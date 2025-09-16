@@ -674,6 +674,7 @@
 	"vm_stop": "Stop",
 	"vm_pause": "Pause",
 	"vm_resume": "Resume",
+	"vm_bus_type_direction": "The communication protocol and physical interface used for connecting devices within a virtual machine.",
 	"please_wait": "Please Wait",
 	"create_virtual_machine": "Create Virtual Machine",
 	"virtual_machine_name": "Virtual Machine Name",
@@ -686,5 +687,18 @@
 	"migrate_virtual_machine": "Migrate Virtual Machine",
 	"target_node": "Target Node",
 	"migrate_virtual_machine_target_node_direction": "Specify the target node for virtual machine migration.",
-	"instance_name": "Instance Name"
+	"instance_name": "Instance Name",
+	"resources": "Resources",
+	"bus_type": "Bus Type",
+	"disk_type": "Disk Type",
+	"source_type": "Source Type",
+	"size": "Size",
+	"network_name": "Network Name",
+	"labels": "Labels",
+	"disk_name": "Disk Name",
+	"add_disk": "Add Disk",
+	"add_new_disk": "Add New Disk",
+	"label_key": "Key",
+	"label_value": "Value",
+	"cloud_image": "Cloud Image"
 }

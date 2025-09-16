@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
 	import Actions from './cell-actions.svelte';
@@ -9,7 +10,28 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity } from '$lib/formatter';
+
+	function getStatusIcon(status: VirtualMachine_status) {
+		switch (status) {
+			case VirtualMachine_status.RUNNING:
+				return { icon: 'ph:power', color: 'text-green-600' };
+			case VirtualMachine_status.STOPPED:
+				return { icon: 'ph:power', color: 'text-gray-600' };
+			case VirtualMachine_status.PAUSED:
+				return { icon: 'ph:pause-circle', color: 'text-yellow-600' };
+			case VirtualMachine_status.STARTING:
+				return { icon: 'ph:arrow-clockwise', color: 'text-blue-500 animate-spin' };
+			case VirtualMachine_status.PROVISIONING:
+				return { icon: 'ph:gear', color: 'text-blue-500 animate-spin' };
+			case VirtualMachine_status.TERMINATING:
+				return { icon: 'ph:trash', color: 'text-red-500' };
+			case VirtualMachine_status.UNKNOWN:
+			default:
+				return { icon: 'ph:warning-circle-fill', color: 'text-amber-500' };
+		}
+	}
 
 	export const cells = {
 		row_picker,
@@ -65,8 +87,18 @@
 {/snippet}
 
 {#snippet status(row: Row<VirtualMachine>)}
+	{@const statusIcon = getStatusIcon(row.original.statusPhase)}
 	<Layout.Cell class="items-start">
-		{VirtualMachine_status[row.original.statusPhase]}
+		<Tooltip.Provider>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					<Icon icon={statusIcon.icon} class={`${statusIcon.color} h-5 w-5`} />
+				</Tooltip.Trigger>
+				<Tooltip.Content>
+					{VirtualMachine_status[row.original.statusPhase]}
+				</Tooltip.Content>
+			</Tooltip.Root>
+		</Tooltip.Provider>
 	</Layout.Cell>
 {/snippet}
 

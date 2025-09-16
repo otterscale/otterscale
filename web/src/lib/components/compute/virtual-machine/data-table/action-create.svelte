@@ -200,7 +200,7 @@
 					<SingleInput.General required type="text" bind:value={request.name} bind:invalid={invalidName} />
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>Namespace</Form.Label>
+					<Form.Label>{m.namespace()}</Form.Label>
 					<SingleSelect.Root
 						required
 						options={namespaces}
@@ -234,9 +234,9 @@
 
 			<!-- ==================== Resource Configuration ==================== -->
 			<Form.Fieldset>
-				<Form.Legend>Resources</Form.Legend>
+				<Form.Legend>{m.resources()}</Form.Legend>
 				<Form.Field>
-					<Form.Label>Type</Form.Label>
+					<Form.Label>{m.type()}</Form.Label>
 					<SingleSelect.Root
 						required
 						options={resourcesCase}
@@ -290,13 +290,16 @@
 
 			<!-- ==================== Disk Configuration ==================== -->
 			<Form.Fieldset>
-				<Form.Legend>Disk</Form.Legend>
+				<Form.Legend>{m.disk()}</Form.Legend>
 				<Form.Field>
-					<Form.Label>Disk Name</Form.Label>
-					<SingleInput.General required type="text" placeholder="Enter disk name" bind:value={newDisk.name} />
+					<Form.Label>{m.name()}</Form.Label>
+					<SingleInput.General required type="text" bind:value={newDisk.name} />
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>Bus Type</Form.Label>
+					<Form.Label>{m.bus_type()}</Form.Label>
+					<Form.Help>
+						{m.vm_bus_type_direction()}
+					</Form.Help>
 					<SingleSelect.Root required options={busTypes} bind:value={newDisk.busType}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -321,7 +324,7 @@
 					</SingleSelect.Root>
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>Disk Type</Form.Label>
+					<Form.Label>{m.disk_type()}</Form.Label>
 					<SingleSelect.Root required options={diskTypes} bind:value={newDisk.diskType}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -347,7 +350,7 @@
 				</Form.Field>
 				{#if newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME}
 					<Form.Field>
-						<Form.Label>Source Type</Form.Label>
+						<Form.Label>{m.source_type()}</Form.Label>
 						<SingleSelect.Root
 							required
 							options={dataVolumeSourceTypes}
@@ -376,16 +379,7 @@
 						</SingleSelect.Root>
 					</Form.Field>
 					<Form.Field>
-						<Form.Label>Source</Form.Label>
-						<SingleInput.General
-							required
-							type="text"
-							placeholder="Enter source reference"
-							bind:value={newDiskSourceDataVolume.source}
-						/>
-					</Form.Field>
-					<Form.Field>
-						<Form.Label>Size</Form.Label>
+						<Form.Label>{m.size()}</Form.Label>
 						<SingleInput.Measurement
 							required
 							bind:value={newDiskSourceDataVolume.sizeBytes}
@@ -393,27 +387,42 @@
 							units={[{ value: 1024 * 1024 * 1024, label: 'GB' } as SingleInput.UnitType]}
 						/>
 					</Form.Field>
+					<Form.Field>
+						<Form.Label>{m.source()}</Form.Label>
+						<SingleInput.General required type="text" bind:value={newDiskSourceDataVolume.source} />
+					</Form.Field>
 				{:else}
 					<Form.Field>
-						<Form.Label>Source</Form.Label>
-						<SingleInput.General
-							required
-							type="text"
-							placeholder="Enter source reference"
-							bind:value={newDiskSource}
-						/>
+						<Form.Label>{m.source()}</Form.Label>
+						<SingleInput.General required type="text" bind:value={newDiskSource} />
 					</Form.Field>
 				{/if}
-				<Button
-					type="button"
-					variant="outline"
-					size="sm"
-					disabled={!newDisk.name.trim() || (!newDiskSource.trim() && !newDiskSourceDataVolume.source.trim())}
-					onclick={addDisk}
-				>
-					<Icon icon="ph:plus" class="size-4" />
-					Add Disk
-				</Button>
+				<div class="flex justify-between gap-2">
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						disabled={!newDisk.name.trim() ||
+							(!newDiskSource.trim() && !newDiskSourceDataVolume.source.trim())}
+						onclick={addDisk}
+					>
+						<Icon icon="ph:plus" class="size-4" />
+						{m.add_disk()}
+					</Button>
+					{#if newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP}
+						<Button
+							variant="outline"
+							size="sm"
+							href="https://cloud-images.ubuntu.com/"
+							target="_blank"
+							class="flex items-center gap-1"
+						>
+							<Icon icon="ph:arrow-square-out" />
+							{m.cloud_image()}
+						</Button>
+					{/if}
+				</div>
+
 				<!-- Display Configured Disks -->
 				{#if request.disks.length > 0}
 					<div class="space-y-2">
@@ -465,7 +474,7 @@
 			<!-- ==================== Advanced Configuration ==================== -->
 			<Collapsible.Root bind:open={isAdvancedOpen} class="py-4">
 				<div class="flex items-center justify-between gap-2">
-					<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>Advance</p>
+					<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>{m.advance()}</p>
 					<Collapsible.Trigger class="bg-muted rounded-full p-1 ">
 						<Icon
 							icon="ph:caret-left"
@@ -475,24 +484,24 @@
 				</div>
 				<Collapsible.Content>
 					<Form.Fieldset>
-						<Form.Legend>Advance</Form.Legend>
+						<Form.Legend>{m.advance()}</Form.Legend>
 						<Form.Field>
-							<Form.Label>Network Name</Form.Label>
+							<Form.Label>{m.network_name()}</Form.Label>
 							<SingleInput.General type="text" bind:value={request.networkName} />
 						</Form.Field>
 						<Form.Field>
-							<Form.Label>Labels</Form.Label>
+							<Form.Label>{m.labels()}</Form.Label>
 							<div class="space-y-2">
 								<div class="flex gap-2">
 									<SingleInput.General
 										type="text"
-										placeholder="Key"
+										placeholder={m.label_key()}
 										bind:value={labelKey}
 										class="flex-1"
 									/>
 									<SingleInput.General
 										type="text"
-										placeholder="Value"
+										placeholder={m.label_value()}
 										bind:value={labelValue}
 										class="flex-1"
 									/>
@@ -531,11 +540,23 @@
 							</div>
 						</Form.Field>
 						<Form.Field>
-							<Form.Label>Startup Script</Form.Label>
+							<Form.Label>{m.startup_script()}</Form.Label>
 							<Code.Root lang="bash" class="w-full" hideLines code={request.startupScript}>
 								<Code.CopyButton />
 							</Code.Root>
 							<SingleInput.Structure preview={false} bind:value={request.startupScript} language="bash" />
+							<div class="flex justify-end gap-2">
+								<Button
+									variant="outline"
+									size="sm"
+									href="https://cloudinit.readthedocs.io/en/latest/reference/examples.html"
+									target="_blank"
+									class="flex items-center gap-1"
+								>
+									<Icon icon="ph:arrow-square-out" />
+									{m.reference()}
+								</Button>
+							</div>
 						</Form.Field>
 					</Form.Fieldset>
 				</Collapsible.Content>

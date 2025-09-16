@@ -674,6 +674,7 @@
 	"vm_stop": "關機",
 	"vm_pause": "暫停",
 	"vm_resume": "運行",
+	"vm_bus_type_direction": "用於在虛擬機器內連接裝置的通訊協定和實體介面。",
 	"please_wait": "請稍候",
 	"create_virtual_machine": "建立虛擬機器",
 	"virtual_machine_name": "虛擬機器名稱",
@@ -686,5 +687,18 @@
 	"migrate_virtual_machine": "遷移虛擬機",
 	"target_node": "目標節點",
 	"migrate_virtual_machine_target_node_direction": "指定虛擬機遷移的目標節點。",
-	"instance_name": "實例名稱"
+	"instance_name": "實例名稱",
+	"resources": "資源",
+	"bus_type": "匯流排類型",
+	"disk_type": "磁碟類型",
+	"source_type": "來源類型",
+	"size": "大小",
+	"network_name": "網路名稱",
+	"labels": "標籤",
+	"disk_name": "磁碟名稱",
+	"add_disk": "新增磁碟",
+	"add_new_disk": "新增磁碟",
+	"label_key": "鍵",
+	"label_value": "值",
+	"cloud_image": "雲端映像檔"
 }
