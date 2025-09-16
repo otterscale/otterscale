@@ -4,7 +4,6 @@
 
 	import Actions from './cell-actions.svelte';
 
-	import { page } from '$app/state';
 	import { type VirtualMachine, VirtualMachine_status } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { Disk } from '$lib/components/compute/virtual-machine/disk';
 	import { Cells } from '$lib/components/custom/data-table/core';
