@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import LLM from '$lib/components/models/large-language-model/index.svelte';
+	import Dashboard from '$lib/components/models/dashboard/index.svelte';
 </script>
 
-<LLM />
+<Dashboard />
