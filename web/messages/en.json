@@ -700,5 +700,15 @@
 	"add_new_disk": "Add New Disk",
 	"label_key": "Key",
 	"label_value": "Value",
-	"cloud_image": "Cloud Image"
+	"cloud_image": "Cloud Image",
+	"input_edit": "Input/Edit",
+	"required": "Required",
+	"editor": "Editor",
+	"vm_status_unknown": "Unknown",
+	"vm_status_provisioning": "Provisioning",
+	"vm_status_starting": "Starting",
+	"vm_status_running": "Running",
+	"vm_status_paused": "Paused",
+	"vm_status_stopped": "Powered Off",
+	"vm_status_terminating": "Terminating"
 }

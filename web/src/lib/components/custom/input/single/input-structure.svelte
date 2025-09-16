@@ -5,6 +5,7 @@
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Code from '$lib/components/custom/code';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 </script>
 
@@ -47,14 +48,14 @@
 		class={cn(buttonVariants({ variant: 'outline' }), 'ring-1', isInvalid ? 'ring-destructive' : '')}
 	>
 		{#if isInvalid}
-			<p class={cn('text-destructive text-xs')}>Required</p>
+			<p class={cn('text-destructive text-xs')}>{m.required()}</p>
 		{:else}
-			Input/Edit
+			{m.input_edit()}
 		{/if}
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="h-[50vh] w-[50vw]">
 		<AlertDialog.Header>
-			<p class="w-full text-center text-xl font-bold">Editor</p>
+			<p class="w-full text-center text-xl font-bold">{m.editor()}</p>
 		</AlertDialog.Header>
 		<Monaco
 			options={{
@@ -73,7 +74,7 @@
 					temporaryValue = value;
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
@@ -81,7 +82,7 @@
 					open = false;
 				}}
 			>
-				Confirm
+				{m.confirm()}
 			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>

@@ -11,6 +11,7 @@
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Sheet from '$lib/components/ui/sheet';
+	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 </script>
 
@@ -59,7 +60,8 @@
 <div class="flex items-center justify-end gap-1">
 	<Sheet.Root>
 		<Sheet.Trigger class="flex items-center gap-1">
-			<Icon icon="mdi:backup-restore" /> Snapshot
+			<Icon icon="mdi:backup-restore" />
+			{m.snapshot()}
 		</Sheet.Trigger>
 
 		<Sheet.Content class="min-w-[70vw] p-4">
