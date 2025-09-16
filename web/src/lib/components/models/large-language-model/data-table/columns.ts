@@ -41,48 +41,21 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		},
 	},
 	{
-		accessorKey: 'version',
+		accessorKey: 'gpu_cache',
 		header: ({ column }) => {
-			return renderSnippet(headers.version, column);
+			return renderSnippet(headers.gpu_cache, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.version, row);
+			return renderSnippet(cells.gpu_cache, row);
 		},
 	},
 	{
-		accessorKey: 'parameters',
+		accessorKey: 'kv_cache',
 		header: ({ column }) => {
-			return renderSnippet(headers.parameters, column);
+			return renderSnippet(headers.kv_cache, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.parameters, row);
-		},
-	},
-	{
-		accessorKey: 'accuracy',
-		header: ({ column }) => {
-			return renderSnippet(headers.accuracy, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.accuracy, row);
-		},
-	},
-	{
-		accessorKey: 'speed',
-		header: ({ column }) => {
-			return renderSnippet(headers.speed, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.speed, row);
-		},
-	},
-	{
-		accessorKey: 'architecture',
-		header: ({ column }) => {
-			return renderSnippet(headers.architecture, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.architecture, row);
+			return renderSnippet(cells.kv_cache, row);
 		},
 	},
 	{
@@ -104,12 +77,12 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		},
 	},
 	{
-		accessorKey: 'topology',
+		accessorKey: 'relation',
 		header: ({ column }) => {
-			return renderSnippet(headers.topology, column);
+			return renderSnippet(headers.relation, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.topology, row);
+			return renderSnippet(cells.relation, row);
 		},
 	},
 ];

@@ -3,7 +3,7 @@
 
 	import { type LargeLangeageModel } from '../protobuf.svelte';
 
-	import Topology from './topology.svelte';
+	import Relation from './cell-relation.svelte';
 
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -12,14 +12,11 @@
 	export const cells = {
 		row_picker,
 		name,
-		version,
-		parameters,
-		accuracy,
-		speed,
-		architecture,
+		gpu_cache,
+		kv_cache,
 		requests,
 		uptime,
-		topology,
+		relation,
 	};
 </script>
 
@@ -35,33 +32,15 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet version(row: Row<LargeLangeageModel>)}
-	<Layout.Cell class="items-start">
-		{row.original.version}
-	</Layout.Cell>
-{/snippet}
-
-{#snippet parameters(row: Row<LargeLangeageModel>)}
+{#snippet gpu_cache(row: Row<LargeLangeageModel>)}
 	<Layout.Cell class="items-end">
-		{row.original.parameters}
+		{row.original.cache.gpu}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet accuracy(row: Row<LargeLangeageModel>)}
+{#snippet kv_cache(row: Row<LargeLangeageModel>)}
 	<Layout.Cell class="items-end">
-		{row.original.metrics.accuracy}
-	</Layout.Cell>
-{/snippet}
-
-{#snippet speed(row: Row<LargeLangeageModel>)}
-	<Layout.Cell class="items-end">
-		{row.original.metrics.speed}
-	</Layout.Cell>
-{/snippet}
-
-{#snippet architecture(row: Row<LargeLangeageModel>)}
-	<Layout.Cell class="items-start">
-		{row.original.architecture}
+		{row.original.cache.kv}
 	</Layout.Cell>
 {/snippet}
 
@@ -77,8 +56,8 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet topology()}
+{#snippet relation(row: Row<LargeLangeageModel>)}
 	<Layout.Cell class="items-end">
-		<Topology />
+		<Relation model={row.original} />
 	</Layout.Cell>
 {/snippet}

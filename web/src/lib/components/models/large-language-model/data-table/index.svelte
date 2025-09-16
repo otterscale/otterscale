@@ -109,12 +109,6 @@
 				{messages}
 				{table}
 			/>
-			<Filters.StringMatch
-				columnId="architecture"
-				values={$largeLanguageModels.flatMap((row) => row.architecture)}
-				{messages}
-				{table}
-			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

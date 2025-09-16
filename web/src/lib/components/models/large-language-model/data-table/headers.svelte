@@ -3,22 +3,18 @@
 
 	import { type LargeLangeageModel } from '../protobuf.svelte';
 
-	import { messages } from './columns';
-
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { m } from '$lib/paraglide/messages';
 
 	export const headers = {
 		row_picker,
 		name,
-		version,
-		parameters,
-		accuracy,
-		speed,
-		architecture,
+		gpu_cache,
+		kv_cache,
 		requests,
 		uptime,
-		topology,
+		relation,
 	};
 </script>
 
@@ -32,54 +28,28 @@
 
 {#snippet name(column: Column<LargeLangeageModel>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages['name']}</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-{#snippet version(column: Column<LargeLangeageModel>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages['version']}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
-{#snippet parameters(column: Column<LargeLangeageModel>)}
+{#snippet gpu_cache(column: Column<LargeLangeageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages['parameters']}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.gpu_cache()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet accuracy(column: Column<LargeLangeageModel>)}
+{#snippet kv_cache(column: Column<LargeLangeageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages['accuracy']}</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
-{#snippet speed(column: Column<LargeLangeageModel>)}
-	<Layout.Header class="justify-end">
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages['speed']}</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
-{#snippet architecture(column: Column<LargeLangeageModel>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages['architecture']}</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
+		<Layout.HeaderViewer>{m.gpu_cache()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -88,7 +58,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages['requests']}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.requests()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -97,8 +67,8 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages['uptime']}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.uptime()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet topology()}{/snippet}
+{#snippet relation()}{/snippet}
