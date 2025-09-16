@@ -13,9 +13,10 @@ import (
 )
 
 type KubeVirtDVRepo interface {
-	CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, sourceType string, source string, sizeBytes int64, isBootable bool) (*DataVolume, error)
+	CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name, sourceType, source, vmName string, sizeBytes int64, isBootable bool) (*DataVolume, error)
 	GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string, pvc *v1.PersistentVolumeClaim) (*DataVolume, error)
-	ListDataVolume(ctx context.Context, config *rest.Config, namespace string) ([]DataVolume, error)
+	ListDataVolumes(ctx context.Context, config *rest.Config, namespace string) ([]DataVolume, error)
+	ListDataVolumesByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]DataVolume, error)
 	DeleteDataVolume(ctx context.Context, config *rest.Config, namespace, name string) error
 	ExtendDataVolume(ctx context.Context, config *rest.Config, namespace string, pvc *v1.PersistentVolumeClaim, sizeBytes resource.Quantity) error
 }
@@ -28,7 +29,7 @@ func (uc *KubeVirtUseCase) CreateDataVolume(ctx context.Context, uuid, facility,
 	}
 
 	return uc.kubeVirtDV.CreateDataVolume(ctx, config, namespace, name,
-		sourceType, source, sizeBytes, isBootable)
+		sourceType, source, "", sizeBytes, isBootable)
 }
 
 // GetDataVolume retrieves a DataVolume and returns the domain model.
@@ -57,7 +58,7 @@ func (uc *KubeVirtUseCase) ListDataVolumes(ctx context.Context, uuid, facility, 
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeVirtDV.ListDataVolume(ctx, config, namespace)
+	return uc.kubeVirtDV.ListDataVolumes(ctx, config, namespace)
 }
 
 // ExtendDataVolume expands the capacity of the PVC inside the DataVolume.

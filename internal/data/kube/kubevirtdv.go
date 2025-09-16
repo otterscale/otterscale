@@ -43,7 +43,7 @@ var _ oscore.KubeVirtDVRepo = (*virtDV)(nil)
 
 // CreateDataVolume creates a DataVolume. Depending on the source_type, constructs different DataVolumeSources.
 // Sets PVC or Storage Spec as needed, then calls the CDI API to create it.
-func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name, sourceType, source string, sizeBytes int64, isBootable bool) (*oscore.DataVolume, error) {
+func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name, sourceType, source, vmName string, sizeBytes int64, isBootable bool) (*oscore.DataVolume, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
@@ -97,7 +97,8 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 			Name:      name,
 			Namespace: namespace,
 			Labels: map[string]string{
-				"is_bootable": strconv.FormatBool(isBootable),
+				"is_bootable":                  strconv.FormatBool(isBootable),
+				"otterscale.io/virtualmachine": vmName,
 			},
 		},
 		Spec: *dvSpec,
@@ -124,12 +125,27 @@ func (r *virtDV) GetDataVolume(ctx context.Context, config *rest.Config, namespa
 }
 
 // ListDataVolume lists all DataVolumes in the specified namespace.
-func (r *virtDV) ListDataVolume(ctx context.Context, config *rest.Config, namespace string) ([]oscore.DataVolume, error) {
+func (r *virtDV) ListDataVolumes(ctx context.Context, config *rest.Config, namespace string) ([]oscore.DataVolume, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.ListOptions{}
+	dvs, err := virtClient.CdiClient().CdiV1beta1().DataVolumes(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return dvs.Items, nil
+}
+
+func (r *virtDV) ListDataVolumesByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]oscore.DataVolume, error) {
+	virtClient, err := r.kubevirt.virtClient(config)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.ListOptions{
+		LabelSelector: label,
+	}
 	dvs, err := virtClient.CdiClient().CdiV1beta1().DataVolumes(namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err

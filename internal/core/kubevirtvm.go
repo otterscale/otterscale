@@ -118,6 +118,7 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 				dvName,
 				dvInfo.SourceType,
 				dvInfo.Source,
+				name,
 				dvInfo.SizeBytes,
 				false, // Is bootable - consider making this configurable
 			)
@@ -420,6 +421,22 @@ func (uc *KubeVirtUseCase) DeleteVirtualMachine(ctx context.Context, uuid, facil
 	for i := range migrations {
 		if err := uc.kubeVirtVM.DeleteVirtualMachineMigrate(ctx, config, namespace, migrations[i].Name); err != nil && !apierrors.IsNotFound(err) {
 			return fmt.Errorf("delete migration %s failed: %w", migrations[i].Name, err)
+		}
+	}
+
+	labelSelector := &metav1.LabelSelector{
+		MatchLabels: map[string]string{
+			"otterscale.io/virtualmachine": name,
+		},
+	}
+	selector, _ := metav1.LabelSelectorAsSelector(labelSelector)
+	datavolumes, err := uc.kubeVirtDV.ListDataVolumesByLabel(ctx, config, namespace, selector.String())
+	if err != nil {
+		return fmt.Errorf("list datavolumes failed: %w", err)
+	}
+	for i := range datavolumes {
+		if err := uc.kubeVirtDV.DeleteDataVolume(ctx, config, namespace, datavolumes[i].Name); err != nil && !apierrors.IsNotFound(err) {
+			return fmt.Errorf("delete datavolume %s failed: %w", datavolumes[i].Name, err)
 		}
 	}
 
