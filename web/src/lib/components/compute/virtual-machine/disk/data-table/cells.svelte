@@ -12,6 +12,7 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	export const cells = {
 		row_picker,
@@ -61,11 +62,23 @@
 
 {#snippet source(row: Row<VirtualMachineDisk>)}
 	<Layout.Cell class="items-end">
-		{#if row.original.sourceData.case === 'source'}
-			{row.original.sourceData.value}
-		{:else if row.original.sourceData.case === 'dataVolume'}
-			{(row.original.sourceData.value as DataVolumeSource).source}
-		{/if}
+		{@const sourceText =
+			row.original.sourceData.case === 'source'
+				? row.original.sourceData.value
+				: row.original.sourceData.case === 'dataVolume'
+					? (row.original.sourceData.value as DataVolumeSource).source
+					: ''}
+
+		<Tooltip.Root>
+			<Tooltip.Trigger>
+				<p class="max-w-70 truncate">
+					{sourceText}
+				</p>
+			</Tooltip.Trigger>
+			<Tooltip.Content>
+				{sourceText}
+			</Tooltip.Content>
+		</Tooltip.Root>
 	</Layout.Cell>
 {/snippet}
 
