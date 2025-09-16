@@ -40,6 +40,16 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		},
 	},
 	{
+		accessorKey: 'status',
+		header: ({ column }) => {
+			return renderSnippet(headers.status, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.status, row);
+		},
+		filterFn: 'arrIncludesSome',
+	},
+	{
 		accessorKey: 'namespace',
 		header: ({ column }) => {
 			return renderSnippet(headers.namespace, column);
@@ -66,16 +76,6 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.node, row);
-		},
-		filterFn: 'arrIncludesSome',
-	},
-	{
-		accessorKey: 'status',
-		header: ({ column }) => {
-			return renderSnippet(headers.status, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.status, row);
 		},
 		filterFn: 'arrIncludesSome',
 	},
