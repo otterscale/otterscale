@@ -13,7 +13,7 @@ const messages = {
 	gpu_cache: m.gpu_cache(),
 	kv_cache: m.kv_cache(),
 	requests: m.requests(),
-	uptime: m.uptime(),
+	time_to_first_token: m.uptime(),
 };
 
 const columns: ColumnDef<LargeLangeageModel>[] = [
