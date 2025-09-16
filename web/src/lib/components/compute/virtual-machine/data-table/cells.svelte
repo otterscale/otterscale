@@ -55,12 +55,7 @@
 
 {#snippet name(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-start">
-		<a
-			class="underline hover:no-underline"
-			href={`${page.url}/${row.original.metadata?.namespace}/${row.original.metadata?.name}`}
-		>
-			{row.original.metadata?.name}
-		</a>
+		{row.original.metadata?.name}
 	</Layout.Cell>
 {/snippet}
 
