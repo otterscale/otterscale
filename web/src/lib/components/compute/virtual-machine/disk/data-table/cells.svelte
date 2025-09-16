@@ -71,7 +71,7 @@
 
 		<Tooltip.Root>
 			<Tooltip.Trigger>
-				<p class="max-w-70 truncate">
+				<p class="max-w-[70px] truncate">
 					{sourceText}
 				</p>
 			</Tooltip.Trigger>
