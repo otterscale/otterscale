@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Row } from '@tanstack/table-core';
 
-	import { type LargeLangeageModel } from '../protobuf.svelte';
+	import { type LargeLangeageModel } from '../type';
 
 	import Relation from './cell-relation.svelte';
 
@@ -15,7 +15,7 @@
 		gpu_cache,
 		kv_cache,
 		requests,
-		uptime,
+		time_to_first_token,
 		relation,
 	};
 </script>
@@ -34,25 +34,25 @@
 
 {#snippet gpu_cache(row: Row<LargeLangeageModel>)}
 	<Layout.Cell class="items-end">
-		{row.original.cache.gpu}
+		{row.original.gpu_cache}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet kv_cache(row: Row<LargeLangeageModel>)}
 	<Layout.Cell class="items-end">
-		{row.original.cache.kv}
+		{row.original.kv_cache}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet requests(row: Row<LargeLangeageModel>)}
 	<Layout.Cell class="items-end">
-		{formatBigNumber(row.original.usageStats.requests)}
+		{formatBigNumber(row.original.requests)}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet uptime(row: Row<LargeLangeageModel>)}
+{#snippet time_to_first_token(row: Row<LargeLangeageModel>)}
 	<Layout.Cell class="items-end">
-		{formatBigNumber(row.original.usageStats.uptime)}
+		{formatBigNumber(row.original.time_to_first_token)}
 	</Layout.Cell>
 {/snippet}
 

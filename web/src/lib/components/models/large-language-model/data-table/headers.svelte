@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Column, Table } from '@tanstack/table-core';
 
-	import { type LargeLangeageModel } from '../protobuf.svelte';
+	import { type LargeLangeageModel } from '../type';
 
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -13,7 +13,7 @@
 		gpu_cache,
 		kv_cache,
 		requests,
-		uptime,
+		time_to_first_token,
 		relation,
 	};
 </script>
@@ -62,7 +62,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet uptime(column: Column<LargeLangeageModel>)}
+{#snippet time_to_first_token(column: Column<LargeLangeageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />

@@ -1,6 +1,6 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { type LargeLangeageModel } from '../protobuf.svelte';
+import { type LargeLangeageModel } from '../type';
 
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
@@ -10,11 +10,8 @@ import { m } from '$lib/paraglide/messages';
 
 const messages = {
 	name: m.name(),
-	version: m.version(),
-	parameters: m.parameters(),
-	accuracy: m.accuracy(),
-	speed: m.speed(),
-	architecture: m.architecture(),
+	gpu_cache: m.gpu_cache(),
+	kv_cache: m.kv_cache(),
 	requests: m.requests(),
 	uptime: m.uptime(),
 };
@@ -68,12 +65,12 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		},
 	},
 	{
-		accessorKey: 'uptime',
+		accessorKey: 'time_to_first_token',
 		header: ({ column }) => {
-			return renderSnippet(headers.uptime, column);
+			return renderSnippet(headers.time_to_first_token, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.uptime, row);
+			return renderSnippet(cells.time_to_first_token, row);
 		},
 	},
 	{
@@ -84,6 +81,7 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.relation, row);
 		},
+		enableHiding: false,
 	},
 ];
 

@@ -12,9 +12,10 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
-	import type { LargeLangeageModel } from '../protobuf.svelte';
+	import type { LargeLangeageModel } from '../type';
 
 	import { columns, messages } from './columns';
+	import Statistics from './statistics.svelte';
 
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -101,6 +102,9 @@
 </script>
 
 <Layout.Root>
+	<Layout.Statistics>
+		<Statistics {table} />
+	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy

@@ -5,11 +5,15 @@
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table/index';
-	import { type LargeLangeageModel } from './protobuf.svelte';
+	import { type LargeLangeageModel } from './type';
 
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+
+	export function getRandomNumber(): number {
+		return Math.round(Math.random() * 100);
+	}
 </script>
 
 <script lang="ts">
@@ -100,14 +104,10 @@
 				(modelName) =>
 					({
 						name: modelName,
-						cache: {
-							gpu: gpuCacheUsageByPod.get(modelName) ?? 0,
-							kv: kvCacheUsageByPod.get(modelName) ?? 0,
-						},
-						usageStats: {
-							requests: requestLatencyByPod.get(modelName) ?? 0,
-							uptime: timeToFirstTokenByPod.get(modelName) ?? 0,
-						},
+						gpu_cache: getRandomNumber() ?? gpuCacheUsageByPod.get(modelName),
+						kv_cache: getRandomNumber() ?? kvCacheUsageByPod.get(modelName),
+						requests: getRandomNumber() ?? requestLatencyByPod.get(modelName),
+						time_to_first_token: getRandomNumber() ?? timeToFirstTokenByPod.get(modelName),
 					}) as LargeLangeageModel,
 			),
 		);

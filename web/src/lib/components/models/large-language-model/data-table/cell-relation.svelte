@@ -5,7 +5,7 @@
 	import { type Edge, type Node } from '@xyflow/svelte';
 	import { writable } from 'svelte/store';
 
-	import type { LargeLangeageModel } from '../protobuf.svelte';
+	import type { LargeLangeageModel } from '../type';
 
 	import { EssentialService, type GpuRelation } from '$lib/api/essential/v1/essential_pb';
 	import { Complex } from '$lib/components/custom/flow/index';
