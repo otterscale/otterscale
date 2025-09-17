@@ -99,7 +99,7 @@
 				);
 			});
 
-		await largeLanguageModels.set(
+		largeLanguageModels.set(
 			modelNames.map(
 				(modelName) =>
 					({

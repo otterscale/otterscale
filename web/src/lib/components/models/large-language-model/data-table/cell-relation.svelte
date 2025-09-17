@@ -20,7 +20,6 @@
 
 <script lang="ts">
 	let { model }: { model: LargeLangeageModel } = $props();
-	console.log(model.name);
 
 	const transport = createConnectTransport({
 		baseUrl: 'http://10.102.197.18:10888',
@@ -54,15 +53,17 @@
 			})),
 	);
 	const models: Node[] = $derived(
-		$relation.podInfos.map((podInformation) => ({
-			id: podInformation.model,
-			type: 'model',
-			data: {
-				name: podInformation.model,
-				icon: 'simple-icons:openai',
-			},
-			position,
-		})),
+		$relation.podInfos
+			.filter((podInformation) => podInformation.model)
+			.map((podInformation) => ({
+				id: podInformation.model,
+				type: 'model',
+				data: {
+					name: podInformation.model,
+					icon: 'simple-icons:openai',
+				},
+				position,
+			})),
 	);
 	const machineGPUs: Edge[] = $derived(
 		$relation.podInfos.flatMap((podInformation) =>
@@ -77,16 +78,18 @@
 		),
 	);
 	const gpuModels: Edge[] = $derived(
-		$relation.podInfos.flatMap((podInformation) =>
-			podInformation.vgpus.map((gpu) => ({
-				id: `${gpu.physicalGpuUuid}${podInformation.model}`,
-				type: 'edge',
-				source: podInformation.model,
-				target: gpu.physicalGpuUuid,
-				animated: true,
-				selectable: false,
-			})),
-		),
+		$relation.podInfos
+			.filter((podInformation) => podInformation.model)
+			.flatMap((podInformation) =>
+				podInformation.vgpus.map((gpu) => ({
+					id: `${gpu.physicalGpuUuid}${podInformation.model}`,
+					type: 'edge',
+					source: podInformation.model,
+					target: gpu.physicalGpuUuid,
+					animated: true,
+					selectable: false,
+				})),
+			),
 	);
 	const nodes = $derived([...machines, ...gpus, ...models]);
 	const edges: Edge[] = $derived([...machineGPUs, ...gpuModels]);
@@ -105,6 +108,9 @@
 					relation.set(response.gpuRelation);
 					isMounted = true;
 				}
+			})
+			.catch((error) => {
+				console.error(`Failed to fetch relation of model ${model.name}:`, error);
 			});
 	});
 </script>
