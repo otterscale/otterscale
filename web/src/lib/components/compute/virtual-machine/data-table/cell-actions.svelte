@@ -32,9 +32,6 @@
 		<Snapshot {virtualMachine} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<StartupScript {virtualMachine} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
 		<Edit {virtualMachine} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>

@@ -389,7 +389,15 @@
 					</Form.Field>
 					<Form.Field>
 						<Form.Label>{m.source()}</Form.Label>
-						<SingleInput.General required type="text" bind:value={newDiskSourceDataVolume.source} />
+						<SingleInput.General
+							required={newDiskSourceDataVolume.type !== DataVolumeSource_Type.BLANK}
+							disabled={newDiskSourceDataVolume.type === DataVolumeSource_Type.BLANK}
+							type="text"
+							bind:value={newDiskSourceDataVolume.source}
+							placeholder={newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP
+								? 'https://cloud-images.ubuntu.com/xxx/xxx/xxx.img'
+								: ''}
+						/>
 					</Form.Field>
 				{:else}
 					<Form.Field>
