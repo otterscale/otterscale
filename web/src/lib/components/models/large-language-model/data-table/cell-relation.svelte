@@ -31,10 +31,7 @@
 		$relation.podInfos.map((podInformation) => ({
 			id: podInformation.machineName,
 			type: 'machine',
-			data: {
-				name: podInformation.machineName,
-				icon: 'simple-icons:maas',
-			},
+			data: podInformation,
 			position,
 		})),
 	);
@@ -44,11 +41,7 @@
 			.map((gpu) => ({
 				id: gpu.physicalGpuUuid,
 				type: 'gpu',
-				data: {
-					name: gpu.physicalGpuUuid,
-					model: gpu.physicalGpuUuid,
-					icon: 'simple-icons:nvidia',
-				},
+				data: gpu,
 				position,
 			})),
 	);
@@ -58,10 +51,7 @@
 			.map((podInformation) => ({
 				id: podInformation.model,
 				type: 'model',
-				data: {
-					name: podInformation.model,
-					icon: 'simple-icons:openai',
-				},
+				data: podInformation,
 				position,
 			})),
 	);

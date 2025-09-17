@@ -2,17 +2,13 @@
 	import Icon from '@iconify/svelte';
 	import { Handle, type NodeProps } from '@xyflow/svelte';
 
+	import { type GpuInfo } from '$lib/api/essential/v1/essential_pb';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { cn } from '$lib/utils';
-
-	export type DataType = {
-		name: string;
-		model: string;
-		icon: string;
-	};
 </script>
 
 <script lang="ts">
-	let { data, selected, targetPosition, sourcePosition }: Omit<NodeProps, 'data'> & { data: DataType } = $props();
+	let { data, selected, targetPosition, sourcePosition }: Omit<NodeProps, 'data'> & { data: GpuInfo } = $props();
 </script>
 
 <div
@@ -27,18 +23,36 @@
 			selected ? 'bg-primary-foreground ring-primary ring-1' : 'bg-card ring-0',
 		)}
 	>
-		<Icon icon="ph:graphics-card-duotone" class="size-5" />
+		<Icon icon="simple-icons:kubernetes" class="size-5" />
 	</div>
 	<div class="flex items-center justify-center p-4">
 		<div class="flex gap-2">
-			<div class="bg-muted-foreground/50 size-fit rounded-full p-1">
-				<Icon icon={data.icon} class="size-5" />
+			<div class="bg-muted-foreground/50 size-fit rounded-full p-2">
+				<Icon icon="ph:graphics-card" class="size-5" />
 			</div>
-			<div>
-				<p class="max-w-[200px] truncate text-base">{data.name}</p>
-				<p class="text-muted-foreground max-w-[200px] truncate text-xs font-light">
-					{data.model}
-				</p>
+			<div class="justufy-start flex flex-col items-start">
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<p class="max-w-[200px] truncate text-base text-nowrap whitespace-nowrap">
+							{data.physicalGpuUuid}
+						</p>
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						{data.physicalGpuUuid}
+					</Tooltip.Content>
+				</Tooltip.Root>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<p
+							class="text-muted-foreground max-w-[200px] truncate text-xs font-light text-nowrap whitespace-nowrap"
+						>
+							{data.vgpuCores} cores · {data.vgpuVram} ram
+						</p>
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						{data.vgpuCores} cores · {data.vgpuVram} ram
+					</Tooltip.Content>
+				</Tooltip.Root>
 			</div>
 		</div>
 	</div>

@@ -2,17 +2,13 @@
 	import Icon from '@iconify/svelte';
 	import { Handle, type NodeProps } from '@xyflow/svelte';
 
+	import { type PodInfo } from '$lib/api/essential/v1/essential_pb';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { cn } from '$lib/utils';
-
-	export type DataType = {
-		name: string;
-		ip: string;
-		icon: string;
-	};
 </script>
 
 <script lang="ts">
-	let { data, selected, targetPosition, sourcePosition }: Omit<NodeProps, 'data'> & { data: DataType } = $props();
+	let { data, selected, targetPosition, sourcePosition }: Omit<NodeProps, 'data'> & { data: PodInfo } = $props();
 </script>
 
 <div
@@ -27,21 +23,21 @@
 			selected ? 'bg-primary-foreground ring-primary ring-1' : 'bg-card ring-0',
 		)}
 	>
-		<Icon icon="ph:computer-tower-duotone" class="size-5" />
+		<Icon icon="simple-icons:maas" class="size-5" />
 	</div>
 	<div class="flex items-center justify-center p-4">
-		<div class="flex gap-2">
-			<div class="bg-muted-foreground/50 size-fit rounded-full p-1">
-				<Icon icon={data.icon} class="size-5" />
+		<div class="flex items-center gap-2">
+			<div class="bg-muted-foreground/50 size-fit rounded-full p-2">
+				<Icon icon="ph:computer-tower" class="size-5" />
 			</div>
-			<div>
-				<p class="max-w-[200px] truncate text-base text-nowrap whitespace-nowrap">{data.name}</p>
-				<p
-					class="text-muted-foreground max-w-[200px] truncate text-xs font-light text-nowrap whitespace-nowrap"
-				>
-					{data.ip}
-				</p>
-			</div>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					<p class="max-w-[200px] truncate text-base text-nowrap whitespace-nowrap">{data.machineName}</p>
+				</Tooltip.Trigger>
+				<Tooltip.Content>
+					{data.namespace} · {data.machineName}
+				</Tooltip.Content>
+			</Tooltip.Root>
 		</div>
 	</div>
 	{#if targetPosition}
