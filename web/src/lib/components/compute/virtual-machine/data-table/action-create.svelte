@@ -12,6 +12,7 @@
 		VirtualMachineResources,
 		VirtualMachineDisk,
 		DataVolumeSource,
+		PersistentVolumeClaim,
 	} from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import {
 		KubeVirtService,
@@ -53,6 +54,7 @@
 
 	// ==================== Local Dropdown Options ====================
 	const namespaces: Writable<SingleSelect.OptionType[]> = writable([]);
+	const bootablePVCs: Writable<SingleSelect.OptionType[]> = writable([]);
 
 	// ==================== API Functions ====================
 	async function loadNamespaces() {
@@ -71,6 +73,30 @@
 			namespaces.set(namespaceOptions);
 		} catch (error) {
 			toast.error('Failed to load namespaces', {
+				description: (error as ConnectError).message.toString(),
+			});
+		}
+	}
+
+	async function loadBootablePVCs() {
+		try {
+			if (!request.namespace) return;
+
+			const response = await kubevirtClient.listBootablePersistentVolumeClaims({
+				scopeUuid: $currentKubernetes?.scopeUuid,
+				facilityName: $currentKubernetes?.name,
+				namespace: request.namespace,
+			});
+
+			const pvcOptions = response.persistentVolumeClaims.map((pvc: PersistentVolumeClaim) => ({
+				value: pvc.name,
+				label: pvc.name,
+				icon: 'ph:hard-drive',
+			}));
+
+			bootablePVCs.set(pvcOptions);
+		} catch (error) {
+			toast.error('Failed to load bootable PVCs', {
 				description: (error as ConnectError).message.toString(),
 			});
 		}
@@ -126,6 +152,13 @@
 		}
 	});
 
+	// Load bootable PVCs when namespace changes
+	$effect(() => {
+		if (request.namespace) {
+			loadBootablePVCs();
+		}
+	});
+
 	// ==================== Utility Functions ====================
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -137,6 +170,7 @@
 		newDisk = DEFAULT_DISK;
 		newDiskSource = DEFAULT_DISK_SOURCE;
 		newDiskSourceDataVolume = DEFAULT_DISK_DATA_VOLUME_SOURCE;
+		bootablePVCs.set([]);
 	}
 	function close() {
 		open = false;
@@ -182,6 +216,9 @@
 	// ==================== Lifecycle Hooks ====================
 	onMount(() => {
 		loadNamespaces();
+		if (request.namespace) {
+			loadBootablePVCs();
+		}
 	});
 </script>
 
@@ -389,15 +426,45 @@
 					</Form.Field>
 					<Form.Field>
 						<Form.Label>{m.source()}</Form.Label>
-						<SingleInput.General
-							required={newDiskSourceDataVolume.type !== DataVolumeSource_Type.BLANK}
-							disabled={newDiskSourceDataVolume.type === DataVolumeSource_Type.BLANK}
-							type="text"
-							bind:value={newDiskSourceDataVolume.source}
-							placeholder={newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP
-								? 'https://cloud-images.ubuntu.com/xxx/xxx/xxx.img'
-								: ''}
-						/>
+						{#if newDiskSourceDataVolume.type === DataVolumeSource_Type.PVC}
+							<SingleSelect.Root
+								required
+								options={bootablePVCs}
+								bind:value={newDiskSourceDataVolume.source}
+							>
+								<SingleSelect.Trigger />
+								<SingleSelect.Content>
+									<SingleSelect.Options>
+										<SingleSelect.Input />
+										<SingleSelect.List>
+											<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+											<SingleSelect.Group>
+												{#each $bootablePVCs as pvc}
+													<SingleSelect.Item option={pvc}>
+														<Icon
+															icon={pvc.icon ? pvc.icon : 'ph:empty'}
+															class={cn('size-5', pvc.icon ? 'visible' : 'invisible')}
+														/>
+														{pvc.label}
+														<SingleSelect.Check option={pvc} />
+													</SingleSelect.Item>
+												{/each}
+											</SingleSelect.Group>
+										</SingleSelect.List>
+									</SingleSelect.Options>
+								</SingleSelect.Content>
+							</SingleSelect.Root>
+						{:else}
+							<SingleInput.General
+								required={newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP}
+								disabled={newDiskSourceDataVolume.type === DataVolumeSource_Type.BLANK}
+								type="text"
+								bind:value={newDiskSourceDataVolume.source}
+								placeholder={newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP
+									? 'https://cloud-images.ubuntu.com/xxx/xxx/xxx.img'
+									: ''}
+							/>
+						{/if}
 					</Form.Field>
 				{:else}
 					<Form.Field>
