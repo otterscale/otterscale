@@ -664,6 +664,8 @@
 	"edit_helm_repository": "編輯 Helm 儲存庫",
 	"helm_repository": "Helm 儲存庫",
 	"edit_package_repository": "編輯套件儲存庫",
+	"extend": "擴展",
+	"extend_data_volume": "擴展資料磁碟區",
 	"quota_limit_is_not_set": "未設定配額限制",
 	"gpu": "GPU",
 	"bus": "匯流排",

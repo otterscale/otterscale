@@ -82,16 +82,16 @@ const columns: ColumnDef<VirtualMachineDisk>[] = [
 			return renderSnippet(cells.size, row);
 		},
 	},
-	// {
-	// 	accessorKey: 'actions',
-	// 	header: ({ column }) => {
-	// 		return renderSnippet(headers.actions, column);
-	// 	},
-	// 	cell: ({ row }) => {
-	// 		return renderSnippet(cells.actions, row);
-	// 	},
-	// 	enableHiding: false,
-	// },
+	{
+		accessorKey: 'actions',
+		header: ({ column }) => {
+			return renderSnippet(headers.actions, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.actions, row);
+		},
+		enableHiding: false,
+	},
 ];
 
 export { columns, messages };
