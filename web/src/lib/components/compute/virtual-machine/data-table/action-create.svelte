@@ -5,8 +5,6 @@
 	import { writable, type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { resourcesCase, diskTypes, busTypes, dataVolumeSourceTypes } from './dropdown';
-
 	import type {
 		CreateVirtualMachineRequest,
 		VirtualMachineResources,
@@ -20,6 +18,12 @@
 		VirtualMachineDisk_bus,
 		DataVolumeSource_Type,
 	} from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import {
+		resourcesCase,
+		diskTypes,
+		busTypes,
+		dataVolumeSourceTypes,
+	} from '$lib/components/compute/virtual-machine/units/dropdown';
 	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -28,7 +32,6 @@
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible';
-	import { Switch } from '$lib/components/ui/switch';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
@@ -432,6 +435,14 @@
 						</SingleSelect.Root>
 					</Form.Field>
 					<Form.Field>
+						<SingleInput.Boolean
+							descriptor={() => m.boot_disk()}
+							bind:value={newDisk.isBootable}
+							disabled={newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME &&
+								newDiskSourceDataVolume.type === DataVolumeSource_Type.BLANK}
+						/>
+					</Form.Field>
+					<Form.Field>
 						<Form.Label>{m.size()}</Form.Label>
 						<SingleInput.Measurement
 							required
@@ -484,18 +495,13 @@
 					</Form.Field>
 				{:else}
 					<Form.Field>
+						<SingleInput.Boolean descriptor={() => m.boot_disk()} bind:value={newDisk.isBootable} />
+					</Form.Field>
+					<Form.Field>
 						<Form.Label>{m.source()}</Form.Label>
 						<SingleInput.General required type="text" bind:value={newDiskSource} />
 					</Form.Field>
 				{/if}
-				<Form.Field>
-					<SingleInput.Boolean
-						descriptor={() => m.boot_disk()}
-						bind:value={newDisk.isBootable}
-						disabled={newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME &&
-							newDiskSourceDataVolume.type === DataVolumeSource_Type.BLANK}
-					/>
-				</Form.Field>
 				<div class="flex justify-between gap-2">
 					<Button
 						type="button"
@@ -508,7 +514,7 @@
 						<Icon icon="ph:plus" class="size-4" />
 						{m.add_disk()}
 					</Button>
-					{#if newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP}
+					{#if newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME && newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP}
 						<Button
 							variant="outline"
 							size="sm"
