@@ -113,7 +113,6 @@ message GetGpuRelationRequestByModel {
   string model_name = 4;
 }
 
-
 message GetGpuRelationResponse {
   GpuRelation gpu_relation = 1;
 }
