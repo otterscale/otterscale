@@ -64,7 +64,7 @@ type EssentialUseCase struct {
 }
 
 // GpuInfo represents GPU information for a pod
-type GpuInfo struct {
+type VGpuInfo struct {
 	IsVGpu          bool
 	VGpuBindTime    time.Time
 	BindPhase       string
@@ -79,7 +79,7 @@ type PodInfo struct {
 	Namespace        string
 	Model            string
 	MachineName      string
-	VGpuInfo         []GpuInfo
+	VGpuInfo         []VGpuInfo
 	DeploymentName   string
 	DeploymentLabels map[string]string
 }
@@ -529,7 +529,7 @@ func (uc *EssentialUseCase) GetGpuRelationByMachine(ctx context.Context, uuid, f
 		if err == nil && deployment != nil {
 			podInfo.DeploymentName = deployment.Name
 			podInfo.DeploymentLabels = deployment.Labels
-			
+
 			// Get model name from deployment labels
 			if modelName, ok := deployment.Labels["model-name"]; ok {
 				podInfo.Model = modelName
@@ -557,7 +557,7 @@ func (uc *EssentialUseCase) GetGpuRelationByModel(ctx context.Context, uuid, fac
 
 	// Find deployments with the specified model
 	label := "model-name=" + modelName
-	deployments, err := uc.kubeAppsRepo.ListDeploymentsByLabel(ctx, config, "", label)
+	deployments, err := uc.kubeAppsRepo.ListAllNamespacesDeploymentsByLabel(ctx, config, "", label)
 	if err != nil {
 		return nil, err
 	}
@@ -612,14 +612,14 @@ func (uc *EssentialUseCase) GetGpuRelationByModel(ctx context.Context, uuid, fac
 }
 
 // extractGpuInfoFromPodAnnotations extracts GPU information from pod annotations
-func extractGpuInfoFromPodAnnotations(annotations map[string]string) []GpuInfo {
+func extractGpuInfoFromPodAnnotations(annotations map[string]string) []VGpuInfo {
 	vgpuDevicesAllocated, hasVGpu := annotations["hami.io/vgpu-devices-allocated"]
 	if !hasVGpu || vgpuDevicesAllocated == "" {
 		return nil
 	}
 
-	gpuInfos := []GpuInfo{}
-	devices := strings.Split(vgpuDevicesAllocated, ";")
+	vgpuInfos := []VGpuInfo{}
+	devices := strings.Split(vgpuDevicesAllocated, ":")
 
 	for _, device := range devices {
 		if device == "" {
@@ -647,7 +647,7 @@ func extractGpuInfoFromPodAnnotations(annotations map[string]string) []GpuInfo {
 			}
 		}
 
-		gpuInfo := GpuInfo{
+		vgpuInfo := VGpuInfo{
 			IsVGpu:          true,
 			VGpuBindTime:    bindTime,
 			BindPhase:       annotations["hami.io/bind-phase"],
@@ -656,10 +656,10 @@ func extractGpuInfoFromPodAnnotations(annotations map[string]string) []GpuInfo {
 			VGpuCores:       cores,
 		}
 
-		gpuInfos = append(gpuInfos, gpuInfo)
+		vgpuInfos = append(vgpuInfos, vgpuInfo)
 	}
 
-	return gpuInfos
+	return vgpuInfos
 }
 
 // findDeploymentForPod finds the deployment that owns the given pod
@@ -670,13 +670,13 @@ func (uc *EssentialUseCase) findDeploymentForPod(ctx context.Context, config *re
 		if ownerRef.Kind == "ReplicaSet" {
 			// Find the ReplicaSet
 			replicaSetName := ownerRef.Name
-			
+
 			// Get all deployments in the namespace and check if any owns this ReplicaSet
 			deployments, err := uc.kubeAppsRepo.ListDeployments(ctx, config, pod.Namespace)
 			if err != nil {
 				return nil, err
 			}
-			
+
 			for _, deployment := range deployments {
 				// Check if this deployment's name matches the ReplicaSet prefix
 				deploymentName := deployment.Name

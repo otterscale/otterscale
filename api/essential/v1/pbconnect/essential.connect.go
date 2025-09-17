@@ -68,8 +68,8 @@ type EssentialServiceClient interface {
 	CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error)
 	CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error)
 	AddUnits(context.Context, *connect.Request[v1.AddUnitsRequest]) (*connect.Response[emptypb.Empty], error)
-	GetGpuRelationByMachine(context.Context, *connect.Request[v1.GetGpuRelationRequest]) (*connect.Response[v1.GetGpuRelationResponse], error)
-	GetGpuRelationByModel(context.Context, *connect.Request[v1.GetGpuRelationRequest]) (*connect.Response[v1.GetGpuRelationResponse], error)
+	GetGpuRelationByMachine(context.Context, *connect.Request[v1.GetGpuRelationRequestByMachine]) (*connect.Response[v1.GetGpuRelationResponse], error)
+	GetGpuRelationByModel(context.Context, *connect.Request[v1.GetGpuRelationRequestByModel]) (*connect.Response[v1.GetGpuRelationResponse], error)
 }
 
 // NewEssentialServiceClient constructs a client for the otterscale.essential.v1.EssentialService
@@ -119,13 +119,13 @@ func NewEssentialServiceClient(httpClient connect.HTTPClient, baseURL string, op
 			connect.WithSchema(essentialServiceMethods.ByName("AddUnits")),
 			connect.WithClientOptions(opts...),
 		),
-		getGpuRelationByMachine: connect.NewClient[v1.GetGpuRelationRequest, v1.GetGpuRelationResponse](
+		getGpuRelationByMachine: connect.NewClient[v1.GetGpuRelationRequestByMachine, v1.GetGpuRelationResponse](
 			httpClient,
 			baseURL+EssentialServiceGetGpuRelationByMachineProcedure,
 			connect.WithSchema(essentialServiceMethods.ByName("GetGpuRelationByMachine")),
 			connect.WithClientOptions(opts...),
 		),
-		getGpuRelationByModel: connect.NewClient[v1.GetGpuRelationRequest, v1.GetGpuRelationResponse](
+		getGpuRelationByModel: connect.NewClient[v1.GetGpuRelationRequestByModel, v1.GetGpuRelationResponse](
 			httpClient,
 			baseURL+EssentialServiceGetGpuRelationByModelProcedure,
 			connect.WithSchema(essentialServiceMethods.ByName("GetGpuRelationByModel")),
@@ -142,8 +142,8 @@ type essentialServiceClient struct {
 	createSingleNode              *connect.Client[v1.CreateSingleNodeRequest, emptypb.Empty]
 	createHighAvailabilityCluster *connect.Client[v1.CreateHighAvailabilityClusterRequest, emptypb.Empty]
 	addUnits                      *connect.Client[v1.AddUnitsRequest, emptypb.Empty]
-	getGpuRelationByMachine       *connect.Client[v1.GetGpuRelationRequest, v1.GetGpuRelationResponse]
-	getGpuRelationByModel         *connect.Client[v1.GetGpuRelationRequest, v1.GetGpuRelationResponse]
+	getGpuRelationByMachine       *connect.Client[v1.GetGpuRelationRequestByMachine, v1.GetGpuRelationResponse]
+	getGpuRelationByModel         *connect.Client[v1.GetGpuRelationRequestByModel, v1.GetGpuRelationResponse]
 }
 
 // IsMachineDeployed calls otterscale.essential.v1.EssentialService.IsMachineDeployed.
@@ -178,12 +178,12 @@ func (c *essentialServiceClient) AddUnits(ctx context.Context, req *connect.Requ
 }
 
 // GetGpuRelationByMachine calls otterscale.essential.v1.EssentialService.GetGpuRelationByMachine.
-func (c *essentialServiceClient) GetGpuRelationByMachine(ctx context.Context, req *connect.Request[v1.GetGpuRelationRequest]) (*connect.Response[v1.GetGpuRelationResponse], error) {
+func (c *essentialServiceClient) GetGpuRelationByMachine(ctx context.Context, req *connect.Request[v1.GetGpuRelationRequestByMachine]) (*connect.Response[v1.GetGpuRelationResponse], error) {
 	return c.getGpuRelationByMachine.CallUnary(ctx, req)
 }
 
 // GetGpuRelationByModel calls otterscale.essential.v1.EssentialService.GetGpuRelationByModel.
-func (c *essentialServiceClient) GetGpuRelationByModel(ctx context.Context, req *connect.Request[v1.GetGpuRelationRequest]) (*connect.Response[v1.GetGpuRelationResponse], error) {
+func (c *essentialServiceClient) GetGpuRelationByModel(ctx context.Context, req *connect.Request[v1.GetGpuRelationRequestByModel]) (*connect.Response[v1.GetGpuRelationResponse], error) {
 	return c.getGpuRelationByModel.CallUnary(ctx, req)
 }
 
@@ -196,8 +196,8 @@ type EssentialServiceHandler interface {
 	CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error)
 	CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error)
 	AddUnits(context.Context, *connect.Request[v1.AddUnitsRequest]) (*connect.Response[emptypb.Empty], error)
-	GetGpuRelationByMachine(context.Context, *connect.Request[v1.GetGpuRelationRequest]) (*connect.Response[v1.GetGpuRelationResponse], error)
-	GetGpuRelationByModel(context.Context, *connect.Request[v1.GetGpuRelationRequest]) (*connect.Response[v1.GetGpuRelationResponse], error)
+	GetGpuRelationByMachine(context.Context, *connect.Request[v1.GetGpuRelationRequestByMachine]) (*connect.Response[v1.GetGpuRelationResponse], error)
+	GetGpuRelationByModel(context.Context, *connect.Request[v1.GetGpuRelationRequestByModel]) (*connect.Response[v1.GetGpuRelationResponse], error)
 }
 
 // NewEssentialServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -306,10 +306,10 @@ func (UnimplementedEssentialServiceHandler) AddUnits(context.Context, *connect.R
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.AddUnits is not implemented"))
 }
 
-func (UnimplementedEssentialServiceHandler) GetGpuRelationByMachine(context.Context, *connect.Request[v1.GetGpuRelationRequest]) (*connect.Response[v1.GetGpuRelationResponse], error) {
+func (UnimplementedEssentialServiceHandler) GetGpuRelationByMachine(context.Context, *connect.Request[v1.GetGpuRelationRequestByMachine]) (*connect.Response[v1.GetGpuRelationResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.GetGpuRelationByMachine is not implemented"))
 }
 
-func (UnimplementedEssentialServiceHandler) GetGpuRelationByModel(context.Context, *connect.Request[v1.GetGpuRelationRequest]) (*connect.Response[v1.GetGpuRelationResponse], error) {
+func (UnimplementedEssentialServiceHandler) GetGpuRelationByModel(context.Context, *connect.Request[v1.GetGpuRelationRequestByModel]) (*connect.Response[v1.GetGpuRelationResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.GetGpuRelationByModel is not implemented"))
 }

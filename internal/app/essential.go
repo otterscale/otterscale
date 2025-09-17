@@ -119,7 +119,7 @@ func toProtoEssentialUnit(eu *core.EssentialUnit) *pb.Essential_Unit {
 	return ret
 }
 
-func (s *EssentialService) GetGpuRelationByMachine(ctx context.Context, req *connect.Request[pb.GetGpuRelationRequest]) (*connect.Response[pb.GetGpuRelationResponse], error) {
+func (s *EssentialService) GetGpuRelationByMachine(ctx context.Context, req *connect.Request[pb.GetGpuRelationRequestByMachine]) (*connect.Response[pb.GetGpuRelationResponse], error) {
 	podInfos, err := s.uc.GetGpuRelationByMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetMachineName())
 	if err != nil {
 		return nil, err
@@ -133,7 +133,7 @@ func (s *EssentialService) GetGpuRelationByMachine(ctx context.Context, req *con
 	return connect.NewResponse(resp), nil
 }
 
-func (s *EssentialService) GetGpuRelationByModel(ctx context.Context, req *connect.Request[pb.GetGpuRelationRequest]) (*connect.Response[pb.GetGpuRelationResponse], error) {
+func (s *EssentialService) GetGpuRelationByModel(ctx context.Context, req *connect.Request[pb.GetGpuRelationRequestByModel]) (*connect.Response[pb.GetGpuRelationResponse], error) {
 	podInfos, err := s.uc.GetGpuRelationByModel(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetModelName())
 	if err != nil {
 		return nil, err
@@ -165,7 +165,7 @@ func toProtoPodInfo(pi *core.PodInfo) *pb.PodInfo {
 	return ret
 }
 
-func toProtoGpuInfos(gpuInfos []core.GpuInfo) []*pb.GpuInfo {
+func toProtoGpuInfos(gpuInfos []core.VGpuInfo) []*pb.GpuInfo {
 	ret := []*pb.GpuInfo{}
 	for i := range gpuInfos {
 		ret = append(ret, toProtoGpuInfo(&gpuInfos[i]))
@@ -173,7 +173,7 @@ func toProtoGpuInfos(gpuInfos []core.GpuInfo) []*pb.GpuInfo {
 	return ret
 }
 
-func toProtoGpuInfo(gi *core.GpuInfo) *pb.GpuInfo {
+func toProtoGpuInfo(gi *core.VGpuInfo) *pb.GpuInfo {
 	ret := &pb.GpuInfo{}
 	ret.SetIsVgpu(gi.IsVGpu)
 	ret.SetBindPhase(gi.BindPhase)
