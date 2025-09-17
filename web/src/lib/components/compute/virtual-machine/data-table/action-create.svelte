@@ -28,6 +28,7 @@
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible';
+	import { Switch } from '$lib/components/ui/switch';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
@@ -132,6 +133,7 @@
 		diskType: VirtualMachineDisk_type.DATAVOLUME,
 		busType: VirtualMachineDisk_bus.VIRTIO,
 		sourceData: { case: 'source', value: DEFAULT_DISK_SOURCE },
+		isBootable: true,
 	} as VirtualMachineDisk;
 
 	// ==================== Form State ====================
@@ -156,6 +158,20 @@
 	$effect(() => {
 		if (request.namespace) {
 			loadBootablePVCs();
+		}
+	});
+
+	// Auto-set bootable based on data volume source type
+	$effect(() => {
+		if (newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME) {
+			if (
+				newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP ||
+				newDiskSourceDataVolume.type === DataVolumeSource_Type.PVC
+			) {
+				newDisk.isBootable = true;
+			} else if (newDiskSourceDataVolume.type === DataVolumeSource_Type.BLANK) {
+				newDisk.isBootable = false;
+			}
 		}
 	});
 
@@ -472,6 +488,14 @@
 						<SingleInput.General required type="text" bind:value={newDiskSource} />
 					</Form.Field>
 				{/if}
+				<Form.Field>
+					<SingleInput.Boolean
+						descriptor={() => m.boot_disk()}
+						bind:value={newDisk.isBootable}
+						disabled={newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME &&
+							newDiskSourceDataVolume.type === DataVolumeSource_Type.BLANK}
+					/>
+				</Form.Field>
 				<div class="flex justify-between gap-2">
 					<Button
 						type="button"
@@ -528,12 +552,16 @@
 											>
 											<span class="mx-2">•</span>
 											<span>Source: {disk.sourceData.value.source}</span>
+											<span class="mx-2">•</span>
+											<span>Bootable: {disk.isBootable ? 'Yes' : 'No'}</span>
 										{:else}
 											<span
 												>Source: {disk.sourceData?.case === 'source'
 													? disk.sourceData.value
 													: 'Unknown'}</span
 											>
+											<span class="mx-2">•</span>
+											<span>Bootable: {disk.isBootable ? 'Yes' : 'No'}</span>
 										{/if}
 									</div>
 								</div>
