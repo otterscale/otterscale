@@ -10,7 +10,7 @@ option go_package = "github.com/otterscale/otterscale/api/kubevirt/v1;pb";
 // Virtual Machine Management Service for KubeVirt
 service KubeVirtService {
   rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse);
-  rpc ListPersistentVolumeClaims(ListPersistentVolumeClaimsRequest) returns (ListPersistentVolumeClaimsResponse);
+  rpc ListBootablePersistentVolumeClaims(ListPersistentVolumeClaimsRequest) returns (ListPersistentVolumeClaimsResponse);
   // Virtual Machine Operations
   rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
   rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine);
@@ -226,6 +226,7 @@ message VirtualMachineDisk {
     string source = 4;
     DataVolumeSource data_volume = 5;
   }
+  bool is_bootable = 11;
 }
 
 message CreateVirtualMachineRequest {
@@ -463,10 +464,10 @@ message ListPersistentVolumeClaimsResponse {
 }
 
 message PersistentVolumeClaim {
-  Metadata metadata = 1;
-  string storage_class = 2;
-  int64 size_bytes = 3;
-  string access_mode = 4;
-  string status = 5;
-  string volume_name = 6;
+  string name = 1;
+  string namespace = 2;
+  string storage_class = 3;
+  int64 size_bytes = 4;
+  string access_mode = 5;
+  string status = 6;
 }

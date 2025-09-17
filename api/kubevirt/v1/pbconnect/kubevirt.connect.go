@@ -37,9 +37,9 @@ const (
 	// KubeVirtServiceListNamespacesProcedure is the fully-qualified name of the KubeVirtService's
 	// ListNamespaces RPC.
 	KubeVirtServiceListNamespacesProcedure = "/otterscale.kubevirt.v1.KubeVirtService/ListNamespaces"
-	// KubeVirtServiceListPersistentVolumeClaimsProcedure is the fully-qualified name of the
-	// KubeVirtService's ListPersistentVolumeClaims RPC.
-	KubeVirtServiceListPersistentVolumeClaimsProcedure = "/otterscale.kubevirt.v1.KubeVirtService/ListPersistentVolumeClaims"
+	// KubeVirtServiceListBootablePersistentVolumeClaimsProcedure is the fully-qualified name of the
+	// KubeVirtService's ListBootablePersistentVolumeClaims RPC.
+	KubeVirtServiceListBootablePersistentVolumeClaimsProcedure = "/otterscale.kubevirt.v1.KubeVirtService/ListBootablePersistentVolumeClaims"
 	// KubeVirtServiceCreateVirtualMachineProcedure is the fully-qualified name of the KubeVirtService's
 	// CreateVirtualMachine RPC.
 	KubeVirtServiceCreateVirtualMachineProcedure = "/otterscale.kubevirt.v1.KubeVirtService/CreateVirtualMachine"
@@ -135,7 +135,7 @@ const (
 // KubeVirtServiceClient is a client for the otterscale.kubevirt.v1.KubeVirtService service.
 type KubeVirtServiceClient interface {
 	ListNamespaces(context.Context, *connect.Request[v1.ListNamespacesRequest]) (*connect.Response[v1.ListNamespacesResponse], error)
-	ListPersistentVolumeClaims(context.Context, *connect.Request[v1.ListPersistentVolumeClaimsRequest]) (*connect.Response[v1.ListPersistentVolumeClaimsResponse], error)
+	ListBootablePersistentVolumeClaims(context.Context, *connect.Request[v1.ListPersistentVolumeClaimsRequest]) (*connect.Response[v1.ListPersistentVolumeClaimsResponse], error)
 	// Virtual Machine Operations
 	CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
@@ -191,10 +191,10 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(kubeVirtServiceMethods.ByName("ListNamespaces")),
 			connect.WithClientOptions(opts...),
 		),
-		listPersistentVolumeClaims: connect.NewClient[v1.ListPersistentVolumeClaimsRequest, v1.ListPersistentVolumeClaimsResponse](
+		listBootablePersistentVolumeClaims: connect.NewClient[v1.ListPersistentVolumeClaimsRequest, v1.ListPersistentVolumeClaimsResponse](
 			httpClient,
-			baseURL+KubeVirtServiceListPersistentVolumeClaimsProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("ListPersistentVolumeClaims")),
+			baseURL+KubeVirtServiceListBootablePersistentVolumeClaimsProcedure,
+			connect.WithSchema(kubeVirtServiceMethods.ByName("ListBootablePersistentVolumeClaims")),
 			connect.WithClientOptions(opts...),
 		),
 		createVirtualMachine: connect.NewClient[v1.CreateVirtualMachineRequest, v1.VirtualMachine](
@@ -382,38 +382,38 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // kubeVirtServiceClient implements KubeVirtServiceClient.
 type kubeVirtServiceClient struct {
-	listNamespaces               *connect.Client[v1.ListNamespacesRequest, v1.ListNamespacesResponse]
-	listPersistentVolumeClaims   *connect.Client[v1.ListPersistentVolumeClaimsRequest, v1.ListPersistentVolumeClaimsResponse]
-	createVirtualMachine         *connect.Client[v1.CreateVirtualMachineRequest, v1.VirtualMachine]
-	getVirtualMachine            *connect.Client[v1.GetVirtualMachineRequest, v1.VirtualMachine]
-	listVirtualMachines          *connect.Client[v1.ListVirtualMachinesRequest, v1.ListVirtualMachinesResponse]
-	updateVirtualMachine         *connect.Client[v1.UpdateVirtualMachineRequest, v1.VirtualMachine]
-	deleteVirtualMachine         *connect.Client[v1.DeleteVirtualMachineRequest, emptypb.Empty]
-	startVirtualMachine          *connect.Client[v1.StartVirtualMachineRequest, emptypb.Empty]
-	stopVirtualMachine           *connect.Client[v1.StopVirtualMachineRequest, emptypb.Empty]
-	pauseVirtualMachine          *connect.Client[v1.PauseVirtualMachineRequest, emptypb.Empty]
-	resumeVirtualMachine         *connect.Client[v1.ResumeVirtualMachineRequest, emptypb.Empty]
-	cloneVirtualMachine          *connect.Client[v1.CloneVirtualMachineRequest, emptypb.Empty]
-	snapshotVirtualMachine       *connect.Client[v1.SnapshotVirtualMachineRequest, emptypb.Empty]
-	restoreVirtualMachine        *connect.Client[v1.RestoreVirtualMachineRequest, emptypb.Empty]
-	migrateVirtualMachine        *connect.Client[v1.MigrateVirtualMachineRequest, emptypb.Empty]
-	getVirtualMachineSnapshot    *connect.Client[v1.GetVirtualMachineSnapshotRequest, v1.VirtualMachineSnapshot]
-	listVirtualMachineSnapshots  *connect.Client[v1.ListVirtualMachineSnapshotsRequest, v1.ListVirtualMachineSnapshotsResponse]
-	deleteVirtualMachineSnapshot *connect.Client[v1.DeleteVirtualMachineSnapshotRequest, emptypb.Empty]
-	createDataVolume             *connect.Client[v1.CreateDataVolumeRequest, v1.DataVolume]
-	getDataVolume                *connect.Client[v1.GetDataVolumeRequest, v1.DataVolume]
-	listDataVolumes              *connect.Client[v1.ListDataVolumesRequest, v1.ListDataVolumesResponse]
-	deleteDataVolume             *connect.Client[v1.DeleteDataVolumeRequest, emptypb.Empty]
-	extendDataVolume             *connect.Client[v1.ExtendDataVolumeRequest, emptypb.Empty]
-	createVirtualMachineService  *connect.Client[v1.CreateVirtualMachineServiceRequest, v1.VirtualMachineService]
-	getVirtualMachineService     *connect.Client[v1.GetVirtualMachineServiceRequest, v1.VirtualMachineService]
-	listVirtualMachineServices   *connect.Client[v1.ListVirtualMachineServicesRequest, v1.ListVirtualMachineServicesResponse]
-	updateVirtualMachineService  *connect.Client[v1.UpdateVirtualMachineServiceRequest, v1.VirtualMachineService]
-	deleteVirtualMachineService  *connect.Client[v1.DeleteVirtualMachineServiceRequest, emptypb.Empty]
-	createInstanceType           *connect.Client[v1.CreateInstanceTypeRequest, v1.InstanceType]
-	getInstanceType              *connect.Client[v1.GetInstanceTypeRequest, v1.InstanceType]
-	listInstanceTypes            *connect.Client[v1.ListInstanceTypesRequest, v1.ListInstanceTypesResponse]
-	deleteInstanceType           *connect.Client[v1.DeleteInstanceTypeRequest, emptypb.Empty]
+	listNamespaces                     *connect.Client[v1.ListNamespacesRequest, v1.ListNamespacesResponse]
+	listBootablePersistentVolumeClaims *connect.Client[v1.ListPersistentVolumeClaimsRequest, v1.ListPersistentVolumeClaimsResponse]
+	createVirtualMachine               *connect.Client[v1.CreateVirtualMachineRequest, v1.VirtualMachine]
+	getVirtualMachine                  *connect.Client[v1.GetVirtualMachineRequest, v1.VirtualMachine]
+	listVirtualMachines                *connect.Client[v1.ListVirtualMachinesRequest, v1.ListVirtualMachinesResponse]
+	updateVirtualMachine               *connect.Client[v1.UpdateVirtualMachineRequest, v1.VirtualMachine]
+	deleteVirtualMachine               *connect.Client[v1.DeleteVirtualMachineRequest, emptypb.Empty]
+	startVirtualMachine                *connect.Client[v1.StartVirtualMachineRequest, emptypb.Empty]
+	stopVirtualMachine                 *connect.Client[v1.StopVirtualMachineRequest, emptypb.Empty]
+	pauseVirtualMachine                *connect.Client[v1.PauseVirtualMachineRequest, emptypb.Empty]
+	resumeVirtualMachine               *connect.Client[v1.ResumeVirtualMachineRequest, emptypb.Empty]
+	cloneVirtualMachine                *connect.Client[v1.CloneVirtualMachineRequest, emptypb.Empty]
+	snapshotVirtualMachine             *connect.Client[v1.SnapshotVirtualMachineRequest, emptypb.Empty]
+	restoreVirtualMachine              *connect.Client[v1.RestoreVirtualMachineRequest, emptypb.Empty]
+	migrateVirtualMachine              *connect.Client[v1.MigrateVirtualMachineRequest, emptypb.Empty]
+	getVirtualMachineSnapshot          *connect.Client[v1.GetVirtualMachineSnapshotRequest, v1.VirtualMachineSnapshot]
+	listVirtualMachineSnapshots        *connect.Client[v1.ListVirtualMachineSnapshotsRequest, v1.ListVirtualMachineSnapshotsResponse]
+	deleteVirtualMachineSnapshot       *connect.Client[v1.DeleteVirtualMachineSnapshotRequest, emptypb.Empty]
+	createDataVolume                   *connect.Client[v1.CreateDataVolumeRequest, v1.DataVolume]
+	getDataVolume                      *connect.Client[v1.GetDataVolumeRequest, v1.DataVolume]
+	listDataVolumes                    *connect.Client[v1.ListDataVolumesRequest, v1.ListDataVolumesResponse]
+	deleteDataVolume                   *connect.Client[v1.DeleteDataVolumeRequest, emptypb.Empty]
+	extendDataVolume                   *connect.Client[v1.ExtendDataVolumeRequest, emptypb.Empty]
+	createVirtualMachineService        *connect.Client[v1.CreateVirtualMachineServiceRequest, v1.VirtualMachineService]
+	getVirtualMachineService           *connect.Client[v1.GetVirtualMachineServiceRequest, v1.VirtualMachineService]
+	listVirtualMachineServices         *connect.Client[v1.ListVirtualMachineServicesRequest, v1.ListVirtualMachineServicesResponse]
+	updateVirtualMachineService        *connect.Client[v1.UpdateVirtualMachineServiceRequest, v1.VirtualMachineService]
+	deleteVirtualMachineService        *connect.Client[v1.DeleteVirtualMachineServiceRequest, emptypb.Empty]
+	createInstanceType                 *connect.Client[v1.CreateInstanceTypeRequest, v1.InstanceType]
+	getInstanceType                    *connect.Client[v1.GetInstanceTypeRequest, v1.InstanceType]
+	listInstanceTypes                  *connect.Client[v1.ListInstanceTypesRequest, v1.ListInstanceTypesResponse]
+	deleteInstanceType                 *connect.Client[v1.DeleteInstanceTypeRequest, emptypb.Empty]
 }
 
 // ListNamespaces calls otterscale.kubevirt.v1.KubeVirtService.ListNamespaces.
@@ -421,10 +421,10 @@ func (c *kubeVirtServiceClient) ListNamespaces(ctx context.Context, req *connect
 	return c.listNamespaces.CallUnary(ctx, req)
 }
 
-// ListPersistentVolumeClaims calls
-// otterscale.kubevirt.v1.KubeVirtService.ListPersistentVolumeClaims.
-func (c *kubeVirtServiceClient) ListPersistentVolumeClaims(ctx context.Context, req *connect.Request[v1.ListPersistentVolumeClaimsRequest]) (*connect.Response[v1.ListPersistentVolumeClaimsResponse], error) {
-	return c.listPersistentVolumeClaims.CallUnary(ctx, req)
+// ListBootablePersistentVolumeClaims calls
+// otterscale.kubevirt.v1.KubeVirtService.ListBootablePersistentVolumeClaims.
+func (c *kubeVirtServiceClient) ListBootablePersistentVolumeClaims(ctx context.Context, req *connect.Request[v1.ListPersistentVolumeClaimsRequest]) (*connect.Response[v1.ListPersistentVolumeClaimsResponse], error) {
+	return c.listBootablePersistentVolumeClaims.CallUnary(ctx, req)
 }
 
 // CreateVirtualMachine calls otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine.
@@ -587,7 +587,7 @@ func (c *kubeVirtServiceClient) DeleteInstanceType(ctx context.Context, req *con
 // service.
 type KubeVirtServiceHandler interface {
 	ListNamespaces(context.Context, *connect.Request[v1.ListNamespacesRequest]) (*connect.Response[v1.ListNamespacesResponse], error)
-	ListPersistentVolumeClaims(context.Context, *connect.Request[v1.ListPersistentVolumeClaimsRequest]) (*connect.Response[v1.ListPersistentVolumeClaimsResponse], error)
+	ListBootablePersistentVolumeClaims(context.Context, *connect.Request[v1.ListPersistentVolumeClaimsRequest]) (*connect.Response[v1.ListPersistentVolumeClaimsResponse], error)
 	// Virtual Machine Operations
 	CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
@@ -639,10 +639,10 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 		connect.WithSchema(kubeVirtServiceMethods.ByName("ListNamespaces")),
 		connect.WithHandlerOptions(opts...),
 	)
-	kubeVirtServiceListPersistentVolumeClaimsHandler := connect.NewUnaryHandler(
-		KubeVirtServiceListPersistentVolumeClaimsProcedure,
-		svc.ListPersistentVolumeClaims,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("ListPersistentVolumeClaims")),
+	kubeVirtServiceListBootablePersistentVolumeClaimsHandler := connect.NewUnaryHandler(
+		KubeVirtServiceListBootablePersistentVolumeClaimsProcedure,
+		svc.ListBootablePersistentVolumeClaims,
+		connect.WithSchema(kubeVirtServiceMethods.ByName("ListBootablePersistentVolumeClaims")),
 		connect.WithHandlerOptions(opts...),
 	)
 	kubeVirtServiceCreateVirtualMachineHandler := connect.NewUnaryHandler(
@@ -829,8 +829,8 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 		switch r.URL.Path {
 		case KubeVirtServiceListNamespacesProcedure:
 			kubeVirtServiceListNamespacesHandler.ServeHTTP(w, r)
-		case KubeVirtServiceListPersistentVolumeClaimsProcedure:
-			kubeVirtServiceListPersistentVolumeClaimsHandler.ServeHTTP(w, r)
+		case KubeVirtServiceListBootablePersistentVolumeClaimsProcedure:
+			kubeVirtServiceListBootablePersistentVolumeClaimsHandler.ServeHTTP(w, r)
 		case KubeVirtServiceCreateVirtualMachineProcedure:
 			kubeVirtServiceCreateVirtualMachineHandler.ServeHTTP(w, r)
 		case KubeVirtServiceGetVirtualMachineProcedure:
@@ -904,8 +904,8 @@ func (UnimplementedKubeVirtServiceHandler) ListNamespaces(context.Context, *conn
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListNamespaces is not implemented"))
 }
 
-func (UnimplementedKubeVirtServiceHandler) ListPersistentVolumeClaims(context.Context, *connect.Request[v1.ListPersistentVolumeClaimsRequest]) (*connect.Response[v1.ListPersistentVolumeClaimsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListPersistentVolumeClaims is not implemented"))
+func (UnimplementedKubeVirtServiceHandler) ListBootablePersistentVolumeClaims(context.Context, *connect.Request[v1.ListPersistentVolumeClaimsRequest]) (*connect.Response[v1.ListPersistentVolumeClaimsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListBootablePersistentVolumeClaims is not implemented"))
 }
 
 func (UnimplementedKubeVirtServiceHandler) CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {

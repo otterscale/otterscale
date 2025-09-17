@@ -75,12 +75,20 @@ func (uc *KubeVirtUseCase) ListNamespaces(ctx context.Context, uuid, facility st
 	return uc.kubeCore.ListNamespaces(ctx, config)
 }
 
-func (uc *KubeVirtUseCase) ListPersistentVolumeClaims(ctx context.Context, uuid, facility, namespace string) ([]PersistentVolumeClaim, error) {
+func (uc *KubeVirtUseCase) ListBootablePersistentVolumeClaims(ctx context.Context, uuid, facility, namespace string) ([]PersistentVolumeClaim, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeCore.ListPersistentVolumeClaims(ctx, config, namespace)
+
+	labelSelector := &metav1.LabelSelector{
+		MatchLabels: map[string]string{
+			"otterscale.io/is_bootable": "true",
+		},
+	}
+	selector, _ := metav1.LabelSelectorAsSelector(labelSelector)
+
+	return uc.kubeCore.ListPersistentVolumeClaimsByLabel(ctx, config, namespace, selector.String())
 }
 
 func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, network, script string, labels map[string]string, resources VirtualMachineResources, disks []DiskDevice, dataVolumeSources map[string]*DataVolumeInfo) (*VirtualMachine, error) {
@@ -120,7 +128,7 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 				dvInfo.Source,
 				name,
 				dvInfo.SizeBytes,
-				false, // Is bootable - consider making this configurable
+				dvInfo.IsBootable,
 			)
 			if err != nil {
 				return nil, fmt.Errorf("failed to create DataVolume %s: %w", dvName, err)

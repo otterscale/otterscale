@@ -90,6 +90,7 @@ type DataVolumeInfo struct {
 	SourceType string
 	Source     string
 	SizeBytes  int64
+	IsBootable bool
 }
 
 type DiskDevice struct {

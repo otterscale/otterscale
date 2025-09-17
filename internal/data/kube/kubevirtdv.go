@@ -97,7 +97,7 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 			Name:      name,
 			Namespace: namespace,
 			Labels: map[string]string{
-				"is_bootable":                  strconv.FormatBool(isBootable),
+				"otterscale.io/is_bootable":    strconv.FormatBool(isBootable),
 				"otterscale.io/virtualmachine": vmName,
 			},
 		},

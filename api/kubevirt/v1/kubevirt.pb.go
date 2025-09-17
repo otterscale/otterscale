@@ -3019,6 +3019,7 @@ type VirtualMachineDisk struct {
 	xxx_hidden_DiskType    VirtualMachineDiskType          `protobuf:"varint,2,opt,name=disk_type,json=diskType,enum=otterscale.kubevirt.v1.VirtualMachineDiskType"`
 	xxx_hidden_BusType     VirtualMachineDiskBus           `protobuf:"varint,3,opt,name=bus_type,json=busType,enum=otterscale.kubevirt.v1.VirtualMachineDiskBus"`
 	xxx_hidden_SourceData  isVirtualMachineDisk_SourceData `protobuf_oneof:"source_data"`
+	xxx_hidden_IsBootable  bool                            `protobuf:"varint,11,opt,name=is_bootable,json=isBootable"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -3096,19 +3097,26 @@ func (x *VirtualMachineDisk) GetDataVolume() *DataVolumeSource {
 	return nil
 }
 
+func (x *VirtualMachineDisk) GetIsBootable() bool {
+	if x != nil {
+		return x.xxx_hidden_IsBootable
+	}
+	return false
+}
+
 func (x *VirtualMachineDisk) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *VirtualMachineDisk) SetDiskType(v VirtualMachineDiskType) {
 	x.xxx_hidden_DiskType = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *VirtualMachineDisk) SetBusType(v VirtualMachineDiskBus) {
 	x.xxx_hidden_BusType = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *VirtualMachineDisk) SetSource(v string) {
@@ -3121,6 +3129,11 @@ func (x *VirtualMachineDisk) SetDataVolume(v *DataVolumeSource) {
 		return
 	}
 	x.xxx_hidden_SourceData = &virtualMachineDisk_DataVolume{v}
+}
+
+func (x *VirtualMachineDisk) SetIsBootable(v bool) {
+	x.xxx_hidden_IsBootable = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *VirtualMachineDisk) HasName() bool {
@@ -3167,6 +3180,13 @@ func (x *VirtualMachineDisk) HasDataVolume() bool {
 	return ok
 }
 
+func (x *VirtualMachineDisk) HasIsBootable() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
 func (x *VirtualMachineDisk) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
@@ -3198,6 +3218,11 @@ func (x *VirtualMachineDisk) ClearDataVolume() {
 	}
 }
 
+func (x *VirtualMachineDisk) ClearIsBootable() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_IsBootable = false
+}
+
 const VirtualMachineDisk_SourceData_not_set_case case_VirtualMachineDisk_SourceData = 0
 const VirtualMachineDisk_Source_case case_VirtualMachineDisk_SourceData = 4
 const VirtualMachineDisk_DataVolume_case case_VirtualMachineDisk_SourceData = 5
@@ -3226,6 +3251,7 @@ type VirtualMachineDisk_builder struct {
 	Source     *string
 	DataVolume *DataVolumeSource
 	// -- end of xxx_hidden_SourceData
+	IsBootable *bool
 }
 
 func (b0 VirtualMachineDisk_builder) Build() *VirtualMachineDisk {
@@ -3233,15 +3259,15 @@ func (b0 VirtualMachineDisk_builder) Build() *VirtualMachineDisk {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.DiskType != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_DiskType = *b.DiskType
 	}
 	if b.BusType != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_BusType = *b.BusType
 	}
 	if b.Source != nil {
@@ -3249,6 +3275,10 @@ func (b0 VirtualMachineDisk_builder) Build() *VirtualMachineDisk {
 	}
 	if b.DataVolume != nil {
 		x.xxx_hidden_SourceData = &virtualMachineDisk_DataVolume{b.DataVolume}
+	}
+	if b.IsBootable != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_IsBootable = *b.IsBootable
 	}
 	return m0
 }
@@ -8954,12 +8984,12 @@ func (b0 ListPersistentVolumeClaimsResponse_builder) Build() *ListPersistentVolu
 
 type PersistentVolumeClaim struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Metadata     *Metadata              `protobuf:"bytes,1,opt,name=metadata"`
-	xxx_hidden_StorageClass *string                `protobuf:"bytes,2,opt,name=storage_class,json=storageClass"`
-	xxx_hidden_SizeBytes    int64                  `protobuf:"varint,3,opt,name=size_bytes,json=sizeBytes"`
-	xxx_hidden_AccessMode   *string                `protobuf:"bytes,4,opt,name=access_mode,json=accessMode"`
-	xxx_hidden_Status       *string                `protobuf:"bytes,5,opt,name=status"`
-	xxx_hidden_VolumeName   *string                `protobuf:"bytes,6,opt,name=volume_name,json=volumeName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,2,opt,name=namespace"`
+	xxx_hidden_StorageClass *string                `protobuf:"bytes,3,opt,name=storage_class,json=storageClass"`
+	xxx_hidden_SizeBytes    int64                  `protobuf:"varint,4,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_AccessMode   *string                `protobuf:"bytes,5,opt,name=access_mode,json=accessMode"`
+	xxx_hidden_Status       *string                `protobuf:"bytes,6,opt,name=status"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -8991,11 +9021,24 @@ func (x *PersistentVolumeClaim) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *PersistentVolumeClaim) GetMetadata() *Metadata {
+func (x *PersistentVolumeClaim) GetName() string {
 	if x != nil {
-		return x.xxx_hidden_Metadata
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
 	}
-	return nil
+	return ""
+}
+
+func (x *PersistentVolumeClaim) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
 }
 
 func (x *PersistentVolumeClaim) GetStorageClass() string {
@@ -9035,151 +9078,146 @@ func (x *PersistentVolumeClaim) GetStatus() string {
 	return ""
 }
 
-func (x *PersistentVolumeClaim) GetVolumeName() string {
-	if x != nil {
-		if x.xxx_hidden_VolumeName != nil {
-			return *x.xxx_hidden_VolumeName
-		}
-		return ""
-	}
-	return ""
+func (x *PersistentVolumeClaim) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
-func (x *PersistentVolumeClaim) SetMetadata(v *Metadata) {
-	x.xxx_hidden_Metadata = v
+func (x *PersistentVolumeClaim) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
 func (x *PersistentVolumeClaim) SetStorageClass(v string) {
 	x.xxx_hidden_StorageClass = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
 }
 
 func (x *PersistentVolumeClaim) SetSizeBytes(v int64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
 }
 
 func (x *PersistentVolumeClaim) SetAccessMode(v string) {
 	x.xxx_hidden_AccessMode = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
 }
 
 func (x *PersistentVolumeClaim) SetStatus(v string) {
 	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
-}
-
-func (x *PersistentVolumeClaim) SetVolumeName(v string) {
-	x.xxx_hidden_VolumeName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
 }
 
-func (x *PersistentVolumeClaim) HasMetadata() bool {
+func (x *PersistentVolumeClaim) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Metadata != nil
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *PersistentVolumeClaim) HasStorageClass() bool {
+func (x *PersistentVolumeClaim) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *PersistentVolumeClaim) HasSizeBytes() bool {
+func (x *PersistentVolumeClaim) HasStorageClass() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *PersistentVolumeClaim) HasAccessMode() bool {
+func (x *PersistentVolumeClaim) HasSizeBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *PersistentVolumeClaim) HasStatus() bool {
+func (x *PersistentVolumeClaim) HasAccessMode() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *PersistentVolumeClaim) HasVolumeName() bool {
+func (x *PersistentVolumeClaim) HasStatus() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *PersistentVolumeClaim) ClearMetadata() {
-	x.xxx_hidden_Metadata = nil
+func (x *PersistentVolumeClaim) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *PersistentVolumeClaim) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Namespace = nil
 }
 
 func (x *PersistentVolumeClaim) ClearStorageClass() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_StorageClass = nil
 }
 
 func (x *PersistentVolumeClaim) ClearSizeBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_SizeBytes = 0
 }
 
 func (x *PersistentVolumeClaim) ClearAccessMode() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_AccessMode = nil
 }
 
 func (x *PersistentVolumeClaim) ClearStatus() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Status = nil
-}
-
-func (x *PersistentVolumeClaim) ClearVolumeName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
-	x.xxx_hidden_VolumeName = nil
+	x.xxx_hidden_Status = nil
 }
 
 type PersistentVolumeClaim_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Metadata     *Metadata
+	Name         *string
+	Namespace    *string
 	StorageClass *string
 	SizeBytes    *int64
 	AccessMode   *string
 	Status       *string
-	VolumeName   *string
 }
 
 func (b0 PersistentVolumeClaim_builder) Build() *PersistentVolumeClaim {
 	m0 := &PersistentVolumeClaim{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_Metadata = b.Metadata
-	if b.StorageClass != nil {
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.Namespace != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.StorageClass != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
 		x.xxx_hidden_StorageClass = b.StorageClass
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
 	if b.AccessMode != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
 		x.xxx_hidden_AccessMode = b.AccessMode
 	}
 	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
-		x.xxx_hidden_Status = b.Status
-	}
-	if b.VolumeName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
-		x.xxx_hidden_VolumeName = b.VolumeName
+		x.xxx_hidden_Status = b.Status
 	}
 	return m0
 }
@@ -9327,14 +9365,16 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\xd3\x03\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\xf4\x03\n" +
 	"\x12VirtualMachineDisk\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12L\n" +
 	"\tdisk_type\x18\x02 \x01(\x0e2/.otterscale.kubevirt.v1.VirtualMachineDisk.typeR\bdiskType\x12I\n" +
 	"\bbus_type\x18\x03 \x01(\x0e2..otterscale.kubevirt.v1.VirtualMachineDisk.busR\abusType\x12\x18\n" +
 	"\x06source\x18\x04 \x01(\tH\x00R\x06source\x12K\n" +
 	"\vdata_volume\x18\x05 \x01(\v2(.otterscale.kubevirt.v1.DataVolumeSourceH\x00R\n" +
-	"dataVolume\"s\n" +
+	"dataVolume\x12\x1f\n" +
+	"\vis_bootable\x18\v \x01(\bR\n" +
+	"isBootable\"s\n" +
 	"\x04type\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\x0e\n" +
 	"\n" +
@@ -9555,20 +9595,19 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\"\x8d\x01\n" +
 	"\"ListPersistentVolumeClaimsResponse\x12g\n" +
-	"\x18persistent_volume_claims\x18\x01 \x03(\v2-.otterscale.kubevirt.v1.PersistentVolumeClaimR\x16persistentVolumeClaims\"\xf3\x01\n" +
-	"\x15PersistentVolumeClaim\x12<\n" +
-	"\bmetadata\x18\x01 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12#\n" +
-	"\rstorage_class\x18\x02 \x01(\tR\fstorageClass\x12\x1d\n" +
+	"\x18persistent_volume_claims\x18\x01 \x03(\v2-.otterscale.kubevirt.v1.PersistentVolumeClaimR\x16persistentVolumeClaims\"\xc6\x01\n" +
+	"\x15PersistentVolumeClaim\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12#\n" +
+	"\rstorage_class\x18\x03 \x01(\tR\fstorageClass\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\x03 \x01(\x03R\tsizeBytes\x12\x1f\n" +
-	"\vaccess_mode\x18\x04 \x01(\tR\n" +
+	"size_bytes\x18\x04 \x01(\x03R\tsizeBytes\x12\x1f\n" +
+	"\vaccess_mode\x18\x05 \x01(\tR\n" +
 	"accessMode\x12\x16\n" +
-	"\x06status\x18\x05 \x01(\tR\x06status\x12\x1f\n" +
-	"\vvolume_name\x18\x06 \x01(\tR\n" +
-	"volumeName2\xe3\x1c\n" +
+	"\x06status\x18\x06 \x01(\tR\x06status2\xeb\x1c\n" +
 	"\x0fKubeVirtService\x12o\n" +
-	"\x0eListNamespaces\x12-.otterscale.kubevirt.v1.ListNamespacesRequest\x1a..otterscale.kubevirt.v1.ListNamespacesResponse\x12\x93\x01\n" +
-	"\x1aListPersistentVolumeClaims\x129.otterscale.kubevirt.v1.ListPersistentVolumeClaimsRequest\x1a:.otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse\x12s\n" +
+	"\x0eListNamespaces\x12-.otterscale.kubevirt.v1.ListNamespacesRequest\x1a..otterscale.kubevirt.v1.ListNamespacesResponse\x12\x9b\x01\n" +
+	"\"ListBootablePersistentVolumeClaims\x129.otterscale.kubevirt.v1.ListPersistentVolumeClaimsRequest\x1a:.otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse\x12s\n" +
 	"\x14CreateVirtualMachine\x123.otterscale.kubevirt.v1.CreateVirtualMachineRequest\x1a&.otterscale.kubevirt.v1.VirtualMachine\x12m\n" +
 	"\x11GetVirtualMachine\x120.otterscale.kubevirt.v1.GetVirtualMachineRequest\x1a&.otterscale.kubevirt.v1.VirtualMachine\x12~\n" +
 	"\x13ListVirtualMachines\x122.otterscale.kubevirt.v1.ListVirtualMachinesRequest\x1a3.otterscale.kubevirt.v1.ListVirtualMachinesResponse\x12s\n" +
@@ -9707,76 +9746,75 @@ var file_api_kubevirt_v1_kubevirt_proto_depIdxs = []int32{
 	13, // 34: otterscale.kubevirt.v1.CreateInstanceTypeRequest.instanceType:type_name -> otterscale.kubevirt.v1.InstanceType
 	13, // 35: otterscale.kubevirt.v1.ListInstanceTypesResponse.instanceTypes:type_name -> otterscale.kubevirt.v1.InstanceType
 	58, // 36: otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse.persistent_volume_claims:type_name -> otterscale.kubevirt.v1.PersistentVolumeClaim
-	7,  // 37: otterscale.kubevirt.v1.PersistentVolumeClaim.metadata:type_name -> otterscale.kubevirt.v1.Metadata
-	8,  // 38: otterscale.kubevirt.v1.KubeVirtService.ListNamespaces:input_type -> otterscale.kubevirt.v1.ListNamespacesRequest
-	56, // 39: otterscale.kubevirt.v1.KubeVirtService.ListPersistentVolumeClaims:input_type -> otterscale.kubevirt.v1.ListPersistentVolumeClaimsRequest
-	24, // 40: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:input_type -> otterscale.kubevirt.v1.CreateVirtualMachineRequest
-	22, // 41: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:input_type -> otterscale.kubevirt.v1.GetVirtualMachineRequest
-	20, // 42: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:input_type -> otterscale.kubevirt.v1.ListVirtualMachinesRequest
-	25, // 43: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:input_type -> otterscale.kubevirt.v1.UpdateVirtualMachineRequest
-	26, // 44: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineRequest
-	27, // 45: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:input_type -> otterscale.kubevirt.v1.StartVirtualMachineRequest
-	28, // 46: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:input_type -> otterscale.kubevirt.v1.StopVirtualMachineRequest
-	29, // 47: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:input_type -> otterscale.kubevirt.v1.PauseVirtualMachineRequest
-	30, // 48: otterscale.kubevirt.v1.KubeVirtService.ResumeVirtualMachine:input_type -> otterscale.kubevirt.v1.ResumeVirtualMachineRequest
-	32, // 49: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:input_type -> otterscale.kubevirt.v1.CloneVirtualMachineRequest
-	31, // 50: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:input_type -> otterscale.kubevirt.v1.SnapshotVirtualMachineRequest
-	33, // 51: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:input_type -> otterscale.kubevirt.v1.RestoreVirtualMachineRequest
-	34, // 52: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:input_type -> otterscale.kubevirt.v1.MigrateVirtualMachineRequest
-	35, // 53: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineSnapshot:input_type -> otterscale.kubevirt.v1.GetVirtualMachineSnapshotRequest
-	36, // 54: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineSnapshots:input_type -> otterscale.kubevirt.v1.ListVirtualMachineSnapshotsRequest
-	37, // 55: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineSnapshot:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineSnapshotRequest
-	39, // 56: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:input_type -> otterscale.kubevirt.v1.CreateDataVolumeRequest
-	42, // 57: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:input_type -> otterscale.kubevirt.v1.GetDataVolumeRequest
-	40, // 58: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:input_type -> otterscale.kubevirt.v1.ListDataVolumesRequest
-	43, // 59: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:input_type -> otterscale.kubevirt.v1.DeleteDataVolumeRequest
-	44, // 60: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:input_type -> otterscale.kubevirt.v1.ExtendDataVolumeRequest
-	45, // 61: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineService:input_type -> otterscale.kubevirt.v1.CreateVirtualMachineServiceRequest
-	48, // 62: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineService:input_type -> otterscale.kubevirt.v1.GetVirtualMachineServiceRequest
-	46, // 63: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineServices:input_type -> otterscale.kubevirt.v1.ListVirtualMachineServicesRequest
-	49, // 64: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachineService:input_type -> otterscale.kubevirt.v1.UpdateVirtualMachineServiceRequest
-	50, // 65: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineService:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineServiceRequest
-	51, // 66: otterscale.kubevirt.v1.KubeVirtService.CreateInstanceType:input_type -> otterscale.kubevirt.v1.CreateInstanceTypeRequest
-	54, // 67: otterscale.kubevirt.v1.KubeVirtService.GetInstanceType:input_type -> otterscale.kubevirt.v1.GetInstanceTypeRequest
-	52, // 68: otterscale.kubevirt.v1.KubeVirtService.ListInstanceTypes:input_type -> otterscale.kubevirt.v1.ListInstanceTypesRequest
-	55, // 69: otterscale.kubevirt.v1.KubeVirtService.DeleteInstanceType:input_type -> otterscale.kubevirt.v1.DeleteInstanceTypeRequest
-	9,  // 70: otterscale.kubevirt.v1.KubeVirtService.ListNamespaces:output_type -> otterscale.kubevirt.v1.ListNamespacesResponse
-	57, // 71: otterscale.kubevirt.v1.KubeVirtService.ListPersistentVolumeClaims:output_type -> otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse
-	10, // 72: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
-	10, // 73: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
-	21, // 74: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:output_type -> otterscale.kubevirt.v1.ListVirtualMachinesResponse
-	10, // 75: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
-	64, // 76: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 77: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 78: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 79: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 80: otterscale.kubevirt.v1.KubeVirtService.ResumeVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 81: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 82: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 83: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 84: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:output_type -> google.protobuf.Empty
-	11, // 85: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineSnapshot:output_type -> otterscale.kubevirt.v1.VirtualMachineSnapshot
-	38, // 86: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineSnapshots:output_type -> otterscale.kubevirt.v1.ListVirtualMachineSnapshotsResponse
-	64, // 87: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineSnapshot:output_type -> google.protobuf.Empty
-	15, // 88: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
-	15, // 89: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
-	41, // 90: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:output_type -> otterscale.kubevirt.v1.ListDataVolumesResponse
-	64, // 91: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:output_type -> google.protobuf.Empty
-	64, // 92: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:output_type -> google.protobuf.Empty
-	16, // 93: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
-	16, // 94: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
-	47, // 95: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineServices:output_type -> otterscale.kubevirt.v1.ListVirtualMachineServicesResponse
-	16, // 96: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
-	64, // 97: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineService:output_type -> google.protobuf.Empty
-	13, // 98: otterscale.kubevirt.v1.KubeVirtService.CreateInstanceType:output_type -> otterscale.kubevirt.v1.InstanceType
-	13, // 99: otterscale.kubevirt.v1.KubeVirtService.GetInstanceType:output_type -> otterscale.kubevirt.v1.InstanceType
-	53, // 100: otterscale.kubevirt.v1.KubeVirtService.ListInstanceTypes:output_type -> otterscale.kubevirt.v1.ListInstanceTypesResponse
-	64, // 101: otterscale.kubevirt.v1.KubeVirtService.DeleteInstanceType:output_type -> google.protobuf.Empty
-	70, // [70:102] is the sub-list for method output_type
-	38, // [38:70] is the sub-list for method input_type
-	38, // [38:38] is the sub-list for extension type_name
-	38, // [38:38] is the sub-list for extension extendee
-	0,  // [0:38] is the sub-list for field type_name
+	8,  // 37: otterscale.kubevirt.v1.KubeVirtService.ListNamespaces:input_type -> otterscale.kubevirt.v1.ListNamespacesRequest
+	56, // 38: otterscale.kubevirt.v1.KubeVirtService.ListBootablePersistentVolumeClaims:input_type -> otterscale.kubevirt.v1.ListPersistentVolumeClaimsRequest
+	24, // 39: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:input_type -> otterscale.kubevirt.v1.CreateVirtualMachineRequest
+	22, // 40: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:input_type -> otterscale.kubevirt.v1.GetVirtualMachineRequest
+	20, // 41: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:input_type -> otterscale.kubevirt.v1.ListVirtualMachinesRequest
+	25, // 42: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:input_type -> otterscale.kubevirt.v1.UpdateVirtualMachineRequest
+	26, // 43: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineRequest
+	27, // 44: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:input_type -> otterscale.kubevirt.v1.StartVirtualMachineRequest
+	28, // 45: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:input_type -> otterscale.kubevirt.v1.StopVirtualMachineRequest
+	29, // 46: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:input_type -> otterscale.kubevirt.v1.PauseVirtualMachineRequest
+	30, // 47: otterscale.kubevirt.v1.KubeVirtService.ResumeVirtualMachine:input_type -> otterscale.kubevirt.v1.ResumeVirtualMachineRequest
+	32, // 48: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:input_type -> otterscale.kubevirt.v1.CloneVirtualMachineRequest
+	31, // 49: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:input_type -> otterscale.kubevirt.v1.SnapshotVirtualMachineRequest
+	33, // 50: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:input_type -> otterscale.kubevirt.v1.RestoreVirtualMachineRequest
+	34, // 51: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:input_type -> otterscale.kubevirt.v1.MigrateVirtualMachineRequest
+	35, // 52: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineSnapshot:input_type -> otterscale.kubevirt.v1.GetVirtualMachineSnapshotRequest
+	36, // 53: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineSnapshots:input_type -> otterscale.kubevirt.v1.ListVirtualMachineSnapshotsRequest
+	37, // 54: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineSnapshot:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineSnapshotRequest
+	39, // 55: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:input_type -> otterscale.kubevirt.v1.CreateDataVolumeRequest
+	42, // 56: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:input_type -> otterscale.kubevirt.v1.GetDataVolumeRequest
+	40, // 57: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:input_type -> otterscale.kubevirt.v1.ListDataVolumesRequest
+	43, // 58: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:input_type -> otterscale.kubevirt.v1.DeleteDataVolumeRequest
+	44, // 59: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:input_type -> otterscale.kubevirt.v1.ExtendDataVolumeRequest
+	45, // 60: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineService:input_type -> otterscale.kubevirt.v1.CreateVirtualMachineServiceRequest
+	48, // 61: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineService:input_type -> otterscale.kubevirt.v1.GetVirtualMachineServiceRequest
+	46, // 62: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineServices:input_type -> otterscale.kubevirt.v1.ListVirtualMachineServicesRequest
+	49, // 63: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachineService:input_type -> otterscale.kubevirt.v1.UpdateVirtualMachineServiceRequest
+	50, // 64: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineService:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineServiceRequest
+	51, // 65: otterscale.kubevirt.v1.KubeVirtService.CreateInstanceType:input_type -> otterscale.kubevirt.v1.CreateInstanceTypeRequest
+	54, // 66: otterscale.kubevirt.v1.KubeVirtService.GetInstanceType:input_type -> otterscale.kubevirt.v1.GetInstanceTypeRequest
+	52, // 67: otterscale.kubevirt.v1.KubeVirtService.ListInstanceTypes:input_type -> otterscale.kubevirt.v1.ListInstanceTypesRequest
+	55, // 68: otterscale.kubevirt.v1.KubeVirtService.DeleteInstanceType:input_type -> otterscale.kubevirt.v1.DeleteInstanceTypeRequest
+	9,  // 69: otterscale.kubevirt.v1.KubeVirtService.ListNamespaces:output_type -> otterscale.kubevirt.v1.ListNamespacesResponse
+	57, // 70: otterscale.kubevirt.v1.KubeVirtService.ListBootablePersistentVolumeClaims:output_type -> otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse
+	10, // 71: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
+	10, // 72: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
+	21, // 73: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:output_type -> otterscale.kubevirt.v1.ListVirtualMachinesResponse
+	10, // 74: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
+	64, // 75: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:output_type -> google.protobuf.Empty
+	64, // 76: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:output_type -> google.protobuf.Empty
+	64, // 77: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:output_type -> google.protobuf.Empty
+	64, // 78: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:output_type -> google.protobuf.Empty
+	64, // 79: otterscale.kubevirt.v1.KubeVirtService.ResumeVirtualMachine:output_type -> google.protobuf.Empty
+	64, // 80: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:output_type -> google.protobuf.Empty
+	64, // 81: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:output_type -> google.protobuf.Empty
+	64, // 82: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:output_type -> google.protobuf.Empty
+	64, // 83: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:output_type -> google.protobuf.Empty
+	11, // 84: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineSnapshot:output_type -> otterscale.kubevirt.v1.VirtualMachineSnapshot
+	38, // 85: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineSnapshots:output_type -> otterscale.kubevirt.v1.ListVirtualMachineSnapshotsResponse
+	64, // 86: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineSnapshot:output_type -> google.protobuf.Empty
+	15, // 87: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
+	15, // 88: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
+	41, // 89: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:output_type -> otterscale.kubevirt.v1.ListDataVolumesResponse
+	64, // 90: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:output_type -> google.protobuf.Empty
+	64, // 91: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:output_type -> google.protobuf.Empty
+	16, // 92: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
+	16, // 93: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
+	47, // 94: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineServices:output_type -> otterscale.kubevirt.v1.ListVirtualMachineServicesResponse
+	16, // 95: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
+	64, // 96: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineService:output_type -> google.protobuf.Empty
+	13, // 97: otterscale.kubevirt.v1.KubeVirtService.CreateInstanceType:output_type -> otterscale.kubevirt.v1.InstanceType
+	13, // 98: otterscale.kubevirt.v1.KubeVirtService.GetInstanceType:output_type -> otterscale.kubevirt.v1.InstanceType
+	53, // 99: otterscale.kubevirt.v1.KubeVirtService.ListInstanceTypes:output_type -> otterscale.kubevirt.v1.ListInstanceTypesResponse
+	64, // 100: otterscale.kubevirt.v1.KubeVirtService.DeleteInstanceType:output_type -> google.protobuf.Empty
+	69, // [69:101] is the sub-list for method output_type
+	37, // [37:69] is the sub-list for method input_type
+	37, // [37:37] is the sub-list for extension type_name
+	37, // [37:37] is the sub-list for extension extendee
+	0,  // [0:37] is the sub-list for field type_name
 }
 
 func init() { file_api_kubevirt_v1_kubevirt_proto_init() }

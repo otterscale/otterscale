@@ -47,8 +47,8 @@ func (s *KubeVirtService) ListNamespaces(ctx context.Context, req *connect.Reque
 }
 
 // ListPersistentVolumeClaims returns a list of persistent volume claims
-func (s *KubeVirtService) ListPersistentVolumeClaims(ctx context.Context, req *connect.Request[pb.ListPersistentVolumeClaimsRequest]) (*connect.Response[pb.ListPersistentVolumeClaimsResponse], error) {
-	pvcs, err := s.uc.ListPersistentVolumeClaims(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+func (s *KubeVirtService) ListBootablePersistentVolumeClaims(ctx context.Context, req *connect.Request[pb.ListPersistentVolumeClaimsRequest]) (*connect.Response[pb.ListPersistentVolumeClaimsResponse], error) {
+	pvcs, err := s.uc.ListBootablePersistentVolumeClaims(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
@@ -56,29 +56,24 @@ func (s *KubeVirtService) ListPersistentVolumeClaims(ctx context.Context, req *c
 	resp := &pb.ListPersistentVolumeClaimsResponse{}
 	pvcList := make([]*pb.PersistentVolumeClaim, 0, len(pvcs))
 
-	for _, pvc := range pvcs {
+	for i := range pvcs {
 		pbPvc := &pb.PersistentVolumeClaim{}
 
 		// Set metadata
-		meta := &pb.Metadata{}
-		meta.SetName(pvc.GetName())
-		meta.SetNamespace(pvc.GetNamespace())
-		meta.SetLabels(pvc.GetLabels())
-		meta.SetCreatedAt(timestamppb.New(pvc.CreationTimestamp.Time))
-		pbPvc.SetMetadata(meta)
-		if pvc.Spec.StorageClassName != nil {
-			pbPvc.SetStorageClass(*pvc.Spec.StorageClassName)
+		pbPvc.SetName(pvcs[i].GetName())
+		pbPvc.SetNamespace(pvcs[i].GetNamespace())
+		if pvcs[i].Spec.StorageClassName != nil {
+			pbPvc.SetStorageClass(*pvcs[i].Spec.StorageClassName)
 		}
-		if pvc.Spec.Resources.Requests != nil {
-			if storageReq, ok := pvc.Spec.Resources.Requests[corev1.ResourceStorage]; ok {
+		if pvcs[i].Spec.Resources.Requests != nil {
+			if storageReq, ok := pvcs[i].Spec.Resources.Requests[corev1.ResourceStorage]; ok {
 				pbPvc.SetSizeBytes(storageReq.Value())
 			}
 		}
-		if len(pvc.Spec.AccessModes) > 0 {
-			pbPvc.SetAccessMode(string(pvc.Spec.AccessModes[0]))
+		if len(pvcs[i].Spec.AccessModes) > 0 {
+			pbPvc.SetAccessMode(string(pvcs[i].Spec.AccessModes[0]))
 		}
-		pbPvc.SetStatus(string(pvc.Status.Phase))
-		pbPvc.SetVolumeName(pvc.Spec.VolumeName)
+		pbPvc.SetStatus(string(pvcs[i].Status.Phase))
 
 		pvcList = append(pvcList, pbPvc)
 	}
@@ -615,6 +610,7 @@ func toCoreDiskDevicesWithDataVolumes(disks []*pb.VirtualMachineDisk) ([]core.Di
 					SourceType: sourceType,
 					Source:     dv.GetSource(),
 					SizeBytes:  dv.GetSizeBytes(),
+					IsBootable: disks[i].GetIsBootable(),
 				}
 			}
 		}
