@@ -124,7 +124,7 @@ message GpuRelation {
 message PodInfo {
   string name = 1;
   string namespace = 2;
-  string model = 3;
+  string model_name = 3;
   string machine_name = 4;
   repeated GpuInfo vgpus = 5;
 }
@@ -134,6 +134,6 @@ message GpuInfo {
   google.protobuf.Timestamp vgpu_bind_time = 2;
   string bind_phase = 3;
   string physical_gpu_uuid = 4;
-  string vgpu_vram = 5;
-  string vgpu_cores = 6;
+  string vram_mib = 5;
+  string vcores_percent = 6;
 }

@@ -69,15 +69,15 @@ type VGpuInfo struct {
 	VGpuBindTime    time.Time
 	BindPhase       string
 	PhysicalGpuUUID string
-	VGpuVram        string
-	VGpuCores       string
+	VRamMib         string
+	VCoresPercent   string
 }
 
 // PodInfo represents pod information with GPU details
 type PodInfo struct {
 	Name             string
 	Namespace        string
-	Model            string
+	ModelName        string
 	MachineName      string
 	VGpuInfo         []VGpuInfo
 	DeploymentName   string
@@ -532,7 +532,7 @@ func (uc *EssentialUseCase) GetGpuRelationByMachine(ctx context.Context, uuid, f
 
 			// Get model name from deployment labels
 			if modelName, ok := deployment.Labels["model-name"]; ok {
-				podInfo.Model = modelName
+				podInfo.ModelName = modelName
 			}
 		}
 
@@ -588,7 +588,7 @@ func (uc *EssentialUseCase) GetGpuRelationByModel(ctx context.Context, uuid, fac
 			podInfo := PodInfo{
 				Name:             pod.GetName(),
 				Namespace:        pod.GetNamespace(),
-				Model:            modelName,
+				ModelName:        modelName,
 				DeploymentName:   deployment.Name,
 				DeploymentLabels: deployment.Labels,
 			}
@@ -652,8 +652,8 @@ func extractGpuInfoFromPodAnnotations(annotations map[string]string) []VGpuInfo 
 			VGpuBindTime:    bindTime,
 			BindPhase:       annotations["hami.io/bind-phase"],
 			PhysicalGpuUUID: gpuUUID,
-			VGpuVram:        vram,
-			VGpuCores:       cores,
+			VRamMib:         vram,
+			VCoresPercent:   cores,
 		}
 
 		vgpuInfos = append(vgpuInfos, vgpuInfo)

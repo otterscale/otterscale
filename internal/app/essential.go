@@ -159,7 +159,7 @@ func toProtoPodInfo(pi *core.PodInfo) *pb.PodInfo {
 	ret := &pb.PodInfo{}
 	ret.SetName(pi.Name)
 	ret.SetNamespace(pi.Namespace)
-	ret.SetModel(pi.Model)
+	ret.SetModelName(pi.ModelName)
 	ret.SetMachineName(pi.MachineName)
 	ret.SetVgpus(toProtoGpuInfos(pi.VGpuInfo))
 	return ret
@@ -178,12 +178,11 @@ func toProtoGpuInfo(gi *core.VGpuInfo) *pb.GpuInfo {
 	ret.SetIsVgpu(gi.IsVGpu)
 	ret.SetBindPhase(gi.BindPhase)
 	ret.SetPhysicalGpuUuid(gi.PhysicalGpuUUID)
-	ret.SetVgpuVram(gi.VGpuVram)
-	ret.SetVgpuCores(gi.VGpuCores)
+	ret.SetVramMib(gi.VRamMib)
+	ret.SetVcoresPercent(gi.VCoresPercent)
 
 	if !gi.VGpuBindTime.IsZero() {
 		ret.SetVgpuBindTime(timestamppb.New(gi.VGpuBindTime))
 	}
-
 	return ret
 }

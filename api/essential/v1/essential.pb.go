@@ -1989,7 +1989,7 @@ type PodInfo struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_Model       *string                `protobuf:"bytes,3,opt,name=model"`
+	xxx_hidden_ModelName   *string                `protobuf:"bytes,3,opt,name=model_name,json=modelName"`
 	xxx_hidden_MachineName *string                `protobuf:"bytes,4,opt,name=machine_name,json=machineName"`
 	xxx_hidden_Vgpus       *[]*GpuInfo            `protobuf:"bytes,5,rep,name=vgpus"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -2043,10 +2043,10 @@ func (x *PodInfo) GetNamespace() string {
 	return ""
 }
 
-func (x *PodInfo) GetModel() string {
+func (x *PodInfo) GetModelName() string {
 	if x != nil {
-		if x.xxx_hidden_Model != nil {
-			return *x.xxx_hidden_Model
+		if x.xxx_hidden_ModelName != nil {
+			return *x.xxx_hidden_ModelName
 		}
 		return ""
 	}
@@ -2082,8 +2082,8 @@ func (x *PodInfo) SetNamespace(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
-func (x *PodInfo) SetModel(v string) {
-	x.xxx_hidden_Model = &v
+func (x *PodInfo) SetModelName(v string) {
+	x.xxx_hidden_ModelName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
@@ -2110,7 +2110,7 @@ func (x *PodInfo) HasNamespace() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *PodInfo) HasModel() bool {
+func (x *PodInfo) HasModelName() bool {
 	if x == nil {
 		return false
 	}
@@ -2134,9 +2134,9 @@ func (x *PodInfo) ClearNamespace() {
 	x.xxx_hidden_Namespace = nil
 }
 
-func (x *PodInfo) ClearModel() {
+func (x *PodInfo) ClearModelName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Model = nil
+	x.xxx_hidden_ModelName = nil
 }
 
 func (x *PodInfo) ClearMachineName() {
@@ -2149,7 +2149,7 @@ type PodInfo_builder struct {
 
 	Name        *string
 	Namespace   *string
-	Model       *string
+	ModelName   *string
 	MachineName *string
 	Vgpus       []*GpuInfo
 }
@@ -2166,9 +2166,9 @@ func (b0 PodInfo_builder) Build() *PodInfo {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
-	if b.Model != nil {
+	if b.ModelName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Model = b.Model
+		x.xxx_hidden_ModelName = b.ModelName
 	}
 	if b.MachineName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
@@ -2184,8 +2184,8 @@ type GpuInfo struct {
 	xxx_hidden_VgpuBindTime    *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=vgpu_bind_time,json=vgpuBindTime"`
 	xxx_hidden_BindPhase       *string                `protobuf:"bytes,3,opt,name=bind_phase,json=bindPhase"`
 	xxx_hidden_PhysicalGpuUuid *string                `protobuf:"bytes,4,opt,name=physical_gpu_uuid,json=physicalGpuUuid"`
-	xxx_hidden_VgpuVram        *string                `protobuf:"bytes,5,opt,name=vgpu_vram,json=vgpuVram"`
-	xxx_hidden_VgpuCores       *string                `protobuf:"bytes,6,opt,name=vgpu_cores,json=vgpuCores"`
+	xxx_hidden_VramMib         *string                `protobuf:"bytes,5,opt,name=vram_mib,json=vramMib"`
+	xxx_hidden_VcoresPercent   *string                `protobuf:"bytes,6,opt,name=vcores_percent,json=vcoresPercent"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
 	unknownFields              protoimpl.UnknownFields
@@ -2251,20 +2251,20 @@ func (x *GpuInfo) GetPhysicalGpuUuid() string {
 	return ""
 }
 
-func (x *GpuInfo) GetVgpuVram() string {
+func (x *GpuInfo) GetVramMib() string {
 	if x != nil {
-		if x.xxx_hidden_VgpuVram != nil {
-			return *x.xxx_hidden_VgpuVram
+		if x.xxx_hidden_VramMib != nil {
+			return *x.xxx_hidden_VramMib
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *GpuInfo) GetVgpuCores() string {
+func (x *GpuInfo) GetVcoresPercent() string {
 	if x != nil {
-		if x.xxx_hidden_VgpuCores != nil {
-			return *x.xxx_hidden_VgpuCores
+		if x.xxx_hidden_VcoresPercent != nil {
+			return *x.xxx_hidden_VcoresPercent
 		}
 		return ""
 	}
@@ -2290,13 +2290,13 @@ func (x *GpuInfo) SetPhysicalGpuUuid(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
 }
 
-func (x *GpuInfo) SetVgpuVram(v string) {
-	x.xxx_hidden_VgpuVram = &v
+func (x *GpuInfo) SetVramMib(v string) {
+	x.xxx_hidden_VramMib = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
 }
 
-func (x *GpuInfo) SetVgpuCores(v string) {
-	x.xxx_hidden_VgpuCores = &v
+func (x *GpuInfo) SetVcoresPercent(v string) {
+	x.xxx_hidden_VcoresPercent = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
 }
 
@@ -2328,14 +2328,14 @@ func (x *GpuInfo) HasPhysicalGpuUuid() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *GpuInfo) HasVgpuVram() bool {
+func (x *GpuInfo) HasVramMib() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *GpuInfo) HasVgpuCores() bool {
+func (x *GpuInfo) HasVcoresPercent() bool {
 	if x == nil {
 		return false
 	}
@@ -2361,14 +2361,14 @@ func (x *GpuInfo) ClearPhysicalGpuUuid() {
 	x.xxx_hidden_PhysicalGpuUuid = nil
 }
 
-func (x *GpuInfo) ClearVgpuVram() {
+func (x *GpuInfo) ClearVramMib() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_VgpuVram = nil
+	x.xxx_hidden_VramMib = nil
 }
 
-func (x *GpuInfo) ClearVgpuCores() {
+func (x *GpuInfo) ClearVcoresPercent() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
-	x.xxx_hidden_VgpuCores = nil
+	x.xxx_hidden_VcoresPercent = nil
 }
 
 type GpuInfo_builder struct {
@@ -2378,8 +2378,8 @@ type GpuInfo_builder struct {
 	VgpuBindTime    *timestamppb.Timestamp
 	BindPhase       *string
 	PhysicalGpuUuid *string
-	VgpuVram        *string
-	VgpuCores       *string
+	VramMib         *string
+	VcoresPercent   *string
 }
 
 func (b0 GpuInfo_builder) Build() *GpuInfo {
@@ -2399,13 +2399,13 @@ func (b0 GpuInfo_builder) Build() *GpuInfo {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
 		x.xxx_hidden_PhysicalGpuUuid = b.PhysicalGpuUuid
 	}
-	if b.VgpuVram != nil {
+	if b.VramMib != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
-		x.xxx_hidden_VgpuVram = b.VgpuVram
+		x.xxx_hidden_VramMib = b.VramMib
 	}
-	if b.VgpuCores != nil {
+	if b.VcoresPercent != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
-		x.xxx_hidden_VgpuCores = b.VgpuCores
+		x.xxx_hidden_VcoresPercent = b.VcoresPercent
 	}
 	return m0
 }
@@ -2621,22 +2621,22 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\x16GetGpuRelationResponse\x12G\n" +
 	"\fgpu_relation\x18\x01 \x01(\v2$.otterscale.essential.v1.GpuRelationR\vgpuRelation\"L\n" +
 	"\vGpuRelation\x12=\n" +
-	"\tpod_infos\x18\x01 \x03(\v2 .otterscale.essential.v1.PodInfoR\bpodInfos\"\xac\x01\n" +
+	"\tpod_infos\x18\x01 \x03(\v2 .otterscale.essential.v1.PodInfoR\bpodInfos\"\xb5\x01\n" +
 	"\aPodInfo\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x14\n" +
-	"\x05model\x18\x03 \x01(\tR\x05model\x12!\n" +
+	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1d\n" +
+	"\n" +
+	"model_name\x18\x03 \x01(\tR\tmodelName\x12!\n" +
 	"\fmachine_name\x18\x04 \x01(\tR\vmachineName\x126\n" +
-	"\x05vgpus\x18\x05 \x03(\v2 .otterscale.essential.v1.GpuInfoR\x05vgpus\"\xeb\x01\n" +
+	"\x05vgpus\x18\x05 \x03(\v2 .otterscale.essential.v1.GpuInfoR\x05vgpus\"\xf1\x01\n" +
 	"\aGpuInfo\x12\x17\n" +
 	"\ais_vgpu\x18\x01 \x01(\bR\x06isVgpu\x12@\n" +
 	"\x0evgpu_bind_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\fvgpuBindTime\x12\x1d\n" +
 	"\n" +
 	"bind_phase\x18\x03 \x01(\tR\tbindPhase\x12*\n" +
-	"\x11physical_gpu_uuid\x18\x04 \x01(\tR\x0fphysicalGpuUuid\x12\x1b\n" +
-	"\tvgpu_vram\x18\x05 \x01(\tR\bvgpuVram\x12\x1d\n" +
-	"\n" +
-	"vgpu_cores\x18\x06 \x01(\tR\tvgpuCores2\x99\a\n" +
+	"\x11physical_gpu_uuid\x18\x04 \x01(\tR\x0fphysicalGpuUuid\x12\x19\n" +
+	"\bvram_mib\x18\x05 \x01(\tR\avramMib\x12%\n" +
+	"\x0evcores_percent\x18\x06 \x01(\tR\rvcoresPercent2\x99\a\n" +
 	"\x10EssentialService\x12z\n" +
 	"\x11IsMachineDeployed\x121.otterscale.essential.v1.IsMachineDeployedRequest\x1a2.otterscale.essential.v1.IsMachineDeployedResponse\x12k\n" +
 	"\fListStatuses\x12,.otterscale.essential.v1.ListStatusesRequest\x1a-.otterscale.essential.v1.ListStatusesResponse\x12q\n" +
