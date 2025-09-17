@@ -1,8 +1,9 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { createClient } from '@connectrpc/connect';
 	import { createConnectTransport } from '@connectrpc/connect-web';
 	import Icon from '@iconify/svelte';
 	import { type Edge, type Node } from '@xyflow/svelte';
+	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import type { LargeLangeageModel } from '../type';
@@ -14,6 +15,10 @@
 	import { currentKubernetes } from '$lib/stores';
 	import '@xyflow/svelte/dist/style.css';
 
+	const position = { x: 0, y: 0 };
+</script>
+
+<script lang="ts">
 	let { model }: { model: LargeLangeageModel } = $props();
 	console.log(model.name);
 
@@ -23,20 +28,6 @@
 	const essentialClient = createClient(EssentialService, transport);
 
 	const relation = writable({} as GpuRelation);
-	essentialClient
-		.getGpuRelationByModel({
-			scopeUuid: $currentKubernetes?.scopeUuid,
-			facilityName: $currentKubernetes?.name,
-			modelName: 'llama-1b-hf-32768-fpf',
-		})
-		.then((response) => {
-			if (response.gpuRelation) {
-				relation.set(response.gpuRelation);
-			}
-		});
-
-	const position = { x: 0, y: 0 };
-
 	const machines: Node[] = $derived(
 		$relation.podInfos.map((podInformation) => ({
 			id: podInformation.machineName,
@@ -62,34 +53,73 @@
 				position,
 			})),
 	);
-
-	const nodes = $derived([...machines, ...gpus]);
-
-	const edges: Edge[] = $derived(
+	const models: Node[] = $derived(
+		$relation.podInfos.map((podInformation) => ({
+			id: podInformation.model,
+			type: 'model',
+			data: {
+				name: podInformation.model,
+				icon: 'simple-icons:openai',
+			},
+			position,
+		})),
+	);
+	const machineGPUs: Edge[] = $derived(
 		$relation.podInfos.flatMap((podInformation) =>
 			podInformation.vgpus.map((gpu) => ({
 				id: `${podInformation.machineName}${gpu.physicalGpuUuid}`,
 				type: 'edge',
-				source: podInformation.machineName,
+				source: gpu.physicalGpuUuid,
+				target: podInformation.machineName,
+				animated: true,
+				selectable: false,
+			})),
+		),
+	);
+	const gpuModels: Edge[] = $derived(
+		$relation.podInfos.flatMap((podInformation) =>
+			podInformation.vgpus.map((gpu) => ({
+				id: `${gpu.physicalGpuUuid}${podInformation.model}`,
+				type: 'edge',
+				source: podInformation.model,
 				target: gpu.physicalGpuUuid,
 				animated: true,
 				selectable: false,
 			})),
 		),
 	);
+	const nodes = $derived([...machines, ...gpus, ...models]);
+	const edges: Edge[] = $derived([...machineGPUs, ...gpuModels]);
 
 	let open = $state(false);
+	let isMounted = $state(false);
+	onMount(async () => {
+		essentialClient
+			.getGpuRelationByMachine({
+				scopeUuid: $currentKubernetes?.scopeUuid,
+				facilityName: $currentKubernetes?.name,
+				machineName: 'proxmox-4090x2-197-114',
+			})
+			.then((response) => {
+				if (response.gpuRelation) {
+					relation.set(response.gpuRelation);
+					isMounted = true;
+				}
+			});
+	});
 </script>
 
-<!-- {machines.length}
-{gpus.length} -->
-<Dialog.Root bind:open>
-	<Dialog.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-		<Icon icon="ph:graph" />
-	</Dialog.Trigger>
-	{#if open}
-		<Dialog.Content class="min-h-[77vh] min-w-[77vw]">
-			<Complex.Flow initialNodes={nodes} initialEdges={edges} />
-		</Dialog.Content>
-	{/if}
-</Dialog.Root>
+{#if !isMounted}
+	Loading...
+{:else}
+	<Dialog.Root bind:open>
+		<Dialog.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+			<Icon icon="ph:graph" />
+		</Dialog.Trigger>
+		{#if open}
+			<Dialog.Content class="min-h-[77vh] min-w-[77vw]">
+				<Complex.Flow initialNodes={nodes} initialEdges={edges} />
+			</Dialog.Content>
+		{/if}
+	</Dialog.Root>
+{/if}

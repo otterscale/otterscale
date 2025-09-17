@@ -104,10 +104,10 @@
 				(modelName) =>
 					({
 						name: modelName,
-						gpu_cache: getRandomNumber() ?? gpuCacheUsageByPod.get(modelName),
-						kv_cache: getRandomNumber() ?? kvCacheUsageByPod.get(modelName),
-						requests: getRandomNumber() ?? requestLatencyByPod.get(modelName),
-						time_to_first_token: getRandomNumber() ?? timeToFirstTokenByPod.get(modelName),
+						gpu_cache: gpuCacheUsageByPod.get(modelName) ?? 0,
+						kv_cache: kvCacheUsageByPod.get(modelName) ?? 0,
+						requests: requestLatencyByPod.get(modelName) ?? 0,
+						time_to_first_token: timeToFirstTokenByPod.get(modelName) ?? 0,
 					}) as LargeLangeageModel,
 			),
 		);
