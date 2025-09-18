@@ -676,6 +676,7 @@
 	"vm_resume": "Resume",
 	"vm_bus_type_direction": "The communication protocol and physical interface used for connecting devices within a virtual machine.",
 	"please_wait": "Please Wait",
+	"create_disk": "Create Disk",
 	"create_virtual_machine": "Create Virtual Machine",
 	"virtual_machine_name": "Virtual Machine Name",
 	"delete_virtual_machine": "Delete Virtual Machine",
@@ -710,5 +711,7 @@
 	"vm_status_running": "Running",
 	"vm_status_paused": "Paused",
 	"vm_status_stopped": "Powered Off",
-	"vm_status_terminating": "Terminating"
+	"vm_status_terminating": "Terminating",
+	"extend": "Extend",
+	"extend_data_volume": "Extend Data Volume"
 }

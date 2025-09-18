@@ -5,13 +5,12 @@
 	import { writable, type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { resourcesCase, diskTypes, busTypes, dataVolumeSourceTypes } from './dropdown';
-
 	import type {
 		CreateVirtualMachineRequest,
 		VirtualMachineResources,
 		VirtualMachineDisk,
 		DataVolumeSource,
+		PersistentVolumeClaim,
 	} from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import {
 		KubeVirtService,
@@ -19,6 +18,12 @@
 		VirtualMachineDisk_bus,
 		DataVolumeSource_Type,
 	} from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import {
+		resourcesCase,
+		diskTypes,
+		busTypes,
+		dataVolumeSourceTypes,
+	} from '$lib/components/compute/virtual-machine/units/dropdown';
 	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -53,6 +58,7 @@
 
 	// ==================== Local Dropdown Options ====================
 	const namespaces: Writable<SingleSelect.OptionType[]> = writable([]);
+	const bootablePVCs: Writable<SingleSelect.OptionType[]> = writable([]);
 
 	// ==================== API Functions ====================
 	async function loadNamespaces() {
@@ -71,6 +77,30 @@
 			namespaces.set(namespaceOptions);
 		} catch (error) {
 			toast.error('Failed to load namespaces', {
+				description: (error as ConnectError).message.toString(),
+			});
+		}
+	}
+
+	async function loadBootablePVCs() {
+		try {
+			if (!request.namespace) return;
+
+			const response = await kubevirtClient.listBootablePersistentVolumeClaims({
+				scopeUuid: $currentKubernetes?.scopeUuid,
+				facilityName: $currentKubernetes?.name,
+				namespace: request.namespace,
+			});
+
+			const pvcOptions = response.persistentVolumeClaims.map((pvc: PersistentVolumeClaim) => ({
+				value: pvc.name,
+				label: pvc.name,
+				icon: 'ph:hard-drive',
+			}));
+
+			bootablePVCs.set(pvcOptions);
+		} catch (error) {
+			toast.error('Failed to load bootable PVCs', {
 				description: (error as ConnectError).message.toString(),
 			});
 		}
@@ -106,6 +136,7 @@
 		diskType: VirtualMachineDisk_type.DATAVOLUME,
 		busType: VirtualMachineDisk_bus.VIRTIO,
 		sourceData: { case: 'source', value: DEFAULT_DISK_SOURCE },
+		isBootable: true,
 	} as VirtualMachineDisk;
 
 	// ==================== Form State ====================
@@ -126,6 +157,27 @@
 		}
 	});
 
+	// Load bootable PVCs when namespace changes
+	$effect(() => {
+		if (request.namespace) {
+			loadBootablePVCs();
+		}
+	});
+
+	// Auto-set bootable based on data volume source type
+	$effect(() => {
+		if (newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME) {
+			if (
+				newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP ||
+				newDiskSourceDataVolume.type === DataVolumeSource_Type.PVC
+			) {
+				newDisk.isBootable = true;
+			} else if (newDiskSourceDataVolume.type === DataVolumeSource_Type.BLANK) {
+				newDisk.isBootable = false;
+			}
+		}
+	});
+
 	// ==================== Utility Functions ====================
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -137,6 +189,7 @@
 		newDisk = DEFAULT_DISK;
 		newDiskSource = DEFAULT_DISK_SOURCE;
 		newDiskSourceDataVolume = DEFAULT_DISK_DATA_VOLUME_SOURCE;
+		bootablePVCs.set([]);
 	}
 	function close() {
 		open = false;
@@ -182,6 +235,9 @@
 	// ==================== Lifecycle Hooks ====================
 	onMount(() => {
 		loadNamespaces();
+		if (request.namespace) {
+			loadBootablePVCs();
+		}
 	});
 </script>
 
@@ -379,6 +435,14 @@
 						</SingleSelect.Root>
 					</Form.Field>
 					<Form.Field>
+						<SingleInput.Boolean
+							descriptor={() => m.boot_disk()}
+							bind:value={newDisk.isBootable}
+							disabled={newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME &&
+								newDiskSourceDataVolume.type === DataVolumeSource_Type.BLANK}
+						/>
+					</Form.Field>
+					<Form.Field>
 						<Form.Label>{m.size()}</Form.Label>
 						<SingleInput.Measurement
 							required
@@ -389,9 +453,50 @@
 					</Form.Field>
 					<Form.Field>
 						<Form.Label>{m.source()}</Form.Label>
-						<SingleInput.General required type="text" bind:value={newDiskSourceDataVolume.source} />
+						{#if newDiskSourceDataVolume.type === DataVolumeSource_Type.PVC}
+							<SingleSelect.Root
+								required
+								options={bootablePVCs}
+								bind:value={newDiskSourceDataVolume.source}
+							>
+								<SingleSelect.Trigger />
+								<SingleSelect.Content>
+									<SingleSelect.Options>
+										<SingleSelect.Input />
+										<SingleSelect.List>
+											<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+											<SingleSelect.Group>
+												{#each $bootablePVCs as pvc}
+													<SingleSelect.Item option={pvc}>
+														<Icon
+															icon={pvc.icon ? pvc.icon : 'ph:empty'}
+															class={cn('size-5', pvc.icon ? 'visible' : 'invisible')}
+														/>
+														{pvc.label}
+														<SingleSelect.Check option={pvc} />
+													</SingleSelect.Item>
+												{/each}
+											</SingleSelect.Group>
+										</SingleSelect.List>
+									</SingleSelect.Options>
+								</SingleSelect.Content>
+							</SingleSelect.Root>
+						{:else}
+							<SingleInput.General
+								required={newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP}
+								disabled={newDiskSourceDataVolume.type === DataVolumeSource_Type.BLANK}
+								type="text"
+								bind:value={newDiskSourceDataVolume.source}
+								placeholder={newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP
+									? 'https://cloud-images.ubuntu.com/xxx/xxx/xxx.img'
+									: ''}
+							/>
+						{/if}
 					</Form.Field>
 				{:else}
+					<Form.Field>
+						<SingleInput.Boolean descriptor={() => m.boot_disk()} bind:value={newDisk.isBootable} />
+					</Form.Field>
 					<Form.Field>
 						<Form.Label>{m.source()}</Form.Label>
 						<SingleInput.General required type="text" bind:value={newDiskSource} />
@@ -409,7 +514,7 @@
 						<Icon icon="ph:plus" class="size-4" />
 						{m.add_disk()}
 					</Button>
-					{#if newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP}
+					{#if newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME && newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP}
 						<Button
 							variant="outline"
 							size="sm"
@@ -453,12 +558,16 @@
 											>
 											<span class="mx-2">•</span>
 											<span>Source: {disk.sourceData.value.source}</span>
+											<span class="mx-2">•</span>
+											<span>Bootable: {disk.isBootable ? 'Yes' : 'No'}</span>
 										{:else}
 											<span
 												>Source: {disk.sourceData?.case === 'source'
 													? disk.sourceData.value
 													: 'Unknown'}</span
 											>
+											<span class="mx-2">•</span>
+											<span>Bootable: {disk.isBootable ? 'Yes' : 'No'}</span>
 										{/if}
 									</div>
 								</div>

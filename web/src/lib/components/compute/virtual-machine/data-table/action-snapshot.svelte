@@ -60,7 +60,7 @@
 <div class="flex items-center justify-end gap-1">
 	<Sheet.Root>
 		<Sheet.Trigger class="flex items-center gap-1">
-			<Icon icon="mdi:backup-restore" />
+			<Icon icon="ph:camera" />
 			{m.snapshot()}
 		</Sheet.Trigger>
 

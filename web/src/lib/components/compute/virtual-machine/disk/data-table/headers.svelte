@@ -14,6 +14,7 @@
 		source,
 		sourceType,
 		size,
+		actions,
 	};
 </script>
 
@@ -79,4 +80,4 @@
 	</Layout.Header>
 {/snippet}
 
-<!-- {#snippet actions()}{/snippet} -->
+{#snippet actions()}{/snippet}

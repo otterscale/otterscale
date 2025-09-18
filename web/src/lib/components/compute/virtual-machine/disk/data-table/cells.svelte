@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Row } from '@tanstack/table-core';
 
-	// import Actions from './cell-actions.svelte';
+	import Actions from './cell-actions.svelte';
 
 	import {
 		type VirtualMachineDisk,
@@ -22,7 +22,7 @@
 		source,
 		sourceType,
 		size,
-		// actions,
+		actions,
 	};
 </script>
 
@@ -71,7 +71,7 @@
 
 		<Tooltip.Root>
 			<Tooltip.Trigger>
-				<p class="max-w-[70px] truncate">
+				<p class="max-w-[210px] truncate">
 					{sourceText}
 				</p>
 			</Tooltip.Trigger>
@@ -90,8 +90,8 @@
 	</Layout.Cell>
 {/snippet}
 
-<!-- {#snippet actions(row: Row<VirtualMachineDisk>)}
+{#snippet actions(row: Row<VirtualMachineDisk>)}
 	<Layout.Cell class="items-start">
-		<Actions snapshot={row.original} />
+		<Actions virtualMachineDisk={row.original} />
 	</Layout.Cell>
-{/snippet} -->
+{/snippet}
