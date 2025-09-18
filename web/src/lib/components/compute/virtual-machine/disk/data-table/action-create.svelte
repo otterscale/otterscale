@@ -16,6 +16,7 @@
 		PersistentVolumeClaim,
 		VirtualMachine,
 		VirtualMachineDisk,
+		CreateVirtualMachineDiskRequest,
 	} from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { busTypes, dataVolumeSourceTypes, diskTypes } from '$lib/components/compute/virtual-machine/units/dropdown';
 	import * as Form from '$lib/components/custom/form';
@@ -76,12 +77,12 @@
 
 	async function loadBootablePVCs() {
 		try {
-			if (!request.namespace) return;
+			if (!request.vmNamespace) return;
 
 			const response = await kubevirtClient.listBootablePersistentVolumeClaims({
 				scopeUuid: $currentKubernetes?.scopeUuid,
 				facilityName: $currentKubernetes?.name,
-				namespace: request.namespace,
+				namespace: request.vmNamespace,
 			});
 
 			const pvcOptions = response.persistentVolumeClaims.map((pvc: PersistentVolumeClaim) => ({
@@ -104,8 +105,8 @@
 	const DEFAULT_REQUEST = {
 		scopeUuid: $currentKubernetes?.scopeUuid,
 		facilityName: $currentKubernetes?.name,
-		name: virtualMachine.metadata?.name,
-		namespace: virtualMachine.metadata?.namespace,
+		vmName: virtualMachine.metadata?.name,
+		vmNamespace: virtualMachine.metadata?.namespace,
 		disk: {
 			name: '',
 			diskType: VirtualMachineDisk_type.DATAVOLUME,
@@ -113,7 +114,7 @@
 			sourceData: { case: 'source', value: '' },
 			isBootable: true,
 		} as VirtualMachineDisk,
-	}; // } as CreateVirtualMachineRequest;
+	} as CreateVirtualMachineDiskRequest;
 	const DEFAULT_DISK_DATA_VOLUME_SOURCE = {
 		type: DataVolumeSource_Type.HTTP,
 		source: '',
@@ -121,15 +122,14 @@
 	} as DataVolumeSource;
 
 	// ==================== Form State ====================
-	// let request: CreateVirtualMachineRequest = $state(DEFAULT_REQUEST);
-	let request = $state(DEFAULT_REQUEST);
+	let request: CreateVirtualMachineDiskRequest = $state(DEFAULT_REQUEST);
 	let diskSource = $state('');
 	let diskSourceDataVolume = $state(DEFAULT_DISK_DATA_VOLUME_SOURCE);
 
 	// ==================== Reactive Statements ====================
 	// Load bootable PVCs when namespace changes
 	$effect(() => {
-		if (request.namespace) {
+		if (request.vmNamespace) {
 			loadBootablePVCs();
 		}
 	});
@@ -171,7 +171,7 @@
 	// ==================== Lifecycle Hooks ====================
 	onMount(() => {
 		loadNamespaces();
-		if (request.namespace) {
+		if (request.vmNamespace) {
 			loadBootablePVCs();
 		}
 	});
@@ -384,14 +384,14 @@
 				<Modal.Action
 					disabled={invalidName || invalidSource}
 					onclick={() => {
-						toast.promise(() => kubevirtClient.createVirtualMachine(request), {
-							loading: `Creating ${request.name}...`,
+						toast.promise(() => kubevirtClient.createVirtualMachineDisk(request), {
+							loading: `Creating ${request.vmName}...`,
 							success: () => {
 								reloadManager.force();
-								return `Successfully created ${request.name}`;
+								return `Successfully created ${request.vmName}`;
 							},
 							error: (error) => {
-								let message = `Failed to create ${request.name}`;
+								let message = `Failed to create ${request.vmName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY,
