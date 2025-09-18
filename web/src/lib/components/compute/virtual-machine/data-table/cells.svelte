@@ -41,8 +41,8 @@
 				};
 			case VirtualMachine_status.PROVISIONING:
 				return {
-					icon: 'ph:gear',
-					color: 'text-blue-500 animate-spin',
+					icon: 'ph:hourglass-high',
+					color: 'text-blue-500',
 					text: m.vm_status_provisioning(),
 				};
 			case VirtualMachine_status.TERMINATING:
