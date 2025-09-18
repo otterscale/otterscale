@@ -32,6 +32,7 @@
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible';
+	import * as Select from '$lib/components/ui/select';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
@@ -59,6 +60,13 @@
 	// ==================== Local Dropdown Options ====================
 	const namespaces: Writable<SingleSelect.OptionType[]> = writable([]);
 	const bootablePVCs: Writable<SingleSelect.OptionType[]> = writable([]);
+	const instanceTypes: Writable<SingleSelect.OptionType[]> = writable([]);
+
+	// Instance type with CPU and memory information
+	type InstanceTypeOption = SingleSelect.OptionType & {
+		cpuCores?: number;
+		memoryBytes?: bigint;
+	};
 
 	// ==================== API Functions ====================
 	async function loadNamespaces() {
@@ -77,6 +85,29 @@
 			namespaces.set(namespaceOptions);
 		} catch (error) {
 			toast.error('Failed to load namespaces', {
+				description: (error as ConnectError).message.toString(),
+			});
+		}
+	}
+
+	async function loadInstanceTypes() {
+		try {
+			const response = await kubevirtClient.listInstanceTypes({
+				scopeUuid: $currentKubernetes?.scopeUuid,
+				facilityName: $currentKubernetes?.name,
+			});
+
+			const instanceTypeOptions: InstanceTypeOption[] = response.instanceTypes.map((instanceType) => ({
+				value: instanceType.metadata?.name || '',
+				label: instanceType.metadata?.name || '',
+				icon: 'ph:layout',
+				cpuCores: instanceType.cpuCores,
+				memoryBytes: instanceType.memoryBytes,
+			}));
+
+			instanceTypes.set(instanceTypeOptions);
+		} catch (error) {
+			toast.error('Failed to load instance types', {
 				description: (error as ConnectError).message.toString(),
 			});
 		}
@@ -124,7 +155,9 @@
 		cpuCores: 1,
 		memoryBytes: 1n * 1024n * 1024n * 1024n, // 1GiB
 	} as VirtualMachineResources;
-	const DEFAULT_RESOURCES_INSTANCE = '';
+	const DEFAULT_INSTANCE_TYPE_NAME = '';
+	const DEFAULT_INSTANCE_TYPE_CPU = undefined;
+	const DEFAULT_INSTANCE_TYPE_MEMORY = undefined;
 	const DEFAULT_DISK_SOURCE = '';
 	const DEFAULT_DISK_DATA_VOLUME_SOURCE = {
 		type: DataVolumeSource_Type.HTTP,
@@ -142,7 +175,9 @@
 	// ==================== Form State ====================
 	let request: CreateVirtualMachineRequest = $state(DEFAULT_REQUEST);
 	let resourcesCustom = $state(DEFAULT_RESOURCES_CUSTOM);
-	let resourcesInstance = $state(DEFAULT_RESOURCES_INSTANCE);
+	let instanceTypeName = $state(DEFAULT_INSTANCE_TYPE_NAME);
+	let instanceTypeCPU: number | undefined = $state(DEFAULT_INSTANCE_TYPE_CPU);
+	let instanceTypeMemoryGB: number | undefined = $state(DEFAULT_INSTANCE_TYPE_MEMORY);
 	let newDisk: VirtualMachineDisk = $state(DEFAULT_DISK);
 	let newDiskSource = $state(DEFAULT_DISK_SOURCE);
 	let newDiskSourceDataVolume = $state(DEFAULT_DISK_DATA_VOLUME_SOURCE);
@@ -151,9 +186,26 @@
 	// Automatically sync request.resources.value with the form state
 	$effect(() => {
 		if (request.resources.case === 'instancetypeName') {
-			request.resources.value = resourcesInstance;
+			request.resources.value = instanceTypeName;
 		} else if (request.resources.case === 'custom') {
 			request.resources.value = resourcesCustom;
+		}
+	});
+
+	// Update selected instance type when instanceTypeName changes
+	$effect(() => {
+		if (request.resources.case === 'instancetypeName' && instanceTypeName) {
+			const instanceType = ($instanceTypes as InstanceTypeOption[]).find(
+				(type) => type.value === instanceTypeName,
+			);
+			instanceTypeCPU = instanceType?.cpuCores ?? DEFAULT_INSTANCE_TYPE_CPU;
+			instanceTypeMemoryGB =
+				instanceType?.memoryBytes !== undefined
+					? Number(instanceType.memoryBytes) / 1024 / 1024 / 1024
+					: DEFAULT_INSTANCE_TYPE_MEMORY;
+		} else {
+			instanceTypeCPU = DEFAULT_INSTANCE_TYPE_CPU;
+			instanceTypeMemoryGB = DEFAULT_INSTANCE_TYPE_MEMORY;
 		}
 	});
 
@@ -182,7 +234,9 @@
 	function reset() {
 		request = DEFAULT_REQUEST;
 		resourcesCustom = DEFAULT_RESOURCES_CUSTOM;
-		resourcesInstance = DEFAULT_RESOURCES_INSTANCE;
+		instanceTypeName = DEFAULT_INSTANCE_TYPE_NAME;
+		instanceTypeCPU = DEFAULT_INSTANCE_TYPE_CPU;
+		instanceTypeMemoryGB = DEFAULT_INSTANCE_TYPE_MEMORY;
 		isAdvancedOpen = false;
 		labelKey = '';
 		labelValue = '';
@@ -235,6 +289,7 @@
 	// ==================== Lifecycle Hooks ====================
 	onMount(() => {
 		loadNamespaces();
+		loadInstanceTypes();
 		if (request.namespace) {
 			loadBootablePVCs();
 		}
@@ -339,7 +394,47 @@
 				{:else if request.resources.case === 'instancetypeName'}
 					<Form.Field>
 						<Form.Label>{m.instance_name()}</Form.Label>
-						<SingleInput.General required type="text" bind:value={resourcesInstance} />
+						<SingleSelect.Root required options={instanceTypes} bind:value={instanceTypeName}>
+							<SingleSelect.Trigger />
+							<SingleSelect.Content>
+								<SingleSelect.Options>
+									<SingleSelect.Input />
+									<SingleSelect.List>
+										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+										<SingleSelect.Group>
+											{#each $instanceTypes as instanceType}
+												<SingleSelect.Item option={instanceType}>
+													<Icon
+														icon={instanceType.icon ? instanceType.icon : 'ph:empty'}
+														class={cn(
+															'size-5',
+															instanceType.icon ? 'visible' : 'invisible',
+														)}
+													/>
+													{instanceType.label}
+													<SingleSelect.Check option={instanceType} />
+												</SingleSelect.Item>
+											{/each}
+										</SingleSelect.Group>
+									</SingleSelect.List>
+								</SingleSelect.Options>
+							</SingleSelect.Content>
+						</SingleSelect.Root>
+					</Form.Field>
+					<Form.Field>
+						<Form.Label>{m.cpu_cores()}</Form.Label>
+						<SingleInput.General type="number" value={instanceTypeCPU} disabled />
+					</Form.Field>
+					<Form.Field>
+						<Form.Label>{m.memory()}</Form.Label>
+						<div class="flex items-center gap-2">
+							<div class={cn('w-full')}>
+								<SingleInput.General type="number" value={instanceTypeMemoryGB} disabled />
+							</div>
+							<Select.Root type="single">
+								<Select.Trigger class={cn('w-fit')}>GB</Select.Trigger>
+							</Select.Root>
+						</div>
 					</Form.Field>
 				{/if}
 			</Form.Fieldset>
