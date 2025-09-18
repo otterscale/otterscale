@@ -16,13 +16,13 @@ import (
 )
 
 const (
-	SourceHTTP     = "HTTP"
-	SourceBlank    = "Blank"
-	SourceRegistry = "Registry"
-	SourceUpload   = "Upload"
-	SourceS3       = "S3"
-	SourceVDDK     = "VDDK"
-	SourcePVC      = "PVC"
+	SourceHTTP     = "http"
+	SourceBlank    = "blank"
+	SourceRegistry = "registry"
+	SourceUpload   = "upload"
+	SourceS3       = "s3"
+	SourceVDDK     = "vddk"
+	SourcePVC      = "pvc"
 )
 
 type virtDV struct {

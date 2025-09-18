@@ -144,6 +144,39 @@ func (s *KubeVirtService) DeleteVirtualMachine(ctx context.Context, req *connect
 	return connect.NewResponse(resp), nil
 }
 
+// CreateVirtualMachineDisk 建立新的磁碟並附加至虛擬機器
+func (s *KubeVirtService) CreateVirtualMachineDisk(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error) {
+	// 1. 從請求中提取資訊
+	scopeUUID := req.Msg.GetScopeUuid()
+	facilityName := req.Msg.GetFacilityName()
+	vmName := req.Msg.GetVmName()
+	vmNamespace := req.Msg.GetVmNamespace()
+	pbDisk := req.Msg.GetDisks()
+
+	disk := fromProtoVirtualMachineDisk(pbDisk)
+
+	var dvInfo *core.DataVolumeInfo
+	if strings.ToLower(disk.DiskType) == core.TYPEDATAVOLUME {
+		if pbDisk.GetDataVolume() != nil {
+			dvInfo = &core.DataVolumeInfo{
+				Name:       pbDisk.GetName(),
+				SourceType: strings.ToLower(pbDisk.GetDataVolume().GetType().String()),
+				Source:     pbDisk.GetDataVolume().GetSource(),
+				SizeBytes:  pbDisk.GetDataVolume().GetSizeBytes(),
+				IsBootable: pbDisk.GetIsBootable(),
+			}
+		}
+	}
+
+	err := s.uc.CreateVirtualMachineDisk(ctx, scopeUUID, facilityName, vmNamespace, vmName, disk, dvInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
 // Virtual Machine Control Operations
 func (s *KubeVirtService) StartVirtualMachine(ctx context.Context, req *connect.Request[pb.StartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
 	if err := s.uc.StartVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
@@ -538,6 +571,46 @@ func toProtoVirtualMachineDisk(disk *virtCorev1.Disk, vmVols map[string]virtCore
 	}
 
 	return ret
+}
+
+func fromProtoVirtualMachineDisk(disk *pb.VirtualMachineDisk) core.DiskDevice {
+	// 將 pb.VirtualMachineDisk 轉換為 core.DiskDevice
+	var diskType string
+	switch disk.GetDiskType() {
+	case pb.VirtualMachineDisk_DATAVOLUME:
+		diskType = core.TYPEDATAVOLUME
+	case pb.VirtualMachineDisk_PERSISTENTVOLUMECLAIM:
+		diskType = core.TYPEPERSISTENTVOLUMECLAIM
+	case pb.VirtualMachineDisk_CONFIGMAP:
+		diskType = core.TYPECONFIGMAP
+	case pb.VirtualMachineDisk_SECRET:
+		diskType = core.TYPESECRET
+	case pb.VirtualMachineDisk_CLOUDINITNOCLOUD:
+		diskType = core.TYPECLOUDINITNOCLOUD
+	default:
+		diskType = ""
+	}
+
+	// 轉換 bus 類型
+	var busStr string
+	switch disk.GetBusType() {
+	case pb.VirtualMachineDisk_SATA:
+		busStr = "sata"
+	case pb.VirtualMachineDisk_SCSI:
+		busStr = "scsi"
+	case pb.VirtualMachineDisk_VIRTIO:
+		busStr = "virtio"
+	default:
+		busStr = "virtio"
+	}
+
+	// 建立並回傳 core.DiskDevice
+	return core.DiskDevice{
+		Name:     disk.GetName(),
+		DiskType: diskType,
+		Bus:      busStr,
+		Data:     disk.GetSource(), // 當 disk 是 source 類型時，這會是有效值
+	}
 }
 
 func toCoreDiskDevices(disks []*pb.VirtualMachineDisk) []core.DiskDevice {

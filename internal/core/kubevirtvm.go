@@ -451,6 +451,80 @@ func (uc *KubeVirtUseCase) DeleteVirtualMachine(ctx context.Context, uuid, facil
 	return uc.kubeVirtVM.DeleteVirtualMachine(ctx, config, namespace, name)
 }
 
+func (uc *KubeVirtUseCase) CreateVirtualMachineDisk(ctx context.Context, uuid, facility, namespace, vmName string, disk DiskDevice, dvInfo *DataVolumeInfo) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+
+	if strings.ToLower(disk.DiskType) == TYPEDATAVOLUME && dvInfo != nil {
+		dvName := dvInfo.Name
+		if dvName == "" {
+			dvName = disk.Name
+		}
+		_, err := uc.kubeVirtDV.CreateDataVolume(
+			ctx,
+			config,
+			namespace,
+			dvName,
+			dvInfo.SourceType,
+			dvInfo.Source,
+			vmName,
+			dvInfo.SizeBytes,
+			dvInfo.IsBootable,
+		)
+		if err != nil {
+			return err
+		}
+	}
+
+	vm, err := uc.kubeVirtVM.GetVirtualMachine(ctx, config, namespace, vmName)
+	if err != nil {
+		return err
+	}
+
+	found := false
+	for _, d := range vm.Spec.Template.Spec.Domain.Devices.Disks {
+		if d.Name == disk.Name {
+			found = true
+			break
+		}
+	}
+	if !found {
+		var bus virtCorev1.DiskBus
+		switch strings.ToLower(disk.Bus) {
+		case "sata":
+			bus = virtCorev1.DiskBusSATA
+		case "scsi":
+			bus = virtCorev1.DiskBusSCSI
+		case "virtio":
+			bus = virtCorev1.DiskBusVirtio
+		default:
+			bus = virtCorev1.DiskBusVirtio
+		}
+		newDisk := virtCorev1.Disk{
+			Name: disk.Name,
+			DiskDevice: virtCorev1.DiskDevice{
+				Disk: &virtCorev1.DiskTarget{Bus: bus},
+			},
+		}
+		vm.Spec.Template.Spec.Domain.Devices.Disks = append(vm.Spec.Template.Spec.Domain.Devices.Disks, newDisk)
+
+		// append volume
+		vol := volumeFromDisk(disk)
+		if vol.Name != "" {
+			vm.Spec.Template.Spec.Volumes = append(vm.Spec.Template.Spec.Volumes, vol)
+		}
+	}
+
+	// 4. 更新 VM
+	_, err = uc.kubeVirtVM.UpdateVirtualMachine(ctx, config, namespace, vmName, vm)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // Virtual Machine Control Operations
 func (uc *KubeVirtUseCase) StartVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) error {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)

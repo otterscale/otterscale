@@ -17,6 +17,8 @@ service KubeVirtService {
   rpc ListVirtualMachines(ListVirtualMachinesRequest) returns (ListVirtualMachinesResponse);
   rpc UpdateVirtualMachine(UpdateVirtualMachineRequest) returns (VirtualMachine);
   rpc DeleteVirtualMachine(DeleteVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc CreateVirtualMachineDisk(CreateVirtualMachineDiskRequest) returns (google.protobuf.Empty);
+
   // Virtual Machine Control Operations
   rpc StartVirtualMachine(StartVirtualMachineRequest) returns (google.protobuf.Empty);
   rpc StopVirtualMachine(StopVirtualMachineRequest) returns (google.protobuf.Empty);
@@ -259,6 +261,14 @@ message DeleteVirtualMachineRequest {
   string facility_name = 2;
   string name = 3;
   string namespace = 4;
+}
+
+message CreateVirtualMachineDiskRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string vm_name = 3;
+  string vm_namespace = 4;
+  VirtualMachineDisk disks = 11;
 }
 
 message StartVirtualMachineRequest {

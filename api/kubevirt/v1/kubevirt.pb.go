@@ -4123,6 +4123,208 @@ func (b0 DeleteVirtualMachineRequest_builder) Build() *DeleteVirtualMachineReque
 	return m0
 }
 
+type CreateVirtualMachineDiskRequest struct {
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_VmName       *string                `protobuf:"bytes,3,opt,name=vm_name,json=vmName"`
+	xxx_hidden_VmNamespace  *string                `protobuf:"bytes,4,opt,name=vm_namespace,json=vmNamespace"`
+	xxx_hidden_Disks        *VirtualMachineDisk    `protobuf:"bytes,11,opt,name=disks"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *CreateVirtualMachineDiskRequest) Reset() {
+	*x = CreateVirtualMachineDiskRequest{}
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateVirtualMachineDiskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateVirtualMachineDiskRequest) ProtoMessage() {}
+
+func (x *CreateVirtualMachineDiskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *CreateVirtualMachineDiskRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineDiskRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineDiskRequest) GetVmName() string {
+	if x != nil {
+		if x.xxx_hidden_VmName != nil {
+			return *x.xxx_hidden_VmName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineDiskRequest) GetVmNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_VmNamespace != nil {
+			return *x.xxx_hidden_VmNamespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineDiskRequest) GetDisks() *VirtualMachineDisk {
+	if x != nil {
+		return x.xxx_hidden_Disks
+	}
+	return nil
+}
+
+func (x *CreateVirtualMachineDiskRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *CreateVirtualMachineDiskRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *CreateVirtualMachineDiskRequest) SetVmName(v string) {
+	x.xxx_hidden_VmName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *CreateVirtualMachineDiskRequest) SetVmNamespace(v string) {
+	x.xxx_hidden_VmNamespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *CreateVirtualMachineDiskRequest) SetDisks(v *VirtualMachineDisk) {
+	x.xxx_hidden_Disks = v
+}
+
+func (x *CreateVirtualMachineDiskRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateVirtualMachineDiskRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *CreateVirtualMachineDiskRequest) HasVmName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *CreateVirtualMachineDiskRequest) HasVmNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *CreateVirtualMachineDiskRequest) HasDisks() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Disks != nil
+}
+
+func (x *CreateVirtualMachineDiskRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *CreateVirtualMachineDiskRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *CreateVirtualMachineDiskRequest) ClearVmName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_VmName = nil
+}
+
+func (x *CreateVirtualMachineDiskRequest) ClearVmNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_VmNamespace = nil
+}
+
+func (x *CreateVirtualMachineDiskRequest) ClearDisks() {
+	x.xxx_hidden_Disks = nil
+}
+
+type CreateVirtualMachineDiskRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	VmName       *string
+	VmNamespace  *string
+	Disks        *VirtualMachineDisk
+}
+
+func (b0 CreateVirtualMachineDiskRequest_builder) Build() *CreateVirtualMachineDiskRequest {
+	m0 := &CreateVirtualMachineDiskRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.VmName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_VmName = b.VmName
+	}
+	if b.VmNamespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_VmNamespace = b.VmNamespace
+	}
+	x.xxx_hidden_Disks = b.Disks
+	return m0
+}
+
 type StartVirtualMachineRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
@@ -4137,7 +4339,7 @@ type StartVirtualMachineRequest struct {
 
 func (x *StartVirtualMachineRequest) Reset() {
 	*x = StartVirtualMachineRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[20]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4149,7 +4351,7 @@ func (x *StartVirtualMachineRequest) String() string {
 func (*StartVirtualMachineRequest) ProtoMessage() {}
 
 func (x *StartVirtualMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[20]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4314,7 +4516,7 @@ type StopVirtualMachineRequest struct {
 
 func (x *StopVirtualMachineRequest) Reset() {
 	*x = StopVirtualMachineRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[21]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4326,7 +4528,7 @@ func (x *StopVirtualMachineRequest) String() string {
 func (*StopVirtualMachineRequest) ProtoMessage() {}
 
 func (x *StopVirtualMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[21]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4491,7 +4693,7 @@ type PauseVirtualMachineRequest struct {
 
 func (x *PauseVirtualMachineRequest) Reset() {
 	*x = PauseVirtualMachineRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[22]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4503,7 +4705,7 @@ func (x *PauseVirtualMachineRequest) String() string {
 func (*PauseVirtualMachineRequest) ProtoMessage() {}
 
 func (x *PauseVirtualMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[22]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4668,7 +4870,7 @@ type ResumeVirtualMachineRequest struct {
 
 func (x *ResumeVirtualMachineRequest) Reset() {
 	*x = ResumeVirtualMachineRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[23]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4680,7 +4882,7 @@ func (x *ResumeVirtualMachineRequest) String() string {
 func (*ResumeVirtualMachineRequest) ProtoMessage() {}
 
 func (x *ResumeVirtualMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[23]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4847,7 +5049,7 @@ type SnapshotVirtualMachineRequest struct {
 
 func (x *SnapshotVirtualMachineRequest) Reset() {
 	*x = SnapshotVirtualMachineRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[24]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4859,7 +5061,7 @@ func (x *SnapshotVirtualMachineRequest) String() string {
 func (*SnapshotVirtualMachineRequest) ProtoMessage() {}
 
 func (x *SnapshotVirtualMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[24]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5090,7 +5292,7 @@ type CloneVirtualMachineRequest struct {
 
 func (x *CloneVirtualMachineRequest) Reset() {
 	*x = CloneVirtualMachineRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[25]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5102,7 +5304,7 @@ func (x *CloneVirtualMachineRequest) String() string {
 func (*CloneVirtualMachineRequest) ProtoMessage() {}
 
 func (x *CloneVirtualMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[25]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5332,7 +5534,7 @@ type RestoreVirtualMachineRequest struct {
 
 func (x *RestoreVirtualMachineRequest) Reset() {
 	*x = RestoreVirtualMachineRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[26]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5344,7 +5546,7 @@ func (x *RestoreVirtualMachineRequest) String() string {
 func (*RestoreVirtualMachineRequest) ProtoMessage() {}
 
 func (x *RestoreVirtualMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[26]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5542,7 +5744,7 @@ type MigrateVirtualMachineRequest struct {
 
 func (x *MigrateVirtualMachineRequest) Reset() {
 	*x = MigrateVirtualMachineRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[27]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5554,7 +5756,7 @@ func (x *MigrateVirtualMachineRequest) String() string {
 func (*MigrateVirtualMachineRequest) ProtoMessage() {}
 
 func (x *MigrateVirtualMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[27]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5751,7 +5953,7 @@ type GetVirtualMachineSnapshotRequest struct {
 
 func (x *GetVirtualMachineSnapshotRequest) Reset() {
 	*x = GetVirtualMachineSnapshotRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[28]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5763,7 +5965,7 @@ func (x *GetVirtualMachineSnapshotRequest) String() string {
 func (*GetVirtualMachineSnapshotRequest) ProtoMessage() {}
 
 func (x *GetVirtualMachineSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[28]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5928,7 +6130,7 @@ type ListVirtualMachineSnapshotsRequest struct {
 
 func (x *ListVirtualMachineSnapshotsRequest) Reset() {
 	*x = ListVirtualMachineSnapshotsRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[29]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5940,7 +6142,7 @@ func (x *ListVirtualMachineSnapshotsRequest) String() string {
 func (*ListVirtualMachineSnapshotsRequest) ProtoMessage() {}
 
 func (x *ListVirtualMachineSnapshotsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[29]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6105,7 +6307,7 @@ type DeleteVirtualMachineSnapshotRequest struct {
 
 func (x *DeleteVirtualMachineSnapshotRequest) Reset() {
 	*x = DeleteVirtualMachineSnapshotRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[30]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6117,7 +6319,7 @@ func (x *DeleteVirtualMachineSnapshotRequest) String() string {
 func (*DeleteVirtualMachineSnapshotRequest) ProtoMessage() {}
 
 func (x *DeleteVirtualMachineSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[30]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6277,7 +6479,7 @@ type ListVirtualMachineSnapshotsResponse struct {
 
 func (x *ListVirtualMachineSnapshotsResponse) Reset() {
 	*x = ListVirtualMachineSnapshotsResponse{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[31]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6289,7 +6491,7 @@ func (x *ListVirtualMachineSnapshotsResponse) String() string {
 func (*ListVirtualMachineSnapshotsResponse) ProtoMessage() {}
 
 func (x *ListVirtualMachineSnapshotsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[31]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6341,7 +6543,7 @@ type CreateDataVolumeRequest struct {
 
 func (x *CreateDataVolumeRequest) Reset() {
 	*x = CreateDataVolumeRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[32]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6353,7 +6555,7 @@ func (x *CreateDataVolumeRequest) String() string {
 func (*CreateDataVolumeRequest) ProtoMessage() {}
 
 func (x *CreateDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[32]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6506,7 +6708,7 @@ type ListDataVolumesRequest struct {
 
 func (x *ListDataVolumesRequest) Reset() {
 	*x = ListDataVolumesRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[33]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6518,7 +6720,7 @@ func (x *ListDataVolumesRequest) String() string {
 func (*ListDataVolumesRequest) ProtoMessage() {}
 
 func (x *ListDataVolumesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[33]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6646,7 +6848,7 @@ type ListDataVolumesResponse struct {
 
 func (x *ListDataVolumesResponse) Reset() {
 	*x = ListDataVolumesResponse{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[34]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6658,7 +6860,7 @@ func (x *ListDataVolumesResponse) String() string {
 func (*ListDataVolumesResponse) ProtoMessage() {}
 
 func (x *ListDataVolumesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[34]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6710,7 +6912,7 @@ type GetDataVolumeRequest struct {
 
 func (x *GetDataVolumeRequest) Reset() {
 	*x = GetDataVolumeRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[35]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6722,7 +6924,7 @@ func (x *GetDataVolumeRequest) String() string {
 func (*GetDataVolumeRequest) ProtoMessage() {}
 
 func (x *GetDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[35]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6887,7 +7089,7 @@ type DeleteDataVolumeRequest struct {
 
 func (x *DeleteDataVolumeRequest) Reset() {
 	*x = DeleteDataVolumeRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[36]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6899,7 +7101,7 @@ func (x *DeleteDataVolumeRequest) String() string {
 func (*DeleteDataVolumeRequest) ProtoMessage() {}
 
 func (x *DeleteDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[36]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7065,7 +7267,7 @@ type ExtendDataVolumeRequest struct {
 
 func (x *ExtendDataVolumeRequest) Reset() {
 	*x = ExtendDataVolumeRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[37]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7077,7 +7279,7 @@ func (x *ExtendDataVolumeRequest) String() string {
 func (*ExtendDataVolumeRequest) ProtoMessage() {}
 
 func (x *ExtendDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[37]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7271,7 +7473,7 @@ type CreateVirtualMachineServiceRequest struct {
 
 func (x *CreateVirtualMachineServiceRequest) Reset() {
 	*x = CreateVirtualMachineServiceRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[38]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7283,7 +7485,7 @@ func (x *CreateVirtualMachineServiceRequest) String() string {
 func (*CreateVirtualMachineServiceRequest) ProtoMessage() {}
 
 func (x *CreateVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[38]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7439,7 +7641,7 @@ type ListVirtualMachineServicesRequest struct {
 
 func (x *ListVirtualMachineServicesRequest) Reset() {
 	*x = ListVirtualMachineServicesRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[39]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7451,7 +7653,7 @@ func (x *ListVirtualMachineServicesRequest) String() string {
 func (*ListVirtualMachineServicesRequest) ProtoMessage() {}
 
 func (x *ListVirtualMachineServicesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[39]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7579,7 +7781,7 @@ type ListVirtualMachineServicesResponse struct {
 
 func (x *ListVirtualMachineServicesResponse) Reset() {
 	*x = ListVirtualMachineServicesResponse{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[40]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7591,7 +7793,7 @@ func (x *ListVirtualMachineServicesResponse) String() string {
 func (*ListVirtualMachineServicesResponse) ProtoMessage() {}
 
 func (x *ListVirtualMachineServicesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[40]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7643,7 +7845,7 @@ type GetVirtualMachineServiceRequest struct {
 
 func (x *GetVirtualMachineServiceRequest) Reset() {
 	*x = GetVirtualMachineServiceRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[41]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7655,7 +7857,7 @@ func (x *GetVirtualMachineServiceRequest) String() string {
 func (*GetVirtualMachineServiceRequest) ProtoMessage() {}
 
 func (x *GetVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[41]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7821,7 +8023,7 @@ type UpdateVirtualMachineServiceRequest struct {
 
 func (x *UpdateVirtualMachineServiceRequest) Reset() {
 	*x = UpdateVirtualMachineServiceRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[42]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7833,7 +8035,7 @@ func (x *UpdateVirtualMachineServiceRequest) String() string {
 func (*UpdateVirtualMachineServiceRequest) ProtoMessage() {}
 
 func (x *UpdateVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[42]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8022,7 +8224,7 @@ type DeleteVirtualMachineServiceRequest struct {
 
 func (x *DeleteVirtualMachineServiceRequest) Reset() {
 	*x = DeleteVirtualMachineServiceRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[43]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8034,7 +8236,7 @@ func (x *DeleteVirtualMachineServiceRequest) String() string {
 func (*DeleteVirtualMachineServiceRequest) ProtoMessage() {}
 
 func (x *DeleteVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[43]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8198,7 +8400,7 @@ type CreateInstanceTypeRequest struct {
 
 func (x *CreateInstanceTypeRequest) Reset() {
 	*x = CreateInstanceTypeRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[44]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8210,7 +8412,7 @@ func (x *CreateInstanceTypeRequest) String() string {
 func (*CreateInstanceTypeRequest) ProtoMessage() {}
 
 func (x *CreateInstanceTypeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[44]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8333,7 +8535,7 @@ type ListInstanceTypesRequest struct {
 
 func (x *ListInstanceTypesRequest) Reset() {
 	*x = ListInstanceTypesRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[45]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8345,7 +8547,7 @@ func (x *ListInstanceTypesRequest) String() string {
 func (*ListInstanceTypesRequest) ProtoMessage() {}
 
 func (x *ListInstanceTypesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[45]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8441,7 +8643,7 @@ type ListInstanceTypesResponse struct {
 
 func (x *ListInstanceTypesResponse) Reset() {
 	*x = ListInstanceTypesResponse{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[46]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8453,7 +8655,7 @@ func (x *ListInstanceTypesResponse) String() string {
 func (*ListInstanceTypesResponse) ProtoMessage() {}
 
 func (x *ListInstanceTypesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[46]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8504,7 +8706,7 @@ type GetInstanceTypeRequest struct {
 
 func (x *GetInstanceTypeRequest) Reset() {
 	*x = GetInstanceTypeRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[47]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8516,7 +8718,7 @@ func (x *GetInstanceTypeRequest) String() string {
 func (*GetInstanceTypeRequest) ProtoMessage() {}
 
 func (x *GetInstanceTypeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[47]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8648,7 +8850,7 @@ type DeleteInstanceTypeRequest struct {
 
 func (x *DeleteInstanceTypeRequest) Reset() {
 	*x = DeleteInstanceTypeRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[48]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8660,7 +8862,7 @@ func (x *DeleteInstanceTypeRequest) String() string {
 func (*DeleteInstanceTypeRequest) ProtoMessage() {}
 
 func (x *DeleteInstanceTypeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[48]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8792,7 +8994,7 @@ type ListPersistentVolumeClaimsRequest struct {
 
 func (x *ListPersistentVolumeClaimsRequest) Reset() {
 	*x = ListPersistentVolumeClaimsRequest{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[49]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8804,7 +9006,7 @@ func (x *ListPersistentVolumeClaimsRequest) String() string {
 func (*ListPersistentVolumeClaimsRequest) ProtoMessage() {}
 
 func (x *ListPersistentVolumeClaimsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[49]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8932,7 +9134,7 @@ type ListPersistentVolumeClaimsResponse struct {
 
 func (x *ListPersistentVolumeClaimsResponse) Reset() {
 	*x = ListPersistentVolumeClaimsResponse{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[50]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8944,7 +9146,7 @@ func (x *ListPersistentVolumeClaimsResponse) String() string {
 func (*ListPersistentVolumeClaimsResponse) ProtoMessage() {}
 
 func (x *ListPersistentVolumeClaimsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[50]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8998,7 +9200,7 @@ type PersistentVolumeClaim struct {
 
 func (x *PersistentVolumeClaim) Reset() {
 	*x = PersistentVolumeClaim{}
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[51]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9010,7 +9212,7 @@ func (x *PersistentVolumeClaim) String() string {
 func (*PersistentVolumeClaim) ProtoMessage() {}
 
 func (x *PersistentVolumeClaim) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[51]
+	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9423,7 +9625,14 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\x92\x01\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\xe3\x01\n" +
+	"\x1fCreateVirtualMachineDiskRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x17\n" +
+	"\avm_name\x18\x03 \x01(\tR\x06vmName\x12!\n" +
+	"\fvm_namespace\x18\x04 \x01(\tR\vvmNamespace\x12@\n" +
+	"\x05disks\x18\v \x01(\v2*.otterscale.kubevirt.v1.VirtualMachineDiskR\x05disks\"\x92\x01\n" +
 	"\x1aStartVirtualMachineRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -9604,7 +9813,7 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"size_bytes\x18\x04 \x01(\x03R\tsizeBytes\x12\x1f\n" +
 	"\vaccess_mode\x18\x05 \x01(\tR\n" +
 	"accessMode\x12\x16\n" +
-	"\x06status\x18\x06 \x01(\tR\x06status2\xeb\x1c\n" +
+	"\x06status\x18\x06 \x01(\tR\x06status2\xd8\x1d\n" +
 	"\x0fKubeVirtService\x12o\n" +
 	"\x0eListNamespaces\x12-.otterscale.kubevirt.v1.ListNamespacesRequest\x1a..otterscale.kubevirt.v1.ListNamespacesResponse\x12\x9b\x01\n" +
 	"\"ListBootablePersistentVolumeClaims\x129.otterscale.kubevirt.v1.ListPersistentVolumeClaimsRequest\x1a:.otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse\x12s\n" +
@@ -9612,7 +9821,8 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\x11GetVirtualMachine\x120.otterscale.kubevirt.v1.GetVirtualMachineRequest\x1a&.otterscale.kubevirt.v1.VirtualMachine\x12~\n" +
 	"\x13ListVirtualMachines\x122.otterscale.kubevirt.v1.ListVirtualMachinesRequest\x1a3.otterscale.kubevirt.v1.ListVirtualMachinesResponse\x12s\n" +
 	"\x14UpdateVirtualMachine\x123.otterscale.kubevirt.v1.UpdateVirtualMachineRequest\x1a&.otterscale.kubevirt.v1.VirtualMachine\x12c\n" +
-	"\x14DeleteVirtualMachine\x123.otterscale.kubevirt.v1.DeleteVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12a\n" +
+	"\x14DeleteVirtualMachine\x123.otterscale.kubevirt.v1.DeleteVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12k\n" +
+	"\x18CreateVirtualMachineDisk\x127.otterscale.kubevirt.v1.CreateVirtualMachineDiskRequest\x1a\x16.google.protobuf.Empty\x12a\n" +
 	"\x13StartVirtualMachine\x122.otterscale.kubevirt.v1.StartVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12_\n" +
 	"\x12StopVirtualMachine\x121.otterscale.kubevirt.v1.StopVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12a\n" +
 	"\x13PauseVirtualMachine\x122.otterscale.kubevirt.v1.PauseVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12c\n" +
@@ -9640,7 +9850,7 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\x12DeleteInstanceType\x121.otterscale.kubevirt.v1.DeleteInstanceTypeRequest\x1a\x16.google.protobuf.EmptyB5Z3github.com/otterscale/otterscale/api/kubevirt/v1;pbb\beditionsp\xe8\a"
 
 var file_api_kubevirt_v1_kubevirt_proto_enumTypes = make([]protoimpl.EnumInfo, 7)
-var file_api_kubevirt_v1_kubevirt_proto_msgTypes = make([]protoimpl.MessageInfo, 56)
+var file_api_kubevirt_v1_kubevirt_proto_msgTypes = make([]protoimpl.MessageInfo, 57)
 var file_api_kubevirt_v1_kubevirt_proto_goTypes = []any{
 	(VirtualMachineStatus)(0),                   // 0: otterscale.kubevirt.v1.VirtualMachine.status
 	(VirtualMachineSnapshotStatus)(0),           // 1: otterscale.kubevirt.v1.VirtualMachineSnapshot.status
@@ -9669,54 +9879,55 @@ var file_api_kubevirt_v1_kubevirt_proto_goTypes = []any{
 	(*CreateVirtualMachineRequest)(nil),         // 24: otterscale.kubevirt.v1.CreateVirtualMachineRequest
 	(*UpdateVirtualMachineRequest)(nil),         // 25: otterscale.kubevirt.v1.UpdateVirtualMachineRequest
 	(*DeleteVirtualMachineRequest)(nil),         // 26: otterscale.kubevirt.v1.DeleteVirtualMachineRequest
-	(*StartVirtualMachineRequest)(nil),          // 27: otterscale.kubevirt.v1.StartVirtualMachineRequest
-	(*StopVirtualMachineRequest)(nil),           // 28: otterscale.kubevirt.v1.StopVirtualMachineRequest
-	(*PauseVirtualMachineRequest)(nil),          // 29: otterscale.kubevirt.v1.PauseVirtualMachineRequest
-	(*ResumeVirtualMachineRequest)(nil),         // 30: otterscale.kubevirt.v1.ResumeVirtualMachineRequest
-	(*SnapshotVirtualMachineRequest)(nil),       // 31: otterscale.kubevirt.v1.SnapshotVirtualMachineRequest
-	(*CloneVirtualMachineRequest)(nil),          // 32: otterscale.kubevirt.v1.CloneVirtualMachineRequest
-	(*RestoreVirtualMachineRequest)(nil),        // 33: otterscale.kubevirt.v1.RestoreVirtualMachineRequest
-	(*MigrateVirtualMachineRequest)(nil),        // 34: otterscale.kubevirt.v1.MigrateVirtualMachineRequest
-	(*GetVirtualMachineSnapshotRequest)(nil),    // 35: otterscale.kubevirt.v1.GetVirtualMachineSnapshotRequest
-	(*ListVirtualMachineSnapshotsRequest)(nil),  // 36: otterscale.kubevirt.v1.ListVirtualMachineSnapshotsRequest
-	(*DeleteVirtualMachineSnapshotRequest)(nil), // 37: otterscale.kubevirt.v1.DeleteVirtualMachineSnapshotRequest
-	(*ListVirtualMachineSnapshotsResponse)(nil), // 38: otterscale.kubevirt.v1.ListVirtualMachineSnapshotsResponse
-	(*CreateDataVolumeRequest)(nil),             // 39: otterscale.kubevirt.v1.CreateDataVolumeRequest
-	(*ListDataVolumesRequest)(nil),              // 40: otterscale.kubevirt.v1.ListDataVolumesRequest
-	(*ListDataVolumesResponse)(nil),             // 41: otterscale.kubevirt.v1.ListDataVolumesResponse
-	(*GetDataVolumeRequest)(nil),                // 42: otterscale.kubevirt.v1.GetDataVolumeRequest
-	(*DeleteDataVolumeRequest)(nil),             // 43: otterscale.kubevirt.v1.DeleteDataVolumeRequest
-	(*ExtendDataVolumeRequest)(nil),             // 44: otterscale.kubevirt.v1.ExtendDataVolumeRequest
-	(*CreateVirtualMachineServiceRequest)(nil),  // 45: otterscale.kubevirt.v1.CreateVirtualMachineServiceRequest
-	(*ListVirtualMachineServicesRequest)(nil),   // 46: otterscale.kubevirt.v1.ListVirtualMachineServicesRequest
-	(*ListVirtualMachineServicesResponse)(nil),  // 47: otterscale.kubevirt.v1.ListVirtualMachineServicesResponse
-	(*GetVirtualMachineServiceRequest)(nil),     // 48: otterscale.kubevirt.v1.GetVirtualMachineServiceRequest
-	(*UpdateVirtualMachineServiceRequest)(nil),  // 49: otterscale.kubevirt.v1.UpdateVirtualMachineServiceRequest
-	(*DeleteVirtualMachineServiceRequest)(nil),  // 50: otterscale.kubevirt.v1.DeleteVirtualMachineServiceRequest
-	(*CreateInstanceTypeRequest)(nil),           // 51: otterscale.kubevirt.v1.CreateInstanceTypeRequest
-	(*ListInstanceTypesRequest)(nil),            // 52: otterscale.kubevirt.v1.ListInstanceTypesRequest
-	(*ListInstanceTypesResponse)(nil),           // 53: otterscale.kubevirt.v1.ListInstanceTypesResponse
-	(*GetInstanceTypeRequest)(nil),              // 54: otterscale.kubevirt.v1.GetInstanceTypeRequest
-	(*DeleteInstanceTypeRequest)(nil),           // 55: otterscale.kubevirt.v1.DeleteInstanceTypeRequest
-	(*ListPersistentVolumeClaimsRequest)(nil),   // 56: otterscale.kubevirt.v1.ListPersistentVolumeClaimsRequest
-	(*ListPersistentVolumeClaimsResponse)(nil),  // 57: otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse
-	(*PersistentVolumeClaim)(nil),               // 58: otterscale.kubevirt.v1.PersistentVolumeClaim
-	nil,                                         // 59: otterscale.kubevirt.v1.Metadata.LabelsEntry
-	nil,                                         // 60: otterscale.kubevirt.v1.VirtualMachineServiceSpec.SelectorEntry
-	nil,                                         // 61: otterscale.kubevirt.v1.CreateVirtualMachineRequest.LabelsEntry
-	nil,                                         // 62: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.LabelsEntry
-	(*timestamppb.Timestamp)(nil),               // 63: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                       // 64: google.protobuf.Empty
+	(*CreateVirtualMachineDiskRequest)(nil),     // 27: otterscale.kubevirt.v1.CreateVirtualMachineDiskRequest
+	(*StartVirtualMachineRequest)(nil),          // 28: otterscale.kubevirt.v1.StartVirtualMachineRequest
+	(*StopVirtualMachineRequest)(nil),           // 29: otterscale.kubevirt.v1.StopVirtualMachineRequest
+	(*PauseVirtualMachineRequest)(nil),          // 30: otterscale.kubevirt.v1.PauseVirtualMachineRequest
+	(*ResumeVirtualMachineRequest)(nil),         // 31: otterscale.kubevirt.v1.ResumeVirtualMachineRequest
+	(*SnapshotVirtualMachineRequest)(nil),       // 32: otterscale.kubevirt.v1.SnapshotVirtualMachineRequest
+	(*CloneVirtualMachineRequest)(nil),          // 33: otterscale.kubevirt.v1.CloneVirtualMachineRequest
+	(*RestoreVirtualMachineRequest)(nil),        // 34: otterscale.kubevirt.v1.RestoreVirtualMachineRequest
+	(*MigrateVirtualMachineRequest)(nil),        // 35: otterscale.kubevirt.v1.MigrateVirtualMachineRequest
+	(*GetVirtualMachineSnapshotRequest)(nil),    // 36: otterscale.kubevirt.v1.GetVirtualMachineSnapshotRequest
+	(*ListVirtualMachineSnapshotsRequest)(nil),  // 37: otterscale.kubevirt.v1.ListVirtualMachineSnapshotsRequest
+	(*DeleteVirtualMachineSnapshotRequest)(nil), // 38: otterscale.kubevirt.v1.DeleteVirtualMachineSnapshotRequest
+	(*ListVirtualMachineSnapshotsResponse)(nil), // 39: otterscale.kubevirt.v1.ListVirtualMachineSnapshotsResponse
+	(*CreateDataVolumeRequest)(nil),             // 40: otterscale.kubevirt.v1.CreateDataVolumeRequest
+	(*ListDataVolumesRequest)(nil),              // 41: otterscale.kubevirt.v1.ListDataVolumesRequest
+	(*ListDataVolumesResponse)(nil),             // 42: otterscale.kubevirt.v1.ListDataVolumesResponse
+	(*GetDataVolumeRequest)(nil),                // 43: otterscale.kubevirt.v1.GetDataVolumeRequest
+	(*DeleteDataVolumeRequest)(nil),             // 44: otterscale.kubevirt.v1.DeleteDataVolumeRequest
+	(*ExtendDataVolumeRequest)(nil),             // 45: otterscale.kubevirt.v1.ExtendDataVolumeRequest
+	(*CreateVirtualMachineServiceRequest)(nil),  // 46: otterscale.kubevirt.v1.CreateVirtualMachineServiceRequest
+	(*ListVirtualMachineServicesRequest)(nil),   // 47: otterscale.kubevirt.v1.ListVirtualMachineServicesRequest
+	(*ListVirtualMachineServicesResponse)(nil),  // 48: otterscale.kubevirt.v1.ListVirtualMachineServicesResponse
+	(*GetVirtualMachineServiceRequest)(nil),     // 49: otterscale.kubevirt.v1.GetVirtualMachineServiceRequest
+	(*UpdateVirtualMachineServiceRequest)(nil),  // 50: otterscale.kubevirt.v1.UpdateVirtualMachineServiceRequest
+	(*DeleteVirtualMachineServiceRequest)(nil),  // 51: otterscale.kubevirt.v1.DeleteVirtualMachineServiceRequest
+	(*CreateInstanceTypeRequest)(nil),           // 52: otterscale.kubevirt.v1.CreateInstanceTypeRequest
+	(*ListInstanceTypesRequest)(nil),            // 53: otterscale.kubevirt.v1.ListInstanceTypesRequest
+	(*ListInstanceTypesResponse)(nil),           // 54: otterscale.kubevirt.v1.ListInstanceTypesResponse
+	(*GetInstanceTypeRequest)(nil),              // 55: otterscale.kubevirt.v1.GetInstanceTypeRequest
+	(*DeleteInstanceTypeRequest)(nil),           // 56: otterscale.kubevirt.v1.DeleteInstanceTypeRequest
+	(*ListPersistentVolumeClaimsRequest)(nil),   // 57: otterscale.kubevirt.v1.ListPersistentVolumeClaimsRequest
+	(*ListPersistentVolumeClaimsResponse)(nil),  // 58: otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse
+	(*PersistentVolumeClaim)(nil),               // 59: otterscale.kubevirt.v1.PersistentVolumeClaim
+	nil,                                         // 60: otterscale.kubevirt.v1.Metadata.LabelsEntry
+	nil,                                         // 61: otterscale.kubevirt.v1.VirtualMachineServiceSpec.SelectorEntry
+	nil,                                         // 62: otterscale.kubevirt.v1.CreateVirtualMachineRequest.LabelsEntry
+	nil,                                         // 63: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.LabelsEntry
+	(*timestamppb.Timestamp)(nil),               // 64: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                       // 65: google.protobuf.Empty
 }
 var file_api_kubevirt_v1_kubevirt_proto_depIdxs = []int32{
-	59, // 0: otterscale.kubevirt.v1.Metadata.labels:type_name -> otterscale.kubevirt.v1.Metadata.LabelsEntry
-	63, // 1: otterscale.kubevirt.v1.Metadata.created_at:type_name -> google.protobuf.Timestamp
-	63, // 2: otterscale.kubevirt.v1.Metadata.updated_at:type_name -> google.protobuf.Timestamp
+	60, // 0: otterscale.kubevirt.v1.Metadata.labels:type_name -> otterscale.kubevirt.v1.Metadata.LabelsEntry
+	64, // 1: otterscale.kubevirt.v1.Metadata.created_at:type_name -> google.protobuf.Timestamp
+	64, // 2: otterscale.kubevirt.v1.Metadata.updated_at:type_name -> google.protobuf.Timestamp
 	7,  // 3: otterscale.kubevirt.v1.VirtualMachine.metadata:type_name -> otterscale.kubevirt.v1.Metadata
 	12, // 4: otterscale.kubevirt.v1.VirtualMachine.resources:type_name -> otterscale.kubevirt.v1.VirtualMachineResources
 	23, // 5: otterscale.kubevirt.v1.VirtualMachine.disks:type_name -> otterscale.kubevirt.v1.VirtualMachineDisk
 	0,  // 6: otterscale.kubevirt.v1.VirtualMachine.status_phase:type_name -> otterscale.kubevirt.v1.VirtualMachine.status
-	63, // 7: otterscale.kubevirt.v1.VirtualMachineSnapshot.created_at:type_name -> google.protobuf.Timestamp
+	64, // 7: otterscale.kubevirt.v1.VirtualMachineSnapshot.created_at:type_name -> google.protobuf.Timestamp
 	1,  // 8: otterscale.kubevirt.v1.VirtualMachineSnapshot.status_phase:type_name -> otterscale.kubevirt.v1.VirtualMachineSnapshot.status
 	7,  // 9: otterscale.kubevirt.v1.InstanceType.metadata:type_name -> otterscale.kubevirt.v1.Metadata
 	2,  // 10: otterscale.kubevirt.v1.DataVolumeSource.type:type_name -> otterscale.kubevirt.v1.DataVolumeSource.Type
@@ -9726,95 +9937,98 @@ var file_api_kubevirt_v1_kubevirt_proto_depIdxs = []int32{
 	19, // 14: otterscale.kubevirt.v1.VirtualMachineService.status:type_name -> otterscale.kubevirt.v1.VirtualMachineServiceStatus
 	3,  // 15: otterscale.kubevirt.v1.VirtualMachineServiceSpec.type:type_name -> otterscale.kubevirt.v1.VirtualMachineServiceSpec.Type
 	18, // 16: otterscale.kubevirt.v1.VirtualMachineServiceSpec.ports:type_name -> otterscale.kubevirt.v1.ServicePort
-	60, // 17: otterscale.kubevirt.v1.VirtualMachineServiceSpec.selector:type_name -> otterscale.kubevirt.v1.VirtualMachineServiceSpec.SelectorEntry
+	61, // 17: otterscale.kubevirt.v1.VirtualMachineServiceSpec.selector:type_name -> otterscale.kubevirt.v1.VirtualMachineServiceSpec.SelectorEntry
 	4,  // 18: otterscale.kubevirt.v1.ServicePort.protocol:type_name -> otterscale.kubevirt.v1.ServicePort.Protocol
 	10, // 19: otterscale.kubevirt.v1.ListVirtualMachinesResponse.virtualMachines:type_name -> otterscale.kubevirt.v1.VirtualMachine
 	5,  // 20: otterscale.kubevirt.v1.VirtualMachineDisk.disk_type:type_name -> otterscale.kubevirt.v1.VirtualMachineDisk.type
 	6,  // 21: otterscale.kubevirt.v1.VirtualMachineDisk.bus_type:type_name -> otterscale.kubevirt.v1.VirtualMachineDisk.bus
 	14, // 22: otterscale.kubevirt.v1.VirtualMachineDisk.data_volume:type_name -> otterscale.kubevirt.v1.DataVolumeSource
-	61, // 23: otterscale.kubevirt.v1.CreateVirtualMachineRequest.labels:type_name -> otterscale.kubevirt.v1.CreateVirtualMachineRequest.LabelsEntry
+	62, // 23: otterscale.kubevirt.v1.CreateVirtualMachineRequest.labels:type_name -> otterscale.kubevirt.v1.CreateVirtualMachineRequest.LabelsEntry
 	23, // 24: otterscale.kubevirt.v1.CreateVirtualMachineRequest.disks:type_name -> otterscale.kubevirt.v1.VirtualMachineDisk
 	12, // 25: otterscale.kubevirt.v1.CreateVirtualMachineRequest.custom:type_name -> otterscale.kubevirt.v1.VirtualMachineResources
-	62, // 26: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.labels:type_name -> otterscale.kubevirt.v1.UpdateVirtualMachineRequest.LabelsEntry
+	63, // 26: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.labels:type_name -> otterscale.kubevirt.v1.UpdateVirtualMachineRequest.LabelsEntry
 	23, // 27: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.disks:type_name -> otterscale.kubevirt.v1.VirtualMachineDisk
-	11, // 28: otterscale.kubevirt.v1.ListVirtualMachineSnapshotsResponse.snapshots:type_name -> otterscale.kubevirt.v1.VirtualMachineSnapshot
-	15, // 29: otterscale.kubevirt.v1.CreateDataVolumeRequest.data_volume:type_name -> otterscale.kubevirt.v1.DataVolume
-	15, // 30: otterscale.kubevirt.v1.ListDataVolumesResponse.datavolumes:type_name -> otterscale.kubevirt.v1.DataVolume
-	16, // 31: otterscale.kubevirt.v1.CreateVirtualMachineServiceRequest.virtual_machine_service:type_name -> otterscale.kubevirt.v1.VirtualMachineService
-	16, // 32: otterscale.kubevirt.v1.ListVirtualMachineServicesResponse.virtual_machine_services:type_name -> otterscale.kubevirt.v1.VirtualMachineService
-	16, // 33: otterscale.kubevirt.v1.UpdateVirtualMachineServiceRequest.virtual_machine_service:type_name -> otterscale.kubevirt.v1.VirtualMachineService
-	13, // 34: otterscale.kubevirt.v1.CreateInstanceTypeRequest.instanceType:type_name -> otterscale.kubevirt.v1.InstanceType
-	13, // 35: otterscale.kubevirt.v1.ListInstanceTypesResponse.instanceTypes:type_name -> otterscale.kubevirt.v1.InstanceType
-	58, // 36: otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse.persistent_volume_claims:type_name -> otterscale.kubevirt.v1.PersistentVolumeClaim
-	8,  // 37: otterscale.kubevirt.v1.KubeVirtService.ListNamespaces:input_type -> otterscale.kubevirt.v1.ListNamespacesRequest
-	56, // 38: otterscale.kubevirt.v1.KubeVirtService.ListBootablePersistentVolumeClaims:input_type -> otterscale.kubevirt.v1.ListPersistentVolumeClaimsRequest
-	24, // 39: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:input_type -> otterscale.kubevirt.v1.CreateVirtualMachineRequest
-	22, // 40: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:input_type -> otterscale.kubevirt.v1.GetVirtualMachineRequest
-	20, // 41: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:input_type -> otterscale.kubevirt.v1.ListVirtualMachinesRequest
-	25, // 42: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:input_type -> otterscale.kubevirt.v1.UpdateVirtualMachineRequest
-	26, // 43: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineRequest
-	27, // 44: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:input_type -> otterscale.kubevirt.v1.StartVirtualMachineRequest
-	28, // 45: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:input_type -> otterscale.kubevirt.v1.StopVirtualMachineRequest
-	29, // 46: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:input_type -> otterscale.kubevirt.v1.PauseVirtualMachineRequest
-	30, // 47: otterscale.kubevirt.v1.KubeVirtService.ResumeVirtualMachine:input_type -> otterscale.kubevirt.v1.ResumeVirtualMachineRequest
-	32, // 48: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:input_type -> otterscale.kubevirt.v1.CloneVirtualMachineRequest
-	31, // 49: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:input_type -> otterscale.kubevirt.v1.SnapshotVirtualMachineRequest
-	33, // 50: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:input_type -> otterscale.kubevirt.v1.RestoreVirtualMachineRequest
-	34, // 51: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:input_type -> otterscale.kubevirt.v1.MigrateVirtualMachineRequest
-	35, // 52: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineSnapshot:input_type -> otterscale.kubevirt.v1.GetVirtualMachineSnapshotRequest
-	36, // 53: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineSnapshots:input_type -> otterscale.kubevirt.v1.ListVirtualMachineSnapshotsRequest
-	37, // 54: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineSnapshot:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineSnapshotRequest
-	39, // 55: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:input_type -> otterscale.kubevirt.v1.CreateDataVolumeRequest
-	42, // 56: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:input_type -> otterscale.kubevirt.v1.GetDataVolumeRequest
-	40, // 57: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:input_type -> otterscale.kubevirt.v1.ListDataVolumesRequest
-	43, // 58: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:input_type -> otterscale.kubevirt.v1.DeleteDataVolumeRequest
-	44, // 59: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:input_type -> otterscale.kubevirt.v1.ExtendDataVolumeRequest
-	45, // 60: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineService:input_type -> otterscale.kubevirt.v1.CreateVirtualMachineServiceRequest
-	48, // 61: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineService:input_type -> otterscale.kubevirt.v1.GetVirtualMachineServiceRequest
-	46, // 62: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineServices:input_type -> otterscale.kubevirt.v1.ListVirtualMachineServicesRequest
-	49, // 63: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachineService:input_type -> otterscale.kubevirt.v1.UpdateVirtualMachineServiceRequest
-	50, // 64: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineService:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineServiceRequest
-	51, // 65: otterscale.kubevirt.v1.KubeVirtService.CreateInstanceType:input_type -> otterscale.kubevirt.v1.CreateInstanceTypeRequest
-	54, // 66: otterscale.kubevirt.v1.KubeVirtService.GetInstanceType:input_type -> otterscale.kubevirt.v1.GetInstanceTypeRequest
-	52, // 67: otterscale.kubevirt.v1.KubeVirtService.ListInstanceTypes:input_type -> otterscale.kubevirt.v1.ListInstanceTypesRequest
-	55, // 68: otterscale.kubevirt.v1.KubeVirtService.DeleteInstanceType:input_type -> otterscale.kubevirt.v1.DeleteInstanceTypeRequest
-	9,  // 69: otterscale.kubevirt.v1.KubeVirtService.ListNamespaces:output_type -> otterscale.kubevirt.v1.ListNamespacesResponse
-	57, // 70: otterscale.kubevirt.v1.KubeVirtService.ListBootablePersistentVolumeClaims:output_type -> otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse
-	10, // 71: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
-	10, // 72: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
-	21, // 73: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:output_type -> otterscale.kubevirt.v1.ListVirtualMachinesResponse
-	10, // 74: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
-	64, // 75: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 76: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 77: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 78: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 79: otterscale.kubevirt.v1.KubeVirtService.ResumeVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 80: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 81: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 82: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:output_type -> google.protobuf.Empty
-	64, // 83: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:output_type -> google.protobuf.Empty
-	11, // 84: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineSnapshot:output_type -> otterscale.kubevirt.v1.VirtualMachineSnapshot
-	38, // 85: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineSnapshots:output_type -> otterscale.kubevirt.v1.ListVirtualMachineSnapshotsResponse
-	64, // 86: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineSnapshot:output_type -> google.protobuf.Empty
-	15, // 87: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
-	15, // 88: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
-	41, // 89: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:output_type -> otterscale.kubevirt.v1.ListDataVolumesResponse
-	64, // 90: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:output_type -> google.protobuf.Empty
-	64, // 91: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:output_type -> google.protobuf.Empty
-	16, // 92: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
-	16, // 93: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
-	47, // 94: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineServices:output_type -> otterscale.kubevirt.v1.ListVirtualMachineServicesResponse
-	16, // 95: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
-	64, // 96: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineService:output_type -> google.protobuf.Empty
-	13, // 97: otterscale.kubevirt.v1.KubeVirtService.CreateInstanceType:output_type -> otterscale.kubevirt.v1.InstanceType
-	13, // 98: otterscale.kubevirt.v1.KubeVirtService.GetInstanceType:output_type -> otterscale.kubevirt.v1.InstanceType
-	53, // 99: otterscale.kubevirt.v1.KubeVirtService.ListInstanceTypes:output_type -> otterscale.kubevirt.v1.ListInstanceTypesResponse
-	64, // 100: otterscale.kubevirt.v1.KubeVirtService.DeleteInstanceType:output_type -> google.protobuf.Empty
-	69, // [69:101] is the sub-list for method output_type
-	37, // [37:69] is the sub-list for method input_type
-	37, // [37:37] is the sub-list for extension type_name
-	37, // [37:37] is the sub-list for extension extendee
-	0,  // [0:37] is the sub-list for field type_name
+	23, // 28: otterscale.kubevirt.v1.CreateVirtualMachineDiskRequest.disks:type_name -> otterscale.kubevirt.v1.VirtualMachineDisk
+	11, // 29: otterscale.kubevirt.v1.ListVirtualMachineSnapshotsResponse.snapshots:type_name -> otterscale.kubevirt.v1.VirtualMachineSnapshot
+	15, // 30: otterscale.kubevirt.v1.CreateDataVolumeRequest.data_volume:type_name -> otterscale.kubevirt.v1.DataVolume
+	15, // 31: otterscale.kubevirt.v1.ListDataVolumesResponse.datavolumes:type_name -> otterscale.kubevirt.v1.DataVolume
+	16, // 32: otterscale.kubevirt.v1.CreateVirtualMachineServiceRequest.virtual_machine_service:type_name -> otterscale.kubevirt.v1.VirtualMachineService
+	16, // 33: otterscale.kubevirt.v1.ListVirtualMachineServicesResponse.virtual_machine_services:type_name -> otterscale.kubevirt.v1.VirtualMachineService
+	16, // 34: otterscale.kubevirt.v1.UpdateVirtualMachineServiceRequest.virtual_machine_service:type_name -> otterscale.kubevirt.v1.VirtualMachineService
+	13, // 35: otterscale.kubevirt.v1.CreateInstanceTypeRequest.instanceType:type_name -> otterscale.kubevirt.v1.InstanceType
+	13, // 36: otterscale.kubevirt.v1.ListInstanceTypesResponse.instanceTypes:type_name -> otterscale.kubevirt.v1.InstanceType
+	59, // 37: otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse.persistent_volume_claims:type_name -> otterscale.kubevirt.v1.PersistentVolumeClaim
+	8,  // 38: otterscale.kubevirt.v1.KubeVirtService.ListNamespaces:input_type -> otterscale.kubevirt.v1.ListNamespacesRequest
+	57, // 39: otterscale.kubevirt.v1.KubeVirtService.ListBootablePersistentVolumeClaims:input_type -> otterscale.kubevirt.v1.ListPersistentVolumeClaimsRequest
+	24, // 40: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:input_type -> otterscale.kubevirt.v1.CreateVirtualMachineRequest
+	22, // 41: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:input_type -> otterscale.kubevirt.v1.GetVirtualMachineRequest
+	20, // 42: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:input_type -> otterscale.kubevirt.v1.ListVirtualMachinesRequest
+	25, // 43: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:input_type -> otterscale.kubevirt.v1.UpdateVirtualMachineRequest
+	26, // 44: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineRequest
+	27, // 45: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineDisk:input_type -> otterscale.kubevirt.v1.CreateVirtualMachineDiskRequest
+	28, // 46: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:input_type -> otterscale.kubevirt.v1.StartVirtualMachineRequest
+	29, // 47: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:input_type -> otterscale.kubevirt.v1.StopVirtualMachineRequest
+	30, // 48: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:input_type -> otterscale.kubevirt.v1.PauseVirtualMachineRequest
+	31, // 49: otterscale.kubevirt.v1.KubeVirtService.ResumeVirtualMachine:input_type -> otterscale.kubevirt.v1.ResumeVirtualMachineRequest
+	33, // 50: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:input_type -> otterscale.kubevirt.v1.CloneVirtualMachineRequest
+	32, // 51: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:input_type -> otterscale.kubevirt.v1.SnapshotVirtualMachineRequest
+	34, // 52: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:input_type -> otterscale.kubevirt.v1.RestoreVirtualMachineRequest
+	35, // 53: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:input_type -> otterscale.kubevirt.v1.MigrateVirtualMachineRequest
+	36, // 54: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineSnapshot:input_type -> otterscale.kubevirt.v1.GetVirtualMachineSnapshotRequest
+	37, // 55: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineSnapshots:input_type -> otterscale.kubevirt.v1.ListVirtualMachineSnapshotsRequest
+	38, // 56: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineSnapshot:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineSnapshotRequest
+	40, // 57: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:input_type -> otterscale.kubevirt.v1.CreateDataVolumeRequest
+	43, // 58: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:input_type -> otterscale.kubevirt.v1.GetDataVolumeRequest
+	41, // 59: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:input_type -> otterscale.kubevirt.v1.ListDataVolumesRequest
+	44, // 60: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:input_type -> otterscale.kubevirt.v1.DeleteDataVolumeRequest
+	45, // 61: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:input_type -> otterscale.kubevirt.v1.ExtendDataVolumeRequest
+	46, // 62: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineService:input_type -> otterscale.kubevirt.v1.CreateVirtualMachineServiceRequest
+	49, // 63: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineService:input_type -> otterscale.kubevirt.v1.GetVirtualMachineServiceRequest
+	47, // 64: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineServices:input_type -> otterscale.kubevirt.v1.ListVirtualMachineServicesRequest
+	50, // 65: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachineService:input_type -> otterscale.kubevirt.v1.UpdateVirtualMachineServiceRequest
+	51, // 66: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineService:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineServiceRequest
+	52, // 67: otterscale.kubevirt.v1.KubeVirtService.CreateInstanceType:input_type -> otterscale.kubevirt.v1.CreateInstanceTypeRequest
+	55, // 68: otterscale.kubevirt.v1.KubeVirtService.GetInstanceType:input_type -> otterscale.kubevirt.v1.GetInstanceTypeRequest
+	53, // 69: otterscale.kubevirt.v1.KubeVirtService.ListInstanceTypes:input_type -> otterscale.kubevirt.v1.ListInstanceTypesRequest
+	56, // 70: otterscale.kubevirt.v1.KubeVirtService.DeleteInstanceType:input_type -> otterscale.kubevirt.v1.DeleteInstanceTypeRequest
+	9,  // 71: otterscale.kubevirt.v1.KubeVirtService.ListNamespaces:output_type -> otterscale.kubevirt.v1.ListNamespacesResponse
+	58, // 72: otterscale.kubevirt.v1.KubeVirtService.ListBootablePersistentVolumeClaims:output_type -> otterscale.kubevirt.v1.ListPersistentVolumeClaimsResponse
+	10, // 73: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
+	10, // 74: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
+	21, // 75: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:output_type -> otterscale.kubevirt.v1.ListVirtualMachinesResponse
+	10, // 76: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
+	65, // 77: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:output_type -> google.protobuf.Empty
+	65, // 78: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineDisk:output_type -> google.protobuf.Empty
+	65, // 79: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:output_type -> google.protobuf.Empty
+	65, // 80: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:output_type -> google.protobuf.Empty
+	65, // 81: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:output_type -> google.protobuf.Empty
+	65, // 82: otterscale.kubevirt.v1.KubeVirtService.ResumeVirtualMachine:output_type -> google.protobuf.Empty
+	65, // 83: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:output_type -> google.protobuf.Empty
+	65, // 84: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:output_type -> google.protobuf.Empty
+	65, // 85: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:output_type -> google.protobuf.Empty
+	65, // 86: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:output_type -> google.protobuf.Empty
+	11, // 87: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineSnapshot:output_type -> otterscale.kubevirt.v1.VirtualMachineSnapshot
+	39, // 88: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineSnapshots:output_type -> otterscale.kubevirt.v1.ListVirtualMachineSnapshotsResponse
+	65, // 89: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineSnapshot:output_type -> google.protobuf.Empty
+	15, // 90: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
+	15, // 91: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
+	42, // 92: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:output_type -> otterscale.kubevirt.v1.ListDataVolumesResponse
+	65, // 93: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:output_type -> google.protobuf.Empty
+	65, // 94: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:output_type -> google.protobuf.Empty
+	16, // 95: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
+	16, // 96: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
+	48, // 97: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineServices:output_type -> otterscale.kubevirt.v1.ListVirtualMachineServicesResponse
+	16, // 98: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachineService:output_type -> otterscale.kubevirt.v1.VirtualMachineService
+	65, // 99: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineService:output_type -> google.protobuf.Empty
+	13, // 100: otterscale.kubevirt.v1.KubeVirtService.CreateInstanceType:output_type -> otterscale.kubevirt.v1.InstanceType
+	13, // 101: otterscale.kubevirt.v1.KubeVirtService.GetInstanceType:output_type -> otterscale.kubevirt.v1.InstanceType
+	54, // 102: otterscale.kubevirt.v1.KubeVirtService.ListInstanceTypes:output_type -> otterscale.kubevirt.v1.ListInstanceTypesResponse
+	65, // 103: otterscale.kubevirt.v1.KubeVirtService.DeleteInstanceType:output_type -> google.protobuf.Empty
+	71, // [71:104] is the sub-list for method output_type
+	38, // [38:71] is the sub-list for method input_type
+	38, // [38:38] is the sub-list for extension type_name
+	38, // [38:38] is the sub-list for extension extendee
+	0,  // [0:38] is the sub-list for field type_name
 }
 
 func init() { file_api_kubevirt_v1_kubevirt_proto_init() }
@@ -9836,7 +10050,7 @@ func file_api_kubevirt_v1_kubevirt_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_kubevirt_v1_kubevirt_proto_rawDesc), len(file_api_kubevirt_v1_kubevirt_proto_rawDesc)),
 			NumEnums:      7,
-			NumMessages:   56,
+			NumMessages:   57,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

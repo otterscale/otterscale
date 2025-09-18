@@ -55,6 +55,9 @@ const (
 	// KubeVirtServiceDeleteVirtualMachineProcedure is the fully-qualified name of the KubeVirtService's
 	// DeleteVirtualMachine RPC.
 	KubeVirtServiceDeleteVirtualMachineProcedure = "/otterscale.kubevirt.v1.KubeVirtService/DeleteVirtualMachine"
+	// KubeVirtServiceCreateVirtualMachineDiskProcedure is the fully-qualified name of the
+	// KubeVirtService's CreateVirtualMachineDisk RPC.
+	KubeVirtServiceCreateVirtualMachineDiskProcedure = "/otterscale.kubevirt.v1.KubeVirtService/CreateVirtualMachineDisk"
 	// KubeVirtServiceStartVirtualMachineProcedure is the fully-qualified name of the KubeVirtService's
 	// StartVirtualMachine RPC.
 	KubeVirtServiceStartVirtualMachineProcedure = "/otterscale.kubevirt.v1.KubeVirtService/StartVirtualMachine"
@@ -142,6 +145,7 @@ type KubeVirtServiceClient interface {
 	ListVirtualMachines(context.Context, *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error)
 	UpdateVirtualMachine(context.Context, *connect.Request[v1.UpdateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	DeleteVirtualMachine(context.Context, *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateVirtualMachineDisk(context.Context, *connect.Request[v1.CreateVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error)
 	// Virtual Machine Control Operations
 	StartVirtualMachine(context.Context, *connect.Request[v1.StartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
 	StopVirtualMachine(context.Context, *connect.Request[v1.StopVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
@@ -225,6 +229,12 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			httpClient,
 			baseURL+KubeVirtServiceDeleteVirtualMachineProcedure,
 			connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteVirtualMachine")),
+			connect.WithClientOptions(opts...),
+		),
+		createVirtualMachineDisk: connect.NewClient[v1.CreateVirtualMachineDiskRequest, emptypb.Empty](
+			httpClient,
+			baseURL+KubeVirtServiceCreateVirtualMachineDiskProcedure,
+			connect.WithSchema(kubeVirtServiceMethods.ByName("CreateVirtualMachineDisk")),
 			connect.WithClientOptions(opts...),
 		),
 		startVirtualMachine: connect.NewClient[v1.StartVirtualMachineRequest, emptypb.Empty](
@@ -389,6 +399,7 @@ type kubeVirtServiceClient struct {
 	listVirtualMachines                *connect.Client[v1.ListVirtualMachinesRequest, v1.ListVirtualMachinesResponse]
 	updateVirtualMachine               *connect.Client[v1.UpdateVirtualMachineRequest, v1.VirtualMachine]
 	deleteVirtualMachine               *connect.Client[v1.DeleteVirtualMachineRequest, emptypb.Empty]
+	createVirtualMachineDisk           *connect.Client[v1.CreateVirtualMachineDiskRequest, emptypb.Empty]
 	startVirtualMachine                *connect.Client[v1.StartVirtualMachineRequest, emptypb.Empty]
 	stopVirtualMachine                 *connect.Client[v1.StopVirtualMachineRequest, emptypb.Empty]
 	pauseVirtualMachine                *connect.Client[v1.PauseVirtualMachineRequest, emptypb.Empty]
@@ -450,6 +461,11 @@ func (c *kubeVirtServiceClient) UpdateVirtualMachine(ctx context.Context, req *c
 // DeleteVirtualMachine calls otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine.
 func (c *kubeVirtServiceClient) DeleteVirtualMachine(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteVirtualMachine.CallUnary(ctx, req)
+}
+
+// CreateVirtualMachineDisk calls otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineDisk.
+func (c *kubeVirtServiceClient) CreateVirtualMachineDisk(ctx context.Context, req *connect.Request[v1.CreateVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.createVirtualMachineDisk.CallUnary(ctx, req)
 }
 
 // StartVirtualMachine calls otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine.
@@ -594,6 +610,7 @@ type KubeVirtServiceHandler interface {
 	ListVirtualMachines(context.Context, *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error)
 	UpdateVirtualMachine(context.Context, *connect.Request[v1.UpdateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	DeleteVirtualMachine(context.Context, *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateVirtualMachineDisk(context.Context, *connect.Request[v1.CreateVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error)
 	// Virtual Machine Control Operations
 	StartVirtualMachine(context.Context, *connect.Request[v1.StartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
 	StopVirtualMachine(context.Context, *connect.Request[v1.StopVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
@@ -673,6 +690,12 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 		KubeVirtServiceDeleteVirtualMachineProcedure,
 		svc.DeleteVirtualMachine,
 		connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteVirtualMachine")),
+		connect.WithHandlerOptions(opts...),
+	)
+	kubeVirtServiceCreateVirtualMachineDiskHandler := connect.NewUnaryHandler(
+		KubeVirtServiceCreateVirtualMachineDiskProcedure,
+		svc.CreateVirtualMachineDisk,
+		connect.WithSchema(kubeVirtServiceMethods.ByName("CreateVirtualMachineDisk")),
 		connect.WithHandlerOptions(opts...),
 	)
 	kubeVirtServiceStartVirtualMachineHandler := connect.NewUnaryHandler(
@@ -841,6 +864,8 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 			kubeVirtServiceUpdateVirtualMachineHandler.ServeHTTP(w, r)
 		case KubeVirtServiceDeleteVirtualMachineProcedure:
 			kubeVirtServiceDeleteVirtualMachineHandler.ServeHTTP(w, r)
+		case KubeVirtServiceCreateVirtualMachineDiskProcedure:
+			kubeVirtServiceCreateVirtualMachineDiskHandler.ServeHTTP(w, r)
 		case KubeVirtServiceStartVirtualMachineProcedure:
 			kubeVirtServiceStartVirtualMachineHandler.ServeHTTP(w, r)
 		case KubeVirtServiceStopVirtualMachineProcedure:
@@ -926,6 +951,10 @@ func (UnimplementedKubeVirtServiceHandler) UpdateVirtualMachine(context.Context,
 
 func (UnimplementedKubeVirtServiceHandler) DeleteVirtualMachine(context.Context, *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine is not implemented"))
+}
+
+func (UnimplementedKubeVirtServiceHandler) CreateVirtualMachineDisk(context.Context, *connect.Request[v1.CreateVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachineDisk is not implemented"))
 }
 
 func (UnimplementedKubeVirtServiceHandler) StartVirtualMachine(context.Context, *connect.Request[v1.StartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
