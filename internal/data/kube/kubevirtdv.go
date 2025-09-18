@@ -138,13 +138,14 @@ func (r *virtDV) ListDataVolumes(ctx context.Context, config *rest.Config, names
 	return dvs.Items, nil
 }
 
-func (r *virtDV) ListDataVolumesByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]oscore.DataVolume, error) {
+func (r *virtDV) ListDataVolumesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]oscore.DataVolume, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.ListOptions{
 		LabelSelector: label,
+		FieldSelector: field,
 	}
 	dvs, err := virtClient.CdiClient().CdiV1beta1().DataVolumes(namespace).List(ctx, opts)
 	if err != nil {

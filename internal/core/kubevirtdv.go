@@ -16,7 +16,7 @@ type KubeVirtDVRepo interface {
 	CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name, sourceType, source, vmName string, sizeBytes int64, isBootable bool) (*DataVolume, error)
 	GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string, pvc *v1.PersistentVolumeClaim) (*DataVolume, error)
 	ListDataVolumes(ctx context.Context, config *rest.Config, namespace string) ([]DataVolume, error)
-	ListDataVolumesByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]DataVolume, error)
+	ListDataVolumesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]DataVolume, error)
 	DeleteDataVolume(ctx context.Context, config *rest.Config, namespace, name string) error
 	ExtendDataVolume(ctx context.Context, config *rest.Config, namespace string, pvc *v1.PersistentVolumeClaim, sizeBytes resource.Quantity) error
 }
@@ -158,15 +158,12 @@ func ExtractDataVolumeInfo(dv *DataVolume) (source, sourceType, accessMode, stor
 	case dv.Spec.Source.HTTP != nil:
 		source = dv.Spec.Source.HTTP.URL
 		sourceType = "HTTP"
-	case dv.Spec.Source.Upload != nil:
+	case dv.Spec.Source.Blank != nil:
 		source = ""
-		sourceType = "Upload"
-	case dv.Spec.Source.S3 != nil:
-		source = dv.Spec.Source.S3.URL
-		sourceType = "S3"
-	case dv.Spec.Source.VDDK != nil:
-		source = dv.Spec.Source.VDDK.URL
-		sourceType = dv.Spec.Source.VDDK.UUID
+		sourceType = "BLANK"
+	case dv.Spec.Source.PVC != nil:
+		source = dv.Spec.Source.PVC.Name
+		sourceType = "PVC"
 	}
 	return
 }

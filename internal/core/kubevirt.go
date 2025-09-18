@@ -29,6 +29,7 @@ type (
 	KubeVirtVolume                      = virtCorev1.Volume
 	KubeVirtDisk                        = virtCorev1.Disk
 	KubeVirtDevice                      = virtCorev1.Devices
+	VirtualMachinePod                   = corev1.Pod
 	VirtualMachineService               = corev1.Service
 	VirtualMachineServiceSpec           = corev1.ServiceSpec
 	VirtualMachineServicePort           = corev1.ServicePort
@@ -41,6 +42,15 @@ type Metadata struct {
 	Annotations map[string]string
 	CreatedAt   *timestamppb.Timestamp
 	UpdatedAt   *timestamppb.Timestamp
+}
+
+type VirtualMachineInfo struct {
+	VM         *VirtualMachine
+	VMI        *VirtualMachineInstance
+	Pod        *VirtualMachinePod
+	Service    *VirtualMachineService
+	DataVolume []*DataVolume
+	SystemID   string
 }
 
 // VirtualMachineSpec defines the specification for a virtual machine
@@ -137,9 +147,10 @@ type KubeVirtUseCase struct {
 	kubeVirtInstanceType KubeVirtInstanceTypeRepo
 	action               ActionRepo
 	facility             FacilityRepo
+	machine              MachineRepo
 }
 
-func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, kubeVirtInstanceType KubeVirtInstanceTypeRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
+func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, kubeVirtInstanceType KubeVirtInstanceTypeRepo, action ActionRepo, facility FacilityRepo, machine MachineRepo) *KubeVirtUseCase {
 	return &KubeVirtUseCase{
 		kubeCore:             kubeCore,
 		kubeApps:             kubeApps,
@@ -148,5 +159,6 @@ func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM
 		kubeVirtInstanceType: kubeVirtInstanceType,
 		action:               action,
 		facility:             facility,
+		machine:              machine,
 	}
 }

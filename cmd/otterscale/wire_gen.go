@@ -80,7 +80,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	kubeVirtVMRepo := kube.NewVirtVM(kubeKube, kubevirt)
 	kubeVirtDVRepo := kube.NewVirtDV(kubeKube, kubevirt)
 	kubeVirtInstanceTypeRepo := kube.NewVirtInstanceType(kubeKube, kubevirt)
-	kubeVirtUseCase := core.NewKubeVirtUseCase(kubeCoreRepo, kubeAppsRepo, kubeVirtVMRepo, kubeVirtDVRepo, kubeVirtInstanceTypeRepo, actionRepo, facilityRepo)
+	kubeVirtUseCase := core.NewKubeVirtUseCase(kubeCoreRepo, kubeAppsRepo, kubeVirtVMRepo, kubeVirtDVRepo, kubeVirtInstanceTypeRepo, actionRepo, facilityRepo, machineRepo)
 	kubeVirtService := app.NewKubeVirtService(kubeVirtUseCase)
 	machineManagerRepo := juju.NewMachine(jujuJuju)
 	tagRepo := maas.NewTag(maasMAAS)

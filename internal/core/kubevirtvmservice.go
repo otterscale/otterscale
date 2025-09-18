@@ -7,7 +7,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-const VirtualMachineLabelKey = "kubevirt.io/vm"
+const VirtualMachineLabelKey = "otterscale.io/virtualmachine"
 
 func (uc *KubeVirtUseCase) CreateVirtualMachineService(ctx context.Context, uuid, facility, namespace, name string, svcspec *corev1.ServiceSpec) (*corev1.Service, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)

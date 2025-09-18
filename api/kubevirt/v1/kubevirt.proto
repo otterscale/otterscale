@@ -12,10 +12,9 @@ service KubeVirtService {
   rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse);
   rpc ListBootablePersistentVolumeClaims(ListPersistentVolumeClaimsRequest) returns (ListPersistentVolumeClaimsResponse);
   // Virtual Machine Operations
-  rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
-  rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine);
+  rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachineResponse);
   rpc ListVirtualMachines(ListVirtualMachinesRequest) returns (ListVirtualMachinesResponse);
-  rpc UpdateVirtualMachine(UpdateVirtualMachineRequest) returns (VirtualMachine);
+  rpc UpdateVirtualMachine(UpdateVirtualMachineRequest) returns (VirtualMachineResponse);
   rpc DeleteVirtualMachine(DeleteVirtualMachineRequest) returns (google.protobuf.Empty);
   rpc CreateVirtualMachineDisk(CreateVirtualMachineDiskRequest) returns (google.protobuf.Empty);
 
@@ -71,21 +70,68 @@ message ListNamespacesResponse{
 
 // Virtual Machine messages
 message VirtualMachine {
+  Metadata metadata = 1;
+  string network_name = 11;
+  string startup_script = 12;
+  VirtualMachineResources resources = 21;
+  repeated VirtualMachineDisk disks = 22;
+}
+
+message VirtualMachineResponse {
   enum status {
     UNKNOWN = 0;
     PROVISIONING = 1;
     STARTING = 2;
     RUNNING = 3;
     PAUSED = 4;
-    STOPPED = 5;
-    TERMINATING = 6;
+    STOPPING = 5;
+    STOPPED = 6;
+    TERMINATING = 7;
+  }
+  message ServiceInfo{
+    enum type {
+      UNSPECIFIED = 0;
+      NODE_PORT        = 1;
+      LOAD_BALANCER    = 2;
+    }
+    type stype = 1;
+    int64 port = 2;
+    int64 node_port = 3;
+  }
+  message DiskInfo {
+    enum type {
+      UNSPECIFIED = 0;
+      DATAVOLUME = 1;
+      PERSISTENTVOLUMECLAIM = 2;
+      CONFIGMAP = 3;
+      SECRET = 4;
+      CLOUDINITNOCLOUD = 5;
+    }
+    enum bus {
+      SATA = 0;
+      SCSI = 1;
+      VIRTIO = 2;
+    }
+    string name = 1;
+    string namespace = 2;
+    int64 bootOrder = 3;
+    type disk_type = 4;
+    bus bus_type = 5;
+    oneof source_data {
+      string source = 6;
+      DataVolumeSource data_volume = 7;
+    }
+    bool is_bootable = 11;
   }
   Metadata metadata = 1;
   string network_name = 11;
   string startup_script = 12;
   string node_name = 13;
+  string pod_name = 14;
+  string maas_id = 15;
   VirtualMachineResources resources = 21;
-  repeated VirtualMachineDisk disks = 22; 
+  repeated DiskInfo disks = 22;
+  repeated ServiceInfo services = 23; 
   status status_phase  = 31;
 }
 
@@ -125,11 +171,7 @@ message DataVolumeSource {
     UNSPECIFIED = 0;
     HTTP = 1;
     BLANK = 2;
-    REGISTRY = 3;
-    UPLOAD = 4;
-    S3 = 5;
-    VDDK = 6;
-    PVC = 7;
+    PVC = 3;
   }
   Type type = 3;
   string source = 4;
@@ -197,7 +239,7 @@ message ListVirtualMachinesRequest {
 }
 
 message ListVirtualMachinesResponse {
-  repeated VirtualMachine virtualMachines = 1;
+  repeated VirtualMachineResponse virtualMachines = 1;
 }
 
 message GetVirtualMachineRequest {
@@ -253,7 +295,6 @@ message UpdateVirtualMachineRequest {
   string namespace = 4;
   string network_name = 5;
   map<string, string> labels = 11;
-  repeated VirtualMachineDisk disks = 31;
 }
 
 message DeleteVirtualMachineRequest {
@@ -268,7 +309,7 @@ message CreateVirtualMachineDiskRequest {
   string facility_name = 2;
   string vm_name = 3;
   string vm_namespace = 4;
-  VirtualMachineDisk disks = 11;
+  VirtualMachineDisk disk = 5;
 }
 
 message StartVirtualMachineRequest {

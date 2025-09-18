@@ -83,7 +83,7 @@ func (s *KubeVirtService) ListBootablePersistentVolumeClaims(ctx context.Context
 }
 
 // Virtual Machine Operations
-func (s *KubeVirtService) CreateVirtualMachine(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
+func (s *KubeVirtService) CreateVirtualMachine(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachineResponse], error) {
 	// Extract disks with their DataVolumeSource information
 	disks := req.Msg.GetDisks()
 	diskDevices, dataVolumeSources := toCoreDiskDevicesWithDataVolumes(disks)
@@ -104,35 +104,34 @@ func (s *KubeVirtService) CreateVirtualMachine(ctx context.Context, req *connect
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoVirtualMachine(vm, nil)
-	return connect.NewResponse(resp), nil
-}
-
-func (s *KubeVirtService) GetVirtualMachine(ctx context.Context, req *connect.Request[pb.GetVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, vmi, err := s.uc.GetVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
-	if err != nil {
-		return nil, err
+	vmInfo := &core.VirtualMachineInfo{
+		VM: vm,
 	}
-	resp := toProtoVirtualMachine(vm, vmi)
+	resp := toProtoVirtualMachineResponse(vmInfo)
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) ListVirtualMachines(ctx context.Context, req *connect.Request[pb.ListVirtualMachinesRequest]) (*connect.Response[pb.ListVirtualMachinesResponse], error) {
-	vms, vmis, err := s.uc.ListVirtualMachines(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	vmInfoList, err := s.uc.ListVirtualMachines(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListVirtualMachinesResponse{}
-	resp.SetVirtualMachines(toProtoVirtualMachines(vms, vmis))
+	resp.SetVirtualMachines(toProtoVirtualMachineResponses(vmInfoList))
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) UpdateVirtualMachine(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, vmi, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetLabels(), toCoreDiskDevices(req.Msg.GetDisks()))
+func (s *KubeVirtService) UpdateVirtualMachine(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachineResponse], error) {
+	vm, vmi, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetLabels(), nil)
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoVirtualMachine(vm, vmi)
+
+	vmInfo := &core.VirtualMachineInfo{
+		VM:  vm,
+		VMI: vmi,
+	}
+	resp := toProtoVirtualMachineResponse(vmInfo)
 	return connect.NewResponse(resp), nil
 }
 
@@ -144,14 +143,12 @@ func (s *KubeVirtService) DeleteVirtualMachine(ctx context.Context, req *connect
 	return connect.NewResponse(resp), nil
 }
 
-// CreateVirtualMachineDisk 建立新的磁碟並附加至虛擬機器
 func (s *KubeVirtService) CreateVirtualMachineDisk(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error) {
-	// 1. 從請求中提取資訊
 	scopeUUID := req.Msg.GetScopeUuid()
 	facilityName := req.Msg.GetFacilityName()
 	vmName := req.Msg.GetVmName()
 	vmNamespace := req.Msg.GetVmNamespace()
-	pbDisk := req.Msg.GetDisks()
+	pbDisk := req.Msg.GetDisk()
 
 	disk := fromProtoVirtualMachineDisk(pbDisk)
 
@@ -413,26 +410,22 @@ func (s *KubeVirtService) DeleteInstanceType(ctx context.Context, req *connect.R
 }
 
 // Conversion functions
-func toProtoVirtualMachines(vms []core.VirtualMachine, vmis []core.VirtualMachineInstance) []*pb.VirtualMachine {
-	ret := []*pb.VirtualMachine{}
-	for i := 0; i < len(vms); i++ {
-		found := false
-		for j := 0; j < len(vmis); j++ {
-			if vms[i].Name == vmis[j].Name {
-				ret = append(ret, toProtoVirtualMachine(&vms[i], &vmis[j]))
-				found = true
-				break
-			}
-		}
-		if !found {
-			ret = append(ret, toProtoVirtualMachine(&vms[i], nil))
-		}
+func toProtoVirtualMachineResponses(vmInfoList []core.VirtualMachineInfo) []*pb.VirtualMachineResponse {
+	ret := []*pb.VirtualMachineResponse{}
+	for i := 0; i < len(vmInfoList); i++ {
+		ret = append(ret, toProtoVirtualMachineResponse(&vmInfoList[i]))
 	}
 	return ret
 }
 
-func toProtoVirtualMachine(vm *core.VirtualMachine, vmi *core.VirtualMachineInstance) *pb.VirtualMachine {
-	ret := &pb.VirtualMachine{}
+func toProtoVirtualMachineResponse(vmInfo *core.VirtualMachineInfo) *pb.VirtualMachineResponse {
+	ret := &pb.VirtualMachineResponse{}
+	if vmInfo.VM == nil {
+		return ret
+	}
+
+	vm := vmInfo.VM
+	vmi := vmInfo.VMI
 
 	ret.SetMetadata(fromVirtualMachine(vm))
 	ret.SetStartupScript(toProtoVirtualMachineScripts(vm.Spec.Template.Spec.Volumes))
@@ -440,14 +433,81 @@ func toProtoVirtualMachine(vm *core.VirtualMachine, vmi *core.VirtualMachineInst
 	if vmi != nil {
 		ret.SetNodeName(vmi.Status.NodeName)
 	}
-	ret.SetNetworkName(vm.Spec.Template.Spec.Networks[0].Name)
-	ret.SetDisks(toProtoVirtualMachineDisks(vm))
+	if vmInfo.Pod != nil {
+		ret.SetPodName(vmInfo.Pod.GetName())
+	}
+	if len(vm.Spec.Template.Spec.Networks) > 0 {
+		ret.SetNetworkName(vm.Spec.Template.Spec.Networks[0].Name)
+	}
 
-	v, ok := pb.VirtualMachineStatus_value[strings.ToUpper(string(vm.Status.PrintableStatus))]
+	ret.SetMaasId(vmInfo.SystemID)
+
+	volumeMap := buildVolumeMap(vm)
+	disks := make([]*pb.VirtualMachineResponse_DiskInfo, 0, len(vm.Spec.Template.Spec.Domain.Devices.Disks))
+
+	for i := range vm.Spec.Template.Spec.Domain.Devices.Disks {
+		disk := &vm.Spec.Template.Spec.Domain.Devices.Disks[i]
+		diskInfo := toProtoVirtualMachineDisk(disk, volumeMap, vm.GetNamespace())
+
+		if diskInfo.GetDiskType() == pb.VirtualMachineResponse_DiskInfo_DATAVOLUME {
+			dvName := volumeMap[disk.Name].VolumeSource.DataVolume.Name
+
+			for _, dv := range vmInfo.DataVolume {
+				if dv.Name == dvName {
+					dvSource := diskInfo.GetDataVolume()
+					if dvSource == nil {
+						dvSource = &pb.DataVolumeSource{}
+					}
+
+					source, sourceType, _, _, sizeBytes := core.ExtractDataVolumeInfo(dv)
+
+					switch strings.ToLower(sourceType) {
+					case "http":
+						dvSource.SetType(pb.DataVolumeSource_HTTP)
+					case "blank":
+						dvSource.SetType(pb.DataVolumeSource_BLANK)
+					case "pvc":
+						dvSource.SetType(pb.DataVolumeSource_PVC)
+					default:
+						dvSource.SetType(pb.DataVolumeSource_UNSPECIFIED)
+					}
+
+					dvSource.SetSource(source)
+					dvSource.SetSizeBytes(sizeBytes)
+
+					diskInfo.SetDataVolume(dvSource)
+					break
+				}
+			}
+		}
+		disks = append(disks, diskInfo)
+	}
+
+	ret.SetDisks(disks)
+
+	if vmInfo.Service != nil {
+		services := []*pb.VirtualMachineResponse_ServiceInfo{}
+		for _, port := range vmInfo.Service.Spec.Ports {
+			service := &pb.VirtualMachineResponse_ServiceInfo{}
+			if vmInfo.Service.Spec.Type == corev1.ServiceTypeNodePort {
+				service.SetStype(pb.VirtualMachineResponse_ServiceInfo_NODE_PORT)
+			} else if vmInfo.Service.Spec.Type == corev1.ServiceTypeLoadBalancer {
+				service.SetStype(pb.VirtualMachineResponse_ServiceInfo_LOAD_BALANCER)
+			} else {
+				service.SetStype(pb.VirtualMachineResponse_ServiceInfo_UNSPECIFIED)
+			}
+			service.SetPort(int64(port.Port))
+			service.SetNodePort(int64(port.NodePort))
+			services = append(services, service)
+		}
+		ret.SetServices(services)
+	}
+
+	v, ok := pb.VirtualMachineResponseStatus_value[strings.ToUpper(string(vm.Status.PrintableStatus))]
 	if ok {
-		ret.SetStatusPhase(pb.VirtualMachineStatus(v))
+		ret.SetStatusPhase(pb.VirtualMachineResponseStatus(v))
 	} else {
-		ret.SetStatusPhase(pb.VirtualMachineStatus(pb.VirtualMachine_UNKNOWN))
+		ret.SetStatusPhase(pb.VirtualMachineResponseStatus(pb.VirtualMachineResponse_UNKNOWN))
 	}
 
 	return ret
@@ -528,45 +588,46 @@ func buildVolumeMap(vm *core.VirtualMachine) map[string]virtCorev1.Volume {
 	return m
 }
 
-func toProtoVirtualMachineDisks(vm *core.VirtualMachine) []*pb.VirtualMachineDisk {
-	volumeMap := buildVolumeMap(vm)
-	ret := []*pb.VirtualMachineDisk{}
-	for i := range vm.Spec.Template.Spec.Domain.Devices.Disks {
-		d := vm.Spec.Template.Spec.Domain.Devices.Disks[i]
-		ret = append(ret, toProtoVirtualMachineDisk(&d, volumeMap))
-	}
-	return ret
-}
-
-func toProtoVirtualMachineDisk(disk *virtCorev1.Disk, vmVols map[string]virtCorev1.Volume) *pb.VirtualMachineDisk {
-	ret := &pb.VirtualMachineDisk{}
+func toProtoVirtualMachineDisk(disk *virtCorev1.Disk, vmVols map[string]virtCorev1.Volume, namespace string) *pb.VirtualMachineResponse_DiskInfo {
+	ret := &pb.VirtualMachineResponse_DiskInfo{}
 	ret.SetName(disk.Name)
+	ret.SetNamespace(namespace)
+	if disk.BootOrder != nil {
+		ret.SetBootOrder(int64(*disk.BootOrder))
+	}
 	if disk.Disk != nil {
 		v, ok := pb.VirtualMachineDiskBus_value[strings.ToUpper(string(disk.Disk.Bus))]
 		if ok {
-			ret.SetBusType(pb.VirtualMachineDiskBus(v))
+			ret.SetBusType(pb.VirtualMachineResponse_DiskInfoBus(v))
 		} else {
-			ret.SetBusType(pb.VirtualMachineDiskBus(pb.VirtualMachineDisk_VIRTIO))
+			ret.SetBusType(pb.VirtualMachineResponse_DiskInfoBus(pb.VirtualMachineDisk_VIRTIO))
 		}
 	}
-	ret.SetDiskType(pb.VirtualMachineDisk_UNSPECIFIED)
+	ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_UNSPECIFIED)
 
 	if vol, ok := vmVols[disk.Name]; ok {
 		switch {
 		case vol.VolumeSource.DataVolume != nil:
-			ret.SetDiskType(pb.VirtualMachineDisk_DATAVOLUME)
-			ret.SetSource(vol.VolumeSource.DataVolume.Name)
+			ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_DATAVOLUME)
+
+			dvSource := &pb.DataVolumeSource{}
+
+			dvSource.SetType(pb.DataVolumeSource_PVC) // 預設為 PVC 類型
+			dvSource.SetSource(vol.VolumeSource.DataVolume.Name)
+
+			ret.SetDataVolume(dvSource)
+
 		case vol.VolumeSource.PersistentVolumeClaim != nil:
-			ret.SetDiskType(pb.VirtualMachineDisk_PERSISTENTVOLUMECLAIM)
+			ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_PERSISTENTVOLUMECLAIM)
 			ret.SetSource(vol.VolumeSource.PersistentVolumeClaim.ClaimName)
 		case vol.VolumeSource.ConfigMap != nil:
-			ret.SetDiskType(pb.VirtualMachineDisk_CONFIGMAP)
+			ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_CONFIGMAP)
 			ret.SetSource(vol.VolumeSource.ConfigMap.Name)
 		case vol.VolumeSource.Secret != nil:
-			ret.SetDiskType(pb.VirtualMachineDisk_SECRET)
+			ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_SECRET)
 			ret.SetSource(vol.VolumeSource.Secret.SecretName)
 		case vol.VolumeSource.CloudInitNoCloud != nil:
-			ret.SetDiskType(pb.VirtualMachineDisk_CLOUDINITNOCLOUD)
+			ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_CLOUDINITNOCLOUD)
 		}
 	}
 
@@ -574,7 +635,6 @@ func toProtoVirtualMachineDisk(disk *virtCorev1.Disk, vmVols map[string]virtCore
 }
 
 func fromProtoVirtualMachineDisk(disk *pb.VirtualMachineDisk) core.DiskDevice {
-	// 將 pb.VirtualMachineDisk 轉換為 core.DiskDevice
 	var diskType string
 	switch disk.GetDiskType() {
 	case pb.VirtualMachineDisk_DATAVOLUME:
@@ -591,7 +651,6 @@ func fromProtoVirtualMachineDisk(disk *pb.VirtualMachineDisk) core.DiskDevice {
 		diskType = ""
 	}
 
-	// 轉換 bus 類型
 	var busStr string
 	switch disk.GetBusType() {
 	case pb.VirtualMachineDisk_SATA:
@@ -604,39 +663,12 @@ func fromProtoVirtualMachineDisk(disk *pb.VirtualMachineDisk) core.DiskDevice {
 		busStr = "virtio"
 	}
 
-	// 建立並回傳 core.DiskDevice
 	return core.DiskDevice{
 		Name:     disk.GetName(),
 		DiskType: diskType,
 		Bus:      busStr,
-		Data:     disk.GetSource(), // 當 disk 是 source 類型時，這會是有效值
+		Data:     disk.GetSource(),
 	}
-}
-
-func toCoreDiskDevices(disks []*pb.VirtualMachineDisk) []core.DiskDevice {
-	ret := []core.DiskDevice{}
-	for i := range disks {
-		// Convert pb.VirtualMachineDisk_bus to string
-		var busStr string
-		switch disks[i].GetBusType() {
-		case pb.VirtualMachineDisk_SATA:
-			busStr = "sata"
-		case pb.VirtualMachineDisk_SCSI:
-			busStr = "scsi"
-		case pb.VirtualMachineDisk_VIRTIO:
-			busStr = "virtio"
-		default:
-			busStr = "virtio"
-		}
-
-		ret = append(ret, core.DiskDevice{
-			Name:     disks[i].GetName(),
-			DiskType: pb.VirtualMachineDiskType_name[int32(disks[i].GetDiskType())],
-			Bus:      busStr,
-			Data:     disks[i].GetSource(),
-		})
-	}
-	return ret
 }
 
 // toCoreDiskDevicesWithDataVolumes extracts both DiskDevice and DataVolumeSource information
@@ -699,14 +731,6 @@ func mapDataVolumeSourceType(sourceType pb.DataVolumeSource_Type) string {
 		return "HTTP"
 	case pb.DataVolumeSource_BLANK:
 		return "Blank"
-	case pb.DataVolumeSource_REGISTRY:
-		return "Registry"
-	case pb.DataVolumeSource_UPLOAD:
-		return "Upload"
-	case pb.DataVolumeSource_S3:
-		return "S3"
-	case pb.DataVolumeSource_VDDK:
-		return "VDDK"
 	case pb.DataVolumeSource_PVC:
 		return "PVC"
 	default:
@@ -736,7 +760,7 @@ func toProtoVirtualMachineSnapshot(snapshot *core.VirtualMachineSnapshot) *pb.Vi
 	if ok {
 		ret.SetStatusPhase(pb.VirtualMachineSnapshotStatus(v))
 	} else {
-		ret.SetStatusPhase(pb.VirtualMachineSnapshotStatus(pb.VirtualMachine_UNKNOWN))
+		ret.SetStatusPhase(pb.VirtualMachineSnapshotStatus(pb.VirtualMachineSnapshot_UNKNOWN))
 	}
 
 	for _, cond := range snapshot.Status.Conditions {
@@ -814,7 +838,7 @@ func toProtoVirtualMachineService(vmsvc *core.VirtualMachineService) *pb.Virtual
 		sp.SetType(pb.VirtualMachineServiceSpec_TYPE_UNSPECIFIED)
 	}
 	sp.SetSelector(vmsvc.Spec.Selector)
-	if vm, ok := vmsvc.Spec.Selector["kubevirt.io/vm"]; ok {
+	if vm, ok := vmsvc.Spec.Selector["otterscale.io/virtualmachine"]; ok {
 		sp.SetVirtualMachineName(vm)
 	}
 	ports := make([]*pb.ServicePort, 0, len(vmsvc.Spec.Ports))
@@ -868,7 +892,7 @@ func toCoreVirtualMachineService(vmsvc *pb.VirtualMachineService) *core.VirtualM
 
 	vmName := vmsvc.GetSpec().GetVirtualMachineName()
 	if vmName != "" {
-		spec.Selector = map[string]string{"kubevirt.io/vm": vmName}
+		spec.Selector = map[string]string{"otterscale.io/virtualmachine": vmName}
 	} else {
 		spec.Selector = map[string]string{}
 	}

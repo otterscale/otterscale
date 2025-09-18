@@ -272,37 +272,133 @@ func buildVMSpec(resources VirtualMachineResources, disks []virtCorev1.Disk, vol
 	return spec
 }
 
-func (uc *KubeVirtUseCase) GetVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) (vm *VirtualMachine, vmi *VirtualMachineInstance, err error) {
+func (uc *KubeVirtUseCase) ListVirtualMachines(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineInfo, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	vm, err = uc.kubeVirtVM.GetVirtualMachine(ctx, config, namespace, name)
+	vms, err := uc.kubeVirtVM.ListVirtualMachines(ctx, config, namespace)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	vmi, _ = uc.kubeVirtVM.GetVirtualMachineInstance(ctx, config, namespace, name)
 
-	return vm, vmi, err
-}
-
-func (uc *KubeVirtUseCase) ListVirtualMachines(ctx context.Context, uuid, facility, namespace string) (vms []VirtualMachine, vmis []VirtualMachineInstance, err error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	vmis, err := uc.kubeVirtVM.ListVirtualMachineInstances(ctx, config, namespace)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	vms, err = uc.kubeVirtVM.ListVirtualMachines(ctx, config, namespace)
+	machines, err := uc.machine.List(ctx)
 	if err != nil {
-		return nil, nil, err
+		machines = []Machine{}
 	}
 
-	vmis, err = uc.kubeVirtVM.ListVirtualMachineInstances(ctx, config, namespace)
-	if err != nil {
-		return nil, nil, err
+	nodeToSystemID := make(map[string]string)
+	for _, machine := range machines {
+		nodeName := machine.FQDN
+		if nodeName != "" {
+			nodeToSystemID[nodeName] = machine.SystemID
+		}
+		if machine.Hostname != "" {
+			nodeToSystemID[machine.Hostname] = machine.SystemID
+		}
 	}
-	return vms, vmis, err
+
+	vmiMap := make(map[string]*VirtualMachineInstance)
+	for i := range vmis {
+		vmiMap[vmis[i].Name] = &vmis[i]
+	}
+
+	vmsInfo := make([]VirtualMachineInfo, 0, len(vms))
+
+	for i := range vms {
+		vm := vms[i]
+
+		labelSelector := &metav1.LabelSelector{
+			MatchLabels: map[string]string{
+				"vm.kubevirt.io/name": vm.Name,
+			},
+		}
+		selector, _ := metav1.LabelSelectorAsSelector(labelSelector)
+
+		// Pods
+		podList, _ := uc.kubeCore.ListPodsByLabel(ctx, config, namespace, selector.String())
+		labelSelector = &metav1.LabelSelector{
+			MatchLabels: map[string]string{
+				"otterscale.io/virtualmachine": vm.Name,
+			},
+		}
+		selector, _ = metav1.LabelSelectorAsSelector(labelSelector)
+		// Services
+		serviceList, _ := uc.kubeCore.ListServicesByOptions(ctx, config, namespace, selector.String(), "")
+
+		dvNameSet := make(map[string]bool)
+		if vm.Spec.Template != nil {
+			for _, volume := range vm.Spec.Template.Spec.Volumes {
+				if volume.DataVolume != nil && volume.DataVolume.Name != "" {
+					dvNameSet[volume.DataVolume.Name] = true
+				}
+			}
+		}
+
+		// Datavolumes
+		dvList, _ := uc.kubeVirtDV.ListDataVolumesByOptions(ctx, config, namespace, selector.String(), "")
+
+		var dataVolumes []*DataVolume
+
+		for j := range dvList {
+			dataVolumes = append(dataVolumes, &dvList[j])
+			dvNameSet[dvList[j].Name] = false
+		}
+
+		for dvName, needFetch := range dvNameSet {
+			if !needFetch {
+				continue
+			}
+			fieldSelector := fmt.Sprintf("metadata.name=%s", dvName)
+			specificDvList, err := uc.kubeVirtDV.ListDataVolumesByOptions(ctx, config, namespace, "", fieldSelector)
+			if err == nil && len(specificDvList) > 0 {
+				dataVolumes = append(dataVolumes, &specificDvList[0])
+			}
+		}
+
+		var pod *VirtualMachinePod
+		if len(podList) > 0 {
+			pod = &podList[0]
+		}
+
+		var service *VirtualMachineService
+		if len(serviceList) > 0 {
+			service = &serviceList[0]
+		}
+
+		// MAAS ID
+		systemID := ""
+		if pod != nil && pod.Spec.NodeName != "" {
+			if id, ok := nodeToSystemID[pod.Spec.NodeName]; ok {
+				systemID = id
+			} else {
+				shortName := pod.Spec.NodeName
+				if idx := strings.Index(shortName, "."); idx > 0 {
+					shortName = shortName[:idx]
+				}
+				if id, ok := nodeToSystemID[shortName]; ok {
+					systemID = id
+				}
+			}
+		}
+
+		vmsInfo = append(vmsInfo, VirtualMachineInfo{
+			VM:         &vms[i],
+			VMI:        vmiMap[vm.Name],
+			Pod:        pod,
+			Service:    service,
+			DataVolume: dataVolumes,
+			SystemID:   systemID,
+		})
+	}
+
+	return vmsInfo, nil
 }
 
 func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, networkName string, labels map[string]string, disks []DiskDevice) (vm *VirtualMachine, vmi *VirtualMachineInstance, err error) {
@@ -317,10 +413,11 @@ func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facil
 	}
 	oldVM.SetLabels(ensureLabels(labels))
 
-	vmDisks, vmVolumes := buildDisksAndVolumes(disks, "")
-
-	oldVM.Spec.Template.Spec.Domain.Devices.Disks = vmDisks
-	oldVM.Spec.Template.Spec.Volumes = vmVolumes
+	if disks != nil {
+		vmDisks, vmVolumes := buildDisksAndVolumes(disks, "")
+		oldVM.Spec.Template.Spec.Domain.Devices.Disks = vmDisks
+		oldVM.Spec.Template.Spec.Volumes = vmVolumes
+	}
 
 	updatedVM, err := uc.kubeVirtVM.UpdateVirtualMachine(ctx, config, namespace, name, oldVM)
 	if err != nil {
@@ -432,19 +529,39 @@ func (uc *KubeVirtUseCase) DeleteVirtualMachine(ctx context.Context, uuid, facil
 		}
 	}
 
+	vm, err := uc.kubeVirtVM.GetVirtualMachine(ctx, config, namespace, name)
+	if err != nil && !apierrors.IsNotFound(err) {
+		return fmt.Errorf("get vm failed: %w", err)
+	}
+
+	dataVolumeNames := make(map[string]bool)
+
+	if err == nil && vm != nil && vm.Spec.Template != nil {
+		for _, volume := range vm.Spec.Template.Spec.Volumes {
+			if volume.DataVolume != nil && volume.DataVolume.Name != "" {
+				dataVolumeNames[volume.DataVolume.Name] = true
+			}
+		}
+	}
+
 	labelSelector := &metav1.LabelSelector{
 		MatchLabels: map[string]string{
 			"otterscale.io/virtualmachine": name,
 		},
 	}
 	selector, _ := metav1.LabelSelectorAsSelector(labelSelector)
-	datavolumes, err := uc.kubeVirtDV.ListDataVolumesByLabel(ctx, config, namespace, selector.String())
+	datavolumes, err := uc.kubeVirtDV.ListDataVolumesByOptions(ctx, config, namespace, selector.String(), "")
 	if err != nil {
-		return fmt.Errorf("list datavolumes failed: %w", err)
+		return fmt.Errorf("list datavolumes by label failed: %w", err)
 	}
+
 	for i := range datavolumes {
-		if err := uc.kubeVirtDV.DeleteDataVolume(ctx, config, namespace, datavolumes[i].Name); err != nil && !apierrors.IsNotFound(err) {
-			return fmt.Errorf("delete datavolume %s failed: %w", datavolumes[i].Name, err)
+		dataVolumeNames[datavolumes[i].Name] = true
+	}
+
+	for dvName := range dataVolumeNames {
+		if err := uc.kubeVirtDV.DeleteDataVolume(ctx, config, namespace, dvName); err != nil && !apierrors.IsNotFound(err) {
+			return fmt.Errorf("delete datavolume %s failed: %w", dvName, err)
 		}
 	}
 
