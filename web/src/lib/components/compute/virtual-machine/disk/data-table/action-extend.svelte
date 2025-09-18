@@ -41,7 +41,7 @@
 		sizeBytes:
 			virtualMachineDisk.sourceData.case === 'dataVolume'
 				? (virtualMachineDisk.sourceData.value as DataVolumeSource).sizeBytes
-				: 0,
+				: undefined,
 	} as ExtendDataVolumeRequest;
 
 	// Current request state

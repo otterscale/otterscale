@@ -183,7 +183,7 @@
 		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.create_virtual_machine()}</Modal.Header>
+		<Modal.Header>{m.create_disk()}</Modal.Header>
 		<Form.Root>
 			<!-- ==================== Disk Configuration ==================== -->
 			<Form.Fieldset>
@@ -385,13 +385,13 @@
 					disabled={invalidName || invalidSource}
 					onclick={() => {
 						toast.promise(() => kubevirtClient.createVirtualMachineDisk(request), {
-							loading: `Creating ${request.vmName}...`,
+							loading: `Creating ${request.disk.name}...`,
 							success: () => {
 								reloadManager.force();
-								return `Successfully created ${request.vmName}`;
+								return `Successfully created ${request.disk.name}`;
 							},
 							error: (error) => {
-								let message = `Failed to create ${request.vmName}`;
+								let message = `Failed to create ${request.disk.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY,
