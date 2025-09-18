@@ -201,7 +201,7 @@
 			instanceTypeCPU = instanceType?.cpuCores ?? DEFAULT_INSTANCE_TYPE_CPU;
 			instanceTypeMemoryGB =
 				instanceType?.memoryBytes !== undefined
-					? Number(instanceType.memoryBytes) / 1024 / 1024 / 1024
+					? Number(instanceType.memoryBytes) / 1024 ** 3
 					: DEFAULT_INSTANCE_TYPE_MEMORY;
 		} else {
 			instanceTypeCPU = DEFAULT_INSTANCE_TYPE_CPU;
