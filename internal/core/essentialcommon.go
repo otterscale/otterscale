@@ -11,7 +11,7 @@ import (
 
 var (
 	commonCharms = []EssentialCharm{
-		{Name: "ch:ceph-csi", Subordinate: true},
+		{Name: "ch:ceph-csi", Channel: "1.32/stable", Subordinate: true},
 		{Name: "ch:grafana-agent", Subordinate: true},
 	}
 
