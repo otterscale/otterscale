@@ -1,6 +1,6 @@
 MAAS=3.6/stable
 MAAS_DB=3.6/stable
 JUJU=3.6/stable
-LXD="5.0/stable"
+LXD=5.0/stable
 KUBERNETES=1.32/stable
 CEPH=squid
