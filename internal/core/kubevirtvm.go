@@ -550,6 +550,18 @@ func (uc *KubeVirtUseCase) DeleteVirtualMachine(ctx context.Context, uuid, facil
 		},
 	}
 	selector, _ := metav1.LabelSelectorAsSelector(labelSelector)
+
+	// Services
+	serviceList, err := uc.kubeCore.ListServicesByOptions(ctx, config, namespace, selector.String(), "")
+	if err != nil {
+		return fmt.Errorf("list services failed: %w", err)
+	}
+	for i := range serviceList {
+		if err := uc.kubeCore.DeleteService(ctx, config, namespace, serviceList[i].Name); err != nil && !apierrors.IsNotFound(err) {
+			return fmt.Errorf("delete service %s failed: %w", serviceList[i].Name, err)
+		}
+	}
+
 	datavolumes, err := uc.kubeVirtDV.ListDataVolumesByOptions(ctx, config, namespace, selector.String(), "")
 	if err != nil {
 		return fmt.Errorf("list datavolumes by label failed: %w", err)

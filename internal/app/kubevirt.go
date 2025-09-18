@@ -83,7 +83,7 @@ func (s *KubeVirtService) ListBootablePersistentVolumeClaims(ctx context.Context
 }
 
 // Virtual Machine Operations
-func (s *KubeVirtService) CreateVirtualMachine(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachineResponse], error) {
+func (s *KubeVirtService) CreateVirtualMachine(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
 	// Extract disks with their DataVolumeSource information
 	disks := req.Msg.GetDisks()
 	diskDevices, dataVolumeSources := toCoreDiskDevicesWithDataVolumes(disks)
@@ -107,7 +107,7 @@ func (s *KubeVirtService) CreateVirtualMachine(ctx context.Context, req *connect
 	vmInfo := &core.VirtualMachineInfo{
 		VM: vm,
 	}
-	resp := toProtoVirtualMachineResponse(vmInfo)
+	resp := toProtoVirtualMachine(vmInfo)
 	return connect.NewResponse(resp), nil
 }
 
@@ -117,11 +117,11 @@ func (s *KubeVirtService) ListVirtualMachines(ctx context.Context, req *connect.
 		return nil, err
 	}
 	resp := &pb.ListVirtualMachinesResponse{}
-	resp.SetVirtualMachines(toProtoVirtualMachineResponses(vmInfoList))
+	resp.SetVirtualMachines(toProtoVirtualMachines(vmInfoList))
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) UpdateVirtualMachine(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachineResponse], error) {
+func (s *KubeVirtService) UpdateVirtualMachine(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
 	vm, vmi, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetLabels(), nil)
 	if err != nil {
 		return nil, err
@@ -131,7 +131,7 @@ func (s *KubeVirtService) UpdateVirtualMachine(ctx context.Context, req *connect
 		VM:  vm,
 		VMI: vmi,
 	}
-	resp := toProtoVirtualMachineResponse(vmInfo)
+	resp := toProtoVirtualMachine(vmInfo)
 	return connect.NewResponse(resp), nil
 }
 
@@ -410,16 +410,16 @@ func (s *KubeVirtService) DeleteInstanceType(ctx context.Context, req *connect.R
 }
 
 // Conversion functions
-func toProtoVirtualMachineResponses(vmInfoList []core.VirtualMachineInfo) []*pb.VirtualMachineResponse {
-	ret := []*pb.VirtualMachineResponse{}
+func toProtoVirtualMachines(vmInfoList []core.VirtualMachineInfo) []*pb.VirtualMachine {
+	ret := []*pb.VirtualMachine{}
 	for i := 0; i < len(vmInfoList); i++ {
-		ret = append(ret, toProtoVirtualMachineResponse(&vmInfoList[i]))
+		ret = append(ret, toProtoVirtualMachine(&vmInfoList[i]))
 	}
 	return ret
 }
 
-func toProtoVirtualMachineResponse(vmInfo *core.VirtualMachineInfo) *pb.VirtualMachineResponse {
-	ret := &pb.VirtualMachineResponse{}
+func toProtoVirtualMachine(vmInfo *core.VirtualMachineInfo) *pb.VirtualMachine {
+	ret := &pb.VirtualMachine{}
 	if vmInfo.VM == nil {
 		return ret
 	}
@@ -443,13 +443,13 @@ func toProtoVirtualMachineResponse(vmInfo *core.VirtualMachineInfo) *pb.VirtualM
 	ret.SetMaasId(vmInfo.SystemID)
 
 	volumeMap := buildVolumeMap(vm)
-	disks := make([]*pb.VirtualMachineResponse_DiskInfo, 0, len(vm.Spec.Template.Spec.Domain.Devices.Disks))
+	disks := make([]*pb.VirtualMachine_DiskInfo, 0, len(vm.Spec.Template.Spec.Domain.Devices.Disks))
 
 	for i := range vm.Spec.Template.Spec.Domain.Devices.Disks {
 		disk := &vm.Spec.Template.Spec.Domain.Devices.Disks[i]
 		diskInfo := toProtoVirtualMachineDisk(disk, volumeMap, vm.GetNamespace())
 
-		if diskInfo.GetDiskType() == pb.VirtualMachineResponse_DiskInfo_DATAVOLUME {
+		if diskInfo.GetDiskType() == pb.VirtualMachine_DiskInfo_DATAVOLUME {
 			dvName := volumeMap[disk.Name].VolumeSource.DataVolume.Name
 
 			for _, dv := range vmInfo.DataVolume {
@@ -486,15 +486,15 @@ func toProtoVirtualMachineResponse(vmInfo *core.VirtualMachineInfo) *pb.VirtualM
 	ret.SetDisks(disks)
 
 	if vmInfo.Service != nil {
-		services := []*pb.VirtualMachineResponse_ServiceInfo{}
+		services := []*pb.VirtualMachine_ServiceInfo{}
 		for _, port := range vmInfo.Service.Spec.Ports {
-			service := &pb.VirtualMachineResponse_ServiceInfo{}
+			service := &pb.VirtualMachine_ServiceInfo{}
 			if vmInfo.Service.Spec.Type == corev1.ServiceTypeNodePort {
-				service.SetStype(pb.VirtualMachineResponse_ServiceInfo_NODE_PORT)
+				service.SetStype(pb.VirtualMachine_ServiceInfo_NODE_PORT)
 			} else if vmInfo.Service.Spec.Type == corev1.ServiceTypeLoadBalancer {
-				service.SetStype(pb.VirtualMachineResponse_ServiceInfo_LOAD_BALANCER)
+				service.SetStype(pb.VirtualMachine_ServiceInfo_LOAD_BALANCER)
 			} else {
-				service.SetStype(pb.VirtualMachineResponse_ServiceInfo_UNSPECIFIED)
+				service.SetStype(pb.VirtualMachine_ServiceInfo_UNSPECIFIED)
 			}
 			service.SetPort(int64(port.Port))
 			service.SetNodePort(int64(port.NodePort))
@@ -503,11 +503,11 @@ func toProtoVirtualMachineResponse(vmInfo *core.VirtualMachineInfo) *pb.VirtualM
 		ret.SetServices(services)
 	}
 
-	v, ok := pb.VirtualMachineResponseStatus_value[strings.ToUpper(string(vm.Status.PrintableStatus))]
+	v, ok := pb.VirtualMachineStatus_value[strings.ToUpper(string(vm.Status.PrintableStatus))]
 	if ok {
-		ret.SetStatusPhase(pb.VirtualMachineResponseStatus(v))
+		ret.SetStatusPhase(pb.VirtualMachineStatus(v))
 	} else {
-		ret.SetStatusPhase(pb.VirtualMachineResponseStatus(pb.VirtualMachineResponse_UNKNOWN))
+		ret.SetStatusPhase(pb.VirtualMachineStatus(pb.VirtualMachine_UNKNOWN))
 	}
 
 	return ret
@@ -588,8 +588,8 @@ func buildVolumeMap(vm *core.VirtualMachine) map[string]virtCorev1.Volume {
 	return m
 }
 
-func toProtoVirtualMachineDisk(disk *virtCorev1.Disk, vmVols map[string]virtCorev1.Volume, namespace string) *pb.VirtualMachineResponse_DiskInfo {
-	ret := &pb.VirtualMachineResponse_DiskInfo{}
+func toProtoVirtualMachineDisk(disk *virtCorev1.Disk, vmVols map[string]virtCorev1.Volume, namespace string) *pb.VirtualMachine_DiskInfo {
+	ret := &pb.VirtualMachine_DiskInfo{}
 	ret.SetName(disk.Name)
 	ret.SetNamespace(namespace)
 	if disk.BootOrder != nil {
@@ -598,17 +598,17 @@ func toProtoVirtualMachineDisk(disk *virtCorev1.Disk, vmVols map[string]virtCore
 	if disk.Disk != nil {
 		v, ok := pb.VirtualMachineDiskBus_value[strings.ToUpper(string(disk.Disk.Bus))]
 		if ok {
-			ret.SetBusType(pb.VirtualMachineResponse_DiskInfoBus(v))
+			ret.SetBusType(pb.VirtualMachine_DiskInfoBus(v))
 		} else {
-			ret.SetBusType(pb.VirtualMachineResponse_DiskInfoBus(pb.VirtualMachineDisk_VIRTIO))
+			ret.SetBusType(pb.VirtualMachine_DiskInfoBus(pb.VirtualMachineDisk_VIRTIO))
 		}
 	}
-	ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_UNSPECIFIED)
+	ret.SetDiskType(pb.VirtualMachine_DiskInfo_UNSPECIFIED)
 
 	if vol, ok := vmVols[disk.Name]; ok {
 		switch {
 		case vol.VolumeSource.DataVolume != nil:
-			ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_DATAVOLUME)
+			ret.SetDiskType(pb.VirtualMachine_DiskInfo_DATAVOLUME)
 
 			dvSource := &pb.DataVolumeSource{}
 
@@ -618,16 +618,16 @@ func toProtoVirtualMachineDisk(disk *virtCorev1.Disk, vmVols map[string]virtCore
 			ret.SetDataVolume(dvSource)
 
 		case vol.VolumeSource.PersistentVolumeClaim != nil:
-			ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_PERSISTENTVOLUMECLAIM)
+			ret.SetDiskType(pb.VirtualMachine_DiskInfo_PERSISTENTVOLUMECLAIM)
 			ret.SetSource(vol.VolumeSource.PersistentVolumeClaim.ClaimName)
 		case vol.VolumeSource.ConfigMap != nil:
-			ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_CONFIGMAP)
+			ret.SetDiskType(pb.VirtualMachine_DiskInfo_CONFIGMAP)
 			ret.SetSource(vol.VolumeSource.ConfigMap.Name)
 		case vol.VolumeSource.Secret != nil:
-			ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_SECRET)
+			ret.SetDiskType(pb.VirtualMachine_DiskInfo_SECRET)
 			ret.SetSource(vol.VolumeSource.Secret.SecretName)
 		case vol.VolumeSource.CloudInitNoCloud != nil:
-			ret.SetDiskType(pb.VirtualMachineResponse_DiskInfo_CLOUDINITNOCLOUD)
+			ret.SetDiskType(pb.VirtualMachine_DiskInfo_CLOUDINITNOCLOUD)
 		}
 	}
 
