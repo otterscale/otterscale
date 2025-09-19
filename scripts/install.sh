@@ -36,8 +36,8 @@ readonly MAAS_CHANNEL="3.6/stable"
 readonly MAAS_DB_CHANNEL="3.6/stable"
 readonly JUJU_CHANNEL="3.6/stable"
 readonly LXD_CHANNEL="5.0/stable"
-readonly MICROK8S_CHANNEL="1.32/stable"
-readonly CONTROLLER_CHARM_CHANNEL="3.5/stable"
+readonly MICROK8S_CHANNEL="1.33/stable"
+readonly CONTROLLER_CHARM_CHANNEL="3.6/stable"
 
 # Otterscale configuration
 readonly OTTERSCALE_MAX_RETRIES=5
