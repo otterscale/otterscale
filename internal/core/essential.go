@@ -63,7 +63,7 @@ type EssentialUseCase struct {
 	action         ActionRepo
 }
 
-// GpuInfo represents GPU information for a pod
+// VGpuInfo represents virtual GPU information for a pod
 type VGpuInfo struct {
 	IsVGpu          bool
 	VGpuBindTime    time.Time
