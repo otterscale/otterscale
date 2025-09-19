@@ -1,6 +1,6 @@
-MAAS=3.6/stable
-MAAS_DB=3.6/stable
-JUJU=3.6/stable
-LXD=5.0/stable
-KUBERNETES=1.32/stable
-CEPH=squid
+UBUNTU=24.04
+MAAS=3.6
+JUJU=3.6
+CEPH=19
+KUBERNETES=1.33
+KUBEVIRT=1.6
