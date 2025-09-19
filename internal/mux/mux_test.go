@@ -57,8 +57,10 @@ func createMockServices() (
 func TestNew_WithoutHelper(t *testing.T) {
 	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
-	mux := New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
-
+	mux, err := New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+	if err != nil {
+		t.Fatal("Expected no error, got:", err)
+	}
 	if mux == nil {
 		t.Fatal("Expected mux to be created, got nil")
 	}
@@ -67,8 +69,10 @@ func TestNew_WithoutHelper(t *testing.T) {
 func TestNew_WithHelper(t *testing.T) {
 	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
-	mux := New(true, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
-
+	mux, err := New(true, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+	if err != nil {
+		t.Fatal("Expected no error, got:", err)
+	}
 	if mux == nil {
 		t.Fatal("Expected mux to be created, got nil")
 	}
@@ -77,7 +81,10 @@ func TestNew_WithHelper(t *testing.T) {
 func TestNew_ServiceHandlersRegistered(t *testing.T) {
 	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
-	mux := New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+	mux, err := New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+	if err != nil {
+		t.Fatal("Expected no error, got:", err)
+	}
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -122,7 +129,10 @@ func TestNew_ServiceHandlersRegistered(t *testing.T) {
 func TestNew_HealthAndReflectionWithHelper(t *testing.T) {
 	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
-	mux := New(true, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+	mux, err := New(true, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+	if err != nil {
+		t.Fatal("Expected no error, got:", err)
+	}
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -165,7 +175,10 @@ func TestNew_HealthAndReflectionWithHelper(t *testing.T) {
 func TestNew_NoHealthAndReflectionWithoutHelper(t *testing.T) {
 	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
-	mux := New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+	mux, err := New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+	if err != nil {
+		t.Fatal("Expected no error, got:", err)
+	}
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -247,8 +260,10 @@ func TestNew_NilServices(t *testing.T) {
 		}
 	}()
 
-	mux := New(false, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
-
+	mux, err := New(false, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	if err != nil {
+		t.Fatal("Expected no error, got:", err)
+	}
 	if mux == nil {
 		t.Error("Expected mux to be created even with nil services")
 	}
@@ -276,7 +291,10 @@ func TestNew_HelperFlagBehavior(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			mux := New(tc.helper, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+			mux, err := New(tc.helper, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+			if err != nil {
+				t.Fatal("Expected no error, got:", err)
+			}
 
 			server := httptest.NewServer(mux)
 			defer server.Close()
@@ -306,7 +324,7 @@ func BenchmarkNew_WithoutHelper(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+		_, _ = New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
 	}
 }
 
@@ -315,6 +333,6 @@ func BenchmarkNew_WithHelper(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = New(true, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
+		_, _ = New(true, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
 	}
 }
