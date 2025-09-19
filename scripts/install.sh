@@ -1251,35 +1251,6 @@ create_vm_from_maas() {
     wait_commissioning "$juju_machine_id"
 }
 
-update_vm_interface() {
-    log "INFO" "Update VM network interface" "VM_NETWORK"
-    local juju_machine_id
-    local juju_machine_network_name
-    local maas_network_name
-    local maas_network_cidr
-    
-    juju_machine_id=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
-    if [[ -z $juju_machine_id ]]; then
-        error_exit "Machine juju-vm not found"
-    fi
-
-    maas_network_name=$(maas admin subnet read $(ip -o -4 addr show dev $OTTERSCALE_BRIDGE_NAME | awk '{print $4}') | jq -r '.name')
-    maas_network_cidr=$(maas admin subnet read $maas_network_name | jq -r '.cidr')
-    juju_machine_network_name=$(maas admin interfaces read $juju_machine_id | jq -r '.[].name')
-
-    if ! is_machine_deployed; then
-        log "INFO" "Un-link juju-vm (id: $juju_machine_id) network interface" "VM_NETWORK"
-        for id in $(maas admin interfaces read $juju_machine_id | jq -r '.[].links | .[].id'); do
-            maas admin interface unlink-subnet $juju_machine_id $juju_machine_network_name id=$id >>"$TEMP_LOG" 2>&1
-        done
-
-	log "INFO" "Link juju-vm (id: $juju_machine_id) network interface $juju_machine_network_name to dhcp mode" "VM_NETWORK"
-        if ! maas admin interface link-subnet $juju_machine_id $juju_machine_network_name mode=dhcp subnet=$maas_network_cidr >>"$TEMP_LOG" 2>&1; then
-            error_exit "Failed update $juju_machine_id network interface"
-        fi
-    fi
-}
-
 # Wait for machine commissioning to complete
 wait_commissioning() {
     local machine_id="$1"
@@ -1614,7 +1585,6 @@ main() {
     create_maas_lxd_project
     create_lxd_vm
     create_vm_from_maas
-    update_vm_interface
     
     # Juju Setup
     log "INFO" "Setting up Juju..." "JUJU_SETUP"
