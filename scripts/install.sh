@@ -1400,7 +1400,8 @@ bootstrap_juju() {
         log "INFO" "Bootstrapping Juju controller..." "JUJU_BOOTSTRAP"
         local bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=$OTTERSCALE_BASE_IMAGE"
         local bootstrap_config="--config default-base=$OTTERSCALE_BASE_IMAGE --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
-        if ! su "$NON_ROOT_USER" -c "$bootstrap_cmd $bootstrap_config --to juju-vm --debug >/dev/null 2>&1"; then
+        if ! su "$NON_ROOT_USER" -c "$bootstrap_cmd $bootstrap_config --to juju-vm"; then
+            rm -rf /home/"$NON_ROOT_USER"/.local/share/juju
             error_exit "Failed to bootstrap Juju controller"
         fi
         log "INFO" "Juju controller bootstrapped successfully" "JUJU_BOOTSTRAP"
