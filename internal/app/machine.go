@@ -127,6 +127,7 @@ func toProtoMachine(m *core.Machine) *pb.Machine {
 	ret.SetNumaNodes(toProtoNUMANodes(m.NUMANodeSet))
 	ret.SetBlockDevices(toProtoBlockDevices(m.BlockDeviceSet, m.BootDisk.ID))
 	ret.SetNetworkInterfaces(toProtoNetworkInterfaces(m.InterfaceSet, m.BootInterface.ID))
+	ret.SetGpuDevices(toProtoNodeDevices(m.GPUs))
 	return ret
 }
 
@@ -202,5 +203,24 @@ func toProtoNetworkInterface(ni *core.NetworkInterface, bootInterfaceID int) *pb
 	ret.SetSubnetId(int64(subnetID))
 	ret.SetIpAddress(ipAdress)
 	ret.SetDhcpOn(ni.VLAN.DHCPOn)
+	return ret
+}
+
+func toProtoNodeDevices(ns []core.NodeDevice) []*pb.Machine_NodeDevice {
+	ret := []*pb.Machine_NodeDevice{}
+	for i := range ns {
+		ret = append(ret, toProtoNodeDevice(&ns[i]))
+	}
+	return ret
+}
+
+func toProtoNodeDevice(n *core.NodeDevice) *pb.Machine_NodeDevice {
+	ret := &pb.Machine_NodeDevice{}
+	ret.SetVendorId(n.VendorID)
+	ret.SetVendorName(n.VendorName)
+	ret.SetProductId(n.ProductID)
+	ret.SetProductName(n.ProductName)
+	ret.SetBusName(n.BusName)
+	ret.SetPciAddress(n.PCIAddress)
 	return ret
 }

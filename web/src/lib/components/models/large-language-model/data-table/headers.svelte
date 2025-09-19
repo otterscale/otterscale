@@ -18,6 +18,7 @@
 		architecture,
 		requests,
 		uptime,
+		topology,
 	};
 </script>
 
@@ -99,3 +100,5 @@
 		<Layout.HeaderViewer>{messages['uptime']}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
+
+{#snippet topology()}{/snippet}

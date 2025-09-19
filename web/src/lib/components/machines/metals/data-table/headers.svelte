@@ -15,6 +15,7 @@
 		ram,
 		disk,
 		storage,
+		gpu,
 		tags,
 		scope,
 		actions,
@@ -62,16 +63,16 @@
 {/snippet}
 
 {#snippet cores_arch(column: Column<Machine>)}
-	<Layout.Header class="justify-end">
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>
 			{m.core()}
 			<Layout.SubHeaderViewer>
 				{m.architecture()}
 			</Layout.SubHeaderViewer>
 		</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
@@ -99,6 +100,12 @@
 			<Sorter {column} />
 		</Layout.HeaderController>
 		<Layout.HeaderViewer>{m.storage()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet gpu()}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderViewer>{m.gpu()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

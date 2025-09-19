@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 
 	"connectrpc.com/connect"
@@ -83,6 +84,7 @@ type KubeAppsRepo interface {
 
 type KubeBatchRepo interface {
 	// Job
+	ListJobs(ctx context.Context, config *rest.Config, namespace string) ([]Job, error)
 	ListJobsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Job, error)
 	CreateJob(ctx context.Context, config *rest.Config, namespace, name string, labels, annotations map[string]string, spec *JobSpec) (*Job, error)
 	DeleteJob(ctx context.Context, config *rest.Config, namespace, name string) error
@@ -105,6 +107,7 @@ type KubeCoreRepo interface {
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
 	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
 	GetPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error)
+	StreamPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error)
 
 	// PersistentVolumeClaim
 	GetPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace, name string) (*PersistentVolumeClaim, error)
@@ -356,6 +359,14 @@ func (uc *ApplicationUseCase) toApplication(ls *metav1.LabelSelector, appType, n
 		Pods:       filterPods(pods, namespace, selector),
 		Storages:   filterStorages(pvcs, vs, namespace, scm),
 	}, nil
+}
+
+func (uc *ApplicationUseCase) StreamPodLogs(ctx context.Context, uuid, facility, namespace, podName, containerName string) (io.ReadCloser, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.kubeCore.StreamPodLogs(ctx, config, namespace, podName, containerName)
 }
 
 func filterServices(svcs []corev1.Service, namespace string, s labels.Selector) []corev1.Service {

@@ -10,53 +10,53 @@ option go_package = "github.com/otterscale/otterscale/api/storage/v1;pb";
 service StorageService {
   rpc ListMONs(ListMONsRequest) returns (ListMONsResponse);
   rpc ListOSDs(ListOSDsRequest) returns (ListOSDsResponse);
-  
+
   rpc DoSMART(DoSMARTRequest) returns (DoSMARTResponse);
- 
+
   rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse);
   rpc CreatePool(CreatePoolRequest) returns (Pool);
   rpc UpdatePool(UpdatePoolRequest) returns (Pool);
   rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty);
-  
+
   rpc ListImages(ListImagesRequest) returns (ListImagesResponse);
   rpc CreateImage(CreateImageRequest) returns (Image);
   rpc UpdateImage(UpdateImageRequest) returns (Image);
   rpc DeleteImage(DeleteImageRequest) returns (google.protobuf.Empty);
-  
+
   rpc CreateImageSnapshot(CreateImageSnapshotRequest) returns (Image.Snapshot);
   rpc DeleteImageSnapshot(DeleteImageSnapshotRequest) returns (google.protobuf.Empty);
   rpc RollbackImageSnapshot(RollbackImageSnapshotRequest) returns (google.protobuf.Empty);
   rpc ProtectImageSnapshot(ProtectImageSnapshotRequest) returns (google.protobuf.Empty);
   rpc UnprotectImageSnapshot(UnprotectImageSnapshotRequest) returns (google.protobuf.Empty);
-  
+
   rpc ListVolumes(ListVolumesRequest) returns (ListVolumesResponse);
-  
+
   rpc ListSubvolumes(ListSubvolumesRequest) returns (ListSubvolumesResponse);
   rpc CreateSubvolume(CreateSubvolumeRequest) returns (Subvolume);
   rpc UpdateSubvolume(UpdateSubvolumeRequest) returns (Subvolume);
   rpc DeleteSubvolume(DeleteSubvolumeRequest) returns (google.protobuf.Empty);
-  
+
   rpc GrantSubvolumeExportAccess(GrantSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
   rpc RevokeSubvolumeExportAccess(RevokeSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
- 
+
   rpc CreateSubvolumeSnapshot(CreateSubvolumeSnapshotRequest) returns (Subvolume.Snapshot);
   rpc DeleteSubvolumeSnapshot(DeleteSubvolumeSnapshotRequest) returns (google.protobuf.Empty);
-  
+
   rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse);
   rpc CreateSubvolumeGroup(CreateSubvolumeGroupRequest) returns (SubvolumeGroup);
   rpc UpdateSubvolumeGroup(UpdateSubvolumeGroupRequest) returns (SubvolumeGroup);
   rpc DeleteSubvolumeGroup(DeleteSubvolumeGroupRequest) returns (google.protobuf.Empty);
-  
+
   rpc ListBuckets(ListBucketsRequest) returns (ListBucketsResponse);
   rpc CreateBucket(CreateBucketRequest) returns (Bucket);
   rpc UpdateBucket(UpdateBucketRequest) returns (Bucket);
   rpc DeleteBucket(DeleteBucketRequest) returns (google.protobuf.Empty);
-  
+
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
   rpc CreateUser(CreateUserRequest) returns (User);
   rpc UpdateUser(UpdateUserRequest) returns (User);
   rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
-  
+
   rpc CreateUserKey(CreateUserKeyRequest) returns (User.Key);
   rpc DeleteUserKey(DeleteUserKeyRequest) returns (google.protobuf.Empty);
 }
@@ -106,6 +106,7 @@ message Pool {
   uint64 quota_objects = 42;
   uint64 used_bytes = 43;
   uint64 used_objects = 44;
+  uint64 max_bytes = 45;
   uint64 placement_group_count = 51;
   map<string, int64> placement_group_state = 52;
   google.protobuf.Timestamp created_at = 61;

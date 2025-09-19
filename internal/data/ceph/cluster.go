@@ -266,8 +266,9 @@ func (r *cluster) toPools(d *osdDump, pd *pgDump, df *df) []core.Pool {
 			if d.Pools[i].ID != df.Pools[j].ID {
 				continue
 			}
-			pool.UsedBytes = df.Pools[j].Stats.BytesUsed
-			pool.UsedObjects = df.Pools[j].Stats.Objects
+			pool.UsedBytes = df.Pools[j].Stats.UsedBytes
+			pool.UsedObjects = df.Pools[j].Stats.UsedObjects
+			pool.MaxBytes = df.Pools[j].Stats.MaxBytes
 		}
 		for j := range pd.PGMap.PGStats {
 			id := strings.Split(pd.PGMap.PGStats[j].ID, ".")[0]

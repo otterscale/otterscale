@@ -81,11 +81,13 @@ const columns: ColumnDef<Pool>[] = [
 		},
 		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
-				Number(previousRow.original.quotaBytes) !== 0
-					? Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes)
+				Number(previousRow.original.usedBytes + previousRow.original.maxBytes) !== 0
+					? Number(previousRow.original.usedBytes) /
+							Number(previousRow.original.usedBytes + previousRow.original.maxBytes)
 					: 0,
-				Number(nextRow.original.quotaBytes) !== 0
-					? Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes)
+				Number(nextRow.original.usedBytes + nextRow.original.maxBytes) !== 0
+					? Number(nextRow.original.usedBytes) /
+							Number(nextRow.original.usedBytes + nextRow.original.maxBytes)
 					: 0,
 				(p, n) => p < n,
 				(p, n) => p === n,

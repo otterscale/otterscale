@@ -134,7 +134,7 @@ func (r *application) ResolveUnitErrors(_ context.Context, uuid string, units []
 	if err != nil {
 		return err
 	}
-	return api.NewClient(conn).ResolveUnitErrors(units, true, true)
+	return api.NewClient(conn).ResolveUnitErrors(units, false, true)
 }
 
 func (r *application) CreateRelation(_ context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error) {

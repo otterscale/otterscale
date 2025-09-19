@@ -63,5 +63,4 @@ export default ts.config(
 			},
 		},
 	},
-	{ ignores: ['src/lib/api/**/*'] },
 );

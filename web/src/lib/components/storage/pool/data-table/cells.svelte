@@ -83,7 +83,7 @@
 	<Layout.Cell class="items-end">
 		<Progress.Root
 			numerator={Number(row.original.usedBytes)}
-			denominator={Number(row.original.quotaBytes)}
+			denominator={Number(row.original.usedBytes + row.original.maxBytes)}
 			highIsGood={false}
 		>
 			{#snippet ratio({ numerator, denominator })}

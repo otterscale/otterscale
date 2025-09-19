@@ -780,6 +780,7 @@ type Pool struct {
 	xxx_hidden_QuotaObjects        uint64                 `protobuf:"varint,42,opt,name=quota_objects,json=quotaObjects"`
 	xxx_hidden_UsedBytes           uint64                 `protobuf:"varint,43,opt,name=used_bytes,json=usedBytes"`
 	xxx_hidden_UsedObjects         uint64                 `protobuf:"varint,44,opt,name=used_objects,json=usedObjects"`
+	xxx_hidden_MaxBytes            uint64                 `protobuf:"varint,45,opt,name=max_bytes,json=maxBytes"`
 	xxx_hidden_PlacementGroupCount uint64                 `protobuf:"varint,51,opt,name=placement_group_count,json=placementGroupCount"`
 	xxx_hidden_PlacementGroupState map[string]int64       `protobuf:"bytes,52,rep,name=placement_group_state,json=placementGroupState" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
 	xxx_hidden_CreatedAt           *timestamppb.Timestamp `protobuf:"bytes,61,opt,name=created_at,json=createdAt"`
@@ -904,6 +905,13 @@ func (x *Pool) GetUsedObjects() uint64 {
 	return 0
 }
 
+func (x *Pool) GetMaxBytes() uint64 {
+	if x != nil {
+		return x.xxx_hidden_MaxBytes
+	}
+	return 0
+}
+
 func (x *Pool) GetPlacementGroupCount() uint64 {
 	if x != nil {
 		return x.xxx_hidden_PlacementGroupCount
@@ -934,67 +942,72 @@ func (x *Pool) GetApplications() []string {
 
 func (x *Pool) SetId(v int64) {
 	x.xxx_hidden_Id = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 17)
 }
 
 func (x *Pool) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 17)
 }
 
 func (x *Pool) SetUpdating(v bool) {
 	x.xxx_hidden_Updating = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 17)
 }
 
 func (x *Pool) SetPoolType(v PoolType) {
 	x.xxx_hidden_PoolType = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 17)
 }
 
 func (x *Pool) SetEcOverwrites(v bool) {
 	x.xxx_hidden_EcOverwrites = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 17)
 }
 
 func (x *Pool) SetDataChunks(v uint64) {
 	x.xxx_hidden_DataChunks = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 17)
 }
 
 func (x *Pool) SetCodingChunks(v uint64) {
 	x.xxx_hidden_CodingChunks = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 17)
 }
 
 func (x *Pool) SetReplicatedSize(v uint64) {
 	x.xxx_hidden_ReplicatedSize = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 17)
 }
 
 func (x *Pool) SetQuotaBytes(v uint64) {
 	x.xxx_hidden_QuotaBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 17)
 }
 
 func (x *Pool) SetQuotaObjects(v uint64) {
 	x.xxx_hidden_QuotaObjects = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 17)
 }
 
 func (x *Pool) SetUsedBytes(v uint64) {
 	x.xxx_hidden_UsedBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 17)
 }
 
 func (x *Pool) SetUsedObjects(v uint64) {
 	x.xxx_hidden_UsedObjects = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 17)
+}
+
+func (x *Pool) SetMaxBytes(v uint64) {
+	x.xxx_hidden_MaxBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 17)
 }
 
 func (x *Pool) SetPlacementGroupCount(v uint64) {
 	x.xxx_hidden_PlacementGroupCount = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 16)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 13, 17)
 }
 
 func (x *Pool) SetPlacementGroupState(v map[string]int64) {
@@ -1093,11 +1106,18 @@ func (x *Pool) HasUsedObjects() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 11)
 }
 
-func (x *Pool) HasPlacementGroupCount() bool {
+func (x *Pool) HasMaxBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 12)
+}
+
+func (x *Pool) HasPlacementGroupCount() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 13)
 }
 
 func (x *Pool) HasCreatedAt() bool {
@@ -1167,8 +1187,13 @@ func (x *Pool) ClearUsedObjects() {
 	x.xxx_hidden_UsedObjects = 0
 }
 
-func (x *Pool) ClearPlacementGroupCount() {
+func (x *Pool) ClearMaxBytes() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 12)
+	x.xxx_hidden_MaxBytes = 0
+}
+
+func (x *Pool) ClearPlacementGroupCount() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 13)
 	x.xxx_hidden_PlacementGroupCount = 0
 }
 
@@ -1191,6 +1216,7 @@ type Pool_builder struct {
 	QuotaObjects        *uint64
 	UsedBytes           *uint64
 	UsedObjects         *uint64
+	MaxBytes            *uint64
 	PlacementGroupCount *uint64
 	PlacementGroupState map[string]int64
 	CreatedAt           *timestamppb.Timestamp
@@ -1202,55 +1228,59 @@ func (b0 Pool_builder) Build() *Pool {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 17)
 		x.xxx_hidden_Id = *b.Id
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 17)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Updating != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 17)
 		x.xxx_hidden_Updating = *b.Updating
 	}
 	if b.PoolType != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 17)
 		x.xxx_hidden_PoolType = *b.PoolType
 	}
 	if b.EcOverwrites != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 17)
 		x.xxx_hidden_EcOverwrites = *b.EcOverwrites
 	}
 	if b.DataChunks != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 17)
 		x.xxx_hidden_DataChunks = *b.DataChunks
 	}
 	if b.CodingChunks != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 17)
 		x.xxx_hidden_CodingChunks = *b.CodingChunks
 	}
 	if b.ReplicatedSize != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 17)
 		x.xxx_hidden_ReplicatedSize = *b.ReplicatedSize
 	}
 	if b.QuotaBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 17)
 		x.xxx_hidden_QuotaBytes = *b.QuotaBytes
 	}
 	if b.QuotaObjects != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 17)
 		x.xxx_hidden_QuotaObjects = *b.QuotaObjects
 	}
 	if b.UsedBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 17)
 		x.xxx_hidden_UsedBytes = *b.UsedBytes
 	}
 	if b.UsedObjects != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 17)
 		x.xxx_hidden_UsedObjects = *b.UsedObjects
 	}
+	if b.MaxBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 17)
+		x.xxx_hidden_MaxBytes = *b.MaxBytes
+	}
 	if b.PlacementGroupCount != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 16)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 13, 17)
 		x.xxx_hidden_PlacementGroupCount = *b.PlacementGroupCount
 	}
 	x.xxx_hidden_PlacementGroupState = b.PlacementGroupState
@@ -11800,7 +11830,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"used_bytes\x18\r \x01(\x04R\tusedBytes\x122\n" +
 	"\x15placement_group_count\x18\x15 \x01(\x04R\x13placementGroupCount\x128\n" +
-	"\amachine\x18e \x01(\v2\x1e.otterscale.storage.v1.MachineR\amachine\"\xe5\x05\n" +
+	"\amachine\x18e \x01(\v2\x1e.otterscale.storage.v1.MachineR\amachine\"\x82\x06\n" +
 	"\x04Pool\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
@@ -11816,7 +11846,8 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\rquota_objects\x18* \x01(\x04R\fquotaObjects\x12\x1d\n" +
 	"\n" +
 	"used_bytes\x18+ \x01(\x04R\tusedBytes\x12!\n" +
-	"\fused_objects\x18, \x01(\x04R\vusedObjects\x122\n" +
+	"\fused_objects\x18, \x01(\x04R\vusedObjects\x12\x1b\n" +
+	"\tmax_bytes\x18- \x01(\x04R\bmaxBytes\x122\n" +
 	"\x15placement_group_count\x183 \x01(\x04R\x13placementGroupCount\x12h\n" +
 	"\x15placement_group_state\x184 \x03(\v24.otterscale.storage.v1.Pool.PlacementGroupStateEntryR\x13placementGroupState\x129\n" +
 	"\n" +

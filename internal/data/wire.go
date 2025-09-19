@@ -18,6 +18,7 @@ var ProviderSet = wire.NewSet(
 	maas.NewFabric,
 	maas.NewIPRange,
 	maas.NewMachine,
+	maas.NewNodeDevice,
 	maas.NewPackageRepository,
 	maas.NewServer,
 	maas.NewSSHKey,

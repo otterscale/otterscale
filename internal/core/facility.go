@@ -246,6 +246,10 @@ func (uc *FacilityUseCase) AddFacilityUnits(ctx context.Context, uuid, name stri
 	return uc.facility.AddUnits(ctx, uuid, name, number, placements)
 }
 
+func (uc *FacilityUseCase) ResolveFacilityUnitErrors(ctx context.Context, uuid, unitName string) error {
+	return uc.facility.ResolveUnitErrors(ctx, uuid, []string{unitName})
+}
+
 func (uc *FacilityUseCase) ListActions(ctx context.Context, uuid, appName string) ([]Action, error) {
 	actions, err := uc.action.List(ctx, uuid, appName)
 	if err != nil {
