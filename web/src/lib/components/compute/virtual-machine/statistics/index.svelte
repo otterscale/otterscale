@@ -1,105 +1,101 @@
-<!-- <script lang="ts">
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-
-	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
+<script lang="ts">
+	import { type VirtualMachine, VirtualMachine_status } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
 	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { formatProgressColor } from '$lib/formatter';
+	import { formatCapacity, formatProgressColor } from '$lib/formatter';
 
-	let { scopeUuid, facilityName }: { scopeUuid: string; facilityName: string } = $props();
+	let { virtualMachines }: { virtualMachines: VirtualMachine[] } = $props();
 
-	// Client setup
-	const transport: Transport = getContext('transport');
-	const client = createClient(ApplicationService, transport);
-	const applications = writable<Application[]>([]);
-
-	// State
-	let selectedValue = $state('');
-
-	// Computed values
-	const filteredApplications = $derived($applications.filter((a) => a.type === selectedValue));
-
-	const totalPods = $derived(filteredApplications.reduce((total, application) => total + application.pods.length, 0));
-
-	const numberOfServices = $derived(
-		filteredApplications.reduce((total, application) => total + application.services.length, 0),
+	// Calculate statistics
+	const totalMachines = $derived(virtualMachines.length);
+	const totalDisks = $derived(virtualMachines.reduce((acc, vm) => acc + vm.disks.length, 0));
+	const totalDataVolumes = $derived(
+		virtualMachines.reduce(
+			(acc, vm) => acc + vm.disks.filter((disk) => disk.sourceData.case === 'dataVolume').length,
+			0,
+		),
 	);
-
-	const healthyPods = $derived(filteredApplications.reduce((total, application) => total + application.healthies, 0));
-
-	const healthByType = $derived(totalPods > 0 ? (healthyPods * 100) / totalPods : 0);
-
-	const healthColorClass = $derived(formatProgressColor(healthByType));
-
-	onMount(async () => {
-		try {
-			const response = await client.listApplications({
-				scopeUuid: scopeUuid,
-				facilityName: facilityName,
-			});
-
-			applications.set(response.applications);
-
-			if (response.applications && response.applications[0]) {
-				selectedValue = response.applications[0].type;
-			}
-		} catch (error) {
-			console.error('Error fetching applications:', error);
-		}
-	});
+	const storageFormatted = $derived(
+		formatCapacity(
+			virtualMachines.reduce((acc, vm) => {
+				return (
+					acc +
+					vm.disks.reduce((diskAcc, disk) => {
+						if (disk.sourceData.case === 'dataVolume') {
+							return diskAcc + Number(disk.sourceData.value.sizeBytes);
+						}
+						return diskAcc;
+					}, 0)
+				);
+			}, 0),
+		),
+	);
+	const machinesOn = $derived(
+		virtualMachines.filter((vm) => vm.statusPhase === VirtualMachine_status.RUNNING).length,
+	);
+	const powerOnPercentage = $derived(Math.round((machinesOn / totalMachines) * 100));
 </script>
 
 <div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 	<Layout>
 		{#snippet title()}
-			<Title title="APPLICATION" />
+			<Title title="VIRTAUL MACHINE" />
 		{/snippet}
 
 		{#snippet content()}
-			<Content value={filteredApplications.length} />
+			<Content value={totalMachines} />
 		{/snippet}
 	</Layout>
 
 	<Layout>
 		{#snippet title()}
-			<Title title="SERVICE" />
+			<Title title="DISK" />
 		{/snippet}
 
 		{#snippet content()}
-			<Content value={numberOfServices} />
+			<Content value={totalDisks} />
 		{/snippet}
 	</Layout>
 
 	<Layout>
 		{#snippet title()}
-			<Title title="POD" />
+			<Title title="DATA VOLUME" />
 		{/snippet}
 
 		{#snippet content()}
-			<Content value={totalPods} />
+			<Content>
+				<span>{storageFormatted.value}</span>
+				<span class="text-3xl font-extralight">
+					{storageFormatted.unit}
+				</span>
+			</Content>
+		{/snippet}
+
+		{#snippet footer()}
+			<p class="text-muted-foreground text-xs">
+				over {totalDataVolumes} Data Volumes
+			</p>
 		{/snippet}
 	</Layout>
 
 	<Layout>
 		{#snippet title()}
-			<Title title="HEALTH" />
+			<Title title="POWER ON" />
 		{/snippet}
 
 		{#snippet content()}
 			<ContentSubtitle
-				value={Math.round(healthByType)}
+				value={powerOnPercentage}
 				unit="%"
-				subtitle={`${healthyPods} Running over ${totalPods} pods`}
+				subtitle={`${machinesOn} On over ${totalMachines} units`}
 			/>
 		{/snippet}
 
 		{#snippet footer()}
-			<Progress value={healthByType} max={100} class={healthColorClass} />
+			<Progress value={powerOnPercentage} max={100} class={formatProgressColor(powerOnPercentage)} />
 		{/snippet}
 	</Layout>
-</div> -->
+</div>
