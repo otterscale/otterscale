@@ -557,7 +557,7 @@ func (uc *EssentialUseCase) GetGpuRelationByModel(ctx context.Context, uuid, fac
 
 	// Find deployments with the specified model
 	label := "model-name=" + modelName
-	deployments, err := uc.kubeAppsRepo.ListAllNamespacesDeploymentsByLabel(ctx, config, "", label)
+	deployments, err := uc.kubeAppsRepo.ListDeploymentsByLabel(ctx, config, "", label)
 	if err != nil {
 		return nil, err
 	}
@@ -621,13 +621,14 @@ func extractGpuInfoFromPodAnnotations(annotations map[string]string) []VGpuInfo 
 	vgpuInfos := []VGpuInfo{}
 	devices := strings.Split(vgpuDevicesAllocated, ":")
 
+	const minDevicePartsCount = 4
 	for _, device := range devices {
 		if device == "" {
 			continue
 		}
 
 		parts := strings.Split(device, ",")
-		if len(parts) < 4 {
+		if len(parts) < minDevicePartsCount {
 			continue
 		}
 

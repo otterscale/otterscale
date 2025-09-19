@@ -71,7 +71,7 @@ type ControlPlaneCredential struct {
 type KubeAppsRepo interface {
 	// Deployment
 	ListDeployments(ctx context.Context, config *rest.Config, namespace string) ([]Deployment, error)
-	ListAllNamespacesDeploymentsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Deployment, error)
+	ListDeploymentsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Deployment, error)
 	GetDeployment(ctx context.Context, config *rest.Config, namespace, name string) (*Deployment, error)
 
 	// StatefulSet

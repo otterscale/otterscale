@@ -35,7 +35,7 @@ func (r *apps) ListDeployments(ctx context.Context, config *rest.Config, namespa
 	return list.Items, nil
 }
 
-func (r *apps) ListAllNamespacesDeploymentsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]oscore.Deployment, error) {
+func (r *apps) ListDeploymentsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]oscore.Deployment, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
