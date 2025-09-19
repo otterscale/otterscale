@@ -506,7 +506,8 @@ func (uc *EssentialUseCase) GetGpuRelationByMachine(ctx context.Context, uuid, f
 	}
 
 	podInfos := make([]PodInfo, 0, len(pods))
-	for _, pod := range pods {
+	for i := range pods {
+		pod := &pods[i]
 		// Check if pod has vGPU annotations
 		annotations := pod.GetAnnotations()
 		if _, hasVGpu := annotations["hami.io/vgpu-devices-allocated"]; !hasVGpu {
@@ -525,7 +526,7 @@ func (uc *EssentialUseCase) GetGpuRelationByMachine(ctx context.Context, uuid, f
 		}
 
 		// Find deployment for this pod
-		deployment, err := uc.findDeploymentForPod(ctx, config, &pod)
+		deployment, err := uc.findDeploymentForPod(ctx, config, pod)
 		if err == nil && deployment != nil {
 			podInfo.DeploymentName = deployment.Name
 			podInfo.DeploymentLabels = deployment.Labels
@@ -563,7 +564,8 @@ func (uc *EssentialUseCase) GetGpuRelationByModel(ctx context.Context, uuid, fac
 	}
 
 	podInfos := []PodInfo{}
-	for _, deployment := range deployments {
+	for i := range deployments {
+		deployment := &deployments[i]
 		// Get pods for this deployment
 		selector := deployment.Spec.Selector
 		if selector == nil || selector.MatchLabels == nil {
@@ -584,7 +586,8 @@ func (uc *EssentialUseCase) GetGpuRelationByModel(ctx context.Context, uuid, fac
 			continue
 		}
 
-		for _, pod := range pods {
+		for j := range pods {
+			pod := &pods[j]
 			podInfo := PodInfo{
 				Name:             pod.GetName(),
 				Namespace:        pod.GetNamespace(),
@@ -678,11 +681,12 @@ func (uc *EssentialUseCase) findDeploymentForPod(ctx context.Context, config *re
 				return nil, err
 			}
 
-			for _, deployment := range deployments {
+			for i := range deployments {
+				deployment := &deployments[i]
 				// Check if this deployment's name matches the ReplicaSet prefix
 				deploymentName := deployment.Name
 				if strings.HasPrefix(replicaSetName, deploymentName+"-") {
-					return &deployment, nil
+					return deployment, nil
 				}
 			}
 		}
