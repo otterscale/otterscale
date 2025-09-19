@@ -51,8 +51,10 @@ func (uc *KubeVirtUseCase) ListVirtualMachineServices(ctx context.Context, uuid,
 	if err != nil {
 		return nil, err
 	}
+	var label = "otterscale.io/kind=vm-service"
 
-	return uc.kubeCore.ListServices(ctx, config, namespace)
+    return uc.kubeCore.ListServicesByOptions(ctx, config, namespace, label, "")
+
 }
 
 func (uc *KubeVirtUseCase) UpdateVirtualMachineService(ctx context.Context, uuid, facility, namespace, name string, svcspec *corev1.ServiceSpec) (*corev1.Service, error) {

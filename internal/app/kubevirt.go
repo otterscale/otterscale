@@ -887,7 +887,7 @@ func toCoreVirtualMachineService(vmsvc *pb.VirtualMachineService) *core.VirtualM
 	case pb.VirtualMachineServiceSpec_LOAD_BALANCER:
 		spec.Type = corev1.ServiceTypeLoadBalancer
 	default:
-		spec.Type = corev1.ServiceTypeLoadBalancer
+		spec.Type = corev1.ServiceTypeNodePort
 	}
 
 	vmName := vmsvc.GetSpec().GetVirtualMachineName()
