@@ -36,13 +36,13 @@
 	const machinesOn = $derived(
 		virtualMachines.filter((vm) => vm.statusPhase === VirtualMachine_status.RUNNING).length,
 	);
-	const powerOnPercentage = $derived(Math.round((machinesOn / totalMachines) * 100));
+	const powerOnPercentage = $derived(totalMachines === 0 ? 0 : Math.round((machinesOn / totalMachines) * 100));
 </script>
 
 <div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 	<Layout>
 		{#snippet title()}
-			<Title title="VIRTAUL MACHINE" />
+			<Title title="VIRTUAL MACHINE" />
 		{/snippet}
 
 		{#snippet content()}
