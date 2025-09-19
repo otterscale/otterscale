@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # =============================================================================
-# Otterscale Installation Script - Optimized Version
-# This script installs and configures Otterscale with MAAS, Juju, LXD, and MicroK8s
-# Author: Otterscale Team
+# OtterScale Installation Script - Optimized Version
+# This script installs and configures OtterScale with MAAS, Juju, LXD, and MicroK8s
+# Author: OtterScale Team
 # Version: 2.0
 # =============================================================================
 
@@ -39,7 +39,7 @@ readonly LXD_CHANNEL="5.0/stable"
 readonly MICROK8S_CHANNEL="1.33/stable"
 readonly CONTROLLER_CHARM_CHANNEL="3.6/stable"
 
-# Otterscale configuration
+# OtterScale configuration
 readonly OTTERSCALE_MAX_RETRIES=5
 readonly OTTERSCALE_CHARMHUB_URL="https://api.charmhub.io"
 readonly OTTERSCALE_MAAS_ADMIN_USER="admin"
@@ -345,7 +345,7 @@ config_modules() {
 # COMMUNICATION FUNCTIONS
 # =============================================================================
 
-# Send HTTP request to Otterscale endpoint
+# Send HTTP request to OtterScale endpoint
 send_request() {
     local url_path="$1"
     local data="$2"
@@ -372,7 +372,7 @@ send_request() {
     return 1
 }
 
-# Send status update to Otterscale
+# Send status update to OtterScale
 send_status_data() {
     local phase="$1"
     local message="$2"
@@ -394,12 +394,12 @@ EOF
     send_request "/otterscale.environment.v1.EnvironmentService/UpdateStatus" "$data"
 }
 
-# Send complete configuration to Otterscale
+# Send complete configuration to OtterScale
 send_otterscale_config_data() {
     local maas_endpoint="http://$OTTERSCALE_INTERFACE_IP:5240/MAAS"
     local kube_folder="/home/$NON_ROOT_USER/.kube"
     
-    log "INFO" "Collecting Otterscale configuration data..." "CONFIG_SEND"
+    log "INFO" "Collecting OtterScale configuration data..." "CONFIG_SEND"
     
     # Get MAAS API key
     local maas_key
@@ -447,7 +447,7 @@ EOF
     if send_request "/otterscale.environment.v1.EnvironmentService/UpdateConfig" "$config_data"; then
         log "INFO" "Configuration data sent successfully" "CONFIG_SEND"
     else
-        log "WARN" "Failed to send configuration data to Otterscale" "CONFIG_SEND"
+        log "WARN" "Failed to send configuration data to OtterScale" "CONFIG_SEND"
     fi
 }
 
@@ -1570,7 +1570,7 @@ main() {
     # Initialize logging
     init_logging
     
-    log "INFO" "Starting Otterscale installation..." "INSTALLATION"
+    log "INFO" "Starting OtterScale installation..." "INSTALLATION"
     log "INFO" "Target endpoint: $OTTERSCALE_ENDPOINT" "INSTALLATION"
     
     # System validation
@@ -1628,7 +1628,7 @@ main() {
     config_modules
     send_otterscale_config_data
     
-    log "INFO" "Otterscale installation completed successfully!" "INSTALLATION"
+    log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
 }
 
 # =============================================================================
@@ -1640,7 +1640,7 @@ parse_arguments() {
     # Default endpoint if no arguments provided
     if [[ $# -eq 0 ]]; then
         while true; do
-            read -p "Enter Otterscale endpoint (default: http://127.0.0.1:8299): " user_endpoint
+            read -p "Enter OtterScale endpoint (default: http://127.0.0.1:8299): " user_endpoint
             OTTERSCALE_ENDPOINT="${user_endpoint:-http://127.0.0.1:8299}"
             
             if validate_url "$OTTERSCALE_ENDPOINT"; then
@@ -1674,7 +1674,7 @@ parse_arguments() {
                 echo ""
                 echo "Options:"
                 echo "  -h, --help, help     Show this help message"
-                echo "  --url=URL            Specify Otterscale endpoint"
+                echo "  --url=URL            Specify OtterScale endpoint"
                 echo "  --config=FILE        Specify configuration file"
                 echo ""
                 echo "Examples:"
