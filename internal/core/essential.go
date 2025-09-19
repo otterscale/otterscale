@@ -7,6 +7,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"connectrpc.com/connect"
 	"github.com/canonical/gomaasclient/entity/node"
@@ -15,6 +16,7 @@ import (
 	"github.com/juju/juju/rpc/params"
 	"golang.org/x/sync/errgroup"
 	jujuyaml "gopkg.in/yaml.v2"
+	"k8s.io/client-go/rest"
 
 	"github.com/otterscale/otterscale/internal/config"
 )
@@ -56,9 +58,34 @@ type EssentialUseCase struct {
 	ipRange        IPRangeRepo
 	server         ServerRepo
 	client         ClientRepo
+	kubeRepo       KubeCoreRepo
+	kubeAppsRepo   KubeAppsRepo
+	action         ActionRepo
 }
 
-func NewEssentialUseCase(conf *config.Config, scope ScopeRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo) *EssentialUseCase {
+// VGpuInfo represents virtual GPU information for a pod
+type VGpuInfo struct {
+	IsVGpu          bool
+	VGpuBindTime    time.Time
+	BindPhase       string
+	PhysicalGpuUUID string
+	VRamMib         string
+	VCoresPercent   string
+}
+
+// PodInfo represents pod information with GPU details
+type PodInfo struct {
+	Name             string
+	Namespace        string
+	ModelName        string
+	MachineName      string
+	VGpuInfo         []VGpuInfo
+	DeploymentName   string
+	DeploymentLabels map[string]string
+}
+
+// NewEssentialUseCase creates an essential use case
+func NewEssentialUseCase(conf *config.Config, scope ScopeRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo, kubeRepo KubeCoreRepo, kubeAppsRepo KubeAppsRepo, action ActionRepo) *EssentialUseCase {
 	return &EssentialUseCase{
 		conf:           conf,
 		scope:          scope,
@@ -69,6 +96,9 @@ func NewEssentialUseCase(conf *config.Config, scope ScopeRepo, facility Facility
 		ipRange:        ipRange,
 		server:         server,
 		client:         client,
+		kubeRepo:       kubeRepo,
+		kubeAppsRepo:   kubeAppsRepo,
+		action:         action,
 	}
 }
 
@@ -459,4 +489,207 @@ func getDirective(ctx context.Context, machineRepo MachineRepo, machineID string
 		return "", connect.NewError(connect.CodeInvalidArgument, errors.New("machine status is not deployed"))
 	}
 	return getJujuMachineID(machine.WorkloadAnnotations)
+}
+
+// GetGpuRelationByMachine returns GPU relation information by machine name
+func (uc *EssentialUseCase) GetGpuRelationByMachine(ctx context.Context, uuid, facility, machineName string) ([]PodInfo, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+
+	// Find pods on the specified machine with vGPU
+	label := "hami.io/vgpu-node=" + machineName
+	pods, err := uc.kubeRepo.ListPodsByLabel(ctx, config, "", label)
+	if err != nil {
+		return nil, err
+	}
+
+	podInfos := make([]PodInfo, 0, len(pods))
+	for i := range pods {
+		pod := &pods[i]
+		// Check if pod has vGPU annotations
+		annotations := pod.GetAnnotations()
+		if _, hasVGpu := annotations["hami.io/vgpu-devices-allocated"]; !hasVGpu {
+			continue // Skip pods without vGPU
+		}
+
+		podInfo := PodInfo{
+			Name:        pod.GetName(),
+			Namespace:   pod.GetNamespace(),
+			MachineName: machineName,
+		}
+
+		// Get machine name from labels if available
+		if nodeLabel, ok := pod.GetLabels()["hami.io/vgpu-node"]; ok {
+			podInfo.MachineName = nodeLabel
+		}
+
+		// Find deployment for this pod
+		deployment, err := uc.findDeploymentForPod(ctx, config, pod)
+		if err == nil && deployment != nil {
+			podInfo.DeploymentName = deployment.Name
+			podInfo.DeploymentLabels = deployment.Labels
+
+			// Get model name from deployment labels
+			if modelName, ok := deployment.Labels["model-name"]; ok {
+				podInfo.ModelName = modelName
+			}
+		}
+
+		// Extract GPU information from annotations
+		gpuInfos := extractGpuInfoFromPodAnnotations(annotations)
+		if len(gpuInfos) > 0 {
+			podInfo.VGpuInfo = gpuInfos
+		}
+
+		podInfos = append(podInfos, podInfo)
+	}
+
+	return podInfos, nil
+}
+
+// GetGpuRelationByModel returns GPU relation information by model name
+func (uc *EssentialUseCase) GetGpuRelationByModel(ctx context.Context, uuid, facility, modelName string) ([]PodInfo, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+
+	// Find deployments with the specified model
+	label := "model-name=" + modelName
+	deployments, err := uc.kubeAppsRepo.ListDeploymentsByLabel(ctx, config, "", label)
+	if err != nil {
+		return nil, err
+	}
+
+	podInfos := []PodInfo{}
+	for i := range deployments {
+		deployment := &deployments[i]
+		// Get pods for this deployment
+		selector := deployment.Spec.Selector
+		if selector == nil || selector.MatchLabels == nil {
+			continue
+		}
+
+		// Build label selector from deployment's selector
+		podLabelSelector := ""
+		for key, value := range selector.MatchLabels {
+			if podLabelSelector != "" {
+				podLabelSelector += ","
+			}
+			podLabelSelector += key + "=" + value
+		}
+
+		pods, err := uc.kubeRepo.ListPodsByLabel(ctx, config, deployment.Namespace, podLabelSelector)
+		if err != nil {
+			continue
+		}
+
+		for j := range pods {
+			pod := &pods[j]
+			podInfo := PodInfo{
+				Name:             pod.GetName(),
+				Namespace:        pod.GetNamespace(),
+				ModelName:        modelName,
+				DeploymentName:   deployment.Name,
+				DeploymentLabels: deployment.Labels,
+			}
+
+			// Get machine name from labels
+			if machineName, ok := pod.GetLabels()["hami.io/vgpu-node"]; ok {
+				podInfo.MachineName = machineName
+			}
+
+			// Extract GPU information from annotations
+			gpuInfos := extractGpuInfoFromPodAnnotations(pod.GetAnnotations())
+			if len(gpuInfos) > 0 {
+				podInfo.VGpuInfo = gpuInfos
+			}
+
+			podInfos = append(podInfos, podInfo)
+		}
+	}
+
+	return podInfos, nil
+}
+
+// extractGpuInfoFromPodAnnotations extracts GPU information from pod annotations
+func extractGpuInfoFromPodAnnotations(annotations map[string]string) []VGpuInfo {
+	vgpuDevicesAllocated, hasVGpu := annotations["hami.io/vgpu-devices-allocated"]
+	if !hasVGpu || vgpuDevicesAllocated == "" {
+		return nil
+	}
+
+	vgpuInfos := []VGpuInfo{}
+	devices := strings.Split(vgpuDevicesAllocated, ":")
+
+	const minDevicePartsCount = 4
+	for _, device := range devices {
+		if device == "" {
+			continue
+		}
+
+		parts := strings.Split(device, ",")
+		if len(parts) < minDevicePartsCount {
+			continue
+		}
+
+		// Extract UUID, VRAM, and cores from the device string
+		gpuUUID := parts[0]
+		vram := parts[2]
+
+		// Extract cores (removing trailing colon)
+		coresStr := parts[3]
+		cores := strings.TrimSuffix(coresStr, ":")
+
+		// Parse bind time
+		var bindTime time.Time
+		if bindTimeStr, ok := annotations["hami.io/bind-time"]; ok && bindTimeStr != "" {
+			if timestamp, err := strconv.ParseInt(bindTimeStr, 10, 64); err == nil {
+				bindTime = time.Unix(timestamp, 0)
+			}
+		}
+
+		vgpuInfo := VGpuInfo{
+			IsVGpu:          true,
+			VGpuBindTime:    bindTime,
+			BindPhase:       annotations["hami.io/bind-phase"],
+			PhysicalGpuUUID: gpuUUID,
+			VRamMib:         vram,
+			VCoresPercent:   cores,
+		}
+
+		vgpuInfos = append(vgpuInfos, vgpuInfo)
+	}
+
+	return vgpuInfos
+}
+
+// findDeploymentForPod finds the deployment that owns the given pod
+func (uc *EssentialUseCase) findDeploymentForPod(ctx context.Context, config *rest.Config, pod *Pod) (*Deployment, error) {
+	// Get the owner references from the pod
+	ownerRefs := pod.OwnerReferences
+	for _, ownerRef := range ownerRefs {
+		if ownerRef.Kind == "ReplicaSet" {
+			// Find the ReplicaSet
+			replicaSetName := ownerRef.Name
+
+			// Get all deployments in the namespace and check if any owns this ReplicaSet
+			deployments, err := uc.kubeAppsRepo.ListDeployments(ctx, config, pod.Namespace)
+			if err != nil {
+				return nil, err
+			}
+
+			for i := range deployments {
+				deployment := &deployments[i]
+				// Check if this deployment's name matches the ReplicaSet prefix
+				deploymentName := deployment.Name
+				if strings.HasPrefix(replicaSetName, deploymentName+"-") {
+					return deployment, nil
+				}
+			}
+		}
+	}
+	return nil, nil
 }

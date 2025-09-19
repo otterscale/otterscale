@@ -202,7 +202,7 @@ func TestEssentialUseCase_IsMachineDeployed(t *testing.T) {
 			LastCommissioned: time.Now(),
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, &essMockMachineRepo{machines: machines}, nil, nil, nil, nil)
+	uc := NewEssentialUseCase(nil, nil, nil, nil, &essMockMachineRepo{machines: machines}, nil, nil, nil, nil, nil, nil, nil)
 	msg, ok, err := uc.IsMachineDeployed(context.Background(), "uuid1")
 	assert.NoError(t, err)
 	assert.True(t, ok)
@@ -232,7 +232,7 @@ func TestEssentialUseCase_ListStatuses(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, client)
+	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, client, nil, nil, nil)
 	statuses, err := uc.ListStatuses(context.Background(), "uuid")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, statuses)
@@ -257,7 +257,7 @@ func TestEssentialUseCase_ListEssentials(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, scope, nil, nil, nil, nil, nil, nil, client)
+	uc := NewEssentialUseCase(nil, scope, nil, nil, nil, nil, nil, nil, client, nil, nil, nil)
 	essentials, err := uc.ListEssentials(context.Background(), 1, "uuid")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, essentials)
@@ -293,7 +293,7 @@ func TestEssentialUseCase_CreateSingleNode(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(&conf.Config, scopeRepo, facilityRepo, facilityOffersRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo)
+	uc := NewEssentialUseCase(&conf.Config, scopeRepo, facilityRepo, facilityOffersRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo, nil, nil, nil)
 	err := uc.CreateSingleNode(context.Background(), "uuid", "id1", "prefix", []string{"10.0.0.2"}, "198.19.0.0/16", []string{"/dev/sda"})
 	assert.Error(t, err) // because CreateCeph, CreateKubernetes, CreateCommon are not implemented
 }
@@ -315,7 +315,7 @@ func TestEssentialUseCase_getMachineStatusMessage(t *testing.T) {
 			LastCommissioned: time.Now(),
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 	msg := uc.getMachineStatusMessage(machines)
 	assert.Contains(t, msg, "testing")
 }
@@ -343,7 +343,7 @@ func TestEssentialUseCase_validateMachineStatus(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, machineRepo, nil, nil, nil, clientRepo)
+	uc := NewEssentialUseCase(nil, nil, nil, nil, machineRepo, nil, nil, nil, clientRepo, nil, nil, nil)
 	err := uc.validateMachineStatus(context.Background(), "uuid", "id1")
 	assert.NoError(t, err)
 }

@@ -83,6 +83,7 @@ func (r *core) ListPodsByLabel(ctx context.Context, config *rest.Config, namespa
 	if err != nil {
 		return nil, err
 	}
+
 	return list.Items, nil
 }
 
