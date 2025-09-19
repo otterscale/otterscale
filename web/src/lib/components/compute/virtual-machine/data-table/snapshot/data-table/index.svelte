@@ -14,7 +14,7 @@
 	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 
-	import type { VirtualMachine, VirtualMachineDisk } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type { VirtualMachine, VirtualMachineSnapshot } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
@@ -24,10 +24,10 @@
 <script lang="ts">
 	let {
 		virtualMachine,
-		virtualMachineDisks,
+		virtualMachineSnapshots,
 	}: {
 		virtualMachine: VirtualMachine;
-		virtualMachineDisks: VirtualMachineDisk[];
+		virtualMachineSnapshots: VirtualMachineSnapshot[];
 	} = $props();
 
 	// let snapshots = $derived(image.snapshots || []);
@@ -38,7 +38,7 @@
 	let rowSelection = $state<RowSelectionState>({});
 	const table = createSvelteTable({
 		get data() {
-			return virtualMachineDisks;
+			return virtualMachineSnapshots;
 		},
 		columns: columns,
 		getCoreRowModel: getCoreRowModel(),
@@ -105,7 +105,7 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
-				values={virtualMachineDisks.map((virtualMachineDisks) => virtualMachineDisks.name)}
+				values={virtualMachineSnapshots.map((virtualMachineSnapshots) => virtualMachineSnapshots.name)}
 				columnId="name"
 				{messages}
 				{table}

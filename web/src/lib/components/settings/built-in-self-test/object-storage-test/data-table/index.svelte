@@ -36,6 +36,7 @@
 		duration: false,
 		objectSize: false,
 		objectCount: false,
+		completedAt: false,
 	});
 	let rowSelection = $state<RowSelectionState>({});
 

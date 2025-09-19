@@ -3,22 +3,20 @@ import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
+import type { VirtualMachineSnapshot } from '$lib/api/kubevirt/v1/kubevirt_pb';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
 const messages = {
 	name: m.name(),
 	namespace: m.namespace(),
-	network: m.network(),
-	node: m.node(),
-	status: m.status(),
-	cpu: m.cpu(),
-	memory: m.memory(),
-	disk: m.disk(),
+	description: m.description(),
+	statusPhase: 'Status Phase',
+	lastConditionMessage: 'Last Condition Message',
+	lastConditionReason: 'Last Condition Reason',
 };
 
-const columns: ColumnDef<VirtualMachine>[] = [
+const columns: ColumnDef<VirtualMachineSnapshot>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -40,16 +38,6 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		},
 	},
 	{
-		accessorKey: 'status',
-		header: ({ column }) => {
-			return renderSnippet(headers.status, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.status, row);
-		},
-		filterFn: 'arrIncludesSome',
-	},
-	{
 		accessorKey: 'namespace',
 		header: ({ column }) => {
 			return renderSnippet(headers.namespace, column);
@@ -57,58 +45,44 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.namespace, row);
 		},
-		filterFn: 'arrIncludesSome',
 	},
 	{
-		accessorKey: 'network',
+		accessorKey: 'statusPhase',
 		header: ({ column }) => {
-			return renderSnippet(headers.network, column);
+			return renderSnippet(headers.statusPhase, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.network, row);
+			return renderSnippet(cells.statusPhase, row);
 		},
-		filterFn: 'arrIncludesSome',
 	},
 	{
-		accessorKey: 'node',
+		accessorKey: 'description',
 		header: ({ column }) => {
-			return renderSnippet(headers.node, column);
+			return renderSnippet(headers.description, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.node, row);
+			return renderSnippet(cells.description, row);
 		},
-		filterFn: 'arrIncludesSome',
 	},
 	{
-		accessorKey: 'cpu',
+		accessorKey: 'lastConditionMessage',
 		header: ({ column }) => {
-			return renderSnippet(headers.cpu, column);
+			return renderSnippet(headers.lastConditionMessage, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.cpu, row);
+			return renderSnippet(cells.lastConditionMessage, row);
 		},
-		filterFn: 'arrIncludesSome',
 	},
 	{
-		accessorKey: 'memory',
+		accessorKey: 'lastConditionReason',
 		header: ({ column }) => {
-			return renderSnippet(headers.memory, column);
+			return renderSnippet(headers.lastConditionReason, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.memory, row);
+			return renderSnippet(cells.lastConditionReason, row);
 		},
-		filterFn: 'arrIncludesSome',
 	},
-	{
-		accessorKey: 'disk',
-		header: ({ column }) => {
-			return renderSnippet(headers.disk, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.disk, row);
-		},
-		filterFn: 'arrIncludesSome',
-	},
+
 	{
 		accessorKey: 'actions',
 		header: ({ column }) => {

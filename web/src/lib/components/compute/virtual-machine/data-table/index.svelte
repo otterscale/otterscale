@@ -12,6 +12,7 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
+	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 
 	import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
@@ -130,6 +131,7 @@
 			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
+			<Create />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

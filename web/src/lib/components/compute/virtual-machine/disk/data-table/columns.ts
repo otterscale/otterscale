@@ -12,6 +12,8 @@ const messages = {
 	type: m.type(),
 	bus: 'bus',
 	source: m.source(),
+	sourceType: 'source type',
+	size: 'disk size',
 };
 
 const columns: ColumnDef<VirtualMachineDisk>[] = [
@@ -54,6 +56,15 @@ const columns: ColumnDef<VirtualMachineDisk>[] = [
 		},
 	},
 	{
+		accessorKey: 'sourceType',
+		header: ({ column }) => {
+			return renderSnippet(headers.sourceType, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.sourceType, row);
+		},
+	},
+	{
 		accessorKey: 'source',
 		header: ({ column }) => {
 			return renderSnippet(headers.source, column);
@@ -62,16 +73,25 @@ const columns: ColumnDef<VirtualMachineDisk>[] = [
 			return renderSnippet(cells.source, row);
 		},
 	},
-	// {
-	// 	accessorKey: 'actions',
-	// 	header: ({ column }) => {
-	// 		return renderSnippet(headers.actions, column);
-	// 	},
-	// 	cell: ({ row }) => {
-	// 		return renderSnippet(cells.actions, row);
-	// 	},
-	// 	enableHiding: false,
-	// },
+	{
+		accessorKey: 'size',
+		header: ({ column }) => {
+			return renderSnippet(headers.size, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.size, row);
+		},
+	},
+	{
+		accessorKey: 'actions',
+		header: ({ column }) => {
+			return renderSnippet(headers.actions, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.actions, row);
+		},
+		enableHiding: false,
+	},
 ];
 
 export { columns, messages };
