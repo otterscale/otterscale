@@ -1490,11 +1490,11 @@ juju_add_k8s() {
         error_exit "Kubernetes config file not found at $kubeconfig"
     fi
     
-    if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" >>"$TEMP_LOG" 2>&1; then
+    if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client" >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to add Kubernetes cluster to Juju"
     fi
 
-    if ! su "$NON_ROOT_USER" -c "juju show-model cos"; then
+    if ! su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1"; then
         su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s --debug" "JUJU_K8S"
         su "$NON_ROOT_USER" -c "juju deploy cos-lite --trust --debug" "JUJU_K8S"
     fi
