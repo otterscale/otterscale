@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table/index';
@@ -30,6 +30,7 @@
 			virtualMachines.set(response.virtualMachines);
 		});
 	});
+	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		KubeVirtClient.listVirtualMachines({

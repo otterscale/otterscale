@@ -12,6 +12,9 @@
 		type,
 		bus,
 		source,
+		sourceType,
+		size,
+		actions,
 	};
 </script>
 
@@ -50,6 +53,15 @@
 	</Layout.Header>
 {/snippet}
 
+{#snippet sourceType(column: Column<VirtualMachineDisk>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>Source Type</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
 {#snippet source(column: Column<VirtualMachineDisk>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
@@ -59,4 +71,13 @@
 	</Layout.Header>
 {/snippet}
 
-<!-- {#snippet actions()}{/snippet} -->
+{#snippet size(column: Column<VirtualMachineDisk>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>Size</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet actions()}{/snippet}

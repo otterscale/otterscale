@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Row } from '@tanstack/table-core';
 
-	// import Actions from './cell-actions.svelte';
+	import Actions from './cell-actions.svelte';
 
 	import { type VirtualMachineSnapshot } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
@@ -16,7 +16,7 @@
 		statusPhase,
 		lastConditionMessage,
 		lastConditionReason,
-		// actions,
+		actions,
 	};
 </script>
 
@@ -64,8 +64,8 @@
 	</Layout.Cell>
 {/snippet}
 
-<!-- {#snippet actions(row: Row<VirtualMachineDisk>)}
+{#snippet actions(row: Row<VirtualMachineSnapshot>)}
 	<Layout.Cell class="items-start">
 		<Actions snapshot={row.original} />
 	</Layout.Cell>
-{/snippet} -->
+{/snippet}

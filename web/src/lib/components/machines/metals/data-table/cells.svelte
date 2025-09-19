@@ -137,9 +137,9 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet gpu()}
+{#snippet gpu(row: Row<Machine>)}
 	<Layout.Cell class="items-end">
-		<GPUs />
+		<GPUs machine={row.original} />
 	</Layout.Cell>
 {/snippet}
 
