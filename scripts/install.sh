@@ -865,12 +865,12 @@ login_maas() {
     local retry_count=0
     
     APIKEY=$(maas apikey --username "$OTTERSCALE_MAAS_ADMIN_USER")
-    sleep 5
+    sleep 10
 
     while ((retry_count < OTTERSCALE_MAX_RETRIES)); do
         if maas login admin "http://localhost:5240/MAAS/" "$APIKEY" >>"$TEMP_LOG" 2>&1; then
             log "INFO" "MAAS login successful" "MAAS_LOGIN"
-            sleep 5
+            sleep 10
             return 0
         else
             log "WARN" "Failed to login to MAAS, retrying in 10 seconds (attempt $((retry_count + 1)))" "MAAS_LOGIN"
