@@ -152,7 +152,6 @@
 							color: memoryUsagesConfiguration.usage.color,
 						},
 					]}
-					seriesLayout="stack"
 					props={{
 						area: {
 							curve: curveNatural,
