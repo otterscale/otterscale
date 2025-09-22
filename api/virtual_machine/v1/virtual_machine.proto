@@ -1,0 +1,401 @@
+edition = "2023";
+
+package otterscale.virtual_machine.v1;
+
+import "api/application/v1/application.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/otterscale/otterscale/api/virtual_machine/v1;pb";
+
+service VirtualMachineService {
+  rpc ListVirtualMachines(ListVirtualMachinesRequest) returns (ListVirtualMachinesResponse);
+  rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine);
+  rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
+  rpc DeleteVirtualMachine(DeleteVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc CloneVirtualMachine(CloneVirtualMachineRequest) returns (google.protobuf.Empty);
+
+  rpc StartInstance(StartInstanceRequest) returns (google.protobuf.Empty);
+  rpc StopInstance(StopInstanceRequest) returns (google.protobuf.Empty);
+  rpc RestartInstance(RestartInstanceRequest) returns (google.protobuf.Empty);
+  rpc PauseInstance(PauseInstanceRequest) returns (google.protobuf.Empty);
+  rpc ResumeInstance(ResumeInstanceRequest) returns (google.protobuf.Empty);
+  rpc MigrateInstance(MigrateInstanceRequest) returns (google.protobuf.Empty);
+
+  rpc CreateService(CreateServiceRequest) returns (otterscale.application.v1.Application.Service);
+  rpc UpdateService(UpdateServiceRequest) returns (otterscale.application.v1.Application.Service);
+  rpc DeleteService(DeleteServiceRequest) returns (google.protobuf.Empty);
+
+  rpc CreateSnapshot(CreateSnapshotRequest) returns (VirtualMachine.Snapshot);
+  rpc DeleteSnapshot(DeleteSnapshotRequest) returns (google.protobuf.Empty);
+
+  rpc CreateRestore(CreateRestoreRequest) returns (VirtualMachine.Restore);
+  rpc DeleteRestore(DeleteRestoreRequest) returns (google.protobuf.Empty);
+
+  rpc CreateDisk(CreateDiskRequest) returns (VirtualMachine.Disk);
+  rpc DeleteDisk(DeleteDiskRequest) returns (google.protobuf.Empty);
+  rpc AttachDisk(AttachDiskRequest) returns (google.protobuf.Empty);
+  rpc DetachDisk(DetachDiskRequest) returns (google.protobuf.Empty);
+
+  rpc ListDataVolumes(ListDataVolumesRequest) returns (ListDataVolumesResponse);
+  rpc GetDataVolume(GetDataVolumeRequest) returns (DataVolume);
+  rpc CreateDataVolume(CreateDataVolumeRequest) returns (DataVolume);
+  rpc DeleteDataVolume(DeleteDataVolumeRequest) returns (google.protobuf.Empty);
+  rpc ExtendDataVolume(ExtendDataVolumeRequest) returns (google.protobuf.Empty);
+
+  rpc ListClusterWideInstanceTypes(ListClusterWideInstanceTypesRequest) returns (ListClusterWideInstanceTypesResponse);
+  rpc ListInstanceTypes(ListInstanceTypesRequest) returns (ListInstanceTypesResponse);
+  rpc GetInstanceType(GetInstanceTypeRequest) returns (InstanceType);
+  rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType);
+  rpc DeleteInstanceType(DeleteInstanceTypeRequest) returns (google.protobuf.Empty);
+}
+
+message VirtualMachine {
+  message Snapshot {
+    string name = 1;
+    string namespace = 2;
+    string source_name = 11;
+    string description = 12;
+    string phase = 21;
+    google.protobuf.Timestamp created_at = 31;
+    otterscale.application.v1.Application.Condition last_condition = 41;
+  }
+  message Restore {
+    string name = 1;
+    string namespace = 2;
+    string source_name = 11;
+    string description = 12;
+    string phase = 21;
+    google.protobuf.Timestamp created_at = 31;
+    otterscale.application.v1.Application.Condition last_condition = 41;
+  }
+  message Disk {
+    // enum Type {
+    //   UNSPECIFIED = 0;
+    //   DATA_VOLUME = 1;
+    //   CLOUD_INIT_NO_CLOUD = 2;
+    // }
+    enum Bus {
+      VIRTIO = 0;
+      SATA = 1;
+      SCSI = 2;
+      USB = 3;
+    }
+    string name = 1;
+    string namespace = 2;
+    Bus bus = 3;
+    // Type type = 11;
+    // string data = 12;
+    bool bootable = 21;
+    uint32 boot_order = 22;
+  }
+  //   enum Status {
+  //     UNKNOWN = 0;
+  //     PROVISIONING = 1;
+  //     STARTING = 2;
+  //     RUNNING = 3;
+  //     PAUSED = 4;
+  //     STOPPING = 5;
+  //     STOPPED = 6;
+  //     TERMINATING = 7;
+  //   }
+
+  //   Metadata metadata = 1;
+  //   string network_name = 11;
+  //   string startup_script = 12;
+  //   string node_name = 13;
+  //   string pod_name = 14;
+  //   string maas_id = 15;
+  //   VirtualMachineResources resources = 21;
+  //   repeated DiskInfo disks = 22;
+  //   repeated ServiceInfo services = 23;
+  //   status status_phase = 31;
+}
+
+// message VirtualMachineResources {
+//   uint32 cpu_cores = 1;
+//   int64 memory_bytes = 2;
+// }
+
+message DataVolume {
+  message Source {
+    enum Type {
+      BLANK_IMAGE = 0;
+      HTTP_URL = 1;
+      EXISTING_PERSISTENT_VOLUME_CLAIM = 2;
+    }
+    Type type = 1;
+    string data = 2;
+  }
+  string name = 1;
+  string namespace = 2;
+  Source source = 11;
+  bool boot_image = 12;
+  string phase = 21;
+  string progress = 22;
+  otterscale.application.v1.Application.PersistentVolumeClaim PersistentVolumeClaim = 31;
+  otterscale.application.v1.Application.Condition last_condition = 41;
+}
+
+message InstanceType {
+  string name = 1;
+  string namespace = 2;
+  uint32 cpu_cores = 3;
+  int64 memory_bytes = 4;
+}
+
+message ListVirtualMachinesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+}
+
+message ListVirtualMachinesResponse {
+  repeated VirtualMachine virtual_machines = 1;
+}
+
+message GetVirtualMachineRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateVirtualMachineRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 11;
+  string namespace = 12;
+  string instance_type_name = 21;
+  string boot_data_volume_name = 22;
+  string startup_script = 31;
+}
+
+message DeleteVirtualMachineRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CloneVirtualMachineRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string target_name = 5;
+}
+
+message StartInstanceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message StopInstanceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message RestartInstanceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message PauseInstanceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message ResumeInstanceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message MigrateInstanceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string target_hostname = 11;
+}
+
+message CreateServiceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  repeated otterscale.application.v1.Application.Service.Port ports = 11;
+}
+
+message UpdateServiceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  repeated otterscale.application.v1.Application.Service.Port ports = 11;
+}
+
+message DeleteServiceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string description = 5;
+  string virtual_machine_name = 11;
+}
+
+message DeleteSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateRestoreRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string virtual_machine_name = 11;
+  string snapshot_name = 12;
+}
+
+message DeleteRestoreRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateDiskRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string data_volume_name = 11;
+}
+
+message DeleteDiskRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message AttachDiskRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string virtual_machine_name = 11;
+}
+
+message DetachDiskRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string virtual_machine_name = 11;
+}
+
+message ListDataVolumesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+}
+
+message ListDataVolumesResponse {
+  repeated DataVolume data_volumes = 1;
+}
+
+message GetDataVolumeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateDataVolumeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 11;
+  string namespace = 12;
+  DataVolume.Source source = 21;
+  bool boot_image = 22;
+  int64 size_bytes = 31;
+  bool shareable = 32;
+}
+
+message DeleteDataVolumeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message ExtendDataVolumeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  int64 size_bytes = 11;
+}
+
+message ListClusterWideInstanceTypesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListClusterWideInstanceTypesResponse {
+  repeated InstanceType instance_types = 1;
+}
+
+message ListInstanceTypesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+}
+
+message ListInstanceTypesResponse {
+  repeated InstanceType instance_types = 1;
+}
+
+message GetInstanceTypeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateInstanceTypeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 11;
+  string namespace = 12;
+  uint32 cpu_cores = 13;
+  int64 memory_bytes = 14;
+}
+
+message DeleteInstanceTypeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
