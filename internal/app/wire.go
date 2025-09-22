@@ -17,5 +17,5 @@ var ProviderSet = wire.NewSet(
 	NewScopeService,
 	NewStorageService,
 	NewTagService,
-	NewKubeVirtService,
+	NewVirtualMachineService,
 )

@@ -8,12 +8,17 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 
+	cdi "github.com/otterscale/kubevirt-client-go/containerizeddataimporter"
+	virt "github.com/otterscale/kubevirt-client-go/kubevirt"
+
 	"github.com/otterscale/otterscale/internal/config"
 )
 
 type Kube struct {
-	conf       *config.Config
-	clientsets sync.Map
+	conf           *config.Config
+	clientsets     sync.Map
+	virtClientsets sync.Map
+	cdiClientsets  sync.Map
 
 	envSettings    *cli.EnvSettings
 	registryClient *registry.Client
@@ -49,6 +54,36 @@ func (m *Kube) clientset(config *rest.Config) (*kubernetes.Clientset, error) {
 	}
 
 	m.clientsets.Store(config.Host, clientset)
+
+	return clientset, nil
+}
+
+func (m *Kube) virtClientset(config *rest.Config) (*virt.Clientset, error) {
+	if v, ok := m.virtClientsets.Load(config.Host); ok {
+		return v.(*virt.Clientset), nil
+	}
+
+	clientset, err := virt.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
+	m.virtClientsets.Store(config.Host, clientset)
+
+	return clientset, nil
+}
+
+func (m *Kube) cdiClientset(config *rest.Config) (*cdi.Clientset, error) {
+	if v, ok := m.cdiClientsets.Load(config.Host); ok {
+		return v.(*cdi.Clientset), nil
+	}
+
+	clientset, err := cdi.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
+	m.cdiClientsets.Store(config.Host, clientset)
 
 	return clientset, nil
 }
