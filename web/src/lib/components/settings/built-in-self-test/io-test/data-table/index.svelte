@@ -38,6 +38,7 @@
 		blockSize: false,
 		fileSize: false,
 		ioDepth: false,
+		completedAt: false,
 	});
 	let rowSelection = $state<RowSelectionState>({});
 

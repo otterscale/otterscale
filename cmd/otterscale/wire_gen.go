@@ -97,7 +97,11 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	scopeService := app.NewScopeService(scopeUseCase)
 	tagUseCase := core.NewTagUseCase(tagRepo)
 	tagService := app.NewTagService(tagUseCase)
-	serveMux := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, premiumService, storageService, scopeService, tagService)
+	serveMux, err := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, premiumService, storageService, scopeService, tagService)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	command := newCmd(configConfig, serveMux)
 	return command, func() {
 		cleanup()
