@@ -17,25 +17,25 @@
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
-	const requestsConfiguration = {
+	let ninety_fives = $state([] as SampleValue[]);
+	let ninety_nines = $state([] as SampleValue[]);
+	const times_to_first_token = $derived(
+		ninety_fives.map((sample, index) => ({
+			time: sample.time,
+			ninety_five: !isNaN(Number(sample.value)) ? Number(sample.value) : 0,
+			ninety_nine: !isNaN(Number(ninety_nines[index]?.value)) ? Number(ninety_nines[index]?.value) : 0,
+		})),
+	);
+
+	const configuration = {
 		ninety_five: { label: '95', color: 'var(--chart-1)' },
 		ninety_nine: { label: '99', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 
-	let ninety_fives = $state([] as SampleValue[]);
-	let ninety_nines = $state([] as SampleValue[]);
-	const requests = $derived(
-		ninety_fives.map((sample, index) => ({
-			time: sample.time,
-			running: sample.value,
-			waiting: ninety_nines[index]?.value ?? 0,
-		})),
-	);
-
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`histogram_quantile(0.95, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{scope_uuid="${scope.uuid}"}[2m])))`,
+				`histogram_quantile(0.95, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model_uuid="${scope.uuid}"}[2m])))`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60,
@@ -45,7 +45,7 @@
 			});
 		prometheusDriver
 			.rangeQuery(
-				`histogram_quantile(0.99, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{scope_uuid="${scope.uuid}"}[2m])))`,
+				`histogram_quantile(0.99, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model_uuid="${scope.uuid}"}[2m])))`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60,
@@ -59,8 +59,13 @@
 
 	let isLoading = $state(true);
 	onMount(async () => {
-		await fetch();
-		isLoading = false;
+		try {
+			await fetch();
+			console.log(prometheusDriver);
+			isLoading = false;
+		} catch (error) {
+			console.error(`Fail to fetch data in scope ${scope}:`, error);
+		}
 	});
 
 	$effect(() => {
@@ -83,22 +88,22 @@
 			</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<Chart.Container config={requestsConfiguration} class="h-[200px] w-full">
+			<Chart.Container config={configuration} class="h-[200px] w-full">
 				<AreaChart
-					data={requests}
+					data={times_to_first_token}
 					x="time"
 					xScale={scaleUtc()}
 					yPadding={[0, 25]}
 					series={[
 						{
 							key: 'ninety_five',
-							label: requestsConfiguration.ninety_five.label,
-							color: requestsConfiguration.ninety_five.color,
+							label: configuration.ninety_five.label,
+							color: configuration.ninety_five.color,
 						},
 						{
 							key: 'ninety_nine',
-							label: requestsConfiguration.ninety_nine.label,
-							color: requestsConfiguration.ninety_nine.color,
+							label: configuration.ninety_nine.label,
+							color: configuration.ninety_nine.color,
 						},
 					]}
 					seriesLayout="stack"
@@ -110,7 +115,8 @@
 							motion: 'tween',
 						},
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+							format: (v: Date) =>
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 						},
 						yAxis: { format: () => '' },
 					}}
@@ -127,7 +133,22 @@
 									minute: 'numeric',
 								});
 							}}
-						/>
+						>
+							{#snippet formatter({ item, name, value })}
+								<div
+									style="--color-bg: {item.color}"
+									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+								></div>
+								<div
+									class="flex flex-1 shrink-0 items-center justify-between gap-2 text-xs leading-none"
+								>
+									<div class="grid gap-1.5">
+										<span class="text-muted-foreground">{name}</span>
+									</div>
+									<p class="font-mono">{Number(value).toFixed(2)} {m.millisecond()}</p>
+								</div>
+							{/snippet}
+						</Chart.Tooltip>
 					{/snippet}
 					{#snippet marks({ series, getAreaProps })}
 						{#each series as s, i (s.key)}

@@ -23,7 +23,7 @@
 
 	let latency = $state(0);
 	let latencies = $state([] as SampleValue[]);
-	const latenciesTrend = $derived(
+	const trend = $derived(
 		latencies.length > 0
 			? (latencies[latencies.length - 1].value - latencies[latencies.length - 2].value) /
 					latencies[latencies.length - 2].value
@@ -31,26 +31,29 @@
 	);
 
 	const configuration = {
-		usage: { label: 'value', color: 'var(--chart-1)' },
+		latency: { label: 'Latency', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
 		prometheusDriver
 			.instantQuery(
-				`avg(vllm:e2e_request_latency_seconds_sum{scope_uuid="${scope.uuid}"}) / avg(vllm:e2e_request_latency_seconds_count{scope_uuid="${scope.uuid}"})`,
+				`avg(vllm:e2e_request_latency_seconds_sum{juju_model_uuid="${scope.uuid}"}) / avg(vllm:e2e_request_latency_seconds_count{juju_model_uuid="${scope.uuid}"})`,
 			)
 			.then((response) => {
-				latency = response.result[0].value.value;
+				const value = response.result[0].value.value;
+				latency = isNaN(Number(value)) ? 0 : value;
 			});
 		prometheusDriver
 			.rangeQuery(
-				`avg(vllm:e2e_request_latency_seconds_sum{scope_uuid="${scope.uuid}"}) / avg(vllm:e2e_request_latency_seconds_count{scope_uuid="${scope.uuid}"})`,
+				`avg(vllm:e2e_request_latency_seconds_sum{juju_model_uuid="${scope.uuid}"}) / avg(vllm:e2e_request_latency_seconds_count{juju_model_uuid="${scope.uuid}"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60,
 			)
 			.then((response) => {
-				latencies = response.result[0]?.values;
+				const sampleValues: SampleValue[] = response.result[0]?.values ?? [];
+				const filtered = sampleValues.filter((sampleValue) => !isNaN(Number(sampleValue.value)));
+				latencies = filtered.length > 0 ? filtered : [];
 			});
 	}
 
@@ -58,8 +61,12 @@
 
 	let isLoading = $state(true);
 	onMount(async () => {
-		await fetch();
-		isLoading = false;
+		try {
+			await fetch();
+			isLoading = false;
+		} catch (error) {
+			console.error(`Fail to fetch data in scope ${scope}:`, error);
+		}
 	});
 
 	$effect(() => {
@@ -95,8 +102,8 @@
 		</Card.Header>
 		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
 			<div class="flex flex-col gap-0.5">
-				<div class="text-3xl font-bold">{typeof latency === 'number' && !isNaN(latency) ? latency : '-'}</div>
-				<p class="text-muted-foreground text-sm">{m.second()}</p>
+				<div class="text-3xl font-bold">{latency.toFixed(2)}</div>
+				<p class="text-muted-foreground text-sm">{m.millisecond()}</p>
 			</div>
 			<Chart.Container config={configuration} class="h-full w-20">
 				<LineChart
@@ -107,8 +114,8 @@
 					series={[
 						{
 							key: 'value',
-							label: 'usage',
-							color: configuration.usage.color,
+							label: configuration.latency.label,
+							color: configuration.latency.color,
 						},
 					]}
 					props={{
@@ -126,11 +133,13 @@
 									style="--color-bg: {item.color}"
 									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 								></div>
-								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+								<div
+									class="flex flex-1 shrink-0 items-center justify-between gap-2 text-xs leading-none"
+								>
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
+									<p class="font-mono">{Number(value).toFixed(2)} {m.millisecond()}</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>
@@ -138,20 +147,18 @@
 				</LineChart>
 			</Chart.Container>
 		</Card.Content>
-		{#if typeof latenciesTrend === 'number' && !isNaN(latenciesTrend)}
-			<Card.Footer
-				class={cn(
-					'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-					latenciesTrend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
-				)}
-			>
-				{Math.abs(latenciesTrend).toFixed(2)} %
-				{#if latenciesTrend >= 0}
-					<Icon icon="ph:caret-up" />
-				{:else}
-					<Icon icon="ph:caret-down" />
-				{/if}
-			</Card.Footer>
-		{/if}
+		<Card.Footer
+			class={cn(
+				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
+				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
+			)}
+		>
+			{Math.abs(trend).toFixed(2)} %
+			{#if trend >= 0}
+				<Icon icon="ph:caret-up" />
+			{:else}
+				<Icon icon="ph:caret-down" />
+			{/if}
+		</Card.Footer>
 	</Card.Root>
 {/if}

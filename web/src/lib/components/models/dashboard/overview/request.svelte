@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
+	import { curveStep } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
@@ -17,11 +17,6 @@
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
-	const requestsConfiguration = {
-		running: { label: 'Running', color: 'var(--chart-1)' },
-		waiting: { label: 'Waiting', color: 'var(--chart-2)' },
-	} satisfies Chart.ChartConfig;
-
 	let runnings = $state([] as SampleValue[]);
 	let waitings = $state([] as SampleValue[]);
 	const requests = $derived(
@@ -32,10 +27,15 @@
 		})),
 	);
 
+	const configuration = {
+		running: { label: 'Running', color: 'var(--chart-1)' },
+		waiting: { label: 'Waiting', color: 'var(--chart-2)' },
+	} satisfies Chart.ChartConfig;
+
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`sum(vllm:num_requests_running{scope_uuid="${scope.uuid}"})`,
+				`sum(vllm:num_requests_running{juju_model_uuid="${scope.uuid}"})`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60,
@@ -45,7 +45,7 @@
 			});
 		prometheusDriver
 			.rangeQuery(
-				`sum(vllm:num_requests_waiting{scope_uuid="${scope.uuid}"})`,
+				`sum(vllm:num_requests_waiting{juju_model_uuid="${scope.uuid}"})`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60,
@@ -59,8 +59,12 @@
 
 	let isLoading = $state(true);
 	onMount(async () => {
-		await fetch();
-		isLoading = false;
+		try {
+			await fetch();
+			isLoading = false;
+		} catch (error) {
+			console.error(`Fail to fetch data in scope ${scope}:`, error);
+		}
 	});
 
 	$effect(() => {
@@ -83,7 +87,7 @@
 			</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<Chart.Container config={requestsConfiguration} class="h-[200px] w-full">
+			<Chart.Container config={configuration} class="h-[200px] w-full">
 				<AreaChart
 					data={requests}
 					x="time"
@@ -92,25 +96,25 @@
 					series={[
 						{
 							key: 'running',
-							label: requestsConfiguration.running.label,
-							color: requestsConfiguration.running.color,
+							label: configuration.running.label,
+							color: configuration.running.color,
 						},
 						{
 							key: 'waiting',
-							label: requestsConfiguration.waiting.label,
-							color: requestsConfiguration.waiting.color,
+							label: configuration.waiting.label,
+							color: configuration.waiting.color,
 						},
 					]}
-					seriesLayout="stack"
 					props={{
 						area: {
-							curve: curveNatural,
+							curve: curveStep,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
 							motion: 'tween',
 						},
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+							format: (v: Date) =>
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 						},
 						yAxis: { format: () => '' },
 					}}

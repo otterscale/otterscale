@@ -10,15 +10,10 @@
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 
 	let {
-		prometheusDriver: _,
+		prometheusDriver,
 		scope,
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
-
-	const prometheusDriver = new PrometheusDriver({
-		endpoint: 'http://192.168.41.100:30091',
-		baseURL: '/api/v1',
-	});
 </script>
 
 <div class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-8">

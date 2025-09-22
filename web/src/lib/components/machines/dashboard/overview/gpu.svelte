@@ -32,26 +32,31 @@
 	const scopeMachines = $derived(
 		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)),
 	);
-	const totalGPUs = $derived(scopeMachines.reduce((sum, m) => sum + Number(m.gpuDevices.length ?? 0), 0));
-	let gpus = $state([] as SampleValue[]);
-	const gpusTrend = $derived(
-		gpus.length > 0 ? (gpus[gpus.length - 1].value - gpus[gpus.length - 2].value) / gpus[gpus.length - 2].value : 0,
+	const totalGPUs = $derived(scopeMachines.reduce((a, machine) => a + Number(machine.gpuDevices.length ?? 0), 0));
+	let allocatedGPUs = $state([] as SampleValue[]);
+	const trend = $derived(
+		allocatedGPUs.length > 0
+			? (allocatedGPUs[allocatedGPUs.length - 1].value - allocatedGPUs[allocatedGPUs.length - 2].value) /
+					allocatedGPUs[allocatedGPUs.length - 2].value
+			: 0,
 	);
 
-	const gpuUsagesConfiguration = {
-		usage: { label: 'value', color: 'var(--chart-1)' },
+	const configuration = {
+		amounts: { label: 'GPUs', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`sum(irate(DCGM_FI_DEV_GPU_UTIL{scope_uuid="${scope.uuid}"}[2m]))`,
-				Date.now() - 10 * 60 * 1000,
+				`
+				count(sum by (node, deviceuuid) (vGPUPodsDeviceAllocated{juju_model_uuid="${scope.uuid}"}) > bool 0)
+				`,
+				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
-				2 * 60,
+				60 * 60,
 			)
 			.then((response) => {
-				gpus = response.result ? response.result[0].values : [0];
+				allocatedGPUs = response.result[0].values;
 			});
 
 		machineClient.listMachines({}).then((response) => {
@@ -63,8 +68,12 @@
 
 	let isLoading = $state(true);
 	onMount(async () => {
-		await fetch();
-		isLoading = false;
+		try {
+			await fetch();
+			isLoading = false;
+		} catch (error) {
+			console.error(`Fail to fetch data in scope ${scope}:`, error);
+		}
 	});
 
 	$effect(() => {
@@ -103,17 +112,17 @@
 				<div class="text-3xl font-bold">{totalGPUs}</div>
 				<p class="text-muted-foreground text-sm">{m.pieces()}</p>
 			</div>
-			<Chart.Container config={gpuUsagesConfiguration} class="h-full w-20">
+			<Chart.Container config={configuration} class="h-full w-20">
 				<LineChart
-					data={gpus}
+					data={allocatedGPUs}
 					x="time"
 					xScale={scaleUtc()}
 					axis={false}
 					series={[
 						{
 							key: 'value',
-							label: 'usage',
-							color: gpuUsagesConfiguration.usage.color,
+							label: configuration.amounts.label,
+							color: configuration.amounts.color,
 						},
 					]}
 					props={{
@@ -135,7 +144,7 @@
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
+									<p class="font-mono">{value}</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>
@@ -146,11 +155,11 @@
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				gpusTrend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
+				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
 			)}
 		>
-			{Math.abs(gpusTrend).toFixed(2)} %
-			{#if gpusTrend >= 0}
+			{Math.abs(trend).toFixed(2)} %
+			{#if trend >= 0}
 				<Icon icon="ph:caret-up" />
 			{:else}
 				<Icon icon="ph:caret-down" />

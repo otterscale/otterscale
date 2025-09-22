@@ -25,48 +25,40 @@
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
-	let latestMemoryBytes = $state(null);
+	let latestMemoryUsage = $state(null);
 	let memoryUsages = $state([] as SampleValue[]);
-	const memoryUsagesTrend = $derived(
+	const trend = $derived(
 		memoryUsages.length > 0
 			? (memoryUsages[memoryUsages.length - 1].value - memoryUsages[memoryUsages.length - 2].value) /
 					memoryUsages[memoryUsages.length - 2].value
 			: 0,
 	);
 
-	const memoryUsagesConfiguration = {
-		usage: { label: 'value', color: 'var(--chart-1)' },
+	const configuration = {
+		usage: { label: 'Usage', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
 		prometheusDriver
 			.instantQuery(
 				`
-				sum(DCGM_FI_DEV_FB_USED{scope_uuid="${scope.uuid}"})
-				+
-				sum(DCGM_FI_DEV_FB_FREE{scope_uuid="${scope.uuid}"})
+				sum(DCGM_FI_DEV_FB_USED{juju_model_uuid="${scope.uuid}"}) + sum(DCGM_FI_DEV_FB_FREE{juju_model_uuid="${scope.uuid}"})
 				`,
 			)
 			.then((response) => {
-				latestMemoryBytes = response.result ? response.result[0].value.value : 0;
+				latestMemoryUsage = response.result[0].value.value;
 			});
 		prometheusDriver
 			.rangeQuery(
 				`
-				sum(irate(DCGM_FI_DEV_FB_USED{scope_uuid="${scope.uuid}"}[2m]))
-				/
-				(
-					sum(irate(DCGM_FI_DEV_FB_USED{scope_uuid="${scope.uuid}"}[2m]))
-					+
-					sum(irate(DCGM_FI_DEV_FB_FREE{scope_uuid="${scope.uuid}"}[2m]))
-				)
+				avg(DCGM_FI_DEV_FB_USED{juju_model_uuid="${scope.uuid}"} / (DCGM_FI_DEV_FB_USED{juju_model_uuid="${scope.uuid}"} + DCGM_FI_DEV_FB_FREE{juju_model_uuid="${scope.uuid}"}))
 				`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60,
 			)
 			.then((response) => {
-				memoryUsages = response.result ? response.result[0].values : [0];
+				memoryUsages = response.result[0].values;
 			});
 	}
 
@@ -76,10 +68,10 @@
 	onMount(async () => {
 		try {
 			await fetch();
+			isLoading = false;
 		} catch (error) {
-			console.error('Failed to initialize Prometheus driver:', error);
+			console.error(`Fail to fetch data in scope ${scope}:`, error);
 		}
-		isLoading = false;
 	});
 
 	$effect(() => {
@@ -116,10 +108,10 @@
 		<Card.Content class="flex flex-col gap-0.5">
 			<div class="flex flex-wrap items-center justify-between gap-6">
 				<div class="text-3xl font-bold">
-					{formatCapacity(Number(latestMemoryBytes)).value}
-					{formatCapacity(Number(latestMemoryBytes)).unit}
+					{formatCapacity(Number(latestMemoryUsage) * 1024 * 1024).value}
+					{formatCapacity(Number(latestMemoryUsage) * 1024 * 1024).unit}
 				</div>
-				<Chart.Container config={memoryUsagesConfiguration} class="h-full w-20">
+				<Chart.Container config={configuration} class="h-full w-20">
 					<LineChart
 						data={memoryUsages}
 						x="time"
@@ -128,8 +120,8 @@
 						series={[
 							{
 								key: 'value',
-								label: 'usage',
-								color: memoryUsagesConfiguration.usage.color,
+								label: configuration.usage.label,
+								color: configuration.usage.color,
 							},
 						]}
 						props={{
@@ -164,11 +156,11 @@
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				memoryUsagesTrend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-red-500 dark:text-red-400',
+				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-red-500 dark:text-red-400',
 			)}
 		>
-			{Math.abs(memoryUsagesTrend).toFixed(2)} %
-			{#if memoryUsagesTrend >= 0}
+			{Math.abs(trend).toFixed(2)} %
+			{#if trend >= 0}
 				<Icon icon="ph:caret-up" />
 			{:else}
 				<Icon icon="ph:caret-down" />

@@ -17,11 +17,6 @@
 		scope,
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
-
-	const gpuPrometheusDriver = new PrometheusDriver({
-		endpoint: 'http://192.168.41.100:30091',
-		baseURL: '/api/v1',
-	});
 </script>
 
 <div class="grid auto-rows-auto grid-cols-3 gap-5 pt-4 md:grid-cols-6 lg:grid-cols-9">
@@ -38,10 +33,10 @@
 		<Nodes {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<GPU prometheusDriver={gpuPrometheusDriver} {scope} bind:isReloading />
+		<GPU {prometheusDriver} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<GPUMemory prometheusDriver={gpuPrometheusDriver} {scope} bind:isReloading />
+		<GPUMemory {prometheusDriver} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-6">
 		<SystemLoad {prometheusDriver} {scope} bind:isReloading />

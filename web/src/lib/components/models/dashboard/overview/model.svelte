@@ -21,33 +21,34 @@
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
-	let totalAvailableModels = $state(0);
-	let models = $state([] as SampleValue[]);
-	const modelsTrend = $derived(
-		models.length > 0
-			? (models[models.length - 1].value - models[models.length - 2].value) / models[models.length - 2].value
+	let latestAvailableModels = $state(0);
+	let availableModels = $state([] as SampleValue[]);
+	const trend = $derived(
+		availableModels.length > 0
+			? (availableModels[availableModels.length - 1].value - availableModels[availableModels.length - 2].value) /
+					availableModels[availableModels.length - 2].value
 			: 0,
 	);
 
 	const configuration = {
-		usage: { label: 'value', color: 'var(--chart-1)' },
+		usage: { label: 'Models', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
 		prometheusDriver
-			.instantQuery(`count by(endpoint) (vllm:gpu_cache_usage_perc{scope_uuid="${scope.uuid}"})`)
+			.instantQuery(`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model_uuid="${scope.uuid}"})`)
 			.then((response) => {
-				totalAvailableModels = response.result[0].value.value;
+				latestAvailableModels = response.result[0].value.value;
 			});
 		prometheusDriver
 			.rangeQuery(
-				`count by(endpoint) (vllm:gpu_cache_usage_perc{scope_uuid="${scope.uuid}"})`,
+				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model_uuid="${scope.uuid}"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60,
 			)
 			.then((response) => {
-				models = response.result[0]?.values;
+				availableModels = response.result[0]?.values;
 			});
 	}
 
@@ -55,8 +56,12 @@
 
 	let isLoading = $state(true);
 	onMount(async () => {
-		await fetch();
-		isLoading = false;
+		try {
+			await fetch();
+			isLoading = false;
+		} catch (error) {
+			console.error(`Fail to fetch data in scope ${scope}:`, error);
+		}
 	});
 
 	$effect(() => {
@@ -84,7 +89,7 @@
 							<Icon icon="ph:info" class="text-muted-foreground size-5" />
 						</Tooltip.Trigger>
 						<Tooltip.Content>
-							<p>{m.machine_dashboard_total_cpu_tooltip()}</p>
+							<p>{m.llm_dashboard_models_tooltip()}</p>
 						</Tooltip.Content>
 					</Tooltip.Root>
 				</Tooltip.Provider>
@@ -92,19 +97,19 @@
 		</Card.Header>
 		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
 			<div class="flex flex-col gap-0.5">
-				<div class="text-3xl font-bold">{totalAvailableModels}</div>
+				<div class="text-3xl font-bold">{latestAvailableModels}</div>
 				<p class="text-muted-foreground text-sm">{m.models()}</p>
 			</div>
 			<Chart.Container config={configuration} class="h-full w-20">
 				<LineChart
-					data={models}
+					data={availableModels}
 					x="time"
 					xScale={scaleUtc()}
 					axis={false}
 					series={[
 						{
 							key: 'value',
-							label: 'usage',
+							label: configuration.usage.label,
 							color: configuration.usage.color,
 						},
 					]}
@@ -123,11 +128,13 @@
 									style="--color-bg: {item.color}"
 									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 								></div>
-								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+								<div
+									class="flex flex-1 shrink-0 items-center justify-between gap-2 text-xs leading-none"
+								>
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
+									<p class="font-mono">{value}</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>
@@ -138,11 +145,11 @@
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				modelsTrend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
+				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
 			)}
 		>
-			{Math.abs(modelsTrend).toFixed(2)} %
-			{#if modelsTrend >= 0}
+			{Math.abs(trend).toFixed(2)} %
+			{#if trend >= 0}
 				<Icon icon="ph:caret-up" />
 			{:else}
 				<Icon icon="ph:caret-down" />

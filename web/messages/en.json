@@ -666,6 +666,8 @@
 	"edit_package_repository": "Edit Package Repository",
 	"quota_limit_is_not_set": "Quota limit is not set",
 	"gpu": "GPU",
+	"vgpu": "vGPU",
+	"vgpu_usage_description":"Displays the current allocation and usage of virtual GPUs",
 	"bus": "Bus",
 	"pci_address": "PCI Address",
 	"script": "Script",
@@ -686,7 +688,7 @@
 	"machine_dashboard_gpu_memory_tooltip": "Total GPU memory across all machines.",
 	"machine_dashboard_gpu_tooltip": "Total GPU across all machines.",
 	"pieces": "pieces",
-	"llm_dashboard_latency_tooltip": "Total Latency across all models.",
+	"llm_dashboard_latency_tooltip": "Average Latency across all models.",
 	"llm_dashboard_models_tooltip": "Number of models.",
 	"llm_dashboard_requests_tooltip": "Shows the number of running and waiting requests over the past 24 hours.",
 	"llm_dashboard_throighputs_tooltip": "Displays running and waiting request throughput for the last 24 hours.",
@@ -694,10 +696,11 @@
 	"time_to_first_token": "Time to First Token",
 	"gpu_cache": "GPU Cache",
 	"kv_cache": "KV Cache",
-	"clone_virtual_machine_namespace_direction": "Namespace for the new virtual machine.",
 	"migrate": "Migrate",
 	"migrate_virtual_machine": "Migrate Virtual Machine",
 	"target_node": "Target Node",
 	"migrate_virtual_machine_target_node_direction": "Specify the target node for virtual machine migration.",
-	"instance_name": "Instance Name"
+	"instance_name": "Instance Name",
+	"millisecond": "millisecond",
+	"per_second": "per s."
 }
