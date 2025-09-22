@@ -667,7 +667,7 @@
 	"quota_limit_is_not_set": "Quota limit is not set",
 	"gpu": "GPU",
 	"vgpu": "vGPU",
-	"vgpu_usage_description":"Displays the current allocation and usage of virtual GPUs",
+	"vgpu_usage_description": "Displays the current allocation and usage of virtual GPUs",
 	"bus": "Bus",
 	"pci_address": "PCI Address",
 	"script": "Script",
