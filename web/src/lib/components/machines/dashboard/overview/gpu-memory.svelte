@@ -1,15 +1,14 @@
 <script lang="ts">
-	import { createClient, type Transport } from '@connectrpc/connect';
+	// import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
 	import { curveLinear } from 'd3-shape';
 	import { LineChart } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
+	// import { getContext, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
-	import { page } from '$app/state';
-	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	// import { MachineService } from '$lib/api/machine/v1/machine_pb';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
@@ -26,50 +25,53 @@
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
-	const transport: Transport = getContext('transport');
-	const machineClient = createClient(MachineService, transport);
-
-	const machines = writable<Machine[]>([]);
-	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)),
-	);
-	const totalMemoryBytes = $derived(scopeMachines.reduce((sum, m) => sum + Number(m.memoryMb ?? 0), 0) * 1024 * 1024);
-
+	let latestMemoryUsage = $state(null);
 	let memoryUsages = $state([] as SampleValue[]);
-	const memoryUsagesTrend = $derived(
+	const trend = $derived(
 		memoryUsages.length > 1 && memoryUsages[memoryUsages.length - 2].value !== 0
 			? (memoryUsages[memoryUsages.length - 1].value - memoryUsages[memoryUsages.length - 2].value) /
 					memoryUsages[memoryUsages.length - 2].value
 			: 0,
 	);
 
-	const memoryUsagesConfiguration = {
-		usage: { label: 'value', color: 'var(--chart-1)' },
+	const configuration = {
+		usage: { label: 'Usage', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
 		prometheusDriver
+			.instantQuery(
+				`
+				sum(DCGM_FI_DEV_FB_USED{juju_model_uuid="${scope.uuid}"}) + sum(DCGM_FI_DEV_FB_FREE{juju_model_uuid="${scope.uuid}"})
+				`,
+			)
+			.then((response) => {
+				latestMemoryUsage = response.result[0].value.value;
+			});
+		prometheusDriver
 			.rangeQuery(
-				`sum(node_memory_MemTotal_bytes{juju_model_uuid="${scope.uuid}"} - node_memory_MemFree_bytes{juju_model_uuid="${scope.uuid}"} - (node_memory_Cached_bytes{juju_model_uuid="${scope.uuid}"} + node_memory_Buffers_bytes{juju_model_uuid="${scope.uuid}"} + node_memory_SReclaimable_bytes{juju_model_uuid="${scope.uuid}"})) / sum(node_memory_MemTotal_bytes{juju_model_uuid="${scope.uuid}"})`,
+				`
+				avg(DCGM_FI_DEV_FB_USED{juju_model_uuid="${scope.uuid}"} / (DCGM_FI_DEV_FB_USED{juju_model_uuid="${scope.uuid}"} + DCGM_FI_DEV_FB_FREE{juju_model_uuid="${scope.uuid}"}))
+				`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60,
 			)
 			.then((response) => {
-				memoryUsages = response.result[0]?.values;
+				memoryUsages = response.result[0].values;
 			});
-
-		machineClient.listMachines({}).then((response) => {
-			machines.set(response.machines);
-		});
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
 	let isLoading = $state(true);
 	onMount(async () => {
-		await fetch();
-		isLoading = false;
+		try {
+			await fetch();
+			isLoading = false;
+		} catch (error) {
+			console.error(`Fail to fetch data in scope ${scope}:`, error);
+		}
 	});
 
 	$effect(() => {
@@ -89,7 +91,7 @@
 			<Card.Title class="flex flex-wrap items-center justify-between gap-6">
 				<div class="flex items-center gap-2 truncate text-sm font-medium tracking-tight">
 					<Icon icon="ph:memory" class="size-4.5" />
-					{m.memory()}
+					{m.gpu_memory()}
 				</div>
 				<Tooltip.Provider>
 					<Tooltip.Root>
@@ -97,7 +99,7 @@
 							<Icon icon="ph:info" class="text-muted-foreground size-5" />
 						</Tooltip.Trigger>
 						<Tooltip.Content>
-							<p>{m.machine_dashboard_total_memory_tooltip()}</p>
+							<p>{m.machine_dashboard_gpu_memory_tooltip()}</p>
 						</Tooltip.Content>
 					</Tooltip.Root>
 				</Tooltip.Provider>
@@ -106,10 +108,10 @@
 		<Card.Content class="flex flex-col gap-0.5">
 			<div class="flex flex-wrap items-center justify-between gap-6">
 				<div class="text-3xl font-bold">
-					{formatCapacity(totalMemoryBytes).value}
-					{formatCapacity(totalMemoryBytes).unit}
+					{formatCapacity(Number(latestMemoryUsage) * 1024 * 1024).value}
+					{formatCapacity(Number(latestMemoryUsage) * 1024 * 1024).unit}
 				</div>
-				<Chart.Container config={memoryUsagesConfiguration} class="h-full w-20">
+				<Chart.Container config={configuration} class="h-full w-20">
 					<LineChart
 						data={memoryUsages}
 						x="time"
@@ -118,8 +120,8 @@
 						series={[
 							{
 								key: 'value',
-								label: 'usage',
-								color: memoryUsagesConfiguration.usage.color,
+								label: configuration.usage.label,
+								color: configuration.usage.color,
 							},
 						]}
 						props={{
@@ -154,11 +156,11 @@
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				memoryUsagesTrend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-red-500 dark:text-red-400',
+				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-red-500 dark:text-red-400',
 			)}
 		>
-			{Math.abs(memoryUsagesTrend).toFixed(2)} %
-			{#if memoryUsagesTrend >= 0}
+			{Math.abs(trend).toFixed(2)} %
+			{#if trend >= 0}
 				<Icon icon="ph:caret-up" />
 			{:else}
 				<Icon icon="ph:caret-down" />

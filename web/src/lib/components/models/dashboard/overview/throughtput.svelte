@@ -8,8 +8,7 @@
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
-	import * as Chart from '$lib/components/ui/chart/index.js';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import * as Chart from '$lib/components/ui/chart';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
@@ -18,61 +17,41 @@
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
-	let cpuUsages: SampleValue[] = $state([]);
-	const cpuUsagesConfiguration = {
-		usage: { label: 'Usage', color: 'var(--chart-2)' },
-	} satisfies Chart.ChartConfig;
-	let allocatableNodesCPU = $state(0);
-	let cpuRequests = $state(0);
-	let cpuLimits = $state(0);
+	let prompts = $state([] as SampleValue[]);
+	let generations = $state([] as SampleValue[]);
+	const throughputs = $derived(
+		prompts.map((sample, index) => ({
+			time: sample.time,
+			prompt: sample.value,
+			generation: generations[index]?.value ?? 0,
+		})),
+	);
 
-	function fetch() {
+	const configuration = {
+		prompt: { label: 'Prompt', color: 'var(--chart-1)' },
+		generation: { label: 'Generation', color: 'var(--chart-2)' },
+	} satisfies Chart.ChartConfig;
+
+	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`
-				sum(
-				node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{juju_model_uuid="${scope.uuid}"}
-				)
-				`,
-				Date.now() - 60 * 60 * 1000,
+				`max(rate(vllm:prompt_tokens_total{juju_model_uuid="${scope.uuid}"}[2m]))`,
+				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60,
 			)
 			.then((response) => {
-				cpuUsages = response.result[0].values;
+				prompts = response.result[0]?.values;
 			});
 		prometheusDriver
-			.instantQuery(
-				`
-				sum(
-					kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${scope.uuid}",resource="cpu"}
-				)
-				`,
+			.rangeQuery(
+				`max(rate(vllm:generation_tokens_total{juju_model_uuid="${scope.uuid}"}[2m]))`,
+				Date.now() - 24 * 60 * 60 * 1000,
+				Date.now(),
+				2 * 60,
 			)
 			.then((response) => {
-				allocatableNodesCPU = response.result[0].value.value;
-			});
-		prometheusDriver
-			.instantQuery(
-				`
-				sum(
-					namespace_cpu:kube_pod_container_resource_requests:sum{juju_model_uuid="${scope.uuid}"}
-				)
-				`,
-			)
-			.then((response) => {
-				cpuRequests = response.result[0].value.value;
-			});
-		prometheusDriver
-			.instantQuery(
-				`
-				sum(
-					namespace_cpu:kube_pod_container_resource_limits:sum{juju_model_uuid="${scope.uuid}"}
-				)
-				`,
-			)
-			.then((response) => {
-				cpuLimits = response.result[0].value.value;
+				generations = response.result[0]?.values;
 			});
 	}
 
@@ -80,8 +59,12 @@
 
 	let isLoading = $state(true);
 	onMount(async () => {
-		await fetch();
-		isLoading = false;
+		try {
+			await fetch();
+			isLoading = false;
+		} catch (error) {
+			console.error(`Fail to fetch data in scope ${scope}:`, error);
+		}
 	});
 
 	$effect(() => {
@@ -96,50 +79,28 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class="h-full gap-2">
+	<Card.Root class="h-full">
 		<Card.Header>
-			<Card.Title>{m.cpu_usage()}</Card.Title>
-			<Card.Action class="text-muted-foreground flex flex-col gap-0.5 text-sm">
-				<div class="flex justify-between gap-2">
-					<p>{m.requests()}</p>
-					<Tooltip.Provider>
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<p class="font-mono">{Math.round((cpuRequests * 100) / allocatableNodesCPU)}%</p>
-							</Tooltip.Trigger>
-							<Tooltip.Content>
-								{cpuRequests.toFixed(2)} / {allocatableNodesCPU}
-							</Tooltip.Content>
-						</Tooltip.Root>
-					</Tooltip.Provider>
-				</div>
-				<div class="flex justify-between gap-2">
-					<p>{m.limits()}</p>
-					<Tooltip.Provider>
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<p class="font-mono">{Math.round((cpuLimits * 100) / allocatableNodesCPU)}%</p>
-							</Tooltip.Trigger>
-							<Tooltip.Content>
-								{cpuLimits.toFixed(2)} / {allocatableNodesCPU}
-							</Tooltip.Content>
-						</Tooltip.Root>
-					</Tooltip.Provider>
-				</div>
-			</Card.Action>
+			<Card.Title>{m.throughput()}</Card.Title>
+			<Card.Description>{m.llm_dashboard_throughputs_tooltip()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<Chart.Container config={cpuUsagesConfiguration}>
+			<Chart.Container config={configuration} class="h-[200px] w-full">
 				<AreaChart
-					data={cpuUsages}
+					data={throughputs}
 					x="time"
 					xScale={scaleUtc()}
 					yPadding={[0, 25]}
 					series={[
 						{
-							key: 'value',
-							label: cpuUsagesConfiguration.usage.label,
-							color: cpuUsagesConfiguration.usage.color,
+							key: 'prompt',
+							label: configuration.prompt.label,
+							color: configuration.prompt.color,
+						},
+						{
+							key: 'generation',
+							label: configuration.generation.label,
+							color: configuration.generation.color,
 						},
 					]}
 					props={{
@@ -174,11 +135,13 @@
 									style="--color-bg: {item.color}"
 									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 								></div>
-								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+								<div
+									class="flex flex-1 shrink-0 items-center justify-between gap-2 text-xs leading-none"
+								>
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{(Number(value) * 100).toFixed(2)}%</p>
+									<p class="font-mono">{Number(value).toFixed(2)} {m.per_second()}</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>
