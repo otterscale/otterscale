@@ -10,6 +10,7 @@
 	import NetworkTraffic from './overview/network-traffic.svelte';
 	import Pod from './overview/pod.svelte';
 	import ThroughtPut from './overview/throughput.svelte';
+	import VGPU from './overview/vgpu.svelte';
 	import Worker from './overview/worker.svelte';
 
 	import { env } from '$env/dynamic/public';
@@ -63,7 +64,7 @@
 			</div>
 			<Tabs.Content
 				value="overview"
-				class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10"
+				class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-12"
 			>
 				<div class="col-span-2">
 					<ControlPlane scope={$activeScope} bind:isReloading />
@@ -71,10 +72,10 @@
 				<div class="col-span-2">
 					<Worker scope={$activeScope} bind:isReloading />
 				</div>
-				<div class="col-span-3 row-span-2">
+				<div class="col-span-4 row-span-2">
 					<CPU {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
-				<div class="col-span-3 row-span-2">
+				<div class="col-span-4 row-span-2">
 					<Memory {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
 				<div class="col-span-2 col-start-1">
@@ -83,10 +84,13 @@
 				<div class="col-span-2">
 					<Container {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
-				<div class="col-span-3 col-start-5">
+				<div class="col-span-4">
+					<VGPU {prometheusDriver} scope={$activeScope} bind:isReloading />
+				</div>
+				<div class="col-span-4 col-start-5">
 					<NetworkTraffic {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
-				<div class="col-span-3">
+				<div class="col-span-4">
 					<ThroughtPut {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
 			</Tabs.Content>

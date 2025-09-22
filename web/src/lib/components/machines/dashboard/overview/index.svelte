@@ -2,6 +2,8 @@
 	import { PrometheusDriver } from 'prometheus-query';
 
 	import CPU from './cpu.svelte';
+	import GPUMemory from './gpu-memory.svelte';
+	import GPU from './gpu.svelte';
 	import Memory from './memory.svelte';
 	import NodeProportion from './node-proportion.svelte';
 	import Nodes from './nodes.svelte';
@@ -27,8 +29,14 @@
 	<div class="col-span-2">
 		<Storage {prometheusDriver} {scope} bind:isReloading />
 	</div>
-	<div class="col-span-3">
+	<div class="col-span-3 row-span-2">
 		<Nodes {scope} bind:isReloading />
+	</div>
+	<div class="col-span-2">
+		<GPU {prometheusDriver} {scope} bind:isReloading />
+	</div>
+	<div class="col-span-2">
+		<GPUMemory {prometheusDriver} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-6">
 		<SystemLoad {prometheusDriver} {scope} bind:isReloading />

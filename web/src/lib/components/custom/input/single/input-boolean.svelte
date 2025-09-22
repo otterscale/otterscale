@@ -39,7 +39,7 @@
 <div
 	class={cn(
 		INPUT_CLASSNAME,
-		'relative flex items-start gap-2 ',
+		'relative flex items-center gap-2',
 		format === 'switch' ? 'ring-1' : 'border-none shadow-none',
 		isInvalid && format === 'switch' ? 'ring-destructive' : '',
 		isInvalid && format === 'checkbox' ? 'ring-destructive ring-1' : '',

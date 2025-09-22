@@ -111,7 +111,6 @@
 							color: throughputsConfigurations.write.color,
 						},
 					]}
-					seriesLayout="stack"
 					props={{
 						area: {
 							curve: curveNatural,

@@ -12,13 +12,13 @@ import type { Single as SingleSelect } from '$lib/components/custom/select';
 export const resourcesCase: Writable<SingleSelect.OptionType[]> = writable([
 	{
 		value: 'instancetypeName',
-		label: 'Instance',
-		icon: 'ph:copy-simple',
+		label: 'InstanceType',
+		icon: 'ph:layout',
 	},
 	{
 		value: 'custom',
 		label: 'Custom',
-		icon: 'ph:scales',
+		icon: 'ph:gear',
 	},
 ]);
 
@@ -79,26 +79,26 @@ export const dataVolumeSourceTypes: Writable<SingleSelect.OptionType[]> = writab
 		label: 'Blank',
 		icon: 'ph:file',
 	},
-	{
-		value: DataVolumeSource_Type.REGISTRY,
-		label: 'Registry',
-		icon: 'ph:package',
-	},
-	{
-		value: DataVolumeSource_Type.UPLOAD,
-		label: 'Upload',
-		icon: 'ph:upload',
-	},
-	{
-		value: DataVolumeSource_Type.S3,
-		label: 'S3',
-		icon: 'ph:cloud',
-	},
-	{
-		value: DataVolumeSource_Type.VDDK,
-		label: 'VDDK',
-		icon: 'ph:hard-drives',
-	},
+	// {
+	// 	value: DataVolumeSource_Type.REGISTRY,
+	// 	label: 'Registry',
+	// 	icon: 'ph:package',
+	// },
+	// {
+	// 	value: DataVolumeSource_Type.UPLOAD,
+	// 	label: 'Upload',
+	// 	icon: 'ph:upload',
+	// },
+	// {
+	// 	value: DataVolumeSource_Type.S3,
+	// 	label: 'S3',
+	// 	icon: 'ph:cloud',
+	// },
+	// {
+	// 	value: DataVolumeSource_Type.VDDK,
+	// 	label: 'VDDK',
+	// 	icon: 'ph:hard-drives',
+	// },
 	{
 		value: DataVolumeSource_Type.PVC,
 		label: 'PVC',

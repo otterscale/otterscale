@@ -107,7 +107,7 @@
 			</Card.Title>
 		</Card.Header>
 		<Card.Content>
-			<Chart.Container config={nodesConfiguration} class="h-[80px] w-full px-2 pt-2">
+			<Chart.Container config={nodesConfiguration} class="h-full w-full px-2 pt-2">
 				<LineChart
 					points={{ r: 4 }}
 					data={nodes}

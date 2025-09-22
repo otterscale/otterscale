@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Row } from '@tanstack/table-core';
 
-	// import Actions from './cell-actions.svelte';
+	import Actions from './cell-actions.svelte';
 
 	import {
 		type VirtualMachineDisk,
@@ -12,6 +12,7 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	export const cells = {
 		row_picker,
@@ -21,7 +22,7 @@
 		source,
 		sourceType,
 		size,
-		// actions,
+		actions,
 	};
 </script>
 
@@ -61,11 +62,23 @@
 
 {#snippet source(row: Row<VirtualMachineDisk>)}
 	<Layout.Cell class="items-end">
-		{#if row.original.sourceData.case === 'source'}
-			{row.original.sourceData.value}
-		{:else if row.original.sourceData.case === 'dataVolume'}
-			{(row.original.sourceData.value as DataVolumeSource).source}
-		{/if}
+		{@const sourceText =
+			row.original.sourceData.case === 'source'
+				? row.original.sourceData.value
+				: row.original.sourceData.case === 'dataVolume'
+					? (row.original.sourceData.value as DataVolumeSource).source
+					: ''}
+
+		<Tooltip.Root>
+			<Tooltip.Trigger>
+				<p class="max-w-[210px] truncate">
+					{sourceText}
+				</p>
+			</Tooltip.Trigger>
+			<Tooltip.Content>
+				{sourceText}
+			</Tooltip.Content>
+		</Tooltip.Root>
 	</Layout.Cell>
 {/snippet}
 
@@ -77,8 +90,8 @@
 	</Layout.Cell>
 {/snippet}
 
-<!-- {#snippet actions(row: Row<VirtualMachineDisk>)}
+{#snippet actions(row: Row<VirtualMachineDisk>)}
 	<Layout.Cell class="items-start">
-		<Actions snapshot={row.original} />
+		<Actions virtualMachineDisk={row.original} />
 	</Layout.Cell>
-{/snippet} -->
+{/snippet}

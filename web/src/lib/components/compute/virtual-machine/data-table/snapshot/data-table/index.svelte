@@ -11,10 +11,10 @@
 		type VisibilityState,
 	} from '@tanstack/table-core';
 
-	// import Create from './action-create.svelte';
+	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 
-	import type { VirtualMachineSnapshot } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type { VirtualMachine, VirtualMachineSnapshot } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
@@ -23,8 +23,10 @@
 
 <script lang="ts">
 	let {
+		virtualMachine,
 		virtualMachineSnapshots,
 	}: {
+		virtualMachine: VirtualMachine;
 		virtualMachineSnapshots: VirtualMachineSnapshot[];
 	} = $props();
 
@@ -110,9 +112,9 @@
 			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
-		<!-- <Layout.ControllerAction>
-			<Create />
-		</Layout.ControllerAction> -->
+		<Layout.ControllerAction>
+			<Create {virtualMachine} />
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>

@@ -1,4 +1,4 @@
-# Otterscale Web
+# OtterScale Web
 
 ## Environment Variables
 

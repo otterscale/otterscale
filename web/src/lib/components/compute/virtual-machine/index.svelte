@@ -55,7 +55,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Statistics />
+		<Statistics virtualMachines={$virtualMachines} />
 		<DataTable {virtualMachines} {reloadManager} />
 	{:else}
 		<Loading.DataTable />

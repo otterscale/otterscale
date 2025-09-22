@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { Construction } from '$lib/components/construction';
+	import Dashboard from '$lib/components/models/dashboard/index.svelte';
 	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
 
@@ -11,4 +11,4 @@
 	});
 </script>
 
-<Construction />
+<Dashboard />

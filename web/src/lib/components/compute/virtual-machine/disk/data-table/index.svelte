@@ -11,10 +11,10 @@
 		type VisibilityState,
 	} from '@tanstack/table-core';
 
-	// import Create from './action-create.svelte';
+	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 
-	import type { VirtualMachineDisk } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type { VirtualMachine, VirtualMachineDisk } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
@@ -23,9 +23,11 @@
 
 <script lang="ts">
 	let {
-		virtualMachines,
+		virtualMachine,
+		virtualMachineDisks,
 	}: {
-		virtualMachines: VirtualMachineDisk[];
+		virtualMachine: VirtualMachine;
+		virtualMachineDisks: VirtualMachineDisk[];
 	} = $props();
 
 	// let snapshots = $derived(image.snapshots || []);
@@ -36,7 +38,7 @@
 	let rowSelection = $state<RowSelectionState>({});
 	const table = createSvelteTable({
 		get data() {
-			return virtualMachines;
+			return virtualMachineDisks;
 		},
 		columns: columns,
 		getCoreRowModel: getCoreRowModel(),
@@ -103,16 +105,16 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
-				values={virtualMachines.map((virtualMachines) => virtualMachines.name)}
+				values={virtualMachineDisks.map((virtualMachineDisks) => virtualMachineDisks.name)}
 				columnId="name"
 				{messages}
 				{table}
 			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
-		<!-- <Layout.ControllerAction>
-			<Create />
-		</Layout.ControllerAction> -->
+		<Layout.ControllerAction>
+			<Create {virtualMachine} />
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>

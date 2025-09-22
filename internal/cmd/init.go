@@ -9,8 +9,8 @@ import (
 func NewInit() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "init",
-		Short:   "Initialize a new Otterscale configuration",
-		Long:    "Initialize a new Otterscale configuration by printing the default configuration to stdout. This outputs the default configuration that can be redirected to a file.",
+		Short:   "Initialize a new OtterScale configuration",
+		Long:    "Initialize a new OtterScale configuration by printing the default configuration to stdout. This outputs the default configuration that can be redirected to a file.",
 		Example: "otterscale init > config.yaml\notterscale init > /path/to/config.yaml",
 		Args:    cobra.NoArgs,
 		RunE: func(_ *cobra.Command, _ []string) error {
