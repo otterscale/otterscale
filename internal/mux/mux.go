@@ -8,6 +8,7 @@ import (
 	"connectrpc.com/grpchealth"
 	"connectrpc.com/grpcreflect"
 	"connectrpc.com/otelconnect"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/prometheus"
 	"go.opentelemetry.io/otel/sdk/metric"
@@ -25,7 +26,6 @@ import (
 	storagev1 "github.com/otterscale/otterscale/api/storage/v1/pbconnect"
 	tagv1 "github.com/otterscale/otterscale/api/tag/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/app"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var Services = []string{
