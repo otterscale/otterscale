@@ -46,7 +46,7 @@
 				const instanceVectors: InstantVector[] = response.result;
 				allocatableGPUs = Object.fromEntries(
 					instanceVectors.map((instanceVector) => [
-						instanceVector.metric.labels.node,
+						(instanceVector.metric.labels as { node?: string }).node,
 						Number(instanceVector.value.value),
 					]),
 				);
@@ -61,7 +61,7 @@
 				const instanceVectors: InstantVector[] = response.result;
 				occupiedGPUs = Object.fromEntries(
 					instanceVectors.map((instanceVector) => [
-						instanceVector.metric.labels.node,
+						(instanceVector.metric.labels as { node?: string }).node,
 						Number(instanceVector.value.value),
 					]),
 				);
