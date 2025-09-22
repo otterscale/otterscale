@@ -61,7 +61,6 @@
 	onMount(async () => {
 		try {
 			await fetch();
-			console.log(prometheusDriver);
 			isLoading = false;
 		} catch (error) {
 			console.error(`Fail to fetch data in scope ${scope}:`, error);
@@ -106,7 +105,6 @@
 							color: configuration.ninety_nine.color,
 						},
 					]}
-					seriesLayout="stack"
 					props={{
 						area: {
 							curve: curveNatural,

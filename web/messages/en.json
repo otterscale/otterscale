@@ -691,7 +691,7 @@
 	"llm_dashboard_latency_tooltip": "Average Latency across all models.",
 	"llm_dashboard_models_tooltip": "Number of models.",
 	"llm_dashboard_requests_tooltip": "Shows the number of running and waiting requests over the past 24 hours.",
-	"llm_dashboard_throighputs_tooltip": "Displays running and waiting request throughput for the last 24 hours.",
+	"llm_dashboard_throughputs_tooltip": "Displays running and waiting request throughput for the last 24 hours.",
 	"llm_dashboard_time_to_first_token_tooltip": "Shows the 95th and 99th percentile time to first token for requests over the past 24 hours.",
 	"time_to_first_token": "Time to First Token",
 	"gpu_cache": "GPU Cache",

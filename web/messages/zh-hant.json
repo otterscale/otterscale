@@ -691,7 +691,7 @@
 	"llm_dashboard_latency_tooltip": "所有模型的平均延遲。",
 	"llm_dashboard_models_tooltip": "模型數量。",
 	"llm_dashboard_requests_tooltip": "顯示過去 24 小時內執行中和等待中的請求數量。",
-	"llm_dashboard_throighputs_tooltip": "顯示過去 24 小時內執行中和等待中請求的吞吐量。",
+	"llm_dashboard_throughputs_tooltip": "顯示過去 24 小時內執行中和等待中請求的吞吐量。",
 	"llm_dashboard_time_to_first_token_tooltip": "顯示過去 24 小時內請求的第 95 和 99 百分位首次產生 token 的時間。",
 	"time_to_first_token": "首次產生 Token 時間",
 	"gpu_cache": "GPU 快取",

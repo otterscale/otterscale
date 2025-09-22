@@ -19,7 +19,6 @@
 
 	let allocatableGPUs: Record<string, number> = $state({});
 	let occupiedGPUs: Record<string, number> = $state({});
-
 	const usages = $derived(
 		Object.keys(allocatableGPUs).map((node) => ({
 			node,

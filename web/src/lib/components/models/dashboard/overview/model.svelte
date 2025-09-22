@@ -24,7 +24,7 @@
 	let latestAvailableModels = $state(0);
 	let availableModels = $state([] as SampleValue[]);
 	const trend = $derived(
-		availableModels.length > 0
+		availableModels.length > 1 && availableModels[availableModels.length - 2].value !== 0
 			? (availableModels[availableModels.length - 1].value - availableModels[availableModels.length - 2].value) /
 					availableModels[availableModels.length - 2].value
 			: 0,

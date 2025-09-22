@@ -82,7 +82,7 @@
 	<Card.Root class="h-full">
 		<Card.Header>
 			<Card.Title>{m.throughput()}</Card.Title>
-			<Card.Description>{m.llm_dashboard_throighputs_tooltip()}</Card.Description>
+			<Card.Description>{m.llm_dashboard_throughputs_tooltip()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<Chart.Container config={configuration} class="h-[200px] w-full">
@@ -103,7 +103,6 @@
 							color: configuration.generation.color,
 						},
 					]}
-					seriesLayout="stack"
 					props={{
 						area: {
 							curve: curveNatural,

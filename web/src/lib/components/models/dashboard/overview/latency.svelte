@@ -21,10 +21,10 @@
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
-	let latency = $state(0);
+	let latestLatency = $state(0);
 	let latencies = $state([] as SampleValue[]);
 	const trend = $derived(
-		latencies.length > 0
+		latencies.length > 1 && latencies[latencies.length - 2].value !== 0
 			? (latencies[latencies.length - 1].value - latencies[latencies.length - 2].value) /
 					latencies[latencies.length - 2].value
 			: 0,
@@ -41,7 +41,7 @@
 			)
 			.then((response) => {
 				const value = response.result[0].value.value;
-				latency = isNaN(Number(value)) ? 0 : value;
+				latestLatency = isNaN(Number(value)) ? 0 : value;
 			});
 		prometheusDriver
 			.rangeQuery(
@@ -102,7 +102,7 @@
 		</Card.Header>
 		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
 			<div class="flex flex-col gap-0.5">
-				<div class="text-3xl font-bold">{latency.toFixed(2)}</div>
+				<div class="text-3xl font-bold">{latestLatency.toFixed(2)}</div>
 				<p class="text-muted-foreground text-sm">{m.millisecond()}</p>
 			</div>
 			<Chart.Container config={configuration} class="h-full w-20">

@@ -28,7 +28,7 @@
 	let latestMemoryUsage = $state(null);
 	let memoryUsages = $state([] as SampleValue[]);
 	const trend = $derived(
-		memoryUsages.length > 0
+		memoryUsages.length > 1 && memoryUsages[memoryUsages.length - 2].value !== 0
 			? (memoryUsages[memoryUsages.length - 1].value - memoryUsages[memoryUsages.length - 2].value) /
 					memoryUsages[memoryUsages.length - 2].value
 			: 0,

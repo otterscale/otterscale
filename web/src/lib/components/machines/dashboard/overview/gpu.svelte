@@ -35,7 +35,7 @@
 	const totalGPUs = $derived(scopeMachines.reduce((a, machine) => a + Number(machine.gpuDevices.length ?? 0), 0));
 	let allocatedGPUs = $state([] as SampleValue[]);
 	const trend = $derived(
-		allocatedGPUs.length > 0
+		allocatedGPUs.length > 1 && allocatedGPUs[allocatedGPUs.length - 2].value !== 0
 			? (allocatedGPUs[allocatedGPUs.length - 1].value - allocatedGPUs[allocatedGPUs.length - 2].value) /
 					allocatedGPUs[allocatedGPUs.length - 2].value
 			: 0,
