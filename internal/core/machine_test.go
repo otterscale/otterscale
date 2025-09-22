@@ -38,8 +38,11 @@ func (m *mockMachineRepo) List(ctx context.Context) ([]Machine, error) {
 func (m *mockMachineRepo) Get(ctx context.Context, systemID string) (*Machine, error) {
 	return &Machine{
 		Machine: &entity.Machine{
-			SystemID:            systemID,
-			WorkloadAnnotations: map[string]string{"juju-model-uuid": "scope"},
+			SystemID: systemID,
+			WorkloadAnnotations: map[string]string{
+				"juju-model-uuid": "scope",
+				"juju-machine-id": "1-lxd-0",
+			},
 		},
 		LastCommissioned: time.Now(),
 	}, nil
