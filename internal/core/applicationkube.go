@@ -136,6 +136,14 @@ type KubeStorageRepo interface {
 	GetStorageClass(ctx context.Context, config *rest.Config, name string) (*StorageClass, error)
 }
 
+func (uc *ApplicationUseCase) ListNamespaces(ctx context.Context, uuid, facility string) ([]Namespace, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.kubeCore.ListNamespaces(ctx, config)
+}
+
 func (uc *ApplicationUseCase) ListApplications(ctx context.Context, uuid, facility string) ([]Application, error) {
 	var (
 		deployments            []appsv1.Deployment
