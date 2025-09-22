@@ -263,7 +263,7 @@ func (uc *FacilityUseCase) DeleteFacility(ctx context.Context, uuid, name string
 
 	app, ok := s.Applications[name]
 	if ok && uc.tag != nil {
-		charmName := ""
+		var charmName string
 		if appCharm, ok := formatAppCharm(app.Charm); ok {
 			charmName = appCharm
 		} else {
@@ -274,17 +274,12 @@ func (uc *FacilityUseCase) DeleteFacility(ctx context.Context, uuid, name string
 			tagName := "otterscale.com/" + charmName
 
 			machineIDs := []string{}
-			for _, unit := range app.Units {
-				machineID := unit.Machine
+			for i := range app.Units {
+				machineID := app.Units[i].Machine
 				if machineID != "" {
-					machines, err := uc.machine.List(ctx)
-					if err == nil {
-						for _, m := range machines {
-							if m.SystemID == machineID {
-								machineIDs = append(machineIDs, m.SystemID)
-								break
-							}
-						}
+					machine, err := uc.machine.Get(ctx, machineID)
+					if err == nil && machine != nil {
+						machineIDs = append(machineIDs, machine.SystemID)
 					}
 				}
 			}

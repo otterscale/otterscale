@@ -403,19 +403,20 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 		if tagRepo != nil {
 			for _, charm := range charms {
 				// Only add tags when the charm is installed directly on the machine
-				if charm.Machine {
-					charmName := formatEssentialCharm(charm.Name)
-					tagName := "otterscale.com/" + charmName
+				if !charm.Machine {
+					continue
+				}
+				charmName := formatEssentialCharm(charm.Name)
+				tagName := "otterscale.com/" + charmName
 
-					_, err = tagRepo.Create(ctx, tagName, fmt.Sprintf("Added by OtterScale for %s", charmName))
-					if err != nil {
-						return err
-					}
+				_, err = tagRepo.Create(ctx, tagName, fmt.Sprintf("Added by OtterScale for %s", charmName))
+				if err != nil {
+					return err
+				}
 
-					err = tagRepo.AddMachines(ctx, tagName, []string{machineID})
-					if err != nil {
-						return err
-					}
+				err = tagRepo.AddMachines(ctx, tagName, []string{machineID})
+				if err != nil {
+					return err
 				}
 			}
 		}

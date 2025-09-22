@@ -369,7 +369,7 @@ func TestNewCharmConfigs(t *testing.T) {
 	assert.Contains(t, result, "ch:ceph-mon")
 	assert.Contains(t, result, "ch:kubernetes-control-plane")
 
-	// 檢查 YAML 內容
+	// Check YAML content
 	assert.Contains(t, result["ch:ceph-mon"], "prefix-ceph-mon")
 	assert.Contains(t, result["ch:kubernetes-control-plane"], "prefix-kubernetes-control-plane")
 }
