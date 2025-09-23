@@ -10,6 +10,7 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	clonev1beta1 "kubevirt.io/api/clone/v1beta1"
+	virtv1 "kubevirt.io/api/core/v1"
 	snapshotv1beta1 "kubevirt.io/api/snapshot/v1beta1"
 	cdiv1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 
@@ -30,6 +31,42 @@ func NewVirtualMachineService(uc *core.VirtualMachineUseCase) *VirtualMachineSer
 }
 
 var _ pbconnect.VirtualMachineServiceHandler = (*VirtualMachineService)(nil)
+
+func (s *VirtualMachineService) ListVirtualMachines(ctx context.Context, req *connect.Request[pb.ListVirtualMachinesRequest]) (*connect.Response[pb.ListVirtualMachinesResponse], error) {
+	vms, err := s.uc.ListVirtualMachines(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListVirtualMachinesResponse{}
+	resp.SetVirtualMachines(toProtoVirtualMachines(vms))
+	return connect.NewResponse(resp), nil
+}
+
+func (s *VirtualMachineService) GetVirtualMachine(ctx context.Context, req *connect.Request[pb.GetVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
+	vm, err := s.uc.GetVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoVirtualMachine(vm)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *VirtualMachineService) CreateVirtualMachine(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
+	vm, err := s.uc.CreateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetInstanceTypeName(), req.Msg.GetBootDataVolumeName(), req.Msg.GetStartupScript())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoVirtualMachine(vm)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *VirtualMachineService) DeleteVirtualMachine(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
 
 func (s *VirtualMachineService) CreateVirtualMachineClone(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineCloneRequest]) (*connect.Response[pb.VirtualMachine_Clone], error) {
 	clone, err := s.uc.CreateVirtualMachineClone(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetSourceVirtualMachineName(), req.Msg.GetTargetVirtualMachineName())
@@ -131,7 +168,7 @@ func (s *VirtualMachineService) MigrateInstance(ctx context.Context, req *connec
 }
 
 func (s *VirtualMachineService) ListDataVolumes(ctx context.Context, req *connect.Request[pb.ListDataVolumesRequest]) (*connect.Response[pb.ListDataVolumesResponse], error) {
-	its, err := s.uc.ListDataVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	its, err := s.uc.ListDataVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetBootImage())
 	if err != nil {
 		return nil, err
 	}
@@ -221,6 +258,103 @@ func (s *VirtualMachineService) DeleteInstanceType(ctx context.Context, req *con
 	return connect.NewResponse(resp), nil
 }
 
+func toProtoVirtualMachineDiskVolumeSource(v *virtv1.VolumeSource) *pb.VirtualMachine_Disk_Volume_Source {
+	ret := &pb.VirtualMachine_Disk_Volume_Source{}
+	if v.DataVolume != nil {
+		ret.SetType(pb.VirtualMachine_Disk_Volume_Source_DATA_VOLUME)
+		ret.SetData(v.DataVolume.Name)
+	} else if v.CloudInitNoCloud != nil {
+		ret.SetType(pb.VirtualMachine_Disk_Volume_Source_CLOUD_INIT_NO_CLOUD)
+		ret.SetData(v.CloudInitNoCloud.UserData)
+	}
+	return ret
+}
+
+func toProtoVirtualMachineDiskVolume(v *virtv1.Volume) *pb.VirtualMachine_Disk_Volume {
+	ret := &pb.VirtualMachine_Disk_Volume{}
+	ret.SetName(v.Name)
+	ret.SetSource(toProtoVirtualMachineDiskVolumeSource(&v.VolumeSource))
+	return ret
+}
+
+func toProtoVirtualMachineDisks(ds []virtv1.Disk, vs []virtv1.Volume) []*pb.VirtualMachine_Disk {
+	ret := []*pb.VirtualMachine_Disk{}
+	for i := range ds {
+		ret = append(ret, toProtoVirtualMachineDisk(&ds[i], vs))
+	}
+	return ret
+}
+
+func toProtoVirtualMachineDisk(d *virtv1.Disk, vs []virtv1.Volume) *pb.VirtualMachine_Disk {
+	ret := &pb.VirtualMachine_Disk{}
+	ret.SetName(d.Name)
+	disk := d.DiskDevice.Disk
+	if disk != nil {
+		ret.SetBus(convertDiskBusToProto(disk.Bus))
+	}
+	bootOrder := d.BootOrder
+	if bootOrder != nil {
+		ret.SetBootOrder(uint32(*bootOrder))
+	}
+	for i := range vs {
+		if vs[i].Name == d.Name {
+			ret.SetVolume(toProtoVirtualMachineDiskVolume(&vs[i]))
+		}
+	}
+	return ret
+}
+
+func convertDiskBusToProto(bus virtv1.DiskBus) pb.VirtualMachine_Disk_Bus {
+	switch bus {
+	case virtv1.DiskBusVirtio:
+		return pb.VirtualMachine_Disk_VIRTIO
+	case virtv1.DiskBusSATA:
+		return pb.VirtualMachine_Disk_SATA
+	case virtv1.DiskBusSCSI:
+		return pb.VirtualMachine_Disk_SCSI
+	case virtv1.DiskBusUSB:
+		return pb.VirtualMachine_Disk_USB
+	default:
+		return pb.VirtualMachine_Disk_VIRTIO
+	}
+}
+
+func toProtoVirtualMachines(vmds []core.VirtualMachineDetails) []*pb.VirtualMachine {
+	ret := []*pb.VirtualMachine{}
+	for i := range vmds {
+		ret = append(ret, toProtoVirtualMachine(&vmds[i]))
+	}
+	return ret
+}
+
+func toProtoVirtualMachine(vmd *core.VirtualMachineDetails) *pb.VirtualMachine {
+	ret := &pb.VirtualMachine{}
+	ret.SetName(vmd.VirtualMachine.Name)
+	ret.SetNamespace(vmd.VirtualMachine.Namespace)
+
+	instanceType := vmd.VirtualMachine.Spec.Instancetype
+	if instanceType != nil {
+		ret.SetInstanceTypeName(instanceType.Name)
+	}
+
+	ret.SetStatus(string(vmd.VirtualMachine.Status.PrintableStatus))
+	ret.SetReady(vmd.VirtualMachine.Status.Ready)
+
+	instance := vmd.VirtualMachineInstance
+	if instance != nil {
+		ret.SetInstancePhase(string(instance.Status.Phase))
+	}
+
+	ret.SetMachineId(vmd.MachineID)
+	ret.SetCreatedAt(timestamppb.New(vmd.VirtualMachine.CreationTimestamp.Time))
+	// TODO SVC
+	ret.SetDisks(toProtoVirtualMachineDisks(vmd.VirtualMachine.Spec.Template.Spec.Domain.Devices.Disks, vmd.VirtualMachine.Spec.Template.Spec.Volumes))
+	ret.SetClones(toProtoVirtualMachineClones(vmd.Clones))
+	ret.SetSnapshots(toProtoVirtualMachineSnapshots(vmd.Snapshots))
+	ret.SetRestores(toProtoVirtualMachineRestores(vmd.Restores))
+	return ret
+}
+
 func toProtoApplicationConditionFromClone(c *clonev1beta1.Condition) *apppb.Application_Condition {
 	ret := &apppb.Application_Condition{}
 	ret.SetType(string(c.Type))
@@ -251,6 +385,14 @@ func toProtoApplicationConditionFromSnapshot(c *snapshotv1beta1.Condition) *appp
 	return ret
 }
 
+func toProtoVirtualMachineClones(cs []core.VirtualMachineClone) []*pb.VirtualMachine_Clone {
+	ret := []*pb.VirtualMachine_Clone{}
+	for i := range cs {
+		ret = append(ret, toProtoVirtualMachineClone(&cs[i]))
+	}
+	return ret
+}
+
 func toProtoVirtualMachineClone(c *core.VirtualMachineClone) *pb.VirtualMachine_Clone {
 	ret := &pb.VirtualMachine_Clone{}
 	ret.SetName(c.Name)
@@ -262,6 +404,14 @@ func toProtoVirtualMachineClone(c *core.VirtualMachineClone) *pb.VirtualMachine_
 	if len(c.Status.Conditions) > 0 {
 		index := len(c.Status.Conditions) - 1
 		ret.SetLastCondition(toProtoApplicationConditionFromClone(&c.Status.Conditions[index]))
+	}
+	return ret
+}
+
+func toProtoVirtualMachineSnapshots(ss []core.VirtualMachineSnapshot) []*pb.VirtualMachine_Snapshot {
+	ret := []*pb.VirtualMachine_Snapshot{}
+	for i := range ss {
+		ret = append(ret, toProtoVirtualMachineSnapshot(&ss[i]))
 	}
 	return ret
 }
@@ -282,6 +432,14 @@ func toProtoVirtualMachineSnapshot(s *core.VirtualMachineSnapshot) *pb.VirtualMa
 		}
 	}
 	ret.SetCreatedAt(timestamppb.New(s.CreationTimestamp.Time))
+	return ret
+}
+
+func toProtoVirtualMachineRestores(rs []core.VirtualMachineRestore) []*pb.VirtualMachine_Restore {
+	ret := []*pb.VirtualMachine_Restore{}
+	for i := range rs {
+		ret = append(ret, toProtoVirtualMachineRestore(&rs[i]))
+	}
 	return ret
 }
 
@@ -358,7 +516,7 @@ func toProtoDataVolumeCondition(c *cdiv1beta1.DataVolumeCondition) *pb.DataVolum
 	return ret
 }
 
-func toProtoDataVolumes(its []core.DataVolumePVC) []*pb.DataVolume {
+func toProtoDataVolumes(its []core.DataVolumeWithStorage) []*pb.DataVolume {
 	ret := []*pb.DataVolume{}
 	for i := range its {
 		ret = append(ret, toProtoDataVolume(&its[i]))
@@ -366,7 +524,7 @@ func toProtoDataVolumes(its []core.DataVolumePVC) []*pb.DataVolume {
 	return ret
 }
 
-func toProtoDataVolume(it *core.DataVolumePVC) *pb.DataVolume {
+func toProtoDataVolume(it *core.DataVolumeWithStorage) *pb.DataVolume {
 	ret := &pb.DataVolume{}
 	ret.SetName(it.Name)
 	ret.SetNamespace(it.Namespace)

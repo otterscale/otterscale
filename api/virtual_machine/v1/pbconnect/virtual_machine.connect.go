@@ -8,7 +8,6 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v11 "github.com/otterscale/otterscale/api/application/v1"
 	v1 "github.com/otterscale/otterscale/api/virtual_machine/v1"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
@@ -47,15 +46,6 @@ const (
 	// VirtualMachineServiceDeleteVirtualMachineProcedure is the fully-qualified name of the
 	// VirtualMachineService's DeleteVirtualMachine RPC.
 	VirtualMachineServiceDeleteVirtualMachineProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/DeleteVirtualMachine"
-	// VirtualMachineServiceCreateVirtualMachineServiceProcedure is the fully-qualified name of the
-	// VirtualMachineService's CreateVirtualMachineService RPC.
-	VirtualMachineServiceCreateVirtualMachineServiceProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/CreateVirtualMachineService"
-	// VirtualMachineServiceUpdateVirtualMachineServiceProcedure is the fully-qualified name of the
-	// VirtualMachineService's UpdateVirtualMachineService RPC.
-	VirtualMachineServiceUpdateVirtualMachineServiceProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/UpdateVirtualMachineService"
-	// VirtualMachineServiceDeleteVirtualMachineServiceProcedure is the fully-qualified name of the
-	// VirtualMachineService's DeleteVirtualMachineService RPC.
-	VirtualMachineServiceDeleteVirtualMachineServiceProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/DeleteVirtualMachineService"
 	// VirtualMachineServiceAttachVirtualMachineDiskProcedure is the fully-qualified name of the
 	// VirtualMachineService's AttachVirtualMachineDisk RPC.
 	VirtualMachineServiceAttachVirtualMachineDiskProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/AttachVirtualMachineDisk"
@@ -137,9 +127,6 @@ type VirtualMachineServiceClient interface {
 	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	DeleteVirtualMachine(context.Context, *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateVirtualMachineService(context.Context, *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
-	UpdateVirtualMachineService(context.Context, *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
-	DeleteVirtualMachineService(context.Context, *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error)
 	AttachVirtualMachineDisk(context.Context, *connect.Request[v1.AttachVirtualMachineDiskRequest]) (*connect.Response[v1.VirtualMachine_Disk], error)
 	DetachVirtualMachineDisk(context.Context, *connect.Request[v1.DetachVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error)
 	CreateVirtualMachineClone(context.Context, *connect.Request[v1.CreateVirtualMachineCloneRequest]) (*connect.Response[v1.VirtualMachine_Clone], error)
@@ -200,24 +187,6 @@ func NewVirtualMachineServiceClient(httpClient connect.HTTPClient, baseURL strin
 			httpClient,
 			baseURL+VirtualMachineServiceDeleteVirtualMachineProcedure,
 			connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteVirtualMachine")),
-			connect.WithClientOptions(opts...),
-		),
-		createVirtualMachineService: connect.NewClient[v1.CreateVirtualMachineServiceRequest, v11.Application_Service](
-			httpClient,
-			baseURL+VirtualMachineServiceCreateVirtualMachineServiceProcedure,
-			connect.WithSchema(virtualMachineServiceMethods.ByName("CreateVirtualMachineService")),
-			connect.WithClientOptions(opts...),
-		),
-		updateVirtualMachineService: connect.NewClient[v1.UpdateVirtualMachineServiceRequest, v11.Application_Service](
-			httpClient,
-			baseURL+VirtualMachineServiceUpdateVirtualMachineServiceProcedure,
-			connect.WithSchema(virtualMachineServiceMethods.ByName("UpdateVirtualMachineService")),
-			connect.WithClientOptions(opts...),
-		),
-		deleteVirtualMachineService: connect.NewClient[v1.DeleteVirtualMachineServiceRequest, emptypb.Empty](
-			httpClient,
-			baseURL+VirtualMachineServiceDeleteVirtualMachineServiceProcedure,
-			connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteVirtualMachineService")),
 			connect.WithClientOptions(opts...),
 		),
 		attachVirtualMachineDisk: connect.NewClient[v1.AttachVirtualMachineDiskRequest, v1.VirtualMachine_Disk](
@@ -373,9 +342,6 @@ type virtualMachineServiceClient struct {
 	getVirtualMachine            *connect.Client[v1.GetVirtualMachineRequest, v1.VirtualMachine]
 	createVirtualMachine         *connect.Client[v1.CreateVirtualMachineRequest, v1.VirtualMachine]
 	deleteVirtualMachine         *connect.Client[v1.DeleteVirtualMachineRequest, emptypb.Empty]
-	createVirtualMachineService  *connect.Client[v1.CreateVirtualMachineServiceRequest, v11.Application_Service]
-	updateVirtualMachineService  *connect.Client[v1.UpdateVirtualMachineServiceRequest, v11.Application_Service]
-	deleteVirtualMachineService  *connect.Client[v1.DeleteVirtualMachineServiceRequest, emptypb.Empty]
 	attachVirtualMachineDisk     *connect.Client[v1.AttachVirtualMachineDiskRequest, v1.VirtualMachine_Disk]
 	detachVirtualMachineDisk     *connect.Client[v1.DetachVirtualMachineDiskRequest, emptypb.Empty]
 	createVirtualMachineClone    *connect.Client[v1.CreateVirtualMachineCloneRequest, v1.VirtualMachine_Clone]
@@ -423,24 +389,6 @@ func (c *virtualMachineServiceClient) CreateVirtualMachine(ctx context.Context, 
 // otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachine.
 func (c *virtualMachineServiceClient) DeleteVirtualMachine(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteVirtualMachine.CallUnary(ctx, req)
-}
-
-// CreateVirtualMachineService calls
-// otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineService.
-func (c *virtualMachineServiceClient) CreateVirtualMachineService(ctx context.Context, req *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
-	return c.createVirtualMachineService.CallUnary(ctx, req)
-}
-
-// UpdateVirtualMachineService calls
-// otterscale.virtual_machine.v1.VirtualMachineService.UpdateVirtualMachineService.
-func (c *virtualMachineServiceClient) UpdateVirtualMachineService(ctx context.Context, req *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
-	return c.updateVirtualMachineService.CallUnary(ctx, req)
-}
-
-// DeleteVirtualMachineService calls
-// otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineService.
-func (c *virtualMachineServiceClient) DeleteVirtualMachineService(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteVirtualMachineService.CallUnary(ctx, req)
 }
 
 // AttachVirtualMachineDisk calls
@@ -581,9 +529,6 @@ type VirtualMachineServiceHandler interface {
 	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	DeleteVirtualMachine(context.Context, *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateVirtualMachineService(context.Context, *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
-	UpdateVirtualMachineService(context.Context, *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
-	DeleteVirtualMachineService(context.Context, *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error)
 	AttachVirtualMachineDisk(context.Context, *connect.Request[v1.AttachVirtualMachineDiskRequest]) (*connect.Response[v1.VirtualMachine_Disk], error)
 	DetachVirtualMachineDisk(context.Context, *connect.Request[v1.DetachVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error)
 	CreateVirtualMachineClone(context.Context, *connect.Request[v1.CreateVirtualMachineCloneRequest]) (*connect.Response[v1.VirtualMachine_Clone], error)
@@ -639,24 +584,6 @@ func NewVirtualMachineServiceHandler(svc VirtualMachineServiceHandler, opts ...c
 		VirtualMachineServiceDeleteVirtualMachineProcedure,
 		svc.DeleteVirtualMachine,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteVirtualMachine")),
-		connect.WithHandlerOptions(opts...),
-	)
-	virtualMachineServiceCreateVirtualMachineServiceHandler := connect.NewUnaryHandler(
-		VirtualMachineServiceCreateVirtualMachineServiceProcedure,
-		svc.CreateVirtualMachineService,
-		connect.WithSchema(virtualMachineServiceMethods.ByName("CreateVirtualMachineService")),
-		connect.WithHandlerOptions(opts...),
-	)
-	virtualMachineServiceUpdateVirtualMachineServiceHandler := connect.NewUnaryHandler(
-		VirtualMachineServiceUpdateVirtualMachineServiceProcedure,
-		svc.UpdateVirtualMachineService,
-		connect.WithSchema(virtualMachineServiceMethods.ByName("UpdateVirtualMachineService")),
-		connect.WithHandlerOptions(opts...),
-	)
-	virtualMachineServiceDeleteVirtualMachineServiceHandler := connect.NewUnaryHandler(
-		VirtualMachineServiceDeleteVirtualMachineServiceProcedure,
-		svc.DeleteVirtualMachineService,
-		connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteVirtualMachineService")),
 		connect.WithHandlerOptions(opts...),
 	)
 	virtualMachineServiceAttachVirtualMachineDiskHandler := connect.NewUnaryHandler(
@@ -813,12 +740,6 @@ func NewVirtualMachineServiceHandler(svc VirtualMachineServiceHandler, opts ...c
 			virtualMachineServiceCreateVirtualMachineHandler.ServeHTTP(w, r)
 		case VirtualMachineServiceDeleteVirtualMachineProcedure:
 			virtualMachineServiceDeleteVirtualMachineHandler.ServeHTTP(w, r)
-		case VirtualMachineServiceCreateVirtualMachineServiceProcedure:
-			virtualMachineServiceCreateVirtualMachineServiceHandler.ServeHTTP(w, r)
-		case VirtualMachineServiceUpdateVirtualMachineServiceProcedure:
-			virtualMachineServiceUpdateVirtualMachineServiceHandler.ServeHTTP(w, r)
-		case VirtualMachineServiceDeleteVirtualMachineServiceProcedure:
-			virtualMachineServiceDeleteVirtualMachineServiceHandler.ServeHTTP(w, r)
 		case VirtualMachineServiceAttachVirtualMachineDiskProcedure:
 			virtualMachineServiceAttachVirtualMachineDiskHandler.ServeHTTP(w, r)
 		case VirtualMachineServiceDetachVirtualMachineDiskProcedure:
@@ -890,18 +811,6 @@ func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachine(context.Co
 
 func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachine(context.Context, *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachine is not implemented"))
-}
-
-func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachineService(context.Context, *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineService is not implemented"))
-}
-
-func (UnimplementedVirtualMachineServiceHandler) UpdateVirtualMachineService(context.Context, *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.UpdateVirtualMachineService is not implemented"))
-}
-
-func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachineService(context.Context, *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineService is not implemented"))
 }
 
 func (UnimplementedVirtualMachineServiceHandler) AttachVirtualMachineDisk(context.Context, *connect.Request[v1.AttachVirtualMachineDiskRequest]) (*connect.Response[v1.VirtualMachine_Disk], error) {

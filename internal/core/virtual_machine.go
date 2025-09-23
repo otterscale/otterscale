@@ -27,43 +27,62 @@ const (
 )
 
 type (
-	VirtualMachineInstanceType        = instancetypev1beta1.VirtualMachineInstancetype
-	VirtualMachineClusterInstanceType = instancetypev1beta1.VirtualMachineClusterInstancetype
-	DataVolume                        = cdiv1beta1.DataVolume
+	VirtualMachine                    = virtv1.VirtualMachine
+	VirtualMachineInstance            = virtv1.VirtualMachineInstance
 	VirtualMachineInstanceMigration   = virtv1.VirtualMachineInstanceMigration
 	VirtualMachineClone               = clonev1beta1.VirtualMachineClone
 	VirtualMachineSnapshot            = snapshotv1beta1.VirtualMachineSnapshot
 	VirtualMachineRestore             = snapshotv1beta1.VirtualMachineRestore
+	VirtualMachineInstanceType        = instancetypev1beta1.VirtualMachineInstancetype
+	VirtualMachineClusterInstanceType = instancetypev1beta1.VirtualMachineClusterInstancetype
+	DataVolume                        = cdiv1beta1.DataVolume
 )
 
-type DataVolumePVC struct {
+type VirtualMachineDetails struct {
+	*VirtualMachine
+	*VirtualMachineInstance
+	Clones    []VirtualMachineClone
+	Snapshots []VirtualMachineSnapshot
+	Restores  []VirtualMachineRestore
+	MachineID string
+}
+
+type DataVolumeWithStorage struct {
 	*DataVolume
 	*Storage
 }
 
 type KubeVirtRepo interface {
+	ListVirtualMachines(ctx context.Context, config *rest.Config, namespace string) ([]VirtualMachine, error)
+	GetVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachine, error)
+	CreateVirtualMachine(ctx context.Context, config *rest.Config, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachine, error)
+	DeleteVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
 	StartVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
 	StopVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
 	RestartVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
+	GetInstance(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineInstance, error)
 	PauseInstance(ctx context.Context, config *rest.Config, namespace, name string) error
 	UnpauseInstance(ctx context.Context, config *rest.Config, namespace, name string) error
 	MigrateInstance(ctx context.Context, config *rest.Config, namespace, name, hostname string) (*VirtualMachineInstanceMigration, error)
 }
 
 type KubeVirtCloneRepo interface {
+	ListVirtualMachineClones(ctx context.Context, config *rest.Config, namespace, vmName string) ([]VirtualMachineClone, error)
 	CreateVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name, source, target string) (*VirtualMachineClone, error)
 	DeleteVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
 type KubeVirtSnapshotRepo interface {
-	CreateVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name, source string) (*VirtualMachineSnapshot, error)
+	ListVirtualMachineSnapshots(ctx context.Context, config *rest.Config, namespace, vmName string) ([]VirtualMachineSnapshot, error)
+	CreateVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name, vmName string) (*VirtualMachineSnapshot, error)
 	DeleteVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string) error
-	CreateVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name, target, snapshot string) (*VirtualMachineRestore, error)
+	ListVirtualMachineRestores(ctx context.Context, config *rest.Config, namespace, vmName string) ([]VirtualMachineRestore, error)
+	CreateVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name, vmName, snapshot string) (*VirtualMachineRestore, error)
 	DeleteVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
 type KubeCDIRepo interface {
-	ListDataVolumes(ctx context.Context, config *rest.Config, namespace string) ([]DataVolume, error)
+	ListDataVolumes(ctx context.Context, config *rest.Config, namespace string, bootImage bool) ([]DataVolume, error)
 	GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string) (*DataVolume, error)
 	CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, srcType SourceType, srcData string, size int64, bootImage bool) (*DataVolume, error)
 	DeleteDataVolume(ctx context.Context, config *rest.Config, namespace, name string) error
@@ -87,9 +106,10 @@ type VirtualMachineUseCase struct {
 	kubeStorage  KubeStorageRepo
 	action       ActionRepo
 	facility     FacilityRepo
+	machine      MachineRepo
 }
 
-func NewVirtualMachineUseCase(kubeVirt KubeVirtRepo, kubeClone KubeVirtCloneRepo, kubeSnapshot KubeVirtSnapshotRepo, kubeCDI KubeCDIRepo, kubeIT KubeInstanceTypeRepo, kubeCore KubeCoreRepo, kubeStorage KubeStorageRepo, action ActionRepo, facility FacilityRepo) *VirtualMachineUseCase {
+func NewVirtualMachineUseCase(kubeVirt KubeVirtRepo, kubeClone KubeVirtCloneRepo, kubeSnapshot KubeVirtSnapshotRepo, kubeCDI KubeCDIRepo, kubeIT KubeInstanceTypeRepo, kubeCore KubeCoreRepo, kubeStorage KubeStorageRepo, action ActionRepo, facility FacilityRepo, machine MachineRepo) *VirtualMachineUseCase {
 	return &VirtualMachineUseCase{
 		kubeVirt:     kubeVirt,
 		kubeClone:    kubeClone,
@@ -100,7 +120,134 @@ func NewVirtualMachineUseCase(kubeVirt KubeVirtRepo, kubeClone KubeVirtCloneRepo
 		kubeStorage:  kubeStorage,
 		action:       action,
 		facility:     facility,
+		machine:      machine,
 	}
+}
+
+func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineDetails, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	vms, err := uc.kubeVirt.ListVirtualMachines(ctx, config, namespace)
+	if err != nil {
+		return nil, err
+	}
+	// FIX: Waited before sending request
+	eg, egctx := errgroup.WithContext(ctx)
+	details := make([]VirtualMachineDetails, len(vms))
+	for i := range vms {
+		eg.Go(func() error {
+			vm, err := uc.GetVirtualMachine(egctx, uuid, facility, vms[i].Namespace, vms[i].Name)
+			if err == nil {
+				details[i] = *vm
+			}
+			return err
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+	return details, nil
+}
+
+func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) (*VirtualMachineDetails, error) {
+	var (
+		virtualMachine *VirtualMachine
+		instance       *VirtualMachineInstance
+		clones         []VirtualMachineClone
+		snapshots      []VirtualMachineSnapshot
+		restores       []VirtualMachineRestore
+		machineID      string
+	)
+
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+
+	eg, egctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		v, err := uc.kubeVirt.GetVirtualMachine(egctx, config, namespace, name)
+		if err == nil {
+			virtualMachine = v
+		}
+		return err
+	})
+	eg.Go(func() error {
+		v, err := uc.kubeVirt.GetInstance(egctx, config, namespace, name)
+		if isKeyNotFoundError(err) {
+			return nil
+		}
+		if err == nil {
+			instance = v
+			ms, err := uc.machine.List(egctx)
+			if err == nil {
+				for i := range ms {
+					if ms[i].Hostname == instance.Status.NodeName {
+						machineID = ms[i].SystemID
+						break
+					}
+				}
+			}
+			return err
+		}
+		return err
+	})
+	eg.Go(func() error {
+		v, err := uc.kubeClone.ListVirtualMachineClones(egctx, config, namespace, name)
+		if err == nil {
+			clones = v
+		}
+		return err
+	})
+	eg.Go(func() error {
+		v, err := uc.kubeSnapshot.ListVirtualMachineSnapshots(egctx, config, namespace, name)
+		if err == nil {
+			snapshots = v
+		}
+		return err
+	})
+	eg.Go(func() error {
+		v, err := uc.kubeSnapshot.ListVirtualMachineRestores(egctx, config, namespace, name)
+		if err == nil {
+			restores = v
+		}
+		return err
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+	return &VirtualMachineDetails{
+		VirtualMachine:         virtualMachine,
+		VirtualMachineInstance: instance,
+		Clones:                 clones,
+		Snapshots:              snapshots,
+		Restores:               restores,
+		MachineID:              machineID,
+	}, nil
+}
+
+func (uc *VirtualMachineUseCase) CreateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineDetails, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	vm, err := uc.kubeVirt.CreateVirtualMachine(ctx, config, namespace, name, instanceType, bootDataVolume, startupScript)
+	if err != nil {
+		return nil, err
+	}
+	return &VirtualMachineDetails{
+		VirtualMachine: vm,
+	}, nil
+}
+
+func (uc *VirtualMachineUseCase) DeleteVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.kubeVirt.DeleteVirtualMachine(ctx, config, namespace, name)
 }
 
 func (uc *VirtualMachineUseCase) CreateVirtualMachineClone(ctx context.Context, uuid, facility, namespace, name, source, target string) (*VirtualMachineClone, error) {
@@ -119,12 +266,12 @@ func (uc *VirtualMachineUseCase) DeleteVirtualMachineClone(ctx context.Context, 
 	return uc.kubeClone.DeleteVirtualMachineClone(ctx, config, namespace, name)
 }
 
-func (uc *VirtualMachineUseCase) CreateVirtualMachineSnapshot(ctx context.Context, uuid, facility, namespace, name, source string) (*VirtualMachineSnapshot, error) {
+func (uc *VirtualMachineUseCase) CreateVirtualMachineSnapshot(ctx context.Context, uuid, facility, namespace, name, vmName string) (*VirtualMachineSnapshot, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeSnapshot.CreateVirtualMachineSnapshot(ctx, config, namespace, name, source)
+	return uc.kubeSnapshot.CreateVirtualMachineSnapshot(ctx, config, namespace, name, vmName)
 }
 
 func (uc *VirtualMachineUseCase) DeleteVirtualMachineSnapshot(ctx context.Context, uuid, facility, namespace, name string) error {
@@ -135,12 +282,12 @@ func (uc *VirtualMachineUseCase) DeleteVirtualMachineSnapshot(ctx context.Contex
 	return uc.kubeSnapshot.DeleteVirtualMachineSnapshot(ctx, config, namespace, name)
 }
 
-func (uc *VirtualMachineUseCase) CreateVirtualMachineRestore(ctx context.Context, uuid, facility, namespace, name, target, snapshot string) (*VirtualMachineRestore, error) {
+func (uc *VirtualMachineUseCase) CreateVirtualMachineRestore(ctx context.Context, uuid, facility, namespace, name, vmName, snapshot string) (*VirtualMachineRestore, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeSnapshot.CreateVirtualMachineRestore(ctx, config, namespace, name, target, snapshot)
+	return uc.kubeSnapshot.CreateVirtualMachineRestore(ctx, config, namespace, name, vmName, snapshot)
 }
 
 func (uc *VirtualMachineUseCase) DeleteVirtualMachineRestore(ctx context.Context, uuid, facility, namespace, name string) error {
@@ -202,7 +349,7 @@ func (uc *VirtualMachineUseCase) MigrateInstance(ctx context.Context, uuid, faci
 	return nil
 }
 
-func (uc *VirtualMachineUseCase) ListDataVolumes(ctx context.Context, uuid, facility, namespace string) ([]DataVolumePVC, error) {
+func (uc *VirtualMachineUseCase) ListDataVolumes(ctx context.Context, uuid, facility, namespace string, bootImage bool) ([]DataVolumeWithStorage, error) {
 	var (
 		dataVolumes            []DataVolume
 		persistentVolumeClaims []corev1.PersistentVolumeClaim
@@ -216,7 +363,7 @@ func (uc *VirtualMachineUseCase) ListDataVolumes(ctx context.Context, uuid, faci
 
 	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		v, err := uc.kubeCDI.ListDataVolumes(egctx, config, namespace)
+		v, err := uc.kubeCDI.ListDataVolumes(egctx, config, namespace, bootImage)
 		if err == nil {
 			dataVolumes = v
 		}
@@ -242,9 +389,9 @@ func (uc *VirtualMachineUseCase) ListDataVolumes(ctx context.Context, uuid, faci
 
 	storageClassMap := toStorageClassMap(storageClasses)
 
-	ret := make([]DataVolumePVC, len(dataVolumes))
+	ret := make([]DataVolumeWithStorage, len(dataVolumes))
 	for i := range ret {
-		ret[i] = DataVolumePVC{
+		ret[i] = DataVolumeWithStorage{
 			DataVolume: &dataVolumes[i],
 		}
 		for j := range persistentVolumeClaims {
@@ -268,7 +415,7 @@ func (uc *VirtualMachineUseCase) ListDataVolumes(ctx context.Context, uuid, faci
 	return ret, nil
 }
 
-func (uc *VirtualMachineUseCase) GetDataVolume(ctx context.Context, uuid, facility, namespace, name string) (*DataVolumePVC, error) {
+func (uc *VirtualMachineUseCase) GetDataVolume(ctx context.Context, uuid, facility, namespace, name string) (*DataVolumeWithStorage, error) {
 	var (
 		dataVolume            *DataVolume
 		persistentVolumeClaim *corev1.PersistentVolumeClaim
@@ -304,7 +451,7 @@ func (uc *VirtualMachineUseCase) GetDataVolume(ctx context.Context, uuid, facili
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	return &DataVolumePVC{
+	return &DataVolumeWithStorage{
 		DataVolume: dataVolume,
 		Storage: &Storage{
 			PersistentVolumeClaim: persistentVolumeClaim,
@@ -313,7 +460,7 @@ func (uc *VirtualMachineUseCase) GetDataVolume(ctx context.Context, uuid, facili
 	}, nil
 }
 
-func (uc *VirtualMachineUseCase) CreateDataVolume(ctx context.Context, uuid, facility, namespace, name string, srcType SourceType, srcData string, size int64, bootImage bool) (*DataVolumePVC, error) {
+func (uc *VirtualMachineUseCase) CreateDataVolume(ctx context.Context, uuid, facility, namespace, name string, srcType SourceType, srcData string, size int64, bootImage bool) (*DataVolumeWithStorage, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -322,7 +469,7 @@ func (uc *VirtualMachineUseCase) CreateDataVolume(ctx context.Context, uuid, fac
 	if err != nil {
 		return nil, err
 	}
-	return &DataVolumePVC{
+	return &DataVolumeWithStorage{
 		DataVolume: dataVolume,
 	}, nil
 }

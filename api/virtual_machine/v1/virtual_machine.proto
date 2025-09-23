@@ -14,17 +14,18 @@ service VirtualMachineService {
   rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
   rpc DeleteVirtualMachine(DeleteVirtualMachineRequest) returns (google.protobuf.Empty);
 
-  rpc CreateVirtualMachineService(CreateVirtualMachineServiceRequest)
-      returns (otterscale.application.v1.Application.Service);
-  rpc UpdateVirtualMachineService(UpdateVirtualMachineServiceRequest)
-      returns (otterscale.application.v1.Application.Service);
-  rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty);
+  // rpc CreateVirtualMachineService(CreateVirtualMachineServiceRequest)
+  //     returns (otterscale.application.v1.Application.Service);
+  // rpc UpdateVirtualMachineService(UpdateVirtualMachineServiceRequest)
+  //     returns (otterscale.application.v1.Application.Service);
+  // rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty);
 
   rpc AttachVirtualMachineDisk(AttachVirtualMachineDiskRequest) returns (VirtualMachine.Disk);
   rpc DetachVirtualMachineDisk(DetachVirtualMachineDiskRequest) returns (google.protobuf.Empty);
 
   rpc CreateVirtualMachineClone(CreateVirtualMachineCloneRequest) returns (VirtualMachine.Clone);
   rpc DeleteVirtualMachineClone(DeleteVirtualMachineCloneRequest) returns (google.protobuf.Empty);
+
   rpc CreateVirtualMachineSnapshot(CreateVirtualMachineSnapshotRequest) returns (VirtualMachine.Snapshot);
   rpc DeleteVirtualMachineSnapshot(DeleteVirtualMachineSnapshotRequest) returns (google.protobuf.Empty);
   rpc CreateVirtualMachineRestore(CreateVirtualMachineRestoreRequest) returns (VirtualMachine.Restore);
@@ -80,56 +81,44 @@ message VirtualMachine {
     otterscale.application.v1.Application.Condition last_condition = 31;
   }
   message Disk {
-    // enum Type {
-    //   UNSPECIFIED = 0;
-    //   DATA_VOLUME = 1;
-    //   CLOUD_INIT_NO_CLOUD = 2;
-    // }
     enum Bus {
       VIRTIO = 0;
       SATA = 1;
       SCSI = 2;
       USB = 3;
     }
+    message Volume {
+      message Source {
+        enum Type {
+          UNKNOWN = 0;
+          DATA_VOLUME = 1;
+          CLOUD_INIT_NO_CLOUD = 2;
+        }
+        Type type = 1;
+        string data = 2;
+      }
+      string name = 1;
+      Source source = 2;
+    }
     string name = 1;
     Bus bus = 2;
-    // Type type = 11;
-    // string data = 12;
-    bool bootable = 21;
-    uint32 boot_order = 22;
-
-    DataVolume data_volume = 31;
+    uint32 boot_order = 3;
+    Volume volume = 4;
   }
-  //   enum Status {
-  //     UNKNOWN = 0;
-  //     PROVISIONING = 1;
-  //     STARTING = 2;
-  //     RUNNING = 3;
-  //     PAUSED = 4;
-  //     STOPPING = 5;
-  //     STOPPED = 6;
-  //     TERMINATING = 7;
-  //   }
-
-  //   Metadata metadata = 1;
-  //   string network_name = 11;
-  //   string startup_script = 12;
-  //   string node_name = 13;
-  //   string pod_name = 14;
-  //   string maas_id = 15;
-  //   VirtualMachineResources resources = 21;
-  //   repeated DiskInfo disks = 22;
-  //   repeated ServiceInfo services = 23;
-  //   status status_phase = 31;
-  repeated Clone clones = 31;
-  repeated Snapshot snapshots = 41;
-  repeated Restore restores = 42;
+  string name = 1;
+  string namespace = 2;
+  string instance_type_name = 3;
+  string status = 11;
+  bool ready = 12;
+  string instance_phase = 21;
+  string machine_id = 22;
+  google.protobuf.Timestamp created_at = 31;
+  otterscale.application.v1.Application.Service service = 41;
+  repeated Disk disks = 51;
+  repeated Clone clones = 61;
+  repeated Snapshot snapshots = 71;
+  repeated Restore restores = 72;
 }
-
-// message VirtualMachineResources {
-//   uint32 cpu_cores = 1;
-//   int64 memory_bytes = 2;
-// }
 
 message DataVolume {
   message Source {
@@ -334,6 +323,7 @@ message ListDataVolumesRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string namespace = 3;
+  bool boot_image = 4;
 }
 
 message ListDataVolumesResponse {

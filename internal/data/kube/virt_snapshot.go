@@ -24,6 +24,21 @@ func NewVirtSnapshot(kube *Kube) oscore.KubeVirtSnapshotRepo {
 
 var _ oscore.KubeVirtSnapshotRepo = (*virtSnapshot)(nil)
 
+func (r *virtSnapshot) ListVirtualMachineSnapshots(ctx context.Context, config *rest.Config, namespace, vmName string) ([]oscore.VirtualMachineSnapshot, error) {
+	clientset, err := r.kube.virtClientset(config)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.ListOptions{
+		LabelSelector: oscore.VirtualMachineNameLabel + "=" + vmName,
+	}
+	list, err := clientset.SnapshotV1beta1().VirtualMachineSnapshots(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
 func (r *virtSnapshot) CreateVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name, vmName string) (*oscore.VirtualMachineSnapshot, error) {
 	clientset, err := r.kube.virtClientset(config)
 	if err != nil {
@@ -35,6 +50,9 @@ func (r *virtSnapshot) CreateVirtualMachineSnapshot(ctx context.Context, config 
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
+			Labels: map[string]string{
+				oscore.VirtualMachineNameLabel: vmName,
+			},
 		},
 		Spec: snapshotv1beta1.VirtualMachineSnapshotSpec{
 			Source: corev1.TypedLocalObjectReference{
@@ -57,7 +75,22 @@ func (r *virtSnapshot) DeleteVirtualMachineSnapshot(ctx context.Context, config 
 	return clientset.SnapshotV1beta1().VirtualMachineSnapshots(namespace).Delete(ctx, name, opts)
 }
 
-func (r *virtSnapshot) CreateVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name, target, snapshot string) (*oscore.VirtualMachineRestore, error) {
+func (r *virtSnapshot) ListVirtualMachineRestores(ctx context.Context, config *rest.Config, namespace, vmName string) ([]oscore.VirtualMachineRestore, error) {
+	clientset, err := r.kube.virtClientset(config)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.ListOptions{
+		LabelSelector: oscore.VirtualMachineNameLabel + "=" + vmName,
+	}
+	list, err := clientset.SnapshotV1beta1().VirtualMachineRestores(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
+func (r *virtSnapshot) CreateVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name, vmName, snapshot string) (*oscore.VirtualMachineRestore, error) {
 	clientset, err := r.kube.virtClientset(config)
 	if err != nil {
 		return nil, err
@@ -68,12 +101,15 @@ func (r *virtSnapshot) CreateVirtualMachineRestore(ctx context.Context, config *
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
+			Labels: map[string]string{
+				oscore.VirtualMachineNameLabel: vmName,
+			},
 		},
 		Spec: snapshotv1beta1.VirtualMachineRestoreSpec{
 			Target: corev1.TypedLocalObjectReference{
 				APIGroup: &apiGroup,
 				Kind:     kind,
-				Name:     target,
+				Name:     vmName,
 			},
 			VirtualMachineSnapshotName: snapshot,
 		},

@@ -25,12 +25,15 @@ func NewCDI(kube *Kube) oscore.KubeCDIRepo {
 
 var _ oscore.KubeCDIRepo = (*cdi)(nil)
 
-func (r *cdi) ListDataVolumes(ctx context.Context, config *rest.Config, namespace string) ([]oscore.DataVolume, error) {
+func (r *cdi) ListDataVolumes(ctx context.Context, config *rest.Config, namespace string, bootImage bool) ([]oscore.DataVolume, error) {
 	clientset, err := r.kube.cdiClientset(config)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.ListOptions{}
+	if bootImage {
+		opts.LabelSelector = oscore.DataVolumeBootImageLabel + "=" + strconv.FormatBool(bootImage)
+	}
 	list, err := clientset.CdiV1beta1().DataVolumes(namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err

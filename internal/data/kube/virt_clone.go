@@ -24,6 +24,21 @@ func NewVirtClone(kube *Kube) oscore.KubeVirtCloneRepo {
 
 var _ oscore.KubeVirtCloneRepo = (*virtClone)(nil)
 
+func (r *virtClone) ListVirtualMachineClones(ctx context.Context, config *rest.Config, namespace, vmName string) ([]oscore.VirtualMachineClone, error) {
+	clientset, err := r.kube.virtClientset(config)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.ListOptions{
+		LabelSelector: oscore.VirtualMachineNameLabel + "=" + vmName,
+	}
+	list, err := clientset.CloneV1beta1().VirtualMachineClones(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
 func (r *virtClone) CreateVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name, source, target string) (*oscore.VirtualMachineClone, error) {
 	clientset, err := r.kube.virtClientset(config)
 	if err != nil {
@@ -35,6 +50,9 @@ func (r *virtClone) CreateVirtualMachineClone(ctx context.Context, config *rest.
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
+			Labels: map[string]string{
+				oscore.VirtualMachineNameLabel: source,
+			},
 		},
 		Spec: clonev1beta1.VirtualMachineCloneSpec{
 			Source: &corev1.TypedLocalObjectReference{
