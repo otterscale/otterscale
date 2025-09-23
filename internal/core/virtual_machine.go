@@ -5,11 +5,16 @@ import (
 	"encoding/json"
 
 	"golang.org/x/sync/errgroup"
-	corev1 "k8s.io/api/core/v1"
-	storagev1 "k8s.io/api/storage/v1"
+
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/client-go/rest"
+
+	corev1 "k8s.io/api/core/v1"
+	storagev1 "k8s.io/api/storage/v1"
+	clonev1beta1 "kubevirt.io/api/clone/v1beta1"
+	virtv1 "kubevirt.io/api/core/v1"
 	instancetypev1beta1 "kubevirt.io/api/instancetype/v1beta1"
+	snapshotv1beta1 "kubevirt.io/api/snapshot/v1beta1"
 	cdiv1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 )
 
@@ -25,11 +30,36 @@ type (
 	VirtualMachineInstanceType        = instancetypev1beta1.VirtualMachineInstancetype
 	VirtualMachineClusterInstanceType = instancetypev1beta1.VirtualMachineClusterInstancetype
 	DataVolume                        = cdiv1beta1.DataVolume
+	VirtualMachineInstanceMigration   = virtv1.VirtualMachineInstanceMigration
+	VirtualMachineClone               = clonev1beta1.VirtualMachineClone
+	VirtualMachineSnapshot            = snapshotv1beta1.VirtualMachineSnapshot
+	VirtualMachineRestore             = snapshotv1beta1.VirtualMachineRestore
 )
 
 type DataVolumePVC struct {
 	*DataVolume
 	*Storage
+}
+
+type KubeVirtRepo interface {
+	StartVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
+	StopVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
+	RestartVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
+	PauseInstance(ctx context.Context, config *rest.Config, namespace, name string) error
+	UnpauseInstance(ctx context.Context, config *rest.Config, namespace, name string) error
+	MigrateInstance(ctx context.Context, config *rest.Config, namespace, name, hostname string) (*VirtualMachineInstanceMigration, error)
+}
+
+type KubeVirtCloneRepo interface {
+	CreateVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name, source, target string) (*VirtualMachineClone, error)
+	DeleteVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string) error
+}
+
+type KubeVirtSnapshotRepo interface {
+	CreateVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name, source string) (*VirtualMachineSnapshot, error)
+	DeleteVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string) error
+	CreateVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name, target, snapshot string) (*VirtualMachineRestore, error)
+	DeleteVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
 type KubeCDIRepo interface {
@@ -48,23 +78,128 @@ type KubeInstanceTypeRepo interface {
 }
 
 type VirtualMachineUseCase struct {
-	kubeCDI     KubeCDIRepo
-	kubeIT      KubeInstanceTypeRepo
-	kubeCore    KubeCoreRepo
-	kubeStorage KubeStorageRepo
-	action      ActionRepo
-	facility    FacilityRepo
+	kubeVirt     KubeVirtRepo
+	kubeClone    KubeVirtCloneRepo
+	kubeSnapshot KubeVirtSnapshotRepo
+	kubeCDI      KubeCDIRepo
+	kubeIT       KubeInstanceTypeRepo
+	kubeCore     KubeCoreRepo
+	kubeStorage  KubeStorageRepo
+	action       ActionRepo
+	facility     FacilityRepo
 }
 
-func NewVirtualMachineUseCase(kubeCDI KubeCDIRepo, kubeIT KubeInstanceTypeRepo, kubeCore KubeCoreRepo, kubeStorage KubeStorageRepo, action ActionRepo, facility FacilityRepo) *VirtualMachineUseCase {
+func NewVirtualMachineUseCase(kubeVirt KubeVirtRepo, kubeClone KubeVirtCloneRepo, kubeSnapshot KubeVirtSnapshotRepo, kubeCDI KubeCDIRepo, kubeIT KubeInstanceTypeRepo, kubeCore KubeCoreRepo, kubeStorage KubeStorageRepo, action ActionRepo, facility FacilityRepo) *VirtualMachineUseCase {
 	return &VirtualMachineUseCase{
-		kubeCDI:     kubeCDI,
-		kubeIT:      kubeIT,
-		kubeCore:    kubeCore,
-		kubeStorage: kubeStorage,
-		action:      action,
-		facility:    facility,
+		kubeVirt:     kubeVirt,
+		kubeClone:    kubeClone,
+		kubeSnapshot: kubeSnapshot,
+		kubeCDI:      kubeCDI,
+		kubeIT:       kubeIT,
+		kubeCore:     kubeCore,
+		kubeStorage:  kubeStorage,
+		action:       action,
+		facility:     facility,
 	}
+}
+
+func (uc *VirtualMachineUseCase) CreateVirtualMachineClone(ctx context.Context, uuid, facility, namespace, name, source, target string) (*VirtualMachineClone, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.kubeClone.CreateVirtualMachineClone(ctx, config, namespace, name, source, target)
+}
+
+func (uc *VirtualMachineUseCase) DeleteVirtualMachineClone(ctx context.Context, uuid, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.kubeClone.DeleteVirtualMachineClone(ctx, config, namespace, name)
+}
+
+func (uc *VirtualMachineUseCase) CreateVirtualMachineSnapshot(ctx context.Context, uuid, facility, namespace, name, source string) (*VirtualMachineSnapshot, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.kubeSnapshot.CreateVirtualMachineSnapshot(ctx, config, namespace, name, source)
+}
+
+func (uc *VirtualMachineUseCase) DeleteVirtualMachineSnapshot(ctx context.Context, uuid, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.kubeSnapshot.DeleteVirtualMachineSnapshot(ctx, config, namespace, name)
+}
+
+func (uc *VirtualMachineUseCase) CreateVirtualMachineRestore(ctx context.Context, uuid, facility, namespace, name, target, snapshot string) (*VirtualMachineRestore, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.kubeSnapshot.CreateVirtualMachineRestore(ctx, config, namespace, name, target, snapshot)
+}
+
+func (uc *VirtualMachineUseCase) DeleteVirtualMachineRestore(ctx context.Context, uuid, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.kubeSnapshot.DeleteVirtualMachineRestore(ctx, config, namespace, name)
+}
+
+func (uc *VirtualMachineUseCase) StartVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.kubeVirt.StartVirtualMachine(ctx, config, namespace, name)
+}
+
+func (uc *VirtualMachineUseCase) StopVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.kubeVirt.StopVirtualMachine(ctx, config, namespace, name)
+}
+
+func (uc *VirtualMachineUseCase) RestartVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.kubeVirt.RestartVirtualMachine(ctx, config, namespace, name)
+}
+
+func (uc *VirtualMachineUseCase) PauseInstance(ctx context.Context, uuid, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.kubeVirt.PauseInstance(ctx, config, namespace, name)
+}
+
+func (uc *VirtualMachineUseCase) ResumeInstance(ctx context.Context, uuid, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.kubeVirt.UnpauseInstance(ctx, config, namespace, name)
+}
+
+func (uc *VirtualMachineUseCase) MigrateInstance(ctx context.Context, uuid, facility, namespace, name, hostname string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	if _, err := uc.kubeVirt.MigrateInstance(ctx, config, namespace, name, hostname); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (uc *VirtualMachineUseCase) ListDataVolumes(ctx context.Context, uuid, facility, namespace string) ([]DataVolumePVC, error) {

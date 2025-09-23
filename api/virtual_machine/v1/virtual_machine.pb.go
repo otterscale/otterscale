@@ -120,9 +120,12 @@ func (x DataVolume_Source_Type) Number() protoreflect.EnumNumber {
 }
 
 type VirtualMachine struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                protoimpl.MessageState      `protogen:"opaque.v1"`
+	xxx_hidden_Clones    *[]*VirtualMachine_Clone    `protobuf:"bytes,31,rep,name=clones"`
+	xxx_hidden_Snapshots *[]*VirtualMachine_Snapshot `protobuf:"bytes,41,rep,name=snapshots"`
+	xxx_hidden_Restores  *[]*VirtualMachine_Restore  `protobuf:"bytes,42,rep,name=restores"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *VirtualMachine) Reset() {
@@ -150,15 +153,70 @@ func (x *VirtualMachine) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *VirtualMachine) GetClones() []*VirtualMachine_Clone {
+	if x != nil {
+		if x.xxx_hidden_Clones != nil {
+			return *x.xxx_hidden_Clones
+		}
+	}
+	return nil
+}
+
+func (x *VirtualMachine) GetSnapshots() []*VirtualMachine_Snapshot {
+	if x != nil {
+		if x.xxx_hidden_Snapshots != nil {
+			return *x.xxx_hidden_Snapshots
+		}
+	}
+	return nil
+}
+
+func (x *VirtualMachine) GetRestores() []*VirtualMachine_Restore {
+	if x != nil {
+		if x.xxx_hidden_Restores != nil {
+			return *x.xxx_hidden_Restores
+		}
+	}
+	return nil
+}
+
+func (x *VirtualMachine) SetClones(v []*VirtualMachine_Clone) {
+	x.xxx_hidden_Clones = &v
+}
+
+func (x *VirtualMachine) SetSnapshots(v []*VirtualMachine_Snapshot) {
+	x.xxx_hidden_Snapshots = &v
+}
+
+func (x *VirtualMachine) SetRestores(v []*VirtualMachine_Restore) {
+	x.xxx_hidden_Restores = &v
+}
+
 type VirtualMachine_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
+	// Metadata metadata = 1;
+	// string network_name = 11;
+	// string startup_script = 12;
+	// string node_name = 13;
+	// string pod_name = 14;
+	// string maas_id = 15;
+	// VirtualMachineResources resources = 21;
+	// repeated DiskInfo disks = 22;
+	// repeated ServiceInfo services = 23;
+	// status status_phase = 31;
+	Clones    []*VirtualMachine_Clone
+	Snapshots []*VirtualMachine_Snapshot
+	Restores  []*VirtualMachine_Restore
 }
 
 func (b0 VirtualMachine_builder) Build() *VirtualMachine {
 	m0 := &VirtualMachine{}
 	b, x := &b0, m0
 	_, _ = b, x
+	x.xxx_hidden_Clones = &b.Clones
+	x.xxx_hidden_Snapshots = &b.Snapshots
+	x.xxx_hidden_Restores = &b.Restores
 	return m0
 }
 
@@ -1478,33 +1536,33 @@ func (b0 DeleteVirtualMachineRequest_builder) Build() *DeleteVirtualMachineReque
 	return m0
 }
 
-type CloneVirtualMachineRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_TargetName   *string                `protobuf:"bytes,5,opt,name=target_name,json=targetName"`
+type CreateVirtualMachineServiceRequest struct {
+	state                   protoimpl.MessageState          `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                         `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                         `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                         `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name         *string                         `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_Ports        *[]*v1.Application_Service_Port `protobuf:"bytes,11,rep,name=ports"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *CloneVirtualMachineRequest) Reset() {
-	*x = CloneVirtualMachineRequest{}
+func (x *CreateVirtualMachineServiceRequest) Reset() {
+	*x = CreateVirtualMachineServiceRequest{}
 	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloneVirtualMachineRequest) String() string {
+func (x *CreateVirtualMachineServiceRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloneVirtualMachineRequest) ProtoMessage() {}
+func (*CreateVirtualMachineServiceRequest) ProtoMessage() {}
 
-func (x *CloneVirtualMachineRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1516,7 +1574,7 @@ func (x *CloneVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *CloneVirtualMachineRequest) GetScopeUuid() string {
+func (x *CreateVirtualMachineServiceRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -1526,7 +1584,7 @@ func (x *CloneVirtualMachineRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *CloneVirtualMachineRequest) GetFacilityName() string {
+func (x *CreateVirtualMachineServiceRequest) GetFacilityName() string {
 	if x != nil {
 		if x.xxx_hidden_FacilityName != nil {
 			return *x.xxx_hidden_FacilityName
@@ -1536,7 +1594,7 @@ func (x *CloneVirtualMachineRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *CloneVirtualMachineRequest) GetNamespace() string {
+func (x *CreateVirtualMachineServiceRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
 			return *x.xxx_hidden_Namespace
@@ -1546,7 +1604,7 @@ func (x *CloneVirtualMachineRequest) GetNamespace() string {
 	return ""
 }
 
-func (x *CloneVirtualMachineRequest) GetName() string {
+func (x *CreateVirtualMachineServiceRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
@@ -1556,113 +1614,99 @@ func (x *CloneVirtualMachineRequest) GetName() string {
 	return ""
 }
 
-func (x *CloneVirtualMachineRequest) GetTargetName() string {
+func (x *CreateVirtualMachineServiceRequest) GetPorts() []*v1.Application_Service_Port {
 	if x != nil {
-		if x.xxx_hidden_TargetName != nil {
-			return *x.xxx_hidden_TargetName
+		if x.xxx_hidden_Ports != nil {
+			return *x.xxx_hidden_Ports
 		}
-		return ""
 	}
-	return ""
+	return nil
 }
 
-func (x *CloneVirtualMachineRequest) SetScopeUuid(v string) {
+func (x *CreateVirtualMachineServiceRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
-func (x *CloneVirtualMachineRequest) SetFacilityName(v string) {
+func (x *CreateVirtualMachineServiceRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
-func (x *CloneVirtualMachineRequest) SetNamespace(v string) {
+func (x *CreateVirtualMachineServiceRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
-func (x *CloneVirtualMachineRequest) SetName(v string) {
+func (x *CreateVirtualMachineServiceRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *CloneVirtualMachineRequest) SetTargetName(v string) {
-	x.xxx_hidden_TargetName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+func (x *CreateVirtualMachineServiceRequest) SetPorts(v []*v1.Application_Service_Port) {
+	x.xxx_hidden_Ports = &v
 }
 
-func (x *CloneVirtualMachineRequest) HasScopeUuid() bool {
+func (x *CreateVirtualMachineServiceRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CloneVirtualMachineRequest) HasFacilityName() bool {
+func (x *CreateVirtualMachineServiceRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CloneVirtualMachineRequest) HasNamespace() bool {
+func (x *CreateVirtualMachineServiceRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CloneVirtualMachineRequest) HasName() bool {
+func (x *CreateVirtualMachineServiceRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CloneVirtualMachineRequest) HasTargetName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
-func (x *CloneVirtualMachineRequest) ClearScopeUuid() {
+func (x *CreateVirtualMachineServiceRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-func (x *CloneVirtualMachineRequest) ClearFacilityName() {
+func (x *CreateVirtualMachineServiceRequest) ClearFacilityName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_FacilityName = nil
 }
 
-func (x *CloneVirtualMachineRequest) ClearNamespace() {
+func (x *CreateVirtualMachineServiceRequest) ClearNamespace() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
-func (x *CloneVirtualMachineRequest) ClearName() {
+func (x *CreateVirtualMachineServiceRequest) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Name = nil
 }
 
-func (x *CloneVirtualMachineRequest) ClearTargetName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_TargetName = nil
-}
-
-type CloneVirtualMachineRequest_builder struct {
+type CreateVirtualMachineServiceRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
 	FacilityName *string
 	Namespace    *string
 	Name         *string
-	TargetName   *string
+	Ports        []*v1.Application_Service_Port
 }
 
-func (b0 CloneVirtualMachineRequest_builder) Build() *CloneVirtualMachineRequest {
-	m0 := &CloneVirtualMachineRequest{}
+func (b0 CreateVirtualMachineServiceRequest_builder) Build() *CreateVirtualMachineServiceRequest {
+	m0 := &CreateVirtualMachineServiceRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -1681,14 +1725,1044 @@ func (b0 CloneVirtualMachineRequest_builder) Build() *CloneVirtualMachineRequest
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_Name = b.Name
 	}
-	if b.TargetName != nil {
+	x.xxx_hidden_Ports = &b.Ports
+	return m0
+}
+
+type UpdateVirtualMachineServiceRequest struct {
+	state                   protoimpl.MessageState          `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                         `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                         `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                         `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name         *string                         `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_Ports        *[]*v1.Application_Service_Port `protobuf:"bytes,11,rep,name=ports"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *UpdateVirtualMachineServiceRequest) Reset() {
+	*x = UpdateVirtualMachineServiceRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateVirtualMachineServiceRequest) ProtoMessage() {}
+
+func (x *UpdateVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineServiceRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineServiceRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineServiceRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineServiceRequest) GetPorts() []*v1.Application_Service_Port {
+	if x != nil {
+		if x.xxx_hidden_Ports != nil {
+			return *x.xxx_hidden_Ports
+		}
+	}
+	return nil
+}
+
+func (x *UpdateVirtualMachineServiceRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) SetPorts(v []*v1.Application_Service_Port) {
+	x.xxx_hidden_Ports = &v
+}
+
+func (x *UpdateVirtualMachineServiceRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *UpdateVirtualMachineServiceRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *UpdateVirtualMachineServiceRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *UpdateVirtualMachineServiceRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+type UpdateVirtualMachineServiceRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
+	Name         *string
+	Ports        []*v1.Application_Service_Port
+}
+
+func (b0 UpdateVirtualMachineServiceRequest_builder) Build() *UpdateVirtualMachineServiceRequest {
+	m0 := &UpdateVirtualMachineServiceRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_Name = b.Name
+	}
+	x.xxx_hidden_Ports = &b.Ports
+	return m0
+}
+
+type DeleteVirtualMachineServiceRequest struct {
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *DeleteVirtualMachineServiceRequest) Reset() {
+	*x = DeleteVirtualMachineServiceRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteVirtualMachineServiceRequest) ProtoMessage() {}
+
+func (x *DeleteVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteVirtualMachineServiceRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteVirtualMachineServiceRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteVirtualMachineServiceRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteVirtualMachineServiceRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *DeleteVirtualMachineServiceRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *DeleteVirtualMachineServiceRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *DeleteVirtualMachineServiceRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+type DeleteVirtualMachineServiceRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
+	Name         *string
+}
+
+func (b0 DeleteVirtualMachineServiceRequest_builder) Build() *DeleteVirtualMachineServiceRequest {
+	m0 := &DeleteVirtualMachineServiceRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_Name = b.Name
+	}
+	return m0
+}
+
+type AttachVirtualMachineDiskRequest struct {
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid      *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName   *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace      *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name           *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_DataVolumeName *string                `protobuf:"bytes,11,opt,name=data_volume_name,json=dataVolumeName"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
+}
+
+func (x *AttachVirtualMachineDiskRequest) Reset() {
+	*x = AttachVirtualMachineDiskRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AttachVirtualMachineDiskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttachVirtualMachineDiskRequest) ProtoMessage() {}
+
+func (x *AttachVirtualMachineDiskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *AttachVirtualMachineDiskRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *AttachVirtualMachineDiskRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *AttachVirtualMachineDiskRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *AttachVirtualMachineDiskRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *AttachVirtualMachineDiskRequest) GetDataVolumeName() string {
+	if x != nil {
+		if x.xxx_hidden_DataVolumeName != nil {
+			return *x.xxx_hidden_DataVolumeName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *AttachVirtualMachineDiskRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *AttachVirtualMachineDiskRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *AttachVirtualMachineDiskRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *AttachVirtualMachineDiskRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *AttachVirtualMachineDiskRequest) SetDataVolumeName(v string) {
+	x.xxx_hidden_DataVolumeName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+}
+
+func (x *AttachVirtualMachineDiskRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *AttachVirtualMachineDiskRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *AttachVirtualMachineDiskRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *AttachVirtualMachineDiskRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *AttachVirtualMachineDiskRequest) HasDataVolumeName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *AttachVirtualMachineDiskRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *AttachVirtualMachineDiskRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *AttachVirtualMachineDiskRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *AttachVirtualMachineDiskRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *AttachVirtualMachineDiskRequest) ClearDataVolumeName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_DataVolumeName = nil
+}
+
+type AttachVirtualMachineDiskRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid      *string
+	FacilityName   *string
+	Namespace      *string
+	Name           *string
+	DataVolumeName *string
+}
+
+func (b0 AttachVirtualMachineDiskRequest_builder) Build() *AttachVirtualMachineDiskRequest {
+	m0 := &AttachVirtualMachineDiskRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.DataVolumeName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_TargetName = b.TargetName
+		x.xxx_hidden_DataVolumeName = b.DataVolumeName
 	}
 	return m0
 }
 
-type StartInstanceRequest struct {
+type DetachVirtualMachineDiskRequest struct {
+	state                         protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid          *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName       *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name               *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_VirtualMachineName *string                `protobuf:"bytes,11,opt,name=virtual_machine_name,json=virtualMachineName"`
+	XXX_raceDetectHookData        protoimpl.RaceDetectHookData
+	XXX_presence                  [1]uint32
+	unknownFields                 protoimpl.UnknownFields
+	sizeCache                     protoimpl.SizeCache
+}
+
+func (x *DetachVirtualMachineDiskRequest) Reset() {
+	*x = DetachVirtualMachineDiskRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DetachVirtualMachineDiskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DetachVirtualMachineDiskRequest) ProtoMessage() {}
+
+func (x *DetachVirtualMachineDiskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *DetachVirtualMachineDiskRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DetachVirtualMachineDiskRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DetachVirtualMachineDiskRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DetachVirtualMachineDiskRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DetachVirtualMachineDiskRequest) GetVirtualMachineName() string {
+	if x != nil {
+		if x.xxx_hidden_VirtualMachineName != nil {
+			return *x.xxx_hidden_VirtualMachineName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DetachVirtualMachineDiskRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *DetachVirtualMachineDiskRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *DetachVirtualMachineDiskRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *DetachVirtualMachineDiskRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *DetachVirtualMachineDiskRequest) SetVirtualMachineName(v string) {
+	x.xxx_hidden_VirtualMachineName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+}
+
+func (x *DetachVirtualMachineDiskRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *DetachVirtualMachineDiskRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *DetachVirtualMachineDiskRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *DetachVirtualMachineDiskRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *DetachVirtualMachineDiskRequest) HasVirtualMachineName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *DetachVirtualMachineDiskRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *DetachVirtualMachineDiskRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *DetachVirtualMachineDiskRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *DetachVirtualMachineDiskRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *DetachVirtualMachineDiskRequest) ClearVirtualMachineName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_VirtualMachineName = nil
+}
+
+type DetachVirtualMachineDiskRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid          *string
+	FacilityName       *string
+	Namespace          *string
+	Name               *string
+	VirtualMachineName *string
+}
+
+func (b0 DetachVirtualMachineDiskRequest_builder) Build() *DetachVirtualMachineDiskRequest {
+	m0 := &DetachVirtualMachineDiskRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.VirtualMachineName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_VirtualMachineName = b.VirtualMachineName
+	}
+	return m0
+}
+
+type CreateVirtualMachineCloneRequest struct {
+	state                               protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid                *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName             *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace                *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name                     *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_SourceVirtualMachineName *string                `protobuf:"bytes,11,opt,name=source_virtual_machine_name,json=sourceVirtualMachineName"`
+	xxx_hidden_TargetVirtualMachineName *string                `protobuf:"bytes,12,opt,name=target_virtual_machine_name,json=targetVirtualMachineName"`
+	XXX_raceDetectHookData              protoimpl.RaceDetectHookData
+	XXX_presence                        [1]uint32
+	unknownFields                       protoimpl.UnknownFields
+	sizeCache                           protoimpl.SizeCache
+}
+
+func (x *CreateVirtualMachineCloneRequest) Reset() {
+	*x = CreateVirtualMachineCloneRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateVirtualMachineCloneRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateVirtualMachineCloneRequest) ProtoMessage() {}
+
+func (x *CreateVirtualMachineCloneRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *CreateVirtualMachineCloneRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineCloneRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineCloneRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineCloneRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineCloneRequest) GetSourceVirtualMachineName() string {
+	if x != nil {
+		if x.xxx_hidden_SourceVirtualMachineName != nil {
+			return *x.xxx_hidden_SourceVirtualMachineName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineCloneRequest) GetTargetVirtualMachineName() string {
+	if x != nil {
+		if x.xxx_hidden_TargetVirtualMachineName != nil {
+			return *x.xxx_hidden_TargetVirtualMachineName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineCloneRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
+}
+
+func (x *CreateVirtualMachineCloneRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+}
+
+func (x *CreateVirtualMachineCloneRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+}
+
+func (x *CreateVirtualMachineCloneRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+}
+
+func (x *CreateVirtualMachineCloneRequest) SetSourceVirtualMachineName(v string) {
+	x.xxx_hidden_SourceVirtualMachineName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+}
+
+func (x *CreateVirtualMachineCloneRequest) SetTargetVirtualMachineName(v string) {
+	x.xxx_hidden_TargetVirtualMachineName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+}
+
+func (x *CreateVirtualMachineCloneRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateVirtualMachineCloneRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *CreateVirtualMachineCloneRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *CreateVirtualMachineCloneRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *CreateVirtualMachineCloneRequest) HasSourceVirtualMachineName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *CreateVirtualMachineCloneRequest) HasTargetVirtualMachineName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *CreateVirtualMachineCloneRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *CreateVirtualMachineCloneRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *CreateVirtualMachineCloneRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *CreateVirtualMachineCloneRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *CreateVirtualMachineCloneRequest) ClearSourceVirtualMachineName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_SourceVirtualMachineName = nil
+}
+
+func (x *CreateVirtualMachineCloneRequest) ClearTargetVirtualMachineName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_TargetVirtualMachineName = nil
+}
+
+type CreateVirtualMachineCloneRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid                *string
+	FacilityName             *string
+	Namespace                *string
+	Name                     *string
+	SourceVirtualMachineName *string
+	TargetVirtualMachineName *string
+}
+
+func (b0 CreateVirtualMachineCloneRequest_builder) Build() *CreateVirtualMachineCloneRequest {
+	m0 := &CreateVirtualMachineCloneRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.SourceVirtualMachineName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		x.xxx_hidden_SourceVirtualMachineName = b.SourceVirtualMachineName
+	}
+	if b.TargetVirtualMachineName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		x.xxx_hidden_TargetVirtualMachineName = b.TargetVirtualMachineName
+	}
+	return m0
+}
+
+type DeleteVirtualMachineCloneRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
@@ -1700,21 +2774,21 @@ type StartInstanceRequest struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *StartInstanceRequest) Reset() {
-	*x = StartInstanceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[9]
+func (x *DeleteVirtualMachineCloneRequest) Reset() {
+	*x = DeleteVirtualMachineCloneRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StartInstanceRequest) String() string {
+func (x *DeleteVirtualMachineCloneRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StartInstanceRequest) ProtoMessage() {}
+func (*DeleteVirtualMachineCloneRequest) ProtoMessage() {}
 
-func (x *StartInstanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[9]
+func (x *DeleteVirtualMachineCloneRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1725,7 +2799,7 @@ func (x *StartInstanceRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *StartInstanceRequest) GetScopeUuid() string {
+func (x *DeleteVirtualMachineCloneRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -1735,7 +2809,7 @@ func (x *StartInstanceRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *StartInstanceRequest) GetFacilityName() string {
+func (x *DeleteVirtualMachineCloneRequest) GetFacilityName() string {
 	if x != nil {
 		if x.xxx_hidden_FacilityName != nil {
 			return *x.xxx_hidden_FacilityName
@@ -1745,7 +2819,7 @@ func (x *StartInstanceRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *StartInstanceRequest) GetNamespace() string {
+func (x *DeleteVirtualMachineCloneRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
 			return *x.xxx_hidden_Namespace
@@ -1755,7 +2829,7 @@ func (x *StartInstanceRequest) GetNamespace() string {
 	return ""
 }
 
-func (x *StartInstanceRequest) GetName() string {
+func (x *DeleteVirtualMachineCloneRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
@@ -1765,75 +2839,75 @@ func (x *StartInstanceRequest) GetName() string {
 	return ""
 }
 
-func (x *StartInstanceRequest) SetScopeUuid(v string) {
+func (x *DeleteVirtualMachineCloneRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *StartInstanceRequest) SetFacilityName(v string) {
+func (x *DeleteVirtualMachineCloneRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
-func (x *StartInstanceRequest) SetNamespace(v string) {
+func (x *DeleteVirtualMachineCloneRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *StartInstanceRequest) SetName(v string) {
+func (x *DeleteVirtualMachineCloneRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *StartInstanceRequest) HasScopeUuid() bool {
+func (x *DeleteVirtualMachineCloneRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *StartInstanceRequest) HasFacilityName() bool {
+func (x *DeleteVirtualMachineCloneRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *StartInstanceRequest) HasNamespace() bool {
+func (x *DeleteVirtualMachineCloneRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *StartInstanceRequest) HasName() bool {
+func (x *DeleteVirtualMachineCloneRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *StartInstanceRequest) ClearScopeUuid() {
+func (x *DeleteVirtualMachineCloneRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-func (x *StartInstanceRequest) ClearFacilityName() {
+func (x *DeleteVirtualMachineCloneRequest) ClearFacilityName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_FacilityName = nil
 }
 
-func (x *StartInstanceRequest) ClearNamespace() {
+func (x *DeleteVirtualMachineCloneRequest) ClearNamespace() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
-func (x *StartInstanceRequest) ClearName() {
+func (x *DeleteVirtualMachineCloneRequest) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Name = nil
 }
 
-type StartInstanceRequest_builder struct {
+type DeleteVirtualMachineCloneRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
@@ -1842,8 +2916,8 @@ type StartInstanceRequest_builder struct {
 	Name         *string
 }
 
-func (b0 StartInstanceRequest_builder) Build() *StartInstanceRequest {
-	m0 := &StartInstanceRequest{}
+func (b0 DeleteVirtualMachineCloneRequest_builder) Build() *DeleteVirtualMachineCloneRequest {
+	m0 := &DeleteVirtualMachineCloneRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -1865,7 +2939,217 @@ func (b0 StartInstanceRequest_builder) Build() *StartInstanceRequest {
 	return m0
 }
 
-type StopInstanceRequest struct {
+type CreateVirtualMachineSnapshotRequest struct {
+	state                         protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid          *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName       *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name               *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_VirtualMachineName *string                `protobuf:"bytes,11,opt,name=virtual_machine_name,json=virtualMachineName"`
+	XXX_raceDetectHookData        protoimpl.RaceDetectHookData
+	XXX_presence                  [1]uint32
+	unknownFields                 protoimpl.UnknownFields
+	sizeCache                     protoimpl.SizeCache
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) Reset() {
+	*x = CreateVirtualMachineSnapshotRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateVirtualMachineSnapshotRequest) ProtoMessage() {}
+
+func (x *CreateVirtualMachineSnapshotRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) GetVirtualMachineName() string {
+	if x != nil {
+		if x.xxx_hidden_VirtualMachineName != nil {
+			return *x.xxx_hidden_VirtualMachineName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) SetVirtualMachineName(v string) {
+	x.xxx_hidden_VirtualMachineName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) HasVirtualMachineName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *CreateVirtualMachineSnapshotRequest) ClearVirtualMachineName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_VirtualMachineName = nil
+}
+
+type CreateVirtualMachineSnapshotRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid          *string
+	FacilityName       *string
+	Namespace          *string
+	Name               *string
+	VirtualMachineName *string
+}
+
+func (b0 CreateVirtualMachineSnapshotRequest_builder) Build() *CreateVirtualMachineSnapshotRequest {
+	m0 := &CreateVirtualMachineSnapshotRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.VirtualMachineName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_VirtualMachineName = b.VirtualMachineName
+	}
+	return m0
+}
+
+type DeleteVirtualMachineSnapshotRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
@@ -1877,21 +3161,21 @@ type StopInstanceRequest struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *StopInstanceRequest) Reset() {
-	*x = StopInstanceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[10]
+func (x *DeleteVirtualMachineSnapshotRequest) Reset() {
+	*x = DeleteVirtualMachineSnapshotRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StopInstanceRequest) String() string {
+func (x *DeleteVirtualMachineSnapshotRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StopInstanceRequest) ProtoMessage() {}
+func (*DeleteVirtualMachineSnapshotRequest) ProtoMessage() {}
 
-func (x *StopInstanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[10]
+func (x *DeleteVirtualMachineSnapshotRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1902,7 +3186,7 @@ func (x *StopInstanceRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *StopInstanceRequest) GetScopeUuid() string {
+func (x *DeleteVirtualMachineSnapshotRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -1912,7 +3196,7 @@ func (x *StopInstanceRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *StopInstanceRequest) GetFacilityName() string {
+func (x *DeleteVirtualMachineSnapshotRequest) GetFacilityName() string {
 	if x != nil {
 		if x.xxx_hidden_FacilityName != nil {
 			return *x.xxx_hidden_FacilityName
@@ -1922,7 +3206,7 @@ func (x *StopInstanceRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *StopInstanceRequest) GetNamespace() string {
+func (x *DeleteVirtualMachineSnapshotRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
 			return *x.xxx_hidden_Namespace
@@ -1932,7 +3216,7 @@ func (x *StopInstanceRequest) GetNamespace() string {
 	return ""
 }
 
-func (x *StopInstanceRequest) GetName() string {
+func (x *DeleteVirtualMachineSnapshotRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
@@ -1942,75 +3226,75 @@ func (x *StopInstanceRequest) GetName() string {
 	return ""
 }
 
-func (x *StopInstanceRequest) SetScopeUuid(v string) {
+func (x *DeleteVirtualMachineSnapshotRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *StopInstanceRequest) SetFacilityName(v string) {
+func (x *DeleteVirtualMachineSnapshotRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
-func (x *StopInstanceRequest) SetNamespace(v string) {
+func (x *DeleteVirtualMachineSnapshotRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *StopInstanceRequest) SetName(v string) {
+func (x *DeleteVirtualMachineSnapshotRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *StopInstanceRequest) HasScopeUuid() bool {
+func (x *DeleteVirtualMachineSnapshotRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *StopInstanceRequest) HasFacilityName() bool {
+func (x *DeleteVirtualMachineSnapshotRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *StopInstanceRequest) HasNamespace() bool {
+func (x *DeleteVirtualMachineSnapshotRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *StopInstanceRequest) HasName() bool {
+func (x *DeleteVirtualMachineSnapshotRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *StopInstanceRequest) ClearScopeUuid() {
+func (x *DeleteVirtualMachineSnapshotRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-func (x *StopInstanceRequest) ClearFacilityName() {
+func (x *DeleteVirtualMachineSnapshotRequest) ClearFacilityName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_FacilityName = nil
 }
 
-func (x *StopInstanceRequest) ClearNamespace() {
+func (x *DeleteVirtualMachineSnapshotRequest) ClearNamespace() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
-func (x *StopInstanceRequest) ClearName() {
+func (x *DeleteVirtualMachineSnapshotRequest) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Name = nil
 }
 
-type StopInstanceRequest_builder struct {
+type DeleteVirtualMachineSnapshotRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
@@ -2019,8 +3303,8 @@ type StopInstanceRequest_builder struct {
 	Name         *string
 }
 
-func (b0 StopInstanceRequest_builder) Build() *StopInstanceRequest {
-	m0 := &StopInstanceRequest{}
+func (b0 DeleteVirtualMachineSnapshotRequest_builder) Build() *DeleteVirtualMachineSnapshotRequest {
+	m0 := &DeleteVirtualMachineSnapshotRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -2042,7 +3326,250 @@ func (b0 StopInstanceRequest_builder) Build() *StopInstanceRequest {
 	return m0
 }
 
-type RestartInstanceRequest struct {
+type CreateVirtualMachineRestoreRequest struct {
+	state                         protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid          *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName       *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name               *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_VirtualMachineName *string                `protobuf:"bytes,11,opt,name=virtual_machine_name,json=virtualMachineName"`
+	xxx_hidden_SnapshotName       *string                `protobuf:"bytes,12,opt,name=snapshot_name,json=snapshotName"`
+	XXX_raceDetectHookData        protoimpl.RaceDetectHookData
+	XXX_presence                  [1]uint32
+	unknownFields                 protoimpl.UnknownFields
+	sizeCache                     protoimpl.SizeCache
+}
+
+func (x *CreateVirtualMachineRestoreRequest) Reset() {
+	*x = CreateVirtualMachineRestoreRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateVirtualMachineRestoreRequest) ProtoMessage() {}
+
+func (x *CreateVirtualMachineRestoreRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineRestoreRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineRestoreRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineRestoreRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineRestoreRequest) GetVirtualMachineName() string {
+	if x != nil {
+		if x.xxx_hidden_VirtualMachineName != nil {
+			return *x.xxx_hidden_VirtualMachineName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineRestoreRequest) GetSnapshotName() string {
+	if x != nil {
+		if x.xxx_hidden_SnapshotName != nil {
+			return *x.xxx_hidden_SnapshotName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineRestoreRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) SetVirtualMachineName(v string) {
+	x.xxx_hidden_VirtualMachineName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) SetSnapshotName(v string) {
+	x.xxx_hidden_SnapshotName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) HasVirtualMachineName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) HasSnapshotName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *CreateVirtualMachineRestoreRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *CreateVirtualMachineRestoreRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *CreateVirtualMachineRestoreRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *CreateVirtualMachineRestoreRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *CreateVirtualMachineRestoreRequest) ClearVirtualMachineName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_VirtualMachineName = nil
+}
+
+func (x *CreateVirtualMachineRestoreRequest) ClearSnapshotName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_SnapshotName = nil
+}
+
+type CreateVirtualMachineRestoreRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid          *string
+	FacilityName       *string
+	Namespace          *string
+	Name               *string
+	VirtualMachineName *string
+	SnapshotName       *string
+}
+
+func (b0 CreateVirtualMachineRestoreRequest_builder) Build() *CreateVirtualMachineRestoreRequest {
+	m0 := &CreateVirtualMachineRestoreRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.VirtualMachineName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		x.xxx_hidden_VirtualMachineName = b.VirtualMachineName
+	}
+	if b.SnapshotName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		x.xxx_hidden_SnapshotName = b.SnapshotName
+	}
+	return m0
+}
+
+type DeleteVirtualMachineRestoreRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
@@ -2054,21 +3581,21 @@ type RestartInstanceRequest struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *RestartInstanceRequest) Reset() {
-	*x = RestartInstanceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[11]
+func (x *DeleteVirtualMachineRestoreRequest) Reset() {
+	*x = DeleteVirtualMachineRestoreRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *RestartInstanceRequest) String() string {
+func (x *DeleteVirtualMachineRestoreRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RestartInstanceRequest) ProtoMessage() {}
+func (*DeleteVirtualMachineRestoreRequest) ProtoMessage() {}
 
-func (x *RestartInstanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[11]
+func (x *DeleteVirtualMachineRestoreRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2079,7 +3606,7 @@ func (x *RestartInstanceRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *RestartInstanceRequest) GetScopeUuid() string {
+func (x *DeleteVirtualMachineRestoreRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -2089,7 +3616,7 @@ func (x *RestartInstanceRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *RestartInstanceRequest) GetFacilityName() string {
+func (x *DeleteVirtualMachineRestoreRequest) GetFacilityName() string {
 	if x != nil {
 		if x.xxx_hidden_FacilityName != nil {
 			return *x.xxx_hidden_FacilityName
@@ -2099,7 +3626,7 @@ func (x *RestartInstanceRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *RestartInstanceRequest) GetNamespace() string {
+func (x *DeleteVirtualMachineRestoreRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
 			return *x.xxx_hidden_Namespace
@@ -2109,7 +3636,7 @@ func (x *RestartInstanceRequest) GetNamespace() string {
 	return ""
 }
 
-func (x *RestartInstanceRequest) GetName() string {
+func (x *DeleteVirtualMachineRestoreRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
@@ -2119,75 +3646,75 @@ func (x *RestartInstanceRequest) GetName() string {
 	return ""
 }
 
-func (x *RestartInstanceRequest) SetScopeUuid(v string) {
+func (x *DeleteVirtualMachineRestoreRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *RestartInstanceRequest) SetFacilityName(v string) {
+func (x *DeleteVirtualMachineRestoreRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
-func (x *RestartInstanceRequest) SetNamespace(v string) {
+func (x *DeleteVirtualMachineRestoreRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *RestartInstanceRequest) SetName(v string) {
+func (x *DeleteVirtualMachineRestoreRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *RestartInstanceRequest) HasScopeUuid() bool {
+func (x *DeleteVirtualMachineRestoreRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *RestartInstanceRequest) HasFacilityName() bool {
+func (x *DeleteVirtualMachineRestoreRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *RestartInstanceRequest) HasNamespace() bool {
+func (x *DeleteVirtualMachineRestoreRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *RestartInstanceRequest) HasName() bool {
+func (x *DeleteVirtualMachineRestoreRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *RestartInstanceRequest) ClearScopeUuid() {
+func (x *DeleteVirtualMachineRestoreRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-func (x *RestartInstanceRequest) ClearFacilityName() {
+func (x *DeleteVirtualMachineRestoreRequest) ClearFacilityName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_FacilityName = nil
 }
 
-func (x *RestartInstanceRequest) ClearNamespace() {
+func (x *DeleteVirtualMachineRestoreRequest) ClearNamespace() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
-func (x *RestartInstanceRequest) ClearName() {
+func (x *DeleteVirtualMachineRestoreRequest) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Name = nil
 }
 
-type RestartInstanceRequest_builder struct {
+type DeleteVirtualMachineRestoreRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
@@ -2196,8 +3723,539 @@ type RestartInstanceRequest_builder struct {
 	Name         *string
 }
 
-func (b0 RestartInstanceRequest_builder) Build() *RestartInstanceRequest {
-	m0 := &RestartInstanceRequest{}
+func (b0 DeleteVirtualMachineRestoreRequest_builder) Build() *DeleteVirtualMachineRestoreRequest {
+	m0 := &DeleteVirtualMachineRestoreRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_Name = b.Name
+	}
+	return m0
+}
+
+type StartVirtualMachineRequest struct {
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *StartVirtualMachineRequest) Reset() {
+	*x = StartVirtualMachineRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StartVirtualMachineRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StartVirtualMachineRequest) ProtoMessage() {}
+
+func (x *StartVirtualMachineRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *StartVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *StartVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *StartVirtualMachineRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *StartVirtualMachineRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *StartVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *StartVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
+func (x *StartVirtualMachineRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+}
+
+func (x *StartVirtualMachineRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+}
+
+func (x *StartVirtualMachineRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *StartVirtualMachineRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *StartVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *StartVirtualMachineRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *StartVirtualMachineRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *StartVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *StartVirtualMachineRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *StartVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+type StartVirtualMachineRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
+	Name         *string
+}
+
+func (b0 StartVirtualMachineRequest_builder) Build() *StartVirtualMachineRequest {
+	m0 := &StartVirtualMachineRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_Name = b.Name
+	}
+	return m0
+}
+
+type StopVirtualMachineRequest struct {
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *StopVirtualMachineRequest) Reset() {
+	*x = StopVirtualMachineRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StopVirtualMachineRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StopVirtualMachineRequest) ProtoMessage() {}
+
+func (x *StopVirtualMachineRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *StopVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *StopVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *StopVirtualMachineRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *StopVirtualMachineRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *StopVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *StopVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
+func (x *StopVirtualMachineRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+}
+
+func (x *StopVirtualMachineRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+}
+
+func (x *StopVirtualMachineRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *StopVirtualMachineRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *StopVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *StopVirtualMachineRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *StopVirtualMachineRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *StopVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *StopVirtualMachineRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *StopVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+type StopVirtualMachineRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
+	Name         *string
+}
+
+func (b0 StopVirtualMachineRequest_builder) Build() *StopVirtualMachineRequest {
+	m0 := &StopVirtualMachineRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_Name = b.Name
+	}
+	return m0
+}
+
+type RestartVirtualMachineRequest struct {
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *RestartVirtualMachineRequest) Reset() {
+	*x = RestartVirtualMachineRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RestartVirtualMachineRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RestartVirtualMachineRequest) ProtoMessage() {}
+
+func (x *RestartVirtualMachineRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *RestartVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *RestartVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *RestartVirtualMachineRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *RestartVirtualMachineRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *RestartVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *RestartVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
+func (x *RestartVirtualMachineRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+}
+
+func (x *RestartVirtualMachineRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+}
+
+func (x *RestartVirtualMachineRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *RestartVirtualMachineRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *RestartVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *RestartVirtualMachineRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *RestartVirtualMachineRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *RestartVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *RestartVirtualMachineRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *RestartVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+type RestartVirtualMachineRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
+	Name         *string
+}
+
+func (b0 RestartVirtualMachineRequest_builder) Build() *RestartVirtualMachineRequest {
+	m0 := &RestartVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -2233,7 +4291,7 @@ type PauseInstanceRequest struct {
 
 func (x *PauseInstanceRequest) Reset() {
 	*x = PauseInstanceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[12]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2245,7 +4303,7 @@ func (x *PauseInstanceRequest) String() string {
 func (*PauseInstanceRequest) ProtoMessage() {}
 
 func (x *PauseInstanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[12]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2410,7 +4468,7 @@ type ResumeInstanceRequest struct {
 
 func (x *ResumeInstanceRequest) Reset() {
 	*x = ResumeInstanceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[13]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2422,7 +4480,7 @@ func (x *ResumeInstanceRequest) String() string {
 func (*ResumeInstanceRequest) ProtoMessage() {}
 
 func (x *ResumeInstanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[13]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2574,21 +4632,21 @@ func (b0 ResumeInstanceRequest_builder) Build() *ResumeInstanceRequest {
 }
 
 type MigrateInstanceRequest struct {
-	state                     protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid      *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName   *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace      *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name           *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_TargetHostname *string                `protobuf:"bytes,11,opt,name=target_hostname,json=targetHostname"`
-	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
-	XXX_presence              [1]uint32
-	unknownFields             protoimpl.UnknownFields
-	sizeCache                 protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_Hostname     *string                `protobuf:"bytes,11,opt,name=hostname"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *MigrateInstanceRequest) Reset() {
 	*x = MigrateInstanceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[14]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2600,7 +4658,7 @@ func (x *MigrateInstanceRequest) String() string {
 func (*MigrateInstanceRequest) ProtoMessage() {}
 
 func (x *MigrateInstanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[14]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2651,10 +4709,10 @@ func (x *MigrateInstanceRequest) GetName() string {
 	return ""
 }
 
-func (x *MigrateInstanceRequest) GetTargetHostname() string {
+func (x *MigrateInstanceRequest) GetHostname() string {
 	if x != nil {
-		if x.xxx_hidden_TargetHostname != nil {
-			return *x.xxx_hidden_TargetHostname
+		if x.xxx_hidden_Hostname != nil {
+			return *x.xxx_hidden_Hostname
 		}
 		return ""
 	}
@@ -2681,8 +4739,8 @@ func (x *MigrateInstanceRequest) SetName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *MigrateInstanceRequest) SetTargetHostname(v string) {
-	x.xxx_hidden_TargetHostname = &v
+func (x *MigrateInstanceRequest) SetHostname(v string) {
+	x.xxx_hidden_Hostname = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
@@ -2714,7 +4772,7 @@ func (x *MigrateInstanceRequest) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *MigrateInstanceRequest) HasTargetHostname() bool {
+func (x *MigrateInstanceRequest) HasHostname() bool {
 	if x == nil {
 		return false
 	}
@@ -2741,19 +4799,19 @@ func (x *MigrateInstanceRequest) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *MigrateInstanceRequest) ClearTargetHostname() {
+func (x *MigrateInstanceRequest) ClearHostname() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_TargetHostname = nil
+	x.xxx_hidden_Hostname = nil
 }
 
 type MigrateInstanceRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid      *string
-	FacilityName   *string
-	Namespace      *string
-	Name           *string
-	TargetHostname *string
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
+	Name         *string
+	Hostname     *string
 }
 
 func (b0 MigrateInstanceRequest_builder) Build() *MigrateInstanceRequest {
@@ -2776,2219 +4834,9 @@ func (b0 MigrateInstanceRequest_builder) Build() *MigrateInstanceRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_Name = b.Name
 	}
-	if b.TargetHostname != nil {
+	if b.Hostname != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_TargetHostname = b.TargetHostname
-	}
-	return m0
-}
-
-type CreateServiceRequest struct {
-	state                   protoimpl.MessageState          `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                         `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                         `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                         `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name         *string                         `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Ports        *[]*v1.Application_Service_Port `protobuf:"bytes,11,rep,name=ports"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
-}
-
-func (x *CreateServiceRequest) Reset() {
-	*x = CreateServiceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[15]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateServiceRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateServiceRequest) ProtoMessage() {}
-
-func (x *CreateServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[15]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *CreateServiceRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateServiceRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateServiceRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateServiceRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateServiceRequest) GetPorts() []*v1.Application_Service_Port {
-	if x != nil {
-		if x.xxx_hidden_Ports != nil {
-			return *x.xxx_hidden_Ports
-		}
-	}
-	return nil
-}
-
-func (x *CreateServiceRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *CreateServiceRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
-}
-
-func (x *CreateServiceRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
-}
-
-func (x *CreateServiceRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
-}
-
-func (x *CreateServiceRequest) SetPorts(v []*v1.Application_Service_Port) {
-	x.xxx_hidden_Ports = &v
-}
-
-func (x *CreateServiceRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *CreateServiceRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *CreateServiceRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *CreateServiceRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *CreateServiceRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *CreateServiceRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *CreateServiceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *CreateServiceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-type CreateServiceRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid    *string
-	FacilityName *string
-	Namespace    *string
-	Name         *string
-	Ports        []*v1.Application_Service_Port
-}
-
-func (b0 CreateServiceRequest_builder) Build() *CreateServiceRequest {
-	m0 := &CreateServiceRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
-		x.xxx_hidden_Name = b.Name
-	}
-	x.xxx_hidden_Ports = &b.Ports
-	return m0
-}
-
-type UpdateServiceRequest struct {
-	state                   protoimpl.MessageState          `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                         `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                         `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                         `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name         *string                         `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Ports        *[]*v1.Application_Service_Port `protobuf:"bytes,11,rep,name=ports"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
-}
-
-func (x *UpdateServiceRequest) Reset() {
-	*x = UpdateServiceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[16]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *UpdateServiceRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateServiceRequest) ProtoMessage() {}
-
-func (x *UpdateServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[16]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *UpdateServiceRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateServiceRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateServiceRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateServiceRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateServiceRequest) GetPorts() []*v1.Application_Service_Port {
-	if x != nil {
-		if x.xxx_hidden_Ports != nil {
-			return *x.xxx_hidden_Ports
-		}
-	}
-	return nil
-}
-
-func (x *UpdateServiceRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *UpdateServiceRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
-}
-
-func (x *UpdateServiceRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
-}
-
-func (x *UpdateServiceRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
-}
-
-func (x *UpdateServiceRequest) SetPorts(v []*v1.Application_Service_Port) {
-	x.xxx_hidden_Ports = &v
-}
-
-func (x *UpdateServiceRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *UpdateServiceRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *UpdateServiceRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *UpdateServiceRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *UpdateServiceRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *UpdateServiceRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *UpdateServiceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *UpdateServiceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-type UpdateServiceRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid    *string
-	FacilityName *string
-	Namespace    *string
-	Name         *string
-	Ports        []*v1.Application_Service_Port
-}
-
-func (b0 UpdateServiceRequest_builder) Build() *UpdateServiceRequest {
-	m0 := &UpdateServiceRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
-		x.xxx_hidden_Name = b.Name
-	}
-	x.xxx_hidden_Ports = &b.Ports
-	return m0
-}
-
-type DeleteServiceRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
-}
-
-func (x *DeleteServiceRequest) Reset() {
-	*x = DeleteServiceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[17]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DeleteServiceRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteServiceRequest) ProtoMessage() {}
-
-func (x *DeleteServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[17]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *DeleteServiceRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteServiceRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteServiceRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteServiceRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteServiceRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteServiceRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
-}
-
-func (x *DeleteServiceRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
-}
-
-func (x *DeleteServiceRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
-}
-
-func (x *DeleteServiceRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *DeleteServiceRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *DeleteServiceRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *DeleteServiceRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *DeleteServiceRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *DeleteServiceRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *DeleteServiceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *DeleteServiceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-type DeleteServiceRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid    *string
-	FacilityName *string
-	Namespace    *string
-	Name         *string
-}
-
-func (b0 DeleteServiceRequest_builder) Build() *DeleteServiceRequest {
-	m0 := &DeleteServiceRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_Name = b.Name
-	}
-	return m0
-}
-
-type CreateSnapshotRequest struct {
-	state                         protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid          *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName       *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name               *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Description        *string                `protobuf:"bytes,5,opt,name=description"`
-	xxx_hidden_VirtualMachineName *string                `protobuf:"bytes,11,opt,name=virtual_machine_name,json=virtualMachineName"`
-	XXX_raceDetectHookData        protoimpl.RaceDetectHookData
-	XXX_presence                  [1]uint32
-	unknownFields                 protoimpl.UnknownFields
-	sizeCache                     protoimpl.SizeCache
-}
-
-func (x *CreateSnapshotRequest) Reset() {
-	*x = CreateSnapshotRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[18]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateSnapshotRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateSnapshotRequest) ProtoMessage() {}
-
-func (x *CreateSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[18]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *CreateSnapshotRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateSnapshotRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateSnapshotRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateSnapshotRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateSnapshotRequest) GetDescription() string {
-	if x != nil {
-		if x.xxx_hidden_Description != nil {
-			return *x.xxx_hidden_Description
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateSnapshotRequest) GetVirtualMachineName() string {
-	if x != nil {
-		if x.xxx_hidden_VirtualMachineName != nil {
-			return *x.xxx_hidden_VirtualMachineName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateSnapshotRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *CreateSnapshotRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
-}
-
-func (x *CreateSnapshotRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
-}
-
-func (x *CreateSnapshotRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
-}
-
-func (x *CreateSnapshotRequest) SetDescription(v string) {
-	x.xxx_hidden_Description = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
-}
-
-func (x *CreateSnapshotRequest) SetVirtualMachineName(v string) {
-	x.xxx_hidden_VirtualMachineName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
-}
-
-func (x *CreateSnapshotRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *CreateSnapshotRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *CreateSnapshotRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *CreateSnapshotRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *CreateSnapshotRequest) HasDescription() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
-func (x *CreateSnapshotRequest) HasVirtualMachineName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
-}
-
-func (x *CreateSnapshotRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *CreateSnapshotRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *CreateSnapshotRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *CreateSnapshotRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-func (x *CreateSnapshotRequest) ClearDescription() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Description = nil
-}
-
-func (x *CreateSnapshotRequest) ClearVirtualMachineName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
-	x.xxx_hidden_VirtualMachineName = nil
-}
-
-type CreateSnapshotRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid          *string
-	FacilityName       *string
-	Namespace          *string
-	Name               *string
-	Description        *string
-	VirtualMachineName *string
-}
-
-func (b0 CreateSnapshotRequest_builder) Build() *CreateSnapshotRequest {
-	m0 := &CreateSnapshotRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
-		x.xxx_hidden_Name = b.Name
-	}
-	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
-		x.xxx_hidden_Description = b.Description
-	}
-	if b.VirtualMachineName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
-		x.xxx_hidden_VirtualMachineName = b.VirtualMachineName
-	}
-	return m0
-}
-
-type DeleteSnapshotRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
-}
-
-func (x *DeleteSnapshotRequest) Reset() {
-	*x = DeleteSnapshotRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[19]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DeleteSnapshotRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteSnapshotRequest) ProtoMessage() {}
-
-func (x *DeleteSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[19]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *DeleteSnapshotRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteSnapshotRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteSnapshotRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteSnapshotRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteSnapshotRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteSnapshotRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
-}
-
-func (x *DeleteSnapshotRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
-}
-
-func (x *DeleteSnapshotRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
-}
-
-func (x *DeleteSnapshotRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *DeleteSnapshotRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *DeleteSnapshotRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *DeleteSnapshotRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *DeleteSnapshotRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *DeleteSnapshotRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *DeleteSnapshotRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *DeleteSnapshotRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-type DeleteSnapshotRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid    *string
-	FacilityName *string
-	Namespace    *string
-	Name         *string
-}
-
-func (b0 DeleteSnapshotRequest_builder) Build() *DeleteSnapshotRequest {
-	m0 := &DeleteSnapshotRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_Name = b.Name
-	}
-	return m0
-}
-
-type CreateRestoreRequest struct {
-	state                         protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid          *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName       *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name               *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_VirtualMachineName *string                `protobuf:"bytes,11,opt,name=virtual_machine_name,json=virtualMachineName"`
-	xxx_hidden_SnapshotName       *string                `protobuf:"bytes,12,opt,name=snapshot_name,json=snapshotName"`
-	XXX_raceDetectHookData        protoimpl.RaceDetectHookData
-	XXX_presence                  [1]uint32
-	unknownFields                 protoimpl.UnknownFields
-	sizeCache                     protoimpl.SizeCache
-}
-
-func (x *CreateRestoreRequest) Reset() {
-	*x = CreateRestoreRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[20]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateRestoreRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateRestoreRequest) ProtoMessage() {}
-
-func (x *CreateRestoreRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[20]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *CreateRestoreRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateRestoreRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateRestoreRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateRestoreRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateRestoreRequest) GetVirtualMachineName() string {
-	if x != nil {
-		if x.xxx_hidden_VirtualMachineName != nil {
-			return *x.xxx_hidden_VirtualMachineName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateRestoreRequest) GetSnapshotName() string {
-	if x != nil {
-		if x.xxx_hidden_SnapshotName != nil {
-			return *x.xxx_hidden_SnapshotName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateRestoreRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *CreateRestoreRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
-}
-
-func (x *CreateRestoreRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
-}
-
-func (x *CreateRestoreRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
-}
-
-func (x *CreateRestoreRequest) SetVirtualMachineName(v string) {
-	x.xxx_hidden_VirtualMachineName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
-}
-
-func (x *CreateRestoreRequest) SetSnapshotName(v string) {
-	x.xxx_hidden_SnapshotName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
-}
-
-func (x *CreateRestoreRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *CreateRestoreRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *CreateRestoreRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *CreateRestoreRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *CreateRestoreRequest) HasVirtualMachineName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
-func (x *CreateRestoreRequest) HasSnapshotName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
-}
-
-func (x *CreateRestoreRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *CreateRestoreRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *CreateRestoreRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *CreateRestoreRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-func (x *CreateRestoreRequest) ClearVirtualMachineName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_VirtualMachineName = nil
-}
-
-func (x *CreateRestoreRequest) ClearSnapshotName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
-	x.xxx_hidden_SnapshotName = nil
-}
-
-type CreateRestoreRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid          *string
-	FacilityName       *string
-	Namespace          *string
-	Name               *string
-	VirtualMachineName *string
-	SnapshotName       *string
-}
-
-func (b0 CreateRestoreRequest_builder) Build() *CreateRestoreRequest {
-	m0 := &CreateRestoreRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
-		x.xxx_hidden_Name = b.Name
-	}
-	if b.VirtualMachineName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
-		x.xxx_hidden_VirtualMachineName = b.VirtualMachineName
-	}
-	if b.SnapshotName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
-		x.xxx_hidden_SnapshotName = b.SnapshotName
-	}
-	return m0
-}
-
-type DeleteRestoreRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
-}
-
-func (x *DeleteRestoreRequest) Reset() {
-	*x = DeleteRestoreRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[21]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DeleteRestoreRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteRestoreRequest) ProtoMessage() {}
-
-func (x *DeleteRestoreRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[21]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *DeleteRestoreRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteRestoreRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteRestoreRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteRestoreRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteRestoreRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteRestoreRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
-}
-
-func (x *DeleteRestoreRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
-}
-
-func (x *DeleteRestoreRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
-}
-
-func (x *DeleteRestoreRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *DeleteRestoreRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *DeleteRestoreRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *DeleteRestoreRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *DeleteRestoreRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *DeleteRestoreRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *DeleteRestoreRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *DeleteRestoreRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-type DeleteRestoreRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid    *string
-	FacilityName *string
-	Namespace    *string
-	Name         *string
-}
-
-func (b0 DeleteRestoreRequest_builder) Build() *DeleteRestoreRequest {
-	m0 := &DeleteRestoreRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_Name = b.Name
-	}
-	return m0
-}
-
-type CreateDiskRequest struct {
-	state                     protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid      *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName   *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace      *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name           *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_DataVolumeName *string                `protobuf:"bytes,11,opt,name=data_volume_name,json=dataVolumeName"`
-	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
-	XXX_presence              [1]uint32
-	unknownFields             protoimpl.UnknownFields
-	sizeCache                 protoimpl.SizeCache
-}
-
-func (x *CreateDiskRequest) Reset() {
-	*x = CreateDiskRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[22]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateDiskRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateDiskRequest) ProtoMessage() {}
-
-func (x *CreateDiskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[22]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *CreateDiskRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateDiskRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateDiskRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateDiskRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateDiskRequest) GetDataVolumeName() string {
-	if x != nil {
-		if x.xxx_hidden_DataVolumeName != nil {
-			return *x.xxx_hidden_DataVolumeName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateDiskRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *CreateDiskRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
-}
-
-func (x *CreateDiskRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
-}
-
-func (x *CreateDiskRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
-}
-
-func (x *CreateDiskRequest) SetDataVolumeName(v string) {
-	x.xxx_hidden_DataVolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
-}
-
-func (x *CreateDiskRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *CreateDiskRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *CreateDiskRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *CreateDiskRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *CreateDiskRequest) HasDataVolumeName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
-func (x *CreateDiskRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *CreateDiskRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *CreateDiskRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *CreateDiskRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-func (x *CreateDiskRequest) ClearDataVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_DataVolumeName = nil
-}
-
-type CreateDiskRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid      *string
-	FacilityName   *string
-	Namespace      *string
-	Name           *string
-	DataVolumeName *string
-}
-
-func (b0 CreateDiskRequest_builder) Build() *CreateDiskRequest {
-	m0 := &CreateDiskRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
-		x.xxx_hidden_Name = b.Name
-	}
-	if b.DataVolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_DataVolumeName = b.DataVolumeName
-	}
-	return m0
-}
-
-type DeleteDiskRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
-}
-
-func (x *DeleteDiskRequest) Reset() {
-	*x = DeleteDiskRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[23]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DeleteDiskRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteDiskRequest) ProtoMessage() {}
-
-func (x *DeleteDiskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[23]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *DeleteDiskRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteDiskRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteDiskRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteDiskRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteDiskRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteDiskRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
-}
-
-func (x *DeleteDiskRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
-}
-
-func (x *DeleteDiskRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
-}
-
-func (x *DeleteDiskRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *DeleteDiskRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *DeleteDiskRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *DeleteDiskRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *DeleteDiskRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *DeleteDiskRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *DeleteDiskRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *DeleteDiskRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-type DeleteDiskRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid    *string
-	FacilityName *string
-	Namespace    *string
-	Name         *string
-}
-
-func (b0 DeleteDiskRequest_builder) Build() *DeleteDiskRequest {
-	m0 := &DeleteDiskRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_Name = b.Name
-	}
-	return m0
-}
-
-type AttachDiskRequest struct {
-	state                         protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid          *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName       *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name               *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_VirtualMachineName *string                `protobuf:"bytes,11,opt,name=virtual_machine_name,json=virtualMachineName"`
-	XXX_raceDetectHookData        protoimpl.RaceDetectHookData
-	XXX_presence                  [1]uint32
-	unknownFields                 protoimpl.UnknownFields
-	sizeCache                     protoimpl.SizeCache
-}
-
-func (x *AttachDiskRequest) Reset() {
-	*x = AttachDiskRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[24]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *AttachDiskRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AttachDiskRequest) ProtoMessage() {}
-
-func (x *AttachDiskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[24]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *AttachDiskRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *AttachDiskRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *AttachDiskRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *AttachDiskRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *AttachDiskRequest) GetVirtualMachineName() string {
-	if x != nil {
-		if x.xxx_hidden_VirtualMachineName != nil {
-			return *x.xxx_hidden_VirtualMachineName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *AttachDiskRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *AttachDiskRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
-}
-
-func (x *AttachDiskRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
-}
-
-func (x *AttachDiskRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
-}
-
-func (x *AttachDiskRequest) SetVirtualMachineName(v string) {
-	x.xxx_hidden_VirtualMachineName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
-}
-
-func (x *AttachDiskRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *AttachDiskRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *AttachDiskRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *AttachDiskRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *AttachDiskRequest) HasVirtualMachineName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
-func (x *AttachDiskRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *AttachDiskRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *AttachDiskRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *AttachDiskRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-func (x *AttachDiskRequest) ClearVirtualMachineName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_VirtualMachineName = nil
-}
-
-type AttachDiskRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid          *string
-	FacilityName       *string
-	Namespace          *string
-	Name               *string
-	VirtualMachineName *string
-}
-
-func (b0 AttachDiskRequest_builder) Build() *AttachDiskRequest {
-	m0 := &AttachDiskRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
-		x.xxx_hidden_Name = b.Name
-	}
-	if b.VirtualMachineName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_VirtualMachineName = b.VirtualMachineName
-	}
-	return m0
-}
-
-type DetachDiskRequest struct {
-	state                         protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid          *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName       *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name               *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_VirtualMachineName *string                `protobuf:"bytes,11,opt,name=virtual_machine_name,json=virtualMachineName"`
-	XXX_raceDetectHookData        protoimpl.RaceDetectHookData
-	XXX_presence                  [1]uint32
-	unknownFields                 protoimpl.UnknownFields
-	sizeCache                     protoimpl.SizeCache
-}
-
-func (x *DetachDiskRequest) Reset() {
-	*x = DetachDiskRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[25]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DetachDiskRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DetachDiskRequest) ProtoMessage() {}
-
-func (x *DetachDiskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[25]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *DetachDiskRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DetachDiskRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DetachDiskRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DetachDiskRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DetachDiskRequest) GetVirtualMachineName() string {
-	if x != nil {
-		if x.xxx_hidden_VirtualMachineName != nil {
-			return *x.xxx_hidden_VirtualMachineName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DetachDiskRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *DetachDiskRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
-}
-
-func (x *DetachDiskRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
-}
-
-func (x *DetachDiskRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
-}
-
-func (x *DetachDiskRequest) SetVirtualMachineName(v string) {
-	x.xxx_hidden_VirtualMachineName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
-}
-
-func (x *DetachDiskRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *DetachDiskRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *DetachDiskRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *DetachDiskRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *DetachDiskRequest) HasVirtualMachineName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
-func (x *DetachDiskRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *DetachDiskRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *DetachDiskRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *DetachDiskRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-func (x *DetachDiskRequest) ClearVirtualMachineName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_VirtualMachineName = nil
-}
-
-type DetachDiskRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid          *string
-	FacilityName       *string
-	Namespace          *string
-	Name               *string
-	VirtualMachineName *string
-}
-
-func (b0 DetachDiskRequest_builder) Build() *DetachDiskRequest {
-	m0 := &DetachDiskRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
-		x.xxx_hidden_Name = b.Name
-	}
-	if b.VirtualMachineName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_VirtualMachineName = b.VirtualMachineName
+		x.xxx_hidden_Hostname = b.Hostname
 	}
 	return m0
 }
@@ -5006,7 +4854,7 @@ type ListDataVolumesRequest struct {
 
 func (x *ListDataVolumesRequest) Reset() {
 	*x = ListDataVolumesRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[26]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5018,7 +4866,7 @@ func (x *ListDataVolumesRequest) String() string {
 func (*ListDataVolumesRequest) ProtoMessage() {}
 
 func (x *ListDataVolumesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[26]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5146,7 +4994,7 @@ type ListDataVolumesResponse struct {
 
 func (x *ListDataVolumesResponse) Reset() {
 	*x = ListDataVolumesResponse{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[27]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5158,7 +5006,7 @@ func (x *ListDataVolumesResponse) String() string {
 func (*ListDataVolumesResponse) ProtoMessage() {}
 
 func (x *ListDataVolumesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[27]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5210,7 +5058,7 @@ type GetDataVolumeRequest struct {
 
 func (x *GetDataVolumeRequest) Reset() {
 	*x = GetDataVolumeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[28]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5222,7 +5070,7 @@ func (x *GetDataVolumeRequest) String() string {
 func (*GetDataVolumeRequest) ProtoMessage() {}
 
 func (x *GetDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[28]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5390,7 +5238,7 @@ type CreateDataVolumeRequest struct {
 
 func (x *CreateDataVolumeRequest) Reset() {
 	*x = CreateDataVolumeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[29]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5402,7 +5250,7 @@ func (x *CreateDataVolumeRequest) String() string {
 func (*CreateDataVolumeRequest) ProtoMessage() {}
 
 func (x *CreateDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[29]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5649,7 +5497,7 @@ type DeleteDataVolumeRequest struct {
 
 func (x *DeleteDataVolumeRequest) Reset() {
 	*x = DeleteDataVolumeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[30]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5661,7 +5509,7 @@ func (x *DeleteDataVolumeRequest) String() string {
 func (*DeleteDataVolumeRequest) ProtoMessage() {}
 
 func (x *DeleteDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[30]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5827,7 +5675,7 @@ type ExtendDataVolumeRequest struct {
 
 func (x *ExtendDataVolumeRequest) Reset() {
 	*x = ExtendDataVolumeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[31]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5839,7 +5687,7 @@ func (x *ExtendDataVolumeRequest) String() string {
 func (*ExtendDataVolumeRequest) ProtoMessage() {}
 
 func (x *ExtendDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[31]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6031,7 +5879,7 @@ type ListClusterWideInstanceTypesRequest struct {
 
 func (x *ListClusterWideInstanceTypesRequest) Reset() {
 	*x = ListClusterWideInstanceTypesRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[32]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6043,7 +5891,7 @@ func (x *ListClusterWideInstanceTypesRequest) String() string {
 func (*ListClusterWideInstanceTypesRequest) ProtoMessage() {}
 
 func (x *ListClusterWideInstanceTypesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[32]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6139,7 +5987,7 @@ type ListClusterWideInstanceTypesResponse struct {
 
 func (x *ListClusterWideInstanceTypesResponse) Reset() {
 	*x = ListClusterWideInstanceTypesResponse{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[33]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6151,7 +5999,7 @@ func (x *ListClusterWideInstanceTypesResponse) String() string {
 func (*ListClusterWideInstanceTypesResponse) ProtoMessage() {}
 
 func (x *ListClusterWideInstanceTypesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[33]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6202,7 +6050,7 @@ type ListInstanceTypesRequest struct {
 
 func (x *ListInstanceTypesRequest) Reset() {
 	*x = ListInstanceTypesRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[34]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6214,7 +6062,7 @@ func (x *ListInstanceTypesRequest) String() string {
 func (*ListInstanceTypesRequest) ProtoMessage() {}
 
 func (x *ListInstanceTypesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[34]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6342,7 +6190,7 @@ type ListInstanceTypesResponse struct {
 
 func (x *ListInstanceTypesResponse) Reset() {
 	*x = ListInstanceTypesResponse{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[35]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6354,7 +6202,7 @@ func (x *ListInstanceTypesResponse) String() string {
 func (*ListInstanceTypesResponse) ProtoMessage() {}
 
 func (x *ListInstanceTypesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[35]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6406,7 +6254,7 @@ type GetInstanceTypeRequest struct {
 
 func (x *GetInstanceTypeRequest) Reset() {
 	*x = GetInstanceTypeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[36]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6418,7 +6266,7 @@ func (x *GetInstanceTypeRequest) String() string {
 func (*GetInstanceTypeRequest) ProtoMessage() {}
 
 func (x *GetInstanceTypeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[36]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6585,7 +6433,7 @@ type CreateInstanceTypeRequest struct {
 
 func (x *CreateInstanceTypeRequest) Reset() {
 	*x = CreateInstanceTypeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[37]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6597,7 +6445,7 @@ func (x *CreateInstanceTypeRequest) String() string {
 func (*CreateInstanceTypeRequest) ProtoMessage() {}
 
 func (x *CreateInstanceTypeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[37]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6820,7 +6668,7 @@ type DeleteInstanceTypeRequest struct {
 
 func (x *DeleteInstanceTypeRequest) Reset() {
 	*x = DeleteInstanceTypeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[38]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6832,7 +6680,7 @@ func (x *DeleteInstanceTypeRequest) String() string {
 func (*DeleteInstanceTypeRequest) ProtoMessage() {}
 
 func (x *DeleteInstanceTypeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[38]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6983,15 +6831,275 @@ func (b0 DeleteInstanceTypeRequest_builder) Build() *DeleteInstanceTypeRequest {
 	return m0
 }
 
+type VirtualMachine_Clone struct {
+	state                    protoimpl.MessageState    `protogen:"opaque.v1"`
+	xxx_hidden_Name          *string                   `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Namespace     *string                   `protobuf:"bytes,2,opt,name=namespace"`
+	xxx_hidden_SourceName    *string                   `protobuf:"bytes,3,opt,name=source_name,json=sourceName"`
+	xxx_hidden_TargetName    *string                   `protobuf:"bytes,4,opt,name=target_name,json=targetName"`
+	xxx_hidden_Phase         *string                   `protobuf:"bytes,11,opt,name=phase"`
+	xxx_hidden_CreatedAt     *timestamppb.Timestamp    `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
+	xxx_hidden_LastCondition *v1.Application_Condition `protobuf:"bytes,31,opt,name=last_condition,json=lastCondition"`
+	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
+	XXX_presence             [1]uint32
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
+}
+
+func (x *VirtualMachine_Clone) Reset() {
+	*x = VirtualMachine_Clone{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[38]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VirtualMachine_Clone) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VirtualMachine_Clone) ProtoMessage() {}
+
+func (x *VirtualMachine_Clone) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[38]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *VirtualMachine_Clone) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *VirtualMachine_Clone) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *VirtualMachine_Clone) GetSourceName() string {
+	if x != nil {
+		if x.xxx_hidden_SourceName != nil {
+			return *x.xxx_hidden_SourceName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *VirtualMachine_Clone) GetTargetName() string {
+	if x != nil {
+		if x.xxx_hidden_TargetName != nil {
+			return *x.xxx_hidden_TargetName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *VirtualMachine_Clone) GetPhase() string {
+	if x != nil {
+		if x.xxx_hidden_Phase != nil {
+			return *x.xxx_hidden_Phase
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *VirtualMachine_Clone) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.xxx_hidden_CreatedAt
+	}
+	return nil
+}
+
+func (x *VirtualMachine_Clone) GetLastCondition() *v1.Application_Condition {
+	if x != nil {
+		return x.xxx_hidden_LastCondition
+	}
+	return nil
+}
+
+func (x *VirtualMachine_Clone) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
+}
+
+func (x *VirtualMachine_Clone) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
+}
+
+func (x *VirtualMachine_Clone) SetSourceName(v string) {
+	x.xxx_hidden_SourceName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
+}
+
+func (x *VirtualMachine_Clone) SetTargetName(v string) {
+	x.xxx_hidden_TargetName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
+}
+
+func (x *VirtualMachine_Clone) SetPhase(v string) {
+	x.xxx_hidden_Phase = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
+}
+
+func (x *VirtualMachine_Clone) SetCreatedAt(v *timestamppb.Timestamp) {
+	x.xxx_hidden_CreatedAt = v
+}
+
+func (x *VirtualMachine_Clone) SetLastCondition(v *v1.Application_Condition) {
+	x.xxx_hidden_LastCondition = v
+}
+
+func (x *VirtualMachine_Clone) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *VirtualMachine_Clone) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *VirtualMachine_Clone) HasSourceName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *VirtualMachine_Clone) HasTargetName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *VirtualMachine_Clone) HasPhase() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *VirtualMachine_Clone) HasCreatedAt() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_CreatedAt != nil
+}
+
+func (x *VirtualMachine_Clone) HasLastCondition() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_LastCondition != nil
+}
+
+func (x *VirtualMachine_Clone) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *VirtualMachine_Clone) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *VirtualMachine_Clone) ClearSourceName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_SourceName = nil
+}
+
+func (x *VirtualMachine_Clone) ClearTargetName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_TargetName = nil
+}
+
+func (x *VirtualMachine_Clone) ClearPhase() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_Phase = nil
+}
+
+func (x *VirtualMachine_Clone) ClearCreatedAt() {
+	x.xxx_hidden_CreatedAt = nil
+}
+
+func (x *VirtualMachine_Clone) ClearLastCondition() {
+	x.xxx_hidden_LastCondition = nil
+}
+
+type VirtualMachine_Clone_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Name          *string
+	Namespace     *string
+	SourceName    *string
+	TargetName    *string
+	Phase         *string
+	CreatedAt     *timestamppb.Timestamp
+	LastCondition *v1.Application_Condition
+}
+
+func (b0 VirtualMachine_Clone_builder) Build() *VirtualMachine_Clone {
+	m0 := &VirtualMachine_Clone{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.SourceName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
+		x.xxx_hidden_SourceName = b.SourceName
+	}
+	if b.TargetName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
+		x.xxx_hidden_TargetName = b.TargetName
+	}
+	if b.Phase != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
+		x.xxx_hidden_Phase = b.Phase
+	}
+	x.xxx_hidden_CreatedAt = b.CreatedAt
+	x.xxx_hidden_LastCondition = b.LastCondition
+	return m0
+}
+
 type VirtualMachine_Snapshot struct {
 	state                    protoimpl.MessageState    `protogen:"opaque.v1"`
 	xxx_hidden_Name          *string                   `protobuf:"bytes,1,opt,name=name"`
 	xxx_hidden_Namespace     *string                   `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_SourceName    *string                   `protobuf:"bytes,11,opt,name=source_name,json=sourceName"`
-	xxx_hidden_Description   *string                   `protobuf:"bytes,12,opt,name=description"`
-	xxx_hidden_Phase         *string                   `protobuf:"bytes,21,opt,name=phase"`
-	xxx_hidden_CreatedAt     *timestamppb.Timestamp    `protobuf:"bytes,31,opt,name=created_at,json=createdAt"`
-	xxx_hidden_LastCondition *v1.Application_Condition `protobuf:"bytes,41,opt,name=last_condition,json=lastCondition"`
+	xxx_hidden_SourceName    *string                   `protobuf:"bytes,3,opt,name=source_name,json=sourceName"`
+	xxx_hidden_Phase         *string                   `protobuf:"bytes,11,opt,name=phase"`
+	xxx_hidden_ReadyToUse    bool                      `protobuf:"varint,12,opt,name=ready_to_use,json=readyToUse"`
+	xxx_hidden_CreatedAt     *timestamppb.Timestamp    `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
+	xxx_hidden_LastCondition *v1.Application_Condition `protobuf:"bytes,31,opt,name=last_condition,json=lastCondition"`
 	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
 	XXX_presence             [1]uint32
 	unknownFields            protoimpl.UnknownFields
@@ -7053,16 +7161,6 @@ func (x *VirtualMachine_Snapshot) GetSourceName() string {
 	return ""
 }
 
-func (x *VirtualMachine_Snapshot) GetDescription() string {
-	if x != nil {
-		if x.xxx_hidden_Description != nil {
-			return *x.xxx_hidden_Description
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *VirtualMachine_Snapshot) GetPhase() string {
 	if x != nil {
 		if x.xxx_hidden_Phase != nil {
@@ -7071,6 +7169,13 @@ func (x *VirtualMachine_Snapshot) GetPhase() string {
 		return ""
 	}
 	return ""
+}
+
+func (x *VirtualMachine_Snapshot) GetReadyToUse() bool {
+	if x != nil {
+		return x.xxx_hidden_ReadyToUse
+	}
+	return false
 }
 
 func (x *VirtualMachine_Snapshot) GetCreatedAt() *timestamppb.Timestamp {
@@ -7102,13 +7207,13 @@ func (x *VirtualMachine_Snapshot) SetSourceName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
 }
 
-func (x *VirtualMachine_Snapshot) SetDescription(v string) {
-	x.xxx_hidden_Description = &v
+func (x *VirtualMachine_Snapshot) SetPhase(v string) {
+	x.xxx_hidden_Phase = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
 }
 
-func (x *VirtualMachine_Snapshot) SetPhase(v string) {
-	x.xxx_hidden_Phase = &v
+func (x *VirtualMachine_Snapshot) SetReadyToUse(v bool) {
+	x.xxx_hidden_ReadyToUse = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
 }
 
@@ -7141,14 +7246,14 @@ func (x *VirtualMachine_Snapshot) HasSourceName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *VirtualMachine_Snapshot) HasDescription() bool {
+func (x *VirtualMachine_Snapshot) HasPhase() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *VirtualMachine_Snapshot) HasPhase() bool {
+func (x *VirtualMachine_Snapshot) HasReadyToUse() bool {
 	if x == nil {
 		return false
 	}
@@ -7184,14 +7289,14 @@ func (x *VirtualMachine_Snapshot) ClearSourceName() {
 	x.xxx_hidden_SourceName = nil
 }
 
-func (x *VirtualMachine_Snapshot) ClearDescription() {
+func (x *VirtualMachine_Snapshot) ClearPhase() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Description = nil
+	x.xxx_hidden_Phase = nil
 }
 
-func (x *VirtualMachine_Snapshot) ClearPhase() {
+func (x *VirtualMachine_Snapshot) ClearReadyToUse() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Phase = nil
+	x.xxx_hidden_ReadyToUse = false
 }
 
 func (x *VirtualMachine_Snapshot) ClearCreatedAt() {
@@ -7208,8 +7313,8 @@ type VirtualMachine_Snapshot_builder struct {
 	Name          *string
 	Namespace     *string
 	SourceName    *string
-	Description   *string
 	Phase         *string
+	ReadyToUse    *bool
 	CreatedAt     *timestamppb.Timestamp
 	LastCondition *v1.Application_Condition
 }
@@ -7230,13 +7335,13 @@ func (b0 VirtualMachine_Snapshot_builder) Build() *VirtualMachine_Snapshot {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
 		x.xxx_hidden_SourceName = b.SourceName
 	}
-	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
-		x.xxx_hidden_Description = b.Description
-	}
 	if b.Phase != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
 		x.xxx_hidden_Phase = b.Phase
+	}
+	if b.ReadyToUse != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
+		x.xxx_hidden_ReadyToUse = *b.ReadyToUse
 	}
 	x.xxx_hidden_CreatedAt = b.CreatedAt
 	x.xxx_hidden_LastCondition = b.LastCondition
@@ -7247,11 +7352,11 @@ type VirtualMachine_Restore struct {
 	state                    protoimpl.MessageState    `protogen:"opaque.v1"`
 	xxx_hidden_Name          *string                   `protobuf:"bytes,1,opt,name=name"`
 	xxx_hidden_Namespace     *string                   `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_SourceName    *string                   `protobuf:"bytes,11,opt,name=source_name,json=sourceName"`
-	xxx_hidden_Description   *string                   `protobuf:"bytes,12,opt,name=description"`
-	xxx_hidden_Phase         *string                   `protobuf:"bytes,21,opt,name=phase"`
-	xxx_hidden_CreatedAt     *timestamppb.Timestamp    `protobuf:"bytes,31,opt,name=created_at,json=createdAt"`
-	xxx_hidden_LastCondition *v1.Application_Condition `protobuf:"bytes,41,opt,name=last_condition,json=lastCondition"`
+	xxx_hidden_TargetName    *string                   `protobuf:"bytes,3,opt,name=target_name,json=targetName"`
+	xxx_hidden_SnapshotName  *string                   `protobuf:"bytes,4,opt,name=snapshot_name,json=snapshotName"`
+	xxx_hidden_Complete      bool                      `protobuf:"varint,11,opt,name=complete"`
+	xxx_hidden_CreatedAt     *timestamppb.Timestamp    `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
+	xxx_hidden_LastCondition *v1.Application_Condition `protobuf:"bytes,31,opt,name=last_condition,json=lastCondition"`
 	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
 	XXX_presence             [1]uint32
 	unknownFields            protoimpl.UnknownFields
@@ -7303,34 +7408,31 @@ func (x *VirtualMachine_Restore) GetNamespace() string {
 	return ""
 }
 
-func (x *VirtualMachine_Restore) GetSourceName() string {
+func (x *VirtualMachine_Restore) GetTargetName() string {
 	if x != nil {
-		if x.xxx_hidden_SourceName != nil {
-			return *x.xxx_hidden_SourceName
+		if x.xxx_hidden_TargetName != nil {
+			return *x.xxx_hidden_TargetName
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *VirtualMachine_Restore) GetDescription() string {
+func (x *VirtualMachine_Restore) GetSnapshotName() string {
 	if x != nil {
-		if x.xxx_hidden_Description != nil {
-			return *x.xxx_hidden_Description
+		if x.xxx_hidden_SnapshotName != nil {
+			return *x.xxx_hidden_SnapshotName
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *VirtualMachine_Restore) GetPhase() string {
+func (x *VirtualMachine_Restore) GetComplete() bool {
 	if x != nil {
-		if x.xxx_hidden_Phase != nil {
-			return *x.xxx_hidden_Phase
-		}
-		return ""
+		return x.xxx_hidden_Complete
 	}
-	return ""
+	return false
 }
 
 func (x *VirtualMachine_Restore) GetCreatedAt() *timestamppb.Timestamp {
@@ -7357,18 +7459,18 @@ func (x *VirtualMachine_Restore) SetNamespace(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
 }
 
-func (x *VirtualMachine_Restore) SetSourceName(v string) {
-	x.xxx_hidden_SourceName = &v
+func (x *VirtualMachine_Restore) SetTargetName(v string) {
+	x.xxx_hidden_TargetName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
 }
 
-func (x *VirtualMachine_Restore) SetDescription(v string) {
-	x.xxx_hidden_Description = &v
+func (x *VirtualMachine_Restore) SetSnapshotName(v string) {
+	x.xxx_hidden_SnapshotName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
 }
 
-func (x *VirtualMachine_Restore) SetPhase(v string) {
-	x.xxx_hidden_Phase = &v
+func (x *VirtualMachine_Restore) SetComplete(v bool) {
+	x.xxx_hidden_Complete = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
 }
 
@@ -7394,21 +7496,21 @@ func (x *VirtualMachine_Restore) HasNamespace() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *VirtualMachine_Restore) HasSourceName() bool {
+func (x *VirtualMachine_Restore) HasTargetName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *VirtualMachine_Restore) HasDescription() bool {
+func (x *VirtualMachine_Restore) HasSnapshotName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *VirtualMachine_Restore) HasPhase() bool {
+func (x *VirtualMachine_Restore) HasComplete() bool {
 	if x == nil {
 		return false
 	}
@@ -7439,19 +7541,19 @@ func (x *VirtualMachine_Restore) ClearNamespace() {
 	x.xxx_hidden_Namespace = nil
 }
 
-func (x *VirtualMachine_Restore) ClearSourceName() {
+func (x *VirtualMachine_Restore) ClearTargetName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_SourceName = nil
+	x.xxx_hidden_TargetName = nil
 }
 
-func (x *VirtualMachine_Restore) ClearDescription() {
+func (x *VirtualMachine_Restore) ClearSnapshotName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Description = nil
+	x.xxx_hidden_SnapshotName = nil
 }
 
-func (x *VirtualMachine_Restore) ClearPhase() {
+func (x *VirtualMachine_Restore) ClearComplete() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Phase = nil
+	x.xxx_hidden_Complete = false
 }
 
 func (x *VirtualMachine_Restore) ClearCreatedAt() {
@@ -7467,9 +7569,9 @@ type VirtualMachine_Restore_builder struct {
 
 	Name          *string
 	Namespace     *string
-	SourceName    *string
-	Description   *string
-	Phase         *string
+	TargetName    *string
+	SnapshotName  *string
+	Complete      *bool
 	CreatedAt     *timestamppb.Timestamp
 	LastCondition *v1.Application_Condition
 }
@@ -7486,17 +7588,17 @@ func (b0 VirtualMachine_Restore_builder) Build() *VirtualMachine_Restore {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
-	if b.SourceName != nil {
+	if b.TargetName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
-		x.xxx_hidden_SourceName = b.SourceName
+		x.xxx_hidden_TargetName = b.TargetName
 	}
-	if b.Description != nil {
+	if b.SnapshotName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
-		x.xxx_hidden_Description = b.Description
+		x.xxx_hidden_SnapshotName = b.SnapshotName
 	}
-	if b.Phase != nil {
+	if b.Complete != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
-		x.xxx_hidden_Phase = b.Phase
+		x.xxx_hidden_Complete = *b.Complete
 	}
 	x.xxx_hidden_CreatedAt = b.CreatedAt
 	x.xxx_hidden_LastCondition = b.LastCondition
@@ -7506,10 +7608,10 @@ func (b0 VirtualMachine_Restore_builder) Build() *VirtualMachine_Restore {
 type VirtualMachine_Disk struct {
 	state                  protoimpl.MessageState  `protogen:"opaque.v1"`
 	xxx_hidden_Name        *string                 `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                 `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_Bus         VirtualMachine_Disk_Bus `protobuf:"varint,3,opt,name=bus,enum=otterscale.virtual_machine.v1.VirtualMachine_Disk_Bus"`
+	xxx_hidden_Bus         VirtualMachine_Disk_Bus `protobuf:"varint,2,opt,name=bus,enum=otterscale.virtual_machine.v1.VirtualMachine_Disk_Bus"`
 	xxx_hidden_Bootable    bool                    `protobuf:"varint,21,opt,name=bootable"`
 	xxx_hidden_BootOrder   uint32                  `protobuf:"varint,22,opt,name=boot_order,json=bootOrder"`
+	xxx_hidden_DataVolume  *DataVolume             `protobuf:"bytes,31,opt,name=data_volume,json=dataVolume"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -7551,19 +7653,9 @@ func (x *VirtualMachine_Disk) GetName() string {
 	return ""
 }
 
-func (x *VirtualMachine_Disk) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *VirtualMachine_Disk) GetBus() VirtualMachine_Disk_Bus {
 	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 2) {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 1) {
 			return x.xxx_hidden_Bus
 		}
 	}
@@ -7584,29 +7676,35 @@ func (x *VirtualMachine_Disk) GetBootOrder() uint32 {
 	return 0
 }
 
+func (x *VirtualMachine_Disk) GetDataVolume() *DataVolume {
+	if x != nil {
+		return x.xxx_hidden_DataVolume
+	}
+	return nil
+}
+
 func (x *VirtualMachine_Disk) SetName(v string) {
 	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
-func (x *VirtualMachine_Disk) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
-}
-
 func (x *VirtualMachine_Disk) SetBus(v VirtualMachine_Disk_Bus) {
 	x.xxx_hidden_Bus = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *VirtualMachine_Disk) SetBootable(v bool) {
 	x.xxx_hidden_Bootable = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *VirtualMachine_Disk) SetBootOrder(v uint32) {
 	x.xxx_hidden_BootOrder = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *VirtualMachine_Disk) SetDataVolume(v *DataVolume) {
+	x.xxx_hidden_DataVolume = v
 }
 
 func (x *VirtualMachine_Disk) HasName() bool {
@@ -7616,32 +7714,32 @@ func (x *VirtualMachine_Disk) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *VirtualMachine_Disk) HasNamespace() bool {
+func (x *VirtualMachine_Disk) HasBus() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *VirtualMachine_Disk) HasBus() bool {
+func (x *VirtualMachine_Disk) HasBootable() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *VirtualMachine_Disk) HasBootable() bool {
+func (x *VirtualMachine_Disk) HasBootOrder() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *VirtualMachine_Disk) HasBootOrder() bool {
+func (x *VirtualMachine_Disk) HasDataVolume() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return x.xxx_hidden_DataVolume != nil
 }
 
 func (x *VirtualMachine_Disk) ClearName() {
@@ -7649,36 +7747,35 @@ func (x *VirtualMachine_Disk) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *VirtualMachine_Disk) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Namespace = nil
-}
-
 func (x *VirtualMachine_Disk) ClearBus() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Bus = VirtualMachine_Disk_VIRTIO
 }
 
 func (x *VirtualMachine_Disk) ClearBootable() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Bootable = false
 }
 
 func (x *VirtualMachine_Disk) ClearBootOrder() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_BootOrder = 0
+}
+
+func (x *VirtualMachine_Disk) ClearDataVolume() {
+	x.xxx_hidden_DataVolume = nil
 }
 
 type VirtualMachine_Disk_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
-	Bus       *VirtualMachine_Disk_Bus
+	Name *string
+	Bus  *VirtualMachine_Disk_Bus
 	// Type type = 11;
 	// string data = 12;
-	Bootable  *bool
-	BootOrder *uint32
+	Bootable   *bool
+	BootOrder  *uint32
+	DataVolume *DataVolume
 }
 
 func (b0 VirtualMachine_Disk_builder) Build() *VirtualMachine_Disk {
@@ -7689,22 +7786,19 @@ func (b0 VirtualMachine_Disk_builder) Build() *VirtualMachine_Disk {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Name = b.Name
 	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
 	if b.Bus != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_Bus = *b.Bus
 	}
 	if b.Bootable != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Bootable = *b.Bootable
 	}
 	if b.BootOrder != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_BootOrder = *b.BootOrder
 	}
+	x.xxx_hidden_DataVolume = b.DataVolume
 	return m0
 }
 
@@ -8049,35 +8143,51 @@ var File_api_virtual_machine_v1_virtual_machine_proto protoreflect.FileDescripto
 
 const file_api_virtual_machine_v1_virtual_machine_proto_rawDesc = "" +
 	"\n" +
-	",api/virtual_machine/v1/virtual_machine.proto\x12\x1dotterscale.virtual_machine.v1\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd7\x06\n" +
-	"\x0eVirtualMachine\x1a\xa9\x02\n" +
+	",api/virtual_machine/v1/virtual_machine.proto\x12\x1dotterscale.virtual_machine.v1\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xac\v\n" +
+	"\x0eVirtualMachine\x12K\n" +
+	"\x06clones\x18\x1f \x03(\v23.otterscale.virtual_machine.v1.VirtualMachine.CloneR\x06clones\x12T\n" +
+	"\tsnapshots\x18) \x03(\v26.otterscale.virtual_machine.v1.VirtualMachine.SnapshotR\tsnapshots\x12Q\n" +
+	"\brestores\x18* \x03(\v25.otterscale.virtual_machine.v1.VirtualMachine.RestoreR\brestores\x1a\xa5\x02\n" +
+	"\x05Clone\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1f\n" +
+	"\vsource_name\x18\x03 \x01(\tR\n" +
+	"sourceName\x12\x1f\n" +
+	"\vtarget_name\x18\x04 \x01(\tR\n" +
+	"targetName\x12\x14\n" +
+	"\x05phase\x18\v \x01(\tR\x05phase\x129\n" +
+	"\n" +
+	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12W\n" +
+	"\x0elast_condition\x18\x1f \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x1a\xa9\x02\n" +
 	"\bSnapshot\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1f\n" +
-	"\vsource_name\x18\v \x01(\tR\n" +
-	"sourceName\x12 \n" +
-	"\vdescription\x18\f \x01(\tR\vdescription\x12\x14\n" +
-	"\x05phase\x18\x15 \x01(\tR\x05phase\x129\n" +
+	"\vsource_name\x18\x03 \x01(\tR\n" +
+	"sourceName\x12\x14\n" +
+	"\x05phase\x18\v \x01(\tR\x05phase\x12 \n" +
+	"\fready_to_use\x18\f \x01(\bR\n" +
+	"readyToUse\x129\n" +
 	"\n" +
-	"created_at\x18\x1f \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12W\n" +
-	"\x0elast_condition\x18) \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x1a\xa8\x02\n" +
+	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12W\n" +
+	"\x0elast_condition\x18\x1f \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x1a\xb1\x02\n" +
 	"\aRestore\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1f\n" +
-	"\vsource_name\x18\v \x01(\tR\n" +
-	"sourceName\x12 \n" +
-	"\vdescription\x18\f \x01(\tR\vdescription\x12\x14\n" +
-	"\x05phase\x18\x15 \x01(\tR\x05phase\x129\n" +
+	"\vtarget_name\x18\x03 \x01(\tR\n" +
+	"targetName\x12#\n" +
+	"\rsnapshot_name\x18\x04 \x01(\tR\fsnapshotName\x12\x1a\n" +
+	"\bcomplete\x18\v \x01(\bR\bcomplete\x129\n" +
 	"\n" +
-	"created_at\x18\x1f \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12W\n" +
-	"\x0elast_condition\x18) \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x1a\xed\x01\n" +
+	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12W\n" +
+	"\x0elast_condition\x18\x1f \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x1a\x9b\x02\n" +
 	"\x04Disk\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12H\n" +
-	"\x03bus\x18\x03 \x01(\x0e26.otterscale.virtual_machine.v1.VirtualMachine.Disk.BusR\x03bus\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12H\n" +
+	"\x03bus\x18\x02 \x01(\x0e26.otterscale.virtual_machine.v1.VirtualMachine.Disk.BusR\x03bus\x12\x1a\n" +
 	"\bbootable\x18\x15 \x01(\bR\bbootable\x12\x1d\n" +
 	"\n" +
-	"boot_order\x18\x16 \x01(\rR\tbootOrder\".\n" +
+	"boot_order\x18\x16 \x01(\rR\tbootOrder\x12J\n" +
+	"\vdata_volume\x18\x1f \x01(\v2).otterscale.virtual_machine.v1.DataVolumeR\n" +
+	"dataVolume\".\n" +
 	"\x03Bus\x12\n" +
 	"\n" +
 	"\x06VIRTIO\x10\x00\x12\b\n" +
@@ -8143,28 +8253,95 @@ const file_api_virtual_machine_v1_virtual_machine_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xb3\x01\n" +
-	"\x1aCloneVirtualMachineRequest\x12\x1d\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\"\xe5\x01\n" +
+	"\"CreateVirtualMachineServiceRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1f\n" +
-	"\vtarget_name\x18\x05 \x01(\tR\n" +
-	"targetName\"\x8c\x01\n" +
-	"\x14StartInstanceRequest\x12\x1d\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12I\n" +
+	"\x05ports\x18\v \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\"\xe5\x01\n" +
+	"\"UpdateVirtualMachineServiceRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\x8b\x01\n" +
-	"\x13StopInstanceRequest\x12\x1d\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12I\n" +
+	"\x05ports\x18\v \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\"\x9a\x01\n" +
+	"\"DeleteVirtualMachineServiceRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\x8e\x01\n" +
-	"\x16RestartInstanceRequest\x12\x1d\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\"\xc1\x01\n" +
+	"\x1fAttachVirtualMachineDiskRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12(\n" +
+	"\x10data_volume_name\x18\v \x01(\tR\x0edataVolumeName\"\xc9\x01\n" +
+	"\x1fDetachVirtualMachineDiskRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x120\n" +
+	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineName\"\x96\x02\n" +
+	" CreateVirtualMachineCloneRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12=\n" +
+	"\x1bsource_virtual_machine_name\x18\v \x01(\tR\x18sourceVirtualMachineName\x12=\n" +
+	"\x1btarget_virtual_machine_name\x18\f \x01(\tR\x18targetVirtualMachineName\"\x98\x01\n" +
+	" DeleteVirtualMachineCloneRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\"\xcd\x01\n" +
+	"#CreateVirtualMachineSnapshotRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x120\n" +
+	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineName\"\x9b\x01\n" +
+	"#DeleteVirtualMachineSnapshotRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\"\xf1\x01\n" +
+	"\"CreateVirtualMachineRestoreRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x120\n" +
+	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineName\x12#\n" +
+	"\rsnapshot_name\x18\f \x01(\tR\fsnapshotName\"\x9a\x01\n" +
+	"\"DeleteVirtualMachineRestoreRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\"\x92\x01\n" +
+	"\x1aStartVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\"\x91\x01\n" +
+	"\x19StopVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\"\x94\x01\n" +
+	"\x1cRestartVirtualMachineRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
@@ -8181,89 +8358,14 @@ const file_api_virtual_machine_v1_virtual_machine_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xb7\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\"\xaa\x01\n" +
 	"\x16MigrateInstanceRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12'\n" +
-	"\x0ftarget_hostname\x18\v \x01(\tR\x0etargetHostname\"\xd7\x01\n" +
-	"\x14CreateServiceRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12I\n" +
-	"\x05ports\x18\v \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\"\xd7\x01\n" +
-	"\x14UpdateServiceRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12I\n" +
-	"\x05ports\x18\v \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\"\x8c\x01\n" +
-	"\x14DeleteServiceRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xe1\x01\n" +
-	"\x15CreateSnapshotRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12 \n" +
-	"\vdescription\x18\x05 \x01(\tR\vdescription\x120\n" +
-	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineName\"\x8d\x01\n" +
-	"\x15DeleteSnapshotRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xe3\x01\n" +
-	"\x14CreateRestoreRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x120\n" +
-	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineName\x12#\n" +
-	"\rsnapshot_name\x18\f \x01(\tR\fsnapshotName\"\x8c\x01\n" +
-	"\x14DeleteRestoreRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xb3\x01\n" +
-	"\x11CreateDiskRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12(\n" +
-	"\x10data_volume_name\x18\v \x01(\tR\x0edataVolumeName\"\x89\x01\n" +
-	"\x11DeleteDiskRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xbb\x01\n" +
-	"\x11AttachDiskRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x120\n" +
-	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineName\"\xbb\x01\n" +
-	"\x11DetachDiskRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x120\n" +
-	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineName\"z\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1a\n" +
+	"\bhostname\x18\v \x01(\tR\bhostname\"z\n" +
 	"\x16ListDataVolumesRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -8334,34 +8436,29 @@ const file_api_virtual_machine_v1_virtual_machine_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name2\xfc\x1b\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name2\x91\x1e\n" +
 	"\x15VirtualMachineService\x12\x8c\x01\n" +
 	"\x13ListVirtualMachines\x129.otterscale.virtual_machine.v1.ListVirtualMachinesRequest\x1a:.otterscale.virtual_machine.v1.ListVirtualMachinesResponse\x12{\n" +
 	"\x11GetVirtualMachine\x127.otterscale.virtual_machine.v1.GetVirtualMachineRequest\x1a-.otterscale.virtual_machine.v1.VirtualMachine\x12\x81\x01\n" +
 	"\x14CreateVirtualMachine\x12:.otterscale.virtual_machine.v1.CreateVirtualMachineRequest\x1a-.otterscale.virtual_machine.v1.VirtualMachine\x12j\n" +
-	"\x14DeleteVirtualMachine\x12:.otterscale.virtual_machine.v1.DeleteVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12h\n" +
-	"\x13CloneVirtualMachine\x129.otterscale.virtual_machine.v1.CloneVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12\\\n" +
-	"\rStartInstance\x123.otterscale.virtual_machine.v1.StartInstanceRequest\x1a\x16.google.protobuf.Empty\x12Z\n" +
-	"\fStopInstance\x122.otterscale.virtual_machine.v1.StopInstanceRequest\x1a\x16.google.protobuf.Empty\x12`\n" +
-	"\x0fRestartInstance\x125.otterscale.virtual_machine.v1.RestartInstanceRequest\x1a\x16.google.protobuf.Empty\x12\\\n" +
+	"\x14DeleteVirtualMachine\x12:.otterscale.virtual_machine.v1.DeleteVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12\x90\x01\n" +
+	"\x1bCreateVirtualMachineService\x12A.otterscale.virtual_machine.v1.CreateVirtualMachineServiceRequest\x1a..otterscale.application.v1.Application.Service\x12\x90\x01\n" +
+	"\x1bUpdateVirtualMachineService\x12A.otterscale.virtual_machine.v1.UpdateVirtualMachineServiceRequest\x1a..otterscale.application.v1.Application.Service\x12x\n" +
+	"\x1bDeleteVirtualMachineService\x12A.otterscale.virtual_machine.v1.DeleteVirtualMachineServiceRequest\x1a\x16.google.protobuf.Empty\x12\x8e\x01\n" +
+	"\x18AttachVirtualMachineDisk\x12>.otterscale.virtual_machine.v1.AttachVirtualMachineDiskRequest\x1a2.otterscale.virtual_machine.v1.VirtualMachine.Disk\x12r\n" +
+	"\x18DetachVirtualMachineDisk\x12>.otterscale.virtual_machine.v1.DetachVirtualMachineDiskRequest\x1a\x16.google.protobuf.Empty\x12\x91\x01\n" +
+	"\x19CreateVirtualMachineClone\x12?.otterscale.virtual_machine.v1.CreateVirtualMachineCloneRequest\x1a3.otterscale.virtual_machine.v1.VirtualMachine.Clone\x12t\n" +
+	"\x19DeleteVirtualMachineClone\x12?.otterscale.virtual_machine.v1.DeleteVirtualMachineCloneRequest\x1a\x16.google.protobuf.Empty\x12\x9a\x01\n" +
+	"\x1cCreateVirtualMachineSnapshot\x12B.otterscale.virtual_machine.v1.CreateVirtualMachineSnapshotRequest\x1a6.otterscale.virtual_machine.v1.VirtualMachine.Snapshot\x12z\n" +
+	"\x1cDeleteVirtualMachineSnapshot\x12B.otterscale.virtual_machine.v1.DeleteVirtualMachineSnapshotRequest\x1a\x16.google.protobuf.Empty\x12\x97\x01\n" +
+	"\x1bCreateVirtualMachineRestore\x12A.otterscale.virtual_machine.v1.CreateVirtualMachineRestoreRequest\x1a5.otterscale.virtual_machine.v1.VirtualMachine.Restore\x12x\n" +
+	"\x1bDeleteVirtualMachineRestore\x12A.otterscale.virtual_machine.v1.DeleteVirtualMachineRestoreRequest\x1a\x16.google.protobuf.Empty\x12h\n" +
+	"\x13StartVirtualMachine\x129.otterscale.virtual_machine.v1.StartVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12f\n" +
+	"\x12StopVirtualMachine\x128.otterscale.virtual_machine.v1.StopVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12l\n" +
+	"\x15RestartVirtualMachine\x12;.otterscale.virtual_machine.v1.RestartVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12\\\n" +
 	"\rPauseInstance\x123.otterscale.virtual_machine.v1.PauseInstanceRequest\x1a\x16.google.protobuf.Empty\x12^\n" +
 	"\x0eResumeInstance\x124.otterscale.virtual_machine.v1.ResumeInstanceRequest\x1a\x16.google.protobuf.Empty\x12`\n" +
-	"\x0fMigrateInstance\x125.otterscale.virtual_machine.v1.MigrateInstanceRequest\x1a\x16.google.protobuf.Empty\x12t\n" +
-	"\rCreateService\x123.otterscale.virtual_machine.v1.CreateServiceRequest\x1a..otterscale.application.v1.Application.Service\x12t\n" +
-	"\rUpdateService\x123.otterscale.virtual_machine.v1.UpdateServiceRequest\x1a..otterscale.application.v1.Application.Service\x12\\\n" +
-	"\rDeleteService\x123.otterscale.virtual_machine.v1.DeleteServiceRequest\x1a\x16.google.protobuf.Empty\x12~\n" +
-	"\x0eCreateSnapshot\x124.otterscale.virtual_machine.v1.CreateSnapshotRequest\x1a6.otterscale.virtual_machine.v1.VirtualMachine.Snapshot\x12^\n" +
-	"\x0eDeleteSnapshot\x124.otterscale.virtual_machine.v1.DeleteSnapshotRequest\x1a\x16.google.protobuf.Empty\x12{\n" +
-	"\rCreateRestore\x123.otterscale.virtual_machine.v1.CreateRestoreRequest\x1a5.otterscale.virtual_machine.v1.VirtualMachine.Restore\x12\\\n" +
-	"\rDeleteRestore\x123.otterscale.virtual_machine.v1.DeleteRestoreRequest\x1a\x16.google.protobuf.Empty\x12r\n" +
-	"\n" +
-	"CreateDisk\x120.otterscale.virtual_machine.v1.CreateDiskRequest\x1a2.otterscale.virtual_machine.v1.VirtualMachine.Disk\x12V\n" +
-	"\n" +
-	"DeleteDisk\x120.otterscale.virtual_machine.v1.DeleteDiskRequest\x1a\x16.google.protobuf.Empty\x12V\n" +
-	"\n" +
-	"AttachDisk\x120.otterscale.virtual_machine.v1.AttachDiskRequest\x1a\x16.google.protobuf.Empty\x12V\n" +
-	"\n" +
-	"DetachDisk\x120.otterscale.virtual_machine.v1.DetachDiskRequest\x1a\x16.google.protobuf.Empty\x12\x80\x01\n" +
+	"\x0fMigrateInstance\x125.otterscale.virtual_machine.v1.MigrateInstanceRequest\x1a\x16.google.protobuf.Empty\x12\x80\x01\n" +
 	"\x0fListDataVolumes\x125.otterscale.virtual_machine.v1.ListDataVolumesRequest\x1a6.otterscale.virtual_machine.v1.ListDataVolumesResponse\x12o\n" +
 	"\rGetDataVolume\x123.otterscale.virtual_machine.v1.GetDataVolumeRequest\x1a).otterscale.virtual_machine.v1.DataVolume\x12u\n" +
 	"\x10CreateDataVolume\x126.otterscale.virtual_machine.v1.CreateDataVolumeRequest\x1a).otterscale.virtual_machine.v1.DataVolume\x12b\n" +
@@ -8386,37 +8483,37 @@ var file_api_virtual_machine_v1_virtual_machine_proto_goTypes = []any{
 	(*GetVirtualMachineRequest)(nil),             // 7: otterscale.virtual_machine.v1.GetVirtualMachineRequest
 	(*CreateVirtualMachineRequest)(nil),          // 8: otterscale.virtual_machine.v1.CreateVirtualMachineRequest
 	(*DeleteVirtualMachineRequest)(nil),          // 9: otterscale.virtual_machine.v1.DeleteVirtualMachineRequest
-	(*CloneVirtualMachineRequest)(nil),           // 10: otterscale.virtual_machine.v1.CloneVirtualMachineRequest
-	(*StartInstanceRequest)(nil),                 // 11: otterscale.virtual_machine.v1.StartInstanceRequest
-	(*StopInstanceRequest)(nil),                  // 12: otterscale.virtual_machine.v1.StopInstanceRequest
-	(*RestartInstanceRequest)(nil),               // 13: otterscale.virtual_machine.v1.RestartInstanceRequest
-	(*PauseInstanceRequest)(nil),                 // 14: otterscale.virtual_machine.v1.PauseInstanceRequest
-	(*ResumeInstanceRequest)(nil),                // 15: otterscale.virtual_machine.v1.ResumeInstanceRequest
-	(*MigrateInstanceRequest)(nil),               // 16: otterscale.virtual_machine.v1.MigrateInstanceRequest
-	(*CreateServiceRequest)(nil),                 // 17: otterscale.virtual_machine.v1.CreateServiceRequest
-	(*UpdateServiceRequest)(nil),                 // 18: otterscale.virtual_machine.v1.UpdateServiceRequest
-	(*DeleteServiceRequest)(nil),                 // 19: otterscale.virtual_machine.v1.DeleteServiceRequest
-	(*CreateSnapshotRequest)(nil),                // 20: otterscale.virtual_machine.v1.CreateSnapshotRequest
-	(*DeleteSnapshotRequest)(nil),                // 21: otterscale.virtual_machine.v1.DeleteSnapshotRequest
-	(*CreateRestoreRequest)(nil),                 // 22: otterscale.virtual_machine.v1.CreateRestoreRequest
-	(*DeleteRestoreRequest)(nil),                 // 23: otterscale.virtual_machine.v1.DeleteRestoreRequest
-	(*CreateDiskRequest)(nil),                    // 24: otterscale.virtual_machine.v1.CreateDiskRequest
-	(*DeleteDiskRequest)(nil),                    // 25: otterscale.virtual_machine.v1.DeleteDiskRequest
-	(*AttachDiskRequest)(nil),                    // 26: otterscale.virtual_machine.v1.AttachDiskRequest
-	(*DetachDiskRequest)(nil),                    // 27: otterscale.virtual_machine.v1.DetachDiskRequest
-	(*ListDataVolumesRequest)(nil),               // 28: otterscale.virtual_machine.v1.ListDataVolumesRequest
-	(*ListDataVolumesResponse)(nil),              // 29: otterscale.virtual_machine.v1.ListDataVolumesResponse
-	(*GetDataVolumeRequest)(nil),                 // 30: otterscale.virtual_machine.v1.GetDataVolumeRequest
-	(*CreateDataVolumeRequest)(nil),              // 31: otterscale.virtual_machine.v1.CreateDataVolumeRequest
-	(*DeleteDataVolumeRequest)(nil),              // 32: otterscale.virtual_machine.v1.DeleteDataVolumeRequest
-	(*ExtendDataVolumeRequest)(nil),              // 33: otterscale.virtual_machine.v1.ExtendDataVolumeRequest
-	(*ListClusterWideInstanceTypesRequest)(nil),  // 34: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesRequest
-	(*ListClusterWideInstanceTypesResponse)(nil), // 35: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse
-	(*ListInstanceTypesRequest)(nil),             // 36: otterscale.virtual_machine.v1.ListInstanceTypesRequest
-	(*ListInstanceTypesResponse)(nil),            // 37: otterscale.virtual_machine.v1.ListInstanceTypesResponse
-	(*GetInstanceTypeRequest)(nil),               // 38: otterscale.virtual_machine.v1.GetInstanceTypeRequest
-	(*CreateInstanceTypeRequest)(nil),            // 39: otterscale.virtual_machine.v1.CreateInstanceTypeRequest
-	(*DeleteInstanceTypeRequest)(nil),            // 40: otterscale.virtual_machine.v1.DeleteInstanceTypeRequest
+	(*CreateVirtualMachineServiceRequest)(nil),   // 10: otterscale.virtual_machine.v1.CreateVirtualMachineServiceRequest
+	(*UpdateVirtualMachineServiceRequest)(nil),   // 11: otterscale.virtual_machine.v1.UpdateVirtualMachineServiceRequest
+	(*DeleteVirtualMachineServiceRequest)(nil),   // 12: otterscale.virtual_machine.v1.DeleteVirtualMachineServiceRequest
+	(*AttachVirtualMachineDiskRequest)(nil),      // 13: otterscale.virtual_machine.v1.AttachVirtualMachineDiskRequest
+	(*DetachVirtualMachineDiskRequest)(nil),      // 14: otterscale.virtual_machine.v1.DetachVirtualMachineDiskRequest
+	(*CreateVirtualMachineCloneRequest)(nil),     // 15: otterscale.virtual_machine.v1.CreateVirtualMachineCloneRequest
+	(*DeleteVirtualMachineCloneRequest)(nil),     // 16: otterscale.virtual_machine.v1.DeleteVirtualMachineCloneRequest
+	(*CreateVirtualMachineSnapshotRequest)(nil),  // 17: otterscale.virtual_machine.v1.CreateVirtualMachineSnapshotRequest
+	(*DeleteVirtualMachineSnapshotRequest)(nil),  // 18: otterscale.virtual_machine.v1.DeleteVirtualMachineSnapshotRequest
+	(*CreateVirtualMachineRestoreRequest)(nil),   // 19: otterscale.virtual_machine.v1.CreateVirtualMachineRestoreRequest
+	(*DeleteVirtualMachineRestoreRequest)(nil),   // 20: otterscale.virtual_machine.v1.DeleteVirtualMachineRestoreRequest
+	(*StartVirtualMachineRequest)(nil),           // 21: otterscale.virtual_machine.v1.StartVirtualMachineRequest
+	(*StopVirtualMachineRequest)(nil),            // 22: otterscale.virtual_machine.v1.StopVirtualMachineRequest
+	(*RestartVirtualMachineRequest)(nil),         // 23: otterscale.virtual_machine.v1.RestartVirtualMachineRequest
+	(*PauseInstanceRequest)(nil),                 // 24: otterscale.virtual_machine.v1.PauseInstanceRequest
+	(*ResumeInstanceRequest)(nil),                // 25: otterscale.virtual_machine.v1.ResumeInstanceRequest
+	(*MigrateInstanceRequest)(nil),               // 26: otterscale.virtual_machine.v1.MigrateInstanceRequest
+	(*ListDataVolumesRequest)(nil),               // 27: otterscale.virtual_machine.v1.ListDataVolumesRequest
+	(*ListDataVolumesResponse)(nil),              // 28: otterscale.virtual_machine.v1.ListDataVolumesResponse
+	(*GetDataVolumeRequest)(nil),                 // 29: otterscale.virtual_machine.v1.GetDataVolumeRequest
+	(*CreateDataVolumeRequest)(nil),              // 30: otterscale.virtual_machine.v1.CreateDataVolumeRequest
+	(*DeleteDataVolumeRequest)(nil),              // 31: otterscale.virtual_machine.v1.DeleteDataVolumeRequest
+	(*ExtendDataVolumeRequest)(nil),              // 32: otterscale.virtual_machine.v1.ExtendDataVolumeRequest
+	(*ListClusterWideInstanceTypesRequest)(nil),  // 33: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesRequest
+	(*ListClusterWideInstanceTypesResponse)(nil), // 34: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse
+	(*ListInstanceTypesRequest)(nil),             // 35: otterscale.virtual_machine.v1.ListInstanceTypesRequest
+	(*ListInstanceTypesResponse)(nil),            // 36: otterscale.virtual_machine.v1.ListInstanceTypesResponse
+	(*GetInstanceTypeRequest)(nil),               // 37: otterscale.virtual_machine.v1.GetInstanceTypeRequest
+	(*CreateInstanceTypeRequest)(nil),            // 38: otterscale.virtual_machine.v1.CreateInstanceTypeRequest
+	(*DeleteInstanceTypeRequest)(nil),            // 39: otterscale.virtual_machine.v1.DeleteInstanceTypeRequest
+	(*VirtualMachine_Clone)(nil),                 // 40: otterscale.virtual_machine.v1.VirtualMachine.Clone
 	(*VirtualMachine_Snapshot)(nil),              // 41: otterscale.virtual_machine.v1.VirtualMachine.Snapshot
 	(*VirtualMachine_Restore)(nil),               // 42: otterscale.virtual_machine.v1.VirtualMachine.Restore
 	(*VirtualMachine_Disk)(nil),                  // 43: otterscale.virtual_machine.v1.VirtualMachine.Disk
@@ -8430,93 +8527,97 @@ var file_api_virtual_machine_v1_virtual_machine_proto_goTypes = []any{
 	(*v1.Application_Service)(nil),               // 51: otterscale.application.v1.Application.Service
 }
 var file_api_virtual_machine_v1_virtual_machine_proto_depIdxs = []int32{
-	44, // 0: otterscale.virtual_machine.v1.DataVolume.source:type_name -> otterscale.virtual_machine.v1.DataVolume.Source
-	46, // 1: otterscale.virtual_machine.v1.DataVolume.PersistentVolumeClaim:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
-	45, // 2: otterscale.virtual_machine.v1.DataVolume.last_condition:type_name -> otterscale.virtual_machine.v1.DataVolume.Condition
-	2,  // 3: otterscale.virtual_machine.v1.ListVirtualMachinesResponse.virtual_machines:type_name -> otterscale.virtual_machine.v1.VirtualMachine
-	47, // 4: otterscale.virtual_machine.v1.CreateServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
-	47, // 5: otterscale.virtual_machine.v1.UpdateServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
-	3,  // 6: otterscale.virtual_machine.v1.ListDataVolumesResponse.data_volumes:type_name -> otterscale.virtual_machine.v1.DataVolume
-	44, // 7: otterscale.virtual_machine.v1.CreateDataVolumeRequest.source:type_name -> otterscale.virtual_machine.v1.DataVolume.Source
-	4,  // 8: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse.instance_types:type_name -> otterscale.virtual_machine.v1.InstanceType
-	4,  // 9: otterscale.virtual_machine.v1.ListInstanceTypesResponse.instance_types:type_name -> otterscale.virtual_machine.v1.InstanceType
-	48, // 10: otterscale.virtual_machine.v1.VirtualMachine.Snapshot.created_at:type_name -> google.protobuf.Timestamp
-	49, // 11: otterscale.virtual_machine.v1.VirtualMachine.Snapshot.last_condition:type_name -> otterscale.application.v1.Application.Condition
-	48, // 12: otterscale.virtual_machine.v1.VirtualMachine.Restore.created_at:type_name -> google.protobuf.Timestamp
-	49, // 13: otterscale.virtual_machine.v1.VirtualMachine.Restore.last_condition:type_name -> otterscale.application.v1.Application.Condition
-	0,  // 14: otterscale.virtual_machine.v1.VirtualMachine.Disk.bus:type_name -> otterscale.virtual_machine.v1.VirtualMachine.Disk.Bus
-	1,  // 15: otterscale.virtual_machine.v1.DataVolume.Source.type:type_name -> otterscale.virtual_machine.v1.DataVolume.Source.Type
-	48, // 16: otterscale.virtual_machine.v1.DataVolume.Condition.heartbeat_at:type_name -> google.protobuf.Timestamp
-	48, // 17: otterscale.virtual_machine.v1.DataVolume.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
-	5,  // 18: otterscale.virtual_machine.v1.VirtualMachineService.ListVirtualMachines:input_type -> otterscale.virtual_machine.v1.ListVirtualMachinesRequest
-	7,  // 19: otterscale.virtual_machine.v1.VirtualMachineService.GetVirtualMachine:input_type -> otterscale.virtual_machine.v1.GetVirtualMachineRequest
-	8,  // 20: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachine:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineRequest
-	9,  // 21: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachine:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineRequest
-	10, // 22: otterscale.virtual_machine.v1.VirtualMachineService.CloneVirtualMachine:input_type -> otterscale.virtual_machine.v1.CloneVirtualMachineRequest
-	11, // 23: otterscale.virtual_machine.v1.VirtualMachineService.StartInstance:input_type -> otterscale.virtual_machine.v1.StartInstanceRequest
-	12, // 24: otterscale.virtual_machine.v1.VirtualMachineService.StopInstance:input_type -> otterscale.virtual_machine.v1.StopInstanceRequest
-	13, // 25: otterscale.virtual_machine.v1.VirtualMachineService.RestartInstance:input_type -> otterscale.virtual_machine.v1.RestartInstanceRequest
-	14, // 26: otterscale.virtual_machine.v1.VirtualMachineService.PauseInstance:input_type -> otterscale.virtual_machine.v1.PauseInstanceRequest
-	15, // 27: otterscale.virtual_machine.v1.VirtualMachineService.ResumeInstance:input_type -> otterscale.virtual_machine.v1.ResumeInstanceRequest
-	16, // 28: otterscale.virtual_machine.v1.VirtualMachineService.MigrateInstance:input_type -> otterscale.virtual_machine.v1.MigrateInstanceRequest
-	17, // 29: otterscale.virtual_machine.v1.VirtualMachineService.CreateService:input_type -> otterscale.virtual_machine.v1.CreateServiceRequest
-	18, // 30: otterscale.virtual_machine.v1.VirtualMachineService.UpdateService:input_type -> otterscale.virtual_machine.v1.UpdateServiceRequest
-	19, // 31: otterscale.virtual_machine.v1.VirtualMachineService.DeleteService:input_type -> otterscale.virtual_machine.v1.DeleteServiceRequest
-	20, // 32: otterscale.virtual_machine.v1.VirtualMachineService.CreateSnapshot:input_type -> otterscale.virtual_machine.v1.CreateSnapshotRequest
-	21, // 33: otterscale.virtual_machine.v1.VirtualMachineService.DeleteSnapshot:input_type -> otterscale.virtual_machine.v1.DeleteSnapshotRequest
-	22, // 34: otterscale.virtual_machine.v1.VirtualMachineService.CreateRestore:input_type -> otterscale.virtual_machine.v1.CreateRestoreRequest
-	23, // 35: otterscale.virtual_machine.v1.VirtualMachineService.DeleteRestore:input_type -> otterscale.virtual_machine.v1.DeleteRestoreRequest
-	24, // 36: otterscale.virtual_machine.v1.VirtualMachineService.CreateDisk:input_type -> otterscale.virtual_machine.v1.CreateDiskRequest
-	25, // 37: otterscale.virtual_machine.v1.VirtualMachineService.DeleteDisk:input_type -> otterscale.virtual_machine.v1.DeleteDiskRequest
-	26, // 38: otterscale.virtual_machine.v1.VirtualMachineService.AttachDisk:input_type -> otterscale.virtual_machine.v1.AttachDiskRequest
-	27, // 39: otterscale.virtual_machine.v1.VirtualMachineService.DetachDisk:input_type -> otterscale.virtual_machine.v1.DetachDiskRequest
-	28, // 40: otterscale.virtual_machine.v1.VirtualMachineService.ListDataVolumes:input_type -> otterscale.virtual_machine.v1.ListDataVolumesRequest
-	30, // 41: otterscale.virtual_machine.v1.VirtualMachineService.GetDataVolume:input_type -> otterscale.virtual_machine.v1.GetDataVolumeRequest
-	31, // 42: otterscale.virtual_machine.v1.VirtualMachineService.CreateDataVolume:input_type -> otterscale.virtual_machine.v1.CreateDataVolumeRequest
-	32, // 43: otterscale.virtual_machine.v1.VirtualMachineService.DeleteDataVolume:input_type -> otterscale.virtual_machine.v1.DeleteDataVolumeRequest
-	33, // 44: otterscale.virtual_machine.v1.VirtualMachineService.ExtendDataVolume:input_type -> otterscale.virtual_machine.v1.ExtendDataVolumeRequest
-	34, // 45: otterscale.virtual_machine.v1.VirtualMachineService.ListClusterWideInstanceTypes:input_type -> otterscale.virtual_machine.v1.ListClusterWideInstanceTypesRequest
-	36, // 46: otterscale.virtual_machine.v1.VirtualMachineService.ListInstanceTypes:input_type -> otterscale.virtual_machine.v1.ListInstanceTypesRequest
-	38, // 47: otterscale.virtual_machine.v1.VirtualMachineService.GetInstanceType:input_type -> otterscale.virtual_machine.v1.GetInstanceTypeRequest
-	39, // 48: otterscale.virtual_machine.v1.VirtualMachineService.CreateInstanceType:input_type -> otterscale.virtual_machine.v1.CreateInstanceTypeRequest
-	40, // 49: otterscale.virtual_machine.v1.VirtualMachineService.DeleteInstanceType:input_type -> otterscale.virtual_machine.v1.DeleteInstanceTypeRequest
-	6,  // 50: otterscale.virtual_machine.v1.VirtualMachineService.ListVirtualMachines:output_type -> otterscale.virtual_machine.v1.ListVirtualMachinesResponse
-	2,  // 51: otterscale.virtual_machine.v1.VirtualMachineService.GetVirtualMachine:output_type -> otterscale.virtual_machine.v1.VirtualMachine
-	2,  // 52: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachine:output_type -> otterscale.virtual_machine.v1.VirtualMachine
-	50, // 53: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachine:output_type -> google.protobuf.Empty
-	50, // 54: otterscale.virtual_machine.v1.VirtualMachineService.CloneVirtualMachine:output_type -> google.protobuf.Empty
-	50, // 55: otterscale.virtual_machine.v1.VirtualMachineService.StartInstance:output_type -> google.protobuf.Empty
-	50, // 56: otterscale.virtual_machine.v1.VirtualMachineService.StopInstance:output_type -> google.protobuf.Empty
-	50, // 57: otterscale.virtual_machine.v1.VirtualMachineService.RestartInstance:output_type -> google.protobuf.Empty
-	50, // 58: otterscale.virtual_machine.v1.VirtualMachineService.PauseInstance:output_type -> google.protobuf.Empty
-	50, // 59: otterscale.virtual_machine.v1.VirtualMachineService.ResumeInstance:output_type -> google.protobuf.Empty
-	50, // 60: otterscale.virtual_machine.v1.VirtualMachineService.MigrateInstance:output_type -> google.protobuf.Empty
-	51, // 61: otterscale.virtual_machine.v1.VirtualMachineService.CreateService:output_type -> otterscale.application.v1.Application.Service
-	51, // 62: otterscale.virtual_machine.v1.VirtualMachineService.UpdateService:output_type -> otterscale.application.v1.Application.Service
-	50, // 63: otterscale.virtual_machine.v1.VirtualMachineService.DeleteService:output_type -> google.protobuf.Empty
-	41, // 64: otterscale.virtual_machine.v1.VirtualMachineService.CreateSnapshot:output_type -> otterscale.virtual_machine.v1.VirtualMachine.Snapshot
-	50, // 65: otterscale.virtual_machine.v1.VirtualMachineService.DeleteSnapshot:output_type -> google.protobuf.Empty
-	42, // 66: otterscale.virtual_machine.v1.VirtualMachineService.CreateRestore:output_type -> otterscale.virtual_machine.v1.VirtualMachine.Restore
-	50, // 67: otterscale.virtual_machine.v1.VirtualMachineService.DeleteRestore:output_type -> google.protobuf.Empty
-	43, // 68: otterscale.virtual_machine.v1.VirtualMachineService.CreateDisk:output_type -> otterscale.virtual_machine.v1.VirtualMachine.Disk
-	50, // 69: otterscale.virtual_machine.v1.VirtualMachineService.DeleteDisk:output_type -> google.protobuf.Empty
-	50, // 70: otterscale.virtual_machine.v1.VirtualMachineService.AttachDisk:output_type -> google.protobuf.Empty
-	50, // 71: otterscale.virtual_machine.v1.VirtualMachineService.DetachDisk:output_type -> google.protobuf.Empty
-	29, // 72: otterscale.virtual_machine.v1.VirtualMachineService.ListDataVolumes:output_type -> otterscale.virtual_machine.v1.ListDataVolumesResponse
-	3,  // 73: otterscale.virtual_machine.v1.VirtualMachineService.GetDataVolume:output_type -> otterscale.virtual_machine.v1.DataVolume
-	3,  // 74: otterscale.virtual_machine.v1.VirtualMachineService.CreateDataVolume:output_type -> otterscale.virtual_machine.v1.DataVolume
-	50, // 75: otterscale.virtual_machine.v1.VirtualMachineService.DeleteDataVolume:output_type -> google.protobuf.Empty
-	50, // 76: otterscale.virtual_machine.v1.VirtualMachineService.ExtendDataVolume:output_type -> google.protobuf.Empty
-	35, // 77: otterscale.virtual_machine.v1.VirtualMachineService.ListClusterWideInstanceTypes:output_type -> otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse
-	37, // 78: otterscale.virtual_machine.v1.VirtualMachineService.ListInstanceTypes:output_type -> otterscale.virtual_machine.v1.ListInstanceTypesResponse
-	4,  // 79: otterscale.virtual_machine.v1.VirtualMachineService.GetInstanceType:output_type -> otterscale.virtual_machine.v1.InstanceType
-	4,  // 80: otterscale.virtual_machine.v1.VirtualMachineService.CreateInstanceType:output_type -> otterscale.virtual_machine.v1.InstanceType
-	50, // 81: otterscale.virtual_machine.v1.VirtualMachineService.DeleteInstanceType:output_type -> google.protobuf.Empty
-	50, // [50:82] is the sub-list for method output_type
-	18, // [18:50] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	40, // 0: otterscale.virtual_machine.v1.VirtualMachine.clones:type_name -> otterscale.virtual_machine.v1.VirtualMachine.Clone
+	41, // 1: otterscale.virtual_machine.v1.VirtualMachine.snapshots:type_name -> otterscale.virtual_machine.v1.VirtualMachine.Snapshot
+	42, // 2: otterscale.virtual_machine.v1.VirtualMachine.restores:type_name -> otterscale.virtual_machine.v1.VirtualMachine.Restore
+	44, // 3: otterscale.virtual_machine.v1.DataVolume.source:type_name -> otterscale.virtual_machine.v1.DataVolume.Source
+	46, // 4: otterscale.virtual_machine.v1.DataVolume.PersistentVolumeClaim:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
+	45, // 5: otterscale.virtual_machine.v1.DataVolume.last_condition:type_name -> otterscale.virtual_machine.v1.DataVolume.Condition
+	2,  // 6: otterscale.virtual_machine.v1.ListVirtualMachinesResponse.virtual_machines:type_name -> otterscale.virtual_machine.v1.VirtualMachine
+	47, // 7: otterscale.virtual_machine.v1.CreateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
+	47, // 8: otterscale.virtual_machine.v1.UpdateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
+	3,  // 9: otterscale.virtual_machine.v1.ListDataVolumesResponse.data_volumes:type_name -> otterscale.virtual_machine.v1.DataVolume
+	44, // 10: otterscale.virtual_machine.v1.CreateDataVolumeRequest.source:type_name -> otterscale.virtual_machine.v1.DataVolume.Source
+	4,  // 11: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse.instance_types:type_name -> otterscale.virtual_machine.v1.InstanceType
+	4,  // 12: otterscale.virtual_machine.v1.ListInstanceTypesResponse.instance_types:type_name -> otterscale.virtual_machine.v1.InstanceType
+	48, // 13: otterscale.virtual_machine.v1.VirtualMachine.Clone.created_at:type_name -> google.protobuf.Timestamp
+	49, // 14: otterscale.virtual_machine.v1.VirtualMachine.Clone.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	48, // 15: otterscale.virtual_machine.v1.VirtualMachine.Snapshot.created_at:type_name -> google.protobuf.Timestamp
+	49, // 16: otterscale.virtual_machine.v1.VirtualMachine.Snapshot.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	48, // 17: otterscale.virtual_machine.v1.VirtualMachine.Restore.created_at:type_name -> google.protobuf.Timestamp
+	49, // 18: otterscale.virtual_machine.v1.VirtualMachine.Restore.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	0,  // 19: otterscale.virtual_machine.v1.VirtualMachine.Disk.bus:type_name -> otterscale.virtual_machine.v1.VirtualMachine.Disk.Bus
+	3,  // 20: otterscale.virtual_machine.v1.VirtualMachine.Disk.data_volume:type_name -> otterscale.virtual_machine.v1.DataVolume
+	1,  // 21: otterscale.virtual_machine.v1.DataVolume.Source.type:type_name -> otterscale.virtual_machine.v1.DataVolume.Source.Type
+	48, // 22: otterscale.virtual_machine.v1.DataVolume.Condition.heartbeat_at:type_name -> google.protobuf.Timestamp
+	48, // 23: otterscale.virtual_machine.v1.DataVolume.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
+	5,  // 24: otterscale.virtual_machine.v1.VirtualMachineService.ListVirtualMachines:input_type -> otterscale.virtual_machine.v1.ListVirtualMachinesRequest
+	7,  // 25: otterscale.virtual_machine.v1.VirtualMachineService.GetVirtualMachine:input_type -> otterscale.virtual_machine.v1.GetVirtualMachineRequest
+	8,  // 26: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachine:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineRequest
+	9,  // 27: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachine:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineRequest
+	10, // 28: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineService:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineServiceRequest
+	11, // 29: otterscale.virtual_machine.v1.VirtualMachineService.UpdateVirtualMachineService:input_type -> otterscale.virtual_machine.v1.UpdateVirtualMachineServiceRequest
+	12, // 30: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineService:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineServiceRequest
+	13, // 31: otterscale.virtual_machine.v1.VirtualMachineService.AttachVirtualMachineDisk:input_type -> otterscale.virtual_machine.v1.AttachVirtualMachineDiskRequest
+	14, // 32: otterscale.virtual_machine.v1.VirtualMachineService.DetachVirtualMachineDisk:input_type -> otterscale.virtual_machine.v1.DetachVirtualMachineDiskRequest
+	15, // 33: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineClone:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineCloneRequest
+	16, // 34: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineClone:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineCloneRequest
+	17, // 35: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineSnapshot:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineSnapshotRequest
+	18, // 36: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineSnapshot:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineSnapshotRequest
+	19, // 37: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineRestore:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineRestoreRequest
+	20, // 38: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineRestore:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineRestoreRequest
+	21, // 39: otterscale.virtual_machine.v1.VirtualMachineService.StartVirtualMachine:input_type -> otterscale.virtual_machine.v1.StartVirtualMachineRequest
+	22, // 40: otterscale.virtual_machine.v1.VirtualMachineService.StopVirtualMachine:input_type -> otterscale.virtual_machine.v1.StopVirtualMachineRequest
+	23, // 41: otterscale.virtual_machine.v1.VirtualMachineService.RestartVirtualMachine:input_type -> otterscale.virtual_machine.v1.RestartVirtualMachineRequest
+	24, // 42: otterscale.virtual_machine.v1.VirtualMachineService.PauseInstance:input_type -> otterscale.virtual_machine.v1.PauseInstanceRequest
+	25, // 43: otterscale.virtual_machine.v1.VirtualMachineService.ResumeInstance:input_type -> otterscale.virtual_machine.v1.ResumeInstanceRequest
+	26, // 44: otterscale.virtual_machine.v1.VirtualMachineService.MigrateInstance:input_type -> otterscale.virtual_machine.v1.MigrateInstanceRequest
+	27, // 45: otterscale.virtual_machine.v1.VirtualMachineService.ListDataVolumes:input_type -> otterscale.virtual_machine.v1.ListDataVolumesRequest
+	29, // 46: otterscale.virtual_machine.v1.VirtualMachineService.GetDataVolume:input_type -> otterscale.virtual_machine.v1.GetDataVolumeRequest
+	30, // 47: otterscale.virtual_machine.v1.VirtualMachineService.CreateDataVolume:input_type -> otterscale.virtual_machine.v1.CreateDataVolumeRequest
+	31, // 48: otterscale.virtual_machine.v1.VirtualMachineService.DeleteDataVolume:input_type -> otterscale.virtual_machine.v1.DeleteDataVolumeRequest
+	32, // 49: otterscale.virtual_machine.v1.VirtualMachineService.ExtendDataVolume:input_type -> otterscale.virtual_machine.v1.ExtendDataVolumeRequest
+	33, // 50: otterscale.virtual_machine.v1.VirtualMachineService.ListClusterWideInstanceTypes:input_type -> otterscale.virtual_machine.v1.ListClusterWideInstanceTypesRequest
+	35, // 51: otterscale.virtual_machine.v1.VirtualMachineService.ListInstanceTypes:input_type -> otterscale.virtual_machine.v1.ListInstanceTypesRequest
+	37, // 52: otterscale.virtual_machine.v1.VirtualMachineService.GetInstanceType:input_type -> otterscale.virtual_machine.v1.GetInstanceTypeRequest
+	38, // 53: otterscale.virtual_machine.v1.VirtualMachineService.CreateInstanceType:input_type -> otterscale.virtual_machine.v1.CreateInstanceTypeRequest
+	39, // 54: otterscale.virtual_machine.v1.VirtualMachineService.DeleteInstanceType:input_type -> otterscale.virtual_machine.v1.DeleteInstanceTypeRequest
+	6,  // 55: otterscale.virtual_machine.v1.VirtualMachineService.ListVirtualMachines:output_type -> otterscale.virtual_machine.v1.ListVirtualMachinesResponse
+	2,  // 56: otterscale.virtual_machine.v1.VirtualMachineService.GetVirtualMachine:output_type -> otterscale.virtual_machine.v1.VirtualMachine
+	2,  // 57: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachine:output_type -> otterscale.virtual_machine.v1.VirtualMachine
+	50, // 58: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachine:output_type -> google.protobuf.Empty
+	51, // 59: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineService:output_type -> otterscale.application.v1.Application.Service
+	51, // 60: otterscale.virtual_machine.v1.VirtualMachineService.UpdateVirtualMachineService:output_type -> otterscale.application.v1.Application.Service
+	50, // 61: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineService:output_type -> google.protobuf.Empty
+	43, // 62: otterscale.virtual_machine.v1.VirtualMachineService.AttachVirtualMachineDisk:output_type -> otterscale.virtual_machine.v1.VirtualMachine.Disk
+	50, // 63: otterscale.virtual_machine.v1.VirtualMachineService.DetachVirtualMachineDisk:output_type -> google.protobuf.Empty
+	40, // 64: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineClone:output_type -> otterscale.virtual_machine.v1.VirtualMachine.Clone
+	50, // 65: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineClone:output_type -> google.protobuf.Empty
+	41, // 66: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineSnapshot:output_type -> otterscale.virtual_machine.v1.VirtualMachine.Snapshot
+	50, // 67: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineSnapshot:output_type -> google.protobuf.Empty
+	42, // 68: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineRestore:output_type -> otterscale.virtual_machine.v1.VirtualMachine.Restore
+	50, // 69: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineRestore:output_type -> google.protobuf.Empty
+	50, // 70: otterscale.virtual_machine.v1.VirtualMachineService.StartVirtualMachine:output_type -> google.protobuf.Empty
+	50, // 71: otterscale.virtual_machine.v1.VirtualMachineService.StopVirtualMachine:output_type -> google.protobuf.Empty
+	50, // 72: otterscale.virtual_machine.v1.VirtualMachineService.RestartVirtualMachine:output_type -> google.protobuf.Empty
+	50, // 73: otterscale.virtual_machine.v1.VirtualMachineService.PauseInstance:output_type -> google.protobuf.Empty
+	50, // 74: otterscale.virtual_machine.v1.VirtualMachineService.ResumeInstance:output_type -> google.protobuf.Empty
+	50, // 75: otterscale.virtual_machine.v1.VirtualMachineService.MigrateInstance:output_type -> google.protobuf.Empty
+	28, // 76: otterscale.virtual_machine.v1.VirtualMachineService.ListDataVolumes:output_type -> otterscale.virtual_machine.v1.ListDataVolumesResponse
+	3,  // 77: otterscale.virtual_machine.v1.VirtualMachineService.GetDataVolume:output_type -> otterscale.virtual_machine.v1.DataVolume
+	3,  // 78: otterscale.virtual_machine.v1.VirtualMachineService.CreateDataVolume:output_type -> otterscale.virtual_machine.v1.DataVolume
+	50, // 79: otterscale.virtual_machine.v1.VirtualMachineService.DeleteDataVolume:output_type -> google.protobuf.Empty
+	50, // 80: otterscale.virtual_machine.v1.VirtualMachineService.ExtendDataVolume:output_type -> google.protobuf.Empty
+	34, // 81: otterscale.virtual_machine.v1.VirtualMachineService.ListClusterWideInstanceTypes:output_type -> otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse
+	36, // 82: otterscale.virtual_machine.v1.VirtualMachineService.ListInstanceTypes:output_type -> otterscale.virtual_machine.v1.ListInstanceTypesResponse
+	4,  // 83: otterscale.virtual_machine.v1.VirtualMachineService.GetInstanceType:output_type -> otterscale.virtual_machine.v1.InstanceType
+	4,  // 84: otterscale.virtual_machine.v1.VirtualMachineService.CreateInstanceType:output_type -> otterscale.virtual_machine.v1.InstanceType
+	50, // 85: otterscale.virtual_machine.v1.VirtualMachineService.DeleteInstanceType:output_type -> google.protobuf.Empty
+	55, // [55:86] is the sub-list for method output_type
+	24, // [24:55] is the sub-list for method input_type
+	24, // [24:24] is the sub-list for extension type_name
+	24, // [24:24] is the sub-list for extension extendee
+	0,  // [0:24] is the sub-list for field type_name
 }
 
 func init() { file_api_virtual_machine_v1_virtual_machine_proto_init() }

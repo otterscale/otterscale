@@ -13,29 +13,30 @@ service VirtualMachineService {
   rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine);
   rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
   rpc DeleteVirtualMachine(DeleteVirtualMachineRequest) returns (google.protobuf.Empty);
-  rpc CloneVirtualMachine(CloneVirtualMachineRequest) returns (google.protobuf.Empty);
 
-  rpc StartInstance(StartInstanceRequest) returns (google.protobuf.Empty);
-  rpc StopInstance(StopInstanceRequest) returns (google.protobuf.Empty);
-  rpc RestartInstance(RestartInstanceRequest) returns (google.protobuf.Empty);
+  rpc CreateVirtualMachineService(CreateVirtualMachineServiceRequest)
+      returns (otterscale.application.v1.Application.Service);
+  rpc UpdateVirtualMachineService(UpdateVirtualMachineServiceRequest)
+      returns (otterscale.application.v1.Application.Service);
+  rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty);
+
+  rpc AttachVirtualMachineDisk(AttachVirtualMachineDiskRequest) returns (VirtualMachine.Disk);
+  rpc DetachVirtualMachineDisk(DetachVirtualMachineDiskRequest) returns (google.protobuf.Empty);
+
+  rpc CreateVirtualMachineClone(CreateVirtualMachineCloneRequest) returns (VirtualMachine.Clone);
+  rpc DeleteVirtualMachineClone(DeleteVirtualMachineCloneRequest) returns (google.protobuf.Empty);
+  rpc CreateVirtualMachineSnapshot(CreateVirtualMachineSnapshotRequest) returns (VirtualMachine.Snapshot);
+  rpc DeleteVirtualMachineSnapshot(DeleteVirtualMachineSnapshotRequest) returns (google.protobuf.Empty);
+  rpc CreateVirtualMachineRestore(CreateVirtualMachineRestoreRequest) returns (VirtualMachine.Restore);
+  rpc DeleteVirtualMachineRestore(DeleteVirtualMachineRestoreRequest) returns (google.protobuf.Empty);
+
+  rpc StartVirtualMachine(StartVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc StopVirtualMachine(StopVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc RestartVirtualMachine(RestartVirtualMachineRequest) returns (google.protobuf.Empty);
+
   rpc PauseInstance(PauseInstanceRequest) returns (google.protobuf.Empty);
   rpc ResumeInstance(ResumeInstanceRequest) returns (google.protobuf.Empty);
   rpc MigrateInstance(MigrateInstanceRequest) returns (google.protobuf.Empty);
-
-  rpc CreateService(CreateServiceRequest) returns (otterscale.application.v1.Application.Service);
-  rpc UpdateService(UpdateServiceRequest) returns (otterscale.application.v1.Application.Service);
-  rpc DeleteService(DeleteServiceRequest) returns (google.protobuf.Empty);
-
-  rpc CreateSnapshot(CreateSnapshotRequest) returns (VirtualMachine.Snapshot);
-  rpc DeleteSnapshot(DeleteSnapshotRequest) returns (google.protobuf.Empty);
-
-  rpc CreateRestore(CreateRestoreRequest) returns (VirtualMachine.Restore);
-  rpc DeleteRestore(DeleteRestoreRequest) returns (google.protobuf.Empty);
-
-  rpc CreateDisk(CreateDiskRequest) returns (VirtualMachine.Disk);
-  rpc DeleteDisk(DeleteDiskRequest) returns (google.protobuf.Empty);
-  rpc AttachDisk(AttachDiskRequest) returns (google.protobuf.Empty);
-  rpc DetachDisk(DetachDiskRequest) returns (google.protobuf.Empty);
 
   rpc ListDataVolumes(ListDataVolumesRequest) returns (ListDataVolumesResponse);
   rpc GetDataVolume(GetDataVolumeRequest) returns (DataVolume);
@@ -51,23 +52,32 @@ service VirtualMachineService {
 }
 
 message VirtualMachine {
+  message Clone {
+    string name = 1;
+    string namespace = 2;
+    string source_name = 3;
+    string target_name = 4;
+    string phase = 11;
+    google.protobuf.Timestamp created_at = 21;
+    otterscale.application.v1.Application.Condition last_condition = 31;
+  }
   message Snapshot {
     string name = 1;
     string namespace = 2;
-    string source_name = 11;
-    string description = 12;
-    string phase = 21;
-    google.protobuf.Timestamp created_at = 31;
-    otterscale.application.v1.Application.Condition last_condition = 41;
+    string source_name = 3;
+    string phase = 11;
+    bool ready_to_use = 12;
+    google.protobuf.Timestamp created_at = 21;
+    otterscale.application.v1.Application.Condition last_condition = 31;
   }
   message Restore {
     string name = 1;
     string namespace = 2;
-    string source_name = 11;
-    string description = 12;
-    string phase = 21;
-    google.protobuf.Timestamp created_at = 31;
-    otterscale.application.v1.Application.Condition last_condition = 41;
+    string target_name = 3;
+    string snapshot_name = 4;
+    bool complete = 11;
+    google.protobuf.Timestamp created_at = 21;
+    otterscale.application.v1.Application.Condition last_condition = 31;
   }
   message Disk {
     // enum Type {
@@ -82,12 +92,13 @@ message VirtualMachine {
       USB = 3;
     }
     string name = 1;
-    string namespace = 2;
-    Bus bus = 3;
+    Bus bus = 2;
     // Type type = 11;
     // string data = 12;
     bool bootable = 21;
     uint32 boot_order = 22;
+
+    DataVolume data_volume = 31;
   }
   //   enum Status {
   //     UNKNOWN = 0;
@@ -110,6 +121,9 @@ message VirtualMachine {
   //   repeated DiskInfo disks = 22;
   //   repeated ServiceInfo services = 23;
   //   status status_phase = 31;
+  repeated Clone clones = 31;
+  repeated Snapshot snapshots = 41;
+  repeated Restore restores = 42;
 }
 
 // message VirtualMachineResources {
@@ -187,29 +201,107 @@ message DeleteVirtualMachineRequest {
   string name = 4;
 }
 
-message CloneVirtualMachineRequest {
+message CreateVirtualMachineServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string namespace = 3;
   string name = 4;
-  string target_name = 5;
+  repeated otterscale.application.v1.Application.Service.Port ports = 11;
 }
 
-message StartInstanceRequest {
+message UpdateVirtualMachineServiceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  repeated otterscale.application.v1.Application.Service.Port ports = 11;
+}
+
+message DeleteVirtualMachineServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string namespace = 3;
   string name = 4;
 }
 
-message StopInstanceRequest {
+message AttachVirtualMachineDiskRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string data_volume_name = 11;
+}
+
+message DetachVirtualMachineDiskRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string virtual_machine_name = 11;
+}
+
+message CreateVirtualMachineCloneRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string source_virtual_machine_name = 11;
+  string target_virtual_machine_name = 12;
+}
+
+message DeleteVirtualMachineCloneRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string namespace = 3;
   string name = 4;
 }
 
-message RestartInstanceRequest {
+message CreateVirtualMachineSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string virtual_machine_name = 11;
+}
+
+message DeleteVirtualMachineSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateVirtualMachineRestoreRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string virtual_machine_name = 11;
+  string snapshot_name = 12;
+}
+
+message DeleteVirtualMachineRestoreRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message StartVirtualMachineRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message StopVirtualMachineRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message RestartVirtualMachineRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string namespace = 3;
@@ -235,93 +327,7 @@ message MigrateInstanceRequest {
   string facility_name = 2;
   string namespace = 3;
   string name = 4;
-  string target_hostname = 11;
-}
-
-message CreateServiceRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-  repeated otterscale.application.v1.Application.Service.Port ports = 11;
-}
-
-message UpdateServiceRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-  repeated otterscale.application.v1.Application.Service.Port ports = 11;
-}
-
-message DeleteServiceRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-}
-
-message CreateSnapshotRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-  string description = 5;
-  string virtual_machine_name = 11;
-}
-
-message DeleteSnapshotRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-}
-
-message CreateRestoreRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-  string virtual_machine_name = 11;
-  string snapshot_name = 12;
-}
-
-message DeleteRestoreRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-}
-
-message CreateDiskRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-  string data_volume_name = 11;
-}
-
-message DeleteDiskRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-}
-
-message AttachDiskRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-  string virtual_machine_name = 11;
-}
-
-message DetachDiskRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-  string virtual_machine_name = 11;
+  string hostname = 11;
 }
 
 message ListDataVolumesRequest {
