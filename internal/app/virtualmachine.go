@@ -65,7 +65,7 @@ func (s *VirtualMachineService) DeleteDataVolume(ctx context.Context, req *conne
 }
 
 func (s *VirtualMachineService) ExtendDataVolume(ctx context.Context, req *connect.Request[pb.ExtendDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.ExtendDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNewSizeBytes()); err != nil {
+	if err := s.uc.ExtendDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetSizeBytes()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}

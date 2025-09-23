@@ -28,7 +28,8 @@ func (r *instanceType) ListClusterWide(ctx context.Context, config *rest.Config)
 	if err != nil {
 		return nil, err
 	}
-	list, err := clientset.InstancetypeV1beta1().VirtualMachineClusterInstancetypes().List(ctx, metav1.ListOptions{})
+	opts := metav1.ListOptions{}
+	list, err := clientset.InstancetypeV1beta1().VirtualMachineClusterInstancetypes().List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +41,8 @@ func (r *instanceType) List(ctx context.Context, config *rest.Config, namespace 
 	if err != nil {
 		return nil, err
 	}
-	list, err := clientset.InstancetypeV1beta1().VirtualMachineInstancetypes(namespace).List(ctx, metav1.ListOptions{})
+	opts := metav1.ListOptions{}
+	list, err := clientset.InstancetypeV1beta1().VirtualMachineInstancetypes(namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +54,8 @@ func (r *instanceType) Get(ctx context.Context, config *rest.Config, namespace, 
 	if err != nil {
 		return nil, err
 	}
-	return clientset.InstancetypeV1beta1().VirtualMachineInstancetypes(namespace).Get(ctx, name, metav1.GetOptions{})
+	opts := metav1.GetOptions{}
+	return clientset.InstancetypeV1beta1().VirtualMachineInstancetypes(namespace).Get(ctx, name, opts)
 }
 
 func (r *instanceType) Create(ctx context.Context, config *rest.Config, namespace, name string, cpu uint32, memory int64) (*oscore.VirtualMachineInstanceType, error) {
@@ -75,7 +78,8 @@ func (r *instanceType) Create(ctx context.Context, config *rest.Config, namespac
 			},
 		},
 	}
-	return clientset.InstancetypeV1beta1().VirtualMachineInstancetypes(namespace).Create(ctx, instanceType, metav1.CreateOptions{})
+	opts := metav1.CreateOptions{}
+	return clientset.InstancetypeV1beta1().VirtualMachineInstancetypes(namespace).Create(ctx, instanceType, opts)
 }
 
 func (r *instanceType) Delete(ctx context.Context, config *rest.Config, namespace, name string) error {
@@ -83,5 +87,6 @@ func (r *instanceType) Delete(ctx context.Context, config *rest.Config, namespac
 	if err != nil {
 		return err
 	}
-	return clientset.InstancetypeV1beta1().VirtualMachineInstancetypes(namespace).Delete(ctx, name, metav1.DeleteOptions{})
+	opts := metav1.DeleteOptions{}
+	return clientset.InstancetypeV1beta1().VirtualMachineInstancetypes(namespace).Delete(ctx, name, opts)
 }

@@ -33,10 +33,10 @@ type DataVolumePVC struct {
 }
 
 type KubeCDIRepo interface {
-	List(ctx context.Context, config *rest.Config, namespace string) ([]DataVolume, error)
-	Get(ctx context.Context, config *rest.Config, namespace, name string) (*DataVolume, error)
-	Create(ctx context.Context, config *rest.Config, namespace, name string, srcType SourceType, srcData string, size int64, bootImage bool) (*DataVolume, error)
-	Delete(ctx context.Context, config *rest.Config, namespace, name string) error
+	ListDataVolumes(ctx context.Context, config *rest.Config, namespace string) ([]DataVolume, error)
+	GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string) (*DataVolume, error)
+	CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, srcType SourceType, srcData string, size int64, bootImage bool) (*DataVolume, error)
+	DeleteDataVolume(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
 type KubeInstanceTypeRepo interface {
@@ -81,7 +81,7 @@ func (uc *VirtualMachineUseCase) ListDataVolumes(ctx context.Context, uuid, faci
 
 	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		v, err := uc.kubeCDI.List(ctx, config, namespace)
+		v, err := uc.kubeCDI.ListDataVolumes(egctx, config, namespace)
 		if err == nil {
 			dataVolumes = v
 		}
@@ -134,16 +134,47 @@ func (uc *VirtualMachineUseCase) ListDataVolumes(ctx context.Context, uuid, faci
 }
 
 func (uc *VirtualMachineUseCase) GetDataVolume(ctx context.Context, uuid, facility, namespace, name string) (*DataVolumePVC, error) {
+	var (
+		dataVolume            *DataVolume
+		persistentVolumeClaim *corev1.PersistentVolumeClaim
+		storageClass          *storagev1.StorageClass
+	)
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	dv, err := uc.kubeCDI.Get(ctx, config, namespace, name)
-	if err != nil {
+	eg, egctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		v, err := uc.kubeCDI.GetDataVolume(egctx, config, namespace, name)
+		if err == nil {
+			dataVolume = v
+		}
+		return err
+	})
+	eg.Go(func() error {
+		v, err := uc.kubeCore.GetPersistentVolumeClaim(egctx, config, namespace, name)
+		if err == nil {
+			persistentVolumeClaim = v
+			scName := persistentVolumeClaim.Spec.StorageClassName
+			if scName != nil {
+				s, err := uc.kubeStorage.GetStorageClass(egctx, config, *scName)
+				if err == nil {
+					storageClass = s
+				}
+				return err
+			}
+		}
+		return err
+	})
+	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
 	return &DataVolumePVC{
-		DataVolume: dv,
+		DataVolume: dataVolume,
+		Storage: &Storage{
+			PersistentVolumeClaim: persistentVolumeClaim,
+			StorageClass:          storageClass,
+		},
 	}, nil
 }
 
@@ -152,12 +183,12 @@ func (uc *VirtualMachineUseCase) CreateDataVolume(ctx context.Context, uuid, fac
 	if err != nil {
 		return nil, err
 	}
-	dv, err := uc.kubeCDI.Create(ctx, config, namespace, name, srcType, srcData, size, bootImage)
+	dataVolume, err := uc.kubeCDI.CreateDataVolume(ctx, config, namespace, name, srcType, srcData, size, bootImage)
 	if err != nil {
 		return nil, err
 	}
 	return &DataVolumePVC{
-		DataVolume: dv,
+		DataVolume: dataVolume,
 	}, nil
 }
 
@@ -166,7 +197,7 @@ func (uc *VirtualMachineUseCase) DeleteDataVolume(ctx context.Context, uuid, fac
 	if err != nil {
 		return err
 	}
-	return uc.kubeCDI.Delete(ctx, config, namespace, name)
+	return uc.kubeCDI.DeleteDataVolume(ctx, config, namespace, name)
 }
 
 func (uc *VirtualMachineUseCase) ExtendDataVolume(ctx context.Context, uuid, facility, namespace, name string, newSize int64) error {

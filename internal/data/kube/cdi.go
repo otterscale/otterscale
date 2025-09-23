@@ -25,27 +25,29 @@ func NewCDI(kube *Kube) oscore.KubeCDIRepo {
 
 var _ oscore.KubeCDIRepo = (*cdi)(nil)
 
-func (r *cdi) List(ctx context.Context, config *rest.Config, namespace string) ([]oscore.DataVolume, error) {
+func (r *cdi) ListDataVolumes(ctx context.Context, config *rest.Config, namespace string) ([]oscore.DataVolume, error) {
 	clientset, err := r.kube.cdiClientset(config)
 	if err != nil {
 		return nil, err
 	}
-	list, err := clientset.CdiV1beta1().DataVolumes(namespace).List(ctx, metav1.ListOptions{})
+	opts := metav1.ListOptions{}
+	list, err := clientset.CdiV1beta1().DataVolumes(namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
 	return list.Items, nil
 }
 
-func (r *cdi) Get(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.DataVolume, error) {
+func (r *cdi) GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.DataVolume, error) {
 	clientset, err := r.kube.cdiClientset(config)
 	if err != nil {
 		return nil, err
 	}
-	return clientset.CdiV1beta1().DataVolumes(namespace).Get(ctx, name, metav1.GetOptions{})
+	opts := metav1.GetOptions{}
+	return clientset.CdiV1beta1().DataVolumes(namespace).Get(ctx, name, opts)
 }
 
-func (r *cdi) Create(ctx context.Context, config *rest.Config, namespace, name string, srcType oscore.SourceType, srcData string, size int64, bootImage bool) (*oscore.DataVolume, error) {
+func (r *cdi) CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, srcType oscore.SourceType, srcData string, size int64, bootImage bool) (*oscore.DataVolume, error) {
 	clientset, err := r.kube.cdiClientset(config)
 	if err != nil {
 		return nil, err
@@ -61,15 +63,17 @@ func (r *cdi) Create(ctx context.Context, config *rest.Config, namespace, name s
 		},
 		Spec: spec,
 	}
-	return clientset.CdiV1beta1().DataVolumes(namespace).Create(ctx, dataVolume, metav1.CreateOptions{})
+	opts := metav1.CreateOptions{}
+	return clientset.CdiV1beta1().DataVolumes(namespace).Create(ctx, dataVolume, opts)
 }
 
-func (r *cdi) Delete(ctx context.Context, config *rest.Config, namespace, name string) error {
+func (r *cdi) DeleteDataVolume(ctx context.Context, config *rest.Config, namespace, name string) error {
 	clientset, err := r.kube.cdiClientset(config)
 	if err != nil {
 		return err
 	}
-	return clientset.CdiV1beta1().DataVolumes(namespace).Delete(ctx, name, metav1.DeleteOptions{})
+	opts := metav1.DeleteOptions{}
+	return clientset.CdiV1beta1().DataVolumes(namespace).Delete(ctx, name, opts)
 }
 
 func (r *cdi) buildDataVolumeSpec(srcType oscore.SourceType, srcData, namespace string, size int64) cdiv1beta1.DataVolumeSpec {
