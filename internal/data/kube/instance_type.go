@@ -15,13 +15,13 @@ type instanceType struct {
 	kube *Kube
 }
 
-func NewInstanceType(kube *Kube) oscore.InstanceTypeRepo {
+func NewInstanceType(kube *Kube) oscore.KubeInstanceTypeRepo {
 	return &instanceType{
 		kube: kube,
 	}
 }
 
-var _ oscore.InstanceTypeRepo = (*instanceType)(nil)
+var _ oscore.KubeInstanceTypeRepo = (*instanceType)(nil)
 
 func (r *instanceType) ListClusterWide(ctx context.Context, config *rest.Config) ([]oscore.VirtualMachineClusterInstanceType, error) {
 	clientset, err := r.kube.virtClientset(config)

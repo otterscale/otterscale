@@ -7,6 +7,7 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 
 	"k8s.io/client-go/rest"
 
@@ -281,6 +282,16 @@ func (r *core) UpdatePersistentVolumeClaim(ctx context.Context, config *rest.Con
 
 	opts := metav1.UpdateOptions{}
 	return clientset.CoreV1().PersistentVolumeClaims(namespace).Update(ctx, pvc, opts)
+}
+
+func (r *core) PatchPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, data []byte) (*oscore.PersistentVolumeClaim, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.PatchOptions{}
+	return clientset.CoreV1().PersistentVolumeClaims(namespace).Patch(ctx, name, types.JSONPatchType, data, opts)
 }
 
 func (r *core) DeletePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) error {

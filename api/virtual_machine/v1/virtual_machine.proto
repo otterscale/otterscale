@@ -127,14 +127,23 @@ message DataVolume {
     Type type = 1;
     string data = 2;
   }
+  message Condition {
+    string type = 1;
+    string status = 2;
+    string reason = 3;
+    string message = 4;
+    google.protobuf.Timestamp heartbeat_at = 201;
+    google.protobuf.Timestamp transitioned_at = 202;
+  }
   string name = 1;
   string namespace = 2;
   Source source = 11;
   bool boot_image = 12;
   string phase = 21;
   string progress = 22;
-  otterscale.application.v1.Application.PersistentVolumeClaim PersistentVolumeClaim = 31;
-  otterscale.application.v1.Application.Condition last_condition = 41;
+  int64 size_bytes = 31;  // requested size in bytes
+  otterscale.application.v1.Application.PersistentVolumeClaim PersistentVolumeClaim = 32;
+  Condition last_condition = 41;
 }
 
 message InstanceType {
@@ -340,7 +349,6 @@ message CreateDataVolumeRequest {
   DataVolume.Source source = 21;
   bool boot_image = 22;
   int64 size_bytes = 31;
-  bool shareable = 32;
 }
 
 message DeleteDataVolumeRequest {
