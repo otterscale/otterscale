@@ -2,12 +2,16 @@ package core
 
 import (
 	"context"
-
+	"fmt"
+	"strings"
+	
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 )
 
 const VirtualMachineLabelKey = "otterscale.io/virtualmachine"
+const VirtualMachineServiceLabelKey = "otterscale.io/virtualmachineservice"
 
 func (uc *KubeVirtUseCase) CreateVirtualMachineService(ctx context.Context, uuid, facility, namespace, name string, svcspec *corev1.ServiceSpec) (*corev1.Service, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
@@ -22,13 +26,8 @@ func (uc *KubeVirtUseCase) CreateVirtualMachineService(ctx context.Context, uuid
 	}
 
 	for i := range svcspec.Ports {
+		svcspec.Ports[i].Name = fmt.Sprintf("%s-%d", strings.ToLower(string(svcspec.Ports[i].Protocol)), svcspec.Ports[i].Port)
 		svcspec.Ports[i].TargetPort = intstr.FromInt(int(svcspec.Ports[i].Port))
-	}
-
-	if svcspec.Type != corev1.ServiceTypeNodePort {
-		for i := range svcspec.Ports {
-			svcspec.Ports[i].NodePort = 0
-		}
 	}
 
 	svc, err := uc.kubeCore.CreateVirtualMachineService(ctx, config, namespace, name, svcspec)
@@ -51,9 +50,8 @@ func (uc *KubeVirtUseCase) ListVirtualMachineServices(ctx context.Context, uuid,
 	if err != nil {
 		return nil, err
 	}
-	var label = "otterscale.io/kind=vm-service"
 
-    return uc.kubeCore.ListServicesByOptions(ctx, config, namespace, label, "")
+    return uc.kubeCore.ListServicesByOptions(ctx, config, namespace, VirtualMachineServiceLabelKey, "")
 
 }
 
@@ -62,7 +60,7 @@ func (uc *KubeVirtUseCase) UpdateVirtualMachineService(ctx context.Context, uuid
 	if err != nil {
 		return nil, err
 	}
-	currentService, err := uc.kubeCore.GetService(ctx, config, namespace, name)
+	currentService, err := uc.GetVirtualMachineService(ctx, uuid, facility, namespace, name)
 	if err != nil {
 		return nil, err
 	}
@@ -72,19 +70,16 @@ func (uc *KubeVirtUseCase) UpdateVirtualMachineService(ctx context.Context, uuid
 	newSpec.Ports = []corev1.ServicePort{}
 	for _, p := range svcspec.Ports {
 		serviceport := corev1.ServicePort{
-			Name:       p.Name,
+			Name:       fmt.Sprintf("%s-%d", strings.ToLower(string(p.Protocol)), p.Port),
 			Protocol:   p.Protocol,
 			Port:       p.Port,
 			TargetPort: intstr.FromInt(int(p.Port)),
 		}
-		if p.NodePort > 0 {
-			serviceport.NodePort = p.NodePort
-		}
 		newSpec.Ports = append(newSpec.Ports, serviceport)
 	}
-	newSpec.Type = currentService.Spec.Type
+	newSpec.Type = svcspec.Type
 
-	return uc.kubeCore.UpdateService(ctx, config, namespace, name, &newSpec)
+	return uc.kubeCore.UpdateVirtualMachineService(ctx, config, namespace, name, &newSpec)
 }
 
 func (uc *KubeVirtUseCase) DeleteVirtualMachineService(ctx context.Context, uuid, facility, namespace, name string) error {
@@ -93,4 +88,17 @@ func (uc *KubeVirtUseCase) DeleteVirtualMachineService(ctx context.Context, uuid
 		return err
 	}
 	return uc.kubeCore.DeleteService(ctx, config, namespace, name)
+}
+
+func (uc *KubeVirtUseCase) ExposeVirtualMachine(ctx context.Context, uuid, facility, namespace, name string, svcspec *corev1.ServiceSpec) (*corev1.Service, error) {
+	_, err := uc.GetVirtualMachineService(ctx, uuid, facility, namespace, name)
+
+	if apierrors.IsNotFound(err) {
+		return uc.CreateVirtualMachineService(ctx, uuid, facility, namespace, name, svcspec)
+	}
+	if err != nil {
+		return nil, err
+	}
+	
+	return uc.UpdateVirtualMachineService(ctx, uuid, facility, namespace, name, svcspec)
 }

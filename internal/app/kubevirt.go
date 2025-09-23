@@ -325,7 +325,7 @@ func (s *KubeVirtService) ExtendDataVolume(ctx context.Context, req *connect.Req
 
 // VirtualMachineService Operations
 func (s *KubeVirtService) CreateVirtualMachineService(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineServiceRequest]) (*connect.Response[pb.VirtualMachineService], error) {
-	vmsvc, err := s.uc.CreateVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVirtualMachineService().GetMetadata().GetNamespace(), req.Msg.GetVirtualMachineService().GetMetadata().GetName(), toCoreVirtualMachineService(req.Msg.GetVirtualMachineService()))
+	vmsvc, err := s.uc.CreateVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), toCoreVirtualMachineService(req.Msg.GetVirtualMachineService()))
 	if err != nil {
 		return nil, err
 	}
@@ -368,6 +368,16 @@ func (s *KubeVirtService) DeleteVirtualMachineService(ctx context.Context, req *
 	}
 
 	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *KubeVirtService) ExposeVirtualMachine(ctx context.Context, req *connect.Request[pb.ExposeVirtualMachineRequest]) (*connect.Response[pb.VirtualMachineService], error) {
+	vmsvc, err := s.uc.ExposeVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), toCoreVirtualMachineService(req.Msg.GetVirtualMachineService()))
+	if err != nil {
+		return nil, err
+	}
+
+	resp := toProtoVirtualMachineService(vmsvc)
 	return connect.NewResponse(resp), nil
 }
 
@@ -828,53 +838,29 @@ func toProtoVirtualMachineService(vmsvc *core.VirtualMachineService) *pb.Virtual
 		}
 	}
 
-	sp := &pb.VirtualMachineServiceSpec{}
+	spec := &pb.VirtualMachineServiceSpec{}
 	switch vmsvc.Spec.Type {
 	case corev1.ServiceTypeNodePort:
-		sp.SetType(pb.VirtualMachineServiceSpec_NODE_PORT)
+		spec.SetType(pb.VirtualMachineServiceSpec_NODE_PORT)
 	case corev1.ServiceTypeLoadBalancer:
-		sp.SetType(pb.VirtualMachineServiceSpec_LOAD_BALANCER)
+		spec.SetType(pb.VirtualMachineServiceSpec_LOAD_BALANCER)
 	default:
-		sp.SetType(pb.VirtualMachineServiceSpec_TYPE_UNSPECIFIED)
+		spec.SetType(pb.VirtualMachineServiceSpec_TYPE_UNSPECIFIED)
 	}
-	sp.SetSelector(vmsvc.Spec.Selector)
-	if vm, ok := vmsvc.Spec.Selector["otterscale.io/virtualmachine"]; ok {
-		sp.SetVirtualMachineName(vm)
-	}
+
 	ports := make([]*pb.ServicePort, 0, len(vmsvc.Spec.Ports))
 	for _, p := range vmsvc.Spec.Ports {
-		pp := &pb.ServicePort{}
-		pp.SetName(p.Name)
-		pp.SetPort(p.Port)
+		sp := &pb.ServicePort{}
+		sp.SetPort(p.Port)
 		if p.Protocol == corev1.ProtocolUDP {
-			pp.SetProtocol(pb.ServicePort_UDP)
+			sp.SetProtocol(pb.ServicePort_UDP)
 		} else {
-			pp.SetProtocol(pb.ServicePort_TCP)
+			sp.SetProtocol(pb.ServicePort_TCP)
 		}
-		pp.SetNodePort(p.NodePort)
-		ports = append(ports, pp)
+		ports = append(ports, sp)
 	}
-	sp.SetPorts(ports)
-	ret.SetSpec(sp)
-	st := &pb.VirtualMachineServiceStatus{}
-	if vmsvc.Spec.ClusterIP != "" {
-		st.SetClusterIp(vmsvc.Spec.ClusterIP)
-	}
-	if len(vmsvc.Spec.ClusterIPs) > 0 {
-		st.SetClusterIps(vmsvc.Spec.ClusterIPs)
-	}
-	if ingress := vmsvc.Status.LoadBalancer.Ingress; len(ingress) > 0 {
-		addrs := make([]string, 0, len(ingress))
-		for _, in := range ingress {
-			if in.IP != "" {
-				addrs = append(addrs, in.IP)
-			} else if in.Hostname != "" {
-				addrs = append(addrs, in.Hostname)
-			}
-		}
-		st.SetLoadBalancerIngress(addrs)
-	}
-	ret.SetStatus(st)
+	spec.SetPorts(ports)
+	ret.SetSpec(spec)
 
 	return ret
 }
@@ -890,7 +876,7 @@ func toCoreVirtualMachineService(vmsvc *pb.VirtualMachineService) *core.VirtualM
 		spec.Type = corev1.ServiceTypeNodePort
 	}
 
-	vmName := vmsvc.GetSpec().GetVirtualMachineName()
+	vmName := vmsvc.GetMetadata().GetName()
 	if vmName != "" {
 		spec.Selector = map[string]string{"otterscale.io/virtualmachine": vmName}
 	} else {
@@ -899,16 +885,12 @@ func toCoreVirtualMachineService(vmsvc *pb.VirtualMachineService) *core.VirtualM
 
 	for _, p := range vmsvc.GetSpec().GetPorts() {
 		sp := corev1.ServicePort{
-			Name:       p.GetName(),
 			Port:       p.GetPort(),
 			TargetPort: intstr.FromInt(int(p.GetPort())),
 			Protocol:   corev1.ProtocolTCP,
 		}
 		if p.GetProtocol() == pb.ServicePort_UDP {
 			sp.Protocol = corev1.ProtocolUDP
-		}
-		if spec.Type == corev1.ServiceTypeNodePort && p.GetNodePort() > 0 {
-			sp.NodePort = p.GetNodePort()
 		}
 		spec.Ports = append(spec.Ports, sp)
 	}

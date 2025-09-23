@@ -42,6 +42,7 @@ service KubeVirtService {
   rpc ListVirtualMachineServices(ListVirtualMachineServicesRequest) returns (ListVirtualMachineServicesResponse);
   rpc UpdateVirtualMachineService(UpdateVirtualMachineServiceRequest) returns (VirtualMachineService);
   rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty);
+  rpc ExposeVirtualMachine(ExposeVirtualMachineRequest) returns (VirtualMachineService);
   // InstanceType Operations
   rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType);
   rpc GetInstanceType(GetInstanceTypeRequest) returns (InstanceType);
@@ -186,8 +187,7 @@ message DataVolume {
 
 message VirtualMachineService {
   Metadata metadata = 1;
-  VirtualMachineServiceSpec   spec   = 11;
-  VirtualMachineServiceStatus status = 12;
+  VirtualMachineServiceSpec spec = 11;
 }
 
 message VirtualMachineServiceSpec {
@@ -196,11 +196,8 @@ message VirtualMachineServiceSpec {
     NODE_PORT        = 1;
     LOAD_BALANCER    = 2;
   }
-
-  string virtual_machine_name = 1;
   Type type = 2;
   repeated ServicePort ports = 11;
-  map<string, string> selector = 21;
 }
 
 message ServicePort {
@@ -209,17 +206,8 @@ message ServicePort {
     TCP  = 1;
     UDP  = 2;
   }
-
-  string name = 1;
-  int32  port = 2;
-  Protocol protocol = 4;
-  int32  node_port = 5;
-}
-
-message VirtualMachineServiceStatus {
-  string           cluster_ip             = 1; 
-  repeated string  cluster_ips            = 2; 
-  repeated string  load_balancer_ingress  = 3; 
+  int32  port = 1;
+  Protocol protocol = 2;
 }
 
 // Request/Response messages
@@ -432,8 +420,9 @@ message ExtendDataVolumeRequest {
 message CreateVirtualMachineServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  string namespace = 3;
-  VirtualMachineService virtual_machine_service = 4; 
+  string name = 3;
+  string namespace = 4;
+  VirtualMachineService virtual_machine_service = 5; 
 }
 
 message ListVirtualMachineServicesRequest {
@@ -466,6 +455,14 @@ message DeleteVirtualMachineServiceRequest {
   string facility_name = 2;
   string name = 3;
   string namespace = 4;
+}
+
+message ExposeVirtualMachineRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name =3;
+  string namespace = 4;
+  VirtualMachineService virtual_machine_service = 5; 
 }
 
 message CreateInstanceTypeRequest {
