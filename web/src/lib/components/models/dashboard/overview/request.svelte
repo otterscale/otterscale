@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
+	import { curveStep } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
@@ -17,41 +17,41 @@
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
-	const systemLoadConfiguration = {
-		one: { label: '1 min', color: 'var(--chart-1)' },
-		five: { label: '5 min', color: 'var(--chart-2)' },
-	} satisfies Chart.ChartConfig;
-
-	let ones = $state([] as SampleValue[]);
-	let fives = $state([] as SampleValue[]);
-	const systemLoads = $derived(
-		ones.map((sample, index) => ({
+	let runnings = $state([] as SampleValue[]);
+	let waitings = $state([] as SampleValue[]);
+	const requests = $derived(
+		runnings.map((sample, index) => ({
 			time: sample.time,
-			one: sample.value,
-			five: fives[index]?.value ?? 0,
+			running: sample.value,
+			waiting: waitings[index]?.value ?? 0,
 		})),
 	);
+
+	const configuration = {
+		running: { label: 'Running', color: 'var(--chart-1)' },
+		waiting: { label: 'Waiting', color: 'var(--chart-2)' },
+	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`sum(node_load1{juju_model_uuid="${scope.uuid}"})`,
+				`sum(vllm:num_requests_running{juju_model_uuid="${scope.uuid}"})`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60,
 			)
 			.then((response) => {
-				ones = response.result[0]?.values;
+				runnings = response.result[0]?.values;
 			});
 		prometheusDriver
 			.rangeQuery(
-				`sum(node_load5{juju_model_uuid="${scope.uuid}"})`,
+				`sum(vllm:num_requests_waiting{juju_model_uuid="${scope.uuid}"})`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60,
 			)
 			.then((response) => {
-				fives = response.result[0]?.values;
+				waitings = response.result[0]?.values;
 			});
 	}
 
@@ -59,8 +59,12 @@
 
 	let isLoading = $state(true);
 	onMount(async () => {
-		await fetch();
-		isLoading = false;
+		try {
+			await fetch();
+			isLoading = false;
+		} catch (error) {
+			console.error(`Fail to fetch data in scope ${scope}:`, error);
+		}
 	});
 
 	$effect(() => {
@@ -77,39 +81,40 @@
 {:else}
 	<Card.Root class="h-full">
 		<Card.Header>
-			<Card.Title>{m.system_load()}</Card.Title>
+			<Card.Title>{m.requests()}</Card.Title>
 			<Card.Description>
-				{m.machine_dashboard_system_loads_tooltip()}
+				{m.llm_dashboard_requests_tooltip()}
 			</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<Chart.Container config={systemLoadConfiguration} class="h-[200px] w-full">
+			<Chart.Container config={configuration} class="h-[200px] w-full">
 				<AreaChart
-					data={systemLoads}
+					data={requests}
 					x="time"
 					xScale={scaleUtc()}
 					yPadding={[0, 25]}
 					series={[
 						{
-							key: 'one',
-							label: systemLoadConfiguration.one.label,
-							color: systemLoadConfiguration.one.color,
+							key: 'running',
+							label: configuration.running.label,
+							color: configuration.running.color,
 						},
 						{
-							key: 'five',
-							label: systemLoadConfiguration.five.label,
-							color: systemLoadConfiguration.five.color,
+							key: 'waiting',
+							label: configuration.waiting.label,
+							color: configuration.waiting.color,
 						},
 					]}
 					props={{
 						area: {
-							curve: curveNatural,
+							curve: curveStep,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
 							motion: 'tween',
 						},
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+							format: (v: Date) =>
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 						},
 						yAxis: { format: () => '' },
 					}}

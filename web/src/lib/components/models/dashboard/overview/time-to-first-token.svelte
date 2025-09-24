@@ -8,8 +8,7 @@
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
-	import * as Chart from '$lib/components/ui/chart/index.js';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import * as Chart from '$lib/components/ui/chart';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
@@ -18,61 +17,41 @@
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
-	let cpuUsages: SampleValue[] = $state([]);
-	const cpuUsagesConfiguration = {
-		usage: { label: 'Usage', color: 'var(--chart-2)' },
-	} satisfies Chart.ChartConfig;
-	let allocatableNodesCPU = $state(0);
-	let cpuRequests = $state(0);
-	let cpuLimits = $state(0);
+	let ninety_fives = $state([] as SampleValue[]);
+	let ninety_nines = $state([] as SampleValue[]);
+	const times_to_first_token = $derived(
+		ninety_fives.map((sample, index) => ({
+			time: sample.time,
+			ninety_five: !isNaN(Number(sample.value)) ? Number(sample.value) : 0,
+			ninety_nine: !isNaN(Number(ninety_nines[index]?.value)) ? Number(ninety_nines[index]?.value) : 0,
+		})),
+	);
 
-	function fetch() {
+	const configuration = {
+		ninety_five: { label: '95', color: 'var(--chart-1)' },
+		ninety_nine: { label: '99', color: 'var(--chart-2)' },
+	} satisfies Chart.ChartConfig;
+
+	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`
-				sum(
-				node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{juju_model_uuid="${scope.uuid}"}
-				)
-				`,
-				Date.now() - 60 * 60 * 1000,
+				`histogram_quantile(0.95, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model_uuid="${scope.uuid}"}[2m])))`,
+				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60,
 			)
 			.then((response) => {
-				cpuUsages = response.result[0].values;
+				ninety_fives = response.result[0]?.values;
 			});
 		prometheusDriver
-			.instantQuery(
-				`
-				sum(
-					kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${scope.uuid}",resource="cpu"}
-				)
-				`,
+			.rangeQuery(
+				`histogram_quantile(0.99, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model_uuid="${scope.uuid}"}[2m])))`,
+				Date.now() - 24 * 60 * 60 * 1000,
+				Date.now(),
+				2 * 60,
 			)
 			.then((response) => {
-				allocatableNodesCPU = response.result[0].value.value;
-			});
-		prometheusDriver
-			.instantQuery(
-				`
-				sum(
-					namespace_cpu:kube_pod_container_resource_requests:sum{juju_model_uuid="${scope.uuid}"}
-				)
-				`,
-			)
-			.then((response) => {
-				cpuRequests = response.result[0].value.value;
-			});
-		prometheusDriver
-			.instantQuery(
-				`
-				sum(
-					namespace_cpu:kube_pod_container_resource_limits:sum{juju_model_uuid="${scope.uuid}"}
-				)
-				`,
-			)
-			.then((response) => {
-				cpuLimits = response.result[0].value.value;
+				ninety_nines = response.result[0]?.values;
 			});
 	}
 
@@ -80,8 +59,12 @@
 
 	let isLoading = $state(true);
 	onMount(async () => {
-		await fetch();
-		isLoading = false;
+		try {
+			await fetch();
+			isLoading = false;
+		} catch (error) {
+			console.error(`Fail to fetch data in scope ${scope}:`, error);
+		}
 	});
 
 	$effect(() => {
@@ -96,50 +79,30 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class="h-full gap-2">
+	<Card.Root class="h-full">
 		<Card.Header>
-			<Card.Title>{m.cpu_usage()}</Card.Title>
-			<Card.Action class="text-muted-foreground flex flex-col gap-0.5 text-sm">
-				<div class="flex justify-between gap-2">
-					<p>{m.requests()}</p>
-					<Tooltip.Provider>
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<p class="font-mono">{Math.round((cpuRequests * 100) / allocatableNodesCPU)}%</p>
-							</Tooltip.Trigger>
-							<Tooltip.Content>
-								{cpuRequests.toFixed(2)} / {allocatableNodesCPU}
-							</Tooltip.Content>
-						</Tooltip.Root>
-					</Tooltip.Provider>
-				</div>
-				<div class="flex justify-between gap-2">
-					<p>{m.limits()}</p>
-					<Tooltip.Provider>
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<p class="font-mono">{Math.round((cpuLimits * 100) / allocatableNodesCPU)}%</p>
-							</Tooltip.Trigger>
-							<Tooltip.Content>
-								{cpuLimits.toFixed(2)} / {allocatableNodesCPU}
-							</Tooltip.Content>
-						</Tooltip.Root>
-					</Tooltip.Provider>
-				</div>
-			</Card.Action>
+			<Card.Title>{m.time_to_first_token()}</Card.Title>
+			<Card.Description>
+				{m.llm_dashboard_time_to_first_token_tooltip()}
+			</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<Chart.Container config={cpuUsagesConfiguration}>
+			<Chart.Container config={configuration} class="h-[200px] w-full">
 				<AreaChart
-					data={cpuUsages}
+					data={times_to_first_token}
 					x="time"
 					xScale={scaleUtc()}
 					yPadding={[0, 25]}
 					series={[
 						{
-							key: 'value',
-							label: cpuUsagesConfiguration.usage.label,
-							color: cpuUsagesConfiguration.usage.color,
+							key: 'ninety_five',
+							label: configuration.ninety_five.label,
+							color: configuration.ninety_five.color,
+						},
+						{
+							key: 'ninety_nine',
+							label: configuration.ninety_nine.label,
+							color: configuration.ninety_nine.color,
 						},
 					]}
 					props={{
@@ -174,11 +137,13 @@
 									style="--color-bg: {item.color}"
 									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 								></div>
-								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+								<div
+									class="flex flex-1 shrink-0 items-center justify-between gap-2 text-xs leading-none"
+								>
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{(Number(value) * 100).toFixed(2)}%</p>
+									<p class="font-mono">{Number(value).toFixed(2)} {m.millisecond()}</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>

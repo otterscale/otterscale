@@ -112,7 +112,6 @@
 							color: trafficsConfigurations.transmit.color,
 						},
 					]}
-					seriesLayout="stack"
 					props={{
 						area: {
 							curve: curveNatural,

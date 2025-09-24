@@ -4,8 +4,14 @@ import (
 	"net/http"
 	"net/http/httputil"
 
+	"connectrpc.com/connect"
 	"connectrpc.com/grpchealth"
 	"connectrpc.com/grpcreflect"
+	"connectrpc.com/otelconnect"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/prometheus"
+	"go.opentelemetry.io/otel/sdk/metric"
 
 	applicationv1 "github.com/otterscale/otterscale/api/application/v1/pbconnect"
 	bistv1 "github.com/otterscale/otterscale/api/bist/v1/pbconnect"
@@ -39,21 +45,31 @@ var Services = []string{
 	virtualmachinev1.VirtualMachineServiceName,
 }
 
-func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, premium *app.PremiumService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService, virtualmachine *app.VirtualMachineService) *http.ServeMux {
+func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, premium *app.PremiumService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService, virtualmachine *app.VirtualMachineService) (*http.ServeMux, error) {
+	// interceptor
+	otelInterceptor, err := otelconnect.NewInterceptor()
+	if err != nil {
+		return nil, err
+	}
+	opts := []connect.HandlerOption{
+		connect.WithInterceptors(otelInterceptor),
+	}
+
+	// mux
 	mux := http.NewServeMux()
-	mux.Handle(applicationv1.NewApplicationServiceHandler(app))
-	mux.Handle(bistv1.NewBISTServiceHandler(bist))
-	mux.Handle(configurationv1.NewConfigurationServiceHandler(config))
-	mux.Handle(environmentv1.NewEnvironmentServiceHandler(environment))
-	mux.Handle(facilityv1.NewFacilityServiceHandler(facility))
-	mux.Handle(essentialv1.NewEssentialServiceHandler(essential))
-	mux.Handle(machinev1.NewMachineServiceHandler(machine))
-	mux.Handle(premiumv1.NewPremiumServiceHandler(premium))
-	mux.Handle(networkv1.NewNetworkServiceHandler(network))
-	mux.Handle(storagev1.NewStorageServiceHandler(storage))
-	mux.Handle(scopev1.NewScopeServiceHandler(scope))
-	mux.Handle(tagv1.NewTagServiceHandler(tag))
-	mux.Handle(virtualmachinev1.NewVirtualMachineServiceHandler(virtualmachine))
+	mux.Handle(applicationv1.NewApplicationServiceHandler(app, opts...))
+	mux.Handle(bistv1.NewBISTServiceHandler(bist, opts...))
+	mux.Handle(configurationv1.NewConfigurationServiceHandler(config, opts...))
+	mux.Handle(environmentv1.NewEnvironmentServiceHandler(environment, opts...))
+	mux.Handle(facilityv1.NewFacilityServiceHandler(facility, opts...))
+	mux.Handle(essentialv1.NewEssentialServiceHandler(essential, opts...))
+	mux.Handle(machinev1.NewMachineServiceHandler(machine, opts...))
+	mux.Handle(premiumv1.NewPremiumServiceHandler(premium, opts...))
+	mux.Handle(networkv1.NewNetworkServiceHandler(network, opts...))
+	mux.Handle(storagev1.NewStorageServiceHandler(storage, opts...))
+	mux.Handle(scopev1.NewScopeServiceHandler(scope, opts...))
+	mux.Handle(tagv1.NewTagServiceHandler(tag, opts...))
+	mux.Handle(virtualmachinev1.NewVirtualMachineServiceHandler(virtualmachine, opts...))
 
 	// prometheus proxy
 	proxy := httputil.NewSingleHostReverseProxy(environment.GetPrometheusURL())
@@ -73,6 +89,14 @@ func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config
 		reflector := grpcreflect.NewStaticReflector(Services...)
 		mux.Handle(grpcreflect.NewHandlerV1(reflector))
 		mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+
+		// metrics
+		exporter, err := prometheus.New()
+		if err != nil {
+			return nil, err
+		}
+		otel.SetMeterProvider(metric.NewMeterProvider(metric.WithReader(exporter)))
+		mux.Handle("/metrics", promhttp.Handler())
 	}
-	return mux
+	return mux, nil
 }

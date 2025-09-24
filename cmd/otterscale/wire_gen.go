@@ -104,7 +104,11 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	kubeInstanceTypeRepo := kube.NewInstanceType(kubeKube)
 	virtualMachineUseCase := core.NewVirtualMachineUseCase(kubeVirtRepo, kubeVirtCloneRepo, kubeVirtSnapshotRepo, kubeCDIRepo, kubeInstanceTypeRepo, kubeCoreRepo, kubeStorageRepo, actionRepo, facilityRepo, machineRepo)
 	virtualMachineService := app.NewVirtualMachineService(virtualMachineUseCase)
-	serveMux := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, premiumService, storageService, scopeService, tagService, virtualMachineService)
+	serveMux, err := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, premiumService, storageService, scopeService, tagService, virtualMachineService)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	command := newCmd(configConfig, serveMux)
 	return command, func() {
 		cleanup()
