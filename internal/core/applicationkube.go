@@ -112,12 +112,8 @@ type KubeCoreRepo interface {
 
 	// PersistentVolumeClaim
 	GetPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) (*PersistentVolumeClaim, error)
-	CreatePersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.PersistentVolumeClaimSpec) (*PersistentVolumeClaim, error)
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
-	ListPersistentVolumeClaimsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]PersistentVolumeClaim, error)
-	UpdatePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.PersistentVolumeClaimSpec) (*PersistentVolumeClaim, error)
 	PatchPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, data []byte) (*PersistentVolumeClaim, error)
-	DeletePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) error
 
 	// Namespace
 	GetNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error)
