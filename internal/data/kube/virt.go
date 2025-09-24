@@ -144,6 +144,15 @@ func (r *virt) CreateVirtualMachine(ctx context.Context, config *rest.Config, na
 	return clientset.KubevirtV1().VirtualMachines(namespace).Create(ctx, virtualMachine, opts)
 }
 
+func (r *virt) UpdateVirtualMachine(ctx context.Context, config *rest.Config, namespace string, virtualMachine *oscore.VirtualMachine) (*oscore.VirtualMachine, error) {
+	clientset, err := r.kube.virtClientset(config)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.UpdateOptions{}
+	return clientset.KubevirtV1().VirtualMachines(namespace).Update(ctx, virtualMachine, opts)
+}
+
 func (r *virt) DeleteVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error {
 	clientset, err := r.kube.virtClientset(config)
 	if err != nil {

@@ -14,12 +14,6 @@ service VirtualMachineService {
   rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
   rpc DeleteVirtualMachine(DeleteVirtualMachineRequest) returns (google.protobuf.Empty);
 
-  // rpc CreateVirtualMachineService(CreateVirtualMachineServiceRequest)
-  //     returns (otterscale.application.v1.Application.Service);
-  // rpc UpdateVirtualMachineService(UpdateVirtualMachineServiceRequest)
-  //     returns (otterscale.application.v1.Application.Service);
-  // rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty);
-
   rpc AttachVirtualMachineDisk(AttachVirtualMachineDiskRequest) returns (VirtualMachine.Disk);
   rpc DetachVirtualMachineDisk(DetachVirtualMachineDiskRequest) returns (google.protobuf.Empty);
 
@@ -50,6 +44,12 @@ service VirtualMachineService {
   rpc GetInstanceType(GetInstanceTypeRequest) returns (InstanceType);
   rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType);
   rpc DeleteInstanceType(DeleteInstanceTypeRequest) returns (google.protobuf.Empty);
+
+  // rpc CreateVirtualMachineService(CreateVirtualMachineServiceRequest)
+  //     returns (otterscale.application.v1.Application.Service);
+  // rpc UpdateVirtualMachineService(UpdateVirtualMachineServiceRequest)
+  //     returns (otterscale.application.v1.Application.Service);
+  // rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty);
 }
 
 message VirtualMachine {
@@ -190,29 +190,6 @@ message DeleteVirtualMachineRequest {
   string name = 4;
 }
 
-message CreateVirtualMachineServiceRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-  repeated otterscale.application.v1.Application.Service.Port ports = 11;
-}
-
-message UpdateVirtualMachineServiceRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-  repeated otterscale.application.v1.Application.Service.Port ports = 11;
-}
-
-message DeleteVirtualMachineServiceRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-  string name = 4;
-}
-
 message AttachVirtualMachineDiskRequest {
   string scope_uuid = 1;
   string facility_name = 2;
@@ -226,7 +203,7 @@ message DetachVirtualMachineDiskRequest {
   string facility_name = 2;
   string namespace = 3;
   string name = 4;
-  string virtual_machine_name = 11;
+  string data_volume_name = 11;
 }
 
 message CreateVirtualMachineCloneRequest {
@@ -398,6 +375,29 @@ message CreateInstanceTypeRequest {
 }
 
 message DeleteInstanceTypeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateVirtualMachineServiceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  repeated otterscale.application.v1.Application.Service.Port ports = 11;
+}
+
+message UpdateVirtualMachineServiceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  repeated otterscale.application.v1.Application.Service.Port ports = 11;
+}
+
+message DeleteVirtualMachineServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string namespace = 3;

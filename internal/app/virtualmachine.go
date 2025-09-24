@@ -68,6 +68,23 @@ func (s *VirtualMachineService) DeleteVirtualMachine(ctx context.Context, req *c
 	return connect.NewResponse(resp), nil
 }
 
+func (s *VirtualMachineService) AttachVirtualMachineDisk(ctx context.Context, req *connect.Request[pb.AttachVirtualMachineDiskRequest]) (*connect.Response[pb.VirtualMachine_Disk], error) {
+	disk, volume, err := s.uc.AttachVirtualMachineDisk(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDataVolumeName())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoVirtualMachineDisk(disk, []virtv1.Volume{*volume})
+	return connect.NewResponse(resp), nil
+}
+
+func (s *VirtualMachineService) DetachVirtualMachineDisk(ctx context.Context, req *connect.Request[pb.DetachVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DetachVirtualMachineDisk(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDataVolumeName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
 func (s *VirtualMachineService) CreateVirtualMachineClone(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineCloneRequest]) (*connect.Response[pb.VirtualMachine_Clone], error) {
 	clone, err := s.uc.CreateVirtualMachineClone(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetSourceVirtualMachineName(), req.Msg.GetTargetVirtualMachineName())
 	if err != nil {
@@ -319,7 +336,7 @@ func convertDiskBusToProto(bus virtv1.DiskBus) pb.VirtualMachine_Disk_Bus {
 	}
 }
 
-func toProtoVirtualMachines(vmds []core.VirtualMachineDetails) []*pb.VirtualMachine {
+func toProtoVirtualMachines(vmds []core.VirtualMachineData) []*pb.VirtualMachine {
 	ret := []*pb.VirtualMachine{}
 	for i := range vmds {
 		ret = append(ret, toProtoVirtualMachine(&vmds[i]))
@@ -327,7 +344,7 @@ func toProtoVirtualMachines(vmds []core.VirtualMachineDetails) []*pb.VirtualMach
 	return ret
 }
 
-func toProtoVirtualMachine(vmd *core.VirtualMachineDetails) *pb.VirtualMachine {
+func toProtoVirtualMachine(vmd *core.VirtualMachineData) *pb.VirtualMachine {
 	ret := &pb.VirtualMachine{}
 	ret.SetName(vmd.VirtualMachine.Name)
 	ret.SetNamespace(vmd.VirtualMachine.Namespace)

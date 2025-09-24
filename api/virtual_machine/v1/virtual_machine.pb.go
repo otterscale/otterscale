@@ -1861,569 +1861,6 @@ func (b0 DeleteVirtualMachineRequest_builder) Build() *DeleteVirtualMachineReque
 	return m0
 }
 
-type CreateVirtualMachineServiceRequest struct {
-	state                   protoimpl.MessageState          `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                         `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                         `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                         `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name         *string                         `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Ports        *[]*v1.Application_Service_Port `protobuf:"bytes,11,rep,name=ports"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
-}
-
-func (x *CreateVirtualMachineServiceRequest) Reset() {
-	*x = CreateVirtualMachineServiceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[8]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateVirtualMachineServiceRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateVirtualMachineServiceRequest) ProtoMessage() {}
-
-func (x *CreateVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[8]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *CreateVirtualMachineServiceRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateVirtualMachineServiceRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateVirtualMachineServiceRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateVirtualMachineServiceRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateVirtualMachineServiceRequest) GetPorts() []*v1.Application_Service_Port {
-	if x != nil {
-		if x.xxx_hidden_Ports != nil {
-			return *x.xxx_hidden_Ports
-		}
-	}
-	return nil
-}
-
-func (x *CreateVirtualMachineServiceRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *CreateVirtualMachineServiceRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
-}
-
-func (x *CreateVirtualMachineServiceRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
-}
-
-func (x *CreateVirtualMachineServiceRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
-}
-
-func (x *CreateVirtualMachineServiceRequest) SetPorts(v []*v1.Application_Service_Port) {
-	x.xxx_hidden_Ports = &v
-}
-
-func (x *CreateVirtualMachineServiceRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *CreateVirtualMachineServiceRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *CreateVirtualMachineServiceRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *CreateVirtualMachineServiceRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *CreateVirtualMachineServiceRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *CreateVirtualMachineServiceRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *CreateVirtualMachineServiceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *CreateVirtualMachineServiceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-type CreateVirtualMachineServiceRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid    *string
-	FacilityName *string
-	Namespace    *string
-	Name         *string
-	Ports        []*v1.Application_Service_Port
-}
-
-func (b0 CreateVirtualMachineServiceRequest_builder) Build() *CreateVirtualMachineServiceRequest {
-	m0 := &CreateVirtualMachineServiceRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
-		x.xxx_hidden_Name = b.Name
-	}
-	x.xxx_hidden_Ports = &b.Ports
-	return m0
-}
-
-type UpdateVirtualMachineServiceRequest struct {
-	state                   protoimpl.MessageState          `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                         `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                         `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                         `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name         *string                         `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Ports        *[]*v1.Application_Service_Port `protobuf:"bytes,11,rep,name=ports"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
-}
-
-func (x *UpdateVirtualMachineServiceRequest) Reset() {
-	*x = UpdateVirtualMachineServiceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[9]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *UpdateVirtualMachineServiceRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateVirtualMachineServiceRequest) ProtoMessage() {}
-
-func (x *UpdateVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[9]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *UpdateVirtualMachineServiceRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateVirtualMachineServiceRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateVirtualMachineServiceRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateVirtualMachineServiceRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateVirtualMachineServiceRequest) GetPorts() []*v1.Application_Service_Port {
-	if x != nil {
-		if x.xxx_hidden_Ports != nil {
-			return *x.xxx_hidden_Ports
-		}
-	}
-	return nil
-}
-
-func (x *UpdateVirtualMachineServiceRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *UpdateVirtualMachineServiceRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
-}
-
-func (x *UpdateVirtualMachineServiceRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
-}
-
-func (x *UpdateVirtualMachineServiceRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
-}
-
-func (x *UpdateVirtualMachineServiceRequest) SetPorts(v []*v1.Application_Service_Port) {
-	x.xxx_hidden_Ports = &v
-}
-
-func (x *UpdateVirtualMachineServiceRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *UpdateVirtualMachineServiceRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *UpdateVirtualMachineServiceRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *UpdateVirtualMachineServiceRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *UpdateVirtualMachineServiceRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *UpdateVirtualMachineServiceRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *UpdateVirtualMachineServiceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *UpdateVirtualMachineServiceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-type UpdateVirtualMachineServiceRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid    *string
-	FacilityName *string
-	Namespace    *string
-	Name         *string
-	Ports        []*v1.Application_Service_Port
-}
-
-func (b0 UpdateVirtualMachineServiceRequest_builder) Build() *UpdateVirtualMachineServiceRequest {
-	m0 := &UpdateVirtualMachineServiceRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
-		x.xxx_hidden_Name = b.Name
-	}
-	x.xxx_hidden_Ports = &b.Ports
-	return m0
-}
-
-type DeleteVirtualMachineServiceRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
-}
-
-func (x *DeleteVirtualMachineServiceRequest) Reset() {
-	*x = DeleteVirtualMachineServiceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[10]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DeleteVirtualMachineServiceRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteVirtualMachineServiceRequest) ProtoMessage() {}
-
-func (x *DeleteVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[10]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *DeleteVirtualMachineServiceRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteVirtualMachineServiceRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteVirtualMachineServiceRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteVirtualMachineServiceRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteVirtualMachineServiceRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteVirtualMachineServiceRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
-}
-
-func (x *DeleteVirtualMachineServiceRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
-}
-
-func (x *DeleteVirtualMachineServiceRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
-}
-
-func (x *DeleteVirtualMachineServiceRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *DeleteVirtualMachineServiceRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *DeleteVirtualMachineServiceRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *DeleteVirtualMachineServiceRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *DeleteVirtualMachineServiceRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *DeleteVirtualMachineServiceRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-func (x *DeleteVirtualMachineServiceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
-func (x *DeleteVirtualMachineServiceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Name = nil
-}
-
-type DeleteVirtualMachineServiceRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid    *string
-	FacilityName *string
-	Namespace    *string
-	Name         *string
-}
-
-func (b0 DeleteVirtualMachineServiceRequest_builder) Build() *DeleteVirtualMachineServiceRequest {
-	m0 := &DeleteVirtualMachineServiceRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_Name = b.Name
-	}
-	return m0
-}
-
 type AttachVirtualMachineDiskRequest struct {
 	state                     protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid      *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
@@ -2439,7 +1876,7 @@ type AttachVirtualMachineDiskRequest struct {
 
 func (x *AttachVirtualMachineDiskRequest) Reset() {
 	*x = AttachVirtualMachineDiskRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[11]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2451,7 +1888,7 @@ func (x *AttachVirtualMachineDiskRequest) String() string {
 func (*AttachVirtualMachineDiskRequest) ProtoMessage() {}
 
 func (x *AttachVirtualMachineDiskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[11]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2635,21 +2072,21 @@ func (b0 AttachVirtualMachineDiskRequest_builder) Build() *AttachVirtualMachineD
 }
 
 type DetachVirtualMachineDiskRequest struct {
-	state                         protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid          *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName       *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name               *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_VirtualMachineName *string                `protobuf:"bytes,11,opt,name=virtual_machine_name,json=virtualMachineName"`
-	XXX_raceDetectHookData        protoimpl.RaceDetectHookData
-	XXX_presence                  [1]uint32
-	unknownFields                 protoimpl.UnknownFields
-	sizeCache                     protoimpl.SizeCache
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid      *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName   *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace      *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name           *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_DataVolumeName *string                `protobuf:"bytes,11,opt,name=data_volume_name,json=dataVolumeName"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *DetachVirtualMachineDiskRequest) Reset() {
 	*x = DetachVirtualMachineDiskRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[12]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2661,7 +2098,7 @@ func (x *DetachVirtualMachineDiskRequest) String() string {
 func (*DetachVirtualMachineDiskRequest) ProtoMessage() {}
 
 func (x *DetachVirtualMachineDiskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[12]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2712,10 +2149,10 @@ func (x *DetachVirtualMachineDiskRequest) GetName() string {
 	return ""
 }
 
-func (x *DetachVirtualMachineDiskRequest) GetVirtualMachineName() string {
+func (x *DetachVirtualMachineDiskRequest) GetDataVolumeName() string {
 	if x != nil {
-		if x.xxx_hidden_VirtualMachineName != nil {
-			return *x.xxx_hidden_VirtualMachineName
+		if x.xxx_hidden_DataVolumeName != nil {
+			return *x.xxx_hidden_DataVolumeName
 		}
 		return ""
 	}
@@ -2742,8 +2179,8 @@ func (x *DetachVirtualMachineDiskRequest) SetName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *DetachVirtualMachineDiskRequest) SetVirtualMachineName(v string) {
-	x.xxx_hidden_VirtualMachineName = &v
+func (x *DetachVirtualMachineDiskRequest) SetDataVolumeName(v string) {
+	x.xxx_hidden_DataVolumeName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
@@ -2775,7 +2212,7 @@ func (x *DetachVirtualMachineDiskRequest) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *DetachVirtualMachineDiskRequest) HasVirtualMachineName() bool {
+func (x *DetachVirtualMachineDiskRequest) HasDataVolumeName() bool {
 	if x == nil {
 		return false
 	}
@@ -2802,19 +2239,19 @@ func (x *DetachVirtualMachineDiskRequest) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *DetachVirtualMachineDiskRequest) ClearVirtualMachineName() {
+func (x *DetachVirtualMachineDiskRequest) ClearDataVolumeName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_VirtualMachineName = nil
+	x.xxx_hidden_DataVolumeName = nil
 }
 
 type DetachVirtualMachineDiskRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid          *string
-	FacilityName       *string
-	Namespace          *string
-	Name               *string
-	VirtualMachineName *string
+	ScopeUuid      *string
+	FacilityName   *string
+	Namespace      *string
+	Name           *string
+	DataVolumeName *string
 }
 
 func (b0 DetachVirtualMachineDiskRequest_builder) Build() *DetachVirtualMachineDiskRequest {
@@ -2837,9 +2274,9 @@ func (b0 DetachVirtualMachineDiskRequest_builder) Build() *DetachVirtualMachineD
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_Name = b.Name
 	}
-	if b.VirtualMachineName != nil {
+	if b.DataVolumeName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_VirtualMachineName = b.VirtualMachineName
+		x.xxx_hidden_DataVolumeName = b.DataVolumeName
 	}
 	return m0
 }
@@ -2860,7 +2297,7 @@ type CreateVirtualMachineCloneRequest struct {
 
 func (x *CreateVirtualMachineCloneRequest) Reset() {
 	*x = CreateVirtualMachineCloneRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[13]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2872,7 +2309,7 @@ func (x *CreateVirtualMachineCloneRequest) String() string {
 func (*CreateVirtualMachineCloneRequest) ProtoMessage() {}
 
 func (x *CreateVirtualMachineCloneRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[13]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3101,7 +2538,7 @@ type DeleteVirtualMachineCloneRequest struct {
 
 func (x *DeleteVirtualMachineCloneRequest) Reset() {
 	*x = DeleteVirtualMachineCloneRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[14]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3113,7 +2550,7 @@ func (x *DeleteVirtualMachineCloneRequest) String() string {
 func (*DeleteVirtualMachineCloneRequest) ProtoMessage() {}
 
 func (x *DeleteVirtualMachineCloneRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[14]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3279,7 +2716,7 @@ type CreateVirtualMachineSnapshotRequest struct {
 
 func (x *CreateVirtualMachineSnapshotRequest) Reset() {
 	*x = CreateVirtualMachineSnapshotRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[15]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3291,7 +2728,7 @@ func (x *CreateVirtualMachineSnapshotRequest) String() string {
 func (*CreateVirtualMachineSnapshotRequest) ProtoMessage() {}
 
 func (x *CreateVirtualMachineSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[15]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3488,7 +2925,7 @@ type DeleteVirtualMachineSnapshotRequest struct {
 
 func (x *DeleteVirtualMachineSnapshotRequest) Reset() {
 	*x = DeleteVirtualMachineSnapshotRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[16]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3500,7 +2937,7 @@ func (x *DeleteVirtualMachineSnapshotRequest) String() string {
 func (*DeleteVirtualMachineSnapshotRequest) ProtoMessage() {}
 
 func (x *DeleteVirtualMachineSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[16]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3667,7 +3104,7 @@ type CreateVirtualMachineRestoreRequest struct {
 
 func (x *CreateVirtualMachineRestoreRequest) Reset() {
 	*x = CreateVirtualMachineRestoreRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[17]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3679,7 +3116,7 @@ func (x *CreateVirtualMachineRestoreRequest) String() string {
 func (*CreateVirtualMachineRestoreRequest) ProtoMessage() {}
 
 func (x *CreateVirtualMachineRestoreRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[17]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3908,7 +3345,7 @@ type DeleteVirtualMachineRestoreRequest struct {
 
 func (x *DeleteVirtualMachineRestoreRequest) Reset() {
 	*x = DeleteVirtualMachineRestoreRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[18]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3920,7 +3357,7 @@ func (x *DeleteVirtualMachineRestoreRequest) String() string {
 func (*DeleteVirtualMachineRestoreRequest) ProtoMessage() {}
 
 func (x *DeleteVirtualMachineRestoreRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[18]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4085,7 +3522,7 @@ type StartVirtualMachineRequest struct {
 
 func (x *StartVirtualMachineRequest) Reset() {
 	*x = StartVirtualMachineRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[19]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4097,7 +3534,7 @@ func (x *StartVirtualMachineRequest) String() string {
 func (*StartVirtualMachineRequest) ProtoMessage() {}
 
 func (x *StartVirtualMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[19]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4262,7 +3699,7 @@ type StopVirtualMachineRequest struct {
 
 func (x *StopVirtualMachineRequest) Reset() {
 	*x = StopVirtualMachineRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[20]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4274,7 +3711,7 @@ func (x *StopVirtualMachineRequest) String() string {
 func (*StopVirtualMachineRequest) ProtoMessage() {}
 
 func (x *StopVirtualMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[20]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4439,7 +3876,7 @@ type RestartVirtualMachineRequest struct {
 
 func (x *RestartVirtualMachineRequest) Reset() {
 	*x = RestartVirtualMachineRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[21]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4451,7 +3888,7 @@ func (x *RestartVirtualMachineRequest) String() string {
 func (*RestartVirtualMachineRequest) ProtoMessage() {}
 
 func (x *RestartVirtualMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[21]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4616,7 +4053,7 @@ type PauseInstanceRequest struct {
 
 func (x *PauseInstanceRequest) Reset() {
 	*x = PauseInstanceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[22]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4628,7 +4065,7 @@ func (x *PauseInstanceRequest) String() string {
 func (*PauseInstanceRequest) ProtoMessage() {}
 
 func (x *PauseInstanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[22]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4793,7 +4230,7 @@ type ResumeInstanceRequest struct {
 
 func (x *ResumeInstanceRequest) Reset() {
 	*x = ResumeInstanceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[23]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4805,7 +4242,7 @@ func (x *ResumeInstanceRequest) String() string {
 func (*ResumeInstanceRequest) ProtoMessage() {}
 
 func (x *ResumeInstanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[23]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4971,7 +4408,7 @@ type MigrateInstanceRequest struct {
 
 func (x *MigrateInstanceRequest) Reset() {
 	*x = MigrateInstanceRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[24]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4983,7 +4420,7 @@ func (x *MigrateInstanceRequest) String() string {
 func (*MigrateInstanceRequest) ProtoMessage() {}
 
 func (x *MigrateInstanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[24]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5180,7 +4617,7 @@ type ListDataVolumesRequest struct {
 
 func (x *ListDataVolumesRequest) Reset() {
 	*x = ListDataVolumesRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[25]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5192,7 +4629,7 @@ func (x *ListDataVolumesRequest) String() string {
 func (*ListDataVolumesRequest) ProtoMessage() {}
 
 func (x *ListDataVolumesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[25]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5349,7 +4786,7 @@ type ListDataVolumesResponse struct {
 
 func (x *ListDataVolumesResponse) Reset() {
 	*x = ListDataVolumesResponse{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[26]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5361,7 +4798,7 @@ func (x *ListDataVolumesResponse) String() string {
 func (*ListDataVolumesResponse) ProtoMessage() {}
 
 func (x *ListDataVolumesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[26]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5413,7 +4850,7 @@ type GetDataVolumeRequest struct {
 
 func (x *GetDataVolumeRequest) Reset() {
 	*x = GetDataVolumeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[27]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5425,7 +4862,7 @@ func (x *GetDataVolumeRequest) String() string {
 func (*GetDataVolumeRequest) ProtoMessage() {}
 
 func (x *GetDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[27]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5593,7 +5030,7 @@ type CreateDataVolumeRequest struct {
 
 func (x *CreateDataVolumeRequest) Reset() {
 	*x = CreateDataVolumeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[28]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5605,7 +5042,7 @@ func (x *CreateDataVolumeRequest) String() string {
 func (*CreateDataVolumeRequest) ProtoMessage() {}
 
 func (x *CreateDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[28]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5852,7 +5289,7 @@ type DeleteDataVolumeRequest struct {
 
 func (x *DeleteDataVolumeRequest) Reset() {
 	*x = DeleteDataVolumeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[29]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5864,7 +5301,7 @@ func (x *DeleteDataVolumeRequest) String() string {
 func (*DeleteDataVolumeRequest) ProtoMessage() {}
 
 func (x *DeleteDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[29]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6030,7 +5467,7 @@ type ExtendDataVolumeRequest struct {
 
 func (x *ExtendDataVolumeRequest) Reset() {
 	*x = ExtendDataVolumeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[30]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6042,7 +5479,7 @@ func (x *ExtendDataVolumeRequest) String() string {
 func (*ExtendDataVolumeRequest) ProtoMessage() {}
 
 func (x *ExtendDataVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[30]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6234,7 +5671,7 @@ type ListClusterWideInstanceTypesRequest struct {
 
 func (x *ListClusterWideInstanceTypesRequest) Reset() {
 	*x = ListClusterWideInstanceTypesRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[31]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6246,7 +5683,7 @@ func (x *ListClusterWideInstanceTypesRequest) String() string {
 func (*ListClusterWideInstanceTypesRequest) ProtoMessage() {}
 
 func (x *ListClusterWideInstanceTypesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[31]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6342,7 +5779,7 @@ type ListClusterWideInstanceTypesResponse struct {
 
 func (x *ListClusterWideInstanceTypesResponse) Reset() {
 	*x = ListClusterWideInstanceTypesResponse{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[32]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6354,7 +5791,7 @@ func (x *ListClusterWideInstanceTypesResponse) String() string {
 func (*ListClusterWideInstanceTypesResponse) ProtoMessage() {}
 
 func (x *ListClusterWideInstanceTypesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[32]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6405,7 +5842,7 @@ type ListInstanceTypesRequest struct {
 
 func (x *ListInstanceTypesRequest) Reset() {
 	*x = ListInstanceTypesRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[33]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6417,7 +5854,7 @@ func (x *ListInstanceTypesRequest) String() string {
 func (*ListInstanceTypesRequest) ProtoMessage() {}
 
 func (x *ListInstanceTypesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[33]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6545,7 +5982,7 @@ type ListInstanceTypesResponse struct {
 
 func (x *ListInstanceTypesResponse) Reset() {
 	*x = ListInstanceTypesResponse{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[34]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6557,7 +5994,7 @@ func (x *ListInstanceTypesResponse) String() string {
 func (*ListInstanceTypesResponse) ProtoMessage() {}
 
 func (x *ListInstanceTypesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[34]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6609,7 +6046,7 @@ type GetInstanceTypeRequest struct {
 
 func (x *GetInstanceTypeRequest) Reset() {
 	*x = GetInstanceTypeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[35]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6621,7 +6058,7 @@ func (x *GetInstanceTypeRequest) String() string {
 func (*GetInstanceTypeRequest) ProtoMessage() {}
 
 func (x *GetInstanceTypeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[35]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6788,7 +6225,7 @@ type CreateInstanceTypeRequest struct {
 
 func (x *CreateInstanceTypeRequest) Reset() {
 	*x = CreateInstanceTypeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[36]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6800,7 +6237,7 @@ func (x *CreateInstanceTypeRequest) String() string {
 func (*CreateInstanceTypeRequest) ProtoMessage() {}
 
 func (x *CreateInstanceTypeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[36]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7023,7 +6460,7 @@ type DeleteInstanceTypeRequest struct {
 
 func (x *DeleteInstanceTypeRequest) Reset() {
 	*x = DeleteInstanceTypeRequest{}
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[37]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7035,7 +6472,7 @@ func (x *DeleteInstanceTypeRequest) String() string {
 func (*DeleteInstanceTypeRequest) ProtoMessage() {}
 
 func (x *DeleteInstanceTypeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[37]
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7165,6 +6602,569 @@ type DeleteInstanceTypeRequest_builder struct {
 
 func (b0 DeleteInstanceTypeRequest_builder) Build() *DeleteInstanceTypeRequest {
 	m0 := &DeleteInstanceTypeRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_Name = b.Name
+	}
+	return m0
+}
+
+type CreateVirtualMachineServiceRequest struct {
+	state                   protoimpl.MessageState          `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                         `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                         `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                         `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name         *string                         `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_Ports        *[]*v1.Application_Service_Port `protobuf:"bytes,11,rep,name=ports"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *CreateVirtualMachineServiceRequest) Reset() {
+	*x = CreateVirtualMachineServiceRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateVirtualMachineServiceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateVirtualMachineServiceRequest) ProtoMessage() {}
+
+func (x *CreateVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *CreateVirtualMachineServiceRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineServiceRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineServiceRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineServiceRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineServiceRequest) GetPorts() []*v1.Application_Service_Port {
+	if x != nil {
+		if x.xxx_hidden_Ports != nil {
+			return *x.xxx_hidden_Ports
+		}
+	}
+	return nil
+}
+
+func (x *CreateVirtualMachineServiceRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *CreateVirtualMachineServiceRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *CreateVirtualMachineServiceRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *CreateVirtualMachineServiceRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *CreateVirtualMachineServiceRequest) SetPorts(v []*v1.Application_Service_Port) {
+	x.xxx_hidden_Ports = &v
+}
+
+func (x *CreateVirtualMachineServiceRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateVirtualMachineServiceRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *CreateVirtualMachineServiceRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *CreateVirtualMachineServiceRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *CreateVirtualMachineServiceRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *CreateVirtualMachineServiceRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *CreateVirtualMachineServiceRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *CreateVirtualMachineServiceRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+type CreateVirtualMachineServiceRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
+	Name         *string
+	Ports        []*v1.Application_Service_Port
+}
+
+func (b0 CreateVirtualMachineServiceRequest_builder) Build() *CreateVirtualMachineServiceRequest {
+	m0 := &CreateVirtualMachineServiceRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_Name = b.Name
+	}
+	x.xxx_hidden_Ports = &b.Ports
+	return m0
+}
+
+type UpdateVirtualMachineServiceRequest struct {
+	state                   protoimpl.MessageState          `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                         `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                         `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                         `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name         *string                         `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_Ports        *[]*v1.Application_Service_Port `protobuf:"bytes,11,rep,name=ports"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *UpdateVirtualMachineServiceRequest) Reset() {
+	*x = UpdateVirtualMachineServiceRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateVirtualMachineServiceRequest) ProtoMessage() {}
+
+func (x *UpdateVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineServiceRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineServiceRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineServiceRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineServiceRequest) GetPorts() []*v1.Application_Service_Port {
+	if x != nil {
+		if x.xxx_hidden_Ports != nil {
+			return *x.xxx_hidden_Ports
+		}
+	}
+	return nil
+}
+
+func (x *UpdateVirtualMachineServiceRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) SetPorts(v []*v1.Application_Service_Port) {
+	x.xxx_hidden_Ports = &v
+}
+
+func (x *UpdateVirtualMachineServiceRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *UpdateVirtualMachineServiceRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *UpdateVirtualMachineServiceRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *UpdateVirtualMachineServiceRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *UpdateVirtualMachineServiceRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+type UpdateVirtualMachineServiceRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
+	Name         *string
+	Ports        []*v1.Application_Service_Port
+}
+
+func (b0 UpdateVirtualMachineServiceRequest_builder) Build() *UpdateVirtualMachineServiceRequest {
+	m0 := &UpdateVirtualMachineServiceRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_Name = b.Name
+	}
+	x.xxx_hidden_Ports = &b.Ports
+	return m0
+}
+
+type DeleteVirtualMachineServiceRequest struct {
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,4,opt,name=name"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *DeleteVirtualMachineServiceRequest) Reset() {
+	*x = DeleteVirtualMachineServiceRequest{}
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[37]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteVirtualMachineServiceRequest) ProtoMessage() {}
+
+func (x *DeleteVirtualMachineServiceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_virtual_machine_v1_virtual_machine_proto_msgTypes[37]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteVirtualMachineServiceRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteVirtualMachineServiceRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteVirtualMachineServiceRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteVirtualMachineServiceRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *DeleteVirtualMachineServiceRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *DeleteVirtualMachineServiceRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *DeleteVirtualMachineServiceRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *DeleteVirtualMachineServiceRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+type DeleteVirtualMachineServiceRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
+	Name         *string
+}
+
+func (b0 DeleteVirtualMachineServiceRequest_builder) Build() *DeleteVirtualMachineServiceRequest {
+	m0 := &DeleteVirtualMachineServiceRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -8809,26 +8809,6 @@ const file_api_virtual_machine_v1_virtual_machine_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xe5\x01\n" +
-	"\"CreateVirtualMachineServiceRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12I\n" +
-	"\x05ports\x18\v \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\"\xe5\x01\n" +
-	"\"UpdateVirtualMachineServiceRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12I\n" +
-	"\x05ports\x18\v \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\"\x9a\x01\n" +
-	"\"DeleteVirtualMachineServiceRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\"\xc1\x01\n" +
 	"\x1fAttachVirtualMachineDiskRequest\x12\x1d\n" +
 	"\n" +
@@ -8836,14 +8816,14 @@ const file_api_virtual_machine_v1_virtual_machine_proto_rawDesc = "" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12(\n" +
-	"\x10data_volume_name\x18\v \x01(\tR\x0edataVolumeName\"\xc9\x01\n" +
+	"\x10data_volume_name\x18\v \x01(\tR\x0edataVolumeName\"\xc1\x01\n" +
 	"\x1fDetachVirtualMachineDiskRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x120\n" +
-	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineName\"\x96\x02\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12(\n" +
+	"\x10data_volume_name\x18\v \x01(\tR\x0edataVolumeName\"\x96\x02\n" +
 	" CreateVirtualMachineCloneRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -8994,6 +8974,26 @@ const file_api_virtual_machine_v1_virtual_machine_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\"\xe5\x01\n" +
+	"\"CreateVirtualMachineServiceRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12I\n" +
+	"\x05ports\x18\v \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\"\xe5\x01\n" +
+	"\"UpdateVirtualMachineServiceRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12I\n" +
+	"\x05ports\x18\v \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\"\x9a\x01\n" +
+	"\"DeleteVirtualMachineServiceRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name2\xf1\x1a\n" +
 	"\x15VirtualMachineService\x12\x8c\x01\n" +
 	"\x13ListVirtualMachines\x129.otterscale.virtual_machine.v1.ListVirtualMachinesRequest\x1a:.otterscale.virtual_machine.v1.ListVirtualMachinesResponse\x12{\n" +
@@ -9039,36 +9039,36 @@ var file_api_virtual_machine_v1_virtual_machine_proto_goTypes = []any{
 	(*GetVirtualMachineRequest)(nil),             // 8: otterscale.virtual_machine.v1.GetVirtualMachineRequest
 	(*CreateVirtualMachineRequest)(nil),          // 9: otterscale.virtual_machine.v1.CreateVirtualMachineRequest
 	(*DeleteVirtualMachineRequest)(nil),          // 10: otterscale.virtual_machine.v1.DeleteVirtualMachineRequest
-	(*CreateVirtualMachineServiceRequest)(nil),   // 11: otterscale.virtual_machine.v1.CreateVirtualMachineServiceRequest
-	(*UpdateVirtualMachineServiceRequest)(nil),   // 12: otterscale.virtual_machine.v1.UpdateVirtualMachineServiceRequest
-	(*DeleteVirtualMachineServiceRequest)(nil),   // 13: otterscale.virtual_machine.v1.DeleteVirtualMachineServiceRequest
-	(*AttachVirtualMachineDiskRequest)(nil),      // 14: otterscale.virtual_machine.v1.AttachVirtualMachineDiskRequest
-	(*DetachVirtualMachineDiskRequest)(nil),      // 15: otterscale.virtual_machine.v1.DetachVirtualMachineDiskRequest
-	(*CreateVirtualMachineCloneRequest)(nil),     // 16: otterscale.virtual_machine.v1.CreateVirtualMachineCloneRequest
-	(*DeleteVirtualMachineCloneRequest)(nil),     // 17: otterscale.virtual_machine.v1.DeleteVirtualMachineCloneRequest
-	(*CreateVirtualMachineSnapshotRequest)(nil),  // 18: otterscale.virtual_machine.v1.CreateVirtualMachineSnapshotRequest
-	(*DeleteVirtualMachineSnapshotRequest)(nil),  // 19: otterscale.virtual_machine.v1.DeleteVirtualMachineSnapshotRequest
-	(*CreateVirtualMachineRestoreRequest)(nil),   // 20: otterscale.virtual_machine.v1.CreateVirtualMachineRestoreRequest
-	(*DeleteVirtualMachineRestoreRequest)(nil),   // 21: otterscale.virtual_machine.v1.DeleteVirtualMachineRestoreRequest
-	(*StartVirtualMachineRequest)(nil),           // 22: otterscale.virtual_machine.v1.StartVirtualMachineRequest
-	(*StopVirtualMachineRequest)(nil),            // 23: otterscale.virtual_machine.v1.StopVirtualMachineRequest
-	(*RestartVirtualMachineRequest)(nil),         // 24: otterscale.virtual_machine.v1.RestartVirtualMachineRequest
-	(*PauseInstanceRequest)(nil),                 // 25: otterscale.virtual_machine.v1.PauseInstanceRequest
-	(*ResumeInstanceRequest)(nil),                // 26: otterscale.virtual_machine.v1.ResumeInstanceRequest
-	(*MigrateInstanceRequest)(nil),               // 27: otterscale.virtual_machine.v1.MigrateInstanceRequest
-	(*ListDataVolumesRequest)(nil),               // 28: otterscale.virtual_machine.v1.ListDataVolumesRequest
-	(*ListDataVolumesResponse)(nil),              // 29: otterscale.virtual_machine.v1.ListDataVolumesResponse
-	(*GetDataVolumeRequest)(nil),                 // 30: otterscale.virtual_machine.v1.GetDataVolumeRequest
-	(*CreateDataVolumeRequest)(nil),              // 31: otterscale.virtual_machine.v1.CreateDataVolumeRequest
-	(*DeleteDataVolumeRequest)(nil),              // 32: otterscale.virtual_machine.v1.DeleteDataVolumeRequest
-	(*ExtendDataVolumeRequest)(nil),              // 33: otterscale.virtual_machine.v1.ExtendDataVolumeRequest
-	(*ListClusterWideInstanceTypesRequest)(nil),  // 34: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesRequest
-	(*ListClusterWideInstanceTypesResponse)(nil), // 35: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse
-	(*ListInstanceTypesRequest)(nil),             // 36: otterscale.virtual_machine.v1.ListInstanceTypesRequest
-	(*ListInstanceTypesResponse)(nil),            // 37: otterscale.virtual_machine.v1.ListInstanceTypesResponse
-	(*GetInstanceTypeRequest)(nil),               // 38: otterscale.virtual_machine.v1.GetInstanceTypeRequest
-	(*CreateInstanceTypeRequest)(nil),            // 39: otterscale.virtual_machine.v1.CreateInstanceTypeRequest
-	(*DeleteInstanceTypeRequest)(nil),            // 40: otterscale.virtual_machine.v1.DeleteInstanceTypeRequest
+	(*AttachVirtualMachineDiskRequest)(nil),      // 11: otterscale.virtual_machine.v1.AttachVirtualMachineDiskRequest
+	(*DetachVirtualMachineDiskRequest)(nil),      // 12: otterscale.virtual_machine.v1.DetachVirtualMachineDiskRequest
+	(*CreateVirtualMachineCloneRequest)(nil),     // 13: otterscale.virtual_machine.v1.CreateVirtualMachineCloneRequest
+	(*DeleteVirtualMachineCloneRequest)(nil),     // 14: otterscale.virtual_machine.v1.DeleteVirtualMachineCloneRequest
+	(*CreateVirtualMachineSnapshotRequest)(nil),  // 15: otterscale.virtual_machine.v1.CreateVirtualMachineSnapshotRequest
+	(*DeleteVirtualMachineSnapshotRequest)(nil),  // 16: otterscale.virtual_machine.v1.DeleteVirtualMachineSnapshotRequest
+	(*CreateVirtualMachineRestoreRequest)(nil),   // 17: otterscale.virtual_machine.v1.CreateVirtualMachineRestoreRequest
+	(*DeleteVirtualMachineRestoreRequest)(nil),   // 18: otterscale.virtual_machine.v1.DeleteVirtualMachineRestoreRequest
+	(*StartVirtualMachineRequest)(nil),           // 19: otterscale.virtual_machine.v1.StartVirtualMachineRequest
+	(*StopVirtualMachineRequest)(nil),            // 20: otterscale.virtual_machine.v1.StopVirtualMachineRequest
+	(*RestartVirtualMachineRequest)(nil),         // 21: otterscale.virtual_machine.v1.RestartVirtualMachineRequest
+	(*PauseInstanceRequest)(nil),                 // 22: otterscale.virtual_machine.v1.PauseInstanceRequest
+	(*ResumeInstanceRequest)(nil),                // 23: otterscale.virtual_machine.v1.ResumeInstanceRequest
+	(*MigrateInstanceRequest)(nil),               // 24: otterscale.virtual_machine.v1.MigrateInstanceRequest
+	(*ListDataVolumesRequest)(nil),               // 25: otterscale.virtual_machine.v1.ListDataVolumesRequest
+	(*ListDataVolumesResponse)(nil),              // 26: otterscale.virtual_machine.v1.ListDataVolumesResponse
+	(*GetDataVolumeRequest)(nil),                 // 27: otterscale.virtual_machine.v1.GetDataVolumeRequest
+	(*CreateDataVolumeRequest)(nil),              // 28: otterscale.virtual_machine.v1.CreateDataVolumeRequest
+	(*DeleteDataVolumeRequest)(nil),              // 29: otterscale.virtual_machine.v1.DeleteDataVolumeRequest
+	(*ExtendDataVolumeRequest)(nil),              // 30: otterscale.virtual_machine.v1.ExtendDataVolumeRequest
+	(*ListClusterWideInstanceTypesRequest)(nil),  // 31: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesRequest
+	(*ListClusterWideInstanceTypesResponse)(nil), // 32: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse
+	(*ListInstanceTypesRequest)(nil),             // 33: otterscale.virtual_machine.v1.ListInstanceTypesRequest
+	(*ListInstanceTypesResponse)(nil),            // 34: otterscale.virtual_machine.v1.ListInstanceTypesResponse
+	(*GetInstanceTypeRequest)(nil),               // 35: otterscale.virtual_machine.v1.GetInstanceTypeRequest
+	(*CreateInstanceTypeRequest)(nil),            // 36: otterscale.virtual_machine.v1.CreateInstanceTypeRequest
+	(*DeleteInstanceTypeRequest)(nil),            // 37: otterscale.virtual_machine.v1.DeleteInstanceTypeRequest
+	(*CreateVirtualMachineServiceRequest)(nil),   // 38: otterscale.virtual_machine.v1.CreateVirtualMachineServiceRequest
+	(*UpdateVirtualMachineServiceRequest)(nil),   // 39: otterscale.virtual_machine.v1.UpdateVirtualMachineServiceRequest
+	(*DeleteVirtualMachineServiceRequest)(nil),   // 40: otterscale.virtual_machine.v1.DeleteVirtualMachineServiceRequest
 	(*VirtualMachine_Clone)(nil),                 // 41: otterscale.virtual_machine.v1.VirtualMachine.Clone
 	(*VirtualMachine_Snapshot)(nil),              // 42: otterscale.virtual_machine.v1.VirtualMachine.Snapshot
 	(*VirtualMachine_Restore)(nil),               // 43: otterscale.virtual_machine.v1.VirtualMachine.Restore
@@ -9095,12 +9095,12 @@ var file_api_virtual_machine_v1_virtual_machine_proto_depIdxs = []int32{
 	51, // 7: otterscale.virtual_machine.v1.DataVolume.PersistentVolumeClaim:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
 	48, // 8: otterscale.virtual_machine.v1.DataVolume.last_condition:type_name -> otterscale.virtual_machine.v1.DataVolume.Condition
 	3,  // 9: otterscale.virtual_machine.v1.ListVirtualMachinesResponse.virtual_machines:type_name -> otterscale.virtual_machine.v1.VirtualMachine
-	52, // 10: otterscale.virtual_machine.v1.CreateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
-	52, // 11: otterscale.virtual_machine.v1.UpdateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
-	4,  // 12: otterscale.virtual_machine.v1.ListDataVolumesResponse.data_volumes:type_name -> otterscale.virtual_machine.v1.DataVolume
-	47, // 13: otterscale.virtual_machine.v1.CreateDataVolumeRequest.source:type_name -> otterscale.virtual_machine.v1.DataVolume.Source
-	5,  // 14: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse.instance_types:type_name -> otterscale.virtual_machine.v1.InstanceType
-	5,  // 15: otterscale.virtual_machine.v1.ListInstanceTypesResponse.instance_types:type_name -> otterscale.virtual_machine.v1.InstanceType
+	4,  // 10: otterscale.virtual_machine.v1.ListDataVolumesResponse.data_volumes:type_name -> otterscale.virtual_machine.v1.DataVolume
+	47, // 11: otterscale.virtual_machine.v1.CreateDataVolumeRequest.source:type_name -> otterscale.virtual_machine.v1.DataVolume.Source
+	5,  // 12: otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse.instance_types:type_name -> otterscale.virtual_machine.v1.InstanceType
+	5,  // 13: otterscale.virtual_machine.v1.ListInstanceTypesResponse.instance_types:type_name -> otterscale.virtual_machine.v1.InstanceType
+	52, // 14: otterscale.virtual_machine.v1.CreateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
+	52, // 15: otterscale.virtual_machine.v1.UpdateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
 	49, // 16: otterscale.virtual_machine.v1.VirtualMachine.Clone.created_at:type_name -> google.protobuf.Timestamp
 	53, // 17: otterscale.virtual_machine.v1.VirtualMachine.Clone.last_condition:type_name -> otterscale.application.v1.Application.Condition
 	49, // 18: otterscale.virtual_machine.v1.VirtualMachine.Snapshot.created_at:type_name -> google.protobuf.Timestamp
@@ -9118,30 +9118,30 @@ var file_api_virtual_machine_v1_virtual_machine_proto_depIdxs = []int32{
 	8,  // 30: otterscale.virtual_machine.v1.VirtualMachineService.GetVirtualMachine:input_type -> otterscale.virtual_machine.v1.GetVirtualMachineRequest
 	9,  // 31: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachine:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineRequest
 	10, // 32: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachine:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineRequest
-	14, // 33: otterscale.virtual_machine.v1.VirtualMachineService.AttachVirtualMachineDisk:input_type -> otterscale.virtual_machine.v1.AttachVirtualMachineDiskRequest
-	15, // 34: otterscale.virtual_machine.v1.VirtualMachineService.DetachVirtualMachineDisk:input_type -> otterscale.virtual_machine.v1.DetachVirtualMachineDiskRequest
-	16, // 35: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineClone:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineCloneRequest
-	17, // 36: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineClone:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineCloneRequest
-	18, // 37: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineSnapshot:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineSnapshotRequest
-	19, // 38: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineSnapshot:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineSnapshotRequest
-	20, // 39: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineRestore:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineRestoreRequest
-	21, // 40: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineRestore:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineRestoreRequest
-	22, // 41: otterscale.virtual_machine.v1.VirtualMachineService.StartVirtualMachine:input_type -> otterscale.virtual_machine.v1.StartVirtualMachineRequest
-	23, // 42: otterscale.virtual_machine.v1.VirtualMachineService.StopVirtualMachine:input_type -> otterscale.virtual_machine.v1.StopVirtualMachineRequest
-	24, // 43: otterscale.virtual_machine.v1.VirtualMachineService.RestartVirtualMachine:input_type -> otterscale.virtual_machine.v1.RestartVirtualMachineRequest
-	25, // 44: otterscale.virtual_machine.v1.VirtualMachineService.PauseInstance:input_type -> otterscale.virtual_machine.v1.PauseInstanceRequest
-	26, // 45: otterscale.virtual_machine.v1.VirtualMachineService.ResumeInstance:input_type -> otterscale.virtual_machine.v1.ResumeInstanceRequest
-	27, // 46: otterscale.virtual_machine.v1.VirtualMachineService.MigrateInstance:input_type -> otterscale.virtual_machine.v1.MigrateInstanceRequest
-	28, // 47: otterscale.virtual_machine.v1.VirtualMachineService.ListDataVolumes:input_type -> otterscale.virtual_machine.v1.ListDataVolumesRequest
-	30, // 48: otterscale.virtual_machine.v1.VirtualMachineService.GetDataVolume:input_type -> otterscale.virtual_machine.v1.GetDataVolumeRequest
-	31, // 49: otterscale.virtual_machine.v1.VirtualMachineService.CreateDataVolume:input_type -> otterscale.virtual_machine.v1.CreateDataVolumeRequest
-	32, // 50: otterscale.virtual_machine.v1.VirtualMachineService.DeleteDataVolume:input_type -> otterscale.virtual_machine.v1.DeleteDataVolumeRequest
-	33, // 51: otterscale.virtual_machine.v1.VirtualMachineService.ExtendDataVolume:input_type -> otterscale.virtual_machine.v1.ExtendDataVolumeRequest
-	34, // 52: otterscale.virtual_machine.v1.VirtualMachineService.ListClusterWideInstanceTypes:input_type -> otterscale.virtual_machine.v1.ListClusterWideInstanceTypesRequest
-	36, // 53: otterscale.virtual_machine.v1.VirtualMachineService.ListInstanceTypes:input_type -> otterscale.virtual_machine.v1.ListInstanceTypesRequest
-	38, // 54: otterscale.virtual_machine.v1.VirtualMachineService.GetInstanceType:input_type -> otterscale.virtual_machine.v1.GetInstanceTypeRequest
-	39, // 55: otterscale.virtual_machine.v1.VirtualMachineService.CreateInstanceType:input_type -> otterscale.virtual_machine.v1.CreateInstanceTypeRequest
-	40, // 56: otterscale.virtual_machine.v1.VirtualMachineService.DeleteInstanceType:input_type -> otterscale.virtual_machine.v1.DeleteInstanceTypeRequest
+	11, // 33: otterscale.virtual_machine.v1.VirtualMachineService.AttachVirtualMachineDisk:input_type -> otterscale.virtual_machine.v1.AttachVirtualMachineDiskRequest
+	12, // 34: otterscale.virtual_machine.v1.VirtualMachineService.DetachVirtualMachineDisk:input_type -> otterscale.virtual_machine.v1.DetachVirtualMachineDiskRequest
+	13, // 35: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineClone:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineCloneRequest
+	14, // 36: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineClone:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineCloneRequest
+	15, // 37: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineSnapshot:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineSnapshotRequest
+	16, // 38: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineSnapshot:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineSnapshotRequest
+	17, // 39: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineRestore:input_type -> otterscale.virtual_machine.v1.CreateVirtualMachineRestoreRequest
+	18, // 40: otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineRestore:input_type -> otterscale.virtual_machine.v1.DeleteVirtualMachineRestoreRequest
+	19, // 41: otterscale.virtual_machine.v1.VirtualMachineService.StartVirtualMachine:input_type -> otterscale.virtual_machine.v1.StartVirtualMachineRequest
+	20, // 42: otterscale.virtual_machine.v1.VirtualMachineService.StopVirtualMachine:input_type -> otterscale.virtual_machine.v1.StopVirtualMachineRequest
+	21, // 43: otterscale.virtual_machine.v1.VirtualMachineService.RestartVirtualMachine:input_type -> otterscale.virtual_machine.v1.RestartVirtualMachineRequest
+	22, // 44: otterscale.virtual_machine.v1.VirtualMachineService.PauseInstance:input_type -> otterscale.virtual_machine.v1.PauseInstanceRequest
+	23, // 45: otterscale.virtual_machine.v1.VirtualMachineService.ResumeInstance:input_type -> otterscale.virtual_machine.v1.ResumeInstanceRequest
+	24, // 46: otterscale.virtual_machine.v1.VirtualMachineService.MigrateInstance:input_type -> otterscale.virtual_machine.v1.MigrateInstanceRequest
+	25, // 47: otterscale.virtual_machine.v1.VirtualMachineService.ListDataVolumes:input_type -> otterscale.virtual_machine.v1.ListDataVolumesRequest
+	27, // 48: otterscale.virtual_machine.v1.VirtualMachineService.GetDataVolume:input_type -> otterscale.virtual_machine.v1.GetDataVolumeRequest
+	28, // 49: otterscale.virtual_machine.v1.VirtualMachineService.CreateDataVolume:input_type -> otterscale.virtual_machine.v1.CreateDataVolumeRequest
+	29, // 50: otterscale.virtual_machine.v1.VirtualMachineService.DeleteDataVolume:input_type -> otterscale.virtual_machine.v1.DeleteDataVolumeRequest
+	30, // 51: otterscale.virtual_machine.v1.VirtualMachineService.ExtendDataVolume:input_type -> otterscale.virtual_machine.v1.ExtendDataVolumeRequest
+	31, // 52: otterscale.virtual_machine.v1.VirtualMachineService.ListClusterWideInstanceTypes:input_type -> otterscale.virtual_machine.v1.ListClusterWideInstanceTypesRequest
+	33, // 53: otterscale.virtual_machine.v1.VirtualMachineService.ListInstanceTypes:input_type -> otterscale.virtual_machine.v1.ListInstanceTypesRequest
+	35, // 54: otterscale.virtual_machine.v1.VirtualMachineService.GetInstanceType:input_type -> otterscale.virtual_machine.v1.GetInstanceTypeRequest
+	36, // 55: otterscale.virtual_machine.v1.VirtualMachineService.CreateInstanceType:input_type -> otterscale.virtual_machine.v1.CreateInstanceTypeRequest
+	37, // 56: otterscale.virtual_machine.v1.VirtualMachineService.DeleteInstanceType:input_type -> otterscale.virtual_machine.v1.DeleteInstanceTypeRequest
 	7,  // 57: otterscale.virtual_machine.v1.VirtualMachineService.ListVirtualMachines:output_type -> otterscale.virtual_machine.v1.ListVirtualMachinesResponse
 	3,  // 58: otterscale.virtual_machine.v1.VirtualMachineService.GetVirtualMachine:output_type -> otterscale.virtual_machine.v1.VirtualMachine
 	3,  // 59: otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachine:output_type -> otterscale.virtual_machine.v1.VirtualMachine
@@ -9160,13 +9160,13 @@ var file_api_virtual_machine_v1_virtual_machine_proto_depIdxs = []int32{
 	54, // 72: otterscale.virtual_machine.v1.VirtualMachineService.PauseInstance:output_type -> google.protobuf.Empty
 	54, // 73: otterscale.virtual_machine.v1.VirtualMachineService.ResumeInstance:output_type -> google.protobuf.Empty
 	54, // 74: otterscale.virtual_machine.v1.VirtualMachineService.MigrateInstance:output_type -> google.protobuf.Empty
-	29, // 75: otterscale.virtual_machine.v1.VirtualMachineService.ListDataVolumes:output_type -> otterscale.virtual_machine.v1.ListDataVolumesResponse
+	26, // 75: otterscale.virtual_machine.v1.VirtualMachineService.ListDataVolumes:output_type -> otterscale.virtual_machine.v1.ListDataVolumesResponse
 	4,  // 76: otterscale.virtual_machine.v1.VirtualMachineService.GetDataVolume:output_type -> otterscale.virtual_machine.v1.DataVolume
 	4,  // 77: otterscale.virtual_machine.v1.VirtualMachineService.CreateDataVolume:output_type -> otterscale.virtual_machine.v1.DataVolume
 	54, // 78: otterscale.virtual_machine.v1.VirtualMachineService.DeleteDataVolume:output_type -> google.protobuf.Empty
 	54, // 79: otterscale.virtual_machine.v1.VirtualMachineService.ExtendDataVolume:output_type -> google.protobuf.Empty
-	35, // 80: otterscale.virtual_machine.v1.VirtualMachineService.ListClusterWideInstanceTypes:output_type -> otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse
-	37, // 81: otterscale.virtual_machine.v1.VirtualMachineService.ListInstanceTypes:output_type -> otterscale.virtual_machine.v1.ListInstanceTypesResponse
+	32, // 80: otterscale.virtual_machine.v1.VirtualMachineService.ListClusterWideInstanceTypes:output_type -> otterscale.virtual_machine.v1.ListClusterWideInstanceTypesResponse
+	34, // 81: otterscale.virtual_machine.v1.VirtualMachineService.ListInstanceTypes:output_type -> otterscale.virtual_machine.v1.ListInstanceTypesResponse
 	5,  // 82: otterscale.virtual_machine.v1.VirtualMachineService.GetInstanceType:output_type -> otterscale.virtual_machine.v1.InstanceType
 	5,  // 83: otterscale.virtual_machine.v1.VirtualMachineService.CreateInstanceType:output_type -> otterscale.virtual_machine.v1.InstanceType
 	54, // 84: otterscale.virtual_machine.v1.VirtualMachineService.DeleteInstanceType:output_type -> google.protobuf.Empty

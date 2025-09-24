@@ -32,6 +32,8 @@ type (
 	VirtualMachine                    = virtv1.VirtualMachine
 	VirtualMachineInstance            = virtv1.VirtualMachineInstance
 	VirtualMachineInstanceMigration   = virtv1.VirtualMachineInstanceMigration
+	VirtualMachineDisk                = virtv1.Disk
+	VirtualMachineVolume              = virtv1.Volume
 	VirtualMachineClone               = clonev1beta1.VirtualMachineClone
 	VirtualMachineSnapshot            = snapshotv1beta1.VirtualMachineSnapshot
 	VirtualMachineRestore             = snapshotv1beta1.VirtualMachineRestore
@@ -40,7 +42,7 @@ type (
 	DataVolume                        = cdiv1beta1.DataVolume
 )
 
-type VirtualMachineDetails struct {
+type VirtualMachineData struct {
 	*VirtualMachine
 	*VirtualMachineInstance
 	Clones    []VirtualMachineClone
@@ -54,19 +56,11 @@ type DataVolumeWithStorage struct {
 	*Storage
 }
 
-type vmData struct {
-	vm        VirtualMachine
-	instance  *VirtualMachineInstance
-	clones    []VirtualMachineClone
-	snapshots []VirtualMachineSnapshot
-	restores  []VirtualMachineRestore
-	machineID string
-}
-
 type KubeVirtRepo interface {
 	ListVirtualMachines(ctx context.Context, config *rest.Config, namespace string) ([]VirtualMachine, error)
 	GetVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachine, error)
 	CreateVirtualMachine(ctx context.Context, config *rest.Config, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachine, error)
+	UpdateVirtualMachine(ctx context.Context, config *rest.Config, namespace string, virtualMachine *VirtualMachine) (*VirtualMachine, error)
 	DeleteVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
 	StartVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
 	StopVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
@@ -135,56 +129,31 @@ func NewVirtualMachineUseCase(kubeVirt KubeVirtRepo, kubeClone KubeVirtCloneRepo
 		machine:      machine,
 	}
 }
-func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineDetails, error) {
+
+func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineData, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-
-	virtualMachines, err := uc.fetchVirtualMachineData(ctx, config, namespace, "")
-	if err != nil {
-		return nil, err
-	}
-
-	details := make([]VirtualMachineDetails, len(virtualMachines))
-	for i, vm := range virtualMachines {
-		details[i] = uc.buildVirtualMachineDetails(&vm.vm, vm.instance, vm.clones, vm.snapshots, vm.restores, vm.machineID)
-	}
-	return details, nil
+	return uc.fetchVirtualMachineData(ctx, config, namespace, "")
 }
 
-func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) (*VirtualMachineDetails, error) {
+func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) (*VirtualMachineData, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-
-	vms, err := uc.fetchVirtualMachineData(ctx, config, namespace, name)
+	vmds, err := uc.fetchVirtualMachineData(ctx, config, namespace, name)
 	if err != nil {
 		return nil, err
 	}
-
-	if len(vms) == 0 {
+	if len(vmds) == 0 {
 		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("virtual machine %s/%s not found", namespace, name))
 	}
-
-	vm := vms[0]
-	details := uc.buildVirtualMachineDetails(&vm.vm, vm.instance, vm.clones, vm.snapshots, vm.restores, vm.machineID)
-	return &details, nil
+	return &vmds[0], nil
 }
 
-func (uc *VirtualMachineUseCase) buildVirtualMachineDetails(vm *VirtualMachine, instance *VirtualMachineInstance, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, machineID string) VirtualMachineDetails {
-	return VirtualMachineDetails{
-		VirtualMachine:         vm,
-		VirtualMachineInstance: instance,
-		Clones:                 clones,
-		Snapshots:              snapshots,
-		Restores:               restores,
-		MachineID:              machineID,
-	}
-}
-
-func (uc *VirtualMachineUseCase) CreateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineDetails, error) {
+func (uc *VirtualMachineUseCase) CreateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -193,7 +162,7 @@ func (uc *VirtualMachineUseCase) CreateVirtualMachine(ctx context.Context, uuid,
 	if err != nil {
 		return nil, err
 	}
-	return &VirtualMachineDetails{
+	return &VirtualMachineData{
 		VirtualMachine: vm,
 	}, nil
 }
@@ -204,6 +173,119 @@ func (uc *VirtualMachineUseCase) DeleteVirtualMachine(ctx context.Context, uuid,
 		return err
 	}
 	return uc.kubeVirt.DeleteVirtualMachine(ctx, config, namespace, name)
+}
+
+func (uc *VirtualMachineUseCase) AttachVirtualMachineDisk(ctx context.Context, uuid, facility, namespace, name, dvName string) (*VirtualMachineDisk, *VirtualMachineVolume, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, nil, err
+	}
+	vm, err := uc.kubeVirt.GetVirtualMachine(ctx, config, namespace, name)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// check if disk already attached
+	for _, vol := range vm.Spec.Template.Spec.Volumes {
+		if vol.Name == dvName {
+			return nil, nil, fmt.Errorf("disk %s is already attached to virtual machine %s/%s", dvName, namespace, name)
+		}
+	}
+
+	// attach disk
+	vm.Spec.Template.Spec.Domain.Devices.Disks = append(vm.Spec.Template.Spec.Domain.Devices.Disks, virtv1.Disk{
+		Name: dvName,
+		DiskDevice: virtv1.DiskDevice{
+			Disk: &virtv1.DiskTarget{
+				Bus: virtv1.DiskBusVirtio,
+			},
+		},
+	})
+
+	// add volume
+	vm.Spec.Template.Spec.Volumes = append(vm.Spec.Template.Spec.Volumes, virtv1.Volume{
+		Name: dvName,
+		VolumeSource: virtv1.VolumeSource{
+			DataVolume: &virtv1.DataVolumeSource{
+				Name: dvName,
+			},
+		},
+	})
+
+	// update virtual machine
+	newVM, err := uc.kubeVirt.UpdateVirtualMachine(ctx, config, namespace, vm)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// get disk and volume to verify
+	var (
+		disk   *VirtualMachineDisk
+		volume *VirtualMachineVolume
+	)
+
+	for _, d := range newVM.Spec.Template.Spec.Domain.Devices.Disks {
+		if d.Name == dvName {
+			disk = &d
+			break
+		}
+	}
+
+	for _, v := range newVM.Spec.Template.Spec.Volumes {
+		if v.Name == dvName {
+			volume = &v
+			break
+		}
+	}
+
+	return disk, volume, nil
+}
+
+func (uc *VirtualMachineUseCase) DetachVirtualMachineDisk(ctx context.Context, uuid, facility, namespace, name, dvName string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	vm, err := uc.kubeVirt.GetVirtualMachine(ctx, config, namespace, name)
+	if err != nil {
+		return err
+	}
+
+	// check if disk is attached
+	found := false
+	for _, vol := range vm.Spec.Template.Spec.Volumes {
+		if vol.Name == dvName {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return fmt.Errorf("disk %s is not attached to virtual machine %s/%s", dvName, namespace, name)
+	}
+
+	// detach disk
+	newDisks := make([]virtv1.Disk, 0, len(vm.Spec.Template.Spec.Domain.Devices.Disks)-1)
+	for _, disk := range vm.Spec.Template.Spec.Domain.Devices.Disks {
+		if disk.Name != dvName {
+			newDisks = append(newDisks, disk)
+		}
+	}
+	vm.Spec.Template.Spec.Domain.Devices.Disks = newDisks
+
+	// remove volume
+	newVolumes := make([]virtv1.Volume, 0, len(vm.Spec.Template.Spec.Volumes)-1)
+	for _, vol := range vm.Spec.Template.Spec.Volumes {
+		if vol.Name != dvName {
+			newVolumes = append(newVolumes, vol)
+		}
+	}
+	vm.Spec.Template.Spec.Volumes = newVolumes
+
+	// update virtual machine
+	if _, err := uc.kubeVirt.UpdateVirtualMachine(ctx, config, namespace, vm); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (uc *VirtualMachineUseCase) CreateVirtualMachineClone(ctx context.Context, uuid, facility, namespace, name, source, target string) (*VirtualMachineClone, error) {
@@ -499,7 +581,7 @@ func (uc *VirtualMachineUseCase) DeleteInstanceType(ctx context.Context, uuid, f
 	return uc.kubeIT.Delete(ctx, config, namespace, name)
 }
 
-func (uc *VirtualMachineUseCase) fetchVirtualMachineData(ctx context.Context, config *rest.Config, namespace, vmName string) ([]vmData, error) {
+func (uc *VirtualMachineUseCase) fetchVirtualMachineData(ctx context.Context, config *rest.Config, namespace, vmName string) ([]VirtualMachineData, error) {
 	var (
 		virtualMachines []VirtualMachine
 		instances       []VirtualMachineInstance
@@ -582,13 +664,13 @@ func (uc *VirtualMachineUseCase) fetchVirtualMachineData(ctx context.Context, co
 	return uc.assembleVMData(virtualMachines, instances, clones, snapshots, restores, machines), nil
 }
 
-func (uc *VirtualMachineUseCase) assembleVMData(virtualMachines []VirtualMachine, instances []VirtualMachineInstance, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, machines []Machine) []vmData {
+func (uc *VirtualMachineUseCase) assembleVMData(virtualMachines []VirtualMachine, instances []VirtualMachineInstance, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, machines []Machine) []VirtualMachineData {
 	machineMap := make(map[string]string, len(machines))
 	for _, m := range machines {
 		machineMap[m.Hostname] = m.SystemID
 	}
 
-	result := make([]vmData, len(virtualMachines))
+	result := make([]VirtualMachineData, len(virtualMachines))
 	for i, vm := range virtualMachines {
 		var instance *VirtualMachineInstance
 		var machineID string
@@ -604,13 +686,13 @@ func (uc *VirtualMachineUseCase) assembleVMData(virtualMachines []VirtualMachine
 			}
 		}
 
-		result[i] = vmData{
-			vm:        vm,
-			instance:  instance,
-			clones:    uc.filterByVM(clones, vm.Namespace, vm.Name).([]VirtualMachineClone),
-			snapshots: uc.filterByVM(snapshots, vm.Namespace, vm.Name).([]VirtualMachineSnapshot),
-			restores:  uc.filterByVM(restores, vm.Namespace, vm.Name).([]VirtualMachineRestore),
-			machineID: machineID,
+		result[i] = VirtualMachineData{
+			VirtualMachine:         &vm,
+			VirtualMachineInstance: instance,
+			Clones:                 uc.filterByVM(clones, vm.Namespace, vm.Name).([]VirtualMachineClone),
+			Snapshots:              uc.filterByVM(snapshots, vm.Namespace, vm.Name).([]VirtualMachineSnapshot),
+			Restores:               uc.filterByVM(restores, vm.Namespace, vm.Name).([]VirtualMachineRestore),
+			MachineID:              machineID,
 		}
 	}
 	return result
