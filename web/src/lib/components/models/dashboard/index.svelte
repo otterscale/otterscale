@@ -3,18 +3,13 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 
-	import { page } from '$app/state';
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { Reloader } from '$lib/components/custom/reloader';
 	import { Overview } from '$lib/components/models/dashboard/overview/index';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
-	import { activeScope, breadcrumb } from '$lib/stores';
-
-	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [], current: dynamicPaths.machines(page.params.scope) });
+	import { activeScope } from '$lib/stores';
 
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);
