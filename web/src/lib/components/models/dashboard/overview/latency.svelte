@@ -37,7 +37,7 @@
 	async function fetch() {
 		prometheusDriver
 			.instantQuery(
-				`avg(vllm:e2e_request_latency_seconds_sum{juju_model_uuid="${scope.uuid}"}) / avg(vllm:e2e_request_latency_seconds_count{juju_model_uuid="${scope.uuid}"})`,
+				`histogram_quantile(0.95, sum by (le) (vllm:e2e_request_latency_seconds_bucket{juju_model_uuid="${scope.uuid}"}))`,
 			)
 			.then((response) => {
 				const value = response.result[0].value.value;
@@ -45,7 +45,7 @@
 			});
 		prometheusDriver
 			.rangeQuery(
-				`avg(vllm:e2e_request_latency_seconds_sum{juju_model_uuid="${scope.uuid}"}) / avg(vllm:e2e_request_latency_seconds_count{juju_model_uuid="${scope.uuid}"})`,
+				`histogram_quantile(0.95, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{juju_model_uuid="${scope.uuid}"}[2m])))`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60,

@@ -46,7 +46,7 @@
 		<div class="grid gap-1">
 			<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.dashboard()}</h1>
 			<p class="text-muted-foreground">
-				{m.machine_dashboard_description()}
+				{m.llm_dashboard_description()}
 			</p>
 		</div>
 

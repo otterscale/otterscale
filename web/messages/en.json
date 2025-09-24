@@ -690,6 +690,7 @@
 	"machine_dashboard_gpu_memory_tooltip": "Total GPU memory across all machines.",
 	"machine_dashboard_gpu_tooltip": "Total GPU across all machines.",
 	"pieces": "pieces",
+	"llm_dashboard_description": "Provides real-time insights into model performance, including end-to-end latency and time to first token.",
 	"llm_dashboard_latency_tooltip": "Average Latency across all models.",
 	"llm_dashboard_models_tooltip": "Number of models.",
 	"llm_dashboard_requests_tooltip": "Shows the number of running and waiting requests over the past 24 hours.",
