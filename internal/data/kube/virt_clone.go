@@ -29,8 +29,9 @@ func (r *virtClone) ListVirtualMachineClones(ctx context.Context, config *rest.C
 	if err != nil {
 		return nil, err
 	}
-	opts := metav1.ListOptions{
-		LabelSelector: oscore.VirtualMachineNameLabel + "=" + vmName,
+	opts := metav1.ListOptions{}
+	if vmName != "" {
+		opts.LabelSelector = oscore.VirtualMachineNameLabel + "=" + vmName
 	}
 	list, err := clientset.CloneV1beta1().VirtualMachineClones(namespace).List(ctx, opts)
 	if err != nil {

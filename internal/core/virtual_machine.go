@@ -3,7 +3,9 @@ package core
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
+	"connectrpc.com/connect"
 	"golang.org/x/sync/errgroup"
 
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -52,6 +54,15 @@ type DataVolumeWithStorage struct {
 	*Storage
 }
 
+type vmData struct {
+	vm        VirtualMachine
+	instance  *VirtualMachineInstance
+	clones    []VirtualMachineClone
+	snapshots []VirtualMachineSnapshot
+	restores  []VirtualMachineRestore
+	machineID string
+}
+
 type KubeVirtRepo interface {
 	ListVirtualMachines(ctx context.Context, config *rest.Config, namespace string) ([]VirtualMachine, error)
 	GetVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachine, error)
@@ -60,6 +71,7 @@ type KubeVirtRepo interface {
 	StartVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
 	StopVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
 	RestartVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
+	ListInstances(ctx context.Context, config *rest.Config, namespace string) ([]VirtualMachineInstance, error)
 	GetInstance(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineInstance, error)
 	PauseInstance(ctx context.Context, config *rest.Config, namespace, name string) error
 	UnpauseInstance(ctx context.Context, config *rest.Config, namespace, name string) error
@@ -123,109 +135,53 @@ func NewVirtualMachineUseCase(kubeVirt KubeVirtRepo, kubeClone KubeVirtCloneRepo
 		machine:      machine,
 	}
 }
-
 func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineDetails, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	vms, err := uc.kubeVirt.ListVirtualMachines(ctx, config, namespace)
+
+	virtualMachines, err := uc.fetchVirtualMachineData(ctx, config, namespace, "")
 	if err != nil {
 		return nil, err
 	}
-	// FIX: Waited before sending request
-	eg, egctx := errgroup.WithContext(ctx)
-	details := make([]VirtualMachineDetails, len(vms))
-	for i := range vms {
-		eg.Go(func() error {
-			vm, err := uc.GetVirtualMachine(egctx, uuid, facility, vms[i].Namespace, vms[i].Name)
-			if err == nil {
-				details[i] = *vm
-			}
-			return err
-		})
-	}
-	if err := eg.Wait(); err != nil {
-		return nil, err
+
+	details := make([]VirtualMachineDetails, len(virtualMachines))
+	for i, vm := range virtualMachines {
+		details[i] = uc.buildVirtualMachineDetails(&vm.vm, vm.instance, vm.clones, vm.snapshots, vm.restores, vm.machineID)
 	}
 	return details, nil
 }
 
 func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) (*VirtualMachineDetails, error) {
-	var (
-		virtualMachine *VirtualMachine
-		instance       *VirtualMachineInstance
-		clones         []VirtualMachineClone
-		snapshots      []VirtualMachineSnapshot
-		restores       []VirtualMachineRestore
-		machineID      string
-	)
-
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
 
-	eg, egctx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		v, err := uc.kubeVirt.GetVirtualMachine(egctx, config, namespace, name)
-		if err == nil {
-			virtualMachine = v
-		}
-		return err
-	})
-	eg.Go(func() error {
-		v, err := uc.kubeVirt.GetInstance(egctx, config, namespace, name)
-		if isKeyNotFoundError(err) {
-			return nil
-		}
-		if err == nil {
-			instance = v
-			ms, err := uc.machine.List(egctx)
-			if err == nil {
-				for i := range ms {
-					if ms[i].Hostname == instance.Status.NodeName {
-						machineID = ms[i].SystemID
-						break
-					}
-				}
-			}
-			return err
-		}
-		return err
-	})
-	eg.Go(func() error {
-		v, err := uc.kubeClone.ListVirtualMachineClones(egctx, config, namespace, name)
-		if err == nil {
-			clones = v
-		}
-		return err
-	})
-	eg.Go(func() error {
-		v, err := uc.kubeSnapshot.ListVirtualMachineSnapshots(egctx, config, namespace, name)
-		if err == nil {
-			snapshots = v
-		}
-		return err
-	})
-	eg.Go(func() error {
-		v, err := uc.kubeSnapshot.ListVirtualMachineRestores(egctx, config, namespace, name)
-		if err == nil {
-			restores = v
-		}
-		return err
-	})
-	if err := eg.Wait(); err != nil {
+	vms, err := uc.fetchVirtualMachineData(ctx, config, namespace, name)
+	if err != nil {
 		return nil, err
 	}
-	return &VirtualMachineDetails{
-		VirtualMachine:         virtualMachine,
+
+	if len(vms) == 0 {
+		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("virtual machine %s/%s not found", namespace, name))
+	}
+
+	vm := vms[0]
+	details := uc.buildVirtualMachineDetails(&vm.vm, vm.instance, vm.clones, vm.snapshots, vm.restores, vm.machineID)
+	return &details, nil
+}
+
+func (uc *VirtualMachineUseCase) buildVirtualMachineDetails(vm *VirtualMachine, instance *VirtualMachineInstance, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, machineID string) VirtualMachineDetails {
+	return VirtualMachineDetails{
+		VirtualMachine:         vm,
 		VirtualMachineInstance: instance,
 		Clones:                 clones,
 		Snapshots:              snapshots,
 		Restores:               restores,
 		MachineID:              machineID,
-	}, nil
+	}
 }
 
 func (uc *VirtualMachineUseCase) CreateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineDetails, error) {
@@ -541,4 +497,152 @@ func (uc *VirtualMachineUseCase) DeleteInstanceType(ctx context.Context, uuid, f
 		return err
 	}
 	return uc.kubeIT.Delete(ctx, config, namespace, name)
+}
+
+func (uc *VirtualMachineUseCase) fetchVirtualMachineData(ctx context.Context, config *rest.Config, namespace, vmName string) ([]vmData, error) {
+	var (
+		virtualMachines []VirtualMachine
+		instances       []VirtualMachineInstance
+		clones          []VirtualMachineClone
+		snapshots       []VirtualMachineSnapshot
+		restores        []VirtualMachineRestore
+		machines        []Machine
+	)
+
+	eg, egctx := errgroup.WithContext(ctx)
+
+	if vmName == "" {
+		eg.Go(func() error {
+			v, err := uc.kubeVirt.ListVirtualMachines(egctx, config, namespace)
+			if err == nil {
+				virtualMachines = v
+			}
+			return err
+		})
+		eg.Go(func() error {
+			v, err := uc.kubeVirt.ListInstances(egctx, config, namespace)
+			if err == nil {
+				instances = v
+			}
+			return err
+		})
+	} else {
+		eg.Go(func() error {
+			v, err := uc.kubeVirt.GetVirtualMachine(egctx, config, namespace, vmName)
+			if err == nil {
+				virtualMachines = []VirtualMachine{*v}
+			}
+			return err
+		})
+		eg.Go(func() error {
+			v, err := uc.kubeVirt.GetInstance(egctx, config, namespace, vmName)
+			if isKeyNotFoundError(err) {
+				return nil
+			}
+			if err == nil {
+				instances = []VirtualMachineInstance{*v}
+			}
+			return err
+		})
+	}
+
+	eg.Go(func() error {
+		v, err := uc.kubeClone.ListVirtualMachineClones(egctx, config, namespace, vmName)
+		if err == nil {
+			clones = v
+		}
+		return err
+	})
+	eg.Go(func() error {
+		v, err := uc.kubeSnapshot.ListVirtualMachineSnapshots(egctx, config, namespace, vmName)
+		if err == nil {
+			snapshots = v
+		}
+		return err
+	})
+	eg.Go(func() error {
+		v, err := uc.kubeSnapshot.ListVirtualMachineRestores(egctx, config, namespace, vmName)
+		if err == nil {
+			restores = v
+		}
+		return err
+	})
+	eg.Go(func() error {
+		v, err := uc.machine.List(egctx)
+		if err == nil {
+			machines = v
+		}
+		return err
+	})
+
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+
+	return uc.assembleVMData(virtualMachines, instances, clones, snapshots, restores, machines), nil
+}
+
+func (uc *VirtualMachineUseCase) assembleVMData(virtualMachines []VirtualMachine, instances []VirtualMachineInstance, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, machines []Machine) []vmData {
+	machineMap := make(map[string]string, len(machines))
+	for _, m := range machines {
+		machineMap[m.Hostname] = m.SystemID
+	}
+
+	result := make([]vmData, len(virtualMachines))
+	for i, vm := range virtualMachines {
+		var instance *VirtualMachineInstance
+		var machineID string
+
+		// find matching instance
+		for j := range instances {
+			if instances[j].Namespace == vm.Namespace && instances[j].Name == vm.Name {
+				instance = &instances[j]
+				if nodeName := instance.Status.NodeName; nodeName != "" {
+					machineID = machineMap[nodeName]
+				}
+				break
+			}
+		}
+
+		result[i] = vmData{
+			vm:        vm,
+			instance:  instance,
+			clones:    uc.filterByVM(clones, vm.Namespace, vm.Name).([]VirtualMachineClone),
+			snapshots: uc.filterByVM(snapshots, vm.Namespace, vm.Name).([]VirtualMachineSnapshot),
+			restores:  uc.filterByVM(restores, vm.Namespace, vm.Name).([]VirtualMachineRestore),
+			machineID: machineID,
+		}
+	}
+	return result
+}
+
+func (uc *VirtualMachineUseCase) filterByVM(items any, namespace, vmName string) any {
+	switch v := items.(type) {
+	case []VirtualMachineClone:
+		var result []VirtualMachineClone
+		for _, item := range v {
+			if item.Namespace == namespace && item.Labels[VirtualMachineNameLabel] == vmName {
+				result = append(result, item)
+			}
+		}
+		return result
+	case []VirtualMachineSnapshot:
+		var result []VirtualMachineSnapshot
+		for _, item := range v {
+			if item.Namespace == namespace && item.Labels[VirtualMachineNameLabel] == vmName {
+				result = append(result, item)
+			}
+		}
+		return result
+	case []VirtualMachineRestore:
+		var result []VirtualMachineRestore
+		for _, item := range v {
+			if item.Namespace == namespace && item.Labels[VirtualMachineNameLabel] == vmName {
+				result = append(result, item)
+			}
+		}
+		return result
+	default:
+		return items
+	}
 }

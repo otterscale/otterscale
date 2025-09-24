@@ -29,8 +29,9 @@ func (r *virtSnapshot) ListVirtualMachineSnapshots(ctx context.Context, config *
 	if err != nil {
 		return nil, err
 	}
-	opts := metav1.ListOptions{
-		LabelSelector: oscore.VirtualMachineNameLabel + "=" + vmName,
+	opts := metav1.ListOptions{}
+	if vmName != "" {
+		opts.LabelSelector = oscore.VirtualMachineNameLabel + "=" + vmName
 	}
 	list, err := clientset.SnapshotV1beta1().VirtualMachineSnapshots(namespace).List(ctx, opts)
 	if err != nil {
@@ -80,8 +81,9 @@ func (r *virtSnapshot) ListVirtualMachineRestores(ctx context.Context, config *r
 	if err != nil {
 		return nil, err
 	}
-	opts := metav1.ListOptions{
-		LabelSelector: oscore.VirtualMachineNameLabel + "=" + vmName,
+	opts := metav1.ListOptions{}
+	if vmName != "" {
+		opts.LabelSelector = oscore.VirtualMachineNameLabel + "=" + vmName
 	}
 	list, err := clientset.SnapshotV1beta1().VirtualMachineRestores(namespace).List(ctx, opts)
 	if err != nil {

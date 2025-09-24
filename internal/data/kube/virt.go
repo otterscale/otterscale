@@ -180,6 +180,19 @@ func (r *virt) RestartVirtualMachine(ctx context.Context, config *rest.Config, n
 	return clientset.KubevirtV1().VirtualMachines(namespace).Restart(ctx, name, opts)
 }
 
+func (r *virt) ListInstances(ctx context.Context, config *rest.Config, namespace string) ([]oscore.VirtualMachineInstance, error) {
+	clientset, err := r.kube.virtClientset(config)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.ListOptions{}
+	list, err := clientset.KubevirtV1().VirtualMachineInstances(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
 func (r *virt) GetInstance(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.VirtualMachineInstance, error) {
 	clientset, err := r.kube.virtClientset(config)
 	if err != nil {
