@@ -96,7 +96,8 @@ message Application {
     message Port {
       int32 port = 1;
       int32 node_port = 2;
-      string protocol = 3;
+      string name = 3;
+      string protocol = 4;
       string target_port = 11;
     }
     string name = 1;

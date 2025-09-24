@@ -45,11 +45,11 @@ service VirtualMachineService {
   rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType);
   rpc DeleteInstanceType(DeleteInstanceTypeRequest) returns (google.protobuf.Empty);
 
-  // rpc CreateVirtualMachineService(CreateVirtualMachineServiceRequest)
-  //     returns (otterscale.application.v1.Application.Service);
-  // rpc UpdateVirtualMachineService(UpdateVirtualMachineServiceRequest)
-  //     returns (otterscale.application.v1.Application.Service);
-  // rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty);
+  rpc CreateVirtualMachineService(CreateVirtualMachineServiceRequest)
+      returns (otterscale.application.v1.Application.Service);
+  rpc UpdateVirtualMachineService(UpdateVirtualMachineServiceRequest)
+      returns (otterscale.application.v1.Application.Service);
+  rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty);
 }
 
 message VirtualMachine {
@@ -113,7 +113,7 @@ message VirtualMachine {
   string instance_phase = 21;
   string machine_id = 22;
   google.protobuf.Timestamp created_at = 31;
-  otterscale.application.v1.Application.Service service = 41;
+  repeated otterscale.application.v1.Application.Service services = 41;
   repeated Disk disks = 51;
   repeated Clone clones = 61;
   repeated Snapshot snapshots = 71;
@@ -386,7 +386,8 @@ message CreateVirtualMachineServiceRequest {
   string facility_name = 2;
   string namespace = 3;
   string name = 4;
-  repeated otterscale.application.v1.Application.Service.Port ports = 11;
+  string virtual_machine_name = 11;
+  repeated otterscale.application.v1.Application.Service.Port ports = 12;
 }
 
 message UpdateVirtualMachineServiceRequest {
@@ -394,7 +395,7 @@ message UpdateVirtualMachineServiceRequest {
   string facility_name = 2;
   string namespace = 3;
   string name = 4;
-  repeated otterscale.application.v1.Application.Service.Port ports = 11;
+  repeated otterscale.application.v1.Application.Service.Port ports = 12;
 }
 
 message DeleteVirtualMachineServiceRequest {

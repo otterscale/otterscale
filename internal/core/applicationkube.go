@@ -36,6 +36,7 @@ type (
 	Container             = corev1.Container
 	Secret                = corev1.Secret
 	Service               = corev1.Service
+	ServicePort           = corev1.ServicePort
 	Pod                   = corev1.Pod
 	PersistentVolumeClaim = corev1.PersistentVolumeClaim
 )
@@ -98,9 +99,9 @@ type KubeCoreRepo interface {
 	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error)
 	ListServicesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]Service, error)
 	GetService(ctx context.Context, config *rest.Config, namespace, name string) (*Service, error)
-	CreateService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*Service, error)
-	CreateVirtualMachineService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*Service, error)
-	UpdateService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*Service, error)
+	ListVirtualMachineServices(ctx context.Context, config *rest.Config, namespace, vmName string) ([]Service, error)
+	CreateVirtualMachineService(ctx context.Context, config *rest.Config, namespace, name, vmName string, ports []corev1.ServicePort) (*Service, error)
+	UpdateService(ctx context.Context, config *rest.Config, namespace, name string, service *Service) (*Service, error)
 	DeleteService(ctx context.Context, config *rest.Config, namespace, name string) error
 
 	// Pod

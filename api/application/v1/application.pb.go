@@ -5375,7 +5375,8 @@ type Application_Service_Port struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Port        int32                  `protobuf:"varint,1,opt,name=port"`
 	xxx_hidden_NodePort    int32                  `protobuf:"varint,2,opt,name=node_port,json=nodePort"`
-	xxx_hidden_Protocol    *string                `protobuf:"bytes,3,opt,name=protocol"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Protocol    *string                `protobuf:"bytes,4,opt,name=protocol"`
 	xxx_hidden_TargetPort  *string                `protobuf:"bytes,11,opt,name=target_port,json=targetPort"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -5422,6 +5423,16 @@ func (x *Application_Service_Port) GetNodePort() int32 {
 	return 0
 }
 
+func (x *Application_Service_Port) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *Application_Service_Port) GetProtocol() string {
 	if x != nil {
 		if x.xxx_hidden_Protocol != nil {
@@ -5444,22 +5455,27 @@ func (x *Application_Service_Port) GetTargetPort() string {
 
 func (x *Application_Service_Port) SetPort(v int32) {
 	x.xxx_hidden_Port = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *Application_Service_Port) SetNodePort(v int32) {
 	x.xxx_hidden_NodePort = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *Application_Service_Port) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *Application_Service_Port) SetProtocol(v string) {
 	x.xxx_hidden_Protocol = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *Application_Service_Port) SetTargetPort(v string) {
 	x.xxx_hidden_TargetPort = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *Application_Service_Port) HasPort() bool {
@@ -5476,18 +5492,25 @@ func (x *Application_Service_Port) HasNodePort() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Application_Service_Port) HasProtocol() bool {
+func (x *Application_Service_Port) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *Application_Service_Port) HasTargetPort() bool {
+func (x *Application_Service_Port) HasProtocol() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *Application_Service_Port) HasTargetPort() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *Application_Service_Port) ClearPort() {
@@ -5500,13 +5523,18 @@ func (x *Application_Service_Port) ClearNodePort() {
 	x.xxx_hidden_NodePort = 0
 }
 
-func (x *Application_Service_Port) ClearProtocol() {
+func (x *Application_Service_Port) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *Application_Service_Port) ClearProtocol() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Protocol = nil
 }
 
 func (x *Application_Service_Port) ClearTargetPort() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_TargetPort = nil
 }
 
@@ -5515,6 +5543,7 @@ type Application_Service_Port_builder struct {
 
 	Port       *int32
 	NodePort   *int32
+	Name       *string
 	Protocol   *string
 	TargetPort *string
 }
@@ -5524,19 +5553,23 @@ func (b0 Application_Service_Port_builder) Build() *Application_Service_Port {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Port != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Port = *b.Port
 	}
 	if b.NodePort != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_NodePort = *b.NodePort
 	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_Name = b.Name
+	}
 	if b.Protocol != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_Protocol = b.Protocol
 	}
 	if b.TargetPort != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_TargetPort = b.TargetPort
 	}
 	return m0
@@ -5554,7 +5587,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"created_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xf2\x19\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x87\x1a\n" +
 	"\vApplication\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1c\n" +
@@ -5629,7 +5662,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\tContainer\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x01 \x01(\tR\timageName\x12*\n" +
-	"\x11image_pull_policy\x18\x02 \x01(\tR\x0fimagePullPolicy\x1a\xcd\x02\n" +
+	"\x11image_pull_policy\x18\x02 \x01(\tR\x0fimagePullPolicy\x1a\xe2\x02\n" +
 	"\aService\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12\x1d\n" +
@@ -5637,11 +5670,12 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"cluster_ip\x18\x03 \x01(\tR\tclusterIp\x12I\n" +
 	"\x05ports\x18\v \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\x12:\n" +
 	"\n" +
-	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1at\n" +
+	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a\x88\x01\n" +
 	"\x04Port\x12\x12\n" +
 	"\x04port\x18\x01 \x01(\x05R\x04port\x12\x1b\n" +
-	"\tnode_port\x18\x02 \x01(\x05R\bnodePort\x12\x1a\n" +
-	"\bprotocol\x18\x03 \x01(\tR\bprotocol\x12\x1f\n" +
+	"\tnode_port\x18\x02 \x01(\x05R\bnodePort\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1a\n" +
+	"\bprotocol\x18\x04 \x01(\tR\bprotocol\x12\x1f\n" +
 	"\vtarget_port\x18\v \x01(\tR\n" +
 	"targetPort\x1a\xf6\x01\n" +
 	"\x03Pod\x12\x12\n" +

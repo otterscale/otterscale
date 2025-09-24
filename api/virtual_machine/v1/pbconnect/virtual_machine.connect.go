@@ -8,6 +8,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
+	v11 "github.com/otterscale/otterscale/api/application/v1"
 	v1 "github.com/otterscale/otterscale/api/virtual_machine/v1"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
@@ -118,6 +119,15 @@ const (
 	// VirtualMachineServiceDeleteInstanceTypeProcedure is the fully-qualified name of the
 	// VirtualMachineService's DeleteInstanceType RPC.
 	VirtualMachineServiceDeleteInstanceTypeProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/DeleteInstanceType"
+	// VirtualMachineServiceCreateVirtualMachineServiceProcedure is the fully-qualified name of the
+	// VirtualMachineService's CreateVirtualMachineService RPC.
+	VirtualMachineServiceCreateVirtualMachineServiceProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/CreateVirtualMachineService"
+	// VirtualMachineServiceUpdateVirtualMachineServiceProcedure is the fully-qualified name of the
+	// VirtualMachineService's UpdateVirtualMachineService RPC.
+	VirtualMachineServiceUpdateVirtualMachineServiceProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/UpdateVirtualMachineService"
+	// VirtualMachineServiceDeleteVirtualMachineServiceProcedure is the fully-qualified name of the
+	// VirtualMachineService's DeleteVirtualMachineService RPC.
+	VirtualMachineServiceDeleteVirtualMachineServiceProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/DeleteVirtualMachineService"
 )
 
 // VirtualMachineServiceClient is a client for the
@@ -151,6 +161,9 @@ type VirtualMachineServiceClient interface {
 	GetInstanceType(context.Context, *connect.Request[v1.GetInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error)
 	CreateInstanceType(context.Context, *connect.Request[v1.CreateInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error)
 	DeleteInstanceType(context.Context, *connect.Request[v1.DeleteInstanceTypeRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateVirtualMachineService(context.Context, *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
+	UpdateVirtualMachineService(context.Context, *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
+	DeleteVirtualMachineService(context.Context, *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewVirtualMachineServiceClient constructs a client for the
@@ -333,6 +346,24 @@ func NewVirtualMachineServiceClient(httpClient connect.HTTPClient, baseURL strin
 			connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteInstanceType")),
 			connect.WithClientOptions(opts...),
 		),
+		createVirtualMachineService: connect.NewClient[v1.CreateVirtualMachineServiceRequest, v11.Application_Service](
+			httpClient,
+			baseURL+VirtualMachineServiceCreateVirtualMachineServiceProcedure,
+			connect.WithSchema(virtualMachineServiceMethods.ByName("CreateVirtualMachineService")),
+			connect.WithClientOptions(opts...),
+		),
+		updateVirtualMachineService: connect.NewClient[v1.UpdateVirtualMachineServiceRequest, v11.Application_Service](
+			httpClient,
+			baseURL+VirtualMachineServiceUpdateVirtualMachineServiceProcedure,
+			connect.WithSchema(virtualMachineServiceMethods.ByName("UpdateVirtualMachineService")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteVirtualMachineService: connect.NewClient[v1.DeleteVirtualMachineServiceRequest, emptypb.Empty](
+			httpClient,
+			baseURL+VirtualMachineServiceDeleteVirtualMachineServiceProcedure,
+			connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteVirtualMachineService")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -366,6 +397,9 @@ type virtualMachineServiceClient struct {
 	getInstanceType              *connect.Client[v1.GetInstanceTypeRequest, v1.InstanceType]
 	createInstanceType           *connect.Client[v1.CreateInstanceTypeRequest, v1.InstanceType]
 	deleteInstanceType           *connect.Client[v1.DeleteInstanceTypeRequest, emptypb.Empty]
+	createVirtualMachineService  *connect.Client[v1.CreateVirtualMachineServiceRequest, v11.Application_Service]
+	updateVirtualMachineService  *connect.Client[v1.UpdateVirtualMachineServiceRequest, v11.Application_Service]
+	deleteVirtualMachineService  *connect.Client[v1.DeleteVirtualMachineServiceRequest, emptypb.Empty]
 }
 
 // ListVirtualMachines calls
@@ -522,6 +556,24 @@ func (c *virtualMachineServiceClient) DeleteInstanceType(ctx context.Context, re
 	return c.deleteInstanceType.CallUnary(ctx, req)
 }
 
+// CreateVirtualMachineService calls
+// otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineService.
+func (c *virtualMachineServiceClient) CreateVirtualMachineService(ctx context.Context, req *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
+	return c.createVirtualMachineService.CallUnary(ctx, req)
+}
+
+// UpdateVirtualMachineService calls
+// otterscale.virtual_machine.v1.VirtualMachineService.UpdateVirtualMachineService.
+func (c *virtualMachineServiceClient) UpdateVirtualMachineService(ctx context.Context, req *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
+	return c.updateVirtualMachineService.CallUnary(ctx, req)
+}
+
+// DeleteVirtualMachineService calls
+// otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineService.
+func (c *virtualMachineServiceClient) DeleteVirtualMachineService(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.deleteVirtualMachineService.CallUnary(ctx, req)
+}
+
 // VirtualMachineServiceHandler is an implementation of the
 // otterscale.virtual_machine.v1.VirtualMachineService service.
 type VirtualMachineServiceHandler interface {
@@ -553,6 +605,9 @@ type VirtualMachineServiceHandler interface {
 	GetInstanceType(context.Context, *connect.Request[v1.GetInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error)
 	CreateInstanceType(context.Context, *connect.Request[v1.CreateInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error)
 	DeleteInstanceType(context.Context, *connect.Request[v1.DeleteInstanceTypeRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateVirtualMachineService(context.Context, *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
+	UpdateVirtualMachineService(context.Context, *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
+	DeleteVirtualMachineService(context.Context, *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewVirtualMachineServiceHandler builds an HTTP handler from the service implementation. It
@@ -730,6 +785,24 @@ func NewVirtualMachineServiceHandler(svc VirtualMachineServiceHandler, opts ...c
 		connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteInstanceType")),
 		connect.WithHandlerOptions(opts...),
 	)
+	virtualMachineServiceCreateVirtualMachineServiceHandler := connect.NewUnaryHandler(
+		VirtualMachineServiceCreateVirtualMachineServiceProcedure,
+		svc.CreateVirtualMachineService,
+		connect.WithSchema(virtualMachineServiceMethods.ByName("CreateVirtualMachineService")),
+		connect.WithHandlerOptions(opts...),
+	)
+	virtualMachineServiceUpdateVirtualMachineServiceHandler := connect.NewUnaryHandler(
+		VirtualMachineServiceUpdateVirtualMachineServiceProcedure,
+		svc.UpdateVirtualMachineService,
+		connect.WithSchema(virtualMachineServiceMethods.ByName("UpdateVirtualMachineService")),
+		connect.WithHandlerOptions(opts...),
+	)
+	virtualMachineServiceDeleteVirtualMachineServiceHandler := connect.NewUnaryHandler(
+		VirtualMachineServiceDeleteVirtualMachineServiceProcedure,
+		svc.DeleteVirtualMachineService,
+		connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteVirtualMachineService")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.virtual_machine.v1.VirtualMachineService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case VirtualMachineServiceListVirtualMachinesProcedure:
@@ -788,6 +861,12 @@ func NewVirtualMachineServiceHandler(svc VirtualMachineServiceHandler, opts ...c
 			virtualMachineServiceCreateInstanceTypeHandler.ServeHTTP(w, r)
 		case VirtualMachineServiceDeleteInstanceTypeProcedure:
 			virtualMachineServiceDeleteInstanceTypeHandler.ServeHTTP(w, r)
+		case VirtualMachineServiceCreateVirtualMachineServiceProcedure:
+			virtualMachineServiceCreateVirtualMachineServiceHandler.ServeHTTP(w, r)
+		case VirtualMachineServiceUpdateVirtualMachineServiceProcedure:
+			virtualMachineServiceUpdateVirtualMachineServiceHandler.ServeHTTP(w, r)
+		case VirtualMachineServiceDeleteVirtualMachineServiceProcedure:
+			virtualMachineServiceDeleteVirtualMachineServiceHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -907,4 +986,16 @@ func (UnimplementedVirtualMachineServiceHandler) CreateInstanceType(context.Cont
 
 func (UnimplementedVirtualMachineServiceHandler) DeleteInstanceType(context.Context, *connect.Request[v1.DeleteInstanceTypeRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DeleteInstanceType is not implemented"))
+}
+
+func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachineService(context.Context, *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineService is not implemented"))
+}
+
+func (UnimplementedVirtualMachineServiceHandler) UpdateVirtualMachineService(context.Context, *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.UpdateVirtualMachineService is not implemented"))
+}
+
+func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachineService(context.Context, *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineService is not implemented"))
 }

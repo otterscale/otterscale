@@ -48,6 +48,7 @@ type VirtualMachineData struct {
 	Clones    []VirtualMachineClone
 	Snapshots []VirtualMachineSnapshot
 	Restores  []VirtualMachineRestore
+	Services  []Service
 	MachineID string
 }
 
@@ -581,6 +582,35 @@ func (uc *VirtualMachineUseCase) DeleteInstanceType(ctx context.Context, uuid, f
 	return uc.kubeIT.Delete(ctx, config, namespace, name)
 }
 
+func (uc *VirtualMachineUseCase) CreateVirtualMachineService(ctx context.Context, uuid, facility, namespace, name, vmName string, ports []ServicePort) (*corev1.Service, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.kubeCore.CreateVirtualMachineService(ctx, config, namespace, name, vmName, ports)
+}
+
+func (uc *VirtualMachineUseCase) UpdateVirtualMachineService(ctx context.Context, uuid, facility, namespace, name string, ports []ServicePort) (*corev1.Service, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	svc, err := uc.kubeCore.GetService(ctx, config, namespace, name)
+	if err != nil {
+		return nil, err
+	}
+	svc.Spec.Ports = ports
+	return uc.kubeCore.UpdateService(ctx, config, namespace, name, svc)
+}
+
+func (uc *VirtualMachineUseCase) DeleteVirtualMachineService(ctx context.Context, uuid, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.kubeCore.DeleteService(ctx, config, namespace, name)
+}
+
 func (uc *VirtualMachineUseCase) fetchVirtualMachineData(ctx context.Context, config *rest.Config, namespace, vmName string) ([]VirtualMachineData, error) {
 	var (
 		virtualMachines []VirtualMachine
@@ -588,6 +618,7 @@ func (uc *VirtualMachineUseCase) fetchVirtualMachineData(ctx context.Context, co
 		clones          []VirtualMachineClone
 		snapshots       []VirtualMachineSnapshot
 		restores        []VirtualMachineRestore
+		services        []Service
 		machines        []Machine
 	)
 
@@ -650,6 +681,13 @@ func (uc *VirtualMachineUseCase) fetchVirtualMachineData(ctx context.Context, co
 		return err
 	})
 	eg.Go(func() error {
+		v, err := uc.kubeCore.ListVirtualMachineServices(egctx, config, namespace, vmName)
+		if err == nil {
+			services = v
+		}
+		return err
+	})
+	eg.Go(func() error {
 		v, err := uc.machine.List(egctx)
 		if err == nil {
 			machines = v
@@ -661,10 +699,10 @@ func (uc *VirtualMachineUseCase) fetchVirtualMachineData(ctx context.Context, co
 		return nil, err
 	}
 
-	return uc.assembleVMData(virtualMachines, instances, clones, snapshots, restores, machines), nil
+	return uc.assembleVMData(virtualMachines, instances, clones, snapshots, restores, services, machines), nil
 }
 
-func (uc *VirtualMachineUseCase) assembleVMData(virtualMachines []VirtualMachine, instances []VirtualMachineInstance, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, machines []Machine) []VirtualMachineData {
+func (uc *VirtualMachineUseCase) assembleVMData(virtualMachines []VirtualMachine, instances []VirtualMachineInstance, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, services []Service, machines []Machine) []VirtualMachineData {
 	machineMap := make(map[string]string, len(machines))
 	for _, m := range machines {
 		machineMap[m.Hostname] = m.SystemID
@@ -692,6 +730,7 @@ func (uc *VirtualMachineUseCase) assembleVMData(virtualMachines []VirtualMachine
 			Clones:                 uc.filterByVM(clones, vm.Namespace, vm.Name).([]VirtualMachineClone),
 			Snapshots:              uc.filterByVM(snapshots, vm.Namespace, vm.Name).([]VirtualMachineSnapshot),
 			Restores:               uc.filterByVM(restores, vm.Namespace, vm.Name).([]VirtualMachineRestore),
+			Services:               uc.filterByVM(services, vm.Namespace, vm.Name).([]Service),
 			MachineID:              machineID,
 		}
 	}
@@ -718,6 +757,14 @@ func (uc *VirtualMachineUseCase) filterByVM(items any, namespace, vmName string)
 		return result
 	case []VirtualMachineRestore:
 		var result []VirtualMachineRestore
+		for _, item := range v {
+			if item.Namespace == namespace && item.Labels[VirtualMachineNameLabel] == vmName {
+				result = append(result, item)
+			}
+		}
+		return result
+	case []Service:
+		var result []Service
 		for _, item := range v {
 			if item.Namespace == namespace && item.Labels[VirtualMachineNameLabel] == vmName {
 				result = append(result, item)

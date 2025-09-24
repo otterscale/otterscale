@@ -39,45 +39,43 @@ func (r *core) GetService(ctx context.Context, config *rest.Config, namespace, n
 	return svc, nil
 }
 
-func (r *core) CreateService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*oscore.Service, error) {
+func (r *core) ListVirtualMachineServices(ctx context.Context, config *rest.Config, namespace, vmName string) ([]oscore.Service, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
-
-	svc := &corev1.Service{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: name,
-		},
+	opts := metav1.ListOptions{}
+	if vmName != "" {
+		opts.LabelSelector = oscore.VirtualMachineNameLabel + "=" + vmName
 	}
-	if spec != nil {
-		svc.Spec = *spec
+	list, err := clientset.CoreV1().Services(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
 	}
-
-	opts := metav1.CreateOptions{}
-	return clientset.CoreV1().Services(namespace).Create(ctx, svc, opts)
+	return list.Items, nil
 }
 
-func (r *core) CreateVirtualMachineService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*oscore.Service, error) {
+func (r *core) CreateVirtualMachineService(ctx context.Context, config *rest.Config, namespace, name, vmName string, ports []corev1.ServicePort) (*oscore.Service, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
 
-	svc := &corev1.Service{
+	service := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: name,
+			Name:      name,
+			Namespace: namespace,
 			Labels: map[string]string{
-				"otterscale.io/kind": "vm-service",
+				oscore.VirtualMachineNameLabel: vmName,
 			},
 		},
+		Spec: corev1.ServiceSpec{
+			Ports: ports,
+			Type:  corev1.ServiceTypeNodePort,
+		},
 	}
-	if spec != nil {
-		svc.Spec = *spec
-	}
-
 	opts := metav1.CreateOptions{}
-	return clientset.CoreV1().Services(namespace).Create(ctx, svc, opts)
+	return clientset.CoreV1().Services(namespace).Create(ctx, service, opts)
 }
 
 func (r *core) ListServices(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Service, error) {
@@ -111,22 +109,13 @@ func (r *core) ListServicesByOptions(ctx context.Context, config *rest.Config, n
 	return list.Items, nil
 }
 
-func (r *core) UpdateService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*oscore.Service, error) {
+func (r *core) UpdateService(ctx context.Context, config *rest.Config, namespace, name string, service *corev1.Service) (*oscore.Service, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
-
-	svc, err := clientset.CoreV1().Services(namespace).Get(ctx, name, metav1.GetOptions{})
-	if err != nil {
-		return nil, err
-	}
-	if spec != nil {
-		svc.Spec = *spec
-	}
-
 	opts := metav1.UpdateOptions{}
-	return clientset.CoreV1().Services(namespace).Update(ctx, svc, opts)
+	return clientset.CoreV1().Services(namespace).Update(ctx, service, opts)
 }
 
 func (r *core) DeleteService(ctx context.Context, config *rest.Config, namespace, name string) error {

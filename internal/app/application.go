@@ -281,6 +281,7 @@ func toProtoServicePort(p *corev1.ServicePort) *pb.Application_Service_Port {
 	ret := &pb.Application_Service_Port{}
 	ret.SetPort(p.Port)
 	ret.SetNodePort(p.NodePort)
+	ret.SetName(p.Name)
 	ret.SetProtocol(string(p.Protocol))
 	ret.SetTargetPort(p.TargetPort.String())
 	return ret

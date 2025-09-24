@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"strings"
 
 	"connectrpc.com/connect"
 
@@ -9,6 +10,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	clonev1beta1 "kubevirt.io/api/clone/v1beta1"
 	virtv1 "kubevirt.io/api/core/v1"
 	snapshotv1beta1 "kubevirt.io/api/snapshot/v1beta1"
@@ -275,6 +277,50 @@ func (s *VirtualMachineService) DeleteInstanceType(ctx context.Context, req *con
 	return connect.NewResponse(resp), nil
 }
 
+func (s *VirtualMachineService) CreateVirtualMachineService(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineServiceRequest]) (*connect.Response[apppb.Application_Service], error) {
+	svc, err := s.uc.CreateVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetVirtualMachineName(), toPorts(req.Msg.GetPorts()))
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoService(svc)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *VirtualMachineService) UpdateVirtualMachineService(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineServiceRequest]) (*connect.Response[apppb.Application_Service], error) {
+	svc, err := s.uc.UpdateVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), toPorts(req.Msg.GetPorts()))
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoService(svc)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *VirtualMachineService) DeleteVirtualMachineService(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func toPorts(ps []*apppb.Application_Service_Port) []corev1.ServicePort {
+	ret := []corev1.ServicePort{}
+	for i := range ps {
+		ret = append(ret, toPort(ps[i]))
+	}
+	return ret
+}
+
+func toPort(p *apppb.Application_Service_Port) corev1.ServicePort {
+	return corev1.ServicePort{
+		Name:       p.GetName(),
+		Port:       p.GetPort(),
+		NodePort:   p.GetNodePort(),
+		Protocol:   corev1.Protocol(strings.ToUpper(p.GetProtocol())),
+		TargetPort: intstr.FromString(p.GetTargetPort()),
+	}
+}
+
 func toProtoVirtualMachineDiskVolumeSource(v *virtv1.VolumeSource) *pb.VirtualMachine_Disk_Volume_Source {
 	ret := &pb.VirtualMachine_Disk_Volume_Source{}
 	if v.DataVolume != nil {
@@ -364,7 +410,7 @@ func toProtoVirtualMachine(vmd *core.VirtualMachineData) *pb.VirtualMachine {
 
 	ret.SetMachineId(vmd.MachineID)
 	ret.SetCreatedAt(timestamppb.New(vmd.VirtualMachine.CreationTimestamp.Time))
-	// TODO SVC
+	ret.SetServices(toProtoServices(vmd.Services))
 	ret.SetDisks(toProtoVirtualMachineDisks(vmd.VirtualMachine.Spec.Template.Spec.Domain.Devices.Disks, vmd.VirtualMachine.Spec.Template.Spec.Volumes))
 	ret.SetClones(toProtoVirtualMachineClones(vmd.Clones))
 	ret.SetSnapshots(toProtoVirtualMachineSnapshots(vmd.Snapshots))
