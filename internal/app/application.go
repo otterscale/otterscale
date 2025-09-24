@@ -36,6 +36,16 @@ func NewApplicationService(uc *core.ApplicationUseCase) *ApplicationService {
 
 var _ pbconnect.ApplicationServiceHandler = (*ApplicationService)(nil)
 
+func (s *ApplicationService) ListNamespaces(ctx context.Context, req *connect.Request[pb.ListNamespacesRequest]) (*connect.Response[pb.ListNamespacesResponse], error) {
+	namespaces, err := s.uc.ListNamespaces(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListNamespacesResponse{}
+	resp.SetNamespaces(toProtoNamespaces(namespaces))
+	return connect.NewResponse(resp), nil
+}
+
 func (s *ApplicationService) ListApplications(ctx context.Context, req *connect.Request[pb.ListApplicationsRequest]) (*connect.Response[pb.ListApplicationsResponse], error) {
 	apps, err := s.uc.ListApplications(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
 	if err != nil {
@@ -177,6 +187,22 @@ func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *connec
 	return connect.NewResponse(resp), nil
 }
 
+func toProtoNamespaces(ns []core.Namespace) []*pb.Namespace {
+	ret := []*pb.Namespace{}
+	for i := range ns {
+		ret = append(ret, toProtoNamespace(&ns[i]))
+	}
+	return ret
+}
+
+func toProtoNamespace(n *core.Namespace) *pb.Namespace {
+	ret := &pb.Namespace{}
+	ret.SetName(n.Name)
+	ret.SetLabels(n.Labels)
+	ret.SetCreatedAt(timestamppb.New(n.CreationTimestamp.Time))
+	return ret
+}
+
 func toProtoApplications(as []core.Application, publicAddress string) []*pb.Application {
 	ret := []*pb.Application{}
 	for i := range as {
@@ -239,6 +265,7 @@ func toProtoService(s *corev1.Service) *pb.Application_Service {
 	ret.SetClusterIp(s.Spec.ClusterIP)
 	ret.SetPorts(toProtoServicePorts(s.Spec.Ports))
 	ret.SetCreatedAt(timestamppb.New(s.CreationTimestamp.Time))
+	ret.SetCreatedAt(timestamppb.New(s.CreationTimestamp.Time))
 	return ret
 }
 
@@ -254,6 +281,7 @@ func toProtoServicePort(p *corev1.ServicePort) *pb.Application_Service_Port {
 	ret := &pb.Application_Service_Port{}
 	ret.SetPort(p.Port)
 	ret.SetNodePort(p.NodePort)
+	ret.SetName(p.Name)
 	ret.SetProtocol(string(p.Protocol))
 	ret.SetTargetPort(p.TargetPort.String())
 	return ret
