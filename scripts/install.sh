@@ -195,17 +195,17 @@ validate_url() {
         ip="${BASH_REMATCH[1]}"
         port="${BASH_REMATCH[2]}"
     else
-        log "WARN" "URL format not recognized: $url" "VALIDATION"
+        echo "URL format not recognized: $url"
         return 1
     fi
 
     if ! validate_ip "$ip"; then
-        log "WARN" "Invalid IP in URL: $ip" "VALIDATION"
+        echo "Invalid IP in URL: $ip"
         return 1
     fi
 
     if ! validate_port "$port"; then
-        log "WARN" "Invalid port in URL: $port" "VALIDATION"
+        echo "Invalid port in URL: $port"
         return 1
     fi
 
@@ -360,12 +360,8 @@ send_request() {
             return 0
         fi
 
-        ((retry_count++))
         log "WARN" "HTTP request failed (attempt $retry_count/$max_retries)" "COMMUNICATION"
-
-        if ((retry_count < max_retries)); then
-            sleep $((retry_count * 2))
-        fi
+        retry_count=$((retry_count+1))
     done
 
     log "ERROR" "Failed to send HTTP request after $max_retries attempts" "COMMUNICATION"
@@ -455,6 +451,13 @@ EOF
 # PACKAGE MANAGEMENT FUNCTIONS
 # =============================================================================
 
+check_curl() {
+    if ! command -v curl &> /dev/null; then
+        echo "Please apt install curl first"
+        exit 1
+    fi
+}
+
 # Update APT package lists
 apt_update() {
     log "INFO" "Updating APT package lists..." "APT_UPDATE"
@@ -500,12 +503,8 @@ retry_snap_install() {
             return 0
         fi
 
-        ((retry_count++))
         log "WARN" "Failed to install snap $snap_name (attempt $retry_count/$max_retries)" "SNAP_INSTALL"
-
-        if ((retry_count < max_retries)); then
-            sleep 5
-        fi
+        retry_count=$((retry_count+1))
     done
 
     error_exit "Failed to install snap $snap_name after $max_retries attempts"
@@ -526,12 +525,8 @@ retry_snap_refresh() {
             return 0
         fi
 
-        ((retry_count++))
         log "WARN" "Failed to refresh snap $snap_name (attempt $retry_count/$max_retries)" "SNAP_REFRESH"
-
-        if ((retry_count < max_retries)); then
-            sleep 5
-        fi
+        retry_count=$((retry_count+1))
     done
 
     error_exit "Failed to refresh snap $snap_name after $max_retries attempts"
@@ -870,11 +865,10 @@ login_maas() {
     while ((retry_count < OTTERSCALE_MAX_RETRIES)); do
         if maas login admin "http://localhost:5240/MAAS/" "$APIKEY" >>"$TEMP_LOG" 2>&1; then
             log "INFO" "MAAS login successful" "MAAS_LOGIN"
-            sleep 10
             return 0
         else
             log "WARN" "Failed to login to MAAS, retrying in 10 seconds (attempt $((retry_count + 1)))" "MAAS_LOGIN"
-            ((retry_count++))
+            retry_count=$((retry_count+1))
             sleep 10
         fi
     done
@@ -1666,5 +1660,6 @@ parse_arguments() {
 # Script entry point
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     parse_arguments "$@"
+    check_curl
     main "$@"
 fi
