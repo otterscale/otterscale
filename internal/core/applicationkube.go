@@ -101,7 +101,7 @@ type KubeCoreRepo interface {
 	GetService(ctx context.Context, config *rest.Config, namespace, name string) (*Service, error)
 	ListVirtualMachineServices(ctx context.Context, config *rest.Config, namespace, vmName string) ([]Service, error)
 	CreateVirtualMachineService(ctx context.Context, config *rest.Config, namespace, name, vmName string, ports []corev1.ServicePort) (*Service, error)
-	UpdateService(ctx context.Context, config *rest.Config, namespace, name string, service *Service) (*Service, error)
+	UpdateService(ctx context.Context, config *rest.Config, namespace string, service *Service) (*Service, error)
 	DeleteService(ctx context.Context, config *rest.Config, namespace, name string) error
 
 	// Pod

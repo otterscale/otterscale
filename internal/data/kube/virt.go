@@ -9,8 +9,11 @@ import (
 	virtv1 "kubevirt.io/api/core/v1"
 
 	"github.com/google/uuid"
+
 	oscore "github.com/otterscale/otterscale/internal/core"
 )
+
+const VirtualMachineKind = "VirtualMachine"
 
 type virt struct {
 	kube *Kube

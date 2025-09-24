@@ -46,7 +46,7 @@ func (r *virtClone) CreateVirtualMachineClone(ctx context.Context, config *rest.
 		return nil, err
 	}
 	apiGroup := virtcore.GroupName
-	kind := "VirtualMachine"
+	kind := VirtualMachineKind
 	clone := &clonev1beta1.VirtualMachineClone{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,

@@ -351,13 +351,13 @@ func toProtoVirtualMachineDisks(ds []virtv1.Disk, vs []virtv1.Volume) []*pb.Virt
 func toProtoVirtualMachineDisk(d *virtv1.Disk, vs []virtv1.Volume) *pb.VirtualMachine_Disk {
 	ret := &pb.VirtualMachine_Disk{}
 	ret.SetName(d.Name)
-	disk := d.DiskDevice.Disk
+	disk := d.Disk
 	if disk != nil {
 		ret.SetBus(convertDiskBusToProto(disk.Bus))
 	}
 	bootOrder := d.BootOrder
 	if bootOrder != nil {
-		ret.SetBootOrder(uint32(*bootOrder))
+		ret.SetBootOrder(uint32(*bootOrder)) //nolint:gosec // ignore
 	}
 	for i := range vs {
 		if vs[i].Name == d.Name {
@@ -522,7 +522,7 @@ func toProtoVirtualMachineRestore(r *core.VirtualMachineRestore) *pb.VirtualMach
 	return ret
 }
 
-func getDataVolumeSize(spec cdiv1beta1.DataVolumeSpec) int64 {
+func getDataVolumeSize(spec *cdiv1beta1.DataVolumeSpec) int64 {
 	if spec.PVC != nil {
 		if size := extractStorageSize(spec.PVC.Resources.Requests); size > 0 {
 			return size
@@ -595,7 +595,7 @@ func toProtoDataVolume(it *core.DataVolumeWithStorage) *pb.DataVolume {
 	ret.SetBootImage(it.Labels[core.DataVolumeBootImageLabel] == "true")
 	ret.SetPhase(string(it.Status.Phase))
 	ret.SetProgress(string(it.Status.Progress))
-	ret.SetSizeBytes(getDataVolumeSize(it.Spec))
+	ret.SetSizeBytes(getDataVolumeSize(&it.Spec))
 	if it.Storage != nil {
 		ret.SetPersistentVolumeClaim(toProtoPersistentVolumeClaim(it.Storage))
 	}

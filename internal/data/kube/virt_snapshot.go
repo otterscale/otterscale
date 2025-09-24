@@ -46,7 +46,7 @@ func (r *virtSnapshot) CreateVirtualMachineSnapshot(ctx context.Context, config 
 		return nil, err
 	}
 	apiGroup := virtcore.GroupName
-	kind := "VirtualMachine"
+	kind := VirtualMachineKind
 	snapshot := &snapshotv1beta1.VirtualMachineSnapshot{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -98,7 +98,7 @@ func (r *virtSnapshot) CreateVirtualMachineRestore(ctx context.Context, config *
 		return nil, err
 	}
 	apiGroup := virtcore.GroupName
-	kind := "VirtualMachine"
+	kind := VirtualMachineKind
 	restore := &snapshotv1beta1.VirtualMachineRestore{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,

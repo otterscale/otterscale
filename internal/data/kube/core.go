@@ -109,7 +109,7 @@ func (r *core) ListServicesByOptions(ctx context.Context, config *rest.Config, n
 	return list.Items, nil
 }
 
-func (r *core) UpdateService(ctx context.Context, config *rest.Config, namespace, name string, service *corev1.Service) (*oscore.Service, error) {
+func (r *core) UpdateService(ctx context.Context, config *rest.Config, namespace string, service *corev1.Service) (*oscore.Service, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err

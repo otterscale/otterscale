@@ -176,7 +176,7 @@ func (uc *VirtualMachineUseCase) DeleteVirtualMachine(ctx context.Context, uuid,
 	return uc.kubeVirt.DeleteVirtualMachine(ctx, config, namespace, name)
 }
 
-func (uc *VirtualMachineUseCase) AttachVirtualMachineDisk(ctx context.Context, uuid, facility, namespace, name, dvName string) (*VirtualMachineDisk, *VirtualMachineVolume, error) {
+func (uc *VirtualMachineUseCase) AttachVirtualMachineDisk(ctx context.Context, uuid, facility, namespace, name, dvName string) (disk *VirtualMachineDisk, volume *VirtualMachineVolume, err error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, nil, err
@@ -187,8 +187,9 @@ func (uc *VirtualMachineUseCase) AttachVirtualMachineDisk(ctx context.Context, u
 	}
 
 	// check if disk already attached
-	for _, vol := range vm.Spec.Template.Spec.Volumes {
-		if vol.Name == dvName {
+	volumes := vm.Spec.Template.Spec.Volumes
+	for i := range volumes {
+		if volumes[i].Name == dvName {
 			return nil, nil, fmt.Errorf("disk %s is already attached to virtual machine %s/%s", dvName, namespace, name)
 		}
 	}
@@ -220,25 +221,20 @@ func (uc *VirtualMachineUseCase) AttachVirtualMachineDisk(ctx context.Context, u
 	}
 
 	// get disk and volume to verify
-	var (
-		disk   *VirtualMachineDisk
-		volume *VirtualMachineVolume
-	)
-
-	for _, d := range newVM.Spec.Template.Spec.Domain.Devices.Disks {
-		if d.Name == dvName {
-			disk = &d
+	disks := newVM.Spec.Template.Spec.Domain.Devices.Disks
+	for i := range disks {
+		if disks[i].Name == dvName {
+			disk = &disks[i]
 			break
 		}
 	}
-
-	for _, v := range newVM.Spec.Template.Spec.Volumes {
-		if v.Name == dvName {
-			volume = &v
+	volumes = newVM.Spec.Template.Spec.Volumes
+	for i := range volumes {
+		if volumes[i].Name == dvName {
+			volume = &volumes[i]
 			break
 		}
 	}
-
 	return disk, volume, nil
 }
 
@@ -254,8 +250,9 @@ func (uc *VirtualMachineUseCase) DetachVirtualMachineDisk(ctx context.Context, u
 
 	// check if disk is attached
 	found := false
-	for _, vol := range vm.Spec.Template.Spec.Volumes {
-		if vol.Name == dvName {
+	volumes := vm.Spec.Template.Spec.Volumes
+	for i := range vm.Spec.Template.Spec.Volumes {
+		if volumes[i].Name == dvName {
 			found = true
 			break
 		}
@@ -266,18 +263,20 @@ func (uc *VirtualMachineUseCase) DetachVirtualMachineDisk(ctx context.Context, u
 
 	// detach disk
 	newDisks := make([]virtv1.Disk, 0, len(vm.Spec.Template.Spec.Domain.Devices.Disks)-1)
-	for _, disk := range vm.Spec.Template.Spec.Domain.Devices.Disks {
-		if disk.Name != dvName {
-			newDisks = append(newDisks, disk)
+	disks := vm.Spec.Template.Spec.Domain.Devices.Disks
+	for i := range disks {
+		if disks[i].Name != dvName {
+			newDisks = append(newDisks, disks[i])
 		}
 	}
 	vm.Spec.Template.Spec.Domain.Devices.Disks = newDisks
 
 	// remove volume
 	newVolumes := make([]virtv1.Volume, 0, len(vm.Spec.Template.Spec.Volumes)-1)
-	for _, vol := range vm.Spec.Template.Spec.Volumes {
-		if vol.Name != dvName {
-			newVolumes = append(newVolumes, vol)
+	volumes = vm.Spec.Template.Spec.Volumes
+	for i := range volumes {
+		if volumes[i].Name != dvName {
+			newVolumes = append(newVolumes, volumes[i])
 		}
 	}
 	vm.Spec.Template.Spec.Volumes = newVolumes
@@ -600,7 +599,7 @@ func (uc *VirtualMachineUseCase) UpdateVirtualMachineService(ctx context.Context
 		return nil, err
 	}
 	svc.Spec.Ports = ports
-	return uc.kubeCore.UpdateService(ctx, config, namespace, name, svc)
+	return uc.kubeCore.UpdateService(ctx, config, namespace, svc)
 }
 
 func (uc *VirtualMachineUseCase) DeleteVirtualMachineService(ctx context.Context, uuid, facility, namespace, name string) error {
@@ -709,13 +708,13 @@ func (uc *VirtualMachineUseCase) assembleVMData(virtualMachines []VirtualMachine
 	}
 
 	result := make([]VirtualMachineData, len(virtualMachines))
-	for i, vm := range virtualMachines {
+	for i := range virtualMachines {
 		var instance *VirtualMachineInstance
 		var machineID string
 
 		// find matching instance
 		for j := range instances {
-			if instances[j].Namespace == vm.Namespace && instances[j].Name == vm.Name {
+			if virtualMachines[i].Namespace == instances[j].Namespace && virtualMachines[i].Name == instances[j].Name {
 				instance = &instances[j]
 				if nodeName := instance.Status.NodeName; nodeName != "" {
 					machineID = machineMap[nodeName]
@@ -725,12 +724,12 @@ func (uc *VirtualMachineUseCase) assembleVMData(virtualMachines []VirtualMachine
 		}
 
 		result[i] = VirtualMachineData{
-			VirtualMachine:         &vm,
+			VirtualMachine:         &virtualMachines[i],
 			VirtualMachineInstance: instance,
-			Clones:                 uc.filterByVM(clones, vm.Namespace, vm.Name).([]VirtualMachineClone),
-			Snapshots:              uc.filterByVM(snapshots, vm.Namespace, vm.Name).([]VirtualMachineSnapshot),
-			Restores:               uc.filterByVM(restores, vm.Namespace, vm.Name).([]VirtualMachineRestore),
-			Services:               uc.filterByVM(services, vm.Namespace, vm.Name).([]Service),
+			Clones:                 uc.filterByVM(clones, virtualMachines[i].Namespace, virtualMachines[i].Name).([]VirtualMachineClone),
+			Snapshots:              uc.filterByVM(snapshots, virtualMachines[i].Namespace, virtualMachines[i].Name).([]VirtualMachineSnapshot),
+			Restores:               uc.filterByVM(restores, virtualMachines[i].Namespace, virtualMachines[i].Name).([]VirtualMachineRestore),
+			Services:               uc.filterByVM(services, virtualMachines[i].Namespace, virtualMachines[i].Name).([]Service),
 			MachineID:              machineID,
 		}
 	}
@@ -741,33 +740,33 @@ func (uc *VirtualMachineUseCase) filterByVM(items any, namespace, vmName string)
 	switch v := items.(type) {
 	case []VirtualMachineClone:
 		var result []VirtualMachineClone
-		for _, item := range v {
-			if item.Namespace == namespace && item.Labels[VirtualMachineNameLabel] == vmName {
-				result = append(result, item)
+		for i := range v {
+			if v[i].Namespace == namespace && v[i].Labels[VirtualMachineNameLabel] == vmName {
+				result = append(result, v[i])
 			}
 		}
 		return result
 	case []VirtualMachineSnapshot:
 		var result []VirtualMachineSnapshot
-		for _, item := range v {
-			if item.Namespace == namespace && item.Labels[VirtualMachineNameLabel] == vmName {
-				result = append(result, item)
+		for i := range v {
+			if v[i].Namespace == namespace && v[i].Labels[VirtualMachineNameLabel] == vmName {
+				result = append(result, v[i])
 			}
 		}
 		return result
 	case []VirtualMachineRestore:
 		var result []VirtualMachineRestore
-		for _, item := range v {
-			if item.Namespace == namespace && item.Labels[VirtualMachineNameLabel] == vmName {
-				result = append(result, item)
+		for i := range v {
+			if v[i].Namespace == namespace && v[i].Labels[VirtualMachineNameLabel] == vmName {
+				result = append(result, v[i])
 			}
 		}
 		return result
 	case []Service:
 		var result []Service
-		for _, item := range v {
-			if item.Namespace == namespace && item.Labels[VirtualMachineNameLabel] == vmName {
-				result = append(result, item)
+		for i := range v {
+			if v[i].Namespace == namespace && v[i].Labels[VirtualMachineNameLabel] == vmName {
+				result = append(result, v[i])
 			}
 		}
 		return result
