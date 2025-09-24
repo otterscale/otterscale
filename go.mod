@@ -1,10 +1,11 @@
 module github.com/otterscale/otterscale
 
-go 1.24.6
+go 1.25.1
 
-replace gopkg.in/yaml.v2 => github.com/juju/yaml/v2 v2.0.0
-
-replace github.com/juju/juju => github.com/iasthc/juju v1.36.7
+replace (
+	github.com/juju/juju => github.com/iasthc/juju v1.36.7
+	gopkg.in/yaml.v2 => github.com/juju/yaml/v2 v2.0.0
+)
 
 require (
 	connectrpc.com/connect v1.18.1
@@ -20,10 +21,12 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/go-faker/faker/v4 v4.6.1
 	github.com/goccy/go-yaml v1.18.0
+	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/jaypipes/pcidb v1.1.1
 	github.com/juju/juju v0.0.0-20250408011917-ff0de670c36e
 	github.com/juju/names/v5 v5.0.0
+	github.com/otterscale/kubevirt-client-go v1.6.1
 	github.com/prometheus/client_golang v1.23.2
 	github.com/rs/cors v1.11.1
 	github.com/spf13/cobra v1.9.1
@@ -42,6 +45,8 @@ require (
 	k8s.io/apimachinery v0.33.3
 	k8s.io/cli-runtime v0.33.3
 	k8s.io/client-go v0.33.3
+	kubevirt.io/api v1.6.1
+	kubevirt.io/containerized-data-importer-api v1.63.0
 	sigs.k8s.io/yaml v1.5.0
 )
 
@@ -103,7 +108,6 @@ require (
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674 // indirect
 	github.com/gosuri/uitable v0.0.4 // indirect
 	github.com/grafana/regexp v0.0.0-20240518133315-a468a5bfb3bc // indirect
@@ -178,6 +182,7 @@ require (
 	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.1 // indirect
+	github.com/openshift/custom-resource-status v1.1.2 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
@@ -206,6 +211,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.38.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.38.0 // indirect
 	go.opentelemetry.io/otel/trace v1.38.0 // indirect
+	go.uber.org/mock v0.5.1 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.3 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
@@ -235,6 +241,7 @@ require (
 	k8s.io/kube-openapi v0.0.0-20250318190949-c8a335a9a2ff // indirect
 	k8s.io/kubectl v0.33.3 // indirect
 	k8s.io/utils v0.0.0-20241210054802-24370beab758 // indirect
+	kubevirt.io/controller-lifecycle-operator-sdk/api v0.0.0-20220329064328-f3cc58c6ed90 // indirect
 	oras.land/oras-go/v2 v2.6.0 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 	sigs.k8s.io/kustomize/api v0.19.0 // indirect

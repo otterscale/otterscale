@@ -25,6 +25,7 @@ import (
 	scopev1 "github.com/otterscale/otterscale/api/scope/v1/pbconnect"
 	storagev1 "github.com/otterscale/otterscale/api/storage/v1/pbconnect"
 	tagv1 "github.com/otterscale/otterscale/api/tag/v1/pbconnect"
+	virtualmachinev1 "github.com/otterscale/otterscale/api/virtual_machine/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/app"
 )
 
@@ -41,9 +42,10 @@ var Services = []string{
 	scopev1.ScopeServiceName,
 	storagev1.StorageServiceName,
 	tagv1.TagServiceName,
+	virtualmachinev1.VirtualMachineServiceName,
 }
 
-func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, premium *app.PremiumService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService) (*http.ServeMux, error) {
+func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, premium *app.PremiumService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService, virtualmachine *app.VirtualMachineService) (*http.ServeMux, error) {
 	// interceptor
 	otelInterceptor, err := otelconnect.NewInterceptor()
 	if err != nil {
@@ -67,6 +69,7 @@ func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config
 	mux.Handle(storagev1.NewStorageServiceHandler(storage, opts...))
 	mux.Handle(scopev1.NewScopeServiceHandler(scope, opts...))
 	mux.Handle(tagv1.NewTagServiceHandler(tag, opts...))
+	mux.Handle(virtualmachinev1.NewVirtualMachineServiceHandler(virtualmachine, opts...))
 
 	// prometheus proxy
 	proxy := httputil.NewSingleHostReverseProxy(environment.GetPrometheusURL())
