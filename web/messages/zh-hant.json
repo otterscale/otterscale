@@ -690,6 +690,7 @@
 	"machine_dashboard_gpu_memory_tooltip": "所有機器的 GPU 記憶體總量。",
 	"machine_dashboard_gpu_tooltip": "所有機器的 GPU 總數。",
 	"pieces": "個",
+	"llm_dashboard_description": "提供模型效能的即時洞察，包括端到端延遲與首個 Token 的生成時間。",
 	"llm_dashboard_latency_tooltip": "所有模型的平均延遲。",
 	"llm_dashboard_models_tooltip": "模型數量。",
 	"llm_dashboard_requests_tooltip": "顯示過去 24 小時內執行中和等待中的請求數量。",

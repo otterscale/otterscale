@@ -25,8 +25,9 @@ var (
 	}
 )
 
-func CreateCeph(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, uuid, machineID, prefix string, configs map[string]string) error {
-	if err := createEssential(ctx, serverRepo, machineRepo, facilityRepo, uuid, machineID, prefix, cephCharms, configs); err != nil {
+func CreateCeph(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, tagRepo TagRepo, uuid, machineID, prefix string, configs map[string]string) error {
+	tags := []string{Ceph, CephMon, CephOSD}
+	if err := createEssential(ctx, serverRepo, machineRepo, facilityRepo, tagRepo, uuid, machineID, prefix, cephCharms, configs, tags); err != nil {
 		return err
 	}
 	return createEssentialRelations(ctx, facilityRepo, uuid, toEndpointList(prefix, cephRelations))
@@ -39,9 +40,10 @@ func GetCephCharms() []EssentialCharm {
 func newCephConfigs(prefix, osdDevices, vip string) (map[string]string, error) {
 	configs := map[string]map[string]any{
 		"ceph-mon": {
-			"monitor-count":      1,
-			"expected-osd-count": 1,
-			"config-flags":       `{ "global": {"osd_pool_default_size": 1, "osd_pool_default_min_size": 1, "mon_allow_pool_size_one": true} }`,
+			"monitor-count":       1,
+			"expected-osd-count":  1,
+			"config-flags":        `{ "global": {"osd_pool_default_size": 1, "osd_pool_default_min_size": 1, "mon_allow_pool_size_one": true} }`,
+			"enable-perf-metrics": true,
 		},
 		"ceph-osd": {
 			"osd-devices": osdDevices,
