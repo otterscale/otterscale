@@ -23,6 +23,8 @@
 	"home": "Home",
 	"compute": "Compute",
 	"platform": "Platform",
+	"model": "Model",
+	"model_name": "Model Name",
 	"models": "Models",
 	"models_description": "AI models for intelligent data processing and analysis",
 	"llm": "LLM",
@@ -729,5 +731,6 @@
 	"vm_status_stopped": "Powered Off",
 	"vm_status_terminating": "Terminating",
 	"extend": "Extend",
-	"extend_data_volume": "Extend Data Volume"
+	"extend_data_volume": "Extend Data Volume",
+	"gpu_relation": "Relation"
 }

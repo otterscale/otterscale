@@ -2,6 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import { Handle, type NodeProps } from '@xyflow/svelte';
 
+	import type { PodInfo } from '$lib/api/essential/v1/essential_pb';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import { cn } from '$lib/utils';
 
@@ -13,7 +14,7 @@
 </script>
 
 <script lang="ts">
-	let { data, selected, targetPosition, sourcePosition }: Omit<NodeProps, 'data'> & { data: DataType } = $props();
+	let { data, selected, targetPosition, sourcePosition }: Omit<NodeProps, 'data'> & { data: PodInfo } = $props();
 </script>
 
 <HoverCard.Root>
@@ -24,7 +25,7 @@
 				selected ? 'bg-primary-foreground ring-primary ring-1' : 'bg-card ring-0',
 			)}
 		>
-			<Icon icon="ph:robot-thin" class="size-10" />
+			<Icon icon="ph:robot" class="size-10" />
 		</div>
 		{#if targetPosition}
 			<Handle type="target" position={targetPosition} class="invisible" />
@@ -34,16 +35,24 @@
 		{/if}
 	</HoverCard.Trigger>
 	<HoverCard.Content class="w-fit">
-		<div class="flex gap-2 p-2">
-			<div class="bg-muted-foreground/50 size-fit rounded-full">
-				<Icon icon={data.icon} class="size-5" />
-			</div>
-			<div>
-				<p class="text-base text-nowrap whitespace-nowrap">{data.name}</p>
-				<p class="text-muted-foreground text-xs font-light text-nowrap whitespace-nowrap">
-					{data.framework}
-				</p>
-			</div>
+		<div class="flex flex-col gap-2 p-2 text-base text-nowrap whitespace-nowrap">
+			<p class="text-lg font-bold">{data.modelName}</p>
+			<span class="flex items-center gap-2">
+				<Icon icon="ph:cube" class="text-muted-foreground size-6" />
+				<div class="flex flex-col gap-0">
+					<p class="text-muted-foreground text-sm">namespace</p>
+					{data.namespace}
+				</div>
+			</span>
+			<span class="flex items-center gap-2">
+				<Icon icon="ph:cube" class="text-muted-foreground size-6" />
+				<div class="flex flex-col gap-0">
+					<p class="text-muted-foreground text-sm">application</p>
+					<p>
+						{data.name}
+					</p>
+				</div>
+			</span>
 		</div>
 	</HoverCard.Content>
 </HoverCard.Root>

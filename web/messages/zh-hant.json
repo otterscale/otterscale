@@ -23,6 +23,8 @@
 	"home": "首頁",
 	"compute": "運算",
 	"platform": "平台",
+	"model": "模型",
+	"model_name": "模型名稱",
 	"models": "模型",
 	"models_description": "用於智慧資料處理和分析的 AI 模型",
 	"llm": "大型語言模型",
@@ -729,5 +731,6 @@
 	"vm_status_stopped": "關機",
 	"vm_status_terminating": "終止中",
 	"extend": "擴展",
-	"extend_data_volume": "擴展資料磁碟區"
+	"extend_data_volume": "擴展資料磁碟區",
+	"gpu_relation": "關係"
 }

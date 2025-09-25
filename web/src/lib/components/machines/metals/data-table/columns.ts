@@ -48,7 +48,7 @@ const columns: ColumnDef<Machine>[] = [
 				(p: string, n: string) => p.localeCompare(n) < 0,
 				(p, n) => p === n,
 			),
-		filterFn: (row, filterValue: string | undefined) => {
+		filterFn: (row, columnId, filterValue: string | undefined) => {
 			if (filterValue === undefined) {
 				return true;
 			}

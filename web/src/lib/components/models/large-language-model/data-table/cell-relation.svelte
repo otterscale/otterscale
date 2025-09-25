@@ -47,9 +47,9 @@
 	);
 	const models: Node[] = $derived(
 		$relation.podInfos
-			.filter((podInformation) => podInformation.model)
+			.filter((podInformation) => podInformation.modelName)
 			.map((podInformation) => ({
-				id: podInformation.model,
+				id: podInformation.modelName,
 				type: 'model',
 				data: podInformation,
 				position,
@@ -69,12 +69,12 @@
 	);
 	const gpuModels: Edge[] = $derived(
 		$relation.podInfos
-			.filter((podInformation) => podInformation.model)
+			.filter((podInformation) => podInformation.modelName)
 			.flatMap((podInformation) =>
 				podInformation.vgpus.map((gpu) => ({
-					id: `${gpu.physicalGpuUuid}${podInformation.model}`,
+					id: `${gpu.physicalGpuUuid}${podInformation.modelName}`,
 					type: 'edge',
-					source: podInformation.model,
+					source: podInformation.modelName,
 					target: gpu.physicalGpuUuid,
 					animated: true,
 					selectable: false,
@@ -87,21 +87,26 @@
 	let open = $state(false);
 	let isMounted = $state(false);
 	onMount(async () => {
-		essentialClient
-			.getGpuRelationByMachine({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
-				machineName: 'proxmox-4090x2-197-114',
-			})
-			.then((response) => {
-				if (response.gpuRelation) {
-					relation.set(response.gpuRelation);
-					isMounted = true;
-				}
-			})
-			.catch((error) => {
-				console.error(`Failed to fetch relation of model ${model.name}:`, error);
-			});
+		try {
+			essentialClient
+				.getGpuRelationByModel({
+					scopeUuid: $currentKubernetes?.scopeUuid,
+					facilityName: $currentKubernetes?.name,
+					modelName: model.name,
+				})
+				.then((response) => {
+					if (response.gpuRelation) {
+						relation.set(response.gpuRelation);
+						isMounted = true;
+					}
+				})
+				.catch((error) => {
+					console.log(essentialClient);
+					console.error(`Failed to fetch relation of model ${model.name}:`, error);
+				});
+		} catch (error) {
+			console.error(error);
+		}
 	});
 </script>
 

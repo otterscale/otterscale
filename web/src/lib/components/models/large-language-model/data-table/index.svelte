@@ -14,6 +14,7 @@
 
 	import type { LargeLangeageModel } from '../type';
 
+	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 
@@ -116,6 +117,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
+			<Create />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

@@ -9,12 +9,17 @@
 
 	export const headers = {
 		row_picker,
+		model,
 		name,
+		replicas,
+		healthies,
 		gpu_cache,
 		kv_cache,
 		requests,
 		time_to_first_token,
 		relation,
+		nodeport,
+		action,
 	};
 </script>
 
@@ -26,12 +31,36 @@
 	</Layout.Header>
 {/snippet}
 
+{#snippet model()}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.model()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
 {#snippet name(column: Column<LargeLangeageModel>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.model_name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet replicas(column: Column<LargeLangeageModel>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>{m.replica()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet healthies(column: Column<LargeLangeageModel>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>{m.health()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -49,7 +78,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.gpu_cache()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.kv_cache()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -71,4 +100,16 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet relation()}{/snippet}
+{#snippet relation()}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderViewer>{m.gpu_relation()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet nodeport()}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.nodeport()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet action()}{/snippet}

@@ -2,8 +2,11 @@
 	import Icon from '@iconify/svelte';
 	import { Handle, type NodeProps } from '@xyflow/svelte';
 
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { type PodInfo } from '$lib/api/essential/v1/essential_pb';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { dynamicPaths } from '$lib/path';
 	import { cn } from '$lib/utils';
 </script>
 
@@ -19,11 +22,18 @@
 >
 	<div
 		class={cn(
-			'bg-card absolute top-1 right-1 translate-x-1/2 -translate-y-1/2 rounded-full border p-2 shadow',
+			'bg-card hover:bg-muted absolute top-1 right-1 translate-x-1/2 -translate-y-1/2 rounded-full border p-2 shadow hover:cursor-default',
 			selected ? 'bg-primary-foreground ring-primary ring-1' : 'bg-card ring-0',
 		)}
 	>
-		<Icon icon="simple-icons:kubernetes" class="size-5" />
+		<Icon
+			icon="simple-icons:kubernetes"
+			class="size-5"
+			onclick={(e) => {
+				e.stopPropagation();
+				goto(`${dynamicPaths.applicationsWorkloads(page.params.scope).url}`);
+			}}
+		/>
 	</div>
 	<div class="flex items-center justify-center p-4">
 		<div class="flex gap-2">
@@ -33,24 +43,17 @@
 			<div class="justufy-start flex flex-col items-start">
 				<Tooltip.Root>
 					<Tooltip.Trigger>
-						<p class="max-w-[200px] truncate text-base text-nowrap whitespace-nowrap">{data.model}</p>
+						<p class="max-w-[200px] truncate text-base text-nowrap whitespace-nowrap">{data.modelName}</p>
 					</Tooltip.Trigger>
 					<Tooltip.Content>
-						{data.model}
+						{data.modelName}
 					</Tooltip.Content>
 				</Tooltip.Root>
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<p
-							class="text-muted-foreground max-w-[200px] truncate text-xs font-light text-nowrap whitespace-nowrap"
-						>
-							{data.namespace} · {data.name}
-						</p>
-					</Tooltip.Trigger>
-					<Tooltip.Content>
-						{data.namespace} · {data.name}
-					</Tooltip.Content>
-				</Tooltip.Root>
+				<p
+					class="text-muted-foreground max-w-[200px] truncate text-xs font-light text-nowrap whitespace-nowrap"
+				>
+					{data.namespace} · {data.name}
+				</p>
 			</div>
 		</div>
 	</div>

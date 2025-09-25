@@ -7,13 +7,11 @@
 	import { DataTable } from './data-table/index';
 	import { type LargeLangeageModel } from './type';
 
-	import { ApplicationService } from '$lib/api/application/v1/application_pb';
+	import { env } from '$env/dynamic/public';
+	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
+	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
-
-	export function getRandomNumber(): number {
-		return Math.round(Math.random() * 100);
-	}
 </script>
 
 <script lang="ts">
@@ -23,23 +21,24 @@
 
 	const transport: Transport = getContext('transport');
 	const applicationClient = createClient(ApplicationService, transport);
+	const environmentService = createClient(EnvironmentService, transport);
 
-	const prometheusDriver = new PrometheusDriver({
-		endpoint: 'http://192.168.41.100:30091',
-		baseURL: '/api/v1',
-	});
+	let prometheusDriver = $state<PrometheusDriver | null>(null);
 
-	let gpuCacheUsage = $state([] as InstantVector[]);
-	let kvCacheUsage = $state([] as InstantVector[]);
-	let timeToFirstTokenSeconds = $state([] as InstantVector[]);
-	let requestLatencySeconds = $state([] as InstantVector[]);
-
-	let modelNames = [] as string[];
+	const applications = writable<Application[]>([]);
+	const models = $derived($applications.filter((application) => application.labels['model-name']));
 
 	async function fetch() {
+		let gpuCacheUsage = $state([] as InstantVector[]);
 		let gpuCacheUsageByPod = $state({} as Map<string, number>);
+
+		let kvCacheUsage = $state([] as InstantVector[]);
 		let kvCacheUsageByPod = $state({} as Map<string, number>);
+
+		let timeToFirstTokenSeconds = $state([] as InstantVector[]);
 		let timeToFirstTokenByPod = $state({} as Map<string, number>);
+
+		let requestLatencySeconds = $state([] as InstantVector[]);
 		let requestLatencyByPod = $state({} as Map<string, number>);
 
 		await applicationClient
@@ -48,77 +47,92 @@
 				facilityName: facilityName,
 			})
 			.then((response) => {
-				modelNames = [
-					...response.applications
-						.filter((application) => application.labels['model-name'])
-						.map((application) => application.labels['model-name']),
-				];
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
-		await prometheusDriver.instantQuery(`vllm:gpu_cache_usage_perc{scope_uuid="${scopeUuid}"}`).then((response) => {
-			gpuCacheUsage = response.result;
-			gpuCacheUsageByPod = new Map(
-				gpuCacheUsage.map((instantVector) => [
-					(instantVector.metric.labels as { pod?: string }).pod ?? '',
-					instantVector.value.value,
-				]),
-			);
-			modelNames = [...modelNames, ...Array.from(gpuCacheUsageByPod.keys())];
-		});
-		await prometheusDriver.instantQuery(`vllm:kv_cache_usage_perc{scope_uuid="${scopeUuid}"}`).then((response) => {
-			kvCacheUsage = response.result;
-			kvCacheUsageByPod = new Map(
-				kvCacheUsage.map((instantVector) => [
-					(instantVector.metric.labels as { pod?: string }).pod ?? '',
-					instantVector.value.value,
-				]),
-			);
-		});
-		await prometheusDriver
-			.instantQuery(`vllm:time_to_first_token_seconds_sum{scope_uuid="${scopeUuid}"}`)
-			.then((response) => {
-				timeToFirstTokenSeconds = response.result;
-				timeToFirstTokenByPod = new Map(
-					timeToFirstTokenSeconds.map((instantVector) => [
-						(instantVector.metric.labels as { pod?: string }).pod ?? '',
-						instantVector.value.value,
-					]),
-				);
-			});
-		await prometheusDriver
-			.instantQuery(`vllm:e2e_request_latency_seconds_sum{scope_uuid="${scopeUuid}"}`)
-			.then((response) => {
-				requestLatencySeconds = response.result;
-				requestLatencyByPod = new Map(
-					requestLatencySeconds.map((instantVector) => [
-						(instantVector.metric.labels as { pod?: string }).pod ?? '',
-						instantVector.value.value,
-					]),
-				);
+				applications.set(response.applications);
 			});
 
+		await environmentService
+			.getPrometheus({})
+			.then((response) => {
+				prometheusDriver = new PrometheusDriver({
+					endpoint: `${env.PUBLIC_API_URL}/prometheus`,
+					baseURL: response.baseUrl,
+				});
+			})
+			.catch((error) => {
+				console.error('Failed to initialize Prometheus driver:', error);
+			});
+
+		if (prometheusDriver) {
+			await prometheusDriver
+				.instantQuery(`vllm:gpu_cache_usage_perc{scope_uuid="${scopeUuid}"}`)
+				.then((response) => {
+					gpuCacheUsage = response.result;
+					gpuCacheUsageByPod = new Map(
+						gpuCacheUsage.map((instantVector) => [
+							(instantVector.metric.labels as { pod?: string }).pod ?? '',
+							instantVector.value.value,
+						]),
+					);
+				});
+			await prometheusDriver
+				.instantQuery(`vllm:kv_cache_usage_perc{scope_uuid="${scopeUuid}"}`)
+				.then((response) => {
+					kvCacheUsage = response.result;
+					kvCacheUsageByPod = new Map(
+						kvCacheUsage.map((instantVector) => [
+							(instantVector.metric.labels as { pod?: string }).pod ?? '',
+							instantVector.value.value,
+						]),
+					);
+				});
+			await prometheusDriver
+				.instantQuery(`vllm:time_to_first_token_seconds_sum{scope_uuid="${scopeUuid}"}`)
+				.then((response) => {
+					timeToFirstTokenSeconds = response.result;
+					timeToFirstTokenByPod = new Map(
+						timeToFirstTokenSeconds.map((instantVector) => [
+							(instantVector.metric.labels as { pod?: string }).pod ?? '',
+							instantVector.value.value,
+						]),
+					);
+				});
+			await prometheusDriver
+				.instantQuery(`vllm:e2e_request_latency_seconds_sum{scope_uuid="${scopeUuid}"}`)
+				.then((response) => {
+					requestLatencySeconds = response.result;
+					requestLatencyByPod = new Map(
+						requestLatencySeconds.map((instantVector) => [
+							(instantVector.metric.labels as { pod?: string }).pod ?? '',
+							instantVector.value.value,
+						]),
+					);
+				});
+		}
+
 		largeLanguageModels.set(
-			modelNames.map(
-				(modelName) =>
+			models.map(
+				(model) =>
 					({
-						name: modelName,
-						gpu_cache: gpuCacheUsageByPod.get(modelName) ?? 0,
-						kv_cache: kvCacheUsageByPod.get(modelName) ?? 0,
-						requests: requestLatencyByPod.get(modelName) ?? 0,
-						time_to_first_token: timeToFirstTokenByPod.get(modelName) ?? 0,
+						name: model.labels['model-name'],
+						application: model,
+						metrics: {
+							gpu_cache: gpuCacheUsageByPod.get(model.labels['model-name']) ?? 0,
+							kv_cache: kvCacheUsageByPod.get(model.labels['model-name']) ?? 0,
+							requests: requestLatencyByPod.get(model.labels['model-name']) ?? 0,
+							time_to_first_token: timeToFirstTokenByPod.get(model.labels['model-name']) ?? 0,
+						},
 					}) as LargeLangeageModel,
 			),
 		);
 	}
 
-	const reloadManager = new ReloadManager(fetch);
+	const reloadManager = new ReloadManager(() => {
+		fetch();
+	});
 	let isMounted = $state(false);
 
 	onMount(async () => {
 		await fetch();
-
 		isMounted = true;
 		reloadManager.start();
 	});
