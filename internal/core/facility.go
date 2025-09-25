@@ -23,6 +23,7 @@ type (
 	FacilityStatus = params.ApplicationStatus
 	UnitStatus     = params.UnitStatus
 	DetailedStatus = params.DetailedStatus
+	MachineStatus  = params.MachineStatus
 )
 
 type FacilityMetadata struct {
@@ -282,16 +283,12 @@ func (uc *FacilityUseCase) ListArtifacts(ctx context.Context, name string) ([]Ch
 	return uc.charm.ListArtifacts(ctx, name)
 }
 
-func (uc *FacilityUseCase) JujuToMAASMachineMap(ctx context.Context, uuid string) (map[string]string, error) {
+func (uc *FacilityUseCase) JujuToMAASMachineMap(ctx context.Context, uuid string) (map[string]params.MachineStatus, error) {
 	status, err := uc.client.Status(ctx, uuid, []string{"machine", "*"})
 	if err != nil {
 		return nil, err
 	}
-	m := map[string]string{}
-	for name := range status.Machines {
-		m[name] = string(status.Machines[name].InstanceId)
-	}
-	return m, nil
+	return status.Machines, nil
 }
 
 func (uc *FacilityUseCase) toPlacements(ctx context.Context, mps []MachinePlacement) ([]instance.Placement, error) {

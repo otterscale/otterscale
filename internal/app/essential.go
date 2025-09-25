@@ -69,6 +69,26 @@ func (s *EssentialService) CreateSingleNode(ctx context.Context, req *connect.Re
 	return connect.NewResponse(resp), nil
 }
 
+func (s *EssentialService) ListKubernetesNodeLabels(ctx context.Context, req *connect.Request[pb.ListKubernetesNodeLabelsRequest]) (*connect.Response[pb.ListKubernetesNodeLabelsResponse], error) {
+	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetHostname())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListKubernetesNodeLabelsResponse{}
+	resp.SetLabels(labels)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *EssentialService) UpdateKubernetesNodeLabels(ctx context.Context, req *connect.Request[pb.UpdateKubernetesNodeLabelsRequest]) (*connect.Response[pb.UpdateKubernetesNodeLabelsResponse], error) {
+	labels, err := s.uc.UpdateKubernetesNodeLabels(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetHostname(), req.Msg.GetLabels())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.UpdateKubernetesNodeLabelsResponse{}
+	resp.SetLabels(labels)
+	return connect.NewResponse(resp), nil
+}
+
 func toProtoStatuses(ess []core.EssentialStatus) []*pb.Status {
 	ret := []*pb.Status{}
 	for i := range ess {

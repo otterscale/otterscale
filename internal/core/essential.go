@@ -48,6 +48,8 @@ type EssentialCharm struct {
 
 type EssentialUseCase struct {
 	conf           *config.Config
+	kubeCore       KubeCoreRepo
+	action         ActionRepo
 	scope          ScopeRepo
 	facility       FacilityRepo
 	facilityOffers FacilityOffersRepo
@@ -59,9 +61,11 @@ type EssentialUseCase struct {
 	tag            TagRepo
 }
 
-func NewEssentialUseCase(conf *config.Config, scope ScopeRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo, tag TagRepo) *EssentialUseCase {
+func NewEssentialUseCase(conf *config.Config, kubeCore KubeCoreRepo, action ActionRepo, scope ScopeRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo, tag TagRepo) *EssentialUseCase {
 	return &EssentialUseCase{
 		conf:           conf,
+		kubeCore:       kubeCore,
+		action:         action,
 		scope:          scope,
 		facility:       facility,
 		facilityOffers: facilityOffers,
@@ -223,6 +227,44 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 		return err
 	}
 	return nil
+}
+
+func (uc *EssentialUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string) (map[string]string, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	node, err := uc.kubeCore.GetNode(ctx, config, hostname)
+	if err != nil {
+		return nil, err
+	}
+	return node.Labels, nil
+}
+
+func (uc *EssentialUseCase) UpdateKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string, labels map[string]string) (map[string]string, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	node, err := uc.kubeCore.GetNode(ctx, config, hostname)
+	if err != nil {
+		return nil, err
+	}
+	if node.Labels == nil {
+		node.Labels = map[string]string{}
+	}
+	for k, v := range labels {
+		if v == "" {
+			delete(node.Labels, k)
+		} else {
+			node.Labels[k] = v
+		}
+	}
+	updatedNode, err := uc.kubeCore.UpdateNode(ctx, config, node)
+	if err != nil {
+		return nil, err
+	}
+	return updatedNode.Labels, nil
 }
 
 func (uc *EssentialUseCase) getMachineStatusMessage(machines []Machine) string {

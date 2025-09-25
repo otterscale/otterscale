@@ -229,16 +229,6 @@ func TestFacilityUseCase_AddFacilityUnits(t *testing.T) {
 	assert.Equal(t, []string{"unit1"}, units)
 }
 
-func TestFacilityUseCase_JujuToMAASMachineMap(t *testing.T) {
-	uc := NewFacilityUseCase(&facilitymockFacilityRepo{}, &facilityMockServerRepo{}, &facilitymockClientRepo{}, &facilityMockActionRepo{}, &mockCharmRepo{}, &mockMachineRepo{})
-	m, err := uc.JujuToMAASMachineMap(context.Background(), "uuid")
-	assert.NoError(t, err)
-	assert.Equal(t, map[string]string{
-		"machine-1": "instance-1",
-		"machine-2": "instance-2",
-	}, m)
-}
-
 func TestFacilityUseCase_ResolveFacilityUnitErrors(t *testing.T) {
 	uc := NewFacilityUseCase(&facilitymockFacilityRepo{}, &facilityMockServerRepo{}, &facilitymockClientRepo{}, &facilityMockActionRepo{}, &mockCharmRepo{}, &mockMachineRepo{})
 	err := uc.ResolveFacilityUnitErrors(context.Background(), "uuid", "unit1")

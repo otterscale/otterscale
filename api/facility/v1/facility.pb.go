@@ -3491,6 +3491,7 @@ type Facility_Unit struct {
 	xxx_hidden_MachineId      *string                `protobuf:"bytes,11,opt,name=machine_id,json=machineId"`
 	xxx_hidden_IpAddress      *string                `protobuf:"bytes,12,opt,name=ip_address,json=ipAddress"`
 	xxx_hidden_Ports          []string               `protobuf:"bytes,13,rep,name=ports"`
+	xxx_hidden_Hostname       *string                `protobuf:"bytes,14,opt,name=hostname"`
 	xxx_hidden_CharmName      *string                `protobuf:"bytes,21,opt,name=charm_name,json=charmName"`
 	xxx_hidden_Version        *string                `protobuf:"bytes,22,opt,name=version"`
 	xxx_hidden_Subordinates   *[]*Facility_Unit      `protobuf:"bytes,31,rep,name=subordinates"`
@@ -3583,6 +3584,16 @@ func (x *Facility_Unit) GetPorts() []string {
 	return nil
 }
 
+func (x *Facility_Unit) GetHostname() string {
+	if x != nil {
+		if x.xxx_hidden_Hostname != nil {
+			return *x.xxx_hidden_Hostname
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *Facility_Unit) GetCharmName() string {
 	if x != nil {
 		if x.xxx_hidden_CharmName != nil {
@@ -3614,7 +3625,7 @@ func (x *Facility_Unit) GetSubordinates() []*Facility_Unit {
 
 func (x *Facility_Unit) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
 }
 
 func (x *Facility_Unit) SetAgentStatus(v *Facility_Status) {
@@ -3627,31 +3638,36 @@ func (x *Facility_Unit) SetWorkloadStatus(v *Facility_Status) {
 
 func (x *Facility_Unit) SetLeader(v bool) {
 	x.xxx_hidden_Leader = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
 }
 
 func (x *Facility_Unit) SetMachineId(v string) {
 	x.xxx_hidden_MachineId = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
 }
 
 func (x *Facility_Unit) SetIpAddress(v string) {
 	x.xxx_hidden_IpAddress = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
 }
 
 func (x *Facility_Unit) SetPorts(v []string) {
 	x.xxx_hidden_Ports = v
 }
 
+func (x *Facility_Unit) SetHostname(v string) {
+	x.xxx_hidden_Hostname = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
+}
+
 func (x *Facility_Unit) SetCharmName(v string) {
 	x.xxx_hidden_CharmName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 11)
 }
 
 func (x *Facility_Unit) SetVersion(v string) {
 	x.xxx_hidden_Version = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 11)
 }
 
 func (x *Facility_Unit) SetSubordinates(v []*Facility_Unit) {
@@ -3700,18 +3716,25 @@ func (x *Facility_Unit) HasIpAddress() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *Facility_Unit) HasCharmName() bool {
+func (x *Facility_Unit) HasHostname() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
-func (x *Facility_Unit) HasVersion() bool {
+func (x *Facility_Unit) HasCharmName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
+}
+
+func (x *Facility_Unit) HasVersion() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
 }
 
 func (x *Facility_Unit) ClearName() {
@@ -3742,13 +3765,18 @@ func (x *Facility_Unit) ClearIpAddress() {
 	x.xxx_hidden_IpAddress = nil
 }
 
-func (x *Facility_Unit) ClearCharmName() {
+func (x *Facility_Unit) ClearHostname() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	x.xxx_hidden_Hostname = nil
+}
+
+func (x *Facility_Unit) ClearCharmName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
 	x.xxx_hidden_CharmName = nil
 }
 
 func (x *Facility_Unit) ClearVersion() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
 	x.xxx_hidden_Version = nil
 }
 
@@ -3762,6 +3790,7 @@ type Facility_Unit_builder struct {
 	MachineId      *string
 	IpAddress      *string
 	Ports          []string
+	Hostname       *string
 	CharmName      *string
 	Version        *string
 	Subordinates   []*Facility_Unit
@@ -3772,30 +3801,34 @@ func (b0 Facility_Unit_builder) Build() *Facility_Unit {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
 		x.xxx_hidden_Name = b.Name
 	}
 	x.xxx_hidden_AgentStatus = b.AgentStatus
 	x.xxx_hidden_WorkloadStatus = b.WorkloadStatus
 	if b.Leader != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
 		x.xxx_hidden_Leader = *b.Leader
 	}
 	if b.MachineId != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
 		x.xxx_hidden_MachineId = b.MachineId
 	}
 	if b.IpAddress != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
 		x.xxx_hidden_IpAddress = b.IpAddress
 	}
 	x.xxx_hidden_Ports = b.Ports
+	if b.Hostname != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
+		x.xxx_hidden_Hostname = b.Hostname
+	}
 	if b.CharmName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 11)
 		x.xxx_hidden_CharmName = b.CharmName
 	}
 	if b.Version != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 11)
 		x.xxx_hidden_Version = b.Version
 	}
 	x.xxx_hidden_Subordinates = &b.Subordinates
@@ -4210,7 +4243,7 @@ var File_api_facility_v1_facility_proto protoreflect.FileDescriptor
 
 const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\n" +
-	"\x1eapi/facility/v1/facility.proto\x12\x16otterscale.facility.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xee\r\n" +
+	"\x1eapi/facility/v1/facility.proto\x12\x16otterscale.facility.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8a\x0e\n" +
 	"\bFacility\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12?\n" +
 	"\x06status\x18\x02 \x01(\v2'.otterscale.facility.v1.Facility.StatusR\x06status\x12\x1d\n" +
@@ -4260,7 +4293,7 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\x05state\x18\x01 \x01(\tR\x05state\x12\x18\n" +
 	"\adetails\x18\x02 \x01(\tR\adetails\x129\n" +
 	"\n" +
-	"created_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a\xa8\x03\n" +
+	"created_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a\xc4\x03\n" +
 	"\x04Unit\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12J\n" +
 	"\fagent_status\x18\x02 \x01(\v2'.otterscale.facility.v1.Facility.StatusR\vagentStatus\x12P\n" +
@@ -4270,7 +4303,8 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"machine_id\x18\v \x01(\tR\tmachineId\x12\x1d\n" +
 	"\n" +
 	"ip_address\x18\f \x01(\tR\tipAddress\x12\x14\n" +
-	"\x05ports\x18\r \x03(\tR\x05ports\x12\x1d\n" +
+	"\x05ports\x18\r \x03(\tR\x05ports\x12\x1a\n" +
+	"\bhostname\x18\x0e \x01(\tR\bhostname\x12\x1d\n" +
 	"\n" +
 	"charm_name\x18\x15 \x01(\tR\tcharmName\x12\x18\n" +
 	"\aversion\x18\x16 \x01(\tR\aversion\x12I\n" +

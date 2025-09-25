@@ -74,6 +74,7 @@ message Facility {
     string machine_id = 11;
     string ip_address = 12;
     repeated string ports = 13;
+    string hostname = 14;
     string charm_name = 21;
     string version = 22;
     repeated Unit subordinates = 31;

@@ -161,7 +161,7 @@ func toProtoFacilityStatus(s *core.DetailedStatus) *pb.Facility_Status {
 	return ret
 }
 
-func toProtoFacilityUnits(usm map[string]core.UnitStatus, machineMap map[string]string) []*pb.Facility_Unit {
+func toProtoFacilityUnits(usm map[string]core.UnitStatus, machineMap map[string]core.MachineStatus) []*pb.Facility_Unit {
 	ret := []*pb.Facility_Unit{}
 	for name := range usm {
 		status := usm[name]
@@ -170,13 +170,14 @@ func toProtoFacilityUnits(usm map[string]core.UnitStatus, machineMap map[string]
 	return ret
 }
 
-func toProtoFacilityUnit(name string, s *core.UnitStatus, machineMap map[string]string) *pb.Facility_Unit {
+func toProtoFacilityUnit(name string, s *core.UnitStatus, machineMap map[string]core.MachineStatus) *pb.Facility_Unit {
 	ret := &pb.Facility_Unit{}
 	ret.SetName(name)
 	ret.SetAgentStatus(toProtoFacilityStatus(&s.AgentStatus))
 	ret.SetWorkloadStatus(toProtoFacilityStatus(&s.WorkloadStatus))
 	ret.SetLeader(s.Leader)
-	ret.SetMachineId(machineMap[s.Machine])
+	ret.SetMachineId(string(machineMap[s.Machine].InstanceId))
+	ret.SetHostname(machineMap[s.Machine].Hostname)
 	ret.SetIpAddress(s.Address + s.PublicAddress)
 	ret.SetPorts(s.OpenedPorts)
 	ret.SetCharmName(s.Charm)
@@ -185,7 +186,7 @@ func toProtoFacilityUnit(name string, s *core.UnitStatus, machineMap map[string]
 	return ret
 }
 
-func toProtoFacilities(fs []core.Facility, machineMap map[string]string) []*pb.Facility {
+func toProtoFacilities(fs []core.Facility, machineMap map[string]core.MachineStatus) []*pb.Facility {
 	ret := []*pb.Facility{}
 	for i := range fs {
 		ret = append(ret, toProtoFacility(&fs[i], machineMap))
@@ -193,7 +194,7 @@ func toProtoFacilities(fs []core.Facility, machineMap map[string]string) []*pb.F
 	return ret
 }
 
-func toProtoFacility(f *core.Facility, machineMap map[string]string) *pb.Facility {
+func toProtoFacility(f *core.Facility, machineMap map[string]core.MachineStatus) *pb.Facility {
 	ret := &pb.Facility{}
 	ret.SetName(f.Name)
 	ret.SetStatus(toProtoFacilityStatus(&f.Status.Status))
