@@ -30,11 +30,13 @@
 		open = false;
 	}
 	let invalid: boolean | undefined = $state();
+
+	const isDisabled = $derived(tag.comment.toLocaleLowerCase().includes('built-in'));
 </script>
 
 <span>
 	<Modal.Root bind:open>
-		<Modal.Trigger variant="destructive">
+		<Modal.Trigger variant="destructive" disabled={isDisabled}>
 			<Icon icon="ph:trash" />
 			{m.delete()}
 		</Modal.Trigger>
