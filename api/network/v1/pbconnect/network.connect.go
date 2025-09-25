@@ -65,15 +65,15 @@ const (
 
 // NetworkServiceClient is a client for the otterscale.network.v1.NetworkService service.
 type NetworkServiceClient interface {
-	ListNetworks(context.Context, *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error)
-	CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error)
-	CreateIPRange(context.Context, *connect.Request[v1.CreateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error)
-	DeleteNetwork(context.Context, *connect.Request[v1.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error)
-	DeleteIPRange(context.Context, *connect.Request[v1.DeleteIPRangeRequest]) (*connect.Response[emptypb.Empty], error)
-	UpdateFabric(context.Context, *connect.Request[v1.UpdateFabricRequest]) (*connect.Response[v1.Network_Fabric], error)
-	UpdateVLAN(context.Context, *connect.Request[v1.UpdateVLANRequest]) (*connect.Response[v1.Network_VLAN], error)
-	UpdateSubnet(context.Context, *connect.Request[v1.UpdateSubnetRequest]) (*connect.Response[v1.Network_Subnet], error)
-	UpdateIPRange(context.Context, *connect.Request[v1.UpdateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error)
+	ListNetworks(context.Context, *v1.ListNetworksRequest) (*v1.ListNetworksResponse, error)
+	CreateNetwork(context.Context, *v1.CreateNetworkRequest) (*v1.Network, error)
+	CreateIPRange(context.Context, *v1.CreateIPRangeRequest) (*v1.Network_IPRange, error)
+	DeleteNetwork(context.Context, *v1.DeleteNetworkRequest) (*emptypb.Empty, error)
+	DeleteIPRange(context.Context, *v1.DeleteIPRangeRequest) (*emptypb.Empty, error)
+	UpdateFabric(context.Context, *v1.UpdateFabricRequest) (*v1.Network_Fabric, error)
+	UpdateVLAN(context.Context, *v1.UpdateVLANRequest) (*v1.Network_VLAN, error)
+	UpdateSubnet(context.Context, *v1.UpdateSubnetRequest) (*v1.Network_Subnet, error)
+	UpdateIPRange(context.Context, *v1.UpdateIPRangeRequest) (*v1.Network_IPRange, error)
 }
 
 // NewNetworkServiceClient constructs a client for the otterscale.network.v1.NetworkService service.
@@ -158,61 +158,97 @@ type networkServiceClient struct {
 }
 
 // ListNetworks calls otterscale.network.v1.NetworkService.ListNetworks.
-func (c *networkServiceClient) ListNetworks(ctx context.Context, req *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error) {
-	return c.listNetworks.CallUnary(ctx, req)
+func (c *networkServiceClient) ListNetworks(ctx context.Context, req *v1.ListNetworksRequest) (*v1.ListNetworksResponse, error) {
+	response, err := c.listNetworks.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateNetwork calls otterscale.network.v1.NetworkService.CreateNetwork.
-func (c *networkServiceClient) CreateNetwork(ctx context.Context, req *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error) {
-	return c.createNetwork.CallUnary(ctx, req)
+func (c *networkServiceClient) CreateNetwork(ctx context.Context, req *v1.CreateNetworkRequest) (*v1.Network, error) {
+	response, err := c.createNetwork.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateIPRange calls otterscale.network.v1.NetworkService.CreateIPRange.
-func (c *networkServiceClient) CreateIPRange(ctx context.Context, req *connect.Request[v1.CreateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error) {
-	return c.createIPRange.CallUnary(ctx, req)
+func (c *networkServiceClient) CreateIPRange(ctx context.Context, req *v1.CreateIPRangeRequest) (*v1.Network_IPRange, error) {
+	response, err := c.createIPRange.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteNetwork calls otterscale.network.v1.NetworkService.DeleteNetwork.
-func (c *networkServiceClient) DeleteNetwork(ctx context.Context, req *connect.Request[v1.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteNetwork.CallUnary(ctx, req)
+func (c *networkServiceClient) DeleteNetwork(ctx context.Context, req *v1.DeleteNetworkRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteNetwork.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteIPRange calls otterscale.network.v1.NetworkService.DeleteIPRange.
-func (c *networkServiceClient) DeleteIPRange(ctx context.Context, req *connect.Request[v1.DeleteIPRangeRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteIPRange.CallUnary(ctx, req)
+func (c *networkServiceClient) DeleteIPRange(ctx context.Context, req *v1.DeleteIPRangeRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteIPRange.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateFabric calls otterscale.network.v1.NetworkService.UpdateFabric.
-func (c *networkServiceClient) UpdateFabric(ctx context.Context, req *connect.Request[v1.UpdateFabricRequest]) (*connect.Response[v1.Network_Fabric], error) {
-	return c.updateFabric.CallUnary(ctx, req)
+func (c *networkServiceClient) UpdateFabric(ctx context.Context, req *v1.UpdateFabricRequest) (*v1.Network_Fabric, error) {
+	response, err := c.updateFabric.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateVLAN calls otterscale.network.v1.NetworkService.UpdateVLAN.
-func (c *networkServiceClient) UpdateVLAN(ctx context.Context, req *connect.Request[v1.UpdateVLANRequest]) (*connect.Response[v1.Network_VLAN], error) {
-	return c.updateVLAN.CallUnary(ctx, req)
+func (c *networkServiceClient) UpdateVLAN(ctx context.Context, req *v1.UpdateVLANRequest) (*v1.Network_VLAN, error) {
+	response, err := c.updateVLAN.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateSubnet calls otterscale.network.v1.NetworkService.UpdateSubnet.
-func (c *networkServiceClient) UpdateSubnet(ctx context.Context, req *connect.Request[v1.UpdateSubnetRequest]) (*connect.Response[v1.Network_Subnet], error) {
-	return c.updateSubnet.CallUnary(ctx, req)
+func (c *networkServiceClient) UpdateSubnet(ctx context.Context, req *v1.UpdateSubnetRequest) (*v1.Network_Subnet, error) {
+	response, err := c.updateSubnet.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateIPRange calls otterscale.network.v1.NetworkService.UpdateIPRange.
-func (c *networkServiceClient) UpdateIPRange(ctx context.Context, req *connect.Request[v1.UpdateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error) {
-	return c.updateIPRange.CallUnary(ctx, req)
+func (c *networkServiceClient) UpdateIPRange(ctx context.Context, req *v1.UpdateIPRangeRequest) (*v1.Network_IPRange, error) {
+	response, err := c.updateIPRange.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // NetworkServiceHandler is an implementation of the otterscale.network.v1.NetworkService service.
 type NetworkServiceHandler interface {
-	ListNetworks(context.Context, *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error)
-	CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error)
-	CreateIPRange(context.Context, *connect.Request[v1.CreateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error)
-	DeleteNetwork(context.Context, *connect.Request[v1.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error)
-	DeleteIPRange(context.Context, *connect.Request[v1.DeleteIPRangeRequest]) (*connect.Response[emptypb.Empty], error)
-	UpdateFabric(context.Context, *connect.Request[v1.UpdateFabricRequest]) (*connect.Response[v1.Network_Fabric], error)
-	UpdateVLAN(context.Context, *connect.Request[v1.UpdateVLANRequest]) (*connect.Response[v1.Network_VLAN], error)
-	UpdateSubnet(context.Context, *connect.Request[v1.UpdateSubnetRequest]) (*connect.Response[v1.Network_Subnet], error)
-	UpdateIPRange(context.Context, *connect.Request[v1.UpdateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error)
+	ListNetworks(context.Context, *v1.ListNetworksRequest) (*v1.ListNetworksResponse, error)
+	CreateNetwork(context.Context, *v1.CreateNetworkRequest) (*v1.Network, error)
+	CreateIPRange(context.Context, *v1.CreateIPRangeRequest) (*v1.Network_IPRange, error)
+	DeleteNetwork(context.Context, *v1.DeleteNetworkRequest) (*emptypb.Empty, error)
+	DeleteIPRange(context.Context, *v1.DeleteIPRangeRequest) (*emptypb.Empty, error)
+	UpdateFabric(context.Context, *v1.UpdateFabricRequest) (*v1.Network_Fabric, error)
+	UpdateVLAN(context.Context, *v1.UpdateVLANRequest) (*v1.Network_VLAN, error)
+	UpdateSubnet(context.Context, *v1.UpdateSubnetRequest) (*v1.Network_Subnet, error)
+	UpdateIPRange(context.Context, *v1.UpdateIPRangeRequest) (*v1.Network_IPRange, error)
 }
 
 // NewNetworkServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -222,55 +258,55 @@ type NetworkServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewNetworkServiceHandler(svc NetworkServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	networkServiceMethods := v1.File_api_network_v1_network_proto.Services().ByName("NetworkService").Methods()
-	networkServiceListNetworksHandler := connect.NewUnaryHandler(
+	networkServiceListNetworksHandler := connect.NewUnaryHandlerSimple(
 		NetworkServiceListNetworksProcedure,
 		svc.ListNetworks,
 		connect.WithSchema(networkServiceMethods.ByName("ListNetworks")),
 		connect.WithHandlerOptions(opts...),
 	)
-	networkServiceCreateNetworkHandler := connect.NewUnaryHandler(
+	networkServiceCreateNetworkHandler := connect.NewUnaryHandlerSimple(
 		NetworkServiceCreateNetworkProcedure,
 		svc.CreateNetwork,
 		connect.WithSchema(networkServiceMethods.ByName("CreateNetwork")),
 		connect.WithHandlerOptions(opts...),
 	)
-	networkServiceCreateIPRangeHandler := connect.NewUnaryHandler(
+	networkServiceCreateIPRangeHandler := connect.NewUnaryHandlerSimple(
 		NetworkServiceCreateIPRangeProcedure,
 		svc.CreateIPRange,
 		connect.WithSchema(networkServiceMethods.ByName("CreateIPRange")),
 		connect.WithHandlerOptions(opts...),
 	)
-	networkServiceDeleteNetworkHandler := connect.NewUnaryHandler(
+	networkServiceDeleteNetworkHandler := connect.NewUnaryHandlerSimple(
 		NetworkServiceDeleteNetworkProcedure,
 		svc.DeleteNetwork,
 		connect.WithSchema(networkServiceMethods.ByName("DeleteNetwork")),
 		connect.WithHandlerOptions(opts...),
 	)
-	networkServiceDeleteIPRangeHandler := connect.NewUnaryHandler(
+	networkServiceDeleteIPRangeHandler := connect.NewUnaryHandlerSimple(
 		NetworkServiceDeleteIPRangeProcedure,
 		svc.DeleteIPRange,
 		connect.WithSchema(networkServiceMethods.ByName("DeleteIPRange")),
 		connect.WithHandlerOptions(opts...),
 	)
-	networkServiceUpdateFabricHandler := connect.NewUnaryHandler(
+	networkServiceUpdateFabricHandler := connect.NewUnaryHandlerSimple(
 		NetworkServiceUpdateFabricProcedure,
 		svc.UpdateFabric,
 		connect.WithSchema(networkServiceMethods.ByName("UpdateFabric")),
 		connect.WithHandlerOptions(opts...),
 	)
-	networkServiceUpdateVLANHandler := connect.NewUnaryHandler(
+	networkServiceUpdateVLANHandler := connect.NewUnaryHandlerSimple(
 		NetworkServiceUpdateVLANProcedure,
 		svc.UpdateVLAN,
 		connect.WithSchema(networkServiceMethods.ByName("UpdateVLAN")),
 		connect.WithHandlerOptions(opts...),
 	)
-	networkServiceUpdateSubnetHandler := connect.NewUnaryHandler(
+	networkServiceUpdateSubnetHandler := connect.NewUnaryHandlerSimple(
 		NetworkServiceUpdateSubnetProcedure,
 		svc.UpdateSubnet,
 		connect.WithSchema(networkServiceMethods.ByName("UpdateSubnet")),
 		connect.WithHandlerOptions(opts...),
 	)
-	networkServiceUpdateIPRangeHandler := connect.NewUnaryHandler(
+	networkServiceUpdateIPRangeHandler := connect.NewUnaryHandlerSimple(
 		NetworkServiceUpdateIPRangeProcedure,
 		svc.UpdateIPRange,
 		connect.WithSchema(networkServiceMethods.ByName("UpdateIPRange")),
@@ -305,38 +341,38 @@ func NewNetworkServiceHandler(svc NetworkServiceHandler, opts ...connect.Handler
 // UnimplementedNetworkServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedNetworkServiceHandler struct{}
 
-func (UnimplementedNetworkServiceHandler) ListNetworks(context.Context, *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error) {
+func (UnimplementedNetworkServiceHandler) ListNetworks(context.Context, *v1.ListNetworksRequest) (*v1.ListNetworksResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.network.v1.NetworkService.ListNetworks is not implemented"))
 }
 
-func (UnimplementedNetworkServiceHandler) CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error) {
+func (UnimplementedNetworkServiceHandler) CreateNetwork(context.Context, *v1.CreateNetworkRequest) (*v1.Network, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.network.v1.NetworkService.CreateNetwork is not implemented"))
 }
 
-func (UnimplementedNetworkServiceHandler) CreateIPRange(context.Context, *connect.Request[v1.CreateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error) {
+func (UnimplementedNetworkServiceHandler) CreateIPRange(context.Context, *v1.CreateIPRangeRequest) (*v1.Network_IPRange, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.network.v1.NetworkService.CreateIPRange is not implemented"))
 }
 
-func (UnimplementedNetworkServiceHandler) DeleteNetwork(context.Context, *connect.Request[v1.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedNetworkServiceHandler) DeleteNetwork(context.Context, *v1.DeleteNetworkRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.network.v1.NetworkService.DeleteNetwork is not implemented"))
 }
 
-func (UnimplementedNetworkServiceHandler) DeleteIPRange(context.Context, *connect.Request[v1.DeleteIPRangeRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedNetworkServiceHandler) DeleteIPRange(context.Context, *v1.DeleteIPRangeRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.network.v1.NetworkService.DeleteIPRange is not implemented"))
 }
 
-func (UnimplementedNetworkServiceHandler) UpdateFabric(context.Context, *connect.Request[v1.UpdateFabricRequest]) (*connect.Response[v1.Network_Fabric], error) {
+func (UnimplementedNetworkServiceHandler) UpdateFabric(context.Context, *v1.UpdateFabricRequest) (*v1.Network_Fabric, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.network.v1.NetworkService.UpdateFabric is not implemented"))
 }
 
-func (UnimplementedNetworkServiceHandler) UpdateVLAN(context.Context, *connect.Request[v1.UpdateVLANRequest]) (*connect.Response[v1.Network_VLAN], error) {
+func (UnimplementedNetworkServiceHandler) UpdateVLAN(context.Context, *v1.UpdateVLANRequest) (*v1.Network_VLAN, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.network.v1.NetworkService.UpdateVLAN is not implemented"))
 }
 
-func (UnimplementedNetworkServiceHandler) UpdateSubnet(context.Context, *connect.Request[v1.UpdateSubnetRequest]) (*connect.Response[v1.Network_Subnet], error) {
+func (UnimplementedNetworkServiceHandler) UpdateSubnet(context.Context, *v1.UpdateSubnetRequest) (*v1.Network_Subnet, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.network.v1.NetworkService.UpdateSubnet is not implemented"))
 }
 
-func (UnimplementedNetworkServiceHandler) UpdateIPRange(context.Context, *connect.Request[v1.UpdateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error) {
+func (UnimplementedNetworkServiceHandler) UpdateIPRange(context.Context, *v1.UpdateIPRangeRequest) (*v1.Network_IPRange, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.network.v1.NetworkService.UpdateIPRange is not implemented"))
 }

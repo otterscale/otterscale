@@ -29,410 +29,410 @@ func NewStorageService(uc *core.StorageUseCase) *StorageService {
 
 var _ pbconnect.StorageServiceHandler = (*StorageService)(nil)
 
-func (s *StorageService) ListMONs(ctx context.Context, req *connect.Request[pb.ListMONsRequest]) (*connect.Response[pb.ListMONsResponse], error) {
-	mons, err := s.uc.ListMONs(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *StorageService) ListMONs(ctx context.Context, req *pb.ListMONsRequest) (*pb.ListMONsResponse, error) {
+	mons, err := s.uc.ListMONs(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListMONsResponse{}
 	resp.SetMons(toProtoMONs(mons))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) ListOSDs(ctx context.Context, req *connect.Request[pb.ListOSDsRequest]) (*connect.Response[pb.ListOSDsResponse], error) {
-	osds, err := s.uc.ListOSDs(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *StorageService) ListOSDs(ctx context.Context, req *pb.ListOSDsRequest) (*pb.ListOSDsResponse, error) {
+	osds, err := s.uc.ListOSDs(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListOSDsResponse{}
 	resp.SetOsds(toProtoOSDs(osds))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) DoSMART(ctx context.Context, req *connect.Request[pb.DoSMARTRequest]) (*connect.Response[pb.DoSMARTResponse], error) {
-	outputs, err := s.uc.DoSMART(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetOsdName())
+func (s *StorageService) DoSMART(ctx context.Context, req *pb.DoSMARTRequest) (*pb.DoSMARTResponse, error) {
+	outputs, err := s.uc.DoSMART(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetOsdName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.DoSMARTResponse{}
 	resp.SetDeviceOutputMap(toDeviceOutputMap(outputs))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) ListPools(ctx context.Context, req *connect.Request[pb.ListPoolsRequest]) (*connect.Response[pb.ListPoolsResponse], error) {
-	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetApplication())
+func (s *StorageService) ListPools(ctx context.Context, req *pb.ListPoolsRequest) (*pb.ListPoolsResponse, error) {
+	pools, err := s.uc.ListPools(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetApplication())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListPoolsResponse{}
 	resp.SetPools(toProtoPools(pools))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) CreatePool(ctx context.Context, req *connect.Request[pb.CreatePoolRequest]) (*connect.Response[pb.Pool], error) {
+func (s *StorageService) CreatePool(ctx context.Context, req *pb.CreatePoolRequest) (*pb.Pool, error) {
 	poolType := []string{"cephfs", "rbd", "rgw"}
 	apps := []string{}
-	for _, app := range req.Msg.GetApplications() {
+	for _, app := range req.GetApplications() {
 		if !slices.Contains(poolType, app) {
 			return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("invalid pool type"))
 		}
 		apps = append(apps, app)
 	}
 	pool, err := s.uc.CreatePool(ctx,
-		req.Msg.GetScopeUuid(),
-		req.Msg.GetFacilityName(),
-		req.Msg.GetPoolName(),
-		strings.ToLower(req.Msg.GetPoolType().String()),
-		req.Msg.GetEcOverwrites(),
-		req.Msg.GetReplicatedSize(),
-		req.Msg.GetQuotaBytes(),
-		req.Msg.GetQuotaObjects(),
+		req.GetScopeUuid(),
+		req.GetFacilityName(),
+		req.GetPoolName(),
+		strings.ToLower(req.GetPoolType().String()),
+		req.GetEcOverwrites(),
+		req.GetReplicatedSize(),
+		req.GetQuotaBytes(),
+		req.GetQuotaObjects(),
 		apps,
 	)
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoPool(pool)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) UpdatePool(ctx context.Context, req *connect.Request[pb.UpdatePoolRequest]) (*connect.Response[pb.Pool], error) {
+func (s *StorageService) UpdatePool(ctx context.Context, req *pb.UpdatePoolRequest) (*pb.Pool, error) {
 	pool, err := s.uc.UpdatePool(ctx,
-		req.Msg.GetScopeUuid(),
-		req.Msg.GetFacilityName(),
-		req.Msg.GetPoolName(),
-		req.Msg.GetQuotaBytes(),
-		req.Msg.GetQuotaObjects(),
+		req.GetScopeUuid(),
+		req.GetFacilityName(),
+		req.GetPoolName(),
+		req.GetQuotaBytes(),
+		req.GetQuotaObjects(),
 	)
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoPool(pool)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) DeletePool(ctx context.Context, req *connect.Request[pb.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeletePool(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName()); err != nil {
+func (s *StorageService) DeletePool(ctx context.Context, req *pb.DeletePoolRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeletePool(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) ListImages(ctx context.Context, req *connect.Request[pb.ListImagesRequest]) (*connect.Response[pb.ListImagesResponse], error) {
-	imgs, err := s.uc.ListImages(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *StorageService) ListImages(ctx context.Context, req *pb.ListImagesRequest) (*pb.ListImagesResponse, error) {
+	imgs, err := s.uc.ListImages(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListImagesResponse{}
 	resp.SetImages(toProtoImages(imgs))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) CreateImage(ctx context.Context, req *connect.Request[pb.CreateImageRequest]) (*connect.Response[pb.Image], error) {
+func (s *StorageService) CreateImage(ctx context.Context, req *pb.CreateImageRequest) (*pb.Image, error) {
 	img, err := s.uc.CreateImage(ctx,
-		req.Msg.GetScopeUuid(),
-		req.Msg.GetFacilityName(),
-		req.Msg.GetPoolName(),
-		req.Msg.GetImageName(),
-		req.Msg.GetObjectSizeBytes(),
-		req.Msg.GetStripeUnitBytes(),
-		req.Msg.GetStripeCount(),
-		req.Msg.GetQuotaBytes(),
-		req.Msg.GetLayering(),
-		req.Msg.GetExclusiveLock(),
-		req.Msg.GetObjectMap(),
-		req.Msg.GetFastDiff(),
-		req.Msg.GetDeepFlatten(),
+		req.GetScopeUuid(),
+		req.GetFacilityName(),
+		req.GetPoolName(),
+		req.GetImageName(),
+		req.GetObjectSizeBytes(),
+		req.GetStripeUnitBytes(),
+		req.GetStripeCount(),
+		req.GetQuotaBytes(),
+		req.GetLayering(),
+		req.GetExclusiveLock(),
+		req.GetObjectMap(),
+		req.GetFastDiff(),
+		req.GetDeepFlatten(),
 	)
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoImage(img)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) UpdateImage(ctx context.Context, req *connect.Request[pb.UpdateImageRequest]) (*connect.Response[pb.Image], error) {
+func (s *StorageService) UpdateImage(ctx context.Context, req *pb.UpdateImageRequest) (*pb.Image, error) {
 	img, err := s.uc.UpdateImage(ctx,
-		req.Msg.GetScopeUuid(),
-		req.Msg.GetFacilityName(),
-		req.Msg.GetPoolName(),
-		req.Msg.GetImageName(),
-		req.Msg.GetQuotaBytes(),
+		req.GetScopeUuid(),
+		req.GetFacilityName(),
+		req.GetPoolName(),
+		req.GetImageName(),
+		req.GetQuotaBytes(),
 	)
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoImage(img)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) DeleteImage(ctx context.Context, req *connect.Request[pb.DeleteImageRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteImage(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName()); err != nil {
+func (s *StorageService) DeleteImage(ctx context.Context, req *pb.DeleteImageRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteImage(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) CreateImageSnapshot(ctx context.Context, req *connect.Request[pb.CreateImageSnapshotRequest]) (*connect.Response[pb.Image_Snapshot], error) {
-	snap, err := s.uc.CreateImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName())
+func (s *StorageService) CreateImageSnapshot(ctx context.Context, req *pb.CreateImageSnapshotRequest) (*pb.Image_Snapshot, error) {
+	snap, err := s.uc.CreateImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoImageSnapshot(snap)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) DeleteImageSnapshot(ctx context.Context, req *connect.Request[pb.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
+func (s *StorageService) DeleteImageSnapshot(ctx context.Context, req *pb.DeleteImageSnapshotRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) RollbackImageSnapshot(ctx context.Context, req *connect.Request[pb.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.RollbackImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
+func (s *StorageService) RollbackImageSnapshot(ctx context.Context, req *pb.RollbackImageSnapshotRequest) (*emptypb.Empty, error) {
+	if err := s.uc.RollbackImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) ProtectImageSnapshot(ctx context.Context, req *connect.Request[pb.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.ProtectImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
+func (s *StorageService) ProtectImageSnapshot(ctx context.Context, req *pb.ProtectImageSnapshotRequest) (*emptypb.Empty, error) {
+	if err := s.uc.ProtectImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) UnprotectImageSnapshot(ctx context.Context, req *connect.Request[pb.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.UnprotectImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
+func (s *StorageService) UnprotectImageSnapshot(ctx context.Context, req *pb.UnprotectImageSnapshotRequest) (*emptypb.Empty, error) {
+	if err := s.uc.UnprotectImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) ListVolumes(ctx context.Context, req *connect.Request[pb.ListVolumesRequest]) (*connect.Response[pb.ListVolumesResponse], error) {
-	volumes, err := s.uc.ListVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *StorageService) ListVolumes(ctx context.Context, req *pb.ListVolumesRequest) (*pb.ListVolumesResponse, error) {
+	volumes, err := s.uc.ListVolumes(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListVolumesResponse{}
 	resp.SetVolumes(toProtoVolumes(volumes))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) ListSubvolumes(ctx context.Context, req *connect.Request[pb.ListSubvolumesRequest]) (*connect.Response[pb.ListSubvolumesResponse], error) {
-	subvolumes, err := s.uc.ListSubvolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName())
+func (s *StorageService) ListSubvolumes(ctx context.Context, req *pb.ListSubvolumesRequest) (*pb.ListSubvolumesResponse, error) {
+	subvolumes, err := s.uc.ListSubvolumes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListSubvolumesResponse{}
 	resp.SetSubvolumes(toProtoSubvolumes(subvolumes))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) CreateSubvolume(ctx context.Context, req *connect.Request[pb.CreateSubvolumeRequest]) (*connect.Response[pb.Subvolume], error) {
+func (s *StorageService) CreateSubvolume(ctx context.Context, req *pb.CreateSubvolumeRequest) (*pb.Subvolume, error) {
 	subvolume, err := s.uc.CreateSubvolume(ctx,
-		req.Msg.GetScopeUuid(),
-		req.Msg.GetFacilityName(),
-		req.Msg.GetVolumeName(),
-		req.Msg.GetSubvolumeName(),
-		req.Msg.GetGroupName(),
-		req.Msg.GetQuotaBytes(),
-		req.Msg.GetExport(),
+		req.GetScopeUuid(),
+		req.GetFacilityName(),
+		req.GetVolumeName(),
+		req.GetSubvolumeName(),
+		req.GetGroupName(),
+		req.GetQuotaBytes(),
+		req.GetExport(),
 	)
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoSubvolume(subvolume)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) UpdateSubvolume(ctx context.Context, req *connect.Request[pb.UpdateSubvolumeRequest]) (*connect.Response[pb.Subvolume], error) {
+func (s *StorageService) UpdateSubvolume(ctx context.Context, req *pb.UpdateSubvolumeRequest) (*pb.Subvolume, error) {
 	subvolume, err := s.uc.UpdateSubvolume(ctx,
-		req.Msg.GetScopeUuid(),
-		req.Msg.GetFacilityName(),
-		req.Msg.GetVolumeName(),
-		req.Msg.GetSubvolumeName(),
-		req.Msg.GetGroupName(),
-		req.Msg.GetQuotaBytes(),
+		req.GetScopeUuid(),
+		req.GetFacilityName(),
+		req.GetVolumeName(),
+		req.GetSubvolumeName(),
+		req.GetGroupName(),
+		req.GetQuotaBytes(),
 	)
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoSubvolume(subvolume)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) DeleteSubvolume(ctx context.Context, req *connect.Request[pb.DeleteSubvolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteSubvolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetSubvolumeName(), req.Msg.GetGroupName()); err != nil {
+func (s *StorageService) DeleteSubvolume(ctx context.Context, req *pb.DeleteSubvolumeRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteSubvolume(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) GrantSubvolumeExportAccess(ctx context.Context, req *connect.Request[pb.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.GrantSubvolumeClient(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetSubvolumeName(), req.Msg.GetClientIp()); err != nil {
+func (s *StorageService) GrantSubvolumeExportAccess(ctx context.Context, req *pb.GrantSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
+	if err := s.uc.GrantSubvolumeClient(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetSubvolumeName(), req.GetClientIp()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) RevokeSubvolumeExportAccess(ctx context.Context, req *connect.Request[pb.RevokeSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.RevokeSubvolumeClient(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetSubvolumeName(), req.Msg.GetClientIp()); err != nil {
+func (s *StorageService) RevokeSubvolumeExportAccess(ctx context.Context, req *pb.RevokeSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
+	if err := s.uc.RevokeSubvolumeClient(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetSubvolumeName(), req.GetClientIp()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) CreateSubvolumeSnapshot(ctx context.Context, req *connect.Request[pb.CreateSubvolumeSnapshotRequest]) (*connect.Response[pb.Subvolume_Snapshot], error) {
-	snapshot, err := s.uc.CreateSubvolumeSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetSubvolumeName(), req.Msg.GetGroupName(), req.Msg.GetSnapshotName())
+func (s *StorageService) CreateSubvolumeSnapshot(ctx context.Context, req *pb.CreateSubvolumeSnapshotRequest) (*pb.Subvolume_Snapshot, error) {
+	snapshot, err := s.uc.CreateSubvolumeSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName(), req.GetSnapshotName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoSubvolumeSnapshot(snapshot)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) DeleteSubvolumeSnapshot(ctx context.Context, req *connect.Request[pb.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteSubvolumeSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetSubvolumeName(), req.Msg.GetGroupName(), req.Msg.GetSnapshotName()); err != nil {
+func (s *StorageService) DeleteSubvolumeSnapshot(ctx context.Context, req *pb.DeleteSubvolumeSnapshotRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteSubvolumeSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName(), req.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) ListSubvolumeGroups(ctx context.Context, req *connect.Request[pb.ListSubvolumeGroupsRequest]) (*connect.Response[pb.ListSubvolumeGroupsResponse], error) {
-	groups, err := s.uc.ListSubvolumeGroups(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName())
+func (s *StorageService) ListSubvolumeGroups(ctx context.Context, req *pb.ListSubvolumeGroupsRequest) (*pb.ListSubvolumeGroupsResponse, error) {
+	groups, err := s.uc.ListSubvolumeGroups(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListSubvolumeGroupsResponse{}
 	resp.SetSubvolumeGroups(toProtoSubvolumeGroups(groups))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) CreateSubvolumeGroup(ctx context.Context, req *connect.Request[pb.CreateSubvolumeGroupRequest]) (*connect.Response[pb.SubvolumeGroup], error) {
-	group, err := s.uc.CreateSubvolumeGroup(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName(), req.Msg.GetQuotaBytes())
+func (s *StorageService) CreateSubvolumeGroup(ctx context.Context, req *pb.CreateSubvolumeGroupRequest) (*pb.SubvolumeGroup, error) {
+	group, err := s.uc.CreateSubvolumeGroup(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName(), req.GetQuotaBytes())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoSubvolumeGroup(group)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) UpdateSubvolumeGroup(ctx context.Context, req *connect.Request[pb.UpdateSubvolumeGroupRequest]) (*connect.Response[pb.SubvolumeGroup], error) {
-	group, err := s.uc.UpdateSubvolumeGroup(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName(), req.Msg.GetQuotaBytes())
+func (s *StorageService) UpdateSubvolumeGroup(ctx context.Context, req *pb.UpdateSubvolumeGroupRequest) (*pb.SubvolumeGroup, error) {
+	group, err := s.uc.UpdateSubvolumeGroup(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName(), req.GetQuotaBytes())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoSubvolumeGroup(group)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) DeleteSubvolumeGroup(ctx context.Context, req *connect.Request[pb.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteSubvolumeGroup(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName()); err != nil {
+func (s *StorageService) DeleteSubvolumeGroup(ctx context.Context, req *pb.DeleteSubvolumeGroupRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteSubvolumeGroup(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) ListBuckets(ctx context.Context, req *connect.Request[pb.ListBucketsRequest]) (*connect.Response[pb.ListBucketsResponse], error) {
-	buckets, err := s.uc.ListBuckets(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *StorageService) ListBuckets(ctx context.Context, req *pb.ListBucketsRequest) (*pb.ListBucketsResponse, error) {
+	buckets, err := s.uc.ListBuckets(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListBucketsResponse{}
 	resp.SetBuckets(toProtoBuckets(buckets))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) CreateBucket(ctx context.Context, req *connect.Request[pb.CreateBucketRequest]) (*connect.Response[pb.Bucket], error) {
-	bucket, err := s.uc.CreateBucket(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetBucketName(), req.Msg.GetOwner(), req.Msg.GetPolicy(), s.ACL(req.Msg.GetAcl().String()))
+func (s *StorageService) CreateBucket(ctx context.Context, req *pb.CreateBucketRequest) (*pb.Bucket, error) {
+	bucket, err := s.uc.CreateBucket(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), s.ACL(req.GetAcl().String()))
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoBucket(bucket)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) UpdateBucket(ctx context.Context, req *connect.Request[pb.UpdateBucketRequest]) (*connect.Response[pb.Bucket], error) {
-	bucket, err := s.uc.UpdateBucket(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetBucketName(), req.Msg.GetOwner(), req.Msg.GetPolicy(), s.ACL(req.Msg.GetAcl().String()))
+func (s *StorageService) UpdateBucket(ctx context.Context, req *pb.UpdateBucketRequest) (*pb.Bucket, error) {
+	bucket, err := s.uc.UpdateBucket(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), s.ACL(req.GetAcl().String()))
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoBucket(bucket)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) DeleteBucket(ctx context.Context, req *connect.Request[pb.DeleteBucketRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteBucket(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetBucketName()); err != nil {
+func (s *StorageService) DeleteBucket(ctx context.Context, req *pb.DeleteBucketRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteBucket(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetBucketName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) ListUsers(ctx context.Context, req *connect.Request[pb.ListUsersRequest]) (*connect.Response[pb.ListUsersResponse], error) {
-	users, err := s.uc.ListUsers(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *StorageService) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
+	users, err := s.uc.ListUsers(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListUsersResponse{}
 	resp.SetUsers(toProtoUsers(users))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) CreateUser(ctx context.Context, req *connect.Request[pb.CreateUserRequest]) (*connect.Response[pb.User], error) {
-	user, err := s.uc.CreateUser(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetUserId(), req.Msg.GetUserName(), req.Msg.GetSuspended())
+func (s *StorageService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.User, error) {
+	user, err := s.uc.CreateUser(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId(), req.GetUserName(), req.GetSuspended())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoUser(user)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) UpdateUser(ctx context.Context, req *connect.Request[pb.UpdateUserRequest]) (*connect.Response[pb.User], error) {
-	user, err := s.uc.UpdateUser(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetUserId(), req.Msg.GetUserName(), req.Msg.GetSuspended())
+func (s *StorageService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.User, error) {
+	user, err := s.uc.UpdateUser(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId(), req.GetUserName(), req.GetSuspended())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoUser(user)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) DeleteUser(ctx context.Context, req *connect.Request[pb.DeleteUserRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteUser(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetUserId()); err != nil {
+func (s *StorageService) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteUser(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) CreateUserKey(ctx context.Context, req *connect.Request[pb.CreateUserKeyRequest]) (*connect.Response[pb.User_Key], error) {
-	key, err := s.uc.CreateUserKey(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetUserId())
+func (s *StorageService) CreateUserKey(ctx context.Context, req *pb.CreateUserKeyRequest) (*pb.User_Key, error) {
+	key, err := s.uc.CreateUserKey(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoUserKey(key)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *StorageService) DeleteUserKey(ctx context.Context, req *connect.Request[pb.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteUserKey(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetUserId(), req.Msg.GetAccessKey()); err != nil {
+func (s *StorageService) DeleteUserKey(ctx context.Context, req *pb.DeleteUserKeyRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteUserKey(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId(), req.GetAccessKey()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
 func (s *StorageService) ACL(str string) types.BucketCannedACL {

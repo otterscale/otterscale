@@ -136,38 +136,38 @@ const (
 // VirtualMachineServiceClient is a client for the
 // otterscale.virtual_machine.v1.VirtualMachineService service.
 type VirtualMachineServiceClient interface {
-	CheckInfrastructureStatus(context.Context, *connect.Request[v1.CheckInfrastructureStatusRequest]) (*connect.Response[v1.CheckInfrastructureStatusResponse], error)
-	ListVirtualMachines(context.Context, *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error)
-	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
-	CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
-	DeleteVirtualMachine(context.Context, *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	AttachVirtualMachineDisk(context.Context, *connect.Request[v1.AttachVirtualMachineDiskRequest]) (*connect.Response[v1.VirtualMachine_Disk], error)
-	DetachVirtualMachineDisk(context.Context, *connect.Request[v1.DetachVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateVirtualMachineClone(context.Context, *connect.Request[v1.CreateVirtualMachineCloneRequest]) (*connect.Response[v1.VirtualMachine_Clone], error)
-	DeleteVirtualMachineClone(context.Context, *connect.Request[v1.DeleteVirtualMachineCloneRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateVirtualMachineSnapshot(context.Context, *connect.Request[v1.CreateVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachine_Snapshot], error)
-	DeleteVirtualMachineSnapshot(context.Context, *connect.Request[v1.DeleteVirtualMachineSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateVirtualMachineRestore(context.Context, *connect.Request[v1.CreateVirtualMachineRestoreRequest]) (*connect.Response[v1.VirtualMachine_Restore], error)
-	DeleteVirtualMachineRestore(context.Context, *connect.Request[v1.DeleteVirtualMachineRestoreRequest]) (*connect.Response[emptypb.Empty], error)
-	StartVirtualMachine(context.Context, *connect.Request[v1.StartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	StopVirtualMachine(context.Context, *connect.Request[v1.StopVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	RestartVirtualMachine(context.Context, *connect.Request[v1.RestartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	PauseInstance(context.Context, *connect.Request[v1.PauseInstanceRequest]) (*connect.Response[emptypb.Empty], error)
-	ResumeInstance(context.Context, *connect.Request[v1.ResumeInstanceRequest]) (*connect.Response[emptypb.Empty], error)
-	MigrateInstance(context.Context, *connect.Request[v1.MigrateInstanceRequest]) (*connect.Response[emptypb.Empty], error)
-	ListDataVolumes(context.Context, *connect.Request[v1.ListDataVolumesRequest]) (*connect.Response[v1.ListDataVolumesResponse], error)
-	GetDataVolume(context.Context, *connect.Request[v1.GetDataVolumeRequest]) (*connect.Response[v1.DataVolume], error)
-	CreateDataVolume(context.Context, *connect.Request[v1.CreateDataVolumeRequest]) (*connect.Response[v1.DataVolume], error)
-	DeleteDataVolume(context.Context, *connect.Request[v1.DeleteDataVolumeRequest]) (*connect.Response[emptypb.Empty], error)
-	ExtendDataVolume(context.Context, *connect.Request[v1.ExtendDataVolumeRequest]) (*connect.Response[emptypb.Empty], error)
-	ListClusterWideInstanceTypes(context.Context, *connect.Request[v1.ListClusterWideInstanceTypesRequest]) (*connect.Response[v1.ListClusterWideInstanceTypesResponse], error)
-	ListInstanceTypes(context.Context, *connect.Request[v1.ListInstanceTypesRequest]) (*connect.Response[v1.ListInstanceTypesResponse], error)
-	GetInstanceType(context.Context, *connect.Request[v1.GetInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error)
-	CreateInstanceType(context.Context, *connect.Request[v1.CreateInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error)
-	DeleteInstanceType(context.Context, *connect.Request[v1.DeleteInstanceTypeRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateVirtualMachineService(context.Context, *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
-	UpdateVirtualMachineService(context.Context, *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
-	DeleteVirtualMachineService(context.Context, *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error)
+	CheckInfrastructureStatus(context.Context, *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error)
+	ListVirtualMachines(context.Context, *v1.ListVirtualMachinesRequest) (*v1.ListVirtualMachinesResponse, error)
+	GetVirtualMachine(context.Context, *v1.GetVirtualMachineRequest) (*v1.VirtualMachine, error)
+	CreateVirtualMachine(context.Context, *v1.CreateVirtualMachineRequest) (*v1.VirtualMachine, error)
+	DeleteVirtualMachine(context.Context, *v1.DeleteVirtualMachineRequest) (*emptypb.Empty, error)
+	AttachVirtualMachineDisk(context.Context, *v1.AttachVirtualMachineDiskRequest) (*v1.VirtualMachine_Disk, error)
+	DetachVirtualMachineDisk(context.Context, *v1.DetachVirtualMachineDiskRequest) (*emptypb.Empty, error)
+	CreateVirtualMachineClone(context.Context, *v1.CreateVirtualMachineCloneRequest) (*v1.VirtualMachine_Clone, error)
+	DeleteVirtualMachineClone(context.Context, *v1.DeleteVirtualMachineCloneRequest) (*emptypb.Empty, error)
+	CreateVirtualMachineSnapshot(context.Context, *v1.CreateVirtualMachineSnapshotRequest) (*v1.VirtualMachine_Snapshot, error)
+	DeleteVirtualMachineSnapshot(context.Context, *v1.DeleteVirtualMachineSnapshotRequest) (*emptypb.Empty, error)
+	CreateVirtualMachineRestore(context.Context, *v1.CreateVirtualMachineRestoreRequest) (*v1.VirtualMachine_Restore, error)
+	DeleteVirtualMachineRestore(context.Context, *v1.DeleteVirtualMachineRestoreRequest) (*emptypb.Empty, error)
+	StartVirtualMachine(context.Context, *v1.StartVirtualMachineRequest) (*emptypb.Empty, error)
+	StopVirtualMachine(context.Context, *v1.StopVirtualMachineRequest) (*emptypb.Empty, error)
+	RestartVirtualMachine(context.Context, *v1.RestartVirtualMachineRequest) (*emptypb.Empty, error)
+	PauseInstance(context.Context, *v1.PauseInstanceRequest) (*emptypb.Empty, error)
+	ResumeInstance(context.Context, *v1.ResumeInstanceRequest) (*emptypb.Empty, error)
+	MigrateInstance(context.Context, *v1.MigrateInstanceRequest) (*emptypb.Empty, error)
+	ListDataVolumes(context.Context, *v1.ListDataVolumesRequest) (*v1.ListDataVolumesResponse, error)
+	GetDataVolume(context.Context, *v1.GetDataVolumeRequest) (*v1.DataVolume, error)
+	CreateDataVolume(context.Context, *v1.CreateDataVolumeRequest) (*v1.DataVolume, error)
+	DeleteDataVolume(context.Context, *v1.DeleteDataVolumeRequest) (*emptypb.Empty, error)
+	ExtendDataVolume(context.Context, *v1.ExtendDataVolumeRequest) (*emptypb.Empty, error)
+	ListClusterWideInstanceTypes(context.Context, *v1.ListClusterWideInstanceTypesRequest) (*v1.ListClusterWideInstanceTypesResponse, error)
+	ListInstanceTypes(context.Context, *v1.ListInstanceTypesRequest) (*v1.ListInstanceTypesResponse, error)
+	GetInstanceType(context.Context, *v1.GetInstanceTypeRequest) (*v1.InstanceType, error)
+	CreateInstanceType(context.Context, *v1.CreateInstanceTypeRequest) (*v1.InstanceType, error)
+	DeleteInstanceType(context.Context, *v1.DeleteInstanceTypeRequest) (*emptypb.Empty, error)
+	CreateVirtualMachineService(context.Context, *v1.CreateVirtualMachineServiceRequest) (*v11.Application_Service, error)
+	UpdateVirtualMachineService(context.Context, *v1.UpdateVirtualMachineServiceRequest) (*v11.Application_Service, error)
+	DeleteVirtualMachineService(context.Context, *v1.DeleteVirtualMachineServiceRequest) (*emptypb.Empty, error)
 }
 
 // NewVirtualMachineServiceClient constructs a client for the
@@ -415,217 +415,345 @@ type virtualMachineServiceClient struct {
 
 // CheckInfrastructureStatus calls
 // otterscale.virtual_machine.v1.VirtualMachineService.CheckInfrastructureStatus.
-func (c *virtualMachineServiceClient) CheckInfrastructureStatus(ctx context.Context, req *connect.Request[v1.CheckInfrastructureStatusRequest]) (*connect.Response[v1.CheckInfrastructureStatusResponse], error) {
-	return c.checkInfrastructureStatus.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) CheckInfrastructureStatus(ctx context.Context, req *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error) {
+	response, err := c.checkInfrastructureStatus.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListVirtualMachines calls
 // otterscale.virtual_machine.v1.VirtualMachineService.ListVirtualMachines.
-func (c *virtualMachineServiceClient) ListVirtualMachines(ctx context.Context, req *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error) {
-	return c.listVirtualMachines.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) ListVirtualMachines(ctx context.Context, req *v1.ListVirtualMachinesRequest) (*v1.ListVirtualMachinesResponse, error) {
+	response, err := c.listVirtualMachines.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GetVirtualMachine calls otterscale.virtual_machine.v1.VirtualMachineService.GetVirtualMachine.
-func (c *virtualMachineServiceClient) GetVirtualMachine(ctx context.Context, req *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {
-	return c.getVirtualMachine.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) GetVirtualMachine(ctx context.Context, req *v1.GetVirtualMachineRequest) (*v1.VirtualMachine, error) {
+	response, err := c.getVirtualMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateVirtualMachine calls
 // otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachine.
-func (c *virtualMachineServiceClient) CreateVirtualMachine(ctx context.Context, req *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {
-	return c.createVirtualMachine.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) CreateVirtualMachine(ctx context.Context, req *v1.CreateVirtualMachineRequest) (*v1.VirtualMachine, error) {
+	response, err := c.createVirtualMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteVirtualMachine calls
 // otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachine.
-func (c *virtualMachineServiceClient) DeleteVirtualMachine(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteVirtualMachine.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) DeleteVirtualMachine(ctx context.Context, req *v1.DeleteVirtualMachineRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteVirtualMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // AttachVirtualMachineDisk calls
 // otterscale.virtual_machine.v1.VirtualMachineService.AttachVirtualMachineDisk.
-func (c *virtualMachineServiceClient) AttachVirtualMachineDisk(ctx context.Context, req *connect.Request[v1.AttachVirtualMachineDiskRequest]) (*connect.Response[v1.VirtualMachine_Disk], error) {
-	return c.attachVirtualMachineDisk.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) AttachVirtualMachineDisk(ctx context.Context, req *v1.AttachVirtualMachineDiskRequest) (*v1.VirtualMachine_Disk, error) {
+	response, err := c.attachVirtualMachineDisk.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DetachVirtualMachineDisk calls
 // otterscale.virtual_machine.v1.VirtualMachineService.DetachVirtualMachineDisk.
-func (c *virtualMachineServiceClient) DetachVirtualMachineDisk(ctx context.Context, req *connect.Request[v1.DetachVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.detachVirtualMachineDisk.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) DetachVirtualMachineDisk(ctx context.Context, req *v1.DetachVirtualMachineDiskRequest) (*emptypb.Empty, error) {
+	response, err := c.detachVirtualMachineDisk.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateVirtualMachineClone calls
 // otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineClone.
-func (c *virtualMachineServiceClient) CreateVirtualMachineClone(ctx context.Context, req *connect.Request[v1.CreateVirtualMachineCloneRequest]) (*connect.Response[v1.VirtualMachine_Clone], error) {
-	return c.createVirtualMachineClone.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) CreateVirtualMachineClone(ctx context.Context, req *v1.CreateVirtualMachineCloneRequest) (*v1.VirtualMachine_Clone, error) {
+	response, err := c.createVirtualMachineClone.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteVirtualMachineClone calls
 // otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineClone.
-func (c *virtualMachineServiceClient) DeleteVirtualMachineClone(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineCloneRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteVirtualMachineClone.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) DeleteVirtualMachineClone(ctx context.Context, req *v1.DeleteVirtualMachineCloneRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteVirtualMachineClone.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateVirtualMachineSnapshot calls
 // otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineSnapshot.
-func (c *virtualMachineServiceClient) CreateVirtualMachineSnapshot(ctx context.Context, req *connect.Request[v1.CreateVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachine_Snapshot], error) {
-	return c.createVirtualMachineSnapshot.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) CreateVirtualMachineSnapshot(ctx context.Context, req *v1.CreateVirtualMachineSnapshotRequest) (*v1.VirtualMachine_Snapshot, error) {
+	response, err := c.createVirtualMachineSnapshot.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteVirtualMachineSnapshot calls
 // otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineSnapshot.
-func (c *virtualMachineServiceClient) DeleteVirtualMachineSnapshot(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteVirtualMachineSnapshot.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) DeleteVirtualMachineSnapshot(ctx context.Context, req *v1.DeleteVirtualMachineSnapshotRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteVirtualMachineSnapshot.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateVirtualMachineRestore calls
 // otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineRestore.
-func (c *virtualMachineServiceClient) CreateVirtualMachineRestore(ctx context.Context, req *connect.Request[v1.CreateVirtualMachineRestoreRequest]) (*connect.Response[v1.VirtualMachine_Restore], error) {
-	return c.createVirtualMachineRestore.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) CreateVirtualMachineRestore(ctx context.Context, req *v1.CreateVirtualMachineRestoreRequest) (*v1.VirtualMachine_Restore, error) {
+	response, err := c.createVirtualMachineRestore.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteVirtualMachineRestore calls
 // otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineRestore.
-func (c *virtualMachineServiceClient) DeleteVirtualMachineRestore(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineRestoreRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteVirtualMachineRestore.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) DeleteVirtualMachineRestore(ctx context.Context, req *v1.DeleteVirtualMachineRestoreRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteVirtualMachineRestore.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // StartVirtualMachine calls
 // otterscale.virtual_machine.v1.VirtualMachineService.StartVirtualMachine.
-func (c *virtualMachineServiceClient) StartVirtualMachine(ctx context.Context, req *connect.Request[v1.StartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.startVirtualMachine.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) StartVirtualMachine(ctx context.Context, req *v1.StartVirtualMachineRequest) (*emptypb.Empty, error) {
+	response, err := c.startVirtualMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // StopVirtualMachine calls otterscale.virtual_machine.v1.VirtualMachineService.StopVirtualMachine.
-func (c *virtualMachineServiceClient) StopVirtualMachine(ctx context.Context, req *connect.Request[v1.StopVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.stopVirtualMachine.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) StopVirtualMachine(ctx context.Context, req *v1.StopVirtualMachineRequest) (*emptypb.Empty, error) {
+	response, err := c.stopVirtualMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // RestartVirtualMachine calls
 // otterscale.virtual_machine.v1.VirtualMachineService.RestartVirtualMachine.
-func (c *virtualMachineServiceClient) RestartVirtualMachine(ctx context.Context, req *connect.Request[v1.RestartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.restartVirtualMachine.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) RestartVirtualMachine(ctx context.Context, req *v1.RestartVirtualMachineRequest) (*emptypb.Empty, error) {
+	response, err := c.restartVirtualMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // PauseInstance calls otterscale.virtual_machine.v1.VirtualMachineService.PauseInstance.
-func (c *virtualMachineServiceClient) PauseInstance(ctx context.Context, req *connect.Request[v1.PauseInstanceRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.pauseInstance.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) PauseInstance(ctx context.Context, req *v1.PauseInstanceRequest) (*emptypb.Empty, error) {
+	response, err := c.pauseInstance.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ResumeInstance calls otterscale.virtual_machine.v1.VirtualMachineService.ResumeInstance.
-func (c *virtualMachineServiceClient) ResumeInstance(ctx context.Context, req *connect.Request[v1.ResumeInstanceRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.resumeInstance.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) ResumeInstance(ctx context.Context, req *v1.ResumeInstanceRequest) (*emptypb.Empty, error) {
+	response, err := c.resumeInstance.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // MigrateInstance calls otterscale.virtual_machine.v1.VirtualMachineService.MigrateInstance.
-func (c *virtualMachineServiceClient) MigrateInstance(ctx context.Context, req *connect.Request[v1.MigrateInstanceRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.migrateInstance.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) MigrateInstance(ctx context.Context, req *v1.MigrateInstanceRequest) (*emptypb.Empty, error) {
+	response, err := c.migrateInstance.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListDataVolumes calls otterscale.virtual_machine.v1.VirtualMachineService.ListDataVolumes.
-func (c *virtualMachineServiceClient) ListDataVolumes(ctx context.Context, req *connect.Request[v1.ListDataVolumesRequest]) (*connect.Response[v1.ListDataVolumesResponse], error) {
-	return c.listDataVolumes.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) ListDataVolumes(ctx context.Context, req *v1.ListDataVolumesRequest) (*v1.ListDataVolumesResponse, error) {
+	response, err := c.listDataVolumes.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GetDataVolume calls otterscale.virtual_machine.v1.VirtualMachineService.GetDataVolume.
-func (c *virtualMachineServiceClient) GetDataVolume(ctx context.Context, req *connect.Request[v1.GetDataVolumeRequest]) (*connect.Response[v1.DataVolume], error) {
-	return c.getDataVolume.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) GetDataVolume(ctx context.Context, req *v1.GetDataVolumeRequest) (*v1.DataVolume, error) {
+	response, err := c.getDataVolume.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateDataVolume calls otterscale.virtual_machine.v1.VirtualMachineService.CreateDataVolume.
-func (c *virtualMachineServiceClient) CreateDataVolume(ctx context.Context, req *connect.Request[v1.CreateDataVolumeRequest]) (*connect.Response[v1.DataVolume], error) {
-	return c.createDataVolume.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) CreateDataVolume(ctx context.Context, req *v1.CreateDataVolumeRequest) (*v1.DataVolume, error) {
+	response, err := c.createDataVolume.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteDataVolume calls otterscale.virtual_machine.v1.VirtualMachineService.DeleteDataVolume.
-func (c *virtualMachineServiceClient) DeleteDataVolume(ctx context.Context, req *connect.Request[v1.DeleteDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteDataVolume.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) DeleteDataVolume(ctx context.Context, req *v1.DeleteDataVolumeRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteDataVolume.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ExtendDataVolume calls otterscale.virtual_machine.v1.VirtualMachineService.ExtendDataVolume.
-func (c *virtualMachineServiceClient) ExtendDataVolume(ctx context.Context, req *connect.Request[v1.ExtendDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.extendDataVolume.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) ExtendDataVolume(ctx context.Context, req *v1.ExtendDataVolumeRequest) (*emptypb.Empty, error) {
+	response, err := c.extendDataVolume.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListClusterWideInstanceTypes calls
 // otterscale.virtual_machine.v1.VirtualMachineService.ListClusterWideInstanceTypes.
-func (c *virtualMachineServiceClient) ListClusterWideInstanceTypes(ctx context.Context, req *connect.Request[v1.ListClusterWideInstanceTypesRequest]) (*connect.Response[v1.ListClusterWideInstanceTypesResponse], error) {
-	return c.listClusterWideInstanceTypes.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) ListClusterWideInstanceTypes(ctx context.Context, req *v1.ListClusterWideInstanceTypesRequest) (*v1.ListClusterWideInstanceTypesResponse, error) {
+	response, err := c.listClusterWideInstanceTypes.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListInstanceTypes calls otterscale.virtual_machine.v1.VirtualMachineService.ListInstanceTypes.
-func (c *virtualMachineServiceClient) ListInstanceTypes(ctx context.Context, req *connect.Request[v1.ListInstanceTypesRequest]) (*connect.Response[v1.ListInstanceTypesResponse], error) {
-	return c.listInstanceTypes.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) ListInstanceTypes(ctx context.Context, req *v1.ListInstanceTypesRequest) (*v1.ListInstanceTypesResponse, error) {
+	response, err := c.listInstanceTypes.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GetInstanceType calls otterscale.virtual_machine.v1.VirtualMachineService.GetInstanceType.
-func (c *virtualMachineServiceClient) GetInstanceType(ctx context.Context, req *connect.Request[v1.GetInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error) {
-	return c.getInstanceType.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) GetInstanceType(ctx context.Context, req *v1.GetInstanceTypeRequest) (*v1.InstanceType, error) {
+	response, err := c.getInstanceType.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateInstanceType calls otterscale.virtual_machine.v1.VirtualMachineService.CreateInstanceType.
-func (c *virtualMachineServiceClient) CreateInstanceType(ctx context.Context, req *connect.Request[v1.CreateInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error) {
-	return c.createInstanceType.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) CreateInstanceType(ctx context.Context, req *v1.CreateInstanceTypeRequest) (*v1.InstanceType, error) {
+	response, err := c.createInstanceType.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteInstanceType calls otterscale.virtual_machine.v1.VirtualMachineService.DeleteInstanceType.
-func (c *virtualMachineServiceClient) DeleteInstanceType(ctx context.Context, req *connect.Request[v1.DeleteInstanceTypeRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteInstanceType.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) DeleteInstanceType(ctx context.Context, req *v1.DeleteInstanceTypeRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteInstanceType.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateVirtualMachineService calls
 // otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineService.
-func (c *virtualMachineServiceClient) CreateVirtualMachineService(ctx context.Context, req *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
-	return c.createVirtualMachineService.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) CreateVirtualMachineService(ctx context.Context, req *v1.CreateVirtualMachineServiceRequest) (*v11.Application_Service, error) {
+	response, err := c.createVirtualMachineService.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateVirtualMachineService calls
 // otterscale.virtual_machine.v1.VirtualMachineService.UpdateVirtualMachineService.
-func (c *virtualMachineServiceClient) UpdateVirtualMachineService(ctx context.Context, req *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
-	return c.updateVirtualMachineService.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) UpdateVirtualMachineService(ctx context.Context, req *v1.UpdateVirtualMachineServiceRequest) (*v11.Application_Service, error) {
+	response, err := c.updateVirtualMachineService.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteVirtualMachineService calls
 // otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineService.
-func (c *virtualMachineServiceClient) DeleteVirtualMachineService(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteVirtualMachineService.CallUnary(ctx, req)
+func (c *virtualMachineServiceClient) DeleteVirtualMachineService(ctx context.Context, req *v1.DeleteVirtualMachineServiceRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteVirtualMachineService.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // VirtualMachineServiceHandler is an implementation of the
 // otterscale.virtual_machine.v1.VirtualMachineService service.
 type VirtualMachineServiceHandler interface {
-	CheckInfrastructureStatus(context.Context, *connect.Request[v1.CheckInfrastructureStatusRequest]) (*connect.Response[v1.CheckInfrastructureStatusResponse], error)
-	ListVirtualMachines(context.Context, *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error)
-	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
-	CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
-	DeleteVirtualMachine(context.Context, *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	AttachVirtualMachineDisk(context.Context, *connect.Request[v1.AttachVirtualMachineDiskRequest]) (*connect.Response[v1.VirtualMachine_Disk], error)
-	DetachVirtualMachineDisk(context.Context, *connect.Request[v1.DetachVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateVirtualMachineClone(context.Context, *connect.Request[v1.CreateVirtualMachineCloneRequest]) (*connect.Response[v1.VirtualMachine_Clone], error)
-	DeleteVirtualMachineClone(context.Context, *connect.Request[v1.DeleteVirtualMachineCloneRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateVirtualMachineSnapshot(context.Context, *connect.Request[v1.CreateVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachine_Snapshot], error)
-	DeleteVirtualMachineSnapshot(context.Context, *connect.Request[v1.DeleteVirtualMachineSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateVirtualMachineRestore(context.Context, *connect.Request[v1.CreateVirtualMachineRestoreRequest]) (*connect.Response[v1.VirtualMachine_Restore], error)
-	DeleteVirtualMachineRestore(context.Context, *connect.Request[v1.DeleteVirtualMachineRestoreRequest]) (*connect.Response[emptypb.Empty], error)
-	StartVirtualMachine(context.Context, *connect.Request[v1.StartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	StopVirtualMachine(context.Context, *connect.Request[v1.StopVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	RestartVirtualMachine(context.Context, *connect.Request[v1.RestartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	PauseInstance(context.Context, *connect.Request[v1.PauseInstanceRequest]) (*connect.Response[emptypb.Empty], error)
-	ResumeInstance(context.Context, *connect.Request[v1.ResumeInstanceRequest]) (*connect.Response[emptypb.Empty], error)
-	MigrateInstance(context.Context, *connect.Request[v1.MigrateInstanceRequest]) (*connect.Response[emptypb.Empty], error)
-	ListDataVolumes(context.Context, *connect.Request[v1.ListDataVolumesRequest]) (*connect.Response[v1.ListDataVolumesResponse], error)
-	GetDataVolume(context.Context, *connect.Request[v1.GetDataVolumeRequest]) (*connect.Response[v1.DataVolume], error)
-	CreateDataVolume(context.Context, *connect.Request[v1.CreateDataVolumeRequest]) (*connect.Response[v1.DataVolume], error)
-	DeleteDataVolume(context.Context, *connect.Request[v1.DeleteDataVolumeRequest]) (*connect.Response[emptypb.Empty], error)
-	ExtendDataVolume(context.Context, *connect.Request[v1.ExtendDataVolumeRequest]) (*connect.Response[emptypb.Empty], error)
-	ListClusterWideInstanceTypes(context.Context, *connect.Request[v1.ListClusterWideInstanceTypesRequest]) (*connect.Response[v1.ListClusterWideInstanceTypesResponse], error)
-	ListInstanceTypes(context.Context, *connect.Request[v1.ListInstanceTypesRequest]) (*connect.Response[v1.ListInstanceTypesResponse], error)
-	GetInstanceType(context.Context, *connect.Request[v1.GetInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error)
-	CreateInstanceType(context.Context, *connect.Request[v1.CreateInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error)
-	DeleteInstanceType(context.Context, *connect.Request[v1.DeleteInstanceTypeRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateVirtualMachineService(context.Context, *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
-	UpdateVirtualMachineService(context.Context, *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error)
-	DeleteVirtualMachineService(context.Context, *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error)
+	CheckInfrastructureStatus(context.Context, *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error)
+	ListVirtualMachines(context.Context, *v1.ListVirtualMachinesRequest) (*v1.ListVirtualMachinesResponse, error)
+	GetVirtualMachine(context.Context, *v1.GetVirtualMachineRequest) (*v1.VirtualMachine, error)
+	CreateVirtualMachine(context.Context, *v1.CreateVirtualMachineRequest) (*v1.VirtualMachine, error)
+	DeleteVirtualMachine(context.Context, *v1.DeleteVirtualMachineRequest) (*emptypb.Empty, error)
+	AttachVirtualMachineDisk(context.Context, *v1.AttachVirtualMachineDiskRequest) (*v1.VirtualMachine_Disk, error)
+	DetachVirtualMachineDisk(context.Context, *v1.DetachVirtualMachineDiskRequest) (*emptypb.Empty, error)
+	CreateVirtualMachineClone(context.Context, *v1.CreateVirtualMachineCloneRequest) (*v1.VirtualMachine_Clone, error)
+	DeleteVirtualMachineClone(context.Context, *v1.DeleteVirtualMachineCloneRequest) (*emptypb.Empty, error)
+	CreateVirtualMachineSnapshot(context.Context, *v1.CreateVirtualMachineSnapshotRequest) (*v1.VirtualMachine_Snapshot, error)
+	DeleteVirtualMachineSnapshot(context.Context, *v1.DeleteVirtualMachineSnapshotRequest) (*emptypb.Empty, error)
+	CreateVirtualMachineRestore(context.Context, *v1.CreateVirtualMachineRestoreRequest) (*v1.VirtualMachine_Restore, error)
+	DeleteVirtualMachineRestore(context.Context, *v1.DeleteVirtualMachineRestoreRequest) (*emptypb.Empty, error)
+	StartVirtualMachine(context.Context, *v1.StartVirtualMachineRequest) (*emptypb.Empty, error)
+	StopVirtualMachine(context.Context, *v1.StopVirtualMachineRequest) (*emptypb.Empty, error)
+	RestartVirtualMachine(context.Context, *v1.RestartVirtualMachineRequest) (*emptypb.Empty, error)
+	PauseInstance(context.Context, *v1.PauseInstanceRequest) (*emptypb.Empty, error)
+	ResumeInstance(context.Context, *v1.ResumeInstanceRequest) (*emptypb.Empty, error)
+	MigrateInstance(context.Context, *v1.MigrateInstanceRequest) (*emptypb.Empty, error)
+	ListDataVolumes(context.Context, *v1.ListDataVolumesRequest) (*v1.ListDataVolumesResponse, error)
+	GetDataVolume(context.Context, *v1.GetDataVolumeRequest) (*v1.DataVolume, error)
+	CreateDataVolume(context.Context, *v1.CreateDataVolumeRequest) (*v1.DataVolume, error)
+	DeleteDataVolume(context.Context, *v1.DeleteDataVolumeRequest) (*emptypb.Empty, error)
+	ExtendDataVolume(context.Context, *v1.ExtendDataVolumeRequest) (*emptypb.Empty, error)
+	ListClusterWideInstanceTypes(context.Context, *v1.ListClusterWideInstanceTypesRequest) (*v1.ListClusterWideInstanceTypesResponse, error)
+	ListInstanceTypes(context.Context, *v1.ListInstanceTypesRequest) (*v1.ListInstanceTypesResponse, error)
+	GetInstanceType(context.Context, *v1.GetInstanceTypeRequest) (*v1.InstanceType, error)
+	CreateInstanceType(context.Context, *v1.CreateInstanceTypeRequest) (*v1.InstanceType, error)
+	DeleteInstanceType(context.Context, *v1.DeleteInstanceTypeRequest) (*emptypb.Empty, error)
+	CreateVirtualMachineService(context.Context, *v1.CreateVirtualMachineServiceRequest) (*v11.Application_Service, error)
+	UpdateVirtualMachineService(context.Context, *v1.UpdateVirtualMachineServiceRequest) (*v11.Application_Service, error)
+	DeleteVirtualMachineService(context.Context, *v1.DeleteVirtualMachineServiceRequest) (*emptypb.Empty, error)
 }
 
 // NewVirtualMachineServiceHandler builds an HTTP handler from the service implementation. It
@@ -635,193 +763,193 @@ type VirtualMachineServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewVirtualMachineServiceHandler(svc VirtualMachineServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	virtualMachineServiceMethods := v1.File_api_virtual_machine_v1_virtual_machine_proto.Services().ByName("VirtualMachineService").Methods()
-	virtualMachineServiceCheckInfrastructureStatusHandler := connect.NewUnaryHandler(
+	virtualMachineServiceCheckInfrastructureStatusHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceCheckInfrastructureStatusProcedure,
 		svc.CheckInfrastructureStatus,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("CheckInfrastructureStatus")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceListVirtualMachinesHandler := connect.NewUnaryHandler(
+	virtualMachineServiceListVirtualMachinesHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceListVirtualMachinesProcedure,
 		svc.ListVirtualMachines,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("ListVirtualMachines")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceGetVirtualMachineHandler := connect.NewUnaryHandler(
+	virtualMachineServiceGetVirtualMachineHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceGetVirtualMachineProcedure,
 		svc.GetVirtualMachine,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("GetVirtualMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceCreateVirtualMachineHandler := connect.NewUnaryHandler(
+	virtualMachineServiceCreateVirtualMachineHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceCreateVirtualMachineProcedure,
 		svc.CreateVirtualMachine,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("CreateVirtualMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceDeleteVirtualMachineHandler := connect.NewUnaryHandler(
+	virtualMachineServiceDeleteVirtualMachineHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceDeleteVirtualMachineProcedure,
 		svc.DeleteVirtualMachine,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteVirtualMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceAttachVirtualMachineDiskHandler := connect.NewUnaryHandler(
+	virtualMachineServiceAttachVirtualMachineDiskHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceAttachVirtualMachineDiskProcedure,
 		svc.AttachVirtualMachineDisk,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("AttachVirtualMachineDisk")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceDetachVirtualMachineDiskHandler := connect.NewUnaryHandler(
+	virtualMachineServiceDetachVirtualMachineDiskHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceDetachVirtualMachineDiskProcedure,
 		svc.DetachVirtualMachineDisk,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("DetachVirtualMachineDisk")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceCreateVirtualMachineCloneHandler := connect.NewUnaryHandler(
+	virtualMachineServiceCreateVirtualMachineCloneHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceCreateVirtualMachineCloneProcedure,
 		svc.CreateVirtualMachineClone,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("CreateVirtualMachineClone")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceDeleteVirtualMachineCloneHandler := connect.NewUnaryHandler(
+	virtualMachineServiceDeleteVirtualMachineCloneHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceDeleteVirtualMachineCloneProcedure,
 		svc.DeleteVirtualMachineClone,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteVirtualMachineClone")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceCreateVirtualMachineSnapshotHandler := connect.NewUnaryHandler(
+	virtualMachineServiceCreateVirtualMachineSnapshotHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceCreateVirtualMachineSnapshotProcedure,
 		svc.CreateVirtualMachineSnapshot,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("CreateVirtualMachineSnapshot")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceDeleteVirtualMachineSnapshotHandler := connect.NewUnaryHandler(
+	virtualMachineServiceDeleteVirtualMachineSnapshotHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceDeleteVirtualMachineSnapshotProcedure,
 		svc.DeleteVirtualMachineSnapshot,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteVirtualMachineSnapshot")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceCreateVirtualMachineRestoreHandler := connect.NewUnaryHandler(
+	virtualMachineServiceCreateVirtualMachineRestoreHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceCreateVirtualMachineRestoreProcedure,
 		svc.CreateVirtualMachineRestore,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("CreateVirtualMachineRestore")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceDeleteVirtualMachineRestoreHandler := connect.NewUnaryHandler(
+	virtualMachineServiceDeleteVirtualMachineRestoreHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceDeleteVirtualMachineRestoreProcedure,
 		svc.DeleteVirtualMachineRestore,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteVirtualMachineRestore")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceStartVirtualMachineHandler := connect.NewUnaryHandler(
+	virtualMachineServiceStartVirtualMachineHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceStartVirtualMachineProcedure,
 		svc.StartVirtualMachine,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("StartVirtualMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceStopVirtualMachineHandler := connect.NewUnaryHandler(
+	virtualMachineServiceStopVirtualMachineHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceStopVirtualMachineProcedure,
 		svc.StopVirtualMachine,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("StopVirtualMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceRestartVirtualMachineHandler := connect.NewUnaryHandler(
+	virtualMachineServiceRestartVirtualMachineHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceRestartVirtualMachineProcedure,
 		svc.RestartVirtualMachine,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("RestartVirtualMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServicePauseInstanceHandler := connect.NewUnaryHandler(
+	virtualMachineServicePauseInstanceHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServicePauseInstanceProcedure,
 		svc.PauseInstance,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("PauseInstance")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceResumeInstanceHandler := connect.NewUnaryHandler(
+	virtualMachineServiceResumeInstanceHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceResumeInstanceProcedure,
 		svc.ResumeInstance,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("ResumeInstance")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceMigrateInstanceHandler := connect.NewUnaryHandler(
+	virtualMachineServiceMigrateInstanceHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceMigrateInstanceProcedure,
 		svc.MigrateInstance,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("MigrateInstance")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceListDataVolumesHandler := connect.NewUnaryHandler(
+	virtualMachineServiceListDataVolumesHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceListDataVolumesProcedure,
 		svc.ListDataVolumes,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("ListDataVolumes")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceGetDataVolumeHandler := connect.NewUnaryHandler(
+	virtualMachineServiceGetDataVolumeHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceGetDataVolumeProcedure,
 		svc.GetDataVolume,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("GetDataVolume")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceCreateDataVolumeHandler := connect.NewUnaryHandler(
+	virtualMachineServiceCreateDataVolumeHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceCreateDataVolumeProcedure,
 		svc.CreateDataVolume,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("CreateDataVolume")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceDeleteDataVolumeHandler := connect.NewUnaryHandler(
+	virtualMachineServiceDeleteDataVolumeHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceDeleteDataVolumeProcedure,
 		svc.DeleteDataVolume,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteDataVolume")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceExtendDataVolumeHandler := connect.NewUnaryHandler(
+	virtualMachineServiceExtendDataVolumeHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceExtendDataVolumeProcedure,
 		svc.ExtendDataVolume,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("ExtendDataVolume")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceListClusterWideInstanceTypesHandler := connect.NewUnaryHandler(
+	virtualMachineServiceListClusterWideInstanceTypesHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceListClusterWideInstanceTypesProcedure,
 		svc.ListClusterWideInstanceTypes,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("ListClusterWideInstanceTypes")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceListInstanceTypesHandler := connect.NewUnaryHandler(
+	virtualMachineServiceListInstanceTypesHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceListInstanceTypesProcedure,
 		svc.ListInstanceTypes,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("ListInstanceTypes")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceGetInstanceTypeHandler := connect.NewUnaryHandler(
+	virtualMachineServiceGetInstanceTypeHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceGetInstanceTypeProcedure,
 		svc.GetInstanceType,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("GetInstanceType")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceCreateInstanceTypeHandler := connect.NewUnaryHandler(
+	virtualMachineServiceCreateInstanceTypeHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceCreateInstanceTypeProcedure,
 		svc.CreateInstanceType,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("CreateInstanceType")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceDeleteInstanceTypeHandler := connect.NewUnaryHandler(
+	virtualMachineServiceDeleteInstanceTypeHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceDeleteInstanceTypeProcedure,
 		svc.DeleteInstanceType,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteInstanceType")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceCreateVirtualMachineServiceHandler := connect.NewUnaryHandler(
+	virtualMachineServiceCreateVirtualMachineServiceHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceCreateVirtualMachineServiceProcedure,
 		svc.CreateVirtualMachineService,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("CreateVirtualMachineService")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceUpdateVirtualMachineServiceHandler := connect.NewUnaryHandler(
+	virtualMachineServiceUpdateVirtualMachineServiceHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceUpdateVirtualMachineServiceProcedure,
 		svc.UpdateVirtualMachineService,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("UpdateVirtualMachineService")),
 		connect.WithHandlerOptions(opts...),
 	)
-	virtualMachineServiceDeleteVirtualMachineServiceHandler := connect.NewUnaryHandler(
+	virtualMachineServiceDeleteVirtualMachineServiceHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceDeleteVirtualMachineServiceProcedure,
 		svc.DeleteVirtualMachineService,
 		connect.WithSchema(virtualMachineServiceMethods.ByName("DeleteVirtualMachineService")),
@@ -902,130 +1030,130 @@ func NewVirtualMachineServiceHandler(svc VirtualMachineServiceHandler, opts ...c
 // UnimplementedVirtualMachineServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedVirtualMachineServiceHandler struct{}
 
-func (UnimplementedVirtualMachineServiceHandler) CheckInfrastructureStatus(context.Context, *connect.Request[v1.CheckInfrastructureStatusRequest]) (*connect.Response[v1.CheckInfrastructureStatusResponse], error) {
+func (UnimplementedVirtualMachineServiceHandler) CheckInfrastructureStatus(context.Context, *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.CheckInfrastructureStatus is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) ListVirtualMachines(context.Context, *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error) {
+func (UnimplementedVirtualMachineServiceHandler) ListVirtualMachines(context.Context, *v1.ListVirtualMachinesRequest) (*v1.ListVirtualMachinesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.ListVirtualMachines is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {
+func (UnimplementedVirtualMachineServiceHandler) GetVirtualMachine(context.Context, *v1.GetVirtualMachineRequest) (*v1.VirtualMachine, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.GetVirtualMachine is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {
+func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachine(context.Context, *v1.CreateVirtualMachineRequest) (*v1.VirtualMachine, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachine is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachine(context.Context, *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachine(context.Context, *v1.DeleteVirtualMachineRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachine is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) AttachVirtualMachineDisk(context.Context, *connect.Request[v1.AttachVirtualMachineDiskRequest]) (*connect.Response[v1.VirtualMachine_Disk], error) {
+func (UnimplementedVirtualMachineServiceHandler) AttachVirtualMachineDisk(context.Context, *v1.AttachVirtualMachineDiskRequest) (*v1.VirtualMachine_Disk, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.AttachVirtualMachineDisk is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) DetachVirtualMachineDisk(context.Context, *connect.Request[v1.DetachVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) DetachVirtualMachineDisk(context.Context, *v1.DetachVirtualMachineDiskRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DetachVirtualMachineDisk is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachineClone(context.Context, *connect.Request[v1.CreateVirtualMachineCloneRequest]) (*connect.Response[v1.VirtualMachine_Clone], error) {
+func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachineClone(context.Context, *v1.CreateVirtualMachineCloneRequest) (*v1.VirtualMachine_Clone, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineClone is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachineClone(context.Context, *connect.Request[v1.DeleteVirtualMachineCloneRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachineClone(context.Context, *v1.DeleteVirtualMachineCloneRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineClone is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachineSnapshot(context.Context, *connect.Request[v1.CreateVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachine_Snapshot], error) {
+func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachineSnapshot(context.Context, *v1.CreateVirtualMachineSnapshotRequest) (*v1.VirtualMachine_Snapshot, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineSnapshot is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachineSnapshot(context.Context, *connect.Request[v1.DeleteVirtualMachineSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachineSnapshot(context.Context, *v1.DeleteVirtualMachineSnapshotRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineSnapshot is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachineRestore(context.Context, *connect.Request[v1.CreateVirtualMachineRestoreRequest]) (*connect.Response[v1.VirtualMachine_Restore], error) {
+func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachineRestore(context.Context, *v1.CreateVirtualMachineRestoreRequest) (*v1.VirtualMachine_Restore, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineRestore is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachineRestore(context.Context, *connect.Request[v1.DeleteVirtualMachineRestoreRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachineRestore(context.Context, *v1.DeleteVirtualMachineRestoreRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineRestore is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) StartVirtualMachine(context.Context, *connect.Request[v1.StartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) StartVirtualMachine(context.Context, *v1.StartVirtualMachineRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.StartVirtualMachine is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) StopVirtualMachine(context.Context, *connect.Request[v1.StopVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) StopVirtualMachine(context.Context, *v1.StopVirtualMachineRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.StopVirtualMachine is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) RestartVirtualMachine(context.Context, *connect.Request[v1.RestartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) RestartVirtualMachine(context.Context, *v1.RestartVirtualMachineRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.RestartVirtualMachine is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) PauseInstance(context.Context, *connect.Request[v1.PauseInstanceRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) PauseInstance(context.Context, *v1.PauseInstanceRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.PauseInstance is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) ResumeInstance(context.Context, *connect.Request[v1.ResumeInstanceRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) ResumeInstance(context.Context, *v1.ResumeInstanceRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.ResumeInstance is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) MigrateInstance(context.Context, *connect.Request[v1.MigrateInstanceRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) MigrateInstance(context.Context, *v1.MigrateInstanceRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.MigrateInstance is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) ListDataVolumes(context.Context, *connect.Request[v1.ListDataVolumesRequest]) (*connect.Response[v1.ListDataVolumesResponse], error) {
+func (UnimplementedVirtualMachineServiceHandler) ListDataVolumes(context.Context, *v1.ListDataVolumesRequest) (*v1.ListDataVolumesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.ListDataVolumes is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) GetDataVolume(context.Context, *connect.Request[v1.GetDataVolumeRequest]) (*connect.Response[v1.DataVolume], error) {
+func (UnimplementedVirtualMachineServiceHandler) GetDataVolume(context.Context, *v1.GetDataVolumeRequest) (*v1.DataVolume, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.GetDataVolume is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) CreateDataVolume(context.Context, *connect.Request[v1.CreateDataVolumeRequest]) (*connect.Response[v1.DataVolume], error) {
+func (UnimplementedVirtualMachineServiceHandler) CreateDataVolume(context.Context, *v1.CreateDataVolumeRequest) (*v1.DataVolume, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.CreateDataVolume is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) DeleteDataVolume(context.Context, *connect.Request[v1.DeleteDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) DeleteDataVolume(context.Context, *v1.DeleteDataVolumeRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DeleteDataVolume is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) ExtendDataVolume(context.Context, *connect.Request[v1.ExtendDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) ExtendDataVolume(context.Context, *v1.ExtendDataVolumeRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.ExtendDataVolume is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) ListClusterWideInstanceTypes(context.Context, *connect.Request[v1.ListClusterWideInstanceTypesRequest]) (*connect.Response[v1.ListClusterWideInstanceTypesResponse], error) {
+func (UnimplementedVirtualMachineServiceHandler) ListClusterWideInstanceTypes(context.Context, *v1.ListClusterWideInstanceTypesRequest) (*v1.ListClusterWideInstanceTypesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.ListClusterWideInstanceTypes is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) ListInstanceTypes(context.Context, *connect.Request[v1.ListInstanceTypesRequest]) (*connect.Response[v1.ListInstanceTypesResponse], error) {
+func (UnimplementedVirtualMachineServiceHandler) ListInstanceTypes(context.Context, *v1.ListInstanceTypesRequest) (*v1.ListInstanceTypesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.ListInstanceTypes is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) GetInstanceType(context.Context, *connect.Request[v1.GetInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error) {
+func (UnimplementedVirtualMachineServiceHandler) GetInstanceType(context.Context, *v1.GetInstanceTypeRequest) (*v1.InstanceType, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.GetInstanceType is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) CreateInstanceType(context.Context, *connect.Request[v1.CreateInstanceTypeRequest]) (*connect.Response[v1.InstanceType], error) {
+func (UnimplementedVirtualMachineServiceHandler) CreateInstanceType(context.Context, *v1.CreateInstanceTypeRequest) (*v1.InstanceType, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.CreateInstanceType is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) DeleteInstanceType(context.Context, *connect.Request[v1.DeleteInstanceTypeRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) DeleteInstanceType(context.Context, *v1.DeleteInstanceTypeRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DeleteInstanceType is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachineService(context.Context, *connect.Request[v1.CreateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
+func (UnimplementedVirtualMachineServiceHandler) CreateVirtualMachineService(context.Context, *v1.CreateVirtualMachineServiceRequest) (*v11.Application_Service, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.CreateVirtualMachineService is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) UpdateVirtualMachineService(context.Context, *connect.Request[v1.UpdateVirtualMachineServiceRequest]) (*connect.Response[v11.Application_Service], error) {
+func (UnimplementedVirtualMachineServiceHandler) UpdateVirtualMachineService(context.Context, *v1.UpdateVirtualMachineServiceRequest) (*v11.Application_Service, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.UpdateVirtualMachineService is not implemented"))
 }
 
-func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachineService(context.Context, *connect.Request[v1.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedVirtualMachineServiceHandler) DeleteVirtualMachineService(context.Context, *v1.DeleteVirtualMachineServiceRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.DeleteVirtualMachineService is not implemented"))
 }

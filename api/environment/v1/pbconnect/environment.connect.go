@@ -60,13 +60,13 @@ const (
 // EnvironmentServiceClient is a client for the otterscale.environment.v1.EnvironmentService
 // service.
 type EnvironmentServiceClient interface {
-	CheckHealth(context.Context, *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error)
-	WatchStatus(context.Context, *connect.Request[v1.WatchStatusRequest]) (*connect.ServerStreamForClient[v1.WatchStatusResponse], error)
-	UpdateStatus(context.Context, *connect.Request[v1.UpdateStatusRequest]) (*connect.Response[emptypb.Empty], error)
-	UpdateConfig(context.Context, *connect.Request[v1.UpdateConfigRequest]) (*connect.Response[emptypb.Empty], error)
-	GetConfigHelmRepositories(context.Context, *connect.Request[v1.GetConfigHelmRepositoriesRequest]) (*connect.Response[v1.GetConfigHelmRepositoriesResponse], error)
-	UpdateConfigHelmRepositories(context.Context, *connect.Request[v1.UpdateConfigHelmRepositoriesRequest]) (*connect.Response[emptypb.Empty], error)
-	GetPrometheus(context.Context, *connect.Request[v1.GetPrometheusRequest]) (*connect.Response[v1.Prometheus], error)
+	CheckHealth(context.Context, *v1.CheckHealthRequest) (*v1.CheckHealthResponse, error)
+	WatchStatus(context.Context, *v1.WatchStatusRequest) (*connect.ServerStreamForClient[v1.WatchStatusResponse], error)
+	UpdateStatus(context.Context, *v1.UpdateStatusRequest) (*emptypb.Empty, error)
+	UpdateConfig(context.Context, *v1.UpdateConfigRequest) (*emptypb.Empty, error)
+	GetConfigHelmRepositories(context.Context, *v1.GetConfigHelmRepositoriesRequest) (*v1.GetConfigHelmRepositoriesResponse, error)
+	UpdateConfigHelmRepositories(context.Context, *v1.UpdateConfigHelmRepositoriesRequest) (*emptypb.Empty, error)
+	GetPrometheus(context.Context, *v1.GetPrometheusRequest) (*v1.Prometheus, error)
 }
 
 // NewEnvironmentServiceClient constructs a client for the
@@ -138,52 +138,76 @@ type environmentServiceClient struct {
 }
 
 // CheckHealth calls otterscale.environment.v1.EnvironmentService.CheckHealth.
-func (c *environmentServiceClient) CheckHealth(ctx context.Context, req *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error) {
-	return c.checkHealth.CallUnary(ctx, req)
+func (c *environmentServiceClient) CheckHealth(ctx context.Context, req *v1.CheckHealthRequest) (*v1.CheckHealthResponse, error) {
+	response, err := c.checkHealth.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // WatchStatus calls otterscale.environment.v1.EnvironmentService.WatchStatus.
-func (c *environmentServiceClient) WatchStatus(ctx context.Context, req *connect.Request[v1.WatchStatusRequest]) (*connect.ServerStreamForClient[v1.WatchStatusResponse], error) {
-	return c.watchStatus.CallServerStream(ctx, req)
+func (c *environmentServiceClient) WatchStatus(ctx context.Context, req *v1.WatchStatusRequest) (*connect.ServerStreamForClient[v1.WatchStatusResponse], error) {
+	return c.watchStatus.CallServerStream(ctx, connect.NewRequest(req))
 }
 
 // UpdateStatus calls otterscale.environment.v1.EnvironmentService.UpdateStatus.
-func (c *environmentServiceClient) UpdateStatus(ctx context.Context, req *connect.Request[v1.UpdateStatusRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.updateStatus.CallUnary(ctx, req)
+func (c *environmentServiceClient) UpdateStatus(ctx context.Context, req *v1.UpdateStatusRequest) (*emptypb.Empty, error) {
+	response, err := c.updateStatus.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateConfig calls otterscale.environment.v1.EnvironmentService.UpdateConfig.
-func (c *environmentServiceClient) UpdateConfig(ctx context.Context, req *connect.Request[v1.UpdateConfigRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.updateConfig.CallUnary(ctx, req)
+func (c *environmentServiceClient) UpdateConfig(ctx context.Context, req *v1.UpdateConfigRequest) (*emptypb.Empty, error) {
+	response, err := c.updateConfig.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GetConfigHelmRepositories calls
 // otterscale.environment.v1.EnvironmentService.GetConfigHelmRepositories.
-func (c *environmentServiceClient) GetConfigHelmRepositories(ctx context.Context, req *connect.Request[v1.GetConfigHelmRepositoriesRequest]) (*connect.Response[v1.GetConfigHelmRepositoriesResponse], error) {
-	return c.getConfigHelmRepositories.CallUnary(ctx, req)
+func (c *environmentServiceClient) GetConfigHelmRepositories(ctx context.Context, req *v1.GetConfigHelmRepositoriesRequest) (*v1.GetConfigHelmRepositoriesResponse, error) {
+	response, err := c.getConfigHelmRepositories.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateConfigHelmRepositories calls
 // otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories.
-func (c *environmentServiceClient) UpdateConfigHelmRepositories(ctx context.Context, req *connect.Request[v1.UpdateConfigHelmRepositoriesRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.updateConfigHelmRepositories.CallUnary(ctx, req)
+func (c *environmentServiceClient) UpdateConfigHelmRepositories(ctx context.Context, req *v1.UpdateConfigHelmRepositoriesRequest) (*emptypb.Empty, error) {
+	response, err := c.updateConfigHelmRepositories.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GetPrometheus calls otterscale.environment.v1.EnvironmentService.GetPrometheus.
-func (c *environmentServiceClient) GetPrometheus(ctx context.Context, req *connect.Request[v1.GetPrometheusRequest]) (*connect.Response[v1.Prometheus], error) {
-	return c.getPrometheus.CallUnary(ctx, req)
+func (c *environmentServiceClient) GetPrometheus(ctx context.Context, req *v1.GetPrometheusRequest) (*v1.Prometheus, error) {
+	response, err := c.getPrometheus.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // EnvironmentServiceHandler is an implementation of the
 // otterscale.environment.v1.EnvironmentService service.
 type EnvironmentServiceHandler interface {
-	CheckHealth(context.Context, *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error)
-	WatchStatus(context.Context, *connect.Request[v1.WatchStatusRequest], *connect.ServerStream[v1.WatchStatusResponse]) error
-	UpdateStatus(context.Context, *connect.Request[v1.UpdateStatusRequest]) (*connect.Response[emptypb.Empty], error)
-	UpdateConfig(context.Context, *connect.Request[v1.UpdateConfigRequest]) (*connect.Response[emptypb.Empty], error)
-	GetConfigHelmRepositories(context.Context, *connect.Request[v1.GetConfigHelmRepositoriesRequest]) (*connect.Response[v1.GetConfigHelmRepositoriesResponse], error)
-	UpdateConfigHelmRepositories(context.Context, *connect.Request[v1.UpdateConfigHelmRepositoriesRequest]) (*connect.Response[emptypb.Empty], error)
-	GetPrometheus(context.Context, *connect.Request[v1.GetPrometheusRequest]) (*connect.Response[v1.Prometheus], error)
+	CheckHealth(context.Context, *v1.CheckHealthRequest) (*v1.CheckHealthResponse, error)
+	WatchStatus(context.Context, *v1.WatchStatusRequest, *connect.ServerStream[v1.WatchStatusResponse]) error
+	UpdateStatus(context.Context, *v1.UpdateStatusRequest) (*emptypb.Empty, error)
+	UpdateConfig(context.Context, *v1.UpdateConfigRequest) (*emptypb.Empty, error)
+	GetConfigHelmRepositories(context.Context, *v1.GetConfigHelmRepositoriesRequest) (*v1.GetConfigHelmRepositoriesResponse, error)
+	UpdateConfigHelmRepositories(context.Context, *v1.UpdateConfigHelmRepositoriesRequest) (*emptypb.Empty, error)
+	GetPrometheus(context.Context, *v1.GetPrometheusRequest) (*v1.Prometheus, error)
 }
 
 // NewEnvironmentServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -193,43 +217,43 @@ type EnvironmentServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewEnvironmentServiceHandler(svc EnvironmentServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	environmentServiceMethods := v1.File_api_environment_v1_environment_proto.Services().ByName("EnvironmentService").Methods()
-	environmentServiceCheckHealthHandler := connect.NewUnaryHandler(
+	environmentServiceCheckHealthHandler := connect.NewUnaryHandlerSimple(
 		EnvironmentServiceCheckHealthProcedure,
 		svc.CheckHealth,
 		connect.WithSchema(environmentServiceMethods.ByName("CheckHealth")),
 		connect.WithHandlerOptions(opts...),
 	)
-	environmentServiceWatchStatusHandler := connect.NewServerStreamHandler(
+	environmentServiceWatchStatusHandler := connect.NewServerStreamHandlerSimple(
 		EnvironmentServiceWatchStatusProcedure,
 		svc.WatchStatus,
 		connect.WithSchema(environmentServiceMethods.ByName("WatchStatus")),
 		connect.WithHandlerOptions(opts...),
 	)
-	environmentServiceUpdateStatusHandler := connect.NewUnaryHandler(
+	environmentServiceUpdateStatusHandler := connect.NewUnaryHandlerSimple(
 		EnvironmentServiceUpdateStatusProcedure,
 		svc.UpdateStatus,
 		connect.WithSchema(environmentServiceMethods.ByName("UpdateStatus")),
 		connect.WithHandlerOptions(opts...),
 	)
-	environmentServiceUpdateConfigHandler := connect.NewUnaryHandler(
+	environmentServiceUpdateConfigHandler := connect.NewUnaryHandlerSimple(
 		EnvironmentServiceUpdateConfigProcedure,
 		svc.UpdateConfig,
 		connect.WithSchema(environmentServiceMethods.ByName("UpdateConfig")),
 		connect.WithHandlerOptions(opts...),
 	)
-	environmentServiceGetConfigHelmRepositoriesHandler := connect.NewUnaryHandler(
+	environmentServiceGetConfigHelmRepositoriesHandler := connect.NewUnaryHandlerSimple(
 		EnvironmentServiceGetConfigHelmRepositoriesProcedure,
 		svc.GetConfigHelmRepositories,
 		connect.WithSchema(environmentServiceMethods.ByName("GetConfigHelmRepositories")),
 		connect.WithHandlerOptions(opts...),
 	)
-	environmentServiceUpdateConfigHelmRepositoriesHandler := connect.NewUnaryHandler(
+	environmentServiceUpdateConfigHelmRepositoriesHandler := connect.NewUnaryHandlerSimple(
 		EnvironmentServiceUpdateConfigHelmRepositoriesProcedure,
 		svc.UpdateConfigHelmRepositories,
 		connect.WithSchema(environmentServiceMethods.ByName("UpdateConfigHelmRepositories")),
 		connect.WithHandlerOptions(opts...),
 	)
-	environmentServiceGetPrometheusHandler := connect.NewUnaryHandler(
+	environmentServiceGetPrometheusHandler := connect.NewUnaryHandlerSimple(
 		EnvironmentServiceGetPrometheusProcedure,
 		svc.GetPrometheus,
 		connect.WithSchema(environmentServiceMethods.ByName("GetPrometheus")),
@@ -260,30 +284,30 @@ func NewEnvironmentServiceHandler(svc EnvironmentServiceHandler, opts ...connect
 // UnimplementedEnvironmentServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedEnvironmentServiceHandler struct{}
 
-func (UnimplementedEnvironmentServiceHandler) CheckHealth(context.Context, *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error) {
+func (UnimplementedEnvironmentServiceHandler) CheckHealth(context.Context, *v1.CheckHealthRequest) (*v1.CheckHealthResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.CheckHealth is not implemented"))
 }
 
-func (UnimplementedEnvironmentServiceHandler) WatchStatus(context.Context, *connect.Request[v1.WatchStatusRequest], *connect.ServerStream[v1.WatchStatusResponse]) error {
+func (UnimplementedEnvironmentServiceHandler) WatchStatus(context.Context, *v1.WatchStatusRequest, *connect.ServerStream[v1.WatchStatusResponse]) error {
 	return connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.WatchStatus is not implemented"))
 }
 
-func (UnimplementedEnvironmentServiceHandler) UpdateStatus(context.Context, *connect.Request[v1.UpdateStatusRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedEnvironmentServiceHandler) UpdateStatus(context.Context, *v1.UpdateStatusRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.UpdateStatus is not implemented"))
 }
 
-func (UnimplementedEnvironmentServiceHandler) UpdateConfig(context.Context, *connect.Request[v1.UpdateConfigRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedEnvironmentServiceHandler) UpdateConfig(context.Context, *v1.UpdateConfigRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.UpdateConfig is not implemented"))
 }
 
-func (UnimplementedEnvironmentServiceHandler) GetConfigHelmRepositories(context.Context, *connect.Request[v1.GetConfigHelmRepositoriesRequest]) (*connect.Response[v1.GetConfigHelmRepositoriesResponse], error) {
+func (UnimplementedEnvironmentServiceHandler) GetConfigHelmRepositories(context.Context, *v1.GetConfigHelmRepositoriesRequest) (*v1.GetConfigHelmRepositoriesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.GetConfigHelmRepositories is not implemented"))
 }
 
-func (UnimplementedEnvironmentServiceHandler) UpdateConfigHelmRepositories(context.Context, *connect.Request[v1.UpdateConfigHelmRepositoriesRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedEnvironmentServiceHandler) UpdateConfigHelmRepositories(context.Context, *v1.UpdateConfigHelmRepositoriesRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories is not implemented"))
 }
 
-func (UnimplementedEnvironmentServiceHandler) GetPrometheus(context.Context, *connect.Request[v1.GetPrometheusRequest]) (*connect.Response[v1.Prometheus], error) {
+func (UnimplementedEnvironmentServiceHandler) GetPrometheus(context.Context, *v1.GetPrometheusRequest) (*v1.Prometheus, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.GetPrometheus is not implemented"))
 }

@@ -35,17 +35,17 @@ func NewEnvironmentService(uc *core.EnvironmentUseCase) *EnvironmentService {
 
 var _ pbconnect.EnvironmentServiceHandler = (*EnvironmentService)(nil)
 
-func (s *EnvironmentService) CheckHealth(ctx context.Context, _ *connect.Request[pb.CheckHealthRequest]) (*connect.Response[pb.CheckHealthResponse], error) {
+func (s *EnvironmentService) CheckHealth(ctx context.Context, _ *pb.CheckHealthRequest) (*pb.CheckHealthResponse, error) {
 	result, err := s.uc.CheckHealth(ctx)
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.CheckHealthResponse{}
 	resp.SetResult(pb.CheckHealthResponse_Result(result))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *EnvironmentService) WatchStatus(ctx context.Context, _ *connect.Request[pb.WatchStatusRequest], stream *connect.ServerStream[pb.WatchStatusResponse]) error {
+func (s *EnvironmentService) WatchStatus(ctx context.Context, _ *pb.WatchStatusRequest, stream *connect.ServerStream[pb.WatchStatusResponse]) error {
 	// Send initial status to the new client
 	status := s.uc.LoadStatus(ctx)
 	if err := stream.Send(toProtoWatchStatus(status)); err != nil {
@@ -61,9 +61,9 @@ func (s *EnvironmentService) WatchStatus(ctx context.Context, _ *connect.Request
 	return ctx.Err()
 }
 
-func (s *EnvironmentService) UpdateStatus(ctx context.Context, req *connect.Request[pb.UpdateStatusRequest]) (*connect.Response[emptypb.Empty], error) {
+func (s *EnvironmentService) UpdateStatus(ctx context.Context, req *pb.UpdateStatusRequest) (*emptypb.Empty, error) {
 	// Update the environment status in the use case layer
-	s.uc.StoreStatus(ctx, req.Msg.GetPhase(), req.Msg.GetMessage())
+	s.uc.StoreStatus(ctx, req.GetPhase(), req.GetMessage())
 
 	status := s.uc.LoadStatus(ctx)
 	select {
@@ -72,7 +72,8 @@ func (s *EnvironmentService) UpdateStatus(ctx context.Context, req *connect.Requ
 		// Non-blocking send to avoid deadlock if channel is full
 	}
 
-	return connect.NewResponse(&emptypb.Empty{}), nil
+	resp := &emptypb.Empty{}
+	return resp, nil
 }
 
 func (s *EnvironmentService) broadcastStatus() {
@@ -87,36 +88,36 @@ func (s *EnvironmentService) broadcastStatus() {
 	}
 }
 
-func (s *EnvironmentService) UpdateConfig(ctx context.Context, req *connect.Request[pb.UpdateConfigRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.UpdateConfig(ctx, toConfig(req.Msg)); err != nil {
+func (s *EnvironmentService) UpdateConfig(ctx context.Context, req *pb.UpdateConfigRequest) (*emptypb.Empty, error) {
+	if err := s.uc.UpdateConfig(ctx, toConfig(req)); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *EnvironmentService) GetConfigHelmRepositories(_ context.Context, _ *connect.Request[pb.GetConfigHelmRepositoriesRequest]) (*connect.Response[pb.GetConfigHelmRepositoriesResponse], error) {
+func (s *EnvironmentService) GetConfigHelmRepositories(_ context.Context, _ *pb.GetConfigHelmRepositoriesRequest) (*pb.GetConfigHelmRepositoriesResponse, error) {
 	helmRepos := s.uc.GetConfigHelmRepos()
 	resp := &pb.GetConfigHelmRepositoriesResponse{}
 	resp.SetUrls(helmRepos)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *EnvironmentService) UpdateConfigHelmRepositories(_ context.Context, req *connect.Request[pb.UpdateConfigHelmRepositoriesRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.UpdateConfigHelmRepos(req.Msg.GetUrls()); err != nil {
+func (s *EnvironmentService) UpdateConfigHelmRepositories(_ context.Context, req *pb.UpdateConfigHelmRepositoriesRequest) (*emptypb.Empty, error) {
+	if err := s.uc.UpdateConfigHelmRepos(req.GetUrls()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *EnvironmentService) GetPrometheus(ctx context.Context, _ *connect.Request[pb.GetPrometheusRequest]) (*connect.Response[pb.Prometheus], error) {
+func (s *EnvironmentService) GetPrometheus(ctx context.Context, _ *pb.GetPrometheusRequest) (*pb.Prometheus, error) {
 	_, err := s.uc.FetchPrometheusInfo(ctx)
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoPrometheus()
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
 func toConfig(req *pb.UpdateConfigRequest) *config.Config {

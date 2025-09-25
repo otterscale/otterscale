@@ -3,8 +3,6 @@ package app
 import (
 	"context"
 
-	"connectrpc.com/connect"
-
 	pb "github.com/otterscale/otterscale/api/premium/v1"
 	"github.com/otterscale/otterscale/api/premium/v1/pbconnect"
 )
@@ -19,7 +17,7 @@ func NewPremiumService() *PremiumService {
 
 var _ pbconnect.PremiumServiceHandler = (*PremiumService)(nil)
 
-func (s *PremiumService) GetTier(_ context.Context, _ *connect.Request[pb.GetTierRequest]) (*connect.Response[pb.GetTierResponse], error) {
+func (s *PremiumService) GetTier(_ context.Context, _ *pb.GetTierRequest) (*pb.GetTierResponse, error) {
 	resp := &pb.GetTierResponse{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }

@@ -62,14 +62,14 @@ const (
 
 // EssentialServiceClient is a client for the otterscale.essential.v1.EssentialService service.
 type EssentialServiceClient interface {
-	IsMachineDeployed(context.Context, *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[v1.IsMachineDeployedResponse], error)
-	ListStatuses(context.Context, *connect.Request[v1.ListStatusesRequest]) (*connect.Response[v1.ListStatusesResponse], error)
-	ListEssentials(context.Context, *connect.Request[v1.ListEssentialsRequest]) (*connect.Response[v1.ListEssentialsResponse], error)
-	CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error)
-	AddUnits(context.Context, *connect.Request[v1.AddUnitsRequest]) (*connect.Response[emptypb.Empty], error)
-	ListKubernetesNodeLabels(context.Context, *connect.Request[v1.ListKubernetesNodeLabelsRequest]) (*connect.Response[v1.ListKubernetesNodeLabelsResponse], error)
-	UpdateKubernetesNodeLabels(context.Context, *connect.Request[v1.UpdateKubernetesNodeLabelsRequest]) (*connect.Response[v1.UpdateKubernetesNodeLabelsResponse], error)
+	IsMachineDeployed(context.Context, *v1.IsMachineDeployedRequest) (*v1.IsMachineDeployedResponse, error)
+	ListStatuses(context.Context, *v1.ListStatusesRequest) (*v1.ListStatusesResponse, error)
+	ListEssentials(context.Context, *v1.ListEssentialsRequest) (*v1.ListEssentialsResponse, error)
+	CreateSingleNode(context.Context, *v1.CreateSingleNodeRequest) (*emptypb.Empty, error)
+	CreateHighAvailabilityCluster(context.Context, *v1.CreateHighAvailabilityClusterRequest) (*emptypb.Empty, error)
+	AddUnits(context.Context, *v1.AddUnitsRequest) (*emptypb.Empty, error)
+	ListKubernetesNodeLabels(context.Context, *v1.ListKubernetesNodeLabelsRequest) (*v1.ListKubernetesNodeLabelsResponse, error)
+	UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error)
 }
 
 // NewEssentialServiceClient constructs a client for the otterscale.essential.v1.EssentialService
@@ -147,58 +147,90 @@ type essentialServiceClient struct {
 }
 
 // IsMachineDeployed calls otterscale.essential.v1.EssentialService.IsMachineDeployed.
-func (c *essentialServiceClient) IsMachineDeployed(ctx context.Context, req *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[v1.IsMachineDeployedResponse], error) {
-	return c.isMachineDeployed.CallUnary(ctx, req)
+func (c *essentialServiceClient) IsMachineDeployed(ctx context.Context, req *v1.IsMachineDeployedRequest) (*v1.IsMachineDeployedResponse, error) {
+	response, err := c.isMachineDeployed.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListStatuses calls otterscale.essential.v1.EssentialService.ListStatuses.
-func (c *essentialServiceClient) ListStatuses(ctx context.Context, req *connect.Request[v1.ListStatusesRequest]) (*connect.Response[v1.ListStatusesResponse], error) {
-	return c.listStatuses.CallUnary(ctx, req)
+func (c *essentialServiceClient) ListStatuses(ctx context.Context, req *v1.ListStatusesRequest) (*v1.ListStatusesResponse, error) {
+	response, err := c.listStatuses.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListEssentials calls otterscale.essential.v1.EssentialService.ListEssentials.
-func (c *essentialServiceClient) ListEssentials(ctx context.Context, req *connect.Request[v1.ListEssentialsRequest]) (*connect.Response[v1.ListEssentialsResponse], error) {
-	return c.listEssentials.CallUnary(ctx, req)
+func (c *essentialServiceClient) ListEssentials(ctx context.Context, req *v1.ListEssentialsRequest) (*v1.ListEssentialsResponse, error) {
+	response, err := c.listEssentials.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateSingleNode calls otterscale.essential.v1.EssentialService.CreateSingleNode.
-func (c *essentialServiceClient) CreateSingleNode(ctx context.Context, req *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.createSingleNode.CallUnary(ctx, req)
+func (c *essentialServiceClient) CreateSingleNode(ctx context.Context, req *v1.CreateSingleNodeRequest) (*emptypb.Empty, error) {
+	response, err := c.createSingleNode.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateHighAvailabilityCluster calls
 // otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster.
-func (c *essentialServiceClient) CreateHighAvailabilityCluster(ctx context.Context, req *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.createHighAvailabilityCluster.CallUnary(ctx, req)
+func (c *essentialServiceClient) CreateHighAvailabilityCluster(ctx context.Context, req *v1.CreateHighAvailabilityClusterRequest) (*emptypb.Empty, error) {
+	response, err := c.createHighAvailabilityCluster.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // AddUnits calls otterscale.essential.v1.EssentialService.AddUnits.
-func (c *essentialServiceClient) AddUnits(ctx context.Context, req *connect.Request[v1.AddUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.addUnits.CallUnary(ctx, req)
+func (c *essentialServiceClient) AddUnits(ctx context.Context, req *v1.AddUnitsRequest) (*emptypb.Empty, error) {
+	response, err := c.addUnits.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListKubernetesNodeLabels calls otterscale.essential.v1.EssentialService.ListKubernetesNodeLabels.
-func (c *essentialServiceClient) ListKubernetesNodeLabels(ctx context.Context, req *connect.Request[v1.ListKubernetesNodeLabelsRequest]) (*connect.Response[v1.ListKubernetesNodeLabelsResponse], error) {
-	return c.listKubernetesNodeLabels.CallUnary(ctx, req)
+func (c *essentialServiceClient) ListKubernetesNodeLabels(ctx context.Context, req *v1.ListKubernetesNodeLabelsRequest) (*v1.ListKubernetesNodeLabelsResponse, error) {
+	response, err := c.listKubernetesNodeLabels.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateKubernetesNodeLabels calls
 // otterscale.essential.v1.EssentialService.UpdateKubernetesNodeLabels.
-func (c *essentialServiceClient) UpdateKubernetesNodeLabels(ctx context.Context, req *connect.Request[v1.UpdateKubernetesNodeLabelsRequest]) (*connect.Response[v1.UpdateKubernetesNodeLabelsResponse], error) {
-	return c.updateKubernetesNodeLabels.CallUnary(ctx, req)
+func (c *essentialServiceClient) UpdateKubernetesNodeLabels(ctx context.Context, req *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error) {
+	response, err := c.updateKubernetesNodeLabels.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // EssentialServiceHandler is an implementation of the otterscale.essential.v1.EssentialService
 // service.
 type EssentialServiceHandler interface {
-	IsMachineDeployed(context.Context, *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[v1.IsMachineDeployedResponse], error)
-	ListStatuses(context.Context, *connect.Request[v1.ListStatusesRequest]) (*connect.Response[v1.ListStatusesResponse], error)
-	ListEssentials(context.Context, *connect.Request[v1.ListEssentialsRequest]) (*connect.Response[v1.ListEssentialsResponse], error)
-	CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error)
-	AddUnits(context.Context, *connect.Request[v1.AddUnitsRequest]) (*connect.Response[emptypb.Empty], error)
-	ListKubernetesNodeLabels(context.Context, *connect.Request[v1.ListKubernetesNodeLabelsRequest]) (*connect.Response[v1.ListKubernetesNodeLabelsResponse], error)
-	UpdateKubernetesNodeLabels(context.Context, *connect.Request[v1.UpdateKubernetesNodeLabelsRequest]) (*connect.Response[v1.UpdateKubernetesNodeLabelsResponse], error)
+	IsMachineDeployed(context.Context, *v1.IsMachineDeployedRequest) (*v1.IsMachineDeployedResponse, error)
+	ListStatuses(context.Context, *v1.ListStatusesRequest) (*v1.ListStatusesResponse, error)
+	ListEssentials(context.Context, *v1.ListEssentialsRequest) (*v1.ListEssentialsResponse, error)
+	CreateSingleNode(context.Context, *v1.CreateSingleNodeRequest) (*emptypb.Empty, error)
+	CreateHighAvailabilityCluster(context.Context, *v1.CreateHighAvailabilityClusterRequest) (*emptypb.Empty, error)
+	AddUnits(context.Context, *v1.AddUnitsRequest) (*emptypb.Empty, error)
+	ListKubernetesNodeLabels(context.Context, *v1.ListKubernetesNodeLabelsRequest) (*v1.ListKubernetesNodeLabelsResponse, error)
+	UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error)
 }
 
 // NewEssentialServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -208,49 +240,49 @@ type EssentialServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewEssentialServiceHandler(svc EssentialServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	essentialServiceMethods := v1.File_api_essential_v1_essential_proto.Services().ByName("EssentialService").Methods()
-	essentialServiceIsMachineDeployedHandler := connect.NewUnaryHandler(
+	essentialServiceIsMachineDeployedHandler := connect.NewUnaryHandlerSimple(
 		EssentialServiceIsMachineDeployedProcedure,
 		svc.IsMachineDeployed,
 		connect.WithSchema(essentialServiceMethods.ByName("IsMachineDeployed")),
 		connect.WithHandlerOptions(opts...),
 	)
-	essentialServiceListStatusesHandler := connect.NewUnaryHandler(
+	essentialServiceListStatusesHandler := connect.NewUnaryHandlerSimple(
 		EssentialServiceListStatusesProcedure,
 		svc.ListStatuses,
 		connect.WithSchema(essentialServiceMethods.ByName("ListStatuses")),
 		connect.WithHandlerOptions(opts...),
 	)
-	essentialServiceListEssentialsHandler := connect.NewUnaryHandler(
+	essentialServiceListEssentialsHandler := connect.NewUnaryHandlerSimple(
 		EssentialServiceListEssentialsProcedure,
 		svc.ListEssentials,
 		connect.WithSchema(essentialServiceMethods.ByName("ListEssentials")),
 		connect.WithHandlerOptions(opts...),
 	)
-	essentialServiceCreateSingleNodeHandler := connect.NewUnaryHandler(
+	essentialServiceCreateSingleNodeHandler := connect.NewUnaryHandlerSimple(
 		EssentialServiceCreateSingleNodeProcedure,
 		svc.CreateSingleNode,
 		connect.WithSchema(essentialServiceMethods.ByName("CreateSingleNode")),
 		connect.WithHandlerOptions(opts...),
 	)
-	essentialServiceCreateHighAvailabilityClusterHandler := connect.NewUnaryHandler(
+	essentialServiceCreateHighAvailabilityClusterHandler := connect.NewUnaryHandlerSimple(
 		EssentialServiceCreateHighAvailabilityClusterProcedure,
 		svc.CreateHighAvailabilityCluster,
 		connect.WithSchema(essentialServiceMethods.ByName("CreateHighAvailabilityCluster")),
 		connect.WithHandlerOptions(opts...),
 	)
-	essentialServiceAddUnitsHandler := connect.NewUnaryHandler(
+	essentialServiceAddUnitsHandler := connect.NewUnaryHandlerSimple(
 		EssentialServiceAddUnitsProcedure,
 		svc.AddUnits,
 		connect.WithSchema(essentialServiceMethods.ByName("AddUnits")),
 		connect.WithHandlerOptions(opts...),
 	)
-	essentialServiceListKubernetesNodeLabelsHandler := connect.NewUnaryHandler(
+	essentialServiceListKubernetesNodeLabelsHandler := connect.NewUnaryHandlerSimple(
 		EssentialServiceListKubernetesNodeLabelsProcedure,
 		svc.ListKubernetesNodeLabels,
 		connect.WithSchema(essentialServiceMethods.ByName("ListKubernetesNodeLabels")),
 		connect.WithHandlerOptions(opts...),
 	)
-	essentialServiceUpdateKubernetesNodeLabelsHandler := connect.NewUnaryHandler(
+	essentialServiceUpdateKubernetesNodeLabelsHandler := connect.NewUnaryHandlerSimple(
 		EssentialServiceUpdateKubernetesNodeLabelsProcedure,
 		svc.UpdateKubernetesNodeLabels,
 		connect.WithSchema(essentialServiceMethods.ByName("UpdateKubernetesNodeLabels")),
@@ -283,34 +315,34 @@ func NewEssentialServiceHandler(svc EssentialServiceHandler, opts ...connect.Han
 // UnimplementedEssentialServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedEssentialServiceHandler struct{}
 
-func (UnimplementedEssentialServiceHandler) IsMachineDeployed(context.Context, *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[v1.IsMachineDeployedResponse], error) {
+func (UnimplementedEssentialServiceHandler) IsMachineDeployed(context.Context, *v1.IsMachineDeployedRequest) (*v1.IsMachineDeployedResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.IsMachineDeployed is not implemented"))
 }
 
-func (UnimplementedEssentialServiceHandler) ListStatuses(context.Context, *connect.Request[v1.ListStatusesRequest]) (*connect.Response[v1.ListStatusesResponse], error) {
+func (UnimplementedEssentialServiceHandler) ListStatuses(context.Context, *v1.ListStatusesRequest) (*v1.ListStatusesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.ListStatuses is not implemented"))
 }
 
-func (UnimplementedEssentialServiceHandler) ListEssentials(context.Context, *connect.Request[v1.ListEssentialsRequest]) (*connect.Response[v1.ListEssentialsResponse], error) {
+func (UnimplementedEssentialServiceHandler) ListEssentials(context.Context, *v1.ListEssentialsRequest) (*v1.ListEssentialsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.ListEssentials is not implemented"))
 }
 
-func (UnimplementedEssentialServiceHandler) CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedEssentialServiceHandler) CreateSingleNode(context.Context, *v1.CreateSingleNodeRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.CreateSingleNode is not implemented"))
 }
 
-func (UnimplementedEssentialServiceHandler) CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedEssentialServiceHandler) CreateHighAvailabilityCluster(context.Context, *v1.CreateHighAvailabilityClusterRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster is not implemented"))
 }
 
-func (UnimplementedEssentialServiceHandler) AddUnits(context.Context, *connect.Request[v1.AddUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedEssentialServiceHandler) AddUnits(context.Context, *v1.AddUnitsRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.AddUnits is not implemented"))
 }
 
-func (UnimplementedEssentialServiceHandler) ListKubernetesNodeLabels(context.Context, *connect.Request[v1.ListKubernetesNodeLabelsRequest]) (*connect.Response[v1.ListKubernetesNodeLabelsResponse], error) {
+func (UnimplementedEssentialServiceHandler) ListKubernetesNodeLabels(context.Context, *v1.ListKubernetesNodeLabelsRequest) (*v1.ListKubernetesNodeLabelsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.ListKubernetesNodeLabels is not implemented"))
 }
 
-func (UnimplementedEssentialServiceHandler) UpdateKubernetesNodeLabels(context.Context, *connect.Request[v1.UpdateKubernetesNodeLabelsRequest]) (*connect.Response[v1.UpdateKubernetesNodeLabelsResponse], error) {
+func (UnimplementedEssentialServiceHandler) UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.UpdateKubernetesNodeLabels is not implemented"))
 }

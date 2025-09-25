@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 
-	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
@@ -24,65 +23,65 @@ func NewMachineService(uc *core.MachineUseCase) *MachineService {
 
 var _ pbconnect.MachineServiceHandler = (*MachineService)(nil)
 
-func (s *MachineService) ListMachines(ctx context.Context, req *connect.Request[pb.ListMachinesRequest]) (*connect.Response[pb.ListMachinesResponse], error) {
-	machines, err := s.uc.ListMachines(ctx, req.Msg.GetScopeUuid())
+func (s *MachineService) ListMachines(ctx context.Context, req *pb.ListMachinesRequest) (*pb.ListMachinesResponse, error) {
+	machines, err := s.uc.ListMachines(ctx, req.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListMachinesResponse{}
 	resp.SetMachines(toProtoMachines(machines))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *MachineService) GetMachine(ctx context.Context, req *connect.Request[pb.GetMachineRequest]) (*connect.Response[pb.Machine], error) {
-	machine, err := s.uc.GetMachine(ctx, req.Msg.GetId())
+func (s *MachineService) GetMachine(ctx context.Context, req *pb.GetMachineRequest) (*pb.Machine, error) {
+	machine, err := s.uc.GetMachine(ctx, req.GetId())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoMachine(machine)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *MachineService) CreateMachine(ctx context.Context, req *connect.Request[pb.CreateMachineRequest]) (*connect.Response[pb.Machine], error) {
-	machine, err := s.uc.CreateMachine(ctx, req.Msg.GetId(), req.Msg.GetEnableSsh(), req.Msg.GetSkipBmcConfig(), req.Msg.GetSkipNetworking(), req.Msg.GetSkipStorage(), req.Msg.GetScopeUuid(), req.Msg.GetTags())
+func (s *MachineService) CreateMachine(ctx context.Context, req *pb.CreateMachineRequest) (*pb.Machine, error) {
+	machine, err := s.uc.CreateMachine(ctx, req.GetId(), req.GetEnableSsh(), req.GetSkipBmcConfig(), req.GetSkipNetworking(), req.GetSkipStorage(), req.GetScopeUuid(), req.GetTags())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoMachine(machine)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *MachineService) DeleteMachine(ctx context.Context, req *connect.Request[pb.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteMachine(ctx, req.Msg.GetId(), req.Msg.GetForce(), req.Msg.GetPurgeDisk()); err != nil {
+func (s *MachineService) DeleteMachine(ctx context.Context, req *pb.DeleteMachineRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteMachine(ctx, req.GetId(), req.GetForce(), req.GetPurgeDisk()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *MachineService) PowerOffMachine(ctx context.Context, req *connect.Request[pb.PowerOffMachineRequest]) (*connect.Response[pb.Machine], error) {
-	machine, err := s.uc.PowerOffMachine(ctx, req.Msg.GetId(), req.Msg.GetComment())
+func (s *MachineService) PowerOffMachine(ctx context.Context, req *pb.PowerOffMachineRequest) (*pb.Machine, error) {
+	machine, err := s.uc.PowerOffMachine(ctx, req.GetId(), req.GetComment())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoMachine(machine)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *MachineService) AddMachineTags(ctx context.Context, req *connect.Request[pb.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.AddMachineTags(ctx, req.Msg.GetId(), req.Msg.GetTags()); err != nil {
+func (s *MachineService) AddMachineTags(ctx context.Context, req *pb.AddMachineTagsRequest) (*emptypb.Empty, error) {
+	if err := s.uc.AddMachineTags(ctx, req.GetId(), req.GetTags()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *MachineService) RemoveMachineTags(ctx context.Context, req *connect.Request[pb.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.RemoveMachineTags(ctx, req.Msg.GetId(), req.Msg.GetTags()); err != nil {
+func (s *MachineService) RemoveMachineTags(ctx context.Context, req *pb.RemoveMachineTagsRequest) (*emptypb.Empty, error) {
+	if err := s.uc.RemoveMachineTags(ctx, req.GetId(), req.GetTags()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
 func toProtoMachines(ms []core.Machine) []*pb.Machine {
