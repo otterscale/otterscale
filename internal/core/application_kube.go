@@ -36,6 +36,7 @@ type (
 	Container             = corev1.Container
 	Secret                = corev1.Secret
 	Service               = corev1.Service
+	ServicePort           = corev1.ServicePort
 	Pod                   = corev1.Pod
 	PersistentVolumeClaim = corev1.PersistentVolumeClaim
 )
@@ -91,9 +92,17 @@ type KubeBatchRepo interface {
 }
 
 type KubeCoreRepo interface {
+	// Namespace
+	ListNamespaces(ctx context.Context, config *rest.Config) ([]Namespace, error)
+
 	// Service
 	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error)
 	ListServicesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]Service, error)
+	GetService(ctx context.Context, config *rest.Config, namespace, name string) (*Service, error)
+	ListVirtualMachineServices(ctx context.Context, config *rest.Config, namespace, vmName string) ([]Service, error)
+	CreateVirtualMachineService(ctx context.Context, config *rest.Config, namespace, name, vmName string, ports []corev1.ServicePort) (*Service, error)
+	UpdateService(ctx context.Context, config *rest.Config, namespace string, service *Service) (*Service, error)
+	DeleteService(ctx context.Context, config *rest.Config, namespace, name string) error
 
 	// Pod
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
@@ -102,7 +111,9 @@ type KubeCoreRepo interface {
 	StreamPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error)
 
 	// PersistentVolumeClaim
+	GetPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) (*PersistentVolumeClaim, error)
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
+	PatchPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, data []byte) (*PersistentVolumeClaim, error)
 
 	// Namespace
 	GetNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error)
@@ -121,6 +132,14 @@ type KubeStorageRepo interface {
 	ListStorageClasses(ctx context.Context, config *rest.Config) ([]StorageClass, error)
 	ListStorageClassesByLabel(ctx context.Context, config *rest.Config, label string) ([]StorageClass, error)
 	GetStorageClass(ctx context.Context, config *rest.Config, name string) (*StorageClass, error)
+}
+
+func (uc *ApplicationUseCase) ListNamespaces(ctx context.Context, uuid, facility string) ([]Namespace, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.kubeCore.ListNamespaces(ctx, config)
 }
 
 func (uc *ApplicationUseCase) ListApplications(ctx context.Context, uuid, facility string) ([]Application, error) {

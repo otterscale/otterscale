@@ -97,7 +97,14 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	scopeService := app.NewScopeService(scopeUseCase)
 	tagUseCase := core.NewTagUseCase(tagRepo)
 	tagService := app.NewTagService(tagUseCase)
-	serveMux, err := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, premiumService, storageService, scopeService, tagService)
+	kubeVirtRepo := kube.NewVirt(kubeKube)
+	kubeVirtCloneRepo := kube.NewVirtClone(kubeKube)
+	kubeVirtSnapshotRepo := kube.NewVirtSnapshot(kubeKube)
+	kubeCDIRepo := kube.NewCDI(kubeKube)
+	kubeInstanceTypeRepo := kube.NewInstanceType(kubeKube)
+	virtualMachineUseCase := core.NewVirtualMachineUseCase(kubeVirtRepo, kubeVirtCloneRepo, kubeVirtSnapshotRepo, kubeCDIRepo, kubeInstanceTypeRepo, kubeCoreRepo, kubeStorageRepo, actionRepo, facilityRepo, machineRepo)
+	virtualMachineService := app.NewVirtualMachineService(virtualMachineUseCase)
+	serveMux, err := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, premiumService, storageService, scopeService, tagService, virtualMachineService)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

@@ -34,6 +34,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// ApplicationServiceListNamespacesProcedure is the fully-qualified name of the ApplicationService's
+	// ListNamespaces RPC.
+	ApplicationServiceListNamespacesProcedure = "/otterscale.application.v1.ApplicationService/ListNamespaces"
 	// ApplicationServiceListApplicationsProcedure is the fully-qualified name of the
 	// ApplicationService's ListApplications RPC.
 	ApplicationServiceListApplicationsProcedure = "/otterscale.application.v1.ApplicationService/ListApplications"
@@ -75,6 +78,7 @@ const (
 // ApplicationServiceClient is a client for the otterscale.application.v1.ApplicationService
 // service.
 type ApplicationServiceClient interface {
+	ListNamespaces(context.Context, *connect.Request[v1.ListNamespacesRequest]) (*connect.Response[v1.ListNamespacesResponse], error)
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
 	WatchLogs(context.Context, *connect.Request[v1.WatchLogsRequest]) (*connect.ServerStreamForClient[v1.WatchLogsResponse], error)
@@ -101,6 +105,12 @@ func NewApplicationServiceClient(httpClient connect.HTTPClient, baseURL string, 
 	baseURL = strings.TrimRight(baseURL, "/")
 	applicationServiceMethods := v1.File_api_application_v1_application_proto.Services().ByName("ApplicationService").Methods()
 	return &applicationServiceClient{
+		listNamespaces: connect.NewClient[v1.ListNamespacesRequest, v1.ListNamespacesResponse](
+			httpClient,
+			baseURL+ApplicationServiceListNamespacesProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("ListNamespaces")),
+			connect.WithClientOptions(opts...),
+		),
 		listApplications: connect.NewClient[v1.ListApplicationsRequest, v1.ListApplicationsResponse](
 			httpClient,
 			baseURL+ApplicationServiceListApplicationsProcedure,
@@ -178,6 +188,7 @@ func NewApplicationServiceClient(httpClient connect.HTTPClient, baseURL string, 
 
 // applicationServiceClient implements ApplicationServiceClient.
 type applicationServiceClient struct {
+	listNamespaces     *connect.Client[v1.ListNamespacesRequest, v1.ListNamespacesResponse]
 	listApplications   *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
 	getApplication     *connect.Client[v1.GetApplicationRequest, v1.Application]
 	watchLogs          *connect.Client[v1.WatchLogsRequest, v1.WatchLogsResponse]
@@ -190,6 +201,11 @@ type applicationServiceClient struct {
 	getChart           *connect.Client[v1.GetChartRequest, v1.Application_Chart]
 	getChartMetadata   *connect.Client[v1.GetChartMetadataRequest, v1.Application_Chart_Metadata]
 	listStorageClasses *connect.Client[v1.ListStorageClassesRequest, v1.ListStorageClassesResponse]
+}
+
+// ListNamespaces calls otterscale.application.v1.ApplicationService.ListNamespaces.
+func (c *applicationServiceClient) ListNamespaces(ctx context.Context, req *connect.Request[v1.ListNamespacesRequest]) (*connect.Response[v1.ListNamespacesResponse], error) {
+	return c.listNamespaces.CallUnary(ctx, req)
 }
 
 // ListApplications calls otterscale.application.v1.ApplicationService.ListApplications.
@@ -255,6 +271,7 @@ func (c *applicationServiceClient) ListStorageClasses(ctx context.Context, req *
 // ApplicationServiceHandler is an implementation of the
 // otterscale.application.v1.ApplicationService service.
 type ApplicationServiceHandler interface {
+	ListNamespaces(context.Context, *connect.Request[v1.ListNamespacesRequest]) (*connect.Response[v1.ListNamespacesResponse], error)
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
 	WatchLogs(context.Context, *connect.Request[v1.WatchLogsRequest], *connect.ServerStream[v1.WatchLogsResponse]) error
@@ -276,6 +293,12 @@ type ApplicationServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	applicationServiceMethods := v1.File_api_application_v1_application_proto.Services().ByName("ApplicationService").Methods()
+	applicationServiceListNamespacesHandler := connect.NewUnaryHandler(
+		ApplicationServiceListNamespacesProcedure,
+		svc.ListNamespaces,
+		connect.WithSchema(applicationServiceMethods.ByName("ListNamespaces")),
+		connect.WithHandlerOptions(opts...),
+	)
 	applicationServiceListApplicationsHandler := connect.NewUnaryHandler(
 		ApplicationServiceListApplicationsProcedure,
 		svc.ListApplications,
@@ -350,6 +373,8 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 	)
 	return "/otterscale.application.v1.ApplicationService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case ApplicationServiceListNamespacesProcedure:
+			applicationServiceListNamespacesHandler.ServeHTTP(w, r)
 		case ApplicationServiceListApplicationsProcedure:
 			applicationServiceListApplicationsHandler.ServeHTTP(w, r)
 		case ApplicationServiceGetApplicationProcedure:
@@ -382,6 +407,10 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 
 // UnimplementedApplicationServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedApplicationServiceHandler struct{}
+
+func (UnimplementedApplicationServiceHandler) ListNamespaces(context.Context, *connect.Request[v1.ListNamespacesRequest]) (*connect.Response[v1.ListNamespacesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListNamespaces is not implemented"))
+}
 
 func (UnimplementedApplicationServiceHandler) ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListApplications is not implemented"))

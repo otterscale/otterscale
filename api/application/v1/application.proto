@@ -9,6 +9,7 @@ import "google/protobuf/struct.proto";
 option go_package = "github.com/otterscale/otterscale/api/application/v1;pb";
 
 service ApplicationService {
+  rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse);
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
   rpc GetApplication(GetApplicationRequest) returns (Application);
   rpc WatchLogs(WatchLogsRequest) returns (stream WatchLogsResponse);
@@ -21,6 +22,12 @@ service ApplicationService {
   rpc GetChart(GetChartRequest) returns (Application.Chart);
   rpc GetChartMetadata(GetChartMetadataRequest) returns (Application.Chart.Metadata);
   rpc ListStorageClasses(ListStorageClassesRequest) returns (ListStorageClassesResponse);
+}
+
+message Namespace {
+  string name = 1;
+  map<string, string> labels = 2;
+  google.protobuf.Timestamp created_at = 11;
 }
 
 message Application {
@@ -89,7 +96,8 @@ message Application {
     message Port {
       int32 port = 1;
       int32 node_port = 2;
-      string protocol = 3;
+      string name = 3;
+      string protocol = 4;
       string target_port = 11;
     }
     string name = 1;
@@ -136,6 +144,15 @@ message StorageClass {
   string volume_binding_mode = 4;
   map<string, string> parameters = 5;
   google.protobuf.Timestamp created_at = 201;
+}
+
+message ListNamespacesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListNamespacesResponse {
+  repeated Namespace namespaces = 1;
 }
 
 message ListApplicationsRequest {
