@@ -55,11 +55,11 @@ const (
 // LargeLanguageModelServiceClient is a client for the
 // otterscale.large_language_model.v1.LargeLanguageModelService service.
 type LargeLanguageModelServiceClient interface {
-	CheckInfrastructureStatus(context.Context, *connect.Request[v1.CheckInfrastructureStatusRequest]) (*connect.Response[v1.CheckInfrastructureStatusResponse], error)
-	ListLargeLanguageModels(context.Context, *connect.Request[v1.ListLargeLanguageModelsRequest]) (*connect.Response[v1.ListLargeLanguageModelsResponse], error)
-	GetLargeLanguageModel(context.Context, *connect.Request[v1.GetLargeLanguageModelRequest]) (*connect.Response[v1.LargeLanguageModel], error)
-	CreateLargeLanguageModel(context.Context, *connect.Request[v1.CreateLargeLanguageModelRequest]) (*connect.Response[v1.LargeLanguageModel], error)
-	DeleteLargeLanguageModel(context.Context, *connect.Request[v1.DeleteLargeLanguageModelRequest]) (*connect.Response[emptypb.Empty], error)
+	CheckInfrastructureStatus(context.Context, *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error)
+	ListLargeLanguageModels(context.Context, *v1.ListLargeLanguageModelsRequest) (*v1.ListLargeLanguageModelsResponse, error)
+	GetLargeLanguageModel(context.Context, *v1.GetLargeLanguageModelRequest) (*v1.LargeLanguageModel, error)
+	CreateLargeLanguageModel(context.Context, *v1.CreateLargeLanguageModelRequest) (*v1.LargeLanguageModel, error)
+	DeleteLargeLanguageModel(context.Context, *v1.DeleteLargeLanguageModelRequest) (*emptypb.Empty, error)
 }
 
 // NewLargeLanguageModelServiceClient constructs a client for the
@@ -118,42 +118,62 @@ type largeLanguageModelServiceClient struct {
 
 // CheckInfrastructureStatus calls
 // otterscale.large_language_model.v1.LargeLanguageModelService.CheckInfrastructureStatus.
-func (c *largeLanguageModelServiceClient) CheckInfrastructureStatus(ctx context.Context, req *connect.Request[v1.CheckInfrastructureStatusRequest]) (*connect.Response[v1.CheckInfrastructureStatusResponse], error) {
-	return c.checkInfrastructureStatus.CallUnary(ctx, req)
+func (c *largeLanguageModelServiceClient) CheckInfrastructureStatus(ctx context.Context, req *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error) {
+	response, err := c.checkInfrastructureStatus.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListLargeLanguageModels calls
 // otterscale.large_language_model.v1.LargeLanguageModelService.ListLargeLanguageModels.
-func (c *largeLanguageModelServiceClient) ListLargeLanguageModels(ctx context.Context, req *connect.Request[v1.ListLargeLanguageModelsRequest]) (*connect.Response[v1.ListLargeLanguageModelsResponse], error) {
-	return c.listLargeLanguageModels.CallUnary(ctx, req)
+func (c *largeLanguageModelServiceClient) ListLargeLanguageModels(ctx context.Context, req *v1.ListLargeLanguageModelsRequest) (*v1.ListLargeLanguageModelsResponse, error) {
+	response, err := c.listLargeLanguageModels.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GetLargeLanguageModel calls
 // otterscale.large_language_model.v1.LargeLanguageModelService.GetLargeLanguageModel.
-func (c *largeLanguageModelServiceClient) GetLargeLanguageModel(ctx context.Context, req *connect.Request[v1.GetLargeLanguageModelRequest]) (*connect.Response[v1.LargeLanguageModel], error) {
-	return c.getLargeLanguageModel.CallUnary(ctx, req)
+func (c *largeLanguageModelServiceClient) GetLargeLanguageModel(ctx context.Context, req *v1.GetLargeLanguageModelRequest) (*v1.LargeLanguageModel, error) {
+	response, err := c.getLargeLanguageModel.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateLargeLanguageModel calls
 // otterscale.large_language_model.v1.LargeLanguageModelService.CreateLargeLanguageModel.
-func (c *largeLanguageModelServiceClient) CreateLargeLanguageModel(ctx context.Context, req *connect.Request[v1.CreateLargeLanguageModelRequest]) (*connect.Response[v1.LargeLanguageModel], error) {
-	return c.createLargeLanguageModel.CallUnary(ctx, req)
+func (c *largeLanguageModelServiceClient) CreateLargeLanguageModel(ctx context.Context, req *v1.CreateLargeLanguageModelRequest) (*v1.LargeLanguageModel, error) {
+	response, err := c.createLargeLanguageModel.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteLargeLanguageModel calls
 // otterscale.large_language_model.v1.LargeLanguageModelService.DeleteLargeLanguageModel.
-func (c *largeLanguageModelServiceClient) DeleteLargeLanguageModel(ctx context.Context, req *connect.Request[v1.DeleteLargeLanguageModelRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteLargeLanguageModel.CallUnary(ctx, req)
+func (c *largeLanguageModelServiceClient) DeleteLargeLanguageModel(ctx context.Context, req *v1.DeleteLargeLanguageModelRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteLargeLanguageModel.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // LargeLanguageModelServiceHandler is an implementation of the
 // otterscale.large_language_model.v1.LargeLanguageModelService service.
 type LargeLanguageModelServiceHandler interface {
-	CheckInfrastructureStatus(context.Context, *connect.Request[v1.CheckInfrastructureStatusRequest]) (*connect.Response[v1.CheckInfrastructureStatusResponse], error)
-	ListLargeLanguageModels(context.Context, *connect.Request[v1.ListLargeLanguageModelsRequest]) (*connect.Response[v1.ListLargeLanguageModelsResponse], error)
-	GetLargeLanguageModel(context.Context, *connect.Request[v1.GetLargeLanguageModelRequest]) (*connect.Response[v1.LargeLanguageModel], error)
-	CreateLargeLanguageModel(context.Context, *connect.Request[v1.CreateLargeLanguageModelRequest]) (*connect.Response[v1.LargeLanguageModel], error)
-	DeleteLargeLanguageModel(context.Context, *connect.Request[v1.DeleteLargeLanguageModelRequest]) (*connect.Response[emptypb.Empty], error)
+	CheckInfrastructureStatus(context.Context, *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error)
+	ListLargeLanguageModels(context.Context, *v1.ListLargeLanguageModelsRequest) (*v1.ListLargeLanguageModelsResponse, error)
+	GetLargeLanguageModel(context.Context, *v1.GetLargeLanguageModelRequest) (*v1.LargeLanguageModel, error)
+	CreateLargeLanguageModel(context.Context, *v1.CreateLargeLanguageModelRequest) (*v1.LargeLanguageModel, error)
+	DeleteLargeLanguageModel(context.Context, *v1.DeleteLargeLanguageModelRequest) (*emptypb.Empty, error)
 }
 
 // NewLargeLanguageModelServiceHandler builds an HTTP handler from the service implementation. It
@@ -163,31 +183,31 @@ type LargeLanguageModelServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewLargeLanguageModelServiceHandler(svc LargeLanguageModelServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	largeLanguageModelServiceMethods := v1.File_api_large_language_model_v1_large_language_model_proto.Services().ByName("LargeLanguageModelService").Methods()
-	largeLanguageModelServiceCheckInfrastructureStatusHandler := connect.NewUnaryHandler(
+	largeLanguageModelServiceCheckInfrastructureStatusHandler := connect.NewUnaryHandlerSimple(
 		LargeLanguageModelServiceCheckInfrastructureStatusProcedure,
 		svc.CheckInfrastructureStatus,
 		connect.WithSchema(largeLanguageModelServiceMethods.ByName("CheckInfrastructureStatus")),
 		connect.WithHandlerOptions(opts...),
 	)
-	largeLanguageModelServiceListLargeLanguageModelsHandler := connect.NewUnaryHandler(
+	largeLanguageModelServiceListLargeLanguageModelsHandler := connect.NewUnaryHandlerSimple(
 		LargeLanguageModelServiceListLargeLanguageModelsProcedure,
 		svc.ListLargeLanguageModels,
 		connect.WithSchema(largeLanguageModelServiceMethods.ByName("ListLargeLanguageModels")),
 		connect.WithHandlerOptions(opts...),
 	)
-	largeLanguageModelServiceGetLargeLanguageModelHandler := connect.NewUnaryHandler(
+	largeLanguageModelServiceGetLargeLanguageModelHandler := connect.NewUnaryHandlerSimple(
 		LargeLanguageModelServiceGetLargeLanguageModelProcedure,
 		svc.GetLargeLanguageModel,
 		connect.WithSchema(largeLanguageModelServiceMethods.ByName("GetLargeLanguageModel")),
 		connect.WithHandlerOptions(opts...),
 	)
-	largeLanguageModelServiceCreateLargeLanguageModelHandler := connect.NewUnaryHandler(
+	largeLanguageModelServiceCreateLargeLanguageModelHandler := connect.NewUnaryHandlerSimple(
 		LargeLanguageModelServiceCreateLargeLanguageModelProcedure,
 		svc.CreateLargeLanguageModel,
 		connect.WithSchema(largeLanguageModelServiceMethods.ByName("CreateLargeLanguageModel")),
 		connect.WithHandlerOptions(opts...),
 	)
-	largeLanguageModelServiceDeleteLargeLanguageModelHandler := connect.NewUnaryHandler(
+	largeLanguageModelServiceDeleteLargeLanguageModelHandler := connect.NewUnaryHandlerSimple(
 		LargeLanguageModelServiceDeleteLargeLanguageModelProcedure,
 		svc.DeleteLargeLanguageModel,
 		connect.WithSchema(largeLanguageModelServiceMethods.ByName("DeleteLargeLanguageModel")),
@@ -214,22 +234,22 @@ func NewLargeLanguageModelServiceHandler(svc LargeLanguageModelServiceHandler, o
 // UnimplementedLargeLanguageModelServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedLargeLanguageModelServiceHandler struct{}
 
-func (UnimplementedLargeLanguageModelServiceHandler) CheckInfrastructureStatus(context.Context, *connect.Request[v1.CheckInfrastructureStatusRequest]) (*connect.Response[v1.CheckInfrastructureStatusResponse], error) {
+func (UnimplementedLargeLanguageModelServiceHandler) CheckInfrastructureStatus(context.Context, *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.large_language_model.v1.LargeLanguageModelService.CheckInfrastructureStatus is not implemented"))
 }
 
-func (UnimplementedLargeLanguageModelServiceHandler) ListLargeLanguageModels(context.Context, *connect.Request[v1.ListLargeLanguageModelsRequest]) (*connect.Response[v1.ListLargeLanguageModelsResponse], error) {
+func (UnimplementedLargeLanguageModelServiceHandler) ListLargeLanguageModels(context.Context, *v1.ListLargeLanguageModelsRequest) (*v1.ListLargeLanguageModelsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.large_language_model.v1.LargeLanguageModelService.ListLargeLanguageModels is not implemented"))
 }
 
-func (UnimplementedLargeLanguageModelServiceHandler) GetLargeLanguageModel(context.Context, *connect.Request[v1.GetLargeLanguageModelRequest]) (*connect.Response[v1.LargeLanguageModel], error) {
+func (UnimplementedLargeLanguageModelServiceHandler) GetLargeLanguageModel(context.Context, *v1.GetLargeLanguageModelRequest) (*v1.LargeLanguageModel, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.large_language_model.v1.LargeLanguageModelService.GetLargeLanguageModel is not implemented"))
 }
 
-func (UnimplementedLargeLanguageModelServiceHandler) CreateLargeLanguageModel(context.Context, *connect.Request[v1.CreateLargeLanguageModelRequest]) (*connect.Response[v1.LargeLanguageModel], error) {
+func (UnimplementedLargeLanguageModelServiceHandler) CreateLargeLanguageModel(context.Context, *v1.CreateLargeLanguageModelRequest) (*v1.LargeLanguageModel, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.large_language_model.v1.LargeLanguageModelService.CreateLargeLanguageModel is not implemented"))
 }
 
-func (UnimplementedLargeLanguageModelServiceHandler) DeleteLargeLanguageModel(context.Context, *connect.Request[v1.DeleteLargeLanguageModelRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedLargeLanguageModelServiceHandler) DeleteLargeLanguageModel(context.Context, *v1.DeleteLargeLanguageModelRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.large_language_model.v1.LargeLanguageModelService.DeleteLargeLanguageModel is not implemented"))
 }

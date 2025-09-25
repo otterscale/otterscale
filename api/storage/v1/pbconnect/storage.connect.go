@@ -152,45 +152,45 @@ const (
 
 // StorageServiceClient is a client for the otterscale.storage.v1.StorageService service.
 type StorageServiceClient interface {
-	ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error)
-	ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error)
-	DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error)
-	ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error)
-	CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error)
-	UpdatePool(context.Context, *connect.Request[v1.UpdatePoolRequest]) (*connect.Response[v1.Pool], error)
-	DeletePool(context.Context, *connect.Request[v1.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error)
-	ListImages(context.Context, *connect.Request[v1.ListImagesRequest]) (*connect.Response[v1.ListImagesResponse], error)
-	CreateImage(context.Context, *connect.Request[v1.CreateImageRequest]) (*connect.Response[v1.Image], error)
-	UpdateImage(context.Context, *connect.Request[v1.UpdateImageRequest]) (*connect.Response[v1.Image], error)
-	DeleteImage(context.Context, *connect.Request[v1.DeleteImageRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateImageSnapshot(context.Context, *connect.Request[v1.CreateImageSnapshotRequest]) (*connect.Response[v1.Image_Snapshot], error)
-	DeleteImageSnapshot(context.Context, *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	RollbackImageSnapshot(context.Context, *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	ProtectImageSnapshot(context.Context, *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	UnprotectImageSnapshot(context.Context, *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error)
-	ListSubvolumes(context.Context, *connect.Request[v1.ListSubvolumesRequest]) (*connect.Response[v1.ListSubvolumesResponse], error)
-	CreateSubvolume(context.Context, *connect.Request[v1.CreateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
-	UpdateSubvolume(context.Context, *connect.Request[v1.UpdateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
-	DeleteSubvolume(context.Context, *connect.Request[v1.DeleteSubvolumeRequest]) (*connect.Response[emptypb.Empty], error)
-	GrantSubvolumeExportAccess(context.Context, *connect.Request[v1.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
-	RevokeSubvolumeExportAccess(context.Context, *connect.Request[v1.RevokeSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateSubvolumeSnapshot(context.Context, *connect.Request[v1.CreateSubvolumeSnapshotRequest]) (*connect.Response[v1.Subvolume_Snapshot], error)
-	DeleteSubvolumeSnapshot(context.Context, *connect.Request[v1.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error)
-	CreateSubvolumeGroup(context.Context, *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
-	UpdateSubvolumeGroup(context.Context, *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
-	DeleteSubvolumeGroup(context.Context, *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error)
-	ListBuckets(context.Context, *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error)
-	CreateBucket(context.Context, *connect.Request[v1.CreateBucketRequest]) (*connect.Response[v1.Bucket], error)
-	UpdateBucket(context.Context, *connect.Request[v1.UpdateBucketRequest]) (*connect.Response[v1.Bucket], error)
-	DeleteBucket(context.Context, *connect.Request[v1.DeleteBucketRequest]) (*connect.Response[emptypb.Empty], error)
-	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
-	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)
-	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateUserKey(context.Context, *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error)
-	DeleteUserKey(context.Context, *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error)
+	ListMONs(context.Context, *v1.ListMONsRequest) (*v1.ListMONsResponse, error)
+	ListOSDs(context.Context, *v1.ListOSDsRequest) (*v1.ListOSDsResponse, error)
+	DoSMART(context.Context, *v1.DoSMARTRequest) (*v1.DoSMARTResponse, error)
+	ListPools(context.Context, *v1.ListPoolsRequest) (*v1.ListPoolsResponse, error)
+	CreatePool(context.Context, *v1.CreatePoolRequest) (*v1.Pool, error)
+	UpdatePool(context.Context, *v1.UpdatePoolRequest) (*v1.Pool, error)
+	DeletePool(context.Context, *v1.DeletePoolRequest) (*emptypb.Empty, error)
+	ListImages(context.Context, *v1.ListImagesRequest) (*v1.ListImagesResponse, error)
+	CreateImage(context.Context, *v1.CreateImageRequest) (*v1.Image, error)
+	UpdateImage(context.Context, *v1.UpdateImageRequest) (*v1.Image, error)
+	DeleteImage(context.Context, *v1.DeleteImageRequest) (*emptypb.Empty, error)
+	CreateImageSnapshot(context.Context, *v1.CreateImageSnapshotRequest) (*v1.Image_Snapshot, error)
+	DeleteImageSnapshot(context.Context, *v1.DeleteImageSnapshotRequest) (*emptypb.Empty, error)
+	RollbackImageSnapshot(context.Context, *v1.RollbackImageSnapshotRequest) (*emptypb.Empty, error)
+	ProtectImageSnapshot(context.Context, *v1.ProtectImageSnapshotRequest) (*emptypb.Empty, error)
+	UnprotectImageSnapshot(context.Context, *v1.UnprotectImageSnapshotRequest) (*emptypb.Empty, error)
+	ListVolumes(context.Context, *v1.ListVolumesRequest) (*v1.ListVolumesResponse, error)
+	ListSubvolumes(context.Context, *v1.ListSubvolumesRequest) (*v1.ListSubvolumesResponse, error)
+	CreateSubvolume(context.Context, *v1.CreateSubvolumeRequest) (*v1.Subvolume, error)
+	UpdateSubvolume(context.Context, *v1.UpdateSubvolumeRequest) (*v1.Subvolume, error)
+	DeleteSubvolume(context.Context, *v1.DeleteSubvolumeRequest) (*emptypb.Empty, error)
+	GrantSubvolumeExportAccess(context.Context, *v1.GrantSubvolumeExportAccessRequest) (*emptypb.Empty, error)
+	RevokeSubvolumeExportAccess(context.Context, *v1.RevokeSubvolumeExportAccessRequest) (*emptypb.Empty, error)
+	CreateSubvolumeSnapshot(context.Context, *v1.CreateSubvolumeSnapshotRequest) (*v1.Subvolume_Snapshot, error)
+	DeleteSubvolumeSnapshot(context.Context, *v1.DeleteSubvolumeSnapshotRequest) (*emptypb.Empty, error)
+	ListSubvolumeGroups(context.Context, *v1.ListSubvolumeGroupsRequest) (*v1.ListSubvolumeGroupsResponse, error)
+	CreateSubvolumeGroup(context.Context, *v1.CreateSubvolumeGroupRequest) (*v1.SubvolumeGroup, error)
+	UpdateSubvolumeGroup(context.Context, *v1.UpdateSubvolumeGroupRequest) (*v1.SubvolumeGroup, error)
+	DeleteSubvolumeGroup(context.Context, *v1.DeleteSubvolumeGroupRequest) (*emptypb.Empty, error)
+	ListBuckets(context.Context, *v1.ListBucketsRequest) (*v1.ListBucketsResponse, error)
+	CreateBucket(context.Context, *v1.CreateBucketRequest) (*v1.Bucket, error)
+	UpdateBucket(context.Context, *v1.UpdateBucketRequest) (*v1.Bucket, error)
+	DeleteBucket(context.Context, *v1.DeleteBucketRequest) (*emptypb.Empty, error)
+	ListUsers(context.Context, *v1.ListUsersRequest) (*v1.ListUsersResponse, error)
+	CreateUser(context.Context, *v1.CreateUserRequest) (*v1.User, error)
+	UpdateUser(context.Context, *v1.UpdateUserRequest) (*v1.User, error)
+	DeleteUser(context.Context, *v1.DeleteUserRequest) (*emptypb.Empty, error)
+	CreateUserKey(context.Context, *v1.CreateUserKeyRequest) (*v1.User_Key, error)
+	DeleteUserKey(context.Context, *v1.DeleteUserKeyRequest) (*emptypb.Empty, error)
 }
 
 // NewStorageServiceClient constructs a client for the otterscale.storage.v1.StorageService service.
@@ -485,242 +485,398 @@ type storageServiceClient struct {
 }
 
 // ListMONs calls otterscale.storage.v1.StorageService.ListMONs.
-func (c *storageServiceClient) ListMONs(ctx context.Context, req *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error) {
-	return c.listMONs.CallUnary(ctx, req)
+func (c *storageServiceClient) ListMONs(ctx context.Context, req *v1.ListMONsRequest) (*v1.ListMONsResponse, error) {
+	response, err := c.listMONs.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListOSDs calls otterscale.storage.v1.StorageService.ListOSDs.
-func (c *storageServiceClient) ListOSDs(ctx context.Context, req *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error) {
-	return c.listOSDs.CallUnary(ctx, req)
+func (c *storageServiceClient) ListOSDs(ctx context.Context, req *v1.ListOSDsRequest) (*v1.ListOSDsResponse, error) {
+	response, err := c.listOSDs.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DoSMART calls otterscale.storage.v1.StorageService.DoSMART.
-func (c *storageServiceClient) DoSMART(ctx context.Context, req *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error) {
-	return c.doSMART.CallUnary(ctx, req)
+func (c *storageServiceClient) DoSMART(ctx context.Context, req *v1.DoSMARTRequest) (*v1.DoSMARTResponse, error) {
+	response, err := c.doSMART.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListPools calls otterscale.storage.v1.StorageService.ListPools.
-func (c *storageServiceClient) ListPools(ctx context.Context, req *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error) {
-	return c.listPools.CallUnary(ctx, req)
+func (c *storageServiceClient) ListPools(ctx context.Context, req *v1.ListPoolsRequest) (*v1.ListPoolsResponse, error) {
+	response, err := c.listPools.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreatePool calls otterscale.storage.v1.StorageService.CreatePool.
-func (c *storageServiceClient) CreatePool(ctx context.Context, req *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error) {
-	return c.createPool.CallUnary(ctx, req)
+func (c *storageServiceClient) CreatePool(ctx context.Context, req *v1.CreatePoolRequest) (*v1.Pool, error) {
+	response, err := c.createPool.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdatePool calls otterscale.storage.v1.StorageService.UpdatePool.
-func (c *storageServiceClient) UpdatePool(ctx context.Context, req *connect.Request[v1.UpdatePoolRequest]) (*connect.Response[v1.Pool], error) {
-	return c.updatePool.CallUnary(ctx, req)
+func (c *storageServiceClient) UpdatePool(ctx context.Context, req *v1.UpdatePoolRequest) (*v1.Pool, error) {
+	response, err := c.updatePool.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeletePool calls otterscale.storage.v1.StorageService.DeletePool.
-func (c *storageServiceClient) DeletePool(ctx context.Context, req *connect.Request[v1.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deletePool.CallUnary(ctx, req)
+func (c *storageServiceClient) DeletePool(ctx context.Context, req *v1.DeletePoolRequest) (*emptypb.Empty, error) {
+	response, err := c.deletePool.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListImages calls otterscale.storage.v1.StorageService.ListImages.
-func (c *storageServiceClient) ListImages(ctx context.Context, req *connect.Request[v1.ListImagesRequest]) (*connect.Response[v1.ListImagesResponse], error) {
-	return c.listImages.CallUnary(ctx, req)
+func (c *storageServiceClient) ListImages(ctx context.Context, req *v1.ListImagesRequest) (*v1.ListImagesResponse, error) {
+	response, err := c.listImages.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateImage calls otterscale.storage.v1.StorageService.CreateImage.
-func (c *storageServiceClient) CreateImage(ctx context.Context, req *connect.Request[v1.CreateImageRequest]) (*connect.Response[v1.Image], error) {
-	return c.createImage.CallUnary(ctx, req)
+func (c *storageServiceClient) CreateImage(ctx context.Context, req *v1.CreateImageRequest) (*v1.Image, error) {
+	response, err := c.createImage.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateImage calls otterscale.storage.v1.StorageService.UpdateImage.
-func (c *storageServiceClient) UpdateImage(ctx context.Context, req *connect.Request[v1.UpdateImageRequest]) (*connect.Response[v1.Image], error) {
-	return c.updateImage.CallUnary(ctx, req)
+func (c *storageServiceClient) UpdateImage(ctx context.Context, req *v1.UpdateImageRequest) (*v1.Image, error) {
+	response, err := c.updateImage.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteImage calls otterscale.storage.v1.StorageService.DeleteImage.
-func (c *storageServiceClient) DeleteImage(ctx context.Context, req *connect.Request[v1.DeleteImageRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteImage.CallUnary(ctx, req)
+func (c *storageServiceClient) DeleteImage(ctx context.Context, req *v1.DeleteImageRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteImage.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateImageSnapshot calls otterscale.storage.v1.StorageService.CreateImageSnapshot.
-func (c *storageServiceClient) CreateImageSnapshot(ctx context.Context, req *connect.Request[v1.CreateImageSnapshotRequest]) (*connect.Response[v1.Image_Snapshot], error) {
-	return c.createImageSnapshot.CallUnary(ctx, req)
+func (c *storageServiceClient) CreateImageSnapshot(ctx context.Context, req *v1.CreateImageSnapshotRequest) (*v1.Image_Snapshot, error) {
+	response, err := c.createImageSnapshot.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteImageSnapshot calls otterscale.storage.v1.StorageService.DeleteImageSnapshot.
-func (c *storageServiceClient) DeleteImageSnapshot(ctx context.Context, req *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteImageSnapshot.CallUnary(ctx, req)
+func (c *storageServiceClient) DeleteImageSnapshot(ctx context.Context, req *v1.DeleteImageSnapshotRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteImageSnapshot.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // RollbackImageSnapshot calls otterscale.storage.v1.StorageService.RollbackImageSnapshot.
-func (c *storageServiceClient) RollbackImageSnapshot(ctx context.Context, req *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.rollbackImageSnapshot.CallUnary(ctx, req)
+func (c *storageServiceClient) RollbackImageSnapshot(ctx context.Context, req *v1.RollbackImageSnapshotRequest) (*emptypb.Empty, error) {
+	response, err := c.rollbackImageSnapshot.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ProtectImageSnapshot calls otterscale.storage.v1.StorageService.ProtectImageSnapshot.
-func (c *storageServiceClient) ProtectImageSnapshot(ctx context.Context, req *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.protectImageSnapshot.CallUnary(ctx, req)
+func (c *storageServiceClient) ProtectImageSnapshot(ctx context.Context, req *v1.ProtectImageSnapshotRequest) (*emptypb.Empty, error) {
+	response, err := c.protectImageSnapshot.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UnprotectImageSnapshot calls otterscale.storage.v1.StorageService.UnprotectImageSnapshot.
-func (c *storageServiceClient) UnprotectImageSnapshot(ctx context.Context, req *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.unprotectImageSnapshot.CallUnary(ctx, req)
+func (c *storageServiceClient) UnprotectImageSnapshot(ctx context.Context, req *v1.UnprotectImageSnapshotRequest) (*emptypb.Empty, error) {
+	response, err := c.unprotectImageSnapshot.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListVolumes calls otterscale.storage.v1.StorageService.ListVolumes.
-func (c *storageServiceClient) ListVolumes(ctx context.Context, req *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error) {
-	return c.listVolumes.CallUnary(ctx, req)
+func (c *storageServiceClient) ListVolumes(ctx context.Context, req *v1.ListVolumesRequest) (*v1.ListVolumesResponse, error) {
+	response, err := c.listVolumes.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListSubvolumes calls otterscale.storage.v1.StorageService.ListSubvolumes.
-func (c *storageServiceClient) ListSubvolumes(ctx context.Context, req *connect.Request[v1.ListSubvolumesRequest]) (*connect.Response[v1.ListSubvolumesResponse], error) {
-	return c.listSubvolumes.CallUnary(ctx, req)
+func (c *storageServiceClient) ListSubvolumes(ctx context.Context, req *v1.ListSubvolumesRequest) (*v1.ListSubvolumesResponse, error) {
+	response, err := c.listSubvolumes.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateSubvolume calls otterscale.storage.v1.StorageService.CreateSubvolume.
-func (c *storageServiceClient) CreateSubvolume(ctx context.Context, req *connect.Request[v1.CreateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error) {
-	return c.createSubvolume.CallUnary(ctx, req)
+func (c *storageServiceClient) CreateSubvolume(ctx context.Context, req *v1.CreateSubvolumeRequest) (*v1.Subvolume, error) {
+	response, err := c.createSubvolume.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateSubvolume calls otterscale.storage.v1.StorageService.UpdateSubvolume.
-func (c *storageServiceClient) UpdateSubvolume(ctx context.Context, req *connect.Request[v1.UpdateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error) {
-	return c.updateSubvolume.CallUnary(ctx, req)
+func (c *storageServiceClient) UpdateSubvolume(ctx context.Context, req *v1.UpdateSubvolumeRequest) (*v1.Subvolume, error) {
+	response, err := c.updateSubvolume.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteSubvolume calls otterscale.storage.v1.StorageService.DeleteSubvolume.
-func (c *storageServiceClient) DeleteSubvolume(ctx context.Context, req *connect.Request[v1.DeleteSubvolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteSubvolume.CallUnary(ctx, req)
+func (c *storageServiceClient) DeleteSubvolume(ctx context.Context, req *v1.DeleteSubvolumeRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteSubvolume.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GrantSubvolumeExportAccess calls otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess.
-func (c *storageServiceClient) GrantSubvolumeExportAccess(ctx context.Context, req *connect.Request[v1.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.grantSubvolumeExportAccess.CallUnary(ctx, req)
+func (c *storageServiceClient) GrantSubvolumeExportAccess(ctx context.Context, req *v1.GrantSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
+	response, err := c.grantSubvolumeExportAccess.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // RevokeSubvolumeExportAccess calls
 // otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess.
-func (c *storageServiceClient) RevokeSubvolumeExportAccess(ctx context.Context, req *connect.Request[v1.RevokeSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.revokeSubvolumeExportAccess.CallUnary(ctx, req)
+func (c *storageServiceClient) RevokeSubvolumeExportAccess(ctx context.Context, req *v1.RevokeSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
+	response, err := c.revokeSubvolumeExportAccess.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateSubvolumeSnapshot calls otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot.
-func (c *storageServiceClient) CreateSubvolumeSnapshot(ctx context.Context, req *connect.Request[v1.CreateSubvolumeSnapshotRequest]) (*connect.Response[v1.Subvolume_Snapshot], error) {
-	return c.createSubvolumeSnapshot.CallUnary(ctx, req)
+func (c *storageServiceClient) CreateSubvolumeSnapshot(ctx context.Context, req *v1.CreateSubvolumeSnapshotRequest) (*v1.Subvolume_Snapshot, error) {
+	response, err := c.createSubvolumeSnapshot.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteSubvolumeSnapshot calls otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot.
-func (c *storageServiceClient) DeleteSubvolumeSnapshot(ctx context.Context, req *connect.Request[v1.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteSubvolumeSnapshot.CallUnary(ctx, req)
+func (c *storageServiceClient) DeleteSubvolumeSnapshot(ctx context.Context, req *v1.DeleteSubvolumeSnapshotRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteSubvolumeSnapshot.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListSubvolumeGroups calls otterscale.storage.v1.StorageService.ListSubvolumeGroups.
-func (c *storageServiceClient) ListSubvolumeGroups(ctx context.Context, req *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error) {
-	return c.listSubvolumeGroups.CallUnary(ctx, req)
+func (c *storageServiceClient) ListSubvolumeGroups(ctx context.Context, req *v1.ListSubvolumeGroupsRequest) (*v1.ListSubvolumeGroupsResponse, error) {
+	response, err := c.listSubvolumeGroups.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateSubvolumeGroup calls otterscale.storage.v1.StorageService.CreateSubvolumeGroup.
-func (c *storageServiceClient) CreateSubvolumeGroup(ctx context.Context, req *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
-	return c.createSubvolumeGroup.CallUnary(ctx, req)
+func (c *storageServiceClient) CreateSubvolumeGroup(ctx context.Context, req *v1.CreateSubvolumeGroupRequest) (*v1.SubvolumeGroup, error) {
+	response, err := c.createSubvolumeGroup.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateSubvolumeGroup calls otterscale.storage.v1.StorageService.UpdateSubvolumeGroup.
-func (c *storageServiceClient) UpdateSubvolumeGroup(ctx context.Context, req *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
-	return c.updateSubvolumeGroup.CallUnary(ctx, req)
+func (c *storageServiceClient) UpdateSubvolumeGroup(ctx context.Context, req *v1.UpdateSubvolumeGroupRequest) (*v1.SubvolumeGroup, error) {
+	response, err := c.updateSubvolumeGroup.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteSubvolumeGroup calls otterscale.storage.v1.StorageService.DeleteSubvolumeGroup.
-func (c *storageServiceClient) DeleteSubvolumeGroup(ctx context.Context, req *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteSubvolumeGroup.CallUnary(ctx, req)
+func (c *storageServiceClient) DeleteSubvolumeGroup(ctx context.Context, req *v1.DeleteSubvolumeGroupRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteSubvolumeGroup.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListBuckets calls otterscale.storage.v1.StorageService.ListBuckets.
-func (c *storageServiceClient) ListBuckets(ctx context.Context, req *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error) {
-	return c.listBuckets.CallUnary(ctx, req)
+func (c *storageServiceClient) ListBuckets(ctx context.Context, req *v1.ListBucketsRequest) (*v1.ListBucketsResponse, error) {
+	response, err := c.listBuckets.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateBucket calls otterscale.storage.v1.StorageService.CreateBucket.
-func (c *storageServiceClient) CreateBucket(ctx context.Context, req *connect.Request[v1.CreateBucketRequest]) (*connect.Response[v1.Bucket], error) {
-	return c.createBucket.CallUnary(ctx, req)
+func (c *storageServiceClient) CreateBucket(ctx context.Context, req *v1.CreateBucketRequest) (*v1.Bucket, error) {
+	response, err := c.createBucket.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateBucket calls otterscale.storage.v1.StorageService.UpdateBucket.
-func (c *storageServiceClient) UpdateBucket(ctx context.Context, req *connect.Request[v1.UpdateBucketRequest]) (*connect.Response[v1.Bucket], error) {
-	return c.updateBucket.CallUnary(ctx, req)
+func (c *storageServiceClient) UpdateBucket(ctx context.Context, req *v1.UpdateBucketRequest) (*v1.Bucket, error) {
+	response, err := c.updateBucket.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteBucket calls otterscale.storage.v1.StorageService.DeleteBucket.
-func (c *storageServiceClient) DeleteBucket(ctx context.Context, req *connect.Request[v1.DeleteBucketRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteBucket.CallUnary(ctx, req)
+func (c *storageServiceClient) DeleteBucket(ctx context.Context, req *v1.DeleteBucketRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteBucket.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListUsers calls otterscale.storage.v1.StorageService.ListUsers.
-func (c *storageServiceClient) ListUsers(ctx context.Context, req *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
-	return c.listUsers.CallUnary(ctx, req)
+func (c *storageServiceClient) ListUsers(ctx context.Context, req *v1.ListUsersRequest) (*v1.ListUsersResponse, error) {
+	response, err := c.listUsers.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateUser calls otterscale.storage.v1.StorageService.CreateUser.
-func (c *storageServiceClient) CreateUser(ctx context.Context, req *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error) {
-	return c.createUser.CallUnary(ctx, req)
+func (c *storageServiceClient) CreateUser(ctx context.Context, req *v1.CreateUserRequest) (*v1.User, error) {
+	response, err := c.createUser.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateUser calls otterscale.storage.v1.StorageService.UpdateUser.
-func (c *storageServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error) {
-	return c.updateUser.CallUnary(ctx, req)
+func (c *storageServiceClient) UpdateUser(ctx context.Context, req *v1.UpdateUserRequest) (*v1.User, error) {
+	response, err := c.updateUser.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteUser calls otterscale.storage.v1.StorageService.DeleteUser.
-func (c *storageServiceClient) DeleteUser(ctx context.Context, req *connect.Request[v1.DeleteUserRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteUser.CallUnary(ctx, req)
+func (c *storageServiceClient) DeleteUser(ctx context.Context, req *v1.DeleteUserRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteUser.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateUserKey calls otterscale.storage.v1.StorageService.CreateUserKey.
-func (c *storageServiceClient) CreateUserKey(ctx context.Context, req *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error) {
-	return c.createUserKey.CallUnary(ctx, req)
+func (c *storageServiceClient) CreateUserKey(ctx context.Context, req *v1.CreateUserKeyRequest) (*v1.User_Key, error) {
+	response, err := c.createUserKey.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteUserKey calls otterscale.storage.v1.StorageService.DeleteUserKey.
-func (c *storageServiceClient) DeleteUserKey(ctx context.Context, req *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteUserKey.CallUnary(ctx, req)
+func (c *storageServiceClient) DeleteUserKey(ctx context.Context, req *v1.DeleteUserKeyRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteUserKey.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // StorageServiceHandler is an implementation of the otterscale.storage.v1.StorageService service.
 type StorageServiceHandler interface {
-	ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error)
-	ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error)
-	DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error)
-	ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error)
-	CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error)
-	UpdatePool(context.Context, *connect.Request[v1.UpdatePoolRequest]) (*connect.Response[v1.Pool], error)
-	DeletePool(context.Context, *connect.Request[v1.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error)
-	ListImages(context.Context, *connect.Request[v1.ListImagesRequest]) (*connect.Response[v1.ListImagesResponse], error)
-	CreateImage(context.Context, *connect.Request[v1.CreateImageRequest]) (*connect.Response[v1.Image], error)
-	UpdateImage(context.Context, *connect.Request[v1.UpdateImageRequest]) (*connect.Response[v1.Image], error)
-	DeleteImage(context.Context, *connect.Request[v1.DeleteImageRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateImageSnapshot(context.Context, *connect.Request[v1.CreateImageSnapshotRequest]) (*connect.Response[v1.Image_Snapshot], error)
-	DeleteImageSnapshot(context.Context, *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	RollbackImageSnapshot(context.Context, *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	ProtectImageSnapshot(context.Context, *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	UnprotectImageSnapshot(context.Context, *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error)
-	ListSubvolumes(context.Context, *connect.Request[v1.ListSubvolumesRequest]) (*connect.Response[v1.ListSubvolumesResponse], error)
-	CreateSubvolume(context.Context, *connect.Request[v1.CreateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
-	UpdateSubvolume(context.Context, *connect.Request[v1.UpdateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
-	DeleteSubvolume(context.Context, *connect.Request[v1.DeleteSubvolumeRequest]) (*connect.Response[emptypb.Empty], error)
-	GrantSubvolumeExportAccess(context.Context, *connect.Request[v1.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
-	RevokeSubvolumeExportAccess(context.Context, *connect.Request[v1.RevokeSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateSubvolumeSnapshot(context.Context, *connect.Request[v1.CreateSubvolumeSnapshotRequest]) (*connect.Response[v1.Subvolume_Snapshot], error)
-	DeleteSubvolumeSnapshot(context.Context, *connect.Request[v1.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error)
-	CreateSubvolumeGroup(context.Context, *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
-	UpdateSubvolumeGroup(context.Context, *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
-	DeleteSubvolumeGroup(context.Context, *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error)
-	ListBuckets(context.Context, *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error)
-	CreateBucket(context.Context, *connect.Request[v1.CreateBucketRequest]) (*connect.Response[v1.Bucket], error)
-	UpdateBucket(context.Context, *connect.Request[v1.UpdateBucketRequest]) (*connect.Response[v1.Bucket], error)
-	DeleteBucket(context.Context, *connect.Request[v1.DeleteBucketRequest]) (*connect.Response[emptypb.Empty], error)
-	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
-	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)
-	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateUserKey(context.Context, *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error)
-	DeleteUserKey(context.Context, *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error)
+	ListMONs(context.Context, *v1.ListMONsRequest) (*v1.ListMONsResponse, error)
+	ListOSDs(context.Context, *v1.ListOSDsRequest) (*v1.ListOSDsResponse, error)
+	DoSMART(context.Context, *v1.DoSMARTRequest) (*v1.DoSMARTResponse, error)
+	ListPools(context.Context, *v1.ListPoolsRequest) (*v1.ListPoolsResponse, error)
+	CreatePool(context.Context, *v1.CreatePoolRequest) (*v1.Pool, error)
+	UpdatePool(context.Context, *v1.UpdatePoolRequest) (*v1.Pool, error)
+	DeletePool(context.Context, *v1.DeletePoolRequest) (*emptypb.Empty, error)
+	ListImages(context.Context, *v1.ListImagesRequest) (*v1.ListImagesResponse, error)
+	CreateImage(context.Context, *v1.CreateImageRequest) (*v1.Image, error)
+	UpdateImage(context.Context, *v1.UpdateImageRequest) (*v1.Image, error)
+	DeleteImage(context.Context, *v1.DeleteImageRequest) (*emptypb.Empty, error)
+	CreateImageSnapshot(context.Context, *v1.CreateImageSnapshotRequest) (*v1.Image_Snapshot, error)
+	DeleteImageSnapshot(context.Context, *v1.DeleteImageSnapshotRequest) (*emptypb.Empty, error)
+	RollbackImageSnapshot(context.Context, *v1.RollbackImageSnapshotRequest) (*emptypb.Empty, error)
+	ProtectImageSnapshot(context.Context, *v1.ProtectImageSnapshotRequest) (*emptypb.Empty, error)
+	UnprotectImageSnapshot(context.Context, *v1.UnprotectImageSnapshotRequest) (*emptypb.Empty, error)
+	ListVolumes(context.Context, *v1.ListVolumesRequest) (*v1.ListVolumesResponse, error)
+	ListSubvolumes(context.Context, *v1.ListSubvolumesRequest) (*v1.ListSubvolumesResponse, error)
+	CreateSubvolume(context.Context, *v1.CreateSubvolumeRequest) (*v1.Subvolume, error)
+	UpdateSubvolume(context.Context, *v1.UpdateSubvolumeRequest) (*v1.Subvolume, error)
+	DeleteSubvolume(context.Context, *v1.DeleteSubvolumeRequest) (*emptypb.Empty, error)
+	GrantSubvolumeExportAccess(context.Context, *v1.GrantSubvolumeExportAccessRequest) (*emptypb.Empty, error)
+	RevokeSubvolumeExportAccess(context.Context, *v1.RevokeSubvolumeExportAccessRequest) (*emptypb.Empty, error)
+	CreateSubvolumeSnapshot(context.Context, *v1.CreateSubvolumeSnapshotRequest) (*v1.Subvolume_Snapshot, error)
+	DeleteSubvolumeSnapshot(context.Context, *v1.DeleteSubvolumeSnapshotRequest) (*emptypb.Empty, error)
+	ListSubvolumeGroups(context.Context, *v1.ListSubvolumeGroupsRequest) (*v1.ListSubvolumeGroupsResponse, error)
+	CreateSubvolumeGroup(context.Context, *v1.CreateSubvolumeGroupRequest) (*v1.SubvolumeGroup, error)
+	UpdateSubvolumeGroup(context.Context, *v1.UpdateSubvolumeGroupRequest) (*v1.SubvolumeGroup, error)
+	DeleteSubvolumeGroup(context.Context, *v1.DeleteSubvolumeGroupRequest) (*emptypb.Empty, error)
+	ListBuckets(context.Context, *v1.ListBucketsRequest) (*v1.ListBucketsResponse, error)
+	CreateBucket(context.Context, *v1.CreateBucketRequest) (*v1.Bucket, error)
+	UpdateBucket(context.Context, *v1.UpdateBucketRequest) (*v1.Bucket, error)
+	DeleteBucket(context.Context, *v1.DeleteBucketRequest) (*emptypb.Empty, error)
+	ListUsers(context.Context, *v1.ListUsersRequest) (*v1.ListUsersResponse, error)
+	CreateUser(context.Context, *v1.CreateUserRequest) (*v1.User, error)
+	UpdateUser(context.Context, *v1.UpdateUserRequest) (*v1.User, error)
+	DeleteUser(context.Context, *v1.DeleteUserRequest) (*emptypb.Empty, error)
+	CreateUserKey(context.Context, *v1.CreateUserKeyRequest) (*v1.User_Key, error)
+	DeleteUserKey(context.Context, *v1.DeleteUserKeyRequest) (*emptypb.Empty, error)
 }
 
 // NewStorageServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -730,235 +886,235 @@ type StorageServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	storageServiceMethods := v1.File_api_storage_v1_storage_proto.Services().ByName("StorageService").Methods()
-	storageServiceListMONsHandler := connect.NewUnaryHandler(
+	storageServiceListMONsHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceListMONsProcedure,
 		svc.ListMONs,
 		connect.WithSchema(storageServiceMethods.ByName("ListMONs")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceListOSDsHandler := connect.NewUnaryHandler(
+	storageServiceListOSDsHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceListOSDsProcedure,
 		svc.ListOSDs,
 		connect.WithSchema(storageServiceMethods.ByName("ListOSDs")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDoSMARTHandler := connect.NewUnaryHandler(
+	storageServiceDoSMARTHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceDoSMARTProcedure,
 		svc.DoSMART,
 		connect.WithSchema(storageServiceMethods.ByName("DoSMART")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceListPoolsHandler := connect.NewUnaryHandler(
+	storageServiceListPoolsHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceListPoolsProcedure,
 		svc.ListPools,
 		connect.WithSchema(storageServiceMethods.ByName("ListPools")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreatePoolHandler := connect.NewUnaryHandler(
+	storageServiceCreatePoolHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceCreatePoolProcedure,
 		svc.CreatePool,
 		connect.WithSchema(storageServiceMethods.ByName("CreatePool")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceUpdatePoolHandler := connect.NewUnaryHandler(
+	storageServiceUpdatePoolHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceUpdatePoolProcedure,
 		svc.UpdatePool,
 		connect.WithSchema(storageServiceMethods.ByName("UpdatePool")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeletePoolHandler := connect.NewUnaryHandler(
+	storageServiceDeletePoolHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceDeletePoolProcedure,
 		svc.DeletePool,
 		connect.WithSchema(storageServiceMethods.ByName("DeletePool")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceListImagesHandler := connect.NewUnaryHandler(
+	storageServiceListImagesHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceListImagesProcedure,
 		svc.ListImages,
 		connect.WithSchema(storageServiceMethods.ByName("ListImages")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreateImageHandler := connect.NewUnaryHandler(
+	storageServiceCreateImageHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceCreateImageProcedure,
 		svc.CreateImage,
 		connect.WithSchema(storageServiceMethods.ByName("CreateImage")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceUpdateImageHandler := connect.NewUnaryHandler(
+	storageServiceUpdateImageHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceUpdateImageProcedure,
 		svc.UpdateImage,
 		connect.WithSchema(storageServiceMethods.ByName("UpdateImage")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeleteImageHandler := connect.NewUnaryHandler(
+	storageServiceDeleteImageHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceDeleteImageProcedure,
 		svc.DeleteImage,
 		connect.WithSchema(storageServiceMethods.ByName("DeleteImage")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreateImageSnapshotHandler := connect.NewUnaryHandler(
+	storageServiceCreateImageSnapshotHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceCreateImageSnapshotProcedure,
 		svc.CreateImageSnapshot,
 		connect.WithSchema(storageServiceMethods.ByName("CreateImageSnapshot")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeleteImageSnapshotHandler := connect.NewUnaryHandler(
+	storageServiceDeleteImageSnapshotHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceDeleteImageSnapshotProcedure,
 		svc.DeleteImageSnapshot,
 		connect.WithSchema(storageServiceMethods.ByName("DeleteImageSnapshot")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceRollbackImageSnapshotHandler := connect.NewUnaryHandler(
+	storageServiceRollbackImageSnapshotHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceRollbackImageSnapshotProcedure,
 		svc.RollbackImageSnapshot,
 		connect.WithSchema(storageServiceMethods.ByName("RollbackImageSnapshot")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceProtectImageSnapshotHandler := connect.NewUnaryHandler(
+	storageServiceProtectImageSnapshotHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceProtectImageSnapshotProcedure,
 		svc.ProtectImageSnapshot,
 		connect.WithSchema(storageServiceMethods.ByName("ProtectImageSnapshot")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceUnprotectImageSnapshotHandler := connect.NewUnaryHandler(
+	storageServiceUnprotectImageSnapshotHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceUnprotectImageSnapshotProcedure,
 		svc.UnprotectImageSnapshot,
 		connect.WithSchema(storageServiceMethods.ByName("UnprotectImageSnapshot")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceListVolumesHandler := connect.NewUnaryHandler(
+	storageServiceListVolumesHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceListVolumesProcedure,
 		svc.ListVolumes,
 		connect.WithSchema(storageServiceMethods.ByName("ListVolumes")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceListSubvolumesHandler := connect.NewUnaryHandler(
+	storageServiceListSubvolumesHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceListSubvolumesProcedure,
 		svc.ListSubvolumes,
 		connect.WithSchema(storageServiceMethods.ByName("ListSubvolumes")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreateSubvolumeHandler := connect.NewUnaryHandler(
+	storageServiceCreateSubvolumeHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceCreateSubvolumeProcedure,
 		svc.CreateSubvolume,
 		connect.WithSchema(storageServiceMethods.ByName("CreateSubvolume")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceUpdateSubvolumeHandler := connect.NewUnaryHandler(
+	storageServiceUpdateSubvolumeHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceUpdateSubvolumeProcedure,
 		svc.UpdateSubvolume,
 		connect.WithSchema(storageServiceMethods.ByName("UpdateSubvolume")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeleteSubvolumeHandler := connect.NewUnaryHandler(
+	storageServiceDeleteSubvolumeHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceDeleteSubvolumeProcedure,
 		svc.DeleteSubvolume,
 		connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolume")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceGrantSubvolumeExportAccessHandler := connect.NewUnaryHandler(
+	storageServiceGrantSubvolumeExportAccessHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceGrantSubvolumeExportAccessProcedure,
 		svc.GrantSubvolumeExportAccess,
 		connect.WithSchema(storageServiceMethods.ByName("GrantSubvolumeExportAccess")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceRevokeSubvolumeExportAccessHandler := connect.NewUnaryHandler(
+	storageServiceRevokeSubvolumeExportAccessHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceRevokeSubvolumeExportAccessProcedure,
 		svc.RevokeSubvolumeExportAccess,
 		connect.WithSchema(storageServiceMethods.ByName("RevokeSubvolumeExportAccess")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreateSubvolumeSnapshotHandler := connect.NewUnaryHandler(
+	storageServiceCreateSubvolumeSnapshotHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceCreateSubvolumeSnapshotProcedure,
 		svc.CreateSubvolumeSnapshot,
 		connect.WithSchema(storageServiceMethods.ByName("CreateSubvolumeSnapshot")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeleteSubvolumeSnapshotHandler := connect.NewUnaryHandler(
+	storageServiceDeleteSubvolumeSnapshotHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceDeleteSubvolumeSnapshotProcedure,
 		svc.DeleteSubvolumeSnapshot,
 		connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolumeSnapshot")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceListSubvolumeGroupsHandler := connect.NewUnaryHandler(
+	storageServiceListSubvolumeGroupsHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceListSubvolumeGroupsProcedure,
 		svc.ListSubvolumeGroups,
 		connect.WithSchema(storageServiceMethods.ByName("ListSubvolumeGroups")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreateSubvolumeGroupHandler := connect.NewUnaryHandler(
+	storageServiceCreateSubvolumeGroupHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceCreateSubvolumeGroupProcedure,
 		svc.CreateSubvolumeGroup,
 		connect.WithSchema(storageServiceMethods.ByName("CreateSubvolumeGroup")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceUpdateSubvolumeGroupHandler := connect.NewUnaryHandler(
+	storageServiceUpdateSubvolumeGroupHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceUpdateSubvolumeGroupProcedure,
 		svc.UpdateSubvolumeGroup,
 		connect.WithSchema(storageServiceMethods.ByName("UpdateSubvolumeGroup")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeleteSubvolumeGroupHandler := connect.NewUnaryHandler(
+	storageServiceDeleteSubvolumeGroupHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceDeleteSubvolumeGroupProcedure,
 		svc.DeleteSubvolumeGroup,
 		connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolumeGroup")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceListBucketsHandler := connect.NewUnaryHandler(
+	storageServiceListBucketsHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceListBucketsProcedure,
 		svc.ListBuckets,
 		connect.WithSchema(storageServiceMethods.ByName("ListBuckets")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreateBucketHandler := connect.NewUnaryHandler(
+	storageServiceCreateBucketHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceCreateBucketProcedure,
 		svc.CreateBucket,
 		connect.WithSchema(storageServiceMethods.ByName("CreateBucket")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceUpdateBucketHandler := connect.NewUnaryHandler(
+	storageServiceUpdateBucketHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceUpdateBucketProcedure,
 		svc.UpdateBucket,
 		connect.WithSchema(storageServiceMethods.ByName("UpdateBucket")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeleteBucketHandler := connect.NewUnaryHandler(
+	storageServiceDeleteBucketHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceDeleteBucketProcedure,
 		svc.DeleteBucket,
 		connect.WithSchema(storageServiceMethods.ByName("DeleteBucket")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceListUsersHandler := connect.NewUnaryHandler(
+	storageServiceListUsersHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceListUsersProcedure,
 		svc.ListUsers,
 		connect.WithSchema(storageServiceMethods.ByName("ListUsers")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreateUserHandler := connect.NewUnaryHandler(
+	storageServiceCreateUserHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceCreateUserProcedure,
 		svc.CreateUser,
 		connect.WithSchema(storageServiceMethods.ByName("CreateUser")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceUpdateUserHandler := connect.NewUnaryHandler(
+	storageServiceUpdateUserHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceUpdateUserProcedure,
 		svc.UpdateUser,
 		connect.WithSchema(storageServiceMethods.ByName("UpdateUser")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeleteUserHandler := connect.NewUnaryHandler(
+	storageServiceDeleteUserHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceDeleteUserProcedure,
 		svc.DeleteUser,
 		connect.WithSchema(storageServiceMethods.ByName("DeleteUser")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreateUserKeyHandler := connect.NewUnaryHandler(
+	storageServiceCreateUserKeyHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceCreateUserKeyProcedure,
 		svc.CreateUserKey,
 		connect.WithSchema(storageServiceMethods.ByName("CreateUserKey")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeleteUserKeyHandler := connect.NewUnaryHandler(
+	storageServiceDeleteUserKeyHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceDeleteUserKeyProcedure,
 		svc.DeleteUserKey,
 		connect.WithSchema(storageServiceMethods.ByName("DeleteUserKey")),
@@ -1053,158 +1209,158 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 // UnimplementedStorageServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedStorageServiceHandler struct{}
 
-func (UnimplementedStorageServiceHandler) ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error) {
+func (UnimplementedStorageServiceHandler) ListMONs(context.Context, *v1.ListMONsRequest) (*v1.ListMONsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListMONs is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error) {
+func (UnimplementedStorageServiceHandler) ListOSDs(context.Context, *v1.ListOSDsRequest) (*v1.ListOSDsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListOSDs is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error) {
+func (UnimplementedStorageServiceHandler) DoSMART(context.Context, *v1.DoSMARTRequest) (*v1.DoSMARTResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DoSMART is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error) {
+func (UnimplementedStorageServiceHandler) ListPools(context.Context, *v1.ListPoolsRequest) (*v1.ListPoolsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListPools is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error) {
+func (UnimplementedStorageServiceHandler) CreatePool(context.Context, *v1.CreatePoolRequest) (*v1.Pool, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreatePool is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) UpdatePool(context.Context, *connect.Request[v1.UpdatePoolRequest]) (*connect.Response[v1.Pool], error) {
+func (UnimplementedStorageServiceHandler) UpdatePool(context.Context, *v1.UpdatePoolRequest) (*v1.Pool, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdatePool is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeletePool(context.Context, *connect.Request[v1.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) DeletePool(context.Context, *v1.DeletePoolRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeletePool is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) ListImages(context.Context, *connect.Request[v1.ListImagesRequest]) (*connect.Response[v1.ListImagesResponse], error) {
+func (UnimplementedStorageServiceHandler) ListImages(context.Context, *v1.ListImagesRequest) (*v1.ListImagesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListImages is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreateImage(context.Context, *connect.Request[v1.CreateImageRequest]) (*connect.Response[v1.Image], error) {
+func (UnimplementedStorageServiceHandler) CreateImage(context.Context, *v1.CreateImageRequest) (*v1.Image, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateImage is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) UpdateImage(context.Context, *connect.Request[v1.UpdateImageRequest]) (*connect.Response[v1.Image], error) {
+func (UnimplementedStorageServiceHandler) UpdateImage(context.Context, *v1.UpdateImageRequest) (*v1.Image, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdateImage is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeleteImage(context.Context, *connect.Request[v1.DeleteImageRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) DeleteImage(context.Context, *v1.DeleteImageRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteImage is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreateImageSnapshot(context.Context, *connect.Request[v1.CreateImageSnapshotRequest]) (*connect.Response[v1.Image_Snapshot], error) {
+func (UnimplementedStorageServiceHandler) CreateImageSnapshot(context.Context, *v1.CreateImageSnapshotRequest) (*v1.Image_Snapshot, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateImageSnapshot is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeleteImageSnapshot(context.Context, *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) DeleteImageSnapshot(context.Context, *v1.DeleteImageSnapshotRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteImageSnapshot is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) RollbackImageSnapshot(context.Context, *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) RollbackImageSnapshot(context.Context, *v1.RollbackImageSnapshotRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.RollbackImageSnapshot is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) ProtectImageSnapshot(context.Context, *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) ProtectImageSnapshot(context.Context, *v1.ProtectImageSnapshotRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ProtectImageSnapshot is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) UnprotectImageSnapshot(context.Context, *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) UnprotectImageSnapshot(context.Context, *v1.UnprotectImageSnapshotRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UnprotectImageSnapshot is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error) {
+func (UnimplementedStorageServiceHandler) ListVolumes(context.Context, *v1.ListVolumesRequest) (*v1.ListVolumesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListVolumes is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) ListSubvolumes(context.Context, *connect.Request[v1.ListSubvolumesRequest]) (*connect.Response[v1.ListSubvolumesResponse], error) {
+func (UnimplementedStorageServiceHandler) ListSubvolumes(context.Context, *v1.ListSubvolumesRequest) (*v1.ListSubvolumesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListSubvolumes is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreateSubvolume(context.Context, *connect.Request[v1.CreateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error) {
+func (UnimplementedStorageServiceHandler) CreateSubvolume(context.Context, *v1.CreateSubvolumeRequest) (*v1.Subvolume, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateSubvolume is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) UpdateSubvolume(context.Context, *connect.Request[v1.UpdateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error) {
+func (UnimplementedStorageServiceHandler) UpdateSubvolume(context.Context, *v1.UpdateSubvolumeRequest) (*v1.Subvolume, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdateSubvolume is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeleteSubvolume(context.Context, *connect.Request[v1.DeleteSubvolumeRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) DeleteSubvolume(context.Context, *v1.DeleteSubvolumeRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteSubvolume is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) GrantSubvolumeExportAccess(context.Context, *connect.Request[v1.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) GrantSubvolumeExportAccess(context.Context, *v1.GrantSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) RevokeSubvolumeExportAccess(context.Context, *connect.Request[v1.RevokeSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) RevokeSubvolumeExportAccess(context.Context, *v1.RevokeSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreateSubvolumeSnapshot(context.Context, *connect.Request[v1.CreateSubvolumeSnapshotRequest]) (*connect.Response[v1.Subvolume_Snapshot], error) {
+func (UnimplementedStorageServiceHandler) CreateSubvolumeSnapshot(context.Context, *v1.CreateSubvolumeSnapshotRequest) (*v1.Subvolume_Snapshot, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeleteSubvolumeSnapshot(context.Context, *connect.Request[v1.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) DeleteSubvolumeSnapshot(context.Context, *v1.DeleteSubvolumeSnapshotRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error) {
+func (UnimplementedStorageServiceHandler) ListSubvolumeGroups(context.Context, *v1.ListSubvolumeGroupsRequest) (*v1.ListSubvolumeGroupsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListSubvolumeGroups is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreateSubvolumeGroup(context.Context, *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
+func (UnimplementedStorageServiceHandler) CreateSubvolumeGroup(context.Context, *v1.CreateSubvolumeGroupRequest) (*v1.SubvolumeGroup, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateSubvolumeGroup is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) UpdateSubvolumeGroup(context.Context, *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
+func (UnimplementedStorageServiceHandler) UpdateSubvolumeGroup(context.Context, *v1.UpdateSubvolumeGroupRequest) (*v1.SubvolumeGroup, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdateSubvolumeGroup is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeleteSubvolumeGroup(context.Context, *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) DeleteSubvolumeGroup(context.Context, *v1.DeleteSubvolumeGroupRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteSubvolumeGroup is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) ListBuckets(context.Context, *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error) {
+func (UnimplementedStorageServiceHandler) ListBuckets(context.Context, *v1.ListBucketsRequest) (*v1.ListBucketsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListBuckets is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreateBucket(context.Context, *connect.Request[v1.CreateBucketRequest]) (*connect.Response[v1.Bucket], error) {
+func (UnimplementedStorageServiceHandler) CreateBucket(context.Context, *v1.CreateBucketRequest) (*v1.Bucket, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateBucket is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) UpdateBucket(context.Context, *connect.Request[v1.UpdateBucketRequest]) (*connect.Response[v1.Bucket], error) {
+func (UnimplementedStorageServiceHandler) UpdateBucket(context.Context, *v1.UpdateBucketRequest) (*v1.Bucket, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdateBucket is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeleteBucket(context.Context, *connect.Request[v1.DeleteBucketRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) DeleteBucket(context.Context, *v1.DeleteBucketRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteBucket is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
+func (UnimplementedStorageServiceHandler) ListUsers(context.Context, *v1.ListUsersRequest) (*v1.ListUsersResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListUsers is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error) {
+func (UnimplementedStorageServiceHandler) CreateUser(context.Context, *v1.CreateUserRequest) (*v1.User, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateUser is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error) {
+func (UnimplementedStorageServiceHandler) UpdateUser(context.Context, *v1.UpdateUserRequest) (*v1.User, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdateUser is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) DeleteUser(context.Context, *v1.DeleteUserRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteUser is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreateUserKey(context.Context, *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error) {
+func (UnimplementedStorageServiceHandler) CreateUserKey(context.Context, *v1.CreateUserKeyRequest) (*v1.User_Key, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateUserKey is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeleteUserKey(context.Context, *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedStorageServiceHandler) DeleteUserKey(context.Context, *v1.DeleteUserKeyRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteUserKey is not implemented"))
 }

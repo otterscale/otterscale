@@ -42,8 +42,8 @@ const (
 
 // ScopeServiceClient is a client for the otterscale.scope.v1.ScopeService service.
 type ScopeServiceClient interface {
-	ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error)
-	CreateScope(context.Context, *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error)
+	ListScopes(context.Context, *v1.ListScopesRequest) (*v1.ListScopesResponse, error)
+	CreateScope(context.Context, *v1.CreateScopeRequest) (*v1.Scope, error)
 }
 
 // NewScopeServiceClient constructs a client for the otterscale.scope.v1.ScopeService service. By
@@ -79,19 +79,27 @@ type scopeServiceClient struct {
 }
 
 // ListScopes calls otterscale.scope.v1.ScopeService.ListScopes.
-func (c *scopeServiceClient) ListScopes(ctx context.Context, req *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error) {
-	return c.listScopes.CallUnary(ctx, req)
+func (c *scopeServiceClient) ListScopes(ctx context.Context, req *v1.ListScopesRequest) (*v1.ListScopesResponse, error) {
+	response, err := c.listScopes.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateScope calls otterscale.scope.v1.ScopeService.CreateScope.
-func (c *scopeServiceClient) CreateScope(ctx context.Context, req *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error) {
-	return c.createScope.CallUnary(ctx, req)
+func (c *scopeServiceClient) CreateScope(ctx context.Context, req *v1.CreateScopeRequest) (*v1.Scope, error) {
+	response, err := c.createScope.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ScopeServiceHandler is an implementation of the otterscale.scope.v1.ScopeService service.
 type ScopeServiceHandler interface {
-	ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error)
-	CreateScope(context.Context, *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error)
+	ListScopes(context.Context, *v1.ListScopesRequest) (*v1.ListScopesResponse, error)
+	CreateScope(context.Context, *v1.CreateScopeRequest) (*v1.Scope, error)
 }
 
 // NewScopeServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -101,13 +109,13 @@ type ScopeServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewScopeServiceHandler(svc ScopeServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	scopeServiceMethods := v1.File_api_scope_v1_scope_proto.Services().ByName("ScopeService").Methods()
-	scopeServiceListScopesHandler := connect.NewUnaryHandler(
+	scopeServiceListScopesHandler := connect.NewUnaryHandlerSimple(
 		ScopeServiceListScopesProcedure,
 		svc.ListScopes,
 		connect.WithSchema(scopeServiceMethods.ByName("ListScopes")),
 		connect.WithHandlerOptions(opts...),
 	)
-	scopeServiceCreateScopeHandler := connect.NewUnaryHandler(
+	scopeServiceCreateScopeHandler := connect.NewUnaryHandlerSimple(
 		ScopeServiceCreateScopeProcedure,
 		svc.CreateScope,
 		connect.WithSchema(scopeServiceMethods.ByName("CreateScope")),
@@ -128,10 +136,10 @@ func NewScopeServiceHandler(svc ScopeServiceHandler, opts ...connect.HandlerOpti
 // UnimplementedScopeServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedScopeServiceHandler struct{}
 
-func (UnimplementedScopeServiceHandler) ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error) {
+func (UnimplementedScopeServiceHandler) ListScopes(context.Context, *v1.ListScopesRequest) (*v1.ListScopesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.scope.v1.ScopeService.ListScopes is not implemented"))
 }
 
-func (UnimplementedScopeServiceHandler) CreateScope(context.Context, *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error) {
+func (UnimplementedScopeServiceHandler) CreateScope(context.Context, *v1.CreateScopeRequest) (*v1.Scope, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.scope.v1.ScopeService.CreateScope is not implemented"))
 }
