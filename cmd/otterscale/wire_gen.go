@@ -71,6 +71,8 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	machineRepo := maas.NewMachine(maasMAAS)
 	facilityUseCase := core.NewFacilityUseCase(facilityRepo, serverRepo, clientRepo, actionRepo, charmRepo, machineRepo)
 	facilityService := app.NewFacilityService(facilityUseCase)
+	largeLanguageModelUseCase := core.NewLargeLanguageModelUseCase(releaseRepo, actionRepo, facilityRepo)
+	largeLanguageModelService := app.NewLargeLanguageModelService(largeLanguageModelUseCase)
 	facilityOffersRepo := juju.NewApplicationOffers(jujuJuju)
 	subnetRepo := maas.NewSubnet(maasMAAS)
 	ipRangeRepo := maas.NewIPRange(maasMAAS)
@@ -102,9 +104,9 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	kubeVirtSnapshotRepo := kube.NewVirtSnapshot(kubeKube)
 	kubeCDIRepo := kube.NewCDI(kubeKube)
 	kubeInstanceTypeRepo := kube.NewInstanceType(kubeKube)
-	virtualMachineUseCase := core.NewVirtualMachineUseCase(kubeVirtRepo, kubeVirtCloneRepo, kubeVirtSnapshotRepo, kubeCDIRepo, kubeInstanceTypeRepo, kubeCoreRepo, kubeStorageRepo, actionRepo, facilityRepo, machineRepo)
+	virtualMachineUseCase := core.NewVirtualMachineUseCase(kubeVirtRepo, kubeVirtCloneRepo, kubeVirtSnapshotRepo, kubeCDIRepo, kubeInstanceTypeRepo, kubeCoreRepo, kubeStorageRepo, releaseRepo, actionRepo, facilityRepo, machineRepo)
 	virtualMachineService := app.NewVirtualMachineService(virtualMachineUseCase)
-	serveMux, err := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, premiumService, storageService, scopeService, tagService, virtualMachineService)
+	serveMux, err := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, largeLanguageModelService, essentialService, machineService, networkService, premiumService, storageService, scopeService, tagService, virtualMachineService)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

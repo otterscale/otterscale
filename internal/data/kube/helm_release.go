@@ -51,6 +51,16 @@ func (r *helmRelease) List(restConfig *rest.Config, namespace string) ([]release
 	return result, nil
 }
 
+func (r *helmRelease) Get(restConfig *rest.Config, namespace, name string) (*release.Release, error) {
+	config, err := r.config(restConfig, namespace)
+	if err != nil {
+		return nil, err
+	}
+
+	client := action.NewGet(config)
+	return client.Run(name)
+}
+
 func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
 	if !action.ValidName.MatchString(name) {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid release name %q", name))
@@ -67,7 +77,7 @@ func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, d
 	client.DryRun = dryRun
 	client.ReleaseName = name
 	client.Labels = map[string]string{
-		"app.otterscale.com/release-name": name,
+		oscore.ApplicationReleaseNameLabel: name,
 		// "app.otterscale.com/chart-ref":    chartRef, // TODO: invalid label format
 	}
 

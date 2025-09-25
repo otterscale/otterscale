@@ -34,6 +34,16 @@ func NewVirtualMachineService(uc *core.VirtualMachineUseCase) *VirtualMachineSer
 
 var _ pbconnect.VirtualMachineServiceHandler = (*VirtualMachineService)(nil)
 
+func (s *VirtualMachineService) CheckInfrastructureStatus(ctx context.Context, req *connect.Request[pb.CheckInfrastructureStatusRequest]) (*connect.Response[pb.CheckInfrastructureStatusResponse], error) {
+	result, err := s.uc.CheckInfrastructureStatus(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.CheckInfrastructureStatusResponse{}
+	resp.SetResult(pb.CheckInfrastructureStatusResponse_Result(result))
+	return connect.NewResponse(resp), nil
+}
+
 func (s *VirtualMachineService) ListVirtualMachines(ctx context.Context, req *connect.Request[pb.ListVirtualMachinesRequest]) (*connect.Response[pb.ListVirtualMachinesResponse], error) {
 	vms, err := s.uc.ListVirtualMachines(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
 	if err != nil {
