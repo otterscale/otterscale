@@ -187,8 +187,19 @@ type (
 )
 
 // Add GetConsumeDetails to satisfy FacilityOffersRepo interface
-func (m *mockFacilityOffersRepo) GetConsumeDetails(ctx context.Context, uuid string) (params.ConsumeOfferDetails, error) {
-	return params.ConsumeOfferDetails{}, nil
+func (m *mockFacilityOffersRepo) GetConsumeDetails(ctx context.Context, url string) (params.ConsumeOfferDetails, error) {
+	return params.ConsumeOfferDetails{
+		Offer: &params.ApplicationOfferDetailsV5{
+			OfferURL: url,
+		},
+		Macaroon: nil,
+		ControllerInfo: &params.ExternalControllerInfo{
+			ControllerTag: "controller-00000000-0000-4000-8000-000000000000",
+			Alias:         "test-alias",
+			Addrs:         []string{"test-addr"},
+			CACert:        "test-cert",
+		},
+	}, nil
 }
 
 func TestEssentialUseCase_IsMachineDeployed(t *testing.T) {
@@ -202,7 +213,7 @@ func TestEssentialUseCase_IsMachineDeployed(t *testing.T) {
 			LastCommissioned: time.Now(),
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, &essMockMachineRepo{machines: machines}, nil, nil, nil, nil)
+	uc := NewEssentialUseCase(nil, nil, nil, nil, &essMockMachineRepo{machines: machines}, nil, nil, nil, nil, nil)
 	msg, ok, err := uc.IsMachineDeployed(context.Background(), "uuid1")
 	assert.NoError(t, err)
 	assert.True(t, ok)
@@ -232,7 +243,7 @@ func TestEssentialUseCase_ListStatuses(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, client)
+	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, client, nil)
 	statuses, err := uc.ListStatuses(context.Background(), "uuid")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, statuses)
@@ -257,7 +268,7 @@ func TestEssentialUseCase_ListEssentials(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, scope, nil, nil, nil, nil, nil, nil, client)
+	uc := NewEssentialUseCase(nil, scope, nil, nil, nil, nil, nil, nil, client, nil)
 	essentials, err := uc.ListEssentials(context.Background(), 1, "uuid")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, essentials)
@@ -293,7 +304,7 @@ func TestEssentialUseCase_CreateSingleNode(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(&conf.Config, scopeRepo, facilityRepo, facilityOffersRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo)
+	uc := NewEssentialUseCase(&conf.Config, scopeRepo, facilityRepo, facilityOffersRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo, nil)
 	err := uc.CreateSingleNode(context.Background(), "uuid", "id1", "prefix", []string{"10.0.0.2"}, "198.19.0.0/16", []string{"/dev/sda"})
 	assert.Error(t, err) // because CreateCeph, CreateKubernetes, CreateCommon are not implemented
 }
@@ -315,7 +326,7 @@ func TestEssentialUseCase_getMachineStatusMessage(t *testing.T) {
 			LastCommissioned: time.Now(),
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 	msg := uc.getMachineStatusMessage(machines)
 	assert.Contains(t, msg, "testing")
 }
@@ -343,36 +354,113 @@ func TestEssentialUseCase_validateMachineStatus(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, machineRepo, nil, nil, nil, clientRepo)
+	uc := NewEssentialUseCase(nil, nil, nil, nil, machineRepo, nil, nil, nil, clientRepo, nil)
 	err := uc.validateMachineStatus(context.Background(), "uuid", "id1")
 	assert.NoError(t, err)
 }
 
 func TestNewCharmConfigs(t *testing.T) {
 	configs := map[string]map[string]any{
-		"ceph-mon": {"foo": "bar"},
+		"ceph-mon":                 {"foo": "bar"},
+		"kubernetes-control-plane": {"config": "value"},
 	}
 	result, err := NewCharmConfigs("prefix", configs)
 	assert.NoError(t, err)
 	assert.Contains(t, result, "ch:ceph-mon")
+	assert.Contains(t, result, "ch:kubernetes-control-plane")
+
+	// Check YAML content
+	assert.Contains(t, result["ch:ceph-mon"], "prefix-ceph-mon")
+	assert.Contains(t, result["ch:kubernetes-control-plane"], "prefix-kubernetes-control-plane")
 }
 
 func Test_formatAppCharm(t *testing.T) {
 	name, ok := formatAppCharm("ch:amd64/ceph-mon-123")
 	assert.True(t, ok)
 	assert.Equal(t, "ceph-mon", name)
+
+	_, ok = formatAppCharm("invalid-format")
+	assert.False(t, ok)
+
+	_, ok = formatAppCharm("ch:invalid")
+	assert.False(t, ok)
 }
 
 func Test_formatEssentialCharm(t *testing.T) {
 	assert.Equal(t, "ceph-mon", formatEssentialCharm("ch:ceph-mon"))
+	assert.Equal(t, "kubernetes-control-plane", formatEssentialCharm("ch:kubernetes-control-plane"))
+	assert.Equal(t, "simple-name", formatEssentialCharm("simple-name"))
+}
+
+func Test_toEssentialName(t *testing.T) {
+	assert.Equal(t, "prefix-ceph-mon", toEssentialName("prefix", "ch:ceph-mon"))
+	assert.Equal(t, "prefix-plain-name", toEssentialName("prefix", "plain-name"))
+}
+
+func Test_toEndpointList(t *testing.T) {
+	relationList := [][]string{
+		{"ch:app1", "ch:app2"},
+		{"ch:app3"},
+	}
+
+	result := toEndpointList("prefix", relationList)
+	assert.Equal(t, "prefix-app1", result[0][0])
+	assert.Equal(t, "prefix-app2", result[0][1])
+	assert.Equal(t, "prefix-app3", result[1][0])
 }
 
 func Test_isEssentialCharm(t *testing.T) {
 	statusMap := map[string]params.ApplicationStatus{
-		"ceph-mon": {Charm: "ch:amd64/ceph-mon-123"},
+		"ceph-mon":    {Charm: "ch:amd64/ceph-mon-123"},
+		"invalid-app": {Charm: "invalid-charm-format"},
+		"other-app":   {Charm: "ch:amd64/other-charm-456"},
 	}
 	charms := []EssentialCharm{{Name: "ch:ceph-mon"}}
+
 	assert.True(t, isEssentialCharm(statusMap, "ceph-mon", charms))
+	assert.False(t, isEssentialCharm(statusMap, "invalid-app", charms))
+	assert.False(t, isEssentialCharm(statusMap, "other-app", charms))
+}
+
+func Test_createEssential(t *testing.T) {
+	serverRepo := &essMockServerRepo{}
+	machineRepo := &essMockMachineRepo{
+		machines: []Machine{
+			{
+				Machine: &entity.Machine{
+					SystemID:            "machine-id",
+					WorkloadAnnotations: map[string]string{"juju-machine-id": "1"},
+					Status:              node.StatusDeployed,
+				},
+			},
+		},
+	}
+	facilityRepo := &essMockFacilityRepo{}
+	tagRepo := &mockTagRepo{}
+
+	err := createEssential(context.Background(), serverRepo, machineRepo, facilityRepo, tagRepo,
+		"uuid", "machine-id", "prefix",
+		[]EssentialCharm{
+			{Name: "ch:test-charm", Machine: true},
+		},
+		map[string]string{"ch:test-charm": "config"}, []string{"tag1", "tag2"})
+	assert.NoError(t, err)
+
+	err = createEssential(context.Background(), serverRepo, machineRepo, facilityRepo, nil,
+		"uuid", "machine-id", "prefix",
+		[]EssentialCharm{
+			{Name: "ch:test-charm", Machine: true},
+		},
+		map[string]string{"ch:test-charm": "config"}, nil)
+	assert.NoError(t, err)
+
+	err = createEssential(context.Background(), serverRepo, machineRepo, facilityRepo, tagRepo,
+		"uuid", "", "prefix",
+		[]EssentialCharm{
+			{Name: "ch:test-charm", Machine: true},
+		},
+		map[string]string{"ch:test-charm": "config"}, nil)
+	assert.NoError(t, err)
 }
 
 func Test_listEssentials(t *testing.T) {
@@ -404,17 +492,6 @@ func Test_createEssentialRelations(t *testing.T) {
 	endpoints := [][]string{{"foo", "bar"}}
 	err := createEssentialRelations(context.Background(), facilityRepo, "uuid", endpoints)
 	assert.NoError(t, err)
-}
-
-func Test_toEssentialName(t *testing.T) {
-	assert.Equal(t, "prefix-ceph-mon", toEssentialName("prefix", "ceph-mon"))
-	assert.Equal(t, "prefix-ceph-mon", toEssentialName("prefix", "ch:ceph-mon"))
-}
-
-func Test_toEndpointList(t *testing.T) {
-	relations := [][]string{{"ceph-mon", "ceph-osd"}}
-	endpoints := toEndpointList("prefix", relations)
-	assert.Equal(t, "prefix-ceph-mon", endpoints[0][0])
 }
 
 func Test_getDirective(t *testing.T) {
