@@ -7,6 +7,7 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/otterscale/otterscale/api/essential/v1;pb";
 
 service EssentialService {
+  rpc GetCapabilities(GetCapabilitiesRequest) returns (GetCapabilitiesResponse);
   rpc IsMachineDeployed(IsMachineDeployedRequest) returns (IsMachineDeployedResponse);
   rpc ListStatuses(ListStatusesRequest) returns (ListStatusesResponse);
   rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse);
@@ -96,4 +97,25 @@ message AddUnitsRequest {
   int32 number = 4;
   repeated string machine_ids = 5;
   bool force = 11;
+}
+
+message GetCapabilitiesRequest {
+  string language = 1; // Language code like "en", "zh", "zh-CN", "zh-TW"
+}
+
+message GetCapabilitiesResponse {
+  message Capability {
+    string category = 1;         // e.g., "Virtualization", "Storage", "Networking"
+    string name = 2;            // e.g., "VM Lifecycle Management"
+    string description = 3;     // Detailed description
+    repeated string features = 4; // List of specific features
+    bool available = 5;         // Whether this capability is currently available
+  }
+  
+  string platform_name = 1;      // "OtterScale"
+  string platform_description = 2; // Brief platform description
+  repeated Capability capabilities = 3;
+  repeated string use_cases = 4;  // Common use cases
+  string documentation_url = 5;   // Link to full documentation
+  string version = 6;            // Platform version
 }

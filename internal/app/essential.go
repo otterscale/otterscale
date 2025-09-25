@@ -23,6 +23,23 @@ func NewEssentialService(uc *core.EssentialUseCase) *EssentialService {
 
 var _ pbconnect.EssentialServiceHandler = (*EssentialService)(nil)
 
+func (s *EssentialService) GetCapabilities(ctx context.Context, req *connect.Request[pb.GetCapabilitiesRequest]) (*connect.Response[pb.GetCapabilitiesResponse], error) {
+	capabilities, err := s.uc.GetCapabilities(ctx, req.Msg.GetLanguage())
+	if err != nil {
+		return nil, err
+	}
+	
+	resp := &pb.GetCapabilitiesResponse{}
+	resp.SetPlatformName(capabilities.PlatformName)
+	resp.SetPlatformDescription(capabilities.PlatformDescription)
+	resp.SetCapabilities(toProtoCapabilities(capabilities.Capabilities))
+	resp.SetUseCases(capabilities.UseCases)
+	resp.SetDocumentationUrl(capabilities.DocumentationURL)
+	resp.SetVersion(capabilities.Version)
+	
+	return connect.NewResponse(resp), nil
+}
+
 func (s *EssentialService) IsMachineDeployed(ctx context.Context, req *connect.Request[pb.IsMachineDeployedRequest]) (*connect.Response[pb.IsMachineDeployedResponse], error) {
 	message, deployed, err := s.uc.IsMachineDeployed(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
@@ -115,5 +132,23 @@ func toProtoEssentialUnit(eu *core.EssentialUnit) *pb.Essential_Unit {
 	ret := &pb.Essential_Unit{}
 	ret.SetName(eu.Name)
 	ret.SetDirective(eu.Directive)
+	return ret
+}
+
+func toProtoCapabilities(caps []core.Capability) []*pb.GetCapabilitiesResponse_Capability {
+	ret := []*pb.GetCapabilitiesResponse_Capability{}
+	for i := range caps {
+		ret = append(ret, toProtoCapability(&caps[i]))
+	}
+	return ret
+}
+
+func toProtoCapability(cap *core.Capability) *pb.GetCapabilitiesResponse_Capability {
+	ret := &pb.GetCapabilitiesResponse_Capability{}
+	ret.SetCategory(cap.Category)
+	ret.SetName(cap.Name)
+	ret.SetDescription(cap.Description)
+	ret.SetFeatures(cap.Features)
+	ret.SetAvailable(cap.Available)
 	return ret
 }
