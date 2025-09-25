@@ -2,11 +2,12 @@
 	import Icon from '@iconify/svelte';
 	import { type Edge, type Node } from '@xyflow/svelte';
 
-	import { Simple, type GPU, type Machine, type Model } from '$lib/components/custom/flow/index';
+	import { type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { Simple } from '$lib/components/custom/flow/index';
 	import { traverse } from '$lib/components/custom/flow/utils.svelte';
 	import * as Table from '$lib/components/custom/table';
 	import * as Sheet from '$lib/components/ui/sheet';
-
+	import { m } from '$lib/paraglide/messages';
 	import '@xyflow/svelte/dist/style.css';
 
 	const position = { x: 0, y: 0 };
@@ -19,7 +20,7 @@
 				name: 'otterscale-vm141.maas',
 				ip: '10.102.197.141',
 				icon: 'simple-icons:maas',
-			} as Machine,
+			},
 			position,
 		},
 		{
@@ -29,7 +30,7 @@
 				name: 'NVIDIA RTX 4090',
 				model: 'NVIDIA',
 				icon: 'simple-icons:nvidia',
-			} as GPU,
+			},
 			position,
 		},
 		{
@@ -39,7 +40,7 @@
 				name: 'AMD Radeon RX 7900 XTX',
 				model: 'AMD',
 				icon: 'simple-icons:amd',
-			} as GPU,
+			},
 			position,
 		},
 		{
@@ -49,7 +50,7 @@
 				name: 'NVIDIA A100',
 				model: 'NVIDIA',
 				icon: 'simple-icons:nvidia',
-			} as GPU,
+			},
 			position,
 		},
 		{
@@ -59,7 +60,7 @@
 				name: 'NVIDIA RTX 3080',
 				model: 'NVIDIA',
 				icon: 'simple-icons:nvidia',
-			} as GPU,
+			},
 			position,
 		},
 		{
@@ -69,7 +70,7 @@
 				name: 'AMD Radeon RX 6800 XT',
 				model: 'AMD',
 				icon: 'simple-icons:amd',
-			} as GPU,
+			},
 			position,
 		},
 		{
@@ -79,7 +80,7 @@
 				name: 'NVIDIA Tesla V100',
 				model: 'NVIDIA',
 				icon: 'simple-icons:nvidia',
-			} as GPU,
+			},
 			position,
 		},
 		{
@@ -89,7 +90,7 @@
 				name: 'Intel Arc A770',
 				model: 'Intel',
 				icon: 'simple-icons:intel',
-			} as GPU,
+			},
 			position,
 		},
 		{
@@ -99,7 +100,7 @@
 				name: 'NVIDIA Quadro RTX 6000',
 				model: 'NVIDIA',
 				icon: 'simple-icons:nvidia',
-			} as GPU,
+			},
 			position,
 		},
 		{
@@ -129,7 +130,7 @@
 				name: 'gpt-oss9',
 				framework: 'vllm',
 				icon: 'simple-icons:openai',
-			} as Model,
+			},
 			position,
 		},
 		{
@@ -139,7 +140,7 @@
 				name: 'llama-3-70b',
 				framework: 'transformers',
 				icon: 'simple-icons:meta',
-			} as Model,
+			},
 			position,
 		},
 		{
@@ -149,7 +150,7 @@
 				name: 'mixtral-8x7b',
 				framework: 'vllm',
 				icon: 'simple-icons:mistral',
-			} as Model,
+			},
 			position,
 		},
 	];
@@ -162,7 +163,6 @@
 		{ id: '5', type: 'edge', source: 'model2', target: 'gpu5', animated: true, selectable: false },
 		{ id: '6', type: 'edge', source: 'model3', target: 'gpu6', animated: true, selectable: false },
 		{ id: '7', type: 'edge', source: 'model3', target: 'gpu7', animated: true, selectable: false },
-
 		{ id: '8', type: 'edge', source: 'model3', target: 'vgpu1', animated: true, selectable: false },
 		{ id: '19', type: 'edge', source: 'model3', target: 'vgpu2', animated: true, selectable: false },
 		{ id: '17', type: 'edge', source: 'vgpu1', target: 'gpu8', animated: true, selectable: false },
@@ -198,31 +198,26 @@
 		initialEdges = edges;
 	}
 
-	let gpus: { name: string; memory: string; vendor: string }[] = [
-		{ name: 'NVIDIA RTX 4090', memory: '24GB', vendor: 'NVIDIA' },
-		{ name: 'AMD Radeon RX 7900 XTX', memory: '24GB', vendor: 'AMD' },
-		{ name: 'NVIDIA A100', memory: '40GB', vendor: 'NVIDIA' },
-		{ name: 'NVIDIA RTX 3080', memory: '10GB', vendor: 'NVIDIA' },
-		{ name: 'AMD Radeon RX 6800 XT', memory: '16GB', vendor: 'AMD' },
-		{ name: 'NVIDIA Tesla V100', memory: '16GB', vendor: 'NVIDIA' },
-		{ name: 'Intel Arc A770', memory: '16GB', vendor: 'Intel' },
-		{ name: 'NVIDIA Quadro RTX 6000', memory: '24GB', vendor: 'NVIDIA' },
-	];
-
 	let open = $state(false);
+
+	let {
+		machine,
+	}: {
+		machine: Machine;
+	} = $props();
 </script>
 
 <Sheet.Root bind:open>
 	<Sheet.Trigger>
 		<span class="flex items-center gap-1">
-			{gpus.length}
+			{machine.gpuDevices.length}
 			<Icon icon="ph:arrow-square-out" />
 		</span>
 	</Sheet.Trigger>
 	<Sheet.Content side="right" class="min-w-[38vw] p-4">
 		{#if open}
 			<Sheet.Header>
-				<Sheet.Title class="text-lg">GPU Details</Sheet.Title>
+				<Sheet.Title class="text-center text-lg">{m.details()}</Sheet.Title>
 			</Sheet.Header>
 			<Simple.Flow {initialNodes} {initialEdges} />
 			<div class="mt-auto rounded-lg border shadow">
@@ -231,17 +226,27 @@
 						<Table.Row
 							class="bg-muted [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
 						>
-							<Table.Head>Name</Table.Head>
-							<Table.Head>Memory</Table.Head>
-							<Table.Head>Vendor</Table.Head>
+							<Table.Head>{m.product()}</Table.Head>
+							<Table.Head>{m.vendor()}</Table.Head>
+							<Table.Head>{m.bus()}</Table.Head>
+							<Table.Head>{m.pci_address()}</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each gpus as gpu}
+						{#each machine.gpuDevices as gpuDevice}
 							<Table.Row>
-								<Table.Cell>{gpu.name}</Table.Cell>
-								<Table.Cell>{gpu.memory}</Table.Cell>
-								<Table.Cell>{gpu.vendor}</Table.Cell>
+								<Table.Cell
+									>{gpuDevice.productName !== ''
+										? gpuDevice.productName
+										: gpuDevice.productId}</Table.Cell
+								>
+								<Table.Cell
+									>{gpuDevice.vendorName !== ''
+										? gpuDevice.vendorName
+										: gpuDevice.vendorId}</Table.Cell
+								>
+								<Table.Cell>{gpuDevice.busName}</Table.Cell>
+								<Table.Cell>{gpuDevice.pciAddress}</Table.Cell>
 							</Table.Row>
 						{/each}
 					</Table.Body>

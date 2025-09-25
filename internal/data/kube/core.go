@@ -7,6 +7,7 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 
 	"k8s.io/client-go/rest"
 
@@ -24,6 +25,58 @@ func NewCore(kube *Kube) oscore.KubeCoreRepo {
 }
 
 var _ oscore.KubeCoreRepo = (*core)(nil)
+
+func (r *core) GetService(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.Service, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.GetOptions{}
+	svc, err := clientset.CoreV1().Services(namespace).Get(ctx, name, opts)
+	if err != nil {
+		return nil, err
+	}
+	return svc, nil
+}
+
+func (r *core) ListVirtualMachineServices(ctx context.Context, config *rest.Config, namespace, vmName string) ([]oscore.Service, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.ListOptions{}
+	if vmName != "" {
+		opts.LabelSelector = oscore.VirtualMachineNameLabel + "=" + vmName
+	}
+	list, err := clientset.CoreV1().Services(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
+func (r *core) CreateVirtualMachineService(ctx context.Context, config *rest.Config, namespace, name, vmName string, ports []corev1.ServicePort) (*oscore.Service, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	service := &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+			Labels: map[string]string{
+				oscore.VirtualMachineNameLabel: vmName,
+			},
+		},
+		Spec: corev1.ServiceSpec{
+			Ports: ports,
+			Type:  corev1.ServiceTypeNodePort,
+		},
+	}
+	opts := metav1.CreateOptions{}
+	return clientset.CoreV1().Services(namespace).Create(ctx, service, opts)
+}
 
 func (r *core) ListServices(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Service, error) {
 	clientset, err := r.kube.clientset(config)
@@ -54,6 +107,24 @@ func (r *core) ListServicesByOptions(ctx context.Context, config *rest.Config, n
 		return nil, err
 	}
 	return list.Items, nil
+}
+
+func (r *core) UpdateService(ctx context.Context, config *rest.Config, namespace string, service *corev1.Service) (*oscore.Service, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.UpdateOptions{}
+	return clientset.CoreV1().Services(namespace).Update(ctx, service, opts)
+}
+
+func (r *core) DeleteService(ctx context.Context, config *rest.Config, namespace, name string) error {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return err
+	}
+	opts := metav1.DeleteOptions{}
+	return clientset.CoreV1().Services(namespace).Delete(ctx, name, opts)
 }
 
 func (r *core) ListPods(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Pod, error) {
@@ -124,6 +195,16 @@ func (r *core) StreamPodLogs(ctx context.Context, config *rest.Config, namespace
 	return clientset.CoreV1().Pods(namespace).GetLogs(podName, &opts).Stream(ctx)
 }
 
+func (r *core) GetPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.PersistentVolumeClaim, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.GetOptions{}
+	return clientset.CoreV1().PersistentVolumeClaims(namespace).Get(ctx, name, opts)
+}
+
 func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]oscore.PersistentVolumeClaim, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
@@ -136,6 +217,16 @@ func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Conf
 		return nil, err
 	}
 	return list.Items, nil
+}
+
+func (r *core) PatchPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, data []byte) (*oscore.PersistentVolumeClaim, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.PatchOptions{}
+	return clientset.CoreV1().PersistentVolumeClaims(namespace).Patch(ctx, name, types.JSONPatchType, data, opts)
 }
 
 func (r *core) GetNamespace(ctx context.Context, config *rest.Config, name string) (*oscore.Namespace, error) {
@@ -187,6 +278,21 @@ func (r *core) CreateConfigMap(ctx context.Context, config *rest.Config, namespa
 	}
 	opts := metav1.CreateOptions{}
 	return clientset.CoreV1().ConfigMaps(namespace).Create(ctx, configMap, opts)
+}
+
+func (r *core) ListNamespaces(ctx context.Context, config *rest.Config) ([]corev1.Namespace, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.ListOptions{}
+	list, err := clientset.CoreV1().Namespaces().List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return list.Items, nil
 }
 
 func (r *core) GetSecret(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.Secret, error) {

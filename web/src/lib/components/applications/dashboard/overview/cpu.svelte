@@ -142,7 +142,6 @@
 							color: cpuUsagesConfiguration.usage.color,
 						},
 					]}
-					seriesLayout="stack"
 					props={{
 						area: {
 							curve: curveNatural,

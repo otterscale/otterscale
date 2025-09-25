@@ -101,7 +101,6 @@
 							color: systemLoadConfiguration.five.color,
 						},
 					]}
-					seriesLayout="stack"
 					props={{
 						area: {
 							curve: curveNatural,
