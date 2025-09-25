@@ -31,6 +31,7 @@ type (
 )
 
 type (
+	Node                  = corev1.Node
 	Namespace             = corev1.Namespace
 	ConfigMap             = corev1.ConfigMap
 	Container             = corev1.Container
@@ -92,14 +93,18 @@ type KubeBatchRepo interface {
 }
 
 type KubeCoreRepo interface {
+	// Node
+	GetNode(ctx context.Context, config *rest.Config, name string) (*Node, error)
+	UpdateNode(ctx context.Context, config *rest.Config, node *Node) (*Node, error)
+
 	// Namespace
 	ListNamespaces(ctx context.Context, config *rest.Config) ([]Namespace, error)
 
 	// Service
 	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error)
 	ListServicesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]Service, error)
-	GetService(ctx context.Context, config *rest.Config, namespace, name string) (*Service, error)
 	ListVirtualMachineServices(ctx context.Context, config *rest.Config, namespace, vmName string) ([]Service, error)
+	GetService(ctx context.Context, config *rest.Config, namespace, name string) (*Service, error)
 	CreateVirtualMachineService(ctx context.Context, config *rest.Config, namespace, name, vmName string, ports []corev1.ServicePort) (*Service, error)
 	UpdateService(ctx context.Context, config *rest.Config, namespace string, service *Service) (*Service, error)
 	DeleteService(ctx context.Context, config *rest.Config, namespace, name string) error
@@ -111,8 +116,8 @@ type KubeCoreRepo interface {
 	StreamPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error)
 
 	// PersistentVolumeClaim
-	GetPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) (*PersistentVolumeClaim, error)
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
+	GetPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) (*PersistentVolumeClaim, error)
 	PatchPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, data []byte) (*PersistentVolumeClaim, error)
 
 	// Namespace

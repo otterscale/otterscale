@@ -52,6 +52,12 @@ const (
 	// EssentialServiceAddUnitsProcedure is the fully-qualified name of the EssentialService's AddUnits
 	// RPC.
 	EssentialServiceAddUnitsProcedure = "/otterscale.essential.v1.EssentialService/AddUnits"
+	// EssentialServiceListKubernetesNodeLabelsProcedure is the fully-qualified name of the
+	// EssentialService's ListKubernetesNodeLabels RPC.
+	EssentialServiceListKubernetesNodeLabelsProcedure = "/otterscale.essential.v1.EssentialService/ListKubernetesNodeLabels"
+	// EssentialServiceUpdateKubernetesNodeLabelsProcedure is the fully-qualified name of the
+	// EssentialService's UpdateKubernetesNodeLabels RPC.
+	EssentialServiceUpdateKubernetesNodeLabelsProcedure = "/otterscale.essential.v1.EssentialService/UpdateKubernetesNodeLabels"
 )
 
 // EssentialServiceClient is a client for the otterscale.essential.v1.EssentialService service.
@@ -62,6 +68,8 @@ type EssentialServiceClient interface {
 	CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error)
 	CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error)
 	AddUnits(context.Context, *connect.Request[v1.AddUnitsRequest]) (*connect.Response[emptypb.Empty], error)
+	ListKubernetesNodeLabels(context.Context, *connect.Request[v1.ListKubernetesNodeLabelsRequest]) (*connect.Response[v1.ListKubernetesNodeLabelsResponse], error)
+	UpdateKubernetesNodeLabels(context.Context, *connect.Request[v1.UpdateKubernetesNodeLabelsRequest]) (*connect.Response[v1.UpdateKubernetesNodeLabelsResponse], error)
 }
 
 // NewEssentialServiceClient constructs a client for the otterscale.essential.v1.EssentialService
@@ -111,6 +119,18 @@ func NewEssentialServiceClient(httpClient connect.HTTPClient, baseURL string, op
 			connect.WithSchema(essentialServiceMethods.ByName("AddUnits")),
 			connect.WithClientOptions(opts...),
 		),
+		listKubernetesNodeLabels: connect.NewClient[v1.ListKubernetesNodeLabelsRequest, v1.ListKubernetesNodeLabelsResponse](
+			httpClient,
+			baseURL+EssentialServiceListKubernetesNodeLabelsProcedure,
+			connect.WithSchema(essentialServiceMethods.ByName("ListKubernetesNodeLabels")),
+			connect.WithClientOptions(opts...),
+		),
+		updateKubernetesNodeLabels: connect.NewClient[v1.UpdateKubernetesNodeLabelsRequest, v1.UpdateKubernetesNodeLabelsResponse](
+			httpClient,
+			baseURL+EssentialServiceUpdateKubernetesNodeLabelsProcedure,
+			connect.WithSchema(essentialServiceMethods.ByName("UpdateKubernetesNodeLabels")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -122,6 +142,8 @@ type essentialServiceClient struct {
 	createSingleNode              *connect.Client[v1.CreateSingleNodeRequest, emptypb.Empty]
 	createHighAvailabilityCluster *connect.Client[v1.CreateHighAvailabilityClusterRequest, emptypb.Empty]
 	addUnits                      *connect.Client[v1.AddUnitsRequest, emptypb.Empty]
+	listKubernetesNodeLabels      *connect.Client[v1.ListKubernetesNodeLabelsRequest, v1.ListKubernetesNodeLabelsResponse]
+	updateKubernetesNodeLabels    *connect.Client[v1.UpdateKubernetesNodeLabelsRequest, v1.UpdateKubernetesNodeLabelsResponse]
 }
 
 // IsMachineDeployed calls otterscale.essential.v1.EssentialService.IsMachineDeployed.
@@ -155,6 +177,17 @@ func (c *essentialServiceClient) AddUnits(ctx context.Context, req *connect.Requ
 	return c.addUnits.CallUnary(ctx, req)
 }
 
+// ListKubernetesNodeLabels calls otterscale.essential.v1.EssentialService.ListKubernetesNodeLabels.
+func (c *essentialServiceClient) ListKubernetesNodeLabels(ctx context.Context, req *connect.Request[v1.ListKubernetesNodeLabelsRequest]) (*connect.Response[v1.ListKubernetesNodeLabelsResponse], error) {
+	return c.listKubernetesNodeLabels.CallUnary(ctx, req)
+}
+
+// UpdateKubernetesNodeLabels calls
+// otterscale.essential.v1.EssentialService.UpdateKubernetesNodeLabels.
+func (c *essentialServiceClient) UpdateKubernetesNodeLabels(ctx context.Context, req *connect.Request[v1.UpdateKubernetesNodeLabelsRequest]) (*connect.Response[v1.UpdateKubernetesNodeLabelsResponse], error) {
+	return c.updateKubernetesNodeLabels.CallUnary(ctx, req)
+}
+
 // EssentialServiceHandler is an implementation of the otterscale.essential.v1.EssentialService
 // service.
 type EssentialServiceHandler interface {
@@ -164,6 +197,8 @@ type EssentialServiceHandler interface {
 	CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error)
 	CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error)
 	AddUnits(context.Context, *connect.Request[v1.AddUnitsRequest]) (*connect.Response[emptypb.Empty], error)
+	ListKubernetesNodeLabels(context.Context, *connect.Request[v1.ListKubernetesNodeLabelsRequest]) (*connect.Response[v1.ListKubernetesNodeLabelsResponse], error)
+	UpdateKubernetesNodeLabels(context.Context, *connect.Request[v1.UpdateKubernetesNodeLabelsRequest]) (*connect.Response[v1.UpdateKubernetesNodeLabelsResponse], error)
 }
 
 // NewEssentialServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -209,6 +244,18 @@ func NewEssentialServiceHandler(svc EssentialServiceHandler, opts ...connect.Han
 		connect.WithSchema(essentialServiceMethods.ByName("AddUnits")),
 		connect.WithHandlerOptions(opts...),
 	)
+	essentialServiceListKubernetesNodeLabelsHandler := connect.NewUnaryHandler(
+		EssentialServiceListKubernetesNodeLabelsProcedure,
+		svc.ListKubernetesNodeLabels,
+		connect.WithSchema(essentialServiceMethods.ByName("ListKubernetesNodeLabels")),
+		connect.WithHandlerOptions(opts...),
+	)
+	essentialServiceUpdateKubernetesNodeLabelsHandler := connect.NewUnaryHandler(
+		EssentialServiceUpdateKubernetesNodeLabelsProcedure,
+		svc.UpdateKubernetesNodeLabels,
+		connect.WithSchema(essentialServiceMethods.ByName("UpdateKubernetesNodeLabels")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.essential.v1.EssentialService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case EssentialServiceIsMachineDeployedProcedure:
@@ -223,6 +270,10 @@ func NewEssentialServiceHandler(svc EssentialServiceHandler, opts ...connect.Han
 			essentialServiceCreateHighAvailabilityClusterHandler.ServeHTTP(w, r)
 		case EssentialServiceAddUnitsProcedure:
 			essentialServiceAddUnitsHandler.ServeHTTP(w, r)
+		case EssentialServiceListKubernetesNodeLabelsProcedure:
+			essentialServiceListKubernetesNodeLabelsHandler.ServeHTTP(w, r)
+		case EssentialServiceUpdateKubernetesNodeLabelsProcedure:
+			essentialServiceUpdateKubernetesNodeLabelsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -254,4 +305,12 @@ func (UnimplementedEssentialServiceHandler) CreateHighAvailabilityCluster(contex
 
 func (UnimplementedEssentialServiceHandler) AddUnits(context.Context, *connect.Request[v1.AddUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.AddUnits is not implemented"))
+}
+
+func (UnimplementedEssentialServiceHandler) ListKubernetesNodeLabels(context.Context, *connect.Request[v1.ListKubernetesNodeLabelsRequest]) (*connect.Response[v1.ListKubernetesNodeLabelsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.ListKubernetesNodeLabels is not implemented"))
+}
+
+func (UnimplementedEssentialServiceHandler) UpdateKubernetesNodeLabels(context.Context, *connect.Request[v1.UpdateKubernetesNodeLabelsRequest]) (*connect.Response[v1.UpdateKubernetesNodeLabelsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.UpdateKubernetesNodeLabels is not implemented"))
 }
