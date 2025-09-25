@@ -18,6 +18,7 @@ type Release = release.Release
 
 type ReleaseRepo interface {
 	List(config *rest.Config, namespace string) ([]release.Release, error)
+	Get(restConfig *rest.Config, namespace, name string) (*release.Release, error)
 	Install(config *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
 	Uninstall(config *rest.Config, namespace, name string, dryRun bool) (*release.Release, error)
 	Upgrade(config *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)

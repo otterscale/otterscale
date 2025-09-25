@@ -8,6 +8,7 @@ var ProviderSet = wire.NewSet(
 	NewConfigurationUseCase,
 	NewEnvironmentUseCase,
 	NewFacilityUseCase,
+	NewLargeLanguageModelUseCase,
 	NewEssentialUseCase,
 	NewMachineUseCase,
 	NewNetworkUseCase,
