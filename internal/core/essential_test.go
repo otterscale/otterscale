@@ -443,7 +443,7 @@ func Test_createEssential(t *testing.T) {
 		[]EssentialCharm{
 			{Name: "ch:test-charm", Machine: true},
 		},
-		map[string]string{"ch:test-charm": "config"})
+		map[string]string{"ch:test-charm": "config"}, nil)
 	assert.NoError(t, err)
 
 	err = createEssential(context.Background(), serverRepo, machineRepo, facilityRepo, nil,
@@ -451,7 +451,7 @@ func Test_createEssential(t *testing.T) {
 		[]EssentialCharm{
 			{Name: "ch:test-charm", Machine: true},
 		},
-		map[string]string{"ch:test-charm": "config"})
+		map[string]string{"ch:test-charm": "config"}, []string{"tag1", "tag2"})
 	assert.NoError(t, err)
 
 	err = createEssential(context.Background(), serverRepo, machineRepo, facilityRepo, tagRepo,
@@ -459,7 +459,7 @@ func Test_createEssential(t *testing.T) {
 		[]EssentialCharm{
 			{Name: "ch:test-charm", Machine: true},
 		},
-		map[string]string{"ch:test-charm": "config"})
+		map[string]string{"ch:test-charm": "config"}, nil)
 	assert.NoError(t, err)
 }
 

@@ -25,7 +25,7 @@ var (
 )
 
 func CreateCommon(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, facilityOffersRepo FacilityOffersRepo, conf *config.Config, uuid, prefix string, configs map[string]string) error {
-	if err := createEssential(ctx, serverRepo, machineRepo, facilityRepo, nil, uuid, "", prefix, commonCharms, configs); err != nil {
+	if err := createEssential(ctx, serverRepo, machineRepo, facilityRepo, nil, uuid, "", prefix, commonCharms, configs, nil); err != nil {
 		return err
 	}
 	if err := createCOS(ctx, facilityRepo, facilityOffersRepo, conf, uuid, prefix); err != nil {

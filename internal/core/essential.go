@@ -389,7 +389,7 @@ func listEssentials(ctx context.Context, scopeRepo ScopeRepo, clientRepo ClientR
 	return ret, nil
 }
 
-func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, tagRepo TagRepo, uuid, machineID, prefix string, charms []EssentialCharm, configs map[string]string) error {
+func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, tagRepo TagRepo, uuid, machineID, prefix string, charms []EssentialCharm, configs map[string]string, tags []string) error {
 	var (
 		directive string
 		err       error
@@ -399,25 +399,10 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 		if err != nil {
 			return err
 		}
-
-		if tagRepo != nil {
-			for _, charm := range charms {
-				// Only add tags when the charm is installed directly on the machine
-				if !charm.Machine {
-					continue
-				}
-				charmName := formatEssentialCharm(charm.Name)
-				tagName := "otterscale.com/" + charmName
-
-				_, err = tagRepo.Create(ctx, tagName, fmt.Sprintf("Added by OtterScale for %s", charmName))
-				if err != nil {
-					return err
-				}
-
-				err = tagRepo.AddMachines(ctx, tagName, []string{machineID})
-				if err != nil {
-					return err
-				}
+		for _, tag := range tags {
+			_, _ = tagRepo.Create(ctx, tag, "built-in")
+			if err := tagRepo.AddMachines(ctx, tag, []string{machineID}); err != nil {
+				return err
 			}
 		}
 	}

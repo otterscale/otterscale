@@ -41,7 +41,8 @@ var (
 )
 
 func CreateKubernetes(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, tagRepo TagRepo, uuid, machineID, prefix string, configs map[string]string) error {
-	if err := createEssential(ctx, serverRepo, machineRepo, facilityRepo, tagRepo, uuid, machineID, prefix, kubernetesCharms, configs); err != nil {
+	tags := []string{Kubernetes, KubernetesControlPlane, KubernetesWorker}
+	if err := createEssential(ctx, serverRepo, machineRepo, facilityRepo, tagRepo, uuid, machineID, prefix, kubernetesCharms, configs, tags); err != nil {
 		return err
 	}
 	return createEssentialRelations(ctx, facilityRepo, uuid, toEndpointList(prefix, kubernetesRelations))

@@ -147,10 +147,9 @@ type FacilityUseCase struct {
 	action   ActionRepo
 	charm    CharmRepo
 	machine  MachineRepo
-	tag      TagRepo
 }
 
-func NewFacilityUseCase(facility FacilityRepo, server ServerRepo, client ClientRepo, action ActionRepo, charm CharmRepo, machine MachineRepo, tag TagRepo) *FacilityUseCase {
+func NewFacilityUseCase(facility FacilityRepo, server ServerRepo, client ClientRepo, action ActionRepo, charm CharmRepo, machine MachineRepo) *FacilityUseCase {
 	return &FacilityUseCase{
 		facility: facility,
 		server:   server,
@@ -158,7 +157,6 @@ func NewFacilityUseCase(facility FacilityRepo, server ServerRepo, client ClientR
 		action:   action,
 		charm:    charm,
 		machine:  machine,
-		tag:      tag,
 	}
 }
 
@@ -221,30 +219,6 @@ func (uc *FacilityUseCase) CreateFacility(ctx context.Context, uuid, name, confi
 	if _, err := uc.facility.Create(ctx, uuid, name, configYAML, charmName, channel, revision, number, &base, placements, &constraint, trust); err != nil {
 		return nil, err
 	}
-
-	// Add tags to machines when creating facility
-	if len(mps) > 0 && uc.tag != nil {
-		tagName := "otterscale.com/" + charmName
-		_, err = uc.tag.Create(ctx, tagName, fmt.Sprintf("Added by OtterScale for %s", charmName))
-		if err != nil {
-			return nil, err
-		}
-
-		machineIDs := []string{}
-		for _, mp := range mps {
-			if mp.MachineID != "" {
-				machineIDs = append(machineIDs, mp.MachineID)
-			}
-		}
-
-		if len(machineIDs) > 0 {
-			err = uc.tag.AddMachines(ctx, tagName, machineIDs)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-
 	return &Facility{}, nil
 }
 
@@ -256,43 +230,6 @@ func (uc *FacilityUseCase) UpdateFacility(ctx context.Context, uuid, name, confi
 }
 
 func (uc *FacilityUseCase) DeleteFacility(ctx context.Context, uuid, name string, destroyStorage, force bool) error {
-	s, err := uc.client.Status(ctx, uuid, []string{"application", name})
-	if err != nil {
-		return err
-	}
-
-	app, ok := s.Applications[name]
-	if ok && uc.tag != nil {
-		var charmName string
-		if appCharm, ok := formatAppCharm(app.Charm); ok {
-			charmName = appCharm
-		} else {
-			charmName = app.Charm
-		}
-
-		if charmName != "" {
-			tagName := "otterscale.com/" + charmName
-
-			machineIDs := []string{}
-			for i := range app.Units {
-				machineID := app.Units[i].Machine
-				if machineID != "" {
-					machine, err := uc.machine.Get(ctx, machineID)
-					if err == nil && machine != nil {
-						machineIDs = append(machineIDs, machine.SystemID)
-					}
-				}
-			}
-
-			if len(machineIDs) > 0 {
-				err := uc.tag.RemoveMachines(ctx, tagName, machineIDs)
-				if err != nil {
-					fmt.Printf("Error removing tag %s from machines: %v\n", tagName, err)
-				}
-			}
-		}
-	}
-
 	return uc.facility.Delete(ctx, uuid, name, destroyStorage, force)
 }
 

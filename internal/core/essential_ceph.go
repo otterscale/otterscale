@@ -26,7 +26,8 @@ var (
 )
 
 func CreateCeph(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, tagRepo TagRepo, uuid, machineID, prefix string, configs map[string]string) error {
-	if err := createEssential(ctx, serverRepo, machineRepo, facilityRepo, tagRepo, uuid, machineID, prefix, cephCharms, configs); err != nil {
+	tags := []string{Ceph, CephMon, CephOSD}
+	if err := createEssential(ctx, serverRepo, machineRepo, facilityRepo, tagRepo, uuid, machineID, prefix, cephCharms, configs, tags); err != nil {
 		return err
 	}
 	return createEssentialRelations(ctx, facilityRepo, uuid, toEndpointList(prefix, cephRelations))
