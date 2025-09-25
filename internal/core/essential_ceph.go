@@ -39,9 +39,10 @@ func GetCephCharms() []EssentialCharm {
 func newCephConfigs(prefix, osdDevices, vip string) (map[string]string, error) {
 	configs := map[string]map[string]any{
 		"ceph-mon": {
-			"monitor-count":      1,
-			"expected-osd-count": 1,
-			"config-flags":       `{ "global": {"osd_pool_default_size": 1, "osd_pool_default_min_size": 1, "mon_allow_pool_size_one": true} }`,
+			"monitor-count":       1,
+			"expected-osd-count":  1,
+			"config-flags":        `{ "global": {"osd_pool_default_size": 1, "osd_pool_default_min_size": 1, "mon_allow_pool_size_one": true} }`,
+			"enable-perf-metrics": true,
 		},
 		"ceph-osd": {
 			"osd-devices": osdDevices,
