@@ -400,7 +400,7 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 			return err
 		}
 		for _, tag := range tags {
-			_, _ = tagRepo.Create(ctx, tag, "built-in")
+			_, _ = tagRepo.Create(ctx, tag, BuiltInMachineTagComment)
 			if err := tagRepo.AddMachines(ctx, tag, []string{machineID}); err != nil {
 				return err
 			}

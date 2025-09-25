@@ -5,6 +5,8 @@ const (
 	VirtualMachineNameLabel  = "otterscale.com/virtual-machine.name"
 )
 
+const BuiltInMachineTagComment = "built-in"
+
 const (
 	Kubernetes             = "kubernetes"
 	KubernetesControlPlane = "kubernetes-control-plane"

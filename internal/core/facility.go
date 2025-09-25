@@ -219,6 +219,7 @@ func (uc *FacilityUseCase) CreateFacility(ctx context.Context, uuid, name, confi
 	if _, err := uc.facility.Create(ctx, uuid, name, configYAML, charmName, channel, revision, number, &base, placements, &constraint, trust); err != nil {
 		return nil, err
 	}
+
 	return &Facility{}, nil
 }
 
@@ -295,9 +296,6 @@ func (uc *FacilityUseCase) JujuToMAASMachineMap(ctx context.Context, uuid string
 
 func (uc *FacilityUseCase) toPlacements(ctx context.Context, mps []MachinePlacement) ([]instance.Placement, error) {
 	placements := []instance.Placement{}
-	if len(mps) == 0 {
-		return placements, nil
-	}
 	for _, mp := range mps {
 		machine, err := uc.machine.Get(ctx, mp.MachineID)
 		if err != nil {
