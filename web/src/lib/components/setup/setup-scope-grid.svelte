@@ -5,6 +5,8 @@
 	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
+	import SetupKubernetesNodeGPU from './setup-kubernetes-node-gpu.svelte';
+
 	import { page } from '$app/state';
 	import {
 		FacilityService,
@@ -123,12 +125,6 @@
 									{unit.name}
 								</span>
 
-								{#if unit.machineId}
-									<a href="{dynamicPaths.machinesMetal(page.params.scope).url}/{unit.machineId}">
-										<Icon icon="ph:computer-tower" class="size-4" />
-									</a>
-								{/if}
-
 								<button
 									class="hover:cursor-pointer"
 									onclick={(e) => {
@@ -167,8 +163,22 @@
 									<Icon icon="ph:arrow-counter-clockwise" class="size-4" />
 								</button>
 
+								{#if unit.machineId}
+									<a href="{dynamicPaths.machinesMetal(page.params.scope).url}/{unit.machineId}">
+										<Icon icon="ph:computer-tower" class="size-4" />
+									</a>
+								{/if}
+
+								{#if unit.machineId}
+									<SetupKubernetesNodeGPU
+										machine_id={unit.machineId}
+										unit_name={unit.name}
+										class="hover:cursor-pointer"
+									/>
+								{/if}
+
 								{#if unit.leader}
-									<Icon icon="ph:star-fill" class="size-4 text-yellow-400 " />
+									<Icon icon="ph:star-fill" class="size-4 text-yellow-400" />
 								{/if}
 							</div>
 
