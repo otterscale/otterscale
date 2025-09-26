@@ -20,6 +20,7 @@
 		{
 			value: 'vm-passthrough',
 			label: 'Passthrough',
+			disabled: true,
 		},
 	];
 </script>
@@ -40,7 +41,7 @@
 			.listKubernetesNodeLabels({
 				scopeUuid: $currentKubernetes?.scopeUuid,
 				facilityName: $currentKubernetes?.name,
-				hostname: 'proxmox-4090x2-197-114',
+				hostname: unit.hostname,
 				all: true,
 			})
 			.then((response) => {
@@ -84,6 +85,7 @@
 					<Command.Group>
 						{#each gpuModeOptions as option}
 							<Command.Item
+								disabled={option.disabled}
 								value={option.value}
 								onSelect={() => {
 									toast.promise(() => set(), {
