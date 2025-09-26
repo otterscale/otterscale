@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 
-	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/otterscale/otterscale/api/tag/v1"
@@ -23,40 +22,40 @@ func NewTagService(uc *core.TagUseCase) *TagService {
 
 var _ pbconnect.TagServiceHandler = (*TagService)(nil)
 
-func (s *TagService) ListTags(ctx context.Context, _ *connect.Request[pb.ListTagsRequest]) (*connect.Response[pb.ListTagsResponse], error) {
+func (s *TagService) ListTags(ctx context.Context, _ *pb.ListTagsRequest) (*pb.ListTagsResponse, error) {
 	tags, err := s.uc.ListTags(ctx)
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListTagsResponse{}
 	resp.SetTags(toProtoTags(tags))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *TagService) GetTag(ctx context.Context, req *connect.Request[pb.GetTagRequest]) (*connect.Response[pb.Tag], error) {
-	tag, err := s.uc.GetTag(ctx, req.Msg.GetName())
+func (s *TagService) GetTag(ctx context.Context, req *pb.GetTagRequest) (*pb.Tag, error) {
+	tag, err := s.uc.GetTag(ctx, req.GetName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoTag(tag)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *TagService) CreateTag(ctx context.Context, req *connect.Request[pb.CreateTagRequest]) (*connect.Response[pb.Tag], error) {
-	tag, err := s.uc.CreateTag(ctx, req.Msg.GetName(), req.Msg.GetComment())
+func (s *TagService) CreateTag(ctx context.Context, req *pb.CreateTagRequest) (*pb.Tag, error) {
+	tag, err := s.uc.CreateTag(ctx, req.GetName(), req.GetComment())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoTag(tag)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *TagService) DeleteTag(ctx context.Context, req *connect.Request[pb.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteTag(ctx, req.Msg.GetName()); err != nil {
+func (s *TagService) DeleteTag(ctx context.Context, req *pb.DeleteTagRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteTag(ctx, req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
 func toProtoTags(ts []core.Tag) []*pb.Tag {

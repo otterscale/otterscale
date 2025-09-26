@@ -46,10 +46,10 @@ const (
 
 // TagServiceClient is a client for the otterscale.tag.v1.TagService service.
 type TagServiceClient interface {
-	ListTags(context.Context, *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error)
-	GetTag(context.Context, *connect.Request[v1.GetTagRequest]) (*connect.Response[v1.Tag], error)
-	CreateTag(context.Context, *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.Tag], error)
-	DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error)
+	ListTags(context.Context, *v1.ListTagsRequest) (*v1.ListTagsResponse, error)
+	GetTag(context.Context, *v1.GetTagRequest) (*v1.Tag, error)
+	CreateTag(context.Context, *v1.CreateTagRequest) (*v1.Tag, error)
+	DeleteTag(context.Context, *v1.DeleteTagRequest) (*emptypb.Empty, error)
 }
 
 // NewTagServiceClient constructs a client for the otterscale.tag.v1.TagService service. By default,
@@ -99,31 +99,47 @@ type tagServiceClient struct {
 }
 
 // ListTags calls otterscale.tag.v1.TagService.ListTags.
-func (c *tagServiceClient) ListTags(ctx context.Context, req *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error) {
-	return c.listTags.CallUnary(ctx, req)
+func (c *tagServiceClient) ListTags(ctx context.Context, req *v1.ListTagsRequest) (*v1.ListTagsResponse, error) {
+	response, err := c.listTags.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GetTag calls otterscale.tag.v1.TagService.GetTag.
-func (c *tagServiceClient) GetTag(ctx context.Context, req *connect.Request[v1.GetTagRequest]) (*connect.Response[v1.Tag], error) {
-	return c.getTag.CallUnary(ctx, req)
+func (c *tagServiceClient) GetTag(ctx context.Context, req *v1.GetTagRequest) (*v1.Tag, error) {
+	response, err := c.getTag.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateTag calls otterscale.tag.v1.TagService.CreateTag.
-func (c *tagServiceClient) CreateTag(ctx context.Context, req *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.Tag], error) {
-	return c.createTag.CallUnary(ctx, req)
+func (c *tagServiceClient) CreateTag(ctx context.Context, req *v1.CreateTagRequest) (*v1.Tag, error) {
+	response, err := c.createTag.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteTag calls otterscale.tag.v1.TagService.DeleteTag.
-func (c *tagServiceClient) DeleteTag(ctx context.Context, req *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteTag.CallUnary(ctx, req)
+func (c *tagServiceClient) DeleteTag(ctx context.Context, req *v1.DeleteTagRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteTag.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // TagServiceHandler is an implementation of the otterscale.tag.v1.TagService service.
 type TagServiceHandler interface {
-	ListTags(context.Context, *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error)
-	GetTag(context.Context, *connect.Request[v1.GetTagRequest]) (*connect.Response[v1.Tag], error)
-	CreateTag(context.Context, *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.Tag], error)
-	DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error)
+	ListTags(context.Context, *v1.ListTagsRequest) (*v1.ListTagsResponse, error)
+	GetTag(context.Context, *v1.GetTagRequest) (*v1.Tag, error)
+	CreateTag(context.Context, *v1.CreateTagRequest) (*v1.Tag, error)
+	DeleteTag(context.Context, *v1.DeleteTagRequest) (*emptypb.Empty, error)
 }
 
 // NewTagServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -133,25 +149,25 @@ type TagServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewTagServiceHandler(svc TagServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	tagServiceMethods := v1.File_api_tag_v1_tag_proto.Services().ByName("TagService").Methods()
-	tagServiceListTagsHandler := connect.NewUnaryHandler(
+	tagServiceListTagsHandler := connect.NewUnaryHandlerSimple(
 		TagServiceListTagsProcedure,
 		svc.ListTags,
 		connect.WithSchema(tagServiceMethods.ByName("ListTags")),
 		connect.WithHandlerOptions(opts...),
 	)
-	tagServiceGetTagHandler := connect.NewUnaryHandler(
+	tagServiceGetTagHandler := connect.NewUnaryHandlerSimple(
 		TagServiceGetTagProcedure,
 		svc.GetTag,
 		connect.WithSchema(tagServiceMethods.ByName("GetTag")),
 		connect.WithHandlerOptions(opts...),
 	)
-	tagServiceCreateTagHandler := connect.NewUnaryHandler(
+	tagServiceCreateTagHandler := connect.NewUnaryHandlerSimple(
 		TagServiceCreateTagProcedure,
 		svc.CreateTag,
 		connect.WithSchema(tagServiceMethods.ByName("CreateTag")),
 		connect.WithHandlerOptions(opts...),
 	)
-	tagServiceDeleteTagHandler := connect.NewUnaryHandler(
+	tagServiceDeleteTagHandler := connect.NewUnaryHandlerSimple(
 		TagServiceDeleteTagProcedure,
 		svc.DeleteTag,
 		connect.WithSchema(tagServiceMethods.ByName("DeleteTag")),
@@ -176,18 +192,18 @@ func NewTagServiceHandler(svc TagServiceHandler, opts ...connect.HandlerOption) 
 // UnimplementedTagServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedTagServiceHandler struct{}
 
-func (UnimplementedTagServiceHandler) ListTags(context.Context, *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error) {
+func (UnimplementedTagServiceHandler) ListTags(context.Context, *v1.ListTagsRequest) (*v1.ListTagsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.tag.v1.TagService.ListTags is not implemented"))
 }
 
-func (UnimplementedTagServiceHandler) GetTag(context.Context, *connect.Request[v1.GetTagRequest]) (*connect.Response[v1.Tag], error) {
+func (UnimplementedTagServiceHandler) GetTag(context.Context, *v1.GetTagRequest) (*v1.Tag, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.tag.v1.TagService.GetTag is not implemented"))
 }
 
-func (UnimplementedTagServiceHandler) CreateTag(context.Context, *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.Tag], error) {
+func (UnimplementedTagServiceHandler) CreateTag(context.Context, *v1.CreateTagRequest) (*v1.Tag, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.tag.v1.TagService.CreateTag is not implemented"))
 }
 
-func (UnimplementedTagServiceHandler) DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedTagServiceHandler) DeleteTag(context.Context, *v1.DeleteTagRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.tag.v1.TagService.DeleteTag is not implemented"))
 }

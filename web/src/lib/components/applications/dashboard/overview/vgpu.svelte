@@ -17,19 +17,10 @@
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
-	let allocatableGPUs: Record<string, number> = $state({});
-	let occupiedGPUs: Record<string, number> = $state({});
-	const usages = $derived(
-		Object.keys(allocatableGPUs).map((node) => ({
-			node,
-			free: allocatableGPUs[node] ? (allocatableGPUs[node] - occupiedGPUs[node]) / allocatableGPUs[node] : 0,
-			occupied: allocatableGPUs[node] ? occupiedGPUs[node] / allocatableGPUs[node] : 0,
-		})),
-	);
+	let memoryUsage: Record<string, number>[] = $state([]);
 
 	const configuration = {
-		occupied: { label: 'Occupied', color: 'var(--chart-1)' },
-		free: { label: 'Free', color: 'var(--chart-2)' },
+		usage: { label: 'Usage', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 
 	let context = $state<ChartContextValue>();
@@ -38,32 +29,19 @@
 		await prometheusDriver
 			.instantQuery(
 				`
-				sum by (node) (kube_node_status_allocatable{juju_model_uuid="${scope.uuid}",resource="split_nvidia_com_gpu"})
+				topk(10, avg by (node) (nodeGPUMemoryPercentage{juju_model_uuid="${scope.uuid}"}))
 				`,
 			)
 			.then((response) => {
 				const instanceVectors: InstantVector[] = response.result;
-				allocatableGPUs = Object.fromEntries(
-					instanceVectors.map((instanceVector) => [
-						(instanceVector.metric.labels as { node?: string }).node,
-						Number(instanceVector.value.value),
-					]),
-				);
-			});
-		await prometheusDriver
-			.instantQuery(
-				`
-				sum by (node) (kube_pod_container_resource_limits{juju_model_uuid="${scope.uuid}",resource="split_nvidia_com_gpu"})
-				`,
-			)
-			.then((response) => {
-				const instanceVectors: InstantVector[] = response.result;
-				occupiedGPUs = Object.fromEntries(
-					instanceVectors.map((instanceVector) => [
-						(instanceVector.metric.labels as { node?: string }).node,
-						Number(instanceVector.value.value),
-					]),
-				);
+				memoryUsage = instanceVectors
+					.sort((p, n) => n.value.value - p.value.value)
+					.map((instanceVector) =>
+						Object.fromEntries([
+							['node', (instanceVector.metric.labels as { node?: string }).node],
+							['usage', instanceVector.value.value],
+						]),
+					);
 			});
 	}
 
@@ -98,7 +76,7 @@
 			<Chart.Container config={configuration} class="w-full">
 				<BarChart
 					bind:context
-					data={usages}
+					data={memoryUsage}
 					orientation="horizontal"
 					yScale={scaleBand().padding(0.25)}
 					y="node"
@@ -107,18 +85,11 @@
 					rule={false}
 					series={[
 						{
-							key: 'free',
-							label: configuration.free.label,
-							color: configuration.free.color,
-						},
-						{
-							key: 'occupied',
-							label: configuration.occupied.label,
-							color: configuration.occupied.color,
+							key: 'usage',
+							label: configuration.usage.label,
+							color: configuration.usage.color,
 						},
 					]}
-					seriesLayout="stack"
-					legend
 					props={{
 						bars: {
 							stroke: 'none',
@@ -133,8 +104,8 @@
 						yAxis: {
 							tickLabelProps: {
 								textAnchor: 'start',
-								dx: 6,
-								class: 'stroke-none fill-background!',
+								dx: 8,
+								class: 'stroke-none fill-background',
 							},
 							tickLength: 0,
 						},
@@ -157,7 +128,7 @@
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{Number(value) * 100} %</p>
+									<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>

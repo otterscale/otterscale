@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 
-	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/otterscale/otterscale/api/network/v1"
@@ -24,84 +23,84 @@ func NewNetworkService(uc *core.NetworkUseCase) *NetworkService {
 
 var _ pbconnect.NetworkServiceHandler = (*NetworkService)(nil)
 
-func (s *NetworkService) ListNetworks(ctx context.Context, _ *connect.Request[pb.ListNetworksRequest]) (*connect.Response[pb.ListNetworksResponse], error) {
+func (s *NetworkService) ListNetworks(ctx context.Context, _ *pb.ListNetworksRequest) (*pb.ListNetworksResponse, error) {
 	networks, err := s.uc.ListNetworks(ctx)
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListNetworksResponse{}
 	resp.SetNetworks(toProtoNetworks(networks))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *NetworkService) CreateNetwork(ctx context.Context, req *connect.Request[pb.CreateNetworkRequest]) (*connect.Response[pb.Network], error) {
-	network, err := s.uc.CreateNetwork(ctx, req.Msg.GetCidr(), req.Msg.GetGatewayIp(), req.Msg.GetDnsServers(), req.Msg.GetDhcpOn())
+func (s *NetworkService) CreateNetwork(ctx context.Context, req *pb.CreateNetworkRequest) (*pb.Network, error) {
+	network, err := s.uc.CreateNetwork(ctx, req.GetCidr(), req.GetGatewayIp(), req.GetDnsServers(), req.GetDhcpOn())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoNetwork(network)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *NetworkService) CreateIPRange(ctx context.Context, req *connect.Request[pb.CreateIPRangeRequest]) (*connect.Response[pb.Network_IPRange], error) {
-	ipRange, err := s.uc.CreateIPRange(ctx, int(req.Msg.GetSubnetId()), req.Msg.GetStartIp(), req.Msg.GetEndIp(), req.Msg.GetComment())
+func (s *NetworkService) CreateIPRange(ctx context.Context, req *pb.CreateIPRangeRequest) (*pb.Network_IPRange, error) {
+	ipRange, err := s.uc.CreateIPRange(ctx, int(req.GetSubnetId()), req.GetStartIp(), req.GetEndIp(), req.GetComment())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoIPRange(ipRange)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *NetworkService) DeleteNetwork(ctx context.Context, req *connect.Request[pb.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteNetwork(ctx, int(req.Msg.GetId())); err != nil {
+func (s *NetworkService) DeleteNetwork(ctx context.Context, req *pb.DeleteNetworkRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteNetwork(ctx, int(req.GetId())); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *NetworkService) DeleteIPRange(ctx context.Context, req *connect.Request[pb.DeleteIPRangeRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteIPRange(ctx, int(req.Msg.GetId())); err != nil {
+func (s *NetworkService) DeleteIPRange(ctx context.Context, req *pb.DeleteIPRangeRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteIPRange(ctx, int(req.GetId())); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *NetworkService) UpdateFabric(ctx context.Context, req *connect.Request[pb.UpdateFabricRequest]) (*connect.Response[pb.Network_Fabric], error) {
-	fabric, err := s.uc.UpdateFabric(ctx, int(req.Msg.GetId()), req.Msg.GetName())
+func (s *NetworkService) UpdateFabric(ctx context.Context, req *pb.UpdateFabricRequest) (*pb.Network_Fabric, error) {
+	fabric, err := s.uc.UpdateFabric(ctx, int(req.GetId()), req.GetName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoFabric(fabric)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *NetworkService) UpdateVLAN(ctx context.Context, req *connect.Request[pb.UpdateVLANRequest]) (*connect.Response[pb.Network_VLAN], error) {
-	vlan, err := s.uc.UpdateVLAN(ctx, int(req.Msg.GetFabricId()), int(req.Msg.GetVid()), req.Msg.GetName(), int(req.Msg.GetMtu()), req.Msg.GetDescription(), req.Msg.GetDhcpOn())
+func (s *NetworkService) UpdateVLAN(ctx context.Context, req *pb.UpdateVLANRequest) (*pb.Network_VLAN, error) {
+	vlan, err := s.uc.UpdateVLAN(ctx, int(req.GetFabricId()), int(req.GetVid()), req.GetName(), int(req.GetMtu()), req.GetDescription(), req.GetDhcpOn())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoVLAN(vlan)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *NetworkService) UpdateSubnet(ctx context.Context, req *connect.Request[pb.UpdateSubnetRequest]) (*connect.Response[pb.Network_Subnet], error) {
-	subnet, err := s.uc.UpdateSubnet(ctx, int(req.Msg.GetId()), req.Msg.GetName(), req.Msg.GetCidr(), req.Msg.GetGatewayIp(), req.Msg.GetDnsServers(), req.Msg.GetDescription(), req.Msg.GetAllowDnsResolution())
+func (s *NetworkService) UpdateSubnet(ctx context.Context, req *pb.UpdateSubnetRequest) (*pb.Network_Subnet, error) {
+	subnet, err := s.uc.UpdateSubnet(ctx, int(req.GetId()), req.GetName(), req.GetCidr(), req.GetGatewayIp(), req.GetDnsServers(), req.GetDescription(), req.GetAllowDnsResolution())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoSubnet(subnet)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *NetworkService) UpdateIPRange(ctx context.Context, req *connect.Request[pb.UpdateIPRangeRequest]) (*connect.Response[pb.Network_IPRange], error) {
-	ipRange, err := s.uc.UpdateIPRange(ctx, int(req.Msg.GetId()), req.Msg.GetStartIp(), req.Msg.GetEndIp(), req.Msg.GetComment())
+func (s *NetworkService) UpdateIPRange(ctx context.Context, req *pb.UpdateIPRangeRequest) (*pb.Network_IPRange, error) {
+	ipRange, err := s.uc.UpdateIPRange(ctx, int(req.GetId()), req.GetStartIp(), req.GetEndIp(), req.GetComment())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoIPRange(ipRange)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
 func toProtoNetworks(ns []core.Network) []*pb.Network {

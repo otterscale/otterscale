@@ -19,6 +19,7 @@ import (
 	environmentv1 "github.com/otterscale/otterscale/api/environment/v1/pbconnect"
 	essentialv1 "github.com/otterscale/otterscale/api/essential/v1/pbconnect"
 	facilityv1 "github.com/otterscale/otterscale/api/facility/v1/pbconnect"
+	largelanguagemodelv1 "github.com/otterscale/otterscale/api/large_language_model/v1/pbconnect"
 	machinev1 "github.com/otterscale/otterscale/api/machine/v1/pbconnect"
 	networkv1 "github.com/otterscale/otterscale/api/network/v1/pbconnect"
 	premiumv1 "github.com/otterscale/otterscale/api/premium/v1/pbconnect"
@@ -35,6 +36,7 @@ var Services = []string{
 	configurationv1.ConfigurationServiceName,
 	environmentv1.EnvironmentServiceName,
 	facilityv1.FacilityServiceName,
+	largelanguagemodelv1.LargeLanguageModelServiceName,
 	essentialv1.EssentialServiceName,
 	machinev1.MachineServiceName,
 	networkv1.NetworkServiceName,
@@ -45,7 +47,7 @@ var Services = []string{
 	virtualmachinev1.VirtualMachineServiceName,
 }
 
-func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, premium *app.PremiumService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService, virtualmachine *app.VirtualMachineService) (*http.ServeMux, error) {
+func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, largelanguagemodel *app.LargeLanguageModelService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, premium *app.PremiumService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService, virtualmachine *app.VirtualMachineService) (*http.ServeMux, error) {
 	// interceptor
 	otelInterceptor, err := otelconnect.NewInterceptor()
 	if err != nil {
@@ -62,6 +64,7 @@ func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config
 	mux.Handle(configurationv1.NewConfigurationServiceHandler(config, opts...))
 	mux.Handle(environmentv1.NewEnvironmentServiceHandler(environment, opts...))
 	mux.Handle(facilityv1.NewFacilityServiceHandler(facility, opts...))
+	mux.Handle(largelanguagemodelv1.NewLargeLanguageModelServiceHandler(largelanguagemodel, opts...))
 	mux.Handle(essentialv1.NewEssentialServiceHandler(essential, opts...))
 	mux.Handle(machinev1.NewMachineServiceHandler(machine, opts...))
 	mux.Handle(premiumv1.NewPremiumServiceHandler(premium, opts...))

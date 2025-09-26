@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	healthOK           = 11
-	healthNotInstalled = 21
+	environmentHealthOK           = 11
+	environmentHealthNotInstalled = 21
 )
 
 const traefikShowAction = "show-proxied-endpoints"
@@ -55,9 +55,9 @@ func NewEnvironmentUseCase(scope ScopeRepo, action ActionRepo, facility Facility
 
 func (uc *EnvironmentUseCase) CheckHealth(_ context.Context) (int32, error) {
 	if !uc.isMAASConfigured() {
-		return healthNotInstalled, nil
+		return environmentHealthNotInstalled, nil
 	}
-	return healthOK, nil
+	return environmentHealthOK, nil
 }
 
 func (uc *EnvironmentUseCase) LoadStatus(_ context.Context) *EnvironmentStatus {

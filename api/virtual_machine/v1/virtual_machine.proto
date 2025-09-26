@@ -9,6 +9,8 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/otterscale/otterscale/api/virtual_machine/v1;pb";
 
 service VirtualMachineService {
+  rpc CheckInfrastructureStatus(CheckInfrastructureStatusRequest) returns (CheckInfrastructureStatusResponse);
+
   rpc ListVirtualMachines(ListVirtualMachinesRequest) returns (ListVirtualMachinesResponse);
   rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine);
   rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
@@ -154,6 +156,22 @@ message InstanceType {
   string namespace = 2;
   uint32 cpu_cores = 3;
   int64 memory_bytes = 4;
+}
+
+message CheckInfrastructureStatusRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message CheckInfrastructureStatusResponse {
+  enum Result {
+    UNKNOWN = 0;
+    OK = 11;
+    NOT_INSTALLED = 21;
+    FAILED = 22;
+    PENDING = 31;
+  }
+  Result result = 1;
 }
 
 message ListVirtualMachinesRequest {

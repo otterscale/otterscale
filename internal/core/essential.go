@@ -48,6 +48,8 @@ type EssentialCharm struct {
 
 type EssentialUseCase struct {
 	conf           *config.Config
+	kubeCore       KubeCoreRepo
+	action         ActionRepo
 	scope          ScopeRepo
 	facility       FacilityRepo
 	facilityOffers FacilityOffersRepo
@@ -56,11 +58,14 @@ type EssentialUseCase struct {
 	ipRange        IPRangeRepo
 	server         ServerRepo
 	client         ClientRepo
+	tag            TagRepo
 }
 
-func NewEssentialUseCase(conf *config.Config, scope ScopeRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo) *EssentialUseCase {
+func NewEssentialUseCase(conf *config.Config, kubeCore KubeCoreRepo, action ActionRepo, scope ScopeRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo, tag TagRepo) *EssentialUseCase {
 	return &EssentialUseCase{
 		conf:           conf,
+		kubeCore:       kubeCore,
+		action:         action,
 		scope:          scope,
 		facility:       facility,
 		facilityOffers: facilityOffers,
@@ -69,6 +74,7 @@ func NewEssentialUseCase(conf *config.Config, scope ScopeRepo, facility Facility
 		ipRange:        ipRange,
 		server:         server,
 		client:         client,
+		tag:            tag,
 	}
 }
 
@@ -211,16 +217,54 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 	}
 
 	// create
-	if err := CreateCeph(ctx, uc.server, uc.machine, uc.facility, uuid, machineID, prefix, cephConfigs); err != nil {
+	if err := CreateCeph(ctx, uc.server, uc.machine, uc.facility, uc.tag, uuid, machineID, prefix, cephConfigs); err != nil {
 		return err
 	}
-	if err := CreateKubernetes(ctx, uc.server, uc.machine, uc.facility, uuid, machineID, prefix, kubeConfigs); err != nil {
+	if err := CreateKubernetes(ctx, uc.server, uc.machine, uc.facility, uc.tag, uuid, machineID, prefix, kubeConfigs); err != nil {
 		return err
 	}
 	if err := CreateCommon(ctx, uc.server, uc.machine, uc.facility, uc.facilityOffers, uc.conf, uuid, prefix, commonConfigs); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (uc *EssentialUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string) (map[string]string, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	node, err := uc.kubeCore.GetNode(ctx, config, hostname)
+	if err != nil {
+		return nil, err
+	}
+	return node.Labels, nil
+}
+
+func (uc *EssentialUseCase) UpdateKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string, labels map[string]string) (map[string]string, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	node, err := uc.kubeCore.GetNode(ctx, config, hostname)
+	if err != nil {
+		return nil, err
+	}
+	if node.Labels == nil {
+		node.Labels = map[string]string{}
+	}
+	for k, v := range labels {
+		if v == "" {
+			delete(node.Labels, k)
+		} else {
+			node.Labels[k] = v
+		}
+	}
+	updatedNode, err := uc.kubeCore.UpdateNode(ctx, config, node)
+	if err != nil {
+		return nil, err
+	}
+	return updatedNode.Labels, nil
 }
 
 func (uc *EssentialUseCase) getMachineStatusMessage(machines []Machine) string {
@@ -305,7 +349,7 @@ func NewCharmConfigs(prefix string, configs map[string]map[string]any) (map[stri
 // ch:amd64/kubernetes-control-plane-567 -> kubernetes-control-plane
 func formatAppCharm(name string) (string, bool) {
 	t := strings.Split(name, "/")
-	if len(t) < 1 {
+	if len(t) < 2 {
 		return "", false
 	}
 	u := strings.Split(t[1], "-")
@@ -387,7 +431,7 @@ func listEssentials(ctx context.Context, scopeRepo ScopeRepo, clientRepo ClientR
 	return ret, nil
 }
 
-func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, uuid, machineID, prefix string, charms []EssentialCharm, configs map[string]string) error {
+func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, tagRepo TagRepo, uuid, machineID, prefix string, charms []EssentialCharm, configs map[string]string, tags []string) error {
 	var (
 		directive string
 		err       error
@@ -396,6 +440,12 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 		directive, err = getDirective(ctx, machineRepo, machineID)
 		if err != nil {
 			return err
+		}
+		for _, tag := range tags {
+			_, _ = tagRepo.Create(ctx, tag, BuiltInMachineTagComment)
+			if err := tagRepo.AddMachines(ctx, tag, []string{machineID}); err != nil {
+				return err
+			}
 		}
 	}
 
