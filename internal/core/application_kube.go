@@ -346,7 +346,7 @@ func (uc *ApplicationUseCase) RestartApplication(ctx context.Context, uuid, faci
 		return err
 	}
 	switch appType {
-	case "deployment":
+	case ApplicationTypeDeployment:
 		deployment, err := uc.kubeApps.GetDeployment(ctx, config, namespace, name)
 		if err != nil {
 			return err
@@ -357,7 +357,7 @@ func (uc *ApplicationUseCase) RestartApplication(ctx context.Context, uuid, faci
 		deployment.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
 		_, err = uc.kubeApps.UpdateDeployment(ctx, config, namespace, deployment)
 		return err
-	case "StatefulSet":
+	case ApplicationTypeStatefulSet:
 		statefulSet, err := uc.kubeApps.GetStatefulSet(ctx, config, namespace, name)
 		if err != nil {
 			return err
@@ -368,7 +368,7 @@ func (uc *ApplicationUseCase) RestartApplication(ctx context.Context, uuid, faci
 		statefulSet.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
 		_, err = uc.kubeApps.UpdateStatefulSet(ctx, config, namespace, statefulSet)
 		return err
-	case "DaemonSet":
+	case ApplicationTypeDaemonSet:
 		daemonSet, err := uc.kubeApps.GetDaemonSet(ctx, config, namespace, name)
 		if err != nil {
 			return err
@@ -390,7 +390,7 @@ func (uc *ApplicationUseCase) ScaleApplication(ctx context.Context, uuid, facili
 		return err
 	}
 	switch appType {
-	case "deployment":
+	case ApplicationTypeDeployment:
 		deployment, err := uc.kubeApps.GetDeployment(ctx, config, namespace, name)
 		if err != nil {
 			return err
@@ -398,7 +398,7 @@ func (uc *ApplicationUseCase) ScaleApplication(ctx context.Context, uuid, facili
 		deployment.Spec.Replicas = &replicas
 		_, err = uc.kubeApps.UpdateDeployment(ctx, config, namespace, deployment)
 		return err
-	case "StatefulSet":
+	case ApplicationTypeStatefulSet:
 		statefulSet, err := uc.kubeApps.GetStatefulSet(ctx, config, namespace, name)
 		if err != nil {
 			return err
@@ -406,7 +406,7 @@ func (uc *ApplicationUseCase) ScaleApplication(ctx context.Context, uuid, facili
 		statefulSet.Spec.Replicas = &replicas
 		_, err = uc.kubeApps.UpdateStatefulSet(ctx, config, namespace, statefulSet)
 		return err
-	case "DaemonSet":
+	case ApplicationTypeDaemonSet:
 		return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("daemon set does not support replica scaling"))
 	default:
 		return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unknown application type: %s", appType))
@@ -430,15 +430,15 @@ func (uc *ApplicationUseCase) ListStorageClasses(ctx context.Context, uuid, faci
 }
 
 func (uc *ApplicationUseCase) fromDeployment(d *appsv1.Deployment, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*Application, error) {
-	return uc.toApplication(d.Spec.Selector, "Deployment", d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
+	return uc.toApplication(d.Spec.Selector, ApplicationTypeDeployment, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
 }
 
 func (uc *ApplicationUseCase) fromStatefulSet(d *appsv1.StatefulSet, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*Application, error) {
-	return uc.toApplication(d.Spec.Selector, "StatefulSet", d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
+	return uc.toApplication(d.Spec.Selector, ApplicationTypeStatefulSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
 }
 
 func (uc *ApplicationUseCase) fromDaemonSet(d *appsv1.DaemonSet, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*Application, error) {
-	return uc.toApplication(d.Spec.Selector, "DaemonSet", d.Name, d.Namespace, &d.ObjectMeta, d.Labels, nil, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
+	return uc.toApplication(d.Spec.Selector, ApplicationTypeDaemonSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, nil, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
 }
 
 func (uc *ApplicationUseCase) toApplication(ls *metav1.LabelSelector, appType, name, namespace string, objectMeta *metav1.ObjectMeta, labels map[string]string, replicas *int32, containers []corev1.Container, vs []corev1.Volume, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*Application, error) {
