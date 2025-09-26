@@ -5,7 +5,7 @@
 	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import SetupKubernetesNodeGPU from './setup-kubernetes-node-gpu.svelte';
+	import SetupNodeGPUMode from './setup-node-gpu-mode.svelte';
 
 	import { page } from '$app/state';
 	import {
@@ -170,11 +170,7 @@
 								{/if}
 
 								{#if unit.machineId}
-									<SetupKubernetesNodeGPU
-										machine_id={unit.machineId}
-										unit_name={unit.name}
-										class="hover:cursor-pointer"
-									/>
+									<SetupNodeGPUMode {unit} class="hover:cursor-pointer" />
 								{/if}
 
 								{#if unit.leader}

@@ -2,6 +2,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
+	import Alert from './alert.svelte';
 	import { DataTable } from './data-table/index';
 	import { listLargeLanguageModels, type LargeLangeageModel } from './protobuf.svelte';
 
@@ -27,6 +28,7 @@
 </script>
 
 <main class="space-y-4 py-4">
+	<Alert />
 	{#if isMounted}
 		<DataTable {largeLanguageModels} {reloadManager} />
 	{:else}
