@@ -33,9 +33,8 @@
 	const essentialClient = createClient(EssentialService, transport);
 
 	let hasGPUs: undefined | boolean = $state(undefined);
-	let selectedGPUMode: undefined | string = $state(undefined);
+	let selectedGPUMode: string = $state('');
 
-	async function set() {}
 	async function fetch() {
 		essentialClient
 			.listKubernetesNodeLabels({
@@ -85,29 +84,42 @@
 					<Command.Group>
 						{#each gpuModeOptions as option}
 							<Command.Item
-								disabled={option.disabled}
 								value={option.value}
 								onSelect={() => {
-									toast.promise(() => set(), {
-										loading: 'Loading...',
-										success: () => {
-											fetch();
-											return `Set ${unit.hostname} as ${selectedGPUMode}`;
-										},
-										error: (e) => {
-											let msg = `Fail to set  ${unit.hostname} as ${selectedGPUMode}`;
-											toast.error(msg, {
-												description: (e as ConnectError).message.toString(),
-												duration: Number.POSITIVE_INFINITY,
+									toast.promise(
+										() => {
+											selectedGPUMode = option.value;
+											return essentialClient.updateKubernetesNodeLabels({
+												scopeUuid: $currentKubernetes?.scopeUuid,
+												facilityName: $currentKubernetes?.name,
+												hostname: unit.hostname,
+												labels: {
+													'nvidia.com/gpu.workload.config': selectedGPUMode,
+												},
 											});
-											return msg;
 										},
-									});
+
+										{
+											loading: 'Loading...',
+											success: () => {
+												fetch();
+												return `Set ${unit.hostname} as ${selectedGPUMode}`;
+											},
+											error: (error) => {
+												let message = `Fail to set  ${unit.hostname} as ${selectedGPUMode}`;
+												toast.error(message, {
+													description: (error as ConnectError).message.toString(),
+													duration: Number.POSITIVE_INFINITY,
+												});
+												return message;
+											},
+										},
+									);
 									close();
 								}}
 							>
 								<Icon
-									icon="ph:graphics-card"
+									icon="ph:check"
 									class={option.value == selectedGPUMode ? 'visible' : 'invisible'}
 								/>
 								{option.label}
