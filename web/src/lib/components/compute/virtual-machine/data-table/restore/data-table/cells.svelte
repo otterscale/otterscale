@@ -4,7 +4,7 @@
 
 	import Actions from './cell-actions.svelte';
 
-	import type { VirtualMachine_Snapshot } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { VirtualMachine_Restore } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
@@ -15,27 +15,27 @@
 		row_picker,
 		name,
 		namespace,
-		sourceName,
-		phase,
-		ready,
+		targetName,
+		snapshotName,
+		complete,
 		createTime,
 		actions,
 	};
 </script>
 
-{#snippet row_picker(row: Row<VirtualMachine_Snapshot>)}
+{#snippet row_picker(row: Row<VirtualMachine_Restore>)}
 	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
 	</Layout.Cell>
 {/snippet}
 
-{#snippet name(row: Row<VirtualMachine_Snapshot>)}
+{#snippet name(row: Row<VirtualMachine_Restore>)}
 	<Layout.Cell class="items-start">
 		{row.original.name}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet namespace(row: Row<VirtualMachine_Snapshot>)}
+{#snippet namespace(row: Row<VirtualMachine_Restore>)}
 	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.namespace}
@@ -43,29 +43,29 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet sourceName(row: Row<VirtualMachine_Snapshot>)}
+{#snippet targetName(row: Row<VirtualMachine_Restore>)}
 	<Layout.Cell class="items-start">
-		{row.original.sourceName}
+		{row.original.targetName}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet phase(row: Row<VirtualMachine_Snapshot>)}
+{#snippet snapshotName(row: Row<VirtualMachine_Restore>)}
 	<Layout.Cell class="items-start">
 		<Badge variant="outline">
-			{row.original.phase}
+			{row.original.snapshotName}
 		</Badge>
 	</Layout.Cell>
 {/snippet}
 
-{#snippet ready(row: Row<VirtualMachine_Snapshot>)}
+{#snippet complete(row: Row<VirtualMachine_Restore>)}
 	<Layout.Cell class="items-start">
 		<Badge variant="outline">
-			{row.original.readyToUse}
+			{row.original.complete}
 		</Badge>
 	</Layout.Cell>
 {/snippet}
 
-{#snippet createTime(row: Row<VirtualMachine_Snapshot>)}
+{#snippet createTime(row: Row<VirtualMachine_Restore>)}
 	<Layout.Cell class="items-start">
 		{#if row.original.createdAt}
 			<Tooltip.Provider>
@@ -82,8 +82,8 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<VirtualMachine_Snapshot>)}
+{#snippet actions(row: Row<VirtualMachine_Restore>)}
 	<Layout.Cell class="items-start">
-		<Actions virtualMachineSnapshot={row.original} />
+		<Actions virtualMachineRestore={row.original} />
 	</Layout.Cell>
 {/snippet}

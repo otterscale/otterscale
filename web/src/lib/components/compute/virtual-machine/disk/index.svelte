@@ -3,7 +3,7 @@
 
 	import { DataTable } from './data-table';
 
-	import type { VirtualMachine, VirtualMachineDisk } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type { VirtualMachine, VirtualMachine_Disk } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import * as Sheet from '$lib/components/ui/sheet';
 </script>
 
@@ -13,7 +13,7 @@
 		virtualMachineDisks,
 	}: {
 		virtualMachine: VirtualMachine;
-		virtualMachineDisks: VirtualMachineDisk[];
+		virtualMachineDisks: VirtualMachine_Disk[];
 	} = $props();
 </script>
 

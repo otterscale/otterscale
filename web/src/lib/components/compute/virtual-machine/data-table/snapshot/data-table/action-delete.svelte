@@ -4,8 +4,11 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { VirtualMachineSnapshot, DeleteVirtualMachineSnapshotRequest } from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { KubeVirtService } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type {
+		VirtualMachine_Snapshot,
+		DeleteVirtualMachineSnapshotRequest,
+	} from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -15,12 +18,12 @@
 </script>
 
 <script lang="ts">
-	let { virtualMachineSnapshot }: { virtualMachineSnapshot: VirtualMachineSnapshot } = $props();
+	let { virtualMachineSnapshot }: { virtualMachineSnapshot: VirtualMachine_Snapshot } = $props();
 
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
-	const KubeVirtClient = createClient(KubeVirtService, transport);
+	const virtualMachineClient = createClient(VirtualMachineService, transport);
 	let invalid = $state(false);
 
 	const defaults = {
@@ -75,7 +78,7 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => KubeVirtClient.deleteVirtualMachineSnapshot(request), {
+						toast.promise(() => virtualMachineClient.deleteVirtualMachineSnapshot(request), {
 							loading: `Deleting ${virtualMachineSnapshot.name}...`,
 							success: () => {
 								reloadManager.force();

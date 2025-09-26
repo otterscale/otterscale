@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import { DataTable } from './snapshot/data-table';
+	import { DataTable } from './restore/data-table';
 
 	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import * as Sheet from '$lib/components/ui/sheet';
@@ -15,8 +15,8 @@
 <div class="flex items-center justify-end gap-1">
 	<Sheet.Root>
 		<Sheet.Trigger class="flex items-center gap-1">
-			<Icon icon="ph:camera" />
-			{m.snapshot()}
+			<Icon icon="ph:arrow-counter-clockwise" />
+			{m.restore()}
 		</Sheet.Trigger>
 
 		<Sheet.Content class="min-w-[70vw] p-4">

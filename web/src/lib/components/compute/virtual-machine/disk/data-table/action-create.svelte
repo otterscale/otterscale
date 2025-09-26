@@ -18,7 +18,7 @@
 		VirtualMachineDisk,
 		CreateVirtualMachineDiskRequest,
 	} from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { busTypes, dataVolumeSourceTypes, diskTypes } from '$lib/components/compute/virtual-machine/units/dropdown';
+	import { busTypes, diskTypes } from '$lib/components/compute/virtual-machine/units/dropdown';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
