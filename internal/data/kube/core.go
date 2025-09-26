@@ -193,6 +193,15 @@ func (r *core) ListPodsByLabel(ctx context.Context, config *rest.Config, namespa
 	return list.Items, nil
 }
 
+func (r *core) DeletePod(ctx context.Context, config *rest.Config, namespace, name string) error {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return err
+	}
+	opts := metav1.DeleteOptions{}
+	return clientset.CoreV1().Pods(namespace).Delete(ctx, name, opts)
+}
+
 func (r *core) GetLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
