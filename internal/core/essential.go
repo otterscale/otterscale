@@ -240,9 +240,9 @@ func (uc *EssentialUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, 
 		return nil, err
 	}
 	if !all {
-		maps.DeleteFunc(node.Labels, func(k string, v string) bool {
+		maps.DeleteFunc(node.Labels, func(k, _ string) bool {
 			parts := strings.Split(k, "/")
-			return !strings.HasSuffix(parts[0], LabelDomain)
+			return len(parts) == 2 && !strings.HasSuffix(parts[0], LabelDomain)
 		})
 	}
 	return node.Labels, nil
