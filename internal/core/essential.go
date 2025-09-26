@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -229,7 +230,7 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 	return nil
 }
 
-func (uc *EssentialUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string) (map[string]string, error) {
+func (uc *EssentialUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string, all bool) (map[string]string, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -237,6 +238,12 @@ func (uc *EssentialUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, 
 	node, err := uc.kubeCore.GetNode(ctx, config, hostname)
 	if err != nil {
 		return nil, err
+	}
+	if !all {
+		maps.DeleteFunc(node.Labels, func(k string, v string) bool {
+			parts := strings.Split(k, "/")
+			return !strings.HasSuffix(parts[0], LabelDomain)
+		})
 	}
 	return node.Labels, nil
 }

@@ -104,6 +104,7 @@ message ListKubernetesNodeLabelsRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string hostname = 3;
+  bool all = 11;
 }
 
 message ListKubernetesNodeLabelsResponse {
