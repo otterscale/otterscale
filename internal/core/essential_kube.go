@@ -16,13 +16,13 @@ const charmKubernetes = "kubernetes-control-plane"
 
 var (
 	kubernetesCharms = []EssentialCharm{
-		{Name: "ch:kubernetes-control-plane", Machine: true},
-		{Name: "ch:etcd", LXD: true},
-		{Name: "ch:easyrsa", LXD: true},
-		{Name: "ch:kubeapi-load-balancer", LXD: true},
-		{Name: "ch:calico", Subordinate: true},
-		{Name: "ch:containerd", Subordinate: true},
-		{Name: "ch:keepalived", Subordinate: true},
+		{Name: "ch:kubernetes-control-plane", Channel: "1.33/stable", Machine: true},
+		{Name: "ch:etcd", Channel: "1.33/stable", LXD: true},
+		{Name: "ch:easyrsa", Channel: "1.33/stable", LXD: true},
+		{Name: "ch:kubeapi-load-balancer", Channel: "1.33/stable", LXD: true},
+		{Name: "ch:calico", Channel: "1.33/stable", Subordinate: true},
+		{Name: "ch:containerd", Channel: "1.33/stable", Subordinate: true},
+		{Name: "ch:keepalived", Channel: "1.33/stable", Subordinate: true},
 	}
 
 	kubernetesRelations = [][]string{
