@@ -69,7 +69,7 @@ func (s *EssentialService) CreateSingleNode(ctx context.Context, req *pb.CreateS
 }
 
 func (s *EssentialService) ListKubernetesNodeLabels(ctx context.Context, req *pb.ListKubernetesNodeLabelsRequest) (*pb.ListKubernetesNodeLabelsResponse, error) {
-	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetHostname())
+	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetHostname(), req.GetAll())
 	if err != nil {
 		return nil, err
 	}

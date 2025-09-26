@@ -1,6 +1,7 @@
 package core
 
 const (
+	LabelDomain                 = "otterscale.com"
 	DataVolumeBootImageLabel    = "otterscale.com/data-volume.boot-image"
 	VirtualMachineNameLabel     = "otterscale.com/virtual-machine.name"
 	ApplicationReleaseNameLabel = "otterscale.com/application-release.name"

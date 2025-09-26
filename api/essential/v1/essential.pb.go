@@ -1574,6 +1574,7 @@ type ListKubernetesNodeLabelsRequest struct {
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_Hostname     *string                `protobuf:"bytes,3,opt,name=hostname"`
+	xxx_hidden_All          bool                   `protobuf:"varint,11,opt,name=all"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -1635,19 +1636,31 @@ func (x *ListKubernetesNodeLabelsRequest) GetHostname() string {
 	return ""
 }
 
+func (x *ListKubernetesNodeLabelsRequest) GetAll() bool {
+	if x != nil {
+		return x.xxx_hidden_All
+	}
+	return false
+}
+
 func (x *ListKubernetesNodeLabelsRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *ListKubernetesNodeLabelsRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *ListKubernetesNodeLabelsRequest) SetHostname(v string) {
 	x.xxx_hidden_Hostname = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+}
+
+func (x *ListKubernetesNodeLabelsRequest) SetAll(v bool) {
+	x.xxx_hidden_All = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *ListKubernetesNodeLabelsRequest) HasScopeUuid() bool {
@@ -1671,6 +1684,13 @@ func (x *ListKubernetesNodeLabelsRequest) HasHostname() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
+func (x *ListKubernetesNodeLabelsRequest) HasAll() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
 func (x *ListKubernetesNodeLabelsRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
@@ -1686,12 +1706,18 @@ func (x *ListKubernetesNodeLabelsRequest) ClearHostname() {
 	x.xxx_hidden_Hostname = nil
 }
 
+func (x *ListKubernetesNodeLabelsRequest) ClearAll() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_All = false
+}
+
 type ListKubernetesNodeLabelsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
 	FacilityName *string
 	Hostname     *string
+	All          *bool
 }
 
 func (b0 ListKubernetesNodeLabelsRequest_builder) Build() *ListKubernetesNodeLabelsRequest {
@@ -1699,16 +1725,20 @@ func (b0 ListKubernetesNodeLabelsRequest_builder) Build() *ListKubernetesNodeLab
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	if b.Hostname != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Hostname = b.Hostname
+	}
+	if b.All != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_All = *b.All
 	}
 	return m0
 }
@@ -2181,12 +2211,13 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\x06number\x18\x04 \x01(\x05R\x06number\x12\x1f\n" +
 	"\vmachine_ids\x18\x05 \x03(\tR\n" +
 	"machineIds\x12\x14\n" +
-	"\x05force\x18\v \x01(\bR\x05force\"\x81\x01\n" +
+	"\x05force\x18\v \x01(\bR\x05force\"\x93\x01\n" +
 	"\x1fListKubernetesNodeLabelsRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1a\n" +
-	"\bhostname\x18\x03 \x01(\tR\bhostname\"\xbc\x01\n" +
+	"\bhostname\x18\x03 \x01(\tR\bhostname\x12\x10\n" +
+	"\x03all\x18\v \x01(\bR\x03all\"\xbc\x01\n" +
 	" ListKubernetesNodeLabelsResponse\x12]\n" +
 	"\x06labels\x18\x01 \x03(\v2E.otterscale.essential.v1.ListKubernetesNodeLabelsResponse.LabelsEntryR\x06labels\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
