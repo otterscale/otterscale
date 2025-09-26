@@ -17,6 +17,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/remotecommand"
 )
 
 type (
@@ -112,8 +113,9 @@ type KubeCoreRepo interface {
 	// Pod
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
 	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
-	GetPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error)
-	StreamPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error)
+	GetLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error)
+	StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error)
+	CreateExecutor(config *rest.Config, namespace, podName, containerName string, command []string) (remotecommand.Executor, error)
 
 	// PersistentVolumeClaim
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
@@ -372,12 +374,20 @@ func (uc *ApplicationUseCase) toApplication(ls *metav1.LabelSelector, appType, n
 	}, nil
 }
 
-func (uc *ApplicationUseCase) StreamPodLogs(ctx context.Context, uuid, facility, namespace, podName, containerName string) (io.ReadCloser, error) {
+func (uc *ApplicationUseCase) StreamLogs(ctx context.Context, uuid, facility, namespace, podName, containerName string) (io.ReadCloser, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeCore.StreamPodLogs(ctx, config, namespace, podName, containerName)
+	return uc.kubeCore.StreamLogs(ctx, config, namespace, podName, containerName)
+}
+
+func (uc *ApplicationUseCase) ExecuteTTY(ctx context.Context, uuid, facility, namespace, podName, containerName string, command []string) (remotecommand.Executor, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.kubeCore.CreateExecutor(config, namespace, podName, containerName, command)
 }
 
 func filterServices(svcs []corev1.Service, namespace string, s labels.Selector) []corev1.Service {

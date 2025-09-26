@@ -4,10 +4,14 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"slices"
+	"sync"
 	"time"
 
 	"connectrpc.com/connect"
+	"github.com/google/uuid"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -18,6 +22,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/duration"
+	"k8s.io/client-go/tools/remotecommand"
 
 	pb "github.com/otterscale/otterscale/api/application/v1"
 	"github.com/otterscale/otterscale/api/application/v1/pbconnect"
@@ -28,6 +33,8 @@ type ApplicationService struct {
 	pbconnect.UnimplementedApplicationServiceHandler
 
 	uc *core.ApplicationUseCase
+
+	ttySessions sync.Map
 }
 
 func NewApplicationService(uc *core.ApplicationUseCase) *ApplicationService {
@@ -79,7 +86,7 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetAppl
 }
 
 func (s *ApplicationService) WatchLogs(ctx context.Context, req *pb.WatchLogsRequest, stream *connect.ServerStream[pb.WatchLogsResponse]) error {
-	logs, err := s.uc.StreamPodLogs(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName())
+	logs, err := s.uc.StreamLogs(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName())
 	if err != nil {
 		return err
 	}
@@ -94,11 +101,98 @@ func (s *ApplicationService) WatchLogs(ctx context.Context, req *pb.WatchLogsReq
 			return err
 		}
 	}
-
 	if err := scanner.Err(); err != nil {
 		return fmt.Errorf("error reading log stream: %w", err)
 	}
 	return nil
+}
+
+func (s *ApplicationService) WriteTTY(_ context.Context, req *pb.WriteTTYRequest) (*emptypb.Empty, error) {
+	// get session
+	sessionID := req.GetSessionId()
+	value, ok := s.ttySessions.Load(sessionID)
+	if !ok {
+		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
+	}
+
+	// write to stdin
+	stdinWriter := value.(*io.PipeWriter)
+	if _, err := stdinWriter.Write(req.GetStdin()); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to write to session: %w", err))
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func (s *ApplicationService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYRequest, stream *connect.ServerStream[pb.ExecuteTTYResponse]) error {
+	// create a new session
+	sessionID := uuid.New().String()
+
+	// prepare pipes
+	stdinReader, stdinWriter := io.Pipe()
+	stdoutReader, stdoutWriter := io.Pipe()
+
+	// store session
+	s.ttySessions.Store(sessionID, stdinWriter)
+
+	// cleanup
+	defer func() {
+		_ = stdinReader.Close()
+		_ = stdinWriter.Close()
+		s.ttySessions.Delete(sessionID)
+	}()
+
+	// send session id to client
+	resp := &pb.ExecuteTTYResponse{}
+	resp.SetSessionId(sessionID)
+	if err := stream.Send(resp); err != nil {
+		return err
+	}
+
+	// execute command
+	exec, err := s.uc.ExecuteTTY(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetCommand())
+	if err != nil {
+		return err
+	}
+
+	// stream output
+	eg, egCtx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		buf := make([]byte, 1024) //nolint:mnd // 1KB buffer
+		for {
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			default:
+				n, err := stdoutReader.Read(buf)
+				if err != nil {
+					if err == io.EOF {
+						return nil
+					}
+					return err
+				}
+				if n > 0 {
+					resp := &pb.ExecuteTTYResponse{}
+					resp.SetStdout(buf[:n])
+					if err := stream.Send(resp); err != nil {
+						return err
+					}
+				}
+			}
+		}
+	})
+	eg.Go(func() error {
+		defer func() {
+			_ = stdoutWriter.Close()
+			_ = stdoutReader.Close()
+		}()
+		return exec.StreamWithContext(egCtx, remotecommand.StreamOptions{
+			Stdin:  stdinReader,
+			Stdout: stdoutWriter, // raw TTY manages stdout and stderr over the stdout stream
+			Tty:    true,
+		})
+	})
+	return eg.Wait()
 }
 
 func (s *ApplicationService) ListReleases(ctx context.Context, req *pb.ListReleasesRequest) (*pb.ListReleasesResponse, error) {

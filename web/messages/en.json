@@ -316,6 +316,7 @@
 	"ready": "Ready",
 	"restarts": "Restarts",
 	"last_condition": "Last Condition",
+	"terminal": "Terminal",
 	"aservices": "Services",
 	"cluster_ip": "Cluster IP",
 	"ports": "Ports",
@@ -730,5 +731,6 @@
 	"vm_status_stopped": "Powered Off",
 	"vm_status_terminating": "Terminating",
 	"extend": "Extend",
-	"extend_data_volume": "Extend Data Volume"
+	"extend_data_volume": "Extend Data Volume",
+	"tty": "tty"
 }
