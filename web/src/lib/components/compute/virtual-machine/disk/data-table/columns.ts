@@ -3,7 +3,7 @@ import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-import type { VirtualMachineDisk } from '$lib/api/kubevirt/v1/kubevirt_pb';
+import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
@@ -16,7 +16,7 @@ const messages = {
 	size: 'disk size',
 };
 
-const columns: ColumnDef<VirtualMachineDisk>[] = [
+const columns: ColumnDef<EnhancedDisk>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => {

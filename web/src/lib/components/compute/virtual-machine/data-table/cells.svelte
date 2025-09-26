@@ -109,7 +109,7 @@
 
 {#snippet disk(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-end">
-		<!-- <Disk virtualMachine={row.original} virtualMachineDisks={row.original.disks} /> -->
+		<Disk virtualMachine={row.original} />
 	</Layout.Cell>
 {/snippet}
 

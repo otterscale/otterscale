@@ -14,7 +14,7 @@
 	// import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 
-	import type { VirtualMachine, VirtualMachine_Disk } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
@@ -23,11 +23,9 @@
 
 <script lang="ts">
 	let {
-		virtualMachine,
-		virtualMachineDisks,
+		enhancedDisks,
 	}: {
-		virtualMachine: VirtualMachine;
-		virtualMachineDisks: VirtualMachine_Disk[];
+		enhancedDisks: EnhancedDisk[];
 	} = $props();
 
 	// let snapshots = $derived(image.snapshots || []);
@@ -38,7 +36,7 @@
 	let rowSelection = $state<RowSelectionState>({});
 	const table = createSvelteTable({
 		get data() {
-			return virtualMachineDisks;
+			return enhancedDisks;
 		},
 		columns: columns,
 		getCoreRowModel: getCoreRowModel(),
@@ -105,7 +103,7 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
-				values={virtualMachineDisks.map((virtualMachineDisks) => virtualMachineDisks.name)}
+				values={enhancedDisks.map((virtualMachineDisks) => virtualMachineDisks.name)}
 				columnId="name"
 				{messages}
 				{table}

@@ -22,7 +22,7 @@
 	// Context dependencies
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
-	const virtualMachineServiceClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(VirtualMachineService, transport);
 
 	// ==================== State Variables ====================
 
@@ -52,7 +52,7 @@
 	// ==================== API Functions ====================
 	async function loadInstanceTypes() {
 		try {
-			const response = await virtualMachineServiceClient.listInstanceTypes({
+			const response = await virtualMachineClient.listInstanceTypes({
 				scopeUuid: $currentKubernetes?.scopeUuid,
 				facilityName: $currentKubernetes?.name,
 				namespace: request.namespace,
@@ -78,7 +78,7 @@
 		try {
 			if (!request.namespace) return;
 
-			const response = await virtualMachineServiceClient.listDataVolumes({
+			const response = await virtualMachineClient.listDataVolumes({
 				scopeUuid: $currentKubernetes?.scopeUuid,
 				facilityName: $currentKubernetes?.name,
 				namespace: request.namespace,
@@ -335,7 +335,7 @@
 				<Modal.Action
 					disabled={invalidName}
 					onclick={() => {
-						toast.promise(() => virtualMachineServiceClient.createVirtualMachine(request), {
+						toast.promise(() => virtualMachineClient.createVirtualMachine(request), {
 							loading: `Creating ${request.name}...`,
 							success: () => {
 								reloadManager.force();
