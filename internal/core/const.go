@@ -33,3 +33,9 @@ const (
 	llmdInfraHealthFailed       = 22
 	llmdInfraHealthPending      = 31
 )
+
+const (
+	ApplicationTypeDeployment  = "Deployment"
+	ApplicationTypeStatefulSet = "StatefulSet"
+	ApplicationTypeDaemonSet   = "DaemonSet"
+)

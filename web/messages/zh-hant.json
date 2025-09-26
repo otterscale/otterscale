@@ -316,6 +316,7 @@
 	"ready": "就緒",
 	"restarts": "重新啟動",
 	"last_condition": "最後狀態",
+	"terminal": "終端機",
 	"aservices": "服務",
 	"cluster_ip": "叢集 IP",
 	"ports": "連接埠",
@@ -733,5 +734,6 @@
 	"vm_status_stopped": "關機",
 	"vm_status_terminating": "終止中",
 	"extend": "擴展",
-	"extend_data_volume": "擴展資料磁碟區"
+	"extend_data_volume": "擴展資料磁碟區",
+	"tty": "tty"
 }

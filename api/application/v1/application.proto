@@ -12,15 +12,27 @@ service ApplicationService {
   rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse);
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
   rpc GetApplication(GetApplicationRequest) returns (Application);
+
+  rpc RestartApplication(RestartApplicationRequest) returns (google.protobuf.Empty);
+  rpc ScaleApplication(ScaleApplicationRequest) returns (google.protobuf.Empty);
+
+  rpc DeleteApplicationPod(DeleteApplicationPodRequest) returns (google.protobuf.Empty);
+
   rpc WatchLogs(WatchLogsRequest) returns (stream WatchLogsResponse);
+  rpc ExecuteTTY(ExecuteTTYRequest)
+      returns (stream ExecuteTTYResponse);  // Due to browser limitations, bidirectional streaming cannot be used.
+  rpc WriteTTY(WriteTTYRequest) returns (google.protobuf.Empty);
+
   rpc ListReleases(ListReleasesRequest) returns (ListReleasesResponse);
   rpc CreateRelease(CreateReleaseRequest) returns (Application.Release);
   rpc UpdateRelease(UpdateReleaseRequest) returns (Application.Release);
   rpc DeleteRelease(DeleteReleaseRequest) returns (google.protobuf.Empty);
   rpc RollbackRelease(RollbackReleaseRequest) returns (google.protobuf.Empty);
+
   rpc ListCharts(ListChartsRequest) returns (ListChartsResponse);
   rpc GetChart(GetChartRequest) returns (Application.Chart);
   rpc GetChartMetadata(GetChartMetadataRequest) returns (Application.Chart.Metadata);
+
   rpc ListStorageClasses(ListStorageClassesRequest) returns (ListStorageClassesResponse);
 }
 
@@ -171,6 +183,30 @@ message GetApplicationRequest {
   string name = 4;
 }
 
+message RestartApplicationRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string type = 5;
+}
+
+message ScaleApplicationRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  string type = 5;
+  int32 replicas = 11;
+}
+
+message DeleteApplicationPodRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
 message WatchLogsRequest {
   string scope_uuid = 1;
   string facility_name = 2;
@@ -181,6 +217,25 @@ message WatchLogsRequest {
 
 message WatchLogsResponse {
   string log = 1;
+}
+
+message ExecuteTTYRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string pod_name = 4;
+  string container_name = 5;
+  repeated string command = 6;
+}
+
+message ExecuteTTYResponse {
+  string session_id = 1;
+  bytes stdout = 2;  // raw TTY manages stdout and stderr over the stdout stream
+}
+
+message WriteTTYRequest {
+  string session_id = 1;
+  bytes stdin = 2;
 }
 
 message ListReleasesRequest {

@@ -32,6 +32,7 @@ export const staticPaths: Record<string, Path> = {
 	home: { title: m.home(), url: '/' },
 	login: { title: m.login(), url: '/login' },
 	setup: { title: m.setup_environment(), url: '/setup' },
+	tty: { title: m.tty(), url: '/tty' },
 	scopes: { title: m.scopes(), url: '/scopes' },
 	privacyPolicy: { title: m.privacy_policy(), url: '/privacy-policy' },
 	termsOfService: { title: m.terms_of_service(), url: '/terms-of-service' },
