@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"connectrpc.com/connect"
 	"golang.org/x/sync/errgroup"
@@ -75,14 +76,17 @@ type KubeAppsRepo interface {
 	// Deployment
 	ListDeployments(ctx context.Context, config *rest.Config, namespace string) ([]Deployment, error)
 	GetDeployment(ctx context.Context, config *rest.Config, namespace, name string) (*Deployment, error)
+	UpdateDeployment(ctx context.Context, config *rest.Config, namespace string, deployment *Deployment) (*Deployment, error)
 
 	// StatefulSet
 	ListStatefulSets(ctx context.Context, config *rest.Config, namespace string) ([]StatefulSet, error)
 	GetStatefulSet(ctx context.Context, config *rest.Config, namespace, name string) (*StatefulSet, error)
+	UpdateStatefulSet(ctx context.Context, config *rest.Config, namespace string, statefulSet *StatefulSet) (*StatefulSet, error)
 
 	// DaemonSet
 	ListDaemonSets(ctx context.Context, config *rest.Config, namespace string) ([]DaemonSet, error)
 	GetDaemonSet(ctx context.Context, config *rest.Config, namespace, name string) (*DaemonSet, error)
+	UpdateDaemonSet(ctx context.Context, config *rest.Config, namespace string, daemonSet *DaemonSet) (*DaemonSet, error)
 }
 
 type KubeBatchRepo interface {
@@ -114,6 +118,7 @@ type KubeCoreRepo interface {
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
 	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
 	GetLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error)
+	DeletePod(ctx context.Context, config *rest.Config, namespace, name string) error
 	StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error)
 	CreateExecutor(config *rest.Config, namespace, podName, containerName string, command []string) (remotecommand.Executor, error)
 
@@ -333,6 +338,87 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 		return uc.fromDaemonSet(daemonSet, services, pods, persistentVolumeClaims, storageClassMap)
 	}
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("application %q in namespace %q not found", name, namespace))
+}
+
+func (uc *ApplicationUseCase) RestartApplication(ctx context.Context, uuid, facility, namespace, name, appType string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	switch appType {
+	case "deployment":
+		deployment, err := uc.kubeApps.GetDeployment(ctx, config, namespace, name)
+		if err != nil {
+			return err
+		}
+		if deployment.Spec.Template.Annotations == nil {
+			deployment.Spec.Template.Annotations = map[string]string{}
+		}
+		deployment.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
+		_, err = uc.kubeApps.UpdateDeployment(ctx, config, namespace, deployment)
+		return err
+	case "StatefulSet":
+		statefulSet, err := uc.kubeApps.GetStatefulSet(ctx, config, namespace, name)
+		if err != nil {
+			return err
+		}
+		if statefulSet.Spec.Template.Annotations == nil {
+			statefulSet.Spec.Template.Annotations = map[string]string{}
+		}
+		statefulSet.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
+		_, err = uc.kubeApps.UpdateStatefulSet(ctx, config, namespace, statefulSet)
+		return err
+	case "DaemonSet":
+		daemonSet, err := uc.kubeApps.GetDaemonSet(ctx, config, namespace, name)
+		if err != nil {
+			return err
+		}
+		if daemonSet.Spec.Template.Annotations == nil {
+			daemonSet.Spec.Template.Annotations = map[string]string{}
+		}
+		daemonSet.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
+		_, err = uc.kubeApps.UpdateDaemonSet(ctx, config, namespace, daemonSet)
+		return err
+	default:
+		return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unknown application type: %s", appType))
+	}
+}
+
+func (uc *ApplicationUseCase) ScaleApplication(ctx context.Context, uuid, facility, namespace, name, appType string, replicas int32) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	switch appType {
+	case "deployment":
+		deployment, err := uc.kubeApps.GetDeployment(ctx, config, namespace, name)
+		if err != nil {
+			return err
+		}
+		deployment.Spec.Replicas = &replicas
+		_, err = uc.kubeApps.UpdateDeployment(ctx, config, namespace, deployment)
+		return err
+	case "StatefulSet":
+		statefulSet, err := uc.kubeApps.GetStatefulSet(ctx, config, namespace, name)
+		if err != nil {
+			return err
+		}
+		statefulSet.Spec.Replicas = &replicas
+		_, err = uc.kubeApps.UpdateStatefulSet(ctx, config, namespace, statefulSet)
+		return err
+	case "DaemonSet":
+		return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("daemon set does not support replica scaling"))
+	default:
+		return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unknown application type: %s", appType))
+	}
+}
+
+func (uc *ApplicationUseCase) DeletePod(ctx context.Context, uuid, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.kubeCore.DeletePod(ctx, config, namespace, name)
 }
 
 func (uc *ApplicationUseCase) ListStorageClasses(ctx context.Context, uuid, facility string) ([]storagev1.StorageClass, error) {

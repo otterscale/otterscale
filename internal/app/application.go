@@ -85,6 +85,33 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetAppl
 	return resp, nil
 }
 
+func (s *ApplicationService) RestartApplication(ctx context.Context, req *pb.RestartApplicationRequest) (*emptypb.Empty, error) {
+	err := s.uc.RestartApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetType())
+	if err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func (s *ApplicationService) ScaleApplication(ctx context.Context, req *pb.ScaleApplicationRequest) (*emptypb.Empty, error) {
+	err := s.uc.ScaleApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetType(), req.GetReplicas())
+	if err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func (s *ApplicationService) DeleteApplicationPod(ctx context.Context, req *pb.DeleteApplicationPodRequest) (*emptypb.Empty, error) {
+	err := s.uc.DeletePod(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
 func (s *ApplicationService) WatchLogs(ctx context.Context, req *pb.WatchLogsRequest, stream *connect.ServerStream[pb.WatchLogsResponse]) error {
 	logs, err := s.uc.StreamLogs(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName())
 	if err != nil {
