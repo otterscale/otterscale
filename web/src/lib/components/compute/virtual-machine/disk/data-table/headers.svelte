@@ -11,13 +11,13 @@
 		name,
 		bus,
 		bootOrder,
-
+		dataVolume,
 		type,
-
-		source,
-		sourceType,
+		phase,
+		boot,
 		size,
 		actions,
+		// data, // start script
 	};
 </script>
 
@@ -38,39 +38,57 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet type(column: Column<EnhancedDisk>)}
-	<Layout.Header class="justify-end">
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.type()}</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
 {#snippet bus(column: Column<EnhancedDisk>)}
-	<Layout.Header class="justify-end">
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.bus()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>bus</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet sourceType(column: Column<EnhancedDisk>)}
-	<Layout.Header class="justify-end">
+{#snippet bootOrder(column: Column<EnhancedDisk>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.boot_order()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>Source Type</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet source(column: Column<EnhancedDisk>)}
-	<Layout.Header class="justify-end">
+{#snippet dataVolume(column: Column<EnhancedDisk>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.data_volume()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.source()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet type(column: Column<EnhancedDisk>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.type()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet phase(column: Column<EnhancedDisk>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.phase()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet boot(column: Column<EnhancedDisk>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.boot()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
@@ -79,7 +97,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>Size</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.size()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

@@ -3,24 +3,22 @@
 
 	import Actions from './cell-actions.svelte';
 
-	import {
-		type DataVolumeSource,
-		VirtualMachineDisk_type,
-		VirtualMachineDisk_bus,
-	} from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import { VirtualMachine_Disk_Bus } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { formatCapacity } from '$lib/formatter';
 
 	export const cells = {
 		row_picker,
 		name,
-		type,
 		bus,
-		source,
-		sourceType,
+		bootOrder,
+		dataVolume,
+		type,
+		phase,
+		boot,
 		size,
 		actions,
 	};
@@ -38,55 +36,57 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet type(row: Row<EnhancedDisk>)}
-	<Layout.Cell class="items-end">
-		<Badge variant="outline">
-			{VirtualMachineDisk_type[row.original.diskType]}
-		</Badge>
-	</Layout.Cell>
-{/snippet}
-
 {#snippet bus(row: Row<EnhancedDisk>)}
-	<Layout.Cell class="items-end">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
-			{VirtualMachineDisk_bus[row.original.busType]}
+			{VirtualMachine_Disk_Bus[row.original.bus]}
 		</Badge>
 	</Layout.Cell>
 {/snippet}
 
-{#snippet sourceType(row: Row<EnhancedDisk>)}
-	<Layout.Cell class="items-end">
-		{row.original.sourceData.case === 'dataVolume' ? (row.original.sourceData.value as DataVolumeSource).type : ''}
+, , , boot,
+
+{#snippet bootOrder(row: Row<EnhancedDisk>)}
+	<Layout.Cell class="items-start">
+		<Badge variant="outline">
+			{row.original.bootOrder}
+		</Badge>
 	</Layout.Cell>
 {/snippet}
 
-{#snippet source(row: Row<EnhancedDisk>)}
-	<Layout.Cell class="items-end">
-		{@const sourceText =
-			row.original.sourceData.case === 'source'
-				? row.original.sourceData.value
-				: row.original.sourceData.case === 'dataVolume'
-					? (row.original.sourceData.value as DataVolumeSource).source
-					: ''}
+{#snippet dataVolume(row: Row<EnhancedDisk>)}
+	<Layout.Cell class="items-start">
+		{row.original.volume?.name ?? ''}
+	</Layout.Cell>
+{/snippet}
 
-		<Tooltip.Root>
-			<Tooltip.Trigger>
-				<p class="max-w-[210px] truncate">
-					{sourceText}
-				</p>
-			</Tooltip.Trigger>
-			<Tooltip.Content>
-				{sourceText}
-			</Tooltip.Content>
-		</Tooltip.Root>
+{#snippet type(row: Row<EnhancedDisk>)}
+	<Layout.Cell class="items-start">
+		{row.original.volume?.source?.type ?? ''}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet phase(row: Row<EnhancedDisk>)}
+	<Layout.Cell class="items-start">
+		{row.original.phase}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet boot(row: Row<EnhancedDisk>)}
+	<Layout.Cell class="items-start">
+		<Badge variant="outline">
+			{row.original.bootImage}
+		</Badge>
 	</Layout.Cell>
 {/snippet}
 
 {#snippet size(row: Row<EnhancedDisk>)}
 	<Layout.Cell class="items-end">
-		{row.original.sourceData.case === 'dataVolume'
-			? (row.original.sourceData.value as DataVolumeSource).sizeBytes
-			: ''}
+		{#if row.original.sizeBytes}
+			{@const { value, unit } = formatCapacity(row.original.sizeBytes)}
+			{value}
+			{unit}
+		{/if}
 	</Layout.Cell>
 {/snippet}
 

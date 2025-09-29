@@ -9,11 +9,13 @@ import { m } from '$lib/paraglide/messages';
 
 const messages = {
 	name: m.name(),
+	bus: m.bus(),
+	bootOrder: m.boot_order(),
+	dataVolume: m.data_volume(),
 	type: m.type(),
-	bus: 'bus',
-	source: m.source(),
-	sourceType: 'source type',
-	size: 'disk size',
+	phase: m.phase(),
+	boot: m.boot(),
+	size: m.size(),
 };
 
 const columns: ColumnDef<EnhancedDisk>[] = [
@@ -38,15 +40,6 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		},
 	},
 	{
-		accessorKey: 'type',
-		header: ({ column }) => {
-			return renderSnippet(headers.type, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.type, row);
-		},
-	},
-	{
 		accessorKey: 'bus',
 		header: ({ column }) => {
 			return renderSnippet(headers.bus, column);
@@ -56,21 +49,48 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		},
 	},
 	{
-		accessorKey: 'sourceType',
+		accessorKey: 'bootOrder',
 		header: ({ column }) => {
-			return renderSnippet(headers.sourceType, column);
+			return renderSnippet(headers.bootOrder, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.sourceType, row);
+			return renderSnippet(cells.bootOrder, row);
 		},
 	},
 	{
-		accessorKey: 'source',
+		accessorKey: 'dataVolume',
 		header: ({ column }) => {
-			return renderSnippet(headers.source, column);
+			return renderSnippet(headers.dataVolume, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.source, row);
+			return renderSnippet(cells.dataVolume, row);
+		},
+	},
+	{
+		accessorKey: 'type',
+		header: ({ column }) => {
+			return renderSnippet(headers.type, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.type, row);
+		},
+	},
+	{
+		accessorKey: 'phase',
+		header: ({ column }) => {
+			return renderSnippet(headers.phase, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.phase, row);
+		},
+	},
+	{
+		accessorKey: 'boot',
+		header: ({ column }) => {
+			return renderSnippet(headers.boot, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.boot, row);
 		},
 	},
 	{

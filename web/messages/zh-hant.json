@@ -761,5 +761,7 @@
 	"delete_restore": "刪除還原",
 	"source_virtual_machine_name": "來源虛擬機器名稱",
 	"target_virtual_machine_name": "目標虛擬機器名稱",
-	"data_volume": "資料磁碟區"
+	"data_volume": "資料磁碟區",
+	"boot_order": "啟動順序",
+	"boot": "啟動"
 }

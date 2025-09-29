@@ -761,5 +761,7 @@
 	"delete_restore": "Delete Restore",
 	"source_virtual_machine_name": "Source Virtual Machine Name",
 	"target_virtual_machine_name": "Target Virtual Machine Name",
-	"data_volume": "Data Volume"
+	"data_volume": "Data Volume",
+	"boot_order": "Boot Order",
+	"boot": "Boot"
 }
