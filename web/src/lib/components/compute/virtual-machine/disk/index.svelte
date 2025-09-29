@@ -14,6 +14,7 @@
 	import type { DataVolume } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import * as Sheet from '$lib/components/ui/sheet';
+	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
@@ -33,8 +34,8 @@
 		try {
 			// Get data volumes
 			const dataVolumesResponse = await virtualMachineClient.listDataVolumes({
-				scopeUuid: '', // Add your scope UUID
-				facilityName: '', // Add your facility name
+				scopeUuid: $currentKubernetes?.scopeUuid,
+				facilityName: $currentKubernetes?.name,
 				namespace: virtualMachine.namespace,
 				bootImage: false, // Set to true if you only want boot images
 			});
@@ -60,6 +61,8 @@
 						bootImage: dataVolume?.bootImage,
 						sizeBytes: dataVolume?.sizeBytes,
 						phase: dataVolume?.phase,
+						vmName: virtualMachine.name,
+						namespace: virtualMachine.namespace,
 					};
 				} else {
 					// Return original disk without DataVolume properties
@@ -68,6 +71,8 @@
 						bootImage: undefined,
 						sizeBytes: undefined,
 						phase: undefined,
+						vmName: virtualMachine.name,
+						namespace: virtualMachine.namespace,
 					};
 				}
 			});
@@ -88,7 +93,7 @@
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[70vw] p-4">
-			<DataTable {enhancedDisks} />
+			<DataTable {virtualMachine} {enhancedDisks} />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>

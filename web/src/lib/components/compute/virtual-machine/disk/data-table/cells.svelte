@@ -3,7 +3,10 @@
 
 	import Actions from './cell-actions.svelte';
 
-	import { VirtualMachine_Disk_Bus } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import {
+		VirtualMachine_Disk_Bus,
+		VirtualMachine_Disk_Volume_Source_Type,
+	} from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -44,13 +47,13 @@
 	</Layout.Cell>
 {/snippet}
 
-, , , boot,
-
 {#snippet bootOrder(row: Row<EnhancedDisk>)}
 	<Layout.Cell class="items-start">
-		<Badge variant="outline">
-			{row.original.bootOrder}
-		</Badge>
+		{#if row.original.bootOrder}
+			<Badge variant="outline">
+				{row.original.bootOrder}
+			</Badge>
+		{/if}
 	</Layout.Cell>
 {/snippet}
 
@@ -62,21 +65,31 @@
 
 {#snippet type(row: Row<EnhancedDisk>)}
 	<Layout.Cell class="items-start">
-		{row.original.volume?.source?.type ?? ''}
+		{#if row.original.volume?.source?.type}
+			<Badge variant="outline">
+				{VirtualMachine_Disk_Volume_Source_Type[row.original.volume.source.type]}
+			</Badge>
+		{/if}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet phase(row: Row<EnhancedDisk>)}
 	<Layout.Cell class="items-start">
-		{row.original.phase}
+		{#if row.original.phase}
+			<Badge variant="outline">
+				{row.original.phase}
+			</Badge>
+		{/if}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet boot(row: Row<EnhancedDisk>)}
 	<Layout.Cell class="items-start">
-		<Badge variant="outline">
-			{row.original.bootImage}
-		</Badge>
+		{#if row.original.bootImage}
+			<Badge variant="outline">
+				{row.original.bootImage}
+			</Badge>
+		{/if}
 	</Layout.Cell>
 {/snippet}
 
@@ -92,6 +105,6 @@
 
 {#snippet actions(row: Row<EnhancedDisk>)}
 	<Layout.Cell class="items-start">
-		<Actions virtualMachineDisk={row.original} />
+		<Actions enhancedDisk={row.original} />
 	</Layout.Cell>
 {/snippet}

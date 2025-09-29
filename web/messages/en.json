@@ -736,6 +736,7 @@
     "err_image_pull": "Error Image Pull",
     "image_pull_back_off": "Image Pull BackOff",
     "error_pvc_not_found": "Error PVC Not Found",
+	"data_volume_name": "Data Volume Name",
     "data_volume_error": "Data Volume Error",
     "waiting_for_volume_binding": "Waiting for Volume Binding",
     "waiting_for_receiver": "Waiting for Receiver",
@@ -763,5 +764,9 @@
 	"target_virtual_machine_name": "Target Virtual Machine Name",
 	"data_volume": "Data Volume",
 	"boot_order": "Boot Order",
-	"boot": "Boot"
+	"boot": "Boot",
+	"attach": "Attach",
+	"attach_disk": "Attach Disk",
+	"detach": "Detach",
+	"detach_disk": "Detach Disk"
 }

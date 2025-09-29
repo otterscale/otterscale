@@ -736,6 +736,7 @@
     "err_image_pull": "映像檔拉取錯誤",
     "image_pull_back_off": "映像檔拉取退避",
     "error_pvc_not_found": "PVC 未找到錯誤",
+	"data_volume_name": "資料磁碟區名稱",
     "data_volume_error": "資料磁碟區錯誤",
     "waiting_for_volume_binding": "等待磁碟區綁定",
     "waiting_for_receiver": "等待接收者",
@@ -763,5 +764,9 @@
 	"target_virtual_machine_name": "目標虛擬機器名稱",
 	"data_volume": "資料磁碟區",
 	"boot_order": "啟動順序",
-	"boot": "啟動"
+	"boot": "啟動",
+	"attach": "掛載",
+	"attach_disk": "掛載磁碟",
+	"detach": "卸載",
+	"detach_disk": "卸載磁碟"
 }

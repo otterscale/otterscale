@@ -2,6 +2,8 @@ import type { VirtualMachine_Disk } from '$lib/api/virtual_machine/v1/virtual_ma
 import { m } from '$lib/paraglide/messages';
 
 export type EnhancedDisk = VirtualMachine_Disk & {
+	vmName: string;
+	namespace: string;
 	phase?: string;
 	bootImage?: boolean;
 	sizeBytes?: bigint;

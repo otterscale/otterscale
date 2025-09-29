@@ -4,12 +4,9 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type {
-		ExtendDataVolumeRequest,
-		VirtualMachineDisk,
-		DataVolumeSource,
-	} from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { VirtualMachineDisk_type, KubeVirtService } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type { DetachVirtualMachineDiskRequest } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -20,29 +17,24 @@
 
 <script lang="ts">
 	// Component props - accepts a virtual machine disk object
-	let { virtualMachineDisk }: { virtualMachineDisk: VirtualMachineDisk } = $props();
+	let { enhancedDisk }: { enhancedDisk: EnhancedDisk } = $props();
 
-	// Get required services from Svelte context
+	// Context dependencies
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
-
-	// Create gRPC client for KubeVirt operations
-	const KubeVirtClient = createClient(KubeVirtService, transport);
+	const virtualMachineClient = createClient(VirtualMachineService, transport);
 
 	// Form validation state
 	let invalid = $state(false);
 
-	// Default values for the extend data volume request
+	// Default values for the detach disk request
 	const defaults = {
 		scopeUuid: $currentKubernetes?.scopeUuid,
 		facilityName: $currentKubernetes?.name,
-		name: virtualMachineDisk.name,
-		namespace: '',
-		sizeBytes:
-			virtualMachineDisk.sourceData.case === 'dataVolume'
-				? (virtualMachineDisk.sourceData.value as DataVolumeSource).sizeBytes
-				: undefined,
-	} as ExtendDataVolumeRequest;
+		namespace: enhancedDisk.namespace,
+		name: enhancedDisk.vmName,
+		dataVolumeName: '',
+	} as DetachVirtualMachineDiskRequest;
 
 	// Current request state
 	let request = $state(defaults);
@@ -61,34 +53,30 @@
 	}
 </script>
 
-<!-- Modal component for disk extension -->
 <Modal.Root bind:open>
-	<Modal.Trigger variant="creative" disabled={virtualMachineDisk.diskType !== VirtualMachineDisk_type.DATAVOLUME}>
-		<Icon icon="ph:arrows-out" />
-		{m.extend()}
+	<Modal.Trigger variant="destructive">
+		<Icon icon="ph:plugs" />
+		{m.detach()}
 	</Modal.Trigger>
-
-	<!-- Modal content -->
 	<Modal.Content>
-		<Modal.Header>{m.extend_data_volume()}</Modal.Header>
+		<Modal.Header>{m.detach_disk()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>{m.size()}</Form.Label>
-					<SingleInput.Measurement
+					<Form.Label>{m.data_volume()}</Form.Label>
+					<Form.Help>
+						{m.deletion_warning({ identifier: m.data_volume_name() })}
+					</Form.Help>
+					<SingleInput.Confirm
 						required
-						bind:value={request.sizeBytes}
+						target={enhancedDisk.name ?? ''}
+						bind:value={request.dataVolumeName}
 						bind:invalid
-						transformer={(value) => String(value)}
-						units={[{ value: 1024 * 1024 * 1024, label: 'GB' } as SingleInput.UnitType]}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
-
-		<!-- Modal footer with action buttons -->
 		<Modal.Footer>
-			<!-- Cancel button -->
 			<Modal.Cancel
 				onclick={() => {
 					reset();
@@ -97,23 +85,18 @@
 				{m.cancel()}
 			</Modal.Cancel>
 
-			<!-- Confirm action group -->
 			<Modal.ActionsGroup>
-				<!-- Confirm button with extend operation -->
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						// Execute extend operation with toast notifications
-						toast.promise(() => KubeVirtClient.extendDataVolume(request), {
-							loading: `Extending ${request.name} to ${Math.floor(Number(request.sizeBytes) / (1024 * 1024 * 1024))}GB...`,
+						toast.promise(() => virtualMachineClient.detachVirtualMachineDisk(request), {
+							loading: `Detaching disk ${enhancedDisk.name}...`,
 							success: () => {
-								// Force reload to refresh data
 								reloadManager.force();
-								return `Successfully extended ${request.name}`;
+								return `Successfully detached disk ${enhancedDisk.name}`;
 							},
 							error: (error) => {
-								// Handle and display error
-								let message = `Failed to extend ${request.name}`;
+								let message = `Failed to detach disk ${enhancedDisk.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY,
@@ -121,7 +104,6 @@
 								return message;
 							},
 						});
-						// Reset form and close modal
 						reset();
 						close();
 					}}
