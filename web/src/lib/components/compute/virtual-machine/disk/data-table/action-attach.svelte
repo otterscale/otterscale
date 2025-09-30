@@ -60,7 +60,7 @@
 
 			dataVolumes.set(dvOptions);
 		} catch (error) {
-			toast.error('Failed to load Data Volumnes', {
+			toast.error('Failed to load Data Volumes', {
 				description: (error as ConnectError).message.toString(),
 			});
 		}
