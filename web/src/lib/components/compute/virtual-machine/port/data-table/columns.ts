@@ -3,19 +3,18 @@ import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-import type { Application_Service } from '$lib/api/application/v1/application_pb';
+import type { Application_Service_Port } from '$lib/api/application/v1/application_pb';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
 const messages = {
 	name: m.name(),
-	type: m.type(),
-	clusterIp: m.cluster_ip(),
+	protocol: m.protocol(),
 	port: m.ports(),
-	createTime: m.create_time(),
+	nodePort: m.node_port(),
 };
 
-const columns: ColumnDef<Application_Service>[] = [
+const columns: ColumnDef<Application_Service_Port>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -37,21 +36,12 @@ const columns: ColumnDef<Application_Service>[] = [
 		},
 	},
 	{
-		accessorKey: 'type',
+		accessorKey: 'protocol',
 		header: ({ column }) => {
-			return renderSnippet(headers.type, column);
+			return renderSnippet(headers.protocol, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.type, row);
-		},
-	},
-	{
-		accessorKey: 'clusterIp',
-		header: ({ column }) => {
-			return renderSnippet(headers.clusterIp, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.clusterIp, row);
+			return renderSnippet(cells.protocol, row);
 		},
 	},
 	{
@@ -63,15 +53,15 @@ const columns: ColumnDef<Application_Service>[] = [
 			return renderSnippet(cells.port, row);
 		},
 	},
-	{
-		accessorKey: 'createTime',
-		header: ({ column }) => {
-			return renderSnippet(headers.createTime, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.createTime, row);
-		},
-	},
+	// {
+	// 	accessorKey: 'nodePort',
+	// 	header: ({ column }) => {
+	// 		return renderSnippet(headers.nodePort, column);
+	// 	},
+	// 	cell: ({ row }) => {
+	// 		return renderSnippet(cells.nodePort, row);
+	// 	},
+	// },
 ];
 
 export { columns, messages };

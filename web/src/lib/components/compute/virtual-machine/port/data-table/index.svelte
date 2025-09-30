@@ -36,7 +36,7 @@
 	let rowSelection = $state<RowSelectionState>({});
 	const table = createSvelteTable({
 		get data() {
-			return virtualMachine.services;
+			return virtualMachine.services.length > 0 ? virtualMachine.services[0].ports : [];
 		},
 		columns: columns,
 		getCoreRowModel: getCoreRowModel(),
