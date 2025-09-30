@@ -19,7 +19,7 @@ type Release = release.Release
 type ReleaseRepo interface {
 	List(config *rest.Config, namespace string) ([]release.Release, error)
 	Get(restConfig *rest.Config, namespace, name string) (*release.Release, error)
-	Install(config *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
+	Install(config *rest.Config, namespace, name string, dryRun bool, chartRef string, labels, annotations map[string]string, values map[string]any) (*release.Release, error)
 	Uninstall(config *rest.Config, namespace, name string, dryRun bool) (*release.Release, error)
 	Upgrade(config *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
 	Rollback(config *rest.Config, namespace, name string, dryRun bool) error
@@ -44,7 +44,20 @@ func (uc *ApplicationUseCase) CreateRelease(ctx context.Context, uuid, facility,
 	if err != nil {
 		return nil, err
 	}
-	return uc.release.Install(config, namespace, getReleaseName(name), dryRun, chartRef, values)
+
+	// labels
+	labels := map[string]string{
+		ApplicationReleaseNameLabel: name,
+	}
+	if strings.Contains(chartRef, "llm-d-incubation/llm-d-modelservice") {
+		labels[ApplicationReleaseLLMDModelNameLabel] = valuesMap["modelArtifacts.name"]
+	}
+
+	// annotations
+	annotations := map[string]string{
+		ApplicationReleaseChartRefAnnotation: chartRef,
+	}
+	return uc.release.Install(config, namespace, getReleaseName(name), dryRun, chartRef, labels, annotations, values)
 }
 
 func (uc *ApplicationUseCase) UpdateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*Release, error) {
