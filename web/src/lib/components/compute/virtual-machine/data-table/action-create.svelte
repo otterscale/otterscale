@@ -15,6 +15,7 @@
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible';
+	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
@@ -52,19 +53,32 @@
 	// ==================== API Functions ====================
 	async function loadInstanceTypes() {
 		try {
-			const response = await virtualMachineClient.listInstanceTypes({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
-				namespace: request.namespace,
-			});
+			// Request both namespace-specific and cluster-wide instance types in parallel
+			const [namespacedResponse, clusterWideResponse] = await Promise.all([
+				virtualMachineClient.listInstanceTypes({
+					scopeUuid: $currentKubernetes?.scopeUuid,
+					facilityName: $currentKubernetes?.name,
+					namespace: request.namespace,
+				}),
+				virtualMachineClient.listClusterWideInstanceTypes({
+					scopeUuid: $currentKubernetes?.scopeUuid,
+					facilityName: $currentKubernetes?.name,
+				}),
+			]);
 
-			const instanceTypeOptions: InstanceTypeOption[] = response.instanceTypes.map((instanceType) => ({
-				value: instanceType.name,
-				label: instanceType.name,
-				icon: 'ph:layout',
-				cpuCores: instanceType.cpuCores,
-				memoryBytes: instanceType.memoryBytes,
-			}));
+			// Merge both results
+			const allInstanceTypes = [...namespacedResponse.instanceTypes, ...clusterWideResponse.instanceTypes];
+
+			const instanceTypeOptions: InstanceTypeOption[] = allInstanceTypes.map((instanceType) => {
+				const memory = formatCapacity(instanceType.memoryBytes);
+				return {
+					value: instanceType.name,
+					label: `${instanceType.name} (CPU: ${instanceType.cpuCores} Core, RAM: ${memory.value} ${memory.unit})`,
+					icon: 'ph:layout',
+					cpuCores: instanceType.cpuCores,
+					memoryBytes: instanceType.memoryBytes,
+				};
+			});
 
 			instanceTypes.set(instanceTypeOptions);
 		} catch (error) {
