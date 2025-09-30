@@ -1,10 +1,12 @@
 package core
 
 const (
-	LabelDomain                 = "otterscale.com"
-	DataVolumeBootImageLabel    = "otterscale.com/data-volume.boot-image"
-	VirtualMachineNameLabel     = "otterscale.com/virtual-machine.name"
-	ApplicationReleaseNameLabel = "otterscale.com/application-release.name"
+	LabelDomain                          = "otterscale.com"
+	DataVolumeBootImageLabel             = "otterscale.com/data-volume.boot-image"
+	VirtualMachineNameLabel              = "otterscale.com/virtual-machine.name"
+	ApplicationReleaseNameLabel          = "otterscale.com/application-release.name"
+	ApplicationReleaseLLMDModelNameLabel = "otterscale.com/application-release.llmd-model-name"
+	ApplicationReleaseChartRefAnnotation = "otterscale.com/application-release.chart-ref"
 )
 
 const BuiltInMachineTagComment = "built-in"
