@@ -30,7 +30,7 @@ import (
 	"github.com/otterscale/otterscale/internal/app"
 )
 
-var Services = []string{
+var services = []string{
 	applicationv1.ApplicationServiceName,
 	bistv1.BISTServiceName,
 	configurationv1.ConfigurationServiceName,
@@ -49,15 +49,12 @@ var Services = []string{
 
 func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, largelanguagemodel *app.LargeLanguageModelService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, premium *app.PremiumService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService, virtualmachine *app.VirtualMachineService) (*http.ServeMux, error) {
 	// interceptor
-	otelInterceptor, err := otelconnect.NewInterceptor()
+	opts, err := newInterceptorOptions()
 	if err != nil {
 		return nil, err
 	}
-	opts := []connect.HandlerOption{
-		connect.WithInterceptors(otelInterceptor),
-	}
 
-	// mux
+	// multiplexer
 	mux := http.NewServeMux()
 	mux.Handle(applicationv1.NewApplicationServiceHandler(app, opts...))
 	mux.Handle(bistv1.NewBISTServiceHandler(bist, opts...))
@@ -74,32 +71,57 @@ func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config
 	mux.Handle(tagv1.NewTagServiceHandler(tag, opts...))
 	mux.Handle(virtualmachinev1.NewVirtualMachineServiceHandler(virtualmachine, opts...))
 
-	// prometheus proxy
+	// proxy
+	handlePrometheusProxy(mux, environment)
+
+	// helper
+	if helper {
+		handleHealth(mux)
+		handleReflect(mux)
+		if err := handleMetrics(mux); err != nil {
+			return nil, err
+		}
+	}
+
+	return mux, nil
+}
+
+func newInterceptorOptions() ([]connect.HandlerOption, error) {
+	otelInterceptor, err := otelconnect.NewInterceptor()
+	if err != nil {
+		return nil, err
+	}
+	return []connect.HandlerOption{
+		connect.WithInterceptors(otelInterceptor),
+	}, nil
+}
+
+func handlePrometheusProxy(mux *http.ServeMux, environment *app.EnvironmentService) {
 	proxy := httputil.NewSingleHostReverseProxy(environment.GetPrometheusURL())
 	proxy.ModifyResponse = func(resp *http.Response) error {
 		resp.Header.Del("Access-Control-Allow-Origin")
 		return nil
 	}
-
 	mux.Handle("/prometheus/", http.StripPrefix("/prometheus", proxy))
+}
 
-	if helper {
-		// health
-		checker := grpchealth.NewStaticChecker(Services...)
-		mux.Handle(grpchealth.NewHandler(checker))
+func handleHealth(mux *http.ServeMux) {
+	checker := grpchealth.NewStaticChecker(services...)
+	mux.Handle(grpchealth.NewHandler(checker))
+}
 
-		// reflect
-		reflector := grpcreflect.NewStaticReflector(Services...)
-		mux.Handle(grpcreflect.NewHandlerV1(reflector))
-		mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+func handleReflect(mux *http.ServeMux) {
+	reflector := grpcreflect.NewStaticReflector(services...)
+	mux.Handle(grpcreflect.NewHandlerV1(reflector))
+	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+}
 
-		// metrics
-		exporter, err := prometheus.New()
-		if err != nil {
-			return nil, err
-		}
-		otel.SetMeterProvider(metric.NewMeterProvider(metric.WithReader(exporter)))
-		mux.Handle("/metrics", promhttp.Handler())
+func handleMetrics(mux *http.ServeMux) error {
+	exporter, err := prometheus.New()
+	if err != nil {
+		return err
 	}
-	return mux, nil
+	otel.SetMeterProvider(metric.NewMeterProvider(metric.WithReader(exporter)))
+	mux.Handle("/metrics", promhttp.Handler())
+	return nil
 }
