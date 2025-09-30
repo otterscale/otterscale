@@ -69,7 +69,7 @@ func TestHelmRelease_Install_InvalidName(t *testing.T) {
 	rl, _ := NewHelmRelease(k)
 
 	restCfg := &rest.Config{Host: "https://example.invalid"}
-	_, err := rl.Install(restCfg, "default", "bad name", false, "any/chart", nil)
+	_, err := rl.Install(restCfg, "default", "bad name", false, "any/chart", nil, nil, nil)
 
 	if err == nil {
 		t.Fatal("expected error for invalid release name, got nil")
@@ -87,7 +87,7 @@ func TestHelmRelease_Install_ChartNotFound(t *testing.T) {
 	rl, _ := NewHelmRelease(k)
 
 	restCfg := &rest.Config{Host: "https://example.invalid"}
-	_, err := rl.Install(restCfg, "default", "valid-name", false, "nonexistent/chart", nil)
+	_, err := rl.Install(restCfg, "default", "valid-name", false, "nonexistent/chart", nil, nil, nil)
 
 	if err == nil {
 		t.Fatal("expected error when chart cannot be located, got nil")
@@ -160,7 +160,7 @@ func TestHelmRelease_EdgeCases_NilKube(t *testing.T) {
 		cfg := &rest.Config{Host: "https://example.invalid"}
 
 		_, _ = h.List(cfg, "default")
-		_, _ = h.Install(cfg, "default", "name", false, "chart/ref", nil)
+		_, _ = h.Install(cfg, "default", "name", false, "chart/ref", nil, nil, nil)
 		_, _ = h.Uninstall(cfg, "default", "name", false)
 		_, _ = h.Upgrade(cfg, "default", "name", false, "chart/ref", nil)
 		_ = h.Rollback(cfg, "default", "name", false)
