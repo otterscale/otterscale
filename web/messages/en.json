@@ -773,6 +773,7 @@
 	"node_port": "Node Port",
 	"target_port": "Target Port",
 	"protocol": "Protocol",
-	"create_service": "Create Service",
-	"service_name": "Service Name"
+	"create_port": "Create Port",
+	"service_name": "Service Name",
+	"update": "Update"
 }

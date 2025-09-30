@@ -3,8 +3,6 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import Actions from './cell-actions.svelte';
-
 	import type { Application_Service } from '$lib/api/application/v1/application_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -22,7 +20,6 @@
 		clusterIp,
 		port,
 		createTime,
-		actions,
 	};
 </script>
 
@@ -55,7 +52,7 @@
 {/snippet}
 
 {#snippet port(row: Row<Application_Service>)}
-	<Layout.Cell class="items-start">
+	<Layout.Cell class="items-end">
 		{#each row.original.ports as port}
 			{#if port.nodePort > 0}
 				<div class="flex items-center gap-1">
@@ -107,7 +104,7 @@
 {/snippet}
 
 {#snippet createTime(row: Row<Application_Service>)}
-	<Layout.Cell class="items-start">
+	<Layout.Cell class="items-end">
 		{#if row.original.createdAt}
 			<Tooltip.Provider>
 				<Tooltip.Root>
@@ -120,11 +117,5 @@
 				</Tooltip.Root>
 			</Tooltip.Provider>
 		{/if}
-	</Layout.Cell>
-{/snippet}
-
-{#snippet actions(row: Row<Application_Service>)}
-	<Layout.Cell class="items-start">
-		<Actions applicationService={row.original} />
 	</Layout.Cell>
 {/snippet}

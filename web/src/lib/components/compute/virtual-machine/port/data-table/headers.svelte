@@ -13,7 +13,6 @@
 		clusterIp,
 		port,
 		createTime,
-		actions,
 	};
 </script>
 
@@ -62,12 +61,10 @@
 {/snippet}
 
 {#snippet createTime(column: Column<Application_Service>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.create_time()}</Layout.HeaderViewer>
+	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
+		<Layout.HeaderViewer>{m.create_time()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
-
-{#snippet actions()}{/snippet}
