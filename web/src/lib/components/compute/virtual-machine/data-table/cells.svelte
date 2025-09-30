@@ -7,7 +7,7 @@
 
 	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import { Disk } from '$lib/components/compute/virtual-machine/disk';
-	// import { Port } from '$lib/components/compute/virtual-machine/port';
+	import { Port } from '$lib/components/compute/virtual-machine/port';
 	import { getStatusInfo, getInstancePhaseInfo } from '$lib/components/compute/virtual-machine/units/type';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -115,7 +115,7 @@
 
 {#snippet port(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-end">
-		<!-- <Port virtualMachine={row.original} virtualMachineDisks={row.original.disks} /> -->
+		<Port virtualMachine={row.original} />
 	</Layout.Cell>
 {/snippet}
 

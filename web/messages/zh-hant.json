@@ -316,6 +316,7 @@
 	"aservices": "服務",
 	"cluster_ip": "叢集 IP",
 	"ports": "連接埠",
+	"port": "連接埠",
 	"namespace": "命名空間",
 	"health": "健康狀態",
 	"service": "服務",
@@ -768,5 +769,10 @@
 	"attach": "掛載",
 	"attach_disk": "掛載磁碟",
 	"detach": "卸載",
-	"detach_disk": "卸載磁碟"
+	"detach_disk": "卸載磁碟",
+	"node_port": "節點連接埠",
+	"target_port": "目標連接埠",
+	"protocol": "協定",
+	"create_service": "建立服務",
+	"service_name": "服務名稱"
 }

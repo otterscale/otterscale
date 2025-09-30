@@ -316,6 +316,7 @@
 	"aservices": "Services",
 	"cluster_ip": "Cluster IP",
 	"ports": "Ports",
+	"port": "Port",
 	"namespace": "Namespace",
 	"health": "Health",
 	"service": "Service",
@@ -768,5 +769,10 @@
 	"attach": "Attach",
 	"attach_disk": "Attach Disk",
 	"detach": "Detach",
-	"detach_disk": "Detach Disk"
+	"detach_disk": "Detach Disk",
+	"node_port": "Node Port",
+	"target_port": "Target Port",
+	"protocol": "Protocol",
+	"create_service": "Create Service",
+	"service_name": "Service Name"
 }
