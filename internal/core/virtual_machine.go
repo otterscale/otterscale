@@ -201,7 +201,35 @@ func (uc *VirtualMachineUseCase) DeleteVirtualMachine(ctx context.Context, uuid,
 	if err != nil {
 		return err
 	}
-	return uc.kubeVirt.DeleteVirtualMachine(ctx, config, namespace, name)
+
+	// Get related services before deleting the virtual machine
+	services, err := uc.kubeCore.ListVirtualMachineServices(ctx, config, namespace, name)
+	if err != nil {
+		return err
+	}
+
+	// Get related snapshots before deleting the virtual machine
+	snapshots, err := uc.kubeSnapshot.ListVirtualMachineSnapshots(ctx, config, namespace, name)
+	if err != nil {
+		return err
+	}
+
+	// Delete the virtual machine first
+	if err := uc.kubeVirt.DeleteVirtualMachine(ctx, config, namespace, name); err != nil {
+		return err
+	}
+
+	// Delete related services
+	for i := range services {
+		_ = uc.kubeCore.DeleteService(ctx, config, namespace, services[i].Name)
+	}
+
+	// Delete related snapshots
+	for i := range snapshots {
+		_ = uc.kubeSnapshot.DeleteVirtualMachineSnapshot(ctx, config, namespace, snapshots[i].Name)
+	}
+
+	return nil
 }
 
 func (uc *VirtualMachineUseCase) AttachVirtualMachineDisk(ctx context.Context, uuid, facility, namespace, name, dvName string) (disk *VirtualMachineDisk, volume *VirtualMachineVolume, err error) {
