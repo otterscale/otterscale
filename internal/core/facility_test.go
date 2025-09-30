@@ -75,13 +75,45 @@ type (
 )
 
 func (m *facilityMockServerRepo) Get(ctx context.Context, name string) (string, error) {
+	if name == "default_distro_series" {
+		return "jammy", nil // Ubuntu 22.04 LTS (Jammy Jellyfish)
+	}
 	return "val", nil
 }
 func (m *facilityMockServerRepo) Update(ctx context.Context, name, value string) error { return nil }
 func (m *facilitymockClientRepo) Status(ctx context.Context, uuid string, patterns []string) (*params.FullStatus, error) {
 	return &params.FullStatus{
 		Applications: map[string]params.ApplicationStatus{
-			"app1": {Charm: "charm1"},
+			"app1": {
+				Charm: "charm1",
+				Units: map[string]params.UnitStatus{
+					"app1/0": {
+						Machine: "machine-1",
+						AgentStatus: params.DetailedStatus{
+							Status: "active",
+						},
+					},
+				},
+			},
+			"name": {
+				Charm: "kubernetes-worker/123",
+				Units: map[string]params.UnitStatus{
+					"name/0": {
+						Machine: "machine-2",
+						AgentStatus: params.DetailedStatus{
+							Status: "active",
+						},
+					},
+				},
+			},
+		},
+		Machines: map[string]params.MachineStatus{
+			"machine-1": {
+				InstanceId: "instance-1",
+			},
+			"machine-2": {
+				InstanceId: "instance-2",
+			},
 		},
 	}, nil
 }
@@ -119,7 +151,7 @@ func TestFacilityUseCase_ListFacilities(t *testing.T) {
 	uc := NewFacilityUseCase(&facilitymockFacilityRepo{}, &facilityMockServerRepo{}, &facilitymockClientRepo{}, &facilityMockActionRepo{}, &mockCharmRepo{}, &mockMachineRepo{})
 	facs, err := uc.ListFacilities(context.Background(), "uuid")
 	assert.NoError(t, err)
-	assert.Len(t, facs, 1)
+	assert.Len(t, facs, 2)
 	assert.Equal(t, "app1", facs[0].Name)
 }
 
@@ -131,14 +163,24 @@ func TestFacilityUseCase_GetFacility(t *testing.T) {
 	assert.Contains(t, fac.Metadata.ConfigYAML, "foo")
 }
 
-/*
 func TestFacilityUseCase_CreateFacility(t *testing.T) {
 	uc := NewFacilityUseCase(&facilitymockFacilityRepo{}, &facilityMockServerRepo{}, &facilitymockClientRepo{}, &facilityMockActionRepo{}, &mockCharmRepo{}, &mockMachineRepo{})
 	fac, err := uc.CreateFacility(context.Background(), "uuid", "name", "yaml", "charm", "stable", 1, 1, nil, nil, true)
 	assert.NoError(t, err)
 	assert.NotNil(t, fac)
 }
-*/
+
+func TestFacilityUseCase_CreateFacility_WithMachines(t *testing.T) {
+	uc := NewFacilityUseCase(&facilitymockFacilityRepo{}, &facilityMockServerRepo{}, &facilitymockClientRepo{}, &facilityMockActionRepo{}, &mockCharmRepo{}, &mockMachineRepo{})
+
+	mps := []MachinePlacement{
+		{MachineID: "machine-1"},
+	}
+
+	fac, err := uc.CreateFacility(context.Background(), "uuid", "name", "yaml", "charm", "stable", 1, 1, mps, nil, true)
+	assert.NoError(t, err)
+	assert.NotNil(t, fac)
+}
 
 func TestFacilityUseCase_UpdateFacility(t *testing.T) {
 	uc := NewFacilityUseCase(&facilitymockFacilityRepo{}, &facilityMockServerRepo{}, &facilitymockClientRepo{}, &facilityMockActionRepo{}, &mockCharmRepo{}, &mockMachineRepo{})
@@ -172,4 +214,43 @@ func TestFacilityUseCase_ListArtifacts(t *testing.T) {
 	arts, err := uc.ListArtifacts(context.Background(), "testcharm")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, arts)
+}
+
+func TestFacilityUseCase_ExposeFacility(t *testing.T) {
+	uc := NewFacilityUseCase(&facilitymockFacilityRepo{}, &facilityMockServerRepo{}, &facilitymockClientRepo{}, &facilityMockActionRepo{}, &mockCharmRepo{}, &mockMachineRepo{})
+	err := uc.ExposeFacility(context.Background(), "uuid", "name")
+	assert.NoError(t, err)
+}
+
+func TestFacilityUseCase_AddFacilityUnits(t *testing.T) {
+	uc := NewFacilityUseCase(&facilitymockFacilityRepo{}, &facilityMockServerRepo{}, &facilitymockClientRepo{}, &facilityMockActionRepo{}, &mockCharmRepo{}, &mockMachineRepo{})
+	units, err := uc.AddFacilityUnits(context.Background(), "uuid", "name", 1, []MachinePlacement{})
+	assert.NoError(t, err)
+	assert.Equal(t, []string{"unit1"}, units)
+}
+
+func TestFacilityUseCase_ResolveFacilityUnitErrors(t *testing.T) {
+	uc := NewFacilityUseCase(&facilitymockFacilityRepo{}, &facilityMockServerRepo{}, &facilitymockClientRepo{}, &facilityMockActionRepo{}, &mockCharmRepo{}, &mockMachineRepo{})
+	err := uc.ResolveFacilityUnitErrors(context.Background(), "uuid", "unit1")
+	assert.NoError(t, err)
+}
+
+func TestFacilityUseCase_ListActions(t *testing.T) {
+	uc := NewFacilityUseCase(&facilitymockFacilityRepo{}, &facilityMockServerRepo{}, &facilitymockClientRepo{}, &facilityMockActionRepo{}, &mockCharmRepo{}, &mockMachineRepo{})
+	actions, err := uc.ListActions(context.Background(), "uuid", "app")
+	assert.NoError(t, err)
+	assert.Len(t, actions, 1)
+	assert.Equal(t, "action1", actions[0].Name)
+}
+
+func TestFacilityUseCase_FilterCharms(t *testing.T) {
+	uc := NewFacilityUseCase(&facilitymockFacilityRepo{}, &facilityMockServerRepo{}, &facilitymockClientRepo{}, &facilityMockActionRepo{}, &mockCharmRepo{}, &mockMachineRepo{})
+	charms := []Charm{
+		{ID: "c1", Type: "charm", Name: "testcharm"},
+		{ID: "c2", Type: "bundle", Name: "testbundle"},
+		{ID: "c3", Type: "charm", Name: "k8scharm", Result: CharmResult{DeployableOn: []string{"kubernetes"}}},
+	}
+	filtered := uc.filterCharms(charms)
+	assert.Len(t, filtered, 1)
+	assert.Equal(t, "testcharm", filtered[0].Name)
 }

@@ -43,9 +43,24 @@ const (
 	// ApplicationServiceGetApplicationProcedure is the fully-qualified name of the ApplicationService's
 	// GetApplication RPC.
 	ApplicationServiceGetApplicationProcedure = "/otterscale.application.v1.ApplicationService/GetApplication"
+	// ApplicationServiceRestartApplicationProcedure is the fully-qualified name of the
+	// ApplicationService's RestartApplication RPC.
+	ApplicationServiceRestartApplicationProcedure = "/otterscale.application.v1.ApplicationService/RestartApplication"
+	// ApplicationServiceScaleApplicationProcedure is the fully-qualified name of the
+	// ApplicationService's ScaleApplication RPC.
+	ApplicationServiceScaleApplicationProcedure = "/otterscale.application.v1.ApplicationService/ScaleApplication"
+	// ApplicationServiceDeleteApplicationPodProcedure is the fully-qualified name of the
+	// ApplicationService's DeleteApplicationPod RPC.
+	ApplicationServiceDeleteApplicationPodProcedure = "/otterscale.application.v1.ApplicationService/DeleteApplicationPod"
 	// ApplicationServiceWatchLogsProcedure is the fully-qualified name of the ApplicationService's
 	// WatchLogs RPC.
 	ApplicationServiceWatchLogsProcedure = "/otterscale.application.v1.ApplicationService/WatchLogs"
+	// ApplicationServiceExecuteTTYProcedure is the fully-qualified name of the ApplicationService's
+	// ExecuteTTY RPC.
+	ApplicationServiceExecuteTTYProcedure = "/otterscale.application.v1.ApplicationService/ExecuteTTY"
+	// ApplicationServiceWriteTTYProcedure is the fully-qualified name of the ApplicationService's
+	// WriteTTY RPC.
+	ApplicationServiceWriteTTYProcedure = "/otterscale.application.v1.ApplicationService/WriteTTY"
 	// ApplicationServiceListReleasesProcedure is the fully-qualified name of the ApplicationService's
 	// ListReleases RPC.
 	ApplicationServiceListReleasesProcedure = "/otterscale.application.v1.ApplicationService/ListReleases"
@@ -78,19 +93,24 @@ const (
 // ApplicationServiceClient is a client for the otterscale.application.v1.ApplicationService
 // service.
 type ApplicationServiceClient interface {
-	ListNamespaces(context.Context, *connect.Request[v1.ListNamespacesRequest]) (*connect.Response[v1.ListNamespacesResponse], error)
-	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
-	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
-	WatchLogs(context.Context, *connect.Request[v1.WatchLogsRequest]) (*connect.ServerStreamForClient[v1.WatchLogsResponse], error)
-	ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error)
-	CreateRelease(context.Context, *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Application_Release], error)
-	UpdateRelease(context.Context, *connect.Request[v1.UpdateReleaseRequest]) (*connect.Response[v1.Application_Release], error)
-	DeleteRelease(context.Context, *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error)
-	RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error)
-	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
-	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error)
-	GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error)
-	ListStorageClasses(context.Context, *connect.Request[v1.ListStorageClassesRequest]) (*connect.Response[v1.ListStorageClassesResponse], error)
+	ListNamespaces(context.Context, *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error)
+	ListApplications(context.Context, *v1.ListApplicationsRequest) (*v1.ListApplicationsResponse, error)
+	GetApplication(context.Context, *v1.GetApplicationRequest) (*v1.Application, error)
+	RestartApplication(context.Context, *v1.RestartApplicationRequest) (*emptypb.Empty, error)
+	ScaleApplication(context.Context, *v1.ScaleApplicationRequest) (*emptypb.Empty, error)
+	DeleteApplicationPod(context.Context, *v1.DeleteApplicationPodRequest) (*emptypb.Empty, error)
+	WatchLogs(context.Context, *v1.WatchLogsRequest) (*connect.ServerStreamForClient[v1.WatchLogsResponse], error)
+	ExecuteTTY(context.Context, *v1.ExecuteTTYRequest) (*connect.ServerStreamForClient[v1.ExecuteTTYResponse], error)
+	WriteTTY(context.Context, *v1.WriteTTYRequest) (*emptypb.Empty, error)
+	ListReleases(context.Context, *v1.ListReleasesRequest) (*v1.ListReleasesResponse, error)
+	CreateRelease(context.Context, *v1.CreateReleaseRequest) (*v1.Application_Release, error)
+	UpdateRelease(context.Context, *v1.UpdateReleaseRequest) (*v1.Application_Release, error)
+	DeleteRelease(context.Context, *v1.DeleteReleaseRequest) (*emptypb.Empty, error)
+	RollbackRelease(context.Context, *v1.RollbackReleaseRequest) (*emptypb.Empty, error)
+	ListCharts(context.Context, *v1.ListChartsRequest) (*v1.ListChartsResponse, error)
+	GetChart(context.Context, *v1.GetChartRequest) (*v1.Application_Chart, error)
+	GetChartMetadata(context.Context, *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error)
+	ListStorageClasses(context.Context, *v1.ListStorageClassesRequest) (*v1.ListStorageClassesResponse, error)
 }
 
 // NewApplicationServiceClient constructs a client for the
@@ -123,10 +143,40 @@ func NewApplicationServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			connect.WithSchema(applicationServiceMethods.ByName("GetApplication")),
 			connect.WithClientOptions(opts...),
 		),
+		restartApplication: connect.NewClient[v1.RestartApplicationRequest, emptypb.Empty](
+			httpClient,
+			baseURL+ApplicationServiceRestartApplicationProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("RestartApplication")),
+			connect.WithClientOptions(opts...),
+		),
+		scaleApplication: connect.NewClient[v1.ScaleApplicationRequest, emptypb.Empty](
+			httpClient,
+			baseURL+ApplicationServiceScaleApplicationProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("ScaleApplication")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteApplicationPod: connect.NewClient[v1.DeleteApplicationPodRequest, emptypb.Empty](
+			httpClient,
+			baseURL+ApplicationServiceDeleteApplicationPodProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("DeleteApplicationPod")),
+			connect.WithClientOptions(opts...),
+		),
 		watchLogs: connect.NewClient[v1.WatchLogsRequest, v1.WatchLogsResponse](
 			httpClient,
 			baseURL+ApplicationServiceWatchLogsProcedure,
 			connect.WithSchema(applicationServiceMethods.ByName("WatchLogs")),
+			connect.WithClientOptions(opts...),
+		),
+		executeTTY: connect.NewClient[v1.ExecuteTTYRequest, v1.ExecuteTTYResponse](
+			httpClient,
+			baseURL+ApplicationServiceExecuteTTYProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("ExecuteTTY")),
+			connect.WithClientOptions(opts...),
+		),
+		writeTTY: connect.NewClient[v1.WriteTTYRequest, emptypb.Empty](
+			httpClient,
+			baseURL+ApplicationServiceWriteTTYProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("WriteTTY")),
 			connect.WithClientOptions(opts...),
 		),
 		listReleases: connect.NewClient[v1.ListReleasesRequest, v1.ListReleasesResponse](
@@ -188,102 +238,201 @@ func NewApplicationServiceClient(httpClient connect.HTTPClient, baseURL string, 
 
 // applicationServiceClient implements ApplicationServiceClient.
 type applicationServiceClient struct {
-	listNamespaces     *connect.Client[v1.ListNamespacesRequest, v1.ListNamespacesResponse]
-	listApplications   *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
-	getApplication     *connect.Client[v1.GetApplicationRequest, v1.Application]
-	watchLogs          *connect.Client[v1.WatchLogsRequest, v1.WatchLogsResponse]
-	listReleases       *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
-	createRelease      *connect.Client[v1.CreateReleaseRequest, v1.Application_Release]
-	updateRelease      *connect.Client[v1.UpdateReleaseRequest, v1.Application_Release]
-	deleteRelease      *connect.Client[v1.DeleteReleaseRequest, emptypb.Empty]
-	rollbackRelease    *connect.Client[v1.RollbackReleaseRequest, emptypb.Empty]
-	listCharts         *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
-	getChart           *connect.Client[v1.GetChartRequest, v1.Application_Chart]
-	getChartMetadata   *connect.Client[v1.GetChartMetadataRequest, v1.Application_Chart_Metadata]
-	listStorageClasses *connect.Client[v1.ListStorageClassesRequest, v1.ListStorageClassesResponse]
+	listNamespaces       *connect.Client[v1.ListNamespacesRequest, v1.ListNamespacesResponse]
+	listApplications     *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
+	getApplication       *connect.Client[v1.GetApplicationRequest, v1.Application]
+	restartApplication   *connect.Client[v1.RestartApplicationRequest, emptypb.Empty]
+	scaleApplication     *connect.Client[v1.ScaleApplicationRequest, emptypb.Empty]
+	deleteApplicationPod *connect.Client[v1.DeleteApplicationPodRequest, emptypb.Empty]
+	watchLogs            *connect.Client[v1.WatchLogsRequest, v1.WatchLogsResponse]
+	executeTTY           *connect.Client[v1.ExecuteTTYRequest, v1.ExecuteTTYResponse]
+	writeTTY             *connect.Client[v1.WriteTTYRequest, emptypb.Empty]
+	listReleases         *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
+	createRelease        *connect.Client[v1.CreateReleaseRequest, v1.Application_Release]
+	updateRelease        *connect.Client[v1.UpdateReleaseRequest, v1.Application_Release]
+	deleteRelease        *connect.Client[v1.DeleteReleaseRequest, emptypb.Empty]
+	rollbackRelease      *connect.Client[v1.RollbackReleaseRequest, emptypb.Empty]
+	listCharts           *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
+	getChart             *connect.Client[v1.GetChartRequest, v1.Application_Chart]
+	getChartMetadata     *connect.Client[v1.GetChartMetadataRequest, v1.Application_Chart_Metadata]
+	listStorageClasses   *connect.Client[v1.ListStorageClassesRequest, v1.ListStorageClassesResponse]
 }
 
 // ListNamespaces calls otterscale.application.v1.ApplicationService.ListNamespaces.
-func (c *applicationServiceClient) ListNamespaces(ctx context.Context, req *connect.Request[v1.ListNamespacesRequest]) (*connect.Response[v1.ListNamespacesResponse], error) {
-	return c.listNamespaces.CallUnary(ctx, req)
+func (c *applicationServiceClient) ListNamespaces(ctx context.Context, req *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error) {
+	response, err := c.listNamespaces.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListApplications calls otterscale.application.v1.ApplicationService.ListApplications.
-func (c *applicationServiceClient) ListApplications(ctx context.Context, req *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
-	return c.listApplications.CallUnary(ctx, req)
+func (c *applicationServiceClient) ListApplications(ctx context.Context, req *v1.ListApplicationsRequest) (*v1.ListApplicationsResponse, error) {
+	response, err := c.listApplications.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GetApplication calls otterscale.application.v1.ApplicationService.GetApplication.
-func (c *applicationServiceClient) GetApplication(ctx context.Context, req *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error) {
-	return c.getApplication.CallUnary(ctx, req)
+func (c *applicationServiceClient) GetApplication(ctx context.Context, req *v1.GetApplicationRequest) (*v1.Application, error) {
+	response, err := c.getApplication.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// RestartApplication calls otterscale.application.v1.ApplicationService.RestartApplication.
+func (c *applicationServiceClient) RestartApplication(ctx context.Context, req *v1.RestartApplicationRequest) (*emptypb.Empty, error) {
+	response, err := c.restartApplication.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ScaleApplication calls otterscale.application.v1.ApplicationService.ScaleApplication.
+func (c *applicationServiceClient) ScaleApplication(ctx context.Context, req *v1.ScaleApplicationRequest) (*emptypb.Empty, error) {
+	response, err := c.scaleApplication.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// DeleteApplicationPod calls otterscale.application.v1.ApplicationService.DeleteApplicationPod.
+func (c *applicationServiceClient) DeleteApplicationPod(ctx context.Context, req *v1.DeleteApplicationPodRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteApplicationPod.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // WatchLogs calls otterscale.application.v1.ApplicationService.WatchLogs.
-func (c *applicationServiceClient) WatchLogs(ctx context.Context, req *connect.Request[v1.WatchLogsRequest]) (*connect.ServerStreamForClient[v1.WatchLogsResponse], error) {
-	return c.watchLogs.CallServerStream(ctx, req)
+func (c *applicationServiceClient) WatchLogs(ctx context.Context, req *v1.WatchLogsRequest) (*connect.ServerStreamForClient[v1.WatchLogsResponse], error) {
+	return c.watchLogs.CallServerStream(ctx, connect.NewRequest(req))
+}
+
+// ExecuteTTY calls otterscale.application.v1.ApplicationService.ExecuteTTY.
+func (c *applicationServiceClient) ExecuteTTY(ctx context.Context, req *v1.ExecuteTTYRequest) (*connect.ServerStreamForClient[v1.ExecuteTTYResponse], error) {
+	return c.executeTTY.CallServerStream(ctx, connect.NewRequest(req))
+}
+
+// WriteTTY calls otterscale.application.v1.ApplicationService.WriteTTY.
+func (c *applicationServiceClient) WriteTTY(ctx context.Context, req *v1.WriteTTYRequest) (*emptypb.Empty, error) {
+	response, err := c.writeTTY.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListReleases calls otterscale.application.v1.ApplicationService.ListReleases.
-func (c *applicationServiceClient) ListReleases(ctx context.Context, req *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error) {
-	return c.listReleases.CallUnary(ctx, req)
+func (c *applicationServiceClient) ListReleases(ctx context.Context, req *v1.ListReleasesRequest) (*v1.ListReleasesResponse, error) {
+	response, err := c.listReleases.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateRelease calls otterscale.application.v1.ApplicationService.CreateRelease.
-func (c *applicationServiceClient) CreateRelease(ctx context.Context, req *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Application_Release], error) {
-	return c.createRelease.CallUnary(ctx, req)
+func (c *applicationServiceClient) CreateRelease(ctx context.Context, req *v1.CreateReleaseRequest) (*v1.Application_Release, error) {
+	response, err := c.createRelease.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // UpdateRelease calls otterscale.application.v1.ApplicationService.UpdateRelease.
-func (c *applicationServiceClient) UpdateRelease(ctx context.Context, req *connect.Request[v1.UpdateReleaseRequest]) (*connect.Response[v1.Application_Release], error) {
-	return c.updateRelease.CallUnary(ctx, req)
+func (c *applicationServiceClient) UpdateRelease(ctx context.Context, req *v1.UpdateReleaseRequest) (*v1.Application_Release, error) {
+	response, err := c.updateRelease.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteRelease calls otterscale.application.v1.ApplicationService.DeleteRelease.
-func (c *applicationServiceClient) DeleteRelease(ctx context.Context, req *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteRelease.CallUnary(ctx, req)
+func (c *applicationServiceClient) DeleteRelease(ctx context.Context, req *v1.DeleteReleaseRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteRelease.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // RollbackRelease calls otterscale.application.v1.ApplicationService.RollbackRelease.
-func (c *applicationServiceClient) RollbackRelease(ctx context.Context, req *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.rollbackRelease.CallUnary(ctx, req)
+func (c *applicationServiceClient) RollbackRelease(ctx context.Context, req *v1.RollbackReleaseRequest) (*emptypb.Empty, error) {
+	response, err := c.rollbackRelease.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListCharts calls otterscale.application.v1.ApplicationService.ListCharts.
-func (c *applicationServiceClient) ListCharts(ctx context.Context, req *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
-	return c.listCharts.CallUnary(ctx, req)
+func (c *applicationServiceClient) ListCharts(ctx context.Context, req *v1.ListChartsRequest) (*v1.ListChartsResponse, error) {
+	response, err := c.listCharts.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GetChart calls otterscale.application.v1.ApplicationService.GetChart.
-func (c *applicationServiceClient) GetChart(ctx context.Context, req *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error) {
-	return c.getChart.CallUnary(ctx, req)
+func (c *applicationServiceClient) GetChart(ctx context.Context, req *v1.GetChartRequest) (*v1.Application_Chart, error) {
+	response, err := c.getChart.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GetChartMetadata calls otterscale.application.v1.ApplicationService.GetChartMetadata.
-func (c *applicationServiceClient) GetChartMetadata(ctx context.Context, req *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error) {
-	return c.getChartMetadata.CallUnary(ctx, req)
+func (c *applicationServiceClient) GetChartMetadata(ctx context.Context, req *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error) {
+	response, err := c.getChartMetadata.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ListStorageClasses calls otterscale.application.v1.ApplicationService.ListStorageClasses.
-func (c *applicationServiceClient) ListStorageClasses(ctx context.Context, req *connect.Request[v1.ListStorageClassesRequest]) (*connect.Response[v1.ListStorageClassesResponse], error) {
-	return c.listStorageClasses.CallUnary(ctx, req)
+func (c *applicationServiceClient) ListStorageClasses(ctx context.Context, req *v1.ListStorageClassesRequest) (*v1.ListStorageClassesResponse, error) {
+	response, err := c.listStorageClasses.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // ApplicationServiceHandler is an implementation of the
 // otterscale.application.v1.ApplicationService service.
 type ApplicationServiceHandler interface {
-	ListNamespaces(context.Context, *connect.Request[v1.ListNamespacesRequest]) (*connect.Response[v1.ListNamespacesResponse], error)
-	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
-	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
-	WatchLogs(context.Context, *connect.Request[v1.WatchLogsRequest], *connect.ServerStream[v1.WatchLogsResponse]) error
-	ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error)
-	CreateRelease(context.Context, *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Application_Release], error)
-	UpdateRelease(context.Context, *connect.Request[v1.UpdateReleaseRequest]) (*connect.Response[v1.Application_Release], error)
-	DeleteRelease(context.Context, *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error)
-	RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error)
-	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
-	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error)
-	GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error)
-	ListStorageClasses(context.Context, *connect.Request[v1.ListStorageClassesRequest]) (*connect.Response[v1.ListStorageClassesResponse], error)
+	ListNamespaces(context.Context, *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error)
+	ListApplications(context.Context, *v1.ListApplicationsRequest) (*v1.ListApplicationsResponse, error)
+	GetApplication(context.Context, *v1.GetApplicationRequest) (*v1.Application, error)
+	RestartApplication(context.Context, *v1.RestartApplicationRequest) (*emptypb.Empty, error)
+	ScaleApplication(context.Context, *v1.ScaleApplicationRequest) (*emptypb.Empty, error)
+	DeleteApplicationPod(context.Context, *v1.DeleteApplicationPodRequest) (*emptypb.Empty, error)
+	WatchLogs(context.Context, *v1.WatchLogsRequest, *connect.ServerStream[v1.WatchLogsResponse]) error
+	ExecuteTTY(context.Context, *v1.ExecuteTTYRequest, *connect.ServerStream[v1.ExecuteTTYResponse]) error
+	WriteTTY(context.Context, *v1.WriteTTYRequest) (*emptypb.Empty, error)
+	ListReleases(context.Context, *v1.ListReleasesRequest) (*v1.ListReleasesResponse, error)
+	CreateRelease(context.Context, *v1.CreateReleaseRequest) (*v1.Application_Release, error)
+	UpdateRelease(context.Context, *v1.UpdateReleaseRequest) (*v1.Application_Release, error)
+	DeleteRelease(context.Context, *v1.DeleteReleaseRequest) (*emptypb.Empty, error)
+	RollbackRelease(context.Context, *v1.RollbackReleaseRequest) (*emptypb.Empty, error)
+	ListCharts(context.Context, *v1.ListChartsRequest) (*v1.ListChartsResponse, error)
+	GetChart(context.Context, *v1.GetChartRequest) (*v1.Application_Chart, error)
+	GetChartMetadata(context.Context, *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error)
+	ListStorageClasses(context.Context, *v1.ListStorageClassesRequest) (*v1.ListStorageClassesResponse, error)
 }
 
 // NewApplicationServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -293,79 +442,109 @@ type ApplicationServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	applicationServiceMethods := v1.File_api_application_v1_application_proto.Services().ByName("ApplicationService").Methods()
-	applicationServiceListNamespacesHandler := connect.NewUnaryHandler(
+	applicationServiceListNamespacesHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceListNamespacesProcedure,
 		svc.ListNamespaces,
 		connect.WithSchema(applicationServiceMethods.ByName("ListNamespaces")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceListApplicationsHandler := connect.NewUnaryHandler(
+	applicationServiceListApplicationsHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceListApplicationsProcedure,
 		svc.ListApplications,
 		connect.WithSchema(applicationServiceMethods.ByName("ListApplications")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceGetApplicationHandler := connect.NewUnaryHandler(
+	applicationServiceGetApplicationHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceGetApplicationProcedure,
 		svc.GetApplication,
 		connect.WithSchema(applicationServiceMethods.ByName("GetApplication")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceWatchLogsHandler := connect.NewServerStreamHandler(
+	applicationServiceRestartApplicationHandler := connect.NewUnaryHandlerSimple(
+		ApplicationServiceRestartApplicationProcedure,
+		svc.RestartApplication,
+		connect.WithSchema(applicationServiceMethods.ByName("RestartApplication")),
+		connect.WithHandlerOptions(opts...),
+	)
+	applicationServiceScaleApplicationHandler := connect.NewUnaryHandlerSimple(
+		ApplicationServiceScaleApplicationProcedure,
+		svc.ScaleApplication,
+		connect.WithSchema(applicationServiceMethods.ByName("ScaleApplication")),
+		connect.WithHandlerOptions(opts...),
+	)
+	applicationServiceDeleteApplicationPodHandler := connect.NewUnaryHandlerSimple(
+		ApplicationServiceDeleteApplicationPodProcedure,
+		svc.DeleteApplicationPod,
+		connect.WithSchema(applicationServiceMethods.ByName("DeleteApplicationPod")),
+		connect.WithHandlerOptions(opts...),
+	)
+	applicationServiceWatchLogsHandler := connect.NewServerStreamHandlerSimple(
 		ApplicationServiceWatchLogsProcedure,
 		svc.WatchLogs,
 		connect.WithSchema(applicationServiceMethods.ByName("WatchLogs")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceListReleasesHandler := connect.NewUnaryHandler(
+	applicationServiceExecuteTTYHandler := connect.NewServerStreamHandlerSimple(
+		ApplicationServiceExecuteTTYProcedure,
+		svc.ExecuteTTY,
+		connect.WithSchema(applicationServiceMethods.ByName("ExecuteTTY")),
+		connect.WithHandlerOptions(opts...),
+	)
+	applicationServiceWriteTTYHandler := connect.NewUnaryHandlerSimple(
+		ApplicationServiceWriteTTYProcedure,
+		svc.WriteTTY,
+		connect.WithSchema(applicationServiceMethods.ByName("WriteTTY")),
+		connect.WithHandlerOptions(opts...),
+	)
+	applicationServiceListReleasesHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceListReleasesProcedure,
 		svc.ListReleases,
 		connect.WithSchema(applicationServiceMethods.ByName("ListReleases")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceCreateReleaseHandler := connect.NewUnaryHandler(
+	applicationServiceCreateReleaseHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceCreateReleaseProcedure,
 		svc.CreateRelease,
 		connect.WithSchema(applicationServiceMethods.ByName("CreateRelease")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceUpdateReleaseHandler := connect.NewUnaryHandler(
+	applicationServiceUpdateReleaseHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceUpdateReleaseProcedure,
 		svc.UpdateRelease,
 		connect.WithSchema(applicationServiceMethods.ByName("UpdateRelease")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceDeleteReleaseHandler := connect.NewUnaryHandler(
+	applicationServiceDeleteReleaseHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceDeleteReleaseProcedure,
 		svc.DeleteRelease,
 		connect.WithSchema(applicationServiceMethods.ByName("DeleteRelease")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceRollbackReleaseHandler := connect.NewUnaryHandler(
+	applicationServiceRollbackReleaseHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceRollbackReleaseProcedure,
 		svc.RollbackRelease,
 		connect.WithSchema(applicationServiceMethods.ByName("RollbackRelease")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceListChartsHandler := connect.NewUnaryHandler(
+	applicationServiceListChartsHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceListChartsProcedure,
 		svc.ListCharts,
 		connect.WithSchema(applicationServiceMethods.ByName("ListCharts")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceGetChartHandler := connect.NewUnaryHandler(
+	applicationServiceGetChartHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceGetChartProcedure,
 		svc.GetChart,
 		connect.WithSchema(applicationServiceMethods.ByName("GetChart")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceGetChartMetadataHandler := connect.NewUnaryHandler(
+	applicationServiceGetChartMetadataHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceGetChartMetadataProcedure,
 		svc.GetChartMetadata,
 		connect.WithSchema(applicationServiceMethods.ByName("GetChartMetadata")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceListStorageClassesHandler := connect.NewUnaryHandler(
+	applicationServiceListStorageClassesHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceListStorageClassesProcedure,
 		svc.ListStorageClasses,
 		connect.WithSchema(applicationServiceMethods.ByName("ListStorageClasses")),
@@ -379,8 +558,18 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 			applicationServiceListApplicationsHandler.ServeHTTP(w, r)
 		case ApplicationServiceGetApplicationProcedure:
 			applicationServiceGetApplicationHandler.ServeHTTP(w, r)
+		case ApplicationServiceRestartApplicationProcedure:
+			applicationServiceRestartApplicationHandler.ServeHTTP(w, r)
+		case ApplicationServiceScaleApplicationProcedure:
+			applicationServiceScaleApplicationHandler.ServeHTTP(w, r)
+		case ApplicationServiceDeleteApplicationPodProcedure:
+			applicationServiceDeleteApplicationPodHandler.ServeHTTP(w, r)
 		case ApplicationServiceWatchLogsProcedure:
 			applicationServiceWatchLogsHandler.ServeHTTP(w, r)
+		case ApplicationServiceExecuteTTYProcedure:
+			applicationServiceExecuteTTYHandler.ServeHTTP(w, r)
+		case ApplicationServiceWriteTTYProcedure:
+			applicationServiceWriteTTYHandler.ServeHTTP(w, r)
 		case ApplicationServiceListReleasesProcedure:
 			applicationServiceListReleasesHandler.ServeHTTP(w, r)
 		case ApplicationServiceCreateReleaseProcedure:
@@ -408,54 +597,74 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 // UnimplementedApplicationServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedApplicationServiceHandler struct{}
 
-func (UnimplementedApplicationServiceHandler) ListNamespaces(context.Context, *connect.Request[v1.ListNamespacesRequest]) (*connect.Response[v1.ListNamespacesResponse], error) {
+func (UnimplementedApplicationServiceHandler) ListNamespaces(context.Context, *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListNamespaces is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
+func (UnimplementedApplicationServiceHandler) ListApplications(context.Context, *v1.ListApplicationsRequest) (*v1.ListApplicationsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListApplications is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error) {
+func (UnimplementedApplicationServiceHandler) GetApplication(context.Context, *v1.GetApplicationRequest) (*v1.Application, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.GetApplication is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) WatchLogs(context.Context, *connect.Request[v1.WatchLogsRequest], *connect.ServerStream[v1.WatchLogsResponse]) error {
+func (UnimplementedApplicationServiceHandler) RestartApplication(context.Context, *v1.RestartApplicationRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.RestartApplication is not implemented"))
+}
+
+func (UnimplementedApplicationServiceHandler) ScaleApplication(context.Context, *v1.ScaleApplicationRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ScaleApplication is not implemented"))
+}
+
+func (UnimplementedApplicationServiceHandler) DeleteApplicationPod(context.Context, *v1.DeleteApplicationPodRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.DeleteApplicationPod is not implemented"))
+}
+
+func (UnimplementedApplicationServiceHandler) WatchLogs(context.Context, *v1.WatchLogsRequest, *connect.ServerStream[v1.WatchLogsResponse]) error {
 	return connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.WatchLogs is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error) {
+func (UnimplementedApplicationServiceHandler) ExecuteTTY(context.Context, *v1.ExecuteTTYRequest, *connect.ServerStream[v1.ExecuteTTYResponse]) error {
+	return connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ExecuteTTY is not implemented"))
+}
+
+func (UnimplementedApplicationServiceHandler) WriteTTY(context.Context, *v1.WriteTTYRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.WriteTTY is not implemented"))
+}
+
+func (UnimplementedApplicationServiceHandler) ListReleases(context.Context, *v1.ListReleasesRequest) (*v1.ListReleasesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListReleases is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) CreateRelease(context.Context, *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Application_Release], error) {
+func (UnimplementedApplicationServiceHandler) CreateRelease(context.Context, *v1.CreateReleaseRequest) (*v1.Application_Release, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.CreateRelease is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) UpdateRelease(context.Context, *connect.Request[v1.UpdateReleaseRequest]) (*connect.Response[v1.Application_Release], error) {
+func (UnimplementedApplicationServiceHandler) UpdateRelease(context.Context, *v1.UpdateReleaseRequest) (*v1.Application_Release, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.UpdateRelease is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) DeleteRelease(context.Context, *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedApplicationServiceHandler) DeleteRelease(context.Context, *v1.DeleteReleaseRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.DeleteRelease is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedApplicationServiceHandler) RollbackRelease(context.Context, *v1.RollbackReleaseRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.RollbackRelease is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
+func (UnimplementedApplicationServiceHandler) ListCharts(context.Context, *v1.ListChartsRequest) (*v1.ListChartsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListCharts is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error) {
+func (UnimplementedApplicationServiceHandler) GetChart(context.Context, *v1.GetChartRequest) (*v1.Application_Chart, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.GetChart is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error) {
+func (UnimplementedApplicationServiceHandler) GetChartMetadata(context.Context, *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.GetChartMetadata is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) ListStorageClasses(context.Context, *connect.Request[v1.ListStorageClassesRequest]) (*connect.Response[v1.ListStorageClassesResponse], error) {
+func (UnimplementedApplicationServiceHandler) ListStorageClasses(context.Context, *v1.ListStorageClassesRequest) (*v1.ListStorageClassesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListStorageClasses is not implemented"))
 }

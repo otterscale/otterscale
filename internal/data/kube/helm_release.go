@@ -1,12 +1,15 @@
 package kube
 
 import (
+	"bytes"
 	"fmt"
 	"log/slog"
+	"maps"
 
 	"connectrpc.com/connect"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/client-go/rest"
+	"sigs.k8s.io/kustomize/kyaml/kio"
 
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
@@ -17,6 +20,47 @@ import (
 
 	oscore "github.com/otterscale/otterscale/internal/core"
 )
+
+type postRenderer struct {
+	extraLabels      map[string]string
+	extraAnnotations map[string]string
+}
+
+func newPostRenderer(extraLabels, extraAnnotations map[string]string) *postRenderer {
+	return &postRenderer{
+		extraLabels:      extraLabels,
+		extraAnnotations: extraAnnotations,
+	}
+}
+
+func (p *postRenderer) Run(renderedManifests *bytes.Buffer) (*bytes.Buffer, error) {
+	if len(p.extraLabels) == 0 && len(p.extraAnnotations) == 0 {
+		return renderedManifests, nil
+	}
+	nodes, err := kio.FromBytes(renderedManifests.Bytes())
+	if err != nil {
+		return nil, err
+	}
+	for _, node := range nodes {
+		// labels
+		labels := node.GetLabels()
+		maps.Copy(labels, p.extraLabels)
+		if err := node.SetLabels(labels); err != nil {
+			return nil, err
+		}
+		// annotations
+		annotations := node.GetAnnotations()
+		maps.Copy(annotations, p.extraAnnotations)
+		if err := node.SetAnnotations(annotations); err != nil {
+			return nil, err
+		}
+	}
+	str, err := kio.StringAll(nodes)
+	if err != nil {
+		return nil, err
+	}
+	return bytes.NewBufferString(str), nil
+}
 
 type helmRelease struct {
 	kube *Kube
@@ -51,7 +95,17 @@ func (r *helmRelease) List(restConfig *rest.Config, namespace string) ([]release
 	return result, nil
 }
 
-func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
+func (r *helmRelease) Get(restConfig *rest.Config, namespace, name string) (*release.Release, error) {
+	config, err := r.config(restConfig, namespace)
+	if err != nil {
+		return nil, err
+	}
+
+	client := action.NewGet(config)
+	return client.Run(name)
+}
+
+func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, labels, annotations map[string]string, values map[string]any) (*release.Release, error) {
 	if !action.ValidName.MatchString(name) {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid release name %q", name))
 	}
@@ -66,10 +120,7 @@ func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, d
 	client.Namespace = namespace
 	client.DryRun = dryRun
 	client.ReleaseName = name
-	client.Labels = map[string]string{
-		"app.otterscale.com/release-name": name,
-		// "app.otterscale.com/chart-ref":    chartRef, // TODO: invalid label format
-	}
+	client.PostRenderer = newPostRenderer(labels, annotations)
 
 	chartPath, err := client.LocateChart(chartRef, r.kube.envSettings)
 	if err != nil {

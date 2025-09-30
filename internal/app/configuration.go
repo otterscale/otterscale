@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 
-	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/otterscale/otterscale/api/configuration/v1"
@@ -23,76 +22,76 @@ func NewConfigurationService(uc *core.ConfigurationUseCase) *ConfigurationServic
 
 var _ pbconnect.ConfigurationServiceHandler = (*ConfigurationService)(nil)
 
-func (s *ConfigurationService) GetConfiguration(ctx context.Context, _ *connect.Request[pb.GetConfigurationRequest]) (*connect.Response[pb.Configuration], error) {
+func (s *ConfigurationService) GetConfiguration(ctx context.Context, _ *pb.GetConfigurationRequest) (*pb.Configuration, error) {
 	config, err := s.uc.GetConfiguration(ctx)
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoConfiguration(config)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ConfigurationService) UpdateNTPServer(ctx context.Context, req *connect.Request[pb.UpdateNTPServerRequest]) (*connect.Response[pb.Configuration_NTPServer], error) {
-	ntpServers, err := s.uc.UpdateNTPServer(ctx, req.Msg.GetAddresses())
+func (s *ConfigurationService) UpdateNTPServer(ctx context.Context, req *pb.UpdateNTPServerRequest) (*pb.Configuration_NTPServer, error) {
+	ntpServers, err := s.uc.UpdateNTPServer(ctx, req.GetAddresses())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoNTPServer(ntpServers)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ConfigurationService) UpdatePackageRepository(ctx context.Context, req *connect.Request[pb.UpdatePackageRepositoryRequest]) (*connect.Response[pb.Configuration_PackageRepository], error) {
-	repo, err := s.uc.UpdatePackageRepository(ctx, int(req.Msg.GetId()), req.Msg.GetUrl(), req.Msg.GetSkipJuju())
+func (s *ConfigurationService) UpdatePackageRepository(ctx context.Context, req *pb.UpdatePackageRepositoryRequest) (*pb.Configuration_PackageRepository, error) {
+	repo, err := s.uc.UpdatePackageRepository(ctx, int(req.GetId()), req.GetUrl(), req.GetSkipJuju())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoPackageRepository(repo)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ConfigurationService) CreateBootImage(ctx context.Context, req *connect.Request[pb.CreateBootImageRequest]) (*connect.Response[pb.Configuration_BootImage], error) {
-	image, err := s.uc.CreateBootImage(ctx, req.Msg.GetDistroSeries(), req.Msg.GetArchitectures())
+func (s *ConfigurationService) CreateBootImage(ctx context.Context, req *pb.CreateBootImageRequest) (*pb.Configuration_BootImage, error) {
+	image, err := s.uc.CreateBootImage(ctx, req.GetDistroSeries(), req.GetArchitectures())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoBootImage(image)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ConfigurationService) SetDefaultBootImage(ctx context.Context, req *connect.Request[pb.SetDefaultBootImageRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.SetDefaultBootImage(ctx, req.Msg.GetDistroSeries()); err != nil {
+func (s *ConfigurationService) SetDefaultBootImage(ctx context.Context, req *pb.SetDefaultBootImageRequest) (*emptypb.Empty, error) {
+	if err := s.uc.SetDefaultBootImage(ctx, req.GetDistroSeries()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ConfigurationService) ImportBootImages(ctx context.Context, _ *connect.Request[pb.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error) {
+func (s *ConfigurationService) ImportBootImages(ctx context.Context, _ *pb.ImportBootImagesRequest) (*emptypb.Empty, error) {
 	if err := s.uc.ImportBootImages(ctx); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ConfigurationService) IsImportingBootImages(ctx context.Context, _ *connect.Request[pb.IsImportingBootImagesRequest]) (*connect.Response[pb.IsImportingBootImagesResponse], error) {
+func (s *ConfigurationService) IsImportingBootImages(ctx context.Context, _ *pb.IsImportingBootImagesRequest) (*pb.IsImportingBootImagesResponse, error) {
 	isImporting, err := s.uc.IsImportingBootImages(ctx)
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.IsImportingBootImagesResponse{}
 	resp.SetImporting(isImporting)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ConfigurationService) ListBootImageSelections(_ context.Context, _ *connect.Request[pb.ListBootImageSelectionsRequest]) (*connect.Response[pb.ListBootImageSelectionsResponse], error) {
+func (s *ConfigurationService) ListBootImageSelections(_ context.Context, _ *pb.ListBootImageSelectionsRequest) (*pb.ListBootImageSelectionsResponse, error) {
 	selections, err := s.uc.ListBootImageSelections()
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListBootImageSelectionsResponse{}
 	resp.SetBootImageSelections(toProtoBootImageSelections(selections))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
 func toProtoNTPServer(addresses []string) *pb.Configuration_NTPServer {

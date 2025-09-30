@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 
-	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/otterscale/otterscale/api/essential/v1"
@@ -23,50 +22,70 @@ func NewEssentialService(uc *core.EssentialUseCase) *EssentialService {
 
 var _ pbconnect.EssentialServiceHandler = (*EssentialService)(nil)
 
-func (s *EssentialService) IsMachineDeployed(ctx context.Context, req *connect.Request[pb.IsMachineDeployedRequest]) (*connect.Response[pb.IsMachineDeployedResponse], error) {
-	message, deployed, err := s.uc.IsMachineDeployed(ctx, req.Msg.GetScopeUuid())
+func (s *EssentialService) IsMachineDeployed(ctx context.Context, req *pb.IsMachineDeployedRequest) (*pb.IsMachineDeployedResponse, error) {
+	message, deployed, err := s.uc.IsMachineDeployed(ctx, req.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.IsMachineDeployedResponse{}
 	resp.SetMessage(message)
 	resp.SetDeployed(deployed)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *EssentialService) ListStatuses(ctx context.Context, req *connect.Request[pb.ListStatusesRequest]) (*connect.Response[pb.ListStatusesResponse], error) {
-	statuses, err := s.uc.ListStatuses(ctx, req.Msg.GetScopeUuid())
+func (s *EssentialService) ListStatuses(ctx context.Context, req *pb.ListStatusesRequest) (*pb.ListStatusesResponse, error) {
+	statuses, err := s.uc.ListStatuses(ctx, req.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListStatusesResponse{}
 	resp.SetStatuses(toProtoStatuses(statuses))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *EssentialService) ListEssentials(ctx context.Context, req *connect.Request[pb.ListEssentialsRequest]) (*connect.Response[pb.ListEssentialsResponse], error) {
-	essentials, err := s.uc.ListEssentials(ctx, int32(req.Msg.GetType()), req.Msg.GetScopeUuid())
+func (s *EssentialService) ListEssentials(ctx context.Context, req *pb.ListEssentialsRequest) (*pb.ListEssentialsResponse, error) {
+	essentials, err := s.uc.ListEssentials(ctx, int32(req.GetType()), req.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListEssentialsResponse{}
 	resp.SetEssentials(toProtoEssentials(essentials))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *EssentialService) CreateSingleNode(ctx context.Context, req *connect.Request[pb.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error) {
+func (s *EssentialService) CreateSingleNode(ctx context.Context, req *pb.CreateSingleNodeRequest) (*emptypb.Empty, error) {
 	if err := s.uc.CreateSingleNode(ctx,
-		req.Msg.GetScopeUuid(),
-		req.Msg.GetMachineId(),
-		req.Msg.GetPrefixName(),
-		req.Msg.GetVirtualIps(),
-		req.Msg.GetCalicoCidr(),
-		req.Msg.GetOsdDevices(),
+		req.GetScopeUuid(),
+		req.GetMachineId(),
+		req.GetPrefixName(),
+		req.GetVirtualIps(),
+		req.GetCalicoCidr(),
+		req.GetOsdDevices(),
 	); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
+}
+
+func (s *EssentialService) ListKubernetesNodeLabels(ctx context.Context, req *pb.ListKubernetesNodeLabelsRequest) (*pb.ListKubernetesNodeLabelsResponse, error) {
+	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetHostname(), req.GetAll())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListKubernetesNodeLabelsResponse{}
+	resp.SetLabels(labels)
+	return resp, nil
+}
+
+func (s *EssentialService) UpdateKubernetesNodeLabels(ctx context.Context, req *pb.UpdateKubernetesNodeLabelsRequest) (*pb.UpdateKubernetesNodeLabelsResponse, error) {
+	labels, err := s.uc.UpdateKubernetesNodeLabels(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetHostname(), req.GetLabels())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.UpdateKubernetesNodeLabelsResponse{}
+	resp.SetLabels(labels)
+	return resp, nil
 }
 
 func toProtoStatuses(ess []core.EssentialStatus) []*pb.Status {

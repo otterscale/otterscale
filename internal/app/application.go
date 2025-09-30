@@ -4,10 +4,14 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"slices"
+	"sync"
 	"time"
 
 	"connectrpc.com/connect"
+	"github.com/google/uuid"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -18,6 +22,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/duration"
+	"k8s.io/client-go/tools/remotecommand"
 
 	pb "github.com/otterscale/otterscale/api/application/v1"
 	"github.com/otterscale/otterscale/api/application/v1/pbconnect"
@@ -28,6 +33,8 @@ type ApplicationService struct {
 	pbconnect.UnimplementedApplicationServiceHandler
 
 	uc *core.ApplicationUseCase
+
+	ttySessions sync.Map
 }
 
 func NewApplicationService(uc *core.ApplicationUseCase) *ApplicationService {
@@ -36,50 +43,77 @@ func NewApplicationService(uc *core.ApplicationUseCase) *ApplicationService {
 
 var _ pbconnect.ApplicationServiceHandler = (*ApplicationService)(nil)
 
-func (s *ApplicationService) ListNamespaces(ctx context.Context, req *connect.Request[pb.ListNamespacesRequest]) (*connect.Response[pb.ListNamespacesResponse], error) {
-	namespaces, err := s.uc.ListNamespaces(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *ApplicationService) ListNamespaces(ctx context.Context, req *pb.ListNamespacesRequest) (*pb.ListNamespacesResponse, error) {
+	namespaces, err := s.uc.ListNamespaces(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListNamespacesResponse{}
 	resp.SetNamespaces(toProtoNamespaces(namespaces))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ApplicationService) ListApplications(ctx context.Context, req *connect.Request[pb.ListApplicationsRequest]) (*connect.Response[pb.ListApplicationsResponse], error) {
-	apps, err := s.uc.ListApplications(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *ApplicationService) ListApplications(ctx context.Context, req *pb.ListApplicationsRequest) (*pb.ListApplicationsResponse, error) {
+	apps, err := s.uc.ListApplications(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
-	publicAddress, err := s.uc.GetPublicAddress(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	publicAddress, err := s.uc.GetPublicAddress(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListApplicationsResponse{}
 	resp.SetApplications(toProtoApplications(apps, publicAddress))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ApplicationService) GetApplication(ctx context.Context, req *connect.Request[pb.GetApplicationRequest]) (*connect.Response[pb.Application], error) {
-	app, err := s.uc.GetApplication(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetApplicationRequest) (*pb.Application, error) {
+	app, err := s.uc.GetApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
-	metadata, err := s.uc.GetChartMetadataFromApplication(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), app)
+	metadata, err := s.uc.GetChartMetadataFromApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), app)
 	if err != nil {
 		return nil, err
 	}
 	app.ChartMetadata = metadata
-	publicAddress, err := s.uc.GetPublicAddress(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	publicAddress, err := s.uc.GetPublicAddress(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoApplication(app, publicAddress)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ApplicationService) WatchLogs(ctx context.Context, req *connect.Request[pb.WatchLogsRequest], stream *connect.ServerStream[pb.WatchLogsResponse]) error {
-	logs, err := s.uc.StreamPodLogs(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetPodName(), req.Msg.GetContainerName())
+func (s *ApplicationService) RestartApplication(ctx context.Context, req *pb.RestartApplicationRequest) (*emptypb.Empty, error) {
+	err := s.uc.RestartApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetType())
+	if err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func (s *ApplicationService) ScaleApplication(ctx context.Context, req *pb.ScaleApplicationRequest) (*emptypb.Empty, error) {
+	err := s.uc.ScaleApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetType(), req.GetReplicas())
+	if err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func (s *ApplicationService) DeleteApplicationPod(ctx context.Context, req *pb.DeleteApplicationPodRequest) (*emptypb.Empty, error) {
+	err := s.uc.DeletePod(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func (s *ApplicationService) WatchLogs(ctx context.Context, req *pb.WatchLogsRequest, stream *connect.ServerStream[pb.WatchLogsResponse]) error {
+	logs, err := s.uc.StreamLogs(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName())
 	if err != nil {
 		return err
 	}
@@ -94,69 +128,156 @@ func (s *ApplicationService) WatchLogs(ctx context.Context, req *connect.Request
 			return err
 		}
 	}
-
 	if err := scanner.Err(); err != nil {
 		return fmt.Errorf("error reading log stream: %w", err)
 	}
 	return nil
 }
 
-func (s *ApplicationService) ListReleases(ctx context.Context, req *connect.Request[pb.ListReleasesRequest]) (*connect.Response[pb.ListReleasesResponse], error) {
-	releases, err := s.uc.ListReleases(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *ApplicationService) WriteTTY(_ context.Context, req *pb.WriteTTYRequest) (*emptypb.Empty, error) {
+	// get session
+	sessionID := req.GetSessionId()
+	value, ok := s.ttySessions.Load(sessionID)
+	if !ok {
+		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
+	}
+
+	// write to stdin
+	stdinWriter := value.(*io.PipeWriter)
+	if _, err := stdinWriter.Write(req.GetStdin()); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to write to session: %w", err))
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func (s *ApplicationService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYRequest, stream *connect.ServerStream[pb.ExecuteTTYResponse]) error {
+	// create a new session
+	sessionID := uuid.New().String()
+
+	// prepare pipes
+	stdinReader, stdinWriter := io.Pipe()
+	stdoutReader, stdoutWriter := io.Pipe()
+
+	// store session
+	s.ttySessions.Store(sessionID, stdinWriter)
+
+	// cleanup
+	defer func() {
+		_ = stdinReader.Close()
+		_ = stdinWriter.Close()
+		s.ttySessions.Delete(sessionID)
+	}()
+
+	// send session id to client
+	resp := &pb.ExecuteTTYResponse{}
+	resp.SetSessionId(sessionID)
+	if err := stream.Send(resp); err != nil {
+		return err
+	}
+
+	// execute command
+	exec, err := s.uc.ExecuteTTY(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetCommand())
+	if err != nil {
+		return err
+	}
+
+	// stream output
+	eg, egCtx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		buf := make([]byte, 1024) //nolint:mnd // 1KB buffer
+		for {
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			default:
+				n, err := stdoutReader.Read(buf)
+				if err != nil {
+					if err == io.EOF {
+						return nil
+					}
+					return err
+				}
+				if n > 0 {
+					resp := &pb.ExecuteTTYResponse{}
+					resp.SetStdout(buf[:n])
+					if err := stream.Send(resp); err != nil {
+						return err
+					}
+				}
+			}
+		}
+	})
+	eg.Go(func() error {
+		defer func() {
+			_ = stdoutWriter.Close()
+			_ = stdoutReader.Close()
+		}()
+		return exec.StreamWithContext(egCtx, remotecommand.StreamOptions{
+			Stdin:  stdinReader,
+			Stdout: stdoutWriter, // raw TTY manages stdout and stderr over the stdout stream
+			Tty:    true,
+		})
+	})
+	return eg.Wait()
+}
+
+func (s *ApplicationService) ListReleases(ctx context.Context, req *pb.ListReleasesRequest) (*pb.ListReleasesResponse, error) {
+	releases, err := s.uc.ListReleases(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListReleasesResponse{}
 	resp.SetReleases(toProtoReleases(releases))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ApplicationService) CreateRelease(ctx context.Context, req *connect.Request[pb.CreateReleaseRequest]) (*connect.Response[pb.Application_Release], error) {
-	release, err := s.uc.CreateRelease(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDryRun(), req.Msg.GetChartRef(), req.Msg.GetValuesYaml(), req.Msg.GetValuesMap())
+func (s *ApplicationService) CreateRelease(ctx context.Context, req *pb.CreateReleaseRequest) (*pb.Application_Release, error) {
+	release, err := s.uc.CreateRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml(), req.GetValuesMap())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoRelease(release)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ApplicationService) UpdateRelease(ctx context.Context, req *connect.Request[pb.UpdateReleaseRequest]) (*connect.Response[pb.Application_Release], error) {
-	release, err := s.uc.UpdateRelease(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDryRun(), req.Msg.GetChartRef(), req.Msg.GetValuesYaml())
+func (s *ApplicationService) UpdateRelease(ctx context.Context, req *pb.UpdateReleaseRequest) (*pb.Application_Release, error) {
+	release, err := s.uc.UpdateRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoRelease(release)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ApplicationService) DeleteRelease(ctx context.Context, req *connect.Request[pb.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteRelease(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDryRun()); err != nil {
+func (s *ApplicationService) DeleteRelease(ctx context.Context, req *pb.DeleteReleaseRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ApplicationService) RollbackRelease(ctx context.Context, req *connect.Request[pb.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.RollbackRelease(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDryRun()); err != nil {
+func (s *ApplicationService) RollbackRelease(ctx context.Context, req *pb.RollbackReleaseRequest) (*emptypb.Empty, error) {
+	if err := s.uc.RollbackRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ApplicationService) ListCharts(ctx context.Context, _ *connect.Request[pb.ListChartsRequest]) (*connect.Response[pb.ListChartsResponse], error) {
+func (s *ApplicationService) ListCharts(ctx context.Context, _ *pb.ListChartsRequest) (*pb.ListChartsResponse, error) {
 	charts, err := s.uc.ListCharts(ctx)
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListChartsResponse{}
 	resp.SetCharts(toProtoCharts(charts))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ApplicationService) GetChart(ctx context.Context, req *connect.Request[pb.GetChartRequest]) (*connect.Response[pb.Application_Chart], error) {
-	ch, err := s.uc.GetChart(ctx, req.Msg.GetName())
+func (s *ApplicationService) GetChart(ctx context.Context, req *pb.GetChartRequest) (*pb.Application_Chart, error) {
+	ch, err := s.uc.GetChart(ctx, req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -165,26 +286,26 @@ func (s *ApplicationService) GetChart(ctx context.Context, req *connect.Request[
 		metadata = ch.Versions[0].Metadata
 	}
 	resp := toProtoChart(metadata, ch.Versions...)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ApplicationService) GetChartMetadata(ctx context.Context, req *connect.Request[pb.GetChartMetadataRequest]) (*connect.Response[pb.Application_Chart_Metadata], error) {
-	metadata, err := s.uc.GetChartMetadata(ctx, req.Msg.GetChartRef())
+func (s *ApplicationService) GetChartMetadata(ctx context.Context, req *pb.GetChartMetadataRequest) (*pb.Application_Chart_Metadata, error) {
+	metadata, err := s.uc.GetChartMetadata(ctx, req.GetChartRef())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoChartMetadata(metadata)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *connect.Request[pb.ListStorageClassesRequest]) (*connect.Response[pb.ListStorageClassesResponse], error) {
-	storageClasses, err := s.uc.ListStorageClasses(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *pb.ListStorageClassesRequest) (*pb.ListStorageClassesResponse, error) {
+	storageClasses, err := s.uc.ListStorageClasses(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListStorageClassesResponse{}
 	resp.SetStorageClasses(toProtoStorageClasses(storageClasses))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
 func toProtoNamespaces(ns []core.Namespace) []*pb.Namespace {

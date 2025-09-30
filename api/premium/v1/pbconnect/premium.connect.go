@@ -39,7 +39,7 @@ const (
 
 // PremiumServiceClient is a client for the otterscale.premium.v1.PremiumService service.
 type PremiumServiceClient interface {
-	GetTier(context.Context, *connect.Request[v1.GetTierRequest]) (*connect.Response[v1.GetTierResponse], error)
+	GetTier(context.Context, *v1.GetTierRequest) (*v1.GetTierResponse, error)
 }
 
 // NewPremiumServiceClient constructs a client for the otterscale.premium.v1.PremiumService service.
@@ -68,13 +68,17 @@ type premiumServiceClient struct {
 }
 
 // GetTier calls otterscale.premium.v1.PremiumService.GetTier.
-func (c *premiumServiceClient) GetTier(ctx context.Context, req *connect.Request[v1.GetTierRequest]) (*connect.Response[v1.GetTierResponse], error) {
-	return c.getTier.CallUnary(ctx, req)
+func (c *premiumServiceClient) GetTier(ctx context.Context, req *v1.GetTierRequest) (*v1.GetTierResponse, error) {
+	response, err := c.getTier.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // PremiumServiceHandler is an implementation of the otterscale.premium.v1.PremiumService service.
 type PremiumServiceHandler interface {
-	GetTier(context.Context, *connect.Request[v1.GetTierRequest]) (*connect.Response[v1.GetTierResponse], error)
+	GetTier(context.Context, *v1.GetTierRequest) (*v1.GetTierResponse, error)
 }
 
 // NewPremiumServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -84,7 +88,7 @@ type PremiumServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewPremiumServiceHandler(svc PremiumServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	premiumServiceMethods := v1.File_api_premium_v1_premium_proto.Services().ByName("PremiumService").Methods()
-	premiumServiceGetTierHandler := connect.NewUnaryHandler(
+	premiumServiceGetTierHandler := connect.NewUnaryHandlerSimple(
 		PremiumServiceGetTierProcedure,
 		svc.GetTier,
 		connect.WithSchema(premiumServiceMethods.ByName("GetTier")),
@@ -103,6 +107,6 @@ func NewPremiumServiceHandler(svc PremiumServiceHandler, opts ...connect.Handler
 // UnimplementedPremiumServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedPremiumServiceHandler struct{}
 
-func (UnimplementedPremiumServiceHandler) GetTier(context.Context, *connect.Request[v1.GetTierRequest]) (*connect.Response[v1.GetTierResponse], error) {
+func (UnimplementedPremiumServiceHandler) GetTier(context.Context, *v1.GetTierRequest) (*v1.GetTierResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.premium.v1.PremiumService.GetTier is not implemented"))
 }

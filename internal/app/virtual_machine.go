@@ -4,8 +4,6 @@ import (
 	"context"
 	"strings"
 
-	"connectrpc.com/connect"
-
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
@@ -34,273 +32,283 @@ func NewVirtualMachineService(uc *core.VirtualMachineUseCase) *VirtualMachineSer
 
 var _ pbconnect.VirtualMachineServiceHandler = (*VirtualMachineService)(nil)
 
-func (s *VirtualMachineService) ListVirtualMachines(ctx context.Context, req *connect.Request[pb.ListVirtualMachinesRequest]) (*connect.Response[pb.ListVirtualMachinesResponse], error) {
-	vms, err := s.uc.ListVirtualMachines(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+func (s *VirtualMachineService) CheckInfrastructureStatus(ctx context.Context, req *pb.CheckInfrastructureStatusRequest) (*pb.CheckInfrastructureStatusResponse, error) {
+	result, err := s.uc.CheckInfrastructureStatus(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.CheckInfrastructureStatusResponse{}
+	resp.SetResult(pb.CheckInfrastructureStatusResponse_Result(result))
+	return resp, nil
+}
+
+func (s *VirtualMachineService) ListVirtualMachines(ctx context.Context, req *pb.ListVirtualMachinesRequest) (*pb.ListVirtualMachinesResponse, error) {
+	vms, err := s.uc.ListVirtualMachines(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListVirtualMachinesResponse{}
 	resp.SetVirtualMachines(toProtoVirtualMachines(vms))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) GetVirtualMachine(ctx context.Context, req *connect.Request[pb.GetVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, err := s.uc.GetVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+func (s *VirtualMachineService) GetVirtualMachine(ctx context.Context, req *pb.GetVirtualMachineRequest) (*pb.VirtualMachine, error) {
+	vm, err := s.uc.GetVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoVirtualMachine(vm)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) CreateVirtualMachine(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, err := s.uc.CreateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetInstanceTypeName(), req.Msg.GetBootDataVolumeName(), req.Msg.GetStartupScript())
+func (s *VirtualMachineService) CreateVirtualMachine(ctx context.Context, req *pb.CreateVirtualMachineRequest) (*pb.VirtualMachine, error) {
+	vm, err := s.uc.CreateVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetInstanceTypeName(), req.GetBootDataVolumeName(), req.GetStartupScript())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoVirtualMachine(vm)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) DeleteVirtualMachine(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) DeleteVirtualMachine(ctx context.Context, req *pb.DeleteVirtualMachineRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) AttachVirtualMachineDisk(ctx context.Context, req *connect.Request[pb.AttachVirtualMachineDiskRequest]) (*connect.Response[pb.VirtualMachine_Disk], error) {
-	disk, volume, err := s.uc.AttachVirtualMachineDisk(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDataVolumeName())
+func (s *VirtualMachineService) AttachVirtualMachineDisk(ctx context.Context, req *pb.AttachVirtualMachineDiskRequest) (*pb.VirtualMachine_Disk, error) {
+	disk, volume, err := s.uc.AttachVirtualMachineDisk(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDataVolumeName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoVirtualMachineDisk(disk, []virtv1.Volume{*volume})
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) DetachVirtualMachineDisk(ctx context.Context, req *connect.Request[pb.DetachVirtualMachineDiskRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DetachVirtualMachineDisk(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDataVolumeName()); err != nil {
+func (s *VirtualMachineService) DetachVirtualMachineDisk(ctx context.Context, req *pb.DetachVirtualMachineDiskRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DetachVirtualMachineDisk(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDataVolumeName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) CreateVirtualMachineClone(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineCloneRequest]) (*connect.Response[pb.VirtualMachine_Clone], error) {
-	clone, err := s.uc.CreateVirtualMachineClone(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetSourceVirtualMachineName(), req.Msg.GetTargetVirtualMachineName())
+func (s *VirtualMachineService) CreateVirtualMachineClone(ctx context.Context, req *pb.CreateVirtualMachineCloneRequest) (*pb.VirtualMachine_Clone, error) {
+	clone, err := s.uc.CreateVirtualMachineClone(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetSourceVirtualMachineName(), req.GetTargetVirtualMachineName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoVirtualMachineClone(clone)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) DeleteVirtualMachineClone(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineCloneRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteVirtualMachineClone(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) DeleteVirtualMachineClone(ctx context.Context, req *pb.DeleteVirtualMachineCloneRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteVirtualMachineClone(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) CreateVirtualMachineSnapshot(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineSnapshotRequest]) (*connect.Response[pb.VirtualMachine_Snapshot], error) {
-	snapshot, err := s.uc.CreateVirtualMachineSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetVirtualMachineName())
+func (s *VirtualMachineService) CreateVirtualMachineSnapshot(ctx context.Context, req *pb.CreateVirtualMachineSnapshotRequest) (*pb.VirtualMachine_Snapshot, error) {
+	snapshot, err := s.uc.CreateVirtualMachineSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetVirtualMachineName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoVirtualMachineSnapshot(snapshot)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) DeleteVirtualMachineSnapshot(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteVirtualMachineSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) DeleteVirtualMachineSnapshot(ctx context.Context, req *pb.DeleteVirtualMachineSnapshotRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteVirtualMachineSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) CreateVirtualMachineRestore(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineRestoreRequest]) (*connect.Response[pb.VirtualMachine_Restore], error) {
-	restore, err := s.uc.CreateVirtualMachineRestore(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetVirtualMachineName(), req.Msg.GetSnapshotName())
+func (s *VirtualMachineService) CreateVirtualMachineRestore(ctx context.Context, req *pb.CreateVirtualMachineRestoreRequest) (*pb.VirtualMachine_Restore, error) {
+	restore, err := s.uc.CreateVirtualMachineRestore(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetVirtualMachineName(), req.GetSnapshotName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoVirtualMachineRestore(restore)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) DeleteVirtualMachineRestore(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineRestoreRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteVirtualMachineRestore(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) DeleteVirtualMachineRestore(ctx context.Context, req *pb.DeleteVirtualMachineRestoreRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteVirtualMachineRestore(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) StartVirtualMachine(ctx context.Context, req *connect.Request[pb.StartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.StartVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) StartVirtualMachine(ctx context.Context, req *pb.StartVirtualMachineRequest) (*emptypb.Empty, error) {
+	if err := s.uc.StartVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) StopVirtualMachine(ctx context.Context, req *connect.Request[pb.StopVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.StopVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) StopVirtualMachine(ctx context.Context, req *pb.StopVirtualMachineRequest) (*emptypb.Empty, error) {
+	if err := s.uc.StopVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) RestartVirtualMachine(ctx context.Context, req *connect.Request[pb.RestartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.RestartVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) RestartVirtualMachine(ctx context.Context, req *pb.RestartVirtualMachineRequest) (*emptypb.Empty, error) {
+	if err := s.uc.RestartVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) PauseInstance(ctx context.Context, req *connect.Request[pb.PauseInstanceRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.PauseInstance(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) PauseInstance(ctx context.Context, req *pb.PauseInstanceRequest) (*emptypb.Empty, error) {
+	if err := s.uc.PauseInstance(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) ResumeInstance(ctx context.Context, req *connect.Request[pb.ResumeInstanceRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.ResumeInstance(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) ResumeInstance(ctx context.Context, req *pb.ResumeInstanceRequest) (*emptypb.Empty, error) {
+	if err := s.uc.ResumeInstance(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) MigrateInstance(ctx context.Context, req *connect.Request[pb.MigrateInstanceRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.MigrateInstance(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetHostname()); err != nil {
+func (s *VirtualMachineService) MigrateInstance(ctx context.Context, req *pb.MigrateInstanceRequest) (*emptypb.Empty, error) {
+	if err := s.uc.MigrateInstance(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetHostname()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) ListDataVolumes(ctx context.Context, req *connect.Request[pb.ListDataVolumesRequest]) (*connect.Response[pb.ListDataVolumesResponse], error) {
-	its, err := s.uc.ListDataVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetBootImage())
+func (s *VirtualMachineService) ListDataVolumes(ctx context.Context, req *pb.ListDataVolumesRequest) (*pb.ListDataVolumesResponse, error) {
+	its, err := s.uc.ListDataVolumes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetBootImage())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListDataVolumesResponse{}
 	resp.SetDataVolumes(toProtoDataVolumes(its))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) GetDataVolume(ctx context.Context, req *connect.Request[pb.GetDataVolumeRequest]) (*connect.Response[pb.DataVolume], error) {
-	it, err := s.uc.GetDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+func (s *VirtualMachineService) GetDataVolume(ctx context.Context, req *pb.GetDataVolumeRequest) (*pb.DataVolume, error) {
+	it, err := s.uc.GetDataVolume(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoDataVolume(it)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) CreateDataVolume(ctx context.Context, req *connect.Request[pb.CreateDataVolumeRequest]) (*connect.Response[pb.DataVolume], error) {
-	src := req.Msg.GetSource()
-	it, err := s.uc.CreateDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), core.SourceType(src.GetType()), src.GetData(), req.Msg.GetSizeBytes(), req.Msg.GetBootImage())
+func (s *VirtualMachineService) CreateDataVolume(ctx context.Context, req *pb.CreateDataVolumeRequest) (*pb.DataVolume, error) {
+	src := req.GetSource()
+	it, err := s.uc.CreateDataVolume(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), core.SourceType(src.GetType()), src.GetData(), req.GetSizeBytes(), req.GetBootImage())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoDataVolume(it)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) DeleteDataVolume(ctx context.Context, req *connect.Request[pb.DeleteDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) DeleteDataVolume(ctx context.Context, req *pb.DeleteDataVolumeRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteDataVolume(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) ExtendDataVolume(ctx context.Context, req *connect.Request[pb.ExtendDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.ExtendDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetSizeBytes()); err != nil {
+func (s *VirtualMachineService) ExtendDataVolume(ctx context.Context, req *pb.ExtendDataVolumeRequest) (*emptypb.Empty, error) {
+	if err := s.uc.ExtendDataVolume(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetSizeBytes()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) ListClusterWideInstanceTypes(ctx context.Context, req *connect.Request[pb.ListClusterWideInstanceTypesRequest]) (*connect.Response[pb.ListClusterWideInstanceTypesResponse], error) {
-	its, err := s.uc.ListClusterWideInstanceTypes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *VirtualMachineService) ListClusterWideInstanceTypes(ctx context.Context, req *pb.ListClusterWideInstanceTypesRequest) (*pb.ListClusterWideInstanceTypesResponse, error) {
+	its, err := s.uc.ListClusterWideInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListClusterWideInstanceTypesResponse{}
 	resp.SetInstanceTypes(toProtoClusterInstanceTypes(its))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) ListInstanceTypes(ctx context.Context, req *connect.Request[pb.ListInstanceTypesRequest]) (*connect.Response[pb.ListInstanceTypesResponse], error) {
-	its, err := s.uc.ListInstanceTypes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+func (s *VirtualMachineService) ListInstanceTypes(ctx context.Context, req *pb.ListInstanceTypesRequest) (*pb.ListInstanceTypesResponse, error) {
+	its, err := s.uc.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListInstanceTypesResponse{}
 	resp.SetInstanceTypes(toProtoInstanceTypes(its))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) GetInstanceType(ctx context.Context, req *connect.Request[pb.GetInstanceTypeRequest]) (*connect.Response[pb.InstanceType], error) {
-	it, err := s.uc.GetInstanceType(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+func (s *VirtualMachineService) GetInstanceType(ctx context.Context, req *pb.GetInstanceTypeRequest) (*pb.InstanceType, error) {
+	it, err := s.uc.GetInstanceType(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoInstanceType(it)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) CreateInstanceType(ctx context.Context, req *connect.Request[pb.CreateInstanceTypeRequest]) (*connect.Response[pb.InstanceType], error) {
-	it, err := s.uc.CreateInstanceType(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetCpuCores(), req.Msg.GetMemoryBytes())
+func (s *VirtualMachineService) CreateInstanceType(ctx context.Context, req *pb.CreateInstanceTypeRequest) (*pb.InstanceType, error) {
+	it, err := s.uc.CreateInstanceType(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetCpuCores(), req.GetMemoryBytes())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoInstanceType(it)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) DeleteInstanceType(ctx context.Context, req *connect.Request[pb.DeleteInstanceTypeRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteInstanceType(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) DeleteInstanceType(ctx context.Context, req *pb.DeleteInstanceTypeRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteInstanceType(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) CreateVirtualMachineService(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineServiceRequest]) (*connect.Response[apppb.Application_Service], error) {
-	svc, err := s.uc.CreateVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetVirtualMachineName(), toPorts(req.Msg.GetPorts()))
+func (s *VirtualMachineService) CreateVirtualMachineService(ctx context.Context, req *pb.CreateVirtualMachineServiceRequest) (*apppb.Application_Service, error) {
+	svc, err := s.uc.CreateVirtualMachineService(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetVirtualMachineName(), toPorts(req.GetPorts()))
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoService(svc)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) UpdateVirtualMachineService(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineServiceRequest]) (*connect.Response[apppb.Application_Service], error) {
-	svc, err := s.uc.UpdateVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), toPorts(req.Msg.GetPorts()))
+func (s *VirtualMachineService) UpdateVirtualMachineService(ctx context.Context, req *pb.UpdateVirtualMachineServiceRequest) (*apppb.Application_Service, error) {
+	svc, err := s.uc.UpdateVirtualMachineService(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), toPorts(req.GetPorts()))
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoService(svc)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *VirtualMachineService) DeleteVirtualMachineService(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *VirtualMachineService) DeleteVirtualMachineService(ctx context.Context, req *pb.DeleteVirtualMachineServiceRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteVirtualMachineService(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
 func toPorts(ps []*apppb.Application_Service_Port) []corev1.ServicePort {
@@ -317,7 +325,7 @@ func toPort(p *apppb.Application_Service_Port) corev1.ServicePort {
 		Port:       p.GetPort(),
 		NodePort:   p.GetNodePort(),
 		Protocol:   corev1.Protocol(strings.ToUpper(p.GetProtocol())),
-		TargetPort: intstr.FromString(p.GetTargetPort()),
+		TargetPort: intstr.Parse(p.GetTargetPort()),
 	}
 }
 

@@ -3,10 +3,13 @@ package core
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"connectrpc.com/connect"
 	"golang.org/x/sync/errgroup"
+	"helm.sh/helm/v3/pkg/release"
+	"helm.sh/helm/v3/pkg/storage/driver"
 
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/client-go/rest"
@@ -111,12 +114,13 @@ type VirtualMachineUseCase struct {
 	kubeIT       KubeInstanceTypeRepo
 	kubeCore     KubeCoreRepo
 	kubeStorage  KubeStorageRepo
+	release      ReleaseRepo
 	action       ActionRepo
 	facility     FacilityRepo
 	machine      MachineRepo
 }
 
-func NewVirtualMachineUseCase(kubeVirt KubeVirtRepo, kubeClone KubeVirtCloneRepo, kubeSnapshot KubeVirtSnapshotRepo, kubeCDI KubeCDIRepo, kubeIT KubeInstanceTypeRepo, kubeCore KubeCoreRepo, kubeStorage KubeStorageRepo, action ActionRepo, facility FacilityRepo, machine MachineRepo) *VirtualMachineUseCase {
+func NewVirtualMachineUseCase(kubeVirt KubeVirtRepo, kubeClone KubeVirtCloneRepo, kubeSnapshot KubeVirtSnapshotRepo, kubeCDI KubeCDIRepo, kubeIT KubeInstanceTypeRepo, kubeCore KubeCoreRepo, kubeStorage KubeStorageRepo, release ReleaseRepo, action ActionRepo, facility FacilityRepo, machine MachineRepo) *VirtualMachineUseCase {
 	return &VirtualMachineUseCase{
 		kubeVirt:     kubeVirt,
 		kubeClone:    kubeClone,
@@ -125,10 +129,34 @@ func NewVirtualMachineUseCase(kubeVirt KubeVirtRepo, kubeClone KubeVirtCloneRepo
 		kubeIT:       kubeIT,
 		kubeCore:     kubeCore,
 		kubeStorage:  kubeStorage,
+		release:      release,
 		action:       action,
 		facility:     facility,
 		machine:      machine,
 	}
+}
+
+func (uc *VirtualMachineUseCase) CheckInfrastructureStatus(ctx context.Context, uuid, facility string) (int32, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return 0, err
+	}
+	rel, err := uc.release.Get(config, LLMd, LLMd)
+	if err != nil {
+		if errors.Is(err, driver.ErrReleaseNotFound) {
+			return kubevirtHealthNotInstalled, nil
+		}
+		return 0, err
+	}
+	switch {
+	case rel.Info.Status.IsPending():
+		return kubevirtHealthPending, nil
+	case rel.Info.Status == release.StatusDeployed:
+		return kubevirtHealthOK, nil
+	case rel.Info.Status == release.StatusFailed:
+		return kubevirtHealthFailed, nil
+	}
+	return 0, nil
 }
 
 func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineData, error) {
@@ -173,7 +201,35 @@ func (uc *VirtualMachineUseCase) DeleteVirtualMachine(ctx context.Context, uuid,
 	if err != nil {
 		return err
 	}
-	return uc.kubeVirt.DeleteVirtualMachine(ctx, config, namespace, name)
+
+	// Get related services before deleting the virtual machine
+	services, err := uc.kubeCore.ListVirtualMachineServices(ctx, config, namespace, name)
+	if err != nil {
+		return err
+	}
+
+	// Get related snapshots before deleting the virtual machine
+	snapshots, err := uc.kubeSnapshot.ListVirtualMachineSnapshots(ctx, config, namespace, name)
+	if err != nil {
+		return err
+	}
+
+	// Delete the virtual machine first
+	if err := uc.kubeVirt.DeleteVirtualMachine(ctx, config, namespace, name); err != nil {
+		return err
+	}
+
+	// Delete related services
+	for i := range services {
+		_ = uc.kubeCore.DeleteService(ctx, config, namespace, services[i].Name)
+	}
+
+	// Delete related snapshots
+	for i := range snapshots {
+		_ = uc.kubeSnapshot.DeleteVirtualMachineSnapshot(ctx, config, namespace, snapshots[i].Name)
+	}
+
+	return nil
 }
 
 func (uc *VirtualMachineUseCase) AttachVirtualMachineDisk(ctx context.Context, uuid, facility, namespace, name, dvName string) (disk *VirtualMachineDisk, volume *VirtualMachineVolume, err error) {

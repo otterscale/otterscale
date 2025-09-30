@@ -27,31 +27,31 @@ func NewBISTService(uc *core.BISTUseCase) *BISTService {
 
 var _ pbconnect.BISTServiceHandler = (*BISTService)(nil)
 
-func (s *BISTService) ListTestResults(ctx context.Context, _ *connect.Request[pb.ListTestResultsRequest]) (*connect.Response[pb.ListTestResultsResponse], error) {
+func (s *BISTService) ListTestResults(ctx context.Context, _ *pb.ListTestResultsRequest) (*pb.ListTestResultsResponse, error) {
 	results, err := s.uc.ListResults(ctx)
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListTestResultsResponse{}
 	resp.SetTestResults(toProtoTestResults(results))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *BISTService) CreateTestResult(ctx context.Context, req *connect.Request[pb.CreateTestResultRequest]) (*connect.Response[pb.TestResult], error) {
+func (s *BISTService) CreateTestResult(ctx context.Context, req *pb.CreateTestResultRequest) (*pb.TestResult, error) {
 	var (
 		result *core.BISTResult
 		err    error
 	)
-	switch req.Msg.WhichKind() {
+	switch req.WhichKind() {
 	case pb.CreateTestResultRequest_Fio_case:
-		fio := req.Msg.GetFio()
-		result, err = s.uc.CreateFIOResult(ctx, req.Msg.GetName(), req.Msg.GetCreatedBy(), toCoreFIOTarget(fio.GetCephBlockDevice(), fio.GetNetworkFileSystem()), toCoreFIOInput(fio.GetInput()))
+		fio := req.GetFio()
+		result, err = s.uc.CreateFIOResult(ctx, req.GetName(), req.GetCreatedBy(), toCoreFIOTarget(fio.GetCephBlockDevice(), fio.GetNetworkFileSystem()), toCoreFIOInput(fio.GetInput()))
 		if err != nil {
 			return nil, err
 		}
 	case pb.CreateTestResultRequest_Warp_case:
-		warp := req.Msg.GetWarp()
-		result, err = s.uc.CreateWarpResult(ctx, req.Msg.GetName(), req.Msg.GetCreatedBy(), toCoreWarpTarget(warp.GetInternalObjectService(), warp.GetExternalObjectService()), toCoreWarpInput(warp.GetInput()))
+		warp := req.GetWarp()
+		result, err = s.uc.CreateWarpResult(ctx, req.GetName(), req.GetCreatedBy(), toCoreWarpTarget(warp.GetInternalObjectService(), warp.GetExternalObjectService()), toCoreWarpInput(warp.GetInput()))
 		if err != nil {
 			return nil, err
 		}
@@ -59,25 +59,25 @@ func (s *BISTService) CreateTestResult(ctx context.Context, req *connect.Request
 		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("kind is empty"))
 	}
 	resp := toProtoTestResult(result)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *BISTService) DeleteTestResult(ctx context.Context, req *connect.Request[pb.DeleteTestResultRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteResult(ctx, req.Msg.GetName()); err != nil {
+func (s *BISTService) DeleteTestResult(ctx context.Context, req *pb.DeleteTestResultRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteResult(ctx, req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *BISTService) ListInternalObjectServices(ctx context.Context, req *connect.Request[pb.ListInternalObjectServicesRequest]) (*connect.Response[pb.ListInternalObjectServicesResponse], error) {
-	services, err := s.uc.ListInternalObjectServices(ctx, req.Msg.GetScopeUuid())
+func (s *BISTService) ListInternalObjectServices(ctx context.Context, req *pb.ListInternalObjectServicesRequest) (*pb.ListInternalObjectServicesResponse, error) {
+	services, err := s.uc.ListInternalObjectServices(ctx, req.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListInternalObjectServicesResponse{}
 	resp.SetInternalObjectServices(toProtoInternalObjectServices(services))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
 func toCoreFIOTarget(c *pb.CephBlockDevice, n *pb.NetworkFileSystem) core.FIOTarget {

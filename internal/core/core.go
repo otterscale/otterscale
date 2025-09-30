@@ -59,6 +59,9 @@ func toPlacement(p *MachinePlacement, directive string) *instance.Placement {
 
 func toConstraint(c *MachineConstraint) constraints.Value {
 	constraint := constraints.Value{}
+	if c == nil {
+		return constraint
+	}
 	if c.Architecture != "" {
 		constraint.Arch = &c.Architecture
 	}

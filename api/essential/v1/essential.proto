@@ -13,6 +13,8 @@ service EssentialService {
   rpc CreateSingleNode(CreateSingleNodeRequest) returns (google.protobuf.Empty);
   rpc CreateHighAvailabilityCluster(CreateHighAvailabilityClusterRequest) returns (google.protobuf.Empty);
   rpc AddUnits(AddUnitsRequest) returns (google.protobuf.Empty);
+  rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse);
+  rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse);
 }
 
 message Essential {
@@ -96,4 +98,26 @@ message AddUnitsRequest {
   int32 number = 4;
   repeated string machine_ids = 5;
   bool force = 11;
+}
+
+message ListKubernetesNodeLabelsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string hostname = 3;
+  bool all = 11;
+}
+
+message ListKubernetesNodeLabelsResponse {
+  map<string, string> labels = 1;
+}
+
+message UpdateKubernetesNodeLabelsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string hostname = 3;
+  map<string, string> labels = 4;
+}
+
+message UpdateKubernetesNodeLabelsResponse {
+  map<string, string> labels = 1;
 }
