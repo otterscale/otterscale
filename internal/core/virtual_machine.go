@@ -215,8 +215,7 @@ func (uc *VirtualMachineUseCase) DeleteVirtualMachine(ctx context.Context, uuid,
 	}
 
 	// Delete the virtual machine first
-	err = uc.kubeVirt.DeleteVirtualMachine(ctx, config, namespace, name)
-	if err != nil {
+	if err := uc.kubeVirt.DeleteVirtualMachine(ctx, config, namespace, name); err != nil {
 		return err
 	}
 
