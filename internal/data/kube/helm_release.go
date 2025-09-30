@@ -26,15 +26,15 @@ type postRenderer struct {
 	extraAnnotations map[string]string
 }
 
-func newPostRenderer(extraLabels, extraAnnotaions map[string]string) *postRenderer {
+func newPostRenderer(extraLabels, extraAnnotations map[string]string) *postRenderer {
 	return &postRenderer{
 		extraLabels:      extraLabels,
-		extraAnnotations: extraAnnotaions,
+		extraAnnotations: extraAnnotations,
 	}
 }
 
 func (p *postRenderer) Run(renderedManifests *bytes.Buffer) (*bytes.Buffer, error) {
-	if len(p.extraLabels) == 0 {
+	if len(p.extraLabels) == 0 && len(p.extraAnnotations) == 0 {
 		return renderedManifests, nil
 	}
 	nodes, err := kio.FromBytes(renderedManifests.Bytes())
