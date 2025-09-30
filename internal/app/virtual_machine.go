@@ -325,7 +325,7 @@ func toPort(p *apppb.Application_Service_Port) corev1.ServicePort {
 		Port:       p.GetPort(),
 		NodePort:   p.GetNodePort(),
 		Protocol:   corev1.Protocol(strings.ToUpper(p.GetProtocol())),
-		TargetPort: intstr.FromString(p.GetTargetPort()),
+		TargetPort: intstr.Parse(p.GetTargetPort()),
 	}
 }
 
