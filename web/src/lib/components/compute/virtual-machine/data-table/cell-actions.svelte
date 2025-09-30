@@ -1,14 +1,14 @@
 <script lang="ts" module>
 	import Clone from './action-clone.svelte';
 	import Delete from './action-delete.svelte';
-	import Edit from './action-edit.svelte';
 	import Migrate from './action-migrate.svelte';
 	import PauseResume from './action-pause-resume.svelte';
+	import Restart from './action-restart.svelte';
+	import Restore from './action-restore.svelte';
 	import Snapshot from './action-snapshot.svelte';
 	import StartStop from './action-start-stop.svelte';
-	import StartupScript from './action-startup-script.svelte';
 
-	import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
 </script>
@@ -19,6 +19,7 @@
 
 <Layout.Actions>
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
+	<Layout.ActionSeparator />
 	<Layout.ActionItem>
 		<PauseResume {virtualMachine} />
 	</Layout.ActionItem>
@@ -26,14 +27,16 @@
 		<StartStop {virtualMachine} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<StartupScript {virtualMachine} />
+		<Restart {virtualMachine} />
 	</Layout.ActionItem>
+	<Layout.ActionSeparator />
 	<Layout.ActionItem>
 		<Snapshot {virtualMachine} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Edit {virtualMachine} />
+		<Restore {virtualMachine} />
 	</Layout.ActionItem>
+	<Layout.ActionSeparator />
 	<Layout.ActionItem>
 		<Clone {virtualMachine} />
 	</Layout.ActionItem>

@@ -6,7 +6,7 @@
 	import { DataTable } from './data-table/index';
 	import { Statistics } from './statistics';
 
-	import { KubeVirtService, type VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import { VirtualMachineService, type VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 </script>
@@ -20,9 +20,9 @@
 
 	const virtualMachines = writable<VirtualMachine[]>([]);
 
-	const KubeVirtClient = createClient(KubeVirtService, transport);
+	const VirtualMachineClient = createClient(VirtualMachineService, transport);
 	const reloadManager = new ReloadManager(() => {
-		KubeVirtClient.listVirtualMachines({
+		VirtualMachineClient.listVirtualMachines({
 			scopeUuid: scopeUuid,
 			facilityName: facilityName,
 			namespace: namespace,
@@ -33,7 +33,7 @@
 	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
-		KubeVirtClient.listVirtualMachines({
+		VirtualMachineClient.listVirtualMachines({
 			scopeUuid: scopeUuid,
 			facilityName: facilityName,
 			namespace: namespace,

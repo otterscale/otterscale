@@ -1,41 +1,40 @@
 <script lang="ts">
-	import { type VirtualMachine, VirtualMachine_status } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import { type VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
 	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { formatCapacity, formatProgressColor } from '$lib/formatter';
+	import { formatProgressColor } from '$lib/formatter';
+	// import { formatCapacity } from '$lib/formatter';
 
 	let { virtualMachines }: { virtualMachines: VirtualMachine[] } = $props();
 
 	// Calculate statistics
 	const totalMachines = $derived(virtualMachines.length);
 	const totalDisks = $derived(virtualMachines.reduce((acc, vm) => acc + vm.disks.length, 0));
-	const totalDataVolumes = $derived(
-		virtualMachines.reduce(
-			(acc, vm) => acc + vm.disks.filter((disk) => disk.sourceData.case === 'dataVolume').length,
-			0,
-		),
-	);
-	const storageFormatted = $derived(
-		formatCapacity(
-			virtualMachines.reduce((acc, vm) => {
-				return (
-					acc +
-					vm.disks.reduce((diskAcc, disk) => {
-						if (disk.sourceData.case === 'dataVolume') {
-							return diskAcc + Number(disk.sourceData.value.sizeBytes);
-						}
-						return diskAcc;
-					}, 0)
-				);
-			}, 0),
-		),
-	);
-	const machinesOn = $derived(
-		virtualMachines.filter((vm) => vm.statusPhase === VirtualMachine_status.RUNNING).length,
-	);
+	// const totalDataVolumes = $derived(
+	// 	virtualMachines.reduce(
+	// 		(acc, vm) => acc + vm.disks.filter((disk) => disk.sourceData.case === 'dataVolume').length,
+	// 		0,
+	// 	),
+	// );
+	// const storageFormatted = $derived(
+	// 	formatCapacity(
+	// 		virtualMachines.reduce((acc, vm) => {
+	// 			return (
+	// 				acc +
+	// 				vm.disks.reduce((diskAcc, disk) => {
+	// 					if (disk.sourceData.case === 'dataVolume') {
+	// 						return diskAcc + Number(disk.sourceData.value.sizeBytes);
+	// 					}
+	// 					return diskAcc;
+	// 				}, 0)
+	// 			);
+	// 		}, 0),
+	// 	),
+	// );
+	const machinesOn = $derived(virtualMachines.filter((vm) => vm.status === 'Running').length);
 	const powerOnPercentage = $derived(totalMachines === 0 ? 0 : Math.round((machinesOn / totalMachines) * 100));
 </script>
 
@@ -60,7 +59,7 @@
 		{/snippet}
 	</Layout>
 
-	<Layout>
+	<!-- <Layout>
 		{#snippet title()}
 			<Title title="DATA VOLUME" />
 		{/snippet}
@@ -79,7 +78,7 @@
 				over {totalDataVolumes} Data Volumes
 			</p>
 		{/snippet}
-	</Layout>
+	</Layout> -->
 
 	<Layout>
 		{#snippet title()}

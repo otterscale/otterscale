@@ -4,8 +4,11 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { VirtualMachine, DeleteVirtualMachineRequest } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type {
+		VirtualMachine_Restore,
+		DeleteVirtualMachineRestoreRequest,
+	} from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -15,7 +18,7 @@
 </script>
 
 <script lang="ts">
-	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
+	let { virtualMachineRestore }: { virtualMachineRestore: VirtualMachine_Restore } = $props();
 
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
@@ -27,8 +30,8 @@
 		scopeUuid: $currentKubernetes?.scopeUuid,
 		facilityName: $currentKubernetes?.name,
 		name: '',
-		namespace: virtualMachine.namespace,
-	} as DeleteVirtualMachineRequest;
+		namespace: virtualMachineRestore.namespace,
+	} as DeleteVirtualMachineRestoreRequest;
 	let request = $state(defaults);
 	function reset() {
 		request = defaults;
@@ -46,17 +49,17 @@
 		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.delete_virtual_machine()}</Modal.Header>
+		<Modal.Header>{m.delete_restore()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>{m.virtual_machine_name()}</Form.Label>
+					<Form.Label>{m.restore_name()}</Form.Label>
 					<Form.Help>
-						{m.deletion_warning({ identifier: m.virtual_machine_name() })}
+						{m.deletion_warning({ identifier: m.restore_name() })}
 					</Form.Help>
 					<SingleInput.Confirm
 						required
-						target={virtualMachine.name ?? ''}
+						target={virtualMachineRestore.name ?? ''}
 						bind:value={request.name}
 						bind:invalid
 					/>
@@ -75,14 +78,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => virtualMachineClient.deleteVirtualMachine(request), {
-							loading: `Deleting ${virtualMachine.name}...`,
+						toast.promise(() => virtualMachineClient.deleteVirtualMachineRestore(request), {
+							loading: `Deleting ${virtualMachineRestore.name}...`,
 							success: () => {
 								reloadManager.force();
-								return `Successfully deleted ${virtualMachine.name}`;
+								return `Successfully deleted ${virtualMachineRestore.name}`;
 							},
 							error: (error) => {
-								let message = `Failed to delete ${virtualMachine.name}`;
+								let message = `Failed to delete ${virtualMachineRestore.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY,

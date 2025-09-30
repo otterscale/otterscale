@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Column, Table } from '@tanstack/table-core';
 
-	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
+	import type { VirtualMachine_Restore } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
@@ -9,19 +9,16 @@
 	export const headers = {
 		row_picker,
 		name,
-		bus,
-		bootOrder,
-		dataVolume,
-		type,
-		phase,
-		boot,
-		size,
+		namespace,
+		targetName,
+		snapshotName,
+		complete,
+		createTime,
 		actions,
-		// data, // start script
 	};
 </script>
 
-{#snippet row_picker(table: Table<EnhancedDisk>)}
+{#snippet row_picker(table: Table<VirtualMachine_Restore>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
 			<Headers.RowPicker {table} />
@@ -29,7 +26,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet name(column: Column<EnhancedDisk>)}
+{#snippet name(column: Column<VirtualMachine_Restore>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -38,66 +35,48 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet bus(column: Column<EnhancedDisk>)}
+{#snippet namespace(column: Column<VirtualMachine_Restore>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.bus()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.namespace()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
-{#snippet bootOrder(column: Column<EnhancedDisk>)}
+{#snippet targetName(column: Column<VirtualMachine_Restore>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.boot_order()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.target_name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
-{#snippet dataVolume(column: Column<EnhancedDisk>)}
+{#snippet snapshotName(column: Column<VirtualMachine_Restore>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.data_volume()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.snapshot_name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
-{#snippet type(column: Column<EnhancedDisk>)}
+{#snippet complete(column: Column<VirtualMachine_Restore>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.type()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.complete()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
-{#snippet phase(column: Column<EnhancedDisk>)}
+{#snippet createTime(column: Column<VirtualMachine_Restore>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.phase()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.create_time()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet boot(column: Column<EnhancedDisk>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.boot()}</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet size(column: Column<EnhancedDisk>)}
-	<Layout.Header class="justify-end">
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.size()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

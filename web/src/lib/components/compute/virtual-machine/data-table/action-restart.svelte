@@ -17,7 +17,7 @@
 	let loading = $state(false);
 	let statusAtClick = $state('Unknown');
 	const isRunning = $derived(virtualMachine.status === 'Running');
-	const isStarting = $derived(virtualMachine.status === 'Starting');
+	const isRestarting = $derived(virtualMachine.status === 'Restarting');
 
 	$effect(() => {
 		// If we are in a loading state and the status has changed from what it was when we clicked,
@@ -27,7 +27,7 @@
 		}
 	});
 
-	async function startVM() {
+	async function restartVM() {
 		const request = {
 			scopeUuid: $currentKubernetes?.scopeUuid,
 			facilityName: $currentKubernetes?.name,
@@ -35,32 +35,11 @@
 			namespace: virtualMachine.namespace,
 		};
 
-		toast.promise(() => virtualMachineClient.startVirtualMachine(request), {
-			loading: `Starting virtual machine ${request.name}...`,
-			success: () => `Successfully started virtual machine ${request.name}.`,
+		toast.promise(() => virtualMachineClient.restartVirtualMachine(request), {
+			loading: `Restarting virtual machine ${request.name}...`,
+			success: () => `Successfully restarted virtual machine ${request.name}.`,
 			error: (e) => {
-				const msg = `Failed to start virtual machine ${request.name}.`;
-				toast.error(msg, {
-					description: (e as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
-				});
-				return msg;
-			},
-		});
-	}
-	async function stopVM() {
-		const request = {
-			scopeUuid: $currentKubernetes?.scopeUuid,
-			facilityName: $currentKubernetes?.name,
-			name: virtualMachine.name,
-			namespace: virtualMachine.namespace,
-		};
-
-		toast.promise(() => virtualMachineClient.stopVirtualMachine(request), {
-			loading: `Stopping virtual machine ${request.name}...`,
-			success: () => `Successfully stopped virtual machine ${request.name}.`,
-			error: (e) => {
-				const msg = `Failed to stop virtual machine ${request.name}.`;
+				const msg = `Failed to restart virtual machine ${request.name}.`;
 				toast.error(msg, {
 					description: (e as ConnectError).message.toString(),
 					duration: Number.POSITIVE_INFINITY,
@@ -75,29 +54,22 @@
 		statusAtClick = virtualMachine.status;
 		loading = true;
 
-		if (isRunning) {
-			await stopVM();
-		} else {
-			await startVM();
-		}
+		await restartVM();
 	}
 </script>
 
 <div class="flex items-center justify-end gap-1">
 	<button
 		onclick={handleClick}
-		disabled={loading || isStarting}
+		disabled={loading || !isRunning}
 		class="flex items-center gap-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
 	>
-		{#if loading || isStarting}
+		{#if loading || isRestarting}
 			<Icon icon="ph:spinner-gap" class="animate-spin" />
 			{m.please_wait()}
-		{:else if isRunning}
-			<Icon icon="ph:power" class="text-destructive" />
-			{m.vm_stop()}
 		{:else}
-			<Icon icon="ph:power" class="text-accent-foreground" />
-			{m.vm_start()}
+			<Icon icon="ph:arrow-clockwise" class="text-accent-foreground" />
+			{m.restarts()}
 		{/if}
 	</button>
 </div>

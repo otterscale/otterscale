@@ -4,8 +4,8 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { VirtualMachine, MigrateVirtualMachineRequest } from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { KubeVirtService } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type { VirtualMachine, MigrateInstanceRequest } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -20,16 +20,16 @@
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
-	const KubeVirtClient = createClient(KubeVirtService, transport);
+	const virtualMachineClient = createClient(VirtualMachineService, transport);
 	let invalid = $state(false);
 
 	const defaults = {
 		scopeUuid: $currentKubernetes?.scopeUuid,
 		facilityName: $currentKubernetes?.name,
-		name: virtualMachine.metadata?.name,
-		namespace: virtualMachine.metadata?.namespace,
-		targetNode: '',
-	} as MigrateVirtualMachineRequest;
+		namespace: virtualMachine.namespace,
+		name: virtualMachine.name,
+		hostname: '',
+	} as MigrateInstanceRequest;
 	let request = $state(defaults);
 	function reset() {
 		request = defaults;
@@ -51,9 +51,8 @@
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>{m.target_node()}</Form.Label>
-					<Form.Help>{m.migrate_virtual_machine_target_node_direction()}</Form.Help>
-					<SingleInput.General type="text" bind:value={request.targetNode} bind:invalid />
+					<Form.Label>{m.hostname()}</Form.Label>
+					<SingleInput.General type="text" bind:value={request.hostname} bind:invalid />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -69,11 +68,11 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => KubeVirtClient.migrateVirtualMachine(request), {
-							loading: `Migrating ${request.name} to ${request.targetNode}...`,
+						toast.promise(() => virtualMachineClient.migrateInstance(request), {
+							loading: `Migrating ${request.name} to ${request.hostname}...`,
 							success: () => {
 								reloadManager.force();
-								return `Successfully migrated ${request.name} to ${request.targetNode}`;
+								return `Successfully migrated ${request.name} to ${request.hostname}`;
 							},
 							error: (error) => {
 								let message = `Failed to migrate ${request.name}`;

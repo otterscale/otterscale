@@ -1,18 +1,18 @@
 <script lang="ts" module>
-	import Detach from './action-detach.svelte';
+	import Delete from './action-delete.svelte';
 
-	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
+	import type { VirtualMachine_Restore } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">
-	let { enhancedDisk }: { enhancedDisk: EnhancedDisk } = $props();
+	let { virtualMachineRestore }: { virtualMachineRestore: VirtualMachine_Restore } = $props();
 </script>
 
 <Layout.Actions>
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionItem>
-		<Detach {enhancedDisk} />
+		<Delete {virtualMachineRestore} />
 	</Layout.ActionItem>
 </Layout.Actions>

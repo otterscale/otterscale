@@ -3,22 +3,20 @@ import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
+import type { VirtualMachine_Restore } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
 const messages = {
 	name: m.name(),
-	bus: m.bus(),
-	bootOrder: m.boot_order(),
-	dataVolume: m.data_volume(),
-	type: m.type(),
-	phase: m.phase(),
-	boot: m.boot(),
-	size: m.size(),
+	namespace: m.namespace(),
+	targetName: m.target_name(),
+	snapshotName: m.snapshot_name(),
+	complete: m.complete(),
+	createTime: m.create_time(),
 };
 
-const columns: ColumnDef<EnhancedDisk>[] = [
+const columns: ColumnDef<VirtualMachine_Restore>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -40,68 +38,51 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		},
 	},
 	{
-		accessorKey: 'bus',
+		accessorKey: 'namespace',
 		header: ({ column }) => {
-			return renderSnippet(headers.bus, column);
+			return renderSnippet(headers.namespace, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.bus, row);
+			return renderSnippet(cells.namespace, row);
 		},
 	},
 	{
-		accessorKey: 'bootOrder',
+		accessorKey: 'targetName',
 		header: ({ column }) => {
-			return renderSnippet(headers.bootOrder, column);
+			return renderSnippet(headers.targetName, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.bootOrder, row);
+			return renderSnippet(cells.targetName, row);
 		},
 	},
 	{
-		accessorKey: 'dataVolume',
+		accessorKey: 'snapshotName',
 		header: ({ column }) => {
-			return renderSnippet(headers.dataVolume, column);
+			return renderSnippet(headers.snapshotName, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.dataVolume, row);
+			return renderSnippet(cells.snapshotName, row);
 		},
 	},
 	{
-		accessorKey: 'type',
+		accessorKey: 'complete',
 		header: ({ column }) => {
-			return renderSnippet(headers.type, column);
+			return renderSnippet(headers.complete, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.type, row);
+			return renderSnippet(cells.complete, row);
 		},
 	},
 	{
-		accessorKey: 'phase',
+		accessorKey: 'createTime',
 		header: ({ column }) => {
-			return renderSnippet(headers.phase, column);
+			return renderSnippet(headers.createTime, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.phase, row);
+			return renderSnippet(cells.createTime, row);
 		},
 	},
-	{
-		accessorKey: 'boot',
-		header: ({ column }) => {
-			return renderSnippet(headers.boot, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.boot, row);
-		},
-	},
-	{
-		accessorKey: 'size',
-		header: ({ column }) => {
-			return renderSnippet(headers.size, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.size, row);
-		},
-	},
+
 	{
 		accessorKey: 'actions',
 		header: ({ column }) => {
