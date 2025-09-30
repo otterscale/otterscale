@@ -5,15 +5,17 @@
 
 	import Actions from './cell-actions.svelte';
 
+	import { page } from '$app/state';
 	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import { Disk } from '$lib/components/compute/virtual-machine/disk';
 	import { Port } from '$lib/components/compute/virtual-machine/port';
-	import { getStatusInfo, getInstancePhaseInfo } from '$lib/components/compute/virtual-machine/units/type';
+	import { getStatusInfo } from '$lib/components/compute/virtual-machine/units/type';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatTimeAgo } from '$lib/formatter';
+	import { dynamicPaths } from '$lib/path';
 
 	export const cells = {
 		row_picker,
@@ -22,7 +24,7 @@
 		namespace,
 		machineId,
 		instanceTypeName,
-		instancePhase,
+		clusterIp,
 		disk,
 		port,
 		createTime,
@@ -40,9 +42,6 @@
 	<Layout.Cell class="items-start">
 		<div class="flex items-center gap-1">
 			{row.original.name}
-			{#if !row.original.ready}
-				<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
-			{/if}
 		</div>
 	</Layout.Cell>
 {/snippet}
@@ -74,9 +73,16 @@
 {#snippet machineId(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-start">
 		{#if row.original.machineId}
-			<Badge variant="outline">
-				{row.original.machineId}
-			</Badge>
+			<a
+				class="m-0 p-0 underline hover:no-underline"
+				href={`${dynamicPaths.machinesMetal(page.params.scope).url}/${row.original.machineId}`}
+			>
+				<Layout.SubCell>
+					<!-- <span class="text-muted-foreground flex items-center gap-1 text-xs"> -->
+					{row.original.machineId}
+					<!-- </span> -->
+				</Layout.SubCell>
+			</a>
 		{/if}
 	</Layout.Cell>
 {/snippet}
@@ -91,7 +97,17 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet instancePhase(row: Row<VirtualMachine>)}
+{#snippet clusterIp(row: Row<VirtualMachine>)}
+	<Layout.Cell class="items-start">
+		{#if row.original.services.length > 0}
+			<Badge variant="outline">
+				{row.original.services[0].clusterIp}
+			</Badge>
+		{/if}
+	</Layout.Cell>
+{/snippet}
+
+<!-- {#snippet instancePhase(row: Row<VirtualMachine>)}
 	{@const instancePhaseInfo = getInstancePhaseInfo(row.original.instancePhase)}
 	<Layout.Cell class="items-start">
 		<Tooltip.Provider>
@@ -105,7 +121,7 @@
 			</Tooltip.Root>
 		</Tooltip.Provider>
 	</Layout.Cell>
-{/snippet}
+{/snippet} -->
 
 {#snippet disk(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-end">

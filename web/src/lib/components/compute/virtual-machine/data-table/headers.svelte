@@ -13,7 +13,7 @@
 		namespace,
 		machineId,
 		instanceTypeName,
-		instancePhase,
+		clusterIp,
 		disk,
 		port,
 		createTime,
@@ -74,9 +74,9 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet instancePhase(column: Column<VirtualMachine>)}
+{#snippet clusterIp(column: Column<VirtualMachine>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.instance_phase()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.cluster_ip()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
