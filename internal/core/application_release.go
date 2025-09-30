@@ -50,7 +50,9 @@ func (uc *ApplicationUseCase) CreateRelease(ctx context.Context, uuid, facility,
 		ApplicationReleaseNameLabel: name,
 	}
 	if strings.Contains(chartRef, "llm-d-incubation/llm-d-modelservice") {
-		labels[ApplicationReleaseLLMDModelNameLabel] = valuesMap["modelArtifacts.name"]
+		if modelName, ok := values["modelArtifacts.name"].(string); ok {
+			labels[ApplicationReleaseLLMDModelNameLabel] = modelName
+		}
 	}
 
 	// annotations
