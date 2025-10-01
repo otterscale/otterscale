@@ -27,6 +27,11 @@
 			page: 'boot-image',
 		},
 		{
+			icon: 'ph:hard-drives',
+			title: m.data_volume(),
+			page: 'data-volume',
+		},
+		{
 			icon: 'ph:cube',
 			title: m.helm_repository(),
 			page: 'helm-repository',
