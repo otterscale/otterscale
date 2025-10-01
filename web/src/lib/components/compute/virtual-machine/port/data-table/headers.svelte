@@ -43,7 +43,7 @@
 
 {#snippet port(column: Column<Application_Service_Port>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.port()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.host_and_container()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>

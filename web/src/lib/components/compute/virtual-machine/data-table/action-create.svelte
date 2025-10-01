@@ -53,23 +53,15 @@
 	// ==================== API Functions ====================
 	async function loadInstanceTypes() {
 		try {
-			// Request both namespace-specific and cluster-wide instance types in parallel
-			const [namespacedResponse, clusterWideResponse] = await Promise.all([
-				virtualMachineClient.listInstanceTypes({
-					scopeUuid: $currentKubernetes?.scopeUuid,
-					facilityName: $currentKubernetes?.name,
-					namespace: request.namespace,
-				}),
-				virtualMachineClient.listClusterWideInstanceTypes({
-					scopeUuid: $currentKubernetes?.scopeUuid,
-					facilityName: $currentKubernetes?.name,
-				}),
-			]);
+			// Request both namespace-specific and cluster-wide instance types
+			const response = await virtualMachineClient.listInstanceTypes({
+				scopeUuid: $currentKubernetes?.scopeUuid,
+				facilityName: $currentKubernetes?.name,
+				namespace: request.namespace,
+				includeClusterWide: true,
+			});
 
-			// Merge both results
-			const allInstanceTypes = [...namespacedResponse.instanceTypes, ...clusterWideResponse.instanceTypes];
-
-			const instanceTypeOptions: InstanceTypeOption[] = allInstanceTypes.map((instanceType) => {
+			const instanceTypeOptions: InstanceTypeOption[] = response.instanceTypes.map((instanceType) => {
 				const memory = formatCapacity(instanceType.memoryBytes);
 				return {
 					value: instanceType.name,
@@ -129,7 +121,7 @@
 	// const DEFAULT_BOOT_DATA_VOLUME_SIZE = undefined;
 
 	// ==================== Form State ====================
-	let request: CreateVirtualMachineRequest = $state(DEFAULT_REQUEST);
+	let request: CreateVirtualMachineRequest = $state({ ...DEFAULT_REQUEST });
 	// let instanceTypeCPU: number | undefined = $state(DEFAULT_INSTANCE_TYPE_CPU);
 	// let instanceTypeMemoryGB: number | undefined = $state(DEFAULT_INSTANCE_TYPE_MEMORY);
 	// let bootDataVolumeSize: number | undefined = $state(DEFAULT_BOOT_DATA_VOLUME_SIZE);
@@ -174,7 +166,7 @@
 
 	// ==================== Utility Functions ====================
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = { ...DEFAULT_REQUEST };
 		// instanceTypeCPU = DEFAULT_INSTANCE_TYPE_CPU;
 		// instanceTypeMemoryGB = DEFAULT_INSTANCE_TYPE_MEMORY;
 		// bootDataVolumeSize = DEFAULT_BOOT_DATA_VOLUME_SIZE;

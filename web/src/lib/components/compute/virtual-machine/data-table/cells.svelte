@@ -13,6 +13,8 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
+	import * as HoverCard from '$lib/components/ui/hover-card';
+	import * as Table from '$lib/components/ui/table';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatTimeAgo } from '$lib/formatter';
 	import { dynamicPaths } from '$lib/path';
@@ -23,8 +25,7 @@
 		status,
 		namespace,
 		machineId,
-		instanceTypeName,
-		clusterIp,
+		instanceType,
 		disk,
 		port,
 		createTime,
@@ -77,51 +78,75 @@
 				class="m-0 p-0 underline hover:no-underline"
 				href={`${dynamicPaths.machinesMetal(page.params.scope).url}/${row.original.machineId}`}
 			>
-				<Layout.SubCell>
-					<!-- <span class="text-muted-foreground flex items-center gap-1 text-xs"> -->
-					{row.original.machineId}
-					<!-- </span> -->
-				</Layout.SubCell>
+				{row.original.hostname}
 			</a>
+			<Layout.SubCell>
+				<span class="text-muted-foreground flex items-center gap-1 text-xs">
+					{row.original.ipAddresses}
+				</span>
+			</Layout.SubCell>
 		{/if}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet instanceTypeName(row: Row<VirtualMachine>)}
+{#snippet instanceType(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-start">
-		{#if row.original.instanceTypeName}
-			<Badge variant="outline">
-				{row.original.instanceTypeName}
-			</Badge>
+		{#if row.original.instanceType}
+			<div class="flex items-center gap-1">
+				<Badge variant="outline">
+					{row.original.instanceType.name}
+				</Badge>
+				<HoverCard.Root>
+					<HoverCard.Trigger>
+						<Icon icon="ph:info" />
+					</HoverCard.Trigger>
+					<HoverCard.Content class="min-w-[300px]">
+						<Table.Root>
+							<Table.Body class="text-xs">
+								{#if row.original.instanceType.name}
+									<Table.Row>
+										<Table.Head class="text-left">Name</Table.Head>
+										<Table.Cell>
+											<Badge variant="outline">{row.original.instanceType.name}</Badge>
+										</Table.Cell>
+									</Table.Row>
+								{/if}
+								{#if row.original.instanceType.namespace}
+									<Table.Row>
+										<Table.Head class="text-left">Namespace</Table.Head>
+										<Table.Cell>{row.original.instanceType.namespace}</Table.Cell>
+									</Table.Row>
+								{/if}
+								{#if row.original.instanceType.cpuCores}
+									<Table.Row>
+										<Table.Head class="text-left">CPU Cores</Table.Head>
+										<Table.Cell>{row.original.instanceType.cpuCores}</Table.Cell>
+									</Table.Row>
+								{/if}
+								{#if row.original.instanceType.memoryBytes}
+									<Table.Row>
+										<Table.Head class="text-left">Memory</Table.Head>
+										<Table.Cell
+											>{Number(row.original.instanceType.memoryBytes) / 1024 ** 3} GB</Table.Cell
+										>
+									</Table.Row>
+								{/if}
+								{#if row.original.instanceType.clusterWide !== undefined}
+									<Table.Row>
+										<Table.Head class="text-left">Cluster Wide</Table.Head>
+										<Table.Cell>
+											<Badge variant="outline">{row.original.instanceType.clusterWide}</Badge>
+										</Table.Cell>
+									</Table.Row>
+								{/if}
+							</Table.Body>
+						</Table.Root>
+					</HoverCard.Content>
+				</HoverCard.Root>
+			</div>
 		{/if}
 	</Layout.Cell>
 {/snippet}
-
-{#snippet clusterIp(row: Row<VirtualMachine>)}
-	<Layout.Cell class="items-start">
-		{#if row.original.services.length > 0}
-			<Badge variant="outline">
-				{row.original.services[0].clusterIp}
-			</Badge>
-		{/if}
-	</Layout.Cell>
-{/snippet}
-
-<!-- {#snippet instancePhase(row: Row<VirtualMachine>)}
-	{@const instancePhaseInfo = getInstancePhaseInfo(row.original.instancePhase)}
-	<Layout.Cell class="items-start">
-		<Tooltip.Provider>
-			<Tooltip.Root>
-				<Tooltip.Trigger>
-					<Icon icon={instancePhaseInfo.icon} class={`${instancePhaseInfo.color} h-5 w-5`} />
-				</Tooltip.Trigger>
-				<Tooltip.Content>
-					{instancePhaseInfo.text}
-				</Tooltip.Content>
-			</Tooltip.Root>
-		</Tooltip.Provider>
-	</Layout.Cell>
-{/snippet} -->
 
 {#snippet disk(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-end">

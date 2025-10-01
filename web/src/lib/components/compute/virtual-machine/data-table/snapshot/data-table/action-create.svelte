@@ -44,11 +44,11 @@
 	} as CreateVirtualMachineSnapshotRequest;
 
 	// ==================== Form State ====================
-	let request: CreateVirtualMachineSnapshotRequest = $state(DEFAULT_REQUEST);
+	let request: CreateVirtualMachineSnapshotRequest = $state({ ...DEFAULT_REQUEST });
 
 	// ==================== Utility Functions ====================
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = { ...DEFAULT_REQUEST };
 	}
 	function close() {
 		open = false;

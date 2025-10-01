@@ -781,5 +781,6 @@
 	"create_port": "Create Port",
 	"service_name": "Service Name",
 	"update": "Update",
-	"tty": "tty"
+	"tty": "tty",
+	"host_and_container": "Host / Container"
 }

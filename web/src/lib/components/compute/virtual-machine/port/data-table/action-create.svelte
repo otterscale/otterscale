@@ -74,7 +74,7 @@
 
 	// ==================== Form State ====================
 	let request: CreateVirtualMachineServiceRequest | UpdateVirtualMachineServiceRequest = $state(
-		virtualMachine.services.length === 0 ? DEFAULT_CREATE_REQUEST : DEFAULT_UPDATE_REQUEST,
+		virtualMachine.services.length === 0 ? { ...DEFAULT_CREATE_REQUEST } : { ...DEFAULT_UPDATE_REQUEST },
 	);
 
 	// New port configuration state
