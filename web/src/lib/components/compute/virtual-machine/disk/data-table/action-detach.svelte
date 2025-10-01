@@ -37,11 +37,11 @@
 	} as DetachVirtualMachineDiskRequest;
 
 	// Current request state
-	let request = $state(defaults);
+	let request = $state({ ...defaults });
 
 	// Reset form to default values
 	function reset() {
-		request = defaults;
+		request = { ...defaults };
 	}
 
 	// Modal open/close state

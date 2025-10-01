@@ -32,9 +32,9 @@
 		name: '',
 		namespace: virtualMachineRestore.namespace,
 	} as DeleteVirtualMachineRestoreRequest;
-	let request = $state(defaults);
+	let request = $state({ ...defaults });
 	function reset() {
-		request = defaults;
+		request = { ...defaults };
 	}
 
 	let open = $state(false);
