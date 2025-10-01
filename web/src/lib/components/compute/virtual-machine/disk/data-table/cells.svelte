@@ -99,13 +99,6 @@
 {#snippet boot(row: Row<EnhancedDisk>)}
 	<Layout.Cell class="items-start">
 		{#if row.original.bootImage}
-			<Badge variant="outline">
-				{row.original.bootImage}
-			</Badge>
-		{/if}
-	</Layout.Cell>
-	<Layout.Cell class="items-start">
-		{#if row.original.bootImage}
 			<Tooltip.Provider>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
