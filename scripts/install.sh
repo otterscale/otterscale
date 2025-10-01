@@ -81,7 +81,7 @@ log() {
     local formatted_message
     formatted_message=$(printf "%s [%s] %-15s %s\n" "$timestamp" "$level" "$phase" "$message")
 
-    #local formatted_message="$timestamp [$level] [$phase] $message"
+    # local formatted_message="$timestamp [$level] [$phase] $message"
     echo "$formatted_message" | tee -a "$LOG"
 
     # Send status update (non-debug messages only)
@@ -1359,13 +1359,12 @@ bootstrap_juju() {
         error_exit "juju-vm machine not found"
     fi
 
-    if [[ $(maas admin machines read | jq -r '[] | select(.hostname="juju-vm")' | jq -r '.status_name') == Deployed ]]; then
+    if [[ $(maas admin machines read | jq -r '[] | select(.hostname=="juju-vm")' | jq -r '.status_name') == Deployed ]]; then
         log "INFO" "Machine juju-vm is bootstrapped" "JUJU_BOOTSTRAP"
     else
         log "INFO" "Bootstrapping Juju controller..." "JUJU_BOOTSTRAP"
         local bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=$OTTERSCALE_BASE_IMAGE"
         local bootstrap_config="--config default-base=$OTTERSCALE_BASE_IMAGE --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
-        #if ! su "$NON_ROOT_USER" -c "$bootstrap_cmd $bootstrap_config --to juju-vm --debug >/dev/null 2>&1"; then
         if ! su "$NON_ROOT_USER" -c "$bootstrap_cmd $bootstrap_config --to juju-vm"; then
             rm -rf /home/"$NON_ROOT_USER"/.local/share/juju
             error_exit "Failed to bootstrap Juju controller"
@@ -1457,19 +1456,27 @@ juju_add_k8s() {
         error_exit "Kubernetes config file not found at $kubeconfig"
     fi
 
-    if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" >>"$TEMP_LOG" 2>&1; then
+    if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client" >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to add Kubernetes cluster to Juju"
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1"; then
-        su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s --debug" "JUJU_K8S"
-        su "$NON_ROOT_USER" -c "juju deploy cos-lite --trust --debug" "JUJU_K8S"
+        su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s" "JUJU_K8S"
+        su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust" "JUJU_K8S"
+        su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge" "JUJU_K8S"
     fi
 
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus metrics_retention_time=180d --debug" "JUJU_CONFIG"
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus maximum_retention_size=70% --debug" "JUJU_CONFIG"
-    su "$NON_ROOT_USER" -c "juju offer cos.grafana:grafana-dashboard global-grafana --debug" "JUJU_OFFER"
-    su "$NON_ROOT_USER" -c "juju offer cos.prometheus:receive-remote-write global-prometheus --debug" "JUJU_OFFER"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus metrics_retention_time=180d"  "JUJU_CONFIG"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus maximum_retention_size=70%" "JUJU_CONFIG"
+    su "$NON_ROOT_USER" -c "juju offer cos.grafana:grafana-dashboard global-grafana" "JUJU_OFFER"
+    su "$NON_ROOT_USER" -c "juju offer cos.prometheus:receive-remote-write global-prometheus" "JUJU_OFFER"
+
+    su "$NON_ROOT_USER" -c "juju relate -m cos prometheus prometheus-scrape-target-k8s" "JUJU_K8S"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s job_name=federate"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s scheme=http"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s metrics_path='/federate'"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s params='match[]:
+  - \"{__name__!=''}\"'"
 
     log "INFO" "Kubernetes cluster added to Juju successfully" "JUJU_K8S"
 }
