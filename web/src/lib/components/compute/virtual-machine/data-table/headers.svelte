@@ -12,8 +12,7 @@
 		status,
 		namespace,
 		machineId,
-		instanceTypeName,
-		clusterIp,
+		instanceType,
 		disk,
 		port,
 		createTime,
@@ -65,18 +64,9 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet instanceTypeName(column: Column<VirtualMachine>)}
+{#snippet instanceType(column: Column<VirtualMachine>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.instance_type()}</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet clusterIp(column: Column<VirtualMachine>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.cluster_ip()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>

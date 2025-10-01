@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
 	import Actions from './cell-actions.svelte';
@@ -11,6 +12,7 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity } from '$lib/formatter';
 
 	export const cells = {
@@ -75,11 +77,22 @@
 
 {#snippet phase(row: Row<EnhancedDisk>)}
 	<Layout.Cell class="items-start">
-		{#if row.original.phase}
-			<Badge variant="outline">
-				{row.original.phase}
-			</Badge>
-		{/if}
+		<Tooltip.Provider>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					{#if row.original.phase === 'Succeeded'}
+						<Icon icon="ph:check" class="text-green-600" />
+					{:else if row.original.phase === 'ImportInProgress'}
+						<Icon icon="ph:spinner" class="animate-spin text-blue-600" />
+					{:else}
+						<Icon icon="ph:x" class="text-gray-400" />
+					{/if}
+				</Tooltip.Trigger>
+				<Tooltip.Content>
+					{row.original.phase}
+				</Tooltip.Content>
+			</Tooltip.Root>
+		</Tooltip.Provider>
 	</Layout.Cell>
 {/snippet}
 
@@ -89,6 +102,24 @@
 			<Badge variant="outline">
 				{row.original.bootImage}
 			</Badge>
+		{/if}
+	</Layout.Cell>
+	<Layout.Cell class="items-start">
+		{#if row.original.bootImage}
+			<Tooltip.Provider>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						{#if row.original.bootImage === true}
+							<Icon icon="ph:power" class="text-green-600" />
+						{:else}
+							<Icon icon="ph:power" class="text-gray-400" />
+						{/if}
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						{row.original.bootImage}
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</Tooltip.Provider>
 		{/if}
 	</Layout.Cell>
 {/snippet}

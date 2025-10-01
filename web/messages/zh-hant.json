@@ -781,5 +781,6 @@
 	"create_port": "建立連接埠",
 	"service_name": "服務名稱",
 	"update": "更新",
-	"tty": "tty"
+	"tty": "tty",
+	"host_and_container": "內部 / 外部"
 }

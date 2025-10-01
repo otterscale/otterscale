@@ -12,8 +12,7 @@ const messages = {
 	status: m.status(),
 	namespace: m.namespace(),
 	machineId: m.machine(),
-	instanceTypeName: m.instance_type(),
-	clusterIp: m.cluster_ip(),
+	instanceType: m.instance_type(),
 	disk: m.disk(),
 	port: m.ports(),
 	createTime: m.create_time(),
@@ -72,22 +71,12 @@ const columns: ColumnDef<VirtualMachine>[] = [
 	},
 
 	{
-		accessorKey: 'instanceTypeName',
+		accessorKey: 'instanceType',
 		header: ({ column }) => {
-			return renderSnippet(headers.instanceTypeName, column);
+			return renderSnippet(headers.instanceType, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.instanceTypeName, row);
-		},
-		filterFn: 'arrIncludesSome',
-	},
-	{
-		accessorKey: 'clusterIp',
-		header: ({ column }) => {
-			return renderSnippet(headers.clusterIp, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.clusterIp, row);
+			return renderSnippet(cells.instanceType, row);
 		},
 		filterFn: 'arrIncludesSome',
 	},

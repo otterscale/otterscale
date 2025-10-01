@@ -53,23 +53,15 @@
 	// ==================== API Functions ====================
 	async function loadInstanceTypes() {
 		try {
-			// Request both namespace-specific and cluster-wide instance types in parallel
-			const [namespacedResponse, clusterWideResponse] = await Promise.all([
-				virtualMachineClient.listInstanceTypes({
-					scopeUuid: $currentKubernetes?.scopeUuid,
-					facilityName: $currentKubernetes?.name,
-					namespace: request.namespace,
-				}),
-				virtualMachineClient.listClusterWideInstanceTypes({
-					scopeUuid: $currentKubernetes?.scopeUuid,
-					facilityName: $currentKubernetes?.name,
-				}),
-			]);
+			// Request both namespace-specific and cluster-wide instance types
+			const response = await virtualMachineClient.listInstanceTypes({
+				scopeUuid: $currentKubernetes?.scopeUuid,
+				facilityName: $currentKubernetes?.name,
+				namespace: request.namespace,
+				includeClusterWide: true,
+			});
 
-			// Merge both results
-			const allInstanceTypes = [...namespacedResponse.instanceTypes, ...clusterWideResponse.instanceTypes];
-
-			const instanceTypeOptions: InstanceTypeOption[] = allInstanceTypes.map((instanceType) => {
+			const instanceTypeOptions: InstanceTypeOption[] = response.instanceTypes.map((instanceType) => {
 				const memory = formatCapacity(instanceType.memoryBytes);
 				return {
 					value: instanceType.name,
