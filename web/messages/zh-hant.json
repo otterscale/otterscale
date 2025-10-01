@@ -769,6 +769,8 @@
 	"source_virtual_machine_name": "來源虛擬機器名稱",
 	"target_virtual_machine_name": "目標虛擬機器名稱",
 	"data_volume": "資料磁碟區",
+	"virtual_machine_data_volume": "虛擬機器資料磁碟區",
+	"create_data_volume": "建立資料磁碟區",
 	"boot_order": "啟動順序",
 	"boot": "啟動",
 	"attach": "掛載",
@@ -781,5 +783,7 @@
 	"create_port": "建立連接埠",
 	"service_name": "服務名稱",
 	"update": "更新",
-	"tty": "tty"
+	"tty": "tty",
+	"progress": "進度",
+	"setting_data_volume_description": "虛擬機器資料磁碟區為虛擬機器提供持久性儲存，可設定不同的來源類型、容量和開機配置。"
 }

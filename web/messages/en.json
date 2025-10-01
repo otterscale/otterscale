@@ -769,6 +769,8 @@
 	"source_virtual_machine_name": "Source Virtual Machine Name",
 	"target_virtual_machine_name": "Target Virtual Machine Name",
 	"data_volume": "Data Volume",
+	"virtual_machine_data_volume": "Virtual Machine Data Volume",
+	"create_data_volume": "Create Data Volume",
 	"boot_order": "Boot Order",
 	"boot": "Boot",
 	"attach": "Attach",
@@ -781,5 +783,7 @@
 	"create_port": "Create Port",
 	"service_name": "Service Name",
 	"update": "Update",
-	"tty": "tty"
+	"tty": "tty",
+	"progress": "Progress",
+	"setting_data_volume_description": "Virtual machine data volumes provide persistent storage for virtual machines and can be configured with different source types, capacities, and boot configurations."
 }
