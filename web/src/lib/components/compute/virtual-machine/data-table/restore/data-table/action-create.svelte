@@ -44,11 +44,11 @@
 	} as CreateVirtualMachineRestoreRequest;
 
 	// ==================== Form State ====================
-	let request: CreateVirtualMachineRestoreRequest = $state(DEFAULT_REQUEST);
+	let request: CreateVirtualMachineRestoreRequest = $state({ ...DEFAULT_REQUEST });
 
 	// ==================== Utility Functions ====================
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = { ...DEFAULT_REQUEST };
 	}
 	function close() {
 		open = false;

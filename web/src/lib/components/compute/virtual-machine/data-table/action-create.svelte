@@ -121,7 +121,7 @@
 	// const DEFAULT_BOOT_DATA_VOLUME_SIZE = undefined;
 
 	// ==================== Form State ====================
-	let request: CreateVirtualMachineRequest = $state(DEFAULT_REQUEST);
+	let request: CreateVirtualMachineRequest = $state({ ...DEFAULT_REQUEST });
 	// let instanceTypeCPU: number | undefined = $state(DEFAULT_INSTANCE_TYPE_CPU);
 	// let instanceTypeMemoryGB: number | undefined = $state(DEFAULT_INSTANCE_TYPE_MEMORY);
 	// let bootDataVolumeSize: number | undefined = $state(DEFAULT_BOOT_DATA_VOLUME_SIZE);
@@ -166,7 +166,7 @@
 
 	// ==================== Utility Functions ====================
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = { ...DEFAULT_REQUEST };
 		// instanceTypeCPU = DEFAULT_INSTANCE_TYPE_CPU;
 		// instanceTypeMemoryGB = DEFAULT_INSTANCE_TYPE_MEMORY;
 		// bootDataVolumeSize = DEFAULT_BOOT_DATA_VOLUME_SIZE;
