@@ -35,11 +35,11 @@
 	} as DeleteDataVolumeRequest;
 
 	// Current request state
-	let request = $state(defaults);
+	let request = $state({ ...defaults });
 
 	// Reset form to default values
 	function reset() {
-		request = defaults;
+		request = { ...defaults };
 	}
 
 	// Modal open/close state
@@ -65,6 +65,7 @@
 					<Form.Help>
 						{m.deletion_warning({ identifier: m.data_volume_name() })}
 					</Form.Help>
+					{console.log(defaults)}
 					<SingleInput.Confirm
 						required
 						target={dataVolume.name ?? ''}
