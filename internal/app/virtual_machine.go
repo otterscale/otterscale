@@ -47,8 +47,12 @@ func (s *VirtualMachineService) ListVirtualMachines(ctx context.Context, req *pb
 	if err != nil {
 		return nil, err
 	}
+	its, err := s.uc.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), true)
+	if err != nil {
+		return nil, err
+	}
 	resp := &pb.ListVirtualMachinesResponse{}
-	resp.SetVirtualMachines(toProtoVirtualMachines(vms))
+	resp.SetVirtualMachines(toProtoVirtualMachines(vms, its))
 	return resp, nil
 }
 
@@ -57,7 +61,11 @@ func (s *VirtualMachineService) GetVirtualMachine(ctx context.Context, req *pb.G
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoVirtualMachine(vm)
+	its, err := s.uc.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), true)
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoVirtualMachine(vm, its)
 	return resp, nil
 }
 
@@ -66,7 +74,11 @@ func (s *VirtualMachineService) CreateVirtualMachine(ctx context.Context, req *p
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoVirtualMachine(vm)
+	its, err := s.uc.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), true)
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoVirtualMachine(vm, its)
 	return resp, nil
 }
 
@@ -239,18 +251,8 @@ func (s *VirtualMachineService) ExtendDataVolume(ctx context.Context, req *pb.Ex
 	return resp, nil
 }
 
-func (s *VirtualMachineService) ListClusterWideInstanceTypes(ctx context.Context, req *pb.ListClusterWideInstanceTypesRequest) (*pb.ListClusterWideInstanceTypesResponse, error) {
-	its, err := s.uc.ListClusterWideInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName())
-	if err != nil {
-		return nil, err
-	}
-	resp := &pb.ListClusterWideInstanceTypesResponse{}
-	resp.SetInstanceTypes(toProtoClusterInstanceTypes(its))
-	return resp, nil
-}
-
 func (s *VirtualMachineService) ListInstanceTypes(ctx context.Context, req *pb.ListInstanceTypesRequest) (*pb.ListInstanceTypesResponse, error) {
-	its, err := s.uc.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace())
+	its, err := s.uc.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetIncludeClusterWide())
 	if err != nil {
 		return nil, err
 	}
@@ -390,22 +392,28 @@ func convertDiskBusToProto(bus virtv1.DiskBus) pb.VirtualMachine_Disk_Bus {
 	}
 }
 
-func toProtoVirtualMachines(vmds []core.VirtualMachineData) []*pb.VirtualMachine {
+func toProtoVirtualMachines(vmds []core.VirtualMachineData, its []core.VirtualMachineInstanceTypeData) []*pb.VirtualMachine {
 	ret := []*pb.VirtualMachine{}
 	for i := range vmds {
-		ret = append(ret, toProtoVirtualMachine(&vmds[i]))
+		ret = append(ret, toProtoVirtualMachine(&vmds[i], its))
 	}
 	return ret
 }
 
-func toProtoVirtualMachine(vmd *core.VirtualMachineData) *pb.VirtualMachine {
+func toProtoVirtualMachine(vmd *core.VirtualMachineData, its []core.VirtualMachineInstanceTypeData) *pb.VirtualMachine {
 	ret := &pb.VirtualMachine{}
 	ret.SetName(vmd.VirtualMachine.Name)
 	ret.SetNamespace(vmd.VirtualMachine.Namespace)
 
 	instanceType := vmd.VirtualMachine.Spec.Instancetype
 	if instanceType != nil {
-		ret.SetInstanceTypeName(instanceType.Name)
+		for _, it := range its {
+			if (it.ClusterWide && it.VirtualMachineClusterInstanceType.Name == instanceType.Name) ||
+				(!it.ClusterWide && it.VirtualMachineInstanceType.Namespace == vmd.VirtualMachine.Namespace && it.VirtualMachineInstanceType.Name == instanceType.Name) {
+				ret.SetInstanceType(toProtoInstanceType(&it))
+				break
+			}
+		}
 	}
 
 	ret.SetStatus(string(vmd.VirtualMachine.Status.PrintableStatus))
@@ -416,7 +424,18 @@ func toProtoVirtualMachine(vmd *core.VirtualMachineData) *pb.VirtualMachine {
 		ret.SetInstancePhase(string(instance.Status.Phase))
 	}
 
-	ret.SetMachineId(vmd.MachineID)
+	machine := vmd.Machine
+	if machine != nil {
+		ret.SetMachineId(machine.SystemID)
+		ret.SetHostname(machine.Hostname)
+
+		ipAddresses := make([]string, len(machine.IPAddresses))
+		for i, ip := range machine.IPAddresses {
+			ipAddresses[i] = ip.String()
+		}
+		ret.SetIpAddresses(ipAddresses)
+	}
+
 	ret.SetCreatedAt(timestamppb.New(vmd.VirtualMachine.CreationTimestamp.Time))
 	ret.SetServices(toProtoServices(vmd.Services))
 	ret.SetDisks(toProtoVirtualMachineDisks(vmd.VirtualMachine.Spec.Template.Spec.Domain.Devices.Disks, vmd.VirtualMachine.Spec.Template.Spec.Volumes))
@@ -631,7 +650,7 @@ func toProtoClusterInstanceType(it *core.VirtualMachineClusterInstanceType) *pb.
 	return ret
 }
 
-func toProtoInstanceTypes(its []core.VirtualMachineInstanceType) []*pb.InstanceType {
+func toProtoInstanceTypes(its []core.VirtualMachineInstanceTypeData) []*pb.InstanceType {
 	ret := []*pb.InstanceType{}
 	for i := range its {
 		ret = append(ret, toProtoInstanceType(&its[i]))
@@ -639,11 +658,30 @@ func toProtoInstanceTypes(its []core.VirtualMachineInstanceType) []*pb.InstanceT
 	return ret
 }
 
-func toProtoInstanceType(it *core.VirtualMachineInstanceType) *pb.InstanceType {
+func toProtoInstanceType(it *core.VirtualMachineInstanceTypeData) *pb.InstanceType {
+	if it.ClusterWide {
+		return toProtoInstanceTypeFromClusterInstanceType(it.VirtualMachineClusterInstanceType)
+	}
+	return toProtoInstanceTypeFromInstanceType(it.VirtualMachineInstanceType)
+}
+
+func toProtoInstanceTypeFromClusterInstanceType(it *core.VirtualMachineClusterInstanceType) *pb.InstanceType {
 	ret := &pb.InstanceType{}
 	ret.SetName(it.Name)
 	ret.SetNamespace(it.Namespace)
 	ret.SetCpuCores(it.Spec.CPU.Guest)
 	ret.SetMemoryBytes(it.Spec.Memory.Guest.Value())
+	ret.SetClusterWide(true)
+	ret.SetCreatedAt(timestamppb.New(it.CreationTimestamp.Time))
+	return ret
+}
+
+func toProtoInstanceTypeFromInstanceType(it *core.VirtualMachineInstanceType) *pb.InstanceType {
+	ret := &pb.InstanceType{}
+	ret.SetName(it.Name)
+	ret.SetNamespace(it.Namespace)
+	ret.SetCpuCores(it.Spec.CPU.Guest)
+	ret.SetMemoryBytes(it.Spec.Memory.Guest.Value())
+	ret.SetCreatedAt(timestamppb.New(it.CreationTimestamp.Time))
 	return ret
 }

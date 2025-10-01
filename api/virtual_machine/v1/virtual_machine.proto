@@ -41,7 +41,6 @@ service VirtualMachineService {
   rpc DeleteDataVolume(DeleteDataVolumeRequest) returns (google.protobuf.Empty);
   rpc ExtendDataVolume(ExtendDataVolumeRequest) returns (google.protobuf.Empty);
 
-  rpc ListClusterWideInstanceTypes(ListClusterWideInstanceTypesRequest) returns (ListClusterWideInstanceTypesResponse);
   rpc ListInstanceTypes(ListInstanceTypesRequest) returns (ListInstanceTypesResponse);
   rpc GetInstanceType(GetInstanceTypeRequest) returns (InstanceType);
   rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType);
@@ -109,17 +108,19 @@ message VirtualMachine {
   }
   string name = 1;
   string namespace = 2;
-  string instance_type_name = 3;
   string status = 11;
   bool ready = 12;
   string instance_phase = 21;
   string machine_id = 22;
+  string hostname = 23;
+  repeated string ip_addresses = 24;
   google.protobuf.Timestamp created_at = 31;
   repeated otterscale.application.v1.Application.Service services = 41;
-  repeated Disk disks = 51;
-  repeated Clone clones = 61;
-  repeated Snapshot snapshots = 71;
-  repeated Restore restores = 72;
+  InstanceType instance_type = 51;
+  repeated Disk disks = 61;
+  repeated Clone clones = 71;
+  repeated Snapshot snapshots = 81;
+  repeated Restore restores = 91;
 }
 
 message DataVolume {
@@ -156,6 +157,8 @@ message InstanceType {
   string namespace = 2;
   uint32 cpu_cores = 3;
   int64 memory_bytes = 4;
+  bool cluster_wide = 11;
+  google.protobuf.Timestamp created_at = 21;
 }
 
 message CheckInfrastructureStatusRequest {
@@ -357,19 +360,11 @@ message ExtendDataVolumeRequest {
   int64 size_bytes = 11;
 }
 
-message ListClusterWideInstanceTypesRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-}
-
-message ListClusterWideInstanceTypesResponse {
-  repeated InstanceType instance_types = 1;
-}
-
 message ListInstanceTypesRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string namespace = 3;
+  bool include_cluster_wide = 11;
 }
 
 message ListInstanceTypesResponse {

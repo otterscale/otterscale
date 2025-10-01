@@ -48,11 +48,17 @@ type (
 type VirtualMachineData struct {
 	*VirtualMachine
 	*VirtualMachineInstance
+	*Machine
 	Clones    []VirtualMachineClone
 	Snapshots []VirtualMachineSnapshot
 	Restores  []VirtualMachineRestore
 	Services  []Service
-	MachineID string
+}
+
+type VirtualMachineInstanceTypeData struct {
+	*VirtualMachineInstanceType
+	*VirtualMachineClusterInstanceType
+	ClusterWide bool
 }
 
 type DataVolumeWithStorage struct {
@@ -605,28 +611,89 @@ func (uc *VirtualMachineUseCase) ListClusterWideInstanceTypes(ctx context.Contex
 	return uc.kubeIT.ListClusterWide(ctx, config)
 }
 
-func (uc *VirtualMachineUseCase) ListInstanceTypes(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineInstanceType, error) {
+func (uc *VirtualMachineUseCase) ListInstanceTypes(ctx context.Context, uuid, facility, namespace string, includeClusterWide bool) ([]VirtualMachineInstanceTypeData, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeIT.List(ctx, config, namespace)
+
+	var (
+		its  []VirtualMachineInstanceType
+		cits []VirtualMachineClusterInstanceType
+	)
+
+	eg, egctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		v, err := uc.kubeIT.List(egctx, config, namespace)
+		if err == nil {
+			its = v
+		}
+		return err
+	})
+
+	if includeClusterWide {
+		eg.Go(func() error {
+			v, err := uc.kubeIT.ListClusterWide(egctx, config)
+			if err == nil {
+				cits = v
+			}
+			return err
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+
+	data := make([]VirtualMachineInstanceTypeData, 0, len(its)+len(cits))
+
+	// Add cluster-wide instance types first
+	for i := range cits {
+		data = append(data, VirtualMachineInstanceTypeData{
+			VirtualMachineClusterInstanceType: &cits[i],
+			ClusterWide:                       true,
+		})
+	}
+
+	// Add namespace-scoped instance types
+	for i := range its {
+		data = append(data, VirtualMachineInstanceTypeData{
+			VirtualMachineInstanceType: &its[i],
+			ClusterWide:                false,
+		})
+	}
+
+	return data, nil
 }
 
-func (uc *VirtualMachineUseCase) GetInstanceType(ctx context.Context, uuid, facility, namespace, name string) (*VirtualMachineInstanceType, error) {
+func (uc *VirtualMachineUseCase) GetInstanceType(ctx context.Context, uuid, facility, namespace, name string) (*VirtualMachineInstanceTypeData, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeIT.Get(ctx, config, namespace, name)
+	it, err := uc.kubeIT.Get(ctx, config, namespace, name)
+	if err != nil {
+		return nil, err
+	}
+	return &VirtualMachineInstanceTypeData{
+		VirtualMachineInstanceType: it,
+		ClusterWide:                false,
+	}, nil
 }
 
-func (uc *VirtualMachineUseCase) CreateInstanceType(ctx context.Context, uuid, facility, namespace, name string, cpu uint32, memory int64) (*VirtualMachineInstanceType, error) {
+func (uc *VirtualMachineUseCase) CreateInstanceType(ctx context.Context, uuid, facility, namespace, name string, cpu uint32, memory int64) (*VirtualMachineInstanceTypeData, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeIT.Create(ctx, config, namespace, name, cpu, memory)
+	it, err := uc.kubeIT.Create(ctx, config, namespace, name, cpu, memory)
+	if err != nil {
+		return nil, err
+	}
+	return &VirtualMachineInstanceTypeData{
+		VirtualMachineInstanceType: it,
+		ClusterWide:                false,
+	}, nil
 }
 
 func (uc *VirtualMachineUseCase) DeleteInstanceType(ctx context.Context, uuid, facility, namespace, name string) error {
@@ -758,22 +825,22 @@ func (uc *VirtualMachineUseCase) fetchVirtualMachineData(ctx context.Context, co
 }
 
 func (uc *VirtualMachineUseCase) assembleVMData(virtualMachines []VirtualMachine, instances []VirtualMachineInstance, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, services []Service, machines []Machine) []VirtualMachineData {
-	machineMap := make(map[string]string, len(machines))
-	for _, m := range machines {
-		machineMap[m.Hostname] = m.SystemID
+	machineMap := make(map[string]*Machine, len(machines))
+	for i := range machines {
+		machineMap[machines[i].Hostname] = &machines[i]
 	}
 
 	result := make([]VirtualMachineData, len(virtualMachines))
 	for i := range virtualMachines {
 		var instance *VirtualMachineInstance
-		var machineID string
+		var machine *Machine
 
 		// find matching instance
 		for j := range instances {
 			if virtualMachines[i].Namespace == instances[j].Namespace && virtualMachines[i].Name == instances[j].Name {
 				instance = &instances[j]
 				if nodeName := instance.Status.NodeName; nodeName != "" {
-					machineID = machineMap[nodeName]
+					machine = machineMap[nodeName]
 				}
 				break
 			}
@@ -782,11 +849,11 @@ func (uc *VirtualMachineUseCase) assembleVMData(virtualMachines []VirtualMachine
 		result[i] = VirtualMachineData{
 			VirtualMachine:         &virtualMachines[i],
 			VirtualMachineInstance: instance,
+			Machine:                machine,
 			Clones:                 uc.filterByVM(clones, virtualMachines[i].Namespace, virtualMachines[i].Name).([]VirtualMachineClone),
 			Snapshots:              uc.filterByVM(snapshots, virtualMachines[i].Namespace, virtualMachines[i].Name).([]VirtualMachineSnapshot),
 			Restores:               uc.filterByVM(restores, virtualMachines[i].Namespace, virtualMachines[i].Name).([]VirtualMachineRestore),
 			Services:               uc.filterByVM(services, virtualMachines[i].Namespace, virtualMachines[i].Name).([]Service),
-			MachineID:              machineID,
 		}
 	}
 	return result
