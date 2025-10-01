@@ -1359,7 +1359,7 @@ bootstrap_juju() {
         error_exit "juju-vm machine not found"
     fi
 
-    if [[ $(maas admin machines read | jq -r '[] | select(.hostname=="juju-vm")' | jq -r '.status_name') == Deployed ]]; then
+    if [[ $(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | jq -r '.status_name') == Deployed ]]; then
         log "INFO" "Machine juju-vm is bootstrapped" "JUJU_BOOTSTRAP"
     else
         log "INFO" "Bootstrapping Juju controller..." "JUJU_BOOTSTRAP"
