@@ -633,23 +633,6 @@ func toProtoDataVolume(it *core.DataVolumeWithStorage) *pb.DataVolume {
 	return ret
 }
 
-func toProtoClusterInstanceTypes(its []core.VirtualMachineClusterInstanceType) []*pb.InstanceType {
-	ret := []*pb.InstanceType{}
-	for i := range its {
-		ret = append(ret, toProtoClusterInstanceType(&its[i]))
-	}
-	return ret
-}
-
-func toProtoClusterInstanceType(it *core.VirtualMachineClusterInstanceType) *pb.InstanceType {
-	ret := &pb.InstanceType{}
-	ret.SetName(it.Name)
-	ret.SetNamespace(it.Namespace)
-	ret.SetCpuCores(it.Spec.CPU.Guest)
-	ret.SetMemoryBytes(it.Spec.Memory.Guest.Value())
-	return ret
-}
-
 func toProtoInstanceTypes(its []core.VirtualMachineInstanceTypeData) []*pb.InstanceType {
 	ret := []*pb.InstanceType{}
 	for i := range its {
