@@ -32,13 +32,6 @@
 				podName: pod.name,
 				containerName: '',
 			});
-			console.log({
-				scopeUuid: $currentKubernetes?.scopeUuid || '',
-				facilityName: $currentKubernetes?.name || '',
-				namespace,
-				podName: pod.name,
-				containerName: '',
-			});
 			for await (const response of stream) {
 				if (shouldStop) break;
 
@@ -89,7 +82,7 @@
 	<Sheet.Trigger onclick={watchLogs}>
 		<span class="flex items-center gap-1">
 			<Icon icon="ph:file-text" />
-			{m.view()} Logs
+			{m.log()}
 		</span>
 	</Sheet.Trigger>
 
