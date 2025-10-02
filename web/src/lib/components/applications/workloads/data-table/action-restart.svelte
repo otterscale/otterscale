@@ -5,6 +5,7 @@
 	import { toast } from 'svelte-sonner';
 
 	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 </script>
@@ -13,6 +14,7 @@
 	let { application }: { application: Application } = $props();
 
 	const transport: Transport = getContext('transport');
+	const reloadManager: ReloadManager = getContext('reloadManager');
 	const applicationClient = createClient(ApplicationService, transport);
 	let loading = $state(false);
 
@@ -27,7 +29,11 @@
 
 		toast.promise(() => applicationClient.restartApplication(request), {
 			loading: `Restarting application ${request.name}...`,
-			success: () => `Successfully restarted application ${request.name}.`,
+			success: () => {
+				// Force reload to refresh data
+				reloadManager.force();
+				return `Successfully restarted application ${request.name}.`;
+			},
 			error: (e) => {
 				const msg = `Failed to restart application ${request.name}.`;
 				toast.error(msg, {
