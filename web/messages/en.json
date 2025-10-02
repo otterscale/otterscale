@@ -789,5 +789,6 @@
 	"setting_instance_type_description": "Instance types define the hardware resources (CPU, memory, storage, etc.) allocated to virtual machines. Configure available instance types to match your workload requirements.",
 	"host_and_container": "Host / Container",
 	"cluster_wide": "Cluster Wide",
-	"instance_type_name": "Instance Type Name"
+	"instance_type_name": "Instance Type Name",
+	"create_instance_type": "Create Instance Type"
 }

@@ -60,7 +60,7 @@
 		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create Instance Type</Modal.Header>
+		<Modal.Header>{m.create_instance_type()}Create Instance Type</Modal.Header>
 		<Form.Root>
 			<!-- ==================== Basic Configuration ==================== -->
 			<Form.Fieldset>
@@ -73,11 +73,11 @@
 					<SingleInput.General type="text" bind:value={request.namespace} />
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>CPU Cores</Form.Label>
+					<Form.Label>{m.cpu_cores()}</Form.Label>
 					<SingleInput.General required type="number" bind:value={request.cpuCores} min="1" />
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>Memory</Form.Label>
+					<Form.Label>{m.memory()}</Form.Label>
 					<SingleInput.Measurement
 						required
 						bind:value={request.memoryBytes}

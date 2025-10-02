@@ -8,7 +8,7 @@
 	// Set breadcrumb navigation
 	breadcrumb.set({
 		parents: [dynamicPaths.settings(page.params.scope)],
-		current: { title: m.data_volume(), url: '' },
+		current: { title: m.instance_type(), url: '' },
 	});
 </script>
 

@@ -789,5 +789,6 @@
 	"setting_instance_type_description": "實例類型定義分配給虛擬機器的硬體資源（CPU、記憶體、儲存等）。請根據您的工作負載需求設定可用的實例類型。",
 	"host_and_container": "內部 / 外部",
 	"cluster_wide": "全叢集",
-	"instance_type_name": "實例類型名稱"
+	"instance_type_name": "實例類型名稱",
+	"create_instance_type": "建立實例類型"
 }

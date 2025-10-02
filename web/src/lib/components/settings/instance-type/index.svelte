@@ -43,17 +43,14 @@
 
 	onMount(async () => {
 		try {
-			await virtualMachineClient
-				.listInstanceTypes({
-					scopeUuid: scopeUuid,
-					facilityName: facilityName,
-					namespace: namespace,
-					includeClusterWide: false,
-				})
-				.then((response) => {
-					instanceTypes.set(response.instanceTypes);
-					isInstanceTypesLoading = false;
-				});
+			const response = await virtualMachineClient.listInstanceTypes({
+				scopeUuid: scopeUuid,
+				facilityName: facilityName,
+				namespace: namespace,
+				includeClusterWide: false,
+			});
+			instanceTypes.set(response.instanceTypes);
+			isInstanceTypesLoading = false;
 
 			reloadManager.start();
 		} catch (error) {
