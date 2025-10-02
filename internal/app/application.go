@@ -32,8 +32,7 @@ import (
 type ApplicationService struct {
 	pbconnect.UnimplementedApplicationServiceHandler
 
-	uc *core.ApplicationUseCase
-
+	uc          *core.ApplicationUseCase
 	ttySessions sync.Map
 }
 

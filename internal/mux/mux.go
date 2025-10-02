@@ -74,6 +74,9 @@ func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config
 	// proxy
 	handlePrometheusProxy(mux, environment)
 
+	// websocket
+	handleKubeVirtVNC(mux, virtualmachine)
+
 	// helper
 	if helper {
 		handleHealth(mux)
@@ -82,7 +85,6 @@ func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config
 			return nil, err
 		}
 	}
-
 	return mux, nil
 }
 
@@ -103,6 +105,10 @@ func handlePrometheusProxy(mux *http.ServeMux, environment *app.EnvironmentServi
 		return nil
 	}
 	mux.Handle("/prometheus/", http.StripPrefix("/prometheus", proxy))
+}
+
+func handleKubeVirtVNC(mux *http.ServeMux, virtualmachine *app.VirtualMachineService) {
+	mux.HandleFunc(virtualmachine.WebSocketPathPrefix, virtualmachine.VNCHandler)
 }
 
 func handleHealth(mux *http.ServeMux) {

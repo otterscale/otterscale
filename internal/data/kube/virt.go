@@ -3,12 +3,15 @@ package kube
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"strconv"
 
+	"github.com/google/uuid"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 	virtv1 "kubevirt.io/api/core/v1"
 
-	"github.com/google/uuid"
+	kvcorev1 "github.com/otterscale/kubevirt-client-go/kubevirt/typed/core/v1"
 
 	oscore "github.com/otterscale/otterscale/internal/core"
 )
@@ -251,4 +254,11 @@ func (r *virt) MigrateInstance(ctx context.Context, config *rest.Config, namespa
 	}
 	opts := metav1.CreateOptions{}
 	return clientset.KubevirtV1().VirtualMachineInstanceMigrations(namespace).Create(ctx, migration, opts)
+}
+
+func (r *virt) VNCInstance(config *rest.Config, namespace, name string) (oscore.VirtualMachineStream, error) {
+	queryParams := url.Values{}
+	queryParams.Add("moveCursor", strconv.FormatBool(true))
+	queryParams.Add("preserveSession", strconv.FormatBool(true))
+	return kvcorev1.AsyncSubresourceHelper(config, "virtualmachineinstances", namespace, name, "vnc", queryParams)
 }

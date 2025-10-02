@@ -34,6 +34,7 @@ service VirtualMachineService {
   rpc PauseInstance(PauseInstanceRequest) returns (google.protobuf.Empty);
   rpc ResumeInstance(ResumeInstanceRequest) returns (google.protobuf.Empty);
   rpc MigrateInstance(MigrateInstanceRequest) returns (google.protobuf.Empty);
+  rpc VNCInstance(VNCInstanceRequest) returns (VNCInstanceResponse);
 
   rpc ListDataVolumes(ListDataVolumesRequest) returns (ListDataVolumesResponse);
   rpc GetDataVolume(GetDataVolumeRequest) returns (DataVolume);
@@ -315,6 +316,17 @@ message MigrateInstanceRequest {
   string namespace = 3;
   string name = 4;
   string hostname = 11;
+}
+
+message VNCInstanceRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message VNCInstanceResponse {
+  string session_id = 1;
 }
 
 message ListDataVolumesRequest {
