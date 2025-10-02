@@ -252,19 +252,22 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 }
 
 func (uc *EssentialUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string, all bool) (map[string]string, error) {
+	const labelMinParts = 2 // Labels must have at least 2 parts (domain/key)
+
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	node, err := uc.kubeCore.GetNode(ctx, config, hostname)
 
+	node, err := uc.kubeCore.GetNode(ctx, config, hostname)
 	if err != nil {
 		return nil, err
 	}
+
 	if !all {
 		maps.DeleteFunc(node.Labels, func(k, _ string) bool {
 			parts := strings.Split(k, "/")
-			return len(parts) < 2 || !strings.HasSuffix(parts[0], LabelDomain)
+			return len(parts) < labelMinParts || !strings.HasSuffix(parts[0], LabelDomain)
 		})
 	}
 	return node.Labels, nil
@@ -579,17 +582,41 @@ func (uc *EssentialUseCase) ListGPURelationsByMachine(ctx context.Context, scope
 	vgpuPods := filterVGpuPodsOnNode(ctx, pods, machine.Hostname, config, uc.kubeCore, uc.kubeApps)
 
 	// Build GPU relations array
+	return uc.buildGPURelationsForMachine(machineID, machine.Hostname, nodeGpuMap, vgpuPods)
+}
+
+// buildGPURelationsForMachine constructs the complete GPU relations array for a machine
+func (uc *EssentialUseCase) buildGPURelationsForMachine(machineID, hostname string, nodeGpuMap map[string]string, vgpuPods []EssentialVGpuPodInfo) ([]*pb.GPURelation, error) {
 	var gpuRelations []*pb.GPURelation
 
 	// Add Machine relation
-	machineRelation := &pb.GPURelation{}
-	machineEntity := &pb.GPURelation_Machine{}
-	machineEntity.SetId(machineID)
-	machineEntity.SetHostname(machine.Hostname)
-	machineRelation.SetMachine(machineEntity)
+	machineRelation := uc.createMachineRelation(machineID, hostname)
 	gpuRelations = append(gpuRelations, machineRelation)
 
 	// Add GPU relations
+	gpuRelations = append(gpuRelations, uc.createGPURelations(machineID, nodeGpuMap)...)
+
+	// Add Pod and vGPU relations
+	podVGpuRelations := uc.createPodAndVGpuRelations(vgpuPods)
+	gpuRelations = append(gpuRelations, podVGpuRelations...)
+
+	return gpuRelations, nil
+}
+
+// createMachineRelation creates a machine relation entity
+func (uc *EssentialUseCase) createMachineRelation(machineID, hostname string) *pb.GPURelation {
+	machineRelation := &pb.GPURelation{}
+	machineEntity := &pb.GPURelation_Machine{}
+	machineEntity.SetId(machineID)
+	machineEntity.SetHostname(hostname)
+	machineRelation.SetMachine(machineEntity)
+	return machineRelation
+}
+
+// createGPURelations creates GPU relation entities for all GPUs on the node
+func (uc *EssentialUseCase) createGPURelations(machineID string, nodeGpuMap map[string]string) []*pb.GPURelation {
+	var gpuRelations []*pb.GPURelation
+
 	for gpuID, gpuVendorProduct := range nodeGpuMap {
 		// Parse vendor and product from the format "NVIDIA-NVIDIA GeForce RTX 4090"
 		vendor, product := parseVendorProduct(gpuVendorProduct)
@@ -604,63 +631,98 @@ func (uc *EssentialUseCase) ListGPURelationsByMachine(ctx context.Context, scope
 		gpuRelations = append(gpuRelations, gpuRelation)
 	}
 
-	// Process vGPU pods and create Pod and vGPU relations
+	return gpuRelations
+}
+
+// createPodAndVGpuRelations creates pod and vGPU relation entities for all vGPU pods
+func (uc *EssentialUseCase) createPodAndVGpuRelations(vgpuPods []EssentialVGpuPodInfo) []*pb.GPURelation {
+	var relations []*pb.GPURelation
+
 	for _, vgpuPod := range vgpuPods {
 		// Collect all GPU IDs used by this pod
-		var gpuIDs []string
-		for _, vgpuAlloc := range vgpuPod.VGpuInfos {
-			gpuIDs = append(gpuIDs, vgpuAlloc.GpuUUID)
-		}
+		gpuIDs := uc.collectGpuIDsFromPod(vgpuPod)
 
 		// Add Pod relation
-		podRelation := &pb.GPURelation{}
-		podEntity := &pb.GPURelation_Pod{}
-		podEntity.SetName(vgpuPod.Pod.Name)
-		podEntity.SetNamespace(vgpuPod.Pod.Namespace)
-		podEntity.SetModelName(vgpuPod.ModelName)
-		podEntity.SetGpuId(gpuIDs)
-		podRelation.SetPod(podEntity)
-		gpuRelations = append(gpuRelations, podRelation)
+		podRelation := uc.createPodRelation(vgpuPod, gpuIDs)
+		relations = append(relations, podRelation)
 
 		// Add vGPU relations for each vGPU allocation
-		for _, vgpuAlloc := range vgpuPod.VGpuInfos {
-			vgpuRelation := &pb.GPURelation{}
+		vgpuRelations := uc.createVGpuRelations(vgpuPod)
+		relations = append(relations, vgpuRelations...)
+	}
 
-			// Convert VramMib string to bytes
-			vramBytes, err := convertVramMibToBytes(vgpuAlloc.VramMib)
-			if err != nil {
-				vramBytes = 0 // Default to 0 if conversion fails
-			}
+	return relations
+}
 
-			// Convert VcoresPercent string to float
-			vcoresPercent, err := convertVcoresPercentToFloat(vgpuAlloc.VcoresPercent)
-			if err != nil {
-				vcoresPercent = 0.0 // Default to 0.0 if conversion fails
-			}
+// collectGpuIDsFromPod extracts all GPU IDs used by a pod
+func (uc *EssentialUseCase) collectGpuIDsFromPod(vgpuPod EssentialVGpuPodInfo) []string {
+	var gpuIDs []string
+	for _, vgpuAlloc := range vgpuPod.VGpuInfos {
+		gpuIDs = append(gpuIDs, vgpuAlloc.GpuUUID)
+	}
+	return gpuIDs
+}
 
-			// Convert bind time to timestamp
-			var boundAt *timestamppb.Timestamp
-			if vgpuAlloc.BindTime != "" {
-				if bindTimeUnix, err := strconv.ParseInt(vgpuAlloc.BindTime, 10, 64); err == nil {
-					boundAt = timestamppb.New(time.Unix(bindTimeUnix, 0))
-				}
-			}
+// createPodRelation creates a pod relation entity
+func (uc *EssentialUseCase) createPodRelation(vgpuPod EssentialVGpuPodInfo, gpuIDs []string) *pb.GPURelation {
+	podRelation := &pb.GPURelation{}
+	podEntity := &pb.GPURelation_Pod{}
+	podEntity.SetName(vgpuPod.Pod.Name)
+	podEntity.SetNamespace(vgpuPod.Pod.Namespace)
+	podEntity.SetModelName(vgpuPod.ModelName)
+	podEntity.SetGpuId(gpuIDs)
+	podRelation.SetPod(podEntity)
+	return podRelation
+}
 
-			vgpuEntity := &pb.GPURelationVGPU{}
-			vgpuEntity.SetGpuId(vgpuAlloc.GpuUUID)
-			vgpuEntity.SetPodName(vgpuPod.Pod.Name)
-			vgpuEntity.SetVramBytes(vramBytes)
-			vgpuEntity.SetVcoresPercent(vcoresPercent)
-			vgpuEntity.SetBindingPhase(vgpuAlloc.BindPhase)
-			if boundAt != nil {
-				vgpuEntity.SetBoundAt(boundAt)
-			}
-			vgpuRelation.SetVgpu(vgpuEntity)
-			gpuRelations = append(gpuRelations, vgpuRelation)
+// createVGpuRelations creates vGPU relation entities for all vGPU allocations in a pod
+func (uc *EssentialUseCase) createVGpuRelations(vgpuPod EssentialVGpuPodInfo) []*pb.GPURelation {
+	var vgpuRelations []*pb.GPURelation
+
+	for _, vgpuAlloc := range vgpuPod.VGpuInfos {
+		vgpuRelation := uc.createSingleVGpuRelation(vgpuPod.Pod.Name, vgpuAlloc)
+		vgpuRelations = append(vgpuRelations, vgpuRelation)
+	}
+
+	return vgpuRelations
+}
+
+// createSingleVGpuRelation creates a single vGPU relation entity
+func (uc *EssentialUseCase) createSingleVGpuRelation(podName string, vgpuAlloc EssentialVGpuAllocation) *pb.GPURelation {
+	vgpuRelation := &pb.GPURelation{}
+
+	// Convert VramMib string to bytes
+	vramBytes, err := convertVramMibToBytes(vgpuAlloc.VramMib)
+	if err != nil {
+		vramBytes = 0 // Default to 0 if conversion fails
+	}
+
+	// Convert VcoresPercent string to float
+	vcoresPercent, err := convertVcoresPercentToFloat(vgpuAlloc.VcoresPercent)
+	if err != nil {
+		vcoresPercent = 0.0 // Default to 0.0 if conversion fails
+	}
+
+	// Convert bind time to timestamp
+	var boundAt *timestamppb.Timestamp
+	if vgpuAlloc.BindTime != "" {
+		if bindTimeUnix, err := strconv.ParseInt(vgpuAlloc.BindTime, 10, 64); err == nil {
+			boundAt = timestamppb.New(time.Unix(bindTimeUnix, 0))
 		}
 	}
 
-	return gpuRelations, nil
+	vgpuEntity := &pb.GPURelationVGPU{}
+	vgpuEntity.SetGpuId(vgpuAlloc.GpuUUID)
+	vgpuEntity.SetPodName(podName)
+	vgpuEntity.SetVramBytes(vramBytes)
+	vgpuEntity.SetVcoresPercent(vcoresPercent)
+	vgpuEntity.SetBindingPhase(vgpuAlloc.BindPhase)
+	if boundAt != nil {
+		vgpuEntity.SetBoundAt(boundAt)
+	}
+	vgpuRelation.SetVgpu(vgpuEntity)
+
+	return vgpuRelation
 }
 
 func (uc *EssentialUseCase) ListGPURelationsByModel(ctx context.Context, scopeUUID, facilityName, namespace, modelName string) ([]*pb.GPURelation, error) {
@@ -677,158 +739,245 @@ func (uc *EssentialUseCase) ListGPURelationsByModel(ctx context.Context, scopeUU
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get deployments: %w", err))
 	}
 
+	return uc.buildGPURelationsForModel(ctx, config, deployments, modelName)
+}
+
+// buildGPURelationsForModel constructs GPU relations for all pods in deployments with the specified model
+func (uc *EssentialUseCase) buildGPURelationsForModel(ctx context.Context, config *rest.Config, deployments []Deployment, modelName string) ([]*pb.GPURelation, error) {
 	var gpuRelations []*pb.GPURelation
-	processedPods := make(map[string]bool)     // Track processed pods to avoid duplicates
-	processedMachines := make(map[string]bool) // Track processed machines to avoid duplicates
-	processedGPUs := make(map[string]bool)     // Track processed GPUs to avoid duplicates
+	tracker := newRelationTracker()
 
-	for _, deployment := range deployments {
-		selector := deployment.Spec.Selector
-		if selector == nil || selector.MatchLabels == nil {
-			continue
-		}
-
-		// Build pod label selector from deployment selector
-		podLabelSelector := ""
-		for key, value := range selector.MatchLabels {
-			if podLabelSelector != "" {
-				podLabelSelector += ","
-			}
-			podLabelSelector += key + "=" + value
-		}
-
-		// Get pods for this deployment
-		pods, err := uc.kubeCore.ListPodsByLabel(ctx, config, deployment.Namespace, podLabelSelector)
+	for i := range deployments {
+		relations, err := uc.processDeploymentForGPURelations(ctx, config, deployments[i], modelName, tracker)
 		if err != nil {
-			continue
+			continue // Skip deployments with errors
 		}
-
-		for _, pod := range pods {
-			// Skip if we've already processed this pod
-			podKey := pod.Namespace + "/" + pod.Name
-			if processedPods[podKey] {
-				continue
-			}
-			processedPods[podKey] = true
-
-			// Check if pod has vGPU allocation
-			vgpuDevicesAllocated, hasVGpuAllocation := pod.Annotations["hami.io/vgpu-devices-allocated"]
-			if !hasVGpuAllocation || vgpuDevicesAllocated == "" {
-				continue
-			}
-
-			// Parse vGPU allocation information
-			vgpuAllocations, err := parseVGpuDevicesAllocated(vgpuDevicesAllocated)
-			if err != nil || len(vgpuAllocations) == 0 {
-				continue
-			}
-
-			// Get machine information
-			machineID, err := uc.getMachineIDFromNodeName(ctx, pod.Spec.NodeName)
-			if err != nil {
-				continue // Skip if we can't get machine ID
-			}
-
-			// Add Machine relation if not already added
-			if !processedMachines[machineID] {
-				machine, err := uc.machine.Get(ctx, machineID)
-				if err == nil {
-					machineRelation := &pb.GPURelation{}
-					machineEntity := &pb.GPURelation_Machine{}
-					machineEntity.SetId(machineID)
-					machineEntity.SetHostname(machine.Hostname)
-					machineRelation.SetMachine(machineEntity)
-					gpuRelations = append(gpuRelations, machineRelation)
-					processedMachines[machineID] = true
-				}
-			}
-
-			// Get GPU information from node
-			nodeGpuMap, err := uc.getNodeGpuMap(ctx, config, pod.Spec.NodeName)
-			if err != nil {
-				nodeGpuMap = make(map[string]string) // Empty map if we can't get node info
-			}
-
-			// Collect GPU IDs used by this pod for the Pod relation
-			var gpuIDs []string
-			for _, vgpuAlloc := range vgpuAllocations {
-				gpuIDs = append(gpuIDs, vgpuAlloc.GpuUUID)
-
-				// Add GPU relation if not already added
-				if !processedGPUs[vgpuAlloc.GpuUUID] {
-					if gpuVendorProduct, exists := nodeGpuMap[vgpuAlloc.GpuUUID]; exists {
-						vendor, product := parseVendorProduct(gpuVendorProduct)
-
-						gpuRelation := &pb.GPURelation{}
-						gpuEntity := &pb.GPURelation_GPU{}
-						gpuEntity.SetId(vgpuAlloc.GpuUUID)
-						gpuEntity.SetVendor(vendor)
-						gpuEntity.SetProduct(product)
-						gpuEntity.SetMachineId(machineID)
-						gpuRelation.SetGpu(gpuEntity)
-						gpuRelations = append(gpuRelations, gpuRelation)
-						processedGPUs[vgpuAlloc.GpuUUID] = true
-					}
-				}
-			}
-
-			// Add Pod relation
-			podRelation := &pb.GPURelation{}
-			podEntity := &pb.GPURelation_Pod{}
-			podEntity.SetName(pod.Name)
-			podEntity.SetNamespace(pod.Namespace)
-			podEntity.SetModelName(modelName)
-			podEntity.SetGpuId(gpuIDs)
-			podRelation.SetPod(podEntity)
-			gpuRelations = append(gpuRelations, podRelation)
-
-			// Add vGPU relations
-			bindTime := pod.Annotations["hami.io/bind-time"]
-			bindPhase := pod.Annotations["hami.io/bind-phase"]
-
-			for _, vgpuAlloc := range vgpuAllocations {
-				vgpuRelation := &pb.GPURelation{}
-
-				// Convert VramMib string to bytes
-				vramBytes, err := convertVramMibToBytes(vgpuAlloc.VramMib)
-				if err != nil {
-					vramBytes = 0 // Default to 0 if conversion fails
-				}
-
-				// Convert VcoresPercent string to float
-				vcoresPercent, err := convertVcoresPercentToFloat(vgpuAlloc.VcoresPercent)
-				if err != nil {
-					vcoresPercent = 0.0 // Default to 0.0 if conversion fails
-				}
-
-				// Convert bind time to timestamp
-				var boundAt *timestamppb.Timestamp
-				if bindTime != "" {
-					if bindTimeUnix, err := strconv.ParseInt(bindTime, 10, 64); err == nil {
-						boundAt = timestamppb.New(time.Unix(bindTimeUnix, 0))
-					}
-				}
-
-				vgpuEntity := &pb.GPURelationVGPU{}
-				vgpuEntity.SetGpuId(vgpuAlloc.GpuUUID)
-				vgpuEntity.SetPodName(pod.Name)
-				vgpuEntity.SetVramBytes(vramBytes)
-				vgpuEntity.SetVcoresPercent(vcoresPercent)
-				vgpuEntity.SetBindingPhase(bindPhase)
-				if boundAt != nil {
-					vgpuEntity.SetBoundAt(boundAt)
-				}
-				vgpuRelation.SetVgpu(vgpuEntity)
-				gpuRelations = append(gpuRelations, vgpuRelation)
-			}
-		}
+		gpuRelations = append(gpuRelations, relations...)
 	}
 
 	return gpuRelations, nil
 }
 
+// relationTracker tracks processed entities to avoid duplicates
+type relationTracker struct {
+	processedPods     map[string]bool
+	processedMachines map[string]bool
+	processedGPUs     map[string]bool
+}
+
+func newRelationTracker() *relationTracker {
+	return &relationTracker{
+		processedPods:     make(map[string]bool),
+		processedMachines: make(map[string]bool),
+		processedGPUs:     make(map[string]bool),
+	}
+}
+
+// processDeploymentForGPURelations processes a single deployment and returns GPU relations
+func (uc *EssentialUseCase) processDeploymentForGPURelations(ctx context.Context, config *rest.Config, deployment Deployment, modelName string, tracker *relationTracker) ([]*pb.GPURelation, error) {
+	if deployment.Spec.Selector == nil || deployment.Spec.Selector.MatchLabels == nil {
+		return nil, nil
+	}
+
+	// Build pod label selector from deployment selector
+	podLabelSelector := uc.buildPodLabelSelector(deployment.Spec.Selector.MatchLabels)
+
+	// Get pods for this deployment
+	pods, err := uc.kubeCore.ListPodsByLabel(ctx, config, deployment.Namespace, podLabelSelector)
+	if err != nil {
+		return nil, err
+	}
+
+	var relations []*pb.GPURelation
+	for i := range pods {
+		podRelations, err := uc.processPodForGPURelations(ctx, config, pods[i], modelName, tracker)
+		if err != nil {
+			continue // Skip pods with errors
+		}
+		relations = append(relations, podRelations...)
+	}
+
+	return relations, nil
+}
+
+// buildPodLabelSelector builds a label selector string from match labels
+func (uc *EssentialUseCase) buildPodLabelSelector(matchLabels map[string]string) string {
+	var selector string
+	for key, value := range matchLabels {
+		if selector != "" {
+			selector += ","
+		}
+		selector += key + "=" + value
+	}
+	return selector
+}
+
+// processPodForGPURelations processes a single pod and returns GPU relations
+func (uc *EssentialUseCase) processPodForGPURelations(ctx context.Context, config *rest.Config, pod Pod, modelName string, tracker *relationTracker) ([]*pb.GPURelation, error) {
+	// Skip if already processed
+	podKey := pod.Namespace + "/" + pod.Name
+	if tracker.processedPods[podKey] {
+		return nil, nil
+	}
+	tracker.processedPods[podKey] = true
+
+	// Check if pod has vGPU allocation
+	vgpuDevicesAllocated, hasVGpuAllocation := pod.Annotations["hami.io/vgpu-devices-allocated"]
+	if !hasVGpuAllocation || vgpuDevicesAllocated == "" {
+		return nil, nil
+	}
+
+	// Parse vGPU allocation information
+	vgpuAllocations := parseVGpuDevicesAllocated(vgpuDevicesAllocated)
+	if len(vgpuAllocations) == 0 {
+		return nil, nil
+	}
+
+	// Get machine information
+	machineID, err := uc.getMachineIDFromNodeName(ctx, pod.Spec.NodeName)
+	if err != nil {
+		return nil, err
+	}
+
+	var relations []*pb.GPURelation
+
+	// Add Machine relation if not already added
+	if machineRelation := uc.addMachineRelationIfNeeded(ctx, machineID, tracker); machineRelation != nil {
+		relations = append(relations, machineRelation)
+	}
+
+	// Get GPU information from node
+	nodeGpuMap, err := uc.getNodeGpuMap(ctx, config, pod.Spec.NodeName)
+	if err != nil {
+		nodeGpuMap = make(map[string]string)
+	}
+
+	// Process vGPU allocations and create GPU relations
+	gpuIDs, gpuRelations := uc.processVGpuAllocationsForGPUs(vgpuAllocations, nodeGpuMap, machineID, tracker)
+	relations = append(relations, gpuRelations...)
+
+	// Add Pod relation
+	podRelation := uc.createPodRelationForModel(pod, modelName, gpuIDs)
+	relations = append(relations, podRelation)
+
+	// Add vGPU relations
+	vgpuRelations := uc.createVGpuRelationsForModel(pod, vgpuAllocations)
+	relations = append(relations, vgpuRelations...)
+
+	return relations, nil
+}
+
+// addMachineRelationIfNeeded adds a machine relation if it hasn't been processed yet
+func (uc *EssentialUseCase) addMachineRelationIfNeeded(ctx context.Context, machineID string, tracker *relationTracker) *pb.GPURelation {
+	if tracker.processedMachines[machineID] {
+		return nil
+	}
+
+	machine, err := uc.machine.Get(ctx, machineID)
+	if err != nil {
+		return nil
+	}
+
+	tracker.processedMachines[machineID] = true
+	return uc.createMachineRelation(machineID, machine.Hostname)
+}
+
+// processVGpuAllocationsForGPUs processes vGPU allocations and creates GPU relations
+func (uc *EssentialUseCase) processVGpuAllocationsForGPUs(vgpuAllocations []EssentialVGpuAllocation, nodeGpuMap map[string]string, machineID string, tracker *relationTracker) ([]string, []*pb.GPURelation) {
+	var gpuIDs []string
+	var gpuRelations []*pb.GPURelation
+
+	for _, vgpuAlloc := range vgpuAllocations {
+		gpuIDs = append(gpuIDs, vgpuAlloc.GpuUUID)
+
+		// Add GPU relation if not already added
+		if !tracker.processedGPUs[vgpuAlloc.GpuUUID] {
+			if gpuVendorProduct, exists := nodeGpuMap[vgpuAlloc.GpuUUID]; exists {
+				vendor, product := parseVendorProduct(gpuVendorProduct)
+
+				gpuRelation := &pb.GPURelation{}
+				gpuEntity := &pb.GPURelation_GPU{}
+				gpuEntity.SetId(vgpuAlloc.GpuUUID)
+				gpuEntity.SetVendor(vendor)
+				gpuEntity.SetProduct(product)
+				gpuEntity.SetMachineId(machineID)
+				gpuRelation.SetGpu(gpuEntity)
+				gpuRelations = append(gpuRelations, gpuRelation)
+				tracker.processedGPUs[vgpuAlloc.GpuUUID] = true
+			}
+		}
+	}
+
+	return gpuIDs, gpuRelations
+}
+
+// createPodRelationForModel creates a pod relation entity for model-based query
+func (uc *EssentialUseCase) createPodRelationForModel(pod Pod, modelName string, gpuIDs []string) *pb.GPURelation {
+	podRelation := &pb.GPURelation{}
+	podEntity := &pb.GPURelation_Pod{}
+	podEntity.SetName(pod.Name)
+	podEntity.SetNamespace(pod.Namespace)
+	podEntity.SetModelName(modelName)
+	podEntity.SetGpuId(gpuIDs)
+	podRelation.SetPod(podEntity)
+	return podRelation
+}
+
+// createVGpuRelationsForModel creates vGPU relation entities for model-based query
+func (uc *EssentialUseCase) createVGpuRelationsForModel(pod Pod, vgpuAllocations []EssentialVGpuAllocation) []*pb.GPURelation {
+	var vgpuRelations []*pb.GPURelation
+
+	bindTime := pod.Annotations["hami.io/bind-time"]
+	bindPhase := pod.Annotations["hami.io/bind-phase"]
+
+	for _, vgpuAlloc := range vgpuAllocations {
+		vgpuRelation := uc.createVGpuRelationForModel(pod.Name, vgpuAlloc, bindTime, bindPhase)
+		vgpuRelations = append(vgpuRelations, vgpuRelation)
+	}
+
+	return vgpuRelations
+}
+
+// createVGpuRelationForModel creates a single vGPU relation entity for model-based query
+func (uc *EssentialUseCase) createVGpuRelationForModel(podName string, vgpuAlloc EssentialVGpuAllocation, bindTime, bindPhase string) *pb.GPURelation {
+	vgpuRelation := &pb.GPURelation{}
+
+	// Convert VramMib string to bytes
+	vramBytes, err := convertVramMibToBytes(vgpuAlloc.VramMib)
+	if err != nil {
+		vramBytes = 0
+	}
+
+	// Convert VcoresPercent string to float
+	vcoresPercent, err := convertVcoresPercentToFloat(vgpuAlloc.VcoresPercent)
+	if err != nil {
+		vcoresPercent = 0.0
+	}
+
+	// Convert bind time to timestamp
+	var boundAt *timestamppb.Timestamp
+	if bindTime != "" {
+		if bindTimeUnix, err := strconv.ParseInt(bindTime, 10, 64); err == nil {
+			boundAt = timestamppb.New(time.Unix(bindTimeUnix, 0))
+		}
+	}
+
+	vgpuEntity := &pb.GPURelationVGPU{}
+	vgpuEntity.SetGpuId(vgpuAlloc.GpuUUID)
+	vgpuEntity.SetPodName(podName)
+	vgpuEntity.SetVramBytes(vramBytes)
+	vgpuEntity.SetVcoresPercent(vcoresPercent)
+	vgpuEntity.SetBindingPhase(bindPhase)
+	if boundAt != nil {
+		vgpuEntity.SetBoundAt(boundAt)
+	}
+	vgpuRelation.SetVgpu(vgpuEntity)
+
+	return vgpuRelation
+}
+
 // filterVGpuPodsOnNode filters pods on the specified Node that have vGPU configuration
-func filterVGpuPodsOnNode(ctx context.Context, pods []Pod, nodeName string, config *rest.Config, kubeRepo KubeCoreRepo, kubeAppsRepo KubeAppsRepo) []EssentialVGpuPodInfo {
+func filterVGpuPodsOnNode(ctx context.Context, pods []Pod, nodeName string, config *rest.Config, kubeRepo KubeCoreRepo, kubeApps KubeAppsRepo) []EssentialVGpuPodInfo {
 	var vgpuPods []EssentialVGpuPodInfo
 
 	for i := range pods {
@@ -846,8 +995,8 @@ func filterVGpuPodsOnNode(ctx context.Context, pods []Pod, nodeName string, conf
 		}
 
 		// Parse vGPU configuration
-		vgpuAllocations, err := parseVGpuDevicesAllocated(vgpuDevicesAllocated)
-		if err != nil || len(vgpuAllocations) == 0 {
+		vgpuAllocations := parseVGpuDevicesAllocated(vgpuDevicesAllocated)
+		if len(vgpuAllocations) == 0 {
 			continue
 		}
 
@@ -862,7 +1011,7 @@ func filterVGpuPodsOnNode(ctx context.Context, pods []Pod, nodeName string, conf
 		}
 
 		// Get model-name (from Deployment labels via Pod's owner reference)
-		modelName := getModelNameFromPod(ctx, pod, config, kubeRepo, kubeAppsRepo)
+		modelName := getModelNameFromPod(ctx, pod, config, kubeApps)
 
 		vgpuPods = append(vgpuPods, EssentialVGpuPodInfo{
 			Pod:       pod,
@@ -876,7 +1025,14 @@ func filterVGpuPodsOnNode(ctx context.Context, pods []Pod, nodeName string, conf
 
 // parseVGpuDevicesAllocated parses hami.io/vgpu-devices-allocated annotation
 // Format: GPU-c15ecdf3-444a-2d02-29e9-e978b2514335,NVIDIA,3684,25:GPU-663aa370-535a-33b8-e01f-b325fb2025c7,NVIDIA,4684,35:;
-func parseVGpuDevicesAllocated(annotation string) ([]EssentialVGpuAllocation, error) {
+func parseVGpuDevicesAllocated(annotation string) []EssentialVGpuAllocation {
+	const (
+		vgpuAllocationFieldCount = 4 // GPU-uuid,vendor,vram,vcores
+		vgpuUUIDIndex            = 0
+		vgpuVendorIndex          = 1
+		vgpuVramIndex            = 2
+		vgpuVcoresIndex          = 3
+	)
 	var allocations []EssentialVGpuAllocation
 
 	// Remove trailing semicolon and split by colon
@@ -891,25 +1047,25 @@ func parseVGpuDevicesAllocated(annotation string) ([]EssentialVGpuAllocation, er
 
 		// Split by comma: GPU-uuid,vendor,vram,vcores
 		parts := strings.Split(entry, ",")
-		if len(parts) != 4 {
+		if len(parts) != vgpuAllocationFieldCount {
 			continue
 		}
 
 		allocation := EssentialVGpuAllocation{
-			GpuUUID:       parts[0], // GPU-c15ecdf3-444a-2d02-29e9-e978b2514335
-			Vendor:        parts[1], // NVIDIA
-			VramMib:       parts[2], // 3684
-			VcoresPercent: parts[3], // 25
+			GpuUUID:       parts[vgpuUUIDIndex],   // GPU-c15ecdf3-444a-2d02-29e9-e978b2514335
+			Vendor:        parts[vgpuVendorIndex], // NVIDIA
+			VramMib:       parts[vgpuVramIndex],   // 3684
+			VcoresPercent: parts[vgpuVcoresIndex], // 25
 		}
 
 		allocations = append(allocations, allocation)
 	}
 
-	return allocations, nil
+	return allocations
 }
 
 // getModelNameFromPod extracts model-name from Pod's Deployment labels
-func getModelNameFromPod(ctx context.Context, pod *Pod, config *rest.Config, kubeRepo KubeCoreRepo, kubeAppsRepo KubeAppsRepo) string {
+func getModelNameFromPod(ctx context.Context, pod *Pod, config *rest.Config, kubeApps KubeAppsRepo) string {
 	// First try to get from Pod labels directly
 	if modelName, exists := pod.Labels["model-name"]; exists {
 		return modelName
@@ -927,7 +1083,7 @@ func getModelNameFromPod(ctx context.Context, pod *Pod, config *rest.Config, kub
 
 				if deploymentName != "" {
 					// Get Deployment and check its labels
-					deployment, err := kubeAppsRepo.GetDeployment(ctx, config, pod.Namespace, deploymentName)
+					deployment, err := kubeApps.GetDeployment(ctx, config, pod.Namespace, deploymentName)
 					if err == nil && deployment != nil {
 						if modelName, exists := deployment.Labels["model-name"]; exists {
 							return modelName
@@ -950,12 +1106,17 @@ func getModelNameFromPod(ctx context.Context, pod *Pod, config *rest.Config, kub
 // extractDeploymentNameFromReplicaSet extracts deployment name from ReplicaSet name
 // ReplicaSet naming pattern: {deployment-name}-{random-hash}
 func extractDeploymentNameFromReplicaSet(replicaSetName string) string {
+	const (
+		replicaSetHashMinLength = 8  // Minimum length of ReplicaSet hash suffix
+		replicaSetHashMaxLength = 10 // Maximum length of ReplicaSet hash suffix
+	)
+
 	// Find the last dash and remove the hash part
 	lastDashIndex := strings.LastIndex(replicaSetName, "-")
 	if lastDashIndex > 0 {
 		// Check if the part after the last dash looks like a hash (alphanumeric, typically 8-10 chars)
 		hashPart := replicaSetName[lastDashIndex+1:]
-		if len(hashPart) >= 8 && len(hashPart) <= 10 {
+		if len(hashPart) >= replicaSetHashMinLength && len(hashPart) <= replicaSetHashMaxLength {
 			// Assume it's a hash if it's the right length and contains only lowercase letters and numbers
 			// ReplicaSet hashes are typically like: 54bb8b45bb, 85c77654c7, 7d8b49557f
 			isHash := true
@@ -998,6 +1159,13 @@ func (uc *EssentialUseCase) getMachineIDFromNodeName(ctx context.Context, nodeNa
 
 // getNodeGpuMap creates a mapping from GPU UUID to GPU vendor for a specific node
 func (uc *EssentialUseCase) getNodeGpuMap(ctx context.Context, config *rest.Config, nodeName string) (map[string]string, error) {
+	const (
+		hamiAnnotationKey        = "hami.io/node-nvidia-register"
+		gpuEntryMinFieldCount    = 5 // Minimum fields: UUID,index,memory,count,vendor,...
+		gpuEntryUUIDFieldIndex   = 0
+		gpuEntryVendorFieldIndex = 4
+	)
+
 	// Get the node
 	node, err := uc.kubeCore.GetNode(ctx, config, nodeName)
 	if err != nil {
@@ -1007,7 +1175,6 @@ func (uc *EssentialUseCase) getNodeGpuMap(ctx context.Context, config *rest.Conf
 	// Parse GPU annotations to get GPU UUID to vendor mapping
 	gpuMap := make(map[string]string)
 
-	const hamiAnnotationKey = "hami.io/node-nvidia-register"
 	annotationValue, exists := node.Annotations[hamiAnnotationKey]
 	if !exists || annotationValue == "" {
 		return gpuMap, nil
@@ -1028,12 +1195,12 @@ func (uc *EssentialUseCase) getNodeGpuMap(ctx context.Context, config *rest.Conf
 		// Parse single GPU entry
 		// Format: GPU-663aa370-535a-33b8-e01f-b325fb2025c7,10,24564,100,NVIDIA-NVIDIA GeForce RTX 4090,0,true,0,hami-core
 		parts := strings.Split(entry, ",")
-		if len(parts) < 5 {
+		if len(parts) < gpuEntryMinFieldCount {
 			continue // Skip incorrectly formatted entries
 		}
 
-		cardUUID := parts[0]
-		cardVendor := parts[4] // Extract full vendor name from parts[4]
+		cardUUID := parts[gpuEntryUUIDFieldIndex]
+		cardVendor := parts[gpuEntryVendorFieldIndex] // Extract full vendor name from parts[4]
 
 		gpuMap[cardUUID] = cardVendor
 	}
@@ -1045,12 +1212,18 @@ func (uc *EssentialUseCase) getNodeGpuMap(ctx context.Context, config *rest.Conf
 // Input: "NVIDIA-NVIDIA GeForce RTX 4090"
 // Output: vendor="NVIDIA", product="NVIDIA GeForce RTX 4090"
 func parseVendorProduct(vendorProduct string) (vendor, product string) {
-	parts := strings.SplitN(vendorProduct, "-", 2)
-	if len(parts) >= 1 {
-		vendor = parts[0]
+	const (
+		maxVendorProductParts = 2 // Split into at most 2 parts: vendor and product
+		vendorIndex           = 0
+		productIndex          = 1
+	)
+
+	parts := strings.SplitN(vendorProduct, "-", maxVendorProductParts)
+	if len(parts) >= vendorIndex+1 {
+		vendor = parts[vendorIndex]
 	}
-	if len(parts) >= 2 {
-		product = parts[1]
+	if len(parts) >= productIndex+1 {
+		product = parts[productIndex]
 	} else {
 		product = vendorProduct
 	}
