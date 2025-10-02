@@ -32,6 +32,8 @@
 	"no_sql": "NoSQL",
 	"applications": "Applications",
 	"applications_description": "Kubernetes applications with integrated app store",
+	"scale_application": "Scale Application",
+	"scale": "Scale",
 	"workloads": "Workloads",
 	"services": "Services",
 	"store": "Store",
