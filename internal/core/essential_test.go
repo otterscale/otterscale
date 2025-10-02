@@ -945,23 +945,28 @@ func TestEssentialUseCase_ListGPURelationsByMachine(t *testing.T) {
 			assert.Equal(t, hostname, relation.GetMachine().GetHostname())
 		case relation.GetGpu() != nil:
 			gpuFound = true
-			assert.Equal(t, machineID, relation.GetGpu().GetMachineId())
-			assert.Equal(t, "NVIDIA", relation.GetGpu().GetVendor())
+			gpu := relation.GetGpu()
+			assert.Equal(t, machineID, gpu.GetMachineId())
+			assert.Equal(t, "NVIDIA", gpu.GetVendor())
+
+			// Check vGPUs embedded in GPU
+			if len(gpu.GetVgpus()) > 0 {
+				vgpuFound = true
+				vgpu := gpu.GetVgpus()[0]
+				assert.Equal(t, "test-pod", vgpu.GetPodName())
+				assert.Equal(t, float32(testVGPUCoresPercent), vgpu.GetVcoresPercent())
+			}
 		case relation.GetPod() != nil:
 			podFound = true
 			assert.Equal(t, "test-pod", relation.GetPod().GetName())
 			assert.Equal(t, "default", relation.GetPod().GetNamespace())
-		case relation.GetVgpu() != nil:
-			vgpuFound = true
-			assert.Equal(t, "test-pod", relation.GetVgpu().GetPodName())
-			assert.Equal(t, float32(testVGPUCoresPercent), relation.GetVgpu().GetVcoresPercent())
 		}
 	}
 
 	assert.True(t, machineFound, "Machine relation should be found")
 	assert.True(t, gpuFound, "GPU relation should be found")
 	assert.True(t, podFound, "Pod relation should be found")
-	assert.True(t, vgpuFound, "vGPU relation should be found")
+	assert.True(t, vgpuFound, "vGPU should be embedded in GPU relation")
 }
 
 // Test for ListGPURelationsByModel
@@ -1078,21 +1083,26 @@ func TestEssentialUseCase_ListGPURelationsByModel(t *testing.T) {
 			assert.Equal(t, "test-machine-id", relation.GetMachine().GetId())
 		case relation.GetGpu() != nil:
 			gpuFound = true
-			assert.Equal(t, "test-machine-id", relation.GetGpu().GetMachineId())
-			assert.Equal(t, "NVIDIA", relation.GetGpu().GetVendor())
+			gpu := relation.GetGpu()
+			assert.Equal(t, "test-machine-id", gpu.GetMachineId())
+			assert.Equal(t, "NVIDIA", gpu.GetVendor())
+
+			// Check vGPUs embedded in GPU
+			if len(gpu.GetVgpus()) > 0 {
+				vgpuFound = true
+				vgpu := gpu.GetVgpus()[0]
+				assert.Equal(t, "test-pod", vgpu.GetPodName())
+				assert.Equal(t, float32(testVGPUCoresPercent), vgpu.GetVcoresPercent())
+			}
 		case relation.GetPod() != nil:
 			podFound = true
 			assert.Equal(t, "test-pod", relation.GetPod().GetName())
 			assert.Equal(t, modelName, relation.GetPod().GetModelName())
-		case relation.GetVgpu() != nil:
-			vgpuFound = true
-			assert.Equal(t, "test-pod", relation.GetVgpu().GetPodName())
-			assert.Equal(t, float32(testVGPUCoresPercent), relation.GetVgpu().GetVcoresPercent())
 		}
 	}
 
 	assert.True(t, machineFound, "Machine relation should be found")
 	assert.True(t, gpuFound, "GPU relation should be found")
 	assert.True(t, podFound, "Pod relation should be found")
-	assert.True(t, vgpuFound, "vGPU relation should be found")
+	assert.True(t, vgpuFound, "vGPU should be embedded in GPU relation")
 }
