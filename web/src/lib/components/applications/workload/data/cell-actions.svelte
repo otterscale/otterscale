@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import Delete from './action-delete.svelte';
+	import Log from './action-log.svelte';
 
 	import type { Application_Pod } from '$lib/api/application/v1/application_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -13,6 +14,9 @@
 <Layout.Actions>
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionSeparator />
+	<Layout.ActionItem>
+		<Log {namespace} {pod} />
+	</Layout.ActionItem>
 	<Layout.ActionItem>
 		<Delete {namespace} {pod} />
 	</Layout.ActionItem>
