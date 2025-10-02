@@ -92,6 +92,9 @@ const (
 	// VirtualMachineServiceMigrateInstanceProcedure is the fully-qualified name of the
 	// VirtualMachineService's MigrateInstance RPC.
 	VirtualMachineServiceMigrateInstanceProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/MigrateInstance"
+	// VirtualMachineServiceVNCInstanceProcedure is the fully-qualified name of the
+	// VirtualMachineService's VNCInstance RPC.
+	VirtualMachineServiceVNCInstanceProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/VNCInstance"
 	// VirtualMachineServiceListDataVolumesProcedure is the fully-qualified name of the
 	// VirtualMachineService's ListDataVolumes RPC.
 	VirtualMachineServiceListDataVolumesProcedure = "/otterscale.virtual_machine.v1.VirtualMachineService/ListDataVolumes"
@@ -152,6 +155,7 @@ type VirtualMachineServiceClient interface {
 	PauseInstance(context.Context, *v1.PauseInstanceRequest) (*emptypb.Empty, error)
 	ResumeInstance(context.Context, *v1.ResumeInstanceRequest) (*emptypb.Empty, error)
 	MigrateInstance(context.Context, *v1.MigrateInstanceRequest) (*emptypb.Empty, error)
+	VNCInstance(context.Context, *v1.VNCInstanceRequest) (*v1.VNCInstanceResponse, error)
 	ListDataVolumes(context.Context, *v1.ListDataVolumesRequest) (*v1.ListDataVolumesResponse, error)
 	GetDataVolume(context.Context, *v1.GetDataVolumeRequest) (*v1.DataVolume, error)
 	CreateDataVolume(context.Context, *v1.CreateDataVolumeRequest) (*v1.DataVolume, error)
@@ -292,6 +296,12 @@ func NewVirtualMachineServiceClient(httpClient connect.HTTPClient, baseURL strin
 			connect.WithSchema(virtualMachineServiceMethods.ByName("MigrateInstance")),
 			connect.WithClientOptions(opts...),
 		),
+		vNCInstance: connect.NewClient[v1.VNCInstanceRequest, v1.VNCInstanceResponse](
+			httpClient,
+			baseURL+VirtualMachineServiceVNCInstanceProcedure,
+			connect.WithSchema(virtualMachineServiceMethods.ByName("VNCInstance")),
+			connect.WithClientOptions(opts...),
+		),
 		listDataVolumes: connect.NewClient[v1.ListDataVolumesRequest, v1.ListDataVolumesResponse](
 			httpClient,
 			baseURL+VirtualMachineServiceListDataVolumesProcedure,
@@ -388,6 +398,7 @@ type virtualMachineServiceClient struct {
 	pauseInstance                *connect.Client[v1.PauseInstanceRequest, emptypb.Empty]
 	resumeInstance               *connect.Client[v1.ResumeInstanceRequest, emptypb.Empty]
 	migrateInstance              *connect.Client[v1.MigrateInstanceRequest, emptypb.Empty]
+	vNCInstance                  *connect.Client[v1.VNCInstanceRequest, v1.VNCInstanceResponse]
 	listDataVolumes              *connect.Client[v1.ListDataVolumesRequest, v1.ListDataVolumesResponse]
 	getDataVolume                *connect.Client[v1.GetDataVolumeRequest, v1.DataVolume]
 	createDataVolume             *connect.Client[v1.CreateDataVolumeRequest, v1.DataVolume]
@@ -587,6 +598,15 @@ func (c *virtualMachineServiceClient) MigrateInstance(ctx context.Context, req *
 	return nil, err
 }
 
+// VNCInstance calls otterscale.virtual_machine.v1.VirtualMachineService.VNCInstance.
+func (c *virtualMachineServiceClient) VNCInstance(ctx context.Context, req *v1.VNCInstanceRequest) (*v1.VNCInstanceResponse, error) {
+	response, err := c.vNCInstance.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // ListDataVolumes calls otterscale.virtual_machine.v1.VirtualMachineService.ListDataVolumes.
 func (c *virtualMachineServiceClient) ListDataVolumes(ctx context.Context, req *v1.ListDataVolumesRequest) (*v1.ListDataVolumesResponse, error) {
 	response, err := c.listDataVolumes.CallUnary(ctx, connect.NewRequest(req))
@@ -720,6 +740,7 @@ type VirtualMachineServiceHandler interface {
 	PauseInstance(context.Context, *v1.PauseInstanceRequest) (*emptypb.Empty, error)
 	ResumeInstance(context.Context, *v1.ResumeInstanceRequest) (*emptypb.Empty, error)
 	MigrateInstance(context.Context, *v1.MigrateInstanceRequest) (*emptypb.Empty, error)
+	VNCInstance(context.Context, *v1.VNCInstanceRequest) (*v1.VNCInstanceResponse, error)
 	ListDataVolumes(context.Context, *v1.ListDataVolumesRequest) (*v1.ListDataVolumesResponse, error)
 	GetDataVolume(context.Context, *v1.GetDataVolumeRequest) (*v1.DataVolume, error)
 	CreateDataVolume(context.Context, *v1.CreateDataVolumeRequest) (*v1.DataVolume, error)
@@ -855,6 +876,12 @@ func NewVirtualMachineServiceHandler(svc VirtualMachineServiceHandler, opts ...c
 		connect.WithSchema(virtualMachineServiceMethods.ByName("MigrateInstance")),
 		connect.WithHandlerOptions(opts...),
 	)
+	virtualMachineServiceVNCInstanceHandler := connect.NewUnaryHandlerSimple(
+		VirtualMachineServiceVNCInstanceProcedure,
+		svc.VNCInstance,
+		connect.WithSchema(virtualMachineServiceMethods.ByName("VNCInstance")),
+		connect.WithHandlerOptions(opts...),
+	)
 	virtualMachineServiceListDataVolumesHandler := connect.NewUnaryHandlerSimple(
 		VirtualMachineServiceListDataVolumesProcedure,
 		svc.ListDataVolumes,
@@ -967,6 +994,8 @@ func NewVirtualMachineServiceHandler(svc VirtualMachineServiceHandler, opts ...c
 			virtualMachineServiceResumeInstanceHandler.ServeHTTP(w, r)
 		case VirtualMachineServiceMigrateInstanceProcedure:
 			virtualMachineServiceMigrateInstanceHandler.ServeHTTP(w, r)
+		case VirtualMachineServiceVNCInstanceProcedure:
+			virtualMachineServiceVNCInstanceHandler.ServeHTTP(w, r)
 		case VirtualMachineServiceListDataVolumesProcedure:
 			virtualMachineServiceListDataVolumesHandler.ServeHTTP(w, r)
 		case VirtualMachineServiceGetDataVolumeProcedure:
@@ -1074,6 +1103,10 @@ func (UnimplementedVirtualMachineServiceHandler) ResumeInstance(context.Context,
 
 func (UnimplementedVirtualMachineServiceHandler) MigrateInstance(context.Context, *v1.MigrateInstanceRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.MigrateInstance is not implemented"))
+}
+
+func (UnimplementedVirtualMachineServiceHandler) VNCInstance(context.Context, *v1.VNCInstanceRequest) (*v1.VNCInstanceResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.virtual_machine.v1.VirtualMachineService.VNCInstance is not implemented"))
 }
 
 func (UnimplementedVirtualMachineServiceHandler) ListDataVolumes(context.Context, *v1.ListDataVolumesRequest) (*v1.ListDataVolumesResponse, error) {

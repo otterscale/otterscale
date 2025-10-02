@@ -21,6 +21,8 @@ import (
 	instancetypev1beta1 "kubevirt.io/api/instancetype/v1beta1"
 	snapshotv1beta1 "kubevirt.io/api/snapshot/v1beta1"
 	cdiv1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
+
+	kvcorev1 "github.com/otterscale/kubevirt-client-go/kubevirt/typed/core/v1"
 )
 
 type SourceType int64
@@ -37,6 +39,8 @@ type (
 	VirtualMachineInstanceMigration   = virtv1.VirtualMachineInstanceMigration
 	VirtualMachineDisk                = virtv1.Disk
 	VirtualMachineVolume              = virtv1.Volume
+	VirtualMachineStream              = kvcorev1.StreamInterface
+	VirtualMachineStreamOptions       = kvcorev1.StreamOptions
 	VirtualMachineClone               = clonev1beta1.VirtualMachineClone
 	VirtualMachineSnapshot            = snapshotv1beta1.VirtualMachineSnapshot
 	VirtualMachineRestore             = snapshotv1beta1.VirtualMachineRestore
@@ -80,6 +84,7 @@ type KubeVirtRepo interface {
 	PauseInstance(ctx context.Context, config *rest.Config, namespace, name string) error
 	UnpauseInstance(ctx context.Context, config *rest.Config, namespace, name string) error
 	MigrateInstance(ctx context.Context, config *rest.Config, namespace, name, hostname string) (*VirtualMachineInstanceMigration, error)
+	VNCInstance(config *rest.Config, namespace, name string) (VirtualMachineStream, error)
 }
 
 type KubeVirtCloneRepo interface {
@@ -447,6 +452,14 @@ func (uc *VirtualMachineUseCase) MigrateInstance(ctx context.Context, uuid, faci
 		return err
 	}
 	return nil
+}
+
+func (uc *VirtualMachineUseCase) VNCInstance(ctx context.Context, scopeUUID, facility, namespace, name string) (VirtualMachineStream, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scopeUUID, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.kubeVirt.VNCInstance(config, namespace, name)
 }
 
 func (uc *VirtualMachineUseCase) ListDataVolumes(ctx context.Context, uuid, facility, namespace string, bootImage bool) ([]DataVolumeWithStorage, error) {
