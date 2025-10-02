@@ -324,6 +324,7 @@
 	"health": "Health",
 	"service": "Service",
 	"pod": "Pod",
+	"delete_pod": "Delete Pod",
 	"replica": "Replica",
 	"volume": "Volume",
 	"nodeport": "Nodeport",

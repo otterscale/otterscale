@@ -324,6 +324,7 @@
 	"health": "健康狀態",
 	"service": "服務",
 	"pod": "Pod",
+	"delete_pod": "刪除 Pod",
 	"replica": "副本",
 	"volume": "磁碟區",
 	"nodeport": "NodePort",

@@ -1,23 +1,23 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 
+	import Actions from './cell-actions.svelte';
+
+	import { browser } from '$app/environment';
+	import { page } from '$app/state';
 	import type { Application, Application_Pod } from '$lib/api/application/v1/application_pb';
 	import * as Table from '$lib/components/custom/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
+	import { staticPaths } from '$lib/path';
+	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">
-	import Icon from '@iconify/svelte';
-
-	import { browser } from '$app/environment';
-	import { page } from '$app/state';
-	import { staticPaths } from '$lib/path';
-	import { currentKubernetes } from '$lib/stores';
-
 	let {
 		application,
 	}: {
@@ -81,6 +81,7 @@
 			<Table.Head>
 				{m.terminal()}
 			</Table.Head>
+			<Table.Head></Table.Head>
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
@@ -129,6 +130,9 @@
 					<Button variant="secondary" size="icon" onclick={() => openTerminal(pod)}>
 						<Icon icon="ph:terminal-window" />
 					</Button>
+				</Table.Cell>
+				<Table.Cell class="p-0">
+					<Actions {pod} namespace={$application.namespace} />
 				</Table.Cell>
 			</Table.Row>
 		{/each}
