@@ -794,5 +794,6 @@
 	"cluster_wide": "全叢集",
 	"instance_type_name": "實例類型名稱",
 	"create_instance_type": "建立實例類型",
-	"log": "日誌"
+	"log": "日誌",
+	"vnc": "VNC"
 }

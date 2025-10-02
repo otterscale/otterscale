@@ -16,6 +16,7 @@
 		disk,
 		port,
 		createTime,
+		vnc,
 		actions,
 	};
 </script>
@@ -99,5 +100,7 @@
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
+
+{#snippet vnc()}{/snippet}
 
 {#snippet actions()}{/snippet}
