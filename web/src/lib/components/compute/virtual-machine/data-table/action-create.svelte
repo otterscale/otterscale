@@ -53,28 +53,20 @@
 	// ==================== API Functions ====================
 	async function loadInstanceTypes() {
 		try {
-			// Request both namespace-specific and cluster-wide instance types in parallel
-			const [namespacedResponse, clusterWideResponse] = await Promise.all([
-				virtualMachineClient.listInstanceTypes({
-					scopeUuid: $currentKubernetes?.scopeUuid,
-					facilityName: $currentKubernetes?.name,
-					namespace: request.namespace,
-				}),
-				virtualMachineClient.listClusterWideInstanceTypes({
-					scopeUuid: $currentKubernetes?.scopeUuid,
-					facilityName: $currentKubernetes?.name,
-				}),
-			]);
+			// Request both namespace-specific and cluster-wide instance types
+			const response = await virtualMachineClient.listInstanceTypes({
+				scopeUuid: $currentKubernetes?.scopeUuid,
+				facilityName: $currentKubernetes?.name,
+				namespace: request.namespace,
+				includeClusterWide: true,
+			});
 
-			// Merge both results
-			const allInstanceTypes = [...namespacedResponse.instanceTypes, ...clusterWideResponse.instanceTypes];
-
-			const instanceTypeOptions: InstanceTypeOption[] = allInstanceTypes.map((instanceType) => {
+			const instanceTypeOptions: InstanceTypeOption[] = response.instanceTypes.map((instanceType) => {
 				const memory = formatCapacity(instanceType.memoryBytes);
 				return {
 					value: instanceType.name,
 					label: `${instanceType.name} (CPU: ${instanceType.cpuCores} Core, RAM: ${memory.value} ${memory.unit})`,
-					icon: 'ph:layout',
+					icon: instanceType.clusterWide ? 'ph:graph' : 'ph:layout',
 					cpuCores: instanceType.cpuCores,
 					memoryBytes: instanceType.memoryBytes,
 				};
@@ -124,46 +116,9 @@
 		bootDataVolumeName: '',
 		startupScript: '',
 	} as CreateVirtualMachineRequest;
-	// const DEFAULT_INSTANCE_TYPE_CPU = undefined;
-	// const DEFAULT_INSTANCE_TYPE_MEMORY = undefined;
-	// const DEFAULT_BOOT_DATA_VOLUME_SIZE = undefined;
 
 	// ==================== Form State ====================
-	let request: CreateVirtualMachineRequest = $state(DEFAULT_REQUEST);
-	// let instanceTypeCPU: number | undefined = $state(DEFAULT_INSTANCE_TYPE_CPU);
-	// let instanceTypeMemoryGB: number | undefined = $state(DEFAULT_INSTANCE_TYPE_MEMORY);
-	// let bootDataVolumeSize: number | undefined = $state(DEFAULT_BOOT_DATA_VOLUME_SIZE);
-
-	// ==================== Reactive Statements ====================
-	// $effect(() => {
-	// 	if (request.bootDataVolumeName) {
-	// 		const bootDataVolume = ($bootDataVolumes as BootDataVolumesOption[]).find(
-	// 			(type) => type.value === request.bootDataVolumeName,
-	// 		);
-	// 		bootDataVolumeSize =
-	// 			bootDataVolume?.sizeBytes !== undefined
-	// 				? Number(bootDataVolume.sizeBytes) / 1024 ** 3
-	// 				: DEFAULT_BOOT_DATA_VOLUME_SIZE;
-	// 	} else {
-	// 		bootDataVolumeSize = DEFAULT_BOOT_DATA_VOLUME_SIZE;
-	// 	}
-	// });
-
-	// $effect(() => {
-	// 	if (request.instanceTypeName) {
-	// 		const instanceType = ($instanceTypes as InstanceTypeOption[]).find(
-	// 			(type) => type.value === request.instanceTypeName,
-	// 		);
-	// 		instanceTypeCPU = instanceType?.cpuCores ?? DEFAULT_INSTANCE_TYPE_CPU;
-	// 		instanceTypeMemoryGB =
-	// 			instanceType?.memoryBytes !== undefined
-	// 				? Number(instanceType.memoryBytes) / 1024 ** 3
-	// 				: DEFAULT_INSTANCE_TYPE_MEMORY;
-	// 	} else {
-	// 		instanceTypeCPU = DEFAULT_INSTANCE_TYPE_CPU;
-	// 		instanceTypeMemoryGB = DEFAULT_INSTANCE_TYPE_MEMORY;
-	// 	}
-	// });
+	let request: CreateVirtualMachineRequest = $state({ ...DEFAULT_REQUEST });
 
 	// Load bootable PVCs when namespace changes
 	$effect(() => {
@@ -174,10 +129,7 @@
 
 	// ==================== Utility Functions ====================
 	function reset() {
-		request = DEFAULT_REQUEST;
-		// instanceTypeCPU = DEFAULT_INSTANCE_TYPE_CPU;
-		// instanceTypeMemoryGB = DEFAULT_INSTANCE_TYPE_MEMORY;
-		// bootDataVolumeSize = DEFAULT_BOOT_DATA_VOLUME_SIZE;
+		request = { ...DEFAULT_REQUEST };
 		isAdvancedOpen = false;
 		bootDataVolumes.set([]);
 		instanceTypes.set([]);
@@ -242,25 +194,7 @@
 							</SingleSelect.Options>
 						</SingleSelect.Content>
 					</SingleSelect.Root>
-					<!-- <Form.Description>
-						{m.cpu_cores()}: {instanceTypeCPU}, {m.memory()}: {instanceTypeMemoryGB}
-					</Form.Description> -->
 				</Form.Field>
-				<!-- <Form.Field>
-					<Form.Label>{m.cpu_cores()}</Form.Label>
-					<SingleInput.General type="number" value={instanceTypeCPU} disabled />
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>{m.memory()}</Form.Label>
-					<div class="flex items-center gap-2">
-						<div class={cn('w-full')}>
-							<SingleInput.General type="number" value={instanceTypeMemoryGB} disabled />
-						</div>
-						<Select.Root type="single">
-							<Select.Trigger class={cn('w-fit')}>GB</Select.Trigger>
-						</Select.Root>
-					</div>
-				</Form.Field> -->
 
 				<Form.Field>
 					<Form.Label>{m.data_volume()}</Form.Label>
@@ -292,12 +226,7 @@
 							</SingleSelect.Options>
 						</SingleSelect.Content>
 					</SingleSelect.Root>
-					<!-- <Form.Description>{m.disk()}: {bootDataVolumeSize}</Form.Description> -->
 				</Form.Field>
-				<!-- <Form.Field>
-					<Form.Label>{m.disk()}</Form.Label>
-					<SingleInput.General type="number" value={bootDataVolumeSize} disabled />
-				</Form.Field> -->
 			</Form.Fieldset>
 			<!-- ==================== Advanced Configuration ==================== -->
 			<Collapsible.Root bind:open={isAdvancedOpen} class="py-4">

@@ -4,9 +4,8 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { DetachVirtualMachineDiskRequest } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { DeleteDataVolumeRequest, DataVolume } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -17,7 +16,7 @@
 
 <script lang="ts">
 	// Component props - accepts a virtual machine disk object
-	let { enhancedDisk }: { enhancedDisk: EnhancedDisk } = $props();
+	let { dataVolume }: { dataVolume: DataVolume } = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
@@ -27,14 +26,13 @@
 	// Form validation state
 	let invalid = $state(false);
 
-	// Default values for the detach disk request
+	// Default values for the delete data volume request
 	const defaults = {
 		scopeUuid: $currentKubernetes?.scopeUuid,
 		facilityName: $currentKubernetes?.name,
-		namespace: enhancedDisk.namespace,
-		name: enhancedDisk.vmName,
-		dataVolumeName: '',
-	} as DetachVirtualMachineDiskRequest;
+		namespace: dataVolume.namespace,
+		name: '',
+	} as DeleteDataVolumeRequest;
 
 	// Current request state
 	let request = $state({ ...defaults });
@@ -55,11 +53,11 @@
 
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
-		<Icon icon="ph:plugs" />
-		{m.detach()}
+		<Icon icon="ph:trash" />
+		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.detach_disk()}</Modal.Header>
+		<Modal.Header>{m.delete()} {m.data_volume()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
@@ -67,10 +65,11 @@
 					<Form.Help>
 						{m.deletion_warning({ identifier: m.data_volume_name() })}
 					</Form.Help>
+					{console.log(defaults)}
 					<SingleInput.Confirm
 						required
-						target={enhancedDisk.name ?? ''}
-						bind:value={request.dataVolumeName}
+						target={dataVolume.name ?? ''}
+						bind:value={request.name}
 						bind:invalid
 					/>
 				</Form.Field>
@@ -89,14 +88,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => virtualMachineClient.detachVirtualMachineDisk(request), {
-							loading: `Detaching disk ${enhancedDisk.name}...`,
+						toast.promise(() => virtualMachineClient.deleteDataVolume(request), {
+							loading: `Deleting data volume ${request.name}...`,
 							success: () => {
 								reloadManager.force();
-								return `Successfully detached disk ${enhancedDisk.name}`;
+								return `Successfully deleted data volume ${request.name}`;
 							},
 							error: (error) => {
-								let message = `Failed to detach disk ${enhancedDisk.name}`;
+								let message = `Failed to delete data volume ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY,

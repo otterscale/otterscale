@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onMount, onDestroy } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 
 	import { DataTable } from './data-table';
@@ -13,6 +13,7 @@
 	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import type { DataVolume } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { currentKubernetes } from '$lib/stores';
 </script>
@@ -81,8 +82,18 @@
 		}
 	}
 
+	// Create ReloadManager for automatic reloading
+	const reloadManager = new ReloadManager(() => {
+		loadEnhancedDisks();
+	});
+
 	onMount(() => {
 		loadEnhancedDisks();
+		reloadManager.start();
+	});
+
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 </script>
 
@@ -93,7 +104,7 @@
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[70vw] p-4">
-			<DataTable {virtualMachine} {enhancedDisks} />
+			<DataTable {virtualMachine} {enhancedDisks} {reloadManager} />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>

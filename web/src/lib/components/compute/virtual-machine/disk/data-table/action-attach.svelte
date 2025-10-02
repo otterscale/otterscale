@@ -76,11 +76,11 @@
 	} as AttachVirtualMachineDiskRequest;
 
 	// ==================== Form State ====================
-	let request: AttachVirtualMachineDiskRequest = $state(DEFAULT_REQUEST);
+	let request: AttachVirtualMachineDiskRequest = $state({ ...DEFAULT_REQUEST });
 
 	// ==================== Utility Functions ====================
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = { ...DEFAULT_REQUEST };
 	}
 
 	function close() {

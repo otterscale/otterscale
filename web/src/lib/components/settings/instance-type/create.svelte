@@ -1,13 +1,10 @@
 <script lang="ts">
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type {
-		CreateVirtualMachineRestoreRequest,
-		VirtualMachine,
-	} from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { CreateInstanceTypeRequest } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -15,9 +12,6 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
-
-	// Props
-	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
@@ -30,29 +24,34 @@
 	let open = $state(false);
 
 	// Form validation state
-	let invalidRestoreName: boolean | undefined = $state();
+	let invalidName: boolean | undefined = $state();
 
 	// ==================== Default Values & Constants ====================
-
-	// Default request structure for creating a virtual machine restore
 	const DEFAULT_REQUEST = {
 		scopeUuid: $currentKubernetes?.scopeUuid,
 		facilityName: $currentKubernetes?.name,
-		namespace: virtualMachine.namespace,
 		name: '',
-		virtualMachineName: virtualMachine.name,
-	} as CreateVirtualMachineRestoreRequest;
+		namespace: 'default',
+		cpuCores: 1,
+		memoryBytes: BigInt(1024 ** 3), // 1GB default
+	} as CreateInstanceTypeRequest;
 
 	// ==================== Form State ====================
-	let request: CreateVirtualMachineRestoreRequest = $state({ ...DEFAULT_REQUEST });
-
+	let request: CreateInstanceTypeRequest = $state({ ...DEFAULT_REQUEST });
 	// ==================== Utility Functions ====================
 	function reset() {
 		request = { ...DEFAULT_REQUEST };
 	}
+
 	function close() {
 		open = false;
 	}
+
+	// ==================== Lifecycle Hooks ====================
+	onMount(() => {
+		// Initialize form
+		reset();
+	});
 </script>
 
 <Modal.Root bind:open>
@@ -61,17 +60,29 @@
 		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.create_restore()}</Modal.Header>
+		<Modal.Header>{m.create_instance_type()}Create Instance Type</Modal.Header>
 		<Form.Root>
 			<!-- ==================== Basic Configuration ==================== -->
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General
+					<SingleInput.General required type="text" bind:value={request.name} bind:invalid={invalidName} />
+				</Form.Field>
+				<Form.Field>
+					<Form.Label>{m.namespace()}</Form.Label>
+					<SingleInput.General type="text" bind:value={request.namespace} />
+				</Form.Field>
+				<Form.Field>
+					<Form.Label>{m.cpu_cores()}</Form.Label>
+					<SingleInput.General required type="number" bind:value={request.cpuCores} min="1" />
+				</Form.Field>
+				<Form.Field>
+					<Form.Label>{m.memory()}</Form.Label>
+					<SingleInput.Measurement
 						required
-						type="text"
-						bind:value={request.name}
-						bind:invalid={invalidRestoreName}
+						bind:value={request.memoryBytes}
+						transformer={(value) => String(value)}
+						units={[{ value: 1024 ** 3, label: 'GB' } as SingleInput.UnitType]}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
@@ -87,16 +98,16 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalidRestoreName || !request.name}
+					disabled={invalidName}
 					onclick={() => {
-						toast.promise(() => virtualMachineClient.createVirtualMachineRestore(request), {
-							loading: `Creating restore ${request.name}...`,
+						toast.promise(() => virtualMachineClient.createInstanceType(request), {
+							loading: `Creating ${request.name}...`,
 							success: () => {
 								reloadManager.force();
-								return `Successfully created restore ${request.name}`;
+								return `Successfully created ${request.name}`;
 							},
 							error: (error) => {
-								let message = `Failed to create restore ${request.name}`;
+								let message = `Failed to create ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY,

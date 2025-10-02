@@ -152,7 +152,9 @@ func TestFacilityUseCase_ListFacilities(t *testing.T) {
 	facs, err := uc.ListFacilities(context.Background(), "uuid")
 	assert.NoError(t, err)
 	assert.Len(t, facs, 2)
-	assert.Equal(t, "app1", facs[0].Name)
+	names := []string{facs[0].Name, facs[1].Name}
+	assert.Contains(t, names, "app1")
+	assert.Contains(t, names, "name")
 }
 
 func TestFacilityUseCase_GetFacility(t *testing.T) {

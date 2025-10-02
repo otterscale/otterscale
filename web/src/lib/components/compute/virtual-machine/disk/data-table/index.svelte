@@ -18,6 +18,7 @@
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 </script>
@@ -26,9 +27,11 @@
 	let {
 		virtualMachine,
 		enhancedDisks,
+		reloadManager,
 	}: {
 		virtualMachine: VirtualMachine;
 		enhancedDisks: EnhancedDisk[];
+		reloadManager: ReloadManager;
 	} = $props();
 
 	// let snapshots = $derived(image.snapshots || []);
@@ -115,6 +118,16 @@
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create {virtualMachine} />
+			<Reloader
+				bind:checked={reloadManager.state}
+				onCheckedChange={() => {
+					if (reloadManager.state) {
+						reloadManager.restart();
+					} else {
+						reloadManager.stop();
+					}
+				}}
+			/>
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>

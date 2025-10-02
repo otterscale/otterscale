@@ -4,9 +4,8 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { DetachVirtualMachineDiskRequest } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { DeleteInstanceTypeRequest, InstanceType } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -16,8 +15,8 @@
 </script>
 
 <script lang="ts">
-	// Component props - accepts a virtual machine disk object
-	let { enhancedDisk }: { enhancedDisk: EnhancedDisk } = $props();
+	// Component props - accepts an instance type object
+	let { instanceType }: { instanceType: InstanceType } = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
@@ -27,14 +26,13 @@
 	// Form validation state
 	let invalid = $state(false);
 
-	// Default values for the detach disk request
+	// Default values for the delete instance type request
 	const defaults = {
 		scopeUuid: $currentKubernetes?.scopeUuid,
 		facilityName: $currentKubernetes?.name,
-		namespace: enhancedDisk.namespace,
-		name: enhancedDisk.vmName,
-		dataVolumeName: '',
-	} as DetachVirtualMachineDiskRequest;
+		namespace: instanceType.namespace,
+		name: '',
+	} as DeleteInstanceTypeRequest;
 
 	// Current request state
 	let request = $state({ ...defaults });
@@ -55,22 +53,22 @@
 
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
-		<Icon icon="ph:plugs" />
-		{m.detach()}
+		<Icon icon="ph:trash" />
+		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.detach_disk()}</Modal.Header>
+		<Modal.Header>{m.delete()} {m.instance_type()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>{m.data_volume()}</Form.Label>
+					<Form.Label>{m.instance_type()}</Form.Label>
 					<Form.Help>
-						{m.deletion_warning({ identifier: m.data_volume_name() })}
+						{m.deletion_warning({ identifier: m.instance_type_name() })}
 					</Form.Help>
 					<SingleInput.Confirm
 						required
-						target={enhancedDisk.name ?? ''}
-						bind:value={request.dataVolumeName}
+						target={instanceType.name ?? ''}
+						bind:value={request.name}
 						bind:invalid
 					/>
 				</Form.Field>
@@ -89,14 +87,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => virtualMachineClient.detachVirtualMachineDisk(request), {
-							loading: `Detaching disk ${enhancedDisk.name}...`,
+						toast.promise(() => virtualMachineClient.deleteInstanceType(request), {
+							loading: `Deleting instance type ${request.name}...`,
 							success: () => {
 								reloadManager.force();
-								return `Successfully detached disk ${enhancedDisk.name}`;
+								return `Successfully deleted instance type ${request.name}`;
 							},
 							error: (error) => {
-								let message = `Failed to detach disk ${enhancedDisk.name}`;
+								let message = `Failed to delete instance type ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY,
