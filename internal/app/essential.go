@@ -136,3 +136,36 @@ func toProtoEssentialUnit(eu *core.EssentialUnit) *pb.Essential_Unit {
 	ret.SetDirective(eu.Directive)
 	return ret
 }
+
+func (s *EssentialService) ListGPURelationsByMachine(ctx context.Context, req *pb.ListGPURelationsByMachineRequest) (*pb.ListGPURelationsByMachineResponse, error) {
+	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx,
+		req.GetScopeUuid(),
+		req.GetFacilityName(),
+		req.GetMachineId(),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListGPURelationsByMachineResponse{}
+	resp.SetGpuRelations(gpuRelations)
+
+	return resp, nil
+}
+
+func (s *EssentialService) ListGPURelationsByModel(ctx context.Context, req *pb.ListGPURelationsByModelRequest) (*pb.ListGPURelationsByModelResponse, error) {
+	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx,
+		req.GetScopeUuid(),
+		req.GetFacilityName(),
+		req.GetNamespace(),
+		req.GetModelName(),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListGPURelationsByModelResponse{}
+	resp.SetGpuRelations(gpuRelations)
+
+	return resp, nil
+}
