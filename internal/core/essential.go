@@ -902,41 +902,6 @@ func (uc *EssentialUseCase) processVGpuAllocationsForGPUsWithVGpus(podName strin
 				gpuRelations = append(gpuRelations, gpuRelation)
 				tracker.processedGPUs[gpuID] = true
 			}
-		} else {
-			// GPU already processed, need to update it with additional vGPUs
-			// This is a limitation - we can't easily update already processed GPUs
-			// For now, we'll create a new GPU relation with just the vGPUs
-			// This should be rare in practice as tracker should prevent reprocessing
-		}
-	}
-
-	return gpuIDs, gpuRelations
-}
-
-// Deprecated: Old function kept for reference
-// processVGpuAllocationsForGPUs processes vGPU allocations and creates GPU relations
-func (uc *EssentialUseCase) processVGpuAllocationsForGPUs(vgpuAllocations []EssentialVGpuAllocation, nodeGpuMap map[string]string, machineID string, tracker *relationTracker) ([]string, []*pb.GPURelation) {
-	var gpuIDs []string
-	var gpuRelations []*pb.GPURelation
-
-	for _, vgpuAlloc := range vgpuAllocations {
-		gpuIDs = append(gpuIDs, vgpuAlloc.GpuUUID)
-
-		// Add GPU relation if not already added
-		if !tracker.processedGPUs[vgpuAlloc.GpuUUID] {
-			if gpuVendorProduct, exists := nodeGpuMap[vgpuAlloc.GpuUUID]; exists {
-				vendor, product := parseVendorProduct(gpuVendorProduct)
-
-				gpuRelation := &pb.GPURelation{}
-				gpuEntity := &pb.GPURelation_GPU{}
-				gpuEntity.SetId(vgpuAlloc.GpuUUID)
-				gpuEntity.SetVendor(vendor)
-				gpuEntity.SetProduct(product)
-				gpuEntity.SetMachineId(machineID)
-				gpuRelation.SetGpu(gpuEntity)
-				gpuRelations = append(gpuRelations, gpuRelation)
-				tracker.processedGPUs[vgpuAlloc.GpuUUID] = true
-			}
 		}
 	}
 
