@@ -19,7 +19,7 @@ require (
 	github.com/canonical/gomaasclient v0.15.0
 	github.com/ceph/go-ceph v0.35.0
 	github.com/fsnotify/fsnotify v1.9.0
-	github.com/go-faker/faker/v4 v4.6.2
+	github.com/go-faker/faker/v4 v4.7.0
 	github.com/goccy/go-yaml v1.18.0
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
