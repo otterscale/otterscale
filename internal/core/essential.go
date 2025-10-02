@@ -679,8 +679,8 @@ func (uc *EssentialUseCase) createPodRelation(vgpuPod EssentialVGpuPodInfo, gpuI
 func (uc *EssentialUseCase) createVGpuRelations(vgpuPod EssentialVGpuPodInfo) []*pb.GPURelation {
 	var vgpuRelations []*pb.GPURelation
 
-	for _, vgpuAlloc := range vgpuPod.VGpuInfos {
-		vgpuRelation := uc.createSingleVGpuRelation(vgpuPod.Pod.Name, vgpuAlloc)
+	for i := range vgpuPod.VGpuInfos {
+		vgpuRelation := uc.createSingleVGpuRelation(vgpuPod.Pod.Name, &vgpuPod.VGpuInfos[i])
 		vgpuRelations = append(vgpuRelations, vgpuRelation)
 	}
 
@@ -688,7 +688,7 @@ func (uc *EssentialUseCase) createVGpuRelations(vgpuPod EssentialVGpuPodInfo) []
 }
 
 // createSingleVGpuRelation creates a single vGPU relation entity
-func (uc *EssentialUseCase) createSingleVGpuRelation(podName string, vgpuAlloc EssentialVGpuAllocation) *pb.GPURelation {
+func (uc *EssentialUseCase) createSingleVGpuRelation(podName string, vgpuAlloc *EssentialVGpuAllocation) *pb.GPURelation {
 	vgpuRelation := &pb.GPURelation{}
 
 	// Convert VramMib string to bytes
@@ -748,7 +748,7 @@ func (uc *EssentialUseCase) buildGPURelationsForModel(ctx context.Context, confi
 	tracker := newRelationTracker()
 
 	for i := range deployments {
-		relations, err := uc.processDeploymentForGPURelations(ctx, config, deployments[i], modelName, tracker)
+		relations, err := uc.processDeploymentForGPURelations(ctx, config, &deployments[i], modelName, tracker)
 		if err != nil {
 			continue // Skip deployments with errors
 		}
@@ -774,7 +774,7 @@ func newRelationTracker() *relationTracker {
 }
 
 // processDeploymentForGPURelations processes a single deployment and returns GPU relations
-func (uc *EssentialUseCase) processDeploymentForGPURelations(ctx context.Context, config *rest.Config, deployment Deployment, modelName string, tracker *relationTracker) ([]*pb.GPURelation, error) {
+func (uc *EssentialUseCase) processDeploymentForGPURelations(ctx context.Context, config *rest.Config, deployment *Deployment, modelName string, tracker *relationTracker) ([]*pb.GPURelation, error) {
 	if deployment.Spec.Selector == nil || deployment.Spec.Selector.MatchLabels == nil {
 		return nil, nil
 	}
@@ -790,7 +790,7 @@ func (uc *EssentialUseCase) processDeploymentForGPURelations(ctx context.Context
 
 	var relations []*pb.GPURelation
 	for i := range pods {
-		podRelations, err := uc.processPodForGPURelations(ctx, config, pods[i], modelName, tracker)
+		podRelations, err := uc.processPodForGPURelations(ctx, config, &pods[i], modelName, tracker)
 		if err != nil {
 			continue // Skip pods with errors
 		}
@@ -813,7 +813,7 @@ func (uc *EssentialUseCase) buildPodLabelSelector(matchLabels map[string]string)
 }
 
 // processPodForGPURelations processes a single pod and returns GPU relations
-func (uc *EssentialUseCase) processPodForGPURelations(ctx context.Context, config *rest.Config, pod Pod, modelName string, tracker *relationTracker) ([]*pb.GPURelation, error) {
+func (uc *EssentialUseCase) processPodForGPURelations(ctx context.Context, config *rest.Config, pod *Pod, modelName string, tracker *relationTracker) ([]*pb.GPURelation, error) {
 	// Skip if already processed
 	podKey := pod.Namespace + "/" + pod.Name
 	if tracker.processedPods[podKey] {
@@ -912,7 +912,7 @@ func (uc *EssentialUseCase) processVGpuAllocationsForGPUs(vgpuAllocations []Esse
 }
 
 // createPodRelationForModel creates a pod relation entity for model-based query
-func (uc *EssentialUseCase) createPodRelationForModel(pod Pod, modelName string, gpuIDs []string) *pb.GPURelation {
+func (uc *EssentialUseCase) createPodRelationForModel(pod *Pod, modelName string, gpuIDs []string) *pb.GPURelation {
 	podRelation := &pb.GPURelation{}
 	podEntity := &pb.GPURelation_Pod{}
 	podEntity.SetName(pod.Name)
@@ -924,14 +924,14 @@ func (uc *EssentialUseCase) createPodRelationForModel(pod Pod, modelName string,
 }
 
 // createVGpuRelationsForModel creates vGPU relation entities for model-based query
-func (uc *EssentialUseCase) createVGpuRelationsForModel(pod Pod, vgpuAllocations []EssentialVGpuAllocation) []*pb.GPURelation {
+func (uc *EssentialUseCase) createVGpuRelationsForModel(pod *Pod, vgpuAllocations []EssentialVGpuAllocation) []*pb.GPURelation {
 	var vgpuRelations []*pb.GPURelation
 
 	bindTime := pod.Annotations["hami.io/bind-time"]
 	bindPhase := pod.Annotations["hami.io/bind-phase"]
 
-	for _, vgpuAlloc := range vgpuAllocations {
-		vgpuRelation := uc.createVGpuRelationForModel(pod.Name, vgpuAlloc, bindTime, bindPhase)
+	for i := range vgpuAllocations {
+		vgpuRelation := uc.createVGpuRelationForModel(pod.Name, &vgpuAllocations[i], bindTime, bindPhase)
 		vgpuRelations = append(vgpuRelations, vgpuRelation)
 	}
 
@@ -939,7 +939,7 @@ func (uc *EssentialUseCase) createVGpuRelationsForModel(pod Pod, vgpuAllocations
 }
 
 // createVGpuRelationForModel creates a single vGPU relation entity for model-based query
-func (uc *EssentialUseCase) createVGpuRelationForModel(podName string, vgpuAlloc EssentialVGpuAllocation, bindTime, bindPhase string) *pb.GPURelation {
+func (uc *EssentialUseCase) createVGpuRelationForModel(podName string, vgpuAlloc *EssentialVGpuAllocation, bindTime, bindPhase string) *pb.GPURelation {
 	vgpuRelation := &pb.GPURelation{}
 
 	// Convert VramMib string to bytes
@@ -977,7 +977,7 @@ func (uc *EssentialUseCase) createVGpuRelationForModel(podName string, vgpuAlloc
 }
 
 // filterVGpuPodsOnNode filters pods on the specified Node that have vGPU configuration
-func filterVGpuPodsOnNode(ctx context.Context, pods []Pod, nodeName string, config *rest.Config, kubeRepo KubeCoreRepo, kubeApps KubeAppsRepo) []EssentialVGpuPodInfo {
+func filterVGpuPodsOnNode(ctx context.Context, pods []Pod, nodeName string, config *rest.Config, _ KubeCoreRepo, kubeApps KubeAppsRepo) []EssentialVGpuPodInfo {
 	var vgpuPods []EssentialVGpuPodInfo
 
 	for i := range pods {
@@ -1232,12 +1232,14 @@ func parseVendorProduct(vendorProduct string) (vendor, product string) {
 
 // convertVramMibToBytes converts VRAM from MiB string to bytes
 func convertVramMibToBytes(vramMib string) (uint64, error) {
+	const bytesPerMiB = 1024 * 1024 // 1 MiB = 1024 * 1024 bytes
+
 	mib, err := strconv.ParseUint(vramMib, 10, 64)
 	if err != nil {
 		return 0, err
 	}
-	// Convert MiB to bytes (1 MiB = 1024 * 1024 bytes)
-	return mib * 1024 * 1024, nil
+	// Convert MiB to bytes
+	return mib * bytesPerMiB, nil
 }
 
 // convertVcoresPercentToFloat converts vcores percent from string to float32
