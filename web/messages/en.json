@@ -790,5 +790,6 @@
 	"host_and_container": "Host / Container",
 	"cluster_wide": "Cluster Wide",
 	"instance_type_name": "Instance Type Name",
-	"create_instance_type": "Create Instance Type"
+	"create_instance_type": "Create Instance Type",
+	"vnc": "VNC"
 }

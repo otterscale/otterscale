@@ -111,6 +111,16 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		filterFn: 'arrIncludesSome',
 	},
 	{
+		accessorKey: 'vnc',
+		header: ({ column }) => {
+			return renderSnippet(headers.vnc, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.vnc, row);
+		},
+		enableHiding: false,
+	},
+	{
 		accessorKey: 'actions',
 		header: ({ column }) => {
 			return renderSnippet(headers.actions, column);
