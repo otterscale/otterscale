@@ -49,7 +49,7 @@
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger class={buttonVariants({ variant: 'outline' })}>
-					<Icon icon="ph:cursor-click" />
+					<Icon icon="ph:monitor" />
 				</Tooltip.Trigger>
 				<Tooltip.Content>
 					VNC to {virtualMachine.name}
