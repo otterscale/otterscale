@@ -360,15 +360,15 @@ func (s *VirtualMachineService) VNCHandler(w http.ResponseWriter, r *http.Reques
 	// get vnc session
 	vnc, sessionID, err := s.getVNCSession(r)
 	if err != nil {
-		conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, err.Error()))
+		_ = conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, err.Error()))
 		return
 	}
 	defer s.vncSessions.Delete(sessionID)
 
 	// configure websocket connection
-	conn.SetReadDeadline(time.Now().Add(s.wsPongWait))
+	_ = conn.SetReadDeadline(time.Now().Add(s.wsPongWait))
 	conn.SetPongHandler(func(string) error {
-		conn.SetReadDeadline(time.Now().Add(s.wsPongWait))
+		_ = conn.SetReadDeadline(time.Now().Add(s.wsPongWait))
 		return nil
 	})
 
@@ -392,23 +392,27 @@ func (s *VirtualMachineService) VNCHandler(w http.ResponseWriter, r *http.Reques
 	finalErr := <-errChan
 
 	if finalErr != nil && !errors.Is(finalErr, context.Canceled) && finalErr != io.EOF && !websocket.IsCloseError(finalErr, websocket.CloseNoStatusReceived, websocket.CloseNormalClosure, websocket.CloseGoingAway) {
-		conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseInternalServerErr, finalErr.Error()))
+		_ = conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseInternalServerErr, finalErr.Error()))
 	}
 }
 
-func (s *VirtualMachineService) getVNCSession(r *http.Request) (core.VirtualMachineStream, string, error) {
+func (s *VirtualMachineService) getVNCSession(r *http.Request) (core.VirtualMachineStream, string, error) { //nolint:gocritic // ignore
 	sessionID := strings.TrimPrefix(r.URL.Path, s.WebSocketPathPrefix)
+	if sessionID == "" {
+		return nil, "", errors.New("missing VNC session ID")
+	}
+
 	value, ok := s.vncSessions.Load(sessionID)
 	if !ok {
-		return nil, "", errors.New("invalid VNC session ID")
+		return nil, "", errors.New("VNC session not found")
 	}
 
-	vnc, ok := value.(core.VirtualMachineStream)
+	stream, ok := value.(core.VirtualMachineStream)
 	if !ok {
-		return nil, "", errors.New("invalid VNC session")
+		return nil, "", errors.New("invalid VNC session type")
 	}
 
-	return vnc, sessionID, nil
+	return stream, sessionID, nil
 }
 
 func (s *VirtualMachineService) pingHandler(ctx context.Context, conn *websocket.Conn) {
