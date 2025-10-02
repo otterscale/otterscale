@@ -8,8 +8,8 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 
-	cdi_api "github.com/otterscale/kubevirt-client-go/containerizeddataimporter"
-	virt_api "github.com/otterscale/kubevirt-client-go/kubevirt"
+	"github.com/otterscale/kubevirt-client-go/containerizeddataimporter"
+	"github.com/otterscale/kubevirt-client-go/kubevirt"
 
 	"github.com/otterscale/otterscale/internal/config"
 )
@@ -58,12 +58,12 @@ func (m *Kube) clientset(config *rest.Config) (*kubernetes.Clientset, error) {
 	return clientset, nil
 }
 
-func (m *Kube) virtClientset(config *rest.Config) (*virt_api.Clientset, error) {
+func (m *Kube) virtClientset(config *rest.Config) (*kubevirt.Clientset, error) {
 	if v, ok := m.virtClientsets.Load(config.Host); ok {
-		return v.(*virt_api.Clientset), nil
+		return v.(*kubevirt.Clientset), nil
 	}
 
-	clientset, err := virt_api.NewForConfig(config)
+	clientset, err := kubevirt.NewForConfig(config)
 	if err != nil {
 		return nil, err
 	}
@@ -73,12 +73,12 @@ func (m *Kube) virtClientset(config *rest.Config) (*virt_api.Clientset, error) {
 	return clientset, nil
 }
 
-func (m *Kube) cdiClientset(config *rest.Config) (*cdi_api.Clientset, error) {
+func (m *Kube) cdiClientset(config *rest.Config) (*containerizeddataimporter.Clientset, error) {
 	if v, ok := m.cdiClientsets.Load(config.Host); ok {
-		return v.(*cdi_api.Clientset), nil
+		return v.(*containerizeddataimporter.Clientset), nil
 	}
 
-	clientset, err := cdi_api.NewForConfig(config)
+	clientset, err := containerizeddataimporter.NewForConfig(config)
 	if err != nil {
 		return nil, err
 	}

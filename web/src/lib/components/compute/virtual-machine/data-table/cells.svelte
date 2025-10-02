@@ -4,6 +4,7 @@
 	import type { Row } from '@tanstack/table-core';
 
 	import Actions from './cell-actions.svelte';
+	import VNC from './cell-vnc.svelte';
 
 	import { page } from '$app/state';
 	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
@@ -29,6 +30,7 @@
 		disk,
 		port,
 		createTime,
+		vnc,
 		actions,
 	};
 </script>
@@ -173,6 +175,14 @@
 					</Tooltip.Content>
 				</Tooltip.Root>
 			</Tooltip.Provider>
+		{/if}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet vnc(row: Row<VirtualMachine>)}
+	<Layout.Cell class="items-end">
+		{#if row.original.status === 'Running'}
+			<VNC virtualMachine={row.original} />
 		{/if}
 	</Layout.Cell>
 {/snippet}
