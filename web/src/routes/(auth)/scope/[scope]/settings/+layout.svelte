@@ -37,6 +37,11 @@
 			page: 'helm-repository',
 		},
 		{
+			icon: 'ph:cpu',
+			title: m.instance_type(),
+			page: 'instance-type',
+		},
+		{
 			icon: 'ph:tag-simple',
 			title: m.machine_tag(),
 			page: 'machine-tag',

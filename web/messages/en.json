@@ -786,5 +786,9 @@
 	"tty": "tty",
 	"progress": "Progress",
 	"setting_data_volume_description": "Virtual machine data volumes provide persistent storage for virtual machines and can be configured with different source types, capacities, and boot configurations.",
-	"host_and_container": "Host / Container"
+	"setting_instance_type_description": "Instance types define the hardware resources (CPU, memory, storage, etc.) allocated to virtual machines. Configure available instance types to match your workload requirements.",
+	"host_and_container": "Host / Container",
+	"cluster_wide": "Cluster Wide",
+	"instance_type_name": "Instance Type Name",
+	"create_instance_type": "Create Instance Type"
 }
