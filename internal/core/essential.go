@@ -601,11 +601,7 @@ func (uc *EssentialUseCase) ListGPURelationsByMachine(ctx context.Context, scope
 		return nil, err
 	}
 
-	nodeGpuMap, err := uc.getNodeGpuMap(node)
-	if err != nil {
-		return nil, err
-	}
-
+	nodeGpuMap := uc.getNodeGpuMap(node)
 	pods, err := uc.kubeCore.ListPods(ctx, config, "")
 	if err != nil {
 		return nil, err
@@ -797,11 +793,7 @@ func (uc *EssentialUseCase) processPod(ctx context.Context, config *rest.Config,
 		return relations, nil
 	}
 
-	nodeGpuMap, err := uc.getNodeGpuMap(node)
-	if err != nil {
-		nodeGpuMap = make(map[string]string)
-	}
-
+	nodeGpuMap := uc.getNodeGpuMap(node)
 	bindTime := pod.Annotations["hami.io/bind-time"]
 	bindPhase := pod.Annotations["hami.io/bind-phase"]
 	gpuIDs, gpuRelations := uc.processVGpuAllocations(pod.Name, vgpuAllocations, nodeGpuMap, machineID, bindTime, bindPhase, tracker)
@@ -1015,7 +1007,7 @@ func (uc *EssentialUseCase) getMachineIDFromNodeName(ctx context.Context, nodeNa
 }
 
 // getNodeGpuMap creates a mapping from GPU UUID to GPU vendor for a specific node
-func (uc *EssentialUseCase) getNodeGpuMap(node *Node) (map[string]string, error) {
+func (uc *EssentialUseCase) getNodeGpuMap(node *Node) map[string]string {
 	const (
 		hamiAnnotationKey = "hami.io/node-nvidia-register"
 		gpuUID            = 0
@@ -1027,7 +1019,7 @@ func (uc *EssentialUseCase) getNodeGpuMap(node *Node) (map[string]string, error)
 
 	annotationValue, exists := node.Annotations[hamiAnnotationKey]
 	if !exists || annotationValue == "" {
-		return gpuMap, nil
+		return gpuMap
 	}
 
 	annotationValue = strings.Trim(annotationValue, "'\"")
@@ -1046,7 +1038,7 @@ func (uc *EssentialUseCase) getNodeGpuMap(node *Node) (map[string]string, error)
 		gpuMap[cardUID] = cardVendor
 	}
 
-	return gpuMap, nil
+	return gpuMap
 }
 
 // parseVendorProduct parses vendor and product from GPU vendor string
