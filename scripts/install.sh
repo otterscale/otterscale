@@ -345,7 +345,7 @@ config_modules() {
 # COMMUNICATION FUNCTIONS
 # =============================================================================
 
-# Send HTTP request to Otterscale endpoint
+# Send HTTP request to OtterScale endpoint
 send_request() {
     local url_path="$1"
     local data="$2"
@@ -368,7 +368,7 @@ send_request() {
     return 1
 }
 
-# Send status update to Otterscale
+# Send status update to OtterScale
 send_status_data() {
     local phase="$1"
     local message="$2"
@@ -390,12 +390,12 @@ EOF
     send_request "/otterscale.environment.v1.EnvironmentService/UpdateStatus" "$data"
 }
 
-# Send complete configuration to Otterscale
+# Send complete configuration to OtterScale
 send_otterscale_config_data() {
     local maas_endpoint="http://$OTTERSCALE_INTERFACE_IP:5240/MAAS"
     local kube_folder="/home/$NON_ROOT_USER/.kube"
 
-    log "INFO" "Collecting Otterscale configuration data..." "CONFIG_SEND"
+    log "INFO" "Collecting OtterScale configuration data..." "CONFIG_SEND"
 
     # Get MAAS API key
     local maas_key
@@ -443,7 +443,7 @@ EOF
     if send_request "/otterscale.environment.v1.EnvironmentService/UpdateConfig" "$config_data"; then
         log "INFO" "Configuration data sent successfully" "CONFIG_SEND"
     else
-        log "WARN" "Failed to send configuration data to Otterscale" "CONFIG_SEND"
+        log "WARN" "Failed to send configuration data to OtterScale" "CONFIG_SEND"
     fi
 }
 
@@ -1474,7 +1474,7 @@ juju_add_k8s() {
     su "$NON_ROOT_USER" -c "juju relate -m cos prometheus prometheus-scrape-target-k8s >/dev/null 2>&1"
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s job_name=federate >/dev/null 2>&1"
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s scheme=http >/dev/null 2>&1"
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s metrics_path='/federate'"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s metrics_path='/federate' >/dev/null 2>&1"
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s params='match[]:
   - \"{__name__!=''}\"'"
 
@@ -1544,7 +1544,7 @@ main() {
     # Initialize logging
     init_logging
 
-    log "INFO" "Starting Otterscale installation..." "INSTALLATION"
+    log "INFO" "Starting OtterScale installation..." "INSTALLATION"
     log "INFO" "Target endpoint: $OTTERSCALE_ENDPOINT" "INSTALLATION"
 
     # System validation
@@ -1601,7 +1601,7 @@ main() {
     config_modules
     send_otterscale_config_data
 
-    log "INFO" "Otterscale installation completed successfully!" "INSTALLATION"
+    log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
 }
 
 # =============================================================================
@@ -1613,7 +1613,7 @@ parse_arguments() {
     # Default endpoint if no arguments provided
     if [[ $# -eq 0 ]]; then
         while true; do
-            read -p "Enter Otterscale endpoint (default: http://127.0.0.1:8299): " user_endpoint
+            read -p "Enter OtterScale endpoint (default: http://127.0.0.1:8299): " user_endpoint
             OTTERSCALE_ENDPOINT="${user_endpoint:-http://127.0.0.1:8299}"
 
             if validate_url "$OTTERSCALE_ENDPOINT"; then
@@ -1647,7 +1647,7 @@ parse_arguments() {
                 echo ""
                 echo "Options:"
                 echo "  -h, --help, help     Show this help message"
-                echo "  --url=URL            Specify Otterscale endpoint"
+                echo "  --url=URL            Specify OtterScale endpoint"
                 echo "  --config=FILE        Specify configuration file"
                 echo ""
                 echo "Examples:"
