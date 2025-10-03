@@ -1364,8 +1364,8 @@ bootstrap_juju() {
     else
         log "INFO" "Bootstrapping Juju controller..." "JUJU_BOOTSTRAP"
         local bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=$OTTERSCALE_BASE_IMAGE"
-        local bootstrap_config="--config default-base=$OTTERSCALE_BASE_IMAGE --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
-        if ! su "$NON_ROOT_USER" -c "$bootstrap_cmd $bootstrap_config --to juju-vm"; then
+        local bootstrap_config="--config default-base=$OTTERSCALE_BASE_IMAGE --config bootstrap-timeout=7200 --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
+        if ! su "$NON_ROOT_USER" -c "$bootstrap_cmd $bootstrap_config --to juju-vm --debug"; then
             rm -rf /home/"$NON_ROOT_USER"/.local/share/juju
             error_exit "Failed to bootstrap Juju controller"
         fi
@@ -1457,23 +1457,23 @@ juju_add_k8s() {
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client" >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to add Kubernetes cluster to Juju"
+        log "WARN" "Controller cos-k8s already exist"
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1"; then
-        su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s" "JUJU_K8S"
-        su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust" "JUJU_K8S"
-        su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge" "JUJU_K8S"
+        su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s >/dev/null 2>&1"
+        su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust >/dev/null 2>&1"
+        su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge >/dev/null 2>&1"
     fi
 
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus metrics_retention_time=180d"  "JUJU_CONFIG"
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus maximum_retention_size=70%" "JUJU_CONFIG"
-    su "$NON_ROOT_USER" -c "juju offer cos.grafana:grafana-dashboard global-grafana" "JUJU_OFFER"
-    su "$NON_ROOT_USER" -c "juju offer cos.prometheus:receive-remote-write global-prometheus" "JUJU_OFFER"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus metrics_retention_time=180d >/dev/null 2>&1"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus maximum_retention_size=70% >/dev/null 2>&1"
+    su "$NON_ROOT_USER" -c "juju offer cos.grafana:grafana-dashboard global-grafana >/dev/null 2>&1"
+    su "$NON_ROOT_USER" -c "juju offer cos.prometheus:receive-remote-write global-prometheus >/dev/null 2>&1"
 
-    su "$NON_ROOT_USER" -c "juju relate -m cos prometheus prometheus-scrape-target-k8s" "JUJU_K8S"
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s job_name=federate"
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s scheme=http"
+    su "$NON_ROOT_USER" -c "juju relate -m cos prometheus prometheus-scrape-target-k8s >/dev/null 2>&1"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s job_name=federate >/dev/null 2>&1"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s scheme=http >/dev/null 2>&1"
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s metrics_path='/federate'"
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s params='match[]:
   - \"{__name__!=''}\"'"
