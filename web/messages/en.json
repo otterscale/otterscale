@@ -32,6 +32,8 @@
 	"no_sql": "NoSQL",
 	"applications": "Applications",
 	"applications_description": "Kubernetes applications with integrated app store",
+	"scale_application": "Scale Application",
+	"scale": "Scale",
 	"workloads": "Workloads",
 	"services": "Services",
 	"store": "Store",
@@ -322,6 +324,7 @@
 	"health": "Health",
 	"service": "Service",
 	"pod": "Pod",
+	"delete_pod": "Delete Pod",
 	"replica": "Replica",
 	"volume": "Volume",
 	"nodeport": "Nodeport",
@@ -791,5 +794,6 @@
 	"cluster_wide": "Cluster Wide",
 	"instance_type_name": "Instance Type Name",
 	"create_instance_type": "Create Instance Type",
+	"log": "Log",
 	"vnc": "VNC"
 }

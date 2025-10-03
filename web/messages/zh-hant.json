@@ -32,6 +32,8 @@
 	"no_sql": "NoSQL",
 	"applications": "應用程式",
 	"applications_description": "具有整合應用程式商店的 Kubernetes 應用程式",
+	"scale_application": "調整應用程式規模",
+	"scale": "調整規模",
 	"workloads": "工作負載",
 	"services": "服務",
 	"store": "商店",
@@ -322,6 +324,7 @@
 	"health": "健康狀態",
 	"service": "服務",
 	"pod": "Pod",
+	"delete_pod": "刪除 Pod",
 	"replica": "副本",
 	"volume": "磁碟區",
 	"nodeport": "NodePort",
@@ -791,5 +794,6 @@
 	"cluster_wide": "全叢集",
 	"instance_type_name": "實例類型名稱",
 	"create_instance_type": "建立實例類型",
+	"log": "日誌",
 	"vnc": "VNC"
 }

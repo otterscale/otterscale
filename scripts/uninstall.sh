@@ -87,9 +87,9 @@ remove_pkg() {
 }
 
 remove_juju_file() {
-    if [ -d /home/$NON_ROOT_USER/.local/share/juju/ ]; then
+    if [ -d /home/$NON_ROOT_USER/.local/share/juju ]; then
         log "INFO" "Removing folder /home/$NON_ROOT_USER/.local/share/juju"
-        rm -rf /home/$NON_ROOT_USER/.local/share/juju/
+        rm -rf /home/$NON_ROOT_USER/.local/share/juju
     fi
 }
 
