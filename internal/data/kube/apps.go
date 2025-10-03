@@ -44,7 +44,6 @@ func (r *apps) ListDeploymentsByLabel(ctx context.Context, config *rest.Config, 
 	opts := metav1.ListOptions{
 		LabelSelector: label,
 	}
-
 	list, err := clientset.AppsV1().Deployments(namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
