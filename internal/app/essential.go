@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/otterscale/otterscale/api/essential/v1"
 	"github.com/otterscale/otterscale/api/essential/v1/pbconnect"
@@ -54,14 +55,7 @@ func (s *EssentialService) ListEssentials(ctx context.Context, req *pb.ListEssen
 }
 
 func (s *EssentialService) CreateSingleNode(ctx context.Context, req *pb.CreateSingleNodeRequest) (*emptypb.Empty, error) {
-	if err := s.uc.CreateSingleNode(ctx,
-		req.GetScopeUuid(),
-		req.GetMachineId(),
-		req.GetPrefixName(),
-		req.GetVirtualIps(),
-		req.GetCalicoCidr(),
-		req.GetOsdDevices(),
-	); err != nil {
+	if err := s.uc.CreateSingleNode(ctx, req.GetScopeUuid(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -85,6 +79,26 @@ func (s *EssentialService) UpdateKubernetesNodeLabels(ctx context.Context, req *
 	}
 	resp := &pb.UpdateKubernetesNodeLabelsResponse{}
 	resp.SetLabels(labels)
+	return resp, nil
+}
+
+func (s *EssentialService) ListGPURelationsByMachine(ctx context.Context, req *pb.ListGPURelationsByMachineRequest) (*pb.ListGPURelationsByMachineResponse, error) {
+	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetMachineId())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListGPURelationsByMachineResponse{}
+	resp.SetGpuRelations(toProtoGPURelations(gpuRelations))
+	return resp, nil
+}
+
+func (s *EssentialService) ListGPURelationsByModel(ctx context.Context, req *pb.ListGPURelationsByModelRequest) (*pb.ListGPURelationsByModelResponse, error) {
+	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetModelName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListGPURelationsByModelResponse{}
+	resp.SetGpuRelations(toProtoGPURelations(gpuRelations))
 	return resp, nil
 }
 
@@ -134,5 +148,72 @@ func toProtoEssentialUnit(eu *core.EssentialUnit) *pb.Essential_Unit {
 	ret := &pb.Essential_Unit{}
 	ret.SetName(eu.Name)
 	ret.SetDirective(eu.Directive)
+	return ret
+}
+
+func toProtoGPURelations(rs []core.GPURelation) []*pb.GPURelation {
+	ret := []*pb.GPURelation{}
+	for i := range rs {
+		ret = append(ret, toProtoGPURelation(&rs[i]))
+	}
+	return ret
+}
+
+func toProtoGPURelation(r *core.GPURelation) *pb.GPURelation {
+	ret := &pb.GPURelation{}
+	switch {
+	case r.Machine != nil:
+		ret.SetMachine(toProtoGPURelationMachine(r))
+	case r.GPU != nil:
+		ret.SetGpu(toProtoGPURelationGPU(r))
+	case r.Pod != nil:
+		ret.SetPod(toProtoGPURelationPod(r))
+	}
+	return ret
+}
+
+func toProtoGPURelationMachine(r *core.GPURelation) *pb.GPURelation_Machine {
+	ret := &pb.GPURelation_Machine{}
+	ret.SetId(r.Machine.ID)
+	ret.SetHostname(r.Machine.Hostname)
+	return ret
+}
+
+func toProtoGPURelationGPU(r *core.GPURelation) *pb.GPURelation_GPU {
+	ret := &pb.GPURelation_GPU{}
+	ret.SetId(r.GPU.ID)
+	ret.SetVendor(r.GPU.Vendor)
+	ret.SetProduct(r.GPU.Product)
+	ret.SetMachineId(r.GPU.MachineID)
+	ret.SetVgpus(toProtoGPURelationGPUvGPUs(r.GPU.VGPUs))
+	return ret
+}
+
+func toProtoGPURelationPod(r *core.GPURelation) *pb.GPURelation_Pod {
+	ret := &pb.GPURelation_Pod{}
+	ret.SetName(r.Pod.Name)
+	ret.SetNamespace(r.Pod.Namespace)
+	ret.SetModelName(r.Pod.ModelName)
+	ret.SetGpuIds(r.Pod.GPUIDs)
+	return ret
+}
+
+func toProtoGPURelationGPUvGPUs(rs []core.GPURelationVGPU) []*pb.GPURelation_GPUVGPU {
+	ret := []*pb.GPURelation_GPUVGPU{}
+	for i := range rs {
+		ret = append(ret, toProtoGPURelationGPUvGPU(&rs[i]))
+	}
+	return ret
+}
+
+func toProtoGPURelationGPUvGPU(r *core.GPURelationVGPU) *pb.GPURelation_GPUVGPU {
+	ret := &pb.GPURelation_GPUVGPU{}
+	ret.SetPodName(r.PodName)
+	ret.SetBindingPhase(r.BindingPhase)
+	ret.SetVramBytes(r.VramBytes)
+	ret.SetVcoresPercent(r.VcoresPercent)
+	if !r.BoundAt.IsZero() {
+		ret.SetBoundAt(timestamppb.New(r.BoundAt))
+	}
 	return ret
 }

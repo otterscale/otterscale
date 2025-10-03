@@ -3,6 +3,7 @@ edition = "2023";
 package otterscale.essential.v1;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/essential/v1;pb";
 
@@ -15,6 +16,8 @@ service EssentialService {
   rpc AddUnits(AddUnitsRequest) returns (google.protobuf.Empty);
   rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse);
   rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse);
+  rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse);
+  rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse);
 }
 
 message Essential {
@@ -45,6 +48,38 @@ message Status {
   Level level = 1;
   string message = 2;
   string details = 3;
+}
+
+message GPURelation {
+  message Pod {
+    string name = 1;
+    string namespace = 2;
+    string model_name = 3;
+    repeated string gpu_ids = 101;
+  }
+  message GPU {
+    message vGPU {
+      string pod_name = 1;  // vgpu doesn't have its own id, so we use pod_name as identifier
+      string binding_phase = 2;
+      uint64 vram_bytes = 3;
+      float vcores_percent = 4;
+      google.protobuf.Timestamp bound_at = 5;
+    }
+    string id = 1;
+    string vendor = 2;
+    string product = 3;
+    repeated vGPU vgpus = 4;
+    string machine_id = 101;
+  }
+  message Machine {
+    string id = 1;
+    string hostname = 2;
+  }
+  oneof entity {
+    Pod pod = 1;
+    GPU gpu = 2;
+    Machine machine = 3;
+  }
 }
 
 message IsMachineDeployedRequest {
@@ -120,4 +155,25 @@ message UpdateKubernetesNodeLabelsRequest {
 
 message UpdateKubernetesNodeLabelsResponse {
   map<string, string> labels = 1;
+}
+
+message ListGPURelationsByMachineRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string machine_id = 3;
+}
+
+message ListGPURelationsByMachineResponse {
+  repeated GPURelation gpu_relations = 1;
+}
+
+message ListGPURelationsByModelRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string model_name = 4;
+}
+
+message ListGPURelationsByModelResponse {
+  repeated GPURelation gpu_relations = 1;
 }

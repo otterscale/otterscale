@@ -58,6 +58,12 @@ const (
 	// EssentialServiceUpdateKubernetesNodeLabelsProcedure is the fully-qualified name of the
 	// EssentialService's UpdateKubernetesNodeLabels RPC.
 	EssentialServiceUpdateKubernetesNodeLabelsProcedure = "/otterscale.essential.v1.EssentialService/UpdateKubernetesNodeLabels"
+	// EssentialServiceListGPURelationsByMachineProcedure is the fully-qualified name of the
+	// EssentialService's ListGPURelationsByMachine RPC.
+	EssentialServiceListGPURelationsByMachineProcedure = "/otterscale.essential.v1.EssentialService/ListGPURelationsByMachine"
+	// EssentialServiceListGPURelationsByModelProcedure is the fully-qualified name of the
+	// EssentialService's ListGPURelationsByModel RPC.
+	EssentialServiceListGPURelationsByModelProcedure = "/otterscale.essential.v1.EssentialService/ListGPURelationsByModel"
 )
 
 // EssentialServiceClient is a client for the otterscale.essential.v1.EssentialService service.
@@ -70,6 +76,8 @@ type EssentialServiceClient interface {
 	AddUnits(context.Context, *v1.AddUnitsRequest) (*emptypb.Empty, error)
 	ListKubernetesNodeLabels(context.Context, *v1.ListKubernetesNodeLabelsRequest) (*v1.ListKubernetesNodeLabelsResponse, error)
 	UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error)
+	ListGPURelationsByMachine(context.Context, *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error)
+	ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error)
 }
 
 // NewEssentialServiceClient constructs a client for the otterscale.essential.v1.EssentialService
@@ -131,6 +139,18 @@ func NewEssentialServiceClient(httpClient connect.HTTPClient, baseURL string, op
 			connect.WithSchema(essentialServiceMethods.ByName("UpdateKubernetesNodeLabels")),
 			connect.WithClientOptions(opts...),
 		),
+		listGPURelationsByMachine: connect.NewClient[v1.ListGPURelationsByMachineRequest, v1.ListGPURelationsByMachineResponse](
+			httpClient,
+			baseURL+EssentialServiceListGPURelationsByMachineProcedure,
+			connect.WithSchema(essentialServiceMethods.ByName("ListGPURelationsByMachine")),
+			connect.WithClientOptions(opts...),
+		),
+		listGPURelationsByModel: connect.NewClient[v1.ListGPURelationsByModelRequest, v1.ListGPURelationsByModelResponse](
+			httpClient,
+			baseURL+EssentialServiceListGPURelationsByModelProcedure,
+			connect.WithSchema(essentialServiceMethods.ByName("ListGPURelationsByModel")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -144,6 +164,8 @@ type essentialServiceClient struct {
 	addUnits                      *connect.Client[v1.AddUnitsRequest, emptypb.Empty]
 	listKubernetesNodeLabels      *connect.Client[v1.ListKubernetesNodeLabelsRequest, v1.ListKubernetesNodeLabelsResponse]
 	updateKubernetesNodeLabels    *connect.Client[v1.UpdateKubernetesNodeLabelsRequest, v1.UpdateKubernetesNodeLabelsResponse]
+	listGPURelationsByMachine     *connect.Client[v1.ListGPURelationsByMachineRequest, v1.ListGPURelationsByMachineResponse]
+	listGPURelationsByModel       *connect.Client[v1.ListGPURelationsByModelRequest, v1.ListGPURelationsByModelResponse]
 }
 
 // IsMachineDeployed calls otterscale.essential.v1.EssentialService.IsMachineDeployed.
@@ -220,6 +242,25 @@ func (c *essentialServiceClient) UpdateKubernetesNodeLabels(ctx context.Context,
 	return nil, err
 }
 
+// ListGPURelationsByMachine calls
+// otterscale.essential.v1.EssentialService.ListGPURelationsByMachine.
+func (c *essentialServiceClient) ListGPURelationsByMachine(ctx context.Context, req *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error) {
+	response, err := c.listGPURelationsByMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListGPURelationsByModel calls otterscale.essential.v1.EssentialService.ListGPURelationsByModel.
+func (c *essentialServiceClient) ListGPURelationsByModel(ctx context.Context, req *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error) {
+	response, err := c.listGPURelationsByModel.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // EssentialServiceHandler is an implementation of the otterscale.essential.v1.EssentialService
 // service.
 type EssentialServiceHandler interface {
@@ -231,6 +272,8 @@ type EssentialServiceHandler interface {
 	AddUnits(context.Context, *v1.AddUnitsRequest) (*emptypb.Empty, error)
 	ListKubernetesNodeLabels(context.Context, *v1.ListKubernetesNodeLabelsRequest) (*v1.ListKubernetesNodeLabelsResponse, error)
 	UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error)
+	ListGPURelationsByMachine(context.Context, *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error)
+	ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error)
 }
 
 // NewEssentialServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -288,6 +331,18 @@ func NewEssentialServiceHandler(svc EssentialServiceHandler, opts ...connect.Han
 		connect.WithSchema(essentialServiceMethods.ByName("UpdateKubernetesNodeLabels")),
 		connect.WithHandlerOptions(opts...),
 	)
+	essentialServiceListGPURelationsByMachineHandler := connect.NewUnaryHandlerSimple(
+		EssentialServiceListGPURelationsByMachineProcedure,
+		svc.ListGPURelationsByMachine,
+		connect.WithSchema(essentialServiceMethods.ByName("ListGPURelationsByMachine")),
+		connect.WithHandlerOptions(opts...),
+	)
+	essentialServiceListGPURelationsByModelHandler := connect.NewUnaryHandlerSimple(
+		EssentialServiceListGPURelationsByModelProcedure,
+		svc.ListGPURelationsByModel,
+		connect.WithSchema(essentialServiceMethods.ByName("ListGPURelationsByModel")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.essential.v1.EssentialService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case EssentialServiceIsMachineDeployedProcedure:
@@ -306,6 +361,10 @@ func NewEssentialServiceHandler(svc EssentialServiceHandler, opts ...connect.Han
 			essentialServiceListKubernetesNodeLabelsHandler.ServeHTTP(w, r)
 		case EssentialServiceUpdateKubernetesNodeLabelsProcedure:
 			essentialServiceUpdateKubernetesNodeLabelsHandler.ServeHTTP(w, r)
+		case EssentialServiceListGPURelationsByMachineProcedure:
+			essentialServiceListGPURelationsByMachineHandler.ServeHTTP(w, r)
+		case EssentialServiceListGPURelationsByModelProcedure:
+			essentialServiceListGPURelationsByModelHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -345,4 +404,12 @@ func (UnimplementedEssentialServiceHandler) ListKubernetesNodeLabels(context.Con
 
 func (UnimplementedEssentialServiceHandler) UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.UpdateKubernetesNodeLabels is not implemented"))
+}
+
+func (UnimplementedEssentialServiceHandler) ListGPURelationsByMachine(context.Context, *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.ListGPURelationsByMachine is not implemented"))
+}
+
+func (UnimplementedEssentialServiceHandler) ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.ListGPURelationsByModel is not implemented"))
 }
