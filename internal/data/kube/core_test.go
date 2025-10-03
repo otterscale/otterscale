@@ -86,7 +86,7 @@ func TestCore_WithConfig(t *testing.T) {
 		t.Log("ListPodsByLabel succeeded unexpectedly (no real cluster)")
 	}
 	// Pod logs – will fail because there is no pod, but should not panic
-	if _, err := repo.GetPodLogs(ctx, restCfg, "default", "demo-pod", "demo-container"); err == nil {
+	if _, err := repo.GetLogs(ctx, restCfg, "default", "demo-pod", "demo-container"); err == nil {
 		t.Log("GetPodLogs succeeded unexpectedly (no real cluster)")
 	}
 	// PVCs
@@ -144,7 +144,7 @@ func TestCore_ErrorHandling(t *testing.T) {
 			return err
 		}},
 		{"GetPodLogs", func() error {
-			_, err := repo.GetPodLogs(ctx, emptyCfg, "default", "pod", "ctr")
+			_, err := repo.GetLogs(ctx, emptyCfg, "default", "pod", "ctr")
 			return err
 		}},
 		{"ListPersistentVolumeClaims", func() error {
@@ -221,7 +221,7 @@ func TestCore_MethodBehavior(t *testing.T) {
 	})
 
 	t.Run("GetPodLogs", func(t *testing.T) {
-		_, err := repo.GetPodLogs(ctx, restCfg, "default", "demo-pod", "demo-ctr")
+		_, err := repo.GetLogs(ctx, restCfg, "default", "demo-pod", "demo-ctr")
 		if err != nil {
 			t.Logf("GetPodLogs returned expected error: %v", err)
 		}
@@ -428,7 +428,7 @@ func TestCore_GetPodLogs_StreamHandling(t *testing.T) {
 	ctx := context.Background()
 	restCfg := &rest.Config{Host: "https://example.invalid"}
 
-	_, err := s.GetPodLogs(ctx, restCfg, "default", "pod", "container")
+	_, err := s.GetLogs(ctx, restCfg, "default", "pod", "container")
 	if err == nil {
 		// In a real cluster we would get logs, but here we accept either error or empty
 		// string. The important part is that the function does not panic.

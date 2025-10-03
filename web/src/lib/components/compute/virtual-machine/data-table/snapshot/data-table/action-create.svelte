@@ -4,8 +4,11 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { SnapshotVirtualMachineRequest, VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { KubeVirtService } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type {
+		CreateVirtualMachineSnapshotRequest,
+		VirtualMachine,
+	} from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -19,7 +22,7 @@
 	// Context dependencies
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
-	const kubevirtClient = createClient(KubeVirtService, transport);
+	const virtualMachineClient = createClient(VirtualMachineService, transport);
 
 	// ==================== State Variables ====================
 
@@ -35,18 +38,17 @@
 	const DEFAULT_REQUEST = {
 		scopeUuid: $currentKubernetes?.scopeUuid,
 		facilityName: $currentKubernetes?.name,
-		name: virtualMachine.metadata?.name,
-		namespace: virtualMachine.metadata?.namespace,
-		snapshotName: '',
-		description: '',
-	} as SnapshotVirtualMachineRequest;
+		namespace: virtualMachine.namespace,
+		name: '',
+		virtualMachineName: virtualMachine.name,
+	} as CreateVirtualMachineSnapshotRequest;
 
 	// ==================== Form State ====================
-	let request: SnapshotVirtualMachineRequest = $state(DEFAULT_REQUEST);
+	let request: CreateVirtualMachineSnapshotRequest = $state({ ...DEFAULT_REQUEST });
 
 	// ==================== Utility Functions ====================
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = { ...DEFAULT_REQUEST };
 	}
 	function close() {
 		open = false;
@@ -68,13 +70,9 @@
 					<SingleInput.General
 						required
 						type="text"
-						bind:value={request.snapshotName}
+						bind:value={request.name}
 						bind:invalid={invalidSnapshotName}
 					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>{m.description()}</Form.Label>
-					<SingleInput.General type="text" bind:value={request.description} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -89,16 +87,16 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalidSnapshotName || !request.snapshotName}
+					disabled={invalidSnapshotName || !request.name}
 					onclick={() => {
-						toast.promise(() => kubevirtClient.snapshotVirtualMachine(request), {
-							loading: `Creating snapshot ${request.snapshotName}...`,
+						toast.promise(() => virtualMachineClient.createVirtualMachineSnapshot(request), {
+							loading: `Creating snapshot ${request.name}...`,
 							success: () => {
 								reloadManager.force();
-								return `Successfully created snapshot ${request.snapshotName}`;
+								return `Successfully created snapshot ${request.name}`;
 							},
 							error: (error) => {
-								let message = `Failed to create snapshot ${request.snapshotName}`;
+								let message = `Failed to create snapshot ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY,

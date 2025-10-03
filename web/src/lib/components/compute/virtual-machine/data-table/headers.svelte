@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Column, Table } from '@tanstack/table-core';
 
-	import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
@@ -9,13 +9,14 @@
 	export const headers = {
 		row_picker,
 		name,
-		namespace,
-		network,
-		node,
 		status,
-		cpu,
-		memory,
+		namespace,
+		machineId,
+		instanceType,
 		disk,
+		port,
+		createTime,
+		vnc,
 		actions,
 	};
 </script>
@@ -37,33 +38,6 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet namespace(column: Column<VirtualMachine>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.namespace()}</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet network(column: Column<VirtualMachine>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.network()}</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet node(column: Column<VirtualMachine>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.node()}</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
 {#snippet status(column: Column<VirtualMachine>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.status()}</Layout.HeaderViewer>
@@ -73,21 +47,30 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet cpu(column: Column<VirtualMachine>)}
-	<Layout.Header class="justify-end">
+{#snippet namespace(column: Column<VirtualMachine>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.namespace()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.cpu()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet memory(column: Column<VirtualMachine>)}
-	<Layout.Header class="justify-end">
+{#snippet machineId(column: Column<VirtualMachine>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.machine()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.memory()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet instanceType(column: Column<VirtualMachine>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.instance_type()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
@@ -99,5 +82,25 @@
 		<Layout.HeaderViewer>{m.disk()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
+
+{#snippet port(column: Column<VirtualMachine>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>{m.ports()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet createTime(column: Column<VirtualMachine>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.create_time()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet vnc()}{/snippet}
 
 {#snippet actions()}{/snippet}

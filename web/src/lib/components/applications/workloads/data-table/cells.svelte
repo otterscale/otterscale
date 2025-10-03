@@ -2,6 +2,8 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
+	import Actions from './cell-actions.svelte';
+
 	import { page } from '$app/state';
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
@@ -22,6 +24,7 @@
 		container,
 		volume,
 		nodeport,
+		actions,
 	};
 </script>
 
@@ -114,5 +117,11 @@
 				{/if}
 			{/each}
 		{/each}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet actions(row: Row<Application>)}
+	<Layout.Cell class="items-start">
+		<Actions application={row.original} />
 	</Layout.Cell>
 {/snippet}

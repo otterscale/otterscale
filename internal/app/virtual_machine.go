@@ -2,17 +2,26 @@ package app
 
 import (
 	"context"
+	"errors"
+	"io"
+	"net/http"
 	"strings"
+	"sync"
+	"time"
 
+	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"k8s.io/apimachinery/pkg/util/intstr"
 
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 	clonev1beta1 "kubevirt.io/api/clone/v1beta1"
 	virtv1 "kubevirt.io/api/core/v1"
 	snapshotv1beta1 "kubevirt.io/api/snapshot/v1beta1"
 	cdiv1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
+
+	kvcorev1 "github.com/otterscale/kubevirt-client-go/kubevirt/typed/core/v1"
 
 	apppb "github.com/otterscale/otterscale/api/application/v1"
 	pb "github.com/otterscale/otterscale/api/virtual_machine/v1"
@@ -23,11 +32,23 @@ import (
 type VirtualMachineService struct {
 	pbconnect.UnimplementedVirtualMachineServiceHandler
 
-	uc *core.VirtualMachineUseCase
+	WebSocketPathPrefix string
+
+	uc             *core.VirtualMachineUseCase
+	vncSessions    sync.Map
+	wsPingDeadline time.Duration
+	wsPingPeriod   time.Duration
+	wsPongWait     time.Duration
 }
 
 func NewVirtualMachineService(uc *core.VirtualMachineUseCase) *VirtualMachineService {
-	return &VirtualMachineService{uc: uc}
+	return &VirtualMachineService{
+		WebSocketPathPrefix: "/vnc/",
+		uc:                  uc,
+		wsPingDeadline:      10 * time.Second,
+		wsPingPeriod:        1 * time.Minute,
+		wsPongWait:          5 * time.Minute,
+	}
 }
 
 var _ pbconnect.VirtualMachineServiceHandler = (*VirtualMachineService)(nil)
@@ -47,8 +68,12 @@ func (s *VirtualMachineService) ListVirtualMachines(ctx context.Context, req *pb
 	if err != nil {
 		return nil, err
 	}
+	its, err := s.uc.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), true)
+	if err != nil {
+		return nil, err
+	}
 	resp := &pb.ListVirtualMachinesResponse{}
-	resp.SetVirtualMachines(toProtoVirtualMachines(vms))
+	resp.SetVirtualMachines(toProtoVirtualMachines(vms, its))
 	return resp, nil
 }
 
@@ -57,7 +82,11 @@ func (s *VirtualMachineService) GetVirtualMachine(ctx context.Context, req *pb.G
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoVirtualMachine(vm)
+	its, err := s.uc.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), true)
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoVirtualMachine(vm, its)
 	return resp, nil
 }
 
@@ -66,7 +95,11 @@ func (s *VirtualMachineService) CreateVirtualMachine(ctx context.Context, req *p
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoVirtualMachine(vm)
+	its, err := s.uc.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), true)
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoVirtualMachine(vm, its)
 	return resp, nil
 }
 
@@ -194,6 +227,20 @@ func (s *VirtualMachineService) MigrateInstance(ctx context.Context, req *pb.Mig
 	return resp, nil
 }
 
+func (s *VirtualMachineService) VNCInstance(ctx context.Context, req *pb.VNCInstanceRequest) (*pb.VNCInstanceResponse, error) {
+	vnc, err := s.uc.VNCInstance(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
+	if err != nil {
+		return nil, err
+	}
+
+	sessionID := uuid.New().String()
+	s.vncSessions.Store(sessionID, vnc)
+
+	resp := &pb.VNCInstanceResponse{}
+	resp.SetSessionId(sessionID)
+	return resp, nil
+}
+
 func (s *VirtualMachineService) ListDataVolumes(ctx context.Context, req *pb.ListDataVolumesRequest) (*pb.ListDataVolumesResponse, error) {
 	its, err := s.uc.ListDataVolumes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetBootImage())
 	if err != nil {
@@ -239,18 +286,8 @@ func (s *VirtualMachineService) ExtendDataVolume(ctx context.Context, req *pb.Ex
 	return resp, nil
 }
 
-func (s *VirtualMachineService) ListClusterWideInstanceTypes(ctx context.Context, req *pb.ListClusterWideInstanceTypesRequest) (*pb.ListClusterWideInstanceTypesResponse, error) {
-	its, err := s.uc.ListClusterWideInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName())
-	if err != nil {
-		return nil, err
-	}
-	resp := &pb.ListClusterWideInstanceTypesResponse{}
-	resp.SetInstanceTypes(toProtoClusterInstanceTypes(its))
-	return resp, nil
-}
-
 func (s *VirtualMachineService) ListInstanceTypes(ctx context.Context, req *pb.ListInstanceTypesRequest) (*pb.ListInstanceTypesResponse, error) {
-	its, err := s.uc.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace())
+	its, err := s.uc.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetIncludeClusterWide())
 	if err != nil {
 		return nil, err
 	}
@@ -311,6 +348,107 @@ func (s *VirtualMachineService) DeleteVirtualMachineService(ctx context.Context,
 	return resp, nil
 }
 
+func (s *VirtualMachineService) VNCHandler(w http.ResponseWriter, r *http.Request) {
+	// upgrade to websocket
+	upgrader := kvcorev1.NewUpgrader()
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		return
+	}
+	defer conn.Close()
+
+	// get vnc session
+	vnc, sessionID, err := s.getVNCSession(r)
+	if err != nil {
+		_ = conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, err.Error()))
+		return
+	}
+	defer s.vncSessions.Delete(sessionID)
+
+	// configure websocket connection
+	_ = conn.SetReadDeadline(time.Now().Add(s.wsPongWait))
+	conn.SetPongHandler(func(string) error {
+		_ = conn.SetReadDeadline(time.Now().Add(s.wsPongWait))
+		return nil
+	})
+
+	// create context for ping handler
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// start ping handler
+	go s.pingHandler(ctx, conn)
+
+	pipeInReader, pipeInWriter := io.Pipe()
+	pipeOutReader, pipeOutWriter := io.Pipe()
+	defer pipeInWriter.Close()
+	defer pipeOutWriter.Close()
+
+	// start stream handler
+	errChan := make(chan error, 3)
+	go s.streamHandler(vnc, pipeInReader, pipeOutWriter, conn, pipeOutReader, pipeInWriter, errChan)
+
+	// wait for any handler to complete
+	finalErr := <-errChan
+
+	if finalErr != nil && !errors.Is(finalErr, context.Canceled) && finalErr != io.EOF && !websocket.IsCloseError(finalErr, websocket.CloseNoStatusReceived, websocket.CloseNormalClosure, websocket.CloseGoingAway) {
+		_ = conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseInternalServerErr, finalErr.Error()))
+	}
+}
+
+func (s *VirtualMachineService) getVNCSession(r *http.Request) (core.VirtualMachineStream, string, error) { //nolint:gocritic // ignore
+	sessionID := strings.TrimPrefix(r.URL.Path, s.WebSocketPathPrefix)
+	if sessionID == "" {
+		return nil, "", errors.New("missing VNC session ID")
+	}
+
+	value, ok := s.vncSessions.Load(sessionID)
+	if !ok {
+		return nil, "", errors.New("VNC session not found")
+	}
+
+	stream, ok := value.(core.VirtualMachineStream)
+	if !ok {
+		return nil, "", errors.New("invalid VNC session type")
+	}
+
+	return stream, sessionID, nil
+}
+
+func (s *VirtualMachineService) pingHandler(ctx context.Context, conn *websocket.Conn) {
+	ticker := time.NewTicker(s.wsPingPeriod)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			if err := conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(s.wsPingDeadline)); err != nil {
+				return
+			}
+		case <-ctx.Done():
+			return
+		}
+	}
+}
+
+func (s *VirtualMachineService) streamHandler(vnc core.VirtualMachineStream, inReader io.Reader, outWriter io.Writer, conn *websocket.Conn, outReader io.Reader, inWriter io.Writer, errChan chan error) {
+	go func() {
+		errChan <- vnc.Stream(core.VirtualMachineStreamOptions{
+			In:  inReader,
+			Out: outWriter,
+		})
+	}()
+
+	go func() {
+		_, err := kvcorev1.CopyTo(conn, outReader)
+		errChan <- err
+	}()
+
+	go func() {
+		_, err := kvcorev1.CopyFrom(inWriter, conn)
+		errChan <- err
+	}()
+}
+
 func toPorts(ps []*apppb.Application_Service_Port) []corev1.ServicePort {
 	ret := []corev1.ServicePort{}
 	for i := range ps {
@@ -325,7 +463,7 @@ func toPort(p *apppb.Application_Service_Port) corev1.ServicePort {
 		Port:       p.GetPort(),
 		NodePort:   p.GetNodePort(),
 		Protocol:   corev1.Protocol(strings.ToUpper(p.GetProtocol())),
-		TargetPort: intstr.FromString(p.GetTargetPort()),
+		TargetPort: intstr.Parse(p.GetTargetPort()),
 	}
 }
 
@@ -390,22 +528,28 @@ func convertDiskBusToProto(bus virtv1.DiskBus) pb.VirtualMachine_Disk_Bus {
 	}
 }
 
-func toProtoVirtualMachines(vmds []core.VirtualMachineData) []*pb.VirtualMachine {
+func toProtoVirtualMachines(vmds []core.VirtualMachineData, its []core.VirtualMachineInstanceTypeData) []*pb.VirtualMachine {
 	ret := []*pb.VirtualMachine{}
 	for i := range vmds {
-		ret = append(ret, toProtoVirtualMachine(&vmds[i]))
+		ret = append(ret, toProtoVirtualMachine(&vmds[i], its))
 	}
 	return ret
 }
 
-func toProtoVirtualMachine(vmd *core.VirtualMachineData) *pb.VirtualMachine {
+func toProtoVirtualMachine(vmd *core.VirtualMachineData, its []core.VirtualMachineInstanceTypeData) *pb.VirtualMachine {
 	ret := &pb.VirtualMachine{}
 	ret.SetName(vmd.VirtualMachine.Name)
 	ret.SetNamespace(vmd.VirtualMachine.Namespace)
 
 	instanceType := vmd.VirtualMachine.Spec.Instancetype
 	if instanceType != nil {
-		ret.SetInstanceTypeName(instanceType.Name)
+		for _, it := range its {
+			if (it.ClusterWide && it.VirtualMachineClusterInstanceType.Name == instanceType.Name) ||
+				(!it.ClusterWide && it.VirtualMachineInstanceType.Namespace == vmd.VirtualMachine.Namespace && it.VirtualMachineInstanceType.Name == instanceType.Name) {
+				ret.SetInstanceType(toProtoInstanceType(&it))
+				break
+			}
+		}
 	}
 
 	ret.SetStatus(string(vmd.VirtualMachine.Status.PrintableStatus))
@@ -416,7 +560,18 @@ func toProtoVirtualMachine(vmd *core.VirtualMachineData) *pb.VirtualMachine {
 		ret.SetInstancePhase(string(instance.Status.Phase))
 	}
 
-	ret.SetMachineId(vmd.MachineID)
+	machine := vmd.Machine
+	if machine != nil {
+		ret.SetMachineId(machine.SystemID)
+		ret.SetHostname(machine.Hostname)
+
+		ipAddresses := make([]string, len(machine.IPAddresses))
+		for i, ip := range machine.IPAddresses {
+			ipAddresses[i] = ip.String()
+		}
+		ret.SetIpAddresses(ipAddresses)
+	}
+
 	ret.SetCreatedAt(timestamppb.New(vmd.VirtualMachine.CreationTimestamp.Time))
 	ret.SetServices(toProtoServices(vmd.Services))
 	ret.SetDisks(toProtoVirtualMachineDisks(vmd.VirtualMachine.Spec.Template.Spec.Domain.Devices.Disks, vmd.VirtualMachine.Spec.Template.Spec.Volumes))
@@ -614,24 +769,7 @@ func toProtoDataVolume(it *core.DataVolumeWithStorage) *pb.DataVolume {
 	return ret
 }
 
-func toProtoClusterInstanceTypes(its []core.VirtualMachineClusterInstanceType) []*pb.InstanceType {
-	ret := []*pb.InstanceType{}
-	for i := range its {
-		ret = append(ret, toProtoClusterInstanceType(&its[i]))
-	}
-	return ret
-}
-
-func toProtoClusterInstanceType(it *core.VirtualMachineClusterInstanceType) *pb.InstanceType {
-	ret := &pb.InstanceType{}
-	ret.SetName(it.Name)
-	ret.SetNamespace(it.Namespace)
-	ret.SetCpuCores(it.Spec.CPU.Guest)
-	ret.SetMemoryBytes(it.Spec.Memory.Guest.Value())
-	return ret
-}
-
-func toProtoInstanceTypes(its []core.VirtualMachineInstanceType) []*pb.InstanceType {
+func toProtoInstanceTypes(its []core.VirtualMachineInstanceTypeData) []*pb.InstanceType {
 	ret := []*pb.InstanceType{}
 	for i := range its {
 		ret = append(ret, toProtoInstanceType(&its[i]))
@@ -639,11 +777,30 @@ func toProtoInstanceTypes(its []core.VirtualMachineInstanceType) []*pb.InstanceT
 	return ret
 }
 
-func toProtoInstanceType(it *core.VirtualMachineInstanceType) *pb.InstanceType {
+func toProtoInstanceType(it *core.VirtualMachineInstanceTypeData) *pb.InstanceType {
+	if it.ClusterWide {
+		return toProtoInstanceTypeFromClusterInstanceType(it.VirtualMachineClusterInstanceType)
+	}
+	return toProtoInstanceTypeFromInstanceType(it.VirtualMachineInstanceType)
+}
+
+func toProtoInstanceTypeFromClusterInstanceType(it *core.VirtualMachineClusterInstanceType) *pb.InstanceType {
 	ret := &pb.InstanceType{}
 	ret.SetName(it.Name)
 	ret.SetNamespace(it.Namespace)
 	ret.SetCpuCores(it.Spec.CPU.Guest)
 	ret.SetMemoryBytes(it.Spec.Memory.Guest.Value())
+	ret.SetClusterWide(true)
+	ret.SetCreatedAt(timestamppb.New(it.CreationTimestamp.Time))
+	return ret
+}
+
+func toProtoInstanceTypeFromInstanceType(it *core.VirtualMachineInstanceType) *pb.InstanceType {
+	ret := &pb.InstanceType{}
+	ret.SetName(it.Name)
+	ret.SetNamespace(it.Namespace)
+	ret.SetCpuCores(it.Spec.CPU.Guest)
+	ret.SetMemoryBytes(it.Spec.Memory.Guest.Value())
+	ret.SetCreatedAt(timestamppb.New(it.CreationTimestamp.Time))
 	return ret
 }

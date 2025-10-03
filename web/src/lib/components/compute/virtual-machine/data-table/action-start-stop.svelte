@@ -4,8 +4,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { KubeVirtService, VirtualMachine_status } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import { VirtualMachineService, type VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 </script>
@@ -14,16 +13,16 @@
 	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
 
 	const transport: Transport = getContext('transport');
-	const KubeVirtClient = createClient(KubeVirtService, transport);
+	const virtualMachineClient = createClient(VirtualMachineService, transport);
 	let loading = $state(false);
-	let statusAtClick = $state<VirtualMachine_status>(VirtualMachine_status.UNKNOWN);
-	const isRunning = $derived(virtualMachine.statusPhase === VirtualMachine_status.RUNNING);
-	const isStarting = $derived(virtualMachine.statusPhase === VirtualMachine_status.STARTING);
+	let statusAtClick = $state('Unknown');
+	const isRunning = $derived(virtualMachine.status === 'Running');
+	const isStarting = $derived(virtualMachine.status === 'Starting');
 
 	$effect(() => {
 		// If we are in a loading state and the status has changed from what it was when we clicked,
 		// we can stop showing the loading indicator.
-		if (loading && virtualMachine.statusPhase !== statusAtClick) {
+		if (loading && virtualMachine.status !== statusAtClick) {
 			loading = false;
 		}
 	});
@@ -32,11 +31,11 @@
 		const request = {
 			scopeUuid: $currentKubernetes?.scopeUuid,
 			facilityName: $currentKubernetes?.name,
-			name: virtualMachine.metadata?.name,
-			namespace: virtualMachine.metadata?.namespace,
+			name: virtualMachine.name,
+			namespace: virtualMachine.namespace,
 		};
 
-		await toast.promise(() => KubeVirtClient.startVirtualMachine(request), {
+		toast.promise(() => virtualMachineClient.startVirtualMachine(request), {
 			loading: `Starting virtual machine ${request.name}...`,
 			success: () => `Successfully started virtual machine ${request.name}.`,
 			error: (e) => {
@@ -53,11 +52,11 @@
 		const request = {
 			scopeUuid: $currentKubernetes?.scopeUuid,
 			facilityName: $currentKubernetes?.name,
-			name: virtualMachine.metadata?.name,
-			namespace: virtualMachine.metadata?.namespace,
+			name: virtualMachine.name,
+			namespace: virtualMachine.namespace,
 		};
 
-		await toast.promise(() => KubeVirtClient.stopVirtualMachine(request), {
+		toast.promise(() => virtualMachineClient.stopVirtualMachine(request), {
 			loading: `Stopping virtual machine ${request.name}...`,
 			success: () => `Successfully stopped virtual machine ${request.name}.`,
 			error: (e) => {
@@ -73,7 +72,7 @@
 
 	async function handleClick() {
 		// Store the status at the moment of the click
-		statusAtClick = virtualMachine.statusPhase;
+		statusAtClick = virtualMachine.status;
 		loading = true;
 
 		if (isRunning) {
