@@ -55,14 +55,7 @@ func (s *EssentialService) ListEssentials(ctx context.Context, req *pb.ListEssen
 }
 
 func (s *EssentialService) CreateSingleNode(ctx context.Context, req *pb.CreateSingleNodeRequest) (*emptypb.Empty, error) {
-	if err := s.uc.CreateSingleNode(ctx,
-		req.GetScopeUuid(),
-		req.GetMachineId(),
-		req.GetPrefixName(),
-		req.GetVirtualIps(),
-		req.GetCalicoCidr(),
-		req.GetOsdDevices(),
-	); err != nil {
+	if err := s.uc.CreateSingleNode(ctx, req.GetScopeUuid(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -86,6 +79,26 @@ func (s *EssentialService) UpdateKubernetesNodeLabels(ctx context.Context, req *
 	}
 	resp := &pb.UpdateKubernetesNodeLabelsResponse{}
 	resp.SetLabels(labels)
+	return resp, nil
+}
+
+func (s *EssentialService) ListGPURelationsByMachine(ctx context.Context, req *pb.ListGPURelationsByMachineRequest) (*pb.ListGPURelationsByMachineResponse, error) {
+	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetMachineId())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListGPURelationsByMachineResponse{}
+	resp.SetGpuRelations(toProtoGPURelations(gpuRelations))
+	return resp, nil
+}
+
+func (s *EssentialService) ListGPURelationsByModel(ctx context.Context, req *pb.ListGPURelationsByModelRequest) (*pb.ListGPURelationsByModelResponse, error) {
+	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetModelName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListGPURelationsByModelResponse{}
+	resp.SetGpuRelations(toProtoGPURelations(gpuRelations))
 	return resp, nil
 }
 
@@ -138,90 +151,69 @@ func toProtoEssentialUnit(eu *core.EssentialUnit) *pb.Essential_Unit {
 	return ret
 }
 
-func (s *EssentialService) ListGPURelationsByMachine(ctx context.Context, req *pb.ListGPURelationsByMachineRequest) (*pb.ListGPURelationsByMachineResponse, error) {
-	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx,
-		req.GetScopeUuid(),
-		req.GetFacilityName(),
-		req.GetMachineId(),
-	)
-	if err != nil {
-		return nil, err
+func toProtoGPURelations(rs []core.GPURelation) []*pb.GPURelation {
+	ret := []*pb.GPURelation{}
+	for i := range rs {
+		ret = append(ret, toProtoGPURelation(&rs[i]))
 	}
-
-	resp := &pb.ListGPURelationsByMachineResponse{}
-	resp.SetGpuRelations(convertGPURelationsToPB(gpuRelations))
-
-	return resp, nil
+	return ret
 }
 
-func (s *EssentialService) ListGPURelationsByModel(ctx context.Context, req *pb.ListGPURelationsByModelRequest) (*pb.ListGPURelationsByModelResponse, error) {
-	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx,
-		req.GetScopeUuid(),
-		req.GetFacilityName(),
-		req.GetNamespace(),
-		req.GetModelName(),
-	)
-	if err != nil {
-		return nil, err
+func toProtoGPURelation(r *core.GPURelation) *pb.GPURelation {
+	ret := &pb.GPURelation{}
+	switch {
+	case r.Machine != nil:
+		ret.SetMachine(toProtoGPURelationMachine(r))
+	case r.GPU != nil:
+		ret.SetGpu(toProtoGPURelationGPU(r))
+	case r.Pod != nil:
+		ret.SetPod(toProtoGPURelationPod(r))
 	}
-
-	resp := &pb.ListGPURelationsByModelResponse{}
-	resp.SetGpuRelations(convertGPURelationsToPB(gpuRelations))
-
-	return resp, nil
+	return ret
 }
 
-// convertGPURelationsToPB converts domain GPURelation to protobuf GPURelation
-func convertGPURelationsToPB(domainRelations []core.GPURelation) []*pb.GPURelation {
-	pbRelations := make([]*pb.GPURelation, 0, len(domainRelations))
+func toProtoGPURelationMachine(r *core.GPURelation) *pb.GPURelation_Machine {
+	ret := &pb.GPURelation_Machine{}
+	ret.SetId(r.Machine.ID)
+	ret.SetHostname(r.Machine.Hostname)
+	return ret
+}
 
-	for i := range domainRelations {
-		pbRelation := &pb.GPURelation{}
+func toProtoGPURelationGPU(r *core.GPURelation) *pb.GPURelation_GPU {
+	ret := &pb.GPURelation_GPU{}
+	ret.SetId(r.GPU.ID)
+	ret.SetVendor(r.GPU.Vendor)
+	ret.SetProduct(r.GPU.Product)
+	ret.SetMachineId(r.GPU.MachineID)
+	ret.SetVgpus(toProtoGPURelationGPUvGPUs(r.GPU.VGPUs))
+	return ret
+}
 
-		switch {
-		case domainRelations[i].Machine != nil:
-			machineEntity := &pb.GPURelation_Machine{}
-			machineEntity.SetId(domainRelations[i].Machine.ID)
-			machineEntity.SetHostname(domainRelations[i].Machine.Hostname)
-			pbRelation.SetMachine(machineEntity)
+func toProtoGPURelationPod(r *core.GPURelation) *pb.GPURelation_Pod {
+	ret := &pb.GPURelation_Pod{}
+	ret.SetName(r.Pod.Name)
+	ret.SetNamespace(r.Pod.Namespace)
+	ret.SetModelName(r.Pod.ModelName)
+	ret.SetGpuIds(r.Pod.GPUIDs)
+	return ret
+}
 
-		case domainRelations[i].GPU != nil:
-			gpuEntity := &pb.GPURelation_GPU{}
-			gpuEntity.SetId(domainRelations[i].GPU.ID)
-			gpuEntity.SetVendor(domainRelations[i].GPU.Vendor)
-			gpuEntity.SetProduct(domainRelations[i].GPU.Product)
-			gpuEntity.SetMachineId(domainRelations[i].GPU.MachineID)
-
-			// Convert vGPUs
-			if len(domainRelations[i].GPU.VGPUs) > 0 {
-				pbVGPUs := make([]*pb.GPURelation_GPUVGPU, 0, len(domainRelations[i].GPU.VGPUs))
-				for j := range domainRelations[i].GPU.VGPUs {
-					vgpu := &domainRelations[i].GPU.VGPUs[j]
-					pbVGPU := &pb.GPURelation_GPUVGPU{}
-					pbVGPU.SetPodName(vgpu.PodName)
-					pbVGPU.SetBindingPhase(vgpu.BindingPhase)
-					pbVGPU.SetVramBytes(vgpu.VramBytes)
-					pbVGPU.SetVcoresPercent(vgpu.VcoresPercent)
-					if !vgpu.BoundAt.IsZero() {
-						pbVGPU.SetBoundAt(timestamppb.New(vgpu.BoundAt))
-					}
-					pbVGPUs = append(pbVGPUs, pbVGPU)
-				}
-				gpuEntity.SetVgpus(pbVGPUs)
-			}
-			pbRelation.SetGpu(gpuEntity)
-
-		case domainRelations[i].Pod != nil:
-			podEntity := &pb.GPURelation_Pod{}
-			podEntity.SetName(domainRelations[i].Pod.Name)
-			podEntity.SetNamespace(domainRelations[i].Pod.Namespace)
-			podEntity.SetModelName(domainRelations[i].Pod.ModelName)
-			podEntity.SetGpuIds(domainRelations[i].Pod.GPUIDs)
-			pbRelation.SetPod(podEntity)
-		}
-
-		pbRelations = append(pbRelations, pbRelation)
+func toProtoGPURelationGPUvGPUs(rs []core.GPURelationVGPU) []*pb.GPURelation_GPUVGPU {
+	ret := []*pb.GPURelation_GPUVGPU{}
+	for i := range rs {
+		ret = append(ret, toProtoGPURelationGPUvGPU(&rs[i]))
 	}
+	return ret
+}
 
-	return pbRelations
+func toProtoGPURelationGPUvGPU(r *core.GPURelationVGPU) *pb.GPURelation_GPUVGPU {
+	ret := &pb.GPURelation_GPUVGPU{}
+	ret.SetPodName(r.PodName)
+	ret.SetBindingPhase(r.BindingPhase)
+	ret.SetVramBytes(r.VramBytes)
+	ret.SetVcoresPercent(r.VcoresPercent)
+	if !r.BoundAt.IsZero() {
+		ret.SetBoundAt(timestamppb.New(r.BoundAt))
+	}
+	return ret
 }
