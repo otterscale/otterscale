@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/otterscale/otterscale/api/essential/v1"
 	"github.com/otterscale/otterscale/api/essential/v1/pbconnect"
@@ -148,7 +149,7 @@ func (s *EssentialService) ListGPURelationsByMachine(ctx context.Context, req *p
 	}
 
 	resp := &pb.ListGPURelationsByMachineResponse{}
-	resp.SetGpuRelations(gpuRelations)
+	resp.SetGpuRelations(convertGPURelationsToPB(gpuRelations))
 
 	return resp, nil
 }
@@ -165,7 +166,62 @@ func (s *EssentialService) ListGPURelationsByModel(ctx context.Context, req *pb.
 	}
 
 	resp := &pb.ListGPURelationsByModelResponse{}
-	resp.SetGpuRelations(gpuRelations)
+	resp.SetGpuRelations(convertGPURelationsToPB(gpuRelations))
 
 	return resp, nil
+}
+
+// convertGPURelationsToPB converts domain GPURelation to protobuf GPURelation
+func convertGPURelationsToPB(domainRelations []core.GPURelation) []*pb.GPURelation {
+	pbRelations := make([]*pb.GPURelation, 0, len(domainRelations))
+
+	for i := range domainRelations {
+		pbRelation := &pb.GPURelation{}
+
+		switch {
+		case domainRelations[i].Machine != nil:
+			machineEntity := &pb.GPURelation_Machine{}
+			machineEntity.SetId(domainRelations[i].Machine.ID)
+			machineEntity.SetHostname(domainRelations[i].Machine.Hostname)
+			pbRelation.SetMachine(machineEntity)
+
+		case domainRelations[i].GPU != nil:
+			gpuEntity := &pb.GPURelation_GPU{}
+			gpuEntity.SetId(domainRelations[i].GPU.ID)
+			gpuEntity.SetVendor(domainRelations[i].GPU.Vendor)
+			gpuEntity.SetProduct(domainRelations[i].GPU.Product)
+			gpuEntity.SetMachineId(domainRelations[i].GPU.MachineID)
+
+			// Convert vGPUs
+			if len(domainRelations[i].GPU.VGPUs) > 0 {
+				pbVGPUs := make([]*pb.GPURelation_GPUVGPU, 0, len(domainRelations[i].GPU.VGPUs))
+				for j := range domainRelations[i].GPU.VGPUs {
+					vgpu := &domainRelations[i].GPU.VGPUs[j]
+					pbVGPU := &pb.GPURelation_GPUVGPU{}
+					pbVGPU.SetPodName(vgpu.PodName)
+					pbVGPU.SetBindingPhase(vgpu.BindingPhase)
+					pbVGPU.SetVramBytes(vgpu.VramBytes)
+					pbVGPU.SetVcoresPercent(vgpu.VcoresPercent)
+					if !vgpu.BoundAt.IsZero() {
+						pbVGPU.SetBoundAt(timestamppb.New(vgpu.BoundAt))
+					}
+					pbVGPUs = append(pbVGPUs, pbVGPU)
+				}
+				gpuEntity.SetVgpus(pbVGPUs)
+			}
+			pbRelation.SetGpu(gpuEntity)
+
+		case domainRelations[i].Pod != nil:
+			podEntity := &pb.GPURelation_Pod{}
+			podEntity.SetName(domainRelations[i].Pod.Name)
+			podEntity.SetNamespace(domainRelations[i].Pod.Namespace)
+			podEntity.SetModelName(domainRelations[i].Pod.ModelName)
+			podEntity.SetGpuIds(domainRelations[i].Pod.GPUIDs)
+			pbRelation.SetPod(podEntity)
+		}
+
+		pbRelations = append(pbRelations, pbRelation)
+	}
+
+	return pbRelations
 }
