@@ -57,11 +57,16 @@
 			</Tooltip.Root>
 		</Tooltip.Provider>
 	</Sheet.Trigger>
-	<Sheet.Content class="rounded-l-lg border-none bg-transparent sm:max-w-9/10">
+	<Sheet.Content class="rounded-l-lg border-none sm:max-w-9/10">
 		{#if isMounted}
 			<iframe class="size-full rounded-l-lg" title="Remote VNC Console" src={vncUrl}>
 				Your browser does not support iframes.
 			</iframe>
+		{:else}
+			<div class="flex h-full w-full flex-col items-center justify-center gap-4 rounded-l-lg">
+				<Icon class="size-12 animate-spin" icon="ph:spinner" />
+				<p class="text-lg">Starting VNC session...</p>
+			</div>
 		{/if}
 	</Sheet.Content>
 </Sheet.Root>
