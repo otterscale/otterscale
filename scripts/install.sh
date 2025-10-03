@@ -865,12 +865,12 @@ login_maas() {
     local retry_count=0
     
     APIKEY=$(maas apikey --username "$OTTERSCALE_MAAS_ADMIN_USER")
-    sleep 10
+    sleep 5
 
     while ((retry_count < OTTERSCALE_MAX_RETRIES)); do
         if maas login admin "http://localhost:5240/MAAS/" "$APIKEY" >>"$TEMP_LOG" 2>&1; then
             log "INFO" "MAAS login successful" "MAAS_LOGIN"
-            sleep 10
+            sleep 5
             return 0
         else
             log "WARN" "Failed to login to MAAS, retrying in 10 seconds (attempt $((retry_count + 1)))" "MAAS_LOGIN"
@@ -1251,6 +1251,35 @@ create_vm_from_maas() {
     wait_commissioning "$juju_machine_id"
 }
 
+update_vm_interface() {
+    log "INFO" "Update VM network interface" "VM_NETWORK"
+    local juju_machine_id
+    local juju_machine_network_name
+    local maas_network_name
+    local maas_network_cidr
+    
+    juju_machine_id=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
+    if [[ -z $juju_machine_id ]]; then
+        error_exit "Machine juju-vm not found"
+    fi
+
+    maas_network_name=$(maas admin subnet read $(ip -o -4 addr show dev $OTTERSCALE_BRIDGE_NAME | awk '{print $4}') | jq -r '.name')
+    maas_network_cidr=$(maas admin subnet read $maas_network_name | jq -r '.cidr')
+    juju_machine_network_name=$(maas admin interfaces read $juju_machine_id | jq -r '.[].name')
+
+    if ! is_machine_deployed; then
+        log "INFO" "Un-link juju-vm (id: $juju_machine_id) network interface" "VM_NETWORK"
+        for id in $(maas admin interfaces read $juju_machine_id | jq -r '.[].links | .[].id'); do
+            maas admin interface unlink-subnet $juju_machine_id $juju_machine_network_name id=$id >>"$TEMP_LOG" 2>&1
+        done
+
+	log "INFO" "Link juju-vm (id: $juju_machine_id) network interface $juju_machine_network_name to dhcp mode" "VM_NETWORK"
+        if ! maas admin interface link-subnet $juju_machine_id $juju_machine_network_name mode=dhcp subnet=$maas_network_cidr >>"$TEMP_LOG" 2>&1; then
+            error_exit "Failed update $juju_machine_id network interface"
+        fi
+    fi
+}
+
 # Wait for machine commissioning to complete
 wait_commissioning() {
     local machine_id="$1"
@@ -1371,8 +1400,7 @@ bootstrap_juju() {
         log "INFO" "Bootstrapping Juju controller..." "JUJU_BOOTSTRAP"
         local bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=$OTTERSCALE_BASE_IMAGE"
         local bootstrap_config="--config default-base=$OTTERSCALE_BASE_IMAGE --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
-        if ! su "$NON_ROOT_USER" -c "$bootstrap_cmd $bootstrap_config --to juju-vm"; then
-            rm -rf /home/"$NON_ROOT_USER"/.local/share/juju
+        if ! su "$NON_ROOT_USER" -c "$bootstrap_cmd $bootstrap_config --to juju-vm --debug >/dev/null 2>&1"; then
             error_exit "Failed to bootstrap Juju controller"
         fi
         log "INFO" "Juju controller bootstrapped successfully" "JUJU_BOOTSTRAP"
@@ -1462,11 +1490,11 @@ juju_add_k8s() {
         error_exit "Kubernetes config file not found at $kubeconfig"
     fi
     
-    if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client" >>"$TEMP_LOG" 2>&1; then
+    if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to add Kubernetes cluster to Juju"
     fi
 
-    if ! su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1"; then
+    if ! su "$NON_ROOT_USER" -c "juju show-model cos"; then
         su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s --debug" "JUJU_K8S"
         su "$NON_ROOT_USER" -c "juju deploy cos-lite --trust --debug" "JUJU_K8S"
     fi
@@ -1585,6 +1613,7 @@ main() {
     create_maas_lxd_project
     create_lxd_vm
     create_vm_from_maas
+    update_vm_interface
     
     # Juju Setup
     log "INFO" "Setting up Juju..." "JUJU_SETUP"
