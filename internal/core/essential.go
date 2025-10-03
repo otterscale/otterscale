@@ -601,7 +601,7 @@ func (uc *EssentialUseCase) ListGPURelationsByMachine(ctx context.Context, scope
 		return nil, err
 	}
 
-	nodeGpuMap, err := uc.getNodeGpuMap(ctx, config, machine.Hostname, node)
+	nodeGpuMap, err := uc.getNodeGpuMap(node)
 	if err != nil {
 		return nil, err
 	}
@@ -797,7 +797,7 @@ func (uc *EssentialUseCase) processPod(ctx context.Context, config *rest.Config,
 		return relations, nil
 	}
 
-	nodeGpuMap, err := uc.getNodeGpuMap(ctx, config, pod.Spec.NodeName, node)
+	nodeGpuMap, err := uc.getNodeGpuMap(node)
 	if err != nil {
 		nodeGpuMap = make(map[string]string)
 	}
@@ -1015,7 +1015,7 @@ func (uc *EssentialUseCase) getMachineIDFromNodeName(ctx context.Context, nodeNa
 }
 
 // getNodeGpuMap creates a mapping from GPU UUID to GPU vendor for a specific node
-func (uc *EssentialUseCase) getNodeGpuMap(ctx context.Context, config *rest.Config, nodeName string, node *Node) (map[string]string, error) {
+func (uc *EssentialUseCase) getNodeGpuMap(node *Node) (map[string]string, error) {
 	const (
 		hamiAnnotationKey = "hami.io/node-nvidia-register"
 		gpuUID            = 0
