@@ -178,7 +178,7 @@ func toProtoGPURelationFromMachine(m *core.Machine) *pb.GPURelation {
 func toProtoGPURelationFromGPU(g *core.GPURelationsGPU) *pb.GPURelation {
 	gpu := &pb.GPURelation_GPU{}
 	gpu.SetId(g.ID)
-	gpu.SetIndex(uint32(g.Index))
+	gpu.SetIndex(g.Index)
 	gpu.SetCount(g.Count)
 	gpu.SetCores(g.Cores)
 	gpu.SetMemoryBytes(g.MemoryBytes)

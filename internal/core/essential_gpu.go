@@ -18,7 +18,7 @@ type GPURelations struct {
 
 type GPURelationsGPU struct {
 	ID          string
-	Index       uint
+	Index       uint32
 	Count       int32
 	Cores       int32
 	MemoryBytes int64
@@ -151,7 +151,7 @@ func (uc *EssentialUseCase) buildGPUsFromNodes(nodes []Node, machineMap map[stri
 		for _, nodeDevice := range nodeDevices {
 			gpus = append(gpus, GPURelationsGPU{
 				ID:          nodeDevice.ID,
-				Index:       nodeDevice.Index,
+				Index:       uint32(nodeDevice.Index), //nolint:gosec // uint to uint32
 				Count:       nodeDevice.Count,
 				Cores:       nodeDevice.Devcore,
 				MemoryBytes: int64(nodeDevice.Devmem) * 1024 * 1024, // gigabytes to bytes
@@ -170,17 +170,17 @@ func buildRelationPodsFromPods(pods []Pod) ([]GPURelationsPod, error) {
 	}
 
 	relationsPods := make([]GPURelationsPod, 0, len(pods))
-	for _, pod := range pods {
-		podDevices, err := extractPodDevices(pod, checkList)
+	for i := range pods {
+		podDevices, err := extractPodDevices(&pods[i], checkList)
 		if err != nil {
 			return nil, err
 		}
-		boundAt, _ := unixTimestampStringToTime(pod.Annotations[annotationHAMIBindTime])
+		boundAt, _ := unixTimestampStringToTime(pods[i].Annotations[annotationHAMIBindTime])
 		relationsPods = append(relationsPods, GPURelationsPod{
-			Name:         pod.Name,
-			Namespace:    pod.Namespace,
-			ModelName:    pod.Labels[ApplicationReleaseLLMDModelNameLabel],
-			BindingPhase: pod.Annotations[annotationHAMIBindPhase],
+			Name:         pods[i].Name,
+			Namespace:    pods[i].Namespace,
+			ModelName:    pods[i].Labels[ApplicationReleaseLLMDModelNameLabel],
+			BindingPhase: pods[i].Annotations[annotationHAMIBindPhase],
 			BoundAt:      boundAt,
 			PodDevices:   podDevices,
 		})
@@ -188,7 +188,7 @@ func buildRelationPodsFromPods(pods []Pod) ([]GPURelationsPod, error) {
 	return relationsPods, nil
 }
 
-func extractPodDevices(pod Pod, checkList map[string]string) ([]GPURelationPodDevice, error) {
+func extractPodDevices(pod *Pod, checkList map[string]string) ([]GPURelationPodDevice, error) {
 	podDevices, err := device.DecodePodDevices(checkList, pod.Annotations)
 	if err != nil {
 		return nil, err
