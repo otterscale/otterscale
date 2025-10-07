@@ -29,6 +29,20 @@ func NewCore(kube *Kube) oscore.KubeCoreRepo {
 
 var _ oscore.KubeCoreRepo = (*core)(nil)
 
+func (r *core) ListNodes(ctx context.Context, config *rest.Config) ([]corev1.Node, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.ListOptions{}
+	list, err := clientset.CoreV1().Nodes().List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
 func (r *core) GetNode(ctx context.Context, config *rest.Config, name string) (*oscore.Node, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
@@ -58,7 +72,6 @@ func (r *core) ListNamespaces(ctx context.Context, config *rest.Config) ([]corev
 	if err != nil {
 		return nil, err
 	}
-
 	return list.Items, nil
 }
 

@@ -100,6 +100,7 @@ type KubeBatchRepo interface {
 
 type KubeCoreRepo interface {
 	// Node
+	ListNodes(ctx context.Context, config *rest.Config) ([]Node, error)
 	GetNode(ctx context.Context, config *rest.Config, name string) (*Node, error)
 	UpdateNode(ctx context.Context, config *rest.Config, node *Node) (*Node, error)
 

@@ -151,69 +151,74 @@ func toProtoEssentialUnit(eu *core.EssentialUnit) *pb.Essential_Unit {
 	return ret
 }
 
-func toProtoGPURelations(rs []core.GPURelation) []*pb.GPURelation {
+func toProtoGPURelations(rs *core.GPURelations) []*pb.GPURelation {
 	ret := []*pb.GPURelation{}
-	for i := range rs {
-		ret = append(ret, toProtoGPURelation(&rs[i]))
+	for _, machine := range rs.Machines {
+		ret = append(ret, toProtoGPURelationFromMachine(&machine))
+	}
+	for _, gpu := range rs.GPUs {
+		ret = append(ret, toProtoGPURelationFromGPU(&gpu))
+	}
+	for _, pod := range rs.Pods {
+		ret = append(ret, toProtoGPURelationFromPod(&pod))
 	}
 	return ret
 }
 
-func toProtoGPURelation(r *core.GPURelation) *pb.GPURelation {
+func toProtoGPURelationFromMachine(m *core.Machine) *pb.GPURelation {
+	machine := &pb.GPURelation_Machine{}
+	machine.SetId(m.SystemID)
+	machine.SetHostname(m.Hostname)
+
 	ret := &pb.GPURelation{}
-	switch {
-	case r.Machine != nil:
-		ret.SetMachine(toProtoGPURelationMachine(r))
-	case r.GPU != nil:
-		ret.SetGpu(toProtoGPURelationGPU(r))
-	case r.Pod != nil:
-		ret.SetPod(toProtoGPURelationPod(r))
+	ret.SetMachine(machine)
+	return ret
+}
+
+func toProtoGPURelationFromGPU(g *core.GPURelationsGPU) *pb.GPURelation {
+	gpu := &pb.GPURelation_GPU{}
+	gpu.SetId(g.ID)
+	gpu.SetIndex(uint32(g.Index))
+	gpu.SetCount(g.Count)
+	gpu.SetCores(g.Cores)
+	gpu.SetMemoryBytes(g.MemoryBytes * 1024)
+	gpu.SetType(g.Type)
+	gpu.SetHealth(g.Health)
+	gpu.SetMachineId(g.MachineID)
+
+	ret := &pb.GPURelation{}
+	ret.SetGpu(gpu)
+	return ret
+}
+
+func toProtoGPURelationFromPod(p *core.GPURelationsPod) *pb.GPURelation {
+	pod := &pb.GPURelation_Pod{}
+	pod.SetName(p.Name)
+	pod.SetNamespace(p.Namespace)
+	pod.SetModelName(p.ModelName)
+	pod.SetBindingPhase(p.BindingPhase)
+	if !p.BoundAt.IsZero() {
+		pod.SetBoundAt(timestamppb.New(p.BoundAt))
+	}
+	pod.SetDevices(toProtoGPURelationPodDevices(p.PodDevices))
+
+	ret := &pb.GPURelation{}
+	ret.SetPod(pod)
+	return ret
+}
+
+func toProtoGPURelationPodDevices(pds []core.GPURelationPodDevice) []*pb.GPURelation_Pod_Device {
+	ret := []*pb.GPURelation_Pod_Device{}
+	for i := range pds {
+		ret = append(ret, toProtoGPURelationPodDevice(&pds[i]))
 	}
 	return ret
 }
 
-func toProtoGPURelationMachine(r *core.GPURelation) *pb.GPURelation_Machine {
-	ret := &pb.GPURelation_Machine{}
-	ret.SetId(r.Machine.ID)
-	ret.SetHostname(r.Machine.Hostname)
-	return ret
-}
-
-func toProtoGPURelationGPU(r *core.GPURelation) *pb.GPURelation_GPU {
-	ret := &pb.GPURelation_GPU{}
-	ret.SetId(r.GPU.ID)
-	ret.SetVendor(r.GPU.Vendor)
-	ret.SetProduct(r.GPU.Product)
-	ret.SetMachineId(r.GPU.MachineID)
-	ret.SetVgpus(toProtoGPURelationGPUvGPUs(r.GPU.VGPUs))
-	return ret
-}
-
-func toProtoGPURelationPod(r *core.GPURelation) *pb.GPURelation_Pod {
-	ret := &pb.GPURelation_Pod{}
-	ret.SetName(r.Pod.Name)
-	ret.SetNamespace(r.Pod.Namespace)
-	ret.SetModelName(r.Pod.ModelName)
-	ret.SetGpuIds(r.Pod.GPUIDs)
-	return ret
-}
-
-func toProtoGPURelationGPUvGPUs(rs []core.GPURelationVGPU) []*pb.GPURelation_GPUVGPU {
-	ret := []*pb.GPURelation_GPUVGPU{}
-	for i := range rs {
-		ret = append(ret, toProtoGPURelationGPUvGPU(&rs[i]))
-	}
-	return ret
-}
-
-func toProtoGPURelationGPUvGPU(r *core.GPURelationVGPU) *pb.GPURelation_GPUVGPU {
-	ret := &pb.GPURelation_GPUVGPU{}
-	ret.SetPodName(r.PodName)
-	ret.SetBindingPhase(r.BindingPhase)
-	ret.SetVramBytes(r.VramBytes)
-	ret.SetVcoresPercent(r.VcoresPercent)
-	if !r.BoundAt.IsZero() {
-		ret.SetBoundAt(timestamppb.New(r.BoundAt))
-	}
+func toProtoGPURelationPodDevice(pd *core.GPURelationPodDevice) *pb.GPURelation_Pod_Device {
+	ret := &pb.GPURelation_Pod_Device{}
+	ret.SetGpuId(pd.GPUID)
+	ret.SetUsedCores(pd.UsedCores)
+	ret.SetUsedMemoryBytes(pd.UsedMemoryBytes)
 	return ret
 }

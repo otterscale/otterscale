@@ -2782,15 +2782,17 @@ func (b0 Essential_Unit_builder) Build() *Essential_Unit {
 }
 
 type GPURelation_Pod struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_ModelName   *string                `protobuf:"bytes,3,opt,name=model_name,json=modelName"`
-	xxx_hidden_GpuIds      []string               `protobuf:"bytes,101,rep,name=gpu_ids,json=gpuIds"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Name         *string                    `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Namespace    *string                    `protobuf:"bytes,2,opt,name=namespace"`
+	xxx_hidden_ModelName    *string                    `protobuf:"bytes,3,opt,name=model_name,json=modelName"`
+	xxx_hidden_BindingPhase *string                    `protobuf:"bytes,11,opt,name=binding_phase,json=bindingPhase"`
+	xxx_hidden_BoundAt      *timestamppb.Timestamp     `protobuf:"bytes,12,opt,name=bound_at,json=boundAt"`
+	xxx_hidden_Devices      *[]*GPURelation_Pod_Device `protobuf:"bytes,21,rep,name=devices"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *GPURelation_Pod) Reset() {
@@ -2848,30 +2850,58 @@ func (x *GPURelation_Pod) GetModelName() string {
 	return ""
 }
 
-func (x *GPURelation_Pod) GetGpuIds() []string {
+func (x *GPURelation_Pod) GetBindingPhase() string {
 	if x != nil {
-		return x.xxx_hidden_GpuIds
+		if x.xxx_hidden_BindingPhase != nil {
+			return *x.xxx_hidden_BindingPhase
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *GPURelation_Pod) GetBoundAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.xxx_hidden_BoundAt
+	}
+	return nil
+}
+
+func (x *GPURelation_Pod) GetDevices() []*GPURelation_Pod_Device {
+	if x != nil {
+		if x.xxx_hidden_Devices != nil {
+			return *x.xxx_hidden_Devices
+		}
 	}
 	return nil
 }
 
 func (x *GPURelation_Pod) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
 func (x *GPURelation_Pod) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
 func (x *GPURelation_Pod) SetModelName(v string) {
 	x.xxx_hidden_ModelName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
 }
 
-func (x *GPURelation_Pod) SetGpuIds(v []string) {
-	x.xxx_hidden_GpuIds = v
+func (x *GPURelation_Pod) SetBindingPhase(v string) {
+	x.xxx_hidden_BindingPhase = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+}
+
+func (x *GPURelation_Pod) SetBoundAt(v *timestamppb.Timestamp) {
+	x.xxx_hidden_BoundAt = v
+}
+
+func (x *GPURelation_Pod) SetDevices(v []*GPURelation_Pod_Device) {
+	x.xxx_hidden_Devices = &v
 }
 
 func (x *GPURelation_Pod) HasName() bool {
@@ -2895,6 +2925,20 @@ func (x *GPURelation_Pod) HasModelName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
+func (x *GPURelation_Pod) HasBindingPhase() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *GPURelation_Pod) HasBoundAt() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_BoundAt != nil
+}
+
 func (x *GPURelation_Pod) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
@@ -2910,13 +2954,24 @@ func (x *GPURelation_Pod) ClearModelName() {
 	x.xxx_hidden_ModelName = nil
 }
 
+func (x *GPURelation_Pod) ClearBindingPhase() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_BindingPhase = nil
+}
+
+func (x *GPURelation_Pod) ClearBoundAt() {
+	x.xxx_hidden_BoundAt = nil
+}
+
 type GPURelation_Pod_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
-	ModelName *string
-	GpuIds    []string
+	Name         *string
+	Namespace    *string
+	ModelName    *string
+	BindingPhase *string
+	BoundAt      *timestamppb.Timestamp
+	Devices      []*GPURelation_Pod_Device
 }
 
 func (b0 GPURelation_Pod_builder) Build() *GPURelation_Pod {
@@ -2924,28 +2979,36 @@ func (b0 GPURelation_Pod_builder) Build() *GPURelation_Pod {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.ModelName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
 		x.xxx_hidden_ModelName = b.ModelName
 	}
-	x.xxx_hidden_GpuIds = b.GpuIds
+	if b.BindingPhase != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		x.xxx_hidden_BindingPhase = b.BindingPhase
+	}
+	x.xxx_hidden_BoundAt = b.BoundAt
+	x.xxx_hidden_Devices = &b.Devices
 	return m0
 }
 
 type GPURelation_GPU struct {
-	state                  protoimpl.MessageState  `protogen:"opaque.v1"`
-	xxx_hidden_Id          *string                 `protobuf:"bytes,1,opt,name=id"`
-	xxx_hidden_Vendor      *string                 `protobuf:"bytes,2,opt,name=vendor"`
-	xxx_hidden_Product     *string                 `protobuf:"bytes,3,opt,name=product"`
-	xxx_hidden_Vgpus       *[]*GPURelation_GPUVGPU `protobuf:"bytes,4,rep,name=vgpus"`
-	xxx_hidden_MachineId   *string                 `protobuf:"bytes,101,opt,name=machine_id,json=machineId"`
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
+	xxx_hidden_Index       uint32                 `protobuf:"varint,2,opt,name=index"`
+	xxx_hidden_Count       int32                  `protobuf:"varint,3,opt,name=count"`
+	xxx_hidden_Cores       int32                  `protobuf:"varint,4,opt,name=cores"`
+	xxx_hidden_MemoryBytes int32                  `protobuf:"varint,5,opt,name=memory_bytes,json=memoryBytes"`
+	xxx_hidden_Type        *string                `protobuf:"bytes,6,opt,name=type"`
+	xxx_hidden_Health      bool                   `protobuf:"varint,7,opt,name=health"`
+	xxx_hidden_MachineId   *string                `protobuf:"bytes,101,opt,name=machine_id,json=machineId"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -2987,33 +3050,49 @@ func (x *GPURelation_GPU) GetId() string {
 	return ""
 }
 
-func (x *GPURelation_GPU) GetVendor() string {
+func (x *GPURelation_GPU) GetIndex() uint32 {
 	if x != nil {
-		if x.xxx_hidden_Vendor != nil {
-			return *x.xxx_hidden_Vendor
+		return x.xxx_hidden_Index
+	}
+	return 0
+}
+
+func (x *GPURelation_GPU) GetCount() int32 {
+	if x != nil {
+		return x.xxx_hidden_Count
+	}
+	return 0
+}
+
+func (x *GPURelation_GPU) GetCores() int32 {
+	if x != nil {
+		return x.xxx_hidden_Cores
+	}
+	return 0
+}
+
+func (x *GPURelation_GPU) GetMemoryBytes() int32 {
+	if x != nil {
+		return x.xxx_hidden_MemoryBytes
+	}
+	return 0
+}
+
+func (x *GPURelation_GPU) GetType() string {
+	if x != nil {
+		if x.xxx_hidden_Type != nil {
+			return *x.xxx_hidden_Type
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *GPURelation_GPU) GetProduct() string {
+func (x *GPURelation_GPU) GetHealth() bool {
 	if x != nil {
-		if x.xxx_hidden_Product != nil {
-			return *x.xxx_hidden_Product
-		}
-		return ""
+		return x.xxx_hidden_Health
 	}
-	return ""
-}
-
-func (x *GPURelation_GPU) GetVgpus() []*GPURelation_GPUVGPU {
-	if x != nil {
-		if x.xxx_hidden_Vgpus != nil {
-			return *x.xxx_hidden_Vgpus
-		}
-	}
-	return nil
+	return false
 }
 
 func (x *GPURelation_GPU) GetMachineId() string {
@@ -3028,26 +3107,42 @@ func (x *GPURelation_GPU) GetMachineId() string {
 
 func (x *GPURelation_GPU) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 8)
 }
 
-func (x *GPURelation_GPU) SetVendor(v string) {
-	x.xxx_hidden_Vendor = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+func (x *GPURelation_GPU) SetIndex(v uint32) {
+	x.xxx_hidden_Index = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 8)
 }
 
-func (x *GPURelation_GPU) SetProduct(v string) {
-	x.xxx_hidden_Product = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+func (x *GPURelation_GPU) SetCount(v int32) {
+	x.xxx_hidden_Count = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 8)
 }
 
-func (x *GPURelation_GPU) SetVgpus(v []*GPURelation_GPUVGPU) {
-	x.xxx_hidden_Vgpus = &v
+func (x *GPURelation_GPU) SetCores(v int32) {
+	x.xxx_hidden_Cores = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 8)
+}
+
+func (x *GPURelation_GPU) SetMemoryBytes(v int32) {
+	x.xxx_hidden_MemoryBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 8)
+}
+
+func (x *GPURelation_GPU) SetType(v string) {
+	x.xxx_hidden_Type = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 8)
+}
+
+func (x *GPURelation_GPU) SetHealth(v bool) {
+	x.xxx_hidden_Health = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 8)
 }
 
 func (x *GPURelation_GPU) SetMachineId(v string) {
 	x.xxx_hidden_MachineId = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 8)
 }
 
 func (x *GPURelation_GPU) HasId() bool {
@@ -3057,25 +3152,53 @@ func (x *GPURelation_GPU) HasId() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GPURelation_GPU) HasVendor() bool {
+func (x *GPURelation_GPU) HasIndex() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GPURelation_GPU) HasProduct() bool {
+func (x *GPURelation_GPU) HasCount() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *GPURelation_GPU) HasMachineId() bool {
+func (x *GPURelation_GPU) HasCores() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *GPURelation_GPU) HasMemoryBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *GPURelation_GPU) HasType() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *GPURelation_GPU) HasHealth() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+}
+
+func (x *GPURelation_GPU) HasMachineId() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
 func (x *GPURelation_GPU) ClearId() {
@@ -3083,29 +3206,52 @@ func (x *GPURelation_GPU) ClearId() {
 	x.xxx_hidden_Id = nil
 }
 
-func (x *GPURelation_GPU) ClearVendor() {
+func (x *GPURelation_GPU) ClearIndex() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Vendor = nil
+	x.xxx_hidden_Index = 0
 }
 
-func (x *GPURelation_GPU) ClearProduct() {
+func (x *GPURelation_GPU) ClearCount() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Product = nil
+	x.xxx_hidden_Count = 0
+}
+
+func (x *GPURelation_GPU) ClearCores() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Cores = 0
+}
+
+func (x *GPURelation_GPU) ClearMemoryBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_MemoryBytes = 0
+}
+
+func (x *GPURelation_GPU) ClearType() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_Type = nil
+}
+
+func (x *GPURelation_GPU) ClearHealth() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	x.xxx_hidden_Health = false
 }
 
 func (x *GPURelation_GPU) ClearMachineId() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
 	x.xxx_hidden_MachineId = nil
 }
 
 type GPURelation_GPU_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Id        *string
-	Vendor    *string
-	Product   *string
-	Vgpus     []*GPURelation_GPUVGPU
-	MachineId *string
+	Id          *string
+	Index       *uint32
+	Count       *int32
+	Cores       *int32
+	MemoryBytes *int32
+	Type        *string
+	Health      *bool
+	MachineId   *string
 }
 
 func (b0 GPURelation_GPU_builder) Build() *GPURelation_GPU {
@@ -3113,20 +3259,35 @@ func (b0 GPURelation_GPU_builder) Build() *GPURelation_GPU {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 8)
 		x.xxx_hidden_Id = b.Id
 	}
-	if b.Vendor != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Vendor = b.Vendor
+	if b.Index != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 8)
+		x.xxx_hidden_Index = *b.Index
 	}
-	if b.Product != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Product = b.Product
+	if b.Count != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
+		x.xxx_hidden_Count = *b.Count
 	}
-	x.xxx_hidden_Vgpus = &b.Vgpus
+	if b.Cores != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 8)
+		x.xxx_hidden_Cores = *b.Cores
+	}
+	if b.MemoryBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 8)
+		x.xxx_hidden_MemoryBytes = *b.MemoryBytes
+	}
+	if b.Type != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 8)
+		x.xxx_hidden_Type = b.Type
+	}
+	if b.Health != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 8)
+		x.xxx_hidden_Health = *b.Health
+	}
 	if b.MachineId != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 8)
 		x.xxx_hidden_MachineId = b.MachineId
 	}
 	return m0
@@ -3243,33 +3404,31 @@ func (b0 GPURelation_Machine_builder) Build() *GPURelation_Machine {
 	return m0
 }
 
-type GPURelation_GPUVGPU struct {
-	state                    protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_PodName       *string                `protobuf:"bytes,1,opt,name=pod_name,json=podName"`
-	xxx_hidden_BindingPhase  *string                `protobuf:"bytes,2,opt,name=binding_phase,json=bindingPhase"`
-	xxx_hidden_VramBytes     uint64                 `protobuf:"varint,3,opt,name=vram_bytes,json=vramBytes"`
-	xxx_hidden_VcoresPercent float32                `protobuf:"fixed32,4,opt,name=vcores_percent,json=vcoresPercent"`
-	xxx_hidden_BoundAt       *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=bound_at,json=boundAt"`
-	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
-	XXX_presence             [1]uint32
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+type GPURelation_Pod_Device struct {
+	state                      protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_GpuId           *string                `protobuf:"bytes,1,opt,name=gpu_id,json=gpuId"`
+	xxx_hidden_UsedCores       int32                  `protobuf:"varint,2,opt,name=used_cores,json=usedCores"`
+	xxx_hidden_UsedMemoryBytes int32                  `protobuf:"varint,3,opt,name=used_memory_bytes,json=usedMemoryBytes"`
+	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
+	XXX_presence               [1]uint32
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *GPURelation_GPUVGPU) Reset() {
-	*x = GPURelation_GPUVGPU{}
+func (x *GPURelation_Pod_Device) Reset() {
+	*x = GPURelation_Pod_Device{}
 	mi := &file_api_essential_v1_essential_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GPURelation_GPUVGPU) String() string {
+func (x *GPURelation_Pod_Device) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GPURelation_GPUVGPU) ProtoMessage() {}
+func (*GPURelation_Pod_Device) ProtoMessage() {}
 
-func (x *GPURelation_GPUVGPU) ProtoReflect() protoreflect.Message {
+func (x *GPURelation_Pod_Device) ProtoReflect() protoreflect.Message {
 	mi := &file_api_essential_v1_essential_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3281,161 +3440,105 @@ func (x *GPURelation_GPUVGPU) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *GPURelation_GPUVGPU) GetPodName() string {
+func (x *GPURelation_Pod_Device) GetGpuId() string {
 	if x != nil {
-		if x.xxx_hidden_PodName != nil {
-			return *x.xxx_hidden_PodName
+		if x.xxx_hidden_GpuId != nil {
+			return *x.xxx_hidden_GpuId
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *GPURelation_GPUVGPU) GetBindingPhase() string {
+func (x *GPURelation_Pod_Device) GetUsedCores() int32 {
 	if x != nil {
-		if x.xxx_hidden_BindingPhase != nil {
-			return *x.xxx_hidden_BindingPhase
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *GPURelation_GPUVGPU) GetVramBytes() uint64 {
-	if x != nil {
-		return x.xxx_hidden_VramBytes
+		return x.xxx_hidden_UsedCores
 	}
 	return 0
 }
 
-func (x *GPURelation_GPUVGPU) GetVcoresPercent() float32 {
+func (x *GPURelation_Pod_Device) GetUsedMemoryBytes() int32 {
 	if x != nil {
-		return x.xxx_hidden_VcoresPercent
+		return x.xxx_hidden_UsedMemoryBytes
 	}
 	return 0
 }
 
-func (x *GPURelation_GPUVGPU) GetBoundAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.xxx_hidden_BoundAt
-	}
-	return nil
+func (x *GPURelation_Pod_Device) SetGpuId(v string) {
+	x.xxx_hidden_GpuId = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *GPURelation_GPUVGPU) SetPodName(v string) {
-	x.xxx_hidden_PodName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+func (x *GPURelation_Pod_Device) SetUsedCores(v int32) {
+	x.xxx_hidden_UsedCores = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *GPURelation_GPUVGPU) SetBindingPhase(v string) {
-	x.xxx_hidden_BindingPhase = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+func (x *GPURelation_Pod_Device) SetUsedMemoryBytes(v int32) {
+	x.xxx_hidden_UsedMemoryBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *GPURelation_GPUVGPU) SetVramBytes(v uint64) {
-	x.xxx_hidden_VramBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
-}
-
-func (x *GPURelation_GPUVGPU) SetVcoresPercent(v float32) {
-	x.xxx_hidden_VcoresPercent = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
-}
-
-func (x *GPURelation_GPUVGPU) SetBoundAt(v *timestamppb.Timestamp) {
-	x.xxx_hidden_BoundAt = v
-}
-
-func (x *GPURelation_GPUVGPU) HasPodName() bool {
+func (x *GPURelation_Pod_Device) HasGpuId() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GPURelation_GPUVGPU) HasBindingPhase() bool {
+func (x *GPURelation_Pod_Device) HasUsedCores() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GPURelation_GPUVGPU) HasVramBytes() bool {
+func (x *GPURelation_Pod_Device) HasUsedMemoryBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *GPURelation_GPUVGPU) HasVcoresPercent() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *GPURelation_GPUVGPU) HasBoundAt() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_BoundAt != nil
-}
-
-func (x *GPURelation_GPUVGPU) ClearPodName() {
+func (x *GPURelation_Pod_Device) ClearGpuId() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_PodName = nil
+	x.xxx_hidden_GpuId = nil
 }
 
-func (x *GPURelation_GPUVGPU) ClearBindingPhase() {
+func (x *GPURelation_Pod_Device) ClearUsedCores() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_BindingPhase = nil
+	x.xxx_hidden_UsedCores = 0
 }
 
-func (x *GPURelation_GPUVGPU) ClearVramBytes() {
+func (x *GPURelation_Pod_Device) ClearUsedMemoryBytes() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_VramBytes = 0
+	x.xxx_hidden_UsedMemoryBytes = 0
 }
 
-func (x *GPURelation_GPUVGPU) ClearVcoresPercent() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_VcoresPercent = 0
-}
-
-func (x *GPURelation_GPUVGPU) ClearBoundAt() {
-	x.xxx_hidden_BoundAt = nil
-}
-
-type GPURelation_GPUVGPU_builder struct {
+type GPURelation_Pod_Device_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	PodName       *string
-	BindingPhase  *string
-	VramBytes     *uint64
-	VcoresPercent *float32
-	BoundAt       *timestamppb.Timestamp
+	GpuId           *string
+	UsedCores       *int32
+	UsedMemoryBytes *int32
 }
 
-func (b0 GPURelation_GPUVGPU_builder) Build() *GPURelation_GPUVGPU {
-	m0 := &GPURelation_GPUVGPU{}
+func (b0 GPURelation_Pod_Device_builder) Build() *GPURelation_Pod_Device {
+	m0 := &GPURelation_Pod_Device{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.PodName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
-		x.xxx_hidden_PodName = b.PodName
+	if b.GpuId != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_GpuId = b.GpuId
 	}
-	if b.BindingPhase != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_BindingPhase = b.BindingPhase
+	if b.UsedCores != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_UsedCores = *b.UsedCores
 	}
-	if b.VramBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_VramBytes = *b.VramBytes
+	if b.UsedMemoryBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_UsedMemoryBytes = *b.UsedMemoryBytes
 	}
-	if b.VcoresPercent != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
-		x.xxx_hidden_VcoresPercent = *b.VcoresPercent
-	}
-	x.xxx_hidden_BoundAt = b.BoundAt
 	return m0
 }
 
@@ -3470,31 +3573,34 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\n" +
 	"\x06MEDIUM\x10\x02\x12\b\n" +
 	"\x04HIGH\x10\x03\x12\f\n" +
-	"\bCRITICAL\x10\x04\"\xf9\x05\n" +
+	"\bCRITICAL\x10\x04\"\xc8\x06\n" +
 	"\vGPURelation\x12<\n" +
 	"\x03pod\x18\x01 \x01(\v2(.otterscale.essential.v1.GPURelation.PodH\x00R\x03pod\x12<\n" +
 	"\x03gpu\x18\x02 \x01(\v2(.otterscale.essential.v1.GPURelation.GPUH\x00R\x03gpu\x12H\n" +
-	"\amachine\x18\x03 \x01(\v2,.otterscale.essential.v1.GPURelation.MachineH\x00R\amachine\x1ao\n" +
+	"\amachine\x18\x03 \x01(\v2,.otterscale.essential.v1.GPURelation.MachineH\x00R\amachine\x1a\xe9\x02\n" +
 	"\x03Pod\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1d\n" +
 	"\n" +
-	"model_name\x18\x03 \x01(\tR\tmodelName\x12\x17\n" +
-	"\agpu_ids\x18e \x03(\tR\x06gpuIds\x1a\xf1\x02\n" +
+	"model_name\x18\x03 \x01(\tR\tmodelName\x12#\n" +
+	"\rbinding_phase\x18\v \x01(\tR\fbindingPhase\x125\n" +
+	"\bbound_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\aboundAt\x12I\n" +
+	"\adevices\x18\x15 \x03(\v2/.otterscale.essential.v1.GPURelation.Pod.DeviceR\adevices\x1aj\n" +
+	"\x06Device\x12\x15\n" +
+	"\x06gpu_id\x18\x01 \x01(\tR\x05gpuId\x12\x1d\n" +
+	"\n" +
+	"used_cores\x18\x02 \x01(\x05R\tusedCores\x12*\n" +
+	"\x11used_memory_bytes\x18\x03 \x01(\x05R\x0fusedMemoryBytes\x1a\xc5\x01\n" +
 	"\x03GPU\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
-	"\x06vendor\x18\x02 \x01(\tR\x06vendor\x12\x18\n" +
-	"\aproduct\x18\x03 \x01(\tR\aproduct\x12C\n" +
-	"\x05vgpus\x18\x04 \x03(\v2-.otterscale.essential.v1.GPURelation.GPU.vGPUR\x05vgpus\x12\x1d\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x05index\x18\x02 \x01(\rR\x05index\x12\x14\n" +
+	"\x05count\x18\x03 \x01(\x05R\x05count\x12\x14\n" +
+	"\x05cores\x18\x04 \x01(\x05R\x05cores\x12!\n" +
+	"\fmemory_bytes\x18\x05 \x01(\x05R\vmemoryBytes\x12\x12\n" +
+	"\x04type\x18\x06 \x01(\tR\x04type\x12\x16\n" +
+	"\x06health\x18\a \x01(\bR\x06health\x12\x1d\n" +
 	"\n" +
-	"machine_id\x18e \x01(\tR\tmachineId\x1a\xc3\x01\n" +
-	"\x04vGPU\x12\x19\n" +
-	"\bpod_name\x18\x01 \x01(\tR\apodName\x12#\n" +
-	"\rbinding_phase\x18\x02 \x01(\tR\fbindingPhase\x12\x1d\n" +
-	"\n" +
-	"vram_bytes\x18\x03 \x01(\x04R\tvramBytes\x12%\n" +
-	"\x0evcores_percent\x18\x04 \x01(\x02R\rvcoresPercent\x125\n" +
-	"\bbound_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\aboundAt\x1a5\n" +
+	"machine_id\x18e \x01(\tR\tmachineId\x1a5\n" +
 	"\aMachine\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1a\n" +
 	"\bhostname\x18\x02 \x01(\tR\bhostnameB\b\n" +
@@ -3636,7 +3742,7 @@ var file_api_essential_v1_essential_proto_goTypes = []any{
 	(*GPURelation_Pod)(nil),                      // 23: otterscale.essential.v1.GPURelation.Pod
 	(*GPURelation_GPU)(nil),                      // 24: otterscale.essential.v1.GPURelation.GPU
 	(*GPURelation_Machine)(nil),                  // 25: otterscale.essential.v1.GPURelation.Machine
-	(*GPURelation_GPUVGPU)(nil),                  // 26: otterscale.essential.v1.GPURelation.GPU.vGPU
+	(*GPURelation_Pod_Device)(nil),               // 26: otterscale.essential.v1.GPURelation.Pod.Device
 	nil,                                          // 27: otterscale.essential.v1.ListKubernetesNodeLabelsResponse.LabelsEntry
 	nil,                                          // 28: otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry
 	nil,                                          // 29: otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry
@@ -3659,8 +3765,8 @@ var file_api_essential_v1_essential_proto_depIdxs = []int32{
 	29, // 12: otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse.labels:type_name -> otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry
 	4,  // 13: otterscale.essential.v1.ListGPURelationsByMachineResponse.gpu_relations:type_name -> otterscale.essential.v1.GPURelation
 	4,  // 14: otterscale.essential.v1.ListGPURelationsByModelResponse.gpu_relations:type_name -> otterscale.essential.v1.GPURelation
-	26, // 15: otterscale.essential.v1.GPURelation.GPU.vgpus:type_name -> otterscale.essential.v1.GPURelation.GPU.vGPU
-	30, // 16: otterscale.essential.v1.GPURelation.GPU.vGPU.bound_at:type_name -> google.protobuf.Timestamp
+	30, // 15: otterscale.essential.v1.GPURelation.Pod.bound_at:type_name -> google.protobuf.Timestamp
+	26, // 16: otterscale.essential.v1.GPURelation.Pod.devices:type_name -> otterscale.essential.v1.GPURelation.Pod.Device
 	5,  // 17: otterscale.essential.v1.EssentialService.IsMachineDeployed:input_type -> otterscale.essential.v1.IsMachineDeployedRequest
 	7,  // 18: otterscale.essential.v1.EssentialService.ListStatuses:input_type -> otterscale.essential.v1.ListStatusesRequest
 	9,  // 19: otterscale.essential.v1.EssentialService.ListEssentials:input_type -> otterscale.essential.v1.ListEssentialsRequest

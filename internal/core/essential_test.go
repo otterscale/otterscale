@@ -3,36 +3,23 @@ package core
 import (
 	"context"
 	"errors"
-	"io"
 	"testing"
 	"time"
 
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/canonical/gomaasclient/entity/node"
 	apibase "github.com/juju/juju/api/base"
-	"github.com/juju/juju/api/client/action"
 	"github.com/juju/juju/api/client/application"
 	"github.com/juju/juju/core/base"
+
 	"github.com/juju/juju/core/constraints"
 	"github.com/juju/juju/core/crossmodel"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/core/status"
 	"github.com/juju/juju/rpc/params"
 	"github.com/stretchr/testify/assert"
-	appsv1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/remotecommand"
 
 	"github.com/otterscale/otterscale/internal/config"
-)
-
-// Test constants for GPU tests
-const (
-	testVGPUCoresPercent = 50.0  // vGPU cores usage percentage
-	testVGPUMemoryMB     = 8192  // vGPU memory in MB
-	testGPUMemoryMB      = 16384 // Physical GPU memory in MB
 )
 
 // Mock MachineRepo
@@ -181,47 +168,15 @@ func (m *essMockFacilityRepo) Update(ctx context.Context, uuid, name, value stri
 	return nil
 }
 
-// Mock ActionRepo
-type essMockActionRepo struct{}
+// Mock ServerRepo
+type essMockServerRepo struct{}
 
-func (m *essMockActionRepo) List(ctx context.Context, uuid, appName string) (map[string]ActionSpec, error) {
-	return map[string]ActionSpec{}, nil
+func (m *essMockServerRepo) Get(ctx context.Context, name string) (string, error) {
+	return "focal", nil
 }
 
-func (m *essMockActionRepo) RunCommand(ctx context.Context, uuid, unitName, command string) (string, error) {
-	return "", nil
-}
-
-func (m *essMockActionRepo) RunAction(ctx context.Context, uuid, unitName, actionName string, parameters map[string]any) (string, error) {
-	return "", nil
-}
-
-func (m *essMockActionRepo) GetResult(ctx context.Context, uuid, id string) (*action.ActionResult, error) {
-	return &action.ActionResult{
-		Status: "completed",
-		Output: map[string]interface{}{
-			"kubeconfig": `
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: dGVzdA==
-    server: https://1.2.3.4:6443
-  name: test
-contexts:
-- context:
-    cluster: test
-    user: test
-  name: test
-current-context: test
-kind: Config
-users:
-- name: test
-  user:
-    client-certificate-data: dGVzdA==
-    client-key-data: dGVzdA==
-`,
-		},
-	}, nil
+func (m *essMockServerRepo) Update(ctx context.Context, name, value string) error {
+	return nil
 }
 
 type (
@@ -258,7 +213,7 @@ func TestEssentialUseCase_IsMachineDeployed(t *testing.T) {
 			LastCommissioned: time.Now(),
 		},
 	}
-	uc := NewEssentialUseCase(nil, &simpleMockKubeCoreRepo{}, &simpleMockKubeAppsRepo{}, &simpleMockActionRepo{}, nil, nil, nil, &essMockMachineRepo{machines: machines}, &simpleMockSubnetRepo{}, &simpleMockIPRangeRepo{}, nil, nil, &simpleMockTagRepo{})
+	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, &essMockMachineRepo{machines: machines}, nil, nil, nil, nil, nil)
 	msg, ok, err := uc.IsMachineDeployed(context.Background(), "uuid1")
 	assert.NoError(t, err)
 	assert.True(t, ok)
@@ -288,7 +243,7 @@ func TestEssentialUseCase_ListStatuses(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, &simpleMockKubeCoreRepo{}, &simpleMockKubeAppsRepo{}, &simpleMockActionRepo{}, nil, nil, nil, nil, &simpleMockSubnetRepo{}, &simpleMockIPRangeRepo{}, nil, client, &simpleMockTagRepo{})
+	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, client, nil)
 	statuses, err := uc.ListStatuses(context.Background(), "uuid")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, statuses)
@@ -313,7 +268,7 @@ func TestEssentialUseCase_ListEssentials(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, &simpleMockKubeCoreRepo{}, &simpleMockKubeAppsRepo{}, &simpleMockActionRepo{}, scope, nil, nil, nil, &simpleMockSubnetRepo{}, &simpleMockIPRangeRepo{}, nil, client, &simpleMockTagRepo{})
+	uc := NewEssentialUseCase(nil, nil, nil, nil, scope, nil, nil, nil, nil, nil, nil, client, nil)
 	essentials, err := uc.ListEssentials(context.Background(), 1, "uuid")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, essentials)
@@ -349,7 +304,7 @@ func TestEssentialUseCase_CreateSingleNode(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(&conf.Config, &simpleMockKubeCoreRepo{}, &simpleMockKubeAppsRepo{}, &simpleMockActionRepo{}, scopeRepo, facilityRepo, facilityOffersRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo, &simpleMockTagRepo{})
+	uc := NewEssentialUseCase(&conf.Config, nil, nil, nil, scopeRepo, facilityRepo, facilityOffersRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo, nil)
 	err := uc.CreateSingleNode(context.Background(), "uuid", "id1", "prefix", []string{"10.0.0.2"}, "198.19.0.0/16", []string{"/dev/sda"})
 	assert.Error(t, err) // because CreateCeph, CreateKubernetes, CreateCommon are not implemented
 }
@@ -371,7 +326,7 @@ func TestEssentialUseCase_getMachineStatusMessage(t *testing.T) {
 			LastCommissioned: time.Now(),
 		},
 	}
-	uc := NewEssentialUseCase(nil, &simpleMockKubeCoreRepo{}, &simpleMockKubeAppsRepo{}, &simpleMockActionRepo{}, nil, nil, nil, nil, &simpleMockSubnetRepo{}, &simpleMockIPRangeRepo{}, nil, nil, &simpleMockTagRepo{})
+	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 	msg := uc.getMachineStatusMessage(machines)
 	assert.Contains(t, msg, "testing")
 }
@@ -399,7 +354,7 @@ func TestEssentialUseCase_validateMachineStatus(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, &simpleMockKubeCoreRepo{}, &simpleMockKubeAppsRepo{}, &simpleMockActionRepo{}, nil, nil, nil, machineRepo, &simpleMockSubnetRepo{}, &simpleMockIPRangeRepo{}, nil, clientRepo, &simpleMockTagRepo{})
+	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, machineRepo, nil, nil, nil, clientRepo, nil)
 	err := uc.validateMachineStatus(context.Background(), "uuid", "id1")
 	assert.NoError(t, err)
 }
@@ -554,555 +509,4 @@ func Test_getDirective(t *testing.T) {
 	directive, err := getDirective(context.Background(), machineRepo, "1")
 	assert.NoError(t, err)
 	assert.Equal(t, "1", directive)
-}
-
-// Simple mocks for GPU testing
-
-type simpleMockMachineRepo struct {
-	machines []Machine
-}
-
-func (m *simpleMockMachineRepo) List(ctx context.Context) ([]Machine, error) {
-	return m.machines, nil
-}
-
-func (m *simpleMockMachineRepo) Get(ctx context.Context, id string) (*Machine, error) {
-	for _, machine := range m.machines {
-		if machine.SystemID == id {
-			return &machine, nil
-		}
-	}
-	return nil, errors.New("machine not found")
-}
-
-func (m *simpleMockMachineRepo) Commission(ctx context.Context, id string, params *entity.MachineCommissionParams) (*Machine, error) {
-	return nil, nil
-}
-
-func (m *simpleMockMachineRepo) PowerOff(ctx context.Context, id string, params *entity.MachinePowerOffParams) (*Machine, error) {
-	return nil, nil
-}
-
-func (m *simpleMockMachineRepo) Release(ctx context.Context, id string, params *entity.MachineReleaseParams) (*Machine, error) {
-	return nil, nil
-}
-
-type simpleMockKubeCoreRepo struct {
-	nodes map[string]*Node
-	pods  []Pod
-}
-
-func (m *simpleMockKubeCoreRepo) GetNode(ctx context.Context, config *rest.Config, name string) (*Node, error) {
-	if node, exists := m.nodes[name]; exists {
-		return node, nil
-	}
-	return nil, errors.New("node not found")
-}
-
-func (m *simpleMockKubeCoreRepo) ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error) {
-	return m.pods, nil
-}
-
-func (m *simpleMockKubeCoreRepo) ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error) {
-	return m.pods, nil
-}
-
-// Minimal implementations for required interface methods
-func (m *simpleMockKubeCoreRepo) UpdateNode(ctx context.Context, config *rest.Config, node *Node) (*Node, error) {
-	return node, nil
-}
-func (m *simpleMockKubeCoreRepo) ListNamespaces(ctx context.Context, config *rest.Config) ([]Namespace, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) ListServicesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]Service, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) ListVirtualMachineServices(ctx context.Context, config *rest.Config, namespace, vmName string) ([]Service, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) GetService(ctx context.Context, config *rest.Config, namespace, name string) (*Service, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) CreateVirtualMachineService(ctx context.Context, config *rest.Config, namespace, name, vmName string, ports []corev1.ServicePort) (*Service, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) UpdateService(ctx context.Context, config *rest.Config, namespace string, service *Service) (*Service, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) DeleteService(ctx context.Context, config *rest.Config, namespace, name string) error {
-	return nil
-}
-func (m *simpleMockKubeCoreRepo) GetLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error) {
-	return "", nil
-}
-func (m *simpleMockKubeCoreRepo) DeletePod(ctx context.Context, config *rest.Config, namespace, name string) error {
-	return nil
-}
-func (m *simpleMockKubeCoreRepo) StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) CreateExecutor(config *rest.Config, namespace, podName, containerName string, command []string) (remotecommand.Executor, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) GetPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) (*PersistentVolumeClaim, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) PatchPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, data []byte) (*PersistentVolumeClaim, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) GetNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) CreateNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) GetConfigMap(ctx context.Context, config *rest.Config, namespace, name string) (*ConfigMap, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) CreateConfigMap(ctx context.Context, config *rest.Config, namespace, name string, data map[string]string) (*ConfigMap, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeCoreRepo) GetSecret(ctx context.Context, config *rest.Config, namespace, name string) (*Secret, error) {
-	return nil, nil
-}
-
-type simpleMockKubeAppsRepo struct {
-	deployments []Deployment
-}
-
-func (m *simpleMockKubeAppsRepo) ListDeploymentsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Deployment, error) {
-	return m.deployments, nil
-}
-
-func (m *simpleMockKubeAppsRepo) GetDeployment(ctx context.Context, config *rest.Config, namespace, name string) (*Deployment, error) {
-	for _, deployment := range m.deployments {
-		if deployment.Name == name && deployment.Namespace == namespace {
-			return &deployment, nil
-		}
-	}
-	return nil, errors.New("deployment not found")
-}
-
-// Minimal implementations for required interface methods
-func (m *simpleMockKubeAppsRepo) ListDeployments(ctx context.Context, config *rest.Config, namespace string) ([]Deployment, error) {
-	return m.deployments, nil
-}
-func (m *simpleMockKubeAppsRepo) UpdateDeployment(ctx context.Context, config *rest.Config, namespace string, deployment *Deployment) (*Deployment, error) {
-	return deployment, nil
-}
-func (m *simpleMockKubeAppsRepo) ListStatefulSets(ctx context.Context, config *rest.Config, namespace string) ([]StatefulSet, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeAppsRepo) GetStatefulSet(ctx context.Context, config *rest.Config, namespace, name string) (*StatefulSet, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeAppsRepo) UpdateStatefulSet(ctx context.Context, config *rest.Config, namespace string, statefulSet *StatefulSet) (*StatefulSet, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeAppsRepo) ListDaemonSets(ctx context.Context, config *rest.Config, namespace string) ([]DaemonSet, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeAppsRepo) GetDaemonSet(ctx context.Context, config *rest.Config, namespace, name string) (*DaemonSet, error) {
-	return nil, nil
-}
-func (m *simpleMockKubeAppsRepo) UpdateDaemonSet(ctx context.Context, config *rest.Config, namespace string, daemonSet *DaemonSet) (*DaemonSet, error) {
-	return nil, nil
-}
-
-type simpleMockFacilityRepo struct{}
-
-func (m *simpleMockFacilityRepo) GetLeader(ctx context.Context, uuid, name string) (string, error) {
-	return "test-leader", nil
-}
-
-// Minimal implementations for required interface methods
-func (m *simpleMockFacilityRepo) GetConfig(ctx context.Context, uuid, name string) (map[string]interface{}, error) {
-	return nil, nil
-}
-func (m *simpleMockFacilityRepo) GetUnitInfo(ctx context.Context, uuid, name string) (*application.UnitInfo, error) {
-	return nil, nil
-}
-func (m *simpleMockFacilityRepo) AddUnits(ctx context.Context, uuid, app string, units int, placements []instance.Placement) ([]string, error) {
-	return nil, nil
-}
-func (m *simpleMockFacilityRepo) Consume(ctx context.Context, uuid string, args *crossmodel.ConsumeApplicationArgs) error {
-	return nil
-}
-func (m *simpleMockFacilityRepo) Create(ctx context.Context, uuid, name, app, channel, series string, units, minUnits int, base *base.Base, placements []instance.Placement, constraints *constraints.Value, trusted bool) (*application.DeployInfo, error) {
-	return nil, nil
-}
-func (m *simpleMockFacilityRepo) CreateRelation(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error) {
-	return nil, nil
-}
-func (m *simpleMockFacilityRepo) Delete(ctx context.Context, uuid, name string, force, destroyStorage bool) error {
-	return nil
-}
-func (m *simpleMockFacilityRepo) DeleteRelation(ctx context.Context, uuid string, relationID int) error {
-	return nil
-}
-func (m *simpleMockFacilityRepo) Expose(ctx context.Context, uuid, app string, endpoints map[string]params.ExposedEndpoint) error {
-	return nil
-}
-func (m *simpleMockFacilityRepo) ResolveUnitErrors(ctx context.Context, uuid string, units []string) error {
-	return nil
-}
-func (m *simpleMockFacilityRepo) Update(ctx context.Context, uuid, name, value string) error {
-	return nil
-}
-
-type simpleMockActionRepo struct{}
-
-func (m *simpleMockActionRepo) List(ctx context.Context, uuid, appName string) (map[string]ActionSpec, error) {
-	return nil, nil
-}
-func (m *simpleMockActionRepo) RunCommand(ctx context.Context, uuid, unitName, command string) (string, error) {
-	return "", nil
-}
-func (m *simpleMockActionRepo) RunAction(ctx context.Context, uuid, unitName, actionName string, parameters map[string]any) (string, error) {
-	return "", nil
-}
-func (m *simpleMockActionRepo) GetResult(ctx context.Context, uuid, id string) (*action.ActionResult, error) {
-	return &action.ActionResult{
-		Status: "completed",
-		Output: map[string]interface{}{
-			"kubeconfig": `
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: dGVzdA==
-    server: https://1.2.3.4:6443
-  name: test
-contexts:
-- context:
-    cluster: test
-    user: test
-  name: test
-current-context: test
-kind: Config
-users:
-- name: test
-  user:
-    client-certificate-data: dGVzdA==
-    client-key-data: dGVzdA==
-`,
-		},
-	}, nil
-}
-
-type simpleMockSubnetRepo struct{}
-
-func (m *simpleMockSubnetRepo) List(ctx context.Context) ([]Subnet, error)       { return nil, nil }
-func (m *simpleMockSubnetRepo) Get(ctx context.Context, id int) (*Subnet, error) { return nil, nil }
-func (m *simpleMockSubnetRepo) Create(ctx context.Context, params *entity.SubnetParams) (*Subnet, error) {
-	return nil, nil
-}
-func (m *simpleMockSubnetRepo) Update(ctx context.Context, id int, params *entity.SubnetParams) (*Subnet, error) {
-	return nil, nil
-}
-func (m *simpleMockSubnetRepo) Delete(ctx context.Context, id int) error { return nil }
-func (m *simpleMockSubnetRepo) GetIPAddresses(ctx context.Context, id int) ([]IPAddress, error) {
-	return nil, nil
-}
-func (m *simpleMockSubnetRepo) GetStatistics(ctx context.Context, id int) (*NetworkStatistics, error) {
-	return nil, nil
-}
-
-type simpleMockIPRangeRepo struct{}
-
-func (m *simpleMockIPRangeRepo) List(ctx context.Context) ([]IPRange, error)       { return nil, nil }
-func (m *simpleMockIPRangeRepo) Get(ctx context.Context, id int) (*IPRange, error) { return nil, nil }
-func (m *simpleMockIPRangeRepo) Create(ctx context.Context, params *entity.IPRangeParams) (*IPRange, error) {
-	return nil, nil
-}
-func (m *simpleMockIPRangeRepo) Update(ctx context.Context, id int, params *entity.IPRangeParams) (*IPRange, error) {
-	return nil, nil
-}
-func (m *simpleMockIPRangeRepo) Delete(ctx context.Context, id int) error { return nil }
-
-type simpleMockTagRepo struct{}
-
-func (m *simpleMockTagRepo) List(ctx context.Context) ([]Tag, error)            { return nil, nil }
-func (m *simpleMockTagRepo) Get(ctx context.Context, name string) (*Tag, error) { return nil, nil }
-func (m *simpleMockTagRepo) Create(ctx context.Context, name, comment string) (*Tag, error) {
-	return nil, nil
-}
-func (m *simpleMockTagRepo) Delete(ctx context.Context, name string) error { return nil }
-func (m *simpleMockTagRepo) AddMachines(ctx context.Context, name string, machineIDs []string) error {
-	return nil
-}
-func (m *simpleMockTagRepo) RemoveMachines(ctx context.Context, name string, machineIDs []string) error {
-	return nil
-}
-
-type essMockServerRepo struct{}
-
-func (m *essMockServerRepo) Get(ctx context.Context, name string) (string, error) {
-	return "focal", nil
-}
-
-func (m *essMockServerRepo) Update(ctx context.Context, name, value string) error {
-	return nil
-}
-
-// Test for ListGPURelationsByMachine
-func TestEssentialUseCase_ListGPURelationsByMachine(t *testing.T) {
-	// Setup test data
-	machineID := "test-machine-id"
-	hostname := "test-node"
-
-	// Mock machine with hostname
-	machines := []Machine{
-		{
-			Machine: &entity.Machine{
-				SystemID: machineID,
-				Hostname: hostname,
-				Status:   node.StatusDeployed,
-			},
-		},
-	}
-
-	// Mock node with GPU annotations
-	nodes := map[string]*Node{
-		hostname: {
-			ObjectMeta: metav1.ObjectMeta{
-				Name: hostname,
-				Annotations: map[string]string{
-					"hami.io/node-nvidia-register": "GPU-663aa370-535a-33b8-e01f-b325fb2025c7,10,24564,100,NVIDIA-NVIDIA GeForce RTX 4090,0,true,0,hami-core:GPU-c15ecdf3-444a-2d02-29e9-e978b2514335,10,24564,100,NVIDIA-NVIDIA GeForce RTX 3080,0,true,0,hami-core:",
-				},
-			},
-		},
-	}
-
-	// Mock pods with vGPU annotations
-	pods := []Pod{
-		{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      "test-pod",
-				Namespace: "default",
-				Annotations: map[string]string{
-					"hami.io/vgpu-devices-allocated": "GPU-663aa370-535a-33b8-e01f-b325fb2025c7,NVIDIA,4096,50:",
-					"hami.io/bind-time":              "1609459200",
-					"hami.io/bind-phase":             "Bound",
-				},
-				Labels: map[string]string{
-					"model-name": "test-model",
-				},
-			},
-			Spec: corev1.PodSpec{
-				NodeName: hostname,
-			},
-		},
-	}
-
-	// Create mocks
-	machineRepo := &simpleMockMachineRepo{machines: machines}
-	kubeCoreRepo := &simpleMockKubeCoreRepo{nodes: nodes, pods: pods}
-	kubeAppsRepo := &simpleMockKubeAppsRepo{}
-	facilityRepo := &simpleMockFacilityRepo{}
-	actionRepo := &simpleMockActionRepo{}
-
-	// Create use case
-	uc := NewEssentialUseCase(
-		&config.Config{}, // conf
-		kubeCoreRepo,     // kubeCore
-		kubeAppsRepo,     // kubeApps
-		actionRepo,       // action
-		nil,              // scope
-		facilityRepo,     // facility
-		nil,              // facilityOffers
-		machineRepo,      // machine
-		nil,              // subnet
-		nil,              // ipRange
-		nil,              // server
-		nil,              // client
-		nil,              // tag
-	)
-
-	// Test
-	relations, err := uc.ListGPURelationsByMachine(context.Background(), "test-scope", "test-facility", machineID)
-
-	// Assertions
-	assert.NoError(t, err)
-	assert.NotEmpty(t, relations)
-
-	// Check machine relation
-	machineFound := false
-	gpuFound := false
-	podFound := false
-	vgpuFound := false
-
-	for _, relation := range relations {
-		switch {
-		case relation.Machine != nil:
-			machineFound = true
-			assert.Equal(t, machineID, relation.Machine.ID)
-			assert.Equal(t, hostname, relation.Machine.Hostname)
-		case relation.GPU != nil:
-			gpuFound = true
-			gpu := relation.GPU
-			assert.Equal(t, machineID, gpu.MachineID)
-			assert.Equal(t, "NVIDIA", gpu.Vendor)
-
-			// Check vGPUs embedded in GPU
-			if len(gpu.VGPUs) > 0 {
-				vgpuFound = true
-				vgpu := gpu.VGPUs[0]
-				assert.Equal(t, "test-pod", vgpu.PodName)
-				assert.Equal(t, float32(testVGPUCoresPercent), vgpu.VcoresPercent)
-			}
-		case relation.Pod != nil:
-			podFound = true
-			assert.Equal(t, "test-pod", relation.Pod.Name)
-			assert.Equal(t, "default", relation.Pod.Namespace)
-		}
-	}
-
-	assert.True(t, machineFound, "Machine relation should be found")
-	assert.True(t, gpuFound, "GPU relation should be found")
-	assert.True(t, podFound, "Pod relation should be found")
-	assert.True(t, vgpuFound, "vGPU should be embedded in GPU relation")
-}
-
-// Test for ListGPURelationsByModel
-func TestEssentialUseCase_ListGPURelationsByModel(t *testing.T) {
-	// Setup test data
-	modelName := "test-model"
-	namespace := "default"
-
-	// Mock deployment with model label
-	deployments := []Deployment{
-		{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      "test-deployment",
-				Namespace: namespace,
-				Labels: map[string]string{
-					"model-name": modelName,
-				},
-			},
-			Spec: appsv1.DeploymentSpec{
-				Selector: &metav1.LabelSelector{
-					MatchLabels: map[string]string{
-						"app": "test-app",
-					},
-				},
-			},
-		},
-	}
-
-	// Mock pods with vGPU annotations
-	pods := []Pod{
-		{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      "test-pod",
-				Namespace: namespace,
-				Annotations: map[string]string{
-					"hami.io/vgpu-devices-allocated": "GPU-663aa370-535a-33b8-e01f-b325fb2025c7,NVIDIA,4096,50:",
-					"hami.io/bind-time":              "1609459200",
-					"hami.io/bind-phase":             "Bound",
-				},
-				Labels: map[string]string{
-					"app":        "test-app",
-					"model-name": modelName,
-				},
-			},
-			Spec: corev1.PodSpec{
-				NodeName: "test-node",
-			},
-		},
-	}
-
-	// Mock machines for node mapping
-	machines := []Machine{
-		{
-			Machine: &entity.Machine{
-				SystemID: "test-machine-id",
-				Hostname: "test-node",
-			},
-		},
-	}
-
-	// Mock nodes with GPU annotations
-	nodes := map[string]*Node{
-		"test-node": {
-			ObjectMeta: metav1.ObjectMeta{
-				Name: "test-node",
-				Annotations: map[string]string{
-					"hami.io/node-nvidia-register": "GPU-663aa370-535a-33b8-e01f-b325fb2025c7,10,24564,100,NVIDIA-NVIDIA GeForce RTX 4090,0,true,0,hami-core:",
-				},
-			},
-		},
-	}
-
-	// Create mocks
-	machineRepo := &simpleMockMachineRepo{machines: machines}
-	kubeCoreRepo := &simpleMockKubeCoreRepo{nodes: nodes, pods: pods}
-	kubeAppsRepo := &simpleMockKubeAppsRepo{deployments: deployments}
-	facilityRepo := &simpleMockFacilityRepo{}
-	actionRepo := &simpleMockActionRepo{}
-
-	// Create use case
-	uc := NewEssentialUseCase(
-		&config.Config{}, // conf
-		kubeCoreRepo,     // kubeCore
-		kubeAppsRepo,     // kubeApps
-		actionRepo,       // action
-		nil,              // scope
-		facilityRepo,     // facility
-		nil,              // facilityOffers
-		machineRepo,      // machine
-		nil,              // subnet
-		nil,              // ipRange
-		nil,              // server
-		nil,              // client
-		nil,              // tag
-	)
-
-	// Test
-	relations, err := uc.ListGPURelationsByModel(context.Background(), "test-scope", "test-facility", namespace, modelName)
-
-	// Assertions
-	assert.NoError(t, err)
-	assert.NotEmpty(t, relations)
-
-	// Check that we have different types of relations
-	machineFound := false
-	gpuFound := false
-	podFound := false
-	vgpuFound := false
-
-	for _, relation := range relations {
-		switch {
-		case relation.Machine != nil:
-			machineFound = true
-			assert.Equal(t, "test-machine-id", relation.Machine.ID)
-		case relation.GPU != nil:
-			gpuFound = true
-			gpu := relation.GPU
-			assert.Equal(t, "test-machine-id", gpu.MachineID)
-			assert.Equal(t, "NVIDIA", gpu.Vendor)
-
-			// Check vGPUs embedded in GPU
-			if len(gpu.VGPUs) > 0 {
-				vgpuFound = true
-				vgpu := gpu.VGPUs[0]
-				assert.Equal(t, "test-pod", vgpu.PodName)
-				assert.Equal(t, float32(testVGPUCoresPercent), vgpu.VcoresPercent)
-			}
-		case relation.Pod != nil:
-			podFound = true
-			assert.Equal(t, "test-pod", relation.Pod.Name)
-			assert.Equal(t, modelName, relation.Pod.ModelName)
-		}
-	}
-
-	assert.True(t, machineFound, "Machine relation should be found")
-	assert.True(t, gpuFound, "GPU relation should be found")
-	assert.True(t, podFound, "Pod relation should be found")
-	assert.True(t, vgpuFound, "vGPU should be embedded in GPU relation")
 }
