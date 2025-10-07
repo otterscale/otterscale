@@ -50,6 +50,7 @@ type EssentialCharm struct {
 type EssentialUseCase struct {
 	conf           *config.Config
 	kubeCore       KubeCoreRepo
+	kubeApps       KubeAppsRepo
 	action         ActionRepo
 	scope          ScopeRepo
 	facility       FacilityRepo
@@ -62,10 +63,11 @@ type EssentialUseCase struct {
 	tag            TagRepo
 }
 
-func NewEssentialUseCase(conf *config.Config, kubeCore KubeCoreRepo, action ActionRepo, scope ScopeRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo, tag TagRepo) *EssentialUseCase {
+func NewEssentialUseCase(conf *config.Config, kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, action ActionRepo, scope ScopeRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo, tag TagRepo) *EssentialUseCase {
 	return &EssentialUseCase{
 		conf:           conf,
 		kubeCore:       kubeCore,
+		kubeApps:       kubeApps,
 		action:         action,
 		scope:          scope,
 		facility:       facility,
@@ -235,6 +237,7 @@ func (uc *EssentialUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, 
 	if err != nil {
 		return nil, err
 	}
+
 	node, err := uc.kubeCore.GetNode(ctx, config, hostname)
 	if err != nil {
 		return nil, err

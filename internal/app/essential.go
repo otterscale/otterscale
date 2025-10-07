@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/otterscale/otterscale/api/essential/v1"
 	"github.com/otterscale/otterscale/api/essential/v1/pbconnect"
@@ -54,14 +55,7 @@ func (s *EssentialService) ListEssentials(ctx context.Context, req *pb.ListEssen
 }
 
 func (s *EssentialService) CreateSingleNode(ctx context.Context, req *pb.CreateSingleNodeRequest) (*emptypb.Empty, error) {
-	if err := s.uc.CreateSingleNode(ctx,
-		req.GetScopeUuid(),
-		req.GetMachineId(),
-		req.GetPrefixName(),
-		req.GetVirtualIps(),
-		req.GetCalicoCidr(),
-		req.GetOsdDevices(),
-	); err != nil {
+	if err := s.uc.CreateSingleNode(ctx, req.GetScopeUuid(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -85,6 +79,26 @@ func (s *EssentialService) UpdateKubernetesNodeLabels(ctx context.Context, req *
 	}
 	resp := &pb.UpdateKubernetesNodeLabelsResponse{}
 	resp.SetLabels(labels)
+	return resp, nil
+}
+
+func (s *EssentialService) ListGPURelationsByMachine(ctx context.Context, req *pb.ListGPURelationsByMachineRequest) (*pb.ListGPURelationsByMachineResponse, error) {
+	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetMachineId())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListGPURelationsByMachineResponse{}
+	resp.SetGpuRelations(toProtoGPURelations(gpuRelations))
+	return resp, nil
+}
+
+func (s *EssentialService) ListGPURelationsByModel(ctx context.Context, req *pb.ListGPURelationsByModelRequest) (*pb.ListGPURelationsByModelResponse, error) {
+	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetModelName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListGPURelationsByModelResponse{}
+	resp.SetGpuRelations(toProtoGPURelations(gpuRelations))
 	return resp, nil
 }
 
@@ -134,5 +148,77 @@ func toProtoEssentialUnit(eu *core.EssentialUnit) *pb.Essential_Unit {
 	ret := &pb.Essential_Unit{}
 	ret.SetName(eu.Name)
 	ret.SetDirective(eu.Directive)
+	return ret
+}
+
+func toProtoGPURelations(rs *core.GPURelations) []*pb.GPURelation {
+	ret := []*pb.GPURelation{}
+	for _, machine := range rs.Machines {
+		ret = append(ret, toProtoGPURelationFromMachine(&machine))
+	}
+	for _, gpu := range rs.GPUs {
+		ret = append(ret, toProtoGPURelationFromGPU(&gpu))
+	}
+	for _, pod := range rs.Pods {
+		ret = append(ret, toProtoGPURelationFromPod(&pod))
+	}
+	return ret
+}
+
+func toProtoGPURelationFromMachine(m *core.Machine) *pb.GPURelation {
+	machine := &pb.GPURelation_Machine{}
+	machine.SetId(m.SystemID)
+	machine.SetHostname(m.Hostname)
+
+	ret := &pb.GPURelation{}
+	ret.SetMachine(machine)
+	return ret
+}
+
+func toProtoGPURelationFromGPU(g *core.GPURelationsGPU) *pb.GPURelation {
+	gpu := &pb.GPURelation_GPU{}
+	gpu.SetId(g.ID)
+	gpu.SetIndex(g.Index)
+	gpu.SetCount(g.Count)
+	gpu.SetCores(g.Cores)
+	gpu.SetMemoryBytes(g.MemoryBytes)
+	gpu.SetType(g.Type)
+	gpu.SetHealth(g.Health)
+	gpu.SetMachineId(g.MachineID)
+
+	ret := &pb.GPURelation{}
+	ret.SetGpu(gpu)
+	return ret
+}
+
+func toProtoGPURelationFromPod(p *core.GPURelationsPod) *pb.GPURelation {
+	pod := &pb.GPURelation_Pod{}
+	pod.SetName(p.Name)
+	pod.SetNamespace(p.Namespace)
+	pod.SetModelName(p.ModelName)
+	pod.SetBindingPhase(p.BindingPhase)
+	if !p.BoundAt.IsZero() {
+		pod.SetBoundAt(timestamppb.New(p.BoundAt))
+	}
+	pod.SetDevices(toProtoGPURelationPodDevices(p.PodDevices))
+
+	ret := &pb.GPURelation{}
+	ret.SetPod(pod)
+	return ret
+}
+
+func toProtoGPURelationPodDevices(pds []core.GPURelationPodDevice) []*pb.GPURelation_Pod_Device {
+	ret := []*pb.GPURelation_Pod_Device{}
+	for i := range pds {
+		ret = append(ret, toProtoGPURelationPodDevice(&pds[i]))
+	}
+	return ret
+}
+
+func toProtoGPURelationPodDevice(pd *core.GPURelationPodDevice) *pb.GPURelation_Pod_Device {
+	ret := &pb.GPURelation_Pod_Device{}
+	ret.SetGpuId(pd.GPUID)
+	ret.SetUsedCores(pd.UsedCores)
+	ret.SetUsedMemoryBytes(pd.UsedMemoryBytes)
 	return ret
 }

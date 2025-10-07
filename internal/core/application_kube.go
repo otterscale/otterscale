@@ -75,6 +75,7 @@ type ControlPlaneCredential struct {
 type KubeAppsRepo interface {
 	// Deployment
 	ListDeployments(ctx context.Context, config *rest.Config, namespace string) ([]Deployment, error)
+	ListDeploymentsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Deployment, error)
 	GetDeployment(ctx context.Context, config *rest.Config, namespace, name string) (*Deployment, error)
 	UpdateDeployment(ctx context.Context, config *rest.Config, namespace string, deployment *Deployment) (*Deployment, error)
 
@@ -99,6 +100,7 @@ type KubeBatchRepo interface {
 
 type KubeCoreRepo interface {
 	// Node
+	ListNodes(ctx context.Context, config *rest.Config) ([]Node, error)
 	GetNode(ctx context.Context, config *rest.Config, name string) (*Node, error)
 	UpdateNode(ctx context.Context, config *rest.Config, node *Node) (*Node, error)
 

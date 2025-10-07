@@ -41,3 +41,11 @@ const (
 	ApplicationTypeStatefulSet = "StatefulSet"
 	ApplicationTypeDaemonSet   = "DaemonSet"
 )
+
+const (
+	annotationHAMINodeNvidiaRegister   = "hami.io/node-nvidia-register"
+	annotationHAMIVGPUNode             = "hami.io/vgpu-node"
+	annotationHAMIVGPUDevicesAllocated = "hami.io/vgpu-devices-allocated"
+	annotationHAMIBindTime             = "hami.io/bind-time"
+	annotationHAMIBindPhase            = "hami.io/bind-phase"
+)

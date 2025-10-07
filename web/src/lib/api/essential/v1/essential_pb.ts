@@ -4,15 +4,15 @@
 
 import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { EmptySchema } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
+import type { EmptySchema, Timestamp } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_empty, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file api/essential/v1/essential.proto.
  */
 export const file_api_essential_v1_essential: GenFile = /*@__PURE__*/
-  fileDesc("CiBhcGkvZXNzZW50aWFsL3YxL2Vzc2VudGlhbC5wcm90bxIXb3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEijAIKCUVzc2VudGlhbBI1CgR0eXBlGAEgASgOMicub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlR5cGUSDAoEbmFtZRgCIAEoCRISCgpzY29wZV91dWlkGAsgASgJEhIKCnNjb3BlX25hbWUYDCABKAkSNgoFdW5pdHMYFSADKAsyJy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwuVW5pdBonCgRVbml0EgwKBG5hbWUYASABKAkSEQoJZGlyZWN0aXZlGAIgASgJIjEKBFR5cGUSDwoLVU5TUEVDSUZJRUQQABIOCgpLVUJFUk5FVEVTEAESCAoEQ0VQSBACIqABCgZTdGF0dXMSNAoFbGV2ZWwYASABKA4yJS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5TdGF0dXMuTGV2ZWwSDwoHbWVzc2FnZRgCIAEoCRIPCgdkZXRhaWxzGAMgASgJIj4KBUxldmVsEggKBElORk8QABIHCgNMT1cQARIKCgZNRURJVU0QAhIICgRISUdIEAMSDAoIQ1JJVElDQUwQBCIuChhJc01hY2hpbmVEZXBsb3llZFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCSI+ChlJc01hY2hpbmVEZXBsb3llZFJlc3BvbnNlEhAKCGRlcGxveWVkGAEgASgIEg8KB21lc3NhZ2UYAiABKAkiKQoTTGlzdFN0YXR1c2VzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJIkkKFExpc3RTdGF0dXNlc1Jlc3BvbnNlEjEKCHN0YXR1c2VzGAEgAygLMh8ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuU3RhdHVzImIKFUxpc3RFc3NlbnRpYWxzUmVxdWVzdBI1CgR0eXBlGAEgASgOMicub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlR5cGUSEgoKc2NvcGVfdXVpZBgCIAEoCSJQChZMaXN0RXNzZW50aWFsc1Jlc3BvbnNlEjYKCmVzc2VudGlhbHMYASADKAsyIi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwilQEKF0NyZWF0ZVNpbmdsZU5vZGVSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSEgoKbWFjaGluZV9pZBgCIAEoCRITCgtwcmVmaXhfbmFtZRgDIAEoCRITCgt2aXJ0dWFsX2lwcxgLIAMoCRITCgtjYWxpY29fY2lkchgMIAEoCRITCgtvc2RfZGV2aWNlcxgVIAMoCSKiAQokQ3JlYXRlSGlnaEF2YWlsYWJpbGl0eUNsdXN0ZXJSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSEgoKbWFjaGluZV9pZBgCIAEoCRITCgtwcmVmaXhfbmFtZRgDIAEoCRITCgt2aXJ0dWFsX2lwcxgLIAMoCRITCgtjYWxpY29fY2lkchgMIAEoCRITCgtvc2RfZGV2aWNlcxgVIAMoCSKeAQoPQWRkVW5pdHNSZXF1ZXN0EjUKBHR5cGUYASABKA4yJy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwuVHlwZRISCgpzY29wZV91dWlkGAIgASgJEgwKBG5hbWUYAyABKAkSDgoGbnVtYmVyGAQgASgFEhMKC21hY2hpbmVfaWRzGAUgAygJEg0KBWZvcmNlGAsgASgIImsKH0xpc3RLdWJlcm5ldGVzTm9kZUxhYmVsc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhAKCGhvc3RuYW1lGAMgASgJEgsKA2FsbBgLIAEoCCKoAQogTGlzdEt1YmVybmV0ZXNOb2RlTGFiZWxzUmVzcG9uc2USVQoGbGFiZWxzGAEgAygLMkUub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdEt1YmVybmV0ZXNOb2RlTGFiZWxzUmVzcG9uc2UuTGFiZWxzRW50cnkaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASLnAQohVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIQCghob3N0bmFtZRgDIAEoCRJWCgZsYWJlbHMYBCADKAsyRi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5VcGRhdGVLdWJlcm5ldGVzTm9kZUxhYmVsc1JlcXVlc3QuTGFiZWxzRW50cnkaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASKsAQoiVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHNSZXNwb25zZRJXCgZsYWJlbHMYASADKAsyRy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5VcGRhdGVLdWJlcm5ldGVzTm9kZUxhYmVsc1Jlc3BvbnNlLkxhYmVsc0VudHJ5Gi0KC0xhYmVsc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEyvAcKEEVzc2VudGlhbFNlcnZpY2USegoRSXNNYWNoaW5lRGVwbG95ZWQSMS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Jc01hY2hpbmVEZXBsb3llZFJlcXVlc3QaMi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Jc01hY2hpbmVEZXBsb3llZFJlc3BvbnNlEmsKDExpc3RTdGF0dXNlcxIsLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkxpc3RTdGF0dXNlc1JlcXVlc3QaLS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5MaXN0U3RhdHVzZXNSZXNwb25zZRJxCg5MaXN0RXNzZW50aWFscxIuLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkxpc3RFc3NlbnRpYWxzUmVxdWVzdBovLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkxpc3RFc3NlbnRpYWxzUmVzcG9uc2USXAoQQ3JlYXRlU2luZ2xlTm9kZRIwLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkNyZWF0ZVNpbmdsZU5vZGVSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EnYKHUNyZWF0ZUhpZ2hBdmFpbGFiaWxpdHlDbHVzdGVyEj0ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuQ3JlYXRlSGlnaEF2YWlsYWJpbGl0eUNsdXN0ZXJSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EkwKCEFkZFVuaXRzEigub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuQWRkVW5pdHNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Eo8BChhMaXN0S3ViZXJuZXRlc05vZGVMYWJlbHMSOC5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5MaXN0S3ViZXJuZXRlc05vZGVMYWJlbHNSZXF1ZXN0Gjkub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdEt1YmVybmV0ZXNOb2RlTGFiZWxzUmVzcG9uc2USlQEKGlVwZGF0ZUt1YmVybmV0ZXNOb2RlTGFiZWxzEjoub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHNSZXF1ZXN0Gjsub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHNSZXNwb25zZUI2WjRnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvZXNzZW50aWFsL3YxO3BiYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty]);
+  fileDesc("CiBhcGkvZXNzZW50aWFsL3YxL2Vzc2VudGlhbC5wcm90bxIXb3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEijAIKCUVzc2VudGlhbBI1CgR0eXBlGAEgASgOMicub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlR5cGUSDAoEbmFtZRgCIAEoCRISCgpzY29wZV91dWlkGAsgASgJEhIKCnNjb3BlX25hbWUYDCABKAkSNgoFdW5pdHMYFSADKAsyJy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwuVW5pdBonCgRVbml0EgwKBG5hbWUYASABKAkSEQoJZGlyZWN0aXZlGAIgASgJIjEKBFR5cGUSDwoLVU5TUEVDSUZJRUQQABIOCgpLVUJFUk5FVEVTEAESCAoEQ0VQSBACIqABCgZTdGF0dXMSNAoFbGV2ZWwYASABKA4yJS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5TdGF0dXMuTGV2ZWwSDwoHbWVzc2FnZRgCIAEoCRIPCgdkZXRhaWxzGAMgASgJIj4KBUxldmVsEggKBElORk8QABIHCgNMT1cQARIKCgZNRURJVU0QAhIICgRISUdIEAMSDAoIQ1JJVElDQUwQBCKJBQoLR1BVUmVsYXRpb24SNwoDcG9kGAEgASgLMigub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuR1BVUmVsYXRpb24uUG9kSAASNwoDZ3B1GAIgASgLMigub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuR1BVUmVsYXRpb24uR1BVSAASPwoHbWFjaGluZRgDIAEoCzIsLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkdQVVJlbGF0aW9uLk1hY2hpbmVIABqKAgoDUG9kEgwKBG5hbWUYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhIKCm1vZGVsX25hbWUYAyABKAkSFQoNYmluZGluZ19waGFzZRgLIAEoCRIsCghib3VuZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASQAoHZGV2aWNlcxgVIAMoCzIvLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkdQVVJlbGF0aW9uLlBvZC5EZXZpY2UaRwoGRGV2aWNlEg4KBmdwdV9pZBgBIAEoCRISCgp1c2VkX2NvcmVzGAIgASgFEhkKEXVzZWRfbWVtb3J5X2J5dGVzGAMgASgDGoYBCgNHUFUSCgoCaWQYASABKAkSDQoFaW5kZXgYAiABKA0SDQoFY291bnQYAyABKAUSDQoFY29yZXMYBCABKAUSFAoMbWVtb3J5X2J5dGVzGAUgASgDEgwKBHR5cGUYBiABKAkSDgoGaGVhbHRoGAcgASgIEhIKCm1hY2hpbmVfaWQYZSABKAkaJwoHTWFjaGluZRIKCgJpZBgBIAEoCRIQCghob3N0bmFtZRgCIAEoCUIICgZlbnRpdHkiLgoYSXNNYWNoaW5lRGVwbG95ZWRSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkiPgoZSXNNYWNoaW5lRGVwbG95ZWRSZXNwb25zZRIQCghkZXBsb3llZBgBIAEoCBIPCgdtZXNzYWdlGAIgASgJIikKE0xpc3RTdGF0dXNlc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCSJJChRMaXN0U3RhdHVzZXNSZXNwb25zZRIxCghzdGF0dXNlcxgBIAMoCzIfLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLlN0YXR1cyJiChVMaXN0RXNzZW50aWFsc1JlcXVlc3QSNQoEdHlwZRgBIAEoDjInLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkVzc2VudGlhbC5UeXBlEhIKCnNjb3BlX3V1aWQYAiABKAkiUAoWTGlzdEVzc2VudGlhbHNSZXNwb25zZRI2Cgplc3NlbnRpYWxzGAEgAygLMiIub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsIpUBChdDcmVhdGVTaW5nbGVOb2RlUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhIKCm1hY2hpbmVfaWQYAiABKAkSEwoLcHJlZml4X25hbWUYAyABKAkSEwoLdmlydHVhbF9pcHMYCyADKAkSEwoLY2FsaWNvX2NpZHIYDCABKAkSEwoLb3NkX2RldmljZXMYFSADKAkiogEKJENyZWF0ZUhpZ2hBdmFpbGFiaWxpdHlDbHVzdGVyUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhIKCm1hY2hpbmVfaWQYAiABKAkSEwoLcHJlZml4X25hbWUYAyABKAkSEwoLdmlydHVhbF9pcHMYCyADKAkSEwoLY2FsaWNvX2NpZHIYDCABKAkSEwoLb3NkX2RldmljZXMYFSADKAkingEKD0FkZFVuaXRzUmVxdWVzdBI1CgR0eXBlGAEgASgOMicub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlR5cGUSEgoKc2NvcGVfdXVpZBgCIAEoCRIMCgRuYW1lGAMgASgJEg4KBm51bWJlchgEIAEoBRITCgttYWNoaW5lX2lkcxgFIAMoCRINCgVmb3JjZRgLIAEoCCJrCh9MaXN0S3ViZXJuZXRlc05vZGVMYWJlbHNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIQCghob3N0bmFtZRgDIAEoCRILCgNhbGwYCyABKAgiqAEKIExpc3RLdWJlcm5ldGVzTm9kZUxhYmVsc1Jlc3BvbnNlElUKBmxhYmVscxgBIAMoCzJFLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkxpc3RLdWJlcm5ldGVzTm9kZUxhYmVsc1Jlc3BvbnNlLkxhYmVsc0VudHJ5Gi0KC0xhYmVsc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEi5wEKIVVwZGF0ZUt1YmVybmV0ZXNOb2RlTGFiZWxzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEAoIaG9zdG5hbWUYAyABKAkSVgoGbGFiZWxzGAQgAygLMkYub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHNSZXF1ZXN0LkxhYmVsc0VudHJ5Gi0KC0xhYmVsc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEirAEKIlVwZGF0ZUt1YmVybmV0ZXNOb2RlTGFiZWxzUmVzcG9uc2USVwoGbGFiZWxzGAEgAygLMkcub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHNSZXNwb25zZS5MYWJlbHNFbnRyeRotCgtMYWJlbHNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBImEKIExpc3RHUFVSZWxhdGlvbnNCeU1hY2hpbmVSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRISCgptYWNoaW5lX2lkGAMgASgJImAKIUxpc3RHUFVSZWxhdGlvbnNCeU1hY2hpbmVSZXNwb25zZRI7Cg1ncHVfcmVsYXRpb25zGAEgAygLMiQub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuR1BVUmVsYXRpb24icgoeTGlzdEdQVVJlbGF0aW9uc0J5TW9kZWxSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSEgoKbW9kZWxfbmFtZRgEIAEoCSJeCh9MaXN0R1BVUmVsYXRpb25zQnlNb2RlbFJlc3BvbnNlEjsKDWdwdV9yZWxhdGlvbnMYASADKAsyJC5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5HUFVSZWxhdGlvbjLgCQoQRXNzZW50aWFsU2VydmljZRJ6ChFJc01hY2hpbmVEZXBsb3llZBIxLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLklzTWFjaGluZURlcGxveWVkUmVxdWVzdBoyLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLklzTWFjaGluZURlcGxveWVkUmVzcG9uc2USawoMTGlzdFN0YXR1c2VzEiwub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdFN0YXR1c2VzUmVxdWVzdBotLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkxpc3RTdGF0dXNlc1Jlc3BvbnNlEnEKDkxpc3RFc3NlbnRpYWxzEi4ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdEVzc2VudGlhbHNSZXF1ZXN0Gi8ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdEVzc2VudGlhbHNSZXNwb25zZRJcChBDcmVhdGVTaW5nbGVOb2RlEjAub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuQ3JlYXRlU2luZ2xlTm9kZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSdgodQ3JlYXRlSGlnaEF2YWlsYWJpbGl0eUNsdXN0ZXISPS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5DcmVhdGVIaWdoQXZhaWxhYmlsaXR5Q2x1c3RlclJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSTAoIQWRkVW5pdHMSKC5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5BZGRVbml0c1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSjwEKGExpc3RLdWJlcm5ldGVzTm9kZUxhYmVscxI4Lm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkxpc3RLdWJlcm5ldGVzTm9kZUxhYmVsc1JlcXVlc3QaOS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5MaXN0S3ViZXJuZXRlc05vZGVMYWJlbHNSZXNwb25zZRKVAQoaVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHMSOi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5VcGRhdGVLdWJlcm5ldGVzTm9kZUxhYmVsc1JlcXVlc3QaOy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5VcGRhdGVLdWJlcm5ldGVzTm9kZUxhYmVsc1Jlc3BvbnNlEpIBChlMaXN0R1BVUmVsYXRpb25zQnlNYWNoaW5lEjkub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdEdQVVJlbGF0aW9uc0J5TWFjaGluZVJlcXVlc3QaOi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5MaXN0R1BVUmVsYXRpb25zQnlNYWNoaW5lUmVzcG9uc2USjAEKF0xpc3RHUFVSZWxhdGlvbnNCeU1vZGVsEjcub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdEdQVVJlbGF0aW9uc0J5TW9kZWxSZXF1ZXN0Gjgub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdEdQVVJlbGF0aW9uc0J5TW9kZWxSZXNwb25zZUI2WjRnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvZXNzZW50aWFsL3YxO3BiYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message otterscale.essential.v1.Essential
@@ -163,6 +163,184 @@ export const Status_LevelSchema: GenEnum<Status_Level> = /*@__PURE__*/
   enumDesc(file_api_essential_v1_essential, 1, 0);
 
 /**
+ * @generated from message otterscale.essential.v1.GPURelation
+ */
+export type GPURelation = Message<"otterscale.essential.v1.GPURelation"> & {
+  /**
+   * @generated from oneof otterscale.essential.v1.GPURelation.entity
+   */
+  entity: {
+    /**
+     * @generated from field: otterscale.essential.v1.GPURelation.Pod pod = 1;
+     */
+    value: GPURelation_Pod;
+    case: "pod";
+  } | {
+    /**
+     * @generated from field: otterscale.essential.v1.GPURelation.GPU gpu = 2;
+     */
+    value: GPURelation_GPU;
+    case: "gpu";
+  } | {
+    /**
+     * @generated from field: otterscale.essential.v1.GPURelation.Machine machine = 3;
+     */
+    value: GPURelation_Machine;
+    case: "machine";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message otterscale.essential.v1.GPURelation.
+ * Use `create(GPURelationSchema)` to create a new message.
+ */
+export const GPURelationSchema: GenMessage<GPURelation> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 2);
+
+/**
+ * @generated from message otterscale.essential.v1.GPURelation.Pod
+ */
+export type GPURelation_Pod = Message<"otterscale.essential.v1.GPURelation.Pod"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string namespace = 2;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string model_name = 3;
+   */
+  modelName: string;
+
+  /**
+   * @generated from field: string binding_phase = 11;
+   */
+  bindingPhase: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp bound_at = 12;
+   */
+  boundAt?: Timestamp;
+
+  /**
+   * @generated from field: repeated otterscale.essential.v1.GPURelation.Pod.Device devices = 21;
+   */
+  devices: GPURelation_Pod_Device[];
+};
+
+/**
+ * Describes the message otterscale.essential.v1.GPURelation.Pod.
+ * Use `create(GPURelation_PodSchema)` to create a new message.
+ */
+export const GPURelation_PodSchema: GenMessage<GPURelation_Pod> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 2, 0);
+
+/**
+ * @generated from message otterscale.essential.v1.GPURelation.Pod.Device
+ */
+export type GPURelation_Pod_Device = Message<"otterscale.essential.v1.GPURelation.Pod.Device"> & {
+  /**
+   * @generated from field: string gpu_id = 1;
+   */
+  gpuId: string;
+
+  /**
+   * @generated from field: int32 used_cores = 2;
+   */
+  usedCores: number;
+
+  /**
+   * @generated from field: int64 used_memory_bytes = 3;
+   */
+  usedMemoryBytes: bigint;
+};
+
+/**
+ * Describes the message otterscale.essential.v1.GPURelation.Pod.Device.
+ * Use `create(GPURelation_Pod_DeviceSchema)` to create a new message.
+ */
+export const GPURelation_Pod_DeviceSchema: GenMessage<GPURelation_Pod_Device> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 2, 0, 0);
+
+/**
+ * @generated from message otterscale.essential.v1.GPURelation.GPU
+ */
+export type GPURelation_GPU = Message<"otterscale.essential.v1.GPURelation.GPU"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: uint32 index = 2;
+   */
+  index: number;
+
+  /**
+   * @generated from field: int32 count = 3;
+   */
+  count: number;
+
+  /**
+   * @generated from field: int32 cores = 4;
+   */
+  cores: number;
+
+  /**
+   * @generated from field: int64 memory_bytes = 5;
+   */
+  memoryBytes: bigint;
+
+  /**
+   * @generated from field: string type = 6;
+   */
+  type: string;
+
+  /**
+   * @generated from field: bool health = 7;
+   */
+  health: boolean;
+
+  /**
+   * @generated from field: string machine_id = 101;
+   */
+  machineId: string;
+};
+
+/**
+ * Describes the message otterscale.essential.v1.GPURelation.GPU.
+ * Use `create(GPURelation_GPUSchema)` to create a new message.
+ */
+export const GPURelation_GPUSchema: GenMessage<GPURelation_GPU> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 2, 1);
+
+/**
+ * @generated from message otterscale.essential.v1.GPURelation.Machine
+ */
+export type GPURelation_Machine = Message<"otterscale.essential.v1.GPURelation.Machine"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string hostname = 2;
+   */
+  hostname: string;
+};
+
+/**
+ * Describes the message otterscale.essential.v1.GPURelation.Machine.
+ * Use `create(GPURelation_MachineSchema)` to create a new message.
+ */
+export const GPURelation_MachineSchema: GenMessage<GPURelation_Machine> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 2, 2);
+
+/**
  * @generated from message otterscale.essential.v1.IsMachineDeployedRequest
  */
 export type IsMachineDeployedRequest = Message<"otterscale.essential.v1.IsMachineDeployedRequest"> & {
@@ -177,7 +355,7 @@ export type IsMachineDeployedRequest = Message<"otterscale.essential.v1.IsMachin
  * Use `create(IsMachineDeployedRequestSchema)` to create a new message.
  */
 export const IsMachineDeployedRequestSchema: GenMessage<IsMachineDeployedRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 2);
+  messageDesc(file_api_essential_v1_essential, 3);
 
 /**
  * @generated from message otterscale.essential.v1.IsMachineDeployedResponse
@@ -199,7 +377,7 @@ export type IsMachineDeployedResponse = Message<"otterscale.essential.v1.IsMachi
  * Use `create(IsMachineDeployedResponseSchema)` to create a new message.
  */
 export const IsMachineDeployedResponseSchema: GenMessage<IsMachineDeployedResponse> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 3);
+  messageDesc(file_api_essential_v1_essential, 4);
 
 /**
  * @generated from message otterscale.essential.v1.ListStatusesRequest
@@ -216,7 +394,7 @@ export type ListStatusesRequest = Message<"otterscale.essential.v1.ListStatusesR
  * Use `create(ListStatusesRequestSchema)` to create a new message.
  */
 export const ListStatusesRequestSchema: GenMessage<ListStatusesRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 4);
+  messageDesc(file_api_essential_v1_essential, 5);
 
 /**
  * @generated from message otterscale.essential.v1.ListStatusesResponse
@@ -233,7 +411,7 @@ export type ListStatusesResponse = Message<"otterscale.essential.v1.ListStatuses
  * Use `create(ListStatusesResponseSchema)` to create a new message.
  */
 export const ListStatusesResponseSchema: GenMessage<ListStatusesResponse> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 5);
+  messageDesc(file_api_essential_v1_essential, 6);
 
 /**
  * @generated from message otterscale.essential.v1.ListEssentialsRequest
@@ -255,7 +433,7 @@ export type ListEssentialsRequest = Message<"otterscale.essential.v1.ListEssenti
  * Use `create(ListEssentialsRequestSchema)` to create a new message.
  */
 export const ListEssentialsRequestSchema: GenMessage<ListEssentialsRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 6);
+  messageDesc(file_api_essential_v1_essential, 7);
 
 /**
  * @generated from message otterscale.essential.v1.ListEssentialsResponse
@@ -272,7 +450,7 @@ export type ListEssentialsResponse = Message<"otterscale.essential.v1.ListEssent
  * Use `create(ListEssentialsResponseSchema)` to create a new message.
  */
 export const ListEssentialsResponseSchema: GenMessage<ListEssentialsResponse> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 7);
+  messageDesc(file_api_essential_v1_essential, 8);
 
 /**
  * @generated from message otterscale.essential.v1.CreateSingleNodeRequest
@@ -314,7 +492,7 @@ export type CreateSingleNodeRequest = Message<"otterscale.essential.v1.CreateSin
  * Use `create(CreateSingleNodeRequestSchema)` to create a new message.
  */
 export const CreateSingleNodeRequestSchema: GenMessage<CreateSingleNodeRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 8);
+  messageDesc(file_api_essential_v1_essential, 9);
 
 /**
  * @generated from message otterscale.essential.v1.CreateHighAvailabilityClusterRequest
@@ -356,7 +534,7 @@ export type CreateHighAvailabilityClusterRequest = Message<"otterscale.essential
  * Use `create(CreateHighAvailabilityClusterRequestSchema)` to create a new message.
  */
 export const CreateHighAvailabilityClusterRequestSchema: GenMessage<CreateHighAvailabilityClusterRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 9);
+  messageDesc(file_api_essential_v1_essential, 10);
 
 /**
  * @generated from message otterscale.essential.v1.AddUnitsRequest
@@ -398,7 +576,7 @@ export type AddUnitsRequest = Message<"otterscale.essential.v1.AddUnitsRequest">
  * Use `create(AddUnitsRequestSchema)` to create a new message.
  */
 export const AddUnitsRequestSchema: GenMessage<AddUnitsRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 10);
+  messageDesc(file_api_essential_v1_essential, 11);
 
 /**
  * @generated from message otterscale.essential.v1.ListKubernetesNodeLabelsRequest
@@ -430,7 +608,7 @@ export type ListKubernetesNodeLabelsRequest = Message<"otterscale.essential.v1.L
  * Use `create(ListKubernetesNodeLabelsRequestSchema)` to create a new message.
  */
 export const ListKubernetesNodeLabelsRequestSchema: GenMessage<ListKubernetesNodeLabelsRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 11);
+  messageDesc(file_api_essential_v1_essential, 12);
 
 /**
  * @generated from message otterscale.essential.v1.ListKubernetesNodeLabelsResponse
@@ -447,7 +625,7 @@ export type ListKubernetesNodeLabelsResponse = Message<"otterscale.essential.v1.
  * Use `create(ListKubernetesNodeLabelsResponseSchema)` to create a new message.
  */
 export const ListKubernetesNodeLabelsResponseSchema: GenMessage<ListKubernetesNodeLabelsResponse> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 12);
+  messageDesc(file_api_essential_v1_essential, 13);
 
 /**
  * @generated from message otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest
@@ -479,7 +657,7 @@ export type UpdateKubernetesNodeLabelsRequest = Message<"otterscale.essential.v1
  * Use `create(UpdateKubernetesNodeLabelsRequestSchema)` to create a new message.
  */
 export const UpdateKubernetesNodeLabelsRequestSchema: GenMessage<UpdateKubernetesNodeLabelsRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 13);
+  messageDesc(file_api_essential_v1_essential, 14);
 
 /**
  * @generated from message otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse
@@ -496,7 +674,100 @@ export type UpdateKubernetesNodeLabelsResponse = Message<"otterscale.essential.v
  * Use `create(UpdateKubernetesNodeLabelsResponseSchema)` to create a new message.
  */
 export const UpdateKubernetesNodeLabelsResponseSchema: GenMessage<UpdateKubernetesNodeLabelsResponse> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 14);
+  messageDesc(file_api_essential_v1_essential, 15);
+
+/**
+ * @generated from message otterscale.essential.v1.ListGPURelationsByMachineRequest
+ */
+export type ListGPURelationsByMachineRequest = Message<"otterscale.essential.v1.ListGPURelationsByMachineRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string facility_name = 2;
+   */
+  facilityName: string;
+
+  /**
+   * @generated from field: string machine_id = 3;
+   */
+  machineId: string;
+};
+
+/**
+ * Describes the message otterscale.essential.v1.ListGPURelationsByMachineRequest.
+ * Use `create(ListGPURelationsByMachineRequestSchema)` to create a new message.
+ */
+export const ListGPURelationsByMachineRequestSchema: GenMessage<ListGPURelationsByMachineRequest> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 16);
+
+/**
+ * @generated from message otterscale.essential.v1.ListGPURelationsByMachineResponse
+ */
+export type ListGPURelationsByMachineResponse = Message<"otterscale.essential.v1.ListGPURelationsByMachineResponse"> & {
+  /**
+   * @generated from field: repeated otterscale.essential.v1.GPURelation gpu_relations = 1;
+   */
+  gpuRelations: GPURelation[];
+};
+
+/**
+ * Describes the message otterscale.essential.v1.ListGPURelationsByMachineResponse.
+ * Use `create(ListGPURelationsByMachineResponseSchema)` to create a new message.
+ */
+export const ListGPURelationsByMachineResponseSchema: GenMessage<ListGPURelationsByMachineResponse> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 17);
+
+/**
+ * @generated from message otterscale.essential.v1.ListGPURelationsByModelRequest
+ */
+export type ListGPURelationsByModelRequest = Message<"otterscale.essential.v1.ListGPURelationsByModelRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string facility_name = 2;
+   */
+  facilityName: string;
+
+  /**
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string model_name = 4;
+   */
+  modelName: string;
+};
+
+/**
+ * Describes the message otterscale.essential.v1.ListGPURelationsByModelRequest.
+ * Use `create(ListGPURelationsByModelRequestSchema)` to create a new message.
+ */
+export const ListGPURelationsByModelRequestSchema: GenMessage<ListGPURelationsByModelRequest> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 18);
+
+/**
+ * @generated from message otterscale.essential.v1.ListGPURelationsByModelResponse
+ */
+export type ListGPURelationsByModelResponse = Message<"otterscale.essential.v1.ListGPURelationsByModelResponse"> & {
+  /**
+   * @generated from field: repeated otterscale.essential.v1.GPURelation gpu_relations = 1;
+   */
+  gpuRelations: GPURelation[];
+};
+
+/**
+ * Describes the message otterscale.essential.v1.ListGPURelationsByModelResponse.
+ * Use `create(ListGPURelationsByModelResponseSchema)` to create a new message.
+ */
+export const ListGPURelationsByModelResponseSchema: GenMessage<ListGPURelationsByModelResponse> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 19);
 
 /**
  * @generated from service otterscale.essential.v1.EssentialService
@@ -565,6 +836,22 @@ export const EssentialService: GenService<{
     methodKind: "unary";
     input: typeof UpdateKubernetesNodeLabelsRequestSchema;
     output: typeof UpdateKubernetesNodeLabelsResponseSchema;
+  },
+  /**
+   * @generated from rpc otterscale.essential.v1.EssentialService.ListGPURelationsByMachine
+   */
+  listGPURelationsByMachine: {
+    methodKind: "unary";
+    input: typeof ListGPURelationsByMachineRequestSchema;
+    output: typeof ListGPURelationsByMachineResponseSchema;
+  },
+  /**
+   * @generated from rpc otterscale.essential.v1.EssentialService.ListGPURelationsByModel
+   */
+  listGPURelationsByModel: {
+    methodKind: "unary";
+    input: typeof ListGPURelationsByModelRequestSchema;
+    output: typeof ListGPURelationsByModelResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_essential_v1_essential, 0);
