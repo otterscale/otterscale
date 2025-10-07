@@ -3005,7 +3005,7 @@ type GPURelation_GPU struct {
 	xxx_hidden_Index       uint32                 `protobuf:"varint,2,opt,name=index"`
 	xxx_hidden_Count       int32                  `protobuf:"varint,3,opt,name=count"`
 	xxx_hidden_Cores       int32                  `protobuf:"varint,4,opt,name=cores"`
-	xxx_hidden_MemoryBytes int32                  `protobuf:"varint,5,opt,name=memory_bytes,json=memoryBytes"`
+	xxx_hidden_MemoryBytes int64                  `protobuf:"varint,5,opt,name=memory_bytes,json=memoryBytes"`
 	xxx_hidden_Type        *string                `protobuf:"bytes,6,opt,name=type"`
 	xxx_hidden_Health      bool                   `protobuf:"varint,7,opt,name=health"`
 	xxx_hidden_MachineId   *string                `protobuf:"bytes,101,opt,name=machine_id,json=machineId"`
@@ -3071,7 +3071,7 @@ func (x *GPURelation_GPU) GetCores() int32 {
 	return 0
 }
 
-func (x *GPURelation_GPU) GetMemoryBytes() int32 {
+func (x *GPURelation_GPU) GetMemoryBytes() int64 {
 	if x != nil {
 		return x.xxx_hidden_MemoryBytes
 	}
@@ -3125,7 +3125,7 @@ func (x *GPURelation_GPU) SetCores(v int32) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 8)
 }
 
-func (x *GPURelation_GPU) SetMemoryBytes(v int32) {
+func (x *GPURelation_GPU) SetMemoryBytes(v int64) {
 	x.xxx_hidden_MemoryBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 8)
 }
@@ -3248,7 +3248,7 @@ type GPURelation_GPU_builder struct {
 	Index       *uint32
 	Count       *int32
 	Cores       *int32
-	MemoryBytes *int32
+	MemoryBytes *int64
 	Type        *string
 	Health      *bool
 	MachineId   *string
@@ -3408,7 +3408,7 @@ type GPURelation_Pod_Device struct {
 	state                      protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_GpuId           *string                `protobuf:"bytes,1,opt,name=gpu_id,json=gpuId"`
 	xxx_hidden_UsedCores       int32                  `protobuf:"varint,2,opt,name=used_cores,json=usedCores"`
-	xxx_hidden_UsedMemoryBytes int32                  `protobuf:"varint,3,opt,name=used_memory_bytes,json=usedMemoryBytes"`
+	xxx_hidden_UsedMemoryBytes int64                  `protobuf:"varint,3,opt,name=used_memory_bytes,json=usedMemoryBytes"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
 	unknownFields              protoimpl.UnknownFields
@@ -3457,7 +3457,7 @@ func (x *GPURelation_Pod_Device) GetUsedCores() int32 {
 	return 0
 }
 
-func (x *GPURelation_Pod_Device) GetUsedMemoryBytes() int32 {
+func (x *GPURelation_Pod_Device) GetUsedMemoryBytes() int64 {
 	if x != nil {
 		return x.xxx_hidden_UsedMemoryBytes
 	}
@@ -3474,7 +3474,7 @@ func (x *GPURelation_Pod_Device) SetUsedCores(v int32) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *GPURelation_Pod_Device) SetUsedMemoryBytes(v int32) {
+func (x *GPURelation_Pod_Device) SetUsedMemoryBytes(v int64) {
 	x.xxx_hidden_UsedMemoryBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
@@ -3520,7 +3520,7 @@ type GPURelation_Pod_Device_builder struct {
 
 	GpuId           *string
 	UsedCores       *int32
-	UsedMemoryBytes *int32
+	UsedMemoryBytes *int64
 }
 
 func (b0 GPURelation_Pod_Device_builder) Build() *GPURelation_Pod_Device {
@@ -3590,13 +3590,13 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\x06gpu_id\x18\x01 \x01(\tR\x05gpuId\x12\x1d\n" +
 	"\n" +
 	"used_cores\x18\x02 \x01(\x05R\tusedCores\x12*\n" +
-	"\x11used_memory_bytes\x18\x03 \x01(\x05R\x0fusedMemoryBytes\x1a\xc5\x01\n" +
+	"\x11used_memory_bytes\x18\x03 \x01(\x03R\x0fusedMemoryBytes\x1a\xc5\x01\n" +
 	"\x03GPU\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05index\x18\x02 \x01(\rR\x05index\x12\x14\n" +
 	"\x05count\x18\x03 \x01(\x05R\x05count\x12\x14\n" +
 	"\x05cores\x18\x04 \x01(\x05R\x05cores\x12!\n" +
-	"\fmemory_bytes\x18\x05 \x01(\x05R\vmemoryBytes\x12\x12\n" +
+	"\fmemory_bytes\x18\x05 \x01(\x03R\vmemoryBytes\x12\x12\n" +
 	"\x04type\x18\x06 \x01(\tR\x04type\x12\x16\n" +
 	"\x06health\x18\a \x01(\bR\x06health\x12\x1d\n" +
 	"\n" +

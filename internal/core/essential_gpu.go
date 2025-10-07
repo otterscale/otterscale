@@ -21,7 +21,7 @@ type GPURelationsGPU struct {
 	Index       uint
 	Count       int32
 	Cores       int32
-	MemoryBytes int32
+	MemoryBytes int64
 	Type        string
 	Health      bool
 	MachineID   string
@@ -39,11 +39,15 @@ type GPURelationsPod struct {
 type GPURelationPodDevice struct {
 	GPUID           string
 	UsedCores       int32
-	UsedMemoryBytes int32
+	UsedMemoryBytes int64
 }
 
 func (uc *EssentialUseCase) ListGPURelationsByMachine(ctx context.Context, scopeUUID, facilityName, machineID string) (*GPURelations, error) {
-	labelSelector := fmt.Sprintf("%s=%s", annotationHAMIVGPUNode, machineID)
+	machine, err := uc.machine.Get(ctx, machineID)
+	if err != nil {
+		return nil, err
+	}
+	labelSelector := fmt.Sprintf("%s=%s", annotationHAMIVGPUNode, machine.Hostname)
 	return uc.listGPURelations(ctx, scopeUUID, facilityName, "", labelSelector)
 }
 
@@ -150,7 +154,7 @@ func (uc *EssentialUseCase) buildGPUsFromNodes(nodes []Node, machineMap map[stri
 				Index:       nodeDevice.Index,
 				Count:       nodeDevice.Count,
 				Cores:       nodeDevice.Devcore,
-				MemoryBytes: nodeDevice.Devmem * 1024,
+				MemoryBytes: int64(nodeDevice.Devmem) * 1024 * 1024, // gigabytes to bytes
 				Type:        nodeDevice.Type,
 				Health:      nodeDevice.Health,
 				MachineID:   machine.SystemID,
@@ -196,7 +200,7 @@ func extractPodDevices(pod Pod, checkList map[string]string) ([]GPURelationPodDe
 				devices = append(devices, GPURelationPodDevice{
 					GPUID:           containerDevice.UUID,
 					UsedCores:       containerDevice.Usedcores,
-					UsedMemoryBytes: containerDevice.Usedmem * 1024,
+					UsedMemoryBytes: int64(containerDevice.Usedmem) * 1024, // gigabytes to bytes
 				})
 			}
 		}
