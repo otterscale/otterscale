@@ -1621,6 +1621,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.facility.v1.AddFacilityUnitsResponse'
+  /otterscale.facility.v1.FacilityService/ResolveFacilityUnitErrors:
+    post:
+      tags:
+        - FacilityService
+      summary: ResolveFacilityUnitErrors
+      operationId: FacilityService_ResolveFacilityUnitErrors
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.facility.v1.ResolveFacilityUnitErrorsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
   /otterscale.facility.v1.FacilityService/ListActions:
     post:
       tags:
@@ -2181,6 +2216,146 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.essential.v1.EssentialService/ListKubernetesNodeLabels:
+    post:
+      tags:
+        - EssentialService
+      summary: ListKubernetesNodeLabels
+      operationId: EssentialService_ListKubernetesNodeLabels
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.essential.v1.ListKubernetesNodeLabelsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.essential.v1.ListKubernetesNodeLabelsResponse'
+  /otterscale.essential.v1.EssentialService/UpdateKubernetesNodeLabels:
+    post:
+      tags:
+        - EssentialService
+      summary: UpdateKubernetesNodeLabels
+      operationId: EssentialService_UpdateKubernetesNodeLabels
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse'
+  /otterscale.essential.v1.EssentialService/ListGPURelationsByMachine:
+    post:
+      tags:
+        - EssentialService
+      summary: ListGPURelationsByMachine
+      operationId: EssentialService_ListGPURelationsByMachine
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.essential.v1.ListGPURelationsByMachineRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.essential.v1.ListGPURelationsByMachineResponse'
+  /otterscale.essential.v1.EssentialService/ListGPURelationsByModel:
+    post:
+      tags:
+        - EssentialService
+      summary: ListGPURelationsByModel
+      operationId: EssentialService_ListGPURelationsByModel
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.essential.v1.ListGPURelationsByModelRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.essential.v1.ListGPURelationsByModelResponse'
   /otterscale.network.v1.NetworkService/ListNetworks:
     post:
       tags:
@@ -2847,6 +3022,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.environment.v1.EnvironmentService/GetConfigHelmRepositories:
+    post:
+      tags:
+        - EnvironmentService
+      summary: GetConfigHelmRepositories
+      operationId: EnvironmentService_GetConfigHelmRepositories
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.environment.v1.GetConfigHelmRepositoriesRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.environment.v1.GetConfigHelmRepositoriesResponse'
   /otterscale.environment.v1.EnvironmentService/UpdateConfigHelmRepositories:
     post:
       tags:
@@ -2917,12 +3127,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.environment.v1.Prometheus'
-  /otterscale.configuration.v1.ConfigurationService/GetConfiguration:
+  /otterscale.application.v1.ApplicationService/ListNamespaces:
     post:
       tags:
-        - ConfigurationService
-      summary: GetConfiguration
-      operationId: ConfigurationService_GetConfiguration
+        - ApplicationService
+      summary: ListNamespaces
+      operationId: ApplicationService_ListNamespaces
       parameters:
         - name: Connect-Protocol-Version
           in: header
@@ -2937,7 +3147,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/otterscale.configuration.v1.GetConfigurationRequest'
+              $ref: '#/components/schemas/otterscale.application.v1.ListNamespacesRequest'
         required: true
       responses:
         default:
@@ -2951,252 +3161,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/otterscale.configuration.v1.Configuration'
-  /otterscale.configuration.v1.ConfigurationService/UpdateNTPServer:
-    post:
-      tags:
-        - ConfigurationService
-      summary: UpdateNTPServer
-      operationId: ConfigurationService_UpdateNTPServer
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.configuration.v1.UpdateNTPServerRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.NTPServer'
-  /otterscale.configuration.v1.ConfigurationService/UpdatePackageRepository:
-    post:
-      tags:
-        - ConfigurationService
-      summary: UpdatePackageRepository
-      operationId: ConfigurationService_UpdatePackageRepository
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.configuration.v1.UpdatePackageRepositoryRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.PackageRepository'
-  /otterscale.configuration.v1.ConfigurationService/CreateBootImage:
-    post:
-      tags:
-        - ConfigurationService
-      summary: CreateBootImage
-      operationId: ConfigurationService_CreateBootImage
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.configuration.v1.CreateBootImageRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.BootImage'
-  /otterscale.configuration.v1.ConfigurationService/SetDefaultBootImage:
-    post:
-      tags:
-        - ConfigurationService
-      summary: SetDefaultBootImage
-      operationId: ConfigurationService_SetDefaultBootImage
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.configuration.v1.SetDefaultBootImageRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/google.protobuf.Empty'
-  /otterscale.configuration.v1.ConfigurationService/ImportBootImages:
-    post:
-      tags:
-        - ConfigurationService
-      summary: ImportBootImages
-      operationId: ConfigurationService_ImportBootImages
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.configuration.v1.ImportBootImagesRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/google.protobuf.Empty'
-  /otterscale.configuration.v1.ConfigurationService/IsImportingBootImages:
-    post:
-      tags:
-        - ConfigurationService
-      summary: IsImportingBootImages
-      operationId: ConfigurationService_IsImportingBootImages
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.configuration.v1.IsImportingBootImagesRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.configuration.v1.IsImportingBootImagesResponse'
-  /otterscale.configuration.v1.ConfigurationService/ListBootImageSelections:
-    post:
-      tags:
-        - ConfigurationService
-      summary: ListBootImageSelections
-      operationId: ConfigurationService_ListBootImageSelections
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.configuration.v1.ListBootImageSelectionsRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.configuration.v1.ListBootImageSelectionsResponse'
+                $ref: '#/components/schemas/otterscale.application.v1.ListNamespacesResponse'
   /otterscale.application.v1.ApplicationService/ListApplications:
     post:
       tags:
@@ -3267,6 +3232,148 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.application.v1.Application'
+  /otterscale.application.v1.ApplicationService/RestartApplication:
+    post:
+      tags:
+        - ApplicationService
+      summary: RestartApplication
+      operationId: ApplicationService_RestartApplication
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.application.v1.RestartApplicationRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.application.v1.ApplicationService/ScaleApplication:
+    post:
+      tags:
+        - ApplicationService
+      summary: ScaleApplication
+      operationId: ApplicationService_ScaleApplication
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.application.v1.ScaleApplicationRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.application.v1.ApplicationService/DeleteApplicationPod:
+    post:
+      tags:
+        - ApplicationService
+      summary: DeleteApplicationPod
+      operationId: ApplicationService_DeleteApplicationPod
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.application.v1.DeleteApplicationPodRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.application.v1.ApplicationService/WatchLogs: {}
+  /otterscale.application.v1.ApplicationService/ExecuteTTY: {}
+  /otterscale.application.v1.ApplicationService/WriteTTY:
+    post:
+      tags:
+        - ApplicationService
+      summary: WriteTTY
+      operationId: ApplicationService_WriteTTY
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.application.v1.WriteTTYRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
   /otterscale.application.v1.ApplicationService/ListReleases:
     post:
       tags:
@@ -3582,6 +3689,1406 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.application.v1.ListStorageClassesResponse'
+  /otterscale.virtual_machine.v1.VirtualMachineService/CheckInfrastructureStatus:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: CheckInfrastructureStatus
+      operationId: VirtualMachineService_CheckInfrastructureStatus
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.CheckInfrastructureStatusRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.CheckInfrastructureStatusResponse'
+  /otterscale.virtual_machine.v1.VirtualMachineService/ListVirtualMachines:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: ListVirtualMachines
+      operationId: VirtualMachineService_ListVirtualMachines
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.ListVirtualMachinesRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.ListVirtualMachinesResponse'
+  /otterscale.virtual_machine.v1.VirtualMachineService/GetVirtualMachine:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: GetVirtualMachine
+      operationId: VirtualMachineService_GetVirtualMachine
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.GetVirtualMachineRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine'
+  /otterscale.virtual_machine.v1.VirtualMachineService/CreateVirtualMachine:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: CreateVirtualMachine
+      operationId: VirtualMachineService_CreateVirtualMachine
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.CreateVirtualMachineRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine'
+  /otterscale.virtual_machine.v1.VirtualMachineService/DeleteVirtualMachine:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: DeleteVirtualMachine
+      operationId: VirtualMachineService_DeleteVirtualMachine
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.DeleteVirtualMachineRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/AttachVirtualMachineDisk:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: AttachVirtualMachineDisk
+      operationId: VirtualMachineService_AttachVirtualMachineDisk
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.AttachVirtualMachineDiskRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Disk'
+  /otterscale.virtual_machine.v1.VirtualMachineService/DetachVirtualMachineDisk:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: DetachVirtualMachineDisk
+      operationId: VirtualMachineService_DetachVirtualMachineDisk
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.DetachVirtualMachineDiskRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/CreateVirtualMachineClone:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: CreateVirtualMachineClone
+      operationId: VirtualMachineService_CreateVirtualMachineClone
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.CreateVirtualMachineCloneRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Clone'
+  /otterscale.virtual_machine.v1.VirtualMachineService/DeleteVirtualMachineClone:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: DeleteVirtualMachineClone
+      operationId: VirtualMachineService_DeleteVirtualMachineClone
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.DeleteVirtualMachineCloneRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/CreateVirtualMachineSnapshot:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: CreateVirtualMachineSnapshot
+      operationId: VirtualMachineService_CreateVirtualMachineSnapshot
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.CreateVirtualMachineSnapshotRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Snapshot'
+  /otterscale.virtual_machine.v1.VirtualMachineService/DeleteVirtualMachineSnapshot:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: DeleteVirtualMachineSnapshot
+      operationId: VirtualMachineService_DeleteVirtualMachineSnapshot
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.DeleteVirtualMachineSnapshotRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/CreateVirtualMachineRestore:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: CreateVirtualMachineRestore
+      operationId: VirtualMachineService_CreateVirtualMachineRestore
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.CreateVirtualMachineRestoreRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Restore'
+  /otterscale.virtual_machine.v1.VirtualMachineService/DeleteVirtualMachineRestore:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: DeleteVirtualMachineRestore
+      operationId: VirtualMachineService_DeleteVirtualMachineRestore
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.DeleteVirtualMachineRestoreRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/StartVirtualMachine:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: StartVirtualMachine
+      operationId: VirtualMachineService_StartVirtualMachine
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.StartVirtualMachineRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/StopVirtualMachine:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: StopVirtualMachine
+      operationId: VirtualMachineService_StopVirtualMachine
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.StopVirtualMachineRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/RestartVirtualMachine:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: RestartVirtualMachine
+      operationId: VirtualMachineService_RestartVirtualMachine
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.RestartVirtualMachineRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/PauseInstance:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: PauseInstance
+      operationId: VirtualMachineService_PauseInstance
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.PauseInstanceRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/ResumeInstance:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: ResumeInstance
+      operationId: VirtualMachineService_ResumeInstance
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.ResumeInstanceRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/MigrateInstance:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: MigrateInstance
+      operationId: VirtualMachineService_MigrateInstance
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.MigrateInstanceRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/VNCInstance:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: VNCInstance
+      operationId: VirtualMachineService_VNCInstance
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.VNCInstanceRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.VNCInstanceResponse'
+  /otterscale.virtual_machine.v1.VirtualMachineService/ListDataVolumes:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: ListDataVolumes
+      operationId: VirtualMachineService_ListDataVolumes
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.ListDataVolumesRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.ListDataVolumesResponse'
+  /otterscale.virtual_machine.v1.VirtualMachineService/GetDataVolume:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: GetDataVolume
+      operationId: VirtualMachineService_GetDataVolume
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.GetDataVolumeRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.DataVolume'
+  /otterscale.virtual_machine.v1.VirtualMachineService/CreateDataVolume:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: CreateDataVolume
+      operationId: VirtualMachineService_CreateDataVolume
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.CreateDataVolumeRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.DataVolume'
+  /otterscale.virtual_machine.v1.VirtualMachineService/DeleteDataVolume:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: DeleteDataVolume
+      operationId: VirtualMachineService_DeleteDataVolume
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.DeleteDataVolumeRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/ExtendDataVolume:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: ExtendDataVolume
+      operationId: VirtualMachineService_ExtendDataVolume
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.ExtendDataVolumeRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/ListInstanceTypes:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: ListInstanceTypes
+      operationId: VirtualMachineService_ListInstanceTypes
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.ListInstanceTypesRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.ListInstanceTypesResponse'
+  /otterscale.virtual_machine.v1.VirtualMachineService/GetInstanceType:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: GetInstanceType
+      operationId: VirtualMachineService_GetInstanceType
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.GetInstanceTypeRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.InstanceType'
+  /otterscale.virtual_machine.v1.VirtualMachineService/CreateInstanceType:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: CreateInstanceType
+      operationId: VirtualMachineService_CreateInstanceType
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.CreateInstanceTypeRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.virtual_machine.v1.InstanceType'
+  /otterscale.virtual_machine.v1.VirtualMachineService/DeleteInstanceType:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: DeleteInstanceType
+      operationId: VirtualMachineService_DeleteInstanceType
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.DeleteInstanceTypeRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.virtual_machine.v1.VirtualMachineService/CreateVirtualMachineService:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: CreateVirtualMachineService
+      operationId: VirtualMachineService_CreateVirtualMachineService
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.CreateVirtualMachineServiceRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.application.v1.Application.Service'
+  /otterscale.virtual_machine.v1.VirtualMachineService/UpdateVirtualMachineService:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: UpdateVirtualMachineService
+      operationId: VirtualMachineService_UpdateVirtualMachineService
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.UpdateVirtualMachineServiceRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.application.v1.Application.Service'
+  /otterscale.virtual_machine.v1.VirtualMachineService/DeleteVirtualMachineService:
+    post:
+      tags:
+        - VirtualMachineService
+      summary: DeleteVirtualMachineService
+      operationId: VirtualMachineService_DeleteVirtualMachineService
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.virtual_machine.v1.DeleteVirtualMachineServiceRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.configuration.v1.ConfigurationService/GetConfiguration:
+    post:
+      tags:
+        - ConfigurationService
+      summary: GetConfiguration
+      operationId: ConfigurationService_GetConfiguration
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.configuration.v1.GetConfigurationRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.configuration.v1.Configuration'
+  /otterscale.configuration.v1.ConfigurationService/UpdateNTPServer:
+    post:
+      tags:
+        - ConfigurationService
+      summary: UpdateNTPServer
+      operationId: ConfigurationService_UpdateNTPServer
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.configuration.v1.UpdateNTPServerRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.NTPServer'
+  /otterscale.configuration.v1.ConfigurationService/UpdatePackageRepository:
+    post:
+      tags:
+        - ConfigurationService
+      summary: UpdatePackageRepository
+      operationId: ConfigurationService_UpdatePackageRepository
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.configuration.v1.UpdatePackageRepositoryRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.PackageRepository'
+  /otterscale.configuration.v1.ConfigurationService/CreateBootImage:
+    post:
+      tags:
+        - ConfigurationService
+      summary: CreateBootImage
+      operationId: ConfigurationService_CreateBootImage
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.configuration.v1.CreateBootImageRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.BootImage'
+  /otterscale.configuration.v1.ConfigurationService/SetDefaultBootImage:
+    post:
+      tags:
+        - ConfigurationService
+      summary: SetDefaultBootImage
+      operationId: ConfigurationService_SetDefaultBootImage
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.configuration.v1.SetDefaultBootImageRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.configuration.v1.ConfigurationService/ImportBootImages:
+    post:
+      tags:
+        - ConfigurationService
+      summary: ImportBootImages
+      operationId: ConfigurationService_ImportBootImages
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.configuration.v1.ImportBootImagesRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.configuration.v1.ConfigurationService/IsImportingBootImages:
+    post:
+      tags:
+        - ConfigurationService
+      summary: IsImportingBootImages
+      operationId: ConfigurationService_IsImportingBootImages
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.configuration.v1.IsImportingBootImagesRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.configuration.v1.IsImportingBootImagesResponse'
+  /otterscale.configuration.v1.ConfigurationService/ListBootImageSelections:
+    post:
+      tags:
+        - ConfigurationService
+      summary: ListBootImageSelections
+      operationId: ConfigurationService_ListBootImageSelections
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.configuration.v1.ListBootImageSelectionsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.configuration.v1.ListBootImageSelectionsResponse'
   /otterscale.bist.v1.BISTService/ListTestResults:
     post:
       tags:
@@ -3757,6 +5264,181 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.premium.v1.GetTierResponse'
+  /otterscale.large_language_model.v1.LargeLanguageModelService/CheckInfrastructureStatus:
+    post:
+      tags:
+        - LargeLanguageModelService
+      summary: CheckInfrastructureStatus
+      operationId: LargeLanguageModelService_CheckInfrastructureStatus
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.large_language_model.v1.CheckInfrastructureStatusRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.large_language_model.v1.CheckInfrastructureStatusResponse'
+  /otterscale.large_language_model.v1.LargeLanguageModelService/ListLargeLanguageModels:
+    post:
+      tags:
+        - LargeLanguageModelService
+      summary: ListLargeLanguageModels
+      operationId: LargeLanguageModelService_ListLargeLanguageModels
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.large_language_model.v1.ListLargeLanguageModelsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.large_language_model.v1.ListLargeLanguageModelsResponse'
+  /otterscale.large_language_model.v1.LargeLanguageModelService/GetLargeLanguageModel:
+    post:
+      tags:
+        - LargeLanguageModelService
+      summary: GetLargeLanguageModel
+      operationId: LargeLanguageModelService_GetLargeLanguageModel
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.large_language_model.v1.GetLargeLanguageModelRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.large_language_model.v1.LargeLanguageModel'
+  /otterscale.large_language_model.v1.LargeLanguageModelService/CreateLargeLanguageModel:
+    post:
+      tags:
+        - LargeLanguageModelService
+      summary: CreateLargeLanguageModel
+      operationId: LargeLanguageModelService_CreateLargeLanguageModel
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.large_language_model.v1.CreateLargeLanguageModelRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.large_language_model.v1.LargeLanguageModel'
+  /otterscale.large_language_model.v1.LargeLanguageModelService/DeleteLargeLanguageModel:
+    post:
+      tags:
+        - LargeLanguageModelService
+      summary: DeleteLargeLanguageModel
+      operationId: LargeLanguageModelService_DeleteLargeLanguageModel
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.large_language_model.v1.DeleteLargeLanguageModelRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
   /otterscale.scope.v1.ScopeService/ListScopes:
     post:
       tags:
@@ -4922,6 +6604,12 @@ components:
             - string
           title: used_objects
           format: int64
+        maxBytes:
+          type:
+            - integer
+            - string
+          title: max_bytes
+          format: int64
         placementGroupCount:
           type:
             - integer
@@ -5427,11 +7115,11 @@ components:
     otterscale.facility.v1.AddFacilityUnitsResponse:
       type: object
       properties:
-        units:
+        unitNames:
           type: array
           items:
             type: string
-          title: units
+          title: unit_names
       title: AddFacilityUnitsResponse
       additionalProperties: false
     otterscale.facility.v1.Constraint:
@@ -5720,6 +7408,9 @@ components:
           items:
             type: string
           title: ports
+        hostname:
+          type: string
+          title: hostname
         charmName:
           type: string
           title: charm_name
@@ -5861,6 +7552,17 @@ components:
               required:
                 - machine
       title: Placement
+      additionalProperties: false
+    otterscale.facility.v1.ResolveFacilityUnitErrorsRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        unitName:
+          type: string
+          title: unit_name
+      title: ResolveFacilityUnitErrorsRequest
       additionalProperties: false
     otterscale.facility.v1.Tag:
       type: object
@@ -6068,6 +7770,120 @@ components:
           title: directive
       title: Unit
       additionalProperties: false
+    otterscale.essential.v1.GPURelation:
+      type: object
+      oneOf:
+        - properties:
+            gpu:
+              title: gpu
+              $ref: '#/components/schemas/otterscale.essential.v1.GPURelation.GPU'
+          title: gpu
+          required:
+            - gpu
+        - properties:
+            machine:
+              title: machine
+              $ref: '#/components/schemas/otterscale.essential.v1.GPURelation.Machine'
+          title: machine
+          required:
+            - machine
+        - properties:
+            pod:
+              title: pod
+              $ref: '#/components/schemas/otterscale.essential.v1.GPURelation.Pod'
+          title: pod
+          required:
+            - pod
+      title: GPURelation
+      additionalProperties: false
+    otterscale.essential.v1.GPURelation.GPU:
+      type: object
+      properties:
+        id:
+          type: string
+          title: id
+        index:
+          type: integer
+          title: index
+        count:
+          type: integer
+          title: count
+          format: int32
+        cores:
+          type: integer
+          title: cores
+          format: int32
+        memoryBytes:
+          type:
+            - integer
+            - string
+          title: memory_bytes
+          format: int64
+        type:
+          type: string
+          title: type
+        health:
+          type: boolean
+          title: health
+        machineId:
+          type: string
+          title: machine_id
+      title: GPU
+      additionalProperties: false
+    otterscale.essential.v1.GPURelation.Machine:
+      type: object
+      properties:
+        id:
+          type: string
+          title: id
+        hostname:
+          type: string
+          title: hostname
+      title: Machine
+      additionalProperties: false
+    otterscale.essential.v1.GPURelation.Pod:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        modelName:
+          type: string
+          title: model_name
+        bindingPhase:
+          type: string
+          title: binding_phase
+        boundAt:
+          title: bound_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        devices:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.essential.v1.GPURelation.Pod.Device'
+          title: devices
+      title: Pod
+      additionalProperties: false
+    otterscale.essential.v1.GPURelation.Pod.Device:
+      type: object
+      properties:
+        gpuId:
+          type: string
+          title: gpu_id
+        usedCores:
+          type: integer
+          title: used_cores
+          format: int32
+        usedMemoryBytes:
+          type:
+            - integer
+            - string
+          title: used_memory_bytes
+          format: int64
+      title: Device
+      additionalProperties: false
     otterscale.essential.v1.IsMachineDeployedRequest:
       type: object
       properties:
@@ -6108,6 +7924,96 @@ components:
           title: essentials
       title: ListEssentialsResponse
       additionalProperties: false
+    otterscale.essential.v1.ListGPURelationsByMachineRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        machineId:
+          type: string
+          title: machine_id
+      title: ListGPURelationsByMachineRequest
+      additionalProperties: false
+    otterscale.essential.v1.ListGPURelationsByMachineResponse:
+      type: object
+      properties:
+        gpuRelations:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.essential.v1.GPURelation'
+          title: gpu_relations
+      title: ListGPURelationsByMachineResponse
+      additionalProperties: false
+    otterscale.essential.v1.ListGPURelationsByModelRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        modelName:
+          type: string
+          title: model_name
+      title: ListGPURelationsByModelRequest
+      additionalProperties: false
+    otterscale.essential.v1.ListGPURelationsByModelResponse:
+      type: object
+      properties:
+        gpuRelations:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.essential.v1.GPURelation'
+          title: gpu_relations
+      title: ListGPURelationsByModelResponse
+      additionalProperties: false
+    otterscale.essential.v1.ListKubernetesNodeLabelsRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        hostname:
+          type: string
+          title: hostname
+        all:
+          type: boolean
+          title: all
+      title: ListKubernetesNodeLabelsRequest
+      additionalProperties: false
+    otterscale.essential.v1.ListKubernetesNodeLabelsResponse:
+      type: object
+      properties:
+        labels:
+          type: object
+          title: labels
+          additionalProperties:
+            type: string
+            title: value
+      title: ListKubernetesNodeLabelsResponse
+      additionalProperties: false
+    otterscale.essential.v1.ListKubernetesNodeLabelsResponse.LabelsEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          title: key
+        value:
+          type: string
+          title: value
+      title: LabelsEntry
+      additionalProperties: false
     otterscale.essential.v1.ListStatusesRequest:
       type: object
       properties:
@@ -6139,6 +8045,59 @@ components:
           type: string
           title: details
       title: Status
+      additionalProperties: false
+    otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        hostname:
+          type: string
+          title: hostname
+        labels:
+          type: object
+          title: labels
+          additionalProperties:
+            type: string
+            title: value
+      title: UpdateKubernetesNodeLabelsRequest
+      additionalProperties: false
+    otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          title: key
+        value:
+          type: string
+          title: value
+      title: LabelsEntry
+      additionalProperties: false
+    otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse:
+      type: object
+      properties:
+        labels:
+          type: object
+          title: labels
+          additionalProperties:
+            type: string
+            title: value
+      title: UpdateKubernetesNodeLabelsResponse
+      additionalProperties: false
+    otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          title: key
+        value:
+          type: string
+          title: value
+      title: LabelsEntry
       additionalProperties: false
     otterscale.network.v1.CreateIPRangeRequest:
       type: object
@@ -6682,6 +8641,11 @@ components:
           items:
             $ref: '#/components/schemas/otterscale.machine.v1.Machine.NetworkInterface'
           title: network_interfaces
+        gpuDevices:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.machine.v1.Machine.NodeDevice'
+          title: gpu_devices
       title: Machine
       additionalProperties: false
     otterscale.machine.v1.Machine.BlockDevice:
@@ -6818,6 +8782,29 @@ components:
           title: dhcp_on
       title: NetworkInterface
       additionalProperties: false
+    otterscale.machine.v1.Machine.NodeDevice:
+      type: object
+      properties:
+        vendorId:
+          type: string
+          title: vendor_id
+        vendorName:
+          type: string
+          title: vendor_name
+        productId:
+          type: string
+          title: product_id
+        productName:
+          type: string
+          title: product_name
+        busName:
+          type: string
+          title: bus_name
+        pciAddress:
+          type: string
+          title: pci_address
+      title: NodeDevice
+      additionalProperties: false
     otterscale.machine.v1.Machine.WorkloadAnnotationsEntry:
       type: object
       properties:
@@ -6871,6 +8858,20 @@ components:
           title: result
           $ref: '#/components/schemas/otterscale.environment.v1.CheckHealthResponse.Result'
       title: CheckHealthResponse
+      additionalProperties: false
+    otterscale.environment.v1.GetConfigHelmRepositoriesRequest:
+      type: object
+      title: GetConfigHelmRepositoriesRequest
+      additionalProperties: false
+    otterscale.environment.v1.GetConfigHelmRepositoriesResponse:
+      type: object
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+          title: urls
+      title: GetConfigHelmRepositoriesResponse
       additionalProperties: false
     otterscale.environment.v1.GetPrometheusRequest:
       type: object
@@ -6968,186 +8969,6 @@ components:
           type: string
           title: message
       title: WatchStatusResponse
-      additionalProperties: false
-    otterscale.configuration.v1.Configuration:
-      type: object
-      properties:
-        ntpServer:
-          title: ntp_server
-          $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.NTPServer'
-        packageRepositories:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.PackageRepository'
-          title: package_repositories
-        bootImages:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.BootImage'
-          title: boot_images
-      title: Configuration
-      additionalProperties: false
-    otterscale.configuration.v1.Configuration.BootImage:
-      type: object
-      properties:
-        source:
-          type: string
-          title: source
-        distroSeries:
-          type: string
-          title: distro_series
-        name:
-          type: string
-          title: name
-        architectureStatusMap:
-          type: object
-          title: architecture_status_map
-          additionalProperties:
-            type: string
-            title: value
-        default:
-          type: boolean
-          title: default
-      title: BootImage
-      additionalProperties: false
-    otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntry:
-      type: object
-      properties:
-        key:
-          type: string
-          title: key
-        value:
-          type: string
-          title: value
-      title: ArchitectureStatusMapEntry
-      additionalProperties: false
-    otterscale.configuration.v1.Configuration.BootImageSelection:
-      type: object
-      properties:
-        distroSeries:
-          type: string
-          title: distro_series
-        name:
-          type: string
-          title: name
-        architectures:
-          type: array
-          items:
-            type: string
-          title: architectures
-      title: BootImageSelection
-      additionalProperties: false
-    otterscale.configuration.v1.Configuration.NTPServer:
-      type: object
-      properties:
-        addresses:
-          type: array
-          items:
-            type: string
-          title: addresses
-      title: NTPServer
-      additionalProperties: false
-    otterscale.configuration.v1.Configuration.PackageRepository:
-      type: object
-      properties:
-        id:
-          type:
-            - integer
-            - string
-          title: id
-          format: int64
-        name:
-          type: string
-          title: name
-        url:
-          type: string
-          title: url
-        enabled:
-          type: boolean
-          title: enabled
-      title: PackageRepository
-      additionalProperties: false
-    otterscale.configuration.v1.CreateBootImageRequest:
-      type: object
-      properties:
-        distroSeries:
-          type: string
-          title: distro_series
-        architectures:
-          type: array
-          items:
-            type: string
-          title: architectures
-      title: CreateBootImageRequest
-      additionalProperties: false
-    otterscale.configuration.v1.GetConfigurationRequest:
-      type: object
-      title: GetConfigurationRequest
-      additionalProperties: false
-    otterscale.configuration.v1.ImportBootImagesRequest:
-      type: object
-      title: ImportBootImagesRequest
-      additionalProperties: false
-    otterscale.configuration.v1.IsImportingBootImagesRequest:
-      type: object
-      title: IsImportingBootImagesRequest
-      additionalProperties: false
-    otterscale.configuration.v1.IsImportingBootImagesResponse:
-      type: object
-      properties:
-        importing:
-          type: boolean
-          title: importing
-      title: IsImportingBootImagesResponse
-      additionalProperties: false
-    otterscale.configuration.v1.ListBootImageSelectionsRequest:
-      type: object
-      title: ListBootImageSelectionsRequest
-      additionalProperties: false
-    otterscale.configuration.v1.ListBootImageSelectionsResponse:
-      type: object
-      properties:
-        bootImageSelections:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.BootImageSelection'
-          title: boot_image_selections
-      title: ListBootImageSelectionsResponse
-      additionalProperties: false
-    otterscale.configuration.v1.SetDefaultBootImageRequest:
-      type: object
-      properties:
-        distroSeries:
-          type: string
-          title: distro_series
-      title: SetDefaultBootImageRequest
-      additionalProperties: false
-    otterscale.configuration.v1.UpdateNTPServerRequest:
-      type: object
-      properties:
-        addresses:
-          type: array
-          items:
-            type: string
-          title: addresses
-      title: UpdateNTPServerRequest
-      additionalProperties: false
-    otterscale.configuration.v1.UpdatePackageRepositoryRequest:
-      type: object
-      properties:
-        id:
-          type:
-            - integer
-            - string
-          title: id
-          format: int64
-        url:
-          type: string
-          title: url
-        skipJuju:
-          type: boolean
-          title: skip_juju
-      title: UpdatePackageRepositoryRequest
       additionalProperties: false
     google.protobuf.NullValue:
       type: string
@@ -7546,6 +9367,9 @@ components:
           type: integer
           title: node_port
           format: int32
+        name:
+          type: string
+          title: name
         protocol:
           type: string
           title: protocol
@@ -7597,6 +9421,23 @@ components:
           title: value
       title: ValuesMapEntry
       additionalProperties: false
+    otterscale.application.v1.DeleteApplicationPodRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: DeleteApplicationPodRequest
+      additionalProperties: false
     otterscale.application.v1.DeleteReleaseRequest:
       type: object
       properties:
@@ -7616,6 +9457,44 @@ components:
           type: boolean
           title: dry_run
       title: DeleteReleaseRequest
+      additionalProperties: false
+    otterscale.application.v1.ExecuteTTYRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        podName:
+          type: string
+          title: pod_name
+        containerName:
+          type: string
+          title: container_name
+        command:
+          type: array
+          items:
+            type: string
+          title: command
+      title: ExecuteTTYRequest
+      additionalProperties: false
+    otterscale.application.v1.ExecuteTTYResponse:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          title: session_id
+        stdout:
+          type: string
+          title: stdout
+          format: byte
+          description: raw TTY manages stdout and stderr over the stdout stream
+      title: ExecuteTTYResponse
       additionalProperties: false
     otterscale.application.v1.GetApplicationRequest:
       type: object
@@ -7685,6 +9564,27 @@ components:
           title: charts
       title: ListChartsResponse
       additionalProperties: false
+    otterscale.application.v1.ListNamespacesRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+      title: ListNamespacesRequest
+      additionalProperties: false
+    otterscale.application.v1.ListNamespacesResponse:
+      type: object
+      properties:
+        namespaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.application.v1.Namespace'
+          title: namespaces
+      title: ListNamespacesResponse
+      additionalProperties: false
     otterscale.application.v1.ListReleasesRequest:
       type: object
       properties:
@@ -7727,6 +9627,54 @@ components:
           title: storage_classes
       title: ListStorageClassesResponse
       additionalProperties: false
+    otterscale.application.v1.Namespace:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        labels:
+          type: object
+          title: labels
+          additionalProperties:
+            type: string
+            title: value
+        createdAt:
+          title: created_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+      title: Namespace
+      additionalProperties: false
+    otterscale.application.v1.Namespace.LabelsEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          title: key
+        value:
+          type: string
+          title: value
+      title: LabelsEntry
+      additionalProperties: false
+    otterscale.application.v1.RestartApplicationRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+        type:
+          type: string
+          title: type
+      title: RestartApplicationRequest
+      additionalProperties: false
     otterscale.application.v1.RollbackReleaseRequest:
       type: object
       properties:
@@ -7746,6 +9694,30 @@ components:
           type: boolean
           title: dry_run
       title: RollbackReleaseRequest
+      additionalProperties: false
+    otterscale.application.v1.ScaleApplicationRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+        type:
+          type: string
+          title: type
+        replicas:
+          type: integer
+          title: replicas
+          format: int32
+      title: ScaleApplicationRequest
       additionalProperties: false
     otterscale.application.v1.StorageClass:
       type: object
@@ -7809,6 +9781,1186 @@ components:
           type: string
           title: values_yaml
       title: UpdateReleaseRequest
+      additionalProperties: false
+    otterscale.application.v1.WatchLogsRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        podName:
+          type: string
+          title: pod_name
+        containerName:
+          type: string
+          title: container_name
+      title: WatchLogsRequest
+      additionalProperties: false
+    otterscale.application.v1.WatchLogsResponse:
+      type: object
+      properties:
+        log:
+          type: string
+          title: log
+      title: WatchLogsResponse
+      additionalProperties: false
+    otterscale.application.v1.WriteTTYRequest:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          title: session_id
+        stdin:
+          type: string
+          title: stdin
+          format: byte
+      title: WriteTTYRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.CheckInfrastructureStatusResponse.Result:
+      type: string
+      title: Result
+      enum:
+        - UNKNOWN
+        - OK
+        - NOT_INSTALLED
+        - FAILED
+        - PENDING
+    otterscale.virtual_machine.v1.DataVolume.Source.Type:
+      type: string
+      title: Type
+      enum:
+        - BLANK_IMAGE
+        - HTTP_URL
+        - EXISTING_PERSISTENT_VOLUME_CLAIM
+    otterscale.virtual_machine.v1.VirtualMachine.Disk.Bus:
+      type: string
+      title: Bus
+      enum:
+        - VIRTIO
+        - SATA
+        - SCSI
+        - USB
+    otterscale.virtual_machine.v1.VirtualMachine.Disk.Volume.Source.Type:
+      type: string
+      title: Type
+      enum:
+        - UNKNOWN
+        - DATA_VOLUME
+        - CLOUD_INIT_NO_CLOUD
+    otterscale.virtual_machine.v1.AttachVirtualMachineDiskRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+        dataVolumeName:
+          type: string
+          title: data_volume_name
+      title: AttachVirtualMachineDiskRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.CheckInfrastructureStatusRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+      title: CheckInfrastructureStatusRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.CheckInfrastructureStatusResponse:
+      type: object
+      properties:
+        result:
+          title: result
+          $ref: '#/components/schemas/otterscale.virtual_machine.v1.CheckInfrastructureStatusResponse.Result'
+      title: CheckInfrastructureStatusResponse
+      additionalProperties: false
+    otterscale.virtual_machine.v1.CreateDataVolumeRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        source:
+          title: source
+          $ref: '#/components/schemas/otterscale.virtual_machine.v1.DataVolume.Source'
+        bootImage:
+          type: boolean
+          title: boot_image
+        sizeBytes:
+          type:
+            - integer
+            - string
+          title: size_bytes
+          format: int64
+      title: CreateDataVolumeRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.CreateInstanceTypeRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        cpuCores:
+          type: integer
+          title: cpu_cores
+        memoryBytes:
+          type:
+            - integer
+            - string
+          title: memory_bytes
+          format: int64
+      title: CreateInstanceTypeRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.CreateVirtualMachineCloneRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+        sourceVirtualMachineName:
+          type: string
+          title: source_virtual_machine_name
+        targetVirtualMachineName:
+          type: string
+          title: target_virtual_machine_name
+      title: CreateVirtualMachineCloneRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.CreateVirtualMachineRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        instanceTypeName:
+          type: string
+          title: instance_type_name
+        bootDataVolumeName:
+          type: string
+          title: boot_data_volume_name
+        startupScript:
+          type: string
+          title: startup_script
+      title: CreateVirtualMachineRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.CreateVirtualMachineRestoreRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+        virtualMachineName:
+          type: string
+          title: virtual_machine_name
+        snapshotName:
+          type: string
+          title: snapshot_name
+      title: CreateVirtualMachineRestoreRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.CreateVirtualMachineServiceRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+        virtualMachineName:
+          type: string
+          title: virtual_machine_name
+        ports:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.application.v1.Application.Service.Port'
+          title: ports
+      title: CreateVirtualMachineServiceRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.CreateVirtualMachineSnapshotRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+        virtualMachineName:
+          type: string
+          title: virtual_machine_name
+      title: CreateVirtualMachineSnapshotRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.DataVolume:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        source:
+          title: source
+          $ref: '#/components/schemas/otterscale.virtual_machine.v1.DataVolume.Source'
+        bootImage:
+          type: boolean
+          title: boot_image
+        phase:
+          type: string
+          title: phase
+        progress:
+          type: string
+          title: progress
+        sizeBytes:
+          type:
+            - integer
+            - string
+          title: size_bytes
+          format: int64
+          description: requested size in bytes
+        PersistentVolumeClaim:
+          title: PersistentVolumeClaim
+          $ref: '#/components/schemas/otterscale.application.v1.Application.PersistentVolumeClaim'
+        lastCondition:
+          title: last_condition
+          $ref: '#/components/schemas/otterscale.virtual_machine.v1.DataVolume.Condition'
+      title: DataVolume
+      additionalProperties: false
+    otterscale.virtual_machine.v1.DataVolume.Condition:
+      type: object
+      properties:
+        type:
+          type: string
+          title: type
+        status:
+          type: string
+          title: status
+        reason:
+          type: string
+          title: reason
+        message:
+          type: string
+          title: message
+        heartbeatAt:
+          title: heartbeat_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        transitionedAt:
+          title: transitioned_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+      title: Condition
+      additionalProperties: false
+    otterscale.virtual_machine.v1.DataVolume.Source:
+      type: object
+      properties:
+        type:
+          title: type
+          $ref: '#/components/schemas/otterscale.virtual_machine.v1.DataVolume.Source.Type'
+        data:
+          type: string
+          title: data
+      title: Source
+      additionalProperties: false
+    otterscale.virtual_machine.v1.DeleteDataVolumeRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: DeleteDataVolumeRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.DeleteInstanceTypeRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: DeleteInstanceTypeRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.DeleteVirtualMachineCloneRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: DeleteVirtualMachineCloneRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.DeleteVirtualMachineRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: DeleteVirtualMachineRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.DeleteVirtualMachineRestoreRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: DeleteVirtualMachineRestoreRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.DeleteVirtualMachineServiceRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: DeleteVirtualMachineServiceRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.DeleteVirtualMachineSnapshotRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: DeleteVirtualMachineSnapshotRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.DetachVirtualMachineDiskRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+        dataVolumeName:
+          type: string
+          title: data_volume_name
+      title: DetachVirtualMachineDiskRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.ExtendDataVolumeRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+        sizeBytes:
+          type:
+            - integer
+            - string
+          title: size_bytes
+          format: int64
+      title: ExtendDataVolumeRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.GetDataVolumeRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: GetDataVolumeRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.GetInstanceTypeRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: GetInstanceTypeRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.GetVirtualMachineRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: GetVirtualMachineRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.InstanceType:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        cpuCores:
+          type: integer
+          title: cpu_cores
+        memoryBytes:
+          type:
+            - integer
+            - string
+          title: memory_bytes
+          format: int64
+        clusterWide:
+          type: boolean
+          title: cluster_wide
+        createdAt:
+          title: created_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+      title: InstanceType
+      additionalProperties: false
+    otterscale.virtual_machine.v1.ListDataVolumesRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        bootImage:
+          type: boolean
+          title: boot_image
+      title: ListDataVolumesRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.ListDataVolumesResponse:
+      type: object
+      properties:
+        dataVolumes:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.virtual_machine.v1.DataVolume'
+          title: data_volumes
+      title: ListDataVolumesResponse
+      additionalProperties: false
+    otterscale.virtual_machine.v1.ListInstanceTypesRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        includeClusterWide:
+          type: boolean
+          title: include_cluster_wide
+      title: ListInstanceTypesRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.ListInstanceTypesResponse:
+      type: object
+      properties:
+        instanceTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.virtual_machine.v1.InstanceType'
+          title: instance_types
+      title: ListInstanceTypesResponse
+      additionalProperties: false
+    otterscale.virtual_machine.v1.ListVirtualMachinesRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+      title: ListVirtualMachinesRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.ListVirtualMachinesResponse:
+      type: object
+      properties:
+        virtualMachines:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine'
+          title: virtual_machines
+      title: ListVirtualMachinesResponse
+      additionalProperties: false
+    otterscale.virtual_machine.v1.MigrateInstanceRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+        hostname:
+          type: string
+          title: hostname
+      title: MigrateInstanceRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.PauseInstanceRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: PauseInstanceRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.RestartVirtualMachineRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: RestartVirtualMachineRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.ResumeInstanceRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: ResumeInstanceRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.StartVirtualMachineRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: StartVirtualMachineRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.StopVirtualMachineRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: StopVirtualMachineRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.UpdateVirtualMachineServiceRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+        ports:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.application.v1.Application.Service.Port'
+          title: ports
+      title: UpdateVirtualMachineServiceRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.VNCInstanceRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        name:
+          type: string
+          title: name
+      title: VNCInstanceRequest
+      additionalProperties: false
+    otterscale.virtual_machine.v1.VNCInstanceResponse:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          title: session_id
+      title: VNCInstanceResponse
+      additionalProperties: false
+    otterscale.virtual_machine.v1.VirtualMachine:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        status:
+          type: string
+          title: status
+        ready:
+          type: boolean
+          title: ready
+        instancePhase:
+          type: string
+          title: instance_phase
+        machineId:
+          type: string
+          title: machine_id
+        hostname:
+          type: string
+          title: hostname
+        ipAddresses:
+          type: array
+          items:
+            type: string
+          title: ip_addresses
+        createdAt:
+          title: created_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.application.v1.Application.Service'
+          title: services
+        instanceType:
+          title: instance_type
+          $ref: '#/components/schemas/otterscale.virtual_machine.v1.InstanceType'
+        disks:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Disk'
+          title: disks
+        clones:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Clone'
+          title: clones
+        snapshots:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Snapshot'
+          title: snapshots
+        restores:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Restore'
+          title: restores
+      title: VirtualMachine
+      additionalProperties: false
+    otterscale.virtual_machine.v1.VirtualMachine.Clone:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        sourceName:
+          type: string
+          title: source_name
+        targetName:
+          type: string
+          title: target_name
+        phase:
+          type: string
+          title: phase
+        createdAt:
+          title: created_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        lastCondition:
+          title: last_condition
+          $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
+      title: Clone
+      additionalProperties: false
+    otterscale.virtual_machine.v1.VirtualMachine.Disk:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        bus:
+          title: bus
+          $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Disk.Bus'
+        bootOrder:
+          type: integer
+          title: boot_order
+        volume:
+          title: volume
+          $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Disk.Volume'
+      title: Disk
+      additionalProperties: false
+    otterscale.virtual_machine.v1.VirtualMachine.Disk.Volume:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        source:
+          title: source
+          $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Disk.Volume.Source'
+      title: Volume
+      additionalProperties: false
+    otterscale.virtual_machine.v1.VirtualMachine.Disk.Volume.Source:
+      type: object
+      properties:
+        type:
+          title: type
+          $ref: '#/components/schemas/otterscale.virtual_machine.v1.VirtualMachine.Disk.Volume.Source.Type'
+        data:
+          type: string
+          title: data
+      title: Source
+      additionalProperties: false
+    otterscale.virtual_machine.v1.VirtualMachine.Restore:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        targetName:
+          type: string
+          title: target_name
+        snapshotName:
+          type: string
+          title: snapshot_name
+        complete:
+          type: boolean
+          title: complete
+        createdAt:
+          title: created_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        lastCondition:
+          title: last_condition
+          $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
+      title: Restore
+      additionalProperties: false
+    otterscale.virtual_machine.v1.VirtualMachine.Snapshot:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        sourceName:
+          type: string
+          title: source_name
+        phase:
+          type: string
+          title: phase
+        readyToUse:
+          type: boolean
+          title: ready_to_use
+        createdAt:
+          title: created_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        lastCondition:
+          title: last_condition
+          $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
+      title: Snapshot
+      additionalProperties: false
+    otterscale.configuration.v1.Configuration:
+      type: object
+      properties:
+        ntpServer:
+          title: ntp_server
+          $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.NTPServer'
+        packageRepositories:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.PackageRepository'
+          title: package_repositories
+        bootImages:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.BootImage'
+          title: boot_images
+      title: Configuration
+      additionalProperties: false
+    otterscale.configuration.v1.Configuration.BootImage:
+      type: object
+      properties:
+        source:
+          type: string
+          title: source
+        distroSeries:
+          type: string
+          title: distro_series
+        name:
+          type: string
+          title: name
+        architectureStatusMap:
+          type: object
+          title: architecture_status_map
+          additionalProperties:
+            type: string
+            title: value
+        default:
+          type: boolean
+          title: default
+      title: BootImage
+      additionalProperties: false
+    otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          title: key
+        value:
+          type: string
+          title: value
+      title: ArchitectureStatusMapEntry
+      additionalProperties: false
+    otterscale.configuration.v1.Configuration.BootImageSelection:
+      type: object
+      properties:
+        distroSeries:
+          type: string
+          title: distro_series
+        name:
+          type: string
+          title: name
+        architectures:
+          type: array
+          items:
+            type: string
+          title: architectures
+      title: BootImageSelection
+      additionalProperties: false
+    otterscale.configuration.v1.Configuration.NTPServer:
+      type: object
+      properties:
+        addresses:
+          type: array
+          items:
+            type: string
+          title: addresses
+      title: NTPServer
+      additionalProperties: false
+    otterscale.configuration.v1.Configuration.PackageRepository:
+      type: object
+      properties:
+        id:
+          type:
+            - integer
+            - string
+          title: id
+          format: int64
+        name:
+          type: string
+          title: name
+        url:
+          type: string
+          title: url
+        enabled:
+          type: boolean
+          title: enabled
+      title: PackageRepository
+      additionalProperties: false
+    otterscale.configuration.v1.CreateBootImageRequest:
+      type: object
+      properties:
+        distroSeries:
+          type: string
+          title: distro_series
+        architectures:
+          type: array
+          items:
+            type: string
+          title: architectures
+      title: CreateBootImageRequest
+      additionalProperties: false
+    otterscale.configuration.v1.GetConfigurationRequest:
+      type: object
+      title: GetConfigurationRequest
+      additionalProperties: false
+    otterscale.configuration.v1.ImportBootImagesRequest:
+      type: object
+      title: ImportBootImagesRequest
+      additionalProperties: false
+    otterscale.configuration.v1.IsImportingBootImagesRequest:
+      type: object
+      title: IsImportingBootImagesRequest
+      additionalProperties: false
+    otterscale.configuration.v1.IsImportingBootImagesResponse:
+      type: object
+      properties:
+        importing:
+          type: boolean
+          title: importing
+      title: IsImportingBootImagesResponse
+      additionalProperties: false
+    otterscale.configuration.v1.ListBootImageSelectionsRequest:
+      type: object
+      title: ListBootImageSelectionsRequest
+      additionalProperties: false
+    otterscale.configuration.v1.ListBootImageSelectionsResponse:
+      type: object
+      properties:
+        bootImageSelections:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.BootImageSelection'
+          title: boot_image_selections
+      title: ListBootImageSelectionsResponse
+      additionalProperties: false
+    otterscale.configuration.v1.SetDefaultBootImageRequest:
+      type: object
+      properties:
+        distroSeries:
+          type: string
+          title: distro_series
+      title: SetDefaultBootImageRequest
+      additionalProperties: false
+    otterscale.configuration.v1.UpdateNTPServerRequest:
+      type: object
+      properties:
+        addresses:
+          type: array
+          items:
+            type: string
+          title: addresses
+      title: UpdateNTPServerRequest
+      additionalProperties: false
+    otterscale.configuration.v1.UpdatePackageRepositoryRequest:
+      type: object
+      properties:
+        id:
+          type:
+            - integer
+            - string
+          title: id
+          format: int64
+        url:
+          type: string
+          title: url
+        skipJuju:
+          type: boolean
+          title: skip_juju
+      title: UpdatePackageRepositoryRequest
       additionalProperties: false
     otterscale.bist.v1.FIO.Input.AccessMode:
       type: string
@@ -8273,6 +11425,108 @@ components:
           $ref: '#/components/schemas/otterscale.premium.v1.PremiumTier'
       title: GetTierResponse
       additionalProperties: false
+    otterscale.large_language_model.v1.CheckInfrastructureStatusResponse.Result:
+      type: string
+      title: Result
+      enum:
+        - UNKNOWN
+        - OK
+        - NOT_INSTALLED
+        - FAILED
+        - PENDING
+    otterscale.large_language_model.v1.CheckInfrastructureStatusRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+      title: CheckInfrastructureStatusRequest
+      additionalProperties: false
+    otterscale.large_language_model.v1.CheckInfrastructureStatusResponse:
+      type: object
+      properties:
+        result:
+          title: result
+          $ref: '#/components/schemas/otterscale.large_language_model.v1.CheckInfrastructureStatusResponse.Result'
+      title: CheckInfrastructureStatusResponse
+      additionalProperties: false
+    otterscale.large_language_model.v1.CreateLargeLanguageModelRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        description:
+          type: string
+          title: description
+        version:
+          type: string
+          title: version
+        comment:
+          type: string
+          title: comment
+      title: CreateLargeLanguageModelRequest
+      additionalProperties: false
+    otterscale.large_language_model.v1.DeleteLargeLanguageModelRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          title: id
+      title: DeleteLargeLanguageModelRequest
+      additionalProperties: false
+    otterscale.large_language_model.v1.GetLargeLanguageModelRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          title: id
+      title: GetLargeLanguageModelRequest
+      additionalProperties: false
+    otterscale.large_language_model.v1.LargeLanguageModel:
+      type: object
+      properties:
+        id:
+          type: string
+          title: id
+        name:
+          type: string
+          title: name
+        description:
+          type: string
+          title: description
+        version:
+          type: string
+          title: version
+        comment:
+          type: string
+          title: comment
+      title: LargeLanguageModel
+      additionalProperties: false
+    otterscale.large_language_model.v1.ListLargeLanguageModelsRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+      title: ListLargeLanguageModelsRequest
+      additionalProperties: false
+    otterscale.large_language_model.v1.ListLargeLanguageModelsResponse:
+      type: object
+      properties:
+        largeLanguageModels:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.large_language_model.v1.LargeLanguageModel'
+          title: large_language_models
+      title: ListLargeLanguageModelsResponse
+      additionalProperties: false
     otterscale.scope.v1.CreateScopeRequest:
       type: object
       properties:
@@ -8355,10 +11609,12 @@ tags:
   - name: NetworkService
   - name: MachineService
   - name: EnvironmentService
-  - name: ConfigurationService
   - name: ApplicationService
+  - name: VirtualMachineService
+  - name: ConfigurationService
   - name: BISTService
   - name: PremiumService
+  - name: LargeLanguageModelService
   - name: ScopeService
 externalDocs:
   description: Website
