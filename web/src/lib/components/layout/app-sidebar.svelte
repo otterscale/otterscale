@@ -14,7 +14,7 @@
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
+	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { PremiumService, PremiumTier } from '$lib/api/premium/v1/premium_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
@@ -31,7 +31,7 @@
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
 	const premiumClient = createClient(PremiumService, transport);
-	const essentialClient = createClient(EssentialService, transport);
+	const orchClient = createClient(OrchestratorService, transport);
 	const scopes = writable<Scope[]>([]);
 	const trigger = writable<boolean>(false);
 
@@ -70,7 +70,7 @@
 
 	async function fetchEssentials(uuid: string) {
 		try {
-			const response = await essentialClient.listEssentials({ scopeUuid: uuid });
+			const response = await orchClient.listEssentials({ scopeUuid: uuid });
 			const { essentials } = response;
 
 			currentCeph.set(essentials.find((e) => e.type === Essential_Type.CEPH));

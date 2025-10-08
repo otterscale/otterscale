@@ -1,13 +1,13 @@
 edition = "2023";
 
-package otterscale.essential.v1;
+package otterscale.orchestrator.v1;
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/otterscale/otterscale/api/essential/v1;pb";
+option go_package = "github.com/otterscale/otterscale/api/orchestrator/v1;pb";
 
-service EssentialService {
+service OrchestratorService {
   rpc IsMachineDeployed(IsMachineDeployedRequest) returns (IsMachineDeployedResponse);
   rpc ListStatuses(ListStatusesRequest) returns (ListStatusesResponse);
   rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse);
