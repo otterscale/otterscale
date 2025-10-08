@@ -4,8 +4,11 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { BISTService, InternalObjectService_Type, type InternalObjectService } from '$lib/api/bist/v1/bist_pb';
-	// import { BISTService, InternalObjectService_Type } from '$gen/api/bist/v1/bist_pb'
+	import {
+		ConfigurationService,
+		InternalObjectService_Type,
+		type InternalObjectService,
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { cn } from '$lib/utils.js';
@@ -19,12 +22,12 @@
 	let scopeUuid = $state('b62d195e-3905-4960-85ee-7673f71eb21e');
 
 	const transport: Transport = getContext('transport');
-	const bistClient = createClient(BISTService, transport);
+	const client = createClient(ConfigurationService, transport);
 
 	const internalObjectServices = writable<SingleSelect.OptionType[]>([]);
 	async function fetchOptions() {
 		try {
-			const response = await bistClient.listInternalObjectServices({ scopeUuid: scopeUuid });
+			const response = await client.listInternalObjectServices({ scopeUuid: scopeUuid });
 			internalObjectServices.set(
 				response.internalObjectServices.map(
 					(internalObjectService) =>

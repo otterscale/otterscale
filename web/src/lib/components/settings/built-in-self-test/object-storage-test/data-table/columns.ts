@@ -4,7 +4,7 @@ import { type ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-import { type TestResult } from '$lib/api/bist/v1/bist_pb';
+import { type TestResult } from '$lib/api/configuration/v1/configuration_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';

@@ -50,12 +50,6 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	clientRepo := juju.NewClient(jujuJuju)
 	applicationUseCase := core.NewApplicationUseCase(kubeAppsRepo, kubeCoreRepo, kubeStorageRepo, chartRepo, releaseRepo, actionRepo, facilityRepo, scopeRepo, clientRepo)
 	applicationService := app.NewApplicationService(applicationUseCase)
-	kubeBatchRepo := kube.NewBatch(kubeKube)
-	cephCeph := ceph.New(configConfig)
-	cephClusterRepo := ceph.NewCluster(cephCeph)
-	cephRBDRepo := ceph.NewRBD(cephCeph)
-	bistUseCase := core.NewBISTUseCase(scopeRepo, clientRepo, facilityRepo, actionRepo, kubeBatchRepo, kubeCoreRepo, cephClusterRepo, cephRBDRepo, configConfig)
-	bistService := app.NewBISTService(bistUseCase)
 	maasMAAS := maas.New(configConfig)
 	serverRepo := maas.NewServer(maasMAAS)
 	scopeConfigRepo := juju.NewModelConfig(jujuJuju)
@@ -64,7 +58,12 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	bootSourceSelectionRepo := maas.NewBootSourceSelection(maasMAAS)
 	packageRepositoryRepo := maas.NewPackageRepository(maasMAAS)
 	configurationUseCase := core.NewConfigurationUseCase(serverRepo, scopeRepo, scopeConfigRepo, bootResourceRepo, bootSourceRepo, bootSourceSelectionRepo, packageRepositoryRepo)
-	configurationService := app.NewConfigurationService(configurationUseCase)
+	kubeBatchRepo := kube.NewBatch(kubeKube)
+	cephCeph := ceph.New(configConfig)
+	cephClusterRepo := ceph.NewCluster(cephCeph)
+	cephRBDRepo := ceph.NewRBD(cephCeph)
+	bistUseCase := core.NewBISTUseCase(scopeRepo, clientRepo, facilityRepo, actionRepo, kubeBatchRepo, kubeCoreRepo, cephClusterRepo, cephRBDRepo, configConfig)
+	configurationService := app.NewConfigurationService(configurationUseCase, bistUseCase)
 	environmentUseCase := core.NewEnvironmentUseCase(scopeRepo, actionRepo, facilityRepo, configConfig)
 	environmentService := app.NewEnvironmentService(environmentUseCase)
 	charmRepo := juju.NewCharm(jujuJuju)
@@ -111,7 +110,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	serve, err := mux.NewServe(applicationService, bistService, configurationService, environmentService, facilityService, largeLanguageModelService, essentialService, machineService, networkService, premiumService, storageService, scopeService, tagService, virtualMachineService, v)
+	serve, err := mux.NewServe(applicationService, configurationService, environmentService, facilityService, largeLanguageModelService, essentialService, machineService, networkService, premiumService, storageService, scopeService, tagService, virtualMachineService, v)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

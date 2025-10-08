@@ -6,7 +6,6 @@ import (
 
 	"connectrpc.com/connect"
 	appv1 "github.com/otterscale/otterscale/api/application/v1/pbconnect"
-	bistv1 "github.com/otterscale/otterscale/api/bist/v1/pbconnect"
 	configv1 "github.com/otterscale/otterscale/api/configuration/v1/pbconnect"
 	envv1 "github.com/otterscale/otterscale/api/environment/v1/pbconnect"
 	essentialv1 "github.com/otterscale/otterscale/api/essential/v1/pbconnect"
@@ -30,7 +29,6 @@ type Serve struct {
 
 type serviceRegistry struct {
 	app       *app.ApplicationService
-	bist      *app.BISTService
 	config    *app.ConfigurationService
 	env       *app.EnvironmentService
 	facility  *app.FacilityService
@@ -48,7 +46,6 @@ type serviceRegistry struct {
 func (s *Serve) serviceNames() []string {
 	return []string{
 		appv1.ApplicationServiceName,
-		bistv1.BISTServiceName,
 		configv1.ConfigurationServiceName,
 		envv1.EnvironmentServiceName,
 		facilityv1.FacilityServiceName,
@@ -66,7 +63,6 @@ func (s *Serve) serviceNames() []string {
 
 func (s *Serve) registerHandlers(opts []connect.HandlerOption) {
 	s.ServeMux.Handle(appv1.NewApplicationServiceHandler(s.services.app, opts...))
-	s.ServeMux.Handle(bistv1.NewBISTServiceHandler(s.services.bist, opts...))
 	s.ServeMux.Handle(configv1.NewConfigurationServiceHandler(s.services.config, opts...))
 	s.ServeMux.Handle(envv1.NewEnvironmentServiceHandler(s.services.env, opts...))
 	s.ServeMux.Handle(facilityv1.NewFacilityServiceHandler(s.services.facility, opts...))
@@ -96,7 +92,6 @@ func (s *Serve) registerWebSocket() {
 
 func NewServe(
 	app *app.ApplicationService,
-	bist *app.BISTService,
 	config *app.ConfigurationService,
 	env *app.EnvironmentService,
 	facility *app.FacilityService,
@@ -114,7 +109,6 @@ func NewServe(
 		ServeMux: &http.ServeMux{},
 		services: serviceRegistry{
 			app:       app,
-			bist:      bist,
 			config:    config,
 			env:       env,
 			facility:  facility,

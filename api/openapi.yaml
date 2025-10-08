@@ -5089,12 +5089,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.configuration.v1.ListBootImageSelectionsResponse'
-  /otterscale.bist.v1.BISTService/ListTestResults:
+  /otterscale.configuration.v1.ConfigurationService/ListTestResults:
     post:
       tags:
-        - BISTService
+        - ConfigurationService
       summary: ListTestResults
-      operationId: BISTService_ListTestResults
+      operationId: ConfigurationService_ListTestResults
       parameters:
         - name: Connect-Protocol-Version
           in: header
@@ -5109,7 +5109,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/otterscale.bist.v1.ListTestResultsRequest'
+              $ref: '#/components/schemas/otterscale.configuration.v1.ListTestResultsRequest'
         required: true
       responses:
         default:
@@ -5123,13 +5123,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/otterscale.bist.v1.ListTestResultsResponse'
-  /otterscale.bist.v1.BISTService/CreateTestResult:
+                $ref: '#/components/schemas/otterscale.configuration.v1.ListTestResultsResponse'
+  /otterscale.configuration.v1.ConfigurationService/CreateTestResult:
     post:
       tags:
-        - BISTService
+        - ConfigurationService
       summary: CreateTestResult
-      operationId: BISTService_CreateTestResult
+      operationId: ConfigurationService_CreateTestResult
       parameters:
         - name: Connect-Protocol-Version
           in: header
@@ -5144,7 +5144,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/otterscale.bist.v1.CreateTestResultRequest'
+              $ref: '#/components/schemas/otterscale.configuration.v1.CreateTestResultRequest'
         required: true
       responses:
         default:
@@ -5158,13 +5158,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/otterscale.bist.v1.TestResult'
-  /otterscale.bist.v1.BISTService/DeleteTestResult:
+                $ref: '#/components/schemas/otterscale.configuration.v1.TestResult'
+  /otterscale.configuration.v1.ConfigurationService/DeleteTestResult:
     post:
       tags:
-        - BISTService
+        - ConfigurationService
       summary: DeleteTestResult
-      operationId: BISTService_DeleteTestResult
+      operationId: ConfigurationService_DeleteTestResult
       parameters:
         - name: Connect-Protocol-Version
           in: header
@@ -5179,7 +5179,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/otterscale.bist.v1.DeleteTestResultRequest'
+              $ref: '#/components/schemas/otterscale.configuration.v1.DeleteTestResultRequest'
         required: true
       responses:
         default:
@@ -5194,12 +5194,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/google.protobuf.Empty'
-  /otterscale.bist.v1.BISTService/ListInternalObjectServices:
+  /otterscale.configuration.v1.ConfigurationService/ListInternalObjectServices:
     post:
       tags:
-        - BISTService
+        - ConfigurationService
       summary: ListInternalObjectServices
-      operationId: BISTService_ListInternalObjectServices
+      operationId: ConfigurationService_ListInternalObjectServices
       parameters:
         - name: Connect-Protocol-Version
           in: header
@@ -5214,7 +5214,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/otterscale.bist.v1.ListInternalObjectServicesRequest'
+              $ref: '#/components/schemas/otterscale.configuration.v1.ListInternalObjectServicesRequest'
         required: true
       responses:
         default:
@@ -5228,7 +5228,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/otterscale.bist.v1.ListInternalObjectServicesResponse'
+                $ref: '#/components/schemas/otterscale.configuration.v1.ListInternalObjectServicesResponse'
   /otterscale.premium.v1.PremiumService/GetTier:
     post:
       tags:
@@ -10782,6 +10782,55 @@ components:
           $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
       title: Snapshot
       additionalProperties: false
+    otterscale.configuration.v1.FIO.Input.AccessMode:
+      type: string
+      title: AccessMode
+      enum:
+        - READ
+        - WRITE
+        - TRIM
+        - READ_WRITE
+        - TRIM_WRITE
+        - RAND_READ
+        - RAND_WRITE
+        - RAND_TRIM
+        - RAND_RW
+        - RAND_TRIM_WRITE
+    otterscale.configuration.v1.InternalObjectService.Type:
+      type: string
+      title: Type
+      enum:
+        - UNSPECIFIED
+        - CEPH
+        - MINIO
+    otterscale.configuration.v1.TestResult.Status:
+      type: string
+      title: Status
+      enum:
+        - RUNNING
+        - SUCCEEDED
+        - FAILED
+    otterscale.configuration.v1.Warp.Input.Operation:
+      type: string
+      title: Operation
+      enum:
+        - GET
+        - PUT
+        - DELETE
+        - LIST
+        - STAT
+        - MIXED
+    otterscale.configuration.v1.CephBlockDevice:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+      title: CephBlockDevice
+      additionalProperties: false
     otterscale.configuration.v1.Configuration:
       type: object
       properties:
@@ -10893,125 +10942,7 @@ components:
           title: architectures
       title: CreateBootImageRequest
       additionalProperties: false
-    otterscale.configuration.v1.GetConfigurationRequest:
-      type: object
-      title: GetConfigurationRequest
-      additionalProperties: false
-    otterscale.configuration.v1.ImportBootImagesRequest:
-      type: object
-      title: ImportBootImagesRequest
-      additionalProperties: false
-    otterscale.configuration.v1.IsImportingBootImagesRequest:
-      type: object
-      title: IsImportingBootImagesRequest
-      additionalProperties: false
-    otterscale.configuration.v1.IsImportingBootImagesResponse:
-      type: object
-      properties:
-        importing:
-          type: boolean
-          title: importing
-      title: IsImportingBootImagesResponse
-      additionalProperties: false
-    otterscale.configuration.v1.ListBootImageSelectionsRequest:
-      type: object
-      title: ListBootImageSelectionsRequest
-      additionalProperties: false
-    otterscale.configuration.v1.ListBootImageSelectionsResponse:
-      type: object
-      properties:
-        bootImageSelections:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.BootImageSelection'
-          title: boot_image_selections
-      title: ListBootImageSelectionsResponse
-      additionalProperties: false
-    otterscale.configuration.v1.SetDefaultBootImageRequest:
-      type: object
-      properties:
-        distroSeries:
-          type: string
-          title: distro_series
-      title: SetDefaultBootImageRequest
-      additionalProperties: false
-    otterscale.configuration.v1.UpdateNTPServerRequest:
-      type: object
-      properties:
-        addresses:
-          type: array
-          items:
-            type: string
-          title: addresses
-      title: UpdateNTPServerRequest
-      additionalProperties: false
-    otterscale.configuration.v1.UpdatePackageRepositoryRequest:
-      type: object
-      properties:
-        id:
-          type:
-            - integer
-            - string
-          title: id
-          format: int64
-        url:
-          type: string
-          title: url
-        skipJuju:
-          type: boolean
-          title: skip_juju
-      title: UpdatePackageRepositoryRequest
-      additionalProperties: false
-    otterscale.bist.v1.FIO.Input.AccessMode:
-      type: string
-      title: AccessMode
-      enum:
-        - READ
-        - WRITE
-        - TRIM
-        - READ_WRITE
-        - TRIM_WRITE
-        - RAND_READ
-        - RAND_WRITE
-        - RAND_TRIM
-        - RAND_RW
-        - RAND_TRIM_WRITE
-    otterscale.bist.v1.InternalObjectService.Type:
-      type: string
-      title: Type
-      enum:
-        - UNSPECIFIED
-        - CEPH
-        - MINIO
-    otterscale.bist.v1.TestResult.Status:
-      type: string
-      title: Status
-      enum:
-        - RUNNING
-        - SUCCEEDED
-        - FAILED
-    otterscale.bist.v1.Warp.Input.Operation:
-      type: string
-      title: Operation
-      enum:
-        - GET
-        - PUT
-        - DELETE
-        - LIST
-        - STAT
-        - MIXED
-    otterscale.bist.v1.CephBlockDevice:
-      type: object
-      properties:
-        scopeUuid:
-          type: string
-          title: scope_uuid
-        facilityName:
-          type: string
-          title: facility_name
-      title: CephBlockDevice
-      additionalProperties: false
-    otterscale.bist.v1.CreateTestResultRequest:
+    otterscale.configuration.v1.CreateTestResultRequest:
       type: object
       allOf:
         - properties:
@@ -11025,20 +10956,20 @@ components:
             - properties:
                 fio:
                   title: fio
-                  $ref: '#/components/schemas/otterscale.bist.v1.FIO'
+                  $ref: '#/components/schemas/otterscale.configuration.v1.FIO'
               title: fio
               required:
                 - fio
             - properties:
                 warp:
                   title: warp
-                  $ref: '#/components/schemas/otterscale.bist.v1.Warp'
+                  $ref: '#/components/schemas/otterscale.configuration.v1.Warp'
               title: warp
               required:
                 - warp
       title: CreateTestResultRequest
       additionalProperties: false
-    otterscale.bist.v1.DeleteTestResultRequest:
+    otterscale.configuration.v1.DeleteTestResultRequest:
       type: object
       properties:
         name:
@@ -11046,7 +10977,7 @@ components:
           title: name
       title: DeleteTestResultRequest
       additionalProperties: false
-    otterscale.bist.v1.ExternalObjectService:
+    otterscale.configuration.v1.ExternalObjectService:
       type: object
       properties:
         endpoint:
@@ -11060,39 +10991,39 @@ components:
           title: secret_key
       title: ExternalObjectService
       additionalProperties: false
-    otterscale.bist.v1.FIO:
+    otterscale.configuration.v1.FIO:
       type: object
       allOf:
         - properties:
             input:
               title: input
-              $ref: '#/components/schemas/otterscale.bist.v1.FIO.Input'
+              $ref: '#/components/schemas/otterscale.configuration.v1.FIO.Input'
             output:
               title: output
-              $ref: '#/components/schemas/otterscale.bist.v1.FIO.Output'
+              $ref: '#/components/schemas/otterscale.configuration.v1.FIO.Output'
         - oneOf:
             - properties:
                 cephBlockDevice:
                   title: ceph_block_device
-                  $ref: '#/components/schemas/otterscale.bist.v1.CephBlockDevice'
+                  $ref: '#/components/schemas/otterscale.configuration.v1.CephBlockDevice'
               title: ceph_block_device
               required:
                 - cephBlockDevice
             - properties:
                 networkFileSystem:
                   title: network_file_system
-                  $ref: '#/components/schemas/otterscale.bist.v1.NetworkFileSystem'
+                  $ref: '#/components/schemas/otterscale.configuration.v1.NetworkFileSystem'
               title: network_file_system
               required:
                 - networkFileSystem
       title: FIO
       additionalProperties: false
-    otterscale.bist.v1.FIO.Input:
+    otterscale.configuration.v1.FIO.Input:
       type: object
       properties:
         accessMode:
           title: access_mode
-          $ref: '#/components/schemas/otterscale.bist.v1.FIO.Input.AccessMode'
+          $ref: '#/components/schemas/otterscale.configuration.v1.FIO.Input.AccessMode'
         jobCount:
           type:
             - integer
@@ -11130,21 +11061,21 @@ components:
           description: 1.13.12 I/O depth
       title: Input
       additionalProperties: false
-    otterscale.bist.v1.FIO.Output:
+    otterscale.configuration.v1.FIO.Output:
       type: object
       properties:
         read:
           title: read
-          $ref: '#/components/schemas/otterscale.bist.v1.FIO.Output.Throughput'
+          $ref: '#/components/schemas/otterscale.configuration.v1.FIO.Output.Throughput'
         write:
           title: write
-          $ref: '#/components/schemas/otterscale.bist.v1.FIO.Output.Throughput'
+          $ref: '#/components/schemas/otterscale.configuration.v1.FIO.Output.Throughput'
         trim:
           title: trim
-          $ref: '#/components/schemas/otterscale.bist.v1.FIO.Output.Throughput'
+          $ref: '#/components/schemas/otterscale.configuration.v1.FIO.Output.Throughput'
       title: Output
       additionalProperties: false
-    otterscale.bist.v1.FIO.Output.Throughput:
+    otterscale.configuration.v1.FIO.Output.Throughput:
       type: object
       properties:
         ioBytes:
@@ -11171,10 +11102,10 @@ components:
           format: int64
         latency:
           title: latency
-          $ref: '#/components/schemas/otterscale.bist.v1.FIO.Output.Throughput.Latency'
+          $ref: '#/components/schemas/otterscale.configuration.v1.FIO.Output.Throughput.Latency'
       title: Throughput
       additionalProperties: false
-    otterscale.bist.v1.FIO.Output.Throughput.Latency:
+    otterscale.configuration.v1.FIO.Output.Throughput.Latency:
       type: object
       properties:
         minNanoseconds:
@@ -11195,12 +11126,20 @@ components:
           format: double
       title: Latency
       additionalProperties: false
-    otterscale.bist.v1.InternalObjectService:
+    otterscale.configuration.v1.GetConfigurationRequest:
+      type: object
+      title: GetConfigurationRequest
+      additionalProperties: false
+    otterscale.configuration.v1.ImportBootImagesRequest:
+      type: object
+      title: ImportBootImagesRequest
+      additionalProperties: false
+    otterscale.configuration.v1.InternalObjectService:
       type: object
       properties:
         type:
           title: type
-          $ref: '#/components/schemas/otterscale.bist.v1.InternalObjectService.Type'
+          $ref: '#/components/schemas/otterscale.configuration.v1.InternalObjectService.Type'
         scopeUuid:
           type: string
           title: scope_uuid
@@ -11215,7 +11154,33 @@ components:
           title: endpoint
       title: InternalObjectService
       additionalProperties: false
-    otterscale.bist.v1.ListInternalObjectServicesRequest:
+    otterscale.configuration.v1.IsImportingBootImagesRequest:
+      type: object
+      title: IsImportingBootImagesRequest
+      additionalProperties: false
+    otterscale.configuration.v1.IsImportingBootImagesResponse:
+      type: object
+      properties:
+        importing:
+          type: boolean
+          title: importing
+      title: IsImportingBootImagesResponse
+      additionalProperties: false
+    otterscale.configuration.v1.ListBootImageSelectionsRequest:
+      type: object
+      title: ListBootImageSelectionsRequest
+      additionalProperties: false
+    otterscale.configuration.v1.ListBootImageSelectionsResponse:
+      type: object
+      properties:
+        bootImageSelections:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.configuration.v1.Configuration.BootImageSelection'
+          title: boot_image_selections
+      title: ListBootImageSelectionsResponse
+      additionalProperties: false
+    otterscale.configuration.v1.ListInternalObjectServicesRequest:
       type: object
       properties:
         scopeUuid:
@@ -11223,31 +11188,31 @@ components:
           title: scope_uuid
       title: ListInternalObjectServicesRequest
       additionalProperties: false
-    otterscale.bist.v1.ListInternalObjectServicesResponse:
+    otterscale.configuration.v1.ListInternalObjectServicesResponse:
       type: object
       properties:
         internalObjectServices:
           type: array
           items:
-            $ref: '#/components/schemas/otterscale.bist.v1.InternalObjectService'
+            $ref: '#/components/schemas/otterscale.configuration.v1.InternalObjectService'
           title: internal_object_services
       title: ListInternalObjectServicesResponse
       additionalProperties: false
-    otterscale.bist.v1.ListTestResultsRequest:
+    otterscale.configuration.v1.ListTestResultsRequest:
       type: object
       title: ListTestResultsRequest
       additionalProperties: false
-    otterscale.bist.v1.ListTestResultsResponse:
+    otterscale.configuration.v1.ListTestResultsResponse:
       type: object
       properties:
         testResults:
           type: array
           items:
-            $ref: '#/components/schemas/otterscale.bist.v1.TestResult'
+            $ref: '#/components/schemas/otterscale.configuration.v1.TestResult'
           title: test_results
       title: ListTestResultsResponse
       additionalProperties: false
-    otterscale.bist.v1.NetworkFileSystem:
+    otterscale.configuration.v1.NetworkFileSystem:
       type: object
       properties:
         endpoint:
@@ -11258,7 +11223,15 @@ components:
           title: path
       title: NetworkFileSystem
       additionalProperties: false
-    otterscale.bist.v1.TestResult:
+    otterscale.configuration.v1.SetDefaultBootImageRequest:
+      type: object
+      properties:
+        distroSeries:
+          type: string
+          title: distro_series
+      title: SetDefaultBootImageRequest
+      additionalProperties: false
+    otterscale.configuration.v1.TestResult:
       type: object
       allOf:
         - properties:
@@ -11270,7 +11243,7 @@ components:
               title: name
             status:
               title: status
-              $ref: '#/components/schemas/otterscale.bist.v1.TestResult.Status'
+              $ref: '#/components/schemas/otterscale.configuration.v1.TestResult.Status'
             createdBy:
               type: string
               title: created_by
@@ -11284,52 +11257,79 @@ components:
             - properties:
                 fio:
                   title: fio
-                  $ref: '#/components/schemas/otterscale.bist.v1.FIO'
+                  $ref: '#/components/schemas/otterscale.configuration.v1.FIO'
               title: fio
               required:
                 - fio
             - properties:
                 warp:
                   title: warp
-                  $ref: '#/components/schemas/otterscale.bist.v1.Warp'
+                  $ref: '#/components/schemas/otterscale.configuration.v1.Warp'
               title: warp
               required:
                 - warp
       title: TestResult
       additionalProperties: false
-    otterscale.bist.v1.Warp:
+    otterscale.configuration.v1.UpdateNTPServerRequest:
+      type: object
+      properties:
+        addresses:
+          type: array
+          items:
+            type: string
+          title: addresses
+      title: UpdateNTPServerRequest
+      additionalProperties: false
+    otterscale.configuration.v1.UpdatePackageRepositoryRequest:
+      type: object
+      properties:
+        id:
+          type:
+            - integer
+            - string
+          title: id
+          format: int64
+        url:
+          type: string
+          title: url
+        skipJuju:
+          type: boolean
+          title: skip_juju
+      title: UpdatePackageRepositoryRequest
+      additionalProperties: false
+    otterscale.configuration.v1.Warp:
       type: object
       allOf:
         - properties:
             input:
               title: input
-              $ref: '#/components/schemas/otterscale.bist.v1.Warp.Input'
+              $ref: '#/components/schemas/otterscale.configuration.v1.Warp.Input'
             output:
               title: output
-              $ref: '#/components/schemas/otterscale.bist.v1.Warp.Output'
+              $ref: '#/components/schemas/otterscale.configuration.v1.Warp.Output'
         - oneOf:
             - properties:
                 externalObjectService:
                   title: external_object_service
-                  $ref: '#/components/schemas/otterscale.bist.v1.ExternalObjectService'
+                  $ref: '#/components/schemas/otterscale.configuration.v1.ExternalObjectService'
               title: external_object_service
               required:
                 - externalObjectService
             - properties:
                 internalObjectService:
                   title: internal_object_service
-                  $ref: '#/components/schemas/otterscale.bist.v1.InternalObjectService'
+                  $ref: '#/components/schemas/otterscale.configuration.v1.InternalObjectService'
               title: internal_object_service
               required:
                 - internalObjectService
       title: Warp
       additionalProperties: false
-    otterscale.bist.v1.Warp.Input:
+    otterscale.configuration.v1.Warp.Input:
       type: object
       properties:
         operation:
           title: operation
-          $ref: '#/components/schemas/otterscale.bist.v1.Warp.Input.Operation'
+          $ref: '#/components/schemas/otterscale.configuration.v1.Warp.Input.Operation'
         durationSeconds:
           type:
             - integer
@@ -11350,21 +11350,21 @@ components:
           format: int64
       title: Input
       additionalProperties: false
-    otterscale.bist.v1.Warp.Output:
+    otterscale.configuration.v1.Warp.Output:
       type: object
       properties:
         get:
           title: get
-          $ref: '#/components/schemas/otterscale.bist.v1.Warp.Output.Throughput'
+          $ref: '#/components/schemas/otterscale.configuration.v1.Warp.Output.Throughput'
         put:
           title: put
-          $ref: '#/components/schemas/otterscale.bist.v1.Warp.Output.Throughput'
+          $ref: '#/components/schemas/otterscale.configuration.v1.Warp.Output.Throughput'
         delete:
           title: delete
-          $ref: '#/components/schemas/otterscale.bist.v1.Warp.Output.Throughput'
+          $ref: '#/components/schemas/otterscale.configuration.v1.Warp.Output.Throughput'
       title: Output
       additionalProperties: false
-    otterscale.bist.v1.Warp.Output.Throughput:
+    otterscale.configuration.v1.Warp.Output.Throughput:
       type: object
       properties:
         totalBytes:
@@ -11383,13 +11383,13 @@ components:
           format: int64
         bytes:
           title: bytes
-          $ref: '#/components/schemas/otterscale.bist.v1.Warp.Output.Throughput.Metrics'
+          $ref: '#/components/schemas/otterscale.configuration.v1.Warp.Output.Throughput.Metrics'
         objects:
           title: objects
-          $ref: '#/components/schemas/otterscale.bist.v1.Warp.Output.Throughput.Metrics'
+          $ref: '#/components/schemas/otterscale.configuration.v1.Warp.Output.Throughput.Metrics'
       title: Throughput
       additionalProperties: false
-    otterscale.bist.v1.Warp.Output.Throughput.Metrics:
+    otterscale.configuration.v1.Warp.Output.Throughput.Metrics:
       type: object
       properties:
         fastestPerSecond:
@@ -11612,7 +11612,6 @@ tags:
   - name: ApplicationService
   - name: VirtualMachineService
   - name: ConfigurationService
-  - name: BISTService
   - name: PremiumService
   - name: LargeLanguageModelService
   - name: ScopeService

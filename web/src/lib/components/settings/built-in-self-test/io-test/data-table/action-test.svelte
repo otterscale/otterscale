@@ -13,8 +13,8 @@
 		FIO_Input,
 		NetworkFileSystem,
 		TestResult,
-	} from '$lib/api/bist/v1/bist_pb';
-	import { BISTService, FIO_Input_AccessMode } from '$lib/api/bist/v1/bist_pb';
+	} from '$lib/api/configuration/v1/configuration_pb';
+	import { ConfigurationService, FIO_Input_AccessMode } from '$lib/api/configuration/v1/configuration_pb';
 	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -127,7 +127,7 @@
 
 	// grpc
 	const transport: Transport = getContext('transport');
-	const bistClient = createClient(BISTService, transport);
+	const configClient = createClient(ConfigurationService, transport);
 	const essentialClient = createClient(EssentialService, transport);
 
 	const reloadManager: ReloadManager = getContext('reloadManager');
@@ -452,7 +452,7 @@
 						} as FIO_Input;
 						request.kind.value = requestFio;
 						// request
-						toast.promise(() => bistClient.createTestResult(request), {
+						toast.promise(() => configClient.createTestResult(request), {
 							loading: `Testing ${request.name}...`,
 							success: () => {
 								reloadManager.force();
