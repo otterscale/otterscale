@@ -58,6 +58,18 @@ const (
 	// ConfigurationServiceListBootImageSelectionsProcedure is the fully-qualified name of the
 	// ConfigurationService's ListBootImageSelections RPC.
 	ConfigurationServiceListBootImageSelectionsProcedure = "/otterscale.configuration.v1.ConfigurationService/ListBootImageSelections"
+	// ConfigurationServiceListTestResultsProcedure is the fully-qualified name of the
+	// ConfigurationService's ListTestResults RPC.
+	ConfigurationServiceListTestResultsProcedure = "/otterscale.configuration.v1.ConfigurationService/ListTestResults"
+	// ConfigurationServiceCreateTestResultProcedure is the fully-qualified name of the
+	// ConfigurationService's CreateTestResult RPC.
+	ConfigurationServiceCreateTestResultProcedure = "/otterscale.configuration.v1.ConfigurationService/CreateTestResult"
+	// ConfigurationServiceDeleteTestResultProcedure is the fully-qualified name of the
+	// ConfigurationService's DeleteTestResult RPC.
+	ConfigurationServiceDeleteTestResultProcedure = "/otterscale.configuration.v1.ConfigurationService/DeleteTestResult"
+	// ConfigurationServiceListInternalObjectServicesProcedure is the fully-qualified name of the
+	// ConfigurationService's ListInternalObjectServices RPC.
+	ConfigurationServiceListInternalObjectServicesProcedure = "/otterscale.configuration.v1.ConfigurationService/ListInternalObjectServices"
 )
 
 // ConfigurationServiceClient is a client for the otterscale.configuration.v1.ConfigurationService
@@ -71,6 +83,10 @@ type ConfigurationServiceClient interface {
 	ImportBootImages(context.Context, *v1.ImportBootImagesRequest) (*emptypb.Empty, error)
 	IsImportingBootImages(context.Context, *v1.IsImportingBootImagesRequest) (*v1.IsImportingBootImagesResponse, error)
 	ListBootImageSelections(context.Context, *v1.ListBootImageSelectionsRequest) (*v1.ListBootImageSelectionsResponse, error)
+	ListTestResults(context.Context, *v1.ListTestResultsRequest) (*v1.ListTestResultsResponse, error)
+	CreateTestResult(context.Context, *v1.CreateTestResultRequest) (*v1.TestResult, error)
+	DeleteTestResult(context.Context, *v1.DeleteTestResultRequest) (*emptypb.Empty, error)
+	ListInternalObjectServices(context.Context, *v1.ListInternalObjectServicesRequest) (*v1.ListInternalObjectServicesResponse, error)
 }
 
 // NewConfigurationServiceClient constructs a client for the
@@ -133,19 +149,47 @@ func NewConfigurationServiceClient(httpClient connect.HTTPClient, baseURL string
 			connect.WithSchema(configurationServiceMethods.ByName("ListBootImageSelections")),
 			connect.WithClientOptions(opts...),
 		),
+		listTestResults: connect.NewClient[v1.ListTestResultsRequest, v1.ListTestResultsResponse](
+			httpClient,
+			baseURL+ConfigurationServiceListTestResultsProcedure,
+			connect.WithSchema(configurationServiceMethods.ByName("ListTestResults")),
+			connect.WithClientOptions(opts...),
+		),
+		createTestResult: connect.NewClient[v1.CreateTestResultRequest, v1.TestResult](
+			httpClient,
+			baseURL+ConfigurationServiceCreateTestResultProcedure,
+			connect.WithSchema(configurationServiceMethods.ByName("CreateTestResult")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteTestResult: connect.NewClient[v1.DeleteTestResultRequest, emptypb.Empty](
+			httpClient,
+			baseURL+ConfigurationServiceDeleteTestResultProcedure,
+			connect.WithSchema(configurationServiceMethods.ByName("DeleteTestResult")),
+			connect.WithClientOptions(opts...),
+		),
+		listInternalObjectServices: connect.NewClient[v1.ListInternalObjectServicesRequest, v1.ListInternalObjectServicesResponse](
+			httpClient,
+			baseURL+ConfigurationServiceListInternalObjectServicesProcedure,
+			connect.WithSchema(configurationServiceMethods.ByName("ListInternalObjectServices")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // configurationServiceClient implements ConfigurationServiceClient.
 type configurationServiceClient struct {
-	getConfiguration        *connect.Client[v1.GetConfigurationRequest, v1.Configuration]
-	updateNTPServer         *connect.Client[v1.UpdateNTPServerRequest, v1.Configuration_NTPServer]
-	updatePackageRepository *connect.Client[v1.UpdatePackageRepositoryRequest, v1.Configuration_PackageRepository]
-	createBootImage         *connect.Client[v1.CreateBootImageRequest, v1.Configuration_BootImage]
-	setDefaultBootImage     *connect.Client[v1.SetDefaultBootImageRequest, emptypb.Empty]
-	importBootImages        *connect.Client[v1.ImportBootImagesRequest, emptypb.Empty]
-	isImportingBootImages   *connect.Client[v1.IsImportingBootImagesRequest, v1.IsImportingBootImagesResponse]
-	listBootImageSelections *connect.Client[v1.ListBootImageSelectionsRequest, v1.ListBootImageSelectionsResponse]
+	getConfiguration           *connect.Client[v1.GetConfigurationRequest, v1.Configuration]
+	updateNTPServer            *connect.Client[v1.UpdateNTPServerRequest, v1.Configuration_NTPServer]
+	updatePackageRepository    *connect.Client[v1.UpdatePackageRepositoryRequest, v1.Configuration_PackageRepository]
+	createBootImage            *connect.Client[v1.CreateBootImageRequest, v1.Configuration_BootImage]
+	setDefaultBootImage        *connect.Client[v1.SetDefaultBootImageRequest, emptypb.Empty]
+	importBootImages           *connect.Client[v1.ImportBootImagesRequest, emptypb.Empty]
+	isImportingBootImages      *connect.Client[v1.IsImportingBootImagesRequest, v1.IsImportingBootImagesResponse]
+	listBootImageSelections    *connect.Client[v1.ListBootImageSelectionsRequest, v1.ListBootImageSelectionsResponse]
+	listTestResults            *connect.Client[v1.ListTestResultsRequest, v1.ListTestResultsResponse]
+	createTestResult           *connect.Client[v1.CreateTestResultRequest, v1.TestResult]
+	deleteTestResult           *connect.Client[v1.DeleteTestResultRequest, emptypb.Empty]
+	listInternalObjectServices *connect.Client[v1.ListInternalObjectServicesRequest, v1.ListInternalObjectServicesResponse]
 }
 
 // GetConfiguration calls otterscale.configuration.v1.ConfigurationService.GetConfiguration.
@@ -223,6 +267,43 @@ func (c *configurationServiceClient) ListBootImageSelections(ctx context.Context
 	return nil, err
 }
 
+// ListTestResults calls otterscale.configuration.v1.ConfigurationService.ListTestResults.
+func (c *configurationServiceClient) ListTestResults(ctx context.Context, req *v1.ListTestResultsRequest) (*v1.ListTestResultsResponse, error) {
+	response, err := c.listTestResults.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// CreateTestResult calls otterscale.configuration.v1.ConfigurationService.CreateTestResult.
+func (c *configurationServiceClient) CreateTestResult(ctx context.Context, req *v1.CreateTestResultRequest) (*v1.TestResult, error) {
+	response, err := c.createTestResult.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// DeleteTestResult calls otterscale.configuration.v1.ConfigurationService.DeleteTestResult.
+func (c *configurationServiceClient) DeleteTestResult(ctx context.Context, req *v1.DeleteTestResultRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteTestResult.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListInternalObjectServices calls
+// otterscale.configuration.v1.ConfigurationService.ListInternalObjectServices.
+func (c *configurationServiceClient) ListInternalObjectServices(ctx context.Context, req *v1.ListInternalObjectServicesRequest) (*v1.ListInternalObjectServicesResponse, error) {
+	response, err := c.listInternalObjectServices.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // ConfigurationServiceHandler is an implementation of the
 // otterscale.configuration.v1.ConfigurationService service.
 type ConfigurationServiceHandler interface {
@@ -234,6 +315,10 @@ type ConfigurationServiceHandler interface {
 	ImportBootImages(context.Context, *v1.ImportBootImagesRequest) (*emptypb.Empty, error)
 	IsImportingBootImages(context.Context, *v1.IsImportingBootImagesRequest) (*v1.IsImportingBootImagesResponse, error)
 	ListBootImageSelections(context.Context, *v1.ListBootImageSelectionsRequest) (*v1.ListBootImageSelectionsResponse, error)
+	ListTestResults(context.Context, *v1.ListTestResultsRequest) (*v1.ListTestResultsResponse, error)
+	CreateTestResult(context.Context, *v1.CreateTestResultRequest) (*v1.TestResult, error)
+	DeleteTestResult(context.Context, *v1.DeleteTestResultRequest) (*emptypb.Empty, error)
+	ListInternalObjectServices(context.Context, *v1.ListInternalObjectServicesRequest) (*v1.ListInternalObjectServicesResponse, error)
 }
 
 // NewConfigurationServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -291,6 +376,30 @@ func NewConfigurationServiceHandler(svc ConfigurationServiceHandler, opts ...con
 		connect.WithSchema(configurationServiceMethods.ByName("ListBootImageSelections")),
 		connect.WithHandlerOptions(opts...),
 	)
+	configurationServiceListTestResultsHandler := connect.NewUnaryHandlerSimple(
+		ConfigurationServiceListTestResultsProcedure,
+		svc.ListTestResults,
+		connect.WithSchema(configurationServiceMethods.ByName("ListTestResults")),
+		connect.WithHandlerOptions(opts...),
+	)
+	configurationServiceCreateTestResultHandler := connect.NewUnaryHandlerSimple(
+		ConfigurationServiceCreateTestResultProcedure,
+		svc.CreateTestResult,
+		connect.WithSchema(configurationServiceMethods.ByName("CreateTestResult")),
+		connect.WithHandlerOptions(opts...),
+	)
+	configurationServiceDeleteTestResultHandler := connect.NewUnaryHandlerSimple(
+		ConfigurationServiceDeleteTestResultProcedure,
+		svc.DeleteTestResult,
+		connect.WithSchema(configurationServiceMethods.ByName("DeleteTestResult")),
+		connect.WithHandlerOptions(opts...),
+	)
+	configurationServiceListInternalObjectServicesHandler := connect.NewUnaryHandlerSimple(
+		ConfigurationServiceListInternalObjectServicesProcedure,
+		svc.ListInternalObjectServices,
+		connect.WithSchema(configurationServiceMethods.ByName("ListInternalObjectServices")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.configuration.v1.ConfigurationService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ConfigurationServiceGetConfigurationProcedure:
@@ -309,6 +418,14 @@ func NewConfigurationServiceHandler(svc ConfigurationServiceHandler, opts ...con
 			configurationServiceIsImportingBootImagesHandler.ServeHTTP(w, r)
 		case ConfigurationServiceListBootImageSelectionsProcedure:
 			configurationServiceListBootImageSelectionsHandler.ServeHTTP(w, r)
+		case ConfigurationServiceListTestResultsProcedure:
+			configurationServiceListTestResultsHandler.ServeHTTP(w, r)
+		case ConfigurationServiceCreateTestResultProcedure:
+			configurationServiceCreateTestResultHandler.ServeHTTP(w, r)
+		case ConfigurationServiceDeleteTestResultProcedure:
+			configurationServiceDeleteTestResultHandler.ServeHTTP(w, r)
+		case ConfigurationServiceListInternalObjectServicesProcedure:
+			configurationServiceListInternalObjectServicesHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -348,4 +465,20 @@ func (UnimplementedConfigurationServiceHandler) IsImportingBootImages(context.Co
 
 func (UnimplementedConfigurationServiceHandler) ListBootImageSelections(context.Context, *v1.ListBootImageSelectionsRequest) (*v1.ListBootImageSelectionsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.configuration.v1.ConfigurationService.ListBootImageSelections is not implemented"))
+}
+
+func (UnimplementedConfigurationServiceHandler) ListTestResults(context.Context, *v1.ListTestResultsRequest) (*v1.ListTestResultsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.configuration.v1.ConfigurationService.ListTestResults is not implemented"))
+}
+
+func (UnimplementedConfigurationServiceHandler) CreateTestResult(context.Context, *v1.CreateTestResultRequest) (*v1.TestResult, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.configuration.v1.ConfigurationService.CreateTestResult is not implemented"))
+}
+
+func (UnimplementedConfigurationServiceHandler) DeleteTestResult(context.Context, *v1.DeleteTestResultRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.configuration.v1.ConfigurationService.DeleteTestResult is not implemented"))
+}
+
+func (UnimplementedConfigurationServiceHandler) ListInternalObjectServices(context.Context, *v1.ListInternalObjectServicesRequest) (*v1.ListInternalObjectServicesResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.configuration.v1.ConfigurationService.ListInternalObjectServices is not implemented"))
 }
