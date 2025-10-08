@@ -55,6 +55,9 @@ const (
 	// EnvironmentServiceGetPrometheusProcedure is the fully-qualified name of the EnvironmentService's
 	// GetPrometheus RPC.
 	EnvironmentServiceGetPrometheusProcedure = "/otterscale.environment.v1.EnvironmentService/GetPrometheus"
+	// EnvironmentServiceGetPremiumTierProcedure is the fully-qualified name of the EnvironmentService's
+	// GetPremiumTier RPC.
+	EnvironmentServiceGetPremiumTierProcedure = "/otterscale.environment.v1.EnvironmentService/GetPremiumTier"
 )
 
 // EnvironmentServiceClient is a client for the otterscale.environment.v1.EnvironmentService
@@ -67,6 +70,7 @@ type EnvironmentServiceClient interface {
 	GetConfigHelmRepositories(context.Context, *v1.GetConfigHelmRepositoriesRequest) (*v1.GetConfigHelmRepositoriesResponse, error)
 	UpdateConfigHelmRepositories(context.Context, *v1.UpdateConfigHelmRepositoriesRequest) (*emptypb.Empty, error)
 	GetPrometheus(context.Context, *v1.GetPrometheusRequest) (*v1.Prometheus, error)
+	GetPremiumTier(context.Context, *v1.GetPremiumTierRequest) (*v1.PremiumTier, error)
 }
 
 // NewEnvironmentServiceClient constructs a client for the
@@ -123,6 +127,12 @@ func NewEnvironmentServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			connect.WithSchema(environmentServiceMethods.ByName("GetPrometheus")),
 			connect.WithClientOptions(opts...),
 		),
+		getPremiumTier: connect.NewClient[v1.GetPremiumTierRequest, v1.PremiumTier](
+			httpClient,
+			baseURL+EnvironmentServiceGetPremiumTierProcedure,
+			connect.WithSchema(environmentServiceMethods.ByName("GetPremiumTier")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -135,6 +145,7 @@ type environmentServiceClient struct {
 	getConfigHelmRepositories    *connect.Client[v1.GetConfigHelmRepositoriesRequest, v1.GetConfigHelmRepositoriesResponse]
 	updateConfigHelmRepositories *connect.Client[v1.UpdateConfigHelmRepositoriesRequest, emptypb.Empty]
 	getPrometheus                *connect.Client[v1.GetPrometheusRequest, v1.Prometheus]
+	getPremiumTier               *connect.Client[v1.GetPremiumTierRequest, v1.PremiumTier]
 }
 
 // CheckHealth calls otterscale.environment.v1.EnvironmentService.CheckHealth.
@@ -198,6 +209,15 @@ func (c *environmentServiceClient) GetPrometheus(ctx context.Context, req *v1.Ge
 	return nil, err
 }
 
+// GetPremiumTier calls otterscale.environment.v1.EnvironmentService.GetPremiumTier.
+func (c *environmentServiceClient) GetPremiumTier(ctx context.Context, req *v1.GetPremiumTierRequest) (*v1.PremiumTier, error) {
+	response, err := c.getPremiumTier.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // EnvironmentServiceHandler is an implementation of the
 // otterscale.environment.v1.EnvironmentService service.
 type EnvironmentServiceHandler interface {
@@ -208,6 +228,7 @@ type EnvironmentServiceHandler interface {
 	GetConfigHelmRepositories(context.Context, *v1.GetConfigHelmRepositoriesRequest) (*v1.GetConfigHelmRepositoriesResponse, error)
 	UpdateConfigHelmRepositories(context.Context, *v1.UpdateConfigHelmRepositoriesRequest) (*emptypb.Empty, error)
 	GetPrometheus(context.Context, *v1.GetPrometheusRequest) (*v1.Prometheus, error)
+	GetPremiumTier(context.Context, *v1.GetPremiumTierRequest) (*v1.PremiumTier, error)
 }
 
 // NewEnvironmentServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -259,6 +280,12 @@ func NewEnvironmentServiceHandler(svc EnvironmentServiceHandler, opts ...connect
 		connect.WithSchema(environmentServiceMethods.ByName("GetPrometheus")),
 		connect.WithHandlerOptions(opts...),
 	)
+	environmentServiceGetPremiumTierHandler := connect.NewUnaryHandlerSimple(
+		EnvironmentServiceGetPremiumTierProcedure,
+		svc.GetPremiumTier,
+		connect.WithSchema(environmentServiceMethods.ByName("GetPremiumTier")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.environment.v1.EnvironmentService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case EnvironmentServiceCheckHealthProcedure:
@@ -275,6 +302,8 @@ func NewEnvironmentServiceHandler(svc EnvironmentServiceHandler, opts ...connect
 			environmentServiceUpdateConfigHelmRepositoriesHandler.ServeHTTP(w, r)
 		case EnvironmentServiceGetPrometheusProcedure:
 			environmentServiceGetPrometheusHandler.ServeHTTP(w, r)
+		case EnvironmentServiceGetPremiumTierProcedure:
+			environmentServiceGetPremiumTierHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -310,4 +339,8 @@ func (UnimplementedEnvironmentServiceHandler) UpdateConfigHelmRepositories(conte
 
 func (UnimplementedEnvironmentServiceHandler) GetPrometheus(context.Context, *v1.GetPrometheusRequest) (*v1.Prometheus, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.GetPrometheus is not implemented"))
+}
+
+func (UnimplementedEnvironmentServiceHandler) GetPremiumTier(context.Context, *v1.GetPremiumTierRequest) (*v1.PremiumTier, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.GetPremiumTier is not implemented"))
 }

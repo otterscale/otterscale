@@ -14,8 +14,8 @@
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { PremiumService, PremiumTier } from '$lib/api/premium/v1/premium_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { Skeleton } from '$lib/components/ui/skeleton';
@@ -30,15 +30,15 @@
 
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
-	const premiumClient = createClient(PremiumService, transport);
+	const envClient = createClient(EnvironmentService, transport);
 	const orchClient = createClient(OrchestratorService, transport);
 	const scopes = writable<Scope[]>([]);
 	const trigger = writable<boolean>(false);
 
 	const tierMap = {
-		[PremiumTier.BASIC]: m.basic_tier(),
-		[PremiumTier.ADVANCED]: m.advanced_tier(),
-		[PremiumTier.ENTERPRISE]: m.enterprise_tier(),
+		[PremiumTier_Level.BASIC]: m.basic_tier(),
+		[PremiumTier_Level.ADVANCED]: m.advanced_tier(),
+		[PremiumTier_Level.ENTERPRISE]: m.enterprise_tier(),
 	};
 
 	const skeletonClasses = {
@@ -58,8 +58,8 @@
 
 	async function fetchEdition() {
 		try {
-			const response = await premiumClient.getTier({});
-			premiumTier.set(response.tier);
+			const response = await envClient.getPremiumTier({});
+			premiumTier.set(response);
 		} catch (error) {
 			const connectError = error as ConnectError;
 			if (connectError.code !== Code.Unimplemented) {
@@ -135,7 +135,7 @@
 			<ScopeSwitcher
 				active={$activeScope}
 				scopes={$scopes}
-				tier={tierMap[$premiumTier]}
+				tier={tierMap[$premiumTier.level]}
 				onSelect={handleScopeOnSelect}
 				{trigger}
 			/>
