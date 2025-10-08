@@ -122,6 +122,48 @@ func (m *mockActionRepo) List(ctx context.Context, uuid, action string) (map[str
 	return map[string]ActionSpec{}, nil
 }
 
+// Mock TagRepo for testing
+type mockTagRepo struct {
+	tags []Tag
+}
+
+func (m *mockTagRepo) List(ctx context.Context) ([]Tag, error) {
+	return m.tags, nil
+}
+
+func (m *mockTagRepo) Get(ctx context.Context, name string) (*Tag, error) {
+	for _, tag := range m.tags {
+		if tag.Name == name {
+			return &tag, nil
+		}
+	}
+	return nil, errors.New("not found")
+}
+
+func (m *mockTagRepo) Create(ctx context.Context, name, comment string) (*Tag, error) {
+	tag := Tag{Name: name, Comment: comment}
+	m.tags = append(m.tags, tag)
+	return &tag, nil
+}
+
+func (m *mockTagRepo) Delete(ctx context.Context, name string) error {
+	for i, tag := range m.tags {
+		if tag.Name == name {
+			m.tags = append(m.tags[:i], m.tags[i+1:]...)
+			return nil
+		}
+	}
+	return errors.New("not found")
+}
+
+func (m *mockTagRepo) AddMachines(ctx context.Context, name string, machineIDs []string) error {
+	return nil
+}
+
+func (m *mockTagRepo) RemoveMachines(ctx context.Context, name string, machineIDs []string) error {
+	return nil
+}
+
 // Mock FacilityRepo
 type machineMockFacility struct{}
 

@@ -6,7 +6,6 @@
 	import { toast } from 'svelte-sonner';
 
 	import { MachineService, type CreateMachineRequest, type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { TagService } from '$lib/api/tag/v1/tag_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
@@ -27,8 +26,7 @@
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const transport: Transport = getContext('transport');
-	const machineClient = createClient(MachineService, transport);
-	const tagClient = createClient(TagService, transport);
+	const client = createClient(MachineService, transport);
 	const tagOptions = writable<SingleSelect.OptionType[]>([]);
 
 	let isTagLoading = $state(true);
@@ -54,7 +52,7 @@
 
 	onMount(async () => {
 		try {
-			tagClient
+			client
 				.listTags({})
 				.then((response) => {
 					tagOptions.set(
@@ -162,7 +160,7 @@
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
-						toast.promise(() => machineClient.createMachine(request), {
+						toast.promise(() => client.createMachine(request), {
 							loading: 'Executing...',
 							success: (response) => {
 								reloadManager.force();

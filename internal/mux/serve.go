@@ -17,7 +17,6 @@ import (
 	premiumv1 "github.com/otterscale/otterscale/api/premium/v1/pbconnect"
 	scopev1 "github.com/otterscale/otterscale/api/scope/v1/pbconnect"
 	storagev1 "github.com/otterscale/otterscale/api/storage/v1/pbconnect"
-	tagv1 "github.com/otterscale/otterscale/api/tag/v1/pbconnect"
 	vmv1 "github.com/otterscale/otterscale/api/virtual_machine/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/app"
 )
@@ -40,7 +39,6 @@ type serviceRegistry struct {
 	premium  *app.PremiumService
 	storage  *app.StorageService
 	scope    *app.ScopeService
-	tag      *app.TagService
 	vm       *app.VirtualMachineService
 }
 
@@ -57,7 +55,6 @@ func (s *Serve) serviceNames() []string {
 		premiumv1.PremiumServiceName,
 		scopev1.ScopeServiceName,
 		storagev1.StorageServiceName,
-		tagv1.TagServiceName,
 		vmv1.VirtualMachineServiceName,
 	}
 }
@@ -74,7 +71,6 @@ func (s *Serve) registerHandlers(opts []connect.HandlerOption) {
 	s.Handle(orchv1.NewOrchestratorServiceHandler(s.services.orch, opts...))
 	s.Handle(storagev1.NewStorageServiceHandler(s.services.storage, opts...))
 	s.Handle(scopev1.NewScopeServiceHandler(s.services.scope, opts...))
-	s.Handle(tagv1.NewTagServiceHandler(s.services.tag, opts...))
 	s.Handle(vmv1.NewVirtualMachineServiceHandler(s.services.vm, opts...))
 }
 
@@ -91,7 +87,7 @@ func (s *Serve) registerWebSocket() {
 	s.HandleFunc(s.services.vm.WebSocketPathPrefix, s.services.vm.VNCHandler)
 }
 
-func NewServe(app *app.ApplicationService, config *app.ConfigurationService, env *app.EnvironmentService, facility *app.FacilityService, llm *app.LargeLanguageModelService, machine *app.MachineService, network *app.NetworkService, orch *app.OrchestratorService, premium *app.PremiumService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService, vm *app.VirtualMachineService, opts []connect.HandlerOption) (*Serve, error) {
+func NewServe(app *app.ApplicationService, config *app.ConfigurationService, env *app.EnvironmentService, facility *app.FacilityService, llm *app.LargeLanguageModelService, machine *app.MachineService, network *app.NetworkService, orch *app.OrchestratorService, premium *app.PremiumService, storage *app.StorageService, scope *app.ScopeService, vm *app.VirtualMachineService, opts []connect.HandlerOption) (*Serve, error) {
 	serve := &Serve{
 		ServeMux: &http.ServeMux{},
 		services: serviceRegistry{
@@ -106,7 +102,6 @@ func NewServe(app *app.ApplicationService, config *app.ConfigurationService, env
 			premium:  premium,
 			storage:  storage,
 			scope:    scope,
-			tag:      tag,
 			vm:       vm,
 		},
 	}

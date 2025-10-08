@@ -14,6 +14,5 @@ var ProviderSet = wire.NewSet(
 	NewOrchestratorUseCase,
 	NewScopeUseCase,
 	NewStorageUseCase,
-	NewTagUseCase,
 	NewVirtualMachineUseCase,
 )
