@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"log"
 	"log/slog"
 	"net"
 	"net/http"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/rs/cors"
 	"github.com/spf13/cobra"
-	"go.uber.org/automaxprocs/maxprocs"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
@@ -33,11 +31,6 @@ func NewServe(conf *config.Config, serve *mux.Serve) *cobra.Command {
 		Long:    "Start the OtterScale API server that provides gRPC and HTTP endpoints for all services",
 		Example: "otterscale serve --address=:8299 --config=otterscale.yaml",
 		RunE: func(_ *cobra.Command, _ []string) error {
-			_, err := maxprocs.Set(maxprocs.Logger(log.Printf))
-			if err != nil {
-				slog.Error("Error setting GOMAXPROCS", "err", err)
-			}
-
 			// Check if running in container and override address
 			if os.Getenv(containerEnvVar) != "" {
 				address = defaultContainerAddress
