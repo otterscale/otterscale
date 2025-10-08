@@ -3127,6 +3127,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.environment.v1.Prometheus'
+  /otterscale.environment.v1.EnvironmentService/GetPremiumTier:
+    post:
+      tags:
+        - EnvironmentService
+      summary: GetPremiumTier
+      operationId: EnvironmentService_GetPremiumTier
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.environment.v1.GetPremiumTierRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.environment.v1.PremiumTier'
   /otterscale.application.v1.ApplicationService/ListNamespaces:
     post:
       tags:
@@ -5229,41 +5264,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.configuration.v1.ListInternalObjectServicesResponse'
-  /otterscale.premium.v1.PremiumService/GetTier:
-    post:
-      tags:
-        - PremiumService
-      summary: GetTier
-      operationId: PremiumService_GetTier
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.premium.v1.GetTierRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.premium.v1.GetTierResponse'
   /otterscale.large_language_model.v1.LargeLanguageModelService/CheckInfrastructureStatus:
     post:
       tags:
@@ -8847,6 +8847,13 @@ components:
         - UNSPECIFIED
         - OK
         - NOT_INSTALLED
+    otterscale.environment.v1.PremiumTier.Level:
+      type: string
+      title: Level
+      enum:
+        - BASIC
+        - ADVANCED
+        - ENTERPRISE
     otterscale.environment.v1.CheckHealthRequest:
       type: object
       title: CheckHealthRequest
@@ -8873,9 +8880,21 @@ components:
           title: urls
       title: GetConfigHelmRepositoriesResponse
       additionalProperties: false
+    otterscale.environment.v1.GetPremiumTierRequest:
+      type: object
+      title: GetPremiumTierRequest
+      additionalProperties: false
     otterscale.environment.v1.GetPrometheusRequest:
       type: object
       title: GetPrometheusRequest
+      additionalProperties: false
+    otterscale.environment.v1.PremiumTier:
+      type: object
+      properties:
+        level:
+          title: level
+          $ref: '#/components/schemas/otterscale.environment.v1.PremiumTier.Level'
+      title: PremiumTier
       additionalProperties: false
     otterscale.environment.v1.Prometheus:
       type: object
@@ -11406,25 +11425,6 @@ components:
           format: double
       title: Metrics
       additionalProperties: false
-    otterscale.premium.v1.PremiumTier:
-      type: string
-      title: PremiumTier
-      enum:
-        - BASIC
-        - ADVANCED
-        - ENTERPRISE
-    otterscale.premium.v1.GetTierRequest:
-      type: object
-      title: GetTierRequest
-      additionalProperties: false
-    otterscale.premium.v1.GetTierResponse:
-      type: object
-      properties:
-        tier:
-          title: tier
-          $ref: '#/components/schemas/otterscale.premium.v1.PremiumTier'
-      title: GetTierResponse
-      additionalProperties: false
     otterscale.large_language_model.v1.CheckInfrastructureStatusResponse.Result:
       type: string
       title: Result
@@ -11611,7 +11611,6 @@ tags:
   - name: ApplicationService
   - name: VirtualMachineService
   - name: ConfigurationService
-  - name: PremiumService
   - name: LargeLanguageModelService
   - name: ScopeService
 externalDocs:
