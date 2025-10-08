@@ -84,6 +84,42 @@ func (s *MachineService) RemoveMachineTags(ctx context.Context, req *pb.RemoveMa
 	return resp, nil
 }
 
+func (s *MachineService) ListTags(ctx context.Context, _ *pb.ListTagsRequest) (*pb.ListTagsResponse, error) {
+	tags, err := s.uc.ListTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListTagsResponse{}
+	resp.SetTags(toProtoTags(tags))
+	return resp, nil
+}
+
+func (s *MachineService) GetTag(ctx context.Context, req *pb.GetTagRequest) (*pb.Tag, error) {
+	tag, err := s.uc.GetTag(ctx, req.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoTag(tag)
+	return resp, nil
+}
+
+func (s *MachineService) CreateTag(ctx context.Context, req *pb.CreateTagRequest) (*pb.Tag, error) {
+	tag, err := s.uc.CreateTag(ctx, req.GetName(), req.GetComment())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoTag(tag)
+	return resp, nil
+}
+
+func (s *MachineService) DeleteTag(ctx context.Context, req *pb.DeleteTagRequest) (*emptypb.Empty, error) {
+	if err := s.uc.DeleteTag(ctx, req.GetName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
 func toProtoMachines(ms []core.Machine) []*pb.Machine {
 	ret := []*pb.Machine{}
 	for i := range ms {
@@ -221,5 +257,20 @@ func toProtoNodeDevice(n *core.NodeDevice) *pb.Machine_NodeDevice {
 	ret.SetProductName(n.ProductName)
 	ret.SetBusName(n.BusName)
 	ret.SetPciAddress(n.PCIAddress)
+	return ret
+}
+
+func toProtoTags(ts []core.Tag) []*pb.Tag {
+	ret := []*pb.Tag{}
+	for i := range ts {
+		ret = append(ret, toProtoTag(&ts[i]))
+	}
+	return ret
+}
+
+func toProtoTag(t *core.Tag) *pb.Tag {
+	ret := &pb.Tag{}
+	ret.SetName(t.Name)
+	ret.SetComment(t.Comment)
 	return ret
 }

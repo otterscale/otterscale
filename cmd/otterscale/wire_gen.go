@@ -96,8 +96,6 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	sshKeyRepo := maas.NewSSHKey(maasMAAS)
 	scopeUseCase := core.NewScopeUseCase(scopeRepo, keyRepo, sshKeyRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
-	tagUseCase := core.NewTagUseCase(tagRepo)
-	tagService := app.NewTagService(tagUseCase)
 	kubeVirtRepo := kube.NewVirt(kubeKube)
 	kubeVirtCloneRepo := kube.NewVirtClone(kubeKube)
 	kubeVirtSnapshotRepo := kube.NewVirtSnapshot(kubeKube)
@@ -110,7 +108,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	serve, err := mux.NewServe(applicationService, configurationService, environmentService, facilityService, largeLanguageModelService, machineService, networkService, orchestratorService, premiumService, storageService, scopeService, tagService, virtualMachineService, v)
+	serve, err := mux.NewServe(applicationService, configurationService, environmentService, facilityService, largeLanguageModelService, machineService, networkService, orchestratorService, premiumService, storageService, scopeService, virtualMachineService, v)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
