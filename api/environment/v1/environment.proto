@@ -14,6 +14,7 @@ service EnvironmentService {
   rpc GetConfigHelmRepositories(GetConfigHelmRepositoriesRequest) returns (GetConfigHelmRepositoriesResponse);
   rpc UpdateConfigHelmRepositories(UpdateConfigHelmRepositoriesRequest) returns (google.protobuf.Empty);
   rpc GetPrometheus(GetPrometheusRequest) returns (Prometheus);
+  rpc GetPremiumTier(GetPremiumTierRequest) returns (PremiumTier);
 }
 
 message CheckHealthRequest {}
@@ -73,3 +74,14 @@ message Prometheus {
 }
 
 message GetPrometheusRequest {}
+
+message PremiumTier {
+  enum Level {
+    BASIC = 0;
+    ADVANCED = 1;
+    ENTERPRISE = 2;
+  }
+  Level level = 1;
+}
+
+message GetPremiumTierRequest {}

@@ -87,7 +87,6 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	facilityOffersRepo := juju.NewApplicationOffers(jujuJuju)
 	orchestratorUseCase := core.NewOrchestratorUseCase(configConfig, kubeCoreRepo, kubeAppsRepo, actionRepo, scopeRepo, facilityRepo, facilityOffersRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo, tagRepo)
 	orchestratorService := app.NewOrchestratorService(orchestratorUseCase)
-	premiumService := app.NewPremiumService()
 	cephFSRepo := ceph.NewFS(cephCeph)
 	cephRGWRepo := ceph.NewRGW(cephCeph)
 	storageUseCase := core.NewStorageUseCase(actionRepo, facilityRepo, cephClusterRepo, cephRBDRepo, cephFSRepo, cephRGWRepo, machineRepo)
@@ -108,7 +107,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	serve, err := mux.NewServe(applicationService, configurationService, environmentService, facilityService, largeLanguageModelService, machineService, networkService, orchestratorService, premiumService, storageService, scopeService, virtualMachineService, v)
+	serve, err := mux.NewServe(applicationService, configurationService, environmentService, facilityService, largeLanguageModelService, machineService, networkService, orchestratorService, storageService, scopeService, virtualMachineService, v)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

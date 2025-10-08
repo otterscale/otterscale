@@ -65,6 +65,50 @@ func (x CheckHealthResponse_Result) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
+type PremiumTier_Level int32
+
+const (
+	PremiumTier_BASIC      PremiumTier_Level = 0
+	PremiumTier_ADVANCED   PremiumTier_Level = 1
+	PremiumTier_ENTERPRISE PremiumTier_Level = 2
+)
+
+// Enum value maps for PremiumTier_Level.
+var (
+	PremiumTier_Level_name = map[int32]string{
+		0: "BASIC",
+		1: "ADVANCED",
+		2: "ENTERPRISE",
+	}
+	PremiumTier_Level_value = map[string]int32{
+		"BASIC":      0,
+		"ADVANCED":   1,
+		"ENTERPRISE": 2,
+	}
+)
+
+func (x PremiumTier_Level) Enum() *PremiumTier_Level {
+	p := new(PremiumTier_Level)
+	*p = x
+	return p
+}
+
+func (x PremiumTier_Level) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PremiumTier_Level) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_environment_v1_environment_proto_enumTypes[1].Descriptor()
+}
+
+func (PremiumTier_Level) Type() protoreflect.EnumType {
+	return &file_api_environment_v1_environment_proto_enumTypes[1]
+}
+
+func (x PremiumTier_Level) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 type CheckHealthRequest struct {
 	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -1210,6 +1254,126 @@ func (b0 GetPrometheusRequest_builder) Build() *GetPrometheusRequest {
 	return m0
 }
 
+type PremiumTier struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Level       PremiumTier_Level      `protobuf:"varint,1,opt,name=level,enum=otterscale.environment.v1.PremiumTier_Level"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *PremiumTier) Reset() {
+	*x = PremiumTier{}
+	mi := &file_api_environment_v1_environment_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PremiumTier) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PremiumTier) ProtoMessage() {}
+
+func (x *PremiumTier) ProtoReflect() protoreflect.Message {
+	mi := &file_api_environment_v1_environment_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *PremiumTier) GetLevel() PremiumTier_Level {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
+			return x.xxx_hidden_Level
+		}
+	}
+	return PremiumTier_BASIC
+}
+
+func (x *PremiumTier) SetLevel(v PremiumTier_Level) {
+	x.xxx_hidden_Level = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *PremiumTier) HasLevel() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *PremiumTier) ClearLevel() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Level = PremiumTier_BASIC
+}
+
+type PremiumTier_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Level *PremiumTier_Level
+}
+
+func (b0 PremiumTier_builder) Build() *PremiumTier {
+	m0 := &PremiumTier{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Level != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Level = *b.Level
+	}
+	return m0
+}
+
+type GetPremiumTierRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPremiumTierRequest) Reset() {
+	*x = GetPremiumTierRequest{}
+	mi := &file_api_environment_v1_environment_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPremiumTierRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPremiumTierRequest) ProtoMessage() {}
+
+func (x *GetPremiumTierRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_environment_v1_environment_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type GetPremiumTierRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 GetPremiumTierRequest_builder) Build() *GetPremiumTierRequest {
+	m0 := &GetPremiumTierRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
 var File_api_environment_v1_environment_proto protoreflect.FileDescriptor
 
 const file_api_environment_v1_environment_proto_rawDesc = "" +
@@ -1253,7 +1417,15 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\n" +
 	"Prometheus\x12\x19\n" +
 	"\bbase_url\x18\x02 \x01(\tR\abaseUrlJ\x04\b\x01\x10\x02\"\x16\n" +
-	"\x14GetPrometheusRequest2\x9c\x06\n" +
+	"\x14GetPrometheusRequest\"\x83\x01\n" +
+	"\vPremiumTier\x12B\n" +
+	"\x05level\x18\x01 \x01(\x0e2,.otterscale.environment.v1.PremiumTier.LevelR\x05level\"0\n" +
+	"\x05Level\x12\t\n" +
+	"\x05BASIC\x10\x00\x12\f\n" +
+	"\bADVANCED\x10\x01\x12\x0e\n" +
+	"\n" +
+	"ENTERPRISE\x10\x02\"\x17\n" +
+	"\x15GetPremiumTierRequest2\x88\a\n" +
 	"\x12EnvironmentService\x12l\n" +
 	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\x12n\n" +
 	"\vWatchStatus\x12-.otterscale.environment.v1.WatchStatusRequest\x1a..otterscale.environment.v1.WatchStatusResponse0\x01\x12V\n" +
@@ -1261,46 +1433,53 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\x12\x96\x01\n" +
 	"\x19GetConfigHelmRepositories\x12;.otterscale.environment.v1.GetConfigHelmRepositoriesRequest\x1a<.otterscale.environment.v1.GetConfigHelmRepositoriesResponse\x12v\n" +
 	"\x1cUpdateConfigHelmRepositories\x12>.otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest\x1a\x16.google.protobuf.Empty\x12g\n" +
-	"\rGetPrometheus\x12/.otterscale.environment.v1.GetPrometheusRequest\x1a%.otterscale.environment.v1.PrometheusB8Z6github.com/otterscale/otterscale/api/environment/v1;pbb\beditionsp\xe8\a"
+	"\rGetPrometheus\x12/.otterscale.environment.v1.GetPrometheusRequest\x1a%.otterscale.environment.v1.Prometheus\x12j\n" +
+	"\x0eGetPremiumTier\x120.otterscale.environment.v1.GetPremiumTierRequest\x1a&.otterscale.environment.v1.PremiumTierB8Z6github.com/otterscale/otterscale/api/environment/v1;pbb\beditionsp\xe8\a"
 
-var file_api_environment_v1_environment_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_environment_v1_environment_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_api_environment_v1_environment_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_api_environment_v1_environment_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_api_environment_v1_environment_proto_goTypes = []any{
 	(CheckHealthResponse_Result)(0),             // 0: otterscale.environment.v1.CheckHealthResponse.Result
-	(*CheckHealthRequest)(nil),                  // 1: otterscale.environment.v1.CheckHealthRequest
-	(*CheckHealthResponse)(nil),                 // 2: otterscale.environment.v1.CheckHealthResponse
-	(*WatchStatusRequest)(nil),                  // 3: otterscale.environment.v1.WatchStatusRequest
-	(*WatchStatusResponse)(nil),                 // 4: otterscale.environment.v1.WatchStatusResponse
-	(*UpdateStatusRequest)(nil),                 // 5: otterscale.environment.v1.UpdateStatusRequest
-	(*UpdateConfigRequest)(nil),                 // 6: otterscale.environment.v1.UpdateConfigRequest
-	(*GetConfigHelmRepositoriesRequest)(nil),    // 7: otterscale.environment.v1.GetConfigHelmRepositoriesRequest
-	(*GetConfigHelmRepositoriesResponse)(nil),   // 8: otterscale.environment.v1.GetConfigHelmRepositoriesResponse
-	(*UpdateConfigHelmRepositoriesRequest)(nil), // 9: otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
-	(*Prometheus)(nil),                          // 10: otterscale.environment.v1.Prometheus
-	(*GetPrometheusRequest)(nil),                // 11: otterscale.environment.v1.GetPrometheusRequest
-	(*emptypb.Empty)(nil),                       // 12: google.protobuf.Empty
+	(PremiumTier_Level)(0),                      // 1: otterscale.environment.v1.PremiumTier.Level
+	(*CheckHealthRequest)(nil),                  // 2: otterscale.environment.v1.CheckHealthRequest
+	(*CheckHealthResponse)(nil),                 // 3: otterscale.environment.v1.CheckHealthResponse
+	(*WatchStatusRequest)(nil),                  // 4: otterscale.environment.v1.WatchStatusRequest
+	(*WatchStatusResponse)(nil),                 // 5: otterscale.environment.v1.WatchStatusResponse
+	(*UpdateStatusRequest)(nil),                 // 6: otterscale.environment.v1.UpdateStatusRequest
+	(*UpdateConfigRequest)(nil),                 // 7: otterscale.environment.v1.UpdateConfigRequest
+	(*GetConfigHelmRepositoriesRequest)(nil),    // 8: otterscale.environment.v1.GetConfigHelmRepositoriesRequest
+	(*GetConfigHelmRepositoriesResponse)(nil),   // 9: otterscale.environment.v1.GetConfigHelmRepositoriesResponse
+	(*UpdateConfigHelmRepositoriesRequest)(nil), // 10: otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
+	(*Prometheus)(nil),                          // 11: otterscale.environment.v1.Prometheus
+	(*GetPrometheusRequest)(nil),                // 12: otterscale.environment.v1.GetPrometheusRequest
+	(*PremiumTier)(nil),                         // 13: otterscale.environment.v1.PremiumTier
+	(*GetPremiumTierRequest)(nil),               // 14: otterscale.environment.v1.GetPremiumTierRequest
+	(*emptypb.Empty)(nil),                       // 15: google.protobuf.Empty
 }
 var file_api_environment_v1_environment_proto_depIdxs = []int32{
 	0,  // 0: otterscale.environment.v1.CheckHealthResponse.result:type_name -> otterscale.environment.v1.CheckHealthResponse.Result
-	1,  // 1: otterscale.environment.v1.EnvironmentService.CheckHealth:input_type -> otterscale.environment.v1.CheckHealthRequest
-	3,  // 2: otterscale.environment.v1.EnvironmentService.WatchStatus:input_type -> otterscale.environment.v1.WatchStatusRequest
-	5,  // 3: otterscale.environment.v1.EnvironmentService.UpdateStatus:input_type -> otterscale.environment.v1.UpdateStatusRequest
-	6,  // 4: otterscale.environment.v1.EnvironmentService.UpdateConfig:input_type -> otterscale.environment.v1.UpdateConfigRequest
-	7,  // 5: otterscale.environment.v1.EnvironmentService.GetConfigHelmRepositories:input_type -> otterscale.environment.v1.GetConfigHelmRepositoriesRequest
-	9,  // 6: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:input_type -> otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
-	11, // 7: otterscale.environment.v1.EnvironmentService.GetPrometheus:input_type -> otterscale.environment.v1.GetPrometheusRequest
-	2,  // 8: otterscale.environment.v1.EnvironmentService.CheckHealth:output_type -> otterscale.environment.v1.CheckHealthResponse
-	4,  // 9: otterscale.environment.v1.EnvironmentService.WatchStatus:output_type -> otterscale.environment.v1.WatchStatusResponse
-	12, // 10: otterscale.environment.v1.EnvironmentService.UpdateStatus:output_type -> google.protobuf.Empty
-	12, // 11: otterscale.environment.v1.EnvironmentService.UpdateConfig:output_type -> google.protobuf.Empty
-	8,  // 12: otterscale.environment.v1.EnvironmentService.GetConfigHelmRepositories:output_type -> otterscale.environment.v1.GetConfigHelmRepositoriesResponse
-	12, // 13: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:output_type -> google.protobuf.Empty
-	10, // 14: otterscale.environment.v1.EnvironmentService.GetPrometheus:output_type -> otterscale.environment.v1.Prometheus
-	8,  // [8:15] is the sub-list for method output_type
-	1,  // [1:8] is the sub-list for method input_type
-	1,  // [1:1] is the sub-list for extension type_name
-	1,  // [1:1] is the sub-list for extension extendee
-	0,  // [0:1] is the sub-list for field type_name
+	1,  // 1: otterscale.environment.v1.PremiumTier.level:type_name -> otterscale.environment.v1.PremiumTier.Level
+	2,  // 2: otterscale.environment.v1.EnvironmentService.CheckHealth:input_type -> otterscale.environment.v1.CheckHealthRequest
+	4,  // 3: otterscale.environment.v1.EnvironmentService.WatchStatus:input_type -> otterscale.environment.v1.WatchStatusRequest
+	6,  // 4: otterscale.environment.v1.EnvironmentService.UpdateStatus:input_type -> otterscale.environment.v1.UpdateStatusRequest
+	7,  // 5: otterscale.environment.v1.EnvironmentService.UpdateConfig:input_type -> otterscale.environment.v1.UpdateConfigRequest
+	8,  // 6: otterscale.environment.v1.EnvironmentService.GetConfigHelmRepositories:input_type -> otterscale.environment.v1.GetConfigHelmRepositoriesRequest
+	10, // 7: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:input_type -> otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
+	12, // 8: otterscale.environment.v1.EnvironmentService.GetPrometheus:input_type -> otterscale.environment.v1.GetPrometheusRequest
+	14, // 9: otterscale.environment.v1.EnvironmentService.GetPremiumTier:input_type -> otterscale.environment.v1.GetPremiumTierRequest
+	3,  // 10: otterscale.environment.v1.EnvironmentService.CheckHealth:output_type -> otterscale.environment.v1.CheckHealthResponse
+	5,  // 11: otterscale.environment.v1.EnvironmentService.WatchStatus:output_type -> otterscale.environment.v1.WatchStatusResponse
+	15, // 12: otterscale.environment.v1.EnvironmentService.UpdateStatus:output_type -> google.protobuf.Empty
+	15, // 13: otterscale.environment.v1.EnvironmentService.UpdateConfig:output_type -> google.protobuf.Empty
+	9,  // 14: otterscale.environment.v1.EnvironmentService.GetConfigHelmRepositories:output_type -> otterscale.environment.v1.GetConfigHelmRepositoriesResponse
+	15, // 15: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:output_type -> google.protobuf.Empty
+	11, // 16: otterscale.environment.v1.EnvironmentService.GetPrometheus:output_type -> otterscale.environment.v1.Prometheus
+	13, // 17: otterscale.environment.v1.EnvironmentService.GetPremiumTier:output_type -> otterscale.environment.v1.PremiumTier
+	10, // [10:18] is the sub-list for method output_type
+	2,  // [2:10] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_api_environment_v1_environment_proto_init() }
@@ -1313,8 +1492,8 @@ func file_api_environment_v1_environment_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_environment_v1_environment_proto_rawDesc), len(file_api_environment_v1_environment_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   11,
+			NumEnums:      2,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
