@@ -15,6 +15,7 @@ import (
 	"golang.org/x/net/http2/h2c"
 
 	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/mux"
 )
 
 const (
@@ -23,7 +24,7 @@ const (
 	defaultContainerConfigPath = "/etc/app/otterscale.yaml"
 )
 
-func NewServe(conf *config.Config, mux *http.ServeMux) *cobra.Command {
+func NewServe(conf *config.Config, serve *mux.Serve) *cobra.Command {
 	var address, configPath string
 
 	cmd := &cobra.Command{
@@ -52,7 +53,7 @@ func NewServe(conf *config.Config, mux *http.ServeMux) *cobra.Command {
 			srv := &http.Server{
 				Addr: address,
 				Handler: h2c.NewHandler(
-					cors.AllowAll().Handler(mux),
+					cors.AllowAll().Handler(serve),
 					&http2.Server{},
 				),
 				ReadHeaderTimeout: time.Second,
