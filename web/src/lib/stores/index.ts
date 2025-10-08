@@ -1,6 +1,6 @@
 import { writable, type Writable } from 'svelte/store';
 
-import { type PremiumTier } from '$lib/api/environment/v1/environment_pb';
+import { PremiumTier_Level, type PremiumTier } from '$lib/api/environment/v1/environment_pb';
 import type { Essential } from '$lib/api/orchestrator/v1/orchestrator_pb';
 import type { Scope } from '$lib/api/scope/v1/scope_pb';
 import { staticPaths, type Path } from '$lib/path';
@@ -46,7 +46,7 @@ interface AppStores {
 // Create stores
 const createStores = (): AppStores => ({
 	breadcrumb: writable<BreadcrumbState>({ parents: [], current: staticPaths.home }),
-	premiumTier: writable<PremiumTier>(),
+	premiumTier: writable<PremiumTier>({ level: PremiumTier_Level.BASIC } as PremiumTier),
 	activeScope: writable<Scope>(),
 	currentCeph: writable<Essential | undefined>(undefined),
 	currentKubernetes: writable<Essential | undefined>(undefined),
