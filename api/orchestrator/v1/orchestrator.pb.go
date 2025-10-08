@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.9
 // 	protoc        v6.32.1
-// source: api/essential/v1/essential.proto
+// source: api/orchestrator/v1/orchestrator.proto
 
 package pb
 
@@ -55,11 +55,11 @@ func (x Essential_Type) String() string {
 }
 
 func (Essential_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_essential_v1_essential_proto_enumTypes[0].Descriptor()
+	return file_api_orchestrator_v1_orchestrator_proto_enumTypes[0].Descriptor()
 }
 
 func (Essential_Type) Type() protoreflect.EnumType {
-	return &file_api_essential_v1_essential_proto_enumTypes[0]
+	return &file_api_orchestrator_v1_orchestrator_proto_enumTypes[0]
 }
 
 func (x Essential_Type) Number() protoreflect.EnumNumber {
@@ -105,11 +105,11 @@ func (x Status_Level) String() string {
 }
 
 func (Status_Level) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_essential_v1_essential_proto_enumTypes[1].Descriptor()
+	return file_api_orchestrator_v1_orchestrator_proto_enumTypes[1].Descriptor()
 }
 
 func (Status_Level) Type() protoreflect.EnumType {
-	return &file_api_essential_v1_essential_proto_enumTypes[1]
+	return &file_api_orchestrator_v1_orchestrator_proto_enumTypes[1]
 }
 
 func (x Status_Level) Number() protoreflect.EnumNumber {
@@ -118,7 +118,7 @@ func (x Status_Level) Number() protoreflect.EnumNumber {
 
 type Essential struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Type        Essential_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.essential.v1.Essential_Type"`
+	xxx_hidden_Type        Essential_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.orchestrator.v1.Essential_Type"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
 	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,11,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_ScopeName   *string                `protobuf:"bytes,12,opt,name=scope_name,json=scopeName"`
@@ -131,7 +131,7 @@ type Essential struct {
 
 func (x *Essential) Reset() {
 	*x = Essential{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[0]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -143,7 +143,7 @@ func (x *Essential) String() string {
 func (*Essential) ProtoMessage() {}
 
 func (x *Essential) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[0]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -310,7 +310,7 @@ func (b0 Essential_builder) Build() *Essential {
 
 type Status struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Level       Status_Level           `protobuf:"varint,1,opt,name=level,enum=otterscale.essential.v1.Status_Level"`
+	xxx_hidden_Level       Status_Level           `protobuf:"varint,1,opt,name=level,enum=otterscale.orchestrator.v1.Status_Level"`
 	xxx_hidden_Message     *string                `protobuf:"bytes,2,opt,name=message"`
 	xxx_hidden_Details     *string                `protobuf:"bytes,3,opt,name=details"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -321,7 +321,7 @@ type Status struct {
 
 func (x *Status) Reset() {
 	*x = Status{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[1]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -333,7 +333,7 @@ func (x *Status) String() string {
 func (*Status) ProtoMessage() {}
 
 func (x *Status) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[1]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -460,7 +460,7 @@ type GPURelation struct {
 
 func (x *GPURelation) Reset() {
 	*x = GPURelation{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[2]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -472,7 +472,7 @@ func (x *GPURelation) String() string {
 func (*GPURelation) ProtoMessage() {}
 
 func (x *GPURelation) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[2]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -637,7 +637,7 @@ func (b0 GPURelation_builder) Build() *GPURelation {
 type case_GPURelation_Entity protoreflect.FieldNumber
 
 func (x case_GPURelation_Entity) String() string {
-	md := file_api_essential_v1_essential_proto_msgTypes[2].Descriptor()
+	md := file_api_orchestrator_v1_orchestrator_proto_msgTypes[2].Descriptor()
 	if x == 0 {
 		return "not set"
 	}
@@ -677,7 +677,7 @@ type IsMachineDeployedRequest struct {
 
 func (x *IsMachineDeployedRequest) Reset() {
 	*x = IsMachineDeployedRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[3]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -689,7 +689,7 @@ func (x *IsMachineDeployedRequest) String() string {
 func (*IsMachineDeployedRequest) ProtoMessage() {}
 
 func (x *IsMachineDeployedRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[3]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -756,7 +756,7 @@ type IsMachineDeployedResponse struct {
 
 func (x *IsMachineDeployedResponse) Reset() {
 	*x = IsMachineDeployedResponse{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[4]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -768,7 +768,7 @@ func (x *IsMachineDeployedResponse) String() string {
 func (*IsMachineDeployedResponse) ProtoMessage() {}
 
 func (x *IsMachineDeployedResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[4]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -863,7 +863,7 @@ type ListStatusesRequest struct {
 
 func (x *ListStatusesRequest) Reset() {
 	*x = ListStatusesRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[5]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -875,7 +875,7 @@ func (x *ListStatusesRequest) String() string {
 func (*ListStatusesRequest) ProtoMessage() {}
 
 func (x *ListStatusesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[5]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -939,7 +939,7 @@ type ListStatusesResponse struct {
 
 func (x *ListStatusesResponse) Reset() {
 	*x = ListStatusesResponse{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[6]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -951,7 +951,7 @@ func (x *ListStatusesResponse) String() string {
 func (*ListStatusesResponse) ProtoMessage() {}
 
 func (x *ListStatusesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[6]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -991,7 +991,7 @@ func (b0 ListStatusesResponse_builder) Build() *ListStatusesResponse {
 
 type ListEssentialsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Type        Essential_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.essential.v1.Essential_Type"`
+	xxx_hidden_Type        Essential_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.orchestrator.v1.Essential_Type"`
 	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,2,opt,name=scope_uuid,json=scopeUuid"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -1001,7 +1001,7 @@ type ListEssentialsRequest struct {
 
 func (x *ListEssentialsRequest) Reset() {
 	*x = ListEssentialsRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[7]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1013,7 +1013,7 @@ func (x *ListEssentialsRequest) String() string {
 func (*ListEssentialsRequest) ProtoMessage() {}
 
 func (x *ListEssentialsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[7]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1108,7 +1108,7 @@ type ListEssentialsResponse struct {
 
 func (x *ListEssentialsResponse) Reset() {
 	*x = ListEssentialsResponse{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[8]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1120,7 +1120,7 @@ func (x *ListEssentialsResponse) String() string {
 func (*ListEssentialsResponse) ProtoMessage() {}
 
 func (x *ListEssentialsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[8]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1174,7 +1174,7 @@ type CreateSingleNodeRequest struct {
 
 func (x *CreateSingleNodeRequest) Reset() {
 	*x = CreateSingleNodeRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[9]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1186,7 +1186,7 @@ func (x *CreateSingleNodeRequest) String() string {
 func (*CreateSingleNodeRequest) ProtoMessage() {}
 
 func (x *CreateSingleNodeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[9]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1379,7 +1379,7 @@ type CreateHighAvailabilityClusterRequest struct {
 
 func (x *CreateHighAvailabilityClusterRequest) Reset() {
 	*x = CreateHighAvailabilityClusterRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[10]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1391,7 +1391,7 @@ func (x *CreateHighAvailabilityClusterRequest) String() string {
 func (*CreateHighAvailabilityClusterRequest) ProtoMessage() {}
 
 func (x *CreateHighAvailabilityClusterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[10]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1570,7 +1570,7 @@ func (b0 CreateHighAvailabilityClusterRequest_builder) Build() *CreateHighAvaila
 
 type AddUnitsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Type        Essential_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.essential.v1.Essential_Type"`
+	xxx_hidden_Type        Essential_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.orchestrator.v1.Essential_Type"`
 	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,2,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,3,opt,name=name"`
 	xxx_hidden_Number      int32                  `protobuf:"varint,4,opt,name=number"`
@@ -1584,7 +1584,7 @@ type AddUnitsRequest struct {
 
 func (x *AddUnitsRequest) Reset() {
 	*x = AddUnitsRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[11]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1596,7 +1596,7 @@ func (x *AddUnitsRequest) String() string {
 func (*AddUnitsRequest) ProtoMessage() {}
 
 func (x *AddUnitsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[11]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1799,7 +1799,7 @@ type ListKubernetesNodeLabelsRequest struct {
 
 func (x *ListKubernetesNodeLabelsRequest) Reset() {
 	*x = ListKubernetesNodeLabelsRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[12]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1811,7 +1811,7 @@ func (x *ListKubernetesNodeLabelsRequest) String() string {
 func (*ListKubernetesNodeLabelsRequest) ProtoMessage() {}
 
 func (x *ListKubernetesNodeLabelsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[12]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1968,7 +1968,7 @@ type ListKubernetesNodeLabelsResponse struct {
 
 func (x *ListKubernetesNodeLabelsResponse) Reset() {
 	*x = ListKubernetesNodeLabelsResponse{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[13]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1980,7 +1980,7 @@ func (x *ListKubernetesNodeLabelsResponse) String() string {
 func (*ListKubernetesNodeLabelsResponse) ProtoMessage() {}
 
 func (x *ListKubernetesNodeLabelsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[13]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2030,7 +2030,7 @@ type UpdateKubernetesNodeLabelsRequest struct {
 
 func (x *UpdateKubernetesNodeLabelsRequest) Reset() {
 	*x = UpdateKubernetesNodeLabelsRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[14]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2042,7 +2042,7 @@ func (x *UpdateKubernetesNodeLabelsRequest) String() string {
 func (*UpdateKubernetesNodeLabelsRequest) ProtoMessage() {}
 
 func (x *UpdateKubernetesNodeLabelsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[14]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2183,7 +2183,7 @@ type UpdateKubernetesNodeLabelsResponse struct {
 
 func (x *UpdateKubernetesNodeLabelsResponse) Reset() {
 	*x = UpdateKubernetesNodeLabelsResponse{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[15]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2195,7 +2195,7 @@ func (x *UpdateKubernetesNodeLabelsResponse) String() string {
 func (*UpdateKubernetesNodeLabelsResponse) ProtoMessage() {}
 
 func (x *UpdateKubernetesNodeLabelsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[15]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2244,7 +2244,7 @@ type ListGPURelationsByMachineRequest struct {
 
 func (x *ListGPURelationsByMachineRequest) Reset() {
 	*x = ListGPURelationsByMachineRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[16]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2256,7 +2256,7 @@ func (x *ListGPURelationsByMachineRequest) String() string {
 func (*ListGPURelationsByMachineRequest) ProtoMessage() {}
 
 func (x *ListGPURelationsByMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[16]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2384,7 +2384,7 @@ type ListGPURelationsByMachineResponse struct {
 
 func (x *ListGPURelationsByMachineResponse) Reset() {
 	*x = ListGPURelationsByMachineResponse{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[17]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2396,7 +2396,7 @@ func (x *ListGPURelationsByMachineResponse) String() string {
 func (*ListGPURelationsByMachineResponse) ProtoMessage() {}
 
 func (x *ListGPURelationsByMachineResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[17]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2448,7 +2448,7 @@ type ListGPURelationsByModelRequest struct {
 
 func (x *ListGPURelationsByModelRequest) Reset() {
 	*x = ListGPURelationsByModelRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[18]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2460,7 +2460,7 @@ func (x *ListGPURelationsByModelRequest) String() string {
 func (*ListGPURelationsByModelRequest) ProtoMessage() {}
 
 func (x *ListGPURelationsByModelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[18]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2620,7 +2620,7 @@ type ListGPURelationsByModelResponse struct {
 
 func (x *ListGPURelationsByModelResponse) Reset() {
 	*x = ListGPURelationsByModelResponse{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[19]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2632,7 +2632,7 @@ func (x *ListGPURelationsByModelResponse) String() string {
 func (*ListGPURelationsByModelResponse) ProtoMessage() {}
 
 func (x *ListGPURelationsByModelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[19]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2682,7 +2682,7 @@ type Essential_Unit struct {
 
 func (x *Essential_Unit) Reset() {
 	*x = Essential_Unit{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[20]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2694,7 +2694,7 @@ func (x *Essential_Unit) String() string {
 func (*Essential_Unit) ProtoMessage() {}
 
 func (x *Essential_Unit) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[20]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2797,7 +2797,7 @@ type GPURelation_Pod struct {
 
 func (x *GPURelation_Pod) Reset() {
 	*x = GPURelation_Pod{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[21]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2809,7 +2809,7 @@ func (x *GPURelation_Pod) String() string {
 func (*GPURelation_Pod) ProtoMessage() {}
 
 func (x *GPURelation_Pod) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[21]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3017,7 +3017,7 @@ type GPURelation_GPU struct {
 
 func (x *GPURelation_GPU) Reset() {
 	*x = GPURelation_GPU{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[22]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3029,7 +3029,7 @@ func (x *GPURelation_GPU) String() string {
 func (*GPURelation_GPU) ProtoMessage() {}
 
 func (x *GPURelation_GPU) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[22]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3305,7 +3305,7 @@ type GPURelation_Machine struct {
 
 func (x *GPURelation_Machine) Reset() {
 	*x = GPURelation_Machine{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[23]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3317,7 +3317,7 @@ func (x *GPURelation_Machine) String() string {
 func (*GPURelation_Machine) ProtoMessage() {}
 
 func (x *GPURelation_Machine) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[23]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3417,7 +3417,7 @@ type GPURelation_Pod_Device struct {
 
 func (x *GPURelation_Pod_Device) Reset() {
 	*x = GPURelation_Pod_Device{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[24]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3429,7 +3429,7 @@ func (x *GPURelation_Pod_Device) String() string {
 func (*GPURelation_Pod_Device) ProtoMessage() {}
 
 func (x *GPURelation_Pod_Device) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[24]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3542,19 +3542,19 @@ func (b0 GPURelation_Pod_Device_builder) Build() *GPURelation_Pod_Device {
 	return m0
 }
 
-var File_api_essential_v1_essential_proto protoreflect.FileDescriptor
+var File_api_orchestrator_v1_orchestrator_proto protoreflect.FileDescriptor
 
-const file_api_essential_v1_essential_proto_rawDesc = "" +
+const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\n" +
-	" api/essential/v1/essential.proto\x12\x17otterscale.essential.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc6\x02\n" +
-	"\tEssential\x12;\n" +
-	"\x04type\x18\x01 \x01(\x0e2'.otterscale.essential.v1.Essential.TypeR\x04type\x12\x12\n" +
+	"&api/orchestrator/v1/orchestrator.proto\x12\x1aotterscale.orchestrator.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xcc\x02\n" +
+	"\tEssential\x12>\n" +
+	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Essential.TypeR\x04type\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\v \x01(\tR\tscopeUuid\x12\x1d\n" +
 	"\n" +
-	"scope_name\x18\f \x01(\tR\tscopeName\x12=\n" +
-	"\x05units\x18\x15 \x03(\v2'.otterscale.essential.v1.Essential.UnitR\x05units\x1a8\n" +
+	"scope_name\x18\f \x01(\tR\tscopeName\x12@\n" +
+	"\x05units\x18\x15 \x03(\v2*.otterscale.orchestrator.v1.Essential.UnitR\x05units\x1a8\n" +
 	"\x04Unit\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tdirective\x18\x02 \x01(\tR\tdirective\"1\n" +
@@ -3562,9 +3562,9 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\vUNSPECIFIED\x10\x00\x12\x0e\n" +
 	"\n" +
 	"KUBERNETES\x10\x01\x12\b\n" +
-	"\x04CEPH\x10\x02\"\xb9\x01\n" +
-	"\x06Status\x12;\n" +
-	"\x05level\x18\x01 \x01(\x0e2%.otterscale.essential.v1.Status.LevelR\x05level\x12\x18\n" +
+	"\x04CEPH\x10\x02\"\xbc\x01\n" +
+	"\x06Status\x12>\n" +
+	"\x05level\x18\x01 \x01(\x0e2(.otterscale.orchestrator.v1.Status.LevelR\x05level\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x18\n" +
 	"\adetails\x18\x03 \x01(\tR\adetails\">\n" +
 	"\x05Level\x12\b\n" +
@@ -3573,19 +3573,19 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\n" +
 	"\x06MEDIUM\x10\x02\x12\b\n" +
 	"\x04HIGH\x10\x03\x12\f\n" +
-	"\bCRITICAL\x10\x04\"\xc8\x06\n" +
-	"\vGPURelation\x12<\n" +
-	"\x03pod\x18\x01 \x01(\v2(.otterscale.essential.v1.GPURelation.PodH\x00R\x03pod\x12<\n" +
-	"\x03gpu\x18\x02 \x01(\v2(.otterscale.essential.v1.GPURelation.GPUH\x00R\x03gpu\x12H\n" +
-	"\amachine\x18\x03 \x01(\v2,.otterscale.essential.v1.GPURelation.MachineH\x00R\amachine\x1a\xe9\x02\n" +
+	"\bCRITICAL\x10\x04\"\xd4\x06\n" +
+	"\vGPURelation\x12?\n" +
+	"\x03pod\x18\x01 \x01(\v2+.otterscale.orchestrator.v1.GPURelation.PodH\x00R\x03pod\x12?\n" +
+	"\x03gpu\x18\x02 \x01(\v2+.otterscale.orchestrator.v1.GPURelation.GPUH\x00R\x03gpu\x12K\n" +
+	"\amachine\x18\x03 \x01(\v2/.otterscale.orchestrator.v1.GPURelation.MachineH\x00R\amachine\x1a\xec\x02\n" +
 	"\x03Pod\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1d\n" +
 	"\n" +
 	"model_name\x18\x03 \x01(\tR\tmodelName\x12#\n" +
 	"\rbinding_phase\x18\v \x01(\tR\fbindingPhase\x125\n" +
-	"\bbound_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\aboundAt\x12I\n" +
-	"\adevices\x18\x15 \x03(\v2/.otterscale.essential.v1.GPURelation.Pod.DeviceR\adevices\x1aj\n" +
+	"\bbound_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\aboundAt\x12L\n" +
+	"\adevices\x18\x15 \x03(\v22.otterscale.orchestrator.v1.GPURelation.Pod.DeviceR\adevices\x1aj\n" +
 	"\x06Device\x12\x15\n" +
 	"\x06gpu_id\x18\x01 \x01(\tR\x05gpuId\x12\x1d\n" +
 	"\n" +
@@ -3613,16 +3613,16 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\amessage\x18\x02 \x01(\tR\amessage\"4\n" +
 	"\x13ListStatusesRequest\x12\x1d\n" +
 	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\"S\n" +
-	"\x14ListStatusesResponse\x12;\n" +
-	"\bstatuses\x18\x01 \x03(\v2\x1f.otterscale.essential.v1.StatusR\bstatuses\"s\n" +
-	"\x15ListEssentialsRequest\x12;\n" +
-	"\x04type\x18\x01 \x01(\x0e2'.otterscale.essential.v1.Essential.TypeR\x04type\x12\x1d\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\"V\n" +
+	"\x14ListStatusesResponse\x12>\n" +
+	"\bstatuses\x18\x01 \x03(\v2\".otterscale.orchestrator.v1.StatusR\bstatuses\"v\n" +
+	"\x15ListEssentialsRequest\x12>\n" +
+	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Essential.TypeR\x04type\x12\x1d\n" +
 	"\n" +
-	"scope_uuid\x18\x02 \x01(\tR\tscopeUuid\"\\\n" +
-	"\x16ListEssentialsResponse\x12B\n" +
+	"scope_uuid\x18\x02 \x01(\tR\tscopeUuid\"_\n" +
+	"\x16ListEssentialsResponse\x12E\n" +
 	"\n" +
-	"essentials\x18\x01 \x03(\v2\".otterscale.essential.v1.EssentialR\n" +
+	"essentials\x18\x01 \x03(\v2%.otterscale.orchestrator.v1.EssentialR\n" +
 	"essentials\"\xdb\x01\n" +
 	"\x17CreateSingleNodeRequest\x12\x1d\n" +
 	"\n" +
@@ -3649,9 +3649,9 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\vcalico_cidr\x18\f \x01(\tR\n" +
 	"calicoCidr\x12\x1f\n" +
 	"\vosd_devices\x18\x15 \x03(\tR\n" +
-	"osdDevices\"\xd0\x01\n" +
-	"\x0fAddUnitsRequest\x12;\n" +
-	"\x04type\x18\x01 \x01(\x0e2'.otterscale.essential.v1.Essential.TypeR\x04type\x12\x1d\n" +
+	"osdDevices\"\xd3\x01\n" +
+	"\x0fAddUnitsRequest\x12>\n" +
+	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Essential.TypeR\x04type\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x02 \x01(\tR\tscopeUuid\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x16\n" +
@@ -3664,23 +3664,23 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1a\n" +
 	"\bhostname\x18\x03 \x01(\tR\bhostname\x12\x10\n" +
-	"\x03all\x18\v \x01(\bR\x03all\"\xbc\x01\n" +
-	" ListKubernetesNodeLabelsResponse\x12]\n" +
-	"\x06labels\x18\x01 \x03(\v2E.otterscale.essential.v1.ListKubernetesNodeLabelsResponse.LabelsEntryR\x06labels\x1a9\n" +
+	"\x03all\x18\v \x01(\bR\x03all\"\xbf\x01\n" +
+	" ListKubernetesNodeLabelsResponse\x12`\n" +
+	"\x06labels\x18\x01 \x03(\v2H.otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.LabelsEntryR\x06labels\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x9e\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xa1\x02\n" +
 	"!UpdateKubernetesNodeLabelsRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1a\n" +
-	"\bhostname\x18\x03 \x01(\tR\bhostname\x12^\n" +
-	"\x06labels\x18\x04 \x03(\v2F.otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntryR\x06labels\x1a9\n" +
+	"\bhostname\x18\x03 \x01(\tR\bhostname\x12a\n" +
+	"\x06labels\x18\x04 \x03(\v2I.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntryR\x06labels\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xc0\x01\n" +
-	"\"UpdateKubernetesNodeLabelsResponse\x12_\n" +
-	"\x06labels\x18\x01 \x03(\v2G.otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntryR\x06labels\x1a9\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xc3\x01\n" +
+	"\"UpdateKubernetesNodeLabelsResponse\x12b\n" +
+	"\x06labels\x18\x01 \x03(\v2J.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntryR\x06labels\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x85\x01\n" +
@@ -3689,104 +3689,105 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1d\n" +
 	"\n" +
-	"machine_id\x18\x03 \x01(\tR\tmachineId\"n\n" +
-	"!ListGPURelationsByMachineResponse\x12I\n" +
-	"\rgpu_relations\x18\x01 \x03(\v2$.otterscale.essential.v1.GPURelationR\fgpuRelations\"\xa1\x01\n" +
+	"machine_id\x18\x03 \x01(\tR\tmachineId\"q\n" +
+	"!ListGPURelationsByMachineResponse\x12L\n" +
+	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\xa1\x01\n" +
 	"\x1eListGPURelationsByModelRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x1d\n" +
 	"\n" +
-	"model_name\x18\x04 \x01(\tR\tmodelName\"l\n" +
-	"\x1fListGPURelationsByModelResponse\x12I\n" +
-	"\rgpu_relations\x18\x01 \x03(\v2$.otterscale.essential.v1.GPURelationR\fgpuRelations2\xe0\t\n" +
-	"\x10EssentialService\x12z\n" +
-	"\x11IsMachineDeployed\x121.otterscale.essential.v1.IsMachineDeployedRequest\x1a2.otterscale.essential.v1.IsMachineDeployedResponse\x12k\n" +
-	"\fListStatuses\x12,.otterscale.essential.v1.ListStatusesRequest\x1a-.otterscale.essential.v1.ListStatusesResponse\x12q\n" +
-	"\x0eListEssentials\x12..otterscale.essential.v1.ListEssentialsRequest\x1a/.otterscale.essential.v1.ListEssentialsResponse\x12\\\n" +
-	"\x10CreateSingleNode\x120.otterscale.essential.v1.CreateSingleNodeRequest\x1a\x16.google.protobuf.Empty\x12v\n" +
-	"\x1dCreateHighAvailabilityCluster\x12=.otterscale.essential.v1.CreateHighAvailabilityClusterRequest\x1a\x16.google.protobuf.Empty\x12L\n" +
-	"\bAddUnits\x12(.otterscale.essential.v1.AddUnitsRequest\x1a\x16.google.protobuf.Empty\x12\x8f\x01\n" +
-	"\x18ListKubernetesNodeLabels\x128.otterscale.essential.v1.ListKubernetesNodeLabelsRequest\x1a9.otterscale.essential.v1.ListKubernetesNodeLabelsResponse\x12\x95\x01\n" +
-	"\x1aUpdateKubernetesNodeLabels\x12:.otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest\x1a;.otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse\x12\x92\x01\n" +
-	"\x19ListGPURelationsByMachine\x129.otterscale.essential.v1.ListGPURelationsByMachineRequest\x1a:.otterscale.essential.v1.ListGPURelationsByMachineResponse\x12\x8c\x01\n" +
-	"\x17ListGPURelationsByModel\x127.otterscale.essential.v1.ListGPURelationsByModelRequest\x1a8.otterscale.essential.v1.ListGPURelationsByModelResponseB6Z4github.com/otterscale/otterscale/api/essential/v1;pbb\beditionsp\xe8\a"
+	"model_name\x18\x04 \x01(\tR\tmodelName\"o\n" +
+	"\x1fListGPURelationsByModelResponse\x12L\n" +
+	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations2\x97\n" +
+	"\n" +
+	"\x13OrchestratorService\x12\x80\x01\n" +
+	"\x11IsMachineDeployed\x124.otterscale.orchestrator.v1.IsMachineDeployedRequest\x1a5.otterscale.orchestrator.v1.IsMachineDeployedResponse\x12q\n" +
+	"\fListStatuses\x12/.otterscale.orchestrator.v1.ListStatusesRequest\x1a0.otterscale.orchestrator.v1.ListStatusesResponse\x12w\n" +
+	"\x0eListEssentials\x121.otterscale.orchestrator.v1.ListEssentialsRequest\x1a2.otterscale.orchestrator.v1.ListEssentialsResponse\x12_\n" +
+	"\x10CreateSingleNode\x123.otterscale.orchestrator.v1.CreateSingleNodeRequest\x1a\x16.google.protobuf.Empty\x12y\n" +
+	"\x1dCreateHighAvailabilityCluster\x12@.otterscale.orchestrator.v1.CreateHighAvailabilityClusterRequest\x1a\x16.google.protobuf.Empty\x12O\n" +
+	"\bAddUnits\x12+.otterscale.orchestrator.v1.AddUnitsRequest\x1a\x16.google.protobuf.Empty\x12\x95\x01\n" +
+	"\x18ListKubernetesNodeLabels\x12;.otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest\x1a<.otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse\x12\x9b\x01\n" +
+	"\x1aUpdateKubernetesNodeLabels\x12=.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest\x1a>.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse\x12\x98\x01\n" +
+	"\x19ListGPURelationsByMachine\x12<.otterscale.orchestrator.v1.ListGPURelationsByMachineRequest\x1a=.otterscale.orchestrator.v1.ListGPURelationsByMachineResponse\x12\x92\x01\n" +
+	"\x17ListGPURelationsByModel\x12:.otterscale.orchestrator.v1.ListGPURelationsByModelRequest\x1a;.otterscale.orchestrator.v1.ListGPURelationsByModelResponseB9Z7github.com/otterscale/otterscale/api/orchestrator/v1;pbb\beditionsp\xe8\a"
 
-var file_api_essential_v1_essential_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_api_essential_v1_essential_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
-var file_api_essential_v1_essential_proto_goTypes = []any{
-	(Essential_Type)(0),                          // 0: otterscale.essential.v1.Essential.Type
-	(Status_Level)(0),                            // 1: otterscale.essential.v1.Status.Level
-	(*Essential)(nil),                            // 2: otterscale.essential.v1.Essential
-	(*Status)(nil),                               // 3: otterscale.essential.v1.Status
-	(*GPURelation)(nil),                          // 4: otterscale.essential.v1.GPURelation
-	(*IsMachineDeployedRequest)(nil),             // 5: otterscale.essential.v1.IsMachineDeployedRequest
-	(*IsMachineDeployedResponse)(nil),            // 6: otterscale.essential.v1.IsMachineDeployedResponse
-	(*ListStatusesRequest)(nil),                  // 7: otterscale.essential.v1.ListStatusesRequest
-	(*ListStatusesResponse)(nil),                 // 8: otterscale.essential.v1.ListStatusesResponse
-	(*ListEssentialsRequest)(nil),                // 9: otterscale.essential.v1.ListEssentialsRequest
-	(*ListEssentialsResponse)(nil),               // 10: otterscale.essential.v1.ListEssentialsResponse
-	(*CreateSingleNodeRequest)(nil),              // 11: otterscale.essential.v1.CreateSingleNodeRequest
-	(*CreateHighAvailabilityClusterRequest)(nil), // 12: otterscale.essential.v1.CreateHighAvailabilityClusterRequest
-	(*AddUnitsRequest)(nil),                      // 13: otterscale.essential.v1.AddUnitsRequest
-	(*ListKubernetesNodeLabelsRequest)(nil),      // 14: otterscale.essential.v1.ListKubernetesNodeLabelsRequest
-	(*ListKubernetesNodeLabelsResponse)(nil),     // 15: otterscale.essential.v1.ListKubernetesNodeLabelsResponse
-	(*UpdateKubernetesNodeLabelsRequest)(nil),    // 16: otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest
-	(*UpdateKubernetesNodeLabelsResponse)(nil),   // 17: otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse
-	(*ListGPURelationsByMachineRequest)(nil),     // 18: otterscale.essential.v1.ListGPURelationsByMachineRequest
-	(*ListGPURelationsByMachineResponse)(nil),    // 19: otterscale.essential.v1.ListGPURelationsByMachineResponse
-	(*ListGPURelationsByModelRequest)(nil),       // 20: otterscale.essential.v1.ListGPURelationsByModelRequest
-	(*ListGPURelationsByModelResponse)(nil),      // 21: otterscale.essential.v1.ListGPURelationsByModelResponse
-	(*Essential_Unit)(nil),                       // 22: otterscale.essential.v1.Essential.Unit
-	(*GPURelation_Pod)(nil),                      // 23: otterscale.essential.v1.GPURelation.Pod
-	(*GPURelation_GPU)(nil),                      // 24: otterscale.essential.v1.GPURelation.GPU
-	(*GPURelation_Machine)(nil),                  // 25: otterscale.essential.v1.GPURelation.Machine
-	(*GPURelation_Pod_Device)(nil),               // 26: otterscale.essential.v1.GPURelation.Pod.Device
-	nil,                                          // 27: otterscale.essential.v1.ListKubernetesNodeLabelsResponse.LabelsEntry
-	nil,                                          // 28: otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry
-	nil,                                          // 29: otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry
+var file_api_orchestrator_v1_orchestrator_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_api_orchestrator_v1_orchestrator_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
+var file_api_orchestrator_v1_orchestrator_proto_goTypes = []any{
+	(Essential_Type)(0),                          // 0: otterscale.orchestrator.v1.Essential.Type
+	(Status_Level)(0),                            // 1: otterscale.orchestrator.v1.Status.Level
+	(*Essential)(nil),                            // 2: otterscale.orchestrator.v1.Essential
+	(*Status)(nil),                               // 3: otterscale.orchestrator.v1.Status
+	(*GPURelation)(nil),                          // 4: otterscale.orchestrator.v1.GPURelation
+	(*IsMachineDeployedRequest)(nil),             // 5: otterscale.orchestrator.v1.IsMachineDeployedRequest
+	(*IsMachineDeployedResponse)(nil),            // 6: otterscale.orchestrator.v1.IsMachineDeployedResponse
+	(*ListStatusesRequest)(nil),                  // 7: otterscale.orchestrator.v1.ListStatusesRequest
+	(*ListStatusesResponse)(nil),                 // 8: otterscale.orchestrator.v1.ListStatusesResponse
+	(*ListEssentialsRequest)(nil),                // 9: otterscale.orchestrator.v1.ListEssentialsRequest
+	(*ListEssentialsResponse)(nil),               // 10: otterscale.orchestrator.v1.ListEssentialsResponse
+	(*CreateSingleNodeRequest)(nil),              // 11: otterscale.orchestrator.v1.CreateSingleNodeRequest
+	(*CreateHighAvailabilityClusterRequest)(nil), // 12: otterscale.orchestrator.v1.CreateHighAvailabilityClusterRequest
+	(*AddUnitsRequest)(nil),                      // 13: otterscale.orchestrator.v1.AddUnitsRequest
+	(*ListKubernetesNodeLabelsRequest)(nil),      // 14: otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest
+	(*ListKubernetesNodeLabelsResponse)(nil),     // 15: otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse
+	(*UpdateKubernetesNodeLabelsRequest)(nil),    // 16: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest
+	(*UpdateKubernetesNodeLabelsResponse)(nil),   // 17: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse
+	(*ListGPURelationsByMachineRequest)(nil),     // 18: otterscale.orchestrator.v1.ListGPURelationsByMachineRequest
+	(*ListGPURelationsByMachineResponse)(nil),    // 19: otterscale.orchestrator.v1.ListGPURelationsByMachineResponse
+	(*ListGPURelationsByModelRequest)(nil),       // 20: otterscale.orchestrator.v1.ListGPURelationsByModelRequest
+	(*ListGPURelationsByModelResponse)(nil),      // 21: otterscale.orchestrator.v1.ListGPURelationsByModelResponse
+	(*Essential_Unit)(nil),                       // 22: otterscale.orchestrator.v1.Essential.Unit
+	(*GPURelation_Pod)(nil),                      // 23: otterscale.orchestrator.v1.GPURelation.Pod
+	(*GPURelation_GPU)(nil),                      // 24: otterscale.orchestrator.v1.GPURelation.GPU
+	(*GPURelation_Machine)(nil),                  // 25: otterscale.orchestrator.v1.GPURelation.Machine
+	(*GPURelation_Pod_Device)(nil),               // 26: otterscale.orchestrator.v1.GPURelation.Pod.Device
+	nil,                                          // 27: otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.LabelsEntry
+	nil,                                          // 28: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry
+	nil,                                          // 29: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry
 	(*timestamppb.Timestamp)(nil),                // 30: google.protobuf.Timestamp
 	(*emptypb.Empty)(nil),                        // 31: google.protobuf.Empty
 }
-var file_api_essential_v1_essential_proto_depIdxs = []int32{
-	0,  // 0: otterscale.essential.v1.Essential.type:type_name -> otterscale.essential.v1.Essential.Type
-	22, // 1: otterscale.essential.v1.Essential.units:type_name -> otterscale.essential.v1.Essential.Unit
-	1,  // 2: otterscale.essential.v1.Status.level:type_name -> otterscale.essential.v1.Status.Level
-	23, // 3: otterscale.essential.v1.GPURelation.pod:type_name -> otterscale.essential.v1.GPURelation.Pod
-	24, // 4: otterscale.essential.v1.GPURelation.gpu:type_name -> otterscale.essential.v1.GPURelation.GPU
-	25, // 5: otterscale.essential.v1.GPURelation.machine:type_name -> otterscale.essential.v1.GPURelation.Machine
-	3,  // 6: otterscale.essential.v1.ListStatusesResponse.statuses:type_name -> otterscale.essential.v1.Status
-	0,  // 7: otterscale.essential.v1.ListEssentialsRequest.type:type_name -> otterscale.essential.v1.Essential.Type
-	2,  // 8: otterscale.essential.v1.ListEssentialsResponse.essentials:type_name -> otterscale.essential.v1.Essential
-	0,  // 9: otterscale.essential.v1.AddUnitsRequest.type:type_name -> otterscale.essential.v1.Essential.Type
-	27, // 10: otterscale.essential.v1.ListKubernetesNodeLabelsResponse.labels:type_name -> otterscale.essential.v1.ListKubernetesNodeLabelsResponse.LabelsEntry
-	28, // 11: otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest.labels:type_name -> otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry
-	29, // 12: otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse.labels:type_name -> otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry
-	4,  // 13: otterscale.essential.v1.ListGPURelationsByMachineResponse.gpu_relations:type_name -> otterscale.essential.v1.GPURelation
-	4,  // 14: otterscale.essential.v1.ListGPURelationsByModelResponse.gpu_relations:type_name -> otterscale.essential.v1.GPURelation
-	30, // 15: otterscale.essential.v1.GPURelation.Pod.bound_at:type_name -> google.protobuf.Timestamp
-	26, // 16: otterscale.essential.v1.GPURelation.Pod.devices:type_name -> otterscale.essential.v1.GPURelation.Pod.Device
-	5,  // 17: otterscale.essential.v1.EssentialService.IsMachineDeployed:input_type -> otterscale.essential.v1.IsMachineDeployedRequest
-	7,  // 18: otterscale.essential.v1.EssentialService.ListStatuses:input_type -> otterscale.essential.v1.ListStatusesRequest
-	9,  // 19: otterscale.essential.v1.EssentialService.ListEssentials:input_type -> otterscale.essential.v1.ListEssentialsRequest
-	11, // 20: otterscale.essential.v1.EssentialService.CreateSingleNode:input_type -> otterscale.essential.v1.CreateSingleNodeRequest
-	12, // 21: otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster:input_type -> otterscale.essential.v1.CreateHighAvailabilityClusterRequest
-	13, // 22: otterscale.essential.v1.EssentialService.AddUnits:input_type -> otterscale.essential.v1.AddUnitsRequest
-	14, // 23: otterscale.essential.v1.EssentialService.ListKubernetesNodeLabels:input_type -> otterscale.essential.v1.ListKubernetesNodeLabelsRequest
-	16, // 24: otterscale.essential.v1.EssentialService.UpdateKubernetesNodeLabels:input_type -> otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest
-	18, // 25: otterscale.essential.v1.EssentialService.ListGPURelationsByMachine:input_type -> otterscale.essential.v1.ListGPURelationsByMachineRequest
-	20, // 26: otterscale.essential.v1.EssentialService.ListGPURelationsByModel:input_type -> otterscale.essential.v1.ListGPURelationsByModelRequest
-	6,  // 27: otterscale.essential.v1.EssentialService.IsMachineDeployed:output_type -> otterscale.essential.v1.IsMachineDeployedResponse
-	8,  // 28: otterscale.essential.v1.EssentialService.ListStatuses:output_type -> otterscale.essential.v1.ListStatusesResponse
-	10, // 29: otterscale.essential.v1.EssentialService.ListEssentials:output_type -> otterscale.essential.v1.ListEssentialsResponse
-	31, // 30: otterscale.essential.v1.EssentialService.CreateSingleNode:output_type -> google.protobuf.Empty
-	31, // 31: otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster:output_type -> google.protobuf.Empty
-	31, // 32: otterscale.essential.v1.EssentialService.AddUnits:output_type -> google.protobuf.Empty
-	15, // 33: otterscale.essential.v1.EssentialService.ListKubernetesNodeLabels:output_type -> otterscale.essential.v1.ListKubernetesNodeLabelsResponse
-	17, // 34: otterscale.essential.v1.EssentialService.UpdateKubernetesNodeLabels:output_type -> otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse
-	19, // 35: otterscale.essential.v1.EssentialService.ListGPURelationsByMachine:output_type -> otterscale.essential.v1.ListGPURelationsByMachineResponse
-	21, // 36: otterscale.essential.v1.EssentialService.ListGPURelationsByModel:output_type -> otterscale.essential.v1.ListGPURelationsByModelResponse
+var file_api_orchestrator_v1_orchestrator_proto_depIdxs = []int32{
+	0,  // 0: otterscale.orchestrator.v1.Essential.type:type_name -> otterscale.orchestrator.v1.Essential.Type
+	22, // 1: otterscale.orchestrator.v1.Essential.units:type_name -> otterscale.orchestrator.v1.Essential.Unit
+	1,  // 2: otterscale.orchestrator.v1.Status.level:type_name -> otterscale.orchestrator.v1.Status.Level
+	23, // 3: otterscale.orchestrator.v1.GPURelation.pod:type_name -> otterscale.orchestrator.v1.GPURelation.Pod
+	24, // 4: otterscale.orchestrator.v1.GPURelation.gpu:type_name -> otterscale.orchestrator.v1.GPURelation.GPU
+	25, // 5: otterscale.orchestrator.v1.GPURelation.machine:type_name -> otterscale.orchestrator.v1.GPURelation.Machine
+	3,  // 6: otterscale.orchestrator.v1.ListStatusesResponse.statuses:type_name -> otterscale.orchestrator.v1.Status
+	0,  // 7: otterscale.orchestrator.v1.ListEssentialsRequest.type:type_name -> otterscale.orchestrator.v1.Essential.Type
+	2,  // 8: otterscale.orchestrator.v1.ListEssentialsResponse.essentials:type_name -> otterscale.orchestrator.v1.Essential
+	0,  // 9: otterscale.orchestrator.v1.AddUnitsRequest.type:type_name -> otterscale.orchestrator.v1.Essential.Type
+	27, // 10: otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.labels:type_name -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.LabelsEntry
+	28, // 11: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.labels:type_name -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry
+	29, // 12: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.labels:type_name -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry
+	4,  // 13: otterscale.orchestrator.v1.ListGPURelationsByMachineResponse.gpu_relations:type_name -> otterscale.orchestrator.v1.GPURelation
+	4,  // 14: otterscale.orchestrator.v1.ListGPURelationsByModelResponse.gpu_relations:type_name -> otterscale.orchestrator.v1.GPURelation
+	30, // 15: otterscale.orchestrator.v1.GPURelation.Pod.bound_at:type_name -> google.protobuf.Timestamp
+	26, // 16: otterscale.orchestrator.v1.GPURelation.Pod.devices:type_name -> otterscale.orchestrator.v1.GPURelation.Pod.Device
+	5,  // 17: otterscale.orchestrator.v1.OrchestratorService.IsMachineDeployed:input_type -> otterscale.orchestrator.v1.IsMachineDeployedRequest
+	7,  // 18: otterscale.orchestrator.v1.OrchestratorService.ListStatuses:input_type -> otterscale.orchestrator.v1.ListStatusesRequest
+	9,  // 19: otterscale.orchestrator.v1.OrchestratorService.ListEssentials:input_type -> otterscale.orchestrator.v1.ListEssentialsRequest
+	11, // 20: otterscale.orchestrator.v1.OrchestratorService.CreateSingleNode:input_type -> otterscale.orchestrator.v1.CreateSingleNodeRequest
+	12, // 21: otterscale.orchestrator.v1.OrchestratorService.CreateHighAvailabilityCluster:input_type -> otterscale.orchestrator.v1.CreateHighAvailabilityClusterRequest
+	13, // 22: otterscale.orchestrator.v1.OrchestratorService.AddUnits:input_type -> otterscale.orchestrator.v1.AddUnitsRequest
+	14, // 23: otterscale.orchestrator.v1.OrchestratorService.ListKubernetesNodeLabels:input_type -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest
+	16, // 24: otterscale.orchestrator.v1.OrchestratorService.UpdateKubernetesNodeLabels:input_type -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest
+	18, // 25: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByMachine:input_type -> otterscale.orchestrator.v1.ListGPURelationsByMachineRequest
+	20, // 26: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel:input_type -> otterscale.orchestrator.v1.ListGPURelationsByModelRequest
+	6,  // 27: otterscale.orchestrator.v1.OrchestratorService.IsMachineDeployed:output_type -> otterscale.orchestrator.v1.IsMachineDeployedResponse
+	8,  // 28: otterscale.orchestrator.v1.OrchestratorService.ListStatuses:output_type -> otterscale.orchestrator.v1.ListStatusesResponse
+	10, // 29: otterscale.orchestrator.v1.OrchestratorService.ListEssentials:output_type -> otterscale.orchestrator.v1.ListEssentialsResponse
+	31, // 30: otterscale.orchestrator.v1.OrchestratorService.CreateSingleNode:output_type -> google.protobuf.Empty
+	31, // 31: otterscale.orchestrator.v1.OrchestratorService.CreateHighAvailabilityCluster:output_type -> google.protobuf.Empty
+	31, // 32: otterscale.orchestrator.v1.OrchestratorService.AddUnits:output_type -> google.protobuf.Empty
+	15, // 33: otterscale.orchestrator.v1.OrchestratorService.ListKubernetesNodeLabels:output_type -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse
+	17, // 34: otterscale.orchestrator.v1.OrchestratorService.UpdateKubernetesNodeLabels:output_type -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse
+	19, // 35: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByMachine:output_type -> otterscale.orchestrator.v1.ListGPURelationsByMachineResponse
+	21, // 36: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel:output_type -> otterscale.orchestrator.v1.ListGPURelationsByModelResponse
 	27, // [27:37] is the sub-list for method output_type
 	17, // [17:27] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name
@@ -3794,12 +3795,12 @@ var file_api_essential_v1_essential_proto_depIdxs = []int32{
 	0,  // [0:17] is the sub-list for field type_name
 }
 
-func init() { file_api_essential_v1_essential_proto_init() }
-func file_api_essential_v1_essential_proto_init() {
-	if File_api_essential_v1_essential_proto != nil {
+func init() { file_api_orchestrator_v1_orchestrator_proto_init() }
+func file_api_orchestrator_v1_orchestrator_proto_init() {
+	if File_api_orchestrator_v1_orchestrator_proto != nil {
 		return
 	}
-	file_api_essential_v1_essential_proto_msgTypes[2].OneofWrappers = []any{
+	file_api_orchestrator_v1_orchestrator_proto_msgTypes[2].OneofWrappers = []any{
 		(*gPURelation_Pod_)(nil),
 		(*gPURelation_Gpu)(nil),
 		(*gPURelation_Machine_)(nil),
@@ -3808,18 +3809,18 @@ func file_api_essential_v1_essential_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_essential_v1_essential_proto_rawDesc), len(file_api_essential_v1_essential_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_orchestrator_v1_orchestrator_proto_rawDesc), len(file_api_orchestrator_v1_orchestrator_proto_rawDesc)),
 			NumEnums:      2,
 			NumMessages:   28,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_api_essential_v1_essential_proto_goTypes,
-		DependencyIndexes: file_api_essential_v1_essential_proto_depIdxs,
-		EnumInfos:         file_api_essential_v1_essential_proto_enumTypes,
-		MessageInfos:      file_api_essential_v1_essential_proto_msgTypes,
+		GoTypes:           file_api_orchestrator_v1_orchestrator_proto_goTypes,
+		DependencyIndexes: file_api_orchestrator_v1_orchestrator_proto_depIdxs,
+		EnumInfos:         file_api_orchestrator_v1_orchestrator_proto_enumTypes,
+		MessageInfos:      file_api_orchestrator_v1_orchestrator_proto_msgTypes,
 	}.Build()
-	File_api_essential_v1_essential_proto = out.File
-	file_api_essential_v1_essential_proto_goTypes = nil
-	file_api_essential_v1_essential_proto_depIdxs = nil
+	File_api_orchestrator_v1_orchestrator_proto = out.File
+	file_api_orchestrator_v1_orchestrator_proto_goTypes = nil
+	file_api_orchestrator_v1_orchestrator_proto_depIdxs = nil
 }

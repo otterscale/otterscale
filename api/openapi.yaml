@@ -1866,6 +1866,356 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.facility.v1.ListCharmArtifactsResponse'
+  /otterscale.orchestrator.v1.OrchestratorService/IsMachineDeployed:
+    post:
+      tags:
+        - OrchestratorService
+      summary: IsMachineDeployed
+      operationId: OrchestratorService_IsMachineDeployed
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.IsMachineDeployedRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.orchestrator.v1.IsMachineDeployedResponse'
+  /otterscale.orchestrator.v1.OrchestratorService/ListStatuses:
+    post:
+      tags:
+        - OrchestratorService
+      summary: ListStatuses
+      operationId: OrchestratorService_ListStatuses
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.ListStatusesRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.orchestrator.v1.ListStatusesResponse'
+  /otterscale.orchestrator.v1.OrchestratorService/ListEssentials:
+    post:
+      tags:
+        - OrchestratorService
+      summary: ListEssentials
+      operationId: OrchestratorService_ListEssentials
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.ListEssentialsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.orchestrator.v1.ListEssentialsResponse'
+  /otterscale.orchestrator.v1.OrchestratorService/CreateSingleNode:
+    post:
+      tags:
+        - OrchestratorService
+      summary: CreateSingleNode
+      operationId: OrchestratorService_CreateSingleNode
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.CreateSingleNodeRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.orchestrator.v1.OrchestratorService/CreateHighAvailabilityCluster:
+    post:
+      tags:
+        - OrchestratorService
+      summary: CreateHighAvailabilityCluster
+      operationId: OrchestratorService_CreateHighAvailabilityCluster
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.CreateHighAvailabilityClusterRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.orchestrator.v1.OrchestratorService/AddUnits:
+    post:
+      tags:
+        - OrchestratorService
+      summary: AddUnits
+      operationId: OrchestratorService_AddUnits
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.AddUnitsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.orchestrator.v1.OrchestratorService/ListKubernetesNodeLabels:
+    post:
+      tags:
+        - OrchestratorService
+      summary: ListKubernetesNodeLabels
+      operationId: OrchestratorService_ListKubernetesNodeLabels
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse'
+  /otterscale.orchestrator.v1.OrchestratorService/UpdateKubernetesNodeLabels:
+    post:
+      tags:
+        - OrchestratorService
+      summary: UpdateKubernetesNodeLabels
+      operationId: OrchestratorService_UpdateKubernetesNodeLabels
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse'
+  /otterscale.orchestrator.v1.OrchestratorService/ListGPURelationsByMachine:
+    post:
+      tags:
+        - OrchestratorService
+      summary: ListGPURelationsByMachine
+      operationId: OrchestratorService_ListGPURelationsByMachine
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.ListGPURelationsByMachineRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.orchestrator.v1.ListGPURelationsByMachineResponse'
+  /otterscale.orchestrator.v1.OrchestratorService/ListGPURelationsByModel:
+    post:
+      tags:
+        - OrchestratorService
+      summary: ListGPURelationsByModel
+      operationId: OrchestratorService_ListGPURelationsByModel
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.ListGPURelationsByModelRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.orchestrator.v1.ListGPURelationsByModelResponse'
   /otterscale.tag.v1.TagService/ListTags:
     post:
       tags:
@@ -2006,356 +2356,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/google.protobuf.Empty'
-  /otterscale.essential.v1.EssentialService/IsMachineDeployed:
-    post:
-      tags:
-        - EssentialService
-      summary: IsMachineDeployed
-      operationId: EssentialService_IsMachineDeployed
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.essential.v1.IsMachineDeployedRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.essential.v1.IsMachineDeployedResponse'
-  /otterscale.essential.v1.EssentialService/ListStatuses:
-    post:
-      tags:
-        - EssentialService
-      summary: ListStatuses
-      operationId: EssentialService_ListStatuses
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.essential.v1.ListStatusesRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.essential.v1.ListStatusesResponse'
-  /otterscale.essential.v1.EssentialService/ListEssentials:
-    post:
-      tags:
-        - EssentialService
-      summary: ListEssentials
-      operationId: EssentialService_ListEssentials
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.essential.v1.ListEssentialsRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.essential.v1.ListEssentialsResponse'
-  /otterscale.essential.v1.EssentialService/CreateSingleNode:
-    post:
-      tags:
-        - EssentialService
-      summary: CreateSingleNode
-      operationId: EssentialService_CreateSingleNode
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.essential.v1.CreateSingleNodeRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/google.protobuf.Empty'
-  /otterscale.essential.v1.EssentialService/CreateHighAvailabilityCluster:
-    post:
-      tags:
-        - EssentialService
-      summary: CreateHighAvailabilityCluster
-      operationId: EssentialService_CreateHighAvailabilityCluster
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.essential.v1.CreateHighAvailabilityClusterRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/google.protobuf.Empty'
-  /otterscale.essential.v1.EssentialService/AddUnits:
-    post:
-      tags:
-        - EssentialService
-      summary: AddUnits
-      operationId: EssentialService_AddUnits
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.essential.v1.AddUnitsRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/google.protobuf.Empty'
-  /otterscale.essential.v1.EssentialService/ListKubernetesNodeLabels:
-    post:
-      tags:
-        - EssentialService
-      summary: ListKubernetesNodeLabels
-      operationId: EssentialService_ListKubernetesNodeLabels
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.essential.v1.ListKubernetesNodeLabelsRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.essential.v1.ListKubernetesNodeLabelsResponse'
-  /otterscale.essential.v1.EssentialService/UpdateKubernetesNodeLabels:
-    post:
-      tags:
-        - EssentialService
-      summary: UpdateKubernetesNodeLabels
-      operationId: EssentialService_UpdateKubernetesNodeLabels
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse'
-  /otterscale.essential.v1.EssentialService/ListGPURelationsByMachine:
-    post:
-      tags:
-        - EssentialService
-      summary: ListGPURelationsByMachine
-      operationId: EssentialService_ListGPURelationsByMachine
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.essential.v1.ListGPURelationsByMachineRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.essential.v1.ListGPURelationsByMachineResponse'
-  /otterscale.essential.v1.EssentialService/ListGPURelationsByModel:
-    post:
-      tags:
-        - EssentialService
-      summary: ListGPURelationsByModel
-      operationId: EssentialService_ListGPURelationsByModel
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.essential.v1.ListGPURelationsByModelRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.essential.v1.ListGPURelationsByModelResponse'
   /otterscale.network.v1.NetworkService/ListNetworks:
     post:
       tags:
@@ -7589,6 +7589,464 @@ components:
           title: config_yaml
       title: UpdateFacilityRequest
       additionalProperties: false
+    otterscale.orchestrator.v1.Essential.Type:
+      type: string
+      title: Type
+      enum:
+        - UNSPECIFIED
+        - KUBERNETES
+        - CEPH
+    otterscale.orchestrator.v1.Status.Level:
+      type: string
+      title: Level
+      enum:
+        - INFO
+        - LOW
+        - MEDIUM
+        - HIGH
+        - CRITICAL
+    otterscale.orchestrator.v1.AddUnitsRequest:
+      type: object
+      properties:
+        type:
+          title: type
+          $ref: '#/components/schemas/otterscale.orchestrator.v1.Essential.Type'
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        name:
+          type: string
+          title: name
+        number:
+          type: integer
+          title: number
+          format: int32
+        machineIds:
+          type: array
+          items:
+            type: string
+          title: machine_ids
+        force:
+          type: boolean
+          title: force
+      title: AddUnitsRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.CreateHighAvailabilityClusterRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        machineId:
+          type: string
+          title: machine_id
+        prefixName:
+          type: string
+          title: prefix_name
+        virtualIps:
+          type: array
+          items:
+            type: string
+          title: virtual_ips
+        calicoCidr:
+          type: string
+          title: calico_cidr
+        osdDevices:
+          type: array
+          items:
+            type: string
+          title: osd_devices
+      title: CreateHighAvailabilityClusterRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.CreateSingleNodeRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        machineId:
+          type: string
+          title: machine_id
+        prefixName:
+          type: string
+          title: prefix_name
+        virtualIps:
+          type: array
+          items:
+            type: string
+          title: virtual_ips
+        calicoCidr:
+          type: string
+          title: calico_cidr
+        osdDevices:
+          type: array
+          items:
+            type: string
+          title: osd_devices
+      title: CreateSingleNodeRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.Essential:
+      type: object
+      properties:
+        type:
+          title: type
+          $ref: '#/components/schemas/otterscale.orchestrator.v1.Essential.Type'
+        name:
+          type: string
+          title: name
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        scopeName:
+          type: string
+          title: scope_name
+        units:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.orchestrator.v1.Essential.Unit'
+          title: units
+      title: Essential
+      additionalProperties: false
+    otterscale.orchestrator.v1.Essential.Unit:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        directive:
+          type: string
+          title: directive
+      title: Unit
+      additionalProperties: false
+    otterscale.orchestrator.v1.GPURelation:
+      type: object
+      oneOf:
+        - properties:
+            gpu:
+              title: gpu
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.GPURelation.GPU'
+          title: gpu
+          required:
+            - gpu
+        - properties:
+            machine:
+              title: machine
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.GPURelation.Machine'
+          title: machine
+          required:
+            - machine
+        - properties:
+            pod:
+              title: pod
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.GPURelation.Pod'
+          title: pod
+          required:
+            - pod
+      title: GPURelation
+      additionalProperties: false
+    otterscale.orchestrator.v1.GPURelation.GPU:
+      type: object
+      properties:
+        id:
+          type: string
+          title: id
+        index:
+          type: integer
+          title: index
+        count:
+          type: integer
+          title: count
+          format: int32
+        cores:
+          type: integer
+          title: cores
+          format: int32
+        memoryBytes:
+          type:
+            - integer
+            - string
+          title: memory_bytes
+          format: int64
+        type:
+          type: string
+          title: type
+        health:
+          type: boolean
+          title: health
+        machineId:
+          type: string
+          title: machine_id
+      title: GPU
+      additionalProperties: false
+    otterscale.orchestrator.v1.GPURelation.Machine:
+      type: object
+      properties:
+        id:
+          type: string
+          title: id
+        hostname:
+          type: string
+          title: hostname
+      title: Machine
+      additionalProperties: false
+    otterscale.orchestrator.v1.GPURelation.Pod:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        modelName:
+          type: string
+          title: model_name
+        bindingPhase:
+          type: string
+          title: binding_phase
+        boundAt:
+          title: bound_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        devices:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.orchestrator.v1.GPURelation.Pod.Device'
+          title: devices
+      title: Pod
+      additionalProperties: false
+    otterscale.orchestrator.v1.GPURelation.Pod.Device:
+      type: object
+      properties:
+        gpuId:
+          type: string
+          title: gpu_id
+        usedCores:
+          type: integer
+          title: used_cores
+          format: int32
+        usedMemoryBytes:
+          type:
+            - integer
+            - string
+          title: used_memory_bytes
+          format: int64
+      title: Device
+      additionalProperties: false
+    otterscale.orchestrator.v1.IsMachineDeployedRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+      title: IsMachineDeployedRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.IsMachineDeployedResponse:
+      type: object
+      properties:
+        deployed:
+          type: boolean
+          title: deployed
+        message:
+          type: string
+          title: message
+      title: IsMachineDeployedResponse
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListEssentialsRequest:
+      type: object
+      properties:
+        type:
+          title: type
+          $ref: '#/components/schemas/otterscale.orchestrator.v1.Essential.Type'
+        scopeUuid:
+          type: string
+          title: scope_uuid
+      title: ListEssentialsRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListEssentialsResponse:
+      type: object
+      properties:
+        essentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.orchestrator.v1.Essential'
+          title: essentials
+      title: ListEssentialsResponse
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListGPURelationsByMachineRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        machineId:
+          type: string
+          title: machine_id
+      title: ListGPURelationsByMachineRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListGPURelationsByMachineResponse:
+      type: object
+      properties:
+        gpuRelations:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.orchestrator.v1.GPURelation'
+          title: gpu_relations
+      title: ListGPURelationsByMachineResponse
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListGPURelationsByModelRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        namespace:
+          type: string
+          title: namespace
+        modelName:
+          type: string
+          title: model_name
+      title: ListGPURelationsByModelRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListGPURelationsByModelResponse:
+      type: object
+      properties:
+        gpuRelations:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.orchestrator.v1.GPURelation'
+          title: gpu_relations
+      title: ListGPURelationsByModelResponse
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        hostname:
+          type: string
+          title: hostname
+        all:
+          type: boolean
+          title: all
+      title: ListKubernetesNodeLabelsRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse:
+      type: object
+      properties:
+        labels:
+          type: object
+          title: labels
+          additionalProperties:
+            type: string
+            title: value
+      title: ListKubernetesNodeLabelsResponse
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.LabelsEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          title: key
+        value:
+          type: string
+          title: value
+      title: LabelsEntry
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListStatusesRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+      title: ListStatusesRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListStatusesResponse:
+      type: object
+      properties:
+        statuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.orchestrator.v1.Status'
+          title: statuses
+      title: ListStatusesResponse
+      additionalProperties: false
+    otterscale.orchestrator.v1.Status:
+      type: object
+      properties:
+        level:
+          title: level
+          $ref: '#/components/schemas/otterscale.orchestrator.v1.Status.Level'
+        message:
+          type: string
+          title: message
+        details:
+          type: string
+          title: details
+      title: Status
+      additionalProperties: false
+    otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+        hostname:
+          type: string
+          title: hostname
+        labels:
+          type: object
+          title: labels
+          additionalProperties:
+            type: string
+            title: value
+      title: UpdateKubernetesNodeLabelsRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          title: key
+        value:
+          type: string
+          title: value
+      title: LabelsEntry
+      additionalProperties: false
+    otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse:
+      type: object
+      properties:
+        labels:
+          type: object
+          title: labels
+          additionalProperties:
+            type: string
+            title: value
+      title: UpdateKubernetesNodeLabelsResponse
+      additionalProperties: false
+    otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          title: key
+        value:
+          type: string
+          title: value
+      title: LabelsEntry
+      additionalProperties: false
     otterscale.tag.v1.CreateTagRequest:
       type: object
       properties:
@@ -7640,464 +8098,6 @@ components:
           type: string
           title: comment
       title: Tag
-      additionalProperties: false
-    otterscale.essential.v1.Essential.Type:
-      type: string
-      title: Type
-      enum:
-        - UNSPECIFIED
-        - KUBERNETES
-        - CEPH
-    otterscale.essential.v1.Status.Level:
-      type: string
-      title: Level
-      enum:
-        - INFO
-        - LOW
-        - MEDIUM
-        - HIGH
-        - CRITICAL
-    otterscale.essential.v1.AddUnitsRequest:
-      type: object
-      properties:
-        type:
-          title: type
-          $ref: '#/components/schemas/otterscale.essential.v1.Essential.Type'
-        scopeUuid:
-          type: string
-          title: scope_uuid
-        name:
-          type: string
-          title: name
-        number:
-          type: integer
-          title: number
-          format: int32
-        machineIds:
-          type: array
-          items:
-            type: string
-          title: machine_ids
-        force:
-          type: boolean
-          title: force
-      title: AddUnitsRequest
-      additionalProperties: false
-    otterscale.essential.v1.CreateHighAvailabilityClusterRequest:
-      type: object
-      properties:
-        scopeUuid:
-          type: string
-          title: scope_uuid
-        machineId:
-          type: string
-          title: machine_id
-        prefixName:
-          type: string
-          title: prefix_name
-        virtualIps:
-          type: array
-          items:
-            type: string
-          title: virtual_ips
-        calicoCidr:
-          type: string
-          title: calico_cidr
-        osdDevices:
-          type: array
-          items:
-            type: string
-          title: osd_devices
-      title: CreateHighAvailabilityClusterRequest
-      additionalProperties: false
-    otterscale.essential.v1.CreateSingleNodeRequest:
-      type: object
-      properties:
-        scopeUuid:
-          type: string
-          title: scope_uuid
-        machineId:
-          type: string
-          title: machine_id
-        prefixName:
-          type: string
-          title: prefix_name
-        virtualIps:
-          type: array
-          items:
-            type: string
-          title: virtual_ips
-        calicoCidr:
-          type: string
-          title: calico_cidr
-        osdDevices:
-          type: array
-          items:
-            type: string
-          title: osd_devices
-      title: CreateSingleNodeRequest
-      additionalProperties: false
-    otterscale.essential.v1.Essential:
-      type: object
-      properties:
-        type:
-          title: type
-          $ref: '#/components/schemas/otterscale.essential.v1.Essential.Type'
-        name:
-          type: string
-          title: name
-        scopeUuid:
-          type: string
-          title: scope_uuid
-        scopeName:
-          type: string
-          title: scope_name
-        units:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.essential.v1.Essential.Unit'
-          title: units
-      title: Essential
-      additionalProperties: false
-    otterscale.essential.v1.Essential.Unit:
-      type: object
-      properties:
-        name:
-          type: string
-          title: name
-        directive:
-          type: string
-          title: directive
-      title: Unit
-      additionalProperties: false
-    otterscale.essential.v1.GPURelation:
-      type: object
-      oneOf:
-        - properties:
-            gpu:
-              title: gpu
-              $ref: '#/components/schemas/otterscale.essential.v1.GPURelation.GPU'
-          title: gpu
-          required:
-            - gpu
-        - properties:
-            machine:
-              title: machine
-              $ref: '#/components/schemas/otterscale.essential.v1.GPURelation.Machine'
-          title: machine
-          required:
-            - machine
-        - properties:
-            pod:
-              title: pod
-              $ref: '#/components/schemas/otterscale.essential.v1.GPURelation.Pod'
-          title: pod
-          required:
-            - pod
-      title: GPURelation
-      additionalProperties: false
-    otterscale.essential.v1.GPURelation.GPU:
-      type: object
-      properties:
-        id:
-          type: string
-          title: id
-        index:
-          type: integer
-          title: index
-        count:
-          type: integer
-          title: count
-          format: int32
-        cores:
-          type: integer
-          title: cores
-          format: int32
-        memoryBytes:
-          type:
-            - integer
-            - string
-          title: memory_bytes
-          format: int64
-        type:
-          type: string
-          title: type
-        health:
-          type: boolean
-          title: health
-        machineId:
-          type: string
-          title: machine_id
-      title: GPU
-      additionalProperties: false
-    otterscale.essential.v1.GPURelation.Machine:
-      type: object
-      properties:
-        id:
-          type: string
-          title: id
-        hostname:
-          type: string
-          title: hostname
-      title: Machine
-      additionalProperties: false
-    otterscale.essential.v1.GPURelation.Pod:
-      type: object
-      properties:
-        name:
-          type: string
-          title: name
-        namespace:
-          type: string
-          title: namespace
-        modelName:
-          type: string
-          title: model_name
-        bindingPhase:
-          type: string
-          title: binding_phase
-        boundAt:
-          title: bound_at
-          $ref: '#/components/schemas/google.protobuf.Timestamp'
-        devices:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.essential.v1.GPURelation.Pod.Device'
-          title: devices
-      title: Pod
-      additionalProperties: false
-    otterscale.essential.v1.GPURelation.Pod.Device:
-      type: object
-      properties:
-        gpuId:
-          type: string
-          title: gpu_id
-        usedCores:
-          type: integer
-          title: used_cores
-          format: int32
-        usedMemoryBytes:
-          type:
-            - integer
-            - string
-          title: used_memory_bytes
-          format: int64
-      title: Device
-      additionalProperties: false
-    otterscale.essential.v1.IsMachineDeployedRequest:
-      type: object
-      properties:
-        scopeUuid:
-          type: string
-          title: scope_uuid
-      title: IsMachineDeployedRequest
-      additionalProperties: false
-    otterscale.essential.v1.IsMachineDeployedResponse:
-      type: object
-      properties:
-        deployed:
-          type: boolean
-          title: deployed
-        message:
-          type: string
-          title: message
-      title: IsMachineDeployedResponse
-      additionalProperties: false
-    otterscale.essential.v1.ListEssentialsRequest:
-      type: object
-      properties:
-        type:
-          title: type
-          $ref: '#/components/schemas/otterscale.essential.v1.Essential.Type'
-        scopeUuid:
-          type: string
-          title: scope_uuid
-      title: ListEssentialsRequest
-      additionalProperties: false
-    otterscale.essential.v1.ListEssentialsResponse:
-      type: object
-      properties:
-        essentials:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.essential.v1.Essential'
-          title: essentials
-      title: ListEssentialsResponse
-      additionalProperties: false
-    otterscale.essential.v1.ListGPURelationsByMachineRequest:
-      type: object
-      properties:
-        scopeUuid:
-          type: string
-          title: scope_uuid
-        facilityName:
-          type: string
-          title: facility_name
-        machineId:
-          type: string
-          title: machine_id
-      title: ListGPURelationsByMachineRequest
-      additionalProperties: false
-    otterscale.essential.v1.ListGPURelationsByMachineResponse:
-      type: object
-      properties:
-        gpuRelations:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.essential.v1.GPURelation'
-          title: gpu_relations
-      title: ListGPURelationsByMachineResponse
-      additionalProperties: false
-    otterscale.essential.v1.ListGPURelationsByModelRequest:
-      type: object
-      properties:
-        scopeUuid:
-          type: string
-          title: scope_uuid
-        facilityName:
-          type: string
-          title: facility_name
-        namespace:
-          type: string
-          title: namespace
-        modelName:
-          type: string
-          title: model_name
-      title: ListGPURelationsByModelRequest
-      additionalProperties: false
-    otterscale.essential.v1.ListGPURelationsByModelResponse:
-      type: object
-      properties:
-        gpuRelations:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.essential.v1.GPURelation'
-          title: gpu_relations
-      title: ListGPURelationsByModelResponse
-      additionalProperties: false
-    otterscale.essential.v1.ListKubernetesNodeLabelsRequest:
-      type: object
-      properties:
-        scopeUuid:
-          type: string
-          title: scope_uuid
-        facilityName:
-          type: string
-          title: facility_name
-        hostname:
-          type: string
-          title: hostname
-        all:
-          type: boolean
-          title: all
-      title: ListKubernetesNodeLabelsRequest
-      additionalProperties: false
-    otterscale.essential.v1.ListKubernetesNodeLabelsResponse:
-      type: object
-      properties:
-        labels:
-          type: object
-          title: labels
-          additionalProperties:
-            type: string
-            title: value
-      title: ListKubernetesNodeLabelsResponse
-      additionalProperties: false
-    otterscale.essential.v1.ListKubernetesNodeLabelsResponse.LabelsEntry:
-      type: object
-      properties:
-        key:
-          type: string
-          title: key
-        value:
-          type: string
-          title: value
-      title: LabelsEntry
-      additionalProperties: false
-    otterscale.essential.v1.ListStatusesRequest:
-      type: object
-      properties:
-        scopeUuid:
-          type: string
-          title: scope_uuid
-      title: ListStatusesRequest
-      additionalProperties: false
-    otterscale.essential.v1.ListStatusesResponse:
-      type: object
-      properties:
-        statuses:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.essential.v1.Status'
-          title: statuses
-      title: ListStatusesResponse
-      additionalProperties: false
-    otterscale.essential.v1.Status:
-      type: object
-      properties:
-        level:
-          title: level
-          $ref: '#/components/schemas/otterscale.essential.v1.Status.Level'
-        message:
-          type: string
-          title: message
-        details:
-          type: string
-          title: details
-      title: Status
-      additionalProperties: false
-    otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest:
-      type: object
-      properties:
-        scopeUuid:
-          type: string
-          title: scope_uuid
-        facilityName:
-          type: string
-          title: facility_name
-        hostname:
-          type: string
-          title: hostname
-        labels:
-          type: object
-          title: labels
-          additionalProperties:
-            type: string
-            title: value
-      title: UpdateKubernetesNodeLabelsRequest
-      additionalProperties: false
-    otterscale.essential.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry:
-      type: object
-      properties:
-        key:
-          type: string
-          title: key
-        value:
-          type: string
-          title: value
-      title: LabelsEntry
-      additionalProperties: false
-    otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse:
-      type: object
-      properties:
-        labels:
-          type: object
-          title: labels
-          additionalProperties:
-            type: string
-            title: value
-      title: UpdateKubernetesNodeLabelsResponse
-      additionalProperties: false
-    otterscale.essential.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry:
-      type: object
-      properties:
-        key:
-          type: string
-          title: key
-        value:
-          type: string
-          title: value
-      title: LabelsEntry
       additionalProperties: false
     otterscale.network.v1.CreateIPRangeRequest:
       type: object
@@ -11604,8 +11604,8 @@ security: []
 tags:
   - name: StorageService
   - name: FacilityService
+  - name: OrchestratorService
   - name: TagService
-  - name: EssentialService
   - name: NetworkService
   - name: MachineService
   - name: EnvironmentService

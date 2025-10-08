@@ -1,6 +1,6 @@
 import { writable, type Writable } from 'svelte/store';
 
-import type { Essential } from '$lib/api/essential/v1/essential_pb';
+import type { Essential } from '$lib/api/orchestrator/v1/orchestrator_pb';
 import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
 import type { Scope } from '$lib/api/scope/v1/scope_pb';
 import { staticPaths, type Path } from '$lib/path';

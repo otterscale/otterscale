@@ -15,7 +15,7 @@
 		TestResult,
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { ConfigurationService, FIO_Input_AccessMode } from '$lib/api/configuration/v1/configuration_pb';
-	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
+	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
@@ -128,7 +128,7 @@
 	// grpc
 	const transport: Transport = getContext('transport');
 	const configClient = createClient(ConfigurationService, transport);
-	const essentialClient = createClient(EssentialService, transport);
+	const orchClient = createClient(OrchestratorService, transport);
 
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
@@ -136,7 +136,7 @@
 	let isCephsLoading = $state(true);
 	async function fetchCephOptions() {
 		try {
-			const response = await essentialClient.listEssentials({ type: Essential_Type.CEPH });
+			const response = await orchClient.listEssentials({ type: Essential_Type.CEPH });
 			cephOptions.set(
 				response.essentials.map(
 					(essential) =>
