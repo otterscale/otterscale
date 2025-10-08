@@ -6,7 +6,7 @@
 	import Create from './create.svelte';
 	import Delete from './delete.svelte';
 
-	import { TagService, type Tag } from '$lib/api/tag/v1/tag_pb';
+	import { MachineService, type Tag } from '$lib/api/machine/v1/machine_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
 	import { m } from '$lib/paraglide/messages';
@@ -15,14 +15,14 @@
 
 <script lang="ts">
 	const transport: Transport = getContext('transport');
-	const tagClient = createClient(TagService, transport);
+	const client = createClient(MachineService, transport);
 
 	const tags = writable<Tag[]>();
 	let isTagLoading = $state(true);
 
 	onMount(async () => {
 		try {
-			await tagClient.listTags({}).then((response) => {
+			await client.listTags({}).then((response) => {
 				tags.set(response.tags);
 				isTagLoading = false;
 			});

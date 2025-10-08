@@ -24,6 +24,7 @@ type (
 	NetworkInterface = entity.NetworkInterface
 	NodeDevice       = entity.NodeDevice
 	Event            = entity.Event
+	Tag              = entity.Tag
 )
 
 type Machine struct {
@@ -49,6 +50,15 @@ type MachineConstraint struct {
 type MachineFactor struct {
 	*MachinePlacement
 	*MachineConstraint
+}
+
+type TagRepo interface {
+	List(ctx context.Context) ([]Tag, error)
+	Get(ctx context.Context, name string) (*Tag, error)
+	Create(ctx context.Context, name, comment string) (*Tag, error)
+	Delete(ctx context.Context, name string) error
+	AddMachines(ctx context.Context, name string, machineIDs []string) error
+	RemoveMachines(ctx context.Context, name string, machineIDs []string) error
 }
 
 type MachineRepo interface {
@@ -244,6 +254,22 @@ func (uc *MachineUseCase) RemoveMachineTags(ctx context.Context, id string, tags
 		})
 	}
 	return eg.Wait()
+}
+
+func (uc *MachineUseCase) ListTags(ctx context.Context) ([]Tag, error) {
+	return uc.tag.List(ctx)
+}
+
+func (uc *MachineUseCase) GetTag(ctx context.Context, name string) (*Tag, error) {
+	return uc.tag.Get(ctx, name)
+}
+
+func (uc *MachineUseCase) CreateTag(ctx context.Context, name, comment string) (*Tag, error) {
+	return uc.tag.Create(ctx, name, comment)
+}
+
+func (uc *MachineUseCase) DeleteTag(ctx context.Context, name string) error {
+	return uc.tag.Delete(ctx, name)
 }
 
 func (uc *MachineUseCase) filterMachines(machines []Machine, scopeUUID string) []Machine {

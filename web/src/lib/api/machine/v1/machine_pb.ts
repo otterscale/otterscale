@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/machine/v1/machine.proto.
  */
 export const file_api_machine_v1_machine: GenFile = /*@__PURE__*/
-  fileDesc("ChxhcGkvbWFjaGluZS92MS9tYWNoaW5lLnByb3RvEhVvdHRlcnNjYWxlLm1hY2hpbmUudjEivg0KB01hY2hpbmUSCgoCaWQYASABKAkSNQoRbGFzdF9jb21taXNzaW9uZWQYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhUKDWhhcmR3YXJlX3V1aWQYZSABKAkSEAoIaG9zdG5hbWUYZiABKAkSDAoEZnFkbhhnIAEoCRIMCgR0YWdzGGggAygJEhMKC2Rlc2NyaXB0aW9uGGkgASgJEg8KBnN0YXR1cxjJASABKAkSFwoOc3RhdHVzX21lc3NhZ2UYygEgASgJEhQKC3Bvd2VyX3N0YXRlGK0CIAEoCRITCgpwb3dlcl90eXBlGK4CIAEoCRIQCgdvc3lzdGVtGJEDIAEoCRIWCg1kaXN0cm9fc2VyaWVzGJIDIAEoCRITCgpod2Vfa2VybmVsGJMDIAEoCRIVCgxhcmNoaXRlY3R1cmUYlAMgASgJEhIKCWNwdV9zcGVlZBiVAyABKAMSEgoJY3B1X2NvdW50GJYDIAEoAxISCgltZW1vcnlfbWIYlwMgASgDEhMKCnN0b3JhZ2VfbWIYmAMgASgBEhUKDGlwX2FkZHJlc3NlcxiZAyADKAkSVgoUd29ya2xvYWRfYW5ub3RhdGlvbnMY9QMgAygLMjcub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLk1hY2hpbmUuV29ya2xvYWRBbm5vdGF0aW9uc0VudHJ5ElYKFGhhcmR3YXJlX2luZm9ybWF0aW9uGNkEIAMoCzI3Lm90dGVyc2NhbGUubWFjaGluZS52MS5NYWNoaW5lLkhhcmR3YXJlSW5mb3JtYXRpb25FbnRyeRIZChBiaW9zX2Jvb3RfbWV0aG9kGNoEIAEoCRI8CgpudW1hX25vZGVzGL0FIAMoCzInLm90dGVyc2NhbGUubWFjaGluZS52MS5NYWNoaW5lLk5VTUFOb2RlEkIKDWJsb2NrX2RldmljZXMYoQYgAygLMioub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLk1hY2hpbmUuQmxvY2tEZXZpY2USTAoSbmV0d29ya19pbnRlcmZhY2VzGKIGIAMoCzIvLm90dGVyc2NhbGUubWFjaGluZS52MS5NYWNoaW5lLk5ldHdvcmtJbnRlcmZhY2USPwoLZ3B1X2RldmljZXMYowYgAygLMikub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLk1hY2hpbmUuTm9kZURldmljZRo/CghOVU1BTm9kZRINCgVpbmRleBgBIAEoAxIRCgljcHVfY29yZXMYAiABKAMSEQoJbWVtb3J5X21iGAMgASgDGqkBCgtCbG9ja0RldmljZRIRCglib290X2Rpc2sYASABKAgSDAoEbmFtZRgLIAEoCRIOCgZzZXJpYWwYDCABKAkSDQoFbW9kZWwYFSABKAkSGAoQZmlybXdhcmVfdmVyc2lvbhgWIAEoCRISCgpzdG9yYWdlX21iGB8gASgBEgwKBHR5cGUYKSABKAkSDAoEdGFncxgzIAMoCRIQCgh1c2VkX2Zvchg9IAEoCRq5AgoQTmV0d29ya0ludGVyZmFjZRIWCg5ib290X2ludGVyZmFjZRgBIAEoCBIMCgRuYW1lGAsgASgJEhMKC21hY19hZGRyZXNzGAwgASgJEhYKDmxpbmtfY29ubmVjdGVkGBUgASgIEhIKCmxpbmtfc3BlZWQYFiABKAMSFwoPaW50ZXJmYWNlX3NwZWVkGBcgASgDEgwKBHR5cGUYHyABKAkSEwoLZmFicmljX25hbWUYKSABKAkSEQoJZmFicmljX2lkGCogASgDEhEKCXZsYW5fbmFtZRgrIAEoCRIPCgd2bGFuX2lkGCwgASgDEhMKC3N1Ym5ldF9uYW1lGDMgASgJEhEKCXN1Ym5ldF9pZBg0IAEoAxISCgppcF9hZGRyZXNzGD0gASgJEg8KB2RoY3Bfb24YRyABKAgahQEKCk5vZGVEZXZpY2USEQoJdmVuZG9yX2lkGAEgASgJEhMKC3ZlbmRvcl9uYW1lGAIgASgJEhIKCnByb2R1Y3RfaWQYAyABKAkSFAoMcHJvZHVjdF9uYW1lGAQgASgJEhAKCGJ1c19uYW1lGAUgASgJEhMKC3BjaV9hZGRyZXNzGAYgASgJGjoKGFdvcmtsb2FkQW5ub3RhdGlvbnNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBGjoKGEhhcmR3YXJlSW5mb3JtYXRpb25FbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIikKE0xpc3RNYWNoaW5lc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCSJIChRMaXN0TWFjaGluZXNSZXNwb25zZRIwCghtYWNoaW5lcxgBIAMoCzIeLm90dGVyc2NhbGUubWFjaGluZS52MS5NYWNoaW5lIh8KEUdldE1hY2hpbmVSZXF1ZXN0EgoKAmlkGAEgASgJIqABChRDcmVhdGVNYWNoaW5lUmVxdWVzdBIKCgJpZBgBIAEoCRISCgplbmFibGVfc3NoGAIgASgIEhcKD3NraXBfYm1jX2NvbmZpZxgDIAEoCBIXCg9za2lwX25ldHdvcmtpbmcYBCABKAgSFAoMc2tpcF9zdG9yYWdlGAUgASgIEhIKCnNjb3BlX3V1aWQYCyABKAkSDAoEdGFncxgVIAMoCSJFChREZWxldGVNYWNoaW5lUmVxdWVzdBIKCgJpZBgBIAEoCRINCgVmb3JjZRgCIAEoCBISCgpwdXJnZV9kaXNrGAMgASgIIjUKFlBvd2VyT2ZmTWFjaGluZVJlcXVlc3QSCgoCaWQYASABKAkSDwoHY29tbWVudBgCIAEoCSIxChVBZGRNYWNoaW5lVGFnc1JlcXVlc3QSCgoCaWQYASABKAkSDAoEdGFncxgCIAMoCSI0ChhSZW1vdmVNYWNoaW5lVGFnc1JlcXVlc3QSCgoCaWQYASABKAkSDAoEdGFncxgCIAMoCTKdBQoOTWFjaGluZVNlcnZpY2USZwoMTGlzdE1hY2hpbmVzEioub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLkxpc3RNYWNoaW5lc1JlcXVlc3QaKy5vdHRlcnNjYWxlLm1hY2hpbmUudjEuTGlzdE1hY2hpbmVzUmVzcG9uc2USVgoKR2V0TWFjaGluZRIoLm90dGVyc2NhbGUubWFjaGluZS52MS5HZXRNYWNoaW5lUmVxdWVzdBoeLm90dGVyc2NhbGUubWFjaGluZS52MS5NYWNoaW5lElwKDUNyZWF0ZU1hY2hpbmUSKy5vdHRlcnNjYWxlLm1hY2hpbmUudjEuQ3JlYXRlTWFjaGluZVJlcXVlc3QaHi5vdHRlcnNjYWxlLm1hY2hpbmUudjEuTWFjaGluZRJUCg1EZWxldGVNYWNoaW5lEisub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLkRlbGV0ZU1hY2hpbmVSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmAKD1Bvd2VyT2ZmTWFjaGluZRItLm90dGVyc2NhbGUubWFjaGluZS52MS5Qb3dlck9mZk1hY2hpbmVSZXF1ZXN0Gh4ub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLk1hY2hpbmUSVgoOQWRkTWFjaGluZVRhZ3MSLC5vdHRlcnNjYWxlLm1hY2hpbmUudjEuQWRkTWFjaGluZVRhZ3NSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElwKEVJlbW92ZU1hY2hpbmVUYWdzEi8ub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLlJlbW92ZU1hY2hpbmVUYWdzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eUI0WjJnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvbWFjaGluZS92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("ChxhcGkvbWFjaGluZS92MS9tYWNoaW5lLnByb3RvEhVvdHRlcnNjYWxlLm1hY2hpbmUudjEivg0KB01hY2hpbmUSCgoCaWQYASABKAkSNQoRbGFzdF9jb21taXNzaW9uZWQYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhUKDWhhcmR3YXJlX3V1aWQYZSABKAkSEAoIaG9zdG5hbWUYZiABKAkSDAoEZnFkbhhnIAEoCRIMCgR0YWdzGGggAygJEhMKC2Rlc2NyaXB0aW9uGGkgASgJEg8KBnN0YXR1cxjJASABKAkSFwoOc3RhdHVzX21lc3NhZ2UYygEgASgJEhQKC3Bvd2VyX3N0YXRlGK0CIAEoCRITCgpwb3dlcl90eXBlGK4CIAEoCRIQCgdvc3lzdGVtGJEDIAEoCRIWCg1kaXN0cm9fc2VyaWVzGJIDIAEoCRITCgpod2Vfa2VybmVsGJMDIAEoCRIVCgxhcmNoaXRlY3R1cmUYlAMgASgJEhIKCWNwdV9zcGVlZBiVAyABKAMSEgoJY3B1X2NvdW50GJYDIAEoAxISCgltZW1vcnlfbWIYlwMgASgDEhMKCnN0b3JhZ2VfbWIYmAMgASgBEhUKDGlwX2FkZHJlc3NlcxiZAyADKAkSVgoUd29ya2xvYWRfYW5ub3RhdGlvbnMY9QMgAygLMjcub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLk1hY2hpbmUuV29ya2xvYWRBbm5vdGF0aW9uc0VudHJ5ElYKFGhhcmR3YXJlX2luZm9ybWF0aW9uGNkEIAMoCzI3Lm90dGVyc2NhbGUubWFjaGluZS52MS5NYWNoaW5lLkhhcmR3YXJlSW5mb3JtYXRpb25FbnRyeRIZChBiaW9zX2Jvb3RfbWV0aG9kGNoEIAEoCRI8CgpudW1hX25vZGVzGL0FIAMoCzInLm90dGVyc2NhbGUubWFjaGluZS52MS5NYWNoaW5lLk5VTUFOb2RlEkIKDWJsb2NrX2RldmljZXMYoQYgAygLMioub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLk1hY2hpbmUuQmxvY2tEZXZpY2USTAoSbmV0d29ya19pbnRlcmZhY2VzGKIGIAMoCzIvLm90dGVyc2NhbGUubWFjaGluZS52MS5NYWNoaW5lLk5ldHdvcmtJbnRlcmZhY2USPwoLZ3B1X2RldmljZXMYowYgAygLMikub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLk1hY2hpbmUuTm9kZURldmljZRo/CghOVU1BTm9kZRINCgVpbmRleBgBIAEoAxIRCgljcHVfY29yZXMYAiABKAMSEQoJbWVtb3J5X21iGAMgASgDGqkBCgtCbG9ja0RldmljZRIRCglib290X2Rpc2sYASABKAgSDAoEbmFtZRgLIAEoCRIOCgZzZXJpYWwYDCABKAkSDQoFbW9kZWwYFSABKAkSGAoQZmlybXdhcmVfdmVyc2lvbhgWIAEoCRISCgpzdG9yYWdlX21iGB8gASgBEgwKBHR5cGUYKSABKAkSDAoEdGFncxgzIAMoCRIQCgh1c2VkX2Zvchg9IAEoCRq5AgoQTmV0d29ya0ludGVyZmFjZRIWCg5ib290X2ludGVyZmFjZRgBIAEoCBIMCgRuYW1lGAsgASgJEhMKC21hY19hZGRyZXNzGAwgASgJEhYKDmxpbmtfY29ubmVjdGVkGBUgASgIEhIKCmxpbmtfc3BlZWQYFiABKAMSFwoPaW50ZXJmYWNlX3NwZWVkGBcgASgDEgwKBHR5cGUYHyABKAkSEwoLZmFicmljX25hbWUYKSABKAkSEQoJZmFicmljX2lkGCogASgDEhEKCXZsYW5fbmFtZRgrIAEoCRIPCgd2bGFuX2lkGCwgASgDEhMKC3N1Ym5ldF9uYW1lGDMgASgJEhEKCXN1Ym5ldF9pZBg0IAEoAxISCgppcF9hZGRyZXNzGD0gASgJEg8KB2RoY3Bfb24YRyABKAgahQEKCk5vZGVEZXZpY2USEQoJdmVuZG9yX2lkGAEgASgJEhMKC3ZlbmRvcl9uYW1lGAIgASgJEhIKCnByb2R1Y3RfaWQYAyABKAkSFAoMcHJvZHVjdF9uYW1lGAQgASgJEhAKCGJ1c19uYW1lGAUgASgJEhMKC3BjaV9hZGRyZXNzGAYgASgJGjoKGFdvcmtsb2FkQW5ub3RhdGlvbnNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBGjoKGEhhcmR3YXJlSW5mb3JtYXRpb25FbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIiQKA1RhZxIMCgRuYW1lGAEgASgJEg8KB2NvbW1lbnQYAiABKAkiKQoTTGlzdE1hY2hpbmVzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJIkgKFExpc3RNYWNoaW5lc1Jlc3BvbnNlEjAKCG1hY2hpbmVzGAEgAygLMh4ub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLk1hY2hpbmUiHwoRR2V0TWFjaGluZVJlcXVlc3QSCgoCaWQYASABKAkioAEKFENyZWF0ZU1hY2hpbmVSZXF1ZXN0EgoKAmlkGAEgASgJEhIKCmVuYWJsZV9zc2gYAiABKAgSFwoPc2tpcF9ibWNfY29uZmlnGAMgASgIEhcKD3NraXBfbmV0d29ya2luZxgEIAEoCBIUCgxza2lwX3N0b3JhZ2UYBSABKAgSEgoKc2NvcGVfdXVpZBgLIAEoCRIMCgR0YWdzGBUgAygJIkUKFERlbGV0ZU1hY2hpbmVSZXF1ZXN0EgoKAmlkGAEgASgJEg0KBWZvcmNlGAIgASgIEhIKCnB1cmdlX2Rpc2sYAyABKAgiNQoWUG93ZXJPZmZNYWNoaW5lUmVxdWVzdBIKCgJpZBgBIAEoCRIPCgdjb21tZW50GAIgASgJIjEKFUFkZE1hY2hpbmVUYWdzUmVxdWVzdBIKCgJpZBgBIAEoCRIMCgR0YWdzGAIgAygJIjQKGFJlbW92ZU1hY2hpbmVUYWdzUmVxdWVzdBIKCgJpZBgBIAEoCRIMCgR0YWdzGAIgAygJIhEKD0xpc3RUYWdzUmVxdWVzdCI8ChBMaXN0VGFnc1Jlc3BvbnNlEigKBHRhZ3MYASADKAsyGi5vdHRlcnNjYWxlLm1hY2hpbmUudjEuVGFnIh0KDUdldFRhZ1JlcXVlc3QSDAoEbmFtZRgBIAEoCSIxChBDcmVhdGVUYWdSZXF1ZXN0EgwKBG5hbWUYASABKAkSDwoHY29tbWVudBgCIAEoCSIgChBEZWxldGVUYWdSZXF1ZXN0EgwKBG5hbWUYASABKAky5gcKDk1hY2hpbmVTZXJ2aWNlEmcKDExpc3RNYWNoaW5lcxIqLm90dGVyc2NhbGUubWFjaGluZS52MS5MaXN0TWFjaGluZXNSZXF1ZXN0Gisub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLkxpc3RNYWNoaW5lc1Jlc3BvbnNlElYKCkdldE1hY2hpbmUSKC5vdHRlcnNjYWxlLm1hY2hpbmUudjEuR2V0TWFjaGluZVJlcXVlc3QaHi5vdHRlcnNjYWxlLm1hY2hpbmUudjEuTWFjaGluZRJcCg1DcmVhdGVNYWNoaW5lEisub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLkNyZWF0ZU1hY2hpbmVSZXF1ZXN0Gh4ub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLk1hY2hpbmUSVAoNRGVsZXRlTWFjaGluZRIrLm90dGVyc2NhbGUubWFjaGluZS52MS5EZWxldGVNYWNoaW5lUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJgCg9Qb3dlck9mZk1hY2hpbmUSLS5vdHRlcnNjYWxlLm1hY2hpbmUudjEuUG93ZXJPZmZNYWNoaW5lUmVxdWVzdBoeLm90dGVyc2NhbGUubWFjaGluZS52MS5NYWNoaW5lElYKDkFkZE1hY2hpbmVUYWdzEiwub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLkFkZE1hY2hpbmVUYWdzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJcChFSZW1vdmVNYWNoaW5lVGFncxIvLm90dGVyc2NhbGUubWFjaGluZS52MS5SZW1vdmVNYWNoaW5lVGFnc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSWwoITGlzdFRhZ3MSJi5vdHRlcnNjYWxlLm1hY2hpbmUudjEuTGlzdFRhZ3NSZXF1ZXN0Gicub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLkxpc3RUYWdzUmVzcG9uc2USSgoGR2V0VGFnEiQub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLkdldFRhZ1JlcXVlc3QaGi5vdHRlcnNjYWxlLm1hY2hpbmUudjEuVGFnElAKCUNyZWF0ZVRhZxInLm90dGVyc2NhbGUubWFjaGluZS52MS5DcmVhdGVUYWdSZXF1ZXN0Ghoub3R0ZXJzY2FsZS5tYWNoaW5lLnYxLlRhZxJMCglEZWxldGVUYWcSJy5vdHRlcnNjYWxlLm1hY2hpbmUudjEuRGVsZXRlVGFnUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eUI0WjJnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvbWFjaGluZS92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message otterscale.machine.v1.Machine
@@ -375,6 +375,28 @@ export const Machine_NodeDeviceSchema: GenMessage<Machine_NodeDevice> = /*@__PUR
   messageDesc(file_api_machine_v1_machine, 0, 3);
 
 /**
+ * @generated from message otterscale.machine.v1.Tag
+ */
+export type Tag = Message<"otterscale.machine.v1.Tag"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string comment = 2;
+   */
+  comment: string;
+};
+
+/**
+ * Describes the message otterscale.machine.v1.Tag.
+ * Use `create(TagSchema)` to create a new message.
+ */
+export const TagSchema: GenMessage<Tag> = /*@__PURE__*/
+  messageDesc(file_api_machine_v1_machine, 1);
+
+/**
  * @generated from message otterscale.machine.v1.ListMachinesRequest
  */
 export type ListMachinesRequest = Message<"otterscale.machine.v1.ListMachinesRequest"> & {
@@ -389,7 +411,7 @@ export type ListMachinesRequest = Message<"otterscale.machine.v1.ListMachinesReq
  * Use `create(ListMachinesRequestSchema)` to create a new message.
  */
 export const ListMachinesRequestSchema: GenMessage<ListMachinesRequest> = /*@__PURE__*/
-  messageDesc(file_api_machine_v1_machine, 1);
+  messageDesc(file_api_machine_v1_machine, 2);
 
 /**
  * @generated from message otterscale.machine.v1.ListMachinesResponse
@@ -406,7 +428,7 @@ export type ListMachinesResponse = Message<"otterscale.machine.v1.ListMachinesRe
  * Use `create(ListMachinesResponseSchema)` to create a new message.
  */
 export const ListMachinesResponseSchema: GenMessage<ListMachinesResponse> = /*@__PURE__*/
-  messageDesc(file_api_machine_v1_machine, 2);
+  messageDesc(file_api_machine_v1_machine, 3);
 
 /**
  * @generated from message otterscale.machine.v1.GetMachineRequest
@@ -423,7 +445,7 @@ export type GetMachineRequest = Message<"otterscale.machine.v1.GetMachineRequest
  * Use `create(GetMachineRequestSchema)` to create a new message.
  */
 export const GetMachineRequestSchema: GenMessage<GetMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_machine_v1_machine, 3);
+  messageDesc(file_api_machine_v1_machine, 4);
 
 /**
  * @generated from message otterscale.machine.v1.CreateMachineRequest
@@ -470,7 +492,7 @@ export type CreateMachineRequest = Message<"otterscale.machine.v1.CreateMachineR
  * Use `create(CreateMachineRequestSchema)` to create a new message.
  */
 export const CreateMachineRequestSchema: GenMessage<CreateMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_machine_v1_machine, 4);
+  messageDesc(file_api_machine_v1_machine, 5);
 
 /**
  * @generated from message otterscale.machine.v1.DeleteMachineRequest
@@ -497,7 +519,7 @@ export type DeleteMachineRequest = Message<"otterscale.machine.v1.DeleteMachineR
  * Use `create(DeleteMachineRequestSchema)` to create a new message.
  */
 export const DeleteMachineRequestSchema: GenMessage<DeleteMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_machine_v1_machine, 5);
+  messageDesc(file_api_machine_v1_machine, 6);
 
 /**
  * @generated from message otterscale.machine.v1.PowerOffMachineRequest
@@ -519,7 +541,7 @@ export type PowerOffMachineRequest = Message<"otterscale.machine.v1.PowerOffMach
  * Use `create(PowerOffMachineRequestSchema)` to create a new message.
  */
 export const PowerOffMachineRequestSchema: GenMessage<PowerOffMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_machine_v1_machine, 6);
+  messageDesc(file_api_machine_v1_machine, 7);
 
 /**
  * @generated from message otterscale.machine.v1.AddMachineTagsRequest
@@ -541,7 +563,7 @@ export type AddMachineTagsRequest = Message<"otterscale.machine.v1.AddMachineTag
  * Use `create(AddMachineTagsRequestSchema)` to create a new message.
  */
 export const AddMachineTagsRequestSchema: GenMessage<AddMachineTagsRequest> = /*@__PURE__*/
-  messageDesc(file_api_machine_v1_machine, 7);
+  messageDesc(file_api_machine_v1_machine, 8);
 
 /**
  * @generated from message otterscale.machine.v1.RemoveMachineTagsRequest
@@ -563,7 +585,93 @@ export type RemoveMachineTagsRequest = Message<"otterscale.machine.v1.RemoveMach
  * Use `create(RemoveMachineTagsRequestSchema)` to create a new message.
  */
 export const RemoveMachineTagsRequestSchema: GenMessage<RemoveMachineTagsRequest> = /*@__PURE__*/
-  messageDesc(file_api_machine_v1_machine, 8);
+  messageDesc(file_api_machine_v1_machine, 9);
+
+/**
+ * @generated from message otterscale.machine.v1.ListTagsRequest
+ */
+export type ListTagsRequest = Message<"otterscale.machine.v1.ListTagsRequest"> & {
+};
+
+/**
+ * Describes the message otterscale.machine.v1.ListTagsRequest.
+ * Use `create(ListTagsRequestSchema)` to create a new message.
+ */
+export const ListTagsRequestSchema: GenMessage<ListTagsRequest> = /*@__PURE__*/
+  messageDesc(file_api_machine_v1_machine, 10);
+
+/**
+ * @generated from message otterscale.machine.v1.ListTagsResponse
+ */
+export type ListTagsResponse = Message<"otterscale.machine.v1.ListTagsResponse"> & {
+  /**
+   * @generated from field: repeated otterscale.machine.v1.Tag tags = 1;
+   */
+  tags: Tag[];
+};
+
+/**
+ * Describes the message otterscale.machine.v1.ListTagsResponse.
+ * Use `create(ListTagsResponseSchema)` to create a new message.
+ */
+export const ListTagsResponseSchema: GenMessage<ListTagsResponse> = /*@__PURE__*/
+  messageDesc(file_api_machine_v1_machine, 11);
+
+/**
+ * @generated from message otterscale.machine.v1.GetTagRequest
+ */
+export type GetTagRequest = Message<"otterscale.machine.v1.GetTagRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+};
+
+/**
+ * Describes the message otterscale.machine.v1.GetTagRequest.
+ * Use `create(GetTagRequestSchema)` to create a new message.
+ */
+export const GetTagRequestSchema: GenMessage<GetTagRequest> = /*@__PURE__*/
+  messageDesc(file_api_machine_v1_machine, 12);
+
+/**
+ * @generated from message otterscale.machine.v1.CreateTagRequest
+ */
+export type CreateTagRequest = Message<"otterscale.machine.v1.CreateTagRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string comment = 2;
+   */
+  comment: string;
+};
+
+/**
+ * Describes the message otterscale.machine.v1.CreateTagRequest.
+ * Use `create(CreateTagRequestSchema)` to create a new message.
+ */
+export const CreateTagRequestSchema: GenMessage<CreateTagRequest> = /*@__PURE__*/
+  messageDesc(file_api_machine_v1_machine, 13);
+
+/**
+ * @generated from message otterscale.machine.v1.DeleteTagRequest
+ */
+export type DeleteTagRequest = Message<"otterscale.machine.v1.DeleteTagRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+};
+
+/**
+ * Describes the message otterscale.machine.v1.DeleteTagRequest.
+ * Use `create(DeleteTagRequestSchema)` to create a new message.
+ */
+export const DeleteTagRequestSchema: GenMessage<DeleteTagRequest> = /*@__PURE__*/
+  messageDesc(file_api_machine_v1_machine, 14);
 
 /**
  * @generated from service otterscale.machine.v1.MachineService
@@ -623,6 +731,38 @@ export const MachineService: GenService<{
   removeMachineTags: {
     methodKind: "unary";
     input: typeof RemoveMachineTagsRequestSchema;
+    output: typeof EmptySchema;
+  },
+  /**
+   * @generated from rpc otterscale.machine.v1.MachineService.ListTags
+   */
+  listTags: {
+    methodKind: "unary";
+    input: typeof ListTagsRequestSchema;
+    output: typeof ListTagsResponseSchema;
+  },
+  /**
+   * @generated from rpc otterscale.machine.v1.MachineService.GetTag
+   */
+  getTag: {
+    methodKind: "unary";
+    input: typeof GetTagRequestSchema;
+    output: typeof TagSchema;
+  },
+  /**
+   * @generated from rpc otterscale.machine.v1.MachineService.CreateTag
+   */
+  createTag: {
+    methodKind: "unary";
+    input: typeof CreateTagRequestSchema;
+    output: typeof TagSchema;
+  },
+  /**
+   * @generated from rpc otterscale.machine.v1.MachineService.DeleteTag
+   */
+  deleteTag: {
+    methodKind: "unary";
+    input: typeof DeleteTagRequestSchema;
     output: typeof EmptySchema;
   },
 }> = /*@__PURE__*/

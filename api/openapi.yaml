@@ -2216,146 +2216,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.orchestrator.v1.ListGPURelationsByModelResponse'
-  /otterscale.tag.v1.TagService/ListTags:
-    post:
-      tags:
-        - TagService
-      summary: ListTags
-      operationId: TagService_ListTags
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.tag.v1.ListTagsRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.tag.v1.ListTagsResponse'
-  /otterscale.tag.v1.TagService/GetTag:
-    post:
-      tags:
-        - TagService
-      summary: GetTag
-      operationId: TagService_GetTag
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.tag.v1.GetTagRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.tag.v1.Tag'
-  /otterscale.tag.v1.TagService/CreateTag:
-    post:
-      tags:
-        - TagService
-      summary: CreateTag
-      operationId: TagService_CreateTag
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.tag.v1.CreateTagRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.tag.v1.Tag'
-  /otterscale.tag.v1.TagService/DeleteTag:
-    post:
-      tags:
-        - TagService
-      summary: DeleteTag
-      operationId: TagService_DeleteTag
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.tag.v1.DeleteTagRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/google.protobuf.Empty'
   /otterscale.network.v1.NetworkService/ListNetworks:
     post:
       tags:
@@ -2902,6 +2762,146 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/otterscale.machine.v1.RemoveMachineTagsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.machine.v1.MachineService/ListTags:
+    post:
+      tags:
+        - MachineService
+      summary: ListTags
+      operationId: MachineService_ListTags
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.machine.v1.ListTagsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.machine.v1.ListTagsResponse'
+  /otterscale.machine.v1.MachineService/GetTag:
+    post:
+      tags:
+        - MachineService
+      summary: GetTag
+      operationId: MachineService_GetTag
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.machine.v1.GetTagRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.machine.v1.Tag'
+  /otterscale.machine.v1.MachineService/CreateTag:
+    post:
+      tags:
+        - MachineService
+      summary: CreateTag
+      operationId: MachineService_CreateTag
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.machine.v1.CreateTagRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.machine.v1.Tag'
+  /otterscale.machine.v1.MachineService/DeleteTag:
+    post:
+      tags:
+        - MachineService
+      summary: DeleteTag
+      operationId: MachineService_DeleteTag
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.machine.v1.DeleteTagRequest'
         required: true
       responses:
         default:
@@ -8047,58 +8047,6 @@ components:
           title: value
       title: LabelsEntry
       additionalProperties: false
-    otterscale.tag.v1.CreateTagRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          title: name
-        comment:
-          type: string
-          title: comment
-      title: CreateTagRequest
-      additionalProperties: false
-    otterscale.tag.v1.DeleteTagRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          title: name
-      title: DeleteTagRequest
-      additionalProperties: false
-    otterscale.tag.v1.GetTagRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          title: name
-      title: GetTagRequest
-      additionalProperties: false
-    otterscale.tag.v1.ListTagsRequest:
-      type: object
-      title: ListTagsRequest
-      additionalProperties: false
-    otterscale.tag.v1.ListTagsResponse:
-      type: object
-      properties:
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.tag.v1.Tag'
-          title: tags
-      title: ListTagsResponse
-      additionalProperties: false
-    otterscale.tag.v1.Tag:
-      type: object
-      properties:
-        name:
-          type: string
-          title: name
-        comment:
-          type: string
-          title: comment
-      title: Tag
-      additionalProperties: false
     otterscale.network.v1.CreateIPRangeRequest:
       type: object
       properties:
@@ -8494,6 +8442,17 @@ components:
           title: tags
       title: CreateMachineRequest
       additionalProperties: false
+    otterscale.machine.v1.CreateTagRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        comment:
+          type: string
+          title: comment
+      title: CreateTagRequest
+      additionalProperties: false
     otterscale.machine.v1.DeleteMachineRequest:
       type: object
       properties:
@@ -8508,6 +8467,14 @@ components:
           title: purge_disk
       title: DeleteMachineRequest
       additionalProperties: false
+    otterscale.machine.v1.DeleteTagRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+      title: DeleteTagRequest
+      additionalProperties: false
     otterscale.machine.v1.GetMachineRequest:
       type: object
       properties:
@@ -8515,6 +8482,14 @@ components:
           type: string
           title: id
       title: GetMachineRequest
+      additionalProperties: false
+    otterscale.machine.v1.GetTagRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+      title: GetTagRequest
       additionalProperties: false
     otterscale.machine.v1.ListMachinesRequest:
       type: object
@@ -8533,6 +8508,20 @@ components:
             $ref: '#/components/schemas/otterscale.machine.v1.Machine'
           title: machines
       title: ListMachinesResponse
+      additionalProperties: false
+    otterscale.machine.v1.ListTagsRequest:
+      type: object
+      title: ListTagsRequest
+      additionalProperties: false
+    otterscale.machine.v1.ListTagsResponse:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.machine.v1.Tag'
+          title: tags
+      title: ListTagsResponse
       additionalProperties: false
     otterscale.machine.v1.Machine:
       type: object
@@ -8839,6 +8828,17 @@ components:
             type: string
           title: tags
       title: RemoveMachineTagsRequest
+      additionalProperties: false
+    otterscale.machine.v1.Tag:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        comment:
+          type: string
+          title: comment
+      title: Tag
       additionalProperties: false
     otterscale.environment.v1.CheckHealthResponse.Result:
       type: string
@@ -11605,7 +11605,6 @@ tags:
   - name: StorageService
   - name: FacilityService
   - name: OrchestratorService
-  - name: TagService
   - name: NetworkService
   - name: MachineService
   - name: EnvironmentService
