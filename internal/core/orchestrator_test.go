@@ -202,7 +202,7 @@ func (m *mockFacilityOffersRepo) GetConsumeDetails(ctx context.Context, url stri
 	}, nil
 }
 
-func TestEssentialUseCase_IsMachineDeployed(t *testing.T) {
+func TestOrchestratorUseCase_IsMachineDeployed(t *testing.T) {
 	machines := []Machine{
 		{
 			Machine: &entity.Machine{
@@ -213,14 +213,14 @@ func TestEssentialUseCase_IsMachineDeployed(t *testing.T) {
 			LastCommissioned: time.Now(),
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, &essMockMachineRepo{machines: machines}, nil, nil, nil, nil, nil)
+	uc := NewOrchestratorUseCase(nil, nil, nil, nil, nil, nil, nil, &essMockMachineRepo{machines: machines}, nil, nil, nil, nil, nil)
 	msg, ok, err := uc.IsMachineDeployed(context.Background(), "uuid1")
 	assert.NoError(t, err)
 	assert.True(t, ok)
 	assert.Equal(t, "", msg)
 }
 
-func TestEssentialUseCase_ListStatuses(t *testing.T) {
+func TestOrchestratorUseCase_ListStatuses(t *testing.T) {
 	client := &essMockClientRepo{
 		statusMap: map[string]*params.FullStatus{
 			"uuid": {
@@ -243,14 +243,14 @@ func TestEssentialUseCase_ListStatuses(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, client, nil)
+	uc := NewOrchestratorUseCase(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, client, nil)
 	statuses, err := uc.ListStatuses(context.Background(), "uuid")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, statuses)
 	assert.Contains(t, statuses[0].Message, "[blocked]")
 }
 
-func TestEssentialUseCase_ListEssentials(t *testing.T) {
+func TestOrchestratorUseCase_ListEssentials(t *testing.T) {
 	scope := &essMockScopeRepo{
 		scopes: []Scope{{UUID: "uuid", Name: "test", Status: apibase.Status{Status: status.Available}}},
 	}
@@ -268,14 +268,14 @@ func TestEssentialUseCase_ListEssentials(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, scope, nil, nil, nil, nil, nil, nil, client, nil)
+	uc := NewOrchestratorUseCase(nil, nil, nil, nil, scope, nil, nil, nil, nil, nil, nil, client, nil)
 	essentials, err := uc.ListEssentials(context.Background(), 1, "uuid")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, essentials)
 	assert.Equal(t, "kubernetes-control-plane", essentials[0].Name)
 }
 
-func TestEssentialUseCase_CreateSingleNode(t *testing.T) {
+func TestOrchestratorUseCase_CreateSingleNode(t *testing.T) {
 	machines := []Machine{
 		{
 			Machine: &entity.Machine{
@@ -304,12 +304,12 @@ func TestEssentialUseCase_CreateSingleNode(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(&conf.Config, nil, nil, nil, scopeRepo, facilityRepo, facilityOffersRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo, nil)
+	uc := NewOrchestratorUseCase(&conf.Config, nil, nil, nil, scopeRepo, facilityRepo, facilityOffersRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo, nil)
 	err := uc.CreateSingleNode(context.Background(), "uuid", "id1", "prefix", []string{"10.0.0.2"}, "198.19.0.0/16", []string{"/dev/sda"})
 	assert.Error(t, err) // because CreateCeph, CreateKubernetes, CreateCommon are not implemented
 }
 
-func TestEssentialUseCase_getMachineStatusMessage(t *testing.T) {
+func TestOrchestratorUseCase_getMachineStatusMessage(t *testing.T) {
 	machines := []Machine{
 		{
 			Machine: &entity.Machine{
@@ -326,12 +326,12 @@ func TestEssentialUseCase_getMachineStatusMessage(t *testing.T) {
 			LastCommissioned: time.Now(),
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	uc := NewOrchestratorUseCase(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 	msg := uc.getMachineStatusMessage(machines)
 	assert.Contains(t, msg, "testing")
 }
 
-func TestEssentialUseCase_validateMachineStatus(t *testing.T) {
+func TestOrchestratorUseCase_validateMachineStatus(t *testing.T) {
 	machines := []Machine{
 		{
 			Machine: &entity.Machine{
@@ -354,7 +354,7 @@ func TestEssentialUseCase_validateMachineStatus(t *testing.T) {
 			},
 		},
 	}
-	uc := NewEssentialUseCase(nil, nil, nil, nil, nil, nil, nil, machineRepo, nil, nil, nil, clientRepo, nil)
+	uc := NewOrchestratorUseCase(nil, nil, nil, nil, nil, nil, nil, machineRepo, nil, nil, nil, clientRepo, nil)
 	err := uc.validateMachineStatus(context.Background(), "uuid", "id1")
 	assert.NoError(t, err)
 }

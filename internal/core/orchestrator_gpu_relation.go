@@ -42,7 +42,7 @@ type GPURelationPodDevice struct {
 	UsedMemoryBytes int64
 }
 
-func (uc *EssentialUseCase) ListGPURelationsByMachine(ctx context.Context, scopeUUID, facilityName, machineID string) (*GPURelations, error) {
+func (uc *OrchestratorUseCase) ListGPURelationsByMachine(ctx context.Context, scopeUUID, facilityName, machineID string) (*GPURelations, error) {
 	machine, err := uc.machine.Get(ctx, machineID)
 	if err != nil {
 		return nil, err
@@ -51,12 +51,12 @@ func (uc *EssentialUseCase) ListGPURelationsByMachine(ctx context.Context, scope
 	return uc.listGPURelations(ctx, scopeUUID, facilityName, "", labelSelector)
 }
 
-func (uc *EssentialUseCase) ListGPURelationsByModel(ctx context.Context, scopeUUID, facilityName, namespace, modelName string) (*GPURelations, error) {
+func (uc *OrchestratorUseCase) ListGPURelationsByModel(ctx context.Context, scopeUUID, facilityName, namespace, modelName string) (*GPURelations, error) {
 	labelSelector := fmt.Sprintf("%s=%s", ApplicationReleaseLLMDModelNameLabel, modelName)
 	return uc.listGPURelations(ctx, scopeUUID, facilityName, namespace, labelSelector)
 }
 
-func (uc *EssentialUseCase) listGPURelations(ctx context.Context, scopeUUID, facilityName, namespace, labelSelector string) (*GPURelations, error) {
+func (uc *OrchestratorUseCase) listGPURelations(ctx context.Context, scopeUUID, facilityName, namespace, labelSelector string) (*GPURelations, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, scopeUUID, facilityName)
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func (uc *EssentialUseCase) listGPURelations(ctx context.Context, scopeUUID, fac
 	return uc.buildGPURelations(pods, nodes, machines)
 }
 
-func (uc *EssentialUseCase) buildGPURelations(pods []Pod, nodes []Node, machines []Machine) (*GPURelations, error) {
+func (uc *OrchestratorUseCase) buildGPURelations(pods []Pod, nodes []Node, machines []Machine) (*GPURelations, error) {
 	nodeNames := extractNodeNamesFromPods(pods)
 	filteredMachines := filterMachinesByNodeNames(machines, nodeNames)
 	filteredNodes := filterNodesByNames(nodes, nodeNames)
@@ -133,7 +133,7 @@ func buildMachineMap(machines []Machine) map[string]Machine {
 	return machineMap
 }
 
-func (uc *EssentialUseCase) buildGPUsFromNodes(nodes []Node, machineMap map[string]Machine) ([]GPURelationsGPU, error) {
+func (uc *OrchestratorUseCase) buildGPUsFromNodes(nodes []Node, machineMap map[string]Machine) ([]GPURelationsGPU, error) {
 	gpus := []GPURelationsGPU{}
 	for i := range nodes {
 		annotation, ok := nodes[i].Annotations[annotationHAMINodeNvidiaRegister]

@@ -47,7 +47,7 @@ type EssentialCharm struct {
 	Subordinate bool
 }
 
-type EssentialUseCase struct {
+type OrchestratorUseCase struct {
 	conf           *config.Config
 	kubeCore       KubeCoreRepo
 	kubeApps       KubeAppsRepo
@@ -63,8 +63,8 @@ type EssentialUseCase struct {
 	tag            TagRepo
 }
 
-func NewEssentialUseCase(conf *config.Config, kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, action ActionRepo, scope ScopeRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo, tag TagRepo) *EssentialUseCase {
-	return &EssentialUseCase{
+func NewOrchestratorUseCase(conf *config.Config, kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, action ActionRepo, scope ScopeRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo, tag TagRepo) *OrchestratorUseCase {
+	return &OrchestratorUseCase{
 		conf:           conf,
 		kubeCore:       kubeCore,
 		kubeApps:       kubeApps,
@@ -81,7 +81,7 @@ func NewEssentialUseCase(conf *config.Config, kubeCore KubeCoreRepo, kubeApps Ku
 	}
 }
 
-func (uc *EssentialUseCase) IsMachineDeployed(ctx context.Context, uuid string) (message string, ok bool, err error) {
+func (uc *OrchestratorUseCase) IsMachineDeployed(ctx context.Context, uuid string) (message string, ok bool, err error) {
 	machines, err := uc.machine.List(ctx)
 	if err != nil {
 		return "", false, err
@@ -104,7 +104,7 @@ func (uc *EssentialUseCase) IsMachineDeployed(ctx context.Context, uuid string) 
 	return uc.getMachineStatusMessage(scopeMachines), false, nil
 }
 
-func (uc *EssentialUseCase) ListStatuses(ctx context.Context, uuid string) ([]EssentialStatus, error) {
+func (uc *OrchestratorUseCase) ListStatuses(ctx context.Context, uuid string) ([]EssentialStatus, error) {
 	s, err := uc.client.Status(ctx, uuid, []string{"application", "*"})
 	if err != nil {
 		return nil, err
@@ -144,7 +144,7 @@ func (uc *EssentialUseCase) ListStatuses(ctx context.Context, uuid string) ([]Es
 	return statuses, nil
 }
 
-func (uc *EssentialUseCase) ListEssentials(ctx context.Context, esType int32, uuid string) ([]Essential, error) {
+func (uc *OrchestratorUseCase) ListEssentials(ctx context.Context, esType int32, uuid string) ([]Essential, error) {
 	eg, egctx := errgroup.WithContext(ctx)
 	result := make([][]Essential, 2)
 	if esType == 0 || esType == 1 {
@@ -171,7 +171,7 @@ func (uc *EssentialUseCase) ListEssentials(ctx context.Context, esType int32, uu
 	return append(result[0], result[1]...), nil
 }
 
-func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineID, prefix string, userVirtualIPs []string, userCalicoCIDR string, userOSDDevices []string) error {
+func (uc *OrchestratorUseCase) CreateSingleNode(ctx context.Context, uuid, machineID, prefix string, userVirtualIPs []string, userCalicoCIDR string, userOSDDevices []string) error {
 	// validate
 	if err := uc.validateMachineStatus(ctx, uuid, machineID); err != nil {
 		return err
@@ -232,7 +232,7 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 	return nil
 }
 
-func (uc *EssentialUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string, all bool) (map[string]string, error) {
+func (uc *OrchestratorUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string, all bool) (map[string]string, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -251,7 +251,7 @@ func (uc *EssentialUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, 
 	return node.Labels, nil
 }
 
-func (uc *EssentialUseCase) UpdateKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string, labels map[string]string) (map[string]string, error) {
+func (uc *OrchestratorUseCase) UpdateKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string, labels map[string]string) (map[string]string, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -277,7 +277,7 @@ func (uc *EssentialUseCase) UpdateKubernetesNodeLabels(ctx context.Context, uuid
 	return updatedNode.Labels, nil
 }
 
-func (uc *EssentialUseCase) getMachineStatusMessage(machines []Machine) string {
+func (uc *OrchestratorUseCase) getMachineStatusMessage(machines []Machine) string {
 	statuses := []node.Status{
 		node.StatusDefault,
 		node.StatusCommissioning,
@@ -314,7 +314,7 @@ func (uc *EssentialUseCase) getMachineStatusMessage(machines []Machine) string {
 	return message
 }
 
-func (uc *EssentialUseCase) validateMachineStatus(ctx context.Context, uuid, machineID string) error {
+func (uc *OrchestratorUseCase) validateMachineStatus(ctx context.Context, uuid, machineID string) error {
 	// maas
 	machine, err := uc.machine.Get(ctx, machineID)
 	if err != nil {

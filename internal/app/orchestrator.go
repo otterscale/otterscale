@@ -6,24 +6,24 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	pb "github.com/otterscale/otterscale/api/essential/v1"
-	"github.com/otterscale/otterscale/api/essential/v1/pbconnect"
+	pb "github.com/otterscale/otterscale/api/orchestrator/v1"
+	"github.com/otterscale/otterscale/api/orchestrator/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-type EssentialService struct {
-	pbconnect.UnimplementedEssentialServiceHandler
+type OrchestratorService struct {
+	pbconnect.UnimplementedOrchestratorServiceHandler
 
-	uc *core.EssentialUseCase
+	uc *core.OrchestratorUseCase
 }
 
-func NewEssentialService(uc *core.EssentialUseCase) *EssentialService {
-	return &EssentialService{uc: uc}
+func NewOrchestratorService(uc *core.OrchestratorUseCase) *OrchestratorService {
+	return &OrchestratorService{uc: uc}
 }
 
-var _ pbconnect.EssentialServiceHandler = (*EssentialService)(nil)
+var _ pbconnect.OrchestratorServiceHandler = (*OrchestratorService)(nil)
 
-func (s *EssentialService) IsMachineDeployed(ctx context.Context, req *pb.IsMachineDeployedRequest) (*pb.IsMachineDeployedResponse, error) {
+func (s *OrchestratorService) IsMachineDeployed(ctx context.Context, req *pb.IsMachineDeployedRequest) (*pb.IsMachineDeployedResponse, error) {
 	message, deployed, err := s.uc.IsMachineDeployed(ctx, req.GetScopeUuid())
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func (s *EssentialService) IsMachineDeployed(ctx context.Context, req *pb.IsMach
 	return resp, nil
 }
 
-func (s *EssentialService) ListStatuses(ctx context.Context, req *pb.ListStatusesRequest) (*pb.ListStatusesResponse, error) {
+func (s *OrchestratorService) ListStatuses(ctx context.Context, req *pb.ListStatusesRequest) (*pb.ListStatusesResponse, error) {
 	statuses, err := s.uc.ListStatuses(ctx, req.GetScopeUuid())
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (s *EssentialService) ListStatuses(ctx context.Context, req *pb.ListStatuse
 	return resp, nil
 }
 
-func (s *EssentialService) ListEssentials(ctx context.Context, req *pb.ListEssentialsRequest) (*pb.ListEssentialsResponse, error) {
+func (s *OrchestratorService) ListEssentials(ctx context.Context, req *pb.ListEssentialsRequest) (*pb.ListEssentialsResponse, error) {
 	essentials, err := s.uc.ListEssentials(ctx, int32(req.GetType()), req.GetScopeUuid())
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (s *EssentialService) ListEssentials(ctx context.Context, req *pb.ListEssen
 	return resp, nil
 }
 
-func (s *EssentialService) CreateSingleNode(ctx context.Context, req *pb.CreateSingleNodeRequest) (*emptypb.Empty, error) {
+func (s *OrchestratorService) CreateSingleNode(ctx context.Context, req *pb.CreateSingleNodeRequest) (*emptypb.Empty, error) {
 	if err := s.uc.CreateSingleNode(ctx, req.GetScopeUuid(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (s *EssentialService) CreateSingleNode(ctx context.Context, req *pb.CreateS
 	return resp, nil
 }
 
-func (s *EssentialService) ListKubernetesNodeLabels(ctx context.Context, req *pb.ListKubernetesNodeLabelsRequest) (*pb.ListKubernetesNodeLabelsResponse, error) {
+func (s *OrchestratorService) ListKubernetesNodeLabels(ctx context.Context, req *pb.ListKubernetesNodeLabelsRequest) (*pb.ListKubernetesNodeLabelsResponse, error) {
 	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetHostname(), req.GetAll())
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func (s *EssentialService) ListKubernetesNodeLabels(ctx context.Context, req *pb
 	return resp, nil
 }
 
-func (s *EssentialService) UpdateKubernetesNodeLabels(ctx context.Context, req *pb.UpdateKubernetesNodeLabelsRequest) (*pb.UpdateKubernetesNodeLabelsResponse, error) {
+func (s *OrchestratorService) UpdateKubernetesNodeLabels(ctx context.Context, req *pb.UpdateKubernetesNodeLabelsRequest) (*pb.UpdateKubernetesNodeLabelsResponse, error) {
 	labels, err := s.uc.UpdateKubernetesNodeLabels(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetHostname(), req.GetLabels())
 	if err != nil {
 		return nil, err
@@ -82,7 +82,7 @@ func (s *EssentialService) UpdateKubernetesNodeLabels(ctx context.Context, req *
 	return resp, nil
 }
 
-func (s *EssentialService) ListGPURelationsByMachine(ctx context.Context, req *pb.ListGPURelationsByMachineRequest) (*pb.ListGPURelationsByMachineResponse, error) {
+func (s *OrchestratorService) ListGPURelationsByMachine(ctx context.Context, req *pb.ListGPURelationsByMachineRequest) (*pb.ListGPURelationsByMachineResponse, error) {
 	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetMachineId())
 	if err != nil {
 		return nil, err
@@ -92,7 +92,7 @@ func (s *EssentialService) ListGPURelationsByMachine(ctx context.Context, req *p
 	return resp, nil
 }
 
-func (s *EssentialService) ListGPURelationsByModel(ctx context.Context, req *pb.ListGPURelationsByModelRequest) (*pb.ListGPURelationsByModelResponse, error) {
+func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *pb.ListGPURelationsByModelRequest) (*pb.ListGPURelationsByModelResponse, error) {
 	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetModelName())
 	if err != nil {
 		return nil, err
