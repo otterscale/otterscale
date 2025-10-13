@@ -3513,76 +3513,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.facility.v1.ListCharmArtifactsResponse'
-  /otterscale.orchestrator.v1.OrchestratorService/IsMachineDeployed:
-    post:
-      tags:
-        - OrchestratorService
-      summary: IsMachineDeployed
-      operationId: OrchestratorService_IsMachineDeployed
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.orchestrator.v1.IsMachineDeployedRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.orchestrator.v1.IsMachineDeployedResponse'
-  /otterscale.orchestrator.v1.OrchestratorService/ListStatuses:
-    post:
-      tags:
-        - OrchestratorService
-      summary: ListStatuses
-      operationId: OrchestratorService_ListStatuses
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.orchestrator.v1.ListStatusesRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.orchestrator.v1.ListStatusesResponse'
   /otterscale.orchestrator.v1.OrchestratorService/ListEssentials:
     post:
       tags:
@@ -3618,12 +3548,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.orchestrator.v1.ListEssentialsResponse'
-  /otterscale.orchestrator.v1.OrchestratorService/CreateSingleNode:
+  /otterscale.orchestrator.v1.OrchestratorService/CreateNode:
     post:
       tags:
         - OrchestratorService
-      summary: CreateSingleNode
-      operationId: OrchestratorService_CreateSingleNode
+      summary: CreateNode
+      operationId: OrchestratorService_CreateNode
       parameters:
         - name: Connect-Protocol-Version
           in: header
@@ -3638,7 +3568,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/otterscale.orchestrator.v1.CreateSingleNodeRequest'
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.CreateNodeRequest'
         required: true
       responses:
         default:
@@ -3653,12 +3583,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/google.protobuf.Empty'
-  /otterscale.orchestrator.v1.OrchestratorService/CreateHighAvailabilityCluster:
+  /otterscale.orchestrator.v1.OrchestratorService/CreateCluster:
     post:
       tags:
         - OrchestratorService
-      summary: CreateHighAvailabilityCluster
-      operationId: OrchestratorService_CreateHighAvailabilityCluster
+      summary: CreateCluster
+      operationId: OrchestratorService_CreateCluster
       parameters:
         - name: Connect-Protocol-Version
           in: header
@@ -3673,7 +3603,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/otterscale.orchestrator.v1.CreateHighAvailabilityClusterRequest'
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.CreateClusterRequest'
         required: true
       responses:
         default:
@@ -3688,12 +3618,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/google.protobuf.Empty'
-  /otterscale.orchestrator.v1.OrchestratorService/AddUnits:
+  /otterscale.orchestrator.v1.OrchestratorService/AddClusterUnits:
     post:
       tags:
         - OrchestratorService
-      summary: AddUnits
-      operationId: OrchestratorService_AddUnits
+      summary: AddClusterUnits
+      operationId: OrchestratorService_AddClusterUnits
       parameters:
         - name: Connect-Protocol-Version
           in: header
@@ -3708,7 +3638,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/otterscale.orchestrator.v1.AddUnitsRequest'
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.AddClusterUnitsRequest'
         required: true
       responses:
         default:
@@ -9272,19 +9202,10 @@ components:
       type: string
       title: Type
       enum:
-        - UNSPECIFIED
+        - UNKNOWN
         - KUBERNETES
         - CEPH
-    otterscale.orchestrator.v1.Status.Level:
-      type: string
-      title: Level
-      enum:
-        - INFO
-        - LOW
-        - MEDIUM
-        - HIGH
-        - CRITICAL
-    otterscale.orchestrator.v1.AddUnitsRequest:
+    otterscale.orchestrator.v1.AddClusterUnitsRequest:
       type: object
       properties:
         type:
@@ -9308,9 +9229,9 @@ components:
         force:
           type: boolean
           title: force
-      title: AddUnitsRequest
+      title: AddClusterUnitsRequest
       additionalProperties: false
-    otterscale.orchestrator.v1.CreateHighAvailabilityClusterRequest:
+    otterscale.orchestrator.v1.CreateClusterRequest:
       type: object
       properties:
         scopeUuid:
@@ -9335,9 +9256,9 @@ components:
           items:
             type: string
           title: osd_devices
-      title: CreateHighAvailabilityClusterRequest
+      title: CreateClusterRequest
       additionalProperties: false
-    otterscale.orchestrator.v1.CreateSingleNodeRequest:
+    otterscale.orchestrator.v1.CreateNodeRequest:
       type: object
       properties:
         scopeUuid:
@@ -9362,7 +9283,7 @@ components:
           items:
             type: string
           title: osd_devices
-      title: CreateSingleNodeRequest
+      title: CreateNodeRequest
       additionalProperties: false
     otterscale.orchestrator.v1.Essential:
       type: object
@@ -9511,25 +9432,6 @@ components:
           format: int64
       title: Device
       additionalProperties: false
-    otterscale.orchestrator.v1.IsMachineDeployedRequest:
-      type: object
-      properties:
-        scopeUuid:
-          type: string
-          title: scope_uuid
-      title: IsMachineDeployedRequest
-      additionalProperties: false
-    otterscale.orchestrator.v1.IsMachineDeployedResponse:
-      type: object
-      properties:
-        deployed:
-          type: boolean
-          title: deployed
-        message:
-          type: string
-          title: message
-      title: IsMachineDeployedResponse
-      additionalProperties: false
     otterscale.orchestrator.v1.ListEssentialsRequest:
       type: object
       properties:
@@ -9640,38 +9542,6 @@ components:
           type: string
           title: value
       title: LabelsEntry
-      additionalProperties: false
-    otterscale.orchestrator.v1.ListStatusesRequest:
-      type: object
-      properties:
-        scopeUuid:
-          type: string
-          title: scope_uuid
-      title: ListStatusesRequest
-      additionalProperties: false
-    otterscale.orchestrator.v1.ListStatusesResponse:
-      type: object
-      properties:
-        statuses:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.orchestrator.v1.Status'
-          title: statuses
-      title: ListStatusesResponse
-      additionalProperties: false
-    otterscale.orchestrator.v1.Status:
-      type: object
-      properties:
-        level:
-          title: level
-          $ref: '#/components/schemas/otterscale.orchestrator.v1.Status.Level'
-        message:
-          type: string
-          title: message
-        details:
-          type: string
-          title: details
-      title: Status
       additionalProperties: false
     otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest:
       type: object
@@ -11029,6 +10899,12 @@ components:
         scopeUuid:
           type: string
           title: scope_uuid
+        kubernetesName:
+          type: string
+          title: kubernetes_name
+        cephName:
+          type: string
+          title: ceph_name
       title: ListInternalObjectServicesRequest
       additionalProperties: false
     otterscale.configuration.v1.ListInternalObjectServicesResponse:
