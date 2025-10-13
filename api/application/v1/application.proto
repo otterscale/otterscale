@@ -34,6 +34,10 @@ service ApplicationService {
   rpc GetChartMetadata(GetChartMetadataRequest) returns (Application.Chart.Metadata);
 
   rpc ListStorageClasses(ListStorageClassesRequest) returns (ListStorageClassesResponse);
+
+  rpc CreateModelArtifact(CreateModelArtifactRequest) returns (Application.Release);
+  rpc CreateModelScheduler(CreateModelSchedulerRequest) returns (Application.Release);
+  rpc CreateModelGateway(CreateModelGatewayRequest) returns (Application.Release);
 }
 
 message Namespace {
@@ -305,4 +309,60 @@ message ListStorageClassesRequest {
 
 message ListStorageClassesResponse {
   repeated StorageClass storage_classes = 1;
+}
+
+message CreateModelArtifactRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  map<string, string> labels = 5;
+  string modelname = 6;
+  int32 size = 7;
+}
+
+message CreateModelGatewayRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  map<string, string> labels = 5;
+  int32 cpu = 6;
+  int32 memory = 7;
+  string type = 8;
+}
+
+message CreateModelSchedulerRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  map<string, string> labels = 5;
+  bool multinode = 6;
+  string modelArtifacts_name = 7;
+  string uri = 8;
+  string accelerator_type = 9;
+  bool inferencePool_create = 10;
+  string parentRefs_name = 11;
+  bool httpRoute_create = 12;
+  message BackendRef {
+    string name = 1;
+    int32 weight = 2;
+  }
+  repeated BackendRef backendRefs = 13;
+  int32 backendRequest = 14;
+  int32 request =15;
+  bool epp_create = 16;
+  int32 epp_replicas = 17;
+  string pluginsConfigFile = 18;
+  bool decode_create = 19;
+  int32 decode_replicas = 20;
+  repeated string decode_args = 21;
+  int32 decode_gpu = 22;
+  int32 decode_gpumemory = 23;
+  bool prefill_create = 24;
+  int32 prefill_replicas = 25;
+  repeated string prefill_args = 26;
+  int32 prefill_gpu = 27;
+  int32 prefill_gpumemory = 28;
 }
