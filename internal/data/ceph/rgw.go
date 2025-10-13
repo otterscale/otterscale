@@ -14,11 +14,6 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-const (
-	cephRegion       = "us-east-1"
-	retryMaxAttempts = 5
-)
-
 type rgw struct {
 	ceph *Ceph
 }
@@ -232,6 +227,11 @@ func (r *rgw) DeleteUserKey(ctx context.Context, config *core.StorageConfig, id,
 }
 
 func (r *rgw) s3Client(ctx context.Context, conf *core.StorageConfig) (*s3.Client, error) {
+	const (
+		cephRegion       = "us-east-1"
+		retryMaxAttempts = 5
+	)
+
 	client, err := r.ceph.client(conf)
 	if err != nil {
 		return nil, err

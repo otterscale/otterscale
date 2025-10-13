@@ -57,7 +57,7 @@ func (uc *InstanceUseCase) VNCHandler(w http.ResponseWriter, r *http.Request) {
 	defer uc.vncSessionMap.Delete(sessionID)
 
 	// configure websocket connection
-	wait := 5 * time.Minute
+	const wait = 5 * time.Minute
 	_ = conn.SetReadDeadline(time.Now().Add(wait))
 	conn.SetPongHandler(func(string) error {
 		_ = conn.SetReadDeadline(time.Now().Add(wait))
@@ -90,7 +90,7 @@ func (uc *InstanceUseCase) VNCHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (uc *InstanceUseCase) pingHandler(ctx context.Context, conn *websocket.Conn) {
-	var (
+	const (
 		period   = 1 * time.Minute
 		deadline = 10 * time.Second
 	)

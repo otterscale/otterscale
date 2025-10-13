@@ -16,13 +16,13 @@ import (
 	"github.com/otterscale/otterscale/internal/mux"
 )
 
-const (
-	containerEnvVar            = "OTTERSCALE_CONTAINER"
-	defaultContainerAddress    = ":8299"
-	defaultContainerConfigPath = "/etc/app/otterscale.yaml"
-)
-
 func NewServe(conf *config.Config, serve *mux.Serve) *cobra.Command {
+	const (
+		containerEnvVar            = "OTTERSCALE_CONTAINER"
+		defaultContainerAddress    = ":8299"
+		defaultContainerConfigPath = "/etc/app/otterscale.yaml"
+	)
+
 	var address, configPath string
 
 	cmd := &cobra.Command{
