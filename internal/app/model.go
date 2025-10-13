@@ -12,7 +12,9 @@ type ModelService struct {
 }
 
 func NewModelService(model *core.ModelUseCase) *ModelService {
-	return &ModelService{model: model}
+	return &ModelService{
+		model: model,
+	}
 }
 
 var _ pbconnect.ModelServiceHandler = (*ModelService)(nil)

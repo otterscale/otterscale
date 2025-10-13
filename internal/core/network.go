@@ -9,15 +9,6 @@ import (
 	"github.com/canonical/gomaasclient/entity/subnet"
 )
 
-type (
-	Fabric            = entity.Fabric
-	VLAN              = entity.VLAN
-	Subnet            = entity.Subnet
-	IPRange           = entity.IPRange
-	IPAddress         = subnet.IPAddress
-	NetworkStatistics = subnet.Statistics
-)
-
 type Network struct {
 	*Fabric
 	*VLAN
@@ -30,6 +21,15 @@ type NetworkSubnet struct {
 	IPAddresses []IPAddress
 	IPRanges    []IPRange
 }
+
+type (
+	Fabric            = entity.Fabric
+	VLAN              = entity.VLAN
+	Subnet            = entity.Subnet
+	IPRange           = entity.IPRange
+	IPAddress         = subnet.IPAddress
+	NetworkStatistics = subnet.Statistics
+)
 
 type FabricRepo interface {
 	List(ctx context.Context) ([]Fabric, error)
@@ -62,17 +62,17 @@ type IPRangeRepo interface {
 
 type NetworkUseCase struct {
 	fabric  FabricRepo
-	vlan    VLANRepo
-	subnet  SubnetRepo
 	ipRange IPRangeRepo
+	subnet  SubnetRepo
+	vlan    VLANRepo
 }
 
-func NewNetworkUseCase(fabric FabricRepo, vlan VLANRepo, subnet SubnetRepo, ipRange IPRangeRepo) *NetworkUseCase {
+func NewNetworkUseCase(fabric FabricRepo, ipRange IPRangeRepo, subnet SubnetRepo, vlan VLANRepo) *NetworkUseCase {
 	return &NetworkUseCase{
 		fabric:  fabric,
-		vlan:    vlan,
-		subnet:  subnet,
 		ipRange: ipRange,
+		subnet:  subnet,
+		vlan:    vlan,
 	}
 }
 

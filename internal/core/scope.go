@@ -8,7 +8,14 @@ import (
 	"github.com/juju/juju/api/base"
 )
 
-type Scope = base.UserModelSummary
+type (
+	Scope  = base.UserModelSummary
+	SSHKey = entity.SSHKey
+)
+
+type KeyRepo interface {
+	Add(ctx context.Context, uuid, key string) error
+}
 
 type ScopeRepo interface {
 	List(ctx context.Context) ([]Scope, error)
@@ -21,26 +28,20 @@ type ScopeConfigRepo interface {
 	Unset(ctx context.Context, uuid string, keys ...string) error
 }
 
-type KeyRepo interface {
-	Add(ctx context.Context, uuid, key string) error
-}
-
-type SSHKey = entity.SSHKey
-
 type SSHKeyRepo interface {
 	List(ctx context.Context) ([]SSHKey, error)
 }
 
 type ScopeUseCase struct {
-	scope  ScopeRepo
 	key    KeyRepo
+	scope  ScopeRepo
 	sshKey SSHKeyRepo
 }
 
-func NewScopeUseCase(scope ScopeRepo, key KeyRepo, sshKey SSHKeyRepo) *ScopeUseCase {
+func NewScopeUseCase(key KeyRepo, scope ScopeRepo, sshKey SSHKeyRepo) *ScopeUseCase {
 	return &ScopeUseCase{
-		scope:  scope,
 		key:    key,
+		scope:  scope,
 		sshKey: sshKey,
 	}
 }
