@@ -19,7 +19,8 @@ type traefikProxiedEndpoints struct {
 }
 
 type EnvironmentUseCase struct {
-	conf     *config.Config
+	conf *config.Config
+
 	action   ActionRepo
 	facility FacilityRepo
 	scope    ScopeRepo

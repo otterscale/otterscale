@@ -9,6 +9,7 @@ var ProviderSet = wire.NewSet(
 	NewConfigurationUseCase,
 	NewEnvironmentUseCase,
 	NewFacilityUseCase,
+	NewInstanceUseCase,
 	NewKubernetesUseCase,
 	NewMachineUseCase,
 	NewModelUseCase,
@@ -17,5 +18,4 @@ var ProviderSet = wire.NewSet(
 	NewReleaseUseCase,
 	NewScopeUseCase,
 	NewStorageUseCase,
-	NewVirtualMachineUseCase,
 )

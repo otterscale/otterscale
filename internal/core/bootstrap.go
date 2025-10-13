@@ -14,7 +14,8 @@ type BootstrapStatus struct {
 }
 
 type BootstrapUseCase struct {
-	conf      *config.Config
+	conf *config.Config
+
 	statusMap sync.Map
 }
 

@@ -35,9 +35,6 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// InstanceServiceCheckInfrastructureStatusProcedure is the fully-qualified name of the
-	// InstanceService's CheckInfrastructureStatus RPC.
-	InstanceServiceCheckInfrastructureStatusProcedure = "/otterscale.instance.v1.InstanceService/CheckInfrastructureStatus"
 	// InstanceServiceListVirtualMachinesProcedure is the fully-qualified name of the InstanceService's
 	// ListVirtualMachines RPC.
 	InstanceServiceListVirtualMachinesProcedure = "/otterscale.instance.v1.InstanceService/ListVirtualMachines"
@@ -135,7 +132,6 @@ const (
 
 // InstanceServiceClient is a client for the otterscale.instance.v1.InstanceService service.
 type InstanceServiceClient interface {
-	CheckInfrastructureStatus(context.Context, *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error)
 	ListVirtualMachines(context.Context, *v1.ListVirtualMachinesRequest) (*v1.ListVirtualMachinesResponse, error)
 	GetVirtualMachine(context.Context, *v1.GetVirtualMachineRequest) (*v1.VirtualMachine, error)
 	CreateVirtualMachine(context.Context, *v1.CreateVirtualMachineRequest) (*v1.VirtualMachine, error)
@@ -180,12 +176,6 @@ func NewInstanceServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 	baseURL = strings.TrimRight(baseURL, "/")
 	instanceServiceMethods := v1.File_api_instance_v1_instance_proto.Services().ByName("InstanceService").Methods()
 	return &instanceServiceClient{
-		checkInfrastructureStatus: connect.NewClient[v1.CheckInfrastructureStatusRequest, v1.CheckInfrastructureStatusResponse](
-			httpClient,
-			baseURL+InstanceServiceCheckInfrastructureStatusProcedure,
-			connect.WithSchema(instanceServiceMethods.ByName("CheckInfrastructureStatus")),
-			connect.WithClientOptions(opts...),
-		),
 		listVirtualMachines: connect.NewClient[v1.ListVirtualMachinesRequest, v1.ListVirtualMachinesResponse](
 			httpClient,
 			baseURL+InstanceServiceListVirtualMachinesProcedure,
@@ -377,7 +367,6 @@ func NewInstanceServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // instanceServiceClient implements InstanceServiceClient.
 type instanceServiceClient struct {
-	checkInfrastructureStatus    *connect.Client[v1.CheckInfrastructureStatusRequest, v1.CheckInfrastructureStatusResponse]
 	listVirtualMachines          *connect.Client[v1.ListVirtualMachinesRequest, v1.ListVirtualMachinesResponse]
 	getVirtualMachine            *connect.Client[v1.GetVirtualMachineRequest, v1.VirtualMachine]
 	createVirtualMachine         *connect.Client[v1.CreateVirtualMachineRequest, v1.VirtualMachine]
@@ -409,15 +398,6 @@ type instanceServiceClient struct {
 	createVirtualMachineService  *connect.Client[v1.CreateVirtualMachineServiceRequest, v11.Application_Service]
 	updateVirtualMachineService  *connect.Client[v1.UpdateVirtualMachineServiceRequest, v11.Application_Service]
 	deleteVirtualMachineService  *connect.Client[v1.DeleteVirtualMachineServiceRequest, emptypb.Empty]
-}
-
-// CheckInfrastructureStatus calls otterscale.instance.v1.InstanceService.CheckInfrastructureStatus.
-func (c *instanceServiceClient) CheckInfrastructureStatus(ctx context.Context, req *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error) {
-	response, err := c.checkInfrastructureStatus.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
 }
 
 // ListVirtualMachines calls otterscale.instance.v1.InstanceService.ListVirtualMachines.
@@ -709,7 +689,6 @@ func (c *instanceServiceClient) DeleteVirtualMachineService(ctx context.Context,
 // InstanceServiceHandler is an implementation of the otterscale.instance.v1.InstanceService
 // service.
 type InstanceServiceHandler interface {
-	CheckInfrastructureStatus(context.Context, *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error)
 	ListVirtualMachines(context.Context, *v1.ListVirtualMachinesRequest) (*v1.ListVirtualMachinesResponse, error)
 	GetVirtualMachine(context.Context, *v1.GetVirtualMachineRequest) (*v1.VirtualMachine, error)
 	CreateVirtualMachine(context.Context, *v1.CreateVirtualMachineRequest) (*v1.VirtualMachine, error)
@@ -750,12 +729,6 @@ type InstanceServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewInstanceServiceHandler(svc InstanceServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	instanceServiceMethods := v1.File_api_instance_v1_instance_proto.Services().ByName("InstanceService").Methods()
-	instanceServiceCheckInfrastructureStatusHandler := connect.NewUnaryHandlerSimple(
-		InstanceServiceCheckInfrastructureStatusProcedure,
-		svc.CheckInfrastructureStatus,
-		connect.WithSchema(instanceServiceMethods.ByName("CheckInfrastructureStatus")),
-		connect.WithHandlerOptions(opts...),
-	)
 	instanceServiceListVirtualMachinesHandler := connect.NewUnaryHandlerSimple(
 		InstanceServiceListVirtualMachinesProcedure,
 		svc.ListVirtualMachines,
@@ -944,8 +917,6 @@ func NewInstanceServiceHandler(svc InstanceServiceHandler, opts ...connect.Handl
 	)
 	return "/otterscale.instance.v1.InstanceService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case InstanceServiceCheckInfrastructureStatusProcedure:
-			instanceServiceCheckInfrastructureStatusHandler.ServeHTTP(w, r)
 		case InstanceServiceListVirtualMachinesProcedure:
 			instanceServiceListVirtualMachinesHandler.ServeHTTP(w, r)
 		case InstanceServiceGetVirtualMachineProcedure:
@@ -1016,10 +987,6 @@ func NewInstanceServiceHandler(svc InstanceServiceHandler, opts ...connect.Handl
 
 // UnimplementedInstanceServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedInstanceServiceHandler struct{}
-
-func (UnimplementedInstanceServiceHandler) CheckInfrastructureStatus(context.Context, *v1.CheckInfrastructureStatusRequest) (*v1.CheckInfrastructureStatusResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.instance.v1.InstanceService.CheckInfrastructureStatus is not implemented"))
-}
 
 func (UnimplementedInstanceServiceHandler) ListVirtualMachines(context.Context, *v1.ListVirtualMachinesRequest) (*v1.ListVirtualMachinesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.instance.v1.InstanceService.ListVirtualMachines is not implemented"))

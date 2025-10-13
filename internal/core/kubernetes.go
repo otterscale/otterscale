@@ -24,6 +24,8 @@ import (
 	"k8s.io/client-go/tools/remotecommand"
 )
 
+const KubernetesResourceStorage = corev1.ResourceStorage
+
 type (
 	KubernetesTime             = metav1.Time
 	DaemonSet                  = appsv1.DaemonSet
@@ -41,9 +43,11 @@ type (
 	Pod                        = corev1.Pod
 	PodCondition               = corev1.PodCondition
 	PodPhase                   = corev1.PodPhase
+	ResourceList               = corev1.ResourceList
 	Secret                     = corev1.Secret
 	Service                    = corev1.Service
 	ServicePort                = corev1.ServicePort
+	ServiceProtocol            = corev1.Protocol
 	StorageClass               = storagev1.StorageClass
 )
 
@@ -137,12 +141,13 @@ type KubeStorageRepo interface {
 }
 
 type KubernetesUseCase struct {
-	action        ActionRepo
-	client        ClientRepo
-	facility      FacilityRepo
-	kubeApps      KubeAppsRepo
-	kubeCore      KubeCoreRepo
-	kubeStorage   KubeStorageRepo
+	action      ActionRepo
+	client      ClientRepo
+	facility    FacilityRepo
+	kubeApps    KubeAppsRepo
+	kubeCore    KubeCoreRepo
+	kubeStorage KubeStorageRepo
+
 	ttySessionMap sync.Map
 }
 

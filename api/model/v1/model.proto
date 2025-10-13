@@ -21,22 +21,6 @@ message Model {
   string comment = 5;
 }
 
-message CheckInfrastructureStatusRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-}
-
-message CheckInfrastructureStatusResponse {
-  enum Result {
-    UNKNOWN = 0;
-    OK = 11;
-    NOT_INSTALLED = 21;
-    FAILED = 22;
-    PENDING = 31;
-  }
-  Result result = 1;
-}
-
 message ListModelsRequest {
   string scope_uuid = 1;
   string facility_name = 2;

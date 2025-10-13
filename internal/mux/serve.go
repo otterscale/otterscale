@@ -80,7 +80,7 @@ func (s *Serve) registerProxy() {
 }
 
 func (s *Serve) registerWebSocket() {
-	s.HandleFunc(s.services.instance.WebSocketPathPrefix, s.services.instance.VNCHandler)
+	s.HandleFunc(s.services.instance.VNCPathPrefix(), s.services.instance.VNCHandler())
 }
 
 func NewServe(app *app.ApplicationService, config *app.ConfigurationService, env *app.EnvironmentService, facility *app.FacilityService, instance *app.InstanceService, machine *app.MachineService, model *app.ModelService, network *app.NetworkService, orch *app.OrchestratorService, storage *app.StorageService, scope *app.ScopeService, opts []connect.HandlerOption) (*Serve, error) {

@@ -70,7 +70,7 @@ func (uc *StorageUseCase) ListVolumes(ctx context.Context, uuid, facility string
 	if err != nil {
 		return nil, err
 	}
-	return uc.fs.ListVolumes(ctx, config)
+	return uc.cephFS.ListVolumes(ctx, config)
 }
 
 func (uc *StorageUseCase) ListSubvolumes(ctx context.Context, uuid, facility, volume, group string) ([]Subvolume, error) {
@@ -78,12 +78,12 @@ func (uc *StorageUseCase) ListSubvolumes(ctx context.Context, uuid, facility, vo
 	if err != nil {
 		return nil, err
 	}
-	subs, err := uc.fs.ListSubvolumes(ctx, config, volume, group)
+	subs, err := uc.cephFS.ListSubvolumes(ctx, config, volume, group)
 	if err != nil {
 		return nil, err
 	}
 	pool := nfsName(facility) // TODO: multiple ceph-nfs charms
-	m, err := uc.fs.ListPathToExportClients(ctx, config, pool)
+	m, err := uc.cephFS.ListPathToExportClients(ctx, config, pool)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (uc *StorageUseCase) ListSubvolumes(ctx context.Context, uuid, facility, vo
 		return nil, err
 	}
 	for i := range subs {
-		subs[i].Snapshots, err = uc.fs.ListSubvolumeSnapshots(ctx, config, volume, subs[i].Name, group)
+		subs[i].Snapshots, err = uc.cephFS.ListSubvolumeSnapshots(ctx, config, volume, subs[i].Name, group)
 		if err != nil {
 			return nil, err
 		}
@@ -125,13 +125,13 @@ func (uc *StorageUseCase) CreateSubvolume(ctx context.Context, uuid, facility, v
 		if _, err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 			return nil, err
 		}
-		return uc.fs.GetSubvolume(ctx, config, volume, subvolume, "")
+		return uc.cephFS.GetSubvolume(ctx, config, volume, subvolume, "")
 	}
 
-	if err := uc.fs.CreateSubvolume(ctx, config, volume, subvolume, group, size); err != nil {
+	if err := uc.cephFS.CreateSubvolume(ctx, config, volume, subvolume, group, size); err != nil {
 		return nil, err
 	}
-	return uc.fs.GetSubvolume(ctx, config, volume, subvolume, group)
+	return uc.cephFS.GetSubvolume(ctx, config, volume, subvolume, group)
 }
 
 func (uc *StorageUseCase) UpdateSubvolume(ctx context.Context, uuid, facility, volume, subvolume, group string, size uint64) (*Subvolume, error) {
@@ -157,13 +157,13 @@ func (uc *StorageUseCase) UpdateSubvolume(ctx context.Context, uuid, facility, v
 		if _, err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 			return nil, err
 		}
-		return uc.fs.GetSubvolume(ctx, config, volume, subvolume, "")
+		return uc.cephFS.GetSubvolume(ctx, config, volume, subvolume, "")
 	}
 
-	if err := uc.fs.ResizeSubvolume(ctx, config, volume, subvolume, group, size); err != nil {
+	if err := uc.cephFS.ResizeSubvolume(ctx, config, volume, subvolume, group, size); err != nil {
 		return nil, err
 	}
-	return uc.fs.GetSubvolume(ctx, config, volume, subvolume, group)
+	return uc.cephFS.GetSubvolume(ctx, config, volume, subvolume, group)
 }
 
 func (uc *StorageUseCase) DeleteSubvolume(ctx context.Context, uuid, facility, volume, subvolume, group string) error {
@@ -190,7 +190,7 @@ func (uc *StorageUseCase) DeleteSubvolume(ctx context.Context, uuid, facility, v
 		}
 		return nil
 	}
-	return uc.fs.DeleteSubvolume(ctx, config, volume, subvolume, group)
+	return uc.cephFS.DeleteSubvolume(ctx, config, volume, subvolume, group)
 }
 
 func (uc *StorageUseCase) GrantSubvolumeClient(ctx context.Context, uuid, facility, subvolume, clientIP string) error {
@@ -230,10 +230,10 @@ func (uc *StorageUseCase) CreateSubvolumeSnapshot(ctx context.Context, uuid, fac
 	if err != nil {
 		return nil, err
 	}
-	if err := uc.fs.CreateSubvolumeSnapshot(ctx, config, volume, subvolume, group, snapshot); err != nil {
+	if err := uc.cephFS.CreateSubvolumeSnapshot(ctx, config, volume, subvolume, group, snapshot); err != nil {
 		return nil, err
 	}
-	return uc.fs.GetSubvolumeSnapshot(ctx, config, volume, subvolume, group, snapshot)
+	return uc.cephFS.GetSubvolumeSnapshot(ctx, config, volume, subvolume, group, snapshot)
 }
 
 func (uc *StorageUseCase) DeleteSubvolumeSnapshot(ctx context.Context, uuid, facility, volume, subvolume, group, snapshot string) error {
@@ -241,7 +241,7 @@ func (uc *StorageUseCase) DeleteSubvolumeSnapshot(ctx context.Context, uuid, fac
 	if err != nil {
 		return err
 	}
-	return uc.fs.DeleteSubvolumeSnapshot(ctx, config, volume, subvolume, group, snapshot)
+	return uc.cephFS.DeleteSubvolumeSnapshot(ctx, config, volume, subvolume, group, snapshot)
 }
 
 func (uc *StorageUseCase) ListSubvolumeGroups(ctx context.Context, uuid, facility, volume string) ([]SubvolumeGroup, error) {
@@ -249,7 +249,7 @@ func (uc *StorageUseCase) ListSubvolumeGroups(ctx context.Context, uuid, facilit
 	if err != nil {
 		return nil, err
 	}
-	return uc.fs.ListSubvolumeGroups(ctx, config, volume)
+	return uc.cephFS.ListSubvolumeGroups(ctx, config, volume)
 }
 
 func (uc *StorageUseCase) CreateSubvolumeGroup(ctx context.Context, uuid, facility, volume, group string, size uint64) (*SubvolumeGroup, error) {
@@ -257,10 +257,10 @@ func (uc *StorageUseCase) CreateSubvolumeGroup(ctx context.Context, uuid, facili
 	if err != nil {
 		return nil, err
 	}
-	if err := uc.fs.CreateSubvolumeGroup(ctx, config, volume, group, size); err != nil {
+	if err := uc.cephFS.CreateSubvolumeGroup(ctx, config, volume, group, size); err != nil {
 		return nil, err
 	}
-	return uc.fs.GetSubvolumeGroup(ctx, config, volume, group)
+	return uc.cephFS.GetSubvolumeGroup(ctx, config, volume, group)
 }
 
 func (uc *StorageUseCase) UpdateSubvolumeGroup(ctx context.Context, uuid, facility, volume, group string, size uint64) (*SubvolumeGroup, error) {
@@ -268,10 +268,10 @@ func (uc *StorageUseCase) UpdateSubvolumeGroup(ctx context.Context, uuid, facili
 	if err != nil {
 		return nil, err
 	}
-	if err := uc.fs.ResizeSubvolumeGroup(ctx, config, volume, group, size); err != nil {
+	if err := uc.cephFS.ResizeSubvolumeGroup(ctx, config, volume, group, size); err != nil {
 		return nil, err
 	}
-	return uc.fs.GetSubvolumeGroup(ctx, config, volume, group)
+	return uc.cephFS.GetSubvolumeGroup(ctx, config, volume, group)
 }
 
 func (uc *StorageUseCase) DeleteSubvolumeGroup(ctx context.Context, uuid, facility, volume, group string) error {
@@ -279,16 +279,16 @@ func (uc *StorageUseCase) DeleteSubvolumeGroup(ctx context.Context, uuid, facili
 	if err != nil {
 		return err
 	}
-	return uc.fs.DeleteSubvolumeGroup(ctx, config, volume, group)
+	return uc.cephFS.DeleteSubvolumeGroup(ctx, config, volume, group)
 }
 
 func (uc *StorageUseCase) subvolumeExport(ctx context.Context, config *StorageConfig, facility, volume, subvolume, group string) (bool, error) {
 	pool := nfsName(facility) // TODO: multiple ceph-nfs charms
-	m, err := uc.fs.ListPathToExportClients(ctx, config, pool)
+	m, err := uc.cephFS.ListPathToExportClients(ctx, config, pool)
 	if err != nil {
 		return false, err
 	}
-	sub, err := uc.fs.GetSubvolume(ctx, config, volume, subvolume, group)
+	sub, err := uc.cephFS.GetSubvolume(ctx, config, volume, subvolume, group)
 	if err != nil {
 		return false, err
 	}

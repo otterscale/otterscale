@@ -9,14 +9,12 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-const kubeConfigAction = "get-kubeconfig"
-
-var kubeConfigs sync.Map
+var kubeConfigMap sync.Map
 
 func kubeConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, uuid, name string) (*rest.Config, error) {
 	key := uuid + "/" + name
 
-	if v, ok := kubeConfigs.Load(key); ok {
+	if v, ok := kubeConfigMap.Load(key); ok {
 		return v.(*rest.Config), nil
 	}
 
@@ -25,7 +23,7 @@ func kubeConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, u
 		return nil, err
 	}
 
-	kubeConfigs.Store(key, config)
+	kubeConfigMap.Store(key, config)
 
 	return config, nil
 }
@@ -37,7 +35,7 @@ func newKubeConfig(ctx context.Context, facility FacilityRepo, action ActionRepo
 		return nil, err
 	}
 
-	result, err := runAction(ctx, action, uuid, leader, kubeConfigAction, nil)
+	result, err := runAction(ctx, action, uuid, leader, "get-kubeconfig", nil)
 	if err != nil {
 		return nil, err
 	}

@@ -2,8 +2,8 @@
 // @generated from file api/model/v1/model.proto (package otterscale.model.v1, edition 2023)
 /* eslint-disable */
 
-import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import type { EmptySchema } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/model/v1/model.proto.
  */
 export const file_api_model_v1_model: GenFile = /*@__PURE__*/
-  fileDesc("ChhhcGkvbW9kZWwvdjEvbW9kZWwucHJvdG8SE290dGVyc2NhbGUubW9kZWwudjEiWAoFTW9kZWwSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIPCgd2ZXJzaW9uGAQgASgJEg8KB2NvbW1lbnQYBSABKAkiTQogQ2hlY2tJbmZyYXN0cnVjdHVyZVN0YXR1c1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJIr0BCiFDaGVja0luZnJhc3RydWN0dXJlU3RhdHVzUmVzcG9uc2USTQoGcmVzdWx0GAEgASgOMj0ub3R0ZXJzY2FsZS5tb2RlbC52MS5DaGVja0luZnJhc3RydWN0dXJlU3RhdHVzUmVzcG9uc2UuUmVzdWx0IkkKBlJlc3VsdBILCgdVTktOT1dOEAASBgoCT0sQCxIRCg1OT1RfSU5TVEFMTEVEEBUSCgoGRkFJTEVEEBYSCwoHUEVORElORxAfIj4KEUxpc3RNb2RlbHNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCSJAChJMaXN0TW9kZWxzUmVzcG9uc2USKgoGbW9kZWxzGAEgAygLMhoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbCIdCg9HZXRNb2RlbFJlcXVlc3QSCgoCaWQYASABKAkiWQoSQ3JlYXRlTW9kZWxSZXF1ZXN0EgwKBG5hbWUYASABKAkSEwoLZGVzY3JpcHRpb24YAiABKAkSDwoHdmVyc2lvbhgDIAEoCRIPCgdjb21tZW50GAQgASgJIiAKEkRlbGV0ZU1vZGVsUmVxdWVzdBIKCgJpZBgBIAEoCTLfAgoMTW9kZWxTZXJ2aWNlEl0KCkxpc3RNb2RlbHMSJi5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbHNSZXF1ZXN0Gicub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxzUmVzcG9uc2USTAoIR2V0TW9kZWwSJC5vdHRlcnNjYWxlLm1vZGVsLnYxLkdldE1vZGVsUmVxdWVzdBoaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwSUgoLQ3JlYXRlTW9kZWwSJy5vdHRlcnNjYWxlLm1vZGVsLnYxLkNyZWF0ZU1vZGVsUmVxdWVzdBoaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwSTgoLRGVsZXRlTW9kZWwSJy5vdHRlcnNjYWxlLm1vZGVsLnYxLkRlbGV0ZU1vZGVsUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eUIyWjBnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvbW9kZWwvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty]);
+  fileDesc("ChhhcGkvbW9kZWwvdjEvbW9kZWwucHJvdG8SE290dGVyc2NhbGUubW9kZWwudjEiWAoFTW9kZWwSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIPCgd2ZXJzaW9uGAQgASgJEg8KB2NvbW1lbnQYBSABKAkiPgoRTGlzdE1vZGVsc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJIkAKEkxpc3RNb2RlbHNSZXNwb25zZRIqCgZtb2RlbHMYASADKAsyGi5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsIh0KD0dldE1vZGVsUmVxdWVzdBIKCgJpZBgBIAEoCSJZChJDcmVhdGVNb2RlbFJlcXVlc3QSDAoEbmFtZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIPCgd2ZXJzaW9uGAMgASgJEg8KB2NvbW1lbnQYBCABKAkiIAoSRGVsZXRlTW9kZWxSZXF1ZXN0EgoKAmlkGAEgASgJMt8CCgxNb2RlbFNlcnZpY2USXQoKTGlzdE1vZGVscxImLm90dGVyc2NhbGUubW9kZWwudjEuTGlzdE1vZGVsc1JlcXVlc3QaJy5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbHNSZXNwb25zZRJMCghHZXRNb2RlbBIkLm90dGVyc2NhbGUubW9kZWwudjEuR2V0TW9kZWxSZXF1ZXN0Ghoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbBJSCgtDcmVhdGVNb2RlbBInLm90dGVyc2NhbGUubW9kZWwudjEuQ3JlYXRlTW9kZWxSZXF1ZXN0Ghoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbBJOCgtEZWxldGVNb2RlbBInLm90dGVyc2NhbGUubW9kZWwudjEuRGVsZXRlTW9kZWxSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5QjJaMGdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9tb2RlbC92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty]);
 
 /**
  * @generated from message otterscale.model.v1.Model
@@ -52,81 +52,6 @@ export const ModelSchema: GenMessage<Model> = /*@__PURE__*/
   messageDesc(file_api_model_v1_model, 0);
 
 /**
- * @generated from message otterscale.model.v1.CheckInfrastructureStatusRequest
- */
-export type CheckInfrastructureStatusRequest = Message<"otterscale.model.v1.CheckInfrastructureStatusRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
-
-  /**
-   * @generated from field: string facility_name = 2;
-   */
-  facilityName: string;
-};
-
-/**
- * Describes the message otterscale.model.v1.CheckInfrastructureStatusRequest.
- * Use `create(CheckInfrastructureStatusRequestSchema)` to create a new message.
- */
-export const CheckInfrastructureStatusRequestSchema: GenMessage<CheckInfrastructureStatusRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 1);
-
-/**
- * @generated from message otterscale.model.v1.CheckInfrastructureStatusResponse
- */
-export type CheckInfrastructureStatusResponse = Message<"otterscale.model.v1.CheckInfrastructureStatusResponse"> & {
-  /**
-   * @generated from field: otterscale.model.v1.CheckInfrastructureStatusResponse.Result result = 1;
-   */
-  result: CheckInfrastructureStatusResponse_Result;
-};
-
-/**
- * Describes the message otterscale.model.v1.CheckInfrastructureStatusResponse.
- * Use `create(CheckInfrastructureStatusResponseSchema)` to create a new message.
- */
-export const CheckInfrastructureStatusResponseSchema: GenMessage<CheckInfrastructureStatusResponse> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 2);
-
-/**
- * @generated from enum otterscale.model.v1.CheckInfrastructureStatusResponse.Result
- */
-export enum CheckInfrastructureStatusResponse_Result {
-  /**
-   * @generated from enum value: UNKNOWN = 0;
-   */
-  UNKNOWN = 0,
-
-  /**
-   * @generated from enum value: OK = 11;
-   */
-  OK = 11,
-
-  /**
-   * @generated from enum value: NOT_INSTALLED = 21;
-   */
-  NOT_INSTALLED = 21,
-
-  /**
-   * @generated from enum value: FAILED = 22;
-   */
-  FAILED = 22,
-
-  /**
-   * @generated from enum value: PENDING = 31;
-   */
-  PENDING = 31,
-}
-
-/**
- * Describes the enum otterscale.model.v1.CheckInfrastructureStatusResponse.Result.
- */
-export const CheckInfrastructureStatusResponse_ResultSchema: GenEnum<CheckInfrastructureStatusResponse_Result> = /*@__PURE__*/
-  enumDesc(file_api_model_v1_model, 2, 0);
-
-/**
  * @generated from message otterscale.model.v1.ListModelsRequest
  */
 export type ListModelsRequest = Message<"otterscale.model.v1.ListModelsRequest"> & {
@@ -146,7 +71,7 @@ export type ListModelsRequest = Message<"otterscale.model.v1.ListModelsRequest">
  * Use `create(ListModelsRequestSchema)` to create a new message.
  */
 export const ListModelsRequestSchema: GenMessage<ListModelsRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 3);
+  messageDesc(file_api_model_v1_model, 1);
 
 /**
  * @generated from message otterscale.model.v1.ListModelsResponse
@@ -163,7 +88,7 @@ export type ListModelsResponse = Message<"otterscale.model.v1.ListModelsResponse
  * Use `create(ListModelsResponseSchema)` to create a new message.
  */
 export const ListModelsResponseSchema: GenMessage<ListModelsResponse> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 4);
+  messageDesc(file_api_model_v1_model, 2);
 
 /**
  * @generated from message otterscale.model.v1.GetModelRequest
@@ -180,7 +105,7 @@ export type GetModelRequest = Message<"otterscale.model.v1.GetModelRequest"> & {
  * Use `create(GetModelRequestSchema)` to create a new message.
  */
 export const GetModelRequestSchema: GenMessage<GetModelRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 5);
+  messageDesc(file_api_model_v1_model, 3);
 
 /**
  * @generated from message otterscale.model.v1.CreateModelRequest
@@ -212,7 +137,7 @@ export type CreateModelRequest = Message<"otterscale.model.v1.CreateModelRequest
  * Use `create(CreateModelRequestSchema)` to create a new message.
  */
 export const CreateModelRequestSchema: GenMessage<CreateModelRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 6);
+  messageDesc(file_api_model_v1_model, 4);
 
 /**
  * @generated from message otterscale.model.v1.DeleteModelRequest
@@ -229,7 +154,7 @@ export type DeleteModelRequest = Message<"otterscale.model.v1.DeleteModelRequest
  * Use `create(DeleteModelRequestSchema)` to create a new message.
  */
 export const DeleteModelRequestSchema: GenMessage<DeleteModelRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 7);
+  messageDesc(file_api_model_v1_model, 5);
 
 /**
  * @generated from service otterscale.model.v1.ModelService

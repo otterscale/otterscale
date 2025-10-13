@@ -21,56 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type CheckInfrastructureStatusResponse_Result int32
-
-const (
-	CheckInfrastructureStatusResponse_UNKNOWN       CheckInfrastructureStatusResponse_Result = 0
-	CheckInfrastructureStatusResponse_OK            CheckInfrastructureStatusResponse_Result = 11
-	CheckInfrastructureStatusResponse_NOT_INSTALLED CheckInfrastructureStatusResponse_Result = 21
-	CheckInfrastructureStatusResponse_FAILED        CheckInfrastructureStatusResponse_Result = 22
-	CheckInfrastructureStatusResponse_PENDING       CheckInfrastructureStatusResponse_Result = 31
-)
-
-// Enum value maps for CheckInfrastructureStatusResponse_Result.
-var (
-	CheckInfrastructureStatusResponse_Result_name = map[int32]string{
-		0:  "UNKNOWN",
-		11: "OK",
-		21: "NOT_INSTALLED",
-		22: "FAILED",
-		31: "PENDING",
-	}
-	CheckInfrastructureStatusResponse_Result_value = map[string]int32{
-		"UNKNOWN":       0,
-		"OK":            11,
-		"NOT_INSTALLED": 21,
-		"FAILED":        22,
-		"PENDING":       31,
-	}
-)
-
-func (x CheckInfrastructureStatusResponse_Result) Enum() *CheckInfrastructureStatusResponse_Result {
-	p := new(CheckInfrastructureStatusResponse_Result)
-	*p = x
-	return p
-}
-
-func (x CheckInfrastructureStatusResponse_Result) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (CheckInfrastructureStatusResponse_Result) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_model_v1_model_proto_enumTypes[0].Descriptor()
-}
-
-func (CheckInfrastructureStatusResponse_Result) Type() protoreflect.EnumType {
-	return &file_api_model_v1_model_proto_enumTypes[0]
-}
-
-func (x CheckInfrastructureStatusResponse_Result) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
 type Model struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
@@ -281,194 +231,6 @@ func (b0 Model_builder) Build() *Model {
 	return m0
 }
 
-type CheckInfrastructureStatusRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
-}
-
-func (x *CheckInfrastructureStatusRequest) Reset() {
-	*x = CheckInfrastructureStatusRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CheckInfrastructureStatusRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CheckInfrastructureStatusRequest) ProtoMessage() {}
-
-func (x *CheckInfrastructureStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *CheckInfrastructureStatusRequest) GetScopeUuid() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CheckInfrastructureStatusRequest) GetFacilityName() string {
-	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CheckInfrastructureStatusRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *CheckInfrastructureStatusRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
-}
-
-func (x *CheckInfrastructureStatusRequest) HasScopeUuid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *CheckInfrastructureStatusRequest) HasFacilityName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *CheckInfrastructureStatusRequest) ClearScopeUuid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *CheckInfrastructureStatusRequest) ClearFacilityName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
-}
-
-type CheckInfrastructureStatusRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ScopeUuid    *string
-	FacilityName *string
-}
-
-func (b0 CheckInfrastructureStatusRequest_builder) Build() *CheckInfrastructureStatusRequest {
-	m0 := &CheckInfrastructureStatusRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	return m0
-}
-
-type CheckInfrastructureStatusResponse struct {
-	state                  protoimpl.MessageState                   `protogen:"opaque.v1"`
-	xxx_hidden_Result      CheckInfrastructureStatusResponse_Result `protobuf:"varint,1,opt,name=result,enum=otterscale.model.v1.CheckInfrastructureStatusResponse_Result"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *CheckInfrastructureStatusResponse) Reset() {
-	*x = CheckInfrastructureStatusResponse{}
-	mi := &file_api_model_v1_model_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CheckInfrastructureStatusResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CheckInfrastructureStatusResponse) ProtoMessage() {}
-
-func (x *CheckInfrastructureStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *CheckInfrastructureStatusResponse) GetResult() CheckInfrastructureStatusResponse_Result {
-	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
-			return x.xxx_hidden_Result
-		}
-	}
-	return CheckInfrastructureStatusResponse_UNKNOWN
-}
-
-func (x *CheckInfrastructureStatusResponse) SetResult(v CheckInfrastructureStatusResponse_Result) {
-	x.xxx_hidden_Result = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
-}
-
-func (x *CheckInfrastructureStatusResponse) HasResult() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *CheckInfrastructureStatusResponse) ClearResult() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Result = CheckInfrastructureStatusResponse_UNKNOWN
-}
-
-type CheckInfrastructureStatusResponse_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Result *CheckInfrastructureStatusResponse_Result
-}
-
-func (b0 CheckInfrastructureStatusResponse_builder) Build() *CheckInfrastructureStatusResponse {
-	m0 := &CheckInfrastructureStatusResponse{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Result != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_Result = *b.Result
-	}
-	return m0
-}
-
 type ListModelsRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
@@ -481,7 +243,7 @@ type ListModelsRequest struct {
 
 func (x *ListModelsRequest) Reset() {
 	*x = ListModelsRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[3]
+	mi := &file_api_model_v1_model_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -493,7 +255,7 @@ func (x *ListModelsRequest) String() string {
 func (*ListModelsRequest) ProtoMessage() {}
 
 func (x *ListModelsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[3]
+	mi := &file_api_model_v1_model_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -589,7 +351,7 @@ type ListModelsResponse struct {
 
 func (x *ListModelsResponse) Reset() {
 	*x = ListModelsResponse{}
-	mi := &file_api_model_v1_model_proto_msgTypes[4]
+	mi := &file_api_model_v1_model_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -601,7 +363,7 @@ func (x *ListModelsResponse) String() string {
 func (*ListModelsResponse) ProtoMessage() {}
 
 func (x *ListModelsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[4]
+	mi := &file_api_model_v1_model_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -650,7 +412,7 @@ type GetModelRequest struct {
 
 func (x *GetModelRequest) Reset() {
 	*x = GetModelRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[5]
+	mi := &file_api_model_v1_model_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -662,7 +424,7 @@ func (x *GetModelRequest) String() string {
 func (*GetModelRequest) ProtoMessage() {}
 
 func (x *GetModelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[5]
+	mi := &file_api_model_v1_model_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -731,7 +493,7 @@ type CreateModelRequest struct {
 
 func (x *CreateModelRequest) Reset() {
 	*x = CreateModelRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[6]
+	mi := &file_api_model_v1_model_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -743,7 +505,7 @@ func (x *CreateModelRequest) String() string {
 func (*CreateModelRequest) ProtoMessage() {}
 
 func (x *CreateModelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[6]
+	mi := &file_api_model_v1_model_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -905,7 +667,7 @@ type DeleteModelRequest struct {
 
 func (x *DeleteModelRequest) Reset() {
 	*x = DeleteModelRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[7]
+	mi := &file_api_model_v1_model_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -917,7 +679,7 @@ func (x *DeleteModelRequest) String() string {
 func (*DeleteModelRequest) ProtoMessage() {}
 
 func (x *DeleteModelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[7]
+	mi := &file_api_model_v1_model_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -982,20 +744,7 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x18\n" +
 	"\aversion\x18\x04 \x01(\tR\aversion\x12\x18\n" +
-	"\acomment\x18\x05 \x01(\tR\acomment\"f\n" +
-	" CheckInfrastructureStatusRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"\xc5\x01\n" +
-	"!CheckInfrastructureStatusResponse\x12U\n" +
-	"\x06result\x18\x01 \x01(\x0e2=.otterscale.model.v1.CheckInfrastructureStatusResponse.ResultR\x06result\"I\n" +
-	"\x06Result\x12\v\n" +
-	"\aUNKNOWN\x10\x00\x12\x06\n" +
-	"\x02OK\x10\v\x12\x11\n" +
-	"\rNOT_INSTALLED\x10\x15\x12\n" +
-	"\n" +
-	"\x06FAILED\x10\x16\x12\v\n" +
-	"\aPENDING\x10\x1f\"W\n" +
+	"\acomment\x18\x05 \x01(\tR\acomment\"W\n" +
 	"\x11ListModelsRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -1018,36 +767,31 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\vCreateModel\x12'.otterscale.model.v1.CreateModelRequest\x1a\x1a.otterscale.model.v1.Model\x12N\n" +
 	"\vDeleteModel\x12'.otterscale.model.v1.DeleteModelRequest\x1a\x16.google.protobuf.EmptyB2Z0github.com/otterscale/otterscale/api/model/v1;pbb\beditionsp\xe8\a"
 
-var file_api_model_v1_model_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_model_v1_model_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_api_model_v1_model_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_api_model_v1_model_proto_goTypes = []any{
-	(CheckInfrastructureStatusResponse_Result)(0), // 0: otterscale.model.v1.CheckInfrastructureStatusResponse.Result
-	(*Model)(nil),                             // 1: otterscale.model.v1.Model
-	(*CheckInfrastructureStatusRequest)(nil),  // 2: otterscale.model.v1.CheckInfrastructureStatusRequest
-	(*CheckInfrastructureStatusResponse)(nil), // 3: otterscale.model.v1.CheckInfrastructureStatusResponse
-	(*ListModelsRequest)(nil),                 // 4: otterscale.model.v1.ListModelsRequest
-	(*ListModelsResponse)(nil),                // 5: otterscale.model.v1.ListModelsResponse
-	(*GetModelRequest)(nil),                   // 6: otterscale.model.v1.GetModelRequest
-	(*CreateModelRequest)(nil),                // 7: otterscale.model.v1.CreateModelRequest
-	(*DeleteModelRequest)(nil),                // 8: otterscale.model.v1.DeleteModelRequest
-	(*emptypb.Empty)(nil),                     // 9: google.protobuf.Empty
+	(*Model)(nil),              // 0: otterscale.model.v1.Model
+	(*ListModelsRequest)(nil),  // 1: otterscale.model.v1.ListModelsRequest
+	(*ListModelsResponse)(nil), // 2: otterscale.model.v1.ListModelsResponse
+	(*GetModelRequest)(nil),    // 3: otterscale.model.v1.GetModelRequest
+	(*CreateModelRequest)(nil), // 4: otterscale.model.v1.CreateModelRequest
+	(*DeleteModelRequest)(nil), // 5: otterscale.model.v1.DeleteModelRequest
+	(*emptypb.Empty)(nil),      // 6: google.protobuf.Empty
 }
 var file_api_model_v1_model_proto_depIdxs = []int32{
-	0, // 0: otterscale.model.v1.CheckInfrastructureStatusResponse.result:type_name -> otterscale.model.v1.CheckInfrastructureStatusResponse.Result
-	1, // 1: otterscale.model.v1.ListModelsResponse.models:type_name -> otterscale.model.v1.Model
-	4, // 2: otterscale.model.v1.ModelService.ListModels:input_type -> otterscale.model.v1.ListModelsRequest
-	6, // 3: otterscale.model.v1.ModelService.GetModel:input_type -> otterscale.model.v1.GetModelRequest
-	7, // 4: otterscale.model.v1.ModelService.CreateModel:input_type -> otterscale.model.v1.CreateModelRequest
-	8, // 5: otterscale.model.v1.ModelService.DeleteModel:input_type -> otterscale.model.v1.DeleteModelRequest
-	5, // 6: otterscale.model.v1.ModelService.ListModels:output_type -> otterscale.model.v1.ListModelsResponse
-	1, // 7: otterscale.model.v1.ModelService.GetModel:output_type -> otterscale.model.v1.Model
-	1, // 8: otterscale.model.v1.ModelService.CreateModel:output_type -> otterscale.model.v1.Model
-	9, // 9: otterscale.model.v1.ModelService.DeleteModel:output_type -> google.protobuf.Empty
-	6, // [6:10] is the sub-list for method output_type
-	2, // [2:6] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0, // 0: otterscale.model.v1.ListModelsResponse.models:type_name -> otterscale.model.v1.Model
+	1, // 1: otterscale.model.v1.ModelService.ListModels:input_type -> otterscale.model.v1.ListModelsRequest
+	3, // 2: otterscale.model.v1.ModelService.GetModel:input_type -> otterscale.model.v1.GetModelRequest
+	4, // 3: otterscale.model.v1.ModelService.CreateModel:input_type -> otterscale.model.v1.CreateModelRequest
+	5, // 4: otterscale.model.v1.ModelService.DeleteModel:input_type -> otterscale.model.v1.DeleteModelRequest
+	2, // 5: otterscale.model.v1.ModelService.ListModels:output_type -> otterscale.model.v1.ListModelsResponse
+	0, // 6: otterscale.model.v1.ModelService.GetModel:output_type -> otterscale.model.v1.Model
+	0, // 7: otterscale.model.v1.ModelService.CreateModel:output_type -> otterscale.model.v1.Model
+	6, // 8: otterscale.model.v1.ModelService.DeleteModel:output_type -> google.protobuf.Empty
+	5, // [5:9] is the sub-list for method output_type
+	1, // [1:5] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_api_model_v1_model_proto_init() }
@@ -1060,14 +804,13 @@ func file_api_model_v1_model_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_model_v1_model_proto_rawDesc), len(file_api_model_v1_model_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   8,
+			NumEnums:      0,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_api_model_v1_model_proto_goTypes,
 		DependencyIndexes: file_api_model_v1_model_proto_depIdxs,
-		EnumInfos:         file_api_model_v1_model_proto_enumTypes,
 		MessageInfos:      file_api_model_v1_model_proto_msgTypes,
 	}.Build()
 	File_api_model_v1_model_proto = out.File

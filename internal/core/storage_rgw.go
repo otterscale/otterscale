@@ -43,7 +43,7 @@ func (uc *StorageUseCase) ListBuckets(ctx context.Context, uuid, facility string
 	if err != nil {
 		return nil, err
 	}
-	return uc.rgw.ListBuckets(ctx, config)
+	return uc.cephRGW.ListBuckets(ctx, config)
 }
 
 func (uc *StorageUseCase) CreateBucket(ctx context.Context, uuid, facility, bucket, owner, policy string, acl types.BucketCannedACL) (*RGWBucket, error) {
@@ -51,18 +51,18 @@ func (uc *StorageUseCase) CreateBucket(ctx context.Context, uuid, facility, buck
 	if err != nil {
 		return nil, err
 	}
-	if err := uc.rgw.CreateBucket(ctx, config, bucket, acl); err != nil {
+	if err := uc.cephRGW.CreateBucket(ctx, config, bucket, acl); err != nil {
 		return nil, err
 	}
-	if err := uc.rgw.UpdateBucketOwner(ctx, config, bucket, owner); err != nil {
+	if err := uc.cephRGW.UpdateBucketOwner(ctx, config, bucket, owner); err != nil {
 		return nil, err
 	}
 	if policy != "" {
-		if err := uc.rgw.UpdateBucketPolicy(ctx, config, bucket, policy); err != nil {
+		if err := uc.cephRGW.UpdateBucketPolicy(ctx, config, bucket, policy); err != nil {
 			return nil, err
 		}
 	}
-	return uc.rgw.GetBucket(ctx, config, bucket)
+	return uc.cephRGW.GetBucket(ctx, config, bucket)
 }
 
 func (uc *StorageUseCase) UpdateBucket(ctx context.Context, uuid, facility, bucket, owner, policy string, acl types.BucketCannedACL) (*RGWBucket, error) {
@@ -70,18 +70,18 @@ func (uc *StorageUseCase) UpdateBucket(ctx context.Context, uuid, facility, buck
 	if err != nil {
 		return nil, err
 	}
-	if err := uc.rgw.UpdateBucketACL(ctx, config, bucket, acl); err != nil {
+	if err := uc.cephRGW.UpdateBucketACL(ctx, config, bucket, acl); err != nil {
 		return nil, err
 	}
-	if err := uc.rgw.UpdateBucketOwner(ctx, config, bucket, owner); err != nil {
+	if err := uc.cephRGW.UpdateBucketOwner(ctx, config, bucket, owner); err != nil {
 		return nil, err
 	}
 	if policy != "" {
-		if err := uc.rgw.UpdateBucketPolicy(ctx, config, bucket, policy); err != nil {
+		if err := uc.cephRGW.UpdateBucketPolicy(ctx, config, bucket, policy); err != nil {
 			return nil, err
 		}
 	}
-	return uc.rgw.GetBucket(ctx, config, bucket)
+	return uc.cephRGW.GetBucket(ctx, config, bucket)
 }
 
 func (uc *StorageUseCase) DeleteBucket(ctx context.Context, uuid, facility, bucket string) error {
@@ -89,7 +89,7 @@ func (uc *StorageUseCase) DeleteBucket(ctx context.Context, uuid, facility, buck
 	if err != nil {
 		return err
 	}
-	return uc.rgw.DeleteBucket(ctx, config, bucket)
+	return uc.cephRGW.DeleteBucket(ctx, config, bucket)
 }
 
 func (uc *StorageUseCase) ListUsers(ctx context.Context, uuid, facility string) ([]RGWUser, error) {
@@ -97,7 +97,7 @@ func (uc *StorageUseCase) ListUsers(ctx context.Context, uuid, facility string) 
 	if err != nil {
 		return nil, err
 	}
-	return uc.rgw.ListUsers(ctx, config)
+	return uc.cephRGW.ListUsers(ctx, config)
 }
 
 func (uc *StorageUseCase) CreateUser(ctx context.Context, uuid, facility, id, name string, suspended bool) (*RGWUser, error) {
@@ -105,7 +105,7 @@ func (uc *StorageUseCase) CreateUser(ctx context.Context, uuid, facility, id, na
 	if err != nil {
 		return nil, err
 	}
-	return uc.rgw.CreateUser(ctx, config, id, name, suspended)
+	return uc.cephRGW.CreateUser(ctx, config, id, name, suspended)
 }
 
 func (uc *StorageUseCase) UpdateUser(ctx context.Context, uuid, facility, id, name string, suspended bool) (*RGWUser, error) {
@@ -113,7 +113,7 @@ func (uc *StorageUseCase) UpdateUser(ctx context.Context, uuid, facility, id, na
 	if err != nil {
 		return nil, err
 	}
-	return uc.rgw.UpdateUser(ctx, config, id, name, suspended)
+	return uc.cephRGW.UpdateUser(ctx, config, id, name, suspended)
 }
 
 func (uc *StorageUseCase) DeleteUser(ctx context.Context, uuid, facility, id string) error {
@@ -121,7 +121,7 @@ func (uc *StorageUseCase) DeleteUser(ctx context.Context, uuid, facility, id str
 	if err != nil {
 		return err
 	}
-	return uc.rgw.DeleteUser(ctx, config, id)
+	return uc.cephRGW.DeleteUser(ctx, config, id)
 }
 
 func (uc *StorageUseCase) CreateUserKey(ctx context.Context, uuid, facility, id string) (*admin.UserKeySpec, error) {
@@ -129,7 +129,7 @@ func (uc *StorageUseCase) CreateUserKey(ctx context.Context, uuid, facility, id 
 	if err != nil {
 		return nil, err
 	}
-	return uc.rgw.CreateUserKey(ctx, config, id)
+	return uc.cephRGW.CreateUserKey(ctx, config, id)
 }
 
 func (uc *StorageUseCase) DeleteUserKey(ctx context.Context, uuid, facility, id, accessKey string) error {
@@ -137,5 +137,5 @@ func (uc *StorageUseCase) DeleteUserKey(ctx context.Context, uuid, facility, id,
 	if err != nil {
 		return err
 	}
-	return uc.rgw.DeleteUserKey(ctx, config, id, accessKey)
+	return uc.cephRGW.DeleteUserKey(ctx, config, id, accessKey)
 }

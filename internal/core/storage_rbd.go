@@ -52,14 +52,14 @@ func (uc *StorageUseCase) ListImages(ctx context.Context, uuid, facility string)
 		return nil, err
 	}
 
-	pools, err := uc.cluster.ListPoolsByApplication(ctx, config, "rbd")
+	pools, err := uc.cephCluster.ListPoolsByApplication(ctx, config, "rbd")
 	if err != nil {
 		return nil, err
 	}
 
 	images := []RBDImage{}
 	for i := range pools {
-		imgs, err := uc.rbd.ListImages(ctx, config, pools[i].Name)
+		imgs, err := uc.cephRBD.ListImages(ctx, config, pools[i].Name)
 		if err != nil {
 			return nil, err
 		}
@@ -76,7 +76,7 @@ func (uc *StorageUseCase) CreateImage(ctx context.Context, uuid, facility, pool,
 
 	order := int(math.Round(math.Log2(float64(objectSizeBytes))))
 	features := convertToRBDImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten)
-	return uc.rbd.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)
+	return uc.cephRBD.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)
 }
 
 func (uc *StorageUseCase) UpdateImage(ctx context.Context, uuid, facility, pool, image string, size uint64) (*RBDImage, error) {
@@ -84,10 +84,10 @@ func (uc *StorageUseCase) UpdateImage(ctx context.Context, uuid, facility, pool,
 	if err != nil {
 		return nil, err
 	}
-	if err := uc.rbd.UpdateImageSize(ctx, config, pool, image, size); err != nil {
+	if err := uc.cephRBD.UpdateImageSize(ctx, config, pool, image, size); err != nil {
 		return nil, err
 	}
-	return uc.rbd.GetImage(ctx, config, pool, image)
+	return uc.cephRBD.GetImage(ctx, config, pool, image)
 }
 
 func (uc *StorageUseCase) DeleteImage(ctx context.Context, uuid, facility, pool, image string) error {
@@ -95,7 +95,7 @@ func (uc *StorageUseCase) DeleteImage(ctx context.Context, uuid, facility, pool,
 	if err != nil {
 		return err
 	}
-	return uc.rbd.DeleteImage(ctx, config, pool, image)
+	return uc.cephRBD.DeleteImage(ctx, config, pool, image)
 }
 
 func (uc *StorageUseCase) CreateImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) (*RBDImageSnapshot, error) {
@@ -103,7 +103,7 @@ func (uc *StorageUseCase) CreateImageSnapshot(ctx context.Context, uuid, facilit
 	if err != nil {
 		return nil, err
 	}
-	if err := uc.rbd.CreateImageSnapshot(ctx, config, pool, image, snapshot); err != nil {
+	if err := uc.cephRBD.CreateImageSnapshot(ctx, config, pool, image, snapshot); err != nil {
 		return nil, err
 	}
 	return &RBDImageSnapshot{
@@ -116,7 +116,7 @@ func (uc *StorageUseCase) DeleteImageSnapshot(ctx context.Context, uuid, facilit
 	if err != nil {
 		return err
 	}
-	return uc.rbd.DeleteImageSnapshot(ctx, config, pool, image, snapshot)
+	return uc.cephRBD.DeleteImageSnapshot(ctx, config, pool, image, snapshot)
 }
 
 func (uc *StorageUseCase) RollbackImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
@@ -124,7 +124,7 @@ func (uc *StorageUseCase) RollbackImageSnapshot(ctx context.Context, uuid, facil
 	if err != nil {
 		return err
 	}
-	return uc.rbd.RollbackImageSnapshot(ctx, config, pool, image, snapshot)
+	return uc.cephRBD.RollbackImageSnapshot(ctx, config, pool, image, snapshot)
 }
 
 func (uc *StorageUseCase) ProtectImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
@@ -132,7 +132,7 @@ func (uc *StorageUseCase) ProtectImageSnapshot(ctx context.Context, uuid, facili
 	if err != nil {
 		return err
 	}
-	return uc.rbd.ProtectImageSnapshot(ctx, config, pool, image, snapshot)
+	return uc.cephRBD.ProtectImageSnapshot(ctx, config, pool, image, snapshot)
 }
 
 func (uc *StorageUseCase) UnprotectImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
@@ -140,7 +140,7 @@ func (uc *StorageUseCase) UnprotectImageSnapshot(ctx context.Context, uuid, faci
 	if err != nil {
 		return err
 	}
-	return uc.rbd.UnprotectImageSnapshot(ctx, config, pool, image, snapshot)
+	return uc.cephRBD.UnprotectImageSnapshot(ctx, config, pool, image, snapshot)
 }
 
 func convertToRBDImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten bool) uint64 {

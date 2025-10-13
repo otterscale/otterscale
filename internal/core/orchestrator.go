@@ -48,7 +48,8 @@ type EssentialCharm struct {
 }
 
 type OrchestratorUseCase struct {
-	conf           *config.Config
+	conf *config.Config
+
 	kubeCore       KubeCoreRepo
 	kubeApps       KubeAppsRepo
 	action         ActionRepo

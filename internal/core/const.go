@@ -73,3 +73,11 @@ const (
 	minioField       = "spec.type=NodePort"
 	minioServiceName = "minio-api"
 )
+
+type DataVolumeSourceType int64
+
+const (
+	DataVolumeSourceTypeBlank DataVolumeSourceType = iota
+	DataVolumeSourceTypeHTTP
+	DataVolumeSourceTypePVC
+)

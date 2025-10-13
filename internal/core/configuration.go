@@ -38,6 +38,8 @@ var ubuntuDistroSeriesMap = map[base.SeriesName]BootImageSelection{
 	},
 }
 
+type PackageRepository = entity.PackageRepository
+
 type Configuration struct {
 	NTPServers          []string
 	PackageRepositories []PackageRepository
@@ -58,8 +60,6 @@ type BootImageSelection struct {
 	Name          string
 	Architectures []string
 }
-
-type PackageRepository = entity.PackageRepository
 
 type BootResourceRepo interface {
 	List(ctx context.Context) ([]entity.BootResource, error)
@@ -82,7 +82,8 @@ type PackageRepositoryRepo interface {
 }
 
 type ConfigurationUseCase struct {
-	conf                *config.Config
+	conf *config.Config
+
 	bootResource        BootResourceRepo
 	bootSource          BootSourceRepo
 	bootSourceSelection BootSourceSelectionRepo

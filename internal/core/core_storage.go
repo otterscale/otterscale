@@ -15,19 +15,12 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-const (
-	cephConfigCommand        = "ceph config generate-minimal-conf && ceph auth get client.admin"
-	cephRGWUserListCommand   = "radosgw-admin user list"
-	cephRGWUserCreateCommand = "radosgw-admin user create --system --uid=otterscale --display-name=OtterScale --format json"
-	cephRGWUserInfoCommand   = "radosgw-admin user info --uid=otterscale --format=json"
-)
-
-var storageConfigs sync.Map
+var storageConfigMap sync.Map
 
 func storageConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, uuid, name string) (*StorageConfig, error) {
 	key := uuid + "/" + name
 
-	if v, ok := storageConfigs.Load(key); ok {
+	if v, ok := storageConfigMap.Load(key); ok {
 		return v.(*StorageConfig), nil
 	}
 
@@ -36,7 +29,7 @@ func storageConfig(ctx context.Context, facility FacilityRepo, action ActionRepo
 		return nil, err
 	}
 
-	storageConfigs.Store(key, config)
+	storageConfigMap.Store(key, config)
 
 	return config, nil
 }
@@ -78,7 +71,7 @@ func newStorageConfig(ctx context.Context, facility FacilityRepo, action ActionR
 
 	eg, egctx = errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		result, err := runCommand(egctx, action, uuid, leader, cephConfigCommand)
+		result, err := runCommand(egctx, action, uuid, leader, "ceph config generate-minimal-conf && ceph auth get client.admin")
 		if err != nil {
 			return err
 		}
@@ -90,7 +83,7 @@ func newStorageConfig(ctx context.Context, facility FacilityRepo, action ActionR
 		return nil
 	})
 	eg.Go(func() error {
-		listResult, err := runCommand(egctx, action, uuid, leader, cephRGWUserListCommand)
+		listResult, err := runCommand(egctx, action, uuid, leader, "radosgw-admin user list")
 		if err != nil {
 			return err
 		}
@@ -156,9 +149,9 @@ func getRGWCommand(result *action.ActionResult) (string, error) {
 	if err := json.Unmarshal([]byte(stdout.(string)), &users); err != nil {
 		return "", err
 	}
-	cmd := cephRGWUserCreateCommand
+	cmd := "radosgw-admin user create --system --uid=otterscale --display-name=OtterScale --format json"
 	if slices.Contains(users, "otterscale") {
-		cmd = cephRGWUserInfoCommand
+		cmd = "radosgw-admin user info --uid=otterscale --format=json"
 	}
 	return cmd, nil
 }

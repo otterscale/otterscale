@@ -34,7 +34,8 @@ type BISTResult struct {
 }
 
 type BISTUseCase struct {
-	conf        *config.Config
+	conf *config.Config
+
 	action      ActionRepo
 	cephCluster CephClusterRepo
 	cephRBD     CephRBDRepo
