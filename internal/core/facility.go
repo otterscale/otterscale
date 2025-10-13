@@ -18,14 +18,6 @@ import (
 	"github.com/juju/juju/rpc/params"
 )
 
-type (
-	ActionSpec     = action.ActionSpec
-	FacilityStatus = params.ApplicationStatus
-	UnitStatus     = params.UnitStatus
-	DetailedStatus = params.DetailedStatus
-	MachineStatus  = params.MachineStatus
-)
-
 type FacilityMetadata struct {
 	ConfigYAML string
 }
@@ -36,9 +28,9 @@ type Facility struct {
 	Status   *FacilityStatus
 }
 
-type Action struct {
+type FacilityAction struct {
 	Name string
-	Spec *ActionSpec
+	Spec *FacilityActionSpec
 }
 
 type Charm struct {
@@ -109,6 +101,14 @@ type CharmResult struct {
 	Website      string                `json:"website"`
 }
 
+type (
+	FacilityActionSpec     = action.ActionSpec
+	FacilityStatus         = params.ApplicationStatus
+	FacilityUnitStatus     = params.UnitStatus
+	FacilityDetailedStatus = params.DetailedStatus
+	FacilityMachineStatus  = params.MachineStatus
+)
+
 type FacilityRepo interface {
 	Create(ctx context.Context, uuid, name string, configYAML string, charmName, channel string, revision, number int, base *corebase.Base, placements []instance.Placement, constraint *constraints.Value, trust bool) (*application.DeployInfo, error)
 	Update(ctx context.Context, uuid, name string, configYAML string) error
@@ -129,7 +129,7 @@ type FacilityOffersRepo interface {
 }
 
 type ActionRepo interface {
-	List(ctx context.Context, uuid, appName string) (map[string]ActionSpec, error)
+	List(ctx context.Context, uuid, appName string) (map[string]FacilityActionSpec, error)
 	RunCommand(ctx context.Context, uuid, unitName, command string) (string, error)
 	RunAction(ctx context.Context, uuid, unitName, actionName string, parameters map[string]any) (string, error)
 	GetResult(ctx context.Context, uuid, id string) (*action.ActionResult, error)
@@ -142,22 +142,22 @@ type CharmRepo interface {
 }
 
 type FacilityUseCase struct {
-	facility FacilityRepo
-	server   ServerRepo
-	client   ClientRepo
 	action   ActionRepo
 	charm    CharmRepo
+	client   ClientRepo
+	facility FacilityRepo
 	machine  MachineRepo
+	server   ServerRepo
 }
 
-func NewFacilityUseCase(facility FacilityRepo, server ServerRepo, client ClientRepo, action ActionRepo, charm CharmRepo, machine MachineRepo) *FacilityUseCase {
+func NewFacilityUseCase(action ActionRepo, charm CharmRepo, client ClientRepo, facility FacilityRepo, machine MachineRepo, server ServerRepo) *FacilityUseCase {
 	return &FacilityUseCase{
-		facility: facility,
-		server:   server,
-		client:   client,
 		action:   action,
 		charm:    charm,
+		client:   client,
+		facility: facility,
 		machine:  machine,
+		server:   server,
 	}
 }
 
@@ -251,15 +251,15 @@ func (uc *FacilityUseCase) ResolveFacilityUnitErrors(ctx context.Context, uuid, 
 	return uc.facility.ResolveUnitErrors(ctx, uuid, []string{unitName})
 }
 
-func (uc *FacilityUseCase) ListActions(ctx context.Context, uuid, appName string) ([]Action, error) {
+func (uc *FacilityUseCase) ListActions(ctx context.Context, uuid, appName string) ([]FacilityAction, error) {
 	actions, err := uc.action.List(ctx, uuid, appName)
 	if err != nil {
 		return nil, err
 	}
 
-	results := []Action{}
+	results := []FacilityAction{}
 	for name, spec := range actions {
-		results = append(results, Action{
+		results = append(results, FacilityAction{
 			Name: name,
 			Spec: &spec,
 		})
