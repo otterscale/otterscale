@@ -23,29 +23,8 @@ func NewOrchestratorService(uc *core.OrchestratorUseCase) *OrchestratorService {
 
 var _ pbconnect.OrchestratorServiceHandler = (*OrchestratorService)(nil)
 
-func (s *OrchestratorService) IsMachineDeployed(ctx context.Context, req *pb.IsMachineDeployedRequest) (*pb.IsMachineDeployedResponse, error) {
-	message, deployed, err := s.uc.IsMachineDeployed(ctx, req.GetScopeUuid())
-	if err != nil {
-		return nil, err
-	}
-	resp := &pb.IsMachineDeployedResponse{}
-	resp.SetMessage(message)
-	resp.SetDeployed(deployed)
-	return resp, nil
-}
-
-func (s *OrchestratorService) ListStatuses(ctx context.Context, req *pb.ListStatusesRequest) (*pb.ListStatusesResponse, error) {
-	statuses, err := s.uc.ListStatuses(ctx, req.GetScopeUuid())
-	if err != nil {
-		return nil, err
-	}
-	resp := &pb.ListStatusesResponse{}
-	resp.SetStatuses(toProtoStatuses(statuses))
-	return resp, nil
-}
-
 func (s *OrchestratorService) ListEssentials(ctx context.Context, req *pb.ListEssentialsRequest) (*pb.ListEssentialsResponse, error) {
-	essentials, err := s.uc.ListEssentials(ctx, int32(req.GetType()), req.GetScopeUuid())
+	essentials, err := s.uc.ListEssentials(ctx, core.EssentialType(req.GetType()), req.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
@@ -54,8 +33,8 @@ func (s *OrchestratorService) ListEssentials(ctx context.Context, req *pb.ListEs
 	return resp, nil
 }
 
-func (s *OrchestratorService) CreateSingleNode(ctx context.Context, req *pb.CreateSingleNodeRequest) (*emptypb.Empty, error) {
-	if err := s.uc.CreateSingleNode(ctx, req.GetScopeUuid(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
+func (s *OrchestratorService) CreateNode(ctx context.Context, req *pb.CreateNodeRequest) (*emptypb.Empty, error) {
+	if err := s.uc.CreateNode(ctx, req.GetScopeUuid(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -100,22 +79,6 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 	resp := &pb.ListGPURelationsByModelResponse{}
 	resp.SetGpuRelations(toProtoGPURelations(gpuRelations))
 	return resp, nil
-}
-
-func toProtoStatuses(ess []core.EssentialStatus) []*pb.Status {
-	ret := []*pb.Status{}
-	for i := range ess {
-		ret = append(ret, toProtoStatus(&ess[i]))
-	}
-	return ret
-}
-
-func toProtoStatus(es *core.EssentialStatus) *pb.Status {
-	ret := &pb.Status{}
-	ret.SetLevel(pb.Status_Level(es.Level))
-	ret.SetMessage(es.Message)
-	ret.SetDetails(es.Details)
-	return ret
 }
 
 func toProtoEssentials(es []core.Essential) []*pb.Essential {

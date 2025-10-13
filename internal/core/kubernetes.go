@@ -513,7 +513,7 @@ func (uc *KubernetesUseCase) ExecuteTTY(ctx context.Context, sessionID, uuid, fa
 	if err != nil {
 		return err
 	}
-	eg, egCtx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		buf := make([]byte, 1024) //nolint:mnd // 1KB buffer
 		for {
@@ -537,7 +537,7 @@ func (uc *KubernetesUseCase) ExecuteTTY(ctx context.Context, sessionID, uuid, fa
 	})
 	eg.Go(func() error {
 		defer close(stdOut)
-		return exec.StreamWithContext(egCtx, remotecommand.StreamOptions{
+		return exec.StreamWithContext(egctx, remotecommand.StreamOptions{
 			Stdin:  ttySession.inReader,
 			Stdout: ttySession.outWriter, // raw TTY manages stdout and stderr over the stdout stream
 			Tty:    true,

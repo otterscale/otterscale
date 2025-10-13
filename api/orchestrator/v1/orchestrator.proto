@@ -8,21 +8,22 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/otterscale/otterscale/api/orchestrator/v1;pb";
 
 service OrchestratorService {
-  rpc IsMachineDeployed(IsMachineDeployedRequest) returns (IsMachineDeployedResponse);
-  rpc ListStatuses(ListStatusesRequest) returns (ListStatusesResponse);
   rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse);
-  rpc CreateSingleNode(CreateSingleNodeRequest) returns (google.protobuf.Empty);
-  rpc CreateHighAvailabilityCluster(CreateHighAvailabilityClusterRequest) returns (google.protobuf.Empty);
-  rpc AddUnits(AddUnitsRequest) returns (google.protobuf.Empty);
+
+  rpc CreateNode(CreateNodeRequest) returns (google.protobuf.Empty);
+  rpc CreateCluster(CreateClusterRequest) returns (google.protobuf.Empty);
+  rpc AddClusterUnits(AddClusterUnitsRequest) returns (google.protobuf.Empty);
+
   rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse);
   rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse);
+
   rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse);
   rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse);
 }
 
 message Essential {
   enum Type {
-    UNSPECIFIED = 0;
+    UNKNOWN = 0;
     KUBERNETES = 1;
     CEPH = 2;
   }
@@ -35,19 +36,6 @@ message Essential {
   string scope_uuid = 11;
   string scope_name = 12;
   repeated Unit units = 21;
-}
-
-message Status {
-  enum Level {
-    INFO = 0;
-    LOW = 1;
-    MEDIUM = 2;
-    HIGH = 3;
-    CRITICAL = 4;
-  }
-  Level level = 1;
-  string message = 2;
-  string details = 3;
 }
 
 message GPURelation {
@@ -85,23 +73,6 @@ message GPURelation {
   }
 }
 
-message IsMachineDeployedRequest {
-  string scope_uuid = 1;
-}
-
-message IsMachineDeployedResponse {
-  bool deployed = 1;
-  string message = 2;
-}
-
-message ListStatusesRequest {
-  string scope_uuid = 1;
-}
-
-message ListStatusesResponse {
-  repeated Status statuses = 1;
-}
-
 message ListEssentialsRequest {
   Essential.Type type = 1;
   string scope_uuid = 2;
@@ -111,7 +82,7 @@ message ListEssentialsResponse {
   repeated Essential essentials = 1;
 }
 
-message CreateSingleNodeRequest {
+message CreateNodeRequest {
   string scope_uuid = 1;
   string machine_id = 2;
   string prefix_name = 3;
@@ -120,7 +91,7 @@ message CreateSingleNodeRequest {
   repeated string osd_devices = 21;
 }
 
-message CreateHighAvailabilityClusterRequest {
+message CreateClusterRequest {
   string scope_uuid = 1;
   string machine_id = 2;
   string prefix_name = 3;
@@ -129,7 +100,7 @@ message CreateHighAvailabilityClusterRequest {
   repeated string osd_devices = 21;
 }
 
-message AddUnitsRequest {
+message AddClusterUnitsRequest {
   Essential.Type type = 1;
   string scope_uuid = 2;
   string name = 3;

@@ -88,11 +88,11 @@ func (uc *BISTUseCase) DeleteResult(ctx context.Context, name string) error {
 	return uc.kubeBatch.DeleteJob(ctx, config, bistNamespace, name)
 }
 
-func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, uuid string) ([]WarpTargetInternal, error) {
+func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, uuid, kubernetes, ceph string) ([]WarpTargetInternal, error) {
 	var cephs, minios []WarpTargetInternal
 	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		svcs, err := uc.listCephObjectServices(egctx, uuid)
+		svcs, err := uc.listCephObjectServices(egctx, uuid, ceph)
 		if err != nil {
 			return err
 		}
@@ -100,7 +100,7 @@ func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, uuid stri
 		return nil
 	})
 	eg.Go(func() error {
-		svcs, err := uc.listMinIOs(egctx, uuid)
+		svcs, err := uc.listMinIOs(egctx, uuid, kubernetes)
 		if err != nil {
 			return err
 		}
@@ -113,68 +113,56 @@ func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, uuid stri
 	return append(cephs, minios...), nil
 }
 
-func (uc *BISTUseCase) listCephObjectServices(ctx context.Context, uuid string) ([]WarpTargetInternal, error) {
-	cephs, err := listCephs(ctx, uc.scope, uc.client, uuid)
+func (uc *BISTUseCase) listCephObjectServices(ctx context.Context, uuid, ceph string) ([]WarpTargetInternal, error) {
+	services := []WarpTargetInternal{}
+	leader, err := uc.facility.GetLeader(ctx, uuid, rgwName(ceph))
 	if err != nil {
 		return nil, err
 	}
-	services := []WarpTargetInternal{}
-	for _, ceph := range cephs {
-		leader, err := uc.facility.GetLeader(ctx, uuid, rgwName(ceph.Name))
-		if err != nil {
-			continue
-		}
-		info, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
-		if err != nil {
-			continue
-		}
-		services = append(services, WarpTargetInternal{
-			Type:         "ceph",
-			ScopeUUID:    ceph.ScopeUUID,
-			FacilityName: ceph.Name,
-			Name:         ceph.Name,
-			Endpoint:     info.PublicAddress,
-		})
+	info, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
+	if err != nil {
+		return nil, err
 	}
+	services = append(services, WarpTargetInternal{
+		Type:         "ceph",
+		ScopeUUID:    uuid,
+		FacilityName: ceph,
+		Name:         ceph,
+		Endpoint:     info.PublicAddress,
+	})
 	return services, nil
 }
 
-func (uc *BISTUseCase) listMinIOs(ctx context.Context, uuid string) ([]WarpTargetInternal, error) {
-	kubes, err := listKuberneteses(ctx, uc.scope, uc.client, uuid)
+func (uc *BISTUseCase) listMinIOs(ctx context.Context, uuid, kubernetes string) ([]WarpTargetInternal, error) {
+	services := []WarpTargetInternal{}
+	leader, err := uc.facility.GetLeader(ctx, uuid, kubernetes)
 	if err != nil {
 		return nil, err
 	}
-	services := []WarpTargetInternal{}
-	for _, kube := range kubes {
-		leader, err := uc.facility.GetLeader(ctx, uuid, kube.Name)
-		if err != nil {
-			continue
-		}
-		info, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
-		if err != nil {
-			continue
-		}
-		config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, kube.Name)
-		if err != nil {
-			continue
-		}
-		svcs, err := uc.kubeCore.ListServicesByOptions(ctx, config, "", minioLabel, minioField)
-		if err != nil {
-			continue
-		}
-		for i := range svcs {
-			for _, port := range svcs[i].Spec.Ports {
-				if port.Name != "minio-api" {
-					continue
-				}
-				services = append(services, WarpTargetInternal{
-					Type:         "minio",
-					ScopeUUID:    kube.ScopeUUID,
-					FacilityName: kube.Name,
-					Name:         fmt.Sprintf("%s.%s", svcs[i].GetNamespace(), svcs[i].GetName()),
-					Endpoint:     fmt.Sprintf("%s:%d", info.PublicAddress, port.NodePort),
-				})
+	info, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
+	if err != nil {
+		return nil, err
+	}
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, kubernetes)
+	if err != nil {
+		return nil, err
+	}
+	svcs, err := uc.kubeCore.ListServicesByOptions(ctx, config, "", minioLabel, minioField)
+	if err != nil {
+		return nil, err
+	}
+	for i := range svcs {
+		for _, port := range svcs[i].Spec.Ports {
+			if port.Name != "minio-api" {
+				continue
 			}
+			services = append(services, WarpTargetInternal{
+				Type:         "minio",
+				ScopeUUID:    uuid,
+				FacilityName: kubernetes,
+				Name:         fmt.Sprintf("%s.%s", svcs[i].GetNamespace(), svcs[i].GetName()),
+				Endpoint:     fmt.Sprintf("%s:%d", info.PublicAddress, port.NodePort),
+			})
 		}
 	}
 	return services, nil

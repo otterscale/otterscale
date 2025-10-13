@@ -2872,12 +2872,14 @@ func (b0 DeleteTestResultRequest_builder) Build() *DeleteTestResultRequest {
 }
 
 type ListInternalObjectServicesRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid      *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_KubernetesName *string                `protobuf:"bytes,2,opt,name=kubernetes_name,json=kubernetesName"`
+	xxx_hidden_CephName       *string                `protobuf:"bytes,3,opt,name=ceph_name,json=cephName"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *ListInternalObjectServicesRequest) Reset() {
@@ -2915,9 +2917,39 @@ func (x *ListInternalObjectServicesRequest) GetScopeUuid() string {
 	return ""
 }
 
+func (x *ListInternalObjectServicesRequest) GetKubernetesName() string {
+	if x != nil {
+		if x.xxx_hidden_KubernetesName != nil {
+			return *x.xxx_hidden_KubernetesName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListInternalObjectServicesRequest) GetCephName() string {
+	if x != nil {
+		if x.xxx_hidden_CephName != nil {
+			return *x.xxx_hidden_CephName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *ListInternalObjectServicesRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *ListInternalObjectServicesRequest) SetKubernetesName(v string) {
+	x.xxx_hidden_KubernetesName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *ListInternalObjectServicesRequest) SetCephName(v string) {
+	x.xxx_hidden_CephName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *ListInternalObjectServicesRequest) HasScopeUuid() bool {
@@ -2927,15 +2959,41 @@ func (x *ListInternalObjectServicesRequest) HasScopeUuid() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
+func (x *ListInternalObjectServicesRequest) HasKubernetesName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListInternalObjectServicesRequest) HasCephName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
 func (x *ListInternalObjectServicesRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
+func (x *ListInternalObjectServicesRequest) ClearKubernetesName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_KubernetesName = nil
+}
+
+func (x *ListInternalObjectServicesRequest) ClearCephName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_CephName = nil
+}
+
 type ListInternalObjectServicesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid *string
+	ScopeUuid      *string
+	KubernetesName *string
+	CephName       *string
 }
 
 func (b0 ListInternalObjectServicesRequest_builder) Build() *ListInternalObjectServicesRequest {
@@ -2943,8 +3001,16 @@ func (b0 ListInternalObjectServicesRequest_builder) Build() *ListInternalObjectS
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.KubernetesName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_KubernetesName = b.KubernetesName
+	}
+	if b.CephName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_CephName = b.CephName
 	}
 	return m0
 }
@@ -5070,10 +5136,12 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x04warp\x18f \x01(\v2!.otterscale.configuration.v1.WarpH\x00R\x04warpB\x06\n" +
 	"\x04kind\"-\n" +
 	"\x17DeleteTestResultRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"B\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"\x88\x01\n" +
 	"!ListInternalObjectServicesRequest\x12\x1d\n" +
 	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\"\x92\x01\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12'\n" +
+	"\x0fkubernetes_name\x18\x02 \x01(\tR\x0ekubernetesName\x12\x1b\n" +
+	"\tceph_name\x18\x03 \x01(\tR\bcephName\"\x92\x01\n" +
 	"\"ListInternalObjectServicesResponse\x12l\n" +
 	"\x18internal_object_services\x18\x01 \x03(\v22.otterscale.configuration.v1.InternalObjectServiceR\x16internalObjectServices2\x92\r\n" +
 	"\x14ConfigurationService\x12t\n" +

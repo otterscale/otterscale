@@ -249,6 +249,8 @@ message DeleteTestResultRequest {
 
 message ListInternalObjectServicesRequest {
   string scope_uuid = 1;
+  string kubernetes_name = 2;
+  string ceph_name = 3;
 }
 
 message ListInternalObjectServicesResponse {

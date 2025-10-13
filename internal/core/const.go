@@ -81,3 +81,11 @@ const (
 	DataVolumeSourceTypeHTTP
 	DataVolumeSourceTypePVC
 )
+
+type EssentialType int32
+
+const (
+	EssentialTypeUnknown EssentialType = iota
+	EssentialTypeKubernetes
+	EssentialTypeCeph
+)

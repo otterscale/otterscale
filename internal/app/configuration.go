@@ -156,7 +156,7 @@ func (s *ConfigurationService) DeleteTestResult(ctx context.Context, req *pb.Del
 }
 
 func (s *ConfigurationService) ListInternalObjectServices(ctx context.Context, req *pb.ListInternalObjectServicesRequest) (*pb.ListInternalObjectServicesResponse, error) {
-	services, err := s.bist.ListInternalObjectServices(ctx, req.GetScopeUuid())
+	services, err := s.bist.ListInternalObjectServices(ctx, req.GetScopeUuid(), req.GetKubernetesName(), req.GetCephName())
 	if err != nil {
 		return nil, err
 	}
