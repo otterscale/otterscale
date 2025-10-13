@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.9
 // 	protoc        v6.32.1
-// source: api/large_language_model/v1/large_language_model.proto
+// source: api/model/v1/model.proto
 
 package pb
 
@@ -60,18 +60,18 @@ func (x CheckInfrastructureStatusResponse_Result) String() string {
 }
 
 func (CheckInfrastructureStatusResponse_Result) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_large_language_model_v1_large_language_model_proto_enumTypes[0].Descriptor()
+	return file_api_model_v1_model_proto_enumTypes[0].Descriptor()
 }
 
 func (CheckInfrastructureStatusResponse_Result) Type() protoreflect.EnumType {
-	return &file_api_large_language_model_v1_large_language_model_proto_enumTypes[0]
+	return &file_api_model_v1_model_proto_enumTypes[0]
 }
 
 func (x CheckInfrastructureStatusResponse_Result) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-type LargeLanguageModel struct {
+type Model struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
@@ -84,21 +84,21 @@ type LargeLanguageModel struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *LargeLanguageModel) Reset() {
-	*x = LargeLanguageModel{}
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[0]
+func (x *Model) Reset() {
+	*x = Model{}
+	mi := &file_api_model_v1_model_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *LargeLanguageModel) String() string {
+func (x *Model) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LargeLanguageModel) ProtoMessage() {}
+func (*Model) ProtoMessage() {}
 
-func (x *LargeLanguageModel) ProtoReflect() protoreflect.Message {
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[0]
+func (x *Model) ProtoReflect() protoreflect.Message {
+	mi := &file_api_model_v1_model_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -109,7 +109,7 @@ func (x *LargeLanguageModel) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *LargeLanguageModel) GetId() string {
+func (x *Model) GetId() string {
 	if x != nil {
 		if x.xxx_hidden_Id != nil {
 			return *x.xxx_hidden_Id
@@ -119,7 +119,7 @@ func (x *LargeLanguageModel) GetId() string {
 	return ""
 }
 
-func (x *LargeLanguageModel) GetName() string {
+func (x *Model) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
@@ -129,7 +129,7 @@ func (x *LargeLanguageModel) GetName() string {
 	return ""
 }
 
-func (x *LargeLanguageModel) GetDescription() string {
+func (x *Model) GetDescription() string {
 	if x != nil {
 		if x.xxx_hidden_Description != nil {
 			return *x.xxx_hidden_Description
@@ -139,7 +139,7 @@ func (x *LargeLanguageModel) GetDescription() string {
 	return ""
 }
 
-func (x *LargeLanguageModel) GetVersion() string {
+func (x *Model) GetVersion() string {
 	if x != nil {
 		if x.xxx_hidden_Version != nil {
 			return *x.xxx_hidden_Version
@@ -149,7 +149,7 @@ func (x *LargeLanguageModel) GetVersion() string {
 	return ""
 }
 
-func (x *LargeLanguageModel) GetComment() string {
+func (x *Model) GetComment() string {
 	if x != nil {
 		if x.xxx_hidden_Comment != nil {
 			return *x.xxx_hidden_Comment
@@ -159,92 +159,92 @@ func (x *LargeLanguageModel) GetComment() string {
 	return ""
 }
 
-func (x *LargeLanguageModel) SetId(v string) {
+func (x *Model) SetId(v string) {
 	x.xxx_hidden_Id = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
-func (x *LargeLanguageModel) SetName(v string) {
+func (x *Model) SetName(v string) {
 	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
-func (x *LargeLanguageModel) SetDescription(v string) {
+func (x *Model) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
-func (x *LargeLanguageModel) SetVersion(v string) {
+func (x *Model) SetVersion(v string) {
 	x.xxx_hidden_Version = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *LargeLanguageModel) SetComment(v string) {
+func (x *Model) SetComment(v string) {
 	x.xxx_hidden_Comment = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
-func (x *LargeLanguageModel) HasId() bool {
+func (x *Model) HasId() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *LargeLanguageModel) HasName() bool {
+func (x *Model) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *LargeLanguageModel) HasDescription() bool {
+func (x *Model) HasDescription() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *LargeLanguageModel) HasVersion() bool {
+func (x *Model) HasVersion() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *LargeLanguageModel) HasComment() bool {
+func (x *Model) HasComment() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *LargeLanguageModel) ClearId() {
+func (x *Model) ClearId() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Id = nil
 }
 
-func (x *LargeLanguageModel) ClearName() {
+func (x *Model) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
-func (x *LargeLanguageModel) ClearDescription() {
+func (x *Model) ClearDescription() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Description = nil
 }
 
-func (x *LargeLanguageModel) ClearVersion() {
+func (x *Model) ClearVersion() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Version = nil
 }
 
-func (x *LargeLanguageModel) ClearComment() {
+func (x *Model) ClearComment() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_Comment = nil
 }
 
-type LargeLanguageModel_builder struct {
+type Model_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Id          *string
@@ -254,8 +254,8 @@ type LargeLanguageModel_builder struct {
 	Comment     *string
 }
 
-func (b0 LargeLanguageModel_builder) Build() *LargeLanguageModel {
-	m0 := &LargeLanguageModel{}
+func (b0 Model_builder) Build() *Model {
+	m0 := &Model{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
@@ -293,7 +293,7 @@ type CheckInfrastructureStatusRequest struct {
 
 func (x *CheckInfrastructureStatusRequest) Reset() {
 	*x = CheckInfrastructureStatusRequest{}
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[1]
+	mi := &file_api_model_v1_model_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -305,7 +305,7 @@ func (x *CheckInfrastructureStatusRequest) String() string {
 func (*CheckInfrastructureStatusRequest) ProtoMessage() {}
 
 func (x *CheckInfrastructureStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[1]
+	mi := &file_api_model_v1_model_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -394,7 +394,7 @@ func (b0 CheckInfrastructureStatusRequest_builder) Build() *CheckInfrastructureS
 
 type CheckInfrastructureStatusResponse struct {
 	state                  protoimpl.MessageState                   `protogen:"opaque.v1"`
-	xxx_hidden_Result      CheckInfrastructureStatusResponse_Result `protobuf:"varint,1,opt,name=result,enum=otterscale.large_language_model.v1.CheckInfrastructureStatusResponse_Result"`
+	xxx_hidden_Result      CheckInfrastructureStatusResponse_Result `protobuf:"varint,1,opt,name=result,enum=otterscale.model.v1.CheckInfrastructureStatusResponse_Result"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -403,7 +403,7 @@ type CheckInfrastructureStatusResponse struct {
 
 func (x *CheckInfrastructureStatusResponse) Reset() {
 	*x = CheckInfrastructureStatusResponse{}
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[2]
+	mi := &file_api_model_v1_model_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -415,7 +415,7 @@ func (x *CheckInfrastructureStatusResponse) String() string {
 func (*CheckInfrastructureStatusResponse) ProtoMessage() {}
 
 func (x *CheckInfrastructureStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[2]
+	mi := &file_api_model_v1_model_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -469,7 +469,7 @@ func (b0 CheckInfrastructureStatusResponse_builder) Build() *CheckInfrastructure
 	return m0
 }
 
-type ListLargeLanguageModelsRequest struct {
+type ListModelsRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
@@ -479,21 +479,21 @@ type ListLargeLanguageModelsRequest struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *ListLargeLanguageModelsRequest) Reset() {
-	*x = ListLargeLanguageModelsRequest{}
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[3]
+func (x *ListModelsRequest) Reset() {
+	*x = ListModelsRequest{}
+	mi := &file_api_model_v1_model_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListLargeLanguageModelsRequest) String() string {
+func (x *ListModelsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListLargeLanguageModelsRequest) ProtoMessage() {}
+func (*ListModelsRequest) ProtoMessage() {}
 
-func (x *ListLargeLanguageModelsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[3]
+func (x *ListModelsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_model_v1_model_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -504,7 +504,7 @@ func (x *ListLargeLanguageModelsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListLargeLanguageModelsRequest) GetScopeUuid() string {
+func (x *ListModelsRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -514,7 +514,7 @@ func (x *ListLargeLanguageModelsRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *ListLargeLanguageModelsRequest) GetFacilityName() string {
+func (x *ListModelsRequest) GetFacilityName() string {
 	if x != nil {
 		if x.xxx_hidden_FacilityName != nil {
 			return *x.xxx_hidden_FacilityName
@@ -524,49 +524,49 @@ func (x *ListLargeLanguageModelsRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *ListLargeLanguageModelsRequest) SetScopeUuid(v string) {
+func (x *ListModelsRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *ListLargeLanguageModelsRequest) SetFacilityName(v string) {
+func (x *ListModelsRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *ListLargeLanguageModelsRequest) HasScopeUuid() bool {
+func (x *ListModelsRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListLargeLanguageModelsRequest) HasFacilityName() bool {
+func (x *ListModelsRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListLargeLanguageModelsRequest) ClearScopeUuid() {
+func (x *ListModelsRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-func (x *ListLargeLanguageModelsRequest) ClearFacilityName() {
+func (x *ListModelsRequest) ClearFacilityName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_FacilityName = nil
 }
 
-type ListLargeLanguageModelsRequest_builder struct {
+type ListModelsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
 	FacilityName *string
 }
 
-func (b0 ListLargeLanguageModelsRequest_builder) Build() *ListLargeLanguageModelsRequest {
-	m0 := &ListLargeLanguageModelsRequest{}
+func (b0 ListModelsRequest_builder) Build() *ListModelsRequest {
+	m0 := &ListModelsRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -580,28 +580,28 @@ func (b0 ListLargeLanguageModelsRequest_builder) Build() *ListLargeLanguageModel
 	return m0
 }
 
-type ListLargeLanguageModelsResponse struct {
-	state                          protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_LargeLanguageModels *[]*LargeLanguageModel `protobuf:"bytes,1,rep,name=large_language_models,json=largeLanguageModels"`
-	unknownFields                  protoimpl.UnknownFields
-	sizeCache                      protoimpl.SizeCache
+type ListModelsResponse struct {
+	state             protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Models *[]*Model              `protobuf:"bytes,1,rep,name=models"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
-func (x *ListLargeLanguageModelsResponse) Reset() {
-	*x = ListLargeLanguageModelsResponse{}
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[4]
+func (x *ListModelsResponse) Reset() {
+	*x = ListModelsResponse{}
+	mi := &file_api_model_v1_model_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListLargeLanguageModelsResponse) String() string {
+func (x *ListModelsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListLargeLanguageModelsResponse) ProtoMessage() {}
+func (*ListModelsResponse) ProtoMessage() {}
 
-func (x *ListLargeLanguageModelsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[4]
+func (x *ListModelsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_model_v1_model_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -612,34 +612,34 @@ func (x *ListLargeLanguageModelsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListLargeLanguageModelsResponse) GetLargeLanguageModels() []*LargeLanguageModel {
+func (x *ListModelsResponse) GetModels() []*Model {
 	if x != nil {
-		if x.xxx_hidden_LargeLanguageModels != nil {
-			return *x.xxx_hidden_LargeLanguageModels
+		if x.xxx_hidden_Models != nil {
+			return *x.xxx_hidden_Models
 		}
 	}
 	return nil
 }
 
-func (x *ListLargeLanguageModelsResponse) SetLargeLanguageModels(v []*LargeLanguageModel) {
-	x.xxx_hidden_LargeLanguageModels = &v
+func (x *ListModelsResponse) SetModels(v []*Model) {
+	x.xxx_hidden_Models = &v
 }
 
-type ListLargeLanguageModelsResponse_builder struct {
+type ListModelsResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	LargeLanguageModels []*LargeLanguageModel
+	Models []*Model
 }
 
-func (b0 ListLargeLanguageModelsResponse_builder) Build() *ListLargeLanguageModelsResponse {
-	m0 := &ListLargeLanguageModelsResponse{}
+func (b0 ListModelsResponse_builder) Build() *ListModelsResponse {
+	m0 := &ListModelsResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_LargeLanguageModels = &b.LargeLanguageModels
+	x.xxx_hidden_Models = &b.Models
 	return m0
 }
 
-type GetLargeLanguageModelRequest struct {
+type GetModelRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -648,21 +648,21 @@ type GetLargeLanguageModelRequest struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *GetLargeLanguageModelRequest) Reset() {
-	*x = GetLargeLanguageModelRequest{}
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[5]
+func (x *GetModelRequest) Reset() {
+	*x = GetModelRequest{}
+	mi := &file_api_model_v1_model_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetLargeLanguageModelRequest) String() string {
+func (x *GetModelRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetLargeLanguageModelRequest) ProtoMessage() {}
+func (*GetModelRequest) ProtoMessage() {}
 
-func (x *GetLargeLanguageModelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[5]
+func (x *GetModelRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_model_v1_model_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -673,7 +673,7 @@ func (x *GetLargeLanguageModelRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *GetLargeLanguageModelRequest) GetId() string {
+func (x *GetModelRequest) GetId() string {
 	if x != nil {
 		if x.xxx_hidden_Id != nil {
 			return *x.xxx_hidden_Id
@@ -683,31 +683,31 @@ func (x *GetLargeLanguageModelRequest) GetId() string {
 	return ""
 }
 
-func (x *GetLargeLanguageModelRequest) SetId(v string) {
+func (x *GetModelRequest) SetId(v string) {
 	x.xxx_hidden_Id = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
-func (x *GetLargeLanguageModelRequest) HasId() bool {
+func (x *GetModelRequest) HasId() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GetLargeLanguageModelRequest) ClearId() {
+func (x *GetModelRequest) ClearId() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Id = nil
 }
 
-type GetLargeLanguageModelRequest_builder struct {
+type GetModelRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Id *string
 }
 
-func (b0 GetLargeLanguageModelRequest_builder) Build() *GetLargeLanguageModelRequest {
-	m0 := &GetLargeLanguageModelRequest{}
+func (b0 GetModelRequest_builder) Build() *GetModelRequest {
+	m0 := &GetModelRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
@@ -717,7 +717,7 @@ func (b0 GetLargeLanguageModelRequest_builder) Build() *GetLargeLanguageModelReq
 	return m0
 }
 
-type CreateLargeLanguageModelRequest struct {
+type CreateModelRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
 	xxx_hidden_Description *string                `protobuf:"bytes,2,opt,name=description"`
@@ -729,21 +729,21 @@ type CreateLargeLanguageModelRequest struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *CreateLargeLanguageModelRequest) Reset() {
-	*x = CreateLargeLanguageModelRequest{}
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[6]
+func (x *CreateModelRequest) Reset() {
+	*x = CreateModelRequest{}
+	mi := &file_api_model_v1_model_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateLargeLanguageModelRequest) String() string {
+func (x *CreateModelRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateLargeLanguageModelRequest) ProtoMessage() {}
+func (*CreateModelRequest) ProtoMessage() {}
 
-func (x *CreateLargeLanguageModelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[6]
+func (x *CreateModelRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_model_v1_model_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -754,7 +754,7 @@ func (x *CreateLargeLanguageModelRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *CreateLargeLanguageModelRequest) GetName() string {
+func (x *CreateModelRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
@@ -764,7 +764,7 @@ func (x *CreateLargeLanguageModelRequest) GetName() string {
 	return ""
 }
 
-func (x *CreateLargeLanguageModelRequest) GetDescription() string {
+func (x *CreateModelRequest) GetDescription() string {
 	if x != nil {
 		if x.xxx_hidden_Description != nil {
 			return *x.xxx_hidden_Description
@@ -774,7 +774,7 @@ func (x *CreateLargeLanguageModelRequest) GetDescription() string {
 	return ""
 }
 
-func (x *CreateLargeLanguageModelRequest) GetVersion() string {
+func (x *CreateModelRequest) GetVersion() string {
 	if x != nil {
 		if x.xxx_hidden_Version != nil {
 			return *x.xxx_hidden_Version
@@ -784,7 +784,7 @@ func (x *CreateLargeLanguageModelRequest) GetVersion() string {
 	return ""
 }
 
-func (x *CreateLargeLanguageModelRequest) GetComment() string {
+func (x *CreateModelRequest) GetComment() string {
 	if x != nil {
 		if x.xxx_hidden_Comment != nil {
 			return *x.xxx_hidden_Comment
@@ -794,75 +794,75 @@ func (x *CreateLargeLanguageModelRequest) GetComment() string {
 	return ""
 }
 
-func (x *CreateLargeLanguageModelRequest) SetName(v string) {
+func (x *CreateModelRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *CreateLargeLanguageModelRequest) SetDescription(v string) {
+func (x *CreateModelRequest) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
-func (x *CreateLargeLanguageModelRequest) SetVersion(v string) {
+func (x *CreateModelRequest) SetVersion(v string) {
 	x.xxx_hidden_Version = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *CreateLargeLanguageModelRequest) SetComment(v string) {
+func (x *CreateModelRequest) SetComment(v string) {
 	x.xxx_hidden_Comment = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *CreateLargeLanguageModelRequest) HasName() bool {
+func (x *CreateModelRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateLargeLanguageModelRequest) HasDescription() bool {
+func (x *CreateModelRequest) HasDescription() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateLargeLanguageModelRequest) HasVersion() bool {
+func (x *CreateModelRequest) HasVersion() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateLargeLanguageModelRequest) HasComment() bool {
+func (x *CreateModelRequest) HasComment() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreateLargeLanguageModelRequest) ClearName() {
+func (x *CreateModelRequest) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
 }
 
-func (x *CreateLargeLanguageModelRequest) ClearDescription() {
+func (x *CreateModelRequest) ClearDescription() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Description = nil
 }
 
-func (x *CreateLargeLanguageModelRequest) ClearVersion() {
+func (x *CreateModelRequest) ClearVersion() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Version = nil
 }
 
-func (x *CreateLargeLanguageModelRequest) ClearComment() {
+func (x *CreateModelRequest) ClearComment() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Comment = nil
 }
 
-type CreateLargeLanguageModelRequest_builder struct {
+type CreateModelRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Name        *string
@@ -871,8 +871,8 @@ type CreateLargeLanguageModelRequest_builder struct {
 	Comment     *string
 }
 
-func (b0 CreateLargeLanguageModelRequest_builder) Build() *CreateLargeLanguageModelRequest {
-	m0 := &CreateLargeLanguageModelRequest{}
+func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
+	m0 := &CreateModelRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
@@ -894,7 +894,7 @@ func (b0 CreateLargeLanguageModelRequest_builder) Build() *CreateLargeLanguageMo
 	return m0
 }
 
-type DeleteLargeLanguageModelRequest struct {
+type DeleteModelRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -903,21 +903,21 @@ type DeleteLargeLanguageModelRequest struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *DeleteLargeLanguageModelRequest) Reset() {
-	*x = DeleteLargeLanguageModelRequest{}
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[7]
+func (x *DeleteModelRequest) Reset() {
+	*x = DeleteModelRequest{}
+	mi := &file_api_model_v1_model_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteLargeLanguageModelRequest) String() string {
+func (x *DeleteModelRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteLargeLanguageModelRequest) ProtoMessage() {}
+func (*DeleteModelRequest) ProtoMessage() {}
 
-func (x *DeleteLargeLanguageModelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_large_language_model_v1_large_language_model_proto_msgTypes[7]
+func (x *DeleteModelRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_model_v1_model_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -928,7 +928,7 @@ func (x *DeleteLargeLanguageModelRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *DeleteLargeLanguageModelRequest) GetId() string {
+func (x *DeleteModelRequest) GetId() string {
 	if x != nil {
 		if x.xxx_hidden_Id != nil {
 			return *x.xxx_hidden_Id
@@ -938,31 +938,31 @@ func (x *DeleteLargeLanguageModelRequest) GetId() string {
 	return ""
 }
 
-func (x *DeleteLargeLanguageModelRequest) SetId(v string) {
+func (x *DeleteModelRequest) SetId(v string) {
 	x.xxx_hidden_Id = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
-func (x *DeleteLargeLanguageModelRequest) HasId() bool {
+func (x *DeleteModelRequest) HasId() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteLargeLanguageModelRequest) ClearId() {
+func (x *DeleteModelRequest) ClearId() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Id = nil
 }
 
-type DeleteLargeLanguageModelRequest_builder struct {
+type DeleteModelRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Id *string
 }
 
-func (b0 DeleteLargeLanguageModelRequest_builder) Build() *DeleteLargeLanguageModelRequest {
-	m0 := &DeleteLargeLanguageModelRequest{}
+func (b0 DeleteModelRequest_builder) Build() *DeleteModelRequest {
+	m0 := &DeleteModelRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
@@ -972,12 +972,12 @@ func (b0 DeleteLargeLanguageModelRequest_builder) Build() *DeleteLargeLanguageMo
 	return m0
 }
 
-var File_api_large_language_model_v1_large_language_model_proto protoreflect.FileDescriptor
+var File_api_model_v1_model_proto protoreflect.FileDescriptor
 
-const file_api_large_language_model_v1_large_language_model_proto_rawDesc = "" +
+const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
-	"6api/large_language_model/v1/large_language_model.proto\x12\"otterscale.large_language_model.v1\x1a\x1bgoogle/protobuf/empty.proto\"\x8e\x01\n" +
-	"\x12LargeLanguageModel\x12\x0e\n" +
+	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x1bgoogle/protobuf/empty.proto\"\x81\x01\n" +
+	"\x05Model\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x18\n" +
@@ -986,93 +986,91 @@ const file_api_large_language_model_v1_large_language_model_proto_rawDesc = "" +
 	" CheckInfrastructureStatusRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"\xd4\x01\n" +
-	"!CheckInfrastructureStatusResponse\x12d\n" +
-	"\x06result\x18\x01 \x01(\x0e2L.otterscale.large_language_model.v1.CheckInfrastructureStatusResponse.ResultR\x06result\"I\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"\xc5\x01\n" +
+	"!CheckInfrastructureStatusResponse\x12U\n" +
+	"\x06result\x18\x01 \x01(\x0e2=.otterscale.model.v1.CheckInfrastructureStatusResponse.ResultR\x06result\"I\n" +
 	"\x06Result\x12\v\n" +
 	"\aUNKNOWN\x10\x00\x12\x06\n" +
 	"\x02OK\x10\v\x12\x11\n" +
 	"\rNOT_INSTALLED\x10\x15\x12\n" +
 	"\n" +
 	"\x06FAILED\x10\x16\x12\v\n" +
-	"\aPENDING\x10\x1f\"d\n" +
-	"\x1eListLargeLanguageModelsRequest\x12\x1d\n" +
+	"\aPENDING\x10\x1f\"W\n" +
+	"\x11ListModelsRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"\x8d\x01\n" +
-	"\x1fListLargeLanguageModelsResponse\x12j\n" +
-	"\x15large_language_models\x18\x01 \x03(\v26.otterscale.large_language_model.v1.LargeLanguageModelR\x13largeLanguageModels\".\n" +
-	"\x1cGetLargeLanguageModelRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x8b\x01\n" +
-	"\x1fCreateLargeLanguageModelRequest\x12\x12\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"H\n" +
+	"\x12ListModelsResponse\x122\n" +
+	"\x06models\x18\x01 \x03(\v2\x1a.otterscale.model.v1.ModelR\x06models\"!\n" +
+	"\x0fGetModelRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"~\n" +
+	"\x12CreateModelRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x18\n" +
 	"\aversion\x18\x03 \x01(\tR\aversion\x12\x18\n" +
-	"\acomment\x18\x04 \x01(\tR\acomment\"1\n" +
-	"\x1fDeleteLargeLanguageModelRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\x92\x06\n" +
-	"\x19LargeLanguageModelService\x12\xa8\x01\n" +
-	"\x19CheckInfrastructureStatus\x12D.otterscale.large_language_model.v1.CheckInfrastructureStatusRequest\x1aE.otterscale.large_language_model.v1.CheckInfrastructureStatusResponse\x12\xa2\x01\n" +
-	"\x17ListLargeLanguageModels\x12B.otterscale.large_language_model.v1.ListLargeLanguageModelsRequest\x1aC.otterscale.large_language_model.v1.ListLargeLanguageModelsResponse\x12\x91\x01\n" +
-	"\x15GetLargeLanguageModel\x12@.otterscale.large_language_model.v1.GetLargeLanguageModelRequest\x1a6.otterscale.large_language_model.v1.LargeLanguageModel\x12\x97\x01\n" +
-	"\x18CreateLargeLanguageModel\x12C.otterscale.large_language_model.v1.CreateLargeLanguageModelRequest\x1a6.otterscale.large_language_model.v1.LargeLanguageModel\x12w\n" +
-	"\x18DeleteLargeLanguageModel\x12C.otterscale.large_language_model.v1.DeleteLargeLanguageModelRequest\x1a\x16.google.protobuf.EmptyBAZ?github.com/otterscale/otterscale/api/large_language_model/v1;pbb\beditionsp\xe8\a"
+	"\acomment\x18\x04 \x01(\tR\acomment\"$\n" +
+	"\x12DeleteModelRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xdf\x02\n" +
+	"\fModelService\x12]\n" +
+	"\n" +
+	"ListModels\x12&.otterscale.model.v1.ListModelsRequest\x1a'.otterscale.model.v1.ListModelsResponse\x12L\n" +
+	"\bGetModel\x12$.otterscale.model.v1.GetModelRequest\x1a\x1a.otterscale.model.v1.Model\x12R\n" +
+	"\vCreateModel\x12'.otterscale.model.v1.CreateModelRequest\x1a\x1a.otterscale.model.v1.Model\x12N\n" +
+	"\vDeleteModel\x12'.otterscale.model.v1.DeleteModelRequest\x1a\x16.google.protobuf.EmptyB2Z0github.com/otterscale/otterscale/api/model/v1;pbb\beditionsp\xe8\a"
 
-var file_api_large_language_model_v1_large_language_model_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_large_language_model_v1_large_language_model_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
-var file_api_large_language_model_v1_large_language_model_proto_goTypes = []any{
-	(CheckInfrastructureStatusResponse_Result)(0), // 0: otterscale.large_language_model.v1.CheckInfrastructureStatusResponse.Result
-	(*LargeLanguageModel)(nil),                    // 1: otterscale.large_language_model.v1.LargeLanguageModel
-	(*CheckInfrastructureStatusRequest)(nil),      // 2: otterscale.large_language_model.v1.CheckInfrastructureStatusRequest
-	(*CheckInfrastructureStatusResponse)(nil),     // 3: otterscale.large_language_model.v1.CheckInfrastructureStatusResponse
-	(*ListLargeLanguageModelsRequest)(nil),        // 4: otterscale.large_language_model.v1.ListLargeLanguageModelsRequest
-	(*ListLargeLanguageModelsResponse)(nil),       // 5: otterscale.large_language_model.v1.ListLargeLanguageModelsResponse
-	(*GetLargeLanguageModelRequest)(nil),          // 6: otterscale.large_language_model.v1.GetLargeLanguageModelRequest
-	(*CreateLargeLanguageModelRequest)(nil),       // 7: otterscale.large_language_model.v1.CreateLargeLanguageModelRequest
-	(*DeleteLargeLanguageModelRequest)(nil),       // 8: otterscale.large_language_model.v1.DeleteLargeLanguageModelRequest
-	(*emptypb.Empty)(nil),                         // 9: google.protobuf.Empty
+var file_api_model_v1_model_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_api_model_v1_model_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_api_model_v1_model_proto_goTypes = []any{
+	(CheckInfrastructureStatusResponse_Result)(0), // 0: otterscale.model.v1.CheckInfrastructureStatusResponse.Result
+	(*Model)(nil),                             // 1: otterscale.model.v1.Model
+	(*CheckInfrastructureStatusRequest)(nil),  // 2: otterscale.model.v1.CheckInfrastructureStatusRequest
+	(*CheckInfrastructureStatusResponse)(nil), // 3: otterscale.model.v1.CheckInfrastructureStatusResponse
+	(*ListModelsRequest)(nil),                 // 4: otterscale.model.v1.ListModelsRequest
+	(*ListModelsResponse)(nil),                // 5: otterscale.model.v1.ListModelsResponse
+	(*GetModelRequest)(nil),                   // 6: otterscale.model.v1.GetModelRequest
+	(*CreateModelRequest)(nil),                // 7: otterscale.model.v1.CreateModelRequest
+	(*DeleteModelRequest)(nil),                // 8: otterscale.model.v1.DeleteModelRequest
+	(*emptypb.Empty)(nil),                     // 9: google.protobuf.Empty
 }
-var file_api_large_language_model_v1_large_language_model_proto_depIdxs = []int32{
-	0, // 0: otterscale.large_language_model.v1.CheckInfrastructureStatusResponse.result:type_name -> otterscale.large_language_model.v1.CheckInfrastructureStatusResponse.Result
-	1, // 1: otterscale.large_language_model.v1.ListLargeLanguageModelsResponse.large_language_models:type_name -> otterscale.large_language_model.v1.LargeLanguageModel
-	2, // 2: otterscale.large_language_model.v1.LargeLanguageModelService.CheckInfrastructureStatus:input_type -> otterscale.large_language_model.v1.CheckInfrastructureStatusRequest
-	4, // 3: otterscale.large_language_model.v1.LargeLanguageModelService.ListLargeLanguageModels:input_type -> otterscale.large_language_model.v1.ListLargeLanguageModelsRequest
-	6, // 4: otterscale.large_language_model.v1.LargeLanguageModelService.GetLargeLanguageModel:input_type -> otterscale.large_language_model.v1.GetLargeLanguageModelRequest
-	7, // 5: otterscale.large_language_model.v1.LargeLanguageModelService.CreateLargeLanguageModel:input_type -> otterscale.large_language_model.v1.CreateLargeLanguageModelRequest
-	8, // 6: otterscale.large_language_model.v1.LargeLanguageModelService.DeleteLargeLanguageModel:input_type -> otterscale.large_language_model.v1.DeleteLargeLanguageModelRequest
-	3, // 7: otterscale.large_language_model.v1.LargeLanguageModelService.CheckInfrastructureStatus:output_type -> otterscale.large_language_model.v1.CheckInfrastructureStatusResponse
-	5, // 8: otterscale.large_language_model.v1.LargeLanguageModelService.ListLargeLanguageModels:output_type -> otterscale.large_language_model.v1.ListLargeLanguageModelsResponse
-	1, // 9: otterscale.large_language_model.v1.LargeLanguageModelService.GetLargeLanguageModel:output_type -> otterscale.large_language_model.v1.LargeLanguageModel
-	1, // 10: otterscale.large_language_model.v1.LargeLanguageModelService.CreateLargeLanguageModel:output_type -> otterscale.large_language_model.v1.LargeLanguageModel
-	9, // 11: otterscale.large_language_model.v1.LargeLanguageModelService.DeleteLargeLanguageModel:output_type -> google.protobuf.Empty
-	7, // [7:12] is the sub-list for method output_type
-	2, // [2:7] is the sub-list for method input_type
+var file_api_model_v1_model_proto_depIdxs = []int32{
+	0, // 0: otterscale.model.v1.CheckInfrastructureStatusResponse.result:type_name -> otterscale.model.v1.CheckInfrastructureStatusResponse.Result
+	1, // 1: otterscale.model.v1.ListModelsResponse.models:type_name -> otterscale.model.v1.Model
+	4, // 2: otterscale.model.v1.ModelService.ListModels:input_type -> otterscale.model.v1.ListModelsRequest
+	6, // 3: otterscale.model.v1.ModelService.GetModel:input_type -> otterscale.model.v1.GetModelRequest
+	7, // 4: otterscale.model.v1.ModelService.CreateModel:input_type -> otterscale.model.v1.CreateModelRequest
+	8, // 5: otterscale.model.v1.ModelService.DeleteModel:input_type -> otterscale.model.v1.DeleteModelRequest
+	5, // 6: otterscale.model.v1.ModelService.ListModels:output_type -> otterscale.model.v1.ListModelsResponse
+	1, // 7: otterscale.model.v1.ModelService.GetModel:output_type -> otterscale.model.v1.Model
+	1, // 8: otterscale.model.v1.ModelService.CreateModel:output_type -> otterscale.model.v1.Model
+	9, // 9: otterscale.model.v1.ModelService.DeleteModel:output_type -> google.protobuf.Empty
+	6, // [6:10] is the sub-list for method output_type
+	2, // [2:6] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_api_large_language_model_v1_large_language_model_proto_init() }
-func file_api_large_language_model_v1_large_language_model_proto_init() {
-	if File_api_large_language_model_v1_large_language_model_proto != nil {
+func init() { file_api_model_v1_model_proto_init() }
+func file_api_model_v1_model_proto_init() {
+	if File_api_model_v1_model_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_large_language_model_v1_large_language_model_proto_rawDesc), len(file_api_large_language_model_v1_large_language_model_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_model_v1_model_proto_rawDesc), len(file_api_model_v1_model_proto_rawDesc)),
 			NumEnums:      1,
 			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_api_large_language_model_v1_large_language_model_proto_goTypes,
-		DependencyIndexes: file_api_large_language_model_v1_large_language_model_proto_depIdxs,
-		EnumInfos:         file_api_large_language_model_v1_large_language_model_proto_enumTypes,
-		MessageInfos:      file_api_large_language_model_v1_large_language_model_proto_msgTypes,
+		GoTypes:           file_api_model_v1_model_proto_goTypes,
+		DependencyIndexes: file_api_model_v1_model_proto_depIdxs,
+		EnumInfos:         file_api_model_v1_model_proto_enumTypes,
+		MessageInfos:      file_api_model_v1_model_proto_msgTypes,
 	}.Build()
-	File_api_large_language_model_v1_large_language_model_proto = out.File
-	file_api_large_language_model_v1_large_language_model_proto_goTypes = nil
-	file_api_large_language_model_v1_large_language_model_proto_depIdxs = nil
+	File_api_model_v1_model_proto = out.File
+	file_api_model_v1_model_proto_goTypes = nil
+	file_api_model_v1_model_proto_depIdxs = nil
 }

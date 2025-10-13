@@ -1,0 +1,62 @@
+edition = "2023";
+
+package otterscale.model.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/otterscale/otterscale/api/model/v1;pb";
+
+service ModelService {
+  rpc ListModels(ListModelsRequest) returns (ListModelsResponse);
+  rpc GetModel(GetModelRequest) returns (Model);
+  rpc CreateModel(CreateModelRequest) returns (Model);
+  rpc DeleteModel(DeleteModelRequest) returns (google.protobuf.Empty);
+}
+
+message Model {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string version = 4;
+  string comment = 5;
+}
+
+message CheckInfrastructureStatusRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message CheckInfrastructureStatusResponse {
+  enum Result {
+    UNKNOWN = 0;
+    OK = 11;
+    NOT_INSTALLED = 21;
+    FAILED = 22;
+    PENDING = 31;
+  }
+  Result result = 1;
+}
+
+message ListModelsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListModelsResponse {
+  repeated Model models = 1;
+}
+
+message GetModelRequest {
+  string id = 1;
+}
+
+message CreateModelRequest {
+  string name = 1;
+  string description = 2;
+  string version = 3;
+  string comment = 4;
+}
+
+message DeleteModelRequest {
+  string id = 1;
+}

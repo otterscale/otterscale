@@ -10,11 +10,11 @@ var ProviderSet = wire.NewSet(
 	NewConfigurationService,
 	NewEnvironmentService,
 	NewFacilityService,
-	NewLargeLanguageModelService,
+	NewInstanceService,
 	NewMachineService,
+	NewModelService,
 	NewNetworkService,
 	NewOrchestratorService,
 	NewScopeService,
 	NewStorageService,
-	NewVirtualMachineService,
 )
