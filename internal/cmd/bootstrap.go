@@ -7,7 +7,7 @@ import (
 	"github.com/otterscale/otterscale/internal/mux"
 )
 
-func NewBootstrap(bootstrap *mux.Bootstrap) *cobra.Command {
+func NewBootstrap(_ *mux.Bootstrap) *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "bootstrap",
 		// Short:   "Initialize a new OtterScale configuration",

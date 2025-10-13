@@ -3,14 +3,11 @@ package core
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"sync"
 
 	"connectrpc.com/connect"
 	"golang.org/x/sync/errgroup"
-	"helm.sh/helm/v3/pkg/release"
-	"helm.sh/helm/v3/pkg/storage/driver"
 
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/client-go/rest"
@@ -155,29 +152,6 @@ func NewInstanceUseCase(action ActionRepo, facility FacilityRepo, kubeCDI KubeCD
 		release:          release,
 		machine:          machine,
 	}
-}
-
-func (uc *InstanceUseCase) CheckInfrastructureStatus(ctx context.Context, uuid, facility string) (int32, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
-	if err != nil {
-		return 0, err
-	}
-	rel, err := uc.release.Get(config, LLMd, LLMd)
-	if err != nil {
-		if errors.Is(err, driver.ErrReleaseNotFound) {
-			return kubevirtHealthNotInstalled, nil
-		}
-		return 0, err
-	}
-	switch {
-	case rel.Info.Status.IsPending():
-		return kubevirtHealthPending, nil
-	case rel.Info.Status == release.StatusDeployed:
-		return kubevirtHealthOK, nil
-	case rel.Info.Status == release.StatusFailed:
-		return kubevirtHealthFailed, nil
-	}
-	return 0, nil
 }
 
 func (uc *InstanceUseCase) ListVirtualMachines(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineData, error) {

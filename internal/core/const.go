@@ -23,20 +23,6 @@ const (
 )
 
 const (
-	kubevirtHealthOK           = 11
-	kubevirtHealthNotInstalled = 21
-	kubevirtHealthFailed       = 22
-	kubevirtHealthPending      = 31
-)
-
-const (
-	llmdInfraHealthOK           = 11
-	llmdInfraHealthNotInstalled = 21
-	llmdInfraHealthFailed       = 22
-	llmdInfraHealthPending      = 31
-)
-
-const (
 	environmentHealthOK           = 11
 	environmentHealthNotInstalled = 21
 )

@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"connectrpc.com/connect"
+	"gopkg.in/yaml.v2"
 
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
@@ -72,7 +73,7 @@ func (uc *ChartUseCase) GetChart(ctx context.Context, chartName string) (*Chart,
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("chart %q not found", chartName))
 }
 
-func (uc *ChartUseCase) GetChartFile(ctx context.Context, chartRef string) (*ChartFile, error) {
+func (uc *ChartUseCase) GetChartFile(chartRef string) (*ChartFile, error) {
 	file := &ChartFile{}
 	wg := sync.WaitGroup{}
 	wg.Go(func() {
@@ -90,18 +91,18 @@ func (uc *ChartUseCase) GetChartFileFromApplication(ctx context.Context, uuid, f
 	wg := sync.WaitGroup{}
 	wg.Go(func() {
 		// FIXME: invalid label
-		// if releaseName, ok := app.Labels["app.otterscale.com/release-name"]; ok {
-		// 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
-		// 	if err != nil {
-		// 		return
-		// 	}
-		// 	v, err := uc.release.GetValues(config, app.Namespace, releaseName)
-		// 	if err != nil {
-		// 		return
-		// 	}
-		// 	valuesYAML, _ := yaml.Marshal(v)
-		// 	metadata.ValuesYAML = string(valuesYAML)
-		// }
+		if releaseName, ok := app.Labels["app.otterscale.com/release-name"]; ok {
+			config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+			if err != nil {
+				return
+			}
+			v, err := uc.release.GetValues(config, app.Namespace, releaseName)
+			if err != nil {
+				return
+			}
+			valuesYAML, _ := yaml.Marshal(v)
+			file.ValuesYAML = string(valuesYAML)
+		}
 	})
 	wg.Go(func() {
 		// FIXME: invalid label format

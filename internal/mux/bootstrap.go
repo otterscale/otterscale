@@ -18,7 +18,7 @@ func (b *Bootstrap) serviceNames() []string {
 }
 
 func (b *Bootstrap) registerHandlers() {
-	b.ServeMux.Handle(bootstrapv1.NewBootstrapServiceHandler(b.svc))
+	b.Handle(bootstrapv1.NewBootstrapServiceHandler(b.svc))
 }
 
 func NewBootstrap(svc *app.BootstrapService) *Bootstrap {

@@ -141,7 +141,9 @@ func (s *ApplicationService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYR
 	if err != nil {
 		return err
 	}
-	defer s.kubernetes.CleanupTTYSession(sessionID)
+	defer func() {
+		_ = s.kubernetes.CleanupTTYSession(sessionID)
+	}()
 
 	// send session id to client
 	resp := &pb.ExecuteTTYResponse{}
@@ -152,7 +154,9 @@ func (s *ApplicationService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYR
 
 	// create stdout channel
 	stdOutChan := make(chan []byte)
-	go s.kubernetes.ExecuteTTY(ctx, sessionID, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetCommand(), stdOutChan)
+	go func() {
+		_ = s.kubernetes.ExecuteTTY(ctx, sessionID, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetCommand(), stdOutChan)
+	}()
 
 	// send stdout to client
 	for stdOut := range stdOutChan {
@@ -232,8 +236,8 @@ func (s *ApplicationService) GetChart(ctx context.Context, req *pb.GetChartReque
 	return resp, nil
 }
 
-func (s *ApplicationService) GetChartMetadata(ctx context.Context, req *pb.GetChartMetadataRequest) (*pb.Application_Chart_Metadata, error) {
-	file, err := s.chart.GetChartFile(ctx, req.GetChartRef())
+func (s *ApplicationService) GetChartMetadata(_ context.Context, req *pb.GetChartMetadataRequest) (*pb.Application_Chart_Metadata, error) {
+	file, err := s.chart.GetChartFile(req.GetChartRef())
 	if err != nil {
 		return nil, err
 	}
@@ -588,7 +592,7 @@ func containerStatusesRestartString(statuses []core.ContainerStatus) string {
 func countHealthies(pods []core.Pod) int32 {
 	count := int32(0)
 	for i := range pods {
-		if core.IsPodHealthy(pods[i]) {
+		if core.IsPodHealthy(&pods[i]) {
 			count++
 		}
 	}

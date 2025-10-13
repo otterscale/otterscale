@@ -649,7 +649,7 @@ func isKeyNotFoundError(err error) bool {
 	return statusErr != nil && statusErr.Status().Code == http.StatusNotFound
 }
 
-func IsPodHealthy(pod Pod) bool {
+func IsPodHealthy(pod *Pod) bool {
 	phases := []corev1.PodPhase{corev1.PodRunning, corev1.PodSucceeded}
 	return slices.Contains(phases, pod.Status.Phase)
 }

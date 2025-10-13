@@ -10,6 +10,7 @@ import (
 
 	"github.com/juju/juju/core/status"
 	"github.com/juju/juju/rpc/params"
+
 	"github.com/otterscale/otterscale/internal/config"
 )
 
@@ -142,7 +143,7 @@ func (uc *OrchestratorUseCase) UpdateKubernetesNodeLabels(ctx context.Context, u
 	return updatedNode.Labels, nil
 }
 
-func (uc *OrchestratorUseCase) listEssentials(ctx context.Context, charmName string, scopeUUID string) ([]Essential, error) {
+func (uc *OrchestratorUseCase) listEssentials(ctx context.Context, charmName, scopeUUID string) ([]Essential, error) {
 	scopes, err := uc.getAvailableScopes(ctx, scopeUUID)
 	if err != nil {
 		return nil, err
@@ -173,7 +174,7 @@ func (uc *OrchestratorUseCase) fetchEssentialsFromScopes(ctx context.Context, sc
 
 	for i := range scopes {
 		eg.Go(func() error {
-			essentials, err := uc.getEssentialsForScope(egctx, scopes[i], charmName)
+			essentials, err := uc.getEssentialsForScope(egctx, &scopes[i], charmName)
 			if err != nil {
 				return err
 			}
@@ -189,19 +190,19 @@ func (uc *OrchestratorUseCase) fetchEssentialsFromScopes(ctx context.Context, sc
 	return uc.flattenEssentials(result), nil
 }
 
-func (uc *OrchestratorUseCase) getEssentialsForScope(ctx context.Context, scope Scope, charmName string) ([]Essential, error) {
+func (uc *OrchestratorUseCase) getEssentialsForScope(ctx context.Context, scope *Scope, charmName string) ([]Essential, error) {
 	status, err := uc.client.Status(ctx, scope.UUID, []string{"application", "*"})
 	if err != nil {
 		return nil, err
 	}
 
 	var essentials []Essential
-	for name, app := range status.Applications {
-		if !strings.Contains(app.Charm, charmName) {
+	for name := range status.Applications {
+		if !strings.Contains(status.Applications[name].Charm, charmName) {
 			continue
 		}
 
-		units := uc.extractUnits(app.Units)
+		units := uc.extractUnits(status.Applications[name].Units)
 		essentials = append(essentials, Essential{
 			Type:      essentialTypeFromCharmName(charmName),
 			Name:      name,
@@ -216,10 +217,10 @@ func (uc *OrchestratorUseCase) getEssentialsForScope(ctx context.Context, scope 
 
 func (uc *OrchestratorUseCase) extractUnits(statusUnits map[string]params.UnitStatus) []EssentialUnit {
 	var units []EssentialUnit
-	for uname, unit := range statusUnits {
+	for uname := range statusUnits {
 		units = append(units, EssentialUnit{
 			Name:      uname,
-			Directive: unit.Machine,
+			Directive: statusUnits[uname].Machine,
 		})
 	}
 	return units

@@ -49,7 +49,7 @@ func (s *BootstrapService) WatchStatus(ctx context.Context, _ *pb.WatchStatusReq
 	return ctx.Err()
 }
 
-func (s *BootstrapService) UpdateStatus(ctx context.Context, req *pb.UpdateStatusRequest) (*emptypb.Empty, error) {
+func (s *BootstrapService) UpdateStatus(_ context.Context, req *pb.UpdateStatusRequest) (*emptypb.Empty, error) {
 	// Update the environment status in the use case layer
 	s.bootstrap.StoreStatus(req.GetPhase(), req.GetMessage())
 

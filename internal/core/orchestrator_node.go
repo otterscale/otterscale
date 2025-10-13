@@ -83,7 +83,7 @@ type NodeParams struct {
 
 // CreateNode creates a new node with the specified configuration.
 func (uc *OrchestratorUseCase) CreateNode(ctx context.Context, uuid, machineID, prefix string, userVirtualIPs []string, userCalicoCIDR string, userOSDDevices []string) error {
-	params := NodeParams{
+	params := &NodeParams{
 		UUID:       uuid,
 		MachineID:  machineID,
 		Prefix:     prefix,
@@ -94,7 +94,7 @@ func (uc *OrchestratorUseCase) CreateNode(ctx context.Context, uuid, machineID, 
 	return uc.createNodeWithParams(ctx, params)
 }
 
-func (uc *OrchestratorUseCase) createNodeWithParams(ctx context.Context, params NodeParams) error {
+func (uc *OrchestratorUseCase) createNodeWithParams(ctx context.Context, params *NodeParams) error {
 	if err := uc.validateMachineStatus(ctx, params.UUID, params.MachineID); err != nil {
 		return err
 	}
