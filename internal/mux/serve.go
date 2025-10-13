@@ -84,6 +84,7 @@ func (s *Serve) registerWebSocket() {
 }
 
 func NewServe(app *app.ApplicationService, config *app.ConfigurationService, env *app.EnvironmentService, facility *app.FacilityService, llm *app.LargeLanguageModelService, machine *app.MachineService, network *app.NetworkService, orch *app.OrchestratorService, storage *app.StorageService, scope *app.ScopeService, vm *app.VirtualMachineService, opts []connect.HandlerOption) (*Serve, error) {
+	// Initialize ServeMux and register all handlers
 	serve := &Serve{
 		ServeMux: &http.ServeMux{},
 		services: serviceRegistry{
@@ -104,10 +105,12 @@ func NewServe(app *app.ApplicationService, config *app.ConfigurationService, env
 	serve.registerProxy()
 	serve.registerWebSocket()
 
-	handleGRPCCompatible(serve.ServeMux, serve.serviceNames()...)
-
-	if err := handleMetrics(serve.ServeMux); err != nil {
+	// Register gRPC reflection, health check, and Prometheus metrics
+	registerGRPCReflection(serve.ServeMux, serve.serviceNames()...)
+	registerGRPCHealth(serve.ServeMux, serve.serviceNames()...)
+	if err := registerPrometheusMetrics(serve.ServeMux); err != nil {
 		return nil, err
 	}
+
 	return serve, nil
 }

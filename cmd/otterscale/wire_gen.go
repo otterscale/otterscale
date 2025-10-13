@@ -21,6 +21,9 @@ import (
 // Injectors from wire.go:
 
 func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
+	bootstrapUseCase := core.NewBootstrapUseCase()
+	bootstrapService := app.NewBootstrapService(bootstrapUseCase)
+	bootstrap := mux.NewBootstrap(bootstrapService)
 	configConfig, cleanup, err := config.New()
 	if err != nil {
 		return nil, nil, err
@@ -112,7 +115,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	command := newCmd(configConfig, serve)
+	command := newCmd(bootstrap, configConfig, serve)
 	return command, func() {
 		cleanup()
 	}, nil
