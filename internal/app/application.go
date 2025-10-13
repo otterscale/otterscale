@@ -32,18 +32,20 @@ import (
 type ApplicationService struct {
 	pbconnect.UnimplementedApplicationServiceHandler
 
-	uc          *core.ApplicationUseCase
+	chart       *core.ChartUseCase
+	release     *core.ReleaseUseCase
+	kubernetes  *core.KubernetesUseCase
 	ttySessions sync.Map
 }
 
-func NewApplicationService(uc *core.ApplicationUseCase) *ApplicationService {
-	return &ApplicationService{uc: uc}
+func NewApplicationService(chart *core.ChartUseCase, release *core.ReleaseUseCase, kubernetes *core.KubernetesUseCase) *ApplicationService {
+	return &ApplicationService{chart: chart, release: release, kubernetes: kubernetes}
 }
 
 var _ pbconnect.ApplicationServiceHandler = (*ApplicationService)(nil)
 
 func (s *ApplicationService) ListNamespaces(ctx context.Context, req *pb.ListNamespacesRequest) (*pb.ListNamespacesResponse, error) {
-	namespaces, err := s.uc.ListNamespaces(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	namespaces, err := s.kubernetes.ListNamespaces(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -53,11 +55,11 @@ func (s *ApplicationService) ListNamespaces(ctx context.Context, req *pb.ListNam
 }
 
 func (s *ApplicationService) ListApplications(ctx context.Context, req *pb.ListApplicationsRequest) (*pb.ListApplicationsResponse, error) {
-	apps, err := s.uc.ListApplications(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	apps, err := s.kubernetes.ListApplications(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
-	publicAddress, err := s.uc.GetPublicAddress(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	publicAddress, err := s.kubernetes.GetPublicAddress(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -67,16 +69,16 @@ func (s *ApplicationService) ListApplications(ctx context.Context, req *pb.ListA
 }
 
 func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetApplicationRequest) (*pb.Application, error) {
-	app, err := s.uc.GetApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
+	app, err := s.kubernetes.GetApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
-	metadata, err := s.uc.GetChartMetadataFromApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), app)
+	metadata, err := s.chart.GetChartMetadataFromApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), app)
 	if err != nil {
 		return nil, err
 	}
 	app.ChartMetadata = metadata
-	publicAddress, err := s.uc.GetPublicAddress(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	publicAddress, err := s.kubernetes.GetPublicAddress(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +87,7 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetAppl
 }
 
 func (s *ApplicationService) RestartApplication(ctx context.Context, req *pb.RestartApplicationRequest) (*emptypb.Empty, error) {
-	err := s.uc.RestartApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetType())
+	err := s.kubernetes.RestartApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetType())
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +96,7 @@ func (s *ApplicationService) RestartApplication(ctx context.Context, req *pb.Res
 }
 
 func (s *ApplicationService) ScaleApplication(ctx context.Context, req *pb.ScaleApplicationRequest) (*emptypb.Empty, error) {
-	err := s.uc.ScaleApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetType(), req.GetReplicas())
+	err := s.kubernetes.ScaleApplication(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetType(), req.GetReplicas())
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +105,7 @@ func (s *ApplicationService) ScaleApplication(ctx context.Context, req *pb.Scale
 }
 
 func (s *ApplicationService) DeleteApplicationPod(ctx context.Context, req *pb.DeleteApplicationPodRequest) (*emptypb.Empty, error) {
-	err := s.uc.DeletePod(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
+	err := s.kubernetes.DeletePod(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +114,7 @@ func (s *ApplicationService) DeleteApplicationPod(ctx context.Context, req *pb.D
 }
 
 func (s *ApplicationService) WatchLogs(ctx context.Context, req *pb.WatchLogsRequest, stream *connect.ServerStream[pb.WatchLogsResponse]) error {
-	logs, err := s.uc.StreamLogs(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName())
+	logs, err := s.kubernetes.StreamLogs(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName())
 	if err != nil {
 		return err
 	}
@@ -133,6 +135,7 @@ func (s *ApplicationService) WatchLogs(ctx context.Context, req *pb.WatchLogsReq
 	return nil
 }
 
+// TODO: move to kubernetes usecase
 func (s *ApplicationService) WriteTTY(_ context.Context, req *pb.WriteTTYRequest) (*emptypb.Empty, error) {
 	// get session
 	sessionID := req.GetSessionId()
@@ -150,6 +153,7 @@ func (s *ApplicationService) WriteTTY(_ context.Context, req *pb.WriteTTYRequest
 	return resp, nil
 }
 
+// TODO: move to kubernetes usecase
 func (s *ApplicationService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYRequest, stream *connect.ServerStream[pb.ExecuteTTYResponse]) error {
 	// create a new session
 	sessionID := uuid.New().String()
@@ -176,7 +180,7 @@ func (s *ApplicationService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYR
 	}
 
 	// execute command
-	exec, err := s.uc.ExecuteTTY(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetCommand())
+	exec, err := s.kubernetes.ExecuteTTY(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetCommand())
 	if err != nil {
 		return err
 	}
@@ -222,7 +226,7 @@ func (s *ApplicationService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYR
 }
 
 func (s *ApplicationService) ListReleases(ctx context.Context, req *pb.ListReleasesRequest) (*pb.ListReleasesResponse, error) {
-	releases, err := s.uc.ListReleases(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	releases, err := s.release.ListReleases(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -232,7 +236,7 @@ func (s *ApplicationService) ListReleases(ctx context.Context, req *pb.ListRelea
 }
 
 func (s *ApplicationService) CreateRelease(ctx context.Context, req *pb.CreateReleaseRequest) (*pb.Application_Release, error) {
-	release, err := s.uc.CreateRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml(), req.GetValuesMap())
+	release, err := s.release.CreateRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml(), req.GetValuesMap())
 	if err != nil {
 		return nil, err
 	}
@@ -241,7 +245,7 @@ func (s *ApplicationService) CreateRelease(ctx context.Context, req *pb.CreateRe
 }
 
 func (s *ApplicationService) UpdateRelease(ctx context.Context, req *pb.UpdateReleaseRequest) (*pb.Application_Release, error) {
-	release, err := s.uc.UpdateRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml())
+	release, err := s.release.UpdateRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml())
 	if err != nil {
 		return nil, err
 	}
@@ -250,7 +254,7 @@ func (s *ApplicationService) UpdateRelease(ctx context.Context, req *pb.UpdateRe
 }
 
 func (s *ApplicationService) DeleteRelease(ctx context.Context, req *pb.DeleteReleaseRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun()); err != nil {
+	if err := s.release.DeleteRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -258,7 +262,7 @@ func (s *ApplicationService) DeleteRelease(ctx context.Context, req *pb.DeleteRe
 }
 
 func (s *ApplicationService) RollbackRelease(ctx context.Context, req *pb.RollbackReleaseRequest) (*emptypb.Empty, error) {
-	if err := s.uc.RollbackRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun()); err != nil {
+	if err := s.release.RollbackRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDryRun()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -266,7 +270,7 @@ func (s *ApplicationService) RollbackRelease(ctx context.Context, req *pb.Rollba
 }
 
 func (s *ApplicationService) ListCharts(ctx context.Context, _ *pb.ListChartsRequest) (*pb.ListChartsResponse, error) {
-	charts, err := s.uc.ListCharts(ctx)
+	charts, err := s.chart.ListCharts(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -276,7 +280,7 @@ func (s *ApplicationService) ListCharts(ctx context.Context, _ *pb.ListChartsReq
 }
 
 func (s *ApplicationService) GetChart(ctx context.Context, req *pb.GetChartRequest) (*pb.Application_Chart, error) {
-	ch, err := s.uc.GetChart(ctx, req.GetName())
+	ch, err := s.chart.GetChart(ctx, req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -289,7 +293,7 @@ func (s *ApplicationService) GetChart(ctx context.Context, req *pb.GetChartReque
 }
 
 func (s *ApplicationService) GetChartMetadata(ctx context.Context, req *pb.GetChartMetadataRequest) (*pb.Application_Chart_Metadata, error) {
-	metadata, err := s.uc.GetChartMetadata(ctx, req.GetChartRef())
+	metadata, err := s.chart.GetChartMetadata(ctx, req.GetChartRef())
 	if err != nil {
 		return nil, err
 	}
@@ -298,7 +302,7 @@ func (s *ApplicationService) GetChartMetadata(ctx context.Context, req *pb.GetCh
 }
 
 func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *pb.ListStorageClassesRequest) (*pb.ListStorageClassesResponse, error) {
-	storageClasses, err := s.uc.ListStorageClasses(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	storageClasses, err := s.kubernetes.ListStorageClasses(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -592,7 +596,7 @@ func toProtoStorageClass(sc *core.StorageClass) *pb.StorageClass {
 func toProtoChartMetadata(md *core.ChartMetadata) *pb.Application_Chart_Metadata {
 	ret := &pb.Application_Chart_Metadata{}
 	ret.SetValuesYaml(md.ValuesYAML)
-	ret.SetReadmeMd(md.ReadmeMD)
+	ret.SetReadmeMd(md.ReadmeMarkdown)
 	ret.SetCustomization(toProtoChartCustomization(md.Customization))
 	return ret
 }

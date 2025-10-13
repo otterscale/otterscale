@@ -6,10 +6,8 @@ import (
 	"strings"
 
 	"github.com/go-faker/faker/v4"
-
 	"helm.sh/helm/v3/pkg/release"
 	"helm.sh/helm/v3/pkg/strvals"
-
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/yaml"
 )
@@ -26,7 +24,23 @@ type ReleaseRepo interface {
 	GetValues(config *rest.Config, namespace, name string) (map[string]any, error)
 }
 
-func (uc *ApplicationUseCase) ListReleases(ctx context.Context, uuid, facility string) ([]Release, error) {
+type ReleaseUseCase struct {
+	action   ActionRepo
+	chart    ChartRepo
+	facility FacilityRepo
+	release  ReleaseRepo
+}
+
+func NewReleaseUseCase(action ActionRepo, chart ChartRepo, facility FacilityRepo, release ReleaseRepo) *ReleaseUseCase {
+	return &ReleaseUseCase{
+		action:   action,
+		chart:    chart,
+		facility: facility,
+		release:  release,
+	}
+}
+
+func (uc *ReleaseUseCase) ListReleases(ctx context.Context, uuid, facility string) ([]Release, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -34,7 +48,7 @@ func (uc *ApplicationUseCase) ListReleases(ctx context.Context, uuid, facility s
 	return uc.release.List(config, "")
 }
 
-func (uc *ApplicationUseCase) CreateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string) (*Release, error) {
+func (uc *ReleaseUseCase) CreateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string) (*Release, error) {
 	values, err := toReleaseValues(valuesYAML, valuesMap)
 	if err != nil {
 		return nil, err
@@ -62,7 +76,7 @@ func (uc *ApplicationUseCase) CreateRelease(ctx context.Context, uuid, facility,
 	return uc.release.Install(config, namespace, getReleaseName(name), dryRun, chartRef, labels, annotations, values)
 }
 
-func (uc *ApplicationUseCase) UpdateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*Release, error) {
+func (uc *ReleaseUseCase) UpdateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*Release, error) {
 	values, err := toReleaseValues(valuesYAML, nil)
 	if err != nil {
 		return nil, err
@@ -75,7 +89,7 @@ func (uc *ApplicationUseCase) UpdateRelease(ctx context.Context, uuid, facility,
 	return uc.release.Upgrade(config, namespace, name, dryRun, chartRef, values)
 }
 
-func (uc *ApplicationUseCase) DeleteRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool) error {
+func (uc *ReleaseUseCase) DeleteRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool) error {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
@@ -84,7 +98,7 @@ func (uc *ApplicationUseCase) DeleteRelease(ctx context.Context, uuid, facility,
 	return err
 }
 
-func (uc *ApplicationUseCase) RollbackRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool) error {
+func (uc *ReleaseUseCase) RollbackRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool) error {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err

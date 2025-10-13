@@ -3,16 +3,18 @@ package core
 import "github.com/google/wire"
 
 var ProviderSet = wire.NewSet(
-	NewApplicationUseCase,
 	NewBootstrapUseCase,
 	NewBISTUseCase,
+	NewChartUseCase,
 	NewConfigurationUseCase,
 	NewEnvironmentUseCase,
 	NewFacilityUseCase,
+	NewKubernetesUseCase,
 	NewLargeLanguageModelUseCase,
 	NewMachineUseCase,
 	NewNetworkUseCase,
 	NewOrchestratorUseCase,
+	NewReleaseUseCase,
 	NewScopeUseCase,
 	NewStorageUseCase,
 	NewVirtualMachineUseCase,

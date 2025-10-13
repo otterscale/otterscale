@@ -28,33 +28,35 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	jujuJuju := juju.New(configConfig)
+	actionRepo := juju.NewAction(jujuJuju)
 	kubeKube, err := kube.New(configConfig)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	kubeAppsRepo := kube.NewApps(kubeKube)
-	kubeCoreRepo := kube.NewCore(kubeKube)
-	kubeStorageRepo := kube.NewStorage(kubeKube)
 	chartRepo, err := kube.NewHelmChart(kubeKube)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
+	facilityRepo := juju.NewApplication(jujuJuju)
 	releaseRepo, err := kube.NewHelmRelease(kubeKube)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	jujuJuju := juju.New(configConfig)
-	actionRepo := juju.NewAction(jujuJuju)
-	facilityRepo := juju.NewApplication(jujuJuju)
-	scopeRepo := juju.NewModel(jujuJuju)
+	chartUseCase := core.NewChartUseCase(actionRepo, chartRepo, facilityRepo, releaseRepo)
+	releaseUseCase := core.NewReleaseUseCase(actionRepo, chartRepo, facilityRepo, releaseRepo)
 	clientRepo := juju.NewClient(jujuJuju)
-	applicationUseCase := core.NewApplicationUseCase(kubeAppsRepo, kubeCoreRepo, kubeStorageRepo, chartRepo, releaseRepo, actionRepo, facilityRepo, scopeRepo, clientRepo)
-	applicationService := app.NewApplicationService(applicationUseCase)
+	kubeAppsRepo := kube.NewApps(kubeKube)
+	kubeCoreRepo := kube.NewCore(kubeKube)
+	kubeStorageRepo := kube.NewStorage(kubeKube)
+	kubernetesUseCase := core.NewKubernetesUseCase(actionRepo, clientRepo, facilityRepo, kubeAppsRepo, kubeCoreRepo, kubeStorageRepo)
+	applicationService := app.NewApplicationService(chartUseCase, releaseUseCase, kubernetesUseCase)
 	maasMAAS := maas.New(configConfig)
 	serverRepo := maas.NewServer(maasMAAS)
+	scopeRepo := juju.NewModel(jujuJuju)
 	scopeConfigRepo := juju.NewModelConfig(jujuJuju)
 	bootResourceRepo := maas.NewBootResource(maasMAAS)
 	bootSourceRepo := maas.NewBootSource(maasMAAS)

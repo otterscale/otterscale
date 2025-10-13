@@ -15,4 +15,4 @@ func NewBootstrapService(uc *core.BootstrapUseCase) *BootstrapService {
 	return &BootstrapService{uc: uc}
 }
 
-var _ pbconnect.BootstrapHandler = (*Bootstrap)(nil)
+// var _ pbconnect.BootstrapHandler = (*Bootstrap)(nil)
