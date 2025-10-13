@@ -12,6 +12,60 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
+type Warp struct {
+	Target WarpTarget  `json:"target"`
+	Input  *WarpInput  `json:"input,omitempty"`
+	Output *WarpOutput `json:"output,omitempty"`
+}
+
+type WarpTarget struct {
+	Internal *WarpTargetInternal `json:"internal,omitempty"`
+	External *WarpTargetExternal `json:"external,omitempty"`
+}
+
+type WarpTargetInternal struct {
+	Type         string `json:"type"`
+	ScopeUUID    string `json:"scope_uuid"`
+	FacilityName string `json:"facility_name"`
+	Name         string `json:"name"`
+	Endpoint     string `json:"endpoint"`
+}
+
+type WarpTargetExternal struct {
+	Endpoint  string `json:"endpoint"`
+	AccessKey string `json:"access_key"`
+	SecretKey string `json:"secret_key"`
+}
+
+type WarpInput struct {
+	Operation   string `json:"operation"`
+	Duration    int64  `json:"duration"`
+	ObjectSize  int64  `json:"object_size"`
+	ObjectCount int64  `json:"object_count"`
+}
+
+type WarpOutput struct {
+	Type       string          `json:"type"`
+	Operations []WarpOperation `json:"operations"`
+}
+
+type WarpOperation struct {
+	Type       string `json:"type"`
+	Throughput struct {
+		Metrics struct {
+			FastestBPS float64 `json:"fastest_bps"`
+			MedianBPS  float64 `json:"median_bps"`
+			SlowestBPS float64 `json:"slowest_bps"`
+			FastestOPS float64 `json:"fastest_ops"`
+			MedianOPS  float64 `json:"median_ops"`
+			SlowestOPS float64 `json:"slowest_ops"`
+		} `json:"segmented"`
+		TotalBytes      float64 `json:"bytes"`
+		TotalObjects    float64 `json:"objects"`
+		TotalOperations int64   `json:"ops"`
+	} `json:"throughput"`
+}
+
 func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy string, target WarpTarget, input *WarpInput) (*BISTResult, error) {
 	config, err := uc.newMicroK8sConfig()
 	if err != nil {

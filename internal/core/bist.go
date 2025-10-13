@@ -22,25 +22,6 @@ import (
 	"github.com/otterscale/otterscale/internal/config"
 )
 
-const (
-	bistKindFIO             = "fio"
-	bistKindWarp            = "warp"
-	bistNamespace           = "bist"
-	bistLabel               = "bist.otterscale.com/name=bist"
-	bistAnnotationCreatedBy = "bist.otterscale.com/created-by"
-	bistAnnotationKind      = "bist.otterscale.com/kind"
-	bistAnnotationFIO       = "bist.otterscale.com/fio"
-	bistAnnotationWarp      = "bist.otterscale.com/warp"
-	bistBlockPool           = "otterscale_bist_pool"
-	bistBlockImage          = "otterscale_bist_image"
-)
-
-const (
-	minioLabel       = "app.kubernetes.io/name=minio"
-	minioField       = "spec.type=NodePort"
-	minioServiceName = "minio-api"
-)
-
 type BISTResult struct {
 	UID            string
 	Name           string
@@ -52,132 +33,29 @@ type BISTResult struct {
 	Warp           *Warp
 }
 
-type FIO struct {
-	Target FIOTarget  `json:"target"`
-	Input  *FIOInput  `json:"input,omitempty"`
-	Output *FIOOutput `json:"output,omitempty"`
-}
-
-type FIOTarget struct {
-	Ceph *FIOTargetCeph `json:"ceph,omitempty"`
-	NFS  *FIOTargetNFS  `json:"nfs,omitempty"`
-}
-
-type FIOTargetCeph struct {
-	ScopeUUID    string `json:"scope_uuid"`
-	FacilityName string `json:"facility_name"`
-}
-
-type FIOTargetNFS struct {
-	Endpoint string `json:"endpoint"`
-	Path     string `json:"path"`
-}
-
-type FIOInput struct {
-	AccessMode string `json:"access_mode"`
-	JobCount   int64  `json:"job_count"`
-	RunTime    int64  `json:"run_time"`
-	BlockSize  int64  `json:"block_size"`
-	FileSize   int64  `json:"file_size"`
-	IODepth    int64  `json:"io_depth"`
-}
-
-type FIOOutput struct {
-	Read  *FIOThroughput `json:"read"`
-	Write *FIOThroughput `json:"write"`
-	Trim  *FIOThroughput `json:"trim"`
-}
-
-type FIOThroughput struct {
-	IOBytes   int64   `json:"io_bytes"`
-	Bandwidth int64   `json:"bw"`
-	IOPS      float64 `json:"iops"`
-	TotalIOs  int64   `json:"total_ios"`
-	Latency   struct {
-		Min  int64   `json:"min"`
-		Max  int64   `json:"max"`
-		Mean float64 `json:"mean"`
-	} `json:"lat_ns"`
-}
-
-type Warp struct {
-	Target WarpTarget  `json:"target"`
-	Input  *WarpInput  `json:"input,omitempty"`
-	Output *WarpOutput `json:"output,omitempty"`
-}
-
-type WarpTarget struct {
-	Internal *WarpTargetInternal `json:"internal,omitempty"`
-	External *WarpTargetExternal `json:"external,omitempty"`
-}
-
-type WarpTargetInternal struct {
-	Type         string `json:"type"`
-	ScopeUUID    string `json:"scope_uuid"`
-	FacilityName string `json:"facility_name"`
-	Name         string `json:"name"`
-	Endpoint     string `json:"endpoint"`
-}
-
-type WarpTargetExternal struct {
-	Endpoint  string `json:"endpoint"`
-	AccessKey string `json:"access_key"`
-	SecretKey string `json:"secret_key"`
-}
-
-type WarpInput struct {
-	Operation   string `json:"operation"`
-	Duration    int64  `json:"duration"`
-	ObjectSize  int64  `json:"object_size"`
-	ObjectCount int64  `json:"object_count"`
-}
-
-type WarpOutput struct {
-	Type       string          `json:"type"`
-	Operations []WarpOperation `json:"operations"`
-}
-
-type WarpOperation struct {
-	Type       string `json:"type"`
-	Throughput struct {
-		Metrics struct {
-			FastestBPS float64 `json:"fastest_bps"`
-			MedianBPS  float64 `json:"median_bps"`
-			SlowestBPS float64 `json:"slowest_bps"`
-			FastestOPS float64 `json:"fastest_ops"`
-			MedianOPS  float64 `json:"median_ops"`
-			SlowestOPS float64 `json:"slowest_ops"`
-		} `json:"segmented"`
-		TotalBytes      float64 `json:"bytes"`
-		TotalObjects    float64 `json:"objects"`
-		TotalOperations int64   `json:"ops"`
-	} `json:"throughput"`
-}
-
 type BISTUseCase struct {
-	scope       ScopeRepo
-	client      ClientRepo
-	facility    FacilityRepo
+	conf        *config.Config
 	action      ActionRepo
-	kubeBatch   KubeBatchRepo
-	kubeCore    KubeCoreRepo
 	cephCluster CephClusterRepo
 	cephRBD     CephRBDRepo
-
-	conf *config.Config
+	client      ClientRepo
+	facility    FacilityRepo
+	kubeBatch   KubeBatchRepo
+	kubeCore    KubeCoreRepo
+	scope       ScopeRepo
 }
 
-func NewBISTUseCase(scope ScopeRepo, client ClientRepo, facility FacilityRepo, action ActionRepo, kubeBatch KubeBatchRepo, kubeCore KubeCoreRepo, cephCluster CephClusterRepo, cephRBD CephRBDRepo, conf *config.Config) *BISTUseCase {
+func NewBISTUseCase(conf *config.Config, action ActionRepo, cephCluster CephClusterRepo, cephRBD CephRBDRepo, client ClientRepo, facility FacilityRepo, kubeBatch KubeBatchRepo, kubeCore KubeCoreRepo, scope ScopeRepo) *BISTUseCase {
 	return &BISTUseCase{
-		scope:       scope,
-		client:      client,
-		facility:    facility,
+		conf:        conf,
 		action:      action,
-		kubeBatch:   kubeBatch,
-		kubeCore:    kubeCore,
 		cephCluster: cephCluster,
 		cephRBD:     cephRBD,
-		conf:        conf,
+		client:      client,
+		facility:    facility,
+		kubeBatch:   kubeBatch,
+		kubeCore:    kubeCore,
+		scope:       scope,
 	}
 }
 

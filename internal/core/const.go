@@ -54,3 +54,22 @@ const (
 	annotationHAMIBindTime             = "hami.io/bind-time"
 	annotationHAMIBindPhase            = "hami.io/bind-phase"
 )
+
+const (
+	bistKindFIO             = "fio"
+	bistKindWarp            = "warp"
+	bistNamespace           = "bist"
+	bistLabel               = "bist.otterscale.com/name=bist"
+	bistAnnotationCreatedBy = "bist.otterscale.com/created-by"
+	bistAnnotationKind      = "bist.otterscale.com/kind"
+	bistAnnotationFIO       = "bist.otterscale.com/fio"
+	bistAnnotationWarp      = "bist.otterscale.com/warp"
+	bistBlockPool           = "otterscale_bist_pool"
+	bistBlockImage          = "otterscale_bist_image"
+)
+
+const (
+	minioLabel       = "app.kubernetes.io/name=minio"
+	minioField       = "spec.type=NodePort"
+	minioServiceName = "minio-api"
+)
