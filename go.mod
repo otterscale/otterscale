@@ -2,6 +2,13 @@ module github.com/otterscale/otterscale
 
 go 1.25.1
 
+ignore (
+	./assets
+	./docs
+	./scripts
+	./web
+)
+
 replace (
 	github.com/Project-HAMi/HAMi => github.com/Project-HAMi/HAMi v0.0.0-20250926102846-38714d526792 // v2.7.0
 	github.com/juju/juju => github.com/juju/juju v0.0.0-20250919053255-3bb033f317e4 // v3.6.10
@@ -204,7 +211,6 @@ require (
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
-	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/vishvananda/netlink v1.3.0 // indirect
 	github.com/vishvananda/netns v0.0.5 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
