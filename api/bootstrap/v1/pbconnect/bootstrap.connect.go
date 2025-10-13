@@ -6,8 +6,12 @@ package pbconnect
 
 import (
 	connect "connectrpc.com/connect"
-	_ "github.com/otterscale/otterscale/api/bootstrap/v1"
+	context "context"
+	errors "errors"
+	v1 "github.com/otterscale/otterscale/api/bootstrap/v1"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
+	strings "strings"
 )
 
 // This is a compile-time assertion to ensure that this generated file and the connect package are
@@ -22,8 +26,26 @@ const (
 	BootstrapServiceName = "otterscale.bootstrap.v1.BootstrapService"
 )
 
+// These constants are the fully-qualified names of the RPCs defined in this package. They're
+// exposed at runtime as Spec.Procedure and as the final two segments of the HTTP route.
+//
+// Note that these are different from the fully-qualified method names used by
+// google.golang.org/protobuf/reflect/protoreflect. To convert from these constants to
+// reflection-formatted method names, remove the leading slash and convert the remaining slash to a
+// period.
+const (
+	// BootstrapServiceWatchStatusProcedure is the fully-qualified name of the BootstrapService's
+	// WatchStatus RPC.
+	BootstrapServiceWatchStatusProcedure = "/otterscale.bootstrap.v1.BootstrapService/WatchStatus"
+	// BootstrapServiceUpdateStatusProcedure is the fully-qualified name of the BootstrapService's
+	// UpdateStatus RPC.
+	BootstrapServiceUpdateStatusProcedure = "/otterscale.bootstrap.v1.BootstrapService/UpdateStatus"
+)
+
 // BootstrapServiceClient is a client for the otterscale.bootstrap.v1.BootstrapService service.
 type BootstrapServiceClient interface {
+	WatchStatus(context.Context, *v1.WatchStatusRequest) (*connect.ServerStreamForClient[v1.WatchStatusResponse], error)
+	UpdateStatus(context.Context, *v1.UpdateStatusRequest) (*emptypb.Empty, error)
 }
 
 // NewBootstrapServiceClient constructs a client for the otterscale.bootstrap.v1.BootstrapService
@@ -34,16 +56,49 @@ type BootstrapServiceClient interface {
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
 func NewBootstrapServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) BootstrapServiceClient {
-	return &bootstrapServiceClient{}
+	baseURL = strings.TrimRight(baseURL, "/")
+	bootstrapServiceMethods := v1.File_api_bootstrap_v1_bootstrap_proto.Services().ByName("BootstrapService").Methods()
+	return &bootstrapServiceClient{
+		watchStatus: connect.NewClient[v1.WatchStatusRequest, v1.WatchStatusResponse](
+			httpClient,
+			baseURL+BootstrapServiceWatchStatusProcedure,
+			connect.WithSchema(bootstrapServiceMethods.ByName("WatchStatus")),
+			connect.WithClientOptions(opts...),
+		),
+		updateStatus: connect.NewClient[v1.UpdateStatusRequest, emptypb.Empty](
+			httpClient,
+			baseURL+BootstrapServiceUpdateStatusProcedure,
+			connect.WithSchema(bootstrapServiceMethods.ByName("UpdateStatus")),
+			connect.WithClientOptions(opts...),
+		),
+	}
 }
 
 // bootstrapServiceClient implements BootstrapServiceClient.
 type bootstrapServiceClient struct {
+	watchStatus  *connect.Client[v1.WatchStatusRequest, v1.WatchStatusResponse]
+	updateStatus *connect.Client[v1.UpdateStatusRequest, emptypb.Empty]
+}
+
+// WatchStatus calls otterscale.bootstrap.v1.BootstrapService.WatchStatus.
+func (c *bootstrapServiceClient) WatchStatus(ctx context.Context, req *v1.WatchStatusRequest) (*connect.ServerStreamForClient[v1.WatchStatusResponse], error) {
+	return c.watchStatus.CallServerStream(ctx, connect.NewRequest(req))
+}
+
+// UpdateStatus calls otterscale.bootstrap.v1.BootstrapService.UpdateStatus.
+func (c *bootstrapServiceClient) UpdateStatus(ctx context.Context, req *v1.UpdateStatusRequest) (*emptypb.Empty, error) {
+	response, err := c.updateStatus.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // BootstrapServiceHandler is an implementation of the otterscale.bootstrap.v1.BootstrapService
 // service.
 type BootstrapServiceHandler interface {
+	WatchStatus(context.Context, *v1.WatchStatusRequest, *connect.ServerStream[v1.WatchStatusResponse]) error
+	UpdateStatus(context.Context, *v1.UpdateStatusRequest) (*emptypb.Empty, error)
 }
 
 // NewBootstrapServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -52,8 +107,25 @@ type BootstrapServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewBootstrapServiceHandler(svc BootstrapServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	bootstrapServiceMethods := v1.File_api_bootstrap_v1_bootstrap_proto.Services().ByName("BootstrapService").Methods()
+	bootstrapServiceWatchStatusHandler := connect.NewServerStreamHandlerSimple(
+		BootstrapServiceWatchStatusProcedure,
+		svc.WatchStatus,
+		connect.WithSchema(bootstrapServiceMethods.ByName("WatchStatus")),
+		connect.WithHandlerOptions(opts...),
+	)
+	bootstrapServiceUpdateStatusHandler := connect.NewUnaryHandlerSimple(
+		BootstrapServiceUpdateStatusProcedure,
+		svc.UpdateStatus,
+		connect.WithSchema(bootstrapServiceMethods.ByName("UpdateStatus")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.bootstrap.v1.BootstrapService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case BootstrapServiceWatchStatusProcedure:
+			bootstrapServiceWatchStatusHandler.ServeHTTP(w, r)
+		case BootstrapServiceUpdateStatusProcedure:
+			bootstrapServiceUpdateStatusHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -62,3 +134,11 @@ func NewBootstrapServiceHandler(svc BootstrapServiceHandler, opts ...connect.Han
 
 // UnimplementedBootstrapServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedBootstrapServiceHandler struct{}
+
+func (UnimplementedBootstrapServiceHandler) WatchStatus(context.Context, *v1.WatchStatusRequest, *connect.ServerStream[v1.WatchStatusResponse]) error {
+	return connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.bootstrap.v1.BootstrapService.WatchStatus is not implemented"))
+}
+
+func (UnimplementedBootstrapServiceHandler) UpdateStatus(context.Context, *v1.UpdateStatusRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.bootstrap.v1.BootstrapService.UpdateStatus is not implemented"))
+}

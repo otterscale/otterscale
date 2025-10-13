@@ -21,13 +21,13 @@ import (
 // Injectors from wire.go:
 
 func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
-	bootstrapUseCase := core.NewBootstrapUseCase()
-	bootstrapService := app.NewBootstrapService(bootstrapUseCase)
-	bootstrap := mux.NewBootstrap(bootstrapService)
 	configConfig, cleanup, err := config.New()
 	if err != nil {
 		return nil, nil, err
 	}
+	bootstrapUseCase := core.NewBootstrapUseCase(configConfig)
+	bootstrapService := app.NewBootstrapService(bootstrapUseCase)
+	bootstrap := mux.NewBootstrap(bootstrapService)
 	jujuJuju := juju.New(configConfig)
 	actionRepo := juju.NewAction(jujuJuju)
 	kubeKube, err := kube.New(configConfig)
@@ -55,21 +55,21 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	kubernetesUseCase := core.NewKubernetesUseCase(actionRepo, clientRepo, facilityRepo, kubeAppsRepo, kubeCoreRepo, kubeStorageRepo)
 	applicationService := app.NewApplicationService(chartUseCase, releaseUseCase, kubernetesUseCase)
 	maasMAAS := maas.New(configConfig)
-	serverRepo := maas.NewServer(maasMAAS)
-	scopeRepo := juju.NewModel(jujuJuju)
-	scopeConfigRepo := juju.NewModelConfig(jujuJuju)
 	bootResourceRepo := maas.NewBootResource(maasMAAS)
 	bootSourceRepo := maas.NewBootSource(maasMAAS)
 	bootSourceSelectionRepo := maas.NewBootSourceSelection(maasMAAS)
 	packageRepositoryRepo := maas.NewPackageRepository(maasMAAS)
-	configurationUseCase := core.NewConfigurationUseCase(serverRepo, scopeRepo, scopeConfigRepo, bootResourceRepo, bootSourceRepo, bootSourceSelectionRepo, packageRepositoryRepo)
+	scopeRepo := juju.NewModel(jujuJuju)
+	scopeConfigRepo := juju.NewModelConfig(jujuJuju)
+	serverRepo := maas.NewServer(maasMAAS)
+	configurationUseCase := core.NewConfigurationUseCase(configConfig, bootResourceRepo, bootSourceRepo, bootSourceSelectionRepo, packageRepositoryRepo, scopeRepo, scopeConfigRepo, serverRepo)
 	kubeBatchRepo := kube.NewBatch(kubeKube)
 	cephCeph := ceph.New(configConfig)
 	cephClusterRepo := ceph.NewCluster(cephCeph)
 	cephRBDRepo := ceph.NewRBD(cephCeph)
 	bistUseCase := core.NewBISTUseCase(scopeRepo, clientRepo, facilityRepo, actionRepo, kubeBatchRepo, kubeCoreRepo, cephClusterRepo, cephRBDRepo, configConfig)
 	configurationService := app.NewConfigurationService(configurationUseCase, bistUseCase)
-	environmentUseCase := core.NewEnvironmentUseCase(scopeRepo, actionRepo, facilityRepo, configConfig)
+	environmentUseCase := core.NewEnvironmentUseCase(configConfig, actionRepo, facilityRepo, scopeRepo)
 	environmentService := app.NewEnvironmentService(environmentUseCase)
 	charmRepo := juju.NewCharm(jujuJuju)
 	machineRepo := maas.NewMachine(maasMAAS)

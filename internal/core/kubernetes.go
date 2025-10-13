@@ -137,13 +137,13 @@ type KubeStorageRepo interface {
 }
 
 type KubernetesUseCase struct {
-	action      ActionRepo
-	client      ClientRepo
-	facility    FacilityRepo
-	kubeApps    KubeAppsRepo
-	kubeCore    KubeCoreRepo
-	kubeStorage KubeStorageRepo
-	ttySessions sync.Map
+	action        ActionRepo
+	client        ClientRepo
+	facility      FacilityRepo
+	kubeApps      KubeAppsRepo
+	kubeCore      KubeCoreRepo
+	kubeStorage   KubeStorageRepo
+	ttySessionMap sync.Map
 }
 
 func NewKubernetesUseCase(action ActionRepo, client ClientRepo, facility FacilityRepo, kubeApps KubeAppsRepo, kubeCore KubeCoreRepo, kubeStorage KubeStorageRepo) *KubernetesUseCase {
@@ -453,7 +453,7 @@ func (uc *KubernetesUseCase) StreamLogs(ctx context.Context, uuid, facility, nam
 }
 
 func (uc *KubernetesUseCase) WriteToTTYSession(sessionID string, stdIn []byte) error {
-	value, ok := uc.ttySessions.Load(sessionID)
+	value, ok := uc.ttySessionMap.Load(sessionID)
 	if !ok {
 		return connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
 	}
@@ -469,7 +469,7 @@ func (uc *KubernetesUseCase) CreateTTYSession() (string, error) {
 	inReader, inWriter := io.Pipe()
 	outReader, outWriter := io.Pipe()
 
-	uc.ttySessions.Store(sessionID, &TTYSession{
+	uc.ttySessionMap.Store(sessionID, &TTYSession{
 		id:        sessionID,
 		inReader:  inReader,
 		inWriter:  inWriter,
@@ -480,7 +480,7 @@ func (uc *KubernetesUseCase) CreateTTYSession() (string, error) {
 }
 
 func (uc *KubernetesUseCase) CleanupTTYSession(sessionID string) error {
-	value, ok := uc.ttySessions.Load(sessionID)
+	value, ok := uc.ttySessionMap.Load(sessionID)
 	if !ok {
 		return connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
 	}
@@ -489,12 +489,12 @@ func (uc *KubernetesUseCase) CleanupTTYSession(sessionID string) error {
 	ttySession.inWriter.Close()
 	ttySession.outReader.Close()
 	ttySession.outWriter.Close()
-	uc.ttySessions.Delete(sessionID)
+	uc.ttySessionMap.Delete(sessionID)
 	return nil
 }
 
 func (uc *KubernetesUseCase) ExecuteTTY(ctx context.Context, sessionID, uuid, facility, namespace, podName, containerName string, command []string, stdOut chan<- []byte) error {
-	value, ok := uc.ttySessions.Load(sessionID)
+	value, ok := uc.ttySessionMap.Load(sessionID)
 	if !ok {
 		return connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
 	}

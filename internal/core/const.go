@@ -37,6 +37,11 @@ const (
 )
 
 const (
+	environmentHealthOK           = 11
+	environmentHealthNotInstalled = 21
+)
+
+const (
 	ApplicationTypeDeployment  = "Deployment"
 	ApplicationTypeStatefulSet = "StatefulSet"
 	ApplicationTypeDaemonSet   = "DaemonSet"

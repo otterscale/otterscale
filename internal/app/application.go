@@ -27,7 +27,11 @@ type ApplicationService struct {
 }
 
 func NewApplicationService(chart *core.ChartUseCase, release *core.ReleaseUseCase, kubernetes *core.KubernetesUseCase) *ApplicationService {
-	return &ApplicationService{chart: chart, release: release, kubernetes: kubernetes}
+	return &ApplicationService{
+		chart:      chart,
+		release:    release,
+		kubernetes: kubernetes,
+	}
 }
 
 var _ pbconnect.ApplicationServiceHandler = (*ApplicationService)(nil)
@@ -131,7 +135,6 @@ func (s *ApplicationService) WriteTTY(_ context.Context, req *pb.WriteTTYRequest
 	return resp, nil
 }
 
-// TODO: move to kubernetes usecase
 func (s *ApplicationService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYRequest, stream *connect.ServerStream[pb.ExecuteTTYResponse]) error {
 	// create session pipes
 	sessionID, err := s.kubernetes.CreateTTYSession()
@@ -148,11 +151,11 @@ func (s *ApplicationService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYR
 	}
 
 	// create stdout channel
-	stdOutChannel := make(chan []byte)
-	go s.kubernetes.ExecuteTTY(ctx, sessionID, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetCommand(), stdOutChannel)
+	stdOutChan := make(chan []byte)
+	go s.kubernetes.ExecuteTTY(ctx, sessionID, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetCommand(), stdOutChan)
 
 	// send stdout to client
-	for stdOut := range stdOutChannel {
+	for stdOut := range stdOutChan {
 		resp := &pb.ExecuteTTYResponse{}
 		resp.SetStdout(stdOut)
 		if err := stream.Send(resp); err != nil {

@@ -9,7 +9,7 @@ package pb
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/emptypb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	unsafe "unsafe"
 )
@@ -21,17 +21,363 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type WatchStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WatchStatusRequest) Reset() {
+	*x = WatchStatusRequest{}
+	mi := &file_api_bootstrap_v1_bootstrap_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WatchStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WatchStatusRequest) ProtoMessage() {}
+
+func (x *WatchStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_bootstrap_v1_bootstrap_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type WatchStatusRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 WatchStatusRequest_builder) Build() *WatchStatusRequest {
+	m0 := &WatchStatusRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type WatchStatusResponse struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Started     bool                   `protobuf:"varint,1,opt,name=started"`
+	xxx_hidden_Finished    bool                   `protobuf:"varint,2,opt,name=finished"`
+	xxx_hidden_Phase       *string                `protobuf:"bytes,11,opt,name=phase"`
+	xxx_hidden_Message     *string                `protobuf:"bytes,12,opt,name=message"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *WatchStatusResponse) Reset() {
+	*x = WatchStatusResponse{}
+	mi := &file_api_bootstrap_v1_bootstrap_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WatchStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WatchStatusResponse) ProtoMessage() {}
+
+func (x *WatchStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_bootstrap_v1_bootstrap_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *WatchStatusResponse) GetStarted() bool {
+	if x != nil {
+		return x.xxx_hidden_Started
+	}
+	return false
+}
+
+func (x *WatchStatusResponse) GetFinished() bool {
+	if x != nil {
+		return x.xxx_hidden_Finished
+	}
+	return false
+}
+
+func (x *WatchStatusResponse) GetPhase() string {
+	if x != nil {
+		if x.xxx_hidden_Phase != nil {
+			return *x.xxx_hidden_Phase
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *WatchStatusResponse) GetMessage() string {
+	if x != nil {
+		if x.xxx_hidden_Message != nil {
+			return *x.xxx_hidden_Message
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *WatchStatusResponse) SetStarted(v bool) {
+	x.xxx_hidden_Started = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *WatchStatusResponse) SetFinished(v bool) {
+	x.xxx_hidden_Finished = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
+func (x *WatchStatusResponse) SetPhase(v string) {
+	x.xxx_hidden_Phase = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+}
+
+func (x *WatchStatusResponse) SetMessage(v string) {
+	x.xxx_hidden_Message = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+}
+
+func (x *WatchStatusResponse) HasStarted() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *WatchStatusResponse) HasFinished() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *WatchStatusResponse) HasPhase() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *WatchStatusResponse) HasMessage() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *WatchStatusResponse) ClearStarted() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Started = false
+}
+
+func (x *WatchStatusResponse) ClearFinished() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Finished = false
+}
+
+func (x *WatchStatusResponse) ClearPhase() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Phase = nil
+}
+
+func (x *WatchStatusResponse) ClearMessage() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Message = nil
+}
+
+type WatchStatusResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Started  *bool
+	Finished *bool
+	Phase    *string
+	Message  *string
+}
+
+func (b0 WatchStatusResponse_builder) Build() *WatchStatusResponse {
+	m0 := &WatchStatusResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Started != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_Started = *b.Started
+	}
+	if b.Finished != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_Finished = *b.Finished
+	}
+	if b.Phase != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		x.xxx_hidden_Phase = b.Phase
+	}
+	if b.Message != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_Message = b.Message
+	}
+	return m0
+}
+
+type UpdateStatusRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Phase       *string                `protobuf:"bytes,1,opt,name=phase"`
+	xxx_hidden_Message     *string                `protobuf:"bytes,2,opt,name=message"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *UpdateStatusRequest) Reset() {
+	*x = UpdateStatusRequest{}
+	mi := &file_api_bootstrap_v1_bootstrap_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateStatusRequest) ProtoMessage() {}
+
+func (x *UpdateStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_bootstrap_v1_bootstrap_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *UpdateStatusRequest) GetPhase() string {
+	if x != nil {
+		if x.xxx_hidden_Phase != nil {
+			return *x.xxx_hidden_Phase
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateStatusRequest) GetMessage() string {
+	if x != nil {
+		if x.xxx_hidden_Message != nil {
+			return *x.xxx_hidden_Message
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateStatusRequest) SetPhase(v string) {
+	x.xxx_hidden_Phase = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *UpdateStatusRequest) SetMessage(v string) {
+	x.xxx_hidden_Message = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *UpdateStatusRequest) HasPhase() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *UpdateStatusRequest) HasMessage() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *UpdateStatusRequest) ClearPhase() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Phase = nil
+}
+
+func (x *UpdateStatusRequest) ClearMessage() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Message = nil
+}
+
+type UpdateStatusRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Phase   *string
+	Message *string
+}
+
+func (b0 UpdateStatusRequest_builder) Build() *UpdateStatusRequest {
+	m0 := &UpdateStatusRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Phase != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Phase = b.Phase
+	}
+	if b.Message != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Message = b.Message
+	}
+	return m0
+}
+
 var File_api_bootstrap_v1_bootstrap_proto protoreflect.FileDescriptor
 
 const file_api_bootstrap_v1_bootstrap_proto_rawDesc = "" +
 	"\n" +
-	" api/bootstrap/v1/bootstrap.proto\x12\x17otterscale.bootstrap.v1\x1a\x1bgoogle/protobuf/empty.proto2\x12\n" +
-	"\x10BootstrapServiceB6Z4github.com/otterscale/otterscale/api/bootstrap/v1;pbb\beditionsp\xe8\a"
+	" api/bootstrap/v1/bootstrap.proto\x12\x17otterscale.bootstrap.v1\x1a\x1bgoogle/protobuf/empty.proto\"\x14\n" +
+	"\x12WatchStatusRequest\"{\n" +
+	"\x13WatchStatusResponse\x12\x18\n" +
+	"\astarted\x18\x01 \x01(\bR\astarted\x12\x1a\n" +
+	"\bfinished\x18\x02 \x01(\bR\bfinished\x12\x14\n" +
+	"\x05phase\x18\v \x01(\tR\x05phase\x12\x18\n" +
+	"\amessage\x18\f \x01(\tR\amessage\"E\n" +
+	"\x13UpdateStatusRequest\x12\x14\n" +
+	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2\xd4\x01\n" +
+	"\x10BootstrapService\x12j\n" +
+	"\vWatchStatus\x12+.otterscale.bootstrap.v1.WatchStatusRequest\x1a,.otterscale.bootstrap.v1.WatchStatusResponse0\x01\x12T\n" +
+	"\fUpdateStatus\x12,.otterscale.bootstrap.v1.UpdateStatusRequest\x1a\x16.google.protobuf.EmptyB6Z4github.com/otterscale/otterscale/api/bootstrap/v1;pbb\beditionsp\xe8\a"
 
-var file_api_bootstrap_v1_bootstrap_proto_goTypes = []any{}
+var file_api_bootstrap_v1_bootstrap_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_api_bootstrap_v1_bootstrap_proto_goTypes = []any{
+	(*WatchStatusRequest)(nil),  // 0: otterscale.bootstrap.v1.WatchStatusRequest
+	(*WatchStatusResponse)(nil), // 1: otterscale.bootstrap.v1.WatchStatusResponse
+	(*UpdateStatusRequest)(nil), // 2: otterscale.bootstrap.v1.UpdateStatusRequest
+	(*emptypb.Empty)(nil),       // 3: google.protobuf.Empty
+}
 var file_api_bootstrap_v1_bootstrap_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
+	0, // 0: otterscale.bootstrap.v1.BootstrapService.WatchStatus:input_type -> otterscale.bootstrap.v1.WatchStatusRequest
+	2, // 1: otterscale.bootstrap.v1.BootstrapService.UpdateStatus:input_type -> otterscale.bootstrap.v1.UpdateStatusRequest
+	1, // 2: otterscale.bootstrap.v1.BootstrapService.WatchStatus:output_type -> otterscale.bootstrap.v1.WatchStatusResponse
+	3, // 3: otterscale.bootstrap.v1.BootstrapService.UpdateStatus:output_type -> google.protobuf.Empty
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -48,12 +394,13 @@ func file_api_bootstrap_v1_bootstrap_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_bootstrap_v1_bootstrap_proto_rawDesc), len(file_api_bootstrap_v1_bootstrap_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   0,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_api_bootstrap_v1_bootstrap_proto_goTypes,
 		DependencyIndexes: file_api_bootstrap_v1_bootstrap_proto_depIdxs,
+		MessageInfos:      file_api_bootstrap_v1_bootstrap_proto_msgTypes,
 	}.Build()
 	File_api_bootstrap_v1_bootstrap_proto = out.File
 	file_api_bootstrap_v1_bootstrap_proto_goTypes = nil
