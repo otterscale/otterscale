@@ -5,10 +5,14 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"slices"
+	"sync"
 	"time"
 
 	"connectrpc.com/connect"
+	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
+
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -21,7 +25,7 @@ import (
 )
 
 type Application struct {
-	*ChartMetadata
+	*ChartFile
 	Type       string
 	Name       string
 	Namespace  string
@@ -39,22 +43,35 @@ type Storage struct {
 	*StorageClass
 }
 
+type TTYSession struct {
+	id        string
+	inReader  *io.PipeReader
+	inWriter  *io.PipeWriter
+	outReader *io.PipeReader
+	outWriter *io.PipeWriter
+}
+
 type (
-	DaemonSet             = appsv1.DaemonSet
-	Deployment            = appsv1.Deployment
-	StatefulSet           = appsv1.StatefulSet
-	Job                   = batchv1.Job
-	JobSpec               = batchv1.JobSpec
-	ConfigMap             = corev1.ConfigMap
-	Container             = corev1.Container
-	Namespace             = corev1.Namespace
-	Node                  = corev1.Node
-	PersistentVolumeClaim = corev1.PersistentVolumeClaim
-	Pod                   = corev1.Pod
-	Secret                = corev1.Secret
-	Service               = corev1.Service
-	ServicePort           = corev1.ServicePort
-	StorageClass          = storagev1.StorageClass
+	KubernetesTime             = metav1.Time
+	DaemonSet                  = appsv1.DaemonSet
+	Deployment                 = appsv1.Deployment
+	StatefulSet                = appsv1.StatefulSet
+	Job                        = batchv1.Job
+	JobSpec                    = batchv1.JobSpec
+	ConfigMap                  = corev1.ConfigMap
+	Container                  = corev1.Container
+	ContainerStatus            = corev1.ContainerStatus
+	Namespace                  = corev1.Namespace
+	Node                       = corev1.Node
+	PersistentVolumeClaim      = corev1.PersistentVolumeClaim
+	PersistentVolumeAccessMode = corev1.PersistentVolumeAccessMode
+	Pod                        = corev1.Pod
+	PodCondition               = corev1.PodCondition
+	PodPhase                   = corev1.PodPhase
+	Secret                     = corev1.Secret
+	Service                    = corev1.Service
+	ServicePort                = corev1.ServicePort
+	StorageClass               = storagev1.StorageClass
 )
 
 type KubeAppsRepo interface {
@@ -126,6 +143,7 @@ type KubernetesUseCase struct {
 	kubeApps    KubeAppsRepo
 	kubeCore    KubeCoreRepo
 	kubeStorage KubeStorageRepo
+	ttySessions sync.Map
 }
 
 func NewKubernetesUseCase(action ActionRepo, client ClientRepo, facility FacilityRepo, kubeApps KubeAppsRepo, kubeCore KubeCoreRepo, kubeStorage KubeStorageRepo) *KubernetesUseCase {
@@ -434,12 +452,93 @@ func (uc *KubernetesUseCase) StreamLogs(ctx context.Context, uuid, facility, nam
 	return uc.kubeCore.StreamLogs(ctx, config, namespace, podName, containerName)
 }
 
-func (uc *KubernetesUseCase) ExecuteTTY(ctx context.Context, uuid, facility, namespace, podName, containerName string, command []string) (remotecommand.Executor, error) {
+func (uc *KubernetesUseCase) WriteToTTYSession(sessionID string, stdIn []byte) error {
+	value, ok := uc.ttySessions.Load(sessionID)
+	if !ok {
+		return connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
+	}
+	if _, err := value.(*TTYSession).inWriter.Write(stdIn); err != nil {
+		return connect.NewError(connect.CodeInternal, fmt.Errorf("failed to write to session: %w", err))
+	}
+	return nil
+}
+
+func (uc *KubernetesUseCase) CreateTTYSession() (string, error) {
+	sessionID := uuid.New().String()
+
+	inReader, inWriter := io.Pipe()
+	outReader, outWriter := io.Pipe()
+
+	uc.ttySessions.Store(sessionID, &TTYSession{
+		id:        sessionID,
+		inReader:  inReader,
+		inWriter:  inWriter,
+		outReader: outReader,
+		outWriter: outWriter,
+	})
+	return sessionID, nil
+}
+
+func (uc *KubernetesUseCase) CleanupTTYSession(sessionID string) error {
+	value, ok := uc.ttySessions.Load(sessionID)
+	if !ok {
+		return connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
+	}
+	ttySession := value.(*TTYSession)
+	ttySession.inReader.Close()
+	ttySession.inWriter.Close()
+	ttySession.outReader.Close()
+	ttySession.outWriter.Close()
+	uc.ttySessions.Delete(sessionID)
+	return nil
+}
+
+func (uc *KubernetesUseCase) ExecuteTTY(ctx context.Context, sessionID, uuid, facility, namespace, podName, containerName string, command []string, stdOut chan<- []byte) error {
+	value, ok := uc.ttySessions.Load(sessionID)
+	if !ok {
+		return connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
+	}
+	ttySession := value.(*TTYSession)
+
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return uc.kubeCore.CreateExecutor(config, namespace, podName, containerName, command)
+	exec, err := uc.kubeCore.CreateExecutor(config, namespace, podName, containerName, command)
+	if err != nil {
+		return err
+	}
+	eg, egCtx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		buf := make([]byte, 1024) //nolint:mnd // 1KB buffer
+		for {
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			default:
+				n, err := ttySession.outReader.Read(buf)
+				if err != nil {
+					if err == io.EOF {
+						return nil
+					}
+					return err
+				}
+				if n > 0 {
+					// write message to std out
+					stdOut <- buf[:n]
+				}
+			}
+		}
+	})
+	eg.Go(func() error {
+		defer close(stdOut)
+		return exec.StreamWithContext(egCtx, remotecommand.StreamOptions{
+			Stdin:  ttySession.inReader,
+			Stdout: ttySession.outWriter, // raw TTY manages stdout and stderr over the stdout stream
+			Tty:    true,
+		})
+	})
+	return eg.Wait()
 }
 
 func (uc *KubernetesUseCase) ListStorageClasses(ctx context.Context, uuid, facility string) ([]storagev1.StorageClass, error) {
@@ -543,4 +642,9 @@ func toStorageClassMap(scs []storagev1.StorageClass) map[string]storagev1.Storag
 func isKeyNotFoundError(err error) bool {
 	statusErr, _ := err.(*k8serrors.StatusError)
 	return statusErr != nil && statusErr.Status().Code == http.StatusNotFound
+}
+
+func IsPodHealthy(pod Pod) bool {
+	phases := []corev1.PodPhase{corev1.PodRunning, corev1.PodSucceeded}
+	return slices.Contains(phases, pod.Status.Phase)
 }

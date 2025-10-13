@@ -6,7 +6,9 @@ import (
 	"sync"
 
 	"connectrpc.com/connect"
+
 	"helm.sh/helm/v3/pkg/action"
+	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/repo"
 )
 
@@ -15,11 +17,18 @@ type Chart struct {
 	Versions repo.ChartVersions
 }
 
-type ChartMetadata struct {
+type ChartFile struct {
 	ReadmeMarkdown string
 	ValuesYAML     string
 	Customization  map[string]any
 }
+
+type (
+	ChartDependency = chart.Dependency
+	ChartMaintainer = chart.Maintainer
+	ChartMetadata   = chart.Metadata
+	ChartVersion    = repo.ChartVersion
+)
 
 type ChartRepo interface {
 	List(ctx context.Context) ([]Chart, error)
@@ -63,21 +72,21 @@ func (uc *ChartUseCase) GetChart(ctx context.Context, chartName string) (*Chart,
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("chart %q not found", chartName))
 }
 
-func (uc *ChartUseCase) GetChartMetadata(ctx context.Context, chartRef string) (*ChartMetadata, error) {
-	metadata := &ChartMetadata{}
+func (uc *ChartUseCase) GetChartFile(ctx context.Context, chartRef string) (*ChartFile, error) {
+	file := &ChartFile{}
 	wg := sync.WaitGroup{}
 	wg.Go(func() {
-		metadata.ValuesYAML, _ = uc.chart.Show(chartRef, action.ShowValues)
+		file.ValuesYAML, _ = uc.chart.Show(chartRef, action.ShowValues)
 	})
 	wg.Go(func() {
-		metadata.ReadmeMarkdown, _ = uc.chart.Show(chartRef, action.ShowReadme)
+		file.ReadmeMarkdown, _ = uc.chart.Show(chartRef, action.ShowReadme)
 	})
 	wg.Wait()
-	return metadata, nil
+	return file, nil
 }
 
-func (uc *ChartUseCase) GetChartMetadataFromApplication(ctx context.Context, uuid, facility string, app *Application) (*ChartMetadata, error) {
-	metadata := &ChartMetadata{}
+func (uc *ChartUseCase) GetChartFileFromApplication(ctx context.Context, uuid, facility string, app *Application) (*ChartFile, error) {
+	file := &ChartFile{}
 	wg := sync.WaitGroup{}
 	wg.Go(func() {
 		// FIXME: invalid label
@@ -105,5 +114,5 @@ func (uc *ChartUseCase) GetChartMetadataFromApplication(ctx context.Context, uui
 		// }
 	})
 	wg.Wait()
-	return metadata, nil
+	return file, nil
 }
