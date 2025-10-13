@@ -9,6 +9,15 @@ import (
 	"github.com/canonical/gomaasclient/entity/subnet"
 )
 
+type (
+	Fabric            = entity.Fabric
+	VLAN              = entity.VLAN
+	Subnet            = entity.Subnet
+	IPRange           = entity.IPRange
+	IPAddress         = subnet.IPAddress
+	NetworkStatistics = subnet.Statistics
+)
+
 type Network struct {
 	*Fabric
 	*VLAN
@@ -21,15 +30,6 @@ type NetworkSubnet struct {
 	IPAddresses []IPAddress
 	IPRanges    []IPRange
 }
-
-type (
-	Fabric            = entity.Fabric
-	VLAN              = entity.VLAN
-	Subnet            = entity.Subnet
-	IPRange           = entity.IPRange
-	IPAddress         = subnet.IPAddress
-	NetworkStatistics = subnet.Statistics
-)
 
 type FabricRepo interface {
 	List(ctx context.Context) ([]Fabric, error)

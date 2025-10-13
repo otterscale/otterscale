@@ -24,6 +24,29 @@ import (
 	"k8s.io/client-go/tools/remotecommand"
 )
 
+type (
+	KubernetesTime             = metav1.Time
+	DaemonSet                  = appsv1.DaemonSet
+	Deployment                 = appsv1.Deployment
+	StatefulSet                = appsv1.StatefulSet
+	Job                        = batchv1.Job
+	JobSpec                    = batchv1.JobSpec
+	ConfigMap                  = corev1.ConfigMap
+	Container                  = corev1.Container
+	ContainerStatus            = corev1.ContainerStatus
+	Namespace                  = corev1.Namespace
+	Node                       = corev1.Node
+	PersistentVolumeClaim      = corev1.PersistentVolumeClaim
+	PersistentVolumeAccessMode = corev1.PersistentVolumeAccessMode
+	Pod                        = corev1.Pod
+	PodCondition               = corev1.PodCondition
+	PodPhase                   = corev1.PodPhase
+	Secret                     = corev1.Secret
+	Service                    = corev1.Service
+	ServicePort                = corev1.ServicePort
+	StorageClass               = storagev1.StorageClass
+)
+
 type Application struct {
 	*ChartFile
 	Type       string
@@ -50,29 +73,6 @@ type TTYSession struct {
 	outReader *io.PipeReader
 	outWriter *io.PipeWriter
 }
-
-type (
-	KubernetesTime             = metav1.Time
-	DaemonSet                  = appsv1.DaemonSet
-	Deployment                 = appsv1.Deployment
-	StatefulSet                = appsv1.StatefulSet
-	Job                        = batchv1.Job
-	JobSpec                    = batchv1.JobSpec
-	ConfigMap                  = corev1.ConfigMap
-	Container                  = corev1.Container
-	ContainerStatus            = corev1.ContainerStatus
-	Namespace                  = corev1.Namespace
-	Node                       = corev1.Node
-	PersistentVolumeClaim      = corev1.PersistentVolumeClaim
-	PersistentVolumeAccessMode = corev1.PersistentVolumeAccessMode
-	Pod                        = corev1.Pod
-	PodCondition               = corev1.PodCondition
-	PodPhase                   = corev1.PodPhase
-	Secret                     = corev1.Secret
-	Service                    = corev1.Service
-	ServicePort                = corev1.ServicePort
-	StorageClass               = storagev1.StorageClass
-)
 
 type KubeAppsRepo interface {
 	ListDaemonSets(ctx context.Context, config *rest.Config, namespace string) ([]DaemonSet, error)

@@ -10,8 +10,6 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/aws/aws-sdk-go-v2/service/s3/types"
-
 	pb "github.com/otterscale/otterscale/api/storage/v1"
 	"github.com/otterscale/otterscale/api/storage/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/core"
@@ -20,17 +18,19 @@ import (
 type StorageService struct {
 	pbconnect.UnimplementedStorageServiceHandler
 
-	uc *core.StorageUseCase
+	storage *core.StorageUseCase
 }
 
-func NewStorageService(uc *core.StorageUseCase) *StorageService {
-	return &StorageService{uc: uc}
+func NewStorageService(storage *core.StorageUseCase) *StorageService {
+	return &StorageService{
+		storage: storage,
+	}
 }
 
 var _ pbconnect.StorageServiceHandler = (*StorageService)(nil)
 
 func (s *StorageService) ListMONs(ctx context.Context, req *pb.ListMONsRequest) (*pb.ListMONsResponse, error) {
-	mons, err := s.uc.ListMONs(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	mons, err := s.storage.ListMONs(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (s *StorageService) ListMONs(ctx context.Context, req *pb.ListMONsRequest) 
 }
 
 func (s *StorageService) ListOSDs(ctx context.Context, req *pb.ListOSDsRequest) (*pb.ListOSDsResponse, error) {
-	osds, err := s.uc.ListOSDs(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	osds, err := s.storage.ListOSDs(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (s *StorageService) ListOSDs(ctx context.Context, req *pb.ListOSDsRequest) 
 }
 
 func (s *StorageService) DoSMART(ctx context.Context, req *pb.DoSMARTRequest) (*pb.DoSMARTResponse, error) {
-	outputs, err := s.uc.DoSMART(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetOsdName())
+	outputs, err := s.storage.DoSMART(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetOsdName())
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (s *StorageService) DoSMART(ctx context.Context, req *pb.DoSMARTRequest) (*
 }
 
 func (s *StorageService) ListPools(ctx context.Context, req *pb.ListPoolsRequest) (*pb.ListPoolsResponse, error) {
-	pools, err := s.uc.ListPools(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetApplication())
+	pools, err := s.storage.ListPools(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetApplication())
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (s *StorageService) CreatePool(ctx context.Context, req *pb.CreatePoolReque
 		}
 		apps = append(apps, app)
 	}
-	pool, err := s.uc.CreatePool(ctx,
+	pool, err := s.storage.CreatePool(ctx,
 		req.GetScopeUuid(),
 		req.GetFacilityName(),
 		req.GetPoolName(),
@@ -97,7 +97,7 @@ func (s *StorageService) CreatePool(ctx context.Context, req *pb.CreatePoolReque
 }
 
 func (s *StorageService) UpdatePool(ctx context.Context, req *pb.UpdatePoolRequest) (*pb.Pool, error) {
-	pool, err := s.uc.UpdatePool(ctx,
+	pool, err := s.storage.UpdatePool(ctx,
 		req.GetScopeUuid(),
 		req.GetFacilityName(),
 		req.GetPoolName(),
@@ -112,7 +112,7 @@ func (s *StorageService) UpdatePool(ctx context.Context, req *pb.UpdatePoolReque
 }
 
 func (s *StorageService) DeletePool(ctx context.Context, req *pb.DeletePoolRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeletePool(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName()); err != nil {
+	if err := s.storage.DeletePool(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -120,7 +120,7 @@ func (s *StorageService) DeletePool(ctx context.Context, req *pb.DeletePoolReque
 }
 
 func (s *StorageService) ListImages(ctx context.Context, req *pb.ListImagesRequest) (*pb.ListImagesResponse, error) {
-	imgs, err := s.uc.ListImages(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	imgs, err := s.storage.ListImages(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +130,7 @@ func (s *StorageService) ListImages(ctx context.Context, req *pb.ListImagesReque
 }
 
 func (s *StorageService) CreateImage(ctx context.Context, req *pb.CreateImageRequest) (*pb.Image, error) {
-	img, err := s.uc.CreateImage(ctx,
+	img, err := s.storage.CreateImage(ctx,
 		req.GetScopeUuid(),
 		req.GetFacilityName(),
 		req.GetPoolName(),
@@ -153,7 +153,7 @@ func (s *StorageService) CreateImage(ctx context.Context, req *pb.CreateImageReq
 }
 
 func (s *StorageService) UpdateImage(ctx context.Context, req *pb.UpdateImageRequest) (*pb.Image, error) {
-	img, err := s.uc.UpdateImage(ctx,
+	img, err := s.storage.UpdateImage(ctx,
 		req.GetScopeUuid(),
 		req.GetFacilityName(),
 		req.GetPoolName(),
@@ -168,7 +168,7 @@ func (s *StorageService) UpdateImage(ctx context.Context, req *pb.UpdateImageReq
 }
 
 func (s *StorageService) DeleteImage(ctx context.Context, req *pb.DeleteImageRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteImage(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName()); err != nil {
+	if err := s.storage.DeleteImage(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -176,7 +176,7 @@ func (s *StorageService) DeleteImage(ctx context.Context, req *pb.DeleteImageReq
 }
 
 func (s *StorageService) CreateImageSnapshot(ctx context.Context, req *pb.CreateImageSnapshotRequest) (*pb.Image_Snapshot, error) {
-	snap, err := s.uc.CreateImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName())
+	snap, err := s.storage.CreateImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName())
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +185,7 @@ func (s *StorageService) CreateImageSnapshot(ctx context.Context, req *pb.Create
 }
 
 func (s *StorageService) DeleteImageSnapshot(ctx context.Context, req *pb.DeleteImageSnapshotRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
+	if err := s.storage.DeleteImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -193,7 +193,7 @@ func (s *StorageService) DeleteImageSnapshot(ctx context.Context, req *pb.Delete
 }
 
 func (s *StorageService) RollbackImageSnapshot(ctx context.Context, req *pb.RollbackImageSnapshotRequest) (*emptypb.Empty, error) {
-	if err := s.uc.RollbackImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
+	if err := s.storage.RollbackImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -201,7 +201,7 @@ func (s *StorageService) RollbackImageSnapshot(ctx context.Context, req *pb.Roll
 }
 
 func (s *StorageService) ProtectImageSnapshot(ctx context.Context, req *pb.ProtectImageSnapshotRequest) (*emptypb.Empty, error) {
-	if err := s.uc.ProtectImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
+	if err := s.storage.ProtectImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -209,7 +209,7 @@ func (s *StorageService) ProtectImageSnapshot(ctx context.Context, req *pb.Prote
 }
 
 func (s *StorageService) UnprotectImageSnapshot(ctx context.Context, req *pb.UnprotectImageSnapshotRequest) (*emptypb.Empty, error) {
-	if err := s.uc.UnprotectImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
+	if err := s.storage.UnprotectImageSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetPoolName(), req.GetImageName(), req.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -217,7 +217,7 @@ func (s *StorageService) UnprotectImageSnapshot(ctx context.Context, req *pb.Unp
 }
 
 func (s *StorageService) ListVolumes(ctx context.Context, req *pb.ListVolumesRequest) (*pb.ListVolumesResponse, error) {
-	volumes, err := s.uc.ListVolumes(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	volumes, err := s.storage.ListVolumes(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -227,7 +227,7 @@ func (s *StorageService) ListVolumes(ctx context.Context, req *pb.ListVolumesReq
 }
 
 func (s *StorageService) ListSubvolumes(ctx context.Context, req *pb.ListSubvolumesRequest) (*pb.ListSubvolumesResponse, error) {
-	subvolumes, err := s.uc.ListSubvolumes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName())
+	subvolumes, err := s.storage.ListSubvolumes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName())
 	if err != nil {
 		return nil, err
 	}
@@ -237,7 +237,7 @@ func (s *StorageService) ListSubvolumes(ctx context.Context, req *pb.ListSubvolu
 }
 
 func (s *StorageService) CreateSubvolume(ctx context.Context, req *pb.CreateSubvolumeRequest) (*pb.Subvolume, error) {
-	subvolume, err := s.uc.CreateSubvolume(ctx,
+	subvolume, err := s.storage.CreateSubvolume(ctx,
 		req.GetScopeUuid(),
 		req.GetFacilityName(),
 		req.GetVolumeName(),
@@ -254,7 +254,7 @@ func (s *StorageService) CreateSubvolume(ctx context.Context, req *pb.CreateSubv
 }
 
 func (s *StorageService) UpdateSubvolume(ctx context.Context, req *pb.UpdateSubvolumeRequest) (*pb.Subvolume, error) {
-	subvolume, err := s.uc.UpdateSubvolume(ctx,
+	subvolume, err := s.storage.UpdateSubvolume(ctx,
 		req.GetScopeUuid(),
 		req.GetFacilityName(),
 		req.GetVolumeName(),
@@ -270,7 +270,7 @@ func (s *StorageService) UpdateSubvolume(ctx context.Context, req *pb.UpdateSubv
 }
 
 func (s *StorageService) DeleteSubvolume(ctx context.Context, req *pb.DeleteSubvolumeRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteSubvolume(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName()); err != nil {
+	if err := s.storage.DeleteSubvolume(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -278,7 +278,7 @@ func (s *StorageService) DeleteSubvolume(ctx context.Context, req *pb.DeleteSubv
 }
 
 func (s *StorageService) GrantSubvolumeExportAccess(ctx context.Context, req *pb.GrantSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
-	if err := s.uc.GrantSubvolumeClient(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetSubvolumeName(), req.GetClientIp()); err != nil {
+	if err := s.storage.GrantSubvolumeClient(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetSubvolumeName(), req.GetClientIp()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -286,7 +286,7 @@ func (s *StorageService) GrantSubvolumeExportAccess(ctx context.Context, req *pb
 }
 
 func (s *StorageService) RevokeSubvolumeExportAccess(ctx context.Context, req *pb.RevokeSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
-	if err := s.uc.RevokeSubvolumeClient(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetSubvolumeName(), req.GetClientIp()); err != nil {
+	if err := s.storage.RevokeSubvolumeClient(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetSubvolumeName(), req.GetClientIp()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -294,7 +294,7 @@ func (s *StorageService) RevokeSubvolumeExportAccess(ctx context.Context, req *p
 }
 
 func (s *StorageService) CreateSubvolumeSnapshot(ctx context.Context, req *pb.CreateSubvolumeSnapshotRequest) (*pb.Subvolume_Snapshot, error) {
-	snapshot, err := s.uc.CreateSubvolumeSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName(), req.GetSnapshotName())
+	snapshot, err := s.storage.CreateSubvolumeSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName(), req.GetSnapshotName())
 	if err != nil {
 		return nil, err
 	}
@@ -303,7 +303,7 @@ func (s *StorageService) CreateSubvolumeSnapshot(ctx context.Context, req *pb.Cr
 }
 
 func (s *StorageService) DeleteSubvolumeSnapshot(ctx context.Context, req *pb.DeleteSubvolumeSnapshotRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteSubvolumeSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName(), req.GetSnapshotName()); err != nil {
+	if err := s.storage.DeleteSubvolumeSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName(), req.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -311,7 +311,7 @@ func (s *StorageService) DeleteSubvolumeSnapshot(ctx context.Context, req *pb.De
 }
 
 func (s *StorageService) ListSubvolumeGroups(ctx context.Context, req *pb.ListSubvolumeGroupsRequest) (*pb.ListSubvolumeGroupsResponse, error) {
-	groups, err := s.uc.ListSubvolumeGroups(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName())
+	groups, err := s.storage.ListSubvolumeGroups(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName())
 	if err != nil {
 		return nil, err
 	}
@@ -321,7 +321,7 @@ func (s *StorageService) ListSubvolumeGroups(ctx context.Context, req *pb.ListSu
 }
 
 func (s *StorageService) CreateSubvolumeGroup(ctx context.Context, req *pb.CreateSubvolumeGroupRequest) (*pb.SubvolumeGroup, error) {
-	group, err := s.uc.CreateSubvolumeGroup(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName(), req.GetQuotaBytes())
+	group, err := s.storage.CreateSubvolumeGroup(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName(), req.GetQuotaBytes())
 	if err != nil {
 		return nil, err
 	}
@@ -330,7 +330,7 @@ func (s *StorageService) CreateSubvolumeGroup(ctx context.Context, req *pb.Creat
 }
 
 func (s *StorageService) UpdateSubvolumeGroup(ctx context.Context, req *pb.UpdateSubvolumeGroupRequest) (*pb.SubvolumeGroup, error) {
-	group, err := s.uc.UpdateSubvolumeGroup(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName(), req.GetQuotaBytes())
+	group, err := s.storage.UpdateSubvolumeGroup(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName(), req.GetQuotaBytes())
 	if err != nil {
 		return nil, err
 	}
@@ -339,7 +339,7 @@ func (s *StorageService) UpdateSubvolumeGroup(ctx context.Context, req *pb.Updat
 }
 
 func (s *StorageService) DeleteSubvolumeGroup(ctx context.Context, req *pb.DeleteSubvolumeGroupRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteSubvolumeGroup(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName()); err != nil {
+	if err := s.storage.DeleteSubvolumeGroup(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetVolumeName(), req.GetGroupName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -347,7 +347,7 @@ func (s *StorageService) DeleteSubvolumeGroup(ctx context.Context, req *pb.Delet
 }
 
 func (s *StorageService) ListBuckets(ctx context.Context, req *pb.ListBucketsRequest) (*pb.ListBucketsResponse, error) {
-	buckets, err := s.uc.ListBuckets(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	buckets, err := s.storage.ListBuckets(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -357,7 +357,7 @@ func (s *StorageService) ListBuckets(ctx context.Context, req *pb.ListBucketsReq
 }
 
 func (s *StorageService) CreateBucket(ctx context.Context, req *pb.CreateBucketRequest) (*pb.Bucket, error) {
-	bucket, err := s.uc.CreateBucket(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), s.ACL(req.GetAcl().String()))
+	bucket, err := s.storage.CreateBucket(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), s.ACL(req.GetAcl().String()))
 	if err != nil {
 		return nil, err
 	}
@@ -366,7 +366,7 @@ func (s *StorageService) CreateBucket(ctx context.Context, req *pb.CreateBucketR
 }
 
 func (s *StorageService) UpdateBucket(ctx context.Context, req *pb.UpdateBucketRequest) (*pb.Bucket, error) {
-	bucket, err := s.uc.UpdateBucket(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), s.ACL(req.GetAcl().String()))
+	bucket, err := s.storage.UpdateBucket(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), s.ACL(req.GetAcl().String()))
 	if err != nil {
 		return nil, err
 	}
@@ -375,7 +375,7 @@ func (s *StorageService) UpdateBucket(ctx context.Context, req *pb.UpdateBucketR
 }
 
 func (s *StorageService) DeleteBucket(ctx context.Context, req *pb.DeleteBucketRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteBucket(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetBucketName()); err != nil {
+	if err := s.storage.DeleteBucket(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetBucketName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -383,7 +383,7 @@ func (s *StorageService) DeleteBucket(ctx context.Context, req *pb.DeleteBucketR
 }
 
 func (s *StorageService) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
-	users, err := s.uc.ListUsers(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	users, err := s.storage.ListUsers(ctx, req.GetScopeUuid(), req.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -393,7 +393,7 @@ func (s *StorageService) ListUsers(ctx context.Context, req *pb.ListUsersRequest
 }
 
 func (s *StorageService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.User, error) {
-	user, err := s.uc.CreateUser(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId(), req.GetUserName(), req.GetSuspended())
+	user, err := s.storage.CreateUser(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId(), req.GetUserName(), req.GetSuspended())
 	if err != nil {
 		return nil, err
 	}
@@ -402,7 +402,7 @@ func (s *StorageService) CreateUser(ctx context.Context, req *pb.CreateUserReque
 }
 
 func (s *StorageService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.User, error) {
-	user, err := s.uc.UpdateUser(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId(), req.GetUserName(), req.GetSuspended())
+	user, err := s.storage.UpdateUser(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId(), req.GetUserName(), req.GetSuspended())
 	if err != nil {
 		return nil, err
 	}
@@ -411,7 +411,7 @@ func (s *StorageService) UpdateUser(ctx context.Context, req *pb.UpdateUserReque
 }
 
 func (s *StorageService) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteUser(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId()); err != nil {
+	if err := s.storage.DeleteUser(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -419,7 +419,7 @@ func (s *StorageService) DeleteUser(ctx context.Context, req *pb.DeleteUserReque
 }
 
 func (s *StorageService) CreateUserKey(ctx context.Context, req *pb.CreateUserKeyRequest) (*pb.User_Key, error) {
-	key, err := s.uc.CreateUserKey(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId())
+	key, err := s.storage.CreateUserKey(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId())
 	if err != nil {
 		return nil, err
 	}
@@ -428,19 +428,19 @@ func (s *StorageService) CreateUserKey(ctx context.Context, req *pb.CreateUserKe
 }
 
 func (s *StorageService) DeleteUserKey(ctx context.Context, req *pb.DeleteUserKeyRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteUserKey(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId(), req.GetAccessKey()); err != nil {
+	if err := s.storage.DeleteUserKey(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetUserId(), req.GetAccessKey()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
 
-func (s *StorageService) ACL(str string) types.BucketCannedACL {
-	acl := types.BucketCannedACL(strings.ToLower(strings.Join(strings.Split(str, "_"), "-")))
+func (s *StorageService) ACL(str string) core.RGWBucketCannedACL {
+	acl := core.RGWBucketCannedACL(strings.ToLower(strings.Join(strings.Split(str, "_"), "-")))
 	if slices.Contains(acl.Values(), acl) {
 		return acl
 	}
-	return types.BucketCannedACLPrivate
+	return core.RGWBucketCannedACLPrivate
 }
 
 func toProtoStorageMachine(id, hostname string) *pb.Machine {
@@ -704,7 +704,7 @@ func toProtoBucket(b *core.RGWBucket) *pb.Bucket {
 	return ret
 }
 
-func toProtoBucketGrants(gs []types.Grant) []*pb.Bucket_Grant {
+func toProtoBucketGrants(gs []core.RGWGrant) []*pb.Bucket_Grant {
 	ret := []*pb.Bucket_Grant{}
 	for i := range gs {
 		ret = append(ret, toProtoBucketGrant(&gs[i]))
@@ -712,7 +712,7 @@ func toProtoBucketGrants(gs []types.Grant) []*pb.Bucket_Grant {
 	return ret
 }
 
-func toProtoBucketGrant(g *types.Grant) *pb.Bucket_Grant {
+func toProtoBucketGrant(g *core.RGWGrant) *pb.Bucket_Grant {
 	ret := &pb.Bucket_Grant{}
 	ret.SetType(string(g.Grantee.Type))
 	id := g.Grantee.ID

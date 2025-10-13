@@ -7,15 +7,20 @@ import (
 	"github.com/ceph/go-ceph/rgw/admin"
 )
 
+const RGWBucketCannedACLPrivate = types.BucketCannedACLPrivate
+
+type (
+	RGWBucketCannedACL = types.BucketCannedACL
+	RGWGrant           = types.Grant
+	RGWUser            = admin.User
+	RGWUserKey         = admin.UserKeySpec
+)
+
 type RGWBucket struct {
 	*admin.Bucket
 	Policy *string
 	Grants []types.Grant
 }
-
-type RGWUser = admin.User
-
-type RGWUserKey = admin.UserKeySpec
 
 type CephRGWRepo interface {
 	ListBuckets(ctx context.Context, config *StorageConfig) ([]RGWBucket, error)

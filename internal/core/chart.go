@@ -12,6 +12,13 @@ import (
 	"helm.sh/helm/v3/pkg/repo"
 )
 
+type (
+	ChartDependency = chart.Dependency
+	ChartMaintainer = chart.Maintainer
+	ChartMetadata   = chart.Metadata
+	ChartVersion    = repo.ChartVersion
+)
+
 type Chart struct {
 	Name     string
 	Versions repo.ChartVersions
@@ -22,13 +29,6 @@ type ChartFile struct {
 	ValuesYAML     string
 	Customization  map[string]any
 }
-
-type (
-	ChartDependency = chart.Dependency
-	ChartMaintainer = chart.Maintainer
-	ChartMetadata   = chart.Metadata
-	ChartVersion    = repo.ChartVersion
-)
 
 type ChartRepo interface {
 	List(ctx context.Context) ([]Chart, error)

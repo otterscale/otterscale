@@ -16,6 +16,15 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+type (
+	BlockDevice      = entity.BlockDevice
+	Event            = entity.Event
+	NetworkInterface = entity.NetworkInterface
+	NodeDevice       = entity.NodeDevice
+	NUMANode         = entity.NUMANode
+	Tag              = entity.Tag
+)
+
 type Machine struct {
 	*entity.Machine
 	GPUs             []NodeDevice
@@ -40,15 +49,6 @@ type MachineFactor struct {
 	*MachinePlacement
 	*MachineConstraint
 }
-
-type (
-	BlockDevice      = entity.BlockDevice
-	Event            = entity.Event
-	NetworkInterface = entity.NetworkInterface
-	NodeDevice       = entity.NodeDevice
-	NUMANode         = entity.NUMANode
-	Tag              = entity.Tag
-)
 
 type ClientRepo interface {
 	Status(ctx context.Context, uuid string, patterns []string) (*params.FullStatus, error)

@@ -18,6 +18,14 @@ import (
 	"github.com/juju/juju/rpc/params"
 )
 
+type (
+	FacilityActionSpec     = action.ActionSpec
+	FacilityStatus         = params.ApplicationStatus
+	FacilityUnitStatus     = params.UnitStatus
+	FacilityDetailedStatus = params.DetailedStatus
+	FacilityMachineStatus  = params.MachineStatus
+)
+
 type FacilityMetadata struct {
 	ConfigYAML string
 }
@@ -100,14 +108,6 @@ type CharmResult struct {
 	Unlisted     bool                  `json:"unlisted"`
 	Website      string                `json:"website"`
 }
-
-type (
-	FacilityActionSpec     = action.ActionSpec
-	FacilityStatus         = params.ApplicationStatus
-	FacilityUnitStatus     = params.UnitStatus
-	FacilityDetailedStatus = params.DetailedStatus
-	FacilityMachineStatus  = params.MachineStatus
-)
 
 type FacilityRepo interface {
 	Create(ctx context.Context, uuid, name string, configYAML string, charmName, channel string, revision, number int, base *corebase.Base, placements []instance.Placement, constraint *constraints.Value, trust bool) (*application.DeployInfo, error)
