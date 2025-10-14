@@ -364,6 +364,7 @@ send_request() {
 send_status_data() {
     local phase="$1"
     local message="$2"
+    local new_url="${3:-}"
 
     # Skip if endpoint is not configured
     if [[ -z "$OTTERSCALE_ENDPOINT" ]]; then
@@ -374,69 +375,14 @@ send_status_data() {
     data=$(cat <<EOF
 {
     "phase": "$phase",
-    "message": "$message"
+    "message": "$message",
+    "new_url": "$new_url"
+
 }
 EOF
 )
 
     send_request "/otterscale.environment.v1.EnvironmentService/UpdateStatus" "$data"
-}
-
-# Send complete configuration to OtterScale
-send_otterscale_config_data() {
-    local maas_endpoint="http://$OTTERSCALE_INTERFACE_IP:5240/MAAS"
-    local kube_folder="/home/$NON_ROOT_USER/.kube"
-
-    log "INFO" "Collecting OtterScale configuration data..." "CONFIG_SEND"
-
-    # Get MAAS API key
-    local maas_key
-    maas_key=$(su "$NON_ROOT_USER" -c "juju show-credentials maas-cloud maas-cloud-credential --show-secrets --client | grep maas-oauth | awk '{print \$2}'")
-
-    # Get Juju controller information
-    local controller_name controller_details
-    controller_name=$(su "$NON_ROOT_USER" -c "juju controllers --format json | jq -r '.\"current-controller\"'")
-    controller_details=$(su "$NON_ROOT_USER" -c "juju show-controller '$controller_name' --show-password --format=json")
-
-    # Extract controller details
-    local juju_endpoints juju_username juju_password juju_cacert
-    juju_endpoints=$(echo "$controller_details" | jq -r ".\"$controller_name\".details.\"api-endpoints\"")
-    juju_username=$(echo "$controller_details" | jq -r ".\"$controller_name\".account.user")
-    juju_password=$(echo "$controller_details" | jq -r ".\"$controller_name\".account.password")
-    juju_cacert=$(echo "$controller_details" | jq -r ".\"$controller_name\".details.\"ca-cert\"")
-
-    # Get Kubernetes configuration
-    local k8s_endpoints k8s_token
-    k8s_endpoints=$(microk8s kubectl get EndpointSlice kubernetes -o json | jq -r '.endpoints[0].addresses[0] + ":" + (.ports[0].port | tostring)')
-    k8s_token=$(base64 -w 0 "$kube_folder/config")
-
-    # Build configuration JSON
-    local config_data
-    config_data=$(cat <<EOF
-{
-    "maas_url": "$maas_endpoint",
-    "maas_key": "$maas_key",
-    "maas_version": "$OTTERSCALE_MAAS_VERSION",
-    "juju_controller": "$controller_name",
-    "juju_controller_addresses": $juju_endpoints,
-    "juju_username": "$juju_username",
-    "juju_password": "$juju_password",
-    "juju_ca_cert": $(echo "$juju_cacert" | jq -sRr '@json'),
-    "juju_cloud_name": "maas-cloud",
-    "juju_cloud_region": "default",
-    "juju_charmhub_api_url": "$OTTERSCALE_CHARMHUB_URL",
-    "micro_k8s_token": "$k8s_token",
-    "micro_k8s_host": "https://$k8s_endpoints"
-}
-EOF
-)
-
-    # Send configuration data
-    if send_request "/otterscale.environment.v1.EnvironmentService/UpdateConfig" "$config_data"; then
-        log "INFO" "Configuration data sent successfully" "CONFIG_SEND"
-    else
-        log "WARN" "Failed to send configuration data to OtterScale" "CONFIG_SEND"
-    fi
 }
 
 # =============================================================================
@@ -1623,8 +1569,8 @@ main() {
     # Final configuration
     log "INFO" "Finalizing configuration..." "FINAL_CONFIG"
     config_modules
-    send_otterscale_config_data
     otterscale_helm_deploy
+    ## send_otterscale_url
 
     log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
 }
