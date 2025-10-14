@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/bootstrap/v1/bootstrap.proto.
  */
 export const file_api_bootstrap_v1_bootstrap: GenFile = /*@__PURE__*/
-  fileDesc("CiBhcGkvYm9vdHN0cmFwL3YxL2Jvb3RzdHJhcC5wcm90bxIXb3R0ZXJzY2FsZS5ib290c3RyYXAudjEiFAoSV2F0Y2hTdGF0dXNSZXF1ZXN0IlgKE1dhdGNoU3RhdHVzUmVzcG9uc2USDwoHc3RhcnRlZBgBIAEoCBIQCghmaW5pc2hlZBgCIAEoCBINCgVwaGFzZRgLIAEoCRIPCgdtZXNzYWdlGAwgASgJIjUKE1VwZGF0ZVN0YXR1c1JlcXVlc3QSDQoFcGhhc2UYASABKAkSDwoHbWVzc2FnZRgCIAEoCTLUAQoQQm9vdHN0cmFwU2VydmljZRJqCgtXYXRjaFN0YXR1cxIrLm90dGVyc2NhbGUuYm9vdHN0cmFwLnYxLldhdGNoU3RhdHVzUmVxdWVzdBosLm90dGVyc2NhbGUuYm9vdHN0cmFwLnYxLldhdGNoU3RhdHVzUmVzcG9uc2UwARJUCgxVcGRhdGVTdGF0dXMSLC5vdHRlcnNjYWxlLmJvb3RzdHJhcC52MS5VcGRhdGVTdGF0dXNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5QjZaNGdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9ib290c3RyYXAvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty]);
+  fileDesc("CiBhcGkvYm9vdHN0cmFwL3YxL2Jvb3RzdHJhcC5wcm90bxIXb3R0ZXJzY2FsZS5ib290c3RyYXAudjEiFAoSV2F0Y2hTdGF0dXNSZXF1ZXN0IkYKE1dhdGNoU3RhdHVzUmVzcG9uc2USDQoFcGhhc2UYASABKAkSDwoHbWVzc2FnZRgCIAEoCRIPCgduZXdfdXJsGAMgASgJIkYKE1VwZGF0ZVN0YXR1c1JlcXVlc3QSDQoFcGhhc2UYASABKAkSDwoHbWVzc2FnZRgCIAEoCRIPCgduZXdfdXJsGAMgASgJMtQBChBCb290c3RyYXBTZXJ2aWNlEmoKC1dhdGNoU3RhdHVzEisub3R0ZXJzY2FsZS5ib290c3RyYXAudjEuV2F0Y2hTdGF0dXNSZXF1ZXN0Giwub3R0ZXJzY2FsZS5ib290c3RyYXAudjEuV2F0Y2hTdGF0dXNSZXNwb25zZTABElQKDFVwZGF0ZVN0YXR1cxIsLm90dGVyc2NhbGUuYm9vdHN0cmFwLnYxLlVwZGF0ZVN0YXR1c1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHlCNlo0Z2l0aHViLmNvbS9vdHRlcnNjYWxlL290dGVyc2NhbGUvYXBpL2Jvb3RzdHJhcC92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty]);
 
 /**
  * @generated from message otterscale.bootstrap.v1.WatchStatusRequest
@@ -32,24 +32,19 @@ export const WatchStatusRequestSchema: GenMessage<WatchStatusRequest> = /*@__PUR
  */
 export type WatchStatusResponse = Message<"otterscale.bootstrap.v1.WatchStatusResponse"> & {
   /**
-   * @generated from field: bool started = 1;
-   */
-  started: boolean;
-
-  /**
-   * @generated from field: bool finished = 2;
-   */
-  finished: boolean;
-
-  /**
-   * @generated from field: string phase = 11;
+   * @generated from field: string phase = 1;
    */
   phase: string;
 
   /**
-   * @generated from field: string message = 12;
+   * @generated from field: string message = 2;
    */
   message: string;
+
+  /**
+   * @generated from field: string new_url = 3;
+   */
+  newUrl: string;
 };
 
 /**
@@ -72,6 +67,11 @@ export type UpdateStatusRequest = Message<"otterscale.bootstrap.v1.UpdateStatusR
    * @generated from field: string message = 2;
    */
   message: string;
+
+  /**
+   * @generated from field: string new_url = 3;
+   */
+  newUrl: string;
 };
 
 /**

@@ -51,7 +51,7 @@ func (s *BootstrapService) WatchStatus(ctx context.Context, _ *pb.WatchStatusReq
 
 func (s *BootstrapService) UpdateStatus(_ context.Context, req *pb.UpdateStatusRequest) (*emptypb.Empty, error) {
 	// Update the environment status in the use case layer
-	s.bootstrap.StoreStatus(req.GetPhase(), req.GetMessage())
+	s.bootstrap.StoreStatus(req.GetPhase(), req.GetMessage(), req.GetNewUrl())
 
 	status := s.bootstrap.LoadStatus()
 	select {
@@ -78,9 +78,8 @@ func (s *BootstrapService) broadcastStatus() {
 
 func toProtoWatchStatus(status *core.BootstrapStatus) *pb.WatchStatusResponse {
 	ret := &pb.WatchStatusResponse{}
-	ret.SetStarted(status.Started)
-	ret.SetFinished(status.Finished)
 	ret.SetPhase(status.Phase)
 	ret.SetMessage(status.Message)
+	ret.SetNewUrl(status.NewURL)
 	return ret
 }

@@ -14,13 +14,13 @@ service BootstrapService {
 message WatchStatusRequest {}
 
 message WatchStatusResponse {
-  bool started = 1;
-  bool finished = 2;
-  string phase = 11;
-  string message = 12;
+  string phase = 1;
+  string message = 2;
+  string new_url = 3;
 }
 
 message UpdateStatusRequest {
   string phase = 1;
   string message = 2;
+  string new_url = 3;
 }

@@ -112,3 +112,7 @@ func (uc *EnvironmentUseCase) DiscoverPrometheusURL(ctx context.Context) (*url.U
 
 	return nil, connect.NewError(connect.CodeNotFound, errors.New("prometheus URL not found in any COS scope"))
 }
+
+func isMAASConfigured(conf *config.Config) bool {
+	return conf.MAAS.Key != "::"
+}

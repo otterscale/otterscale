@@ -66,10 +66,9 @@ func (b0 WatchStatusRequest_builder) Build() *WatchStatusRequest {
 
 type WatchStatusResponse struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Started     bool                   `protobuf:"varint,1,opt,name=started"`
-	xxx_hidden_Finished    bool                   `protobuf:"varint,2,opt,name=finished"`
-	xxx_hidden_Phase       *string                `protobuf:"bytes,11,opt,name=phase"`
-	xxx_hidden_Message     *string                `protobuf:"bytes,12,opt,name=message"`
+	xxx_hidden_Phase       *string                `protobuf:"bytes,1,opt,name=phase"`
+	xxx_hidden_Message     *string                `protobuf:"bytes,2,opt,name=message"`
+	xxx_hidden_NewUrl      *string                `protobuf:"bytes,3,opt,name=new_url,json=newUrl"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -101,20 +100,6 @@ func (x *WatchStatusResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *WatchStatusResponse) GetStarted() bool {
-	if x != nil {
-		return x.xxx_hidden_Started
-	}
-	return false
-}
-
-func (x *WatchStatusResponse) GetFinished() bool {
-	if x != nil {
-		return x.xxx_hidden_Finished
-	}
-	return false
-}
-
 func (x *WatchStatusResponse) GetPhase() string {
 	if x != nil {
 		if x.xxx_hidden_Phase != nil {
@@ -135,102 +120,90 @@ func (x *WatchStatusResponse) GetMessage() string {
 	return ""
 }
 
-func (x *WatchStatusResponse) SetStarted(v bool) {
-	x.xxx_hidden_Started = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *WatchStatusResponse) SetFinished(v bool) {
-	x.xxx_hidden_Finished = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+func (x *WatchStatusResponse) GetNewUrl() string {
+	if x != nil {
+		if x.xxx_hidden_NewUrl != nil {
+			return *x.xxx_hidden_NewUrl
+		}
+		return ""
+	}
+	return ""
 }
 
 func (x *WatchStatusResponse) SetPhase(v string) {
 	x.xxx_hidden_Phase = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *WatchStatusResponse) SetMessage(v string) {
 	x.xxx_hidden_Message = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *WatchStatusResponse) HasStarted() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *WatchStatusResponse) HasFinished() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+func (x *WatchStatusResponse) SetNewUrl(v string) {
+	x.xxx_hidden_NewUrl = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *WatchStatusResponse) HasPhase() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
 func (x *WatchStatusResponse) HasMessage() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *WatchStatusResponse) ClearStarted() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Started = false
-}
-
-func (x *WatchStatusResponse) ClearFinished() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Finished = false
+func (x *WatchStatusResponse) HasNewUrl() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *WatchStatusResponse) ClearPhase() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Phase = nil
 }
 
 func (x *WatchStatusResponse) ClearMessage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Message = nil
+}
+
+func (x *WatchStatusResponse) ClearNewUrl() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_NewUrl = nil
 }
 
 type WatchStatusResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Started  *bool
-	Finished *bool
-	Phase    *string
-	Message  *string
+	Phase   *string
+	Message *string
+	NewUrl  *string
 }
 
 func (b0 WatchStatusResponse_builder) Build() *WatchStatusResponse {
 	m0 := &WatchStatusResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Started != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_Started = *b.Started
-	}
-	if b.Finished != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Finished = *b.Finished
-	}
 	if b.Phase != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Phase = b.Phase
 	}
 	if b.Message != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Message = b.Message
+	}
+	if b.NewUrl != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_NewUrl = b.NewUrl
 	}
 	return m0
 }
@@ -239,6 +212,7 @@ type UpdateStatusRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Phase       *string                `protobuf:"bytes,1,opt,name=phase"`
 	xxx_hidden_Message     *string                `protobuf:"bytes,2,opt,name=message"`
+	xxx_hidden_NewUrl      *string                `protobuf:"bytes,3,opt,name=new_url,json=newUrl"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -290,14 +264,29 @@ func (x *UpdateStatusRequest) GetMessage() string {
 	return ""
 }
 
+func (x *UpdateStatusRequest) GetNewUrl() string {
+	if x != nil {
+		if x.xxx_hidden_NewUrl != nil {
+			return *x.xxx_hidden_NewUrl
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *UpdateStatusRequest) SetPhase(v string) {
 	x.xxx_hidden_Phase = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *UpdateStatusRequest) SetMessage(v string) {
 	x.xxx_hidden_Message = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *UpdateStatusRequest) SetNewUrl(v string) {
+	x.xxx_hidden_NewUrl = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *UpdateStatusRequest) HasPhase() bool {
@@ -314,6 +303,13 @@ func (x *UpdateStatusRequest) HasMessage() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
+func (x *UpdateStatusRequest) HasNewUrl() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
 func (x *UpdateStatusRequest) ClearPhase() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Phase = nil
@@ -324,11 +320,17 @@ func (x *UpdateStatusRequest) ClearMessage() {
 	x.xxx_hidden_Message = nil
 }
 
+func (x *UpdateStatusRequest) ClearNewUrl() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_NewUrl = nil
+}
+
 type UpdateStatusRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Phase   *string
 	Message *string
+	NewUrl  *string
 }
 
 func (b0 UpdateStatusRequest_builder) Build() *UpdateStatusRequest {
@@ -336,12 +338,16 @@ func (b0 UpdateStatusRequest_builder) Build() *UpdateStatusRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Phase != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Phase = b.Phase
 	}
 	if b.Message != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Message = b.Message
+	}
+	if b.NewUrl != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_NewUrl = b.NewUrl
 	}
 	return m0
 }
@@ -351,15 +357,15 @@ var File_api_bootstrap_v1_bootstrap_proto protoreflect.FileDescriptor
 const file_api_bootstrap_v1_bootstrap_proto_rawDesc = "" +
 	"\n" +
 	" api/bootstrap/v1/bootstrap.proto\x12\x17otterscale.bootstrap.v1\x1a\x1bgoogle/protobuf/empty.proto\"\x14\n" +
-	"\x12WatchStatusRequest\"{\n" +
-	"\x13WatchStatusResponse\x12\x18\n" +
-	"\astarted\x18\x01 \x01(\bR\astarted\x12\x1a\n" +
-	"\bfinished\x18\x02 \x01(\bR\bfinished\x12\x14\n" +
-	"\x05phase\x18\v \x01(\tR\x05phase\x12\x18\n" +
-	"\amessage\x18\f \x01(\tR\amessage\"E\n" +
+	"\x12WatchStatusRequest\"^\n" +
+	"\x13WatchStatusResponse\x12\x14\n" +
+	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12\x17\n" +
+	"\anew_url\x18\x03 \x01(\tR\x06newUrl\"^\n" +
 	"\x13UpdateStatusRequest\x12\x14\n" +
 	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\xd4\x01\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12\x17\n" +
+	"\anew_url\x18\x03 \x01(\tR\x06newUrl2\xd4\x01\n" +
 	"\x10BootstrapService\x12j\n" +
 	"\vWatchStatus\x12+.otterscale.bootstrap.v1.WatchStatusRequest\x1a,.otterscale.bootstrap.v1.WatchStatusResponse0\x01\x12T\n" +
 	"\fUpdateStatus\x12,.otterscale.bootstrap.v1.UpdateStatusRequest\x1a\x16.google.protobuf.EmptyB6Z4github.com/otterscale/otterscale/api/bootstrap/v1;pbb\beditionsp\xe8\a"

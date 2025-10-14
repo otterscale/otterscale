@@ -1,21 +1,38 @@
 package cmd
 
 import (
+	"log/slog"
+	"os"
+
 	"github.com/spf13/cobra"
 
-	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/mux"
 )
 
-func NewBootstrap(_ *mux.Bootstrap) *cobra.Command {
+func NewBootstrap(bootstrap *mux.Bootstrap) *cobra.Command {
+	var address string
+
 	cmd := &cobra.Command{
-		Use: "bootstrap",
-		// Short:   "Initialize a new OtterScale configuration",
-		// Long:    "Initialize a new OtterScale configuration by printing the default configuration to stdout. This outputs the default configuration that can be redirected to a file.",
-		// Example: "otterscale init > config.yaml\notterscale init > /path/to/config.yaml",
+		Use:     "bootstrap",
+		Short:   "Start the bootstrap API server",
+		Long:    "Start the OtterScale API server that provides gRPC and HTTP endpoints for bootstrap service",
+		Example: "otterscale bootstrap --address=:8299",
 		RunE: func(_ *cobra.Command, _ []string) error {
-			return config.PrintDefaultConfig()
+			if os.Getenv(containerEnvVar) != "" {
+				address = defaultContainerAddress
+				slog.Info("Container environment detected, using default configuration", "address", address)
+			}
+			return startHTTPServer(address, bootstrap)
 		},
 	}
+
+	cmd.Flags().StringVarP(
+		&address,
+		"address",
+		"a",
+		":0",
+		"address of service",
+	)
+
 	return cmd
 }
