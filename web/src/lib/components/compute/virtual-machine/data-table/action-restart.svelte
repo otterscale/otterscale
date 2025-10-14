@@ -29,8 +29,8 @@
 
 	async function restartVM() {
 		const request = {
-			scopeUuid: $currentKubernetes?.scopeUuid,
-			facilityName: $currentKubernetes?.name,
+			scope: $currentKubernetes?.scope,
+			facility: $currentKubernetes?.name,
 			name: virtualMachine.name,
 			namespace: virtualMachine.namespace,
 		};

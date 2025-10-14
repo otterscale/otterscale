@@ -19,8 +19,7 @@
 </script>
 
 <script lang="ts">
-	let { scopeUuid, facilityName, namespace }: { scopeUuid: string; facilityName: string; namespace: string } =
-		$props();
+	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -31,8 +30,8 @@
 	const reloadManager = new ReloadManager(() => {
 		virtualMachineClient
 			.listDataVolumes({
-				scopeUuid: scopeUuid,
-				facilityName: facilityName,
+				scope: scope,
+				facility: facility,
 				namespace: namespace,
 				bootImage: true,
 			})
@@ -46,8 +45,8 @@
 		try {
 			await virtualMachineClient
 				.listDataVolumes({
-					scopeUuid: scopeUuid,
-					facilityName: facilityName,
+					scope: scope,
+					facility: facility,
 					namespace: namespace,
 					bootImage: true,
 				})

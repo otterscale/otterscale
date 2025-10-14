@@ -1082,13 +1082,13 @@ func (b0 ListBootImageSelectionsResponse_builder) Build() *ListBootImageSelectio
 }
 
 type CephBlockDevice struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *CephBlockDevice) Reset() {
@@ -1116,78 +1116,78 @@ func (x *CephBlockDevice) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *CephBlockDevice) GetScopeUuid() string {
+func (x *CephBlockDevice) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *CephBlockDevice) GetFacilityName() string {
+func (x *CephBlockDevice) GetFacility() string {
 	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *CephBlockDevice) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *CephBlockDevice) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *CephBlockDevice) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
+func (x *CephBlockDevice) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *CephBlockDevice) HasScopeUuid() bool {
+func (x *CephBlockDevice) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CephBlockDevice) HasFacilityName() bool {
+func (x *CephBlockDevice) HasFacility() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CephBlockDevice) ClearScopeUuid() {
+func (x *CephBlockDevice) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
-func (x *CephBlockDevice) ClearFacilityName() {
+func (x *CephBlockDevice) ClearFacility() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
+	x.xxx_hidden_Facility = nil
 }
 
 type CephBlockDevice_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid    *string
-	FacilityName *string
+	Scope    *string
+	Facility *string
 }
 
 func (b0 CephBlockDevice_builder) Build() *CephBlockDevice {
 	m0 := &CephBlockDevice{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.FacilityName != nil {
+	if b.Facility != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_FacilityName = b.FacilityName
+		x.xxx_hidden_Facility = b.Facility
 	}
 	return m0
 }
@@ -1304,16 +1304,16 @@ func (b0 NetworkFileSystem_builder) Build() *NetworkFileSystem {
 }
 
 type InternalObjectService struct {
-	state                   protoimpl.MessageState     `protogen:"opaque.v1"`
-	xxx_hidden_Type         InternalObjectService_Type `protobuf:"varint,1,opt,name=type,enum=otterscale.configuration.v1.InternalObjectService_Type"`
-	xxx_hidden_ScopeUuid    *string                    `protobuf:"bytes,2,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                    `protobuf:"bytes,3,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Name         *string                    `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Endpoint     *string                    `protobuf:"bytes,5,opt,name=endpoint"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	state                  protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Type        InternalObjectService_Type `protobuf:"varint,1,opt,name=type,enum=otterscale.configuration.v1.InternalObjectService_Type"`
+	xxx_hidden_Scope       *string                    `protobuf:"bytes,2,opt,name=scope"`
+	xxx_hidden_Facility    *string                    `protobuf:"bytes,3,opt,name=facility"`
+	xxx_hidden_Name        *string                    `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_Endpoint    *string                    `protobuf:"bytes,5,opt,name=endpoint"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *InternalObjectService) Reset() {
@@ -1350,20 +1350,20 @@ func (x *InternalObjectService) GetType() InternalObjectService_Type {
 	return InternalObjectService_UNSPECIFIED
 }
 
-func (x *InternalObjectService) GetScopeUuid() string {
+func (x *InternalObjectService) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *InternalObjectService) GetFacilityName() string {
+func (x *InternalObjectService) GetFacility() string {
 	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -1395,13 +1395,13 @@ func (x *InternalObjectService) SetType(v InternalObjectService_Type) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
-func (x *InternalObjectService) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *InternalObjectService) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
-func (x *InternalObjectService) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
+func (x *InternalObjectService) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
@@ -1422,14 +1422,14 @@ func (x *InternalObjectService) HasType() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *InternalObjectService) HasScopeUuid() bool {
+func (x *InternalObjectService) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *InternalObjectService) HasFacilityName() bool {
+func (x *InternalObjectService) HasFacility() bool {
 	if x == nil {
 		return false
 	}
@@ -1455,14 +1455,14 @@ func (x *InternalObjectService) ClearType() {
 	x.xxx_hidden_Type = InternalObjectService_UNSPECIFIED
 }
 
-func (x *InternalObjectService) ClearScopeUuid() {
+func (x *InternalObjectService) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
-func (x *InternalObjectService) ClearFacilityName() {
+func (x *InternalObjectService) ClearFacility() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_FacilityName = nil
+	x.xxx_hidden_Facility = nil
 }
 
 func (x *InternalObjectService) ClearName() {
@@ -1478,11 +1478,11 @@ func (x *InternalObjectService) ClearEndpoint() {
 type InternalObjectService_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Type         *InternalObjectService_Type
-	ScopeUuid    *string
-	FacilityName *string
-	Name         *string
-	Endpoint     *string
+	Type     *InternalObjectService_Type
+	Scope    *string
+	Facility *string
+	Name     *string
+	Endpoint *string
 }
 
 func (b0 InternalObjectService_builder) Build() *InternalObjectService {
@@ -1493,13 +1493,13 @@ func (b0 InternalObjectService_builder) Build() *InternalObjectService {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Type = *b.Type
 	}
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.FacilityName != nil {
+	if b.Facility != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_FacilityName = b.FacilityName
+		x.xxx_hidden_Facility = b.Facility
 	}
 	if b.Name != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
@@ -2873,7 +2873,7 @@ func (b0 DeleteTestResultRequest_builder) Build() *DeleteTestResultRequest {
 
 type ListInternalObjectServicesRequest struct {
 	state                     protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid      *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_KubernetesName *string                `protobuf:"bytes,2,opt,name=kubernetes_name,json=kubernetesName"`
 	xxx_hidden_CephName       *string                `protobuf:"bytes,3,opt,name=ceph_name,json=cephName"`
 	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
@@ -2907,10 +2907,10 @@ func (x *ListInternalObjectServicesRequest) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-func (x *ListInternalObjectServicesRequest) GetScopeUuid() string {
+func (x *ListInternalObjectServicesRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
@@ -2937,8 +2937,8 @@ func (x *ListInternalObjectServicesRequest) GetCephName() string {
 	return ""
 }
 
-func (x *ListInternalObjectServicesRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *ListInternalObjectServicesRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
@@ -2952,7 +2952,7 @@ func (x *ListInternalObjectServicesRequest) SetCephName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *ListInternalObjectServicesRequest) HasScopeUuid() bool {
+func (x *ListInternalObjectServicesRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
@@ -2973,9 +2973,9 @@ func (x *ListInternalObjectServicesRequest) HasCephName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *ListInternalObjectServicesRequest) ClearScopeUuid() {
+func (x *ListInternalObjectServicesRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
 func (x *ListInternalObjectServicesRequest) ClearKubernetesName() {
@@ -2991,7 +2991,7 @@ func (x *ListInternalObjectServicesRequest) ClearCephName() {
 type ListInternalObjectServicesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid      *string
+	Scope          *string
 	KubernetesName *string
 	CephName       *string
 }
@@ -3000,9 +3000,9 @@ func (b0 ListInternalObjectServicesRequest_builder) Build() *ListInternalObjectS
 	m0 := &ListInternalObjectServicesRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
 	if b.KubernetesName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
@@ -5001,19 +5001,17 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\timporting\x18\x01 \x01(\bR\timporting\" \n" +
 	"\x1eListBootImageSelectionsRequest\"\x94\x01\n" +
 	"\x1fListBootImageSelectionsResponse\x12q\n" +
-	"\x15boot_image_selections\x18\x01 \x03(\v2=.otterscale.configuration.v1.Configuration.BootImageSelectionR\x13bootImageSelections\"U\n" +
-	"\x0fCephBlockDevice\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"C\n" +
+	"\x15boot_image_selections\x18\x01 \x03(\v2=.otterscale.configuration.v1.Configuration.BootImageSelectionR\x13bootImageSelections\"C\n" +
+	"\x0fCephBlockDevice\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\"C\n" +
 	"\x11NetworkFileSystem\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x12\n" +
-	"\x04path\x18\x02 \x01(\tR\x04path\"\x86\x02\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path\"\xf4\x01\n" +
 	"\x15InternalObjectService\x12K\n" +
-	"\x04type\x18\x01 \x01(\x0e27.otterscale.configuration.v1.InternalObjectService.TypeR\x04type\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x02 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x03 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04type\x18\x01 \x01(\x0e27.otterscale.configuration.v1.InternalObjectService.TypeR\x04type\x12\x14\n" +
+	"\x05scope\x18\x02 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x03 \x01(\tR\bfacility\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1a\n" +
 	"\bendpoint\x18\x05 \x01(\tR\bendpoint\",\n" +
 	"\x04Type\x12\x0f\n" +
@@ -5136,10 +5134,9 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x04warp\x18f \x01(\v2!.otterscale.configuration.v1.WarpH\x00R\x04warpB\x06\n" +
 	"\x04kind\"-\n" +
 	"\x17DeleteTestResultRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"\x88\x01\n" +
-	"!ListInternalObjectServicesRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12'\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"\x7f\n" +
+	"!ListInternalObjectServicesRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12'\n" +
 	"\x0fkubernetes_name\x18\x02 \x01(\tR\x0ekubernetesName\x12\x1b\n" +
 	"\tceph_name\x18\x03 \x01(\tR\bcephName\"\x92\x01\n" +
 	"\"ListInternalObjectServicesResponse\x12l\n" +

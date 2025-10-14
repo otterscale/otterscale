@@ -46,7 +46,7 @@ func (uc *OrchestratorUseCase) resolveCalicoCIDR(userCalicoCIDR string) string {
 	return defaultCalicoCIDR
 }
 
-func (uc *OrchestratorUseCase) createEssential(ctx context.Context, uuid, machineID, prefix string, charms []EssentialCharm, configs map[string]string, tags []string) error {
+func (uc *OrchestratorUseCase) createEssential(ctx context.Context, scope, machineID, prefix string, charms []EssentialCharm, configs map[string]string, tags []string) error {
 	directive, err := uc.getMachineDirective(ctx, machineID)
 	if err != nil {
 		return err
@@ -61,7 +61,7 @@ func (uc *OrchestratorUseCase) createEssential(ctx context.Context, uuid, machin
 		return err
 	}
 
-	return uc.deployCharms(ctx, uuid, prefix, directive, charms, configs, &base)
+	return uc.deployCharms(ctx, scope, prefix, directive, charms, configs, &base)
 }
 
 func (uc *OrchestratorUseCase) applyTags(ctx context.Context, machineID string, tags []string) error {
@@ -74,23 +74,23 @@ func (uc *OrchestratorUseCase) applyTags(ctx context.Context, machineID string, 
 	return nil
 }
 
-func (uc *OrchestratorUseCase) deployCharms(ctx context.Context, uuid, prefix, directive string, charms []EssentialCharm, configs map[string]string, base *base.Base) error {
+func (uc *OrchestratorUseCase) deployCharms(ctx context.Context, scope, prefix, directive string, charms []EssentialCharm, configs map[string]string, base *base.Base) error {
 	eg, egctx := errgroup.WithContext(ctx)
 
 	for _, charm := range charms {
 		eg.Go(func() error {
-			return uc.deployCharm(egctx, uuid, prefix, directive, charm, configs[charm.Name], base)
+			return uc.deployCharm(egctx, scope, prefix, directive, charm, configs[charm.Name], base)
 		})
 	}
 
 	return eg.Wait()
 }
 
-func (uc *OrchestratorUseCase) deployCharm(ctx context.Context, uuid, prefix, directive string, charm EssentialCharm, config string, base *base.Base) error {
+func (uc *OrchestratorUseCase) deployCharm(ctx context.Context, scope, prefix, directive string, charm EssentialCharm, config string, base *base.Base) error {
 	name := toEssentialName(prefix, charm.Name)
 	placements := uc.buildPlacements(directive, charm)
 
-	_, err := uc.facility.Create(ctx, uuid, name, config, charm.Name, charm.Channel, charm.Revision, 1, base, placements, nil, true)
+	_, err := uc.facility.Create(ctx, scope, name, config, charm.Name, charm.Channel, charm.Revision, 1, base, placements, nil, true)
 	return err
 }
 
@@ -103,12 +103,12 @@ func (uc *OrchestratorUseCase) buildPlacements(directive string, charm Essential
 	return []instance.Placement{*placement}
 }
 
-func (uc *OrchestratorUseCase) createEssentialRelations(ctx context.Context, uuid string, endpointList [][]string) error {
+func (uc *OrchestratorUseCase) createEssentialRelations(ctx context.Context, scope string, endpointList [][]string) error {
 	eg, egctx := errgroup.WithContext(ctx)
 
 	for _, endpoints := range endpointList {
 		eg.Go(func() error {
-			_, err := uc.facility.CreateRelation(egctx, uuid, endpoints)
+			_, err := uc.facility.CreateRelation(egctx, scope, endpoints)
 			return err
 		})
 	}
@@ -129,7 +129,7 @@ func (uc *OrchestratorUseCase) getMachineDirective(ctx context.Context, machineI
 	return getJujuMachineID(machine.WorkloadAnnotations)
 }
 
-func (uc *OrchestratorUseCase) validateMachineStatus(ctx context.Context, uuid, machineID string) error {
+func (uc *OrchestratorUseCase) validateMachineStatus(ctx context.Context, scope, machineID string) error {
 	machine, err := uc.machine.Get(ctx, machineID)
 	if err != nil {
 		return err
@@ -139,16 +139,16 @@ func (uc *OrchestratorUseCase) validateMachineStatus(ctx context.Context, uuid, 
 		return connect.NewError(connect.CodeInvalidArgument, errors.New("machine is not deployed"))
 	}
 
-	return uc.validateJujuMachineStatus(ctx, uuid, machine)
+	return uc.validateJujuMachineStatus(ctx, scope, machine)
 }
 
-func (uc *OrchestratorUseCase) validateJujuMachineStatus(ctx context.Context, uuid string, machine *Machine) error {
+func (uc *OrchestratorUseCase) validateJujuMachineStatus(ctx context.Context, scope string, machine *Machine) error {
 	id, err := getJujuMachineID(machine.WorkloadAnnotations)
 	if err != nil {
 		return err
 	}
 
-	fullStatus, err := uc.client.Status(ctx, uuid, []string{"machine", id})
+	fullStatus, err := uc.client.Status(ctx, scope, []string{"machine", id})
 	if err != nil {
 		return err
 	}

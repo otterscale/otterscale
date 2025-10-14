@@ -21,8 +21,8 @@ func NewKey(juju *Juju) core.KeyRepo {
 
 var _ core.KeyRepo = (*key)(nil)
 
-func (r *key) Add(_ context.Context, uuid, key string) error {
-	conn, err := r.juju.connection(uuid)
+func (r *key) Add(_ context.Context, scope, key string) error {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}

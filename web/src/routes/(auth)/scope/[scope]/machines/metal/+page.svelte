@@ -12,7 +12,7 @@
 </script>
 
 {#if $activeScope}
-	{#key $activeScope.uuid}
+	{#key $activeScope.name}
 		<Metals />
 	{/key}
 {/if}

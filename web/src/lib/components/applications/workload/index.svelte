@@ -11,11 +11,11 @@
 
 <script lang="ts">
 	let {
-		scopeUuid,
-		facilityName,
+		scope,
+		facility,
 		namespace,
 		applicationName,
-	}: { scopeUuid: string; facilityName: string; namespace: string; applicationName: string } = $props();
+	}: { scope: string; facility: string; namespace: string; applicationName: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(ApplicationService, transport);
@@ -27,8 +27,8 @@
 		try {
 			client
 				.getApplication({
-					scopeUuid: scopeUuid,
-					facilityName: facilityName,
+					scope: scope,
+					facility: facility,
 					namespace: namespace,
 					name: applicationName,
 				})

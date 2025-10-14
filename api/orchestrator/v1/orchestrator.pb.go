@@ -70,8 +70,7 @@ type Essential struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Type        Essential_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.orchestrator.v1.Essential_Type"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
-	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,11,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_ScopeName   *string                `protobuf:"bytes,12,opt,name=scope_name,json=scopeName"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,11,opt,name=scope"`
 	xxx_hidden_Units       *[]*Essential_Unit     `protobuf:"bytes,21,rep,name=units"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -123,20 +122,10 @@ func (x *Essential) GetName() string {
 	return ""
 }
 
-func (x *Essential) GetScopeUuid() string {
+func (x *Essential) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *Essential) GetScopeName() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeName != nil {
-			return *x.xxx_hidden_ScopeName
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
@@ -154,22 +143,17 @@ func (x *Essential) GetUnits() []*Essential_Unit {
 
 func (x *Essential) SetType(v Essential_Type) {
 	x.xxx_hidden_Type = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *Essential) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
-func (x *Essential) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
-}
-
-func (x *Essential) SetScopeName(v string) {
-	x.xxx_hidden_ScopeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+func (x *Essential) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *Essential) SetUnits(v []*Essential_Unit) {
@@ -190,18 +174,11 @@ func (x *Essential) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Essential) HasScopeUuid() bool {
+func (x *Essential) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *Essential) HasScopeName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *Essential) ClearType() {
@@ -214,24 +191,18 @@ func (x *Essential) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *Essential) ClearScopeUuid() {
+func (x *Essential) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_ScopeUuid = nil
-}
-
-func (x *Essential) ClearScopeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_ScopeName = nil
+	x.xxx_hidden_Scope = nil
 }
 
 type Essential_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Type      *Essential_Type
-	Name      *string
-	ScopeUuid *string
-	ScopeName *string
-	Units     []*Essential_Unit
+	Type  *Essential_Type
+	Name  *string
+	Scope *string
+	Units []*Essential_Unit
 }
 
 func (b0 Essential_builder) Build() *Essential {
@@ -239,20 +210,16 @@ func (b0 Essential_builder) Build() *Essential {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Type = *b.Type
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Name = b.Name
 	}
-	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
-	}
-	if b.ScopeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
-		x.xxx_hidden_ScopeName = b.ScopeName
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		x.xxx_hidden_Scope = b.Scope
 	}
 	x.xxx_hidden_Units = &b.Units
 	return m0
@@ -261,7 +228,7 @@ func (b0 Essential_builder) Build() *Essential {
 type ListEssentialsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Type        Essential_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.orchestrator.v1.Essential_Type"`
-	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,2,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,2,opt,name=scope"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -302,10 +269,10 @@ func (x *ListEssentialsRequest) GetType() Essential_Type {
 	return Essential_UNKNOWN
 }
 
-func (x *ListEssentialsRequest) GetScopeUuid() string {
+func (x *ListEssentialsRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
@@ -317,8 +284,8 @@ func (x *ListEssentialsRequest) SetType(v Essential_Type) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *ListEssentialsRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *ListEssentialsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
@@ -329,7 +296,7 @@ func (x *ListEssentialsRequest) HasType() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListEssentialsRequest) HasScopeUuid() bool {
+func (x *ListEssentialsRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
@@ -341,16 +308,16 @@ func (x *ListEssentialsRequest) ClearType() {
 	x.xxx_hidden_Type = Essential_UNKNOWN
 }
 
-func (x *ListEssentialsRequest) ClearScopeUuid() {
+func (x *ListEssentialsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
 type ListEssentialsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Type      *Essential_Type
-	ScopeUuid *string
+	Type  *Essential_Type
+	Scope *string
 }
 
 func (b0 ListEssentialsRequest_builder) Build() *ListEssentialsRequest {
@@ -361,9 +328,9 @@ func (b0 ListEssentialsRequest_builder) Build() *ListEssentialsRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Type = *b.Type
 	}
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
 	return m0
 }
@@ -429,7 +396,7 @@ func (b0 ListEssentialsResponse_builder) Build() *ListEssentialsResponse {
 
 type CreateNodeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_MachineId   *string                `protobuf:"bytes,2,opt,name=machine_id,json=machineId"`
 	xxx_hidden_PrefixName  *string                `protobuf:"bytes,3,opt,name=prefix_name,json=prefixName"`
 	xxx_hidden_VirtualIps  []string               `protobuf:"bytes,11,rep,name=virtual_ips,json=virtualIps"`
@@ -466,10 +433,10 @@ func (x *CreateNodeRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *CreateNodeRequest) GetScopeUuid() string {
+func (x *CreateNodeRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
@@ -520,8 +487,8 @@ func (x *CreateNodeRequest) GetOsdDevices() []string {
 	return nil
 }
 
-func (x *CreateNodeRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *CreateNodeRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
@@ -548,7 +515,7 @@ func (x *CreateNodeRequest) SetOsdDevices(v []string) {
 	x.xxx_hidden_OsdDevices = v
 }
 
-func (x *CreateNodeRequest) HasScopeUuid() bool {
+func (x *CreateNodeRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
@@ -576,9 +543,9 @@ func (x *CreateNodeRequest) HasCalicoCidr() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *CreateNodeRequest) ClearScopeUuid() {
+func (x *CreateNodeRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
 func (x *CreateNodeRequest) ClearMachineId() {
@@ -599,7 +566,7 @@ func (x *CreateNodeRequest) ClearCalicoCidr() {
 type CreateNodeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid  *string
+	Scope      *string
 	MachineId  *string
 	PrefixName *string
 	VirtualIps []string
@@ -611,9 +578,9 @@ func (b0 CreateNodeRequest_builder) Build() *CreateNodeRequest {
 	m0 := &CreateNodeRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
 	if b.MachineId != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
@@ -634,7 +601,7 @@ func (b0 CreateNodeRequest_builder) Build() *CreateNodeRequest {
 
 type CreateClusterRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_MachineId   *string                `protobuf:"bytes,2,opt,name=machine_id,json=machineId"`
 	xxx_hidden_PrefixName  *string                `protobuf:"bytes,3,opt,name=prefix_name,json=prefixName"`
 	xxx_hidden_VirtualIps  []string               `protobuf:"bytes,11,rep,name=virtual_ips,json=virtualIps"`
@@ -671,10 +638,10 @@ func (x *CreateClusterRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *CreateClusterRequest) GetScopeUuid() string {
+func (x *CreateClusterRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
@@ -725,8 +692,8 @@ func (x *CreateClusterRequest) GetOsdDevices() []string {
 	return nil
 }
 
-func (x *CreateClusterRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *CreateClusterRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
@@ -753,7 +720,7 @@ func (x *CreateClusterRequest) SetOsdDevices(v []string) {
 	x.xxx_hidden_OsdDevices = v
 }
 
-func (x *CreateClusterRequest) HasScopeUuid() bool {
+func (x *CreateClusterRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
@@ -781,9 +748,9 @@ func (x *CreateClusterRequest) HasCalicoCidr() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *CreateClusterRequest) ClearScopeUuid() {
+func (x *CreateClusterRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
 func (x *CreateClusterRequest) ClearMachineId() {
@@ -804,7 +771,7 @@ func (x *CreateClusterRequest) ClearCalicoCidr() {
 type CreateClusterRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid  *string
+	Scope      *string
 	MachineId  *string
 	PrefixName *string
 	VirtualIps []string
@@ -816,9 +783,9 @@ func (b0 CreateClusterRequest_builder) Build() *CreateClusterRequest {
 	m0 := &CreateClusterRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
 	if b.MachineId != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
@@ -840,7 +807,7 @@ func (b0 CreateClusterRequest_builder) Build() *CreateClusterRequest {
 type AddClusterUnitsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Type        Essential_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.orchestrator.v1.Essential_Type"`
-	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,2,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,2,opt,name=scope"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,3,opt,name=name"`
 	xxx_hidden_Number      int32                  `protobuf:"varint,4,opt,name=number"`
 	xxx_hidden_MachineIds  []string               `protobuf:"bytes,5,rep,name=machine_ids,json=machineIds"`
@@ -885,10 +852,10 @@ func (x *AddClusterUnitsRequest) GetType() Essential_Type {
 	return Essential_UNKNOWN
 }
 
-func (x *AddClusterUnitsRequest) GetScopeUuid() string {
+func (x *AddClusterUnitsRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
@@ -931,8 +898,8 @@ func (x *AddClusterUnitsRequest) SetType(v Essential_Type) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
-func (x *AddClusterUnitsRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *AddClusterUnitsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
@@ -962,7 +929,7 @@ func (x *AddClusterUnitsRequest) HasType() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *AddClusterUnitsRequest) HasScopeUuid() bool {
+func (x *AddClusterUnitsRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
@@ -995,9 +962,9 @@ func (x *AddClusterUnitsRequest) ClearType() {
 	x.xxx_hidden_Type = Essential_UNKNOWN
 }
 
-func (x *AddClusterUnitsRequest) ClearScopeUuid() {
+func (x *AddClusterUnitsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
 func (x *AddClusterUnitsRequest) ClearName() {
@@ -1019,7 +986,7 @@ type AddClusterUnitsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Type       *Essential_Type
-	ScopeUuid  *string
+	Scope      *string
 	Name       *string
 	Number     *int32
 	MachineIds []string
@@ -1034,9 +1001,9 @@ func (b0 AddClusterUnitsRequest_builder) Build() *AddClusterUnitsRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
 		x.xxx_hidden_Type = *b.Type
 	}
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
 	if b.Name != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
@@ -1055,15 +1022,15 @@ func (b0 AddClusterUnitsRequest_builder) Build() *AddClusterUnitsRequest {
 }
 
 type ListKubernetesNodeLabelsRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Hostname     *string                `protobuf:"bytes,3,opt,name=hostname"`
-	xxx_hidden_All          bool                   `protobuf:"varint,11,opt,name=all"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	xxx_hidden_Hostname    *string                `protobuf:"bytes,3,opt,name=hostname"`
+	xxx_hidden_All         bool                   `protobuf:"varint,11,opt,name=all"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ListKubernetesNodeLabelsRequest) Reset() {
@@ -1091,20 +1058,20 @@ func (x *ListKubernetesNodeLabelsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListKubernetesNodeLabelsRequest) GetScopeUuid() string {
+func (x *ListKubernetesNodeLabelsRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *ListKubernetesNodeLabelsRequest) GetFacilityName() string {
+func (x *ListKubernetesNodeLabelsRequest) GetFacility() string {
 	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -1128,13 +1095,13 @@ func (x *ListKubernetesNodeLabelsRequest) GetAll() bool {
 	return false
 }
 
-func (x *ListKubernetesNodeLabelsRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *ListKubernetesNodeLabelsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *ListKubernetesNodeLabelsRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
+func (x *ListKubernetesNodeLabelsRequest) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
@@ -1148,14 +1115,14 @@ func (x *ListKubernetesNodeLabelsRequest) SetAll(v bool) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *ListKubernetesNodeLabelsRequest) HasScopeUuid() bool {
+func (x *ListKubernetesNodeLabelsRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListKubernetesNodeLabelsRequest) HasFacilityName() bool {
+func (x *ListKubernetesNodeLabelsRequest) HasFacility() bool {
 	if x == nil {
 		return false
 	}
@@ -1176,14 +1143,14 @@ func (x *ListKubernetesNodeLabelsRequest) HasAll() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *ListKubernetesNodeLabelsRequest) ClearScopeUuid() {
+func (x *ListKubernetesNodeLabelsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListKubernetesNodeLabelsRequest) ClearFacilityName() {
+func (x *ListKubernetesNodeLabelsRequest) ClearFacility() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
+	x.xxx_hidden_Facility = nil
 }
 
 func (x *ListKubernetesNodeLabelsRequest) ClearHostname() {
@@ -1199,23 +1166,23 @@ func (x *ListKubernetesNodeLabelsRequest) ClearAll() {
 type ListKubernetesNodeLabelsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid    *string
-	FacilityName *string
-	Hostname     *string
-	All          *bool
+	Scope    *string
+	Facility *string
+	Hostname *string
+	All      *bool
 }
 
 func (b0 ListKubernetesNodeLabelsRequest_builder) Build() *ListKubernetesNodeLabelsRequest {
 	m0 := &ListKubernetesNodeLabelsRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.FacilityName != nil {
+	if b.Facility != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_FacilityName = b.FacilityName
+		x.xxx_hidden_Facility = b.Facility
 	}
 	if b.Hostname != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
@@ -1286,15 +1253,15 @@ func (b0 ListKubernetesNodeLabelsResponse_builder) Build() *ListKubernetesNodeLa
 }
 
 type UpdateKubernetesNodeLabelsRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Hostname     *string                `protobuf:"bytes,3,opt,name=hostname"`
-	xxx_hidden_Labels       map[string]string      `protobuf:"bytes,4,rep,name=labels" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	xxx_hidden_Hostname    *string                `protobuf:"bytes,3,opt,name=hostname"`
+	xxx_hidden_Labels      map[string]string      `protobuf:"bytes,4,rep,name=labels" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *UpdateKubernetesNodeLabelsRequest) Reset() {
@@ -1322,20 +1289,20 @@ func (x *UpdateKubernetesNodeLabelsRequest) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-func (x *UpdateKubernetesNodeLabelsRequest) GetScopeUuid() string {
+func (x *UpdateKubernetesNodeLabelsRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *UpdateKubernetesNodeLabelsRequest) GetFacilityName() string {
+func (x *UpdateKubernetesNodeLabelsRequest) GetFacility() string {
 	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -1359,13 +1326,13 @@ func (x *UpdateKubernetesNodeLabelsRequest) GetLabels() map[string]string {
 	return nil
 }
 
-func (x *UpdateKubernetesNodeLabelsRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *UpdateKubernetesNodeLabelsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *UpdateKubernetesNodeLabelsRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
+func (x *UpdateKubernetesNodeLabelsRequest) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
@@ -1378,14 +1345,14 @@ func (x *UpdateKubernetesNodeLabelsRequest) SetLabels(v map[string]string) {
 	x.xxx_hidden_Labels = v
 }
 
-func (x *UpdateKubernetesNodeLabelsRequest) HasScopeUuid() bool {
+func (x *UpdateKubernetesNodeLabelsRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UpdateKubernetesNodeLabelsRequest) HasFacilityName() bool {
+func (x *UpdateKubernetesNodeLabelsRequest) HasFacility() bool {
 	if x == nil {
 		return false
 	}
@@ -1399,14 +1366,14 @@ func (x *UpdateKubernetesNodeLabelsRequest) HasHostname() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UpdateKubernetesNodeLabelsRequest) ClearScopeUuid() {
+func (x *UpdateKubernetesNodeLabelsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
-func (x *UpdateKubernetesNodeLabelsRequest) ClearFacilityName() {
+func (x *UpdateKubernetesNodeLabelsRequest) ClearFacility() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
+	x.xxx_hidden_Facility = nil
 }
 
 func (x *UpdateKubernetesNodeLabelsRequest) ClearHostname() {
@@ -1417,23 +1384,23 @@ func (x *UpdateKubernetesNodeLabelsRequest) ClearHostname() {
 type UpdateKubernetesNodeLabelsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid    *string
-	FacilityName *string
-	Hostname     *string
-	Labels       map[string]string
+	Scope    *string
+	Facility *string
+	Hostname *string
+	Labels   map[string]string
 }
 
 func (b0 UpdateKubernetesNodeLabelsRequest_builder) Build() *UpdateKubernetesNodeLabelsRequest {
 	m0 := &UpdateKubernetesNodeLabelsRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.FacilityName != nil {
+	if b.Facility != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_FacilityName = b.FacilityName
+		x.xxx_hidden_Facility = b.Facility
 	}
 	if b.Hostname != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
@@ -1716,14 +1683,14 @@ func (*gPURelation_Gpu) isGPURelation_Entity() {}
 func (*gPURelation_Machine_) isGPURelation_Entity() {}
 
 type ListGPURelationsByMachineRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_MachineId    *string                `protobuf:"bytes,3,opt,name=machine_id,json=machineId"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	xxx_hidden_MachineId   *string                `protobuf:"bytes,3,opt,name=machine_id,json=machineId"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ListGPURelationsByMachineRequest) Reset() {
@@ -1751,20 +1718,20 @@ func (x *ListGPURelationsByMachineRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListGPURelationsByMachineRequest) GetScopeUuid() string {
+func (x *ListGPURelationsByMachineRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *ListGPURelationsByMachineRequest) GetFacilityName() string {
+func (x *ListGPURelationsByMachineRequest) GetFacility() string {
 	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -1781,13 +1748,13 @@ func (x *ListGPURelationsByMachineRequest) GetMachineId() string {
 	return ""
 }
 
-func (x *ListGPURelationsByMachineRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *ListGPURelationsByMachineRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *ListGPURelationsByMachineRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
+func (x *ListGPURelationsByMachineRequest) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
@@ -1796,14 +1763,14 @@ func (x *ListGPURelationsByMachineRequest) SetMachineId(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *ListGPURelationsByMachineRequest) HasScopeUuid() bool {
+func (x *ListGPURelationsByMachineRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListGPURelationsByMachineRequest) HasFacilityName() bool {
+func (x *ListGPURelationsByMachineRequest) HasFacility() bool {
 	if x == nil {
 		return false
 	}
@@ -1817,14 +1784,14 @@ func (x *ListGPURelationsByMachineRequest) HasMachineId() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *ListGPURelationsByMachineRequest) ClearScopeUuid() {
+func (x *ListGPURelationsByMachineRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListGPURelationsByMachineRequest) ClearFacilityName() {
+func (x *ListGPURelationsByMachineRequest) ClearFacility() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
+	x.xxx_hidden_Facility = nil
 }
 
 func (x *ListGPURelationsByMachineRequest) ClearMachineId() {
@@ -1835,22 +1802,22 @@ func (x *ListGPURelationsByMachineRequest) ClearMachineId() {
 type ListGPURelationsByMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid    *string
-	FacilityName *string
-	MachineId    *string
+	Scope     *string
+	Facility  *string
+	MachineId *string
 }
 
 func (b0 ListGPURelationsByMachineRequest_builder) Build() *ListGPURelationsByMachineRequest {
 	m0 := &ListGPURelationsByMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.FacilityName != nil {
+	if b.Facility != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_FacilityName = b.FacilityName
+		x.xxx_hidden_Facility = b.Facility
 	}
 	if b.MachineId != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
@@ -1919,15 +1886,15 @@ func (b0 ListGPURelationsByMachineResponse_builder) Build() *ListGPURelationsByM
 }
 
 type ListGPURelationsByModelRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_ModelName    *string                `protobuf:"bytes,4,opt,name=model_name,json=modelName"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_ModelName   *string                `protobuf:"bytes,4,opt,name=model_name,json=modelName"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ListGPURelationsByModelRequest) Reset() {
@@ -1955,20 +1922,20 @@ func (x *ListGPURelationsByModelRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListGPURelationsByModelRequest) GetScopeUuid() string {
+func (x *ListGPURelationsByModelRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *ListGPURelationsByModelRequest) GetFacilityName() string {
+func (x *ListGPURelationsByModelRequest) GetFacility() string {
 	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -1995,13 +1962,13 @@ func (x *ListGPURelationsByModelRequest) GetModelName() string {
 	return ""
 }
 
-func (x *ListGPURelationsByModelRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *ListGPURelationsByModelRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *ListGPURelationsByModelRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
+func (x *ListGPURelationsByModelRequest) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
@@ -2015,14 +1982,14 @@ func (x *ListGPURelationsByModelRequest) SetModelName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *ListGPURelationsByModelRequest) HasScopeUuid() bool {
+func (x *ListGPURelationsByModelRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListGPURelationsByModelRequest) HasFacilityName() bool {
+func (x *ListGPURelationsByModelRequest) HasFacility() bool {
 	if x == nil {
 		return false
 	}
@@ -2043,14 +2010,14 @@ func (x *ListGPURelationsByModelRequest) HasModelName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *ListGPURelationsByModelRequest) ClearScopeUuid() {
+func (x *ListGPURelationsByModelRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListGPURelationsByModelRequest) ClearFacilityName() {
+func (x *ListGPURelationsByModelRequest) ClearFacility() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
+	x.xxx_hidden_Facility = nil
 }
 
 func (x *ListGPURelationsByModelRequest) ClearNamespace() {
@@ -2066,23 +2033,23 @@ func (x *ListGPURelationsByModelRequest) ClearModelName() {
 type ListGPURelationsByModelRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid    *string
-	FacilityName *string
-	Namespace    *string
-	ModelName    *string
+	Scope     *string
+	Facility  *string
+	Namespace *string
+	ModelName *string
 }
 
 func (b0 ListGPURelationsByModelRequest_builder) Build() *ListGPURelationsByModelRequest {
 	m0 := &ListGPURelationsByModelRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.FacilityName != nil {
+	if b.Facility != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_FacilityName = b.FacilityName
+		x.xxx_hidden_Facility = b.Facility
 	}
 	if b.Namespace != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
@@ -2432,13 +2399,13 @@ func (b0 Plugin_builder) Build() *Plugin {
 }
 
 type ListPluginsRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ListPluginsRequest) Reset() {
@@ -2466,78 +2433,78 @@ func (x *ListPluginsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListPluginsRequest) GetScopeUuid() string {
+func (x *ListPluginsRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *ListPluginsRequest) GetFacilityName() string {
+func (x *ListPluginsRequest) GetFacility() string {
 	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *ListPluginsRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *ListPluginsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *ListPluginsRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
+func (x *ListPluginsRequest) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *ListPluginsRequest) HasScopeUuid() bool {
+func (x *ListPluginsRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListPluginsRequest) HasFacilityName() bool {
+func (x *ListPluginsRequest) HasFacility() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListPluginsRequest) ClearScopeUuid() {
+func (x *ListPluginsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListPluginsRequest) ClearFacilityName() {
+func (x *ListPluginsRequest) ClearFacility() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
+	x.xxx_hidden_Facility = nil
 }
 
 type ListPluginsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid    *string
-	FacilityName *string
+	Scope    *string
+	Facility *string
 }
 
 func (b0 ListPluginsRequest_builder) Build() *ListPluginsRequest {
 	m0 := &ListPluginsRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.FacilityName != nil {
+	if b.Facility != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_FacilityName = b.FacilityName
+		x.xxx_hidden_Facility = b.Facility
 	}
 	return m0
 }
@@ -3687,14 +3654,11 @@ var File_api_orchestrator_v1_orchestrator_proto protoreflect.FileDescriptor
 
 const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\n" +
-	"&api/orchestrator/v1/orchestrator.proto\x12\x1aotterscale.orchestrator.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc8\x02\n" +
+	"&api/orchestrator/v1/orchestrator.proto\x12\x1aotterscale.orchestrator.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa0\x02\n" +
 	"\tEssential\x12>\n" +
 	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Essential.TypeR\x04type\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\v \x01(\tR\tscopeUuid\x12\x1d\n" +
-	"\n" +
-	"scope_name\x18\f \x01(\tR\tscopeName\x12@\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
+	"\x05scope\x18\v \x01(\tR\x05scope\x12@\n" +
 	"\x05units\x18\x15 \x03(\v2*.otterscale.orchestrator.v1.Essential.UnitR\x05units\x1a8\n" +
 	"\x04Unit\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
@@ -3703,31 +3667,16 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\aUNKNOWN\x10\x00\x12\x0e\n" +
 	"\n" +
 	"KUBERNETES\x10\x01\x12\b\n" +
-	"\x04CEPH\x10\x02\"v\n" +
+	"\x04CEPH\x10\x02\"m\n" +
 	"\x15ListEssentialsRequest\x12>\n" +
-	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Essential.TypeR\x04type\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x02 \x01(\tR\tscopeUuid\"_\n" +
+	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Essential.TypeR\x04type\x12\x14\n" +
+	"\x05scope\x18\x02 \x01(\tR\x05scope\"_\n" +
 	"\x16ListEssentialsResponse\x12E\n" +
 	"\n" +
 	"essentials\x18\x01 \x03(\v2%.otterscale.orchestrator.v1.EssentialR\n" +
-	"essentials\"\xd5\x01\n" +
-	"\x11CreateNodeRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12\x1d\n" +
-	"\n" +
-	"machine_id\x18\x02 \x01(\tR\tmachineId\x12\x1f\n" +
-	"\vprefix_name\x18\x03 \x01(\tR\n" +
-	"prefixName\x12\x1f\n" +
-	"\vvirtual_ips\x18\v \x03(\tR\n" +
-	"virtualIps\x12\x1f\n" +
-	"\vcalico_cidr\x18\f \x01(\tR\n" +
-	"calicoCidr\x12\x1f\n" +
-	"\vosd_devices\x18\x15 \x03(\tR\n" +
-	"osdDevices\"\xd8\x01\n" +
-	"\x14CreateClusterRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12\x1d\n" +
+	"essentials\"\xcc\x01\n" +
+	"\x11CreateNodeRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1d\n" +
 	"\n" +
 	"machine_id\x18\x02 \x01(\tR\tmachineId\x12\x1f\n" +
 	"\vprefix_name\x18\x03 \x01(\tR\n" +
@@ -3737,31 +3686,40 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\vcalico_cidr\x18\f \x01(\tR\n" +
 	"calicoCidr\x12\x1f\n" +
 	"\vosd_devices\x18\x15 \x03(\tR\n" +
-	"osdDevices\"\xda\x01\n" +
+	"osdDevices\"\xcf\x01\n" +
+	"\x14CreateClusterRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1d\n" +
+	"\n" +
+	"machine_id\x18\x02 \x01(\tR\tmachineId\x12\x1f\n" +
+	"\vprefix_name\x18\x03 \x01(\tR\n" +
+	"prefixName\x12\x1f\n" +
+	"\vvirtual_ips\x18\v \x03(\tR\n" +
+	"virtualIps\x12\x1f\n" +
+	"\vcalico_cidr\x18\f \x01(\tR\n" +
+	"calicoCidr\x12\x1f\n" +
+	"\vosd_devices\x18\x15 \x03(\tR\n" +
+	"osdDevices\"\xd1\x01\n" +
 	"\x16AddClusterUnitsRequest\x12>\n" +
-	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Essential.TypeR\x04type\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x02 \x01(\tR\tscopeUuid\x12\x12\n" +
+	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Essential.TypeR\x04type\x12\x14\n" +
+	"\x05scope\x18\x02 \x01(\tR\x05scope\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x16\n" +
 	"\x06number\x18\x04 \x01(\x05R\x06number\x12\x1f\n" +
 	"\vmachine_ids\x18\x05 \x03(\tR\n" +
 	"machineIds\x12\x14\n" +
-	"\x05force\x18\v \x01(\bR\x05force\"\x93\x01\n" +
-	"\x1fListKubernetesNodeLabelsRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1a\n" +
+	"\x05force\x18\v \x01(\bR\x05force\"\x81\x01\n" +
+	"\x1fListKubernetesNodeLabelsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1a\n" +
 	"\bhostname\x18\x03 \x01(\tR\bhostname\x12\x10\n" +
 	"\x03all\x18\v \x01(\bR\x03all\"\xbf\x01\n" +
 	" ListKubernetesNodeLabelsResponse\x12`\n" +
 	"\x06labels\x18\x01 \x03(\v2H.otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.LabelsEntryR\x06labels\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xa1\x02\n" +
-	"!UpdateKubernetesNodeLabelsRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1a\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x8f\x02\n" +
+	"!UpdateKubernetesNodeLabelsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1a\n" +
 	"\bhostname\x18\x03 \x01(\tR\bhostname\x12a\n" +
 	"\x06labels\x18\x04 \x03(\v2I.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntryR\x06labels\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
@@ -3802,19 +3760,17 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\aMachine\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1a\n" +
 	"\bhostname\x18\x02 \x01(\tR\bhostnameB\b\n" +
-	"\x06entity\"\x85\x01\n" +
-	" ListGPURelationsByMachineRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1d\n" +
+	"\x06entity\"s\n" +
+	" ListGPURelationsByMachineRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1d\n" +
 	"\n" +
 	"machine_id\x18\x03 \x01(\tR\tmachineId\"q\n" +
 	"!ListGPURelationsByMachineResponse\x12L\n" +
-	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\xa1\x01\n" +
-	"\x1eListGPURelationsByModelRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\x8f\x01\n" +
+	"\x1eListGPURelationsByModelRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x1d\n" +
 	"\n" +
 	"model_name\x18\x04 \x01(\tR\tmodelName\"o\n" +
@@ -3836,11 +3792,10 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\vapp_version\x18\x03 \x01(\tR\n" +
 	"appVersion\x12 \n" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x12\n" +
-	"\x04icon\x18\x05 \x01(\tR\x04icon\"X\n" +
-	"\x12ListPluginsRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"S\n" +
+	"\x04icon\x18\x05 \x01(\tR\x04icon\"F\n" +
+	"\x12ListPluginsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\"S\n" +
 	"\x13ListPluginsResponse\x12<\n" +
 	"\aplugins\x18\x01 \x03(\v2\".otterscale.orchestrator.v1.PluginR\aplugins2\xf3\b\n" +
 	"\x13OrchestratorService\x12w\n" +

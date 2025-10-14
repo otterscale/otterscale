@@ -19,18 +19,18 @@ import (
 )
 
 var (
-	kubeConfigMap    sync.Map
-	storageConfigMap sync.Map
+	kubeConfigMap sync.Map
+	cephConfigMap sync.Map
 )
 
-func kubeConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, uuid, name string) (*rest.Config, error) {
-	key := uuid + "/" + name
+func kubeConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, scope, name string) (*rest.Config, error) {
+	key := scope + "/" + name
 
 	if v, ok := kubeConfigMap.Load(key); ok {
 		return v.(*rest.Config), nil
 	}
 
-	config, err := newKubeConfig(ctx, facility, action, uuid, name)
+	config, err := newKubeConfig(ctx, facility, action, scope, name)
 	if err != nil {
 		return nil, err
 	}
@@ -40,14 +40,14 @@ func kubeConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, u
 	return config, nil
 }
 
-func newKubeConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, uuid, name string) (*rest.Config, error) {
+func newKubeConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, scope, name string) (*rest.Config, error) {
 	// kubernetes-control-plane
-	leader, err := facility.GetLeader(ctx, uuid, name)
+	leader, err := facility.GetLeader(ctx, scope, name)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := runAction(ctx, action, uuid, leader, "get-kubeconfig", nil)
+	result, err := runAction(ctx, action, scope, leader, "get-kubeconfig", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -79,31 +79,31 @@ func newKubeConfig(ctx context.Context, facility FacilityRepo, action ActionRepo
 	return config, nil
 }
 
-func storageConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, uuid, name string) (*StorageConfig, error) {
-	key := uuid + "/" + name
+func cephConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, scope, name string) (*CephConfig, error) {
+	key := scope + "/" + name
 
-	if v, ok := storageConfigMap.Load(key); ok {
-		return v.(*StorageConfig), nil
+	if v, ok := cephConfigMap.Load(key); ok {
+		return v.(*CephConfig), nil
 	}
 
-	config, err := newStorageConfig(ctx, facility, action, uuid, name)
+	config, err := newCephConfig(ctx, facility, action, scope, name)
 	if err != nil {
 		return nil, err
 	}
 
-	storageConfigMap.Store(key, config)
+	cephConfigMap.Store(key, config)
 
 	return config, nil
 }
 
-func newStorageConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, uuid, name string) (*StorageConfig, error) {
+func newCephConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, scope, name string) (*CephConfig, error) {
 	var (
 		leader   string
 		endpoint string
 	)
 	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		monLeader, err := facility.GetLeader(egctx, uuid, name) // ceph-mon
+		monLeader, err := facility.GetLeader(egctx, scope, name) // ceph-mon
 		if err != nil {
 			return err
 		}
@@ -111,11 +111,11 @@ func newStorageConfig(ctx context.Context, facility FacilityRepo, action ActionR
 		return nil
 	})
 	eg.Go(func() error {
-		leader, err := facility.GetLeader(egctx, uuid, rgwName(name))
+		leader, err := facility.GetLeader(egctx, scope, rgwName(name))
 		if err != nil {
 			return err
 		}
-		info, err := facility.GetUnitInfo(egctx, uuid, leader)
+		info, err := facility.GetUnitInfo(egctx, scope, leader)
 		if err != nil {
 			return err
 		}
@@ -126,18 +126,18 @@ func newStorageConfig(ctx context.Context, facility FacilityRepo, action ActionR
 		return nil, err
 	}
 
-	var cephConfig *StorageCephConfig
-	rgwConfig := &StorageRGWConfig{
+	var cephConfig *CephClusterConfig
+	rgwConfig := &CephObjectConfig{
 		Endpoint: endpoint,
 	}
 
 	eg, egctx = errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		result, err := runCommand(egctx, action, uuid, leader, "ceph config generate-minimal-conf && ceph auth get client.admin")
+		result, err := runCommand(egctx, action, scope, leader, "ceph config generate-minimal-conf && ceph auth get client.admin")
 		if err != nil {
 			return err
 		}
-		config, err := extractStorageCephConfig(result)
+		config, err := extractCephClusterConfig(result)
 		if err != nil {
 			return err
 		}
@@ -145,7 +145,7 @@ func newStorageConfig(ctx context.Context, facility FacilityRepo, action ActionR
 		return nil
 	})
 	eg.Go(func() error {
-		listResult, err := runCommand(egctx, action, uuid, leader, "radosgw-admin user list")
+		listResult, err := runCommand(egctx, action, scope, leader, "radosgw-admin user list")
 		if err != nil {
 			return err
 		}
@@ -153,11 +153,11 @@ func newStorageConfig(ctx context.Context, facility FacilityRepo, action ActionR
 		if err != nil {
 			return err
 		}
-		result, err := runCommand(egctx, action, uuid, leader, cmd)
+		result, err := runCommand(egctx, action, scope, leader, cmd)
 		if err != nil {
 			return err
 		}
-		config, err := extractStorageRGWConfig(result)
+		config, err := extractCephObjectConfig(result)
 		if err != nil {
 			return err
 		}
@@ -168,13 +168,13 @@ func newStorageConfig(ctx context.Context, facility FacilityRepo, action ActionR
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	return &StorageConfig{
-		StorageCephConfig: cephConfig,
-		StorageRGWConfig:  rgwConfig,
+	return &CephConfig{
+		CephClusterConfig: cephConfig,
+		CephObjectConfig:  rgwConfig,
 	}, nil
 }
 
-func extractStorageCephConfig(result *action.ActionResult) (*StorageCephConfig, error) {
+func extractCephClusterConfig(result *action.ActionResult) (*CephClusterConfig, error) {
 	stdout, ok := result.Output["stdout"]
 	if !ok {
 		return nil, errors.New("ceph config stdout not found")
@@ -195,7 +195,7 @@ func extractStorageCephConfig(result *action.ActionResult) (*StorageCephConfig, 
 	if key == "" {
 		return nil, errors.New("ceph config key not found")
 	}
-	return &StorageCephConfig{
+	return &CephClusterConfig{
 		FSID:    fsID,
 		MONHost: monHost,
 		Key:     key,
@@ -218,7 +218,7 @@ func getRGWCommand(result *action.ActionResult) (string, error) {
 	return cmd, nil
 }
 
-func extractStorageRGWConfig(result *action.ActionResult) (*StorageRGWConfig, error) {
+func extractCephObjectConfig(result *action.ActionResult) (*CephObjectConfig, error) {
 	stdout, ok := result.Output["stdout"]
 	if !ok {
 		return nil, errors.New("rgw config stdout not found")
@@ -244,29 +244,29 @@ func extractStorageRGWConfig(result *action.ActionResult) (*StorageRGWConfig, er
 	if secretKey == "" {
 		return nil, errors.New("rgw config secret key not found")
 	}
-	return &StorageRGWConfig{
+	return &CephObjectConfig{
 		AccessKey: accessKey,
 		SecretKey: secretKey,
 	}, nil
 }
 
-func runCommand(ctx context.Context, actionRepo ActionRepo, uuid, leader, command string) (*action.ActionResult, error) {
-	id, err := actionRepo.RunCommand(ctx, uuid, leader, command)
+func runCommand(ctx context.Context, actionRepo ActionRepo, scope, leader, command string) (*action.ActionResult, error) {
+	id, err := actionRepo.RunCommand(ctx, scope, leader, command)
 	if err != nil {
 		return nil, err
 	}
-	return waitForActionCompleted(ctx, actionRepo, uuid, id, time.Second, time.Minute)
+	return waitForActionCompleted(ctx, actionRepo, scope, id, time.Second, time.Minute)
 }
 
-func runAction(ctx context.Context, actionRepo ActionRepo, uuid, leader, action string, params map[string]any) (*action.ActionResult, error) {
-	id, err := actionRepo.RunAction(ctx, uuid, leader, action, params)
+func runAction(ctx context.Context, actionRepo ActionRepo, scope, leader, action string, params map[string]any) (*action.ActionResult, error) {
+	id, err := actionRepo.RunAction(ctx, scope, leader, action, params)
 	if err != nil {
 		return nil, err
 	}
-	return waitForActionCompleted(ctx, actionRepo, uuid, id, time.Second, time.Minute)
+	return waitForActionCompleted(ctx, actionRepo, scope, id, time.Second, time.Minute)
 }
 
-func waitForActionCompleted(ctx context.Context, actionRepo ActionRepo, uuid, id string, tickInterval, timeoutDuration time.Duration) (*action.ActionResult, error) {
+func waitForActionCompleted(ctx context.Context, actionRepo ActionRepo, scope, id string, tickInterval, timeoutDuration time.Duration) (*action.ActionResult, error) {
 	ticker := time.NewTicker(tickInterval)
 	defer ticker.Stop()
 
@@ -274,7 +274,7 @@ func waitForActionCompleted(ctx context.Context, actionRepo ActionRepo, uuid, id
 	for {
 		select {
 		case <-ticker.C:
-			result, err := actionRepo.GetResult(ctx, uuid, id)
+			result, err := actionRepo.GetResult(ctx, scope, id)
 			if err != nil {
 				return nil, err
 			}

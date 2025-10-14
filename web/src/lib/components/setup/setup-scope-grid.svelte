@@ -136,7 +136,7 @@
 										toast.promise(
 											() =>
 												facilityClient.resolveFacilityUnitErrors({
-													scopeUuid: page.params.scope,
+													scope: page.params.scope,
 													unitName: unit.name,
 												}),
 											{
@@ -144,7 +144,7 @@
 												success: () => {
 													facilityClient
 														.listFacilities({
-															scopeUuid: page.params.scope,
+															scope: page.params.scope,
 														})
 														.then((response) => {
 															facilities.set(response.facilities);

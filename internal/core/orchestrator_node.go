@@ -13,7 +13,7 @@ type CharmConfig struct {
 }
 
 var (
-	kubernetesConfig = CharmConfig{
+	kubeCharmConfig = CharmConfig{
 		Charms: []EssentialCharm{
 			{Name: "ch:kubernetes-control-plane", Channel: "1.33/stable", Machine: true},
 			{Name: "ch:etcd", Channel: "1.33/stable", LXD: true},
@@ -38,7 +38,7 @@ var (
 		},
 	}
 
-	cephConfig = CharmConfig{
+	cephCharmConfig = CharmConfig{
 		Charms: []EssentialCharm{
 			{Name: "ch:ceph-mon", Channel: "squid/stable", LXD: true},
 			{Name: "ch:ceph-osd", Channel: "squid/stable", Machine: true},
@@ -56,7 +56,7 @@ var (
 		},
 	}
 
-	addonConfig = CharmConfig{
+	addonCharmConfig = CharmConfig{
 		Charms: []EssentialCharm{
 			{Name: "ch:ceph-csi", Channel: "1.33/stable", Subordinate: true},
 			{Name: "ch:grafana-agent", Subordinate: true},
@@ -71,116 +71,116 @@ var (
 	}
 )
 
-// NodeParams encapsulates node creation parameters
-type NodeParams struct {
-	UUID       string
-	MachineID  string
-	Prefix     string
-	VirtualIPs []string
-	CalicoCIDR string
-	OSDDevices []string
+// nodeParams encapsulates node creation parameters
+type nodeParams struct {
+	scope      string
+	machineID  string
+	prefix     string
+	virtualIPs []string
+	calicoCIDR string
+	osdDevices []string
 }
 
 // CreateNode creates a new node with the specified configuration.
-func (uc *OrchestratorUseCase) CreateNode(ctx context.Context, uuid, machineID, prefix string, userVirtualIPs []string, userCalicoCIDR string, userOSDDevices []string) error {
-	params := &NodeParams{
-		UUID:       uuid,
-		MachineID:  machineID,
-		Prefix:     prefix,
-		VirtualIPs: userVirtualIPs,
-		CalicoCIDR: userCalicoCIDR,
-		OSDDevices: userOSDDevices,
+func (uc *OrchestratorUseCase) CreateNode(ctx context.Context, scope, machineID, prefix string, userVirtualIPs []string, userCalicoCIDR string, userOSDDevices []string) error {
+	params := &nodeParams{
+		scope:      scope,
+		machineID:  machineID,
+		prefix:     prefix,
+		virtualIPs: userVirtualIPs,
+		calicoCIDR: userCalicoCIDR,
+		osdDevices: userOSDDevices,
 	}
 	return uc.createNodeWithParams(ctx, params)
 }
 
-func (uc *OrchestratorUseCase) createNodeWithParams(ctx context.Context, params *NodeParams) error {
-	if err := uc.validateMachineStatus(ctx, params.UUID, params.MachineID); err != nil {
+func (uc *OrchestratorUseCase) createNodeWithParams(ctx context.Context, params *nodeParams) error {
+	if err := uc.validateMachineStatus(ctx, params.scope, params.machineID); err != nil {
 		return err
 	}
 
-	osdDevices, err := uc.validateOSDDevices(params.OSDDevices)
+	osdDevices, err := uc.validateOSDDevices(params.osdDevices)
 	if err != nil {
 		return err
 	}
 
-	kubeVIPs, err := uc.resolveKubeVIPs(ctx, params.MachineID, params.Prefix, params.VirtualIPs)
+	kubeVIPs, err := uc.resolveKubeVIPs(ctx, params.machineID, params.prefix, params.virtualIPs)
 	if err != nil {
 		return err
 	}
 
-	calicoCIDR := uc.resolveCalicoCIDR(params.CalicoCIDR)
+	calicoCIDR := uc.resolveCalicoCIDR(params.calicoCIDR)
 
-	nfsVIP, err := uc.reserveIP(ctx, params.MachineID, fmt.Sprintf("Ceph NFS IP for %s", params.Prefix))
+	nfsVIP, err := uc.reserveIP(ctx, params.machineID, fmt.Sprintf("Ceph NFS IP for %s", params.prefix))
 	if err != nil {
 		return err
 	}
 
-	return uc.createNode(ctx, params.UUID, params.MachineID, params.Prefix, kubeVIPs, calicoCIDR, osdDevices, nfsVIP.String())
+	return uc.createNode(ctx, params.scope, params.machineID, params.prefix, kubeVIPs, calicoCIDR, osdDevices, nfsVIP.String())
 }
 
-func (uc *OrchestratorUseCase) createNode(ctx context.Context, uuid, machineID, prefix, kubeVIPs, calicoCIDR, osdDevices, nfsVIP string) error {
-	if err := uc.deployKubernetes(ctx, uuid, machineID, prefix, kubeVIPs, calicoCIDR); err != nil {
+func (uc *OrchestratorUseCase) createNode(ctx context.Context, scope, machineID, prefix, kubeVIPs, calicoCIDR, osdDevices, nfsVIP string) error {
+	if err := uc.deployKubernetes(ctx, scope, machineID, prefix, kubeVIPs, calicoCIDR); err != nil {
 		return err
 	}
 
-	if err := uc.deployCeph(ctx, uuid, machineID, prefix, osdDevices, nfsVIP); err != nil {
+	if err := uc.deployCeph(ctx, scope, machineID, prefix, osdDevices, nfsVIP); err != nil {
 		return err
 	}
 
-	if err := uc.deployAddons(ctx, uuid, prefix); err != nil {
+	if err := uc.deployAddons(ctx, scope, prefix); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (uc *OrchestratorUseCase) deployKubernetes(ctx context.Context, uuid, machineID, prefix, kubeVIPs, calicoCIDR string) error {
+func (uc *OrchestratorUseCase) deployKubernetes(ctx context.Context, scope, machineID, prefix, kubeVIPs, calicoCIDR string) error {
 	configs, err := uc.kubernetesConfigs(prefix, kubeVIPs, calicoCIDR)
 	if err != nil {
 		return err
 	}
 
 	tags := []string{Kubernetes, KubernetesControlPlane, KubernetesWorker}
-	if err := uc.createEssential(ctx, uuid, machineID, prefix, kubernetesConfig.Charms, configs, tags); err != nil {
+	if err := uc.createEssential(ctx, scope, machineID, prefix, kubeCharmConfig.Charms, configs, tags); err != nil {
 		return err
 	}
 
-	endpointList := toEssentialEndpointList(prefix, kubernetesConfig.Relations)
-	return uc.createEssentialRelations(ctx, uuid, endpointList)
+	endpointList := toEssentialEndpointList(prefix, kubeCharmConfig.Relations)
+	return uc.createEssentialRelations(ctx, scope, endpointList)
 }
 
-func (uc *OrchestratorUseCase) deployCeph(ctx context.Context, uuid, machineID, prefix, osdDevices, nfsVIP string) error {
+func (uc *OrchestratorUseCase) deployCeph(ctx context.Context, scope, machineID, prefix, osdDevices, nfsVIP string) error {
 	configs, err := uc.cephConfigs(prefix, osdDevices, nfsVIP)
 	if err != nil {
 		return err
 	}
 
 	tags := []string{Ceph, CephMon, CephOSD}
-	if err := uc.createEssential(ctx, uuid, machineID, prefix, cephConfig.Charms, configs, tags); err != nil {
+	if err := uc.createEssential(ctx, scope, machineID, prefix, cephCharmConfig.Charms, configs, tags); err != nil {
 		return err
 	}
 
-	endpointList := toEssentialEndpointList(prefix, cephConfig.Relations)
-	return uc.createEssentialRelations(ctx, uuid, endpointList)
+	endpointList := toEssentialEndpointList(prefix, cephCharmConfig.Relations)
+	return uc.createEssentialRelations(ctx, scope, endpointList)
 }
 
-func (uc *OrchestratorUseCase) deployAddons(ctx context.Context, uuid, prefix string) error {
+func (uc *OrchestratorUseCase) deployAddons(ctx context.Context, scope, prefix string) error {
 	configs, err := uc.addonConfigs(prefix)
 	if err != nil {
 		return err
 	}
 
-	if err := uc.createEssential(ctx, uuid, "", prefix, addonConfig.Charms, configs, nil); err != nil {
+	if err := uc.createEssential(ctx, scope, "", prefix, addonCharmConfig.Charms, configs, nil); err != nil {
 		return err
 	}
 
-	if err := uc.createCOS(ctx, uuid, prefix); err != nil {
+	if err := uc.createCOS(ctx, scope, prefix); err != nil {
 		return err
 	}
 
-	endpointList := toEssentialEndpointList(prefix, addonConfig.Relations)
-	return uc.createEssentialRelations(ctx, uuid, endpointList)
+	endpointList := toEssentialEndpointList(prefix, addonCharmConfig.Relations)
+	return uc.createEssentialRelations(ctx, scope, endpointList)
 }
 
 func (uc *OrchestratorUseCase) kubernetesConfigs(prefix, vips, cidr string) (map[string]string, error) {

@@ -12,8 +12,7 @@
 </script>
 
 <script lang="ts">
-	let { scopeUuid, facilityName, namespace }: { scopeUuid: string; facilityName: string; namespace: string } =
-		$props();
+	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	let isMounted = $state(false);
@@ -23,8 +22,8 @@
 	const VirtualMachineClient = createClient(InstanceService, transport);
 	const reloadManager = new ReloadManager(() => {
 		VirtualMachineClient.listVirtualMachines({
-			scopeUuid: scopeUuid,
-			facilityName: facilityName,
+			scope: scope,
+			facility: facility,
 			namespace: namespace,
 		}).then((response) => {
 			virtualMachines.set(response.virtualMachines);
@@ -34,8 +33,8 @@
 
 	onMount(() => {
 		VirtualMachineClient.listVirtualMachines({
-			scopeUuid: scopeUuid,
-			facilityName: facilityName,
+			scope: scope,
+			facility: facility,
 			namespace: namespace,
 		})
 			.then((response) => {

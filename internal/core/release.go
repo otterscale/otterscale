@@ -42,21 +42,21 @@ func NewReleaseUseCase(action ActionRepo, chart ChartRepo, facility FacilityRepo
 	}
 }
 
-func (uc *ReleaseUseCase) ListReleases(ctx context.Context, uuid, facility string) ([]Release, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *ReleaseUseCase) ListReleases(ctx context.Context, scope, facility string) ([]Release, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
 	return uc.release.List(config, "")
 }
 
-func (uc *ReleaseUseCase) CreateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string) (*Release, error) {
+func (uc *ReleaseUseCase) CreateRelease(ctx context.Context, scope, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string) (*Release, error) {
 	values, err := toReleaseValues(valuesYAML, valuesMap)
 	if err != nil {
 		return nil, err
 	}
 
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -78,21 +78,21 @@ func (uc *ReleaseUseCase) CreateRelease(ctx context.Context, uuid, facility, nam
 	return uc.release.Install(config, namespace, getReleaseName(name), dryRun, chartRef, labels, annotations, values)
 }
 
-func (uc *ReleaseUseCase) UpdateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*Release, error) {
+func (uc *ReleaseUseCase) UpdateRelease(ctx context.Context, scope, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*Release, error) {
 	values, err := toReleaseValues(valuesYAML, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
 	return uc.release.Upgrade(config, namespace, name, dryRun, chartRef, values)
 }
 
-func (uc *ReleaseUseCase) DeleteRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool) error {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *ReleaseUseCase) DeleteRelease(ctx context.Context, scope, facility, namespace, name string, dryRun bool) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
@@ -100,8 +100,8 @@ func (uc *ReleaseUseCase) DeleteRelease(ctx context.Context, uuid, facility, nam
 	return err
 }
 
-func (uc *ReleaseUseCase) RollbackRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool) error {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *ReleaseUseCase) RollbackRelease(ctx context.Context, scope, facility, namespace, name string, dryRun bool) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}

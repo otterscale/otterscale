@@ -27,8 +27,8 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		name: '',
 		namespace: virtualMachineSnapshot.namespace,
 	} as DeleteVirtualMachineSnapshotRequest;

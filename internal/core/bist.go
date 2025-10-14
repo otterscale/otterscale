@@ -88,11 +88,11 @@ func (uc *BISTUseCase) DeleteResult(ctx context.Context, name string) error {
 	return uc.kubeBatch.DeleteJob(ctx, config, bistNamespace, name)
 }
 
-func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, uuid, kubernetes, ceph string) ([]WarpTargetInternal, error) {
+func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, scope, kubernetes, ceph string) ([]WarpTargetInternal, error) {
 	var cephs, minios []WarpTargetInternal
 	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		svcs, err := uc.listCephObjectServices(egctx, uuid, ceph)
+		svcs, err := uc.listCephObjectServices(egctx, scope, ceph)
 		if err != nil {
 			return err
 		}
@@ -100,7 +100,7 @@ func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, uuid, kub
 		return nil
 	})
 	eg.Go(func() error {
-		svcs, err := uc.listMinIOs(egctx, uuid, kubernetes)
+		svcs, err := uc.listMinIOs(egctx, scope, kubernetes)
 		if err != nil {
 			return err
 		}
@@ -113,37 +113,37 @@ func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, uuid, kub
 	return append(cephs, minios...), nil
 }
 
-func (uc *BISTUseCase) listCephObjectServices(ctx context.Context, uuid, ceph string) ([]WarpTargetInternal, error) {
+func (uc *BISTUseCase) listCephObjectServices(ctx context.Context, scope, ceph string) ([]WarpTargetInternal, error) {
 	services := []WarpTargetInternal{}
-	leader, err := uc.facility.GetLeader(ctx, uuid, rgwName(ceph))
+	leader, err := uc.facility.GetLeader(ctx, scope, rgwName(ceph))
 	if err != nil {
 		return nil, err
 	}
-	info, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
+	info, err := uc.facility.GetUnitInfo(ctx, scope, leader)
 	if err != nil {
 		return nil, err
 	}
 	services = append(services, WarpTargetInternal{
-		Type:         "ceph",
-		ScopeUUID:    uuid,
-		FacilityName: ceph,
-		Name:         ceph,
-		Endpoint:     info.PublicAddress,
+		Type:     "ceph",
+		Scope:    scope,
+		Facility: ceph,
+		Name:     ceph,
+		Endpoint: info.PublicAddress,
 	})
 	return services, nil
 }
 
-func (uc *BISTUseCase) listMinIOs(ctx context.Context, uuid, kubernetes string) ([]WarpTargetInternal, error) {
+func (uc *BISTUseCase) listMinIOs(ctx context.Context, scope, kubernetes string) ([]WarpTargetInternal, error) {
 	services := []WarpTargetInternal{}
-	leader, err := uc.facility.GetLeader(ctx, uuid, kubernetes)
+	leader, err := uc.facility.GetLeader(ctx, scope, kubernetes)
 	if err != nil {
 		return nil, err
 	}
-	info, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
+	info, err := uc.facility.GetUnitInfo(ctx, scope, leader)
 	if err != nil {
 		return nil, err
 	}
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, kubernetes)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, kubernetes)
 	if err != nil {
 		return nil, err
 	}
@@ -157,11 +157,11 @@ func (uc *BISTUseCase) listMinIOs(ctx context.Context, uuid, kubernetes string) 
 				continue
 			}
 			services = append(services, WarpTargetInternal{
-				Type:         "minio",
-				ScopeUUID:    uuid,
-				FacilityName: kubernetes,
-				Name:         fmt.Sprintf("%s.%s", svcs[i].GetNamespace(), svcs[i].GetName()),
-				Endpoint:     fmt.Sprintf("%s:%d", info.PublicAddress, port.NodePort),
+				Type:     "minio",
+				Scope:    scope,
+				Facility: kubernetes,
+				Name:     fmt.Sprintf("%s.%s", svcs[i].GetNamespace(), svcs[i].GetName()),
+				Endpoint: fmt.Sprintf("%s:%d", info.PublicAddress, port.NodePort),
 			})
 		}
 	}
@@ -189,24 +189,24 @@ func (uc *BISTUseCase) ensureNamespace(ctx context.Context, config *rest.Config)
 	return nil
 }
 
-func (uc *BISTUseCase) ensureConfigMap(ctx context.Context, config *rest.Config, uuid, facility, name string) error {
-	_, err := uc.kubeCore.GetConfigMap(ctx, config, bistNamespace, name)
+func (uc *BISTUseCase) ensureConfigMap(ctx context.Context, kubeConfig *rest.Config, scope, facility, name string) error {
+	_, err := uc.kubeCore.GetConfigMap(ctx, kubeConfig, bistNamespace, name)
 	if apierrors.IsNotFound(err) {
-		sc, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+		cephConfig, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 		if err != nil {
 			return err
 		}
 		data := map[string]string{
-			"ceph.conf": fmt.Sprintf(`[global]\nmon host = %s\nfsid = %s\nkey = %s`, sc.MONHost, sc.FSID, sc.Key),
+			"ceph.conf": fmt.Sprintf(`[global]\nmon host = %s\nfsid = %s\nkey = %s`, cephConfig.MONHost, cephConfig.FSID, cephConfig.Key),
 		}
-		_, err = uc.kubeCore.CreateConfigMap(ctx, config, bistNamespace, name, data)
+		_, err = uc.kubeCore.CreateConfigMap(ctx, kubeConfig, bistNamespace, name, data)
 		return err
 	}
 	return nil
 }
 
-func (uc *BISTUseCase) ensurePool(ctx context.Context, uuid, facility, pool string) error {
-	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *BISTUseCase) ensurePool(ctx context.Context, scope, facility, pool string) error {
+	config, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
@@ -225,8 +225,8 @@ func (uc *BISTUseCase) ensurePool(ctx context.Context, uuid, facility, pool stri
 	return uc.cephCluster.EnableApplication(ctx, config, pool, "rbd")
 }
 
-func (uc *BISTUseCase) ensureImage(ctx context.Context, uuid, facility, pool, image string) error {
-	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *BISTUseCase) ensureImage(ctx context.Context, scope, facility, pool, image string) error {
+	config, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}

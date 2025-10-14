@@ -96,14 +96,14 @@ func (uc *ChartUseCase) GetChartFile(chartRef string) (*ChartFile, error) {
 	return file, nil
 }
 
-func (uc *ChartUseCase) GetChartFileFromApplication(ctx context.Context, uuid, facility string, app *Application) (*ChartFile, error) {
+func (uc *ChartUseCase) GetChartFileFromApplication(ctx context.Context, scope, facility string, app *Application) (*ChartFile, error) {
 	file := &ChartFile{}
 	eg := errgroup.Group{}
 	eg.Go(func() error {
 		// FIXME: invalid label
 		releaseName, ok := app.Labels["app.otterscale.com/release-name"]
 		if ok {
-			config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+			config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 			if err != nil {
 				return err
 			}

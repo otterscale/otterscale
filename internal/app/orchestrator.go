@@ -24,7 +24,7 @@ func NewOrchestratorService(uc *core.OrchestratorUseCase) *OrchestratorService {
 var _ pbconnect.OrchestratorServiceHandler = (*OrchestratorService)(nil)
 
 func (s *OrchestratorService) ListEssentials(ctx context.Context, req *pb.ListEssentialsRequest) (*pb.ListEssentialsResponse, error) {
-	essentials, err := s.uc.ListEssentials(ctx, core.EssentialType(req.GetType()), req.GetScopeUuid())
+	essentials, err := s.uc.ListEssentials(ctx, core.EssentialType(req.GetType()), req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (s *OrchestratorService) ListEssentials(ctx context.Context, req *pb.ListEs
 }
 
 func (s *OrchestratorService) CreateNode(ctx context.Context, req *pb.CreateNodeRequest) (*emptypb.Empty, error) {
-	if err := s.uc.CreateNode(ctx, req.GetScopeUuid(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
+	if err := s.uc.CreateNode(ctx, req.GetScope(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -42,7 +42,7 @@ func (s *OrchestratorService) CreateNode(ctx context.Context, req *pb.CreateNode
 }
 
 func (s *OrchestratorService) ListKubernetesNodeLabels(ctx context.Context, req *pb.ListKubernetesNodeLabelsRequest) (*pb.ListKubernetesNodeLabelsResponse, error) {
-	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetHostname(), req.GetAll())
+	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.GetScope(), req.GetFacility(), req.GetHostname(), req.GetAll())
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (s *OrchestratorService) ListKubernetesNodeLabels(ctx context.Context, req 
 }
 
 func (s *OrchestratorService) UpdateKubernetesNodeLabels(ctx context.Context, req *pb.UpdateKubernetesNodeLabelsRequest) (*pb.UpdateKubernetesNodeLabelsResponse, error) {
-	labels, err := s.uc.UpdateKubernetesNodeLabels(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetHostname(), req.GetLabels())
+	labels, err := s.uc.UpdateKubernetesNodeLabels(ctx, req.GetScope(), req.GetFacility(), req.GetHostname(), req.GetLabels())
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (s *OrchestratorService) UpdateKubernetesNodeLabels(ctx context.Context, re
 }
 
 func (s *OrchestratorService) ListGPURelationsByMachine(ctx context.Context, req *pb.ListGPURelationsByMachineRequest) (*pb.ListGPURelationsByMachineResponse, error) {
-	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetMachineId())
+	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx, req.GetScope(), req.GetFacility(), req.GetMachineId())
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (s *OrchestratorService) ListGPURelationsByMachine(ctx context.Context, req
 }
 
 func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *pb.ListGPURelationsByModelRequest) (*pb.ListGPURelationsByModelResponse, error) {
-	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetModelName())
+	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetModelName())
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 }
 
 func (s *OrchestratorService) ListPlugins(ctx context.Context, req *pb.ListPluginsRequest) (*pb.ListPluginsResponse, error) {
-	plugins, err := s.uc.ListPlugins(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	plugins, err := s.uc.ListPlugins(ctx, req.GetScope(), req.GetFacility())
 	if err != nil {
 		return nil, err
 	}
@@ -103,8 +103,7 @@ func toProtoEssential(e *core.Essential) *pb.Essential {
 	ret := &pb.Essential{}
 	ret.SetType(pb.Essential_Type(e.Type))
 	ret.SetName(e.Name)
-	ret.SetScopeUuid(e.ScopeUUID)
-	ret.SetScopeName(e.ScopeName)
+	ret.SetScope(e.Scope)
 	ret.SetUnits(toProtoEssentialUnits(e.Units))
 	return ret
 }

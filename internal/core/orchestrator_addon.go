@@ -7,14 +7,14 @@ import (
 	"github.com/juju/names/v5"
 )
 
-func (uc *OrchestratorUseCase) createCOS(ctx context.Context, uuid, prefix string) error {
+func (uc *OrchestratorUseCase) createCOS(ctx context.Context, scope, prefix string) error {
 	// consume
 	offerURLs := []string{
 		uc.conf.Juju.Username + "/cos.global-prometheus",
 		uc.conf.Juju.Username + "/cos.global-grafana",
 	}
 	for _, url := range offerURLs {
-		if err := uc.consumeRemoteOffer(ctx, uuid, url); err != nil {
+		if err := uc.consumeRemoteOffer(ctx, scope, url); err != nil {
 			return err
 		}
 	}
@@ -25,10 +25,10 @@ func (uc *OrchestratorUseCase) createCOS(ctx context.Context, uuid, prefix strin
 		{name + ":send-remote-write", "global-prometheus:receive-remote-write"},
 		{name + ":grafana-dashboards-provider", "global-grafana:grafana-dashboard"},
 	}
-	return uc.createEssentialRelations(ctx, uuid, endpointList)
+	return uc.createEssentialRelations(ctx, scope, endpointList)
 }
 
-func (uc *OrchestratorUseCase) consumeRemoteOffer(ctx context.Context, uuid, url string) error {
+func (uc *OrchestratorUseCase) consumeRemoteOffer(ctx context.Context, scope, url string) error {
 	consumeDetails, err := uc.facilityOffers.GetConsumeDetails(ctx, url)
 	if err != nil {
 		return err
@@ -56,5 +56,5 @@ func (uc *OrchestratorUseCase) consumeRemoteOffer(ctx context.Context, uuid, url
 			CACert:        consumeDetails.ControllerInfo.CACert,
 		}
 	}
-	return uc.facility.Consume(ctx, uuid, args)
+	return uc.facility.Consume(ctx, scope, args)
 }

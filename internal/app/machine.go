@@ -26,7 +26,7 @@ func NewMachineService(machine *core.MachineUseCase) *MachineService {
 var _ pbconnect.MachineServiceHandler = (*MachineService)(nil)
 
 func (s *MachineService) ListMachines(ctx context.Context, req *pb.ListMachinesRequest) (*pb.ListMachinesResponse, error) {
-	machines, err := s.machine.ListMachines(ctx, req.GetScopeUuid())
+	machines, err := s.machine.ListMachines(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (s *MachineService) GetMachine(ctx context.Context, req *pb.GetMachineReque
 }
 
 func (s *MachineService) CreateMachine(ctx context.Context, req *pb.CreateMachineRequest) (*pb.Machine, error) {
-	machine, err := s.machine.CreateMachine(ctx, req.GetId(), req.GetEnableSsh(), req.GetSkipBmcConfig(), req.GetSkipNetworking(), req.GetSkipStorage(), req.GetScopeUuid(), req.GetTags())
+	machine, err := s.machine.CreateMachine(ctx, req.GetId(), req.GetEnableSsh(), req.GetSkipBmcConfig(), req.GetSkipNetworking(), req.GetSkipStorage(), req.GetScope(), req.GetTags())
 	if err != nil {
 		return nil, err
 	}

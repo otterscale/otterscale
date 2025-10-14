@@ -43,8 +43,8 @@
 			if (!request.namespace) return;
 
 			const response = await virtualMachineClient.listDataVolumes({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
+				scope: $currentKubernetes?.scope,
+				facility: $currentKubernetes?.name,
 				namespace: request.namespace,
 			});
 
@@ -64,8 +64,8 @@
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_REQUEST = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		name: virtualMachine.name,
 		namespace: virtualMachine.namespace,
 		dataVolumeName: '',

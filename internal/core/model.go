@@ -15,8 +15,8 @@ func NewModelUseCase(action ActionRepo, facility FacilityRepo, release ReleaseRe
 }
 
 // TODO: add back when llm infra is supported
-// func (uc *ModelUseCase) CheckInfrastructureStatus(ctx context.Context, uuid, facility string) (int32, error) {
-// 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+// func (uc *ModelUseCase) CheckInfrastructureStatus(ctx context.Context, scope, facility string) (int32, error) {
+// 	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 // 	if err != nil {
 // 		return 0, err
 // 	}

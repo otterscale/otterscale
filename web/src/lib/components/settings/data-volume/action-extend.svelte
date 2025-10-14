@@ -30,8 +30,8 @@
 
 	// Default values for the extend data volume request
 	const defaults = {
-		scopeUuid: $currentKubernetes?.scopeUuid || '',
-		facilityName: $currentKubernetes?.name || '',
+		scope: $currentKubernetes?.scope || '',
+		facility: $currentKubernetes?.name || '',
 		name: dataVolume.name,
 		namespace: dataVolume.namespace,
 		sizeBytes: dataVolume.sizeBytes,

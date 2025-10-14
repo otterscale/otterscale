@@ -81,12 +81,12 @@ func (uc *EnvironmentUseCase) DiscoverPrometheusURL(ctx context.Context) (*url.U
 	})
 
 	for i := range cosScopes {
-		leader, err := uc.facility.GetLeader(ctx, cosScopes[i].UUID, "traefik")
+		leader, err := uc.facility.GetLeader(ctx, cosScopes[i].Name, "traefik")
 		if err != nil {
 			continue
 		}
 
-		result, err := runAction(ctx, uc.action, cosScopes[i].UUID, leader, "show-proxied-endpoints", nil)
+		result, err := runAction(ctx, uc.action, cosScopes[i].Name, leader, "show-proxied-endpoints", nil)
 		if err != nil {
 			continue
 		}

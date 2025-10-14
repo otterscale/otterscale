@@ -13,12 +13,12 @@
 
 <script lang="ts">
 	let {
-		selectedScopeUuid = $bindable(),
+		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
 		selectedVolume = $bindable(),
 		trigger,
 	}: {
-		selectedScopeUuid: string;
+		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
 		trigger: Snippet;
@@ -34,8 +34,8 @@
 	const reloadManager = new ReloadManager(() => {
 		storageClient
 			.listSubvolumeGroups({
-				scopeUuid: selectedScopeUuid,
-				facilityName: selectedFacility,
+				scope: selectedScope,
+				facility: selectedFacility,
 				volumeName: selectedVolume,
 			})
 			.then((response) => {
@@ -45,14 +45,14 @@
 	setContext('groupStore', groupStore);
 	setContext('reloadManager', reloadManager);
 	onMount(() => {
-		groupStore.selectedScopeUuid.set(selectedScopeUuid);
-		groupStore.selectedFacilityName.set(selectedFacility);
+		groupStore.selectedScope.set(selectedScope);
+		groupStore.selectedFacility.set(selectedFacility);
 		groupStore.selectedVolumeName.set(selectedVolume);
 
 		storageClient
 			.listSubvolumeGroups({
-				scopeUuid: selectedScopeUuid,
-				facilityName: selectedFacility,
+				scope: selectedScope,
+				facility: selectedFacility,
 				volumeName: selectedVolume,
 			})
 			.then((response) => {

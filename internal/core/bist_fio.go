@@ -23,8 +23,8 @@ type FIOTarget struct {
 }
 
 type FIOTargetCeph struct {
-	ScopeUUID    string `json:"scope_uuid"`
-	FacilityName string `json:"facility_name"`
+	Scope    string `json:"scope"`
+	Facility string `json:"facility"`
 }
 
 type FIOTargetNFS struct {
@@ -99,15 +99,15 @@ func (uc *BISTUseCase) CreateFIOResult(ctx context.Context, name, createdBy stri
 	block := target.Ceph
 	if block != nil {
 		// pool & image
-		if err := uc.ensurePool(ctx, block.ScopeUUID, block.FacilityName, bistBlockPool); err != nil {
+		if err := uc.ensurePool(ctx, block.Scope, block.Facility, bistBlockPool); err != nil {
 			return nil, err
 		}
-		if err := uc.ensureImage(ctx, block.ScopeUUID, block.FacilityName, bistBlockPool, bistBlockImage); err != nil {
+		if err := uc.ensureImage(ctx, block.Scope, block.Facility, bistBlockPool, bistBlockImage); err != nil {
 			return nil, err
 		}
 		// config map
-		configMapName := fmt.Sprintf("ceph-conf-%s", generateHashedName(block.ScopeUUID+block.FacilityName))
-		if err := uc.ensureConfigMap(ctx, config, block.ScopeUUID, block.FacilityName, configMapName); err != nil {
+		configMapName := fmt.Sprintf("ceph-conf-%s", generateHashedName(block.Scope+block.Facility))
+		if err := uc.ensureConfigMap(ctx, config, block.Scope, block.Facility, configMapName); err != nil {
 			return nil, err
 		}
 		spec = uc.blockJobSpec(configMapName, input)

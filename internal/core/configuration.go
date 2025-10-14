@@ -150,7 +150,7 @@ func (uc *ConfigurationUseCase) UpdatePackageRepository(ctx context.Context, id 
 			return nil, err
 		}
 		for i := range scopes {
-			if err := uc.scopeConfig.Set(ctx, scopes[i].UUID, map[string]any{"apt-mirror": url}); err != nil {
+			if err := uc.scopeConfig.Set(ctx, scopes[i].Name, map[string]any{"apt-mirror": url}); err != nil {
 				return nil, err
 			}
 		}

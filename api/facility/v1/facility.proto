@@ -111,7 +111,7 @@ message Tag {
 }
 
 message ListFacilitiesRequest {
-  string scope_uuid = 1;
+  string scope = 1;
 }
 
 message ListFacilitiesResponse {
@@ -119,12 +119,12 @@ message ListFacilitiesResponse {
 }
 
 message GetFacilityRequest {
-  string scope_uuid = 1;
+  string scope = 1;
   string name = 2;
 }
 
 message CreateFacilityRequest {
-  string scope_uuid = 1;
+  string scope = 1;
   string name = 2;
   string config_yaml = 11;
   string charm_name = 21;
@@ -137,25 +137,25 @@ message CreateFacilityRequest {
 }
 
 message UpdateFacilityRequest {
-  string scope_uuid = 1;
+  string scope = 1;
   string name = 2;
   string config_yaml = 11;
 }
 
 message DeleteFacilityRequest {
-  string scope_uuid = 1;
+  string scope = 1;
   string name = 2;
   bool destroy_storage = 11;
   bool force = 12;
 }
 
 message ExposeFacilityRequest {
-  string scope_uuid = 1;
+  string scope = 1;
   string name = 2;
 }
 
 message AddFacilityUnitsRequest {
-  string scope_uuid = 1;
+  string scope = 1;
   string name = 2;
   int64 number = 11;
   repeated Placement placements = 21;
@@ -166,13 +166,13 @@ message AddFacilityUnitsResponse {
 }
 
 message ResolveFacilityUnitErrorsRequest {
-  string scope_uuid = 1;
+  string scope = 1;
   string unit_name = 2;
 }
 
 message ListActionsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListActionsResponse {

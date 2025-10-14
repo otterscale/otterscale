@@ -12,10 +12,10 @@
 
 <script lang="ts">
 	let {
-		selectedScopeUuid = $bindable(),
+		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
 	}: {
-		selectedScopeUuid: string;
+		selectedScope: string;
 		selectedFacility: string;
 	} = $props();
 
@@ -26,7 +26,7 @@
 	const pools = writable([] as Pool[]);
 
 	const reloadManager = new ReloadManager(() => {
-		storageClient.listPools({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility }).then((response) => {
+		storageClient.listPools({ scope: selectedScope, facility: selectedFacility }).then((response) => {
 			pools.set(response.pools);
 		});
 	});
@@ -35,7 +35,7 @@
 	let isMounted = $state(false);
 	onMount(() => {
 		storageClient
-			.listPools({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility })
+			.listPools({ scope: selectedScope, facility: selectedFacility })
 			.then((response) => {
 				pools.set(response.pools);
 				isMounted = true;

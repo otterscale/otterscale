@@ -68,7 +68,7 @@
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{#if row.original.kind.value.target.case === 'cephBlockDevice'}
 				<Badge variant="outline">
-					{row.original.kind.value.target.value.facilityName}
+					{row.original.kind.value.target.value.facility}
 				</Badge>
 			{:else if row.original.kind.value.target.case === 'networkFileSystem'}
 				<Badge variant="outline">

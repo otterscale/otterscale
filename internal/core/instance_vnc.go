@@ -14,8 +14,8 @@ import (
 	kvcorev1 "github.com/otterscale/kubevirt-client-go/kubevirt/typed/core/v1"
 )
 
-func (uc *InstanceUseCase) CreateVNCSession(ctx context.Context, scopeUUID, facility, namespace, name string) (string, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, scopeUUID, facility)
+func (uc *InstanceUseCase) CreateVNCSession(ctx context.Context, scope, facility, namespace, name string) (string, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return "", err
 	}

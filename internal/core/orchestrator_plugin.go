@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-func (uc *OrchestratorUseCase) ListPlugins(ctx context.Context, uuid, facility string) ([]Release, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *OrchestratorUseCase) ListPlugins(ctx context.Context, scope, facility string) ([]Release, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}

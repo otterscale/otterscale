@@ -28,8 +28,8 @@
 
 	// Default values for the delete data volume request
 	const defaults = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		namespace: dataVolume.namespace,
 		name: '',
 	} as DeleteDataVolumeRequest;
