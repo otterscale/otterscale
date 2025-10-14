@@ -2,6 +2,7 @@ import { error, redirect } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
 
+import { resolve } from '$app/paths';
 import { env } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public';
 import { auth } from '$lib/auth';
@@ -23,6 +24,10 @@ export const load: PageServerLoad = async ({ request, url }) => {
 		}
 	}
 
+	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE)) {
+		redirect(302, resolve('/setup'));
+	}
+
 	// Check if the user is already authenticated
 	const session = await auth.api.getSession({
 		headers: request.headers,
@@ -33,4 +38,8 @@ export const load: PageServerLoad = async ({ request, url }) => {
 	}
 
 	redirect(302, `${staticPaths.login.url}${url.search}`);
+};
+
+const isFlexibleBooleanTrue = (envVar: string | undefined): boolean => {
+	return ['true', '1', 'yes', 'on'].includes((envVar || '').toLowerCase());
 };

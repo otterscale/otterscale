@@ -7,10 +7,9 @@ import (
 )
 
 type BootstrapStatus struct {
-	Started  bool
-	Finished bool
-	Phase    string
-	Message  string
+	Phase   string
+	Message string
+	NewURL  string
 }
 
 type BootstrapUseCase struct {
@@ -30,20 +29,13 @@ func (uc *BootstrapUseCase) LoadStatus() *BootstrapStatus {
 	if ok {
 		return v.(*BootstrapStatus)
 	}
-	return &BootstrapStatus{
-		Finished: isMAASConfigured(uc.conf),
-	}
+	return &BootstrapStatus{}
 }
 
-func (uc *BootstrapUseCase) StoreStatus(phase, message string) {
+func (uc *BootstrapUseCase) StoreStatus(phase, message, newURL string) {
 	uc.statusMap.Store("", &BootstrapStatus{
-		Started:  true,
-		Finished: isMAASConfigured(uc.conf),
-		Phase:    phase,
-		Message:  message,
+		Phase:   phase,
+		Message: message,
+		NewURL:  newURL,
 	})
-}
-
-func isMAASConfigured(conf *config.Config) bool {
-	return conf.MAAS.Key != "::"
 }
