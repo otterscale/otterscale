@@ -22,16 +22,16 @@ func NewAction(juju *Juju) core.ActionRepo {
 
 var _ core.ActionRepo = (*action)(nil)
 
-func (r *action) List(_ context.Context, uuid, appName string) (map[string]core.FacilityActionSpec, error) {
-	conn, err := r.juju.connection(uuid)
+func (r *action) List(_ context.Context, scope, appName string) (map[string]core.FacilityActionSpec, error) {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err
 	}
 	return api.NewClient(conn).ApplicationCharmActions(appName)
 }
 
-func (r *action) RunCommand(_ context.Context, uuid, unitName, command string) (string, error) {
-	conn, err := r.juju.connection(uuid)
+func (r *action) RunCommand(_ context.Context, scope, unitName, command string) (string, error) {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return "", err
 	}
@@ -51,8 +51,8 @@ func (r *action) RunCommand(_ context.Context, uuid, unitName, command string) (
 	return enqueued.Actions[0].Action.ID, nil
 }
 
-func (r *action) RunAction(_ context.Context, uuid, unitName, actionName string, parameters map[string]any) (string, error) {
-	conn, err := r.juju.connection(uuid)
+func (r *action) RunAction(_ context.Context, scope, unitName, actionName string, parameters map[string]any) (string, error) {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return "", err
 	}
@@ -73,8 +73,8 @@ func (r *action) RunAction(_ context.Context, uuid, unitName, actionName string,
 	return enqueued.Actions[0].Action.ID, nil
 }
 
-func (r *action) GetResult(_ context.Context, uuid, id string) (*api.ActionResult, error) {
-	conn, err := r.juju.connection(uuid)
+func (r *action) GetResult(_ context.Context, scope, id string) (*api.ActionResult, error) {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err
 	}
