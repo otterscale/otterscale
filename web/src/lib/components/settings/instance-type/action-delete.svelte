@@ -28,8 +28,8 @@
 
 	// Default values for the delete instance type request
 	const defaults = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		namespace: instanceType.namespace,
 		name: '',
 	} as DeleteInstanceTypeRequest;

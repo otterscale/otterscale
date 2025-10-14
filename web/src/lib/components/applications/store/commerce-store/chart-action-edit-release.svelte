@@ -35,8 +35,8 @@
 
 	const defaults = {
 		dryRun: false,
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		namespace: release.namespace,
 		name: release.name,
 		chartRef: release.version?.chartRef,

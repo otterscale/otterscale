@@ -88,12 +88,12 @@
 				} as unknown as FIO_Input);
 	let selectedScope = $state(
 		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-			? (testResult.kind.value.target.value?.scopeUuid ?? '')
+			? (testResult.kind.value.target.value?.scope ?? '')
 			: '',
 	);
 	let selectedFacility = $state(
 		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-			? (testResult.kind.value.target.value?.facilityName ?? '')
+			? (testResult.kind.value.target.value?.facility ?? '')
 			: '',
 	);
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
@@ -141,8 +141,8 @@
 				response.essentials.map(
 					(essential) =>
 						({
-							value: { scopeUuid: essential.scopeUuid, facilityName: essential.name },
-							label: `${essential.scopeName}-${essential.name}`,
+							value: { scope: essential.scope, facility: essential.name },
+							label: `${essential.scope}-${essential.name}`,
 							icon: 'ph:cube',
 						}) as SingleSelect.OptionType,
 				),
@@ -249,8 +249,8 @@
 																<SingleSelect.Item
 																	{option}
 																	onclick={() => {
-																		selectedScope = option.value.scopeUuid;
-																		selectedFacility = option.value.facilityName;
+																		selectedScope = option.value.scope;
+																		selectedFacility = option.value.facility;
 																	}}
 																>
 																	<Icon
@@ -436,8 +436,8 @@
 					onclick={() => {
 						// prepare request
 						if (requestFio.target.case == 'cephBlockDevice') {
-							requestCephBlockDevice.scopeUuid = selectedScope;
-							requestCephBlockDevice.facilityName = selectedFacility;
+							requestCephBlockDevice.scope = selectedScope;
+							requestCephBlockDevice.facility = selectedFacility;
 							requestFio.target.value = requestCephBlockDevice;
 						} else if (requestFio.target.case == 'networkFileSystem') {
 							requestFio.target.value = requestNetworkFileSystem;

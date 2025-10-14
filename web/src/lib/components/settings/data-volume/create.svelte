@@ -29,8 +29,8 @@
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_REQUEST = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		name: '',
 		namespace: 'default',
 		source: { type: DataVolume_Source_Type.HTTP_URL, data: '' } as DataVolume_Source,

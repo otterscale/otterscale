@@ -26,8 +26,8 @@
 			shouldStop = false;
 
 			const stream = applicationClient.watchLogs({
-				scopeUuid: $currentKubernetes?.scopeUuid || '',
-				facilityName: $currentKubernetes?.name || '',
+				scope: $currentKubernetes?.scope || '',
+				facility: $currentKubernetes?.name || '',
 				namespace,
 				podName: pod.name,
 				containerName: '',

@@ -68,9 +68,9 @@
 		}
 	}
 
-	async function fetchEssentials(uuid: string) {
+	async function fetchEssentials(scope: string) {
 		try {
-			const response = await orchClient.listEssentials({ scopeUuid: uuid });
+			const response = await orchClient.listEssentials({ scope: scope });
 			const { essentials } = response;
 
 			currentCeph.set(essentials.find((e) => e.type === Essential_Type.CEPH));
@@ -86,7 +86,7 @@
 
 		// Set store and fetch essentials
 		activeScope.set(scope);
-		await fetchEssentials(scope.uuid);
+		await fetchEssentials(scope.name);
 
 		// Show success feedback
 		toast.success(m.switch_scope({ name: scope.name }));

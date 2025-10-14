@@ -33,8 +33,8 @@
 
 	// Default request structure for creating a virtual machine snapshot
 	const DEFAULT_REQUEST = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		namespace: virtualMachine.namespace,
 		name: '',
 		virtualMachineName: virtualMachine.name,

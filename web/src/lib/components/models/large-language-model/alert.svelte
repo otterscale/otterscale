@@ -17,7 +17,7 @@
 	const client = createClient(OrchestratorService, transport);
 </script>
 
-{#await client.listPlugins({ scopeUuid: $currentKubernetes?.scopeUuid, facilityName: $currentKubernetes?.name })}
+{#await client.listPlugins({ scope: $currentKubernetes?.scope, facility: $currentKubernetes?.name })}
 	<Loading.Alert />
 {:then response}
 	{@const status = response.plugins.find((plugin) => plugin.chart?.name == 'llm-d-infra')?.status}

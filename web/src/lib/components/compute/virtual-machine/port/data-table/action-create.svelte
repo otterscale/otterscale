@@ -47,8 +47,8 @@
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_CREATE_REQUEST = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		namespace: virtualMachine.namespace,
 		name: virtualMachine.name,
 		virtualMachineName: virtualMachine.name,
@@ -56,8 +56,8 @@
 	} as CreateVirtualMachineServiceRequest;
 
 	const DEFAULT_UPDATE_REQUEST = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		namespace: virtualMachine.namespace,
 		name: virtualMachine.services.length > 0 ? virtualMachine.services[0].name : virtualMachine.name,
 		ports:

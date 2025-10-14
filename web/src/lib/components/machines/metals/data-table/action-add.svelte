@@ -32,7 +32,7 @@
 	let isTagLoading = $state(true);
 
 	const defaults = {
-		scopeUuid: $activeScope?.uuid,
+		scope: $activeScope?.name,
 		id: machine.id,
 		enableSsh: true,
 		skipBmcConfig: false,

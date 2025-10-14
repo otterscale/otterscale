@@ -55,8 +55,8 @@
 		try {
 			// Request both namespace-specific and cluster-wide instance types
 			const response = await virtualMachineClient.listInstanceTypes({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
+				scope: $currentKubernetes?.scope,
+				facility: $currentKubernetes?.name,
 				namespace: request.namespace,
 				includeClusterWide: true,
 			});
@@ -85,8 +85,8 @@
 			if (!request.namespace) return;
 
 			const response = await virtualMachineClient.listDataVolumes({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
+				scope: $currentKubernetes?.scope,
+				facility: $currentKubernetes?.name,
 				namespace: request.namespace,
 				bootImage: true,
 			});
@@ -108,8 +108,8 @@
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_REQUEST = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		name: '',
 		namespace: 'default',
 		instanceTypeName: '',

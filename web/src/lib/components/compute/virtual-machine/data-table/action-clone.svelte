@@ -24,8 +24,8 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		namespace: virtualMachine.namespace,
 		name: `clone-${virtualMachine.name}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}`,
 		sourceVirtualMachineName: virtualMachine.name,

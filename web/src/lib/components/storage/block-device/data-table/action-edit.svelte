@@ -27,8 +27,8 @@
 	let invalid = $state(false);
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
-		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name,
+		scope: $currentCeph?.scope,
+		facility: $currentCeph?.name,
 		poolName: image.poolName,
 		imageName: image.name,
 		quotaBytes: image.quotaBytes,
