@@ -23,29 +23,8 @@ func NewOrchestratorService(uc *core.OrchestratorUseCase) *OrchestratorService {
 
 var _ pbconnect.OrchestratorServiceHandler = (*OrchestratorService)(nil)
 
-func (s *OrchestratorService) IsMachineDeployed(ctx context.Context, req *pb.IsMachineDeployedRequest) (*pb.IsMachineDeployedResponse, error) {
-	message, deployed, err := s.uc.IsMachineDeployed(ctx, req.GetScopeUuid())
-	if err != nil {
-		return nil, err
-	}
-	resp := &pb.IsMachineDeployedResponse{}
-	resp.SetMessage(message)
-	resp.SetDeployed(deployed)
-	return resp, nil
-}
-
-func (s *OrchestratorService) ListStatuses(ctx context.Context, req *pb.ListStatusesRequest) (*pb.ListStatusesResponse, error) {
-	statuses, err := s.uc.ListStatuses(ctx, req.GetScopeUuid())
-	if err != nil {
-		return nil, err
-	}
-	resp := &pb.ListStatusesResponse{}
-	resp.SetStatuses(toProtoStatuses(statuses))
-	return resp, nil
-}
-
 func (s *OrchestratorService) ListEssentials(ctx context.Context, req *pb.ListEssentialsRequest) (*pb.ListEssentialsResponse, error) {
-	essentials, err := s.uc.ListEssentials(ctx, int32(req.GetType()), req.GetScopeUuid())
+	essentials, err := s.uc.ListEssentials(ctx, core.EssentialType(req.GetType()), req.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
@@ -54,8 +33,8 @@ func (s *OrchestratorService) ListEssentials(ctx context.Context, req *pb.ListEs
 	return resp, nil
 }
 
-func (s *OrchestratorService) CreateSingleNode(ctx context.Context, req *pb.CreateSingleNodeRequest) (*emptypb.Empty, error) {
-	if err := s.uc.CreateSingleNode(ctx, req.GetScopeUuid(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
+func (s *OrchestratorService) CreateNode(ctx context.Context, req *pb.CreateNodeRequest) (*emptypb.Empty, error) {
+	if err := s.uc.CreateNode(ctx, req.GetScopeUuid(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -102,20 +81,14 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 	return resp, nil
 }
 
-func toProtoStatuses(ess []core.EssentialStatus) []*pb.Status {
-	ret := []*pb.Status{}
-	for i := range ess {
-		ret = append(ret, toProtoStatus(&ess[i]))
+func (s *OrchestratorService) ListPlugins(ctx context.Context, req *pb.ListPluginsRequest) (*pb.ListPluginsResponse, error) {
+	plugins, err := s.uc.ListPlugins(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	if err != nil {
+		return nil, err
 	}
-	return ret
-}
-
-func toProtoStatus(es *core.EssentialStatus) *pb.Status {
-	ret := &pb.Status{}
-	ret.SetLevel(pb.Status_Level(es.Level))
-	ret.SetMessage(es.Message)
-	ret.SetDetails(es.Details)
-	return ret
+	resp := &pb.ListPluginsResponse{}
+	resp.SetPlugins(toProtoPlugins(plugins))
+	return resp, nil
 }
 
 func toProtoEssentials(es []core.Essential) []*pb.Essential {
@@ -220,5 +193,43 @@ func toProtoGPURelationPodDevice(pd *core.GPURelationPodDevice) *pb.GPURelation_
 	ret.SetGpuId(pd.GPUID)
 	ret.SetUsedCores(pd.UsedCores)
 	ret.SetUsedMemoryBytes(pd.UsedMemoryBytes)
+	return ret
+}
+
+func toProtoPlugins(rs []core.Release) []*pb.Plugin {
+	ret := []*pb.Plugin{}
+	for i := range rs {
+		ret = append(ret, toProtoPlugin(&rs[i]))
+	}
+	return ret
+}
+
+func toProtoPlugin(r *core.Release) *pb.Plugin {
+	ret := &pb.Plugin{}
+	ret.SetName(r.Name)
+	ret.SetNamespace(r.Namespace)
+	info := r.Info
+	if info != nil {
+		ret.SetStatus(info.Status.String())
+		ret.SetDescription(info.Description)
+		ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
+		ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
+		if !info.Deleted.IsZero() {
+			ret.SetDeletedAt(timestamppb.New(info.Deleted.Time))
+		}
+	}
+	if r.Chart != nil && r.Chart.Metadata != nil {
+		ret.SetChart(toProtoPluginChart(r.Chart.Metadata))
+	}
+	return ret
+}
+
+func toProtoPluginChart(md *core.ChartMetadata) *pb.Plugin_Chart {
+	ret := &pb.Plugin_Chart{}
+	ret.SetName(md.Name)
+	ret.SetVersion(md.Version)
+	ret.SetAppVersion(md.AppVersion)
+	ret.SetDescription(md.Description)
+	ret.SetIcon(md.Icon)
 	return ret
 }

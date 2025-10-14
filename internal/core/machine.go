@@ -16,14 +16,12 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-const JobHostUnits = model.JobHostUnits
-
 type (
-	NUMANode         = entity.NUMANode
 	BlockDevice      = entity.BlockDevice
+	Event            = entity.Event
 	NetworkInterface = entity.NetworkInterface
 	NodeDevice       = entity.NodeDevice
-	Event            = entity.Event
+	NUMANode         = entity.NUMANode
 	Tag              = entity.Tag
 )
 
@@ -52,13 +50,12 @@ type MachineFactor struct {
 	*MachineConstraint
 }
 
-type TagRepo interface {
-	List(ctx context.Context) ([]Tag, error)
-	Get(ctx context.Context, name string) (*Tag, error)
-	Create(ctx context.Context, name, comment string) (*Tag, error)
-	Delete(ctx context.Context, name string) error
-	AddMachines(ctx context.Context, name string, machineIDs []string) error
-	RemoveMachines(ctx context.Context, name string, machineIDs []string) error
+type ClientRepo interface {
+	Status(ctx context.Context, uuid string, patterns []string) (*params.FullStatus, error)
+}
+
+type EventRepo interface {
+	Get(ctx context.Context, systemID string) ([]Event, error)
 }
 
 type MachineRepo interface {
@@ -83,37 +80,38 @@ type ServerRepo interface {
 	Update(ctx context.Context, name, value string) error
 }
 
-type ClientRepo interface {
-	Status(ctx context.Context, uuid string, patterns []string) (*params.FullStatus, error)
-}
-
-type EventRepo interface {
-	Get(ctx context.Context, systemID string) ([]Event, error)
+type TagRepo interface {
+	List(ctx context.Context) ([]Tag, error)
+	Get(ctx context.Context, name string) (*Tag, error)
+	Create(ctx context.Context, name, comment string) (*Tag, error)
+	Delete(ctx context.Context, name string) error
+	AddMachines(ctx context.Context, name string, machineIDs []string) error
+	RemoveMachines(ctx context.Context, name string, machineIDs []string) error
 }
 
 type MachineUseCase struct {
+	action         ActionRepo
+	client         ClientRepo
+	event          EventRepo
+	facility       FacilityRepo
 	machine        MachineRepo
 	machineManager MachineManagerRepo
 	nodeDevice     NodeDeviceRepo
 	server         ServerRepo
-	client         ClientRepo
 	tag            TagRepo
-	action         ActionRepo
-	facility       FacilityRepo
-	event          EventRepo
 }
 
-func NewMachineUseCase(machine MachineRepo, machineManager MachineManagerRepo, nodeDevice NodeDeviceRepo, server ServerRepo, client ClientRepo, tag TagRepo, action ActionRepo, facility FacilityRepo, event EventRepo) *MachineUseCase {
+func NewMachineUseCase(action ActionRepo, client ClientRepo, event EventRepo, facility FacilityRepo, machine MachineRepo, machineManager MachineManagerRepo, nodeDevice NodeDeviceRepo, server ServerRepo, tag TagRepo) *MachineUseCase {
 	return &MachineUseCase{
+		action:         action,
+		client:         client,
+		event:          event,
+		facility:       facility,
 		machine:        machine,
 		machineManager: machineManager,
 		nodeDevice:     nodeDevice,
 		server:         server,
-		client:         client,
 		tag:            tag,
-		action:         action,
-		facility:       facility,
-		event:          event,
 	}
 }
 
@@ -202,7 +200,7 @@ func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSS
 	addMachineParams := []params.AddMachineParams{
 		{
 			Placement: &instance.Placement{Scope: uuid, Directive: machine.FQDN},
-			Jobs:      []model.MachineJob{JobHostUnits},
+			Jobs:      []model.MachineJob{model.JobHostUnits},
 			Base:      &params.Base{Name: base.OS, Channel: base.Channel.String()},
 		},
 	}

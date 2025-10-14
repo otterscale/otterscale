@@ -1,0 +1,26 @@
+edition = "2023";
+
+package otterscale.bootstrap.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/otterscale/otterscale/api/bootstrap/v1;pb";
+
+service BootstrapService {
+  rpc WatchStatus(WatchStatusRequest) returns (stream WatchStatusResponse);
+  rpc UpdateStatus(UpdateStatusRequest) returns (google.protobuf.Empty);
+}
+
+message WatchStatusRequest {}
+
+message WatchStatusResponse {
+  bool started = 1;
+  bool finished = 2;
+  string phase = 11;
+  string message = 12;
+}
+
+message UpdateStatusRequest {
+  string phase = 1;
+  string message = 2;
+}

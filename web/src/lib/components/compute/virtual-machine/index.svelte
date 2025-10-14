@@ -6,7 +6,7 @@
 	import { DataTable } from './data-table/index';
 	import { Statistics } from './statistics';
 
-	import { VirtualMachineService, type VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import { InstanceService, type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 </script>
@@ -20,7 +20,7 @@
 
 	const virtualMachines = writable<VirtualMachine[]>([]);
 
-	const VirtualMachineClient = createClient(VirtualMachineService, transport);
+	const VirtualMachineClient = createClient(InstanceService, transport);
 	const reloadManager = new ReloadManager(() => {
 		VirtualMachineClient.listVirtualMachines({
 			scopeUuid: scopeUuid,

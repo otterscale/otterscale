@@ -16,7 +16,7 @@ import (
 	"go.opentelemetry.io/otel/sdk/metric"
 )
 
-var ProviderSet = wire.NewSet(NewServe, NewInterceptorOptions)
+var ProviderSet = wire.NewSet(NewBootstrap, NewServe, NewInterceptorOptions)
 
 func NewInterceptorOptions() ([]connect.HandlerOption, error) {
 	otelInterceptor, err := otelconnect.NewInterceptor()
@@ -28,7 +28,7 @@ func NewInterceptorOptions() ([]connect.HandlerOption, error) {
 	}, nil
 }
 
-func handleMetrics(mux *http.ServeMux) error {
+func registerPrometheusMetrics(mux *http.ServeMux) error {
 	exporter, err := prometheus.New()
 	if err != nil {
 		return err
@@ -38,11 +38,13 @@ func handleMetrics(mux *http.ServeMux) error {
 	return nil
 }
 
-func handleGRPCCompatible(mux *http.ServeMux, services ...string) {
-	checker := grpchealth.NewStaticChecker(services...)
-	mux.Handle(grpchealth.NewHandler(checker))
-
+func registerGRPCReflection(mux *http.ServeMux, services ...string) {
 	reflector := grpcreflect.NewStaticReflector(services...)
 	mux.Handle(grpcreflect.NewHandlerV1(reflector))
 	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+}
+
+func registerGRPCHealth(mux *http.ServeMux, services ...string) {
+	checker := grpchealth.NewStaticChecker(services...)
+	mux.Handle(grpchealth.NewHandler(checker))
 }

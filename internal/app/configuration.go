@@ -18,18 +18,21 @@ import (
 type ConfigurationService struct {
 	pbconnect.UnimplementedConfigurationServiceHandler
 
-	cuc *core.ConfigurationUseCase
-	buc *core.BISTUseCase
+	configuration *core.ConfigurationUseCase
+	bist          *core.BISTUseCase
 }
 
-func NewConfigurationService(cuc *core.ConfigurationUseCase, buc *core.BISTUseCase) *ConfigurationService {
-	return &ConfigurationService{cuc: cuc, buc: buc}
+func NewConfigurationService(configuration *core.ConfigurationUseCase, bist *core.BISTUseCase) *ConfigurationService {
+	return &ConfigurationService{
+		configuration: configuration,
+		bist:          bist,
+	}
 }
 
 var _ pbconnect.ConfigurationServiceHandler = (*ConfigurationService)(nil)
 
 func (s *ConfigurationService) GetConfiguration(ctx context.Context, _ *pb.GetConfigurationRequest) (*pb.Configuration, error) {
-	config, err := s.cuc.GetConfiguration(ctx)
+	config, err := s.configuration.GetConfiguration(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +41,7 @@ func (s *ConfigurationService) GetConfiguration(ctx context.Context, _ *pb.GetCo
 }
 
 func (s *ConfigurationService) UpdateNTPServer(ctx context.Context, req *pb.UpdateNTPServerRequest) (*pb.Configuration_NTPServer, error) {
-	ntpServers, err := s.cuc.UpdateNTPServer(ctx, req.GetAddresses())
+	ntpServers, err := s.configuration.UpdateNTPServer(ctx, req.GetAddresses())
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +50,7 @@ func (s *ConfigurationService) UpdateNTPServer(ctx context.Context, req *pb.Upda
 }
 
 func (s *ConfigurationService) UpdatePackageRepository(ctx context.Context, req *pb.UpdatePackageRepositoryRequest) (*pb.Configuration_PackageRepository, error) {
-	repo, err := s.cuc.UpdatePackageRepository(ctx, int(req.GetId()), req.GetUrl(), req.GetSkipJuju())
+	repo, err := s.configuration.UpdatePackageRepository(ctx, int(req.GetId()), req.GetUrl(), req.GetSkipJuju())
 	if err != nil {
 		return nil, err
 	}
@@ -55,8 +58,17 @@ func (s *ConfigurationService) UpdatePackageRepository(ctx context.Context, req 
 	return resp, nil
 }
 
+func (s *ConfigurationService) UpdateHelmRepository(_ context.Context, req *pb.UpdateHelmRepositoryRequest) (*pb.Configuration_HelmRepository, error) {
+	helmRepository, err := s.configuration.UpdateHelmRepository(req.GetUrls())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoHelmRepository(helmRepository)
+	return resp, nil
+}
+
 func (s *ConfigurationService) CreateBootImage(ctx context.Context, req *pb.CreateBootImageRequest) (*pb.Configuration_BootImage, error) {
-	image, err := s.cuc.CreateBootImage(ctx, req.GetDistroSeries(), req.GetArchitectures())
+	image, err := s.configuration.CreateBootImage(ctx, req.GetDistroSeries(), req.GetArchitectures())
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +77,7 @@ func (s *ConfigurationService) CreateBootImage(ctx context.Context, req *pb.Crea
 }
 
 func (s *ConfigurationService) SetDefaultBootImage(ctx context.Context, req *pb.SetDefaultBootImageRequest) (*emptypb.Empty, error) {
-	if err := s.cuc.SetDefaultBootImage(ctx, req.GetDistroSeries()); err != nil {
+	if err := s.configuration.SetDefaultBootImage(ctx, req.GetDistroSeries()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -73,7 +85,7 @@ func (s *ConfigurationService) SetDefaultBootImage(ctx context.Context, req *pb.
 }
 
 func (s *ConfigurationService) ImportBootImages(ctx context.Context, _ *pb.ImportBootImagesRequest) (*emptypb.Empty, error) {
-	if err := s.cuc.ImportBootImages(ctx); err != nil {
+	if err := s.configuration.ImportBootImages(ctx); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -81,7 +93,7 @@ func (s *ConfigurationService) ImportBootImages(ctx context.Context, _ *pb.Impor
 }
 
 func (s *ConfigurationService) IsImportingBootImages(ctx context.Context, _ *pb.IsImportingBootImagesRequest) (*pb.IsImportingBootImagesResponse, error) {
-	isImporting, err := s.cuc.IsImportingBootImages(ctx)
+	isImporting, err := s.configuration.IsImportingBootImages(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +103,7 @@ func (s *ConfigurationService) IsImportingBootImages(ctx context.Context, _ *pb.
 }
 
 func (s *ConfigurationService) ListBootImageSelections(_ context.Context, _ *pb.ListBootImageSelectionsRequest) (*pb.ListBootImageSelectionsResponse, error) {
-	selections, err := s.cuc.ListBootImageSelections()
+	selections, err := s.configuration.ListBootImageSelections()
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +113,7 @@ func (s *ConfigurationService) ListBootImageSelections(_ context.Context, _ *pb.
 }
 
 func (s *ConfigurationService) ListTestResults(ctx context.Context, _ *pb.ListTestResultsRequest) (*pb.ListTestResultsResponse, error) {
-	results, err := s.buc.ListResults(ctx)
+	results, err := s.bist.ListResults(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -118,13 +130,13 @@ func (s *ConfigurationService) CreateTestResult(ctx context.Context, req *pb.Cre
 	switch req.WhichKind() {
 	case pb.CreateTestResultRequest_Fio_case:
 		fio := req.GetFio()
-		result, err = s.buc.CreateFIOResult(ctx, req.GetName(), req.GetCreatedBy(), toCoreFIOTarget(fio.GetCephBlockDevice(), fio.GetNetworkFileSystem()), toCoreFIOInput(fio.GetInput()))
+		result, err = s.bist.CreateFIOResult(ctx, req.GetName(), req.GetCreatedBy(), toCoreFIOTarget(fio.GetCephBlockDevice(), fio.GetNetworkFileSystem()), toCoreFIOInput(fio.GetInput()))
 		if err != nil {
 			return nil, err
 		}
 	case pb.CreateTestResultRequest_Warp_case:
 		warp := req.GetWarp()
-		result, err = s.buc.CreateWarpResult(ctx, req.GetName(), req.GetCreatedBy(), toCoreWarpTarget(warp.GetInternalObjectService(), warp.GetExternalObjectService()), toCoreWarpInput(warp.GetInput()))
+		result, err = s.bist.CreateWarpResult(ctx, req.GetName(), req.GetCreatedBy(), toCoreWarpTarget(warp.GetInternalObjectService(), warp.GetExternalObjectService()), toCoreWarpInput(warp.GetInput()))
 		if err != nil {
 			return nil, err
 		}
@@ -136,7 +148,7 @@ func (s *ConfigurationService) CreateTestResult(ctx context.Context, req *pb.Cre
 }
 
 func (s *ConfigurationService) DeleteTestResult(ctx context.Context, req *pb.DeleteTestResultRequest) (*emptypb.Empty, error) {
-	if err := s.buc.DeleteResult(ctx, req.GetName()); err != nil {
+	if err := s.bist.DeleteResult(ctx, req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -144,7 +156,7 @@ func (s *ConfigurationService) DeleteTestResult(ctx context.Context, req *pb.Del
 }
 
 func (s *ConfigurationService) ListInternalObjectServices(ctx context.Context, req *pb.ListInternalObjectServicesRequest) (*pb.ListInternalObjectServicesResponse, error) {
-	services, err := s.buc.ListInternalObjectServices(ctx, req.GetScopeUuid())
+	services, err := s.bist.ListInternalObjectServices(ctx, req.GetScopeUuid(), req.GetKubernetesName(), req.GetCephName())
 	if err != nil {
 		return nil, err
 	}
@@ -210,11 +222,18 @@ func toProtoBootImageSelection(bis *core.BootImageSelection) *pb.Configuration_B
 	return ret
 }
 
+func toProtoHelmRepository(urls []string) *pb.Configuration_HelmRepository {
+	ret := &pb.Configuration_HelmRepository{}
+	ret.SetUrls(urls)
+	return ret
+}
+
 func toProtoConfiguration(c *core.Configuration) *pb.Configuration {
 	ret := &pb.Configuration{}
 	ret.SetNtpServer(toProtoNTPServer(c.NTPServers))
 	ret.SetPackageRepositories(toProtoPackageRepositories(c.PackageRepositories))
 	ret.SetBootImages(toProtoBootImages(c.BootImages))
+	ret.SetHelmRepository(toProtoHelmRepository(c.HelmRepositorys))
 	return ret
 }
 

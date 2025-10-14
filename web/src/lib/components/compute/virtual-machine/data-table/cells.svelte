@@ -7,7 +7,7 @@
 	import VNC from './cell-vnc.svelte';
 
 	import { page } from '$app/state';
-	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { Disk } from '$lib/components/compute/virtual-machine/disk';
 	import { Port } from '$lib/components/compute/virtual-machine/port';
 	import { getStatusInfo } from '$lib/components/compute/virtual-machine/units/type';

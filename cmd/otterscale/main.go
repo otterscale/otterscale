@@ -13,7 +13,7 @@ import (
 
 var version = "devel"
 
-func newCmd(conf *config.Config, serve *mux.Serve) *cobra.Command {
+func newCmd(bootstrap *mux.Bootstrap, conf *config.Config, serve *mux.Serve) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:           "otterscale",
 		Short:         "Open-source platform for managing server infrastructure and GPU farms",
@@ -23,6 +23,7 @@ func newCmd(conf *config.Config, serve *mux.Serve) *cobra.Command {
 		SilenceErrors: true,
 	}
 	cmd.AddCommand(
+		oscmd.NewBootstrap(bootstrap),
 		oscmd.NewInit(),
 		oscmd.NewServe(conf, serve),
 	)

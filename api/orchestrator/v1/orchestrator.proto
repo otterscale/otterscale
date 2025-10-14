@@ -8,21 +8,24 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/otterscale/otterscale/api/orchestrator/v1;pb";
 
 service OrchestratorService {
-  rpc IsMachineDeployed(IsMachineDeployedRequest) returns (IsMachineDeployedResponse);
-  rpc ListStatuses(ListStatusesRequest) returns (ListStatusesResponse);
   rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse);
-  rpc CreateSingleNode(CreateSingleNodeRequest) returns (google.protobuf.Empty);
-  rpc CreateHighAvailabilityCluster(CreateHighAvailabilityClusterRequest) returns (google.protobuf.Empty);
-  rpc AddUnits(AddUnitsRequest) returns (google.protobuf.Empty);
+
+  rpc CreateNode(CreateNodeRequest) returns (google.protobuf.Empty);
+  rpc CreateCluster(CreateClusterRequest) returns (google.protobuf.Empty);
+  rpc AddClusterUnits(AddClusterUnitsRequest) returns (google.protobuf.Empty);
+
   rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse);
   rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse);
+
   rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse);
   rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse);
+
+  rpc ListPlugins(ListPluginsRequest) returns (ListPluginsResponse);
 }
 
 message Essential {
   enum Type {
-    UNSPECIFIED = 0;
+    UNKNOWN = 0;
     KUBERNETES = 1;
     CEPH = 2;
   }
@@ -37,17 +40,62 @@ message Essential {
   repeated Unit units = 21;
 }
 
-message Status {
-  enum Level {
-    INFO = 0;
-    LOW = 1;
-    MEDIUM = 2;
-    HIGH = 3;
-    CRITICAL = 4;
-  }
-  Level level = 1;
-  string message = 2;
-  string details = 3;
+message ListEssentialsRequest {
+  Essential.Type type = 1;
+  string scope_uuid = 2;
+}
+
+message ListEssentialsResponse {
+  repeated Essential essentials = 1;
+}
+
+message CreateNodeRequest {
+  string scope_uuid = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+  repeated string virtual_ips = 11;
+  string calico_cidr = 12;
+  repeated string osd_devices = 21;
+}
+
+message CreateClusterRequest {
+  string scope_uuid = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+  repeated string virtual_ips = 11;
+  string calico_cidr = 12;
+  repeated string osd_devices = 21;
+}
+
+message AddClusterUnitsRequest {
+  Essential.Type type = 1;
+  string scope_uuid = 2;
+  string name = 3;
+  int32 number = 4;
+  repeated string machine_ids = 5;
+  bool force = 11;
+}
+
+message ListKubernetesNodeLabelsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string hostname = 3;
+  bool all = 11;
+}
+
+message ListKubernetesNodeLabelsResponse {
+  map<string, string> labels = 1;
+}
+
+message UpdateKubernetesNodeLabelsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string hostname = 3;
+  map<string, string> labels = 4;
+}
+
+message UpdateKubernetesNodeLabelsResponse {
+  map<string, string> labels = 1;
 }
 
 message GPURelation {
@@ -85,81 +133,6 @@ message GPURelation {
   }
 }
 
-message IsMachineDeployedRequest {
-  string scope_uuid = 1;
-}
-
-message IsMachineDeployedResponse {
-  bool deployed = 1;
-  string message = 2;
-}
-
-message ListStatusesRequest {
-  string scope_uuid = 1;
-}
-
-message ListStatusesResponse {
-  repeated Status statuses = 1;
-}
-
-message ListEssentialsRequest {
-  Essential.Type type = 1;
-  string scope_uuid = 2;
-}
-
-message ListEssentialsResponse {
-  repeated Essential essentials = 1;
-}
-
-message CreateSingleNodeRequest {
-  string scope_uuid = 1;
-  string machine_id = 2;
-  string prefix_name = 3;
-  repeated string virtual_ips = 11;
-  string calico_cidr = 12;
-  repeated string osd_devices = 21;
-}
-
-message CreateHighAvailabilityClusterRequest {
-  string scope_uuid = 1;
-  string machine_id = 2;
-  string prefix_name = 3;
-  repeated string virtual_ips = 11;
-  string calico_cidr = 12;
-  repeated string osd_devices = 21;
-}
-
-message AddUnitsRequest {
-  Essential.Type type = 1;
-  string scope_uuid = 2;
-  string name = 3;
-  int32 number = 4;
-  repeated string machine_ids = 5;
-  bool force = 11;
-}
-
-message ListKubernetesNodeLabelsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string hostname = 3;
-  bool all = 11;
-}
-
-message ListKubernetesNodeLabelsResponse {
-  map<string, string> labels = 1;
-}
-
-message UpdateKubernetesNodeLabelsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string hostname = 3;
-  map<string, string> labels = 4;
-}
-
-message UpdateKubernetesNodeLabelsResponse {
-  map<string, string> labels = 1;
-}
-
 message ListGPURelationsByMachineRequest {
   string scope_uuid = 1;
   string facility_name = 2;
@@ -179,4 +152,31 @@ message ListGPURelationsByModelRequest {
 
 message ListGPURelationsByModelResponse {
   repeated GPURelation gpu_relations = 1;
+}
+
+message Plugin {
+  message Chart {
+    string name = 1;
+    string version = 2;
+    string app_version = 3;
+    string description = 4;
+    string icon = 5;
+  }
+  string name = 1;
+  string namespace = 2;
+  string status = 3;
+  string description = 4;
+  google.protobuf.Timestamp first_deployed_at = 5;
+  google.protobuf.Timestamp last_deployed_at = 6;
+  google.protobuf.Timestamp deleted_at = 7;
+  Chart chart = 11;
+}
+
+message ListPluginsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListPluginsResponse {
+  repeated Plugin plugins = 1;
 }

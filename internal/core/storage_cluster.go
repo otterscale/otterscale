@@ -75,7 +75,7 @@ func (uc *StorageUseCase) ListMONs(ctx context.Context, uuid, facility string) (
 	if err != nil {
 		return nil, err
 	}
-	mons, err := uc.cluster.ListMONs(ctx, config)
+	mons, err := uc.cephCluster.ListMONs(ctx, config)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (uc *StorageUseCase) ListOSDs(ctx context.Context, uuid, facility string) (
 	if err != nil {
 		return nil, err
 	}
-	osds, err := uc.cluster.ListOSDs(ctx, config)
+	osds, err := uc.cephCluster.ListOSDs(ctx, config)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +121,7 @@ func (uc *StorageUseCase) DoSMART(ctx context.Context, uuid, facility, osd strin
 	if err != nil {
 		return nil, err
 	}
-	return uc.cluster.DoSMART(ctx, config, osd)
+	return uc.cephCluster.DoSMART(ctx, config, osd)
 }
 
 func (uc *StorageUseCase) ListPools(ctx context.Context, uuid, facility, application string) ([]Pool, error) {
@@ -130,26 +130,26 @@ func (uc *StorageUseCase) ListPools(ctx context.Context, uuid, facility, applica
 		return nil, err
 	}
 	if application != "" {
-		return uc.cluster.ListPoolsByApplication(ctx, config, application)
+		return uc.cephCluster.ListPoolsByApplication(ctx, config, application)
 	}
-	pools, err := uc.cluster.ListPools(ctx, config)
+	pools, err := uc.cephCluster.ListPools(ctx, config)
 	if err != nil {
 		return nil, err
 	}
 	for i := range pools {
 		if pools[i].Type == "erasure" {
-			ecOverwrites, _ := uc.cluster.GetParameter(ctx, config, pools[i].Name, "allow_ec_overwrites")
+			ecOverwrites, _ := uc.cephCluster.GetParameter(ctx, config, pools[i].Name, "allow_ec_overwrites")
 			if ecOverwrites == "true" {
 				pools[i].ECOverwrites = true
 			}
-			ecProfile, _ := uc.cluster.GetParameter(ctx, config, pools[i].Name, "erasure_code_profile")
+			ecProfile, _ := uc.cephCluster.GetParameter(ctx, config, pools[i].Name, "erasure_code_profile")
 			if ecProfile != "" {
-				k, m, _ := uc.cluster.GetECProfile(ctx, config, ecProfile)
+				k, m, _ := uc.cephCluster.GetECProfile(ctx, config, ecProfile)
 				pools[i].DataChunks, _ = strconv.ParseUint(k, 10, 64)
 				pools[i].CodingChunks, _ = strconv.ParseUint(m, 10, 64)
 			}
 		}
-		maxBytes, maxObjects, _ := uc.cluster.GetQuota(ctx, config, pools[i].Name)
+		maxBytes, maxObjects, _ := uc.cephCluster.GetQuota(ctx, config, pools[i].Name)
 		pools[i].QuotaBytes = maxBytes
 		pools[i].QuotaObjects = maxObjects
 	}
@@ -161,25 +161,25 @@ func (uc *StorageUseCase) CreatePool(ctx context.Context, uuid, facility, pool, 
 	if err != nil {
 		return nil, err
 	}
-	if err := uc.cluster.CreatePool(ctx, config, pool, poolType); err != nil {
+	if err := uc.cephCluster.CreatePool(ctx, config, pool, poolType); err != nil {
 		return nil, err
 	}
 	if poolType == "erasure" && ecOverwrites {
-		if err := uc.cluster.SetParameter(ctx, config, pool, "allow_ec_overwrites", "true"); err != nil {
+		if err := uc.cephCluster.SetParameter(ctx, config, pool, "allow_ec_overwrites", "true"); err != nil {
 			return nil, err
 		}
 	}
 	if poolType == "replicated" && replicatedSize > 1 {
-		if err := uc.cluster.SetParameter(ctx, config, pool, "size", strconv.FormatUint(replicatedSize, 10)); err != nil {
+		if err := uc.cephCluster.SetParameter(ctx, config, pool, "size", strconv.FormatUint(replicatedSize, 10)); err != nil {
 			return nil, err
 		}
 	}
 	for _, app := range applications {
-		if err := uc.cluster.EnableApplication(ctx, config, pool, app); err != nil {
+		if err := uc.cephCluster.EnableApplication(ctx, config, pool, app); err != nil {
 			return nil, err
 		}
 	}
-	if err := uc.cluster.SetQuota(ctx, config, pool, quotaMaxBytes, quotaMaxObjects); err != nil {
+	if err := uc.cephCluster.SetQuota(ctx, config, pool, quotaMaxBytes, quotaMaxObjects); err != nil {
 		return nil, err
 	}
 	return &Pool{
@@ -192,7 +192,7 @@ func (uc *StorageUseCase) UpdatePool(ctx context.Context, uuid, facility, pool s
 	if err != nil {
 		return nil, err
 	}
-	if err := uc.cluster.SetQuota(ctx, config, pool, quotaMaxBytes, quotaMaxObjects); err != nil {
+	if err := uc.cephCluster.SetQuota(ctx, config, pool, quotaMaxBytes, quotaMaxObjects); err != nil {
 		return nil, err
 	}
 	return &Pool{
@@ -205,7 +205,7 @@ func (uc *StorageUseCase) DeletePool(ctx context.Context, uuid, facility, pool s
 	if err != nil {
 		return err
 	}
-	return uc.cluster.DeletePool(ctx, config, pool)
+	return uc.cephCluster.DeletePool(ctx, config, pool)
 }
 
 func (uc *StorageUseCase) getMachineByJujuMachine(machines []Machine, uuid, monName string) (*Machine, error) {

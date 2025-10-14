@@ -14,7 +14,7 @@
 	import Create from './action-attach.svelte';
 	import { columns, messages } from './columns';
 
-	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';

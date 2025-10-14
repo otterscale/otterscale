@@ -14,7 +14,7 @@
 	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 
-	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';

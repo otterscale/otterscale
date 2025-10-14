@@ -18,23 +18,23 @@ type StorageConfig struct {
 }
 
 type StorageUseCase struct {
-	action   ActionRepo
-	facility FacilityRepo
-	cluster  CephClusterRepo
-	rbd      CephRBDRepo
-	fs       CephFSRepo
-	rgw      CephRGWRepo
-	machine  MachineRepo
+	action      ActionRepo
+	facility    FacilityRepo
+	cephCluster CephClusterRepo
+	cephFS      CephFSRepo
+	cephRBD     CephRBDRepo
+	cephRGW     CephRGWRepo
+	machine     MachineRepo
 }
 
-func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cluster CephClusterRepo, rbd CephRBDRepo, fs CephFSRepo, rgw CephRGWRepo, machine MachineRepo) *StorageUseCase {
+func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cephCluster CephClusterRepo, cephFS CephFSRepo, cephRBD CephRBDRepo, cephRGW CephRGWRepo, machine MachineRepo) *StorageUseCase {
 	return &StorageUseCase{
-		action:   action,
-		facility: facility,
-		cluster:  cluster,
-		rbd:      rbd,
-		fs:       fs,
-		rgw:      rgw,
-		machine:  machine,
+		action:      action,
+		facility:    facility,
+		cephCluster: cephCluster,
+		cephFS:      cephFS,
+		cephRBD:     cephRBD,
+		cephRGW:     cephRGW,
+		machine:     machine,
 	}
 }

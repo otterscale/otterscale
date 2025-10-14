@@ -14,17 +14,19 @@ import (
 type MachineService struct {
 	pbconnect.UnimplementedMachineServiceHandler
 
-	uc *core.MachineUseCase
+	machine *core.MachineUseCase
 }
 
-func NewMachineService(uc *core.MachineUseCase) *MachineService {
-	return &MachineService{uc: uc}
+func NewMachineService(machine *core.MachineUseCase) *MachineService {
+	return &MachineService{
+		machine: machine,
+	}
 }
 
 var _ pbconnect.MachineServiceHandler = (*MachineService)(nil)
 
 func (s *MachineService) ListMachines(ctx context.Context, req *pb.ListMachinesRequest) (*pb.ListMachinesResponse, error) {
-	machines, err := s.uc.ListMachines(ctx, req.GetScopeUuid())
+	machines, err := s.machine.ListMachines(ctx, req.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +36,7 @@ func (s *MachineService) ListMachines(ctx context.Context, req *pb.ListMachinesR
 }
 
 func (s *MachineService) GetMachine(ctx context.Context, req *pb.GetMachineRequest) (*pb.Machine, error) {
-	machine, err := s.uc.GetMachine(ctx, req.GetId())
+	machine, err := s.machine.GetMachine(ctx, req.GetId())
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +45,7 @@ func (s *MachineService) GetMachine(ctx context.Context, req *pb.GetMachineReque
 }
 
 func (s *MachineService) CreateMachine(ctx context.Context, req *pb.CreateMachineRequest) (*pb.Machine, error) {
-	machine, err := s.uc.CreateMachine(ctx, req.GetId(), req.GetEnableSsh(), req.GetSkipBmcConfig(), req.GetSkipNetworking(), req.GetSkipStorage(), req.GetScopeUuid(), req.GetTags())
+	machine, err := s.machine.CreateMachine(ctx, req.GetId(), req.GetEnableSsh(), req.GetSkipBmcConfig(), req.GetSkipNetworking(), req.GetSkipStorage(), req.GetScopeUuid(), req.GetTags())
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +54,7 @@ func (s *MachineService) CreateMachine(ctx context.Context, req *pb.CreateMachin
 }
 
 func (s *MachineService) DeleteMachine(ctx context.Context, req *pb.DeleteMachineRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteMachine(ctx, req.GetId(), req.GetForce(), req.GetPurgeDisk()); err != nil {
+	if err := s.machine.DeleteMachine(ctx, req.GetId(), req.GetForce(), req.GetPurgeDisk()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -60,7 +62,7 @@ func (s *MachineService) DeleteMachine(ctx context.Context, req *pb.DeleteMachin
 }
 
 func (s *MachineService) PowerOffMachine(ctx context.Context, req *pb.PowerOffMachineRequest) (*pb.Machine, error) {
-	machine, err := s.uc.PowerOffMachine(ctx, req.GetId(), req.GetComment())
+	machine, err := s.machine.PowerOffMachine(ctx, req.GetId(), req.GetComment())
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +71,7 @@ func (s *MachineService) PowerOffMachine(ctx context.Context, req *pb.PowerOffMa
 }
 
 func (s *MachineService) AddMachineTags(ctx context.Context, req *pb.AddMachineTagsRequest) (*emptypb.Empty, error) {
-	if err := s.uc.AddMachineTags(ctx, req.GetId(), req.GetTags()); err != nil {
+	if err := s.machine.AddMachineTags(ctx, req.GetId(), req.GetTags()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -77,7 +79,7 @@ func (s *MachineService) AddMachineTags(ctx context.Context, req *pb.AddMachineT
 }
 
 func (s *MachineService) RemoveMachineTags(ctx context.Context, req *pb.RemoveMachineTagsRequest) (*emptypb.Empty, error) {
-	if err := s.uc.RemoveMachineTags(ctx, req.GetId(), req.GetTags()); err != nil {
+	if err := s.machine.RemoveMachineTags(ctx, req.GetId(), req.GetTags()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -85,7 +87,7 @@ func (s *MachineService) RemoveMachineTags(ctx context.Context, req *pb.RemoveMa
 }
 
 func (s *MachineService) ListTags(ctx context.Context, _ *pb.ListTagsRequest) (*pb.ListTagsResponse, error) {
-	tags, err := s.uc.ListTags(ctx)
+	tags, err := s.machine.ListTags(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +97,7 @@ func (s *MachineService) ListTags(ctx context.Context, _ *pb.ListTagsRequest) (*
 }
 
 func (s *MachineService) GetTag(ctx context.Context, req *pb.GetTagRequest) (*pb.Tag, error) {
-	tag, err := s.uc.GetTag(ctx, req.GetName())
+	tag, err := s.machine.GetTag(ctx, req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +106,7 @@ func (s *MachineService) GetTag(ctx context.Context, req *pb.GetTagRequest) (*pb
 }
 
 func (s *MachineService) CreateTag(ctx context.Context, req *pb.CreateTagRequest) (*pb.Tag, error) {
-	tag, err := s.uc.CreateTag(ctx, req.GetName(), req.GetComment())
+	tag, err := s.machine.CreateTag(ctx, req.GetName(), req.GetComment())
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +115,7 @@ func (s *MachineService) CreateTag(ctx context.Context, req *pb.CreateTagRequest
 }
 
 func (s *MachineService) DeleteTag(ctx context.Context, req *pb.DeleteTagRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteTag(ctx, req.GetName()); err != nil {
+	if err := s.machine.DeleteTag(ctx, req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}

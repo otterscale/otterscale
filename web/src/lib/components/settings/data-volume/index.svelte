@@ -7,11 +7,7 @@
 	import Actions from './cell-actions.svelte';
 	import Create from './create.svelte';
 
-	import {
-		DataVolume_Source_Type,
-		VirtualMachineService,
-		type DataVolume,
-	} from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import { DataVolume_Source_Type, InstanceService, type DataVolume } from '$lib/api/instance/v1/instance_pb';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
@@ -27,7 +23,7 @@
 		$props();
 
 	const transport: Transport = getContext('transport');
-	const virtualMachineClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 
 	const dataVolumes = writable<DataVolume[]>();
 	let isConfigurationLoading = $state(true);

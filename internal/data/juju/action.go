@@ -22,7 +22,7 @@ func NewAction(juju *Juju) core.ActionRepo {
 
 var _ core.ActionRepo = (*action)(nil)
 
-func (r *action) List(_ context.Context, uuid, appName string) (map[string]core.ActionSpec, error) {
+func (r *action) List(_ context.Context, uuid, appName string) (map[string]core.FacilityActionSpec, error) {
 	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err
