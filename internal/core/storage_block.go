@@ -34,20 +34,20 @@ type RBDImage struct {
 }
 
 type CephRBDRepo interface {
-	ListImages(ctx context.Context, config *StorageConfig, pool string) ([]RBDImage, error)
-	GetImage(ctx context.Context, config *StorageConfig, pool, image string) (*RBDImage, error)
-	CreateImage(ctx context.Context, config *StorageConfig, pool, image string, order int, stripeUnit, stripeCount, size, features uint64) (*RBDImage, error)
-	UpdateImageSize(ctx context.Context, config *StorageConfig, pool, image string, size uint64) error
-	DeleteImage(ctx context.Context, config *StorageConfig, pool, image string) error
-	CreateImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
-	DeleteImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
-	RollbackImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
-	ProtectImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
-	UnprotectImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
+	ListImages(ctx context.Context, config *CephConfig, pool string) ([]RBDImage, error)
+	GetImage(ctx context.Context, config *CephConfig, pool, image string) (*RBDImage, error)
+	CreateImage(ctx context.Context, config *CephConfig, pool, image string, order int, stripeUnit, stripeCount, size, features uint64) (*RBDImage, error)
+	UpdateImageSize(ctx context.Context, config *CephConfig, pool, image string, size uint64) error
+	DeleteImage(ctx context.Context, config *CephConfig, pool, image string) error
+	CreateImageSnapshot(ctx context.Context, config *CephConfig, pool, image, snapshot string) error
+	DeleteImageSnapshot(ctx context.Context, config *CephConfig, pool, image, snapshot string) error
+	RollbackImageSnapshot(ctx context.Context, config *CephConfig, pool, image, snapshot string) error
+	ProtectImageSnapshot(ctx context.Context, config *CephConfig, pool, image, snapshot string) error
+	UnprotectImageSnapshot(ctx context.Context, config *CephConfig, pool, image, snapshot string) error
 }
 
-func (uc *StorageUseCase) ListImages(ctx context.Context, uuid, facility string) ([]RBDImage, error) {
-	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *StorageUseCase) ListImages(ctx context.Context, scope, facility string) ([]RBDImage, error) {
+	config, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -68,8 +68,8 @@ func (uc *StorageUseCase) ListImages(ctx context.Context, uuid, facility string)
 	return images, nil
 }
 
-func (uc *StorageUseCase) CreateImage(ctx context.Context, uuid, facility, pool, image string, objectSizeBytes, stripeUnitBytes, stripeCount, size uint64, layering, exclusiveLock, objectMap, fastDiff, deepFlatten bool) (*RBDImage, error) {
-	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *StorageUseCase) CreateImage(ctx context.Context, scope, facility, pool, image string, objectSizeBytes, stripeUnitBytes, stripeCount, size uint64, layering, exclusiveLock, objectMap, fastDiff, deepFlatten bool) (*RBDImage, error) {
+	config, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -79,8 +79,8 @@ func (uc *StorageUseCase) CreateImage(ctx context.Context, uuid, facility, pool,
 	return uc.cephRBD.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)
 }
 
-func (uc *StorageUseCase) UpdateImage(ctx context.Context, uuid, facility, pool, image string, size uint64) (*RBDImage, error) {
-	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *StorageUseCase) UpdateImage(ctx context.Context, scope, facility, pool, image string, size uint64) (*RBDImage, error) {
+	config, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -90,16 +90,16 @@ func (uc *StorageUseCase) UpdateImage(ctx context.Context, uuid, facility, pool,
 	return uc.cephRBD.GetImage(ctx, config, pool, image)
 }
 
-func (uc *StorageUseCase) DeleteImage(ctx context.Context, uuid, facility, pool, image string) error {
-	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *StorageUseCase) DeleteImage(ctx context.Context, scope, facility, pool, image string) error {
+	config, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
 	return uc.cephRBD.DeleteImage(ctx, config, pool, image)
 }
 
-func (uc *StorageUseCase) CreateImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) (*RBDImageSnapshot, error) {
-	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *StorageUseCase) CreateImageSnapshot(ctx context.Context, scope, facility, pool, image, snapshot string) (*RBDImageSnapshot, error) {
+	config, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -111,32 +111,32 @@ func (uc *StorageUseCase) CreateImageSnapshot(ctx context.Context, uuid, facilit
 	}, nil
 }
 
-func (uc *StorageUseCase) DeleteImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
-	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *StorageUseCase) DeleteImageSnapshot(ctx context.Context, scope, facility, pool, image, snapshot string) error {
+	config, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
 	return uc.cephRBD.DeleteImageSnapshot(ctx, config, pool, image, snapshot)
 }
 
-func (uc *StorageUseCase) RollbackImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
-	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *StorageUseCase) RollbackImageSnapshot(ctx context.Context, scope, facility, pool, image, snapshot string) error {
+	config, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
 	return uc.cephRBD.RollbackImageSnapshot(ctx, config, pool, image, snapshot)
 }
 
-func (uc *StorageUseCase) ProtectImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
-	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *StorageUseCase) ProtectImageSnapshot(ctx context.Context, scope, facility, pool, image, snapshot string) error {
+	config, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
 	return uc.cephRBD.ProtectImageSnapshot(ctx, config, pool, image, snapshot)
 }
 
-func (uc *StorageUseCase) UnprotectImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
-	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *StorageUseCase) UnprotectImageSnapshot(ctx context.Context, scope, facility, pool, image, snapshot string) error {
+	config, err := cephConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}

@@ -24,11 +24,11 @@ type WarpTarget struct {
 }
 
 type WarpTargetInternal struct {
-	Type         string `json:"type"`
-	ScopeUUID    string `json:"scope_uuid"`
-	FacilityName string `json:"facility_name"`
-	Name         string `json:"name"`
-	Endpoint     string `json:"endpoint"`
+	Type     string `json:"type"`
+	Scope    string `json:"scope"`
+	Facility string `json:"facility"`
+	Name     string `json:"name"`
+	Endpoint string `json:"endpoint"`
 }
 
 type WarpTargetExternal struct {
@@ -136,14 +136,14 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 }
 
 func (uc *BISTUseCase) warpCephObjectGatewayJobSpec(ctx context.Context, target *WarpTargetInternal, input *WarpInput) (*JobSpec, error) {
-	sc, err := storageConfig(ctx, uc.facility, uc.action, target.ScopeUUID, target.FacilityName)
+	config, err := cephConfig(ctx, uc.facility, uc.action, target.Scope, target.Facility)
 	if err != nil {
 		return nil, err
 	}
 	return uc.warpJobSpec(&WarpTargetExternal{
 		Endpoint:  target.Endpoint, // without protocol prefix
-		AccessKey: sc.AccessKey,
-		SecretKey: sc.SecretKey,
+		AccessKey: config.AccessKey,
+		SecretKey: config.SecretKey,
 	}, input), nil
 }
 
@@ -152,7 +152,7 @@ func (uc *BISTUseCase) warpMinIOJobSpec(ctx context.Context, target *WarpTargetI
 	if len(tmp) != 2 {
 		return nil, fmt.Errorf("invalid name %q", target.Name)
 	}
-	kc, err := kubeConfig(ctx, uc.facility, uc.action, target.ScopeUUID, target.FacilityName)
+	kc, err := kubeConfig(ctx, uc.facility, uc.action, target.Scope, target.Facility)
 	if err != nil {
 		return nil, err
 	}

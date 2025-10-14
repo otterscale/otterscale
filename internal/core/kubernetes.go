@@ -162,27 +162,27 @@ func NewKubernetesUseCase(action ActionRepo, client ClientRepo, facility Facilit
 	}
 }
 
-func (uc *KubernetesUseCase) GetPublicAddress(ctx context.Context, uuid, facility string) (string, error) {
-	leader, err := uc.facility.GetLeader(ctx, uuid, facility)
+func (uc *KubernetesUseCase) GetPublicAddress(ctx context.Context, scope, facility string) (string, error) {
+	leader, err := uc.facility.GetLeader(ctx, scope, facility)
 	if err != nil {
 		return "", err
 	}
-	unitInfo, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
+	unitInfo, err := uc.facility.GetUnitInfo(ctx, scope, leader)
 	if err != nil {
 		return "", err
 	}
 	return unitInfo.PublicAddress, nil
 }
 
-func (uc *KubernetesUseCase) ListNamespaces(ctx context.Context, uuid, facility string) ([]Namespace, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *KubernetesUseCase) ListNamespaces(ctx context.Context, scope, facility string) ([]Namespace, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
 	return uc.kubeCore.ListNamespaces(ctx, config)
 }
 
-func (uc *KubernetesUseCase) ListApplications(ctx context.Context, uuid, facility string) ([]Application, error) {
+func (uc *KubernetesUseCase) ListApplications(ctx context.Context, scope, facility string) ([]Application, error) {
 	var (
 		deployments            []appsv1.Deployment
 		statefulSets           []appsv1.StatefulSet
@@ -193,7 +193,7 @@ func (uc *KubernetesUseCase) ListApplications(ctx context.Context, uuid, facilit
 		storageClasses         []storagev1.StorageClass
 	)
 
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -279,7 +279,7 @@ func (uc *KubernetesUseCase) ListApplications(ctx context.Context, uuid, facilit
 	return apps, nil
 }
 
-func (uc *KubernetesUseCase) GetApplication(ctx context.Context, uuid, facility, namespace, name string) (*Application, error) {
+func (uc *KubernetesUseCase) GetApplication(ctx context.Context, scope, facility, namespace, name string) (*Application, error) {
 	var (
 		deployment             *appsv1.Deployment
 		statefulSet            *appsv1.StatefulSet
@@ -290,7 +290,7 @@ func (uc *KubernetesUseCase) GetApplication(ctx context.Context, uuid, facility,
 		storageClasses         []storagev1.StorageClass
 	)
 
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -368,8 +368,8 @@ func (uc *KubernetesUseCase) GetApplication(ctx context.Context, uuid, facility,
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("application %q in namespace %q not found", name, namespace))
 }
 
-func (uc *KubernetesUseCase) RestartApplication(ctx context.Context, uuid, facility, namespace, name, appType string) error {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *KubernetesUseCase) RestartApplication(ctx context.Context, scope, facility, namespace, name, appType string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
@@ -412,8 +412,8 @@ func (uc *KubernetesUseCase) RestartApplication(ctx context.Context, uuid, facil
 	}
 }
 
-func (uc *KubernetesUseCase) ScaleApplication(ctx context.Context, uuid, facility, namespace, name, appType string, replicas int32) error {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *KubernetesUseCase) ScaleApplication(ctx context.Context, scope, facility, namespace, name, appType string, replicas int32) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
@@ -441,16 +441,16 @@ func (uc *KubernetesUseCase) ScaleApplication(ctx context.Context, uuid, facilit
 	}
 }
 
-func (uc *KubernetesUseCase) DeletePod(ctx context.Context, uuid, facility, namespace, name string) error {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *KubernetesUseCase) DeletePod(ctx context.Context, scope, facility, namespace, name string) error {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
 	return uc.kubeCore.DeletePod(ctx, config, namespace, name)
 }
 
-func (uc *KubernetesUseCase) StreamLogs(ctx context.Context, uuid, facility, namespace, podName, containerName string) (io.ReadCloser, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *KubernetesUseCase) StreamLogs(ctx context.Context, scope, facility, namespace, podName, containerName string) (io.ReadCloser, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -498,14 +498,14 @@ func (uc *KubernetesUseCase) CleanupTTYSession(sessionID string) error {
 	return nil
 }
 
-func (uc *KubernetesUseCase) ExecuteTTY(ctx context.Context, sessionID, uuid, facility, namespace, podName, containerName string, command []string, stdOut chan<- []byte) error {
+func (uc *KubernetesUseCase) ExecuteTTY(ctx context.Context, sessionID, scope, facility, namespace, podName, containerName string, command []string, stdOut chan<- []byte) error {
 	value, ok := uc.ttySessionMap.Load(sessionID)
 	if !ok {
 		return connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
 	}
 	ttySession := value.(*TTYSession)
 
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
@@ -546,8 +546,8 @@ func (uc *KubernetesUseCase) ExecuteTTY(ctx context.Context, sessionID, uuid, fa
 	return eg.Wait()
 }
 
-func (uc *KubernetesUseCase) ListStorageClasses(ctx context.Context, uuid, facility string) ([]storagev1.StorageClass, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *KubernetesUseCase) ListStorageClasses(ctx context.Context, scope, facility string) ([]storagev1.StorageClass, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}

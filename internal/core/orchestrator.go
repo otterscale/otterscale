@@ -15,11 +15,10 @@ import (
 )
 
 type Essential struct {
-	Type      EssentialType
-	Name      string
-	ScopeUUID string
-	ScopeName string
-	Units     []EssentialUnit
+	Type  EssentialType
+	Name  string
+	Scope string
+	Units []EssentialUnit
 }
 
 type EssentialUnit struct {
@@ -73,12 +72,12 @@ func NewOrchestratorUseCase(conf *config.Config, action ActionRepo, client Clien
 	}
 }
 
-func (uc *OrchestratorUseCase) ListEssentials(ctx context.Context, esType EssentialType, uuid string) ([]Essential, error) {
+func (uc *OrchestratorUseCase) ListEssentials(ctx context.Context, esType EssentialType, scope string) ([]Essential, error) {
 	eg, egctx := errgroup.WithContext(ctx)
 	result := make([][]Essential, 2)
 	if esType == EssentialTypeUnknown || esType == EssentialTypeKubernetes {
 		eg.Go(func() error {
-			v, err := uc.listEssentials(egctx, KubernetesControlPlane, uuid)
+			v, err := uc.listEssentials(egctx, KubernetesControlPlane, scope)
 			if err == nil {
 				result[0] = v
 			}
@@ -87,7 +86,7 @@ func (uc *OrchestratorUseCase) ListEssentials(ctx context.Context, esType Essent
 	}
 	if esType == EssentialTypeUnknown || esType == EssentialTypeCeph {
 		eg.Go(func() error {
-			v, err := uc.listEssentials(egctx, CephMon, uuid)
+			v, err := uc.listEssentials(egctx, CephMon, scope)
 			if err == nil {
 				result[1] = v
 			}
@@ -100,8 +99,8 @@ func (uc *OrchestratorUseCase) ListEssentials(ctx context.Context, esType Essent
 	return append(result[0], result[1]...), nil
 }
 
-func (uc *OrchestratorUseCase) ListKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string, all bool) (map[string]string, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *OrchestratorUseCase) ListKubernetesNodeLabels(ctx context.Context, scope, facility, hostname string, all bool) (map[string]string, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -119,8 +118,8 @@ func (uc *OrchestratorUseCase) ListKubernetesNodeLabels(ctx context.Context, uui
 	return node.Labels, nil
 }
 
-func (uc *OrchestratorUseCase) UpdateKubernetesNodeLabels(ctx context.Context, uuid, facility, hostname string, labels map[string]string) (map[string]string, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+func (uc *OrchestratorUseCase) UpdateKubernetesNodeLabels(ctx context.Context, scope, facility, hostname string, labels map[string]string) (map[string]string, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -145,8 +144,8 @@ func (uc *OrchestratorUseCase) UpdateKubernetesNodeLabels(ctx context.Context, u
 	return updatedNode.Labels, nil
 }
 
-func (uc *OrchestratorUseCase) listEssentials(ctx context.Context, charmName, scopeUUID string) ([]Essential, error) {
-	scopes, err := uc.getAvailableScopes(ctx, scopeUUID)
+func (uc *OrchestratorUseCase) listEssentials(ctx context.Context, charmName, scope string) ([]Essential, error) {
+	scopes, err := uc.getAvailableScopes(ctx, scope)
 	if err != nil {
 		return nil, err
 	}
@@ -159,14 +158,14 @@ func (uc *OrchestratorUseCase) listEssentials(ctx context.Context, charmName, sc
 	return uc.sortEssentials(essentials), nil
 }
 
-func (uc *OrchestratorUseCase) getAvailableScopes(ctx context.Context, scopeUUID string) ([]Scope, error) {
+func (uc *OrchestratorUseCase) getAvailableScopes(ctx context.Context, scope string) ([]Scope, error) {
 	scopes, err := uc.scope.List(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	return slices.DeleteFunc(scopes, func(s Scope) bool {
-		return !strings.Contains(s.UUID, scopeUUID) || s.Status.Status != status.Available
+		return !strings.Contains(s.Name, scope) || s.Status.Status != status.Available
 	}), nil
 }
 
@@ -193,7 +192,7 @@ func (uc *OrchestratorUseCase) fetchEssentialsFromScopes(ctx context.Context, sc
 }
 
 func (uc *OrchestratorUseCase) getEssentialsForScope(ctx context.Context, scope *Scope, charmName string) ([]Essential, error) {
-	status, err := uc.client.Status(ctx, scope.UUID, []string{"application", "*"})
+	status, err := uc.client.Status(ctx, scope.Name, []string{"application", "*"})
 	if err != nil {
 		return nil, err
 	}
@@ -206,11 +205,10 @@ func (uc *OrchestratorUseCase) getEssentialsForScope(ctx context.Context, scope 
 
 		units := uc.extractUnits(status.Applications[name].Units)
 		essentials = append(essentials, Essential{
-			Type:      essentialTypeFromCharmName(charmName),
-			Name:      name,
-			ScopeUUID: scope.UUID,
-			ScopeName: scope.Name,
-			Units:     units,
+			Type:  essentialTypeFromCharmName(charmName),
+			Name:  name,
+			Scope: scope.Name,
+			Units: units,
 		})
 	}
 

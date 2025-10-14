@@ -1,20 +1,20 @@
 package core
 
-type StorageCephConfig struct {
+type CephClusterConfig struct {
 	FSID    string
 	MONHost string
 	Key     string
 }
 
-type StorageRGWConfig struct {
+type CephObjectConfig struct {
 	Endpoint  string
 	AccessKey string
 	SecretKey string
 }
 
-type StorageConfig struct {
-	*StorageCephConfig
-	*StorageRGWConfig
+type CephConfig struct {
+	*CephClusterConfig
+	*CephObjectConfig
 }
 
 type StorageUseCase struct {

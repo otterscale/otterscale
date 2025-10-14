@@ -110,18 +110,18 @@ type CharmResult struct {
 }
 
 type FacilityRepo interface {
-	Create(ctx context.Context, uuid, name string, configYAML string, charmName, channel string, revision, number int, base *corebase.Base, placements []instance.Placement, constraint *constraints.Value, trust bool) (*application.DeployInfo, error)
-	Update(ctx context.Context, uuid, name string, configYAML string) error
-	Delete(ctx context.Context, uuid, name string, destroyStorage, force bool) error
-	Expose(ctx context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error
-	AddUnits(ctx context.Context, uuid, name string, number int, placements []instance.Placement) ([]string, error)
-	ResolveUnitErrors(ctx context.Context, uuid string, units []string) error
-	CreateRelation(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error)
-	DeleteRelation(ctx context.Context, uuid string, id int) error
-	GetConfig(ctx context.Context, uuid string, name string) (map[string]any, error)
-	GetLeader(ctx context.Context, uuid, name string) (string, error)
-	GetUnitInfo(ctx context.Context, uuid, name string) (*application.UnitInfo, error)
-	Consume(ctx context.Context, uuid string, args *crossmodel.ConsumeApplicationArgs) error
+	Create(ctx context.Context, scope, name string, configYAML string, charmName, channel string, revision, number int, base *corebase.Base, placements []instance.Placement, constraint *constraints.Value, trust bool) (*application.DeployInfo, error)
+	Update(ctx context.Context, scope, name string, configYAML string) error
+	Delete(ctx context.Context, scope, name string, destroyStorage, force bool) error
+	Expose(ctx context.Context, scope, name string, endpoints map[string]params.ExposedEndpoint) error
+	AddUnits(ctx context.Context, scope, name string, number int, placements []instance.Placement) ([]string, error)
+	ResolveUnitErrors(ctx context.Context, scope string, units []string) error
+	CreateRelation(ctx context.Context, scope string, endpoints []string) (*params.AddRelationResults, error)
+	DeleteRelation(ctx context.Context, scope string, id int) error
+	GetConfig(ctx context.Context, scope string, name string) (map[string]any, error)
+	GetLeader(ctx context.Context, scope, name string) (string, error)
+	GetUnitInfo(ctx context.Context, scope, name string) (*application.UnitInfo, error)
+	Consume(ctx context.Context, scope string, args *crossmodel.ConsumeApplicationArgs) error
 }
 
 type FacilityOffersRepo interface {
@@ -129,10 +129,10 @@ type FacilityOffersRepo interface {
 }
 
 type ActionRepo interface {
-	List(ctx context.Context, uuid, appName string) (map[string]FacilityActionSpec, error)
-	RunCommand(ctx context.Context, uuid, unitName, command string) (string, error)
-	RunAction(ctx context.Context, uuid, unitName, actionName string, parameters map[string]any) (string, error)
-	GetResult(ctx context.Context, uuid, id string) (*action.ActionResult, error)
+	List(ctx context.Context, scope, appName string) (map[string]FacilityActionSpec, error)
+	RunCommand(ctx context.Context, scope, unitName, command string) (string, error)
+	RunAction(ctx context.Context, scope, unitName, actionName string, parameters map[string]any) (string, error)
+	GetResult(ctx context.Context, scope, id string) (*action.ActionResult, error)
 }
 
 type CharmRepo interface {
@@ -161,8 +161,8 @@ func NewFacilityUseCase(action ActionRepo, charm CharmRepo, client ClientRepo, f
 	}
 }
 
-func (uc *FacilityUseCase) ListFacilities(ctx context.Context, uuid string) ([]Facility, error) {
-	s, err := uc.client.Status(ctx, uuid, nil)
+func (uc *FacilityUseCase) ListFacilities(ctx context.Context, scope string) ([]Facility, error) {
+	s, err := uc.client.Status(ctx, scope, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -178,8 +178,8 @@ func (uc *FacilityUseCase) ListFacilities(ctx context.Context, uuid string) ([]F
 	return facilities, nil
 }
 
-func (uc *FacilityUseCase) GetFacility(ctx context.Context, uuid, name string) (*Facility, error) {
-	s, err := uc.client.Status(ctx, uuid, []string{"application", name})
+func (uc *FacilityUseCase) GetFacility(ctx context.Context, scope, name string) (*Facility, error) {
+	s, err := uc.client.Status(ctx, scope, []string{"application", name})
 	if err != nil {
 		return nil, err
 	}
@@ -189,7 +189,7 @@ func (uc *FacilityUseCase) GetFacility(ctx context.Context, uuid, name string) (
 		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("facility %q not found", name))
 	}
 
-	config, err := uc.facility.GetConfig(ctx, uuid, name)
+	config, err := uc.facility.GetConfig(ctx, scope, name)
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +205,7 @@ func (uc *FacilityUseCase) GetFacility(ctx context.Context, uuid, name string) (
 	}, nil
 }
 
-func (uc *FacilityUseCase) CreateFacility(ctx context.Context, uuid, name, configYAML, charmName, channel string, revision, number int, mps []MachinePlacement, mc *MachineConstraint, trust bool) (*Facility, error) {
+func (uc *FacilityUseCase) CreateFacility(ctx context.Context, scope, name, configYAML, charmName, channel string, revision, number int, mps []MachinePlacement, mc *MachineConstraint, trust bool) (*Facility, error) {
 	base, err := defaultBase(ctx, uc.server)
 	if err != nil {
 		return nil, err
@@ -217,42 +217,42 @@ func (uc *FacilityUseCase) CreateFacility(ctx context.Context, uuid, name, confi
 	}
 
 	constraint := toConstraint(mc)
-	if _, err := uc.facility.Create(ctx, uuid, name, configYAML, charmName, channel, revision, number, &base, placements, &constraint, trust); err != nil {
+	if _, err := uc.facility.Create(ctx, scope, name, configYAML, charmName, channel, revision, number, &base, placements, &constraint, trust); err != nil {
 		return nil, err
 	}
 
 	return &Facility{}, nil
 }
 
-func (uc *FacilityUseCase) UpdateFacility(ctx context.Context, uuid, name, configYAML string) (*Facility, error) {
-	if err := uc.facility.Update(ctx, uuid, name, configYAML); err != nil {
+func (uc *FacilityUseCase) UpdateFacility(ctx context.Context, scope, name, configYAML string) (*Facility, error) {
+	if err := uc.facility.Update(ctx, scope, name, configYAML); err != nil {
 		return nil, err
 	}
 	return &Facility{}, nil
 }
 
-func (uc *FacilityUseCase) DeleteFacility(ctx context.Context, uuid, name string, destroyStorage, force bool) error {
-	return uc.facility.Delete(ctx, uuid, name, destroyStorage, force)
+func (uc *FacilityUseCase) DeleteFacility(ctx context.Context, scope, name string, destroyStorage, force bool) error {
+	return uc.facility.Delete(ctx, scope, name, destroyStorage, force)
 }
 
-func (uc *FacilityUseCase) ExposeFacility(ctx context.Context, uuid, name string) error {
-	return uc.facility.Expose(ctx, uuid, name, nil)
+func (uc *FacilityUseCase) ExposeFacility(ctx context.Context, scope, name string) error {
+	return uc.facility.Expose(ctx, scope, name, nil)
 }
 
-func (uc *FacilityUseCase) AddFacilityUnits(ctx context.Context, uuid, name string, number int, mps []MachinePlacement) ([]string, error) {
+func (uc *FacilityUseCase) AddFacilityUnits(ctx context.Context, scope, name string, number int, mps []MachinePlacement) ([]string, error) {
 	placements, err := uc.toPlacements(ctx, mps)
 	if err != nil {
 		return nil, err
 	}
-	return uc.facility.AddUnits(ctx, uuid, name, number, placements)
+	return uc.facility.AddUnits(ctx, scope, name, number, placements)
 }
 
-func (uc *FacilityUseCase) ResolveFacilityUnitErrors(ctx context.Context, uuid, unitName string) error {
-	return uc.facility.ResolveUnitErrors(ctx, uuid, []string{unitName})
+func (uc *FacilityUseCase) ResolveFacilityUnitErrors(ctx context.Context, scope, unitName string) error {
+	return uc.facility.ResolveUnitErrors(ctx, scope, []string{unitName})
 }
 
-func (uc *FacilityUseCase) ListActions(ctx context.Context, uuid, appName string) ([]FacilityAction, error) {
-	actions, err := uc.action.List(ctx, uuid, appName)
+func (uc *FacilityUseCase) ListActions(ctx context.Context, scope, appName string) ([]FacilityAction, error) {
+	actions, err := uc.action.List(ctx, scope, appName)
 	if err != nil {
 		return nil, err
 	}
@@ -283,8 +283,8 @@ func (uc *FacilityUseCase) ListArtifacts(ctx context.Context, name string) ([]Ch
 	return uc.charm.ListArtifacts(ctx, name)
 }
 
-func (uc *FacilityUseCase) JujuToMAASMachineMap(ctx context.Context, uuid string) (map[string]params.MachineStatus, error) {
-	status, err := uc.client.Status(ctx, uuid, []string{"machine", "*"})
+func (uc *FacilityUseCase) JujuToMAASMachineMap(ctx context.Context, scope string) (map[string]params.MachineStatus, error) {
+	status, err := uc.client.Status(ctx, scope, []string{"machine", "*"})
 	if err != nil {
 		return nil, err
 	}

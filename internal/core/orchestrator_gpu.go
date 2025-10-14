@@ -42,22 +42,22 @@ type GPURelationPodDevice struct {
 	UsedMemoryBytes int64
 }
 
-func (uc *OrchestratorUseCase) ListGPURelationsByMachine(ctx context.Context, scopeUUID, facilityName, machineID string) (*GPURelations, error) {
+func (uc *OrchestratorUseCase) ListGPURelationsByMachine(ctx context.Context, scope, facility, machineID string) (*GPURelations, error) {
 	machine, err := uc.machine.Get(ctx, machineID)
 	if err != nil {
 		return nil, err
 	}
 	labelSelector := fmt.Sprintf("%s=%s", annotationHAMIVGPUNode, machine.Hostname)
-	return uc.listGPURelations(ctx, scopeUUID, facilityName, "", labelSelector)
+	return uc.listGPURelations(ctx, scope, facility, "", labelSelector)
 }
 
-func (uc *OrchestratorUseCase) ListGPURelationsByModel(ctx context.Context, scopeUUID, facilityName, namespace, modelName string) (*GPURelations, error) {
+func (uc *OrchestratorUseCase) ListGPURelationsByModel(ctx context.Context, scope, facility, namespace, modelName string) (*GPURelations, error) {
 	labelSelector := fmt.Sprintf("%s=%s", ApplicationReleaseLLMDModelNameLabel, modelName)
-	return uc.listGPURelations(ctx, scopeUUID, facilityName, namespace, labelSelector)
+	return uc.listGPURelations(ctx, scope, facility, namespace, labelSelector)
 }
 
-func (uc *OrchestratorUseCase) listGPURelations(ctx context.Context, scopeUUID, facilityName, namespace, labelSelector string) (*GPURelations, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, scopeUUID, facilityName)
+func (uc *OrchestratorUseCase) listGPURelations(ctx context.Context, scope, facility, namespace, labelSelector string) (*GPURelations, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
