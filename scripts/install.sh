@@ -221,7 +221,7 @@ is_ip_in_network() {
     local network_number=$(network_to_number $network $mask)
     local mask_number=$(ip_to_number $mask)
 
-    if [ $((ip_number & mask_number)) -eq $network_number ]; then
+    if [[ $((ip_number & mask_number)) -eq "$network_number" ]]; then
         return 0
     fi
 
@@ -264,6 +264,9 @@ check_ip_range() {
         $((0xFF << (32 - subnet_cidr) & 0xFF)))
 
     # Check if both IPs are in the network
+    echo "MAAS_DHCP_START_IP $MAAS_DHCP_START_IP"
+    echo "network $network"
+    echo "mask_dotted $mask_dotted"
     if is_ip_in_network "$MAAS_DHCP_START_IP" "$network" "$mask_dotted" && \
        is_ip_in_network "$MAAS_DHCP_END_IP" "$network" "$mask_dotted"; then
         log "INFO" "IP range $MAAS_DHCP_START_IP-$MAAS_DHCP_END_IP is valid for network $MAAS_NETWORK_SUBNET" "VALIDATION"
@@ -287,14 +290,19 @@ check_root() {
 
 # Validate Ubuntu version
 check_os() {
-    local os_id
+    local os_id os_release
     os_id=$(lsb_release -si)
+    os_release=$(lsb_release -sr)
 
     if [[ "$os_id" != "Ubuntu" ]]; then
         error_exit "This script requires Ubuntu $OTTERSCALE_OS, found: $os_id"
     fi
 
-    log "INFO" "OS validation passed: $os_id" "VALIDATION"
+    if [[ "$os_release" != "$OTTERSCALE_OS" ]]; then
+        error_exit "This script requires Ubuntu version $OTTERSCALE_OS, found: $os_release"
+    fi
+
+    log "INFO" "OS validation passed: $os_id $os_release" "VALIDATION"
 }
 
 # Check memory requirements
@@ -326,19 +334,6 @@ disable_ipv6() {
     log "INFO" "Temporarily disabling IPv6 (restored after reboot)" "SYSTEM_CONFIG"
     sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
     sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
-}
-
-# Configure required kernel modules
-config_modules() {
-    local module="rbd"
-    local modules_file="/etc/modules"
-
-    if ! grep -q "^$module$" "$modules_file"; then
-        echo "$module" >> "$modules_file"
-        log "INFO" "Added $module module to $modules_file" "SYSTEM_CONFIG"
-    else
-        log "INFO" "Module $module already configured" "SYSTEM_CONFIG"
-    fi
 }
 
 # =============================================================================
@@ -415,7 +410,7 @@ send_otterscale_config_data() {
 
     # Get Kubernetes configuration
     local k8s_endpoints k8s_token
-    k8s_endpoints=$(microk8s kubectl get endpoints kubernetes -o json | jq -r '.subsets[0].addresses[0].ip + ":" + (.subsets[0].ports[0].port | tostring)')
+    k8s_endpoints=$(microk8s kubectl get EndpointSlice kubernetes -o json | jq -r '.endpoints[0].addresses[0] + ":" + (.ports[0].port | tostring)')
     k8s_token=$(base64 -w 0 "$kube_folder/config")
 
     # Build configuration JSON
@@ -629,66 +624,6 @@ get_default_dns() {
     fi
 }
 
-# Backup current netplan configuration
-backup_netplan() {
-    local netplan_file
-    netplan_file=$(find /etc/netplan/ -name "*.yaml" | head -1)
-    if [[ -z $netplan_file ]]; then
-        error_exit "No netplan configuration file found"
-    fi
-
-    log "INFO" "Backing up netplan configuration: $netplan_file" "NETWORK"
-    cp "$netplan_file" "${netplan_file}.backup-$(date +%Y%m%d%H%M%S)"
-    NETPLAN_FILE="$netplan_file"
-}
-
-# Create new netplan configuration
-create_netplan() {
-    log "INFO" "Creating new netplan configuration" "NETWORK"
-
-    cat > "$NETPLAN_FILE" <<EOF
-network:
-  version: 2
-  renderer: networkd
-  ethernets:
-    $CURRENT_INTERFACE:
-      dhcp4: no
-      dhcp6: no
-  bridges:
-    br-otters:
-      interfaces: [$CURRENT_INTERFACE]
-      addresses: [$CURRENT_CIDR]
-      routes:
-        - to: default
-          via: $CURRENT_GATEWAY
-      nameservers:
-        addresses: [$CURRENT_DNS]
-EOF
-
-    chmod 600 "$NETPLAN_FILE"
-    log "INFO" "Netplan configuration created" "NETWORK"
-}
-
-# Apply netplan configuration
-apply_netplan() {
-    log "INFO" "Applying netplan configuration..." "NETWORK"
-
-    # Disable NetworkManager if present
-    systemctl stop NetworkManager >/dev/null 2>&1 || true
-    systemctl disable NetworkManager >/dev/null 2>&1 || true
-
-    # Enable systemd-networkd
-    systemctl restart systemd-networkd >/dev/null 2>&1
-    systemctl enable systemd-networkd >/dev/null 2>&1
-
-    if ! netplan apply; then
-        error_exit "Failed to apply netplan configuration"
-    fi
-
-    log "INFO" "Netplan applied successfully" "NETWORK"
-    sleep 10  # Allow network to stabilize
-}
-
 # Select network bridge
 select_bridge() {
     local bridges
@@ -716,21 +651,34 @@ select_bridge() {
 
 # Prompt for bridge creation
 prompt_bridge_creation() {
-    read -p "No network bridge found. Create automatically? (Y/N): " confirm
-    if [[ "$confirm" =~ ^[Yy]$ ]]; then
-        log "INFO" "User chose to auto-create bridge" "NETWORK"
-        get_default_interface
-        get_default_gateway
-        get_default_cidr
-        get_default_dns "$CURRENT_INTERFACE"
-        backup_netplan
-        create_netplan
-        apply_netplan
-    else
-        log "INFO" "User declined bridge creation. Exiting." "NETWORK"
-        exit 0
+    if ! systemctl is-active --quiet NetworkManager; then
+        error_exit "NetworkManager is not active, stop network bridge creation."
     fi
+
+    get_default_interface
+    get_default_gateway
+    get_default_cidr
+    get_default_dns "$CURRENT_INTERFACE"
+
+    log "INFO" "Create network bridge $OTTERSCALE_BRIDGE_NAME" "NETWORK"
+    local CURRENT_CONNECTION=$(nmcli -t -f NAME,DEVICE connection show --active | grep "$CURRENT_INTERFACE" | cut -d: -f1)
+    if ! nmcli connection add type bridge ifname "$OTTERSCALE_BRIDGE_NAME" con-name "$OTTERSCALE_BRIDGE_NAME" \
+        ipv4.method manual \
+        ipv4.addresses "$CURRENT_CIDR" \
+        ipv4.gateway "$CURRENT_GATEWAY" \
+        ipv4.dns "$CURRENT_DNS" > /dev/null; then
+        error_exit "Failed network bridge creation"
+    fi
+
+    log "INFO" "Connect network bridge $OTTERSCALE_BRIDGE_NAME to interface $CURRENT_INTERFACE"
+    nmcli connection add type bridge-slave con-name br-otters-slave ifname "$CURRENT_INTERFACE" master "$OTTERSCALE_BRIDGE_NAME" > /dev/null
+
+    log "INFO" "Start up network bridge $OTTERSCALE_BRIDGE_NAME" "NETWORK"
+    nmcli connection up "$OTTERSCALE_BRIDGE_NAME" > /dev/null && nmcli connection down "$CURRENT_CONNECTION" > /dev/null
+
+    sleep 10
 }
+
 
 # Check/setup network bridge
 check_bridge() {
@@ -1413,6 +1361,7 @@ enable_microk8s_option() {
     execute_cmd "microk8s enable dns" "enable MicroK8s DNS"
     execute_cmd "microk8s enable hostpath-storage" "enable MicroK8s hostpath-storage"
     execute_cmd "microk8s enable metallb:$OTTERSCALE_INTERFACE_IP-$OTTERSCALE_INTERFACE_IP" "enable MicroK8s MetalLB"
+    execute_cmd "microk8s enable helm3" "enable MicroK8s helm3"
 
     log "INFO" "MicroK8s add-ons enabled successfully" "MICROK8S_ADDONS"
 }
@@ -1457,7 +1406,7 @@ juju_add_k8s() {
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client" >>"$TEMP_LOG" 2>&1; then
-        log "WARN" "Controller cos-k8s already exist"
+        log "WARN" "Controller cos-k8s already exist" "Cos-k8s exist"
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1"; then
@@ -1466,17 +1415,38 @@ juju_add_k8s() {
         su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge >/dev/null 2>&1"
     fi
 
+    ## Config prometheus
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus metrics_retention_time=180d >/dev/null 2>&1"
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus maximum_retention_size=70% >/dev/null 2>&1"
+
+    ## Offer
     su "$NON_ROOT_USER" -c "juju offer cos.grafana:grafana-dashboard global-grafana >/dev/null 2>&1"
     su "$NON_ROOT_USER" -c "juju offer cos.prometheus:receive-remote-write global-prometheus >/dev/null 2>&1"
 
-    su "$NON_ROOT_USER" -c "juju relate -m cos prometheus prometheus-scrape-target-k8s >/dev/null 2>&1"
+    ## Relate (integrate)
+    if ! su "$NON_ROOT_USER" -c 'juju status -m cos --relations 2>/dev/null | grep -Eq "(^|[[:space:]])(prometheus(:[^[:space:]]+)?[[:space:]]+prometheus-scrape-target-k8s(:[^[:space:]]+)?|prometheus-scrape-target-k8s(:[^[:space:]]+)?[[:space:]]+prometheus(:[^[:space:]]+)?)"'; then
+      su "$NON_ROOT_USER" -c 'juju relate -m cos prometheus prometheus-scrape-target-k8s >/dev/null 2>&1'
+    fi
+
+    ## Config prometheus scrape target
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s job_name=federate >/dev/null 2>&1"
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s scheme=http >/dev/null 2>&1"
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s metrics_path='/federate' >/dev/null 2>&1"
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s params='match[]:
   - \"{__name__!=''}\"'"
+
+    ## Cos-lite resource, default is not limit
+    # Grafana
+    #su "$NON_ROOT_USER" -c "juju config -m cos grafana cpu=500m >/dev/null 2>&1"
+    #su "$NON_ROOT_USER" -c "juju config -m cos grafana memory=512Mi >/dev/null 2>&1"
+
+    # Prometheus
+    #su "$NON_ROOT_USER" -c "juju config -m cos prometheus cpu=2 >/dev/null 2>&1"
+    #su "$NON_ROOT_USER" -c "juju config -m cos prometheus memory=4Gi >/dev/null 2>&1"
+
+    # Loki
+    #su "$NON_ROOT_USER" -c "juju config -m cos loki cpu=250m >/dev/null 2>&1"
+    #su "$NON_ROOT_USER" -c "juju config -m cos loki memory=256Mi >/dev/null 2>&1"
 
     log "INFO" "Kubernetes cluster added to Juju successfully" "JUJU_K8S"
 }
@@ -1531,6 +1501,61 @@ wait_for_deployment() {
                 ;;
         esac
     done
+}
+
+otterscale_helm_deploy() {
+    ## Istio
+    log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
+    local istio_version="1.27.1"
+    local istio_url="https://istio.io/downloadIstio"
+    local istio_namespace="istio-system"
+    local has_istio=false
+    local arch
+    arch=$(uname -m)
+    case "$arch" in
+        x86_64|amd64) arch="x86_64" ;;
+        aarch64|arm64) arch="arm64" ;;
+    esac
+
+    if ! command -v istioctl &> /dev/null; then
+        log "INFO" "Install istioctl" "ISTIO_DEPLOY"
+        if ! curl -fsSL $istio_url | ISTIO_VERSION="$istio_version" TARGET_ARCH="$arch" bash - >>"$TEMP_LOG" 2>&1; then
+            error_exit "Failed install istio"
+        fi
+        mv "istio-$istio_version/bin/istioctl" /usr/local/bin/
+        chmod +x /usr/local/bin/istioctl
+        rm -rf "istio-$istio_version"
+    fi
+
+    if [[ $(microk8s kubectl get deploy -n istio-system -l app=istiod -o name | wc -l) -eq 0 ]]; then
+        log "INFO" "Install istio into kubernetes environment" "ISTIO_SERVICE"
+        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation >>"$TEMP_LOG" 2>&1"
+    else
+        log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
+    fi
+
+    if [[ -n "${OTTERSCALE_INTERFACE_IP:-}" ]]; then
+        log "INFO" "Patching istio-ingressgateway externalIPs to ${OTTERSCALE_INTERFACE_IP}" "ISTIO_INGRESSGATEWAY"
+        microk8s kubectl patch service istio-ingressgateway -n $istio_namespace -p "{\"spec\": {\"externalIPs\": [\"$OTTERSCALE_INTERFACE_IP\"]}}" >>"$TEMP_LOG" 2>&1
+    fi
+
+    ## Helm
+    log "INFO" "Process microk8s helm3" "HELM_CHECK"
+    local repository_url="https://otterscale.github.io/otterscale-charts"
+    local repository_name="otterscale-charts"
+    local deploy_name="otterscale"
+    local namespace="otterscale"
+
+    log "INFO" "Add and update helm repository $repository_name" "HELM_REPO"
+    execute_cmd "microk8s helm3 repo add $repository_name $repository_url" "helm repository add"
+    execute_cmd "microk8s helm3 repo update" "helm repository update"
+
+    if ! microk8s helm3 list -n "$namespace" | grep -qw "$deploy_name"; then
+        log "INFO" "Deploy OtterScale helm chart" "HELM_DEPLOY"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace" "Deploy OtterScale helm chart"
+    else
+        log "INFO" "Helm releases already has otterscale" "HELM_CHECK"
+    fi
 }
 
 # =============================================================================
@@ -1600,6 +1625,7 @@ main() {
     log "INFO" "Finalizing configuration..." "FINAL_CONFIG"
     config_modules
     send_otterscale_config_data
+    otterscale_helm_deploy
 
     log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
 }
