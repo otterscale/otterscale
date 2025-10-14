@@ -200,7 +200,7 @@ func (uc *OrchestratorUseCase) kubernetesConfigs(prefix, vips, cidr string) (map
 			"gpu_driver": "none",
 		},
 		"keepalived": {
-			"virtual_ip": strings.Split(vips, " ")[0],
+			"virtual_ip": strings.Fields(vips)[0],
 		},
 	}
 	return toEssentialConfigs(prefix, configs)

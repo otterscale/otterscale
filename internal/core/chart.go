@@ -3,9 +3,9 @@ package core
 import (
 	"context"
 	"fmt"
-	"sync"
 
 	"connectrpc.com/connect"
+	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v2"
 
 	"helm.sh/helm/v3/pkg/action"
@@ -75,36 +75,48 @@ func (uc *ChartUseCase) GetChart(ctx context.Context, chartName string) (*Chart,
 
 func (uc *ChartUseCase) GetChartFile(chartRef string) (*ChartFile, error) {
 	file := &ChartFile{}
-	wg := sync.WaitGroup{}
-	wg.Go(func() {
-		file.ValuesYAML, _ = uc.chart.Show(chartRef, action.ShowValues)
+	eg := errgroup.Group{}
+	eg.Go(func() error {
+		v, err := uc.chart.Show(chartRef, action.ShowValues)
+		if err == nil {
+			file.ValuesYAML = v
+		}
+		return err
 	})
-	wg.Go(func() {
-		file.ReadmeMarkdown, _ = uc.chart.Show(chartRef, action.ShowReadme)
+	eg.Go(func() error {
+		v, err := uc.chart.Show(chartRef, action.ShowReadme)
+		if err == nil {
+			file.ReadmeMarkdown = v
+		}
+		return err
 	})
-	wg.Wait()
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
 	return file, nil
 }
 
 func (uc *ChartUseCase) GetChartFileFromApplication(ctx context.Context, uuid, facility string, app *Application) (*ChartFile, error) {
 	file := &ChartFile{}
-	wg := sync.WaitGroup{}
-	wg.Go(func() {
+	eg := errgroup.Group{}
+	eg.Go(func() error {
 		// FIXME: invalid label
-		if releaseName, ok := app.Labels["app.otterscale.com/release-name"]; ok {
+		releaseName, ok := app.Labels["app.otterscale.com/release-name"]
+		if ok {
 			config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 			if err != nil {
-				return
+				return err
 			}
 			v, err := uc.release.GetValues(config, app.Namespace, releaseName)
 			if err != nil {
-				return
+				return err
 			}
 			valuesYAML, _ := yaml.Marshal(v)
 			file.ValuesYAML = string(valuesYAML)
 		}
+		return nil
 	})
-	wg.Go(func() {
+	eg.Go(func() error {
 		// FIXME: invalid label format
 		// if chartRef, ok := app.Labels["app.otterscale.com/chart-ref"]; ok {
 		// 	v, err := uc.chart.Show(chartRef, action.ShowReadme)
@@ -113,7 +125,10 @@ func (uc *ChartUseCase) GetChartFileFromApplication(ctx context.Context, uuid, f
 		// 	}
 		// 	metadata.ReadmeMD = v
 		// }
+		return nil
 	})
-	wg.Wait()
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
 	return file, nil
 }
