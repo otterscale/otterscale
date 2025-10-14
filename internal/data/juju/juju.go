@@ -63,6 +63,10 @@ func (m *Juju) connection(scope string) (api.Connection, error) {
 }
 
 func (m *Juju) getModelUUID(scope string) (string, error) {
+	if scope == "controller" {
+		return "", nil
+	}
+
 	conn, err := m.newConnection("")
 	if err != nil {
 		return "", err
