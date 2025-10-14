@@ -3793,6 +3793,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.orchestrator.v1.ListGPURelationsByModelResponse'
+  /otterscale.orchestrator.v1.OrchestratorService/ListPlugins:
+    post:
+      tags:
+        - OrchestratorService
+      summary: ListPlugins
+      operationId: OrchestratorService_ListPlugins
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.orchestrator.v1.ListPluginsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.orchestrator.v1.ListPluginsResponse'
   /otterscale.network.v1.NetworkService/ListNetworks:
     post:
       tags:
@@ -9542,6 +9577,76 @@ components:
           type: string
           title: value
       title: LabelsEntry
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListPluginsRequest:
+      type: object
+      properties:
+        scopeUuid:
+          type: string
+          title: scope_uuid
+        facilityName:
+          type: string
+          title: facility_name
+      title: ListPluginsRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.ListPluginsResponse:
+      type: object
+      properties:
+        plugins:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.orchestrator.v1.Plugin'
+          title: plugins
+      title: ListPluginsResponse
+      additionalProperties: false
+    otterscale.orchestrator.v1.Plugin:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        status:
+          type: string
+          title: status
+        description:
+          type: string
+          title: description
+        firstDeployedAt:
+          title: first_deployed_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        lastDeployedAt:
+          title: last_deployed_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        deletedAt:
+          title: deleted_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        chart:
+          title: chart
+          $ref: '#/components/schemas/otterscale.orchestrator.v1.Plugin.Chart'
+      title: Plugin
+      additionalProperties: false
+    otterscale.orchestrator.v1.Plugin.Chart:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        version:
+          type: string
+          title: version
+        appVersion:
+          type: string
+          title: app_version
+        description:
+          type: string
+          title: description
+        icon:
+          type: string
+          title: icon
+      title: Chart
       additionalProperties: false
     otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest:
       type: object
