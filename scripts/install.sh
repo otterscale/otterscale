@@ -1526,7 +1526,7 @@ otterscale_helm_deploy() {
 
     if [[ $(microk8s kubectl get deploy -n istio-system -l app=istiod -o name | wc -l) -eq 0 ]]; then
         log "INFO" "Install istio into kubernetes environment" "ISTIO_SERVICE"
-        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation >>"$TEMP_LOG" 2>&1"
+        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation >/dev/null"
     else
         log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
     fi
