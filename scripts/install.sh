@@ -264,9 +264,6 @@ check_ip_range() {
         $((0xFF << (32 - subnet_cidr) & 0xFF)))
 
     # Check if both IPs are in the network
-    echo "MAAS_DHCP_START_IP $MAAS_DHCP_START_IP"
-    echo "network $network"
-    echo "mask_dotted $mask_dotted"
     if is_ip_in_network "$MAAS_DHCP_START_IP" "$network" "$mask_dotted" && \
        is_ip_in_network "$MAAS_DHCP_END_IP" "$network" "$mask_dotted"; then
         log "INFO" "IP range $MAAS_DHCP_START_IP-$MAAS_DHCP_END_IP is valid for network $MAAS_NETWORK_SUBNET" "VALIDATION"
