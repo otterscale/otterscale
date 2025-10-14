@@ -7,8 +7,8 @@
 
 	import type { Application_Service_Port } from '$lib/api/application/v1/application_pb';
 	import type {
-		CreateInstanceServiceRequest,
-		UpdateInstanceServiceRequest,
+		CreateVirtualMachineServiceRequest,
+		UpdateVirtualMachineServiceRequest,
 		VirtualMachine,
 	} from '$lib/api/instance/v1/instance_pb';
 	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
@@ -53,7 +53,7 @@
 		name: virtualMachine.name,
 		virtualMachineName: virtualMachine.name,
 		ports: [] as Application_Service_Port[],
-	} as CreateInstanceServiceRequest;
+	} as CreateVirtualMachineServiceRequest;
 
 	const DEFAULT_UPDATE_REQUEST = {
 		scopeUuid: $currentKubernetes?.scopeUuid,
@@ -64,7 +64,7 @@
 			virtualMachine.services.length > 0
 				? [...virtualMachine.services[0].ports]
 				: ([] as Application_Service_Port[]),
-	} as UpdateInstanceServiceRequest;
+	} as UpdateVirtualMachineServiceRequest;
 	const DEFAULT_PORT = {
 		port: undefined as number | undefined,
 		nodePort: undefined as number | undefined,
@@ -73,7 +73,7 @@
 	} as Application_Service_Port;
 
 	// ==================== Form State ====================
-	let request: CreateInstanceServiceRequest | UpdateInstanceServiceRequest = $state(
+	let request: CreateVirtualMachineServiceRequest | UpdateVirtualMachineServiceRequest = $state(
 		virtualMachine.services.length === 0 ? { ...DEFAULT_CREATE_REQUEST } : { ...DEFAULT_UPDATE_REQUEST },
 	);
 
@@ -248,11 +248,11 @@
 						toast.promise(
 							() =>
 								isUpdate
-									? virtualMachineClient.updateInstanceService(
-											request as UpdateInstanceServiceRequest,
+									? virtualMachineClient.updateVirtualMachineService(
+											request as UpdateVirtualMachineServiceRequest,
 										)
-									: virtualMachineClient.createInstanceService(
-											request as CreateInstanceServiceRequest,
+									: virtualMachineClient.createVirtualMachineService(
+											request as CreateVirtualMachineServiceRequest,
 										),
 							{
 								loading: `${actionText} service ${request.name}...`,
