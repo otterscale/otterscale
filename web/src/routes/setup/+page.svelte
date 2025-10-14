@@ -60,7 +60,7 @@
 					statusStore.update((state) => ({
 						...state,
 						phase: determinePhase(status),
-						messages: [...state.messages, status],
+						messages: [...state.messages.slice(-199), status],
 						newURL: status.newUrl || state.newURL,
 					}));
 				}
@@ -84,7 +84,7 @@
 	});
 </script>
 
-<main class="bg-sidebar relative flex min-h-screen flex-col overflow-hidden px-2 py-20 md:px-4 md:py-24">
+<main class="bg-sidebar relative flex max-h-screen min-h-screen flex-col overflow-hidden">
 	<div class="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center opacity-100">
 		<img
 			src={SquareGridImage}
@@ -93,7 +93,7 @@
 		/>
 	</div>
 
-	<div class="z-10 flex flex-col items-center justify-center">
+	<div class="z-10 mt-16 flex flex-col items-center justify-center p-4 md:mt-18">
 		<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">
 			{phase === SetupPhase.Completed ? m.setup_environment_complete() : m.setup_environment()}
 		</h2>
@@ -145,7 +145,7 @@
 	</Button>
 
 	<div
-		class="border-border bg-secondary dark text-card-foreground m-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
+		class="border-border bg-secondary dark text-card-foreground mt-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
 	>
 		<div class="flex border-b border-inherit p-4">
 			<div class="flex items-center gap-2">
@@ -186,7 +186,14 @@
 
 {#snippet decorativeArrows()}
 	<div class="absolute end-0 top-0 hidden translate-x-20 -translate-y-12 md:block">
-		<svg class="h-auto w-16 text-orange-500" width={121} height={135} viewBox="0 0 121 135" fill="none">
+		<svg
+			class="h-auto w-16 text-orange-500"
+			width={121}
+			height={135}
+			viewBox="0 0 121 135"
+			fill="none"
+			aria-hidden="true"
+		>
 			<path
 				d="M5 16.4754C11.7688 27.4499 21.2452 57.3224 5 89.0164"
 				stroke="currentColor"
@@ -209,7 +216,14 @@
 	</div>
 
 	<div class="absolute start-0 bottom-0 hidden -translate-x-32 translate-y-10 md:block">
-		<svg class="h-auto w-40 text-cyan-500" width={347} height={188} viewBox="0 0 347 188" fill="none">
+		<svg
+			class="h-auto w-40 text-cyan-500"
+			width={347}
+			height={188}
+			viewBox="0 0 347 188"
+			fill="none"
+			aria-hidden="true"
+		>
 			<path
 				d="M4 82.4591C54.7956 92.8751 30.9771 162.782 68.2065 181.385C112.642 203.59 127.943 78.57 122.161 25.5053C120.504 2.2376 93.4028 -8.11128 89.7468 25.5053C85.8633 61.2125 130.186 199.678 180.982 146.248L214.898 107.02C224.322 95.4118 242.9 79.2851 258.6 107.02C274.299 134.754 299.315 125.589 309.861 117.539L343 93.4426"
 				stroke="currentColor"

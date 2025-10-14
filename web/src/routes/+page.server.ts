@@ -20,12 +20,12 @@ export const load: PageServerLoad = async ({ request, url }) => {
 
 	for (const { value, name } of requiredEnvVars) {
 		if (!value) {
-			error(503, `${name} is not set`);
+			throw error(503, `${name} is not set`);
 		}
 	}
 
 	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE)) {
-		redirect(302, resolve('/setup'));
+		throw redirect(302, resolve('/setup'));
 	}
 
 	// Check if the user is already authenticated
@@ -34,10 +34,10 @@ export const load: PageServerLoad = async ({ request, url }) => {
 	});
 
 	if (session) {
-		redirect(302, staticPaths.scopes.url);
+		throw redirect(302, staticPaths.scopes.url);
 	}
 
-	redirect(302, `${staticPaths.login.url}${url.search}`);
+	throw redirect(302, `${staticPaths.login.url}${url.search}`);
 };
 
 const isFlexibleBooleanTrue = (envVar: string | undefined): boolean => {
