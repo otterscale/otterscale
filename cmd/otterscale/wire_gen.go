@@ -86,7 +86,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	machineManagerRepo := juju.NewMachine(jujuJuju)
 	nodeDeviceRepo := maas.NewNodeDevice(maasMAAS)
 	tagRepo := maas.NewTag(maasMAAS)
-	machineUseCase := core.NewMachineUseCase(actionRepo, clientRepo, eventRepo, facilityRepo, machineRepo, machineManagerRepo, nodeDeviceRepo, serverRepo, tagRepo)
+	machineUseCase := core.NewMachineUseCase(actionRepo, clientRepo, eventRepo, facilityRepo, machineRepo, machineManagerRepo, nodeDeviceRepo, scopeRepo, serverRepo, tagRepo)
 	machineService := app.NewMachineService(machineUseCase)
 	modelUseCase := core.NewModelUseCase(actionRepo, facilityRepo, releaseRepo)
 	modelService := app.NewModelService(modelUseCase)
