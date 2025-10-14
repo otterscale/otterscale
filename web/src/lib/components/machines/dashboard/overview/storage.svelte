@@ -61,7 +61,7 @@
 				storageUsages = response.result[0]?.values;
 			});
 
-		machineClient.listMachines({ scopeUuid: scope.uuid }).then((response) => {
+		machineClient.listMachines({ scope: scope.name }).then((response) => {
 			machines.set(response.machines);
 		});
 	}

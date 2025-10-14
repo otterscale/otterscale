@@ -39,7 +39,7 @@
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
-		machineClient.listMachines({ scopeUuid: scope.uuid }).then((response) => {
+		machineClient.listMachines({ scope: scope.name }).then((response) => {
 			machines.set(response.machines);
 		});
 	}

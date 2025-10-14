@@ -26,7 +26,7 @@
 	);
 
 	async function fetch() {
-		facilityClient.listFacilities({ scopeUuid: scope.uuid }).then((response) => {
+		facilityClient.listFacilities({ scope: scope.name }).then((response) => {
 			facilities.set(response.facilities);
 		});
 	}
