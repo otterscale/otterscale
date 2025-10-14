@@ -4,11 +4,8 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import type {
-		VirtualMachine_Restore,
-		DeleteVirtualMachineRestoreRequest,
-	} from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
+	import type { VirtualMachine_Restore, DeleteVirtualMachineRestoreRequest } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -23,7 +20,7 @@
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
-	const virtualMachineClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 	let invalid = $state(false);
 
 	const defaults = {

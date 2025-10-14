@@ -3,10 +3,7 @@
 	import { getContext } from 'svelte';
 
 	import { page } from '$app/state';
-	import {
-		CheckInfrastructureStatusResponse_Result,
-		LargeLanguageModelService,
-	} from '$lib/api/large_language_model/v1/large_language_model_pb';
+	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { COLUMN_ID as STORE_FILTERNAME_COLUMNID } from '$lib/components/applications/store/commerce-store/filter-name.svelte';
 	import { Single as Alert } from '$lib/components/custom/alert';
 	import * as Loading from '$lib/components/custom/loading';
@@ -17,14 +14,14 @@
 
 <script lang="ts">
 	const transport: Transport = getContext('transport');
-	const largeLanguageModelClient = createClient(LargeLanguageModelService, transport);
+	const client = createClient(OrchestratorService, transport);
 </script>
 
-{#await largeLanguageModelClient.checkInfrastructureStatus( { scopeUuid: $currentKubernetes?.scopeUuid, facilityName: $currentKubernetes?.name }, )}
+{#await client.listPlugins({ scopeUuid: $currentKubernetes?.scopeUuid, facilityName: $currentKubernetes?.name })}
 	<Loading.Alert />
 {:then response}
-	{@const status = response.result}
-	{#if status == CheckInfrastructureStatusResponse_Result.NOT_INSTALLED}
+	{@const status = response.plugins.find((plugin) => plugin.chart?.name == 'llm-d-infra')?.status}
+	{#if status != 'deployed'}
 		<Alert.Root variant="destructive">
 			<Alert.Icon />
 			<Alert.Title>

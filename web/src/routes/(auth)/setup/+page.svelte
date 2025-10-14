@@ -6,7 +6,7 @@
 	import { fly } from 'svelte/transition';
 
 	import { env } from '$env/dynamic/public';
-	import { EnvironmentService, type WatchStatusResponse } from '$lib/api/environment/v1/environment_pb';
+	import { BootstrapService, type WatchStatusResponse } from '$lib/api/bootstrap/v1/bootstrap_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import SquareGridImage from '$lib/assets/square-grid.svg';
 	import * as Code from '$lib/components/custom/code';
@@ -47,7 +47,7 @@
 	// Context
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
-	const environmentClient = createClient(EnvironmentService, transport);
+	const bootstrapClient = createClient(BootstrapService, transport);
 	const scopes = writable<Scope[]>([]);
 
 	// Set breadcrumb navigation
@@ -72,7 +72,7 @@
 	async function watchStatus() {
 		while (true) {
 			try {
-				for await (const status of environmentClient.watchStatus({})) {
+				for await (const status of bootstrapClient.watchStatus({})) {
 					statusStore.update((state) => ({
 						...state,
 						started: status.started,

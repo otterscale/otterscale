@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Column, Table } from '@tanstack/table-core';
 
-	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';

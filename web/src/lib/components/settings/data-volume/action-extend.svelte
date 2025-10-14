@@ -4,8 +4,8 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { DataVolume, ExtendDataVolumeRequest } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { DataVolume, ExtendDataVolumeRequest } from '$lib/api/instance/v1/instance_pb';
+	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -23,7 +23,7 @@
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	// Create gRPC client for virtual machine operations
-	const virtualMachineClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// Form validation state
 	let invalid = $state(false);

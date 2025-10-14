@@ -4,8 +4,8 @@
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { CreateDataVolumeRequest, DataVolume_Source } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import { DataVolume_Source_Type, VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { CreateDataVolumeRequest, DataVolume_Source } from '$lib/api/instance/v1/instance_pb';
+	import { DataVolume_Source_Type, InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -17,7 +17,7 @@
 	// Context dependencies
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
-	const virtualMachineClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
 

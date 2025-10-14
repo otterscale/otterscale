@@ -7,11 +7,11 @@
 
 	import type { Application_Service_Port } from '$lib/api/application/v1/application_pb';
 	import type {
-		CreateVirtualMachineServiceRequest,
-		UpdateVirtualMachineServiceRequest,
+		CreateInstanceServiceRequest,
+		UpdateInstanceServiceRequest,
 		VirtualMachine,
-	} from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	} from '$lib/api/instance/v1/instance_pb';
+	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -38,7 +38,7 @@
 	// Context dependencies
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
-	const virtualMachineClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
 
@@ -53,7 +53,7 @@
 		name: virtualMachine.name,
 		virtualMachineName: virtualMachine.name,
 		ports: [] as Application_Service_Port[],
-	} as CreateVirtualMachineServiceRequest;
+	} as CreateInstanceServiceRequest;
 
 	const DEFAULT_UPDATE_REQUEST = {
 		scopeUuid: $currentKubernetes?.scopeUuid,
@@ -64,7 +64,7 @@
 			virtualMachine.services.length > 0
 				? [...virtualMachine.services[0].ports]
 				: ([] as Application_Service_Port[]),
-	} as UpdateVirtualMachineServiceRequest;
+	} as UpdateInstanceServiceRequest;
 	const DEFAULT_PORT = {
 		port: undefined as number | undefined,
 		nodePort: undefined as number | undefined,
@@ -73,7 +73,7 @@
 	} as Application_Service_Port;
 
 	// ==================== Form State ====================
-	let request: CreateVirtualMachineServiceRequest | UpdateVirtualMachineServiceRequest = $state(
+	let request: CreateInstanceServiceRequest | UpdateInstanceServiceRequest = $state(
 		virtualMachine.services.length === 0 ? { ...DEFAULT_CREATE_REQUEST } : { ...DEFAULT_UPDATE_REQUEST },
 	);
 
@@ -248,11 +248,11 @@
 						toast.promise(
 							() =>
 								isUpdate
-									? virtualMachineClient.updateVirtualMachineService(
-											request as UpdateVirtualMachineServiceRequest,
+									? virtualMachineClient.updateInstanceService(
+											request as UpdateInstanceServiceRequest,
 										)
-									: virtualMachineClient.createVirtualMachineService(
-											request as CreateVirtualMachineServiceRequest,
+									: virtualMachineClient.createInstanceService(
+											request as CreateInstanceServiceRequest,
 										),
 							{
 								loading: `${actionText} service ${request.name}...`,
