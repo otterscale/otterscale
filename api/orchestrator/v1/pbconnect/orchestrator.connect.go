@@ -58,6 +58,9 @@ const (
 	// OrchestratorServiceListGPURelationsByModelProcedure is the fully-qualified name of the
 	// OrchestratorService's ListGPURelationsByModel RPC.
 	OrchestratorServiceListGPURelationsByModelProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListGPURelationsByModel"
+	// OrchestratorServiceListPluginsProcedure is the fully-qualified name of the OrchestratorService's
+	// ListPlugins RPC.
+	OrchestratorServiceListPluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListPlugins"
 )
 
 // OrchestratorServiceClient is a client for the otterscale.orchestrator.v1.OrchestratorService
@@ -71,6 +74,7 @@ type OrchestratorServiceClient interface {
 	UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error)
 	ListGPURelationsByMachine(context.Context, *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error)
 	ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error)
+	ListPlugins(context.Context, *v1.ListPluginsRequest) (*v1.ListPluginsResponse, error)
 }
 
 // NewOrchestratorServiceClient constructs a client for the
@@ -133,6 +137,12 @@ func NewOrchestratorServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(orchestratorServiceMethods.ByName("ListGPURelationsByModel")),
 			connect.WithClientOptions(opts...),
 		),
+		listPlugins: connect.NewClient[v1.ListPluginsRequest, v1.ListPluginsResponse](
+			httpClient,
+			baseURL+OrchestratorServiceListPluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("ListPlugins")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -146,6 +156,7 @@ type orchestratorServiceClient struct {
 	updateKubernetesNodeLabels *connect.Client[v1.UpdateKubernetesNodeLabelsRequest, v1.UpdateKubernetesNodeLabelsResponse]
 	listGPURelationsByMachine  *connect.Client[v1.ListGPURelationsByMachineRequest, v1.ListGPURelationsByMachineResponse]
 	listGPURelationsByModel    *connect.Client[v1.ListGPURelationsByModelRequest, v1.ListGPURelationsByModelResponse]
+	listPlugins                *connect.Client[v1.ListPluginsRequest, v1.ListPluginsResponse]
 }
 
 // ListEssentials calls otterscale.orchestrator.v1.OrchestratorService.ListEssentials.
@@ -224,6 +235,15 @@ func (c *orchestratorServiceClient) ListGPURelationsByModel(ctx context.Context,
 	return nil, err
 }
 
+// ListPlugins calls otterscale.orchestrator.v1.OrchestratorService.ListPlugins.
+func (c *orchestratorServiceClient) ListPlugins(ctx context.Context, req *v1.ListPluginsRequest) (*v1.ListPluginsResponse, error) {
+	response, err := c.listPlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // OrchestratorServiceHandler is an implementation of the
 // otterscale.orchestrator.v1.OrchestratorService service.
 type OrchestratorServiceHandler interface {
@@ -235,6 +255,7 @@ type OrchestratorServiceHandler interface {
 	UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error)
 	ListGPURelationsByMachine(context.Context, *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error)
 	ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error)
+	ListPlugins(context.Context, *v1.ListPluginsRequest) (*v1.ListPluginsResponse, error)
 }
 
 // NewOrchestratorServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -292,6 +313,12 @@ func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...conne
 		connect.WithSchema(orchestratorServiceMethods.ByName("ListGPURelationsByModel")),
 		connect.WithHandlerOptions(opts...),
 	)
+	orchestratorServiceListPluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceListPluginsProcedure,
+		svc.ListPlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("ListPlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.orchestrator.v1.OrchestratorService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case OrchestratorServiceListEssentialsProcedure:
@@ -310,6 +337,8 @@ func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...conne
 			orchestratorServiceListGPURelationsByMachineHandler.ServeHTTP(w, r)
 		case OrchestratorServiceListGPURelationsByModelProcedure:
 			orchestratorServiceListGPURelationsByModelHandler.ServeHTTP(w, r)
+		case OrchestratorServiceListPluginsProcedure:
+			orchestratorServiceListPluginsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -349,4 +378,8 @@ func (UnimplementedOrchestratorServiceHandler) ListGPURelationsByMachine(context
 
 func (UnimplementedOrchestratorServiceHandler) ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) ListPlugins(context.Context, *v1.ListPluginsRequest) (*v1.ListPluginsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListPlugins is not implemented"))
 }

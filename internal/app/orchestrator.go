@@ -81,6 +81,16 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 	return resp, nil
 }
 
+func (s *OrchestratorService) ListPlugins(ctx context.Context, req *pb.ListPluginsRequest) (*pb.ListPluginsResponse, error) {
+	plugins, err := s.uc.ListPlugins(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListPluginsResponse{}
+	resp.SetPlugins(toProtoPlugins(plugins))
+	return resp, nil
+}
+
 func toProtoEssentials(es []core.Essential) []*pb.Essential {
 	ret := []*pb.Essential{}
 	for i := range es {
@@ -183,5 +193,43 @@ func toProtoGPURelationPodDevice(pd *core.GPURelationPodDevice) *pb.GPURelation_
 	ret.SetGpuId(pd.GPUID)
 	ret.SetUsedCores(pd.UsedCores)
 	ret.SetUsedMemoryBytes(pd.UsedMemoryBytes)
+	return ret
+}
+
+func toProtoPlugins(rs []core.Release) []*pb.Plugin {
+	ret := []*pb.Plugin{}
+	for i := range rs {
+		ret = append(ret, toProtoPlugin(&rs[i]))
+	}
+	return ret
+}
+
+func toProtoPlugin(r *core.Release) *pb.Plugin {
+	ret := &pb.Plugin{}
+	ret.SetName(r.Name)
+	ret.SetNamespace(r.Namespace)
+	info := r.Info
+	if info != nil {
+		ret.SetStatus(info.Status.String())
+		ret.SetDescription(info.Description)
+		ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
+		ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
+		if !info.Deleted.IsZero() {
+			ret.SetDeletedAt(timestamppb.New(info.Deleted.Time))
+		}
+	}
+	if r.Chart != nil && r.Chart.Metadata != nil {
+		ret.SetChart(toProtoPluginChart(r.Chart.Metadata))
+	}
+	return ret
+}
+
+func toProtoPluginChart(md *core.ChartMetadata) *pb.Plugin_Chart {
+	ret := &pb.Plugin_Chart{}
+	ret.SetName(md.Name)
+	ret.SetVersion(md.Version)
+	ret.SetAppVersion(md.AppVersion)
+	ret.SetDescription(md.Description)
+	ret.SetIcon(md.Icon)
 	return ret
 }

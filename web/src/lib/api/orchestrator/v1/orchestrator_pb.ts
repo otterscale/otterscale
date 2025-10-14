@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/orchestrator/v1/orchestrator.proto.
  */
 export const file_api_orchestrator_v1_orchestrator: GenFile = /*@__PURE__*/
-  fileDesc("CiZhcGkvb3JjaGVzdHJhdG9yL3YxL29yY2hlc3RyYXRvci5wcm90bxIab3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEijgIKCUVzc2VudGlhbBI4CgR0eXBlGAEgASgOMioub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuRXNzZW50aWFsLlR5cGUSDAoEbmFtZRgCIAEoCRISCgpzY29wZV91dWlkGAsgASgJEhIKCnNjb3BlX25hbWUYDCABKAkSOQoFdW5pdHMYFSADKAsyKi5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5Fc3NlbnRpYWwuVW5pdBonCgRVbml0EgwKBG5hbWUYASABKAkSEQoJZGlyZWN0aXZlGAIgASgJIi0KBFR5cGUSCwoHVU5LTk9XThAAEg4KCktVQkVSTkVURVMQARIICgRDRVBIEAIilQUKC0dQVVJlbGF0aW9uEjoKA3BvZBgBIAEoCzIrLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkdQVVJlbGF0aW9uLlBvZEgAEjoKA2dwdRgCIAEoCzIrLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkdQVVJlbGF0aW9uLkdQVUgAEkIKB21hY2hpbmUYAyABKAsyLy5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5HUFVSZWxhdGlvbi5NYWNoaW5lSAAajQIKA1BvZBIMCgRuYW1lGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRISCgptb2RlbF9uYW1lGAMgASgJEhUKDWJpbmRpbmdfcGhhc2UYCyABKAkSLAoIYm91bmRfYXQYDCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEkMKB2RldmljZXMYFSADKAsyMi5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5HUFVSZWxhdGlvbi5Qb2QuRGV2aWNlGkcKBkRldmljZRIOCgZncHVfaWQYASABKAkSEgoKdXNlZF9jb3JlcxgCIAEoBRIZChF1c2VkX21lbW9yeV9ieXRlcxgDIAEoAxqGAQoDR1BVEgoKAmlkGAEgASgJEg0KBWluZGV4GAIgASgNEg0KBWNvdW50GAMgASgFEg0KBWNvcmVzGAQgASgFEhQKDG1lbW9yeV9ieXRlcxgFIAEoAxIMCgR0eXBlGAYgASgJEg4KBmhlYWx0aBgHIAEoCBISCgptYWNoaW5lX2lkGGUgASgJGicKB01hY2hpbmUSCgoCaWQYASABKAkSEAoIaG9zdG5hbWUYAiABKAlCCAoGZW50aXR5ImUKFUxpc3RFc3NlbnRpYWxzUmVxdWVzdBI4CgR0eXBlGAEgASgOMioub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuRXNzZW50aWFsLlR5cGUSEgoKc2NvcGVfdXVpZBgCIAEoCSJTChZMaXN0RXNzZW50aWFsc1Jlc3BvbnNlEjkKCmVzc2VudGlhbHMYASADKAsyJS5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5Fc3NlbnRpYWwijwEKEUNyZWF0ZU5vZGVSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSEgoKbWFjaGluZV9pZBgCIAEoCRITCgtwcmVmaXhfbmFtZRgDIAEoCRITCgt2aXJ0dWFsX2lwcxgLIAMoCRITCgtjYWxpY29fY2lkchgMIAEoCRITCgtvc2RfZGV2aWNlcxgVIAMoCSKSAQoUQ3JlYXRlQ2x1c3RlclJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRISCgptYWNoaW5lX2lkGAIgASgJEhMKC3ByZWZpeF9uYW1lGAMgASgJEhMKC3ZpcnR1YWxfaXBzGAsgAygJEhMKC2NhbGljb19jaWRyGAwgASgJEhMKC29zZF9kZXZpY2VzGBUgAygJIqgBChZBZGRDbHVzdGVyVW5pdHNSZXF1ZXN0EjgKBHR5cGUYASABKA4yKi5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5Fc3NlbnRpYWwuVHlwZRISCgpzY29wZV91dWlkGAIgASgJEgwKBG5hbWUYAyABKAkSDgoGbnVtYmVyGAQgASgFEhMKC21hY2hpbmVfaWRzGAUgAygJEg0KBWZvcmNlGAsgASgIImsKH0xpc3RLdWJlcm5ldGVzTm9kZUxhYmVsc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhAKCGhvc3RuYW1lGAMgASgJEgsKA2FsbBgLIAEoCCKrAQogTGlzdEt1YmVybmV0ZXNOb2RlTGFiZWxzUmVzcG9uc2USWAoGbGFiZWxzGAEgAygLMkgub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuTGlzdEt1YmVybmV0ZXNOb2RlTGFiZWxzUmVzcG9uc2UuTGFiZWxzRW50cnkaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASLqAQohVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIQCghob3N0bmFtZRgDIAEoCRJZCgZsYWJlbHMYBCADKAsySS5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5VcGRhdGVLdWJlcm5ldGVzTm9kZUxhYmVsc1JlcXVlc3QuTGFiZWxzRW50cnkaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASKvAQoiVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHNSZXNwb25zZRJaCgZsYWJlbHMYASADKAsySi5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5VcGRhdGVLdWJlcm5ldGVzTm9kZUxhYmVsc1Jlc3BvbnNlLkxhYmVsc0VudHJ5Gi0KC0xhYmVsc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiYQogTGlzdEdQVVJlbGF0aW9uc0J5TWFjaGluZVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhIKCm1hY2hpbmVfaWQYAyABKAkiYwohTGlzdEdQVVJlbGF0aW9uc0J5TWFjaGluZVJlc3BvbnNlEj4KDWdwdV9yZWxhdGlvbnMYASADKAsyJy5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5HUFVSZWxhdGlvbiJyCh5MaXN0R1BVUmVsYXRpb25zQnlNb2RlbFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRISCgptb2RlbF9uYW1lGAQgASgJImEKH0xpc3RHUFVSZWxhdGlvbnNCeU1vZGVsUmVzcG9uc2USPgoNZ3B1X3JlbGF0aW9ucxgBIAMoCzInLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkdQVVJlbGF0aW9uMoMIChNPcmNoZXN0cmF0b3JTZXJ2aWNlEncKDkxpc3RFc3NlbnRpYWxzEjEub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuTGlzdEVzc2VudGlhbHNSZXF1ZXN0GjIub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuTGlzdEVzc2VudGlhbHNSZXNwb25zZRJTCgpDcmVhdGVOb2RlEi0ub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuQ3JlYXRlTm9kZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSWQoNQ3JlYXRlQ2x1c3RlchIwLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkNyZWF0ZUNsdXN0ZXJSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5El0KD0FkZENsdXN0ZXJVbml0cxIyLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkFkZENsdXN0ZXJVbml0c1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSlQEKGExpc3RLdWJlcm5ldGVzTm9kZUxhYmVscxI7Lm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkxpc3RLdWJlcm5ldGVzTm9kZUxhYmVsc1JlcXVlc3QaPC5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5MaXN0S3ViZXJuZXRlc05vZGVMYWJlbHNSZXNwb25zZRKbAQoaVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHMSPS5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5VcGRhdGVLdWJlcm5ldGVzTm9kZUxhYmVsc1JlcXVlc3QaPi5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5VcGRhdGVLdWJlcm5ldGVzTm9kZUxhYmVsc1Jlc3BvbnNlEpgBChlMaXN0R1BVUmVsYXRpb25zQnlNYWNoaW5lEjwub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuTGlzdEdQVVJlbGF0aW9uc0J5TWFjaGluZVJlcXVlc3QaPS5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5MaXN0R1BVUmVsYXRpb25zQnlNYWNoaW5lUmVzcG9uc2USkgEKF0xpc3RHUFVSZWxhdGlvbnNCeU1vZGVsEjoub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuTGlzdEdQVVJlbGF0aW9uc0J5TW9kZWxSZXF1ZXN0Gjsub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuTGlzdEdQVVJlbGF0aW9uc0J5TW9kZWxSZXNwb25zZUI5WjdnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvb3JjaGVzdHJhdG9yL3YxO3BiYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("CiZhcGkvb3JjaGVzdHJhdG9yL3YxL29yY2hlc3RyYXRvci5wcm90bxIab3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEijgIKCUVzc2VudGlhbBI4CgR0eXBlGAEgASgOMioub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuRXNzZW50aWFsLlR5cGUSDAoEbmFtZRgCIAEoCRISCgpzY29wZV91dWlkGAsgASgJEhIKCnNjb3BlX25hbWUYDCABKAkSOQoFdW5pdHMYFSADKAsyKi5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5Fc3NlbnRpYWwuVW5pdBonCgRVbml0EgwKBG5hbWUYASABKAkSEQoJZGlyZWN0aXZlGAIgASgJIi0KBFR5cGUSCwoHVU5LTk9XThAAEg4KCktVQkVSTkVURVMQARIICgRDRVBIEAIiZQoVTGlzdEVzc2VudGlhbHNSZXF1ZXN0EjgKBHR5cGUYASABKA4yKi5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5Fc3NlbnRpYWwuVHlwZRISCgpzY29wZV91dWlkGAIgASgJIlMKFkxpc3RFc3NlbnRpYWxzUmVzcG9uc2USOQoKZXNzZW50aWFscxgBIAMoCzIlLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkVzc2VudGlhbCKPAQoRQ3JlYXRlTm9kZVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRISCgptYWNoaW5lX2lkGAIgASgJEhMKC3ByZWZpeF9uYW1lGAMgASgJEhMKC3ZpcnR1YWxfaXBzGAsgAygJEhMKC2NhbGljb19jaWRyGAwgASgJEhMKC29zZF9kZXZpY2VzGBUgAygJIpIBChRDcmVhdGVDbHVzdGVyUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhIKCm1hY2hpbmVfaWQYAiABKAkSEwoLcHJlZml4X25hbWUYAyABKAkSEwoLdmlydHVhbF9pcHMYCyADKAkSEwoLY2FsaWNvX2NpZHIYDCABKAkSEwoLb3NkX2RldmljZXMYFSADKAkiqAEKFkFkZENsdXN0ZXJVbml0c1JlcXVlc3QSOAoEdHlwZRgBIAEoDjIqLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkVzc2VudGlhbC5UeXBlEhIKCnNjb3BlX3V1aWQYAiABKAkSDAoEbmFtZRgDIAEoCRIOCgZudW1iZXIYBCABKAUSEwoLbWFjaGluZV9pZHMYBSADKAkSDQoFZm9yY2UYCyABKAgiawofTGlzdEt1YmVybmV0ZXNOb2RlTGFiZWxzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEAoIaG9zdG5hbWUYAyABKAkSCwoDYWxsGAsgASgIIqsBCiBMaXN0S3ViZXJuZXRlc05vZGVMYWJlbHNSZXNwb25zZRJYCgZsYWJlbHMYASADKAsySC5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5MaXN0S3ViZXJuZXRlc05vZGVMYWJlbHNSZXNwb25zZS5MYWJlbHNFbnRyeRotCgtMYWJlbHNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIuoBCiFVcGRhdGVLdWJlcm5ldGVzTm9kZUxhYmVsc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhAKCGhvc3RuYW1lGAMgASgJElkKBmxhYmVscxgEIAMoCzJJLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLlVwZGF0ZUt1YmVybmV0ZXNOb2RlTGFiZWxzUmVxdWVzdC5MYWJlbHNFbnRyeRotCgtMYWJlbHNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIq8BCiJVcGRhdGVLdWJlcm5ldGVzTm9kZUxhYmVsc1Jlc3BvbnNlEloKBmxhYmVscxgBIAMoCzJKLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLlVwZGF0ZUt1YmVybmV0ZXNOb2RlTGFiZWxzUmVzcG9uc2UuTGFiZWxzRW50cnkaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASKVBQoLR1BVUmVsYXRpb24SOgoDcG9kGAEgASgLMisub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuR1BVUmVsYXRpb24uUG9kSAASOgoDZ3B1GAIgASgLMisub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuR1BVUmVsYXRpb24uR1BVSAASQgoHbWFjaGluZRgDIAEoCzIvLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkdQVVJlbGF0aW9uLk1hY2hpbmVIABqNAgoDUG9kEgwKBG5hbWUYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhIKCm1vZGVsX25hbWUYAyABKAkSFQoNYmluZGluZ19waGFzZRgLIAEoCRIsCghib3VuZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASQwoHZGV2aWNlcxgVIAMoCzIyLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkdQVVJlbGF0aW9uLlBvZC5EZXZpY2UaRwoGRGV2aWNlEg4KBmdwdV9pZBgBIAEoCRISCgp1c2VkX2NvcmVzGAIgASgFEhkKEXVzZWRfbWVtb3J5X2J5dGVzGAMgASgDGoYBCgNHUFUSCgoCaWQYASABKAkSDQoFaW5kZXgYAiABKA0SDQoFY291bnQYAyABKAUSDQoFY29yZXMYBCABKAUSFAoMbWVtb3J5X2J5dGVzGAUgASgDEgwKBHR5cGUYBiABKAkSDgoGaGVhbHRoGAcgASgIEhIKCm1hY2hpbmVfaWQYZSABKAkaJwoHTWFjaGluZRIKCgJpZBgBIAEoCRIQCghob3N0bmFtZRgCIAEoCUIICgZlbnRpdHkiYQogTGlzdEdQVVJlbGF0aW9uc0J5TWFjaGluZVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhIKCm1hY2hpbmVfaWQYAyABKAkiYwohTGlzdEdQVVJlbGF0aW9uc0J5TWFjaGluZVJlc3BvbnNlEj4KDWdwdV9yZWxhdGlvbnMYASADKAsyJy5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5HUFVSZWxhdGlvbiJyCh5MaXN0R1BVUmVsYXRpb25zQnlNb2RlbFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRISCgptb2RlbF9uYW1lGAQgASgJImEKH0xpc3RHUFVSZWxhdGlvbnNCeU1vZGVsUmVzcG9uc2USPgoNZ3B1X3JlbGF0aW9ucxgBIAMoCzInLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkdQVVJlbGF0aW9uIoQDCgZQbHVnaW4SDAoEbmFtZRgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSDgoGc3RhdHVzGAMgASgJEhMKC2Rlc2NyaXB0aW9uGAQgASgJEjUKEWZpcnN0X2RlcGxveWVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI0ChBsYXN0X2RlcGxveWVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgpkZWxldGVkX2F0GAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI3CgVjaGFydBgLIAEoCzIoLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLlBsdWdpbi5DaGFydBpeCgVDaGFydBIMCgRuYW1lGAEgASgJEg8KB3ZlcnNpb24YAiABKAkSEwoLYXBwX3ZlcnNpb24YAyABKAkSEwoLZGVzY3JpcHRpb24YBCABKAkSDAoEaWNvbhgFIAEoCSI/ChJMaXN0UGx1Z2luc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJIkoKE0xpc3RQbHVnaW5zUmVzcG9uc2USMwoHcGx1Z2lucxgBIAMoCzIiLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLlBsdWdpbjLzCAoTT3JjaGVzdHJhdG9yU2VydmljZRJ3Cg5MaXN0RXNzZW50aWFscxIxLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkxpc3RFc3NlbnRpYWxzUmVxdWVzdBoyLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkxpc3RFc3NlbnRpYWxzUmVzcG9uc2USUwoKQ3JlYXRlTm9kZRItLm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkNyZWF0ZU5vZGVSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElkKDUNyZWF0ZUNsdXN0ZXISMC5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5DcmVhdGVDbHVzdGVyUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJdCg9BZGRDbHVzdGVyVW5pdHMSMi5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5BZGRDbHVzdGVyVW5pdHNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EpUBChhMaXN0S3ViZXJuZXRlc05vZGVMYWJlbHMSOy5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5MaXN0S3ViZXJuZXRlc05vZGVMYWJlbHNSZXF1ZXN0Gjwub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuTGlzdEt1YmVybmV0ZXNOb2RlTGFiZWxzUmVzcG9uc2USmwEKGlVwZGF0ZUt1YmVybmV0ZXNOb2RlTGFiZWxzEj0ub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHNSZXF1ZXN0Gj4ub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuVXBkYXRlS3ViZXJuZXRlc05vZGVMYWJlbHNSZXNwb25zZRKYAQoZTGlzdEdQVVJlbGF0aW9uc0J5TWFjaGluZRI8Lm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkxpc3RHUFVSZWxhdGlvbnNCeU1hY2hpbmVSZXF1ZXN0Gj0ub3R0ZXJzY2FsZS5vcmNoZXN0cmF0b3IudjEuTGlzdEdQVVJlbGF0aW9uc0J5TWFjaGluZVJlc3BvbnNlEpIBChdMaXN0R1BVUmVsYXRpb25zQnlNb2RlbBI6Lm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkxpc3RHUFVSZWxhdGlvbnNCeU1vZGVsUmVxdWVzdBo7Lm90dGVyc2NhbGUub3JjaGVzdHJhdG9yLnYxLkxpc3RHUFVSZWxhdGlvbnNCeU1vZGVsUmVzcG9uc2USbgoLTGlzdFBsdWdpbnMSLi5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5MaXN0UGx1Z2luc1JlcXVlc3QaLy5vdHRlcnNjYWxlLm9yY2hlc3RyYXRvci52MS5MaXN0UGx1Z2luc1Jlc3BvbnNlQjlaN2dpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9vcmNoZXN0cmF0b3IvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message otterscale.orchestrator.v1.Essential
@@ -100,6 +100,269 @@ export const Essential_TypeSchema: GenEnum<Essential_Type> = /*@__PURE__*/
   enumDesc(file_api_orchestrator_v1_orchestrator, 0, 0);
 
 /**
+ * @generated from message otterscale.orchestrator.v1.ListEssentialsRequest
+ */
+export type ListEssentialsRequest = Message<"otterscale.orchestrator.v1.ListEssentialsRequest"> & {
+  /**
+   * @generated from field: otterscale.orchestrator.v1.Essential.Type type = 1;
+   */
+  type: Essential_Type;
+
+  /**
+   * @generated from field: string scope_uuid = 2;
+   */
+  scopeUuid: string;
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.ListEssentialsRequest.
+ * Use `create(ListEssentialsRequestSchema)` to create a new message.
+ */
+export const ListEssentialsRequestSchema: GenMessage<ListEssentialsRequest> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 1);
+
+/**
+ * @generated from message otterscale.orchestrator.v1.ListEssentialsResponse
+ */
+export type ListEssentialsResponse = Message<"otterscale.orchestrator.v1.ListEssentialsResponse"> & {
+  /**
+   * @generated from field: repeated otterscale.orchestrator.v1.Essential essentials = 1;
+   */
+  essentials: Essential[];
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.ListEssentialsResponse.
+ * Use `create(ListEssentialsResponseSchema)` to create a new message.
+ */
+export const ListEssentialsResponseSchema: GenMessage<ListEssentialsResponse> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 2);
+
+/**
+ * @generated from message otterscale.orchestrator.v1.CreateNodeRequest
+ */
+export type CreateNodeRequest = Message<"otterscale.orchestrator.v1.CreateNodeRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string machine_id = 2;
+   */
+  machineId: string;
+
+  /**
+   * @generated from field: string prefix_name = 3;
+   */
+  prefixName: string;
+
+  /**
+   * @generated from field: repeated string virtual_ips = 11;
+   */
+  virtualIps: string[];
+
+  /**
+   * @generated from field: string calico_cidr = 12;
+   */
+  calicoCidr: string;
+
+  /**
+   * @generated from field: repeated string osd_devices = 21;
+   */
+  osdDevices: string[];
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.CreateNodeRequest.
+ * Use `create(CreateNodeRequestSchema)` to create a new message.
+ */
+export const CreateNodeRequestSchema: GenMessage<CreateNodeRequest> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 3);
+
+/**
+ * @generated from message otterscale.orchestrator.v1.CreateClusterRequest
+ */
+export type CreateClusterRequest = Message<"otterscale.orchestrator.v1.CreateClusterRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string machine_id = 2;
+   */
+  machineId: string;
+
+  /**
+   * @generated from field: string prefix_name = 3;
+   */
+  prefixName: string;
+
+  /**
+   * @generated from field: repeated string virtual_ips = 11;
+   */
+  virtualIps: string[];
+
+  /**
+   * @generated from field: string calico_cidr = 12;
+   */
+  calicoCidr: string;
+
+  /**
+   * @generated from field: repeated string osd_devices = 21;
+   */
+  osdDevices: string[];
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.CreateClusterRequest.
+ * Use `create(CreateClusterRequestSchema)` to create a new message.
+ */
+export const CreateClusterRequestSchema: GenMessage<CreateClusterRequest> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 4);
+
+/**
+ * @generated from message otterscale.orchestrator.v1.AddClusterUnitsRequest
+ */
+export type AddClusterUnitsRequest = Message<"otterscale.orchestrator.v1.AddClusterUnitsRequest"> & {
+  /**
+   * @generated from field: otterscale.orchestrator.v1.Essential.Type type = 1;
+   */
+  type: Essential_Type;
+
+  /**
+   * @generated from field: string scope_uuid = 2;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string name = 3;
+   */
+  name: string;
+
+  /**
+   * @generated from field: int32 number = 4;
+   */
+  number: number;
+
+  /**
+   * @generated from field: repeated string machine_ids = 5;
+   */
+  machineIds: string[];
+
+  /**
+   * @generated from field: bool force = 11;
+   */
+  force: boolean;
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.AddClusterUnitsRequest.
+ * Use `create(AddClusterUnitsRequestSchema)` to create a new message.
+ */
+export const AddClusterUnitsRequestSchema: GenMessage<AddClusterUnitsRequest> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 5);
+
+/**
+ * @generated from message otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest
+ */
+export type ListKubernetesNodeLabelsRequest = Message<"otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string facility_name = 2;
+   */
+  facilityName: string;
+
+  /**
+   * @generated from field: string hostname = 3;
+   */
+  hostname: string;
+
+  /**
+   * @generated from field: bool all = 11;
+   */
+  all: boolean;
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest.
+ * Use `create(ListKubernetesNodeLabelsRequestSchema)` to create a new message.
+ */
+export const ListKubernetesNodeLabelsRequestSchema: GenMessage<ListKubernetesNodeLabelsRequest> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 6);
+
+/**
+ * @generated from message otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse
+ */
+export type ListKubernetesNodeLabelsResponse = Message<"otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse"> & {
+  /**
+   * @generated from field: map<string, string> labels = 1;
+   */
+  labels: { [key: string]: string };
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.
+ * Use `create(ListKubernetesNodeLabelsResponseSchema)` to create a new message.
+ */
+export const ListKubernetesNodeLabelsResponseSchema: GenMessage<ListKubernetesNodeLabelsResponse> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 7);
+
+/**
+ * @generated from message otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest
+ */
+export type UpdateKubernetesNodeLabelsRequest = Message<"otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string facility_name = 2;
+   */
+  facilityName: string;
+
+  /**
+   * @generated from field: string hostname = 3;
+   */
+  hostname: string;
+
+  /**
+   * @generated from field: map<string, string> labels = 4;
+   */
+  labels: { [key: string]: string };
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.
+ * Use `create(UpdateKubernetesNodeLabelsRequestSchema)` to create a new message.
+ */
+export const UpdateKubernetesNodeLabelsRequestSchema: GenMessage<UpdateKubernetesNodeLabelsRequest> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 8);
+
+/**
+ * @generated from message otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse
+ */
+export type UpdateKubernetesNodeLabelsResponse = Message<"otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse"> & {
+  /**
+   * @generated from field: map<string, string> labels = 1;
+   */
+  labels: { [key: string]: string };
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.
+ * Use `create(UpdateKubernetesNodeLabelsResponseSchema)` to create a new message.
+ */
+export const UpdateKubernetesNodeLabelsResponseSchema: GenMessage<UpdateKubernetesNodeLabelsResponse> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 9);
+
+/**
  * @generated from message otterscale.orchestrator.v1.GPURelation
  */
 export type GPURelation = Message<"otterscale.orchestrator.v1.GPURelation"> & {
@@ -132,7 +395,7 @@ export type GPURelation = Message<"otterscale.orchestrator.v1.GPURelation"> & {
  * Use `create(GPURelationSchema)` to create a new message.
  */
 export const GPURelationSchema: GenMessage<GPURelation> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 1);
+  messageDesc(file_api_orchestrator_v1_orchestrator, 10);
 
 /**
  * @generated from message otterscale.orchestrator.v1.GPURelation.Pod
@@ -174,7 +437,7 @@ export type GPURelation_Pod = Message<"otterscale.orchestrator.v1.GPURelation.Po
  * Use `create(GPURelation_PodSchema)` to create a new message.
  */
 export const GPURelation_PodSchema: GenMessage<GPURelation_Pod> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 1, 0);
+  messageDesc(file_api_orchestrator_v1_orchestrator, 10, 0);
 
 /**
  * @generated from message otterscale.orchestrator.v1.GPURelation.Pod.Device
@@ -201,7 +464,7 @@ export type GPURelation_Pod_Device = Message<"otterscale.orchestrator.v1.GPURela
  * Use `create(GPURelation_Pod_DeviceSchema)` to create a new message.
  */
 export const GPURelation_Pod_DeviceSchema: GenMessage<GPURelation_Pod_Device> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 1, 0, 0);
+  messageDesc(file_api_orchestrator_v1_orchestrator, 10, 0, 0);
 
 /**
  * @generated from message otterscale.orchestrator.v1.GPURelation.GPU
@@ -253,7 +516,7 @@ export type GPURelation_GPU = Message<"otterscale.orchestrator.v1.GPURelation.GP
  * Use `create(GPURelation_GPUSchema)` to create a new message.
  */
 export const GPURelation_GPUSchema: GenMessage<GPURelation_GPU> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 1, 1);
+  messageDesc(file_api_orchestrator_v1_orchestrator, 10, 1);
 
 /**
  * @generated from message otterscale.orchestrator.v1.GPURelation.Machine
@@ -275,270 +538,7 @@ export type GPURelation_Machine = Message<"otterscale.orchestrator.v1.GPURelatio
  * Use `create(GPURelation_MachineSchema)` to create a new message.
  */
 export const GPURelation_MachineSchema: GenMessage<GPURelation_Machine> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 1, 2);
-
-/**
- * @generated from message otterscale.orchestrator.v1.ListEssentialsRequest
- */
-export type ListEssentialsRequest = Message<"otterscale.orchestrator.v1.ListEssentialsRequest"> & {
-  /**
-   * @generated from field: otterscale.orchestrator.v1.Essential.Type type = 1;
-   */
-  type: Essential_Type;
-
-  /**
-   * @generated from field: string scope_uuid = 2;
-   */
-  scopeUuid: string;
-};
-
-/**
- * Describes the message otterscale.orchestrator.v1.ListEssentialsRequest.
- * Use `create(ListEssentialsRequestSchema)` to create a new message.
- */
-export const ListEssentialsRequestSchema: GenMessage<ListEssentialsRequest> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 2);
-
-/**
- * @generated from message otterscale.orchestrator.v1.ListEssentialsResponse
- */
-export type ListEssentialsResponse = Message<"otterscale.orchestrator.v1.ListEssentialsResponse"> & {
-  /**
-   * @generated from field: repeated otterscale.orchestrator.v1.Essential essentials = 1;
-   */
-  essentials: Essential[];
-};
-
-/**
- * Describes the message otterscale.orchestrator.v1.ListEssentialsResponse.
- * Use `create(ListEssentialsResponseSchema)` to create a new message.
- */
-export const ListEssentialsResponseSchema: GenMessage<ListEssentialsResponse> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 3);
-
-/**
- * @generated from message otterscale.orchestrator.v1.CreateNodeRequest
- */
-export type CreateNodeRequest = Message<"otterscale.orchestrator.v1.CreateNodeRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
-
-  /**
-   * @generated from field: string machine_id = 2;
-   */
-  machineId: string;
-
-  /**
-   * @generated from field: string prefix_name = 3;
-   */
-  prefixName: string;
-
-  /**
-   * @generated from field: repeated string virtual_ips = 11;
-   */
-  virtualIps: string[];
-
-  /**
-   * @generated from field: string calico_cidr = 12;
-   */
-  calicoCidr: string;
-
-  /**
-   * @generated from field: repeated string osd_devices = 21;
-   */
-  osdDevices: string[];
-};
-
-/**
- * Describes the message otterscale.orchestrator.v1.CreateNodeRequest.
- * Use `create(CreateNodeRequestSchema)` to create a new message.
- */
-export const CreateNodeRequestSchema: GenMessage<CreateNodeRequest> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 4);
-
-/**
- * @generated from message otterscale.orchestrator.v1.CreateClusterRequest
- */
-export type CreateClusterRequest = Message<"otterscale.orchestrator.v1.CreateClusterRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
-
-  /**
-   * @generated from field: string machine_id = 2;
-   */
-  machineId: string;
-
-  /**
-   * @generated from field: string prefix_name = 3;
-   */
-  prefixName: string;
-
-  /**
-   * @generated from field: repeated string virtual_ips = 11;
-   */
-  virtualIps: string[];
-
-  /**
-   * @generated from field: string calico_cidr = 12;
-   */
-  calicoCidr: string;
-
-  /**
-   * @generated from field: repeated string osd_devices = 21;
-   */
-  osdDevices: string[];
-};
-
-/**
- * Describes the message otterscale.orchestrator.v1.CreateClusterRequest.
- * Use `create(CreateClusterRequestSchema)` to create a new message.
- */
-export const CreateClusterRequestSchema: GenMessage<CreateClusterRequest> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 5);
-
-/**
- * @generated from message otterscale.orchestrator.v1.AddClusterUnitsRequest
- */
-export type AddClusterUnitsRequest = Message<"otterscale.orchestrator.v1.AddClusterUnitsRequest"> & {
-  /**
-   * @generated from field: otterscale.orchestrator.v1.Essential.Type type = 1;
-   */
-  type: Essential_Type;
-
-  /**
-   * @generated from field: string scope_uuid = 2;
-   */
-  scopeUuid: string;
-
-  /**
-   * @generated from field: string name = 3;
-   */
-  name: string;
-
-  /**
-   * @generated from field: int32 number = 4;
-   */
-  number: number;
-
-  /**
-   * @generated from field: repeated string machine_ids = 5;
-   */
-  machineIds: string[];
-
-  /**
-   * @generated from field: bool force = 11;
-   */
-  force: boolean;
-};
-
-/**
- * Describes the message otterscale.orchestrator.v1.AddClusterUnitsRequest.
- * Use `create(AddClusterUnitsRequestSchema)` to create a new message.
- */
-export const AddClusterUnitsRequestSchema: GenMessage<AddClusterUnitsRequest> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 6);
-
-/**
- * @generated from message otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest
- */
-export type ListKubernetesNodeLabelsRequest = Message<"otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
-
-  /**
-   * @generated from field: string facility_name = 2;
-   */
-  facilityName: string;
-
-  /**
-   * @generated from field: string hostname = 3;
-   */
-  hostname: string;
-
-  /**
-   * @generated from field: bool all = 11;
-   */
-  all: boolean;
-};
-
-/**
- * Describes the message otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest.
- * Use `create(ListKubernetesNodeLabelsRequestSchema)` to create a new message.
- */
-export const ListKubernetesNodeLabelsRequestSchema: GenMessage<ListKubernetesNodeLabelsRequest> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 7);
-
-/**
- * @generated from message otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse
- */
-export type ListKubernetesNodeLabelsResponse = Message<"otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse"> & {
-  /**
-   * @generated from field: map<string, string> labels = 1;
-   */
-  labels: { [key: string]: string };
-};
-
-/**
- * Describes the message otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.
- * Use `create(ListKubernetesNodeLabelsResponseSchema)` to create a new message.
- */
-export const ListKubernetesNodeLabelsResponseSchema: GenMessage<ListKubernetesNodeLabelsResponse> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 8);
-
-/**
- * @generated from message otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest
- */
-export type UpdateKubernetesNodeLabelsRequest = Message<"otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
-
-  /**
-   * @generated from field: string facility_name = 2;
-   */
-  facilityName: string;
-
-  /**
-   * @generated from field: string hostname = 3;
-   */
-  hostname: string;
-
-  /**
-   * @generated from field: map<string, string> labels = 4;
-   */
-  labels: { [key: string]: string };
-};
-
-/**
- * Describes the message otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.
- * Use `create(UpdateKubernetesNodeLabelsRequestSchema)` to create a new message.
- */
-export const UpdateKubernetesNodeLabelsRequestSchema: GenMessage<UpdateKubernetesNodeLabelsRequest> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 9);
-
-/**
- * @generated from message otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse
- */
-export type UpdateKubernetesNodeLabelsResponse = Message<"otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse"> & {
-  /**
-   * @generated from field: map<string, string> labels = 1;
-   */
-  labels: { [key: string]: string };
-};
-
-/**
- * Describes the message otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.
- * Use `create(UpdateKubernetesNodeLabelsResponseSchema)` to create a new message.
- */
-export const UpdateKubernetesNodeLabelsResponseSchema: GenMessage<UpdateKubernetesNodeLabelsResponse> = /*@__PURE__*/
-  messageDesc(file_api_orchestrator_v1_orchestrator, 10);
+  messageDesc(file_api_orchestrator_v1_orchestrator, 10, 2);
 
 /**
  * @generated from message otterscale.orchestrator.v1.ListGPURelationsByMachineRequest
@@ -634,6 +634,134 @@ export const ListGPURelationsByModelResponseSchema: GenMessage<ListGPURelationsB
   messageDesc(file_api_orchestrator_v1_orchestrator, 14);
 
 /**
+ * @generated from message otterscale.orchestrator.v1.Plugin
+ */
+export type Plugin = Message<"otterscale.orchestrator.v1.Plugin"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string namespace = 2;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string status = 3;
+   */
+  status: string;
+
+  /**
+   * @generated from field: string description = 4;
+   */
+  description: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp first_deployed_at = 5;
+   */
+  firstDeployedAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp last_deployed_at = 6;
+   */
+  lastDeployedAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp deleted_at = 7;
+   */
+  deletedAt?: Timestamp;
+
+  /**
+   * @generated from field: otterscale.orchestrator.v1.Plugin.Chart chart = 11;
+   */
+  chart?: Plugin_Chart;
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.Plugin.
+ * Use `create(PluginSchema)` to create a new message.
+ */
+export const PluginSchema: GenMessage<Plugin> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 15);
+
+/**
+ * @generated from message otterscale.orchestrator.v1.Plugin.Chart
+ */
+export type Plugin_Chart = Message<"otterscale.orchestrator.v1.Plugin.Chart"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string version = 2;
+   */
+  version: string;
+
+  /**
+   * @generated from field: string app_version = 3;
+   */
+  appVersion: string;
+
+  /**
+   * @generated from field: string description = 4;
+   */
+  description: string;
+
+  /**
+   * @generated from field: string icon = 5;
+   */
+  icon: string;
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.Plugin.Chart.
+ * Use `create(Plugin_ChartSchema)` to create a new message.
+ */
+export const Plugin_ChartSchema: GenMessage<Plugin_Chart> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 15, 0);
+
+/**
+ * @generated from message otterscale.orchestrator.v1.ListPluginsRequest
+ */
+export type ListPluginsRequest = Message<"otterscale.orchestrator.v1.ListPluginsRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string facility_name = 2;
+   */
+  facilityName: string;
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.ListPluginsRequest.
+ * Use `create(ListPluginsRequestSchema)` to create a new message.
+ */
+export const ListPluginsRequestSchema: GenMessage<ListPluginsRequest> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 16);
+
+/**
+ * @generated from message otterscale.orchestrator.v1.ListPluginsResponse
+ */
+export type ListPluginsResponse = Message<"otterscale.orchestrator.v1.ListPluginsResponse"> & {
+  /**
+   * @generated from field: repeated otterscale.orchestrator.v1.Plugin plugins = 1;
+   */
+  plugins: Plugin[];
+};
+
+/**
+ * Describes the message otterscale.orchestrator.v1.ListPluginsResponse.
+ * Use `create(ListPluginsResponseSchema)` to create a new message.
+ */
+export const ListPluginsResponseSchema: GenMessage<ListPluginsResponse> = /*@__PURE__*/
+  messageDesc(file_api_orchestrator_v1_orchestrator, 17);
+
+/**
  * @generated from service otterscale.orchestrator.v1.OrchestratorService
  */
 export const OrchestratorService: GenService<{
@@ -700,6 +828,14 @@ export const OrchestratorService: GenService<{
     methodKind: "unary";
     input: typeof ListGPURelationsByModelRequestSchema;
     output: typeof ListGPURelationsByModelResponseSchema;
+  },
+  /**
+   * @generated from rpc otterscale.orchestrator.v1.OrchestratorService.ListPlugins
+   */
+  listPlugins: {
+    methodKind: "unary";
+    input: typeof ListPluginsRequestSchema;
+    output: typeof ListPluginsResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_orchestrator_v1_orchestrator, 0);

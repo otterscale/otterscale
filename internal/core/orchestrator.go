@@ -47,13 +47,14 @@ type OrchestratorUseCase struct {
 	kubeApps       KubeAppsRepo
 	kubeCore       KubeCoreRepo
 	machine        MachineRepo
+	release        ReleaseRepo
 	scope          ScopeRepo
 	server         ServerRepo
 	subnet         SubnetRepo
 	tag            TagRepo
 }
 
-func NewOrchestratorUseCase(conf *config.Config, action ActionRepo, client ClientRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, ipRange IPRangeRepo, kubeApps KubeAppsRepo, kubeCore KubeCoreRepo, machine MachineRepo, scope ScopeRepo, server ServerRepo, subnet SubnetRepo, tag TagRepo) *OrchestratorUseCase {
+func NewOrchestratorUseCase(conf *config.Config, action ActionRepo, client ClientRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, ipRange IPRangeRepo, kubeApps KubeAppsRepo, kubeCore KubeCoreRepo, machine MachineRepo, release ReleaseRepo, scope ScopeRepo, server ServerRepo, subnet SubnetRepo, tag TagRepo) *OrchestratorUseCase {
 	return &OrchestratorUseCase{
 		conf:           conf,
 		action:         action,
@@ -64,6 +65,7 @@ func NewOrchestratorUseCase(conf *config.Config, action ActionRepo, client Clien
 		kubeApps:       kubeApps,
 		kubeCore:       kubeCore,
 		machine:        machine,
+		release:        release,
 		scope:          scope,
 		server:         server,
 		subnet:         subnet,
