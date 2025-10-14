@@ -5,7 +5,7 @@
 	import { curveLinear } from 'd3-shape';
 	import { LineChart } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { page } from '$app/state';
@@ -56,7 +56,7 @@
 				60 * 60,
 			)
 			.then((response) => {
-				allocatedGPUs = response.result[0].values;
+				allocatedGPUs = response.result && response.result[0] ? response.result[0].values : [];
 			});
 
 		machineClient.listMachines({}).then((response) => {
@@ -74,6 +74,9 @@
 		} catch (error) {
 			console.error(`Fail to fetch data in scope ${scope}:`, error);
 		}
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 
 	$effect(() => {
