@@ -232,13 +232,13 @@ func (b0 Model_builder) Build() *Model {
 }
 
 type ListModelsRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ListModelsRequest) Reset() {
@@ -266,78 +266,78 @@ func (x *ListModelsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListModelsRequest) GetScopeUuid() string {
+func (x *ListModelsRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *ListModelsRequest) GetFacilityName() string {
+func (x *ListModelsRequest) GetFacility() string {
 	if x != nil {
-		if x.xxx_hidden_FacilityName != nil {
-			return *x.xxx_hidden_FacilityName
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *ListModelsRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *ListModelsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *ListModelsRequest) SetFacilityName(v string) {
-	x.xxx_hidden_FacilityName = &v
+func (x *ListModelsRequest) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *ListModelsRequest) HasScopeUuid() bool {
+func (x *ListModelsRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListModelsRequest) HasFacilityName() bool {
+func (x *ListModelsRequest) HasFacility() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListModelsRequest) ClearScopeUuid() {
+func (x *ListModelsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListModelsRequest) ClearFacilityName() {
+func (x *ListModelsRequest) ClearFacility() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_FacilityName = nil
+	x.xxx_hidden_Facility = nil
 }
 
 type ListModelsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid    *string
-	FacilityName *string
+	Scope    *string
+	Facility *string
 }
 
 func (b0 ListModelsRequest_builder) Build() *ListModelsRequest {
 	m0 := &ListModelsRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.FacilityName != nil {
+	if b.Facility != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_FacilityName = b.FacilityName
+		x.xxx_hidden_Facility = b.Facility
 	}
 	return m0
 }
@@ -744,11 +744,10 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x18\n" +
 	"\aversion\x18\x04 \x01(\tR\aversion\x12\x18\n" +
-	"\acomment\x18\x05 \x01(\tR\acomment\"W\n" +
-	"\x11ListModelsRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"H\n" +
+	"\acomment\x18\x05 \x01(\tR\acomment\"E\n" +
+	"\x11ListModelsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\"H\n" +
 	"\x12ListModelsResponse\x122\n" +
 	"\x06models\x18\x01 \x03(\v2\x1a.otterscale.model.v1.ModelR\x06models\"!\n" +
 	"\x0fGetModelRequest\x12\x0e\n" +

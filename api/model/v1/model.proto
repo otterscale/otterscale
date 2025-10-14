@@ -22,8 +22,8 @@ message Model {
 }
 
 message ListModelsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListModelsResponse {

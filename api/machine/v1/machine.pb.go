@@ -907,7 +907,7 @@ func (b0 Tag_builder) Build() *Tag {
 
 type ListMachinesRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -939,46 +939,46 @@ func (x *ListMachinesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListMachinesRequest) GetScopeUuid() string {
+func (x *ListMachinesRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *ListMachinesRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *ListMachinesRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
-func (x *ListMachinesRequest) HasScopeUuid() bool {
+func (x *ListMachinesRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListMachinesRequest) ClearScopeUuid() {
+func (x *ListMachinesRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
 type ListMachinesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid *string
+	Scope *string
 }
 
 func (b0 ListMachinesRequest_builder) Build() *ListMachinesRequest {
 	m0 := &ListMachinesRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
 	return m0
 }
@@ -1127,7 +1127,7 @@ type CreateMachineRequest struct {
 	xxx_hidden_SkipBmcConfig  bool                   `protobuf:"varint,3,opt,name=skip_bmc_config,json=skipBmcConfig"`
 	xxx_hidden_SkipNetworking bool                   `protobuf:"varint,4,opt,name=skip_networking,json=skipNetworking"`
 	xxx_hidden_SkipStorage    bool                   `protobuf:"varint,5,opt,name=skip_storage,json=skipStorage"`
-	xxx_hidden_ScopeUuid      *string                `protobuf:"bytes,11,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_Scope          *string                `protobuf:"bytes,11,opt,name=scope"`
 	xxx_hidden_Tags           []string               `protobuf:"bytes,21,rep,name=tags"`
 	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
 	XXX_presence              [1]uint32
@@ -1198,10 +1198,10 @@ func (x *CreateMachineRequest) GetSkipStorage() bool {
 	return false
 }
 
-func (x *CreateMachineRequest) GetScopeUuid() string {
+func (x *CreateMachineRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
@@ -1240,8 +1240,8 @@ func (x *CreateMachineRequest) SetSkipStorage(v bool) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
 }
 
-func (x *CreateMachineRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *CreateMachineRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 7)
 }
 
@@ -1284,7 +1284,7 @@ func (x *CreateMachineRequest) HasSkipStorage() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *CreateMachineRequest) HasScopeUuid() bool {
+func (x *CreateMachineRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
@@ -1316,9 +1316,9 @@ func (x *CreateMachineRequest) ClearSkipStorage() {
 	x.xxx_hidden_SkipStorage = false
 }
 
-func (x *CreateMachineRequest) ClearScopeUuid() {
+func (x *CreateMachineRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
 type CreateMachineRequest_builder struct {
@@ -1329,7 +1329,7 @@ type CreateMachineRequest_builder struct {
 	SkipBmcConfig  *bool
 	SkipNetworking *bool
 	SkipStorage    *bool
-	ScopeUuid      *string
+	Scope          *string
 	Tags           []string
 }
 
@@ -1357,9 +1357,9 @@ func (b0 CreateMachineRequest_builder) Build() *CreateMachineRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
 		x.xxx_hidden_SkipStorage = *b.SkipStorage
 	}
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 7)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
 	x.xxx_hidden_Tags = b.Tags
 	return m0
@@ -3472,23 +3472,21 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"3\n" +
 	"\x03Tag\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
-	"\acomment\x18\x02 \x01(\tR\acomment\"4\n" +
-	"\x13ListMachinesRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\"R\n" +
+	"\acomment\x18\x02 \x01(\tR\acomment\"+\n" +
+	"\x13ListMachinesRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\"R\n" +
 	"\x14ListMachinesResponse\x12:\n" +
 	"\bmachines\x18\x01 \x03(\v2\x1e.otterscale.machine.v1.MachineR\bmachines\"#\n" +
 	"\x11GetMachineRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xec\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xe3\x01\n" +
 	"\x14CreateMachineRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"enable_ssh\x18\x02 \x01(\bR\tenableSsh\x12&\n" +
 	"\x0fskip_bmc_config\x18\x03 \x01(\bR\rskipBmcConfig\x12'\n" +
 	"\x0fskip_networking\x18\x04 \x01(\bR\x0eskipNetworking\x12!\n" +
-	"\fskip_storage\x18\x05 \x01(\bR\vskipStorage\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\v \x01(\tR\tscopeUuid\x12\x12\n" +
+	"\fskip_storage\x18\x05 \x01(\bR\vskipStorage\x12\x14\n" +
+	"\x05scope\x18\v \x01(\tR\x05scope\x12\x12\n" +
 	"\x04tags\x18\x15 \x03(\tR\x04tags\"[\n" +
 	"\x14DeleteMachineRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +

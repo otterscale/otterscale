@@ -159,8 +159,8 @@ message StorageClass {
 }
 
 message ListNamespacesRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListNamespacesResponse {
@@ -168,8 +168,8 @@ message ListNamespacesResponse {
 }
 
 message ListApplicationsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListApplicationsResponse {
@@ -177,23 +177,23 @@ message ListApplicationsResponse {
 }
 
 message GetApplicationRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string name = 4;
 }
 
 message RestartApplicationRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string name = 4;
   string type = 5;
 }
 
 message ScaleApplicationRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string name = 4;
   string type = 5;
@@ -201,15 +201,15 @@ message ScaleApplicationRequest {
 }
 
 message DeleteApplicationPodRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string name = 4;
 }
 
 message WatchLogsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string pod_name = 4;
   string container_name = 5;
@@ -220,8 +220,8 @@ message WatchLogsResponse {
 }
 
 message ExecuteTTYRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string pod_name = 4;
   string container_name = 5;
@@ -239,8 +239,8 @@ message WriteTTYRequest {
 }
 
 message ListReleasesRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListReleasesResponse {
@@ -248,8 +248,8 @@ message ListReleasesResponse {
 }
 
 message CreateReleaseRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string name = 4;
   bool dry_run = 5;
@@ -259,8 +259,8 @@ message CreateReleaseRequest {
 }
 
 message UpdateReleaseRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string name = 4;
   bool dry_run = 5;
@@ -269,16 +269,16 @@ message UpdateReleaseRequest {
 }
 
 message DeleteReleaseRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string name = 4;
   bool dry_run = 5;
 }
 
 message RollbackReleaseRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string name = 4;
   bool dry_run = 5;
@@ -299,8 +299,8 @@ message GetChartMetadataRequest {
 }
 
 message ListStorageClassesRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListStorageClassesResponse {

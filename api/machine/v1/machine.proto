@@ -99,7 +99,7 @@ message Tag {
 }
 
 message ListMachinesRequest {
-  string scope_uuid = 1;
+  string scope = 1;
 }
 
 message ListMachinesResponse {
@@ -116,7 +116,7 @@ message CreateMachineRequest {
   bool skip_bmc_config = 3;
   bool skip_networking = 4;
   bool skip_storage = 5;
-  string scope_uuid = 11;
+  string scope = 11;
   repeated string tags = 21;
 }
 

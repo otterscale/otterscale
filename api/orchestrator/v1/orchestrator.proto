@@ -35,14 +35,14 @@ message Essential {
   }
   Type type = 1;
   string name = 2;
-  string scope_uuid = 11;
+  string scope = 11;
   string scope_name = 12;
   repeated Unit units = 21;
 }
 
 message ListEssentialsRequest {
   Essential.Type type = 1;
-  string scope_uuid = 2;
+  string scope = 2;
 }
 
 message ListEssentialsResponse {
@@ -50,7 +50,7 @@ message ListEssentialsResponse {
 }
 
 message CreateNodeRequest {
-  string scope_uuid = 1;
+  string scope = 1;
   string machine_id = 2;
   string prefix_name = 3;
   repeated string virtual_ips = 11;
@@ -59,7 +59,7 @@ message CreateNodeRequest {
 }
 
 message CreateClusterRequest {
-  string scope_uuid = 1;
+  string scope = 1;
   string machine_id = 2;
   string prefix_name = 3;
   repeated string virtual_ips = 11;
@@ -69,7 +69,7 @@ message CreateClusterRequest {
 
 message AddClusterUnitsRequest {
   Essential.Type type = 1;
-  string scope_uuid = 2;
+  string scope = 2;
   string name = 3;
   int32 number = 4;
   repeated string machine_ids = 5;
@@ -77,8 +77,8 @@ message AddClusterUnitsRequest {
 }
 
 message ListKubernetesNodeLabelsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string hostname = 3;
   bool all = 11;
 }
@@ -88,8 +88,8 @@ message ListKubernetesNodeLabelsResponse {
 }
 
 message UpdateKubernetesNodeLabelsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string hostname = 3;
   map<string, string> labels = 4;
 }
@@ -134,8 +134,8 @@ message GPURelation {
 }
 
 message ListGPURelationsByMachineRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string machine_id = 3;
 }
 
@@ -144,8 +144,8 @@ message ListGPURelationsByMachineResponse {
 }
 
 message ListGPURelationsByModelRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string model_name = 4;
 }
@@ -173,8 +173,8 @@ message Plugin {
 }
 
 message ListPluginsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListPluginsResponse {
