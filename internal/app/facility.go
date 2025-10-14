@@ -26,11 +26,11 @@ func NewFacilityService(facility *core.FacilityUseCase) *FacilityService {
 var _ pbconnect.FacilityServiceHandler = (*FacilityService)(nil)
 
 func (s *FacilityService) ListFacilities(ctx context.Context, req *pb.ListFacilitiesRequest) (*pb.ListFacilitiesResponse, error) {
-	facilities, err := s.facility.ListFacilities(ctx, req.GetScopeUuid())
+	facilities, err := s.facility.ListFacilities(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
-	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScopeUuid())
+	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -40,11 +40,11 @@ func (s *FacilityService) ListFacilities(ctx context.Context, req *pb.ListFacili
 }
 
 func (s *FacilityService) GetFacility(ctx context.Context, req *pb.GetFacilityRequest) (*pb.Facility, error) {
-	facility, err := s.facility.GetFacility(ctx, req.GetScopeUuid(), req.GetName())
+	facility, err := s.facility.GetFacility(ctx, req.GetScope(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
-	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScopeUuid())
+	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -53,11 +53,11 @@ func (s *FacilityService) GetFacility(ctx context.Context, req *pb.GetFacilityRe
 }
 
 func (s *FacilityService) CreateFacility(ctx context.Context, req *pb.CreateFacilityRequest) (*pb.Facility, error) {
-	facility, err := s.facility.CreateFacility(ctx, req.GetScopeUuid(), req.GetName(), req.GetConfigYaml(), req.GetCharmName(), req.GetChannel(), int(req.GetRevision()), int(req.GetNumber()), toModelPlacements(req.GetPlacements()), toModelConstraint(req.GetConstraint()), req.GetTrust())
+	facility, err := s.facility.CreateFacility(ctx, req.GetScope(), req.GetName(), req.GetConfigYaml(), req.GetCharmName(), req.GetChannel(), int(req.GetRevision()), int(req.GetNumber()), toModelPlacements(req.GetPlacements()), toModelConstraint(req.GetConstraint()), req.GetTrust())
 	if err != nil {
 		return nil, err
 	}
-	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScopeUuid())
+	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -66,11 +66,11 @@ func (s *FacilityService) CreateFacility(ctx context.Context, req *pb.CreateFaci
 }
 
 func (s *FacilityService) UpdateFacility(ctx context.Context, req *pb.UpdateFacilityRequest) (*pb.Facility, error) {
-	facility, err := s.facility.UpdateFacility(ctx, req.GetScopeUuid(), req.GetName(), req.GetConfigYaml())
+	facility, err := s.facility.UpdateFacility(ctx, req.GetScope(), req.GetName(), req.GetConfigYaml())
 	if err != nil {
 		return nil, err
 	}
-	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScopeUuid())
+	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (s *FacilityService) UpdateFacility(ctx context.Context, req *pb.UpdateFaci
 }
 
 func (s *FacilityService) DeleteFacility(ctx context.Context, req *pb.DeleteFacilityRequest) (*emptypb.Empty, error) {
-	if err := s.facility.DeleteFacility(ctx, req.GetScopeUuid(), req.GetName(), req.GetDestroyStorage(), req.GetForce()); err != nil {
+	if err := s.facility.DeleteFacility(ctx, req.GetScope(), req.GetName(), req.GetDestroyStorage(), req.GetForce()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -87,7 +87,7 @@ func (s *FacilityService) DeleteFacility(ctx context.Context, req *pb.DeleteFaci
 }
 
 func (s *FacilityService) ExposeFacility(ctx context.Context, req *pb.ExposeFacilityRequest) (*emptypb.Empty, error) {
-	if err := s.facility.ExposeFacility(ctx, req.GetScopeUuid(), req.GetName()); err != nil {
+	if err := s.facility.ExposeFacility(ctx, req.GetScope(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -95,7 +95,7 @@ func (s *FacilityService) ExposeFacility(ctx context.Context, req *pb.ExposeFaci
 }
 
 func (s *FacilityService) AddFacilityUnits(ctx context.Context, req *pb.AddFacilityUnitsRequest) (*pb.AddFacilityUnitsResponse, error) {
-	unitNames, err := s.facility.AddFacilityUnits(ctx, req.GetScopeUuid(), req.GetName(), int(req.GetNumber()), toModelPlacements(req.GetPlacements()))
+	unitNames, err := s.facility.AddFacilityUnits(ctx, req.GetScope(), req.GetName(), int(req.GetNumber()), toModelPlacements(req.GetPlacements()))
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func (s *FacilityService) AddFacilityUnits(ctx context.Context, req *pb.AddFacil
 }
 
 func (s *FacilityService) ResolveFacilityUnitErrors(ctx context.Context, req *pb.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error) {
-	if err := s.facility.ResolveFacilityUnitErrors(ctx, req.GetScopeUuid(), req.GetUnitName()); err != nil {
+	if err := s.facility.ResolveFacilityUnitErrors(ctx, req.GetScope(), req.GetUnitName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -113,7 +113,7 @@ func (s *FacilityService) ResolveFacilityUnitErrors(ctx context.Context, req *pb
 }
 
 func (s *FacilityService) ListActions(ctx context.Context, req *pb.ListActionsRequest) (*pb.ListActionsResponse, error) {
-	actions, err := s.facility.ListActions(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	actions, err := s.facility.ListActions(ctx, req.GetScope(), req.GetFacility())
 	if err != nil {
 		return nil, err
 	}

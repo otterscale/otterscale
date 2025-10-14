@@ -156,7 +156,7 @@ func (s *ConfigurationService) DeleteTestResult(ctx context.Context, req *pb.Del
 }
 
 func (s *ConfigurationService) ListInternalObjectServices(ctx context.Context, req *pb.ListInternalObjectServicesRequest) (*pb.ListInternalObjectServicesResponse, error) {
-	services, err := s.bist.ListInternalObjectServices(ctx, req.GetScopeUuid(), req.GetKubernetesName(), req.GetCephName())
+	services, err := s.bist.ListInternalObjectServices(ctx, req.GetScope(), req.GetKubernetesName(), req.GetCephName())
 	if err != nil {
 		return nil, err
 	}
@@ -241,8 +241,8 @@ func toCoreFIOTarget(c *pb.CephBlockDevice, n *pb.NetworkFileSystem) core.FIOTar
 	ret := core.FIOTarget{}
 	if c != nil {
 		ret.Ceph = &core.FIOTargetCeph{
-			ScopeUUID:    c.GetScopeUuid(),
-			FacilityName: c.GetFacilityName(),
+			Scope:    c.GetScope(),
+			Facility: c.GetFacility(),
 		}
 	}
 	if n != nil {
@@ -258,11 +258,11 @@ func toCoreWarpTarget(i *pb.InternalObjectService, e *pb.ExternalObjectService) 
 	ret := core.WarpTarget{}
 	if i != nil {
 		ret.Internal = &core.WarpTargetInternal{
-			Type:         strings.ToLower(i.GetType().String()),
-			ScopeUUID:    i.GetScopeUuid(),
-			FacilityName: i.GetFacilityName(),
-			Name:         i.GetName(),
-			Endpoint:     i.GetEndpoint(),
+			Type:     strings.ToLower(i.GetType().String()),
+			Scope:    i.GetScope(),
+			Facility: i.GetFacility(),
+			Name:     i.GetName(),
+			Endpoint: i.GetEndpoint(),
 		}
 	}
 	if e != nil {
@@ -339,8 +339,8 @@ func toProtoFIO(f *core.FIO) *pb.FIO {
 
 func toProtoCephBlockDevice(f *core.FIOTargetCeph) *pb.CephBlockDevice {
 	ret := &pb.CephBlockDevice{}
-	ret.SetScopeUuid(f.ScopeUUID)
-	ret.SetFacilityName(f.FacilityName)
+	ret.SetScope(f.Scope)
+	ret.SetFacility(f.Facility)
 	return ret
 }
 
@@ -419,8 +419,8 @@ func toProtoInternalObjectServices(ss []core.WarpTargetInternal) []*pb.InternalO
 func toProtoInternalObjectService(s *core.WarpTargetInternal) *pb.InternalObjectService {
 	ret := &pb.InternalObjectService{}
 	ret.SetType(toProtoInternalObjectServiceType(s.Type))
-	ret.SetScopeUuid(s.ScopeUUID)
-	ret.SetFacilityName(s.FacilityName)
+	ret.SetScope(s.Scope)
+	ret.SetFacility(s.Facility)
 	ret.SetName(s.Name)
 	ret.SetEndpoint(s.Endpoint)
 	return ret

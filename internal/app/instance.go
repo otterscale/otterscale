@@ -31,11 +31,11 @@ func NewInstanceService(instance *core.InstanceUseCase) *InstanceService {
 var _ pbconnect.InstanceServiceHandler = (*InstanceService)(nil)
 
 func (s *InstanceService) ListVirtualMachines(ctx context.Context, req *pb.ListVirtualMachinesRequest) (*pb.ListVirtualMachinesResponse, error) {
-	vms, err := s.instance.ListVirtualMachines(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace())
+	vms, err := s.instance.ListVirtualMachines(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
-	its, err := s.instance.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), true)
+	its, err := s.instance.ListInstanceTypes(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), true)
 	if err != nil {
 		return nil, err
 	}
@@ -45,11 +45,11 @@ func (s *InstanceService) ListVirtualMachines(ctx context.Context, req *pb.ListV
 }
 
 func (s *InstanceService) GetVirtualMachine(ctx context.Context, req *pb.GetVirtualMachineRequest) (*pb.VirtualMachine, error) {
-	vm, err := s.instance.GetVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
+	vm, err := s.instance.GetVirtualMachine(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
-	its, err := s.instance.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), true)
+	its, err := s.instance.ListInstanceTypes(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), true)
 	if err != nil {
 		return nil, err
 	}
@@ -58,11 +58,11 @@ func (s *InstanceService) GetVirtualMachine(ctx context.Context, req *pb.GetVirt
 }
 
 func (s *InstanceService) CreateVirtualMachine(ctx context.Context, req *pb.CreateVirtualMachineRequest) (*pb.VirtualMachine, error) {
-	vm, err := s.instance.CreateVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetInstanceTypeName(), req.GetBootDataVolumeName(), req.GetStartupScript())
+	vm, err := s.instance.CreateVirtualMachine(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetInstanceTypeName(), req.GetBootDataVolumeName(), req.GetStartupScript())
 	if err != nil {
 		return nil, err
 	}
-	its, err := s.instance.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), true)
+	its, err := s.instance.ListInstanceTypes(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), true)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (s *InstanceService) CreateVirtualMachine(ctx context.Context, req *pb.Crea
 }
 
 func (s *InstanceService) DeleteVirtualMachine(ctx context.Context, req *pb.DeleteVirtualMachineRequest) (*emptypb.Empty, error) {
-	if err := s.instance.DeleteVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.DeleteVirtualMachine(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -79,7 +79,7 @@ func (s *InstanceService) DeleteVirtualMachine(ctx context.Context, req *pb.Dele
 }
 
 func (s *InstanceService) AttachVirtualMachineDisk(ctx context.Context, req *pb.AttachVirtualMachineDiskRequest) (*pb.VirtualMachine_Disk, error) {
-	disk, volume, err := s.instance.AttachVirtualMachineDisk(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDataVolumeName())
+	disk, volume, err := s.instance.AttachVirtualMachineDisk(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetDataVolumeName())
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func (s *InstanceService) AttachVirtualMachineDisk(ctx context.Context, req *pb.
 }
 
 func (s *InstanceService) DetachVirtualMachineDisk(ctx context.Context, req *pb.DetachVirtualMachineDiskRequest) (*emptypb.Empty, error) {
-	if err := s.instance.DetachVirtualMachineDisk(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetDataVolumeName()); err != nil {
+	if err := s.instance.DetachVirtualMachineDisk(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetDataVolumeName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -96,7 +96,7 @@ func (s *InstanceService) DetachVirtualMachineDisk(ctx context.Context, req *pb.
 }
 
 func (s *InstanceService) CreateVirtualMachineClone(ctx context.Context, req *pb.CreateVirtualMachineCloneRequest) (*pb.VirtualMachine_Clone, error) {
-	clone, err := s.instance.CreateVirtualMachineClone(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetSourceVirtualMachineName(), req.GetTargetVirtualMachineName())
+	clone, err := s.instance.CreateVirtualMachineClone(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetSourceVirtualMachineName(), req.GetTargetVirtualMachineName())
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func (s *InstanceService) CreateVirtualMachineClone(ctx context.Context, req *pb
 }
 
 func (s *InstanceService) DeleteVirtualMachineClone(ctx context.Context, req *pb.DeleteVirtualMachineCloneRequest) (*emptypb.Empty, error) {
-	if err := s.instance.DeleteVirtualMachineClone(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.DeleteVirtualMachineClone(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -113,7 +113,7 @@ func (s *InstanceService) DeleteVirtualMachineClone(ctx context.Context, req *pb
 }
 
 func (s *InstanceService) CreateVirtualMachineSnapshot(ctx context.Context, req *pb.CreateVirtualMachineSnapshotRequest) (*pb.VirtualMachine_Snapshot, error) {
-	snapshot, err := s.instance.CreateVirtualMachineSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetVirtualMachineName())
+	snapshot, err := s.instance.CreateVirtualMachineSnapshot(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetVirtualMachineName())
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ func (s *InstanceService) CreateVirtualMachineSnapshot(ctx context.Context, req 
 }
 
 func (s *InstanceService) DeleteVirtualMachineSnapshot(ctx context.Context, req *pb.DeleteVirtualMachineSnapshotRequest) (*emptypb.Empty, error) {
-	if err := s.instance.DeleteVirtualMachineSnapshot(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.DeleteVirtualMachineSnapshot(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -130,7 +130,7 @@ func (s *InstanceService) DeleteVirtualMachineSnapshot(ctx context.Context, req 
 }
 
 func (s *InstanceService) CreateVirtualMachineRestore(ctx context.Context, req *pb.CreateVirtualMachineRestoreRequest) (*pb.VirtualMachine_Restore, error) {
-	restore, err := s.instance.CreateVirtualMachineRestore(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetVirtualMachineName(), req.GetSnapshotName())
+	restore, err := s.instance.CreateVirtualMachineRestore(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetVirtualMachineName(), req.GetSnapshotName())
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +139,7 @@ func (s *InstanceService) CreateVirtualMachineRestore(ctx context.Context, req *
 }
 
 func (s *InstanceService) DeleteVirtualMachineRestore(ctx context.Context, req *pb.DeleteVirtualMachineRestoreRequest) (*emptypb.Empty, error) {
-	if err := s.instance.DeleteVirtualMachineRestore(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.DeleteVirtualMachineRestore(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -147,7 +147,7 @@ func (s *InstanceService) DeleteVirtualMachineRestore(ctx context.Context, req *
 }
 
 func (s *InstanceService) StartVirtualMachine(ctx context.Context, req *pb.StartVirtualMachineRequest) (*emptypb.Empty, error) {
-	if err := s.instance.StartVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.StartVirtualMachine(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -155,7 +155,7 @@ func (s *InstanceService) StartVirtualMachine(ctx context.Context, req *pb.Start
 }
 
 func (s *InstanceService) StopVirtualMachine(ctx context.Context, req *pb.StopVirtualMachineRequest) (*emptypb.Empty, error) {
-	if err := s.instance.StopVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.StopVirtualMachine(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -163,7 +163,7 @@ func (s *InstanceService) StopVirtualMachine(ctx context.Context, req *pb.StopVi
 }
 
 func (s *InstanceService) RestartVirtualMachine(ctx context.Context, req *pb.RestartVirtualMachineRequest) (*emptypb.Empty, error) {
-	if err := s.instance.RestartVirtualMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.RestartVirtualMachine(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -171,7 +171,7 @@ func (s *InstanceService) RestartVirtualMachine(ctx context.Context, req *pb.Res
 }
 
 func (s *InstanceService) PauseInstance(ctx context.Context, req *pb.PauseInstanceRequest) (*emptypb.Empty, error) {
-	if err := s.instance.PauseInstance(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.PauseInstance(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -179,7 +179,7 @@ func (s *InstanceService) PauseInstance(ctx context.Context, req *pb.PauseInstan
 }
 
 func (s *InstanceService) ResumeInstance(ctx context.Context, req *pb.ResumeInstanceRequest) (*emptypb.Empty, error) {
-	if err := s.instance.ResumeInstance(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.ResumeInstance(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -187,7 +187,7 @@ func (s *InstanceService) ResumeInstance(ctx context.Context, req *pb.ResumeInst
 }
 
 func (s *InstanceService) MigrateInstance(ctx context.Context, req *pb.MigrateInstanceRequest) (*emptypb.Empty, error) {
-	if err := s.instance.MigrateInstance(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetHostname()); err != nil {
+	if err := s.instance.MigrateInstance(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetHostname()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -195,7 +195,7 @@ func (s *InstanceService) MigrateInstance(ctx context.Context, req *pb.MigrateIn
 }
 
 func (s *InstanceService) VNCInstance(ctx context.Context, req *pb.VNCInstanceRequest) (*pb.VNCInstanceResponse, error) {
-	sessionID, err := s.instance.CreateVNCSession(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
+	sessionID, err := s.instance.CreateVNCSession(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -206,7 +206,7 @@ func (s *InstanceService) VNCInstance(ctx context.Context, req *pb.VNCInstanceRe
 }
 
 func (s *InstanceService) ListDataVolumes(ctx context.Context, req *pb.ListDataVolumesRequest) (*pb.ListDataVolumesResponse, error) {
-	its, err := s.instance.ListDataVolumes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetBootImage())
+	its, err := s.instance.ListDataVolumes(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetBootImage())
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +216,7 @@ func (s *InstanceService) ListDataVolumes(ctx context.Context, req *pb.ListDataV
 }
 
 func (s *InstanceService) GetDataVolume(ctx context.Context, req *pb.GetDataVolumeRequest) (*pb.DataVolume, error) {
-	it, err := s.instance.GetDataVolume(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
+	it, err := s.instance.GetDataVolume(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -226,7 +226,7 @@ func (s *InstanceService) GetDataVolume(ctx context.Context, req *pb.GetDataVolu
 
 func (s *InstanceService) CreateDataVolume(ctx context.Context, req *pb.CreateDataVolumeRequest) (*pb.DataVolume, error) {
 	src := req.GetSource()
-	it, err := s.instance.CreateDataVolume(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), core.DataVolumeSourceType(src.GetType()), src.GetData(), req.GetSizeBytes(), req.GetBootImage())
+	it, err := s.instance.CreateDataVolume(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), core.DataVolumeSourceType(src.GetType()), src.GetData(), req.GetSizeBytes(), req.GetBootImage())
 	if err != nil {
 		return nil, err
 	}
@@ -235,7 +235,7 @@ func (s *InstanceService) CreateDataVolume(ctx context.Context, req *pb.CreateDa
 }
 
 func (s *InstanceService) DeleteDataVolume(ctx context.Context, req *pb.DeleteDataVolumeRequest) (*emptypb.Empty, error) {
-	if err := s.instance.DeleteDataVolume(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.DeleteDataVolume(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -243,7 +243,7 @@ func (s *InstanceService) DeleteDataVolume(ctx context.Context, req *pb.DeleteDa
 }
 
 func (s *InstanceService) ExtendDataVolume(ctx context.Context, req *pb.ExtendDataVolumeRequest) (*emptypb.Empty, error) {
-	if err := s.instance.ExtendDataVolume(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetSizeBytes()); err != nil {
+	if err := s.instance.ExtendDataVolume(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetSizeBytes()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -251,7 +251,7 @@ func (s *InstanceService) ExtendDataVolume(ctx context.Context, req *pb.ExtendDa
 }
 
 func (s *InstanceService) ListInstanceTypes(ctx context.Context, req *pb.ListInstanceTypesRequest) (*pb.ListInstanceTypesResponse, error) {
-	its, err := s.instance.ListInstanceTypes(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetIncludeClusterWide())
+	its, err := s.instance.ListInstanceTypes(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetIncludeClusterWide())
 	if err != nil {
 		return nil, err
 	}
@@ -261,7 +261,7 @@ func (s *InstanceService) ListInstanceTypes(ctx context.Context, req *pb.ListIns
 }
 
 func (s *InstanceService) GetInstanceType(ctx context.Context, req *pb.GetInstanceTypeRequest) (*pb.InstanceType, error) {
-	it, err := s.instance.GetInstanceType(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName())
+	it, err := s.instance.GetInstanceType(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -270,7 +270,7 @@ func (s *InstanceService) GetInstanceType(ctx context.Context, req *pb.GetInstan
 }
 
 func (s *InstanceService) CreateInstanceType(ctx context.Context, req *pb.CreateInstanceTypeRequest) (*pb.InstanceType, error) {
-	it, err := s.instance.CreateInstanceType(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetCpuCores(), req.GetMemoryBytes())
+	it, err := s.instance.CreateInstanceType(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetCpuCores(), req.GetMemoryBytes())
 	if err != nil {
 		return nil, err
 	}
@@ -279,7 +279,7 @@ func (s *InstanceService) CreateInstanceType(ctx context.Context, req *pb.Create
 }
 
 func (s *InstanceService) DeleteInstanceType(ctx context.Context, req *pb.DeleteInstanceTypeRequest) (*emptypb.Empty, error) {
-	if err := s.instance.DeleteInstanceType(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.DeleteInstanceType(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -287,7 +287,7 @@ func (s *InstanceService) DeleteInstanceType(ctx context.Context, req *pb.Delete
 }
 
 func (s *InstanceService) CreateVirtualMachineService(ctx context.Context, req *pb.CreateVirtualMachineServiceRequest) (*apppb.Application_Service, error) {
-	svc, err := s.instance.CreateVirtualMachineService(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), req.GetVirtualMachineName(), toPorts(req.GetPorts()))
+	svc, err := s.instance.CreateVirtualMachineService(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetVirtualMachineName(), toPorts(req.GetPorts()))
 	if err != nil {
 		return nil, err
 	}
@@ -296,7 +296,7 @@ func (s *InstanceService) CreateVirtualMachineService(ctx context.Context, req *
 }
 
 func (s *InstanceService) UpdateVirtualMachineService(ctx context.Context, req *pb.UpdateVirtualMachineServiceRequest) (*apppb.Application_Service, error) {
-	svc, err := s.instance.UpdateVirtualMachineService(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), toPorts(req.GetPorts()))
+	svc, err := s.instance.UpdateVirtualMachineService(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), toPorts(req.GetPorts()))
 	if err != nil {
 		return nil, err
 	}
@@ -305,7 +305,7 @@ func (s *InstanceService) UpdateVirtualMachineService(ctx context.Context, req *
 }
 
 func (s *InstanceService) DeleteVirtualMachineService(ctx context.Context, req *pb.DeleteVirtualMachineServiceRequest) (*emptypb.Empty, error) {
-	if err := s.instance.DeleteVirtualMachineService(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.instance.DeleteVirtualMachineService(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
