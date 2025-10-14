@@ -355,12 +355,12 @@ send_request() {
             return 0
         fi
 
-        log "WARN" "HTTP request failed (attempt $retry_count/$max_retries)" "COMMUNICATION"
+        echo "HTTP request failed (attempt $retry_count/$max_retries)"
         retry_count=$((retry_count+1))
     done
 
-    log "ERROR" "Failed to send HTTP request after $max_retries attempts" "COMMUNICATION"
-    return 1
+    echo "Failed to send HTTP request after $max_retries attempts"
+    exit 1
 }
 
 # Send status update to OtterScale
