@@ -1533,7 +1533,9 @@ otterscale_helm_deploy() {
 
     if [[ -n "${OTTERSCALE_INTERFACE_IP:-}" ]]; then
         log "INFO" "Patching istio-ingressgateway externalIPs to ${OTTERSCALE_INTERFACE_IP}" "ISTIO_INGRESSGATEWAY"
-        microk8s kubectl patch service istio-ingressgateway -n $istio_namespace -p "{\"spec\": {\"externalIPs\": [\"$OTTERSCALE_INTERFACE_IP\"]}}" >>"$TEMP_LOG" 2>&1
+        microk8s kubectl patch service istio-ingressgateway -n $istio_namespace \
+        --type=merge \
+        -p "$(printf 'spec:\n  externalIPs:\n  - %s\n' "$OTTERSCALE_INTERFACE_IP")"
     fi
 
     ## Helm
