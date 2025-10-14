@@ -26,7 +26,7 @@ func NewModel(juju *Juju) core.ScopeRepo {
 var _ core.ScopeRepo = (*model)(nil)
 
 func (r *model) List(_ context.Context) ([]core.Scope, error) {
-	conn, err := r.juju.connection("")
+	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (r *model) List(_ context.Context) ([]core.Scope, error) {
 }
 
 func (r *model) Get(_ context.Context, name string) (*core.Scope, error) {
-	conn, err := r.juju.connection("")
+	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (r *model) Get(_ context.Context, name string) (*core.Scope, error) {
 }
 
 func (r *model) Create(_ context.Context, name string) (*core.Scope, error) {
-	conn, err := r.juju.connection("")
+	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return nil, err
 	}
