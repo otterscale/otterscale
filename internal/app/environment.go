@@ -45,7 +45,8 @@ func (s *EnvironmentService) UpdateConfig(ctx context.Context, req *pb.UpdateCon
 }
 
 func (s *EnvironmentService) GetPrometheus(ctx context.Context, _ *pb.GetPrometheusRequest) (*pb.Prometheus, error) {
-	if err := s.environment.FetchPrometheusInfo(ctx); err != nil {
+	_, err := s.environment.DiscoverPrometheusURL(ctx)
+	if err != nil {
 		return nil, err
 	}
 	resp := toProtoPrometheus()

@@ -65,39 +65,50 @@ func (uc *EnvironmentUseCase) GetPrometheusURL() *url.URL {
 	return uc.prometheusURL
 }
 
-func (uc *EnvironmentUseCase) FetchPrometheusInfo(ctx context.Context) error {
+func (uc *EnvironmentUseCase) DiscoverPrometheusURL(ctx context.Context) (*url.URL, error) {
 	if uc.prometheusURL.Scheme != "" {
-		return nil
+		return uc.prometheusURL, nil
 	}
 
 	scopes, err := uc.scope.List(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	cosScopes := []string{"cos", "cos-lite", "cos-dev"}
-	scopes = slices.DeleteFunc(scopes, func(s Scope) bool {
-		return !slices.Contains(cosScopes, s.Name)
+	cosNames := []string{"cos", "cos-lite", "cos-dev"}
+	cosScopes := slices.DeleteFunc(scopes, func(s Scope) bool {
+		return !slices.Contains(cosNames, s.Name)
 	})
 
-	for i := range scopes {
-		leader, err := uc.facility.GetLeader(ctx, scopes[i].UUID, "traefik")
+	for i := range cosScopes {
+		leader, err := uc.facility.GetLeader(ctx, cosScopes[i].UUID, "traefik")
 		if err != nil {
 			continue
 		}
-		result, err := runAction(ctx, uc.action, scopes[i].UUID, leader, "show-proxied-endpoints", nil)
+
+		result, err := runAction(ctx, uc.action, cosScopes[i].UUID, leader, "show-proxied-endpoints", nil)
 		if err != nil {
 			continue
 		}
+
 		var endpoints traefikProxiedEndpoints
-		if err := json.Unmarshal([]byte(result.Output["proxied-endpoints"].(string)), &endpoints); err != nil {
+		proxiedEndpointsStr, ok := result.Output["proxied-endpoints"].(string)
+		if !ok {
 			continue
 		}
-		url, err := url.Parse(endpoints.Prometheus.URL)
+
+		if err := json.Unmarshal([]byte(proxiedEndpointsStr), &endpoints); err != nil {
+			continue
+		}
+
+		prometheusURL, err := url.Parse(endpoints.Prometheus.URL)
 		if err != nil {
 			continue
 		}
-		*uc.prometheusURL = *url
+
+		*uc.prometheusURL = *prometheusURL
+		return uc.prometheusURL, nil
 	}
-	return connect.NewError(connect.CodeNotFound, errors.New("prometheus info not found"))
+
+	return nil, connect.NewError(connect.CodeNotFound, errors.New("prometheus URL not found in any COS scope"))
 }
