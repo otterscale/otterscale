@@ -71,7 +71,6 @@ type Essential struct {
 	xxx_hidden_Type        Essential_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.orchestrator.v1.Essential_Type"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,11,opt,name=scope"`
-	xxx_hidden_ScopeName   *string                `protobuf:"bytes,12,opt,name=scope_name,json=scopeName"`
 	xxx_hidden_Units       *[]*Essential_Unit     `protobuf:"bytes,21,rep,name=units"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -133,16 +132,6 @@ func (x *Essential) GetScope() string {
 	return ""
 }
 
-func (x *Essential) GetScopeName() string {
-	if x != nil {
-		if x.xxx_hidden_ScopeName != nil {
-			return *x.xxx_hidden_ScopeName
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *Essential) GetUnits() []*Essential_Unit {
 	if x != nil {
 		if x.xxx_hidden_Units != nil {
@@ -154,22 +143,17 @@ func (x *Essential) GetUnits() []*Essential_Unit {
 
 func (x *Essential) SetType(v Essential_Type) {
 	x.xxx_hidden_Type = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *Essential) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *Essential) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
-}
-
-func (x *Essential) SetScopeName(v string) {
-	x.xxx_hidden_ScopeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *Essential) SetUnits(v []*Essential_Unit) {
@@ -197,13 +181,6 @@ func (x *Essential) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *Essential) HasScopeName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *Essential) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Type = Essential_UNKNOWN
@@ -219,19 +196,13 @@ func (x *Essential) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *Essential) ClearScopeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_ScopeName = nil
-}
-
 type Essential_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Type      *Essential_Type
-	Name      *string
-	Scope     *string
-	ScopeName *string
-	Units     []*Essential_Unit
+	Type  *Essential_Type
+	Name  *string
+	Scope *string
+	Units []*Essential_Unit
 }
 
 func (b0 Essential_builder) Build() *Essential {
@@ -239,20 +210,16 @@ func (b0 Essential_builder) Build() *Essential {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Type = *b.Type
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.ScopeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
-		x.xxx_hidden_ScopeName = b.ScopeName
 	}
 	x.xxx_hidden_Units = &b.Units
 	return m0
@@ -3687,13 +3654,11 @@ var File_api_orchestrator_v1_orchestrator_proto protoreflect.FileDescriptor
 
 const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\n" +
-	"&api/orchestrator/v1/orchestrator.proto\x12\x1aotterscale.orchestrator.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xbf\x02\n" +
+	"&api/orchestrator/v1/orchestrator.proto\x12\x1aotterscale.orchestrator.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa0\x02\n" +
 	"\tEssential\x12>\n" +
 	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Essential.TypeR\x04type\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
-	"\x05scope\x18\v \x01(\tR\x05scope\x12\x1d\n" +
-	"\n" +
-	"scope_name\x18\f \x01(\tR\tscopeName\x12@\n" +
+	"\x05scope\x18\v \x01(\tR\x05scope\x12@\n" +
 	"\x05units\x18\x15 \x03(\v2*.otterscale.orchestrator.v1.Essential.UnitR\x05units\x1a8\n" +
 	"\x04Unit\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +

@@ -36,7 +36,6 @@ message Essential {
   Type type = 1;
   string name = 2;
   string scope = 11;
-  string scope_name = 12;
   repeated Unit units = 21;
 }
 
