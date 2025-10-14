@@ -342,9 +342,9 @@ send_request() {
     local url_path="$1"
     local data="$2"
     local max_retries="${3:-3}"
-    local retry_count=0
+    local retry_count=1
 
-    while ((retry_count < max_retries)); do
+    while ((retry_count <= max_retries)); do
         if curl -s --max-time 30 \
                 --header "Content-Type: application/json" \
                 --data "$data" \
