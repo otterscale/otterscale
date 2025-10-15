@@ -1473,15 +1473,13 @@ otterscale_helm_deploy() {
     if [[ $(microk8s kubectl get deploy -n istio-system -l app=istiod -o name | wc -l) -eq 0 ]]; then
         log "INFO" "Install istio into kubernetes environment" "ISTIO_SERVICE"
         su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation >/dev/null"
-    else
-        log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
-    fi
 
-    if [[ -n "${OTTERSCALE_INTERFACE_IP:-}" ]]; then
         log "INFO" "Patching istio-ingressgateway externalIPs to ${OTTERSCALE_INTERFACE_IP}" "ISTIO_INGRESSGATEWAY"
         microk8s kubectl patch service istio-ingressgateway -n $istio_namespace \
         --type=merge \
         -p "$(printf 'spec:\n  externalIPs:\n  - %s\n' "$OTTERSCALE_INTERFACE_IP")" >>"$TEMP_LOG" 2>&1
+    else
+        log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
     fi
 
     ## Helm
@@ -1497,54 +1495,67 @@ otterscale_helm_deploy() {
 
     if ! microk8s helm3 list -n "$namespace" | grep -qw "$deploy_name"; then
         log "INFO" "Collecting configuration data for helm deployment" "HELM_CONFIG"
-        
+
         # Collect MAAS configuration
         local maas_endpoint="http://$OTTERSCALE_INTERFACE_IP:5240/MAAS"
         local kube_folder="/home/$NON_ROOT_USER/.kube"
         local maas_key
         maas_key=$(su "$NON_ROOT_USER" -c "juju show-credentials maas-cloud maas-cloud-credential --show-secrets --client | grep maas-oauth | awk '{print \$2}'")
-        
+
         # Get Juju controller information
         local controller_name controller_details
         controller_name=$(su "$NON_ROOT_USER" -c "juju controllers --format json | jq -r '.\"current-controller\"'")
         controller_details=$(su "$NON_ROOT_USER" -c "juju show-controller '$controller_name' --show-password --format=json")
-        
+
         # Extract controller details
         local juju_endpoints juju_username juju_password juju_cacert
         juju_endpoints=$(echo "$controller_details" | jq -r ".\"$controller_name\".details.\"api-endpoints\"[0]")
         juju_username=$(echo "$controller_details" | jq -r ".\"$controller_name\".account.user")
         juju_password=$(echo "$controller_details" | jq -r ".\"$controller_name\".account.password")
         juju_cacert=$(echo "$controller_details" | jq -r ".\"$controller_name\".details.\"ca-cert\"")
-                
+
         log "INFO" "Deploy OtterScale helm chart with configuration" "HELM_DEPLOY"
-        
+
         # Create temporary file for CA certificate to handle multiline content properly
         local ca_cert_file="/tmp/juju-ca-cert.pem"
         echo "$juju_cacert" > "$ca_cert_file"
-        
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace \
-            --set configContent.maas.url=\"$maas_endpoint\" \
-            --set configContent.maas.key=\"$maas_key\" \
-            --set configContent.maas.version=\"$OTTERSCALE_MAAS_VERSION\" \
-            --set configContent.juju.controller=\"$controller_name\" \
-            --set configContent.juju.controller_addresses[0]=\"$juju_endpoints\" \
-            --set configContent.juju.username=\"$juju_username\" \
-            --set configContent.juju.password=\"$juju_password\" \
-            --set-file configContent.juju.ca_cert=\"$ca_cert_file\" \
-            --set configContent.juju.cloud_name=\"maas-cloud\" \
-            --set configContent.juju.cloud_region=\"default\" \
-            --set configContent.juju.charmhub_api_url=\"$OTTERSCALE_CHARMHUB_URL\" \
-            --set configContent.kube.helm_repository_urls[0]=\"https://charts.bitnami.com/bitnami\" \
-            --set configContent.ceph.rados_timeout=\"0s\"" "Deploy OtterScale helm chart"
-        
+
+        # Create temporary values file
+        values_file="/tmp/otterscale-values.yaml"
+        cat > "$values_file" << EOF
+configContent: |
+  maas:
+    url: $maas_endpoint
+    key: $maas_key
+    version: "$OTTERSCALE_MAAS_VERSION"
+  juju:
+    controller: $controller_name
+    controller_addresses:
+    - $juju_endpoints
+    username: $juju_username
+    password: $juju_password
+    ca_cert: |
+$(echo "$juju_cacert" | sed 's/^/      /')
+    cloud_name: maas-cloud
+    cloud_region: default
+    charmhub_api_url: $OTTERSCALE_CHARMHUB_URL
+  kube:
+    helm_repository_urls:
+    - https://charts.bitnami.com/bitnami
+  ceph:
+    rados_timeout: 0s
+EOF
+
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace -f $values_file" "Deply OtterScale chart"
+
         # Clean up temporary file
         rm -f "$ca_cert_file"
 
         # Get Kubernetes configuration
-        local k8s_endpoints 
+        local k8s_endpoints
         k8s_endpoints=$(microk8s kubectl get EndpointSlice kubernetes -o json | jq -r '.endpoints[0].addresses[0] + ":" + (.ports[0].port | tostring)')
-        send_status_data "$phase" "$message" "https://$k8s_endpoints"
-
+        log "INFO" "OtterScale endpoint is $k8s_endpoints" "FINISHED"
+        send_status_data "$phase" "$message" "https:\/\/$k8s_endpoints"
     else
         log "INFO" "Helm releases already has otterscale" "HELM_CHECK"
     fi
