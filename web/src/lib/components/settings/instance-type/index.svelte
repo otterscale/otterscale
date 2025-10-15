@@ -7,7 +7,7 @@
 	import Actions from './cell-actions.svelte';
 	import Create from './create.svelte';
 
-	import { VirtualMachineService, type InstanceType } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import { InstanceService, type InstanceType } from '$lib/api/instance/v1/instance_pb';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
@@ -18,11 +18,10 @@
 </script>
 
 <script lang="ts">
-	let { scopeUuid, facilityName, namespace }: { scopeUuid: string; facilityName: string; namespace: string } =
-		$props();
+	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } = $props();
 
 	const transport: Transport = getContext('transport');
-	const virtualMachineClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 
 	const instanceTypes = writable<InstanceType[]>();
 	let isInstanceTypesLoading = $state(true);
@@ -30,8 +29,8 @@
 	const reloadManager = new ReloadManager(() => {
 		virtualMachineClient
 			.listInstanceTypes({
-				scopeUuid: scopeUuid,
-				facilityName: facilityName,
+				scope: scope,
+				facility: facility,
 				namespace: namespace,
 				includeClusterWide: false,
 			})
@@ -44,8 +43,8 @@
 	onMount(async () => {
 		try {
 			const response = await virtualMachineClient.listInstanceTypes({
-				scopeUuid: scopeUuid,
-				facilityName: facilityName,
+				scope: scope,
+				facility: facility,
 				namespace: namespace,
 				includeClusterWide: false,
 			});

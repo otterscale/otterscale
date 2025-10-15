@@ -2,18 +2,18 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
 	"github.com/spf13/cobra"
 
 	oscmd "github.com/otterscale/otterscale/internal/cmd"
 	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/mux"
 )
 
 var version = "devel"
 
-func newCmd(conf *config.Config, mux *http.ServeMux) *cobra.Command {
+func newCmd(bootstrap *mux.Bootstrap, conf *config.Config, serve *mux.Serve) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:           "otterscale",
 		Short:         "Open-source platform for managing server infrastructure and GPU farms",
@@ -23,8 +23,9 @@ func newCmd(conf *config.Config, mux *http.ServeMux) *cobra.Command {
 		SilenceErrors: true,
 	}
 	cmd.AddCommand(
+		oscmd.NewBootstrap(bootstrap),
 		oscmd.NewInit(),
-		oscmd.NewServe(conf, mux),
+		oscmd.NewServe(conf, serve),
 	)
 	return cmd
 }

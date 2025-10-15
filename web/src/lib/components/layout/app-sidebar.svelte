@@ -14,8 +14,8 @@
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
-	import { PremiumService, PremiumTier } from '$lib/api/premium/v1/premium_pb';
+	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
+	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { Skeleton } from '$lib/components/ui/skeleton';
@@ -30,15 +30,15 @@
 
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
-	const premiumClient = createClient(PremiumService, transport);
-	const essentialClient = createClient(EssentialService, transport);
+	const envClient = createClient(EnvironmentService, transport);
+	const orchClient = createClient(OrchestratorService, transport);
 	const scopes = writable<Scope[]>([]);
 	const trigger = writable<boolean>(false);
 
 	const tierMap = {
-		[PremiumTier.BASIC]: m.basic_tier(),
-		[PremiumTier.ADVANCED]: m.advanced_tier(),
-		[PremiumTier.ENTERPRISE]: m.enterprise_tier(),
+		[PremiumTier_Level.BASIC]: m.basic_tier(),
+		[PremiumTier_Level.ADVANCED]: m.advanced_tier(),
+		[PremiumTier_Level.ENTERPRISE]: m.enterprise_tier(),
 	};
 
 	const skeletonClasses = {
@@ -58,8 +58,8 @@
 
 	async function fetchEdition() {
 		try {
-			const response = await premiumClient.getTier({});
-			premiumTier.set(response.tier);
+			const response = await envClient.getPremiumTier({});
+			premiumTier.set(response);
 		} catch (error) {
 			const connectError = error as ConnectError;
 			if (connectError.code !== Code.Unimplemented) {
@@ -68,9 +68,9 @@
 		}
 	}
 
-	async function fetchEssentials(uuid: string) {
+	async function fetchEssentials(scope: string) {
 		try {
-			const response = await essentialClient.listEssentials({ scopeUuid: uuid });
+			const response = await orchClient.listEssentials({ scope: scope });
 			const { essentials } = response;
 
 			currentCeph.set(essentials.find((e) => e.type === Essential_Type.CEPH));
@@ -86,7 +86,7 @@
 
 		// Set store and fetch essentials
 		activeScope.set(scope);
-		await fetchEssentials(scope.uuid);
+		await fetchEssentials(scope.name);
 
 		// Show success feedback
 		toast.success(m.switch_scope({ name: scope.name }));
@@ -135,7 +135,7 @@
 			<ScopeSwitcher
 				active={$activeScope}
 				scopes={$scopes}
-				tier={tierMap[$premiumTier]}
+				tier={tierMap[$premiumTier.level]}
 				onSelect={handleScopeOnSelect}
 				{trigger}
 			/>

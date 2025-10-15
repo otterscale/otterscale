@@ -794,29 +794,30 @@ func (b0 Machine_builder) Build() *Machine {
 	return m0
 }
 
-type ListMachinesRequest struct {
+type Tag struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Comment     *string                `protobuf:"bytes,2,opt,name=comment"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *ListMachinesRequest) Reset() {
-	*x = ListMachinesRequest{}
+func (x *Tag) Reset() {
+	*x = Tag{}
 	mi := &file_api_machine_v1_machine_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListMachinesRequest) String() string {
+func (x *Tag) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListMachinesRequest) ProtoMessage() {}
+func (*Tag) ProtoMessage() {}
 
-func (x *ListMachinesRequest) ProtoReflect() protoreflect.Message {
+func (x *Tag) ProtoReflect() protoreflect.Message {
 	mi := &file_api_machine_v1_machine_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -828,46 +829,156 @@ func (x *ListMachinesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListMachinesRequest) GetScopeUuid() string {
+func (x *Tag) GetName() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *ListMachinesRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+func (x *Tag) GetComment() string {
+	if x != nil {
+		if x.xxx_hidden_Comment != nil {
+			return *x.xxx_hidden_Comment
+		}
+		return ""
+	}
+	return ""
 }
 
-func (x *ListMachinesRequest) HasScopeUuid() bool {
+func (x *Tag) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *Tag) SetComment(v string) {
+	x.xxx_hidden_Comment = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *Tag) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListMachinesRequest) ClearScopeUuid() {
+func (x *Tag) HasComment() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Tag) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Name = nil
+}
+
+func (x *Tag) ClearComment() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Comment = nil
+}
+
+type Tag_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Name    *string
+	Comment *string
+}
+
+func (b0 Tag_builder) Build() *Tag {
+	m0 := &Tag{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.Comment != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Comment = b.Comment
+	}
+	return m0
+}
+
+type ListMachinesRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ListMachinesRequest) Reset() {
+	*x = ListMachinesRequest{}
+	mi := &file_api_machine_v1_machine_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMachinesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMachinesRequest) ProtoMessage() {}
+
+func (x *ListMachinesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_machine_v1_machine_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListMachinesRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListMachinesRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *ListMachinesRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ListMachinesRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
 }
 
 type ListMachinesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid *string
+	Scope *string
 }
 
 func (b0 ListMachinesRequest_builder) Build() *ListMachinesRequest {
 	m0 := &ListMachinesRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
 	return m0
 }
@@ -881,7 +992,7 @@ type ListMachinesResponse struct {
 
 func (x *ListMachinesResponse) Reset() {
 	*x = ListMachinesResponse{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[2]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -893,7 +1004,7 @@ func (x *ListMachinesResponse) String() string {
 func (*ListMachinesResponse) ProtoMessage() {}
 
 func (x *ListMachinesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[2]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -942,7 +1053,7 @@ type GetMachineRequest struct {
 
 func (x *GetMachineRequest) Reset() {
 	*x = GetMachineRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[3]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -954,7 +1065,7 @@ func (x *GetMachineRequest) String() string {
 func (*GetMachineRequest) ProtoMessage() {}
 
 func (x *GetMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[3]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1016,7 +1127,7 @@ type CreateMachineRequest struct {
 	xxx_hidden_SkipBmcConfig  bool                   `protobuf:"varint,3,opt,name=skip_bmc_config,json=skipBmcConfig"`
 	xxx_hidden_SkipNetworking bool                   `protobuf:"varint,4,opt,name=skip_networking,json=skipNetworking"`
 	xxx_hidden_SkipStorage    bool                   `protobuf:"varint,5,opt,name=skip_storage,json=skipStorage"`
-	xxx_hidden_ScopeUuid      *string                `protobuf:"bytes,11,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_Scope          *string                `protobuf:"bytes,11,opt,name=scope"`
 	xxx_hidden_Tags           []string               `protobuf:"bytes,21,rep,name=tags"`
 	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
 	XXX_presence              [1]uint32
@@ -1026,7 +1137,7 @@ type CreateMachineRequest struct {
 
 func (x *CreateMachineRequest) Reset() {
 	*x = CreateMachineRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[4]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1038,7 +1149,7 @@ func (x *CreateMachineRequest) String() string {
 func (*CreateMachineRequest) ProtoMessage() {}
 
 func (x *CreateMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[4]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1087,10 +1198,10 @@ func (x *CreateMachineRequest) GetSkipStorage() bool {
 	return false
 }
 
-func (x *CreateMachineRequest) GetScopeUuid() string {
+func (x *CreateMachineRequest) GetScope() string {
 	if x != nil {
-		if x.xxx_hidden_ScopeUuid != nil {
-			return *x.xxx_hidden_ScopeUuid
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
 		}
 		return ""
 	}
@@ -1129,8 +1240,8 @@ func (x *CreateMachineRequest) SetSkipStorage(v bool) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
 }
 
-func (x *CreateMachineRequest) SetScopeUuid(v string) {
-	x.xxx_hidden_ScopeUuid = &v
+func (x *CreateMachineRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 7)
 }
 
@@ -1173,7 +1284,7 @@ func (x *CreateMachineRequest) HasSkipStorage() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *CreateMachineRequest) HasScopeUuid() bool {
+func (x *CreateMachineRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
@@ -1205,9 +1316,9 @@ func (x *CreateMachineRequest) ClearSkipStorage() {
 	x.xxx_hidden_SkipStorage = false
 }
 
-func (x *CreateMachineRequest) ClearScopeUuid() {
+func (x *CreateMachineRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
-	x.xxx_hidden_ScopeUuid = nil
+	x.xxx_hidden_Scope = nil
 }
 
 type CreateMachineRequest_builder struct {
@@ -1218,7 +1329,7 @@ type CreateMachineRequest_builder struct {
 	SkipBmcConfig  *bool
 	SkipNetworking *bool
 	SkipStorage    *bool
-	ScopeUuid      *string
+	Scope          *string
 	Tags           []string
 }
 
@@ -1246,9 +1357,9 @@ func (b0 CreateMachineRequest_builder) Build() *CreateMachineRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
 		x.xxx_hidden_SkipStorage = *b.SkipStorage
 	}
-	if b.ScopeUuid != nil {
+	if b.Scope != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 7)
-		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+		x.xxx_hidden_Scope = b.Scope
 	}
 	x.xxx_hidden_Tags = b.Tags
 	return m0
@@ -1267,7 +1378,7 @@ type DeleteMachineRequest struct {
 
 func (x *DeleteMachineRequest) Reset() {
 	*x = DeleteMachineRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[5]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1279,7 +1390,7 @@ func (x *DeleteMachineRequest) String() string {
 func (*DeleteMachineRequest) ProtoMessage() {}
 
 func (x *DeleteMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[5]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1404,7 +1515,7 @@ type PowerOffMachineRequest struct {
 
 func (x *PowerOffMachineRequest) Reset() {
 	*x = PowerOffMachineRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[6]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1416,7 +1527,7 @@ func (x *PowerOffMachineRequest) String() string {
 func (*PowerOffMachineRequest) ProtoMessage() {}
 
 func (x *PowerOffMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[6]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1515,7 +1626,7 @@ type AddMachineTagsRequest struct {
 
 func (x *AddMachineTagsRequest) Reset() {
 	*x = AddMachineTagsRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[7]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1527,7 +1638,7 @@ func (x *AddMachineTagsRequest) String() string {
 func (*AddMachineTagsRequest) ProtoMessage() {}
 
 func (x *AddMachineTagsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[7]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1607,7 +1718,7 @@ type RemoveMachineTagsRequest struct {
 
 func (x *RemoveMachineTagsRequest) Reset() {
 	*x = RemoveMachineTagsRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[8]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1619,7 +1730,7 @@ func (x *RemoveMachineTagsRequest) String() string {
 func (*RemoveMachineTagsRequest) ProtoMessage() {}
 
 func (x *RemoveMachineTagsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[8]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1687,6 +1798,375 @@ func (b0 RemoveMachineTagsRequest_builder) Build() *RemoveMachineTagsRequest {
 	return m0
 }
 
+type ListTagsRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTagsRequest) Reset() {
+	*x = ListTagsRequest{}
+	mi := &file_api_machine_v1_machine_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTagsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTagsRequest) ProtoMessage() {}
+
+func (x *ListTagsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_machine_v1_machine_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type ListTagsRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 ListTagsRequest_builder) Build() *ListTagsRequest {
+	m0 := &ListTagsRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type ListTagsResponse struct {
+	state           protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Tags *[]*Tag                `protobuf:"bytes,1,rep,name=tags"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *ListTagsResponse) Reset() {
+	*x = ListTagsResponse{}
+	mi := &file_api_machine_v1_machine_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTagsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTagsResponse) ProtoMessage() {}
+
+func (x *ListTagsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_machine_v1_machine_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListTagsResponse) GetTags() []*Tag {
+	if x != nil {
+		if x.xxx_hidden_Tags != nil {
+			return *x.xxx_hidden_Tags
+		}
+	}
+	return nil
+}
+
+func (x *ListTagsResponse) SetTags(v []*Tag) {
+	x.xxx_hidden_Tags = &v
+}
+
+type ListTagsResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Tags []*Tag
+}
+
+func (b0 ListTagsResponse_builder) Build() *ListTagsResponse {
+	m0 := &ListTagsResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Tags = &b.Tags
+	return m0
+}
+
+type GetTagRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *GetTagRequest) Reset() {
+	*x = GetTagRequest{}
+	mi := &file_api_machine_v1_machine_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTagRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTagRequest) ProtoMessage() {}
+
+func (x *GetTagRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_machine_v1_machine_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *GetTagRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *GetTagRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *GetTagRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *GetTagRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Name = nil
+}
+
+type GetTagRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Name *string
+}
+
+func (b0 GetTagRequest_builder) Build() *GetTagRequest {
+	m0 := &GetTagRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Name = b.Name
+	}
+	return m0
+}
+
+type CreateTagRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Comment     *string                `protobuf:"bytes,2,opt,name=comment"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *CreateTagRequest) Reset() {
+	*x = CreateTagRequest{}
+	mi := &file_api_machine_v1_machine_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateTagRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTagRequest) ProtoMessage() {}
+
+func (x *CreateTagRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_machine_v1_machine_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *CreateTagRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateTagRequest) GetComment() string {
+	if x != nil {
+		if x.xxx_hidden_Comment != nil {
+			return *x.xxx_hidden_Comment
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateTagRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *CreateTagRequest) SetComment(v string) {
+	x.xxx_hidden_Comment = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *CreateTagRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateTagRequest) HasComment() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *CreateTagRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *CreateTagRequest) ClearComment() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Comment = nil
+}
+
+type CreateTagRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Name    *string
+	Comment *string
+}
+
+func (b0 CreateTagRequest_builder) Build() *CreateTagRequest {
+	m0 := &CreateTagRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.Comment != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Comment = b.Comment
+	}
+	return m0
+}
+
+type DeleteTagRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *DeleteTagRequest) Reset() {
+	*x = DeleteTagRequest{}
+	mi := &file_api_machine_v1_machine_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteTagRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteTagRequest) ProtoMessage() {}
+
+func (x *DeleteTagRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_machine_v1_machine_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *DeleteTagRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteTagRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *DeleteTagRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *DeleteTagRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Name = nil
+}
+
+type DeleteTagRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Name *string
+}
+
+func (b0 DeleteTagRequest_builder) Build() *DeleteTagRequest {
+	m0 := &DeleteTagRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Name = b.Name
+	}
+	return m0
+}
+
 type Machine_NUMANode struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Index       int64                  `protobuf:"varint,1,opt,name=index"`
@@ -1700,7 +2180,7 @@ type Machine_NUMANode struct {
 
 func (x *Machine_NUMANode) Reset() {
 	*x = Machine_NUMANode{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[9]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1712,7 +2192,7 @@ func (x *Machine_NUMANode) String() string {
 func (*Machine_NUMANode) ProtoMessage() {}
 
 func (x *Machine_NUMANode) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[9]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1841,7 +2321,7 @@ type Machine_BlockDevice struct {
 
 func (x *Machine_BlockDevice) Reset() {
 	*x = Machine_BlockDevice{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[10]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1853,7 +2333,7 @@ func (x *Machine_BlockDevice) String() string {
 func (*Machine_BlockDevice) ProtoMessage() {}
 
 func (x *Machine_BlockDevice) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[10]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2164,7 +2644,7 @@ type Machine_NetworkInterface struct {
 
 func (x *Machine_NetworkInterface) Reset() {
 	*x = Machine_NetworkInterface{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[11]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2176,7 +2656,7 @@ func (x *Machine_NetworkInterface) String() string {
 func (*Machine_NetworkInterface) ProtoMessage() {}
 
 func (x *Machine_NetworkInterface) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[11]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2671,7 +3151,7 @@ type Machine_NodeDevice struct {
 
 func (x *Machine_NodeDevice) Reset() {
 	*x = Machine_NodeDevice{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[12]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2683,7 +3163,7 @@ func (x *Machine_NodeDevice) String() string {
 func (*Machine_NodeDevice) ProtoMessage() {}
 
 func (x *Machine_NodeDevice) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[12]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2989,23 +3469,24 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aF\n" +
 	"\x18HardwareInformationEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"4\n" +
-	"\x13ListMachinesRequest\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\"R\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"3\n" +
+	"\x03Tag\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
+	"\acomment\x18\x02 \x01(\tR\acomment\"+\n" +
+	"\x13ListMachinesRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\"R\n" +
 	"\x14ListMachinesResponse\x12:\n" +
 	"\bmachines\x18\x01 \x03(\v2\x1e.otterscale.machine.v1.MachineR\bmachines\"#\n" +
 	"\x11GetMachineRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xec\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xe3\x01\n" +
 	"\x14CreateMachineRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"enable_ssh\x18\x02 \x01(\bR\tenableSsh\x12&\n" +
 	"\x0fskip_bmc_config\x18\x03 \x01(\bR\rskipBmcConfig\x12'\n" +
 	"\x0fskip_networking\x18\x04 \x01(\bR\x0eskipNetworking\x12!\n" +
-	"\fskip_storage\x18\x05 \x01(\bR\vskipStorage\x12\x1d\n" +
-	"\n" +
-	"scope_uuid\x18\v \x01(\tR\tscopeUuid\x12\x12\n" +
+	"\fskip_storage\x18\x05 \x01(\bR\vskipStorage\x12\x14\n" +
+	"\x05scope\x18\v \x01(\tR\x05scope\x12\x12\n" +
 	"\x04tags\x18\x15 \x03(\tR\x04tags\"[\n" +
 	"\x14DeleteMachineRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
@@ -3020,7 +3501,17 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\x04tags\x18\x02 \x03(\tR\x04tags\">\n" +
 	"\x18RemoveMachineTagsRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04tags\x18\x02 \x03(\tR\x04tags2\x9d\x05\n" +
+	"\x04tags\x18\x02 \x03(\tR\x04tags\"\x11\n" +
+	"\x0fListTagsRequest\"B\n" +
+	"\x10ListTagsResponse\x12.\n" +
+	"\x04tags\x18\x01 \x03(\v2\x1a.otterscale.machine.v1.TagR\x04tags\"#\n" +
+	"\rGetTagRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"@\n" +
+	"\x10CreateTagRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
+	"\acomment\x18\x02 \x01(\tR\acomment\"&\n" +
+	"\x10DeleteTagRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name2\xe6\a\n" +
 	"\x0eMachineService\x12g\n" +
 	"\fListMachines\x12*.otterscale.machine.v1.ListMachinesRequest\x1a+.otterscale.machine.v1.ListMachinesResponse\x12V\n" +
 	"\n" +
@@ -3029,56 +3520,75 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\rDeleteMachine\x12+.otterscale.machine.v1.DeleteMachineRequest\x1a\x16.google.protobuf.Empty\x12`\n" +
 	"\x0fPowerOffMachine\x12-.otterscale.machine.v1.PowerOffMachineRequest\x1a\x1e.otterscale.machine.v1.Machine\x12V\n" +
 	"\x0eAddMachineTags\x12,.otterscale.machine.v1.AddMachineTagsRequest\x1a\x16.google.protobuf.Empty\x12\\\n" +
-	"\x11RemoveMachineTags\x12/.otterscale.machine.v1.RemoveMachineTagsRequest\x1a\x16.google.protobuf.EmptyB4Z2github.com/otterscale/otterscale/api/machine/v1;pbb\beditionsp\xe8\a"
+	"\x11RemoveMachineTags\x12/.otterscale.machine.v1.RemoveMachineTagsRequest\x1a\x16.google.protobuf.Empty\x12[\n" +
+	"\bListTags\x12&.otterscale.machine.v1.ListTagsRequest\x1a'.otterscale.machine.v1.ListTagsResponse\x12J\n" +
+	"\x06GetTag\x12$.otterscale.machine.v1.GetTagRequest\x1a\x1a.otterscale.machine.v1.Tag\x12P\n" +
+	"\tCreateTag\x12'.otterscale.machine.v1.CreateTagRequest\x1a\x1a.otterscale.machine.v1.Tag\x12L\n" +
+	"\tDeleteTag\x12'.otterscale.machine.v1.DeleteTagRequest\x1a\x16.google.protobuf.EmptyB4Z2github.com/otterscale/otterscale/api/machine/v1;pbb\beditionsp\xe8\a"
 
-var file_api_machine_v1_machine_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_api_machine_v1_machine_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_api_machine_v1_machine_proto_goTypes = []any{
 	(*Machine)(nil),                  // 0: otterscale.machine.v1.Machine
-	(*ListMachinesRequest)(nil),      // 1: otterscale.machine.v1.ListMachinesRequest
-	(*ListMachinesResponse)(nil),     // 2: otterscale.machine.v1.ListMachinesResponse
-	(*GetMachineRequest)(nil),        // 3: otterscale.machine.v1.GetMachineRequest
-	(*CreateMachineRequest)(nil),     // 4: otterscale.machine.v1.CreateMachineRequest
-	(*DeleteMachineRequest)(nil),     // 5: otterscale.machine.v1.DeleteMachineRequest
-	(*PowerOffMachineRequest)(nil),   // 6: otterscale.machine.v1.PowerOffMachineRequest
-	(*AddMachineTagsRequest)(nil),    // 7: otterscale.machine.v1.AddMachineTagsRequest
-	(*RemoveMachineTagsRequest)(nil), // 8: otterscale.machine.v1.RemoveMachineTagsRequest
-	(*Machine_NUMANode)(nil),         // 9: otterscale.machine.v1.Machine.NUMANode
-	(*Machine_BlockDevice)(nil),      // 10: otterscale.machine.v1.Machine.BlockDevice
-	(*Machine_NetworkInterface)(nil), // 11: otterscale.machine.v1.Machine.NetworkInterface
-	(*Machine_NodeDevice)(nil),       // 12: otterscale.machine.v1.Machine.NodeDevice
-	nil,                              // 13: otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
-	nil,                              // 14: otterscale.machine.v1.Machine.HardwareInformationEntry
-	(*timestamppb.Timestamp)(nil),    // 15: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),            // 16: google.protobuf.Empty
+	(*Tag)(nil),                      // 1: otterscale.machine.v1.Tag
+	(*ListMachinesRequest)(nil),      // 2: otterscale.machine.v1.ListMachinesRequest
+	(*ListMachinesResponse)(nil),     // 3: otterscale.machine.v1.ListMachinesResponse
+	(*GetMachineRequest)(nil),        // 4: otterscale.machine.v1.GetMachineRequest
+	(*CreateMachineRequest)(nil),     // 5: otterscale.machine.v1.CreateMachineRequest
+	(*DeleteMachineRequest)(nil),     // 6: otterscale.machine.v1.DeleteMachineRequest
+	(*PowerOffMachineRequest)(nil),   // 7: otterscale.machine.v1.PowerOffMachineRequest
+	(*AddMachineTagsRequest)(nil),    // 8: otterscale.machine.v1.AddMachineTagsRequest
+	(*RemoveMachineTagsRequest)(nil), // 9: otterscale.machine.v1.RemoveMachineTagsRequest
+	(*ListTagsRequest)(nil),          // 10: otterscale.machine.v1.ListTagsRequest
+	(*ListTagsResponse)(nil),         // 11: otterscale.machine.v1.ListTagsResponse
+	(*GetTagRequest)(nil),            // 12: otterscale.machine.v1.GetTagRequest
+	(*CreateTagRequest)(nil),         // 13: otterscale.machine.v1.CreateTagRequest
+	(*DeleteTagRequest)(nil),         // 14: otterscale.machine.v1.DeleteTagRequest
+	(*Machine_NUMANode)(nil),         // 15: otterscale.machine.v1.Machine.NUMANode
+	(*Machine_BlockDevice)(nil),      // 16: otterscale.machine.v1.Machine.BlockDevice
+	(*Machine_NetworkInterface)(nil), // 17: otterscale.machine.v1.Machine.NetworkInterface
+	(*Machine_NodeDevice)(nil),       // 18: otterscale.machine.v1.Machine.NodeDevice
+	nil,                              // 19: otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
+	nil,                              // 20: otterscale.machine.v1.Machine.HardwareInformationEntry
+	(*timestamppb.Timestamp)(nil),    // 21: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),            // 22: google.protobuf.Empty
 }
 var file_api_machine_v1_machine_proto_depIdxs = []int32{
-	15, // 0: otterscale.machine.v1.Machine.last_commissioned:type_name -> google.protobuf.Timestamp
-	13, // 1: otterscale.machine.v1.Machine.workload_annotations:type_name -> otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
-	14, // 2: otterscale.machine.v1.Machine.hardware_information:type_name -> otterscale.machine.v1.Machine.HardwareInformationEntry
-	9,  // 3: otterscale.machine.v1.Machine.numa_nodes:type_name -> otterscale.machine.v1.Machine.NUMANode
-	10, // 4: otterscale.machine.v1.Machine.block_devices:type_name -> otterscale.machine.v1.Machine.BlockDevice
-	11, // 5: otterscale.machine.v1.Machine.network_interfaces:type_name -> otterscale.machine.v1.Machine.NetworkInterface
-	12, // 6: otterscale.machine.v1.Machine.gpu_devices:type_name -> otterscale.machine.v1.Machine.NodeDevice
+	21, // 0: otterscale.machine.v1.Machine.last_commissioned:type_name -> google.protobuf.Timestamp
+	19, // 1: otterscale.machine.v1.Machine.workload_annotations:type_name -> otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
+	20, // 2: otterscale.machine.v1.Machine.hardware_information:type_name -> otterscale.machine.v1.Machine.HardwareInformationEntry
+	15, // 3: otterscale.machine.v1.Machine.numa_nodes:type_name -> otterscale.machine.v1.Machine.NUMANode
+	16, // 4: otterscale.machine.v1.Machine.block_devices:type_name -> otterscale.machine.v1.Machine.BlockDevice
+	17, // 5: otterscale.machine.v1.Machine.network_interfaces:type_name -> otterscale.machine.v1.Machine.NetworkInterface
+	18, // 6: otterscale.machine.v1.Machine.gpu_devices:type_name -> otterscale.machine.v1.Machine.NodeDevice
 	0,  // 7: otterscale.machine.v1.ListMachinesResponse.machines:type_name -> otterscale.machine.v1.Machine
-	1,  // 8: otterscale.machine.v1.MachineService.ListMachines:input_type -> otterscale.machine.v1.ListMachinesRequest
-	3,  // 9: otterscale.machine.v1.MachineService.GetMachine:input_type -> otterscale.machine.v1.GetMachineRequest
-	4,  // 10: otterscale.machine.v1.MachineService.CreateMachine:input_type -> otterscale.machine.v1.CreateMachineRequest
-	5,  // 11: otterscale.machine.v1.MachineService.DeleteMachine:input_type -> otterscale.machine.v1.DeleteMachineRequest
-	6,  // 12: otterscale.machine.v1.MachineService.PowerOffMachine:input_type -> otterscale.machine.v1.PowerOffMachineRequest
-	7,  // 13: otterscale.machine.v1.MachineService.AddMachineTags:input_type -> otterscale.machine.v1.AddMachineTagsRequest
-	8,  // 14: otterscale.machine.v1.MachineService.RemoveMachineTags:input_type -> otterscale.machine.v1.RemoveMachineTagsRequest
-	2,  // 15: otterscale.machine.v1.MachineService.ListMachines:output_type -> otterscale.machine.v1.ListMachinesResponse
-	0,  // 16: otterscale.machine.v1.MachineService.GetMachine:output_type -> otterscale.machine.v1.Machine
-	0,  // 17: otterscale.machine.v1.MachineService.CreateMachine:output_type -> otterscale.machine.v1.Machine
-	16, // 18: otterscale.machine.v1.MachineService.DeleteMachine:output_type -> google.protobuf.Empty
-	0,  // 19: otterscale.machine.v1.MachineService.PowerOffMachine:output_type -> otterscale.machine.v1.Machine
-	16, // 20: otterscale.machine.v1.MachineService.AddMachineTags:output_type -> google.protobuf.Empty
-	16, // 21: otterscale.machine.v1.MachineService.RemoveMachineTags:output_type -> google.protobuf.Empty
-	15, // [15:22] is the sub-list for method output_type
-	8,  // [8:15] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	1,  // 8: otterscale.machine.v1.ListTagsResponse.tags:type_name -> otterscale.machine.v1.Tag
+	2,  // 9: otterscale.machine.v1.MachineService.ListMachines:input_type -> otterscale.machine.v1.ListMachinesRequest
+	4,  // 10: otterscale.machine.v1.MachineService.GetMachine:input_type -> otterscale.machine.v1.GetMachineRequest
+	5,  // 11: otterscale.machine.v1.MachineService.CreateMachine:input_type -> otterscale.machine.v1.CreateMachineRequest
+	6,  // 12: otterscale.machine.v1.MachineService.DeleteMachine:input_type -> otterscale.machine.v1.DeleteMachineRequest
+	7,  // 13: otterscale.machine.v1.MachineService.PowerOffMachine:input_type -> otterscale.machine.v1.PowerOffMachineRequest
+	8,  // 14: otterscale.machine.v1.MachineService.AddMachineTags:input_type -> otterscale.machine.v1.AddMachineTagsRequest
+	9,  // 15: otterscale.machine.v1.MachineService.RemoveMachineTags:input_type -> otterscale.machine.v1.RemoveMachineTagsRequest
+	10, // 16: otterscale.machine.v1.MachineService.ListTags:input_type -> otterscale.machine.v1.ListTagsRequest
+	12, // 17: otterscale.machine.v1.MachineService.GetTag:input_type -> otterscale.machine.v1.GetTagRequest
+	13, // 18: otterscale.machine.v1.MachineService.CreateTag:input_type -> otterscale.machine.v1.CreateTagRequest
+	14, // 19: otterscale.machine.v1.MachineService.DeleteTag:input_type -> otterscale.machine.v1.DeleteTagRequest
+	3,  // 20: otterscale.machine.v1.MachineService.ListMachines:output_type -> otterscale.machine.v1.ListMachinesResponse
+	0,  // 21: otterscale.machine.v1.MachineService.GetMachine:output_type -> otterscale.machine.v1.Machine
+	0,  // 22: otterscale.machine.v1.MachineService.CreateMachine:output_type -> otterscale.machine.v1.Machine
+	22, // 23: otterscale.machine.v1.MachineService.DeleteMachine:output_type -> google.protobuf.Empty
+	0,  // 24: otterscale.machine.v1.MachineService.PowerOffMachine:output_type -> otterscale.machine.v1.Machine
+	22, // 25: otterscale.machine.v1.MachineService.AddMachineTags:output_type -> google.protobuf.Empty
+	22, // 26: otterscale.machine.v1.MachineService.RemoveMachineTags:output_type -> google.protobuf.Empty
+	11, // 27: otterscale.machine.v1.MachineService.ListTags:output_type -> otterscale.machine.v1.ListTagsResponse
+	1,  // 28: otterscale.machine.v1.MachineService.GetTag:output_type -> otterscale.machine.v1.Tag
+	1,  // 29: otterscale.machine.v1.MachineService.CreateTag:output_type -> otterscale.machine.v1.Tag
+	22, // 30: otterscale.machine.v1.MachineService.DeleteTag:output_type -> google.protobuf.Empty
+	20, // [20:31] is the sub-list for method output_type
+	9,  // [9:20] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_api_machine_v1_machine_proto_init() }
@@ -3092,7 +3602,7 @@ func file_api_machine_v1_machine_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_machine_v1_machine_proto_rawDesc), len(file_api_machine_v1_machine_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

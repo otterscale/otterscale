@@ -1,0 +1,181 @@
+edition = "2023";
+
+package otterscale.orchestrator.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/otterscale/otterscale/api/orchestrator/v1;pb";
+
+service OrchestratorService {
+  rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse);
+
+  rpc CreateNode(CreateNodeRequest) returns (google.protobuf.Empty);
+  rpc CreateCluster(CreateClusterRequest) returns (google.protobuf.Empty);
+  rpc AddClusterUnits(AddClusterUnitsRequest) returns (google.protobuf.Empty);
+
+  rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse);
+  rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse);
+
+  rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse);
+  rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse);
+
+  rpc ListPlugins(ListPluginsRequest) returns (ListPluginsResponse);
+}
+
+message Essential {
+  enum Type {
+    UNKNOWN = 0;
+    KUBERNETES = 1;
+    CEPH = 2;
+  }
+  message Unit {
+    string name = 1;
+    string directive = 2;
+  }
+  Type type = 1;
+  string name = 2;
+  string scope = 11;
+  repeated Unit units = 21;
+}
+
+message ListEssentialsRequest {
+  Essential.Type type = 1;
+  string scope = 2;
+}
+
+message ListEssentialsResponse {
+  repeated Essential essentials = 1;
+}
+
+message CreateNodeRequest {
+  string scope = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+  repeated string virtual_ips = 11;
+  string calico_cidr = 12;
+  repeated string osd_devices = 21;
+}
+
+message CreateClusterRequest {
+  string scope = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+  repeated string virtual_ips = 11;
+  string calico_cidr = 12;
+  repeated string osd_devices = 21;
+}
+
+message AddClusterUnitsRequest {
+  Essential.Type type = 1;
+  string scope = 2;
+  string name = 3;
+  int32 number = 4;
+  repeated string machine_ids = 5;
+  bool force = 11;
+}
+
+message ListKubernetesNodeLabelsRequest {
+  string scope = 1;
+  string facility = 2;
+  string hostname = 3;
+  bool all = 11;
+}
+
+message ListKubernetesNodeLabelsResponse {
+  map<string, string> labels = 1;
+}
+
+message UpdateKubernetesNodeLabelsRequest {
+  string scope = 1;
+  string facility = 2;
+  string hostname = 3;
+  map<string, string> labels = 4;
+}
+
+message UpdateKubernetesNodeLabelsResponse {
+  map<string, string> labels = 1;
+}
+
+message GPURelation {
+  message Pod {
+    message Device {
+      string gpu_id = 1;
+      int32 used_cores = 2;
+      int64 used_memory_bytes = 3;
+    }
+    string name = 1;
+    string namespace = 2;
+    string model_name = 3;
+    string binding_phase = 11;
+    google.protobuf.Timestamp bound_at = 12;
+    repeated Device devices = 21;
+  }
+  message GPU {
+    string id = 1;
+    uint32 index = 2;
+    int32 count = 3;
+    int32 cores = 4;
+    int64 memory_bytes = 5;
+    string type = 6;
+    bool health = 7;
+    string machine_id = 101;
+  }
+  message Machine {
+    string id = 1;
+    string hostname = 2;
+  }
+  oneof entity {
+    Pod pod = 1;
+    GPU gpu = 2;
+    Machine machine = 3;
+  }
+}
+
+message ListGPURelationsByMachineRequest {
+  string scope = 1;
+  string facility = 2;
+  string machine_id = 3;
+}
+
+message ListGPURelationsByMachineResponse {
+  repeated GPURelation gpu_relations = 1;
+}
+
+message ListGPURelationsByModelRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string model_name = 4;
+}
+
+message ListGPURelationsByModelResponse {
+  repeated GPURelation gpu_relations = 1;
+}
+
+message Plugin {
+  message Chart {
+    string name = 1;
+    string version = 2;
+    string app_version = 3;
+    string description = 4;
+    string icon = 5;
+  }
+  string name = 1;
+  string namespace = 2;
+  string status = 3;
+  string description = 4;
+  google.protobuf.Timestamp first_deployed_at = 5;
+  google.protobuf.Timestamp last_deployed_at = 6;
+  google.protobuf.Timestamp deleted_at = 7;
+  Chart chart = 11;
+}
+
+message ListPluginsRequest {
+  string scope = 1;
+  string facility = 2;
+}
+
+message ListPluginsResponse {
+  repeated Plugin plugins = 1;
+}

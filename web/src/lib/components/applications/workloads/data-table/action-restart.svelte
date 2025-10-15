@@ -20,8 +20,8 @@
 
 	async function restartApplication() {
 		const request = {
-			scopeUuid: $currentKubernetes?.scopeUuid,
-			facilityName: $currentKubernetes?.name,
+			scope: $currentKubernetes?.scope,
+			facility: $currentKubernetes?.name,
 			name: application.name,
 			namespace: application.namespace,
 			type: application.type,

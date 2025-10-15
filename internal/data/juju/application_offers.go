@@ -22,7 +22,7 @@ func NewApplicationOffers(juju *Juju) core.FacilityOffersRepo {
 var _ core.FacilityOffersRepo = (*applicationOffers)(nil)
 
 func (r *applicationOffers) GetConsumeDetails(_ context.Context, url string) (params.ConsumeOfferDetails, error) {
-	conn, err := r.juju.connection("")
+	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return params.ConsumeOfferDetails{}, err
 	}

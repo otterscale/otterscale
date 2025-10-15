@@ -12,9 +12,9 @@
 </script>
 
 {#if $currentKubernetes}
-	{@const scopeUuid = $currentKubernetes.scopeUuid}
-	{@const facilityName = $currentKubernetes.name}
+	{@const scope = $currentKubernetes.scope}
+	{@const facility = $currentKubernetes.name}
 	{@const namespace = page.params.namespace ?? ''}
 
-	<VirtualMachine {scopeUuid} {facilityName} {namespace} />
+	<VirtualMachine {scope} {facility} {namespace} />
 {/if}

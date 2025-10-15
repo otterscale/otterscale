@@ -50,7 +50,7 @@ func (r *cdi) GetDataVolume(ctx context.Context, config *rest.Config, namespace,
 	return clientset.CdiV1beta1().DataVolumes(namespace).Get(ctx, name, opts)
 }
 
-func (r *cdi) CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, srcType oscore.SourceType, srcData string, size int64, bootImage bool) (*oscore.DataVolume, error) {
+func (r *cdi) CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, srcType oscore.DataVolumeSourceType, srcData string, size int64, bootImage bool) (*oscore.DataVolume, error) {
 	clientset, err := r.kube.cdiClientset(config)
 	if err != nil {
 		return nil, err
@@ -79,8 +79,8 @@ func (r *cdi) DeleteDataVolume(ctx context.Context, config *rest.Config, namespa
 	return clientset.CdiV1beta1().DataVolumes(namespace).Delete(ctx, name, opts)
 }
 
-func (r *cdi) buildDataVolumeSpec(srcType oscore.SourceType, srcData, namespace string, size int64) cdiv1beta1.DataVolumeSpec {
-	if srcType == oscore.SourceTypePVC {
+func (r *cdi) buildDataVolumeSpec(srcType oscore.DataVolumeSourceType, srcData, namespace string, size int64) cdiv1beta1.DataVolumeSpec {
+	if srcType == oscore.DataVolumeSourceTypePVC {
 		return r.buildPVCSpec(srcData, namespace, size)
 	}
 	return r.buildStorageSpec(srcType, srcData, size)
@@ -107,12 +107,12 @@ func (r *cdi) buildPVCSpec(srcData, namespace string, size int64) cdiv1beta1.Dat
 	}
 }
 
-func (r *cdi) buildStorageSpec(srcType oscore.SourceType, srcData string, size int64) cdiv1beta1.DataVolumeSpec {
+func (r *cdi) buildStorageSpec(srcType oscore.DataVolumeSourceType, srcData string, size int64) cdiv1beta1.DataVolumeSpec {
 	source := &cdiv1beta1.DataVolumeSource{}
 	switch srcType {
-	case oscore.SourceTypeBlank:
+	case oscore.DataVolumeSourceTypeBlank:
 		source.Blank = &cdiv1beta1.DataVolumeBlankImage{}
-	case oscore.SourceTypeHTTP:
+	case oscore.DataVolumeSourceTypeHTTP:
 		source.HTTP = &cdiv1beta1.DataVolumeSourceHTTP{URL: srcData}
 	}
 	storage := &cdiv1beta1.StorageSpec{

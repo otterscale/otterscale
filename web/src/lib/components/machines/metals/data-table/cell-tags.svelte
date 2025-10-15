@@ -5,7 +5,6 @@
 	import { toast } from 'svelte-sonner';
 
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { TagService } from '$lib/api/tag/v1/tag_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -32,8 +31,7 @@
 		!(machine.tags.length === tags.length && machine.tags.every((tag) => tags.includes(tag))),
 	);
 
-	const machineClient = createClient(MachineService, transport);
-	const tagClient = createClient(TagService, transport);
+	const client = createClient(MachineService, transport);
 
 	let open = $state(false);
 	function close() {
@@ -42,7 +40,7 @@
 
 	onMount(async () => {
 		try {
-			tagClient
+			client
 				.listTags({})
 				.then((response) => {
 					tagOptions = response.tags.flatMap((tag) => tag.name);
@@ -77,13 +75,13 @@
 							onclick={() => {
 								toast.promise(
 									() =>
-										machineClient
+										client
 											.addMachineTags({
 												id: machine.id,
 												tags: tags.filter((tag) => !machine.tags.includes(tag)),
 											})
 											.then(() => {
-												machineClient.removeMachineTags({
+												client.removeMachineTags({
 													id: machine.id,
 													tags: machine.tags.filter((tag) => !tags.includes(tag)),
 												});

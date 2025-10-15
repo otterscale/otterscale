@@ -14,17 +14,19 @@ import (
 type NetworkService struct {
 	pbconnect.UnimplementedNetworkServiceHandler
 
-	uc *core.NetworkUseCase
+	network *core.NetworkUseCase
 }
 
-func NewNetworkService(uc *core.NetworkUseCase) *NetworkService {
-	return &NetworkService{uc: uc}
+func NewNetworkService(network *core.NetworkUseCase) *NetworkService {
+	return &NetworkService{
+		network: network,
+	}
 }
 
 var _ pbconnect.NetworkServiceHandler = (*NetworkService)(nil)
 
 func (s *NetworkService) ListNetworks(ctx context.Context, _ *pb.ListNetworksRequest) (*pb.ListNetworksResponse, error) {
-	networks, err := s.uc.ListNetworks(ctx)
+	networks, err := s.network.ListNetworks(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +36,7 @@ func (s *NetworkService) ListNetworks(ctx context.Context, _ *pb.ListNetworksReq
 }
 
 func (s *NetworkService) CreateNetwork(ctx context.Context, req *pb.CreateNetworkRequest) (*pb.Network, error) {
-	network, err := s.uc.CreateNetwork(ctx, req.GetCidr(), req.GetGatewayIp(), req.GetDnsServers(), req.GetDhcpOn())
+	network, err := s.network.CreateNetwork(ctx, req.GetCidr(), req.GetGatewayIp(), req.GetDnsServers(), req.GetDhcpOn())
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +45,7 @@ func (s *NetworkService) CreateNetwork(ctx context.Context, req *pb.CreateNetwor
 }
 
 func (s *NetworkService) CreateIPRange(ctx context.Context, req *pb.CreateIPRangeRequest) (*pb.Network_IPRange, error) {
-	ipRange, err := s.uc.CreateIPRange(ctx, int(req.GetSubnetId()), req.GetStartIp(), req.GetEndIp(), req.GetComment())
+	ipRange, err := s.network.CreateIPRange(ctx, int(req.GetSubnetId()), req.GetStartIp(), req.GetEndIp(), req.GetComment())
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +54,7 @@ func (s *NetworkService) CreateIPRange(ctx context.Context, req *pb.CreateIPRang
 }
 
 func (s *NetworkService) DeleteNetwork(ctx context.Context, req *pb.DeleteNetworkRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteNetwork(ctx, int(req.GetId())); err != nil {
+	if err := s.network.DeleteNetwork(ctx, int(req.GetId())); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -60,7 +62,7 @@ func (s *NetworkService) DeleteNetwork(ctx context.Context, req *pb.DeleteNetwor
 }
 
 func (s *NetworkService) DeleteIPRange(ctx context.Context, req *pb.DeleteIPRangeRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteIPRange(ctx, int(req.GetId())); err != nil {
+	if err := s.network.DeleteIPRange(ctx, int(req.GetId())); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -68,7 +70,7 @@ func (s *NetworkService) DeleteIPRange(ctx context.Context, req *pb.DeleteIPRang
 }
 
 func (s *NetworkService) UpdateFabric(ctx context.Context, req *pb.UpdateFabricRequest) (*pb.Network_Fabric, error) {
-	fabric, err := s.uc.UpdateFabric(ctx, int(req.GetId()), req.GetName())
+	fabric, err := s.network.UpdateFabric(ctx, int(req.GetId()), req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +79,7 @@ func (s *NetworkService) UpdateFabric(ctx context.Context, req *pb.UpdateFabricR
 }
 
 func (s *NetworkService) UpdateVLAN(ctx context.Context, req *pb.UpdateVLANRequest) (*pb.Network_VLAN, error) {
-	vlan, err := s.uc.UpdateVLAN(ctx, int(req.GetFabricId()), int(req.GetVid()), req.GetName(), int(req.GetMtu()), req.GetDescription(), req.GetDhcpOn())
+	vlan, err := s.network.UpdateVLAN(ctx, int(req.GetFabricId()), int(req.GetVid()), req.GetName(), int(req.GetMtu()), req.GetDescription(), req.GetDhcpOn())
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +88,7 @@ func (s *NetworkService) UpdateVLAN(ctx context.Context, req *pb.UpdateVLANReque
 }
 
 func (s *NetworkService) UpdateSubnet(ctx context.Context, req *pb.UpdateSubnetRequest) (*pb.Network_Subnet, error) {
-	subnet, err := s.uc.UpdateSubnet(ctx, int(req.GetId()), req.GetName(), req.GetCidr(), req.GetGatewayIp(), req.GetDnsServers(), req.GetDescription(), req.GetAllowDnsResolution())
+	subnet, err := s.network.UpdateSubnet(ctx, int(req.GetId()), req.GetName(), req.GetCidr(), req.GetGatewayIp(), req.GetDnsServers(), req.GetDescription(), req.GetAllowDnsResolution())
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +97,7 @@ func (s *NetworkService) UpdateSubnet(ctx context.Context, req *pb.UpdateSubnetR
 }
 
 func (s *NetworkService) UpdateIPRange(ctx context.Context, req *pb.UpdateIPRangeRequest) (*pb.Network_IPRange, error) {
-	ipRange, err := s.uc.UpdateIPRange(ctx, int(req.GetId()), req.GetStartIp(), req.GetEndIp(), req.GetComment())
+	ipRange, err := s.network.UpdateIPRange(ctx, int(req.GetId()), req.GetStartIp(), req.GetEndIp(), req.GetComment())
 	if err != nil {
 		return nil, err
 	}

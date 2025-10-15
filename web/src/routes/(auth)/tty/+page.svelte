@@ -4,8 +4,8 @@
 </script>
 
 <Terminal
-	scopeUUID={page.url.searchParams.get('scope') ?? ''}
-	facilityName={page.url.searchParams.get('facility') ?? ''}
+	scope={page.url.searchParams.get('scope') ?? ''}
+	facility={page.url.searchParams.get('facility') ?? ''}
 	namespace={page.url.searchParams.get('namespace') ?? ''}
 	podName={page.url.searchParams.get('pod') ?? ''}
 	containerName={page.url.searchParams.get('container') ?? ''}

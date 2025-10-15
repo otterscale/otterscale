@@ -6,12 +6,9 @@
 
 	import { DataTable } from './data-table';
 
-	import {
-		VirtualMachineService,
-		VirtualMachine_Disk_Volume_Source_Type,
-	} from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import type { DataVolume } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import { InstanceService, VirtualMachine_Disk_Volume_Source_Type } from '$lib/api/instance/v1/instance_pb';
+	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
+	import type { DataVolume } from '$lib/api/instance/v1/instance_pb';
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Sheet from '$lib/components/ui/sheet';
@@ -27,7 +24,7 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const virtualMachineClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 
 	let enhancedDisks: EnhancedDisk[] = $state([]);
 
@@ -35,8 +32,8 @@
 		try {
 			// Get data volumes
 			const dataVolumesResponse = await virtualMachineClient.listDataVolumes({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
+				scope: $currentKubernetes?.scope,
+				facility: $currentKubernetes?.name,
 				namespace: virtualMachine.namespace,
 				bootImage: false, // Set to true if you only want boot images
 			});

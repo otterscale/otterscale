@@ -13,9 +13,9 @@
 		FIO_Input,
 		NetworkFileSystem,
 		TestResult,
-	} from '$lib/api/bist/v1/bist_pb';
-	import { BISTService, FIO_Input_AccessMode } from '$lib/api/bist/v1/bist_pb';
-	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
+	} from '$lib/api/configuration/v1/configuration_pb';
+	import { ConfigurationService, FIO_Input_AccessMode } from '$lib/api/configuration/v1/configuration_pb';
+	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
@@ -88,12 +88,12 @@
 				} as unknown as FIO_Input);
 	let selectedScope = $state(
 		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-			? (testResult.kind.value.target.value?.scopeUuid ?? '')
+			? (testResult.kind.value.target.value?.scope ?? '')
 			: '',
 	);
 	let selectedFacility = $state(
 		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-			? (testResult.kind.value.target.value?.facilityName ?? '')
+			? (testResult.kind.value.target.value?.facility ?? '')
 			: '',
 	);
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
@@ -127,8 +127,8 @@
 
 	// grpc
 	const transport: Transport = getContext('transport');
-	const bistClient = createClient(BISTService, transport);
-	const essentialClient = createClient(EssentialService, transport);
+	const configClient = createClient(ConfigurationService, transport);
+	const orchClient = createClient(OrchestratorService, transport);
 
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
@@ -136,13 +136,13 @@
 	let isCephsLoading = $state(true);
 	async function fetchCephOptions() {
 		try {
-			const response = await essentialClient.listEssentials({ type: Essential_Type.CEPH });
+			const response = await orchClient.listEssentials({ type: Essential_Type.CEPH });
 			cephOptions.set(
 				response.essentials.map(
 					(essential) =>
 						({
-							value: { scopeUuid: essential.scopeUuid, facilityName: essential.name },
-							label: `${essential.scopeName}-${essential.name}`,
+							value: { scope: essential.scope, facility: essential.name },
+							label: `${essential.scope}-${essential.name}`,
 							icon: 'ph:cube',
 						}) as SingleSelect.OptionType,
 				),
@@ -249,8 +249,8 @@
 																<SingleSelect.Item
 																	{option}
 																	onclick={() => {
-																		selectedScope = option.value.scopeUuid;
-																		selectedFacility = option.value.facilityName;
+																		selectedScope = option.value.scope;
+																		selectedFacility = option.value.facility;
 																	}}
 																>
 																	<Icon
@@ -436,8 +436,8 @@
 					onclick={() => {
 						// prepare request
 						if (requestFio.target.case == 'cephBlockDevice') {
-							requestCephBlockDevice.scopeUuid = selectedScope;
-							requestCephBlockDevice.facilityName = selectedFacility;
+							requestCephBlockDevice.scope = selectedScope;
+							requestCephBlockDevice.facility = selectedFacility;
 							requestFio.target.value = requestCephBlockDevice;
 						} else if (requestFio.target.case == 'networkFileSystem') {
 							requestFio.target.value = requestNetworkFileSystem;
@@ -452,7 +452,7 @@
 						} as FIO_Input;
 						request.kind.value = requestFio;
 						// request
-						toast.promise(() => bistClient.createTestResult(request), {
+						toast.promise(() => configClient.createTestResult(request), {
 							loading: `Testing ${request.name}...`,
 							success: () => {
 								reloadManager.force();

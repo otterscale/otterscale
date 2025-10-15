@@ -2,6 +2,7 @@ import { error, redirect } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
 
+import { resolve } from '$app/paths';
 import { env } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public';
 import { auth } from '$lib/auth';
@@ -19,8 +20,12 @@ export const load: PageServerLoad = async ({ request, url }) => {
 
 	for (const { value, name } of requiredEnvVars) {
 		if (!value) {
-			error(503, `${name} is not set`);
+			throw error(503, `${name} is not set`);
 		}
+	}
+
+	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE)) {
+		throw redirect(302, resolve('/setup'));
 	}
 
 	// Check if the user is already authenticated
@@ -29,8 +34,12 @@ export const load: PageServerLoad = async ({ request, url }) => {
 	});
 
 	if (session) {
-		redirect(302, staticPaths.scopes.url);
+		throw redirect(302, staticPaths.scopes.url);
 	}
 
-	redirect(302, `${staticPaths.login.url}${url.search}`);
+	throw redirect(302, `${staticPaths.login.url}${url.search}`);
+};
+
+const isFlexibleBooleanTrue = (envVar: string | undefined): boolean => {
+	return ['true', '1', 'yes', 'on'].includes((envVar || '').toLowerCase());
 };

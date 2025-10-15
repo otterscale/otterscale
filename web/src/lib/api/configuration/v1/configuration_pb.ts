@@ -2,17 +2,17 @@
 // @generated from file api/configuration/v1/configuration.proto (package otterscale.configuration.v1, edition 2023)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { EmptySchema } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { EmptySchema, Timestamp } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_empty, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file api/configuration/v1/configuration.proto.
  */
 export const file_api_configuration_v1_configuration: GenFile = /*@__PURE__*/
-  fileDesc("CihhcGkvY29uZmlndXJhdGlvbi92MS9jb25maWd1cmF0aW9uLnByb3RvEhtvdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEiwwUKDUNvbmZpZ3VyYXRpb24SSAoKbnRwX3NlcnZlchgBIAEoCzI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLk5UUFNlcnZlchJaChRwYWNrYWdlX3JlcG9zaXRvcmllcxgCIAMoCzI8Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLlBhY2thZ2VSZXBvc2l0b3J5EkkKC2Jvb3RfaW1hZ2VzGAMgAygLMjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlGh4KCU5UUFNlcnZlchIRCglhZGRyZXNzZXMYASADKAkaSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCBpQChJCb290SW1hZ2VTZWxlY3Rpb24SFQoNZGlzdHJvX3NlcmllcxgBIAEoCRIMCgRuYW1lGAIgASgJEhUKDWFyY2hpdGVjdHVyZXMYAyADKAkagQIKCUJvb3RJbWFnZRIOCgZzb3VyY2UYASABKAkSFQoNZGlzdHJvX3NlcmllcxgCIAEoCRIMCgRuYW1lGAMgASgJEnAKF2FyY2hpdGVjdHVyZV9zdGF0dXNfbWFwGAUgAygLMk8ub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlLkFyY2hpdGVjdHVyZVN0YXR1c01hcEVudHJ5Eg8KB2RlZmF1bHQYCyABKAgaPAoaQXJjaGl0ZWN0dXJlU3RhdHVzTWFwRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASIZChdHZXRDb25maWd1cmF0aW9uUmVxdWVzdCIrChZVcGRhdGVOVFBTZXJ2ZXJSZXF1ZXN0EhEKCWFkZHJlc3NlcxgBIAMoCSJMCh5VcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVJlcXVlc3QSCgoCaWQYASABKAMSCwoDdXJsGAIgASgJEhEKCXNraXBfanVqdRgDIAEoCCJGChZDcmVhdGVCb290SW1hZ2VSZXF1ZXN0EhUKDWRpc3Ryb19zZXJpZXMYASABKAkSFQoNYXJjaGl0ZWN0dXJlcxgCIAMoCSIzChpTZXREZWZhdWx0Qm9vdEltYWdlUmVxdWVzdBIVCg1kaXN0cm9fc2VyaWVzGAEgASgJIhkKF0ltcG9ydEJvb3RJbWFnZXNSZXF1ZXN0Ih4KHElzSW1wb3J0aW5nQm9vdEltYWdlc1JlcXVlc3QiMgodSXNJbXBvcnRpbmdCb290SW1hZ2VzUmVzcG9uc2USEQoJaW1wb3J0aW5nGAEgASgIIiAKHkxpc3RCb290SW1hZ2VTZWxlY3Rpb25zUmVxdWVzdCJ/Ch9MaXN0Qm9vdEltYWdlU2VsZWN0aW9uc1Jlc3BvbnNlElwKFWJvb3RfaW1hZ2Vfc2VsZWN0aW9ucxgBIAMoCzI9Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLkJvb3RJbWFnZVNlbGVjdGlvbjKRCAoUQ29uZmlndXJhdGlvblNlcnZpY2USdAoQR2V0Q29uZmlndXJhdGlvbhI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5HZXRDb25maWd1cmF0aW9uUmVxdWVzdBoqLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uEnwKD1VwZGF0ZU5UUFNlcnZlchIzLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5VcGRhdGVOVFBTZXJ2ZXJSZXF1ZXN0GjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uTlRQU2VydmVyEpQBChdVcGRhdGVQYWNrYWdlUmVwb3NpdG9yeRI7Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5VcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVJlcXVlc3QaPC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ29uZmlndXJhdGlvbi5QYWNrYWdlUmVwb3NpdG9yeRJ8Cg9DcmVhdGVCb290SW1hZ2USMy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ3JlYXRlQm9vdEltYWdlUmVxdWVzdBo0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLkJvb3RJbWFnZRJmChNTZXREZWZhdWx0Qm9vdEltYWdlEjcub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLlNldERlZmF1bHRCb290SW1hZ2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmAKEEltcG9ydEJvb3RJbWFnZXMSNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuSW1wb3J0Qm9vdEltYWdlc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSjgEKFUlzSW1wb3J0aW5nQm9vdEltYWdlcxI5Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Jc0ltcG9ydGluZ0Jvb3RJbWFnZXNSZXF1ZXN0Gjoub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLklzSW1wb3J0aW5nQm9vdEltYWdlc1Jlc3BvbnNlEpQBChdMaXN0Qm9vdEltYWdlU2VsZWN0aW9ucxI7Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0Qm9vdEltYWdlU2VsZWN0aW9uc1JlcXVlc3QaPC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuTGlzdEJvb3RJbWFnZVNlbGVjdGlvbnNSZXNwb25zZUI6WjhnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvY29uZmlndXJhdGlvbi92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty]);
+  fileDesc("CihhcGkvY29uZmlndXJhdGlvbi92MS9jb25maWd1cmF0aW9uLnByb3RvEhtvdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEitwYKDUNvbmZpZ3VyYXRpb24SSAoKbnRwX3NlcnZlchgBIAEoCzI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLk5UUFNlcnZlchJaChRwYWNrYWdlX3JlcG9zaXRvcmllcxgCIAMoCzI8Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLlBhY2thZ2VSZXBvc2l0b3J5EkkKC2Jvb3RfaW1hZ2VzGAMgAygLMjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlElIKD2hlbG1fcmVwb3NpdG9yeRgEIAEoCzI5Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLkhlbG1SZXBvc2l0b3J5Gh4KCU5UUFNlcnZlchIRCglhZGRyZXNzZXMYASADKAkaSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCBpQChJCb290SW1hZ2VTZWxlY3Rpb24SFQoNZGlzdHJvX3NlcmllcxgBIAEoCRIMCgRuYW1lGAIgASgJEhUKDWFyY2hpdGVjdHVyZXMYAyADKAkagQIKCUJvb3RJbWFnZRIOCgZzb3VyY2UYASABKAkSFQoNZGlzdHJvX3NlcmllcxgCIAEoCRIMCgRuYW1lGAMgASgJEnAKF2FyY2hpdGVjdHVyZV9zdGF0dXNfbWFwGAUgAygLMk8ub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlLkFyY2hpdGVjdHVyZVN0YXR1c01hcEVudHJ5Eg8KB2RlZmF1bHQYCyABKAgaPAoaQXJjaGl0ZWN0dXJlU3RhdHVzTWFwRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARoeCg5IZWxtUmVwb3NpdG9yeRIMCgR1cmxzGAEgAygJIhkKF0dldENvbmZpZ3VyYXRpb25SZXF1ZXN0IisKFlVwZGF0ZU5UUFNlcnZlclJlcXVlc3QSEQoJYWRkcmVzc2VzGAEgAygJIkwKHlVwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5UmVxdWVzdBIKCgJpZBgBIAEoAxILCgN1cmwYAiABKAkSEQoJc2tpcF9qdWp1GAMgASgIIisKG1VwZGF0ZUhlbG1SZXBvc2l0b3J5UmVxdWVzdBIMCgR1cmxzGAEgAygJIkYKFkNyZWF0ZUJvb3RJbWFnZVJlcXVlc3QSFQoNZGlzdHJvX3NlcmllcxgBIAEoCRIVCg1hcmNoaXRlY3R1cmVzGAIgAygJIjMKGlNldERlZmF1bHRCb290SW1hZ2VSZXF1ZXN0EhUKDWRpc3Ryb19zZXJpZXMYASABKAkiGQoXSW1wb3J0Qm9vdEltYWdlc1JlcXVlc3QiHgocSXNJbXBvcnRpbmdCb290SW1hZ2VzUmVxdWVzdCIyCh1Jc0ltcG9ydGluZ0Jvb3RJbWFnZXNSZXNwb25zZRIRCglpbXBvcnRpbmcYASABKAgiIAoeTGlzdEJvb3RJbWFnZVNlbGVjdGlvbnNSZXF1ZXN0In8KH0xpc3RCb290SW1hZ2VTZWxlY3Rpb25zUmVzcG9uc2USXAoVYm9vdF9pbWFnZV9zZWxlY3Rpb25zGAEgAygLMj0ub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlU2VsZWN0aW9uIjIKD0NlcGhCbG9ja0RldmljZRINCgVzY29wZRgBIAEoCRIQCghmYWNpbGl0eRgCIAEoCSIzChFOZXR3b3JrRmlsZVN5c3RlbRIQCghlbmRwb2ludBgBIAEoCRIMCgRwYXRoGAIgASgJIs0BChVJbnRlcm5hbE9iamVjdFNlcnZpY2USRQoEdHlwZRgBIAEoDjI3Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5JbnRlcm5hbE9iamVjdFNlcnZpY2UuVHlwZRINCgVzY29wZRgCIAEoCRIQCghmYWNpbGl0eRgDIAEoCRIMCgRuYW1lGAQgASgJEhAKCGVuZHBvaW50GAUgASgJIiwKBFR5cGUSDwoLVU5TUEVDSUZJRUQQABIICgRDRVBIEAESCQoFTUlOSU8QAiJRChVFeHRlcm5hbE9iamVjdFNlcnZpY2USEAoIZW5kcG9pbnQYASABKAkSEgoKYWNjZXNzX2tleRgCIAEoCRISCgpzZWNyZXRfa2V5GAMgASgJItUICgNGSU8SSQoRY2VwaF9ibG9ja19kZXZpY2UYASABKAsyLC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ2VwaEJsb2NrRGV2aWNlSAASTQoTbmV0d29ya19maWxlX3N5c3RlbRgCIAEoCzIuLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5OZXR3b3JrRmlsZVN5c3RlbUgAEjUKBWlucHV0GAsgASgLMiYub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJTy5JbnB1dBI3CgZvdXRwdXQYDCABKAsyJy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRklPLk91dHB1dBrfAgoFSW5wdXQSRgoLYWNjZXNzX21vZGUYASABKA4yMS5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRklPLklucHV0LkFjY2Vzc01vZGUSEQoJam9iX2NvdW50GB8gASgDEhgKEHJ1bl90aW1lX3NlY29uZHMYKSABKAMSGAoQYmxvY2tfc2l6ZV9ieXRlcxhHIAEoAxIXCg9maWxlX3NpemVfYnl0ZXMYWyABKAMSEAoIaW9fZGVwdGgYeSABKAMimwEKCkFjY2Vzc01vZGUSCAoEUkVBRBAAEgkKBVdSSVRFEAESCAoEVFJJTRACEg4KClJFQURfV1JJVEUQAxIOCgpUUklNX1dSSVRFEAQSDQoJUkFORF9SRUFEEAUSDgoKUkFORF9XUklURRAGEg0KCVJBTkRfVFJJTRAHEgsKB1JBTkRfUlcQCBITCg9SQU5EX1RSSU1fV1JJVEUQCRrXAwoGT3V0cHV0EkAKBHJlYWQYASABKAsyMi5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRklPLk91dHB1dC5UaHJvdWdocHV0EkEKBXdyaXRlGAIgASgLMjIub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJTy5PdXRwdXQuVGhyb3VnaHB1dBJACgR0cmltGAMgASgLMjIub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJTy5PdXRwdXQuVGhyb3VnaHB1dBqFAgoKVGhyb3VnaHB1dBIQCghpb19ieXRlcxgBIAEoAxIXCg9iYW5kd2lkdGhfYnl0ZXMYAiABKAMSFQoNaW9fcGVyX3NlY29uZBgDIAEoARIRCgl0b3RhbF9pb3MYBCABKAMSSwoHbGF0ZW5jeRgLIAEoCzI6Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5GSU8uT3V0cHV0LlRocm91Z2hwdXQuTGF0ZW5jeRpVCgdMYXRlbmN5EhcKD21pbl9uYW5vc2Vjb25kcxgBIAEoAxIXCg9tYXhfbmFub3NlY29uZHMYAiABKAMSGAoQbWVhbl9uYW5vc2Vjb25kcxgDIAEoAUIICgZ0YXJnZXQitggKBFdhcnASVQoXaW50ZXJuYWxfb2JqZWN0X3NlcnZpY2UYASABKAsyMi5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuSW50ZXJuYWxPYmplY3RTZXJ2aWNlSAASVQoXZXh0ZXJuYWxfb2JqZWN0X3NlcnZpY2UYAiABKAsyMi5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRXh0ZXJuYWxPYmplY3RTZXJ2aWNlSAASNgoFaW5wdXQYCyABKAsyJy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycC5JbnB1dBI4CgZvdXRwdXQYDCABKAsyKC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycC5PdXRwdXQa4gEKBUlucHV0EkQKCW9wZXJhdGlvbhgBIAEoDjIxLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5XYXJwLklucHV0Lk9wZXJhdGlvbhIYChBkdXJhdGlvbl9zZWNvbmRzGBUgASgDEhkKEW9iamVjdF9zaXplX2J5dGVzGB8gASgDEhQKDG9iamVjdF9jb3VudBggIAEoAyJICglPcGVyYXRpb24SBwoDR0VUEAASBwoDUFVUEAESCgoGREVMRVRFEAISCAoETElTVBADEggKBFNUQVQQBBIJCgVNSVhFRBAFGp4ECgZPdXRwdXQSQAoDZ2V0GAsgASgLMjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQSQAoDcHV0GAwgASgLMjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQSQwoGZGVsZXRlGA0gASgLMjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQaygIKClRocm91Z2hwdXQSEwoLdG90YWxfYnl0ZXMYASABKAESFQoNdG90YWxfb2JqZWN0cxgCIAEoARIYChB0b3RhbF9vcGVyYXRpb25zGAMgASgDEkoKBWJ5dGVzGAsgASgLMjsub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQuTWV0cmljcxJMCgdvYmplY3RzGAwgASgLMjsub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQuTWV0cmljcxpcCgdNZXRyaWNzEhoKEmZhc3Rlc3RfcGVyX3NlY29uZBgBIAEoARIZChFtZWRpYW5fcGVyX3NlY29uZBgCIAEoARIaChJzbG93ZXN0X3Blcl9zZWNvbmQYAyABKAFCCAoGdGFyZ2V0IvsCCgpUZXN0UmVzdWx0EgsKA3VpZBgBIAEoCRIMCgRuYW1lGAIgASgJEj4KBnN0YXR1cxgDIAEoDjIuLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5UZXN0UmVzdWx0LlN0YXR1cxISCgpjcmVhdGVkX2J5GAQgASgJEi4KCnN0YXJ0ZWRfYXQYCyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjAKDGNvbXBsZXRlZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoDZmlvGGUgASgLMiAub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJT0gAEjEKBHdhcnAYZiABKAsyIS5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycEgAIjAKBlN0YXR1cxILCgdSVU5OSU5HEAASDQoJU1VDQ0VFREVEEAESCgoGRkFJTEVEEAJCBgoEa2luZCIYChZMaXN0VGVzdFJlc3VsdHNSZXF1ZXN0IlgKF0xpc3RUZXN0UmVzdWx0c1Jlc3BvbnNlEj0KDHRlc3RfcmVzdWx0cxgBIAMoCzInLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5UZXN0UmVzdWx0IqcBChdDcmVhdGVUZXN0UmVzdWx0UmVxdWVzdBIMCgRuYW1lGAEgASgJEhIKCmNyZWF0ZWRfYnkYAiABKAkSLwoDZmlvGGUgASgLMiAub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJT0gAEjEKBHdhcnAYZiABKAsyIS5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycEgAQgYKBGtpbmQiJwoXRGVsZXRlVGVzdFJlc3VsdFJlcXVlc3QSDAoEbmFtZRgBIAEoCSJeCiFMaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1JlcXVlc3QSDQoFc2NvcGUYASABKAkSFwoPa3ViZXJuZXRlc19uYW1lGAIgASgJEhEKCWNlcGhfbmFtZRgDIAEoCSJ6CiJMaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1Jlc3BvbnNlElQKGGludGVybmFsX29iamVjdF9zZXJ2aWNlcxgBIAMoCzIyLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5JbnRlcm5hbE9iamVjdFNlcnZpY2Uykg0KFENvbmZpZ3VyYXRpb25TZXJ2aWNlEnQKEEdldENvbmZpZ3VyYXRpb24SNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuR2V0Q29uZmlndXJhdGlvblJlcXVlc3QaKi5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ29uZmlndXJhdGlvbhJ8Cg9VcGRhdGVOVFBTZXJ2ZXISMy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuVXBkYXRlTlRQU2VydmVyUmVxdWVzdBo0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLk5UUFNlcnZlchKUAQoXVXBkYXRlUGFja2FnZVJlcG9zaXRvcnkSOy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlSZXF1ZXN0Gjwub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uUGFja2FnZVJlcG9zaXRvcnkSiwEKFFVwZGF0ZUhlbG1SZXBvc2l0b3J5Ejgub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLlVwZGF0ZUhlbG1SZXBvc2l0b3J5UmVxdWVzdBo5Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLkhlbG1SZXBvc2l0b3J5EnwKD0NyZWF0ZUJvb3RJbWFnZRIzLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5DcmVhdGVCb290SW1hZ2VSZXF1ZXN0GjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlEmYKE1NldERlZmF1bHRCb290SW1hZ2USNy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuU2V0RGVmYXVsdEJvb3RJbWFnZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSYAoQSW1wb3J0Qm9vdEltYWdlcxI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5JbXBvcnRCb290SW1hZ2VzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRKOAQoVSXNJbXBvcnRpbmdCb290SW1hZ2VzEjkub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLklzSW1wb3J0aW5nQm9vdEltYWdlc1JlcXVlc3QaOi5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuSXNJbXBvcnRpbmdCb290SW1hZ2VzUmVzcG9uc2USlAEKF0xpc3RCb290SW1hZ2VTZWxlY3Rpb25zEjsub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkxpc3RCb290SW1hZ2VTZWxlY3Rpb25zUmVxdWVzdBo8Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0Qm9vdEltYWdlU2VsZWN0aW9uc1Jlc3BvbnNlEnwKD0xpc3RUZXN0UmVzdWx0cxIzLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0VGVzdFJlc3VsdHNSZXF1ZXN0GjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkxpc3RUZXN0UmVzdWx0c1Jlc3BvbnNlEnEKEENyZWF0ZVRlc3RSZXN1bHQSNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ3JlYXRlVGVzdFJlc3VsdFJlcXVlc3QaJy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuVGVzdFJlc3VsdBJgChBEZWxldGVUZXN0UmVzdWx0EjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkRlbGV0ZVRlc3RSZXN1bHRSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Ep0BChpMaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlcxI+Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1JlcXVlc3QaPy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuTGlzdEludGVybmFsT2JqZWN0U2VydmljZXNSZXNwb25zZUI6WjhnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvY29uZmlndXJhdGlvbi92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message otterscale.configuration.v1.Configuration
@@ -32,6 +32,11 @@ export type Configuration = Message<"otterscale.configuration.v1.Configuration">
    * @generated from field: repeated otterscale.configuration.v1.Configuration.BootImage boot_images = 3;
    */
   bootImages: Configuration_BootImage[];
+
+  /**
+   * @generated from field: otterscale.configuration.v1.Configuration.HelmRepository helm_repository = 4;
+   */
+  helmRepository?: Configuration_HelmRepository;
 };
 
 /**
@@ -155,6 +160,23 @@ export const Configuration_BootImageSchema: GenMessage<Configuration_BootImage> 
   messageDesc(file_api_configuration_v1_configuration, 0, 3);
 
 /**
+ * @generated from message otterscale.configuration.v1.Configuration.HelmRepository
+ */
+export type Configuration_HelmRepository = Message<"otterscale.configuration.v1.Configuration.HelmRepository"> & {
+  /**
+   * @generated from field: repeated string urls = 1;
+   */
+  urls: string[];
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.Configuration.HelmRepository.
+ * Use `create(Configuration_HelmRepositorySchema)` to create a new message.
+ */
+export const Configuration_HelmRepositorySchema: GenMessage<Configuration_HelmRepository> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 0, 4);
+
+/**
  * @generated from message otterscale.configuration.v1.GetConfigurationRequest
  */
 export type GetConfigurationRequest = Message<"otterscale.configuration.v1.GetConfigurationRequest"> & {
@@ -212,6 +234,23 @@ export const UpdatePackageRepositoryRequestSchema: GenMessage<UpdatePackageRepos
   messageDesc(file_api_configuration_v1_configuration, 3);
 
 /**
+ * @generated from message otterscale.configuration.v1.UpdateHelmRepositoryRequest
+ */
+export type UpdateHelmRepositoryRequest = Message<"otterscale.configuration.v1.UpdateHelmRepositoryRequest"> & {
+  /**
+   * @generated from field: repeated string urls = 1;
+   */
+  urls: string[];
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.UpdateHelmRepositoryRequest.
+ * Use `create(UpdateHelmRepositoryRequestSchema)` to create a new message.
+ */
+export const UpdateHelmRepositoryRequestSchema: GenMessage<UpdateHelmRepositoryRequest> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 4);
+
+/**
  * @generated from message otterscale.configuration.v1.CreateBootImageRequest
  */
 export type CreateBootImageRequest = Message<"otterscale.configuration.v1.CreateBootImageRequest"> & {
@@ -231,7 +270,7 @@ export type CreateBootImageRequest = Message<"otterscale.configuration.v1.Create
  * Use `create(CreateBootImageRequestSchema)` to create a new message.
  */
 export const CreateBootImageRequestSchema: GenMessage<CreateBootImageRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 4);
+  messageDesc(file_api_configuration_v1_configuration, 5);
 
 /**
  * @generated from message otterscale.configuration.v1.SetDefaultBootImageRequest
@@ -248,7 +287,7 @@ export type SetDefaultBootImageRequest = Message<"otterscale.configuration.v1.Se
  * Use `create(SetDefaultBootImageRequestSchema)` to create a new message.
  */
 export const SetDefaultBootImageRequestSchema: GenMessage<SetDefaultBootImageRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 5);
+  messageDesc(file_api_configuration_v1_configuration, 6);
 
 /**
  * @generated from message otterscale.configuration.v1.ImportBootImagesRequest
@@ -261,7 +300,7 @@ export type ImportBootImagesRequest = Message<"otterscale.configuration.v1.Impor
  * Use `create(ImportBootImagesRequestSchema)` to create a new message.
  */
 export const ImportBootImagesRequestSchema: GenMessage<ImportBootImagesRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 6);
+  messageDesc(file_api_configuration_v1_configuration, 7);
 
 /**
  * @generated from message otterscale.configuration.v1.IsImportingBootImagesRequest
@@ -274,7 +313,7 @@ export type IsImportingBootImagesRequest = Message<"otterscale.configuration.v1.
  * Use `create(IsImportingBootImagesRequestSchema)` to create a new message.
  */
 export const IsImportingBootImagesRequestSchema: GenMessage<IsImportingBootImagesRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 7);
+  messageDesc(file_api_configuration_v1_configuration, 8);
 
 /**
  * @generated from message otterscale.configuration.v1.IsImportingBootImagesResponse
@@ -291,7 +330,7 @@ export type IsImportingBootImagesResponse = Message<"otterscale.configuration.v1
  * Use `create(IsImportingBootImagesResponseSchema)` to create a new message.
  */
 export const IsImportingBootImagesResponseSchema: GenMessage<IsImportingBootImagesResponse> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 8);
+  messageDesc(file_api_configuration_v1_configuration, 9);
 
 /**
  * @generated from message otterscale.configuration.v1.ListBootImageSelectionsRequest
@@ -304,7 +343,7 @@ export type ListBootImageSelectionsRequest = Message<"otterscale.configuration.v
  * Use `create(ListBootImageSelectionsRequestSchema)` to create a new message.
  */
 export const ListBootImageSelectionsRequestSchema: GenMessage<ListBootImageSelectionsRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 9);
+  messageDesc(file_api_configuration_v1_configuration, 10);
 
 /**
  * @generated from message otterscale.configuration.v1.ListBootImageSelectionsResponse
@@ -321,7 +360,802 @@ export type ListBootImageSelectionsResponse = Message<"otterscale.configuration.
  * Use `create(ListBootImageSelectionsResponseSchema)` to create a new message.
  */
 export const ListBootImageSelectionsResponseSchema: GenMessage<ListBootImageSelectionsResponse> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 10);
+  messageDesc(file_api_configuration_v1_configuration, 11);
+
+/**
+ * @generated from message otterscale.configuration.v1.CephBlockDevice
+ */
+export type CephBlockDevice = Message<"otterscale.configuration.v1.CephBlockDevice"> & {
+  /**
+   * @generated from field: string scope = 1;
+   */
+  scope: string;
+
+  /**
+   * @generated from field: string facility = 2;
+   */
+  facility: string;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.CephBlockDevice.
+ * Use `create(CephBlockDeviceSchema)` to create a new message.
+ */
+export const CephBlockDeviceSchema: GenMessage<CephBlockDevice> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 12);
+
+/**
+ * @generated from message otterscale.configuration.v1.NetworkFileSystem
+ */
+export type NetworkFileSystem = Message<"otterscale.configuration.v1.NetworkFileSystem"> & {
+  /**
+   * @generated from field: string endpoint = 1;
+   */
+  endpoint: string;
+
+  /**
+   * @generated from field: string path = 2;
+   */
+  path: string;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.NetworkFileSystem.
+ * Use `create(NetworkFileSystemSchema)` to create a new message.
+ */
+export const NetworkFileSystemSchema: GenMessage<NetworkFileSystem> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 13);
+
+/**
+ * @generated from message otterscale.configuration.v1.InternalObjectService
+ */
+export type InternalObjectService = Message<"otterscale.configuration.v1.InternalObjectService"> & {
+  /**
+   * @generated from field: otterscale.configuration.v1.InternalObjectService.Type type = 1;
+   */
+  type: InternalObjectService_Type;
+
+  /**
+   * @generated from field: string scope = 2;
+   */
+  scope: string;
+
+  /**
+   * @generated from field: string facility = 3;
+   */
+  facility: string;
+
+  /**
+   * @generated from field: string name = 4;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string endpoint = 5;
+   */
+  endpoint: string;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.InternalObjectService.
+ * Use `create(InternalObjectServiceSchema)` to create a new message.
+ */
+export const InternalObjectServiceSchema: GenMessage<InternalObjectService> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 14);
+
+/**
+ * @generated from enum otterscale.configuration.v1.InternalObjectService.Type
+ */
+export enum InternalObjectService_Type {
+  /**
+   * @generated from enum value: UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: CEPH = 1;
+   */
+  CEPH = 1,
+
+  /**
+   * @generated from enum value: MINIO = 2;
+   */
+  MINIO = 2,
+}
+
+/**
+ * Describes the enum otterscale.configuration.v1.InternalObjectService.Type.
+ */
+export const InternalObjectService_TypeSchema: GenEnum<InternalObjectService_Type> = /*@__PURE__*/
+  enumDesc(file_api_configuration_v1_configuration, 14, 0);
+
+/**
+ * @generated from message otterscale.configuration.v1.ExternalObjectService
+ */
+export type ExternalObjectService = Message<"otterscale.configuration.v1.ExternalObjectService"> & {
+  /**
+   * @generated from field: string endpoint = 1;
+   */
+  endpoint: string;
+
+  /**
+   * @generated from field: string access_key = 2;
+   */
+  accessKey: string;
+
+  /**
+   * @generated from field: string secret_key = 3;
+   */
+  secretKey: string;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.ExternalObjectService.
+ * Use `create(ExternalObjectServiceSchema)` to create a new message.
+ */
+export const ExternalObjectServiceSchema: GenMessage<ExternalObjectService> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 15);
+
+/**
+ * @generated from message otterscale.configuration.v1.FIO
+ */
+export type FIO = Message<"otterscale.configuration.v1.FIO"> & {
+  /**
+   * @generated from oneof otterscale.configuration.v1.FIO.target
+   */
+  target: {
+    /**
+     * @generated from field: otterscale.configuration.v1.CephBlockDevice ceph_block_device = 1;
+     */
+    value: CephBlockDevice;
+    case: "cephBlockDevice";
+  } | {
+    /**
+     * @generated from field: otterscale.configuration.v1.NetworkFileSystem network_file_system = 2;
+     */
+    value: NetworkFileSystem;
+    case: "networkFileSystem";
+  } | { case: undefined; value?: undefined };
+
+  /**
+   * @generated from field: otterscale.configuration.v1.FIO.Input input = 11;
+   */
+  input?: FIO_Input;
+
+  /**
+   * @generated from field: otterscale.configuration.v1.FIO.Output output = 12;
+   */
+  output?: FIO_Output;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.FIO.
+ * Use `create(FIOSchema)` to create a new message.
+ */
+export const FIOSchema: GenMessage<FIO> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 16);
+
+/**
+ * @generated from message otterscale.configuration.v1.FIO.Input
+ */
+export type FIO_Input = Message<"otterscale.configuration.v1.FIO.Input"> & {
+  /**
+   * @generated from field: otterscale.configuration.v1.FIO.Input.AccessMode access_mode = 1;
+   */
+  accessMode: FIO_Input_AccessMode;
+
+  /**
+   * 1.13.3 Job description
+   *
+   * @generated from field: int64 job_count = 31;
+   */
+  jobCount: bigint;
+
+  /**
+   * 1.13.4 Time related parameters
+   *
+   * @generated from field: int64 run_time_seconds = 41;
+   */
+  runTimeSeconds: bigint;
+
+  /**
+   * 1.13.7 Block size
+   *
+   * @generated from field: int64 block_size_bytes = 71;
+   */
+  blockSizeBytes: bigint;
+
+  /**
+   * 1.13.9 I/O size
+   *
+   * @generated from field: int64 file_size_bytes = 91;
+   */
+  fileSizeBytes: bigint;
+
+  /**
+   * 1.13.12 I/O depth
+   *
+   * @generated from field: int64 io_depth = 121;
+   */
+  ioDepth: bigint;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.FIO.Input.
+ * Use `create(FIO_InputSchema)` to create a new message.
+ */
+export const FIO_InputSchema: GenMessage<FIO_Input> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 16, 0);
+
+/**
+ * @generated from enum otterscale.configuration.v1.FIO.Input.AccessMode
+ */
+export enum FIO_Input_AccessMode {
+  /**
+   * @generated from enum value: READ = 0;
+   */
+  READ = 0,
+
+  /**
+   * @generated from enum value: WRITE = 1;
+   */
+  WRITE = 1,
+
+  /**
+   * @generated from enum value: TRIM = 2;
+   */
+  TRIM = 2,
+
+  /**
+   * @generated from enum value: READ_WRITE = 3;
+   */
+  READ_WRITE = 3,
+
+  /**
+   * @generated from enum value: TRIM_WRITE = 4;
+   */
+  TRIM_WRITE = 4,
+
+  /**
+   * @generated from enum value: RAND_READ = 5;
+   */
+  RAND_READ = 5,
+
+  /**
+   * @generated from enum value: RAND_WRITE = 6;
+   */
+  RAND_WRITE = 6,
+
+  /**
+   * @generated from enum value: RAND_TRIM = 7;
+   */
+  RAND_TRIM = 7,
+
+  /**
+   * @generated from enum value: RAND_RW = 8;
+   */
+  RAND_RW = 8,
+
+  /**
+   * @generated from enum value: RAND_TRIM_WRITE = 9;
+   */
+  RAND_TRIM_WRITE = 9,
+}
+
+/**
+ * Describes the enum otterscale.configuration.v1.FIO.Input.AccessMode.
+ */
+export const FIO_Input_AccessModeSchema: GenEnum<FIO_Input_AccessMode> = /*@__PURE__*/
+  enumDesc(file_api_configuration_v1_configuration, 16, 0, 0);
+
+/**
+ * @generated from message otterscale.configuration.v1.FIO.Output
+ */
+export type FIO_Output = Message<"otterscale.configuration.v1.FIO.Output"> & {
+  /**
+   * @generated from field: otterscale.configuration.v1.FIO.Output.Throughput read = 1;
+   */
+  read?: FIO_Output_Throughput;
+
+  /**
+   * @generated from field: otterscale.configuration.v1.FIO.Output.Throughput write = 2;
+   */
+  write?: FIO_Output_Throughput;
+
+  /**
+   * @generated from field: otterscale.configuration.v1.FIO.Output.Throughput trim = 3;
+   */
+  trim?: FIO_Output_Throughput;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.FIO.Output.
+ * Use `create(FIO_OutputSchema)` to create a new message.
+ */
+export const FIO_OutputSchema: GenMessage<FIO_Output> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 16, 1);
+
+/**
+ * @generated from message otterscale.configuration.v1.FIO.Output.Throughput
+ */
+export type FIO_Output_Throughput = Message<"otterscale.configuration.v1.FIO.Output.Throughput"> & {
+  /**
+   * @generated from field: int64 io_bytes = 1;
+   */
+  ioBytes: bigint;
+
+  /**
+   * @generated from field: int64 bandwidth_bytes = 2;
+   */
+  bandwidthBytes: bigint;
+
+  /**
+   * @generated from field: double io_per_second = 3;
+   */
+  ioPerSecond: number;
+
+  /**
+   * @generated from field: int64 total_ios = 4;
+   */
+  totalIos: bigint;
+
+  /**
+   * @generated from field: otterscale.configuration.v1.FIO.Output.Throughput.Latency latency = 11;
+   */
+  latency?: FIO_Output_Throughput_Latency;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.FIO.Output.Throughput.
+ * Use `create(FIO_Output_ThroughputSchema)` to create a new message.
+ */
+export const FIO_Output_ThroughputSchema: GenMessage<FIO_Output_Throughput> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 16, 1, 0);
+
+/**
+ * @generated from message otterscale.configuration.v1.FIO.Output.Throughput.Latency
+ */
+export type FIO_Output_Throughput_Latency = Message<"otterscale.configuration.v1.FIO.Output.Throughput.Latency"> & {
+  /**
+   * @generated from field: int64 min_nanoseconds = 1;
+   */
+  minNanoseconds: bigint;
+
+  /**
+   * @generated from field: int64 max_nanoseconds = 2;
+   */
+  maxNanoseconds: bigint;
+
+  /**
+   * @generated from field: double mean_nanoseconds = 3;
+   */
+  meanNanoseconds: number;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.FIO.Output.Throughput.Latency.
+ * Use `create(FIO_Output_Throughput_LatencySchema)` to create a new message.
+ */
+export const FIO_Output_Throughput_LatencySchema: GenMessage<FIO_Output_Throughput_Latency> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 16, 1, 0, 0);
+
+/**
+ * @generated from message otterscale.configuration.v1.Warp
+ */
+export type Warp = Message<"otterscale.configuration.v1.Warp"> & {
+  /**
+   * @generated from oneof otterscale.configuration.v1.Warp.target
+   */
+  target: {
+    /**
+     * @generated from field: otterscale.configuration.v1.InternalObjectService internal_object_service = 1;
+     */
+    value: InternalObjectService;
+    case: "internalObjectService";
+  } | {
+    /**
+     * @generated from field: otterscale.configuration.v1.ExternalObjectService external_object_service = 2;
+     */
+    value: ExternalObjectService;
+    case: "externalObjectService";
+  } | { case: undefined; value?: undefined };
+
+  /**
+   * @generated from field: otterscale.configuration.v1.Warp.Input input = 11;
+   */
+  input?: Warp_Input;
+
+  /**
+   * @generated from field: otterscale.configuration.v1.Warp.Output output = 12;
+   */
+  output?: Warp_Output;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.Warp.
+ * Use `create(WarpSchema)` to create a new message.
+ */
+export const WarpSchema: GenMessage<Warp> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 17);
+
+/**
+ * @generated from message otterscale.configuration.v1.Warp.Input
+ */
+export type Warp_Input = Message<"otterscale.configuration.v1.Warp.Input"> & {
+  /**
+   * @generated from field: otterscale.configuration.v1.Warp.Input.Operation operation = 1;
+   */
+  operation: Warp_Input_Operation;
+
+  /**
+   * @generated from field: int64 duration_seconds = 21;
+   */
+  durationSeconds: bigint;
+
+  /**
+   * @generated from field: int64 object_size_bytes = 31;
+   */
+  objectSizeBytes: bigint;
+
+  /**
+   * @generated from field: int64 object_count = 32;
+   */
+  objectCount: bigint;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.Warp.Input.
+ * Use `create(Warp_InputSchema)` to create a new message.
+ */
+export const Warp_InputSchema: GenMessage<Warp_Input> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 17, 0);
+
+/**
+ * @generated from enum otterscale.configuration.v1.Warp.Input.Operation
+ */
+export enum Warp_Input_Operation {
+  /**
+   * @generated from enum value: GET = 0;
+   */
+  GET = 0,
+
+  /**
+   * @generated from enum value: PUT = 1;
+   */
+  PUT = 1,
+
+  /**
+   * @generated from enum value: DELETE = 2;
+   */
+  DELETE = 2,
+
+  /**
+   * @generated from enum value: LIST = 3;
+   */
+  LIST = 3,
+
+  /**
+   * @generated from enum value: STAT = 4;
+   */
+  STAT = 4,
+
+  /**
+   * @generated from enum value: MIXED = 5;
+   */
+  MIXED = 5,
+}
+
+/**
+ * Describes the enum otterscale.configuration.v1.Warp.Input.Operation.
+ */
+export const Warp_Input_OperationSchema: GenEnum<Warp_Input_Operation> = /*@__PURE__*/
+  enumDesc(file_api_configuration_v1_configuration, 17, 0, 0);
+
+/**
+ * @generated from message otterscale.configuration.v1.Warp.Output
+ */
+export type Warp_Output = Message<"otterscale.configuration.v1.Warp.Output"> & {
+  /**
+   * @generated from field: otterscale.configuration.v1.Warp.Output.Throughput get = 11;
+   */
+  get?: Warp_Output_Throughput;
+
+  /**
+   * @generated from field: otterscale.configuration.v1.Warp.Output.Throughput put = 12;
+   */
+  put?: Warp_Output_Throughput;
+
+  /**
+   * @generated from field: otterscale.configuration.v1.Warp.Output.Throughput delete = 13;
+   */
+  delete?: Warp_Output_Throughput;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.Warp.Output.
+ * Use `create(Warp_OutputSchema)` to create a new message.
+ */
+export const Warp_OutputSchema: GenMessage<Warp_Output> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 17, 1);
+
+/**
+ * @generated from message otterscale.configuration.v1.Warp.Output.Throughput
+ */
+export type Warp_Output_Throughput = Message<"otterscale.configuration.v1.Warp.Output.Throughput"> & {
+  /**
+   * @generated from field: double total_bytes = 1;
+   */
+  totalBytes: number;
+
+  /**
+   * @generated from field: double total_objects = 2;
+   */
+  totalObjects: number;
+
+  /**
+   * @generated from field: int64 total_operations = 3;
+   */
+  totalOperations: bigint;
+
+  /**
+   * @generated from field: otterscale.configuration.v1.Warp.Output.Throughput.Metrics bytes = 11;
+   */
+  bytes?: Warp_Output_Throughput_Metrics;
+
+  /**
+   * @generated from field: otterscale.configuration.v1.Warp.Output.Throughput.Metrics objects = 12;
+   */
+  objects?: Warp_Output_Throughput_Metrics;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.Warp.Output.Throughput.
+ * Use `create(Warp_Output_ThroughputSchema)` to create a new message.
+ */
+export const Warp_Output_ThroughputSchema: GenMessage<Warp_Output_Throughput> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 17, 1, 0);
+
+/**
+ * @generated from message otterscale.configuration.v1.Warp.Output.Throughput.Metrics
+ */
+export type Warp_Output_Throughput_Metrics = Message<"otterscale.configuration.v1.Warp.Output.Throughput.Metrics"> & {
+  /**
+   * @generated from field: double fastest_per_second = 1;
+   */
+  fastestPerSecond: number;
+
+  /**
+   * @generated from field: double median_per_second = 2;
+   */
+  medianPerSecond: number;
+
+  /**
+   * @generated from field: double slowest_per_second = 3;
+   */
+  slowestPerSecond: number;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.Warp.Output.Throughput.Metrics.
+ * Use `create(Warp_Output_Throughput_MetricsSchema)` to create a new message.
+ */
+export const Warp_Output_Throughput_MetricsSchema: GenMessage<Warp_Output_Throughput_Metrics> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 17, 1, 0, 0);
+
+/**
+ * @generated from message otterscale.configuration.v1.TestResult
+ */
+export type TestResult = Message<"otterscale.configuration.v1.TestResult"> & {
+  /**
+   * @generated from field: string uid = 1;
+   */
+  uid: string;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
+
+  /**
+   * @generated from field: otterscale.configuration.v1.TestResult.Status status = 3;
+   */
+  status: TestResult_Status;
+
+  /**
+   * @generated from field: string created_by = 4;
+   */
+  createdBy: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp started_at = 11;
+   */
+  startedAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp completed_at = 12;
+   */
+  completedAt?: Timestamp;
+
+  /**
+   * @generated from oneof otterscale.configuration.v1.TestResult.kind
+   */
+  kind: {
+    /**
+     * @generated from field: otterscale.configuration.v1.FIO fio = 101;
+     */
+    value: FIO;
+    case: "fio";
+  } | {
+    /**
+     * @generated from field: otterscale.configuration.v1.Warp warp = 102;
+     */
+    value: Warp;
+    case: "warp";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.TestResult.
+ * Use `create(TestResultSchema)` to create a new message.
+ */
+export const TestResultSchema: GenMessage<TestResult> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 18);
+
+/**
+ * @generated from enum otterscale.configuration.v1.TestResult.Status
+ */
+export enum TestResult_Status {
+  /**
+   * @generated from enum value: RUNNING = 0;
+   */
+  RUNNING = 0,
+
+  /**
+   * @generated from enum value: SUCCEEDED = 1;
+   */
+  SUCCEEDED = 1,
+
+  /**
+   * @generated from enum value: FAILED = 2;
+   */
+  FAILED = 2,
+}
+
+/**
+ * Describes the enum otterscale.configuration.v1.TestResult.Status.
+ */
+export const TestResult_StatusSchema: GenEnum<TestResult_Status> = /*@__PURE__*/
+  enumDesc(file_api_configuration_v1_configuration, 18, 0);
+
+/**
+ * @generated from message otterscale.configuration.v1.ListTestResultsRequest
+ */
+export type ListTestResultsRequest = Message<"otterscale.configuration.v1.ListTestResultsRequest"> & {
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.ListTestResultsRequest.
+ * Use `create(ListTestResultsRequestSchema)` to create a new message.
+ */
+export const ListTestResultsRequestSchema: GenMessage<ListTestResultsRequest> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 19);
+
+/**
+ * @generated from message otterscale.configuration.v1.ListTestResultsResponse
+ */
+export type ListTestResultsResponse = Message<"otterscale.configuration.v1.ListTestResultsResponse"> & {
+  /**
+   * @generated from field: repeated otterscale.configuration.v1.TestResult test_results = 1;
+   */
+  testResults: TestResult[];
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.ListTestResultsResponse.
+ * Use `create(ListTestResultsResponseSchema)` to create a new message.
+ */
+export const ListTestResultsResponseSchema: GenMessage<ListTestResultsResponse> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 20);
+
+/**
+ * @generated from message otterscale.configuration.v1.CreateTestResultRequest
+ */
+export type CreateTestResultRequest = Message<"otterscale.configuration.v1.CreateTestResultRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string created_by = 2;
+   */
+  createdBy: string;
+
+  /**
+   * @generated from oneof otterscale.configuration.v1.CreateTestResultRequest.kind
+   */
+  kind: {
+    /**
+     * @generated from field: otterscale.configuration.v1.FIO fio = 101;
+     */
+    value: FIO;
+    case: "fio";
+  } | {
+    /**
+     * @generated from field: otterscale.configuration.v1.Warp warp = 102;
+     */
+    value: Warp;
+    case: "warp";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.CreateTestResultRequest.
+ * Use `create(CreateTestResultRequestSchema)` to create a new message.
+ */
+export const CreateTestResultRequestSchema: GenMessage<CreateTestResultRequest> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 21);
+
+/**
+ * @generated from message otterscale.configuration.v1.DeleteTestResultRequest
+ */
+export type DeleteTestResultRequest = Message<"otterscale.configuration.v1.DeleteTestResultRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.DeleteTestResultRequest.
+ * Use `create(DeleteTestResultRequestSchema)` to create a new message.
+ */
+export const DeleteTestResultRequestSchema: GenMessage<DeleteTestResultRequest> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 22);
+
+/**
+ * @generated from message otterscale.configuration.v1.ListInternalObjectServicesRequest
+ */
+export type ListInternalObjectServicesRequest = Message<"otterscale.configuration.v1.ListInternalObjectServicesRequest"> & {
+  /**
+   * @generated from field: string scope = 1;
+   */
+  scope: string;
+
+  /**
+   * @generated from field: string kubernetes_name = 2;
+   */
+  kubernetesName: string;
+
+  /**
+   * @generated from field: string ceph_name = 3;
+   */
+  cephName: string;
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.ListInternalObjectServicesRequest.
+ * Use `create(ListInternalObjectServicesRequestSchema)` to create a new message.
+ */
+export const ListInternalObjectServicesRequestSchema: GenMessage<ListInternalObjectServicesRequest> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 23);
+
+/**
+ * @generated from message otterscale.configuration.v1.ListInternalObjectServicesResponse
+ */
+export type ListInternalObjectServicesResponse = Message<"otterscale.configuration.v1.ListInternalObjectServicesResponse"> & {
+  /**
+   * @generated from field: repeated otterscale.configuration.v1.InternalObjectService internal_object_services = 1;
+   */
+  internalObjectServices: InternalObjectService[];
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.ListInternalObjectServicesResponse.
+ * Use `create(ListInternalObjectServicesResponseSchema)` to create a new message.
+ */
+export const ListInternalObjectServicesResponseSchema: GenMessage<ListInternalObjectServicesResponse> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 24);
 
 /**
  * @generated from service otterscale.configuration.v1.ConfigurationService
@@ -350,6 +1184,14 @@ export const ConfigurationService: GenService<{
     methodKind: "unary";
     input: typeof UpdatePackageRepositoryRequestSchema;
     output: typeof Configuration_PackageRepositorySchema;
+  },
+  /**
+   * @generated from rpc otterscale.configuration.v1.ConfigurationService.UpdateHelmRepository
+   */
+  updateHelmRepository: {
+    methodKind: "unary";
+    input: typeof UpdateHelmRepositoryRequestSchema;
+    output: typeof Configuration_HelmRepositorySchema;
   },
   /**
    * @generated from rpc otterscale.configuration.v1.ConfigurationService.CreateBootImage
@@ -390,6 +1232,38 @@ export const ConfigurationService: GenService<{
     methodKind: "unary";
     input: typeof ListBootImageSelectionsRequestSchema;
     output: typeof ListBootImageSelectionsResponseSchema;
+  },
+  /**
+   * @generated from rpc otterscale.configuration.v1.ConfigurationService.ListTestResults
+   */
+  listTestResults: {
+    methodKind: "unary";
+    input: typeof ListTestResultsRequestSchema;
+    output: typeof ListTestResultsResponseSchema;
+  },
+  /**
+   * @generated from rpc otterscale.configuration.v1.ConfigurationService.CreateTestResult
+   */
+  createTestResult: {
+    methodKind: "unary";
+    input: typeof CreateTestResultRequestSchema;
+    output: typeof TestResultSchema;
+  },
+  /**
+   * @generated from rpc otterscale.configuration.v1.ConfigurationService.DeleteTestResult
+   */
+  deleteTestResult: {
+    methodKind: "unary";
+    input: typeof DeleteTestResultRequestSchema;
+    output: typeof EmptySchema;
+  },
+  /**
+   * @generated from rpc otterscale.configuration.v1.ConfigurationService.ListInternalObjectServices
+   */
+  listInternalObjectServices: {
+    methodKind: "unary";
+    input: typeof ListInternalObjectServicesRequestSchema;
+    output: typeof ListInternalObjectServicesResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_configuration_v1_configuration, 0);

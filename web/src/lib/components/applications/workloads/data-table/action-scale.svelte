@@ -30,8 +30,8 @@
 
 	// Default values for the scale application request
 	const defaults = {
-		scopeUuid: $currentKubernetes?.scopeUuid || '',
-		facilityName: $currentKubernetes?.name || '',
+		scope: $currentKubernetes?.scope || '',
+		facility: $currentKubernetes?.name || '',
 		name: application.name,
 		namespace: application.namespace,
 		type: application.type,

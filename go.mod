@@ -2,6 +2,13 @@ module github.com/otterscale/otterscale
 
 go 1.25.1
 
+ignore (
+	./assets
+	./docs
+	./scripts
+	./web
+)
+
 replace (
 	github.com/Project-HAMi/HAMi => github.com/Project-HAMi/HAMi v0.0.0-20250926102846-38714d526792 // v2.7.0
 	github.com/juju/juju => github.com/juju/juju v0.0.0-20250919053255-3bb033f317e4 // v3.6.10
@@ -33,11 +40,9 @@ require (
 	github.com/prometheus/client_golang v1.23.2
 	github.com/rs/cors v1.11.1
 	github.com/spf13/cobra v1.10.1
-	github.com/stretchr/testify v1.11.1
 	go.opentelemetry.io/otel v1.38.0
 	go.opentelemetry.io/otel/exporters/prometheus v0.60.0
 	go.opentelemetry.io/otel/sdk/metric v1.38.0
-	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/net v0.44.0
 	golang.org/x/sync v0.17.0
 	google.golang.org/protobuf v1.36.9
@@ -205,7 +210,6 @@ require (
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
-	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/vishvananda/netlink v1.3.0 // indirect
 	github.com/vishvananda/netns v0.0.5 // indirect
 	github.com/x448/float16 v0.8.4 // indirect

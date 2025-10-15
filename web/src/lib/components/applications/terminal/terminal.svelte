@@ -7,15 +7,15 @@
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 
 	let {
-		scopeUUID,
-		facilityName,
+		scope,
+		facility,
 		namespace,
 		podName,
 		containerName,
 		command,
 	}: {
-		scopeUUID: string;
-		facilityName: string;
+		scope: string;
+		facility: string;
 		namespace: string;
 		podName: string;
 		containerName: string;
@@ -174,8 +174,8 @@
 	async function startTTYSession(): Promise<void> {
 		try {
 			const stream = client.executeTTY({
-				scopeUuid: scopeUUID,
-				facilityName: facilityName,
+				scope: scope,
+				facility: facility,
 				namespace: namespace,
 				podName: podName,
 				containerName: containerName,

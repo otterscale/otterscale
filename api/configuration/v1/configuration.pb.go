@@ -10,6 +10,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	unsafe "unsafe"
 )
@@ -21,11 +22,218 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type InternalObjectService_Type int32
+
+const (
+	InternalObjectService_UNSPECIFIED InternalObjectService_Type = 0
+	InternalObjectService_CEPH        InternalObjectService_Type = 1
+	InternalObjectService_MINIO       InternalObjectService_Type = 2
+)
+
+// Enum value maps for InternalObjectService_Type.
+var (
+	InternalObjectService_Type_name = map[int32]string{
+		0: "UNSPECIFIED",
+		1: "CEPH",
+		2: "MINIO",
+	}
+	InternalObjectService_Type_value = map[string]int32{
+		"UNSPECIFIED": 0,
+		"CEPH":        1,
+		"MINIO":       2,
+	}
+)
+
+func (x InternalObjectService_Type) Enum() *InternalObjectService_Type {
+	p := new(InternalObjectService_Type)
+	*p = x
+	return p
+}
+
+func (x InternalObjectService_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (InternalObjectService_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_configuration_v1_configuration_proto_enumTypes[0].Descriptor()
+}
+
+func (InternalObjectService_Type) Type() protoreflect.EnumType {
+	return &file_api_configuration_v1_configuration_proto_enumTypes[0]
+}
+
+func (x InternalObjectService_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+type FIO_Input_AccessMode int32
+
+const (
+	FIO_Input_READ            FIO_Input_AccessMode = 0
+	FIO_Input_WRITE           FIO_Input_AccessMode = 1
+	FIO_Input_TRIM            FIO_Input_AccessMode = 2
+	FIO_Input_READ_WRITE      FIO_Input_AccessMode = 3
+	FIO_Input_TRIM_WRITE      FIO_Input_AccessMode = 4
+	FIO_Input_RAND_READ       FIO_Input_AccessMode = 5
+	FIO_Input_RAND_WRITE      FIO_Input_AccessMode = 6
+	FIO_Input_RAND_TRIM       FIO_Input_AccessMode = 7
+	FIO_Input_RAND_RW         FIO_Input_AccessMode = 8
+	FIO_Input_RAND_TRIM_WRITE FIO_Input_AccessMode = 9
+)
+
+// Enum value maps for FIO_Input_AccessMode.
+var (
+	FIO_Input_AccessMode_name = map[int32]string{
+		0: "READ",
+		1: "WRITE",
+		2: "TRIM",
+		3: "READ_WRITE",
+		4: "TRIM_WRITE",
+		5: "RAND_READ",
+		6: "RAND_WRITE",
+		7: "RAND_TRIM",
+		8: "RAND_RW",
+		9: "RAND_TRIM_WRITE",
+	}
+	FIO_Input_AccessMode_value = map[string]int32{
+		"READ":            0,
+		"WRITE":           1,
+		"TRIM":            2,
+		"READ_WRITE":      3,
+		"TRIM_WRITE":      4,
+		"RAND_READ":       5,
+		"RAND_WRITE":      6,
+		"RAND_TRIM":       7,
+		"RAND_RW":         8,
+		"RAND_TRIM_WRITE": 9,
+	}
+)
+
+func (x FIO_Input_AccessMode) Enum() *FIO_Input_AccessMode {
+	p := new(FIO_Input_AccessMode)
+	*p = x
+	return p
+}
+
+func (x FIO_Input_AccessMode) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (FIO_Input_AccessMode) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_configuration_v1_configuration_proto_enumTypes[1].Descriptor()
+}
+
+func (FIO_Input_AccessMode) Type() protoreflect.EnumType {
+	return &file_api_configuration_v1_configuration_proto_enumTypes[1]
+}
+
+func (x FIO_Input_AccessMode) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+type Warp_Input_Operation int32
+
+const (
+	Warp_Input_GET    Warp_Input_Operation = 0
+	Warp_Input_PUT    Warp_Input_Operation = 1
+	Warp_Input_DELETE Warp_Input_Operation = 2
+	Warp_Input_LIST   Warp_Input_Operation = 3
+	Warp_Input_STAT   Warp_Input_Operation = 4
+	Warp_Input_MIXED  Warp_Input_Operation = 5
+)
+
+// Enum value maps for Warp_Input_Operation.
+var (
+	Warp_Input_Operation_name = map[int32]string{
+		0: "GET",
+		1: "PUT",
+		2: "DELETE",
+		3: "LIST",
+		4: "STAT",
+		5: "MIXED",
+	}
+	Warp_Input_Operation_value = map[string]int32{
+		"GET":    0,
+		"PUT":    1,
+		"DELETE": 2,
+		"LIST":   3,
+		"STAT":   4,
+		"MIXED":  5,
+	}
+)
+
+func (x Warp_Input_Operation) Enum() *Warp_Input_Operation {
+	p := new(Warp_Input_Operation)
+	*p = x
+	return p
+}
+
+func (x Warp_Input_Operation) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Warp_Input_Operation) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_configuration_v1_configuration_proto_enumTypes[2].Descriptor()
+}
+
+func (Warp_Input_Operation) Type() protoreflect.EnumType {
+	return &file_api_configuration_v1_configuration_proto_enumTypes[2]
+}
+
+func (x Warp_Input_Operation) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+type TestResult_Status int32
+
+const (
+	TestResult_RUNNING   TestResult_Status = 0
+	TestResult_SUCCEEDED TestResult_Status = 1
+	TestResult_FAILED    TestResult_Status = 2
+)
+
+// Enum value maps for TestResult_Status.
+var (
+	TestResult_Status_name = map[int32]string{
+		0: "RUNNING",
+		1: "SUCCEEDED",
+		2: "FAILED",
+	}
+	TestResult_Status_value = map[string]int32{
+		"RUNNING":   0,
+		"SUCCEEDED": 1,
+		"FAILED":    2,
+	}
+)
+
+func (x TestResult_Status) Enum() *TestResult_Status {
+	p := new(TestResult_Status)
+	*p = x
+	return p
+}
+
+func (x TestResult_Status) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TestResult_Status) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_configuration_v1_configuration_proto_enumTypes[3].Descriptor()
+}
+
+func (TestResult_Status) Type() protoreflect.EnumType {
+	return &file_api_configuration_v1_configuration_proto_enumTypes[3]
+}
+
+func (x TestResult_Status) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 type Configuration struct {
 	state                          protoimpl.MessageState              `protogen:"opaque.v1"`
 	xxx_hidden_NtpServer           *Configuration_NTPServer            `protobuf:"bytes,1,opt,name=ntp_server,json=ntpServer"`
 	xxx_hidden_PackageRepositories *[]*Configuration_PackageRepository `protobuf:"bytes,2,rep,name=package_repositories,json=packageRepositories"`
 	xxx_hidden_BootImages          *[]*Configuration_BootImage         `protobuf:"bytes,3,rep,name=boot_images,json=bootImages"`
+	xxx_hidden_HelmRepository      *Configuration_HelmRepository       `protobuf:"bytes,4,opt,name=helm_repository,json=helmRepository"`
 	unknownFields                  protoimpl.UnknownFields
 	sizeCache                      protoimpl.SizeCache
 }
@@ -80,6 +288,13 @@ func (x *Configuration) GetBootImages() []*Configuration_BootImage {
 	return nil
 }
 
+func (x *Configuration) GetHelmRepository() *Configuration_HelmRepository {
+	if x != nil {
+		return x.xxx_hidden_HelmRepository
+	}
+	return nil
+}
+
 func (x *Configuration) SetNtpServer(v *Configuration_NTPServer) {
 	x.xxx_hidden_NtpServer = v
 }
@@ -92,6 +307,10 @@ func (x *Configuration) SetBootImages(v []*Configuration_BootImage) {
 	x.xxx_hidden_BootImages = &v
 }
 
+func (x *Configuration) SetHelmRepository(v *Configuration_HelmRepository) {
+	x.xxx_hidden_HelmRepository = v
+}
+
 func (x *Configuration) HasNtpServer() bool {
 	if x == nil {
 		return false
@@ -99,8 +318,19 @@ func (x *Configuration) HasNtpServer() bool {
 	return x.xxx_hidden_NtpServer != nil
 }
 
+func (x *Configuration) HasHelmRepository() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_HelmRepository != nil
+}
+
 func (x *Configuration) ClearNtpServer() {
 	x.xxx_hidden_NtpServer = nil
+}
+
+func (x *Configuration) ClearHelmRepository() {
+	x.xxx_hidden_HelmRepository = nil
 }
 
 type Configuration_builder struct {
@@ -109,6 +339,7 @@ type Configuration_builder struct {
 	NtpServer           *Configuration_NTPServer
 	PackageRepositories []*Configuration_PackageRepository
 	BootImages          []*Configuration_BootImage
+	HelmRepository      *Configuration_HelmRepository
 }
 
 func (b0 Configuration_builder) Build() *Configuration {
@@ -118,6 +349,7 @@ func (b0 Configuration_builder) Build() *Configuration {
 	x.xxx_hidden_NtpServer = b.NtpServer
 	x.xxx_hidden_PackageRepositories = &b.PackageRepositories
 	x.xxx_hidden_BootImages = &b.BootImages
+	x.xxx_hidden_HelmRepository = b.HelmRepository
 	return m0
 }
 
@@ -359,6 +591,63 @@ func (b0 UpdatePackageRepositoryRequest_builder) Build() *UpdatePackageRepositor
 	return m0
 }
 
+type UpdateHelmRepositoryRequest struct {
+	state           protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Urls []string               `protobuf:"bytes,1,rep,name=urls"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *UpdateHelmRepositoryRequest) Reset() {
+	*x = UpdateHelmRepositoryRequest{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateHelmRepositoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateHelmRepositoryRequest) ProtoMessage() {}
+
+func (x *UpdateHelmRepositoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *UpdateHelmRepositoryRequest) GetUrls() []string {
+	if x != nil {
+		return x.xxx_hidden_Urls
+	}
+	return nil
+}
+
+func (x *UpdateHelmRepositoryRequest) SetUrls(v []string) {
+	x.xxx_hidden_Urls = v
+}
+
+type UpdateHelmRepositoryRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Urls []string
+}
+
+func (b0 UpdateHelmRepositoryRequest_builder) Build() *UpdateHelmRepositoryRequest {
+	m0 := &UpdateHelmRepositoryRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Urls = b.Urls
+	return m0
+}
+
 type CreateBootImageRequest struct {
 	state                    protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_DistroSeries  *string                `protobuf:"bytes,1,opt,name=distro_series,json=distroSeries"`
@@ -371,7 +660,7 @@ type CreateBootImageRequest struct {
 
 func (x *CreateBootImageRequest) Reset() {
 	*x = CreateBootImageRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[4]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -383,7 +672,7 @@ func (x *CreateBootImageRequest) String() string {
 func (*CreateBootImageRequest) ProtoMessage() {}
 
 func (x *CreateBootImageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[4]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -462,7 +751,7 @@ type SetDefaultBootImageRequest struct {
 
 func (x *SetDefaultBootImageRequest) Reset() {
 	*x = SetDefaultBootImageRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[5]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -474,7 +763,7 @@ func (x *SetDefaultBootImageRequest) String() string {
 func (*SetDefaultBootImageRequest) ProtoMessage() {}
 
 func (x *SetDefaultBootImageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[5]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -537,7 +826,7 @@ type ImportBootImagesRequest struct {
 
 func (x *ImportBootImagesRequest) Reset() {
 	*x = ImportBootImagesRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[6]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -549,7 +838,7 @@ func (x *ImportBootImagesRequest) String() string {
 func (*ImportBootImagesRequest) ProtoMessage() {}
 
 func (x *ImportBootImagesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[6]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -580,7 +869,7 @@ type IsImportingBootImagesRequest struct {
 
 func (x *IsImportingBootImagesRequest) Reset() {
 	*x = IsImportingBootImagesRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[7]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -592,7 +881,7 @@ func (x *IsImportingBootImagesRequest) String() string {
 func (*IsImportingBootImagesRequest) ProtoMessage() {}
 
 func (x *IsImportingBootImagesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[7]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -626,7 +915,7 @@ type IsImportingBootImagesResponse struct {
 
 func (x *IsImportingBootImagesResponse) Reset() {
 	*x = IsImportingBootImagesResponse{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[8]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -638,7 +927,7 @@ func (x *IsImportingBootImagesResponse) String() string {
 func (*IsImportingBootImagesResponse) ProtoMessage() {}
 
 func (x *IsImportingBootImagesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[8]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -698,7 +987,7 @@ type ListBootImageSelectionsRequest struct {
 
 func (x *ListBootImageSelectionsRequest) Reset() {
 	*x = ListBootImageSelectionsRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[9]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -710,7 +999,7 @@ func (x *ListBootImageSelectionsRequest) String() string {
 func (*ListBootImageSelectionsRequest) ProtoMessage() {}
 
 func (x *ListBootImageSelectionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[9]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -742,7 +1031,7 @@ type ListBootImageSelectionsResponse struct {
 
 func (x *ListBootImageSelectionsResponse) Reset() {
 	*x = ListBootImageSelectionsResponse{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[10]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -754,7 +1043,7 @@ func (x *ListBootImageSelectionsResponse) String() string {
 func (*ListBootImageSelectionsResponse) ProtoMessage() {}
 
 func (x *ListBootImageSelectionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[10]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -792,6 +1081,1999 @@ func (b0 ListBootImageSelectionsResponse_builder) Build() *ListBootImageSelectio
 	return m0
 }
 
+type CephBlockDevice struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *CephBlockDevice) Reset() {
+	*x = CephBlockDevice{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CephBlockDevice) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CephBlockDevice) ProtoMessage() {}
+
+func (x *CephBlockDevice) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *CephBlockDevice) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CephBlockDevice) GetFacility() string {
+	if x != nil {
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CephBlockDevice) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *CephBlockDevice) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *CephBlockDevice) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CephBlockDevice) HasFacility() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *CephBlockDevice) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+func (x *CephBlockDevice) ClearFacility() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Facility = nil
+}
+
+type CephBlockDevice_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope    *string
+	Facility *string
+}
+
+func (b0 CephBlockDevice_builder) Build() *CephBlockDevice {
+	m0 := &CephBlockDevice{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	if b.Facility != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Facility = b.Facility
+	}
+	return m0
+}
+
+type NetworkFileSystem struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Endpoint    *string                `protobuf:"bytes,1,opt,name=endpoint"`
+	xxx_hidden_Path        *string                `protobuf:"bytes,2,opt,name=path"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *NetworkFileSystem) Reset() {
+	*x = NetworkFileSystem{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NetworkFileSystem) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NetworkFileSystem) ProtoMessage() {}
+
+func (x *NetworkFileSystem) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *NetworkFileSystem) GetEndpoint() string {
+	if x != nil {
+		if x.xxx_hidden_Endpoint != nil {
+			return *x.xxx_hidden_Endpoint
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *NetworkFileSystem) GetPath() string {
+	if x != nil {
+		if x.xxx_hidden_Path != nil {
+			return *x.xxx_hidden_Path
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *NetworkFileSystem) SetEndpoint(v string) {
+	x.xxx_hidden_Endpoint = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *NetworkFileSystem) SetPath(v string) {
+	x.xxx_hidden_Path = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *NetworkFileSystem) HasEndpoint() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *NetworkFileSystem) HasPath() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *NetworkFileSystem) ClearEndpoint() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Endpoint = nil
+}
+
+func (x *NetworkFileSystem) ClearPath() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Path = nil
+}
+
+type NetworkFileSystem_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Endpoint *string
+	Path     *string
+}
+
+func (b0 NetworkFileSystem_builder) Build() *NetworkFileSystem {
+	m0 := &NetworkFileSystem{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Endpoint != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Endpoint = b.Endpoint
+	}
+	if b.Path != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Path = b.Path
+	}
+	return m0
+}
+
+type InternalObjectService struct {
+	state                  protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Type        InternalObjectService_Type `protobuf:"varint,1,opt,name=type,enum=otterscale.configuration.v1.InternalObjectService_Type"`
+	xxx_hidden_Scope       *string                    `protobuf:"bytes,2,opt,name=scope"`
+	xxx_hidden_Facility    *string                    `protobuf:"bytes,3,opt,name=facility"`
+	xxx_hidden_Name        *string                    `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_Endpoint    *string                    `protobuf:"bytes,5,opt,name=endpoint"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *InternalObjectService) Reset() {
+	*x = InternalObjectService{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InternalObjectService) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InternalObjectService) ProtoMessage() {}
+
+func (x *InternalObjectService) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *InternalObjectService) GetType() InternalObjectService_Type {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
+			return x.xxx_hidden_Type
+		}
+	}
+	return InternalObjectService_UNSPECIFIED
+}
+
+func (x *InternalObjectService) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *InternalObjectService) GetFacility() string {
+	if x != nil {
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *InternalObjectService) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *InternalObjectService) GetEndpoint() string {
+	if x != nil {
+		if x.xxx_hidden_Endpoint != nil {
+			return *x.xxx_hidden_Endpoint
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *InternalObjectService) SetType(v InternalObjectService_Type) {
+	x.xxx_hidden_Type = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *InternalObjectService) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *InternalObjectService) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *InternalObjectService) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *InternalObjectService) SetEndpoint(v string) {
+	x.xxx_hidden_Endpoint = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+}
+
+func (x *InternalObjectService) HasType() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *InternalObjectService) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *InternalObjectService) HasFacility() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *InternalObjectService) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *InternalObjectService) HasEndpoint() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *InternalObjectService) ClearType() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Type = InternalObjectService_UNSPECIFIED
+}
+
+func (x *InternalObjectService) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Scope = nil
+}
+
+func (x *InternalObjectService) ClearFacility() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Facility = nil
+}
+
+func (x *InternalObjectService) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *InternalObjectService) ClearEndpoint() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_Endpoint = nil
+}
+
+type InternalObjectService_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Type     *InternalObjectService_Type
+	Scope    *string
+	Facility *string
+	Name     *string
+	Endpoint *string
+}
+
+func (b0 InternalObjectService_builder) Build() *InternalObjectService {
+	m0 := &InternalObjectService{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Type != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_Type = *b.Type
+	}
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	if b.Facility != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_Facility = b.Facility
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.Endpoint != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_Endpoint = b.Endpoint
+	}
+	return m0
+}
+
+type ExternalObjectService struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Endpoint    *string                `protobuf:"bytes,1,opt,name=endpoint"`
+	xxx_hidden_AccessKey   *string                `protobuf:"bytes,2,opt,name=access_key,json=accessKey"`
+	xxx_hidden_SecretKey   *string                `protobuf:"bytes,3,opt,name=secret_key,json=secretKey"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ExternalObjectService) Reset() {
+	*x = ExternalObjectService{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExternalObjectService) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExternalObjectService) ProtoMessage() {}
+
+func (x *ExternalObjectService) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ExternalObjectService) GetEndpoint() string {
+	if x != nil {
+		if x.xxx_hidden_Endpoint != nil {
+			return *x.xxx_hidden_Endpoint
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ExternalObjectService) GetAccessKey() string {
+	if x != nil {
+		if x.xxx_hidden_AccessKey != nil {
+			return *x.xxx_hidden_AccessKey
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ExternalObjectService) GetSecretKey() string {
+	if x != nil {
+		if x.xxx_hidden_SecretKey != nil {
+			return *x.xxx_hidden_SecretKey
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ExternalObjectService) SetEndpoint(v string) {
+	x.xxx_hidden_Endpoint = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *ExternalObjectService) SetAccessKey(v string) {
+	x.xxx_hidden_AccessKey = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *ExternalObjectService) SetSecretKey(v string) {
+	x.xxx_hidden_SecretKey = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+}
+
+func (x *ExternalObjectService) HasEndpoint() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ExternalObjectService) HasAccessKey() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ExternalObjectService) HasSecretKey() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *ExternalObjectService) ClearEndpoint() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Endpoint = nil
+}
+
+func (x *ExternalObjectService) ClearAccessKey() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_AccessKey = nil
+}
+
+func (x *ExternalObjectService) ClearSecretKey() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_SecretKey = nil
+}
+
+type ExternalObjectService_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Endpoint  *string
+	AccessKey *string
+	SecretKey *string
+}
+
+func (b0 ExternalObjectService_builder) Build() *ExternalObjectService {
+	m0 := &ExternalObjectService{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Endpoint != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_Endpoint = b.Endpoint
+	}
+	if b.AccessKey != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_AccessKey = b.AccessKey
+	}
+	if b.SecretKey != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_SecretKey = b.SecretKey
+	}
+	return m0
+}
+
+type FIO struct {
+	state             protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Target isFIO_Target           `protobuf_oneof:"target"`
+	xxx_hidden_Input  *FIO_Input             `protobuf:"bytes,11,opt,name=input"`
+	xxx_hidden_Output *FIO_Output            `protobuf:"bytes,12,opt,name=output"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *FIO) Reset() {
+	*x = FIO{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FIO) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FIO) ProtoMessage() {}
+
+func (x *FIO) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *FIO) GetCephBlockDevice() *CephBlockDevice {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Target.(*fIO_CephBlockDevice); ok {
+			return x.CephBlockDevice
+		}
+	}
+	return nil
+}
+
+func (x *FIO) GetNetworkFileSystem() *NetworkFileSystem {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Target.(*fIO_NetworkFileSystem); ok {
+			return x.NetworkFileSystem
+		}
+	}
+	return nil
+}
+
+func (x *FIO) GetInput() *FIO_Input {
+	if x != nil {
+		return x.xxx_hidden_Input
+	}
+	return nil
+}
+
+func (x *FIO) GetOutput() *FIO_Output {
+	if x != nil {
+		return x.xxx_hidden_Output
+	}
+	return nil
+}
+
+func (x *FIO) SetCephBlockDevice(v *CephBlockDevice) {
+	if v == nil {
+		x.xxx_hidden_Target = nil
+		return
+	}
+	x.xxx_hidden_Target = &fIO_CephBlockDevice{v}
+}
+
+func (x *FIO) SetNetworkFileSystem(v *NetworkFileSystem) {
+	if v == nil {
+		x.xxx_hidden_Target = nil
+		return
+	}
+	x.xxx_hidden_Target = &fIO_NetworkFileSystem{v}
+}
+
+func (x *FIO) SetInput(v *FIO_Input) {
+	x.xxx_hidden_Input = v
+}
+
+func (x *FIO) SetOutput(v *FIO_Output) {
+	x.xxx_hidden_Output = v
+}
+
+func (x *FIO) HasTarget() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Target != nil
+}
+
+func (x *FIO) HasCephBlockDevice() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Target.(*fIO_CephBlockDevice)
+	return ok
+}
+
+func (x *FIO) HasNetworkFileSystem() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Target.(*fIO_NetworkFileSystem)
+	return ok
+}
+
+func (x *FIO) HasInput() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Input != nil
+}
+
+func (x *FIO) HasOutput() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Output != nil
+}
+
+func (x *FIO) ClearTarget() {
+	x.xxx_hidden_Target = nil
+}
+
+func (x *FIO) ClearCephBlockDevice() {
+	if _, ok := x.xxx_hidden_Target.(*fIO_CephBlockDevice); ok {
+		x.xxx_hidden_Target = nil
+	}
+}
+
+func (x *FIO) ClearNetworkFileSystem() {
+	if _, ok := x.xxx_hidden_Target.(*fIO_NetworkFileSystem); ok {
+		x.xxx_hidden_Target = nil
+	}
+}
+
+func (x *FIO) ClearInput() {
+	x.xxx_hidden_Input = nil
+}
+
+func (x *FIO) ClearOutput() {
+	x.xxx_hidden_Output = nil
+}
+
+const FIO_Target_not_set_case case_FIO_Target = 0
+const FIO_CephBlockDevice_case case_FIO_Target = 1
+const FIO_NetworkFileSystem_case case_FIO_Target = 2
+
+func (x *FIO) WhichTarget() case_FIO_Target {
+	if x == nil {
+		return FIO_Target_not_set_case
+	}
+	switch x.xxx_hidden_Target.(type) {
+	case *fIO_CephBlockDevice:
+		return FIO_CephBlockDevice_case
+	case *fIO_NetworkFileSystem:
+		return FIO_NetworkFileSystem_case
+	default:
+		return FIO_Target_not_set_case
+	}
+}
+
+type FIO_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	// Fields of oneof xxx_hidden_Target:
+	CephBlockDevice   *CephBlockDevice
+	NetworkFileSystem *NetworkFileSystem
+	// -- end of xxx_hidden_Target
+	Input  *FIO_Input
+	Output *FIO_Output
+}
+
+func (b0 FIO_builder) Build() *FIO {
+	m0 := &FIO{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.CephBlockDevice != nil {
+		x.xxx_hidden_Target = &fIO_CephBlockDevice{b.CephBlockDevice}
+	}
+	if b.NetworkFileSystem != nil {
+		x.xxx_hidden_Target = &fIO_NetworkFileSystem{b.NetworkFileSystem}
+	}
+	x.xxx_hidden_Input = b.Input
+	x.xxx_hidden_Output = b.Output
+	return m0
+}
+
+type case_FIO_Target protoreflect.FieldNumber
+
+func (x case_FIO_Target) String() string {
+	md := file_api_configuration_v1_configuration_proto_msgTypes[16].Descriptor()
+	if x == 0 {
+		return "not set"
+	}
+	return protoimpl.X.MessageFieldStringOf(md, protoreflect.FieldNumber(x))
+}
+
+type isFIO_Target interface {
+	isFIO_Target()
+}
+
+type fIO_CephBlockDevice struct {
+	CephBlockDevice *CephBlockDevice `protobuf:"bytes,1,opt,name=ceph_block_device,json=cephBlockDevice,oneof"`
+}
+
+type fIO_NetworkFileSystem struct {
+	NetworkFileSystem *NetworkFileSystem `protobuf:"bytes,2,opt,name=network_file_system,json=networkFileSystem,oneof"`
+}
+
+func (*fIO_CephBlockDevice) isFIO_Target() {}
+
+func (*fIO_NetworkFileSystem) isFIO_Target() {}
+
+type Warp struct {
+	state             protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Target isWarp_Target          `protobuf_oneof:"target"`
+	xxx_hidden_Input  *Warp_Input            `protobuf:"bytes,11,opt,name=input"`
+	xxx_hidden_Output *Warp_Output           `protobuf:"bytes,12,opt,name=output"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *Warp) Reset() {
+	*x = Warp{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Warp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Warp) ProtoMessage() {}
+
+func (x *Warp) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Warp) GetInternalObjectService() *InternalObjectService {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Target.(*warp_InternalObjectService); ok {
+			return x.InternalObjectService
+		}
+	}
+	return nil
+}
+
+func (x *Warp) GetExternalObjectService() *ExternalObjectService {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Target.(*warp_ExternalObjectService); ok {
+			return x.ExternalObjectService
+		}
+	}
+	return nil
+}
+
+func (x *Warp) GetInput() *Warp_Input {
+	if x != nil {
+		return x.xxx_hidden_Input
+	}
+	return nil
+}
+
+func (x *Warp) GetOutput() *Warp_Output {
+	if x != nil {
+		return x.xxx_hidden_Output
+	}
+	return nil
+}
+
+func (x *Warp) SetInternalObjectService(v *InternalObjectService) {
+	if v == nil {
+		x.xxx_hidden_Target = nil
+		return
+	}
+	x.xxx_hidden_Target = &warp_InternalObjectService{v}
+}
+
+func (x *Warp) SetExternalObjectService(v *ExternalObjectService) {
+	if v == nil {
+		x.xxx_hidden_Target = nil
+		return
+	}
+	x.xxx_hidden_Target = &warp_ExternalObjectService{v}
+}
+
+func (x *Warp) SetInput(v *Warp_Input) {
+	x.xxx_hidden_Input = v
+}
+
+func (x *Warp) SetOutput(v *Warp_Output) {
+	x.xxx_hidden_Output = v
+}
+
+func (x *Warp) HasTarget() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Target != nil
+}
+
+func (x *Warp) HasInternalObjectService() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Target.(*warp_InternalObjectService)
+	return ok
+}
+
+func (x *Warp) HasExternalObjectService() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Target.(*warp_ExternalObjectService)
+	return ok
+}
+
+func (x *Warp) HasInput() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Input != nil
+}
+
+func (x *Warp) HasOutput() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Output != nil
+}
+
+func (x *Warp) ClearTarget() {
+	x.xxx_hidden_Target = nil
+}
+
+func (x *Warp) ClearInternalObjectService() {
+	if _, ok := x.xxx_hidden_Target.(*warp_InternalObjectService); ok {
+		x.xxx_hidden_Target = nil
+	}
+}
+
+func (x *Warp) ClearExternalObjectService() {
+	if _, ok := x.xxx_hidden_Target.(*warp_ExternalObjectService); ok {
+		x.xxx_hidden_Target = nil
+	}
+}
+
+func (x *Warp) ClearInput() {
+	x.xxx_hidden_Input = nil
+}
+
+func (x *Warp) ClearOutput() {
+	x.xxx_hidden_Output = nil
+}
+
+const Warp_Target_not_set_case case_Warp_Target = 0
+const Warp_InternalObjectService_case case_Warp_Target = 1
+const Warp_ExternalObjectService_case case_Warp_Target = 2
+
+func (x *Warp) WhichTarget() case_Warp_Target {
+	if x == nil {
+		return Warp_Target_not_set_case
+	}
+	switch x.xxx_hidden_Target.(type) {
+	case *warp_InternalObjectService:
+		return Warp_InternalObjectService_case
+	case *warp_ExternalObjectService:
+		return Warp_ExternalObjectService_case
+	default:
+		return Warp_Target_not_set_case
+	}
+}
+
+type Warp_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	// Fields of oneof xxx_hidden_Target:
+	InternalObjectService *InternalObjectService
+	ExternalObjectService *ExternalObjectService
+	// -- end of xxx_hidden_Target
+	Input  *Warp_Input
+	Output *Warp_Output
+}
+
+func (b0 Warp_builder) Build() *Warp {
+	m0 := &Warp{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.InternalObjectService != nil {
+		x.xxx_hidden_Target = &warp_InternalObjectService{b.InternalObjectService}
+	}
+	if b.ExternalObjectService != nil {
+		x.xxx_hidden_Target = &warp_ExternalObjectService{b.ExternalObjectService}
+	}
+	x.xxx_hidden_Input = b.Input
+	x.xxx_hidden_Output = b.Output
+	return m0
+}
+
+type case_Warp_Target protoreflect.FieldNumber
+
+func (x case_Warp_Target) String() string {
+	md := file_api_configuration_v1_configuration_proto_msgTypes[17].Descriptor()
+	if x == 0 {
+		return "not set"
+	}
+	return protoimpl.X.MessageFieldStringOf(md, protoreflect.FieldNumber(x))
+}
+
+type isWarp_Target interface {
+	isWarp_Target()
+}
+
+type warp_InternalObjectService struct {
+	InternalObjectService *InternalObjectService `protobuf:"bytes,1,opt,name=internal_object_service,json=internalObjectService,oneof"`
+}
+
+type warp_ExternalObjectService struct {
+	ExternalObjectService *ExternalObjectService `protobuf:"bytes,2,opt,name=external_object_service,json=externalObjectService,oneof"`
+}
+
+func (*warp_InternalObjectService) isWarp_Target() {}
+
+func (*warp_ExternalObjectService) isWarp_Target() {}
+
+type TestResult struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Uid         *string                `protobuf:"bytes,1,opt,name=uid"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
+	xxx_hidden_Status      TestResult_Status      `protobuf:"varint,3,opt,name=status,enum=otterscale.configuration.v1.TestResult_Status"`
+	xxx_hidden_CreatedBy   *string                `protobuf:"bytes,4,opt,name=created_by,json=createdBy"`
+	xxx_hidden_StartedAt   *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=started_at,json=startedAt"`
+	xxx_hidden_CompletedAt *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=completed_at,json=completedAt"`
+	xxx_hidden_Kind        isTestResult_Kind      `protobuf_oneof:"kind"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *TestResult) Reset() {
+	*x = TestResult{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TestResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TestResult) ProtoMessage() {}
+
+func (x *TestResult) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *TestResult) GetUid() string {
+	if x != nil {
+		if x.xxx_hidden_Uid != nil {
+			return *x.xxx_hidden_Uid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *TestResult) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *TestResult) GetStatus() TestResult_Status {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 2) {
+			return x.xxx_hidden_Status
+		}
+	}
+	return TestResult_RUNNING
+}
+
+func (x *TestResult) GetCreatedBy() string {
+	if x != nil {
+		if x.xxx_hidden_CreatedBy != nil {
+			return *x.xxx_hidden_CreatedBy
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *TestResult) GetStartedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.xxx_hidden_StartedAt
+	}
+	return nil
+}
+
+func (x *TestResult) GetCompletedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.xxx_hidden_CompletedAt
+	}
+	return nil
+}
+
+func (x *TestResult) GetFio() *FIO {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Kind.(*testResult_Fio); ok {
+			return x.Fio
+		}
+	}
+	return nil
+}
+
+func (x *TestResult) GetWarp() *Warp {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Kind.(*testResult_Warp); ok {
+			return x.Warp
+		}
+	}
+	return nil
+}
+
+func (x *TestResult) SetUid(v string) {
+	x.xxx_hidden_Uid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
+}
+
+func (x *TestResult) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
+}
+
+func (x *TestResult) SetStatus(v TestResult_Status) {
+	x.xxx_hidden_Status = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
+}
+
+func (x *TestResult) SetCreatedBy(v string) {
+	x.xxx_hidden_CreatedBy = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
+}
+
+func (x *TestResult) SetStartedAt(v *timestamppb.Timestamp) {
+	x.xxx_hidden_StartedAt = v
+}
+
+func (x *TestResult) SetCompletedAt(v *timestamppb.Timestamp) {
+	x.xxx_hidden_CompletedAt = v
+}
+
+func (x *TestResult) SetFio(v *FIO) {
+	if v == nil {
+		x.xxx_hidden_Kind = nil
+		return
+	}
+	x.xxx_hidden_Kind = &testResult_Fio{v}
+}
+
+func (x *TestResult) SetWarp(v *Warp) {
+	if v == nil {
+		x.xxx_hidden_Kind = nil
+		return
+	}
+	x.xxx_hidden_Kind = &testResult_Warp{v}
+}
+
+func (x *TestResult) HasUid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *TestResult) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *TestResult) HasStatus() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *TestResult) HasCreatedBy() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *TestResult) HasStartedAt() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_StartedAt != nil
+}
+
+func (x *TestResult) HasCompletedAt() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_CompletedAt != nil
+}
+
+func (x *TestResult) HasKind() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Kind != nil
+}
+
+func (x *TestResult) HasFio() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Kind.(*testResult_Fio)
+	return ok
+}
+
+func (x *TestResult) HasWarp() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Kind.(*testResult_Warp)
+	return ok
+}
+
+func (x *TestResult) ClearUid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Uid = nil
+}
+
+func (x *TestResult) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *TestResult) ClearStatus() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Status = TestResult_RUNNING
+}
+
+func (x *TestResult) ClearCreatedBy() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_CreatedBy = nil
+}
+
+func (x *TestResult) ClearStartedAt() {
+	x.xxx_hidden_StartedAt = nil
+}
+
+func (x *TestResult) ClearCompletedAt() {
+	x.xxx_hidden_CompletedAt = nil
+}
+
+func (x *TestResult) ClearKind() {
+	x.xxx_hidden_Kind = nil
+}
+
+func (x *TestResult) ClearFio() {
+	if _, ok := x.xxx_hidden_Kind.(*testResult_Fio); ok {
+		x.xxx_hidden_Kind = nil
+	}
+}
+
+func (x *TestResult) ClearWarp() {
+	if _, ok := x.xxx_hidden_Kind.(*testResult_Warp); ok {
+		x.xxx_hidden_Kind = nil
+	}
+}
+
+const TestResult_Kind_not_set_case case_TestResult_Kind = 0
+const TestResult_Fio_case case_TestResult_Kind = 101
+const TestResult_Warp_case case_TestResult_Kind = 102
+
+func (x *TestResult) WhichKind() case_TestResult_Kind {
+	if x == nil {
+		return TestResult_Kind_not_set_case
+	}
+	switch x.xxx_hidden_Kind.(type) {
+	case *testResult_Fio:
+		return TestResult_Fio_case
+	case *testResult_Warp:
+		return TestResult_Warp_case
+	default:
+		return TestResult_Kind_not_set_case
+	}
+}
+
+type TestResult_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Uid         *string
+	Name        *string
+	Status      *TestResult_Status
+	CreatedBy   *string
+	StartedAt   *timestamppb.Timestamp
+	CompletedAt *timestamppb.Timestamp
+	// Fields of oneof xxx_hidden_Kind:
+	Fio  *FIO
+	Warp *Warp
+	// -- end of xxx_hidden_Kind
+}
+
+func (b0 TestResult_builder) Build() *TestResult {
+	m0 := &TestResult{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Uid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
+		x.xxx_hidden_Uid = b.Uid
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.Status != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
+		x.xxx_hidden_Status = *b.Status
+	}
+	if b.CreatedBy != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
+		x.xxx_hidden_CreatedBy = b.CreatedBy
+	}
+	x.xxx_hidden_StartedAt = b.StartedAt
+	x.xxx_hidden_CompletedAt = b.CompletedAt
+	if b.Fio != nil {
+		x.xxx_hidden_Kind = &testResult_Fio{b.Fio}
+	}
+	if b.Warp != nil {
+		x.xxx_hidden_Kind = &testResult_Warp{b.Warp}
+	}
+	return m0
+}
+
+type case_TestResult_Kind protoreflect.FieldNumber
+
+func (x case_TestResult_Kind) String() string {
+	md := file_api_configuration_v1_configuration_proto_msgTypes[18].Descriptor()
+	if x == 0 {
+		return "not set"
+	}
+	return protoimpl.X.MessageFieldStringOf(md, protoreflect.FieldNumber(x))
+}
+
+type isTestResult_Kind interface {
+	isTestResult_Kind()
+}
+
+type testResult_Fio struct {
+	Fio *FIO `protobuf:"bytes,101,opt,name=fio,oneof"`
+}
+
+type testResult_Warp struct {
+	Warp *Warp `protobuf:"bytes,102,opt,name=warp,oneof"`
+}
+
+func (*testResult_Fio) isTestResult_Kind() {}
+
+func (*testResult_Warp) isTestResult_Kind() {}
+
+type ListTestResultsRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTestResultsRequest) Reset() {
+	*x = ListTestResultsRequest{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTestResultsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTestResultsRequest) ProtoMessage() {}
+
+func (x *ListTestResultsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type ListTestResultsRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 ListTestResultsRequest_builder) Build() *ListTestResultsRequest {
+	m0 := &ListTestResultsRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type ListTestResultsResponse struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_TestResults *[]*TestResult         `protobuf:"bytes,1,rep,name=test_results,json=testResults"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ListTestResultsResponse) Reset() {
+	*x = ListTestResultsResponse{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTestResultsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTestResultsResponse) ProtoMessage() {}
+
+func (x *ListTestResultsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListTestResultsResponse) GetTestResults() []*TestResult {
+	if x != nil {
+		if x.xxx_hidden_TestResults != nil {
+			return *x.xxx_hidden_TestResults
+		}
+	}
+	return nil
+}
+
+func (x *ListTestResultsResponse) SetTestResults(v []*TestResult) {
+	x.xxx_hidden_TestResults = &v
+}
+
+type ListTestResultsResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	TestResults []*TestResult
+}
+
+func (b0 ListTestResultsResponse_builder) Build() *ListTestResultsResponse {
+	m0 := &ListTestResultsResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_TestResults = &b.TestResults
+	return m0
+}
+
+type CreateTestResultRequest struct {
+	state                  protoimpl.MessageState         `protogen:"opaque.v1"`
+	xxx_hidden_Name        *string                        `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_CreatedBy   *string                        `protobuf:"bytes,2,opt,name=created_by,json=createdBy"`
+	xxx_hidden_Kind        isCreateTestResultRequest_Kind `protobuf_oneof:"kind"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *CreateTestResultRequest) Reset() {
+	*x = CreateTestResultRequest{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateTestResultRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTestResultRequest) ProtoMessage() {}
+
+func (x *CreateTestResultRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *CreateTestResultRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateTestResultRequest) GetCreatedBy() string {
+	if x != nil {
+		if x.xxx_hidden_CreatedBy != nil {
+			return *x.xxx_hidden_CreatedBy
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateTestResultRequest) GetFio() *FIO {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Kind.(*createTestResultRequest_Fio); ok {
+			return x.Fio
+		}
+	}
+	return nil
+}
+
+func (x *CreateTestResultRequest) GetWarp() *Warp {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Kind.(*createTestResultRequest_Warp); ok {
+			return x.Warp
+		}
+	}
+	return nil
+}
+
+func (x *CreateTestResultRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *CreateTestResultRequest) SetCreatedBy(v string) {
+	x.xxx_hidden_CreatedBy = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *CreateTestResultRequest) SetFio(v *FIO) {
+	if v == nil {
+		x.xxx_hidden_Kind = nil
+		return
+	}
+	x.xxx_hidden_Kind = &createTestResultRequest_Fio{v}
+}
+
+func (x *CreateTestResultRequest) SetWarp(v *Warp) {
+	if v == nil {
+		x.xxx_hidden_Kind = nil
+		return
+	}
+	x.xxx_hidden_Kind = &createTestResultRequest_Warp{v}
+}
+
+func (x *CreateTestResultRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateTestResultRequest) HasCreatedBy() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *CreateTestResultRequest) HasKind() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Kind != nil
+}
+
+func (x *CreateTestResultRequest) HasFio() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Kind.(*createTestResultRequest_Fio)
+	return ok
+}
+
+func (x *CreateTestResultRequest) HasWarp() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Kind.(*createTestResultRequest_Warp)
+	return ok
+}
+
+func (x *CreateTestResultRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *CreateTestResultRequest) ClearCreatedBy() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_CreatedBy = nil
+}
+
+func (x *CreateTestResultRequest) ClearKind() {
+	x.xxx_hidden_Kind = nil
+}
+
+func (x *CreateTestResultRequest) ClearFio() {
+	if _, ok := x.xxx_hidden_Kind.(*createTestResultRequest_Fio); ok {
+		x.xxx_hidden_Kind = nil
+	}
+}
+
+func (x *CreateTestResultRequest) ClearWarp() {
+	if _, ok := x.xxx_hidden_Kind.(*createTestResultRequest_Warp); ok {
+		x.xxx_hidden_Kind = nil
+	}
+}
+
+const CreateTestResultRequest_Kind_not_set_case case_CreateTestResultRequest_Kind = 0
+const CreateTestResultRequest_Fio_case case_CreateTestResultRequest_Kind = 101
+const CreateTestResultRequest_Warp_case case_CreateTestResultRequest_Kind = 102
+
+func (x *CreateTestResultRequest) WhichKind() case_CreateTestResultRequest_Kind {
+	if x == nil {
+		return CreateTestResultRequest_Kind_not_set_case
+	}
+	switch x.xxx_hidden_Kind.(type) {
+	case *createTestResultRequest_Fio:
+		return CreateTestResultRequest_Fio_case
+	case *createTestResultRequest_Warp:
+		return CreateTestResultRequest_Warp_case
+	default:
+		return CreateTestResultRequest_Kind_not_set_case
+	}
+}
+
+type CreateTestResultRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Name      *string
+	CreatedBy *string
+	// Fields of oneof xxx_hidden_Kind:
+	Fio  *FIO
+	Warp *Warp
+	// -- end of xxx_hidden_Kind
+}
+
+func (b0 CreateTestResultRequest_builder) Build() *CreateTestResultRequest {
+	m0 := &CreateTestResultRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.CreatedBy != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_CreatedBy = b.CreatedBy
+	}
+	if b.Fio != nil {
+		x.xxx_hidden_Kind = &createTestResultRequest_Fio{b.Fio}
+	}
+	if b.Warp != nil {
+		x.xxx_hidden_Kind = &createTestResultRequest_Warp{b.Warp}
+	}
+	return m0
+}
+
+type case_CreateTestResultRequest_Kind protoreflect.FieldNumber
+
+func (x case_CreateTestResultRequest_Kind) String() string {
+	md := file_api_configuration_v1_configuration_proto_msgTypes[21].Descriptor()
+	if x == 0 {
+		return "not set"
+	}
+	return protoimpl.X.MessageFieldStringOf(md, protoreflect.FieldNumber(x))
+}
+
+type isCreateTestResultRequest_Kind interface {
+	isCreateTestResultRequest_Kind()
+}
+
+type createTestResultRequest_Fio struct {
+	Fio *FIO `protobuf:"bytes,101,opt,name=fio,oneof"`
+}
+
+type createTestResultRequest_Warp struct {
+	Warp *Warp `protobuf:"bytes,102,opt,name=warp,oneof"`
+}
+
+func (*createTestResultRequest_Fio) isCreateTestResultRequest_Kind() {}
+
+func (*createTestResultRequest_Warp) isCreateTestResultRequest_Kind() {}
+
+type DeleteTestResultRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *DeleteTestResultRequest) Reset() {
+	*x = DeleteTestResultRequest{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteTestResultRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteTestResultRequest) ProtoMessage() {}
+
+func (x *DeleteTestResultRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *DeleteTestResultRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteTestResultRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *DeleteTestResultRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *DeleteTestResultRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Name = nil
+}
+
+type DeleteTestResultRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Name *string
+}
+
+func (b0 DeleteTestResultRequest_builder) Build() *DeleteTestResultRequest {
+	m0 := &DeleteTestResultRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Name = b.Name
+	}
+	return m0
+}
+
+type ListInternalObjectServicesRequest struct {
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_KubernetesName *string                `protobuf:"bytes,2,opt,name=kubernetes_name,json=kubernetesName"`
+	xxx_hidden_CephName       *string                `protobuf:"bytes,3,opt,name=ceph_name,json=cephName"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
+}
+
+func (x *ListInternalObjectServicesRequest) Reset() {
+	*x = ListInternalObjectServicesRequest{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListInternalObjectServicesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListInternalObjectServicesRequest) ProtoMessage() {}
+
+func (x *ListInternalObjectServicesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListInternalObjectServicesRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListInternalObjectServicesRequest) GetKubernetesName() string {
+	if x != nil {
+		if x.xxx_hidden_KubernetesName != nil {
+			return *x.xxx_hidden_KubernetesName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListInternalObjectServicesRequest) GetCephName() string {
+	if x != nil {
+		if x.xxx_hidden_CephName != nil {
+			return *x.xxx_hidden_CephName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListInternalObjectServicesRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *ListInternalObjectServicesRequest) SetKubernetesName(v string) {
+	x.xxx_hidden_KubernetesName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *ListInternalObjectServicesRequest) SetCephName(v string) {
+	x.xxx_hidden_CephName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+}
+
+func (x *ListInternalObjectServicesRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ListInternalObjectServicesRequest) HasKubernetesName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListInternalObjectServicesRequest) HasCephName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *ListInternalObjectServicesRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+func (x *ListInternalObjectServicesRequest) ClearKubernetesName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_KubernetesName = nil
+}
+
+func (x *ListInternalObjectServicesRequest) ClearCephName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_CephName = nil
+}
+
+type ListInternalObjectServicesRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope          *string
+	KubernetesName *string
+	CephName       *string
+}
+
+func (b0 ListInternalObjectServicesRequest_builder) Build() *ListInternalObjectServicesRequest {
+	m0 := &ListInternalObjectServicesRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	if b.KubernetesName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_KubernetesName = b.KubernetesName
+	}
+	if b.CephName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_CephName = b.CephName
+	}
+	return m0
+}
+
+type ListInternalObjectServicesResponse struct {
+	state                             protoimpl.MessageState    `protogen:"opaque.v1"`
+	xxx_hidden_InternalObjectServices *[]*InternalObjectService `protobuf:"bytes,1,rep,name=internal_object_services,json=internalObjectServices"`
+	unknownFields                     protoimpl.UnknownFields
+	sizeCache                         protoimpl.SizeCache
+}
+
+func (x *ListInternalObjectServicesResponse) Reset() {
+	*x = ListInternalObjectServicesResponse{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListInternalObjectServicesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListInternalObjectServicesResponse) ProtoMessage() {}
+
+func (x *ListInternalObjectServicesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListInternalObjectServicesResponse) GetInternalObjectServices() []*InternalObjectService {
+	if x != nil {
+		if x.xxx_hidden_InternalObjectServices != nil {
+			return *x.xxx_hidden_InternalObjectServices
+		}
+	}
+	return nil
+}
+
+func (x *ListInternalObjectServicesResponse) SetInternalObjectServices(v []*InternalObjectService) {
+	x.xxx_hidden_InternalObjectServices = &v
+}
+
+type ListInternalObjectServicesResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	InternalObjectServices []*InternalObjectService
+}
+
+func (b0 ListInternalObjectServicesResponse_builder) Build() *ListInternalObjectServicesResponse {
+	m0 := &ListInternalObjectServicesResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_InternalObjectServices = &b.InternalObjectServices
+	return m0
+}
+
 type Configuration_NTPServer struct {
 	state                protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Addresses []string               `protobuf:"bytes,1,rep,name=addresses"`
@@ -801,7 +3083,7 @@ type Configuration_NTPServer struct {
 
 func (x *Configuration_NTPServer) Reset() {
 	*x = Configuration_NTPServer{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[11]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -813,7 +3095,7 @@ func (x *Configuration_NTPServer) String() string {
 func (*Configuration_NTPServer) ProtoMessage() {}
 
 func (x *Configuration_NTPServer) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[11]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -863,7 +3145,7 @@ type Configuration_PackageRepository struct {
 
 func (x *Configuration_PackageRepository) Reset() {
 	*x = Configuration_PackageRepository{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[12]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -875,7 +3157,7 @@ func (x *Configuration_PackageRepository) String() string {
 func (*Configuration_PackageRepository) ProtoMessage() {}
 
 func (x *Configuration_PackageRepository) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[12]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1033,7 +3315,7 @@ type Configuration_BootImageSelection struct {
 
 func (x *Configuration_BootImageSelection) Reset() {
 	*x = Configuration_BootImageSelection{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[13]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1045,7 +3327,7 @@ func (x *Configuration_BootImageSelection) String() string {
 func (*Configuration_BootImageSelection) ProtoMessage() {}
 
 func (x *Configuration_BootImageSelection) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[13]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1160,7 +3442,7 @@ type Configuration_BootImage struct {
 
 func (x *Configuration_BootImage) Reset() {
 	*x = Configuration_BootImage{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[14]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1172,7 +3454,7 @@ func (x *Configuration_BootImage) String() string {
 func (*Configuration_BootImage) ProtoMessage() {}
 
 func (x *Configuration_BootImage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[14]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1333,17 +3615,1350 @@ func (b0 Configuration_BootImage_builder) Build() *Configuration_BootImage {
 	return m0
 }
 
+type Configuration_HelmRepository struct {
+	state           protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Urls []string               `protobuf:"bytes,1,rep,name=urls"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *Configuration_HelmRepository) Reset() {
+	*x = Configuration_HelmRepository{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Configuration_HelmRepository) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Configuration_HelmRepository) ProtoMessage() {}
+
+func (x *Configuration_HelmRepository) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Configuration_HelmRepository) GetUrls() []string {
+	if x != nil {
+		return x.xxx_hidden_Urls
+	}
+	return nil
+}
+
+func (x *Configuration_HelmRepository) SetUrls(v []string) {
+	x.xxx_hidden_Urls = v
+}
+
+type Configuration_HelmRepository_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Urls []string
+}
+
+func (b0 Configuration_HelmRepository_builder) Build() *Configuration_HelmRepository {
+	m0 := &Configuration_HelmRepository{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Urls = b.Urls
+	return m0
+}
+
+type FIO_Input struct {
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_AccessMode     FIO_Input_AccessMode   `protobuf:"varint,1,opt,name=access_mode,json=accessMode,enum=otterscale.configuration.v1.FIO_Input_AccessMode"`
+	xxx_hidden_JobCount       int64                  `protobuf:"varint,31,opt,name=job_count,json=jobCount"`
+	xxx_hidden_RunTimeSeconds int64                  `protobuf:"varint,41,opt,name=run_time_seconds,json=runTimeSeconds"`
+	xxx_hidden_BlockSizeBytes int64                  `protobuf:"varint,71,opt,name=block_size_bytes,json=blockSizeBytes"`
+	xxx_hidden_FileSizeBytes  int64                  `protobuf:"varint,91,opt,name=file_size_bytes,json=fileSizeBytes"`
+	xxx_hidden_IoDepth        int64                  `protobuf:"varint,121,opt,name=io_depth,json=ioDepth"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
+}
+
+func (x *FIO_Input) Reset() {
+	*x = FIO_Input{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FIO_Input) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FIO_Input) ProtoMessage() {}
+
+func (x *FIO_Input) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *FIO_Input) GetAccessMode() FIO_Input_AccessMode {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
+			return x.xxx_hidden_AccessMode
+		}
+	}
+	return FIO_Input_READ
+}
+
+func (x *FIO_Input) GetJobCount() int64 {
+	if x != nil {
+		return x.xxx_hidden_JobCount
+	}
+	return 0
+}
+
+func (x *FIO_Input) GetRunTimeSeconds() int64 {
+	if x != nil {
+		return x.xxx_hidden_RunTimeSeconds
+	}
+	return 0
+}
+
+func (x *FIO_Input) GetBlockSizeBytes() int64 {
+	if x != nil {
+		return x.xxx_hidden_BlockSizeBytes
+	}
+	return 0
+}
+
+func (x *FIO_Input) GetFileSizeBytes() int64 {
+	if x != nil {
+		return x.xxx_hidden_FileSizeBytes
+	}
+	return 0
+}
+
+func (x *FIO_Input) GetIoDepth() int64 {
+	if x != nil {
+		return x.xxx_hidden_IoDepth
+	}
+	return 0
+}
+
+func (x *FIO_Input) SetAccessMode(v FIO_Input_AccessMode) {
+	x.xxx_hidden_AccessMode = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
+}
+
+func (x *FIO_Input) SetJobCount(v int64) {
+	x.xxx_hidden_JobCount = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+}
+
+func (x *FIO_Input) SetRunTimeSeconds(v int64) {
+	x.xxx_hidden_RunTimeSeconds = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+}
+
+func (x *FIO_Input) SetBlockSizeBytes(v int64) {
+	x.xxx_hidden_BlockSizeBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+}
+
+func (x *FIO_Input) SetFileSizeBytes(v int64) {
+	x.xxx_hidden_FileSizeBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+}
+
+func (x *FIO_Input) SetIoDepth(v int64) {
+	x.xxx_hidden_IoDepth = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+}
+
+func (x *FIO_Input) HasAccessMode() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *FIO_Input) HasJobCount() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *FIO_Input) HasRunTimeSeconds() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *FIO_Input) HasBlockSizeBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *FIO_Input) HasFileSizeBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *FIO_Input) HasIoDepth() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *FIO_Input) ClearAccessMode() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_AccessMode = FIO_Input_READ
+}
+
+func (x *FIO_Input) ClearJobCount() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_JobCount = 0
+}
+
+func (x *FIO_Input) ClearRunTimeSeconds() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_RunTimeSeconds = 0
+}
+
+func (x *FIO_Input) ClearBlockSizeBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_BlockSizeBytes = 0
+}
+
+func (x *FIO_Input) ClearFileSizeBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_FileSizeBytes = 0
+}
+
+func (x *FIO_Input) ClearIoDepth() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_IoDepth = 0
+}
+
+type FIO_Input_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	AccessMode     *FIO_Input_AccessMode
+	JobCount       *int64
+	RunTimeSeconds *int64
+	BlockSizeBytes *int64
+	FileSizeBytes  *int64
+	IoDepth        *int64
+}
+
+func (b0 FIO_Input_builder) Build() *FIO_Input {
+	m0 := &FIO_Input{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.AccessMode != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		x.xxx_hidden_AccessMode = *b.AccessMode
+	}
+	if b.JobCount != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		x.xxx_hidden_JobCount = *b.JobCount
+	}
+	if b.RunTimeSeconds != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		x.xxx_hidden_RunTimeSeconds = *b.RunTimeSeconds
+	}
+	if b.BlockSizeBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		x.xxx_hidden_BlockSizeBytes = *b.BlockSizeBytes
+	}
+	if b.FileSizeBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		x.xxx_hidden_FileSizeBytes = *b.FileSizeBytes
+	}
+	if b.IoDepth != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		x.xxx_hidden_IoDepth = *b.IoDepth
+	}
+	return m0
+}
+
+type FIO_Output struct {
+	state            protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Read  *FIO_Output_Throughput `protobuf:"bytes,1,opt,name=read"`
+	xxx_hidden_Write *FIO_Output_Throughput `protobuf:"bytes,2,opt,name=write"`
+	xxx_hidden_Trim  *FIO_Output_Throughput `protobuf:"bytes,3,opt,name=trim"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *FIO_Output) Reset() {
+	*x = FIO_Output{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FIO_Output) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FIO_Output) ProtoMessage() {}
+
+func (x *FIO_Output) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *FIO_Output) GetRead() *FIO_Output_Throughput {
+	if x != nil {
+		return x.xxx_hidden_Read
+	}
+	return nil
+}
+
+func (x *FIO_Output) GetWrite() *FIO_Output_Throughput {
+	if x != nil {
+		return x.xxx_hidden_Write
+	}
+	return nil
+}
+
+func (x *FIO_Output) GetTrim() *FIO_Output_Throughput {
+	if x != nil {
+		return x.xxx_hidden_Trim
+	}
+	return nil
+}
+
+func (x *FIO_Output) SetRead(v *FIO_Output_Throughput) {
+	x.xxx_hidden_Read = v
+}
+
+func (x *FIO_Output) SetWrite(v *FIO_Output_Throughput) {
+	x.xxx_hidden_Write = v
+}
+
+func (x *FIO_Output) SetTrim(v *FIO_Output_Throughput) {
+	x.xxx_hidden_Trim = v
+}
+
+func (x *FIO_Output) HasRead() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Read != nil
+}
+
+func (x *FIO_Output) HasWrite() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Write != nil
+}
+
+func (x *FIO_Output) HasTrim() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Trim != nil
+}
+
+func (x *FIO_Output) ClearRead() {
+	x.xxx_hidden_Read = nil
+}
+
+func (x *FIO_Output) ClearWrite() {
+	x.xxx_hidden_Write = nil
+}
+
+func (x *FIO_Output) ClearTrim() {
+	x.xxx_hidden_Trim = nil
+}
+
+type FIO_Output_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Read  *FIO_Output_Throughput
+	Write *FIO_Output_Throughput
+	Trim  *FIO_Output_Throughput
+}
+
+func (b0 FIO_Output_builder) Build() *FIO_Output {
+	m0 := &FIO_Output{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Read = b.Read
+	x.xxx_hidden_Write = b.Write
+	x.xxx_hidden_Trim = b.Trim
+	return m0
+}
+
+type FIO_Output_Throughput struct {
+	state                     protoimpl.MessageState         `protogen:"opaque.v1"`
+	xxx_hidden_IoBytes        int64                          `protobuf:"varint,1,opt,name=io_bytes,json=ioBytes"`
+	xxx_hidden_BandwidthBytes int64                          `protobuf:"varint,2,opt,name=bandwidth_bytes,json=bandwidthBytes"`
+	xxx_hidden_IoPerSecond    float64                        `protobuf:"fixed64,3,opt,name=io_per_second,json=ioPerSecond"`
+	xxx_hidden_TotalIos       int64                          `protobuf:"varint,4,opt,name=total_ios,json=totalIos"`
+	xxx_hidden_Latency        *FIO_Output_Throughput_Latency `protobuf:"bytes,11,opt,name=latency"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
+}
+
+func (x *FIO_Output_Throughput) Reset() {
+	*x = FIO_Output_Throughput{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FIO_Output_Throughput) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FIO_Output_Throughput) ProtoMessage() {}
+
+func (x *FIO_Output_Throughput) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *FIO_Output_Throughput) GetIoBytes() int64 {
+	if x != nil {
+		return x.xxx_hidden_IoBytes
+	}
+	return 0
+}
+
+func (x *FIO_Output_Throughput) GetBandwidthBytes() int64 {
+	if x != nil {
+		return x.xxx_hidden_BandwidthBytes
+	}
+	return 0
+}
+
+func (x *FIO_Output_Throughput) GetIoPerSecond() float64 {
+	if x != nil {
+		return x.xxx_hidden_IoPerSecond
+	}
+	return 0
+}
+
+func (x *FIO_Output_Throughput) GetTotalIos() int64 {
+	if x != nil {
+		return x.xxx_hidden_TotalIos
+	}
+	return 0
+}
+
+func (x *FIO_Output_Throughput) GetLatency() *FIO_Output_Throughput_Latency {
+	if x != nil {
+		return x.xxx_hidden_Latency
+	}
+	return nil
+}
+
+func (x *FIO_Output_Throughput) SetIoBytes(v int64) {
+	x.xxx_hidden_IoBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *FIO_Output_Throughput) SetBandwidthBytes(v int64) {
+	x.xxx_hidden_BandwidthBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *FIO_Output_Throughput) SetIoPerSecond(v float64) {
+	x.xxx_hidden_IoPerSecond = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *FIO_Output_Throughput) SetTotalIos(v int64) {
+	x.xxx_hidden_TotalIos = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *FIO_Output_Throughput) SetLatency(v *FIO_Output_Throughput_Latency) {
+	x.xxx_hidden_Latency = v
+}
+
+func (x *FIO_Output_Throughput) HasIoBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *FIO_Output_Throughput) HasBandwidthBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *FIO_Output_Throughput) HasIoPerSecond() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *FIO_Output_Throughput) HasTotalIos() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *FIO_Output_Throughput) HasLatency() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Latency != nil
+}
+
+func (x *FIO_Output_Throughput) ClearIoBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_IoBytes = 0
+}
+
+func (x *FIO_Output_Throughput) ClearBandwidthBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_BandwidthBytes = 0
+}
+
+func (x *FIO_Output_Throughput) ClearIoPerSecond() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_IoPerSecond = 0
+}
+
+func (x *FIO_Output_Throughput) ClearTotalIos() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_TotalIos = 0
+}
+
+func (x *FIO_Output_Throughput) ClearLatency() {
+	x.xxx_hidden_Latency = nil
+}
+
+type FIO_Output_Throughput_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	IoBytes        *int64
+	BandwidthBytes *int64
+	IoPerSecond    *float64
+	TotalIos       *int64
+	Latency        *FIO_Output_Throughput_Latency
+}
+
+func (b0 FIO_Output_Throughput_builder) Build() *FIO_Output_Throughput {
+	m0 := &FIO_Output_Throughput{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.IoBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_IoBytes = *b.IoBytes
+	}
+	if b.BandwidthBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_BandwidthBytes = *b.BandwidthBytes
+	}
+	if b.IoPerSecond != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_IoPerSecond = *b.IoPerSecond
+	}
+	if b.TotalIos != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_TotalIos = *b.TotalIos
+	}
+	x.xxx_hidden_Latency = b.Latency
+	return m0
+}
+
+type FIO_Output_Throughput_Latency struct {
+	state                      protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_MinNanoseconds  int64                  `protobuf:"varint,1,opt,name=min_nanoseconds,json=minNanoseconds"`
+	xxx_hidden_MaxNanoseconds  int64                  `protobuf:"varint,2,opt,name=max_nanoseconds,json=maxNanoseconds"`
+	xxx_hidden_MeanNanoseconds float64                `protobuf:"fixed64,3,opt,name=mean_nanoseconds,json=meanNanoseconds"`
+	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
+	XXX_presence               [1]uint32
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
+}
+
+func (x *FIO_Output_Throughput_Latency) Reset() {
+	*x = FIO_Output_Throughput_Latency{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FIO_Output_Throughput_Latency) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FIO_Output_Throughput_Latency) ProtoMessage() {}
+
+func (x *FIO_Output_Throughput_Latency) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *FIO_Output_Throughput_Latency) GetMinNanoseconds() int64 {
+	if x != nil {
+		return x.xxx_hidden_MinNanoseconds
+	}
+	return 0
+}
+
+func (x *FIO_Output_Throughput_Latency) GetMaxNanoseconds() int64 {
+	if x != nil {
+		return x.xxx_hidden_MaxNanoseconds
+	}
+	return 0
+}
+
+func (x *FIO_Output_Throughput_Latency) GetMeanNanoseconds() float64 {
+	if x != nil {
+		return x.xxx_hidden_MeanNanoseconds
+	}
+	return 0
+}
+
+func (x *FIO_Output_Throughput_Latency) SetMinNanoseconds(v int64) {
+	x.xxx_hidden_MinNanoseconds = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *FIO_Output_Throughput_Latency) SetMaxNanoseconds(v int64) {
+	x.xxx_hidden_MaxNanoseconds = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *FIO_Output_Throughput_Latency) SetMeanNanoseconds(v float64) {
+	x.xxx_hidden_MeanNanoseconds = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+}
+
+func (x *FIO_Output_Throughput_Latency) HasMinNanoseconds() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *FIO_Output_Throughput_Latency) HasMaxNanoseconds() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *FIO_Output_Throughput_Latency) HasMeanNanoseconds() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *FIO_Output_Throughput_Latency) ClearMinNanoseconds() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_MinNanoseconds = 0
+}
+
+func (x *FIO_Output_Throughput_Latency) ClearMaxNanoseconds() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_MaxNanoseconds = 0
+}
+
+func (x *FIO_Output_Throughput_Latency) ClearMeanNanoseconds() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_MeanNanoseconds = 0
+}
+
+type FIO_Output_Throughput_Latency_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	MinNanoseconds  *int64
+	MaxNanoseconds  *int64
+	MeanNanoseconds *float64
+}
+
+func (b0 FIO_Output_Throughput_Latency_builder) Build() *FIO_Output_Throughput_Latency {
+	m0 := &FIO_Output_Throughput_Latency{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.MinNanoseconds != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_MinNanoseconds = *b.MinNanoseconds
+	}
+	if b.MaxNanoseconds != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_MaxNanoseconds = *b.MaxNanoseconds
+	}
+	if b.MeanNanoseconds != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_MeanNanoseconds = *b.MeanNanoseconds
+	}
+	return m0
+}
+
+type Warp_Input struct {
+	state                      protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Operation       Warp_Input_Operation   `protobuf:"varint,1,opt,name=operation,enum=otterscale.configuration.v1.Warp_Input_Operation"`
+	xxx_hidden_DurationSeconds int64                  `protobuf:"varint,21,opt,name=duration_seconds,json=durationSeconds"`
+	xxx_hidden_ObjectSizeBytes int64                  `protobuf:"varint,31,opt,name=object_size_bytes,json=objectSizeBytes"`
+	xxx_hidden_ObjectCount     int64                  `protobuf:"varint,32,opt,name=object_count,json=objectCount"`
+	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
+	XXX_presence               [1]uint32
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
+}
+
+func (x *Warp_Input) Reset() {
+	*x = Warp_Input{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Warp_Input) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Warp_Input) ProtoMessage() {}
+
+func (x *Warp_Input) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Warp_Input) GetOperation() Warp_Input_Operation {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
+			return x.xxx_hidden_Operation
+		}
+	}
+	return Warp_Input_GET
+}
+
+func (x *Warp_Input) GetDurationSeconds() int64 {
+	if x != nil {
+		return x.xxx_hidden_DurationSeconds
+	}
+	return 0
+}
+
+func (x *Warp_Input) GetObjectSizeBytes() int64 {
+	if x != nil {
+		return x.xxx_hidden_ObjectSizeBytes
+	}
+	return 0
+}
+
+func (x *Warp_Input) GetObjectCount() int64 {
+	if x != nil {
+		return x.xxx_hidden_ObjectCount
+	}
+	return 0
+}
+
+func (x *Warp_Input) SetOperation(v Warp_Input_Operation) {
+	x.xxx_hidden_Operation = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *Warp_Input) SetDurationSeconds(v int64) {
+	x.xxx_hidden_DurationSeconds = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
+func (x *Warp_Input) SetObjectSizeBytes(v int64) {
+	x.xxx_hidden_ObjectSizeBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+}
+
+func (x *Warp_Input) SetObjectCount(v int64) {
+	x.xxx_hidden_ObjectCount = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+}
+
+func (x *Warp_Input) HasOperation() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *Warp_Input) HasDurationSeconds() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Warp_Input) HasObjectSizeBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *Warp_Input) HasObjectCount() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *Warp_Input) ClearOperation() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Operation = Warp_Input_GET
+}
+
+func (x *Warp_Input) ClearDurationSeconds() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_DurationSeconds = 0
+}
+
+func (x *Warp_Input) ClearObjectSizeBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_ObjectSizeBytes = 0
+}
+
+func (x *Warp_Input) ClearObjectCount() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_ObjectCount = 0
+}
+
+type Warp_Input_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Operation       *Warp_Input_Operation
+	DurationSeconds *int64
+	ObjectSizeBytes *int64
+	ObjectCount     *int64
+}
+
+func (b0 Warp_Input_builder) Build() *Warp_Input {
+	m0 := &Warp_Input{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Operation != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_Operation = *b.Operation
+	}
+	if b.DurationSeconds != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_DurationSeconds = *b.DurationSeconds
+	}
+	if b.ObjectSizeBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		x.xxx_hidden_ObjectSizeBytes = *b.ObjectSizeBytes
+	}
+	if b.ObjectCount != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_ObjectCount = *b.ObjectCount
+	}
+	return m0
+}
+
+type Warp_Output struct {
+	state             protoimpl.MessageState  `protogen:"opaque.v1"`
+	xxx_hidden_Get    *Warp_Output_Throughput `protobuf:"bytes,11,opt,name=get"`
+	xxx_hidden_Put    *Warp_Output_Throughput `protobuf:"bytes,12,opt,name=put"`
+	xxx_hidden_Delete *Warp_Output_Throughput `protobuf:"bytes,13,opt,name=delete"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *Warp_Output) Reset() {
+	*x = Warp_Output{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Warp_Output) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Warp_Output) ProtoMessage() {}
+
+func (x *Warp_Output) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Warp_Output) GetGet() *Warp_Output_Throughput {
+	if x != nil {
+		return x.xxx_hidden_Get
+	}
+	return nil
+}
+
+func (x *Warp_Output) GetPut() *Warp_Output_Throughput {
+	if x != nil {
+		return x.xxx_hidden_Put
+	}
+	return nil
+}
+
+func (x *Warp_Output) GetDelete() *Warp_Output_Throughput {
+	if x != nil {
+		return x.xxx_hidden_Delete
+	}
+	return nil
+}
+
+func (x *Warp_Output) SetGet(v *Warp_Output_Throughput) {
+	x.xxx_hidden_Get = v
+}
+
+func (x *Warp_Output) SetPut(v *Warp_Output_Throughput) {
+	x.xxx_hidden_Put = v
+}
+
+func (x *Warp_Output) SetDelete(v *Warp_Output_Throughput) {
+	x.xxx_hidden_Delete = v
+}
+
+func (x *Warp_Output) HasGet() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Get != nil
+}
+
+func (x *Warp_Output) HasPut() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Put != nil
+}
+
+func (x *Warp_Output) HasDelete() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Delete != nil
+}
+
+func (x *Warp_Output) ClearGet() {
+	x.xxx_hidden_Get = nil
+}
+
+func (x *Warp_Output) ClearPut() {
+	x.xxx_hidden_Put = nil
+}
+
+func (x *Warp_Output) ClearDelete() {
+	x.xxx_hidden_Delete = nil
+}
+
+type Warp_Output_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Get    *Warp_Output_Throughput
+	Put    *Warp_Output_Throughput
+	Delete *Warp_Output_Throughput
+}
+
+func (b0 Warp_Output_builder) Build() *Warp_Output {
+	m0 := &Warp_Output{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Get = b.Get
+	x.xxx_hidden_Put = b.Put
+	x.xxx_hidden_Delete = b.Delete
+	return m0
+}
+
+type Warp_Output_Throughput struct {
+	state                      protoimpl.MessageState          `protogen:"opaque.v1"`
+	xxx_hidden_TotalBytes      float64                         `protobuf:"fixed64,1,opt,name=total_bytes,json=totalBytes"`
+	xxx_hidden_TotalObjects    float64                         `protobuf:"fixed64,2,opt,name=total_objects,json=totalObjects"`
+	xxx_hidden_TotalOperations int64                           `protobuf:"varint,3,opt,name=total_operations,json=totalOperations"`
+	xxx_hidden_Bytes           *Warp_Output_Throughput_Metrics `protobuf:"bytes,11,opt,name=bytes"`
+	xxx_hidden_Objects         *Warp_Output_Throughput_Metrics `protobuf:"bytes,12,opt,name=objects"`
+	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
+	XXX_presence               [1]uint32
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
+}
+
+func (x *Warp_Output_Throughput) Reset() {
+	*x = Warp_Output_Throughput{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[37]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Warp_Output_Throughput) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Warp_Output_Throughput) ProtoMessage() {}
+
+func (x *Warp_Output_Throughput) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[37]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Warp_Output_Throughput) GetTotalBytes() float64 {
+	if x != nil {
+		return x.xxx_hidden_TotalBytes
+	}
+	return 0
+}
+
+func (x *Warp_Output_Throughput) GetTotalObjects() float64 {
+	if x != nil {
+		return x.xxx_hidden_TotalObjects
+	}
+	return 0
+}
+
+func (x *Warp_Output_Throughput) GetTotalOperations() int64 {
+	if x != nil {
+		return x.xxx_hidden_TotalOperations
+	}
+	return 0
+}
+
+func (x *Warp_Output_Throughput) GetBytes() *Warp_Output_Throughput_Metrics {
+	if x != nil {
+		return x.xxx_hidden_Bytes
+	}
+	return nil
+}
+
+func (x *Warp_Output_Throughput) GetObjects() *Warp_Output_Throughput_Metrics {
+	if x != nil {
+		return x.xxx_hidden_Objects
+	}
+	return nil
+}
+
+func (x *Warp_Output_Throughput) SetTotalBytes(v float64) {
+	x.xxx_hidden_TotalBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *Warp_Output_Throughput) SetTotalObjects(v float64) {
+	x.xxx_hidden_TotalObjects = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *Warp_Output_Throughput) SetTotalOperations(v int64) {
+	x.xxx_hidden_TotalOperations = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *Warp_Output_Throughput) SetBytes(v *Warp_Output_Throughput_Metrics) {
+	x.xxx_hidden_Bytes = v
+}
+
+func (x *Warp_Output_Throughput) SetObjects(v *Warp_Output_Throughput_Metrics) {
+	x.xxx_hidden_Objects = v
+}
+
+func (x *Warp_Output_Throughput) HasTotalBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *Warp_Output_Throughput) HasTotalObjects() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Warp_Output_Throughput) HasTotalOperations() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *Warp_Output_Throughput) HasBytes() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Bytes != nil
+}
+
+func (x *Warp_Output_Throughput) HasObjects() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Objects != nil
+}
+
+func (x *Warp_Output_Throughput) ClearTotalBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_TotalBytes = 0
+}
+
+func (x *Warp_Output_Throughput) ClearTotalObjects() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_TotalObjects = 0
+}
+
+func (x *Warp_Output_Throughput) ClearTotalOperations() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_TotalOperations = 0
+}
+
+func (x *Warp_Output_Throughput) ClearBytes() {
+	x.xxx_hidden_Bytes = nil
+}
+
+func (x *Warp_Output_Throughput) ClearObjects() {
+	x.xxx_hidden_Objects = nil
+}
+
+type Warp_Output_Throughput_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	TotalBytes      *float64
+	TotalObjects    *float64
+	TotalOperations *int64
+	Bytes           *Warp_Output_Throughput_Metrics
+	Objects         *Warp_Output_Throughput_Metrics
+}
+
+func (b0 Warp_Output_Throughput_builder) Build() *Warp_Output_Throughput {
+	m0 := &Warp_Output_Throughput{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.TotalBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_TotalBytes = *b.TotalBytes
+	}
+	if b.TotalObjects != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_TotalObjects = *b.TotalObjects
+	}
+	if b.TotalOperations != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_TotalOperations = *b.TotalOperations
+	}
+	x.xxx_hidden_Bytes = b.Bytes
+	x.xxx_hidden_Objects = b.Objects
+	return m0
+}
+
+type Warp_Output_Throughput_Metrics struct {
+	state                       protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_FastestPerSecond float64                `protobuf:"fixed64,1,opt,name=fastest_per_second,json=fastestPerSecond"`
+	xxx_hidden_MedianPerSecond  float64                `protobuf:"fixed64,2,opt,name=median_per_second,json=medianPerSecond"`
+	xxx_hidden_SlowestPerSecond float64                `protobuf:"fixed64,3,opt,name=slowest_per_second,json=slowestPerSecond"`
+	XXX_raceDetectHookData      protoimpl.RaceDetectHookData
+	XXX_presence                [1]uint32
+	unknownFields               protoimpl.UnknownFields
+	sizeCache                   protoimpl.SizeCache
+}
+
+func (x *Warp_Output_Throughput_Metrics) Reset() {
+	*x = Warp_Output_Throughput_Metrics{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[38]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Warp_Output_Throughput_Metrics) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Warp_Output_Throughput_Metrics) ProtoMessage() {}
+
+func (x *Warp_Output_Throughput_Metrics) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[38]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Warp_Output_Throughput_Metrics) GetFastestPerSecond() float64 {
+	if x != nil {
+		return x.xxx_hidden_FastestPerSecond
+	}
+	return 0
+}
+
+func (x *Warp_Output_Throughput_Metrics) GetMedianPerSecond() float64 {
+	if x != nil {
+		return x.xxx_hidden_MedianPerSecond
+	}
+	return 0
+}
+
+func (x *Warp_Output_Throughput_Metrics) GetSlowestPerSecond() float64 {
+	if x != nil {
+		return x.xxx_hidden_SlowestPerSecond
+	}
+	return 0
+}
+
+func (x *Warp_Output_Throughput_Metrics) SetFastestPerSecond(v float64) {
+	x.xxx_hidden_FastestPerSecond = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *Warp_Output_Throughput_Metrics) SetMedianPerSecond(v float64) {
+	x.xxx_hidden_MedianPerSecond = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *Warp_Output_Throughput_Metrics) SetSlowestPerSecond(v float64) {
+	x.xxx_hidden_SlowestPerSecond = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+}
+
+func (x *Warp_Output_Throughput_Metrics) HasFastestPerSecond() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *Warp_Output_Throughput_Metrics) HasMedianPerSecond() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Warp_Output_Throughput_Metrics) HasSlowestPerSecond() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *Warp_Output_Throughput_Metrics) ClearFastestPerSecond() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_FastestPerSecond = 0
+}
+
+func (x *Warp_Output_Throughput_Metrics) ClearMedianPerSecond() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_MedianPerSecond = 0
+}
+
+func (x *Warp_Output_Throughput_Metrics) ClearSlowestPerSecond() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_SlowestPerSecond = 0
+}
+
+type Warp_Output_Throughput_Metrics_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	FastestPerSecond *float64
+	MedianPerSecond  *float64
+	SlowestPerSecond *float64
+}
+
+func (b0 Warp_Output_Throughput_Metrics_builder) Build() *Warp_Output_Throughput_Metrics {
+	m0 := &Warp_Output_Throughput_Metrics{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.FastestPerSecond != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_FastestPerSecond = *b.FastestPerSecond
+	}
+	if b.MedianPerSecond != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_MedianPerSecond = *b.MedianPerSecond
+	}
+	if b.SlowestPerSecond != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_SlowestPerSecond = *b.SlowestPerSecond
+	}
+	return m0
+}
+
 var File_api_configuration_v1_configuration_proto protoreflect.FileDescriptor
 
 const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\n" +
-	"(api/configuration/v1/configuration.proto\x12\x1botterscale.configuration.v1\x1a\x1bgoogle/protobuf/empty.proto\"\xfe\x06\n" +
+	"(api/configuration/v1/configuration.proto\x12\x1botterscale.configuration.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x88\b\n" +
 	"\rConfiguration\x12S\n" +
 	"\n" +
 	"ntp_server\x18\x01 \x01(\v24.otterscale.configuration.v1.Configuration.NTPServerR\tntpServer\x12o\n" +
 	"\x14package_repositories\x18\x02 \x03(\v2<.otterscale.configuration.v1.Configuration.PackageRepositoryR\x13packageRepositories\x12U\n" +
 	"\vboot_images\x18\x03 \x03(\v24.otterscale.configuration.v1.Configuration.BootImageR\n" +
-	"bootImages\x1a)\n" +
+	"bootImages\x12b\n" +
+	"\x0fhelm_repository\x18\x04 \x01(\v29.otterscale.configuration.v1.Configuration.HelmRepositoryR\x0ehelmRepository\x1a)\n" +
 	"\tNTPServer\x12\x1c\n" +
 	"\taddresses\x18\x01 \x03(\tR\taddresses\x1ac\n" +
 	"\x11PackageRepository\x12\x0e\n" +
@@ -1363,14 +4978,18 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\adefault\x18\v \x01(\bR\adefault\x1aH\n" +
 	"\x1aArchitectureStatusMapEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x19\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a$\n" +
+	"\x0eHelmRepository\x12\x12\n" +
+	"\x04urls\x18\x01 \x03(\tR\x04urls\"\x19\n" +
 	"\x17GetConfigurationRequest\"6\n" +
 	"\x16UpdateNTPServerRequest\x12\x1c\n" +
 	"\taddresses\x18\x01 \x03(\tR\taddresses\"_\n" +
 	"\x1eUpdatePackageRepositoryRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x10\n" +
 	"\x03url\x18\x02 \x01(\tR\x03url\x12\x1b\n" +
-	"\tskip_juju\x18\x03 \x01(\bR\bskipJuju\"c\n" +
+	"\tskip_juju\x18\x03 \x01(\bR\bskipJuju\"1\n" +
+	"\x1bUpdateHelmRepositoryRequest\x12\x12\n" +
+	"\x04urls\x18\x01 \x03(\tR\x04urls\"c\n" +
 	"\x16CreateBootImageRequest\x12#\n" +
 	"\rdistro_series\x18\x01 \x01(\tR\fdistroSeries\x12$\n" +
 	"\rarchitectures\x18\x02 \x03(\tR\rarchitectures\"A\n" +
@@ -1382,64 +5001,277 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\timporting\x18\x01 \x01(\bR\timporting\" \n" +
 	"\x1eListBootImageSelectionsRequest\"\x94\x01\n" +
 	"\x1fListBootImageSelectionsResponse\x12q\n" +
-	"\x15boot_image_selections\x18\x01 \x03(\v2=.otterscale.configuration.v1.Configuration.BootImageSelectionR\x13bootImageSelections2\x91\b\n" +
+	"\x15boot_image_selections\x18\x01 \x03(\v2=.otterscale.configuration.v1.Configuration.BootImageSelectionR\x13bootImageSelections\"C\n" +
+	"\x0fCephBlockDevice\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\"C\n" +
+	"\x11NetworkFileSystem\x12\x1a\n" +
+	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x12\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path\"\xf4\x01\n" +
+	"\x15InternalObjectService\x12K\n" +
+	"\x04type\x18\x01 \x01(\x0e27.otterscale.configuration.v1.InternalObjectService.TypeR\x04type\x12\x14\n" +
+	"\x05scope\x18\x02 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x03 \x01(\tR\bfacility\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1a\n" +
+	"\bendpoint\x18\x05 \x01(\tR\bendpoint\",\n" +
+	"\x04Type\x12\x0f\n" +
+	"\vUNSPECIFIED\x10\x00\x12\b\n" +
+	"\x04CEPH\x10\x01\x12\t\n" +
+	"\x05MINIO\x10\x02\"q\n" +
+	"\x15ExternalObjectService\x12\x1a\n" +
+	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x1d\n" +
+	"\n" +
+	"access_key\x18\x02 \x01(\tR\taccessKey\x12\x1d\n" +
+	"\n" +
+	"secret_key\x18\x03 \x01(\tR\tsecretKey\"\xd4\n" +
+	"\n" +
+	"\x03FIO\x12Z\n" +
+	"\x11ceph_block_device\x18\x01 \x01(\v2,.otterscale.configuration.v1.CephBlockDeviceH\x00R\x0fcephBlockDevice\x12`\n" +
+	"\x13network_file_system\x18\x02 \x01(\v2..otterscale.configuration.v1.NetworkFileSystemH\x00R\x11networkFileSystem\x12<\n" +
+	"\x05input\x18\v \x01(\v2&.otterscale.configuration.v1.FIO.InputR\x05input\x12?\n" +
+	"\x06output\x18\f \x01(\v2'.otterscale.configuration.v1.FIO.OutputR\x06output\x1a\xad\x03\n" +
+	"\x05Input\x12R\n" +
+	"\vaccess_mode\x18\x01 \x01(\x0e21.otterscale.configuration.v1.FIO.Input.AccessModeR\n" +
+	"accessMode\x12\x1b\n" +
+	"\tjob_count\x18\x1f \x01(\x03R\bjobCount\x12(\n" +
+	"\x10run_time_seconds\x18) \x01(\x03R\x0erunTimeSeconds\x12(\n" +
+	"\x10block_size_bytes\x18G \x01(\x03R\x0eblockSizeBytes\x12&\n" +
+	"\x0ffile_size_bytes\x18[ \x01(\x03R\rfileSizeBytes\x12\x19\n" +
+	"\bio_depth\x18y \x01(\x03R\aioDepth\"\x9b\x01\n" +
+	"\n" +
+	"AccessMode\x12\b\n" +
+	"\x04READ\x10\x00\x12\t\n" +
+	"\x05WRITE\x10\x01\x12\b\n" +
+	"\x04TRIM\x10\x02\x12\x0e\n" +
+	"\n" +
+	"READ_WRITE\x10\x03\x12\x0e\n" +
+	"\n" +
+	"TRIM_WRITE\x10\x04\x12\r\n" +
+	"\tRAND_READ\x10\x05\x12\x0e\n" +
+	"\n" +
+	"RAND_WRITE\x10\x06\x12\r\n" +
+	"\tRAND_TRIM\x10\a\x12\v\n" +
+	"\aRAND_RW\x10\b\x12\x13\n" +
+	"\x0fRAND_TRIM_WRITE\x10\t\x1a\xd5\x04\n" +
+	"\x06Output\x12F\n" +
+	"\x04read\x18\x01 \x01(\v22.otterscale.configuration.v1.FIO.Output.ThroughputR\x04read\x12H\n" +
+	"\x05write\x18\x02 \x01(\v22.otterscale.configuration.v1.FIO.Output.ThroughputR\x05write\x12F\n" +
+	"\x04trim\x18\x03 \x01(\v22.otterscale.configuration.v1.FIO.Output.ThroughputR\x04trim\x1a\xf0\x02\n" +
+	"\n" +
+	"Throughput\x12\x19\n" +
+	"\bio_bytes\x18\x01 \x01(\x03R\aioBytes\x12'\n" +
+	"\x0fbandwidth_bytes\x18\x02 \x01(\x03R\x0ebandwidthBytes\x12\"\n" +
+	"\rio_per_second\x18\x03 \x01(\x01R\vioPerSecond\x12\x1b\n" +
+	"\ttotal_ios\x18\x04 \x01(\x03R\btotalIos\x12T\n" +
+	"\alatency\x18\v \x01(\v2:.otterscale.configuration.v1.FIO.Output.Throughput.LatencyR\alatency\x1a\x86\x01\n" +
+	"\aLatency\x12'\n" +
+	"\x0fmin_nanoseconds\x18\x01 \x01(\x03R\x0eminNanoseconds\x12'\n" +
+	"\x0fmax_nanoseconds\x18\x02 \x01(\x03R\x0emaxNanoseconds\x12)\n" +
+	"\x10mean_nanoseconds\x18\x03 \x01(\x01R\x0fmeanNanosecondsB\b\n" +
+	"\x06target\"\xb0\n" +
+	"\n" +
+	"\x04Warp\x12l\n" +
+	"\x17internal_object_service\x18\x01 \x01(\v22.otterscale.configuration.v1.InternalObjectServiceH\x00R\x15internalObjectService\x12l\n" +
+	"\x17external_object_service\x18\x02 \x01(\v22.otterscale.configuration.v1.ExternalObjectServiceH\x00R\x15externalObjectService\x12=\n" +
+	"\x05input\x18\v \x01(\v2'.otterscale.configuration.v1.Warp.InputR\x05input\x12@\n" +
+	"\x06output\x18\f \x01(\v2(.otterscale.configuration.v1.Warp.OutputR\x06output\x1a\x9c\x02\n" +
+	"\x05Input\x12O\n" +
+	"\toperation\x18\x01 \x01(\x0e21.otterscale.configuration.v1.Warp.Input.OperationR\toperation\x12)\n" +
+	"\x10duration_seconds\x18\x15 \x01(\x03R\x0fdurationSeconds\x12*\n" +
+	"\x11object_size_bytes\x18\x1f \x01(\x03R\x0fobjectSizeBytes\x12!\n" +
+	"\fobject_count\x18  \x01(\x03R\vobjectCount\"H\n" +
+	"\tOperation\x12\a\n" +
+	"\x03GET\x10\x00\x12\a\n" +
+	"\x03PUT\x10\x01\x12\n" +
+	"\n" +
+	"\x06DELETE\x10\x02\x12\b\n" +
+	"\x04LIST\x10\x03\x12\b\n" +
+	"\x04STAT\x10\x04\x12\t\n" +
+	"\x05MIXED\x10\x05\x1a\xa1\x05\n" +
+	"\x06Output\x12E\n" +
+	"\x03get\x18\v \x01(\v23.otterscale.configuration.v1.Warp.Output.ThroughputR\x03get\x12E\n" +
+	"\x03put\x18\f \x01(\v23.otterscale.configuration.v1.Warp.Output.ThroughputR\x03put\x12K\n" +
+	"\x06delete\x18\r \x01(\v23.otterscale.configuration.v1.Warp.Output.ThroughputR\x06delete\x1a\xbb\x03\n" +
+	"\n" +
+	"Throughput\x12\x1f\n" +
+	"\vtotal_bytes\x18\x01 \x01(\x01R\n" +
+	"totalBytes\x12#\n" +
+	"\rtotal_objects\x18\x02 \x01(\x01R\ftotalObjects\x12)\n" +
+	"\x10total_operations\x18\x03 \x01(\x03R\x0ftotalOperations\x12Q\n" +
+	"\x05bytes\x18\v \x01(\v2;.otterscale.configuration.v1.Warp.Output.Throughput.MetricsR\x05bytes\x12U\n" +
+	"\aobjects\x18\f \x01(\v2;.otterscale.configuration.v1.Warp.Output.Throughput.MetricsR\aobjects\x1a\x91\x01\n" +
+	"\aMetrics\x12,\n" +
+	"\x12fastest_per_second\x18\x01 \x01(\x01R\x10fastestPerSecond\x12*\n" +
+	"\x11median_per_second\x18\x02 \x01(\x01R\x0fmedianPerSecond\x12,\n" +
+	"\x12slowest_per_second\x18\x03 \x01(\x01R\x10slowestPerSecondB\b\n" +
+	"\x06target\"\xbc\x03\n" +
+	"\n" +
+	"TestResult\x12\x10\n" +
+	"\x03uid\x18\x01 \x01(\tR\x03uid\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12F\n" +
+	"\x06status\x18\x03 \x01(\x0e2..otterscale.configuration.v1.TestResult.StatusR\x06status\x12\x1d\n" +
+	"\n" +
+	"created_by\x18\x04 \x01(\tR\tcreatedBy\x129\n" +
+	"\n" +
+	"started_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tstartedAt\x12=\n" +
+	"\fcompleted_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x124\n" +
+	"\x03fio\x18e \x01(\v2 .otterscale.configuration.v1.FIOH\x00R\x03fio\x127\n" +
+	"\x04warp\x18f \x01(\v2!.otterscale.configuration.v1.WarpH\x00R\x04warp\"0\n" +
+	"\x06Status\x12\v\n" +
+	"\aRUNNING\x10\x00\x12\r\n" +
+	"\tSUCCEEDED\x10\x01\x12\n" +
+	"\n" +
+	"\x06FAILED\x10\x02B\x06\n" +
+	"\x04kind\"\x18\n" +
+	"\x16ListTestResultsRequest\"e\n" +
+	"\x17ListTestResultsResponse\x12J\n" +
+	"\ftest_results\x18\x01 \x03(\v2'.otterscale.configuration.v1.TestResultR\vtestResults\"\xc3\x01\n" +
+	"\x17CreateTestResultRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1d\n" +
+	"\n" +
+	"created_by\x18\x02 \x01(\tR\tcreatedBy\x124\n" +
+	"\x03fio\x18e \x01(\v2 .otterscale.configuration.v1.FIOH\x00R\x03fio\x127\n" +
+	"\x04warp\x18f \x01(\v2!.otterscale.configuration.v1.WarpH\x00R\x04warpB\x06\n" +
+	"\x04kind\"-\n" +
+	"\x17DeleteTestResultRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"\x7f\n" +
+	"!ListInternalObjectServicesRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12'\n" +
+	"\x0fkubernetes_name\x18\x02 \x01(\tR\x0ekubernetesName\x12\x1b\n" +
+	"\tceph_name\x18\x03 \x01(\tR\bcephName\"\x92\x01\n" +
+	"\"ListInternalObjectServicesResponse\x12l\n" +
+	"\x18internal_object_services\x18\x01 \x03(\v22.otterscale.configuration.v1.InternalObjectServiceR\x16internalObjectServices2\x92\r\n" +
 	"\x14ConfigurationService\x12t\n" +
 	"\x10GetConfiguration\x124.otterscale.configuration.v1.GetConfigurationRequest\x1a*.otterscale.configuration.v1.Configuration\x12|\n" +
 	"\x0fUpdateNTPServer\x123.otterscale.configuration.v1.UpdateNTPServerRequest\x1a4.otterscale.configuration.v1.Configuration.NTPServer\x12\x94\x01\n" +
-	"\x17UpdatePackageRepository\x12;.otterscale.configuration.v1.UpdatePackageRepositoryRequest\x1a<.otterscale.configuration.v1.Configuration.PackageRepository\x12|\n" +
+	"\x17UpdatePackageRepository\x12;.otterscale.configuration.v1.UpdatePackageRepositoryRequest\x1a<.otterscale.configuration.v1.Configuration.PackageRepository\x12\x8b\x01\n" +
+	"\x14UpdateHelmRepository\x128.otterscale.configuration.v1.UpdateHelmRepositoryRequest\x1a9.otterscale.configuration.v1.Configuration.HelmRepository\x12|\n" +
 	"\x0fCreateBootImage\x123.otterscale.configuration.v1.CreateBootImageRequest\x1a4.otterscale.configuration.v1.Configuration.BootImage\x12f\n" +
 	"\x13SetDefaultBootImage\x127.otterscale.configuration.v1.SetDefaultBootImageRequest\x1a\x16.google.protobuf.Empty\x12`\n" +
 	"\x10ImportBootImages\x124.otterscale.configuration.v1.ImportBootImagesRequest\x1a\x16.google.protobuf.Empty\x12\x8e\x01\n" +
 	"\x15IsImportingBootImages\x129.otterscale.configuration.v1.IsImportingBootImagesRequest\x1a:.otterscale.configuration.v1.IsImportingBootImagesResponse\x12\x94\x01\n" +
-	"\x17ListBootImageSelections\x12;.otterscale.configuration.v1.ListBootImageSelectionsRequest\x1a<.otterscale.configuration.v1.ListBootImageSelectionsResponseB:Z8github.com/otterscale/otterscale/api/configuration/v1;pbb\beditionsp\xe8\a"
+	"\x17ListBootImageSelections\x12;.otterscale.configuration.v1.ListBootImageSelectionsRequest\x1a<.otterscale.configuration.v1.ListBootImageSelectionsResponse\x12|\n" +
+	"\x0fListTestResults\x123.otterscale.configuration.v1.ListTestResultsRequest\x1a4.otterscale.configuration.v1.ListTestResultsResponse\x12q\n" +
+	"\x10CreateTestResult\x124.otterscale.configuration.v1.CreateTestResultRequest\x1a'.otterscale.configuration.v1.TestResult\x12`\n" +
+	"\x10DeleteTestResult\x124.otterscale.configuration.v1.DeleteTestResultRequest\x1a\x16.google.protobuf.Empty\x12\x9d\x01\n" +
+	"\x1aListInternalObjectServices\x12>.otterscale.configuration.v1.ListInternalObjectServicesRequest\x1a?.otterscale.configuration.v1.ListInternalObjectServicesResponseB:Z8github.com/otterscale/otterscale/api/configuration/v1;pbb\beditionsp\xe8\a"
 
-var file_api_configuration_v1_configuration_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_api_configuration_v1_configuration_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
+var file_api_configuration_v1_configuration_proto_msgTypes = make([]protoimpl.MessageInfo, 39)
 var file_api_configuration_v1_configuration_proto_goTypes = []any{
-	(*Configuration)(nil),                    // 0: otterscale.configuration.v1.Configuration
-	(*GetConfigurationRequest)(nil),          // 1: otterscale.configuration.v1.GetConfigurationRequest
-	(*UpdateNTPServerRequest)(nil),           // 2: otterscale.configuration.v1.UpdateNTPServerRequest
-	(*UpdatePackageRepositoryRequest)(nil),   // 3: otterscale.configuration.v1.UpdatePackageRepositoryRequest
-	(*CreateBootImageRequest)(nil),           // 4: otterscale.configuration.v1.CreateBootImageRequest
-	(*SetDefaultBootImageRequest)(nil),       // 5: otterscale.configuration.v1.SetDefaultBootImageRequest
-	(*ImportBootImagesRequest)(nil),          // 6: otterscale.configuration.v1.ImportBootImagesRequest
-	(*IsImportingBootImagesRequest)(nil),     // 7: otterscale.configuration.v1.IsImportingBootImagesRequest
-	(*IsImportingBootImagesResponse)(nil),    // 8: otterscale.configuration.v1.IsImportingBootImagesResponse
-	(*ListBootImageSelectionsRequest)(nil),   // 9: otterscale.configuration.v1.ListBootImageSelectionsRequest
-	(*ListBootImageSelectionsResponse)(nil),  // 10: otterscale.configuration.v1.ListBootImageSelectionsResponse
-	(*Configuration_NTPServer)(nil),          // 11: otterscale.configuration.v1.Configuration.NTPServer
-	(*Configuration_PackageRepository)(nil),  // 12: otterscale.configuration.v1.Configuration.PackageRepository
-	(*Configuration_BootImageSelection)(nil), // 13: otterscale.configuration.v1.Configuration.BootImageSelection
-	(*Configuration_BootImage)(nil),          // 14: otterscale.configuration.v1.Configuration.BootImage
-	nil,                                      // 15: otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntry
-	(*emptypb.Empty)(nil),                    // 16: google.protobuf.Empty
+	(InternalObjectService_Type)(0),            // 0: otterscale.configuration.v1.InternalObjectService.Type
+	(FIO_Input_AccessMode)(0),                  // 1: otterscale.configuration.v1.FIO.Input.AccessMode
+	(Warp_Input_Operation)(0),                  // 2: otterscale.configuration.v1.Warp.Input.Operation
+	(TestResult_Status)(0),                     // 3: otterscale.configuration.v1.TestResult.Status
+	(*Configuration)(nil),                      // 4: otterscale.configuration.v1.Configuration
+	(*GetConfigurationRequest)(nil),            // 5: otterscale.configuration.v1.GetConfigurationRequest
+	(*UpdateNTPServerRequest)(nil),             // 6: otterscale.configuration.v1.UpdateNTPServerRequest
+	(*UpdatePackageRepositoryRequest)(nil),     // 7: otterscale.configuration.v1.UpdatePackageRepositoryRequest
+	(*UpdateHelmRepositoryRequest)(nil),        // 8: otterscale.configuration.v1.UpdateHelmRepositoryRequest
+	(*CreateBootImageRequest)(nil),             // 9: otterscale.configuration.v1.CreateBootImageRequest
+	(*SetDefaultBootImageRequest)(nil),         // 10: otterscale.configuration.v1.SetDefaultBootImageRequest
+	(*ImportBootImagesRequest)(nil),            // 11: otterscale.configuration.v1.ImportBootImagesRequest
+	(*IsImportingBootImagesRequest)(nil),       // 12: otterscale.configuration.v1.IsImportingBootImagesRequest
+	(*IsImportingBootImagesResponse)(nil),      // 13: otterscale.configuration.v1.IsImportingBootImagesResponse
+	(*ListBootImageSelectionsRequest)(nil),     // 14: otterscale.configuration.v1.ListBootImageSelectionsRequest
+	(*ListBootImageSelectionsResponse)(nil),    // 15: otterscale.configuration.v1.ListBootImageSelectionsResponse
+	(*CephBlockDevice)(nil),                    // 16: otterscale.configuration.v1.CephBlockDevice
+	(*NetworkFileSystem)(nil),                  // 17: otterscale.configuration.v1.NetworkFileSystem
+	(*InternalObjectService)(nil),              // 18: otterscale.configuration.v1.InternalObjectService
+	(*ExternalObjectService)(nil),              // 19: otterscale.configuration.v1.ExternalObjectService
+	(*FIO)(nil),                                // 20: otterscale.configuration.v1.FIO
+	(*Warp)(nil),                               // 21: otterscale.configuration.v1.Warp
+	(*TestResult)(nil),                         // 22: otterscale.configuration.v1.TestResult
+	(*ListTestResultsRequest)(nil),             // 23: otterscale.configuration.v1.ListTestResultsRequest
+	(*ListTestResultsResponse)(nil),            // 24: otterscale.configuration.v1.ListTestResultsResponse
+	(*CreateTestResultRequest)(nil),            // 25: otterscale.configuration.v1.CreateTestResultRequest
+	(*DeleteTestResultRequest)(nil),            // 26: otterscale.configuration.v1.DeleteTestResultRequest
+	(*ListInternalObjectServicesRequest)(nil),  // 27: otterscale.configuration.v1.ListInternalObjectServicesRequest
+	(*ListInternalObjectServicesResponse)(nil), // 28: otterscale.configuration.v1.ListInternalObjectServicesResponse
+	(*Configuration_NTPServer)(nil),            // 29: otterscale.configuration.v1.Configuration.NTPServer
+	(*Configuration_PackageRepository)(nil),    // 30: otterscale.configuration.v1.Configuration.PackageRepository
+	(*Configuration_BootImageSelection)(nil),   // 31: otterscale.configuration.v1.Configuration.BootImageSelection
+	(*Configuration_BootImage)(nil),            // 32: otterscale.configuration.v1.Configuration.BootImage
+	(*Configuration_HelmRepository)(nil),       // 33: otterscale.configuration.v1.Configuration.HelmRepository
+	nil,                                        // 34: otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntry
+	(*FIO_Input)(nil),                          // 35: otterscale.configuration.v1.FIO.Input
+	(*FIO_Output)(nil),                         // 36: otterscale.configuration.v1.FIO.Output
+	(*FIO_Output_Throughput)(nil),              // 37: otterscale.configuration.v1.FIO.Output.Throughput
+	(*FIO_Output_Throughput_Latency)(nil),      // 38: otterscale.configuration.v1.FIO.Output.Throughput.Latency
+	(*Warp_Input)(nil),                         // 39: otterscale.configuration.v1.Warp.Input
+	(*Warp_Output)(nil),                        // 40: otterscale.configuration.v1.Warp.Output
+	(*Warp_Output_Throughput)(nil),             // 41: otterscale.configuration.v1.Warp.Output.Throughput
+	(*Warp_Output_Throughput_Metrics)(nil),     // 42: otterscale.configuration.v1.Warp.Output.Throughput.Metrics
+	(*timestamppb.Timestamp)(nil),              // 43: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                      // 44: google.protobuf.Empty
 }
 var file_api_configuration_v1_configuration_proto_depIdxs = []int32{
-	11, // 0: otterscale.configuration.v1.Configuration.ntp_server:type_name -> otterscale.configuration.v1.Configuration.NTPServer
-	12, // 1: otterscale.configuration.v1.Configuration.package_repositories:type_name -> otterscale.configuration.v1.Configuration.PackageRepository
-	14, // 2: otterscale.configuration.v1.Configuration.boot_images:type_name -> otterscale.configuration.v1.Configuration.BootImage
-	13, // 3: otterscale.configuration.v1.ListBootImageSelectionsResponse.boot_image_selections:type_name -> otterscale.configuration.v1.Configuration.BootImageSelection
-	15, // 4: otterscale.configuration.v1.Configuration.BootImage.architecture_status_map:type_name -> otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntry
-	1,  // 5: otterscale.configuration.v1.ConfigurationService.GetConfiguration:input_type -> otterscale.configuration.v1.GetConfigurationRequest
-	2,  // 6: otterscale.configuration.v1.ConfigurationService.UpdateNTPServer:input_type -> otterscale.configuration.v1.UpdateNTPServerRequest
-	3,  // 7: otterscale.configuration.v1.ConfigurationService.UpdatePackageRepository:input_type -> otterscale.configuration.v1.UpdatePackageRepositoryRequest
-	4,  // 8: otterscale.configuration.v1.ConfigurationService.CreateBootImage:input_type -> otterscale.configuration.v1.CreateBootImageRequest
-	5,  // 9: otterscale.configuration.v1.ConfigurationService.SetDefaultBootImage:input_type -> otterscale.configuration.v1.SetDefaultBootImageRequest
-	6,  // 10: otterscale.configuration.v1.ConfigurationService.ImportBootImages:input_type -> otterscale.configuration.v1.ImportBootImagesRequest
-	7,  // 11: otterscale.configuration.v1.ConfigurationService.IsImportingBootImages:input_type -> otterscale.configuration.v1.IsImportingBootImagesRequest
-	9,  // 12: otterscale.configuration.v1.ConfigurationService.ListBootImageSelections:input_type -> otterscale.configuration.v1.ListBootImageSelectionsRequest
-	0,  // 13: otterscale.configuration.v1.ConfigurationService.GetConfiguration:output_type -> otterscale.configuration.v1.Configuration
-	11, // 14: otterscale.configuration.v1.ConfigurationService.UpdateNTPServer:output_type -> otterscale.configuration.v1.Configuration.NTPServer
-	12, // 15: otterscale.configuration.v1.ConfigurationService.UpdatePackageRepository:output_type -> otterscale.configuration.v1.Configuration.PackageRepository
-	14, // 16: otterscale.configuration.v1.ConfigurationService.CreateBootImage:output_type -> otterscale.configuration.v1.Configuration.BootImage
-	16, // 17: otterscale.configuration.v1.ConfigurationService.SetDefaultBootImage:output_type -> google.protobuf.Empty
-	16, // 18: otterscale.configuration.v1.ConfigurationService.ImportBootImages:output_type -> google.protobuf.Empty
-	8,  // 19: otterscale.configuration.v1.ConfigurationService.IsImportingBootImages:output_type -> otterscale.configuration.v1.IsImportingBootImagesResponse
-	10, // 20: otterscale.configuration.v1.ConfigurationService.ListBootImageSelections:output_type -> otterscale.configuration.v1.ListBootImageSelectionsResponse
-	13, // [13:21] is the sub-list for method output_type
-	5,  // [5:13] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	29, // 0: otterscale.configuration.v1.Configuration.ntp_server:type_name -> otterscale.configuration.v1.Configuration.NTPServer
+	30, // 1: otterscale.configuration.v1.Configuration.package_repositories:type_name -> otterscale.configuration.v1.Configuration.PackageRepository
+	32, // 2: otterscale.configuration.v1.Configuration.boot_images:type_name -> otterscale.configuration.v1.Configuration.BootImage
+	33, // 3: otterscale.configuration.v1.Configuration.helm_repository:type_name -> otterscale.configuration.v1.Configuration.HelmRepository
+	31, // 4: otterscale.configuration.v1.ListBootImageSelectionsResponse.boot_image_selections:type_name -> otterscale.configuration.v1.Configuration.BootImageSelection
+	0,  // 5: otterscale.configuration.v1.InternalObjectService.type:type_name -> otterscale.configuration.v1.InternalObjectService.Type
+	16, // 6: otterscale.configuration.v1.FIO.ceph_block_device:type_name -> otterscale.configuration.v1.CephBlockDevice
+	17, // 7: otterscale.configuration.v1.FIO.network_file_system:type_name -> otterscale.configuration.v1.NetworkFileSystem
+	35, // 8: otterscale.configuration.v1.FIO.input:type_name -> otterscale.configuration.v1.FIO.Input
+	36, // 9: otterscale.configuration.v1.FIO.output:type_name -> otterscale.configuration.v1.FIO.Output
+	18, // 10: otterscale.configuration.v1.Warp.internal_object_service:type_name -> otterscale.configuration.v1.InternalObjectService
+	19, // 11: otterscale.configuration.v1.Warp.external_object_service:type_name -> otterscale.configuration.v1.ExternalObjectService
+	39, // 12: otterscale.configuration.v1.Warp.input:type_name -> otterscale.configuration.v1.Warp.Input
+	40, // 13: otterscale.configuration.v1.Warp.output:type_name -> otterscale.configuration.v1.Warp.Output
+	3,  // 14: otterscale.configuration.v1.TestResult.status:type_name -> otterscale.configuration.v1.TestResult.Status
+	43, // 15: otterscale.configuration.v1.TestResult.started_at:type_name -> google.protobuf.Timestamp
+	43, // 16: otterscale.configuration.v1.TestResult.completed_at:type_name -> google.protobuf.Timestamp
+	20, // 17: otterscale.configuration.v1.TestResult.fio:type_name -> otterscale.configuration.v1.FIO
+	21, // 18: otterscale.configuration.v1.TestResult.warp:type_name -> otterscale.configuration.v1.Warp
+	22, // 19: otterscale.configuration.v1.ListTestResultsResponse.test_results:type_name -> otterscale.configuration.v1.TestResult
+	20, // 20: otterscale.configuration.v1.CreateTestResultRequest.fio:type_name -> otterscale.configuration.v1.FIO
+	21, // 21: otterscale.configuration.v1.CreateTestResultRequest.warp:type_name -> otterscale.configuration.v1.Warp
+	18, // 22: otterscale.configuration.v1.ListInternalObjectServicesResponse.internal_object_services:type_name -> otterscale.configuration.v1.InternalObjectService
+	34, // 23: otterscale.configuration.v1.Configuration.BootImage.architecture_status_map:type_name -> otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntry
+	1,  // 24: otterscale.configuration.v1.FIO.Input.access_mode:type_name -> otterscale.configuration.v1.FIO.Input.AccessMode
+	37, // 25: otterscale.configuration.v1.FIO.Output.read:type_name -> otterscale.configuration.v1.FIO.Output.Throughput
+	37, // 26: otterscale.configuration.v1.FIO.Output.write:type_name -> otterscale.configuration.v1.FIO.Output.Throughput
+	37, // 27: otterscale.configuration.v1.FIO.Output.trim:type_name -> otterscale.configuration.v1.FIO.Output.Throughput
+	38, // 28: otterscale.configuration.v1.FIO.Output.Throughput.latency:type_name -> otterscale.configuration.v1.FIO.Output.Throughput.Latency
+	2,  // 29: otterscale.configuration.v1.Warp.Input.operation:type_name -> otterscale.configuration.v1.Warp.Input.Operation
+	41, // 30: otterscale.configuration.v1.Warp.Output.get:type_name -> otterscale.configuration.v1.Warp.Output.Throughput
+	41, // 31: otterscale.configuration.v1.Warp.Output.put:type_name -> otterscale.configuration.v1.Warp.Output.Throughput
+	41, // 32: otterscale.configuration.v1.Warp.Output.delete:type_name -> otterscale.configuration.v1.Warp.Output.Throughput
+	42, // 33: otterscale.configuration.v1.Warp.Output.Throughput.bytes:type_name -> otterscale.configuration.v1.Warp.Output.Throughput.Metrics
+	42, // 34: otterscale.configuration.v1.Warp.Output.Throughput.objects:type_name -> otterscale.configuration.v1.Warp.Output.Throughput.Metrics
+	5,  // 35: otterscale.configuration.v1.ConfigurationService.GetConfiguration:input_type -> otterscale.configuration.v1.GetConfigurationRequest
+	6,  // 36: otterscale.configuration.v1.ConfigurationService.UpdateNTPServer:input_type -> otterscale.configuration.v1.UpdateNTPServerRequest
+	7,  // 37: otterscale.configuration.v1.ConfigurationService.UpdatePackageRepository:input_type -> otterscale.configuration.v1.UpdatePackageRepositoryRequest
+	8,  // 38: otterscale.configuration.v1.ConfigurationService.UpdateHelmRepository:input_type -> otterscale.configuration.v1.UpdateHelmRepositoryRequest
+	9,  // 39: otterscale.configuration.v1.ConfigurationService.CreateBootImage:input_type -> otterscale.configuration.v1.CreateBootImageRequest
+	10, // 40: otterscale.configuration.v1.ConfigurationService.SetDefaultBootImage:input_type -> otterscale.configuration.v1.SetDefaultBootImageRequest
+	11, // 41: otterscale.configuration.v1.ConfigurationService.ImportBootImages:input_type -> otterscale.configuration.v1.ImportBootImagesRequest
+	12, // 42: otterscale.configuration.v1.ConfigurationService.IsImportingBootImages:input_type -> otterscale.configuration.v1.IsImportingBootImagesRequest
+	14, // 43: otterscale.configuration.v1.ConfigurationService.ListBootImageSelections:input_type -> otterscale.configuration.v1.ListBootImageSelectionsRequest
+	23, // 44: otterscale.configuration.v1.ConfigurationService.ListTestResults:input_type -> otterscale.configuration.v1.ListTestResultsRequest
+	25, // 45: otterscale.configuration.v1.ConfigurationService.CreateTestResult:input_type -> otterscale.configuration.v1.CreateTestResultRequest
+	26, // 46: otterscale.configuration.v1.ConfigurationService.DeleteTestResult:input_type -> otterscale.configuration.v1.DeleteTestResultRequest
+	27, // 47: otterscale.configuration.v1.ConfigurationService.ListInternalObjectServices:input_type -> otterscale.configuration.v1.ListInternalObjectServicesRequest
+	4,  // 48: otterscale.configuration.v1.ConfigurationService.GetConfiguration:output_type -> otterscale.configuration.v1.Configuration
+	29, // 49: otterscale.configuration.v1.ConfigurationService.UpdateNTPServer:output_type -> otterscale.configuration.v1.Configuration.NTPServer
+	30, // 50: otterscale.configuration.v1.ConfigurationService.UpdatePackageRepository:output_type -> otterscale.configuration.v1.Configuration.PackageRepository
+	33, // 51: otterscale.configuration.v1.ConfigurationService.UpdateHelmRepository:output_type -> otterscale.configuration.v1.Configuration.HelmRepository
+	32, // 52: otterscale.configuration.v1.ConfigurationService.CreateBootImage:output_type -> otterscale.configuration.v1.Configuration.BootImage
+	44, // 53: otterscale.configuration.v1.ConfigurationService.SetDefaultBootImage:output_type -> google.protobuf.Empty
+	44, // 54: otterscale.configuration.v1.ConfigurationService.ImportBootImages:output_type -> google.protobuf.Empty
+	13, // 55: otterscale.configuration.v1.ConfigurationService.IsImportingBootImages:output_type -> otterscale.configuration.v1.IsImportingBootImagesResponse
+	15, // 56: otterscale.configuration.v1.ConfigurationService.ListBootImageSelections:output_type -> otterscale.configuration.v1.ListBootImageSelectionsResponse
+	24, // 57: otterscale.configuration.v1.ConfigurationService.ListTestResults:output_type -> otterscale.configuration.v1.ListTestResultsResponse
+	22, // 58: otterscale.configuration.v1.ConfigurationService.CreateTestResult:output_type -> otterscale.configuration.v1.TestResult
+	44, // 59: otterscale.configuration.v1.ConfigurationService.DeleteTestResult:output_type -> google.protobuf.Empty
+	28, // 60: otterscale.configuration.v1.ConfigurationService.ListInternalObjectServices:output_type -> otterscale.configuration.v1.ListInternalObjectServicesResponse
+	48, // [48:61] is the sub-list for method output_type
+	35, // [35:48] is the sub-list for method input_type
+	35, // [35:35] is the sub-list for extension type_name
+	35, // [35:35] is the sub-list for extension extendee
+	0,  // [0:35] is the sub-list for field type_name
 }
 
 func init() { file_api_configuration_v1_configuration_proto_init() }
@@ -1447,18 +5279,35 @@ func file_api_configuration_v1_configuration_proto_init() {
 	if File_api_configuration_v1_configuration_proto != nil {
 		return
 	}
+	file_api_configuration_v1_configuration_proto_msgTypes[16].OneofWrappers = []any{
+		(*fIO_CephBlockDevice)(nil),
+		(*fIO_NetworkFileSystem)(nil),
+	}
+	file_api_configuration_v1_configuration_proto_msgTypes[17].OneofWrappers = []any{
+		(*warp_InternalObjectService)(nil),
+		(*warp_ExternalObjectService)(nil),
+	}
+	file_api_configuration_v1_configuration_proto_msgTypes[18].OneofWrappers = []any{
+		(*testResult_Fio)(nil),
+		(*testResult_Warp)(nil),
+	}
+	file_api_configuration_v1_configuration_proto_msgTypes[21].OneofWrappers = []any{
+		(*createTestResultRequest_Fio)(nil),
+		(*createTestResultRequest_Warp)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_configuration_v1_configuration_proto_rawDesc), len(file_api_configuration_v1_configuration_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   16,
+			NumEnums:      4,
+			NumMessages:   39,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_api_configuration_v1_configuration_proto_goTypes,
 		DependencyIndexes: file_api_configuration_v1_configuration_proto_depIdxs,
+		EnumInfos:         file_api_configuration_v1_configuration_proto_enumTypes,
 		MessageInfos:      file_api_configuration_v1_configuration_proto_msgTypes,
 	}.Build()
 	File_api_configuration_v1_configuration_proto = out.File

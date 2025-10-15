@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import type { TestResult } from '$lib/api/bist/v1/bist_pb';
+	import type { TestResult } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { formatCapacity } from '$lib/formatter';

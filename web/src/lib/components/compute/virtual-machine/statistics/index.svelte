@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import { type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
 	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';

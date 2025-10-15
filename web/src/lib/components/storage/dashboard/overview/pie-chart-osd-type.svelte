@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { PieChart, Text } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
@@ -129,6 +129,9 @@
 	onMount(() => {
 		fetch();
 		isLoading = false;
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 </script>
 
