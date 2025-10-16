@@ -1447,42 +1447,6 @@ wait_for_deployment() {
 }
 
 otterscale_helm_deploy() {
-    ## Istio
-    log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
-    local istio_version="1.27.1"
-    local istio_url="https://istio.io/downloadIstio"
-    local istio_namespace="istio-system"
-    local has_istio=false
-    local arch
-    arch=$(uname -m)
-    case "$arch" in
-        x86_64|amd64) arch="x86_64" ;;
-        aarch64|arm64) arch="arm64" ;;
-    esac
-
-    if ! command -v istioctl &> /dev/null; then
-        log "INFO" "Install istioctl" "ISTIO_DEPLOY"
-        if ! curl -fsSL $istio_url | ISTIO_VERSION="$istio_version" TARGET_ARCH="$arch" bash - >>"$TEMP_LOG" 2>&1; then
-            error_exit "Failed install istio"
-        fi
-        mv "istio-$istio_version/bin/istioctl" /usr/local/bin/
-        chmod +x /usr/local/bin/istioctl
-        rm -rf "istio-$istio_version"
-    fi
-
-    if [[ $(microk8s kubectl get deploy -n istio-system -l app=istiod -o name | wc -l) -eq 0 ]]; then
-        log "INFO" "Install istio into kubernetes environment" "ISTIO_SERVICE"
-        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation >/dev/null"
-
-        log "INFO" "Patching istio-ingressgateway externalIPs to ${OTTERSCALE_INTERFACE_IP}" "ISTIO_INGRESSGATEWAY"
-        microk8s kubectl patch service istio-ingressgateway -n $istio_namespace \
-        --type=merge \
-        -p "$(printf 'spec:\n  externalIPs:\n  - %s\n' "$OTTERSCALE_INTERFACE_IP")" >>"$TEMP_LOG" 2>&1
-    else
-        log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
-    fi
-
-    ## Helm
     log "INFO" "Process microk8s helm3" "HELM_CHECK"
     local repository_url="https://otterscale.github.io/otterscale-charts"
     local repository_name="otterscale-charts"
