@@ -4,12 +4,9 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { ApplicationService, type UploadChartRequest } from '$lib/api/application/v1/application_pb';
+	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
-	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
-	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { cn } from '$lib/utils';
 	// FileDropZone component is not available, using basic file input instead
@@ -23,7 +20,6 @@
 	};
 	let open = $state(false);
 	let files = $state<Array<{ name: string; size: number; url: Promise<string>; uploadedAt: number }>>([]);
-	let date = new Date();
 
 	const onUpload = (uploadedFiles: File[]) => {
 		const maxFileSize = 20 * MEGABYTE; // 20MB limit for Helm charts
@@ -65,10 +61,6 @@
 				uploadedAt: Date.now(),
 			},
 		];
-	};
-
-	const onFileRejected = (rejectedFiles: any[]) => {
-		console.log('Rejected files:', rejectedFiles);
 	};
 
 	// Drag and drop functionality
@@ -310,13 +302,18 @@
 					Previous
 				</Button>
 			{/if}
-			<AlertDialog.Action
+			<Button
+				disabled={step == 0 && files.length === 0}
 				onclick={async () => {
 					if (step == 1) {
 						// Final step - upload charts
 						await uploadChart();
 					} else {
 						// Move to next step
+						if (files.length === 0) {
+							toast.error('Please select a chart file before proceeding');
+							return;
+						}
 						step++;
 						if (step >= 2) {
 							close();
@@ -329,7 +326,7 @@
 				{:else}
 					Next
 				{/if}
-			</AlertDialog.Action>
+			</Button>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>
