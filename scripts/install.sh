@@ -1448,7 +1448,7 @@ wait_for_deployment() {
 
 otterscale_helm_deploy() {
     log "INFO" "Process microk8s helm3" "HELM_CHECK"
-    local repository_url="https://otterscale.github.io/otterscale-charts"
+    local repository_url="https://otterscale.github.io/otterscale-charts/docs"
     local repository_name="otterscale-charts"
     local deploy_name="otterscale"
     local namespace="otterscale"
