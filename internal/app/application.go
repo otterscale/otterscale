@@ -255,6 +255,15 @@ func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *pb.Lis
 	return resp, nil
 }
 
+func (s *ApplicationService) UploadChart(ctx context.Context, req *pb.UploadChartRequest) (*emptypb.Empty, error) {
+	err := s.chart.UploadChart(ctx, req.GetChartContent())
+	if err != nil {
+		return nil, err
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
 func toProtoNamespaces(ns []core.Namespace) []*pb.Namespace {
 	ret := []*pb.Namespace{}
 	for i := range ns {
