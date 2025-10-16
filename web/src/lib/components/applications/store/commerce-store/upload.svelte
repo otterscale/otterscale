@@ -134,9 +134,9 @@
 			const arrayBuffer = await response.arrayBuffer();
 			const chartContent = new Uint8Array(arrayBuffer);
 
-			const request: UploadChartRequest = {
+			const request = {
 				chartContent: chartContent,
-			};
+			} as any;
 
 			await client.uploadChart(request);
 

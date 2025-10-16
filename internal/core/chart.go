@@ -8,16 +8,16 @@ import (
 	"strings"
 
 	"connectrpc.com/connect"
-	"github.com/otterscale/otterscale/internal/config"
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v2"
-	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
-
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/repo"
+	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
+
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 type (
@@ -178,7 +178,7 @@ func (uc *ChartUseCase) UploadChart(ctx context.Context, chartContent []byte) er
 	return uc.chart.UploadChart(ctx, ociRegistryURL, chartName, chartVersion, chartContent)
 }
 
-func extractChartMetadata(chartContent []byte) (string, string, error) {
+func extractChartMetadata(chartContent []byte) (name, version string, err error) {
 	reader := bytes.NewReader(chartContent)
 	chart, err := loader.LoadArchive(reader)
 	if err != nil {
