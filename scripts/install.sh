@@ -1618,10 +1618,10 @@ main() {
 
     # Juju Setup
     log "INFO" "Setting up Juju..." "JUJU_SETUP"
-    bootstrap_juju
     prepare_microk8s_config
     enable_microk8s_option
     extend_microk8s_cert
+    bootstrap_juju
     juju_add_k8s
 
     # Final configuration
