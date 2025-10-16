@@ -34,8 +34,8 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		scopeUuid: get(nfsStore.selectedScopeUuid),
-		facilityName: get(nfsStore.selectedFacilityName),
+		scope: get(nfsStore.selectedScope),
+		facility: get(nfsStore.selectedFacility),
 		volumeName: get(nfsStore.selectedVolumeName),
 		subvolumeName: subvolume.name,
 	} as RevokeSubvolumeExportAccessRequest;

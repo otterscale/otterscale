@@ -65,6 +65,50 @@ func (x CheckHealthResponse_Result) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
+type PremiumTier_Level int32
+
+const (
+	PremiumTier_BASIC      PremiumTier_Level = 0
+	PremiumTier_ADVANCED   PremiumTier_Level = 1
+	PremiumTier_ENTERPRISE PremiumTier_Level = 2
+)
+
+// Enum value maps for PremiumTier_Level.
+var (
+	PremiumTier_Level_name = map[int32]string{
+		0: "BASIC",
+		1: "ADVANCED",
+		2: "ENTERPRISE",
+	}
+	PremiumTier_Level_value = map[string]int32{
+		"BASIC":      0,
+		"ADVANCED":   1,
+		"ENTERPRISE": 2,
+	}
+)
+
+func (x PremiumTier_Level) Enum() *PremiumTier_Level {
+	p := new(PremiumTier_Level)
+	*p = x
+	return p
+}
+
+func (x PremiumTier_Level) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PremiumTier_Level) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_environment_v1_environment_proto_enumTypes[1].Descriptor()
+}
+
+func (PremiumTier_Level) Type() protoreflect.EnumType {
+	return &file_api_environment_v1_environment_proto_enumTypes[1]
+}
+
+func (x PremiumTier_Level) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 type CheckHealthRequest struct {
 	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -185,331 +229,6 @@ func (b0 CheckHealthResponse_builder) Build() *CheckHealthResponse {
 	return m0
 }
 
-type WatchStatusRequest struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *WatchStatusRequest) Reset() {
-	*x = WatchStatusRequest{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *WatchStatusRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*WatchStatusRequest) ProtoMessage() {}
-
-func (x *WatchStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-type WatchStatusRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-}
-
-func (b0 WatchStatusRequest_builder) Build() *WatchStatusRequest {
-	m0 := &WatchStatusRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	return m0
-}
-
-type WatchStatusResponse struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Started     bool                   `protobuf:"varint,1,opt,name=started"`
-	xxx_hidden_Finished    bool                   `protobuf:"varint,2,opt,name=finished"`
-	xxx_hidden_Phase       *string                `protobuf:"bytes,11,opt,name=phase"`
-	xxx_hidden_Message     *string                `protobuf:"bytes,12,opt,name=message"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *WatchStatusResponse) Reset() {
-	*x = WatchStatusResponse{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *WatchStatusResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*WatchStatusResponse) ProtoMessage() {}
-
-func (x *WatchStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *WatchStatusResponse) GetStarted() bool {
-	if x != nil {
-		return x.xxx_hidden_Started
-	}
-	return false
-}
-
-func (x *WatchStatusResponse) GetFinished() bool {
-	if x != nil {
-		return x.xxx_hidden_Finished
-	}
-	return false
-}
-
-func (x *WatchStatusResponse) GetPhase() string {
-	if x != nil {
-		if x.xxx_hidden_Phase != nil {
-			return *x.xxx_hidden_Phase
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *WatchStatusResponse) GetMessage() string {
-	if x != nil {
-		if x.xxx_hidden_Message != nil {
-			return *x.xxx_hidden_Message
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *WatchStatusResponse) SetStarted(v bool) {
-	x.xxx_hidden_Started = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *WatchStatusResponse) SetFinished(v bool) {
-	x.xxx_hidden_Finished = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
-}
-
-func (x *WatchStatusResponse) SetPhase(v string) {
-	x.xxx_hidden_Phase = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
-}
-
-func (x *WatchStatusResponse) SetMessage(v string) {
-	x.xxx_hidden_Message = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
-}
-
-func (x *WatchStatusResponse) HasStarted() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *WatchStatusResponse) HasFinished() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *WatchStatusResponse) HasPhase() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *WatchStatusResponse) HasMessage() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *WatchStatusResponse) ClearStarted() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Started = false
-}
-
-func (x *WatchStatusResponse) ClearFinished() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Finished = false
-}
-
-func (x *WatchStatusResponse) ClearPhase() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Phase = nil
-}
-
-func (x *WatchStatusResponse) ClearMessage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Message = nil
-}
-
-type WatchStatusResponse_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Started  *bool
-	Finished *bool
-	Phase    *string
-	Message  *string
-}
-
-func (b0 WatchStatusResponse_builder) Build() *WatchStatusResponse {
-	m0 := &WatchStatusResponse{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Started != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_Started = *b.Started
-	}
-	if b.Finished != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Finished = *b.Finished
-	}
-	if b.Phase != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
-		x.xxx_hidden_Phase = b.Phase
-	}
-	if b.Message != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_Message = b.Message
-	}
-	return m0
-}
-
-type UpdateStatusRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Phase       *string                `protobuf:"bytes,1,opt,name=phase"`
-	xxx_hidden_Message     *string                `protobuf:"bytes,2,opt,name=message"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *UpdateStatusRequest) Reset() {
-	*x = UpdateStatusRequest{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *UpdateStatusRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateStatusRequest) ProtoMessage() {}
-
-func (x *UpdateStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *UpdateStatusRequest) GetPhase() string {
-	if x != nil {
-		if x.xxx_hidden_Phase != nil {
-			return *x.xxx_hidden_Phase
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateStatusRequest) GetMessage() string {
-	if x != nil {
-		if x.xxx_hidden_Message != nil {
-			return *x.xxx_hidden_Message
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateStatusRequest) SetPhase(v string) {
-	x.xxx_hidden_Phase = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *UpdateStatusRequest) SetMessage(v string) {
-	x.xxx_hidden_Message = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
-}
-
-func (x *UpdateStatusRequest) HasPhase() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *UpdateStatusRequest) HasMessage() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *UpdateStatusRequest) ClearPhase() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Phase = nil
-}
-
-func (x *UpdateStatusRequest) ClearMessage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Message = nil
-}
-
-type UpdateStatusRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Phase   *string
-	Message *string
-}
-
-func (b0 UpdateStatusRequest_builder) Build() *UpdateStatusRequest {
-	m0 := &UpdateStatusRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Phase != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Phase = b.Phase
-	}
-	if b.Message != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Message = b.Message
-	}
-	return m0
-}
-
 type UpdateConfigRequest struct {
 	state                              protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_MaasUrl                 *string                `protobuf:"bytes,1,opt,name=maas_url,json=maasUrl"`
@@ -523,7 +242,7 @@ type UpdateConfigRequest struct {
 	xxx_hidden_JujuCloudName           *string                `protobuf:"bytes,21,opt,name=juju_cloud_name,json=jujuCloudName"`
 	xxx_hidden_JujuCloudRegion         *string                `protobuf:"bytes,22,opt,name=juju_cloud_region,json=jujuCloudRegion"`
 	xxx_hidden_JujuCharmhubApiUrl      *string                `protobuf:"bytes,23,opt,name=juju_charmhub_api_url,json=jujuCharmhubApiUrl"`
-	xxx_hidden_MircoK8SConfig          *string                `protobuf:"bytes,33,opt,name=mirco_k8s_config,json=mircoK8sConfig"`
+	xxx_hidden_MicroK8SConfig          *string                `protobuf:"bytes,33,opt,name=micro_k8s_config,json=microK8sConfig"`
 	XXX_raceDetectHookData             protoimpl.RaceDetectHookData
 	XXX_presence                       [1]uint32
 	unknownFields                      protoimpl.UnknownFields
@@ -532,7 +251,7 @@ type UpdateConfigRequest struct {
 
 func (x *UpdateConfigRequest) Reset() {
 	*x = UpdateConfigRequest{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[5]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -544,7 +263,7 @@ func (x *UpdateConfigRequest) String() string {
 func (*UpdateConfigRequest) ProtoMessage() {}
 
 func (x *UpdateConfigRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[5]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -662,10 +381,10 @@ func (x *UpdateConfigRequest) GetJujuCharmhubApiUrl() string {
 	return ""
 }
 
-func (x *UpdateConfigRequest) GetMircoK8SConfig() string {
+func (x *UpdateConfigRequest) GetMicroK8SConfig() string {
 	if x != nil {
-		if x.xxx_hidden_MircoK8SConfig != nil {
-			return *x.xxx_hidden_MircoK8SConfig
+		if x.xxx_hidden_MicroK8SConfig != nil {
+			return *x.xxx_hidden_MicroK8SConfig
 		}
 		return ""
 	}
@@ -726,8 +445,8 @@ func (x *UpdateConfigRequest) SetJujuCharmhubApiUrl(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 12)
 }
 
-func (x *UpdateConfigRequest) SetMircoK8SConfig(v string) {
-	x.xxx_hidden_MircoK8SConfig = &v
+func (x *UpdateConfigRequest) SetMicroK8SConfig(v string) {
+	x.xxx_hidden_MicroK8SConfig = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 12)
 }
 
@@ -801,7 +520,7 @@ func (x *UpdateConfigRequest) HasJujuCharmhubApiUrl() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 10)
 }
 
-func (x *UpdateConfigRequest) HasMircoK8SConfig() bool {
+func (x *UpdateConfigRequest) HasMicroK8SConfig() bool {
 	if x == nil {
 		return false
 	}
@@ -858,9 +577,9 @@ func (x *UpdateConfigRequest) ClearJujuCharmhubApiUrl() {
 	x.xxx_hidden_JujuCharmhubApiUrl = nil
 }
 
-func (x *UpdateConfigRequest) ClearMircoK8SConfig() {
+func (x *UpdateConfigRequest) ClearMicroK8SConfig() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
-	x.xxx_hidden_MircoK8SConfig = nil
+	x.xxx_hidden_MicroK8SConfig = nil
 }
 
 type UpdateConfigRequest_builder struct {
@@ -877,7 +596,7 @@ type UpdateConfigRequest_builder struct {
 	JujuCloudName           *string
 	JujuCloudRegion         *string
 	JujuCharmhubApiUrl      *string
-	MircoK8SConfig          *string
+	MicroK8SConfig          *string
 }
 
 func (b0 UpdateConfigRequest_builder) Build() *UpdateConfigRequest {
@@ -925,167 +644,10 @@ func (b0 UpdateConfigRequest_builder) Build() *UpdateConfigRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 12)
 		x.xxx_hidden_JujuCharmhubApiUrl = b.JujuCharmhubApiUrl
 	}
-	if b.MircoK8SConfig != nil {
+	if b.MicroK8SConfig != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 12)
-		x.xxx_hidden_MircoK8SConfig = b.MircoK8SConfig
+		x.xxx_hidden_MicroK8SConfig = b.MicroK8SConfig
 	}
-	return m0
-}
-
-type GetConfigHelmRepositoriesRequest struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetConfigHelmRepositoriesRequest) Reset() {
-	*x = GetConfigHelmRepositoriesRequest{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetConfigHelmRepositoriesRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetConfigHelmRepositoriesRequest) ProtoMessage() {}
-
-func (x *GetConfigHelmRepositoriesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-type GetConfigHelmRepositoriesRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-}
-
-func (b0 GetConfigHelmRepositoriesRequest_builder) Build() *GetConfigHelmRepositoriesRequest {
-	m0 := &GetConfigHelmRepositoriesRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	return m0
-}
-
-type GetConfigHelmRepositoriesResponse struct {
-	state           protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Urls []string               `protobuf:"bytes,1,rep,name=urls"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
-}
-
-func (x *GetConfigHelmRepositoriesResponse) Reset() {
-	*x = GetConfigHelmRepositoriesResponse{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetConfigHelmRepositoriesResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetConfigHelmRepositoriesResponse) ProtoMessage() {}
-
-func (x *GetConfigHelmRepositoriesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *GetConfigHelmRepositoriesResponse) GetUrls() []string {
-	if x != nil {
-		return x.xxx_hidden_Urls
-	}
-	return nil
-}
-
-func (x *GetConfigHelmRepositoriesResponse) SetUrls(v []string) {
-	x.xxx_hidden_Urls = v
-}
-
-type GetConfigHelmRepositoriesResponse_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Urls []string
-}
-
-func (b0 GetConfigHelmRepositoriesResponse_builder) Build() *GetConfigHelmRepositoriesResponse {
-	m0 := &GetConfigHelmRepositoriesResponse{}
-	b, x := &b0, m0
-	_, _ = b, x
-	x.xxx_hidden_Urls = b.Urls
-	return m0
-}
-
-type UpdateConfigHelmRepositoriesRequest struct {
-	state           protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Urls []string               `protobuf:"bytes,1,rep,name=urls"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
-}
-
-func (x *UpdateConfigHelmRepositoriesRequest) Reset() {
-	*x = UpdateConfigHelmRepositoriesRequest{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[8]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *UpdateConfigHelmRepositoriesRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateConfigHelmRepositoriesRequest) ProtoMessage() {}
-
-func (x *UpdateConfigHelmRepositoriesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[8]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *UpdateConfigHelmRepositoriesRequest) GetUrls() []string {
-	if x != nil {
-		return x.xxx_hidden_Urls
-	}
-	return nil
-}
-
-func (x *UpdateConfigHelmRepositoriesRequest) SetUrls(v []string) {
-	x.xxx_hidden_Urls = v
-}
-
-type UpdateConfigHelmRepositoriesRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Urls []string
-}
-
-func (b0 UpdateConfigHelmRepositoriesRequest_builder) Build() *UpdateConfigHelmRepositoriesRequest {
-	m0 := &UpdateConfigHelmRepositoriesRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	x.xxx_hidden_Urls = b.Urls
 	return m0
 }
 
@@ -1100,7 +662,7 @@ type Prometheus struct {
 
 func (x *Prometheus) Reset() {
 	*x = Prometheus{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[9]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1112,7 +674,7 @@ func (x *Prometheus) String() string {
 func (*Prometheus) ProtoMessage() {}
 
 func (x *Prometheus) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[9]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1175,7 +737,7 @@ type GetPrometheusRequest struct {
 
 func (x *GetPrometheusRequest) Reset() {
 	*x = GetPrometheusRequest{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[10]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1187,7 +749,7 @@ func (x *GetPrometheusRequest) String() string {
 func (*GetPrometheusRequest) ProtoMessage() {}
 
 func (x *GetPrometheusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[10]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1210,6 +772,126 @@ func (b0 GetPrometheusRequest_builder) Build() *GetPrometheusRequest {
 	return m0
 }
 
+type PremiumTier struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Level       PremiumTier_Level      `protobuf:"varint,1,opt,name=level,enum=otterscale.environment.v1.PremiumTier_Level"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *PremiumTier) Reset() {
+	*x = PremiumTier{}
+	mi := &file_api_environment_v1_environment_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PremiumTier) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PremiumTier) ProtoMessage() {}
+
+func (x *PremiumTier) ProtoReflect() protoreflect.Message {
+	mi := &file_api_environment_v1_environment_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *PremiumTier) GetLevel() PremiumTier_Level {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
+			return x.xxx_hidden_Level
+		}
+	}
+	return PremiumTier_BASIC
+}
+
+func (x *PremiumTier) SetLevel(v PremiumTier_Level) {
+	x.xxx_hidden_Level = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *PremiumTier) HasLevel() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *PremiumTier) ClearLevel() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Level = PremiumTier_BASIC
+}
+
+type PremiumTier_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Level *PremiumTier_Level
+}
+
+func (b0 PremiumTier_builder) Build() *PremiumTier {
+	m0 := &PremiumTier{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Level != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Level = *b.Level
+	}
+	return m0
+}
+
+type GetPremiumTierRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPremiumTierRequest) Reset() {
+	*x = GetPremiumTierRequest{}
+	mi := &file_api_environment_v1_environment_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPremiumTierRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPremiumTierRequest) ProtoMessage() {}
+
+func (x *GetPremiumTierRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_environment_v1_environment_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type GetPremiumTierRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 GetPremiumTierRequest_builder) Build() *GetPremiumTierRequest {
+	m0 := &GetPremiumTierRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
 var File_api_environment_v1_environment_proto protoreflect.FileDescriptor
 
 const file_api_environment_v1_environment_proto_rawDesc = "" +
@@ -1221,16 +903,7 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\x06Result\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\x06\n" +
 	"\x02OK\x10\v\x12\x11\n" +
-	"\rNOT_INSTALLED\x10\x15\"\x14\n" +
-	"\x12WatchStatusRequest\"{\n" +
-	"\x13WatchStatusResponse\x12\x18\n" +
-	"\astarted\x18\x01 \x01(\bR\astarted\x12\x1a\n" +
-	"\bfinished\x18\x02 \x01(\bR\bfinished\x12\x14\n" +
-	"\x05phase\x18\v \x01(\tR\x05phase\x12\x18\n" +
-	"\amessage\x18\f \x01(\tR\amessage\"E\n" +
-	"\x13UpdateStatusRequest\x12\x14\n" +
-	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"\xf6\x03\n" +
+	"\rNOT_INSTALLED\x10\x15\"\xf6\x03\n" +
 	"\x13UpdateConfigRequest\x12\x19\n" +
 	"\bmaas_url\x18\x01 \x01(\tR\amaasUrl\x12\x19\n" +
 	"\bmaas_key\x18\x02 \x01(\tR\amaasKey\x12!\n" +
@@ -1244,63 +917,55 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\x0fjuju_cloud_name\x18\x15 \x01(\tR\rjujuCloudName\x12*\n" +
 	"\x11juju_cloud_region\x18\x16 \x01(\tR\x0fjujuCloudRegion\x121\n" +
 	"\x15juju_charmhub_api_url\x18\x17 \x01(\tR\x12jujuCharmhubApiUrl\x12(\n" +
-	"\x10mirco_k8s_config\x18! \x01(\tR\x0emircoK8sConfigJ\x04\b\x1f\x10!\"\"\n" +
-	" GetConfigHelmRepositoriesRequest\"7\n" +
-	"!GetConfigHelmRepositoriesResponse\x12\x12\n" +
-	"\x04urls\x18\x01 \x03(\tR\x04urls\"9\n" +
-	"#UpdateConfigHelmRepositoriesRequest\x12\x12\n" +
-	"\x04urls\x18\x01 \x03(\tR\x04urls\"-\n" +
+	"\x10micro_k8s_config\x18! \x01(\tR\x0emicroK8sConfigJ\x04\b\x1f\x10!\"-\n" +
 	"\n" +
 	"Prometheus\x12\x19\n" +
 	"\bbase_url\x18\x02 \x01(\tR\abaseUrlJ\x04\b\x01\x10\x02\"\x16\n" +
-	"\x14GetPrometheusRequest2\x9c\x06\n" +
+	"\x14GetPrometheusRequest\"\x83\x01\n" +
+	"\vPremiumTier\x12B\n" +
+	"\x05level\x18\x01 \x01(\x0e2,.otterscale.environment.v1.PremiumTier.LevelR\x05level\"0\n" +
+	"\x05Level\x12\t\n" +
+	"\x05BASIC\x10\x00\x12\f\n" +
+	"\bADVANCED\x10\x01\x12\x0e\n" +
+	"\n" +
+	"ENTERPRISE\x10\x02\"\x17\n" +
+	"\x15GetPremiumTierRequest2\xaf\x03\n" +
 	"\x12EnvironmentService\x12l\n" +
-	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\x12n\n" +
-	"\vWatchStatus\x12-.otterscale.environment.v1.WatchStatusRequest\x1a..otterscale.environment.v1.WatchStatusResponse0\x01\x12V\n" +
-	"\fUpdateStatus\x12..otterscale.environment.v1.UpdateStatusRequest\x1a\x16.google.protobuf.Empty\x12V\n" +
-	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\x12\x96\x01\n" +
-	"\x19GetConfigHelmRepositories\x12;.otterscale.environment.v1.GetConfigHelmRepositoriesRequest\x1a<.otterscale.environment.v1.GetConfigHelmRepositoriesResponse\x12v\n" +
-	"\x1cUpdateConfigHelmRepositories\x12>.otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest\x1a\x16.google.protobuf.Empty\x12g\n" +
-	"\rGetPrometheus\x12/.otterscale.environment.v1.GetPrometheusRequest\x1a%.otterscale.environment.v1.PrometheusB8Z6github.com/otterscale/otterscale/api/environment/v1;pbb\beditionsp\xe8\a"
+	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\x12V\n" +
+	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\x12g\n" +
+	"\rGetPrometheus\x12/.otterscale.environment.v1.GetPrometheusRequest\x1a%.otterscale.environment.v1.Prometheus\x12j\n" +
+	"\x0eGetPremiumTier\x120.otterscale.environment.v1.GetPremiumTierRequest\x1a&.otterscale.environment.v1.PremiumTierB8Z6github.com/otterscale/otterscale/api/environment/v1;pbb\beditionsp\xe8\a"
 
-var file_api_environment_v1_environment_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_environment_v1_environment_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_api_environment_v1_environment_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_api_environment_v1_environment_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_api_environment_v1_environment_proto_goTypes = []any{
-	(CheckHealthResponse_Result)(0),             // 0: otterscale.environment.v1.CheckHealthResponse.Result
-	(*CheckHealthRequest)(nil),                  // 1: otterscale.environment.v1.CheckHealthRequest
-	(*CheckHealthResponse)(nil),                 // 2: otterscale.environment.v1.CheckHealthResponse
-	(*WatchStatusRequest)(nil),                  // 3: otterscale.environment.v1.WatchStatusRequest
-	(*WatchStatusResponse)(nil),                 // 4: otterscale.environment.v1.WatchStatusResponse
-	(*UpdateStatusRequest)(nil),                 // 5: otterscale.environment.v1.UpdateStatusRequest
-	(*UpdateConfigRequest)(nil),                 // 6: otterscale.environment.v1.UpdateConfigRequest
-	(*GetConfigHelmRepositoriesRequest)(nil),    // 7: otterscale.environment.v1.GetConfigHelmRepositoriesRequest
-	(*GetConfigHelmRepositoriesResponse)(nil),   // 8: otterscale.environment.v1.GetConfigHelmRepositoriesResponse
-	(*UpdateConfigHelmRepositoriesRequest)(nil), // 9: otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
-	(*Prometheus)(nil),                          // 10: otterscale.environment.v1.Prometheus
-	(*GetPrometheusRequest)(nil),                // 11: otterscale.environment.v1.GetPrometheusRequest
-	(*emptypb.Empty)(nil),                       // 12: google.protobuf.Empty
+	(CheckHealthResponse_Result)(0), // 0: otterscale.environment.v1.CheckHealthResponse.Result
+	(PremiumTier_Level)(0),          // 1: otterscale.environment.v1.PremiumTier.Level
+	(*CheckHealthRequest)(nil),      // 2: otterscale.environment.v1.CheckHealthRequest
+	(*CheckHealthResponse)(nil),     // 3: otterscale.environment.v1.CheckHealthResponse
+	(*UpdateConfigRequest)(nil),     // 4: otterscale.environment.v1.UpdateConfigRequest
+	(*Prometheus)(nil),              // 5: otterscale.environment.v1.Prometheus
+	(*GetPrometheusRequest)(nil),    // 6: otterscale.environment.v1.GetPrometheusRequest
+	(*PremiumTier)(nil),             // 7: otterscale.environment.v1.PremiumTier
+	(*GetPremiumTierRequest)(nil),   // 8: otterscale.environment.v1.GetPremiumTierRequest
+	(*emptypb.Empty)(nil),           // 9: google.protobuf.Empty
 }
 var file_api_environment_v1_environment_proto_depIdxs = []int32{
-	0,  // 0: otterscale.environment.v1.CheckHealthResponse.result:type_name -> otterscale.environment.v1.CheckHealthResponse.Result
-	1,  // 1: otterscale.environment.v1.EnvironmentService.CheckHealth:input_type -> otterscale.environment.v1.CheckHealthRequest
-	3,  // 2: otterscale.environment.v1.EnvironmentService.WatchStatus:input_type -> otterscale.environment.v1.WatchStatusRequest
-	5,  // 3: otterscale.environment.v1.EnvironmentService.UpdateStatus:input_type -> otterscale.environment.v1.UpdateStatusRequest
-	6,  // 4: otterscale.environment.v1.EnvironmentService.UpdateConfig:input_type -> otterscale.environment.v1.UpdateConfigRequest
-	7,  // 5: otterscale.environment.v1.EnvironmentService.GetConfigHelmRepositories:input_type -> otterscale.environment.v1.GetConfigHelmRepositoriesRequest
-	9,  // 6: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:input_type -> otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
-	11, // 7: otterscale.environment.v1.EnvironmentService.GetPrometheus:input_type -> otterscale.environment.v1.GetPrometheusRequest
-	2,  // 8: otterscale.environment.v1.EnvironmentService.CheckHealth:output_type -> otterscale.environment.v1.CheckHealthResponse
-	4,  // 9: otterscale.environment.v1.EnvironmentService.WatchStatus:output_type -> otterscale.environment.v1.WatchStatusResponse
-	12, // 10: otterscale.environment.v1.EnvironmentService.UpdateStatus:output_type -> google.protobuf.Empty
-	12, // 11: otterscale.environment.v1.EnvironmentService.UpdateConfig:output_type -> google.protobuf.Empty
-	8,  // 12: otterscale.environment.v1.EnvironmentService.GetConfigHelmRepositories:output_type -> otterscale.environment.v1.GetConfigHelmRepositoriesResponse
-	12, // 13: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:output_type -> google.protobuf.Empty
-	10, // 14: otterscale.environment.v1.EnvironmentService.GetPrometheus:output_type -> otterscale.environment.v1.Prometheus
-	8,  // [8:15] is the sub-list for method output_type
-	1,  // [1:8] is the sub-list for method input_type
-	1,  // [1:1] is the sub-list for extension type_name
-	1,  // [1:1] is the sub-list for extension extendee
-	0,  // [0:1] is the sub-list for field type_name
+	0, // 0: otterscale.environment.v1.CheckHealthResponse.result:type_name -> otterscale.environment.v1.CheckHealthResponse.Result
+	1, // 1: otterscale.environment.v1.PremiumTier.level:type_name -> otterscale.environment.v1.PremiumTier.Level
+	2, // 2: otterscale.environment.v1.EnvironmentService.CheckHealth:input_type -> otterscale.environment.v1.CheckHealthRequest
+	4, // 3: otterscale.environment.v1.EnvironmentService.UpdateConfig:input_type -> otterscale.environment.v1.UpdateConfigRequest
+	6, // 4: otterscale.environment.v1.EnvironmentService.GetPrometheus:input_type -> otterscale.environment.v1.GetPrometheusRequest
+	8, // 5: otterscale.environment.v1.EnvironmentService.GetPremiumTier:input_type -> otterscale.environment.v1.GetPremiumTierRequest
+	3, // 6: otterscale.environment.v1.EnvironmentService.CheckHealth:output_type -> otterscale.environment.v1.CheckHealthResponse
+	9, // 7: otterscale.environment.v1.EnvironmentService.UpdateConfig:output_type -> google.protobuf.Empty
+	5, // 8: otterscale.environment.v1.EnvironmentService.GetPrometheus:output_type -> otterscale.environment.v1.Prometheus
+	7, // 9: otterscale.environment.v1.EnvironmentService.GetPremiumTier:output_type -> otterscale.environment.v1.PremiumTier
+	6, // [6:10] is the sub-list for method output_type
+	2, // [2:6] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_api_environment_v1_environment_proto_init() }
@@ -1313,8 +978,8 @@ func file_api_environment_v1_environment_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_environment_v1_environment_proto_rawDesc), len(file_api_environment_v1_environment_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   11,
+			NumEnums:      2,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

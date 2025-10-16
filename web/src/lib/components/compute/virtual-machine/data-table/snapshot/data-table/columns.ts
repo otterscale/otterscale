@@ -3,20 +3,20 @@ import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-import type { VirtualMachineSnapshot } from '$lib/api/kubevirt/v1/kubevirt_pb';
+import type { VirtualMachine_Snapshot } from '$lib/api/instance/v1/instance_pb';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
 const messages = {
 	name: m.name(),
 	namespace: m.namespace(),
-	description: m.description(),
-	statusPhase: 'Status Phase',
-	lastConditionMessage: 'Last Condition Message',
-	lastConditionReason: 'Last Condition Reason',
+	sourceName: m.source_name(),
+	phase: m.phase(),
+	ready: m.ready(),
+	createTime: m.create_time(),
 };
 
-const columns: ColumnDef<VirtualMachineSnapshot>[] = [
+const columns: ColumnDef<VirtualMachine_Snapshot>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -47,39 +47,39 @@ const columns: ColumnDef<VirtualMachineSnapshot>[] = [
 		},
 	},
 	{
-		accessorKey: 'statusPhase',
+		accessorKey: 'sourceName',
 		header: ({ column }) => {
-			return renderSnippet(headers.statusPhase, column);
+			return renderSnippet(headers.sourceName, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.statusPhase, row);
+			return renderSnippet(cells.sourceName, row);
 		},
 	},
 	{
-		accessorKey: 'description',
+		accessorKey: 'phase',
 		header: ({ column }) => {
-			return renderSnippet(headers.description, column);
+			return renderSnippet(headers.phase, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.description, row);
+			return renderSnippet(cells.phase, row);
 		},
 	},
 	{
-		accessorKey: 'lastConditionMessage',
+		accessorKey: 'ready',
 		header: ({ column }) => {
-			return renderSnippet(headers.lastConditionMessage, column);
+			return renderSnippet(headers.ready, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.lastConditionMessage, row);
+			return renderSnippet(cells.ready, row);
 		},
 	},
 	{
-		accessorKey: 'lastConditionReason',
+		accessorKey: 'createTime',
 		header: ({ column }) => {
-			return renderSnippet(headers.lastConditionReason, column);
+			return renderSnippet(headers.createTime, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.lastConditionReason, row);
+			return renderSnippet(cells.createTime, row);
 		},
 	},
 

@@ -29,8 +29,8 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name,
+		scope: $currentCeph?.scope,
+		facility: $currentCeph?.name,
 		userId: user.id,
 	} as DeleteUserKeyRequest;
 	let request = $state(defaults);

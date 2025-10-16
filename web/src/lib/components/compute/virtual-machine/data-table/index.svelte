@@ -15,7 +15,7 @@
 	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 
-	import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
@@ -35,7 +35,9 @@
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
-	let columnVisibility = $state<VisibilityState>({});
+	let columnVisibility = $state<VisibilityState>({
+		createTime: false,
+	});
 	let rowSelection = $state<RowSelectionState>({});
 
 	const table = createSvelteTable({
@@ -110,21 +112,10 @@
 <Layout.Root>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy
-				columnId="name"
-				values={$virtualMachines.map((row) => row.metadata?.name)}
-				{messages}
-				{table}
-			/>
+			<Filters.StringFuzzy columnId="name" values={$virtualMachines.map((row) => row.name)} {messages} {table} />
 			<Filters.StringMatch
-				columnId="network"
-				values={$virtualMachines.flatMap((row) => row.networkName)}
-				{messages}
-				{table}
-			/>
-			<Filters.StringMatch
-				columnId="node"
-				values={$virtualMachines.flatMap((row) => row.nodeName)}
+				columnId="status"
+				values={$virtualMachines.flatMap((row) => row.status)}
 				{messages}
 				{table}
 			/>

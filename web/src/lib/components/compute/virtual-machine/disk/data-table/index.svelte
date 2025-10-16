@@ -11,12 +11,14 @@
 		type VisibilityState,
 	} from '@tanstack/table-core';
 
-	import Create from './action-create.svelte';
+	import Create from './action-attach.svelte';
 	import { columns, messages } from './columns';
 
-	import type { VirtualMachine, VirtualMachineDisk } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
+	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 </script>
@@ -24,10 +26,12 @@
 <script lang="ts">
 	let {
 		virtualMachine,
-		virtualMachineDisks,
+		enhancedDisks,
+		reloadManager,
 	}: {
 		virtualMachine: VirtualMachine;
-		virtualMachineDisks: VirtualMachineDisk[];
+		enhancedDisks: EnhancedDisk[];
+		reloadManager: ReloadManager;
 	} = $props();
 
 	// let snapshots = $derived(image.snapshots || []);
@@ -38,7 +42,7 @@
 	let rowSelection = $state<RowSelectionState>({});
 	const table = createSvelteTable({
 		get data() {
-			return virtualMachineDisks;
+			return enhancedDisks;
 		},
 		columns: columns,
 		getCoreRowModel: getCoreRowModel(),
@@ -105,7 +109,7 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
-				values={virtualMachineDisks.map((virtualMachineDisks) => virtualMachineDisks.name)}
+				values={enhancedDisks.map((virtualMachineDisks) => virtualMachineDisks.name)}
 				columnId="name"
 				{messages}
 				{table}
@@ -114,6 +118,16 @@
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create {virtualMachine} />
+			<Reloader
+				bind:checked={reloadManager.state}
+				onCheckedChange={() => {
+					if (reloadManager.state) {
+						reloadManager.restart();
+					} else {
+						reloadManager.stop();
+					}
+				}}
+			/>
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>

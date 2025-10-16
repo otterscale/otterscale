@@ -58,8 +58,8 @@
 	let invalidReplicatedSize: boolean | undefined = $state();
 
 	const defaults = {
-		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name,
+		scope: $currentCeph?.scope,
+		facility: $currentCeph?.name,
 	} as CreatePoolRequest;
 	let request = $state(defaults);
 	function reset() {

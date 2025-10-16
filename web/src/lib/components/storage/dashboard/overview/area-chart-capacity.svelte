@@ -3,7 +3,7 @@
 	import { curveStep } from 'd3-shape';
 	import { AreaChart } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
@@ -187,6 +187,9 @@
 	onMount(() => {
 		fetch();
 		isLoading = false;
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 </script>
 

@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 
 	import { page } from '$app/state';
-	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
+	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
@@ -18,7 +18,7 @@
 	// Tier configurations
 	const tiers = [
 		{
-			id: PremiumTier.BASIC,
+			level: PremiumTier_Level.BASIC,
 			title: m.basic_tier(),
 			description: m.basic_setup_description(),
 			icons: [
@@ -44,7 +44,7 @@
 			isRecommended: false,
 		},
 		{
-			id: PremiumTier.ADVANCED,
+			level: PremiumTier_Level.ADVANCED,
 			title: m.advanced_tier(),
 			description: m.advanced_setup_description(),
 			icons: [{ name: 'simple-icons:ceph', color: '#f0424d', hasAnimation: true }],
@@ -61,7 +61,7 @@
 			isRecommended: false,
 		},
 		{
-			id: PremiumTier.ENTERPRISE,
+			level: PremiumTier_Level.ENTERPRISE,
 			title: m.enterprise_tier(),
 			description: m.enterprise_setup_description(),
 			icons: [
@@ -151,9 +151,9 @@
 						href="mailto:paul_tsai@phison.com"
 						class="w-full"
 						variant={tier.isRecommended ? 'default' : 'outline'}
-						disabled={tier.id <= $premiumTier}
+						disabled={tier.level <= $premiumTier.level}
 					>
-						{#if tier.id > $premiumTier}
+						{#if tier.level > $premiumTier.level}
 							{m.contact_sales()}
 						{:else}
 							{m.enabled()}

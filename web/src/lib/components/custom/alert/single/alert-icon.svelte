@@ -6,9 +6,10 @@
 
 	export const alertIcons: Map<AlertVariant, string> = new Map([
 		['default', 'ph:terminal'],
-		['information', 'ph:info'],
-		['warning', 'ph:warning'],
 		['destructive', 'ph:prohibit'],
+		['success', 'ph:check-circle'],
+		['warning', 'ph:warning'],
+		['information', 'ph:info'],
 	]);
 
 	export function getAlertIcon(variant: AlertVariant): string {

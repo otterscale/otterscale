@@ -4,8 +4,8 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { VirtualMachine, DeleteVirtualMachineRequest } from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { KubeVirtService } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import type { VirtualMachine, DeleteVirtualMachineRequest } from '$lib/api/instance/v1/instance_pb';
+	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -20,18 +20,18 @@
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
-	const KubeVirtClient = createClient(KubeVirtService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 	let invalid = $state(false);
 
 	const defaults = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		name: '',
-		namespace: virtualMachine.metadata?.namespace,
+		namespace: virtualMachine.namespace,
 	} as DeleteVirtualMachineRequest;
-	let request = $state(defaults);
+	let request = $state({ ...defaults });
 	function reset() {
-		request = defaults;
+		request = { ...defaults };
 	}
 
 	let open = $state(false);
@@ -56,7 +56,7 @@
 					</Form.Help>
 					<SingleInput.Confirm
 						required
-						target={virtualMachine.metadata?.name ?? ''}
+						target={virtualMachine.name ?? ''}
 						bind:value={request.name}
 						bind:invalid
 					/>
@@ -75,14 +75,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => KubeVirtClient.deleteVirtualMachine(request), {
-							loading: `Deleting ${virtualMachine.metadata?.name}...`,
+						toast.promise(() => virtualMachineClient.deleteVirtualMachine(request), {
+							loading: `Deleting ${virtualMachine.name}...`,
 							success: () => {
 								reloadManager.force();
-								return `Successfully deleted ${virtualMachine.metadata?.name}`;
+								return `Successfully deleted ${virtualMachine.name}`;
 							},
 							error: (error) => {
-								let message = `Failed to delete ${virtualMachine.metadata?.name}`;
+								let message = `Failed to delete ${virtualMachine.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY,

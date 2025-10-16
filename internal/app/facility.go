@@ -14,21 +14,23 @@ import (
 type FacilityService struct {
 	pbconnect.UnimplementedFacilityServiceHandler
 
-	uc *core.FacilityUseCase
+	facility *core.FacilityUseCase
 }
 
-func NewFacilityService(uc *core.FacilityUseCase) *FacilityService {
-	return &FacilityService{uc: uc}
+func NewFacilityService(facility *core.FacilityUseCase) *FacilityService {
+	return &FacilityService{
+		facility: facility,
+	}
 }
 
 var _ pbconnect.FacilityServiceHandler = (*FacilityService)(nil)
 
 func (s *FacilityService) ListFacilities(ctx context.Context, req *pb.ListFacilitiesRequest) (*pb.ListFacilitiesResponse, error) {
-	facilities, err := s.uc.ListFacilities(ctx, req.GetScopeUuid())
+	facilities, err := s.facility.ListFacilities(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
-	machineMap, err := s.uc.JujuToMAASMachineMap(ctx, req.GetScopeUuid())
+	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -38,11 +40,11 @@ func (s *FacilityService) ListFacilities(ctx context.Context, req *pb.ListFacili
 }
 
 func (s *FacilityService) GetFacility(ctx context.Context, req *pb.GetFacilityRequest) (*pb.Facility, error) {
-	facility, err := s.uc.GetFacility(ctx, req.GetScopeUuid(), req.GetName())
+	facility, err := s.facility.GetFacility(ctx, req.GetScope(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
-	machineMap, err := s.uc.JujuToMAASMachineMap(ctx, req.GetScopeUuid())
+	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -51,11 +53,11 @@ func (s *FacilityService) GetFacility(ctx context.Context, req *pb.GetFacilityRe
 }
 
 func (s *FacilityService) CreateFacility(ctx context.Context, req *pb.CreateFacilityRequest) (*pb.Facility, error) {
-	facility, err := s.uc.CreateFacility(ctx, req.GetScopeUuid(), req.GetName(), req.GetConfigYaml(), req.GetCharmName(), req.GetChannel(), int(req.GetRevision()), int(req.GetNumber()), toModelPlacements(req.GetPlacements()), toModelConstraint(req.GetConstraint()), req.GetTrust())
+	facility, err := s.facility.CreateFacility(ctx, req.GetScope(), req.GetName(), req.GetConfigYaml(), req.GetCharmName(), req.GetChannel(), int(req.GetRevision()), int(req.GetNumber()), toModelPlacements(req.GetPlacements()), toModelConstraint(req.GetConstraint()), req.GetTrust())
 	if err != nil {
 		return nil, err
 	}
-	machineMap, err := s.uc.JujuToMAASMachineMap(ctx, req.GetScopeUuid())
+	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -64,11 +66,11 @@ func (s *FacilityService) CreateFacility(ctx context.Context, req *pb.CreateFaci
 }
 
 func (s *FacilityService) UpdateFacility(ctx context.Context, req *pb.UpdateFacilityRequest) (*pb.Facility, error) {
-	facility, err := s.uc.UpdateFacility(ctx, req.GetScopeUuid(), req.GetName(), req.GetConfigYaml())
+	facility, err := s.facility.UpdateFacility(ctx, req.GetScope(), req.GetName(), req.GetConfigYaml())
 	if err != nil {
 		return nil, err
 	}
-	machineMap, err := s.uc.JujuToMAASMachineMap(ctx, req.GetScopeUuid())
+	machineMap, err := s.facility.JujuToMAASMachineMap(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +79,7 @@ func (s *FacilityService) UpdateFacility(ctx context.Context, req *pb.UpdateFaci
 }
 
 func (s *FacilityService) DeleteFacility(ctx context.Context, req *pb.DeleteFacilityRequest) (*emptypb.Empty, error) {
-	if err := s.uc.DeleteFacility(ctx, req.GetScopeUuid(), req.GetName(), req.GetDestroyStorage(), req.GetForce()); err != nil {
+	if err := s.facility.DeleteFacility(ctx, req.GetScope(), req.GetName(), req.GetDestroyStorage(), req.GetForce()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -85,7 +87,7 @@ func (s *FacilityService) DeleteFacility(ctx context.Context, req *pb.DeleteFaci
 }
 
 func (s *FacilityService) ExposeFacility(ctx context.Context, req *pb.ExposeFacilityRequest) (*emptypb.Empty, error) {
-	if err := s.uc.ExposeFacility(ctx, req.GetScopeUuid(), req.GetName()); err != nil {
+	if err := s.facility.ExposeFacility(ctx, req.GetScope(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -93,7 +95,7 @@ func (s *FacilityService) ExposeFacility(ctx context.Context, req *pb.ExposeFaci
 }
 
 func (s *FacilityService) AddFacilityUnits(ctx context.Context, req *pb.AddFacilityUnitsRequest) (*pb.AddFacilityUnitsResponse, error) {
-	unitNames, err := s.uc.AddFacilityUnits(ctx, req.GetScopeUuid(), req.GetName(), int(req.GetNumber()), toModelPlacements(req.GetPlacements()))
+	unitNames, err := s.facility.AddFacilityUnits(ctx, req.GetScope(), req.GetName(), int(req.GetNumber()), toModelPlacements(req.GetPlacements()))
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +105,7 @@ func (s *FacilityService) AddFacilityUnits(ctx context.Context, req *pb.AddFacil
 }
 
 func (s *FacilityService) ResolveFacilityUnitErrors(ctx context.Context, req *pb.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error) {
-	if err := s.uc.ResolveFacilityUnitErrors(ctx, req.GetScopeUuid(), req.GetUnitName()); err != nil {
+	if err := s.facility.ResolveFacilityUnitErrors(ctx, req.GetScope(), req.GetUnitName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -111,7 +113,7 @@ func (s *FacilityService) ResolveFacilityUnitErrors(ctx context.Context, req *pb
 }
 
 func (s *FacilityService) ListActions(ctx context.Context, req *pb.ListActionsRequest) (*pb.ListActionsResponse, error) {
-	actions, err := s.uc.ListActions(ctx, req.GetScopeUuid(), req.GetFacilityName())
+	actions, err := s.facility.ListActions(ctx, req.GetScope(), req.GetFacility())
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +123,7 @@ func (s *FacilityService) ListActions(ctx context.Context, req *pb.ListActionsRe
 }
 
 func (s *FacilityService) ListCharms(ctx context.Context, _ *pb.ListCharmsRequest) (*pb.ListCharmsResponse, error) {
-	charms, err := s.uc.ListCharms(ctx)
+	charms, err := s.facility.ListCharms(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +133,7 @@ func (s *FacilityService) ListCharms(ctx context.Context, _ *pb.ListCharmsReques
 }
 
 func (s *FacilityService) GetCharm(ctx context.Context, req *pb.GetCharmRequest) (*pb.Facility_Charm, error) {
-	charm, err := s.uc.GetCharm(ctx, req.GetName())
+	charm, err := s.facility.GetCharm(ctx, req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +142,7 @@ func (s *FacilityService) GetCharm(ctx context.Context, req *pb.GetCharmRequest)
 }
 
 func (s *FacilityService) ListCharmArtifacts(ctx context.Context, req *pb.ListCharmArtifactsRequest) (*pb.ListCharmArtifactsResponse, error) {
-	artifacts, err := s.uc.ListArtifacts(ctx, req.GetName())
+	artifacts, err := s.facility.ListArtifacts(ctx, req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +151,7 @@ func (s *FacilityService) ListCharmArtifacts(ctx context.Context, req *pb.ListCh
 	return resp, nil
 }
 
-func toProtoFacilityStatus(s *core.DetailedStatus) *pb.Facility_Status {
+func toProtoFacilityStatus(s *core.FacilityDetailedStatus) *pb.Facility_Status {
 	ret := &pb.Facility_Status{}
 	ret.SetState(s.Status)
 	ret.SetDetails(s.Info)
@@ -160,7 +162,7 @@ func toProtoFacilityStatus(s *core.DetailedStatus) *pb.Facility_Status {
 	return ret
 }
 
-func toProtoFacilityUnits(usm map[string]core.UnitStatus, machineMap map[string]core.MachineStatus) []*pb.Facility_Unit {
+func toProtoFacilityUnits(usm map[string]core.FacilityUnitStatus, machineMap map[string]core.FacilityMachineStatus) []*pb.Facility_Unit {
 	ret := []*pb.Facility_Unit{}
 	for name := range usm {
 		status := usm[name]
@@ -169,7 +171,7 @@ func toProtoFacilityUnits(usm map[string]core.UnitStatus, machineMap map[string]
 	return ret
 }
 
-func toProtoFacilityUnit(name string, s *core.UnitStatus, machineMap map[string]core.MachineStatus) *pb.Facility_Unit {
+func toProtoFacilityUnit(name string, s *core.FacilityUnitStatus, machineMap map[string]core.FacilityMachineStatus) *pb.Facility_Unit {
 	ret := &pb.Facility_Unit{}
 	ret.SetName(name)
 	ret.SetAgentStatus(toProtoFacilityStatus(&s.AgentStatus))
@@ -185,7 +187,7 @@ func toProtoFacilityUnit(name string, s *core.UnitStatus, machineMap map[string]
 	return ret
 }
 
-func toProtoFacilities(fs []core.Facility, machineMap map[string]core.MachineStatus) []*pb.Facility {
+func toProtoFacilities(fs []core.Facility, machineMap map[string]core.FacilityMachineStatus) []*pb.Facility {
 	ret := []*pb.Facility{}
 	for i := range fs {
 		ret = append(ret, toProtoFacility(&fs[i], machineMap))
@@ -193,7 +195,7 @@ func toProtoFacilities(fs []core.Facility, machineMap map[string]core.MachineSta
 	return ret
 }
 
-func toProtoFacility(f *core.Facility, machineMap map[string]core.MachineStatus) *pb.Facility {
+func toProtoFacility(f *core.Facility, machineMap map[string]core.FacilityMachineStatus) *pb.Facility {
 	ret := &pb.Facility{}
 	ret.SetName(f.Name)
 	ret.SetStatus(toProtoFacilityStatus(&f.Status.Status))
@@ -214,7 +216,7 @@ func toProtoFacilityMetadata(md *core.FacilityMetadata) *pb.Facility_Charm_Metad
 	return ret
 }
 
-func toProtoActions(as []core.Action) []*pb.Facility_Action {
+func toProtoActions(as []core.FacilityAction) []*pb.Facility_Action {
 	ret := []*pb.Facility_Action{}
 	for i := range as {
 		ret = append(ret, toProtoAction(&as[i]))
@@ -222,7 +224,7 @@ func toProtoActions(as []core.Action) []*pb.Facility_Action {
 	return ret
 }
 
-func toProtoAction(a *core.Action) *pb.Facility_Action {
+func toProtoAction(a *core.FacilityAction) *pb.Facility_Action {
 	ret := &pb.Facility_Action{}
 	ret.SetName(a.Name)
 	ret.SetDescription(a.Spec.Description)

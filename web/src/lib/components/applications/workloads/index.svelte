@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table/index';
@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-	let { scopeUuid, facilityName }: { scopeUuid: string; facilityName: string } = $props();
+	let { scope, facility }: { scope: string; facility: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	let isMounted = $state(false);
@@ -23,19 +23,20 @@
 	const reloadManager = new ReloadManager(() => {
 		applicationClient
 			.listApplications({
-				scopeUuid: scopeUuid,
-				facilityName: facilityName,
+				scope: scope,
+				facility: facility,
 			})
 			.then((response) => {
 				applications.set(response.applications);
 			});
 	});
+	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		applicationClient
 			.listApplications({
-				scopeUuid: scopeUuid,
-				facilityName: facilityName,
+				scope: scope,
+				facility: facility,
 			})
 			.then((response) => {
 				applications.set(response.applications);
@@ -54,7 +55,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Statistics {scopeUuid} {facilityName} />
+		<Statistics {scope} {facility} />
 		<DataTable {applications} {reloadManager} />
 	{:else}
 		<Loading.DataTable />

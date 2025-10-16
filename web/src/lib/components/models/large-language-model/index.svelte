@@ -10,6 +10,8 @@
 </script>
 
 <script lang="ts">
+	import Alert from './alert.svelte';
+
 	const largeLanguageModels = writable<LargeLangeageModel[]>([]);
 	let isMounted = $state(false);
 	const reloadManager = new ReloadManager(() => {
@@ -27,6 +29,7 @@
 </script>
 
 <main class="space-y-4 py-4">
+	<Alert />
 	{#if isMounted}
 		<DataTable {largeLanguageModels} {reloadManager} />
 	{:else}

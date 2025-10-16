@@ -2,8 +2,8 @@
 	import Icon from '@iconify/svelte';
 
 	import { page } from '$app/state';
+	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { type Facility } from '$lib/api/facility/v1/facility_pb';
-	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
 	import ContainerImage from '$lib/assets/container.jpg';
 	import DiskImage from '$lib/assets/disk.jpg';
 	import { Button } from '$lib/components/ui/button';
@@ -157,7 +157,7 @@
 <div class="mx-auto max-w-7xl min-w-7xl">
 	<div class="grid w-full grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
 		<div class="col-span-2 flex justify-end space-x-4 rounded-lg sm:space-x-6 lg:col-span-4">
-			<Button variant="ghost" disabled={$premiumTier === PremiumTier.BASIC}>
+			<Button variant="ghost" disabled={$premiumTier.level === PremiumTier_Level.BASIC}>
 				<Icon icon="ph:plus" class="size-4" />
 				{m.add_node()}
 			</Button>

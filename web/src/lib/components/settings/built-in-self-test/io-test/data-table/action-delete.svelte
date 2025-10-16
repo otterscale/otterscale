@@ -4,8 +4,8 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { DeleteTestResultRequest, TestResult } from '$lib/api/bist/v1/bist_pb';
-	import { BISTService } from '$lib/api/bist/v1/bist_pb';
+	import type { DeleteTestResultRequest, TestResult } from '$lib/api/configuration/v1/configuration_pb';
+	import { ConfigurationService } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -23,7 +23,7 @@
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(BISTService, transport);
+	const client = createClient(ConfigurationService, transport);
 
 	let invalid = $state(false);
 

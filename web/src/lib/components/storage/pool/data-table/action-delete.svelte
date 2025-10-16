@@ -28,8 +28,8 @@
 	let invalid: boolean | undefined = $state();
 
 	const defaults = {
-		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name,
+		scope: $currentCeph?.scope,
+		facility: $currentCeph?.name,
 	} as DeletePoolRequest;
 	let request = $state(defaults);
 	function reset() {

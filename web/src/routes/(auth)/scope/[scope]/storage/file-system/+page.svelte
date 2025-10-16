@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
-	let selectedScopeUuid = $derived($activeScope ? $activeScope.uuid : '');
+	let selectedScope = $derived($activeScope ? $activeScope.name : '');
 	let selectedFacility = $state('ceph-mon');
 	let selectedVolume = $state('ceph-fs');
 	let selectedSubvolumeGroupName = $state('');
@@ -18,7 +18,7 @@
 </script>
 
 {#if $activeScope}
-	{#key selectedScopeUuid + selectedFacility + selectedVolume + selectedSubvolumeGroupName}
-		<FileSystem bind:selectedScopeUuid bind:selectedFacility bind:selectedVolume bind:selectedSubvolumeGroupName />
+	{#key selectedScope + selectedFacility + selectedVolume + selectedSubvolumeGroupName}
+		<FileSystem bind:selectedScope bind:selectedFacility bind:selectedVolume bind:selectedSubvolumeGroupName />
 	{/key}
 {/if}

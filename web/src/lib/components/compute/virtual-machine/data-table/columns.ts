@@ -3,19 +3,19 @@ import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
+import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
 const messages = {
 	name: m.name(),
-	namespace: m.namespace(),
-	network: m.network(),
-	node: m.node(),
 	status: m.status(),
-	cpu: m.cpu(),
-	memory: m.memory(),
+	namespace: m.namespace(),
+	machineId: m.machine(),
+	instanceType: m.instance_type(),
 	disk: m.disk(),
+	port: m.ports(),
+	createTime: m.create_time(),
 };
 
 const columns: ColumnDef<VirtualMachine>[] = [
@@ -60,42 +60,23 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		filterFn: 'arrIncludesSome',
 	},
 	{
-		accessorKey: 'network',
+		accessorKey: 'machineId',
 		header: ({ column }) => {
-			return renderSnippet(headers.network, column);
+			return renderSnippet(headers.machineId, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.network, row);
+			return renderSnippet(cells.machineId, row);
 		},
 		filterFn: 'arrIncludesSome',
 	},
+
 	{
-		accessorKey: 'node',
+		accessorKey: 'instanceType',
 		header: ({ column }) => {
-			return renderSnippet(headers.node, column);
+			return renderSnippet(headers.instanceType, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.node, row);
-		},
-		filterFn: 'arrIncludesSome',
-	},
-	{
-		accessorKey: 'cpu',
-		header: ({ column }) => {
-			return renderSnippet(headers.cpu, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.cpu, row);
-		},
-		filterFn: 'arrIncludesSome',
-	},
-	{
-		accessorKey: 'memory',
-		header: ({ column }) => {
-			return renderSnippet(headers.memory, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.memory, row);
+			return renderSnippet(cells.instanceType, row);
 		},
 		filterFn: 'arrIncludesSome',
 	},
@@ -108,6 +89,36 @@ const columns: ColumnDef<VirtualMachine>[] = [
 			return renderSnippet(cells.disk, row);
 		},
 		filterFn: 'arrIncludesSome',
+	},
+	{
+		accessorKey: 'port',
+		header: ({ column }) => {
+			return renderSnippet(headers.port, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.port, row);
+		},
+		filterFn: 'arrIncludesSome',
+	},
+	{
+		accessorKey: 'createTime',
+		header: ({ column }) => {
+			return renderSnippet(headers.createTime, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.createTime, row);
+		},
+		filterFn: 'arrIncludesSome',
+	},
+	{
+		accessorKey: 'vnc',
+		header: ({ column }) => {
+			return renderSnippet(headers.vnc, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.vnc, row);
+		},
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'actions',

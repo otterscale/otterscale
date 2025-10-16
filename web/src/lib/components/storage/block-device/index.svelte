@@ -12,10 +12,10 @@
 
 <script lang="ts">
 	let {
-		selectedScopeUuid = $bindable(),
+		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
 	}: {
-		selectedScopeUuid: string;
+		selectedScope: string;
 		selectedFacility: string;
 	} = $props();
 
@@ -26,7 +26,7 @@
 
 	const storageClient = createClient(StorageService, transport);
 	const reloadManager = new ReloadManager(() => {
-		storageClient.listImages({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility }).then((response) => {
+		storageClient.listImages({ scope: selectedScope, facility: selectedFacility }).then((response) => {
 			images.set(response.images);
 		});
 	});
@@ -34,7 +34,7 @@
 
 	onMount(() => {
 		storageClient
-			.listImages({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility })
+			.listImages({ scope: selectedScope, facility: selectedFacility })
 			.then((response) => {
 				images.set(response.images);
 				isMounted = true;

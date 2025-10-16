@@ -8,39 +8,41 @@ import (
 	"github.com/juju/juju/api/base"
 )
 
-type Scope = base.UserModelSummary
+type (
+	Scope  = base.UserModelSummary
+	SSHKey = entity.SSHKey
+)
+
+type KeyRepo interface {
+	Add(ctx context.Context, scope, key string) error
+}
 
 type ScopeRepo interface {
 	List(ctx context.Context) ([]Scope, error)
+	Get(ctx context.Context, name string) (*Scope, error)
 	Create(ctx context.Context, name string) (*Scope, error)
 }
 
 type ScopeConfigRepo interface {
-	List(ctx context.Context, uuid string) (map[string]any, error)
-	Set(ctx context.Context, uuid string, config map[string]any) error
-	Unset(ctx context.Context, uuid string, keys ...string) error
+	List(ctx context.Context, scope string) (map[string]any, error)
+	Set(ctx context.Context, scope string, config map[string]any) error
+	Unset(ctx context.Context, scope string, keys ...string) error
 }
-
-type KeyRepo interface {
-	Add(ctx context.Context, uuid, key string) error
-}
-
-type SSHKey = entity.SSHKey
 
 type SSHKeyRepo interface {
 	List(ctx context.Context) ([]SSHKey, error)
 }
 
 type ScopeUseCase struct {
-	scope  ScopeRepo
 	key    KeyRepo
+	scope  ScopeRepo
 	sshKey SSHKeyRepo
 }
 
-func NewScopeUseCase(scope ScopeRepo, key KeyRepo, sshKey SSHKeyRepo) *ScopeUseCase {
+func NewScopeUseCase(key KeyRepo, scope ScopeRepo, sshKey SSHKeyRepo) *ScopeUseCase {
 	return &ScopeUseCase{
-		scope:  scope,
 		key:    key,
+		scope:  scope,
 		sshKey: sshKey,
 	}
 }
@@ -58,7 +60,7 @@ func (uc *ScopeUseCase) CreateScope(ctx context.Context, name string) (*Scope, e
 	if err != nil {
 		return nil, err
 	}
-	if err := uc.key.Add(ctx, scope.UUID, sshKey); err != nil {
+	if err := uc.key.Add(ctx, scope.Name, sshKey); err != nil {
 		return nil, err
 	}
 	return scope, nil

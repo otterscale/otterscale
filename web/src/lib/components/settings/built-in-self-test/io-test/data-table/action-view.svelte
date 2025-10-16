@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import type { TestResult } from '$lib/api/bist/v1/bist_pb';
+	import type { TestResult } from '$lib/api/configuration/v1/configuration_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { formatCapacity, formatLatencyNano } from '$lib/formatter';

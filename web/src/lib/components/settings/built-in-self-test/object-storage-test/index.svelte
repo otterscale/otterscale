@@ -5,7 +5,7 @@
 
 	import { DataTable } from './data-table';
 
-	import { BISTService, type TestResult } from '$lib/api/bist/v1/bist_pb';
+	import { ConfigurationService, type TestResult } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 </script>
@@ -18,16 +18,16 @@
 	const testResults = writable<TestResult[]>([]);
 	let isMounted = $state(false);
 
-	const bistClient = createClient(BISTService, transport);
+	const client = createClient(ConfigurationService, transport);
 	const reloadManager = new ReloadManager(() => {
-		bistClient.listTestResults({}).then((response) => {
+		client.listTestResults({}).then((response) => {
 			testResults.set(response.testResults);
 		});
 	});
 	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
-		bistClient
+		client
 			.listTestResults({})
 			.then((response) => {
 				testResults.set(response.testResults);
