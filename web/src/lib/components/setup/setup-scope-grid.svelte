@@ -5,6 +5,8 @@
 	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
+	import SetupNodeGPUMode from './setup-node-gpu-mode.svelte';
+
 	import { page } from '$app/state';
 	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import {
@@ -123,12 +125,6 @@
 									{unit.name}
 								</span>
 
-								{#if unit.machineId}
-									<a href="{dynamicPaths.machinesMetal(page.params.scope).url}/{unit.machineId}">
-										<Icon icon="ph:computer-tower" class="size-4" />
-									</a>
-								{/if}
-
 								<button
 									class="hover:cursor-pointer"
 									onclick={(e) => {
@@ -167,8 +163,18 @@
 									<Icon icon="ph:arrow-counter-clockwise" class="size-4" />
 								</button>
 
+								{#if unit.machineId}
+									<a href="{dynamicPaths.machinesMetal(page.params.scope).url}/{unit.machineId}">
+										<Icon icon="ph:computer-tower" class="size-4" />
+									</a>
+								{/if}
+
+								{#if unit.machineId}
+									<SetupNodeGPUMode {unit} class="hover:cursor-pointer" />
+								{/if}
+
 								{#if unit.leader}
-									<Icon icon="ph:star-fill" class="size-4 text-yellow-400 " />
+									<Icon icon="ph:star-fill" class="size-4 text-yellow-400" />
 								{/if}
 							</div>
 
