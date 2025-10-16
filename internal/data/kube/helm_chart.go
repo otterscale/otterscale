@@ -185,7 +185,7 @@ func (r *helmChart) UploadChart(ctx context.Context, ociRegistryURL, chartName, 
 }
 
 // pushToOCI pushes the chart to OCI registry using Helm's OCI support
-func (r *helmChart) pushToOCI(ctx context.Context, ociRegistryURL, chartName, chartVersion string, chartContent []byte) (string, error) {
+func (r *helmChart) pushToOCI(_ context.Context, ociRegistryURL, chartName, chartVersion string, chartContent []byte) (string, error) {
 	registryURL := ociRegistryURL
 	if !strings.HasPrefix(registryURL, "oci://") {
 		registryURL = "oci://" + strings.TrimPrefix(registryURL, "oci://")

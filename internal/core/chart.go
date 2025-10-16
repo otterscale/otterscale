@@ -52,8 +52,9 @@ type ChartUseCase struct {
 	conf     *config.Config
 }
 
-func NewChartUseCase(action ActionRepo, chart ChartRepo, facility FacilityRepo, release ReleaseRepo) *ChartUseCase {
+func NewChartUseCase(conf *config.Config, action ActionRepo, chart ChartRepo, facility FacilityRepo, release ReleaseRepo) *ChartUseCase {
 	return &ChartUseCase{
+		conf:     conf,
 		action:   action,
 		chart:    chart,
 		facility: facility,
