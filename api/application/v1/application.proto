@@ -32,6 +32,7 @@ service ApplicationService {
   rpc ListCharts(ListChartsRequest) returns (ListChartsResponse);
   rpc GetChart(GetChartRequest) returns (Application.Chart);
   rpc GetChartMetadata(GetChartMetadataRequest) returns (Application.Chart.Metadata);
+  rpc UploadChart(UploadChartRequest) returns (google.protobuf.Empty);
 
   rpc ListStorageClasses(ListStorageClassesRequest) returns (ListStorageClassesResponse);
 }
@@ -306,3 +307,9 @@ message ListStorageClassesRequest {
 message ListStorageClassesResponse {
   repeated StorageClass storage_classes = 1;
 }
+
+message UploadChartRequest {
+  bytes chart_content = 1;
+}
+
+

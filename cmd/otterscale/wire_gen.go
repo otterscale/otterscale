@@ -46,7 +46,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	chartUseCase := core.NewChartUseCase(actionRepo, chartRepo, facilityRepo, releaseRepo)
+	chartUseCase := core.NewChartUseCase(configConfig, actionRepo, chartRepo, facilityRepo, releaseRepo)
 	releaseUseCase := core.NewReleaseUseCase(actionRepo, chartRepo, facilityRepo, releaseRepo)
 	clientRepo := juju.NewClient(jujuJuju)
 	kubeAppsRepo := kube.NewApps(kubeKube)
