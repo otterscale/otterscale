@@ -23,6 +23,8 @@
 	"home": "Home",
 	"compute": "Compute",
 	"platform": "Platform",
+	"model": "Model",
+	"model_name": "Model Name",
 	"models": "Models",
 	"models_description": "AI models for intelligent data processing and analysis",
 	"llm": "LLM",
@@ -224,6 +226,7 @@
 	"disk": "Disk",
 	"memory": "Memory",
 	"ram": "RAM",
+	"vram": "vRAM",
 	"swap": "Swap",
 	"system": "System",
 	"uptime": "Uptime",
@@ -323,6 +326,8 @@
 	"port": "Port",
 	"namespace": "Namespace",
 	"health": "Health",
+	"healthy": "Healthy",
+	"unhealthy": "Unhealthy",
 	"service": "Service",
 	"pod": "Pod",
 	"delete_pod": "Delete Pod",
@@ -703,6 +708,8 @@
 	"llm_alert_action": "Install",
 	"time_to_first_token": "Time to First Token",
 	"gpu_cache": "GPU Cache",
+	"gpu_count": "Count",
+	"gpu_relation": "GPU Relation",
 	"kv_cache": "KV Cache",
 	"migrate": "Migrate",
 	"migrate_virtual_machine": "Migrate Virtual Machine",
@@ -796,5 +803,6 @@
 	"instance_type_name": "Instance Type Name",
 	"create_instance_type": "Create Instance Type",
 	"log": "Log",
-	"vnc": "VNC"
+	"vnc": "VNC",
+	"index": "Index"
 }

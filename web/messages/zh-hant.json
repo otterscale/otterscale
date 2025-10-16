@@ -23,6 +23,8 @@
 	"home": "首頁",
 	"compute": "運算",
 	"platform": "平台",
+	"model": "模型",
+	"model_name": "模型名稱",
 	"models": "模型",
 	"models_description": "用於智慧資料處理和分析的 AI 模型",
 	"llm": "大型語言模型",
@@ -224,6 +226,7 @@
 	"disk": "磁碟",
 	"memory": "記憶體",
 	"ram": "RAM",
+	"vram": "vRAM",
 	"swap": "交換空間",
 	"system": "系統",
 	"uptime": "執行時間",
@@ -323,6 +326,8 @@
 	"port": "連接埠",
 	"namespace": "命名空間",
 	"health": "健康狀態",
+	"healthy": "健康",
+	"unhealthy": "異常",
 	"service": "服務",
 	"pod": "Pod",
 	"delete_pod": "刪除 Pod",
@@ -703,6 +708,8 @@
 	"llm_alert_action": "安裝",
 	"time_to_first_token": "首次產生 Token 時間",
 	"gpu_cache": "GPU 快取",
+	"gpu_count": "進程",
+	"gpu_relation": "GPU 關聯結構圖",
 	"kv_cache": "KV 快取",
 	"migrate": "遷移",
 	"migrate_virtual_machine": "遷移虛擬機",
@@ -796,5 +803,6 @@
 	"instance_type_name": "實例類型名稱",
 	"create_instance_type": "建立實例類型",
 	"log": "日誌",
-	"vnc": "VNC"
+	"vnc": "VNC",
+	"index": "索引"
 }

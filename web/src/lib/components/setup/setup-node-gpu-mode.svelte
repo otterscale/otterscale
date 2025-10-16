@@ -4,9 +4,9 @@
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { EssentialService } from '$lib/api/essential/v1/essential_pb';
 	import type { Facility_Unit } from '$lib/api/facility/v1/facility_pb';
 	import { MachineService } from '$lib/api/machine/v1/machine_pb';
+	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { currentKubernetes } from '$lib/stores';
@@ -30,16 +30,16 @@
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
-	const essentialClient = createClient(EssentialService, transport);
+	const orchestratorClient = createClient(OrchestratorService, transport);
 
 	let hasGPUs: undefined | boolean = $state(undefined);
 	let selectedGPUMode: string = $state('');
 
 	async function fetch() {
-		essentialClient
+		orchestratorClient
 			.listKubernetesNodeLabels({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
+				scope: $currentKubernetes?.scope,
+				facility: $currentKubernetes?.name,
 				hostname: unit.hostname,
 				all: true,
 			})
@@ -89,9 +89,9 @@
 									toast.promise(
 										() => {
 											selectedGPUMode = option.value;
-											return essentialClient.updateKubernetesNodeLabels({
-												scopeUuid: $currentKubernetes?.scopeUuid,
-												facilityName: $currentKubernetes?.name,
+											return orchestratorClient.updateKubernetesNodeLabels({
+												scope: $currentKubernetes?.scope,
+												facility: $currentKubernetes?.name,
 												hostname: unit.hostname,
 												labels: {
 													'nvidia.com/gpu.workload.config': selectedGPUMode,
