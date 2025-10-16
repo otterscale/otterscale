@@ -5,7 +5,7 @@
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table/index';
-	import { type LargeLangeageModel } from './type';
+	import { type LargeLanguageModel } from './type';
 
 	import { env } from '$env/dynamic/public';
 	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
@@ -17,7 +17,7 @@
 <script lang="ts">
 	let { scopeUuid, facilityName }: { scopeUuid: string; facilityName: string } = $props();
 
-	const largeLanguageModels = writable<LargeLangeageModel[]>([]);
+	const largeLanguageModels = writable<LargeLanguageModel[]>([]);
 
 	const transport: Transport = getContext('transport');
 	const applicationClient = createClient(ApplicationService, transport);
@@ -121,7 +121,7 @@
 							requests: requestLatencyByPod.get(model.labels['model-name']) ?? 0,
 							time_to_first_token: timeToFirstTokenByPod.get(model.labels['model-name']) ?? 0,
 						},
-					}) as LargeLangeageModel,
+					}) as LargeLanguageModel,
 			),
 		);
 	}

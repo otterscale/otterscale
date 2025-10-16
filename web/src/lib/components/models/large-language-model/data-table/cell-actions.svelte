@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import type { LargeLangeageModel } from '../type';
+	import type { LargeLanguageModel } from '../type';
 
 	import Delete from './action-delete.svelte';
 
@@ -11,7 +11,7 @@
 	let {
 		model,
 	}: {
-		model: LargeLangeageModel;
+		model: LargeLanguageModel;
 	} = $props();
 </script>
 

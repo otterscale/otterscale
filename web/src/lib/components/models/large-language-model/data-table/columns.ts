@@ -1,6 +1,6 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { type LargeLangeageModel } from '../type';
+import { type LargeLanguageModel } from '../type';
 
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
@@ -20,7 +20,7 @@ const messages = {
 	time_to_first_token: m.uptime(),
 };
 
-const columns: ColumnDef<LargeLangeageModel>[] = [
+const columns: ColumnDef<LargeLanguageModel>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => {

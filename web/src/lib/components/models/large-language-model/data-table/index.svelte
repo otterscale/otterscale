@@ -12,7 +12,7 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
-	import type { LargeLangeageModel } from '../type';
+	import type { LargeLanguageModel } from '../type';
 
 	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
@@ -29,7 +29,7 @@
 	let {
 		largeLanguageModels,
 		reloadManager,
-	}: { largeLanguageModels: Writable<LargeLangeageModel[]>; reloadManager: ReloadManager } = $props();
+	}: { largeLanguageModels: Writable<LargeLanguageModel[]>; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);

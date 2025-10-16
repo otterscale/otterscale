@@ -63,7 +63,7 @@
 				await fetch();
 			}
 		} catch (error) {
-			console.error('Failed to get machine informationo:', error);
+			console.error('Failed to get machine information:', error);
 		}
 	});
 </script>
@@ -106,7 +106,7 @@
 												return `Set ${unit.hostname} as ${selectedGPUMode}`;
 											},
 											error: (error) => {
-												let message = `Fail to set  ${unit.hostname} as ${selectedGPUMode}`;
+												let message = `Failed to set ${unit.hostname} as ${selectedGPUMode}`;
 												toast.error(message, {
 													description: (error as ConnectError).message.toString(),
 													duration: Number.POSITIVE_INFINITY,

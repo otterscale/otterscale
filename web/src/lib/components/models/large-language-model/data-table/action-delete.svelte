@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import type { LargeLangeageModel } from '../type';
+	import type { LargeLanguageModel } from '../type';
 
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
@@ -11,7 +11,7 @@
 	let {
 		model,
 	}: {
-		model: LargeLangeageModel;
+		model: LargeLanguageModel;
 	} = $props();
 
 	let open = $state(false);

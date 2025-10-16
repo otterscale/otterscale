@@ -6,7 +6,7 @@
 	import { getContext } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
 
-	import type { LargeLangeageModel } from '../type';
+	import type { LargeLanguageModel } from '../type';
 
 	import {
 		OrchestratorService,
@@ -22,7 +22,7 @@
 </script>
 
 <script lang="ts">
-	let { model }: { model: LargeLangeageModel } = $props();
+	let { model }: { model: LargeLanguageModel } = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(OrchestratorService, transport);
@@ -38,7 +38,7 @@
 			scope: $currentKubernetes?.scope,
 			facility: $currentKubernetes?.name,
 			namespace: model.application.namespace,
-			modelName: 'paul-123',
+			modelName: model.name,
 		})
 		.then((response) => {
 			nodes.set(
