@@ -143,7 +143,6 @@
 			const chartContent = new Uint8Array(arrayBuffer);
 
 			const request = {
-				ociRegistryUrl: '', // Use backend default registry
 				chartContent: chartContent,
 			} as any;
 
