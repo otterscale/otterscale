@@ -240,7 +240,7 @@ func (r *core) GetLogs(ctx context.Context, config *rest.Config, namespace, podN
 	return buf.String(), nil
 }
 
-func (r *core) StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error) {
+func (r *core) StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string, since *metav1.Time) (io.ReadCloser, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -249,6 +249,9 @@ func (r *core) StreamLogs(ctx context.Context, config *rest.Config, namespace, p
 	opts := corev1.PodLogOptions{
 		Container: containerName,
 		Follow:    true,
+	}
+	if since != nil {
+		opts.SinceTime = since
 	}
 	return clientset.CoreV1().Pods(namespace).GetLogs(podName, &opts).Stream(ctx)
 }
