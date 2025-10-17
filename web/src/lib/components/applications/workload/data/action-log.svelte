@@ -41,7 +41,7 @@
 		{ label: '12h', value: '12h', minutes: 720 },
 	];
 
-	let selectedTime = $state<TimeOption | undefined>(timeOptions[0]); // Default to 5 minutes
+	let selectedTime = $state<TimeOption | undefined>(timeOptions[0]); // Default to All
 	let selectedTimeValue = $state<string>(timeOptions[0].value); // For Select component
 
 	async function watchLogs() {
