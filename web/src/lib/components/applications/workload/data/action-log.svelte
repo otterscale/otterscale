@@ -122,7 +122,7 @@
 		</span>
 	</Sheet.Trigger>
 
-	<Sheet.Content class="sm:max-w-9/10 rounded-l-lg border-none bg-transparent">
+	<Sheet.Content class="rounded-l-lg border-none bg-transparent sm:max-w-9/10">
 		{#if open}
 			<div
 				class="border-border bg-secondary text-card-foreground dark size-full flex-col rounded-l-lg border font-mono text-sm shadow-sm"
