@@ -1516,9 +1516,11 @@ EOF
         rm -f "$ca_cert_file"
 
         # Get Kubernetes configuration
-        local k8s_endpoints
-        k8s_endpoints="http:\/\/" + $(microk8s kubectl get EndpointSlice kubernetes -o json | jq -r '.endpoints[0].addresses[0] + ":" + (.ports[0].port | tostring)')
-        send_status_data "FINISHED" "OtterScale endpoint is $k8s_endpoints" "$k8s_endpoints"
+        local k8s_endpoints otterscale_svc_port otterscale_web
+        k8s_endpoints=$(microk8s kubectl get EndpointSlice kubernetes -o json | jq -r '.endpoints[0].addresses[0]')
+        otterscale_svc_port=$(microk8s kubectl get svc -n $namespace otterscale-web -o json | jq -r '.spec.ports[] | select(.name == "http") | .nodePort')
+        otterscale_web="http://$k8s_endpoints:$otterscale_svc_port"
+        send_status_data "FINISHED" "OtterScale endpoint is $otterscale_web" "$otterscale_web"
         log "INFO" "OtterScale Install Finished" "FINISHED"
     else
         log "INFO" "Helm releases already has otterscale" "HELM_CHECK"
