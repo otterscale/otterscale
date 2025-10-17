@@ -1,15 +1,14 @@
 <script lang="ts">
+	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onDestroy } from 'svelte';
 	import { fly } from 'svelte/transition';
-	import { create } from '@bufbuild/protobuf';
-	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
 
 	import type { Application_Pod } from '$lib/api/application/v1/application_pb';
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
-	import * as Sheet from '$lib/components/ui/sheet';
 	import * as Select from '$lib/components/ui/select';
+	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 
@@ -41,8 +40,8 @@
 		{ label: '12h', value: '12h', minutes: 720 },
 	];
 
-	let selectedTime = $state<TimeOption | undefined>(timeOptions[0]); // Default to All
 	let selectedTimeValue = $state<string>(timeOptions[0].value); // For Select component
+	let selectedTime = $derived(timeOptions.find((option) => option.value === selectedTimeValue)); // Derived from selectedTimeValue
 
 	async function watchLogs() {
 		try {
@@ -103,11 +102,6 @@
 		}
 	});
 
-	// Update selectedTime when selectedTimeValue changes
-	$effect(() => {
-		selectedTime = timeOptions.find((option) => option.value === selectedTimeValue);
-	});
-
 	$effect(() => {
 		if (open && selectedTime) {
 			stopWatching();
@@ -128,7 +122,7 @@
 		</span>
 	</Sheet.Trigger>
 
-	<Sheet.Content class="rounded-l-lg border-none bg-transparent sm:max-w-9/10">
+	<Sheet.Content class="sm:max-w-9/10 rounded-l-lg border-none bg-transparent">
 		{#if open}
 			<div
 				class="border-border bg-secondary text-card-foreground dark size-full flex-col rounded-l-lg border font-mono text-sm shadow-sm"
