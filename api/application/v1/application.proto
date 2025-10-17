@@ -213,6 +213,7 @@ message WatchLogsRequest {
   string namespace = 3;
   string pod_name = 4;
   string container_name = 5;
+  google.protobuf.Timestamp since = 6;
 }
 
 message WatchLogsResponse {
