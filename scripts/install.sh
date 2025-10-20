@@ -921,7 +921,7 @@ enter_otterscale_web_ip() {
             break
         fi
         echo "Invalid IP format. Please try again."
-    done	
+    done
 }
 
 get_dhcp_subnet_and_ip() {
@@ -1478,7 +1478,7 @@ config_bridge() {
         log "INFO" "Detect that IP $OTTERSCAEL_WEB_IP exists on network $OTTERSCALE_BRIDGE_NAME"
     else
         ## Insert ip to network interface
-	local mask=$(nmcli device show $OTTERSCALE_BRIDGE_NAME | grep "^IP4.ADDRESS" | head -n 1 | awk '{print $2}' | cut -d'/' -f2)
+        local mask=$(nmcli device show $OTTERSCALE_BRIDGE_NAME | grep "^IP4.ADDRESS" | head -n 1 | awk '{print $2}' | cut -d'/' -f2)
 
         if nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCAEL_WEB_IP/$mask"; then
             log "INFO" "Add $OTTERSCAEL_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME"
@@ -1492,7 +1492,7 @@ deploy_istio() {
     log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
     local istio_version="1.27.1"
     local istio_url="https://istio.io/downloadIstio"
-    local istio_namespace="istio-system"    
+    local istio_namespace="istio-system"
     local has_istio=false
     local arch
     arch=$(uname -m)
@@ -1514,11 +1514,6 @@ deploy_istio() {
     if [[ $(microk8s kubectl get deploy -n istio-system -l app=istiod -o name | wc -l) -eq 0 ]]; then
         log "INFO" "Install istio into kubernetes environment" "ISTIO_SERVICE"
         su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation >/dev/null"
-
-        log "INFO" "Patching istio-ingressgateway externalIPs to ${OTTERSCALE_INTERFACE_IP}" "ISTIO_INGRESSGATEWAY"
-        microk8s kubectl patch service istio-ingressgateway -n $istio_namespace \
-        --type=merge \
-        -p "$(printf 'spec:\n  externalIPs:\n  - %s\n' "$OTTERSCALE_INTERFACE_IP")" >>"$TEMP_LOG" 2>&1
     else
         log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
     fi
@@ -1593,7 +1588,7 @@ EOF
         # Clean up temporary file
         rm -f "$ca_cert_file"
 
-	local otterscale_endpoint="http://$OTTERSCAEL_WEB_IP"
+        local otterscale_endpoint="http://$OTTERSCAEL_WEB_IP"
         send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
         log "INFO" "OtterScale install finished, you can visit web UI from $otterscale_endpoint" "FINISHED"
     else
