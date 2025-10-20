@@ -50,13 +50,14 @@ readonly OTTERSCALE_INSTALL_DIR=$(dirname "$(readlink -f "$0")")
 # Runtime variables
 readonly TEMP_LOG=$(mktemp)
 readonly LOG="$OTTERSCALE_INSTALL_DIR/setup.log"
-OTTERSCALE_ENDPOINT=""
+MAAS_DHCP_START_IP=""
+MAAS_DHCP_END_IP=""
 NON_ROOT_USER=""
+OTTERSCALE_API_ENDPOINT=""
+OTTERSCAEL_WEB_IP=""
 OTTERSCALE_BRIDGE_NAME="br-otters"
 OTTERSCALE_INTERFACE_IP=""
 OTTERSCALE_CIDR=""
-MAAS_DHCP_START_IP=""
-MAAS_DHCP_END_IP=""
 
 # =============================================================================
 # UTILITY FUNCTIONS
@@ -85,7 +86,7 @@ log() {
     echo "$formatted_message" | tee -a "$LOG"
 
     # Send status update (non-debug messages only)
-    if [[ "$level" != "DEBUG" && -n "$OTTERSCALE_ENDPOINT" ]]; then
+    if [[ "$level" != "DEBUG" && -n "$OTTERSCALE_API_ENDPOINT" ]]; then
         send_status_data "$phase" "$message" || true
     fi
 }
@@ -348,7 +349,7 @@ send_request() {
         if curl -s --max-time 30 \
                 --header "Content-Type: application/json" \
                 --data "$data" \
-                "$OTTERSCALE_ENDPOINT$url_path" >/dev/null 2>&1; then
+                "$OTTERSCALE_API_ENDPOINT$url_path" >/dev/null 2>&1; then
             return 0
         fi
 
@@ -367,7 +368,7 @@ send_status_data() {
     local new_url="${3:-}"
 
     # Skip if endpoint is not configured
-    if [[ -z "$OTTERSCALE_ENDPOINT" ]]; then
+    if [[ -z "$OTTERSCALE_API_ENDPOINT" ]]; then
         return 0
     fi
 
@@ -651,18 +652,20 @@ check_bridge() {
 
 # Find first non-root user
 find_first_non_root_user() {
-    for user_home in /home/*; do
-        if [[ -d "$user_home" ]]; then
-            NON_ROOT_USER=$(basename "$user_home")
-            break
+    if [ ! -z $NON_ROOT_USER ]; then
+        for user_home in /home/*; do
+            if [[ -d "$user_home" ]]; then
+                NON_ROOT_USER=$(basename "$user_home")
+                break
+            fi
+        done
+
+        if [[ -z "$NON_ROOT_USER" ]]; then
+            error_exit "No non-root user found"
         fi
-    done
 
-    if [[ -z "$NON_ROOT_USER" ]]; then
-        error_exit "No non-root user found"
+        log "INFO" "Using non-root user: $NON_ROOT_USER" "USER_SETUP"
     fi
-
-    log "INFO" "Using non-root user: $NON_ROOT_USER" "USER_SETUP"
 }
 
 # Generate SSH key for user
@@ -1447,6 +1450,42 @@ wait_for_deployment() {
 }
 
 otterscale_helm_deploy() {
+    ## Istio
+    log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
+    local istio_version="1.27.1"
+    local istio_url="https://istio.io/downloadIstio"
+    local istio_namespace="istio-system"
+    local has_istio=false
+    local arch
+    arch=$(uname -m)
+    case "$arch" in
+        x86_64|amd64) arch="x86_64" ;;
+        aarch64|arm64) arch="arm64" ;;
+    esac
+
+    if ! command -v istioctl &> /dev/null; then
+        log "INFO" "Install istioctl" "ISTIO_DEPLOY"
+        if ! curl -fsSL $istio_url | ISTIO_VERSION="$istio_version" TARGET_ARCH="$arch" bash - >>"$TEMP_LOG" 2>&1; then
+            error_exit "Failed install istio"
+        fi
+        mv "istio-$istio_version/bin/istioctl" /usr/local/bin/
+        chmod +x /usr/local/bin/istioctl
+        rm -rf "istio-$istio_version"
+    fi
+
+    if [[ $(microk8s kubectl get deploy -n istio-system -l app=istiod -o name | wc -l) -eq 0 ]]; then
+        log "INFO" "Install istio into kubernetes environment" "ISTIO_SERVICE"
+        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation >/dev/null"
+
+        log "INFO" "Patching istio-ingressgateway externalIPs to ${OTTERSCALE_INTERFACE_IP}" "ISTIO_INGRESSGATEWAY"
+        microk8s kubectl patch service istio-ingressgateway -n $istio_namespace \
+        --type=merge \
+        -p "$(printf 'spec:\n  externalIPs:\n  - %s\n' "$OTTERSCALE_INTERFACE_IP")" >>"$TEMP_LOG" 2>&1
+    else
+        log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
+    fi
+
+    ## HELM
     log "INFO" "Process microk8s helm3" "HELM_CHECK"
     local repository_url="https://otterscale.github.io/otterscale-charts/docs"
     local repository_name="otterscale-charts"
@@ -1539,7 +1578,7 @@ main() {
     init_logging
 
     log "INFO" "Starting OtterScale installation..." "INSTALLATION"
-    log "INFO" "Target endpoint: $OTTERSCALE_ENDPOINT" "INSTALLATION"
+    log "INFO" "Target endpoint: $OTTERSCALE_API_ENDPOINT" "INSTALLATION"
 
     # System validation
     log "INFO" "Performing system validation..." "VALIDATION"
@@ -1608,9 +1647,9 @@ parse_arguments() {
     if [[ $# -eq 0 ]]; then
         while true; do
             read -p "Enter OtterScale endpoint (default: http://127.0.0.1:8299): " user_endpoint
-            OTTERSCALE_ENDPOINT="${user_endpoint:-http://127.0.0.1:8299}"
+            OTTERSCALE_API_ENDPOINT="${user_endpoint:-http://127.0.0.1:8299}"
 
-            if validate_url "$OTTERSCALE_ENDPOINT"; then
+            if validate_url "$OTTERSCALE_API_ENDPOINT"; then
                 break
             else
                 echo "Invalid URL format. Please try again."
@@ -1623,9 +1662,9 @@ parse_arguments() {
     while [[ $# -gt 0 ]]; do
         case $1 in
             --url=*|url=*)
-                OTTERSCALE_ENDPOINT="${1#*=}"
-                if ! validate_url "$OTTERSCALE_ENDPOINT"; then
-                    error_exit "Invalid URL: $OTTERSCALE_ENDPOINT"
+                OTTERSCALE_API_ENDPOINT="${1#*=}"
+                if ! validate_url "$OTTERSCALE_API_ENDPOINT"; then
+                    error_exit "Invalid URL: $OTTERSCALE_API_ENDPOINT"
                 fi
                 ;;
             --config=*|config=*)
