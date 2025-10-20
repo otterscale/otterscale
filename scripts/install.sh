@@ -27,7 +27,7 @@ readonly LXD_MEMORY_MB=4096
 readonly LXD_DISK_GB="50G"
 
 # Package configuration
-readonly APT_PACKAGES="jq openssh-server bridge-utils openvswitch-switch"
+readonly APT_PACKAGES="jq openssh-server bridge-utils openvswitch-switch network-manager"
 readonly SNAP_PACKAGES="core24 maas maas-test-db juju lxd microk8s"
 
 # Snap channel versions
@@ -549,7 +549,7 @@ get_default_gateway() {
 
 # Get interface CIDR
 get_default_cidr() {
-    CURRENT_CIDR=$(ip -o -4 addr show dev "$CURRENT_INTERFACE" | awk '{print $4}')
+    CURRENT_CIDR=$(ip -o -4 addr show dev "$CURRENT_INTERFACE" | awk '{print $4}' | head -n 1)
     if [[ -z $CURRENT_CIDR ]]; then
         error_exit "Interface $CURRENT_INTERFACE CIDR not found"
     fi
@@ -559,12 +559,18 @@ get_default_cidr() {
 # Get DNS servers
 get_default_dns() {
     local interface="$1"
-    CURRENT_DNS=$(resolvectl status "$interface" | grep "DNS Servers" | awk '{print $3}' | head -1)
-    if [[ -z $CURRENT_DNS ]]; then
+
+    if resolvectl status "$interface" | grep "DNS Servers" > /dev/null; then
+        CURRENT_DNS=$(resolvectl status "$interface" | grep "DNS Servers" | awk '{print $3}' | head -1)
+        if [[ -z $CURRENT_DNS ]]; then
+            log "WARN" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
+            CURRENT_DNS="8.8.8.8"
+        else
+            log "INFO" "Detected DNS server for $interface: $CURRENT_DNS" "NETWORK"
+        fi
+    else
         log "WARN" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
         CURRENT_DNS="8.8.8.8"
-    else
-        log "INFO" "Detected DNS server for $interface: $CURRENT_DNS" "NETWORK"
     fi
 }
 
@@ -639,7 +645,7 @@ check_bridge() {
     fi
 
     # Get bridge network information
-    OTTERSCALE_CIDR=$(ip -o -4 addr show dev "$OTTERSCALE_BRIDGE_NAME" | awk '{print $4}')
+    OTTERSCALE_CIDR=$(ip -o -4 addr show dev "$OTTERSCALE_BRIDGE_NAME" | awk '{print $4}' | head -n 1)
     OTTERSCALE_INTERFACE_IP=$(echo "$OTTERSCALE_CIDR" | cut -d'/' -f1)
     get_default_dns "$OTTERSCALE_BRIDGE_NAME"
 
@@ -652,7 +658,7 @@ check_bridge() {
 
 # Find first non-root user
 find_first_non_root_user() {
-    if [ ! -z $NON_ROOT_USER ]; then
+    if [ -z $NON_ROOT_USER ]; then
         for user_home in /home/*; do
             if [[ -d "$user_home" ]]; then
                 NON_ROOT_USER=$(basename "$user_home")
@@ -679,7 +685,6 @@ generate_ssh_key() {
     fi
 
     log "INFO" "Generating SSH key for user $NON_ROOT_USER" "SSH_SETUP"
-
     if ! su "$NON_ROOT_USER" -c "mkdir -p '$ssh_dir' && ssh-keygen -q -t rsa -N '' -f '$private_key'"; then
         error_exit "SSH key generation failed"
     fi
@@ -907,6 +912,16 @@ enter_dhcp_end_ip() {
         fi
         echo "Invalid IP format. Please try again."
     done
+}
+
+enter_otterscale_web_ip() {
+    while true; do
+        read -p "Enter OtterScale Web IP: " OTTERSCAEL_WEB_IP
+        if validate_ip "$OTTERSCAEL_WEB_IP"; then
+            break
+        fi
+        echo "Invalid IP format. Please try again."
+    done	
 }
 
 get_dhcp_subnet_and_ip() {
@@ -1398,7 +1413,7 @@ juju_add_k8s() {
 }
 
 # Configure kernel modules
-config_modules() {
+config_ceph_rbd_modules() {
     local module="rbd"
     local modules_file="/etc/modules"
 
@@ -1449,12 +1464,35 @@ wait_for_deployment() {
     done
 }
 
-otterscale_helm_deploy() {
-    ## Istio
+config_bridge() {
+    ## Check OTTERSCAEL_WEB_IP
+    if [[ -z "$OTTERSCAEL_WEB_IP" ]]; then
+        enter_otterscale_web_ip
+    else
+        log "INFO" "OtterScale Web IP is $OTTERSCAEL_WEB_IP" "NETWORK"
+    fi
+
+    ## Check network interface
+    log "INFO" "Detect network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
+    if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCAEL_WEB_IP"; then
+        log "INFO" "Detect that IP $OTTERSCAEL_WEB_IP exists on network $OTTERSCALE_BRIDGE_NAME"
+    else
+        ## Insert ip to network interface
+	local mask=$(nmcli device show $OTTERSCALE_BRIDGE_NAME | grep "^IP4.ADDRESS" | head -n 1 | awk '{print $2}' | cut -d'/' -f2)
+
+        if nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCAEL_WEB_IP/$mask"; then
+            log "INFO" "Add $OTTERSCAEL_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME"
+            log "INFO" "Update microk8s metallb"
+            microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCAEL_WEB_IP-$OTTERSCAEL_WEB_IP\"}]" >"$TEMP_LOG" 2>&1
+        fi
+    fi
+}
+
+deploy_istio() {
     log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
     local istio_version="1.27.1"
     local istio_url="https://istio.io/downloadIstio"
-    local istio_namespace="istio-system"
+    local istio_namespace="istio-system"    
     local has_istio=false
     local arch
     arch=$(uname -m)
@@ -1484,8 +1522,9 @@ otterscale_helm_deploy() {
     else
         log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
     fi
+}
 
-    ## HELM
+deploy_helm() {
     log "INFO" "Process microk8s helm3" "HELM_CHECK"
     local repository_url="https://otterscale.github.io/otterscale-charts/docs"
     local repository_name="otterscale-charts"
@@ -1554,13 +1593,9 @@ EOF
         # Clean up temporary file
         rm -f "$ca_cert_file"
 
-        # Get Kubernetes configuration
-        local k8s_endpoints otterscale_svc_port otterscale_web
-        k8s_endpoints=$(microk8s kubectl get EndpointSlice kubernetes -o json | jq -r '.endpoints[0].addresses[0]')
-        otterscale_svc_port=$(microk8s kubectl get svc -n $namespace otterscale-web -o json | jq -r '.spec.ports[] | select(.name == "http") | .nodePort')
-        otterscale_web="http://$k8s_endpoints:$otterscale_svc_port"
-        send_status_data "FINISHED" "OtterScale endpoint is $otterscale_web" "$otterscale_web"
-        log "INFO" "OtterScale Install Finished" "FINISHED"
+	local otterscale_endpoint="http://$OTTERSCAEL_WEB_IP"
+        send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
+        log "INFO" "OtterScale install finished, you can visit web UI from $otterscale_endpoint" "FINISHED"
     else
         log "INFO" "Helm releases already has otterscale" "HELM_CHECK"
     fi
@@ -1631,8 +1666,11 @@ main() {
 
     # Final configuration
     log "INFO" "Finalizing configuration..." "FINAL_CONFIG"
-    config_modules
-    otterscale_helm_deploy
+    config_ceph_rbd_modules
+
+    config_bridge
+    deploy_istio
+    deploy_helm
 
     log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
 }
