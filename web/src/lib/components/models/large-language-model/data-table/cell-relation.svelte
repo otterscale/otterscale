@@ -38,7 +38,7 @@
 			scope: $currentKubernetes?.scope,
 			facility: $currentKubernetes?.name,
 			namespace: model.application.namespace,
-			modelName: model.name,
+			modelName: 'paul-123',
 		})
 		.then((response) => {
 			nodes.set(

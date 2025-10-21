@@ -595,6 +595,7 @@
 	"check": "Check",
 	"internal_object_service": "Internal Object Service",
 	"endpoint": "Endpoint",
+	"endpoints": "Endpoints",
 	"secret_key": "Secret Key",
 	"parameter": "Parameter",
 	"back": "Back",

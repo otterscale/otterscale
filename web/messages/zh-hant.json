@@ -595,6 +595,7 @@
 	"check": "檢查",
 	"internal_object_service": "內部物件服務",
 	"endpoint": "端點",
+	"endpoints": "端點",
 	"secret_key": "密鑰",
 	"parameter": "參數",
 	"back": "返回",
