@@ -11,7 +11,7 @@ option (openapi.v3.document) = {
     title: "OtterScale Service"
     version: "v1"
     description: "OtterScale is a hyper-converged infrastructure platform unifying compute, storage, networking, and orchestration for scalable, enterprise-grade data center operations."
-    contact: { name: "Chung-Hsuan Tsai" url: "https://iasthc.github.io" email: "zx.c@nycu.edu.tw" }
+    contact: { name: "Chung-Hsuan Tsai" url: "https://iasthc.github.io" email: "paul_tsai@phison.com" }
     license: { name: "AGPL-3.0 License" url: "https://github.com/otterscale/otterscale/blob/master/LICENSE" }
   }
   components: {
