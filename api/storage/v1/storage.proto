@@ -2,63 +2,246 @@ edition = "2023";
 
 package otterscale.storage.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/storage/v1;pb";
 
 service StorageService {
-  rpc ListMONs(ListMONsRequest) returns (ListMONsResponse);
-  rpc ListOSDs(ListOSDsRequest) returns (ListOSDsResponse);
+  rpc ListMONs(ListMONsRequest) returns (ListMONsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc DoSMART(DoSMARTRequest) returns (DoSMARTResponse);
+  rpc ListOSDs(ListOSDsRequest) returns (ListOSDsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse);
-  rpc CreatePool(CreatePoolRequest) returns (Pool);
-  rpc UpdatePool(UpdatePoolRequest) returns (Pool);
-  rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty);
+  rpc DoSMART(DoSMARTRequest) returns (DoSMARTResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc ListImages(ListImagesRequest) returns (ListImagesResponse);
-  rpc CreateImage(CreateImageRequest) returns (Image);
-  rpc UpdateImage(UpdateImageRequest) returns (Image);
-  rpc DeleteImage(DeleteImageRequest) returns (google.protobuf.Empty);
+  rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc CreateImageSnapshot(CreateImageSnapshotRequest) returns (Image.Snapshot);
-  rpc DeleteImageSnapshot(DeleteImageSnapshotRequest) returns (google.protobuf.Empty);
-  rpc RollbackImageSnapshot(RollbackImageSnapshotRequest) returns (google.protobuf.Empty);
-  rpc ProtectImageSnapshot(ProtectImageSnapshotRequest) returns (google.protobuf.Empty);
-  rpc UnprotectImageSnapshot(UnprotectImageSnapshotRequest) returns (google.protobuf.Empty);
+  rpc CreatePool(CreatePoolRequest) returns (Pool) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc ListVolumes(ListVolumesRequest) returns (ListVolumesResponse);
+  rpc UpdatePool(UpdatePoolRequest) returns (Pool) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc ListSubvolumes(ListSubvolumesRequest) returns (ListSubvolumesResponse);
-  rpc CreateSubvolume(CreateSubvolumeRequest) returns (Subvolume);
-  rpc UpdateSubvolume(UpdateSubvolumeRequest) returns (Subvolume);
-  rpc DeleteSubvolume(DeleteSubvolumeRequest) returns (google.protobuf.Empty);
+  rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc GrantSubvolumeExportAccess(GrantSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
-  rpc RevokeSubvolumeExportAccess(RevokeSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
+  rpc ListImages(ListImagesRequest) returns (ListImagesResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
 
-  rpc CreateSubvolumeSnapshot(CreateSubvolumeSnapshotRequest) returns (Subvolume.Snapshot);
-  rpc DeleteSubvolumeSnapshot(DeleteSubvolumeSnapshotRequest) returns (google.protobuf.Empty);
+  rpc CreateImage(CreateImageRequest) returns (Image) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
 
-  rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse);
-  rpc CreateSubvolumeGroup(CreateSubvolumeGroupRequest) returns (SubvolumeGroup);
-  rpc UpdateSubvolumeGroup(UpdateSubvolumeGroupRequest) returns (SubvolumeGroup);
-  rpc DeleteSubvolumeGroup(DeleteSubvolumeGroupRequest) returns (google.protobuf.Empty);
+  rpc UpdateImage(UpdateImageRequest) returns (Image) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
 
-  rpc ListBuckets(ListBucketsRequest) returns (ListBucketsResponse);
-  rpc CreateBucket(CreateBucketRequest) returns (Bucket);
-  rpc UpdateBucket(UpdateBucketRequest) returns (Bucket);
-  rpc DeleteBucket(DeleteBucketRequest) returns (google.protobuf.Empty);
+  rpc DeleteImage(DeleteImageRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
 
-  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
-  rpc CreateUser(CreateUserRequest) returns (User);
-  rpc UpdateUser(UpdateUserRequest) returns (User);
-  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
+  rpc CreateImageSnapshot(CreateImageSnapshotRequest) returns (Image.Snapshot) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
 
-  rpc CreateUserKey(CreateUserKeyRequest) returns (User.Key);
-  rpc DeleteUserKey(DeleteUserKeyRequest) returns (google.protobuf.Empty);
+  rpc DeleteImageSnapshot(DeleteImageSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
+
+  rpc RollbackImageSnapshot(RollbackImageSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
+
+  rpc ProtectImageSnapshot(ProtectImageSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
+
+  rpc UnprotectImageSnapshot(UnprotectImageSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
+
+  rpc ListVolumes(ListVolumesRequest) returns (ListVolumesResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc ListSubvolumes(ListSubvolumesRequest) returns (ListSubvolumesResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc CreateSubvolume(CreateSubvolumeRequest) returns (Subvolume) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc UpdateSubvolume(UpdateSubvolumeRequest) returns (Subvolume) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc DeleteSubvolume(DeleteSubvolumeRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc GrantSubvolumeExportAccess(GrantSubvolumeExportAccessRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc RevokeSubvolumeExportAccess(RevokeSubvolumeExportAccessRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc CreateSubvolumeSnapshot(CreateSubvolumeSnapshotRequest) returns (Subvolume.Snapshot) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc DeleteSubvolumeSnapshot(DeleteSubvolumeSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc CreateSubvolumeGroup(CreateSubvolumeGroupRequest) returns (SubvolumeGroup) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc UpdateSubvolumeGroup(UpdateSubvolumeGroupRequest) returns (SubvolumeGroup) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc DeleteSubvolumeGroup(DeleteSubvolumeGroupRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc ListBuckets(ListBucketsRequest) returns (ListBucketsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc CreateBucket(CreateBucketRequest) returns (Bucket) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc UpdateBucket(UpdateBucketRequest) returns (Bucket) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc DeleteBucket(DeleteBucketRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc CreateUser(CreateUserRequest) returns (User) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc UpdateUser(UpdateUserRequest) returns (User) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc CreateUserKey(CreateUserKeyRequest) returns (User.Key) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc DeleteUserKey(DeleteUserKeyRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
 }
 
 enum PoolType {

@@ -4,40 +4,23 @@ package otterscale.api;
 
 import "gnostic/openapiv3/annotations.proto";
 
-option go_package = "github.com/otterscale/otterscale/api;pb";
+option go_package = "github.com/otterscale/otterscale/api;api";
 
 option (openapi.v3.document) = {
   info: {
     title: "OtterScale Service"
     version: "v1"
     description: "OtterScale is a hyper-converged infrastructure platform unifying compute, storage, networking, and orchestration for scalable, enterprise-grade data center operations."
-    contact: {
-      name: "Chung-Hsuan Tsai"
-      url: "https://iasthc.github.io"
-      email: "zx.c@nycu.edu.tw"
-    }
-    license: {
-      name: "AGPL-3.0 License"
-      url: "https://github.com/otterscale/otterscale/blob/master/LICENSE"
-    }
+    contact: { name: "Chung-Hsuan Tsai" url: "https://iasthc.github.io" email: "zx.c@nycu.edu.tw" }
+    license: { name: "AGPL-3.0 License" url: "https://github.com/otterscale/otterscale/blob/master/LICENSE" }
   }
   components: {
     security_schemes: {
-      additional_properties: [
-        {
-          name: "BasicAuth"
-          value: {
-            security_scheme: {
-              type: "http"
-              scheme: "basic"
-            }
-          }
-        }
-      ]
+      additional_properties: [ {
+        name: "BasicAuth"
+        value: { security_scheme: { type: "http" scheme: "basic" } }
+      } ]
     }
   }
-  external_docs: {
-    description: "Website"
-    url: "https://otterscale.github.io"
-  }
+  external_docs: { description: "Website" url: "https://otterscale.github.io" }
 };
