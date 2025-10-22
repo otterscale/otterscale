@@ -181,7 +181,6 @@ func (uc *ModelUseCase) CreateModelScheduler(ctx context.Context, scope, facilit
 modelArtifacts:
   name: %q
   uri: %q
-  size: "2Gi"
 multinode: %t
 accelerator:
   type: "nvidia"
@@ -282,7 +281,6 @@ prefill:
 		prefillArgsYAML,
 		prefillEnvYAML,
 	)
-	fmt.Printf("%q\n", valuesYAML)
 	_, err := uc.release.CreateRelease(ctx, scope, facility, namespace, name, false, chartModelService, valuesYAML, nil, "")
 	if err != nil {
 		return nil, err
@@ -338,7 +336,6 @@ func renderEnvMapYAML(m map[string]string, indent string) string {
 	if len(m) == 0 {
 		return indent + "[]"
 	}
-	// Stable order
 	keys := make([]string, 0, len(m))
 	for k := range m { keys = append(keys, k) }
 	sort.Strings(keys)
