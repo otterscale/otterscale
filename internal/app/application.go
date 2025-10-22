@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"time"
-	"strings"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -181,7 +180,7 @@ func (s *ApplicationService) ListReleases(ctx context.Context, req *pb.ListRelea
 }
 
 func (s *ApplicationService) CreateRelease(ctx context.Context, req *pb.CreateReleaseRequest) (*pb.Application_Release, error) {
-	release, err := s.release.CreateRelease(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml(), req.GetValuesMap())
+	release, err := s.release.CreateRelease(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml(), req.GetValuesMap(), "")
 	if err != nil {
 		return nil, err
 	}
@@ -606,148 +605,4 @@ func accessModesToStrings(modes []core.PersistentVolumeAccessMode) []string {
 		ret[i] = string(modes[i])
 	}
 	return ret
-}
-
-func (s *ApplicationService) CreateModelArtifcat(ctx context.Context, req *pb.CreateModelArtifactRequest) (*pb.Application_Release, error) {
-	ChartRef := "otterscale/llm-d-artifact"
-	ValuesMap := map[string]string{
-		"nameOverride": req.GetName(),
-		"pvc.name": req.GetModelname(),
-		"pvc.size": fmt.Sprintf("%dGi", req.GetSize()),
-	}
-	release, err := s.uc.CreateRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), false, ChartRef, "", ValuesMap)
-	if err != nil {
-		return nil, err
-	}
-	resp := toProtoRelease(release)
-	return resp, nil
-}
-
-func (s *ApplicationService) CreateModelScheduler(ctx context.Context, req *pb.CreateModelSchedulerRequest) (*pb.Application_Release, error) {
-	ChartRef := "https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v0.2.13/llm-d-modelservice-v0.2.13.tgz"
-	ValuesMap := map[string]string{
-		"fullnameOverride": req.GetName(),
-		"multinode": fmt.Sprintf("%t", req.GetMultinode()),
-		"modelArtifacts.name": req.GetModelArtifactsName(),
-		"modelArtifacts.uri": req.GetUri(),
-		"accelerator.type": req.GetAcceleratorType(),
-		"routing.inferencePool.create": fmt.Sprintf("%t", req.GetInferencePoolCreate()),
-		"routing.parentRefs[0].name": req.GetParentRefsName(),
-		"routing.httpRoute.create": fmt.Sprintf("%t", req.GetHttpRouteCreate()),
-		"routing.epp.create": fmt.Sprintf("%t", req.GetEppCreate()),
-		"routing.epp.replicas": fmt.Sprintf("%d", req.GetEppReplicas()),
-		"routing.epp.pluginsConfigFile": req.GetPluginsConfigFile(),
-		"decode.create": fmt.Sprintf("%t", req.GetDecodeCreate()),
-		"decode.replicas": fmt.Sprintf("%d", req.GetDecodeReplicas()),
-		"decode.resources.limits.otterscale.com/vgpu": fmt.Sprintf("%d", req.GetDecodeGpu()),
-		"decode.resources.limits.otterscale.com/vgpumem-percentage": fmt.Sprintf("%d", req.GetDecodeGpumemory()),
-		"decode.resources.requests.otterscale.com/vgpu": fmt.Sprintf("%d", req.GetDecodeGpu()),
-		"decode.resources.requests.otterscale.com/vgpumem-percentage": fmt.Sprintf("%d", req.GetDecodeGpumemory()),
-		"prefill.create": fmt.Sprintf("%t", req.GetPrefillCreate()),
-		"prefill.replicas": fmt.Sprintf("%d", req.GetPrefillReplicas()),
-		"prefill.resources.limits.otterscale.com/vgpu": fmt.Sprintf("%d", req.GetPrefillGpu()),
-		"prefill.resources.limits.otterscale.com/vgpumem-percentage": fmt.Sprintf("%d", req.GetPrefillGpumemory()),
-		"prefill.resources.requests.otterscale.com/vgpu": fmt.Sprintf("%d", req.GetPrefillGpu()),
-		"prefill.resources.requests.otterscale.com/vgpumem-percentage": fmt.Sprintf("%d", req.GetPrefillGpumemory()),
-		"decode.monitoring.podmonitor.enabled": "true",
-		"decode.monitoring.podmonitor.portName": "metrics",
-		"decode.monitoring.podmonitor.path": "/metrics",
-		"decode.monitoring.podmonitor.interval": "30s",
-		"decode.containers[0].name": "vllm",
-		"decode.containers[0].image": "ghcr.io/llm-d/llm-d-dev:pr-170",
-		"decode.containers[0].modelCommand": "vllmServe",
-		"decode.containers[0].ports[0].containerPort": "5557",
-		"decode.containers[0].ports[0].protocol": "TCP",
-		"decode.containers[0].ports[1].containerPort": "8200",
-		"decode.containers[0].ports[1].name": "metrics",
-		"decode.containers[0].ports[1].protocol": "TCP",		
-		"decode.containers[0].mountModelVolume": "true",
-		"decode.containers[0].volumeMounts[0].name": "metrics-volume",
-		"decode.containers[0].volumeMounts[0].mountPath": "/.config",
-		"decode.containers[0].volumeMounts[1].name": "torch-compile-cache",
-		"decode.containers[0].volumeMounts[1].mountPath": "/.compile-cache",
-		"decode.volumes[0].name": "metrics-volume",
-		"decode.volumes[0].emptyDir": "",
-		"decode.volumes[1].name": "torch-compile-cache",
-		"decode.volumes[1].emptyDir": "",
-		"prefill.monitoring.podmonitor.enabled": "true",
-		"prefill.monitoring.podmonitor.portName": "metrics",
-		"prefill.monitoring.podmonitor.path": "/metrics",
-		"prefill.monitoring.podmonitor.interval": "30s",
-		"prefill.containers[0].name": "vllm",
-		"prefill.containers[0].image": "ghcr.io/llm-d/llm-d-dev:pr-170",
-		"prefill.containers[0].modelCommand": "vllmServe",
-		"prefill.containers[0].ports[0].containerPort": "5557",
-		"prefill.containers[0].ports[0].protocol": "TCP",
-		"prefill.containers[0].ports[1].containerPort": "8200",
-		"prefill.containers[0].ports[1].name": "metrics",
-		"prefill.containers[0].ports[1].protocol": "TCP",		
-		"prefill.containers[0].mountModelVolume": "true",
-		"prefill.containers[0].volumeMounts[0].name": "metrics-volume",
-		"prefill.containers[0].volumeMounts[0].mountPath": "/.config",
-		"prefill.containers[0].volumeMounts[1].name": "torch-compile-cache",
-		"prefill.containers[0].volumeMounts[1].mountPath": "/.compile-cache",
-		"prefill.volumes[0].name": "metrics-volume",
-		"prefill.volumes[0].emptyDir": "",
-		"prefill.volumes[1].name": "torch-compile-cache",
-		"prefill.volumes[1].emptyDir": "",
-	}
-
-	for i, s := range req.GetDecodeArgs() {
-		s = strings.TrimSpace(s)
-		if s == "" {
-			continue
-		}
-        ValuesMap[fmt.Sprintf("decode.containers[0].args[%d]", i)] = s
-    }
-	for i, s := range req.GetPrefillArgs() {
-		s = strings.TrimSpace(s)
-		if s == "" {
-			continue
-		}
-		ValuesMap[fmt.Sprintf("prefill.containers[0].args[%d]", i)] = s
-    }
-
-	if refs := req.GetBackendRefs(); len(refs) > 0 {
-    	ValuesMap["routing.httpRoute.rules[0].matches[0].path.type"]  = "PathPrefix"
-    	ValuesMap["routing.httpRoute.rules[0].matches[0].path.value"] = "/"
-
-    	const (
-        	group = "inference.networking.x-k8s.io" 
-        	kind  = "InferencePool"
-        	port  = 8000                            
-    	)
-    	for i, br := range refs {
-        	base := fmt.Sprintf("routing.httpRoute.rules[0].backendRefs[%d]", i)
-        	ValuesMap[base+".group"]  = group
-        	ValuesMap[base+".kind"]   = kind
-        	ValuesMap[base+".name"]   = br.GetName()
-        	ValuesMap[base+".port"]   = fmt.Sprintf("%d", port)
-        	ValuesMap[base+".weight"] = fmt.Sprintf("%d", br.GetWeight())
-    		}
-	}
-	release, err := s.uc.CreateRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), false, ChartRef, "", ValuesMap)
-	if err != nil {
-		return nil, err
-	}
-	resp := toProtoRelease(release)
-	return resp, nil
-}
-
-func (s *ApplicationService) CreateModelGateway(ctx context.Context, req *pb.CreateModelGatewayRequest) (*pb.Application_Release, error) {
-	ChartRef := "https://github.com/llm-d-incubation/llm-d-infra/releases/download/v1.3.3/llm-d-infra-v1.3.3.tgz"
-	ValuesMap := map[string]string{
-		"nameOverride": req.GetName(),
-		"gateway.gatewayParameters.resources.limits.cpu": fmt.Sprintf("%d", req.GetCpu()),
-		"gateway.gatewayParameters.resources.limits.memory": fmt.Sprintf("%dGi", req.GetMemory()),
-		"gateway.gatewayParameters.resources.requests.cpu": fmt.Sprintf("%d", req.GetCpu()),
-		"gateway.gatewayParameters.resources.requests.memory": fmt.Sprintf("%dGi", req.GetMemory()),
-		"gateway.service.type": req.GetType(),
-	}
-	release, err := s.uc.CreateRelease(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetName(), false, ChartRef, "", ValuesMap)
-	if err != nil {
-		return nil, err
-	}
-	resp := toProtoRelease(release)
-	return resp, nil
 }

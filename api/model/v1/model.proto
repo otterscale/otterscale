@@ -3,6 +3,7 @@ edition = "2023";
 package otterscale.model.v1;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/model/v1;pb";
 
@@ -11,6 +12,11 @@ service ModelService {
   rpc GetModel(GetModelRequest) returns (Model);
   rpc CreateModel(CreateModelRequest) returns (Model);
   rpc DeleteModel(DeleteModelRequest) returns (google.protobuf.Empty);
+
+  rpc CreateModelArtifact(CreateModelArtifactRequest) returns (ModelArtifact);
+  rpc CreateModelScheduler(CreateModelSchedulerRequest) returns (ModelScheduler);
+  rpc CreateModelGateway(CreateModelGatewayRequest) returns (ModelGateway);
+  rpc ListModelArtifacts(ListModelArtifactsRequest) returns (ListModelArtifactsResponse);
 }
 
 message Model {
@@ -43,4 +49,119 @@ message CreateModelRequest {
 
 message DeleteModelRequest {
   string id = 1;
+}
+
+message StorageClass {
+  string name = 1;
+  string provisioner = 2;
+  string reclaim_policy = 3;
+  string volume_binding_mode = 4;
+  map<string, string> parameters = 5;
+  google.protobuf.Timestamp created_at = 201;
+}
+
+message CreateModelArtifactRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  string modelname = 5;
+  int64 size = 6;
+}
+
+message CreateModelSchedulerRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  string modelArtifacts_name = 5;
+  string uri = 6;
+  bool multinode = 7;
+  string nvidia = 8;
+  string parentRefs_name = 9;
+  bool httpRoute_create = 10;
+  message BackendRef {
+    string name = 1;
+    int32 weight = 2;
+  }
+  repeated BackendRef backendRefs = 11;
+  string backendRequest = 12;
+  string request = 13;
+  bool epp_create = 14;
+  bool decode_create = 15;
+  int32 decode_replicas = 16;
+  repeated string decode_args = 17;
+  message decode_env {
+    string name = 1;
+    string value = 2;
+  }
+  repeated decode_env decode_envs = 18;
+  int32 decode_resources_limits_gpu = 19;
+  int32 decode_resources_limits_gpumem = 20;
+  bool prefill_create = 21;
+  int32 prefill_replicas = 22;
+  repeated string prefill_args = 23;
+    message prefill_env {
+    string name = 1;
+    string value = 2;
+  }
+  repeated prefill_env prefill_envs = 24;
+  int32 prefill_resources_limits_gpu = 25;
+  int32 prefill_resources_limits_gpumem = 26;
+  int32 inference_extension_replicas = 27;
+  int32 ext_proc_port = 28;
+  string plugins_config_file = 29;
+  int32 target_port_number = 30;
+}
+
+message CreateModelGatewayRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  int32 cpu = 5;
+  int32 memory = 6;
+  string type = 7;
+}
+
+message ListModelArtifactsRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+}
+
+message ListModelArtifactsResponse {
+  message PersistentVolumeClaim {
+    string name = 1;
+    string status = 2;
+    repeated string access_modes = 3;
+    string capacity = 4;
+    StorageClass storage_class = 11;
+    google.protobuf.Timestamp created_at = 201;
+  }
+  repeated PersistentVolumeClaim persistent_volume_claims = 1;
+}
+
+message ModelArtifact {
+  string name = 1;
+  string modelname = 2;
+  int64 size = 3; 
+}
+
+message ModelGateway {
+  string name = 1;
+  string public_address = 2;
+}
+
+message ModelScheduler {
+  string name = 1;
+  string modelArtifacts_name = 2;
+  bool httpRoute_create = 3;
+  message BackendRef {
+    string name = 1;
+    int32 weight = 2;
+  }
+  repeated BackendRef backendRefs = 4;
+  bool epp_create = 5;
+  bool prefill_create = 6;
 }
