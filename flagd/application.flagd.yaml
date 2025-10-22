@@ -5,16 +5,16 @@ flags:
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"
   app-container:
     state: ENABLED
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"
   app-helm-chart:
     state: ENABLED
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"

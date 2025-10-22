@@ -5,16 +5,16 @@ flags:
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"
   mdl-general:
     state: ENABLED
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"
   orch-gpu:
     state: ENABLED
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"

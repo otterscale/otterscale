@@ -5,28 +5,28 @@ flags:
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"
   stg-general:
     state: ENABLED
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"
   stg-block:
     state: ENABLED
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"
   stg-file:
     state: ENABLED
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"
   stg-object:
     state: ENABLED
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"
