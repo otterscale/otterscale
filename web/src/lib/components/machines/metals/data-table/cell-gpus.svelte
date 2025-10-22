@@ -50,12 +50,18 @@
 				machineId: machine.id,
 			});
 
+			// Extract GPUs and pods once to avoid redundant computation
+			const gpus = response.gpuRelations
+				.filter((gpuRelation) => gpuRelation.entity.case === 'gpu')
+				.map((gpuRelation) => gpuRelation.entity.value as GPURelation_GPU);
+
+			const pods = response.gpuRelations
+				.filter((gpuRelation) => gpuRelation.entity.case === 'pod')
+				.map((gpuRelation) => gpuRelation.entity.value as GPURelation_Pod);
+
 			nodes.set(
 				response.gpuRelations.map((gpuRelation) => {
 					if (gpuRelation.entity.case === 'machine') {
-						const gpus = response.gpuRelations
-							.filter((gpuRelation) => gpuRelation.entity.case === 'gpu')
-							.map((gpuRelation) => gpuRelation.entity.value as GPURelation_GPU);
 						return {
 							type: 'machine',
 							id: `machine${gpuRelation.entity.value.id}`,
@@ -68,9 +74,6 @@
 							position,
 						};
 					} else if (gpuRelation.entity.case === 'gpu') {
-						const pods = response.gpuRelations
-							.filter((gpuRelation) => gpuRelation.entity.case === 'pod')
-							.map((gpuRelation) => gpuRelation.entity.value as GPURelation_Pod);
 						return {
 							type: 'gpu',
 							id: `gpu${gpuRelation.entity.value.id}`,
