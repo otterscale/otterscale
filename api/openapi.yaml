@@ -11,41 +11,6 @@ info:
     url: https://github.com/otterscale/otterscale/blob/master/LICENSE
   version: v1
 paths:
-  /otterscale.application.v1.ApplicationService/ListNamespaces:
-    post:
-      tags:
-        - ApplicationService
-      summary: ListNamespaces
-      operationId: ApplicationService_ListNamespaces
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.application.v1.ListNamespacesRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.application.v1.ListNamespacesResponse'
   /otterscale.application.v1.ApplicationService/ListApplications:
     post:
       tags:
@@ -538,6 +503,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.application.v1.Application.Chart.Metadata'
+  /otterscale.application.v1.ApplicationService/ListNamespaces:
+    post:
+      tags:
+        - ApplicationService
+      summary: ListNamespaces
+      operationId: ApplicationService_ListNamespaces
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.application.v1.ListNamespacesRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.application.v1.ListNamespacesResponse'
   /otterscale.application.v1.ApplicationService/ListStorageClasses:
     post:
       tags:
@@ -3198,6 +3198,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.facility.v1.FacilityService/ResolveFacilityUnitErrors:
+    post:
+      tags:
+        - FacilityService
+      summary: ResolveFacilityUnitErrors
+      operationId: FacilityService_ResolveFacilityUnitErrors
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.facility.v1.ResolveFacilityUnitErrorsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
   /otterscale.facility.v1.FacilityService/ExposeFacility:
     post:
       tags:
@@ -3268,41 +3303,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.facility.v1.AddFacilityUnitsResponse'
-  /otterscale.facility.v1.FacilityService/ResolveFacilityUnitErrors:
-    post:
-      tags:
-        - FacilityService
-      summary: ResolveFacilityUnitErrors
-      operationId: FacilityService_ResolveFacilityUnitErrors
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.facility.v1.ResolveFacilityUnitErrorsRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/google.protobuf.Empty'
   /otterscale.facility.v1.FacilityService/ListActions:
     post:
       tags:
@@ -4563,41 +4563,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.environment.v1.CheckHealthResponse'
-  /otterscale.environment.v1.EnvironmentService/UpdateConfig:
-    post:
-      tags:
-        - EnvironmentService
-      summary: UpdateConfig
-      operationId: EnvironmentService_UpdateConfig
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.environment.v1.UpdateConfigRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/google.protobuf.Empty'
   /otterscale.environment.v1.EnvironmentService/GetPrometheus:
     post:
       tags:
@@ -4668,6 +4633,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.environment.v1.PremiumTier'
+  /otterscale.environment.v1.EnvironmentService/UpdateConfig:
+    post:
+      tags:
+        - EnvironmentService
+      summary: UpdateConfig
+      operationId: EnvironmentService_UpdateConfig
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.environment.v1.UpdateConfigRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
   /otterscale.configuration.v1.ConfigurationService/GetConfiguration:
     post:
       tags:
@@ -5371,6 +5371,14 @@ paths:
                 $ref: '#/components/schemas/otterscale.scope.v1.Scope'
 components:
   schemas:
+    otterscale.api.Feature:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+      title: Feature
+      additionalProperties: false
     google.protobuf.NullValue:
       type: string
       title: NullValue
@@ -5888,12 +5896,12 @@ components:
     otterscale.application.v1.CreateReleaseRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -5931,12 +5939,12 @@ components:
     otterscale.application.v1.DeleteApplicationPodRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -5948,12 +5956,12 @@ components:
     otterscale.application.v1.DeleteReleaseRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -5968,12 +5976,12 @@ components:
     otterscale.application.v1.ExecuteTTYRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6006,12 +6014,12 @@ components:
     otterscale.application.v1.GetApplicationRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6039,12 +6047,12 @@ components:
     otterscale.application.v1.ListApplicationsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListApplicationsRequest
       additionalProperties: false
     otterscale.application.v1.ListApplicationsResponse:
@@ -6074,12 +6082,12 @@ components:
     otterscale.application.v1.ListNamespacesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListNamespacesRequest
       additionalProperties: false
     otterscale.application.v1.ListNamespacesResponse:
@@ -6095,12 +6103,12 @@ components:
     otterscale.application.v1.ListReleasesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListReleasesRequest
       additionalProperties: false
     otterscale.application.v1.ListReleasesResponse:
@@ -6116,12 +6124,12 @@ components:
     otterscale.application.v1.ListStorageClassesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListStorageClassesRequest
       additionalProperties: false
     otterscale.application.v1.ListStorageClassesResponse:
@@ -6165,12 +6173,12 @@ components:
     otterscale.application.v1.RestartApplicationRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6185,12 +6193,12 @@ components:
     otterscale.application.v1.RollbackReleaseRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6205,12 +6213,12 @@ components:
     otterscale.application.v1.ScaleApplicationRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6266,12 +6274,12 @@ components:
     otterscale.application.v1.UpdateReleaseRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6292,12 +6300,12 @@ components:
     otterscale.application.v1.WatchLogsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6423,12 +6431,12 @@ components:
     otterscale.instance.v1.AttachVirtualMachineDiskRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6443,12 +6451,12 @@ components:
     otterscale.instance.v1.CreateDataVolumeRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         name:
           type: string
           title: name
@@ -6472,12 +6480,12 @@ components:
     otterscale.instance.v1.CreateInstanceTypeRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         name:
           type: string
           title: name
@@ -6498,12 +6506,12 @@ components:
     otterscale.instance.v1.CreateVirtualMachineCloneRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6521,12 +6529,12 @@ components:
     otterscale.instance.v1.CreateVirtualMachineRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         name:
           type: string
           title: name
@@ -6547,12 +6555,12 @@ components:
     otterscale.instance.v1.CreateVirtualMachineRestoreRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6570,12 +6578,12 @@ components:
     otterscale.instance.v1.CreateVirtualMachineServiceRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6595,12 +6603,12 @@ components:
     otterscale.instance.v1.CreateVirtualMachineSnapshotRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6685,12 +6693,12 @@ components:
     otterscale.instance.v1.DeleteDataVolumeRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6702,12 +6710,12 @@ components:
     otterscale.instance.v1.DeleteInstanceTypeRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6719,12 +6727,12 @@ components:
     otterscale.instance.v1.DeleteVirtualMachineCloneRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6736,12 +6744,12 @@ components:
     otterscale.instance.v1.DeleteVirtualMachineRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6753,12 +6761,12 @@ components:
     otterscale.instance.v1.DeleteVirtualMachineRestoreRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6770,12 +6778,12 @@ components:
     otterscale.instance.v1.DeleteVirtualMachineServiceRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6787,12 +6795,12 @@ components:
     otterscale.instance.v1.DeleteVirtualMachineSnapshotRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6804,12 +6812,12 @@ components:
     otterscale.instance.v1.DetachVirtualMachineDiskRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6824,12 +6832,12 @@ components:
     otterscale.instance.v1.ExtendDataVolumeRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6847,12 +6855,12 @@ components:
     otterscale.instance.v1.GetDataVolumeRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6864,12 +6872,12 @@ components:
     otterscale.instance.v1.GetInstanceTypeRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6881,12 +6889,12 @@ components:
     otterscale.instance.v1.GetVirtualMachineRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6924,12 +6932,12 @@ components:
     otterscale.instance.v1.ListDataVolumesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6951,12 +6959,12 @@ components:
     otterscale.instance.v1.ListInstanceTypesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -6978,12 +6986,12 @@ components:
     otterscale.instance.v1.ListVirtualMachinesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -7002,12 +7010,12 @@ components:
     otterscale.instance.v1.MigrateInstanceRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -7022,12 +7030,12 @@ components:
     otterscale.instance.v1.PauseInstanceRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -7039,12 +7047,12 @@ components:
     otterscale.instance.v1.RestartVirtualMachineRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -7056,12 +7064,12 @@ components:
     otterscale.instance.v1.ResumeInstanceRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -7073,12 +7081,12 @@ components:
     otterscale.instance.v1.StartVirtualMachineRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -7090,12 +7098,12 @@ components:
     otterscale.instance.v1.StopVirtualMachineRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -7107,12 +7115,12 @@ components:
     otterscale.instance.v1.UpdateVirtualMachineServiceRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -7129,12 +7137,12 @@ components:
     otterscale.instance.v1.VNCInstanceRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -7402,12 +7410,12 @@ components:
     otterscale.storage.v1.CreateBucketRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         bucketName:
           type: string
           title: bucket_name
@@ -7425,12 +7433,12 @@ components:
     otterscale.storage.v1.CreateImageRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         poolName:
           type: string
           title: pool_name
@@ -7481,12 +7489,12 @@ components:
     otterscale.storage.v1.CreateImageSnapshotRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         poolName:
           type: string
           title: pool_name
@@ -7501,12 +7509,12 @@ components:
     otterscale.storage.v1.CreatePoolRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         poolName:
           type: string
           title: pool_name
@@ -7547,12 +7555,12 @@ components:
     otterscale.storage.v1.CreateSubvolumeGroupRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -7570,12 +7578,12 @@ components:
     otterscale.storage.v1.CreateSubvolumeRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -7599,12 +7607,12 @@ components:
     otterscale.storage.v1.CreateSubvolumeSnapshotRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -7622,12 +7630,12 @@ components:
     otterscale.storage.v1.CreateUserKeyRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         userId:
           type: string
           title: user_id
@@ -7636,12 +7644,12 @@ components:
     otterscale.storage.v1.CreateUserRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         userId:
           type: string
           title: user_id
@@ -7656,12 +7664,12 @@ components:
     otterscale.storage.v1.DeleteBucketRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         bucketName:
           type: string
           title: bucket_name
@@ -7670,12 +7678,12 @@ components:
     otterscale.storage.v1.DeleteImageRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         poolName:
           type: string
           title: pool_name
@@ -7687,12 +7695,12 @@ components:
     otterscale.storage.v1.DeleteImageSnapshotRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         poolName:
           type: string
           title: pool_name
@@ -7707,12 +7715,12 @@ components:
     otterscale.storage.v1.DeletePoolRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         poolName:
           type: string
           title: pool_name
@@ -7721,12 +7729,12 @@ components:
     otterscale.storage.v1.DeleteSubvolumeGroupRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -7738,12 +7746,12 @@ components:
     otterscale.storage.v1.DeleteSubvolumeRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -7758,12 +7766,12 @@ components:
     otterscale.storage.v1.DeleteSubvolumeSnapshotRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -7781,12 +7789,12 @@ components:
     otterscale.storage.v1.DeleteUserKeyRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         userId:
           type: string
           title: user_id
@@ -7798,12 +7806,12 @@ components:
     otterscale.storage.v1.DeleteUserRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         userId:
           type: string
           title: user_id
@@ -7812,12 +7820,12 @@ components:
     otterscale.storage.v1.DoSMARTRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         osdName:
           type: string
           title: osd_name
@@ -7858,12 +7866,12 @@ components:
     otterscale.storage.v1.GrantSubvolumeExportAccessRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -7971,12 +7979,12 @@ components:
     otterscale.storage.v1.ListBucketsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListBucketsRequest
       additionalProperties: false
     otterscale.storage.v1.ListBucketsResponse:
@@ -7992,12 +8000,12 @@ components:
     otterscale.storage.v1.ListImagesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListImagesRequest
       additionalProperties: false
     otterscale.storage.v1.ListImagesResponse:
@@ -8013,12 +8021,12 @@ components:
     otterscale.storage.v1.ListMONsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListMONsRequest
       additionalProperties: false
     otterscale.storage.v1.ListMONsResponse:
@@ -8034,12 +8042,12 @@ components:
     otterscale.storage.v1.ListOSDsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListOSDsRequest
       additionalProperties: false
     otterscale.storage.v1.ListOSDsResponse:
@@ -8055,12 +8063,12 @@ components:
     otterscale.storage.v1.ListPoolsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         application:
           type: string
           title: application
@@ -8079,12 +8087,12 @@ components:
     otterscale.storage.v1.ListSubvolumeGroupsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -8103,12 +8111,12 @@ components:
     otterscale.storage.v1.ListSubvolumesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -8130,12 +8138,12 @@ components:
     otterscale.storage.v1.ListUsersRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListUsersRequest
       additionalProperties: false
     otterscale.storage.v1.ListUsersResponse:
@@ -8151,12 +8159,12 @@ components:
     otterscale.storage.v1.ListVolumesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListVolumesRequest
       additionalProperties: false
     otterscale.storage.v1.ListVolumesResponse:
@@ -8365,12 +8373,12 @@ components:
     otterscale.storage.v1.ProtectImageSnapshotRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         poolName:
           type: string
           title: pool_name
@@ -8385,12 +8393,12 @@ components:
     otterscale.storage.v1.RevokeSubvolumeExportAccessRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -8405,12 +8413,12 @@ components:
     otterscale.storage.v1.RollbackImageSnapshotRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         poolName:
           type: string
           title: pool_name
@@ -8529,12 +8537,12 @@ components:
     otterscale.storage.v1.UnprotectImageSnapshotRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         poolName:
           type: string
           title: pool_name
@@ -8549,12 +8557,12 @@ components:
     otterscale.storage.v1.UpdateBucketRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         bucketName:
           type: string
           title: bucket_name
@@ -8572,12 +8580,12 @@ components:
     otterscale.storage.v1.UpdateImageRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         poolName:
           type: string
           title: pool_name
@@ -8595,12 +8603,12 @@ components:
     otterscale.storage.v1.UpdatePoolRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         poolName:
           type: string
           title: pool_name
@@ -8621,12 +8629,12 @@ components:
     otterscale.storage.v1.UpdateSubvolumeGroupRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -8644,12 +8652,12 @@ components:
     otterscale.storage.v1.UpdateSubvolumeRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         volumeName:
           type: string
           title: volume_name
@@ -8670,12 +8678,12 @@ components:
     otterscale.storage.v1.UpdateUserRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         userId:
           type: string
           title: user_id
@@ -8737,9 +8745,9 @@ components:
     otterscale.facility.v1.AddFacilityUnitsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         name:
           type: string
           title: name
@@ -8794,9 +8802,9 @@ components:
     otterscale.facility.v1.CreateFacilityRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         name:
           type: string
           title: name
@@ -8837,9 +8845,9 @@ components:
     otterscale.facility.v1.DeleteFacilityRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         name:
           type: string
           title: name
@@ -8858,9 +8866,9 @@ components:
     otterscale.facility.v1.ExposeFacilityRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         name:
           type: string
           title: name
@@ -9087,9 +9095,9 @@ components:
     otterscale.facility.v1.GetFacilityRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         name:
           type: string
           title: name
@@ -9098,12 +9106,12 @@ components:
     otterscale.facility.v1.ListActionsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListActionsRequest
       additionalProperties: false
     otterscale.facility.v1.ListActionsResponse:
@@ -9151,9 +9159,9 @@ components:
     otterscale.facility.v1.ListFacilitiesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
       title: ListFacilitiesRequest
       additionalProperties: false
     otterscale.facility.v1.ListFacilitiesResponse:
@@ -9200,9 +9208,9 @@ components:
     otterscale.facility.v1.ResolveFacilityUnitErrorsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         unitName:
           type: string
           title: unit_name
@@ -9222,9 +9230,9 @@ components:
     otterscale.facility.v1.UpdateFacilityRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         name:
           type: string
           title: name
@@ -9246,9 +9254,9 @@ components:
         type:
           title: type
           $ref: '#/components/schemas/otterscale.orchestrator.v1.Essential.Type'
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         name:
           type: string
           title: name
@@ -9269,9 +9277,9 @@ components:
     otterscale.orchestrator.v1.CreateClusterRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         machineId:
           type: string
           title: machine_id
@@ -9296,9 +9304,9 @@ components:
     otterscale.orchestrator.v1.CreateNodeRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         machineId:
           type: string
           title: machine_id
@@ -9329,12 +9337,9 @@ components:
         name:
           type: string
           title: name
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        scopeName:
-          type: string
-          title: scope_name
+          title: scope
         units:
           type: array
           items:
@@ -9473,9 +9478,9 @@ components:
         type:
           title: type
           $ref: '#/components/schemas/otterscale.orchestrator.v1.Essential.Type'
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
       title: ListEssentialsRequest
       additionalProperties: false
     otterscale.orchestrator.v1.ListEssentialsResponse:
@@ -9491,12 +9496,12 @@ components:
     otterscale.orchestrator.v1.ListGPURelationsByMachineRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         machineId:
           type: string
           title: machine_id
@@ -9515,12 +9520,12 @@ components:
     otterscale.orchestrator.v1.ListGPURelationsByModelRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         namespace:
           type: string
           title: namespace
@@ -9542,12 +9547,12 @@ components:
     otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         hostname:
           type: string
           title: hostname
@@ -9581,12 +9586,12 @@ components:
     otterscale.orchestrator.v1.ListPluginsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListPluginsRequest
       additionalProperties: false
     otterscale.orchestrator.v1.ListPluginsResponse:
@@ -9651,12 +9656,12 @@ components:
     otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         hostname:
           type: string
           title: hostname
@@ -10086,9 +10091,9 @@ components:
         skipStorage:
           type: boolean
           title: skip_storage
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         tags:
           type: array
           items:
@@ -10148,9 +10153,9 @@ components:
     otterscale.machine.v1.ListMachinesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
       title: ListMachinesRequest
       additionalProperties: false
     otterscale.machine.v1.ListMachinesResponse:
@@ -10628,12 +10633,12 @@ components:
     otterscale.configuration.v1.CephBlockDevice:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: CephBlockDevice
       additionalProperties: false
     otterscale.configuration.v1.Configuration:
@@ -10958,12 +10963,12 @@ components:
         type:
           title: type
           $ref: '#/components/schemas/otterscale.configuration.v1.InternalObjectService.Type'
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
         name:
           type: string
           title: name
@@ -11001,9 +11006,9 @@ components:
     otterscale.configuration.v1.ListInternalObjectServicesRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
+          title: scope
         kubernetesName:
           type: string
           title: kubernetes_name
@@ -11276,12 +11281,12 @@ components:
     otterscale.model.v1.ListModelsRequest:
       type: object
       properties:
-        scopeUuid:
+        scope:
           type: string
-          title: scope_uuid
-        facilityName:
+          title: scope
+        facility:
           type: string
-          title: facility_name
+          title: facility
       title: ListModelsRequest
       additionalProperties: false
     otterscale.model.v1.ListModelsResponse:
@@ -11323,6 +11328,9 @@ components:
         message:
           type: string
           title: message
+        newUrl:
+          type: string
+          title: new_url
       title: UpdateStatusRequest
       additionalProperties: false
     otterscale.bootstrap.v1.WatchStatusRequest:
@@ -11332,18 +11340,15 @@ components:
     otterscale.bootstrap.v1.WatchStatusResponse:
       type: object
       properties:
-        started:
-          type: boolean
-          title: started
-        finished:
-          type: boolean
-          title: finished
         phase:
           type: string
           title: phase
         message:
           type: string
           title: message
+        newUrl:
+          type: string
+          title: new_url
       title: WatchStatusResponse
       additionalProperties: false
     otterscale.scope.v1.CreateScopeRequest:
