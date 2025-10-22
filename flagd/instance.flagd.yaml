@@ -5,10 +5,10 @@ flags:
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"
   vm-general:
     state: ENABLED
     variants:
       "on": true
       "off": false
-    defaultVariant: "off"
+    defaultVariant: "on"
