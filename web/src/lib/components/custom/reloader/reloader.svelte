@@ -18,5 +18,5 @@
 
 <div class={cn('flex items-center justify-start gap-1', className)}>
 	<Switch bind:ref bind:checked {...restProps} />
-    <span class="capitalize text-sm font-medium">{m.auto_update()}</span>
+	<span class="text-sm font-medium capitalize">{m.auto_update()}</span>
 </div>
