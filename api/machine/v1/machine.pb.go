@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -3382,7 +3383,7 @@ var File_api_machine_v1_machine_proto protoreflect.FileDescriptor
 
 const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\n" +
-	"\x1capi/machine/v1/machine.proto\x12\x15otterscale.machine.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf3\x12\n" +
+	"\x1capi/machine/v1/machine.proto\x12\x15otterscale.machine.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf3\x12\n" +
 	"\aMachine\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12G\n" +
 	"\x11last_commissioned\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x10lastCommissioned\x12#\n" +
@@ -3511,20 +3512,31 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
 	"\acomment\x18\x02 \x01(\tR\acomment\"&\n" +
 	"\x10DeleteTagRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name2\xe6\a\n" +
-	"\x0eMachineService\x12g\n" +
-	"\fListMachines\x12*.otterscale.machine.v1.ListMachinesRequest\x1a+.otterscale.machine.v1.ListMachinesResponse\x12V\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name2\xb2\t\n" +
+	"\x0eMachineService\x12{\n" +
+	"\fListMachines\x12*.otterscale.machine.v1.ListMachinesRequest\x1a+.otterscale.machine.v1.ListMachinesResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vmch-general\x12j\n" +
 	"\n" +
-	"GetMachine\x12(.otterscale.machine.v1.GetMachineRequest\x1a\x1e.otterscale.machine.v1.Machine\x12\\\n" +
-	"\rCreateMachine\x12+.otterscale.machine.v1.CreateMachineRequest\x1a\x1e.otterscale.machine.v1.Machine\x12T\n" +
-	"\rDeleteMachine\x12+.otterscale.machine.v1.DeleteMachineRequest\x1a\x16.google.protobuf.Empty\x12`\n" +
-	"\x0fPowerOffMachine\x12-.otterscale.machine.v1.PowerOffMachineRequest\x1a\x1e.otterscale.machine.v1.Machine\x12V\n" +
-	"\x0eAddMachineTags\x12,.otterscale.machine.v1.AddMachineTagsRequest\x1a\x16.google.protobuf.Empty\x12\\\n" +
-	"\x11RemoveMachineTags\x12/.otterscale.machine.v1.RemoveMachineTagsRequest\x1a\x16.google.protobuf.Empty\x12[\n" +
-	"\bListTags\x12&.otterscale.machine.v1.ListTagsRequest\x1a'.otterscale.machine.v1.ListTagsResponse\x12J\n" +
-	"\x06GetTag\x12$.otterscale.machine.v1.GetTagRequest\x1a\x1a.otterscale.machine.v1.Tag\x12P\n" +
-	"\tCreateTag\x12'.otterscale.machine.v1.CreateTagRequest\x1a\x1a.otterscale.machine.v1.Tag\x12L\n" +
-	"\tDeleteTag\x12'.otterscale.machine.v1.DeleteTagRequest\x1a\x16.google.protobuf.EmptyB4Z2github.com/otterscale/otterscale/api/machine/v1;pbb\beditionsp\xe8\a"
+	"GetMachine\x12(.otterscale.machine.v1.GetMachineRequest\x1a\x1e.otterscale.machine.v1.Machine\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vmch-general\x12p\n" +
+	"\rCreateMachine\x12+.otterscale.machine.v1.CreateMachineRequest\x1a\x1e.otterscale.machine.v1.Machine\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vmch-general\x12h\n" +
+	"\rDeleteMachine\x12+.otterscale.machine.v1.DeleteMachineRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vmch-general\x12t\n" +
+	"\x0fPowerOffMachine\x12-.otterscale.machine.v1.PowerOffMachineRequest\x1a\x1e.otterscale.machine.v1.Machine\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vmch-general\x12j\n" +
+	"\x0eAddMachineTags\x12,.otterscale.machine.v1.AddMachineTagsRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vmch-general\x12p\n" +
+	"\x11RemoveMachineTags\x12/.otterscale.machine.v1.RemoveMachineTagsRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vmch-general\x12k\n" +
+	"\bListTags\x12&.otterscale.machine.v1.ListTagsRequest\x1a'.otterscale.machine.v1.ListTagsResponse\"\x0e\x8a\xdf\xd5\x1d\t\n" +
+	"\amch-tag\x12Z\n" +
+	"\x06GetTag\x12$.otterscale.machine.v1.GetTagRequest\x1a\x1a.otterscale.machine.v1.Tag\"\x0e\x8a\xdf\xd5\x1d\t\n" +
+	"\amch-tag\x12`\n" +
+	"\tCreateTag\x12'.otterscale.machine.v1.CreateTagRequest\x1a\x1a.otterscale.machine.v1.Tag\"\x0e\x8a\xdf\xd5\x1d\t\n" +
+	"\amch-tag\x12\\\n" +
+	"\tDeleteTag\x12'.otterscale.machine.v1.DeleteTagRequest\x1a\x16.google.protobuf.Empty\"\x0e\x8a\xdf\xd5\x1d\t\n" +
+	"\amch-tagB4Z2github.com/otterscale/otterscale/api/machine/v1;pbb\beditionsp\xe8\a"
 
 var file_api_machine_v1_machine_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_api_machine_v1_machine_proto_goTypes = []any{

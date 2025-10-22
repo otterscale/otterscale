@@ -2,25 +2,66 @@ edition = "2023";
 
 package otterscale.orchestrator.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/orchestrator/v1;pb";
 
 service OrchestratorService {
-  rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse);
+  rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
 
-  rpc CreateNode(CreateNodeRequest) returns (google.protobuf.Empty);
-  rpc CreateCluster(CreateClusterRequest) returns (google.protobuf.Empty);
-  rpc AddClusterUnits(AddClusterUnitsRequest) returns (google.protobuf.Empty);
+  rpc CreateNode(CreateNodeRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
 
-  rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse);
-  rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse);
+  rpc CreateCluster(CreateClusterRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
 
-  rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse);
-  rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse);
+  rpc AddClusterUnits(AddClusterUnitsRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
 
-  rpc ListPlugins(ListPluginsRequest) returns (ListPluginsResponse);
+  rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-gpu"
+    };
+  };
+
+  rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-gpu"
+    };
+  };
+
+  rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-gpu"
+    };
+  };
+
+  rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-gpu"
+    };
+  };
+
+  rpc ListPlugins(ListPluginsRequest) returns (ListPluginsResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-plugin"
+    };
+  };
 }
 
 message Essential {

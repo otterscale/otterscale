@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -3654,7 +3655,7 @@ var File_api_orchestrator_v1_orchestrator_proto protoreflect.FileDescriptor
 
 const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\n" +
-	"&api/orchestrator/v1/orchestrator.proto\x12\x1aotterscale.orchestrator.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa0\x02\n" +
+	"&api/orchestrator/v1/orchestrator.proto\x12\x1aotterscale.orchestrator.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa0\x02\n" +
 	"\tEssential\x12>\n" +
 	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Essential.TypeR\x04type\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
@@ -3797,18 +3798,32 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
 	"\bfacility\x18\x02 \x01(\tR\bfacility\"S\n" +
 	"\x13ListPluginsResponse\x12<\n" +
-	"\aplugins\x18\x01 \x03(\v2\".otterscale.orchestrator.v1.PluginR\aplugins2\xf3\b\n" +
-	"\x13OrchestratorService\x12w\n" +
-	"\x0eListEssentials\x121.otterscale.orchestrator.v1.ListEssentialsRequest\x1a2.otterscale.orchestrator.v1.ListEssentialsResponse\x12S\n" +
+	"\aplugins\x18\x01 \x03(\v2\".otterscale.orchestrator.v1.PluginR\aplugins2\xa1\n" +
 	"\n" +
-	"CreateNode\x12-.otterscale.orchestrator.v1.CreateNodeRequest\x1a\x16.google.protobuf.Empty\x12Y\n" +
-	"\rCreateCluster\x120.otterscale.orchestrator.v1.CreateClusterRequest\x1a\x16.google.protobuf.Empty\x12]\n" +
-	"\x0fAddClusterUnits\x122.otterscale.orchestrator.v1.AddClusterUnitsRequest\x1a\x16.google.protobuf.Empty\x12\x95\x01\n" +
-	"\x18ListKubernetesNodeLabels\x12;.otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest\x1a<.otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse\x12\x9b\x01\n" +
-	"\x1aUpdateKubernetesNodeLabels\x12=.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest\x1a>.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse\x12\x98\x01\n" +
-	"\x19ListGPURelationsByMachine\x12<.otterscale.orchestrator.v1.ListGPURelationsByMachineRequest\x1a=.otterscale.orchestrator.v1.ListGPURelationsByMachineResponse\x12\x92\x01\n" +
-	"\x17ListGPURelationsByModel\x12:.otterscale.orchestrator.v1.ListGPURelationsByModelRequest\x1a;.otterscale.orchestrator.v1.ListGPURelationsByModelResponse\x12n\n" +
-	"\vListPlugins\x12..otterscale.orchestrator.v1.ListPluginsRequest\x1a/.otterscale.orchestrator.v1.ListPluginsResponseB9Z7github.com/otterscale/otterscale/api/orchestrator/v1;pbb\beditionsp\xe8\a"
+	"\x13OrchestratorService\x12\x8c\x01\n" +
+	"\x0eListEssentials\x121.otterscale.orchestrator.v1.ListEssentialsRequest\x1a2.otterscale.orchestrator.v1.ListEssentialsResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
+	"\forch-general\x12h\n" +
+	"\n" +
+	"CreateNode\x12-.otterscale.orchestrator.v1.CreateNodeRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
+	"\forch-general\x12n\n" +
+	"\rCreateCluster\x120.otterscale.orchestrator.v1.CreateClusterRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
+	"\forch-general\x12r\n" +
+	"\x0fAddClusterUnits\x122.otterscale.orchestrator.v1.AddClusterUnitsRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
+	"\forch-general\x12\xa6\x01\n" +
+	"\x18ListKubernetesNodeLabels\x12;.otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest\x1a<.otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse\"\x0f\x8a\xdf\xd5\x1d\n" +
+	"\n" +
+	"\borch-gpu\x12\xac\x01\n" +
+	"\x1aUpdateKubernetesNodeLabels\x12=.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest\x1a>.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse\"\x0f\x8a\xdf\xd5\x1d\n" +
+	"\n" +
+	"\borch-gpu\x12\xa9\x01\n" +
+	"\x19ListGPURelationsByMachine\x12<.otterscale.orchestrator.v1.ListGPURelationsByMachineRequest\x1a=.otterscale.orchestrator.v1.ListGPURelationsByMachineResponse\"\x0f\x8a\xdf\xd5\x1d\n" +
+	"\n" +
+	"\borch-gpu\x12\xa3\x01\n" +
+	"\x17ListGPURelationsByModel\x12:.otterscale.orchestrator.v1.ListGPURelationsByModelRequest\x1a;.otterscale.orchestrator.v1.ListGPURelationsByModelResponse\"\x0f\x8a\xdf\xd5\x1d\n" +
+	"\n" +
+	"\borch-gpu\x12\x82\x01\n" +
+	"\vListPlugins\x12..otterscale.orchestrator.v1.ListPluginsRequest\x1a/.otterscale.orchestrator.v1.ListPluginsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vorch-pluginB9Z7github.com/otterscale/otterscale/api/orchestrator/v1;pbb\beditionsp\xe8\a"
 
 var file_api_orchestrator_v1_orchestrator_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_orchestrator_v1_orchestrator_proto_msgTypes = make([]protoimpl.MessageInfo, 27)

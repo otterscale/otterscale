@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -1700,6 +1701,117 @@ func (b0 DeleteFacilityRequest_builder) Build() *DeleteFacilityRequest {
 	return m0
 }
 
+type ResolveFacilityUnitErrorsRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_UnitName    *string                `protobuf:"bytes,2,opt,name=unit_name,json=unitName"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) Reset() {
+	*x = ResolveFacilityUnitErrorsRequest{}
+	mi := &file_api_facility_v1_facility_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolveFacilityUnitErrorsRequest) ProtoMessage() {}
+
+func (x *ResolveFacilityUnitErrorsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_facility_v1_facility_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) GetUnitName() string {
+	if x != nil {
+		if x.xxx_hidden_UnitName != nil {
+			return *x.xxx_hidden_UnitName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) SetUnitName(v string) {
+	x.xxx_hidden_UnitName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) HasUnitName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) ClearUnitName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_UnitName = nil
+}
+
+type ResolveFacilityUnitErrorsRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope    *string
+	UnitName *string
+}
+
+func (b0 ResolveFacilityUnitErrorsRequest_builder) Build() *ResolveFacilityUnitErrorsRequest {
+	m0 := &ResolveFacilityUnitErrorsRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	if b.UnitName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_UnitName = b.UnitName
+	}
+	return m0
+}
+
 type ExposeFacilityRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
@@ -1712,7 +1824,7 @@ type ExposeFacilityRequest struct {
 
 func (x *ExposeFacilityRequest) Reset() {
 	*x = ExposeFacilityRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[10]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1724,7 +1836,7 @@ func (x *ExposeFacilityRequest) String() string {
 func (*ExposeFacilityRequest) ProtoMessage() {}
 
 func (x *ExposeFacilityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[10]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1825,7 +1937,7 @@ type AddFacilityUnitsRequest struct {
 
 func (x *AddFacilityUnitsRequest) Reset() {
 	*x = AddFacilityUnitsRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[11]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1837,7 +1949,7 @@ func (x *AddFacilityUnitsRequest) String() string {
 func (*AddFacilityUnitsRequest) ProtoMessage() {}
 
 func (x *AddFacilityUnitsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[11]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1977,7 +2089,7 @@ type AddFacilityUnitsResponse struct {
 
 func (x *AddFacilityUnitsResponse) Reset() {
 	*x = AddFacilityUnitsResponse{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[12]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1989,7 +2101,7 @@ func (x *AddFacilityUnitsResponse) String() string {
 func (*AddFacilityUnitsResponse) ProtoMessage() {}
 
 func (x *AddFacilityUnitsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[12]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2022,117 +2134,6 @@ func (b0 AddFacilityUnitsResponse_builder) Build() *AddFacilityUnitsResponse {
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_UnitNames = b.UnitNames
-	return m0
-}
-
-type ResolveFacilityUnitErrorsRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_UnitName    *string                `protobuf:"bytes,2,opt,name=unit_name,json=unitName"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *ResolveFacilityUnitErrorsRequest) Reset() {
-	*x = ResolveFacilityUnitErrorsRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[13]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ResolveFacilityUnitErrorsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ResolveFacilityUnitErrorsRequest) ProtoMessage() {}
-
-func (x *ResolveFacilityUnitErrorsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[13]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *ResolveFacilityUnitErrorsRequest) GetScope() string {
-	if x != nil {
-		if x.xxx_hidden_Scope != nil {
-			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ResolveFacilityUnitErrorsRequest) GetUnitName() string {
-	if x != nil {
-		if x.xxx_hidden_UnitName != nil {
-			return *x.xxx_hidden_UnitName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ResolveFacilityUnitErrorsRequest) SetScope(v string) {
-	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *ResolveFacilityUnitErrorsRequest) SetUnitName(v string) {
-	x.xxx_hidden_UnitName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
-}
-
-func (x *ResolveFacilityUnitErrorsRequest) HasScope() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *ResolveFacilityUnitErrorsRequest) HasUnitName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *ResolveFacilityUnitErrorsRequest) ClearScope() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Scope = nil
-}
-
-func (x *ResolveFacilityUnitErrorsRequest) ClearUnitName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_UnitName = nil
-}
-
-type ResolveFacilityUnitErrorsRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Scope    *string
-	UnitName *string
-}
-
-func (b0 ResolveFacilityUnitErrorsRequest_builder) Build() *ResolveFacilityUnitErrorsRequest {
-	m0 := &ResolveFacilityUnitErrorsRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.UnitName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_UnitName = b.UnitName
-	}
 	return m0
 }
 
@@ -4243,7 +4244,7 @@ var File_api_facility_v1_facility_proto protoreflect.FileDescriptor
 
 const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\n" +
-	"\x1eapi/facility/v1/facility.proto\x12\x16otterscale.facility.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8a\x0e\n" +
+	"\x1eapi/facility/v1/facility.proto\x12\x16otterscale.facility.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8a\x0e\n" +
 	"\bFacility\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12?\n" +
 	"\x06status\x18\x02 \x01(\v2'.otterscale.facility.v1.Facility.StatusR\x06status\x12\x1d\n" +
@@ -4360,7 +4361,10 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12'\n" +
 	"\x0fdestroy_storage\x18\v \x01(\bR\x0edestroyStorage\x12\x14\n" +
-	"\x05force\x18\f \x01(\bR\x05force\"A\n" +
+	"\x05force\x18\f \x01(\bR\x05force\"U\n" +
+	" ResolveFacilityUnitErrorsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
+	"\tunit_name\x18\x02 \x01(\tR\bunitName\"A\n" +
 	"\x15ExposeFacilityRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\"\x9e\x01\n" +
@@ -4373,10 +4377,7 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"placements\"9\n" +
 	"\x18AddFacilityUnitsResponse\x12\x1d\n" +
 	"\n" +
-	"unit_names\x18\x01 \x03(\tR\tunitNames\"U\n" +
-	" ResolveFacilityUnitErrorsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
-	"\tunit_name\x18\x02 \x01(\tR\bunitName\"F\n" +
+	"unit_names\x18\x01 \x03(\tR\tunitNames\"F\n" +
 	"\x12ListActionsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
 	"\bfacility\x18\x02 \x01(\tR\bfacility\"X\n" +
@@ -4393,23 +4394,37 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\x19ListCharmArtifactsRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"k\n" +
 	"\x1aListCharmArtifactsResponse\x12M\n" +
-	"\tartifacts\x18\x01 \x03(\v2/.otterscale.facility.v1.Facility.Charm.ArtifactR\tartifacts2\xa7\v\n" +
-	"\x0fFacilityService\x12o\n" +
-	"\x0eListFacilities\x12-.otterscale.facility.v1.ListFacilitiesRequest\x1a..otterscale.facility.v1.ListFacilitiesResponse\x12[\n" +
-	"\vGetFacility\x12*.otterscale.facility.v1.GetFacilityRequest\x1a .otterscale.facility.v1.Facility\x12a\n" +
-	"\x0eCreateFacility\x12-.otterscale.facility.v1.CreateFacilityRequest\x1a .otterscale.facility.v1.Facility\x12a\n" +
-	"\x0eUpdateFacility\x12-.otterscale.facility.v1.UpdateFacilityRequest\x1a .otterscale.facility.v1.Facility\x12W\n" +
-	"\x0eDeleteFacility\x12-.otterscale.facility.v1.DeleteFacilityRequest\x1a\x16.google.protobuf.Empty\x12W\n" +
-	"\x0eExposeFacility\x12-.otterscale.facility.v1.ExposeFacilityRequest\x1a\x16.google.protobuf.Empty\x12u\n" +
-	"\x10AddFacilityUnits\x12/.otterscale.facility.v1.AddFacilityUnitsRequest\x1a0.otterscale.facility.v1.AddFacilityUnitsResponse\x12m\n" +
-	"\x19ResolveFacilityUnitErrors\x128.otterscale.facility.v1.ResolveFacilityUnitErrorsRequest\x1a\x16.google.protobuf.Empty\x12f\n" +
-	"\vListActions\x12*.otterscale.facility.v1.ListActionsRequest\x1a+.otterscale.facility.v1.ListActionsResponse\x12K\n" +
-	"\bDoAction\x12'.otterscale.facility.v1.DoActionRequest\x1a\x16.google.protobuf.Empty\x12c\n" +
+	"\tartifacts\x18\x01 \x03(\v2/.otterscale.facility.v1.Facility.Charm.ArtifactR\tartifacts2\xae\r\n" +
+	"\x0fFacilityService\x12\x83\x01\n" +
+	"\x0eListFacilities\x12-.otterscale.facility.v1.ListFacilitiesRequest\x1a..otterscale.facility.v1.ListFacilitiesResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vfac-general\x12o\n" +
+	"\vGetFacility\x12*.otterscale.facility.v1.GetFacilityRequest\x1a .otterscale.facility.v1.Facility\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vfac-general\x12s\n" +
+	"\x0eCreateFacility\x12-.otterscale.facility.v1.CreateFacilityRequest\x1a .otterscale.facility.v1.Facility\"\x10\x8a\xdf\xd5\x1d\v\n" +
+	"\tfac-debug\x12s\n" +
+	"\x0eUpdateFacility\x12-.otterscale.facility.v1.UpdateFacilityRequest\x1a .otterscale.facility.v1.Facility\"\x10\x8a\xdf\xd5\x1d\v\n" +
+	"\tfac-debug\x12i\n" +
+	"\x0eDeleteFacility\x12-.otterscale.facility.v1.DeleteFacilityRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
+	"\tfac-debug\x12\x81\x01\n" +
+	"\x19ResolveFacilityUnitErrors\x128.otterscale.facility.v1.ResolveFacilityUnitErrorsRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vfac-general\x12i\n" +
+	"\x0eExposeFacility\x12-.otterscale.facility.v1.ExposeFacilityRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
+	"\tfac-debug\x12\x87\x01\n" +
+	"\x10AddFacilityUnits\x12/.otterscale.facility.v1.AddFacilityUnitsRequest\x1a0.otterscale.facility.v1.AddFacilityUnitsResponse\"\x10\x8a\xdf\xd5\x1d\v\n" +
+	"\tfac-debug\x12x\n" +
+	"\vListActions\x12*.otterscale.facility.v1.ListActionsRequest\x1a+.otterscale.facility.v1.ListActionsResponse\"\x10\x8a\xdf\xd5\x1d\v\n" +
+	"\tfac-debug\x12]\n" +
+	"\bDoAction\x12'.otterscale.facility.v1.DoActionRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
+	"\tfac-debug\x12u\n" +
 	"\n" +
-	"ListCharms\x12).otterscale.facility.v1.ListCharmsRequest\x1a*.otterscale.facility.v1.ListCharmsResponse\x12[\n" +
-	"\bGetCharm\x12'.otterscale.facility.v1.GetCharmRequest\x1a&.otterscale.facility.v1.Facility.Charm\x12t\n" +
-	"\x10GetCharmMetadata\x12/.otterscale.facility.v1.GetCharmMetadataRequest\x1a/.otterscale.facility.v1.Facility.Charm.Metadata\x12{\n" +
-	"\x12ListCharmArtifacts\x121.otterscale.facility.v1.ListCharmArtifactsRequest\x1a2.otterscale.facility.v1.ListCharmArtifactsResponseB5Z3github.com/otterscale/otterscale/api/facility/v1;pbb\beditionsp\xe8\a"
+	"ListCharms\x12).otterscale.facility.v1.ListCharmsRequest\x1a*.otterscale.facility.v1.ListCharmsResponse\"\x10\x8a\xdf\xd5\x1d\v\n" +
+	"\tfac-debug\x12m\n" +
+	"\bGetCharm\x12'.otterscale.facility.v1.GetCharmRequest\x1a&.otterscale.facility.v1.Facility.Charm\"\x10\x8a\xdf\xd5\x1d\v\n" +
+	"\tfac-debug\x12\x86\x01\n" +
+	"\x10GetCharmMetadata\x12/.otterscale.facility.v1.GetCharmMetadataRequest\x1a/.otterscale.facility.v1.Facility.Charm.Metadata\"\x10\x8a\xdf\xd5\x1d\v\n" +
+	"\tfac-debug\x12\x8d\x01\n" +
+	"\x12ListCharmArtifacts\x121.otterscale.facility.v1.ListCharmArtifactsRequest\x1a2.otterscale.facility.v1.ListCharmArtifactsResponse\"\x10\x8a\xdf\xd5\x1d\v\n" +
+	"\tfac-debugB5Z3github.com/otterscale/otterscale/api/facility/v1;pbb\beditionsp\xe8\a"
 
 var file_api_facility_v1_facility_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_api_facility_v1_facility_proto_goTypes = []any{
@@ -4423,10 +4438,10 @@ var file_api_facility_v1_facility_proto_goTypes = []any{
 	(*CreateFacilityRequest)(nil),            // 7: otterscale.facility.v1.CreateFacilityRequest
 	(*UpdateFacilityRequest)(nil),            // 8: otterscale.facility.v1.UpdateFacilityRequest
 	(*DeleteFacilityRequest)(nil),            // 9: otterscale.facility.v1.DeleteFacilityRequest
-	(*ExposeFacilityRequest)(nil),            // 10: otterscale.facility.v1.ExposeFacilityRequest
-	(*AddFacilityUnitsRequest)(nil),          // 11: otterscale.facility.v1.AddFacilityUnitsRequest
-	(*AddFacilityUnitsResponse)(nil),         // 12: otterscale.facility.v1.AddFacilityUnitsResponse
-	(*ResolveFacilityUnitErrorsRequest)(nil), // 13: otterscale.facility.v1.ResolveFacilityUnitErrorsRequest
+	(*ResolveFacilityUnitErrorsRequest)(nil), // 10: otterscale.facility.v1.ResolveFacilityUnitErrorsRequest
+	(*ExposeFacilityRequest)(nil),            // 11: otterscale.facility.v1.ExposeFacilityRequest
+	(*AddFacilityUnitsRequest)(nil),          // 12: otterscale.facility.v1.AddFacilityUnitsRequest
+	(*AddFacilityUnitsResponse)(nil),         // 13: otterscale.facility.v1.AddFacilityUnitsResponse
 	(*ListActionsRequest)(nil),               // 14: otterscale.facility.v1.ListActionsRequest
 	(*ListActionsResponse)(nil),              // 15: otterscale.facility.v1.ListActionsResponse
 	(*DoActionRequest)(nil),                  // 16: otterscale.facility.v1.DoActionRequest
@@ -4469,9 +4484,9 @@ var file_api_facility_v1_facility_proto_depIdxs = []int32{
 	7,  // 19: otterscale.facility.v1.FacilityService.CreateFacility:input_type -> otterscale.facility.v1.CreateFacilityRequest
 	8,  // 20: otterscale.facility.v1.FacilityService.UpdateFacility:input_type -> otterscale.facility.v1.UpdateFacilityRequest
 	9,  // 21: otterscale.facility.v1.FacilityService.DeleteFacility:input_type -> otterscale.facility.v1.DeleteFacilityRequest
-	10, // 22: otterscale.facility.v1.FacilityService.ExposeFacility:input_type -> otterscale.facility.v1.ExposeFacilityRequest
-	11, // 23: otterscale.facility.v1.FacilityService.AddFacilityUnits:input_type -> otterscale.facility.v1.AddFacilityUnitsRequest
-	13, // 24: otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors:input_type -> otterscale.facility.v1.ResolveFacilityUnitErrorsRequest
+	10, // 22: otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors:input_type -> otterscale.facility.v1.ResolveFacilityUnitErrorsRequest
+	11, // 23: otterscale.facility.v1.FacilityService.ExposeFacility:input_type -> otterscale.facility.v1.ExposeFacilityRequest
+	12, // 24: otterscale.facility.v1.FacilityService.AddFacilityUnits:input_type -> otterscale.facility.v1.AddFacilityUnitsRequest
 	14, // 25: otterscale.facility.v1.FacilityService.ListActions:input_type -> otterscale.facility.v1.ListActionsRequest
 	16, // 26: otterscale.facility.v1.FacilityService.DoAction:input_type -> otterscale.facility.v1.DoActionRequest
 	17, // 27: otterscale.facility.v1.FacilityService.ListCharms:input_type -> otterscale.facility.v1.ListCharmsRequest
@@ -4483,9 +4498,9 @@ var file_api_facility_v1_facility_proto_depIdxs = []int32{
 	0,  // 33: otterscale.facility.v1.FacilityService.CreateFacility:output_type -> otterscale.facility.v1.Facility
 	0,  // 34: otterscale.facility.v1.FacilityService.UpdateFacility:output_type -> otterscale.facility.v1.Facility
 	31, // 35: otterscale.facility.v1.FacilityService.DeleteFacility:output_type -> google.protobuf.Empty
-	31, // 36: otterscale.facility.v1.FacilityService.ExposeFacility:output_type -> google.protobuf.Empty
-	12, // 37: otterscale.facility.v1.FacilityService.AddFacilityUnits:output_type -> otterscale.facility.v1.AddFacilityUnitsResponse
-	31, // 38: otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors:output_type -> google.protobuf.Empty
+	31, // 36: otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors:output_type -> google.protobuf.Empty
+	31, // 37: otterscale.facility.v1.FacilityService.ExposeFacility:output_type -> google.protobuf.Empty
+	13, // 38: otterscale.facility.v1.FacilityService.AddFacilityUnits:output_type -> otterscale.facility.v1.AddFacilityUnitsResponse
 	15, // 39: otterscale.facility.v1.FacilityService.ListActions:output_type -> otterscale.facility.v1.ListActionsResponse
 	31, // 40: otterscale.facility.v1.FacilityService.DoAction:output_type -> google.protobuf.Empty
 	18, // 41: otterscale.facility.v1.FacilityService.ListCharms:output_type -> otterscale.facility.v1.ListCharmsResponse

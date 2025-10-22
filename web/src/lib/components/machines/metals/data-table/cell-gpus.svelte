@@ -35,15 +35,20 @@
 
 	const nodes: Writable<Node[]> = writable([]);
 	const edges: Writable<Edge[]> = writable([]);
-	let isLoading = $state(true);
+	let isLoading = $state(false);
+	let hasLoadedData = $state(false);
 
-	client
-		.listGPURelationsByMachine({
-			scope: $currentKubernetes?.scope,
-			facility: $currentKubernetes?.name,
-			machineId: machine.id,
-		})
-		.then((response) => {
+	async function loadGPURelations() {
+		if (hasLoadedData) return;
+
+		isLoading = true;
+		try {
+			const response = await client.listGPURelationsByMachine({
+				scope: $currentKubernetes?.scope,
+				facility: $currentKubernetes?.name,
+				machineId: machine.id,
+			});
+
 			nodes.set(
 				response.gpuRelations.map((gpuRelation) => {
 					if (gpuRelation.entity.case === 'machine') {
@@ -105,19 +110,19 @@
 				}),
 			);
 
+			hasLoadedData = true;
+		} catch (error) {
+			console.error('Error loading GPU relations:', error);
+		} finally {
 			isLoading = false;
-		});
+		}
+	}
 
 	let open = $state(false);
 </script>
 
-{#if isLoading}
-	<span class="flex items-center gap-1">
-		{machine.gpuDevices.length}
-		<Icon icon="ph:circle-notch" class="animate-spin" />
-	</span>
-{:else if isMachineInSelectedScope}
-	<Sheet.Root bind:open>
+{#if isMachineInSelectedScope}
+	<Sheet.Root bind:open onOpenChange={loadGPURelations}>
 		<Sheet.Trigger>
 			<span class="flex items-center gap-1">
 				{machine.gpuDevices.length}
@@ -129,7 +134,13 @@
 				<Sheet.Header>
 					<Sheet.Title class="text-center text-lg">{m.details()}</Sheet.Title>
 				</Sheet.Header>
-				<Simple.Flow initialNodes={$nodes} initialEdges={$edges} />
+				{#if isLoading}
+					<div class="flex items-center justify-center p-8">
+						<Icon icon="ph:circle-notch" class="h-8 w-8 animate-spin" />
+					</div>
+				{:else}
+					<Simple.Flow initialNodes={$nodes} initialEdges={$edges} />
+				{/if}
 				<div class="mt-auto rounded-lg border shadow">
 					<Table.Root>
 						<Table.Header>
