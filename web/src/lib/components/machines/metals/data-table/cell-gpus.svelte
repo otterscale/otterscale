@@ -9,6 +9,7 @@
 	import {
 		OrchestratorService,
 		type GPURelation_GPU,
+		type GPURelation_Machine,
 		type GPURelation_Pod,
 	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as Table from '$lib/components/custom/table';
@@ -49,20 +50,41 @@
 				machineId: machine.id,
 			});
 
+			// Extract GPUs and pods once to avoid redundant computation
+			const gpus = response.gpuRelations
+				.filter((gpuRelation) => gpuRelation.entity.case === 'gpu')
+				.map((gpuRelation) => gpuRelation.entity.value as GPURelation_GPU);
+
+			const pods = response.gpuRelations
+				.filter((gpuRelation) => gpuRelation.entity.case === 'pod')
+				.map((gpuRelation) => gpuRelation.entity.value as GPURelation_Pod);
+
 			nodes.set(
 				response.gpuRelations.map((gpuRelation) => {
 					if (gpuRelation.entity.case === 'machine') {
 						return {
 							type: 'machine',
 							id: `machine${gpuRelation.entity.value.id}`,
-							data: gpuRelation.entity.value,
+							data: {
+								machine: gpuRelation.entity.value,
+								gpus: gpus.filter(
+									(gpu) => gpu.machineId === (gpuRelation.entity.value as GPURelation_Machine).id,
+								),
+							},
 							position,
 						};
 					} else if (gpuRelation.entity.case === 'gpu') {
 						return {
 							type: 'gpu',
 							id: `gpu${gpuRelation.entity.value.id}`,
-							data: gpuRelation.entity.value,
+							data: {
+								gpu: gpuRelation.entity.value,
+								devices: pods.flatMap((pod) =>
+									pod.devices.filter((device) => {
+										return device.gpuId === (gpuRelation.entity.value as GPURelation_GPU).id;
+									}),
+								),
+							},
 							position,
 						};
 					} else if (gpuRelation.entity.case === 'pod') {
