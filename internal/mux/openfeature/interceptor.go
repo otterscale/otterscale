@@ -8,10 +8,11 @@ import (
 	"connectrpc.com/connect"
 	flagd "github.com/open-feature/go-sdk-contrib/providers/flagd/pkg"
 	"github.com/open-feature/go-sdk/openfeature"
-	"github.com/otterscale/otterscale/api"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
+
+	"github.com/otterscale/otterscale/api"
 )
 
 const domain = "otterscale"
