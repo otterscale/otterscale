@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -356,7 +357,7 @@ var File_api_bootstrap_v1_bootstrap_proto protoreflect.FileDescriptor
 
 const file_api_bootstrap_v1_bootstrap_proto_rawDesc = "" +
 	"\n" +
-	" api/bootstrap/v1/bootstrap.proto\x12\x17otterscale.bootstrap.v1\x1a\x1bgoogle/protobuf/empty.proto\"\x14\n" +
+	" api/bootstrap/v1/bootstrap.proto\x12\x17otterscale.bootstrap.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\"\x14\n" +
 	"\x12WatchStatusRequest\"^\n" +
 	"\x13WatchStatusResponse\x12\x14\n" +
 	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
@@ -365,10 +366,14 @@ const file_api_bootstrap_v1_bootstrap_proto_rawDesc = "" +
 	"\x13UpdateStatusRequest\x12\x14\n" +
 	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x17\n" +
-	"\anew_url\x18\x03 \x01(\tR\x06newUrl2\xd4\x01\n" +
-	"\x10BootstrapService\x12j\n" +
-	"\vWatchStatus\x12+.otterscale.bootstrap.v1.WatchStatusRequest\x1a,.otterscale.bootstrap.v1.WatchStatusResponse0\x01\x12T\n" +
-	"\fUpdateStatus\x12,.otterscale.bootstrap.v1.UpdateStatusRequest\x1a\x16.google.protobuf.EmptyB6Z4github.com/otterscale/otterscale/api/bootstrap/v1;pbb\beditionsp\xe8\a"
+	"\anew_url\x18\x03 \x01(\tR\x06newUrl2\xfa\x01\n" +
+	"\x10BootstrapService\x12}\n" +
+	"\vWatchStatus\x12+.otterscale.bootstrap.v1.WatchStatusRequest\x1a,.otterscale.bootstrap.v1.WatchStatusResponse\"\x11\x8a\xdf\xd5\x1d\f\n" +
+	"\n" +
+	"bs-general0\x01\x12g\n" +
+	"\fUpdateStatus\x12,.otterscale.bootstrap.v1.UpdateStatusRequest\x1a\x16.google.protobuf.Empty\"\x11\x8a\xdf\xd5\x1d\f\n" +
+	"\n" +
+	"bs-generalB6Z4github.com/otterscale/otterscale/api/bootstrap/v1;pbb\beditionsp\xe8\a"
 
 var file_api_bootstrap_v1_bootstrap_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_api_bootstrap_v1_bootstrap_proto_goTypes = []any{

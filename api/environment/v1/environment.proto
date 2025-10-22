@@ -2,15 +2,35 @@ edition = "2023";
 
 package otterscale.environment.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/environment/v1;pb";
 
 service EnvironmentService {
-  rpc CheckHealth(CheckHealthRequest) returns (CheckHealthResponse);
-  rpc UpdateConfig(UpdateConfigRequest) returns (google.protobuf.Empty);
-  rpc GetPrometheus(GetPrometheusRequest) returns (Prometheus);
-  rpc GetPremiumTier(GetPremiumTierRequest) returns (PremiumTier);
+  rpc CheckHealth(CheckHealthRequest) returns (CheckHealthResponse) {
+    option (otterscale.api.feature) = {
+      name: "env-general"
+    };
+  };
+
+  rpc GetPrometheus(GetPrometheusRequest) returns (Prometheus) {
+    option (otterscale.api.feature) = {
+      name: "env-general"
+    };
+  };
+
+  rpc GetPremiumTier(GetPremiumTierRequest) returns (PremiumTier) {
+    option (otterscale.api.feature) = {
+      name: "env-general"
+    };
+  };
+
+  rpc UpdateConfig(UpdateConfigRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "env-debug"
+    };
+  };
 }
 
 message CheckHealthRequest {}

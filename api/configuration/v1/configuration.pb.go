@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -4951,7 +4952,7 @@ var File_api_configuration_v1_configuration_proto protoreflect.FileDescriptor
 
 const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\n" +
-	"(api/configuration/v1/configuration.proto\x12\x1botterscale.configuration.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x88\b\n" +
+	"(api/configuration/v1/configuration.proto\x12\x1botterscale.configuration.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x88\b\n" +
 	"\rConfiguration\x12S\n" +
 	"\n" +
 	"ntp_server\x18\x01 \x01(\v24.otterscale.configuration.v1.Configuration.NTPServerR\tntpServer\x12o\n" +
@@ -5140,21 +5141,34 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x0fkubernetes_name\x18\x02 \x01(\tR\x0ekubernetesName\x12\x1b\n" +
 	"\tceph_name\x18\x03 \x01(\tR\bcephName\"\x92\x01\n" +
 	"\"ListInternalObjectServicesResponse\x12l\n" +
-	"\x18internal_object_services\x18\x01 \x03(\v22.otterscale.configuration.v1.InternalObjectServiceR\x16internalObjectServices2\x92\r\n" +
-	"\x14ConfigurationService\x12t\n" +
-	"\x10GetConfiguration\x124.otterscale.configuration.v1.GetConfigurationRequest\x1a*.otterscale.configuration.v1.Configuration\x12|\n" +
-	"\x0fUpdateNTPServer\x123.otterscale.configuration.v1.UpdateNTPServerRequest\x1a4.otterscale.configuration.v1.Configuration.NTPServer\x12\x94\x01\n" +
-	"\x17UpdatePackageRepository\x12;.otterscale.configuration.v1.UpdatePackageRepositoryRequest\x1a<.otterscale.configuration.v1.Configuration.PackageRepository\x12\x8b\x01\n" +
-	"\x14UpdateHelmRepository\x128.otterscale.configuration.v1.UpdateHelmRepositoryRequest\x1a9.otterscale.configuration.v1.Configuration.HelmRepository\x12|\n" +
-	"\x0fCreateBootImage\x123.otterscale.configuration.v1.CreateBootImageRequest\x1a4.otterscale.configuration.v1.Configuration.BootImage\x12f\n" +
-	"\x13SetDefaultBootImage\x127.otterscale.configuration.v1.SetDefaultBootImageRequest\x1a\x16.google.protobuf.Empty\x12`\n" +
-	"\x10ImportBootImages\x124.otterscale.configuration.v1.ImportBootImagesRequest\x1a\x16.google.protobuf.Empty\x12\x8e\x01\n" +
-	"\x15IsImportingBootImages\x129.otterscale.configuration.v1.IsImportingBootImagesRequest\x1a:.otterscale.configuration.v1.IsImportingBootImagesResponse\x12\x94\x01\n" +
-	"\x17ListBootImageSelections\x12;.otterscale.configuration.v1.ListBootImageSelectionsRequest\x1a<.otterscale.configuration.v1.ListBootImageSelectionsResponse\x12|\n" +
-	"\x0fListTestResults\x123.otterscale.configuration.v1.ListTestResultsRequest\x1a4.otterscale.configuration.v1.ListTestResultsResponse\x12q\n" +
-	"\x10CreateTestResult\x124.otterscale.configuration.v1.CreateTestResultRequest\x1a'.otterscale.configuration.v1.TestResult\x12`\n" +
-	"\x10DeleteTestResult\x124.otterscale.configuration.v1.DeleteTestResultRequest\x1a\x16.google.protobuf.Empty\x12\x9d\x01\n" +
-	"\x1aListInternalObjectServices\x12>.otterscale.configuration.v1.ListInternalObjectServicesRequest\x1a?.otterscale.configuration.v1.ListInternalObjectServicesResponseB:Z8github.com/otterscale/otterscale/api/configuration/v1;pbb\beditionsp\xe8\a"
+	"\x18internal_object_services\x18\x01 \x03(\v22.otterscale.configuration.v1.InternalObjectServiceR\x16internalObjectServices2\xc7\x0f\n" +
+	"\x14ConfigurationService\x12\x88\x01\n" +
+	"\x10GetConfiguration\x124.otterscale.configuration.v1.GetConfigurationRequest\x1a*.otterscale.configuration.v1.Configuration\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vcfg-general\x12\x90\x01\n" +
+	"\x0fUpdateNTPServer\x123.otterscale.configuration.v1.UpdateNTPServerRequest\x1a4.otterscale.configuration.v1.Configuration.NTPServer\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vcfg-general\x12\xa8\x01\n" +
+	"\x17UpdatePackageRepository\x12;.otterscale.configuration.v1.UpdatePackageRepositoryRequest\x1a<.otterscale.configuration.v1.Configuration.PackageRepository\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vcfg-general\x12\x9f\x01\n" +
+	"\x14UpdateHelmRepository\x128.otterscale.configuration.v1.UpdateHelmRepositoryRequest\x1a9.otterscale.configuration.v1.Configuration.HelmRepository\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vcfg-general\x12\x90\x01\n" +
+	"\x0fCreateBootImage\x123.otterscale.configuration.v1.CreateBootImageRequest\x1a4.otterscale.configuration.v1.Configuration.BootImage\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vcfg-general\x12z\n" +
+	"\x13SetDefaultBootImage\x127.otterscale.configuration.v1.SetDefaultBootImageRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vcfg-general\x12t\n" +
+	"\x10ImportBootImages\x124.otterscale.configuration.v1.ImportBootImagesRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vcfg-general\x12\xa2\x01\n" +
+	"\x15IsImportingBootImages\x129.otterscale.configuration.v1.IsImportingBootImagesRequest\x1a:.otterscale.configuration.v1.IsImportingBootImagesResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vcfg-general\x12\xa8\x01\n" +
+	"\x17ListBootImageSelections\x12;.otterscale.configuration.v1.ListBootImageSelectionsRequest\x1a<.otterscale.configuration.v1.ListBootImageSelectionsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vcfg-general\x12\x9b\x01\n" +
+	"\x0fListTestResults\x123.otterscale.configuration.v1.ListTestResultsRequest\x1a4.otterscale.configuration.v1.ListTestResultsResponse\"\x1d\x8a\xdf\xd5\x1d\x18\n" +
+	"\x16cfg-built-in-self-test\x12\x90\x01\n" +
+	"\x10CreateTestResult\x124.otterscale.configuration.v1.CreateTestResultRequest\x1a'.otterscale.configuration.v1.TestResult\"\x1d\x8a\xdf\xd5\x1d\x18\n" +
+	"\x16cfg-built-in-self-test\x12\x7f\n" +
+	"\x10DeleteTestResult\x124.otterscale.configuration.v1.DeleteTestResultRequest\x1a\x16.google.protobuf.Empty\"\x1d\x8a\xdf\xd5\x1d\x18\n" +
+	"\x16cfg-built-in-self-test\x12\xbc\x01\n" +
+	"\x1aListInternalObjectServices\x12>.otterscale.configuration.v1.ListInternalObjectServicesRequest\x1a?.otterscale.configuration.v1.ListInternalObjectServicesResponse\"\x1d\x8a\xdf\xd5\x1d\x18\n" +
+	"\x16cfg-built-in-self-testB:Z8github.com/otterscale/otterscale/api/configuration/v1;pbb\beditionsp\xe8\a"
 
 var file_api_configuration_v1_configuration_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_api_configuration_v1_configuration_proto_msgTypes = make([]protoimpl.MessageInfo, 39)

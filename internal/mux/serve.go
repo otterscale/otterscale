@@ -5,6 +5,7 @@ import (
 	"net/http/httputil"
 
 	"connectrpc.com/connect"
+	"connectrpc.com/otelconnect"
 
 	appv1 "github.com/otterscale/otterscale/api/application/v1/pbconnect"
 	configv1 "github.com/otterscale/otterscale/api/configuration/v1/pbconnect"
@@ -18,6 +19,7 @@ import (
 	scopev1 "github.com/otterscale/otterscale/api/scope/v1/pbconnect"
 	storagev1 "github.com/otterscale/otterscale/api/storage/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/app"
+	"github.com/otterscale/otterscale/internal/mux/openfeature"
 )
 
 type Serve struct {
@@ -56,7 +58,7 @@ func (s *Serve) serviceNames() []string {
 	}
 }
 
-func (s *Serve) registerHandlers(opts []connect.HandlerOption) {
+func (s *Serve) registerHandlers(opts ...connect.HandlerOption) {
 	s.Handle(appv1.NewApplicationServiceHandler(s.services.app, opts...))
 	s.Handle(configv1.NewConfigurationServiceHandler(s.services.config, opts...))
 	s.Handle(envv1.NewEnvironmentServiceHandler(s.services.env, opts...))
@@ -83,7 +85,21 @@ func (s *Serve) registerWebSocket() {
 	s.HandleFunc(s.services.instance.VNCPathPrefix(), s.services.instance.VNCHandler())
 }
 
-func NewServe(app *app.ApplicationService, config *app.ConfigurationService, env *app.EnvironmentService, facility *app.FacilityService, instance *app.InstanceService, machine *app.MachineService, model *app.ModelService, network *app.NetworkService, orch *app.OrchestratorService, storage *app.StorageService, scope *app.ScopeService, opts []connect.HandlerOption) (*Serve, error) {
+func NewServeOptions() ([]connect.HandlerOption, error) {
+	openTelemetryInterceptor, err := otelconnect.NewInterceptor()
+	if err != nil {
+		return nil, err
+	}
+	openFeatureInterceptor, err := openfeature.NewInterceptor()
+	if err != nil {
+		return nil, err
+	}
+	return []connect.HandlerOption{
+		connect.WithInterceptors(openTelemetryInterceptor, openFeatureInterceptor),
+	}, nil
+}
+
+func NewServe(app *app.ApplicationService, config *app.ConfigurationService, env *app.EnvironmentService, facility *app.FacilityService, instance *app.InstanceService, machine *app.MachineService, model *app.ModelService, network *app.NetworkService, orch *app.OrchestratorService, storage *app.StorageService, scope *app.ScopeService, opts ...connect.HandlerOption) (*Serve, error) {
 	// Initialize ServeMux and register all handlers
 	serve := &Serve{
 		ServeMux: &http.ServeMux{},
@@ -101,7 +117,7 @@ func NewServe(app *app.ApplicationService, config *app.ConfigurationService, env
 			scope:    scope,
 		},
 	}
-	serve.registerHandlers(opts)
+	serve.registerHandlers(opts...)
 	serve.registerProxy()
 	serve.registerWebSocket()
 
