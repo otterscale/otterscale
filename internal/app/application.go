@@ -180,7 +180,7 @@ func (s *ApplicationService) ListReleases(ctx context.Context, req *pb.ListRelea
 }
 
 func (s *ApplicationService) CreateRelease(ctx context.Context, req *pb.CreateReleaseRequest) (*pb.Application_Release, error) {
-	release, err := s.release.CreateRelease(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml(), req.GetValuesMap(), "")
+	release, err := s.release.CreateRelease(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml(), req.GetValuesMap())
 	if err != nil {
 		return nil, err
 	}

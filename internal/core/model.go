@@ -62,7 +62,7 @@ type BackendRef struct {
 
 const (
 	chartModelService = "https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v0.2.15/llm-d-modelservice-v0.2.15.tgz"
-	chartInferencePool = "oci://registry.k8s.io/gateway-api-inference-extension/charts/inferencepool"
+	chartInferencePool = "oci://registry.k8s.io/gateway-api-inference-extension/charts/inferencepool:v1.0.1"
 	chartInfra  = "https://github.com/llm-d-incubation/llm-d-infra/releases/download/v1.3.3/llm-d-infra-v1.3.3.tgz"
 	chartArtifact = "https://raw.githubusercontent.com/otterscale/otterscale-charts/refs/heads/main/docs/llm-d-artifact-0.1.0.tgz"
 
@@ -103,7 +103,7 @@ func (uc *ModelUseCase)CreateModelArtifact(ctx context.Context, scope, facility,
 		"pvc.name": name,
 		"pvc.size": fmt.Sprintf("%d", size),
 	}
-	_, err := uc.release.CreateRelease(ctx, scope, facility, namespace, name, false, chartArtifact, "", ValuesMap, "")
+	_, err := uc.release.CreateRelease(ctx, scope, facility, namespace, name, false, chartArtifact, "", ValuesMap)
 	if err != nil {
 		return nil, err
 	}
@@ -281,13 +281,13 @@ prefill:
 		prefillArgsYAML,
 		prefillEnvYAML,
 	)
-	_, err := uc.release.CreateRelease(ctx, scope, facility, namespace, name, false, chartModelService, valuesYAML, nil, "")
+	_, err := uc.release.CreateRelease(ctx, scope, facility, namespace, name, false, chartModelService, valuesYAML, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	if eppcreate {
-		_, err := uc.release.CreateRelease(ctx, scope, facility, namespace, ipName, false, chartInferencePool, "", ipValuesMap, "v1.0.1")
+		_, err := uc.release.CreateRelease(ctx, scope, facility, namespace, ipName, false, chartInferencePool, "", ipValuesMap)
 		if err != nil {
 			return nil, err
 		}
@@ -384,7 +384,7 @@ func (uc *ModelUseCase) CreateModelGateway(ctx context.Context, scope, facility,
 		"gateway.gatewayParameters.resources.limits.memory": fmt.Sprintf("%d", memory),
 		"gateway.service.type": servicetype,
 	}
-	release, err := uc.release.CreateRelease(ctx, scope, facility, namespace, name, false, chartInfra, "", ValuesMap, "")
+	release, err := uc.release.CreateRelease(ctx, scope, facility, namespace, name, false, chartInfra, "", ValuesMap)
 	if err != nil {
 		return nil, err
 	}
