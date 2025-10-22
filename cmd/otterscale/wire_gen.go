@@ -107,12 +107,12 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	sshKeyRepo := maas.NewSSHKey(maasMAAS)
 	scopeUseCase := core.NewScopeUseCase(keyRepo, scopeRepo, sshKeyRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
-	v, err := mux.NewInterceptorOptions()
+	v, err := mux.NewServeOptions()
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	serve, err := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, storageService, scopeService, v)
+	serve, err := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, storageService, scopeService, v...)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
