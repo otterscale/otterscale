@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://flagd.dev/schema/v0/flags.json
+flags:
+  orch-plugin:
+    state: ENABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "off"
+  stg-general:
+    state: ENABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "off"
+  stg-block:
+    state: ENABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "off"
+  stg-file:
+    state: ENABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "off"
+  stg-object:
+    state: ENABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "off"

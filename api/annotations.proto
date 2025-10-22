@@ -1,0 +1,15 @@
+edition = "2023";
+
+package otterscale.api;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "github.com/otterscale/otterscale/api;api";
+
+message Feature {
+  string name = 1;
+}
+
+extend google.protobuf.MethodOptions {
+  Feature feature = 7777777;
+}

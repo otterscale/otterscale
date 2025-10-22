@@ -2,26 +2,96 @@ edition = "2023";
 
 package otterscale.facility.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/facility/v1;pb";
 
 service FacilityService {
-  rpc ListFacilities(ListFacilitiesRequest) returns (ListFacilitiesResponse);
-  rpc GetFacility(GetFacilityRequest) returns (Facility);
-  rpc CreateFacility(CreateFacilityRequest) returns (Facility);
-  rpc UpdateFacility(UpdateFacilityRequest) returns (Facility);
-  rpc DeleteFacility(DeleteFacilityRequest) returns (google.protobuf.Empty);
-  rpc ExposeFacility(ExposeFacilityRequest) returns (google.protobuf.Empty);
-  rpc AddFacilityUnits(AddFacilityUnitsRequest) returns (AddFacilityUnitsResponse);
-  rpc ResolveFacilityUnitErrors(ResolveFacilityUnitErrorsRequest) returns (google.protobuf.Empty);
-  rpc ListActions(ListActionsRequest) returns (ListActionsResponse);
-  rpc DoAction(DoActionRequest) returns (google.protobuf.Empty);
-  rpc ListCharms(ListCharmsRequest) returns (ListCharmsResponse);
-  rpc GetCharm(GetCharmRequest) returns (Facility.Charm);
-  rpc GetCharmMetadata(GetCharmMetadataRequest) returns (Facility.Charm.Metadata);
-  rpc ListCharmArtifacts(ListCharmArtifactsRequest) returns (ListCharmArtifactsResponse);
+  rpc ListFacilities(ListFacilitiesRequest) returns (ListFacilitiesResponse) {
+    option (otterscale.api.feature) = {
+      name: "fac-general"
+    };
+  };
+
+  rpc GetFacility(GetFacilityRequest) returns (Facility) {
+    option (otterscale.api.feature) = {
+      name: "fac-general"
+    };
+  };
+
+  rpc CreateFacility(CreateFacilityRequest) returns (Facility) {
+    option (otterscale.api.feature) = {
+      name: "fac-debug"
+    };
+  };
+
+  rpc UpdateFacility(UpdateFacilityRequest) returns (Facility) {
+    option (otterscale.api.feature) = {
+      name: "fac-debug"
+    };
+  };
+
+  rpc DeleteFacility(DeleteFacilityRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "fac-debug"
+    };
+  };
+
+  rpc ResolveFacilityUnitErrors(ResolveFacilityUnitErrorsRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "fac-general"
+    };
+  };
+
+  rpc ExposeFacility(ExposeFacilityRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "fac-debug"
+    };
+  };
+
+  rpc AddFacilityUnits(AddFacilityUnitsRequest) returns (AddFacilityUnitsResponse) {
+    option (otterscale.api.feature) = {
+      name: "fac-debug"
+    };
+  };
+
+  rpc ListActions(ListActionsRequest) returns (ListActionsResponse) {
+    option (otterscale.api.feature) = {
+      name: "fac-debug"
+    };
+  };
+
+  rpc DoAction(DoActionRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "fac-debug"
+    };
+  };
+
+  rpc ListCharms(ListCharmsRequest) returns (ListCharmsResponse) {
+    option (otterscale.api.feature) = {
+      name: "fac-debug"
+    };
+  };
+
+  rpc GetCharm(GetCharmRequest) returns (Facility.Charm) {
+    option (otterscale.api.feature) = {
+      name: "fac-debug"
+    };
+  };
+
+  rpc GetCharmMetadata(GetCharmMetadataRequest) returns (Facility.Charm.Metadata) {
+    option (otterscale.api.feature) = {
+      name: "fac-debug"
+    };
+  };
+
+  rpc ListCharmArtifacts(ListCharmArtifactsRequest) returns (ListCharmArtifactsResponse) {
+    option (otterscale.api.feature) = {
+      name: "fac-debug"
+    };
+  };
 }
 
 message Facility {
@@ -149,6 +219,11 @@ message DeleteFacilityRequest {
   bool force = 12;
 }
 
+message ResolveFacilityUnitErrorsRequest {
+  string scope = 1;
+  string unit_name = 2;
+}
+
 message ExposeFacilityRequest {
   string scope = 1;
   string name = 2;
@@ -163,11 +238,6 @@ message AddFacilityUnitsRequest {
 
 message AddFacilityUnitsResponse {
   repeated string unit_names = 1;
-}
-
-message ResolveFacilityUnitErrorsRequest {
-  string scope = 1;
-  string unit_name = 2;
 }
 
 message ListActionsRequest {

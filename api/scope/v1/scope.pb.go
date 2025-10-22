@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -600,7 +601,7 @@ var File_api_scope_v1_scope_proto protoreflect.FileDescriptor
 
 const file_api_scope_v1_scope_proto_rawDesc = "" +
 	"\n" +
-	"\x18api/scope/v1/scope.proto\x12\x13otterscale.scope.v1\"\xbc\x02\n" +
+	"\x18api/scope/v1/scope.proto\x12\x13otterscale.scope.v1\x1a\x15api/annotations.proto\"\xbc\x02\n" +
 	"\x05Scope\x12\x12\n" +
 	"\x04uuid\x18\x01 \x01(\tR\x04uuid\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
@@ -621,11 +622,13 @@ const file_api_scope_v1_scope_proto_rawDesc = "" +
 	"\x12ListScopesResponse\x122\n" +
 	"\x06scopes\x18\x01 \x03(\v2\x1a.otterscale.scope.v1.ScopeR\x06scopes\"(\n" +
 	"\x12CreateScopeRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name2\xc1\x01\n" +
-	"\fScopeService\x12]\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name2\xe9\x01\n" +
+	"\fScopeService\x12q\n" +
 	"\n" +
-	"ListScopes\x12&.otterscale.scope.v1.ListScopesRequest\x1a'.otterscale.scope.v1.ListScopesResponse\x12R\n" +
-	"\vCreateScope\x12'.otterscale.scope.v1.CreateScopeRequest\x1a\x1a.otterscale.scope.v1.ScopeB2Z0github.com/otterscale/otterscale/api/scope/v1;pbb\beditionsp\xe8\a"
+	"ListScopes\x12&.otterscale.scope.v1.ListScopesRequest\x1a'.otterscale.scope.v1.ListScopesResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vscp-general\x12f\n" +
+	"\vCreateScope\x12'.otterscale.scope.v1.CreateScopeRequest\x1a\x1a.otterscale.scope.v1.Scope\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vscp-generalB2Z0github.com/otterscale/otterscale/api/scope/v1;pbb\beditionsp\xe8\a"
 
 var file_api_scope_v1_scope_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_api_scope_v1_scope_proto_goTypes = []any{

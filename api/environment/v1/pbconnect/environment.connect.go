@@ -37,24 +37,24 @@ const (
 	// EnvironmentServiceCheckHealthProcedure is the fully-qualified name of the EnvironmentService's
 	// CheckHealth RPC.
 	EnvironmentServiceCheckHealthProcedure = "/otterscale.environment.v1.EnvironmentService/CheckHealth"
-	// EnvironmentServiceUpdateConfigProcedure is the fully-qualified name of the EnvironmentService's
-	// UpdateConfig RPC.
-	EnvironmentServiceUpdateConfigProcedure = "/otterscale.environment.v1.EnvironmentService/UpdateConfig"
 	// EnvironmentServiceGetPrometheusProcedure is the fully-qualified name of the EnvironmentService's
 	// GetPrometheus RPC.
 	EnvironmentServiceGetPrometheusProcedure = "/otterscale.environment.v1.EnvironmentService/GetPrometheus"
 	// EnvironmentServiceGetPremiumTierProcedure is the fully-qualified name of the EnvironmentService's
 	// GetPremiumTier RPC.
 	EnvironmentServiceGetPremiumTierProcedure = "/otterscale.environment.v1.EnvironmentService/GetPremiumTier"
+	// EnvironmentServiceUpdateConfigProcedure is the fully-qualified name of the EnvironmentService's
+	// UpdateConfig RPC.
+	EnvironmentServiceUpdateConfigProcedure = "/otterscale.environment.v1.EnvironmentService/UpdateConfig"
 )
 
 // EnvironmentServiceClient is a client for the otterscale.environment.v1.EnvironmentService
 // service.
 type EnvironmentServiceClient interface {
 	CheckHealth(context.Context, *v1.CheckHealthRequest) (*v1.CheckHealthResponse, error)
-	UpdateConfig(context.Context, *v1.UpdateConfigRequest) (*emptypb.Empty, error)
 	GetPrometheus(context.Context, *v1.GetPrometheusRequest) (*v1.Prometheus, error)
 	GetPremiumTier(context.Context, *v1.GetPremiumTierRequest) (*v1.PremiumTier, error)
+	UpdateConfig(context.Context, *v1.UpdateConfigRequest) (*emptypb.Empty, error)
 }
 
 // NewEnvironmentServiceClient constructs a client for the
@@ -75,12 +75,6 @@ func NewEnvironmentServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			connect.WithSchema(environmentServiceMethods.ByName("CheckHealth")),
 			connect.WithClientOptions(opts...),
 		),
-		updateConfig: connect.NewClient[v1.UpdateConfigRequest, emptypb.Empty](
-			httpClient,
-			baseURL+EnvironmentServiceUpdateConfigProcedure,
-			connect.WithSchema(environmentServiceMethods.ByName("UpdateConfig")),
-			connect.WithClientOptions(opts...),
-		),
 		getPrometheus: connect.NewClient[v1.GetPrometheusRequest, v1.Prometheus](
 			httpClient,
 			baseURL+EnvironmentServiceGetPrometheusProcedure,
@@ -93,29 +87,26 @@ func NewEnvironmentServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			connect.WithSchema(environmentServiceMethods.ByName("GetPremiumTier")),
 			connect.WithClientOptions(opts...),
 		),
+		updateConfig: connect.NewClient[v1.UpdateConfigRequest, emptypb.Empty](
+			httpClient,
+			baseURL+EnvironmentServiceUpdateConfigProcedure,
+			connect.WithSchema(environmentServiceMethods.ByName("UpdateConfig")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // environmentServiceClient implements EnvironmentServiceClient.
 type environmentServiceClient struct {
 	checkHealth    *connect.Client[v1.CheckHealthRequest, v1.CheckHealthResponse]
-	updateConfig   *connect.Client[v1.UpdateConfigRequest, emptypb.Empty]
 	getPrometheus  *connect.Client[v1.GetPrometheusRequest, v1.Prometheus]
 	getPremiumTier *connect.Client[v1.GetPremiumTierRequest, v1.PremiumTier]
+	updateConfig   *connect.Client[v1.UpdateConfigRequest, emptypb.Empty]
 }
 
 // CheckHealth calls otterscale.environment.v1.EnvironmentService.CheckHealth.
 func (c *environmentServiceClient) CheckHealth(ctx context.Context, req *v1.CheckHealthRequest) (*v1.CheckHealthResponse, error) {
 	response, err := c.checkHealth.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// UpdateConfig calls otterscale.environment.v1.EnvironmentService.UpdateConfig.
-func (c *environmentServiceClient) UpdateConfig(ctx context.Context, req *v1.UpdateConfigRequest) (*emptypb.Empty, error) {
-	response, err := c.updateConfig.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -140,13 +131,22 @@ func (c *environmentServiceClient) GetPremiumTier(ctx context.Context, req *v1.G
 	return nil, err
 }
 
+// UpdateConfig calls otterscale.environment.v1.EnvironmentService.UpdateConfig.
+func (c *environmentServiceClient) UpdateConfig(ctx context.Context, req *v1.UpdateConfigRequest) (*emptypb.Empty, error) {
+	response, err := c.updateConfig.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // EnvironmentServiceHandler is an implementation of the
 // otterscale.environment.v1.EnvironmentService service.
 type EnvironmentServiceHandler interface {
 	CheckHealth(context.Context, *v1.CheckHealthRequest) (*v1.CheckHealthResponse, error)
-	UpdateConfig(context.Context, *v1.UpdateConfigRequest) (*emptypb.Empty, error)
 	GetPrometheus(context.Context, *v1.GetPrometheusRequest) (*v1.Prometheus, error)
 	GetPremiumTier(context.Context, *v1.GetPremiumTierRequest) (*v1.PremiumTier, error)
+	UpdateConfig(context.Context, *v1.UpdateConfigRequest) (*emptypb.Empty, error)
 }
 
 // NewEnvironmentServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -162,12 +162,6 @@ func NewEnvironmentServiceHandler(svc EnvironmentServiceHandler, opts ...connect
 		connect.WithSchema(environmentServiceMethods.ByName("CheckHealth")),
 		connect.WithHandlerOptions(opts...),
 	)
-	environmentServiceUpdateConfigHandler := connect.NewUnaryHandlerSimple(
-		EnvironmentServiceUpdateConfigProcedure,
-		svc.UpdateConfig,
-		connect.WithSchema(environmentServiceMethods.ByName("UpdateConfig")),
-		connect.WithHandlerOptions(opts...),
-	)
 	environmentServiceGetPrometheusHandler := connect.NewUnaryHandlerSimple(
 		EnvironmentServiceGetPrometheusProcedure,
 		svc.GetPrometheus,
@@ -180,16 +174,22 @@ func NewEnvironmentServiceHandler(svc EnvironmentServiceHandler, opts ...connect
 		connect.WithSchema(environmentServiceMethods.ByName("GetPremiumTier")),
 		connect.WithHandlerOptions(opts...),
 	)
+	environmentServiceUpdateConfigHandler := connect.NewUnaryHandlerSimple(
+		EnvironmentServiceUpdateConfigProcedure,
+		svc.UpdateConfig,
+		connect.WithSchema(environmentServiceMethods.ByName("UpdateConfig")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.environment.v1.EnvironmentService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case EnvironmentServiceCheckHealthProcedure:
 			environmentServiceCheckHealthHandler.ServeHTTP(w, r)
-		case EnvironmentServiceUpdateConfigProcedure:
-			environmentServiceUpdateConfigHandler.ServeHTTP(w, r)
 		case EnvironmentServiceGetPrometheusProcedure:
 			environmentServiceGetPrometheusHandler.ServeHTTP(w, r)
 		case EnvironmentServiceGetPremiumTierProcedure:
 			environmentServiceGetPremiumTierHandler.ServeHTTP(w, r)
+		case EnvironmentServiceUpdateConfigProcedure:
+			environmentServiceUpdateConfigHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -203,14 +203,14 @@ func (UnimplementedEnvironmentServiceHandler) CheckHealth(context.Context, *v1.C
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.CheckHealth is not implemented"))
 }
 
-func (UnimplementedEnvironmentServiceHandler) UpdateConfig(context.Context, *v1.UpdateConfigRequest) (*emptypb.Empty, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.UpdateConfig is not implemented"))
-}
-
 func (UnimplementedEnvironmentServiceHandler) GetPrometheus(context.Context, *v1.GetPrometheusRequest) (*v1.Prometheus, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.GetPrometheus is not implemented"))
 }
 
 func (UnimplementedEnvironmentServiceHandler) GetPremiumTier(context.Context, *v1.GetPremiumTierRequest) (*v1.PremiumTier, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.GetPremiumTier is not implemented"))
+}
+
+func (UnimplementedEnvironmentServiceHandler) UpdateConfig(context.Context, *v1.UpdateConfigRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.UpdateConfig is not implemented"))
 }
