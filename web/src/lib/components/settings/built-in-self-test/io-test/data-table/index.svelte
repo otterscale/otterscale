@@ -25,8 +25,11 @@
 </script>
 
 <script lang="ts">
-	let { testResults, reloadManager }: { testResults: Writable<TestResult[]>; reloadManager: ReloadManager } =
-		$props();
+	let {
+		mode,
+		testResults,
+		reloadManager,
+	}: { mode: string; testResults: Writable<TestResult[]>; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -112,7 +115,7 @@
 
 <Layout.Root>
 	<Layout.Statistics>
-		<Statistics {table} />
+		<Statistics {mode} {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
