@@ -46,7 +46,7 @@
 	});
 </script>
 
-<main class="space-y-4 py-4">
+<main>
 	{#if isMounted}
 		<div class="flex items-center justify-between gap-2">
 			{@render trigger()}

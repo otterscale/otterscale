@@ -13,7 +13,7 @@
 	const { read: readTmp, write: writeTmp, trim: trimTmp } = dashboardManager.getFioOutputs();
 </script>
 
-<div class="my-6 grid w-full gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3">
+<div class="mt-4 grid w-full gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3">
 	<Layout>
 		{#snippet title()}
 			<Title title="Bandwidth" />
