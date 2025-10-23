@@ -23,7 +23,7 @@
 	const client = createClient(ConfigurationService, transport);
 	const reloadManager = new ReloadManager(() => {
 		client.listTestResults({}).then((response) => {
-			testResults.set(response.testResults);
+			testResults.set(response.testResults.filter((result) => result.kind.case === 'warp'));
 		});
 	});
 	setContext('reloadManager', reloadManager);
@@ -32,7 +32,7 @@
 		client
 			.listTestResults({})
 			.then((response) => {
-				testResults.set(response.testResults);
+				testResults.set(response.testResults.filter((result) => result.kind.case === 'warp'));
 				isMounted = true;
 			})
 			.catch((error) => {
@@ -46,7 +46,7 @@
 	});
 </script>
 
-<main class="space-y-4 py-4">
+<main>
 	{#if isMounted}
 		<div class="flex items-center justify-between gap-2">
 			{@render trigger()}
