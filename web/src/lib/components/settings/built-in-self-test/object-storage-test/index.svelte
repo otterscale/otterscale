@@ -4,6 +4,7 @@
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table';
+	import Pickers from './pickers.svelte';
 
 	import { ConfigurationService, type TestResult } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Loading from '$lib/components/custom/loading';
@@ -17,11 +18,12 @@
 
 	const testResults = writable<TestResult[]>([]);
 	let isMounted = $state(false);
+	let mode = $state('get');
 
 	const client = createClient(ConfigurationService, transport);
 	const reloadManager = new ReloadManager(() => {
 		client.listTestResults({}).then((response) => {
-			testResults.set(response.testResults);
+			testResults.set(response.testResults.filter((result) => result.kind.case === 'warp'));
 		});
 	});
 	setContext('reloadManager', reloadManager);
@@ -30,7 +32,7 @@
 		client
 			.listTestResults({})
 			.then((response) => {
-				testResults.set(response.testResults);
+				testResults.set(response.testResults.filter((result) => result.kind.case === 'warp'));
 				isMounted = true;
 			})
 			.catch((error) => {
@@ -44,10 +46,13 @@
 	});
 </script>
 
-<main class="space-y-4 py-4">
+<main>
 	{#if isMounted}
-		{@render trigger()}
-		<DataTable {testResults} {reloadManager} />
+		<div class="flex items-center justify-between gap-2">
+			{@render trigger()}
+			<Pickers bind:selectedMode={mode} />
+		</div>
+		<DataTable {mode} {testResults} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}
