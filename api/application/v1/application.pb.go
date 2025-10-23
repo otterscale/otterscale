@@ -10,6 +10,7 @@ import (
 	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -1703,6 +1704,7 @@ type WatchLogsRequest struct {
 	xxx_hidden_Namespace     *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_PodName       *string                `protobuf:"bytes,4,opt,name=pod_name,json=podName"`
 	xxx_hidden_ContainerName *string                `protobuf:"bytes,5,opt,name=container_name,json=containerName"`
+	xxx_hidden_Duration      *durationpb.Duration   `protobuf:"bytes,6,opt,name=duration"`
 	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
 	XXX_presence             [1]uint32
 	unknownFields            protoimpl.UnknownFields
@@ -1784,29 +1786,40 @@ func (x *WatchLogsRequest) GetContainerName() string {
 	return ""
 }
 
+func (x *WatchLogsRequest) GetDuration() *durationpb.Duration {
+	if x != nil {
+		return x.xxx_hidden_Duration
+	}
+	return nil
+}
+
 func (x *WatchLogsRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
 func (x *WatchLogsRequest) SetFacility(v string) {
 	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
 func (x *WatchLogsRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
 }
 
 func (x *WatchLogsRequest) SetPodName(v string) {
 	x.xxx_hidden_PodName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
 }
 
 func (x *WatchLogsRequest) SetContainerName(v string) {
 	x.xxx_hidden_ContainerName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+}
+
+func (x *WatchLogsRequest) SetDuration(v *durationpb.Duration) {
+	x.xxx_hidden_Duration = v
 }
 
 func (x *WatchLogsRequest) HasScope() bool {
@@ -1844,6 +1857,13 @@ func (x *WatchLogsRequest) HasContainerName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
+func (x *WatchLogsRequest) HasDuration() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Duration != nil
+}
+
 func (x *WatchLogsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
@@ -1869,6 +1889,10 @@ func (x *WatchLogsRequest) ClearContainerName() {
 	x.xxx_hidden_ContainerName = nil
 }
 
+func (x *WatchLogsRequest) ClearDuration() {
+	x.xxx_hidden_Duration = nil
+}
+
 type WatchLogsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -1877,6 +1901,7 @@ type WatchLogsRequest_builder struct {
 	Namespace     *string
 	PodName       *string
 	ContainerName *string
+	Duration      *durationpb.Duration
 }
 
 func (b0 WatchLogsRequest_builder) Build() *WatchLogsRequest {
@@ -1884,25 +1909,26 @@ func (b0 WatchLogsRequest_builder) Build() *WatchLogsRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
 		x.xxx_hidden_Scope = b.Scope
 	}
 	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
 		x.xxx_hidden_Facility = b.Facility
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.PodName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
 		x.xxx_hidden_PodName = b.PodName
 	}
 	if b.ContainerName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
 		x.xxx_hidden_ContainerName = b.ContainerName
 	}
+	x.xxx_hidden_Duration = b.Duration
 	return m0
 }
 
@@ -6653,7 +6679,7 @@ var File_api_application_v1_application_proto protoreflect.FileDescriptor
 
 const file_api_application_v1_application_proto_rawDesc = "" +
 	"\n" +
-	"$api/application/v1/application.proto\x12\x19otterscale.application.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xdf\x01\n" +
+	"$api/application/v1/application.proto\x12\x19otterscale.application.v1\x1a\x15api/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xdf\x01\n" +
 	"\tNamespace\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12H\n" +
 	"\x06labels\x18\x02 \x03(\v20.otterscale.application.v1.Namespace.LabelsEntryR\x06labels\x129\n" +
@@ -6811,13 +6837,14 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
 	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xa4\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\"\xdb\x01\n" +
 	"\x10WatchLogsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
 	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x19\n" +
 	"\bpod_name\x18\x04 \x01(\tR\apodName\x12%\n" +
-	"\x0econtainer_name\x18\x05 \x01(\tR\rcontainerName\"%\n" +
+	"\x0econtainer_name\x18\x05 \x01(\tR\rcontainerName\x125\n" +
+	"\bduration\x18\x06 \x01(\v2\x19.google.protobuf.DurationR\bduration\"%\n" +
 	"\x11WatchLogsResponse\x12\x10\n" +
 	"\x03log\x18\x01 \x01(\tR\x03log\"\xbf\x01\n" +
 	"\x11ExecuteTTYRequest\x12\x14\n" +
@@ -6982,8 +7009,9 @@ var file_api_application_v1_application_proto_goTypes = []any{
 	nil,                                     // 43: otterscale.application.v1.StorageClass.ParametersEntry
 	nil,                                     // 44: otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
 	(*timestamppb.Timestamp)(nil),           // 45: google.protobuf.Timestamp
-	(*structpb.Struct)(nil),                 // 46: google.protobuf.Struct
-	(*emptypb.Empty)(nil),                   // 47: google.protobuf.Empty
+	(*durationpb.Duration)(nil),             // 46: google.protobuf.Duration
+	(*structpb.Struct)(nil),                 // 47: google.protobuf.Struct
+	(*emptypb.Empty)(nil),                   // 48: google.protobuf.Empty
 }
 var file_api_application_v1_application_proto_depIdxs = []int32{
 	28, // 0: otterscale.application.v1.Namespace.labels:type_name -> otterscale.application.v1.Namespace.LabelsEntry
@@ -6998,66 +7026,67 @@ var file_api_application_v1_application_proto_depIdxs = []int32{
 	43, // 9: otterscale.application.v1.StorageClass.parameters:type_name -> otterscale.application.v1.StorageClass.ParametersEntry
 	45, // 10: otterscale.application.v1.StorageClass.created_at:type_name -> google.protobuf.Timestamp
 	1,  // 11: otterscale.application.v1.ListApplicationsResponse.applications:type_name -> otterscale.application.v1.Application
-	30, // 12: otterscale.application.v1.ListReleasesResponse.releases:type_name -> otterscale.application.v1.Application.Release
-	44, // 13: otterscale.application.v1.CreateReleaseRequest.values_map:type_name -> otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
-	29, // 14: otterscale.application.v1.ListChartsResponse.charts:type_name -> otterscale.application.v1.Application.Chart
-	0,  // 15: otterscale.application.v1.ListNamespacesResponse.namespaces:type_name -> otterscale.application.v1.Namespace
-	2,  // 16: otterscale.application.v1.ListStorageClassesResponse.storage_classes:type_name -> otterscale.application.v1.StorageClass
-	39, // 17: otterscale.application.v1.Application.Chart.maintainers:type_name -> otterscale.application.v1.Application.Chart.Maintainer
-	40, // 18: otterscale.application.v1.Application.Chart.dependencies:type_name -> otterscale.application.v1.Application.Chart.Dependency
-	41, // 19: otterscale.application.v1.Application.Chart.versions:type_name -> otterscale.application.v1.Application.Chart.Version
-	41, // 20: otterscale.application.v1.Application.Release.version:type_name -> otterscale.application.v1.Application.Chart.Version
-	45, // 21: otterscale.application.v1.Application.Condition.probed_at:type_name -> google.protobuf.Timestamp
-	45, // 22: otterscale.application.v1.Application.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
-	42, // 23: otterscale.application.v1.Application.Service.ports:type_name -> otterscale.application.v1.Application.Service.Port
-	45, // 24: otterscale.application.v1.Application.Service.created_at:type_name -> google.protobuf.Timestamp
-	31, // 25: otterscale.application.v1.Application.Pod.last_condition:type_name -> otterscale.application.v1.Application.Condition
-	45, // 26: otterscale.application.v1.Application.Pod.created_at:type_name -> google.protobuf.Timestamp
-	2,  // 27: otterscale.application.v1.Application.PersistentVolumeClaim.storage_class:type_name -> otterscale.application.v1.StorageClass
-	45, // 28: otterscale.application.v1.Application.PersistentVolumeClaim.created_at:type_name -> google.protobuf.Timestamp
-	46, // 29: otterscale.application.v1.Application.Chart.Customization.values:type_name -> google.protobuf.Struct
-	37, // 30: otterscale.application.v1.Application.Chart.Metadata.customization:type_name -> otterscale.application.v1.Application.Chart.Customization
-	3,  // 31: otterscale.application.v1.ApplicationService.ListApplications:input_type -> otterscale.application.v1.ListApplicationsRequest
-	5,  // 32: otterscale.application.v1.ApplicationService.GetApplication:input_type -> otterscale.application.v1.GetApplicationRequest
-	6,  // 33: otterscale.application.v1.ApplicationService.RestartApplication:input_type -> otterscale.application.v1.RestartApplicationRequest
-	7,  // 34: otterscale.application.v1.ApplicationService.ScaleApplication:input_type -> otterscale.application.v1.ScaleApplicationRequest
-	8,  // 35: otterscale.application.v1.ApplicationService.DeleteApplicationPod:input_type -> otterscale.application.v1.DeleteApplicationPodRequest
-	9,  // 36: otterscale.application.v1.ApplicationService.WatchLogs:input_type -> otterscale.application.v1.WatchLogsRequest
-	11, // 37: otterscale.application.v1.ApplicationService.ExecuteTTY:input_type -> otterscale.application.v1.ExecuteTTYRequest
-	13, // 38: otterscale.application.v1.ApplicationService.WriteTTY:input_type -> otterscale.application.v1.WriteTTYRequest
-	14, // 39: otterscale.application.v1.ApplicationService.ListReleases:input_type -> otterscale.application.v1.ListReleasesRequest
-	16, // 40: otterscale.application.v1.ApplicationService.CreateRelease:input_type -> otterscale.application.v1.CreateReleaseRequest
-	17, // 41: otterscale.application.v1.ApplicationService.UpdateRelease:input_type -> otterscale.application.v1.UpdateReleaseRequest
-	18, // 42: otterscale.application.v1.ApplicationService.DeleteRelease:input_type -> otterscale.application.v1.DeleteReleaseRequest
-	19, // 43: otterscale.application.v1.ApplicationService.RollbackRelease:input_type -> otterscale.application.v1.RollbackReleaseRequest
-	20, // 44: otterscale.application.v1.ApplicationService.ListCharts:input_type -> otterscale.application.v1.ListChartsRequest
-	22, // 45: otterscale.application.v1.ApplicationService.GetChart:input_type -> otterscale.application.v1.GetChartRequest
-	23, // 46: otterscale.application.v1.ApplicationService.GetChartMetadata:input_type -> otterscale.application.v1.GetChartMetadataRequest
-	24, // 47: otterscale.application.v1.ApplicationService.ListNamespaces:input_type -> otterscale.application.v1.ListNamespacesRequest
-	26, // 48: otterscale.application.v1.ApplicationService.ListStorageClasses:input_type -> otterscale.application.v1.ListStorageClassesRequest
-	4,  // 49: otterscale.application.v1.ApplicationService.ListApplications:output_type -> otterscale.application.v1.ListApplicationsResponse
-	1,  // 50: otterscale.application.v1.ApplicationService.GetApplication:output_type -> otterscale.application.v1.Application
-	47, // 51: otterscale.application.v1.ApplicationService.RestartApplication:output_type -> google.protobuf.Empty
-	47, // 52: otterscale.application.v1.ApplicationService.ScaleApplication:output_type -> google.protobuf.Empty
-	47, // 53: otterscale.application.v1.ApplicationService.DeleteApplicationPod:output_type -> google.protobuf.Empty
-	10, // 54: otterscale.application.v1.ApplicationService.WatchLogs:output_type -> otterscale.application.v1.WatchLogsResponse
-	12, // 55: otterscale.application.v1.ApplicationService.ExecuteTTY:output_type -> otterscale.application.v1.ExecuteTTYResponse
-	47, // 56: otterscale.application.v1.ApplicationService.WriteTTY:output_type -> google.protobuf.Empty
-	15, // 57: otterscale.application.v1.ApplicationService.ListReleases:output_type -> otterscale.application.v1.ListReleasesResponse
-	30, // 58: otterscale.application.v1.ApplicationService.CreateRelease:output_type -> otterscale.application.v1.Application.Release
-	30, // 59: otterscale.application.v1.ApplicationService.UpdateRelease:output_type -> otterscale.application.v1.Application.Release
-	47, // 60: otterscale.application.v1.ApplicationService.DeleteRelease:output_type -> google.protobuf.Empty
-	47, // 61: otterscale.application.v1.ApplicationService.RollbackRelease:output_type -> google.protobuf.Empty
-	21, // 62: otterscale.application.v1.ApplicationService.ListCharts:output_type -> otterscale.application.v1.ListChartsResponse
-	29, // 63: otterscale.application.v1.ApplicationService.GetChart:output_type -> otterscale.application.v1.Application.Chart
-	38, // 64: otterscale.application.v1.ApplicationService.GetChartMetadata:output_type -> otterscale.application.v1.Application.Chart.Metadata
-	25, // 65: otterscale.application.v1.ApplicationService.ListNamespaces:output_type -> otterscale.application.v1.ListNamespacesResponse
-	27, // 66: otterscale.application.v1.ApplicationService.ListStorageClasses:output_type -> otterscale.application.v1.ListStorageClassesResponse
-	49, // [49:67] is the sub-list for method output_type
-	31, // [31:49] is the sub-list for method input_type
-	31, // [31:31] is the sub-list for extension type_name
-	31, // [31:31] is the sub-list for extension extendee
-	0,  // [0:31] is the sub-list for field type_name
+	46, // 12: otterscale.application.v1.WatchLogsRequest.duration:type_name -> google.protobuf.Duration
+	30, // 13: otterscale.application.v1.ListReleasesResponse.releases:type_name -> otterscale.application.v1.Application.Release
+	44, // 14: otterscale.application.v1.CreateReleaseRequest.values_map:type_name -> otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
+	29, // 15: otterscale.application.v1.ListChartsResponse.charts:type_name -> otterscale.application.v1.Application.Chart
+	0,  // 16: otterscale.application.v1.ListNamespacesResponse.namespaces:type_name -> otterscale.application.v1.Namespace
+	2,  // 17: otterscale.application.v1.ListStorageClassesResponse.storage_classes:type_name -> otterscale.application.v1.StorageClass
+	39, // 18: otterscale.application.v1.Application.Chart.maintainers:type_name -> otterscale.application.v1.Application.Chart.Maintainer
+	40, // 19: otterscale.application.v1.Application.Chart.dependencies:type_name -> otterscale.application.v1.Application.Chart.Dependency
+	41, // 20: otterscale.application.v1.Application.Chart.versions:type_name -> otterscale.application.v1.Application.Chart.Version
+	41, // 21: otterscale.application.v1.Application.Release.version:type_name -> otterscale.application.v1.Application.Chart.Version
+	45, // 22: otterscale.application.v1.Application.Condition.probed_at:type_name -> google.protobuf.Timestamp
+	45, // 23: otterscale.application.v1.Application.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
+	42, // 24: otterscale.application.v1.Application.Service.ports:type_name -> otterscale.application.v1.Application.Service.Port
+	45, // 25: otterscale.application.v1.Application.Service.created_at:type_name -> google.protobuf.Timestamp
+	31, // 26: otterscale.application.v1.Application.Pod.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	45, // 27: otterscale.application.v1.Application.Pod.created_at:type_name -> google.protobuf.Timestamp
+	2,  // 28: otterscale.application.v1.Application.PersistentVolumeClaim.storage_class:type_name -> otterscale.application.v1.StorageClass
+	45, // 29: otterscale.application.v1.Application.PersistentVolumeClaim.created_at:type_name -> google.protobuf.Timestamp
+	47, // 30: otterscale.application.v1.Application.Chart.Customization.values:type_name -> google.protobuf.Struct
+	37, // 31: otterscale.application.v1.Application.Chart.Metadata.customization:type_name -> otterscale.application.v1.Application.Chart.Customization
+	3,  // 32: otterscale.application.v1.ApplicationService.ListApplications:input_type -> otterscale.application.v1.ListApplicationsRequest
+	5,  // 33: otterscale.application.v1.ApplicationService.GetApplication:input_type -> otterscale.application.v1.GetApplicationRequest
+	6,  // 34: otterscale.application.v1.ApplicationService.RestartApplication:input_type -> otterscale.application.v1.RestartApplicationRequest
+	7,  // 35: otterscale.application.v1.ApplicationService.ScaleApplication:input_type -> otterscale.application.v1.ScaleApplicationRequest
+	8,  // 36: otterscale.application.v1.ApplicationService.DeleteApplicationPod:input_type -> otterscale.application.v1.DeleteApplicationPodRequest
+	9,  // 37: otterscale.application.v1.ApplicationService.WatchLogs:input_type -> otterscale.application.v1.WatchLogsRequest
+	11, // 38: otterscale.application.v1.ApplicationService.ExecuteTTY:input_type -> otterscale.application.v1.ExecuteTTYRequest
+	13, // 39: otterscale.application.v1.ApplicationService.WriteTTY:input_type -> otterscale.application.v1.WriteTTYRequest
+	14, // 40: otterscale.application.v1.ApplicationService.ListReleases:input_type -> otterscale.application.v1.ListReleasesRequest
+	16, // 41: otterscale.application.v1.ApplicationService.CreateRelease:input_type -> otterscale.application.v1.CreateReleaseRequest
+	17, // 42: otterscale.application.v1.ApplicationService.UpdateRelease:input_type -> otterscale.application.v1.UpdateReleaseRequest
+	18, // 43: otterscale.application.v1.ApplicationService.DeleteRelease:input_type -> otterscale.application.v1.DeleteReleaseRequest
+	19, // 44: otterscale.application.v1.ApplicationService.RollbackRelease:input_type -> otterscale.application.v1.RollbackReleaseRequest
+	20, // 45: otterscale.application.v1.ApplicationService.ListCharts:input_type -> otterscale.application.v1.ListChartsRequest
+	22, // 46: otterscale.application.v1.ApplicationService.GetChart:input_type -> otterscale.application.v1.GetChartRequest
+	23, // 47: otterscale.application.v1.ApplicationService.GetChartMetadata:input_type -> otterscale.application.v1.GetChartMetadataRequest
+	24, // 48: otterscale.application.v1.ApplicationService.ListNamespaces:input_type -> otterscale.application.v1.ListNamespacesRequest
+	26, // 49: otterscale.application.v1.ApplicationService.ListStorageClasses:input_type -> otterscale.application.v1.ListStorageClassesRequest
+	4,  // 50: otterscale.application.v1.ApplicationService.ListApplications:output_type -> otterscale.application.v1.ListApplicationsResponse
+	1,  // 51: otterscale.application.v1.ApplicationService.GetApplication:output_type -> otterscale.application.v1.Application
+	48, // 52: otterscale.application.v1.ApplicationService.RestartApplication:output_type -> google.protobuf.Empty
+	48, // 53: otterscale.application.v1.ApplicationService.ScaleApplication:output_type -> google.protobuf.Empty
+	48, // 54: otterscale.application.v1.ApplicationService.DeleteApplicationPod:output_type -> google.protobuf.Empty
+	10, // 55: otterscale.application.v1.ApplicationService.WatchLogs:output_type -> otterscale.application.v1.WatchLogsResponse
+	12, // 56: otterscale.application.v1.ApplicationService.ExecuteTTY:output_type -> otterscale.application.v1.ExecuteTTYResponse
+	48, // 57: otterscale.application.v1.ApplicationService.WriteTTY:output_type -> google.protobuf.Empty
+	15, // 58: otterscale.application.v1.ApplicationService.ListReleases:output_type -> otterscale.application.v1.ListReleasesResponse
+	30, // 59: otterscale.application.v1.ApplicationService.CreateRelease:output_type -> otterscale.application.v1.Application.Release
+	30, // 60: otterscale.application.v1.ApplicationService.UpdateRelease:output_type -> otterscale.application.v1.Application.Release
+	48, // 61: otterscale.application.v1.ApplicationService.DeleteRelease:output_type -> google.protobuf.Empty
+	48, // 62: otterscale.application.v1.ApplicationService.RollbackRelease:output_type -> google.protobuf.Empty
+	21, // 63: otterscale.application.v1.ApplicationService.ListCharts:output_type -> otterscale.application.v1.ListChartsResponse
+	29, // 64: otterscale.application.v1.ApplicationService.GetChart:output_type -> otterscale.application.v1.Application.Chart
+	38, // 65: otterscale.application.v1.ApplicationService.GetChartMetadata:output_type -> otterscale.application.v1.Application.Chart.Metadata
+	25, // 66: otterscale.application.v1.ApplicationService.ListNamespaces:output_type -> otterscale.application.v1.ListNamespacesResponse
+	27, // 67: otterscale.application.v1.ApplicationService.ListStorageClasses:output_type -> otterscale.application.v1.ListStorageClassesResponse
+	50, // [50:68] is the sub-list for method output_type
+	32, // [32:50] is the sub-list for method input_type
+	32, // [32:32] is the sub-list for extension type_name
+	32, // [32:32] is the sub-list for extension extendee
+	0,  // [0:32] is the sub-list for field type_name
 }
 
 func init() { file_api_application_v1_application_proto_init() }

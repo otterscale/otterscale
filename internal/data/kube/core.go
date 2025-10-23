@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"net/url"
+	"time"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -240,7 +241,7 @@ func (r *core) GetLogs(ctx context.Context, config *rest.Config, namespace, podN
 	return buf.String(), nil
 }
 
-func (r *core) StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error) {
+func (r *core) StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string, duration time.Duration) (io.ReadCloser, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -249,6 +250,10 @@ func (r *core) StreamLogs(ctx context.Context, config *rest.Config, namespace, p
 	opts := corev1.PodLogOptions{
 		Container: containerName,
 		Follow:    true,
+	}
+	if duration > 0 {
+		sec := int64(duration.Round(time.Second).Seconds())
+		opts.SinceSeconds = &sec
 	}
 	return clientset.CoreV1().Pods(namespace).GetLogs(podName, &opts).Stream(ctx)
 }
