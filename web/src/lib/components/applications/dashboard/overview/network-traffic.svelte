@@ -3,7 +3,7 @@
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
@@ -74,6 +74,9 @@
 	onMount(async () => {
 		await fetch();
 		isLoading = false;
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 
 	$effect(() => {

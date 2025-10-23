@@ -28,8 +28,8 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name,
+		scope: $currentCeph?.scope,
+		facility: $currentCeph?.name,
 		poolName: pool.name,
 		quotaBytes: pool.quotaBytes,
 		quotaObjects: pool.quotaObjects,

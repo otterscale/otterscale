@@ -13,8 +13,8 @@
 </script>
 
 {#if $currentKubernetes}
-	{@const scopeUuid = $currentKubernetes.scopeUuid}
-	{@const facilityName = $currentKubernetes.name}
+	{@const scope = $currentKubernetes.scope}
+	{@const facility = $currentKubernetes.name}
 
-	<Workloads {scopeUuid} {facilityName} />
+	<Workloads {scope} {facility} />
 {/if}

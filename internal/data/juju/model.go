@@ -2,6 +2,7 @@ package juju
 
 import (
 	"context"
+	"fmt"
 	"slices"
 
 	"github.com/juju/juju/api/base"
@@ -25,7 +26,7 @@ func NewModel(juju *Juju) core.ScopeRepo {
 var _ core.ScopeRepo = (*model)(nil)
 
 func (r *model) List(_ context.Context) ([]core.Scope, error) {
-	conn, err := r.juju.connection("")
+	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return nil, err
 	}
@@ -37,8 +38,28 @@ func (r *model) List(_ context.Context) ([]core.Scope, error) {
 	return r.filterValidModels(models), nil
 }
 
+func (r *model) Get(_ context.Context, name string) (*core.Scope, error) {
+	conn, err := r.juju.connection("controller")
+	if err != nil {
+		return nil, err
+	}
+
+	models, err := api.NewClient(conn).ListModelSummaries(r.juju.username(), true)
+	if err != nil {
+		return nil, err
+	}
+
+	models = r.filterValidModels(models)
+	for i := range models {
+		if models[i].Name == name {
+			return &models[i], nil
+		}
+	}
+	return nil, fmt.Errorf("model %q not found", name)
+}
+
 func (r *model) Create(_ context.Context, name string) (*core.Scope, error) {
-	conn, err := r.juju.connection("")
+	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return nil, err
 	}

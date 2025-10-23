@@ -5,7 +5,7 @@
 
 	import Update from './update.svelte';
 
-	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
+	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Layout from '$lib/components/settings/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
@@ -14,16 +14,16 @@
 
 <script lang="ts">
 	const transport: Transport = getContext('transport');
-	const environmentClient = createClient(EnvironmentService, transport);
+	const configurationClient = createClient(ConfigurationService, transport);
 
-	const urls = writable<string[]>([]);
-	let isUrlsLoading = $state(true);
+	const configuration = writable<Configuration>();
+	let isConfigurationLoading = $state(true);
 
 	onMount(async () => {
 		try {
-			await environmentClient.getConfigHelmRepositories({}).then((response) => {
-				urls.set(response.urls);
-				isUrlsLoading = false;
+			await configurationClient.getConfiguration({}).then((response) => {
+				configuration.set(response);
+				isConfigurationLoading = false;
 			});
 		} catch (error) {
 			console.error('Error during initial data load:', error);
@@ -31,20 +31,20 @@
 	});
 </script>
 
-{#if !isUrlsLoading}
+{#if !isConfigurationLoading}
 	<Layout.Root>
 		<Layout.Title>{m.repository()}</Layout.Title>
 		<Layout.Description>
 			{m.setting_helm_repository_description()}
 		</Layout.Description>
 		<Layout.Controller>
-			<Update {urls} />
+			<Update {configuration} />
 		</Layout.Controller>
 		<Layout.Viewer>
 			<Card.Root>
 				<Card.Content>
-					{#if $urls}
-						{#each $urls as url}
+					{#if $configuration.helmRepository && $configuration.helmRepository.urls}
+						{#each $configuration.helmRepository.urls as url}
 							<Badge>{url}</Badge>
 						{/each}
 					{/if}

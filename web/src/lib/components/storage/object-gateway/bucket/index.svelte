@@ -12,11 +12,11 @@
 
 <script lang="ts">
 	let {
-		selectedScopeUuid = $bindable(),
+		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
 		trigger,
 	}: {
-		selectedScopeUuid: string;
+		selectedScope: string;
 		selectedFacility: string;
 		trigger: Snippet;
 	} = $props();
@@ -28,7 +28,7 @@
 
 	const storageClient = createClient(StorageService, transport);
 	const reloadManager = new ReloadManager(() => {
-		storageClient.listBuckets({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility }).then((response) => {
+		storageClient.listBuckets({ scope: selectedScope, facility: selectedFacility }).then((response) => {
 			buckets.set(response.buckets);
 		});
 	});
@@ -36,7 +36,7 @@
 
 	onMount(() => {
 		storageClient
-			.listBuckets({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility })
+			.listBuckets({ scope: selectedScope, facility: selectedFacility })
 			.then((response) => {
 				buckets.set(response.buckets);
 				isMounted = true;

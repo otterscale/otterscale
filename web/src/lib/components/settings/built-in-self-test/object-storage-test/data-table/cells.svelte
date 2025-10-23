@@ -10,7 +10,7 @@
 		type TestResult,
 		TestResult_Status,
 		Warp_Input_Operation,
-	} from '$lib/api/bist/v1/bist_pb';
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge/index.js';
@@ -66,7 +66,7 @@
 			{#if row.original.kind.value.target.case === 'internalObjectService'}
 				<Badge variant="outline">
 					{InternalObjectService_Type[row.original.kind.value.target.value.type]}-{row.original.kind.value
-						.target.value.facilityName}
+						.target.value.facility}
 				</Badge>
 			{:else if row.original.kind.value.target.case === 'externalObjectService'}
 				<Badge variant="outline">

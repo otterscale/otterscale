@@ -7,10 +7,10 @@ interface Metrics {
 	time_to_first_token: number;
 }
 
-interface LargeLangeageModel {
+interface LargeLanguageModel {
 	name: string;
 	application: Application;
 	metrics: Metrics;
 }
 
-export type { LargeLangeageModel };
+export type { LargeLanguageModel };

@@ -23,8 +23,8 @@ func NewMachine(juju *Juju) core.MachineManagerRepo {
 
 var _ core.MachineManagerRepo = (*machine)(nil)
 
-func (r *machine) AddMachines(_ context.Context, uuid string, params []params.AddMachineParams) error {
-	conn, err := r.juju.connection(uuid)
+func (r *machine) AddMachines(_ context.Context, scope string, params []params.AddMachineParams) error {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -42,8 +42,8 @@ func (r *machine) AddMachines(_ context.Context, uuid string, params []params.Ad
 	return errors.Join(errs...)
 }
 
-func (r *machine) DestroyMachines(_ context.Context, uuid string, force, keep, dryRun bool, maxWait *time.Duration, machines ...string) error {
-	conn, err := r.juju.connection(uuid)
+func (r *machine) DestroyMachines(_ context.Context, scope string, force, keep, dryRun bool, maxWait *time.Duration, machines ...string) error {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}

@@ -1,15 +1,23 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
+	import { onMount } from 'svelte';
 
 	import type { FilterManager } from './utils';
 
+	import { page } from '$app/stores';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+
+	export const COLUMN_ID = 'name';
 </script>
 
 <script lang="ts">
 	let { filterManager }: { filterManager: FilterManager } = $props();
+
+	onMount(() => {
+		filterManager.searchedName = $page.url.searchParams.get(COLUMN_ID) ?? '';
+	});
 </script>
 
 <span class="relative h-8">

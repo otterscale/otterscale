@@ -18,6 +18,7 @@
 		container,
 		volume,
 		nodeport,
+		actions,
 	};
 </script>
 
@@ -115,3 +116,5 @@
 		<Layout.HeaderViewer>{m.nodeport()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
+
+{#snippet actions()}{/snippet}

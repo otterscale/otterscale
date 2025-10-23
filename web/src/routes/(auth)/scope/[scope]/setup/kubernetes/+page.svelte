@@ -59,9 +59,9 @@
 	let autoRefresh = $state(false);
 	let refreshInterval: NodeJS.Timeout | null = null;
 
-	async function fetchFacilities(uuid: string) {
+	async function fetchFacilities(scope: string) {
 		try {
-			const response = await facilityClient.listFacilities({ scopeUuid: uuid });
+			const response = await facilityClient.listFacilities({ scope: scope });
 			facilities.set(response.facilities);
 		} catch (error) {
 			console.error('Error fetching facilities:', error);
@@ -78,12 +78,12 @@
 		}
 
 		if (scope) {
-			fetchFacilities(scope.uuid);
+			fetchFacilities(scope.name);
 
 			// Setup auto-refresh if enabled
 			if (autoRefresh) {
 				refreshInterval = setInterval(() => {
-					fetchFacilities(scope.uuid);
+					fetchFacilities(scope.name);
 				}, 3000);
 			}
 		}

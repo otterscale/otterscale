@@ -100,13 +100,13 @@
 					discoveryEndpoint: ssoFormData.discoveryEndpoint,
 					scopes: ['openid', 'email', 'profile'],
 					pkce: true,
-				},
-				mapping: {
-					id: 'sub',
-					email: 'email',
-					emailVerified: 'email_verified',
-					name: 'name',
-					image: 'picture',
+					mapping: {
+						id: 'sub',
+						email: 'email',
+						emailVerified: 'email_verified',
+						name: 'name',
+						image: 'picture',
+					},
 				},
 			}),
 			{

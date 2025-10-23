@@ -6,7 +6,7 @@
 	import { LineChart } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	// import { getContext, onMount } from 'svelte';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	// import { MachineService } from '$lib/api/machine/v1/machine_pb';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
@@ -25,7 +25,7 @@
 		isReloading = $bindable(),
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
-	let latestMemoryUsage = $state(null);
+	let latestMemoryUsage = $state(0);
 	let memoryUsages = $state([] as SampleValue[]);
 	const trend = $derived(
 		memoryUsages.length > 1 && memoryUsages[memoryUsages.length - 2].value !== 0
@@ -46,7 +46,7 @@
 				`,
 			)
 			.then((response) => {
-				latestMemoryUsage = response.result[0].value.value;
+				latestMemoryUsage = response.result && response.result[0] ? response.result[0].value.value : 0;
 			});
 		prometheusDriver
 			.rangeQuery(
@@ -58,7 +58,7 @@
 				2 * 60,
 			)
 			.then((response) => {
-				memoryUsages = response.result[0].values;
+				memoryUsages = response.result && response.result[0] ? response.result[0].values : [];
 			});
 	}
 
@@ -72,6 +72,9 @@
 		} catch (error) {
 			console.error(`Fail to fetch data in scope ${scope}:`, error);
 		}
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 
 	$effect(() => {

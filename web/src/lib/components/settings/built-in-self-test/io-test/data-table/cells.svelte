@@ -5,7 +5,11 @@
 
 	import Actions from './actions.svelte';
 
-	import { FIO_Input_AccessMode, type TestResult, TestResult_Status } from '$lib/api/bist/v1/bist_pb';
+	import {
+		FIO_Input_AccessMode,
+		type TestResult,
+		TestResult_Status,
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge/index.js';
@@ -62,11 +66,11 @@
 {#snippet target(row: Row<TestResult>)}
 	<Layout.Cell class="items-start">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
-			{#if row.original.kind.value.target.case === 'cephBlockDevice'}
+			{#if row.original.kind.value.target.case === 'cephBlockDevice' && row.original.kind.value.target.value.facility}
 				<Badge variant="outline">
-					{row.original.kind.value.target.value.facilityName}
+					{row.original.kind.value.target.value.facility}
 				</Badge>
-			{:else if row.original.kind.value.target.case === 'networkFileSystem'}
+			{:else if row.original.kind.value.target.case === 'networkFileSystem' && row.original.kind.value.target.value.endpoint}
 				<Badge variant="outline">
 					{row.original.kind.value.target.value.endpoint}
 				</Badge>

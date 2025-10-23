@@ -28,8 +28,8 @@
 	let isImageNameInvalid = $state(false);
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
-		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name,
+		scope: $currentCeph?.scope,
+		facility: $currentCeph?.name,
 	} as DeleteImageRequest;
 	let request = $state(defaults);
 	function reset() {

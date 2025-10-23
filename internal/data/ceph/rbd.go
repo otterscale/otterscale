@@ -23,7 +23,7 @@ func NewRBD(ceph *Ceph) core.CephRBDRepo {
 
 var _ core.CephRBDRepo = (*rbd)(nil)
 
-func (r *rbd) ListImages(_ context.Context, config *core.StorageConfig, pool string) ([]core.RBDImage, error) {
+func (r *rbd) ListImages(_ context.Context, config *core.CephConfig, pool string) ([]core.RBDImage, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (r *rbd) ListImages(_ context.Context, config *core.StorageConfig, pool str
 	return imgs, nil
 }
 
-func (r *rbd) GetImage(_ context.Context, config *core.StorageConfig, pool, image string) (*core.RBDImage, error) {
+func (r *rbd) GetImage(_ context.Context, config *core.CephConfig, pool, image string) (*core.RBDImage, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -66,7 +66,7 @@ func (r *rbd) GetImage(_ context.Context, config *core.StorageConfig, pool, imag
 	return r.openImage(ioctx, pool, image)
 }
 
-func (r *rbd) CreateImage(_ context.Context, config *core.StorageConfig, pool, image string, order int, stripeUnit, stripeCount, size, features uint64) (*core.RBDImage, error) {
+func (r *rbd) CreateImage(_ context.Context, config *core.CephConfig, pool, image string, order int, stripeUnit, stripeCount, size, features uint64) (*core.RBDImage, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -84,7 +84,7 @@ func (r *rbd) CreateImage(_ context.Context, config *core.StorageConfig, pool, i
 	return r.openImage(ioctx, pool, image)
 }
 
-func (r *rbd) UpdateImageSize(_ context.Context, config *core.StorageConfig, pool, image string, size uint64) error {
+func (r *rbd) UpdateImageSize(_ context.Context, config *core.CephConfig, pool, image string, size uint64) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -105,7 +105,7 @@ func (r *rbd) UpdateImageSize(_ context.Context, config *core.StorageConfig, poo
 	return img.Resize(size)
 }
 
-func (r *rbd) DeleteImage(_ context.Context, config *core.StorageConfig, pool, image string) error {
+func (r *rbd) DeleteImage(_ context.Context, config *core.CephConfig, pool, image string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -120,7 +120,7 @@ func (r *rbd) DeleteImage(_ context.Context, config *core.StorageConfig, pool, i
 	return cephrbd.RemoveImage(ioctx, image)
 }
 
-func (r *rbd) CreateImageSnapshot(_ context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
+func (r *rbd) CreateImageSnapshot(_ context.Context, config *core.CephConfig, pool, image, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -142,7 +142,7 @@ func (r *rbd) CreateImageSnapshot(_ context.Context, config *core.StorageConfig,
 	return err
 }
 
-func (r *rbd) DeleteImageSnapshot(_ context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
+func (r *rbd) DeleteImageSnapshot(_ context.Context, config *core.CephConfig, pool, image, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -163,7 +163,7 @@ func (r *rbd) DeleteImageSnapshot(_ context.Context, config *core.StorageConfig,
 	return img.GetSnapshot(snapshot).Remove()
 }
 
-func (r *rbd) RollbackImageSnapshot(_ context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
+func (r *rbd) RollbackImageSnapshot(_ context.Context, config *core.CephConfig, pool, image, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -184,7 +184,7 @@ func (r *rbd) RollbackImageSnapshot(_ context.Context, config *core.StorageConfi
 	return img.GetSnapshot(snapshot).Rollback()
 }
 
-func (r *rbd) ProtectImageSnapshot(_ context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
+func (r *rbd) ProtectImageSnapshot(_ context.Context, config *core.CephConfig, pool, image, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -205,7 +205,7 @@ func (r *rbd) ProtectImageSnapshot(_ context.Context, config *core.StorageConfig
 	return img.GetSnapshot(snapshot).Protect()
 }
 
-func (r *rbd) UnprotectImageSnapshot(_ context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
+func (r *rbd) UnprotectImageSnapshot(_ context.Context, config *core.CephConfig, pool, image, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err

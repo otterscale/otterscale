@@ -25,12 +25,13 @@ func defaultBase(ctx context.Context, server ServerRepo) (base.Base, error) {
 	return base.GetBaseFromSeries(series)
 }
 
-func getJujuModelUUID(m map[string]string) (string, error) {
-	v, ok := m["juju-model-uuid"]
+func getJujuModelName(m map[string]string) (string, error) {
+	v, ok := m["juju-machine-id"]
 	if !ok {
-		return "", errors.New("juju model uuid not found")
+		return "", errors.New("juju machine id not found")
 	}
-	return v, nil
+	token := strings.Split(v, "-")
+	return token[0], nil
 }
 
 func getJujuMachineID(m map[string]string) (string, error) {
@@ -59,6 +60,9 @@ func toPlacement(p *MachinePlacement, directive string) *instance.Placement {
 
 func toConstraint(c *MachineConstraint) constraints.Value {
 	constraint := constraints.Value{}
+	if c == nil {
+		return constraint
+	}
 	if c.Architecture != "" {
 		constraint.Arch = &c.Architecture
 	}

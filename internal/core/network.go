@@ -62,17 +62,17 @@ type IPRangeRepo interface {
 
 type NetworkUseCase struct {
 	fabric  FabricRepo
-	vlan    VLANRepo
-	subnet  SubnetRepo
 	ipRange IPRangeRepo
+	subnet  SubnetRepo
+	vlan    VLANRepo
 }
 
-func NewNetworkUseCase(fabric FabricRepo, vlan VLANRepo, subnet SubnetRepo, ipRange IPRangeRepo) *NetworkUseCase {
+func NewNetworkUseCase(fabric FabricRepo, ipRange IPRangeRepo, subnet SubnetRepo, vlan VLANRepo) *NetworkUseCase {
 	return &NetworkUseCase{
 		fabric:  fabric,
-		vlan:    vlan,
-		subnet:  subnet,
 		ipRange: ipRange,
+		subnet:  subnet,
+		vlan:    vlan,
 	}
 }
 
@@ -163,7 +163,14 @@ func (uc *NetworkUseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP str
 }
 
 func (uc *NetworkUseCase) CreateIPRange(ctx context.Context, subnetID int, startIP, endIP, comment string) (*IPRange, error) {
-	return createIPRange(ctx, uc.ipRange, subnetID, startIP, endIP, comment)
+	params := &entity.IPRangeParams{
+		Type:    "reserved",
+		Subnet:  strconv.Itoa(subnetID),
+		StartIP: startIP,
+		EndIP:   endIP,
+		Comment: comment,
+	}
+	return uc.ipRange.Create(ctx, params)
 }
 
 func (uc *NetworkUseCase) DeleteNetwork(ctx context.Context, id int) error {

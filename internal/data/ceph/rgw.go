@@ -14,11 +14,6 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-const (
-	cephRegion       = "us-east-1"
-	retryMaxAttempts = 5
-)
-
 type rgw struct {
 	ceph *Ceph
 }
@@ -32,7 +27,7 @@ func NewRGW(ceph *Ceph) core.CephRGWRepo {
 var _ core.CephRGWRepo = (*rgw)(nil)
 
 // ceph api
-func (r *rgw) ListBuckets(ctx context.Context, config *core.StorageConfig) ([]core.RGWBucket, error) {
+func (r *rgw) ListBuckets(ctx context.Context, config *core.CephConfig) ([]core.RGWBucket, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
 		return nil, err
@@ -53,7 +48,7 @@ func (r *rgw) ListBuckets(ctx context.Context, config *core.StorageConfig) ([]co
 }
 
 // ceph api
-func (r *rgw) GetBucket(ctx context.Context, config *core.StorageConfig, bucket string) (*core.RGWBucket, error) {
+func (r *rgw) GetBucket(ctx context.Context, config *core.CephConfig, bucket string) (*core.RGWBucket, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
 		return nil, err
@@ -71,7 +66,7 @@ func (r *rgw) GetBucket(ctx context.Context, config *core.StorageConfig, bucket 
 }
 
 // s3 api
-func (r *rgw) CreateBucket(ctx context.Context, config *core.StorageConfig, bucket string, acl types.BucketCannedACL) error {
+func (r *rgw) CreateBucket(ctx context.Context, config *core.CephConfig, bucket string, acl types.BucketCannedACL) error {
 	s3Client, err := r.s3Client(ctx, config)
 	if err != nil {
 		return err
@@ -84,7 +79,7 @@ func (r *rgw) CreateBucket(ctx context.Context, config *core.StorageConfig, buck
 }
 
 // ceph api
-func (r *rgw) UpdateBucketOwner(ctx context.Context, config *core.StorageConfig, bucket, owner string) error {
+func (r *rgw) UpdateBucketOwner(ctx context.Context, config *core.CephConfig, bucket, owner string) error {
 	client, err := r.ceph.client(config)
 	if err != nil {
 		return err
@@ -96,7 +91,7 @@ func (r *rgw) UpdateBucketOwner(ctx context.Context, config *core.StorageConfig,
 }
 
 // s3 api
-func (r *rgw) UpdateBucketACL(ctx context.Context, config *core.StorageConfig, bucket string, acl types.BucketCannedACL) error {
+func (r *rgw) UpdateBucketACL(ctx context.Context, config *core.CephConfig, bucket string, acl types.BucketCannedACL) error {
 	s3Client, err := r.s3Client(ctx, config)
 	if err != nil {
 		return err
@@ -109,7 +104,7 @@ func (r *rgw) UpdateBucketACL(ctx context.Context, config *core.StorageConfig, b
 }
 
 // s3 api
-func (r *rgw) UpdateBucketPolicy(ctx context.Context, config *core.StorageConfig, bucket, policy string) error {
+func (r *rgw) UpdateBucketPolicy(ctx context.Context, config *core.CephConfig, bucket, policy string) error {
 	s3Client, err := r.s3Client(ctx, config)
 	if err != nil {
 		return err
@@ -122,7 +117,7 @@ func (r *rgw) UpdateBucketPolicy(ctx context.Context, config *core.StorageConfig
 }
 
 // s3 api
-func (r *rgw) DeleteBucket(ctx context.Context, config *core.StorageConfig, bucket string) error {
+func (r *rgw) DeleteBucket(ctx context.Context, config *core.CephConfig, bucket string) error {
 	s3Client, err := r.s3Client(ctx, config)
 	if err != nil {
 		return err
@@ -134,7 +129,7 @@ func (r *rgw) DeleteBucket(ctx context.Context, config *core.StorageConfig, buck
 }
 
 // ceph api
-func (r *rgw) ListUsers(ctx context.Context, config *core.StorageConfig) ([]core.RGWUser, error) {
+func (r *rgw) ListUsers(ctx context.Context, config *core.CephConfig) ([]core.RGWUser, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
 		return nil, err
@@ -164,7 +159,7 @@ func (r *rgw) ListUsers(ctx context.Context, config *core.StorageConfig) ([]core
 }
 
 // ceph api
-func (r *rgw) CreateUser(ctx context.Context, config *core.StorageConfig, id, name string, suspended bool) (*core.RGWUser, error) {
+func (r *rgw) CreateUser(ctx context.Context, config *core.CephConfig, id, name string, suspended bool) (*core.RGWUser, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
 		return nil, err
@@ -181,7 +176,7 @@ func (r *rgw) CreateUser(ctx context.Context, config *core.StorageConfig, id, na
 }
 
 // ceph api
-func (r *rgw) UpdateUser(ctx context.Context, config *core.StorageConfig, id, name string, suspended bool) (*core.RGWUser, error) {
+func (r *rgw) UpdateUser(ctx context.Context, config *core.CephConfig, id, name string, suspended bool) (*core.RGWUser, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
 		return nil, err
@@ -198,7 +193,7 @@ func (r *rgw) UpdateUser(ctx context.Context, config *core.StorageConfig, id, na
 }
 
 // ceph api
-func (r *rgw) DeleteUser(ctx context.Context, config *core.StorageConfig, id string) error {
+func (r *rgw) DeleteUser(ctx context.Context, config *core.CephConfig, id string) error {
 	client, err := r.ceph.client(config)
 	if err != nil {
 		return err
@@ -207,7 +202,7 @@ func (r *rgw) DeleteUser(ctx context.Context, config *core.StorageConfig, id str
 }
 
 // ceph api
-func (r *rgw) CreateUserKey(ctx context.Context, config *core.StorageConfig, id string) (*core.RGWUserKey, error) {
+func (r *rgw) CreateUserKey(ctx context.Context, config *core.CephConfig, id string) (*core.RGWUserKey, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
 		return nil, err
@@ -223,7 +218,7 @@ func (r *rgw) CreateUserKey(ctx context.Context, config *core.StorageConfig, id 
 }
 
 // ceph api
-func (r *rgw) DeleteUserKey(ctx context.Context, config *core.StorageConfig, id, accessKey string) error {
+func (r *rgw) DeleteUserKey(ctx context.Context, config *core.CephConfig, id, accessKey string) error {
 	client, err := r.ceph.client(config)
 	if err != nil {
 		return err
@@ -231,7 +226,12 @@ func (r *rgw) DeleteUserKey(ctx context.Context, config *core.StorageConfig, id,
 	return client.RemoveKey(ctx, admin.UserKeySpec{UID: id, AccessKey: accessKey})
 }
 
-func (r *rgw) s3Client(ctx context.Context, conf *core.StorageConfig) (*s3.Client, error) {
+func (r *rgw) s3Client(ctx context.Context, conf *core.CephConfig) (*s3.Client, error) {
+	const (
+		cephRegion       = "us-east-1"
+		retryMaxAttempts = 5
+	)
+
 	client, err := r.ceph.client(conf)
 	if err != nil {
 		return nil, err
@@ -260,7 +260,7 @@ func (r *rgw) s3Client(ctx context.Context, conf *core.StorageConfig) (*s3.Clien
 	return svc, nil
 }
 
-func (r *rgw) toBucket(ctx context.Context, config *core.StorageConfig, b *admin.Bucket) (*core.RGWBucket, error) {
+func (r *rgw) toBucket(ctx context.Context, config *core.CephConfig, b *admin.Bucket) (*core.RGWBucket, error) {
 	bucket := &core.RGWBucket{
 		Bucket: b,
 	}

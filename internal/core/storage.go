@@ -1,40 +1,40 @@
 package core
 
-type StorageCephConfig struct {
+type CephClusterConfig struct {
 	FSID    string
 	MONHost string
 	Key     string
 }
 
-type StorageRGWConfig struct {
+type CephObjectConfig struct {
 	Endpoint  string
 	AccessKey string
 	SecretKey string
 }
 
-type StorageConfig struct {
-	*StorageCephConfig
-	*StorageRGWConfig
+type CephConfig struct {
+	*CephClusterConfig
+	*CephObjectConfig
 }
 
 type StorageUseCase struct {
-	action   ActionRepo
-	facility FacilityRepo
-	cluster  CephClusterRepo
-	rbd      CephRBDRepo
-	fs       CephFSRepo
-	rgw      CephRGWRepo
-	machine  MachineRepo
+	action      ActionRepo
+	facility    FacilityRepo
+	cephCluster CephClusterRepo
+	cephFS      CephFSRepo
+	cephRBD     CephRBDRepo
+	cephRGW     CephRGWRepo
+	machine     MachineRepo
 }
 
-func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cluster CephClusterRepo, rbd CephRBDRepo, fs CephFSRepo, rgw CephRGWRepo, machine MachineRepo) *StorageUseCase {
+func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cephCluster CephClusterRepo, cephFS CephFSRepo, cephRBD CephRBDRepo, cephRGW CephRGWRepo, machine MachineRepo) *StorageUseCase {
 	return &StorageUseCase{
-		action:   action,
-		facility: facility,
-		cluster:  cluster,
-		rbd:      rbd,
-		fs:       fs,
-		rgw:      rgw,
-		machine:  machine,
+		action:      action,
+		facility:    facility,
+		cephCluster: cephCluster,
+		cephFS:      cephFS,
+		cephRBD:     cephRBD,
+		cephRGW:     cephRGW,
+		machine:     machine,
 	}
 }

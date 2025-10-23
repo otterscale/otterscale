@@ -6,9 +6,10 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		EnvironmentService,
-		type UpdateConfigHelmRepositoriesRequest,
-	} from '$lib/api/environment/v1/environment_pb';
+		ConfigurationService,
+		type Configuration,
+		type UpdateHelmRepositoryRequest,
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Multiple as MultipleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -16,18 +17,14 @@
 </script>
 
 <script lang="ts">
-	let {
-		urls,
-	}: {
-		urls: Writable<string[]>;
-	} = $props();
+	let { configuration }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
 
-	const client = createClient(EnvironmentService, transport);
+	const client = createClient(ConfigurationService, transport);
 	const defaults = {
-		urls: $urls,
-	} as UpdateConfigHelmRepositoriesRequest;
+		urls: $configuration.helmRepository?.urls,
+	} as UpdateHelmRepositoryRequest;
 	let request = $state(defaults);
 	function reset() {
 		request = defaults;
@@ -39,66 +36,64 @@
 	}
 </script>
 
-<span>
-	<Modal.Root bind:open>
-		<Modal.Trigger variant="default">
-			<Icon icon="ph:pencil" />
-			{m.edit()}
-		</Modal.Trigger>
-		<Modal.Content>
-			<Modal.Header>{m.edit_helm_repository()}</Modal.Header>
-			<Form.Root>
-				<Form.Fieldset>
-					<Form.Field>
-						<Form.Label>{m.url()}</Form.Label>
-						<MultipleInput.Root type="text" bind:values={request.urls}>
-							<MultipleInput.Viewer />
-							<MultipleInput.Controller>
-								<MultipleInput.Input />
-								<MultipleInput.Add />
-								<MultipleInput.Clear />
-							</MultipleInput.Controller>
-						</MultipleInput.Root>
-					</Form.Field>
-				</Form.Fieldset>
-			</Form.Root>
-			<Modal.Footer>
-				<Modal.Cancel
+<Modal.Root bind:open>
+	<Modal.Trigger variant="default">
+		<Icon icon="ph:pencil" />
+		{m.edit()}
+	</Modal.Trigger>
+	<Modal.Content>
+		<Modal.Header>{m.edit_helm_repository()}</Modal.Header>
+		<Form.Root>
+			<Form.Fieldset>
+				<Form.Field>
+					<Form.Label>{m.url()}</Form.Label>
+					<MultipleInput.Root type="text" bind:values={request.urls}>
+						<MultipleInput.Viewer />
+						<MultipleInput.Controller>
+							<MultipleInput.Input />
+							<MultipleInput.Add />
+							<MultipleInput.Clear />
+						</MultipleInput.Controller>
+					</MultipleInput.Root>
+				</Form.Field>
+			</Form.Fieldset>
+		</Form.Root>
+		<Modal.Footer>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
+				{m.cancel()}
+			</Modal.Cancel>
+			<Modal.ActionsGroup>
+				<Modal.Action
 					onclick={() => {
+						toast.promise(() => client.updateHelmRepository(request), {
+							loading: 'Loading...',
+							success: () => {
+								client.getConfiguration({}).then((response) => {
+									configuration.set(response);
+								});
+								return `Update Helm repository success`;
+							},
+							error: (error) => {
+								let message = `Fail to update Helm repository`;
+								toast.error(message, {
+									description: (error as ConnectError).message.toString(),
+									duration: Number.POSITIVE_INFINITY,
+								});
+								return message;
+							},
+						});
+
 						reset();
+						close();
 					}}
 				>
-					{m.cancel()}
-				</Modal.Cancel>
-				<Modal.ActionsGroup>
-					<Modal.Action
-						onclick={() => {
-							toast.promise(() => client.updateConfigHelmRepositories(request), {
-								loading: 'Loading...',
-								success: () => {
-									client.getConfigHelmRepositories({}).then((response) => {
-										urls.set(response.urls);
-									});
-									return `Update success`;
-								},
-								error: (error) => {
-									let message = `Fail to update`;
-									toast.error(message, {
-										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY,
-									});
-									return message;
-								},
-							});
-
-							reset();
-							close();
-						}}
-					>
-						{m.confirm()}
-					</Modal.Action>
-				</Modal.ActionsGroup>
-			</Modal.Footer>
-		</Modal.Content>
-	</Modal.Root>
-</span>
+					{m.confirm()}
+				</Modal.Action>
+			</Modal.ActionsGroup>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>

@@ -8,10 +8,10 @@
 
 <script lang="ts">
 	let {
-		selectedScopeUuid = $bindable(),
+		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
 	}: {
-		selectedScopeUuid: string;
+		selectedScope: string;
 		selectedFacility: string;
 	} = $props();
 </script>
@@ -24,9 +24,9 @@
 {/snippet}
 <Tabs.Root value="bucket">
 	<Tabs.Content value="bucket">
-		<Bucket bind:selectedScopeUuid bind:selectedFacility {trigger} />
+		<Bucket bind:selectedScope bind:selectedFacility {trigger} />
 	</Tabs.Content>
 	<Tabs.Content value="user">
-		<User bind:selectedScopeUuid bind:selectedFacility {trigger} />
+		<User bind:selectedScope bind:selectedFacility {trigger} />
 	</Tabs.Content>
 </Tabs.Root>

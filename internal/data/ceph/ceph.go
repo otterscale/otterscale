@@ -24,7 +24,7 @@ func New(conf *config.Config) *Ceph {
 	}
 }
 
-func (m *Ceph) newConnection(config *core.StorageConfig) (*rados.Conn, error) {
+func (m *Ceph) newConnection(config *core.CephConfig) (*rados.Conn, error) {
 	conn, err := rados.NewConn()
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (m *Ceph) newConnection(config *core.StorageConfig) (*rados.Conn, error) {
 }
 
 // TODO: Check connection with 'OpenIOContext'
-func (m *Ceph) connection(config *core.StorageConfig) (*rados.Conn, error) {
+func (m *Ceph) connection(config *core.CephConfig) (*rados.Conn, error) {
 	if v, ok := m.connections.Load(config.FSID); ok {
 		conn := v.(*rados.Conn)
 		return conn, nil
@@ -75,7 +75,7 @@ func (m *Ceph) connection(config *core.StorageConfig) (*rados.Conn, error) {
 	return conn, nil
 }
 
-func (m *Ceph) client(config *core.StorageConfig) (*admin.API, error) {
+func (m *Ceph) client(config *core.CephConfig) (*admin.API, error) {
 	if v, ok := m.clients.Load(config.FSID); ok {
 		client := v.(*admin.API)
 		return client, nil

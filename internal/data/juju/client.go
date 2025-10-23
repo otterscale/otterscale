@@ -21,8 +21,8 @@ func NewClient(juju *Juju) core.ClientRepo {
 
 var _ core.ClientRepo = (*client)(nil)
 
-func (r *client) Status(_ context.Context, uuid string, patterns []string) (*params.FullStatus, error) {
-	conn, err := r.juju.connection(uuid)
+func (r *client) Status(_ context.Context, scope string, patterns []string) (*params.FullStatus, error) {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err
 	}

@@ -55,17 +55,31 @@ const (
 	// MachineServiceRemoveMachineTagsProcedure is the fully-qualified name of the MachineService's
 	// RemoveMachineTags RPC.
 	MachineServiceRemoveMachineTagsProcedure = "/otterscale.machine.v1.MachineService/RemoveMachineTags"
+	// MachineServiceListTagsProcedure is the fully-qualified name of the MachineService's ListTags RPC.
+	MachineServiceListTagsProcedure = "/otterscale.machine.v1.MachineService/ListTags"
+	// MachineServiceGetTagProcedure is the fully-qualified name of the MachineService's GetTag RPC.
+	MachineServiceGetTagProcedure = "/otterscale.machine.v1.MachineService/GetTag"
+	// MachineServiceCreateTagProcedure is the fully-qualified name of the MachineService's CreateTag
+	// RPC.
+	MachineServiceCreateTagProcedure = "/otterscale.machine.v1.MachineService/CreateTag"
+	// MachineServiceDeleteTagProcedure is the fully-qualified name of the MachineService's DeleteTag
+	// RPC.
+	MachineServiceDeleteTagProcedure = "/otterscale.machine.v1.MachineService/DeleteTag"
 )
 
 // MachineServiceClient is a client for the otterscale.machine.v1.MachineService service.
 type MachineServiceClient interface {
-	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
-	GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error)
-	CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error)
-	DeleteMachine(context.Context, *connect.Request[v1.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error)
-	AddMachineTags(context.Context, *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error)
-	RemoveMachineTags(context.Context, *connect.Request[v1.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error)
+	ListMachines(context.Context, *v1.ListMachinesRequest) (*v1.ListMachinesResponse, error)
+	GetMachine(context.Context, *v1.GetMachineRequest) (*v1.Machine, error)
+	CreateMachine(context.Context, *v1.CreateMachineRequest) (*v1.Machine, error)
+	DeleteMachine(context.Context, *v1.DeleteMachineRequest) (*emptypb.Empty, error)
+	PowerOffMachine(context.Context, *v1.PowerOffMachineRequest) (*v1.Machine, error)
+	AddMachineTags(context.Context, *v1.AddMachineTagsRequest) (*emptypb.Empty, error)
+	RemoveMachineTags(context.Context, *v1.RemoveMachineTagsRequest) (*emptypb.Empty, error)
+	ListTags(context.Context, *v1.ListTagsRequest) (*v1.ListTagsResponse, error)
+	GetTag(context.Context, *v1.GetTagRequest) (*v1.Tag, error)
+	CreateTag(context.Context, *v1.CreateTagRequest) (*v1.Tag, error)
+	DeleteTag(context.Context, *v1.DeleteTagRequest) (*emptypb.Empty, error)
 }
 
 // NewMachineServiceClient constructs a client for the otterscale.machine.v1.MachineService service.
@@ -121,6 +135,30 @@ func NewMachineServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(machineServiceMethods.ByName("RemoveMachineTags")),
 			connect.WithClientOptions(opts...),
 		),
+		listTags: connect.NewClient[v1.ListTagsRequest, v1.ListTagsResponse](
+			httpClient,
+			baseURL+MachineServiceListTagsProcedure,
+			connect.WithSchema(machineServiceMethods.ByName("ListTags")),
+			connect.WithClientOptions(opts...),
+		),
+		getTag: connect.NewClient[v1.GetTagRequest, v1.Tag](
+			httpClient,
+			baseURL+MachineServiceGetTagProcedure,
+			connect.WithSchema(machineServiceMethods.ByName("GetTag")),
+			connect.WithClientOptions(opts...),
+		),
+		createTag: connect.NewClient[v1.CreateTagRequest, v1.Tag](
+			httpClient,
+			baseURL+MachineServiceCreateTagProcedure,
+			connect.WithSchema(machineServiceMethods.ByName("CreateTag")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteTag: connect.NewClient[v1.DeleteTagRequest, emptypb.Empty](
+			httpClient,
+			baseURL+MachineServiceDeleteTagProcedure,
+			connect.WithSchema(machineServiceMethods.ByName("DeleteTag")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -133,52 +171,124 @@ type machineServiceClient struct {
 	powerOffMachine   *connect.Client[v1.PowerOffMachineRequest, v1.Machine]
 	addMachineTags    *connect.Client[v1.AddMachineTagsRequest, emptypb.Empty]
 	removeMachineTags *connect.Client[v1.RemoveMachineTagsRequest, emptypb.Empty]
+	listTags          *connect.Client[v1.ListTagsRequest, v1.ListTagsResponse]
+	getTag            *connect.Client[v1.GetTagRequest, v1.Tag]
+	createTag         *connect.Client[v1.CreateTagRequest, v1.Tag]
+	deleteTag         *connect.Client[v1.DeleteTagRequest, emptypb.Empty]
 }
 
 // ListMachines calls otterscale.machine.v1.MachineService.ListMachines.
-func (c *machineServiceClient) ListMachines(ctx context.Context, req *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error) {
-	return c.listMachines.CallUnary(ctx, req)
+func (c *machineServiceClient) ListMachines(ctx context.Context, req *v1.ListMachinesRequest) (*v1.ListMachinesResponse, error) {
+	response, err := c.listMachines.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // GetMachine calls otterscale.machine.v1.MachineService.GetMachine.
-func (c *machineServiceClient) GetMachine(ctx context.Context, req *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error) {
-	return c.getMachine.CallUnary(ctx, req)
+func (c *machineServiceClient) GetMachine(ctx context.Context, req *v1.GetMachineRequest) (*v1.Machine, error) {
+	response, err := c.getMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // CreateMachine calls otterscale.machine.v1.MachineService.CreateMachine.
-func (c *machineServiceClient) CreateMachine(ctx context.Context, req *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error) {
-	return c.createMachine.CallUnary(ctx, req)
+func (c *machineServiceClient) CreateMachine(ctx context.Context, req *v1.CreateMachineRequest) (*v1.Machine, error) {
+	response, err := c.createMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // DeleteMachine calls otterscale.machine.v1.MachineService.DeleteMachine.
-func (c *machineServiceClient) DeleteMachine(ctx context.Context, req *connect.Request[v1.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteMachine.CallUnary(ctx, req)
+func (c *machineServiceClient) DeleteMachine(ctx context.Context, req *v1.DeleteMachineRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // PowerOffMachine calls otterscale.machine.v1.MachineService.PowerOffMachine.
-func (c *machineServiceClient) PowerOffMachine(ctx context.Context, req *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error) {
-	return c.powerOffMachine.CallUnary(ctx, req)
+func (c *machineServiceClient) PowerOffMachine(ctx context.Context, req *v1.PowerOffMachineRequest) (*v1.Machine, error) {
+	response, err := c.powerOffMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // AddMachineTags calls otterscale.machine.v1.MachineService.AddMachineTags.
-func (c *machineServiceClient) AddMachineTags(ctx context.Context, req *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.addMachineTags.CallUnary(ctx, req)
+func (c *machineServiceClient) AddMachineTags(ctx context.Context, req *v1.AddMachineTagsRequest) (*emptypb.Empty, error) {
+	response, err := c.addMachineTags.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // RemoveMachineTags calls otterscale.machine.v1.MachineService.RemoveMachineTags.
-func (c *machineServiceClient) RemoveMachineTags(ctx context.Context, req *connect.Request[v1.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.removeMachineTags.CallUnary(ctx, req)
+func (c *machineServiceClient) RemoveMachineTags(ctx context.Context, req *v1.RemoveMachineTagsRequest) (*emptypb.Empty, error) {
+	response, err := c.removeMachineTags.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListTags calls otterscale.machine.v1.MachineService.ListTags.
+func (c *machineServiceClient) ListTags(ctx context.Context, req *v1.ListTagsRequest) (*v1.ListTagsResponse, error) {
+	response, err := c.listTags.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// GetTag calls otterscale.machine.v1.MachineService.GetTag.
+func (c *machineServiceClient) GetTag(ctx context.Context, req *v1.GetTagRequest) (*v1.Tag, error) {
+	response, err := c.getTag.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// CreateTag calls otterscale.machine.v1.MachineService.CreateTag.
+func (c *machineServiceClient) CreateTag(ctx context.Context, req *v1.CreateTagRequest) (*v1.Tag, error) {
+	response, err := c.createTag.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// DeleteTag calls otterscale.machine.v1.MachineService.DeleteTag.
+func (c *machineServiceClient) DeleteTag(ctx context.Context, req *v1.DeleteTagRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteTag.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // MachineServiceHandler is an implementation of the otterscale.machine.v1.MachineService service.
 type MachineServiceHandler interface {
-	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
-	GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error)
-	CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error)
-	DeleteMachine(context.Context, *connect.Request[v1.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error)
-	AddMachineTags(context.Context, *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error)
-	RemoveMachineTags(context.Context, *connect.Request[v1.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error)
+	ListMachines(context.Context, *v1.ListMachinesRequest) (*v1.ListMachinesResponse, error)
+	GetMachine(context.Context, *v1.GetMachineRequest) (*v1.Machine, error)
+	CreateMachine(context.Context, *v1.CreateMachineRequest) (*v1.Machine, error)
+	DeleteMachine(context.Context, *v1.DeleteMachineRequest) (*emptypb.Empty, error)
+	PowerOffMachine(context.Context, *v1.PowerOffMachineRequest) (*v1.Machine, error)
+	AddMachineTags(context.Context, *v1.AddMachineTagsRequest) (*emptypb.Empty, error)
+	RemoveMachineTags(context.Context, *v1.RemoveMachineTagsRequest) (*emptypb.Empty, error)
+	ListTags(context.Context, *v1.ListTagsRequest) (*v1.ListTagsResponse, error)
+	GetTag(context.Context, *v1.GetTagRequest) (*v1.Tag, error)
+	CreateTag(context.Context, *v1.CreateTagRequest) (*v1.Tag, error)
+	DeleteTag(context.Context, *v1.DeleteTagRequest) (*emptypb.Empty, error)
 }
 
 // NewMachineServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -188,46 +298,70 @@ type MachineServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewMachineServiceHandler(svc MachineServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	machineServiceMethods := v1.File_api_machine_v1_machine_proto.Services().ByName("MachineService").Methods()
-	machineServiceListMachinesHandler := connect.NewUnaryHandler(
+	machineServiceListMachinesHandler := connect.NewUnaryHandlerSimple(
 		MachineServiceListMachinesProcedure,
 		svc.ListMachines,
 		connect.WithSchema(machineServiceMethods.ByName("ListMachines")),
 		connect.WithHandlerOptions(opts...),
 	)
-	machineServiceGetMachineHandler := connect.NewUnaryHandler(
+	machineServiceGetMachineHandler := connect.NewUnaryHandlerSimple(
 		MachineServiceGetMachineProcedure,
 		svc.GetMachine,
 		connect.WithSchema(machineServiceMethods.ByName("GetMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	machineServiceCreateMachineHandler := connect.NewUnaryHandler(
+	machineServiceCreateMachineHandler := connect.NewUnaryHandlerSimple(
 		MachineServiceCreateMachineProcedure,
 		svc.CreateMachine,
 		connect.WithSchema(machineServiceMethods.ByName("CreateMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	machineServiceDeleteMachineHandler := connect.NewUnaryHandler(
+	machineServiceDeleteMachineHandler := connect.NewUnaryHandlerSimple(
 		MachineServiceDeleteMachineProcedure,
 		svc.DeleteMachine,
 		connect.WithSchema(machineServiceMethods.ByName("DeleteMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	machineServicePowerOffMachineHandler := connect.NewUnaryHandler(
+	machineServicePowerOffMachineHandler := connect.NewUnaryHandlerSimple(
 		MachineServicePowerOffMachineProcedure,
 		svc.PowerOffMachine,
 		connect.WithSchema(machineServiceMethods.ByName("PowerOffMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	machineServiceAddMachineTagsHandler := connect.NewUnaryHandler(
+	machineServiceAddMachineTagsHandler := connect.NewUnaryHandlerSimple(
 		MachineServiceAddMachineTagsProcedure,
 		svc.AddMachineTags,
 		connect.WithSchema(machineServiceMethods.ByName("AddMachineTags")),
 		connect.WithHandlerOptions(opts...),
 	)
-	machineServiceRemoveMachineTagsHandler := connect.NewUnaryHandler(
+	machineServiceRemoveMachineTagsHandler := connect.NewUnaryHandlerSimple(
 		MachineServiceRemoveMachineTagsProcedure,
 		svc.RemoveMachineTags,
 		connect.WithSchema(machineServiceMethods.ByName("RemoveMachineTags")),
+		connect.WithHandlerOptions(opts...),
+	)
+	machineServiceListTagsHandler := connect.NewUnaryHandlerSimple(
+		MachineServiceListTagsProcedure,
+		svc.ListTags,
+		connect.WithSchema(machineServiceMethods.ByName("ListTags")),
+		connect.WithHandlerOptions(opts...),
+	)
+	machineServiceGetTagHandler := connect.NewUnaryHandlerSimple(
+		MachineServiceGetTagProcedure,
+		svc.GetTag,
+		connect.WithSchema(machineServiceMethods.ByName("GetTag")),
+		connect.WithHandlerOptions(opts...),
+	)
+	machineServiceCreateTagHandler := connect.NewUnaryHandlerSimple(
+		MachineServiceCreateTagProcedure,
+		svc.CreateTag,
+		connect.WithSchema(machineServiceMethods.ByName("CreateTag")),
+		connect.WithHandlerOptions(opts...),
+	)
+	machineServiceDeleteTagHandler := connect.NewUnaryHandlerSimple(
+		MachineServiceDeleteTagProcedure,
+		svc.DeleteTag,
+		connect.WithSchema(machineServiceMethods.ByName("DeleteTag")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/otterscale.machine.v1.MachineService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -246,6 +380,14 @@ func NewMachineServiceHandler(svc MachineServiceHandler, opts ...connect.Handler
 			machineServiceAddMachineTagsHandler.ServeHTTP(w, r)
 		case MachineServiceRemoveMachineTagsProcedure:
 			machineServiceRemoveMachineTagsHandler.ServeHTTP(w, r)
+		case MachineServiceListTagsProcedure:
+			machineServiceListTagsHandler.ServeHTTP(w, r)
+		case MachineServiceGetTagProcedure:
+			machineServiceGetTagHandler.ServeHTTP(w, r)
+		case MachineServiceCreateTagProcedure:
+			machineServiceCreateTagHandler.ServeHTTP(w, r)
+		case MachineServiceDeleteTagProcedure:
+			machineServiceDeleteTagHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -255,30 +397,46 @@ func NewMachineServiceHandler(svc MachineServiceHandler, opts ...connect.Handler
 // UnimplementedMachineServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedMachineServiceHandler struct{}
 
-func (UnimplementedMachineServiceHandler) ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error) {
+func (UnimplementedMachineServiceHandler) ListMachines(context.Context, *v1.ListMachinesRequest) (*v1.ListMachinesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.ListMachines is not implemented"))
 }
 
-func (UnimplementedMachineServiceHandler) GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error) {
+func (UnimplementedMachineServiceHandler) GetMachine(context.Context, *v1.GetMachineRequest) (*v1.Machine, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.GetMachine is not implemented"))
 }
 
-func (UnimplementedMachineServiceHandler) CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error) {
+func (UnimplementedMachineServiceHandler) CreateMachine(context.Context, *v1.CreateMachineRequest) (*v1.Machine, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.CreateMachine is not implemented"))
 }
 
-func (UnimplementedMachineServiceHandler) DeleteMachine(context.Context, *connect.Request[v1.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedMachineServiceHandler) DeleteMachine(context.Context, *v1.DeleteMachineRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.DeleteMachine is not implemented"))
 }
 
-func (UnimplementedMachineServiceHandler) PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error) {
+func (UnimplementedMachineServiceHandler) PowerOffMachine(context.Context, *v1.PowerOffMachineRequest) (*v1.Machine, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.PowerOffMachine is not implemented"))
 }
 
-func (UnimplementedMachineServiceHandler) AddMachineTags(context.Context, *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedMachineServiceHandler) AddMachineTags(context.Context, *v1.AddMachineTagsRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.AddMachineTags is not implemented"))
 }
 
-func (UnimplementedMachineServiceHandler) RemoveMachineTags(context.Context, *connect.Request[v1.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedMachineServiceHandler) RemoveMachineTags(context.Context, *v1.RemoveMachineTagsRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.RemoveMachineTags is not implemented"))
+}
+
+func (UnimplementedMachineServiceHandler) ListTags(context.Context, *v1.ListTagsRequest) (*v1.ListTagsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.ListTags is not implemented"))
+}
+
+func (UnimplementedMachineServiceHandler) GetTag(context.Context, *v1.GetTagRequest) (*v1.Tag, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.GetTag is not implemented"))
+}
+
+func (UnimplementedMachineServiceHandler) CreateTag(context.Context, *v1.CreateTagRequest) (*v1.Tag, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.CreateTag is not implemented"))
+}
+
+func (UnimplementedMachineServiceHandler) DeleteTag(context.Context, *v1.DeleteTagRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.DeleteTag is not implemented"))
 }

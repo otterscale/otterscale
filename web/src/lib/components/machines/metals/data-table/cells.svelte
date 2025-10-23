@@ -48,11 +48,9 @@
 		</a>
 		{#if row.original.ipAddresses}
 			<Layout.SubCell>
-				<span class="text-muted-foreground flex items-center gap-1 text-xs">
-					{#each row.original.ipAddresses as ipAddress}
-						{ipAddress}
-					{/each}
-				</span>
+				{#each row.original.ipAddresses as ipAddress}
+					{ipAddress}
+				{/each}
 			</Layout.SubCell>
 		{/if}
 	</Layout.Cell>

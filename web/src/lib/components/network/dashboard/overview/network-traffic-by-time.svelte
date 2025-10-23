@@ -2,7 +2,7 @@
 	import { scaleBand } from 'd3-scale';
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
 	import { SvelteDate } from 'svelte/reactivity';
 
@@ -68,6 +68,10 @@
 		await fetch();
 		isLoading = false;
 	});
+	onDestroy(() => {
+		reloadManager.stop();
+	});
+
 	$effect(() => {
 		if (isReloading) {
 			reloadManager.restart();

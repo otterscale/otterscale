@@ -6,25 +6,24 @@
 	import { DataTable } from './data-table/index';
 	import { Statistics } from './statistics';
 
-	import { KubeVirtService, type VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import { InstanceService, type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">
-	let { scopeUuid, facilityName, namespace }: { scopeUuid: string; facilityName: string; namespace: string } =
-		$props();
+	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	let isMounted = $state(false);
 
 	const virtualMachines = writable<VirtualMachine[]>([]);
 
-	const KubeVirtClient = createClient(KubeVirtService, transport);
+	const VirtualMachineClient = createClient(InstanceService, transport);
 	const reloadManager = new ReloadManager(() => {
-		KubeVirtClient.listVirtualMachines({
-			scopeUuid: scopeUuid,
-			facilityName: facilityName,
+		VirtualMachineClient.listVirtualMachines({
+			scope: scope,
+			facility: facility,
 			namespace: namespace,
 		}).then((response) => {
 			virtualMachines.set(response.virtualMachines);
@@ -33,9 +32,9 @@
 	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
-		KubeVirtClient.listVirtualMachines({
-			scopeUuid: scopeUuid,
-			facilityName: facilityName,
+		VirtualMachineClient.listVirtualMachines({
+			scope: scope,
+			facility: facility,
 			namespace: namespace,
 		})
 			.then((response) => {

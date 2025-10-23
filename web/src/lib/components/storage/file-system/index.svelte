@@ -8,12 +8,12 @@
 
 <script lang="ts">
 	let {
-		selectedScopeUuid = $bindable(),
+		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
 		selectedVolume = $bindable(),
 		selectedSubvolumeGroupName = $bindable(),
 	}: {
-		selectedScopeUuid: string;
+		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
 		selectedSubvolumeGroupName: string;
@@ -28,15 +28,9 @@
 {/snippet}
 <Tabs.Root value="nfs">
 	<Tabs.Content value="nfs">
-		<NFS
-			bind:selectedScopeUuid
-			bind:selectedFacility
-			bind:selectedVolume
-			bind:selectedSubvolumeGroupName
-			{trigger}
-		/>
+		<NFS bind:selectedScope bind:selectedFacility bind:selectedVolume bind:selectedSubvolumeGroupName {trigger} />
 	</Tabs.Content>
 	<Tabs.Content value="group">
-		<Group bind:selectedScopeUuid bind:selectedFacility bind:selectedVolume {trigger} />
+		<Group bind:selectedScope bind:selectedFacility bind:selectedVolume {trigger} />
 	</Tabs.Content>
 </Tabs.Root>

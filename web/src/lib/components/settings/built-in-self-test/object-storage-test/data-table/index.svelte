@@ -16,7 +16,7 @@
 	import { columns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 
-	import { type TestResult } from '$lib/api/bist/v1/bist_pb';
+	import { type TestResult } from '$lib/api/configuration/v1/configuration_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';

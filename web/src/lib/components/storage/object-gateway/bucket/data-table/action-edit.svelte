@@ -36,8 +36,8 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name,
+		scope: $currentCeph?.scope,
+		facility: $currentCeph?.name,
 		bucketName: bucket.name,
 		owner: bucket.owner,
 		policy: bucket.policy,
@@ -55,7 +55,7 @@
 
 	onMount(() => {
 		storageClient
-			.listUsers({ scopeUuid: $currentCeph?.scopeUuid, facilityName: $currentCeph?.name })
+			.listUsers({ scope: $currentCeph?.scope, facility: $currentCeph?.name })
 			.then((response) => {
 				userOptions.set(
 					response.users.map(

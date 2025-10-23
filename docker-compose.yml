@@ -8,7 +8,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 10s
       retries: 3
@@ -22,7 +22,7 @@ services:
       - "${CONFIG_VOLUME_PATH}:/etc/app/otterscale.yaml"
     ports:
       - "${SERVICE_PORT}:8299"
-    command: serve
+    command: bootstrap
     restart: unless-stopped
 
   otterscale-web:
@@ -40,6 +40,7 @@ services:
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
       GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
       SSO_LOGIN_PROMPT: ${SSO_LOGIN_PROMPT}
+      BOOTSTRAP_MODE: ${BOOTSTRAP_MODE}
     ports:
       - "${WEB_PORT}:3000"
     restart: unless-stopped

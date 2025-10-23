@@ -22,8 +22,8 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name,
+		scope: $currentCeph?.scope,
+		facility: $currentCeph?.name,
 		suspended: true,
 	} as CreateUserRequest;
 	let request = $state(defaults);

@@ -40,7 +40,7 @@
 
 {#snippet usage(row: Row<Bucket>)}
 	{@const { value, unit } = formatCapacity(row.original.usedBytes)}
-	<Layout.Cell class="items-end">
+	<Layout.Cell class="items-end gap-0">
 		{value}
 		{unit}
 		<Layout.SubCell>{row.original.usedObjects} unit(s)</Layout.SubCell>

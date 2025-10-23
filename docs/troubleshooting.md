@@ -118,7 +118,7 @@ This guide helps you resolve common issues when installing, configuring, or runn
 
    ```bash
    go version
-   # Should be Go 1.24.6 or later
+   # Should be Go 1.25.1 or later
    ```
 
 2. **Install system dependencies**:

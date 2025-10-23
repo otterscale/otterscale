@@ -3,20 +3,22 @@ import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-import type { VirtualMachineDisk } from '$lib/api/kubevirt/v1/kubevirt_pb';
+import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
 const messages = {
 	name: m.name(),
+	bus: m.bus(),
+	bootOrder: m.boot_order(),
+	dataVolume: m.data_volume(),
 	type: m.type(),
-	bus: 'bus',
-	source: m.source(),
-	sourceType: 'source type',
-	size: 'disk size',
+	phase: m.phase(),
+	boot: m.boot(),
+	size: m.size(),
 };
 
-const columns: ColumnDef<VirtualMachineDisk>[] = [
+const columns: ColumnDef<EnhancedDisk>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -38,15 +40,6 @@ const columns: ColumnDef<VirtualMachineDisk>[] = [
 		},
 	},
 	{
-		accessorKey: 'type',
-		header: ({ column }) => {
-			return renderSnippet(headers.type, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.type, row);
-		},
-	},
-	{
 		accessorKey: 'bus',
 		header: ({ column }) => {
 			return renderSnippet(headers.bus, column);
@@ -56,21 +49,48 @@ const columns: ColumnDef<VirtualMachineDisk>[] = [
 		},
 	},
 	{
-		accessorKey: 'sourceType',
+		accessorKey: 'bootOrder',
 		header: ({ column }) => {
-			return renderSnippet(headers.sourceType, column);
+			return renderSnippet(headers.bootOrder, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.sourceType, row);
+			return renderSnippet(cells.bootOrder, row);
 		},
 	},
 	{
-		accessorKey: 'source',
+		accessorKey: 'dataVolume',
 		header: ({ column }) => {
-			return renderSnippet(headers.source, column);
+			return renderSnippet(headers.dataVolume, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.source, row);
+			return renderSnippet(cells.dataVolume, row);
+		},
+	},
+	{
+		accessorKey: 'type',
+		header: ({ column }) => {
+			return renderSnippet(headers.type, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.type, row);
+		},
+	},
+	{
+		accessorKey: 'phase',
+		header: ({ column }) => {
+			return renderSnippet(headers.phase, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.phase, row);
+		},
+	},
+	{
+		accessorKey: 'boot',
+		header: ({ column }) => {
+			return renderSnippet(headers.boot, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.boot, row);
 		},
 	},
 	{

@@ -11,12 +11,12 @@
 
 <script lang="ts">
 	let {
-		selectedScopeUuid,
+		selectedScope,
 		selectedFacility,
 		selectedVolume,
 		selectedSubvolumeGroupName = $bindable(),
 	}: {
-		selectedScopeUuid: string;
+		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
 		selectedSubvolumeGroupName: string;
@@ -29,8 +29,8 @@
 	async function fetchVolumeOptions() {
 		try {
 			const response = await storageClient.listSubvolumeGroups({
-				scopeUuid: selectedScopeUuid,
-				facilityName: selectedFacility,
+				scope: selectedScope,
+				facility: selectedFacility,
 				volumeName: selectedVolume,
 			});
 
@@ -81,8 +81,8 @@
 							<SingleSelect.Item
 								{option}
 								onclick={() => {
-									selectedScopeUuid = option.value.scopeUuid;
-									selectedFacility = option.value.facilityName;
+									selectedScope = option.value.scope;
+									selectedFacility = option.value.facility;
 								}}
 							>
 								<Icon

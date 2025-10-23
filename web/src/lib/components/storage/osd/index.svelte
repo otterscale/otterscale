@@ -12,10 +12,10 @@
 
 <script lang="ts">
 	let {
-		selectedScopeUuid = $bindable(),
+		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
 	}: {
-		selectedScopeUuid: string;
+		selectedScope: string;
 		selectedFacility: string;
 	} = $props();
 
@@ -26,7 +26,7 @@
 	const objectStorageDaemons = $state(writable([] as OSD[]));
 
 	const reloadManager = new ReloadManager(() => {
-		storageClient.listOSDs({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility }).then((response) => {
+		storageClient.listOSDs({ scope: selectedScope, facility: selectedFacility }).then((response) => {
 			objectStorageDaemons.set(response.osds);
 		});
 	});
@@ -35,7 +35,7 @@
 	let isMounted = $state(false);
 	onMount(() => {
 		storageClient
-			.listOSDs({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility })
+			.listOSDs({ scope: selectedScope, facility: selectedFacility })
 			.then((response) => {
 				objectStorageDaemons.set(response.osds);
 				isMounted = true;

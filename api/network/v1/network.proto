@@ -2,20 +2,65 @@ edition = "2023";
 
 package otterscale.network.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/network/v1;pb";
 
 service NetworkService {
-  rpc ListNetworks(ListNetworksRequest) returns (ListNetworksResponse);
-  rpc CreateNetwork(CreateNetworkRequest) returns (Network);
-  rpc CreateIPRange(CreateIPRangeRequest) returns (Network.IPRange);
-  rpc DeleteNetwork(DeleteNetworkRequest) returns (google.protobuf.Empty);
-  rpc DeleteIPRange(DeleteIPRangeRequest) returns (google.protobuf.Empty);
-  rpc UpdateFabric(UpdateFabricRequest) returns (Network.Fabric);
-  rpc UpdateVLAN(UpdateVLANRequest) returns (Network.VLAN);
-  rpc UpdateSubnet(UpdateSubnetRequest) returns (Network.Subnet);
-  rpc UpdateIPRange(UpdateIPRangeRequest) returns (Network.IPRange);
+  rpc ListNetworks(ListNetworksRequest) returns (ListNetworksResponse) {
+    option (otterscale.api.feature) = {
+      name: "net-general"
+    };
+  };
+
+  rpc CreateNetwork(CreateNetworkRequest) returns (Network) {
+    option (otterscale.api.feature) = {
+      name: "net-general"
+    };
+  };
+
+  rpc CreateIPRange(CreateIPRangeRequest) returns (Network.IPRange) {
+    option (otterscale.api.feature) = {
+      name: "net-general"
+    };
+  };
+
+  rpc DeleteNetwork(DeleteNetworkRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "net-general"
+    };
+  };
+
+  rpc DeleteIPRange(DeleteIPRangeRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "net-general"
+    };
+  };
+
+  rpc UpdateFabric(UpdateFabricRequest) returns (Network.Fabric) {
+    option (otterscale.api.feature) = {
+      name: "net-general"
+    };
+  };
+
+  rpc UpdateVLAN(UpdateVLANRequest) returns (Network.VLAN) {
+    option (otterscale.api.feature) = {
+      name: "net-general"
+    };
+  };
+
+  rpc UpdateSubnet(UpdateSubnetRequest) returns (Network.Subnet) {
+    option (otterscale.api.feature) = {
+      name: "net-general"
+    };
+  };
+
+  rpc UpdateIPRange(UpdateIPRangeRequest) returns (Network.IPRange) {
+    option (otterscale.api.feature) = {
+      name: "net-general"
+    };
+  };
 }
 
 message Network {

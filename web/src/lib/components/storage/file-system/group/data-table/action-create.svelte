@@ -25,8 +25,8 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		scopeUuid: get(groupStore.selectedScopeUuid),
-		facilityName: get(groupStore.selectedFacilityName),
+		scope: get(groupStore.selectedScope),
+		facility: get(groupStore.selectedFacility),
 		volumeName: get(groupStore.selectedVolumeName),
 	} as CreateSubvolumeGroupRequest;
 	let request = $state(defaults);

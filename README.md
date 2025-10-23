@@ -1,4 +1,4 @@
-# 🦦 OtterScale
+# OtterScale
 
 [![GitHub Release](https://img.shields.io/github/v/release/otterscale/otterscale?logo=github)](https://github.com/otterscale/otterscale/releases)
 [![GitHub License](https://img.shields.io/github/license/otterscale/otterscale?logo=github)](https://opensource.org/license/agpl-v3)
@@ -87,7 +87,7 @@ For production deployments, see our [deployment guide](/docs/deployment.md).
 ## 🔧 Development
 
 > [!IMPORTANT]
-> Requirements: `Go 1.24.6+`, `Docker`, `Protobuf compiler`, `Make`, `Git`
+> Requirements: `Go 1.25.1+`, `Docker`, `Protobuf compiler`, `Make`, `Git`
 
 ### System Dependencies
 

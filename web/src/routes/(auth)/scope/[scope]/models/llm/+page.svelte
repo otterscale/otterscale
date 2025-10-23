@@ -12,7 +12,7 @@
 </script>
 
 {#if $currentKubernetes}
-	{#key $currentKubernetes?.scopeUuid + $currentKubernetes?.name}
-		<LLM scopeUuid={$currentKubernetes?.scopeUuid} facilityName={$currentKubernetes?.name} />
+	{#key $currentKubernetes?.scope + $currentKubernetes?.name}
+		<LLM scopeUuid={$currentKubernetes?.scope} facilityName={$currentKubernetes?.name} />
 	{/key}
 {/if}

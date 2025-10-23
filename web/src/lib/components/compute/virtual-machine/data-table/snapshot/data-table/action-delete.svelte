@@ -4,8 +4,11 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { VirtualMachineSnapshot, DeleteVirtualMachineSnapshotRequest } from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { KubeVirtService } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
+	import type {
+		VirtualMachine_Snapshot,
+		DeleteVirtualMachineSnapshotRequest,
+	} from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -15,23 +18,23 @@
 </script>
 
 <script lang="ts">
-	let { virtualMachineSnapshot }: { virtualMachineSnapshot: VirtualMachineSnapshot } = $props();
+	let { virtualMachineSnapshot }: { virtualMachineSnapshot: VirtualMachine_Snapshot } = $props();
 
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
-	const KubeVirtClient = createClient(KubeVirtService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 	let invalid = $state(false);
 
 	const defaults = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		name: '',
 		namespace: virtualMachineSnapshot.namespace,
 	} as DeleteVirtualMachineSnapshotRequest;
-	let request = $state(defaults);
+	let request = $state({ ...defaults });
 	function reset() {
-		request = defaults;
+		request = { ...defaults };
 	}
 
 	let open = $state(false);
@@ -75,7 +78,7 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => KubeVirtClient.deleteVirtualMachineSnapshot(request), {
+						toast.promise(() => virtualMachineClient.deleteVirtualMachineSnapshot(request), {
 							loading: `Deleting ${virtualMachineSnapshot.name}...`,
 							success: () => {
 								reloadManager.force();

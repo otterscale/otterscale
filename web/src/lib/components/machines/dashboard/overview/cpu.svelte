@@ -5,7 +5,7 @@
 	import { curveLinear } from 'd3-shape';
 	import { LineChart } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { page } from '$app/state';
@@ -48,13 +48,13 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`1 - (sum(irate(node_cpu_seconds_total{juju_model_uuid="${scope.uuid}",mode="idle"}[2m])) / sum(irate(juju_model_uuid="${scope.uuid}",node_cpu_seconds_total[2m])))`,
+				`1 - (sum(irate(node_cpu_seconds_total{juju_model_uuid="${scope.uuid}",mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total{juju_model_uuid="${scope.uuid}"}[2m])))`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60,
 			)
 			.then((response) => {
-				cpuUsages = response.result[0]?.values;
+				cpuUsages = response.result && response.result[0] ? response.result[0]?.values : [];
 			});
 
 		machineClient.listMachines({}).then((response) => {
@@ -68,6 +68,9 @@
 	onMount(async () => {
 		await fetch();
 		isLoading = false;
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 
 	$effect(() => {

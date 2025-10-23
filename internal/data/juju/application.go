@@ -29,8 +29,8 @@ func NewApplication(juju *Juju) core.FacilityRepo {
 
 var _ core.FacilityRepo = (*application)(nil)
 
-func (r *application) Create(_ context.Context, uuid, name, configYAML, charmName, channel string, revision, number int, base *base.Base, placements []instance.Placement, constraint *constraints.Value, trust bool) (*api.DeployInfo, error) {
-	conn, err := r.juju.connection(uuid)
+func (r *application) Create(_ context.Context, scope, name, configYAML, charmName, channel string, revision, number int, base *base.Base, placements []instance.Placement, constraint *constraints.Value, trust bool) (*api.DeployInfo, error) {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +72,8 @@ func (r *application) Create(_ context.Context, uuid, name, configYAML, charmNam
 }
 
 // Note: This function has not been tested.
-func (r *application) Update(_ context.Context, uuid, name, configYAML string) error {
-	conn, err := r.juju.connection(uuid)
+func (r *application) Update(_ context.Context, scope, name, configYAML string) error {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -81,8 +81,8 @@ func (r *application) Update(_ context.Context, uuid, name, configYAML string) e
 }
 
 // Note: This function has not been tested.
-func (r *application) Delete(_ context.Context, uuid, name string, destroyStorage, force bool) error {
-	conn, err := r.juju.connection(uuid)
+func (r *application) Delete(_ context.Context, scope, name string, destroyStorage, force bool) error {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -105,16 +105,16 @@ func (r *application) Delete(_ context.Context, uuid, name string, destroyStorag
 	return errors.Join(errs...)
 }
 
-func (r *application) Expose(_ context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error {
-	conn, err := r.juju.connection(uuid)
+func (r *application) Expose(_ context.Context, scope, name string, endpoints map[string]params.ExposedEndpoint) error {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
 	return api.NewClient(conn).Expose(name, endpoints)
 }
 
-func (r *application) AddUnits(_ context.Context, uuid, name string, number int, placements []instance.Placement) ([]string, error) {
-	conn, err := r.juju.connection(uuid)
+func (r *application) AddUnits(_ context.Context, scope, name string, number int, placements []instance.Placement) ([]string, error) {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -129,32 +129,32 @@ func (r *application) AddUnits(_ context.Context, uuid, name string, number int,
 	return api.NewClient(conn).AddUnits(params)
 }
 
-func (r *application) ResolveUnitErrors(_ context.Context, uuid string, units []string) error {
-	conn, err := r.juju.connection(uuid)
+func (r *application) ResolveUnitErrors(_ context.Context, scope string, units []string) error {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
 	return api.NewClient(conn).ResolveUnitErrors(units, false, true)
 }
 
-func (r *application) CreateRelation(_ context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error) {
-	conn, err := r.juju.connection(uuid)
+func (r *application) CreateRelation(_ context.Context, scope string, endpoints []string) (*params.AddRelationResults, error) {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err
 	}
 	return api.NewClient(conn).AddRelation(endpoints, nil)
 }
 
-func (r *application) DeleteRelation(_ context.Context, uuid string, id int) error {
-	conn, err := r.juju.connection(uuid)
+func (r *application) DeleteRelation(_ context.Context, scope string, id int) error {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
 	return api.NewClient(conn).DestroyRelationId(id, nil, nil)
 }
 
-func (r *application) GetConfig(_ context.Context, uuid, name string) (map[string]any, error) {
-	conn, err := r.juju.connection(uuid)
+func (r *application) GetConfig(_ context.Context, scope, name string) (map[string]any, error) {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -166,16 +166,16 @@ func (r *application) GetConfig(_ context.Context, uuid, name string) (map[strin
 	return app.CharmConfig, nil
 }
 
-func (r *application) GetLeader(_ context.Context, uuid, name string) (string, error) {
-	conn, err := r.juju.connection(uuid)
+func (r *application) GetLeader(_ context.Context, scope, name string) (string, error) {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return "", err
 	}
 	return api.NewClient(conn).Leader(name)
 }
 
-func (r *application) GetUnitInfo(_ context.Context, uuid, name string) (*api.UnitInfo, error) {
-	conn, err := r.juju.connection(uuid)
+func (r *application) GetUnitInfo(_ context.Context, scope, name string) (*api.UnitInfo, error) {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -194,8 +194,8 @@ func (r *application) GetUnitInfo(_ context.Context, uuid, name string) (*api.Un
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("unit info %q not found", name))
 }
 
-func (r *application) Consume(_ context.Context, uuid string, args *crossmodel.ConsumeApplicationArgs) error {
-	conn, err := r.juju.connection(uuid)
+func (r *application) Consume(_ context.Context, scope string, args *crossmodel.ConsumeApplicationArgs) error {
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}

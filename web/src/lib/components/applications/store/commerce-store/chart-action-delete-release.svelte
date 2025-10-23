@@ -14,6 +14,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
+	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
@@ -31,8 +32,8 @@
 
 	const defaults = {
 		dryRun: false,
-		scopeUuid: release.name,
-		facilityName: release.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		namespace: release.namespace,
 	} as DeleteReleaseRequest;
 	let request = $state(defaults as DeleteReleaseRequest);

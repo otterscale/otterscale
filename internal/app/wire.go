@@ -6,15 +6,15 @@ import (
 
 var ProviderSet = wire.NewSet(
 	NewApplicationService,
-	NewBISTService,
+	NewBootstrapService,
 	NewConfigurationService,
 	NewEnvironmentService,
 	NewFacilityService,
-	NewEssentialService,
+	NewInstanceService,
 	NewMachineService,
+	NewModelService,
 	NewNetworkService,
-	NewPremiumService,
+	NewOrchestratorService,
 	NewScopeService,
 	NewStorageService,
-	NewTagService,
 )

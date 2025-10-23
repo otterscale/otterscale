@@ -7,12 +7,12 @@
 
 <script lang="ts">
 	let {
-		selectedScopeUuid,
+		selectedScope,
 		selectedFacility,
 		selectedVolume,
 		selectedSubvolumeGroupName = $bindable(),
 	}: {
-		selectedScopeUuid: string;
+		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
 		selectedSubvolumeGroupName: string;
@@ -22,6 +22,6 @@
 <Picker.Root align="left">
 	<Picker.Wrapper class="*:h-8">
 		<Picker.Label>{m.group()}</Picker.Label>
-		<SubvolumeGroupPicker {selectedScopeUuid} {selectedFacility} {selectedVolume} bind:selectedSubvolumeGroupName />
+		<SubvolumeGroupPicker {selectedScope} {selectedFacility} {selectedVolume} bind:selectedSubvolumeGroupName />
 	</Picker.Wrapper>
 </Picker.Root>

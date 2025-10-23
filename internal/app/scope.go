@@ -3,8 +3,6 @@ package app
 import (
 	"context"
 
-	"connectrpc.com/connect"
-
 	pb "github.com/otterscale/otterscale/api/scope/v1"
 	"github.com/otterscale/otterscale/api/scope/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/core"
@@ -13,32 +11,34 @@ import (
 type ScopeService struct {
 	pbconnect.UnimplementedScopeServiceHandler
 
-	uc *core.ScopeUseCase
+	scope *core.ScopeUseCase
 }
 
-func NewScopeService(uc *core.ScopeUseCase) *ScopeService {
-	return &ScopeService{uc: uc}
+func NewScopeService(scope *core.ScopeUseCase) *ScopeService {
+	return &ScopeService{
+		scope: scope,
+	}
 }
 
 var _ pbconnect.ScopeServiceHandler = (*ScopeService)(nil)
 
-func (s *ScopeService) ListScopes(ctx context.Context, _ *connect.Request[pb.ListScopesRequest]) (*connect.Response[pb.ListScopesResponse], error) {
-	scopes, err := s.uc.ListScopes(ctx)
+func (s *ScopeService) ListScopes(ctx context.Context, _ *pb.ListScopesRequest) (*pb.ListScopesResponse, error) {
+	scopes, err := s.scope.ListScopes(ctx)
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListScopesResponse{}
 	resp.SetScopes(toProtoScopes(scopes))
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
-func (s *ScopeService) CreateScope(ctx context.Context, req *connect.Request[pb.CreateScopeRequest]) (*connect.Response[pb.Scope], error) {
-	scope, err := s.uc.CreateScope(ctx, req.Msg.GetName())
+func (s *ScopeService) CreateScope(ctx context.Context, req *pb.CreateScopeRequest) (*pb.Scope, error) {
+	scope, err := s.scope.CreateScope(ctx, req.GetName())
 	if err != nil {
 		return nil, err
 	}
 	resp := toProtoScope(scope)
-	return connect.NewResponse(resp), nil
+	return resp, nil
 }
 
 func toProtoScopes(ss []core.Scope) []*pb.Scope {

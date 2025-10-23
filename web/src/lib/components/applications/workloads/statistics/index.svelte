@@ -11,7 +11,7 @@
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { formatProgressColor } from '$lib/formatter';
 
-	let { scopeUuid, facilityName }: { scopeUuid: string; facilityName: string } = $props();
+	let { scope, facility }: { scope: string; facility: string } = $props();
 
 	// Client setup
 	const transport: Transport = getContext('transport');
@@ -39,8 +39,8 @@
 	onMount(async () => {
 		try {
 			const response = await client.listApplications({
-				scopeUuid: scopeUuid,
-				facilityName: facilityName,
+				scope: scope,
+				facility: facility,
 			});
 
 			applications.set(response.applications);

@@ -15,8 +15,8 @@
 		TestResult,
 		Warp,
 		Warp_Input,
-	} from '$lib/api/bist/v1/bist_pb';
-	import { BISTService, Warp_Input_Operation } from '$lib/api/bist/v1/bist_pb';
+	} from '$lib/api/configuration/v1/configuration_pb';
+	import { ConfigurationService, Warp_Input_Operation } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Modal from '$lib/components/custom/modal/mutiple-step';
@@ -113,7 +113,7 @@
 	// grpc
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
-	const client = createClient(BISTService, transport);
+	const client = createClient(ConfigurationService, transport);
 
 	let invalidName = $state(false);
 	let invalidTarget = $state(false);

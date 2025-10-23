@@ -12,11 +12,11 @@
 
 <script lang="ts">
 	let {
-		selectedScopeUuid = $bindable(),
+		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
 		trigger,
 	}: {
-		selectedScopeUuid: string;
+		selectedScope: string;
 		selectedFacility: string;
 		trigger: Snippet;
 	} = $props();
@@ -28,7 +28,7 @@
 
 	const storageClient = createClient(StorageService, transport);
 	const reloadManager = new ReloadManager(() => {
-		storageClient.listUsers({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility }).then((response) => {
+		storageClient.listUsers({ scope: selectedScope, facility: selectedFacility }).then((response) => {
 			users.set(response.users);
 		});
 	});
@@ -36,7 +36,7 @@
 
 	onMount(() => {
 		storageClient
-			.listUsers({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility })
+			.listUsers({ scope: selectedScope, facility: selectedFacility })
 			.then((response) => {
 				users.set(response.users);
 				isMounted = true;

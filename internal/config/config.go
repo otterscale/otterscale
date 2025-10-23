@@ -10,8 +10,6 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
-const filePerm600 os.FileMode = 0o600
-
 type MAAS struct {
 	URL     string `yaml:"url"`
 	Key     string `yaml:"key"`
@@ -82,6 +80,7 @@ func (c *Config) Close() error {
 }
 
 func (c *Config) Override(config *Config) error {
+	const filePerm600 os.FileMode = 0o600
 	data, err := yaml.Marshal(config)
 	if err != nil {
 		return err

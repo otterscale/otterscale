@@ -37,8 +37,8 @@
 			});
 		await applicationClient
 			.listReleases({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
+				scope: $currentKubernetes?.scope,
+				facility: $currentKubernetes?.name,
 			})
 			.then((response) => {
 				releases.set(response.releases);

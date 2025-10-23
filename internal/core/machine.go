@@ -16,14 +16,13 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-const JobHostUnits = model.JobHostUnits
-
 type (
-	NUMANode         = entity.NUMANode
 	BlockDevice      = entity.BlockDevice
+	Event            = entity.Event
 	NetworkInterface = entity.NetworkInterface
 	NodeDevice       = entity.NodeDevice
-	Event            = entity.Event
+	NUMANode         = entity.NUMANode
+	Tag              = entity.Tag
 )
 
 type Machine struct {
@@ -51,6 +50,14 @@ type MachineFactor struct {
 	*MachineConstraint
 }
 
+type ClientRepo interface {
+	Status(ctx context.Context, scope string, patterns []string) (*params.FullStatus, error)
+}
+
+type EventRepo interface {
+	Get(ctx context.Context, systemID string) ([]Event, error)
+}
+
 type MachineRepo interface {
 	List(ctx context.Context) ([]Machine, error)
 	Get(ctx context.Context, systemID string) (*Machine, error)
@@ -60,8 +67,8 @@ type MachineRepo interface {
 }
 
 type MachineManagerRepo interface {
-	AddMachines(ctx context.Context, uuid string, params []params.AddMachineParams) error
-	DestroyMachines(ctx context.Context, uuid string, force, keep, dryRun bool, maxWait *time.Duration, machines ...string) error
+	AddMachines(ctx context.Context, scope string, params []params.AddMachineParams) error
+	DestroyMachines(ctx context.Context, scope string, force, keep, dryRun bool, maxWait *time.Duration, machines ...string) error
 }
 
 type NodeDeviceRepo interface {
@@ -73,41 +80,44 @@ type ServerRepo interface {
 	Update(ctx context.Context, name, value string) error
 }
 
-type ClientRepo interface {
-	Status(ctx context.Context, uuid string, patterns []string) (*params.FullStatus, error)
-}
-
-type EventRepo interface {
-	Get(ctx context.Context, systemID string) ([]Event, error)
+type TagRepo interface {
+	List(ctx context.Context) ([]Tag, error)
+	Get(ctx context.Context, name string) (*Tag, error)
+	Create(ctx context.Context, name, comment string) (*Tag, error)
+	Delete(ctx context.Context, name string) error
+	AddMachines(ctx context.Context, name string, machineIDs []string) error
+	RemoveMachines(ctx context.Context, name string, machineIDs []string) error
 }
 
 type MachineUseCase struct {
+	action         ActionRepo
+	client         ClientRepo
+	event          EventRepo
+	facility       FacilityRepo
 	machine        MachineRepo
 	machineManager MachineManagerRepo
 	nodeDevice     NodeDeviceRepo
+	scope          ScopeRepo
 	server         ServerRepo
-	client         ClientRepo
 	tag            TagRepo
-	action         ActionRepo
-	facility       FacilityRepo
-	event          EventRepo
 }
 
-func NewMachineUseCase(machine MachineRepo, machineManager MachineManagerRepo, nodeDevice NodeDeviceRepo, server ServerRepo, client ClientRepo, tag TagRepo, action ActionRepo, facility FacilityRepo, event EventRepo) *MachineUseCase {
+func NewMachineUseCase(action ActionRepo, client ClientRepo, event EventRepo, facility FacilityRepo, machine MachineRepo, machineManager MachineManagerRepo, nodeDevice NodeDeviceRepo, scope ScopeRepo, server ServerRepo, tag TagRepo) *MachineUseCase {
 	return &MachineUseCase{
+		action:         action,
+		client:         client,
+		event:          event,
+		facility:       facility,
 		machine:        machine,
 		machineManager: machineManager,
 		nodeDevice:     nodeDevice,
+		scope:          scope,
 		server:         server,
-		client:         client,
 		tag:            tag,
-		action:         action,
-		facility:       facility,
-		event:          event,
 	}
 }
 
-func (uc *MachineUseCase) ListMachines(ctx context.Context, scopeUUID string) ([]Machine, error) {
+func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]Machine, error) {
 	machines, err := uc.machine.List(ctx)
 	if err != nil {
 		return nil, err
@@ -131,7 +141,7 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scopeUUID string) ([
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	return uc.filterMachines(machines, scopeUUID), nil
+	return uc.filterMachines(machines, scope), nil
 }
 
 func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*Machine, error) {
@@ -154,7 +164,7 @@ func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*Machine, 
 	return machine, nil
 }
 
-func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool, uuid string, tags []string) (*Machine, error) {
+func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool, scopeName string, tags []string) (*Machine, error) {
 	// tag
 	eg, egctx := errgroup.WithContext(ctx)
 	for _, tag := range tags {
@@ -184,19 +194,24 @@ func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSS
 		return nil, err
 	}
 
-	// add
+	scope, err := uc.scope.Get(ctx, scopeName) // validate scope exists
+	if err != nil {
+		return nil, err
+	}
 	base, err := defaultBase(ctx, uc.server)
 	if err != nil {
 		return nil, err
 	}
+
+	// add
 	addMachineParams := []params.AddMachineParams{
 		{
-			Placement: &instance.Placement{Scope: uuid, Directive: machine.FQDN},
-			Jobs:      []model.MachineJob{JobHostUnits},
+			Placement: &instance.Placement{Scope: scope.UUID, Directive: machine.FQDN},
+			Jobs:      []model.MachineJob{model.JobHostUnits},
 			Base:      &params.Base{Name: base.OS, Channel: base.Channel.String()},
 		},
 	}
-	if err := uc.machineManager.AddMachines(ctx, uuid, addMachineParams); err != nil {
+	if err := uc.machineManager.AddMachines(ctx, scopeName, addMachineParams); err != nil {
 		return nil, err
 	}
 
@@ -246,10 +261,26 @@ func (uc *MachineUseCase) RemoveMachineTags(ctx context.Context, id string, tags
 	return eg.Wait()
 }
 
-func (uc *MachineUseCase) filterMachines(machines []Machine, scopeUUID string) []Machine {
+func (uc *MachineUseCase) ListTags(ctx context.Context) ([]Tag, error) {
+	return uc.tag.List(ctx)
+}
+
+func (uc *MachineUseCase) GetTag(ctx context.Context, name string) (*Tag, error) {
+	return uc.tag.Get(ctx, name)
+}
+
+func (uc *MachineUseCase) CreateTag(ctx context.Context, name, comment string) (*Tag, error) {
+	return uc.tag.Create(ctx, name, comment)
+}
+
+func (uc *MachineUseCase) DeleteTag(ctx context.Context, name string) error {
+	return uc.tag.Delete(ctx, name)
+}
+
+func (uc *MachineUseCase) filterMachines(machines []Machine, scope string) []Machine {
 	return slices.DeleteFunc(machines, func(machine Machine) bool {
-		modelUUID, _ := getJujuModelUUID(machine.WorkloadAnnotations)
-		return !strings.Contains(modelUUID, scopeUUID) // empty
+		model, _ := getJujuModelName(machine.WorkloadAnnotations)
+		return !strings.Contains(model, scope) // empty
 	})
 }
 
@@ -287,7 +318,7 @@ func (uc *MachineUseCase) purgeDisk(ctx context.Context, machineSystemID string)
 	if err != nil {
 		return err
 	}
-	uuid, err := getJujuModelUUID(machine.WorkloadAnnotations)
+	scope, err := getJujuModelName(machine.WorkloadAnnotations)
 	if err != nil {
 		return err
 	}
@@ -295,7 +326,7 @@ func (uc *MachineUseCase) purgeDisk(ctx context.Context, machineSystemID string)
 	if err != nil {
 		return err
 	}
-	s, err := uc.client.Status(ctx, uuid, []string{"machine", id})
+	s, err := uc.client.Status(ctx, scope, []string{"machine", id})
 	if err != nil {
 		return err
 	}
@@ -303,7 +334,7 @@ func (uc *MachineUseCase) purgeDisk(ctx context.Context, machineSystemID string)
 		if !strings.Contains(s.Applications[name].Charm, "ceph-osd") {
 			continue
 		}
-		config, err := uc.facility.GetConfig(ctx, uuid, name)
+		config, err := uc.facility.GetConfig(ctx, scope, name)
 		if err != nil {
 			continue
 		}
@@ -318,11 +349,11 @@ func (uc *MachineUseCase) purgeDisk(ctx context.Context, machineSystemID string)
 		osdDevices := strings.SplitSeq(val.(string), " ")
 		for osdDevice := range osdDevices {
 			for uname := range s.Applications[name].Units {
-				id, err := uc.action.RunCommand(ctx, uuid, uname, fmt.Sprintf("sudo dd if=/dev/zero of=%s bs=1M count=200000", osdDevice))
+				id, err := uc.action.RunCommand(ctx, scope, uname, fmt.Sprintf("sudo dd if=/dev/zero of=%s bs=1M count=200000", osdDevice))
 				if err != nil {
 					continue
 				}
-				if _, err := waitForActionCompleted(ctx, uc.action, uuid, id, time.Second*10, time.Minute*10); err != nil { //nolint:mnd // default
+				if _, err := waitForActionCompleted(ctx, uc.action, scope, id, time.Second*10, time.Minute*10); err != nil { //nolint:mnd // default
 					return err
 				}
 				break

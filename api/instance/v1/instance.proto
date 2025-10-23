@@ -1,0 +1,560 @@
+edition = "2023";
+
+package otterscale.instance.v1;
+
+import "api/annotations.proto";
+import "api/application/v1/application.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/otterscale/otterscale/api/instance/v1;pb";
+
+service InstanceService {
+  rpc ListVirtualMachines(ListVirtualMachinesRequest) returns (ListVirtualMachinesResponse) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteVirtualMachine(DeleteVirtualMachineRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc AttachVirtualMachineDisk(AttachVirtualMachineDiskRequest) returns (VirtualMachine.Disk) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DetachVirtualMachineDisk(DetachVirtualMachineDiskRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc CreateVirtualMachineClone(CreateVirtualMachineCloneRequest) returns (VirtualMachine.Clone) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteVirtualMachineClone(DeleteVirtualMachineCloneRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc CreateVirtualMachineSnapshot(CreateVirtualMachineSnapshotRequest) returns (VirtualMachine.Snapshot) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteVirtualMachineSnapshot(DeleteVirtualMachineSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc CreateVirtualMachineRestore(CreateVirtualMachineRestoreRequest) returns (VirtualMachine.Restore) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteVirtualMachineRestore(DeleteVirtualMachineRestoreRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc StartVirtualMachine(StartVirtualMachineRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc StopVirtualMachine(StopVirtualMachineRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc RestartVirtualMachine(RestartVirtualMachineRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc PauseInstance(PauseInstanceRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc ResumeInstance(ResumeInstanceRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc MigrateInstance(MigrateInstanceRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc VNCInstance(VNCInstanceRequest) returns (VNCInstanceResponse) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc ListDataVolumes(ListDataVolumesRequest) returns (ListDataVolumesResponse) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc GetDataVolume(GetDataVolumeRequest) returns (DataVolume) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc CreateDataVolume(CreateDataVolumeRequest) returns (DataVolume) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteDataVolume(DeleteDataVolumeRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc ExtendDataVolume(ExtendDataVolumeRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc ListInstanceTypes(ListInstanceTypesRequest) returns (ListInstanceTypesResponse) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc GetInstanceType(GetInstanceTypeRequest) returns (InstanceType) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteInstanceType(DeleteInstanceTypeRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc CreateVirtualMachineService(CreateVirtualMachineServiceRequest)
+      returns (otterscale.application.v1.Application.Service) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc UpdateVirtualMachineService(UpdateVirtualMachineServiceRequest)
+      returns (otterscale.application.v1.Application.Service) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+}
+
+message VirtualMachine {
+  message Clone {
+    string name = 1;
+    string namespace = 2;
+    string source_name = 3;
+    string target_name = 4;
+    string phase = 11;
+    google.protobuf.Timestamp created_at = 21;
+    otterscale.application.v1.Application.Condition last_condition = 31;
+  }
+  message Snapshot {
+    string name = 1;
+    string namespace = 2;
+    string source_name = 3;
+    string phase = 11;
+    bool ready_to_use = 12;
+    google.protobuf.Timestamp created_at = 21;
+    otterscale.application.v1.Application.Condition last_condition = 31;
+  }
+  message Restore {
+    string name = 1;
+    string namespace = 2;
+    string target_name = 3;
+    string snapshot_name = 4;
+    bool complete = 11;
+    google.protobuf.Timestamp created_at = 21;
+    otterscale.application.v1.Application.Condition last_condition = 31;
+  }
+  message Disk {
+    enum Bus {
+      VIRTIO = 0;
+      SATA = 1;
+      SCSI = 2;
+      USB = 3;
+    }
+    message Volume {
+      message Source {
+        enum Type {
+          UNKNOWN = 0;
+          DATA_VOLUME = 1;
+          CLOUD_INIT_NO_CLOUD = 2;
+        }
+        Type type = 1;
+        string data = 2;
+      }
+      string name = 1;
+      Source source = 2;
+    }
+    string name = 1;
+    Bus bus = 2;
+    uint32 boot_order = 3;
+    Volume volume = 4;
+  }
+  string name = 1;
+  string namespace = 2;
+  string status = 11;
+  bool ready = 12;
+  string instance_phase = 21;
+  string machine_id = 22;
+  string hostname = 23;
+  repeated string ip_addresses = 24;
+  google.protobuf.Timestamp created_at = 31;
+  repeated otterscale.application.v1.Application.Service services = 41;
+  InstanceType instance_type = 51;
+  repeated Disk disks = 61;
+  repeated Clone clones = 71;
+  repeated Snapshot snapshots = 81;
+  repeated Restore restores = 91;
+}
+
+message DataVolume {
+  message Source {
+    enum Type {
+      BLANK_IMAGE = 0;
+      HTTP_URL = 1;
+      EXISTING_PERSISTENT_VOLUME_CLAIM = 2;
+    }
+    Type type = 1;
+    string data = 2;
+  }
+  message Condition {
+    string type = 1;
+    string status = 2;
+    string reason = 3;
+    string message = 4;
+    google.protobuf.Timestamp heartbeat_at = 201;
+    google.protobuf.Timestamp transitioned_at = 202;
+  }
+  string name = 1;
+  string namespace = 2;
+  Source source = 11;
+  bool boot_image = 12;
+  string phase = 21;
+  string progress = 22;
+  int64 size_bytes = 31;  // requested size in bytes
+  otterscale.application.v1.Application.PersistentVolumeClaim PersistentVolumeClaim = 32;
+  Condition last_condition = 41;
+}
+
+message InstanceType {
+  string name = 1;
+  string namespace = 2;
+  uint32 cpu_cores = 3;
+  int64 memory_bytes = 4;
+  bool cluster_wide = 11;
+  google.protobuf.Timestamp created_at = 21;
+}
+
+message ListVirtualMachinesRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+}
+
+message ListVirtualMachinesResponse {
+  repeated VirtualMachine virtual_machines = 1;
+}
+
+message GetVirtualMachineRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateVirtualMachineRequest {
+  string scope = 1;
+  string facility = 2;
+  string name = 11;
+  string namespace = 12;
+  string instance_type_name = 21;
+  string boot_data_volume_name = 22;
+  string startup_script = 31;
+}
+
+message DeleteVirtualMachineRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message AttachVirtualMachineDiskRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  string data_volume_name = 11;
+}
+
+message DetachVirtualMachineDiskRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  string data_volume_name = 11;
+}
+
+message CreateVirtualMachineCloneRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  string source_virtual_machine_name = 11;
+  string target_virtual_machine_name = 12;
+}
+
+message DeleteVirtualMachineCloneRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateVirtualMachineSnapshotRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  string virtual_machine_name = 11;
+}
+
+message DeleteVirtualMachineSnapshotRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateVirtualMachineRestoreRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  string virtual_machine_name = 11;
+  string snapshot_name = 12;
+}
+
+message DeleteVirtualMachineRestoreRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message StartVirtualMachineRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message StopVirtualMachineRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message RestartVirtualMachineRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message PauseInstanceRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message ResumeInstanceRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message MigrateInstanceRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  string hostname = 11;
+}
+
+message VNCInstanceRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message VNCInstanceResponse {
+  string session_id = 1;
+}
+
+message ListDataVolumesRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  bool boot_image = 4;
+}
+
+message ListDataVolumesResponse {
+  repeated DataVolume data_volumes = 1;
+}
+
+message GetDataVolumeRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateDataVolumeRequest {
+  string scope = 1;
+  string facility = 2;
+  string name = 11;
+  string namespace = 12;
+  DataVolume.Source source = 21;
+  bool boot_image = 22;
+  int64 size_bytes = 31;
+}
+
+message DeleteDataVolumeRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message ExtendDataVolumeRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  int64 size_bytes = 11;
+}
+
+message ListInstanceTypesRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  bool include_cluster_wide = 11;
+}
+
+message ListInstanceTypesResponse {
+  repeated InstanceType instance_types = 1;
+}
+
+message GetInstanceTypeRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateInstanceTypeRequest {
+  string scope = 1;
+  string facility = 2;
+  string name = 11;
+  string namespace = 12;
+  uint32 cpu_cores = 13;
+  int64 memory_bytes = 14;
+}
+
+message DeleteInstanceTypeRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message CreateVirtualMachineServiceRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  string virtual_machine_name = 11;
+  repeated otterscale.application.v1.Application.Service.Port ports = 12;
+}
+
+message UpdateVirtualMachineServiceRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  repeated otterscale.application.v1.Application.Service.Port ports = 12;
+}
+
+message DeleteVirtualMachineServiceRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}

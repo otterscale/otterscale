@@ -21,7 +21,7 @@ func NewCluster(ceph *Ceph) core.CephClusterRepo {
 
 var _ core.CephClusterRepo = (*cluster)(nil)
 
-func (r *cluster) ListMONs(_ context.Context, config *core.StorageConfig) ([]core.MON, error) {
+func (r *cluster) ListMONs(_ context.Context, config *core.CephConfig) ([]core.MON, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (r *cluster) ListMONs(_ context.Context, config *core.StorageConfig) ([]cor
 	return r.toMONs(monDump, monStat), nil
 }
 
-func (r *cluster) ListOSDs(_ context.Context, config *core.StorageConfig) ([]core.OSD, error) {
+func (r *cluster) ListOSDs(_ context.Context, config *core.CephConfig) ([]core.OSD, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (r *cluster) ListOSDs(_ context.Context, config *core.StorageConfig) ([]cor
 	return r.toOSDs(osdDump, osdTree, osdDF), nil
 }
 
-func (r *cluster) DoSMART(_ context.Context, config *core.StorageConfig, who string) (map[string][]string, error) {
+func (r *cluster) DoSMART(_ context.Context, config *core.CephConfig, who string) (map[string][]string, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (r *cluster) DoSMART(_ context.Context, config *core.StorageConfig, who str
 	return outputs, nil
 }
 
-func (r *cluster) ListPools(_ context.Context, config *core.StorageConfig) ([]core.Pool, error) {
+func (r *cluster) ListPools(_ context.Context, config *core.CephConfig) ([]core.Pool, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ func (r *cluster) ListPools(_ context.Context, config *core.StorageConfig) ([]co
 	return r.toPools(osdDump, dumpPG, dfAll), nil
 }
 
-func (r *cluster) ListPoolsByApplication(_ context.Context, config *core.StorageConfig, application string) ([]core.Pool, error) {
+func (r *cluster) ListPoolsByApplication(_ context.Context, config *core.CephConfig, application string) ([]core.Pool, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -120,7 +120,7 @@ func (r *cluster) ListPoolsByApplication(_ context.Context, config *core.Storage
 	}), nil
 }
 
-func (r *cluster) CreatePool(_ context.Context, config *core.StorageConfig, pool, poolType string) error {
+func (r *cluster) CreatePool(_ context.Context, config *core.CephConfig, pool, poolType string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -128,7 +128,7 @@ func (r *cluster) CreatePool(_ context.Context, config *core.StorageConfig, pool
 	return createOSDPool(conn, pool, poolType)
 }
 
-func (r *cluster) DeletePool(_ context.Context, config *core.StorageConfig, pool string) error {
+func (r *cluster) DeletePool(_ context.Context, config *core.CephConfig, pool string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -136,7 +136,7 @@ func (r *cluster) DeletePool(_ context.Context, config *core.StorageConfig, pool
 	return deleteOSDPool(conn, pool)
 }
 
-func (r *cluster) EnableApplication(_ context.Context, config *core.StorageConfig, pool, application string) error {
+func (r *cluster) EnableApplication(_ context.Context, config *core.CephConfig, pool, application string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -144,7 +144,7 @@ func (r *cluster) EnableApplication(_ context.Context, config *core.StorageConfi
 	return enableOSDPoolApplication(conn, pool, application)
 }
 
-func (r *cluster) GetParameter(_ context.Context, config *core.StorageConfig, pool, key string) (string, error) {
+func (r *cluster) GetParameter(_ context.Context, config *core.CephConfig, pool, key string) (string, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return "", err
@@ -152,7 +152,7 @@ func (r *cluster) GetParameter(_ context.Context, config *core.StorageConfig, po
 	return getOSDPool(conn, pool, key)
 }
 
-func (r *cluster) SetParameter(_ context.Context, config *core.StorageConfig, pool, key, value string) error {
+func (r *cluster) SetParameter(_ context.Context, config *core.CephConfig, pool, key, value string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -160,7 +160,7 @@ func (r *cluster) SetParameter(_ context.Context, config *core.StorageConfig, po
 	return setOSDPool(conn, pool, key, value)
 }
 
-func (r *cluster) GetQuota(_ context.Context, config *core.StorageConfig, pool string) (maxBytes, maxObjects uint64, err error) {
+func (r *cluster) GetQuota(_ context.Context, config *core.CephConfig, pool string) (maxBytes, maxObjects uint64, err error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return 0, 0, err
@@ -172,7 +172,7 @@ func (r *cluster) GetQuota(_ context.Context, config *core.StorageConfig, pool s
 	return quota.QuotaMaxBytes, quota.QuotaMaxObjects, nil
 }
 
-func (r *cluster) SetQuota(_ context.Context, config *core.StorageConfig, pool string, maxBytes, maxObjects uint64) error {
+func (r *cluster) SetQuota(_ context.Context, config *core.CephConfig, pool string, maxBytes, maxObjects uint64) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -183,7 +183,7 @@ func (r *cluster) SetQuota(_ context.Context, config *core.StorageConfig, pool s
 	return setOSDPoolQuota(conn, pool, "max_objects", maxObjects)
 }
 
-func (r *cluster) GetECProfile(_ context.Context, config *core.StorageConfig, name string) (k, m string, err error) {
+func (r *cluster) GetECProfile(_ context.Context, config *core.CephConfig, name string) (k, m string, err error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return "", "", err

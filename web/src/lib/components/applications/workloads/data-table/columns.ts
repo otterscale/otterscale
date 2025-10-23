@@ -167,6 +167,16 @@ const columns: ColumnDef<Application>[] = [
 			return renderSnippet(cells.nodeport, row);
 		},
 	},
+	{
+		accessorKey: 'actions',
+		header: ({ column }) => {
+			return renderSnippet(headers.actions, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.actions, row);
+		},
+		enableHiding: false,
+	},
 ];
 
 export { columns, messages };

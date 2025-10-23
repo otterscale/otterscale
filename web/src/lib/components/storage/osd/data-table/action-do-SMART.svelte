@@ -25,8 +25,8 @@
 	async function fetchSMARTs() {
 		try {
 			const response = await storageClient.doSMART({
-				scopeUuid: $currentCeph?.scopeUuid,
-				facilityName: $currentCeph?.name,
+				scope: $currentCeph?.scope,
+				facility: $currentCeph?.name,
 				osdName: osd.name,
 			});
 			smarts.set(response.deviceOutputMap);

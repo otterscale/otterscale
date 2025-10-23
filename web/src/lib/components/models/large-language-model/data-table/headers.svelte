@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Column, Table } from '@tanstack/table-core';
 
-	import { type LargeLangeageModel } from '../type';
+	import { type LargeLanguageModel } from '../type';
 
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -18,12 +18,11 @@
 		requests,
 		time_to_first_token,
 		relation,
-		nodeport,
 		action,
 	};
 </script>
 
-{#snippet row_picker(table: Table<LargeLangeageModel>)}
+{#snippet row_picker(table: Table<LargeLanguageModel>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
 			<Headers.RowPicker {table} />
@@ -37,7 +36,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet name(column: Column<LargeLangeageModel>)}
+{#snippet name(column: Column<LargeLanguageModel>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.model_name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -46,7 +45,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet replicas(column: Column<LargeLangeageModel>)}
+{#snippet replicas(column: Column<LargeLanguageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -55,7 +54,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet healthies(column: Column<LargeLangeageModel>)}
+{#snippet healthies(column: Column<LargeLanguageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -64,7 +63,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet gpu_cache(column: Column<LargeLangeageModel>)}
+{#snippet gpu_cache(column: Column<LargeLanguageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -73,7 +72,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet kv_cache(column: Column<LargeLangeageModel>)}
+{#snippet kv_cache(column: Column<LargeLanguageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -82,7 +81,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet requests(column: Column<LargeLangeageModel>)}
+{#snippet requests(column: Column<LargeLanguageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -91,7 +90,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet time_to_first_token(column: Column<LargeLangeageModel>)}
+{#snippet time_to_first_token(column: Column<LargeLanguageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -103,12 +102,6 @@
 {#snippet relation()}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>{m.gpu_relation()}</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
-{#snippet nodeport()}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.nodeport()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

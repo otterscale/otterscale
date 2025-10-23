@@ -5,14 +5,16 @@
 	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
+	import SetupNodeGPUMode from './setup-node-gpu-mode.svelte';
+
 	import { page } from '$app/state';
+	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import {
 		FacilityService,
 		type Facility,
 		type Facility_Status,
 		type Facility_Unit,
 	} from '$lib/api/facility/v1/facility_pb';
-	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
@@ -60,7 +62,7 @@
 
 <div class="grid w-full grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-6">
 	<div class="col-span-3 flex justify-end space-x-4 rounded-lg sm:space-x-6 lg:col-span-6">
-		<Button variant="ghost" disabled={$premiumTier === PremiumTier.BASIC}>
+		<Button variant="ghost" disabled={$premiumTier.level === PremiumTier_Level.BASIC}>
 			<Icon icon="ph:plus" class="size-4" />
 			{m.add_node()}
 		</Button>
@@ -123,12 +125,6 @@
 									{unit.name}
 								</span>
 
-								{#if unit.machineId}
-									<a href="{dynamicPaths.machinesMetal(page.params.scope).url}/{unit.machineId}">
-										<Icon icon="ph:computer-tower" class="size-4" />
-									</a>
-								{/if}
-
 								<button
 									class="hover:cursor-pointer"
 									onclick={(e) => {
@@ -136,7 +132,7 @@
 										toast.promise(
 											() =>
 												facilityClient.resolveFacilityUnitErrors({
-													scopeUuid: page.params.scope,
+													scope: page.params.scope,
 													unitName: unit.name,
 												}),
 											{
@@ -144,7 +140,7 @@
 												success: () => {
 													facilityClient
 														.listFacilities({
-															scopeUuid: page.params.scope,
+															scope: page.params.scope,
 														})
 														.then((response) => {
 															facilities.set(response.facilities);
@@ -167,8 +163,18 @@
 									<Icon icon="ph:arrow-counter-clockwise" class="size-4" />
 								</button>
 
+								{#if unit.machineId}
+									<a href="{dynamicPaths.machinesMetal(page.params.scope).url}/{unit.machineId}">
+										<Icon icon="ph:computer-tower" class="size-4" />
+									</a>
+								{/if}
+
+								{#if unit.machineId}
+									<SetupNodeGPUMode {unit} class="hover:cursor-pointer" />
+								{/if}
+
 								{#if unit.leader}
-									<Icon icon="ph:star-fill" class="size-4 text-yellow-400 " />
+									<Icon icon="ph:star-fill" class="size-4 text-yellow-400" />
 								{/if}
 							</div>
 

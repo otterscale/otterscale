@@ -6,6 +6,8 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/juju/juju/core/base"
+
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 var ubuntuDistroSeriesMap = map[base.SeriesName]BootImageSelection{
@@ -42,6 +44,7 @@ type Configuration struct {
 	NTPServers          []string
 	PackageRepositories []PackageRepository
 	BootImages          []BootImage
+	HelmRepositorys     []string
 }
 
 type BootImage struct {
@@ -79,24 +82,27 @@ type PackageRepositoryRepo interface {
 }
 
 type ConfigurationUseCase struct {
-	server              ServerRepo
-	scope               ScopeRepo
-	scopeConfig         ScopeConfigRepo
+	conf *config.Config
+
 	bootResource        BootResourceRepo
 	bootSource          BootSourceRepo
 	bootSourceSelection BootSourceSelectionRepo
 	packageRepository   PackageRepositoryRepo
+	scope               ScopeRepo
+	scopeConfig         ScopeConfigRepo
+	server              ServerRepo
 }
 
-func NewConfigurationUseCase(server ServerRepo, scope ScopeRepo, scopeConfig ScopeConfigRepo, bootResource BootResourceRepo, bootSource BootSourceRepo, bootSourceSelection BootSourceSelectionRepo, packageRepository PackageRepositoryRepo) *ConfigurationUseCase {
+func NewConfigurationUseCase(conf *config.Config, bootResource BootResourceRepo, bootSource BootSourceRepo, bootSourceSelection BootSourceSelectionRepo, packageRepository PackageRepositoryRepo, scope ScopeRepo, scopeConfig ScopeConfigRepo, server ServerRepo) *ConfigurationUseCase {
 	return &ConfigurationUseCase{
-		server:              server,
-		scope:               scope,
-		scopeConfig:         scopeConfig,
+		conf:                conf,
 		bootResource:        bootResource,
 		bootSource:          bootSource,
 		bootSourceSelection: bootSourceSelection,
 		packageRepository:   packageRepository,
+		scope:               scope,
+		scopeConfig:         scopeConfig,
+		server:              server,
 	}
 }
 
@@ -113,10 +119,12 @@ func (uc *ConfigurationUseCase) GetConfiguration(ctx context.Context) (*Configur
 	if err != nil {
 		return nil, err
 	}
+	helmRepositories := uc.listHelmRepositories()
 	return &Configuration{
 		NTPServers:          ntpServers,
 		PackageRepositories: packageRepositories,
 		BootImages:          bootImages,
+		HelmRepositorys:     helmRepositories,
 	}, nil
 }
 
@@ -142,13 +150,21 @@ func (uc *ConfigurationUseCase) UpdatePackageRepository(ctx context.Context, id 
 			return nil, err
 		}
 		for i := range scopes {
-			if err := uc.scopeConfig.Set(ctx, scopes[i].UUID, map[string]any{"apt-mirror": url}); err != nil {
+			if err := uc.scopeConfig.Set(ctx, scopes[i].Name, map[string]any{"apt-mirror": url}); err != nil {
 				return nil, err
 			}
 		}
 	}
 
 	return packageRepository, nil
+}
+
+func (uc *ConfigurationUseCase) UpdateHelmRepository(urls []string) ([]string, error) {
+	uc.conf.Kube.HelmRepositoryURLs = urls
+	if err := uc.conf.Override(uc.conf); err != nil {
+		return nil, err
+	}
+	return uc.listHelmRepositories(), nil
 }
 
 func (uc *ConfigurationUseCase) CreateBootImage(ctx context.Context, distroSeries string, architectures []string) (*BootImage, error) {
@@ -267,4 +283,8 @@ func (uc *ConfigurationUseCase) listBootImages(ctx context.Context) ([]BootImage
 		}
 	}
 	return bootImages, nil
+}
+
+func (uc *ConfigurationUseCase) listHelmRepositories() []string {
+	return uc.conf.Kube.HelmRepositoryURLs
 }
