@@ -36,19 +36,13 @@
 	const transport: Transport = getContext('transport');
 	const client = createClient(ApplicationService, transport);
 
-	let controller: AbortController | null = null;
+	let controller: AbortController;
 	let triggerContent = $state('');
 	let messages = $state<{ message: string; phase: string }[]>([]);
 	let terminal = $state<HTMLDivElement>();
 
 	async function watchLogs(duration: string) {
 		try {
-			if (controller) {
-				stopWatching();
-			}
-
-			messages = [];
-
 			controller = new AbortController();
 			const signal = controller.signal;
 
@@ -68,6 +62,9 @@
 				},
 			);
 			for await (const response of stream) {
+				if (signal.aborted) {
+					break;
+				}
 				messages = [...messages, { message: response.log, phase: 'LOG' }];
 				scrollToBottom();
 
@@ -85,8 +82,6 @@
 			if (!isAbortError) {
 				console.error('Error watching logs:', error);
 			}
-		} finally {
-			controller = null;
 		}
 	}
 
@@ -97,7 +92,8 @@
 	}
 
 	function stopWatching() {
-		if (controller) {
+		messages = [];
+		if (!controller.signal.aborted) {
 			controller.abort();
 		}
 	}
