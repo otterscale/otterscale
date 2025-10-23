@@ -11,7 +11,6 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/duration"
 
 	pb "github.com/otterscale/otterscale/api/application/v1"
@@ -107,12 +106,7 @@ func (s *ApplicationService) DeleteApplicationPod(ctx context.Context, req *pb.D
 }
 
 func (s *ApplicationService) WatchLogs(ctx context.Context, req *pb.WatchLogsRequest, stream *connect.ServerStream[pb.WatchLogsResponse]) error {
-	var since *metav1.Time
-	if req.GetSince() != nil {
-		since = &metav1.Time{Time: req.GetSince().AsTime()}
-	}
-
-	logs, err := s.kubernetes.StreamLogs(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), since)
+	logs, err := s.kubernetes.StreamLogs(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetDuration().AsDuration())
 	if err != nil {
 		return err
 	}

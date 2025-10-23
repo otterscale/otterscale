@@ -120,7 +120,7 @@ type KubeCoreRepo interface {
 	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
 	GetLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error)
 	DeletePod(ctx context.Context, config *rest.Config, namespace, name string) error
-	StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string, since *metav1.Time) (io.ReadCloser, error)
+	StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string, duration time.Duration) (io.ReadCloser, error)
 	CreateExecutor(config *rest.Config, namespace, podName, containerName string, command []string) (remotecommand.Executor, error)
 
 	GetSecret(ctx context.Context, config *rest.Config, namespace, name string) (*Secret, error)
@@ -449,12 +449,12 @@ func (uc *KubernetesUseCase) DeletePod(ctx context.Context, scope, facility, nam
 	return uc.kubeCore.DeletePod(ctx, config, namespace, name)
 }
 
-func (uc *KubernetesUseCase) StreamLogs(ctx context.Context, scope, facility, namespace, podName, containerName string, since *metav1.Time) (io.ReadCloser, error) {
+func (uc *KubernetesUseCase) StreamLogs(ctx context.Context, scope, facility, namespace, podName, containerName string, duration time.Duration) (io.ReadCloser, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeCore.StreamLogs(ctx, config, namespace, podName, containerName, since)
+	return uc.kubeCore.StreamLogs(ctx, config, namespace, podName, containerName, duration)
 }
 
 func (uc *KubernetesUseCase) WriteToTTYSession(sessionID string, stdIn []byte) error {

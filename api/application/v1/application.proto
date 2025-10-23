@@ -3,6 +3,7 @@ edition = "2023";
 package otterscale.application.v1;
 
 import "api/annotations.proto";
+import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
@@ -288,7 +289,7 @@ message WatchLogsRequest {
   string namespace = 3;
   string pod_name = 4;
   string container_name = 5;
-  google.protobuf.Timestamp since = 6;
+  google.protobuf.Duration duration = 6;
 }
 
 message WatchLogsResponse {
