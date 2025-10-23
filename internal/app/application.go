@@ -106,7 +106,7 @@ func (s *ApplicationService) DeleteApplicationPod(ctx context.Context, req *pb.D
 }
 
 func (s *ApplicationService) WatchLogs(ctx context.Context, req *pb.WatchLogsRequest, stream *connect.ServerStream[pb.WatchLogsResponse]) error {
-	logs, err := s.kubernetes.StreamLogs(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetPodName(), req.GetContainerName())
+	logs, err := s.kubernetes.StreamLogs(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetDuration().AsDuration())
 	if err != nil {
 		return err
 	}
