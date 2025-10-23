@@ -6,7 +6,6 @@
 	import Actions from './cell-actions.svelte';
 	import Relation from './cell-relation.svelte';
 
-	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
