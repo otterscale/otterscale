@@ -17,6 +17,19 @@ func boolToInt(b bool) int {
 	return 0
 }
 
+func flatten[T any](data [][]T) []T {
+	totalLen := 0
+	for _, innerSlice := range data {
+		totalLen += len(innerSlice)
+	}
+
+	result := make([]T, 0, totalLen)
+	for _, innerSlice := range data {
+		result = append(result, innerSlice...)
+	}
+	return result
+}
+
 func defaultBase(ctx context.Context, server ServerRepo) (base.Base, error) {
 	series, err := server.Get(ctx, "default_distro_series")
 	if err != nil {

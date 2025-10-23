@@ -39,10 +39,6 @@ func New(conf *config.Config) (*Kube, error) {
 	}, nil
 }
 
-func (m *Kube) helmRepoURLs() []string {
-	return m.conf.Kube.HelmRepositoryURLs
-}
-
 func (m *Kube) clientset(config *rest.Config) (*kubernetes.Clientset, error) {
 	if v, ok := m.clientsets.Load(config.Host); ok {
 		return v.(*kubernetes.Clientset), nil

@@ -81,12 +81,42 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 	return resp, nil
 }
 
-func (s *OrchestratorService) ListPlugins(ctx context.Context, req *pb.ListPluginsRequest) (*pb.ListPluginsResponse, error) {
-	plugins, err := s.uc.ListPlugins(ctx, req.GetScope(), req.GetFacility())
+func (s *OrchestratorService) ListGeneralPlugins(ctx context.Context, req *pb.ListGeneralPluginsRequest) (*pb.ListGeneralPluginsResponse, error) {
+	plugins, err := s.uc.ListGeneralPlugins(ctx, req.GetScope(), req.GetFacility())
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ListPluginsResponse{}
+	resp := &pb.ListGeneralPluginsResponse{}
+	resp.SetPlugins(toProtoPlugins(plugins))
+	return resp, nil
+}
+
+func (s *OrchestratorService) ListModelPlugins(ctx context.Context, req *pb.ListModelPluginsRequest) (*pb.ListModelPluginsResponse, error) {
+	plugins, err := s.uc.ListModelPlugins(ctx, req.GetScope(), req.GetFacility())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListModelPluginsResponse{}
+	resp.SetPlugins(toProtoPlugins(plugins))
+	return resp, nil
+}
+
+func (s *OrchestratorService) ListInstancePlugins(ctx context.Context, req *pb.ListInstancePluginsRequest) (*pb.ListInstancePluginsResponse, error) {
+	plugins, err := s.uc.ListInstancePlugins(ctx, req.GetScope(), req.GetFacility())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListInstancePluginsResponse{}
+	resp.SetPlugins(toProtoPlugins(plugins))
+	return resp, nil
+}
+
+func (s *OrchestratorService) ListStoragePlugins(ctx context.Context, req *pb.ListStoragePluginsRequest) (*pb.ListStoragePluginsResponse, error) {
+	plugins, err := s.uc.ListStoragePlugins(ctx, req.GetScope(), req.GetFacility())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListStoragePluginsResponse{}
 	resp.SetPlugins(toProtoPlugins(plugins))
 	return resp, nil
 }
@@ -195,30 +225,38 @@ func toProtoGPURelationPodDevice(pd *core.GPURelationPodDevice) *pb.GPURelation_
 	return ret
 }
 
-func toProtoPlugins(rs []core.Release) []*pb.Plugin {
+func toProtoPlugins(ps []core.Plugin) []*pb.Plugin {
 	ret := []*pb.Plugin{}
-	for i := range rs {
-		ret = append(ret, toProtoPlugin(&rs[i]))
+	for i := range ps {
+		ret = append(ret, toProtoPlugin(&ps[i]))
 	}
 	return ret
 }
 
-func toProtoPlugin(r *core.Release) *pb.Plugin {
+func toProtoPlugin(p *core.Plugin) *pb.Plugin {
 	ret := &pb.Plugin{}
-	ret.SetName(r.Name)
-	ret.SetNamespace(r.Namespace)
-	info := r.Info
-	if info != nil {
-		ret.SetStatus(info.Status.String())
-		ret.SetDescription(info.Description)
-		ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
-		ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
-		if !info.Deleted.IsZero() {
-			ret.SetDeletedAt(timestamppb.New(info.Deleted.Time))
+	release := p.Release
+	if release != nil {
+		ret.SetName(release.Name)
+		ret.SetNamespace(release.Namespace)
+		info := release.Info
+		if info != nil {
+			ret.SetStatus(info.Status.String())
+			ret.SetDescription(info.Description)
+			ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
+			ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
+			if !info.Deleted.IsZero() {
+				ret.SetDeletedAt(timestamppb.New(info.Deleted.Time))
+			}
+		}
+		current := release.Chart
+		if current != nil && current.Metadata != nil {
+			ret.SetCurrent(toProtoPluginChart(current.Metadata))
 		}
 	}
-	if r.Chart != nil && r.Chart.Metadata != nil {
-		ret.SetChart(toProtoPluginChart(r.Chart.Metadata))
+	latest := p.Latest
+	if latest != nil && latest.Metadata != nil {
+		ret.SetLatest(toProtoPluginChart(latest.Metadata))
 	}
 	return ret
 }

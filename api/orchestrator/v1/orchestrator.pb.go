@@ -2131,7 +2131,8 @@ type Plugin struct {
 	xxx_hidden_FirstDeployedAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=first_deployed_at,json=firstDeployedAt"`
 	xxx_hidden_LastDeployedAt  *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=last_deployed_at,json=lastDeployedAt"`
 	xxx_hidden_DeletedAt       *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=deleted_at,json=deletedAt"`
-	xxx_hidden_Chart           *Plugin_Chart          `protobuf:"bytes,11,opt,name=chart"`
+	xxx_hidden_Current         *Plugin_Chart          `protobuf:"bytes,11,opt,name=current"`
+	xxx_hidden_Latest          *Plugin_Chart          `protobuf:"bytes,12,opt,name=latest"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
 	unknownFields              protoimpl.UnknownFields
@@ -2224,31 +2225,38 @@ func (x *Plugin) GetDeletedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *Plugin) GetChart() *Plugin_Chart {
+func (x *Plugin) GetCurrent() *Plugin_Chart {
 	if x != nil {
-		return x.xxx_hidden_Chart
+		return x.xxx_hidden_Current
+	}
+	return nil
+}
+
+func (x *Plugin) GetLatest() *Plugin_Chart {
+	if x != nil {
+		return x.xxx_hidden_Latest
 	}
 	return nil
 }
 
 func (x *Plugin) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 9)
 }
 
 func (x *Plugin) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 9)
 }
 
 func (x *Plugin) SetStatus(v string) {
 	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 9)
 }
 
 func (x *Plugin) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 9)
 }
 
 func (x *Plugin) SetFirstDeployedAt(v *timestamppb.Timestamp) {
@@ -2263,8 +2271,12 @@ func (x *Plugin) SetDeletedAt(v *timestamppb.Timestamp) {
 	x.xxx_hidden_DeletedAt = v
 }
 
-func (x *Plugin) SetChart(v *Plugin_Chart) {
-	x.xxx_hidden_Chart = v
+func (x *Plugin) SetCurrent(v *Plugin_Chart) {
+	x.xxx_hidden_Current = v
+}
+
+func (x *Plugin) SetLatest(v *Plugin_Chart) {
+	x.xxx_hidden_Latest = v
 }
 
 func (x *Plugin) HasName() bool {
@@ -2316,11 +2328,18 @@ func (x *Plugin) HasDeletedAt() bool {
 	return x.xxx_hidden_DeletedAt != nil
 }
 
-func (x *Plugin) HasChart() bool {
+func (x *Plugin) HasCurrent() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Chart != nil
+	return x.xxx_hidden_Current != nil
+}
+
+func (x *Plugin) HasLatest() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Latest != nil
 }
 
 func (x *Plugin) ClearName() {
@@ -2355,8 +2374,12 @@ func (x *Plugin) ClearDeletedAt() {
 	x.xxx_hidden_DeletedAt = nil
 }
 
-func (x *Plugin) ClearChart() {
-	x.xxx_hidden_Chart = nil
+func (x *Plugin) ClearCurrent() {
+	x.xxx_hidden_Current = nil
+}
+
+func (x *Plugin) ClearLatest() {
+	x.xxx_hidden_Latest = nil
 }
 
 type Plugin_builder struct {
@@ -2369,7 +2392,8 @@ type Plugin_builder struct {
 	FirstDeployedAt *timestamppb.Timestamp
 	LastDeployedAt  *timestamppb.Timestamp
 	DeletedAt       *timestamppb.Timestamp
-	Chart           *Plugin_Chart
+	Current         *Plugin_Chart
+	Latest          *Plugin_Chart
 }
 
 func (b0 Plugin_builder) Build() *Plugin {
@@ -2377,29 +2401,30 @@ func (b0 Plugin_builder) Build() *Plugin {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 9)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 9)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 9)
 		x.xxx_hidden_Status = b.Status
 	}
 	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 9)
 		x.xxx_hidden_Description = b.Description
 	}
 	x.xxx_hidden_FirstDeployedAt = b.FirstDeployedAt
 	x.xxx_hidden_LastDeployedAt = b.LastDeployedAt
 	x.xxx_hidden_DeletedAt = b.DeletedAt
-	x.xxx_hidden_Chart = b.Chart
+	x.xxx_hidden_Current = b.Current
+	x.xxx_hidden_Latest = b.Latest
 	return m0
 }
 
-type ListPluginsRequest struct {
+type ListGeneralPluginsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
@@ -2409,20 +2434,20 @@ type ListPluginsRequest struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *ListPluginsRequest) Reset() {
-	*x = ListPluginsRequest{}
+func (x *ListGeneralPluginsRequest) Reset() {
+	*x = ListGeneralPluginsRequest{}
 	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListPluginsRequest) String() string {
+func (x *ListGeneralPluginsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListPluginsRequest) ProtoMessage() {}
+func (*ListGeneralPluginsRequest) ProtoMessage() {}
 
-func (x *ListPluginsRequest) ProtoReflect() protoreflect.Message {
+func (x *ListGeneralPluginsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -2434,7 +2459,7 @@ func (x *ListPluginsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListPluginsRequest) GetScope() string {
+func (x *ListGeneralPluginsRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
@@ -2444,7 +2469,7 @@ func (x *ListPluginsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListPluginsRequest) GetFacility() string {
+func (x *ListGeneralPluginsRequest) GetFacility() string {
 	if x != nil {
 		if x.xxx_hidden_Facility != nil {
 			return *x.xxx_hidden_Facility
@@ -2454,49 +2479,49 @@ func (x *ListPluginsRequest) GetFacility() string {
 	return ""
 }
 
-func (x *ListPluginsRequest) SetScope(v string) {
+func (x *ListGeneralPluginsRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *ListPluginsRequest) SetFacility(v string) {
+func (x *ListGeneralPluginsRequest) SetFacility(v string) {
 	x.xxx_hidden_Facility = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *ListPluginsRequest) HasScope() bool {
+func (x *ListGeneralPluginsRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListPluginsRequest) HasFacility() bool {
+func (x *ListGeneralPluginsRequest) HasFacility() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListPluginsRequest) ClearScope() {
+func (x *ListGeneralPluginsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListPluginsRequest) ClearFacility() {
+func (x *ListGeneralPluginsRequest) ClearFacility() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Facility = nil
 }
 
-type ListPluginsRequest_builder struct {
+type ListGeneralPluginsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope    *string
 	Facility *string
 }
 
-func (b0 ListPluginsRequest_builder) Build() *ListPluginsRequest {
-	m0 := &ListPluginsRequest{}
+func (b0 ListGeneralPluginsRequest_builder) Build() *ListGeneralPluginsRequest {
+	m0 := &ListGeneralPluginsRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
@@ -2510,27 +2535,27 @@ func (b0 ListPluginsRequest_builder) Build() *ListPluginsRequest {
 	return m0
 }
 
-type ListPluginsResponse struct {
+type ListGeneralPluginsResponse struct {
 	state              protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Plugins *[]*Plugin             `protobuf:"bytes,1,rep,name=plugins"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *ListPluginsResponse) Reset() {
-	*x = ListPluginsResponse{}
+func (x *ListGeneralPluginsResponse) Reset() {
+	*x = ListGeneralPluginsResponse{}
 	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListPluginsResponse) String() string {
+func (x *ListGeneralPluginsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListPluginsResponse) ProtoMessage() {}
+func (*ListGeneralPluginsResponse) ProtoMessage() {}
 
-func (x *ListPluginsResponse) ProtoReflect() protoreflect.Message {
+func (x *ListGeneralPluginsResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -2542,7 +2567,7 @@ func (x *ListPluginsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListPluginsResponse) GetPlugins() []*Plugin {
+func (x *ListGeneralPluginsResponse) GetPlugins() []*Plugin {
 	if x != nil {
 		if x.xxx_hidden_Plugins != nil {
 			return *x.xxx_hidden_Plugins
@@ -2551,18 +2576,528 @@ func (x *ListPluginsResponse) GetPlugins() []*Plugin {
 	return nil
 }
 
-func (x *ListPluginsResponse) SetPlugins(v []*Plugin) {
+func (x *ListGeneralPluginsResponse) SetPlugins(v []*Plugin) {
 	x.xxx_hidden_Plugins = &v
 }
 
-type ListPluginsResponse_builder struct {
+type ListGeneralPluginsResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Plugins []*Plugin
 }
 
-func (b0 ListPluginsResponse_builder) Build() *ListPluginsResponse {
-	m0 := &ListPluginsResponse{}
+func (b0 ListGeneralPluginsResponse_builder) Build() *ListGeneralPluginsResponse {
+	m0 := &ListGeneralPluginsResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Plugins = &b.Plugins
+	return m0
+}
+
+type ListModelPluginsRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ListModelPluginsRequest) Reset() {
+	*x = ListModelPluginsRequest{}
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListModelPluginsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListModelPluginsRequest) ProtoMessage() {}
+
+func (x *ListModelPluginsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListModelPluginsRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListModelPluginsRequest) GetFacility() string {
+	if x != nil {
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListModelPluginsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *ListModelPluginsRequest) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ListModelPluginsRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ListModelPluginsRequest) HasFacility() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListModelPluginsRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+func (x *ListModelPluginsRequest) ClearFacility() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Facility = nil
+}
+
+type ListModelPluginsRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope    *string
+	Facility *string
+}
+
+func (b0 ListModelPluginsRequest_builder) Build() *ListModelPluginsRequest {
+	m0 := &ListModelPluginsRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	if b.Facility != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Facility = b.Facility
+	}
+	return m0
+}
+
+type ListModelPluginsResponse struct {
+	state              protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Plugins *[]*Plugin             `protobuf:"bytes,1,rep,name=plugins"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *ListModelPluginsResponse) Reset() {
+	*x = ListModelPluginsResponse{}
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListModelPluginsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListModelPluginsResponse) ProtoMessage() {}
+
+func (x *ListModelPluginsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListModelPluginsResponse) GetPlugins() []*Plugin {
+	if x != nil {
+		if x.xxx_hidden_Plugins != nil {
+			return *x.xxx_hidden_Plugins
+		}
+	}
+	return nil
+}
+
+func (x *ListModelPluginsResponse) SetPlugins(v []*Plugin) {
+	x.xxx_hidden_Plugins = &v
+}
+
+type ListModelPluginsResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Plugins []*Plugin
+}
+
+func (b0 ListModelPluginsResponse_builder) Build() *ListModelPluginsResponse {
+	m0 := &ListModelPluginsResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Plugins = &b.Plugins
+	return m0
+}
+
+type ListInstancePluginsRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ListInstancePluginsRequest) Reset() {
+	*x = ListInstancePluginsRequest{}
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListInstancePluginsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListInstancePluginsRequest) ProtoMessage() {}
+
+func (x *ListInstancePluginsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListInstancePluginsRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListInstancePluginsRequest) GetFacility() string {
+	if x != nil {
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListInstancePluginsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *ListInstancePluginsRequest) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ListInstancePluginsRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ListInstancePluginsRequest) HasFacility() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListInstancePluginsRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+func (x *ListInstancePluginsRequest) ClearFacility() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Facility = nil
+}
+
+type ListInstancePluginsRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope    *string
+	Facility *string
+}
+
+func (b0 ListInstancePluginsRequest_builder) Build() *ListInstancePluginsRequest {
+	m0 := &ListInstancePluginsRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	if b.Facility != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Facility = b.Facility
+	}
+	return m0
+}
+
+type ListInstancePluginsResponse struct {
+	state              protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Plugins *[]*Plugin             `protobuf:"bytes,1,rep,name=plugins"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *ListInstancePluginsResponse) Reset() {
+	*x = ListInstancePluginsResponse{}
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListInstancePluginsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListInstancePluginsResponse) ProtoMessage() {}
+
+func (x *ListInstancePluginsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListInstancePluginsResponse) GetPlugins() []*Plugin {
+	if x != nil {
+		if x.xxx_hidden_Plugins != nil {
+			return *x.xxx_hidden_Plugins
+		}
+	}
+	return nil
+}
+
+func (x *ListInstancePluginsResponse) SetPlugins(v []*Plugin) {
+	x.xxx_hidden_Plugins = &v
+}
+
+type ListInstancePluginsResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Plugins []*Plugin
+}
+
+func (b0 ListInstancePluginsResponse_builder) Build() *ListInstancePluginsResponse {
+	m0 := &ListInstancePluginsResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Plugins = &b.Plugins
+	return m0
+}
+
+type ListStoragePluginsRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ListStoragePluginsRequest) Reset() {
+	*x = ListStoragePluginsRequest{}
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListStoragePluginsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListStoragePluginsRequest) ProtoMessage() {}
+
+func (x *ListStoragePluginsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListStoragePluginsRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListStoragePluginsRequest) GetFacility() string {
+	if x != nil {
+		if x.xxx_hidden_Facility != nil {
+			return *x.xxx_hidden_Facility
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListStoragePluginsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *ListStoragePluginsRequest) SetFacility(v string) {
+	x.xxx_hidden_Facility = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ListStoragePluginsRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ListStoragePluginsRequest) HasFacility() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListStoragePluginsRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+func (x *ListStoragePluginsRequest) ClearFacility() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Facility = nil
+}
+
+type ListStoragePluginsRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope    *string
+	Facility *string
+}
+
+func (b0 ListStoragePluginsRequest_builder) Build() *ListStoragePluginsRequest {
+	m0 := &ListStoragePluginsRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	if b.Facility != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Facility = b.Facility
+	}
+	return m0
+}
+
+type ListStoragePluginsResponse struct {
+	state              protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Plugins *[]*Plugin             `protobuf:"bytes,1,rep,name=plugins"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *ListStoragePluginsResponse) Reset() {
+	*x = ListStoragePluginsResponse{}
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListStoragePluginsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListStoragePluginsResponse) ProtoMessage() {}
+
+func (x *ListStoragePluginsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListStoragePluginsResponse) GetPlugins() []*Plugin {
+	if x != nil {
+		if x.xxx_hidden_Plugins != nil {
+			return *x.xxx_hidden_Plugins
+		}
+	}
+	return nil
+}
+
+func (x *ListStoragePluginsResponse) SetPlugins(v []*Plugin) {
+	x.xxx_hidden_Plugins = &v
+}
+
+type ListStoragePluginsResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Plugins []*Plugin
+}
+
+func (b0 ListStoragePluginsResponse_builder) Build() *ListStoragePluginsResponse {
+	m0 := &ListStoragePluginsResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Plugins = &b.Plugins
@@ -2581,7 +3116,7 @@ type Essential_Unit struct {
 
 func (x *Essential_Unit) Reset() {
 	*x = Essential_Unit{}
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[18]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2593,7 +3128,7 @@ func (x *Essential_Unit) String() string {
 func (*Essential_Unit) ProtoMessage() {}
 
 func (x *Essential_Unit) ProtoReflect() protoreflect.Message {
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[18]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2696,7 +3231,7 @@ type GPURelation_Pod struct {
 
 func (x *GPURelation_Pod) Reset() {
 	*x = GPURelation_Pod{}
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[22]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2708,7 +3243,7 @@ func (x *GPURelation_Pod) String() string {
 func (*GPURelation_Pod) ProtoMessage() {}
 
 func (x *GPURelation_Pod) ProtoReflect() protoreflect.Message {
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[22]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2916,7 +3451,7 @@ type GPURelation_GPU struct {
 
 func (x *GPURelation_GPU) Reset() {
 	*x = GPURelation_GPU{}
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[23]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2928,7 +3463,7 @@ func (x *GPURelation_GPU) String() string {
 func (*GPURelation_GPU) ProtoMessage() {}
 
 func (x *GPURelation_GPU) ProtoReflect() protoreflect.Message {
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[23]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3204,7 +3739,7 @@ type GPURelation_Machine struct {
 
 func (x *GPURelation_Machine) Reset() {
 	*x = GPURelation_Machine{}
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[24]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3216,7 +3751,7 @@ func (x *GPURelation_Machine) String() string {
 func (*GPURelation_Machine) ProtoMessage() {}
 
 func (x *GPURelation_Machine) ProtoReflect() protoreflect.Message {
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[24]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3316,7 +3851,7 @@ type GPURelation_Pod_Device struct {
 
 func (x *GPURelation_Pod_Device) Reset() {
 	*x = GPURelation_Pod_Device{}
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[25]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3328,7 +3863,7 @@ func (x *GPURelation_Pod_Device) String() string {
 func (*GPURelation_Pod_Device) ProtoMessage() {}
 
 func (x *GPURelation_Pod_Device) ProtoReflect() protoreflect.Message {
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[25]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3456,7 +3991,7 @@ type Plugin_Chart struct {
 
 func (x *Plugin_Chart) Reset() {
 	*x = Plugin_Chart{}
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[26]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3468,7 +4003,7 @@ func (x *Plugin_Chart) String() string {
 func (*Plugin_Chart) ProtoMessage() {}
 
 func (x *Plugin_Chart) ProtoReflect() protoreflect.Message {
-	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[26]
+	mi := &file_api_orchestrator_v1_orchestrator_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3776,7 +4311,7 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\n" +
 	"model_name\x18\x04 \x01(\tR\tmodelName\"o\n" +
 	"\x1fListGPURelationsByModelResponse\x12L\n" +
-	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\x8c\x04\n" +
+	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\xd2\x04\n" +
 	"\x06Plugin\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x16\n" +
@@ -3785,21 +4320,36 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\x11first_deployed_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\x0ffirstDeployedAt\x12D\n" +
 	"\x10last_deployed_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\x0elastDeployedAt\x129\n" +
 	"\n" +
-	"deleted_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tdeletedAt\x12>\n" +
-	"\x05chart\x18\v \x01(\v2(.otterscale.orchestrator.v1.Plugin.ChartR\x05chart\x1a\x8c\x01\n" +
+	"deleted_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tdeletedAt\x12B\n" +
+	"\acurrent\x18\v \x01(\v2(.otterscale.orchestrator.v1.Plugin.ChartR\acurrent\x12@\n" +
+	"\x06latest\x18\f \x01(\v2(.otterscale.orchestrator.v1.Plugin.ChartR\x06latest\x1a\x8c\x01\n" +
 	"\x05Chart\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x1f\n" +
 	"\vapp_version\x18\x03 \x01(\tR\n" +
 	"appVersion\x12 \n" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x12\n" +
-	"\x04icon\x18\x05 \x01(\tR\x04icon\"F\n" +
-	"\x12ListPluginsRequest\x12\x14\n" +
+	"\x04icon\x18\x05 \x01(\tR\x04icon\"M\n" +
+	"\x19ListGeneralPluginsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"S\n" +
-	"\x13ListPluginsResponse\x12<\n" +
-	"\aplugins\x18\x01 \x03(\v2\".otterscale.orchestrator.v1.PluginR\aplugins2\xa1\n" +
-	"\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\"Z\n" +
+	"\x1aListGeneralPluginsResponse\x12<\n" +
+	"\aplugins\x18\x01 \x03(\v2\".otterscale.orchestrator.v1.PluginR\aplugins\"K\n" +
+	"\x17ListModelPluginsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\"X\n" +
+	"\x18ListModelPluginsResponse\x12<\n" +
+	"\aplugins\x18\x01 \x03(\v2\".otterscale.orchestrator.v1.PluginR\aplugins\"N\n" +
+	"\x1aListInstancePluginsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\"[\n" +
+	"\x1bListInstancePluginsResponse\x12<\n" +
+	"\aplugins\x18\x01 \x03(\v2\".otterscale.orchestrator.v1.PluginR\aplugins\"M\n" +
+	"\x19ListStoragePluginsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\"Z\n" +
+	"\x1aListStoragePluginsResponse\x12<\n" +
+	"\aplugins\x18\x01 \x03(\v2\".otterscale.orchestrator.v1.PluginR\aplugins2\x8f\x0e\n" +
 	"\x13OrchestratorService\x12\x8c\x01\n" +
 	"\x0eListEssentials\x121.otterscale.orchestrator.v1.ListEssentialsRequest\x1a2.otterscale.orchestrator.v1.ListEssentialsResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
 	"\forch-general\x12h\n" +
@@ -3809,24 +4359,27 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\rCreateCluster\x120.otterscale.orchestrator.v1.CreateClusterRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
 	"\forch-general\x12r\n" +
 	"\x0fAddClusterUnits\x122.otterscale.orchestrator.v1.AddClusterUnitsRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\forch-general\x12\xa6\x01\n" +
-	"\x18ListKubernetesNodeLabels\x12;.otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest\x1a<.otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse\"\x0f\x8a\xdf\xd5\x1d\n" +
+	"\forch-general\x12\xaa\x01\n" +
+	"\x18ListKubernetesNodeLabels\x12;.otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest\x1a<.otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
+	"\forch-general\x12\xb0\x01\n" +
+	"\x1aUpdateKubernetesNodeLabels\x12=.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest\x1a>.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
+	"\forch-general\x12\x98\x01\n" +
+	"\x12ListGeneralPlugins\x125.otterscale.orchestrator.v1.ListGeneralPluginsRequest\x1a6.otterscale.orchestrator.v1.ListGeneralPluginsResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
+	"\forch-general\x12\xac\x01\n" +
+	"\x19ListGPURelationsByMachine\x12<.otterscale.orchestrator.v1.ListGPURelationsByMachineRequest\x1a=.otterscale.orchestrator.v1.ListGPURelationsByMachineResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vmdl-general\x12\xa6\x01\n" +
+	"\x17ListGPURelationsByModel\x12:.otterscale.orchestrator.v1.ListGPURelationsByModelRequest\x1a;.otterscale.orchestrator.v1.ListGPURelationsByModelResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vmdl-general\x12\x91\x01\n" +
+	"\x10ListModelPlugins\x123.otterscale.orchestrator.v1.ListModelPluginsRequest\x1a4.otterscale.orchestrator.v1.ListModelPluginsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vmdl-general\x12\x99\x01\n" +
+	"\x13ListInstancePlugins\x126.otterscale.orchestrator.v1.ListInstancePluginsRequest\x1a7.otterscale.orchestrator.v1.ListInstancePluginsResponse\"\x11\x8a\xdf\xd5\x1d\f\n" +
 	"\n" +
-	"\borch-gpu\x12\xac\x01\n" +
-	"\x1aUpdateKubernetesNodeLabels\x12=.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest\x1a>.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\borch-gpu\x12\xa9\x01\n" +
-	"\x19ListGPURelationsByMachine\x12<.otterscale.orchestrator.v1.ListGPURelationsByMachineRequest\x1a=.otterscale.orchestrator.v1.ListGPURelationsByMachineResponse\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\borch-gpu\x12\xa3\x01\n" +
-	"\x17ListGPURelationsByModel\x12:.otterscale.orchestrator.v1.ListGPURelationsByModelRequest\x1a;.otterscale.orchestrator.v1.ListGPURelationsByModelResponse\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\borch-gpu\x12\x82\x01\n" +
-	"\vListPlugins\x12..otterscale.orchestrator.v1.ListPluginsRequest\x1a/.otterscale.orchestrator.v1.ListPluginsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vorch-pluginB9Z7github.com/otterscale/otterscale/api/orchestrator/v1;pbb\beditionsp\xe8\a"
+	"vm-general\x12\x97\x01\n" +
+	"\x12ListStoragePlugins\x125.otterscale.orchestrator.v1.ListStoragePluginsRequest\x1a6.otterscale.orchestrator.v1.ListStoragePluginsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vstg-generalB9Z7github.com/otterscale/otterscale/api/orchestrator/v1;pbb\beditionsp\xe8\a"
 
 var file_api_orchestrator_v1_orchestrator_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_orchestrator_v1_orchestrator_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
+var file_api_orchestrator_v1_orchestrator_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
 var file_api_orchestrator_v1_orchestrator_proto_goTypes = []any{
 	(Essential_Type)(0),                        // 0: otterscale.orchestrator.v1.Essential.Type
 	(*Essential)(nil),                          // 1: otterscale.orchestrator.v1.Essential
@@ -3845,64 +4398,80 @@ var file_api_orchestrator_v1_orchestrator_proto_goTypes = []any{
 	(*ListGPURelationsByModelRequest)(nil),     // 14: otterscale.orchestrator.v1.ListGPURelationsByModelRequest
 	(*ListGPURelationsByModelResponse)(nil),    // 15: otterscale.orchestrator.v1.ListGPURelationsByModelResponse
 	(*Plugin)(nil),                             // 16: otterscale.orchestrator.v1.Plugin
-	(*ListPluginsRequest)(nil),                 // 17: otterscale.orchestrator.v1.ListPluginsRequest
-	(*ListPluginsResponse)(nil),                // 18: otterscale.orchestrator.v1.ListPluginsResponse
-	(*Essential_Unit)(nil),                     // 19: otterscale.orchestrator.v1.Essential.Unit
-	nil,                                        // 20: otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.LabelsEntry
-	nil,                                        // 21: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry
-	nil,                                        // 22: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry
-	(*GPURelation_Pod)(nil),                    // 23: otterscale.orchestrator.v1.GPURelation.Pod
-	(*GPURelation_GPU)(nil),                    // 24: otterscale.orchestrator.v1.GPURelation.GPU
-	(*GPURelation_Machine)(nil),                // 25: otterscale.orchestrator.v1.GPURelation.Machine
-	(*GPURelation_Pod_Device)(nil),             // 26: otterscale.orchestrator.v1.GPURelation.Pod.Device
-	(*Plugin_Chart)(nil),                       // 27: otterscale.orchestrator.v1.Plugin.Chart
-	(*timestamppb.Timestamp)(nil),              // 28: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                      // 29: google.protobuf.Empty
+	(*ListGeneralPluginsRequest)(nil),          // 17: otterscale.orchestrator.v1.ListGeneralPluginsRequest
+	(*ListGeneralPluginsResponse)(nil),         // 18: otterscale.orchestrator.v1.ListGeneralPluginsResponse
+	(*ListModelPluginsRequest)(nil),            // 19: otterscale.orchestrator.v1.ListModelPluginsRequest
+	(*ListModelPluginsResponse)(nil),           // 20: otterscale.orchestrator.v1.ListModelPluginsResponse
+	(*ListInstancePluginsRequest)(nil),         // 21: otterscale.orchestrator.v1.ListInstancePluginsRequest
+	(*ListInstancePluginsResponse)(nil),        // 22: otterscale.orchestrator.v1.ListInstancePluginsResponse
+	(*ListStoragePluginsRequest)(nil),          // 23: otterscale.orchestrator.v1.ListStoragePluginsRequest
+	(*ListStoragePluginsResponse)(nil),         // 24: otterscale.orchestrator.v1.ListStoragePluginsResponse
+	(*Essential_Unit)(nil),                     // 25: otterscale.orchestrator.v1.Essential.Unit
+	nil,                                        // 26: otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.LabelsEntry
+	nil,                                        // 27: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry
+	nil,                                        // 28: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry
+	(*GPURelation_Pod)(nil),                    // 29: otterscale.orchestrator.v1.GPURelation.Pod
+	(*GPURelation_GPU)(nil),                    // 30: otterscale.orchestrator.v1.GPURelation.GPU
+	(*GPURelation_Machine)(nil),                // 31: otterscale.orchestrator.v1.GPURelation.Machine
+	(*GPURelation_Pod_Device)(nil),             // 32: otterscale.orchestrator.v1.GPURelation.Pod.Device
+	(*Plugin_Chart)(nil),                       // 33: otterscale.orchestrator.v1.Plugin.Chart
+	(*timestamppb.Timestamp)(nil),              // 34: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                      // 35: google.protobuf.Empty
 }
 var file_api_orchestrator_v1_orchestrator_proto_depIdxs = []int32{
 	0,  // 0: otterscale.orchestrator.v1.Essential.type:type_name -> otterscale.orchestrator.v1.Essential.Type
-	19, // 1: otterscale.orchestrator.v1.Essential.units:type_name -> otterscale.orchestrator.v1.Essential.Unit
+	25, // 1: otterscale.orchestrator.v1.Essential.units:type_name -> otterscale.orchestrator.v1.Essential.Unit
 	0,  // 2: otterscale.orchestrator.v1.ListEssentialsRequest.type:type_name -> otterscale.orchestrator.v1.Essential.Type
 	1,  // 3: otterscale.orchestrator.v1.ListEssentialsResponse.essentials:type_name -> otterscale.orchestrator.v1.Essential
 	0,  // 4: otterscale.orchestrator.v1.AddClusterUnitsRequest.type:type_name -> otterscale.orchestrator.v1.Essential.Type
-	20, // 5: otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.labels:type_name -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.LabelsEntry
-	21, // 6: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.labels:type_name -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry
-	22, // 7: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.labels:type_name -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry
-	23, // 8: otterscale.orchestrator.v1.GPURelation.pod:type_name -> otterscale.orchestrator.v1.GPURelation.Pod
-	24, // 9: otterscale.orchestrator.v1.GPURelation.gpu:type_name -> otterscale.orchestrator.v1.GPURelation.GPU
-	25, // 10: otterscale.orchestrator.v1.GPURelation.machine:type_name -> otterscale.orchestrator.v1.GPURelation.Machine
+	26, // 5: otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.labels:type_name -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse.LabelsEntry
+	27, // 6: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.labels:type_name -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest.LabelsEntry
+	28, // 7: otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.labels:type_name -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse.LabelsEntry
+	29, // 8: otterscale.orchestrator.v1.GPURelation.pod:type_name -> otterscale.orchestrator.v1.GPURelation.Pod
+	30, // 9: otterscale.orchestrator.v1.GPURelation.gpu:type_name -> otterscale.orchestrator.v1.GPURelation.GPU
+	31, // 10: otterscale.orchestrator.v1.GPURelation.machine:type_name -> otterscale.orchestrator.v1.GPURelation.Machine
 	11, // 11: otterscale.orchestrator.v1.ListGPURelationsByMachineResponse.gpu_relations:type_name -> otterscale.orchestrator.v1.GPURelation
 	11, // 12: otterscale.orchestrator.v1.ListGPURelationsByModelResponse.gpu_relations:type_name -> otterscale.orchestrator.v1.GPURelation
-	28, // 13: otterscale.orchestrator.v1.Plugin.first_deployed_at:type_name -> google.protobuf.Timestamp
-	28, // 14: otterscale.orchestrator.v1.Plugin.last_deployed_at:type_name -> google.protobuf.Timestamp
-	28, // 15: otterscale.orchestrator.v1.Plugin.deleted_at:type_name -> google.protobuf.Timestamp
-	27, // 16: otterscale.orchestrator.v1.Plugin.chart:type_name -> otterscale.orchestrator.v1.Plugin.Chart
-	16, // 17: otterscale.orchestrator.v1.ListPluginsResponse.plugins:type_name -> otterscale.orchestrator.v1.Plugin
-	28, // 18: otterscale.orchestrator.v1.GPURelation.Pod.bound_at:type_name -> google.protobuf.Timestamp
-	26, // 19: otterscale.orchestrator.v1.GPURelation.Pod.devices:type_name -> otterscale.orchestrator.v1.GPURelation.Pod.Device
-	2,  // 20: otterscale.orchestrator.v1.OrchestratorService.ListEssentials:input_type -> otterscale.orchestrator.v1.ListEssentialsRequest
-	4,  // 21: otterscale.orchestrator.v1.OrchestratorService.CreateNode:input_type -> otterscale.orchestrator.v1.CreateNodeRequest
-	5,  // 22: otterscale.orchestrator.v1.OrchestratorService.CreateCluster:input_type -> otterscale.orchestrator.v1.CreateClusterRequest
-	6,  // 23: otterscale.orchestrator.v1.OrchestratorService.AddClusterUnits:input_type -> otterscale.orchestrator.v1.AddClusterUnitsRequest
-	7,  // 24: otterscale.orchestrator.v1.OrchestratorService.ListKubernetesNodeLabels:input_type -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest
-	9,  // 25: otterscale.orchestrator.v1.OrchestratorService.UpdateKubernetesNodeLabels:input_type -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest
-	12, // 26: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByMachine:input_type -> otterscale.orchestrator.v1.ListGPURelationsByMachineRequest
-	14, // 27: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel:input_type -> otterscale.orchestrator.v1.ListGPURelationsByModelRequest
-	17, // 28: otterscale.orchestrator.v1.OrchestratorService.ListPlugins:input_type -> otterscale.orchestrator.v1.ListPluginsRequest
-	3,  // 29: otterscale.orchestrator.v1.OrchestratorService.ListEssentials:output_type -> otterscale.orchestrator.v1.ListEssentialsResponse
-	29, // 30: otterscale.orchestrator.v1.OrchestratorService.CreateNode:output_type -> google.protobuf.Empty
-	29, // 31: otterscale.orchestrator.v1.OrchestratorService.CreateCluster:output_type -> google.protobuf.Empty
-	29, // 32: otterscale.orchestrator.v1.OrchestratorService.AddClusterUnits:output_type -> google.protobuf.Empty
-	8,  // 33: otterscale.orchestrator.v1.OrchestratorService.ListKubernetesNodeLabels:output_type -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse
-	10, // 34: otterscale.orchestrator.v1.OrchestratorService.UpdateKubernetesNodeLabels:output_type -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse
-	13, // 35: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByMachine:output_type -> otterscale.orchestrator.v1.ListGPURelationsByMachineResponse
-	15, // 36: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel:output_type -> otterscale.orchestrator.v1.ListGPURelationsByModelResponse
-	18, // 37: otterscale.orchestrator.v1.OrchestratorService.ListPlugins:output_type -> otterscale.orchestrator.v1.ListPluginsResponse
-	29, // [29:38] is the sub-list for method output_type
-	20, // [20:29] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	34, // 13: otterscale.orchestrator.v1.Plugin.first_deployed_at:type_name -> google.protobuf.Timestamp
+	34, // 14: otterscale.orchestrator.v1.Plugin.last_deployed_at:type_name -> google.protobuf.Timestamp
+	34, // 15: otterscale.orchestrator.v1.Plugin.deleted_at:type_name -> google.protobuf.Timestamp
+	33, // 16: otterscale.orchestrator.v1.Plugin.current:type_name -> otterscale.orchestrator.v1.Plugin.Chart
+	33, // 17: otterscale.orchestrator.v1.Plugin.latest:type_name -> otterscale.orchestrator.v1.Plugin.Chart
+	16, // 18: otterscale.orchestrator.v1.ListGeneralPluginsResponse.plugins:type_name -> otterscale.orchestrator.v1.Plugin
+	16, // 19: otterscale.orchestrator.v1.ListModelPluginsResponse.plugins:type_name -> otterscale.orchestrator.v1.Plugin
+	16, // 20: otterscale.orchestrator.v1.ListInstancePluginsResponse.plugins:type_name -> otterscale.orchestrator.v1.Plugin
+	16, // 21: otterscale.orchestrator.v1.ListStoragePluginsResponse.plugins:type_name -> otterscale.orchestrator.v1.Plugin
+	34, // 22: otterscale.orchestrator.v1.GPURelation.Pod.bound_at:type_name -> google.protobuf.Timestamp
+	32, // 23: otterscale.orchestrator.v1.GPURelation.Pod.devices:type_name -> otterscale.orchestrator.v1.GPURelation.Pod.Device
+	2,  // 24: otterscale.orchestrator.v1.OrchestratorService.ListEssentials:input_type -> otterscale.orchestrator.v1.ListEssentialsRequest
+	4,  // 25: otterscale.orchestrator.v1.OrchestratorService.CreateNode:input_type -> otterscale.orchestrator.v1.CreateNodeRequest
+	5,  // 26: otterscale.orchestrator.v1.OrchestratorService.CreateCluster:input_type -> otterscale.orchestrator.v1.CreateClusterRequest
+	6,  // 27: otterscale.orchestrator.v1.OrchestratorService.AddClusterUnits:input_type -> otterscale.orchestrator.v1.AddClusterUnitsRequest
+	7,  // 28: otterscale.orchestrator.v1.OrchestratorService.ListKubernetesNodeLabels:input_type -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest
+	9,  // 29: otterscale.orchestrator.v1.OrchestratorService.UpdateKubernetesNodeLabels:input_type -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest
+	17, // 30: otterscale.orchestrator.v1.OrchestratorService.ListGeneralPlugins:input_type -> otterscale.orchestrator.v1.ListGeneralPluginsRequest
+	12, // 31: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByMachine:input_type -> otterscale.orchestrator.v1.ListGPURelationsByMachineRequest
+	14, // 32: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel:input_type -> otterscale.orchestrator.v1.ListGPURelationsByModelRequest
+	19, // 33: otterscale.orchestrator.v1.OrchestratorService.ListModelPlugins:input_type -> otterscale.orchestrator.v1.ListModelPluginsRequest
+	21, // 34: otterscale.orchestrator.v1.OrchestratorService.ListInstancePlugins:input_type -> otterscale.orchestrator.v1.ListInstancePluginsRequest
+	23, // 35: otterscale.orchestrator.v1.OrchestratorService.ListStoragePlugins:input_type -> otterscale.orchestrator.v1.ListStoragePluginsRequest
+	3,  // 36: otterscale.orchestrator.v1.OrchestratorService.ListEssentials:output_type -> otterscale.orchestrator.v1.ListEssentialsResponse
+	35, // 37: otterscale.orchestrator.v1.OrchestratorService.CreateNode:output_type -> google.protobuf.Empty
+	35, // 38: otterscale.orchestrator.v1.OrchestratorService.CreateCluster:output_type -> google.protobuf.Empty
+	35, // 39: otterscale.orchestrator.v1.OrchestratorService.AddClusterUnits:output_type -> google.protobuf.Empty
+	8,  // 40: otterscale.orchestrator.v1.OrchestratorService.ListKubernetesNodeLabels:output_type -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse
+	10, // 41: otterscale.orchestrator.v1.OrchestratorService.UpdateKubernetesNodeLabels:output_type -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse
+	18, // 42: otterscale.orchestrator.v1.OrchestratorService.ListGeneralPlugins:output_type -> otterscale.orchestrator.v1.ListGeneralPluginsResponse
+	13, // 43: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByMachine:output_type -> otterscale.orchestrator.v1.ListGPURelationsByMachineResponse
+	15, // 44: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel:output_type -> otterscale.orchestrator.v1.ListGPURelationsByModelResponse
+	20, // 45: otterscale.orchestrator.v1.OrchestratorService.ListModelPlugins:output_type -> otterscale.orchestrator.v1.ListModelPluginsResponse
+	22, // 46: otterscale.orchestrator.v1.OrchestratorService.ListInstancePlugins:output_type -> otterscale.orchestrator.v1.ListInstancePluginsResponse
+	24, // 47: otterscale.orchestrator.v1.OrchestratorService.ListStoragePlugins:output_type -> otterscale.orchestrator.v1.ListStoragePluginsResponse
+	36, // [36:48] is the sub-list for method output_type
+	24, // [24:36] is the sub-list for method input_type
+	24, // [24:24] is the sub-list for extension type_name
+	24, // [24:24] is the sub-list for extension extendee
+	0,  // [0:24] is the sub-list for field type_name
 }
 
 func init() { file_api_orchestrator_v1_orchestrator_proto_init() }
@@ -3921,7 +4490,7 @@ func file_api_orchestrator_v1_orchestrator_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_orchestrator_v1_orchestrator_proto_rawDesc), len(file_api_orchestrator_v1_orchestrator_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   27,
+			NumMessages:   33,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

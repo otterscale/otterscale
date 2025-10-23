@@ -35,31 +35,49 @@ service OrchestratorService {
 
   rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse) {
     option (otterscale.api.feature) = {
-      name: "orch-gpu"
+      name: "orch-general"
     };
   };
 
   rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse) {
     option (otterscale.api.feature) = {
-      name: "orch-gpu"
+      name: "orch-general"
+    };
+  };
+
+  rpc ListGeneralPlugins(ListGeneralPluginsRequest) returns (ListGeneralPluginsResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
     };
   };
 
   rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse) {
     option (otterscale.api.feature) = {
-      name: "orch-gpu"
+      name: "mdl-general"
     };
   };
 
   rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse) {
     option (otterscale.api.feature) = {
-      name: "orch-gpu"
+      name: "mdl-general"
     };
   };
 
-  rpc ListPlugins(ListPluginsRequest) returns (ListPluginsResponse) {
+  rpc ListModelPlugins(ListModelPluginsRequest) returns (ListModelPluginsResponse) {
     option (otterscale.api.feature) = {
-      name: "orch-plugin"
+      name: "mdl-general"
+    };
+  };
+
+  rpc ListInstancePlugins(ListInstancePluginsRequest) returns (ListInstancePluginsResponse) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc ListStoragePlugins(ListStoragePluginsRequest) returns (ListStoragePluginsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
     };
   };
 }
@@ -209,14 +227,42 @@ message Plugin {
   google.protobuf.Timestamp first_deployed_at = 5;
   google.protobuf.Timestamp last_deployed_at = 6;
   google.protobuf.Timestamp deleted_at = 7;
-  Chart chart = 11;
+  Chart current = 11;
+  Chart latest = 12;
 }
 
-message ListPluginsRequest {
+message ListGeneralPluginsRequest {
   string scope = 1;
   string facility = 2;
 }
 
-message ListPluginsResponse {
+message ListGeneralPluginsResponse {
+  repeated Plugin plugins = 1;
+}
+
+message ListModelPluginsRequest {
+  string scope = 1;
+  string facility = 2;
+}
+
+message ListModelPluginsResponse {
+  repeated Plugin plugins = 1;
+}
+
+message ListInstancePluginsRequest {
+  string scope = 1;
+  string facility = 2;
+}
+
+message ListInstancePluginsResponse {
+  repeated Plugin plugins = 1;
+}
+
+message ListStoragePluginsRequest {
+  string scope = 1;
+  string facility = 2;
+}
+
+message ListStoragePluginsResponse {
   repeated Plugin plugins = 1;
 }
