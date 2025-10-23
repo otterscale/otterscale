@@ -169,8 +169,10 @@
 									</a>
 								{/if}
 
-								{#if unit.machineId}
-									<SetupNodeGPUMode {unit} class="hover:cursor-pointer" />
+								{#if page.data.orchestratorFeatureStates['orch-gpu']}
+									{#if unit.machineId}
+										<SetupNodeGPUMode {unit} class="hover:cursor-pointer" />
+									{/if}
 								{/if}
 
 								{#if unit.leader}

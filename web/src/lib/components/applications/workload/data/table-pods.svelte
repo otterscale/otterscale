@@ -78,9 +78,11 @@
 			<Table.Head>
 				{m.last_condition()}
 			</Table.Head>
-			<Table.Head>
-				{m.terminal()}
-			</Table.Head>
+			{#if page.data.applicationFeatureStates['app-container']}
+				<Table.Head>
+					{m.terminal()}
+				</Table.Head>
+			{/if}
 			<Table.Head></Table.Head>
 		</Table.Row>
 	</Table.Header>
@@ -126,11 +128,13 @@
 						{/if}
 					{/if}
 				</Table.Cell>
-				<Table.Cell>
-					<Button variant="secondary" size="icon" onclick={() => openTerminal(pod)}>
-						<Icon icon="ph:terminal-window" />
-					</Button>
-				</Table.Cell>
+				{#if page.data.applicationFeatureStates['app-container']}
+					<Table.Cell>
+						<Button variant="secondary" size="icon" onclick={() => openTerminal(pod)}>
+							<Icon icon="ph:terminal-window" />
+						</Button>
+					</Table.Cell>
+				{/if}
 				<Table.Cell class="p-0">
 					<Actions {pod} namespace={$application.namespace} />
 				</Table.Cell>

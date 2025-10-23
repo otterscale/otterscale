@@ -87,6 +87,8 @@
 		"@iconify/svelte": "^5.0.2",
 		"@inlang/paraglide-js": "^2.4.0",
 		"@octokit/core": "^7.0.5",
+		"@openfeature/flagd-provider": "^0.13.3",
+		"@openfeature/server-sdk": "^1.20.0",
 		"@shikijs/langs": "^3.13.0",
 		"@shikijs/themes": "^3.13.0",
 		"@xterm/addon-clipboard": "^0.1.0",

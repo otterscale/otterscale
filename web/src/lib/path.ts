@@ -1,3 +1,4 @@
+import { page } from '$app/state';
 import { m } from '$lib/paraglide/messages.js';
 
 const createScopePath = (scope: string | undefined, subPath = '') =>
@@ -196,6 +197,63 @@ export const pathDisabled = (
 		(!cephName && paths.ceph.some((path) => path.url === url)) ||
 		(!kubeName && paths.kube.some((path) => path.url === url))
 	);
+};
+
+export const pathHidden = (scope: string | undefined, url: string): boolean => {
+	if (
+		url === dynamicPaths.applications(scope).url &&
+		!(page.data.featureStates['app-general'] || page.data.featureStates['app-helm-chart'])
+	) {
+		return true;
+	}
+	if (url === dynamicPaths.applicationsWorkloads(scope).url && !page.data.featureStates['app-general']) {
+		return true;
+	}
+	if (url === dynamicPaths.applicationsStore(scope).url && !page.data.featureStates['app-helm-chart']) {
+		return true;
+	}
+
+	if (url === dynamicPaths.compute(scope).url && !page.data.featureStates['vm-general']) {
+		return true;
+	}
+	if (url === dynamicPaths.computeVirtualMachine(scope).url && !page.data.featureStates['vm-general']) {
+		return true;
+	}
+
+	if (url === dynamicPaths.models(scope).url && !page.data.featureStates['mdl-general']) {
+		return true;
+	}
+	if (url === dynamicPaths.modelsLLM(scope).url && !page.data.featureStates['mdl-general']) {
+		return true;
+	}
+
+	if (
+		url === dynamicPaths.storage(scope).url &&
+		!(
+			page.data.featureStates['stg-general'] ||
+			page.data.featureStates['stg-block'] ||
+			page.data.featureStates['stg-file'] ||
+			page.data.featureStates['stg-object']
+		)
+	) {
+		return true;
+	}
+	if (url === dynamicPaths.storageOSD(scope).url && !page.data.featureStates['stg-general']) {
+		return true;
+	}
+	if (url === dynamicPaths.storagePool(scope).url && !page.data.featureStates['stg-general']) {
+		return true;
+	}
+	if (url === dynamicPaths.storageBlockDevice(scope).url && !page.data.featureStates['stg-block']) {
+		return true;
+	}
+	if (url === dynamicPaths.storageFileSystem(scope).url && !page.data.featureStates['stg-file']) {
+		return true;
+	}
+	if (url === dynamicPaths.storageObjectGateway(scope).url && !page.data.featureStates['stg-object']) {
+		return true;
+	}
+	return false;
 };
 
 const findDynamicPath = (pathname: string, scope: string | undefined): keyof typeof dynamicPaths | null => {
