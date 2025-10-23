@@ -16,12 +16,12 @@
 	const chartConfigNew = {} satisfies Chart.ChartConfig;
 </script>
 
-<Chart.Container config={chartConfigNew} class="aspect-auto h-[250px] w-full">
+<Chart.Container config={chartConfigNew} class="aspect-auto h-[240px] w-full">
 	<ScatterChart
-		legend
 		x={xKey}
 		y={yKey}
 		series={Object.values(data)}
+		grid={false}
 		props={{
 			xAxis: {
 				format: () => '',
