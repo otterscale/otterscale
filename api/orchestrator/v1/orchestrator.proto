@@ -45,12 +45,6 @@ service OrchestratorService {
     };
   };
 
-  rpc ListGeneralPlugins(ListGeneralPluginsRequest) returns (ListGeneralPluginsResponse) {
-    option (otterscale.api.feature) = {
-      name: "orch-general"
-    };
-  };
-
   rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse) {
     option (otterscale.api.feature) = {
       name: "mdl-general"
@@ -60,6 +54,12 @@ service OrchestratorService {
   rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse) {
     option (otterscale.api.feature) = {
       name: "mdl-general"
+    };
+  };
+
+  rpc ListGeneralPlugins(ListGeneralPluginsRequest) returns (ListGeneralPluginsResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
     };
   };
 
@@ -78,6 +78,18 @@ service OrchestratorService {
   rpc ListStoragePlugins(ListStoragePluginsRequest) returns (ListStoragePluginsResponse) {
     option (otterscale.api.feature) = {
       name: "stg-general"
+    };
+  };
+
+  rpc InstallPlugins(InstallPluginsRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
+
+  rpc UpgradePlugins(UpgradePluginsRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
     };
   };
 }
@@ -219,6 +231,7 @@ message Plugin {
     string app_version = 3;
     string description = 4;
     string icon = 5;
+    string ref = 6;
   }
   string name = 1;
   string namespace = 2;
@@ -265,4 +278,16 @@ message ListStoragePluginsRequest {
 
 message ListStoragePluginsResponse {
   repeated Plugin plugins = 1;
+}
+
+message InstallPluginsRequest {
+  string scope = 1;
+  string facility = 2;
+  repeated Plugin.Chart charts = 3;
+}
+
+message UpgradePluginsRequest {
+  string scope = 1;
+  string facility = 2;
+  repeated Plugin.Chart charts = 3;
 }

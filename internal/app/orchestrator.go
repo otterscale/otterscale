@@ -121,6 +121,30 @@ func (s *OrchestratorService) ListStoragePlugins(ctx context.Context, req *pb.Li
 	return resp, nil
 }
 
+func (s *OrchestratorService) InstallPlugins(ctx context.Context, req *pb.InstallPluginsRequest) (*emptypb.Empty, error) {
+	if err := s.uc.InstallPlugins(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func (s *OrchestratorService) UpgradePlugins(ctx context.Context, req *pb.UpgradePluginsRequest) (*emptypb.Empty, error) {
+	if err := s.uc.UpgradePlugins(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func toChartRefMap(cs []*pb.Plugin_Chart) map[string]string {
+	ret := map[string]string{}
+	for _, c := range cs {
+		ret[c.GetName()] = c.GetRef()
+	}
+	return ret
+}
+
 func toProtoEssentials(es []core.Essential) []*pb.Essential {
 	ret := []*pb.Essential{}
 	for i := range es {
