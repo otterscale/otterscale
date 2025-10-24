@@ -9,8 +9,6 @@ import (
 	"sync"
 	"time"
 
-	"golang.org/x/sync/errgroup"
-
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/repo"
 
@@ -21,7 +19,7 @@ import (
 )
 
 type helmRepo struct {
-	indexFile *repo.IndexFile
+	charts    []oscore.Chart
 	lastFetch time.Time
 }
 
@@ -38,46 +36,53 @@ func NewHelmChart(kube *Kube) (oscore.ChartRepo, error) {
 
 var _ oscore.ChartRepo = (*helmChart)(nil)
 
-func (r *helmChart) List(ctx context.Context) ([]oscore.Chart, error) {
-	urls := r.kube.helmRepoURLs()
-	eg, egctx := errgroup.WithContext(ctx)
-	result := make([]*repo.IndexFile, len(urls))
-	for i := range urls {
-		eg.Go(func() error {
-			v, ok := r.repoIndexCache.Load(urls[i])
-			if ok {
-				helmRepo := v.(*helmRepo)
-				if time.Since(helmRepo.lastFetch) < time.Hour*24 {
-					result[i] = helmRepo.indexFile
-					return nil
-				}
-			}
-			indexFile, err := r.fetchRepoIndex(egctx, urls[i])
-			if err == nil {
-				indexFile.SortEntries()
-				r.repoIndexCache.Store(urls[i], &helmRepo{
-					indexFile: indexFile,
-					lastFetch: time.Now(),
-				})
-				result[i] = indexFile
-			}
-			return err
-		})
+func (r *helmChart) List(ctx context.Context, url string) ([]oscore.Chart, error) {
+	if charts, ok := r.getCachedCharts(url); ok {
+		return charts, nil
 	}
-	if err := eg.Wait(); err != nil {
+
+	indexFile, err := r.fetchRepoIndex(ctx, url)
+	if err != nil {
 		return nil, err
 	}
 
-	charts := []oscore.Chart{}
-	for i := range result {
-		for name := range result[i].Entries {
-			charts = append(charts, oscore.Chart{
-				Name:     name,
-				Versions: result[i].Entries[name],
-			})
-		}
-	}
+	charts := r.buildChartsFromIndex(indexFile)
+	r.cacheCharts(url, charts)
+
 	return charts, nil
+}
+
+func (r *helmChart) getCachedCharts(url string) ([]oscore.Chart, bool) {
+	v, ok := r.repoIndexCache.Load(url)
+	if !ok {
+		return nil, false
+	}
+
+	helmRepo := v.(*helmRepo)
+	if time.Since(helmRepo.lastFetch) >= time.Hour*4 {
+		return nil, false
+	}
+
+	return helmRepo.charts, true
+}
+
+func (r *helmChart) buildChartsFromIndex(indexFile *repo.IndexFile) []oscore.Chart {
+	indexFile.SortEntries()
+	charts := make([]oscore.Chart, 0, len(indexFile.Entries))
+	for name, versions := range indexFile.Entries {
+		charts = append(charts, oscore.Chart{
+			Name:     name,
+			Versions: versions,
+		})
+	}
+	return charts
+}
+
+func (r *helmChart) cacheCharts(url string, charts []oscore.Chart) {
+	r.repoIndexCache.Store(url, &helmRepo{
+		charts:    charts,
+		lastFetch: time.Now(),
+	})
 }
 
 func (r *helmChart) Show(chartRef string, format action.ShowOutputFormat) (string, error) {

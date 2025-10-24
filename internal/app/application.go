@@ -223,19 +223,6 @@ func (s *ApplicationService) ListCharts(ctx context.Context, _ *pb.ListChartsReq
 	return resp, nil
 }
 
-func (s *ApplicationService) GetChart(ctx context.Context, req *pb.GetChartRequest) (*pb.Application_Chart, error) {
-	ch, err := s.chart.GetChart(ctx, req.GetName())
-	if err != nil {
-		return nil, err
-	}
-	metadata := &core.ChartMetadata{}
-	if len(ch.Versions) > 0 {
-		metadata = ch.Versions[0].Metadata
-	}
-	resp := toProtoChart(metadata, ch.Versions...)
-	return resp, nil
-}
-
 func (s *ApplicationService) GetChartMetadata(_ context.Context, req *pb.GetChartMetadataRequest) (*pb.Application_Chart_Metadata, error) {
 	file, err := s.chart.GetChartFile(req.GetChartRef())
 	if err != nil {
