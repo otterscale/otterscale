@@ -6,7 +6,6 @@
 	import Actions from './cell-actions.svelte';
 	import Relation from './cell-relation.svelte';
 
-	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -35,15 +34,13 @@
 {/snippet}
 
 {#snippet model(row: Row<LargeLanguageModel>)}
-	<Layout.Cell
-		class="items-start underline hover:cursor-pointer hover:no-underline"
-		onclick={() => {
-			goto(
-				`${dynamicPaths.applicationsWorkloads(page.params.scope).url}/${row.original.application.namespace}/${row.original.application.name}`,
-			);
-		}}
-	>
-		{row.original.application.name}
+	<Layout.Cell class="items-start">
+		<a
+			class="m-0 p-0 underline hover:no-underline"
+			href={`${dynamicPaths.applicationsWorkloads(page.params.scope).url}/${row.original.application.namespace}/${row.original.application.name}`}
+		>
+			{row.original.application.name}
+		</a>
 		<Layout.SubCell>
 			{row.original.application.namespace}
 		</Layout.SubCell>
