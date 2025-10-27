@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://flagd.dev/schema/v0/flags.json
+flags:
+  stg-general:
+    state: ENABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "on"
+  stg-block:
+    state: ENABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "on"
+  stg-file:
+    state: ENABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "on"
+  stg-object:
+    state: ENABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "on"

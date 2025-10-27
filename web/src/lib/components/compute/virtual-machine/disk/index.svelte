@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount, onDestroy } from 'svelte';
+	import { getContext, onDestroy } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 
 	import { DataTable } from './data-table';
@@ -27,6 +27,7 @@
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	let enhancedDisks: EnhancedDisk[] = $state([]);
+	let isLoaded = $state(false);
 
 	async function loadEnhancedDisks() {
 		try {
@@ -74,20 +75,25 @@
 					};
 				}
 			});
+			isLoaded = true;
 		} catch (error) {
 			console.error('Failed to load enhanced disks:', error);
 		}
 	}
 
-	// Create ReloadManager for automatic reloading
+	// Create ReloadManager for automatic reloading (only when data is loaded)
 	const reloadManager = new ReloadManager(() => {
-		loadEnhancedDisks();
+		if (isLoaded) {
+			loadEnhancedDisks();
+		}
 	});
 
-	onMount(() => {
-		loadEnhancedDisks();
-		reloadManager.start();
-	});
+	function handleSheetOpen() {
+		if (!isLoaded) {
+			loadEnhancedDisks();
+			reloadManager.start();
+		}
+	}
 
 	onDestroy(() => {
 		reloadManager.stop();
@@ -95,9 +101,9 @@
 </script>
 
 <div class="flex items-center justify-end gap-1">
-	{enhancedDisks.length}
+	{virtualMachine.disks.length}
 	<Sheet.Root>
-		<Sheet.Trigger>
+		<Sheet.Trigger onclick={handleSheetOpen}>
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[70vw] p-4">

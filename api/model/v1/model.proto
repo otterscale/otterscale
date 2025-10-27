@@ -2,16 +2,36 @@ edition = "2023";
 
 package otterscale.model.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/model/v1;pb";
 
 service ModelService {
-  rpc ListModels(ListModelsRequest) returns (ListModelsResponse);
-  rpc GetModel(GetModelRequest) returns (Model);
-  rpc CreateModel(CreateModelRequest) returns (Model);
-  rpc DeleteModel(DeleteModelRequest) returns (google.protobuf.Empty);
+  rpc ListModels(ListModelsRequest) returns (ListModelsResponse) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc GetModel(GetModelRequest) returns (Model) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc CreateModel(CreateModelRequest) returns (Model) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc DeleteModel(DeleteModelRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
 
   rpc CreateModelArtifact(CreateModelArtifactRequest) returns (ModelArtifact);
   rpc CreateModelScheduler(CreateModelSchedulerRequest) returns (ModelScheduler);
@@ -101,7 +121,7 @@ message CreateModelSchedulerRequest {
   bool prefill_create = 21;
   int32 prefill_replicas = 22;
   repeated string prefill_args = 23;
-    message prefill_env {
+  message prefill_env {
     string name = 1;
     string value = 2;
   }
@@ -145,7 +165,7 @@ message ListModelArtifactsResponse {
 message ModelArtifact {
   string name = 1;
   string modelname = 2;
-  int64 size = 3; 
+  int64 size = 3;
 }
 
 message ModelGateway {

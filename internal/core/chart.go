@@ -2,15 +2,15 @@ package core
 
 import (
 	"context"
-	"fmt"
 
-	"connectrpc.com/connect"
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v2"
 
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/repo"
+
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 type (
@@ -32,19 +32,22 @@ type ChartFile struct {
 }
 
 type ChartRepo interface {
-	List(ctx context.Context) ([]Chart, error)
+	List(ctx context.Context, url string) ([]Chart, error)
 	Show(chartRef string, format action.ShowOutputFormat) (string, error)
 }
 
 type ChartUseCase struct {
+	conf *config.Config
+
 	action   ActionRepo
 	chart    ChartRepo
 	facility FacilityRepo
 	release  ReleaseRepo
 }
 
-func NewChartUseCase(action ActionRepo, chart ChartRepo, facility FacilityRepo, release ReleaseRepo) *ChartUseCase {
+func NewChartUseCase(conf *config.Config, action ActionRepo, chart ChartRepo, facility FacilityRepo, release ReleaseRepo) *ChartUseCase {
 	return &ChartUseCase{
+		conf:     conf,
 		action:   action,
 		chart:    chart,
 		facility: facility,
@@ -53,24 +56,22 @@ func NewChartUseCase(action ActionRepo, chart ChartRepo, facility FacilityRepo, 
 }
 
 func (uc *ChartUseCase) ListCharts(ctx context.Context) ([]Chart, error) {
-	return uc.chart.List(ctx)
-}
-
-func (uc *ChartUseCase) GetChart(ctx context.Context, chartName string) (*Chart, error) {
-	charts, err := uc.chart.List(ctx)
-	if err != nil {
+	urls := uc.conf.Kube.HelmRepositoryURLs
+	eg, egctx := errgroup.WithContext(ctx)
+	result := make([][]Chart, len(urls))
+	for i := range urls {
+		eg.Go(func() error {
+			v, err := uc.chart.List(egctx, urls[i])
+			if err == nil {
+				result[i] = v
+			}
+			return err
+		})
+	}
+	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	for i := range charts {
-		if charts[i].Name != chartName {
-			continue
-		}
-		return &Chart{
-			Name:     charts[i].Name,
-			Versions: charts[i].Versions,
-		}, nil
-	}
-	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("chart %q not found", chartName))
+	return flatten(result), nil
 }
 
 func (uc *ChartUseCase) GetChartFile(chartRef string) (*ChartFile, error) {

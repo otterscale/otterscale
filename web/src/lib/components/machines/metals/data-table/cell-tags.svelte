@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
@@ -25,7 +25,8 @@
 
 	let tags = $state(machine.tags);
 	let tagOptions: string[] = $state([]);
-	let isTagsLoading = $state(true);
+	let isTagsLoading = $state(false);
+	let hasLoadedTags = $state(false);
 
 	const isChanged = $derived(
 		!(machine.tags.length === tags.length && machine.tags.every((tag) => tags.includes(tag))),
@@ -38,87 +39,87 @@
 		open = false;
 	}
 
-	onMount(async () => {
+	async function loadTags() {
+		if (hasLoadedTags) return;
+
+		isTagsLoading = true;
 		try {
-			client
-				.listTags({})
-				.then((response) => {
-					tagOptions = response.tags.flatMap((tag) => tag.name);
-				})
-				.finally(() => {
-					isTagsLoading = false;
-				});
+			const response = await client.listTags({});
+			tagOptions = response.tags.flatMap((tag) => tag.name);
+			hasLoadedTags = true;
 		} catch (error) {
-			console.error('Error during initial data load:', error);
+			console.error('Error loading tags:', error);
+		} finally {
+			isTagsLoading = false;
 		}
-	});
+	}
 </script>
 
-{#if isTagsLoading}
-	<Loading.Selection />
-{:else}
-	<div class="flex w-full justify-end">
-		<Select.Root bind:open type="multiple" bind:value={tags}>
-			<Select.Trigger class="ring-none m-0 flex-row-reverse border-none p-0 shadow-none">
-				{machine.tags.length}
-			</Select.Trigger>
-			<Select.Content>
-				<Select.Group>
+<div class="flex w-full justify-end">
+	<Select.Root bind:open type="multiple" bind:value={tags} onOpenChange={loadTags}>
+		<Select.Trigger class="ring-none m-0 flex-row-reverse border-none p-0 shadow-none">
+			{machine.tags.length}
+		</Select.Trigger>
+		<Select.Content>
+			<Select.Group>
+				{#if isTagsLoading}
+					<Loading.Selection />
+				{:else}
 					{#each tagOptions as option}
 						<Select.Item value={option} label={option}>
 							<Icon icon="ph:tag" />{option}
 						</Select.Item>
 					{/each}
-					<div class={cn('grid grid-cols-2 gap-1 border capitalize', isChanged ? 'visible' : 'hidden')}>
-						<Button
-							size="sm"
-							onclick={() => {
-								toast.promise(
-									() =>
-										client
-											.addMachineTags({
+				{/if}
+				<div class={cn('grid grid-cols-2 gap-1 border capitalize', isChanged ? 'visible' : 'hidden')}>
+					<Button
+						size="sm"
+						onclick={() => {
+							toast.promise(
+								() =>
+									client
+										.addMachineTags({
+											id: machine.id,
+											tags: tags.filter((tag) => !machine.tags.includes(tag)),
+										})
+										.then(() => {
+											client.removeMachineTags({
 												id: machine.id,
-												tags: tags.filter((tag) => !machine.tags.includes(tag)),
-											})
-											.then(() => {
-												client.removeMachineTags({
-													id: machine.id,
-													tags: machine.tags.filter((tag) => !tags.includes(tag)),
-												});
-											}),
-									{
-										loading: 'Loading...',
-										success: () => {
-											reloadManager.force();
-											return `Update ${machine.fqdn} tags success`;
-										},
-										error: (error) => {
-											let message = `Fail to udpate ${machine.fqdn} tags`;
-											toast.error(message, {
-												description: (error as ConnectError).message.toString(),
-												duration: Number.POSITIVE_INFINITY,
+												tags: machine.tags.filter((tag) => !tags.includes(tag)),
 											});
-											return message;
-										},
+										}),
+								{
+									loading: 'Loading...',
+									success: () => {
+										reloadManager.force();
+										return `Update ${machine.fqdn} tags success`;
 									},
-								);
-								close();
-							}}
-						>
-							{m.save()}
-						</Button>
-						<Button
-							size="sm"
-							class="capitalize"
-							onclick={() => {
-								tags = machine.tags;
-							}}
-						>
-							{m.reset()}
-						</Button>
-					</div>
-				</Select.Group>
-			</Select.Content>
-		</Select.Root>
-	</div>
-{/if}
+									error: (error) => {
+										let message = `Fail to udpate ${machine.fqdn} tags`;
+										toast.error(message, {
+											description: (error as ConnectError).message.toString(),
+											duration: Number.POSITIVE_INFINITY,
+										});
+										return message;
+									},
+								},
+							);
+							close();
+						}}
+					>
+						{m.save()}
+					</Button>
+					<Button
+						size="sm"
+						class="capitalize"
+						onclick={() => {
+							tags = machine.tags;
+						}}
+					>
+						{m.reset()}
+					</Button>
+				</div>
+			</Select.Group>
+		</Select.Content>
+	</Select.Root>
+</div>
