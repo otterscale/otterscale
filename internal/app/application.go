@@ -106,7 +106,7 @@ func (s *ApplicationService) DeleteApplicationPod(ctx context.Context, req *pb.D
 }
 
 func (s *ApplicationService) WatchLogs(ctx context.Context, req *pb.WatchLogsRequest, stream *connect.ServerStream[pb.WatchLogsResponse]) error {
-	logs, err := s.kubernetes.StreamLogs(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetPodName(), req.GetContainerName())
+	logs, err := s.kubernetes.StreamLogs(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetDuration().AsDuration())
 	if err != nil {
 		return err
 	}
@@ -220,19 +220,6 @@ func (s *ApplicationService) ListCharts(ctx context.Context, _ *pb.ListChartsReq
 	}
 	resp := &pb.ListChartsResponse{}
 	resp.SetCharts(toProtoCharts(charts))
-	return resp, nil
-}
-
-func (s *ApplicationService) GetChart(ctx context.Context, req *pb.GetChartRequest) (*pb.Application_Chart, error) {
-	ch, err := s.chart.GetChart(ctx, req.GetName())
-	if err != nil {
-		return nil, err
-	}
-	metadata := &core.ChartMetadata{}
-	if len(ch.Versions) > 0 {
-		metadata = ch.Versions[0].Metadata
-	}
-	resp := toProtoChart(metadata, ch.Versions...)
 	return resp, nil
 }
 

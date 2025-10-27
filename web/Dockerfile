@@ -43,6 +43,6 @@ ENV NODE_ENV=production
 EXPOSE 3000
 
 # Labels
-LABEL maintainer="Chung-Hsuan Tsai <zx.c@nycu.edu.tw>"
+LABEL maintainer="Chung-Hsuan Tsai <paul_tsai@phison.com>"
 
 CMD ["node", "./build"]

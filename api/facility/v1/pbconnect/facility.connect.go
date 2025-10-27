@@ -49,15 +49,15 @@ const (
 	// FacilityServiceDeleteFacilityProcedure is the fully-qualified name of the FacilityService's
 	// DeleteFacility RPC.
 	FacilityServiceDeleteFacilityProcedure = "/otterscale.facility.v1.FacilityService/DeleteFacility"
+	// FacilityServiceResolveFacilityUnitErrorsProcedure is the fully-qualified name of the
+	// FacilityService's ResolveFacilityUnitErrors RPC.
+	FacilityServiceResolveFacilityUnitErrorsProcedure = "/otterscale.facility.v1.FacilityService/ResolveFacilityUnitErrors"
 	// FacilityServiceExposeFacilityProcedure is the fully-qualified name of the FacilityService's
 	// ExposeFacility RPC.
 	FacilityServiceExposeFacilityProcedure = "/otterscale.facility.v1.FacilityService/ExposeFacility"
 	// FacilityServiceAddFacilityUnitsProcedure is the fully-qualified name of the FacilityService's
 	// AddFacilityUnits RPC.
 	FacilityServiceAddFacilityUnitsProcedure = "/otterscale.facility.v1.FacilityService/AddFacilityUnits"
-	// FacilityServiceResolveFacilityUnitErrorsProcedure is the fully-qualified name of the
-	// FacilityService's ResolveFacilityUnitErrors RPC.
-	FacilityServiceResolveFacilityUnitErrorsProcedure = "/otterscale.facility.v1.FacilityService/ResolveFacilityUnitErrors"
 	// FacilityServiceListActionsProcedure is the fully-qualified name of the FacilityService's
 	// ListActions RPC.
 	FacilityServiceListActionsProcedure = "/otterscale.facility.v1.FacilityService/ListActions"
@@ -85,9 +85,9 @@ type FacilityServiceClient interface {
 	CreateFacility(context.Context, *v1.CreateFacilityRequest) (*v1.Facility, error)
 	UpdateFacility(context.Context, *v1.UpdateFacilityRequest) (*v1.Facility, error)
 	DeleteFacility(context.Context, *v1.DeleteFacilityRequest) (*emptypb.Empty, error)
+	ResolveFacilityUnitErrors(context.Context, *v1.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error)
 	ExposeFacility(context.Context, *v1.ExposeFacilityRequest) (*emptypb.Empty, error)
 	AddFacilityUnits(context.Context, *v1.AddFacilityUnitsRequest) (*v1.AddFacilityUnitsResponse, error)
-	ResolveFacilityUnitErrors(context.Context, *v1.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error)
 	ListActions(context.Context, *v1.ListActionsRequest) (*v1.ListActionsResponse, error)
 	DoAction(context.Context, *v1.DoActionRequest) (*emptypb.Empty, error)
 	ListCharms(context.Context, *v1.ListCharmsRequest) (*v1.ListCharmsResponse, error)
@@ -137,6 +137,12 @@ func NewFacilityServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(facilityServiceMethods.ByName("DeleteFacility")),
 			connect.WithClientOptions(opts...),
 		),
+		resolveFacilityUnitErrors: connect.NewClient[v1.ResolveFacilityUnitErrorsRequest, emptypb.Empty](
+			httpClient,
+			baseURL+FacilityServiceResolveFacilityUnitErrorsProcedure,
+			connect.WithSchema(facilityServiceMethods.ByName("ResolveFacilityUnitErrors")),
+			connect.WithClientOptions(opts...),
+		),
 		exposeFacility: connect.NewClient[v1.ExposeFacilityRequest, emptypb.Empty](
 			httpClient,
 			baseURL+FacilityServiceExposeFacilityProcedure,
@@ -147,12 +153,6 @@ func NewFacilityServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			httpClient,
 			baseURL+FacilityServiceAddFacilityUnitsProcedure,
 			connect.WithSchema(facilityServiceMethods.ByName("AddFacilityUnits")),
-			connect.WithClientOptions(opts...),
-		),
-		resolveFacilityUnitErrors: connect.NewClient[v1.ResolveFacilityUnitErrorsRequest, emptypb.Empty](
-			httpClient,
-			baseURL+FacilityServiceResolveFacilityUnitErrorsProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("ResolveFacilityUnitErrors")),
 			connect.WithClientOptions(opts...),
 		),
 		listActions: connect.NewClient[v1.ListActionsRequest, v1.ListActionsResponse](
@@ -201,9 +201,9 @@ type facilityServiceClient struct {
 	createFacility            *connect.Client[v1.CreateFacilityRequest, v1.Facility]
 	updateFacility            *connect.Client[v1.UpdateFacilityRequest, v1.Facility]
 	deleteFacility            *connect.Client[v1.DeleteFacilityRequest, emptypb.Empty]
+	resolveFacilityUnitErrors *connect.Client[v1.ResolveFacilityUnitErrorsRequest, emptypb.Empty]
 	exposeFacility            *connect.Client[v1.ExposeFacilityRequest, emptypb.Empty]
 	addFacilityUnits          *connect.Client[v1.AddFacilityUnitsRequest, v1.AddFacilityUnitsResponse]
-	resolveFacilityUnitErrors *connect.Client[v1.ResolveFacilityUnitErrorsRequest, emptypb.Empty]
 	listActions               *connect.Client[v1.ListActionsRequest, v1.ListActionsResponse]
 	doAction                  *connect.Client[v1.DoActionRequest, emptypb.Empty]
 	listCharms                *connect.Client[v1.ListCharmsRequest, v1.ListCharmsResponse]
@@ -257,6 +257,15 @@ func (c *facilityServiceClient) DeleteFacility(ctx context.Context, req *v1.Dele
 	return nil, err
 }
 
+// ResolveFacilityUnitErrors calls otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors.
+func (c *facilityServiceClient) ResolveFacilityUnitErrors(ctx context.Context, req *v1.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error) {
+	response, err := c.resolveFacilityUnitErrors.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // ExposeFacility calls otterscale.facility.v1.FacilityService.ExposeFacility.
 func (c *facilityServiceClient) ExposeFacility(ctx context.Context, req *v1.ExposeFacilityRequest) (*emptypb.Empty, error) {
 	response, err := c.exposeFacility.CallUnary(ctx, connect.NewRequest(req))
@@ -269,15 +278,6 @@ func (c *facilityServiceClient) ExposeFacility(ctx context.Context, req *v1.Expo
 // AddFacilityUnits calls otterscale.facility.v1.FacilityService.AddFacilityUnits.
 func (c *facilityServiceClient) AddFacilityUnits(ctx context.Context, req *v1.AddFacilityUnitsRequest) (*v1.AddFacilityUnitsResponse, error) {
 	response, err := c.addFacilityUnits.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// ResolveFacilityUnitErrors calls otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors.
-func (c *facilityServiceClient) ResolveFacilityUnitErrors(ctx context.Context, req *v1.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error) {
-	response, err := c.resolveFacilityUnitErrors.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -346,9 +346,9 @@ type FacilityServiceHandler interface {
 	CreateFacility(context.Context, *v1.CreateFacilityRequest) (*v1.Facility, error)
 	UpdateFacility(context.Context, *v1.UpdateFacilityRequest) (*v1.Facility, error)
 	DeleteFacility(context.Context, *v1.DeleteFacilityRequest) (*emptypb.Empty, error)
+	ResolveFacilityUnitErrors(context.Context, *v1.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error)
 	ExposeFacility(context.Context, *v1.ExposeFacilityRequest) (*emptypb.Empty, error)
 	AddFacilityUnits(context.Context, *v1.AddFacilityUnitsRequest) (*v1.AddFacilityUnitsResponse, error)
-	ResolveFacilityUnitErrors(context.Context, *v1.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error)
 	ListActions(context.Context, *v1.ListActionsRequest) (*v1.ListActionsResponse, error)
 	DoAction(context.Context, *v1.DoActionRequest) (*emptypb.Empty, error)
 	ListCharms(context.Context, *v1.ListCharmsRequest) (*v1.ListCharmsResponse, error)
@@ -394,6 +394,12 @@ func NewFacilityServiceHandler(svc FacilityServiceHandler, opts ...connect.Handl
 		connect.WithSchema(facilityServiceMethods.ByName("DeleteFacility")),
 		connect.WithHandlerOptions(opts...),
 	)
+	facilityServiceResolveFacilityUnitErrorsHandler := connect.NewUnaryHandlerSimple(
+		FacilityServiceResolveFacilityUnitErrorsProcedure,
+		svc.ResolveFacilityUnitErrors,
+		connect.WithSchema(facilityServiceMethods.ByName("ResolveFacilityUnitErrors")),
+		connect.WithHandlerOptions(opts...),
+	)
 	facilityServiceExposeFacilityHandler := connect.NewUnaryHandlerSimple(
 		FacilityServiceExposeFacilityProcedure,
 		svc.ExposeFacility,
@@ -404,12 +410,6 @@ func NewFacilityServiceHandler(svc FacilityServiceHandler, opts ...connect.Handl
 		FacilityServiceAddFacilityUnitsProcedure,
 		svc.AddFacilityUnits,
 		connect.WithSchema(facilityServiceMethods.ByName("AddFacilityUnits")),
-		connect.WithHandlerOptions(opts...),
-	)
-	facilityServiceResolveFacilityUnitErrorsHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceResolveFacilityUnitErrorsProcedure,
-		svc.ResolveFacilityUnitErrors,
-		connect.WithSchema(facilityServiceMethods.ByName("ResolveFacilityUnitErrors")),
 		connect.WithHandlerOptions(opts...),
 	)
 	facilityServiceListActionsHandler := connect.NewUnaryHandlerSimple(
@@ -460,12 +460,12 @@ func NewFacilityServiceHandler(svc FacilityServiceHandler, opts ...connect.Handl
 			facilityServiceUpdateFacilityHandler.ServeHTTP(w, r)
 		case FacilityServiceDeleteFacilityProcedure:
 			facilityServiceDeleteFacilityHandler.ServeHTTP(w, r)
+		case FacilityServiceResolveFacilityUnitErrorsProcedure:
+			facilityServiceResolveFacilityUnitErrorsHandler.ServeHTTP(w, r)
 		case FacilityServiceExposeFacilityProcedure:
 			facilityServiceExposeFacilityHandler.ServeHTTP(w, r)
 		case FacilityServiceAddFacilityUnitsProcedure:
 			facilityServiceAddFacilityUnitsHandler.ServeHTTP(w, r)
-		case FacilityServiceResolveFacilityUnitErrorsProcedure:
-			facilityServiceResolveFacilityUnitErrorsHandler.ServeHTTP(w, r)
 		case FacilityServiceListActionsProcedure:
 			facilityServiceListActionsHandler.ServeHTTP(w, r)
 		case FacilityServiceDoActionProcedure:
@@ -507,16 +507,16 @@ func (UnimplementedFacilityServiceHandler) DeleteFacility(context.Context, *v1.D
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.DeleteFacility is not implemented"))
 }
 
+func (UnimplementedFacilityServiceHandler) ResolveFacilityUnitErrors(context.Context, *v1.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors is not implemented"))
+}
+
 func (UnimplementedFacilityServiceHandler) ExposeFacility(context.Context, *v1.ExposeFacilityRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.ExposeFacility is not implemented"))
 }
 
 func (UnimplementedFacilityServiceHandler) AddFacilityUnits(context.Context, *v1.AddFacilityUnitsRequest) (*v1.AddFacilityUnitsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.AddFacilityUnits is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) ResolveFacilityUnitErrors(context.Context, *v1.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors is not implemented"))
 }
 
 func (UnimplementedFacilityServiceHandler) ListActions(context.Context, *v1.ListActionsRequest) (*v1.ListActionsResponse, error) {

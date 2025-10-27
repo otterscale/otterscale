@@ -53,7 +53,7 @@ func (s *EnvironmentService) GetPrometheus(ctx context.Context, _ *pb.GetPrometh
 	return resp, nil
 }
 
-func (s *EnvironmentService) GetTier(_ context.Context, _ *pb.GetPremiumTierRequest) (*pb.PremiumTier, error) {
+func (s *EnvironmentService) GetPremiumTier(_ context.Context, _ *pb.GetPremiumTierRequest) (*pb.PremiumTier, error) {
 	resp := &pb.PremiumTier{}
 	return resp, nil
 }

@@ -131,8 +131,6 @@
 	function reset() {
 		request = { ...DEFAULT_REQUEST };
 		isAdvancedOpen = false;
-		bootDataVolumes.set([]);
-		instanceTypes.set([]);
 	}
 	function close() {
 		open = false;
