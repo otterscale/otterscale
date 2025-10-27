@@ -3,13 +3,14 @@ package core
 import (
 	"context"
 
-	"github.com/otterscale/otterscale/internal/config"
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v2"
 
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/repo"
+
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 type (

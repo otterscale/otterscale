@@ -170,30 +170,26 @@ func (uc *OrchestratorUseCase) filterInternalPlugins(plugins []string) []plugin 
 func (uc *OrchestratorUseCase) filterPlugins(charts []Chart, releases []Release, plugins []string) ([]Plugin, error) {
 	result := []Plugin{}
 	for _, plugin := range plugins {
-		release, err := uc.findPluginRelease(releases, plugin)
-		if err != nil {
-			return nil, err
-		}
 		latest, err := uc.findLatestPluginChart(charts, plugin)
 		if err != nil {
 			return nil, err
 		}
 		result = append(result, Plugin{
-			Release: release,
+			Release: uc.findPluginRelease(releases, plugin),
 			Latest:  latest,
 		})
 	}
 	return result, nil
 }
 
-func (uc *OrchestratorUseCase) findPluginRelease(releases []Release, plugin string) (*Release, error) {
+func (uc *OrchestratorUseCase) findPluginRelease(releases []Release, plugin string) *Release {
 	idx := slices.IndexFunc(releases, func(r Release) bool {
 		return r.Chart != nil && r.Chart.Name() == plugin
 	})
 	if idx == -1 {
-		return nil, nil
+		return nil
 	}
-	return &releases[idx], nil
+	return &releases[idx]
 }
 
 func (uc *OrchestratorUseCase) findLatestPluginChart(charts []Chart, plugin string) (*ChartVersion, error) {
