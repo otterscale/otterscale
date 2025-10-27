@@ -11,6 +11,54 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
+type FIO struct {
+	Target FIOTarget  `json:"target"`
+	Input  *FIOInput  `json:"input,omitempty"`
+	Output *FIOOutput `json:"output,omitempty"`
+}
+
+type FIOTarget struct {
+	Ceph *FIOTargetCeph `json:"ceph,omitempty"`
+	NFS  *FIOTargetNFS  `json:"nfs,omitempty"`
+}
+
+type FIOTargetCeph struct {
+	Scope    string `json:"scope"`
+	Facility string `json:"facility"`
+}
+
+type FIOTargetNFS struct {
+	Endpoint string `json:"endpoint"`
+	Path     string `json:"path"`
+}
+
+type FIOInput struct {
+	AccessMode string `json:"access_mode"`
+	JobCount   int64  `json:"job_count"`
+	RunTime    int64  `json:"run_time"`
+	BlockSize  int64  `json:"block_size"`
+	FileSize   int64  `json:"file_size"`
+	IODepth    int64  `json:"io_depth"`
+}
+
+type FIOOutput struct {
+	Read  *FIOThroughput `json:"read"`
+	Write *FIOThroughput `json:"write"`
+	Trim  *FIOThroughput `json:"trim"`
+}
+
+type FIOThroughput struct {
+	IOBytes   int64   `json:"io_bytes"`
+	Bandwidth int64   `json:"bw"`
+	IOPS      float64 `json:"iops"`
+	TotalIOs  int64   `json:"total_ios"`
+	Latency   struct {
+		Min  int64   `json:"min"`
+		Max  int64   `json:"max"`
+		Mean float64 `json:"mean"`
+	} `json:"lat_ns"`
+}
+
 func (uc *BISTUseCase) CreateFIOResult(ctx context.Context, name, createdBy string, target FIOTarget, input *FIOInput) (*BISTResult, error) {
 	config, err := uc.newMicroK8sConfig()
 	if err != nil {
@@ -51,15 +99,15 @@ func (uc *BISTUseCase) CreateFIOResult(ctx context.Context, name, createdBy stri
 	block := target.Ceph
 	if block != nil {
 		// pool & image
-		if err := uc.ensurePool(ctx, block.ScopeUUID, block.FacilityName, bistBlockPool); err != nil {
+		if err := uc.ensurePool(ctx, block.Scope, block.Facility, bistBlockPool); err != nil {
 			return nil, err
 		}
-		if err := uc.ensureImage(ctx, block.ScopeUUID, block.FacilityName, bistBlockPool, bistBlockImage); err != nil {
+		if err := uc.ensureImage(ctx, block.Scope, block.Facility, bistBlockPool, bistBlockImage); err != nil {
 			return nil, err
 		}
 		// config map
-		configMapName := fmt.Sprintf("ceph-conf-%s", generateHashedName(block.ScopeUUID+block.FacilityName))
-		if err := uc.ensureConfigMap(ctx, config, block.ScopeUUID, block.FacilityName, configMapName); err != nil {
+		configMapName := fmt.Sprintf("ceph-conf-%s", generateHashedName(block.Scope+block.Facility))
+		if err := uc.ensureConfigMap(ctx, config, block.Scope, block.Facility, configMapName); err != nil {
 			return nil, err
 		}
 		spec = uc.blockJobSpec(configMapName, input)

@@ -28,8 +28,8 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name,
+		scope: $currentCeph?.scope,
+		facility: $currentCeph?.name,
 	} as DeleteUserRequest;
 	let request = $state(defaults);
 	function reset() {

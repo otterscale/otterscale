@@ -2,11 +2,21 @@ edition = "2023";
 
 package otterscale.scope.v1;
 
+import "api/annotations.proto";
 option go_package = "github.com/otterscale/otterscale/api/scope/v1;pb";
 
 service ScopeService {
-  rpc ListScopes(ListScopesRequest) returns (ListScopesResponse);
-  rpc CreateScope(CreateScopeRequest) returns (Scope);
+  rpc ListScopes(ListScopesRequest) returns (ListScopesResponse) {
+    option (otterscale.api.feature) = {
+      name: "scp-general"
+    };
+  };
+
+  rpc CreateScope(CreateScopeRequest) returns (Scope) {
+    option (otterscale.api.feature) = {
+      name: "scp-general"
+    };
+  };
 }
 
 message Scope {

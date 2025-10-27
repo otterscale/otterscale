@@ -17,6 +17,19 @@ func boolToInt(b bool) int {
 	return 0
 }
 
+func flatten[T any](data [][]T) []T {
+	totalLen := 0
+	for _, innerSlice := range data {
+		totalLen += len(innerSlice)
+	}
+
+	result := make([]T, 0, totalLen)
+	for _, innerSlice := range data {
+		result = append(result, innerSlice...)
+	}
+	return result
+}
+
 func defaultBase(ctx context.Context, server ServerRepo) (base.Base, error) {
 	series, err := server.Get(ctx, "default_distro_series")
 	if err != nil {
@@ -25,12 +38,13 @@ func defaultBase(ctx context.Context, server ServerRepo) (base.Base, error) {
 	return base.GetBaseFromSeries(series)
 }
 
-func getJujuModelUUID(m map[string]string) (string, error) {
-	v, ok := m["juju-model-uuid"]
+func getJujuModelName(m map[string]string) (string, error) {
+	v, ok := m["juju-machine-id"]
 	if !ok {
-		return "", errors.New("juju model uuid not found")
+		return "", errors.New("juju machine id not found")
 	}
-	return v, nil
+	token := strings.Split(v, "-")
+	return token[0], nil
 }
 
 func getJujuMachineID(m map[string]string) (string, error) {

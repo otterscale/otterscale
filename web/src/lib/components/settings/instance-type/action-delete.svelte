@@ -4,8 +4,8 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { DeleteInstanceTypeRequest, InstanceType } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { DeleteInstanceTypeRequest, InstanceType } from '$lib/api/instance/v1/instance_pb';
+	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -21,15 +21,15 @@
 	// Context dependencies
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
-	const virtualMachineClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// Form validation state
 	let invalid = $state(false);
 
 	// Default values for the delete instance type request
 	const defaults = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		namespace: instanceType.namespace,
 		name: '',
 	} as DeleteInstanceTypeRequest;

@@ -1,4 +1,4 @@
-import type { VirtualMachine_Disk } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+import type { VirtualMachine_Disk } from '$lib/api/instance/v1/instance_pb';
 import { m } from '$lib/paraglide/messages';
 
 export type EnhancedDisk = VirtualMachine_Disk & {

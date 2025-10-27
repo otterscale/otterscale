@@ -30,8 +30,8 @@
 	let poolOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
-		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name,
+		scope: $currentCeph?.scope,
+		facility: $currentCeph?.name,
 		layering: true,
 		exclusiveLock: true,
 		objectMap: true,
@@ -51,8 +51,8 @@
 	async function fetchVolumeOptions() {
 		try {
 			const response = await storageClient.listPools({
-				scopeUuid: $currentCeph?.scopeUuid,
-				facilityName: $currentCeph?.name,
+				scope: $currentCeph?.scope,
+				facility: $currentCeph?.name,
 			});
 			poolOptions.set(
 				response.pools.map(

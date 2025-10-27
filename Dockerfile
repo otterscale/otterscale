@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.25.1-trixie AS builder
+FROM golang:1.25.3-trixie AS builder
 
 WORKDIR /src
 
@@ -49,6 +49,6 @@ ENV OTTERSCALE_CONTAINER=true
 EXPOSE 8299
 
 # Labels
-LABEL maintainer="Chung-Hsuan Tsai <zx.c@nycu.edu.tw>"
+LABEL maintainer="Chung-Hsuan Tsai <paul_tsai@phison.com>"
 
 ENTRYPOINT ["/app/otterscale"]

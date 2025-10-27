@@ -31,7 +31,7 @@ func NewFS(ceph *Ceph) core.CephFSRepo {
 
 var _ core.CephFSRepo = (*fs)(nil)
 
-func (r *fs) ListVolumes(_ context.Context, config *core.StorageConfig) ([]core.Volume, error) {
+func (r *fs) ListVolumes(_ context.Context, config *core.CephConfig) ([]core.Volume, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func (r *fs) ListVolumes(_ context.Context, config *core.StorageConfig) ([]core.
 	return r.toVolumes(fsDump), nil
 }
 
-func (r *fs) ListSubvolumes(_ context.Context, config *core.StorageConfig, volume, group string) ([]core.Subvolume, error) {
+func (r *fs) ListSubvolumes(_ context.Context, config *core.CephConfig, volume, group string) ([]core.Subvolume, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (r *fs) ListSubvolumes(_ context.Context, config *core.StorageConfig, volum
 	return subvolumes, nil
 }
 
-func (r *fs) GetSubvolume(_ context.Context, config *core.StorageConfig, volume, subvolume, group string) (*core.Subvolume, error) {
+func (r *fs) GetSubvolume(_ context.Context, config *core.CephConfig, volume, subvolume, group string) (*core.Subvolume, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -75,7 +75,7 @@ func (r *fs) GetSubvolume(_ context.Context, config *core.StorageConfig, volume,
 	return r.toSubvolume(subvolume, info), nil
 }
 
-func (r *fs) CreateSubvolume(_ context.Context, config *core.StorageConfig, volume, subvolume, group string, size uint64) error {
+func (r *fs) CreateSubvolume(_ context.Context, config *core.CephConfig, volume, subvolume, group string, size uint64) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -83,7 +83,7 @@ func (r *fs) CreateSubvolume(_ context.Context, config *core.StorageConfig, volu
 	return createSubvolume(conn, volume, subvolume, group, size)
 }
 
-func (r *fs) ResizeSubvolume(_ context.Context, config *core.StorageConfig, volume, subvolume, group string, size uint64) error {
+func (r *fs) ResizeSubvolume(_ context.Context, config *core.CephConfig, volume, subvolume, group string, size uint64) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -91,7 +91,7 @@ func (r *fs) ResizeSubvolume(_ context.Context, config *core.StorageConfig, volu
 	return resizeSubvolume(conn, volume, subvolume, group, size)
 }
 
-func (r *fs) DeleteSubvolume(_ context.Context, config *core.StorageConfig, volume, subvolume, group string) error {
+func (r *fs) DeleteSubvolume(_ context.Context, config *core.CephConfig, volume, subvolume, group string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -99,7 +99,7 @@ func (r *fs) DeleteSubvolume(_ context.Context, config *core.StorageConfig, volu
 	return removeSubvolume(conn, volume, subvolume, group)
 }
 
-func (r *fs) ListSubvolumeSnapshots(_ context.Context, config *core.StorageConfig, volume, subvolume, group string) ([]core.SubvolumeSnapshot, error) {
+func (r *fs) ListSubvolumeSnapshots(_ context.Context, config *core.CephConfig, volume, subvolume, group string) ([]core.SubvolumeSnapshot, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -119,7 +119,7 @@ func (r *fs) ListSubvolumeSnapshots(_ context.Context, config *core.StorageConfi
 	return snapshots, nil
 }
 
-func (r *fs) GetSubvolumeSnapshot(_ context.Context, config *core.StorageConfig, volume, subvolume, group, snapshot string) (*core.SubvolumeSnapshot, error) {
+func (r *fs) GetSubvolumeSnapshot(_ context.Context, config *core.CephConfig, volume, subvolume, group, snapshot string) (*core.SubvolumeSnapshot, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -131,7 +131,7 @@ func (r *fs) GetSubvolumeSnapshot(_ context.Context, config *core.StorageConfig,
 	return r.toSubvolumeSnapshot(snapshot, info), nil
 }
 
-func (r *fs) CreateSubvolumeSnapshot(_ context.Context, config *core.StorageConfig, volume, subvolume, group, snapshot string) error {
+func (r *fs) CreateSubvolumeSnapshot(_ context.Context, config *core.CephConfig, volume, subvolume, group, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -139,7 +139,7 @@ func (r *fs) CreateSubvolumeSnapshot(_ context.Context, config *core.StorageConf
 	return createSubvolumeSnapshot(conn, volume, subvolume, group, snapshot)
 }
 
-func (r *fs) DeleteSubvolumeSnapshot(_ context.Context, config *core.StorageConfig, volume, subvolume, group, snapshot string) error {
+func (r *fs) DeleteSubvolumeSnapshot(_ context.Context, config *core.CephConfig, volume, subvolume, group, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -147,7 +147,7 @@ func (r *fs) DeleteSubvolumeSnapshot(_ context.Context, config *core.StorageConf
 	return removeSubvolumeSnapshot(conn, volume, subvolume, group, snapshot)
 }
 
-func (r *fs) ListSubvolumeGroups(_ context.Context, config *core.StorageConfig, volume string) ([]core.SubvolumeGroup, error) {
+func (r *fs) ListSubvolumeGroups(_ context.Context, config *core.CephConfig, volume string) ([]core.SubvolumeGroup, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -167,7 +167,7 @@ func (r *fs) ListSubvolumeGroups(_ context.Context, config *core.StorageConfig, 
 	return subvolumeGroups, nil
 }
 
-func (r *fs) GetSubvolumeGroup(_ context.Context, config *core.StorageConfig, volume, group string) (*core.SubvolumeGroup, error) {
+func (r *fs) GetSubvolumeGroup(_ context.Context, config *core.CephConfig, volume, group string) (*core.SubvolumeGroup, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -179,7 +179,7 @@ func (r *fs) GetSubvolumeGroup(_ context.Context, config *core.StorageConfig, vo
 	return r.toSubvolumeGroups(group, info), nil
 }
 
-func (r *fs) CreateSubvolumeGroup(_ context.Context, config *core.StorageConfig, volume, group string, size uint64) error {
+func (r *fs) CreateSubvolumeGroup(_ context.Context, config *core.CephConfig, volume, group string, size uint64) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -187,7 +187,7 @@ func (r *fs) CreateSubvolumeGroup(_ context.Context, config *core.StorageConfig,
 	return createSubvolumeGroup(conn, volume, group, size)
 }
 
-func (r *fs) ResizeSubvolumeGroup(_ context.Context, config *core.StorageConfig, volume, group string, size uint64) error {
+func (r *fs) ResizeSubvolumeGroup(_ context.Context, config *core.CephConfig, volume, group string, size uint64) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -195,7 +195,7 @@ func (r *fs) ResizeSubvolumeGroup(_ context.Context, config *core.StorageConfig,
 	return resizeSubvolumeGroup(conn, volume, group, size)
 }
 
-func (r *fs) DeleteSubvolumeGroup(_ context.Context, config *core.StorageConfig, volume, group string) error {
+func (r *fs) DeleteSubvolumeGroup(_ context.Context, config *core.CephConfig, volume, group string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -203,7 +203,7 @@ func (r *fs) DeleteSubvolumeGroup(_ context.Context, config *core.StorageConfig,
 	return removeSubvolumeGroup(conn, volume, group)
 }
 
-func (r *fs) ListPathToExportClients(ctx context.Context, config *core.StorageConfig, pool string) (map[string][]string, error) {
+func (r *fs) ListPathToExportClients(ctx context.Context, config *core.CephConfig, pool string) (map[string][]string, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err

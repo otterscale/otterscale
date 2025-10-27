@@ -27,7 +27,7 @@
 <script lang="ts">
 	let { buckets, reloadManager }: { buckets: Writable<Bucket[]>; reloadManager: ReloadManager } = $props();
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});

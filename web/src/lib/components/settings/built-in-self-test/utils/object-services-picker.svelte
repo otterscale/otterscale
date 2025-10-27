@@ -11,6 +11,7 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { activeScope } from '$lib/stores';
 	import { cn } from '$lib/utils.js';
 </script>
 
@@ -19,7 +20,6 @@
 		$props();
 
 	let selectedInit = $state({});
-	let scopeUuid = $state('b62d195e-3905-4960-85ee-7673f71eb21e');
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);
@@ -27,7 +27,7 @@
 	const internalObjectServices = writable<SingleSelect.OptionType[]>([]);
 	async function fetchOptions() {
 		try {
-			const response = await client.listInternalObjectServices({ scopeUuid: scopeUuid });
+			const response = await client.listInternalObjectServices({ scope: $activeScope?.name });
 			internalObjectServices.set(
 				response.internalObjectServices.map(
 					(internalObjectService) =>
@@ -52,8 +52,8 @@
 				const matched = options.find(
 					(opt) =>
 						opt.value.type === selectedInternalObjectService.type &&
-						opt.value.scopeUuid === selectedInternalObjectService.scopeUuid &&
-						opt.value.facilityName === selectedInternalObjectService.facilityName &&
+						opt.value.scope === selectedInternalObjectService.scope &&
+						opt.value.facility === selectedInternalObjectService.facility &&
 						opt.value.name === selectedInternalObjectService.name &&
 						opt.value.endpoint === selectedInternalObjectService.endpoint,
 				);

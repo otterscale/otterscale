@@ -34,24 +34,18 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// OrchestratorServiceIsMachineDeployedProcedure is the fully-qualified name of the
-	// OrchestratorService's IsMachineDeployed RPC.
-	OrchestratorServiceIsMachineDeployedProcedure = "/otterscale.orchestrator.v1.OrchestratorService/IsMachineDeployed"
-	// OrchestratorServiceListStatusesProcedure is the fully-qualified name of the OrchestratorService's
-	// ListStatuses RPC.
-	OrchestratorServiceListStatusesProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListStatuses"
 	// OrchestratorServiceListEssentialsProcedure is the fully-qualified name of the
 	// OrchestratorService's ListEssentials RPC.
 	OrchestratorServiceListEssentialsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListEssentials"
-	// OrchestratorServiceCreateSingleNodeProcedure is the fully-qualified name of the
-	// OrchestratorService's CreateSingleNode RPC.
-	OrchestratorServiceCreateSingleNodeProcedure = "/otterscale.orchestrator.v1.OrchestratorService/CreateSingleNode"
-	// OrchestratorServiceCreateHighAvailabilityClusterProcedure is the fully-qualified name of the
-	// OrchestratorService's CreateHighAvailabilityCluster RPC.
-	OrchestratorServiceCreateHighAvailabilityClusterProcedure = "/otterscale.orchestrator.v1.OrchestratorService/CreateHighAvailabilityCluster"
-	// OrchestratorServiceAddUnitsProcedure is the fully-qualified name of the OrchestratorService's
-	// AddUnits RPC.
-	OrchestratorServiceAddUnitsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/AddUnits"
+	// OrchestratorServiceCreateNodeProcedure is the fully-qualified name of the OrchestratorService's
+	// CreateNode RPC.
+	OrchestratorServiceCreateNodeProcedure = "/otterscale.orchestrator.v1.OrchestratorService/CreateNode"
+	// OrchestratorServiceCreateClusterProcedure is the fully-qualified name of the
+	// OrchestratorService's CreateCluster RPC.
+	OrchestratorServiceCreateClusterProcedure = "/otterscale.orchestrator.v1.OrchestratorService/CreateCluster"
+	// OrchestratorServiceAddClusterUnitsProcedure is the fully-qualified name of the
+	// OrchestratorService's AddClusterUnits RPC.
+	OrchestratorServiceAddClusterUnitsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/AddClusterUnits"
 	// OrchestratorServiceListKubernetesNodeLabelsProcedure is the fully-qualified name of the
 	// OrchestratorService's ListKubernetesNodeLabels RPC.
 	OrchestratorServiceListKubernetesNodeLabelsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListKubernetesNodeLabels"
@@ -64,21 +58,43 @@ const (
 	// OrchestratorServiceListGPURelationsByModelProcedure is the fully-qualified name of the
 	// OrchestratorService's ListGPURelationsByModel RPC.
 	OrchestratorServiceListGPURelationsByModelProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListGPURelationsByModel"
+	// OrchestratorServiceListGeneralPluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's ListGeneralPlugins RPC.
+	OrchestratorServiceListGeneralPluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListGeneralPlugins"
+	// OrchestratorServiceListModelPluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's ListModelPlugins RPC.
+	OrchestratorServiceListModelPluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListModelPlugins"
+	// OrchestratorServiceListInstancePluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's ListInstancePlugins RPC.
+	OrchestratorServiceListInstancePluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListInstancePlugins"
+	// OrchestratorServiceListStoragePluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's ListStoragePlugins RPC.
+	OrchestratorServiceListStoragePluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListStoragePlugins"
+	// OrchestratorServiceInstallPluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's InstallPlugins RPC.
+	OrchestratorServiceInstallPluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/InstallPlugins"
+	// OrchestratorServiceUpgradePluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's UpgradePlugins RPC.
+	OrchestratorServiceUpgradePluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/UpgradePlugins"
 )
 
 // OrchestratorServiceClient is a client for the otterscale.orchestrator.v1.OrchestratorService
 // service.
 type OrchestratorServiceClient interface {
-	IsMachineDeployed(context.Context, *v1.IsMachineDeployedRequest) (*v1.IsMachineDeployedResponse, error)
-	ListStatuses(context.Context, *v1.ListStatusesRequest) (*v1.ListStatusesResponse, error)
 	ListEssentials(context.Context, *v1.ListEssentialsRequest) (*v1.ListEssentialsResponse, error)
-	CreateSingleNode(context.Context, *v1.CreateSingleNodeRequest) (*emptypb.Empty, error)
-	CreateHighAvailabilityCluster(context.Context, *v1.CreateHighAvailabilityClusterRequest) (*emptypb.Empty, error)
-	AddUnits(context.Context, *v1.AddUnitsRequest) (*emptypb.Empty, error)
+	CreateNode(context.Context, *v1.CreateNodeRequest) (*emptypb.Empty, error)
+	CreateCluster(context.Context, *v1.CreateClusterRequest) (*emptypb.Empty, error)
+	AddClusterUnits(context.Context, *v1.AddClusterUnitsRequest) (*emptypb.Empty, error)
 	ListKubernetesNodeLabels(context.Context, *v1.ListKubernetesNodeLabelsRequest) (*v1.ListKubernetesNodeLabelsResponse, error)
 	UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error)
 	ListGPURelationsByMachine(context.Context, *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error)
 	ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error)
+	ListGeneralPlugins(context.Context, *v1.ListGeneralPluginsRequest) (*v1.ListGeneralPluginsResponse, error)
+	ListModelPlugins(context.Context, *v1.ListModelPluginsRequest) (*v1.ListModelPluginsResponse, error)
+	ListInstancePlugins(context.Context, *v1.ListInstancePluginsRequest) (*v1.ListInstancePluginsResponse, error)
+	ListStoragePlugins(context.Context, *v1.ListStoragePluginsRequest) (*v1.ListStoragePluginsResponse, error)
+	InstallPlugins(context.Context, *v1.InstallPluginsRequest) (*emptypb.Empty, error)
+	UpgradePlugins(context.Context, *v1.UpgradePluginsRequest) (*emptypb.Empty, error)
 }
 
 // NewOrchestratorServiceClient constructs a client for the
@@ -93,40 +109,28 @@ func NewOrchestratorServiceClient(httpClient connect.HTTPClient, baseURL string,
 	baseURL = strings.TrimRight(baseURL, "/")
 	orchestratorServiceMethods := v1.File_api_orchestrator_v1_orchestrator_proto.Services().ByName("OrchestratorService").Methods()
 	return &orchestratorServiceClient{
-		isMachineDeployed: connect.NewClient[v1.IsMachineDeployedRequest, v1.IsMachineDeployedResponse](
-			httpClient,
-			baseURL+OrchestratorServiceIsMachineDeployedProcedure,
-			connect.WithSchema(orchestratorServiceMethods.ByName("IsMachineDeployed")),
-			connect.WithClientOptions(opts...),
-		),
-		listStatuses: connect.NewClient[v1.ListStatusesRequest, v1.ListStatusesResponse](
-			httpClient,
-			baseURL+OrchestratorServiceListStatusesProcedure,
-			connect.WithSchema(orchestratorServiceMethods.ByName("ListStatuses")),
-			connect.WithClientOptions(opts...),
-		),
 		listEssentials: connect.NewClient[v1.ListEssentialsRequest, v1.ListEssentialsResponse](
 			httpClient,
 			baseURL+OrchestratorServiceListEssentialsProcedure,
 			connect.WithSchema(orchestratorServiceMethods.ByName("ListEssentials")),
 			connect.WithClientOptions(opts...),
 		),
-		createSingleNode: connect.NewClient[v1.CreateSingleNodeRequest, emptypb.Empty](
+		createNode: connect.NewClient[v1.CreateNodeRequest, emptypb.Empty](
 			httpClient,
-			baseURL+OrchestratorServiceCreateSingleNodeProcedure,
-			connect.WithSchema(orchestratorServiceMethods.ByName("CreateSingleNode")),
+			baseURL+OrchestratorServiceCreateNodeProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("CreateNode")),
 			connect.WithClientOptions(opts...),
 		),
-		createHighAvailabilityCluster: connect.NewClient[v1.CreateHighAvailabilityClusterRequest, emptypb.Empty](
+		createCluster: connect.NewClient[v1.CreateClusterRequest, emptypb.Empty](
 			httpClient,
-			baseURL+OrchestratorServiceCreateHighAvailabilityClusterProcedure,
-			connect.WithSchema(orchestratorServiceMethods.ByName("CreateHighAvailabilityCluster")),
+			baseURL+OrchestratorServiceCreateClusterProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("CreateCluster")),
 			connect.WithClientOptions(opts...),
 		),
-		addUnits: connect.NewClient[v1.AddUnitsRequest, emptypb.Empty](
+		addClusterUnits: connect.NewClient[v1.AddClusterUnitsRequest, emptypb.Empty](
 			httpClient,
-			baseURL+OrchestratorServiceAddUnitsProcedure,
-			connect.WithSchema(orchestratorServiceMethods.ByName("AddUnits")),
+			baseURL+OrchestratorServiceAddClusterUnitsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("AddClusterUnits")),
 			connect.WithClientOptions(opts...),
 		),
 		listKubernetesNodeLabels: connect.NewClient[v1.ListKubernetesNodeLabelsRequest, v1.ListKubernetesNodeLabelsResponse](
@@ -153,39 +157,61 @@ func NewOrchestratorServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(orchestratorServiceMethods.ByName("ListGPURelationsByModel")),
 			connect.WithClientOptions(opts...),
 		),
+		listGeneralPlugins: connect.NewClient[v1.ListGeneralPluginsRequest, v1.ListGeneralPluginsResponse](
+			httpClient,
+			baseURL+OrchestratorServiceListGeneralPluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("ListGeneralPlugins")),
+			connect.WithClientOptions(opts...),
+		),
+		listModelPlugins: connect.NewClient[v1.ListModelPluginsRequest, v1.ListModelPluginsResponse](
+			httpClient,
+			baseURL+OrchestratorServiceListModelPluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("ListModelPlugins")),
+			connect.WithClientOptions(opts...),
+		),
+		listInstancePlugins: connect.NewClient[v1.ListInstancePluginsRequest, v1.ListInstancePluginsResponse](
+			httpClient,
+			baseURL+OrchestratorServiceListInstancePluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("ListInstancePlugins")),
+			connect.WithClientOptions(opts...),
+		),
+		listStoragePlugins: connect.NewClient[v1.ListStoragePluginsRequest, v1.ListStoragePluginsResponse](
+			httpClient,
+			baseURL+OrchestratorServiceListStoragePluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("ListStoragePlugins")),
+			connect.WithClientOptions(opts...),
+		),
+		installPlugins: connect.NewClient[v1.InstallPluginsRequest, emptypb.Empty](
+			httpClient,
+			baseURL+OrchestratorServiceInstallPluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("InstallPlugins")),
+			connect.WithClientOptions(opts...),
+		),
+		upgradePlugins: connect.NewClient[v1.UpgradePluginsRequest, emptypb.Empty](
+			httpClient,
+			baseURL+OrchestratorServiceUpgradePluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("UpgradePlugins")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // orchestratorServiceClient implements OrchestratorServiceClient.
 type orchestratorServiceClient struct {
-	isMachineDeployed             *connect.Client[v1.IsMachineDeployedRequest, v1.IsMachineDeployedResponse]
-	listStatuses                  *connect.Client[v1.ListStatusesRequest, v1.ListStatusesResponse]
-	listEssentials                *connect.Client[v1.ListEssentialsRequest, v1.ListEssentialsResponse]
-	createSingleNode              *connect.Client[v1.CreateSingleNodeRequest, emptypb.Empty]
-	createHighAvailabilityCluster *connect.Client[v1.CreateHighAvailabilityClusterRequest, emptypb.Empty]
-	addUnits                      *connect.Client[v1.AddUnitsRequest, emptypb.Empty]
-	listKubernetesNodeLabels      *connect.Client[v1.ListKubernetesNodeLabelsRequest, v1.ListKubernetesNodeLabelsResponse]
-	updateKubernetesNodeLabels    *connect.Client[v1.UpdateKubernetesNodeLabelsRequest, v1.UpdateKubernetesNodeLabelsResponse]
-	listGPURelationsByMachine     *connect.Client[v1.ListGPURelationsByMachineRequest, v1.ListGPURelationsByMachineResponse]
-	listGPURelationsByModel       *connect.Client[v1.ListGPURelationsByModelRequest, v1.ListGPURelationsByModelResponse]
-}
-
-// IsMachineDeployed calls otterscale.orchestrator.v1.OrchestratorService.IsMachineDeployed.
-func (c *orchestratorServiceClient) IsMachineDeployed(ctx context.Context, req *v1.IsMachineDeployedRequest) (*v1.IsMachineDeployedResponse, error) {
-	response, err := c.isMachineDeployed.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// ListStatuses calls otterscale.orchestrator.v1.OrchestratorService.ListStatuses.
-func (c *orchestratorServiceClient) ListStatuses(ctx context.Context, req *v1.ListStatusesRequest) (*v1.ListStatusesResponse, error) {
-	response, err := c.listStatuses.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
+	listEssentials             *connect.Client[v1.ListEssentialsRequest, v1.ListEssentialsResponse]
+	createNode                 *connect.Client[v1.CreateNodeRequest, emptypb.Empty]
+	createCluster              *connect.Client[v1.CreateClusterRequest, emptypb.Empty]
+	addClusterUnits            *connect.Client[v1.AddClusterUnitsRequest, emptypb.Empty]
+	listKubernetesNodeLabels   *connect.Client[v1.ListKubernetesNodeLabelsRequest, v1.ListKubernetesNodeLabelsResponse]
+	updateKubernetesNodeLabels *connect.Client[v1.UpdateKubernetesNodeLabelsRequest, v1.UpdateKubernetesNodeLabelsResponse]
+	listGPURelationsByMachine  *connect.Client[v1.ListGPURelationsByMachineRequest, v1.ListGPURelationsByMachineResponse]
+	listGPURelationsByModel    *connect.Client[v1.ListGPURelationsByModelRequest, v1.ListGPURelationsByModelResponse]
+	listGeneralPlugins         *connect.Client[v1.ListGeneralPluginsRequest, v1.ListGeneralPluginsResponse]
+	listModelPlugins           *connect.Client[v1.ListModelPluginsRequest, v1.ListModelPluginsResponse]
+	listInstancePlugins        *connect.Client[v1.ListInstancePluginsRequest, v1.ListInstancePluginsResponse]
+	listStoragePlugins         *connect.Client[v1.ListStoragePluginsRequest, v1.ListStoragePluginsResponse]
+	installPlugins             *connect.Client[v1.InstallPluginsRequest, emptypb.Empty]
+	upgradePlugins             *connect.Client[v1.UpgradePluginsRequest, emptypb.Empty]
 }
 
 // ListEssentials calls otterscale.orchestrator.v1.OrchestratorService.ListEssentials.
@@ -197,28 +223,27 @@ func (c *orchestratorServiceClient) ListEssentials(ctx context.Context, req *v1.
 	return nil, err
 }
 
-// CreateSingleNode calls otterscale.orchestrator.v1.OrchestratorService.CreateSingleNode.
-func (c *orchestratorServiceClient) CreateSingleNode(ctx context.Context, req *v1.CreateSingleNodeRequest) (*emptypb.Empty, error) {
-	response, err := c.createSingleNode.CallUnary(ctx, connect.NewRequest(req))
+// CreateNode calls otterscale.orchestrator.v1.OrchestratorService.CreateNode.
+func (c *orchestratorServiceClient) CreateNode(ctx context.Context, req *v1.CreateNodeRequest) (*emptypb.Empty, error) {
+	response, err := c.createNode.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
 	return nil, err
 }
 
-// CreateHighAvailabilityCluster calls
-// otterscale.orchestrator.v1.OrchestratorService.CreateHighAvailabilityCluster.
-func (c *orchestratorServiceClient) CreateHighAvailabilityCluster(ctx context.Context, req *v1.CreateHighAvailabilityClusterRequest) (*emptypb.Empty, error) {
-	response, err := c.createHighAvailabilityCluster.CallUnary(ctx, connect.NewRequest(req))
+// CreateCluster calls otterscale.orchestrator.v1.OrchestratorService.CreateCluster.
+func (c *orchestratorServiceClient) CreateCluster(ctx context.Context, req *v1.CreateClusterRequest) (*emptypb.Empty, error) {
+	response, err := c.createCluster.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
 	return nil, err
 }
 
-// AddUnits calls otterscale.orchestrator.v1.OrchestratorService.AddUnits.
-func (c *orchestratorServiceClient) AddUnits(ctx context.Context, req *v1.AddUnitsRequest) (*emptypb.Empty, error) {
-	response, err := c.addUnits.CallUnary(ctx, connect.NewRequest(req))
+// AddClusterUnits calls otterscale.orchestrator.v1.OrchestratorService.AddClusterUnits.
+func (c *orchestratorServiceClient) AddClusterUnits(ctx context.Context, req *v1.AddClusterUnitsRequest) (*emptypb.Empty, error) {
+	response, err := c.addClusterUnits.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -265,19 +290,77 @@ func (c *orchestratorServiceClient) ListGPURelationsByModel(ctx context.Context,
 	return nil, err
 }
 
+// ListGeneralPlugins calls otterscale.orchestrator.v1.OrchestratorService.ListGeneralPlugins.
+func (c *orchestratorServiceClient) ListGeneralPlugins(ctx context.Context, req *v1.ListGeneralPluginsRequest) (*v1.ListGeneralPluginsResponse, error) {
+	response, err := c.listGeneralPlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListModelPlugins calls otterscale.orchestrator.v1.OrchestratorService.ListModelPlugins.
+func (c *orchestratorServiceClient) ListModelPlugins(ctx context.Context, req *v1.ListModelPluginsRequest) (*v1.ListModelPluginsResponse, error) {
+	response, err := c.listModelPlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListInstancePlugins calls otterscale.orchestrator.v1.OrchestratorService.ListInstancePlugins.
+func (c *orchestratorServiceClient) ListInstancePlugins(ctx context.Context, req *v1.ListInstancePluginsRequest) (*v1.ListInstancePluginsResponse, error) {
+	response, err := c.listInstancePlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListStoragePlugins calls otterscale.orchestrator.v1.OrchestratorService.ListStoragePlugins.
+func (c *orchestratorServiceClient) ListStoragePlugins(ctx context.Context, req *v1.ListStoragePluginsRequest) (*v1.ListStoragePluginsResponse, error) {
+	response, err := c.listStoragePlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// InstallPlugins calls otterscale.orchestrator.v1.OrchestratorService.InstallPlugins.
+func (c *orchestratorServiceClient) InstallPlugins(ctx context.Context, req *v1.InstallPluginsRequest) (*emptypb.Empty, error) {
+	response, err := c.installPlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// UpgradePlugins calls otterscale.orchestrator.v1.OrchestratorService.UpgradePlugins.
+func (c *orchestratorServiceClient) UpgradePlugins(ctx context.Context, req *v1.UpgradePluginsRequest) (*emptypb.Empty, error) {
+	response, err := c.upgradePlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // OrchestratorServiceHandler is an implementation of the
 // otterscale.orchestrator.v1.OrchestratorService service.
 type OrchestratorServiceHandler interface {
-	IsMachineDeployed(context.Context, *v1.IsMachineDeployedRequest) (*v1.IsMachineDeployedResponse, error)
-	ListStatuses(context.Context, *v1.ListStatusesRequest) (*v1.ListStatusesResponse, error)
 	ListEssentials(context.Context, *v1.ListEssentialsRequest) (*v1.ListEssentialsResponse, error)
-	CreateSingleNode(context.Context, *v1.CreateSingleNodeRequest) (*emptypb.Empty, error)
-	CreateHighAvailabilityCluster(context.Context, *v1.CreateHighAvailabilityClusterRequest) (*emptypb.Empty, error)
-	AddUnits(context.Context, *v1.AddUnitsRequest) (*emptypb.Empty, error)
+	CreateNode(context.Context, *v1.CreateNodeRequest) (*emptypb.Empty, error)
+	CreateCluster(context.Context, *v1.CreateClusterRequest) (*emptypb.Empty, error)
+	AddClusterUnits(context.Context, *v1.AddClusterUnitsRequest) (*emptypb.Empty, error)
 	ListKubernetesNodeLabels(context.Context, *v1.ListKubernetesNodeLabelsRequest) (*v1.ListKubernetesNodeLabelsResponse, error)
 	UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error)
 	ListGPURelationsByMachine(context.Context, *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error)
 	ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error)
+	ListGeneralPlugins(context.Context, *v1.ListGeneralPluginsRequest) (*v1.ListGeneralPluginsResponse, error)
+	ListModelPlugins(context.Context, *v1.ListModelPluginsRequest) (*v1.ListModelPluginsResponse, error)
+	ListInstancePlugins(context.Context, *v1.ListInstancePluginsRequest) (*v1.ListInstancePluginsResponse, error)
+	ListStoragePlugins(context.Context, *v1.ListStoragePluginsRequest) (*v1.ListStoragePluginsResponse, error)
+	InstallPlugins(context.Context, *v1.InstallPluginsRequest) (*emptypb.Empty, error)
+	UpgradePlugins(context.Context, *v1.UpgradePluginsRequest) (*emptypb.Empty, error)
 }
 
 // NewOrchestratorServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -287,40 +370,28 @@ type OrchestratorServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	orchestratorServiceMethods := v1.File_api_orchestrator_v1_orchestrator_proto.Services().ByName("OrchestratorService").Methods()
-	orchestratorServiceIsMachineDeployedHandler := connect.NewUnaryHandlerSimple(
-		OrchestratorServiceIsMachineDeployedProcedure,
-		svc.IsMachineDeployed,
-		connect.WithSchema(orchestratorServiceMethods.ByName("IsMachineDeployed")),
-		connect.WithHandlerOptions(opts...),
-	)
-	orchestratorServiceListStatusesHandler := connect.NewUnaryHandlerSimple(
-		OrchestratorServiceListStatusesProcedure,
-		svc.ListStatuses,
-		connect.WithSchema(orchestratorServiceMethods.ByName("ListStatuses")),
-		connect.WithHandlerOptions(opts...),
-	)
 	orchestratorServiceListEssentialsHandler := connect.NewUnaryHandlerSimple(
 		OrchestratorServiceListEssentialsProcedure,
 		svc.ListEssentials,
 		connect.WithSchema(orchestratorServiceMethods.ByName("ListEssentials")),
 		connect.WithHandlerOptions(opts...),
 	)
-	orchestratorServiceCreateSingleNodeHandler := connect.NewUnaryHandlerSimple(
-		OrchestratorServiceCreateSingleNodeProcedure,
-		svc.CreateSingleNode,
-		connect.WithSchema(orchestratorServiceMethods.ByName("CreateSingleNode")),
+	orchestratorServiceCreateNodeHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceCreateNodeProcedure,
+		svc.CreateNode,
+		connect.WithSchema(orchestratorServiceMethods.ByName("CreateNode")),
 		connect.WithHandlerOptions(opts...),
 	)
-	orchestratorServiceCreateHighAvailabilityClusterHandler := connect.NewUnaryHandlerSimple(
-		OrchestratorServiceCreateHighAvailabilityClusterProcedure,
-		svc.CreateHighAvailabilityCluster,
-		connect.WithSchema(orchestratorServiceMethods.ByName("CreateHighAvailabilityCluster")),
+	orchestratorServiceCreateClusterHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceCreateClusterProcedure,
+		svc.CreateCluster,
+		connect.WithSchema(orchestratorServiceMethods.ByName("CreateCluster")),
 		connect.WithHandlerOptions(opts...),
 	)
-	orchestratorServiceAddUnitsHandler := connect.NewUnaryHandlerSimple(
-		OrchestratorServiceAddUnitsProcedure,
-		svc.AddUnits,
-		connect.WithSchema(orchestratorServiceMethods.ByName("AddUnits")),
+	orchestratorServiceAddClusterUnitsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceAddClusterUnitsProcedure,
+		svc.AddClusterUnits,
+		connect.WithSchema(orchestratorServiceMethods.ByName("AddClusterUnits")),
 		connect.WithHandlerOptions(opts...),
 	)
 	orchestratorServiceListKubernetesNodeLabelsHandler := connect.NewUnaryHandlerSimple(
@@ -347,20 +418,52 @@ func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...conne
 		connect.WithSchema(orchestratorServiceMethods.ByName("ListGPURelationsByModel")),
 		connect.WithHandlerOptions(opts...),
 	)
+	orchestratorServiceListGeneralPluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceListGeneralPluginsProcedure,
+		svc.ListGeneralPlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("ListGeneralPlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	orchestratorServiceListModelPluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceListModelPluginsProcedure,
+		svc.ListModelPlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("ListModelPlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	orchestratorServiceListInstancePluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceListInstancePluginsProcedure,
+		svc.ListInstancePlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("ListInstancePlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	orchestratorServiceListStoragePluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceListStoragePluginsProcedure,
+		svc.ListStoragePlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("ListStoragePlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	orchestratorServiceInstallPluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceInstallPluginsProcedure,
+		svc.InstallPlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("InstallPlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	orchestratorServiceUpgradePluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceUpgradePluginsProcedure,
+		svc.UpgradePlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("UpgradePlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.orchestrator.v1.OrchestratorService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case OrchestratorServiceIsMachineDeployedProcedure:
-			orchestratorServiceIsMachineDeployedHandler.ServeHTTP(w, r)
-		case OrchestratorServiceListStatusesProcedure:
-			orchestratorServiceListStatusesHandler.ServeHTTP(w, r)
 		case OrchestratorServiceListEssentialsProcedure:
 			orchestratorServiceListEssentialsHandler.ServeHTTP(w, r)
-		case OrchestratorServiceCreateSingleNodeProcedure:
-			orchestratorServiceCreateSingleNodeHandler.ServeHTTP(w, r)
-		case OrchestratorServiceCreateHighAvailabilityClusterProcedure:
-			orchestratorServiceCreateHighAvailabilityClusterHandler.ServeHTTP(w, r)
-		case OrchestratorServiceAddUnitsProcedure:
-			orchestratorServiceAddUnitsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceCreateNodeProcedure:
+			orchestratorServiceCreateNodeHandler.ServeHTTP(w, r)
+		case OrchestratorServiceCreateClusterProcedure:
+			orchestratorServiceCreateClusterHandler.ServeHTTP(w, r)
+		case OrchestratorServiceAddClusterUnitsProcedure:
+			orchestratorServiceAddClusterUnitsHandler.ServeHTTP(w, r)
 		case OrchestratorServiceListKubernetesNodeLabelsProcedure:
 			orchestratorServiceListKubernetesNodeLabelsHandler.ServeHTTP(w, r)
 		case OrchestratorServiceUpdateKubernetesNodeLabelsProcedure:
@@ -369,6 +472,18 @@ func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...conne
 			orchestratorServiceListGPURelationsByMachineHandler.ServeHTTP(w, r)
 		case OrchestratorServiceListGPURelationsByModelProcedure:
 			orchestratorServiceListGPURelationsByModelHandler.ServeHTTP(w, r)
+		case OrchestratorServiceListGeneralPluginsProcedure:
+			orchestratorServiceListGeneralPluginsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceListModelPluginsProcedure:
+			orchestratorServiceListModelPluginsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceListInstancePluginsProcedure:
+			orchestratorServiceListInstancePluginsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceListStoragePluginsProcedure:
+			orchestratorServiceListStoragePluginsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceInstallPluginsProcedure:
+			orchestratorServiceInstallPluginsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceUpgradePluginsProcedure:
+			orchestratorServiceUpgradePluginsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -378,28 +493,20 @@ func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...conne
 // UnimplementedOrchestratorServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedOrchestratorServiceHandler struct{}
 
-func (UnimplementedOrchestratorServiceHandler) IsMachineDeployed(context.Context, *v1.IsMachineDeployedRequest) (*v1.IsMachineDeployedResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.IsMachineDeployed is not implemented"))
-}
-
-func (UnimplementedOrchestratorServiceHandler) ListStatuses(context.Context, *v1.ListStatusesRequest) (*v1.ListStatusesResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListStatuses is not implemented"))
-}
-
 func (UnimplementedOrchestratorServiceHandler) ListEssentials(context.Context, *v1.ListEssentialsRequest) (*v1.ListEssentialsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListEssentials is not implemented"))
 }
 
-func (UnimplementedOrchestratorServiceHandler) CreateSingleNode(context.Context, *v1.CreateSingleNodeRequest) (*emptypb.Empty, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.CreateSingleNode is not implemented"))
+func (UnimplementedOrchestratorServiceHandler) CreateNode(context.Context, *v1.CreateNodeRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.CreateNode is not implemented"))
 }
 
-func (UnimplementedOrchestratorServiceHandler) CreateHighAvailabilityCluster(context.Context, *v1.CreateHighAvailabilityClusterRequest) (*emptypb.Empty, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.CreateHighAvailabilityCluster is not implemented"))
+func (UnimplementedOrchestratorServiceHandler) CreateCluster(context.Context, *v1.CreateClusterRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.CreateCluster is not implemented"))
 }
 
-func (UnimplementedOrchestratorServiceHandler) AddUnits(context.Context, *v1.AddUnitsRequest) (*emptypb.Empty, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.AddUnits is not implemented"))
+func (UnimplementedOrchestratorServiceHandler) AddClusterUnits(context.Context, *v1.AddClusterUnitsRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.AddClusterUnits is not implemented"))
 }
 
 func (UnimplementedOrchestratorServiceHandler) ListKubernetesNodeLabels(context.Context, *v1.ListKubernetesNodeLabelsRequest) (*v1.ListKubernetesNodeLabelsResponse, error) {
@@ -416,4 +523,28 @@ func (UnimplementedOrchestratorServiceHandler) ListGPURelationsByMachine(context
 
 func (UnimplementedOrchestratorServiceHandler) ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) ListGeneralPlugins(context.Context, *v1.ListGeneralPluginsRequest) (*v1.ListGeneralPluginsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListGeneralPlugins is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) ListModelPlugins(context.Context, *v1.ListModelPluginsRequest) (*v1.ListModelPluginsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListModelPlugins is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) ListInstancePlugins(context.Context, *v1.ListInstancePluginsRequest) (*v1.ListInstancePluginsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListInstancePlugins is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) ListStoragePlugins(context.Context, *v1.ListStoragePluginsRequest) (*v1.ListStoragePluginsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListStoragePlugins is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) InstallPlugins(context.Context, *v1.InstallPluginsRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.InstallPlugins is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) UpgradePlugins(context.Context, *v1.UpgradePluginsRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.UpgradePlugins is not implemented"))
 }

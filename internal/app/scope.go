@@ -11,17 +11,19 @@ import (
 type ScopeService struct {
 	pbconnect.UnimplementedScopeServiceHandler
 
-	uc *core.ScopeUseCase
+	scope *core.ScopeUseCase
 }
 
-func NewScopeService(uc *core.ScopeUseCase) *ScopeService {
-	return &ScopeService{uc: uc}
+func NewScopeService(scope *core.ScopeUseCase) *ScopeService {
+	return &ScopeService{
+		scope: scope,
+	}
 }
 
 var _ pbconnect.ScopeServiceHandler = (*ScopeService)(nil)
 
 func (s *ScopeService) ListScopes(ctx context.Context, _ *pb.ListScopesRequest) (*pb.ListScopesResponse, error) {
-	scopes, err := s.uc.ListScopes(ctx)
+	scopes, err := s.scope.ListScopes(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +33,7 @@ func (s *ScopeService) ListScopes(ctx context.Context, _ *pb.ListScopesRequest) 
 }
 
 func (s *ScopeService) CreateScope(ctx context.Context, req *pb.CreateScopeRequest) (*pb.Scope, error) {
-	scope, err := s.uc.CreateScope(ctx, req.GetName())
+	scope, err := s.scope.CreateScope(ctx, req.GetName())
 	if err != nil {
 		return nil, err
 	}

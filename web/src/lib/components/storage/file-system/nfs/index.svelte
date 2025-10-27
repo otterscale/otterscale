@@ -14,13 +14,13 @@
 
 <script lang="ts">
 	let {
-		selectedScopeUuid = $bindable(),
+		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
 		selectedVolume = $bindable(),
 		selectedSubvolumeGroupName = $bindable(),
 		trigger,
 	}: {
-		selectedScopeUuid: string;
+		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
 		selectedSubvolumeGroupName: string;
@@ -36,8 +36,8 @@
 	const reloadManager = new ReloadManager(() => {
 		storageClient
 			.listSubvolumes({
-				scopeUuid: selectedScopeUuid,
-				facilityName: selectedFacility,
+				scope: selectedScope,
+				facility: selectedFacility,
 				volumeName: selectedVolume,
 				groupName: selectedSubvolumeGroupName,
 			})
@@ -48,15 +48,15 @@
 	setContext('nfsStore', nfsStore);
 	setContext('reloadManager', reloadManager);
 	onMount(() => {
-		nfsStore.selectedScopeUuid.set(selectedScopeUuid);
-		nfsStore.selectedFacilityName.set(selectedFacility);
+		nfsStore.selectedScope.set(selectedScope);
+		nfsStore.selectedFacility.set(selectedFacility);
 		nfsStore.selectedVolumeName.set(selectedVolume);
 		nfsStore.selectedSubvolumeGroupName.set(selectedSubvolumeGroupName);
 
 		storageClient
 			.listSubvolumes({
-				scopeUuid: selectedScopeUuid,
-				facilityName: selectedFacility,
+				scope: selectedScope,
+				facility: selectedFacility,
 				volumeName: selectedVolume,
 				groupName: selectedSubvolumeGroupName,
 			})
@@ -79,7 +79,7 @@
 	{#if isMounted}
 		<div class="flex items-center justify-between gap-2">
 			{@render trigger()}
-			<Pickers {selectedScopeUuid} {selectedFacility} {selectedVolume} bind:selectedSubvolumeGroupName />
+			<Pickers {selectedScope} {selectedFacility} {selectedVolume} bind:selectedSubvolumeGroupName />
 		</div>
 		<DataTable {subvolumes} {reloadManager} />
 	{:else}

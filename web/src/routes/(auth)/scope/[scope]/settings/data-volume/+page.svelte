@@ -13,9 +13,9 @@
 </script>
 
 {#if $currentKubernetes}
-	{@const scopeUuid = $currentKubernetes.scopeUuid}
-	{@const facilityName = $currentKubernetes.name}
+	{@const scope = $currentKubernetes.scope}
+	{@const facility = $currentKubernetes.name}
 	{@const namespace = page.params.namespace ?? ''}
 
-	<DataVolume {scopeUuid} {facilityName} {namespace} />
+	<DataVolume {scope} {facility} {namespace} />
 {/if}

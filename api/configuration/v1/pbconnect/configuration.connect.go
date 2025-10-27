@@ -43,6 +43,9 @@ const (
 	// ConfigurationServiceUpdatePackageRepositoryProcedure is the fully-qualified name of the
 	// ConfigurationService's UpdatePackageRepository RPC.
 	ConfigurationServiceUpdatePackageRepositoryProcedure = "/otterscale.configuration.v1.ConfigurationService/UpdatePackageRepository"
+	// ConfigurationServiceUpdateHelmRepositoryProcedure is the fully-qualified name of the
+	// ConfigurationService's UpdateHelmRepository RPC.
+	ConfigurationServiceUpdateHelmRepositoryProcedure = "/otterscale.configuration.v1.ConfigurationService/UpdateHelmRepository"
 	// ConfigurationServiceCreateBootImageProcedure is the fully-qualified name of the
 	// ConfigurationService's CreateBootImage RPC.
 	ConfigurationServiceCreateBootImageProcedure = "/otterscale.configuration.v1.ConfigurationService/CreateBootImage"
@@ -78,6 +81,7 @@ type ConfigurationServiceClient interface {
 	GetConfiguration(context.Context, *v1.GetConfigurationRequest) (*v1.Configuration, error)
 	UpdateNTPServer(context.Context, *v1.UpdateNTPServerRequest) (*v1.Configuration_NTPServer, error)
 	UpdatePackageRepository(context.Context, *v1.UpdatePackageRepositoryRequest) (*v1.Configuration_PackageRepository, error)
+	UpdateHelmRepository(context.Context, *v1.UpdateHelmRepositoryRequest) (*v1.Configuration_HelmRepository, error)
 	CreateBootImage(context.Context, *v1.CreateBootImageRequest) (*v1.Configuration_BootImage, error)
 	SetDefaultBootImage(context.Context, *v1.SetDefaultBootImageRequest) (*emptypb.Empty, error)
 	ImportBootImages(context.Context, *v1.ImportBootImagesRequest) (*emptypb.Empty, error)
@@ -117,6 +121,12 @@ func NewConfigurationServiceClient(httpClient connect.HTTPClient, baseURL string
 			httpClient,
 			baseURL+ConfigurationServiceUpdatePackageRepositoryProcedure,
 			connect.WithSchema(configurationServiceMethods.ByName("UpdatePackageRepository")),
+			connect.WithClientOptions(opts...),
+		),
+		updateHelmRepository: connect.NewClient[v1.UpdateHelmRepositoryRequest, v1.Configuration_HelmRepository](
+			httpClient,
+			baseURL+ConfigurationServiceUpdateHelmRepositoryProcedure,
+			connect.WithSchema(configurationServiceMethods.ByName("UpdateHelmRepository")),
 			connect.WithClientOptions(opts...),
 		),
 		createBootImage: connect.NewClient[v1.CreateBootImageRequest, v1.Configuration_BootImage](
@@ -181,6 +191,7 @@ type configurationServiceClient struct {
 	getConfiguration           *connect.Client[v1.GetConfigurationRequest, v1.Configuration]
 	updateNTPServer            *connect.Client[v1.UpdateNTPServerRequest, v1.Configuration_NTPServer]
 	updatePackageRepository    *connect.Client[v1.UpdatePackageRepositoryRequest, v1.Configuration_PackageRepository]
+	updateHelmRepository       *connect.Client[v1.UpdateHelmRepositoryRequest, v1.Configuration_HelmRepository]
 	createBootImage            *connect.Client[v1.CreateBootImageRequest, v1.Configuration_BootImage]
 	setDefaultBootImage        *connect.Client[v1.SetDefaultBootImageRequest, emptypb.Empty]
 	importBootImages           *connect.Client[v1.ImportBootImagesRequest, emptypb.Empty]
@@ -214,6 +225,15 @@ func (c *configurationServiceClient) UpdateNTPServer(ctx context.Context, req *v
 // otterscale.configuration.v1.ConfigurationService.UpdatePackageRepository.
 func (c *configurationServiceClient) UpdatePackageRepository(ctx context.Context, req *v1.UpdatePackageRepositoryRequest) (*v1.Configuration_PackageRepository, error) {
 	response, err := c.updatePackageRepository.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// UpdateHelmRepository calls otterscale.configuration.v1.ConfigurationService.UpdateHelmRepository.
+func (c *configurationServiceClient) UpdateHelmRepository(ctx context.Context, req *v1.UpdateHelmRepositoryRequest) (*v1.Configuration_HelmRepository, error) {
+	response, err := c.updateHelmRepository.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -310,6 +330,7 @@ type ConfigurationServiceHandler interface {
 	GetConfiguration(context.Context, *v1.GetConfigurationRequest) (*v1.Configuration, error)
 	UpdateNTPServer(context.Context, *v1.UpdateNTPServerRequest) (*v1.Configuration_NTPServer, error)
 	UpdatePackageRepository(context.Context, *v1.UpdatePackageRepositoryRequest) (*v1.Configuration_PackageRepository, error)
+	UpdateHelmRepository(context.Context, *v1.UpdateHelmRepositoryRequest) (*v1.Configuration_HelmRepository, error)
 	CreateBootImage(context.Context, *v1.CreateBootImageRequest) (*v1.Configuration_BootImage, error)
 	SetDefaultBootImage(context.Context, *v1.SetDefaultBootImageRequest) (*emptypb.Empty, error)
 	ImportBootImages(context.Context, *v1.ImportBootImagesRequest) (*emptypb.Empty, error)
@@ -344,6 +365,12 @@ func NewConfigurationServiceHandler(svc ConfigurationServiceHandler, opts ...con
 		ConfigurationServiceUpdatePackageRepositoryProcedure,
 		svc.UpdatePackageRepository,
 		connect.WithSchema(configurationServiceMethods.ByName("UpdatePackageRepository")),
+		connect.WithHandlerOptions(opts...),
+	)
+	configurationServiceUpdateHelmRepositoryHandler := connect.NewUnaryHandlerSimple(
+		ConfigurationServiceUpdateHelmRepositoryProcedure,
+		svc.UpdateHelmRepository,
+		connect.WithSchema(configurationServiceMethods.ByName("UpdateHelmRepository")),
 		connect.WithHandlerOptions(opts...),
 	)
 	configurationServiceCreateBootImageHandler := connect.NewUnaryHandlerSimple(
@@ -408,6 +435,8 @@ func NewConfigurationServiceHandler(svc ConfigurationServiceHandler, opts ...con
 			configurationServiceUpdateNTPServerHandler.ServeHTTP(w, r)
 		case ConfigurationServiceUpdatePackageRepositoryProcedure:
 			configurationServiceUpdatePackageRepositoryHandler.ServeHTTP(w, r)
+		case ConfigurationServiceUpdateHelmRepositoryProcedure:
+			configurationServiceUpdateHelmRepositoryHandler.ServeHTTP(w, r)
 		case ConfigurationServiceCreateBootImageProcedure:
 			configurationServiceCreateBootImageHandler.ServeHTTP(w, r)
 		case ConfigurationServiceSetDefaultBootImageProcedure:
@@ -445,6 +474,10 @@ func (UnimplementedConfigurationServiceHandler) UpdateNTPServer(context.Context,
 
 func (UnimplementedConfigurationServiceHandler) UpdatePackageRepository(context.Context, *v1.UpdatePackageRepositoryRequest) (*v1.Configuration_PackageRepository, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.configuration.v1.ConfigurationService.UpdatePackageRepository is not implemented"))
+}
+
+func (UnimplementedConfigurationServiceHandler) UpdateHelmRepository(context.Context, *v1.UpdateHelmRepositoryRequest) (*v1.Configuration_HelmRepository, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.configuration.v1.ConfigurationService.UpdateHelmRepository is not implemented"))
 }
 
 func (UnimplementedConfigurationServiceHandler) CreateBootImage(context.Context, *v1.CreateBootImageRequest) (*v1.Configuration_BootImage, error) {

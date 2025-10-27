@@ -66,11 +66,11 @@
 {#snippet target(row: Row<TestResult>)}
 	<Layout.Cell class="items-start">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
-			{#if row.original.kind.value.target.case === 'cephBlockDevice'}
+			{#if row.original.kind.value.target.case === 'cephBlockDevice' && row.original.kind.value.target.value.facility}
 				<Badge variant="outline">
-					{row.original.kind.value.target.value.facilityName}
+					{row.original.kind.value.target.value.facility}
 				</Badge>
-			{:else if row.original.kind.value.target.case === 'networkFileSystem'}
+			{:else if row.original.kind.value.target.case === 'networkFileSystem' && row.original.kind.value.target.value.endpoint}
 				<Badge variant="outline">
 					{row.original.kind.value.target.value.endpoint}
 				</Badge>

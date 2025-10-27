@@ -2,7 +2,7 @@
 	import Delete from './action-delete.svelte';
 	import Extend from './action-extend.svelte';
 
-	import type { DataVolume } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { DataVolume } from '$lib/api/instance/v1/instance_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
 </script>

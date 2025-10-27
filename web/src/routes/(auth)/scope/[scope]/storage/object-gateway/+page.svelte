@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
-	let selectedScopeUuid = $derived($activeScope ? $activeScope.uuid : '');
+	let selectedScope = $derived($activeScope ? $activeScope.name : '');
 	let selectedFacility = $state('ceph-mon');
 
 	breadcrumb.set({
@@ -16,7 +16,7 @@
 </script>
 
 {#if $activeScope}
-	{#key selectedScopeUuid + selectedFacility}
-		<ObjectDateway bind:selectedScopeUuid bind:selectedFacility />
+	{#key selectedScope + selectedFacility}
+		<ObjectDateway bind:selectedScope bind:selectedFacility />
 	{/key}
 {/if}

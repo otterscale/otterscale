@@ -4,7 +4,7 @@
 
 	import Actions from './cell-actions.svelte';
 
-	import type { VirtualMachine_Restore } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { VirtualMachine_Restore } from '$lib/api/instance/v1/instance_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';

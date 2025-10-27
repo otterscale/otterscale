@@ -66,7 +66,7 @@
 			{#if row.original.kind.value.target.case === 'internalObjectService'}
 				<Badge variant="outline">
 					{InternalObjectService_Type[row.original.kind.value.target.value.type]}-{row.original.kind.value
-						.target.value.facilityName}
+						.target.value.facility}
 				</Badge>
 			{:else if row.original.kind.value.target.case === 'externalObjectService'}
 				<Badge variant="outline">

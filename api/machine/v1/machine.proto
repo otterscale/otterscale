@@ -2,24 +2,78 @@ edition = "2023";
 
 package otterscale.machine.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/machine/v1;pb";
 
 service MachineService {
-  rpc ListMachines(ListMachinesRequest) returns (ListMachinesResponse);
-  rpc GetMachine(GetMachineRequest) returns (Machine);
-  rpc CreateMachine(CreateMachineRequest) returns (Machine);
-  rpc DeleteMachine(DeleteMachineRequest) returns (google.protobuf.Empty);
-  rpc PowerOffMachine(PowerOffMachineRequest) returns (Machine);
-  rpc AddMachineTags(AddMachineTagsRequest) returns (google.protobuf.Empty);
-  rpc RemoveMachineTags(RemoveMachineTagsRequest) returns (google.protobuf.Empty);
+  rpc ListMachines(ListMachinesRequest) returns (ListMachinesResponse) {
+    option (otterscale.api.feature) = {
+      name: "mch-general"
+    };
+  };
 
-  rpc ListTags(ListTagsRequest) returns (ListTagsResponse);
-  rpc GetTag(GetTagRequest) returns (Tag);
-  rpc CreateTag(CreateTagRequest) returns (Tag);
-  rpc DeleteTag(DeleteTagRequest) returns (google.protobuf.Empty);
+  rpc GetMachine(GetMachineRequest) returns (Machine) {
+    option (otterscale.api.feature) = {
+      name: "mch-general"
+    };
+  };
+
+  rpc CreateMachine(CreateMachineRequest) returns (Machine) {
+    option (otterscale.api.feature) = {
+      name: "mch-general"
+    };
+  };
+
+  rpc DeleteMachine(DeleteMachineRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "mch-general"
+    };
+  };
+
+  rpc PowerOffMachine(PowerOffMachineRequest) returns (Machine) {
+    option (otterscale.api.feature) = {
+      name: "mch-general"
+    };
+  };
+
+  rpc AddMachineTags(AddMachineTagsRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "mch-general"
+    };
+  };
+
+  rpc RemoveMachineTags(RemoveMachineTagsRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "mch-general"
+    };
+  };
+
+  rpc ListTags(ListTagsRequest) returns (ListTagsResponse) {
+    option (otterscale.api.feature) = {
+      name: "mch-tag"
+    };
+  };
+
+  rpc GetTag(GetTagRequest) returns (Tag) {
+    option (otterscale.api.feature) = {
+      name: "mch-tag"
+    };
+  };
+
+  rpc CreateTag(CreateTagRequest) returns (Tag) {
+    option (otterscale.api.feature) = {
+      name: "mch-tag"
+    };
+  };
+
+  rpc DeleteTag(DeleteTagRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "mch-tag"
+    };
+  };
 }
 
 message Machine {
@@ -99,7 +153,7 @@ message Tag {
 }
 
 message ListMachinesRequest {
-  string scope_uuid = 1;
+  string scope = 1;
 }
 
 message ListMachinesResponse {
@@ -116,7 +170,7 @@ message CreateMachineRequest {
   bool skip_bmc_config = 3;
   bool skip_networking = 4;
   bool skip_storage = 5;
-  string scope_uuid = 11;
+  string scope = 11;
   repeated string tags = 21;
 }
 

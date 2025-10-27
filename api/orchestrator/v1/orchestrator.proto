@@ -2,27 +2,101 @@ edition = "2023";
 
 package otterscale.orchestrator.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/orchestrator/v1;pb";
 
 service OrchestratorService {
-  rpc IsMachineDeployed(IsMachineDeployedRequest) returns (IsMachineDeployedResponse);
-  rpc ListStatuses(ListStatusesRequest) returns (ListStatusesResponse);
-  rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse);
-  rpc CreateSingleNode(CreateSingleNodeRequest) returns (google.protobuf.Empty);
-  rpc CreateHighAvailabilityCluster(CreateHighAvailabilityClusterRequest) returns (google.protobuf.Empty);
-  rpc AddUnits(AddUnitsRequest) returns (google.protobuf.Empty);
-  rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse);
-  rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse);
-  rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse);
-  rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse);
+  rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
+
+  rpc CreateNode(CreateNodeRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
+
+  rpc CreateCluster(CreateClusterRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
+
+  rpc AddClusterUnits(AddClusterUnitsRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
+
+  rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
+
+  rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
+
+  rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc ListGeneralPlugins(ListGeneralPluginsRequest) returns (ListGeneralPluginsResponse) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
+
+  rpc ListModelPlugins(ListModelPluginsRequest) returns (ListModelPluginsResponse) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc ListInstancePlugins(ListInstancePluginsRequest) returns (ListInstancePluginsResponse) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc ListStoragePlugins(ListStoragePluginsRequest) returns (ListStoragePluginsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
+
+  rpc InstallPlugins(InstallPluginsRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
+
+  rpc UpgradePlugins(UpgradePluginsRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
 }
 
 message Essential {
   enum Type {
-    UNSPECIFIED = 0;
+    UNKNOWN = 0;
     KUBERNETES = 1;
     CEPH = 2;
   }
@@ -32,22 +106,66 @@ message Essential {
   }
   Type type = 1;
   string name = 2;
-  string scope_uuid = 11;
-  string scope_name = 12;
+  string scope = 11;
   repeated Unit units = 21;
 }
 
-message Status {
-  enum Level {
-    INFO = 0;
-    LOW = 1;
-    MEDIUM = 2;
-    HIGH = 3;
-    CRITICAL = 4;
-  }
-  Level level = 1;
-  string message = 2;
-  string details = 3;
+message ListEssentialsRequest {
+  Essential.Type type = 1;
+  string scope = 2;
+}
+
+message ListEssentialsResponse {
+  repeated Essential essentials = 1;
+}
+
+message CreateNodeRequest {
+  string scope = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+  repeated string virtual_ips = 11;
+  string calico_cidr = 12;
+  repeated string osd_devices = 21;
+}
+
+message CreateClusterRequest {
+  string scope = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+  repeated string virtual_ips = 11;
+  string calico_cidr = 12;
+  repeated string osd_devices = 21;
+}
+
+message AddClusterUnitsRequest {
+  Essential.Type type = 1;
+  string scope = 2;
+  string name = 3;
+  int32 number = 4;
+  repeated string machine_ids = 5;
+  bool force = 11;
+}
+
+message ListKubernetesNodeLabelsRequest {
+  string scope = 1;
+  string facility = 2;
+  string hostname = 3;
+  bool all = 11;
+}
+
+message ListKubernetesNodeLabelsResponse {
+  map<string, string> labels = 1;
+}
+
+message UpdateKubernetesNodeLabelsRequest {
+  string scope = 1;
+  string facility = 2;
+  string hostname = 3;
+  map<string, string> labels = 4;
+}
+
+message UpdateKubernetesNodeLabelsResponse {
+  map<string, string> labels = 1;
 }
 
 message GPURelation {
@@ -85,84 +203,9 @@ message GPURelation {
   }
 }
 
-message IsMachineDeployedRequest {
-  string scope_uuid = 1;
-}
-
-message IsMachineDeployedResponse {
-  bool deployed = 1;
-  string message = 2;
-}
-
-message ListStatusesRequest {
-  string scope_uuid = 1;
-}
-
-message ListStatusesResponse {
-  repeated Status statuses = 1;
-}
-
-message ListEssentialsRequest {
-  Essential.Type type = 1;
-  string scope_uuid = 2;
-}
-
-message ListEssentialsResponse {
-  repeated Essential essentials = 1;
-}
-
-message CreateSingleNodeRequest {
-  string scope_uuid = 1;
-  string machine_id = 2;
-  string prefix_name = 3;
-  repeated string virtual_ips = 11;
-  string calico_cidr = 12;
-  repeated string osd_devices = 21;
-}
-
-message CreateHighAvailabilityClusterRequest {
-  string scope_uuid = 1;
-  string machine_id = 2;
-  string prefix_name = 3;
-  repeated string virtual_ips = 11;
-  string calico_cidr = 12;
-  repeated string osd_devices = 21;
-}
-
-message AddUnitsRequest {
-  Essential.Type type = 1;
-  string scope_uuid = 2;
-  string name = 3;
-  int32 number = 4;
-  repeated string machine_ids = 5;
-  bool force = 11;
-}
-
-message ListKubernetesNodeLabelsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string hostname = 3;
-  bool all = 11;
-}
-
-message ListKubernetesNodeLabelsResponse {
-  map<string, string> labels = 1;
-}
-
-message UpdateKubernetesNodeLabelsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string hostname = 3;
-  map<string, string> labels = 4;
-}
-
-message UpdateKubernetesNodeLabelsResponse {
-  map<string, string> labels = 1;
-}
-
 message ListGPURelationsByMachineRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string machine_id = 3;
 }
 
@@ -171,12 +214,80 @@ message ListGPURelationsByMachineResponse {
 }
 
 message ListGPURelationsByModelRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string namespace = 3;
   string model_name = 4;
 }
 
 message ListGPURelationsByModelResponse {
   repeated GPURelation gpu_relations = 1;
+}
+
+message Plugin {
+  message Chart {
+    string name = 1;
+    string version = 2;
+    string app_version = 3;
+    string description = 4;
+    string icon = 5;
+    string ref = 6;
+  }
+  string name = 1;
+  string namespace = 2;
+  string status = 3;
+  string description = 4;
+  google.protobuf.Timestamp first_deployed_at = 5;
+  google.protobuf.Timestamp last_deployed_at = 6;
+  google.protobuf.Timestamp deleted_at = 7;
+  Chart current = 11;
+  Chart latest = 12;
+}
+
+message ListGeneralPluginsRequest {
+  string scope = 1;
+  string facility = 2;
+}
+
+message ListGeneralPluginsResponse {
+  repeated Plugin plugins = 1;
+}
+
+message ListModelPluginsRequest {
+  string scope = 1;
+  string facility = 2;
+}
+
+message ListModelPluginsResponse {
+  repeated Plugin plugins = 1;
+}
+
+message ListInstancePluginsRequest {
+  string scope = 1;
+  string facility = 2;
+}
+
+message ListInstancePluginsResponse {
+  repeated Plugin plugins = 1;
+}
+
+message ListStoragePluginsRequest {
+  string scope = 1;
+  string facility = 2;
+}
+
+message ListStoragePluginsResponse {
+  repeated Plugin plugins = 1;
+}
+
+message InstallPluginsRequest {
+  string scope = 1;
+  string facility = 2;
+  repeated Plugin.Chart charts = 3;
+}
+
+message UpgradePluginsRequest {
+  string scope = 1;
+  string facility = 2;
+  repeated Plugin.Chart charts = 3;
 }

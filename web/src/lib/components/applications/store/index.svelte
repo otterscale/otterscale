@@ -11,10 +11,11 @@
 		type Application_Release,
 	} from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
-	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
+	let { scope, facility }: { scope: string; facility: string } = $props();
+
 	const transport: Transport = getContext('transport');
 
 	let charts = $state(writable<Application_Chart[]>([]));
@@ -37,8 +38,8 @@
 			});
 		await applicationClient
 			.listReleases({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
+				scope: scope,
+				facility: facility,
 			})
 			.then((response) => {
 				releases.set(response.releases);

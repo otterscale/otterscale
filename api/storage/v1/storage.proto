@@ -2,63 +2,246 @@ edition = "2023";
 
 package otterscale.storage.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/storage/v1;pb";
 
 service StorageService {
-  rpc ListMONs(ListMONsRequest) returns (ListMONsResponse);
-  rpc ListOSDs(ListOSDsRequest) returns (ListOSDsResponse);
+  rpc ListMONs(ListMONsRequest) returns (ListMONsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc DoSMART(DoSMARTRequest) returns (DoSMARTResponse);
+  rpc ListOSDs(ListOSDsRequest) returns (ListOSDsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse);
-  rpc CreatePool(CreatePoolRequest) returns (Pool);
-  rpc UpdatePool(UpdatePoolRequest) returns (Pool);
-  rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty);
+  rpc DoSMART(DoSMARTRequest) returns (DoSMARTResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc ListImages(ListImagesRequest) returns (ListImagesResponse);
-  rpc CreateImage(CreateImageRequest) returns (Image);
-  rpc UpdateImage(UpdateImageRequest) returns (Image);
-  rpc DeleteImage(DeleteImageRequest) returns (google.protobuf.Empty);
+  rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc CreateImageSnapshot(CreateImageSnapshotRequest) returns (Image.Snapshot);
-  rpc DeleteImageSnapshot(DeleteImageSnapshotRequest) returns (google.protobuf.Empty);
-  rpc RollbackImageSnapshot(RollbackImageSnapshotRequest) returns (google.protobuf.Empty);
-  rpc ProtectImageSnapshot(ProtectImageSnapshotRequest) returns (google.protobuf.Empty);
-  rpc UnprotectImageSnapshot(UnprotectImageSnapshotRequest) returns (google.protobuf.Empty);
+  rpc CreatePool(CreatePoolRequest) returns (Pool) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc ListVolumes(ListVolumesRequest) returns (ListVolumesResponse);
+  rpc UpdatePool(UpdatePoolRequest) returns (Pool) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc ListSubvolumes(ListSubvolumesRequest) returns (ListSubvolumesResponse);
-  rpc CreateSubvolume(CreateSubvolumeRequest) returns (Subvolume);
-  rpc UpdateSubvolume(UpdateSubvolumeRequest) returns (Subvolume);
-  rpc DeleteSubvolume(DeleteSubvolumeRequest) returns (google.protobuf.Empty);
+  rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
 
-  rpc GrantSubvolumeExportAccess(GrantSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
-  rpc RevokeSubvolumeExportAccess(RevokeSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
+  rpc ListImages(ListImagesRequest) returns (ListImagesResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
 
-  rpc CreateSubvolumeSnapshot(CreateSubvolumeSnapshotRequest) returns (Subvolume.Snapshot);
-  rpc DeleteSubvolumeSnapshot(DeleteSubvolumeSnapshotRequest) returns (google.protobuf.Empty);
+  rpc CreateImage(CreateImageRequest) returns (Image) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
 
-  rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse);
-  rpc CreateSubvolumeGroup(CreateSubvolumeGroupRequest) returns (SubvolumeGroup);
-  rpc UpdateSubvolumeGroup(UpdateSubvolumeGroupRequest) returns (SubvolumeGroup);
-  rpc DeleteSubvolumeGroup(DeleteSubvolumeGroupRequest) returns (google.protobuf.Empty);
+  rpc UpdateImage(UpdateImageRequest) returns (Image) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
 
-  rpc ListBuckets(ListBucketsRequest) returns (ListBucketsResponse);
-  rpc CreateBucket(CreateBucketRequest) returns (Bucket);
-  rpc UpdateBucket(UpdateBucketRequest) returns (Bucket);
-  rpc DeleteBucket(DeleteBucketRequest) returns (google.protobuf.Empty);
+  rpc DeleteImage(DeleteImageRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
 
-  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
-  rpc CreateUser(CreateUserRequest) returns (User);
-  rpc UpdateUser(UpdateUserRequest) returns (User);
-  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
+  rpc CreateImageSnapshot(CreateImageSnapshotRequest) returns (Image.Snapshot) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
 
-  rpc CreateUserKey(CreateUserKeyRequest) returns (User.Key);
-  rpc DeleteUserKey(DeleteUserKeyRequest) returns (google.protobuf.Empty);
+  rpc DeleteImageSnapshot(DeleteImageSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
+
+  rpc RollbackImageSnapshot(RollbackImageSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
+
+  rpc ProtectImageSnapshot(ProtectImageSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
+
+  rpc UnprotectImageSnapshot(UnprotectImageSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-block"
+    };
+  };
+
+  rpc ListVolumes(ListVolumesRequest) returns (ListVolumesResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc ListSubvolumes(ListSubvolumesRequest) returns (ListSubvolumesResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc CreateSubvolume(CreateSubvolumeRequest) returns (Subvolume) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc UpdateSubvolume(UpdateSubvolumeRequest) returns (Subvolume) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc DeleteSubvolume(DeleteSubvolumeRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc GrantSubvolumeExportAccess(GrantSubvolumeExportAccessRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc RevokeSubvolumeExportAccess(RevokeSubvolumeExportAccessRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc CreateSubvolumeSnapshot(CreateSubvolumeSnapshotRequest) returns (Subvolume.Snapshot) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc DeleteSubvolumeSnapshot(DeleteSubvolumeSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc CreateSubvolumeGroup(CreateSubvolumeGroupRequest) returns (SubvolumeGroup) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc UpdateSubvolumeGroup(UpdateSubvolumeGroupRequest) returns (SubvolumeGroup) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc DeleteSubvolumeGroup(DeleteSubvolumeGroupRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-file"
+    };
+  };
+
+  rpc ListBuckets(ListBucketsRequest) returns (ListBucketsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc CreateBucket(CreateBucketRequest) returns (Bucket) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc UpdateBucket(UpdateBucketRequest) returns (Bucket) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc DeleteBucket(DeleteBucketRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc CreateUser(CreateUserRequest) returns (User) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc UpdateUser(UpdateUserRequest) returns (User) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc CreateUserKey(CreateUserKeyRequest) returns (User.Key) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
+
+  rpc DeleteUserKey(DeleteUserKeyRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "stg-object"
+    };
+  };
 }
 
 enum PoolType {
@@ -210,8 +393,8 @@ message User {
 }
 
 message ListMONsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListMONsResponse {
@@ -219,8 +402,8 @@ message ListMONsResponse {
 }
 
 message ListOSDsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListOSDsResponse {
@@ -228,8 +411,8 @@ message ListOSDsResponse {
 }
 
 message DoSMARTRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string osd_name = 3;
 }
 
@@ -241,8 +424,8 @@ message DoSMARTResponse {
 }
 
 message ListPoolsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string application = 11;
 }
 
@@ -251,8 +434,8 @@ message ListPoolsResponse {
 }
 
 message CreatePoolRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string pool_name = 3;
   PoolType pool_type = 11;
   bool ec_overwrites = 21;      // erasure
@@ -263,22 +446,22 @@ message CreatePoolRequest {
 }
 
 message UpdatePoolRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string pool_name = 3;
   uint64 quota_bytes = 41;
   uint64 quota_objects = 42;
 }
 
 message DeletePoolRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string pool_name = 3;
 }
 
 message ListImagesRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListImagesResponse {
@@ -286,8 +469,8 @@ message ListImagesResponse {
 }
 
 message CreateImageRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string pool_name = 3;
   string image_name = 4;
   uint64 object_size_bytes = 11;
@@ -302,63 +485,63 @@ message CreateImageRequest {
 }
 
 message UpdateImageRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string pool_name = 3;
   string image_name = 4;
   uint64 quota_bytes = 11;
 }
 
 message DeleteImageRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string pool_name = 3;
   string image_name = 4;
 }
 
 message CreateImageSnapshotRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string pool_name = 3;
   string image_name = 4;
   string snapshot_name = 5;
 }
 
 message DeleteImageSnapshotRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string pool_name = 3;
   string image_name = 4;
   string snapshot_name = 5;
 }
 
 message RollbackImageSnapshotRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string pool_name = 3;
   string image_name = 4;
   string snapshot_name = 5;
 }
 
 message ProtectImageSnapshotRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string pool_name = 3;
   string image_name = 4;
   string snapshot_name = 5;
 }
 
 message UnprotectImageSnapshotRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string pool_name = 3;
   string image_name = 4;
   string snapshot_name = 5;
 }
 
 message ListVolumesRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListVolumesResponse {
@@ -366,8 +549,8 @@ message ListVolumesResponse {
 }
 
 message ListSubvolumesRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
   string group_name = 4;
 }
@@ -377,8 +560,8 @@ message ListSubvolumesResponse {
 }
 
 message CreateSubvolumeRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
@@ -387,8 +570,8 @@ message CreateSubvolumeRequest {
 }
 
 message UpdateSubvolumeRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
@@ -396,32 +579,32 @@ message UpdateSubvolumeRequest {
 }
 
 message DeleteSubvolumeRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
 }
 
 message GrantSubvolumeExportAccessRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
   string subvolume_name = 4;
   string client_ip = 11;
 }
 
 message RevokeSubvolumeExportAccessRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
   string subvolume_name = 4;
   string client_ip = 11;
 }
 
 message CreateSubvolumeSnapshotRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
   string subvolume_name = 4;
   string group_name = 5;
@@ -429,8 +612,8 @@ message CreateSubvolumeSnapshotRequest {
 }
 
 message DeleteSubvolumeSnapshotRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
   string subvolume_name = 4;
   string group_name = 5;
@@ -438,8 +621,8 @@ message DeleteSubvolumeSnapshotRequest {
 }
 
 message ListSubvolumeGroupsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
 }
 
@@ -448,31 +631,31 @@ message ListSubvolumeGroupsResponse {
 }
 
 message CreateSubvolumeGroupRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
   string group_name = 4;
   uint64 quota_bytes = 11;
 }
 
 message UpdateSubvolumeGroupRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
   string group_name = 4;
   uint64 quota_bytes = 11;
 }
 
 message DeleteSubvolumeGroupRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string volume_name = 3;
   string group_name = 4;
 }
 
 message ListBucketsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListBucketsResponse {
@@ -480,8 +663,8 @@ message ListBucketsResponse {
 }
 
 message CreateBucketRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string bucket_name = 3;
   string owner = 11;
   string policy = 12;
@@ -489,8 +672,8 @@ message CreateBucketRequest {
 }
 
 message UpdateBucketRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string bucket_name = 3;
   string owner = 11;
   string policy = 12;
@@ -498,14 +681,14 @@ message UpdateBucketRequest {
 }
 
 message DeleteBucketRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string bucket_name = 3;
 }
 
 message ListUsersRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message ListUsersResponse {
@@ -513,36 +696,36 @@ message ListUsersResponse {
 }
 
 message CreateUserRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string user_id = 3;
   string user_name = 11;
   bool suspended = 12;
 }
 
 message UpdateUserRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string user_id = 3;
   string user_name = 11;
   bool suspended = 12;
 }
 
 message DeleteUserRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string user_id = 3;
 }
 
 message CreateUserKeyRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string user_id = 3;
 }
 
 message DeleteUserKeyRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
   string user_id = 3;
   string access_key = 4;
 }

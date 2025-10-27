@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
@@ -40,6 +40,9 @@
 	onMount(async () => {
 		await fetch();
 		isLoading = false;
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 
 	$effect(() => {

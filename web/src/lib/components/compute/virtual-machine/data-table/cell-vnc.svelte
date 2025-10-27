@@ -4,7 +4,7 @@
 	import { getContext } from 'svelte';
 
 	import { env } from '$env/dynamic/public';
-	import { VirtualMachineService, type VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import { InstanceService, type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import * as Tooltip from '$lib/components/ui/tooltip';
@@ -15,7 +15,7 @@
 	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
 
 	const transport: Transport = getContext('transport');
-	const virtualMachineClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 
 	const url = new URL(env.PUBLIC_API_URL ?? '');
 	const [host, port] = url.host.split(':');
@@ -27,8 +27,8 @@
 	async function getVncUrl() {
 		try {
 			const response = await virtualMachineClient.vNCInstance({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
+				scope: $currentKubernetes?.scope,
+				facility: $currentKubernetes?.name,
 				name: virtualMachine.name,
 				namespace: virtualMachine.namespace,
 			});

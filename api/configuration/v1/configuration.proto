@@ -2,25 +2,90 @@ edition = "2023";
 
 package otterscale.configuration.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/configuration/v1;pb";
 
 service ConfigurationService {
-  rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
-  rpc UpdateNTPServer(UpdateNTPServerRequest) returns (Configuration.NTPServer);
-  rpc UpdatePackageRepository(UpdatePackageRepositoryRequest) returns (Configuration.PackageRepository);
-  rpc CreateBootImage(CreateBootImageRequest) returns (Configuration.BootImage);
-  rpc SetDefaultBootImage(SetDefaultBootImageRequest) returns (google.protobuf.Empty);
-  rpc ImportBootImages(ImportBootImagesRequest) returns (google.protobuf.Empty);
-  rpc IsImportingBootImages(IsImportingBootImagesRequest) returns (IsImportingBootImagesResponse);
-  rpc ListBootImageSelections(ListBootImageSelectionsRequest) returns (ListBootImageSelectionsResponse);
+  rpc GetConfiguration(GetConfigurationRequest) returns (Configuration) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
 
-  rpc ListTestResults(ListTestResultsRequest) returns (ListTestResultsResponse);
-  rpc CreateTestResult(CreateTestResultRequest) returns (TestResult);
-  rpc DeleteTestResult(DeleteTestResultRequest) returns (google.protobuf.Empty);
-  rpc ListInternalObjectServices(ListInternalObjectServicesRequest) returns (ListInternalObjectServicesResponse);
+  rpc UpdateNTPServer(UpdateNTPServerRequest) returns (Configuration.NTPServer) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc UpdatePackageRepository(UpdatePackageRepositoryRequest) returns (Configuration.PackageRepository) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc UpdateHelmRepository(UpdateHelmRepositoryRequest) returns (Configuration.HelmRepository) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc CreateBootImage(CreateBootImageRequest) returns (Configuration.BootImage) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc SetDefaultBootImage(SetDefaultBootImageRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc ImportBootImages(ImportBootImagesRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc IsImportingBootImages(IsImportingBootImagesRequest) returns (IsImportingBootImagesResponse) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc ListBootImageSelections(ListBootImageSelectionsRequest) returns (ListBootImageSelectionsResponse) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc ListTestResults(ListTestResultsRequest) returns (ListTestResultsResponse) {
+    option (otterscale.api.feature) = {
+      name: "cfg-built-in-self-test"
+    };
+  };
+
+  rpc CreateTestResult(CreateTestResultRequest) returns (TestResult) {
+    option (otterscale.api.feature) = {
+      name: "cfg-built-in-self-test"
+    };
+  };
+
+  rpc DeleteTestResult(DeleteTestResultRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "cfg-built-in-self-test"
+    };
+  };
+
+  rpc ListInternalObjectServices(ListInternalObjectServicesRequest) returns (ListInternalObjectServicesResponse) {
+    option (otterscale.api.feature) = {
+      name: "cfg-built-in-self-test"
+    };
+  };
 }
 
 message Configuration {
@@ -45,9 +110,13 @@ message Configuration {
     map<string, string> architecture_status_map = 5;
     bool default = 11;
   }
+  message HelmRepository {
+    repeated string urls = 1;
+  }
   NTPServer ntp_server = 1;
   repeated PackageRepository package_repositories = 2;
   repeated BootImage boot_images = 3;
+  HelmRepository helm_repository = 4;
 }
 
 message GetConfigurationRequest {}
@@ -60,6 +129,10 @@ message UpdatePackageRepositoryRequest {
   int64 id = 1;
   string url = 2;
   bool skip_juju = 3;
+}
+
+message UpdateHelmRepositoryRequest {
+  repeated string urls = 1;
 }
 
 message CreateBootImageRequest {
@@ -86,8 +159,8 @@ message ListBootImageSelectionsResponse {
 }
 
 message CephBlockDevice {
-  string scope_uuid = 1;
-  string facility_name = 2;
+  string scope = 1;
+  string facility = 2;
 }
 
 message NetworkFileSystem {
@@ -102,8 +175,8 @@ message InternalObjectService {
     MINIO = 2;
   }
   Type type = 1;
-  string scope_uuid = 2;
-  string facility_name = 3;
+  string scope = 2;
+  string facility = 3;
   string name = 4;
   string endpoint = 5;
 }
@@ -238,7 +311,9 @@ message DeleteTestResultRequest {
 }
 
 message ListInternalObjectServicesRequest {
-  string scope_uuid = 1;
+  string scope = 1;
+  string kubernetes_name = 2;
+  string ceph_name = 3;
 }
 
 message ListInternalObjectServicesResponse {

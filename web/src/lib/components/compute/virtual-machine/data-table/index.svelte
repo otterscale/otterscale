@@ -15,7 +15,7 @@
 	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 
-	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
@@ -32,7 +32,7 @@
 		reloadManager: ReloadManager;
 	} = $props();
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 9 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({

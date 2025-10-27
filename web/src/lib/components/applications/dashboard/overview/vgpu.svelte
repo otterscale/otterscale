@@ -2,7 +2,7 @@
 	import { scaleBand } from 'd3-scale';
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { InstantVector, PrometheusDriver } from 'prometheus-query';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
 
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
@@ -51,6 +51,9 @@
 	onMount(async () => {
 		await fetch();
 		isLoading = false;
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 
 	$effect(() => {

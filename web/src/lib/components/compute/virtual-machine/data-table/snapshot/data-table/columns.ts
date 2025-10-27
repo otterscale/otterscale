@@ -3,7 +3,7 @@ import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-import type { VirtualMachine_Snapshot } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+import type { VirtualMachine_Snapshot } from '$lib/api/instance/v1/instance_pb';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 

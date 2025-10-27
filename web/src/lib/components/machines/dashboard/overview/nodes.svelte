@@ -5,7 +5,7 @@
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { LineChart } from 'layerchart';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { page } from '$app/state';
@@ -60,7 +60,7 @@
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
-		machineClient.listMachines({ scopeUuid: scope.uuid }).then((response) => {
+		machineClient.listMachines({ scope: scope.name }).then((response) => {
 			machines.set(response.machines);
 		});
 	}
@@ -71,6 +71,9 @@
 	onMount(async () => {
 		await fetch();
 		isLoading = false;
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 
 	$effect(() => {

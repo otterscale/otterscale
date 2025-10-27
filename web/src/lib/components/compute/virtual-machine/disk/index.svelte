@@ -1,17 +1,14 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount, onDestroy } from 'svelte';
+	import { getContext, onDestroy } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 
 	import { DataTable } from './data-table';
 
-	import {
-		VirtualMachineService,
-		VirtualMachine_Disk_Volume_Source_Type,
-	} from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import type { VirtualMachine } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import type { DataVolume } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import { InstanceService, VirtualMachine_Disk_Volume_Source_Type } from '$lib/api/instance/v1/instance_pb';
+	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
+	import type { DataVolume } from '$lib/api/instance/v1/instance_pb';
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Sheet from '$lib/components/ui/sheet';
@@ -27,16 +24,17 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const virtualMachineClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 
 	let enhancedDisks: EnhancedDisk[] = $state([]);
+	let isLoaded = $state(false);
 
 	async function loadEnhancedDisks() {
 		try {
 			// Get data volumes
 			const dataVolumesResponse = await virtualMachineClient.listDataVolumes({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
+				scope: $currentKubernetes?.scope,
+				facility: $currentKubernetes?.name,
 				namespace: virtualMachine.namespace,
 				bootImage: false, // Set to true if you only want boot images
 			});
@@ -77,20 +75,25 @@
 					};
 				}
 			});
+			isLoaded = true;
 		} catch (error) {
 			console.error('Failed to load enhanced disks:', error);
 		}
 	}
 
-	// Create ReloadManager for automatic reloading
+	// Create ReloadManager for automatic reloading (only when data is loaded)
 	const reloadManager = new ReloadManager(() => {
-		loadEnhancedDisks();
+		if (isLoaded) {
+			loadEnhancedDisks();
+		}
 	});
 
-	onMount(() => {
-		loadEnhancedDisks();
-		reloadManager.start();
-	});
+	function handleSheetOpen() {
+		if (!isLoaded) {
+			loadEnhancedDisks();
+			reloadManager.start();
+		}
+	}
 
 	onDestroy(() => {
 		reloadManager.stop();
@@ -98,9 +101,9 @@
 </script>
 
 <div class="flex items-center justify-end gap-1">
-	{enhancedDisks.length}
+	{virtualMachine.disks.length}
 	<Sheet.Root>
-		<Sheet.Trigger>
+		<Sheet.Trigger onclick={handleSheetOpen}>
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[70vw] p-4">

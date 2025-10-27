@@ -12,9 +12,11 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
-	import type { LargeLangeageModel } from '../protobuf.svelte';
+	import type { LargeLanguageModel } from '../type';
 
+	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
+	import Statistics from './statistics.svelte';
 
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -27,9 +29,9 @@
 	let {
 		largeLanguageModels,
 		reloadManager,
-	}: { largeLanguageModels: Writable<LargeLangeageModel[]>; reloadManager: ReloadManager } = $props();
+	}: { largeLanguageModels: Writable<LargeLanguageModel[]>; reloadManager: ReloadManager } = $props();
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 9 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
@@ -101,6 +103,9 @@
 </script>
 
 <Layout.Root>
+	<Layout.Statistics>
+		<Statistics {table} />
+	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
@@ -109,15 +114,10 @@
 				{messages}
 				{table}
 			/>
-			<Filters.StringMatch
-				columnId="architecture"
-				values={$largeLanguageModels.flatMap((row) => row.architecture)}
-				{messages}
-				{table}
-			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
+			<Create />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

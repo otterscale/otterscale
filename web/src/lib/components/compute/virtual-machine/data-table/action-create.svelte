@@ -5,8 +5,8 @@
 	import { writable, type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import type { CreateVirtualMachineRequest, DataVolume } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
-	import { VirtualMachineService } from '$lib/api/virtual_machine/v1/virtual_machine_pb';
+	import type { CreateVirtualMachineRequest, DataVolume } from '$lib/api/instance/v1/instance_pb';
+	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -23,7 +23,7 @@
 	// Context dependencies
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
-	const virtualMachineClient = createClient(VirtualMachineService, transport);
+	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
 
@@ -55,8 +55,8 @@
 		try {
 			// Request both namespace-specific and cluster-wide instance types
 			const response = await virtualMachineClient.listInstanceTypes({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
+				scope: $currentKubernetes?.scope,
+				facility: $currentKubernetes?.name,
 				namespace: request.namespace,
 				includeClusterWide: true,
 			});
@@ -85,8 +85,8 @@
 			if (!request.namespace) return;
 
 			const response = await virtualMachineClient.listDataVolumes({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
+				scope: $currentKubernetes?.scope,
+				facility: $currentKubernetes?.name,
 				namespace: request.namespace,
 				bootImage: true,
 			});
@@ -108,8 +108,8 @@
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_REQUEST = {
-		scopeUuid: $currentKubernetes?.scopeUuid,
-		facilityName: $currentKubernetes?.name,
+		scope: $currentKubernetes?.scope,
+		facility: $currentKubernetes?.name,
 		name: '',
 		namespace: 'default',
 		instanceTypeName: '',
@@ -131,8 +131,6 @@
 	function reset() {
 		request = { ...DEFAULT_REQUEST };
 		isAdvancedOpen = false;
-		bootDataVolumes.set([]);
-		instanceTypes.set([]);
 	}
 	function close() {
 		open = false;

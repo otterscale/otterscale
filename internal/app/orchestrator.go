@@ -23,29 +23,8 @@ func NewOrchestratorService(uc *core.OrchestratorUseCase) *OrchestratorService {
 
 var _ pbconnect.OrchestratorServiceHandler = (*OrchestratorService)(nil)
 
-func (s *OrchestratorService) IsMachineDeployed(ctx context.Context, req *pb.IsMachineDeployedRequest) (*pb.IsMachineDeployedResponse, error) {
-	message, deployed, err := s.uc.IsMachineDeployed(ctx, req.GetScopeUuid())
-	if err != nil {
-		return nil, err
-	}
-	resp := &pb.IsMachineDeployedResponse{}
-	resp.SetMessage(message)
-	resp.SetDeployed(deployed)
-	return resp, nil
-}
-
-func (s *OrchestratorService) ListStatuses(ctx context.Context, req *pb.ListStatusesRequest) (*pb.ListStatusesResponse, error) {
-	statuses, err := s.uc.ListStatuses(ctx, req.GetScopeUuid())
-	if err != nil {
-		return nil, err
-	}
-	resp := &pb.ListStatusesResponse{}
-	resp.SetStatuses(toProtoStatuses(statuses))
-	return resp, nil
-}
-
 func (s *OrchestratorService) ListEssentials(ctx context.Context, req *pb.ListEssentialsRequest) (*pb.ListEssentialsResponse, error) {
-	essentials, err := s.uc.ListEssentials(ctx, int32(req.GetType()), req.GetScopeUuid())
+	essentials, err := s.uc.ListEssentials(ctx, core.EssentialType(req.GetType()), req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -54,8 +33,8 @@ func (s *OrchestratorService) ListEssentials(ctx context.Context, req *pb.ListEs
 	return resp, nil
 }
 
-func (s *OrchestratorService) CreateSingleNode(ctx context.Context, req *pb.CreateSingleNodeRequest) (*emptypb.Empty, error) {
-	if err := s.uc.CreateSingleNode(ctx, req.GetScopeUuid(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
+func (s *OrchestratorService) CreateNode(ctx context.Context, req *pb.CreateNodeRequest) (*emptypb.Empty, error) {
+	if err := s.uc.CreateNode(ctx, req.GetScope(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -63,7 +42,7 @@ func (s *OrchestratorService) CreateSingleNode(ctx context.Context, req *pb.Crea
 }
 
 func (s *OrchestratorService) ListKubernetesNodeLabels(ctx context.Context, req *pb.ListKubernetesNodeLabelsRequest) (*pb.ListKubernetesNodeLabelsResponse, error) {
-	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetHostname(), req.GetAll())
+	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.GetScope(), req.GetFacility(), req.GetHostname(), req.GetAll())
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +52,7 @@ func (s *OrchestratorService) ListKubernetesNodeLabels(ctx context.Context, req 
 }
 
 func (s *OrchestratorService) UpdateKubernetesNodeLabels(ctx context.Context, req *pb.UpdateKubernetesNodeLabelsRequest) (*pb.UpdateKubernetesNodeLabelsResponse, error) {
-	labels, err := s.uc.UpdateKubernetesNodeLabels(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetHostname(), req.GetLabels())
+	labels, err := s.uc.UpdateKubernetesNodeLabels(ctx, req.GetScope(), req.GetFacility(), req.GetHostname(), req.GetLabels())
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +62,7 @@ func (s *OrchestratorService) UpdateKubernetesNodeLabels(ctx context.Context, re
 }
 
 func (s *OrchestratorService) ListGPURelationsByMachine(ctx context.Context, req *pb.ListGPURelationsByMachineRequest) (*pb.ListGPURelationsByMachineResponse, error) {
-	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetMachineId())
+	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx, req.GetScope(), req.GetFacility(), req.GetMachineId())
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +72,7 @@ func (s *OrchestratorService) ListGPURelationsByMachine(ctx context.Context, req
 }
 
 func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *pb.ListGPURelationsByModelRequest) (*pb.ListGPURelationsByModelResponse, error) {
-	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx, req.GetScopeUuid(), req.GetFacilityName(), req.GetNamespace(), req.GetModelName())
+	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetModelName())
 	if err != nil {
 		return nil, err
 	}
@@ -102,19 +81,67 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 	return resp, nil
 }
 
-func toProtoStatuses(ess []core.EssentialStatus) []*pb.Status {
-	ret := []*pb.Status{}
-	for i := range ess {
-		ret = append(ret, toProtoStatus(&ess[i]))
+func (s *OrchestratorService) ListGeneralPlugins(ctx context.Context, req *pb.ListGeneralPluginsRequest) (*pb.ListGeneralPluginsResponse, error) {
+	plugins, err := s.uc.ListGeneralPlugins(ctx, req.GetScope(), req.GetFacility())
+	if err != nil {
+		return nil, err
 	}
-	return ret
+	resp := &pb.ListGeneralPluginsResponse{}
+	resp.SetPlugins(toProtoPlugins(plugins))
+	return resp, nil
 }
 
-func toProtoStatus(es *core.EssentialStatus) *pb.Status {
-	ret := &pb.Status{}
-	ret.SetLevel(pb.Status_Level(es.Level))
-	ret.SetMessage(es.Message)
-	ret.SetDetails(es.Details)
+func (s *OrchestratorService) ListModelPlugins(ctx context.Context, req *pb.ListModelPluginsRequest) (*pb.ListModelPluginsResponse, error) {
+	plugins, err := s.uc.ListModelPlugins(ctx, req.GetScope(), req.GetFacility())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListModelPluginsResponse{}
+	resp.SetPlugins(toProtoPlugins(plugins))
+	return resp, nil
+}
+
+func (s *OrchestratorService) ListInstancePlugins(ctx context.Context, req *pb.ListInstancePluginsRequest) (*pb.ListInstancePluginsResponse, error) {
+	plugins, err := s.uc.ListInstancePlugins(ctx, req.GetScope(), req.GetFacility())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListInstancePluginsResponse{}
+	resp.SetPlugins(toProtoPlugins(plugins))
+	return resp, nil
+}
+
+func (s *OrchestratorService) ListStoragePlugins(ctx context.Context, req *pb.ListStoragePluginsRequest) (*pb.ListStoragePluginsResponse, error) {
+	plugins, err := s.uc.ListStoragePlugins(ctx, req.GetScope(), req.GetFacility())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListStoragePluginsResponse{}
+	resp.SetPlugins(toProtoPlugins(plugins))
+	return resp, nil
+}
+
+func (s *OrchestratorService) InstallPlugins(ctx context.Context, req *pb.InstallPluginsRequest) (*emptypb.Empty, error) {
+	if err := s.uc.InstallPlugins(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func (s *OrchestratorService) UpgradePlugins(ctx context.Context, req *pb.UpgradePluginsRequest) (*emptypb.Empty, error) {
+	if err := s.uc.UpgradePlugins(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func toChartRefMap(cs []*pb.Plugin_Chart) map[string]string {
+	ret := map[string]string{}
+	for _, c := range cs {
+		ret[c.GetName()] = c.GetRef()
+	}
 	return ret
 }
 
@@ -130,8 +157,7 @@ func toProtoEssential(e *core.Essential) *pb.Essential {
 	ret := &pb.Essential{}
 	ret.SetType(pb.Essential_Type(e.Type))
 	ret.SetName(e.Name)
-	ret.SetScopeUuid(e.ScopeUUID)
-	ret.SetScopeName(e.ScopeName)
+	ret.SetScope(e.Scope)
 	ret.SetUnits(toProtoEssentialUnits(e.Units))
 	return ret
 }
@@ -220,5 +246,51 @@ func toProtoGPURelationPodDevice(pd *core.GPURelationPodDevice) *pb.GPURelation_
 	ret.SetGpuId(pd.GPUID)
 	ret.SetUsedCores(pd.UsedCores)
 	ret.SetUsedMemoryBytes(pd.UsedMemoryBytes)
+	return ret
+}
+
+func toProtoPlugins(ps []core.Plugin) []*pb.Plugin {
+	ret := []*pb.Plugin{}
+	for i := range ps {
+		ret = append(ret, toProtoPlugin(&ps[i]))
+	}
+	return ret
+}
+
+func toProtoPlugin(p *core.Plugin) *pb.Plugin {
+	ret := &pb.Plugin{}
+	release := p.Release
+	if release != nil {
+		ret.SetName(release.Name)
+		ret.SetNamespace(release.Namespace)
+		info := release.Info
+		if info != nil {
+			ret.SetStatus(info.Status.String())
+			ret.SetDescription(info.Description)
+			ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
+			ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
+			if !info.Deleted.IsZero() {
+				ret.SetDeletedAt(timestamppb.New(info.Deleted.Time))
+			}
+		}
+		current := release.Chart
+		if current != nil && current.Metadata != nil {
+			ret.SetCurrent(toProtoPluginChart(current.Metadata))
+		}
+	}
+	latest := p.Latest
+	if latest != nil && latest.Metadata != nil {
+		ret.SetLatest(toProtoPluginChart(latest.Metadata))
+	}
+	return ret
+}
+
+func toProtoPluginChart(md *core.ChartMetadata) *pb.Plugin_Chart {
+	ret := &pb.Plugin_Chart{}
+	ret.SetName(md.Name)
+	ret.SetVersion(md.Version)
+	ret.SetAppVersion(md.AppVersion)
+	ret.SetDescription(md.Description)
+	ret.SetIcon(md.Icon)
 	return ret
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
 
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
@@ -139,6 +139,9 @@
 	onMount(() => {
 		fetch();
 		isLoading = false;
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 </script>
 
