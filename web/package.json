@@ -43,6 +43,7 @@
 		"@types/pg": "^8.15.5",
 		"@types/semver": "^7.7.1",
 		"@vitest/browser": "^4.0.3",
+		"@vitest/browser-playwright": "^4.0.3",
 		"@vitest/coverage-v8": "^4.0.3",
 		"bits-ui": "^2.14.1",
 		"clsx": "^2.1.1",
