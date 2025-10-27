@@ -36,9 +36,11 @@ func NewHelmChart(kube *Kube) (oscore.ChartRepo, error) {
 
 var _ oscore.ChartRepo = (*helmChart)(nil)
 
-func (r *helmChart) List(ctx context.Context, url string) ([]oscore.Chart, error) {
-	if charts, ok := r.getCachedCharts(url); ok {
-		return charts, nil
+func (r *helmChart) List(ctx context.Context, url string, useCache bool) ([]oscore.Chart, error) {
+	if useCache {
+		if charts, ok := r.getCachedCharts(url); ok {
+			return charts, nil
+		}
 	}
 
 	indexFile, err := r.fetchRepoIndex(ctx, url)
@@ -84,10 +86,6 @@ func (r *helmChart) Index(dir, url string) error {
 }
 
 func (r *helmChart) getCachedCharts(url string) ([]oscore.Chart, bool) {
-	if url == oscore.LocalChartRepoDir {
-		return nil, false
-	}
-
 	v, ok := r.repoIndexCache.Load(url)
 	if !ok {
 		return nil, false

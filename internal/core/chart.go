@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	LocalChartRepoDir = "./charts"
+	localChartRepoDir = "./charts"
 	remoteOCIFormat   = "oci://%s:32000/charts"
 )
 
@@ -45,7 +45,7 @@ type ChartFile struct {
 }
 
 type ChartRepo interface {
-	List(ctx context.Context, url string) ([]Chart, error)
+	List(ctx context.Context, url string, useCache bool) ([]Chart, error)
 	Show(chartRef string, format action.ShowOutputFormat) (string, error)
 	Push(chartRef, remoteOCI string) (string, error)
 	Index(dir, url string) error
@@ -72,11 +72,13 @@ func NewChartUseCase(conf *config.Config, action ActionRepo, chart ChartRepo, fa
 
 func (uc *ChartUseCase) ListCharts(ctx context.Context) ([]Chart, error) {
 	urls := uc.conf.Kube.HelmRepositoryURLs
+	urls = append(urls, localChartRepoDir)
 	eg, egctx := errgroup.WithContext(ctx)
 	result := make([][]Chart, len(urls))
 	for i := range urls {
 		eg.Go(func() error {
-			v, err := uc.chart.List(egctx, urls[i])
+			useCache := urls[i] != localChartRepoDir
+			v, err := uc.chart.List(egctx, urls[i], useCache)
 			if err == nil {
 				result[i] = v
 			}
@@ -151,7 +153,7 @@ func (uc *ChartUseCase) GetChartFileFromApplication(ctx context.Context, scope, 
 
 // TODO: multiple service on kubernetes
 func (uc *ChartUseCase) UploadChart(chartContent []byte) error {
-	if err := os.MkdirAll(LocalChartRepoDir, 0o700); err != nil { //nolint:mnd // default folder permission
+	if err := os.MkdirAll(localChartRepoDir, 0o700); err != nil { //nolint:mnd // default folder permission
 		return err
 	}
 
@@ -160,7 +162,7 @@ func (uc *ChartUseCase) UploadChart(chartContent []byte) error {
 		return err
 	}
 
-	fileName := filepath.Join(LocalChartRepoDir, fmt.Sprintf("%s-%s.tgz", name, version))
+	fileName := filepath.Join(localChartRepoDir, fmt.Sprintf("%s-%s.tgz", name, version))
 	if err := os.WriteFile(fileName, chartContent, 0o600); err != nil { //nolint:mnd // default file permission
 		return err
 	}
@@ -174,7 +176,7 @@ func (uc *ChartUseCase) UploadChart(chartContent []byte) error {
 		return err
 	}
 
-	return uc.chart.Index(LocalChartRepoDir, remoteOCI)
+	return uc.chart.Index(localChartRepoDir, remoteOCI)
 }
 
 // TODO: replace with remote flag
