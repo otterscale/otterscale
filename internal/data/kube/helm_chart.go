@@ -84,6 +84,10 @@ func (r *helmChart) Index(dir, url string) error {
 }
 
 func (r *helmChart) getCachedCharts(url string) ([]oscore.Chart, bool) {
+	if url == oscore.LocalChartRepoDir {
+		return nil, false
+	}
+
 	v, ok := r.repoIndexCache.Load(url)
 	if !ok {
 		return nil, false

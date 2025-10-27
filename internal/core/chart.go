@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	localChartRepoDir = "./charts"
+	LocalChartRepoDir = "./charts"
 	remoteOCIFormat   = "oci://%s:32000/charts"
 )
 
@@ -151,7 +151,7 @@ func (uc *ChartUseCase) GetChartFileFromApplication(ctx context.Context, scope, 
 
 // TODO: multiple service on kubernetes
 func (uc *ChartUseCase) UploadChart(chartContent []byte) error {
-	if err := os.MkdirAll(localChartRepoDir, 0o700); err != nil { //nolint:mnd // default folder permission
+	if err := os.MkdirAll(LocalChartRepoDir, 0o700); err != nil { //nolint:mnd // default folder permission
 		return err
 	}
 
@@ -160,7 +160,7 @@ func (uc *ChartUseCase) UploadChart(chartContent []byte) error {
 		return err
 	}
 
-	fileName := filepath.Join(localChartRepoDir, fmt.Sprintf("%s-%s.tgz", name, version))
+	fileName := filepath.Join(LocalChartRepoDir, fmt.Sprintf("%s-%s.tgz", name, version))
 	if err := os.WriteFile(fileName, chartContent, 0o600); err != nil { //nolint:mnd // default file permission
 		return err
 	}
@@ -174,7 +174,7 @@ func (uc *ChartUseCase) UploadChart(chartContent []byte) error {
 		return err
 	}
 
-	return uc.chart.Index(localChartRepoDir, remoteOCI)
+	return uc.chart.Index(LocalChartRepoDir, remoteOCI)
 }
 
 // TODO: replace with remote flag
