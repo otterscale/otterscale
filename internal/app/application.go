@@ -232,8 +232,8 @@ func (s *ApplicationService) GetChartMetadata(_ context.Context, req *pb.GetChar
 	return resp, nil
 }
 
-func (s *ApplicationService) UploadChart(ctx context.Context, req *pb.UploadChartRequest) (*emptypb.Empty, error) {
-	err := s.chart.UploadChart(ctx, req.GetChartContent())
+func (s *ApplicationService) UploadChart(_ context.Context, req *pb.UploadChartRequest) (*emptypb.Empty, error) {
+	err := s.chart.UploadChart(req.GetChartContent())
 	if err != nil {
 		return nil, err
 	}

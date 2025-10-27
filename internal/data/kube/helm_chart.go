@@ -80,7 +80,7 @@ func (r *helmChart) Index(dir, url string) error {
 		return err
 	}
 	i.SortEntries()
-	return i.WriteFile(out, 0o644)
+	return i.WriteFile(out, 0o644) //nolint:mnd // default file permission
 }
 
 func (r *helmChart) getCachedCharts(url string) ([]oscore.Chart, bool) {

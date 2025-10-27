@@ -149,9 +149,9 @@ func (uc *ChartUseCase) GetChartFileFromApplication(ctx context.Context, scope, 
 	return file, nil
 }
 
-// TODO: multiple service on kunbernetes
-func (uc *ChartUseCase) UploadChart(ctx context.Context, chartContent []byte) error {
-	if err := os.MkdirAll(localChartRepoDir, 0o755); err != nil {
+// TODO: multiple service on kubernetes
+func (uc *ChartUseCase) UploadChart(chartContent []byte) error {
+	if err := os.MkdirAll(localChartRepoDir, 0o755); err != nil { //nolint:mnd // default folder permission
 		return err
 	}
 
@@ -161,7 +161,7 @@ func (uc *ChartUseCase) UploadChart(ctx context.Context, chartContent []byte) er
 	}
 
 	fileName := filepath.Join(localChartRepoDir, fmt.Sprintf("%s-%s.tgz", name, version))
-	if err := os.WriteFile(fileName, chartContent, 0o600); err != nil {
+	if err := os.WriteFile(fileName, chartContent, 0o600); err != nil { //nolint:mnd // default file permission
 		return err
 	}
 
