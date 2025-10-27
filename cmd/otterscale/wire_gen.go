@@ -46,7 +46,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	chartUseCase := core.NewChartUseCase(actionRepo, chartRepo, facilityRepo, releaseRepo)
+	chartUseCase := core.NewChartUseCase(configConfig, actionRepo, chartRepo, facilityRepo, releaseRepo)
 	releaseUseCase := core.NewReleaseUseCase(actionRepo, chartRepo, facilityRepo, releaseRepo)
 	clientRepo := juju.NewClient(jujuJuju)
 	kubeAppsRepo := kube.NewApps(kubeKube)
@@ -97,7 +97,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	networkUseCase := core.NewNetworkUseCase(fabricRepo, ipRangeRepo, subnetRepo, vlanRepo)
 	networkService := app.NewNetworkService(networkUseCase)
 	facilityOffersRepo := juju.NewApplicationOffers(jujuJuju)
-	orchestratorUseCase := core.NewOrchestratorUseCase(configConfig, actionRepo, clientRepo, facilityRepo, facilityOffersRepo, ipRangeRepo, kubeAppsRepo, kubeCoreRepo, machineRepo, releaseRepo, scopeRepo, serverRepo, subnetRepo, tagRepo)
+	orchestratorUseCase := core.NewOrchestratorUseCase(configConfig, actionRepo, chartRepo, clientRepo, facilityRepo, facilityOffersRepo, ipRangeRepo, kubeAppsRepo, kubeCoreRepo, machineRepo, releaseRepo, scopeRepo, serverRepo, subnetRepo, tagRepo)
 	orchestratorService := app.NewOrchestratorService(orchestratorUseCase)
 	cephFSRepo := ceph.NewFS(cephCeph)
 	cephRGWRepo := ceph.NewRGW(cephCeph)

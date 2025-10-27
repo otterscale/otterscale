@@ -58,9 +58,24 @@ const (
 	// OrchestratorServiceListGPURelationsByModelProcedure is the fully-qualified name of the
 	// OrchestratorService's ListGPURelationsByModel RPC.
 	OrchestratorServiceListGPURelationsByModelProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListGPURelationsByModel"
-	// OrchestratorServiceListPluginsProcedure is the fully-qualified name of the OrchestratorService's
-	// ListPlugins RPC.
-	OrchestratorServiceListPluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListPlugins"
+	// OrchestratorServiceListGeneralPluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's ListGeneralPlugins RPC.
+	OrchestratorServiceListGeneralPluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListGeneralPlugins"
+	// OrchestratorServiceListModelPluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's ListModelPlugins RPC.
+	OrchestratorServiceListModelPluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListModelPlugins"
+	// OrchestratorServiceListInstancePluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's ListInstancePlugins RPC.
+	OrchestratorServiceListInstancePluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListInstancePlugins"
+	// OrchestratorServiceListStoragePluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's ListStoragePlugins RPC.
+	OrchestratorServiceListStoragePluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListStoragePlugins"
+	// OrchestratorServiceInstallPluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's InstallPlugins RPC.
+	OrchestratorServiceInstallPluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/InstallPlugins"
+	// OrchestratorServiceUpgradePluginsProcedure is the fully-qualified name of the
+	// OrchestratorService's UpgradePlugins RPC.
+	OrchestratorServiceUpgradePluginsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/UpgradePlugins"
 )
 
 // OrchestratorServiceClient is a client for the otterscale.orchestrator.v1.OrchestratorService
@@ -74,7 +89,12 @@ type OrchestratorServiceClient interface {
 	UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error)
 	ListGPURelationsByMachine(context.Context, *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error)
 	ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error)
-	ListPlugins(context.Context, *v1.ListPluginsRequest) (*v1.ListPluginsResponse, error)
+	ListGeneralPlugins(context.Context, *v1.ListGeneralPluginsRequest) (*v1.ListGeneralPluginsResponse, error)
+	ListModelPlugins(context.Context, *v1.ListModelPluginsRequest) (*v1.ListModelPluginsResponse, error)
+	ListInstancePlugins(context.Context, *v1.ListInstancePluginsRequest) (*v1.ListInstancePluginsResponse, error)
+	ListStoragePlugins(context.Context, *v1.ListStoragePluginsRequest) (*v1.ListStoragePluginsResponse, error)
+	InstallPlugins(context.Context, *v1.InstallPluginsRequest) (*emptypb.Empty, error)
+	UpgradePlugins(context.Context, *v1.UpgradePluginsRequest) (*emptypb.Empty, error)
 }
 
 // NewOrchestratorServiceClient constructs a client for the
@@ -137,10 +157,40 @@ func NewOrchestratorServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(orchestratorServiceMethods.ByName("ListGPURelationsByModel")),
 			connect.WithClientOptions(opts...),
 		),
-		listPlugins: connect.NewClient[v1.ListPluginsRequest, v1.ListPluginsResponse](
+		listGeneralPlugins: connect.NewClient[v1.ListGeneralPluginsRequest, v1.ListGeneralPluginsResponse](
 			httpClient,
-			baseURL+OrchestratorServiceListPluginsProcedure,
-			connect.WithSchema(orchestratorServiceMethods.ByName("ListPlugins")),
+			baseURL+OrchestratorServiceListGeneralPluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("ListGeneralPlugins")),
+			connect.WithClientOptions(opts...),
+		),
+		listModelPlugins: connect.NewClient[v1.ListModelPluginsRequest, v1.ListModelPluginsResponse](
+			httpClient,
+			baseURL+OrchestratorServiceListModelPluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("ListModelPlugins")),
+			connect.WithClientOptions(opts...),
+		),
+		listInstancePlugins: connect.NewClient[v1.ListInstancePluginsRequest, v1.ListInstancePluginsResponse](
+			httpClient,
+			baseURL+OrchestratorServiceListInstancePluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("ListInstancePlugins")),
+			connect.WithClientOptions(opts...),
+		),
+		listStoragePlugins: connect.NewClient[v1.ListStoragePluginsRequest, v1.ListStoragePluginsResponse](
+			httpClient,
+			baseURL+OrchestratorServiceListStoragePluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("ListStoragePlugins")),
+			connect.WithClientOptions(opts...),
+		),
+		installPlugins: connect.NewClient[v1.InstallPluginsRequest, emptypb.Empty](
+			httpClient,
+			baseURL+OrchestratorServiceInstallPluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("InstallPlugins")),
+			connect.WithClientOptions(opts...),
+		),
+		upgradePlugins: connect.NewClient[v1.UpgradePluginsRequest, emptypb.Empty](
+			httpClient,
+			baseURL+OrchestratorServiceUpgradePluginsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("UpgradePlugins")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -156,7 +206,12 @@ type orchestratorServiceClient struct {
 	updateKubernetesNodeLabels *connect.Client[v1.UpdateKubernetesNodeLabelsRequest, v1.UpdateKubernetesNodeLabelsResponse]
 	listGPURelationsByMachine  *connect.Client[v1.ListGPURelationsByMachineRequest, v1.ListGPURelationsByMachineResponse]
 	listGPURelationsByModel    *connect.Client[v1.ListGPURelationsByModelRequest, v1.ListGPURelationsByModelResponse]
-	listPlugins                *connect.Client[v1.ListPluginsRequest, v1.ListPluginsResponse]
+	listGeneralPlugins         *connect.Client[v1.ListGeneralPluginsRequest, v1.ListGeneralPluginsResponse]
+	listModelPlugins           *connect.Client[v1.ListModelPluginsRequest, v1.ListModelPluginsResponse]
+	listInstancePlugins        *connect.Client[v1.ListInstancePluginsRequest, v1.ListInstancePluginsResponse]
+	listStoragePlugins         *connect.Client[v1.ListStoragePluginsRequest, v1.ListStoragePluginsResponse]
+	installPlugins             *connect.Client[v1.InstallPluginsRequest, emptypb.Empty]
+	upgradePlugins             *connect.Client[v1.UpgradePluginsRequest, emptypb.Empty]
 }
 
 // ListEssentials calls otterscale.orchestrator.v1.OrchestratorService.ListEssentials.
@@ -235,9 +290,54 @@ func (c *orchestratorServiceClient) ListGPURelationsByModel(ctx context.Context,
 	return nil, err
 }
 
-// ListPlugins calls otterscale.orchestrator.v1.OrchestratorService.ListPlugins.
-func (c *orchestratorServiceClient) ListPlugins(ctx context.Context, req *v1.ListPluginsRequest) (*v1.ListPluginsResponse, error) {
-	response, err := c.listPlugins.CallUnary(ctx, connect.NewRequest(req))
+// ListGeneralPlugins calls otterscale.orchestrator.v1.OrchestratorService.ListGeneralPlugins.
+func (c *orchestratorServiceClient) ListGeneralPlugins(ctx context.Context, req *v1.ListGeneralPluginsRequest) (*v1.ListGeneralPluginsResponse, error) {
+	response, err := c.listGeneralPlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListModelPlugins calls otterscale.orchestrator.v1.OrchestratorService.ListModelPlugins.
+func (c *orchestratorServiceClient) ListModelPlugins(ctx context.Context, req *v1.ListModelPluginsRequest) (*v1.ListModelPluginsResponse, error) {
+	response, err := c.listModelPlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListInstancePlugins calls otterscale.orchestrator.v1.OrchestratorService.ListInstancePlugins.
+func (c *orchestratorServiceClient) ListInstancePlugins(ctx context.Context, req *v1.ListInstancePluginsRequest) (*v1.ListInstancePluginsResponse, error) {
+	response, err := c.listInstancePlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListStoragePlugins calls otterscale.orchestrator.v1.OrchestratorService.ListStoragePlugins.
+func (c *orchestratorServiceClient) ListStoragePlugins(ctx context.Context, req *v1.ListStoragePluginsRequest) (*v1.ListStoragePluginsResponse, error) {
+	response, err := c.listStoragePlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// InstallPlugins calls otterscale.orchestrator.v1.OrchestratorService.InstallPlugins.
+func (c *orchestratorServiceClient) InstallPlugins(ctx context.Context, req *v1.InstallPluginsRequest) (*emptypb.Empty, error) {
+	response, err := c.installPlugins.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// UpgradePlugins calls otterscale.orchestrator.v1.OrchestratorService.UpgradePlugins.
+func (c *orchestratorServiceClient) UpgradePlugins(ctx context.Context, req *v1.UpgradePluginsRequest) (*emptypb.Empty, error) {
+	response, err := c.upgradePlugins.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -255,7 +355,12 @@ type OrchestratorServiceHandler interface {
 	UpdateKubernetesNodeLabels(context.Context, *v1.UpdateKubernetesNodeLabelsRequest) (*v1.UpdateKubernetesNodeLabelsResponse, error)
 	ListGPURelationsByMachine(context.Context, *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error)
 	ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error)
-	ListPlugins(context.Context, *v1.ListPluginsRequest) (*v1.ListPluginsResponse, error)
+	ListGeneralPlugins(context.Context, *v1.ListGeneralPluginsRequest) (*v1.ListGeneralPluginsResponse, error)
+	ListModelPlugins(context.Context, *v1.ListModelPluginsRequest) (*v1.ListModelPluginsResponse, error)
+	ListInstancePlugins(context.Context, *v1.ListInstancePluginsRequest) (*v1.ListInstancePluginsResponse, error)
+	ListStoragePlugins(context.Context, *v1.ListStoragePluginsRequest) (*v1.ListStoragePluginsResponse, error)
+	InstallPlugins(context.Context, *v1.InstallPluginsRequest) (*emptypb.Empty, error)
+	UpgradePlugins(context.Context, *v1.UpgradePluginsRequest) (*emptypb.Empty, error)
 }
 
 // NewOrchestratorServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -313,10 +418,40 @@ func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...conne
 		connect.WithSchema(orchestratorServiceMethods.ByName("ListGPURelationsByModel")),
 		connect.WithHandlerOptions(opts...),
 	)
-	orchestratorServiceListPluginsHandler := connect.NewUnaryHandlerSimple(
-		OrchestratorServiceListPluginsProcedure,
-		svc.ListPlugins,
-		connect.WithSchema(orchestratorServiceMethods.ByName("ListPlugins")),
+	orchestratorServiceListGeneralPluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceListGeneralPluginsProcedure,
+		svc.ListGeneralPlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("ListGeneralPlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	orchestratorServiceListModelPluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceListModelPluginsProcedure,
+		svc.ListModelPlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("ListModelPlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	orchestratorServiceListInstancePluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceListInstancePluginsProcedure,
+		svc.ListInstancePlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("ListInstancePlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	orchestratorServiceListStoragePluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceListStoragePluginsProcedure,
+		svc.ListStoragePlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("ListStoragePlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	orchestratorServiceInstallPluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceInstallPluginsProcedure,
+		svc.InstallPlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("InstallPlugins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	orchestratorServiceUpgradePluginsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceUpgradePluginsProcedure,
+		svc.UpgradePlugins,
+		connect.WithSchema(orchestratorServiceMethods.ByName("UpgradePlugins")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/otterscale.orchestrator.v1.OrchestratorService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -337,8 +472,18 @@ func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...conne
 			orchestratorServiceListGPURelationsByMachineHandler.ServeHTTP(w, r)
 		case OrchestratorServiceListGPURelationsByModelProcedure:
 			orchestratorServiceListGPURelationsByModelHandler.ServeHTTP(w, r)
-		case OrchestratorServiceListPluginsProcedure:
-			orchestratorServiceListPluginsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceListGeneralPluginsProcedure:
+			orchestratorServiceListGeneralPluginsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceListModelPluginsProcedure:
+			orchestratorServiceListModelPluginsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceListInstancePluginsProcedure:
+			orchestratorServiceListInstancePluginsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceListStoragePluginsProcedure:
+			orchestratorServiceListStoragePluginsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceInstallPluginsProcedure:
+			orchestratorServiceInstallPluginsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceUpgradePluginsProcedure:
+			orchestratorServiceUpgradePluginsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -380,6 +525,26 @@ func (UnimplementedOrchestratorServiceHandler) ListGPURelationsByModel(context.C
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel is not implemented"))
 }
 
-func (UnimplementedOrchestratorServiceHandler) ListPlugins(context.Context, *v1.ListPluginsRequest) (*v1.ListPluginsResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListPlugins is not implemented"))
+func (UnimplementedOrchestratorServiceHandler) ListGeneralPlugins(context.Context, *v1.ListGeneralPluginsRequest) (*v1.ListGeneralPluginsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListGeneralPlugins is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) ListModelPlugins(context.Context, *v1.ListModelPluginsRequest) (*v1.ListModelPluginsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListModelPlugins is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) ListInstancePlugins(context.Context, *v1.ListInstancePluginsRequest) (*v1.ListInstancePluginsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListInstancePlugins is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) ListStoragePlugins(context.Context, *v1.ListStoragePluginsRequest) (*v1.ListStoragePluginsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListStoragePlugins is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) InstallPlugins(context.Context, *v1.InstallPluginsRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.InstallPlugins is not implemented"))
+}
+
+func (UnimplementedOrchestratorServiceHandler) UpgradePlugins(context.Context, *v1.UpgradePluginsRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.UpgradePlugins is not implemented"))
 }
