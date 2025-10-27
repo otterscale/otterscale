@@ -1,5 +1,7 @@
 <script lang="ts" module>
-	import Dashboard from '$lib/components/models/dashboard/index.svelte';
+	import Upload from '$lib/components/applications/store/commerce-store/upload.svelte';
 </script>
 
-<Dashboard />
+<div class="flex">
+	<Upload class="ml-auto" />
+</div>
