@@ -9,7 +9,7 @@
 </script>
 
 <script lang="ts">
-	let { selectedIOTMode = $bindable() }: { selectedIOTMode: string } = $props();
+	let { selectedMode = $bindable() }: { selectedMode: string } = $props();
 
 	const modes = writable<SingleSelect.OptionType[]>([
 		{ value: 'read', label: 'Read', icon: 'ph:download-simple' },
@@ -21,7 +21,7 @@
 <Picker.Root align="left" class="mt-2">
 	<Picker.Wrapper class="*:h-8">
 		<Picker.Label>{m.mode()}</Picker.Label>
-		<SingleSelect.Root options={modes} bind:value={selectedIOTMode}>
+		<SingleSelect.Root options={modes} bind:value={selectedMode}>
 			<SingleSelect.Trigger />
 			<SingleSelect.Content>
 				<SingleSelect.Options>

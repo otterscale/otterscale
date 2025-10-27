@@ -111,7 +111,8 @@ class BistDashboardManager<TData = TestResult> {
 			const testResult = datum as TestResult;
 
 			if (testResult.kind.case === 'fio' && testResult.kind.value.output && testResult.kind.value.input) {
-				const groupName = this.generateFioGroupName(testResult.kind.value.input);
+				// const groupName = this.generateFioGroupName(testResult.kind.value.input);
+				const groupName = testResult.name;
 
 				// Process read output
 				if (testResult.kind.value.output.read && testResult.kind.value.output.read.latency) {
@@ -134,7 +135,8 @@ class BistDashboardManager<TData = TestResult> {
 						outputMap['read'][groupName] = {
 							key: groupName,
 							data: [],
-							color: this.generateColor(groupName),
+							// color: this.generateColor(groupName),
+							color: 'var(--chart-1)',
 						};
 					}
 
@@ -162,7 +164,8 @@ class BistDashboardManager<TData = TestResult> {
 						outputMap['write'][groupName] = {
 							key: groupName,
 							data: [],
-							color: this.generateColor(groupName),
+							// color: this.generateColor(groupName),
+							color: 'var(--chart-1)',
 						};
 					}
 
@@ -190,7 +193,8 @@ class BistDashboardManager<TData = TestResult> {
 						outputMap['trim'][groupName] = {
 							key: groupName,
 							data: [],
-							color: this.generateColor(groupName),
+							// color: this.generateColor(groupName),
+							color: 'var(--chart-1)',
 						};
 					}
 
@@ -220,7 +224,8 @@ class BistDashboardManager<TData = TestResult> {
 			const testResult = datum as TestResult;
 
 			if (testResult.kind.case === 'warp' && testResult.kind.value.output && testResult.kind.value.input) {
-				const groupName = this.generateWarpGroupName(testResult.kind.value.input);
+				// const groupName = this.generateWarpGroupName(testResult.kind.value.input);
+				const groupName = testResult.name;
 
 				// Process get output
 				if (testResult.kind.value.output.get) {
@@ -247,7 +252,8 @@ class BistDashboardManager<TData = TestResult> {
 						outputMap['get'][groupName] = {
 							key: groupName,
 							data: [],
-							color: this.generateColor(groupName),
+							// color: this.generateColor(groupName),
+							color: 'var(--chart-1)',
 						};
 					}
 
@@ -279,7 +285,8 @@ class BistDashboardManager<TData = TestResult> {
 						outputMap['put'][groupName] = {
 							key: groupName,
 							data: [],
-							color: this.generateColor(groupName),
+							// color: this.generateColor(groupName),
+							color: 'var(--chart-1)',
 						};
 					}
 
@@ -311,7 +318,8 @@ class BistDashboardManager<TData = TestResult> {
 						outputMap['delete'][groupName] = {
 							key: groupName,
 							data: [],
-							color: this.generateColor(groupName),
+							// color: this.generateColor(groupName),
+							color: 'var(--chart-1)',
 						};
 					}
 
