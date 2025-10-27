@@ -28,7 +28,7 @@
 		"@iconify-json/simple-icons": "^1.2.55",
 		"@iconify-json/streamline-logos": "^1.2.0",
 		"@internationalized/date": "^3.10.0",
-		"@lucide/svelte": "^0.544.0",
+		"@lucide/svelte": "^0.548.0",
 		"@neoconfetti/svelte": "^2.2.2",
 		"@playwright/test": "^1.56.1",
 		"@sveltejs/adapter-node": "^5.4.0",
