@@ -1,11 +1,13 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { InstantVector, PrometheusDriver } from 'prometheus-query';
+	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
+	import type { SvelteMap } from 'svelte/reactivity';
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table/index';
 	import { type LargeLanguageModel } from './type';
+	import { getGatewayURL, getMetricsMap } from './utils.svelte';
 
 	import { env } from '$env/dynamic/public';
 	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
@@ -17,30 +19,29 @@
 <script lang="ts">
 	let { scopeUuid, facilityName }: { scopeUuid: string; facilityName: string } = $props();
 
-	const largeLanguageModels = writable<LargeLanguageModel[]>([]);
-
 	const transport: Transport = getContext('transport');
 	const applicationClient = createClient(ApplicationService, transport);
 	const environmentService = createClient(EnvironmentService, transport);
-
 	let prometheusDriver = $state<PrometheusDriver | null>(null);
 
+	const largeLanguageModels = writable<LargeLanguageModel[]>([]);
+
 	const applications = writable<Application[]>([]);
-	const models = $derived($applications.filter((application) => application.labels['model-name']));
+	const modelNames = writable<string[]>([]);
+	const endToEndRequestLatencyMap = writable({} as SvelteMap<string | undefined, SampleValue[]>);
+	const gpuCacheMap = writable({} as SvelteMap<string | undefined, SampleValue[]>);
+	const kvCacheMap = writable({} as SvelteMap<string | undefined, SampleValue[]>);
+	const timeToFirstTokenMap = writable({} as SvelteMap<string | undefined, SampleValue[]>);
 
-	async function fetch() {
-		let gpuCacheUsage = $state([] as InstantVector[]);
-		let gpuCacheUsageByPod = $state({} as Map<string, number>);
+	const modelServices = $derived(
+		$applications.filter((application) =>
+			application.labels['helm.sh/chart']
+				? application.labels['helm.sh/chart'].startsWith('llm-d-modelservice')
+				: false,
+		),
+	);
 
-		let kvCacheUsage = $state([] as InstantVector[]);
-		let kvCacheUsageByPod = $state({} as Map<string, number>);
-
-		let timeToFirstTokenSeconds = $state([] as InstantVector[]);
-		let timeToFirstTokenByPod = $state({} as Map<string, number>);
-
-		let requestLatencySeconds = $state([] as InstantVector[]);
-		let requestLatencyByPod = $state({} as Map<string, number>);
-
+	async function fetchModels() {
 		await applicationClient
 			.listApplications({
 				scope: scopeUuid,
@@ -49,6 +50,24 @@
 			.then((response) => {
 				applications.set(response.applications);
 			});
+
+		await fetch(getGatewayURL($applications), {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' },
+		}).then((response) => {
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+
+			response
+				.json()
+				.then((r) => {
+					modelNames.set((r.data as { id: string }[]).map((model) => model['id']));
+				})
+				.catch((error) => {
+					console.error(`Failed to fetch models:`, error);
+				});
+		});
 
 		await environmentService
 			.getPrometheus({})
@@ -64,62 +83,38 @@
 
 		if (prometheusDriver) {
 			await prometheusDriver
-				.instantQuery(`vllm:gpu_cache_usage_perc{scope_uuid="${scopeUuid}"}`)
+				.rangeQuery(`vllm:e2e_request_latency_seconds_sum`, Date.now() - 10 * 60 * 1000, Date.now(), 2 * 60)
 				.then((response) => {
-					gpuCacheUsage = response.result;
-					gpuCacheUsageByPod = new Map(
-						gpuCacheUsage.map((instantVector) => [
-							(instantVector.metric.labels as { pod?: string }).pod ?? '',
-							instantVector.value.value,
-						]),
-					);
+					endToEndRequestLatencyMap.set(getMetricsMap(response.result));
 				});
 			await prometheusDriver
-				.instantQuery(`vllm:kv_cache_usage_perc{scope_uuid="${scopeUuid}"}`)
+				.rangeQuery(`vllm:gpu_cache_usage_perc`, Date.now() - 10 * 60 * 1000, Date.now(), 2 * 60)
 				.then((response) => {
-					kvCacheUsage = response.result;
-					kvCacheUsageByPod = new Map(
-						kvCacheUsage.map((instantVector) => [
-							(instantVector.metric.labels as { pod?: string }).pod ?? '',
-							instantVector.value.value,
-						]),
-					);
+					gpuCacheMap.set(getMetricsMap(response.result));
 				});
 			await prometheusDriver
-				.instantQuery(`vllm:time_to_first_token_seconds_sum{scope_uuid="${scopeUuid}"}`)
+				.rangeQuery(`vllm:kv_cache_usage_perc`, Date.now() - 10 * 60 * 1000, Date.now(), 2 * 60)
 				.then((response) => {
-					timeToFirstTokenSeconds = response.result;
-					timeToFirstTokenByPod = new Map(
-						timeToFirstTokenSeconds.map((instantVector) => [
-							(instantVector.metric.labels as { pod?: string }).pod ?? '',
-							instantVector.value.value,
-						]),
-					);
+					kvCacheMap.set(getMetricsMap(response.result));
 				});
 			await prometheusDriver
-				.instantQuery(`vllm:e2e_request_latency_seconds_sum{scope_uuid="${scopeUuid}"}`)
+				.rangeQuery(`vllm:time_to_first_token_seconds_sum`, Date.now() - 10 * 60 * 1000, Date.now(), 2 * 60)
 				.then((response) => {
-					requestLatencySeconds = response.result;
-					requestLatencyByPod = new Map(
-						requestLatencySeconds.map((instantVector) => [
-							(instantVector.metric.labels as { pod?: string }).pod ?? '',
-							instantVector.value.value,
-						]),
-					);
+					timeToFirstTokenMap.set(getMetricsMap(response.result));
 				});
 		}
 
 		largeLanguageModels.set(
-			models.map(
+			modelServices.map(
 				(model) =>
 					({
 						name: model.labels['model-name'],
 						application: model,
 						metrics: {
-							gpu_cache: gpuCacheUsageByPod.get(model.labels['model-name']) ?? 0,
-							kv_cache: kvCacheUsageByPod.get(model.labels['model-name']) ?? 0,
-							requests: requestLatencyByPod.get(model.labels['model-name']) ?? 0,
-							time_to_first_token: timeToFirstTokenByPod.get(model.labels['model-name']) ?? 0,
+							gpu_cache: $gpuCacheMap.get('inference-dev'),
+							kv_cache: $kvCacheMap.get('inference-dev'),
+							requests: $endToEndRequestLatencyMap.get('inference-dev'),
+							time_to_first_token: $timeToFirstTokenMap.get('inference-dev'),
 						},
 					}) as LargeLanguageModel,
 			),
@@ -127,13 +122,13 @@
 	}
 
 	const reloadManager = new ReloadManager(() => {
-		fetch();
+		fetchModels();
 	});
 	setContext('reloadManager', reloadManager);
 	let isMounted = $state(false);
 
 	onMount(async () => {
-		await fetch();
+		await fetchModels();
 		isMounted = true;
 		reloadManager.start();
 	});

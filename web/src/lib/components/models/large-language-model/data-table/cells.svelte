@@ -1,5 +1,8 @@
 <script lang="ts" module>
 	import type { Row } from '@tanstack/table-core';
+	import { scaleUtc } from 'd3-scale';
+	import { curveLinear } from 'd3-shape';
+	import { LineChart } from 'layerchart';
 
 	import { type LargeLanguageModel } from '../type';
 
@@ -9,7 +12,7 @@
 	import { page } from '$app/state';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import { formatBigNumber } from '$lib/formatter';
+	import * as Chart from '$lib/components/ui/chart';
 	import { dynamicPaths } from '$lib/path';
 
 	export const cells = {
@@ -66,26 +69,194 @@
 {/snippet}
 
 {#snippet gpu_cache(row: Row<LargeLanguageModel>)}
+	{@const configuration = {
+		request: { label: 'request', color: 'var(--chart-2)' },
+	} satisfies Chart.ChartConfig}
+
 	<Layout.Cell class="items-end">
-		{row.original.metrics.gpu_cache}
+		<Chart.Container config={configuration} class="h-fit w-20">
+			<LineChart
+				data={row.original.metrics.gpu_cache}
+				x="time"
+				xScale={scaleUtc()}
+				axis={false}
+				series={[
+					{
+						key: 'value',
+						label: configuration.request.label,
+						color: configuration.request.color,
+					},
+				]}
+				props={{
+					spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
+					xAxis: {
+						format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+					},
+					highlight: { points: { r: 4 } },
+				}}
+			>
+				{#snippet tooltip()}
+					<Chart.Tooltip hideLabel>
+						{#snippet formatter({ item, name, value })}
+							<div
+								style="--color-bg: {item.color}"
+								class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+							></div>
+							<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+								<div class="grid gap-1.5">
+									<span class="text-muted-foreground">{name}</span>
+								</div>
+								<p class="font-mono">{Number(value)}</p>
+							</div>
+						{/snippet}
+					</Chart.Tooltip>
+				{/snippet}
+			</LineChart>
+		</Chart.Container>
 	</Layout.Cell>
 {/snippet}
 
 {#snippet kv_cache(row: Row<LargeLanguageModel>)}
+	{@const configuration = {
+		request: { label: 'request', color: 'var(--chart-2)' },
+	} satisfies Chart.ChartConfig}
+
 	<Layout.Cell class="items-end">
-		{row.original.metrics.kv_cache}
+		<Chart.Container config={configuration} class="h-fit w-20">
+			<LineChart
+				data={row.original.metrics.kv_cache}
+				x="time"
+				xScale={scaleUtc()}
+				axis={false}
+				series={[
+					{
+						key: 'value',
+						label: configuration.request.label,
+						color: configuration.request.color,
+					},
+				]}
+				props={{
+					spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
+					xAxis: {
+						format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+					},
+					highlight: { points: { r: 4 } },
+				}}
+			>
+				{#snippet tooltip()}
+					<Chart.Tooltip hideLabel>
+						{#snippet formatter({ item, name, value })}
+							<div
+								style="--color-bg: {item.color}"
+								class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+							></div>
+							<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+								<div class="grid gap-1.5">
+									<span class="text-muted-foreground">{name}</span>
+								</div>
+								<p class="font-mono">{Number(value)}</p>
+							</div>
+						{/snippet}
+					</Chart.Tooltip>
+				{/snippet}
+			</LineChart>
+		</Chart.Container>
 	</Layout.Cell>
 {/snippet}
 
 {#snippet requests(row: Row<LargeLanguageModel>)}
+	{@const configuration = {
+		request: { label: 'request', color: 'var(--chart-1)' },
+	} satisfies Chart.ChartConfig}
+
 	<Layout.Cell class="items-end">
-		{formatBigNumber(row.original.metrics.requests)}
+		<Chart.Container config={configuration} class="h-fit w-20">
+			<LineChart
+				data={row.original.metrics.requests}
+				x="time"
+				xScale={scaleUtc()}
+				axis={false}
+				series={[
+					{
+						key: 'value',
+						label: configuration.request.label,
+						color: configuration.request.color,
+					},
+				]}
+				props={{
+					spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
+					xAxis: {
+						format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+					},
+					highlight: { points: { r: 4 } },
+				}}
+			>
+				{#snippet tooltip()}
+					<Chart.Tooltip hideLabel>
+						{#snippet formatter({ item, name, value })}
+							<div
+								style="--color-bg: {item.color}"
+								class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+							></div>
+							<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+								<div class="grid gap-1.5">
+									<span class="text-muted-foreground">{name}</span>
+								</div>
+								<p class="font-mono">{Number(value)}</p>
+							</div>
+						{/snippet}
+					</Chart.Tooltip>
+				{/snippet}
+			</LineChart>
+		</Chart.Container>
 	</Layout.Cell>
 {/snippet}
 
 {#snippet time_to_first_token(row: Row<LargeLanguageModel>)}
+	{@const configuration = {
+		request: { label: 'request', color: 'var(--chart-1)' },
+	} satisfies Chart.ChartConfig}
+
 	<Layout.Cell class="items-end">
-		{formatBigNumber(row.original.metrics.time_to_first_token)}
+		<Chart.Container config={configuration} class="h-fit w-20">
+			<LineChart
+				data={row.original.metrics.time_to_first_token}
+				x="time"
+				xScale={scaleUtc()}
+				axis={false}
+				series={[
+					{
+						key: 'value',
+						label: configuration.request.label,
+						color: configuration.request.color,
+					},
+				]}
+				props={{
+					spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
+					xAxis: {
+						format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+					},
+					highlight: { points: { r: 4 } },
+				}}
+			>
+				{#snippet tooltip()}
+					<Chart.Tooltip hideLabel>
+						{#snippet formatter({ item, name, value })}
+							<div
+								style="--color-bg: {item.color}"
+								class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+							></div>
+							<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+								<div class="grid gap-1.5">
+									<span class="text-muted-foreground">{name}</span>
+								</div>
+								<p class="font-mono">{Number(value)}</p>
+							</div>
+						{/snippet}
+					</Chart.Tooltip>
+				{/snippet}
+			</LineChart>
+		</Chart.Container>
 	</Layout.Cell>
 {/snippet}
 

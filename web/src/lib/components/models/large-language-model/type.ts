@@ -1,10 +1,12 @@
+import type { SampleValue } from 'prometheus-query';
+
 import type { Application } from '$lib/api/application/v1/application_pb';
 
 interface Metrics {
-	kv_cache: number;
-	gpu_cache: number;
-	requests: number;
-	time_to_first_token: number;
+	kv_cache: SampleValue[];
+	gpu_cache: SampleValue[];
+	requests: SampleValue[];
+	time_to_first_token: SampleValue[];
 }
 
 interface LargeLanguageModel {
