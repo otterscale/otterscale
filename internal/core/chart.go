@@ -5,7 +5,9 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"strings"
+	"net/url"
+	"os"
+	"path/filepath"
 
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v2"
@@ -17,6 +19,11 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/otterscale/otterscale/internal/config"
+)
+
+const (
+	localChartRepoDir = "./charts"
+	remoteOCIFormat   = "oci://%s:32000/charts"
 )
 
 type (
@@ -40,7 +47,8 @@ type ChartFile struct {
 type ChartRepo interface {
 	List(ctx context.Context, url string) ([]Chart, error)
 	Show(chartRef string, format action.ShowOutputFormat) (string, error)
-	UploadChart(ctx context.Context, ociRegistryURL, chartName, chartVersion string, chartContent []byte) error
+	Push(chartRef, remoteOCI string) (string, error)
+	Index(dir, url string) error
 }
 
 type ChartUseCase struct {
@@ -50,7 +58,6 @@ type ChartUseCase struct {
 	chart    ChartRepo
 	facility FacilityRepo
 	release  ReleaseRepo
-	conf     *config.Config
 }
 
 func NewChartUseCase(conf *config.Config, action ActionRepo, chart ChartRepo, facility FacilityRepo, release ReleaseRepo) *ChartUseCase {
@@ -142,6 +149,35 @@ func (uc *ChartUseCase) GetChartFileFromApplication(ctx context.Context, scope, 
 	return file, nil
 }
 
+// TODO: multiple service on kunbernetes
+func (uc *ChartUseCase) UploadChart(ctx context.Context, chartContent []byte) error {
+	if err := os.MkdirAll(localChartRepoDir, 0o755); err != nil {
+		return err
+	}
+
+	name, version, err := extractChartMetadata(chartContent)
+	if err != nil {
+		return err
+	}
+
+	fileName := filepath.Join(localChartRepoDir, fmt.Sprintf("%s-%s.tgz", name, version))
+	if err := os.WriteFile(fileName, chartContent, 0o600); err != nil {
+		return err
+	}
+
+	remoteOCI, err := uc.remoteOCI()
+	if err != nil {
+		return err
+	}
+
+	if _, err := uc.chart.Push(fileName, remoteOCI); err != nil {
+		return err
+	}
+
+	return uc.chart.Index(localChartRepoDir, remoteOCI)
+}
+
+// TODO: replace with remote flag
 func (uc *ChartUseCase) newMicroK8sConfig() (*rest.Config, error) {
 	kubeConfig, err := base64.StdEncoding.DecodeString(uc.conf.MicroK8s.Config)
 	if err != nil {
@@ -154,27 +190,16 @@ func (uc *ChartUseCase) newMicroK8sConfig() (*rest.Config, error) {
 	return clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
 }
 
-func (uc *ChartUseCase) UploadChart(ctx context.Context, chartContent []byte) error {
-	// Parse chart metadata from the chart content to extract name and version
-	chartName, chartVersion, err := extractChartMetadata(chartContent)
+func (uc *ChartUseCase) remoteOCI() (string, error) {
+	config, err := uc.newMicroK8sConfig()
 	if err != nil {
-		return fmt.Errorf("failed to extract chart metadata: %w", err)
+		return "", err
 	}
-
-	microK8sConfig, err := uc.newMicroK8sConfig()
+	url, err := url.Parse(config.Host)
 	if err != nil {
-		return err
+		return "", err
 	}
-
-	// Convert https://IP:PORT to oci://IP:32000/charts
-	host := microK8sConfig.Host
-	host = strings.TrimPrefix(host, "https://")
-	if colonIndex := strings.Index(host, ":"); colonIndex != -1 {
-		host = host[:colonIndex]
-	}
-	ociRegistryURL := fmt.Sprintf("oci://%s:32000/charts", host)
-
-	return uc.chart.UploadChart(ctx, ociRegistryURL, chartName, chartVersion, chartContent)
+	return fmt.Sprintf(remoteOCIFormat, url.Hostname()), nil
 }
 
 func extractChartMetadata(chartContent []byte) (name, version string, err error) {
@@ -184,16 +209,15 @@ func extractChartMetadata(chartContent []byte) (name, version string, err error)
 		return "", "", fmt.Errorf("failed to load chart archive: %w", err)
 	}
 
-	if chart.Metadata == nil {
-		return "", "", fmt.Errorf("chart metadata is nil")
+	metadata := chart.Metadata
+	if metadata == nil {
+		return "", "", fmt.Errorf("chart metadata not found")
 	}
-
-	if chart.Metadata.Name == "" {
-		return "", "", fmt.Errorf("chart name not found in Chart.yaml")
+	if metadata.Name == "" {
+		return "", "", fmt.Errorf("chart name not found")
 	}
-	if chart.Metadata.Version == "" {
-		return "", "", fmt.Errorf("chart version not found in Chart.yaml")
+	if metadata.Version == "" {
+		return "", "", fmt.Errorf("chart version not found")
 	}
-
-	return chart.Metadata.Name, chart.Metadata.Version, nil
+	return metadata.Name, metadata.Version, nil
 }

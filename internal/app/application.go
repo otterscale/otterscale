@@ -232,6 +232,14 @@ func (s *ApplicationService) GetChartMetadata(_ context.Context, req *pb.GetChar
 	return resp, nil
 }
 
+func (s *ApplicationService) UploadChart(ctx context.Context, req *pb.UploadChartRequest) (*emptypb.Empty, error) {
+	err := s.chart.UploadChart(ctx, req.GetChartContent())
+	if err != nil {
+		return nil, err
+	}
+	return &emptypb.Empty{}, nil
+}
+
 func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *pb.ListStorageClassesRequest) (*pb.ListStorageClassesResponse, error) {
 	storageClasses, err := s.kubernetes.ListStorageClasses(ctx, req.GetScope(), req.GetFacility())
 	if err != nil {
@@ -240,15 +248,6 @@ func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *pb.Lis
 	resp := &pb.ListStorageClassesResponse{}
 	resp.SetStorageClasses(toProtoStorageClasses(storageClasses))
 	return resp, nil
-}
-
-func (s *ApplicationService) UploadChart(ctx context.Context, req *pb.UploadChartRequest) (*emptypb.Empty, error) {
-	err := s.chart.UploadChart(ctx, req.GetChartContent())
-	if err != nil {
-		return nil, err
-	}
-
-	return &emptypb.Empty{}, nil
 }
 
 func toProtoNamespaces(ns []core.Namespace) []*pb.Namespace {
