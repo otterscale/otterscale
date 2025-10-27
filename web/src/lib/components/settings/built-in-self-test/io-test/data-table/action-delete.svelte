@@ -28,7 +28,7 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		name: testResult.name,
+		name: '',
 	} as DeleteTestResultRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -55,7 +55,7 @@
 				</Form.Help>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.Confirm required target={testResult.name} bind:value={request.name} />
+					<SingleInput.Confirm required target={testResult.name ?? ''} bind:value={request.name} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
