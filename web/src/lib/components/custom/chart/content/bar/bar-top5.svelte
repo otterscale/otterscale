@@ -98,54 +98,30 @@
 		{#snippet tooltip()}
 			<Chart.Tooltip nameKey="views">
 				{#snippet formatter({ item, name, value })}
-					{#if addFormatter === 'io'}
-						{@const { value: formattedValue, unit } = formatIO(Number(value))}
-						<div
-							style="--color-bg: {item.color}"
-							class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
-						></div>
-						<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
-							<div class="grid gap-1.5">
-								<span class="text-muted-foreground">{labelKey ? labelKey : name}</span>
-							</div>
-							<p class="font-mono">{formattedValue} {unit}</p>
+					{@const formattedData = (() => {
+						if (addFormatter === 'io') {
+							const { value: formattedValue, unit } = formatIO(Number(value));
+							return { display: `${formattedValue} ${unit}` };
+						} else if (addFormatter === 'second') {
+							const { value: formattedValue, unit } = formatSecond(Number(value));
+							return { display: `${formattedValue} ${unit}` };
+						} else if (addFormatter === 'nanoSecond') {
+							const { value: formattedValue, unit } = formatLatencyNano(Number(value));
+							return { display: `${formattedValue} ${unit}` };
+						} else {
+							return { display: value };
+						}
+					})()}
+					<div
+						style="--color-bg: {item.color}"
+						class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+					></div>
+					<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+						<div class="grid gap-1.5">
+							<span class="text-muted-foreground">{labelKey ? labelKey : name}</span>
 						</div>
-					{:else if addFormatter === 'second'}
-						{@const { value: formattedValue, unit } = formatSecond(Number(value))}
-						<div
-							style="--color-bg: {item.color}"
-							class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
-						></div>
-						<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
-							<div class="grid gap-1.5">
-								<span class="text-muted-foreground">{labelKey ? labelKey : name}</span>
-							</div>
-							<p class="font-mono">{formattedValue} {unit}</p>
-						</div>
-					{:else if addFormatter === 'nanoSecond'}
-						{@const { value: formattedValue, unit } = formatLatencyNano(Number(value))}
-						<div
-							style="--color-bg: {item.color}"
-							class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
-						></div>
-						<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
-							<div class="grid gap-1.5">
-								<span class="text-muted-foreground">{labelKey ? labelKey : name}</span>
-							</div>
-							<p class="font-mono">{formattedValue} {unit}</p>
-						</div>
-					{:else}
-						<div
-							style="--color-bg: {item.color}"
-							class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
-						></div>
-						<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
-							<div class="grid gap-1.5">
-								<span class="text-muted-foreground">{labelKey ? labelKey : name}</span>
-							</div>
-							<p class="font-mono">{value}</p>
-						</div>
-					{/if}
+						<p class="font-mono">{formattedData.display}</p>
+					</div>
 				{/snippet}
 			</Chart.Tooltip>
 		{/snippet}
