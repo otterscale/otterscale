@@ -2,10 +2,10 @@
 	import { type Table } from '@tanstack/table-core';
 
 	import type { TestResult } from '$lib/api/configuration/v1/configuration_pb';
-	import Content from '$lib/components/custom/chart/content/scatter/scatter.svelte';
+	import Content from '$lib/components/custom/chart/content/bar/bar-top5.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
-	import { BistDashboardManager } from '$lib/components/settings/built-in-self-test/utils/bistManager';
+	import { BistDashboardManager } from '$lib/components/settings/built-in-self-test/utils/bistManager-top5';
 	import * as Card from '$lib/components/ui/card/index.js';
 
 	let { mode, table }: { mode: string; table: Table<TestResult> } = $props();
@@ -26,7 +26,9 @@
 		<Card.Content>
 			<Content
 				xKey="bytesFastest"
-				yKey="completedAt"
+				yKey="name"
+				labelKey="Throughput"
+				addFormatter="io"
 				data={mode === 'get' ? getTmp : mode === 'put' ? putTmp : deleteTmp}
 			/>
 		</Card.Content>
@@ -44,7 +46,9 @@
 		<Card.Content>
 			<Content
 				xKey="bytesSlowest"
-				yKey="completedAt"
+				yKey="name"
+				labelKey="Throughput"
+				addFormatter="io"
 				data={mode === 'get' ? getTmp : mode === 'put' ? putTmp : deleteTmp}
 			/>
 		</Card.Content>
@@ -62,7 +66,9 @@
 		<Card.Content>
 			<Content
 				xKey="bytesMedian"
-				yKey="completedAt"
+				yKey="name"
+				labelKey="Throughput"
+				addFormatter="io"
 				data={mode === 'get' ? getTmp : mode === 'put' ? putTmp : deleteTmp}
 			/>
 		</Card.Content>
