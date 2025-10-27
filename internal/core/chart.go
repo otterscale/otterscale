@@ -151,7 +151,7 @@ func (uc *ChartUseCase) GetChartFileFromApplication(ctx context.Context, scope, 
 
 // TODO: multiple service on kubernetes
 func (uc *ChartUseCase) UploadChart(chartContent []byte) error {
-	if err := os.MkdirAll(localChartRepoDir, 0o755); err != nil { //nolint:mnd // default folder permission
+	if err := os.MkdirAll(localChartRepoDir, 0o700); err != nil { //nolint:mnd // default folder permission
 		return err
 	}
 
