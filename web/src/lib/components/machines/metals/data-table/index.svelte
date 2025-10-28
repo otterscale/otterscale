@@ -133,7 +133,7 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
-							{#if header.id !== 'gpu' || page.data['feature-states.mdl-general']}
+							{#if header.column.id !== 'gpu' || page.data['feature-states.mdl-general']}
 								<Table.Head>
 									{#if !header.isPlaceholder}
 										<FlexRender
@@ -151,9 +151,11 @@
 				{#each table.getRowModel().rows as row (row.id)}
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
-							<Table.Cell>
-								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-							</Table.Cell>
+							{#if cell.column.id !== 'gpu' || page.data['feature-states.mdl-general']}
+								<Table.Cell>
+									<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+								</Table.Cell>
+							{/if}
 						{/each}
 					</Table.Row>
 				{:else}
