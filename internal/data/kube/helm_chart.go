@@ -36,9 +36,11 @@ func NewHelmChart(kube *Kube) (oscore.ChartRepo, error) {
 
 var _ oscore.ChartRepo = (*helmChart)(nil)
 
-func (r *helmChart) List(ctx context.Context, url string) ([]oscore.Chart, error) {
-	if charts, ok := r.getCachedCharts(url); ok {
-		return charts, nil
+func (r *helmChart) List(ctx context.Context, url string, useCache bool) ([]oscore.Chart, error) {
+	if useCache {
+		if charts, ok := r.getCachedCharts(url); ok {
+			return charts, nil
+		}
 	}
 
 	indexFile, err := r.fetchRepoIndex(ctx, url)
@@ -50,6 +52,37 @@ func (r *helmChart) List(ctx context.Context, url string) ([]oscore.Chart, error
 	r.cacheCharts(url, charts)
 
 	return charts, nil
+}
+
+func (r *helmChart) Show(chartRef string, format action.ShowOutputFormat) (string, error) {
+	client := action.NewShow(format)
+	client.SetRegistryClient(r.kube.registryClient)
+
+	chartPath, err := client.LocateChart(chartRef, r.kube.envSettings)
+	if err != nil {
+		return "", err
+	}
+	return client.Run(chartPath)
+}
+
+func (r *helmChart) Push(chartRef, remoteOCI string) (string, error) {
+	config := &action.Configuration{
+		RegistryClient: r.kube.registryClient,
+	}
+	client := action.NewPushWithOpts(action.WithPushConfig(config))
+	client.Settings = r.kube.envSettings
+	return client.Run(chartRef, remoteOCI)
+}
+
+func (r *helmChart) Index(dir, url string) error {
+	out := filepath.Join(dir, "index.yaml")
+
+	i, err := repo.IndexDirectory(dir, url)
+	if err != nil {
+		return err
+	}
+	i.SortEntries()
+	return i.WriteFile(out, 0o644) //nolint:mnd // default file permission
 }
 
 func (r *helmChart) getCachedCharts(url string) ([]oscore.Chart, bool) {
@@ -83,17 +116,6 @@ func (r *helmChart) cacheCharts(url string, charts []oscore.Chart) {
 		charts:    charts,
 		lastFetch: time.Now(),
 	})
-}
-
-func (r *helmChart) Show(chartRef string, format action.ShowOutputFormat) (string, error) {
-	client := action.NewShow(format)
-	client.SetRegistryClient(r.kube.registryClient)
-
-	chartPath, err := client.LocateChart(chartRef, r.kube.envSettings)
-	if err != nil {
-		return "", err
-	}
-	return client.Run(chartPath)
 }
 
 func (r *helmChart) fetchRepoIndex(ctx context.Context, url string) (*repo.IndexFile, error) {

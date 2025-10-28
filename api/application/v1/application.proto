@@ -108,6 +108,12 @@ service ApplicationService {
     };
   };
 
+  rpc UploadChart(UploadChartRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "app-helm-chart"
+    };
+  };
+
   rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse) {
     option (otterscale.api.feature) = {
       name: "app-resource"
@@ -391,4 +397,8 @@ message ListStorageClassesRequest {
 
 message ListStorageClassesResponse {
   repeated StorageClass storage_classes = 1;
+}
+
+message UploadChartRequest {
+  bytes chart_content = 1;
 }
