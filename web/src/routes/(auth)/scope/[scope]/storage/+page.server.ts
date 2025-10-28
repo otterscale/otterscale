@@ -13,14 +13,12 @@ export const load: PageServerLoad = async () => {
 
 	const client = OpenFeature.getClient();
 
-	const appGeneralFeatureState = await client.getBooleanValue('app-general', false);
-	const appContainerFeatureState = await client.getBooleanValue('app-container', false);
+	const stgBlockFeatureState = await client.getBooleanValue('stg-block', false);
+	const stgFileFeatureState = await client.getBooleanValue('stg-file', false);
+	const stgObjectFeatureState = await client.getBooleanValue('stg-object', false);
+	const stgGeneralFeatureState = await client.getBooleanValue('stg-general', false);
 
-	if (!appGeneralFeatureState) {
+	if (!(stgBlockFeatureState && stgFileFeatureState && stgObjectFeatureState && stgGeneralFeatureState)) {
 		throw error(501, `This feature is not implemented.`);
 	}
-
-	return {
-		'feature-states.app-container': appContainerFeatureState,
-	};
 };

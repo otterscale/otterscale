@@ -1,5 +1,6 @@
 import { FlagdProvider } from '@openfeature/flagd-provider';
 import { OpenFeature } from '@openfeature/server-sdk';
+import { error } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
 
@@ -12,9 +13,10 @@ export const load: PageServerLoad = async () => {
 
 	const client = OpenFeature.getClient();
 
-	const orchGPUFeatureState = await client.getBooleanValue('orch-gpu', false);
+	const appGeneralFeatureState = await client.getBooleanValue('app-general', false);
+	const appHelmChartFeatureState = await client.getBooleanValue('app-helm-chart', false);
 
-	return {
-		'feature-states.orch-gpu': orchGPUFeatureState,
-	};
+	if (!(appGeneralFeatureState && appHelmChartFeatureState)) {
+		throw error(501, `This feature is not implemented.`);
+	}
 };

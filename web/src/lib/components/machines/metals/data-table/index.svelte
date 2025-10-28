@@ -14,6 +14,7 @@
 
 	import { columns, messages } from './columns';
 
+	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -132,14 +133,16 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
-							<Table.Head>
-								{#if !header.isPlaceholder}
-									<FlexRender
-										content={header.column.columnDef.header}
-										context={header.getContext()}
-									/>
-								{/if}
-							</Table.Head>
+							{#if header.id !== 'gpu' || page.data['feature-states.mdl-general']}
+								<Table.Head>
+									{#if !header.isPlaceholder}
+										<FlexRender
+											content={header.column.columnDef.header}
+											context={header.getContext()}
+										/>
+									{/if}
+								</Table.Head>
+							{/if}
 						{/each}
 					</Table.Row>
 				{/each}

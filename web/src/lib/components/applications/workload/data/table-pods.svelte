@@ -78,7 +78,7 @@
 			<Table.Head>
 				{m.last_condition()}
 			</Table.Head>
-			{#if page.data['feature-states-app-container']}
+			{#if page.data['feature-states.app-container']}
 				<Table.Head>
 					{m.terminal()}
 				</Table.Head>
@@ -128,7 +128,7 @@
 						{/if}
 					{/if}
 				</Table.Cell>
-				{#if page.data['feature-states-app-container']}
+				{#if page.data['feature-states.app-container']}
 					<Table.Cell>
 						<Button variant="secondary" size="icon" onclick={() => openTerminal(pod)}>
 							<Icon icon="ph:terminal-window" />

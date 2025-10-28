@@ -35,13 +35,13 @@ export const load: LayoutServerLoad = async ({ request, url }) => {
 
 	return {
 		user: session.user as User,
-		'feature-states-app-general': appGeneralFeatureState,
-		'feature-states-app-helm-chart': appHelmChartFeatureState,
-		'feature-states-vm-general': vmGeneralFeatureState,
-		'feature-states-mdl-general': mdlGeneralFeatureState,
-		'feature-states-stg-general': stgGeneralFeatureState,
-		'feature-states-stg-block': stgBlockFeatureState,
-		'feature-states-stg-file': stgFileFeatureState,
-		'feature-states-stg-object': stgObjectFeatureState,
+		'feature-states.app-general': appGeneralFeatureState,
+		'feature-states.app-helm-chart': appHelmChartFeatureState,
+		'feature-states.vm-general': vmGeneralFeatureState,
+		'feature-states.mdl-general': mdlGeneralFeatureState,
+		'feature-states.stg-general': stgGeneralFeatureState,
+		'feature-states.stg-block': stgBlockFeatureState,
+		'feature-states.stg-file': stgFileFeatureState,
+		'feature-states.stg-object': stgObjectFeatureState,
 	};
 };

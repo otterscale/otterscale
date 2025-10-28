@@ -11,9 +11,10 @@ export const load: PageServerLoad = async () => {
 	}
 
 	const client = OpenFeature.getClient();
+
 	const appContainerFeatureState = await client.getBooleanValue('app-container', false);
 
 	return {
-		'feature-states-app-container': appContainerFeatureState,
+		'feature-states.app-container': appContainerFeatureState,
 	};
 };

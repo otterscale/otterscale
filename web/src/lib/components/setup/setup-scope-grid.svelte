@@ -171,7 +171,7 @@
 									</a>
 								{/if}
 
-								{#if page.data['feature-states-orch-gpu']}
+								{#if page.data['feature-states.orch-gpu']}
 									{#if unit.machineId}
 										<SetupNodeGPUMode {unit} class="hover:cursor-pointer" />
 									{/if}
