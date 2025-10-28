@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-	let { trigger }: { trigger: Snippet } = $props();
+	let { selectedTab, trigger }: { selectedTab: string; trigger: Snippet } = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -47,7 +47,7 @@
 </script>
 
 <main>
-	{#if isMounted}
+	{#if isMounted && selectedTab === 'object-storage-test'}
 		<div class="flex items-center justify-between gap-2">
 			{@render trigger()}
 			<Pickers bind:selectedMode={mode} />
