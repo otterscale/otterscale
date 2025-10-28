@@ -18,6 +18,7 @@
 	"error_message_403": "Sorry, this area is VIP only! You don't have the golden ticket for this resource.",
 	"error_message_404": "Well, this is awkward... The page seems to have gone on vacation without telling us!",
 	"error_message_500": "Yikes! Our servers are having a moment. Please give us a sec to get things back on track.",
+	"error_message_501": "Sorry! This feature is still on the engineers' to-do list and hasn't been implemented yet. We'll get them a cup of coffee to hurry it along.",
 	"error_message_502": "Our gateway is feeling a bit under the weather. We're nursing it back to health!",
 	"error_message_503": "We're temporarily out of order, like a vending machine that ate your dollar. Try again soon!",
 	"home": "Home",
