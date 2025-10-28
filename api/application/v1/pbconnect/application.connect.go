@@ -82,6 +82,9 @@ const (
 	// ApplicationServiceGetChartMetadataProcedure is the fully-qualified name of the
 	// ApplicationService's GetChartMetadata RPC.
 	ApplicationServiceGetChartMetadataProcedure = "/otterscale.application.v1.ApplicationService/GetChartMetadata"
+	// ApplicationServiceUploadChartProcedure is the fully-qualified name of the ApplicationService's
+	// UploadChart RPC.
+	ApplicationServiceUploadChartProcedure = "/otterscale.application.v1.ApplicationService/UploadChart"
 	// ApplicationServiceListNamespacesProcedure is the fully-qualified name of the ApplicationService's
 	// ListNamespaces RPC.
 	ApplicationServiceListNamespacesProcedure = "/otterscale.application.v1.ApplicationService/ListNamespaces"
@@ -110,6 +113,7 @@ type ApplicationServiceClient interface {
 	ListCharts(context.Context, *v1.ListChartsRequest) (*v1.ListChartsResponse, error)
 	GetChart(context.Context, *v1.GetChartRequest) (*v1.Application_Chart, error)
 	GetChartMetadata(context.Context, *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error)
+	UploadChart(context.Context, *v1.UploadChartRequest) (*emptypb.Empty, error)
 	ListNamespaces(context.Context, *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error)
 	ListStorageClasses(context.Context, *v1.ListStorageClassesRequest) (*v1.ListStorageClassesResponse, error)
 }
@@ -222,6 +226,12 @@ func NewApplicationServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			connect.WithSchema(applicationServiceMethods.ByName("GetChartMetadata")),
 			connect.WithClientOptions(opts...),
 		),
+		uploadChart: connect.NewClient[v1.UploadChartRequest, emptypb.Empty](
+			httpClient,
+			baseURL+ApplicationServiceUploadChartProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("UploadChart")),
+			connect.WithClientOptions(opts...),
+		),
 		listNamespaces: connect.NewClient[v1.ListNamespacesRequest, v1.ListNamespacesResponse](
 			httpClient,
 			baseURL+ApplicationServiceListNamespacesProcedure,
@@ -255,6 +265,7 @@ type applicationServiceClient struct {
 	listCharts           *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
 	getChart             *connect.Client[v1.GetChartRequest, v1.Application_Chart]
 	getChartMetadata     *connect.Client[v1.GetChartMetadataRequest, v1.Application_Chart_Metadata]
+	uploadChart          *connect.Client[v1.UploadChartRequest, emptypb.Empty]
 	listNamespaces       *connect.Client[v1.ListNamespacesRequest, v1.ListNamespacesResponse]
 	listStorageClasses   *connect.Client[v1.ListStorageClassesRequest, v1.ListStorageClassesResponse]
 }
@@ -395,6 +406,15 @@ func (c *applicationServiceClient) GetChartMetadata(ctx context.Context, req *v1
 	return nil, err
 }
 
+// UploadChart calls otterscale.application.v1.ApplicationService.UploadChart.
+func (c *applicationServiceClient) UploadChart(ctx context.Context, req *v1.UploadChartRequest) (*emptypb.Empty, error) {
+	response, err := c.uploadChart.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // ListNamespaces calls otterscale.application.v1.ApplicationService.ListNamespaces.
 func (c *applicationServiceClient) ListNamespaces(ctx context.Context, req *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error) {
 	response, err := c.listNamespaces.CallUnary(ctx, connect.NewRequest(req))
@@ -433,6 +453,7 @@ type ApplicationServiceHandler interface {
 	ListCharts(context.Context, *v1.ListChartsRequest) (*v1.ListChartsResponse, error)
 	GetChart(context.Context, *v1.GetChartRequest) (*v1.Application_Chart, error)
 	GetChartMetadata(context.Context, *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error)
+	UploadChart(context.Context, *v1.UploadChartRequest) (*emptypb.Empty, error)
 	ListNamespaces(context.Context, *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error)
 	ListStorageClasses(context.Context, *v1.ListStorageClassesRequest) (*v1.ListStorageClassesResponse, error)
 }
@@ -540,6 +561,12 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 		connect.WithSchema(applicationServiceMethods.ByName("GetChartMetadata")),
 		connect.WithHandlerOptions(opts...),
 	)
+	applicationServiceUploadChartHandler := connect.NewUnaryHandlerSimple(
+		ApplicationServiceUploadChartProcedure,
+		svc.UploadChart,
+		connect.WithSchema(applicationServiceMethods.ByName("UploadChart")),
+		connect.WithHandlerOptions(opts...),
+	)
 	applicationServiceListNamespacesHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceListNamespacesProcedure,
 		svc.ListNamespaces,
@@ -586,6 +613,8 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 			applicationServiceGetChartHandler.ServeHTTP(w, r)
 		case ApplicationServiceGetChartMetadataProcedure:
 			applicationServiceGetChartMetadataHandler.ServeHTTP(w, r)
+		case ApplicationServiceUploadChartProcedure:
+			applicationServiceUploadChartHandler.ServeHTTP(w, r)
 		case ApplicationServiceListNamespacesProcedure:
 			applicationServiceListNamespacesHandler.ServeHTTP(w, r)
 		case ApplicationServiceListStorageClassesProcedure:
@@ -661,6 +690,10 @@ func (UnimplementedApplicationServiceHandler) GetChart(context.Context, *v1.GetC
 
 func (UnimplementedApplicationServiceHandler) GetChartMetadata(context.Context, *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.GetChartMetadata is not implemented"))
+}
+
+func (UnimplementedApplicationServiceHandler) UploadChart(context.Context, *v1.UploadChartRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.UploadChart is not implemented"))
 }
 
 func (UnimplementedApplicationServiceHandler) ListNamespaces(context.Context, *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error) {

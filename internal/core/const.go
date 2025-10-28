@@ -1,5 +1,6 @@
 package core
 
+// TODO: refactor these constants into more appropriate files as the project structure evolves.
 const (
 	LabelDomain                          = "otterscale.com"
 	DataVolumeBootImageLabel             = "otterscale.com/data-volume.boot-image"
@@ -7,6 +8,10 @@ const (
 	ApplicationReleaseNameLabel          = "otterscale.com/application-release.name"
 	ApplicationReleaseLLMDModelNameLabel = "otterscale.com/application-release.llmd-model-name"
 	ApplicationReleaseChartRefAnnotation = "otterscale.com/application-release.chart-ref"
+	TypeLabel                            = "otterscale.com/type"
+	ModelNameAnnotation                  = "otterscale.com/model.name"
+	ModelArtifactModelNameAnnotation     = "otterscale.com/model-artifact.model-name"
+	ChartRefKey                          = "chart-ref"
 )
 
 const BuiltInMachineTagComment = "built-in"

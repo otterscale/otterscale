@@ -4,6 +4,8 @@
 
 	import * as Tabs from '$lib/components/ui/tabs/index';
 	import { m } from '$lib/paraglide/messages';
+
+	let selectedTab = $state('io-test');
 </script>
 
 {#snippet trigger()}
@@ -12,11 +14,11 @@
 		<Tabs.Trigger value="object-storage-test">{m.object_storage_test()}</Tabs.Trigger>
 	</Tabs.List>
 {/snippet}
-<Tabs.Root value="io-test">
+<Tabs.Root bind:value={selectedTab}>
 	<Tabs.Content value="io-test" class="max-w-[70vw]">
-		<IOTest {trigger} />
+		<IOTest {selectedTab} {trigger} />
 	</Tabs.Content>
 	<Tabs.Content value="object-storage-test" class="max-w-[70vw]">
-		<ObjectStorageTest {trigger} />
+		<ObjectStorageTest {selectedTab} {trigger} />
 	</Tabs.Content>
 </Tabs.Root>
