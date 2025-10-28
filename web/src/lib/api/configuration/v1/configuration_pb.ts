@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/configuration/v1/configuration.proto.
  */
 export const file_api_configuration_v1_configuration: GenFile = /*@__PURE__*/
-  fileDesc("CihhcGkvY29uZmlndXJhdGlvbi92MS9jb25maWd1cmF0aW9uLnByb3RvEhtvdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEitwYKDUNvbmZpZ3VyYXRpb24SSAoKbnRwX3NlcnZlchgBIAEoCzI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLk5UUFNlcnZlchJaChRwYWNrYWdlX3JlcG9zaXRvcmllcxgCIAMoCzI8Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLlBhY2thZ2VSZXBvc2l0b3J5EkkKC2Jvb3RfaW1hZ2VzGAMgAygLMjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlElIKD2hlbG1fcmVwb3NpdG9yeRgEIAEoCzI5Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLkhlbG1SZXBvc2l0b3J5Gh4KCU5UUFNlcnZlchIRCglhZGRyZXNzZXMYASADKAkaSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCBpQChJCb290SW1hZ2VTZWxlY3Rpb24SFQoNZGlzdHJvX3NlcmllcxgBIAEoCRIMCgRuYW1lGAIgASgJEhUKDWFyY2hpdGVjdHVyZXMYAyADKAkagQIKCUJvb3RJbWFnZRIOCgZzb3VyY2UYASABKAkSFQoNZGlzdHJvX3NlcmllcxgCIAEoCRIMCgRuYW1lGAMgASgJEnAKF2FyY2hpdGVjdHVyZV9zdGF0dXNfbWFwGAUgAygLMk8ub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlLkFyY2hpdGVjdHVyZVN0YXR1c01hcEVudHJ5Eg8KB2RlZmF1bHQYCyABKAgaPAoaQXJjaGl0ZWN0dXJlU3RhdHVzTWFwRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARoeCg5IZWxtUmVwb3NpdG9yeRIMCgR1cmxzGAEgAygJIhkKF0dldENvbmZpZ3VyYXRpb25SZXF1ZXN0IisKFlVwZGF0ZU5UUFNlcnZlclJlcXVlc3QSEQoJYWRkcmVzc2VzGAEgAygJIkwKHlVwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5UmVxdWVzdBIKCgJpZBgBIAEoAxILCgN1cmwYAiABKAkSEQoJc2tpcF9qdWp1GAMgASgIIisKG1VwZGF0ZUhlbG1SZXBvc2l0b3J5UmVxdWVzdBIMCgR1cmxzGAEgAygJIkYKFkNyZWF0ZUJvb3RJbWFnZVJlcXVlc3QSFQoNZGlzdHJvX3NlcmllcxgBIAEoCRIVCg1hcmNoaXRlY3R1cmVzGAIgAygJIjMKGlNldERlZmF1bHRCb290SW1hZ2VSZXF1ZXN0EhUKDWRpc3Ryb19zZXJpZXMYASABKAkiGQoXSW1wb3J0Qm9vdEltYWdlc1JlcXVlc3QiHgocSXNJbXBvcnRpbmdCb290SW1hZ2VzUmVxdWVzdCIyCh1Jc0ltcG9ydGluZ0Jvb3RJbWFnZXNSZXNwb25zZRIRCglpbXBvcnRpbmcYASABKAgiIAoeTGlzdEJvb3RJbWFnZVNlbGVjdGlvbnNSZXF1ZXN0In8KH0xpc3RCb290SW1hZ2VTZWxlY3Rpb25zUmVzcG9uc2USXAoVYm9vdF9pbWFnZV9zZWxlY3Rpb25zGAEgAygLMj0ub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlU2VsZWN0aW9uIjIKD0NlcGhCbG9ja0RldmljZRINCgVzY29wZRgBIAEoCRIQCghmYWNpbGl0eRgCIAEoCSIzChFOZXR3b3JrRmlsZVN5c3RlbRIQCghlbmRwb2ludBgBIAEoCRIMCgRwYXRoGAIgASgJIs0BChVJbnRlcm5hbE9iamVjdFNlcnZpY2USRQoEdHlwZRgBIAEoDjI3Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5JbnRlcm5hbE9iamVjdFNlcnZpY2UuVHlwZRINCgVzY29wZRgCIAEoCRIQCghmYWNpbGl0eRgDIAEoCRIMCgRuYW1lGAQgASgJEhAKCGVuZHBvaW50GAUgASgJIiwKBFR5cGUSDwoLVU5TUEVDSUZJRUQQABIICgRDRVBIEAESCQoFTUlOSU8QAiJRChVFeHRlcm5hbE9iamVjdFNlcnZpY2USEAoIZW5kcG9pbnQYASABKAkSEgoKYWNjZXNzX2tleRgCIAEoCRISCgpzZWNyZXRfa2V5GAMgASgJItUICgNGSU8SSQoRY2VwaF9ibG9ja19kZXZpY2UYASABKAsyLC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ2VwaEJsb2NrRGV2aWNlSAASTQoTbmV0d29ya19maWxlX3N5c3RlbRgCIAEoCzIuLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5OZXR3b3JrRmlsZVN5c3RlbUgAEjUKBWlucHV0GAsgASgLMiYub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJTy5JbnB1dBI3CgZvdXRwdXQYDCABKAsyJy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRklPLk91dHB1dBrfAgoFSW5wdXQSRgoLYWNjZXNzX21vZGUYASABKA4yMS5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRklPLklucHV0LkFjY2Vzc01vZGUSEQoJam9iX2NvdW50GB8gASgDEhgKEHJ1bl90aW1lX3NlY29uZHMYKSABKAMSGAoQYmxvY2tfc2l6ZV9ieXRlcxhHIAEoAxIXCg9maWxlX3NpemVfYnl0ZXMYWyABKAMSEAoIaW9fZGVwdGgYeSABKAMimwEKCkFjY2Vzc01vZGUSCAoEUkVBRBAAEgkKBVdSSVRFEAESCAoEVFJJTRACEg4KClJFQURfV1JJVEUQAxIOCgpUUklNX1dSSVRFEAQSDQoJUkFORF9SRUFEEAUSDgoKUkFORF9XUklURRAGEg0KCVJBTkRfVFJJTRAHEgsKB1JBTkRfUlcQCBITCg9SQU5EX1RSSU1fV1JJVEUQCRrXAwoGT3V0cHV0EkAKBHJlYWQYASABKAsyMi5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRklPLk91dHB1dC5UaHJvdWdocHV0EkEKBXdyaXRlGAIgASgLMjIub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJTy5PdXRwdXQuVGhyb3VnaHB1dBJACgR0cmltGAMgASgLMjIub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJTy5PdXRwdXQuVGhyb3VnaHB1dBqFAgoKVGhyb3VnaHB1dBIQCghpb19ieXRlcxgBIAEoAxIXCg9iYW5kd2lkdGhfYnl0ZXMYAiABKAMSFQoNaW9fcGVyX3NlY29uZBgDIAEoARIRCgl0b3RhbF9pb3MYBCABKAMSSwoHbGF0ZW5jeRgLIAEoCzI6Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5GSU8uT3V0cHV0LlRocm91Z2hwdXQuTGF0ZW5jeRpVCgdMYXRlbmN5EhcKD21pbl9uYW5vc2Vjb25kcxgBIAEoAxIXCg9tYXhfbmFub3NlY29uZHMYAiABKAMSGAoQbWVhbl9uYW5vc2Vjb25kcxgDIAEoAUIICgZ0YXJnZXQitggKBFdhcnASVQoXaW50ZXJuYWxfb2JqZWN0X3NlcnZpY2UYASABKAsyMi5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuSW50ZXJuYWxPYmplY3RTZXJ2aWNlSAASVQoXZXh0ZXJuYWxfb2JqZWN0X3NlcnZpY2UYAiABKAsyMi5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRXh0ZXJuYWxPYmplY3RTZXJ2aWNlSAASNgoFaW5wdXQYCyABKAsyJy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycC5JbnB1dBI4CgZvdXRwdXQYDCABKAsyKC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycC5PdXRwdXQa4gEKBUlucHV0EkQKCW9wZXJhdGlvbhgBIAEoDjIxLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5XYXJwLklucHV0Lk9wZXJhdGlvbhIYChBkdXJhdGlvbl9zZWNvbmRzGBUgASgDEhkKEW9iamVjdF9zaXplX2J5dGVzGB8gASgDEhQKDG9iamVjdF9jb3VudBggIAEoAyJICglPcGVyYXRpb24SBwoDR0VUEAASBwoDUFVUEAESCgoGREVMRVRFEAISCAoETElTVBADEggKBFNUQVQQBBIJCgVNSVhFRBAFGp4ECgZPdXRwdXQSQAoDZ2V0GAsgASgLMjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQSQAoDcHV0GAwgASgLMjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQSQwoGZGVsZXRlGA0gASgLMjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQaygIKClRocm91Z2hwdXQSEwoLdG90YWxfYnl0ZXMYASABKAESFQoNdG90YWxfb2JqZWN0cxgCIAEoARIYChB0b3RhbF9vcGVyYXRpb25zGAMgASgDEkoKBWJ5dGVzGAsgASgLMjsub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQuTWV0cmljcxJMCgdvYmplY3RzGAwgASgLMjsub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQuTWV0cmljcxpcCgdNZXRyaWNzEhoKEmZhc3Rlc3RfcGVyX3NlY29uZBgBIAEoARIZChFtZWRpYW5fcGVyX3NlY29uZBgCIAEoARIaChJzbG93ZXN0X3Blcl9zZWNvbmQYAyABKAFCCAoGdGFyZ2V0IvsCCgpUZXN0UmVzdWx0EgsKA3VpZBgBIAEoCRIMCgRuYW1lGAIgASgJEj4KBnN0YXR1cxgDIAEoDjIuLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5UZXN0UmVzdWx0LlN0YXR1cxISCgpjcmVhdGVkX2J5GAQgASgJEi4KCnN0YXJ0ZWRfYXQYCyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjAKDGNvbXBsZXRlZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoDZmlvGGUgASgLMiAub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJT0gAEjEKBHdhcnAYZiABKAsyIS5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycEgAIjAKBlN0YXR1cxILCgdSVU5OSU5HEAASDQoJU1VDQ0VFREVEEAESCgoGRkFJTEVEEAJCBgoEa2luZCIYChZMaXN0VGVzdFJlc3VsdHNSZXF1ZXN0IlgKF0xpc3RUZXN0UmVzdWx0c1Jlc3BvbnNlEj0KDHRlc3RfcmVzdWx0cxgBIAMoCzInLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5UZXN0UmVzdWx0IqcBChdDcmVhdGVUZXN0UmVzdWx0UmVxdWVzdBIMCgRuYW1lGAEgASgJEhIKCmNyZWF0ZWRfYnkYAiABKAkSLwoDZmlvGGUgASgLMiAub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJT0gAEjEKBHdhcnAYZiABKAsyIS5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycEgAQgYKBGtpbmQiJwoXRGVsZXRlVGVzdFJlc3VsdFJlcXVlc3QSDAoEbmFtZRgBIAEoCSJeCiFMaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1JlcXVlc3QSDQoFc2NvcGUYASABKAkSFwoPa3ViZXJuZXRlc19uYW1lGAIgASgJEhEKCWNlcGhfbmFtZRgDIAEoCSJ6CiJMaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1Jlc3BvbnNlElQKGGludGVybmFsX29iamVjdF9zZXJ2aWNlcxgBIAMoCzIyLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5JbnRlcm5hbE9iamVjdFNlcnZpY2Uyxw8KFENvbmZpZ3VyYXRpb25TZXJ2aWNlEogBChBHZXRDb25maWd1cmF0aW9uEjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkdldENvbmZpZ3VyYXRpb25SZXF1ZXN0Gioub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24iEorf1R0NCgtjZmctZ2VuZXJhbBKQAQoPVXBkYXRlTlRQU2VydmVyEjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLlVwZGF0ZU5UUFNlcnZlclJlcXVlc3QaNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ29uZmlndXJhdGlvbi5OVFBTZXJ2ZXIiEorf1R0NCgtjZmctZ2VuZXJhbBKoAQoXVXBkYXRlUGFja2FnZVJlcG9zaXRvcnkSOy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlSZXF1ZXN0Gjwub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uUGFja2FnZVJlcG9zaXRvcnkiEorf1R0NCgtjZmctZ2VuZXJhbBKfAQoUVXBkYXRlSGVsbVJlcG9zaXRvcnkSOC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuVXBkYXRlSGVsbVJlcG9zaXRvcnlSZXF1ZXN0Gjkub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uSGVsbVJlcG9zaXRvcnkiEorf1R0NCgtjZmctZ2VuZXJhbBKQAQoPQ3JlYXRlQm9vdEltYWdlEjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNyZWF0ZUJvb3RJbWFnZVJlcXVlc3QaNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ29uZmlndXJhdGlvbi5Cb290SW1hZ2UiEorf1R0NCgtjZmctZ2VuZXJhbBJ6ChNTZXREZWZhdWx0Qm9vdEltYWdlEjcub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLlNldERlZmF1bHRCb290SW1hZ2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhKK39UdDQoLY2ZnLWdlbmVyYWwSdAoQSW1wb3J0Qm9vdEltYWdlcxI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5JbXBvcnRCb290SW1hZ2VzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSISit/VHQ0KC2NmZy1nZW5lcmFsEqIBChVJc0ltcG9ydGluZ0Jvb3RJbWFnZXMSOS5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuSXNJbXBvcnRpbmdCb290SW1hZ2VzUmVxdWVzdBo6Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Jc0ltcG9ydGluZ0Jvb3RJbWFnZXNSZXNwb25zZSISit/VHQ0KC2NmZy1nZW5lcmFsEqgBChdMaXN0Qm9vdEltYWdlU2VsZWN0aW9ucxI7Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0Qm9vdEltYWdlU2VsZWN0aW9uc1JlcXVlc3QaPC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuTGlzdEJvb3RJbWFnZVNlbGVjdGlvbnNSZXNwb25zZSISit/VHQ0KC2NmZy1nZW5lcmFsEpsBCg9MaXN0VGVzdFJlc3VsdHMSMy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuTGlzdFRlc3RSZXN1bHRzUmVxdWVzdBo0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0VGVzdFJlc3VsdHNSZXNwb25zZSIdit/VHRgKFmNmZy1idWlsdC1pbi1zZWxmLXRlc3QSkAEKEENyZWF0ZVRlc3RSZXN1bHQSNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ3JlYXRlVGVzdFJlc3VsdFJlcXVlc3QaJy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuVGVzdFJlc3VsdCIdit/VHRgKFmNmZy1idWlsdC1pbi1zZWxmLXRlc3QSfwoQRGVsZXRlVGVzdFJlc3VsdBI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5EZWxldGVUZXN0UmVzdWx0UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIdit/VHRgKFmNmZy1idWlsdC1pbi1zZWxmLXRlc3QSvAEKGkxpc3RJbnRlcm5hbE9iamVjdFNlcnZpY2VzEj4ub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkxpc3RJbnRlcm5hbE9iamVjdFNlcnZpY2VzUmVxdWVzdBo/Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1Jlc3BvbnNlIh2K39UdGAoWY2ZnLWJ1aWx0LWluLXNlbGYtdGVzdEI6WjhnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvY29uZmlndXJhdGlvbi92MTtwYmIIZWRpdGlvbnNw6Ac", [file_api_annotations, file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("CihhcGkvY29uZmlndXJhdGlvbi92MS9jb25maWd1cmF0aW9uLnByb3RvEhtvdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEiwwYKDUNvbmZpZ3VyYXRpb24SSAoKbnRwX3NlcnZlchgBIAEoCzI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLk5UUFNlcnZlchJaChRwYWNrYWdlX3JlcG9zaXRvcmllcxgCIAMoCzI8Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLlBhY2thZ2VSZXBvc2l0b3J5EkkKC2Jvb3RfaW1hZ2VzGAMgAygLMjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlElIKD2hlbG1fcmVwb3NpdG9yeRgEIAEoCzI5Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLkhlbG1SZXBvc2l0b3J5Gh4KCU5UUFNlcnZlchIRCglhZGRyZXNzZXMYASADKAkaSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCBpQChJCb290SW1hZ2VTZWxlY3Rpb24SFQoNZGlzdHJvX3NlcmllcxgBIAEoCRIMCgRuYW1lGAIgASgJEhUKDWFyY2hpdGVjdHVyZXMYAyADKAkajQIKCUJvb3RJbWFnZRIOCgZzb3VyY2UYASABKAkSFQoNZGlzdHJvX3NlcmllcxgCIAEoCRIMCgRuYW1lGAMgASgJEgoKAmlkGAQgASgDEnAKF2FyY2hpdGVjdHVyZV9zdGF0dXNfbWFwGAUgAygLMk8ub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlLkFyY2hpdGVjdHVyZVN0YXR1c01hcEVudHJ5Eg8KB2RlZmF1bHQYCyABKAgaPAoaQXJjaGl0ZWN0dXJlU3RhdHVzTWFwRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARoeCg5IZWxtUmVwb3NpdG9yeRIMCgR1cmxzGAEgAygJIhkKF0dldENvbmZpZ3VyYXRpb25SZXF1ZXN0IisKFlVwZGF0ZU5UUFNlcnZlclJlcXVlc3QSEQoJYWRkcmVzc2VzGAEgAygJIkwKHlVwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5UmVxdWVzdBIKCgJpZBgBIAEoAxILCgN1cmwYAiABKAkSEQoJc2tpcF9qdWp1GAMgASgIIisKG1VwZGF0ZUhlbG1SZXBvc2l0b3J5UmVxdWVzdBIMCgR1cmxzGAEgAygJIkYKFkNyZWF0ZUJvb3RJbWFnZVJlcXVlc3QSFQoNZGlzdHJvX3NlcmllcxgBIAEoCRIVCg1hcmNoaXRlY3R1cmVzGAIgAygJIlIKFlVwZGF0ZUJvb3RJbWFnZVJlcXVlc3QSCgoCaWQYASABKAMSFQoNZGlzdHJvX3NlcmllcxgCIAEoCRIVCg1hcmNoaXRlY3R1cmVzGAMgAygJIjMKGlNldERlZmF1bHRCb290SW1hZ2VSZXF1ZXN0EhUKDWRpc3Ryb19zZXJpZXMYASABKAkiGQoXSW1wb3J0Qm9vdEltYWdlc1JlcXVlc3QiHgocSXNJbXBvcnRpbmdCb290SW1hZ2VzUmVxdWVzdCIyCh1Jc0ltcG9ydGluZ0Jvb3RJbWFnZXNSZXNwb25zZRIRCglpbXBvcnRpbmcYASABKAgiIAoeTGlzdEJvb3RJbWFnZVNlbGVjdGlvbnNSZXF1ZXN0In8KH0xpc3RCb290SW1hZ2VTZWxlY3Rpb25zUmVzcG9uc2USXAoVYm9vdF9pbWFnZV9zZWxlY3Rpb25zGAEgAygLMj0ub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlU2VsZWN0aW9uIjIKD0NlcGhCbG9ja0RldmljZRINCgVzY29wZRgBIAEoCRIQCghmYWNpbGl0eRgCIAEoCSIzChFOZXR3b3JrRmlsZVN5c3RlbRIQCghlbmRwb2ludBgBIAEoCRIMCgRwYXRoGAIgASgJIs0BChVJbnRlcm5hbE9iamVjdFNlcnZpY2USRQoEdHlwZRgBIAEoDjI3Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5JbnRlcm5hbE9iamVjdFNlcnZpY2UuVHlwZRINCgVzY29wZRgCIAEoCRIQCghmYWNpbGl0eRgDIAEoCRIMCgRuYW1lGAQgASgJEhAKCGVuZHBvaW50GAUgASgJIiwKBFR5cGUSDwoLVU5TUEVDSUZJRUQQABIICgRDRVBIEAESCQoFTUlOSU8QAiJRChVFeHRlcm5hbE9iamVjdFNlcnZpY2USEAoIZW5kcG9pbnQYASABKAkSEgoKYWNjZXNzX2tleRgCIAEoCRISCgpzZWNyZXRfa2V5GAMgASgJItUICgNGSU8SSQoRY2VwaF9ibG9ja19kZXZpY2UYASABKAsyLC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ2VwaEJsb2NrRGV2aWNlSAASTQoTbmV0d29ya19maWxlX3N5c3RlbRgCIAEoCzIuLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5OZXR3b3JrRmlsZVN5c3RlbUgAEjUKBWlucHV0GAsgASgLMiYub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJTy5JbnB1dBI3CgZvdXRwdXQYDCABKAsyJy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRklPLk91dHB1dBrfAgoFSW5wdXQSRgoLYWNjZXNzX21vZGUYASABKA4yMS5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRklPLklucHV0LkFjY2Vzc01vZGUSEQoJam9iX2NvdW50GB8gASgDEhgKEHJ1bl90aW1lX3NlY29uZHMYKSABKAMSGAoQYmxvY2tfc2l6ZV9ieXRlcxhHIAEoAxIXCg9maWxlX3NpemVfYnl0ZXMYWyABKAMSEAoIaW9fZGVwdGgYeSABKAMimwEKCkFjY2Vzc01vZGUSCAoEUkVBRBAAEgkKBVdSSVRFEAESCAoEVFJJTRACEg4KClJFQURfV1JJVEUQAxIOCgpUUklNX1dSSVRFEAQSDQoJUkFORF9SRUFEEAUSDgoKUkFORF9XUklURRAGEg0KCVJBTkRfVFJJTRAHEgsKB1JBTkRfUlcQCBITCg9SQU5EX1RSSU1fV1JJVEUQCRrXAwoGT3V0cHV0EkAKBHJlYWQYASABKAsyMi5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRklPLk91dHB1dC5UaHJvdWdocHV0EkEKBXdyaXRlGAIgASgLMjIub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJTy5PdXRwdXQuVGhyb3VnaHB1dBJACgR0cmltGAMgASgLMjIub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJTy5PdXRwdXQuVGhyb3VnaHB1dBqFAgoKVGhyb3VnaHB1dBIQCghpb19ieXRlcxgBIAEoAxIXCg9iYW5kd2lkdGhfYnl0ZXMYAiABKAMSFQoNaW9fcGVyX3NlY29uZBgDIAEoARIRCgl0b3RhbF9pb3MYBCABKAMSSwoHbGF0ZW5jeRgLIAEoCzI6Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5GSU8uT3V0cHV0LlRocm91Z2hwdXQuTGF0ZW5jeRpVCgdMYXRlbmN5EhcKD21pbl9uYW5vc2Vjb25kcxgBIAEoAxIXCg9tYXhfbmFub3NlY29uZHMYAiABKAMSGAoQbWVhbl9uYW5vc2Vjb25kcxgDIAEoAUIICgZ0YXJnZXQitggKBFdhcnASVQoXaW50ZXJuYWxfb2JqZWN0X3NlcnZpY2UYASABKAsyMi5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuSW50ZXJuYWxPYmplY3RTZXJ2aWNlSAASVQoXZXh0ZXJuYWxfb2JqZWN0X3NlcnZpY2UYAiABKAsyMi5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuRXh0ZXJuYWxPYmplY3RTZXJ2aWNlSAASNgoFaW5wdXQYCyABKAsyJy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycC5JbnB1dBI4CgZvdXRwdXQYDCABKAsyKC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycC5PdXRwdXQa4gEKBUlucHV0EkQKCW9wZXJhdGlvbhgBIAEoDjIxLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5XYXJwLklucHV0Lk9wZXJhdGlvbhIYChBkdXJhdGlvbl9zZWNvbmRzGBUgASgDEhkKEW9iamVjdF9zaXplX2J5dGVzGB8gASgDEhQKDG9iamVjdF9jb3VudBggIAEoAyJICglPcGVyYXRpb24SBwoDR0VUEAASBwoDUFVUEAESCgoGREVMRVRFEAISCAoETElTVBADEggKBFNUQVQQBBIJCgVNSVhFRBAFGp4ECgZPdXRwdXQSQAoDZ2V0GAsgASgLMjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQSQAoDcHV0GAwgASgLMjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQSQwoGZGVsZXRlGA0gASgLMjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQaygIKClRocm91Z2hwdXQSEwoLdG90YWxfYnl0ZXMYASABKAESFQoNdG90YWxfb2JqZWN0cxgCIAEoARIYChB0b3RhbF9vcGVyYXRpb25zGAMgASgDEkoKBWJ5dGVzGAsgASgLMjsub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQuTWV0cmljcxJMCgdvYmplY3RzGAwgASgLMjsub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQuTWV0cmljcxpcCgdNZXRyaWNzEhoKEmZhc3Rlc3RfcGVyX3NlY29uZBgBIAEoARIZChFtZWRpYW5fcGVyX3NlY29uZBgCIAEoARIaChJzbG93ZXN0X3Blcl9zZWNvbmQYAyABKAFCCAoGdGFyZ2V0IvsCCgpUZXN0UmVzdWx0EgsKA3VpZBgBIAEoCRIMCgRuYW1lGAIgASgJEj4KBnN0YXR1cxgDIAEoDjIuLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5UZXN0UmVzdWx0LlN0YXR1cxISCgpjcmVhdGVkX2J5GAQgASgJEi4KCnN0YXJ0ZWRfYXQYCyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjAKDGNvbXBsZXRlZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoDZmlvGGUgASgLMiAub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJT0gAEjEKBHdhcnAYZiABKAsyIS5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycEgAIjAKBlN0YXR1cxILCgdSVU5OSU5HEAASDQoJU1VDQ0VFREVEEAESCgoGRkFJTEVEEAJCBgoEa2luZCIYChZMaXN0VGVzdFJlc3VsdHNSZXF1ZXN0IlgKF0xpc3RUZXN0UmVzdWx0c1Jlc3BvbnNlEj0KDHRlc3RfcmVzdWx0cxgBIAMoCzInLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5UZXN0UmVzdWx0IqcBChdDcmVhdGVUZXN0UmVzdWx0UmVxdWVzdBIMCgRuYW1lGAEgASgJEhIKCmNyZWF0ZWRfYnkYAiABKAkSLwoDZmlvGGUgASgLMiAub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkZJT0gAEjEKBHdhcnAYZiABKAsyIS5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuV2FycEgAQgYKBGtpbmQiJwoXRGVsZXRlVGVzdFJlc3VsdFJlcXVlc3QSDAoEbmFtZRgBIAEoCSJeCiFMaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1JlcXVlc3QSDQoFc2NvcGUYASABKAkSFwoPa3ViZXJuZXRlc19uYW1lGAIgASgJEhEKCWNlcGhfbmFtZRgDIAEoCSJ6CiJMaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1Jlc3BvbnNlElQKGGludGVybmFsX29iamVjdF9zZXJ2aWNlcxgBIAMoCzIyLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5JbnRlcm5hbE9iamVjdFNlcnZpY2Uy2hAKFENvbmZpZ3VyYXRpb25TZXJ2aWNlEogBChBHZXRDb25maWd1cmF0aW9uEjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkdldENvbmZpZ3VyYXRpb25SZXF1ZXN0Gioub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24iEorf1R0NCgtjZmctZ2VuZXJhbBKQAQoPVXBkYXRlTlRQU2VydmVyEjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLlVwZGF0ZU5UUFNlcnZlclJlcXVlc3QaNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ29uZmlndXJhdGlvbi5OVFBTZXJ2ZXIiEorf1R0NCgtjZmctZ2VuZXJhbBKoAQoXVXBkYXRlUGFja2FnZVJlcG9zaXRvcnkSOy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlSZXF1ZXN0Gjwub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uUGFja2FnZVJlcG9zaXRvcnkiEorf1R0NCgtjZmctZ2VuZXJhbBKfAQoUVXBkYXRlSGVsbVJlcG9zaXRvcnkSOC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuVXBkYXRlSGVsbVJlcG9zaXRvcnlSZXF1ZXN0Gjkub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uSGVsbVJlcG9zaXRvcnkiEorf1R0NCgtjZmctZ2VuZXJhbBKQAQoPQ3JlYXRlQm9vdEltYWdlEjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNyZWF0ZUJvb3RJbWFnZVJlcXVlc3QaNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ29uZmlndXJhdGlvbi5Cb290SW1hZ2UiEorf1R0NCgtjZmctZ2VuZXJhbBKQAQoPVXBkYXRlQm9vdEltYWdlEjMub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLlVwZGF0ZUJvb3RJbWFnZVJlcXVlc3QaNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ29uZmlndXJhdGlvbi5Cb290SW1hZ2UiEorf1R0NCgtjZmctZ2VuZXJhbBJ6ChNTZXREZWZhdWx0Qm9vdEltYWdlEjcub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLlNldERlZmF1bHRCb290SW1hZ2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhKK39UdDQoLY2ZnLWdlbmVyYWwSdAoQSW1wb3J0Qm9vdEltYWdlcxI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5JbXBvcnRCb290SW1hZ2VzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSISit/VHQ0KC2NmZy1nZW5lcmFsEqIBChVJc0ltcG9ydGluZ0Jvb3RJbWFnZXMSOS5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuSXNJbXBvcnRpbmdCb290SW1hZ2VzUmVxdWVzdBo6Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Jc0ltcG9ydGluZ0Jvb3RJbWFnZXNSZXNwb25zZSISit/VHQ0KC2NmZy1nZW5lcmFsEqgBChdMaXN0Qm9vdEltYWdlU2VsZWN0aW9ucxI7Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0Qm9vdEltYWdlU2VsZWN0aW9uc1JlcXVlc3QaPC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuTGlzdEJvb3RJbWFnZVNlbGVjdGlvbnNSZXNwb25zZSISit/VHQ0KC2NmZy1nZW5lcmFsEpsBCg9MaXN0VGVzdFJlc3VsdHMSMy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuTGlzdFRlc3RSZXN1bHRzUmVxdWVzdBo0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0VGVzdFJlc3VsdHNSZXNwb25zZSIdit/VHRgKFmNmZy1idWlsdC1pbi1zZWxmLXRlc3QSkAEKEENyZWF0ZVRlc3RSZXN1bHQSNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ3JlYXRlVGVzdFJlc3VsdFJlcXVlc3QaJy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuVGVzdFJlc3VsdCIdit/VHRgKFmNmZy1idWlsdC1pbi1zZWxmLXRlc3QSfwoQRGVsZXRlVGVzdFJlc3VsdBI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5EZWxldGVUZXN0UmVzdWx0UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIdit/VHRgKFmNmZy1idWlsdC1pbi1zZWxmLXRlc3QSvAEKGkxpc3RJbnRlcm5hbE9iamVjdFNlcnZpY2VzEj4ub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkxpc3RJbnRlcm5hbE9iamVjdFNlcnZpY2VzUmVxdWVzdBo/Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1Jlc3BvbnNlIh2K39UdGAoWY2ZnLWJ1aWx0LWluLXNlbGYtdGVzdEI6WjhnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvY29uZmlndXJhdGlvbi92MTtwYmIIZWRpdGlvbnNw6Ac", [file_api_annotations, file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message otterscale.configuration.v1.Configuration
@@ -141,6 +141,11 @@ export type Configuration_BootImage = Message<"otterscale.configuration.v1.Confi
    * @generated from field: string name = 3;
    */
   name: string;
+
+  /**
+   * @generated from field: int64 id = 4;
+   */
+  id: bigint;
 
   /**
    * @generated from field: map<string, string> architecture_status_map = 5;
@@ -274,6 +279,33 @@ export const CreateBootImageRequestSchema: GenMessage<CreateBootImageRequest> = 
   messageDesc(file_api_configuration_v1_configuration, 5);
 
 /**
+ * @generated from message otterscale.configuration.v1.UpdateBootImageRequest
+ */
+export type UpdateBootImageRequest = Message<"otterscale.configuration.v1.UpdateBootImageRequest"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string distro_series = 2;
+   */
+  distroSeries: string;
+
+  /**
+   * @generated from field: repeated string architectures = 3;
+   */
+  architectures: string[];
+};
+
+/**
+ * Describes the message otterscale.configuration.v1.UpdateBootImageRequest.
+ * Use `create(UpdateBootImageRequestSchema)` to create a new message.
+ */
+export const UpdateBootImageRequestSchema: GenMessage<UpdateBootImageRequest> = /*@__PURE__*/
+  messageDesc(file_api_configuration_v1_configuration, 6);
+
+/**
  * @generated from message otterscale.configuration.v1.SetDefaultBootImageRequest
  */
 export type SetDefaultBootImageRequest = Message<"otterscale.configuration.v1.SetDefaultBootImageRequest"> & {
@@ -288,7 +320,7 @@ export type SetDefaultBootImageRequest = Message<"otterscale.configuration.v1.Se
  * Use `create(SetDefaultBootImageRequestSchema)` to create a new message.
  */
 export const SetDefaultBootImageRequestSchema: GenMessage<SetDefaultBootImageRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 6);
+  messageDesc(file_api_configuration_v1_configuration, 7);
 
 /**
  * @generated from message otterscale.configuration.v1.ImportBootImagesRequest
@@ -301,7 +333,7 @@ export type ImportBootImagesRequest = Message<"otterscale.configuration.v1.Impor
  * Use `create(ImportBootImagesRequestSchema)` to create a new message.
  */
 export const ImportBootImagesRequestSchema: GenMessage<ImportBootImagesRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 7);
+  messageDesc(file_api_configuration_v1_configuration, 8);
 
 /**
  * @generated from message otterscale.configuration.v1.IsImportingBootImagesRequest
@@ -314,7 +346,7 @@ export type IsImportingBootImagesRequest = Message<"otterscale.configuration.v1.
  * Use `create(IsImportingBootImagesRequestSchema)` to create a new message.
  */
 export const IsImportingBootImagesRequestSchema: GenMessage<IsImportingBootImagesRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 8);
+  messageDesc(file_api_configuration_v1_configuration, 9);
 
 /**
  * @generated from message otterscale.configuration.v1.IsImportingBootImagesResponse
@@ -331,7 +363,7 @@ export type IsImportingBootImagesResponse = Message<"otterscale.configuration.v1
  * Use `create(IsImportingBootImagesResponseSchema)` to create a new message.
  */
 export const IsImportingBootImagesResponseSchema: GenMessage<IsImportingBootImagesResponse> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 9);
+  messageDesc(file_api_configuration_v1_configuration, 10);
 
 /**
  * @generated from message otterscale.configuration.v1.ListBootImageSelectionsRequest
@@ -344,7 +376,7 @@ export type ListBootImageSelectionsRequest = Message<"otterscale.configuration.v
  * Use `create(ListBootImageSelectionsRequestSchema)` to create a new message.
  */
 export const ListBootImageSelectionsRequestSchema: GenMessage<ListBootImageSelectionsRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 10);
+  messageDesc(file_api_configuration_v1_configuration, 11);
 
 /**
  * @generated from message otterscale.configuration.v1.ListBootImageSelectionsResponse
@@ -361,7 +393,7 @@ export type ListBootImageSelectionsResponse = Message<"otterscale.configuration.
  * Use `create(ListBootImageSelectionsResponseSchema)` to create a new message.
  */
 export const ListBootImageSelectionsResponseSchema: GenMessage<ListBootImageSelectionsResponse> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 11);
+  messageDesc(file_api_configuration_v1_configuration, 12);
 
 /**
  * @generated from message otterscale.configuration.v1.CephBlockDevice
@@ -383,7 +415,7 @@ export type CephBlockDevice = Message<"otterscale.configuration.v1.CephBlockDevi
  * Use `create(CephBlockDeviceSchema)` to create a new message.
  */
 export const CephBlockDeviceSchema: GenMessage<CephBlockDevice> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 12);
+  messageDesc(file_api_configuration_v1_configuration, 13);
 
 /**
  * @generated from message otterscale.configuration.v1.NetworkFileSystem
@@ -405,7 +437,7 @@ export type NetworkFileSystem = Message<"otterscale.configuration.v1.NetworkFile
  * Use `create(NetworkFileSystemSchema)` to create a new message.
  */
 export const NetworkFileSystemSchema: GenMessage<NetworkFileSystem> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 13);
+  messageDesc(file_api_configuration_v1_configuration, 14);
 
 /**
  * @generated from message otterscale.configuration.v1.InternalObjectService
@@ -442,7 +474,7 @@ export type InternalObjectService = Message<"otterscale.configuration.v1.Interna
  * Use `create(InternalObjectServiceSchema)` to create a new message.
  */
 export const InternalObjectServiceSchema: GenMessage<InternalObjectService> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 14);
+  messageDesc(file_api_configuration_v1_configuration, 15);
 
 /**
  * @generated from enum otterscale.configuration.v1.InternalObjectService.Type
@@ -468,7 +500,7 @@ export enum InternalObjectService_Type {
  * Describes the enum otterscale.configuration.v1.InternalObjectService.Type.
  */
 export const InternalObjectService_TypeSchema: GenEnum<InternalObjectService_Type> = /*@__PURE__*/
-  enumDesc(file_api_configuration_v1_configuration, 14, 0);
+  enumDesc(file_api_configuration_v1_configuration, 15, 0);
 
 /**
  * @generated from message otterscale.configuration.v1.ExternalObjectService
@@ -495,7 +527,7 @@ export type ExternalObjectService = Message<"otterscale.configuration.v1.Externa
  * Use `create(ExternalObjectServiceSchema)` to create a new message.
  */
 export const ExternalObjectServiceSchema: GenMessage<ExternalObjectService> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 15);
+  messageDesc(file_api_configuration_v1_configuration, 16);
 
 /**
  * @generated from message otterscale.configuration.v1.FIO
@@ -534,7 +566,7 @@ export type FIO = Message<"otterscale.configuration.v1.FIO"> & {
  * Use `create(FIOSchema)` to create a new message.
  */
 export const FIOSchema: GenMessage<FIO> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 16);
+  messageDesc(file_api_configuration_v1_configuration, 17);
 
 /**
  * @generated from message otterscale.configuration.v1.FIO.Input
@@ -586,7 +618,7 @@ export type FIO_Input = Message<"otterscale.configuration.v1.FIO.Input"> & {
  * Use `create(FIO_InputSchema)` to create a new message.
  */
 export const FIO_InputSchema: GenMessage<FIO_Input> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 16, 0);
+  messageDesc(file_api_configuration_v1_configuration, 17, 0);
 
 /**
  * @generated from enum otterscale.configuration.v1.FIO.Input.AccessMode
@@ -647,7 +679,7 @@ export enum FIO_Input_AccessMode {
  * Describes the enum otterscale.configuration.v1.FIO.Input.AccessMode.
  */
 export const FIO_Input_AccessModeSchema: GenEnum<FIO_Input_AccessMode> = /*@__PURE__*/
-  enumDesc(file_api_configuration_v1_configuration, 16, 0, 0);
+  enumDesc(file_api_configuration_v1_configuration, 17, 0, 0);
 
 /**
  * @generated from message otterscale.configuration.v1.FIO.Output
@@ -674,7 +706,7 @@ export type FIO_Output = Message<"otterscale.configuration.v1.FIO.Output"> & {
  * Use `create(FIO_OutputSchema)` to create a new message.
  */
 export const FIO_OutputSchema: GenMessage<FIO_Output> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 16, 1);
+  messageDesc(file_api_configuration_v1_configuration, 17, 1);
 
 /**
  * @generated from message otterscale.configuration.v1.FIO.Output.Throughput
@@ -711,7 +743,7 @@ export type FIO_Output_Throughput = Message<"otterscale.configuration.v1.FIO.Out
  * Use `create(FIO_Output_ThroughputSchema)` to create a new message.
  */
 export const FIO_Output_ThroughputSchema: GenMessage<FIO_Output_Throughput> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 16, 1, 0);
+  messageDesc(file_api_configuration_v1_configuration, 17, 1, 0);
 
 /**
  * @generated from message otterscale.configuration.v1.FIO.Output.Throughput.Latency
@@ -738,7 +770,7 @@ export type FIO_Output_Throughput_Latency = Message<"otterscale.configuration.v1
  * Use `create(FIO_Output_Throughput_LatencySchema)` to create a new message.
  */
 export const FIO_Output_Throughput_LatencySchema: GenMessage<FIO_Output_Throughput_Latency> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 16, 1, 0, 0);
+  messageDesc(file_api_configuration_v1_configuration, 17, 1, 0, 0);
 
 /**
  * @generated from message otterscale.configuration.v1.Warp
@@ -777,7 +809,7 @@ export type Warp = Message<"otterscale.configuration.v1.Warp"> & {
  * Use `create(WarpSchema)` to create a new message.
  */
 export const WarpSchema: GenMessage<Warp> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 17);
+  messageDesc(file_api_configuration_v1_configuration, 18);
 
 /**
  * @generated from message otterscale.configuration.v1.Warp.Input
@@ -809,7 +841,7 @@ export type Warp_Input = Message<"otterscale.configuration.v1.Warp.Input"> & {
  * Use `create(Warp_InputSchema)` to create a new message.
  */
 export const Warp_InputSchema: GenMessage<Warp_Input> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 17, 0);
+  messageDesc(file_api_configuration_v1_configuration, 18, 0);
 
 /**
  * @generated from enum otterscale.configuration.v1.Warp.Input.Operation
@@ -850,7 +882,7 @@ export enum Warp_Input_Operation {
  * Describes the enum otterscale.configuration.v1.Warp.Input.Operation.
  */
 export const Warp_Input_OperationSchema: GenEnum<Warp_Input_Operation> = /*@__PURE__*/
-  enumDesc(file_api_configuration_v1_configuration, 17, 0, 0);
+  enumDesc(file_api_configuration_v1_configuration, 18, 0, 0);
 
 /**
  * @generated from message otterscale.configuration.v1.Warp.Output
@@ -877,7 +909,7 @@ export type Warp_Output = Message<"otterscale.configuration.v1.Warp.Output"> & {
  * Use `create(Warp_OutputSchema)` to create a new message.
  */
 export const Warp_OutputSchema: GenMessage<Warp_Output> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 17, 1);
+  messageDesc(file_api_configuration_v1_configuration, 18, 1);
 
 /**
  * @generated from message otterscale.configuration.v1.Warp.Output.Throughput
@@ -914,7 +946,7 @@ export type Warp_Output_Throughput = Message<"otterscale.configuration.v1.Warp.O
  * Use `create(Warp_Output_ThroughputSchema)` to create a new message.
  */
 export const Warp_Output_ThroughputSchema: GenMessage<Warp_Output_Throughput> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 17, 1, 0);
+  messageDesc(file_api_configuration_v1_configuration, 18, 1, 0);
 
 /**
  * @generated from message otterscale.configuration.v1.Warp.Output.Throughput.Metrics
@@ -941,7 +973,7 @@ export type Warp_Output_Throughput_Metrics = Message<"otterscale.configuration.v
  * Use `create(Warp_Output_Throughput_MetricsSchema)` to create a new message.
  */
 export const Warp_Output_Throughput_MetricsSchema: GenMessage<Warp_Output_Throughput_Metrics> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 17, 1, 0, 0);
+  messageDesc(file_api_configuration_v1_configuration, 18, 1, 0, 0);
 
 /**
  * @generated from message otterscale.configuration.v1.TestResult
@@ -1000,7 +1032,7 @@ export type TestResult = Message<"otterscale.configuration.v1.TestResult"> & {
  * Use `create(TestResultSchema)` to create a new message.
  */
 export const TestResultSchema: GenMessage<TestResult> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 18);
+  messageDesc(file_api_configuration_v1_configuration, 19);
 
 /**
  * @generated from enum otterscale.configuration.v1.TestResult.Status
@@ -1026,7 +1058,7 @@ export enum TestResult_Status {
  * Describes the enum otterscale.configuration.v1.TestResult.Status.
  */
 export const TestResult_StatusSchema: GenEnum<TestResult_Status> = /*@__PURE__*/
-  enumDesc(file_api_configuration_v1_configuration, 18, 0);
+  enumDesc(file_api_configuration_v1_configuration, 19, 0);
 
 /**
  * @generated from message otterscale.configuration.v1.ListTestResultsRequest
@@ -1039,7 +1071,7 @@ export type ListTestResultsRequest = Message<"otterscale.configuration.v1.ListTe
  * Use `create(ListTestResultsRequestSchema)` to create a new message.
  */
 export const ListTestResultsRequestSchema: GenMessage<ListTestResultsRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 19);
+  messageDesc(file_api_configuration_v1_configuration, 20);
 
 /**
  * @generated from message otterscale.configuration.v1.ListTestResultsResponse
@@ -1056,7 +1088,7 @@ export type ListTestResultsResponse = Message<"otterscale.configuration.v1.ListT
  * Use `create(ListTestResultsResponseSchema)` to create a new message.
  */
 export const ListTestResultsResponseSchema: GenMessage<ListTestResultsResponse> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 20);
+  messageDesc(file_api_configuration_v1_configuration, 21);
 
 /**
  * @generated from message otterscale.configuration.v1.CreateTestResultRequest
@@ -1095,7 +1127,7 @@ export type CreateTestResultRequest = Message<"otterscale.configuration.v1.Creat
  * Use `create(CreateTestResultRequestSchema)` to create a new message.
  */
 export const CreateTestResultRequestSchema: GenMessage<CreateTestResultRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 21);
+  messageDesc(file_api_configuration_v1_configuration, 22);
 
 /**
  * @generated from message otterscale.configuration.v1.DeleteTestResultRequest
@@ -1112,7 +1144,7 @@ export type DeleteTestResultRequest = Message<"otterscale.configuration.v1.Delet
  * Use `create(DeleteTestResultRequestSchema)` to create a new message.
  */
 export const DeleteTestResultRequestSchema: GenMessage<DeleteTestResultRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 22);
+  messageDesc(file_api_configuration_v1_configuration, 23);
 
 /**
  * @generated from message otterscale.configuration.v1.ListInternalObjectServicesRequest
@@ -1139,7 +1171,7 @@ export type ListInternalObjectServicesRequest = Message<"otterscale.configuratio
  * Use `create(ListInternalObjectServicesRequestSchema)` to create a new message.
  */
 export const ListInternalObjectServicesRequestSchema: GenMessage<ListInternalObjectServicesRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 23);
+  messageDesc(file_api_configuration_v1_configuration, 24);
 
 /**
  * @generated from message otterscale.configuration.v1.ListInternalObjectServicesResponse
@@ -1156,7 +1188,7 @@ export type ListInternalObjectServicesResponse = Message<"otterscale.configurati
  * Use `create(ListInternalObjectServicesResponseSchema)` to create a new message.
  */
 export const ListInternalObjectServicesResponseSchema: GenMessage<ListInternalObjectServicesResponse> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 24);
+  messageDesc(file_api_configuration_v1_configuration, 25);
 
 /**
  * @generated from service otterscale.configuration.v1.ConfigurationService
@@ -1200,6 +1232,14 @@ export const ConfigurationService: GenService<{
   createBootImage: {
     methodKind: "unary";
     input: typeof CreateBootImageRequestSchema;
+    output: typeof Configuration_BootImageSchema;
+  },
+  /**
+   * @generated from rpc otterscale.configuration.v1.ConfigurationService.UpdateBootImage
+   */
+  updateBootImage: {
+    methodKind: "unary";
+    input: typeof UpdateBootImageRequestSchema;
     output: typeof Configuration_BootImageSchema;
   },
   /**

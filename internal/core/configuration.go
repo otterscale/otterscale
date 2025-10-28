@@ -51,6 +51,7 @@ type BootImage struct {
 	Source                string
 	DistroSeries          string
 	Name                  string
+	ID                    int
 	ArchitectureStatusMap map[string]string
 	Default               bool
 }
@@ -74,6 +75,7 @@ type BootSourceRepo interface {
 type BootSourceSelectionRepo interface {
 	List(ctx context.Context, id int) ([]entity.BootSourceSelection, error)
 	Create(ctx context.Context, bootSourceID int, params *entity.BootSourceSelectionParams) (*entity.BootSourceSelection, error)
+	Update(ctx context.Context, bootSourceID int, id int, params *entity.BootSourceSelectionParams) (*entity.BootSourceSelection, error)
 }
 
 type PackageRepositoryRepo interface {
@@ -181,6 +183,36 @@ func (uc *ConfigurationUseCase) CreateBootImage(ctx context.Context, distroSerie
 		Labels:    []string{"*"},
 	}
 	selections, err := uc.bootSourceSelection.Create(ctx, maasIO, params)
+	if err != nil {
+		return nil, err
+	}
+
+	statusMap := map[string]string{}
+	for _, arch := range selections.Arches {
+		statusMap[arch] = ""
+	}
+
+	return &BootImage{
+		DistroSeries:          selections.Release,
+		Name:                  selections.OS,
+		ArchitectureStatusMap: statusMap,
+	}, nil
+}
+
+func (uc *ConfigurationUseCase) UpdateBootImage(ctx context.Context, id int, distroSeries string, architectures []string) (*BootImage, error) {
+	if len(architectures) == 0 {
+		architectures = []string{"amd64"} // set default
+	}
+
+	maasIO := 1
+	params := &entity.BootSourceSelectionParams{
+		OS:        "ubuntu",
+		Release:   distroSeries,
+		Arches:    architectures,
+		Subarches: []string{"*"},
+		Labels:    []string{"*"},
+	}
+	selections, err := uc.bootSourceSelection.Update(ctx, maasIO, id, params)
 	if err != nil {
 		return nil, err
 	}

@@ -39,6 +39,12 @@ service ConfigurationService {
     };
   };
 
+  rpc UpdateBootImage(UpdateBootImageRequest) returns (Configuration.BootImage) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
   rpc SetDefaultBootImage(SetDefaultBootImageRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
       name: "cfg-general"
@@ -107,6 +113,7 @@ message Configuration {
     string source = 1;
     string distro_series = 2;
     string name = 3;
+    int64 id = 4;
     map<string, string> architecture_status_map = 5;
     bool default = 11;
   }
@@ -138,6 +145,12 @@ message UpdateHelmRepositoryRequest {
 message CreateBootImageRequest {
   string distro_series = 1;
   repeated string architectures = 2;
+}
+
+message UpdateBootImageRequest {
+  int64 id = 1;
+  string distro_series = 2;
+  repeated string architectures = 3;
 }
 
 message SetDefaultBootImageRequest {

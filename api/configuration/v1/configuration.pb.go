@@ -741,6 +741,128 @@ func (b0 CreateBootImageRequest_builder) Build() *CreateBootImageRequest {
 	return m0
 }
 
+type UpdateBootImageRequest struct {
+	state                    protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Id            int64                  `protobuf:"varint,1,opt,name=id"`
+	xxx_hidden_DistroSeries  *string                `protobuf:"bytes,2,opt,name=distro_series,json=distroSeries"`
+	xxx_hidden_Architectures []string               `protobuf:"bytes,3,rep,name=architectures"`
+	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
+	XXX_presence             [1]uint32
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
+}
+
+func (x *UpdateBootImageRequest) Reset() {
+	*x = UpdateBootImageRequest{}
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateBootImageRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateBootImageRequest) ProtoMessage() {}
+
+func (x *UpdateBootImageRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *UpdateBootImageRequest) GetId() int64 {
+	if x != nil {
+		return x.xxx_hidden_Id
+	}
+	return 0
+}
+
+func (x *UpdateBootImageRequest) GetDistroSeries() string {
+	if x != nil {
+		if x.xxx_hidden_DistroSeries != nil {
+			return *x.xxx_hidden_DistroSeries
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateBootImageRequest) GetArchitectures() []string {
+	if x != nil {
+		return x.xxx_hidden_Architectures
+	}
+	return nil
+}
+
+func (x *UpdateBootImageRequest) SetId(v int64) {
+	x.xxx_hidden_Id = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *UpdateBootImageRequest) SetDistroSeries(v string) {
+	x.xxx_hidden_DistroSeries = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *UpdateBootImageRequest) SetArchitectures(v []string) {
+	x.xxx_hidden_Architectures = v
+}
+
+func (x *UpdateBootImageRequest) HasId() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *UpdateBootImageRequest) HasDistroSeries() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *UpdateBootImageRequest) ClearId() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Id = 0
+}
+
+func (x *UpdateBootImageRequest) ClearDistroSeries() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_DistroSeries = nil
+}
+
+type UpdateBootImageRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Id            *int64
+	DistroSeries  *string
+	Architectures []string
+}
+
+func (b0 UpdateBootImageRequest_builder) Build() *UpdateBootImageRequest {
+	m0 := &UpdateBootImageRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Id != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_Id = *b.Id
+	}
+	if b.DistroSeries != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_DistroSeries = b.DistroSeries
+	}
+	x.xxx_hidden_Architectures = b.Architectures
+	return m0
+}
+
 type SetDefaultBootImageRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_DistroSeries *string                `protobuf:"bytes,1,opt,name=distro_series,json=distroSeries"`
@@ -752,7 +874,7 @@ type SetDefaultBootImageRequest struct {
 
 func (x *SetDefaultBootImageRequest) Reset() {
 	*x = SetDefaultBootImageRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[6]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -764,7 +886,7 @@ func (x *SetDefaultBootImageRequest) String() string {
 func (*SetDefaultBootImageRequest) ProtoMessage() {}
 
 func (x *SetDefaultBootImageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[6]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -827,7 +949,7 @@ type ImportBootImagesRequest struct {
 
 func (x *ImportBootImagesRequest) Reset() {
 	*x = ImportBootImagesRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[7]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -839,7 +961,7 @@ func (x *ImportBootImagesRequest) String() string {
 func (*ImportBootImagesRequest) ProtoMessage() {}
 
 func (x *ImportBootImagesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[7]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -870,7 +992,7 @@ type IsImportingBootImagesRequest struct {
 
 func (x *IsImportingBootImagesRequest) Reset() {
 	*x = IsImportingBootImagesRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[8]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -882,7 +1004,7 @@ func (x *IsImportingBootImagesRequest) String() string {
 func (*IsImportingBootImagesRequest) ProtoMessage() {}
 
 func (x *IsImportingBootImagesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[8]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -916,7 +1038,7 @@ type IsImportingBootImagesResponse struct {
 
 func (x *IsImportingBootImagesResponse) Reset() {
 	*x = IsImportingBootImagesResponse{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[9]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -928,7 +1050,7 @@ func (x *IsImportingBootImagesResponse) String() string {
 func (*IsImportingBootImagesResponse) ProtoMessage() {}
 
 func (x *IsImportingBootImagesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[9]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -988,7 +1110,7 @@ type ListBootImageSelectionsRequest struct {
 
 func (x *ListBootImageSelectionsRequest) Reset() {
 	*x = ListBootImageSelectionsRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[10]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1000,7 +1122,7 @@ func (x *ListBootImageSelectionsRequest) String() string {
 func (*ListBootImageSelectionsRequest) ProtoMessage() {}
 
 func (x *ListBootImageSelectionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[10]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1032,7 +1154,7 @@ type ListBootImageSelectionsResponse struct {
 
 func (x *ListBootImageSelectionsResponse) Reset() {
 	*x = ListBootImageSelectionsResponse{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[11]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1044,7 +1166,7 @@ func (x *ListBootImageSelectionsResponse) String() string {
 func (*ListBootImageSelectionsResponse) ProtoMessage() {}
 
 func (x *ListBootImageSelectionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[11]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1094,7 +1216,7 @@ type CephBlockDevice struct {
 
 func (x *CephBlockDevice) Reset() {
 	*x = CephBlockDevice{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[12]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1106,7 +1228,7 @@ func (x *CephBlockDevice) String() string {
 func (*CephBlockDevice) ProtoMessage() {}
 
 func (x *CephBlockDevice) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[12]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1205,7 +1327,7 @@ type NetworkFileSystem struct {
 
 func (x *NetworkFileSystem) Reset() {
 	*x = NetworkFileSystem{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[13]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1217,7 +1339,7 @@ func (x *NetworkFileSystem) String() string {
 func (*NetworkFileSystem) ProtoMessage() {}
 
 func (x *NetworkFileSystem) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[13]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1319,7 +1441,7 @@ type InternalObjectService struct {
 
 func (x *InternalObjectService) Reset() {
 	*x = InternalObjectService{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[14]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1331,7 +1453,7 @@ func (x *InternalObjectService) String() string {
 func (*InternalObjectService) ProtoMessage() {}
 
 func (x *InternalObjectService) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[14]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1526,7 +1648,7 @@ type ExternalObjectService struct {
 
 func (x *ExternalObjectService) Reset() {
 	*x = ExternalObjectService{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[15]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1538,7 +1660,7 @@ func (x *ExternalObjectService) String() string {
 func (*ExternalObjectService) ProtoMessage() {}
 
 func (x *ExternalObjectService) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[15]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1668,7 +1790,7 @@ type FIO struct {
 
 func (x *FIO) Reset() {
 	*x = FIO{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[16]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1680,7 +1802,7 @@ func (x *FIO) String() string {
 func (*FIO) ProtoMessage() {}
 
 func (x *FIO) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[16]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1855,7 +1977,7 @@ func (b0 FIO_builder) Build() *FIO {
 type case_FIO_Target protoreflect.FieldNumber
 
 func (x case_FIO_Target) String() string {
-	md := file_api_configuration_v1_configuration_proto_msgTypes[16].Descriptor()
+	md := file_api_configuration_v1_configuration_proto_msgTypes[17].Descriptor()
 	if x == 0 {
 		return "not set"
 	}
@@ -1889,7 +2011,7 @@ type Warp struct {
 
 func (x *Warp) Reset() {
 	*x = Warp{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[17]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1901,7 +2023,7 @@ func (x *Warp) String() string {
 func (*Warp) ProtoMessage() {}
 
 func (x *Warp) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[17]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2076,7 +2198,7 @@ func (b0 Warp_builder) Build() *Warp {
 type case_Warp_Target protoreflect.FieldNumber
 
 func (x case_Warp_Target) String() string {
-	md := file_api_configuration_v1_configuration_proto_msgTypes[17].Descriptor()
+	md := file_api_configuration_v1_configuration_proto_msgTypes[18].Descriptor()
 	if x == 0 {
 		return "not set"
 	}
@@ -2116,7 +2238,7 @@ type TestResult struct {
 
 func (x *TestResult) Reset() {
 	*x = TestResult{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[18]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2128,7 +2250,7 @@ func (x *TestResult) String() string {
 func (*TestResult) ProtoMessage() {}
 
 func (x *TestResult) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[18]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2430,7 +2552,7 @@ func (b0 TestResult_builder) Build() *TestResult {
 type case_TestResult_Kind protoreflect.FieldNumber
 
 func (x case_TestResult_Kind) String() string {
-	md := file_api_configuration_v1_configuration_proto_msgTypes[18].Descriptor()
+	md := file_api_configuration_v1_configuration_proto_msgTypes[19].Descriptor()
 	if x == 0 {
 		return "not set"
 	}
@@ -2461,7 +2583,7 @@ type ListTestResultsRequest struct {
 
 func (x *ListTestResultsRequest) Reset() {
 	*x = ListTestResultsRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[19]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2473,7 +2595,7 @@ func (x *ListTestResultsRequest) String() string {
 func (*ListTestResultsRequest) ProtoMessage() {}
 
 func (x *ListTestResultsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[19]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2505,7 +2627,7 @@ type ListTestResultsResponse struct {
 
 func (x *ListTestResultsResponse) Reset() {
 	*x = ListTestResultsResponse{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[20]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2517,7 +2639,7 @@ func (x *ListTestResultsResponse) String() string {
 func (*ListTestResultsResponse) ProtoMessage() {}
 
 func (x *ListTestResultsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[20]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2568,7 +2690,7 @@ type CreateTestResultRequest struct {
 
 func (x *CreateTestResultRequest) Reset() {
 	*x = CreateTestResultRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[21]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2580,7 +2702,7 @@ func (x *CreateTestResultRequest) String() string {
 func (*CreateTestResultRequest) ProtoMessage() {}
 
 func (x *CreateTestResultRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[21]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2771,7 +2893,7 @@ func (b0 CreateTestResultRequest_builder) Build() *CreateTestResultRequest {
 type case_CreateTestResultRequest_Kind protoreflect.FieldNumber
 
 func (x case_CreateTestResultRequest_Kind) String() string {
-	md := file_api_configuration_v1_configuration_proto_msgTypes[21].Descriptor()
+	md := file_api_configuration_v1_configuration_proto_msgTypes[22].Descriptor()
 	if x == 0 {
 		return "not set"
 	}
@@ -2805,7 +2927,7 @@ type DeleteTestResultRequest struct {
 
 func (x *DeleteTestResultRequest) Reset() {
 	*x = DeleteTestResultRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[22]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2817,7 +2939,7 @@ func (x *DeleteTestResultRequest) String() string {
 func (*DeleteTestResultRequest) ProtoMessage() {}
 
 func (x *DeleteTestResultRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[22]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2885,7 +3007,7 @@ type ListInternalObjectServicesRequest struct {
 
 func (x *ListInternalObjectServicesRequest) Reset() {
 	*x = ListInternalObjectServicesRequest{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[23]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2897,7 +3019,7 @@ func (x *ListInternalObjectServicesRequest) String() string {
 func (*ListInternalObjectServicesRequest) ProtoMessage() {}
 
 func (x *ListInternalObjectServicesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[23]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3025,7 +3147,7 @@ type ListInternalObjectServicesResponse struct {
 
 func (x *ListInternalObjectServicesResponse) Reset() {
 	*x = ListInternalObjectServicesResponse{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[24]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3037,7 +3159,7 @@ func (x *ListInternalObjectServicesResponse) String() string {
 func (*ListInternalObjectServicesResponse) ProtoMessage() {}
 
 func (x *ListInternalObjectServicesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[24]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3084,7 +3206,7 @@ type Configuration_NTPServer struct {
 
 func (x *Configuration_NTPServer) Reset() {
 	*x = Configuration_NTPServer{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[25]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3096,7 +3218,7 @@ func (x *Configuration_NTPServer) String() string {
 func (*Configuration_NTPServer) ProtoMessage() {}
 
 func (x *Configuration_NTPServer) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[25]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3146,7 +3268,7 @@ type Configuration_PackageRepository struct {
 
 func (x *Configuration_PackageRepository) Reset() {
 	*x = Configuration_PackageRepository{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[26]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3158,7 +3280,7 @@ func (x *Configuration_PackageRepository) String() string {
 func (*Configuration_PackageRepository) ProtoMessage() {}
 
 func (x *Configuration_PackageRepository) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[26]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3316,7 +3438,7 @@ type Configuration_BootImageSelection struct {
 
 func (x *Configuration_BootImageSelection) Reset() {
 	*x = Configuration_BootImageSelection{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[27]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3328,7 +3450,7 @@ func (x *Configuration_BootImageSelection) String() string {
 func (*Configuration_BootImageSelection) ProtoMessage() {}
 
 func (x *Configuration_BootImageSelection) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[27]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3433,6 +3555,7 @@ type Configuration_BootImage struct {
 	xxx_hidden_Source                *string                `protobuf:"bytes,1,opt,name=source"`
 	xxx_hidden_DistroSeries          *string                `protobuf:"bytes,2,opt,name=distro_series,json=distroSeries"`
 	xxx_hidden_Name                  *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Id                    int64                  `protobuf:"varint,4,opt,name=id"`
 	xxx_hidden_ArchitectureStatusMap map[string]string      `protobuf:"bytes,5,rep,name=architecture_status_map,json=architectureStatusMap" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	xxx_hidden_Default               bool                   `protobuf:"varint,11,opt,name=default"`
 	XXX_raceDetectHookData           protoimpl.RaceDetectHookData
@@ -3443,7 +3566,7 @@ type Configuration_BootImage struct {
 
 func (x *Configuration_BootImage) Reset() {
 	*x = Configuration_BootImage{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[28]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3455,7 +3578,7 @@ func (x *Configuration_BootImage) String() string {
 func (*Configuration_BootImage) ProtoMessage() {}
 
 func (x *Configuration_BootImage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[28]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3496,6 +3619,13 @@ func (x *Configuration_BootImage) GetName() string {
 	return ""
 }
 
+func (x *Configuration_BootImage) GetId() int64 {
+	if x != nil {
+		return x.xxx_hidden_Id
+	}
+	return 0
+}
+
 func (x *Configuration_BootImage) GetArchitectureStatusMap() map[string]string {
 	if x != nil {
 		return x.xxx_hidden_ArchitectureStatusMap
@@ -3512,17 +3642,22 @@ func (x *Configuration_BootImage) GetDefault() bool {
 
 func (x *Configuration_BootImage) SetSource(v string) {
 	x.xxx_hidden_Source = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
 func (x *Configuration_BootImage) SetDistroSeries(v string) {
 	x.xxx_hidden_DistroSeries = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
 func (x *Configuration_BootImage) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+}
+
+func (x *Configuration_BootImage) SetId(v int64) {
+	x.xxx_hidden_Id = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
 }
 
 func (x *Configuration_BootImage) SetArchitectureStatusMap(v map[string]string) {
@@ -3531,7 +3666,7 @@ func (x *Configuration_BootImage) SetArchitectureStatusMap(v map[string]string) 
 
 func (x *Configuration_BootImage) SetDefault(v bool) {
 	x.xxx_hidden_Default = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
 }
 
 func (x *Configuration_BootImage) HasSource() bool {
@@ -3555,11 +3690,18 @@ func (x *Configuration_BootImage) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
+func (x *Configuration_BootImage) HasId() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
 func (x *Configuration_BootImage) HasDefault() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
 func (x *Configuration_BootImage) ClearSource() {
@@ -3577,8 +3719,13 @@ func (x *Configuration_BootImage) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
+func (x *Configuration_BootImage) ClearId() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Id = 0
+}
+
 func (x *Configuration_BootImage) ClearDefault() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_Default = false
 }
 
@@ -3588,6 +3735,7 @@ type Configuration_BootImage_builder struct {
 	Source                *string
 	DistroSeries          *string
 	Name                  *string
+	Id                    *int64
 	ArchitectureStatusMap map[string]string
 	Default               *bool
 }
@@ -3597,20 +3745,24 @@ func (b0 Configuration_BootImage_builder) Build() *Configuration_BootImage {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Source != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
 		x.xxx_hidden_Source = b.Source
 	}
 	if b.DistroSeries != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
 		x.xxx_hidden_DistroSeries = b.DistroSeries
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
 		x.xxx_hidden_Name = b.Name
+	}
+	if b.Id != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		x.xxx_hidden_Id = *b.Id
 	}
 	x.xxx_hidden_ArchitectureStatusMap = b.ArchitectureStatusMap
 	if b.Default != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
 		x.xxx_hidden_Default = *b.Default
 	}
 	return m0
@@ -3625,7 +3777,7 @@ type Configuration_HelmRepository struct {
 
 func (x *Configuration_HelmRepository) Reset() {
 	*x = Configuration_HelmRepository{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[29]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3637,7 +3789,7 @@ func (x *Configuration_HelmRepository) String() string {
 func (*Configuration_HelmRepository) ProtoMessage() {}
 
 func (x *Configuration_HelmRepository) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[29]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3689,7 +3841,7 @@ type FIO_Input struct {
 
 func (x *FIO_Input) Reset() {
 	*x = FIO_Input{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[31]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3701,7 +3853,7 @@ func (x *FIO_Input) String() string {
 func (*FIO_Input) ProtoMessage() {}
 
 func (x *FIO_Input) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[31]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3911,7 +4063,7 @@ type FIO_Output struct {
 
 func (x *FIO_Output) Reset() {
 	*x = FIO_Output{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[32]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3923,7 +4075,7 @@ func (x *FIO_Output) String() string {
 func (*FIO_Output) ProtoMessage() {}
 
 func (x *FIO_Output) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[32]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4033,7 +4185,7 @@ type FIO_Output_Throughput struct {
 
 func (x *FIO_Output_Throughput) Reset() {
 	*x = FIO_Output_Throughput{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[33]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4045,7 +4197,7 @@ func (x *FIO_Output_Throughput) String() string {
 func (*FIO_Output_Throughput) ProtoMessage() {}
 
 func (x *FIO_Output_Throughput) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[33]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4221,7 +4373,7 @@ type FIO_Output_Throughput_Latency struct {
 
 func (x *FIO_Output_Throughput_Latency) Reset() {
 	*x = FIO_Output_Throughput_Latency{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[34]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4233,7 +4385,7 @@ func (x *FIO_Output_Throughput_Latency) String() string {
 func (*FIO_Output_Throughput_Latency) ProtoMessage() {}
 
 func (x *FIO_Output_Throughput_Latency) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[34]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4357,7 +4509,7 @@ type Warp_Input struct {
 
 func (x *Warp_Input) Reset() {
 	*x = Warp_Input{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[35]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4369,7 +4521,7 @@ func (x *Warp_Input) String() string {
 func (*Warp_Input) ProtoMessage() {}
 
 func (x *Warp_Input) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[35]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4521,7 +4673,7 @@ type Warp_Output struct {
 
 func (x *Warp_Output) Reset() {
 	*x = Warp_Output{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[36]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4533,7 +4685,7 @@ func (x *Warp_Output) String() string {
 func (*Warp_Output) ProtoMessage() {}
 
 func (x *Warp_Output) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[36]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4643,7 +4795,7 @@ type Warp_Output_Throughput struct {
 
 func (x *Warp_Output_Throughput) Reset() {
 	*x = Warp_Output_Throughput{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[37]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4655,7 +4807,7 @@ func (x *Warp_Output_Throughput) String() string {
 func (*Warp_Output_Throughput) ProtoMessage() {}
 
 func (x *Warp_Output_Throughput) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[37]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4826,7 +4978,7 @@ type Warp_Output_Throughput_Metrics struct {
 
 func (x *Warp_Output_Throughput_Metrics) Reset() {
 	*x = Warp_Output_Throughput_Metrics{}
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[38]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4838,7 +4990,7 @@ func (x *Warp_Output_Throughput_Metrics) String() string {
 func (*Warp_Output_Throughput_Metrics) ProtoMessage() {}
 
 func (x *Warp_Output_Throughput_Metrics) ProtoReflect() protoreflect.Message {
-	mi := &file_api_configuration_v1_configuration_proto_msgTypes[38]
+	mi := &file_api_configuration_v1_configuration_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4952,7 +5104,7 @@ var File_api_configuration_v1_configuration_proto protoreflect.FileDescriptor
 
 const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\n" +
-	"(api/configuration/v1/configuration.proto\x12\x1botterscale.configuration.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x88\b\n" +
+	"(api/configuration/v1/configuration.proto\x12\x1botterscale.configuration.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x98\b\n" +
 	"\rConfiguration\x12S\n" +
 	"\n" +
 	"ntp_server\x18\x01 \x01(\v24.otterscale.configuration.v1.Configuration.NTPServerR\tntpServer\x12o\n" +
@@ -4970,11 +5122,12 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x12BootImageSelection\x12#\n" +
 	"\rdistro_series\x18\x01 \x01(\tR\fdistroSeries\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12$\n" +
-	"\rarchitectures\x18\x03 \x03(\tR\rarchitectures\x1a\xca\x02\n" +
+	"\rarchitectures\x18\x03 \x03(\tR\rarchitectures\x1a\xda\x02\n" +
 	"\tBootImage\x12\x16\n" +
 	"\x06source\x18\x01 \x01(\tR\x06source\x12#\n" +
 	"\rdistro_series\x18\x02 \x01(\tR\fdistroSeries\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x12\x87\x01\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x0e\n" +
+	"\x02id\x18\x04 \x01(\x03R\x02id\x12\x87\x01\n" +
 	"\x17architecture_status_map\x18\x05 \x03(\v2O.otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntryR\x15architectureStatusMap\x12\x18\n" +
 	"\adefault\x18\v \x01(\bR\adefault\x1aH\n" +
 	"\x1aArchitectureStatusMapEntry\x12\x10\n" +
@@ -4993,7 +5146,11 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x04urls\x18\x01 \x03(\tR\x04urls\"c\n" +
 	"\x16CreateBootImageRequest\x12#\n" +
 	"\rdistro_series\x18\x01 \x01(\tR\fdistroSeries\x12$\n" +
-	"\rarchitectures\x18\x02 \x03(\tR\rarchitectures\"A\n" +
+	"\rarchitectures\x18\x02 \x03(\tR\rarchitectures\"s\n" +
+	"\x16UpdateBootImageRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12#\n" +
+	"\rdistro_series\x18\x02 \x01(\tR\fdistroSeries\x12$\n" +
+	"\rarchitectures\x18\x03 \x03(\tR\rarchitectures\"A\n" +
 	"\x1aSetDefaultBootImageRequest\x12#\n" +
 	"\rdistro_series\x18\x01 \x01(\tR\fdistroSeries\"\x19\n" +
 	"\x17ImportBootImagesRequest\"\x1e\n" +
@@ -5141,7 +5298,7 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x0fkubernetes_name\x18\x02 \x01(\tR\x0ekubernetesName\x12\x1b\n" +
 	"\tceph_name\x18\x03 \x01(\tR\bcephName\"\x92\x01\n" +
 	"\"ListInternalObjectServicesResponse\x12l\n" +
-	"\x18internal_object_services\x18\x01 \x03(\v22.otterscale.configuration.v1.InternalObjectServiceR\x16internalObjectServices2\xc7\x0f\n" +
+	"\x18internal_object_services\x18\x01 \x03(\v22.otterscale.configuration.v1.InternalObjectServiceR\x16internalObjectServices2\xda\x10\n" +
 	"\x14ConfigurationService\x12\x88\x01\n" +
 	"\x10GetConfiguration\x124.otterscale.configuration.v1.GetConfigurationRequest\x1a*.otterscale.configuration.v1.Configuration\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vcfg-general\x12\x90\x01\n" +
@@ -5152,6 +5309,8 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x14UpdateHelmRepository\x128.otterscale.configuration.v1.UpdateHelmRepositoryRequest\x1a9.otterscale.configuration.v1.Configuration.HelmRepository\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vcfg-general\x12\x90\x01\n" +
 	"\x0fCreateBootImage\x123.otterscale.configuration.v1.CreateBootImageRequest\x1a4.otterscale.configuration.v1.Configuration.BootImage\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vcfg-general\x12\x90\x01\n" +
+	"\x0fUpdateBootImage\x123.otterscale.configuration.v1.UpdateBootImageRequest\x1a4.otterscale.configuration.v1.Configuration.BootImage\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vcfg-general\x12z\n" +
 	"\x13SetDefaultBootImage\x127.otterscale.configuration.v1.SetDefaultBootImageRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vcfg-general\x12t\n" +
@@ -5171,7 +5330,7 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x16cfg-built-in-self-testB:Z8github.com/otterscale/otterscale/api/configuration/v1;pbb\beditionsp\xe8\a"
 
 var file_api_configuration_v1_configuration_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_api_configuration_v1_configuration_proto_msgTypes = make([]protoimpl.MessageInfo, 39)
+var file_api_configuration_v1_configuration_proto_msgTypes = make([]protoimpl.MessageInfo, 40)
 var file_api_configuration_v1_configuration_proto_goTypes = []any{
 	(InternalObjectService_Type)(0),            // 0: otterscale.configuration.v1.InternalObjectService.Type
 	(FIO_Input_AccessMode)(0),                  // 1: otterscale.configuration.v1.FIO.Input.AccessMode
@@ -5183,106 +5342,109 @@ var file_api_configuration_v1_configuration_proto_goTypes = []any{
 	(*UpdatePackageRepositoryRequest)(nil),     // 7: otterscale.configuration.v1.UpdatePackageRepositoryRequest
 	(*UpdateHelmRepositoryRequest)(nil),        // 8: otterscale.configuration.v1.UpdateHelmRepositoryRequest
 	(*CreateBootImageRequest)(nil),             // 9: otterscale.configuration.v1.CreateBootImageRequest
-	(*SetDefaultBootImageRequest)(nil),         // 10: otterscale.configuration.v1.SetDefaultBootImageRequest
-	(*ImportBootImagesRequest)(nil),            // 11: otterscale.configuration.v1.ImportBootImagesRequest
-	(*IsImportingBootImagesRequest)(nil),       // 12: otterscale.configuration.v1.IsImportingBootImagesRequest
-	(*IsImportingBootImagesResponse)(nil),      // 13: otterscale.configuration.v1.IsImportingBootImagesResponse
-	(*ListBootImageSelectionsRequest)(nil),     // 14: otterscale.configuration.v1.ListBootImageSelectionsRequest
-	(*ListBootImageSelectionsResponse)(nil),    // 15: otterscale.configuration.v1.ListBootImageSelectionsResponse
-	(*CephBlockDevice)(nil),                    // 16: otterscale.configuration.v1.CephBlockDevice
-	(*NetworkFileSystem)(nil),                  // 17: otterscale.configuration.v1.NetworkFileSystem
-	(*InternalObjectService)(nil),              // 18: otterscale.configuration.v1.InternalObjectService
-	(*ExternalObjectService)(nil),              // 19: otterscale.configuration.v1.ExternalObjectService
-	(*FIO)(nil),                                // 20: otterscale.configuration.v1.FIO
-	(*Warp)(nil),                               // 21: otterscale.configuration.v1.Warp
-	(*TestResult)(nil),                         // 22: otterscale.configuration.v1.TestResult
-	(*ListTestResultsRequest)(nil),             // 23: otterscale.configuration.v1.ListTestResultsRequest
-	(*ListTestResultsResponse)(nil),            // 24: otterscale.configuration.v1.ListTestResultsResponse
-	(*CreateTestResultRequest)(nil),            // 25: otterscale.configuration.v1.CreateTestResultRequest
-	(*DeleteTestResultRequest)(nil),            // 26: otterscale.configuration.v1.DeleteTestResultRequest
-	(*ListInternalObjectServicesRequest)(nil),  // 27: otterscale.configuration.v1.ListInternalObjectServicesRequest
-	(*ListInternalObjectServicesResponse)(nil), // 28: otterscale.configuration.v1.ListInternalObjectServicesResponse
-	(*Configuration_NTPServer)(nil),            // 29: otterscale.configuration.v1.Configuration.NTPServer
-	(*Configuration_PackageRepository)(nil),    // 30: otterscale.configuration.v1.Configuration.PackageRepository
-	(*Configuration_BootImageSelection)(nil),   // 31: otterscale.configuration.v1.Configuration.BootImageSelection
-	(*Configuration_BootImage)(nil),            // 32: otterscale.configuration.v1.Configuration.BootImage
-	(*Configuration_HelmRepository)(nil),       // 33: otterscale.configuration.v1.Configuration.HelmRepository
-	nil,                                        // 34: otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntry
-	(*FIO_Input)(nil),                          // 35: otterscale.configuration.v1.FIO.Input
-	(*FIO_Output)(nil),                         // 36: otterscale.configuration.v1.FIO.Output
-	(*FIO_Output_Throughput)(nil),              // 37: otterscale.configuration.v1.FIO.Output.Throughput
-	(*FIO_Output_Throughput_Latency)(nil),      // 38: otterscale.configuration.v1.FIO.Output.Throughput.Latency
-	(*Warp_Input)(nil),                         // 39: otterscale.configuration.v1.Warp.Input
-	(*Warp_Output)(nil),                        // 40: otterscale.configuration.v1.Warp.Output
-	(*Warp_Output_Throughput)(nil),             // 41: otterscale.configuration.v1.Warp.Output.Throughput
-	(*Warp_Output_Throughput_Metrics)(nil),     // 42: otterscale.configuration.v1.Warp.Output.Throughput.Metrics
-	(*timestamppb.Timestamp)(nil),              // 43: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                      // 44: google.protobuf.Empty
+	(*UpdateBootImageRequest)(nil),             // 10: otterscale.configuration.v1.UpdateBootImageRequest
+	(*SetDefaultBootImageRequest)(nil),         // 11: otterscale.configuration.v1.SetDefaultBootImageRequest
+	(*ImportBootImagesRequest)(nil),            // 12: otterscale.configuration.v1.ImportBootImagesRequest
+	(*IsImportingBootImagesRequest)(nil),       // 13: otterscale.configuration.v1.IsImportingBootImagesRequest
+	(*IsImportingBootImagesResponse)(nil),      // 14: otterscale.configuration.v1.IsImportingBootImagesResponse
+	(*ListBootImageSelectionsRequest)(nil),     // 15: otterscale.configuration.v1.ListBootImageSelectionsRequest
+	(*ListBootImageSelectionsResponse)(nil),    // 16: otterscale.configuration.v1.ListBootImageSelectionsResponse
+	(*CephBlockDevice)(nil),                    // 17: otterscale.configuration.v1.CephBlockDevice
+	(*NetworkFileSystem)(nil),                  // 18: otterscale.configuration.v1.NetworkFileSystem
+	(*InternalObjectService)(nil),              // 19: otterscale.configuration.v1.InternalObjectService
+	(*ExternalObjectService)(nil),              // 20: otterscale.configuration.v1.ExternalObjectService
+	(*FIO)(nil),                                // 21: otterscale.configuration.v1.FIO
+	(*Warp)(nil),                               // 22: otterscale.configuration.v1.Warp
+	(*TestResult)(nil),                         // 23: otterscale.configuration.v1.TestResult
+	(*ListTestResultsRequest)(nil),             // 24: otterscale.configuration.v1.ListTestResultsRequest
+	(*ListTestResultsResponse)(nil),            // 25: otterscale.configuration.v1.ListTestResultsResponse
+	(*CreateTestResultRequest)(nil),            // 26: otterscale.configuration.v1.CreateTestResultRequest
+	(*DeleteTestResultRequest)(nil),            // 27: otterscale.configuration.v1.DeleteTestResultRequest
+	(*ListInternalObjectServicesRequest)(nil),  // 28: otterscale.configuration.v1.ListInternalObjectServicesRequest
+	(*ListInternalObjectServicesResponse)(nil), // 29: otterscale.configuration.v1.ListInternalObjectServicesResponse
+	(*Configuration_NTPServer)(nil),            // 30: otterscale.configuration.v1.Configuration.NTPServer
+	(*Configuration_PackageRepository)(nil),    // 31: otterscale.configuration.v1.Configuration.PackageRepository
+	(*Configuration_BootImageSelection)(nil),   // 32: otterscale.configuration.v1.Configuration.BootImageSelection
+	(*Configuration_BootImage)(nil),            // 33: otterscale.configuration.v1.Configuration.BootImage
+	(*Configuration_HelmRepository)(nil),       // 34: otterscale.configuration.v1.Configuration.HelmRepository
+	nil,                                        // 35: otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntry
+	(*FIO_Input)(nil),                          // 36: otterscale.configuration.v1.FIO.Input
+	(*FIO_Output)(nil),                         // 37: otterscale.configuration.v1.FIO.Output
+	(*FIO_Output_Throughput)(nil),              // 38: otterscale.configuration.v1.FIO.Output.Throughput
+	(*FIO_Output_Throughput_Latency)(nil),      // 39: otterscale.configuration.v1.FIO.Output.Throughput.Latency
+	(*Warp_Input)(nil),                         // 40: otterscale.configuration.v1.Warp.Input
+	(*Warp_Output)(nil),                        // 41: otterscale.configuration.v1.Warp.Output
+	(*Warp_Output_Throughput)(nil),             // 42: otterscale.configuration.v1.Warp.Output.Throughput
+	(*Warp_Output_Throughput_Metrics)(nil),     // 43: otterscale.configuration.v1.Warp.Output.Throughput.Metrics
+	(*timestamppb.Timestamp)(nil),              // 44: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                      // 45: google.protobuf.Empty
 }
 var file_api_configuration_v1_configuration_proto_depIdxs = []int32{
-	29, // 0: otterscale.configuration.v1.Configuration.ntp_server:type_name -> otterscale.configuration.v1.Configuration.NTPServer
-	30, // 1: otterscale.configuration.v1.Configuration.package_repositories:type_name -> otterscale.configuration.v1.Configuration.PackageRepository
-	32, // 2: otterscale.configuration.v1.Configuration.boot_images:type_name -> otterscale.configuration.v1.Configuration.BootImage
-	33, // 3: otterscale.configuration.v1.Configuration.helm_repository:type_name -> otterscale.configuration.v1.Configuration.HelmRepository
-	31, // 4: otterscale.configuration.v1.ListBootImageSelectionsResponse.boot_image_selections:type_name -> otterscale.configuration.v1.Configuration.BootImageSelection
+	30, // 0: otterscale.configuration.v1.Configuration.ntp_server:type_name -> otterscale.configuration.v1.Configuration.NTPServer
+	31, // 1: otterscale.configuration.v1.Configuration.package_repositories:type_name -> otterscale.configuration.v1.Configuration.PackageRepository
+	33, // 2: otterscale.configuration.v1.Configuration.boot_images:type_name -> otterscale.configuration.v1.Configuration.BootImage
+	34, // 3: otterscale.configuration.v1.Configuration.helm_repository:type_name -> otterscale.configuration.v1.Configuration.HelmRepository
+	32, // 4: otterscale.configuration.v1.ListBootImageSelectionsResponse.boot_image_selections:type_name -> otterscale.configuration.v1.Configuration.BootImageSelection
 	0,  // 5: otterscale.configuration.v1.InternalObjectService.type:type_name -> otterscale.configuration.v1.InternalObjectService.Type
-	16, // 6: otterscale.configuration.v1.FIO.ceph_block_device:type_name -> otterscale.configuration.v1.CephBlockDevice
-	17, // 7: otterscale.configuration.v1.FIO.network_file_system:type_name -> otterscale.configuration.v1.NetworkFileSystem
-	35, // 8: otterscale.configuration.v1.FIO.input:type_name -> otterscale.configuration.v1.FIO.Input
-	36, // 9: otterscale.configuration.v1.FIO.output:type_name -> otterscale.configuration.v1.FIO.Output
-	18, // 10: otterscale.configuration.v1.Warp.internal_object_service:type_name -> otterscale.configuration.v1.InternalObjectService
-	19, // 11: otterscale.configuration.v1.Warp.external_object_service:type_name -> otterscale.configuration.v1.ExternalObjectService
-	39, // 12: otterscale.configuration.v1.Warp.input:type_name -> otterscale.configuration.v1.Warp.Input
-	40, // 13: otterscale.configuration.v1.Warp.output:type_name -> otterscale.configuration.v1.Warp.Output
+	17, // 6: otterscale.configuration.v1.FIO.ceph_block_device:type_name -> otterscale.configuration.v1.CephBlockDevice
+	18, // 7: otterscale.configuration.v1.FIO.network_file_system:type_name -> otterscale.configuration.v1.NetworkFileSystem
+	36, // 8: otterscale.configuration.v1.FIO.input:type_name -> otterscale.configuration.v1.FIO.Input
+	37, // 9: otterscale.configuration.v1.FIO.output:type_name -> otterscale.configuration.v1.FIO.Output
+	19, // 10: otterscale.configuration.v1.Warp.internal_object_service:type_name -> otterscale.configuration.v1.InternalObjectService
+	20, // 11: otterscale.configuration.v1.Warp.external_object_service:type_name -> otterscale.configuration.v1.ExternalObjectService
+	40, // 12: otterscale.configuration.v1.Warp.input:type_name -> otterscale.configuration.v1.Warp.Input
+	41, // 13: otterscale.configuration.v1.Warp.output:type_name -> otterscale.configuration.v1.Warp.Output
 	3,  // 14: otterscale.configuration.v1.TestResult.status:type_name -> otterscale.configuration.v1.TestResult.Status
-	43, // 15: otterscale.configuration.v1.TestResult.started_at:type_name -> google.protobuf.Timestamp
-	43, // 16: otterscale.configuration.v1.TestResult.completed_at:type_name -> google.protobuf.Timestamp
-	20, // 17: otterscale.configuration.v1.TestResult.fio:type_name -> otterscale.configuration.v1.FIO
-	21, // 18: otterscale.configuration.v1.TestResult.warp:type_name -> otterscale.configuration.v1.Warp
-	22, // 19: otterscale.configuration.v1.ListTestResultsResponse.test_results:type_name -> otterscale.configuration.v1.TestResult
-	20, // 20: otterscale.configuration.v1.CreateTestResultRequest.fio:type_name -> otterscale.configuration.v1.FIO
-	21, // 21: otterscale.configuration.v1.CreateTestResultRequest.warp:type_name -> otterscale.configuration.v1.Warp
-	18, // 22: otterscale.configuration.v1.ListInternalObjectServicesResponse.internal_object_services:type_name -> otterscale.configuration.v1.InternalObjectService
-	34, // 23: otterscale.configuration.v1.Configuration.BootImage.architecture_status_map:type_name -> otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntry
+	44, // 15: otterscale.configuration.v1.TestResult.started_at:type_name -> google.protobuf.Timestamp
+	44, // 16: otterscale.configuration.v1.TestResult.completed_at:type_name -> google.protobuf.Timestamp
+	21, // 17: otterscale.configuration.v1.TestResult.fio:type_name -> otterscale.configuration.v1.FIO
+	22, // 18: otterscale.configuration.v1.TestResult.warp:type_name -> otterscale.configuration.v1.Warp
+	23, // 19: otterscale.configuration.v1.ListTestResultsResponse.test_results:type_name -> otterscale.configuration.v1.TestResult
+	21, // 20: otterscale.configuration.v1.CreateTestResultRequest.fio:type_name -> otterscale.configuration.v1.FIO
+	22, // 21: otterscale.configuration.v1.CreateTestResultRequest.warp:type_name -> otterscale.configuration.v1.Warp
+	19, // 22: otterscale.configuration.v1.ListInternalObjectServicesResponse.internal_object_services:type_name -> otterscale.configuration.v1.InternalObjectService
+	35, // 23: otterscale.configuration.v1.Configuration.BootImage.architecture_status_map:type_name -> otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntry
 	1,  // 24: otterscale.configuration.v1.FIO.Input.access_mode:type_name -> otterscale.configuration.v1.FIO.Input.AccessMode
-	37, // 25: otterscale.configuration.v1.FIO.Output.read:type_name -> otterscale.configuration.v1.FIO.Output.Throughput
-	37, // 26: otterscale.configuration.v1.FIO.Output.write:type_name -> otterscale.configuration.v1.FIO.Output.Throughput
-	37, // 27: otterscale.configuration.v1.FIO.Output.trim:type_name -> otterscale.configuration.v1.FIO.Output.Throughput
-	38, // 28: otterscale.configuration.v1.FIO.Output.Throughput.latency:type_name -> otterscale.configuration.v1.FIO.Output.Throughput.Latency
+	38, // 25: otterscale.configuration.v1.FIO.Output.read:type_name -> otterscale.configuration.v1.FIO.Output.Throughput
+	38, // 26: otterscale.configuration.v1.FIO.Output.write:type_name -> otterscale.configuration.v1.FIO.Output.Throughput
+	38, // 27: otterscale.configuration.v1.FIO.Output.trim:type_name -> otterscale.configuration.v1.FIO.Output.Throughput
+	39, // 28: otterscale.configuration.v1.FIO.Output.Throughput.latency:type_name -> otterscale.configuration.v1.FIO.Output.Throughput.Latency
 	2,  // 29: otterscale.configuration.v1.Warp.Input.operation:type_name -> otterscale.configuration.v1.Warp.Input.Operation
-	41, // 30: otterscale.configuration.v1.Warp.Output.get:type_name -> otterscale.configuration.v1.Warp.Output.Throughput
-	41, // 31: otterscale.configuration.v1.Warp.Output.put:type_name -> otterscale.configuration.v1.Warp.Output.Throughput
-	41, // 32: otterscale.configuration.v1.Warp.Output.delete:type_name -> otterscale.configuration.v1.Warp.Output.Throughput
-	42, // 33: otterscale.configuration.v1.Warp.Output.Throughput.bytes:type_name -> otterscale.configuration.v1.Warp.Output.Throughput.Metrics
-	42, // 34: otterscale.configuration.v1.Warp.Output.Throughput.objects:type_name -> otterscale.configuration.v1.Warp.Output.Throughput.Metrics
+	42, // 30: otterscale.configuration.v1.Warp.Output.get:type_name -> otterscale.configuration.v1.Warp.Output.Throughput
+	42, // 31: otterscale.configuration.v1.Warp.Output.put:type_name -> otterscale.configuration.v1.Warp.Output.Throughput
+	42, // 32: otterscale.configuration.v1.Warp.Output.delete:type_name -> otterscale.configuration.v1.Warp.Output.Throughput
+	43, // 33: otterscale.configuration.v1.Warp.Output.Throughput.bytes:type_name -> otterscale.configuration.v1.Warp.Output.Throughput.Metrics
+	43, // 34: otterscale.configuration.v1.Warp.Output.Throughput.objects:type_name -> otterscale.configuration.v1.Warp.Output.Throughput.Metrics
 	5,  // 35: otterscale.configuration.v1.ConfigurationService.GetConfiguration:input_type -> otterscale.configuration.v1.GetConfigurationRequest
 	6,  // 36: otterscale.configuration.v1.ConfigurationService.UpdateNTPServer:input_type -> otterscale.configuration.v1.UpdateNTPServerRequest
 	7,  // 37: otterscale.configuration.v1.ConfigurationService.UpdatePackageRepository:input_type -> otterscale.configuration.v1.UpdatePackageRepositoryRequest
 	8,  // 38: otterscale.configuration.v1.ConfigurationService.UpdateHelmRepository:input_type -> otterscale.configuration.v1.UpdateHelmRepositoryRequest
 	9,  // 39: otterscale.configuration.v1.ConfigurationService.CreateBootImage:input_type -> otterscale.configuration.v1.CreateBootImageRequest
-	10, // 40: otterscale.configuration.v1.ConfigurationService.SetDefaultBootImage:input_type -> otterscale.configuration.v1.SetDefaultBootImageRequest
-	11, // 41: otterscale.configuration.v1.ConfigurationService.ImportBootImages:input_type -> otterscale.configuration.v1.ImportBootImagesRequest
-	12, // 42: otterscale.configuration.v1.ConfigurationService.IsImportingBootImages:input_type -> otterscale.configuration.v1.IsImportingBootImagesRequest
-	14, // 43: otterscale.configuration.v1.ConfigurationService.ListBootImageSelections:input_type -> otterscale.configuration.v1.ListBootImageSelectionsRequest
-	23, // 44: otterscale.configuration.v1.ConfigurationService.ListTestResults:input_type -> otterscale.configuration.v1.ListTestResultsRequest
-	25, // 45: otterscale.configuration.v1.ConfigurationService.CreateTestResult:input_type -> otterscale.configuration.v1.CreateTestResultRequest
-	26, // 46: otterscale.configuration.v1.ConfigurationService.DeleteTestResult:input_type -> otterscale.configuration.v1.DeleteTestResultRequest
-	27, // 47: otterscale.configuration.v1.ConfigurationService.ListInternalObjectServices:input_type -> otterscale.configuration.v1.ListInternalObjectServicesRequest
-	4,  // 48: otterscale.configuration.v1.ConfigurationService.GetConfiguration:output_type -> otterscale.configuration.v1.Configuration
-	29, // 49: otterscale.configuration.v1.ConfigurationService.UpdateNTPServer:output_type -> otterscale.configuration.v1.Configuration.NTPServer
-	30, // 50: otterscale.configuration.v1.ConfigurationService.UpdatePackageRepository:output_type -> otterscale.configuration.v1.Configuration.PackageRepository
-	33, // 51: otterscale.configuration.v1.ConfigurationService.UpdateHelmRepository:output_type -> otterscale.configuration.v1.Configuration.HelmRepository
-	32, // 52: otterscale.configuration.v1.ConfigurationService.CreateBootImage:output_type -> otterscale.configuration.v1.Configuration.BootImage
-	44, // 53: otterscale.configuration.v1.ConfigurationService.SetDefaultBootImage:output_type -> google.protobuf.Empty
-	44, // 54: otterscale.configuration.v1.ConfigurationService.ImportBootImages:output_type -> google.protobuf.Empty
-	13, // 55: otterscale.configuration.v1.ConfigurationService.IsImportingBootImages:output_type -> otterscale.configuration.v1.IsImportingBootImagesResponse
-	15, // 56: otterscale.configuration.v1.ConfigurationService.ListBootImageSelections:output_type -> otterscale.configuration.v1.ListBootImageSelectionsResponse
-	24, // 57: otterscale.configuration.v1.ConfigurationService.ListTestResults:output_type -> otterscale.configuration.v1.ListTestResultsResponse
-	22, // 58: otterscale.configuration.v1.ConfigurationService.CreateTestResult:output_type -> otterscale.configuration.v1.TestResult
-	44, // 59: otterscale.configuration.v1.ConfigurationService.DeleteTestResult:output_type -> google.protobuf.Empty
-	28, // 60: otterscale.configuration.v1.ConfigurationService.ListInternalObjectServices:output_type -> otterscale.configuration.v1.ListInternalObjectServicesResponse
-	48, // [48:61] is the sub-list for method output_type
-	35, // [35:48] is the sub-list for method input_type
+	10, // 40: otterscale.configuration.v1.ConfigurationService.UpdateBootImage:input_type -> otterscale.configuration.v1.UpdateBootImageRequest
+	11, // 41: otterscale.configuration.v1.ConfigurationService.SetDefaultBootImage:input_type -> otterscale.configuration.v1.SetDefaultBootImageRequest
+	12, // 42: otterscale.configuration.v1.ConfigurationService.ImportBootImages:input_type -> otterscale.configuration.v1.ImportBootImagesRequest
+	13, // 43: otterscale.configuration.v1.ConfigurationService.IsImportingBootImages:input_type -> otterscale.configuration.v1.IsImportingBootImagesRequest
+	15, // 44: otterscale.configuration.v1.ConfigurationService.ListBootImageSelections:input_type -> otterscale.configuration.v1.ListBootImageSelectionsRequest
+	24, // 45: otterscale.configuration.v1.ConfigurationService.ListTestResults:input_type -> otterscale.configuration.v1.ListTestResultsRequest
+	26, // 46: otterscale.configuration.v1.ConfigurationService.CreateTestResult:input_type -> otterscale.configuration.v1.CreateTestResultRequest
+	27, // 47: otterscale.configuration.v1.ConfigurationService.DeleteTestResult:input_type -> otterscale.configuration.v1.DeleteTestResultRequest
+	28, // 48: otterscale.configuration.v1.ConfigurationService.ListInternalObjectServices:input_type -> otterscale.configuration.v1.ListInternalObjectServicesRequest
+	4,  // 49: otterscale.configuration.v1.ConfigurationService.GetConfiguration:output_type -> otterscale.configuration.v1.Configuration
+	30, // 50: otterscale.configuration.v1.ConfigurationService.UpdateNTPServer:output_type -> otterscale.configuration.v1.Configuration.NTPServer
+	31, // 51: otterscale.configuration.v1.ConfigurationService.UpdatePackageRepository:output_type -> otterscale.configuration.v1.Configuration.PackageRepository
+	34, // 52: otterscale.configuration.v1.ConfigurationService.UpdateHelmRepository:output_type -> otterscale.configuration.v1.Configuration.HelmRepository
+	33, // 53: otterscale.configuration.v1.ConfigurationService.CreateBootImage:output_type -> otterscale.configuration.v1.Configuration.BootImage
+	33, // 54: otterscale.configuration.v1.ConfigurationService.UpdateBootImage:output_type -> otterscale.configuration.v1.Configuration.BootImage
+	45, // 55: otterscale.configuration.v1.ConfigurationService.SetDefaultBootImage:output_type -> google.protobuf.Empty
+	45, // 56: otterscale.configuration.v1.ConfigurationService.ImportBootImages:output_type -> google.protobuf.Empty
+	14, // 57: otterscale.configuration.v1.ConfigurationService.IsImportingBootImages:output_type -> otterscale.configuration.v1.IsImportingBootImagesResponse
+	16, // 58: otterscale.configuration.v1.ConfigurationService.ListBootImageSelections:output_type -> otterscale.configuration.v1.ListBootImageSelectionsResponse
+	25, // 59: otterscale.configuration.v1.ConfigurationService.ListTestResults:output_type -> otterscale.configuration.v1.ListTestResultsResponse
+	23, // 60: otterscale.configuration.v1.ConfigurationService.CreateTestResult:output_type -> otterscale.configuration.v1.TestResult
+	45, // 61: otterscale.configuration.v1.ConfigurationService.DeleteTestResult:output_type -> google.protobuf.Empty
+	29, // 62: otterscale.configuration.v1.ConfigurationService.ListInternalObjectServices:output_type -> otterscale.configuration.v1.ListInternalObjectServicesResponse
+	49, // [49:63] is the sub-list for method output_type
+	35, // [35:49] is the sub-list for method input_type
 	35, // [35:35] is the sub-list for extension type_name
 	35, // [35:35] is the sub-list for extension extendee
 	0,  // [0:35] is the sub-list for field type_name
@@ -5293,19 +5455,19 @@ func file_api_configuration_v1_configuration_proto_init() {
 	if File_api_configuration_v1_configuration_proto != nil {
 		return
 	}
-	file_api_configuration_v1_configuration_proto_msgTypes[16].OneofWrappers = []any{
+	file_api_configuration_v1_configuration_proto_msgTypes[17].OneofWrappers = []any{
 		(*fIO_CephBlockDevice)(nil),
 		(*fIO_NetworkFileSystem)(nil),
 	}
-	file_api_configuration_v1_configuration_proto_msgTypes[17].OneofWrappers = []any{
+	file_api_configuration_v1_configuration_proto_msgTypes[18].OneofWrappers = []any{
 		(*warp_InternalObjectService)(nil),
 		(*warp_ExternalObjectService)(nil),
 	}
-	file_api_configuration_v1_configuration_proto_msgTypes[18].OneofWrappers = []any{
+	file_api_configuration_v1_configuration_proto_msgTypes[19].OneofWrappers = []any{
 		(*testResult_Fio)(nil),
 		(*testResult_Warp)(nil),
 	}
-	file_api_configuration_v1_configuration_proto_msgTypes[21].OneofWrappers = []any{
+	file_api_configuration_v1_configuration_proto_msgTypes[22].OneofWrappers = []any{
 		(*createTestResultRequest_Fio)(nil),
 		(*createTestResultRequest_Warp)(nil),
 	}
@@ -5315,7 +5477,7 @@ func file_api_configuration_v1_configuration_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_configuration_v1_configuration_proto_rawDesc), len(file_api_configuration_v1_configuration_proto_rawDesc)),
 			NumEnums:      4,
-			NumMessages:   39,
+			NumMessages:   40,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
