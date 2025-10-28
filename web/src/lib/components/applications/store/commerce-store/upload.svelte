@@ -33,7 +33,7 @@
 			return;
 		}
 
-		uploadedFle = {
+		uploadedFile = {
 			name: selectedFile.name,
 			size: selectedFile.size,
 			type: selectedFile.type,
@@ -43,8 +43,8 @@
 		};
 	};
 
-	async function getChartContent(uploadedFle: UploadedFile) {
-		const url = await uploadedFle.url;
+	async function getChartContent(uploadedFile: UploadedFile) {
+		const url = await uploadedFile.url;
 		const response = await fetch(url);
 		const arrayBuffer = await response.arrayBuffer();
 		const chartContent = new Uint8Array(arrayBuffer);
@@ -53,17 +53,17 @@
 
 	const upload = async () => {
 		try {
-			if (!uploadedFle) {
+			if (!uploadedFile) {
 				toast.error('Please select a chart file to upload');
 				return;
 			}
 
-			if (!uploadedFle.name.endsWith('.tgz') && !uploadedFle.name.endsWith('.tar.gz')) {
+			if (!uploadedFile.name.endsWith('.tgz') && !uploadedFile.name.endsWith('.tar.gz')) {
 				toast.error('Please select a valid Helm chart file (.tgz or .tar.gz)');
 				return;
 			}
 
-			const chartContent = await getChartContent(uploadedFle);
+			const chartContent = await getChartContent(uploadedFile);
 			await client.uploadChart({
 				chartContent: chartContent,
 			});
@@ -132,9 +132,9 @@
 		open = false;
 	}
 
-	let uploadedFle = $state<UploadedFile | undefined>(undefined);
+	let uploadedFile = $state<UploadedFile | undefined>(undefined);
 	function reset() {
-		uploadedFle = undefined;
+		uploadedFile = undefined;
 	}
 
 	let isDragging = $state(false);
@@ -182,7 +182,7 @@
 				for="file-upload"
 				class="flex min-h-36 cursor-pointer flex-col items-center justify-center space-y-2"
 			>
-				{#if !uploadedFle}
+				{#if !uploadedFile}
 					<Icon icon="ph:upload" class="size-8 text-gray-400" />
 					<div>
 						<p class="text-sm text-gray-600">
@@ -193,14 +193,14 @@
 						<p class="text-xs text-gray-400">{m.applications_store_chart_upload_constraint()}</p>
 					</div>
 				{:else}
-					{@const { value: fileSizeValue, unit: fileSizeUnit } = formatCapacity(uploadedFle.size)}
+					{@const { value: fileSizeValue, unit: fileSizeUnit } = formatCapacity(uploadedFile.size)}
 					<Icon icon="ph:file-archive" class="size-8 text-gray-600" />
 					<div class="space-y-1">
 						<p class="text-sm text-gray-600">
-							{uploadedFle.name}
+							{uploadedFile.name}
 						</p>
 						<p class="text-xs text-gray-400">
-							{new Date(uploadedFle.lastModifiedAt).toLocaleString()}．{fileSizeValue}
+							{new Date(uploadedFile.lastModifiedAt).toLocaleString()}．{fileSizeValue}
 							{fileSizeUnit}
 						</p>
 					</div>
@@ -215,7 +215,7 @@
 				}}>{m.cancel()}</Modal.Cancel
 			>
 			<Modal.Action
-				disabled={!uploadedFle}
+				disabled={!uploadedFile}
 				onclick={async () => {
 					await upload();
 					reset();
