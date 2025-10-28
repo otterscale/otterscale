@@ -202,55 +202,55 @@ export const pathDisabled = (
 export const pathHidden = (scope: string | undefined, url: string): boolean => {
 	if (
 		url === dynamicPaths.applications(scope).url &&
-		!(page.data.featureStates['app-general'] || page.data.featureStates['app-helm-chart'])
+		!(page.data['feature-states-app-general'] || page.data['feature-states-app-helm-chart'])
 	) {
 		return true;
 	}
-	if (url === dynamicPaths.applicationsWorkloads(scope).url && !page.data.featureStates['app-general']) {
+	if (url === dynamicPaths.applicationsWorkloads(scope).url && !page.data['feature-states-app-general']) {
 		return true;
 	}
-	if (url === dynamicPaths.applicationsStore(scope).url && !page.data.featureStates['app-helm-chart']) {
-		return true;
-	}
-
-	if (url === dynamicPaths.compute(scope).url && !page.data.featureStates['vm-general']) {
-		return true;
-	}
-	if (url === dynamicPaths.computeVirtualMachine(scope).url && !page.data.featureStates['vm-general']) {
+	if (url === dynamicPaths.applicationsStore(scope).url && !page.data['feature-states-app-helm-chart']) {
 		return true;
 	}
 
-	if (url === dynamicPaths.models(scope).url && !page.data.featureStates['mdl-general']) {
+	if (url === dynamicPaths.compute(scope).url && !page.data['feature-states-vm-general']) {
 		return true;
 	}
-	if (url === dynamicPaths.modelsLLM(scope).url && !page.data.featureStates['mdl-general']) {
+	if (url === dynamicPaths.computeVirtualMachine(scope).url && !page.data['feature-states-vm-general']) {
+		return true;
+	}
+
+	if (url === dynamicPaths.models(scope).url && !page.data['feature-states-mdl-general']) {
+		return true;
+	}
+	if (url === dynamicPaths.modelsLLM(scope).url && !page.data['feature-states-mdl-general']) {
 		return true;
 	}
 
 	if (
 		url === dynamicPaths.storage(scope).url &&
 		!(
-			page.data.featureStates['stg-general'] ||
-			page.data.featureStates['stg-block'] ||
-			page.data.featureStates['stg-file'] ||
-			page.data.featureStates['stg-object']
+			page.data['feature-states-stg-general'] ||
+			page.data['feature-states-stg-block'] ||
+			page.data['feature-states-stg-file'] ||
+			page.data['feature-states-stg-object']
 		)
 	) {
 		return true;
 	}
-	if (url === dynamicPaths.storageOSD(scope).url && !page.data.featureStates['stg-general']) {
+	if (url === dynamicPaths.storageOSD(scope).url && !page.data['feature-states-stg-general']) {
 		return true;
 	}
-	if (url === dynamicPaths.storagePool(scope).url && !page.data.featureStates['stg-general']) {
+	if (url === dynamicPaths.storagePool(scope).url && !page.data['feature-states-stg-general']) {
 		return true;
 	}
-	if (url === dynamicPaths.storageBlockDevice(scope).url && !page.data.featureStates['stg-block']) {
+	if (url === dynamicPaths.storageBlockDevice(scope).url && !page.data['feature-states-stg-block']) {
 		return true;
 	}
-	if (url === dynamicPaths.storageFileSystem(scope).url && !page.data.featureStates['stg-file']) {
+	if (url === dynamicPaths.storageFileSystem(scope).url && !page.data['feature-states-stg-file']) {
 		return true;
 	}
-	if (url === dynamicPaths.storageObjectGateway(scope).url && !page.data.featureStates['stg-object']) {
+	if (url === dynamicPaths.storageObjectGateway(scope).url && !page.data['feature-states-stg-object']) {
 		return true;
 	}
 	return false;

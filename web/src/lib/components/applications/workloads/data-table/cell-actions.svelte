@@ -12,7 +12,7 @@
 	let { application }: { application: Application } = $props();
 </script>
 
-{#if page.data.applicationFeatureStates['app-container']}
+{#if page.data['feature-states-app-container']}
 	<Layout.Actions>
 		<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 		<Layout.ActionSeparator />

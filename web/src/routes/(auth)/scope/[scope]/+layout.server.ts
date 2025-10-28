@@ -1,3 +1,4 @@
+import { FlagdProvider } from '@openfeature/flagd-provider';
 import { OpenFeature } from '@openfeature/server-sdk';
 import { redirect } from '@sveltejs/kit';
 import type { User } from 'better-auth';
@@ -15,40 +16,32 @@ export const load: LayoutServerLoad = async ({ request, url }) => {
 		redirect(302, `/?next=${url.pathname}`);
 	}
 
-	const client = OpenFeature.getClient();
-
-	const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-	while (client.providerStatus !== 'READY') {
-		if (Date.now() - Date.now() > 5000) {
-			return {
-				user: session.user as User,
-				isAppGeneralOn: true,
-				isAppHelmChartOn: false,
-			};
-		}
-		await sleep(1000);
+	try {
+		await OpenFeature.setProviderAndWait(new FlagdProvider({ host: 'localhost', port: 8013 }));
+	} catch (error) {
+		console.error('Failed to initialize provider:', error);
 	}
 
-	const appGeneral = await client.getBooleanValue('app-general', false);
-	const appHelmChart = await client.getBooleanValue('app-helm-chart', false);
-	const vmGeneral = await client.getBooleanValue('vm-general', false);
-	const mdlGeneral = await client.getBooleanValue('mdl-general', false);
-	const stgGeneral = await client.getBooleanValue('stg-general', false);
-	const stgBlock = await client.getBooleanValue('stg-block', false);
-	const stgFile = await client.getBooleanValue('stg-file', false);
-	const stgObject = await client.getBooleanValue('stg-object', false);
+	const client = OpenFeature.getClient();
+
+	const appGeneralFeatureState = await client.getBooleanValue('app-general', false);
+	const appHelmChartFeatureState = await client.getBooleanValue('app-helm-chart', false);
+	const vmGeneralFeatureState = await client.getBooleanValue('vm-general', false);
+	const mdlGeneralFeatureState = await client.getBooleanValue('mdl-general', false);
+	const stgGeneralFeatureState = await client.getBooleanValue('stg-general', false);
+	const stgBlockFeatureState = await client.getBooleanValue('stg-block', false);
+	const stgFileFeatureState = await client.getBooleanValue('stg-file', false);
+	const stgObjectFeatureState = await client.getBooleanValue('stg-object', false);
 
 	return {
 		user: session.user as User,
-		featureStates: {
-			'app-general': appGeneral,
-			'app-helm-chart': appHelmChart,
-			'vm-general': vmGeneral,
-			'mdl-general': mdlGeneral,
-			'stg-general': stgGeneral,
-			'stg-block': stgBlock,
-			'stg-file': stgFile,
-			'stg-object': stgObject,
-		},
+		'feature-states-app-general': appGeneralFeatureState,
+		'feature-states-app-helm-chart': appHelmChartFeatureState,
+		'feature-states-vm-general': vmGeneralFeatureState,
+		'feature-states-mdl-general': mdlGeneralFeatureState,
+		'feature-states-stg-general': stgGeneralFeatureState,
+		'feature-states-stg-block': stgBlockFeatureState,
+		'feature-states-stg-file': stgFileFeatureState,
+		'feature-states-stg-object': stgObjectFeatureState,
 	};
 };

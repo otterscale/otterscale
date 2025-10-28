@@ -12,7 +12,7 @@
 	let { namespace, pod }: { namespace: string; pod: Application_Pod } = $props();
 </script>
 
-{#if page.data.applicationFeatureStates['app-container']}
+{#if page.data['feature-states-app-container']}
 	<Layout.Actions>
 		<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 		<Layout.ActionSeparator />
