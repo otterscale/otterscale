@@ -3,13 +3,12 @@ package app
 import (
 	"context"
 
-	corev1 "k8s.io/api/core/v1"
-
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"github.com/otterscale/otterscale/internal/core"
 
 	pb "github.com/otterscale/otterscale/api/model/v1"
 	pbconnect "github.com/otterscale/otterscale/api/model/v1/pbconnect"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type ModelService struct {
@@ -26,95 +25,127 @@ func NewModelService(model *core.ModelUseCase) *ModelService {
 
 var _ pbconnect.ModelServiceHandler = (*ModelService)(nil)
 
-func (s *ModelService) CreateModelArtifact(ctx context.Context, req *pb.CreateModelArtifactRequest) (*pb.ModelArtifact, error){
-	ma, err := s.model.CreateModelArtifact(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetModelname(), req.GetSize())
+func (s *ModelService) ListModels(ctx context.Context, req *pb.ListModelsRequest) (*pb.ListModelsResponse, error) {
+	models, err := s.model.ListModels(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ModelArtifact{}
-	resp.SetName(ma.Name)
-	resp.SetModelname(ma.Modelname)
-	resp.SetSize(ma.Size)
+	resp := &pb.ListModelsResponse{}
+	resp.SetModels(toProtoModels(models))
 	return resp, nil
 }
 
-func (s *ModelService) CreateModelScheduler(ctx context.Context, req *pb.CreateModelSchedulerRequest) (*pb.ModelScheduler, error) {
-	var brs []core.BackendRef
-	for _, r := range req.GetBackendRefs() {
-    	brs = append(brs, core.BackendRef{
-        	Name:   r.GetName(),
-        	Weight: r.GetWeight(),
-    	})
-	}
-	decEnvMap := make(map[string]string, len(req.GetDecodeEnvs()))
-	for _, e := range req.GetDecodeEnvs() {
-		if n := e.GetName(); n != "" {
-			decEnvMap[n] = e.GetValue()
-		}
-	}
-    preEnvMap := make(map[string]string, len(req.GetPrefillEnvs()))
-	for _, e := range req.GetPrefillEnvs() {
-		if n := e.GetName(); n != "" {
-			preEnvMap[n] = e.GetValue()
-		}
-	}
-	ms, err := s.model.CreateModelScheduler(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetModelArtifactsName(), 
-		req.GetUri(), req.GetMultinode(), req.GetNvidia(), req.GetParentRefsName(), req.GetHttpRouteCreate(), brs, req.GetBackendRequest(), 
-		req.GetRequest(), req.GetEppCreate(), req.GetDecodeCreate(), req.GetDecodeReplicas(), req.GetDecodeArgs(), decEnvMap, req.GetDecodeResourcesLimitsGpu(),
-		req.GetDecodeResourcesLimitsGpumem(), req.GetPrefillCreate(), req.GetPrefillReplicas(), req.GetPrefillArgs(), preEnvMap, req.GetPrefillResourcesLimitsGpu(), 
-		req.GetPrefillResourcesLimitsGpumem(), req.GetInferenceExtensionReplicas(), req.GetExtProcPort(), req.GetPluginsConfigFile(), req.GetTargetPortNumber())
+func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelRequest) (*pb.Model, error) {
+	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetModelName())
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ModelScheduler{}
-	resp.SetName(ms.Name)
-	resp.SetModelArtifactsName(ms.Modelartifactsname)
-	resp.SetHttpRouteCreate(ms.HttpRouteCreate)
-	resp.SetEppCreate(ms.EppCreate)
-	resp.SetPrefillCreate(ms.PrefillCreate)
-	if len(ms.BackendRefs) > 0 {
-		out := make([]*pb.ModelScheduler_BackendRef, 0, len(ms.BackendRefs))
-		for _, br := range ms.BackendRefs {
-	    	r := &pb.ModelScheduler_BackendRef{}
-    		r.SetName(br.Name)
-	  		r.SetWeight(br.Weight)
-   			out = append(out, r)
-		}
-	}
+	resp := toProtoModel(model)
 	return resp, nil
 }
 
-func (s *ModelService) CreateModelGateway(ctx context.Context, req *pb.CreateModelGatewayRequest) (*pb.ModelGateway, error) {
-	mg, err := s.model.CreateModelGateway(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetCpu(), req.GetMemory(), req.GetType())
+func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelRequest) (*pb.Model, error) {
+	var requests, limits *core.ModelResource
+	if r := req.GetRequests(); r != nil {
+		requests = toModelResource(r)
+	}
+	if r := req.GetLimits(); r != nil {
+		limits = toModelResource(r)
+	}
+	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), requests, limits)
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ModelGateway{}
-	resp.SetName(mg.Name)
-	resp.SetPublicAddress(mg.Publicaddress)
+	resp := toProtoModel(model)
+	return resp, nil
+}
+
+func (s *ModelService) DeleteModel(ctx context.Context, req *pb.DeleteModelRequest) (*emptypb.Empty, error) {
+	if err := s.model.DeleteModel(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
 	return resp, nil
 }
 
 func (s *ModelService) ListModelArtifacts(ctx context.Context, req *pb.ListModelArtifactsRequest) (*pb.ListModelArtifactsResponse, error) {
-	pvcs, err := s.model.ListModelArtifactPVCs(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace())
+	artifacts, err := s.model.ListModelArtifacts(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
-	modelartifacts := make([]*pb.ListModelArtifactsResponse_PersistentVolumeClaim, 0, len(pvcs))
-	for i := range pvcs {
-		modelartifacts = append(modelartifacts, toProtoModelArtifactPVC(&pvcs[i]))
-	}
 	resp := &pb.ListModelArtifactsResponse{}
-	resp.SetPersistentVolumeClaims(modelartifacts)
+	resp.SetModelArtifacts(toProtoModelArtifacts(artifacts))
 	return resp, nil
 }
 
-func toProtoModelArtifactPVC(pvc *corev1.PersistentVolumeClaim) *pb.ListModelArtifactsResponse_PersistentVolumeClaim {
-	modelartifact := &pb.ListModelArtifactsResponse_PersistentVolumeClaim{}
-	modelartifact.SetName(pvc.Name)
-	modelartifact.SetStatus(string(pvc.Status.Phase))
-	modelartifact.SetAccessModes(accessModesToStrings(pvc.Spec.AccessModes))
-	modelartifact.SetCapacity(pvc.Spec.Resources.Requests.Storage().String())
-	modelartifact.SetCreatedAt(timestamppb.New(pvc.CreationTimestamp.Time))
-	return modelartifact
+func (s *ModelService) CreateModelArtifact(ctx context.Context, req *pb.CreateModelArtifactRequest) (*pb.ModelArtifact, error) {
+	artifact, err := s.model.CreateModelArtifact(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSize())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoModelArtifact(artifact)
+	return resp, nil
+}
+
+func (s *ModelService) DeleteModelArtifact(ctx context.Context, req *pb.DeleteModelArtifactRequest) (*emptypb.Empty, error) {
+	if err := s.model.DeleteModelArtifact(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func toModelResource(r *pb.Model_Resource) *core.ModelResource {
+	return &core.ModelResource{
+		VGPU:       r.GetVgpu(),
+		VGPUMemory: r.GetVgpumemPercentage(),
+	}
+}
+
+func toProtoModels(ms []core.Model) []*pb.Model {
+	ret := []*pb.Model{}
+	for i := range ms {
+		ret = append(ret, toProtoModel(&ms[i]))
+	}
+	return ret
+}
+
+func toProtoModel(m *core.Model) *pb.Model {
+	ret := &pb.Model{}
+	ret.SetId("ID") // TODO: waiting for v0.3.0
+	ret.SetName(m.Name)
+	ret.SetNamespace(m.Namespace)
+	info := m.Info
+	if info != nil {
+		ret.SetStatus(string(info.Status))
+		ret.SetDescription(info.Description)
+		ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
+		ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
+	}
+	chart := m.Chart
+	if chart != nil && chart.Metadata != nil {
+		ret.SetChartVersion(chart.Metadata.Version)
+		ret.SetAppVersion(chart.Metadata.AppVersion)
+	}
+	return ret
+}
+
+func toProtoModelArtifacts(mas []core.ModelArtifact) []*pb.ModelArtifact {
+	ret := []*pb.ModelArtifact{}
+	for i := range mas {
+		ret = append(ret, toProtoModelArtifact(&mas[i]))
+	}
+	return ret
+}
+
+func toProtoModelArtifact(ma *core.ModelArtifact) *pb.ModelArtifact {
+	ret := &pb.ModelArtifact{}
+	ret.SetName(ma.Name)
+	ret.SetNamespace(ma.Namespace)
+	ret.SetModelName(ma.Modelname)
+	ret.SetPhase(string(ma.Phase))
+	ret.SetSize(ma.Size)
+	ret.SetVolumeName(ma.VolumeName)
+	ret.SetCreatedAt(timestamppb.New(ma.CreatedAt))
+	return ret
 }

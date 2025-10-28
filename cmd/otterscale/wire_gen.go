@@ -88,7 +88,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	tagRepo := maas.NewTag(maasMAAS)
 	machineUseCase := core.NewMachineUseCase(actionRepo, clientRepo, eventRepo, facilityRepo, machineRepo, machineManagerRepo, nodeDeviceRepo, scopeRepo, serverRepo, tagRepo)
 	machineService := app.NewMachineService(machineUseCase)
-	modelUseCase := core.NewModelUseCase(actionRepo, facilityRepo, releaseRepo)
+	modelUseCase := core.NewModelUseCase(actionRepo, chartRepo, facilityRepo, kubeCoreRepo, releaseRepo)
 	modelService := app.NewModelService(modelUseCase)
 	fabricRepo := maas.NewFabric(maasMAAS)
 	ipRangeRepo := maas.NewIPRange(maasMAAS)
