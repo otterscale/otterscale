@@ -58,8 +58,6 @@
 	function getStatusClass(status: Facility_Status | undefined): string {
 		return status?.state === 'active' ? 'text-muted-foreground' : 'font-semibold text-red-500';
 	}
-
-	console.log(page.data);
 </script>
 
 <div class="grid w-full grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-6">

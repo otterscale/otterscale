@@ -6,7 +6,7 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
 	try {
-		await OpenFeature.setProviderAndWait(new FlagdProvider({ host: 'localhost', port: 8013 }));
+		await OpenFeature.setProviderAndWait(new FlagdProvider({}));
 	} catch (error) {
 		console.error('Failed to initialize provider:', error);
 	}
