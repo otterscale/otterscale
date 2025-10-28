@@ -100,6 +100,7 @@ type KubeBatchRepo interface {
 	DeleteJob(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
+// TODO: refactor ByLabel functions to use selector pattern for improved consistency
 type KubeCoreRepo interface {
 	GetConfigMap(ctx context.Context, config *rest.Config, namespace, name string) (*ConfigMap, error)
 	CreateConfigMap(ctx context.Context, config *rest.Config, namespace, name string, data map[string]string) (*ConfigMap, error)
@@ -113,8 +114,10 @@ type KubeCoreRepo interface {
 	UpdateNode(ctx context.Context, config *rest.Config, node *Node) (*Node, error)
 
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
+	ListPersistentVolumeClaimsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]PersistentVolumeClaim, error)
 	GetPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) (*PersistentVolumeClaim, error)
 	PatchPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, data []byte) (*PersistentVolumeClaim, error)
+	DeletePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) error
 
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
 	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
