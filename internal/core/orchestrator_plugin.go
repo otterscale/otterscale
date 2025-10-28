@@ -156,7 +156,7 @@ func (uc *OrchestratorUseCase) listPlugins(ctx context.Context, scope, facility 
 	eg, egctx := errgroup.WithContext(ctx)
 	for i := range plugins {
 		eg.Go(func() error {
-			v, err := uc.chart.List(egctx, plugins[i].repoURL)
+			v, err := uc.chart.List(egctx, plugins[i].repoURL, true)
 			if err == nil {
 				charts[i] = v
 			}
