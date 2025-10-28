@@ -62,7 +62,7 @@ func (uc *ModelUseCase) CreateModel(ctx context.Context, scope, facility, namesp
 	}
 
 	// find chart ref
-	charts, err := uc.chart.List(ctx, chartRepoURL)
+	charts, err := uc.chart.List(ctx, chartRepoURL, true)
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +166,7 @@ func (uc *ModelUseCase) CreateModelArtifact(ctx context.Context, scope, facility
 	}
 
 	// find chart ref
-	charts, err := uc.chart.List(ctx, chartRepoURL)
+	charts, err := uc.chart.List(ctx, chartRepoURL, true)
 	if err != nil {
 		return nil, err
 	}
