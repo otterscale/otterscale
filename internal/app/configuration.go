@@ -211,6 +211,7 @@ func toProtoBootImage(bi *core.BootImage) *pb.Configuration_BootImage {
 	ret.SetDistroSeries(bi.DistroSeries)
 	ret.SetName(bi.Name)
 	ret.SetId(int64(bi.ID))
+	ret.SetArchitectures(bi.Architectures)
 	ret.SetArchitectureStatusMap(bi.ArchitectureStatusMap)
 	ret.SetDefault(bi.Default)
 	return ret

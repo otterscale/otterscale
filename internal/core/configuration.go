@@ -52,6 +52,7 @@ type BootImage struct {
 	DistroSeries          string
 	Name                  string
 	ID                    int
+	Architectures         []string
 	ArchitectureStatusMap map[string]string
 	Default               bool
 }
@@ -309,6 +310,8 @@ func (uc *ConfigurationUseCase) listBootImages(ctx context.Context) ([]BootImage
 				Source:                sources[i].URL,
 				DistroSeries:          distro,
 				Name:                  name,
+				ID:                    selections[j].ID,
+				Architectures:         selections[j].Arches,
 				ArchitectureStatusMap: statusMaps[distro],
 				Default:               distro == defaultDistro,
 			})

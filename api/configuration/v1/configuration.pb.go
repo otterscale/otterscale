@@ -3556,7 +3556,8 @@ type Configuration_BootImage struct {
 	xxx_hidden_DistroSeries          *string                `protobuf:"bytes,2,opt,name=distro_series,json=distroSeries"`
 	xxx_hidden_Name                  *string                `protobuf:"bytes,3,opt,name=name"`
 	xxx_hidden_Id                    int64                  `protobuf:"varint,4,opt,name=id"`
-	xxx_hidden_ArchitectureStatusMap map[string]string      `protobuf:"bytes,5,rep,name=architecture_status_map,json=architectureStatusMap" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	xxx_hidden_Architectures         []string               `protobuf:"bytes,5,rep,name=architectures"`
+	xxx_hidden_ArchitectureStatusMap map[string]string      `protobuf:"bytes,6,rep,name=architecture_status_map,json=architectureStatusMap" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	xxx_hidden_Default               bool                   `protobuf:"varint,11,opt,name=default"`
 	XXX_raceDetectHookData           protoimpl.RaceDetectHookData
 	XXX_presence                     [1]uint32
@@ -3626,6 +3627,13 @@ func (x *Configuration_BootImage) GetId() int64 {
 	return 0
 }
 
+func (x *Configuration_BootImage) GetArchitectures() []string {
+	if x != nil {
+		return x.xxx_hidden_Architectures
+	}
+	return nil
+}
+
 func (x *Configuration_BootImage) GetArchitectureStatusMap() map[string]string {
 	if x != nil {
 		return x.xxx_hidden_ArchitectureStatusMap
@@ -3642,22 +3650,26 @@ func (x *Configuration_BootImage) GetDefault() bool {
 
 func (x *Configuration_BootImage) SetSource(v string) {
 	x.xxx_hidden_Source = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
 }
 
 func (x *Configuration_BootImage) SetDistroSeries(v string) {
 	x.xxx_hidden_DistroSeries = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
 }
 
 func (x *Configuration_BootImage) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
 }
 
 func (x *Configuration_BootImage) SetId(v int64) {
 	x.xxx_hidden_Id = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
+}
+
+func (x *Configuration_BootImage) SetArchitectures(v []string) {
+	x.xxx_hidden_Architectures = v
 }
 
 func (x *Configuration_BootImage) SetArchitectureStatusMap(v map[string]string) {
@@ -3666,7 +3678,7 @@ func (x *Configuration_BootImage) SetArchitectureStatusMap(v map[string]string) 
 
 func (x *Configuration_BootImage) SetDefault(v bool) {
 	x.xxx_hidden_Default = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 7)
 }
 
 func (x *Configuration_BootImage) HasSource() bool {
@@ -3701,7 +3713,7 @@ func (x *Configuration_BootImage) HasDefault() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
 func (x *Configuration_BootImage) ClearSource() {
@@ -3725,7 +3737,7 @@ func (x *Configuration_BootImage) ClearId() {
 }
 
 func (x *Configuration_BootImage) ClearDefault() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_Default = false
 }
 
@@ -3736,6 +3748,7 @@ type Configuration_BootImage_builder struct {
 	DistroSeries          *string
 	Name                  *string
 	Id                    *int64
+	Architectures         []string
 	ArchitectureStatusMap map[string]string
 	Default               *bool
 }
@@ -3745,24 +3758,25 @@ func (b0 Configuration_BootImage_builder) Build() *Configuration_BootImage {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Source != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
 		x.xxx_hidden_Source = b.Source
 	}
 	if b.DistroSeries != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
 		x.xxx_hidden_DistroSeries = b.DistroSeries
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
 		x.xxx_hidden_Id = *b.Id
 	}
+	x.xxx_hidden_Architectures = b.Architectures
 	x.xxx_hidden_ArchitectureStatusMap = b.ArchitectureStatusMap
 	if b.Default != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 7)
 		x.xxx_hidden_Default = *b.Default
 	}
 	return m0
@@ -5104,7 +5118,7 @@ var File_api_configuration_v1_configuration_proto protoreflect.FileDescriptor
 
 const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\n" +
-	"(api/configuration/v1/configuration.proto\x12\x1botterscale.configuration.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x98\b\n" +
+	"(api/configuration/v1/configuration.proto\x12\x1botterscale.configuration.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xbe\b\n" +
 	"\rConfiguration\x12S\n" +
 	"\n" +
 	"ntp_server\x18\x01 \x01(\v24.otterscale.configuration.v1.Configuration.NTPServerR\tntpServer\x12o\n" +
@@ -5122,13 +5136,14 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x12BootImageSelection\x12#\n" +
 	"\rdistro_series\x18\x01 \x01(\tR\fdistroSeries\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12$\n" +
-	"\rarchitectures\x18\x03 \x03(\tR\rarchitectures\x1a\xda\x02\n" +
+	"\rarchitectures\x18\x03 \x03(\tR\rarchitectures\x1a\x80\x03\n" +
 	"\tBootImage\x12\x16\n" +
 	"\x06source\x18\x01 \x01(\tR\x06source\x12#\n" +
 	"\rdistro_series\x18\x02 \x01(\tR\fdistroSeries\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x0e\n" +
-	"\x02id\x18\x04 \x01(\x03R\x02id\x12\x87\x01\n" +
-	"\x17architecture_status_map\x18\x05 \x03(\v2O.otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntryR\x15architectureStatusMap\x12\x18\n" +
+	"\x02id\x18\x04 \x01(\x03R\x02id\x12$\n" +
+	"\rarchitectures\x18\x05 \x03(\tR\rarchitectures\x12\x87\x01\n" +
+	"\x17architecture_status_map\x18\x06 \x03(\v2O.otterscale.configuration.v1.Configuration.BootImage.ArchitectureStatusMapEntryR\x15architectureStatusMap\x12\x18\n" +
 	"\adefault\x18\v \x01(\bR\adefault\x1aH\n" +
 	"\x1aArchitectureStatusMapEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +

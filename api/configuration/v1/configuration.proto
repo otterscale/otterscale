@@ -114,7 +114,8 @@ message Configuration {
     string distro_series = 2;
     string name = 3;
     int64 id = 4;
-    map<string, string> architecture_status_map = 5;
+    repeated string architectures = 5;
+    map<string, string> architecture_status_map = 6;
     bool default = 11;
   }
   message HelmRepository {
