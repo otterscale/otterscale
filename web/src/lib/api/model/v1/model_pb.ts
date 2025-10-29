@@ -5,15 +5,45 @@
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import { file_api_annotations } from "../../annotations_pb";
-import type { EmptySchema } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
+import type { EmptySchema, Timestamp } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_empty, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file api/model/v1/model.proto.
  */
 export const file_api_model_v1_model: GenFile = /*@__PURE__*/
-  fileDesc("ChhhcGkvbW9kZWwvdjEvbW9kZWwucHJvdG8SE290dGVyc2NhbGUubW9kZWwudjEiWAoFTW9kZWwSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIPCgd2ZXJzaW9uGAQgASgJEg8KB2NvbW1lbnQYBSABKAkiNAoRTGlzdE1vZGVsc1JlcXVlc3QSDQoFc2NvcGUYASABKAkSEAoIZmFjaWxpdHkYAiABKAkiQAoSTGlzdE1vZGVsc1Jlc3BvbnNlEioKBm1vZGVscxgBIAMoCzIaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwiHQoPR2V0TW9kZWxSZXF1ZXN0EgoKAmlkGAEgASgJIlkKEkNyZWF0ZU1vZGVsUmVxdWVzdBIMCgRuYW1lGAEgASgJEhMKC2Rlc2NyaXB0aW9uGAIgASgJEg8KB3ZlcnNpb24YAyABKAkSDwoHY29tbWVudBgEIAEoCSIgChJEZWxldGVNb2RlbFJlcXVlc3QSCgoCaWQYASABKAkyrwMKDE1vZGVsU2VydmljZRJxCgpMaXN0TW9kZWxzEiYub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxzUmVxdWVzdBonLm90dGVyc2NhbGUubW9kZWwudjEuTGlzdE1vZGVsc1Jlc3BvbnNlIhKK39UdDQoLbWRsLWdlbmVyYWwSYAoIR2V0TW9kZWwSJC5vdHRlcnNjYWxlLm1vZGVsLnYxLkdldE1vZGVsUmVxdWVzdBoaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwiEorf1R0NCgttZGwtZ2VuZXJhbBJmCgtDcmVhdGVNb2RlbBInLm90dGVyc2NhbGUubW9kZWwudjEuQ3JlYXRlTW9kZWxSZXF1ZXN0Ghoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbCISit/VHQ0KC21kbC1nZW5lcmFsEmIKC0RlbGV0ZU1vZGVsEicub3R0ZXJzY2FsZS5tb2RlbC52MS5EZWxldGVNb2RlbFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiEorf1R0NCgttZGwtZ2VuZXJhbEIyWjBnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvbW9kZWwvdjE7cGJiCGVkaXRpb25zcOgH", [file_api_annotations, file_google_protobuf_empty]);
+  fileDesc("ChhhcGkvbW9kZWwvdjEvbW9kZWwucHJvdG8SE290dGVyc2NhbGUubW9kZWwudjEiCwoJSFRUUFJvdXRlIg8KDUluZmVyZW5jZVBvb2wisQMKBU1vZGVsEgoKAmlkGAEgASgJEhsKE2luZmVyZW5jZV9wb29sX25hbWUYAiABKAkSDAoEbmFtZRgLIAEoCRIRCgluYW1lc3BhY2UYDCABKAkSDgoGc3RhdHVzGA0gASgJEhMKC2Rlc2NyaXB0aW9uGA4gASgJEjUKEWZpcnN0X2RlcGxveWVkX2F0GA8gASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI0ChBsYXN0X2RlcGxveWVkX2F0GBAgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIVCg1jaGFydF92ZXJzaW9uGBUgASgJEhMKC2FwcF92ZXJzaW9uGBYgASgJEjUKCHJlcXVlc3RzGB8gASgLMiMub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5SZXNvdXJjZRIzCgZsaW1pdHMYICABKAsyIy5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsLlJlc291cmNlGjQKCFJlc291cmNlEgwKBHZncHUYASABKA0SGgoSdmdwdW1lbV9wZXJjZW50YWdlGAIgASgNIkcKEUxpc3RNb2RlbHNSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhAKCGZhY2lsaXR5GAIgASgJEhEKCW5hbWVzcGFjZRgDIAEoCSJYChJMaXN0TW9kZWxzUmVzcG9uc2USKgoGbW9kZWxzGAEgAygLMhoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbBIWCg5wdWJsaWNfYWRkcmVzcxgCIAEoCSJqChJDcmVhdGVNb2RlbFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEAoIZmFjaWxpdHkYAiABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAkSEgoKbW9kZWxfbmFtZRgLIAEoCSLCAQoSVXBkYXRlTW9kZWxSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhAKCGZhY2lsaXR5GAIgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEjMKBmxpbWl0cxgLIAEoCzIjLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuUmVzb3VyY2USNQoIcmVxdWVzdHMYDCABKAsyIy5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsLlJlc291cmNlIlYKEkRlbGV0ZU1vZGVsUmVxdWVzdBINCgVzY29wZRgBIAEoCRIQCghmYWNpbGl0eRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCSKmAQoNTW9kZWxBcnRpZmFjdBIMCgRuYW1lGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRISCgptb2RlbF9uYW1lGAsgASgJEg0KBXBoYXNlGBUgASgJEgwKBHNpemUYFiABKAMSEwoLdm9sdW1lX25hbWUYHyABKAkSLgoKY3JlYXRlZF9hdBgpIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiTwoZTGlzdE1vZGVsQXJ0aWZhY3RzUmVxdWVzdBINCgVzY29wZRgBIAEoCRIQCghmYWNpbGl0eRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkiWQoaTGlzdE1vZGVsQXJ0aWZhY3RzUmVzcG9uc2USOwoPbW9kZWxfYXJ0aWZhY3RzGAEgAygLMiIub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbEFydGlmYWN0IoABChpDcmVhdGVNb2RlbEFydGlmYWN0UmVxdWVzdBINCgVzY29wZRgBIAEoCRIQCghmYWNpbGl0eRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRISCgptb2RlbF9uYW1lGAsgASgJEgwKBHNpemUYDCABKAMiXgoaRGVsZXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEAoIZmFjaWxpdHkYAiABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAkytQYKDE1vZGVsU2VydmljZRJxCgpMaXN0TW9kZWxzEiYub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxzUmVxdWVzdBonLm90dGVyc2NhbGUubW9kZWwudjEuTGlzdE1vZGVsc1Jlc3BvbnNlIhKK39UdDQoLbWRsLWdlbmVyYWwSZgoLQ3JlYXRlTW9kZWwSJy5vdHRlcnNjYWxlLm1vZGVsLnYxLkNyZWF0ZU1vZGVsUmVxdWVzdBoaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwiEorf1R0NCgttZGwtZ2VuZXJhbBJmCgtVcGRhdGVNb2RlbBInLm90dGVyc2NhbGUubW9kZWwudjEuVXBkYXRlTW9kZWxSZXF1ZXN0Ghoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbCISit/VHQ0KC21kbC1nZW5lcmFsEmIKC0RlbGV0ZU1vZGVsEicub3R0ZXJzY2FsZS5tb2RlbC52MS5EZWxldGVNb2RlbFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiEorf1R0NCgttZGwtZ2VuZXJhbBKJAQoSTGlzdE1vZGVsQXJ0aWZhY3RzEi4ub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxBcnRpZmFjdHNSZXF1ZXN0Gi8ub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxBcnRpZmFjdHNSZXNwb25zZSISit/VHQ0KC21kbC1nZW5lcmFsEn4KE0NyZWF0ZU1vZGVsQXJ0aWZhY3QSLy5vdHRlcnNjYWxlLm1vZGVsLnYxLkNyZWF0ZU1vZGVsQXJ0aWZhY3RSZXF1ZXN0GiIub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbEFydGlmYWN0IhKK39UdDQoLbWRsLWdlbmVyYWwScgoTRGVsZXRlTW9kZWxBcnRpZmFjdBIvLm90dGVyc2NhbGUubW9kZWwudjEuRGVsZXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiEorf1R0NCgttZGwtZ2VuZXJhbEIyWjBnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvbW9kZWwvdjE7cGJiCGVkaXRpb25zcOgH", [file_api_annotations, file_google_protobuf_empty, file_google_protobuf_timestamp]);
+
+/**
+ * TODO: namespace -> httproute
+ *
+ * @generated from message otterscale.model.v1.HTTPRoute
+ */
+export type HTTPRoute = Message<"otterscale.model.v1.HTTPRoute"> & {
+};
+
+/**
+ * Describes the message otterscale.model.v1.HTTPRoute.
+ * Use `create(HTTPRouteSchema)` to create a new message.
+ */
+export const HTTPRouteSchema: GenMessage<HTTPRoute> = /*@__PURE__*/
+  messageDesc(file_api_model_v1_model, 0);
+
+/**
+ * TODO: selector -> model
+ *
+ * @generated from message otterscale.model.v1.InferencePool
+ */
+export type InferencePool = Message<"otterscale.model.v1.InferencePool"> & {
+};
+
+/**
+ * Describes the message otterscale.model.v1.InferencePool.
+ * Use `create(InferencePoolSchema)` to create a new message.
+ */
+export const InferencePoolSchema: GenMessage<InferencePool> = /*@__PURE__*/
+  messageDesc(file_api_model_v1_model, 1);
 
 /**
  * @generated from message otterscale.model.v1.Model
@@ -25,24 +55,59 @@ export type Model = Message<"otterscale.model.v1.Model"> & {
   id: string;
 
   /**
-   * @generated from field: string name = 2;
+   * @generated from field: string inference_pool_name = 2;
+   */
+  inferencePoolName: string;
+
+  /**
+   * @generated from field: string name = 11;
    */
   name: string;
 
   /**
-   * @generated from field: string description = 3;
+   * @generated from field: string namespace = 12;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string status = 13;
+   */
+  status: string;
+
+  /**
+   * @generated from field: string description = 14;
    */
   description: string;
 
   /**
-   * @generated from field: string version = 4;
+   * @generated from field: google.protobuf.Timestamp first_deployed_at = 15;
    */
-  version: string;
+  firstDeployedAt?: Timestamp;
 
   /**
-   * @generated from field: string comment = 5;
+   * @generated from field: google.protobuf.Timestamp last_deployed_at = 16;
    */
-  comment: string;
+  lastDeployedAt?: Timestamp;
+
+  /**
+   * @generated from field: string chart_version = 21;
+   */
+  chartVersion: string;
+
+  /**
+   * @generated from field: string app_version = 22;
+   */
+  appVersion: string;
+
+  /**
+   * @generated from field: otterscale.model.v1.Model.Resource requests = 31;
+   */
+  requests?: Model_Resource;
+
+  /**
+   * @generated from field: otterscale.model.v1.Model.Resource limits = 32;
+   */
+  limits?: Model_Resource;
 };
 
 /**
@@ -50,7 +115,29 @@ export type Model = Message<"otterscale.model.v1.Model"> & {
  * Use `create(ModelSchema)` to create a new message.
  */
 export const ModelSchema: GenMessage<Model> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 0);
+  messageDesc(file_api_model_v1_model, 2);
+
+/**
+ * @generated from message otterscale.model.v1.Model.Resource
+ */
+export type Model_Resource = Message<"otterscale.model.v1.Model.Resource"> & {
+  /**
+   * @generated from field: uint32 vgpu = 1;
+   */
+  vgpu: number;
+
+  /**
+   * @generated from field: uint32 vgpumem_percentage = 2;
+   */
+  vgpumemPercentage: number;
+};
+
+/**
+ * Describes the message otterscale.model.v1.Model.Resource.
+ * Use `create(Model_ResourceSchema)` to create a new message.
+ */
+export const Model_ResourceSchema: GenMessage<Model_Resource> = /*@__PURE__*/
+  messageDesc(file_api_model_v1_model, 2, 0);
 
 /**
  * @generated from message otterscale.model.v1.ListModelsRequest
@@ -65,6 +152,11 @@ export type ListModelsRequest = Message<"otterscale.model.v1.ListModelsRequest">
    * @generated from field: string facility = 2;
    */
   facility: string;
+
+  /**
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
 };
 
 /**
@@ -72,7 +164,7 @@ export type ListModelsRequest = Message<"otterscale.model.v1.ListModelsRequest">
  * Use `create(ListModelsRequestSchema)` to create a new message.
  */
 export const ListModelsRequestSchema: GenMessage<ListModelsRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 1);
+  messageDesc(file_api_model_v1_model, 3);
 
 /**
  * @generated from message otterscale.model.v1.ListModelsResponse
@@ -82,6 +174,11 @@ export type ListModelsResponse = Message<"otterscale.model.v1.ListModelsResponse
    * @generated from field: repeated otterscale.model.v1.Model models = 1;
    */
   models: Model[];
+
+  /**
+   * @generated from field: string public_address = 2;
+   */
+  publicAddress: string;
 };
 
 /**
@@ -89,48 +186,36 @@ export type ListModelsResponse = Message<"otterscale.model.v1.ListModelsResponse
  * Use `create(ListModelsResponseSchema)` to create a new message.
  */
 export const ListModelsResponseSchema: GenMessage<ListModelsResponse> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 2);
-
-/**
- * @generated from message otterscale.model.v1.GetModelRequest
- */
-export type GetModelRequest = Message<"otterscale.model.v1.GetModelRequest"> & {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id: string;
-};
-
-/**
- * Describes the message otterscale.model.v1.GetModelRequest.
- * Use `create(GetModelRequestSchema)` to create a new message.
- */
-export const GetModelRequestSchema: GenMessage<GetModelRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 3);
+  messageDesc(file_api_model_v1_model, 4);
 
 /**
  * @generated from message otterscale.model.v1.CreateModelRequest
  */
 export type CreateModelRequest = Message<"otterscale.model.v1.CreateModelRequest"> & {
   /**
-   * @generated from field: string name = 1;
+   * @generated from field: string scope = 1;
+   */
+  scope: string;
+
+  /**
+   * @generated from field: string facility = 2;
+   */
+  facility: string;
+
+  /**
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string name = 4;
    */
   name: string;
 
   /**
-   * @generated from field: string description = 2;
+   * @generated from field: string model_name = 11;
    */
-  description: string;
-
-  /**
-   * @generated from field: string version = 3;
-   */
-  version: string;
-
-  /**
-   * @generated from field: string comment = 4;
-   */
-  comment: string;
+  modelName: string;
 };
 
 /**
@@ -138,16 +223,73 @@ export type CreateModelRequest = Message<"otterscale.model.v1.CreateModelRequest
  * Use `create(CreateModelRequestSchema)` to create a new message.
  */
 export const CreateModelRequestSchema: GenMessage<CreateModelRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 4);
+  messageDesc(file_api_model_v1_model, 5);
+
+/**
+ * @generated from message otterscale.model.v1.UpdateModelRequest
+ */
+export type UpdateModelRequest = Message<"otterscale.model.v1.UpdateModelRequest"> & {
+  /**
+   * @generated from field: string scope = 1;
+   */
+  scope: string;
+
+  /**
+   * @generated from field: string facility = 2;
+   */
+  facility: string;
+
+  /**
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string name = 4;
+   */
+  name: string;
+
+  /**
+   * @generated from field: otterscale.model.v1.Model.Resource limits = 11;
+   */
+  limits?: Model_Resource;
+
+  /**
+   * @generated from field: otterscale.model.v1.Model.Resource requests = 12;
+   */
+  requests?: Model_Resource;
+};
+
+/**
+ * Describes the message otterscale.model.v1.UpdateModelRequest.
+ * Use `create(UpdateModelRequestSchema)` to create a new message.
+ */
+export const UpdateModelRequestSchema: GenMessage<UpdateModelRequest> = /*@__PURE__*/
+  messageDesc(file_api_model_v1_model, 6);
 
 /**
  * @generated from message otterscale.model.v1.DeleteModelRequest
  */
 export type DeleteModelRequest = Message<"otterscale.model.v1.DeleteModelRequest"> & {
   /**
-   * @generated from field: string id = 1;
+   * @generated from field: string scope = 1;
    */
-  id: string;
+  scope: string;
+
+  /**
+   * @generated from field: string facility = 2;
+   */
+  facility: string;
+
+  /**
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string name = 4;
+   */
+  name: string;
 };
 
 /**
@@ -155,7 +297,172 @@ export type DeleteModelRequest = Message<"otterscale.model.v1.DeleteModelRequest
  * Use `create(DeleteModelRequestSchema)` to create a new message.
  */
 export const DeleteModelRequestSchema: GenMessage<DeleteModelRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 5);
+  messageDesc(file_api_model_v1_model, 7);
+
+/**
+ * @generated from message otterscale.model.v1.ModelArtifact
+ */
+export type ModelArtifact = Message<"otterscale.model.v1.ModelArtifact"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string namespace = 2;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string model_name = 11;
+   */
+  modelName: string;
+
+  /**
+   * @generated from field: string phase = 21;
+   */
+  phase: string;
+
+  /**
+   * @generated from field: int64 size = 22;
+   */
+  size: bigint;
+
+  /**
+   * @generated from field: string volume_name = 31;
+   */
+  volumeName: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 41;
+   */
+  createdAt?: Timestamp;
+};
+
+/**
+ * Describes the message otterscale.model.v1.ModelArtifact.
+ * Use `create(ModelArtifactSchema)` to create a new message.
+ */
+export const ModelArtifactSchema: GenMessage<ModelArtifact> = /*@__PURE__*/
+  messageDesc(file_api_model_v1_model, 8);
+
+/**
+ * @generated from message otterscale.model.v1.ListModelArtifactsRequest
+ */
+export type ListModelArtifactsRequest = Message<"otterscale.model.v1.ListModelArtifactsRequest"> & {
+  /**
+   * @generated from field: string scope = 1;
+   */
+  scope: string;
+
+  /**
+   * @generated from field: string facility = 2;
+   */
+  facility: string;
+
+  /**
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
+};
+
+/**
+ * Describes the message otterscale.model.v1.ListModelArtifactsRequest.
+ * Use `create(ListModelArtifactsRequestSchema)` to create a new message.
+ */
+export const ListModelArtifactsRequestSchema: GenMessage<ListModelArtifactsRequest> = /*@__PURE__*/
+  messageDesc(file_api_model_v1_model, 9);
+
+/**
+ * @generated from message otterscale.model.v1.ListModelArtifactsResponse
+ */
+export type ListModelArtifactsResponse = Message<"otterscale.model.v1.ListModelArtifactsResponse"> & {
+  /**
+   * @generated from field: repeated otterscale.model.v1.ModelArtifact model_artifacts = 1;
+   */
+  modelArtifacts: ModelArtifact[];
+};
+
+/**
+ * Describes the message otterscale.model.v1.ListModelArtifactsResponse.
+ * Use `create(ListModelArtifactsResponseSchema)` to create a new message.
+ */
+export const ListModelArtifactsResponseSchema: GenMessage<ListModelArtifactsResponse> = /*@__PURE__*/
+  messageDesc(file_api_model_v1_model, 10);
+
+/**
+ * @generated from message otterscale.model.v1.CreateModelArtifactRequest
+ */
+export type CreateModelArtifactRequest = Message<"otterscale.model.v1.CreateModelArtifactRequest"> & {
+  /**
+   * @generated from field: string scope = 1;
+   */
+  scope: string;
+
+  /**
+   * @generated from field: string facility = 2;
+   */
+  facility: string;
+
+  /**
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string name = 4;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string model_name = 11;
+   */
+  modelName: string;
+
+  /**
+   * @generated from field: int64 size = 12;
+   */
+  size: bigint;
+};
+
+/**
+ * Describes the message otterscale.model.v1.CreateModelArtifactRequest.
+ * Use `create(CreateModelArtifactRequestSchema)` to create a new message.
+ */
+export const CreateModelArtifactRequestSchema: GenMessage<CreateModelArtifactRequest> = /*@__PURE__*/
+  messageDesc(file_api_model_v1_model, 11);
+
+/**
+ * @generated from message otterscale.model.v1.DeleteModelArtifactRequest
+ */
+export type DeleteModelArtifactRequest = Message<"otterscale.model.v1.DeleteModelArtifactRequest"> & {
+  /**
+   * @generated from field: string scope = 1;
+   */
+  scope: string;
+
+  /**
+   * @generated from field: string facility = 2;
+   */
+  facility: string;
+
+  /**
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string name = 4;
+   */
+  name: string;
+};
+
+/**
+ * Describes the message otterscale.model.v1.DeleteModelArtifactRequest.
+ * Use `create(DeleteModelArtifactRequestSchema)` to create a new message.
+ */
+export const DeleteModelArtifactRequestSchema: GenMessage<DeleteModelArtifactRequest> = /*@__PURE__*/
+  messageDesc(file_api_model_v1_model, 12);
 
 /**
  * @generated from service otterscale.model.v1.ModelService
@@ -170,14 +477,6 @@ export const ModelService: GenService<{
     output: typeof ListModelsResponseSchema;
   },
   /**
-   * @generated from rpc otterscale.model.v1.ModelService.GetModel
-   */
-  getModel: {
-    methodKind: "unary";
-    input: typeof GetModelRequestSchema;
-    output: typeof ModelSchema;
-  },
-  /**
    * @generated from rpc otterscale.model.v1.ModelService.CreateModel
    */
   createModel: {
@@ -186,11 +485,43 @@ export const ModelService: GenService<{
     output: typeof ModelSchema;
   },
   /**
+   * @generated from rpc otterscale.model.v1.ModelService.UpdateModel
+   */
+  updateModel: {
+    methodKind: "unary";
+    input: typeof UpdateModelRequestSchema;
+    output: typeof ModelSchema;
+  },
+  /**
    * @generated from rpc otterscale.model.v1.ModelService.DeleteModel
    */
   deleteModel: {
     methodKind: "unary";
     input: typeof DeleteModelRequestSchema;
+    output: typeof EmptySchema;
+  },
+  /**
+   * @generated from rpc otterscale.model.v1.ModelService.ListModelArtifacts
+   */
+  listModelArtifacts: {
+    methodKind: "unary";
+    input: typeof ListModelArtifactsRequestSchema;
+    output: typeof ListModelArtifactsResponseSchema;
+  },
+  /**
+   * @generated from rpc otterscale.model.v1.ModelService.CreateModelArtifact
+   */
+  createModelArtifact: {
+    methodKind: "unary";
+    input: typeof CreateModelArtifactRequestSchema;
+    output: typeof ModelArtifactSchema;
+  },
+  /**
+   * @generated from rpc otterscale.model.v1.ModelService.DeleteModelArtifact
+   */
+  deleteModelArtifact: {
+    methodKind: "unary";
+    input: typeof DeleteModelArtifactRequestSchema;
     output: typeof EmptySchema;
   },
 }> = /*@__PURE__*/
