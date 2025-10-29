@@ -62,6 +62,7 @@
 	"ntp_server": "NTP 伺服器",
 	"package_repository": "套件庫",
 	"boot_image": "開機映像檔",
+	"edit_boot_image": "編輯開機映像檔",
 	"machine_tag": "機器標籤",
 	"global": "全域",
 	"sso": "單一登入",

@@ -1,15 +1,16 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
+	import Actions from './cell-actions.svelte';
 	import Create from './create.svelte';
 	import Import from './import.svelte';
 	import ReadArchitectures from './read-architectures.svelte';
-	import SetAsDefault from './set-as-default.svelte';
 
 	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
 	import { Badge } from '$lib/components/ui/badge';
@@ -23,6 +24,13 @@
 	const configuration = writable<Configuration>();
 	let isConfigurationLoading = $state(true);
 
+	const reloadManager = new ReloadManager(() => {
+		configurationClient.getConfiguration({}).then((response) => {
+			configuration.set(response);
+		});
+	});
+	setContext('reloadManager', reloadManager);
+
 	onMount(async () => {
 		try {
 			await configurationClient.getConfiguration({}).then((response) => {
@@ -32,6 +40,11 @@
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
+		reloadManager.start();
+	});
+
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 </script>
 
@@ -55,6 +68,7 @@
 							<Table.Head>{m.distro_series()}</Table.Head>
 							<Table.Head>{m.default_value()}</Table.Head>
 							<Table.Head class="text-right">{m.architecture()}</Table.Head>
+							<Table.Head class="text-right">{m.status()}</Table.Head>
 							<Table.Head></Table.Head>
 						</Table.Row>
 					</Table.Header>
@@ -70,15 +84,20 @@
 									<Icon icon={bootImage.default ? 'ph:circle' : 'ph:x'} />
 								</Table.Cell>
 								<Table.Cell>
-									<span class="flex items-center justify-end gap-1">
-										<ReadArchitectures {bootImage} />
-										{Object.keys(bootImage.architectureStatusMap).length}
+									<span class="mr-1 flex items-center justify-end gap-1">
+										{#each bootImage.architectures as architecture}
+											<Badge variant="outline" class="">{architecture}</Badge>
+										{/each}
 									</span>
 								</Table.Cell>
 								<Table.Cell>
-									<div class="flex items-center justify-end">
-										<SetAsDefault {bootImage} {configuration} />
-									</div>
+									<span class="flex items-center justify-end">
+										{Object.keys(bootImage.architectureStatusMap).length}
+										<ReadArchitectures {bootImage} />
+									</span>
+								</Table.Cell>
+								<Table.Cell class="p-0">
+									<Actions {bootImage} {configuration} />
 								</Table.Cell>
 							</Table.Row>
 						{/each}
