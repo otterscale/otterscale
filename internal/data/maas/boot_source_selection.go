@@ -36,7 +36,7 @@ func (r *bootSourceSelection) Create(_ context.Context, bootSourceID int, params
 	return client.BootSourceSelections.Create(bootSourceID, params)
 }
 
-func (r *bootSourceSelection) Update(_ context.Context, bootSourceID int, id int, params *entity.BootSourceSelectionParams) (*entity.BootSourceSelection, error) {
+func (r *bootSourceSelection) Update(_ context.Context, bootSourceID, id int, params *entity.BootSourceSelectionParams) (*entity.BootSourceSelection, error) {
 	client, err := r.maas.client()
 	if err != nil {
 		return nil, err
