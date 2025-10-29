@@ -37,6 +37,11 @@
 			page: 'helm-repository',
 		},
 		{
+			icon: 'ph:cube',
+			title: m.plugins(),
+			page: 'plugins',
+		},
+		{
 			icon: 'ph:cpu',
 			title: m.instance_type(),
 			page: 'instance-type',

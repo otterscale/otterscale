@@ -35,6 +35,7 @@
 	"applications": "應用程式",
 	"applications_description": "具有整合應用程式商店的 Kubernetes 應用程式",
 	"scale_application": "調整應用程式規模",
+	"plugins": "插件",
 	"scale": "調整規模",
 	"workloads": "工作負載",
 	"services": "服務",
