@@ -194,6 +194,7 @@ func (uc *ConfigurationUseCase) CreateBootImage(ctx context.Context, distroSerie
 	}
 
 	return &BootImage{
+		ID:                    selections.ID,
 		DistroSeries:          selections.Release,
 		Name:                  selections.OS,
 		ArchitectureStatusMap: statusMap,
@@ -224,6 +225,7 @@ func (uc *ConfigurationUseCase) UpdateBootImage(ctx context.Context, id int, dis
 	}
 
 	return &BootImage{
+		ID:                    selections.ID,
 		DistroSeries:          selections.Release,
 		Name:                  selections.OS,
 		ArchitectureStatusMap: statusMap,
