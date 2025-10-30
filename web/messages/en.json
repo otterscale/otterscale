@@ -63,6 +63,7 @@
 	"ntp_server": "NTP Server",
 	"package_repository": "Package Repository",
 	"boot_image": "Boot Image",
+	"edit_boot_image": "Edit Boot Image",
 	"machine_tag": "Machine Tag",
 	"global": "Global",
 	"sso": "Single Sign-On",

@@ -156,16 +156,18 @@
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
+						const distroSeries = request.distroSeries;
+						const architectures = `${request.architectures.join(', ')}`;
 						toast.promise(() => client.createBootImage(request), {
 							loading: 'Loading...',
 							success: () => {
 								client.getConfiguration({}).then((response) => {
 									configuration.set(response);
 								});
-								return `Create boot images ${request.distroSeries}: ${request.architectures.join(', ')} success`;
+								return `Create boot images ${distroSeries}: ${architectures} success`;
 							},
 							error: (error) => {
-								let message = `Fail to create boot images ${request.distroSeries}: ${request.architectures.join(', ')}`;
+								let message = `Fail to create boot images ${distroSeries}: ${architectures}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY,

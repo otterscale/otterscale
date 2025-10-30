@@ -33,16 +33,22 @@
 	}
 
 	let isImportingBootImages = $state(false);
-	onMount(async () => {
+
+	async function checkImportingStatus() {
 		while (true) {
 			const response = await client.isImportingBootImages({});
 			if (response.importing) {
+				isImportingBootImages = true;
 				await new Promise((resolve) => setTimeout(resolve, 5000));
 			} else {
 				isImportingBootImages = false;
 				break;
 			}
 		}
+	}
+
+	onMount(async () => {
+		await checkImportingStatus();
 	});
 </script>
 
@@ -79,9 +85,11 @@
 						toast.promise(() => client.importBootImages(request), {
 							loading: 'Loading...',
 							success: () => {
+								isImportingBootImages = true;
 								client.getConfiguration({}).then((response) => {
 									configuration.set(response);
 								});
+								checkImportingStatus();
 								return `Import boot images success`;
 							},
 							error: (error) => {
