@@ -4,10 +4,13 @@ import (
 	"log/slog"
 	"os"
 
+	"connectrpc.com/connect"
+	"connectrpc.com/otelconnect"
 	"github.com/spf13/cobra"
 
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/mux"
+	"github.com/otterscale/otterscale/internal/mux/openfeature"
 )
 
 func NewServe(conf *config.Config, serve *mux.Serve) *cobra.Command {
@@ -30,7 +33,11 @@ func NewServe(conf *config.Config, serve *mux.Serve) *cobra.Command {
 				return err
 			}
 
-			return startHTTPServer(address, serve)
+			opts, err := newServeOptions()
+			if err != nil {
+				return err
+			}
+			return startHTTPServer(address, serve, opts...)
 		},
 	}
 
@@ -51,4 +58,18 @@ func NewServe(conf *config.Config, serve *mux.Serve) *cobra.Command {
 	)
 
 	return cmd
+}
+
+func newServeOptions() ([]connect.HandlerOption, error) {
+	openTelemetryInterceptor, err := otelconnect.NewInterceptor()
+	if err != nil {
+		return nil, err
+	}
+	openFeatureInterceptor, err := openfeature.NewInterceptor()
+	if err != nil {
+		return nil, err
+	}
+	return []connect.HandlerOption{
+		connect.WithInterceptors(openTelemetryInterceptor, openFeatureInterceptor),
+	}, nil
 }

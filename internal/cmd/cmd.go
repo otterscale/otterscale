@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"connectrpc.com/connect"
 	"github.com/rs/cors"
 )
 
@@ -15,7 +16,14 @@ const (
 	defaultContainerConfigPath = "/etc/app/otterscale.yaml"
 )
 
-func startHTTPServer(address string, handler http.Handler) error {
+type handler interface {
+	ServeHTTP(http.ResponseWriter, *http.Request)
+	RegisterHandlers(opts []connect.HandlerOption)
+}
+
+func startHTTPServer(address string, handler handler, opts ...connect.HandlerOption) error {
+	handler.RegisterHandlers(opts)
+
 	protocols := new(http.Protocols)
 	protocols.SetHTTP1(true)
 	protocols.SetUnencryptedHTTP2(true)
