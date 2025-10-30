@@ -102,18 +102,7 @@
 					<Table.Body>
 						{#each $dataVolumes as dataVolume}
 							<Table.Row class="*:px-4">
-								<Table.Cell>
-									<Tooltip.Root>
-										<Tooltip.Trigger>
-											<p class="max-w-[180px] truncate">
-												{dataVolume.name}
-											</p>
-										</Tooltip.Trigger>
-										<Tooltip.Content>
-											{dataVolume.name}
-										</Tooltip.Content>
-									</Tooltip.Root>
-								</Table.Cell>
+								<Table.Cell>{dataVolume.name}</Table.Cell>
 								<Table.Cell><Badge variant="outline">{dataVolume.namespace}</Badge></Table.Cell>
 								<Table.Cell>
 									<Tooltip.Provider>

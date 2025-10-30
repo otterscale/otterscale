@@ -97,18 +97,7 @@
 					<Table.Body>
 						{#each $instanceTypes as instanceType}
 							<Table.Row class="*:px-4">
-								<Table.Cell>
-									<Tooltip.Root>
-										<Tooltip.Trigger>
-											<p class="max-w-[180px] truncate">
-												{instanceType.name}
-											</p>
-										</Tooltip.Trigger>
-										<Tooltip.Content>
-											{instanceType.name}
-										</Tooltip.Content>
-									</Tooltip.Root>
-								</Table.Cell>
+								<Table.Cell>{instanceType.name}</Table.Cell>
 								<Table.Cell>
 									{#if instanceType.namespace}
 										<Badge variant="outline">{instanceType.namespace}</Badge>
