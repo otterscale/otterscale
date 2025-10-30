@@ -210,7 +210,7 @@
 		</Card.Header>
 
 		<Card.Content>
-			<Chart.Container config={CHART_CONFIG} class="h-[64px] w-full">
+			<Chart.Container config={CHART_CONFIG} class="h-16 w-full">
 				<LineChart
 					data={response}
 					x="date"

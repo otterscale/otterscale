@@ -1,20 +1,18 @@
-import type { AlertType, VariantGetterType, ValueType } from './types';
+import type { AlertType, ValueType } from './types';
 
 class IterationManager {
 	alerts: AlertType[];
 	value: ValueType;
-	variantGetter: VariantGetterType;
 
 	private duration: number;
 
 	private interval: ReturnType<typeof setInterval>;
 
-	constructor(alerts: AlertType[], duration: number, value: ValueType, variantGetter: VariantGetterType) {
+	constructor(alerts: AlertType[], duration: number, value: ValueType) {
 		this.alerts = alerts;
 		this.duration = duration;
 
 		this.value = value;
-		this.variantGetter = variantGetter;
 
 		this.interval = this.getInterval();
 	}

@@ -4,6 +4,8 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { tv, type VariantProps } from 'tailwind-variants';
 
+	import type { AlertType } from './types';
+
 	import { alertVariants as baseAlertVariants } from '$lib/components/ui/alert/alert.svelte';
 	import * as Alert from '$lib/components/ui/alert/index';
 	import { cn } from '$lib/utils.js';
@@ -35,16 +37,21 @@
 	let {
 		ref = $bindable(null),
 		class: className,
-		variant = 'default',
+		alert,
 		children,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		variant?: AlertVariant;
+		alert: AlertType;
 	} = $props();
 
-	setContext('variant', variant);
+	setContext('variant', alert.variant);
 </script>
 
-<Alert.Root bind:ref data-slot="alert-root" class={cn(alertVariants({ variant }), className)} {...restProps}>
+<Alert.Root
+	bind:ref
+	data-slot="alert-root"
+	class={cn(alertVariants({ variant: alert.variant }), className)}
+	{...restProps}
+>
 	{@render children?.()}
 </Alert.Root>

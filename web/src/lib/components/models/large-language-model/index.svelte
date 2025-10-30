@@ -5,6 +5,7 @@
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table/index';
+	import PluginsAlert from './plugins-alert.svelte';
 	import { type LargeLanguageModel } from './type';
 
 	import { env } from '$env/dynamic/public';
@@ -15,7 +16,7 @@
 </script>
 
 <script lang="ts">
-	let { scopeUuid, facilityName }: { scopeUuid: string; facilityName: string } = $props();
+	let { scope, facility }: { scope: string; facility: string } = $props();
 
 	const largeLanguageModels = writable<LargeLanguageModel[]>([]);
 
@@ -43,8 +44,8 @@
 
 		await applicationClient
 			.listApplications({
-				scope: scopeUuid,
-				facility: facilityName,
+				scope: scope,
+				facility: facility,
 			})
 			.then((response) => {
 				applications.set(response.applications);
@@ -63,30 +64,26 @@
 			});
 
 		if (prometheusDriver) {
+			await prometheusDriver.instantQuery(`vllm:gpu_cache_usage_perc{scope_uuid="${scope}"}`).then((response) => {
+				gpuCacheUsage = response.result;
+				gpuCacheUsageByPod = new Map(
+					gpuCacheUsage.map((instantVector) => [
+						(instantVector.metric.labels as { pod?: string }).pod ?? '',
+						instantVector.value.value,
+					]),
+				);
+			});
+			await prometheusDriver.instantQuery(`vllm:kv_cache_usage_perc{scope_uuid="${scope}"}`).then((response) => {
+				kvCacheUsage = response.result;
+				kvCacheUsageByPod = new Map(
+					kvCacheUsage.map((instantVector) => [
+						(instantVector.metric.labels as { pod?: string }).pod ?? '',
+						instantVector.value.value,
+					]),
+				);
+			});
 			await prometheusDriver
-				.instantQuery(`vllm:gpu_cache_usage_perc{scope_uuid="${scopeUuid}"}`)
-				.then((response) => {
-					gpuCacheUsage = response.result;
-					gpuCacheUsageByPod = new Map(
-						gpuCacheUsage.map((instantVector) => [
-							(instantVector.metric.labels as { pod?: string }).pod ?? '',
-							instantVector.value.value,
-						]),
-					);
-				});
-			await prometheusDriver
-				.instantQuery(`vllm:kv_cache_usage_perc{scope_uuid="${scopeUuid}"}`)
-				.then((response) => {
-					kvCacheUsage = response.result;
-					kvCacheUsageByPod = new Map(
-						kvCacheUsage.map((instantVector) => [
-							(instantVector.metric.labels as { pod?: string }).pod ?? '',
-							instantVector.value.value,
-						]),
-					);
-				});
-			await prometheusDriver
-				.instantQuery(`vllm:time_to_first_token_seconds_sum{scope_uuid="${scopeUuid}"}`)
+				.instantQuery(`vllm:time_to_first_token_seconds_sum{scope_uuid="${scope}"}`)
 				.then((response) => {
 					timeToFirstTokenSeconds = response.result;
 					timeToFirstTokenByPod = new Map(
@@ -97,7 +94,7 @@
 					);
 				});
 			await prometheusDriver
-				.instantQuery(`vllm:e2e_request_latency_seconds_sum{scope_uuid="${scopeUuid}"}`)
+				.instantQuery(`vllm:e2e_request_latency_seconds_sum{scope_uuid="${scope}"}`)
 				.then((response) => {
 					requestLatencySeconds = response.result;
 					requestLatencyByPod = new Map(
@@ -143,6 +140,7 @@
 </script>
 
 <main class="space-y-4 py-4">
+	<PluginsAlert {scope} {facility} />
 	{#if isMounted}
 		<DataTable {largeLanguageModels} {reloadManager} />
 	{:else}

@@ -10,6 +10,92 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { cn } from '$lib/utils';
+
+	export type PluginConfiguration = {
+		name: string;
+		description: string;
+		icon: string;
+	};
+	export type PlatformConfigurations = Record<
+		'General' | 'Model' | 'Instance' | 'Storage',
+		{
+			name: string;
+			plugins: PluginConfiguration[];
+			description: string;
+			icon: string;
+		}
+	>;
+
+	export const platformConfigurations: PlatformConfigurations = {
+		General: {
+			name: 'Dashboards',
+			plugins: [
+				{
+					name: 'kube-prometheus-stack',
+					description:
+						'Prometheus is an open-source monitoring system that scrapes metrics, stores time-series data, and supports queries and alerts.',
+					icon: 'ph:gauge',
+				},
+			],
+			description:
+				'Create interactive dashboards with customizable widgets, real-time charts, and drill-down insights from metrics and logs, plus role-based access controls for secure collaboration.',
+			icon: 'ph:gauge',
+		},
+		Model: {
+			name: 'Models',
+			plugins: [
+				{
+					name: 'gpu-operator',
+					description:
+						'Installs and manages NVIDIA GPU drivers, device plugins, and related components to enable GPU-accelerated workloads on the cluster.',
+					icon: 'ph:graphics-card',
+				},
+				{
+					name: 'llm-d-infra',
+					description:
+						'llm-d-infra are the infrastructure components surrounding the llm-d system - a Kubernetes-native high-performance distributed LLM inference framework',
+					icon: 'ph:robot',
+				},
+			],
+			description: 'Enable vLLM plugins (tokenizers, backends, batching, logging).',
+			icon: 'ph:robot',
+		},
+
+		Instance: {
+			name: 'Virtual Machines',
+			plugins: [
+				{
+					name: 'kubevirt-infra',
+					description:
+						'Provides KubeVirt components and tooling to run and manage virtual machines on Kubernetes — VM lifecycle, networking and storage integration, snapshots, and secure isolation.',
+					icon: 'ph:desktop-tower',
+				},
+			],
+			description:
+				'Provision and manage virtual machines with scalable resource allocation, snapshots, and secure networking.',
+			icon: 'ph:desktop-tower',
+		},
+		Storage: {
+			name: 'Storages',
+			plugins: [
+				{
+					name: 'samba-operator',
+					description:
+						'Installs and manages Samba/CIFS file share services to provide SMB-compatible file storage for workloads and expose persistent file shares to clients.',
+					icon: 'ph:hard-drive',
+				},
+				{
+					name: 'nfs-operator',
+					description:
+						'Deploys and manages NFS servers and exports, enabling scalable network file storage with POSIX semantics for stateful applications.',
+					icon: 'ph:hard-drive',
+				},
+			],
+			description:
+				'Provide scalable, redundant storage for stateful workloads — block, file, and object stores with dynamic provisioning, snapshotting, and backup integrations.',
+			icon: 'ph:hard-drives',
+		},
+	};
 </script>
 
 <script lang="ts">
@@ -20,76 +106,6 @@
 
 	let chartNameToInstalledPlugins: Record<string, Plugin[] | undefined> = $state({});
 	const installedCharts = $derived(Object.keys(chartNameToInstalledPlugins));
-
-	const configurations = $derived([
-		{
-			name: 'Models',
-			requirements: [
-				{
-					icon: 'ph:graphics-card',
-					name: 'gpu-operator',
-					description:
-						'Installs and manages NVIDIA GPU drivers, device plugins, and related components to enable GPU-accelerated workloads on the cluster.',
-				},
-				{
-					icon: 'ph:robot',
-					name: 'llm-d-infra',
-					description:
-						'llm-d-infra are the infrastructure components surrounding the llm-d system - a Kubernetes-native high-performance distributed LLM inference framework',
-				},
-			],
-			description: 'Enable vLLM plugins (tokenizers, backends, batching, logging).',
-			icon: 'ph:robot',
-		},
-		{
-			name: 'Storage',
-			requirements: [
-				{
-					icon: 'ph:hard-drive',
-					name: 'samba-operator',
-					description:
-						'Installs and manages Samba/CIFS file share services to provide SMB-compatible file storage for workloads and expose persistent file shares to clients.',
-				},
-				{
-					icon: 'ph:hard-drive',
-					name: 'nfs-operator',
-					description:
-						'Deploys and manages NFS servers and exports, enabling scalable network file storage with POSIX semantics for stateful applications.',
-				},
-			],
-			description:
-				'Provide scalable, redundant storage for stateful workloads — block, file, and object stores with dynamic provisioning, snapshotting, and backup integrations.',
-			icon: 'ph:hard-drives',
-		},
-		{
-			name: 'Virtual Machines',
-			requirements: [
-				{
-					icon: 'ph:desktop-tower',
-					name: 'kubevirt-infra',
-					description:
-						'Provides KubeVirt components and tooling to run and manage virtual machines on Kubernetes — VM lifecycle, networking and storage integration, snapshots, and secure isolation.',
-				},
-			],
-			description:
-				'Provision and manage virtual machines with scalable resource allocation, snapshots, and secure networking.',
-			icon: 'ph:desktop-tower',
-		},
-		{
-			name: 'Dashboard',
-			requirements: [
-				{
-					icon: 'ph:gauge',
-					name: 'kube-prometheus-stack',
-					description:
-						'Prometheus is an open-source monitoring system that scrapes metrics, stores time-series data, and supports queries and alerts.',
-				},
-			],
-			description:
-				'Create interactive dashboards with customizable widgets, real-time charts, and drill-down insights from metrics and logs, plus role-based access controls for secure collaboration.',
-			icon: 'ph:gauge',
-		},
-	]);
 
 	orchestratorService
 		.listPlugins({ scope: scope, facility: facility })
@@ -105,20 +121,19 @@
 	type="multiple"
 	class="group bg-card text-card-foreground w-full overflow-hidden rounded-lg border transition-all duration-300"
 >
-	{#each configurations as configuration, index}
+	{#each Object.entries(platformConfigurations) as [_, pluginConfiguration], index}
 		<Accordion.Item value={String(index)} class="p-6">
 			<Accordion.Trigger>
 				{@render Thumbnial(
-					configuration.icon,
-					configuration.name,
-					configuration.description,
-					configuration.requirements.filter((requirement) => installedCharts.includes(requirement.name))
-						.length,
-					configuration.requirements.length,
+					pluginConfiguration.icon,
+					pluginConfiguration.name,
+					pluginConfiguration.description,
+					pluginConfiguration.plugins.filter((plugin) => installedCharts.includes(plugin.name)).length,
+					pluginConfiguration.plugins.length,
 				)}
 			</Accordion.Trigger>
 			<Accordion.Content class="flex flex-col gap-4 text-balance">
-				{#each configuration.requirements as requirement, index}
+				{#each pluginConfiguration.plugins as requirement, index}
 					<div class="relative mx-auto hidden w-full space-y-12 pt-10 md:block">
 						{@render Node(
 							index % 2 ? 'right' : 'left',
@@ -133,6 +148,7 @@
 		</Accordion.Item>
 	{/each}
 </Accordion.Root>
+
 {#snippet Thumbnial(icon: string, title: string, description: string, installed: number, required: number)}
 	{@const percentage = (installed * 100) / required}
 	<div class="flex w-full flex-col gap-4">
