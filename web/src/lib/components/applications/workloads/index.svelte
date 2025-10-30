@@ -34,6 +34,9 @@
 						publicAddress: response.publicAddress,
 					})),
 				);
+			})
+			.catch((error) => {
+				console.error('Error during data loading:', error);
 			});
 	});
 	setContext('reloadManager', reloadManager);
