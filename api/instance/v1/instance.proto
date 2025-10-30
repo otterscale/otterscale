@@ -1,4 +1,4 @@
-edition = "2023";
+edition = "2024";
 
 package otterscale.instance.v1;
 
@@ -294,7 +294,7 @@ message DataVolume {
   string phase = 21;
   string progress = 22;
   int64 size_bytes = 31;  // requested size in bytes
-  otterscale.application.v1.Application.PersistentVolumeClaim PersistentVolumeClaim = 32;
+  otterscale.application.v1.Application.PersistentVolumeClaim persistent_volume_claim = 32;
   Condition last_condition = 41;
 }
 

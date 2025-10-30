@@ -31,7 +31,7 @@
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							publicAddress: application.publicAddress,
+							publicAddress: response.publicAddress,
 						})),
 					),
 				);
@@ -53,7 +53,7 @@
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							publicAddress: application.publicAddress,
+							publicAddress: response.publicAddress,
 						})),
 					),
 				);
