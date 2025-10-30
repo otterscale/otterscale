@@ -3536,7 +3536,7 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\tCreateTag\x12'.otterscale.machine.v1.CreateTagRequest\x1a\x1a.otterscale.machine.v1.Tag\"\x0e\x8a\xdf\xd5\x1d\t\n" +
 	"\amch-tag\x12\\\n" +
 	"\tDeleteTag\x12'.otterscale.machine.v1.DeleteTagRequest\x1a\x16.google.protobuf.Empty\"\x0e\x8a\xdf\xd5\x1d\t\n" +
-	"\amch-tagB4Z2github.com/otterscale/otterscale/api/machine/v1;pbb\beditionsp\xe8\a"
+	"\amch-tagB4Z2github.com/otterscale/otterscale/api/machine/v1;pbb\beditionsp\xe9\a"
 
 var file_api_machine_v1_machine_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_api_machine_v1_machine_proto_goTypes = []any{
