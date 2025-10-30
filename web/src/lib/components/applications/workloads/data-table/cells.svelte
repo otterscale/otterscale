@@ -2,10 +2,11 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
+	import type { Application } from '../types';
+
 	import Actions from './cell-actions.svelte';
 
 	import { page } from '$app/state';
-	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';

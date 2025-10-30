@@ -3,7 +3,9 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
+	import type { Application } from '../types';
+
+	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
 	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
@@ -43,7 +45,12 @@
 				facility: facility,
 			});
 
-			applications.set(response.applications);
+			applications.set(
+				response.applications.map((application) => ({
+					...application,
+					publicAddress: response.publicAddress,
+				})),
+			);
 
 			if (response.applications && response.applications[0]) {
 				selectedValue = response.applications[0].type;

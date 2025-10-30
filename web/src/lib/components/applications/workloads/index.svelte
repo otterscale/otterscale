@@ -5,8 +5,9 @@
 
 	import { DataTable } from './data-table/index';
 	import { Statistics } from './statistics';
+	import type { Application } from './types';
 
-	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
+	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 </script>
@@ -27,7 +28,12 @@
 				facility: facility,
 			})
 			.then((response) => {
-				applications.set(response.applications);
+				applications.set(
+					response.applications.map((application) => ({
+						...application,
+						publicAddress: response.publicAddress,
+					})),
+				);
 			});
 	});
 	setContext('reloadManager', reloadManager);
@@ -39,7 +45,12 @@
 				facility: facility,
 			})
 			.then((response) => {
-				applications.set(response.applications);
+				applications.set(
+					response.applications.map((application) => ({
+						...application,
+						publicAddress: response.publicAddress,
+					})),
+				);
 				isMounted = true;
 			})
 			.catch((error) => {

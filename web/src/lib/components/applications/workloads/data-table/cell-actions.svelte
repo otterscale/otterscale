@@ -1,9 +1,10 @@
 <script lang="ts" module>
+	import type { Application } from '../types';
+
 	import Restart from './action-restart.svelte';
 	import Scale from './action-scale.svelte';
 
 	import { page } from '$app/state';
-	import type { Application } from '$lib/api/application/v1/application_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
 </script>

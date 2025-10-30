@@ -12,9 +12,10 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
+	import type { Application } from '../types';
+
 	import { columns, messages } from './columns';
 
-	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
