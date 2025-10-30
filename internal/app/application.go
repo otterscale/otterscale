@@ -56,7 +56,8 @@ func (s *ApplicationService) ListApplications(ctx context.Context, req *pb.ListA
 		return nil, err
 	}
 	resp := &pb.ListApplicationsResponse{}
-	resp.SetApplications(toProtoApplications(apps, publicAddress))
+	resp.SetApplications(toProtoApplications(apps))
+	resp.SetPublicAddress(publicAddress)
 	return resp, nil
 }
 
@@ -70,11 +71,7 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetAppl
 		return nil, err
 	}
 	app.ChartFile = chartFile
-	publicAddress, err := s.kubernetes.GetPublicAddress(ctx, req.GetScope(), req.GetFacility())
-	if err != nil {
-		return nil, err
-	}
-	resp := toProtoApplication(app, publicAddress)
+	resp := toProtoApplication(app)
 	return resp, nil
 }
 
@@ -266,15 +263,15 @@ func toProtoNamespace(n *core.Namespace) *pb.Namespace {
 	return ret
 }
 
-func toProtoApplications(as []core.Application, publicAddress string) []*pb.Application {
+func toProtoApplications(as []core.Application) []*pb.Application {
 	ret := []*pb.Application{}
 	for i := range as {
-		ret = append(ret, toProtoApplication(&as[i], publicAddress))
+		ret = append(ret, toProtoApplication(&as[i]))
 	}
 	return ret
 }
 
-func toProtoApplication(a *core.Application, publicAddress string) *pb.Application {
+func toProtoApplication(a *core.Application) *pb.Application {
 	replicas := int32(0)
 	if a.Replicas != nil {
 		replicas = *a.Replicas
@@ -291,7 +288,6 @@ func toProtoApplication(a *core.Application, publicAddress string) *pb.Applicati
 	ret.SetPods(toProtoPods(a.Pods))
 	ret.SetPersistentVolumeClaims(toProtoPersistentVolumeClaims(a.Storages))
 	ret.SetCreatedAt(timestamppb.New(a.ObjectMeta.CreationTimestamp.Time))
-	ret.SetPublicAddress(publicAddress)
 	if a.ChartFile != nil {
 		ret.SetMetadata(toProtoChartMetadata(a.ChartFile))
 	}

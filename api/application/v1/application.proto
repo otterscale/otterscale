@@ -237,7 +237,6 @@ message Application {
   repeated Pod pods = 102;
   repeated PersistentVolumeClaim persistent_volume_claims = 103;
   google.protobuf.Timestamp created_at = 201;
-  string public_address = 301;
 }
 
 message StorageClass {
@@ -256,6 +255,7 @@ message ListApplicationsRequest {
 
 message ListApplicationsResponse {
   repeated Application applications = 1;
+  string public_address = 2;
 }
 
 message GetApplicationRequest {
