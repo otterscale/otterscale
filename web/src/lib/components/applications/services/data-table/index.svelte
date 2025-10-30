@@ -13,10 +13,11 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
+	import type { Service } from '../types';
+
 	import { columns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 
-	import type { Application_Service } from '$lib/api/application/v1/application_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
@@ -29,11 +30,11 @@
 		services,
 		reloadManager,
 	}: {
-		services: Writable<Application_Service[]>;
+		services: Writable<Service[]>;
 		reloadManager: ReloadManager;
 	} = $props();
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 14 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});

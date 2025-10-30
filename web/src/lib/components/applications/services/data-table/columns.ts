@@ -1,9 +1,11 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
+import type { Service } from '../types';
+
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-import type { Application_Service } from '$lib/api/application/v1/application_pb';
+import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
@@ -14,7 +16,7 @@ const messages = {
 	ports: m.ports(),
 };
 
-const columns: ColumnDef<Application_Service>[] = [
+const columns: ColumnDef<Service>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -61,6 +63,13 @@ const columns: ColumnDef<Application_Service>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.ports, row);
 		},
+		sortingFn: (previousRow, nextRow) =>
+			getSortingFunction(
+				previousRow.original.ports.length,
+				nextRow.original.ports.length,
+				(p, n) => p < n,
+				(p, n) => p === n,
+			),
 	},
 	{
 		accessorKey: 'endpoints',

@@ -4,8 +4,9 @@
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table/index';
+	import type { Service } from './types';
 
-	import { ApplicationService, type Application_Service } from '$lib/api/application/v1/application_pb';
+	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 </script>
@@ -16,7 +17,7 @@
 	const transport: Transport = getContext('transport');
 	let isMounted = $state(false);
 
-	const services = writable<Application_Service[]>([]);
+	const services = writable<Service[]>([]);
 
 	const applicationClient = createClient(ApplicationService, transport);
 	const reloadManager = new ReloadManager(() => {
@@ -27,9 +28,12 @@
 			})
 			.then((response) => {
 				services.set(
-					response.applications
-						.filter((application) => application.services.length > 0)
-						.flatMap((application) => application.services),
+					response.applications.flatMap((application) =>
+						application.services.map((service) => ({
+							...service,
+							publicAddress: application.publicAddress,
+						})),
+					),
 				);
 			});
 	});
@@ -43,9 +47,12 @@
 			})
 			.then((response) => {
 				services.set(
-					response.applications
-						.filter((application) => application.services.length > 0)
-						.flatMap((application) => application.services),
+					response.applications.flatMap((application) =>
+						application.services.map((service) => ({
+							...service,
+							publicAddress: application.publicAddress,
+						})),
+					),
 				);
 				isMounted = true;
 			})

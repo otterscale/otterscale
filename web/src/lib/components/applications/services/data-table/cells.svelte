@@ -2,14 +2,16 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import Actions from './cell-actions.svelte';
+	import type { Service } from '../types';
 
-	import type { Application_Service } from '$lib/api/application/v1/application_pb';
+	import CopyButton from '$lib/components/custom/copy-button/copy-button.svelte';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Table from '$lib/components/custom/table';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { m } from '$lib/paraglide/messages';
 
 	export const cells = {
 		row_picker,
@@ -22,19 +24,19 @@
 	};
 </script>
 
-{#snippet row_picker(row: Row<Application_Service>)}
+{#snippet row_picker(row: Row<Service>)}
 	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
 	</Layout.Cell>
 {/snippet}
 
-{#snippet name(row: Row<Application_Service>)}
+{#snippet name(row: Row<Service>)}
 	<Layout.Cell class="items-start">
 		{row.original.name}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet type(row: Row<Application_Service>)}
+{#snippet type(row: Row<Service>)}
 	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.type}
@@ -42,13 +44,13 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet clusterIp(row: Row<Application_Service>)}
+{#snippet clusterIp(row: Row<Service>)}
 	<Layout.Cell class="items-start">
 		{row.original.clusterIp}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet ports(row: Row<Application_Service>)}
+{#snippet ports(row: Row<Service>)}
 	<Layout.Cell class="items-end">
 		<HoverCard.Root>
 			<HoverCard.Trigger>
@@ -61,11 +63,11 @@
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
-							<Table.Head class="text-start">Protocol</Table.Head>
-							<Table.Head class="text-end">Port</Table.Head>
-							<Table.Head class="text-end">Node Port</Table.Head>
-							<Table.Head class="text-end">Target Port</Table.Head>
-							<Table.Head class="text-start">Name</Table.Head>
+							<Table.Head class="text-start">{m.protocol()}</Table.Head>
+							<Table.Head class="text-end">{m.port()}</Table.Head>
+							<Table.Head class="text-end">{m.node_port()}</Table.Head>
+							<Table.Head class="text-end">{m.target_port()}</Table.Head>
+							<Table.Head class="text-start">{m.name()}</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -95,10 +97,29 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet endpoints()}{/snippet}
-
-{#snippet actions(row: Row<Application_Service>)}
-	<Layout.Cell class="items-start">
-		<Actions service={row.original} />
-	</Layout.Cell>
+{#snippet endpoints(row: Row<Service>)}
+	{#if row.original.type === 'NodePort'}
+		<Layout.Cell class="items-start">
+			{#each row.original.ports as port}
+				{@const url = `http://${row.original.publicAddress}:${port.nodePort}`}
+				<div class="group flex items-center gap-1">
+					<Tooltip.Provider>
+						<Tooltip.Root delayDuration={13}>
+							<Tooltip.Trigger>
+								<Badge variant="outline">
+									{port.name}
+								</Badge>
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								{url}
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
+					<CopyButton class="invisible size-4 group-hover:visible" text={url} />
+				</div>
+			{/each}
+		</Layout.Cell>
+	{/if}
 {/snippet}
+
+{#snippet actions()}{/snippet}
