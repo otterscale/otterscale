@@ -46,7 +46,7 @@
 
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
-		<Icon icon="ph:lock-open" />
+		<Icon icon="ph:arrow-counter-clockwise" />
 		{m.rollback()}
 	</Modal.Trigger>
 	<Modal.Content>
