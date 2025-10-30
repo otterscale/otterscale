@@ -19,8 +19,8 @@ func (b *Bootstrap) serviceNames() []string {
 	return []string{bootstrapv1.BootstrapServiceName}
 }
 
-func (b *Bootstrap) RegisterHandlers(_ []connect.HandlerOption) {
-	b.Handle(bootstrapv1.NewBootstrapServiceHandler(b.svc))
+func (b *Bootstrap) RegisterHandlers(opts []connect.HandlerOption) {
+	b.Handle(bootstrapv1.NewBootstrapServiceHandler(b.svc, opts...))
 }
 
 func NewBootstrap(svc *app.BootstrapService) *Bootstrap {
