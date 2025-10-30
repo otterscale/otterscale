@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/yaml.v2"
@@ -71,8 +72,15 @@ func NewChartUseCase(conf *config.Config, action ActionRepo, chart ChartRepo, fa
 }
 
 func (uc *ChartUseCase) ListCharts(ctx context.Context) ([]Chart, error) {
-	urls := uc.conf.Kube.HelmRepositoryURLs
-	urls = append(urls, localChartRepoDir)
+	urls := slices.Clone(uc.conf.Kube.HelmRepositoryURLs)
+	exists, err := checkDirExists(localChartRepoDir)
+	if err != nil {
+		return nil, err
+	}
+	if exists {
+		urls = append(urls, localChartRepoDir)
+	}
+
 	eg, egctx := errgroup.WithContext(ctx)
 	result := make([][]Chart, len(urls))
 	for i := range urls {
