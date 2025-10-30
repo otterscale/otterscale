@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"errors"
+	"os"
 	"strings"
 
 	"github.com/juju/juju/core/base"
@@ -89,4 +90,15 @@ func toConstraint(c *MachineConstraint) constraints.Value {
 		constraint.Tags = &c.Tags
 	}
 	return constraint
+}
+
+func checkDirExists(dir string) (bool, error) {
+	info, err := os.Stat(dir)
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return info.IsDir(), nil
 }
