@@ -2,27 +2,96 @@ edition = "2023";
 
 package otterscale.configuration.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/configuration/v1;pb";
 
 service ConfigurationService {
-  rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
-  rpc UpdateNTPServer(UpdateNTPServerRequest) returns (Configuration.NTPServer);
-  rpc UpdatePackageRepository(UpdatePackageRepositoryRequest) returns (Configuration.PackageRepository);
-  rpc UpdateHelmRepository(UpdateHelmRepositoryRequest) returns (Configuration.HelmRepository);
+  rpc GetConfiguration(GetConfigurationRequest) returns (Configuration) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
 
-  rpc CreateBootImage(CreateBootImageRequest) returns (Configuration.BootImage);
-  rpc SetDefaultBootImage(SetDefaultBootImageRequest) returns (google.protobuf.Empty);
-  rpc ImportBootImages(ImportBootImagesRequest) returns (google.protobuf.Empty);
-  rpc IsImportingBootImages(IsImportingBootImagesRequest) returns (IsImportingBootImagesResponse);
-  rpc ListBootImageSelections(ListBootImageSelectionsRequest) returns (ListBootImageSelectionsResponse);
+  rpc UpdateNTPServer(UpdateNTPServerRequest) returns (Configuration.NTPServer) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
 
-  rpc ListTestResults(ListTestResultsRequest) returns (ListTestResultsResponse);
-  rpc CreateTestResult(CreateTestResultRequest) returns (TestResult);
-  rpc DeleteTestResult(DeleteTestResultRequest) returns (google.protobuf.Empty);
-  rpc ListInternalObjectServices(ListInternalObjectServicesRequest) returns (ListInternalObjectServicesResponse);
+  rpc UpdatePackageRepository(UpdatePackageRepositoryRequest) returns (Configuration.PackageRepository) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc UpdateHelmRepository(UpdateHelmRepositoryRequest) returns (Configuration.HelmRepository) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc CreateBootImage(CreateBootImageRequest) returns (Configuration.BootImage) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc UpdateBootImage(UpdateBootImageRequest) returns (Configuration.BootImage) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc SetDefaultBootImage(SetDefaultBootImageRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc ImportBootImages(ImportBootImagesRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc IsImportingBootImages(IsImportingBootImagesRequest) returns (IsImportingBootImagesResponse) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc ListBootImageSelections(ListBootImageSelectionsRequest) returns (ListBootImageSelectionsResponse) {
+    option (otterscale.api.feature) = {
+      name: "cfg-general"
+    };
+  };
+
+  rpc ListTestResults(ListTestResultsRequest) returns (ListTestResultsResponse) {
+    option (otterscale.api.feature) = {
+      name: "cfg-built-in-self-test"
+    };
+  };
+
+  rpc CreateTestResult(CreateTestResultRequest) returns (TestResult) {
+    option (otterscale.api.feature) = {
+      name: "cfg-built-in-self-test"
+    };
+  };
+
+  rpc DeleteTestResult(DeleteTestResultRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "cfg-built-in-self-test"
+    };
+  };
+
+  rpc ListInternalObjectServices(ListInternalObjectServicesRequest) returns (ListInternalObjectServicesResponse) {
+    option (otterscale.api.feature) = {
+      name: "cfg-built-in-self-test"
+    };
+  };
 }
 
 message Configuration {
@@ -44,7 +113,9 @@ message Configuration {
     string source = 1;
     string distro_series = 2;
     string name = 3;
-    map<string, string> architecture_status_map = 5;
+    int64 id = 4;
+    repeated string architectures = 5;
+    map<string, string> architecture_status_map = 6;
     bool default = 11;
   }
   message HelmRepository {
@@ -75,6 +146,12 @@ message UpdateHelmRepositoryRequest {
 message CreateBootImageRequest {
   string distro_series = 1;
   repeated string architectures = 2;
+}
+
+message UpdateBootImageRequest {
+  int64 id = 1;
+  string distro_series = 2;
+  repeated string architectures = 3;
 }
 
 message SetDefaultBootImageRequest {

@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"net/url"
+	"time"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -240,7 +241,7 @@ func (r *core) GetLogs(ctx context.Context, config *rest.Config, namespace, podN
 	return buf.String(), nil
 }
 
-func (r *core) StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error) {
+func (r *core) StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string, duration time.Duration) (io.ReadCloser, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -249,6 +250,10 @@ func (r *core) StreamLogs(ctx context.Context, config *rest.Config, namespace, p
 	opts := corev1.PodLogOptions{
 		Container: containerName,
 		Follow:    true,
+	}
+	if duration > 0 {
+		sec := int64(duration.Round(time.Second).Seconds())
+		opts.SinceSeconds = &sec
 	}
 	return clientset.CoreV1().Pods(namespace).GetLogs(podName, &opts).Stream(ctx)
 }
@@ -291,6 +296,22 @@ func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Conf
 	return list.Items, nil
 }
 
+func (r *core) ListPersistentVolumeClaimsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]oscore.PersistentVolumeClaim, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.ListOptions{
+		LabelSelector: label,
+	}
+	list, err := clientset.CoreV1().PersistentVolumeClaims(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
 func (r *core) GetPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.PersistentVolumeClaim, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
@@ -309,6 +330,16 @@ func (r *core) PatchPersistentVolumeClaim(ctx context.Context, config *rest.Conf
 
 	opts := metav1.PatchOptions{}
 	return clientset.CoreV1().PersistentVolumeClaims(namespace).Patch(ctx, name, types.JSONPatchType, data, opts)
+}
+
+func (r *core) DeletePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) error {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return err
+	}
+
+	opts := metav1.DeleteOptions{}
+	return clientset.CoreV1().PersistentVolumeClaims(namespace).Delete(ctx, name, opts)
 }
 
 func (r *core) GetNamespace(ctx context.Context, config *rest.Config, name string) (*oscore.Namespace, error) {

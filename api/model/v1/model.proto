@@ -2,45 +2,148 @@ edition = "2023";
 
 package otterscale.model.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/model/v1;pb";
 
 service ModelService {
-  rpc ListModels(ListModelsRequest) returns (ListModelsResponse);
-  rpc GetModel(GetModelRequest) returns (Model);
-  rpc CreateModel(CreateModelRequest) returns (Model);
-  rpc DeleteModel(DeleteModelRequest) returns (google.protobuf.Empty);
+  rpc ListModels(ListModelsRequest) returns (ListModelsResponse) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc CreateModel(CreateModelRequest) returns (Model) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc UpdateModel(UpdateModelRequest) returns (Model) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc DeleteModel(DeleteModelRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc ListModelArtifacts(ListModelArtifactsRequest) returns (ListModelArtifactsResponse) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc CreateModelArtifact(CreateModelArtifactRequest) returns (ModelArtifact) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc DeleteModelArtifact(DeleteModelArtifactRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
 }
 
+// TODO: namespace -> httproute
+message HTTPRoute {}
+
+// TODO: selector -> model
+message InferencePool {}
+
 message Model {
+  message Resource {
+    uint32 vgpu = 1;
+    uint32 vgpumem_percentage = 2;
+  }
   string id = 1;
-  string name = 2;
-  string description = 3;
-  string version = 4;
-  string comment = 5;
+  string inference_pool_name = 2;
+  string name = 11;
+  string namespace = 12;
+  string status = 13;
+  string description = 14;
+  google.protobuf.Timestamp first_deployed_at = 15;
+  google.protobuf.Timestamp last_deployed_at = 16;
+  string chart_version = 21;
+  string app_version = 22;
+  Resource requests = 31;
+  Resource limits = 32;
 }
 
 message ListModelsRequest {
   string scope = 1;
   string facility = 2;
+  string namespace = 3;
 }
 
 message ListModelsResponse {
   repeated Model models = 1;
-}
-
-message GetModelRequest {
-  string id = 1;
+  string public_address = 2;
 }
 
 message CreateModelRequest {
-  string name = 1;
-  string description = 2;
-  string version = 3;
-  string comment = 4;
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  string model_name = 11;
+}
+
+message UpdateModelRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  Model.Resource limits = 11;
+  Model.Resource requests = 12;
 }
 
 message DeleteModelRequest {
-  string id = 1;
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message ModelArtifact {
+  string name = 1;
+  string namespace = 2;
+  string model_name = 11;
+  string phase = 21;
+  int64 size = 22;
+  string volume_name = 31;
+  google.protobuf.Timestamp created_at = 41;
+}
+
+message ListModelArtifactsRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+}
+
+message ListModelArtifactsResponse {
+  repeated ModelArtifact model_artifacts = 1;
+}
+
+message CreateModelArtifactRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  string model_name = 11;
+  int64 size = 12;
+}
+
+message DeleteModelArtifactRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
 }

@@ -2,13 +2,23 @@ edition = "2023";
 
 package otterscale.bootstrap.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/bootstrap/v1;pb";
 
 service BootstrapService {
-  rpc WatchStatus(WatchStatusRequest) returns (stream WatchStatusResponse);
-  rpc UpdateStatus(UpdateStatusRequest) returns (google.protobuf.Empty);
+  rpc WatchStatus(WatchStatusRequest) returns (stream WatchStatusResponse) {
+    option (otterscale.api.feature) = {
+      name: "bs-general"
+    };
+  };
+
+  rpc UpdateStatus(UpdateStatusRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "bs-general"
+    };
+  };
 }
 
 message WatchStatusRequest {}

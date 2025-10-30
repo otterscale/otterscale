@@ -1,19 +1,23 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 	import { writable } from 'svelte/store';
 
+	import Actions from './cell-actions.svelte';
 	import Create from './create.svelte';
 	import Import from './import.svelte';
 	import ReadArchitectures from './read-architectures.svelte';
-	import SetAsDefault from './set-as-default.svelte';
 
 	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
 	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
+	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">
@@ -22,6 +26,14 @@
 
 	const configuration = writable<Configuration>();
 	let isConfigurationLoading = $state(true);
+	let expandedArchitectures = new SvelteMap<string, boolean>();
+
+	const reloadManager = new ReloadManager(() => {
+		configurationClient.getConfiguration({}).then((response) => {
+			configuration.set(response);
+		});
+	});
+	setContext('reloadManager', reloadManager);
 
 	onMount(async () => {
 		try {
@@ -32,6 +44,11 @@
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
+		reloadManager.start();
+	});
+
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 </script>
 
@@ -55,6 +72,7 @@
 							<Table.Head>{m.distro_series()}</Table.Head>
 							<Table.Head>{m.default_value()}</Table.Head>
 							<Table.Head class="text-right">{m.architecture()}</Table.Head>
+							<Table.Head class="text-right">{m.status()}</Table.Head>
 							<Table.Head></Table.Head>
 						</Table.Row>
 					</Table.Header>
@@ -70,15 +88,56 @@
 									<Icon icon={bootImage.default ? 'ph:circle' : 'ph:x'} />
 								</Table.Cell>
 								<Table.Cell>
-									<span class="flex items-center justify-end gap-1">
-										<ReadArchitectures {bootImage} />
-										{Object.keys(bootImage.architectureStatusMap).length}
-									</span>
+									<div class="flex items-center justify-end gap-1">
+										<div class="flex flex-wrap gap-1">
+											{#if !expandedArchitectures.get(bootImage.name)}
+												{#each bootImage.architectures.slice(0, 3) as architecture}
+													<Badge variant="outline">{architecture}</Badge>
+												{/each}
+												{#if bootImage.architectures.length > 3}
+													<Badge variant="outline" class="h-fit w-fit">
+														+{bootImage.architectures.length - 3}
+													</Badge>
+												{/if}
+											{:else}
+												{#each bootImage.architectures as architecture}
+													<Badge variant="outline">{architecture}</Badge>
+												{/each}
+											{/if}
+										</div>
+										{#if bootImage.architectures.length > 3}
+											<Button
+												variant="outline"
+												size="icon"
+												class="size-6"
+												onclick={() => {
+													expandedArchitectures.set(
+														bootImage.name,
+														!expandedArchitectures.get(bootImage.name),
+													);
+												}}
+											>
+												<Icon
+													icon="ph:caret-left"
+													class={cn(
+														'size-4 transition-all',
+														expandedArchitectures.get(bootImage.name)
+															? 'rotate-90'
+															: '-rotate-90',
+													)}
+												/>
+											</Button>
+										{/if}
+									</div>
 								</Table.Cell>
 								<Table.Cell>
-									<div class="flex items-center justify-end">
-										<SetAsDefault {bootImage} {configuration} />
-									</div>
+									<span class="flex items-center justify-end">
+										{Object.keys(bootImage.architectureStatusMap).length}
+										<ReadArchitectures {bootImage} />
+									</span>
+								</Table.Cell>
+								<Table.Cell class="p-0">
+									<Actions {bootImage} {configuration} />
 								</Table.Cell>
 							</Table.Row>
 						{/each}

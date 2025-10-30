@@ -49,6 +49,9 @@ const (
 	// ConfigurationServiceCreateBootImageProcedure is the fully-qualified name of the
 	// ConfigurationService's CreateBootImage RPC.
 	ConfigurationServiceCreateBootImageProcedure = "/otterscale.configuration.v1.ConfigurationService/CreateBootImage"
+	// ConfigurationServiceUpdateBootImageProcedure is the fully-qualified name of the
+	// ConfigurationService's UpdateBootImage RPC.
+	ConfigurationServiceUpdateBootImageProcedure = "/otterscale.configuration.v1.ConfigurationService/UpdateBootImage"
 	// ConfigurationServiceSetDefaultBootImageProcedure is the fully-qualified name of the
 	// ConfigurationService's SetDefaultBootImage RPC.
 	ConfigurationServiceSetDefaultBootImageProcedure = "/otterscale.configuration.v1.ConfigurationService/SetDefaultBootImage"
@@ -83,6 +86,7 @@ type ConfigurationServiceClient interface {
 	UpdatePackageRepository(context.Context, *v1.UpdatePackageRepositoryRequest) (*v1.Configuration_PackageRepository, error)
 	UpdateHelmRepository(context.Context, *v1.UpdateHelmRepositoryRequest) (*v1.Configuration_HelmRepository, error)
 	CreateBootImage(context.Context, *v1.CreateBootImageRequest) (*v1.Configuration_BootImage, error)
+	UpdateBootImage(context.Context, *v1.UpdateBootImageRequest) (*v1.Configuration_BootImage, error)
 	SetDefaultBootImage(context.Context, *v1.SetDefaultBootImageRequest) (*emptypb.Empty, error)
 	ImportBootImages(context.Context, *v1.ImportBootImagesRequest) (*emptypb.Empty, error)
 	IsImportingBootImages(context.Context, *v1.IsImportingBootImagesRequest) (*v1.IsImportingBootImagesResponse, error)
@@ -133,6 +137,12 @@ func NewConfigurationServiceClient(httpClient connect.HTTPClient, baseURL string
 			httpClient,
 			baseURL+ConfigurationServiceCreateBootImageProcedure,
 			connect.WithSchema(configurationServiceMethods.ByName("CreateBootImage")),
+			connect.WithClientOptions(opts...),
+		),
+		updateBootImage: connect.NewClient[v1.UpdateBootImageRequest, v1.Configuration_BootImage](
+			httpClient,
+			baseURL+ConfigurationServiceUpdateBootImageProcedure,
+			connect.WithSchema(configurationServiceMethods.ByName("UpdateBootImage")),
 			connect.WithClientOptions(opts...),
 		),
 		setDefaultBootImage: connect.NewClient[v1.SetDefaultBootImageRequest, emptypb.Empty](
@@ -193,6 +203,7 @@ type configurationServiceClient struct {
 	updatePackageRepository    *connect.Client[v1.UpdatePackageRepositoryRequest, v1.Configuration_PackageRepository]
 	updateHelmRepository       *connect.Client[v1.UpdateHelmRepositoryRequest, v1.Configuration_HelmRepository]
 	createBootImage            *connect.Client[v1.CreateBootImageRequest, v1.Configuration_BootImage]
+	updateBootImage            *connect.Client[v1.UpdateBootImageRequest, v1.Configuration_BootImage]
 	setDefaultBootImage        *connect.Client[v1.SetDefaultBootImageRequest, emptypb.Empty]
 	importBootImages           *connect.Client[v1.ImportBootImagesRequest, emptypb.Empty]
 	isImportingBootImages      *connect.Client[v1.IsImportingBootImagesRequest, v1.IsImportingBootImagesResponse]
@@ -243,6 +254,15 @@ func (c *configurationServiceClient) UpdateHelmRepository(ctx context.Context, r
 // CreateBootImage calls otterscale.configuration.v1.ConfigurationService.CreateBootImage.
 func (c *configurationServiceClient) CreateBootImage(ctx context.Context, req *v1.CreateBootImageRequest) (*v1.Configuration_BootImage, error) {
 	response, err := c.createBootImage.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// UpdateBootImage calls otterscale.configuration.v1.ConfigurationService.UpdateBootImage.
+func (c *configurationServiceClient) UpdateBootImage(ctx context.Context, req *v1.UpdateBootImageRequest) (*v1.Configuration_BootImage, error) {
+	response, err := c.updateBootImage.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -332,6 +352,7 @@ type ConfigurationServiceHandler interface {
 	UpdatePackageRepository(context.Context, *v1.UpdatePackageRepositoryRequest) (*v1.Configuration_PackageRepository, error)
 	UpdateHelmRepository(context.Context, *v1.UpdateHelmRepositoryRequest) (*v1.Configuration_HelmRepository, error)
 	CreateBootImage(context.Context, *v1.CreateBootImageRequest) (*v1.Configuration_BootImage, error)
+	UpdateBootImage(context.Context, *v1.UpdateBootImageRequest) (*v1.Configuration_BootImage, error)
 	SetDefaultBootImage(context.Context, *v1.SetDefaultBootImageRequest) (*emptypb.Empty, error)
 	ImportBootImages(context.Context, *v1.ImportBootImagesRequest) (*emptypb.Empty, error)
 	IsImportingBootImages(context.Context, *v1.IsImportingBootImagesRequest) (*v1.IsImportingBootImagesResponse, error)
@@ -377,6 +398,12 @@ func NewConfigurationServiceHandler(svc ConfigurationServiceHandler, opts ...con
 		ConfigurationServiceCreateBootImageProcedure,
 		svc.CreateBootImage,
 		connect.WithSchema(configurationServiceMethods.ByName("CreateBootImage")),
+		connect.WithHandlerOptions(opts...),
+	)
+	configurationServiceUpdateBootImageHandler := connect.NewUnaryHandlerSimple(
+		ConfigurationServiceUpdateBootImageProcedure,
+		svc.UpdateBootImage,
+		connect.WithSchema(configurationServiceMethods.ByName("UpdateBootImage")),
 		connect.WithHandlerOptions(opts...),
 	)
 	configurationServiceSetDefaultBootImageHandler := connect.NewUnaryHandlerSimple(
@@ -439,6 +466,8 @@ func NewConfigurationServiceHandler(svc ConfigurationServiceHandler, opts ...con
 			configurationServiceUpdateHelmRepositoryHandler.ServeHTTP(w, r)
 		case ConfigurationServiceCreateBootImageProcedure:
 			configurationServiceCreateBootImageHandler.ServeHTTP(w, r)
+		case ConfigurationServiceUpdateBootImageProcedure:
+			configurationServiceUpdateBootImageHandler.ServeHTTP(w, r)
 		case ConfigurationServiceSetDefaultBootImageProcedure:
 			configurationServiceSetDefaultBootImageHandler.ServeHTTP(w, r)
 		case ConfigurationServiceImportBootImagesProcedure:
@@ -482,6 +511,10 @@ func (UnimplementedConfigurationServiceHandler) UpdateHelmRepository(context.Con
 
 func (UnimplementedConfigurationServiceHandler) CreateBootImage(context.Context, *v1.CreateBootImageRequest) (*v1.Configuration_BootImage, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.configuration.v1.ConfigurationService.CreateBootImage is not implemented"))
+}
+
+func (UnimplementedConfigurationServiceHandler) UpdateBootImage(context.Context, *v1.UpdateBootImageRequest) (*v1.Configuration_BootImage, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.configuration.v1.ConfigurationService.UpdateBootImage is not implemented"))
 }
 
 func (UnimplementedConfigurationServiceHandler) SetDefaultBootImage(context.Context, *v1.SetDefaultBootImageRequest) (*emptypb.Empty, error) {

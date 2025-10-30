@@ -2,6 +2,7 @@ edition = "2023";
 
 package otterscale.instance.v1;
 
+import "api/annotations.proto";
 import "api/application/v1/application.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
@@ -9,47 +10,193 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/otterscale/otterscale/api/instance/v1;pb";
 
 service InstanceService {
-  rpc ListVirtualMachines(ListVirtualMachinesRequest) returns (ListVirtualMachinesResponse);
-  rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine);
-  rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
-  rpc DeleteVirtualMachine(DeleteVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc ListVirtualMachines(ListVirtualMachinesRequest) returns (ListVirtualMachinesResponse) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
 
-  rpc AttachVirtualMachineDisk(AttachVirtualMachineDiskRequest) returns (VirtualMachine.Disk);
-  rpc DetachVirtualMachineDisk(DetachVirtualMachineDiskRequest) returns (google.protobuf.Empty);
+  rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
 
-  rpc CreateVirtualMachineClone(CreateVirtualMachineCloneRequest) returns (VirtualMachine.Clone);
-  rpc DeleteVirtualMachineClone(DeleteVirtualMachineCloneRequest) returns (google.protobuf.Empty);
+  rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
 
-  rpc CreateVirtualMachineSnapshot(CreateVirtualMachineSnapshotRequest) returns (VirtualMachine.Snapshot);
-  rpc DeleteVirtualMachineSnapshot(DeleteVirtualMachineSnapshotRequest) returns (google.protobuf.Empty);
-  rpc CreateVirtualMachineRestore(CreateVirtualMachineRestoreRequest) returns (VirtualMachine.Restore);
-  rpc DeleteVirtualMachineRestore(DeleteVirtualMachineRestoreRequest) returns (google.protobuf.Empty);
+  rpc DeleteVirtualMachine(DeleteVirtualMachineRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
 
-  rpc StartVirtualMachine(StartVirtualMachineRequest) returns (google.protobuf.Empty);
-  rpc StopVirtualMachine(StopVirtualMachineRequest) returns (google.protobuf.Empty);
-  rpc RestartVirtualMachine(RestartVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc AttachVirtualMachineDisk(AttachVirtualMachineDiskRequest) returns (VirtualMachine.Disk) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
 
-  rpc PauseInstance(PauseInstanceRequest) returns (google.protobuf.Empty);
-  rpc ResumeInstance(ResumeInstanceRequest) returns (google.protobuf.Empty);
-  rpc MigrateInstance(MigrateInstanceRequest) returns (google.protobuf.Empty);
-  rpc VNCInstance(VNCInstanceRequest) returns (VNCInstanceResponse);
+  rpc DetachVirtualMachineDisk(DetachVirtualMachineDiskRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
 
-  rpc ListDataVolumes(ListDataVolumesRequest) returns (ListDataVolumesResponse);
-  rpc GetDataVolume(GetDataVolumeRequest) returns (DataVolume);
-  rpc CreateDataVolume(CreateDataVolumeRequest) returns (DataVolume);
-  rpc DeleteDataVolume(DeleteDataVolumeRequest) returns (google.protobuf.Empty);
-  rpc ExtendDataVolume(ExtendDataVolumeRequest) returns (google.protobuf.Empty);
+  rpc CreateVirtualMachineClone(CreateVirtualMachineCloneRequest) returns (VirtualMachine.Clone) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
 
-  rpc ListInstanceTypes(ListInstanceTypesRequest) returns (ListInstanceTypesResponse);
-  rpc GetInstanceType(GetInstanceTypeRequest) returns (InstanceType);
-  rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType);
-  rpc DeleteInstanceType(DeleteInstanceTypeRequest) returns (google.protobuf.Empty);
+  rpc DeleteVirtualMachineClone(DeleteVirtualMachineCloneRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc CreateVirtualMachineSnapshot(CreateVirtualMachineSnapshotRequest) returns (VirtualMachine.Snapshot) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteVirtualMachineSnapshot(DeleteVirtualMachineSnapshotRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc CreateVirtualMachineRestore(CreateVirtualMachineRestoreRequest) returns (VirtualMachine.Restore) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteVirtualMachineRestore(DeleteVirtualMachineRestoreRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc StartVirtualMachine(StartVirtualMachineRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc StopVirtualMachine(StopVirtualMachineRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc RestartVirtualMachine(RestartVirtualMachineRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc PauseInstance(PauseInstanceRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc ResumeInstance(ResumeInstanceRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc MigrateInstance(MigrateInstanceRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc VNCInstance(VNCInstanceRequest) returns (VNCInstanceResponse) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc ListDataVolumes(ListDataVolumesRequest) returns (ListDataVolumesResponse) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc GetDataVolume(GetDataVolumeRequest) returns (DataVolume) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc CreateDataVolume(CreateDataVolumeRequest) returns (DataVolume) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteDataVolume(DeleteDataVolumeRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc ExtendDataVolume(ExtendDataVolumeRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc ListInstanceTypes(ListInstanceTypesRequest) returns (ListInstanceTypesResponse) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc GetInstanceType(GetInstanceTypeRequest) returns (InstanceType) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteInstanceType(DeleteInstanceTypeRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
 
   rpc CreateVirtualMachineService(CreateVirtualMachineServiceRequest)
-      returns (otterscale.application.v1.Application.Service);
+      returns (otterscale.application.v1.Application.Service) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
   rpc UpdateVirtualMachineService(UpdateVirtualMachineServiceRequest)
-      returns (otterscale.application.v1.Application.Service);
-  rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty);
+      returns (otterscale.application.v1.Application.Service) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
 }
 
 message VirtualMachine {

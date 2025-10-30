@@ -76,6 +76,15 @@ func (s *ConfigurationService) CreateBootImage(ctx context.Context, req *pb.Crea
 	return resp, nil
 }
 
+func (s *ConfigurationService) UpdateBootImage(ctx context.Context, req *pb.UpdateBootImageRequest) (*pb.Configuration_BootImage, error) {
+	image, err := s.configuration.UpdateBootImage(ctx, int(req.GetId()), req.GetDistroSeries(), req.GetArchitectures())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoBootImage(image)
+	return resp, nil
+}
+
 func (s *ConfigurationService) SetDefaultBootImage(ctx context.Context, req *pb.SetDefaultBootImageRequest) (*emptypb.Empty, error) {
 	if err := s.configuration.SetDefaultBootImage(ctx, req.GetDistroSeries()); err != nil {
 		return nil, err
@@ -201,6 +210,8 @@ func toProtoBootImage(bi *core.BootImage) *pb.Configuration_BootImage {
 	ret.SetSource(bi.Source)
 	ret.SetDistroSeries(bi.DistroSeries)
 	ret.SetName(bi.Name)
+	ret.SetId(int64(bi.ID))
+	ret.SetArchitectures(bi.Architectures)
 	ret.SetArchitectureStatusMap(bi.ArchitectureStatusMap)
 	ret.SetDefault(bi.Default)
 	return ret

@@ -83,9 +83,7 @@
 				{row.original.hostname}
 			</a>
 			<Layout.SubCell>
-				<span class="text-muted-foreground flex items-center gap-1 text-xs">
-					{row.original.ipAddresses}
-				</span>
+				{row.original.ipAddresses}
 			</Layout.SubCell>
 		{/if}
 	</Layout.Cell>
