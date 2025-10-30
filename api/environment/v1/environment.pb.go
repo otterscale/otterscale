@@ -939,7 +939,7 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\x0eGetPremiumTier\x120.otterscale.environment.v1.GetPremiumTierRequest\x1a&.otterscale.environment.v1.PremiumTier\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\venv-general\x12h\n" +
 	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tenv-debugB8Z6github.com/otterscale/otterscale/api/environment/v1;pbb\beditionsp\xe8\a"
+	"\tenv-debugB8Z6github.com/otterscale/otterscale/api/environment/v1;pbb\beditionsp\xe9\a"
 
 var file_api_environment_v1_environment_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_api_environment_v1_environment_proto_msgTypes = make([]protoimpl.MessageInfo, 7)

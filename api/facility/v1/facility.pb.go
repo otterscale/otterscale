@@ -4424,7 +4424,7 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\x10GetCharmMetadata\x12/.otterscale.facility.v1.GetCharmMetadataRequest\x1a/.otterscale.facility.v1.Facility.Charm.Metadata\"\x10\x8a\xdf\xd5\x1d\v\n" +
 	"\tfac-debug\x12\x8d\x01\n" +
 	"\x12ListCharmArtifacts\x121.otterscale.facility.v1.ListCharmArtifactsRequest\x1a2.otterscale.facility.v1.ListCharmArtifactsResponse\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debugB5Z3github.com/otterscale/otterscale/api/facility/v1;pbb\beditionsp\xe8\a"
+	"\tfac-debugB5Z3github.com/otterscale/otterscale/api/facility/v1;pbb\beditionsp\xe9\a"
 
 var file_api_facility_v1_facility_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_api_facility_v1_facility_proto_goTypes = []any{
