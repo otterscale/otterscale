@@ -156,7 +156,6 @@ type Application struct {
 	xxx_hidden_Pods                   *[]*Application_Pod                   `protobuf:"bytes,102,rep,name=pods"`
 	xxx_hidden_PersistentVolumeClaims *[]*Application_PersistentVolumeClaim `protobuf:"bytes,103,rep,name=persistent_volume_claims,json=persistentVolumeClaims"`
 	xxx_hidden_CreatedAt              *timestamppb.Timestamp                `protobuf:"bytes,201,opt,name=created_at,json=createdAt"`
-	xxx_hidden_PublicAddress          *string                               `protobuf:"bytes,301,opt,name=public_address,json=publicAddress"`
 	XXX_raceDetectHookData            protoimpl.RaceDetectHookData
 	XXX_presence                      [1]uint32
 	unknownFields                     protoimpl.UnknownFields
@@ -289,29 +288,19 @@ func (x *Application) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *Application) GetPublicAddress() string {
-	if x != nil {
-		if x.xxx_hidden_PublicAddress != nil {
-			return *x.xxx_hidden_PublicAddress
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *Application) SetType(v string) {
 	x.xxx_hidden_Type = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 12)
 }
 
 func (x *Application) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 12)
 }
 
 func (x *Application) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 12)
 }
 
 func (x *Application) SetLabels(v map[string]string) {
@@ -320,12 +309,12 @@ func (x *Application) SetLabels(v map[string]string) {
 
 func (x *Application) SetReplicas(v int32) {
 	x.xxx_hidden_Replicas = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 12)
 }
 
 func (x *Application) SetHealthies(v int32) {
 	x.xxx_hidden_Healthies = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 12)
 }
 
 func (x *Application) SetMetadata(v *Application_Chart_Metadata) {
@@ -350,11 +339,6 @@ func (x *Application) SetPersistentVolumeClaims(v []*Application_PersistentVolum
 
 func (x *Application) SetCreatedAt(v *timestamppb.Timestamp) {
 	x.xxx_hidden_CreatedAt = v
-}
-
-func (x *Application) SetPublicAddress(v string) {
-	x.xxx_hidden_PublicAddress = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 13)
 }
 
 func (x *Application) HasType() bool {
@@ -406,13 +390,6 @@ func (x *Application) HasCreatedAt() bool {
 	return x.xxx_hidden_CreatedAt != nil
 }
 
-func (x *Application) HasPublicAddress() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 12)
-}
-
 func (x *Application) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Type = nil
@@ -446,11 +423,6 @@ func (x *Application) ClearCreatedAt() {
 	x.xxx_hidden_CreatedAt = nil
 }
 
-func (x *Application) ClearPublicAddress() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 12)
-	x.xxx_hidden_PublicAddress = nil
-}
-
 type Application_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -466,7 +438,6 @@ type Application_builder struct {
 	Pods                   []*Application_Pod
 	PersistentVolumeClaims []*Application_PersistentVolumeClaim
 	CreatedAt              *timestamppb.Timestamp
-	PublicAddress          *string
 }
 
 func (b0 Application_builder) Build() *Application {
@@ -474,24 +445,24 @@ func (b0 Application_builder) Build() *Application {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 12)
 		x.xxx_hidden_Type = b.Type
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 12)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 12)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	x.xxx_hidden_Labels = b.Labels
 	if b.Replicas != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 12)
 		x.xxx_hidden_Replicas = *b.Replicas
 	}
 	if b.Healthies != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 12)
 		x.xxx_hidden_Healthies = *b.Healthies
 	}
 	x.xxx_hidden_Metadata = b.Metadata
@@ -500,10 +471,6 @@ func (b0 Application_builder) Build() *Application {
 	x.xxx_hidden_Pods = &b.Pods
 	x.xxx_hidden_PersistentVolumeClaims = &b.PersistentVolumeClaims
 	x.xxx_hidden_CreatedAt = b.CreatedAt
-	if b.PublicAddress != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 13)
-		x.xxx_hidden_PublicAddress = b.PublicAddress
-	}
 	return m0
 }
 
@@ -835,10 +802,13 @@ func (b0 ListApplicationsRequest_builder) Build() *ListApplicationsRequest {
 }
 
 type ListApplicationsResponse struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Applications *[]*Application        `protobuf:"bytes,1,rep,name=applications"`
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	state                    protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Applications  *[]*Application        `protobuf:"bytes,1,rep,name=applications"`
+	xxx_hidden_PublicAddress *string                `protobuf:"bytes,2,opt,name=public_address,json=publicAddress"`
+	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
+	XXX_presence             [1]uint32
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
 }
 
 func (x *ListApplicationsResponse) Reset() {
@@ -875,14 +845,42 @@ func (x *ListApplicationsResponse) GetApplications() []*Application {
 	return nil
 }
 
+func (x *ListApplicationsResponse) GetPublicAddress() string {
+	if x != nil {
+		if x.xxx_hidden_PublicAddress != nil {
+			return *x.xxx_hidden_PublicAddress
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *ListApplicationsResponse) SetApplications(v []*Application) {
 	x.xxx_hidden_Applications = &v
+}
+
+func (x *ListApplicationsResponse) SetPublicAddress(v string) {
+	x.xxx_hidden_PublicAddress = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ListApplicationsResponse) HasPublicAddress() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListApplicationsResponse) ClearPublicAddress() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_PublicAddress = nil
 }
 
 type ListApplicationsResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Applications []*Application
+	Applications  []*Application
+	PublicAddress *string
 }
 
 func (b0 ListApplicationsResponse_builder) Build() *ListApplicationsResponse {
@@ -890,6 +888,10 @@ func (b0 ListApplicationsResponse_builder) Build() *ListApplicationsResponse {
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Applications = &b.Applications
+	if b.PublicAddress != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_PublicAddress = b.PublicAddress
+	}
 	return m0
 }
 
@@ -6765,7 +6767,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"created_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x87\x1a\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xdf\x19\n" +
 	"\vApplication\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1c\n" +
@@ -6781,8 +6783,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\x04pods\x18f \x03(\v2*.otterscale.application.v1.Application.PodR\x04pods\x12v\n" +
 	"\x18persistent_volume_claims\x18g \x03(\v2<.otterscale.application.v1.Application.PersistentVolumeClaimR\x16persistentVolumeClaims\x12:\n" +
 	"\n" +
-	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12&\n" +
-	"\x0epublic_address\x18\xad\x02 \x01(\tR\rpublicAddress\x1a\xe3\b\n" +
+	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a\xe3\b\n" +
 	"\x05Chart\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04icon\x18\x02 \x01(\tR\x04icon\x12 \n" +
@@ -6890,9 +6891,10 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"K\n" +
 	"\x17ListApplicationsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"f\n" +
+	"\bfacility\x18\x02 \x01(\tR\bfacility\"\x8d\x01\n" +
 	"\x18ListApplicationsResponse\x12J\n" +
-	"\fapplications\x18\x01 \x03(\v2&.otterscale.application.v1.ApplicationR\fapplications\"{\n" +
+	"\fapplications\x18\x01 \x03(\v2&.otterscale.application.v1.ApplicationR\fapplications\x12%\n" +
+	"\x0epublic_address\x18\x02 \x01(\tR\rpublicAddress\"{\n" +
 	"\x15GetApplicationRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
 	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
