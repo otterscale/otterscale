@@ -57,37 +57,37 @@ service OrchestratorService {
     };
   };
 
-  rpc ListGeneralPlugins(ListGeneralPluginsRequest) returns (ListGeneralPluginsResponse) {
+  rpc ListGeneralExtensions(ListGeneralExtensionsRequest) returns (ListGeneralExtensionsResponse) {
     option (otterscale.api.feature) = {
       name: "orch-general"
     };
   };
 
-  rpc ListModelPlugins(ListModelPluginsRequest) returns (ListModelPluginsResponse) {
+  rpc ListModelExtensions(ListModelExtensionsRequest) returns (ListModelExtensionsResponse) {
     option (otterscale.api.feature) = {
       name: "mdl-general"
     };
   };
 
-  rpc ListInstancePlugins(ListInstancePluginsRequest) returns (ListInstancePluginsResponse) {
+  rpc ListInstanceExtensions(ListInstanceExtensionsRequest) returns (ListInstanceExtensionsResponse) {
     option (otterscale.api.feature) = {
       name: "vm-general"
     };
   };
 
-  rpc ListStoragePlugins(ListStoragePluginsRequest) returns (ListStoragePluginsResponse) {
+  rpc ListStorageExtensions(ListStorageExtensionsRequest) returns (ListStorageExtensionsResponse) {
     option (otterscale.api.feature) = {
       name: "stg-general"
     };
   };
 
-  rpc InstallPlugins(InstallPluginsRequest) returns (google.protobuf.Empty) {
+  rpc InstallExtensions(InstallExtensionsRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
       name: "orch-general"
     };
   };
 
-  rpc UpgradePlugins(UpgradePluginsRequest) returns (google.protobuf.Empty) {
+  rpc UpgradeExtensions(UpgradeExtensionsRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
       name: "orch-general"
     };
@@ -224,7 +224,7 @@ message ListGPURelationsByModelResponse {
   repeated GPURelation gpu_relations = 1;
 }
 
-message Plugin {
+message Extension {
   message Chart {
     string name = 1;
     string version = 2;
@@ -244,50 +244,50 @@ message Plugin {
   Chart latest = 12;
 }
 
-message ListGeneralPluginsRequest {
+message ListGeneralExtensionsRequest {
   string scope = 1;
   string facility = 2;
 }
 
-message ListGeneralPluginsResponse {
-  repeated Plugin plugins = 1;
+message ListGeneralExtensionsResponse {
+  repeated Extension Extensions = 1;
 }
 
-message ListModelPluginsRequest {
+message ListModelExtensionsRequest {
   string scope = 1;
   string facility = 2;
 }
 
-message ListModelPluginsResponse {
-  repeated Plugin plugins = 1;
+message ListModelExtensionsResponse {
+  repeated Extension Extensions = 1;
 }
 
-message ListInstancePluginsRequest {
+message ListInstanceExtensionsRequest {
   string scope = 1;
   string facility = 2;
 }
 
-message ListInstancePluginsResponse {
-  repeated Plugin plugins = 1;
+message ListInstanceExtensionsResponse {
+  repeated Extension Extensions = 1;
 }
 
-message ListStoragePluginsRequest {
+message ListStorageExtensionsRequest {
   string scope = 1;
   string facility = 2;
 }
 
-message ListStoragePluginsResponse {
-  repeated Plugin plugins = 1;
+message ListStorageExtensionsResponse {
+  repeated Extension Extensions = 1;
 }
 
-message InstallPluginsRequest {
+message InstallExtensionsRequest {
   string scope = 1;
   string facility = 2;
-  repeated Plugin.Chart charts = 3;
+  repeated Extension.Chart charts = 3;
 }
 
-message UpgradePluginsRequest {
+message UpgradeExtensionsRequest {
   string scope = 1;
   string facility = 2;
-  repeated Plugin.Chart charts = 3;
+  repeated Extension.Chart charts = 3;
 }
