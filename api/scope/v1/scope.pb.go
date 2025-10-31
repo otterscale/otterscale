@@ -628,7 +628,7 @@ const file_api_scope_v1_scope_proto_rawDesc = "" +
 	"ListScopes\x12&.otterscale.scope.v1.ListScopesRequest\x1a'.otterscale.scope.v1.ListScopesResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vscp-general\x12f\n" +
 	"\vCreateScope\x12'.otterscale.scope.v1.CreateScopeRequest\x1a\x1a.otterscale.scope.v1.Scope\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vscp-generalB2Z0github.com/otterscale/otterscale/api/scope/v1;pbb\beditionsp\xe9\a"
+	"\vscp-generalB2Z0github.com/otterscale/otterscale/api/scope/v1;pbb\beditionsp\xe8\a"
 
 var file_api_scope_v1_scope_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_api_scope_v1_scope_proto_goTypes = []any{
