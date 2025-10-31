@@ -13,7 +13,7 @@ import (
 
 const chartRepoURL = "https://otterscale.github.io/charts"
 
-type plugin struct {
+type extension struct {
 	name        string
 	namespace   string
 	repoURL     string
@@ -22,7 +22,7 @@ type plugin struct {
 	valuesMap   map[string]string
 }
 
-var pluginMap = map[string]plugin{
+var extensionMap = map[string]extension{
 	"kube-prometheus-stack": {
 		name:      "kube-prometheus-stack",
 		namespace: "monitoring",
@@ -61,51 +61,51 @@ var pluginMap = map[string]plugin{
 	},
 }
 
-type Plugin struct {
+type Extension struct {
 	Release   *Release
 	Latest    *ChartVersion
 	LatestURL string
 }
 
-func (uc *OrchestratorUseCase) ListGeneralPlugins(ctx context.Context, scope, facility string) ([]Plugin, error) {
-	return uc.listPlugins(ctx, scope, facility, []string{
+func (uc *OrchestratorUseCase) ListGeneralExtensions(ctx context.Context, scope, facility string) ([]Extension, error) {
+	return uc.listExtensions(ctx, scope, facility, []string{
 		"kube-prometheus-stack",
 	})
 }
 
-func (uc *OrchestratorUseCase) ListModelPlugins(ctx context.Context, scope, facility string) ([]Plugin, error) {
-	return uc.listPlugins(ctx, scope, facility, []string{
+func (uc *OrchestratorUseCase) ListModelExtensions(ctx context.Context, scope, facility string) ([]Extension, error) {
+	return uc.listExtensions(ctx, scope, facility, []string{
 		"gpu-operator",
 		"llm-d-infra",
 	})
 }
 
-func (uc *OrchestratorUseCase) ListInstancePlugins(ctx context.Context, scope, facility string) ([]Plugin, error) {
-	return uc.listPlugins(ctx, scope, facility, []string{
+func (uc *OrchestratorUseCase) ListInstanceExtensions(ctx context.Context, scope, facility string) ([]Extension, error) {
+	return uc.listExtensions(ctx, scope, facility, []string{
 		"kubevirt-infra",
 	})
 }
 
-func (uc *OrchestratorUseCase) ListStoragePlugins(ctx context.Context, scope, facility string) ([]Plugin, error) {
-	return uc.listPlugins(ctx, scope, facility, []string{
+func (uc *OrchestratorUseCase) ListStorageExtensions(ctx context.Context, scope, facility string) ([]Extension, error) {
+	return uc.listExtensions(ctx, scope, facility, []string{
 		"samba-operator",
 	})
 }
 
-func (uc *OrchestratorUseCase) InstallPlugins(ctx context.Context, scope, facility string, chartRefMap map[string]string) error {
+func (uc *OrchestratorUseCase) InstallExtensions(ctx context.Context, scope, facility string, chartRefMap map[string]string) error {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
 
 	labels := map[string]string{
-		TypeLabel: "plugin",
+		TypeLabel: "extension",
 	}
 	names := slices.Collect(maps.Keys(chartRefMap))
-	plugins := uc.filterInternalPlugins(names)
+	extensions := uc.filterInternalExtensions(names)
 
 	eg, _ := errgroup.WithContext(ctx)
-	for _, p := range plugins {
+	for _, p := range extensions {
 		eg.Go(func() error {
 			ref := chartRefMap[p.name]
 			values, err := toReleaseValues("", p.valuesMap)
@@ -119,17 +119,17 @@ func (uc *OrchestratorUseCase) InstallPlugins(ctx context.Context, scope, facili
 	return eg.Wait()
 }
 
-func (uc *OrchestratorUseCase) UpgradePlugins(ctx context.Context, scope, facility string, chartRefMap map[string]string) error {
+func (uc *OrchestratorUseCase) UpgradeExtensions(ctx context.Context, scope, facility string, chartRefMap map[string]string) error {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return err
 	}
 
 	names := slices.Collect(maps.Keys(chartRefMap))
-	plugins := uc.filterInternalPlugins(names)
+	extensions := uc.filterInternalExtensions(names)
 
 	eg, _ := errgroup.WithContext(ctx)
-	for _, p := range plugins {
+	for _, p := range extensions {
 		eg.Go(func() error {
 			ref := chartRefMap[p.name]
 			values, err := toReleaseValues("", p.valuesMap)
@@ -143,28 +143,28 @@ func (uc *OrchestratorUseCase) UpgradePlugins(ctx context.Context, scope, facili
 	return eg.Wait()
 }
 
-func (uc *OrchestratorUseCase) listPlugins(ctx context.Context, scope, facility string, names []string) ([]Plugin, error) {
+func (uc *OrchestratorUseCase) listExtensions(ctx context.Context, scope, facility string, names []string) ([]Extension, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
 
-	plugins := uc.filterInternalPlugins(names)
-	charts := make([][]Chart, len(plugins))
-	releases := make([][]Release, len(plugins))
+	extensions := uc.filterInternalExtensions(names)
+	charts := make([][]Chart, len(extensions))
+	releases := make([][]Release, len(extensions))
 
 	eg, egctx := errgroup.WithContext(ctx)
-	for i := range plugins {
+	for i := range extensions {
 		eg.Go(func() error {
-			v, err := uc.chart.List(egctx, plugins[i].repoURL, true)
+			v, err := uc.chart.List(egctx, extensions[i].repoURL, true)
 			if err == nil {
 				charts[i] = v
 			}
 			return err
 		})
 		eg.Go(func() error {
-			selector := fmt.Sprintf("%s=%s", TypeLabel, "plugin")
-			v, err := uc.release.List(config, plugins[i].namespace, selector)
+			selector := fmt.Sprintf("%s=%s", TypeLabel, "extension")
+			v, err := uc.release.List(config, extensions[i].namespace, selector)
 			if err == nil {
 				releases[i] = v
 			}
@@ -175,28 +175,28 @@ func (uc *OrchestratorUseCase) listPlugins(ctx context.Context, scope, facility 
 		return nil, err
 	}
 
-	return uc.filterPlugins(flatten(charts), flatten(releases), names)
+	return uc.filterExtensions(flatten(charts), flatten(releases), names)
 }
 
-func (uc *OrchestratorUseCase) filterInternalPlugins(plugins []string) []plugin {
-	result := []plugin{}
-	for _, p := range plugins {
-		if plg, ok := pluginMap[p]; ok {
+func (uc *OrchestratorUseCase) filterInternalExtensions(extensions []string) []extension {
+	result := []extension{}
+	for _, p := range extensions {
+		if plg, ok := extensionMap[p]; ok {
 			result = append(result, plg)
 		}
 	}
 	return result
 }
 
-func (uc *OrchestratorUseCase) filterPlugins(charts []Chart, releases []Release, plugins []string) ([]Plugin, error) {
-	result := []Plugin{}
-	for _, plugin := range plugins {
-		latest, url, err := findLatestChart(charts, plugin)
+func (uc *OrchestratorUseCase) filterExtensions(charts []Chart, releases []Release, extensions []string) ([]Extension, error) {
+	result := []Extension{}
+	for _, extension := range extensions {
+		latest, url, err := findLatestChart(charts, extension)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, Plugin{
-			Release:   findRelease(releases, plugin),
+		result = append(result, Extension{
+			Release:   findRelease(releases, extension),
 			Latest:    latest,
 			LatestURL: url,
 		})

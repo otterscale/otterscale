@@ -81,63 +81,63 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 	return resp, nil
 }
 
-func (s *OrchestratorService) ListGeneralPlugins(ctx context.Context, req *pb.ListGeneralPluginsRequest) (*pb.ListGeneralPluginsResponse, error) {
-	plugins, err := s.uc.ListGeneralPlugins(ctx, req.GetScope(), req.GetFacility())
+func (s *OrchestratorService) ListGeneralExtensions(ctx context.Context, req *pb.ListGeneralExtensionsRequest) (*pb.ListGeneralExtensionsResponse, error) {
+	Extensions, err := s.uc.ListGeneralExtensions(ctx, req.GetScope(), req.GetFacility())
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ListGeneralPluginsResponse{}
-	resp.SetPlugins(toProtoPlugins(plugins))
+	resp := &pb.ListGeneralExtensionsResponse{}
+	resp.SetExtensions(toProtoExtensions(Extensions))
 	return resp, nil
 }
 
-func (s *OrchestratorService) ListModelPlugins(ctx context.Context, req *pb.ListModelPluginsRequest) (*pb.ListModelPluginsResponse, error) {
-	plugins, err := s.uc.ListModelPlugins(ctx, req.GetScope(), req.GetFacility())
+func (s *OrchestratorService) ListModelExtensions(ctx context.Context, req *pb.ListModelExtensionsRequest) (*pb.ListModelExtensionsResponse, error) {
+	Extensions, err := s.uc.ListModelExtensions(ctx, req.GetScope(), req.GetFacility())
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ListModelPluginsResponse{}
-	resp.SetPlugins(toProtoPlugins(plugins))
+	resp := &pb.ListModelExtensionsResponse{}
+	resp.SetExtensions(toProtoExtensions(Extensions))
 	return resp, nil
 }
 
-func (s *OrchestratorService) ListInstancePlugins(ctx context.Context, req *pb.ListInstancePluginsRequest) (*pb.ListInstancePluginsResponse, error) {
-	plugins, err := s.uc.ListInstancePlugins(ctx, req.GetScope(), req.GetFacility())
+func (s *OrchestratorService) ListInstanceExtensions(ctx context.Context, req *pb.ListInstanceExtensionsRequest) (*pb.ListInstanceExtensionsResponse, error) {
+	Extensions, err := s.uc.ListInstanceExtensions(ctx, req.GetScope(), req.GetFacility())
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ListInstancePluginsResponse{}
-	resp.SetPlugins(toProtoPlugins(plugins))
+	resp := &pb.ListInstanceExtensionsResponse{}
+	resp.SetExtensions(toProtoExtensions(Extensions))
 	return resp, nil
 }
 
-func (s *OrchestratorService) ListStoragePlugins(ctx context.Context, req *pb.ListStoragePluginsRequest) (*pb.ListStoragePluginsResponse, error) {
-	plugins, err := s.uc.ListStoragePlugins(ctx, req.GetScope(), req.GetFacility())
+func (s *OrchestratorService) ListStorageExtensions(ctx context.Context, req *pb.ListStorageExtensionsRequest) (*pb.ListStorageExtensionsResponse, error) {
+	Extensions, err := s.uc.ListStorageExtensions(ctx, req.GetScope(), req.GetFacility())
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ListStoragePluginsResponse{}
-	resp.SetPlugins(toProtoPlugins(plugins))
+	resp := &pb.ListStorageExtensionsResponse{}
+	resp.SetExtensions(toProtoExtensions(Extensions))
 	return resp, nil
 }
 
-func (s *OrchestratorService) InstallPlugins(ctx context.Context, req *pb.InstallPluginsRequest) (*emptypb.Empty, error) {
-	if err := s.uc.InstallPlugins(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+func (s *OrchestratorService) InstallExtensions(ctx context.Context, req *pb.InstallExtensionsRequest) (*emptypb.Empty, error) {
+	if err := s.uc.InstallExtensions(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
 
-func (s *OrchestratorService) UpgradePlugins(ctx context.Context, req *pb.UpgradePluginsRequest) (*emptypb.Empty, error) {
-	if err := s.uc.UpgradePlugins(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+func (s *OrchestratorService) UpgradeExtensions(ctx context.Context, req *pb.UpgradeExtensionsRequest) (*emptypb.Empty, error) {
+	if err := s.uc.UpgradeExtensions(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
 
-func toChartRefMap(cs []*pb.Plugin_Chart) map[string]string {
+func toChartRefMap(cs []*pb.Extension_Chart) map[string]string {
 	ret := map[string]string{}
 	for _, c := range cs {
 		ret[c.GetName()] = c.GetRef()
@@ -249,16 +249,16 @@ func toProtoGPURelationPodDevice(pd *core.GPURelationPodDevice) *pb.GPURelation_
 	return ret
 }
 
-func toProtoPlugins(ps []core.Plugin) []*pb.Plugin {
-	ret := []*pb.Plugin{}
+func toProtoExtensions(ps []core.Extension) []*pb.Extension {
+	ret := []*pb.Extension{}
 	for i := range ps {
-		ret = append(ret, toProtoPlugin(&ps[i]))
+		ret = append(ret, toProtoExtension(&ps[i]))
 	}
 	return ret
 }
 
-func toProtoPlugin(p *core.Plugin) *pb.Plugin {
-	ret := &pb.Plugin{}
+func toProtoExtension(p *core.Extension) *pb.Extension {
+	ret := &pb.Extension{}
 	release := p.Release
 	if release != nil {
 		ret.SetName(release.Name)
@@ -275,18 +275,18 @@ func toProtoPlugin(p *core.Plugin) *pb.Plugin {
 		}
 		current := release.Chart
 		if current != nil && current.Metadata != nil {
-			ret.SetCurrent(toProtoPluginChart(current.Metadata, ""))
+			ret.SetCurrent(toProtoExtensionChart(current.Metadata, ""))
 		}
 	}
 	latest := p.Latest
 	if latest != nil && latest.Metadata != nil {
-		ret.SetLatest(toProtoPluginChart(latest.Metadata, p.LatestURL))
+		ret.SetLatest(toProtoExtensionChart(latest.Metadata, p.LatestURL))
 	}
 	return ret
 }
 
-func toProtoPluginChart(md *core.ChartMetadata, ref string) *pb.Plugin_Chart {
-	ret := &pb.Plugin_Chart{}
+func toProtoExtensionChart(md *core.ChartMetadata, ref string) *pb.Extension_Chart {
+	ret := &pb.Extension_Chart{}
 	ret.SetName(md.Name)
 	ret.SetVersion(md.Version)
 	ret.SetAppVersion(md.AppVersion)
