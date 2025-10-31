@@ -19,12 +19,13 @@
 <Layout.Actions>
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionSeparator />
-	{console.log(machine.workloadAnnotations['juju-model-uuid'])}
-	<Layout.ActionItem disabled={machine.status != 'Ready' || !!machine.workloadAnnotations['juju-model-uuid']}>
+	<Layout.ActionItem
+		disabled={machine.status.toLowerCase() !== 'ready' || !!machine.workloadAnnotations['juju-model-uuid']}
+	>
 		<Add {machine} />
 	</Layout.ActionItem>
 	<Layout.ActionItem
-		disabled={machine.status == 'Releasing' ||
+		disabled={machine.status.toLowerCase() === 'releasing' ||
 			!!machine.workloadAnnotations['juju-is-controller'] ||
 			!machine.workloadAnnotations['juju-model-uuid']}
 	>
@@ -33,11 +34,10 @@
 	<Layout.ActionSeparator />
 	<Layout.ActionItem
 		disabled={machine.powerState.toLowerCase() !== 'on' ||
-			machine.status == 'Commissioning' ||
-			machine.status == 'Testing' ||
-			machine.status == 'Deploying'}
+			machine.status.toLowerCase() === 'commissioning' ||
+			machine.status.toLowerCase() === 'testing' ||
+			machine.status.toLowerCase() === 'deploying'}
 	>
 		<PowerOff {machine} />
 	</Layout.ActionItem>
 </Layout.Actions>
-<!-- Releasing -->
