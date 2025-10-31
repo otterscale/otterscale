@@ -214,7 +214,7 @@ func findRelease(releases []Release, name string) *Release {
 	return &releases[idx]
 }
 
-func findLatestChart(charts []Chart, name string) (*ChartVersion, string, error) {
+func findLatestChart(charts []Chart, name string) (latest *ChartVersion, ref string, err error) {
 	idx := slices.IndexFunc(charts, func(c Chart) bool {
 		return c.Name == name
 	})
@@ -231,7 +231,7 @@ func findLatestChart(charts []Chart, name string) (*ChartVersion, string, error)
 		return semver.Compare(b.Version, a.Version)
 	})
 
-	latest := chart.Versions[0]
+	latest = chart.Versions[0]
 	if len(latest.URLs) == 0 {
 		return nil, "", fmt.Errorf("no chart URL found for %q", name)
 	}
