@@ -4676,7 +4676,7 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\x0eInstallPlugins\x121.otterscale.orchestrator.v1.InstallPluginsRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
 	"\forch-general\x12p\n" +
 	"\x0eUpgradePlugins\x121.otterscale.orchestrator.v1.UpgradePluginsRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\forch-generalB9Z7github.com/otterscale/otterscale/api/orchestrator/v1;pbb\beditionsp\xe9\a"
+	"\forch-generalB9Z7github.com/otterscale/otterscale/api/orchestrator/v1;pbb\beditionsp\xe8\a"
 
 var file_api_orchestrator_v1_orchestrator_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_orchestrator_v1_orchestrator_proto_msgTypes = make([]protoimpl.MessageInfo, 35)

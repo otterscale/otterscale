@@ -373,7 +373,7 @@ const file_api_bootstrap_v1_bootstrap_proto_rawDesc = "" +
 	"bs-general0\x01\x12g\n" +
 	"\fUpdateStatus\x12,.otterscale.bootstrap.v1.UpdateStatusRequest\x1a\x16.google.protobuf.Empty\"\x11\x8a\xdf\xd5\x1d\f\n" +
 	"\n" +
-	"bs-generalB6Z4github.com/otterscale/otterscale/api/bootstrap/v1;pbb\beditionsp\xe9\a"
+	"bs-generalB6Z4github.com/otterscale/otterscale/api/bootstrap/v1;pbb\beditionsp\xe8\a"
 
 var file_api_bootstrap_v1_bootstrap_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_api_bootstrap_v1_bootstrap_proto_goTypes = []any{
