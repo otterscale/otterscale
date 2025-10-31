@@ -2,6 +2,8 @@ module github.com/otterscale/otterscale
 
 go 1.25.3
 
+retract v1.0.0-beta.19
+
 ignore (
 	./assets
 	./docs
