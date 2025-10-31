@@ -275,22 +275,23 @@ func toProtoPlugin(p *core.Plugin) *pb.Plugin {
 		}
 		current := release.Chart
 		if current != nil && current.Metadata != nil {
-			ret.SetCurrent(toProtoPluginChart(current.Metadata))
+			ret.SetCurrent(toProtoPluginChart(current.Metadata, ""))
 		}
 	}
 	latest := p.Latest
 	if latest != nil && latest.Metadata != nil {
-		ret.SetLatest(toProtoPluginChart(latest.Metadata))
+		ret.SetLatest(toProtoPluginChart(latest.Metadata, p.LatestURL))
 	}
 	return ret
 }
 
-func toProtoPluginChart(md *core.ChartMetadata) *pb.Plugin_Chart {
+func toProtoPluginChart(md *core.ChartMetadata, ref string) *pb.Plugin_Chart {
 	ret := &pb.Plugin_Chart{}
 	ret.SetName(md.Name)
 	ret.SetVersion(md.Version)
 	ret.SetAppVersion(md.AppVersion)
 	ret.SetDescription(md.Description)
 	ret.SetIcon(md.Icon)
+	ret.SetRef(ref)
 	return ret
 }

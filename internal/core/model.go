@@ -66,7 +66,7 @@ func (uc *ModelUseCase) CreateModel(ctx context.Context, scope, facility, namesp
 	if err != nil {
 		return nil, err
 	}
-	chartRef, err := findLatestChartRef(charts, "llm-d-modelservice")
+	_, chartRef, err := findLatestChart(charts, "llm-d-modelservice")
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +170,7 @@ func (uc *ModelUseCase) CreateModelArtifact(ctx context.Context, scope, facility
 	if err != nil {
 		return nil, err
 	}
-	chartRef, err := findLatestChartRef(charts, "model-artifact")
+	_, chartRef, err := findLatestChart(charts, "model-artifact")
 	if err != nil {
 		return nil, err
 	}
