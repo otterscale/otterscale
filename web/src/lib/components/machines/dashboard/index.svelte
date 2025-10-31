@@ -3,6 +3,8 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onDestroy, onMount } from 'svelte';
 
+	import PluginsAlert from './plugins-alert.svelte';
+
 	import { page } from '$app/state';
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
@@ -11,7 +13,7 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
-	import { activeScope, breadcrumb } from '$lib/stores';
+	import { activeScope, breadcrumb, currentKubernetes } from '$lib/stores';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({ parents: [], current: dynamicPaths.machines(page.params.scope) });
@@ -44,29 +46,34 @@
 	});
 </script>
 
-{#if prometheusDriver && $activeScope}
-	<div class="mx-auto grid w-full gap-6">
-		<div class="grid gap-1">
-			<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.dashboard()}</h1>
-			<p class="text-muted-foreground">
-				{m.machine_dashboard_description()}
-			</p>
-		</div>
-
-		<Tabs.Root value="overview">
-			<div class="flex justify-between gap-2">
-				<Tabs.List>
-					<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
-					<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
-				</Tabs.List>
-				<Reloader bind:checked={isReloading} />
+<main class="space-y-4 py-4">
+	{#if $currentKubernetes}
+		<PluginsAlert scope={$currentKubernetes.scope} facility={$currentKubernetes.name} />
+	{/if}
+	{#if prometheusDriver && $activeScope}
+		<div class="mx-auto grid w-full gap-6">
+			<div class="grid gap-1">
+				<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.dashboard()}</h1>
+				<p class="text-muted-foreground">
+					{m.machine_dashboard_description()}
+				</p>
 			</div>
-			<Tabs.Content value="overview">
-				<Overview {prometheusDriver} scope={$activeScope} bind:isReloading />
-			</Tabs.Content>
-			<Tabs.Content value="analytics">
-				<!-- <Dashboard client={prometheusDriver} {machines} /> -->
-			</Tabs.Content>
-		</Tabs.Root>
-	</div>
-{/if}
+
+			<Tabs.Root value="overview">
+				<div class="flex justify-between gap-2">
+					<Tabs.List>
+						<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
+						<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
+					</Tabs.List>
+					<Reloader bind:checked={isReloading} />
+				</div>
+				<Tabs.Content value="overview">
+					<Overview {prometheusDriver} scope={$activeScope} bind:isReloading />
+				</Tabs.Content>
+				<Tabs.Content value="analytics">
+					<!-- <Dashboard client={prometheusDriver} {machines} /> -->
+				</Tabs.Content>
+			</Tabs.Root>
+		</div>
+	{/if}
+</main>
