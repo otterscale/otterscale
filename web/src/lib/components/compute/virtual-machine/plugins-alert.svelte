@@ -6,6 +6,7 @@
 	import { OrchestratorService, type Plugin } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { Single as Alert } from '$lib/components/custom/alert';
 	import { installPlugins } from '$lib/components/settings/plugins/utils.svelte';
+	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -42,12 +43,13 @@
 		<Alert.Title>{alert.title}</Alert.Title>
 		<Alert.Description>
 			<p>{alert.message}</p>
-			<p>
-				{$instancePlugins
-					.filter((instancePlugin) => !instancePlugin.current)
-					.map((instancePlugin) => instancePlugin.name)
-					.join(', ')}
-			</p>
+			<div class="flex w-full flex-wrap gap-2">
+				{#each $instancePlugins.filter((plugin) => !plugin.current) as plugin}
+					<Badge variant="outline" class="border-destructive/50 text-destructive bg-destructive/5"
+						>{plugin.latest?.name}
+					</Badge>
+				{/each}
+			</div>
 		</Alert.Description>
 		<Alert.Action onclick={alert.action}>{m.install()}</Alert.Action>
 	</Alert.Root>

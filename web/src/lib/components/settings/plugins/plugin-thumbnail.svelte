@@ -2,16 +2,18 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import type { PluginsBundleType } from './types';
 
 	import type { Plugin } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { m } from '$lib/paraglide/messages';
+	import { activeScope } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	const pluginsBundleConfigurations: Record<
@@ -23,26 +25,23 @@
 		}
 	> = {
 		general: {
-			name: 'Dashboards',
-			description:
-				'Create interactive dashboards with customizable widgets, real-time charts, and drill-down insights from metrics and logs, plus role-based access controls for secure collaboration.',
-			icon: 'ph:gauge',
+			name: m.general(),
+			description: m.plugins_general_bundle_description(),
+			icon: 'ph:cube',
 		},
 		model: {
-			name: 'Models',
-			description: 'Enable vLLM plugins (tokenizers, backends, batching, logging).',
+			name: m.model(),
+			description: m.plugins_model_bundle_description(),
 			icon: 'ph:robot',
 		},
 		instance: {
-			name: 'Virtual Machines',
-			description:
-				'Provision and manage virtual machines with scalable resource allocation, snapshots, and secure networking.',
+			name: m.virtual_machine(),
+			description: m.plugins_virtual_machine_bundle_description(),
 			icon: 'ph:desktop-tower',
 		},
 		storage: {
-			name: 'Storages',
-			description:
-				'Provide scalable, redundant storage for stateful workloads — block, file, and object stores with dynamic provisioning, snapshotting, and backup integrations.',
+			name: m.storage(),
+			description: m.plugins_storage_bundle_description(),
 			icon: 'ph:hard-drives',
 		},
 	};
@@ -54,33 +53,13 @@
 		facility,
 		pluginsBundle,
 		plugins,
-	}: { scope: string; facility: string; pluginsBundle: PluginsBundleType; plugins: Plugin[] } = $props();
+	}: { scope: string; facility: string; pluginsBundle: PluginsBundleType; plugins: Writable<Plugin[]> } = $props();
 
 	const transport: Transport = getContext('transport');
 	const orchestratorClient = createClient(OrchestratorService, transport);
 
-	const modelPlugins: Writable<Plugin[]> = writable([]);
-	const generalPlugins: Writable<Plugin[]> = writable([]);
-
-	orchestratorClient
-		.listModelPlugins({ scope: scope, facility: facility })
-		.then((respoonse) => {
-			modelPlugins.set(respoonse.plugins);
-		})
-		.catch((error) => {
-			console.error('Failed to fetch model plugins:', error);
-		});
-	orchestratorClient
-		.listGeneralPlugins({ scope: scope, facility: facility })
-		.then((respoonse) => {
-			generalPlugins.set(respoonse.plugins);
-		})
-		.catch((error) => {
-			console.error('Failed to fetch general plugins:', error);
-		});
-
-	const installed = $derived(plugins.filter((plugin) => plugin.current).length);
-	const required = $derived(plugins.length);
+	const installed = $derived($plugins.filter((plugin) => plugin.current).length);
+	const required = $derived($plugins.length);
 </script>
 
 <div class="flex w-full flex-col gap-4">
@@ -100,14 +79,18 @@
 				<Icon icon={pluginsBundleConfigurations[pluginsBundle].icon} class="size-8" />
 			</div>
 			<div>
-				<h3 class="text-lg font-bold">{pluginsBundleConfigurations[pluginsBundle].name}</h3>
+				<div class="flex items-center gap-1">
+					<h3 class="text-lg font-bold">{pluginsBundleConfigurations[pluginsBundle].name}</h3>
+					<Badge>{$activeScope.name}</Badge>
+				</div>
+
 				<p class="text-muted-foreground mt-1 text-sm">
 					{pluginsBundleConfigurations[pluginsBundle].description}
 				</p>
 			</div>
 		</div>
-		<div class="ml-auto flex flex-col justify-between gap-4">
-			<p class="text-muted-foreground whitespace-nowrap">{installed} over {required}</p>
+		<div class="ml-auto flex flex-col items-center justify-between gap-4">
+			<p class="text-muted-foreground whitespace-nowrap">{installed} / {required}</p>
 			{#if installed < required}
 				<div class="ml-auto">
 					<Button
@@ -119,22 +102,22 @@
 									orchestratorClient.installPlugins({
 										scope: scope,
 										facility: facility,
-										charts: $modelPlugins
-											.filter((modelPlugin) => modelPlugin.latest && !modelPlugin.current)
-											.map((modelPlugin) => modelPlugin.latest!),
+										charts: $plugins
+											.filter((plugin) => plugin.latest && !plugin.current)
+											.map((plugin) => plugin.latest!),
 									}),
 								{
-									loading: `Installing plugins of model`,
+									loading: `Installing ${pluginsBundle} plugins.`,
 									success: () => {
 										orchestratorClient
 											.listModelPlugins({ scope: scope, facility: facility })
 											.then((response) => {
-												modelPlugins.set(response.plugins);
+												plugins.set(response.plugins);
 											});
-										return `Successfully installed plugins`;
+										return `Successfully installed ${pluginsBundle} plugins`;
 									},
 									error: (error) => {
-										let message = `Failed to install plugins`;
+										let message = `Failed to install ${pluginsBundle} plugins`;
 										toast.error(message, {
 											description: (error as ConnectError).message.toString(),
 											duration: Number.POSITIVE_INFINITY,
@@ -159,22 +142,22 @@
 									orchestratorClient.upgradePlugins({
 										scope: scope,
 										facility: facility,
-										charts: $modelPlugins
-											.filter((modelPlugin) => modelPlugin.latest && modelPlugin.current)
-											.map((modelPlugin) => modelPlugin.latest!),
+										charts: $plugins
+											.filter((plugin) => plugin.latest && plugin.current)
+											.map((plugin) => plugin.latest!),
 									}),
 								{
-									loading: `Upgrading plugins of model`,
+									loading: `Upgrading ${pluginsBundle} plugins`,
 									success: () => {
 										orchestratorClient
 											.listModelPlugins({ scope: scope, facility: facility })
 											.then((response) => {
-												modelPlugins.set(response.plugins);
+												plugins.set(response.plugins);
 											});
-										return `Successfully upgraded plugins`;
+										return `Successfully upgraded ${pluginsBundle} plugins`;
 									},
 									error: (error) => {
-										let message = `Failed to upgrade plugins`;
+										let message = `Failed to upgrade ${pluginsBundle} plugins`;
 										toast.error(message, {
 											description: (error as ConnectError).message.toString(),
 											duration: Number.POSITIVE_INFINITY,
