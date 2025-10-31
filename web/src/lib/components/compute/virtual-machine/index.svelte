@@ -4,7 +4,7 @@
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table/index';
-	import PluginsAlert from './plugins-alert.svelte';
+	import ExtensionsAlert from './extensions-alert.svelte';
 	import { Statistics } from './statistics';
 
 	import { InstanceService, type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
@@ -54,7 +54,7 @@
 </script>
 
 <main class="space-y-4 py-4">
-	<PluginsAlert {scope} {facility} />
+	<ExtensionsAlert {scope} {facility} />
 	{#if isMounted}
 		<Statistics virtualMachines={$virtualMachines} />
 		<DataTable {virtualMachines} {reloadManager} />

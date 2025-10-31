@@ -3,7 +3,7 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 
-	import PluginsAlert from './plugins-alert.svelte';
+	import ExtensionsAlert from './extensions-alert.svelte';
 
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
@@ -41,7 +41,7 @@
 </script>
 
 <main class="space-y-4 py-4">
-	<PluginsAlert {scope} {facility} />
+	<ExtensionsAlert {scope} {facility} />
 	{#if prometheusDriver && $activeScope}
 		<div class="mx-auto grid w-full gap-6">
 			<div class="grid gap-1">

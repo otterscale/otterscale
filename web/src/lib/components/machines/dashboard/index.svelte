@@ -3,7 +3,7 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onDestroy, onMount } from 'svelte';
 
-	import PluginsAlert from './plugins-alert.svelte';
+	import ExtensionsAlert from './extensions-alert.svelte';
 
 	import { page } from '$app/state';
 	import { env } from '$env/dynamic/public';
@@ -48,7 +48,7 @@
 
 <main class="space-y-4 py-4">
 	{#if $currentKubernetes}
-		<PluginsAlert scope={$currentKubernetes.scope} facility={$currentKubernetes.name} />
+		<ExtensionsAlert scope={$currentKubernetes.scope} facility={$currentKubernetes.name} />
 	{/if}
 	{#if prometheusDriver && $activeScope}
 		<div class="mx-auto grid w-full gap-6">

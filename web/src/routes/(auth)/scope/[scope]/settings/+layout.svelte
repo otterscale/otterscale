@@ -7,10 +7,11 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
+	import { cn } from '$lib/utils';
 
 	let { children } = $props();
 
-	let items = [
+	let globalItems = [
 		{
 			icon: 'ph:clock',
 			title: m.ntp_server(),
@@ -27,24 +28,9 @@
 			page: 'boot-image',
 		},
 		{
-			icon: 'ph:hard-drives',
-			title: m.data_volume(),
-			page: 'data-volume',
-		},
-		{
 			icon: 'ph:cube',
 			title: m.helm_repository(),
 			page: 'helm-repository',
-		},
-		{
-			icon: 'ph:cube',
-			title: m.plugins(),
-			page: 'plugins',
-		},
-		{
-			icon: 'ph:cpu',
-			title: m.instance_type(),
-			page: 'instance-type',
 		},
 		{
 			icon: 'ph:tag-simple',
@@ -67,6 +53,24 @@
 			page: 'subscription',
 		},
 	];
+
+	let scopeBasedItems = [
+		{
+			icon: 'ph:hard-drives',
+			title: m.data_volume(),
+			page: 'data-volume',
+		},
+		{
+			icon: 'ph:cube',
+			title: m.extensions(),
+			page: 'extensions',
+		},
+		{
+			icon: 'ph:cpu',
+			title: m.instance_type(),
+			page: 'instance-type',
+		},
+	];
 </script>
 
 <div class="mx-auto grid w-full gap-6">
@@ -78,23 +82,56 @@
 	<Separator />
 
 	<div class="mx-auto grid w-full items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
-		<NavigationMenu.Root viewport={false}>
-			<NavigationMenu.List class="flex-col items-start">
-				{#each items as item}
+		<NavigationMenu.Root viewport={false} class="flex-col items-start gap-4">
+			<NavigationMenu.List class="w-full flex-col items-start gap-1">
+				{#each globalItems as item}
 					{@const url = `${dynamicPaths.settings(page.params.scope).url}/${item.page}`}
 					<NavigationMenu.Item>
 						<NavigationMenu.Link>
 							{#snippet child()}
-								{#if page.url.pathname === url}
-									<a href={url} class="{navigationMenuTriggerStyle()} bg-muted gap-2 font-semibold">
-										<Icon icon={item.icon + '-bold'} class="size-4" />
-										<span> {item.title} </span>
-									</a>{:else}
-									<a href={url} class="{navigationMenuTriggerStyle()} gap-2 font-normal">
-										<Icon icon={item.icon} class="size-4" />
-										<span> {item.title} </span>
-									</a>
-								{/if}
+								<a
+									href={url}
+									class={cn(
+										navigationMenuTriggerStyle(),
+										'h-fit',
+										page.url.pathname === url
+											? 'bg-muted gap-2 font-semibold'
+											: 'gap-2 font-normal',
+									)}
+								>
+									<Icon
+										icon={page.url.pathname === url ? item.icon + '-bold' : item.icon}
+										class="size-5"
+									/>
+									{item.title}
+								</a>
+							{/snippet}
+						</NavigationMenu.Link>
+					</NavigationMenu.Item>
+				{/each}
+			</NavigationMenu.List>
+			<NavigationMenu.List class="w-full flex-col items-start gap-2">
+				{#each scopeBasedItems as item}
+					{@const url = `${dynamicPaths.settings(page.params.scope).url}/${item.page}`}
+					<NavigationMenu.Item>
+						<NavigationMenu.Link>
+							{#snippet child()}
+								<a
+									href={url}
+									class={cn(
+										navigationMenuTriggerStyle(),
+										'h-fit',
+										page.url.pathname === url
+											? 'bg-muted gap-2 font-semibold'
+											: 'gap-2 font-normal',
+									)}
+								>
+									<Icon
+										icon={page.url.pathname === url ? item.icon + '-bold' : item.icon}
+										class="size-5"
+									/>
+									{item.title}
+								</a>
 							{/snippet}
 						</NavigationMenu.Link>
 					</NavigationMenu.Item>

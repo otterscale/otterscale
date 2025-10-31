@@ -5,9 +5,9 @@
 	import { type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import type { PluginsBundleType } from './types';
+	import type { ExtensionsBundleType } from './types';
 
-	import type { Plugin } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import type { Extension } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -16,8 +16,8 @@
 	import { activeScope } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
-	const pluginsBundleConfigurations: Record<
-		PluginsBundleType,
+	const extensionsBundleConfigurations: Record<
+		ExtensionsBundleType,
 		{
 			name: string;
 			description: string;
@@ -26,22 +26,22 @@
 	> = {
 		general: {
 			name: m.general(),
-			description: m.plugins_general_bundle_description(),
+			description: m.extensions_general_bundle_description(),
 			icon: 'ph:cube',
 		},
 		model: {
 			name: m.model(),
-			description: m.plugins_model_bundle_description(),
+			description: m.extensions_model_bundle_description(),
 			icon: 'ph:robot',
 		},
 		instance: {
 			name: m.virtual_machine(),
-			description: m.plugins_virtual_machine_bundle_description(),
+			description: m.extensions_virtual_machine_bundle_description(),
 			icon: 'ph:desktop-tower',
 		},
 		storage: {
 			name: m.storage(),
-			description: m.plugins_storage_bundle_description(),
+			description: m.extensions_storage_bundle_description(),
 			icon: 'ph:hard-drives',
 		},
 	};
@@ -51,15 +51,22 @@
 	let {
 		scope,
 		facility,
-		pluginsBundle,
-		plugins,
-	}: { scope: string; facility: string; pluginsBundle: PluginsBundleType; plugins: Writable<Plugin[]> } = $props();
+		extensionsBundle,
+		extensions,
+		updator,
+	}: {
+		scope: string;
+		facility: string;
+		extensionsBundle: ExtensionsBundleType;
+		extensions: Writable<Extension[]>;
+		updator: () => void;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 	const orchestratorClient = createClient(OrchestratorService, transport);
 
-	const installed = $derived($plugins.filter((plugin) => plugin.current).length);
-	const required = $derived($plugins.length);
+	const installed = $derived($extensions.filter((extension) => extension.current).length);
+	const required = $derived($extensions.length);
 </script>
 
 <div class="flex w-full flex-col gap-4">
@@ -76,16 +83,16 @@
 	<div class="flex items-center gap-2">
 		<div class="flex h-full items-center justify-between gap-4">
 			<div class="bg-primary/10 rounded-lg p-2">
-				<Icon icon={pluginsBundleConfigurations[pluginsBundle].icon} class="size-8" />
+				<Icon icon={extensionsBundleConfigurations[extensionsBundle].icon} class="size-8" />
 			</div>
 			<div>
 				<div class="flex items-center gap-1">
-					<h3 class="text-lg font-bold">{pluginsBundleConfigurations[pluginsBundle].name}</h3>
+					<h3 class="text-lg font-bold">{extensionsBundleConfigurations[extensionsBundle].name}</h3>
 					<Badge>{$activeScope.name}</Badge>
 				</div>
 
 				<p class="text-muted-foreground mt-1 text-sm">
-					{pluginsBundleConfigurations[pluginsBundle].description}
+					{extensionsBundleConfigurations[extensionsBundle].description}
 				</p>
 			</div>
 		</div>
@@ -99,25 +106,21 @@
 						onclick={() => {
 							toast.promise(
 								() =>
-									orchestratorClient.installPlugins({
+									orchestratorClient.installExtensions({
 										scope: scope,
 										facility: facility,
-										charts: $plugins
-											.filter((plugin) => plugin.latest && !plugin.current)
-											.map((plugin) => plugin.latest!),
+										charts: $extensions
+											.filter((extension) => extension.latest && !extension.current)
+											.map((extension) => extension.latest!),
 									}),
 								{
-									loading: `Installing ${pluginsBundle} plugins.`,
+									loading: `Installing ${extensionsBundle} extensions.`,
 									success: () => {
-										orchestratorClient
-											.listModelPlugins({ scope: scope, facility: facility })
-											.then((response) => {
-												plugins.set(response.plugins);
-											});
-										return `Successfully installed ${pluginsBundle} plugins`;
+										updator();
+										return `Successfully installed ${extensionsBundle} extensions`;
 									},
 									error: (error) => {
-										let message = `Failed to install ${pluginsBundle} plugins`;
+										let message = `Failed to install ${extensionsBundle} extensions`;
 										toast.error(message, {
 											description: (error as ConnectError).message.toString(),
 											duration: Number.POSITIVE_INFINITY,
@@ -139,25 +142,21 @@
 						onclick={() => {
 							toast.promise(
 								() =>
-									orchestratorClient.upgradePlugins({
+									orchestratorClient.upgradeExtensions({
 										scope: scope,
 										facility: facility,
-										charts: $plugins
-											.filter((plugin) => plugin.latest && plugin.current)
-											.map((plugin) => plugin.latest!),
+										charts: $extensions
+											.filter((extension) => extension.latest && extension.current)
+											.map((extension) => extension.latest!),
 									}),
 								{
-									loading: `Upgrading ${pluginsBundle} plugins`,
+									loading: `Upgrading ${extensionsBundle} extensions`,
 									success: () => {
-										orchestratorClient
-											.listModelPlugins({ scope: scope, facility: facility })
-											.then((response) => {
-												plugins.set(response.plugins);
-											});
-										return `Successfully upgraded ${pluginsBundle} plugins`;
+										updator();
+										return `Successfully upgraded ${extensionsBundle} extensions`;
 									},
 									error: (error) => {
-										let message = `Failed to upgrade ${pluginsBundle} plugins`;
+										let message = `Failed to upgrade ${extensionsBundle} extensions`;
 										toast.error(message, {
 											description: (error as ConnectError).message.toString(),
 											duration: Number.POSITIVE_INFINITY,
@@ -168,7 +167,7 @@
 							);
 						}}
 					>
-						{m.plugins_upgrade()}
+						{m.extensions_upgrade()}
 					</Button>
 				</div>
 			{/if}

@@ -5,7 +5,7 @@
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table/index';
-	import PluginsAlert from './plugins-alert.svelte';
+	import ExtensionsAlert from './extensions-alert.svelte';
 	import { type LargeLanguageModel } from './type';
 
 	import { env } from '$env/dynamic/public';
@@ -140,7 +140,7 @@
 </script>
 
 <main class="space-y-4 py-4">
-	<PluginsAlert {scope} {facility} />
+	<ExtensionsAlert {scope} {facility} />
 	{#if isMounted}
 		<DataTable {largeLanguageModels} {reloadManager} />
 	{:else}

@@ -3,9 +3,9 @@
 	import { getContext } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
 
-	import { OrchestratorService, type Plugin } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import { OrchestratorService, type Extension } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { Single as Alert } from '$lib/components/custom/alert';
-	import { installPlugins } from '$lib/components/settings/plugins/utils.svelte';
+	import { installExtensions } from '$lib/components/settings/extensions/utils.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { m } from '$lib/paraglide/messages';
 </script>
@@ -16,28 +16,28 @@
 	const transport: Transport = getContext('transport');
 	const orchestratorClient = createClient(OrchestratorService, transport);
 
-	const generalPlugins: Writable<Plugin[]> = writable([]);
+	const modelExtensions: Writable<Extension[]> = writable([]);
 
 	orchestratorClient
-		.listGeneralPlugins({ scope: scope, facility: facility })
-		.then((respoonse) => {
-			generalPlugins.set(respoonse.plugins);
+		.listModelExtensions({ scope: scope, facility: facility })
+		.then((response) => {
+			modelExtensions.set(response.Extensions);
 		})
 		.catch((error) => {
-			console.error('Failed to fetch plugins:', error);
+			console.error('Failed to fetch extensions:', error);
 		});
 
 	const alert: Alert.AlertType = $derived({
-		title: m.plugins_alert_title(),
-		message: m.plugins_alert_description(),
+		title: m.extensions_alert_title(),
+		message: m.extensions_alert_description(),
 		action: () => {
-			installPlugins(['general']);
+			installExtensions(['model']);
 		},
 		variant: 'destructive',
 	});
 </script>
 
-{#if $generalPlugins.filter((generalPlugin) => generalPlugin.current).length < $generalPlugins.length}
+{#if $modelExtensions.filter((modelExtension) => modelExtension.current).length < $modelExtensions.length}
 	<Alert.Root {alert}>
 		<Alert.Icon />
 		<Alert.Title>{alert.title}</Alert.Title>
@@ -45,9 +45,9 @@
 			<div class="space-y-1">
 				<p>{alert.message}</p>
 				<div class="flex w-full flex-wrap gap-2">
-					{#each $generalPlugins.filter((plugin) => !plugin.current) as plugin}
+					{#each $modelExtensions.filter((extension) => !extension.current) as extension}
 						<Badge variant="outline" class="border-destructive/50 text-destructive bg-destructive/5"
-							>{plugin.latest?.name}</Badge
+							>{extension.latest?.name}</Badge
 						>
 					{/each}
 				</div>
