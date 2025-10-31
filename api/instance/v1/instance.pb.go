@@ -585,7 +585,7 @@ type DataVolume struct {
 	xxx_hidden_Phase                 *string                               `protobuf:"bytes,21,opt,name=phase"`
 	xxx_hidden_Progress              *string                               `protobuf:"bytes,22,opt,name=progress"`
 	xxx_hidden_SizeBytes             int64                                 `protobuf:"varint,31,opt,name=size_bytes,json=sizeBytes"`
-	xxx_hidden_PersistentVolumeClaim *v1.Application_PersistentVolumeClaim `protobuf:"bytes,32,opt,name=PersistentVolumeClaim"`
+	xxx_hidden_PersistentVolumeClaim *v1.Application_PersistentVolumeClaim `protobuf:"bytes,32,opt,name=persistent_volume_claim,json=persistentVolumeClaim"`
 	xxx_hidden_LastCondition         *DataVolume_Condition                 `protobuf:"bytes,41,opt,name=last_condition,json=lastCondition"`
 	XXX_raceDetectHookData           protoimpl.RaceDetectHookData
 	XXX_presence                     [1]uint32
@@ -8985,7 +8985,7 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\x06VIRTIO\x10\x00\x12\b\n" +
 	"\x04SATA\x10\x01\x12\b\n" +
 	"\x04SCSI\x10\x02\x12\a\n" +
-	"\x03USB\x10\x03\"\xdc\x06\n" +
+	"\x03USB\x10\x03\"\xde\x06\n" +
 	"\n" +
 	"DataVolume\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
@@ -8996,8 +8996,8 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\x05phase\x18\x15 \x01(\tR\x05phase\x12\x1a\n" +
 	"\bprogress\x18\x16 \x01(\tR\bprogress\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\x1f \x01(\x03R\tsizeBytes\x12r\n" +
-	"\x15PersistentVolumeClaim\x18  \x01(\v2<.otterscale.application.v1.Application.PersistentVolumeClaimR\x15PersistentVolumeClaim\x12S\n" +
+	"size_bytes\x18\x1f \x01(\x03R\tsizeBytes\x12t\n" +
+	"\x17persistent_volume_claim\x18  \x01(\v2<.otterscale.application.v1.Application.PersistentVolumeClaimR\x15persistentVolumeClaim\x12S\n" +
 	"\x0elast_condition\x18) \x01(\v2,.otterscale.instance.v1.DataVolume.ConditionR\rlastCondition\x1a\xad\x01\n" +
 	"\x06Source\x12B\n" +
 	"\x04type\x18\x01 \x01(\x0e2..otterscale.instance.v1.DataVolume.Source.TypeR\x04type\x12\x12\n" +
@@ -9301,7 +9301,7 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"vm-general\x12\x84\x01\n" +
 	"\x1bDeleteVirtualMachineService\x12:.otterscale.instance.v1.DeleteVirtualMachineServiceRequest\x1a\x16.google.protobuf.Empty\"\x11\x8a\xdf\xd5\x1d\f\n" +
 	"\n" +
-	"vm-generalB5Z3github.com/otterscale/otterscale/api/instance/v1;pbb\beditionsp\xe8\a"
+	"vm-generalB5Z3github.com/otterscale/otterscale/api/instance/v1;pbb\beditionsp\xe9\a"
 
 var file_api_instance_v1_instance_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
 var file_api_instance_v1_instance_proto_msgTypes = make([]protoimpl.MessageInfo, 46)
@@ -9371,7 +9371,7 @@ var file_api_instance_v1_instance_proto_depIdxs = []int32{
 	42, // 5: otterscale.instance.v1.VirtualMachine.snapshots:type_name -> otterscale.instance.v1.VirtualMachine.Snapshot
 	43, // 6: otterscale.instance.v1.VirtualMachine.restores:type_name -> otterscale.instance.v1.VirtualMachine.Restore
 	47, // 7: otterscale.instance.v1.DataVolume.source:type_name -> otterscale.instance.v1.DataVolume.Source
-	51, // 8: otterscale.instance.v1.DataVolume.PersistentVolumeClaim:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
+	51, // 8: otterscale.instance.v1.DataVolume.persistent_volume_claim:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
 	48, // 9: otterscale.instance.v1.DataVolume.last_condition:type_name -> otterscale.instance.v1.DataVolume.Condition
 	49, // 10: otterscale.instance.v1.InstanceType.created_at:type_name -> google.protobuf.Timestamp
 	3,  // 11: otterscale.instance.v1.ListVirtualMachinesResponse.virtual_machines:type_name -> otterscale.instance.v1.VirtualMachine

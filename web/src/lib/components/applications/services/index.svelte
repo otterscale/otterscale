@@ -4,8 +4,7 @@
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table/index';
-	import { Statistics } from './statistics';
-	import type { Application } from './types';
+	import type { Service } from './types';
 
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
@@ -18,7 +17,7 @@
 	const transport: Transport = getContext('transport');
 	let isMounted = $state(false);
 
-	const applications = writable<Application[]>([]);
+	const services = writable<Service[]>([]);
 
 	const applicationClient = createClient(ApplicationService, transport);
 	const reloadManager = new ReloadManager(() => {
@@ -28,11 +27,13 @@
 				facility: facility,
 			})
 			.then((response) => {
-				applications.set(
-					response.applications.map((application) => ({
-						...application,
-						publicAddress: response.publicAddress,
-					})),
+				services.set(
+					response.applications.flatMap((application) =>
+						application.services.map((service) => ({
+							...service,
+							publicAddress: response.publicAddress,
+						})),
+					),
 				);
 			})
 			.catch((error) => {
@@ -48,11 +49,13 @@
 				facility: facility,
 			})
 			.then((response) => {
-				applications.set(
-					response.applications.map((application) => ({
-						...application,
-						publicAddress: response.publicAddress,
-					})),
+				services.set(
+					response.applications.flatMap((application) =>
+						application.services.map((service) => ({
+							...service,
+							publicAddress: response.publicAddress,
+						})),
+					),
 				);
 				isMounted = true;
 			})
@@ -69,8 +72,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Statistics {scope} {facility} />
-		<DataTable {applications} {reloadManager} />
+		<DataTable {services} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

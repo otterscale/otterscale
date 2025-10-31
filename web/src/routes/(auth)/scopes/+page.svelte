@@ -4,8 +4,6 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable, derived } from 'svelte/store';
 
-	import { goto } from '$app/navigation';
-	import { CheckHealthResponse_Result, EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import SquareGridImage from '$lib/assets/square-grid.svg';
 	import { scopeIcon } from '$lib/components/scopes/icon';
@@ -13,28 +11,17 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths, staticPaths } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 
 	const EXCLUDED_SCOPES = ['cos', 'cos-dev', 'cos-lite'];
 
 	const transport: Transport = getContext('transport');
-	const environmentClient = createClient(EnvironmentService, transport);
 	const scopeClient = createClient(ScopeService, transport);
 
 	const scopes = writable<Scope[]>([]);
 	const filteredScopes = derived(scopes, ($scopes) =>
 		$scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name)),
 	);
-
-	async function checkEnvironmentHealth(): Promise<boolean> {
-		try {
-			const response = await environmentClient.checkHealth({});
-			return response.result === CheckHealthResponse_Result.OK;
-		} catch (error) {
-			console.error('Failed to check environment health:', error);
-			return false;
-		}
-	}
 
 	async function fetchScopes() {
 		try {
@@ -56,12 +43,6 @@
 
 	let mounted = $state(false);
 	onMount(async () => {
-		const isHealthy = await checkEnvironmentHealth();
-		if (!isHealthy) {
-			goto(staticPaths.setup.url);
-			return;
-		}
-
 		await fetchScopes();
 		mounted = true;
 	});

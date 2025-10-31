@@ -5342,7 +5342,7 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x10DeleteTestResult\x124.otterscale.configuration.v1.DeleteTestResultRequest\x1a\x16.google.protobuf.Empty\"\x1d\x8a\xdf\xd5\x1d\x18\n" +
 	"\x16cfg-built-in-self-test\x12\xbc\x01\n" +
 	"\x1aListInternalObjectServices\x12>.otterscale.configuration.v1.ListInternalObjectServicesRequest\x1a?.otterscale.configuration.v1.ListInternalObjectServicesResponse\"\x1d\x8a\xdf\xd5\x1d\x18\n" +
-	"\x16cfg-built-in-self-testB:Z8github.com/otterscale/otterscale/api/configuration/v1;pbb\beditionsp\xe8\a"
+	"\x16cfg-built-in-self-testB:Z8github.com/otterscale/otterscale/api/configuration/v1;pbb\beditionsp\xe9\a"
 
 var file_api_configuration_v1_configuration_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_api_configuration_v1_configuration_proto_msgTypes = make([]protoimpl.MessageInfo, 40)

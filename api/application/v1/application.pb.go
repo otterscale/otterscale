@@ -6767,7 +6767,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"created_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xdf\x19\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xe7\x19\n" +
 	"\vApplication\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1c\n" +
@@ -6830,18 +6830,18 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\brevision\x18\x06 \x01(\x05R\brevision\x12\x1d\n" +
 	"\n" +
 	"chart_name\x18\v \x01(\tR\tchartName\x12N\n" +
-	"\aversion\x18\f \x01(\v24.otterscale.application.v1.Application.Chart.VersionR\aversionJ\x04\b\x01\x10\x04\x1a\xe9\x01\n" +
+	"\aversion\x18\f \x01(\v24.otterscale.application.v1.Application.Chart.VersionR\aversionJ\x04\b\x01\x10\x04\x1a\xeb\x01\n" +
 	"\tCondition\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x16\n" +
 	"\x06reason\x18\x03 \x01(\tR\x06reason\x12\x18\n" +
 	"\amessage\x18\x04 \x01(\tR\amessage\x128\n" +
 	"\tprobed_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\bprobedAt\x12D\n" +
-	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAt\x1aV\n" +
+	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAtX\x02\x1aV\n" +
 	"\tContainer\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x01 \x01(\tR\timageName\x12*\n" +
-	"\x11image_pull_policy\x18\x02 \x01(\tR\x0fimagePullPolicy\x1a\xe2\x02\n" +
+	"\x11image_pull_policy\x18\x02 \x01(\tR\x0fimagePullPolicy\x1a\xe6\x02\n" +
 	"\aService\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12\x1d\n" +
@@ -6849,14 +6849,14 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"cluster_ip\x18\x03 \x01(\tR\tclusterIp\x12I\n" +
 	"\x05ports\x18\v \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\x12:\n" +
 	"\n" +
-	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a\x88\x01\n" +
+	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a\x8a\x01\n" +
 	"\x04Port\x12\x12\n" +
 	"\x04port\x18\x01 \x01(\x05R\x04port\x12\x1b\n" +
 	"\tnode_port\x18\x02 \x01(\x05R\bnodePort\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1a\n" +
 	"\bprotocol\x18\x04 \x01(\tR\bprotocol\x12\x1f\n" +
 	"\vtarget_port\x18\v \x01(\tR\n" +
-	"targetPort\x1a\xf6\x01\n" +
+	"targetPortX\x02X\x02\x1a\xf6\x01\n" +
 	"\x03Pod\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05phase\x18\x02 \x01(\tR\x05phase\x12\x14\n" +
@@ -6864,7 +6864,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\brestarts\x18\x04 \x01(\tR\brestarts\x12W\n" +
 	"\x0elast_condition\x18\v \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x12:\n" +
 	"\n" +
-	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a\x8c\x02\n" +
+	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a\x8e\x02\n" +
 	"\x15PersistentVolumeClaim\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12!\n" +
@@ -6872,7 +6872,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\bcapacity\x18\x04 \x01(\tR\bcapacity\x12L\n" +
 	"\rstorage_class\x18\v \x01(\v2'.otterscale.application.v1.StorageClassR\fstorageClass\x12:\n" +
 	"\n" +
-	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a9\n" +
+	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAtX\x02\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xef\x02\n" +
@@ -7043,7 +7043,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\x0eListNamespaces\x120.otterscale.application.v1.ListNamespacesRequest\x1a1.otterscale.application.v1.ListNamespacesResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
 	"\fapp-resource\x12\x96\x01\n" +
 	"\x12ListStorageClasses\x124.otterscale.application.v1.ListStorageClassesRequest\x1a5.otterscale.application.v1.ListStorageClassesResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\fapp-resourceB8Z6github.com/otterscale/otterscale/api/application/v1;pbb\beditionsp\xe8\a"
+	"\fapp-resourceB8Z6github.com/otterscale/otterscale/api/application/v1;pbb\beditionsp\xe9\a"
 
 var file_api_application_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 46)
 var file_api_application_v1_application_proto_goTypes = []any{

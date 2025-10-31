@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import {
 		getCoreRowModel,
+		getExpandedRowModel,
 		getFilteredRowModel,
 		getPaginationRowModel,
 		getSortedRowModel,
@@ -12,9 +13,10 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
-	import type { Application } from '../types';
+	import type { Service } from '../types';
 
 	import { columns, messages } from './columns';
+	import Statistics from './statistics.svelte';
 
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -25,14 +27,14 @@
 
 <script lang="ts">
 	let {
-		applications,
+		services,
 		reloadManager,
 	}: {
-		applications: Writable<Application[]>;
+		services: Writable<Service[]>;
 		reloadManager: ReloadManager;
 	} = $props();
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 9 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 14 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
@@ -40,7 +42,7 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $applications;
+			return $services;
 		},
 		columns,
 
@@ -48,6 +50,7 @@
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+		getExpandedRowModel: getExpandedRowModel(),
 
 		state: {
 			get pagination() {
@@ -107,17 +110,12 @@
 	});
 </script>
 
+<Statistics {table} />
 <Layout.Root>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy columnId="name" values={$applications.map((row) => row.name)} {messages} {table} />
-			<Filters.StringMatch columnId="type" values={$applications.flatMap((row) => row.type)} {messages} {table} />
-			<Filters.StringMatch
-				columnId="namespace"
-				values={$applications.flatMap((row) => row.namespace)}
-				{messages}
-				{table}
-			/>
+			<Filters.StringFuzzy columnId="name" values={$services.map((row) => row.name)} {messages} {table} />
+			<Filters.StringMatch columnId="type" values={$services.flatMap((row) => row.type)} {messages} {table} />
 			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
@@ -139,7 +137,7 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
-							<Table.Head>
+							<Table.Head colspan={header.colSpan}>
 								{#if !header.isPlaceholder}
 									<FlexRender
 										content={header.column.columnDef.header}

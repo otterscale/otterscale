@@ -11,7 +11,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-const chartRepoURL = "https://raw.githubusercontent.com/otterscale/otterscale-charts/refs/heads/main"
+const chartRepoURL = "https://otterscale.github.io/charts"
 
 type plugin struct {
 	name        string
@@ -62,8 +62,9 @@ var pluginMap = map[string]plugin{
 }
 
 type Plugin struct {
-	Release *Release
-	Latest  *ChartVersion
+	Release   *Release
+	Latest    *ChartVersion
+	LatestURL string
 }
 
 func (uc *OrchestratorUseCase) ListGeneralPlugins(ctx context.Context, scope, facility string) ([]Plugin, error) {
@@ -88,7 +89,6 @@ func (uc *OrchestratorUseCase) ListInstancePlugins(ctx context.Context, scope, f
 func (uc *OrchestratorUseCase) ListStoragePlugins(ctx context.Context, scope, facility string) ([]Plugin, error) {
 	return uc.listPlugins(ctx, scope, facility, []string{
 		"samba-operator",
-		"nfs-operator",
 	})
 }
 
@@ -191,13 +191,14 @@ func (uc *OrchestratorUseCase) filterInternalPlugins(plugins []string) []plugin 
 func (uc *OrchestratorUseCase) filterPlugins(charts []Chart, releases []Release, plugins []string) ([]Plugin, error) {
 	result := []Plugin{}
 	for _, plugin := range plugins {
-		latest, err := findLatestChart(charts, plugin)
+		latest, url, err := findLatestChart(charts, plugin)
 		if err != nil {
 			return nil, err
 		}
 		result = append(result, Plugin{
-			Release: findRelease(releases, plugin),
-			Latest:  latest,
+			Release:   findRelease(releases, plugin),
+			Latest:    latest,
+			LatestURL: url,
 		})
 	}
 	return result, nil
@@ -213,35 +214,26 @@ func findRelease(releases []Release, name string) *Release {
 	return &releases[idx]
 }
 
-func findLatestChart(charts []Chart, name string) (*ChartVersion, error) {
+func findLatestChart(charts []Chart, name string) (*ChartVersion, string, error) {
 	idx := slices.IndexFunc(charts, func(c Chart) bool {
 		return c.Name == name
 	})
 	if idx == -1 {
-		return nil, fmt.Errorf("chart not found for %q", name)
+		return nil, "", fmt.Errorf("chart not found for %q", name)
 	}
 
 	chart := charts[idx]
 	if len(chart.Versions) == 0 {
-		return nil, fmt.Errorf("no versions available for %q", name)
+		return nil, "", fmt.Errorf("no versions available for %q", name)
 	}
 
 	slices.SortFunc(chart.Versions, func(a, b *ChartVersion) int {
 		return semver.Compare(b.Version, a.Version)
 	})
 
-	return chart.Versions[0], nil
-}
-
-func findLatestChartRef(charts []Chart, name string) (string, error) {
-	chart, err := findLatestChart(charts, name)
-	if err != nil {
-		return "", err
+	latest := chart.Versions[0]
+	if len(latest.URLs) == 0 {
+		return nil, "", fmt.Errorf("no chart URL found for %q", name)
 	}
-
-	urls := chart.URLs
-	if len(urls) == 0 {
-		return "", fmt.Errorf("no chart URL found for %q", name)
-	}
-	return urls[0], nil
+	return latest, latest.URLs[0], nil
 }
