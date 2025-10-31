@@ -12354,7 +12354,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"stg-object\x12g\n" +
 	"\rDeleteUserKey\x12+.otterscale.storage.v1.DeleteUserKeyRequest\x1a\x16.google.protobuf.Empty\"\x11\x8a\xdf\xd5\x1d\f\n" +
 	"\n" +
-	"stg-objectB4Z2github.com/otterscale/otterscale/api/storage/v1;pbb\beditionsp\xe9\a"
+	"stg-objectB4Z2github.com/otterscale/otterscale/api/storage/v1;pbb\beditionsp\xe8\a"
 
 var file_api_storage_v1_storage_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_api_storage_v1_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 67)

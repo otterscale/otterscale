@@ -1,4 +1,4 @@
-edition = "2024";
+edition = "2023";
 
 package otterscale.application.v1;
 
@@ -183,7 +183,7 @@ message Application {
     string chart_name = 11;
     Chart.Version version = 12;
   }
-  export message Condition {
+  message Condition {
     string type = 1;
     string status = 2;
     string reason = 3;
@@ -195,8 +195,8 @@ message Application {
     string image_name = 1;
     string image_pull_policy = 2;
   }
-  export message Service {
-    export message Port {
+  message Service {
+    message Port {
       int32 port = 1;
       int32 node_port = 2;
       string name = 3;
@@ -217,7 +217,7 @@ message Application {
     Condition last_condition = 11;
     google.protobuf.Timestamp created_at = 201;
   }
-  export message PersistentVolumeClaim {
+  message PersistentVolumeClaim {
     string name = 1;
     string status = 2;
     repeated string access_modes = 3;

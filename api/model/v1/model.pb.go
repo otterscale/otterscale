@@ -2457,7 +2457,7 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x13CreateModelArtifact\x12/.otterscale.model.v1.CreateModelArtifactRequest\x1a\".otterscale.model.v1.ModelArtifact\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vmdl-general\x12r\n" +
 	"\x13DeleteModelArtifact\x12/.otterscale.model.v1.DeleteModelArtifactRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-generalB2Z0github.com/otterscale/otterscale/api/model/v1;pbb\beditionsp\xe9\a"
+	"\vmdl-generalB2Z0github.com/otterscale/otterscale/api/model/v1;pbb\beditionsp\xe8\a"
 
 var file_api_model_v1_model_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_api_model_v1_model_proto_goTypes = []any{

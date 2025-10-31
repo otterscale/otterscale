@@ -9301,7 +9301,7 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"vm-general\x12\x84\x01\n" +
 	"\x1bDeleteVirtualMachineService\x12:.otterscale.instance.v1.DeleteVirtualMachineServiceRequest\x1a\x16.google.protobuf.Empty\"\x11\x8a\xdf\xd5\x1d\f\n" +
 	"\n" +
-	"vm-generalB5Z3github.com/otterscale/otterscale/api/instance/v1;pbb\beditionsp\xe9\a"
+	"vm-generalB5Z3github.com/otterscale/otterscale/api/instance/v1;pbb\beditionsp\xe8\a"
 
 var file_api_instance_v1_instance_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
 var file_api_instance_v1_instance_proto_msgTypes = make([]protoimpl.MessageInfo, 46)
