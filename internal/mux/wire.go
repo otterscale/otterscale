@@ -4,4 +4,4 @@ import (
 	"github.com/google/wire"
 )
 
-var ProviderSet = wire.NewSet(NewBootstrap, NewServe)
+var ProviderSet = wire.NewSet(NewBootstrap, NewJWKSProxy, NewServe)

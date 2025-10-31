@@ -18,11 +18,13 @@ const (
 
 type handler interface {
 	ServeHTTP(http.ResponseWriter, *http.Request)
-	RegisterHandlers(opts []connect.HandlerOption)
+	RegisterHandlers(opts []connect.HandlerOption) error
 }
 
 func startHTTPServer(address string, handler handler, opts ...connect.HandlerOption) error {
-	handler.RegisterHandlers(opts)
+	if err := handler.RegisterHandlers(opts); err != nil {
+		return err
+	}
 
 	protocols := new(http.Protocols)
 	protocols.SetHTTP1(true)
