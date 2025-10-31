@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
 
 	import Node from './extension-node.svelte';
@@ -18,42 +18,52 @@
 	const orchestratorClient = createClient(OrchestratorService, transport);
 
 	const instanceExtensions: Writable<Extension[]> = writable([]);
+	let isInstanceExtensionsLoaded = $state(false);
 	const modelExtensions: Writable<Extension[]> = writable([]);
+	let isModelExtensionsLoaded = $state(false);
 	const storageExtensions: Writable<Extension[]> = writable([]);
+	let isStorageExtensionsLoaded = $state(false);
 	const generalExtensions: Writable<Extension[]> = writable([]);
+	let isGeneralExtensionsLoaded = $state(false);
 
-	orchestratorClient
-		.listInstanceExtensions({ scope: scope, facility: facility })
-		.then((respoonse) => {
-			instanceExtensions.set(respoonse.Extensions);
-		})
-		.catch((error) => {
-			console.error('Failed to fetch instance extensions:', error);
-		});
-	orchestratorClient
-		.listModelExtensions({ scope: scope, facility: facility })
-		.then((respoonse) => {
-			modelExtensions.set(respoonse.Extensions);
-		})
-		.catch((error) => {
-			console.error('Failed to fetch model extensions:', error);
-		});
-	orchestratorClient
-		.listStorageExtensions({ scope: scope, facility: facility })
-		.then((respoonse) => {
-			storageExtensions.set(respoonse.Extensions);
-		})
-		.catch((error) => {
-			console.error('Failed to fetch storage extensions:', error);
-		});
-	orchestratorClient
-		.listGeneralExtensions({ scope: scope, facility: facility })
-		.then((respoonse) => {
-			generalExtensions.set(respoonse.Extensions);
-		})
-		.catch((error) => {
-			console.error('Failed to fetch general extensions:', error);
-		});
+	onMount(async () => {
+		orchestratorClient
+			.listInstanceExtensions({ scope: scope, facility: facility })
+			.then((respoonse) => {
+				instanceExtensions.set(respoonse.Extensions);
+				isInstanceExtensionsLoaded = true;
+			})
+			.catch((error) => {
+				console.error('Failed to fetch instance extensions:', error);
+			});
+		orchestratorClient
+			.listModelExtensions({ scope: scope, facility: facility })
+			.then((respoonse) => {
+				modelExtensions.set(respoonse.Extensions);
+				isModelExtensionsLoaded = true;
+			})
+			.catch((error) => {
+				console.error('Failed to fetch model extensions:', error);
+			});
+		orchestratorClient
+			.listStorageExtensions({ scope: scope, facility: facility })
+			.then((respoonse) => {
+				storageExtensions.set(respoonse.Extensions);
+				isStorageExtensionsLoaded = true;
+			})
+			.catch((error) => {
+				console.error('Failed to fetch storage extensions:', error);
+			});
+		orchestratorClient
+			.listGeneralExtensions({ scope: scope, facility: facility })
+			.then((respoonse) => {
+				generalExtensions.set(respoonse.Extensions);
+				isGeneralExtensionsLoaded = true;
+			})
+			.catch((error) => {
+				console.error('Failed to fetch general extensions:', error);
+			});
+	});
 </script>
 
 <Accordion.Root
@@ -61,7 +71,7 @@
 	class="group bg-card text-card-foreground w-full overflow-hidden rounded-lg border transition-all duration-300 **:data-[slot='accordion-trigger']:p-6"
 	value={getAccordionValue()}
 >
-	{#if $instanceExtensions.filter((instanceExtension) => !instanceExtension.latest).length == 0}
+	{#if isInstanceExtensionsLoaded && $instanceExtensions.filter((instanceExtension) => !instanceExtension.latest).length == 0}
 		<Accordion.Item value="instance">
 			<Accordion.Trigger>
 				<Thumbnail
@@ -89,7 +99,7 @@
 		</Accordion.Item>
 	{/if}
 
-	{#if $modelExtensions.filter((modelExtension) => !modelExtension.latest).length == 0}
+	{#if isModelExtensionsLoaded && $modelExtensions.filter((modelExtension) => !modelExtension.latest).length == 0}
 		<Accordion.Item value="model">
 			<Accordion.Trigger>
 				<Thumbnail
@@ -117,7 +127,7 @@
 		</Accordion.Item>
 	{/if}
 
-	{#if $storageExtensions.filter((storageExtension) => !storageExtension.latest).length == 0}
+	{#if isGeneralExtensionsLoaded && isStorageExtensionsLoaded && $storageExtensions.filter((storageExtension) => !storageExtension.latest).length == 0}
 		<Accordion.Item value="storage">
 			<Accordion.Trigger>
 				<Thumbnail

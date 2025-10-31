@@ -71,7 +71,7 @@
 
 <div class="flex w-full flex-col gap-4">
 	<Progress
-		value={(installed * 100) / required}
+		value={required ? (installed * 100) / required : 0}
 		class={cn(
 			installed == required
 				? 'bg-green-700/20 **:data-[slot="progress-indicator"]:bg-green-700'

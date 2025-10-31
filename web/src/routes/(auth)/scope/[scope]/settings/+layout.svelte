@@ -11,7 +11,7 @@
 
 	let { children } = $props();
 
-	let globalItems = [
+	const globalItems = [
 		{
 			icon: 'ph:clock',
 			title: m.ntp_server(),
@@ -54,21 +54,21 @@
 		},
 	];
 
-	let scopeBasedItems = [
+	const scopeBasedItems = [
 		{
 			icon: 'ph:hard-drives',
 			title: m.data_volume(),
 			page: 'data-volume',
 		},
 		{
-			icon: 'ph:cube',
-			title: m.extensions(),
-			page: 'extensions',
-		},
-		{
 			icon: 'ph:cpu',
 			title: m.instance_type(),
 			page: 'instance-type',
+		},
+		{
+			icon: 'ph:cube',
+			title: m.extensions(),
+			page: 'extensions',
 		},
 	];
 </script>
@@ -110,6 +110,7 @@
 					</NavigationMenu.Item>
 				{/each}
 			</NavigationMenu.List>
+			<Separator class="w-full" />
 			<NavigationMenu.List class="w-full flex-col items-start gap-2">
 				{#each scopeBasedItems as item}
 					{@const url = `${dynamicPaths.settings(page.params.scope).url}/${item.page}`}

@@ -43,11 +43,13 @@
 		<Layout.Viewer>
 			<Card.Root>
 				<Card.Content>
-					{#if $configuration.helmRepository && $configuration.helmRepository.urls}
-						{#each $configuration.helmRepository.urls as url}
-							<Badge>{url}</Badge>
-						{/each}
-					{/if}
+					<div class="flex flex-wrap gap-1">
+						{#if $configuration.helmRepository && $configuration.helmRepository.urls}
+							{#each $configuration.helmRepository.urls as url}
+								<Badge>{url}</Badge>
+							{/each}
+						{/if}
+					</div>
 				</Card.Content>
 			</Card.Root>
 		</Layout.Viewer>
