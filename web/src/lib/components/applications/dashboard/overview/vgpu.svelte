@@ -33,7 +33,6 @@
 				`,
 			)
 			.then((response) => {
-				console.log('VGPU Memory Response:', scope.uuid, response);
 				const instanceVectors: InstantVector[] = response.result;
 				memoryUsage = instanceVectors
 					.sort((p, n) => n.value.value - p.value.value)

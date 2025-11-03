@@ -29,8 +29,8 @@
 	onMount(async () => {
 		orchestratorClient
 			.listInstanceExtensions({ scope: scope, facility: facility })
-			.then((respoonse) => {
-				instanceExtensions.set(respoonse.Extensions);
+			.then((response) => {
+				instanceExtensions.set(response.Extensions);
 				isInstanceExtensionsLoaded = true;
 			})
 			.catch((error) => {
@@ -38,8 +38,8 @@
 			});
 		orchestratorClient
 			.listModelExtensions({ scope: scope, facility: facility })
-			.then((respoonse) => {
-				modelExtensions.set(respoonse.Extensions);
+			.then((response) => {
+				modelExtensions.set(response.Extensions);
 				isModelExtensionsLoaded = true;
 			})
 			.catch((error) => {
@@ -47,8 +47,8 @@
 			});
 		orchestratorClient
 			.listStorageExtensions({ scope: scope, facility: facility })
-			.then((respoonse) => {
-				storageExtensions.set(respoonse.Extensions);
+			.then((response) => {
+				storageExtensions.set(response.Extensions);
 				isStorageExtensionsLoaded = true;
 			})
 			.catch((error) => {
@@ -56,8 +56,8 @@
 			});
 		orchestratorClient
 			.listGeneralExtensions({ scope: scope, facility: facility })
-			.then((respoonse) => {
-				generalExtensions.set(respoonse.Extensions);
+			.then((response) => {
+				generalExtensions.set(response.Extensions);
 				isGeneralExtensionsLoaded = true;
 			})
 			.catch((error) => {
@@ -82,8 +82,8 @@
 					updator={() => {
 						orchestratorClient
 							.listInstanceExtensions({ scope: scope, facility: facility })
-							.then((respoonse) => {
-								instanceExtensions.set(respoonse.Extensions);
+							.then((response) => {
+								instanceExtensions.set(response.Extensions);
 							})
 							.catch((error) => {
 								console.error('Failed to fetch instance extensions:', error);
@@ -110,8 +110,8 @@
 					updator={() => {
 						orchestratorClient
 							.listModelExtensions({ scope: scope, facility: facility })
-							.then((respoonse) => {
-								modelExtensions.set(respoonse.Extensions);
+							.then((response) => {
+								modelExtensions.set(response.Extensions);
 							})
 							.catch((error) => {
 								console.error('Failed to fetch model extensions:', error);
@@ -138,8 +138,8 @@
 					updator={() => {
 						orchestratorClient
 							.listStorageExtensions({ scope: scope, facility: facility })
-							.then((respoonse) => {
-								storageExtensions.set(respoonse.Extensions);
+							.then((response) => {
+								storageExtensions.set(response.Extensions);
 							})
 							.catch((error) => {
 								console.error('Failed to fetch storage extensions:', error);
@@ -166,8 +166,8 @@
 					updator={() => {
 						orchestratorClient
 							.listGeneralExtensions({ scope: scope, facility: facility })
-							.then((respoonse) => {
-								generalExtensions.set(respoonse.Extensions);
+							.then((response) => {
+								generalExtensions.set(response.Extensions);
 							})
 							.catch((error) => {
 								console.error('Failed to fetch general extensions:', error);

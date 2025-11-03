@@ -20,8 +20,8 @@
 
 	orchestratorClient
 		.listInstanceExtensions({ scope: scope, facility: facility })
-		.then((respoonse) => {
-			instanceExtensions.set(respoonse.Extensions);
+		.then((response) => {
+			instanceExtensions.set(response.Extensions);
 		})
 		.catch((error) => {
 			console.error('Failed to fetch extensions:', error);
@@ -42,13 +42,15 @@
 		<Alert.Icon />
 		<Alert.Title>{alert.title}</Alert.Title>
 		<Alert.Description>
-			<p>{alert.message}</p>
-			<div class="flex w-full flex-wrap gap-2">
-				{#each $instanceExtensions.filter((extension) => !extension.current) as extension}
-					<Badge variant="outline" class="border-destructive/50 text-destructive bg-destructive/5"
-						>{extension.latest?.name}
-					</Badge>
-				{/each}
+			<div class="space-y-1">
+				<p>{alert.message}</p>
+				<div class="flex w-full flex-wrap gap-2">
+					{#each $instanceExtensions.filter((extension) => !extension.current) as extension}
+						<Badge variant="outline" class="border-destructive/50 text-destructive bg-destructive/5"
+							>{extension.latest?.name}
+						</Badge>
+					{/each}
+				</div>
 			</div>
 		</Alert.Description>
 		<Alert.Action onclick={alert.action}>{m.install()}</Alert.Action>

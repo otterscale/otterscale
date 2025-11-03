@@ -331,9 +331,7 @@ export const getValidURL = (
 	cephName: string | undefined,
 	kubeName: string | undefined,
 ): string => {
-	console.log(pathname);
 	if (pathBypass(pathname)) {
-		console.log(pathname.replace(/\/scope\/[^/]+/, `/scope/${scope}`));
 		return pathname.replace(/\/scope\/[^/]+/, `/scope/${scope}`);
 	}
 

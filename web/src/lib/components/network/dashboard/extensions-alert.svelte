@@ -20,8 +20,8 @@
 
 	orchestratorClient
 		.listGeneralExtensions({ scope: scope, facility: facility })
-		.then((respoonse) => {
-			generalExtension.set(respoonse.Extensions);
+		.then((response) => {
+			generalExtension.set(response.Extensions);
 		})
 		.catch((error) => {
 			console.error('Failed to fetch extensions:', error);
