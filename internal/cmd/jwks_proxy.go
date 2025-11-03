@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/lestrrat-go/httprc/v3"
+	"github.com/lestrrat-go/httprc/v3/tracesink"
 	"github.com/lestrrat-go/jwx/v3/jwk"
 	"github.com/spf13/cobra"
 
@@ -22,8 +23,8 @@ func NewJWKSProxy(jwksProxy *mux.JWKSProxy) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "jwks-proxy",
 		Short:   "Start the JWKS proxy server",
-		Long:    "Start the OtterScale API server that provides gRPC and HTTP endpoints for JWKS proxy service",
-		Example: "otterscale jwks-proxy --address=:8299",
+		Long:    "Starts a proxy server that caches and serves JWKS (JSON Web Key Set) from an external identity provider. The proxy periodically refreshes the keys to ensure they are up-to-date while reducing load on the external provider.",
+		Example: "otterscale jwks-proxy --address=:8299 --jwks-url=https://default.idp.com/.well-known/jwks.json",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			if os.Getenv(containerEnvVar) != "" {
 				address = defaultContainerAddress
@@ -34,6 +35,7 @@ func NewJWKSProxy(jwksProxy *mux.JWKSProxy) *cobra.Command {
 			if err != nil {
 				return err
 			}
+
 			jwksProxy.SetCache(cache)
 			jwksProxy.SetURL(jwksURL)
 
@@ -68,13 +70,21 @@ func NewJWKSProxy(jwksProxy *mux.JWKSProxy) *cobra.Command {
 	return cmd
 }
 
-// TODO: Check Interval
 func newJWKSCache(ctx context.Context, url string) (*jwk.Cache, error) {
-	cache, err := jwk.NewCache(ctx, httprc.NewClient())
+	cache, err := jwk.NewCache(
+		ctx,
+		httprc.NewClient(
+			httprc.WithTraceSink(tracesink.NewSlog(slog.New(slog.NewJSONHandler(os.Stderr, nil)))),
+		))
 	if err != nil {
 		return nil, err
 	}
-	if err := cache.Register(ctx, url); err != nil {
+	if err := cache.Register(
+		ctx,
+		url,
+		jwk.WithMaxInterval(24*time.Hour*7),
+		jwk.WithMinInterval(15*time.Minute),
+	); err != nil {
 		return nil, err
 	}
 	if _, err := cache.Refresh(ctx, url); err != nil {
