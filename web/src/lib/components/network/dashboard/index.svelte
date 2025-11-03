@@ -3,13 +3,13 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 
+	import ExtensionsAlert from './extensions-alert.svelte';
 	import AvailableIPs from './overview/available-ips.svelte';
 	import DHCP from './overview/dhcp.svelte';
 	import Discovery from './overview/discovery.svelte';
 	import DNSServer from './overview/dns-server.svelte';
 	import NetworkTrafficByTime from './overview/network-traffic-by-time.svelte';
 	import NetworkTraffic from './overview/network-traffic.svelte';
-	import ExtensionsAlert from './extensions-alert.svelte';
 
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
