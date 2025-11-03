@@ -16,8 +16,8 @@ import (
 
 func NewJWKSProxy(jwksProxy *mux.JWKSProxy) *cobra.Command {
 	var (
-		address, jwksURL string
-		refreshInterval  time.Duration
+		address, jwksURL                       string
+		maxRefreshInterval, minRefreshInterval time.Duration
 	)
 
 	cmd := &cobra.Command{
@@ -31,7 +31,7 @@ func NewJWKSProxy(jwksProxy *mux.JWKSProxy) *cobra.Command {
 				slog.Info("Container environment detected, using default configuration", "address", address)
 			}
 
-			cache, err := newJWKSCache(cmd.Context(), jwksURL)
+			cache, err := newJWKSCache(cmd.Context(), jwksURL, maxRefreshInterval, minRefreshInterval)
 			if err != nil {
 				return err
 			}
@@ -59,18 +59,24 @@ func NewJWKSProxy(jwksProxy *mux.JWKSProxy) *cobra.Command {
 		"External JWKS endpoint URL",
 	)
 
-	cmd.Flags().DurationVarP(
-		&refreshInterval,
-		"refresh-interval",
-		"i",
-		5*time.Minute,
+	cmd.Flags().DurationVar(
+		&maxRefreshInterval,
+		"max-refresh-interval",
+		24*time.Hour*7, //nolint:mnd // reasonable default
 		"Interval to check and refresh the external JWKS keys",
+	)
+
+	cmd.Flags().DurationVar(
+		&minRefreshInterval,
+		"min-refresh-interval",
+		15*time.Minute, //nolint:mnd // reasonable default
+		"Minimum interval to check and refresh the external JWKS keys",
 	)
 
 	return cmd
 }
 
-func newJWKSCache(ctx context.Context, url string) (*jwk.Cache, error) {
+func newJWKSCache(ctx context.Context, url string, maxRefreshInterval, minRefreshInterval time.Duration) (*jwk.Cache, error) {
 	cache, err := jwk.NewCache(
 		ctx,
 		httprc.NewClient(
@@ -82,8 +88,8 @@ func newJWKSCache(ctx context.Context, url string) (*jwk.Cache, error) {
 	if err := cache.Register(
 		ctx,
 		url,
-		jwk.WithMaxInterval(24*time.Hour*7),
-		jwk.WithMinInterval(15*time.Minute),
+		jwk.WithMaxInterval(maxRefreshInterval),
+		jwk.WithMinInterval(minRefreshInterval),
 	); err != nil {
 		return nil, err
 	}
