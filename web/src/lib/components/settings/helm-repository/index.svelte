@@ -41,12 +41,10 @@
 		</Layout.Controller>
 		<Layout.Viewer>
 			{#if $configuration.helmRepository}
-				<div class="grid gap-4 space-y-8 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5 w-full">
+				<div class="grid w-full gap-4 space-y-8 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
 					{#each $configuration.helmRepository.urls as url}
 						<div class="flex flex-col items-center gap-4">
-							<div
-								class="bg-muted/50 m-2 rounded-full p-2 shadow-lg"
-							>
+							<div class="bg-muted/50 m-2 rounded-full p-2 shadow-lg">
 								<Icon icon="ph:package" class="m-2 size-20" />
 							</div>
 							<div class="flex flex-col items-center">

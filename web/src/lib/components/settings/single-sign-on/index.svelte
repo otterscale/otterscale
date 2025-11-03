@@ -125,35 +125,35 @@
 	</Layout.Description>
 	<Layout.Viewer>
 		<div class="w-full">
-		<Card.Root>
-			<Card.Header>
-				<Card.Title>{m.single_sign_on_form_title()}</Card.Title>
-				<Card.Description>{m.single_sign_on_form_description()}</Card.Description>
-			</Card.Header>
-			<Card.Content>
-				<form onsubmit={handleSSOSubmit}>
-					<div class="flex flex-col gap-6">
-						<div class="grid grid-cols-2 gap-4">
-							{#each ssoFormFields as field}
-								<div class="grid gap-2">
-									<Label for={field.key}>{field.label}</Label>
-									<Input
-										id={field.key}
-										type={field.type}
-										placeholder={field.placeholder}
-										bind:value={ssoFormData[field.key as keyof typeof ssoFormData]}
-										required
-									/>
-								</div>
-							{/each}
+			<Card.Root>
+				<Card.Header>
+					<Card.Title>{m.single_sign_on_form_title()}</Card.Title>
+					<Card.Description>{m.single_sign_on_form_description()}</Card.Description>
+				</Card.Header>
+				<Card.Content>
+					<form onsubmit={handleSSOSubmit}>
+						<div class="flex flex-col gap-6">
+							<div class="grid grid-cols-2 gap-4">
+								{#each ssoFormFields as field}
+									<div class="grid gap-2">
+										<Label for={field.key}>{field.label}</Label>
+										<Input
+											id={field.key}
+											type={field.type}
+											placeholder={field.placeholder}
+											bind:value={ssoFormData[field.key as keyof typeof ssoFormData]}
+											required
+										/>
+									</div>
+								{/each}
+							</div>
 						</div>
-					</div>
-					<Card.Footer class="flex-col gap-2 px-0 pt-6">
-						<Button type="submit" class="w-full">{m.submit()}</Button>
-					</Card.Footer>
-				</form>
-			</Card.Content>
-		</Card.Root>
+						<Card.Footer class="flex-col gap-2 px-0 pt-6">
+							<Button type="submit" class="w-full">{m.submit()}</Button>
+						</Card.Footer>
+					</form>
+				</Card.Content>
+			</Card.Root>
 		</div>
 	</Layout.Viewer>
 </Layout.Root>

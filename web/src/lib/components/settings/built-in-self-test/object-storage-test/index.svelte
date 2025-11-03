@@ -48,7 +48,7 @@
 
 <main>
 	{#if isMounted && selectedTab === 'object-storage-test'}
-		<div class="flex items-center justify-between gap-2 w-full">
+		<div class="flex w-full items-center justify-between gap-2">
 			{@render trigger()}
 			<Pickers bind:selectedMode={mode} />
 		</div>

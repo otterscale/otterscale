@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
-    import type { Writable } from 'svelte/store';
+	import type { Writable } from 'svelte/store';
 
 	import { PremiumTier_Level, type PremiumTier } from '$lib/api/environment/v1/environment_pb';
 	import * as Layout from '$lib/components/settings/layout';
@@ -83,8 +83,7 @@
 </script>
 
 <script lang="ts">
-    let { premiumTier }: { premiumTier: Writable<PremiumTier> } = $props()
-
+	let { premiumTier }: { premiumTier: Writable<PremiumTier> } = $props();
 </script>
 
 <!-- just-in-time  -->
@@ -93,78 +92,80 @@
 
 <Layout.Root>
 	<Layout.Viewer>
-		<div class="max-w-7xl px-4 xl:px-0 w-full">
-	<div class="grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:items-start">
-		{#each tiers as tier}
-			<Card.Root class="flex h-full flex-col {tier.isRecommended ? 'border-primary relative' : ''}">
-				{#if tier.isRecommended}
-					<div
-						class="bg-primary text-primary-foreground absolute top-0 right-0 rounded-tr-lg rounded-bl-lg px-3 py-1 text-xs font-medium uppercase"
-					>
-						{m.recommended()}
-					</div>
-				{/if}
-
-				<Card.Header class="justify-center pb-2 text-center">
-					<Card.Title class="mb-7">{tier.title}</Card.Title>
-					<div class="flex {tier.icons.length > 1 ? 'space-x-2' : ''}">
-						{#each tier.icons as iconConfig}
-							<div class="flex">
-								<Icon icon={iconConfig.name} class="size-12 text-[{iconConfig.color}]" />
-								{#if iconConfig.hasAnimation}
-									<span class="relative flex size-3">
-										<span
-											class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[{iconConfig.color}] opacity-75"
-										></span>
-										<span class="relative inline-flex size-3 rounded-full bg-[{iconConfig.color}]"
-										></span>
-									</span>
-								{/if}
+		<div class="w-full max-w-7xl px-4 xl:px-0">
+			<div class="grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:items-start">
+				{#each tiers as tier}
+					<Card.Root class="flex h-full flex-col {tier.isRecommended ? 'border-primary relative' : ''}">
+						{#if tier.isRecommended}
+							<div
+								class="bg-primary text-primary-foreground absolute top-0 right-0 rounded-tr-lg rounded-bl-lg px-3 py-1 text-xs font-medium uppercase"
+							>
+								{m.recommended()}
 							</div>
-						{/each}
-					</div>
-				</Card.Header>
-
-				<Card.Description class="text-center {tier.isRecommended ? 'mx-auto w-11/12' : ''}">
-					{tier.description}
-				</Card.Description>
-
-				<Card.Content>
-					<ul>
-						{#each tier.features as feature, index}
-							{#if index % 2 === 0}
-								<li class="flex space-x-2 pt-4">
-									<Icon icon="ph:check-bold" class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-500" />
-									<span class="text-foreground text-sm">{feature}</span>
-								</li>
-							{:else}
-								<li class="flex space-x-2 py-1 pl-6">
-									<span class="text-muted-foreground text-xs">{feature}</span>
-								</li>
-							{/if}
-						{/each}
-					</ul>
-				</Card.Content>
-
-				<Card.Footer class="mt-auto">
-					<Button
-						href="mailto:paul_tsai@phison.com"
-						class="w-full"
-						variant={tier.isRecommended ? 'default' : 'outline'}
-						disabled={tier.level <= $premiumTier.level}
-					>
-						{#if tier.level > $premiumTier.level}
-							{m.contact_sales()}
-						{:else}
-							{m.enabled()}
 						{/if}
-					</Button>
-				</Card.Footer>
-			</Card.Root>
-		{/each}
-	</div>
-</div>
+
+						<Card.Header class="justify-center pb-2 text-center">
+							<Card.Title class="mb-7">{tier.title}</Card.Title>
+							<div class="flex {tier.icons.length > 1 ? 'space-x-2' : ''}">
+								{#each tier.icons as iconConfig}
+									<div class="flex">
+										<Icon icon={iconConfig.name} class="size-12 text-[{iconConfig.color}]" />
+										{#if iconConfig.hasAnimation}
+											<span class="relative flex size-3">
+												<span
+													class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[{iconConfig.color}] opacity-75"
+												></span>
+												<span
+													class="relative inline-flex size-3 rounded-full bg-[{iconConfig.color}]"
+												></span>
+											</span>
+										{/if}
+									</div>
+								{/each}
+							</div>
+						</Card.Header>
+
+						<Card.Description class="text-center {tier.isRecommended ? 'mx-auto w-11/12' : ''}">
+							{tier.description}
+						</Card.Description>
+
+						<Card.Content>
+							<ul>
+								{#each tier.features as feature, index}
+									{#if index % 2 === 0}
+										<li class="flex space-x-2 pt-4">
+											<Icon
+												icon="ph:check-bold"
+												class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-500"
+											/>
+											<span class="text-foreground text-sm">{feature}</span>
+										</li>
+									{:else}
+										<li class="flex space-x-2 py-1 pl-6">
+											<span class="text-muted-foreground text-xs">{feature}</span>
+										</li>
+									{/if}
+								{/each}
+							</ul>
+						</Card.Content>
+
+						<Card.Footer class="mt-auto">
+							<Button
+								href="mailto:paul_tsai@phison.com"
+								class="w-full"
+								variant={tier.isRecommended ? 'default' : 'outline'}
+								disabled={tier.level <= $premiumTier.level}
+							>
+								{#if tier.level > $premiumTier.level}
+									{m.contact_sales()}
+								{:else}
+									{m.enabled()}
+								{/if}
+							</Button>
+						</Card.Footer>
+					</Card.Root>
+				{/each}
+			</div>
+		</div>
 	</Layout.Viewer>
 </Layout.Root>
-
-
