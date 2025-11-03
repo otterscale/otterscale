@@ -63,14 +63,14 @@ func NewJWKSProxy(jwksProxy *mux.JWKSProxy) *cobra.Command {
 		&maxRefreshInterval,
 		"max-refresh-interval",
 		24*time.Hour*7, //nolint:mnd // reasonable default
-		"Interval to check and refresh the external JWKS keys",
+		"Maximum interval between refresh attempts for the external JWKS keys",
 	)
 
 	cmd.Flags().DurationVar(
 		&minRefreshInterval,
 		"min-refresh-interval",
 		15*time.Minute, //nolint:mnd // reasonable default
-		"Minimum interval to check and refresh the external JWKS keys",
+		"Minimum interval between refresh attempts for the external JWKS keys",
 	)
 
 	return cmd
