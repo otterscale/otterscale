@@ -46,7 +46,7 @@ func NewServe(conf *config.Config, serve *mux.Serve) *cobra.Command {
 		"address",
 		"a",
 		":0",
-		"address of service",
+		"Address for server to listen on",
 	)
 
 	cmd.Flags().StringVarP(
@@ -54,7 +54,7 @@ func NewServe(conf *config.Config, serve *mux.Serve) *cobra.Command {
 		"config",
 		"c",
 		"otterscale.yaml",
-		"config path",
+		"Config path for server to load",
 	)
 
 	return cmd

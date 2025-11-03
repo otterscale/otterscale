@@ -31,7 +31,7 @@ func NewBootstrap(bootstrap *mux.Bootstrap) *cobra.Command {
 		"address",
 		"a",
 		":0",
-		"address of service",
+		"Address for server to listen on",
 	)
 
 	return cmd
