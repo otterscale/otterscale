@@ -29,7 +29,7 @@
 		await prometheusDriver
 			.instantQuery(
 				`
-				topk(10, avg by (node) (nodeGPUMemoryPercentage{juju_model_uuid="${scope.uuid}"}))
+				topk(10, avg by (nodeid) (nodeGPUMemoryPercentage{juju_model_uuid="${scope.uuid}"}))
 				`,
 			)
 			.then((response) => {
@@ -38,10 +38,13 @@
 					.sort((p, n) => n.value.value - p.value.value)
 					.map((instanceVector) =>
 						Object.fromEntries([
-							['node', (instanceVector.metric.labels as { node?: string }).node],
+							['node', (instanceVector.metric.labels as { nodeid?: string }).nodeid],
 							['usage', instanceVector.value.value],
 						]),
 					);
+			})
+			.catch((error) => {
+				console.error('Failed to fetch VGPU memory usage:', error);
 			});
 	}
 
