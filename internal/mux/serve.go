@@ -5,6 +5,12 @@ import (
 	"net/http/httputil"
 
 	"connectrpc.com/connect"
+	"connectrpc.com/grpchealth"
+	"connectrpc.com/grpcreflect"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/prometheus"
+	"go.opentelemetry.io/otel/sdk/metric"
 
 	appv1 "github.com/otterscale/otterscale/api/application/v1/pbconnect"
 	configv1 "github.com/otterscale/otterscale/api/configuration/v1/pbconnect"
@@ -23,71 +29,39 @@ import (
 type Serve struct {
 	*http.ServeMux
 
-	services serviceRegistry
+	application   *app.ApplicationService
+	configuration *app.ConfigurationService
+	environment   *app.EnvironmentService
+	facility      *app.FacilityService
+	instance      *app.InstanceService
+	machine       *app.MachineService
+	model         *app.ModelService
+	network       *app.NetworkService
+	orchestrator  *app.OrchestratorService
+	storage       *app.StorageService
+	scope         *app.ScopeService
 }
 
-type serviceRegistry struct {
-	app      *app.ApplicationService
-	config   *app.ConfigurationService
-	env      *app.EnvironmentService
-	facility *app.FacilityService
-	instance *app.InstanceService
-	machine  *app.MachineService
-	model    *app.ModelService
-	network  *app.NetworkService
-	orch     *app.OrchestratorService
-	storage  *app.StorageService
-	scope    *app.ScopeService
-}
-
-func NewServe(app *app.ApplicationService, config *app.ConfigurationService, env *app.EnvironmentService, facility *app.FacilityService, instance *app.InstanceService, machine *app.MachineService, model *app.ModelService, network *app.NetworkService, orch *app.OrchestratorService, storage *app.StorageService, scope *app.ScopeService) (*Serve, error) {
-	// Initialize ServeMux and register all handlers
-	serve := &Serve{
-		ServeMux: &http.ServeMux{},
-		services: serviceRegistry{
-			app:      app,
-			config:   config,
-			env:      env,
-			facility: facility,
-			instance: instance,
-			machine:  machine,
-			model:    model,
-			network:  network,
-			orch:     orch,
-			storage:  storage,
-			scope:    scope,
-		},
+func NewServe(application *app.ApplicationService, configuration *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, instance *app.InstanceService, machine *app.MachineService, model *app.ModelService, network *app.NetworkService, orchestrator *app.OrchestratorService, storage *app.StorageService, scope *app.ScopeService) *Serve {
+	return &Serve{
+		ServeMux:      &http.ServeMux{},
+		application:   application,
+		configuration: configuration,
+		environment:   environment,
+		facility:      facility,
+		instance:      instance,
+		machine:       machine,
+		model:         model,
+		network:       network,
+		orchestrator:  orchestrator,
+		storage:       storage,
+		scope:         scope,
 	}
-
-	// Register gRPC reflection, health check, and Prometheus metrics
-	registerGRPCReflection(serve.ServeMux, serve.serviceNames()...)
-	registerGRPCHealth(serve.ServeMux, serve.serviceNames()...)
-	if err := registerPrometheusMetrics(serve.ServeMux); err != nil {
-		return nil, err
-	}
-
-	return serve, nil
 }
 
-func (s *Serve) RegisterHandlers(opts []connect.HandlerOption) {
-	s.Handle(appv1.NewApplicationServiceHandler(s.services.app, opts...))
-	s.Handle(configv1.NewConfigurationServiceHandler(s.services.config, opts...))
-	s.Handle(envv1.NewEnvironmentServiceHandler(s.services.env, opts...))
-	s.Handle(facilityv1.NewFacilityServiceHandler(s.services.facility, opts...))
-	s.Handle(instancev1.NewInstanceServiceHandler(s.services.instance, opts...))
-	s.Handle(machinev1.NewMachineServiceHandler(s.services.machine, opts...))
-	s.Handle(modelv1.NewModelServiceHandler(s.services.model, opts...))
-	s.Handle(networkv1.NewNetworkServiceHandler(s.services.network, opts...))
-	s.Handle(orchv1.NewOrchestratorServiceHandler(s.services.orch, opts...))
-	s.Handle(storagev1.NewStorageServiceHandler(s.services.storage, opts...))
-	s.Handle(scopev1.NewScopeServiceHandler(s.services.scope, opts...))
-
-	s.registerProxy()
-	s.registerWebSocket()
-}
-
-func (s *Serve) serviceNames() []string {
-	return []string{
+func (s *Serve) RegisterHandlers(opts []connect.HandlerOption) error {
+	// Prepare service names for reflection and health check
+	services := []string{
 		appv1.ApplicationServiceName,
 		configv1.ConfigurationServiceName,
 		envv1.EnvironmentServiceName,
@@ -100,10 +74,55 @@ func (s *Serve) serviceNames() []string {
 		scopev1.ScopeServiceName,
 		storagev1.StorageServiceName,
 	}
+
+	// Register gRPC reflection
+	reflector := grpcreflect.NewStaticReflector(services...)
+	s.Handle(grpcreflect.NewHandlerV1(reflector))
+	s.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+
+	// Register gRPC health check
+	checker := grpchealth.NewStaticChecker(services...)
+	s.Handle(grpchealth.NewHandler(checker))
+
+	// Register metrics endpoint
+	if err := s.registerMetrics(); err != nil {
+		return err
+	}
+
+	// Register Prometheus proxy
+	s.registerProxy()
+
+	// Register WebSocket handler
+	s.registerWebSocket()
+
+	// Register service handlers
+	s.Handle(appv1.NewApplicationServiceHandler(s.application, opts...))
+	s.Handle(configv1.NewConfigurationServiceHandler(s.configuration, opts...))
+	s.Handle(envv1.NewEnvironmentServiceHandler(s.environment, opts...))
+	s.Handle(facilityv1.NewFacilityServiceHandler(s.facility, opts...))
+	s.Handle(instancev1.NewInstanceServiceHandler(s.instance, opts...))
+	s.Handle(machinev1.NewMachineServiceHandler(s.machine, opts...))
+	s.Handle(modelv1.NewModelServiceHandler(s.model, opts...))
+	s.Handle(networkv1.NewNetworkServiceHandler(s.network, opts...))
+	s.Handle(orchv1.NewOrchestratorServiceHandler(s.orchestrator, opts...))
+	s.Handle(storagev1.NewStorageServiceHandler(s.storage, opts...))
+	s.Handle(scopev1.NewScopeServiceHandler(s.scope, opts...))
+
+	return nil
+}
+
+func (s *Serve) registerMetrics() error {
+	exporter, err := prometheus.New()
+	if err != nil {
+		return err
+	}
+	otel.SetMeterProvider(metric.NewMeterProvider(metric.WithReader(exporter)))
+	s.Handle("/metrics", promhttp.Handler())
+	return nil
 }
 
 func (s *Serve) registerProxy() {
-	proxy := httputil.NewSingleHostReverseProxy(s.services.env.GetPrometheusURL())
+	proxy := httputil.NewSingleHostReverseProxy(s.environment.GetPrometheusURL())
 	proxy.ModifyResponse = func(resp *http.Response) error {
 		resp.Header.Del("Access-Control-Allow-Origin")
 		return nil
@@ -112,5 +131,5 @@ func (s *Serve) registerProxy() {
 }
 
 func (s *Serve) registerWebSocket() {
-	s.HandleFunc(s.services.instance.VNCPathPrefix(), s.services.instance.VNCHandler())
+	s.HandleFunc(s.instance.VNCPathPrefix(), s.instance.VNCHandler())
 }

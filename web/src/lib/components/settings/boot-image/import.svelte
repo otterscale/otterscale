@@ -5,13 +5,8 @@
 	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import {
-		ConfigurationService,
-		type Configuration,
-		type ImportBootImagesRequest,
-	} from '$lib/api/configuration/v1/configuration_pb';
-	import * as Form from '$lib/components/custom/form';
-	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
+	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -20,17 +15,6 @@
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);
-
-	const DEFAULT_REQUEST = {} as ImportBootImagesRequest;
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
-	let open = $state(false);
-	function close() {
-		open = false;
-	}
 
 	let isImportingBootImages = $state(false);
 
@@ -52,63 +36,37 @@
 	});
 </script>
 
-<Modal.Root bind:open>
-	<Modal.Trigger disabled={isImportingBootImages}>
-		{#if isImportingBootImages == true}
-			<Icon icon="ph:spinner" class="text-muted-foreground size-5 animate-spin" />
-			{m.importing()}
-		{:else}
-			<Icon icon="ph:arrows-clockwise" />
-			{m.import()}
-		{/if}
-	</Modal.Trigger>
-	<Modal.Content>
-		<Modal.Header>{m.create_boot_image()}</Modal.Header>
-		<Form.Root>
-			<Form.Fieldset>
-				<Form.Field>
-					<Form.Label>{m.distro_series()}</Form.Label>
-				</Form.Field>
-			</Form.Fieldset>
-		</Form.Root>
-		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
-				{m.cancel()}
-			</Modal.Cancel>
-			<Modal.ActionsGroup>
-				<Modal.Action
-					onclick={() => {
-						toast.promise(() => client.importBootImages(request), {
-							loading: 'Loading...',
-							success: () => {
-								isImportingBootImages = true;
-								client.getConfiguration({}).then((response) => {
-									configuration.set(response);
-								});
-								checkImportingStatus();
-								return `Import boot images success`;
-							},
-							error: (error) => {
-								let message = `Fail to import boot images`;
-								toast.error(message, {
-									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
-								});
-								return message;
-							},
-						});
-
-						reset();
-						close();
-					}}
-				>
-					{m.confirm()}
-				</Modal.Action>
-			</Modal.ActionsGroup>
-		</Modal.Footer>
-	</Modal.Content>
-</Modal.Root>
+<Button
+	variant="ghost"
+	disabled={isImportingBootImages}
+	onclick={() => {
+		toast.promise(() => client.importBootImages({}), {
+			loading: 'Loading...',
+			success: () => {
+				isImportingBootImages = true;
+				client.getConfiguration({}).then((response) => {
+					configuration.set(response);
+				});
+				checkImportingStatus();
+				return `Import boot images success`;
+			},
+			error: (error) => {
+				let message = `Fail to import boot images`;
+				toast.error(message, {
+					description: (error as ConnectError).message.toString(),
+					duration: Number.POSITIVE_INFINITY,
+				});
+				return message;
+			},
+		});
+	}}
+	class="flex items-center gap-2"
+>
+	{#if isImportingBootImages == true}
+		<Icon icon="ph:spinner" class="text-muted-foreground size-5 animate-spin" />
+		{m.importing()}
+	{:else}
+		<Icon icon="ph:arrows-clockwise" />
+		{m.import()}
+	{/if}
+</Button>
