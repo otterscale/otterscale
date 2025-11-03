@@ -52,12 +52,12 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General type="text" required value={request.name} bind:invalid />
+					<SingleInput.General type="text" required bind:value={request.name} bind:invalid />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>{m.description()}</Form.Label>
-					<SingleInput.General type="text" value={request.description} />
+					<SingleInput.General type="text" bind:value={request.description} />
 				</Form.Field>
 			</Form.Fieldset>
 
@@ -66,12 +66,12 @@
 
 				<Form.Field>
 					<Form.Label>{m.cidr()}</Form.Label>
-					<SingleInput.General type="text" value={request.cidr} />
+					<SingleInput.General type="text" bind:value={request.cidr} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>{m.gateway()}</Form.Label>
-					<SingleInput.General type="text" value={request.gatewayIp} />
+					<SingleInput.General type="text" bind:value={request.gatewayIp} />
 				</Form.Field>
 			</Form.Fieldset>
 

@@ -28,7 +28,7 @@
 	const client = createClient(NetworkService, transport);
 	const defaults = {
 		fabricId: fabric.id,
-		vid: vlan.id,
+		vid: vlan.vid,
 		name: vlan.name,
 		mtu: vlan.mtu,
 		description: vlan.description,
@@ -56,21 +56,21 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General type="text" required value={request.name} bind:invalid />
+					<SingleInput.General type="text" required bind:value={request.name} bind:invalid />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>{m.mtu()}</Form.Label>
-					<SingleInput.General type="number" value={request.mtu} />
+					<SingleInput.General type="number" bind:value={request.mtu} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>{m.description()}</Form.Label>
-					<SingleInput.General type="text" value={request.description} />
+					<SingleInput.General type="text" bind:value={request.description} />
 				</Form.Field>
 
 				<Form.Field>
-					<SingleInput.Boolean descriptor={() => 'DHCP ON'} value={request.dhcpOn} />
+					<SingleInput.Boolean descriptor={() => 'DHCP ON'} bind:value={request.dhcpOn} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
