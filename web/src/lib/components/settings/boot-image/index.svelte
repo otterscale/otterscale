@@ -63,7 +63,7 @@
 			<Import {configuration} />
 		</Layout.Controller>
 		<Layout.Viewer>
-			<div class="rounded-lg border shadow-sm">
+			<div class="rounded-lg border shadow-sm w-full">
 				<Table.Root>
 					<Table.Header>
 						<Table.Row class="[&_th]:bg-muted *:px-4 [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg">

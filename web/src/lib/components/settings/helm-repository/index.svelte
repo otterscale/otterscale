@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -7,8 +8,6 @@
 
 	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Layout from '$lib/components/settings/layout';
-	import { Badge } from '$lib/components/ui/badge';
-	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -41,17 +40,23 @@
 			<Update {configuration} />
 		</Layout.Controller>
 		<Layout.Viewer>
-			<Card.Root>
-				<Card.Content>
-					<div class="flex flex-wrap gap-1">
-						{#if $configuration.helmRepository && $configuration.helmRepository.urls}
-							{#each $configuration.helmRepository.urls as url}
-								<Badge>{url}</Badge>
-							{/each}
-						{/if}
-					</div>
-				</Card.Content>
-			</Card.Root>
+			{#if $configuration.helmRepository}
+				<div class="grid gap-4 space-y-8 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5 w-full">
+					{#each $configuration.helmRepository.urls as url}
+						<div class="flex flex-col items-center gap-4">
+							<div
+								class="bg-muted/50 m-2 rounded-full p-2 shadow-lg"
+							>
+								<Icon icon="ph:package" class="m-2 size-20" />
+							</div>
+							<div class="flex flex-col items-center">
+								<p class="text-sm font-bold">{url}</p>
+								<p class="text-muted-foreground text-xs font-semibold">helm repository</p>
+							</div>
+						</div>
+					{/each}
+				</div>
+			{/if}
 		</Layout.Viewer>
 	</Layout.Root>
 {/if}

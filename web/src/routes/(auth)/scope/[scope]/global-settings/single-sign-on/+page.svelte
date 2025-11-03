@@ -7,7 +7,7 @@
 
 	// Set breadcrumb navigation
 	breadcrumb.set({
-		parents: [dynamicPaths.settings(page.params.scope)],
+		parents: [dynamicPaths.globalSettings(page.params.scope)],
 		current: { title: m.sso(), url: '' },
 	});
 </script>

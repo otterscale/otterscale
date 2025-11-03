@@ -1,19 +1,12 @@
-<script lang="ts">
+<script lang="ts" module>
 	import Icon from '@iconify/svelte';
+    import type { Writable } from 'svelte/store';
 
-	import { page } from '$app/state';
-	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
+	import { PremiumTier_Level, type PremiumTier } from '$lib/api/environment/v1/environment_pb';
+	import * as Layout from '$lib/components/settings/layout';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb, premiumTier } from '$lib/stores';
-
-	// Set breadcrumb navigation
-	breadcrumb.set({
-		parents: [dynamicPaths.settings(page.params.scope)],
-		current: { title: m.subscription(), url: '' },
-	});
 
 	// Tier configurations
 	const tiers = [
@@ -89,11 +82,18 @@
 	];
 </script>
 
+<script lang="ts">
+    let { premiumTier }: { premiumTier: Writable<PremiumTier> } = $props()
+
+</script>
+
 <!-- just-in-time  -->
 <dummy class="hidden bg-[#326de6]"></dummy>
 <dummy class="hidden bg-[#f0424d]"></dummy>
 
-<div class="max-w-7xl px-4 xl:px-0">
+<Layout.Root>
+	<Layout.Viewer>
+		<div class="max-w-7xl px-4 xl:px-0 w-full">
 	<div class="grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:items-start">
 		{#each tiers as tier}
 			<Card.Root class="flex h-full flex-col {tier.isRecommended ? 'border-primary relative' : ''}">
@@ -164,3 +164,7 @@
 		{/each}
 	</div>
 </div>
+	</Layout.Viewer>
+</Layout.Root>
+
+

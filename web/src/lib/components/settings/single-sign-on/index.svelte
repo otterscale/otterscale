@@ -124,6 +124,7 @@
 		{m.setting_single_sign_on_description()}
 	</Layout.Description>
 	<Layout.Viewer>
+		<div class="w-full">
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>{m.single_sign_on_form_title()}</Card.Title>
@@ -153,5 +154,6 @@
 				</form>
 			</Card.Content>
 		</Card.Root>
+		</div>
 	</Layout.Viewer>
 </Layout.Root>

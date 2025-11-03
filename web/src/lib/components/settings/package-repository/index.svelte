@@ -36,7 +36,7 @@
 		<Layout.Title>{m.repository()}</Layout.Title>
 		<Layout.Description>{m.setting_package_repository_description()}</Layout.Description>
 		<Layout.Viewer>
-			<div class="rounded-lg border shadow-sm">
+			<div class="rounded-lg border shadow-sm w-full">
 				<Table.Root>
 					<Table.Header>
 						<Table.Row class="[&_th]:bg-muted *:px-4 [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg">

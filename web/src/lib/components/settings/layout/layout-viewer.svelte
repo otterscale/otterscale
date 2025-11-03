@@ -6,6 +6,6 @@
 	let { children }: { children?: Snippet } = $props();
 </script>
 
-<div class="my-4">
+<div class="flex items-center justify-center w-full my-4 max-w-7xl">
 	{@render children?.()}
 </div>

@@ -6,6 +6,6 @@
 	let { children }: { children?: Snippet } = $props();
 </script>
 
-<div>
+<div class="flex flex-col items-center justify-center">
 	{@render children?.()}
 </div>

@@ -1,11 +1,12 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
+	import type { Route } from './routes';
+
 	import { page } from '$app/state';
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { pathDisabled, pathHidden, urlIcon } from '$lib/path';
-	import type { Route } from '$lib/routes';
 	import { currentCeph, currentKubernetes } from '$lib/stores';
 
 	let { title, routes }: { title: string; routes: Route[] } = $props();

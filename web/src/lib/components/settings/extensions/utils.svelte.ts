@@ -12,7 +12,7 @@ function getAccordionValue(): ExtensionsBundleType[] | undefined {
 
 function installExtensions(extensions: ExtensionsBundleType[]) {
 	goto(
-		`${dynamicPaths.settings(page.params.scope).url}/extensions?${extensions.map((extension) => `${key}=${extension}`).join('&')}`,
+		`${dynamicPaths.settingsExtensions(page.params.scope).url}?${extensions.map((extension) => `${key}=${extension}`).join('&')}`,
 	);
 }
 

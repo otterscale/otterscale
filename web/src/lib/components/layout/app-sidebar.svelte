@@ -10,6 +10,7 @@
 	import NavFooter from './nav-footer.svelte';
 	import NavGeneral from './nav-general.svelte';
 	import NavUser from './nav-user.svelte';
+	import { globalRoutes, platformRoutes } from './routes';
 	import ScopeSwitcher from './scope-switcher.svelte';
 
 	import { goto } from '$app/navigation';
@@ -21,7 +22,6 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths, getValidURL, type Path } from '$lib/path';
-	import { applicationRoutes, platformRoutes } from '$lib/routes';
 	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 
 	type Props = { user: User } & ComponentProps<typeof Sidebar.Root>;
@@ -159,8 +159,8 @@
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavGeneral title={m.applications()} routes={applicationRoutes(page.params.scope)} />
 		<NavGeneral title={m.platform()} routes={platformRoutes(page.params.scope)} />
+		<NavGeneral title={m.global()} routes={globalRoutes(page.params.scope)} />
 		<NavBookmark bookmarks={$bookmarks} onDelete={onBookmarkDelete} />
 		<NavFooter class="mt-auto" />
 	</Sidebar.Content>

@@ -1,20 +1,21 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { Extensions } from '$lib/components/settings/extensions';
+	import { DataVolume } from '$lib/components/settings/data-volume';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb, currentKubernetes } from '$lib/stores';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({
-		parents: [dynamicPaths.settings(page.params.scope)],
-		current: { title: m.package_repository(), url: '' },
+		parents: [dynamicPaths.scopeBasedSettings(page.params.scope)],
+		current: { title: m.data_volume(), url: '' },
 	});
 </script>
 
 {#if $currentKubernetes}
 	{@const scope = $currentKubernetes.scope}
 	{@const facility = $currentKubernetes.name}
+	{@const namespace = page.params.namespace ?? ''}
 
-	<Extensions {scope} {facility} />
+	<DataVolume {scope} {facility} {namespace} />
 {/if}
