@@ -1513,7 +1513,7 @@ deploy_istio() {
 
     if [[ $(microk8s kubectl get deploy -n istio-system -l app=istiod -o name | wc -l) -eq 0 ]]; then
         log "INFO" "Install istio into kubernetes environment" "ISTIO_SERVICE"
-        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation >/dev/null"
+        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation --readiness-timeout 10m0s >/dev/null"
     else
         log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
     fi
@@ -1526,11 +1526,15 @@ deploy_helm() {
     local deploy_name="otterscale"
     local namespace="otterscale"
 
-    log "INFO" "Add and update helm repository $repository_name" "HELM_REPO"
-    execute_cmd "microk8s helm3 repo add $repository_name $repository_url" "helm repository add"
-    execute_cmd "microk8s helm3 repo update" "helm repository update"
+    if ! microk8s helm3 repo list | grep -qw "$repository_name" >/dev/null ; then
+        log "INFO" "Add and update helm repository $repository_name" "HELM_REPO"
+        execute_cmd "microk8s helm3 repo add $repository_name $repository_url" "helm repository add"
+        execute_cmd "microk8s helm3 repo update" "helm repository update"
+    else
+        log "WARN" "Helm repository $repository_name already exist" "HELM_REPO"
+    fi
 
-    if ! microk8s helm3 list -n "$namespace" | grep -qw "$deploy_name"; then
+    if ! microk8s helm3 list -n "$namespace" | grep -qw "$deploy_name" >/dev/null ; then
         log "INFO" "Collecting configuration data for helm deployment" "HELM_CONFIG"
 
         # Collect MAAS configuration
