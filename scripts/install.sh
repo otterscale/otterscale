@@ -1521,7 +1521,7 @@ deploy_istio() {
 
 deploy_helm() {
     log "INFO" "Process microk8s helm3" "HELM_CHECK"
-    local repository_url="https://otterscale.github.io/otterscale-charts/docs"
+    local repository_url="https://otterscale.github.io/charts"
     local repository_name="otterscale-charts"
     local deploy_name="otterscale"
     local namespace="otterscale"
