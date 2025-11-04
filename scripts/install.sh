@@ -921,7 +921,7 @@ enter_otterscale_web_ip() {
             break
         fi
         echo "Invalid IP format. Please try again."
-    done
+    done	
 }
 
 get_dhcp_subnet_and_ip() {
@@ -1478,7 +1478,7 @@ config_bridge() {
         log "INFO" "Detect that IP $OTTERSCAEL_WEB_IP exists on network $OTTERSCALE_BRIDGE_NAME"
     else
         ## Insert ip to network interface
-        local mask=$(nmcli device show $OTTERSCALE_BRIDGE_NAME | grep "^IP4.ADDRESS" | head -n 1 | awk '{print $2}' | cut -d'/' -f2)
+	local mask=$(nmcli device show $OTTERSCALE_BRIDGE_NAME | grep "^IP4.ADDRESS" | head -n 1 | awk '{print $2}' | cut -d'/' -f2)
 
         if nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCAEL_WEB_IP/$mask"; then
             log "INFO" "Add $OTTERSCAEL_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME"
@@ -1492,7 +1492,7 @@ deploy_istio() {
     log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
     local istio_version="1.27.1"
     local istio_url="https://istio.io/downloadIstio"
-    local istio_namespace="istio-system"
+    local istio_namespace="istio-system"    
     local has_istio=false
     local arch
     arch=$(uname -m)
@@ -1579,6 +1579,9 @@ $(echo "$juju_cacert" | sed 's/^/      /')
   kube:
     helm_repository_urls:
     - https://charts.bitnami.com/bitnami
+    - https://grafana.github.io/helm-charts
+    - https://prometheus-community.github.io/helm-charts
+    - https://otterscale.com/charts
   ceph:
     rados_timeout: 0s
 EOF
@@ -1588,7 +1591,7 @@ EOF
         # Clean up temporary file
         rm -f "$ca_cert_file"
 
-        local otterscale_endpoint="http://$OTTERSCAEL_WEB_IP"
+	local otterscale_endpoint="http://$OTTERSCAEL_WEB_IP"
         send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
         log "INFO" "OtterScale install finished, you can visit web UI from $otterscale_endpoint" "FINISHED"
     else
