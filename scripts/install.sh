@@ -1583,9 +1583,6 @@ $(echo "$juju_cacert" | sed 's/^/      /')
   kube:
     helm_repository_urls:
     - https://charts.bitnami.com/bitnami
-    - https://grafana.github.io/helm-charts
-    - https://prometheus-community.github.io/helm-charts
-    - https://otterscale.com/charts
   ceph:
     rados_timeout: 0s
 EOF
