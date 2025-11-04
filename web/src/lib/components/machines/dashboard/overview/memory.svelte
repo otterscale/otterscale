@@ -56,7 +56,7 @@
 				2 * 60,
 			)
 			.then((response) => {
-				memoryUsages = response.result[0]?.values;
+				memoryUsages = response.result[0]?.values ?? [];
 			});
 
 		machineClient.listMachines({}).then((response) => {

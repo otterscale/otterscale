@@ -58,7 +58,7 @@
 				2 * 60,
 			)
 			.then((response) => {
-				storageUsages = response.result[0]?.values;
+				storageUsages = response.result[0]?.values ?? [];
 			});
 
 		machineClient.listMachines({ scope: scope.name }).then((response) => {

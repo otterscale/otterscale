@@ -41,7 +41,7 @@
 				2 * 60,
 			)
 			.then((response) => {
-				ones = response.result[0]?.values;
+				ones = response.result[0]?.values ?? [];
 			});
 		prometheusDriver
 			.rangeQuery(
@@ -51,7 +51,7 @@
 				2 * 60,
 			)
 			.then((response) => {
-				fives = response.result[0]?.values;
+				fives = response.result[0]?.values ?? [];
 			});
 	}
 
