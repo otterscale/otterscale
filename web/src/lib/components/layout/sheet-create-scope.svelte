@@ -1,14 +1,18 @@
 <script lang="ts">
+	import { create } from '@bufbuild/protobuf';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
 
 	import type { Plan } from './plans';
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { MachineService, type Machine, CreateMachineRequestSchema } from '$lib/api/machine/v1/machine_pb';
+	import { OrchestratorService, CreateNodeRequestSchema } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import { ScopeService, CreateScopeRequestSchema } from '$lib/api/scope/v1/scope_pb';
 	import { IPv4AddressInput } from '$lib/components/custom/ipv4';
 	import { IPv4CIDRInput } from '$lib/components/custom/ipv4-cidr';
 	import { Badge } from '$lib/components/ui/badge';
@@ -25,50 +29,95 @@
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 
-	// import type { CreateScopeRequest } from '$lib/api/scope/v1/scope_pb';
-
 	let { open = $bindable(false), plan = $bindable({} as Plan) }: { open: boolean; plan: Plan } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
+	const scopeClient = createClient(ScopeService, transport);
+	const orchestratorClient = createClient(OrchestratorService, transport);
 	const machinesStore = writable<Machine[]>([]);
-	// const defaultCreateScopeRequest = { name: '' } as CreateScopeRequest;
 
+	// Form state
+	let scopeName = $state('');
 	let selectedMachine = $state('');
-	// let createScopeRequest = $state(defaultCreateScopeRequest);
+	let selectedDevices = $state<string[]>([]);
+	let calicoCidr = $state('');
+	let virtualIp = $state('');
+	let prefixName = $state('');
+	let isSubmitting = $state(false);
 
 	async function fetchMachines() {
 		try {
 			const response = await machineClient.listMachines({});
 			machinesStore.set(response.machines);
 		} catch (error) {
-			console.error('Error fetching:', error);
+			console.error('Error fetching machines:', error);
+			toast.error('Failed to fetch machines');
 		}
 	}
 
-	// TODO
-	function handleSubmit() {
-		// if (createScopeRequest.name.trim()) {
-		// 	scopeClient
-		// 		.createScope(createScopeRequest)
-		// 		.then((r) => {
-		// 			toast.success(m.create_scope_success({ name: r.name }));
-		// 			trigger.set(true);
-		// 		})
-		// 		.catch((e) => {
-		// 			toast.error(m.create_scope_error({ name: createScopeRequest.name, error: e.toString() }));
-		// 		});
-		// 	open = false;
-		// 	createScopeRequest = DEFAULT_REQUEST;
-		// }
-		handleClose();
-		// trigger.set(true);
-		goto(dynamicPaths.setupScope('zzz').url);
+	async function handleSubmit(event: Event) {
+		event.preventDefault();
+
+		if (isSubmitting) return;
+		isSubmitting = true;
+
+		try {
+			// Step 1: Create Scope
+			const createScopeRequest = create(CreateScopeRequestSchema, {
+				name: scopeName,
+			});
+
+			const scopeResponse = await scopeClient.createScope(createScopeRequest);
+			toast.success(m.create_scope_success({ name: scopeResponse.name }));
+
+			// Step 2: Create Machine
+			const createMachineRequest = create(CreateMachineRequestSchema, {
+				id: selectedMachine,
+				scope: scopeResponse.uuid,
+				enableSsh: true,
+				skipBmcConfig: false,
+				skipNetworking: false,
+				skipStorage: false,
+				tags: [],
+			});
+
+			const machineResponse = await machineClient.createMachine(createMachineRequest);
+			toast.success(`Machine ${machineResponse.hostname} created successfully`);
+
+			// Step 3: Create Node
+			const createNodeRequest = create(CreateNodeRequestSchema, {
+				scope: scopeResponse.uuid,
+				machineId: selectedMachine,
+				prefixName: prefixName || scopeName,
+				virtualIps: virtualIp ? [virtualIp] : [],
+				calicoCidr: calicoCidr || '',
+				osdDevices: selectedDevices,
+			});
+
+			await orchestratorClient.createNode(createNodeRequest);
+			toast.success('Node created successfully');
+
+			// Success - redirect to the new scope
+			handleClose();
+			goto(dynamicPaths.setupScope(scopeResponse.uuid).url);
+		} catch (error) {
+			console.error('Error creating scope:', error);
+			toast.error(`Failed to create scope: ${error}`);
+		} finally {
+			isSubmitting = false;
+		}
 	}
 
 	function handleClose() {
 		open = false;
-		// createScopeRequest = defaultCreateScopeRequest;
+		// Reset form
+		scopeName = '';
+		selectedMachine = '';
+		selectedDevices = [];
+		calicoCidr = '';
+		virtualIp = '';
+		prefixName = '';
 	}
 
 	onMount(async () => {
@@ -116,7 +165,7 @@
 									{m.create_scope_name_description()}
 								</p>
 							</div>
-							<Input id="name" type="text" placeholder="scope-name" required />
+							<Input id="name" type="text" placeholder="scope-name" bind:value={scopeName} required />
 						</div>
 
 						<!-- Machine Selection -->
@@ -171,10 +220,20 @@
 											<Tooltip.Root>
 												<Tooltip.Trigger>
 													<Label
-														class="hover:bg-accent/50 flex items-start gap-x-2 rounded-md border p-2 has-[[aria-checked=true]]:border-slate-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-slate-900 dark:has-[[aria-checked=true]]:bg-slate-950"
+														class="hover:bg-accent/50 flex items-start gap-x-2 rounded-md border p-2 has-aria-checked:border-slate-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-slate-900 dark:has-aria-checked:bg-slate-950"
 													>
 														<Checkbox
 															id={device.name}
+															checked={selectedDevices.includes(device.name)}
+															onCheckedChange={(checked) => {
+																if (checked) {
+																	selectedDevices = [...selectedDevices, device.name];
+																} else {
+																	selectedDevices = selectedDevices.filter(
+																		(d) => d !== device.name,
+																	);
+																}
+															}}
 															class="data-[state=checked]:border-slate-600 data-[state=checked]:bg-slate-600 data-[state=checked]:text-white dark:data-[state=checked]:border-slate-700 dark:data-[state=checked]:bg-slate-700"
 														/>
 														<p class="text-sm leading-none">{device.name}</p>
@@ -202,7 +261,11 @@
 											{m.create_scope_calico_cidr_description()}
 										</p>
 									</div>
-									<IPv4CIDRInput class="font-sans text-sm font-normal" placeholder="192.168.0.0/16" />
+									<IPv4CIDRInput
+										class="font-sans text-sm font-normal"
+										placeholder="192.168.0.0/16"
+										bind:value={calicoCidr}
+									/>
 								</div>
 								<div class="grid gap-4">
 									<div class="grid gap-1">
@@ -211,18 +274,46 @@
 											{m.create_scope_virtual_ip_description()}
 										</p>
 									</div>
-									<IPv4AddressInput class="font-sans text-sm font-normal" placeholder="192.168.1.1" />
+									<IPv4AddressInput
+										class="font-sans text-sm font-normal"
+										placeholder="192.168.1.1"
+										bind:value={virtualIp}
+									/>
 								</div>
+							</div>
+
+							<!-- Prefix Name (optional) -->
+							<div class="grid gap-4">
+								<div class="grid gap-1">
+									<Label for="prefix-name">Prefix Name ({m.optional()})</Label>
+									<p class="text-muted-foreground text-sm">
+										Prefix for node naming (defaults to scope name if not provided)
+									</p>
+								</div>
+								<Input id="prefix-name" type="text" placeholder="node-prefix" bind:value={prefixName} />
 							</div>
 						{/if}
 					</div>
 
 					<!-- Form Actions -->
 					<div class="flex gap-8">
-						<Button size="lg" variant="outline" class="flex-1" onclick={handleClose}>
+						<Button
+							size="lg"
+							variant="outline"
+							class="flex-1"
+							onclick={handleClose}
+							disabled={isSubmitting}
+						>
 							{m.cancel()}
 						</Button>
-						<Button type="submit" size="lg" class="flex-1">{m.create()}</Button>
+						<Button type="submit" size="lg" class="flex-1" disabled={isSubmitting}>
+							{#if isSubmitting}
+								<Icon icon="ph:spinner" class="mr-2 size-4 animate-spin" />
+								Creating...
+							{:else}
+								{m.create()}
+							{/if}
+						</Button>
 					</div>
 				</form>
 			</div>
