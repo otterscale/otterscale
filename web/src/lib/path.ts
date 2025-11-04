@@ -1,3 +1,4 @@
+import { page } from '$app/state';
 import { m } from '$lib/paraglide/messages.js';
 
 const createScopePath = (scope: string | undefined, subPath = '') =>
@@ -129,9 +130,58 @@ export const dynamicPaths = {
 		title: m.virtual_machine(),
 		url: createScopePath(scope, '/compute/virtual-machine'),
 	}),
-	settings: (scope: string | undefined): Path => ({
+	globalSettings: (scope: string | undefined): Path => ({
 		title: m.settings(),
-		url: createScopePath(scope, '/settings'),
+		url: createScopePath(scope, '/global-settings'),
+	}),
+	settingsNTPServer: (scope: string | undefined): Path => ({
+		title: m.settings(),
+		url: createScopePath(scope, '/global-settings/ntp-server'),
+	}),
+	settingsBootImage: (scope: string | undefined): Path => ({
+		title: m.boot_image(),
+		url: createScopePath(scope, '/global-settings/boot-image'),
+	}),
+	settingsMachineTag: (scope: string | undefined): Path => ({
+		title: m.machine_tag(),
+		url: createScopePath(scope, '/global-settings/machine-tag'),
+	}),
+	settingsPackageRepository: (scope: string | undefined): Path => ({
+		title: m.package_repository(),
+		url: createScopePath(scope, '/global-settings/package-repository'),
+	}),
+	settingsHelmRepository: (scope: string | undefined): Path => ({
+		title: m.helm_repository(),
+		url: createScopePath(scope, '/global-settings/helm-repository'),
+	}),
+	settingsBuiltInTest: (scope: string | undefined): Path => ({
+		title: m.built_in_test(),
+		url: createScopePath(scope, '/global-settings/built-in-test'),
+	}),
+	settingsSSO: (scope: string | undefined): Path => ({
+		title: m.sso(),
+		url: createScopePath(scope, '/global-settings/single-sign-on'),
+	}),
+	settingsSubscription: (scope: string | undefined): Path => ({
+		title: m.subscription(),
+		url: createScopePath(scope, '/global-settings/subscription'),
+	}),
+
+	scopeBasedSettings: (scope: string | undefined): Path => ({
+		title: m.settings(),
+		url: createScopePath(scope, '/scope-based-settings'),
+	}),
+	settingsExtensions: (scope: string | undefined): Path => ({
+		title: m.settings(),
+		url: createScopePath(scope, '/scope-based-settings/extensions'),
+	}),
+	settingsDataVolume: (scope: string | undefined): Path => ({
+		title: m.settings(),
+		url: createScopePath(scope, '/scope-based-settings/data-volume'),
+	}),
+	settingsInstanceType: (scope: string | undefined): Path => ({
+		title: m.settings(),
+		url: createScopePath(scope, '/scope-based-settings/instance-type'),
 	}),
 	networking: (scope: string | undefined): Path => ({
 		title: m.networking(),
@@ -163,7 +213,8 @@ const ICON_MAP = new Map([
 	['/compute', 'ph:cpu'],
 	['/machines', 'ph:computer-tower'],
 	['/networking', 'ph:network'],
-	['/settings', 'ph:sliders-horizontal'],
+	['/global-settings', 'ph:sliders-horizontal'],
+	['/scope-based-settings', 'ph:sliders-horizontal'],
 ]);
 
 export function urlIcon(url: string): string {
@@ -179,9 +230,9 @@ const disabledPaths = (scope: string | undefined) => ({
 	ceph: [dynamicPaths.compute(scope), dynamicPaths.storage(scope)],
 	kube: [
 		dynamicPaths.models(scope),
-		dynamicPaths.databases(scope),
 		dynamicPaths.applications(scope),
 		dynamicPaths.compute(scope),
+		dynamicPaths.scopeBasedSettings(scope),
 	],
 });
 
@@ -198,6 +249,62 @@ export const pathDisabled = (
 	);
 };
 
+export const pathHidden = (scope: string | undefined, url: string): boolean => {
+	if (
+		url === dynamicPaths.applications(scope).url &&
+		!page.data['feature-states.app-general'] &&
+		!page.data['feature-states.app-helm-chart']
+	) {
+		return true;
+	}
+	if (url === dynamicPaths.applicationsWorkloads(scope).url && !page.data['feature-states.app-general']) {
+		return true;
+	}
+	if (url === dynamicPaths.applicationsStore(scope).url && !page.data['feature-states.app-helm-chart']) {
+		return true;
+	}
+
+	if (url === dynamicPaths.compute(scope).url && !page.data['feature-states.vm-general']) {
+		return true;
+	}
+	if (url === dynamicPaths.computeVirtualMachine(scope).url && !page.data['feature-states.vm-general']) {
+		return true;
+	}
+
+	if (url === dynamicPaths.models(scope).url && !page.data['feature-states.mdl-general']) {
+		return true;
+	}
+	if (url === dynamicPaths.modelsLLM(scope).url && !page.data['feature-states.mdl-general']) {
+		return true;
+	}
+
+	if (
+		url === dynamicPaths.storage(scope).url &&
+		!page.data['feature-states.stg-general'] &&
+		!page.data['feature-states.stg-block'] &&
+		!page.data['feature-states.stg-file'] &&
+		!page.data['feature-states.stg-object']
+	) {
+		return true;
+	}
+	if (url === dynamicPaths.storageOSD(scope).url && !page.data['feature-states.stg-general']) {
+		return true;
+	}
+	if (url === dynamicPaths.storagePool(scope).url && !page.data['feature-states.stg-general']) {
+		return true;
+	}
+	if (url === dynamicPaths.storageBlockDevice(scope).url && !page.data['feature-states.stg-block']) {
+		return true;
+	}
+	if (url === dynamicPaths.storageFileSystem(scope).url && !page.data['feature-states.stg-file']) {
+		return true;
+	}
+	if (url === dynamicPaths.storageObjectGateway(scope).url && !page.data['feature-states.stg-object']) {
+		return true;
+	}
+	return false;
+};
+
 const findDynamicPath = (pathname: string, scope: string | undefined): keyof typeof dynamicPaths | null => {
 	for (const [key, pathFn] of Object.entries(dynamicPaths)) {
 		const path = pathFn(scope);
@@ -209,7 +316,7 @@ const findDynamicPath = (pathname: string, scope: string | undefined): keyof typ
 };
 
 const pathBypass = (pathname: string): boolean => {
-	const bypass = ['/machines', '/settings'];
+	const bypass = ['/machines', 'settings/'];
 	for (const url of bypass) {
 		if (pathname.includes(url)) {
 			return true;

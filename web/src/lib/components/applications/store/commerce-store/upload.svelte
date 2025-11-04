@@ -1,156 +1,229 @@
-<script lang="ts">
+<script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
-	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
-	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
-	import { Input } from '$lib/components/ui/input';
+	import type { UploadedFile } from './types';
+
+	import { ApplicationService } from '$lib/api/application/v1/application_pb';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { Label } from '$lib/components/ui/label';
+	import { formatCapacity } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+</script>
+
+<script lang="ts">
+	const handleUpload = (selectedFile: File) => {
+		const maxFileSize = 20 * 1024 * 1024;
+
+		if (!selectedFile) return;
+
+		if (selectedFile.size > maxFileSize) {
+			const { value: maxFileSizeValue, unit: maxFileSizeUnit } = formatCapacity(maxFileSize);
+			toast.error(`${selectedFile.name} is too large. Maximum size is ${maxFileSizeValue} ${maxFileSizeUnit}`);
+			return;
+		}
+
+		if (!selectedFile.name.endsWith('.tgz') && !selectedFile.name.endsWith('.tar.gz')) {
+			toast.error(
+				`${selectedFile.name} is not a valid Helm chart file. Only .tgz and .tar.gz files are supported`,
+			);
+			return;
+		}
+
+		uploadedFile = {
+			name: selectedFile.name,
+			size: selectedFile.size,
+			type: selectedFile.type,
+			lastModifiedAt: selectedFile.lastModified,
+			url: Promise.resolve(URL.createObjectURL(selectedFile)),
+			uploadedAt: Date.now(),
+		};
+	};
+
+	async function getChartContent(uploadedFile: UploadedFile) {
+		const url = await uploadedFile.url;
+		const response = await fetch(url);
+		const arrayBuffer = await response.arrayBuffer();
+		const chartContent = new Uint8Array(arrayBuffer);
+		return chartContent;
+	}
+
+	const upload = async () => {
+		try {
+			if (!uploadedFile) {
+				toast.error('Please select a chart file to upload');
+				return;
+			}
+
+			if (!uploadedFile.name.endsWith('.tgz') && !uploadedFile.name.endsWith('.tar.gz')) {
+				toast.error('Please select a valid Helm chart file (.tgz or .tar.gz)');
+				return;
+			}
+
+			const chartContent = await getChartContent(uploadedFile);
+			await client.uploadChart({
+				chartContent: chartContent,
+			});
+
+			toast.success(`Chart uploaded successfully!`, {
+				description: `Saved to local charts directory`,
+			});
+		} catch (error) {
+			if (error instanceof ConnectError) {
+				toast.error(`Upload failed: ${error.message}`);
+			} else {
+				toast.error('Unknown error occurred during upload');
+			}
+			console.error('Error uploading charts:', error);
+		}
+	};
+
+	const handleDragOver = (e: DragEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		isDragging = true;
+	};
+
+	const handleDragEnter = (e: DragEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		isDragging = true;
+	};
+
+	const handleDragLeave = (e: DragEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+
+		const currentTarget = e.currentTarget as HTMLElement;
+		const relatedTarget = e.relatedTarget as HTMLElement;
+		if (!currentTarget?.contains(relatedTarget)) {
+			isDragging = false;
+		}
+	};
+
+	const handleDrop = (e: DragEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		isDragging = false;
+
+		const droppedFiles = e.dataTransfer?.files;
+		if (droppedFiles) {
+			handleUpload(droppedFiles[0]);
+		}
+	};
+
+	const handleKeydown = (e: KeyboardEvent) => {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			document.getElementById('file-upload')?.click();
+		}
+	};
+
+	let { class: className }: { class?: string } = $props();
+
+	const transport: Transport = getContext('transport');
+	const client = createClient(ApplicationService, transport);
 
 	let open = $state(false);
 	function close() {
 		open = false;
-		step = 0;
 	}
-	let { class: className }: { class?: string } = $props();
-	let step = $state(0);
+
+	let uploadedFile = $state<UploadedFile | undefined>(undefined);
+	function reset() {
+		uploadedFile = undefined;
+	}
+
+	let isDragging = $state(false);
 </script>
 
-<AlertDialog.Root bind:open>
-	<AlertDialog.Trigger class={cn('flex items-center gap-1', className)}>
-		<Button>
-			<Icon icon="ph:upload" />
-			Upload
-		</Button>
-	</AlertDialog.Trigger>
-	<AlertDialog.Content>
-		{#if step == 0}
-			<AlertDialog.Header>
-				<AlertDialog.Title>
-					Basic Information
-					<div class="text-muted-foreground text-sm font-normal">
-						Setup and upload your custom application template
-					</div>
-				</AlertDialog.Title>
-
-				<div class="grid gap-2 space-y-2 py-4">
-					<div class="grid gap-2">
-						<Label>Name</Label>
-						<Input value="Foo" />
-					</div>
-					<div class="grid gap-2">
-						<Label>Description</Label>
-						<Input value="Bar" />
-					</div>
-					<div class="grid gap-2">
-						<Label>Container Image</Label>
-						<Input value="docker.io/otterscale/foo:bar" />
-					</div>
-					<div class="grid gap-2">
-						<Label>Logo URL</Label>
-						<Input value="otterscale.com/logo.svg" />
-					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<div class="grid gap-2">
-							<Label>Tags</Label>
-							<div>
-								<Badge>LLM</Badge>
-								<Badge>MCP</Badge>
-								<Badge>AI</Badge>
-								<Badge>TIC</Badge>
-							</div>
-						</div>
-						<div class="grid gap-2">
-							<Label>Labels</Label>
-							<div>
-								<Badge>OtterScale</Badge>
-								<Badge>Enterprise</Badge>
-							</div>
-						</div>
-					</div>
-				</div>
-			</AlertDialog.Header>
-		{:else if step == 1}
-			<AlertDialog.Header>
-				<AlertDialog.Title>
-					Service
-					<div class="text-muted-foreground text-sm font-normal">
-						Setup and configure your service details
-					</div>
-				</AlertDialog.Title>
-
-				<div class="grid gap-2 space-y-2 py-4">
-					<div class="grid grid-cols-7 gap-4">
-						<div class="grid gap-2">
-							<Label>Enable</Label>
-							<Checkbox checked={false} />
-						</div>
-						<div class="col-span-3 grid gap-2">
-							<Label>Service Name</Label>
-							<Input value="Web Page" />
-						</div>
-						<div class="col-span-3 grid gap-2">
-							<Label>Service Port</Label>
-							<Input value="8443" />
-						</div>
-					</div>
-					<div class="grid grid-cols-7 gap-4">
-						<div class="grid gap-2">
-							<Label>Enable</Label>
-							<Checkbox checked={false} />
-						</div>
-						<div class="col-span-3 grid gap-2">
-							<Label>Service Name</Label>
-							<Input value="Web API" />
-						</div>
-						<div class="col-span-3 grid gap-2">
-							<Label>Service Port</Label>
-							<Input value="9000" />
-						</div>
-					</div>
-					<div class="grid gap-2">
-						<Button>
-							<Icon icon="ph:plus" />
-						</Button>
-					</div>
-				</div>
-			</AlertDialog.Header>
-		{:else}
-			<AlertDialog.Header>
-				<AlertDialog.Title>
-					Confirm
-					<div class="text-muted-foreground text-sm font-normal">
-						Setup and upload your custom application template
-					</div>
-				</AlertDialog.Title>
-
-				<div>foo</div>
-			</AlertDialog.Header>
-		{/if}
-
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel
-				onclick={() => {
-					close();
-				}}
-				class="mr-auto">Cancel</AlertDialog.Cancel
-			>
-			<AlertDialog.Action
-				onclick={() => {
-					step++;
-					if (step >= 3) {
-						close();
+<Modal.Root bind:open>
+	<Modal.Trigger variant="primary" class={cn(className)}>
+		<Icon icon="ph:upload" />
+		{m.upload()}
+	</Modal.Trigger>
+	<Modal.Content>
+		<Modal.Header>
+			{m.upload()}
+			<div class="text-muted-foreground text-sm font-normal">
+				{m.applications_store_chart_upload_description()}
+			</div>
+		</Modal.Header>
+		<div
+			class={cn(
+				'hover:bg-muted flex w-full flex-col gap-2 rounded-lg border-2 border-dashed p-6 text-center transition-colors',
+				isDragging ? 'border-blue-400 bg-blue-50' : 'border-gray-300 hover:border-gray-400',
+			)}
+			role="button"
+			tabindex="0"
+			ondragover={handleDragOver}
+			ondragenter={handleDragEnter}
+			ondragleave={handleDragLeave}
+			ondrop={handleDrop}
+			onkeydown={handleKeydown}
+			aria-label="Upload Helm chart file"
+		>
+			<input
+				type="file"
+				accept=".tgz,.tar.gz,application/gzip,application/x-gzip"
+				class="hidden"
+				id="file-upload"
+				onchange={(e) => {
+					const target = e.target as HTMLInputElement;
+					if (target.files) {
+						handleUpload(target.files[0]);
 					}
 				}}
+			/>
+			<Label
+				for="file-upload"
+				class="flex min-h-36 cursor-pointer flex-col items-center justify-center space-y-2"
 			>
-				{#if step == 2}
-					Upload
+				{#if !uploadedFile}
+					<Icon icon="ph:upload" class="size-8 text-gray-400" />
+					<div>
+						<p class="text-sm text-gray-600">
+							{isDragging
+								? m.applications_store_chart_upload_is_dragging()
+								: m.applications_store_chart_upload_is_not_dragging()}
+						</p>
+						<p class="text-xs text-gray-400">{m.applications_store_chart_upload_constraint()}</p>
+					</div>
 				{:else}
-					Next
+					{@const { value: fileSizeValue, unit: fileSizeUnit } = formatCapacity(uploadedFile.size)}
+					<Icon icon="ph:file-archive" class="size-8 text-gray-600" />
+					<div class="space-y-1">
+						<p class="text-sm text-gray-600">
+							{uploadedFile.name}
+						</p>
+						<p class="text-xs text-gray-400">
+							{new Date(uploadedFile.lastModifiedAt).toLocaleString()}．{fileSizeValue}
+							{fileSizeUnit}
+						</p>
+					</div>
 				{/if}
-			</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+			</Label>
+		</div>
+
+		<Modal.Footer>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}>{m.cancel()}</Modal.Cancel
+			>
+			<Modal.Action
+				disabled={!uploadedFile}
+				onclick={async () => {
+					await upload();
+					reset();
+					close();
+				}}
+			>
+				{m.confirm()}
+			</Modal.Action>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>

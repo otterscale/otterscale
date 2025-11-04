@@ -74,13 +74,14 @@ func NewHelmRelease(kube *Kube) (oscore.ReleaseRepo, error) {
 
 var _ oscore.ReleaseRepo = (*helmRelease)(nil)
 
-func (r *helmRelease) List(restConfig *rest.Config, namespace string) ([]release.Release, error) {
+func (r *helmRelease) List(restConfig *rest.Config, namespace, selector string) ([]release.Release, error) {
 	config, err := r.config(restConfig, namespace)
 	if err != nil {
 		return nil, err
 	}
 
 	client := action.NewList(config)
+	client.Selector = selector
 	client.Deployed = true
 
 	releases, err := client.Run()
@@ -105,7 +106,7 @@ func (r *helmRelease) Get(restConfig *rest.Config, namespace, name string) (*rel
 	return client.Run(name)
 }
 
-func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, labels, annotations map[string]string, values map[string]any) (*release.Release, error) {
+func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, labelsInSecrets, labels, annotations map[string]string, values map[string]any) (*release.Release, error) {
 	if !action.ValidName.MatchString(name) {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid release name %q", name))
 	}
@@ -120,6 +121,7 @@ func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, d
 	client.Namespace = namespace
 	client.DryRun = dryRun
 	client.ReleaseName = name
+	client.Labels = labelsInSecrets
 	client.PostRenderer = newPostRenderer(labels, annotations)
 
 	chartPath, err := client.LocateChart(chartRef, r.kube.envSettings)
@@ -151,7 +153,7 @@ func (r *helmRelease) Uninstall(restConfig *rest.Config, namespace, name string,
 	return res.Release, nil
 }
 
-func (r *helmRelease) Upgrade(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
+func (r *helmRelease) Upgrade(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any, reuseValues bool) (*release.Release, error) {
 	config, err := r.config(restConfig, namespace)
 	if err != nil {
 		return nil, err
@@ -160,6 +162,7 @@ func (r *helmRelease) Upgrade(restConfig *rest.Config, namespace, name string, d
 	client := action.NewUpgrade(config)
 	client.Namespace = namespace
 	client.DryRun = dryRun
+	client.ReuseValues = reuseValues
 
 	chartPath, err := client.LocateChart(chartRef, r.kube.envSettings)
 	if err != nil {

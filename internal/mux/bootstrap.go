@@ -3,6 +3,10 @@ package mux
 import (
 	"net/http"
 
+	"connectrpc.com/connect"
+	"connectrpc.com/grpchealth"
+	"connectrpc.com/grpcreflect"
+
 	bootstrapv1 "github.com/otterscale/otterscale/api/bootstrap/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/app"
 )
@@ -10,28 +14,31 @@ import (
 type Bootstrap struct {
 	*http.ServeMux
 
-	svc *app.BootstrapService
+	bootstrap *app.BootstrapService
 }
 
-func (b *Bootstrap) serviceNames() []string {
-	return []string{bootstrapv1.BootstrapServiceName}
-}
-
-func (b *Bootstrap) registerHandlers() {
-	b.Handle(bootstrapv1.NewBootstrapServiceHandler(b.svc))
-}
-
-func NewBootstrap(svc *app.BootstrapService) *Bootstrap {
-	// Initialize Bootstrap and register all handlers
-	bootstrap := &Bootstrap{
-		ServeMux: &http.ServeMux{},
-		svc:      svc,
+func NewBootstrap(bootstrap *app.BootstrapService) *Bootstrap {
+	return &Bootstrap{
+		ServeMux:  &http.ServeMux{},
+		bootstrap: bootstrap,
 	}
-	bootstrap.registerHandlers()
+}
 
-	// Register gRPC reflection and health check
-	registerGRPCReflection(bootstrap.ServeMux, bootstrap.serviceNames()...)
-	registerGRPCHealth(bootstrap.ServeMux, bootstrap.serviceNames()...)
+func (b *Bootstrap) RegisterHandlers(opts []connect.HandlerOption) error {
+	// Prepare service names for reflection and health check
+	services := []string{bootstrapv1.BootstrapServiceName}
 
-	return bootstrap
+	// Register gRPC reflection
+	reflector := grpcreflect.NewStaticReflector(services...)
+	b.Handle(grpcreflect.NewHandlerV1(reflector))
+	b.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+
+	// Register gRPC health check
+	checker := grpchealth.NewStaticChecker(services...)
+	b.Handle(grpchealth.NewHandler(checker))
+
+	// Register service handlers
+	b.Handle(bootstrapv1.NewBootstrapServiceHandler(b.bootstrap, opts...))
+
+	return nil
 }

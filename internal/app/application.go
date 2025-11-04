@@ -56,7 +56,8 @@ func (s *ApplicationService) ListApplications(ctx context.Context, req *pb.ListA
 		return nil, err
 	}
 	resp := &pb.ListApplicationsResponse{}
-	resp.SetApplications(toProtoApplications(apps, publicAddress))
+	resp.SetApplications(toProtoApplications(apps))
+	resp.SetPublicAddress(publicAddress)
 	return resp, nil
 }
 
@@ -70,11 +71,7 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetAppl
 		return nil, err
 	}
 	app.ChartFile = chartFile
-	publicAddress, err := s.kubernetes.GetPublicAddress(ctx, req.GetScope(), req.GetFacility())
-	if err != nil {
-		return nil, err
-	}
-	resp := toProtoApplication(app, publicAddress)
+	resp := toProtoApplication(app)
 	return resp, nil
 }
 
@@ -223,19 +220,6 @@ func (s *ApplicationService) ListCharts(ctx context.Context, _ *pb.ListChartsReq
 	return resp, nil
 }
 
-func (s *ApplicationService) GetChart(ctx context.Context, req *pb.GetChartRequest) (*pb.Application_Chart, error) {
-	ch, err := s.chart.GetChart(ctx, req.GetName())
-	if err != nil {
-		return nil, err
-	}
-	metadata := &core.ChartMetadata{}
-	if len(ch.Versions) > 0 {
-		metadata = ch.Versions[0].Metadata
-	}
-	resp := toProtoChart(metadata, ch.Versions...)
-	return resp, nil
-}
-
 func (s *ApplicationService) GetChartMetadata(_ context.Context, req *pb.GetChartMetadataRequest) (*pb.Application_Chart_Metadata, error) {
 	file, err := s.chart.GetChartFile(req.GetChartRef())
 	if err != nil {
@@ -243,6 +227,14 @@ func (s *ApplicationService) GetChartMetadata(_ context.Context, req *pb.GetChar
 	}
 	resp := toProtoChartMetadata(file)
 	return resp, nil
+}
+
+func (s *ApplicationService) UploadChart(_ context.Context, req *pb.UploadChartRequest) (*emptypb.Empty, error) {
+	err := s.chart.UploadChart(req.GetChartContent())
+	if err != nil {
+		return nil, err
+	}
+	return &emptypb.Empty{}, nil
 }
 
 func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *pb.ListStorageClassesRequest) (*pb.ListStorageClassesResponse, error) {
@@ -271,15 +263,15 @@ func toProtoNamespace(n *core.Namespace) *pb.Namespace {
 	return ret
 }
 
-func toProtoApplications(as []core.Application, publicAddress string) []*pb.Application {
+func toProtoApplications(as []core.Application) []*pb.Application {
 	ret := []*pb.Application{}
 	for i := range as {
-		ret = append(ret, toProtoApplication(&as[i], publicAddress))
+		ret = append(ret, toProtoApplication(&as[i]))
 	}
 	return ret
 }
 
-func toProtoApplication(a *core.Application, publicAddress string) *pb.Application {
+func toProtoApplication(a *core.Application) *pb.Application {
 	replicas := int32(0)
 	if a.Replicas != nil {
 		replicas = *a.Replicas
@@ -296,7 +288,6 @@ func toProtoApplication(a *core.Application, publicAddress string) *pb.Applicati
 	ret.SetPods(toProtoPods(a.Pods))
 	ret.SetPersistentVolumeClaims(toProtoPersistentVolumeClaims(a.Storages))
 	ret.SetCreatedAt(timestamppb.New(a.ObjectMeta.CreationTimestamp.Time))
-	ret.SetPublicAddress(publicAddress)
 	if a.ChartFile != nil {
 		ret.SetMetadata(toProtoChartMetadata(a.ChartFile))
 	}

@@ -296,6 +296,22 @@ func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Conf
 	return list.Items, nil
 }
 
+func (r *core) ListPersistentVolumeClaimsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]oscore.PersistentVolumeClaim, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.ListOptions{
+		LabelSelector: label,
+	}
+	list, err := clientset.CoreV1().PersistentVolumeClaims(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
 func (r *core) GetPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.PersistentVolumeClaim, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
@@ -314,6 +330,16 @@ func (r *core) PatchPersistentVolumeClaim(ctx context.Context, config *rest.Conf
 
 	opts := metav1.PatchOptions{}
 	return clientset.CoreV1().PersistentVolumeClaims(namespace).Patch(ctx, name, types.JSONPatchType, data, opts)
+}
+
+func (r *core) DeletePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) error {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return err
+	}
+
+	opts := metav1.DeleteOptions{}
+	return clientset.CoreV1().PersistentVolumeClaims(namespace).Delete(ctx, name, opts)
 }
 
 func (r *core) GetNamespace(ctx context.Context, config *rest.Config, name string) (*oscore.Namespace, error) {

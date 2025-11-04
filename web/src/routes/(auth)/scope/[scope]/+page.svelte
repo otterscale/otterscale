@@ -5,7 +5,7 @@
 	import { HomeCard, HomeCell } from '$lib/components/scopes';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths, pathDisabled } from '$lib/path';
+	import { dynamicPaths, pathDisabled, pathHidden } from '$lib/path';
 	import { breadcrumb, currentCeph, currentKubernetes } from '$lib/stores';
 
 	// Set breadcrumb navigation
@@ -50,17 +50,19 @@
 	<div class="mx-auto flex max-w-5xl px-4 xl:px-0">
 		<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
 			{#each cards as card}
-				<HomeCard
-					background={card.background}
-					path={card.path}
-					description={card.description}
-					disabled={pathDisabled(
-						$currentCeph?.name,
-						$currentKubernetes?.name,
-						page.params.scope,
-						card.path.url,
-					)}
-				/>
+				{#if !pathHidden(page.params.scope, card.path.url)}
+					<HomeCard
+						background={card.background}
+						path={card.path}
+						description={card.description}
+						disabled={pathDisabled(
+							$currentCeph?.name,
+							$currentKubernetes?.name,
+							page.params.scope,
+							card.path.url,
+						)}
+					/>
+				{/if}
 			{/each}
 		</div>
 	</div>

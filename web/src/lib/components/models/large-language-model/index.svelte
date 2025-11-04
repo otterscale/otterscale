@@ -6,6 +6,7 @@
 	import { writable } from 'svelte/store';
 
 	import { DataTable } from './data-table/index';
+	import ExtensionsAlert from './extensions-alert.svelte';
 	import { type LargeLanguageModel } from './type';
 	import { getGatewayURL, getMetricsMap } from './utils.svelte';
 
@@ -17,7 +18,7 @@
 </script>
 
 <script lang="ts">
-	let { scopeUuid, facilityName }: { scopeUuid: string; facilityName: string } = $props();
+	let { scope, facility }: { scope: string; facility: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const applicationClient = createClient(ApplicationService, transport);
@@ -44,8 +45,8 @@
 	async function fetchModels() {
 		await applicationClient
 			.listApplications({
-				scope: scopeUuid,
-				facility: facilityName,
+				scope: scope,
+				facility: facility,
 			})
 			.then((response) => {
 				applications.set(response.applications);
@@ -138,6 +139,7 @@
 </script>
 
 <main class="space-y-4 py-4">
+	<ExtensionsAlert {scope} {facility} />
 	{#if isMounted}
 		<DataTable {largeLanguageModels} {reloadManager} />
 	{:else}

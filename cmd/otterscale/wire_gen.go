@@ -28,6 +28,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	bootstrapUseCase := core.NewBootstrapUseCase(configConfig)
 	bootstrapService := app.NewBootstrapService(bootstrapUseCase)
 	bootstrap := mux.NewBootstrap(bootstrapService)
+	jwksProxy := mux.NewJWKSProxy()
 	jujuJuju := juju.New(configConfig)
 	actionRepo := juju.NewAction(jujuJuju)
 	kubeKube, err := kube.New(configConfig)
@@ -46,7 +47,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	chartUseCase := core.NewChartUseCase(actionRepo, chartRepo, facilityRepo, releaseRepo)
+	chartUseCase := core.NewChartUseCase(configConfig, actionRepo, chartRepo, facilityRepo, releaseRepo)
 	releaseUseCase := core.NewReleaseUseCase(actionRepo, chartRepo, facilityRepo, releaseRepo)
 	clientRepo := juju.NewClient(jujuJuju)
 	kubeAppsRepo := kube.NewApps(kubeKube)
@@ -88,7 +89,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	tagRepo := maas.NewTag(maasMAAS)
 	machineUseCase := core.NewMachineUseCase(actionRepo, clientRepo, eventRepo, facilityRepo, machineRepo, machineManagerRepo, nodeDeviceRepo, scopeRepo, serverRepo, tagRepo)
 	machineService := app.NewMachineService(machineUseCase)
-	modelUseCase := core.NewModelUseCase(actionRepo, facilityRepo, releaseRepo)
+	modelUseCase := core.NewModelUseCase(actionRepo, chartRepo, facilityRepo, kubeCoreRepo, releaseRepo)
 	modelService := app.NewModelService(modelUseCase)
 	fabricRepo := maas.NewFabric(maasMAAS)
 	ipRangeRepo := maas.NewIPRange(maasMAAS)
@@ -97,7 +98,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	networkUseCase := core.NewNetworkUseCase(fabricRepo, ipRangeRepo, subnetRepo, vlanRepo)
 	networkService := app.NewNetworkService(networkUseCase)
 	facilityOffersRepo := juju.NewApplicationOffers(jujuJuju)
-	orchestratorUseCase := core.NewOrchestratorUseCase(configConfig, actionRepo, clientRepo, facilityRepo, facilityOffersRepo, ipRangeRepo, kubeAppsRepo, kubeCoreRepo, machineRepo, releaseRepo, scopeRepo, serverRepo, subnetRepo, tagRepo)
+	orchestratorUseCase := core.NewOrchestratorUseCase(configConfig, actionRepo, chartRepo, clientRepo, facilityRepo, facilityOffersRepo, ipRangeRepo, kubeAppsRepo, kubeCoreRepo, machineRepo, releaseRepo, scopeRepo, serverRepo, subnetRepo, tagRepo)
 	orchestratorService := app.NewOrchestratorService(orchestratorUseCase)
 	cephFSRepo := ceph.NewFS(cephCeph)
 	cephRGWRepo := ceph.NewRGW(cephCeph)
@@ -107,17 +108,8 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	sshKeyRepo := maas.NewSSHKey(maasMAAS)
 	scopeUseCase := core.NewScopeUseCase(keyRepo, scopeRepo, sshKeyRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
-	v, err := mux.NewServeOptions()
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	serve, err := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, storageService, scopeService, v...)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	command := newCmd(bootstrap, configConfig, serve)
+	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, storageService, scopeService)
+	command := newCmd(configConfig, bootstrap, jwksProxy, serve)
 	return command, func() {
 		cleanup()
 	}, nil

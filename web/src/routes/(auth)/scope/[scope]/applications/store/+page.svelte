@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import { Store } from '$lib/components/applications/store';
 	import { dynamicPaths } from '$lib/path';
-	import { activeScope, breadcrumb } from '$lib/stores';
+	import { activeScope, breadcrumb, currentKubernetes } from '$lib/stores';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({
@@ -11,6 +11,8 @@
 	});
 </script>
 
-{#if $activeScope}
-	<Store />
+{#if $activeScope && $currentKubernetes}
+	{@const scope = $currentKubernetes.scope}
+	{@const facility = $currentKubernetes.name}
+	<Store {scope} {facility} />
 {/if}

@@ -4,7 +4,9 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { Application, ScaleApplicationRequest } from '$lib/api/application/v1/application_pb';
+	import type { Application } from '../types';
+
+	import type { ScaleApplicationRequest } from '$lib/api/application/v1/application_pb';
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';

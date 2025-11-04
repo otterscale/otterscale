@@ -12,6 +12,7 @@
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { activeScope } from '$lib/stores';
+	import { currentCeph, currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils.js';
 </script>
 
@@ -27,7 +28,11 @@
 	const internalObjectServices = writable<SingleSelect.OptionType[]>([]);
 	async function fetchOptions() {
 		try {
-			const response = await client.listInternalObjectServices({ scope: $activeScope?.name });
+			const response = await client.listInternalObjectServices({
+				scope: $activeScope?.name,
+				cephName: $currentCeph?.name,
+				kubernetesName: $currentKubernetes?.name,
+			});
 			internalObjectServices.set(
 				response.internalObjectServices.map(
 					(internalObjectService) =>

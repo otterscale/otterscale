@@ -35,31 +35,61 @@ service OrchestratorService {
 
   rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse) {
     option (otterscale.api.feature) = {
-      name: "orch-gpu"
+      name: "orch-general"
     };
   };
 
   rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse) {
     option (otterscale.api.feature) = {
-      name: "orch-gpu"
+      name: "orch-general"
     };
   };
 
   rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse) {
     option (otterscale.api.feature) = {
-      name: "orch-gpu"
+      name: "mdl-general"
     };
   };
 
   rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse) {
     option (otterscale.api.feature) = {
-      name: "orch-gpu"
+      name: "mdl-general"
     };
   };
 
-  rpc ListPlugins(ListPluginsRequest) returns (ListPluginsResponse) {
+  rpc ListGeneralExtensions(ListGeneralExtensionsRequest) returns (ListGeneralExtensionsResponse) {
     option (otterscale.api.feature) = {
-      name: "orch-plugin"
+      name: "orch-general"
+    };
+  };
+
+  rpc ListModelExtensions(ListModelExtensionsRequest) returns (ListModelExtensionsResponse) {
+    option (otterscale.api.feature) = {
+      name: "mdl-general"
+    };
+  };
+
+  rpc ListInstanceExtensions(ListInstanceExtensionsRequest) returns (ListInstanceExtensionsResponse) {
+    option (otterscale.api.feature) = {
+      name: "vm-general"
+    };
+  };
+
+  rpc ListStorageExtensions(ListStorageExtensionsRequest) returns (ListStorageExtensionsResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-general"
+    };
+  };
+
+  rpc InstallExtensions(InstallExtensionsRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
+    };
+  };
+
+  rpc UpgradeExtensions(UpgradeExtensionsRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "orch-general"
     };
   };
 }
@@ -194,13 +224,14 @@ message ListGPURelationsByModelResponse {
   repeated GPURelation gpu_relations = 1;
 }
 
-message Plugin {
+message Extension {
   message Chart {
     string name = 1;
     string version = 2;
     string app_version = 3;
     string description = 4;
     string icon = 5;
+    string ref = 6;
   }
   string name = 1;
   string namespace = 2;
@@ -209,14 +240,54 @@ message Plugin {
   google.protobuf.Timestamp first_deployed_at = 5;
   google.protobuf.Timestamp last_deployed_at = 6;
   google.protobuf.Timestamp deleted_at = 7;
-  Chart chart = 11;
+  Chart current = 11;
+  Chart latest = 12;
 }
 
-message ListPluginsRequest {
+message ListGeneralExtensionsRequest {
   string scope = 1;
   string facility = 2;
 }
 
-message ListPluginsResponse {
-  repeated Plugin plugins = 1;
+message ListGeneralExtensionsResponse {
+  repeated Extension Extensions = 1;
+}
+
+message ListModelExtensionsRequest {
+  string scope = 1;
+  string facility = 2;
+}
+
+message ListModelExtensionsResponse {
+  repeated Extension Extensions = 1;
+}
+
+message ListInstanceExtensionsRequest {
+  string scope = 1;
+  string facility = 2;
+}
+
+message ListInstanceExtensionsResponse {
+  repeated Extension Extensions = 1;
+}
+
+message ListStorageExtensionsRequest {
+  string scope = 1;
+  string facility = 2;
+}
+
+message ListStorageExtensionsResponse {
+  repeated Extension Extensions = 1;
+}
+
+message InstallExtensionsRequest {
+  string scope = 1;
+  string facility = 2;
+  repeated Extension.Chart charts = 3;
+}
+
+message UpgradeExtensionsRequest {
+  string scope = 1;
+  string facility = 2;
+  repeated Extension.Chart charts = 3;
 }

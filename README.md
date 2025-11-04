@@ -87,7 +87,7 @@ For production deployments, see our [deployment guide](/docs/deployment.md).
 ## 🔧 Development
 
 > [!IMPORTANT]
-> Requirements: `Go 1.25.1+`, `Docker`, `Protobuf compiler`, `Make`, `Git`
+> Requirements: `Go 1.25.3+`, `Docker`, `Protobuf compiler`, `Make`, `Git`
 
 ### System Dependencies
 

@@ -44,7 +44,7 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>
-			{m.create_group()}
+			{m.create_user()}
 		</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>

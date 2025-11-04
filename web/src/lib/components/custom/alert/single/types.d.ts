@@ -1,8 +1,10 @@
+import { alertVariants } from './alert.svelte';
+
 type AlertType = {
-	level: string;
 	title: string;
 	message: string;
 	action?: () => void;
+	variant?: alertVariants;
 };
 
 export type { AlertType };

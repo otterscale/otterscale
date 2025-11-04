@@ -8,6 +8,7 @@ const triggerVariants = tv({
 	variants: {
 		variant: {
 			default: cn(buttonVariants({ variant: 'ghost', size: 'default' }), 'w-fit'),
+			primary: cn(buttonVariants({ variant: 'default', size: 'default' }), 'w-fit'),
 			creative: '',
 			destructive: 'text-destructive **:text-destructive',
 		},

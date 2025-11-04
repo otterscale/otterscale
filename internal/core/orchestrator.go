@@ -39,6 +39,7 @@ type OrchestratorUseCase struct {
 	conf *config.Config
 
 	action         ActionRepo
+	chart          ChartRepo
 	client         ClientRepo
 	facility       FacilityRepo
 	facilityOffers FacilityOffersRepo
@@ -53,10 +54,11 @@ type OrchestratorUseCase struct {
 	tag            TagRepo
 }
 
-func NewOrchestratorUseCase(conf *config.Config, action ActionRepo, client ClientRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, ipRange IPRangeRepo, kubeApps KubeAppsRepo, kubeCore KubeCoreRepo, machine MachineRepo, release ReleaseRepo, scope ScopeRepo, server ServerRepo, subnet SubnetRepo, tag TagRepo) *OrchestratorUseCase {
+func NewOrchestratorUseCase(conf *config.Config, action ActionRepo, chart ChartRepo, client ClientRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, ipRange IPRangeRepo, kubeApps KubeAppsRepo, kubeCore KubeCoreRepo, machine MachineRepo, release ReleaseRepo, scope ScopeRepo, server ServerRepo, subnet SubnetRepo, tag TagRepo) *OrchestratorUseCase {
 	return &OrchestratorUseCase{
 		conf:           conf,
 		action:         action,
+		chart:          chart,
 		client:         client,
 		facility:       facility,
 		facilityOffers: facilityOffers,

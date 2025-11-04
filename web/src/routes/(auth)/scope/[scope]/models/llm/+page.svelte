@@ -13,6 +13,6 @@
 
 {#if $currentKubernetes}
 	{#key $currentKubernetes?.scope + $currentKubernetes?.name}
-		<LLM scopeUuid={$currentKubernetes?.scope} facilityName={$currentKubernetes?.name} />
+		<LLM scope={$currentKubernetes?.scope} facility={$currentKubernetes?.name} />
 	{/key}
 {/if}

@@ -81,14 +81,68 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 	return resp, nil
 }
 
-func (s *OrchestratorService) ListPlugins(ctx context.Context, req *pb.ListPluginsRequest) (*pb.ListPluginsResponse, error) {
-	plugins, err := s.uc.ListPlugins(ctx, req.GetScope(), req.GetFacility())
+func (s *OrchestratorService) ListGeneralExtensions(ctx context.Context, req *pb.ListGeneralExtensionsRequest) (*pb.ListGeneralExtensionsResponse, error) {
+	Extensions, err := s.uc.ListGeneralExtensions(ctx, req.GetScope(), req.GetFacility())
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ListPluginsResponse{}
-	resp.SetPlugins(toProtoPlugins(plugins))
+	resp := &pb.ListGeneralExtensionsResponse{}
+	resp.SetExtensions(toProtoExtensions(Extensions))
 	return resp, nil
+}
+
+func (s *OrchestratorService) ListModelExtensions(ctx context.Context, req *pb.ListModelExtensionsRequest) (*pb.ListModelExtensionsResponse, error) {
+	Extensions, err := s.uc.ListModelExtensions(ctx, req.GetScope(), req.GetFacility())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListModelExtensionsResponse{}
+	resp.SetExtensions(toProtoExtensions(Extensions))
+	return resp, nil
+}
+
+func (s *OrchestratorService) ListInstanceExtensions(ctx context.Context, req *pb.ListInstanceExtensionsRequest) (*pb.ListInstanceExtensionsResponse, error) {
+	Extensions, err := s.uc.ListInstanceExtensions(ctx, req.GetScope(), req.GetFacility())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListInstanceExtensionsResponse{}
+	resp.SetExtensions(toProtoExtensions(Extensions))
+	return resp, nil
+}
+
+func (s *OrchestratorService) ListStorageExtensions(ctx context.Context, req *pb.ListStorageExtensionsRequest) (*pb.ListStorageExtensionsResponse, error) {
+	Extensions, err := s.uc.ListStorageExtensions(ctx, req.GetScope(), req.GetFacility())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListStorageExtensionsResponse{}
+	resp.SetExtensions(toProtoExtensions(Extensions))
+	return resp, nil
+}
+
+func (s *OrchestratorService) InstallExtensions(ctx context.Context, req *pb.InstallExtensionsRequest) (*emptypb.Empty, error) {
+	if err := s.uc.InstallExtensions(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func (s *OrchestratorService) UpgradeExtensions(ctx context.Context, req *pb.UpgradeExtensionsRequest) (*emptypb.Empty, error) {
+	if err := s.uc.UpgradeExtensions(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func toChartRefMap(cs []*pb.Extension_Chart) map[string]string {
+	ret := map[string]string{}
+	for _, c := range cs {
+		ret[c.GetName()] = c.GetRef()
+	}
+	return ret
 }
 
 func toProtoEssentials(es []core.Essential) []*pb.Essential {
@@ -195,40 +249,49 @@ func toProtoGPURelationPodDevice(pd *core.GPURelationPodDevice) *pb.GPURelation_
 	return ret
 }
 
-func toProtoPlugins(rs []core.Release) []*pb.Plugin {
-	ret := []*pb.Plugin{}
-	for i := range rs {
-		ret = append(ret, toProtoPlugin(&rs[i]))
+func toProtoExtensions(ps []core.Extension) []*pb.Extension {
+	ret := []*pb.Extension{}
+	for i := range ps {
+		ret = append(ret, toProtoExtension(&ps[i]))
 	}
 	return ret
 }
 
-func toProtoPlugin(r *core.Release) *pb.Plugin {
-	ret := &pb.Plugin{}
-	ret.SetName(r.Name)
-	ret.SetNamespace(r.Namespace)
-	info := r.Info
-	if info != nil {
-		ret.SetStatus(info.Status.String())
-		ret.SetDescription(info.Description)
-		ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
-		ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
-		if !info.Deleted.IsZero() {
-			ret.SetDeletedAt(timestamppb.New(info.Deleted.Time))
+func toProtoExtension(p *core.Extension) *pb.Extension {
+	ret := &pb.Extension{}
+	release := p.Release
+	if release != nil {
+		ret.SetName(release.Name)
+		ret.SetNamespace(release.Namespace)
+		info := release.Info
+		if info != nil {
+			ret.SetStatus(info.Status.String())
+			ret.SetDescription(info.Description)
+			ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
+			ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
+			if !info.Deleted.IsZero() {
+				ret.SetDeletedAt(timestamppb.New(info.Deleted.Time))
+			}
+		}
+		current := release.Chart
+		if current != nil && current.Metadata != nil {
+			ret.SetCurrent(toProtoExtensionChart(current.Metadata, ""))
 		}
 	}
-	if r.Chart != nil && r.Chart.Metadata != nil {
-		ret.SetChart(toProtoPluginChart(r.Chart.Metadata))
+	latest := p.Latest
+	if latest != nil && latest.Metadata != nil {
+		ret.SetLatest(toProtoExtensionChart(latest.Metadata, p.LatestURL))
 	}
 	return ret
 }
 
-func toProtoPluginChart(md *core.ChartMetadata) *pb.Plugin_Chart {
-	ret := &pb.Plugin_Chart{}
+func toProtoExtensionChart(md *core.ChartMetadata, ref string) *pb.Extension_Chart {
+	ret := &pb.Extension_Chart{}
 	ret.SetName(md.Name)
 	ret.SetVersion(md.Version)
 	ret.SetAppVersion(md.AppVersion)
 	ret.SetDescription(md.Description)
 	ret.SetIcon(md.Icon)
+	ret.SetRef(ref)
 	return ret
 }

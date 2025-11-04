@@ -7,7 +7,7 @@ import EnterpriseTierImage from '$lib/assets/enterprise-tier.jpg';
 import { m } from '$lib/paraglide/messages';
 import { premiumTier } from '$lib/stores';
 
-export interface Plan {
+interface Plan {
 	tier: string;
 	star: boolean;
 	name: string;
@@ -17,7 +17,7 @@ export interface Plan {
 	disabled: boolean;
 }
 
-export const plans: Plan[] = [
+const plans: Plan[] = [
 	{
 		tier: m.basic_tier(),
 		star: false,
@@ -46,3 +46,6 @@ export const plans: Plan[] = [
 		disabled: get(premiumTier).level < PremiumTier_Level.ENTERPRISE,
 	},
 ];
+
+export type { Plan };
+export { plans };

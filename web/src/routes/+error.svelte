@@ -8,6 +8,7 @@
 		403: m.error_message_403(),
 		404: m.error_message_404(),
 		500: m.error_message_500(),
+		501: m.error_message_501(),
 		502: m.error_message_502(),
 		503: m.error_message_503(),
 	};

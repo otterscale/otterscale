@@ -5,7 +5,7 @@
 
 	import { alertVariants } from '../single/alert.svelte';
 
-	import type { AlertType, VariantGetterType } from './types';
+	import type { AlertType } from './types';
 	import { IterationManager } from './utils.svelte';
 
 	import * as Alert from '$lib/components/ui/alert/index';
@@ -22,13 +22,11 @@
 		alerts,
 		index = $bindable(0),
 		duration = 1000,
-		variantGetter,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		alerts: AlertType[];
 		index: number;
 		duration?: number;
-		variantGetter: VariantGetterType;
 	} = $props();
 
 	let value = {
@@ -40,7 +38,7 @@
 		},
 	};
 
-	export const iterationManager = new IterationManager(alerts, duration, value, variantGetter);
+	export const iterationManager = new IterationManager(alerts, duration, value);
 	setContext('IterationManager', iterationManager);
 </script>
 
@@ -49,7 +47,7 @@
 	data-slot="alert-root"
 	class={cn(
 		alertVariants({
-			variant: iterationManager.variantGetter(iterationManager.alerts[iterationManager.value.index].level),
+			variant: alerts[index].variant,
 		}),
 		'[&>[data-slot=alert-controller]~*]:pr-7',
 		className,

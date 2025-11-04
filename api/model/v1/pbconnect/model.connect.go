@@ -36,22 +36,35 @@ const (
 const (
 	// ModelServiceListModelsProcedure is the fully-qualified name of the ModelService's ListModels RPC.
 	ModelServiceListModelsProcedure = "/otterscale.model.v1.ModelService/ListModels"
-	// ModelServiceGetModelProcedure is the fully-qualified name of the ModelService's GetModel RPC.
-	ModelServiceGetModelProcedure = "/otterscale.model.v1.ModelService/GetModel"
 	// ModelServiceCreateModelProcedure is the fully-qualified name of the ModelService's CreateModel
 	// RPC.
 	ModelServiceCreateModelProcedure = "/otterscale.model.v1.ModelService/CreateModel"
+	// ModelServiceUpdateModelProcedure is the fully-qualified name of the ModelService's UpdateModel
+	// RPC.
+	ModelServiceUpdateModelProcedure = "/otterscale.model.v1.ModelService/UpdateModel"
 	// ModelServiceDeleteModelProcedure is the fully-qualified name of the ModelService's DeleteModel
 	// RPC.
 	ModelServiceDeleteModelProcedure = "/otterscale.model.v1.ModelService/DeleteModel"
+	// ModelServiceListModelArtifactsProcedure is the fully-qualified name of the ModelService's
+	// ListModelArtifacts RPC.
+	ModelServiceListModelArtifactsProcedure = "/otterscale.model.v1.ModelService/ListModelArtifacts"
+	// ModelServiceCreateModelArtifactProcedure is the fully-qualified name of the ModelService's
+	// CreateModelArtifact RPC.
+	ModelServiceCreateModelArtifactProcedure = "/otterscale.model.v1.ModelService/CreateModelArtifact"
+	// ModelServiceDeleteModelArtifactProcedure is the fully-qualified name of the ModelService's
+	// DeleteModelArtifact RPC.
+	ModelServiceDeleteModelArtifactProcedure = "/otterscale.model.v1.ModelService/DeleteModelArtifact"
 )
 
 // ModelServiceClient is a client for the otterscale.model.v1.ModelService service.
 type ModelServiceClient interface {
 	ListModels(context.Context, *v1.ListModelsRequest) (*v1.ListModelsResponse, error)
-	GetModel(context.Context, *v1.GetModelRequest) (*v1.Model, error)
 	CreateModel(context.Context, *v1.CreateModelRequest) (*v1.Model, error)
+	UpdateModel(context.Context, *v1.UpdateModelRequest) (*v1.Model, error)
 	DeleteModel(context.Context, *v1.DeleteModelRequest) (*emptypb.Empty, error)
+	ListModelArtifacts(context.Context, *v1.ListModelArtifactsRequest) (*v1.ListModelArtifactsResponse, error)
+	CreateModelArtifact(context.Context, *v1.CreateModelArtifactRequest) (*v1.ModelArtifact, error)
+	DeleteModelArtifact(context.Context, *v1.DeleteModelArtifactRequest) (*emptypb.Empty, error)
 }
 
 // NewModelServiceClient constructs a client for the otterscale.model.v1.ModelService service. By
@@ -71,16 +84,16 @@ func NewModelServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(modelServiceMethods.ByName("ListModels")),
 			connect.WithClientOptions(opts...),
 		),
-		getModel: connect.NewClient[v1.GetModelRequest, v1.Model](
-			httpClient,
-			baseURL+ModelServiceGetModelProcedure,
-			connect.WithSchema(modelServiceMethods.ByName("GetModel")),
-			connect.WithClientOptions(opts...),
-		),
 		createModel: connect.NewClient[v1.CreateModelRequest, v1.Model](
 			httpClient,
 			baseURL+ModelServiceCreateModelProcedure,
 			connect.WithSchema(modelServiceMethods.ByName("CreateModel")),
+			connect.WithClientOptions(opts...),
+		),
+		updateModel: connect.NewClient[v1.UpdateModelRequest, v1.Model](
+			httpClient,
+			baseURL+ModelServiceUpdateModelProcedure,
+			connect.WithSchema(modelServiceMethods.ByName("UpdateModel")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteModel: connect.NewClient[v1.DeleteModelRequest, emptypb.Empty](
@@ -89,29 +102,41 @@ func NewModelServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(modelServiceMethods.ByName("DeleteModel")),
 			connect.WithClientOptions(opts...),
 		),
+		listModelArtifacts: connect.NewClient[v1.ListModelArtifactsRequest, v1.ListModelArtifactsResponse](
+			httpClient,
+			baseURL+ModelServiceListModelArtifactsProcedure,
+			connect.WithSchema(modelServiceMethods.ByName("ListModelArtifacts")),
+			connect.WithClientOptions(opts...),
+		),
+		createModelArtifact: connect.NewClient[v1.CreateModelArtifactRequest, v1.ModelArtifact](
+			httpClient,
+			baseURL+ModelServiceCreateModelArtifactProcedure,
+			connect.WithSchema(modelServiceMethods.ByName("CreateModelArtifact")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteModelArtifact: connect.NewClient[v1.DeleteModelArtifactRequest, emptypb.Empty](
+			httpClient,
+			baseURL+ModelServiceDeleteModelArtifactProcedure,
+			connect.WithSchema(modelServiceMethods.ByName("DeleteModelArtifact")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // modelServiceClient implements ModelServiceClient.
 type modelServiceClient struct {
-	listModels  *connect.Client[v1.ListModelsRequest, v1.ListModelsResponse]
-	getModel    *connect.Client[v1.GetModelRequest, v1.Model]
-	createModel *connect.Client[v1.CreateModelRequest, v1.Model]
-	deleteModel *connect.Client[v1.DeleteModelRequest, emptypb.Empty]
+	listModels          *connect.Client[v1.ListModelsRequest, v1.ListModelsResponse]
+	createModel         *connect.Client[v1.CreateModelRequest, v1.Model]
+	updateModel         *connect.Client[v1.UpdateModelRequest, v1.Model]
+	deleteModel         *connect.Client[v1.DeleteModelRequest, emptypb.Empty]
+	listModelArtifacts  *connect.Client[v1.ListModelArtifactsRequest, v1.ListModelArtifactsResponse]
+	createModelArtifact *connect.Client[v1.CreateModelArtifactRequest, v1.ModelArtifact]
+	deleteModelArtifact *connect.Client[v1.DeleteModelArtifactRequest, emptypb.Empty]
 }
 
 // ListModels calls otterscale.model.v1.ModelService.ListModels.
 func (c *modelServiceClient) ListModels(ctx context.Context, req *v1.ListModelsRequest) (*v1.ListModelsResponse, error) {
 	response, err := c.listModels.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// GetModel calls otterscale.model.v1.ModelService.GetModel.
-func (c *modelServiceClient) GetModel(ctx context.Context, req *v1.GetModelRequest) (*v1.Model, error) {
-	response, err := c.getModel.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -127,6 +152,15 @@ func (c *modelServiceClient) CreateModel(ctx context.Context, req *v1.CreateMode
 	return nil, err
 }
 
+// UpdateModel calls otterscale.model.v1.ModelService.UpdateModel.
+func (c *modelServiceClient) UpdateModel(ctx context.Context, req *v1.UpdateModelRequest) (*v1.Model, error) {
+	response, err := c.updateModel.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // DeleteModel calls otterscale.model.v1.ModelService.DeleteModel.
 func (c *modelServiceClient) DeleteModel(ctx context.Context, req *v1.DeleteModelRequest) (*emptypb.Empty, error) {
 	response, err := c.deleteModel.CallUnary(ctx, connect.NewRequest(req))
@@ -136,12 +170,42 @@ func (c *modelServiceClient) DeleteModel(ctx context.Context, req *v1.DeleteMode
 	return nil, err
 }
 
+// ListModelArtifacts calls otterscale.model.v1.ModelService.ListModelArtifacts.
+func (c *modelServiceClient) ListModelArtifacts(ctx context.Context, req *v1.ListModelArtifactsRequest) (*v1.ListModelArtifactsResponse, error) {
+	response, err := c.listModelArtifacts.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// CreateModelArtifact calls otterscale.model.v1.ModelService.CreateModelArtifact.
+func (c *modelServiceClient) CreateModelArtifact(ctx context.Context, req *v1.CreateModelArtifactRequest) (*v1.ModelArtifact, error) {
+	response, err := c.createModelArtifact.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// DeleteModelArtifact calls otterscale.model.v1.ModelService.DeleteModelArtifact.
+func (c *modelServiceClient) DeleteModelArtifact(ctx context.Context, req *v1.DeleteModelArtifactRequest) (*emptypb.Empty, error) {
+	response, err := c.deleteModelArtifact.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // ModelServiceHandler is an implementation of the otterscale.model.v1.ModelService service.
 type ModelServiceHandler interface {
 	ListModels(context.Context, *v1.ListModelsRequest) (*v1.ListModelsResponse, error)
-	GetModel(context.Context, *v1.GetModelRequest) (*v1.Model, error)
 	CreateModel(context.Context, *v1.CreateModelRequest) (*v1.Model, error)
+	UpdateModel(context.Context, *v1.UpdateModelRequest) (*v1.Model, error)
 	DeleteModel(context.Context, *v1.DeleteModelRequest) (*emptypb.Empty, error)
+	ListModelArtifacts(context.Context, *v1.ListModelArtifactsRequest) (*v1.ListModelArtifactsResponse, error)
+	CreateModelArtifact(context.Context, *v1.CreateModelArtifactRequest) (*v1.ModelArtifact, error)
+	DeleteModelArtifact(context.Context, *v1.DeleteModelArtifactRequest) (*emptypb.Empty, error)
 }
 
 // NewModelServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -157,16 +221,16 @@ func NewModelServiceHandler(svc ModelServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(modelServiceMethods.ByName("ListModels")),
 		connect.WithHandlerOptions(opts...),
 	)
-	modelServiceGetModelHandler := connect.NewUnaryHandlerSimple(
-		ModelServiceGetModelProcedure,
-		svc.GetModel,
-		connect.WithSchema(modelServiceMethods.ByName("GetModel")),
-		connect.WithHandlerOptions(opts...),
-	)
 	modelServiceCreateModelHandler := connect.NewUnaryHandlerSimple(
 		ModelServiceCreateModelProcedure,
 		svc.CreateModel,
 		connect.WithSchema(modelServiceMethods.ByName("CreateModel")),
+		connect.WithHandlerOptions(opts...),
+	)
+	modelServiceUpdateModelHandler := connect.NewUnaryHandlerSimple(
+		ModelServiceUpdateModelProcedure,
+		svc.UpdateModel,
+		connect.WithSchema(modelServiceMethods.ByName("UpdateModel")),
 		connect.WithHandlerOptions(opts...),
 	)
 	modelServiceDeleteModelHandler := connect.NewUnaryHandlerSimple(
@@ -175,16 +239,40 @@ func NewModelServiceHandler(svc ModelServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(modelServiceMethods.ByName("DeleteModel")),
 		connect.WithHandlerOptions(opts...),
 	)
+	modelServiceListModelArtifactsHandler := connect.NewUnaryHandlerSimple(
+		ModelServiceListModelArtifactsProcedure,
+		svc.ListModelArtifacts,
+		connect.WithSchema(modelServiceMethods.ByName("ListModelArtifacts")),
+		connect.WithHandlerOptions(opts...),
+	)
+	modelServiceCreateModelArtifactHandler := connect.NewUnaryHandlerSimple(
+		ModelServiceCreateModelArtifactProcedure,
+		svc.CreateModelArtifact,
+		connect.WithSchema(modelServiceMethods.ByName("CreateModelArtifact")),
+		connect.WithHandlerOptions(opts...),
+	)
+	modelServiceDeleteModelArtifactHandler := connect.NewUnaryHandlerSimple(
+		ModelServiceDeleteModelArtifactProcedure,
+		svc.DeleteModelArtifact,
+		connect.WithSchema(modelServiceMethods.ByName("DeleteModelArtifact")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.model.v1.ModelService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ModelServiceListModelsProcedure:
 			modelServiceListModelsHandler.ServeHTTP(w, r)
-		case ModelServiceGetModelProcedure:
-			modelServiceGetModelHandler.ServeHTTP(w, r)
 		case ModelServiceCreateModelProcedure:
 			modelServiceCreateModelHandler.ServeHTTP(w, r)
+		case ModelServiceUpdateModelProcedure:
+			modelServiceUpdateModelHandler.ServeHTTP(w, r)
 		case ModelServiceDeleteModelProcedure:
 			modelServiceDeleteModelHandler.ServeHTTP(w, r)
+		case ModelServiceListModelArtifactsProcedure:
+			modelServiceListModelArtifactsHandler.ServeHTTP(w, r)
+		case ModelServiceCreateModelArtifactProcedure:
+			modelServiceCreateModelArtifactHandler.ServeHTTP(w, r)
+		case ModelServiceDeleteModelArtifactProcedure:
+			modelServiceDeleteModelArtifactHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -198,14 +286,26 @@ func (UnimplementedModelServiceHandler) ListModels(context.Context, *v1.ListMode
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.model.v1.ModelService.ListModels is not implemented"))
 }
 
-func (UnimplementedModelServiceHandler) GetModel(context.Context, *v1.GetModelRequest) (*v1.Model, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.model.v1.ModelService.GetModel is not implemented"))
-}
-
 func (UnimplementedModelServiceHandler) CreateModel(context.Context, *v1.CreateModelRequest) (*v1.Model, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.model.v1.ModelService.CreateModel is not implemented"))
 }
 
+func (UnimplementedModelServiceHandler) UpdateModel(context.Context, *v1.UpdateModelRequest) (*v1.Model, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.model.v1.ModelService.UpdateModel is not implemented"))
+}
+
 func (UnimplementedModelServiceHandler) DeleteModel(context.Context, *v1.DeleteModelRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.model.v1.ModelService.DeleteModel is not implemented"))
+}
+
+func (UnimplementedModelServiceHandler) ListModelArtifacts(context.Context, *v1.ListModelArtifactsRequest) (*v1.ListModelArtifactsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.model.v1.ModelService.ListModelArtifacts is not implemented"))
+}
+
+func (UnimplementedModelServiceHandler) CreateModelArtifact(context.Context, *v1.CreateModelArtifactRequest) (*v1.ModelArtifact, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.model.v1.ModelService.CreateModelArtifact is not implemented"))
+}
+
+func (UnimplementedModelServiceHandler) DeleteModelArtifact(context.Context, *v1.DeleteModelArtifactRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.model.v1.ModelService.DeleteModelArtifact is not implemented"))
 }

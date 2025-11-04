@@ -47,7 +47,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General type="text" required value={request.name} bind:invalid />
+					<SingleInput.General type="text" required bind:value={request.name} bind:invalid />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>

@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"errors"
+	"os"
 	"strings"
 
 	"github.com/juju/juju/core/base"
@@ -15,6 +16,19 @@ func boolToInt(b bool) int {
 		return 1
 	}
 	return 0
+}
+
+func flatten[T any](data [][]T) []T {
+	totalLen := 0
+	for _, innerSlice := range data {
+		totalLen += len(innerSlice)
+	}
+
+	result := make([]T, 0, totalLen)
+	for _, innerSlice := range data {
+		result = append(result, innerSlice...)
+	}
+	return result
 }
 
 func defaultBase(ctx context.Context, server ServerRepo) (base.Base, error) {
@@ -76,4 +90,15 @@ func toConstraint(c *MachineConstraint) constraints.Value {
 		constraint.Tags = &c.Tags
 	}
 	return constraint
+}
+
+func checkDirExists(dir string) (bool, error) {
+	info, err := os.Stat(dir)
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return info.IsDir(), nil
 }
