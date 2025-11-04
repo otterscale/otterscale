@@ -54,7 +54,7 @@ MAAS_DHCP_START_IP=""
 MAAS_DHCP_END_IP=""
 NON_ROOT_USER=""
 OTTERSCALE_API_ENDPOINT=""
-OTTERSCAEL_WEB_IP=""
+OTTERSCALE_WEB_IP=""
 OTTERSCALE_BRIDGE_NAME="br-otters"
 OTTERSCALE_INTERFACE_IP=""
 OTTERSCALE_CIDR=""
@@ -916,12 +916,12 @@ enter_dhcp_end_ip() {
 
 enter_otterscale_web_ip() {
     while true; do
-        read -p "Enter OtterScale Web IP: " OTTERSCAEL_WEB_IP
-        if validate_ip "$OTTERSCAEL_WEB_IP"; then
+        read -p "Enter OtterScale Web IP: " OTTERSCALE_WEB_IP
+        if validate_ip "$OTTERSCALE_WEB_IP"; then
             break
         fi
         echo "Invalid IP format. Please try again."
-    done	
+    done
 }
 
 get_dhcp_subnet_and_ip() {
@@ -1367,7 +1367,7 @@ juju_add_k8s() {
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client" >>"$TEMP_LOG" 2>&1; then
-        log "WARN" "Controller cos-k8s already exist" "Cos-k8s exist"
+        log "WARN" "Controller cos-k8s already exist" "JUJU_K8S"
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1"; then
@@ -1465,25 +1465,25 @@ wait_for_deployment() {
 }
 
 config_bridge() {
-    ## Check OTTERSCAEL_WEB_IP
-    if [[ -z "$OTTERSCAEL_WEB_IP" ]]; then
+    ## Check OTTERSCALE_WEB_IP
+    if [[ -z "$OTTERSCALE_WEB_IP" ]]; then
         enter_otterscale_web_ip
     else
-        log "INFO" "OtterScale Web IP is $OTTERSCAEL_WEB_IP" "NETWORK"
+        log "INFO" "OtterScale Web IP is $OTTERSCALE_WEB_IP" "NETWORK"
     fi
 
     ## Check network interface
     log "INFO" "Detect network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-    if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCAEL_WEB_IP"; then
-        log "INFO" "Detect that IP $OTTERSCAEL_WEB_IP exists on network $OTTERSCALE_BRIDGE_NAME"
+    if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
+        log "INFO" "Detect that IP $OTTERSCALE_WEB_IP exists on network $OTTERSCALE_BRIDGE_NAME"
     else
         ## Insert ip to network interface
 	local mask=$(nmcli device show $OTTERSCALE_BRIDGE_NAME | grep "^IP4.ADDRESS" | head -n 1 | awk '{print $2}' | cut -d'/' -f2)
 
-        if nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCAEL_WEB_IP/$mask"; then
-            log "INFO" "Add $OTTERSCAEL_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME"
+        if nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask"; then
+            log "INFO" "Add $OTTERSCALE_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME"
             log "INFO" "Update microk8s metallb"
-            microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCAEL_WEB_IP-$OTTERSCAEL_WEB_IP\"}]" >"$TEMP_LOG" 2>&1
+            microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >"$TEMP_LOG" 2>&1
         fi
     fi
 }
@@ -1590,12 +1590,12 @@ $(echo "$juju_cacert" | sed 's/^/      /')
     rados_timeout: 0s
 EOF
 
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace -f $values_file" "Deply OtterScale chart"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace -f $values_file" "Deploy OtterScale chart"
 
         # Clean up temporary file
         rm -f "$ca_cert_file"
 
-	local otterscale_endpoint="http://$OTTERSCAEL_WEB_IP"
+        local otterscale_endpoint="http://$OTTERSCALE_WEB_IP"
         send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
         log "INFO" "OtterScale install finished, you can visit web UI from $otterscale_endpoint" "FINISHED"
     else
