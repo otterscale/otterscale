@@ -175,7 +175,7 @@ func (uc *MachineUseCase) CreateMachine(ctx context.Context, machineID, scopeNam
 	}
 
 	machine, err := uc.machine.Get(ctx, machineID)
-	if err == nil {
+	if err != nil {
 		return nil, err
 	}
 
