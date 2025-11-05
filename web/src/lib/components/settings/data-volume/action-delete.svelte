@@ -65,7 +65,6 @@
 					<Form.Help>
 						{m.deletion_warning({ identifier: m.data_volume_name() })}
 					</Form.Help>
-					{console.log(defaults)}
 					<SingleInput.Confirm
 						required
 						target={dataVolume.name ?? ''}
