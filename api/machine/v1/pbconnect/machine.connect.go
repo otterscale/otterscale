@@ -46,6 +46,9 @@ const (
 	// MachineServiceDeleteMachineProcedure is the fully-qualified name of the MachineService's
 	// DeleteMachine RPC.
 	MachineServiceDeleteMachineProcedure = "/otterscale.machine.v1.MachineService/DeleteMachine"
+	// MachineServiceCommissionMachineProcedure is the fully-qualified name of the MachineService's
+	// CommissionMachine RPC.
+	MachineServiceCommissionMachineProcedure = "/otterscale.machine.v1.MachineService/CommissionMachine"
 	// MachineServicePowerOffMachineProcedure is the fully-qualified name of the MachineService's
 	// PowerOffMachine RPC.
 	MachineServicePowerOffMachineProcedure = "/otterscale.machine.v1.MachineService/PowerOffMachine"
@@ -73,6 +76,7 @@ type MachineServiceClient interface {
 	GetMachine(context.Context, *v1.GetMachineRequest) (*v1.Machine, error)
 	CreateMachine(context.Context, *v1.CreateMachineRequest) (*v1.Machine, error)
 	DeleteMachine(context.Context, *v1.DeleteMachineRequest) (*emptypb.Empty, error)
+	CommissionMachine(context.Context, *v1.CommissionMachineRequest) (*emptypb.Empty, error)
 	PowerOffMachine(context.Context, *v1.PowerOffMachineRequest) (*v1.Machine, error)
 	AddMachineTags(context.Context, *v1.AddMachineTagsRequest) (*emptypb.Empty, error)
 	RemoveMachineTags(context.Context, *v1.RemoveMachineTagsRequest) (*emptypb.Empty, error)
@@ -115,6 +119,12 @@ func NewMachineServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+MachineServiceDeleteMachineProcedure,
 			connect.WithSchema(machineServiceMethods.ByName("DeleteMachine")),
+			connect.WithClientOptions(opts...),
+		),
+		commissionMachine: connect.NewClient[v1.CommissionMachineRequest, emptypb.Empty](
+			httpClient,
+			baseURL+MachineServiceCommissionMachineProcedure,
+			connect.WithSchema(machineServiceMethods.ByName("CommissionMachine")),
 			connect.WithClientOptions(opts...),
 		),
 		powerOffMachine: connect.NewClient[v1.PowerOffMachineRequest, v1.Machine](
@@ -168,6 +178,7 @@ type machineServiceClient struct {
 	getMachine        *connect.Client[v1.GetMachineRequest, v1.Machine]
 	createMachine     *connect.Client[v1.CreateMachineRequest, v1.Machine]
 	deleteMachine     *connect.Client[v1.DeleteMachineRequest, emptypb.Empty]
+	commissionMachine *connect.Client[v1.CommissionMachineRequest, emptypb.Empty]
 	powerOffMachine   *connect.Client[v1.PowerOffMachineRequest, v1.Machine]
 	addMachineTags    *connect.Client[v1.AddMachineTagsRequest, emptypb.Empty]
 	removeMachineTags *connect.Client[v1.RemoveMachineTagsRequest, emptypb.Empty]
@@ -207,6 +218,15 @@ func (c *machineServiceClient) CreateMachine(ctx context.Context, req *v1.Create
 // DeleteMachine calls otterscale.machine.v1.MachineService.DeleteMachine.
 func (c *machineServiceClient) DeleteMachine(ctx context.Context, req *v1.DeleteMachineRequest) (*emptypb.Empty, error) {
 	response, err := c.deleteMachine.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// CommissionMachine calls otterscale.machine.v1.MachineService.CommissionMachine.
+func (c *machineServiceClient) CommissionMachine(ctx context.Context, req *v1.CommissionMachineRequest) (*emptypb.Empty, error) {
+	response, err := c.commissionMachine.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -282,6 +302,7 @@ type MachineServiceHandler interface {
 	GetMachine(context.Context, *v1.GetMachineRequest) (*v1.Machine, error)
 	CreateMachine(context.Context, *v1.CreateMachineRequest) (*v1.Machine, error)
 	DeleteMachine(context.Context, *v1.DeleteMachineRequest) (*emptypb.Empty, error)
+	CommissionMachine(context.Context, *v1.CommissionMachineRequest) (*emptypb.Empty, error)
 	PowerOffMachine(context.Context, *v1.PowerOffMachineRequest) (*v1.Machine, error)
 	AddMachineTags(context.Context, *v1.AddMachineTagsRequest) (*emptypb.Empty, error)
 	RemoveMachineTags(context.Context, *v1.RemoveMachineTagsRequest) (*emptypb.Empty, error)
@@ -320,6 +341,12 @@ func NewMachineServiceHandler(svc MachineServiceHandler, opts ...connect.Handler
 		MachineServiceDeleteMachineProcedure,
 		svc.DeleteMachine,
 		connect.WithSchema(machineServiceMethods.ByName("DeleteMachine")),
+		connect.WithHandlerOptions(opts...),
+	)
+	machineServiceCommissionMachineHandler := connect.NewUnaryHandlerSimple(
+		MachineServiceCommissionMachineProcedure,
+		svc.CommissionMachine,
+		connect.WithSchema(machineServiceMethods.ByName("CommissionMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
 	machineServicePowerOffMachineHandler := connect.NewUnaryHandlerSimple(
@@ -374,6 +401,8 @@ func NewMachineServiceHandler(svc MachineServiceHandler, opts ...connect.Handler
 			machineServiceCreateMachineHandler.ServeHTTP(w, r)
 		case MachineServiceDeleteMachineProcedure:
 			machineServiceDeleteMachineHandler.ServeHTTP(w, r)
+		case MachineServiceCommissionMachineProcedure:
+			machineServiceCommissionMachineHandler.ServeHTTP(w, r)
 		case MachineServicePowerOffMachineProcedure:
 			machineServicePowerOffMachineHandler.ServeHTTP(w, r)
 		case MachineServiceAddMachineTagsProcedure:
@@ -411,6 +440,10 @@ func (UnimplementedMachineServiceHandler) CreateMachine(context.Context, *v1.Cre
 
 func (UnimplementedMachineServiceHandler) DeleteMachine(context.Context, *v1.DeleteMachineRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.DeleteMachine is not implemented"))
+}
+
+func (UnimplementedMachineServiceHandler) CommissionMachine(context.Context, *v1.CommissionMachineRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.machine.v1.MachineService.CommissionMachine is not implemented"))
 }
 
 func (UnimplementedMachineServiceHandler) PowerOffMachine(context.Context, *v1.PowerOffMachineRequest) (*v1.Machine, error) {

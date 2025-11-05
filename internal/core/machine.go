@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/canonical/gomaasclient/entity"
-	"github.com/canonical/gomaasclient/entity/node"
 	"github.com/jaypipes/pcidb"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/core/model"
@@ -27,6 +26,7 @@ type (
 
 type Machine struct {
 	*entity.Machine
+	AgentStatus      params.DetailedStatus // from Juju agent
 	GPUs             []NodeDevice
 	LastCommissioned time.Time
 }
@@ -149,6 +149,10 @@ func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*Machine, 
 	if err != nil {
 		return nil, err
 	}
+	agentStatus, ok := uc.getAgentStatus(ctx, machine)
+	if ok {
+		machine.AgentStatus = agentStatus
+	}
 	gpus, err := uc.nodeDevice.List(ctx, id, "gpu")
 	if err != nil {
 		return nil, err
@@ -164,40 +168,17 @@ func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*Machine, 
 	return machine, nil
 }
 
-func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool, scopeName string, tags []string) (*Machine, error) {
-	// tag
-	eg, egctx := errgroup.WithContext(ctx)
-	for _, tag := range tags {
-		eg.Go(func() error {
-			return uc.tag.AddMachines(egctx, tag, []string{id})
-		})
-	}
-	if err := eg.Wait(); err != nil {
-		return nil, err
-	}
-
-	// commission
-	commissionParams := &entity.MachineCommissionParams{
-		TestingScripts: "",
-		EnableSSH:      boolToInt(enableSSH),
-		SkipBMCConfig:  boolToInt(skipBMCConfig),
-		SkipNetworking: boolToInt(skipNetworking),
-		SkipStorage:    boolToInt(skipStorage),
-	}
-	machine, err := uc.machine.Commission(ctx, id, commissionParams)
-	if err != nil {
-		return nil, err
-	}
-
-	// wait
-	if err := uc.waitForMachineReady(ctx, id); err != nil {
-		return nil, err
-	}
-
+func (uc *MachineUseCase) CreateMachine(ctx context.Context, machineID, scopeName string) (*Machine, error) {
 	scope, err := uc.scope.Get(ctx, scopeName) // validate scope exists
 	if err != nil {
 		return nil, err
 	}
+
+	machine, err := uc.machine.Get(ctx, machineID)
+	if err == nil {
+		return nil, err
+	}
+
 	base, err := defaultBase(ctx, uc.server)
 	if err != nil {
 		return nil, err
@@ -214,7 +195,6 @@ func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSS
 	if err := uc.machineManager.AddMachines(ctx, scopeName, addMachineParams); err != nil {
 		return nil, err
 	}
-
 	return machine, nil
 }
 
@@ -229,6 +209,20 @@ func (uc *MachineUseCase) DeleteMachine(ctx context.Context, id string, force, p
 		Force: force,
 	}
 	if _, err := uc.machine.Release(ctx, id, params); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (uc *MachineUseCase) CommissionMachine(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool) error {
+	commissionParams := &entity.MachineCommissionParams{
+		TestingScripts: "",
+		EnableSSH:      boolToInt(enableSSH),
+		SkipBMCConfig:  boolToInt(skipBMCConfig),
+		SkipNetworking: boolToInt(skipNetworking),
+		SkipStorage:    boolToInt(skipStorage),
+	}
+	if _, err := uc.machine.Commission(ctx, id, commissionParams); err != nil {
 		return err
 	}
 	return nil
@@ -284,33 +278,24 @@ func (uc *MachineUseCase) filterMachines(machines []Machine, scope string) []Mac
 	})
 }
 
-func (uc *MachineUseCase) waitForMachineReady(ctx context.Context, id string) error {
-	const tickInterval = 10 * time.Second
-	const timeoutDuration = 10 * time.Minute
-
-	ticker := time.NewTicker(tickInterval)
-	defer ticker.Stop()
-
-	timeout := time.After(timeoutDuration)
-	for {
-		select {
-		case <-ticker.C:
-			machine, err := uc.machine.Get(ctx, id)
-			if err != nil {
-				return err
-			}
-			if machine.Status == node.StatusReady {
-				return nil
-			}
-			continue
-
-		case <-timeout:
-			return fmt.Errorf("timeout waiting for machine %s to become ready", id)
-
-		case <-ctx.Done():
-			return ctx.Err()
-		}
+func (uc *MachineUseCase) getAgentStatus(ctx context.Context, machine *Machine) (params.DetailedStatus, bool) {
+	scope, err := getJujuModelName(machine.WorkloadAnnotations)
+	if err != nil {
+		return params.DetailedStatus{}, false
 	}
+	jujuMachineID, err := getJujuMachineID(machine.WorkloadAnnotations)
+	if err != nil {
+		return params.DetailedStatus{}, false
+	}
+	fullStatus, err := uc.client.Status(ctx, scope, []string{"machine", jujuMachineID})
+	if err != nil {
+		return params.DetailedStatus{}, false
+	}
+	machineStatus, ok := fullStatus.Machines[jujuMachineID]
+	if !ok {
+		return params.DetailedStatus{}, false
+	}
+	return machineStatus.AgentStatus, true
 }
 
 func (uc *MachineUseCase) purgeDisk(ctx context.Context, machineSystemID string) error {

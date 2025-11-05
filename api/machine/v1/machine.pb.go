@@ -34,6 +34,7 @@ type Machine struct {
 	xxx_hidden_Description         *string                      `protobuf:"bytes,105,opt,name=description"`
 	xxx_hidden_Status              *string                      `protobuf:"bytes,201,opt,name=status"`
 	xxx_hidden_StatusMessage       *string                      `protobuf:"bytes,202,opt,name=status_message,json=statusMessage"`
+	xxx_hidden_AgentStatus         *string                      `protobuf:"bytes,203,opt,name=agent_status,json=agentStatus"`
 	xxx_hidden_PowerState          *string                      `protobuf:"bytes,301,opt,name=power_state,json=powerState"`
 	xxx_hidden_PowerType           *string                      `protobuf:"bytes,302,opt,name=power_type,json=powerType"`
 	xxx_hidden_Osystem             *string                      `protobuf:"bytes,401,opt,name=osystem"`
@@ -161,6 +162,16 @@ func (x *Machine) GetStatusMessage() string {
 	if x != nil {
 		if x.xxx_hidden_StatusMessage != nil {
 			return *x.xxx_hidden_StatusMessage
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Machine) GetAgentStatus() string {
+	if x != nil {
+		if x.xxx_hidden_AgentStatus != nil {
+			return *x.xxx_hidden_AgentStatus
 		}
 		return ""
 	}
@@ -324,7 +335,7 @@ func (x *Machine) GetGpuDevices() []*Machine_NodeDevice {
 
 func (x *Machine) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 28)
 }
 
 func (x *Machine) SetLastCommissioned(v *timestamppb.Timestamp) {
@@ -333,17 +344,17 @@ func (x *Machine) SetLastCommissioned(v *timestamppb.Timestamp) {
 
 func (x *Machine) SetHardwareUuid(v string) {
 	x.xxx_hidden_HardwareUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 28)
 }
 
 func (x *Machine) SetHostname(v string) {
 	x.xxx_hidden_Hostname = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 28)
 }
 
 func (x *Machine) SetFqdn(v string) {
 	x.xxx_hidden_Fqdn = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 28)
 }
 
 func (x *Machine) SetTags(v []string) {
@@ -352,67 +363,72 @@ func (x *Machine) SetTags(v []string) {
 
 func (x *Machine) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 28)
 }
 
 func (x *Machine) SetStatus(v string) {
 	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 28)
 }
 
 func (x *Machine) SetStatusMessage(v string) {
 	x.xxx_hidden_StatusMessage = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 28)
+}
+
+func (x *Machine) SetAgentStatus(v string) {
+	x.xxx_hidden_AgentStatus = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 28)
 }
 
 func (x *Machine) SetPowerState(v string) {
 	x.xxx_hidden_PowerState = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 28)
 }
 
 func (x *Machine) SetPowerType(v string) {
 	x.xxx_hidden_PowerType = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 28)
 }
 
 func (x *Machine) SetOsystem(v string) {
 	x.xxx_hidden_Osystem = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 28)
 }
 
 func (x *Machine) SetDistroSeries(v string) {
 	x.xxx_hidden_DistroSeries = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 13, 28)
 }
 
 func (x *Machine) SetHweKernel(v string) {
 	x.xxx_hidden_HweKernel = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 13, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 14, 28)
 }
 
 func (x *Machine) SetArchitecture(v string) {
 	x.xxx_hidden_Architecture = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 14, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 15, 28)
 }
 
 func (x *Machine) SetCpuSpeed(v int64) {
 	x.xxx_hidden_CpuSpeed = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 15, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 16, 28)
 }
 
 func (x *Machine) SetCpuCount(v int64) {
 	x.xxx_hidden_CpuCount = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 16, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 17, 28)
 }
 
 func (x *Machine) SetMemoryMb(v int64) {
 	x.xxx_hidden_MemoryMb = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 17, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 18, 28)
 }
 
 func (x *Machine) SetStorageMb(v float64) {
 	x.xxx_hidden_StorageMb = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 18, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 19, 28)
 }
 
 func (x *Machine) SetIpAddresses(v []string) {
@@ -429,7 +445,7 @@ func (x *Machine) SetHardwareInformation(v map[string]string) {
 
 func (x *Machine) SetBiosBootMethod(v string) {
 	x.xxx_hidden_BiosBootMethod = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 22, 27)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 23, 28)
 }
 
 func (x *Machine) SetNumaNodes(v []*Machine_NUMANode) {
@@ -504,81 +520,88 @@ func (x *Machine) HasStatusMessage() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
-func (x *Machine) HasPowerState() bool {
+func (x *Machine) HasAgentStatus() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
 }
 
-func (x *Machine) HasPowerType() bool {
+func (x *Machine) HasPowerState() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 10)
 }
 
-func (x *Machine) HasOsystem() bool {
+func (x *Machine) HasPowerType() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 11)
 }
 
-func (x *Machine) HasDistroSeries() bool {
+func (x *Machine) HasOsystem() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 12)
 }
 
-func (x *Machine) HasHweKernel() bool {
+func (x *Machine) HasDistroSeries() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 13)
 }
 
-func (x *Machine) HasArchitecture() bool {
+func (x *Machine) HasHweKernel() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 14)
 }
 
-func (x *Machine) HasCpuSpeed() bool {
+func (x *Machine) HasArchitecture() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 15)
 }
 
-func (x *Machine) HasCpuCount() bool {
+func (x *Machine) HasCpuSpeed() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 16)
 }
 
-func (x *Machine) HasMemoryMb() bool {
+func (x *Machine) HasCpuCount() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 17)
 }
 
-func (x *Machine) HasStorageMb() bool {
+func (x *Machine) HasMemoryMb() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 18)
 }
 
+func (x *Machine) HasStorageMb() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 19)
+}
+
 func (x *Machine) HasBiosBootMethod() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 22)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 23)
 }
 
 func (x *Machine) ClearId() {
@@ -620,58 +643,63 @@ func (x *Machine) ClearStatusMessage() {
 	x.xxx_hidden_StatusMessage = nil
 }
 
-func (x *Machine) ClearPowerState() {
+func (x *Machine) ClearAgentStatus() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
+	x.xxx_hidden_AgentStatus = nil
+}
+
+func (x *Machine) ClearPowerState() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 10)
 	x.xxx_hidden_PowerState = nil
 }
 
 func (x *Machine) ClearPowerType() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 10)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
 	x.xxx_hidden_PowerType = nil
 }
 
 func (x *Machine) ClearOsystem() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 12)
 	x.xxx_hidden_Osystem = nil
 }
 
 func (x *Machine) ClearDistroSeries() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 12)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 13)
 	x.xxx_hidden_DistroSeries = nil
 }
 
 func (x *Machine) ClearHweKernel() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 13)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 14)
 	x.xxx_hidden_HweKernel = nil
 }
 
 func (x *Machine) ClearArchitecture() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 14)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 15)
 	x.xxx_hidden_Architecture = nil
 }
 
 func (x *Machine) ClearCpuSpeed() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 15)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 16)
 	x.xxx_hidden_CpuSpeed = 0
 }
 
 func (x *Machine) ClearCpuCount() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 16)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 17)
 	x.xxx_hidden_CpuCount = 0
 }
 
 func (x *Machine) ClearMemoryMb() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 17)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 18)
 	x.xxx_hidden_MemoryMb = 0
 }
 
 func (x *Machine) ClearStorageMb() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 18)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 19)
 	x.xxx_hidden_StorageMb = 0
 }
 
 func (x *Machine) ClearBiosBootMethod() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 22)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 23)
 	x.xxx_hidden_BiosBootMethod = nil
 }
 
@@ -687,6 +715,7 @@ type Machine_builder struct {
 	Description         *string
 	Status              *string
 	StatusMessage       *string
+	AgentStatus         *string
 	PowerState          *string
 	PowerType           *string
 	Osystem             *string
@@ -712,80 +741,84 @@ func (b0 Machine_builder) Build() *Machine {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 28)
 		x.xxx_hidden_Id = b.Id
 	}
 	x.xxx_hidden_LastCommissioned = b.LastCommissioned
 	if b.HardwareUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 28)
 		x.xxx_hidden_HardwareUuid = b.HardwareUuid
 	}
 	if b.Hostname != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 28)
 		x.xxx_hidden_Hostname = b.Hostname
 	}
 	if b.Fqdn != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 28)
 		x.xxx_hidden_Fqdn = b.Fqdn
 	}
 	x.xxx_hidden_Tags = b.Tags
 	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 28)
 		x.xxx_hidden_Description = b.Description
 	}
 	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 28)
 		x.xxx_hidden_Status = b.Status
 	}
 	if b.StatusMessage != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 28)
 		x.xxx_hidden_StatusMessage = b.StatusMessage
 	}
+	if b.AgentStatus != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 28)
+		x.xxx_hidden_AgentStatus = b.AgentStatus
+	}
 	if b.PowerState != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 28)
 		x.xxx_hidden_PowerState = b.PowerState
 	}
 	if b.PowerType != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 28)
 		x.xxx_hidden_PowerType = b.PowerType
 	}
 	if b.Osystem != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 28)
 		x.xxx_hidden_Osystem = b.Osystem
 	}
 	if b.DistroSeries != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 13, 28)
 		x.xxx_hidden_DistroSeries = b.DistroSeries
 	}
 	if b.HweKernel != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 13, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 14, 28)
 		x.xxx_hidden_HweKernel = b.HweKernel
 	}
 	if b.Architecture != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 14, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 15, 28)
 		x.xxx_hidden_Architecture = b.Architecture
 	}
 	if b.CpuSpeed != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 15, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 16, 28)
 		x.xxx_hidden_CpuSpeed = *b.CpuSpeed
 	}
 	if b.CpuCount != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 16, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 17, 28)
 		x.xxx_hidden_CpuCount = *b.CpuCount
 	}
 	if b.MemoryMb != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 17, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 18, 28)
 		x.xxx_hidden_MemoryMb = *b.MemoryMb
 	}
 	if b.StorageMb != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 18, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 19, 28)
 		x.xxx_hidden_StorageMb = *b.StorageMb
 	}
 	x.xxx_hidden_IpAddresses = b.IpAddresses
 	x.xxx_hidden_WorkloadAnnotations = b.WorkloadAnnotations
 	x.xxx_hidden_HardwareInformation = b.HardwareInformation
 	if b.BiosBootMethod != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 22, 27)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 23, 28)
 		x.xxx_hidden_BiosBootMethod = b.BiosBootMethod
 	}
 	x.xxx_hidden_NumaNodes = &b.NumaNodes
@@ -1122,18 +1155,13 @@ func (b0 GetMachineRequest_builder) Build() *GetMachineRequest {
 }
 
 type CreateMachineRequest struct {
-	state                     protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Id             *string                `protobuf:"bytes,1,opt,name=id"`
-	xxx_hidden_EnableSsh      bool                   `protobuf:"varint,2,opt,name=enable_ssh,json=enableSsh"`
-	xxx_hidden_SkipBmcConfig  bool                   `protobuf:"varint,3,opt,name=skip_bmc_config,json=skipBmcConfig"`
-	xxx_hidden_SkipNetworking bool                   `protobuf:"varint,4,opt,name=skip_networking,json=skipNetworking"`
-	xxx_hidden_SkipStorage    bool                   `protobuf:"varint,5,opt,name=skip_storage,json=skipStorage"`
-	xxx_hidden_Scope          *string                `protobuf:"bytes,11,opt,name=scope"`
-	xxx_hidden_Tags           []string               `protobuf:"bytes,21,rep,name=tags"`
-	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
-	XXX_presence              [1]uint32
-	unknownFields             protoimpl.UnknownFields
-	sizeCache                 protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,2,opt,name=scope"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *CreateMachineRequest) Reset() {
@@ -1171,34 +1199,6 @@ func (x *CreateMachineRequest) GetId() string {
 	return ""
 }
 
-func (x *CreateMachineRequest) GetEnableSsh() bool {
-	if x != nil {
-		return x.xxx_hidden_EnableSsh
-	}
-	return false
-}
-
-func (x *CreateMachineRequest) GetSkipBmcConfig() bool {
-	if x != nil {
-		return x.xxx_hidden_SkipBmcConfig
-	}
-	return false
-}
-
-func (x *CreateMachineRequest) GetSkipNetworking() bool {
-	if x != nil {
-		return x.xxx_hidden_SkipNetworking
-	}
-	return false
-}
-
-func (x *CreateMachineRequest) GetSkipStorage() bool {
-	if x != nil {
-		return x.xxx_hidden_SkipStorage
-	}
-	return false
-}
-
 func (x *CreateMachineRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
@@ -1209,45 +1209,14 @@ func (x *CreateMachineRequest) GetScope() string {
 	return ""
 }
 
-func (x *CreateMachineRequest) GetTags() []string {
-	if x != nil {
-		return x.xxx_hidden_Tags
-	}
-	return nil
-}
-
 func (x *CreateMachineRequest) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
-}
-
-func (x *CreateMachineRequest) SetEnableSsh(v bool) {
-	x.xxx_hidden_EnableSsh = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
-}
-
-func (x *CreateMachineRequest) SetSkipBmcConfig(v bool) {
-	x.xxx_hidden_SkipBmcConfig = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
-}
-
-func (x *CreateMachineRequest) SetSkipNetworking(v bool) {
-	x.xxx_hidden_SkipNetworking = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
-}
-
-func (x *CreateMachineRequest) SetSkipStorage(v bool) {
-	x.xxx_hidden_SkipStorage = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *CreateMachineRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 7)
-}
-
-func (x *CreateMachineRequest) SetTags(v []string) {
-	x.xxx_hidden_Tags = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *CreateMachineRequest) HasId() bool {
@@ -1257,39 +1226,11 @@ func (x *CreateMachineRequest) HasId() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateMachineRequest) HasEnableSsh() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *CreateMachineRequest) HasSkipBmcConfig() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *CreateMachineRequest) HasSkipNetworking() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *CreateMachineRequest) HasSkipStorage() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *CreateMachineRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *CreateMachineRequest) ClearId() {
@@ -1297,41 +1238,16 @@ func (x *CreateMachineRequest) ClearId() {
 	x.xxx_hidden_Id = nil
 }
 
-func (x *CreateMachineRequest) ClearEnableSsh() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_EnableSsh = false
-}
-
-func (x *CreateMachineRequest) ClearSkipBmcConfig() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_SkipBmcConfig = false
-}
-
-func (x *CreateMachineRequest) ClearSkipNetworking() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_SkipNetworking = false
-}
-
-func (x *CreateMachineRequest) ClearSkipStorage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_SkipStorage = false
-}
-
 func (x *CreateMachineRequest) ClearScope() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Scope = nil
 }
 
 type CreateMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Id             *string
-	EnableSsh      *bool
-	SkipBmcConfig  *bool
-	SkipNetworking *bool
-	SkipStorage    *bool
-	Scope          *string
-	Tags           []string
+	Id    *string
+	Scope *string
 }
 
 func (b0 CreateMachineRequest_builder) Build() *CreateMachineRequest {
@@ -1339,30 +1255,13 @@ func (b0 CreateMachineRequest_builder) Build() *CreateMachineRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Id = b.Id
 	}
-	if b.EnableSsh != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
-		x.xxx_hidden_EnableSsh = *b.EnableSsh
-	}
-	if b.SkipBmcConfig != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
-		x.xxx_hidden_SkipBmcConfig = *b.SkipBmcConfig
-	}
-	if b.SkipNetworking != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
-		x.xxx_hidden_SkipNetworking = *b.SkipNetworking
-	}
-	if b.SkipStorage != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
-		x.xxx_hidden_SkipStorage = *b.SkipStorage
-	}
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	x.xxx_hidden_Tags = b.Tags
 	return m0
 }
 
@@ -1504,6 +1403,204 @@ func (b0 DeleteMachineRequest_builder) Build() *DeleteMachineRequest {
 	return m0
 }
 
+type CommissionMachineRequest struct {
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Id             *string                `protobuf:"bytes,1,opt,name=id"`
+	xxx_hidden_EnableSsh      bool                   `protobuf:"varint,2,opt,name=enable_ssh,json=enableSsh"`
+	xxx_hidden_SkipBmcConfig  bool                   `protobuf:"varint,3,opt,name=skip_bmc_config,json=skipBmcConfig"`
+	xxx_hidden_SkipNetworking bool                   `protobuf:"varint,4,opt,name=skip_networking,json=skipNetworking"`
+	xxx_hidden_SkipStorage    bool                   `protobuf:"varint,5,opt,name=skip_storage,json=skipStorage"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
+}
+
+func (x *CommissionMachineRequest) Reset() {
+	*x = CommissionMachineRequest{}
+	mi := &file_api_machine_v1_machine_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CommissionMachineRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommissionMachineRequest) ProtoMessage() {}
+
+func (x *CommissionMachineRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_machine_v1_machine_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *CommissionMachineRequest) GetId() string {
+	if x != nil {
+		if x.xxx_hidden_Id != nil {
+			return *x.xxx_hidden_Id
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CommissionMachineRequest) GetEnableSsh() bool {
+	if x != nil {
+		return x.xxx_hidden_EnableSsh
+	}
+	return false
+}
+
+func (x *CommissionMachineRequest) GetSkipBmcConfig() bool {
+	if x != nil {
+		return x.xxx_hidden_SkipBmcConfig
+	}
+	return false
+}
+
+func (x *CommissionMachineRequest) GetSkipNetworking() bool {
+	if x != nil {
+		return x.xxx_hidden_SkipNetworking
+	}
+	return false
+}
+
+func (x *CommissionMachineRequest) GetSkipStorage() bool {
+	if x != nil {
+		return x.xxx_hidden_SkipStorage
+	}
+	return false
+}
+
+func (x *CommissionMachineRequest) SetId(v string) {
+	x.xxx_hidden_Id = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *CommissionMachineRequest) SetEnableSsh(v bool) {
+	x.xxx_hidden_EnableSsh = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *CommissionMachineRequest) SetSkipBmcConfig(v bool) {
+	x.xxx_hidden_SkipBmcConfig = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *CommissionMachineRequest) SetSkipNetworking(v bool) {
+	x.xxx_hidden_SkipNetworking = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *CommissionMachineRequest) SetSkipStorage(v bool) {
+	x.xxx_hidden_SkipStorage = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+}
+
+func (x *CommissionMachineRequest) HasId() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CommissionMachineRequest) HasEnableSsh() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *CommissionMachineRequest) HasSkipBmcConfig() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *CommissionMachineRequest) HasSkipNetworking() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *CommissionMachineRequest) HasSkipStorage() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *CommissionMachineRequest) ClearId() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Id = nil
+}
+
+func (x *CommissionMachineRequest) ClearEnableSsh() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_EnableSsh = false
+}
+
+func (x *CommissionMachineRequest) ClearSkipBmcConfig() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_SkipBmcConfig = false
+}
+
+func (x *CommissionMachineRequest) ClearSkipNetworking() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_SkipNetworking = false
+}
+
+func (x *CommissionMachineRequest) ClearSkipStorage() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_SkipStorage = false
+}
+
+type CommissionMachineRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Id             *string
+	EnableSsh      *bool
+	SkipBmcConfig  *bool
+	SkipNetworking *bool
+	SkipStorage    *bool
+}
+
+func (b0 CommissionMachineRequest_builder) Build() *CommissionMachineRequest {
+	m0 := &CommissionMachineRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Id != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_Id = b.Id
+	}
+	if b.EnableSsh != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_EnableSsh = *b.EnableSsh
+	}
+	if b.SkipBmcConfig != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_SkipBmcConfig = *b.SkipBmcConfig
+	}
+	if b.SkipNetworking != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_SkipNetworking = *b.SkipNetworking
+	}
+	if b.SkipStorage != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_SkipStorage = *b.SkipStorage
+	}
+	return m0
+}
+
 type PowerOffMachineRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
@@ -1516,7 +1613,7 @@ type PowerOffMachineRequest struct {
 
 func (x *PowerOffMachineRequest) Reset() {
 	*x = PowerOffMachineRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[7]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1528,7 +1625,7 @@ func (x *PowerOffMachineRequest) String() string {
 func (*PowerOffMachineRequest) ProtoMessage() {}
 
 func (x *PowerOffMachineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[7]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1627,7 +1724,7 @@ type AddMachineTagsRequest struct {
 
 func (x *AddMachineTagsRequest) Reset() {
 	*x = AddMachineTagsRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[8]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1639,7 +1736,7 @@ func (x *AddMachineTagsRequest) String() string {
 func (*AddMachineTagsRequest) ProtoMessage() {}
 
 func (x *AddMachineTagsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[8]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1719,7 +1816,7 @@ type RemoveMachineTagsRequest struct {
 
 func (x *RemoveMachineTagsRequest) Reset() {
 	*x = RemoveMachineTagsRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[9]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1731,7 +1828,7 @@ func (x *RemoveMachineTagsRequest) String() string {
 func (*RemoveMachineTagsRequest) ProtoMessage() {}
 
 func (x *RemoveMachineTagsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[9]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1807,7 +1904,7 @@ type ListTagsRequest struct {
 
 func (x *ListTagsRequest) Reset() {
 	*x = ListTagsRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[10]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1819,7 +1916,7 @@ func (x *ListTagsRequest) String() string {
 func (*ListTagsRequest) ProtoMessage() {}
 
 func (x *ListTagsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[10]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1851,7 +1948,7 @@ type ListTagsResponse struct {
 
 func (x *ListTagsResponse) Reset() {
 	*x = ListTagsResponse{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[11]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1863,7 +1960,7 @@ func (x *ListTagsResponse) String() string {
 func (*ListTagsResponse) ProtoMessage() {}
 
 func (x *ListTagsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[11]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1912,7 +2009,7 @@ type GetTagRequest struct {
 
 func (x *GetTagRequest) Reset() {
 	*x = GetTagRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[12]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1924,7 +2021,7 @@ func (x *GetTagRequest) String() string {
 func (*GetTagRequest) ProtoMessage() {}
 
 func (x *GetTagRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[12]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1991,7 +2088,7 @@ type CreateTagRequest struct {
 
 func (x *CreateTagRequest) Reset() {
 	*x = CreateTagRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[13]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2003,7 +2100,7 @@ func (x *CreateTagRequest) String() string {
 func (*CreateTagRequest) ProtoMessage() {}
 
 func (x *CreateTagRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[13]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2101,7 +2198,7 @@ type DeleteTagRequest struct {
 
 func (x *DeleteTagRequest) Reset() {
 	*x = DeleteTagRequest{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[14]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2113,7 +2210,7 @@ func (x *DeleteTagRequest) String() string {
 func (*DeleteTagRequest) ProtoMessage() {}
 
 func (x *DeleteTagRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[14]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2181,7 +2278,7 @@ type Machine_NUMANode struct {
 
 func (x *Machine_NUMANode) Reset() {
 	*x = Machine_NUMANode{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[15]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2193,7 +2290,7 @@ func (x *Machine_NUMANode) String() string {
 func (*Machine_NUMANode) ProtoMessage() {}
 
 func (x *Machine_NUMANode) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[15]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2322,7 +2419,7 @@ type Machine_BlockDevice struct {
 
 func (x *Machine_BlockDevice) Reset() {
 	*x = Machine_BlockDevice{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[16]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2334,7 +2431,7 @@ func (x *Machine_BlockDevice) String() string {
 func (*Machine_BlockDevice) ProtoMessage() {}
 
 func (x *Machine_BlockDevice) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[16]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2645,7 +2742,7 @@ type Machine_NetworkInterface struct {
 
 func (x *Machine_NetworkInterface) Reset() {
 	*x = Machine_NetworkInterface{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[17]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2657,7 +2754,7 @@ func (x *Machine_NetworkInterface) String() string {
 func (*Machine_NetworkInterface) ProtoMessage() {}
 
 func (x *Machine_NetworkInterface) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[17]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3152,7 +3249,7 @@ type Machine_NodeDevice struct {
 
 func (x *Machine_NodeDevice) Reset() {
 	*x = Machine_NodeDevice{}
-	mi := &file_api_machine_v1_machine_proto_msgTypes[18]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3164,7 +3261,7 @@ func (x *Machine_NodeDevice) String() string {
 func (*Machine_NodeDevice) ProtoMessage() {}
 
 func (x *Machine_NodeDevice) ProtoReflect() protoreflect.Message {
-	mi := &file_api_machine_v1_machine_proto_msgTypes[18]
+	mi := &file_api_machine_v1_machine_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3383,7 +3480,7 @@ var File_api_machine_v1_machine_proto protoreflect.FileDescriptor
 
 const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\n" +
-	"\x1capi/machine/v1/machine.proto\x12\x15otterscale.machine.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf3\x12\n" +
+	"\x1capi/machine/v1/machine.proto\x12\x15otterscale.machine.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x97\x13\n" +
 	"\aMachine\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12G\n" +
 	"\x11last_commissioned\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x10lastCommissioned\x12#\n" +
@@ -3393,7 +3490,8 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\x04tags\x18h \x03(\tR\x04tags\x12 \n" +
 	"\vdescription\x18i \x01(\tR\vdescription\x12\x17\n" +
 	"\x06status\x18\xc9\x01 \x01(\tR\x06status\x12&\n" +
-	"\x0estatus_message\x18\xca\x01 \x01(\tR\rstatusMessage\x12 \n" +
+	"\x0estatus_message\x18\xca\x01 \x01(\tR\rstatusMessage\x12\"\n" +
+	"\fagent_status\x18\xcb\x01 \x01(\tR\vagentStatus\x12 \n" +
 	"\vpower_state\x18\xad\x02 \x01(\tR\n" +
 	"powerState\x12\x1e\n" +
 	"\n" +
@@ -3479,21 +3577,22 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\x14ListMachinesResponse\x12:\n" +
 	"\bmachines\x18\x01 \x03(\v2\x1e.otterscale.machine.v1.MachineR\bmachines\"#\n" +
 	"\x11GetMachineRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xe3\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"<\n" +
 	"\x14CreateMachineRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x05scope\x18\x02 \x01(\tR\x05scope\"[\n" +
+	"\x14DeleteMachineRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x05force\x18\x02 \x01(\bR\x05force\x12\x1d\n" +
+	"\n" +
+	"purge_disk\x18\x03 \x01(\bR\tpurgeDisk\"\xbd\x01\n" +
+	"\x18CommissionMachineRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"enable_ssh\x18\x02 \x01(\bR\tenableSsh\x12&\n" +
 	"\x0fskip_bmc_config\x18\x03 \x01(\bR\rskipBmcConfig\x12'\n" +
 	"\x0fskip_networking\x18\x04 \x01(\bR\x0eskipNetworking\x12!\n" +
-	"\fskip_storage\x18\x05 \x01(\bR\vskipStorage\x12\x14\n" +
-	"\x05scope\x18\v \x01(\tR\x05scope\x12\x12\n" +
-	"\x04tags\x18\x15 \x03(\tR\x04tags\"[\n" +
-	"\x14DeleteMachineRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
-	"\x05force\x18\x02 \x01(\bR\x05force\x12\x1d\n" +
-	"\n" +
-	"purge_disk\x18\x03 \x01(\bR\tpurgeDisk\"B\n" +
+	"\fskip_storage\x18\x05 \x01(\bR\vskipStorage\"B\n" +
 	"\x16PowerOffMachineRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
 	"\acomment\x18\x02 \x01(\tR\acomment\";\n" +
@@ -3512,7 +3611,8 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
 	"\acomment\x18\x02 \x01(\tR\acomment\"&\n" +
 	"\x10DeleteTagRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name2\xb2\t\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name2\xa4\n" +
+	"\n" +
 	"\x0eMachineService\x12{\n" +
 	"\fListMachines\x12*.otterscale.machine.v1.ListMachinesRequest\x1a+.otterscale.machine.v1.ListMachinesResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vmch-general\x12j\n" +
@@ -3522,6 +3622,8 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\rCreateMachine\x12+.otterscale.machine.v1.CreateMachineRequest\x1a\x1e.otterscale.machine.v1.Machine\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vmch-general\x12h\n" +
 	"\rDeleteMachine\x12+.otterscale.machine.v1.DeleteMachineRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vmch-general\x12p\n" +
+	"\x11CommissionMachine\x12/.otterscale.machine.v1.CommissionMachineRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vmch-general\x12t\n" +
 	"\x0fPowerOffMachine\x12-.otterscale.machine.v1.PowerOffMachineRequest\x1a\x1e.otterscale.machine.v1.Machine\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vmch-general\x12j\n" +
@@ -3538,7 +3640,7 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\tDeleteTag\x12'.otterscale.machine.v1.DeleteTagRequest\x1a\x16.google.protobuf.Empty\"\x0e\x8a\xdf\xd5\x1d\t\n" +
 	"\amch-tagB4Z2github.com/otterscale/otterscale/api/machine/v1;pbb\beditionsp\xe8\a"
 
-var file_api_machine_v1_machine_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
+var file_api_machine_v1_machine_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_api_machine_v1_machine_proto_goTypes = []any{
 	(*Machine)(nil),                  // 0: otterscale.machine.v1.Machine
 	(*Tag)(nil),                      // 1: otterscale.machine.v1.Tag
@@ -3547,57 +3649,60 @@ var file_api_machine_v1_machine_proto_goTypes = []any{
 	(*GetMachineRequest)(nil),        // 4: otterscale.machine.v1.GetMachineRequest
 	(*CreateMachineRequest)(nil),     // 5: otterscale.machine.v1.CreateMachineRequest
 	(*DeleteMachineRequest)(nil),     // 6: otterscale.machine.v1.DeleteMachineRequest
-	(*PowerOffMachineRequest)(nil),   // 7: otterscale.machine.v1.PowerOffMachineRequest
-	(*AddMachineTagsRequest)(nil),    // 8: otterscale.machine.v1.AddMachineTagsRequest
-	(*RemoveMachineTagsRequest)(nil), // 9: otterscale.machine.v1.RemoveMachineTagsRequest
-	(*ListTagsRequest)(nil),          // 10: otterscale.machine.v1.ListTagsRequest
-	(*ListTagsResponse)(nil),         // 11: otterscale.machine.v1.ListTagsResponse
-	(*GetTagRequest)(nil),            // 12: otterscale.machine.v1.GetTagRequest
-	(*CreateTagRequest)(nil),         // 13: otterscale.machine.v1.CreateTagRequest
-	(*DeleteTagRequest)(nil),         // 14: otterscale.machine.v1.DeleteTagRequest
-	(*Machine_NUMANode)(nil),         // 15: otterscale.machine.v1.Machine.NUMANode
-	(*Machine_BlockDevice)(nil),      // 16: otterscale.machine.v1.Machine.BlockDevice
-	(*Machine_NetworkInterface)(nil), // 17: otterscale.machine.v1.Machine.NetworkInterface
-	(*Machine_NodeDevice)(nil),       // 18: otterscale.machine.v1.Machine.NodeDevice
-	nil,                              // 19: otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
-	nil,                              // 20: otterscale.machine.v1.Machine.HardwareInformationEntry
-	(*timestamppb.Timestamp)(nil),    // 21: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),            // 22: google.protobuf.Empty
+	(*CommissionMachineRequest)(nil), // 7: otterscale.machine.v1.CommissionMachineRequest
+	(*PowerOffMachineRequest)(nil),   // 8: otterscale.machine.v1.PowerOffMachineRequest
+	(*AddMachineTagsRequest)(nil),    // 9: otterscale.machine.v1.AddMachineTagsRequest
+	(*RemoveMachineTagsRequest)(nil), // 10: otterscale.machine.v1.RemoveMachineTagsRequest
+	(*ListTagsRequest)(nil),          // 11: otterscale.machine.v1.ListTagsRequest
+	(*ListTagsResponse)(nil),         // 12: otterscale.machine.v1.ListTagsResponse
+	(*GetTagRequest)(nil),            // 13: otterscale.machine.v1.GetTagRequest
+	(*CreateTagRequest)(nil),         // 14: otterscale.machine.v1.CreateTagRequest
+	(*DeleteTagRequest)(nil),         // 15: otterscale.machine.v1.DeleteTagRequest
+	(*Machine_NUMANode)(nil),         // 16: otterscale.machine.v1.Machine.NUMANode
+	(*Machine_BlockDevice)(nil),      // 17: otterscale.machine.v1.Machine.BlockDevice
+	(*Machine_NetworkInterface)(nil), // 18: otterscale.machine.v1.Machine.NetworkInterface
+	(*Machine_NodeDevice)(nil),       // 19: otterscale.machine.v1.Machine.NodeDevice
+	nil,                              // 20: otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
+	nil,                              // 21: otterscale.machine.v1.Machine.HardwareInformationEntry
+	(*timestamppb.Timestamp)(nil),    // 22: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),            // 23: google.protobuf.Empty
 }
 var file_api_machine_v1_machine_proto_depIdxs = []int32{
-	21, // 0: otterscale.machine.v1.Machine.last_commissioned:type_name -> google.protobuf.Timestamp
-	19, // 1: otterscale.machine.v1.Machine.workload_annotations:type_name -> otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
-	20, // 2: otterscale.machine.v1.Machine.hardware_information:type_name -> otterscale.machine.v1.Machine.HardwareInformationEntry
-	15, // 3: otterscale.machine.v1.Machine.numa_nodes:type_name -> otterscale.machine.v1.Machine.NUMANode
-	16, // 4: otterscale.machine.v1.Machine.block_devices:type_name -> otterscale.machine.v1.Machine.BlockDevice
-	17, // 5: otterscale.machine.v1.Machine.network_interfaces:type_name -> otterscale.machine.v1.Machine.NetworkInterface
-	18, // 6: otterscale.machine.v1.Machine.gpu_devices:type_name -> otterscale.machine.v1.Machine.NodeDevice
+	22, // 0: otterscale.machine.v1.Machine.last_commissioned:type_name -> google.protobuf.Timestamp
+	20, // 1: otterscale.machine.v1.Machine.workload_annotations:type_name -> otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
+	21, // 2: otterscale.machine.v1.Machine.hardware_information:type_name -> otterscale.machine.v1.Machine.HardwareInformationEntry
+	16, // 3: otterscale.machine.v1.Machine.numa_nodes:type_name -> otterscale.machine.v1.Machine.NUMANode
+	17, // 4: otterscale.machine.v1.Machine.block_devices:type_name -> otterscale.machine.v1.Machine.BlockDevice
+	18, // 5: otterscale.machine.v1.Machine.network_interfaces:type_name -> otterscale.machine.v1.Machine.NetworkInterface
+	19, // 6: otterscale.machine.v1.Machine.gpu_devices:type_name -> otterscale.machine.v1.Machine.NodeDevice
 	0,  // 7: otterscale.machine.v1.ListMachinesResponse.machines:type_name -> otterscale.machine.v1.Machine
 	1,  // 8: otterscale.machine.v1.ListTagsResponse.tags:type_name -> otterscale.machine.v1.Tag
 	2,  // 9: otterscale.machine.v1.MachineService.ListMachines:input_type -> otterscale.machine.v1.ListMachinesRequest
 	4,  // 10: otterscale.machine.v1.MachineService.GetMachine:input_type -> otterscale.machine.v1.GetMachineRequest
 	5,  // 11: otterscale.machine.v1.MachineService.CreateMachine:input_type -> otterscale.machine.v1.CreateMachineRequest
 	6,  // 12: otterscale.machine.v1.MachineService.DeleteMachine:input_type -> otterscale.machine.v1.DeleteMachineRequest
-	7,  // 13: otterscale.machine.v1.MachineService.PowerOffMachine:input_type -> otterscale.machine.v1.PowerOffMachineRequest
-	8,  // 14: otterscale.machine.v1.MachineService.AddMachineTags:input_type -> otterscale.machine.v1.AddMachineTagsRequest
-	9,  // 15: otterscale.machine.v1.MachineService.RemoveMachineTags:input_type -> otterscale.machine.v1.RemoveMachineTagsRequest
-	10, // 16: otterscale.machine.v1.MachineService.ListTags:input_type -> otterscale.machine.v1.ListTagsRequest
-	12, // 17: otterscale.machine.v1.MachineService.GetTag:input_type -> otterscale.machine.v1.GetTagRequest
-	13, // 18: otterscale.machine.v1.MachineService.CreateTag:input_type -> otterscale.machine.v1.CreateTagRequest
-	14, // 19: otterscale.machine.v1.MachineService.DeleteTag:input_type -> otterscale.machine.v1.DeleteTagRequest
-	3,  // 20: otterscale.machine.v1.MachineService.ListMachines:output_type -> otterscale.machine.v1.ListMachinesResponse
-	0,  // 21: otterscale.machine.v1.MachineService.GetMachine:output_type -> otterscale.machine.v1.Machine
-	0,  // 22: otterscale.machine.v1.MachineService.CreateMachine:output_type -> otterscale.machine.v1.Machine
-	22, // 23: otterscale.machine.v1.MachineService.DeleteMachine:output_type -> google.protobuf.Empty
-	0,  // 24: otterscale.machine.v1.MachineService.PowerOffMachine:output_type -> otterscale.machine.v1.Machine
-	22, // 25: otterscale.machine.v1.MachineService.AddMachineTags:output_type -> google.protobuf.Empty
-	22, // 26: otterscale.machine.v1.MachineService.RemoveMachineTags:output_type -> google.protobuf.Empty
-	11, // 27: otterscale.machine.v1.MachineService.ListTags:output_type -> otterscale.machine.v1.ListTagsResponse
-	1,  // 28: otterscale.machine.v1.MachineService.GetTag:output_type -> otterscale.machine.v1.Tag
-	1,  // 29: otterscale.machine.v1.MachineService.CreateTag:output_type -> otterscale.machine.v1.Tag
-	22, // 30: otterscale.machine.v1.MachineService.DeleteTag:output_type -> google.protobuf.Empty
-	20, // [20:31] is the sub-list for method output_type
-	9,  // [9:20] is the sub-list for method input_type
+	7,  // 13: otterscale.machine.v1.MachineService.CommissionMachine:input_type -> otterscale.machine.v1.CommissionMachineRequest
+	8,  // 14: otterscale.machine.v1.MachineService.PowerOffMachine:input_type -> otterscale.machine.v1.PowerOffMachineRequest
+	9,  // 15: otterscale.machine.v1.MachineService.AddMachineTags:input_type -> otterscale.machine.v1.AddMachineTagsRequest
+	10, // 16: otterscale.machine.v1.MachineService.RemoveMachineTags:input_type -> otterscale.machine.v1.RemoveMachineTagsRequest
+	11, // 17: otterscale.machine.v1.MachineService.ListTags:input_type -> otterscale.machine.v1.ListTagsRequest
+	13, // 18: otterscale.machine.v1.MachineService.GetTag:input_type -> otterscale.machine.v1.GetTagRequest
+	14, // 19: otterscale.machine.v1.MachineService.CreateTag:input_type -> otterscale.machine.v1.CreateTagRequest
+	15, // 20: otterscale.machine.v1.MachineService.DeleteTag:input_type -> otterscale.machine.v1.DeleteTagRequest
+	3,  // 21: otterscale.machine.v1.MachineService.ListMachines:output_type -> otterscale.machine.v1.ListMachinesResponse
+	0,  // 22: otterscale.machine.v1.MachineService.GetMachine:output_type -> otterscale.machine.v1.Machine
+	0,  // 23: otterscale.machine.v1.MachineService.CreateMachine:output_type -> otterscale.machine.v1.Machine
+	23, // 24: otterscale.machine.v1.MachineService.DeleteMachine:output_type -> google.protobuf.Empty
+	23, // 25: otterscale.machine.v1.MachineService.CommissionMachine:output_type -> google.protobuf.Empty
+	0,  // 26: otterscale.machine.v1.MachineService.PowerOffMachine:output_type -> otterscale.machine.v1.Machine
+	23, // 27: otterscale.machine.v1.MachineService.AddMachineTags:output_type -> google.protobuf.Empty
+	23, // 28: otterscale.machine.v1.MachineService.RemoveMachineTags:output_type -> google.protobuf.Empty
+	12, // 29: otterscale.machine.v1.MachineService.ListTags:output_type -> otterscale.machine.v1.ListTagsResponse
+	1,  // 30: otterscale.machine.v1.MachineService.GetTag:output_type -> otterscale.machine.v1.Tag
+	1,  // 31: otterscale.machine.v1.MachineService.CreateTag:output_type -> otterscale.machine.v1.Tag
+	23, // 32: otterscale.machine.v1.MachineService.DeleteTag:output_type -> google.protobuf.Empty
+	21, // [21:33] is the sub-list for method output_type
+	9,  // [9:21] is the sub-list for method input_type
 	9,  // [9:9] is the sub-list for extension type_name
 	9,  // [9:9] is the sub-list for extension extendee
 	0,  // [0:9] is the sub-list for field type_name
@@ -3614,7 +3719,7 @@ func file_api_machine_v1_machine_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_machine_v1_machine_proto_rawDesc), len(file_api_machine_v1_machine_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   21,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
