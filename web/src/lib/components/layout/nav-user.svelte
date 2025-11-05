@@ -37,6 +37,10 @@
 		locale = newLocale;
 	};
 
+	const handleLogout = () => {
+		logout();
+	};
+
 	const toggleNotification = () => {
 		open = !open;
 	};
@@ -152,7 +156,7 @@
 				<DropdownMenu.Separator />
 
 				<!-- Sign Out -->
-				<DropdownMenu.Item variant="destructive" onclick={logout}>
+				<DropdownMenu.Item variant="destructive" onclick={handleLogout}>
 					<Icon icon="ph:sign-out-bold" />
 					{m.log_out()}
 				</DropdownMenu.Item>

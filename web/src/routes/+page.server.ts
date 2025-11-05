@@ -6,9 +6,8 @@ import { resolve } from '$app/paths';
 import { env } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public';
 
-// Environment variables are loaded from .env in development or system environment in production
 export const load: PageServerLoad = async () => {
-	// Validate required environment variables
+	// Environment variables are loaded from .env in development or system environment in production
 	const requiredEnvVars = [
 		{ value: publicEnv.PUBLIC_URL, name: 'PUBLIC_URL' },
 		{ value: publicEnv.PUBLIC_API_URL, name: 'PUBLIC_API_URL' },

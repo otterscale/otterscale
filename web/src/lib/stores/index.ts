@@ -1,8 +1,11 @@
 import { writable, type Writable } from 'svelte/store';
 
+import { localStore } from './local-store';
+
 import { PremiumTier_Level, type PremiumTier } from '$lib/api/environment/v1/environment_pb';
 import type { Essential } from '$lib/api/orchestrator/v1/orchestrator_pb';
 import type { Scope } from '$lib/api/scope/v1/scope_pb';
+import type { User } from '$lib/auth';
 import { staticPaths, type Path } from '$lib/path';
 
 // Types
@@ -25,6 +28,11 @@ export interface Notification {
 }
 
 interface AppStores {
+	// Auth
+	isAuthenticated: Writable<boolean>;
+	user: Writable<User | undefined>;
+	token: Writable<string | undefined>;
+
 	// Navigation
 	breadcrumb: Writable<BreadcrumbState>;
 
@@ -45,6 +53,9 @@ interface AppStores {
 
 // Create stores
 const createStores = (): AppStores => ({
+	isAuthenticated: localStore<boolean>('is_authenticated', false),
+	user: localStore<User | undefined>('user', undefined),
+	token: localStore<string | undefined>('token', undefined),
 	breadcrumb: writable<BreadcrumbState>({ parents: [], current: staticPaths.home }),
 	premiumTier: writable<PremiumTier>({ level: PremiumTier_Level.BASIC } as PremiumTier),
 	activeScope: writable<Scope>(),
@@ -102,5 +113,15 @@ const createStores = (): AppStores => ({
 });
 
 // Export individual stores
-export const { breadcrumb, premiumTier, activeScope, currentCeph, currentKubernetes, bookmarks, notifications } =
-	createStores();
+export const {
+	isAuthenticated,
+	user,
+	token,
+	breadcrumb,
+	premiumTier,
+	activeScope,
+	currentCeph,
+	currentKubernetes,
+	bookmarks,
+	notifications,
+} = createStores();

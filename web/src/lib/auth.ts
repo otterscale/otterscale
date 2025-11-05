@@ -1,62 +1,58 @@
 import Keycloak from 'keycloak-js';
 
-import { isAuthenticated } from './stores/auth';
+import { isAuthenticated, token, user } from './stores';
 
-import { browser } from '$app/environment';
 import { env } from '$env/dynamic/public';
 
-// Initialize Keycloak instance
 const keycloak = new Keycloak({
 	url: env.PUBLIC_AUTH_URL ?? '',
 	realm: env.PUBLIC_AUTH_REALM ?? '',
 	clientId: env.PUBLIC_AUTH_CLIENT_ID ?? '',
 });
 
-// Setup token refresh handler
-const setupTokenRefresh = () => {
-	keycloak.onTokenExpired = () => {
-		keycloak.updateToken(30).catch((error) => {
-			console.error('Failed to refresh token:', error);
-			isAuthenticated.set(false);
-		});
-	};
+const reset = () => {
+	isAuthenticated.set(false);
+	user.set(undefined);
+	token.set(undefined);
 };
 
 export const initializeAuth = async (): Promise<void> => {
-	if (!browser) return;
-
 	try {
 		const authenticated = await keycloak.init({
-			onLoad: 'login-required',
-			pkceMethod: 'S256',
+			onLoad: 'check-sso',
 			checkLoginIframe: false,
-			redirectUri: `${env.PUBLIC_URL}`,
+			silentCheckSsoRedirectUri: `${location.origin}/silent-check-sso.html`,
 		});
 
 		isAuthenticated.set(authenticated);
+
 		if (authenticated) {
-			setupTokenRefresh();
+			user.set(keycloak.tokenParsed);
+			token.set(keycloak.token);
 		}
+
+		keycloak.onTokenExpired = () => {
+			keycloak.updateToken(30).then((refreshed) => {
+				if (refreshed) {
+					token.set(keycloak.token);
+					user.set(keycloak.tokenParsed);
+				}
+			});
+		};
 	} catch (error) {
 		console.error('Error during Keycloak initialization:', error);
-		isAuthenticated.set(false);
+		reset();
 	}
 };
 
-export const login = (): void => {
-	if (browser) {
-		keycloak.login();
-	}
+export const login = () => {
+	keycloak.login();
+	reset();
 };
 
-export const logout = (): void => {
-	if (browser) {
-		keycloak.logout();
-	}
+export const logout = () => {
+	keycloak.logout();
+	reset();
 };
-
-export const getUser = (): User | undefined => keycloak.tokenParsed;
-
-export const getToken = (): string | undefined => keycloak.token;
 
 export type User = Keycloak.KeycloakTokenParsed;
