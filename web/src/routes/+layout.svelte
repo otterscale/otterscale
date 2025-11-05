@@ -7,10 +7,11 @@
 	import simpleIcons from '@iconify-json/simple-icons/icons.json';
 	import streamlineLogos from '@iconify-json/streamline-logos/icons.json';
 	import { ModeWatcher } from 'mode-watcher';
-	import { setContext } from 'svelte';
+	import { onMount, setContext } from 'svelte';
 
 	import { env } from '$env/dynamic/public';
 	import favicon from '$lib/assets/favicon.svg';
+	import { initializeAuth } from '$lib/auth';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import '../app.css';
 
@@ -26,6 +27,8 @@
 	addCollection(ph);
 	addCollection(simpleIcons);
 	addCollection(streamlineLogos);
+
+	onMount(initializeAuth);
 </script>
 
 <svelte:head>

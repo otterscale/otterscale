@@ -1,22 +1,20 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import type { User } from 'better-auth';
 	import { mode, toggleMode } from 'mode-watcher';
-	import { toast } from 'svelte-sonner';
 
 	import SheetNotification from './sheet-notification.svelte';
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
-	import { authClient } from '$lib/auth-client';
+	import { logout, type User } from '$lib/auth';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
-	import { dynamicPaths, staticPaths } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 
 	let { user }: { user: User } = $props();
 	let locale = $state(getLocale());
@@ -32,17 +30,6 @@
 				.join('')
 				.toUpperCase() || ''
 		);
-	};
-
-	const handleSignOut = () => {
-		authClient.signOut({
-			fetchOptions: {
-				onSuccess: () => {
-					toast.success(m.sign_out_success());
-					goto(staticPaths.login.url);
-				},
-			},
-		});
 	};
 
 	const handleLanguageChange = (newLocale: any) => {
@@ -76,7 +63,7 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
 						<Avatar.Root class="size-8 rounded-lg">
-							<Avatar.Image src={user.image} alt={user.name} />
+							<Avatar.Image src={user.picture} alt={user.name} />
 							<Avatar.Fallback class="rounded-lg">{getUserInitials(user.name)}</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
@@ -98,7 +85,7 @@
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 						<Avatar.Root class="size-8 rounded-lg">
-							<Avatar.Image src={user.image} alt={user.name} />
+							<Avatar.Image src={user.picture} alt={user.name} />
 							<Avatar.Fallback class="rounded-lg">{getUserInitials(user.name)}</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
@@ -165,7 +152,7 @@
 				<DropdownMenu.Separator />
 
 				<!-- Sign Out -->
-				<DropdownMenu.Item variant="destructive" onclick={handleSignOut}>
+				<DropdownMenu.Item variant="destructive" onclick={logout}>
 					<Icon icon="ph:sign-out-bold" />
 					{m.log_out()}
 				</DropdownMenu.Item>

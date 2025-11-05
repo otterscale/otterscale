@@ -1,10 +1,11 @@
 <script lang="ts">
 	import BookmarkIcon from '@lucide/svelte/icons/bookmark';
-	import type { Snippet } from 'svelte';
+	import { onMount } from 'svelte';
 
-	import type { LayoutData } from './$types';
-
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
+	import { getUser } from '$lib/auth';
 	import { AppSidebar } from '$lib/components/layout';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import { buttonVariants, Button } from '$lib/components/ui/button';
@@ -16,13 +17,9 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { Path } from '$lib/path';
 	import { bookmarks, breadcrumb } from '$lib/stores';
+	import { isAuthenticated } from '$lib/stores/auth';
 
-	interface Props {
-		data: LayoutData;
-		children: Snippet;
-	}
-
-	let { data, children }: Props = $props();
+	let { children } = $props();
 	let open = $state(false);
 
 	// Computed values
@@ -40,6 +37,16 @@
 		bookmarks.update((items) => items.filter((bookmark) => bookmark.url !== path.url));
 		open = false;
 	}
+
+	onMount(() => {
+		const unsubscribe = isAuthenticated.subscribe((value) => {
+			if (!value) {
+				goto(resolve('/'));
+			}
+		});
+
+		return () => unsubscribe();
+	});
 </script>
 
 <svelte:head>
@@ -47,7 +54,9 @@
 </svelte:head>
 
 <Sidebar.Provider>
-	<AppSidebar user={data.user} />
+	{#if getUser()}
+		<AppSidebar user={getUser()!} />
+	{/if}
 	<Sidebar.Inset>
 		<header
 			class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"

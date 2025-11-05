@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import type { User } from 'better-auth';
 	import type { ComponentProps } from 'svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -18,6 +17,7 @@
 	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
+	import type { User } from '$lib/auth';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { m } from '$lib/paraglide/messages';

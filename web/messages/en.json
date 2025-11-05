@@ -13,6 +13,7 @@
 	"terms_of_service": "Terms of Service",
 	"go_back": "Go Back",
 	"back_to_home": "Back to Home",
+	"redirect_message_302": "Hold tight! We're sending you to the right spot to continue your journey.",
 	"error_message_400": "Oops! That request looks a bit wonky. Mind double-checking your input?",
 	"error_message_401": "Hold up! You'll need to show your digital ID to enter this exclusive club.",
 	"error_message_403": "Sorry, this area is VIP only! You don't have the golden ticket for this resource.",

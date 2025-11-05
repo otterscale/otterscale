@@ -1,21 +1,9 @@
 import { FlagdProvider } from '@openfeature/flagd-provider';
 import { OpenFeature } from '@openfeature/server-sdk';
-import { redirect } from '@sveltejs/kit';
-import type { User } from 'better-auth';
 
 import type { LayoutServerLoad } from './$types';
 
-import { auth } from '$lib/auth';
-
-export const load: LayoutServerLoad = async ({ request, url }) => {
-	const session = await auth.api.getSession({
-		headers: request.headers,
-	});
-
-	if (!session) {
-		redirect(302, `/?next=${url.pathname}`);
-	}
-
+export const load: LayoutServerLoad = async () => {
 	try {
 		await OpenFeature.setProviderAndWait(new FlagdProvider({}));
 	} catch (error) {
@@ -34,7 +22,6 @@ export const load: LayoutServerLoad = async ({ request, url }) => {
 	const stgObjectFeatureState = await client.getBooleanValue('stg-object', false);
 
 	return {
-		user: session.user as User,
 		'feature-states.app-general': appGeneralFeatureState,
 		'feature-states.app-helm-chart': appHelmChartFeatureState,
 		'feature-states.vm-general': vmGeneralFeatureState,

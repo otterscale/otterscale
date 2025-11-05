@@ -1,61 +1,62 @@
-import { sso } from '@better-auth/sso';
-import { betterAuth } from 'better-auth';
-import { getMigrations } from 'better-auth/db';
-import { Pool } from 'pg';
+import Keycloak from 'keycloak-js';
 
-import { env } from '$env/dynamic/private';
-import { env as publicEnv } from '$env/dynamic/public';
+import { isAuthenticated } from './stores/auth';
 
-export const auth = betterAuth({
-	account: {
-		accountLinking: {
-			enabled: true,
-			trustedProviders: env.AUTH_TRUSTED_PROVIDERS?.split(',') || [],
-		},
-	},
-	baseURL: env.PUBLIC_URL,
-	database: new Pool({
-		connectionString: env.DATABASE_URL,
-	}),
-	emailAndPassword: {
-		enabled: true,
-	},
-	plugins: [sso()],
-	secret: env.AUTH_SECRET,
-	session: {
-		cookieCache: {
-			enabled: true,
-			maxAge: 5 * 60,
-		},
-	},
-	socialProviders: {
-		apple: {
-			clientId: env.APPLE_CLIENT_ID!,
-			clientSecret: env.APPLE_CLIENT_SECRET!,
-			appBundleIdentifier: env.APPLE_APP_BUNDLE_IDENTIFIER!,
-		},
-		github: {
-			clientId: env.GITHUB_CLIENT_ID!,
-			clientSecret: env.GITHUB_CLIENT_SECRET!,
-		},
-		google: {
-			clientId: env.GOOGLE_CLIENT_ID!,
-			clientSecret: env.GOOGLE_CLIENT_SECRET!,
-		},
-	},
-	telemetry: { enabled: false },
-	trustedOrigins: publicEnv.PUBLIC_URL ? [publicEnv.PUBLIC_URL] : [],
+import { browser } from '$app/environment';
+import { env } from '$env/dynamic/public';
+
+// Initialize Keycloak instance
+const keycloak = new Keycloak({
+	url: env.PUBLIC_AUTH_URL,
+	realm: env.PUBLIC_AUTH_REALM,
+	clientId: env.PUBLIC_AUTH_CLIENT_ID,
 });
 
-async function initializeDatabase() {
-	const { runMigrations } = await getMigrations(auth.options);
-	await runMigrations();
-	console.log('Database migrations completed successfully');
-}
+// Setup token refresh handler
+const setupTokenRefresh = () => {
+	keycloak.onTokenExpired = () => {
+		keycloak.updateToken(30).catch((error) => {
+			console.error('Failed to refresh token:', error);
+			isAuthenticated.set(false);
+		});
+	};
+};
 
-if (!process.env.BUILD) {
-	initializeDatabase().catch((error) => {
-		console.error('Failed to initialize database:', error);
-		process.exit(1);
-	});
-}
+export const initializeAuth = async (): Promise<void> => {
+	if (!browser) return;
+
+	try {
+		const authenticated = await keycloak.init({
+			onLoad: 'login-required',
+			pkceMethod: 'S256',
+			checkLoginIframe: false,
+			redirectUri: `${env.PUBLIC_URL}`,
+		});
+
+		isAuthenticated.set(authenticated);
+		if (authenticated) {
+			setupTokenRefresh();
+		}
+	} catch (error) {
+		console.error('Error during Keycloak initialization:', error);
+		isAuthenticated.set(false);
+	}
+};
+
+export const login = (): void => {
+	if (browser) {
+		keycloak.login();
+	}
+};
+
+export const logout = (): void => {
+	if (browser) {
+		keycloak.logout();
+	}
+};
+
+export const getUser = () => keycloak.tokenParsed;
+
+export const getToken = () => keycloak.token;
+
+export type User = Keycloak.KeycloakTokenParsed;
