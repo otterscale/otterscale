@@ -45,7 +45,7 @@ var (
 			{Name: "ch:ceph-fs", Channel: "squid/stable", LXD: true},
 			{Name: "ch:ceph-radosgw", Channel: "squid/stable", LXD: true},
 			{Name: "ch:ceph-nfs", Channel: "squid/stable", LXD: true},
-			{Name: "ch:hacluster", Channel: "2.4/stable", Subordinate: true},
+			{Name: "ch:hacluster", Channel: "2.8/stable", Subordinate: true},
 		},
 		Relations: [][]string{
 			{"ceph-mon:client", "ceph-nfs:ceph-client"},
@@ -171,7 +171,7 @@ func (uc *OrchestratorUseCase) deployAddons(ctx context.Context, scope, prefix s
 		return err
 	}
 
-	if err := uc.createEssential(ctx, scope, "", prefix, addonCharmConfig.Charms, configs, nil); err != nil {
+	if err := uc.deployCharms(ctx, scope, prefix, "", addonCharmConfig.Charms, configs); err != nil {
 		return err
 	}
 

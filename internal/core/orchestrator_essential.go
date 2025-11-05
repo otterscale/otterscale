@@ -56,12 +56,7 @@ func (uc *OrchestratorUseCase) createEssential(ctx context.Context, scope, machi
 		return err
 	}
 
-	base, err := defaultBase(ctx, uc.server)
-	if err != nil {
-		return err
-	}
-
-	return uc.deployCharms(ctx, scope, prefix, directive, charms, configs, &base)
+	return uc.deployCharms(ctx, scope, prefix, directive, charms, configs)
 }
 
 func (uc *OrchestratorUseCase) applyTags(ctx context.Context, machineID string, tags []string) error {
@@ -74,15 +69,18 @@ func (uc *OrchestratorUseCase) applyTags(ctx context.Context, machineID string, 
 	return nil
 }
 
-func (uc *OrchestratorUseCase) deployCharms(ctx context.Context, scope, prefix, directive string, charms []EssentialCharm, configs map[string]string, base *base.Base) error {
-	eg, egctx := errgroup.WithContext(ctx)
-
-	for _, charm := range charms {
-		eg.Go(func() error {
-			return uc.deployCharm(egctx, scope, prefix, directive, charm, configs[charm.Name], base)
-		})
+func (uc *OrchestratorUseCase) deployCharms(ctx context.Context, scope, prefix, directive string, charms []EssentialCharm, configs map[string]string) error {
+	base, err := defaultBase(ctx, uc.server)
+	if err != nil {
+		return err
 	}
 
+	eg, egctx := errgroup.WithContext(ctx)
+	for _, charm := range charms {
+		eg.Go(func() error {
+			return uc.deployCharm(egctx, scope, prefix, directive, charm, configs[charm.Name], &base)
+		})
+	}
 	return eg.Wait()
 }
 
@@ -205,7 +203,7 @@ func toEssentialEndpointList(prefix string, relationList [][]string) [][]string 
 	for _, relations := range relationList {
 		endpoints := make([]string, 0, len(relations))
 		for _, relation := range relations {
-			endpoints = append(endpoints, toEssentialName(prefix, relation))
+			endpoints = append(endpoints, prefix+"-"+relation)
 		}
 		endpointList = append(endpointList, endpoints)
 	}
