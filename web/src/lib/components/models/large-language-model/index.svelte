@@ -8,11 +8,11 @@
 	import { DataTable } from './data-table/index';
 	import ExtensionsAlert from './extensions-alert.svelte';
 	import { type LargeLanguageModel } from './type';
-	import { getGatewayURL, getMetricsMap } from './utils.svelte';
+	import { getMetricsMap } from './utils.svelte';
 
 	import { env } from '$env/dynamic/public';
-	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
+	import { ModelService, type Model } from '$lib/api/model/v1/model_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 </script>
@@ -21,56 +21,28 @@
 	let { scope, facility }: { scope: string; facility: string } = $props();
 
 	const transport: Transport = getContext('transport');
-	const applicationClient = createClient(ApplicationService, transport);
-	const environmentService = createClient(EnvironmentService, transport);
+	const modelClient = createClient(ModelService, transport);
+	const environmentClient = createClient(EnvironmentService, transport);
 	let prometheusDriver = $state<PrometheusDriver | null>(null);
 
 	const largeLanguageModels = writable<LargeLanguageModel[]>([]);
 
-	const applications = writable<Application[]>([]);
-	const modelNames = writable<string[]>([]);
+	const models = writable<Model[]>([]);
+
 	const endToEndRequestLatencyMap = writable({} as SvelteMap<string | undefined, SampleValue[]>);
 	const gpuCacheMap = writable({} as SvelteMap<string | undefined, SampleValue[]>);
 	const kvCacheMap = writable({} as SvelteMap<string | undefined, SampleValue[]>);
 	const timeToFirstTokenMap = writable({} as SvelteMap<string | undefined, SampleValue[]>);
 
-	const modelServices = $derived(
-		$applications.filter((application) =>
-			application.labels['helm.sh/chart']
-				? application.labels['helm.sh/chart'].startsWith('llm-d-modelservice')
-				: false,
-		),
-	);
-
 	async function fetchModels() {
-		await applicationClient
-			.listApplications({
-				scope: scope,
-				facility: facility,
-			})
+		modelClient
+			.listModels({ scope, facility, namespace: 'default' })
 			.then((response) => {
-				applications.set(response.applications);
-			});
+				models.set(response.models);
+			})
+			.catch((error) => (console.error(`Failed to fetch models for namespace default:`, error), []));
 
-		await fetch(getGatewayURL($applications), {
-			method: 'GET',
-			headers: { 'Content-Type': 'application/json' },
-		}).then((response) => {
-			if (!response.ok) {
-				throw new Error('Network response was not ok');
-			}
-
-			response
-				.json()
-				.then((r) => {
-					modelNames.set((r.data as { id: string }[]).map((model) => model['id']));
-				})
-				.catch((error) => {
-					console.error(`Failed to fetch models:`, error);
-				});
-		});
-
-		await environmentService
+		await environmentClient
 			.getPrometheus({})
 			.then((response) => {
 				prometheusDriver = new PrometheusDriver({
@@ -105,29 +77,73 @@
 				});
 		}
 
-		largeLanguageModels.set(
-			modelServices.map(
+		largeLanguageModels.set([
+			...($models.map(
 				(model) =>
 					({
-						name: model.labels['model-name'],
-						application: model,
-						metrics: {
-							gpu_cache: $gpuCacheMap.get('inference-dev'),
-							kv_cache: $kvCacheMap.get('inference-dev'),
-							requests: $endToEndRequestLatencyMap.get('inference-dev'),
-							time_to_first_token: $timeToFirstTokenMap.get('inference-dev'),
-						},
+						...model,
+						pods: model.pods.map((pod) => ({
+							...pod,
+							metrics: {
+								gpu_cache: $gpuCacheMap.get('vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk'),
+								kv_cache: $kvCacheMap.get('vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk'),
+								requests: $endToEndRequestLatencyMap.get(
+									'vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk',
+								),
+								time_to_first_token: $timeToFirstTokenMap.get(
+									'vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk',
+								),
+							},
+						})),
 					}) as LargeLanguageModel,
-			),
-		);
+			) as LargeLanguageModel[]),
+			...($models.map(
+				(model) =>
+					({
+						...model,
+						pods: [
+							...model.pods.map((pod) => ({
+								...pod,
+								metrics: {
+									gpu_cache: $gpuCacheMap.get(
+										'vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk',
+									),
+									kv_cache: $kvCacheMap.get('vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk'),
+									requests: $endToEndRequestLatencyMap.get(
+										'vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk',
+									),
+									time_to_first_token: $timeToFirstTokenMap.get(
+										'vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk',
+									),
+								},
+							})),
+							...model.pods.map((pod) => ({
+								...pod,
+								metrics: {
+									gpu_cache: $gpuCacheMap.get(
+										'vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk',
+									),
+									kv_cache: $kvCacheMap.get('vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk'),
+									requests: $endToEndRequestLatencyMap.get(
+										'vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk',
+									),
+									time_to_first_token: $timeToFirstTokenMap.get(
+										'vllm-llama-3-2-1b-instruct-deployment-85c77654c7-st9qk',
+									),
+								},
+							})),
+						],
+					}) as LargeLanguageModel,
+			) as LargeLanguageModel[]),
+		]);
 	}
 
 	const reloadManager = new ReloadManager(() => {
 		fetchModels();
 	});
 	setContext('reloadManager', reloadManager);
-	let isMounted = $state(false);
 
+	let isMounted = $state(false);
 	onMount(async () => {
 		await fetchModels();
 		isMounted = true;

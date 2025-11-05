@@ -1,6 +1,6 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { type LargeLanguageModel } from '../type';
+import { type LargeLanguageModel, type Meta } from '../type';
 
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
@@ -11,160 +11,128 @@ import { m } from '$lib/paraglide/messages';
 
 const messages = {
 	name: m.name(),
-	gpu_cache: m.gpu_cache(),
-	application: m.application(),
-	replicas: m.replica(),
-	healthies: m.health(),
-	kv_cache: m.kv_cache(),
+	namespace: m.namespace(),
+	chart_version: m.version(),
+	application_version: m.version(),
+	status: m.status(),
+	description: m.description(),
 	requests: m.requests(),
-	time_to_first_token: m.uptime(),
+	limits: m.limits(),
+	first_deployed_at: m.time(),
+	last_deployed_at: m.time(),
+	relation: m.relational(),
+	pods: m.pods(),
+	kv_cache: m.kv_cache(),
 };
 
 const columns: ColumnDef<LargeLanguageModel>[] = [
 	{
-		id: 'select',
-		header: ({ table }) => {
-			return renderSnippet(headers.row_picker, table);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.row_picker, row);
-		},
+		id: 'expand',
+		header: ({ table }) => renderSnippet(headers.row_expander, table),
+		cell: ({ row }) => renderSnippet(cells.row_expander, row),
 		enableSorting: false,
 		enableHiding: false,
+		meta: {
+			isRowAction: true,
+		} as Meta,
 	},
 	{
-		accessorKey: 'model',
-		header: ({ column }) => {
-			return renderSnippet(headers.model, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.model, row);
-		},
+		id: 'select',
+		header: ({ table }) => renderSnippet(headers.row_picker, table),
+		cell: ({ row }) => renderSnippet(cells.row_picker, row),
+		enableSorting: false,
+		enableHiding: false,
+		meta: {
+			isRowAction: true,
+		} as Meta,
 	},
 	{
 		accessorKey: 'name',
-		header: ({ column }) => {
-			return renderSnippet(headers.name, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.name, row);
-		},
+		header: ({ column }) => renderSnippet(headers.name, column),
+		cell: ({ row }) => renderSnippet(cells.name, row),
 	},
 	{
-		accessorKey: 'replicas',
-		header: ({ column }) => {
-			return renderSnippet(headers.replicas, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.replicas, row);
-		},
-		sortingFn: (previousRow, nextRow) =>
-			getSortingFunction(
-				previousRow.original.application.replicas,
-				nextRow.original.application.replicas,
-				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+		accessorKey: 'namespace',
+		header: ({ column }) => renderSnippet(headers.namespace, column),
+		cell: ({ row }) => renderSnippet(cells.namespace, row),
 	},
 	{
-		accessorKey: 'healthies',
-		header: ({ column }) => {
-			return renderSnippet(headers.healthies, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.healthies, row);
-		},
-		sortingFn: (previousRow, nextRow) =>
-			getSortingFunction(
-				previousRow.original.application.healthies,
-				nextRow.original.application.healthies,
-				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+		accessorKey: 'chart_version',
+		header: ({ column }) => renderSnippet(headers.chart_version, column),
+		cell: ({ row }) => renderSnippet(cells.chart_version, row),
 	},
 	{
-		accessorKey: 'gpu_cache',
-		header: ({ column }) => {
-			return renderSnippet(headers.gpu_cache, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.gpu_cache, row);
-		},
-		sortingFn: (previousRow, nextRow) =>
-			getSortingFunction(
-				previousRow.original.metrics.gpu_cache,
-				nextRow.original.metrics.gpu_cache,
-				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+		accessorKey: 'application_version',
+		header: ({ column }) => renderSnippet(headers.application_version, column),
+		cell: ({ row }) => renderSnippet(cells.application_version, row),
 	},
 	{
-		accessorKey: 'kv_cache',
-		header: ({ column }) => {
-			return renderSnippet(headers.kv_cache, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.kv_cache, row);
-		},
-		sortingFn: (previousRow, nextRow) =>
-			getSortingFunction(
-				previousRow.original.metrics.kv_cache,
-				nextRow.original.metrics.kv_cache,
-				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+		accessorKey: 'status',
+		header: ({ column }) => renderSnippet(headers.status, column),
+		cell: ({ row }) => renderSnippet(cells.status, row),
+	},
+	{
+		accessorKey: 'description',
+		header: ({ column }) => renderSnippet(headers.description, column),
+		cell: ({ row }) => renderSnippet(cells.description, row),
 	},
 	{
 		accessorKey: 'requests',
-		header: ({ column }) => {
-			return renderSnippet(headers.requests, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.requests, row);
-		},
+		header: ({ column }) => renderSnippet(headers.requests, column),
+		cell: ({ row }) => renderSnippet(cells.requests, row),
+	},
+	{
+		accessorKey: 'limits',
+		header: ({ column }) => renderSnippet(headers.limits, column),
+		cell: ({ row }) => renderSnippet(cells.limits, row),
+	},
+	{
+		accessorKey: 'first_deployed_at',
+		header: ({ column }) => renderSnippet(headers.first_deployed_at, column),
+
+		cell: ({ row }) => renderSnippet(cells.first_deployed_at, row),
 		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
-				previousRow.original.metrics.requests,
-				nextRow.original.metrics.requests,
-				(p, n) => p < n,
-				(p, n) => p === n,
+				previousRow.original.firstDeployedAt,
+				nextRow.original.firstDeployedAt,
+				(p, n) => Date.parse(String(p)) < Date.parse(String(n)),
+				(p, n) => Date.parse(String(p)) === Date.parse(String(n)),
 			),
 	},
 	{
-		accessorKey: 'time_to_first_token',
-		header: ({ column }) => {
-			return renderSnippet(headers.time_to_first_token, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.time_to_first_token, row);
-		},
+		accessorKey: 'last_deployed_at',
+		header: ({ column }) => renderSnippet(headers.last_deployed_at, column),
+		cell: ({ row }) => renderSnippet(cells.last_deployed_at, row),
 		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
-				previousRow.original.metrics.time_to_first_token,
-				nextRow.original.metrics.time_to_first_token,
-				(p, n) => p < n,
-				(p, n) => p === n,
+				previousRow.original.lastDeployedAt,
+				nextRow.original.lastDeployedAt,
+				(p, n) => Date.parse(String(p)) < Date.parse(String(n)),
+				(p, n) => Date.parse(String(p)) === Date.parse(String(n)),
 			),
 	},
 	{
 		accessorKey: 'relation',
-		header: ({ column }) => {
-			return renderSnippet(headers.relation, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.relation, row);
-		},
-		enableHiding: false,
+		header: ({ column }) => renderSnippet(headers.relation, column),
+		cell: ({ row }) => renderSnippet(cells.relation, row),
+		enableSorting: false,
 	},
-
+	{
+		accessorKey: 'pods',
+		header: ({ column }) => renderSnippet(headers.pods, column),
+		cell: ({ row }) => renderSnippet(cells.pods, row),
+		sortingFn: (previousRow, nextRow) =>
+			getSortingFunction(
+				previousRow.original.pods.length,
+				nextRow.original.pods.length,
+				(p, n) => p < n,
+				(p, n) => p === n,
+			),
+	},
 	{
 		accessorKey: 'action',
-		header: ({ column }) => {
-			return renderSnippet(headers.action, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.action, row);
-		},
+		header: ({ column }) => renderSnippet(headers.action, column),
+		cell: ({ row }) => renderSnippet(cells.action, row),
 		enableHiding: false,
 	},
 ];

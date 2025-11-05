@@ -8,6 +8,7 @@ package pb
 
 import (
 	_ "github.com/otterscale/otterscale/api"
+	v1 "github.com/otterscale/otterscale/api/application/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -125,6 +126,7 @@ type Model struct {
 	xxx_hidden_AppVersion        *string                `protobuf:"bytes,22,opt,name=app_version,json=appVersion"`
 	xxx_hidden_Requests          *Model_Resource        `protobuf:"bytes,31,opt,name=requests"`
 	xxx_hidden_Limits            *Model_Resource        `protobuf:"bytes,32,opt,name=limits"`
+	xxx_hidden_Pods              *[]*v1.Application_Pod `protobuf:"bytes,41,rep,name=pods"`
 	XXX_raceDetectHookData       protoimpl.RaceDetectHookData
 	XXX_presence                 [1]uint32
 	unknownFields                protoimpl.UnknownFields
@@ -264,34 +266,43 @@ func (x *Model) GetLimits() *Model_Resource {
 	return nil
 }
 
+func (x *Model) GetPods() []*v1.Application_Pod {
+	if x != nil {
+		if x.xxx_hidden_Pods != nil {
+			return *x.xxx_hidden_Pods
+		}
+	}
+	return nil
+}
+
 func (x *Model) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 13)
 }
 
 func (x *Model) SetInferencePoolName(v string) {
 	x.xxx_hidden_InferencePoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 13)
 }
 
 func (x *Model) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 13)
 }
 
 func (x *Model) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 13)
 }
 
 func (x *Model) SetStatus(v string) {
 	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 13)
 }
 
 func (x *Model) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 13)
 }
 
 func (x *Model) SetFirstDeployedAt(v *timestamppb.Timestamp) {
@@ -304,12 +315,12 @@ func (x *Model) SetLastDeployedAt(v *timestamppb.Timestamp) {
 
 func (x *Model) SetChartVersion(v string) {
 	x.xxx_hidden_ChartVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 13)
 }
 
 func (x *Model) SetAppVersion(v string) {
 	x.xxx_hidden_AppVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 13)
 }
 
 func (x *Model) SetRequests(v *Model_Resource) {
@@ -318,6 +329,10 @@ func (x *Model) SetRequests(v *Model_Resource) {
 
 func (x *Model) SetLimits(v *Model_Resource) {
 	x.xxx_hidden_Limits = v
+}
+
+func (x *Model) SetPods(v []*v1.Application_Pod) {
+	x.xxx_hidden_Pods = &v
 }
 
 func (x *Model) HasId() bool {
@@ -475,6 +490,7 @@ type Model_builder struct {
 	AppVersion        *string
 	Requests          *Model_Resource
 	Limits            *Model_Resource
+	Pods              []*v1.Application_Pod
 }
 
 func (b0 Model_builder) Build() *Model {
@@ -482,41 +498,42 @@ func (b0 Model_builder) Build() *Model {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 13)
 		x.xxx_hidden_Id = b.Id
 	}
 	if b.InferencePoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 13)
 		x.xxx_hidden_InferencePoolName = b.InferencePoolName
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 13)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 13)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 13)
 		x.xxx_hidden_Status = b.Status
 	}
 	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 13)
 		x.xxx_hidden_Description = b.Description
 	}
 	x.xxx_hidden_FirstDeployedAt = b.FirstDeployedAt
 	x.xxx_hidden_LastDeployedAt = b.LastDeployedAt
 	if b.ChartVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 13)
 		x.xxx_hidden_ChartVersion = b.ChartVersion
 	}
 	if b.AppVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 13)
 		x.xxx_hidden_AppVersion = b.AppVersion
 	}
 	x.xxx_hidden_Requests = b.Requests
 	x.xxx_hidden_Limits = b.Limits
+	x.xxx_hidden_Pods = &b.Pods
 	return m0
 }
 
@@ -2366,9 +2383,9 @@ var File_api_model_v1_model_proto protoreflect.FileDescriptor
 
 const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
-	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\v\n" +
+	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\v\n" +
 	"\tHTTPRoute\"\x0f\n" +
-	"\rInferencePool\"\xd4\x04\n" +
+	"\rInferencePool\"\x94\x05\n" +
 	"\x05Model\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12.\n" +
 	"\x13inference_pool_name\x18\x02 \x01(\tR\x11inferencePoolName\x12\x12\n" +
@@ -2382,7 +2399,8 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\vapp_version\x18\x16 \x01(\tR\n" +
 	"appVersion\x12?\n" +
 	"\brequests\x18\x1f \x01(\v2#.otterscale.model.v1.Model.ResourceR\brequests\x12;\n" +
-	"\x06limits\x18  \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06limits\x1aM\n" +
+	"\x06limits\x18  \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06limits\x12>\n" +
+	"\x04pods\x18) \x03(\v2*.otterscale.application.v1.Application.PodR\x04pods\x1aM\n" +
 	"\bResource\x12\x12\n" +
 	"\x04vgpu\x18\x01 \x01(\rR\x04vgpu\x12-\n" +
 	"\x12vgpumem_percentage\x18\x02 \x01(\rR\x11vgpumemPercentage\"c\n" +
@@ -2476,37 +2494,39 @@ var file_api_model_v1_model_proto_goTypes = []any{
 	(*DeleteModelArtifactRequest)(nil), // 12: otterscale.model.v1.DeleteModelArtifactRequest
 	(*Model_Resource)(nil),             // 13: otterscale.model.v1.Model.Resource
 	(*timestamppb.Timestamp)(nil),      // 14: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),              // 15: google.protobuf.Empty
+	(*v1.Application_Pod)(nil),         // 15: otterscale.application.v1.Application.Pod
+	(*emptypb.Empty)(nil),              // 16: google.protobuf.Empty
 }
 var file_api_model_v1_model_proto_depIdxs = []int32{
 	14, // 0: otterscale.model.v1.Model.first_deployed_at:type_name -> google.protobuf.Timestamp
 	14, // 1: otterscale.model.v1.Model.last_deployed_at:type_name -> google.protobuf.Timestamp
 	13, // 2: otterscale.model.v1.Model.requests:type_name -> otterscale.model.v1.Model.Resource
 	13, // 3: otterscale.model.v1.Model.limits:type_name -> otterscale.model.v1.Model.Resource
-	2,  // 4: otterscale.model.v1.ListModelsResponse.models:type_name -> otterscale.model.v1.Model
-	13, // 5: otterscale.model.v1.UpdateModelRequest.limits:type_name -> otterscale.model.v1.Model.Resource
-	13, // 6: otterscale.model.v1.UpdateModelRequest.requests:type_name -> otterscale.model.v1.Model.Resource
-	14, // 7: otterscale.model.v1.ModelArtifact.created_at:type_name -> google.protobuf.Timestamp
-	8,  // 8: otterscale.model.v1.ListModelArtifactsResponse.model_artifacts:type_name -> otterscale.model.v1.ModelArtifact
-	3,  // 9: otterscale.model.v1.ModelService.ListModels:input_type -> otterscale.model.v1.ListModelsRequest
-	5,  // 10: otterscale.model.v1.ModelService.CreateModel:input_type -> otterscale.model.v1.CreateModelRequest
-	6,  // 11: otterscale.model.v1.ModelService.UpdateModel:input_type -> otterscale.model.v1.UpdateModelRequest
-	7,  // 12: otterscale.model.v1.ModelService.DeleteModel:input_type -> otterscale.model.v1.DeleteModelRequest
-	9,  // 13: otterscale.model.v1.ModelService.ListModelArtifacts:input_type -> otterscale.model.v1.ListModelArtifactsRequest
-	11, // 14: otterscale.model.v1.ModelService.CreateModelArtifact:input_type -> otterscale.model.v1.CreateModelArtifactRequest
-	12, // 15: otterscale.model.v1.ModelService.DeleteModelArtifact:input_type -> otterscale.model.v1.DeleteModelArtifactRequest
-	4,  // 16: otterscale.model.v1.ModelService.ListModels:output_type -> otterscale.model.v1.ListModelsResponse
-	2,  // 17: otterscale.model.v1.ModelService.CreateModel:output_type -> otterscale.model.v1.Model
-	2,  // 18: otterscale.model.v1.ModelService.UpdateModel:output_type -> otterscale.model.v1.Model
-	15, // 19: otterscale.model.v1.ModelService.DeleteModel:output_type -> google.protobuf.Empty
-	10, // 20: otterscale.model.v1.ModelService.ListModelArtifacts:output_type -> otterscale.model.v1.ListModelArtifactsResponse
-	8,  // 21: otterscale.model.v1.ModelService.CreateModelArtifact:output_type -> otterscale.model.v1.ModelArtifact
-	15, // 22: otterscale.model.v1.ModelService.DeleteModelArtifact:output_type -> google.protobuf.Empty
-	16, // [16:23] is the sub-list for method output_type
-	9,  // [9:16] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	15, // 4: otterscale.model.v1.Model.pods:type_name -> otterscale.application.v1.Application.Pod
+	2,  // 5: otterscale.model.v1.ListModelsResponse.models:type_name -> otterscale.model.v1.Model
+	13, // 6: otterscale.model.v1.UpdateModelRequest.limits:type_name -> otterscale.model.v1.Model.Resource
+	13, // 7: otterscale.model.v1.UpdateModelRequest.requests:type_name -> otterscale.model.v1.Model.Resource
+	14, // 8: otterscale.model.v1.ModelArtifact.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 9: otterscale.model.v1.ListModelArtifactsResponse.model_artifacts:type_name -> otterscale.model.v1.ModelArtifact
+	3,  // 10: otterscale.model.v1.ModelService.ListModels:input_type -> otterscale.model.v1.ListModelsRequest
+	5,  // 11: otterscale.model.v1.ModelService.CreateModel:input_type -> otterscale.model.v1.CreateModelRequest
+	6,  // 12: otterscale.model.v1.ModelService.UpdateModel:input_type -> otterscale.model.v1.UpdateModelRequest
+	7,  // 13: otterscale.model.v1.ModelService.DeleteModel:input_type -> otterscale.model.v1.DeleteModelRequest
+	9,  // 14: otterscale.model.v1.ModelService.ListModelArtifacts:input_type -> otterscale.model.v1.ListModelArtifactsRequest
+	11, // 15: otterscale.model.v1.ModelService.CreateModelArtifact:input_type -> otterscale.model.v1.CreateModelArtifactRequest
+	12, // 16: otterscale.model.v1.ModelService.DeleteModelArtifact:input_type -> otterscale.model.v1.DeleteModelArtifactRequest
+	4,  // 17: otterscale.model.v1.ModelService.ListModels:output_type -> otterscale.model.v1.ListModelsResponse
+	2,  // 18: otterscale.model.v1.ModelService.CreateModel:output_type -> otterscale.model.v1.Model
+	2,  // 19: otterscale.model.v1.ModelService.UpdateModel:output_type -> otterscale.model.v1.Model
+	16, // 20: otterscale.model.v1.ModelService.DeleteModel:output_type -> google.protobuf.Empty
+	10, // 21: otterscale.model.v1.ModelService.ListModelArtifacts:output_type -> otterscale.model.v1.ListModelArtifactsResponse
+	8,  // 22: otterscale.model.v1.ModelService.CreateModelArtifact:output_type -> otterscale.model.v1.ModelArtifact
+	16, // 23: otterscale.model.v1.ModelService.DeleteModelArtifact:output_type -> google.protobuf.Empty
+	17, // [17:24] is the sub-list for method output_type
+	10, // [10:17] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_api_model_v1_model_proto_init() }

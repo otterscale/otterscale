@@ -8,19 +8,25 @@
 	import { m } from '$lib/paraglide/messages';
 
 	export const headers = {
+		row_expander,
 		row_picker,
-		model,
 		name,
-		replicas,
-		healthies,
-		gpu_cache,
-		kv_cache,
+		namespace,
+		chart_version,
+		application_version,
+		status,
+		description,
 		requests,
-		time_to_first_token,
+		limits,
+		first_deployed_at,
+		last_deployed_at,
 		relation,
+		pods,
 		action,
 	};
 </script>
+
+{#snippet row_expander()}{/snippet}
 
 {#snippet row_picker(table: Table<LargeLanguageModel>)}
 	<Layout.Header class="justify-center">
@@ -30,54 +36,57 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet model()}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.model()}</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
 {#snippet name(column: Column<LargeLanguageModel>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.model_name()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
-{#snippet replicas(column: Column<LargeLanguageModel>)}
-	<Layout.Header class="justify-end">
+{#snippet namespace(column: Column<LargeLanguageModel>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.namespace()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.replica()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet healthies(column: Column<LargeLanguageModel>)}
+{#snippet chart_version(column: Column<LargeLanguageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.health()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.version()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet gpu_cache(column: Column<LargeLanguageModel>)}
+{#snippet application_version(column: Column<LargeLanguageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.gpu_cache()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.version()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet kv_cache(column: Column<LargeLanguageModel>)}
-	<Layout.Header class="justify-end">
+{#snippet status(column: Column<LargeLanguageModel>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.status()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.kv_cache()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet description(column: Column<LargeLanguageModel>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.description()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
@@ -90,18 +99,45 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet time_to_first_token(column: Column<LargeLanguageModel>)}
+{#snippet limits(column: Column<LargeLanguageModel>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.uptime()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.limits()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet first_deployed_at(column: Column<LargeLanguageModel>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>{m.time()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet last_deployed_at(column: Column<LargeLanguageModel>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>{m.time()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet pods(column: Column<LargeLanguageModel>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>{m.pods()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet relation()}
 	<Layout.Header class="justify-end">
-		<Layout.HeaderViewer>{m.gpu_relation()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.relational()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

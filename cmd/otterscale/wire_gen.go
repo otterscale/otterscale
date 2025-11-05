@@ -90,7 +90,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	machineUseCase := core.NewMachineUseCase(actionRepo, clientRepo, eventRepo, facilityRepo, machineRepo, machineManagerRepo, nodeDeviceRepo, scopeRepo, serverRepo, tagRepo)
 	machineService := app.NewMachineService(machineUseCase)
 	modelUseCase := core.NewModelUseCase(actionRepo, chartRepo, facilityRepo, kubeCoreRepo, releaseRepo)
-	modelService := app.NewModelService(modelUseCase)
+	modelService := app.NewModelService(modelUseCase, kubernetesUseCase)
 	fabricRepo := maas.NewFabric(maasMAAS)
 	ipRangeRepo := maas.NewIPRange(maasMAAS)
 	subnetRepo := maas.NewSubnet(maasMAAS)

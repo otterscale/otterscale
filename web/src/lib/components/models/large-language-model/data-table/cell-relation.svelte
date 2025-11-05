@@ -22,7 +22,7 @@
 </script>
 
 <script lang="ts">
-	let { model }: { model: LargeLanguageModel } = $props();
+	let { model: _ }: { model: LargeLanguageModel } = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(OrchestratorService, transport);
@@ -37,8 +37,10 @@
 		.listGPURelationsByModel({
 			scope: $currentKubernetes?.scope,
 			facility: $currentKubernetes?.name,
-			namespace: model.application.namespace,
-			modelName: model.name,
+			namespace: 'vllm',
+			// namespace: model.namespace,
+			modelName: 'paul-123',
+			// modelName: model.name,
 		})
 		.then((response) => {
 			nodes.set(

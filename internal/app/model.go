@@ -6,6 +6,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	apppb "github.com/otterscale/otterscale/api/application/v1"
 	pb "github.com/otterscale/otterscale/api/model/v1"
 	pbconnect "github.com/otterscale/otterscale/api/model/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/core"
@@ -14,12 +15,14 @@ import (
 type ModelService struct {
 	pbconnect.UnimplementedModelServiceHandler
 
-	model *core.ModelUseCase
+	model      *core.ModelUseCase
+	kubernetes *core.KubernetesUseCase
 }
 
-func NewModelService(model *core.ModelUseCase) *ModelService {
+func NewModelService(model *core.ModelUseCase, kubernetes *core.KubernetesUseCase) *ModelService {
 	return &ModelService{
-		model: model,
+		model:      model,
+		kubernetes: kubernetes,
 	}
 }
 
@@ -30,8 +33,13 @@ func (s *ModelService) ListModels(ctx context.Context, req *pb.ListModelsRequest
 	if err != nil {
 		return nil, err
 	}
+	publicAddress, err := s.kubernetes.GetPublicAddress(ctx, req.GetScope(), req.GetFacility())
+	if err != nil {
+		return nil, err
+	}
 	resp := &pb.ListModelsResponse{}
 	resp.SetModels(toProtoModels(models))
+	resp.SetPublicAddress(publicAddress)
 	return resp, nil
 }
 
@@ -102,6 +110,28 @@ func toModelResource(r *pb.Model_Resource) *core.ModelResource {
 	}
 }
 
+func toProtoModelPods(ps []core.Pod) []*apppb.Application_Pod {
+	ret := []*apppb.Application_Pod{}
+	for i := range ps {
+		ret = append(ret, toProtoModelPod(&ps[i]))
+	}
+	return ret
+}
+
+func toProtoModelPod(p *core.Pod) *apppb.Application_Pod {
+	ret := &apppb.Application_Pod{}
+	ret.SetName(p.Name)
+	ret.SetPhase(string(p.Status.Phase))
+	ret.SetReady(containerStatusesReadyString(p.Status.ContainerStatuses))
+	ret.SetRestarts(containerStatusesRestartString(p.Status.ContainerStatuses))
+	if len(p.Status.Conditions) > 0 {
+		index := len(p.Status.Conditions) - 1
+		ret.SetLastCondition(toProtoLastCondition(&p.Status.Conditions[index]))
+	}
+	ret.SetCreatedAt(timestamppb.New(p.CreationTimestamp.Time))
+	return ret
+}
+
 func toProtoModels(ms []core.Model) []*pb.Model {
 	ret := []*pb.Model{}
 	for i := range ms {
@@ -126,6 +156,9 @@ func toProtoModel(m *core.Model) *pb.Model {
 	if chart != nil && chart.Metadata != nil {
 		ret.SetChartVersion(chart.Metadata.Version)
 		ret.SetAppVersion(chart.Metadata.AppVersion)
+	}
+	if len(m.Pods) > 0 {
+		ret.SetPods(toProtoModelPods(m.Pods))
 	}
 	return ret
 }

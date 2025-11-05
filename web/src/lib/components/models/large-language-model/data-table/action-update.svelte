@@ -6,7 +6,7 @@
 
 	import type { LargeLanguageModel } from '../type';
 
-	import { ModelService, type DeleteModelRequest } from '$lib/api/model/v1/model_pb';
+	import { ModelService, type UpdateModelRequest } from '$lib/api/model/v1/model_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -24,12 +24,18 @@
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	let isNameInvalid = $state(false);
+	let isNamespaceInvalid = $state(false);
+	let isRequestsInvalid = $state(false);
+	let isLimitsInvalid = $state(false);
 
 	const defaults = {
 		scope: $currentKubernetes?.scope,
 		facility: $currentKubernetes?.name,
+		name: model.name,
 		namespace: model.namespace,
-	} as DeleteModelRequest;
+		requests: model.requests,
+		limits: model.limits,
+	} as UpdateModelRequest;
 	let request = $state(defaults);
 	function reset() {
 		request = defaults;
@@ -42,24 +48,33 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger variant="destructive">
-		<Icon icon="ph:trash" />
-		{m.delete()}
+	<Modal.Trigger variant="creative">
+		<Icon icon="ph:pencil" />
+		{m.update()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.delete()}</Modal.Header>
+		<Modal.Header>{m.update()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>{m.name()}</Form.Label>
-					<Form.Help>
-						{m.deletion_warning({ identifier: m.model_name() })}
-					</Form.Help>
-					<SingleInput.Confirm
+					<Form.Label>{m.requests()}</Form.Label>
+					<SingleInput.General
 						required
-						target={model.name}
-						bind:value={request.name}
-						bind:invalid={isNameInvalid}
+						type="number"
+						bind:value={request.requests}
+						bind:invalid={isNamespaceInvalid}
+						transformer={(value) => String(value)}
+					/>
+				</Form.Field>
+
+				<Form.Field>
+					<Form.Label>{m.limits()}</Form.Label>
+					<SingleInput.General
+						required
+						type="number"
+						bind:value={request.limits}
+						bind:invalid={isNamespaceInvalid}
+						transformer={(value) => String(value)}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
@@ -74,16 +89,17 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={isNameInvalid}
+					disabled={isNameInvalid || isNamespaceInvalid || isRequestsInvalid || isLimitsInvalid}
 					onclick={() => {
-						toast.promise(() => modelClient.deleteModel(request), {
-							loading: `Deleting ${request.name}...`,
+						console.log(request);
+						toast.promise(() => modelClient.updateModel(request), {
+							loading: `Updating ${request.name}...`,
 							success: () => {
 								reloadManager.force();
-								return `Delete ${request.name} successfully`;
+								return `Update ${request.name} successfully`;
 							},
 							error: (error) => {
-								let message = `Fail to delete ${request.name}`;
+								let message = `Fail to update ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY,

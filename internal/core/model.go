@@ -10,7 +10,10 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-type Model = release.Release
+type Model struct {
+	*release.Release
+	Pods []Pod
+}
 
 type ModelResource struct {
 	VGPU       uint32
@@ -45,17 +48,34 @@ func NewModelUseCase(action ActionRepo, chart ChartRepo, facility FacilityRepo, 
 	}
 }
 
-func (uc *ModelUseCase) ListModels(ctx context.Context, scope, facility, namespace string) ([]Release, error) {
+func (uc *ModelUseCase) ListModels(ctx context.Context, scope, facility, namespace string) ([]Model, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
 	}
 
 	selector := fmt.Sprintf("%s=%s", TypeLabel, "model")
-	return uc.release.List(config, namespace, selector)
+	releases, err := uc.release.List(config, namespace, selector)
+	if err != nil {
+		return nil, err
+	}
+
+	models := []Model{}
+	for i := range releases {
+		selector := fmt.Sprintf("app.kubernetes.io/instance=%s", releases[i].Name)
+		pods, err := uc.kubeCore.ListPodsByLabel(ctx, config, namespace, selector)
+		if err != nil {
+			return nil, err
+		}
+		models = append(models, Model{
+			Release: &releases[i],
+			Pods:    pods,
+		})
+	}
+	return models, nil
 }
 
-func (uc *ModelUseCase) CreateModel(ctx context.Context, scope, facility, namespace, name, modelName string) (*Release, error) {
+func (uc *ModelUseCase) CreateModel(ctx context.Context, scope, facility, namespace, name, modelName string) (*Model, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
@@ -89,10 +109,17 @@ func (uc *ModelUseCase) CreateModel(ctx context.Context, scope, facility, namesp
 		return nil, err
 	}
 
-	return uc.release.Install(config, namespace, getReleaseName(name), false, chartRef, labels, labels, annotations, values)
+	rel, err := uc.release.Install(config, namespace, getReleaseName(name), false, chartRef, labels, labels, annotations, values)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Model{
+		Release: rel,
+	}, nil
 }
 
-func (uc *ModelUseCase) UpdateModel(ctx context.Context, scope, facility, namespace, name string, requests, limits *ModelResource) (*Release, error) {
+func (uc *ModelUseCase) UpdateModel(ctx context.Context, scope, facility, namespace, name string, requests, limits *ModelResource) (*Model, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
 	if err != nil {
 		return nil, err
@@ -125,7 +152,14 @@ func (uc *ModelUseCase) UpdateModel(ctx context.Context, scope, facility, namesp
 		return nil, err
 	}
 
-	return uc.release.Upgrade(config, namespace, getReleaseName(name), false, chartRef, values, true)
+	rel, err := uc.release.Upgrade(config, namespace, getReleaseName(name), false, chartRef, values, true)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Model{
+		Release: rel,
+	}, nil
 }
 
 func (uc *ModelUseCase) DeleteModel(ctx context.Context, scope, facility, namespace, name string) error {

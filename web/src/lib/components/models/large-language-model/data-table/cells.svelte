@@ -1,52 +1,56 @@
 <script lang="ts" module>
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
+	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import { scaleUtc } from 'd3-scale';
-	import { curveLinear } from 'd3-shape';
-	import { LineChart } from 'layerchart';
 
 	import { type LargeLanguageModel } from '../type';
 
 	import Actions from './cell-actions.svelte';
 	import Relation from './cell-relation.svelte';
 
-	import { page } from '$app/state';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import * as Chart from '$lib/components/ui/chart';
-	import { dynamicPaths } from '$lib/path';
+	import { formatTimeAgo } from '$lib/formatter';
 
 	export const cells = {
+		row_expander,
 		row_picker,
-		model,
 		name,
-		replicas,
-		healthies,
-		gpu_cache,
-		kv_cache,
+		namespace,
+		chart_version,
+		application_version,
+		status,
+		description,
 		requests,
-		time_to_first_token,
+		limits,
+		first_deployed_at,
+		last_deployed_at,
 		relation,
+		pods,
 		action,
 	};
 </script>
 
-{#snippet row_picker(row: Row<LargeLanguageModel>)}
+{#snippet row_expander(row: Row<LargeLanguageModel>)}
 	<Layout.Cell class="items-center">
-		<Cells.RowPicker {row} />
+		<button
+			class="flex size-6 items-center justify-center"
+			onclick={row.getToggleExpandedHandler()}
+			aria-expanded={row.getIsExpanded()}
+		>
+			<Icon
+				icon="ph:caret-left"
+				class={row.getIsExpanded()
+					? 'rotate-90 transition-transform duration-300'
+					: '-rotate-90 transition-transform duration-300'}
+			/>
+		</button>
 	</Layout.Cell>
 {/snippet}
 
-{#snippet model(row: Row<LargeLanguageModel>)}
-	<Layout.Cell class="items-start">
-		<a
-			class="m-0 p-0 underline hover:no-underline"
-			href={`${dynamicPaths.applicationsWorkloads(page.params.scope).url}/${row.original.application.namespace}/${row.original.application.name}`}
-		>
-			{row.original.application.name}
-		</a>
-		<Layout.SubCell>
-			{row.original.application.namespace}
-		</Layout.SubCell>
+{#snippet row_picker(row: Row<LargeLanguageModel>)}
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
 	</Layout.Cell>
 {/snippet}
 
@@ -56,216 +60,74 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet replicas(row: Row<LargeLanguageModel>)}
-	<Layout.Cell class="items-end">
-		{row.original.application.replicas}
+{#snippet namespace(row: Row<LargeLanguageModel>)}
+	<Layout.Cell class="items-start">
+		{row.original.namespace}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet healthies(row: Row<LargeLanguageModel>)}
+{#snippet chart_version(row: Row<LargeLanguageModel>)}
 	<Layout.Cell class="items-end">
-		{row.original.application.healthies}
+		{row.original.chartVersion}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet gpu_cache(row: Row<LargeLanguageModel>)}
-	{@const configuration = {
-		request: { label: 'request', color: 'var(--chart-2)' },
-	} satisfies Chart.ChartConfig}
-
+{#snippet application_version(row: Row<LargeLanguageModel>)}
 	<Layout.Cell class="items-end">
-		<Chart.Container config={configuration} class="h-fit w-20">
-			<LineChart
-				data={row.original.metrics.gpu_cache}
-				x="time"
-				xScale={scaleUtc()}
-				axis={false}
-				series={[
-					{
-						key: 'value',
-						label: configuration.request.label,
-						color: configuration.request.color,
-					},
-				]}
-				props={{
-					spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
-					xAxis: {
-						format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
-					},
-					highlight: { points: { r: 4 } },
-				}}
-			>
-				{#snippet tooltip()}
-					<Chart.Tooltip hideLabel>
-						{#snippet formatter({ item, name, value })}
-							<div
-								style="--color-bg: {item.color}"
-								class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
-							></div>
-							<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
-								<div class="grid gap-1.5">
-									<span class="text-muted-foreground">{name}</span>
-								</div>
-								<p class="font-mono">{Number(value)}</p>
-							</div>
-						{/snippet}
-					</Chart.Tooltip>
-				{/snippet}
-			</LineChart>
-		</Chart.Container>
+		{row.original.appVersion}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet kv_cache(row: Row<LargeLanguageModel>)}
-	{@const configuration = {
-		request: { label: 'request', color: 'var(--chart-2)' },
-	} satisfies Chart.ChartConfig}
+{#snippet status(row: Row<LargeLanguageModel>)}
+	<Layout.Cell class="items-start">
+		{row.original.status}
+	</Layout.Cell>
+{/snippet}
 
-	<Layout.Cell class="items-end">
-		<Chart.Container config={configuration} class="h-fit w-20">
-			<LineChart
-				data={row.original.metrics.kv_cache}
-				x="time"
-				xScale={scaleUtc()}
-				axis={false}
-				series={[
-					{
-						key: 'value',
-						label: configuration.request.label,
-						color: configuration.request.color,
-					},
-				]}
-				props={{
-					spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
-					xAxis: {
-						format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
-					},
-					highlight: { points: { r: 4 } },
-				}}
-			>
-				{#snippet tooltip()}
-					<Chart.Tooltip hideLabel>
-						{#snippet formatter({ item, name, value })}
-							<div
-								style="--color-bg: {item.color}"
-								class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
-							></div>
-							<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
-								<div class="grid gap-1.5">
-									<span class="text-muted-foreground">{name}</span>
-								</div>
-								<p class="font-mono">{Number(value)}</p>
-							</div>
-						{/snippet}
-					</Chart.Tooltip>
-				{/snippet}
-			</LineChart>
-		</Chart.Container>
+{#snippet description(row: Row<LargeLanguageModel>)}
+	<Layout.Cell class="items-start">
+		{row.original.description}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet requests(row: Row<LargeLanguageModel>)}
-	{@const configuration = {
-		request: { label: 'request', color: 'var(--chart-1)' },
-	} satisfies Chart.ChartConfig}
-
 	<Layout.Cell class="items-end">
-		<Chart.Container config={configuration} class="h-fit w-20">
-			<LineChart
-				data={row.original.metrics.requests}
-				x="time"
-				xScale={scaleUtc()}
-				axis={false}
-				series={[
-					{
-						key: 'value',
-						label: configuration.request.label,
-						color: configuration.request.color,
-					},
-				]}
-				props={{
-					spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
-					xAxis: {
-						format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
-					},
-					highlight: { points: { r: 4 } },
-				}}
-			>
-				{#snippet tooltip()}
-					<Chart.Tooltip hideLabel>
-						{#snippet formatter({ item, name, value })}
-							<div
-								style="--color-bg: {item.color}"
-								class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
-							></div>
-							<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
-								<div class="grid gap-1.5">
-									<span class="text-muted-foreground">{name}</span>
-								</div>
-								<p class="font-mono">{Number(value)}</p>
-							</div>
-						{/snippet}
-					</Chart.Tooltip>
-				{/snippet}
-			</LineChart>
-		</Chart.Container>
+		{row.original.requests}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet time_to_first_token(row: Row<LargeLanguageModel>)}
-	{@const configuration = {
-		request: { label: 'request', color: 'var(--chart-1)' },
-	} satisfies Chart.ChartConfig}
-
+{#snippet limits(row: Row<LargeLanguageModel>)}
 	<Layout.Cell class="items-end">
-		<Chart.Container config={configuration} class="h-fit w-20">
-			<LineChart
-				data={row.original.metrics.time_to_first_token}
-				x="time"
-				xScale={scaleUtc()}
-				axis={false}
-				series={[
-					{
-						key: 'value',
-						label: configuration.request.label,
-						color: configuration.request.color,
-					},
-				]}
-				props={{
-					spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
-					xAxis: {
-						format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
-					},
-					highlight: { points: { r: 4 } },
-				}}
-			>
-				{#snippet tooltip()}
-					<Chart.Tooltip hideLabel>
-						{#snippet formatter({ item, name, value })}
-							<div
-								style="--color-bg: {item.color}"
-								class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
-							></div>
-							<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
-								<div class="grid gap-1.5">
-									<span class="text-muted-foreground">{name}</span>
-								</div>
-								<p class="font-mono">{Number(value)}</p>
-							</div>
-						{/snippet}
-					</Chart.Tooltip>
-				{/snippet}
-			</LineChart>
-		</Chart.Container>
+		{row.original.limits}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet first_deployed_at(row: Row<LargeLanguageModel>)}
+	{#if row.original.firstDeployedAt}
+		<Layout.Cell class="items-end">
+			{formatTimeAgo(timestampDate(row.original.firstDeployedAt))}
+		</Layout.Cell>
+	{/if}
+{/snippet}
+
+{#snippet last_deployed_at(row: Row<LargeLanguageModel>)}
+	{#if row.original.lastDeployedAt}
+		<Layout.Cell class="items-end">
+			{formatTimeAgo(timestampDate(row.original.lastDeployedAt))}
+		</Layout.Cell>
+	{/if}
+{/snippet}
+
+{#snippet pods(row: Row<LargeLanguageModel>)}
+	<Layout.Cell class="items-end">
+		{row.original.pods.length}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet relation(row: Row<LargeLanguageModel>)}
-	{#if row.original.application.healthies > 0}
-		<Layout.Cell class="items-end">
-			<Relation model={row.original} />
-		</Layout.Cell>
-	{/if}
+	<Layout.Cell class="items-end">
+		<Relation model={row.original} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet action(row: Row<LargeLanguageModel>)}

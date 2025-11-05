@@ -30,9 +30,20 @@
 		{/snippet}
 
 		{#snippet content()}
-			{@const requestsList = filteredData.map((datum) => datum['requests' as keyof TData])}
+			{@const requestsList = filteredData.map((datum) => datum['requests' as keyof TData] ?? '0')}
 			{@const totalRequests = requestsList.reduce((a, requests) => a + Number(requests), 0)}
 			<Content value={totalRequests} />
+		{/snippet}
+	</Layout>
+	<Layout>
+		{#snippet title()}
+			<Title title={m.limits()} />
+		{/snippet}
+
+		{#snippet content()}
+			{@const limitsList = filteredData.map((datum) => datum['limits' as keyof TData] ?? '0')}
+			{@const totalLimits = limitsList.reduce((a, limits) => a + Number(limits), 0)}
+			<Content value={totalLimits} />
 		{/snippet}
 	</Layout>
 </div>
