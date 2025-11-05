@@ -179,14 +179,14 @@ func toProtoEssentialUnit(eu *core.EssentialUnit) *pb.Essential_Unit {
 
 func toProtoGPURelations(rs *core.GPURelations) []*pb.GPURelation {
 	ret := []*pb.GPURelation{}
-	for _, machine := range rs.Machines {
-		ret = append(ret, toProtoGPURelationFromMachine(&machine))
+	for i := range rs.Machines {
+		ret = append(ret, toProtoGPURelationFromMachine(&rs.Machines[i]))
 	}
-	for _, gpu := range rs.GPUs {
-		ret = append(ret, toProtoGPURelationFromGPU(&gpu))
+	for i := range rs.GPUs {
+		ret = append(ret, toProtoGPURelationFromGPU(&rs.GPUs[i]))
 	}
-	for _, pod := range rs.Pods {
-		ret = append(ret, toProtoGPURelationFromPod(&pod))
+	for i := range rs.Pods {
+		ret = append(ret, toProtoGPURelationFromPod(&rs.Pods[i]))
 	}
 	return ret
 }
