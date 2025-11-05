@@ -37,6 +37,11 @@
 
 	let { open = $bindable(false), plan = $bindable({} as Plan) }: { open: boolean; plan: Plan } = $props();
 
+	// Constants
+	const TOAST_DURATION_MS = 1200000; // 20 minutes
+	const POLLING_INTERVAL_MS = 5000; // 5 seconds
+	const MAX_POLL_ATTEMPTS = 60 * 4; // 20 minutes with 5 second intervals
+	const DEVICE_PATH_PREFIX = '/dev/';
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 	const scopeClient = createClient(ScopeService, transport);
@@ -69,12 +74,10 @@
 		isSubmitting = true;
 
 		// Create a loading toast that we can update
-		const toastId = toast.loading(`Creating scope ${scopeName}...`, { duration: 10000000 });
+		const toastId = toast.loading(`Creating scope ${scopeName}...`, { duration: TOAST_DURATION_MS });
+		handleClose();
 		(async () => {
 			try {
-				isSubmitting = false;
-				handleClose();
-
 				// Step 1: Create Scope
 				const createScopeRequest = create(CreateScopeRequestSchema, {
 					name: scopeName,
@@ -82,7 +85,7 @@
 				const scopeResponse = await scopeClient.createScope(createScopeRequest);
 
 				// Step 2: Add Machine Tags
-				toast.loading('Adding machine tags...', { id: toastId, duration: 10000000 });
+				toast.loading('Adding machine tags...', { id: toastId, duration: TOAST_DURATION_MS });
 				const addMachineTagsRequest = create(AddMachineTagsRequestSchema, {
 					id: selectedMachine,
 					tags: [],
@@ -90,7 +93,7 @@
 				await machineClient.addMachineTags(addMachineTagsRequest);
 
 				// Step 3: Commission Machine
-				toast.loading('Commissioning machine...', { id: toastId, duration: 10000000 });
+				toast.loading('Commissioning machine...', { id: toastId, duration: TOAST_DURATION_MS });
 				const commissionMachineRequest = create(CommissionMachineRequestSchema, {
 					id: selectedMachine,
 					enableSsh: true,
@@ -101,23 +104,25 @@
 				await machineClient.commissionMachine(commissionMachineRequest);
 
 				// Step 4: Wait for machine status to be Ready
-				toast.loading('Waiting for machine to be ready...', { id: toastId, duration: 10000000 });
+				toast.loading('Waiting for machine to be ready...', { id: toastId, duration: TOAST_DURATION_MS });
 				const getMachineRequest = create(GetMachineRequestSchema, {
 					id: selectedMachine,
 				});
 
 				// Poll until machine status is Ready
 				let machineReady = false;
-				while (!machineReady) {
-					await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds between checks
+				let retryCount = 0;
+				while (!machineReady && retryCount < MAX_POLL_ATTEMPTS) {
+					await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
 					const machineResponse = await machineClient.getMachine(getMachineRequest);
 					if (machineResponse.status.toLowerCase() === 'ready') {
 						machineReady = true;
 					}
+					retryCount++;
 				}
 
 				// Step 5: Create Machine
-				toast.loading('Creating machine...', { id: toastId, duration: 10000000 });
+				toast.loading('Creating machine...', { id: toastId, duration: TOAST_DURATION_MS });
 				const createMachineRequest = create(CreateMachineRequestSchema, {
 					id: selectedMachine,
 					scope: scopeResponse.name,
@@ -125,32 +130,35 @@
 				const machineResponse = await machineClient.createMachine(createMachineRequest);
 
 				// Step 6: Wait for agent status to be Started
-				toast.loading('Waiting for agent to start...', { id: toastId, duration: 10000000 });
+				toast.loading('Waiting for agent to start...', { id: toastId, duration: TOAST_DURATION_MS });
 
 				// Poll until agent status is Started
 				let agentStarted = false;
-				while (!agentStarted) {
-					await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds between checks
+				retryCount = 0;
+				while (!agentStarted && retryCount < MAX_POLL_ATTEMPTS) {
+					await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
 					const machineResponse = await machineClient.getMachine(getMachineRequest);
 					if (machineResponse.agentStatus.toLowerCase() === 'started') {
 						agentStarted = true;
 					}
+					retryCount++;
 				}
 
 				// Step 7: Create Node
-				toast.loading('Creating node...', { id: toastId, duration: 10000000 });
+				toast.loading('Creating node...', { id: toastId, duration: TOAST_DURATION_MS });
 				const createNodeRequest = create(CreateNodeRequestSchema, {
 					scope: scopeResponse.name,
 					machineId: machineResponse.id,
 					prefixName: prefixName || scopeName,
 					virtualIps: virtualIp ? [virtualIp] : [],
 					calicoCidr: calicoCidr,
-					osdDevices: selectedDevices.map((device) => `/dev/${device}`),
+					osdDevices: selectedDevices.map((device) => `${DEVICE_PATH_PREFIX}${device}`),
 				});
 				await orchestratorClient.createNode(createNodeRequest);
 
 				// Success
 				toast.success(m.create_scope_success({ name: scopeResponse.name }), { id: toastId, duration: 5000 });
+				isSubmitting = false;
 				resetForm();
 			} catch (error) {
 				isSubmitting = false;
@@ -359,7 +367,10 @@
 							size="lg"
 							variant="outline"
 							class="flex-1"
-							onclick={handleClose}
+							onclick={() => {
+								handleClose();
+								resetForm();
+							}}
 							disabled={isSubmitting}
 						>
 							{m.cancel()}
