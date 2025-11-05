@@ -20,7 +20,7 @@ func (uc *OrchestratorUseCase) createCOS(ctx context.Context, scope, prefix stri
 	}
 
 	// integrate
-	name := toEssentialName(prefix, "grafana-agent")
+	name := prefix + "-" + "grafana-agent"
 	endpointList := [][]string{
 		{name + ":send-remote-write", "global-prometheus:receive-remote-write"},
 		{name + ":grafana-dashboards-provider", "global-grafana:grafana-dashboard"},
