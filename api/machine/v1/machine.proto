@@ -33,6 +33,12 @@ service MachineService {
     };
   };
 
+  rpc CommissionMachine(CommissionMachineRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "mch-general"
+    };
+  };
+
   rpc PowerOffMachine(PowerOffMachineRequest) returns (Machine) {
     option (otterscale.api.feature) = {
       name: "mch-general"
@@ -127,6 +133,7 @@ message Machine {
   string description = 105;
   string status = 201;
   string status_message = 202;
+  string agent_status = 203;
   string power_state = 301;
   string power_type = 302;
   string osystem = 401;
@@ -166,18 +173,21 @@ message GetMachineRequest {
 
 message CreateMachineRequest {
   string id = 1;
-  bool enable_ssh = 2;
-  bool skip_bmc_config = 3;
-  bool skip_networking = 4;
-  bool skip_storage = 5;
-  string scope = 11;
-  repeated string tags = 21;
+  string scope = 2;
 }
 
 message DeleteMachineRequest {
   string id = 1;
   bool force = 2;
   bool purge_disk = 3;
+}
+
+message CommissionMachineRequest {
+  string id = 1;
+  bool enable_ssh = 2;
+  bool skip_bmc_config = 3;
+  bool skip_networking = 4;
+  bool skip_storage = 5;
 }
 
 message PowerOffMachineRequest {

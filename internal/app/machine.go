@@ -45,7 +45,7 @@ func (s *MachineService) GetMachine(ctx context.Context, req *pb.GetMachineReque
 }
 
 func (s *MachineService) CreateMachine(ctx context.Context, req *pb.CreateMachineRequest) (*pb.Machine, error) {
-	machine, err := s.machine.CreateMachine(ctx, req.GetId(), req.GetEnableSsh(), req.GetSkipBmcConfig(), req.GetSkipNetworking(), req.GetSkipStorage(), req.GetScope(), req.GetTags())
+	machine, err := s.machine.CreateMachine(ctx, req.GetId(), req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -55,6 +55,14 @@ func (s *MachineService) CreateMachine(ctx context.Context, req *pb.CreateMachin
 
 func (s *MachineService) DeleteMachine(ctx context.Context, req *pb.DeleteMachineRequest) (*emptypb.Empty, error) {
 	if err := s.machine.DeleteMachine(ctx, req.GetId(), req.GetForce(), req.GetPurgeDisk()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
+func (s *MachineService) CommissionMachine(ctx context.Context, req *pb.CommissionMachineRequest) (*emptypb.Empty, error) {
+	if err := s.machine.CommissionMachine(ctx, req.GetId(), req.GetEnableSsh(), req.GetSkipBmcConfig(), req.GetSkipNetworking(), req.GetSkipStorage()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -147,6 +155,7 @@ func toProtoMachine(m *core.Machine) *pb.Machine {
 	ret.SetDescription(m.Description)
 	ret.SetStatus(m.StatusName)
 	ret.SetStatusMessage(m.StatusMessage)
+	ret.SetAgentStatus(m.AgentStatus.Status)
 	ret.SetPowerState(m.PowerState)
 	ret.SetPowerType(m.PowerType)
 	ret.SetOsystem(m.OSystem)
