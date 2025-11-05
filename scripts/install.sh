@@ -1401,24 +1401,24 @@ config_bridge() {
             log "INFO" "Add $OTTERSCALE_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
             
             log "INFO" "Waiting ipv4 bind to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-            while true; do   
+            while true; do
                 if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
                     log "INFO" "Success bind IP $OTTERSCALE_WEB_IP to network device $OTTERSCALE_BRIDGE_NAME"
-                    snap restart microk8s
+                    sleep 10
                     return 0
                 fi
             done
         fi
     fi
+}
 
+deploy_istio() {
     log "INFO" "Check metallb ipaddresspools" "NETWORK"
     if ! microk8s kubectl get ipaddresspools default-addresspool -n metallb-system -o json | jq --exit-status ".spec.addresses[] | select(.==\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\")" >/dev/null 2>&1 ; then
         log "INFO" "Update microk8s metallb: $OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP" "NETWORK"
         microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >"$TEMP_LOG" 2>&1
     fi
-}
 
-deploy_istio() {
     log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
     local istio_version="1.27.3"
     local istio_url="https://istio.io/downloadIstio"
@@ -1443,7 +1443,7 @@ deploy_istio() {
 
     if [[ $(microk8s kubectl get deploy -n istio-system -l app=istiod -o name | wc -l) -eq 0 ]]; then
         log "INFO" "Install istio into kubernetes environment" "ISTIO_SERVICE"
-        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation --readiness-timeout 10m0s"
+        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation --readiness-timeout 10m0s --kubeclient-timeout 180s"
     else
         log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
     fi
@@ -1455,6 +1455,7 @@ deploy_helm() {
     local repository_name="otterscale-charts"
     local deploy_name="otterscale"
     local namespace="otterscale"
+    local otterscale_endpoint="http://$OTTERSCALE_WEB_IP"
 
     if ! microk8s helm3 repo list | grep -qw "$repository_name" >/dev/null ; then
         log "INFO" "Add and update helm repository $repository_name" "HELM_REPO"
@@ -1518,16 +1519,14 @@ $(echo "$juju_cacert" | sed 's/^/      /')
 EOF
 
         execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace -f $values_file" "Deploy OtterScale chart"
-
-        # Clean up temporary file
         rm -f "$ca_cert_file"
 
-        local otterscale_endpoint="http://$OTTERSCALE_WEB_IP"
         send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
-        log "INFO" "OtterScale install finished, you can visit web UI from $otterscale_endpoint" "FINISHED"
     else
         log "INFO" "Helm releases already has otterscale" "HELM_CHECK"
     fi
+
+    log "INFO" "You can visit web UI from $otterscale_endpoint" "FINISHED"
 }
 
 # =============================================================================
@@ -1591,11 +1590,12 @@ main() {
 
     # Final configuration
     log "INFO" "Finalizing configuration..." "FINAL_CONFIG"
+    config_bridge
     config_ceph_rbd_modules
 
-    config_bridge
     deploy_istio
     deploy_helm
+    
 
     log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
 }
