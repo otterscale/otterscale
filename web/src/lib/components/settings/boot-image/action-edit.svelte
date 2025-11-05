@@ -145,7 +145,6 @@
 				<Modal.Action
 					onclick={() => {
 						const architectures = `${request.architectures.join(', ')}`;
-						console.log('request', request);
 						// Execute edit operation with toast notifications
 						toast.promise(() => client.updateBootImage(request), {
 							loading: `Editing boot image ${request.distroSeries}...`,
