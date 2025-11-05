@@ -7,9 +7,9 @@ import { env } from '$env/dynamic/public';
 
 // Initialize Keycloak instance
 const keycloak = new Keycloak({
-	url: env.PUBLIC_AUTH_URL,
-	realm: env.PUBLIC_AUTH_REALM,
-	clientId: env.PUBLIC_AUTH_CLIENT_ID,
+	url: env.PUBLIC_AUTH_URL ?? '',
+	realm: env.PUBLIC_AUTH_REALM ?? '',
+	clientId: env.PUBLIC_AUTH_CLIENT_ID ?? '',
 });
 
 // Setup token refresh handler
@@ -55,8 +55,8 @@ export const logout = (): void => {
 	}
 };
 
-export const getUser = () => keycloak.tokenParsed;
+export const getUser = (): User | undefined => keycloak.tokenParsed;
 
-export const getToken = () => keycloak.token;
+export const getToken = (): string | undefined => keycloak.token;
 
 export type User = Keycloak.KeycloakTokenParsed;

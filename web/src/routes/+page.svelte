@@ -24,7 +24,6 @@
 		<p class="text-muted-foreground line-clamp-2 text-center">
 			{m.redirect_message_302()}
 		</p>
-		<p class="text-muted-foreground text-center"></p>
 		<div class="mt-6 flex gap-4">
 			<Spinner class="size-8" />
 		</div>

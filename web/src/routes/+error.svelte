@@ -22,7 +22,6 @@
 			<p class="text-muted-foreground line-clamp-2 text-center">
 				{errorMessages[page.status]}
 			</p>
-			<p class="text-muted-foreground text-center"></p>
 			<div class="mt-6 flex gap-4">
 				<button
 					class="focus-visible:ring-ring [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-9 items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium whitespace-nowrap shadow-xs transition-colors focus-visible:ring-1 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"

@@ -54,8 +54,9 @@
 </svelte:head>
 
 <Sidebar.Provider>
-	{#if getUser()}
-		<AppSidebar user={getUser()!} />
+	{@const user = getUser()}
+	{#if user}
+		<AppSidebar {user} />
 	{/if}
 	<Sidebar.Inset>
 		<header
