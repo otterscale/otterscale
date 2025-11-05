@@ -1396,6 +1396,7 @@ config_bridge() {
         log "INFO" "Detect that IP $OTTERSCALE_WEB_IP exists on network $OTTERSCALE_BRIDGE_NAME" "NETWORK"
     else
         local mask=$(nmcli device show $OTTERSCALE_BRIDGE_NAME | grep "^IP4.ADDRESS" | head -n 1 | awk '{print $2}' | cut -d'/' -f2)
+        local metallb_svc=$(microk8s kubectl get svc metallb-webhook-service -n metallb-system -o json | jq -r .spec.clusterIP)
 
         if nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask" >/dev/null 2>&1; then
             log "INFO" "Add $OTTERSCALE_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
@@ -1405,22 +1406,23 @@ config_bridge() {
                 if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
                     log "INFO" "Success bind IP $OTTERSCALE_WEB_IP to network device $OTTERSCALE_BRIDGE_NAME"
                     break
-                else
-                    sleep 1
                 fi
+                
+                sleep 1
             done
 
-            # Wait microk8s refresh and restart
-            sleep 5
+            sleep 10 # Wait microk8s refresh and restart
 
-            log "INFO" "Waiting microk8s is available" "MICROK8S"
+            log "INFO" "Waiting metallb-webhook-service is available" "MICROK8S"
             while true; do
                 if (echo > /dev/tcp/localhost/16443) &>/dev/null; then
-                    log "INFO" "Microk8s is available" "MICROK8S"
-                    break
-                else
-                    sleep 1
+                    if (echo > /dev/tcp/"$metallb_svc"/443) &>/dev/null; then
+                        log "INFO" "metallb-webhook-service is available" "MICROK8S"
+                        break
+                    fi
                 fi
+                
+                sleep 1
             done
         fi
     fi
@@ -1430,7 +1432,8 @@ deploy_istio() {
     log "INFO" "Check metallb ipaddresspools" "NETWORK"
     if ! microk8s kubectl get ipaddresspools default-addresspool -n metallb-system -o json | jq --exit-status ".spec.addresses[] | select(.==\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\")" >/dev/null 2>&1 ; then
         log "INFO" "Update microk8s metallb: $OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP" "NETWORK"
-        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >"$TEMP_LOG" 2>&1
+        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]"
+        #microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >"$TEMP_LOG" 2>&1
     fi
 
     log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
