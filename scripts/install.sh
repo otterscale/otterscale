@@ -1404,8 +1404,22 @@ config_bridge() {
             while true; do
                 if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
                     log "INFO" "Success bind IP $OTTERSCALE_WEB_IP to network device $OTTERSCALE_BRIDGE_NAME"
-                    sleep 10
-                    return 0
+                    break
+                else
+                    sleep 1
+                fi
+            done
+
+            # Wait microk8s refresh and restart
+            sleep 5
+
+            log "INFO" "Waiting microk8s is available" "MICROK8S"
+            while true; do
+                if (echo > /dev/tcp/localhost/16443) &>/dev/null; then
+                    log "INFO" "Microk8s is available" "MICROK8S"
+                    break
+                else
+                    sleep 1
                 fi
             done
         fi
