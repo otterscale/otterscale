@@ -21,6 +21,12 @@ const items = [
 		type: m.virtual_machine(),
 		url: dynamicPaths.settingsInstanceType(page.params.scope).url,
 	},
+	{
+		icon: 'ph:robot',
+		title: m.model(),
+		type: m.model(),
+		url: dynamicPaths.settingsModelArtifact(page.params.scope).url,
+	},
 ];
 
 export { items };

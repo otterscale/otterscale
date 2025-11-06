@@ -166,7 +166,6 @@ export const dynamicPaths = {
 		title: m.subscription(),
 		url: createScopePath(scope, '/global-settings/subscription'),
 	}),
-
 	scopeBasedSettings: (scope: string | undefined): Path => ({
 		title: m.settings(),
 		url: createScopePath(scope, '/scope-based-settings'),
@@ -182,6 +181,10 @@ export const dynamicPaths = {
 	settingsInstanceType: (scope: string | undefined): Path => ({
 		title: m.settings(),
 		url: createScopePath(scope, '/scope-based-settings/instance-type'),
+	}),
+	settingsModelArtifact: (scope: string | undefined): Path => ({
+		title: m.settings(),
+		url: createScopePath(scope, '/scope-based-settings/model-artifact'),
 	}),
 	networking: (scope: string | undefined): Path => ({
 		title: m.networking(),
