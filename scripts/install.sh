@@ -1432,14 +1432,13 @@ deploy_istio() {
     log "INFO" "Check metallb ipaddresspools" "NETWORK"
     if ! microk8s kubectl get ipaddresspools default-addresspool -n metallb-system -o json | jq --exit-status ".spec.addresses[] | select(.==\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\")" >/dev/null 2>&1 ; then
         log "INFO" "Update microk8s metallb: $OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP" "NETWORK"
-        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]"
-        #microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >"$TEMP_LOG" 2>&1
+        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >/dev/null 2>&1
     fi
 
     log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
     local istio_version="1.27.3"
     local istio_url="https://istio.io/downloadIstio"
-    local istio_namespace="istio-system"    
+    local istio_namespace="istio-system"
     local has_istio=false
     local arch
     arch=$(uname -m)
@@ -1453,6 +1452,7 @@ deploy_istio() {
         if ! curl -fsSL $istio_url | ISTIO_VERSION="$istio_version" TARGET_ARCH="$arch" bash - >>"$TEMP_LOG" 2>&1; then
             error_exit "Failed install istio"
         fi
+
         mv "istio-$istio_version/bin/istioctl" /usr/local/bin/
         chmod +x /usr/local/bin/istioctl
         rm -rf "istio-$istio_version"
@@ -1535,9 +1535,8 @@ $(echo "$juju_cacert" | sed 's/^/      /')
     rados_timeout: 0s
 EOF
 
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace -f $values_file" "Deploy OtterScale chart"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace -f $values_file --wait" "Deploy OtterScale chart"
         rm -f "$ca_cert_file"
-
         send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
     else
         log "INFO" "Helm releases already has otterscale" "HELM_CHECK"
