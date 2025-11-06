@@ -5,9 +5,9 @@
 	import SheetNotification from './sheet-notification.svelte';
 
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
-	import { logout } from '$lib/auth';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
@@ -39,7 +39,7 @@
 	};
 
 	const handleLogout = () => {
-		logout();
+		goto(resolve('/logout'));
 	};
 
 	const toggleNotification = () => {
@@ -68,8 +68,8 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
 						<Avatar.Root class="size-8 rounded-lg">
-							<Avatar.Image src={user.picture} alt={user.name} />
-							<Avatar.Fallback class="rounded-lg">{getUserInitials(user.name)}</Avatar.Fallback>
+							<Avatar.Image src={user.picture as string} alt={user.name as string} />
+							<Avatar.Fallback class="rounded-lg">{getUserInitials(user.name as string)}</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-medium">{user.name}</span>
@@ -90,8 +90,8 @@
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 						<Avatar.Root class="size-8 rounded-lg">
-							<Avatar.Image src={user.picture} alt={user.name} />
-							<Avatar.Fallback class="rounded-lg">{getUserInitials(user.name)}</Avatar.Fallback>
+							<Avatar.Image src={user.picture as string} alt={user.name as string} />
+							<Avatar.Fallback class="rounded-lg">{getUserInitials(user.name as string)}</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-medium">{user.name}</span>
