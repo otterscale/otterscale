@@ -1,19 +1,23 @@
 import Keycloak from 'keycloak-js';
 
-import { isAuthenticated, token, user } from './stores';
-
 import { env } from '$env/dynamic/public';
+import { setToken } from '$lib/jwt';
 
 const keycloak = new Keycloak({
-	url: env.PUBLIC_AUTH_URL ?? '',
-	realm: env.PUBLIC_AUTH_REALM ?? '',
-	clientId: env.PUBLIC_AUTH_CLIENT_ID ?? '',
+	url: env.PUBLIC_AUTH_URL,
+	realm: env.PUBLIC_AUTH_REALM,
+	clientId: env.PUBLIC_AUTH_CLIENT_ID,
 });
 
-const reset = () => {
-	isAuthenticated.set(false);
-	user.set(undefined);
-	token.set(undefined);
+const handleTokenRefresh = async (): Promise<void> => {
+	try {
+		const refreshed = await keycloak.updateToken(30);
+		if (refreshed && keycloak.token) {
+			await setToken(keycloak.token);
+		}
+	} catch (error) {
+		console.error('Failed to refresh token:', error);
+	}
 };
 
 export const initializeAuth = async (): Promise<void> => {
@@ -24,35 +28,18 @@ export const initializeAuth = async (): Promise<void> => {
 			silentCheckSsoRedirectUri: `${location.origin}/silent-check-sso.html`,
 		});
 
-		isAuthenticated.set(authenticated);
-
-		if (authenticated) {
-			user.set(keycloak.tokenParsed);
-			token.set(keycloak.token);
+		if (authenticated && keycloak.token) {
+			await setToken(keycloak.token);
 		}
 
-		keycloak.onTokenExpired = () => {
-			keycloak.updateToken(30).then((refreshed) => {
-				if (refreshed) {
-					token.set(keycloak.token);
-					user.set(keycloak.tokenParsed);
-				}
-			});
-		};
+		keycloak.onTokenExpired = handleTokenRefresh;
 	} catch (error) {
 		console.error('Error during Keycloak initialization:', error);
-		reset();
 	}
 };
 
-export const login = () => {
-	keycloak.login();
-	reset();
-};
+export const register = (): Promise<void> => keycloak.register();
 
-export const logout = () => {
-	keycloak.logout();
-	reset();
-};
+export const login = (): Promise<void> => keycloak.login();
 
-export type User = Keycloak.KeycloakTokenParsed;
+export const logout = (): Promise<void> => keycloak.logout();

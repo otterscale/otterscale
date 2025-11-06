@@ -1,5 +1,8 @@
 <script lang="ts">
 	import BookmarkIcon from '@lucide/svelte/icons/bookmark';
+	import type { Snippet } from 'svelte';
+
+	import type { LayoutData } from './$types.js';
 
 	import { page } from '$app/state';
 	import { AppSidebar } from '$lib/components/layout';
@@ -12,9 +15,14 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
 	import type { Path } from '$lib/path';
-	import { bookmarks, breadcrumb, user } from '$lib/stores';
+	import { bookmarks, breadcrumb } from '$lib/stores';
 
-	let { children } = $props();
+	interface Props {
+		data: LayoutData;
+		children: Snippet;
+	}
+
+	let { data, children }: Props = $props();
 	let open = $state(false);
 
 	// Computed values
@@ -39,9 +47,7 @@
 </svelte:head>
 
 <Sidebar.Provider>
-	{#if $user}
-		<AppSidebar user={$user} />
-	{/if}
+	<AppSidebar user={data.user} />
 	<Sidebar.Inset>
 		<header
 			class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"

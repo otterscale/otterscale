@@ -1,27 +1,13 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-
-	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
-	import { login, logout } from '$lib/auth';
+	import { login, logout, register } from '$lib/auth';
 	import { Button } from '$lib/components/ui/button';
 	import { Spinner } from '$lib/components/ui/spinner';
 	import { m } from '$lib/paraglide/messages';
-	import { isAuthenticated } from '$lib/stores';
-
-	onMount(() => {
-		const unsubscribe = isAuthenticated.subscribe((value) => {
-			if (value) {
-				goto(resolve('/scopes'));
-			}
-		});
-
-		return () => unsubscribe();
-	});
 </script>
 
 <Button onclick={login}>Login with OIDC</Button>
 <Button onclick={logout}>Logout</Button>
+<Button onclick={register}>Register</Button>
 
 <div class="h-svh">
 	<div class="m-auto flex h-full w-1/4 flex-col items-center justify-center gap-2">

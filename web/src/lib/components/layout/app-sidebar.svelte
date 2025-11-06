@@ -17,11 +17,11 @@
 	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
-	import type { User } from '$lib/auth';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { Skeleton } from '$lib/components/ui/skeleton';
+	import type { User } from '$lib/jwt';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths, getValidURL, type Path } from '$lib/path';
+	import { dynamicPaths, type Path } from '$lib/path';
 	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 
 	type Props = { user: User } & ComponentProps<typeof Sidebar.Root>;
@@ -80,7 +80,7 @@
 		}
 	}
 
-	async function handleScopeOnSelect(index: number, home: boolean = false) {
+	async function handleScopeOnSelect(index: number) {
 		const scope = $scopes[index];
 		if (!scope) return;
 
@@ -92,14 +92,7 @@
 		toast.success(m.switch_scope({ name: scope.name }));
 
 		// Go home
-		if (home) {
-			goto(dynamicPaths.scope(scope.name).url);
-			return;
-		}
-
-		// Navigate to new url
-		const url = getValidURL(page.url.pathname, scope.name, $currentCeph?.name, $currentKubernetes?.name);
-		goto(url);
+		goto(dynamicPaths.scope(scope.name).url);
 	}
 
 	async function initialize() {

@@ -7,11 +7,12 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
-	import { logout, type User } from '$lib/auth';
+	import { logout } from '$lib/auth';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
+	import type { User } from '$lib/jwt';
 	import { m } from '$lib/paraglide/messages.js';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 	import { dynamicPaths } from '$lib/path';
