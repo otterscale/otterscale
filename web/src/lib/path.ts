@@ -42,10 +42,6 @@ export const staticPaths: Record<string, Path> = {
 // Dynamic
 export const dynamicPaths = {
 	scope: (scope: string | undefined): Path => ({ title: m.scopes(), url: createScopePath(scope) }),
-	changelog: (scope: string | undefined): Path => ({
-		title: m.changelog(),
-		url: createScopePath(scope, '/changelog'),
-	}),
 	account: (scope: string | undefined): Path => ({
 		title: m.account(),
 		url: createScopePath(scope, '/account'),
