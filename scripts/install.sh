@@ -1436,7 +1436,7 @@ deploy_istio() {
     fi
 
     log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
-    local istio_version="1.27.3"
+    local istio_version="1.26.6"
     local istio_url="https://istio.io/downloadIstio"
     local istio_namespace="istio-system"
     local has_istio=false
@@ -1460,7 +1460,7 @@ deploy_istio() {
 
     if [[ $(microk8s kubectl get deploy -n istio-system -l app=istiod -o name | wc -l) -eq 0 ]]; then
         log "INFO" "Install istio into kubernetes environment" "ISTIO_SERVICE"
-        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation --readiness-timeout 10m0s --kubeclient-timeout 180s"
+        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation"
     else
         log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
     fi
