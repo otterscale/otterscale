@@ -4,6 +4,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable, derived } from 'svelte/store';
 
+	import { resolve } from '$app/paths';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import SquareGridImage from '$lib/assets/square-grid.svg';
 	import { scopeIcon } from '$lib/components/scopes/icon';
@@ -11,7 +12,6 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
 
 	const EXCLUDED_SCOPES = ['cos', 'cos-dev', 'cos-lite'];
 
@@ -78,7 +78,7 @@
 	<div class="z-10 mx-auto grid w-full grid-cols-8 gap-4 px-4 py-10 sm:gap-6 xl:px-0 2xl:w-3/4">
 		{#each $filteredScopes as scope, index}
 			<a
-				href={dynamicPaths.scope(scope.name).url}
+				href={resolve(`/(auth)/scope/[scope]`, { scope: scope.name })}
 				class="group col-span-2 cursor-pointer {getCardColumnClass(index, $filteredScopes.length)}"
 			>
 				<Card.Root>

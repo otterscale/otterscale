@@ -8,6 +8,7 @@
 
 	import type { Plan } from './plans';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import {
 		MachineService,
@@ -33,7 +34,6 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
 
 	let { open = $bindable(false), plan = $bindable({} as Plan) }: { open: boolean; plan: Plan } = $props();
 
@@ -399,7 +399,10 @@
 	<div class="flex items-center space-x-2">
 		<HoverCard.Root>
 			<HoverCard.Trigger
-				href={dynamicPaths.machinesMetal(page.params.scope).url + '/' + machine.id}
+				href={resolve('/(auth)/scope/[scope]/machines/metal/[id]', {
+					scope: page.params.scope!,
+					id: machine.id,
+				})}
 				target="_blank"
 				rel="noreferrer noopener"
 				class="flex items-center space-x-1 rounded-sm underline-offset-4 group-hover:underline focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"

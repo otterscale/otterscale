@@ -123,6 +123,7 @@
 				password: $signUpForm.password,
 				name: `${$signUpForm.firstName} ${$signUpForm.lastName}`,
 				fetchOptions: {
+					// eslint-disable-next-line svelte/no-navigation-without-resolve
 					onSuccess: () => goto(data.nextPath),
 					onError: showError,
 				},

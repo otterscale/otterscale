@@ -6,6 +6,7 @@
 	import Actions from './cell-actions.svelte';
 	import VNC from './cell-vnc.svelte';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { Disk } from '$lib/components/compute/virtual-machine/disk';
@@ -18,7 +19,6 @@
 	import * as Table from '$lib/components/ui/table';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatTimeAgo } from '$lib/formatter';
-	import { dynamicPaths } from '$lib/path';
 
 	export const cells = {
 		row_picker,
@@ -78,7 +78,10 @@
 		{#if row.original.machineId}
 			<a
 				class="m-0 p-0 underline hover:no-underline"
-				href={`${dynamicPaths.machinesMetal(page.params.scope).url}/${row.original.machineId}`}
+				href={resolve('/(auth)/scope/[scope]/machines/metal/[id]', {
+					scope: page.params.scope!,
+					id: row.original.machineId,
+				})}
 			>
 				{row.original.hostname}
 			</a>

@@ -1,15 +1,21 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Subscription } from '$lib/components/settings/subscription';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb, premiumTier } from '$lib/stores';
+	import { breadcrumbs, premiumTier } from '$lib/stores';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({
-		parents: [dynamicPaths.globalSettings(page.params.scope)],
-		current: { title: m.subscription(), url: '' },
-	});
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{
+			title: m.settings(),
+			url: resolve('/(auth)/scope/[scope]/global-settings', { scope: page.params.scope! }),
+		},
+		{
+			title: m.subscription(),
+			url: resolve('/(auth)/scope/[scope]/global-settings/subscription', { scope: page.params.scope! }),
+		},
+	]);
 </script>
 
 {#key $premiumTier.level}

@@ -3,16 +3,17 @@
 	import { Handle, type NodeProps } from '@xyflow/svelte';
 
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import type { GPURelation_Pod } from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { dynamicPaths } from '$lib/path';
 	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">
 	let { data, selected, targetPosition, sourcePosition }: Omit<NodeProps, 'data'> & { data: GPURelation_Pod } =
 		$props();
-	const link = `${dynamicPaths.applicationsWorkloads(page.params.scope).url}`;
+
+	const link = resolve('/(auth)/scope/[scope]/applications/workloads', { scope: page.params.scope! });
 </script>
 
 <div

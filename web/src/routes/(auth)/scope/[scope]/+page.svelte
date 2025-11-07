@@ -1,35 +1,53 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { HomeCard, HomeCell } from '$lib/components/scopes';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths, pathDisabled, pathHidden } from '$lib/path';
-	import { breadcrumb, currentCeph, currentKubernetes } from '$lib/stores';
+	import { getCephPathDisabled, getKubernetesPathDisabled } from '$lib/path';
+	import { breadcrumbs, currentCeph, currentKubernetes } from '$lib/stores';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [], current: dynamicPaths.scope(page.params.scope) });
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{
+			title: m.scope(),
+			url: resolve('/(auth)/scope/[scope]', { scope: page.params.scope! }),
+		},
+	]);
 
 	const cards = $derived([
 		{
 			background: 'bg-[#1c77c3]/30',
-			path: dynamicPaths.models(page.params.scope),
+			path: {
+				title: m.models(),
+				url: resolve('/(auth)/scope/[scope]/models', { scope: page.params.scope! }),
+			},
 			description: m.models_description(),
 		},
 		{
 			background: 'bg-[#39a9db]/30',
-			path: dynamicPaths.applications(page.params.scope),
+			path: {
+				title: m.applications(),
+				url: resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! }),
+			},
 			description: m.applications_description(),
 		},
 		{
 			background: 'bg-[#f39237]/30',
-			path: dynamicPaths.storage(page.params.scope),
+			path: {
+				title: m.storage(),
+				url: resolve('/(auth)/scope/[scope]/storage', { scope: page.params.scope! }),
+			},
 			description: m.storage_description(),
 		},
 		{
 			background: 'bg-[#d63230]/30',
-			path: dynamicPaths.machines(page.params.scope),
+			path: {
+				title: m.machines(),
+				url: resolve('/(auth)/scope/[scope]/machines', { scope: page.params.scope! }),
+			},
 			description: m.machines_description(),
 		},
 	]);
@@ -50,19 +68,13 @@
 	<div class="mx-auto flex max-w-5xl px-4 xl:px-0">
 		<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
 			{#each cards as card}
-				{#if !pathHidden(page.params.scope, card.path.url)}
-					<HomeCard
-						background={card.background}
-						path={card.path}
-						description={card.description}
-						disabled={pathDisabled(
-							$currentCeph?.name,
-							$currentKubernetes?.name,
-							page.params.scope,
-							card.path.url,
-						)}
-					/>
-				{/if}
+				<HomeCard
+					background={card.background}
+					path={card.path}
+					description={card.description}
+					disabled={(!$currentCeph && getCephPathDisabled(card.path.url)) ||
+						(!$currentKubernetes && getKubernetesPathDisabled(card.path.url))}
+				/>
 			{/each}
 		</div>
 	</div>
@@ -99,7 +111,7 @@
 						{m.home_integration_description()}
 					</p>
 
-					<Button href={dynamicPaths.applications(page.params.scope).url}>
+					<Button href={resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! })}>
 						{m.home_get_started()}
 						<Icon icon="ph:cursor-click-fill" />
 					</Button>

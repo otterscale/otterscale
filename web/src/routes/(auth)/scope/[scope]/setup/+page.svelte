@@ -3,17 +3,20 @@
 	import { getContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { FacilityService, type Facility } from '$lib/api/facility/v1/facility_pb';
 	import { SetupScope } from '$lib/components/setup';
-	import { dynamicPaths } from '$lib/path';
-	import { activeScope, breadcrumb } from '$lib/stores';
+	import { m } from '$lib/paraglide/messages';
+	import { activeScope, breadcrumbs } from '$lib/stores';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({
-		parents: [],
-		current: dynamicPaths.setupScope(page.params.scope),
-	});
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{
+			title: m.setup(),
+			url: resolve('/(auth)/scope/[scope]/setup', { scope: page.params.scope! }),
+		},
+	]);
 
 	// API setup
 	const transport: Transport = getContext('transport');

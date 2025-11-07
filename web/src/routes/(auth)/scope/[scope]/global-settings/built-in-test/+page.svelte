@@ -1,15 +1,21 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { BuiltInSelfTest } from '$lib/components/settings/built-in-self-test/index';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({
-		parents: [dynamicPaths.globalSettings(page.params.scope)],
-		current: { title: m.built_in_test(), url: '' },
-	});
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{
+			title: m.settings(),
+			url: resolve('/(auth)/scope/[scope]/global-settings', { scope: page.params.scope! }),
+		},
+		{
+			title: m.built_in_test(),
+			url: resolve('/(auth)/scope/[scope]/global-settings/built-in-test', { scope: page.params.scope! }),
+		},
+	]);
 </script>
 
 <BuiltInSelfTest />

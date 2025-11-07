@@ -1,302 +1,51 @@
-import { page } from '$app/state';
-import { m } from '$lib/paraglide/messages.js';
+import type { ResolvedPathname } from '$app/types';
 
-const createScopePath = (scope: string | undefined, subPath = '') =>
-	scope === undefined ? '/' : `/scope/${scope}${subPath}`;
-
-export interface Path {
+export type Path = {
+	url: ResolvedPathname;
 	title: string;
-	url: string;
+};
+
+const PATH_ICON_MAP: Record<string, string> = {
+	'/models': 'ph:robot',
+	'/databases': 'ph:database',
+	'/applications': 'ph:compass',
+	'/storage': 'ph:hard-drives',
+	'/compute': 'ph:cpu',
+	'/machines': 'ph:computer-tower',
+	'/networking': 'ph:network',
+	'/global-settings': 'ph:sliders-horizontal',
+	'/scope-based-settings': 'ph:sliders-horizontal',
+};
+
+const CEPH_PATH_DISABLED_MAP: Record<string, boolean> = {
+	'/compute': true,
+	'/storage': true,
+};
+
+const KUBERNETES_PATH_DISABLED_MAP: Record<string, boolean> = {
+	'/applications': true,
+	'/compute': true,
+	'/databases': true,
+	'/models': true,
+	'/scope-based-settings': true,
+	'/storage': true,
+};
+
+function findMatchingPath(url: string, pathMap: Record<string, unknown>): string | undefined {
+	return Object.keys(pathMap).find((section) => url.endsWith(section));
 }
 
-// Static
-export const staticPaths: Record<string, Path> = {
-	// External
-	documentation: {
-		title: m.documentation(),
-		url: 'https://otterscale.github.io',
-	},
-	github: {
-		title: 'GitHub',
-		url: 'https://github.com/otterscale/otterscale',
-	},
-	feedback: {
-		title: m.feedback(),
-		url: 'https://github.com/otterscale/otterscale/issues/new/choose',
-	},
-	contributors: {
-		title: m.contributors(),
-		url: 'https://github.com/otterscale/otterscale/graphs/contributors',
-	},
-
-	// Internal
-	home: { title: m.home(), url: '/' },
-	login: { title: m.login(), url: '/login' },
-	setup: { title: m.setup_environment(), url: '/setup' },
-	tty: { title: m.tty(), url: '/tty' },
-	scopes: { title: m.scopes(), url: '/scopes' },
-	privacyPolicy: { title: m.privacy_policy(), url: '/privacy-policy' },
-	termsOfService: { title: m.terms_of_service(), url: '/terms-of-service' },
-};
-
-// Dynamic
-export const dynamicPaths = {
-	scope: (scope: string | undefined): Path => ({ title: m.scopes(), url: createScopePath(scope) }),
-	account: (scope: string | undefined): Path => ({
-		title: m.account(),
-		url: createScopePath(scope, '/account'),
-	}),
-	accountSettings: (scope: string | undefined): Path => ({
-		title: m.settings(),
-		url: createScopePath(scope, '/account/settings'),
-	}),
-	models: (scope: string | undefined): Path => ({
-		title: m.models(),
-		url: createScopePath(scope, '/models'),
-	}),
-	modelsLLM: (scope: string | undefined): Path => ({
-		title: m.llm(),
-		url: createScopePath(scope, '/models/llm'),
-	}),
-	databases: (scope: string | undefined): Path => ({
-		title: m.databases(),
-		url: createScopePath(scope, '/databases'),
-	}),
-	databasesRelational: (scope: string | undefined): Path => ({
-		title: m.relational(),
-		url: createScopePath(scope, '/databases/relational'),
-	}),
-	databasesNoSQL: (scope: string | undefined): Path => ({
-		title: m.no_sql(),
-		url: createScopePath(scope, '/databases/no-sql'),
-	}),
-	applications: (scope: string | undefined): Path => ({
-		title: m.management(),
-		url: createScopePath(scope, '/applications'),
-	}),
-	applicationsWorkloads: (scope: string | undefined): Path => ({
-		title: m.workloads(),
-		url: createScopePath(scope, '/applications/workloads'),
-	}),
-	applicationsServices: (scope: string | undefined): Path => ({
-		title: m.services(),
-		url: createScopePath(scope, '/applications/services'),
-	}),
-	applicationsStore: (scope: string | undefined): Path => ({
-		title: m.store(),
-		url: createScopePath(scope, '/applications/store'),
-	}),
-	storage: (scope: string | undefined): Path => ({
-		title: m.storage(),
-		url: createScopePath(scope, '/storage'),
-	}),
-	storageOSD: (scope: string | undefined): Path => ({
-		title: m.osds(),
-		url: createScopePath(scope, '/storage/osd'),
-	}),
-	storagePool: (scope: string | undefined): Path => ({
-		title: m.pool(),
-		url: createScopePath(scope, '/storage/pool'),
-	}),
-	storageBlockDevice: (scope: string | undefined): Path => ({
-		title: m.block_device(),
-		url: createScopePath(scope, '/storage/block-device'),
-	}),
-	storageFileSystem: (scope: string | undefined): Path => ({
-		title: m.network_file_system(),
-		url: createScopePath(scope, '/storage/file-system'),
-	}),
-	storageObjectGateway: (scope: string | undefined): Path => ({
-		title: m.object_gateway(),
-		url: createScopePath(scope, '/storage/object-gateway'),
-	}),
-	machines: (scope: string | undefined): Path => ({
-		title: m.machines(),
-		url: createScopePath(scope, '/machines'),
-	}),
-	machinesMetal: (scope: string | undefined): Path => ({
-		title: m.node(),
-		url: createScopePath(scope, '/machines/metal'),
-	}),
-	compute: (scope: string | undefined): Path => ({
-		title: m.compute(),
-		url: createScopePath(scope, '/compute'),
-	}),
-	computeVirtualMachine: (scope: string | undefined): Path => ({
-		title: m.virtual_machine(),
-		url: createScopePath(scope, '/compute/virtual-machine'),
-	}),
-	globalSettings: (scope: string | undefined): Path => ({
-		title: m.settings(),
-		url: createScopePath(scope, '/global-settings'),
-	}),
-	settingsNTPServer: (scope: string | undefined): Path => ({
-		title: m.settings(),
-		url: createScopePath(scope, '/global-settings/ntp-server'),
-	}),
-	settingsBootImage: (scope: string | undefined): Path => ({
-		title: m.boot_image(),
-		url: createScopePath(scope, '/global-settings/boot-image'),
-	}),
-	settingsMachineTag: (scope: string | undefined): Path => ({
-		title: m.machine_tag(),
-		url: createScopePath(scope, '/global-settings/machine-tag'),
-	}),
-	settingsPackageRepository: (scope: string | undefined): Path => ({
-		title: m.package_repository(),
-		url: createScopePath(scope, '/global-settings/package-repository'),
-	}),
-	settingsHelmRepository: (scope: string | undefined): Path => ({
-		title: m.helm_repository(),
-		url: createScopePath(scope, '/global-settings/helm-repository'),
-	}),
-	settingsBuiltInTest: (scope: string | undefined): Path => ({
-		title: m.built_in_test(),
-		url: createScopePath(scope, '/global-settings/built-in-test'),
-	}),
-	settingsSSO: (scope: string | undefined): Path => ({
-		title: m.sso(),
-		url: createScopePath(scope, '/global-settings/single-sign-on'),
-	}),
-	settingsSubscription: (scope: string | undefined): Path => ({
-		title: m.subscription(),
-		url: createScopePath(scope, '/global-settings/subscription'),
-	}),
-
-	scopeBasedSettings: (scope: string | undefined): Path => ({
-		title: m.settings(),
-		url: createScopePath(scope, '/scope-based-settings'),
-	}),
-	settingsExtensions: (scope: string | undefined): Path => ({
-		title: m.settings(),
-		url: createScopePath(scope, '/scope-based-settings/extensions'),
-	}),
-	settingsDataVolume: (scope: string | undefined): Path => ({
-		title: m.settings(),
-		url: createScopePath(scope, '/scope-based-settings/data-volume'),
-	}),
-	settingsInstanceType: (scope: string | undefined): Path => ({
-		title: m.settings(),
-		url: createScopePath(scope, '/scope-based-settings/instance-type'),
-	}),
-	networking: (scope: string | undefined): Path => ({
-		title: m.networking(),
-		url: createScopePath(scope, '/networking'),
-	}),
-	networkingSubnets: (scope: string | undefined): Path => ({
-		title: m.subnets(),
-		url: createScopePath(scope, '/networking/subnets'),
-	}),
-	setupScope: (scope: string | undefined): Path => ({
-		title: m.setup_scope(),
-		url: createScopePath(scope, '/setup'),
-	}),
-	setupScopeCeph: (scope: string | undefined): Path => ({
-		title: 'Ceph',
-		url: createScopePath(scope, '/setup/ceph'),
-	}),
-	setupScopeKubernetes: (scope: string | undefined): Path => ({
-		title: 'Kubernetes',
-		url: createScopePath(scope, '/setup/kubernetes'),
-	}),
-};
-
-const ICON_MAP = new Map([
-	['/models', 'ph:robot'],
-	['/databases', 'ph:database'],
-	['/applications', 'ph:compass'],
-	['/storage', 'ph:hard-drives'],
-	['/compute', 'ph:cpu'],
-	['/machines', 'ph:computer-tower'],
-	['/networking', 'ph:network'],
-	['/global-settings', 'ph:sliders-horizontal'],
-	['/scope-based-settings', 'ph:sliders-horizontal'],
-]);
-
-export function urlIcon(url: string): string {
-	for (const [section, icon] of ICON_MAP) {
-		if (url.endsWith(section)) {
-			return icon;
-		}
-	}
-	return 'ph:circle-dashed';
+export function getPathIcon(url: string): string {
+	const matchedPath = findMatchingPath(url, PATH_ICON_MAP);
+	return matchedPath ? PATH_ICON_MAP[matchedPath] : 'ph:circle-dashed';
 }
 
-const disabledPaths = (scope: string | undefined) => ({
-	ceph: [dynamicPaths.compute(scope), dynamicPaths.storage(scope)],
-	kube: [
-		dynamicPaths.models(scope),
-		dynamicPaths.applications(scope),
-		dynamicPaths.compute(scope),
-		dynamicPaths.scopeBasedSettings(scope),
-	],
-});
+export function getCephPathDisabled(url: string): boolean {
+	const matchedPath = findMatchingPath(url, CEPH_PATH_DISABLED_MAP);
+	return matchedPath ? CEPH_PATH_DISABLED_MAP[matchedPath] : false;
+}
 
-export const pathDisabled = (
-	cephName: string | undefined,
-	kubeName: string | undefined,
-	scope: string | undefined,
-	url: string,
-): boolean => {
-	const paths = disabledPaths(scope);
-	return (
-		(!cephName && paths.ceph.some((path) => path.url === url)) ||
-		(!kubeName && paths.kube.some((path) => path.url === url))
-	);
-};
-
-export const pathHidden = (scope: string | undefined, url: string): boolean => {
-	if (
-		url === dynamicPaths.applications(scope).url &&
-		!page.data['feature-states.app-general'] &&
-		!page.data['feature-states.app-helm-chart']
-	) {
-		return true;
-	}
-	if (url === dynamicPaths.applicationsWorkloads(scope).url && !page.data['feature-states.app-general']) {
-		return true;
-	}
-	if (url === dynamicPaths.applicationsStore(scope).url && !page.data['feature-states.app-helm-chart']) {
-		return true;
-	}
-
-	if (url === dynamicPaths.compute(scope).url && !page.data['feature-states.vm-general']) {
-		return true;
-	}
-	if (url === dynamicPaths.computeVirtualMachine(scope).url && !page.data['feature-states.vm-general']) {
-		return true;
-	}
-
-	if (url === dynamicPaths.models(scope).url && !page.data['feature-states.mdl-general']) {
-		return true;
-	}
-	if (url === dynamicPaths.modelsLLM(scope).url && !page.data['feature-states.mdl-general']) {
-		return true;
-	}
-
-	if (
-		url === dynamicPaths.storage(scope).url &&
-		!page.data['feature-states.stg-general'] &&
-		!page.data['feature-states.stg-block'] &&
-		!page.data['feature-states.stg-file'] &&
-		!page.data['feature-states.stg-object']
-	) {
-		return true;
-	}
-	if (url === dynamicPaths.storageOSD(scope).url && !page.data['feature-states.stg-general']) {
-		return true;
-	}
-	if (url === dynamicPaths.storagePool(scope).url && !page.data['feature-states.stg-general']) {
-		return true;
-	}
-	if (url === dynamicPaths.storageBlockDevice(scope).url && !page.data['feature-states.stg-block']) {
-		return true;
-	}
-	if (url === dynamicPaths.storageFileSystem(scope).url && !page.data['feature-states.stg-file']) {
-		return true;
-	}
-	if (url === dynamicPaths.storageObjectGateway(scope).url && !page.data['feature-states.stg-object']) {
-		return true;
-	}
-	return false;
-};
+export function getKubernetesPathDisabled(url: string): boolean {
+	const matchedPath = findMatchingPath(url, KUBERNETES_PATH_DISABLED_MAP);
+	return matchedPath ? KUBERNETES_PATH_DISABLED_MAP[matchedPath] : false;
+}

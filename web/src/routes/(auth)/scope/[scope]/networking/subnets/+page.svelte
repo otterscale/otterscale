@@ -1,14 +1,21 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Subnet } from '$lib/components/network/subnet';
-	import { dynamicPaths } from '$lib/path';
-	import { activeScope, breadcrumb } from '$lib/stores';
+	import { m } from '$lib/paraglide/messages';
+	import { activeScope, breadcrumbs } from '$lib/stores';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({
-		parents: [dynamicPaths.networking(page.params.scope)],
-		current: dynamicPaths.networkingSubnets(page.params.scope),
-	});
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{
+			title: m.networking(),
+			url: resolve('/(auth)/scope/[scope]/networking', { scope: page.params.scope! }),
+		},
+		{
+			title: m.subnets(),
+			url: resolve('/(auth)/scope/[scope]/networking/subnets', { scope: page.params.scope! }),
+		},
+	]);
 </script>
 
 {#if $activeScope}

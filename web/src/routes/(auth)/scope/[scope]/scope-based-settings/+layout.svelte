@@ -29,6 +29,7 @@
 					<NavigationMenu.Item>
 						<NavigationMenu.Link>
 							{#snippet child()}
+								<!-- eslint-disable svelte/no-navigation-without-resolve -->
 								<a
 									href={item.url}
 									class={cn(
@@ -48,6 +49,7 @@
 										<p class="text-muted-foreground text-xs">{item.type}</p>
 									</div>
 								</a>
+								<!-- eslint-enable svelte/no-navigation-without-resolve -->
 							{/snippet}
 						</NavigationMenu.Link>
 					</NavigationMenu.Item>

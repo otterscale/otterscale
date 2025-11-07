@@ -3,12 +3,12 @@
 	import { getContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { FacilityService, type Facility } from '$lib/api/facility/v1/facility_pb';
 	import { SetupScopeGrid } from '$lib/components/setup';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
-	import { activeScope, breadcrumb } from '$lib/stores';
+	import { activeScope, breadcrumbs } from '$lib/stores';
 
 	// Configuration for Ceph services
 	const CEPH_SERVICES = {
@@ -44,11 +44,14 @@
 		},
 	} as const;
 
-	// Set breadcrumb navigation
-	breadcrumb.set({
-		parents: [dynamicPaths.setupScope(page.params.scope)],
-		current: dynamicPaths.setupScopeCeph(page.params.scope),
-	});
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{ title: m.setup(), url: resolve('/(auth)/scope/[scope]/setup', { scope: page.params.scope! }) },
+		{
+			title: m.ceph(),
+			url: resolve('/(auth)/scope/[scope]/setup/ceph', { scope: page.params.scope! }),
+		},
+	]);
 
 	// API setup
 	const transport: Transport = getContext('transport');

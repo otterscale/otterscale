@@ -1,11 +1,17 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import Dashboard from '$lib/components/applications/dashboard/index.svelte';
-	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb } from '$lib/stores';
+	import { m } from '$lib/paraglide/messages';
+	import { breadcrumbs } from '$lib/stores';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [], current: dynamicPaths.applications(page.params.scope) });
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{
+			title: m.applications(),
+			url: resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! }),
+		},
+	]);
 </script>
 
 <Dashboard />

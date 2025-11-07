@@ -5,6 +5,7 @@
 	import Actions from './cell-actions.svelte';
 
 	import { browser } from '$app/environment';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import type { Application, Application_Pod } from '$lib/api/application/v1/application_pb';
 	import * as Table from '$lib/components/custom/table';
@@ -12,7 +13,6 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
-	import { staticPaths } from '$lib/path';
 	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
 </script>
@@ -38,7 +38,7 @@
 			command: '/bin/sh',
 		});
 
-		const terminalUrl = staticPaths.tty.url + `?${searchParams.toString()}`;
+		const terminalUrl = `${resolve('/(auth)/tty')}${searchParams.toString()}`;
 		const windowName = m.tty();
 
 		const features = [

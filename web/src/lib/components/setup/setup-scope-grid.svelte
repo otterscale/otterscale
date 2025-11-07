@@ -7,6 +7,7 @@
 
 	import SetupNodeGPUMode from './setup-node-gpu-mode.svelte';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import {
@@ -21,7 +22,6 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Switch } from '$lib/components/ui/switch';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
 	import { premiumTier } from '$lib/stores';
 
 	let {
@@ -164,7 +164,12 @@
 								</button>
 
 								{#if unit.machineId}
-									<a href="{dynamicPaths.machinesMetal(page.params.scope).url}/{unit.machineId}">
+									<a
+										href={resolve('/(auth)/scope/[scope]/machines/metal/[id]', {
+											scope: page.params.scope!,
+											id: unit.machineId,
+										})}
+									>
 										<Icon icon="ph:computer-tower" class="size-4" />
 									</a>
 								{/if}

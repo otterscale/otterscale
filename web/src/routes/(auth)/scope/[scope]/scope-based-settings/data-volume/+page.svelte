@@ -1,15 +1,21 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { DataVolume } from '$lib/components/settings/data-volume';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb, currentKubernetes } from '$lib/stores';
+	import { breadcrumbs, currentKubernetes } from '$lib/stores';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({
-		parents: [dynamicPaths.scopeBasedSettings(page.params.scope)],
-		current: { title: m.data_volume(), url: '' },
-	});
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{
+			title: m.settings(),
+			url: resolve('/(auth)/scope/[scope]/scope-based-settings', { scope: page.params.scope! }),
+		},
+		{
+			title: m.data_volume(),
+			url: resolve('/(auth)/scope/[scope]/scope-based-settings/data-volume', { scope: page.params.scope! }),
+		},
+	]);
 </script>
 
 {#if $currentKubernetes}
