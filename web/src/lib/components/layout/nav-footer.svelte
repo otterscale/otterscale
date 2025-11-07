@@ -4,11 +4,9 @@
 
 	import DialogAbout from './dialog-about.svelte';
 
-	import { page } from '$app/state';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
-	import { dynamicPaths, staticPaths } from '$lib/path';
-	import changelogRead from '$lib/stores/changelog';
+	import { staticPaths } from '$lib/path';
 
 	type Props = ComponentProps<typeof Sidebar.Group>;
 
@@ -28,26 +26,6 @@
 						<a href={staticPaths.documentation.url} target="_blank" {...props}>
 							<Icon icon="ph:book-open" />
 							<span>{m.documentation()}</span>
-						</a>
-					{/snippet}
-				</Sidebar.MenuButton>
-			</Sidebar.MenuItem>
-			<Sidebar.MenuItem>
-				<Sidebar.MenuButton size="sm" tooltipContent={m.changelog()}>
-					{#snippet child({ props })}
-						<a href={dynamicPaths.changelog(page.params.scope).url} {...props}>
-							<Icon icon="ph:clock-counter-clockwise" />
-							<span>{m.changelog()}</span>
-							{#if !$changelogRead}
-								<span class="relative flex size-2">
-									<span
-										class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"
-									></span>
-									<span class="relative inline-flex size-2 rounded-full bg-blue-500"></span>
-								</span>
-							{/if}
-							<!-- prevent [&>span:last-child]:truncate -->
-							<span></span>
 						</a>
 					{/snippet}
 				</Sidebar.MenuButton>
