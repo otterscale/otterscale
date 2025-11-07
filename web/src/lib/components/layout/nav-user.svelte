@@ -8,7 +8,6 @@
 
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import { authClient } from '$lib/auth-client';
 	import * as Avatar from '$lib/components/ui/avatar';
@@ -112,9 +111,7 @@
 
 				<!-- User Actions -->
 				<DropdownMenu.Group>
-					<DropdownMenu.Item
-						onclick={() => goto(resolve('/(auth)/scope/[scope]/account', { scope: page.params.scope! }))}
-					>
+					<DropdownMenu.Item onclick={() => goto(resolve('/(auth)/account'))}>
 						<Icon icon="ph:user-bold" />
 						{m.account()}
 					</DropdownMenu.Item>

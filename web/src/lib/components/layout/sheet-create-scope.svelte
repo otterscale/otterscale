@@ -9,7 +9,6 @@
 	import type { Plan } from './plans';
 
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import {
 		MachineService,
 		type Machine,
@@ -399,8 +398,7 @@
 	<div class="flex items-center space-x-2">
 		<HoverCard.Root>
 			<HoverCard.Trigger
-				href={resolve('/(auth)/scope/[scope]/machines/metal/[id]', {
-					scope: page.params.scope!,
+				href={resolve('/(auth)/machines/metal/[id]', {
 					id: machine.id,
 				})}
 				target="_blank"

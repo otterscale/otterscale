@@ -4,7 +4,6 @@
 
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import type { GPURelation_Machine } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { cn } from '$lib/utils';
 </script>
@@ -13,7 +12,7 @@
 	let { data, selected, targetPosition, sourcePosition }: Omit<NodeProps, 'data'> & { data: GPURelation_Machine } =
 		$props();
 
-	const link = resolve('/(auth)/scope/[scope]/machines/metal/[id]', { scope: page.params.scope!, id: data.id });
+	const link = resolve('/(auth)/machines/metal/[id]', { id: data.id });
 </script>
 
 <div

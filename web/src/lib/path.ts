@@ -6,15 +6,15 @@ export type Path = {
 };
 
 const PATH_ICON_MAP: Record<string, string> = {
-	'/models': 'ph:robot',
-	'/databases': 'ph:database',
 	'/applications': 'ph:compass',
-	'/storage': 'ph:hard-drives',
 	'/compute': 'ph:cpu',
+	'/configuration': 'ph:gear',
+	'/databases': 'ph:database',
 	'/machines': 'ph:computer-tower',
+	'/models': 'ph:robot',
 	'/networking': 'ph:network',
-	'/global-settings': 'ph:sliders-horizontal',
-	'/scope-based-settings': 'ph:sliders-horizontal',
+	'/settings': 'ph:sliders-horizontal',
+	'/storage': 'ph:hard-drives',
 };
 
 const CEPH_PATH_DISABLED_MAP: Record<string, boolean> = {
@@ -27,7 +27,7 @@ const KUBERNETES_PATH_DISABLED_MAP: Record<string, boolean> = {
 	'/compute': true,
 	'/databases': true,
 	'/models': true,
-	'/scope-based-settings': true,
+	'/settings': true,
 	'/storage': true,
 };
 
