@@ -46,7 +46,7 @@
 			background: 'bg-[#d63230]/30',
 			path: {
 				title: m.machines(),
-				url: resolve('/(auth)/scope/[scope]/machines', { scope: page.params.scope! }),
+				url: resolve('/(auth)/machines'),
 			},
 			description: m.machines_description(),
 		},

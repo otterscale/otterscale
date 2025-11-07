@@ -153,8 +153,8 @@
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavGeneral title={m.platform()} routes={platformRoutes(page.params.scope)} />
-		<NavGeneral title={m.global()} routes={globalRoutes(page.params.scope)} />
+		<NavGeneral title={m.platform()} routes={platformRoutes(page.params.scope!)} />
+		<NavGeneral title={m.global()} routes={globalRoutes()} />
 		<NavBookmark bookmarks={$bookmarks} onDelete={onBookmarkDelete} />
 		<NavFooter class="mt-auto" />
 	</Sidebar.Content>

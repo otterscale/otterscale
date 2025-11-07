@@ -7,7 +7,6 @@
 	import VNC from './cell-vnc.svelte';
 
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { Disk } from '$lib/components/compute/virtual-machine/disk';
 	import { Port } from '$lib/components/compute/virtual-machine/port';
@@ -78,8 +77,7 @@
 		{#if row.original.machineId}
 			<a
 				class="m-0 p-0 underline hover:no-underline"
-				href={resolve('/(auth)/scope/[scope]/machines/metal/[id]', {
-					scope: page.params.scope!,
+				href={resolve('/(auth)/machines/metal/[id]', {
 					id: row.original.machineId,
 				})}
 			>

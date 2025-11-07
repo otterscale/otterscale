@@ -6,7 +6,6 @@
 
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -79,8 +78,7 @@
 				class="hover:cursor-pointer"
 				onclick={() => {
 					goto(
-						resolve('/(auth)/scope/[scope]/machines/metal/[id]', {
-							scope: page.params.scope!,
+						resolve('/(auth)/machines/metal/[id]', {
 							id: row.original.machine?.id ?? '',
 						}),
 					);

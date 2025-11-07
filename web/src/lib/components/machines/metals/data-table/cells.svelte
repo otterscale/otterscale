@@ -8,7 +8,6 @@
 	import Tags from './cell-tags.svelte';
 
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -42,8 +41,7 @@
 	<Layout.Cell class="items-start">
 		<a
 			class="m-0 p-0 underline hover:no-underline"
-			href={resolve('/(auth)/scope/[scope]/machines/metal/[id]', {
-				scope: page.params.scope!,
+			href={resolve('/(auth)/machines/metal/[id]', {
 				id: row.original.id,
 			})}
 		>

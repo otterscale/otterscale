@@ -165,8 +165,7 @@
 
 								{#if unit.machineId}
 									<a
-										href={resolve('/(auth)/scope/[scope]/machines/metal/[id]', {
-											scope: page.params.scope!,
+										href={resolve('/(auth)/machines/metal/[id]', {
 											id: unit.machineId,
 										})}
 									>
