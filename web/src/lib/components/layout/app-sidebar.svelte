@@ -16,15 +16,14 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import type { ResolvedPathname } from '$app/types';
 	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 	import type { Path } from '$lib/path';
+	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 
 	type Props = { user: User } & ComponentProps<typeof Sidebar.Root>;
 
