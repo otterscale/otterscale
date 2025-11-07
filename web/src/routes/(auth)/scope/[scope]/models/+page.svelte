@@ -1,14 +1,17 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import Dashboard from '$lib/components/models/dashboard/index.svelte';
-	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb, currentKubernetes } from '$lib/stores';
+	import { m } from '$lib/paraglide/messages';
+	import { breadcrumbs, currentKubernetes } from '$lib/stores';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({
-		parents: [],
-		current: dynamicPaths.models(page.params.scope),
-	});
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{
+			title: m.models(),
+			url: resolve('/(auth)/scope/[scope]/models', { scope: page.params.scope! }),
+		},
+	]);
 </script>
 
 {#if $currentKubernetes}

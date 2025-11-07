@@ -3,9 +3,9 @@
 	import { Handle, type NodeProps } from '@xyflow/svelte';
 
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import type { GPURelation_Machine } from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { dynamicPaths } from '$lib/path';
 	import { cn } from '$lib/utils';
 </script>
 
@@ -13,7 +13,7 @@
 	let { data, selected, targetPosition, sourcePosition }: Omit<NodeProps, 'data'> & { data: GPURelation_Machine } =
 		$props();
 
-	const link = $derived(`${dynamicPaths.machinesMetal(page.params.scope).url}/${data.id}`);
+	const link = resolve('/(auth)/scope/[scope]/machines/metal/[id]', { scope: page.params.scope!, id: data.id });
 </script>
 
 <div

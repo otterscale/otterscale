@@ -1,11 +1,17 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Construction } from '$lib/components/construction';
-	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb } from '$lib/stores';
+	import { m } from '$lib/paraglide/messages';
+	import { breadcrumbs } from '$lib/stores';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [], current: dynamicPaths.account(page.params.scope) });
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{
+			title: m.account(),
+			url: resolve('/(auth)/scope/[scope]/account', { scope: page.params.scope! }),
+		},
+	]);
 </script>
 
 <Construction />

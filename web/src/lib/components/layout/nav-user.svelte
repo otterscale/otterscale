@@ -7,6 +7,7 @@
 	import SheetNotification from './sheet-notification.svelte';
 
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import { authClient } from '$lib/auth-client';
@@ -16,7 +17,6 @@
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
-	import { dynamicPaths, staticPaths } from '$lib/path';
 
 	let { user }: { user: User } = $props();
 	let locale = $state(getLocale());
@@ -39,7 +39,7 @@
 			fetchOptions: {
 				onSuccess: () => {
 					toast.success(m.sign_out_success());
-					goto(staticPaths.login.url);
+					goto(resolve('/login'));
 				},
 			},
 		});
@@ -112,7 +112,9 @@
 
 				<!-- User Actions -->
 				<DropdownMenu.Group>
-					<DropdownMenu.Item onclick={() => goto(dynamicPaths.account(page.params.scope).url)}>
+					<DropdownMenu.Item
+						onclick={() => goto(resolve('/(auth)/scope/[scope]/account', { scope: page.params.scope! }))}
+					>
 						<Icon icon="ph:user-bold" />
 						{m.account()}
 					</DropdownMenu.Item>

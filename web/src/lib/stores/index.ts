@@ -1,15 +1,11 @@
 import { writable, type Writable } from 'svelte/store';
 
+import { resolve } from '$app/paths';
 import { PremiumTier_Level, type PremiumTier } from '$lib/api/environment/v1/environment_pb';
 import type { Essential } from '$lib/api/orchestrator/v1/orchestrator_pb';
 import type { Scope } from '$lib/api/scope/v1/scope_pb';
-import { staticPaths, type Path } from '$lib/path';
-
-// Types
-interface BreadcrumbState {
-	parents: Path[];
-	current: Path;
-}
+import { m } from '$lib/paraglide/messages';
+import type { Path } from '$lib/path';
 
 // temp
 export interface Notification {
@@ -26,7 +22,7 @@ export interface Notification {
 
 interface AppStores {
 	// Navigation
-	breadcrumb: Writable<BreadcrumbState>;
+	breadcrumbs: Writable<Path[]>;
 
 	// Premium Tier
 	premiumTier: Writable<PremiumTier>;
@@ -45,7 +41,7 @@ interface AppStores {
 
 // Create stores
 const createStores = (): AppStores => ({
-	breadcrumb: writable<BreadcrumbState>({ parents: [], current: staticPaths.home }),
+	breadcrumbs: writable<Path[]>([{ title: m.home(), url: resolve('/') }]),
 	premiumTier: writable<PremiumTier>({ level: PremiumTier_Level.BASIC } as PremiumTier),
 	activeScope: writable<Scope>(),
 	currentCeph: writable<Essential | undefined>(undefined),
@@ -102,5 +98,5 @@ const createStores = (): AppStores => ({
 });
 
 // Export individual stores
-export const { breadcrumb, premiumTier, activeScope, currentCeph, currentKubernetes, bookmarks, notifications } =
+export const { breadcrumbs, premiumTier, activeScope, currentCeph, currentKubernetes, bookmarks, notifications } =
 	createStores();

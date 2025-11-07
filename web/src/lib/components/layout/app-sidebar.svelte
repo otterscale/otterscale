@@ -14,15 +14,17 @@
 	import ScopeSwitcher from './scope-switcher.svelte';
 
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
+	import type { ResolvedPathname } from '$app/types';
 	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths, type Path } from '$lib/path';
 	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
+	import type { Path } from '$lib/path';
 
 	type Props = { user: User } & ComponentProps<typeof Sidebar.Root>;
 
@@ -80,7 +82,7 @@
 		}
 	}
 
-	async function handleScopeOnSelect(index: number, home: boolean = false) {
+	async function handleScopeOnSelect(index: number) {
 		const scope = $scopes[index];
 		if (!scope) return;
 
@@ -92,7 +94,7 @@
 		toast.success(m.switch_scope({ name: scope.name }));
 
 		// Go home
-		goto(dynamicPaths.scope(scope.name).url);
+		goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
 	}
 
 	async function initialize() {

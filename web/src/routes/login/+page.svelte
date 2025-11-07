@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { LanguageSwitcher, LightSwitch, LoginForm } from '$lib/components/login';
 	import { m } from '$lib/paraglide/messages.js';
 	import { getLocale, setLocale, type Locale } from '$lib/paraglide/runtime.js';
-	import { staticPaths } from '$lib/path';
 
 	const { data } = $props();
 
@@ -45,8 +45,8 @@
 			>
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 				{@html m.login_footer({
-					terms_of_service: `<a href="${staticPaths.termsOfService.url}">${m.terms_of_service()}</a>`,
-					privacy_policy: `<a href="${staticPaths.privacyPolicy.url}">${m.privacy_policy()}</a>`,
+					terms_of_service: `<a href="${resolve('/terms-of-service')}">${m.terms_of_service()}</a>`,
+					privacy_policy: `<a href="${resolve('/privacy-policy')}">${m.privacy_policy()}</a>`,
 				})}
 			</div>
 		</div>

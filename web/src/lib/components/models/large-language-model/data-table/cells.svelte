@@ -6,11 +6,11 @@
 	import Actions from './cell-actions.svelte';
 	import Relation from './cell-relation.svelte';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { formatBigNumber } from '$lib/formatter';
-	import { dynamicPaths } from '$lib/path';
 
 	export const cells = {
 		row_picker,
@@ -37,7 +37,11 @@
 	<Layout.Cell class="items-start">
 		<a
 			class="m-0 p-0 underline hover:no-underline"
-			href={`${dynamicPaths.applicationsWorkloads(page.params.scope).url}/${row.original.application.namespace}/${row.original.application.name}`}
+			href={resolve('/(auth)/scope/[scope]/applications/workloads/[namespace]/[application_name]', {
+				scope: page.params.scope!,
+				namespace: row.original.application.namespace,
+				application_name: row.original.application.name,
+			})}
 		>
 			{row.original.application.name}
 		</a>

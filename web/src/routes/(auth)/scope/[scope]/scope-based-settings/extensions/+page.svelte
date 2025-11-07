@@ -1,15 +1,21 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Extensions } from '$lib/components/settings/extensions';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb, currentKubernetes } from '$lib/stores';
+	import { breadcrumbs, currentKubernetes } from '$lib/stores';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({
-		parents: [dynamicPaths.scopeBasedSettings(page.params.scope)],
-		current: { title: m.package_repository(), url: '' },
-	});
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{
+			title: m.settings(),
+			url: resolve('/(auth)/scope/[scope]/scope-based-settings', { scope: page.params.scope! }),
+		},
+		{
+			title: m.extensions(),
+			url: resolve('/(auth)/scope/[scope]/scope-based-settings/extensions', { scope: page.params.scope! }),
+		},
+	]);
 </script>
 
 {#if $currentKubernetes}

@@ -169,6 +169,7 @@
 								<Icon icon="ph:house" />
 								{m.home()}
 							</span>
+							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
 								target="_blank"
 								href={chart.home}
@@ -176,6 +177,7 @@
 							>
 								{chart.home}
 							</a>
+							<!-- eslint-enable svelte/no-navigation-without-resolve -->
 						</div>
 					{/if}
 
@@ -207,6 +209,7 @@
 							<div class="flex max-h-[15vh] flex-col gap-1 overflow-auto pl-6 text-xs">
 								{#if !isSourcesExpand}
 									{#each chart.sources.slice(0, 3) as source}
+										<!-- eslint-disable svelte/no-navigation-without-resolve -->
 										<a
 											target="_blank"
 											href={source}
@@ -214,6 +217,7 @@
 										>
 											{source}
 										</a>
+										<!-- eslint-enable svelte/no-navigation-without-resolve -->
 									{/each}
 									{#if chart.sources.length > 3}
 										<Badge variant="outline" class="group relative h-fit w-fit">
@@ -222,6 +226,7 @@
 									{/if}
 								{:else}
 									{#each chart.sources as source}
+										<!-- eslint-disable svelte/no-navigation-without-resolve -->
 										<a
 											target="_blank"
 											href={source}
@@ -229,6 +234,7 @@
 										>
 											{source}
 										</a>
+										<!-- eslint-enable svelte/no-navigation-without-resolve -->
 									{/each}
 								{/if}
 							</div>

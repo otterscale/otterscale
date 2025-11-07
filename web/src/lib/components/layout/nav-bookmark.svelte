@@ -1,11 +1,12 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
+	import type { ResolvedPathname } from '$app/types';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
-	import { urlIcon, type Path } from '$lib/path';
+	import { getPathIcon, type Path } from '$lib/path';
 
-	let { bookmarks, onDelete }: { bookmarks: Path[]; onDelete: (path: Path) => Promise<void> } = $props();
+	let { bookmarks, onDelete }: { bookmarks: Path[]; onDelete: (url: Path) => Promise<void> } = $props();
 
 	let visibleCount = $state(3);
 	const increment = 3;
@@ -25,10 +26,12 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton>
 					{#snippet child({ props })}
+						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						<a href={bookmark.url} {...props}>
-							<Icon icon={urlIcon(bookmark.url)} />
+							<Icon icon={getPathIcon(bookmark.url)} />
 							<span>{bookmark.title}</span>
 						</a>
+						<!-- eslint-enable svelte/no-navigation-without-resolve -->
 					{/snippet}
 				</Sidebar.MenuButton>
 				<Sidebar.MenuAction showOnHover onclick={() => onDelete(bookmark)}>

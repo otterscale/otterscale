@@ -2,9 +2,9 @@ import { redirect } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
 
+import { resolve } from '$app/paths';
 import { env } from '$env/dynamic/private';
 import { auth } from '$lib/auth';
-import { staticPaths } from '$lib/path';
 
 const isProviderConfigured = (
 	clientId?: string,
@@ -20,10 +20,10 @@ export const load: PageServerLoad = async ({ request, url }) => {
 	});
 
 	if (session) {
-		redirect(302, staticPaths.scopes.url);
+		redirect(302, resolve('/(auth)/scopes'));
 	}
 
-	const nextPath = url.searchParams.get('next') || staticPaths.scopes.url;
+	const nextPath = url.searchParams.get('next') || resolve('/(auth)/scopes');
 
 	return {
 		nextPath,

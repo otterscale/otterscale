@@ -31,3 +31,6 @@ project.inlang/project_id
 # Coverage
 coverage
 
+# ESLint
+.eslintcache
+

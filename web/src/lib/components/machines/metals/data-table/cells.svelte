@@ -7,13 +7,13 @@
 	import GPUs from './cell-gpus.svelte';
 	import Tags from './cell-tags.svelte';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
-	import { dynamicPaths } from '$lib/path';
 	import { cn } from '$lib/utils';
 
 	export const cells = {
@@ -42,7 +42,10 @@
 	<Layout.Cell class="items-start">
 		<a
 			class="m-0 p-0 underline hover:no-underline"
-			href={`${dynamicPaths.machinesMetal(page.params.scope).url}/${row.original.id}`}
+			href={resolve('/(auth)/scope/[scope]/machines/metal/[id]', {
+				scope: page.params.scope!,
+				id: row.original.id,
+			})}
 		>
 			{row.original.fqdn}
 		</a>

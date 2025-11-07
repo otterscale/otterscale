@@ -6,7 +6,6 @@ import { resolve } from '$app/paths';
 import { env } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public';
 import { auth } from '$lib/auth';
-import { staticPaths } from '$lib/path';
 
 // Environment variables are loaded from .env in development or system environment in production
 export const load: PageServerLoad = async ({ request, url }) => {
@@ -34,10 +33,10 @@ export const load: PageServerLoad = async ({ request, url }) => {
 	});
 
 	if (session) {
-		throw redirect(302, staticPaths.scopes.url);
+		throw redirect(302, resolve('/(auth)/scopes'));
 	}
 
-	throw redirect(302, `${staticPaths.login.url}${url.search}`);
+	throw redirect(302, `${resolve('/login')}${url.search}`);
 };
 
 const isFlexibleBooleanTrue = (envVar: string | undefined): boolean => {

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { type Facility } from '$lib/api/facility/v1/facility_pb';
@@ -10,7 +11,6 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
 	import { currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 
 	// Props
@@ -211,7 +211,7 @@
 {#snippet kubernetesCards()}
 	<!-- Kubernetes Main Card -->
 	<a
-		href={dynamicPaths.setupScopeKubernetes(page.params.scope).url}
+		href={resolve('/(auth)/scope/[scope]/setup/kubernetes', { scope: page.params.scope! })}
 		class="group relative col-span-2 row-span-2 overflow-clip rounded-lg shadow-sm sm:max-lg:col-span-1"
 	>
 		<img src={ContainerImage} alt="container" class="absolute h-full w-full object-cover object-center" />
@@ -272,7 +272,7 @@
 
 	<!-- Ceph Main Card -->
 	<a
-		href={dynamicPaths.setupScopeCeph(page.params.scope).url}
+		href={resolve('/(auth)/scope/[scope]/setup/ceph', { scope: page.params.scope! })}
 		class="group relative col-span-2 row-span-2 overflow-clip rounded-lg shadow-sm sm:max-lg:col-span-1"
 	>
 		<img src={DiskImage} alt="disk" class="absolute h-full w-full object-cover object-center" />

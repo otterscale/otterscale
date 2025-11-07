@@ -5,6 +5,7 @@
 	import Actions from './cell-actions.svelte';
 
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
@@ -13,7 +14,6 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
 
 	export const cells = {
 		row_picker,
@@ -78,7 +78,12 @@
 				icon="ph:arrow-square-out"
 				class="hover:cursor-pointer"
 				onclick={() => {
-					goto(`${dynamicPaths.machinesMetal(page.params.scope).url}/${row.original.machine?.id}`);
+					goto(
+						resolve('/(auth)/scope/[scope]/machines/metal/[id]', {
+							scope: page.params.scope!,
+							id: row.original.machine?.id ?? '',
+						}),
+					);
 				}}
 			/>
 		</div>

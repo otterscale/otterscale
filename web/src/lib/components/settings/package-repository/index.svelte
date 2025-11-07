@@ -51,12 +51,14 @@
 							<Table.Row class="*:px-4">
 								<Table.Cell>{packageRepository.name}</Table.Cell>
 								<Table.Cell>
+									<!-- eslint-disable svelte/no-navigation-without-resolve -->
 									<a
 										href={packageRepository.url}
 										class="flex items-start gap-1 underline hover:no-underline"
 									>
 										{packageRepository.url}
 									</a>
+									<!-- eslint-enable svelte/no-navigation-without-resolve -->
 								</Table.Cell>
 								<Table.Cell>
 									<Icon icon={packageRepository.enabled ? 'ph:circle' : 'ph:x'} />

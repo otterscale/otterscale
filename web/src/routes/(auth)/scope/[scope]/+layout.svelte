@@ -4,7 +4,6 @@
 
 	import type { LayoutData } from './$types';
 
-	import { page } from '$app/state';
 	import { AppSidebar } from '$lib/components/layout';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import { buttonVariants, Button } from '$lib/components/ui/button';
@@ -15,7 +14,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
 	import type { Path } from '$lib/path';
-	import { bookmarks, breadcrumb } from '$lib/stores';
+	import { bookmarks, breadcrumbs } from '$lib/stores';
 
 	interface Props {
 		data: LayoutData;
@@ -26,24 +25,25 @@
 	let open = $state(false);
 
 	// Computed values
-	const currentTitle = $derived($breadcrumb.current.title);
-	const scopedTitle = $derived(`${currentTitle}${page.params.scope ? ` - ${page.params.scope}` : ''}`);
-	const isBookmarked = $derived($bookmarks.some((bookmark) => bookmark.url === $breadcrumb.current.url));
+	const current = $derived($breadcrumbs.at(-1));
+	const isBookmarked = $derived($bookmarks.some((bookmark) => bookmark.url === current?.url));
 
 	// Event handlers
-	function handleBookmarkAdd(path: Path) {
-		bookmarks.update((items) => [...items, { title: scopedTitle, url: path.url }]);
+	function handleBookmarkAdd(path: Path | undefined) {
+		if (!path) return;
+		bookmarks.update((items) => [...items, path]);
 		open = false;
 	}
 
-	function handleBookmarkDelete(path: Path) {
+	function handleBookmarkDelete(path: Path | undefined) {
+		if (!path) return;
 		bookmarks.update((items) => items.filter((bookmark) => bookmark.url !== path.url));
 		open = false;
 	}
 </script>
 
 <svelte:head>
-	<title>{$breadcrumb.current.title} | OtterScale 🦦</title>
+	<title>{current ? `${current.title} - ` : ''}OtterScale</title>
 </svelte:head>
 
 <Sidebar.Provider>
@@ -61,17 +61,20 @@
 				<nav aria-label="Breadcrumb">
 					<Breadcrumb.Root>
 						<Breadcrumb.List>
-							{#each $breadcrumb.parents as parent}
-								<Breadcrumb.Item class="hidden md:block">
-									<Breadcrumb.Link href={parent.url}>
-										{parent.title}
-									</Breadcrumb.Link>
-								</Breadcrumb.Item>
-								<Breadcrumb.Separator class="hidden md:block" />
+							{#each $breadcrumbs as item}
+								{#if item.url === current?.url}
+									<Breadcrumb.Item>
+										<Breadcrumb.Page>{current.title}</Breadcrumb.Page>
+									</Breadcrumb.Item>
+								{:else}
+									<Breadcrumb.Item class="hidden md:block">
+										<Breadcrumb.Link href={item.url}>
+											{item.title}
+										</Breadcrumb.Link>
+									</Breadcrumb.Item>
+									<Breadcrumb.Separator class="hidden md:block" />
+								{/if}
 							{/each}
-							<Breadcrumb.Item>
-								<Breadcrumb.Page>{$breadcrumb.current.title}</Breadcrumb.Page>
-							</Breadcrumb.Item>
 						</Breadcrumb.List>
 					</Breadcrumb.Root>
 				</nav>
@@ -92,15 +95,15 @@
 							<div class="grid gap-2">
 								<div class="grid grid-cols-3 items-center gap-4">
 									<Label for="bookmark-name">{m.name()}</Label>
-									<Input id="bookmark-name" value={scopedTitle} class="col-span-2 h-8" />
+									<Input id="bookmark-name" value={current?.title} class="col-span-2 h-8" />
 								</div>
 							</div>
 
 							<div class="grid grid-cols-2 gap-6">
-								<Button variant="secondary" onclick={() => handleBookmarkDelete($breadcrumb.current)}>
+								<Button variant="secondary" onclick={() => handleBookmarkDelete(current)}>
 									{m.remove()}
 								</Button>
-								<Button onclick={() => handleBookmarkAdd($breadcrumb.current)}>
+								<Button onclick={() => handleBookmarkAdd(current)}>
 									{m.complete()}
 								</Button>
 							</div>

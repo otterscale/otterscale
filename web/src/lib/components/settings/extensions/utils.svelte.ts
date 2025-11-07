@@ -1,8 +1,10 @@
+import { SvelteURL } from 'svelte/reactivity';
+
 import type { ExtensionsBundleType } from './types';
 
 import { goto } from '$app/navigation';
+import { resolve } from '$app/paths';
 import { page } from '$app/state';
-import { dynamicPaths } from '$lib/path';
 
 const key = 'ps';
 
@@ -11,9 +13,10 @@ function getAccordionValue(): ExtensionsBundleType[] | undefined {
 }
 
 function installExtensions(extensions: ExtensionsBundleType[]) {
-	goto(
-		`${dynamicPaths.settingsExtensions(page.params.scope).url}?${extensions.map((extension) => `${key}=${extension}`).join('&')}`,
-	);
+	const basePath = resolve('/(auth)/scope/[scope]/scope-based-settings/extensions', { scope: page.params.scope! });
+	const url = new SvelteURL(basePath, window.location.origin);
+	extensions.forEach((extension) => url.searchParams.append(key, extension));
+	goto(url.pathname + url.search); // eslint-disable-line svelte/no-navigation-without-resolve
 }
 
 export { getAccordionValue, installExtensions };

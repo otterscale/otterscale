@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	import { urlIcon, type Path } from '$lib/path';
+	import { getPathIcon, type Path } from '$lib/path';
 
 	interface Props {
 		background: string;
@@ -13,6 +13,7 @@
 	let { background, path, description, disabled }: Props = $props();
 </script>
 
+<!-- eslint-disable svelte/no-navigation-without-resolve -->
 <a
 	href={path.url}
 	class="group bg-card flex aspect-square flex-col overflow-hidden rounded-lg border shadow-sm transition-all hover:shadow-md
@@ -25,7 +26,7 @@
 			<div
 				class="bg-primary/30 mx-auto flex size-18 overflow-hidden rounded-full shadow-md group-hover:scale-105"
 			>
-				<Icon icon="{urlIcon(path.url)}-fill" class="text-muted m-auto size-8" />
+				<Icon icon="{getPathIcon(path.url)}-fill" class="text-muted m-auto size-8" />
 			</div>
 		</div>
 	</header>
@@ -39,3 +40,4 @@
 		</p>
 	</div>
 </a>
+<!-- eslint-enable svelte/no-navigation-without-resolve -->

@@ -91,6 +91,7 @@
 					</AlertDialog.Title>
 					<AlertDialog.Description class="flex items-center gap-1">
 						{m.edit_release_configuration_documentation()}
+						<!-- eslint-disable svelte/no-navigation-without-resolve -->
 						<a
 							href={chartRef}
 							target="_blank"
@@ -99,6 +100,7 @@
 						>
 							{chartRef}
 						</a>
+						<!-- eslint-enable svelte/no-navigation-without-resolve -->
 					</AlertDialog.Description>
 				</div>
 				<div class="flex items-center gap-2">

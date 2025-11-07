@@ -6,6 +6,7 @@
 
 	import Actions from './cell-actions.svelte';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -37,7 +38,14 @@
 
 {#snippet name(row: Row<Application>)}
 	<Layout.Cell class="items-start">
-		<a class="underline hover:no-underline" href={`${page.url}/${row.original.namespace}/${row.original.name}`}>
+		<a
+			class="underline hover:no-underline"
+			href={resolve('/(auth)/scope/[scope]/applications/workloads/[namespace]/[application_name]', {
+				scope: page.params.scope!,
+				namespace: row.original.namespace!,
+				application_name: row.original.name!,
+			})}
+		>
 			{row.original.name}
 		</a>
 	</Layout.Cell>

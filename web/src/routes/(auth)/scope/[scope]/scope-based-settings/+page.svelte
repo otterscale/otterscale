@@ -10,6 +10,7 @@
 	onMount(() => {
 		const defaultItem = items.find((item) => item.default);
 		const [firstItem] = items;
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
 		goto(defaultItem ? defaultItem.url : firstItem.url);
 	});
 </script>

@@ -6,7 +6,6 @@
 
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
-	import { staticPaths } from '$lib/path';
 
 	type Props = ComponentProps<typeof Sidebar.Group>;
 
@@ -23,7 +22,7 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton size="sm" tooltipContent={m.documentation()}>
 					{#snippet child({ props })}
-						<a href={staticPaths.documentation.url} target="_blank" {...props}>
+						<a href="https://otterscale.github.io" target="_blank" {...props}>
 							<Icon icon="ph:book-open" />
 							<span>{m.documentation()}</span>
 						</a>

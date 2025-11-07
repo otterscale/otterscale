@@ -7,13 +7,12 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { siteConfig } from '$lib/config/site';
 	import { m } from '$lib/paraglide/messages';
-	import { staticPaths } from '$lib/path';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 
 	const links = [
-		{ icon: 'streamline-logos:github-logo-2-solid', url: staticPaths.github.url },
-		{ icon: 'ph:paper-plane-tilt-fill', url: staticPaths.feedback.url },
+		{ icon: 'streamline-logos:github-logo-2-solid', url: 'https://github.com/otterscale/otterscale' },
+		{ icon: 'ph:paper-plane-tilt-fill', url: 'https://github.com/otterscale/otterscale/issues/new/choose' },
 	];
 </script>
 

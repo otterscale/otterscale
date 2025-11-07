@@ -1,11 +1,17 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import Dashboard from '$lib/components/storage/dashboard/index.svelte';
-	import { dynamicPaths } from '$lib/path';
-	import { activeScope, breadcrumb, currentCeph } from '$lib/stores';
+	import { m } from '$lib/paraglide/messages';
+	import { activeScope, breadcrumbs, currentCeph } from '$lib/stores';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [], current: dynamicPaths.storage(page.params.scope) });
+	// Set breadcrumbs navigation
+	breadcrumbs.set([
+		{
+			title: m.storage(),
+			url: resolve('/(auth)/scope/[scope]/storage', { scope: page.params.scope! }),
+		},
+	]);
 </script>
 
 {#if $activeScope && $currentCeph}

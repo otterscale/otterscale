@@ -4,6 +4,7 @@
 
 	import DialogCreateScope from './dialog-create-scope.svelte';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
@@ -13,7 +14,6 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
 
 	let {
 		active,
@@ -111,7 +111,7 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
 						<Button
-							href={dynamicPaths.setupScope(page.params.scope).url}
+							href={resolve('/(auth)/scope/[scope]/setup', { scope: page.params.scope! })}
 							class="group/icon bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg transition"
 						>
 							<Icon
