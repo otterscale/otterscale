@@ -40,7 +40,7 @@
 		"@tanstack/table-core": "^8.21.3",
 		"@types/d3-scale": "^4.0.9",
 		"@types/d3-shape": "^3.1.7",
-		"@types/pg": "^8.15.5",
+		"@types/pg": "^8.15.6",
 		"@vitest/browser": "^4.0.3",
 		"@vitest/browser-playwright": "^4.0.3",
 		"@vitest/coverage-v8": "^4.0.3",
