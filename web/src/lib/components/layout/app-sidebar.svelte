@@ -21,7 +21,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths, getValidURL, type Path } from '$lib/path';
+	import { dynamicPaths, type Path } from '$lib/path';
 	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 
 	type Props = { user: User } & ComponentProps<typeof Sidebar.Root>;
@@ -92,14 +92,7 @@
 		toast.success(m.switch_scope({ name: scope.name }));
 
 		// Go home
-		if (home) {
-			goto(dynamicPaths.scope(scope.name).url);
-			return;
-		}
-
-		// Navigate to new url
-		const url = getValidURL(page.url.pathname, scope.name, $currentCeph?.name, $currentKubernetes?.name);
-		goto(url);
+		goto(dynamicPaths.scope(scope.name).url);
 	}
 
 	async function initialize() {
