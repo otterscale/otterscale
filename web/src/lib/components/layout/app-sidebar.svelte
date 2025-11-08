@@ -11,7 +11,7 @@
 	import { page } from '$app/state';
 	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { type Scope,ScopeService } from '$lib/api/scope/v1/scope_pb';
+	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { m } from '$lib/paraglide/messages';

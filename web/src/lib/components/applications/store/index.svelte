@@ -6,7 +6,8 @@
 	import {
 		type Application_Chart,
 		type Application_Release,
-		ApplicationService	} from '$lib/api/application/v1/application_pb';
+		ApplicationService
+	} from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 
 	import { CommerceStore } from './commerce-store/index';

@@ -4,7 +4,7 @@
 
 	import { AppSidebar } from '$lib/components/layout';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
-	import { Button,buttonVariants } from '$lib/components/ui/button';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as Popover from '$lib/components/ui/popover';

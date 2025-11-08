@@ -3,7 +3,7 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { type Network,NetworkService } from '$lib/api/network/v1/network_pb';
+	import { type Network, NetworkService } from '$lib/api/network/v1/network_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 

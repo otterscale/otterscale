@@ -12,4 +12,5 @@ export {
 	Description,
 	Icon,
 	Root,
-	Title};
+	Title
+};

@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
-	import { type Writable,writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import {

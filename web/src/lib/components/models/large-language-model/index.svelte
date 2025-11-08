@@ -5,7 +5,7 @@
 	import { writable } from 'svelte/store';
 
 	import { env } from '$env/dynamic/public';
-	import { type Application,ApplicationService } from '$lib/api/application/v1/application_pb';
+	import { type Application, ApplicationService } from '$lib/api/application/v1/application_pb';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';

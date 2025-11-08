@@ -5,7 +5,7 @@
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 
-	import { type Network,NetworkService } from '$lib/api/network/v1/network_pb';
+	import { type Network, NetworkService } from '$lib/api/network/v1/network_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Card from '$lib/components/ui/card';

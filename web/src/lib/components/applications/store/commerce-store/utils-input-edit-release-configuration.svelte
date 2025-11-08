@@ -14,7 +14,8 @@
 
 	import {
 		type Application_Chart_Metadata,
-		ApplicationService	} from '$lib/api/application/v1/application_pb';
+		ApplicationService
+	} from '$lib/api/application/v1/application_pb';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Resizable from '$lib/components/ui/resizable';

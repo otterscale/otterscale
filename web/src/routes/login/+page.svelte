@@ -2,7 +2,7 @@
 	import { resolve } from '$app/paths';
 	import { LanguageSwitcher, LightSwitch, LoginForm } from '$lib/components/login';
 	import { m } from '$lib/paraglide/messages.js';
-	import { getLocale, type Locale,setLocale } from '$lib/paraglide/runtime.js';
+	import { getLocale, type Locale, setLocale } from '$lib/paraglide/runtime.js';
 
 	const { data } = $props();
 

@@ -20,4 +20,5 @@ export {
 	CopyButton,
 	type CodeCopyButtonProps as CopyButtonProps,
 	Root,
-	type CodeRootProps as RootProps};
+	type CodeRootProps as RootProps
+};

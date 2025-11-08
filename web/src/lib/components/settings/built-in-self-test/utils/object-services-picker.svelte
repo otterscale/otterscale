@@ -7,7 +7,8 @@
 	import {
 		ConfigurationService,
 		type InternalObjectService,
-		InternalObjectService_Type	} from '$lib/api/configuration/v1/configuration_pb';
+		InternalObjectService_Type
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { activeScope } from '$lib/stores';

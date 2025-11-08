@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { scaleUtc } from 'd3-scale';
-	import { BarChart, type ChartContextValue,Highlight } from 'layerchart';
+	import { BarChart, type ChartContextValue, Highlight } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';

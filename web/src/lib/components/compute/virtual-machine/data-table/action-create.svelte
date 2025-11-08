@@ -2,7 +2,7 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
-	import { type Writable,writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import type { CreateVirtualMachineRequest, DataVolume } from '$lib/api/instance/v1/instance_pb';

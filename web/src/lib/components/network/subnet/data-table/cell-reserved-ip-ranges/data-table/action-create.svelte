@@ -7,7 +7,8 @@
 	import {
 		type CreateIPRangeRequest,
 		type Network_Subnet,
-		NetworkService	} from '$lib/api/network/v1/network_pb';
+		NetworkService
+	} from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';

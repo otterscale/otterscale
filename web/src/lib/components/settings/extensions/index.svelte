@@ -1,9 +1,9 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
-	import { type Writable,writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 
-	import { type Extension,OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import { type Extension, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as Accordion from '$lib/components/ui/accordion/index.js';
 
 	import Node from './extension-node.svelte';

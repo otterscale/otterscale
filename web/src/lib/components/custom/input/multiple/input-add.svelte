@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 
-	import { Button, type ButtonProps,buttonVariants } from '$lib/components/ui/button/index.js';
+	import { Button, type ButtonProps, buttonVariants } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 
 	import type { InputManager, ValuesManager } from './utils.svelte';

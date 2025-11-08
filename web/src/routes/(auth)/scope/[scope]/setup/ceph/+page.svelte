@@ -5,7 +5,7 @@
 
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { type Facility,FacilityService } from '$lib/api/facility/v1/facility_pb';
+	import { type Facility, FacilityService } from '$lib/api/facility/v1/facility_pb';
 	import { SetupScopeGrid } from '$lib/components/setup';
 	import { m } from '$lib/paraglide/messages';
 	import { activeScope, breadcrumbs } from '$lib/stores';

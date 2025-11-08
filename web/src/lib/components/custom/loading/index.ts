@@ -6,4 +6,4 @@ import * as DataTables from './data-tables';
 import Report from './report.svelte';
 import Selection from './selection.svelte';
 
-export { Alert,ApplicationStore, Data, DataTable, DataTables, Report, Selection };
+export { Alert, ApplicationStore, Data, DataTable, DataTables, Report, Selection };

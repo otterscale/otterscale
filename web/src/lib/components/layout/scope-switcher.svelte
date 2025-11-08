@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { type Writable,writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';

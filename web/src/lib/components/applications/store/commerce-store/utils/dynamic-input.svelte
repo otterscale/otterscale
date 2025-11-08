@@ -30,6 +30,7 @@
 	{@const [anyItem] = data}
 	{#if typeof anyItem === 'object'}
 		<span class="flex flex-col">
+			<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 			{#each data as _, i}
 				<div class="rounded-lg bg-muted/50">
 					<Self bind:data={data[i]} />

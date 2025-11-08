@@ -5,7 +5,6 @@
 
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
-	import type { Essential } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import Reloader from '$lib/components/custom/reloader/reloader.svelte';
 	import { Overview } from '$lib/components/storage/dashboard/overview';
@@ -15,7 +14,7 @@
 
 	import ExtensionsAlert from './extensions-alert.svelte';
 
-	let { scope, ceph: _ }: { scope: Scope; ceph: Essential } = $props();
+	let { scope }: { scope: Scope } = $props();
 
 	let isReloading = $state(true);
 

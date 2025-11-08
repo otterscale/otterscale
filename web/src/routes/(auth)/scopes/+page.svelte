@@ -2,10 +2,10 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
-	import { derived,writable } from 'svelte/store';
+	import { derived, writable } from 'svelte/store';
 
 	import { resolve } from '$app/paths';
-	import { type Scope,ScopeService } from '$lib/api/scope/v1/scope_pb';
+	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import SquareGridImage from '$lib/assets/square-grid.svg';
 	import { scopeIcon } from '$lib/components/scopes/icon';
 	import { Badge } from '$lib/components/ui/badge';

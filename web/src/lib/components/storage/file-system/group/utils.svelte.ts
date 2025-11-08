@@ -1,4 +1,4 @@
-import { type Writable,writable } from 'svelte/store';
+import { type Writable, writable } from 'svelte/store';
 
 interface GroupStore {
 	selectedScope: Writable<string | undefined>;

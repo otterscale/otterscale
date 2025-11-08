@@ -2,7 +2,7 @@
 	import '@xyflow/svelte/dist/style.css';
 
 	import dagre from '@dagrejs/dagre';
-	import { type Edge, type Node,Panel, Position, SvelteFlow } from '@xyflow/svelte';
+	import { type Edge, type Node, Panel, Position, SvelteFlow } from '@xyflow/svelte';
 
 	import { cn } from '$lib/utils';
 

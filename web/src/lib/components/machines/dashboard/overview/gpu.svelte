@@ -9,7 +9,7 @@
 	import { writable } from 'svelte/store';
 
 	import { page } from '$app/state';
-	import { type Machine,MachineService } from '$lib/api/machine/v1/machine_pb';
+	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';

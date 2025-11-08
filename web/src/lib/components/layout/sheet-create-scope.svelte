@@ -13,11 +13,13 @@
 		CreateMachineRequestSchema,
 		GetMachineRequestSchema,
 		type Machine,
-		MachineService	} from '$lib/api/machine/v1/machine_pb';
+		MachineService
+	} from '$lib/api/machine/v1/machine_pb';
 	import {
 		CreateNodeRequestSchema,
-		OrchestratorService	} from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { CreateScopeRequestSchema,ScopeService } from '$lib/api/scope/v1/scope_pb';
+		OrchestratorService
+	} from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import { CreateScopeRequestSchema, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import { IPv4AddressInput } from '$lib/components/custom/ipv4';
 	import { IPv4CIDRInput } from '$lib/components/custom/ipv4-cidr';
 	import { Badge } from '$lib/components/ui/badge';

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { mode } from 'mode-watcher';
-	import { type Writable,writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
@@ -107,6 +107,7 @@
 			</Carousel.Content>
 
 			<div class="absolute top-14 right-12 flex items-center space-x-2">
+				<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 				{#each plans as _, index}
 					<button
 						onclick={() => api?.scrollTo(index)}

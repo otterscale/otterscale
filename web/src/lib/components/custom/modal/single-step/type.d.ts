@@ -3,4 +3,4 @@ import type { triggerVariants } from './utils';
 type TriggerVariant = VariantProps<typeof triggerVariants>['variant'];
 type TriggerSize = VariantProps<typeof triggerVariants>['size'];
 
-export type { TriggerSize,TriggerVariant };
+export type { TriggerSize, TriggerVariant };

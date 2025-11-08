@@ -6,13 +6,14 @@
 	import Icon from '@iconify/svelte';
 	import { type Edge, type Node } from '@xyflow/svelte';
 	import { getContext } from 'svelte';
-	import { type Writable,writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 
 	import {
 		type GPURelation_GPU,
 		type GPURelation_Machine,
 		type GPURelation_Pod,
-		OrchestratorService	} from '$lib/api/orchestrator/v1/orchestrator_pb';
+		OrchestratorService
+	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { Complex as Flow } from '$lib/components/flow/index';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';

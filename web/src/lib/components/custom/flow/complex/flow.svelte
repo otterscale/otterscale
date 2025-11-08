@@ -9,7 +9,8 @@
 		type Node,
 		Panel,
 		Position,
-		SvelteFlow	} from '@xyflow/svelte';
+		SvelteFlow
+	} from '@xyflow/svelte';
 
 	import { cn } from '$lib/utils';
 

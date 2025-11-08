@@ -12,7 +12,8 @@
 		type Facility,
 		type Facility_Status,
 		type Facility_Unit,
-		FacilityService	} from '$lib/api/facility/v1/facility_pb';
+		FacilityService
+	} from '$lib/api/facility/v1/facility_pb';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';

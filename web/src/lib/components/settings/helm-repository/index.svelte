@@ -6,7 +6,8 @@
 
 	import {
 		type Configuration,
-		ConfigurationService	} from '$lib/api/configuration/v1/configuration_pb';
+		ConfigurationService
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Layout from '$lib/components/settings/layout';
 	import { m } from '$lib/paraglide/messages';
 

@@ -7,7 +7,8 @@
 
 	import {
 		type Configuration,
-		ConfigurationService	} from '$lib/api/configuration/v1/configuration_pb';
+		ConfigurationService
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';

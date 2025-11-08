@@ -4,7 +4,7 @@
 	import { cubicInOut } from 'svelte/easing';
 
 	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { formatIO, formatLatencyNano,formatSecond } from '$lib/formatter';
+	import { formatIO, formatLatencyNano, formatSecond } from '$lib/formatter';
 
 	let {
 		data,

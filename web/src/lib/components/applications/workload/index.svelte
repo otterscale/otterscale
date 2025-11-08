@@ -3,7 +3,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { type Application,ApplicationService } from '$lib/api/application/v1/application_pb';
+	import { type Application, ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 
 	import { Data } from './data';

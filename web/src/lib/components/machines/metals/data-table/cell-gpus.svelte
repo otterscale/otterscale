@@ -5,14 +5,15 @@
 	import Icon from '@iconify/svelte';
 	import { type Edge, type Node } from '@xyflow/svelte';
 	import { getContext } from 'svelte';
-	import { type Writable,writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import {
 		type GPURelation_GPU,
 		type GPURelation_Machine,
 		type GPURelation_Pod,
-		OrchestratorService	} from '$lib/api/orchestrator/v1/orchestrator_pb';
+		OrchestratorService
+	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as Table from '$lib/components/custom/table';
 	import { Complex as Simple } from '$lib/components/flow/index';
 	import * as HoverCard from '$lib/components/ui/hover-card';

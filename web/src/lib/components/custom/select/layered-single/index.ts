@@ -13,7 +13,7 @@ import SubContent from './select-sub-content.svelte';
 import SubTrigger from './select-sub-trigger.svelte';
 import Trigger from './select-trigger.svelte';
 import type { AncestralOptionType, OptionType } from './types';
-import { getAllAncestralOptions, getAncestralOptionsMap,OptionManager } from './utils.svelte';
+import { getAllAncestralOptions, getAncestralOptionsMap, OptionManager } from './utils.svelte';
 const Sub = DropdownMenuPrimitive.Sub;
 
 export {
@@ -32,5 +32,6 @@ export {
 	Sub,
 	SubContent,
 	SubTrigger,
-	Trigger};
+	Trigger
+};
 export type { AncestralOptionType, OptionType };

@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import { type Pool,PoolType } from '$lib/api/storage/v1/storage_pb';
+	import { type Pool, PoolType } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress';

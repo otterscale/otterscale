@@ -14,7 +14,8 @@
 		type ChartConfig,
 		type DataPoint,
 		generateChartConfig,
-		getSeries	} from '$lib/components/custom/prometheus';
+		getSeries
+	} from '$lib/components/custom/prometheus';
 	import ChartContainer from '$lib/components/ui/chart/chart-container.svelte';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 

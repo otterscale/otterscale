@@ -1,4 +1,4 @@
-import { type Writable,writable } from 'svelte/store';
+import { type Writable, writable } from 'svelte/store';
 
 interface NFSStore {
 	selectedScope: Writable<string | undefined>;

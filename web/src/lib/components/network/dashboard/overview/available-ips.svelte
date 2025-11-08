@@ -4,7 +4,7 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { type Network,NetworkService } from '$lib/api/network/v1/network_pb';
+	import { type Network, NetworkService } from '$lib/api/network/v1/network_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';

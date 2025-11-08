@@ -3,11 +3,11 @@
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
 
-	import { type ButtonVariant,buttonVariants } from '$lib/components/ui/button';
+	import { type ButtonVariant, buttonVariants } from '$lib/components/ui/button';
 	import * as Popover from '$lib/components/ui/popover';
 	import { cn } from '$lib/utils.js';
 
-	import { type OptionManager,validate } from './utils.svelte';
+	import { type OptionManager, validate } from './utils.svelte';
 </script>
 
 <script lang="ts">

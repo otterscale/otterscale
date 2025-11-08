@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import * as Form from '$lib/components/custom/form';
-	import { Multiple as MultipleInput,Single as SingleInput } from '$lib/components/custom/input';
+	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { PalinTabs } from '$lib/components/custom/tabs';
 </script>
 
