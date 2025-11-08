@@ -1,9 +1,8 @@
 {
 	"useTabs": true,
-	"tabWidth": 4,
 	"singleQuote": true,
-	"trailingComma": "all",
-	"printWidth": 120,
+	"trailingComma": "none",
+	"printWidth": 100,
 	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
 	"overrides": [
 		{
@@ -11,23 +10,7 @@
 			"options": {
 				"parser": "svelte"
 			}
-		},
-		{
-			"files": "*.md",
-			"options": {
-				"tabWidth": 2,
-				"useTabs": false,
-				"printWidth": 79
-			}
-		},
-		{
-			"files": ".github/**/*",
-			"options": {
-				"tabWidth": 2,
-				"useTabs": false,
-				"parser": "yaml"
-			}
 		}
 	],
-	"tailwindFunctions": ["clsx", "cn", "tv", "cva"]
+	"tailwindStylesheet": "./src/app.css"
 }
