@@ -10,7 +10,7 @@
 	import { siteConfig } from '$lib/config/site';
 	import { formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { notifications, type Notification } from '$lib/stores';
+	import { type Notification,notifications } from '$lib/stores';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 

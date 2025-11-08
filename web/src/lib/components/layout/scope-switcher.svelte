@@ -1,8 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { writable, type Writable } from 'svelte/store';
-
-	import DialogCreateScope from './dialog-create-scope.svelte';
+	import { type Writable,writable } from 'svelte/store';
 
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
@@ -14,6 +12,8 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
+
+	import DialogCreateScope from './dialog-create-scope.svelte';
 
 	let {
 		active,

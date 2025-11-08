@@ -3,6 +3,13 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 
+	import { env } from '$env/dynamic/public';
+	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
+	import { Reloader } from '$lib/components/custom/reloader';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { m } from '$lib/paraglide/messages';
+	import { activeScope, currentKubernetes } from '$lib/stores';
+
 	import ExtensionsAlert from './extensions-alert.svelte';
 	import Container from './overview/container.svelte';
 	import ControlPlane from './overview/control-plane.svelte';
@@ -13,13 +20,6 @@
 	import ThroughtPut from './overview/throughput.svelte';
 	import VGPU from './overview/vgpu.svelte';
 	import Worker from './overview/worker.svelte';
-
-	import { env } from '$env/dynamic/public';
-	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
-	import { Reloader } from '$lib/components/custom/reloader';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { m } from '$lib/paraglide/messages';
-	import { activeScope, currentKubernetes } from '$lib/stores';
 
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);

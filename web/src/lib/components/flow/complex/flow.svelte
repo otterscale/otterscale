@@ -1,24 +1,23 @@
 <script lang="ts" module>
+	import '@xyflow/svelte/dist/style.css';
+
 	import dagre from '@dagrejs/dagre';
 	import {
 		Controls,
+		type Edge,
 		MiniMap,
+		type Node,
 		Panel,
 		Position,
-		SvelteFlow,
-		type Edge,
-		type Node
-	} from '@xyflow/svelte';
-	import '@xyflow/svelte/dist/style.css';
+		SvelteFlow	} from '@xyflow/svelte';
+
+	import { cn } from '$lib/utils';
 
 	import { traverse } from '../utils.svelte';
-
 	import FlowEdge from './flow-edge.svelte';
 	import FlowNodeGPU from './flow-node-gpu.svelte';
 	import FlowNodeMachine from './flow-node-machine.svelte';
 	import FlowNodeModel from './flow-node-model.svelte';
-
-	import { cn } from '$lib/utils';
 
 	const defaultNodeWidth = 300;
 	const defaultNodeHeight = 150;

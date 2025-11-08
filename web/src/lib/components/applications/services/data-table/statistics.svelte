@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { Table } from '@tanstack/table-core';
 
-	import type { Service } from '../types';
-
 	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
+
+	import type { Service } from '../types';
 
 	let { table }: { table: Table<Service> } = $props();
 </script>

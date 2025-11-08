@@ -3,8 +3,6 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import Actions from './actions.svelte';
-
 	import {
 		InternalObjectService_Type,
 		type TestResult,
@@ -16,6 +14,8 @@
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatSecond, formatTimeAgo } from '$lib/formatter';
+
+	import Actions from './actions.svelte';
 
 	export const cells = {
 		row_picker,

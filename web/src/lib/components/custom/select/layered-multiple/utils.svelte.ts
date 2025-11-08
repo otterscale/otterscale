@@ -1,5 +1,4 @@
 import { getAllAncestralOptions, getAncestralOptionsMap } from '../layered-single/index';
-
 import type { AccessorType, AncestralOptionType, OptionType } from './types';
 
 class OptionManager {

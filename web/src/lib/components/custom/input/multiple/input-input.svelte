@@ -3,12 +3,11 @@
 	import { getContext } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	import * as Input from '../single';
+	import { cn } from '$lib/utils.js';
 
+	import * as Input from '../single';
 	import { InputManager, ValuesManager } from './utils.svelte';
 	import { validate } from './utils.svelte';
-
-	import { cn } from '$lib/utils.js';
 
 	type Props = WithElementRef<Omit<HTMLInputAttributes, 'value' | 'type'>>;
 </script>

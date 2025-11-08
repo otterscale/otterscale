@@ -1,4 +1,6 @@
 <script lang="ts">
+	import '../app.css';
+
 	import { createConnectTransport } from '@connectrpc/connect-web';
 	import { addCollection } from '@iconify/svelte';
 	import logos from '@iconify-json/logos/icons.json';
@@ -11,7 +13,6 @@
 	import { env } from '$env/dynamic/public';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { Spinner } from '$lib/components/ui/spinner';
-	import '../app.css';
 
 	let { children } = $props();
 

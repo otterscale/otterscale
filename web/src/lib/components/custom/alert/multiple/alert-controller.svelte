@@ -4,9 +4,9 @@
 	import { getContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 
-	import type { IterationManager } from './utils.svelte';
-
 	import { cn } from '$lib/utils.js';
+
+	import type { IterationManager } from './utils.svelte';
 </script>
 
 <script lang="ts">

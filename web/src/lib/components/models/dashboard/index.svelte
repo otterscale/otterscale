@@ -3,8 +3,6 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 
-	import ExtensionsAlert from './extensions-alert.svelte';
-
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { Reloader } from '$lib/components/custom/reloader';
@@ -12,6 +10,8 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
 	import { activeScope } from '$lib/stores';
+
+	import ExtensionsAlert from './extensions-alert.svelte';
 
 	let { scope, facility }: { scope: string; facility: string } = $props();
 

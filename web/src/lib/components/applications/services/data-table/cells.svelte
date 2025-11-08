@@ -2,8 +2,6 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import type { Service } from '../types';
-
 	import CopyButton from '$lib/components/custom/copy-button/copy-button.svelte';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -12,6 +10,8 @@
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { m } from '$lib/paraglide/messages';
+
+	import type { Service } from '../types';
 
 	export const cells = {
 		row_picker,

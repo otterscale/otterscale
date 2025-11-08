@@ -5,17 +5,14 @@
 	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import SetupNodeGPUMode from './setup-node-gpu-mode.svelte';
-
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import {
-		FacilityService,
 		type Facility,
 		type Facility_Status,
-		type Facility_Unit
-	} from '$lib/api/facility/v1/facility_pb';
+		type Facility_Unit,
+		FacilityService	} from '$lib/api/facility/v1/facility_pb';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
@@ -23,6 +20,8 @@
 	import { Switch } from '$lib/components/ui/switch';
 	import { m } from '$lib/paraglide/messages';
 	import { premiumTier } from '$lib/stores';
+
+	import SetupNodeGPUMode from './setup-node-gpu-mode.svelte';
 
 	let {
 		services,

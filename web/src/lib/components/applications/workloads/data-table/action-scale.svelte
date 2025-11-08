@@ -4,8 +4,6 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { Application } from '../types';
-
 	import type { ScaleApplicationRequest } from '$lib/api/application/v1/application_pb';
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -14,6 +12,8 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
+
+	import type { Application } from '../types';
 </script>
 
 <script lang="ts">

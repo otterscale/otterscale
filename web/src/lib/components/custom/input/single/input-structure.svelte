@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import 'highlight.js/styles/github.css';
+
 	import Monaco from 'svelte-monaco';
 
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';

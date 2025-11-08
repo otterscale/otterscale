@@ -1,3 +1,4 @@
+import Root from './form.svelte';
 import Actions from './form-actions.svelte';
 import Collapsible from './form-collapsible.svelte';
 import Description from './form-description.svelte';
@@ -8,7 +9,6 @@ import Label from './form-label.svelte';
 import Legend from './form-legend.svelte';
 import Separator from './form-separator.svelte';
 import Submit from './form-submit.svelte';
-import Root from './form.svelte';
 import { RequestManager } from './utils.svelte';
 
 export {

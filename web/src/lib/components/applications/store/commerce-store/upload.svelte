@@ -4,14 +4,14 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { UploadedFile } from './types';
-
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { Label } from '$lib/components/ui/label';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+
+	import type { UploadedFile } from './types';
 </script>
 
 <script lang="ts">

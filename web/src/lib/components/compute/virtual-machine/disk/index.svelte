@@ -4,18 +4,18 @@
 	import { getContext, onDestroy } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 
-	import { DataTable } from './data-table';
-
+	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
+	import type { DataVolume } from '$lib/api/instance/v1/instance_pb';
 	import {
 		InstanceService,
 		VirtualMachine_Disk_Volume_Source_Type
 	} from '$lib/api/instance/v1/instance_pb';
-	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
-	import type { DataVolume } from '$lib/api/instance/v1/instance_pb';
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { currentKubernetes } from '$lib/stores';
+
+	import { DataTable } from './data-table';
 </script>
 
 <script lang="ts">

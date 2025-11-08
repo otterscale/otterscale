@@ -1,9 +1,9 @@
 <script lang="ts" module>
-	import Detach from './action-detach.svelte';
-
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
+
+	import Detach from './action-detach.svelte';
 </script>
 
 <script lang="ts">

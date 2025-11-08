@@ -1,9 +1,9 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable,writable } from 'svelte/store';
 
-	import { OrchestratorService, type Extension } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import { type Extension,OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { Single as Alert } from '$lib/components/custom/alert';
 	import { installExtensions } from '$lib/components/settings/extensions/utils.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';

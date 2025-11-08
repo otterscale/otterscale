@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import type { ITerminalOptions, ITerminalInitOnlyOptions, Terminal } from '@xterm/xterm';
-	import { getContext, onMount } from 'svelte';
 	import '@xterm/xterm/css/xterm.css';
+
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import type { ITerminalInitOnlyOptions, ITerminalOptions, Terminal } from '@xterm/xterm';
+	import { getContext, onMount } from 'svelte';
 
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 

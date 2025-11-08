@@ -1,8 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	import { items } from './data';
-
 	import { page } from '$app/state';
 	import * as NavigationMenu from '$lib/components/ui/navigation-menu';
 	import { navigationMenuTriggerStyle } from '$lib/components/ui/navigation-menu/navigation-menu-trigger.svelte';
@@ -10,6 +8,8 @@
 	import { m } from '$lib/paraglide/messages';
 	import { activeScope } from '$lib/stores';
 	import { cn } from '$lib/utils';
+
+	import { items } from './data';
 
 	let { children } = $props();
 </script>

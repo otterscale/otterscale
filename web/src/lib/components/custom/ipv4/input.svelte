@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 
-	import { isNumber } from './is-number';
-
 	import { cn } from '$lib/utils';
+
+	import { isNumber } from './is-number';
 
 	type Props = {
 		value?: number | string | null;

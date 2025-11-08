@@ -4,11 +4,10 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import type {
-		VirtualMachine_Restore,
-		DeleteVirtualMachineRestoreRequest
-	} from '$lib/api/instance/v1/instance_pb';
+		DeleteVirtualMachineRestoreRequest,
+		VirtualMachine_Restore	} from '$lib/api/instance/v1/instance_pb';
+	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';

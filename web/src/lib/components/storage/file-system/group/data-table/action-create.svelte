@@ -5,8 +5,6 @@
 	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { type GroupStore } from '../utils.svelte.js';
-
 	import type { CreateSubvolumeGroupRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -14,6 +12,8 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
+
+	import { type GroupStore } from '../utils.svelte.js';
 </script>
 
 <script lang="ts">

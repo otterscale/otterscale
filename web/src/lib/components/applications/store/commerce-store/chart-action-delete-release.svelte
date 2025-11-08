@@ -6,8 +6,8 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		ApplicationService,
 		type Application_Release,
+		ApplicationService,
 		type DeleteReleaseRequest
 	} from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';

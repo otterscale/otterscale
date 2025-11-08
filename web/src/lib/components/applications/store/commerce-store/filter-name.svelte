@@ -2,12 +2,12 @@
 	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
 
-	import type { FilterManager } from './utils';
-
 	import { page } from '$app/stores';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+
+	import type { FilterManager } from './utils';
 
 	export const COLUMN_ID = 'name';
 </script>

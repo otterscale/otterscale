@@ -4,9 +4,6 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import Actions from './cell-actions.svelte';
-	import Create from './create.svelte';
-
 	import { InstanceService, type InstanceType } from '$lib/api/instance/v1/instance_pb';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
@@ -15,6 +12,9 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+
+	import Actions from './cell-actions.svelte';
+	import Create from './create.svelte';
 </script>
 
 <script lang="ts">

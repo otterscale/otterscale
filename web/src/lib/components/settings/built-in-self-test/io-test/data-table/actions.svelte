@@ -1,11 +1,11 @@
 <script lang="ts" module>
-	import Delete from './action-delete.svelte';
-	import Retest from './action-retest.svelte';
-	import View from './action-view.svelte';
-
 	import type { TestResult } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
+
+	import Delete from './action-delete.svelte';
+	import Retest from './action-retest.svelte';
+	import View from './action-view.svelte';
 </script>
 
 <script lang="ts">

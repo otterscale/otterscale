@@ -3,15 +3,15 @@
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
 
-	import type { OptionType } from './types';
-	import { validate, type OptionManager } from './utils.svelte';
-
 	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button';
+	import { type ButtonVariant,buttonVariants } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Popover from '$lib/components/ui/popover';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { cn } from '$lib/utils.js';
+
+	import type { OptionType } from './types';
+	import { type OptionManager,validate } from './utils.svelte';
 </script>
 
 <script lang="ts">

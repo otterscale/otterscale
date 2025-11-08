@@ -5,10 +5,9 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		MachineService,
 		type DeleteMachineRequest,
-		type Machine
-	} from '$lib/api/machine/v1/machine_pb';
+		type Machine,
+		MachineService	} from '$lib/api/machine/v1/machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';

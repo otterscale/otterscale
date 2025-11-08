@@ -4,11 +4,11 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { tv, type VariantProps } from 'tailwind-variants';
 
-	import type { AlertType } from './types';
-
 	import { alertVariants as baseAlertVariants } from '$lib/components/ui/alert/alert.svelte';
 	import * as Alert from '$lib/components/ui/alert/index';
 	import { cn } from '$lib/utils.js';
+
+	import type { AlertType } from './types';
 
 	export const alertVariants = tv({
 		base: cn(baseAlertVariants.base, '[&>svg]:size-6'),

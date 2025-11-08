@@ -1,24 +1,24 @@
 <script lang="ts" module>
+	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/dist/style.css';
+
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { type Edge, type Node } from '@xyflow/svelte';
-	import '@xyflow/svelte/dist/style.css';
 	import { getContext } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
-
-	import type { LargeLanguageModel } from '../type';
+	import { type Writable,writable } from 'svelte/store';
 
 	import {
-		OrchestratorService,
 		type GPURelation_GPU,
 		type GPURelation_Machine,
-		type GPURelation_Pod
-	} from '$lib/api/orchestrator/v1/orchestrator_pb';
+		type GPURelation_Pod,
+		OrchestratorService	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { Complex as Flow } from '$lib/components/flow/index';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
-	import '@xyflow/svelte/dist/style.css';
+
+	import type { LargeLanguageModel } from '../type';
 </script>
 
 <script lang="ts">

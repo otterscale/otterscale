@@ -4,7 +4,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { NetworkService, type CreateNetworkRequest } from '$lib/api/network/v1/network_pb';
+	import { type CreateNetworkRequest,NetworkService } from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';

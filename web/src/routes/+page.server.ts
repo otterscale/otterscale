@@ -1,11 +1,11 @@
 import { error, redirect } from '@sveltejs/kit';
 
-import type { PageServerLoad } from './$types';
-
 import { resolve } from '$app/paths';
 import { env } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public';
 import { auth } from '$lib/auth';
+
+import type { PageServerLoad } from './$types';
 
 // Environment variables are loaded from .env in development or system environment in production
 export const load: PageServerLoad = async ({ request, url }) => {

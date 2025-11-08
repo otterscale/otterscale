@@ -3,4 +3,4 @@ import * as LayeredSingle from './layered-single';
 import * as Multiple from './multiple';
 import * as Single from './single';
 
-export { Single, Multiple, LayeredMultiple, LayeredSingle };
+export { LayeredMultiple, LayeredSingle,Multiple, Single };

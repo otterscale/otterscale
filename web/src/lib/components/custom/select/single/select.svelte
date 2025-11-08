@@ -3,10 +3,10 @@
 	import { setContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
 
+	import * as Popover from '$lib/components/ui/popover';
+
 	import type { OptionType } from './types';
 	import { OptionManager, validate } from './utils.svelte';
-
-	import * as Popover from '$lib/components/ui/popover';
 </script>
 
 <script lang="ts">

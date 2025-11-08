@@ -1,10 +1,10 @@
 <script lang="ts" module>
 	import type { Row } from '@tanstack/table-core';
 
-	import type { TableRow } from './type';
-
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
+
+	import type { TableRow } from './type';
 
 	export const cells = {
 		row_picker,

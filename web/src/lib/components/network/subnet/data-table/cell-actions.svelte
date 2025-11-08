@@ -1,12 +1,12 @@
 <script lang="ts" module>
+	import type { Network } from '$lib/api/network/v1/network_pb';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { m } from '$lib/paraglide/messages';
+
 	import DeleteFabric from './action-delete-fabric.svelte';
 	import UpdateFabric from './action-update-fabric.svelte';
 	import UpdateSubnet from './action-update-subnet.svelte';
 	import UpdateVLAN from './action-update-vlan.svelte';
-
-	import type { Network } from '$lib/api/network/v1/network_pb';
-	import * as Layout from '$lib/components/custom/data-table/layout';
-	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">

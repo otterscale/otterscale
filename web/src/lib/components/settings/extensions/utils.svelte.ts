@@ -1,10 +1,10 @@
 import { SvelteURL } from 'svelte/reactivity';
 
-import type { ExtensionsBundleType } from './types';
-
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { page } from '$app/state';
+
+import type { ExtensionsBundleType } from './types';
 
 const key = 'ps';
 

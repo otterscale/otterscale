@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import type { Writable } from 'svelte/store';
 
-	import { PremiumTier_Level, type PremiumTier } from '$lib/api/environment/v1/environment_pb';
+	import { type PremiumTier,PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import * as Layout from '$lib/components/settings/layout';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';

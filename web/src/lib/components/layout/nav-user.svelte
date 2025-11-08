@@ -4,8 +4,6 @@
 	import { mode, toggleMode } from 'mode-watcher';
 	import { toast } from 'svelte-sonner';
 
-	import SheetNotification from './sheet-notification.svelte';
-
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
@@ -16,6 +14,8 @@
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
+
+	import SheetNotification from './sheet-notification.svelte';
 
 	let { user }: { user: User } = $props();
 	let locale = $state(getLocale());

@@ -1,8 +1,6 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import { fuzzLogosIcon } from './utils';
-
 	import {
 		type Application_Chart,
 		type Application_Release
@@ -12,6 +10,8 @@
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+
+	import { fuzzLogosIcon } from './utils';
 </script>
 
 <script lang="ts">

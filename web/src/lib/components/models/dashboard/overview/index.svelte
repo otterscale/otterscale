@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+
 	import Latency from './latency.svelte';
 	import Model from './model.svelte';
 	import Request from './request.svelte';
 	import Throughput from './throughtput.svelte';
 	import TimeToFirstToken from './time-to-first-token.svelte';
-
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 
 	let {
 		prometheusDriver,

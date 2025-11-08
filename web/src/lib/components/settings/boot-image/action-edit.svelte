@@ -6,8 +6,8 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		ConfigurationService,
 		type Configuration_BootImage,
+		ConfigurationService,
 		type UpdateBootImageRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';

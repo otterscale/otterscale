@@ -5,8 +5,6 @@
 	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { type NFSStore } from '../utils.svelte.js';
-
 	import type {
 		GrantSubvolumeExportAccessRequest,
 		Subvolume
@@ -17,6 +15,8 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
+
+	import { type NFSStore } from '../utils.svelte.js';
 </script>
 
 <script lang="ts">

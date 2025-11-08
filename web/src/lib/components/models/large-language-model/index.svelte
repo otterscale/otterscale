@@ -4,15 +4,15 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { DataTable } from './data-table/index';
-	import ExtensionsAlert from './extensions-alert.svelte';
-	import { type LargeLanguageModel } from './type';
-
 	import { env } from '$env/dynamic/public';
-	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
+	import { type Application,ApplicationService } from '$lib/api/application/v1/application_pb';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+
+	import { DataTable } from './data-table/index';
+	import ExtensionsAlert from './extensions-alert.svelte';
+	import { type LargeLanguageModel } from './type';
 </script>
 
 <script lang="ts">

@@ -4,8 +4,6 @@
 	import type { Row } from '@tanstack/table-core';
 	import { toast } from 'svelte-sonner';
 
-	import Actions from './cell-actions.svelte';
-
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -16,6 +14,8 @@
 	import * as Table from '$lib/components/ui/table';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
+
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,

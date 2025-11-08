@@ -2,8 +2,6 @@
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 
-	import Actions from './cell-actions.svelte';
-
 	import { browser } from '$app/environment';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
@@ -15,6 +13,8 @@
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
+
+	import Actions from './cell-actions.svelte';
 </script>
 
 <script lang="ts">

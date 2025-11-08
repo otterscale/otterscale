@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { box } from 'svelte-toolbelt';
 
-	import { useCode } from './code.svelte.js';
-	import type { CodeRootProps } from './types';
-
 	import { codeVariants } from '$lib/components/custom/code';
 	import { cn } from '$lib/utils';
+
+	import { useCode } from './code.svelte.js';
+	import type { CodeRootProps } from './types';
 
 	let {
 		ref = $bindable(null),

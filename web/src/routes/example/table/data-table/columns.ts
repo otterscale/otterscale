@@ -1,10 +1,10 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
+import { renderSnippet } from '$lib/components/ui/data-table/index.js';
+
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 import type { TableRow } from './type';
-
-import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 
 const columns: ColumnDef<TableRow>[] = [
 	{

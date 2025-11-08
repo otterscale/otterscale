@@ -4,12 +4,12 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { Application } from '../types';
-
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
+
+	import type { Application } from '../types';
 </script>
 
 <script lang="ts">

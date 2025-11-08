@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import { Button, buttonVariants, type ButtonProps } from '$lib/components/ui/button/index.js';
+	import { Button, type ButtonProps,buttonVariants } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 </script>
 

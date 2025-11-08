@@ -6,9 +6,9 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		ConfigurationService,
 		type Configuration,
 		type Configuration_BootImage,
+		ConfigurationService,
 		type SetDefaultBootImageRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';

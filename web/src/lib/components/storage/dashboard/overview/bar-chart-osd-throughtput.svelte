@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
+	import { BarChart, type ChartContextValue,Highlight } from 'layerchart';
 	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';

@@ -38,4 +38,4 @@ class TimerManager {
 	}
 }
 
-export { TimerManager, Speed };
+export { Speed,TimerManager };

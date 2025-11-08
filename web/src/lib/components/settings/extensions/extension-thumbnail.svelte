@@ -5,8 +5,6 @@
 	import { type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import type { ExtensionsBundleType } from './types';
-
 	import type { Extension } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
@@ -15,6 +13,8 @@
 	import { m } from '$lib/paraglide/messages';
 	import { activeScope } from '$lib/stores';
 	import { cn } from '$lib/utils';
+
+	import type { ExtensionsBundleType } from './types';
 
 	const extensionsBundleConfigurations: Record<
 		ExtensionsBundleType,

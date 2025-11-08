@@ -2,13 +2,13 @@
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 
-	import CardHardware from './card-hardware.svelte';
-
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import { buttonVariants } from '$lib/components/ui/button/button.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import { m } from '$lib/paraglide/messages';
+
+	import CardHardware from './card-hardware.svelte';
 </script>
 
 <script lang="ts">

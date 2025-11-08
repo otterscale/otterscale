@@ -2,8 +2,6 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import Actions from './cell-actions.svelte';
-
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
@@ -13,6 +11,8 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,

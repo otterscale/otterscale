@@ -3,9 +3,6 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import Actions from './cell-actions.svelte';
-	import VNC from './cell-vnc.svelte';
-
 	import { resolve } from '$app/paths';
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { Disk } from '$lib/components/compute/virtual-machine/disk';
@@ -18,6 +15,9 @@
 	import * as Table from '$lib/components/ui/table';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatTimeAgo } from '$lib/formatter';
+
+	import Actions from './cell-actions.svelte';
+	import VNC from './cell-vnc.svelte';
 
 	export const cells = {
 		row_picker,

@@ -5,11 +5,9 @@
 	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
-
 	import {
-		ApplicationService,
 		type Application_Release,
+		ApplicationService,
 		type UpdateReleaseRequest
 	} from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -17,6 +15,8 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
+
+	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
 </script>
 
 <script lang="ts">

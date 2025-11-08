@@ -3,13 +3,13 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { DataTable } from './data-table/index';
-	import ExtensionsAlert from './extensions-alert.svelte';
-	import { Statistics } from './statistics';
-
 	import { InstanceService, type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+
+	import { DataTable } from './data-table/index';
+	import ExtensionsAlert from './extensions-alert.svelte';
+	import { Statistics } from './statistics';
 </script>
 
 <script lang="ts">

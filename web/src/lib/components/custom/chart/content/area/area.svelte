@@ -5,17 +5,16 @@
 	import { cubicInOut } from 'svelte/easing';
 
 	import {
-		formatXAxisDate,
 		formatTooltipDate,
+		formatXAxisDate,
 		getXAxisTicks,
 		type TimeRange
 	} from '$lib/components/custom/chart/units/formatter';
 	import {
-		generateChartConfig,
-		getSeries,
+		type ChartConfig,
 		type DataPoint,
-		type ChartConfig
-	} from '$lib/components/custom/prometheus';
+		generateChartConfig,
+		getSeries	} from '$lib/components/custom/prometheus';
 	import ChartContainer from '$lib/components/ui/chart/chart-container.svelte';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 

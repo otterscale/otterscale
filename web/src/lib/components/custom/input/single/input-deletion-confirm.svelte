@@ -2,10 +2,10 @@
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	import General from './input-general.svelte';
-
 	import { CopyButton } from '$lib/components/custom/copy-button';
 	import { cn } from '$lib/utils';
+
+	import General from './input-general.svelte';
 </script>
 
 <script lang="ts">

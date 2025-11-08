@@ -1,16 +1,15 @@
 <script lang="ts" module>
 	import type { Row } from '@tanstack/table-core';
 
-	import { type LargeLanguageModel } from '../type';
-
-	import Actions from './cell-actions.svelte';
-	import Relation from './cell-relation.svelte';
-
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { formatBigNumber } from '$lib/formatter';
+
+	import { type LargeLanguageModel } from '../type';
+	import Actions from './cell-actions.svelte';
+	import Relation from './cell-relation.svelte';
 
 	export const cells = {
 		row_picker,

@@ -1,5 +1,6 @@
-import { type Edge } from '@xyflow/svelte';
 import '@xyflow/svelte/dist/style.css';
+
+import { type Edge } from '@xyflow/svelte';
 import { SvelteSet } from 'svelte/reactivity';
 
 function traverse(

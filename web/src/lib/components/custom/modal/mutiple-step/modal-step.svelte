@@ -4,11 +4,11 @@
 	import { getContext, type Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 
-	import { IndexManager, StepManager } from './utils.svelte';
-
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import { cn } from '$lib/utils.js';
+
+	import { IndexManager, StepManager } from './utils.svelte';
 </script>
 
 <script lang="ts">

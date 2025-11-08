@@ -2,10 +2,10 @@
 	import { Menubar as MenubarPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
 
-	import type { Setter } from './types';
-
 	import * as Menubar from '$lib/components/ui/menubar/index';
 	import { cn } from '$lib/utils.js';
+
+	import type { Setter } from './types';
 </script>
 
 <script lang="ts">

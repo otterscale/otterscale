@@ -1,4 +1,6 @@
 <script lang="ts">
+	import '@xyflow/svelte/dist/style.css';
+
 	import { type Edge, type Node } from '@xyflow/svelte';
 
 	import {
@@ -8,7 +10,6 @@
 		type Model,
 		type VGPU
 	} from '$lib/components/custom/flow/index';
-	import '@xyflow/svelte/dist/style.css';
 
 	const position = { x: 0, y: 0 };
 

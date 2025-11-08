@@ -3,14 +3,14 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import Create from './create.svelte';
-	import Delete from './delete.svelte';
-
 	import { MachineService, type Tag } from '$lib/api/machine/v1/machine_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+
+	import Create from './create.svelte';
+	import Delete from './delete.svelte';
 </script>
 
 <script lang="ts">

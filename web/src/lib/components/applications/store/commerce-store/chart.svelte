@@ -3,10 +3,6 @@
 	import type { Snippet } from 'svelte';
 	import type { Writable } from 'svelte/store';
 
-	import Install from './chart-action-install-release.svelte';
-	import Actions from './chart-actions.svelte';
-	import { fuzzLogosIcon } from './utils';
-
 	import {
 		type Application_Chart,
 		type Application_Release
@@ -19,6 +15,10 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+
+	import Install from './chart-action-install-release.svelte';
+	import Actions from './chart-actions.svelte';
+	import { fuzzLogosIcon } from './utils';
 </script>
 
 <script lang="ts">

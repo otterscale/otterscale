@@ -6,9 +6,8 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		ConfigurationService,
-		type Configuration
-	} from '$lib/api/configuration/v1/configuration_pb';
+		type Configuration,
+		ConfigurationService	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 </script>

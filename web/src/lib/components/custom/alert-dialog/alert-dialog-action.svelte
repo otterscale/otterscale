@@ -3,10 +3,9 @@
 
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import {
-		buttonVariants,
 		type ButtonSize,
-		type ButtonVariant
-	} from '$lib/components/ui/button/index.js';
+		type ButtonVariant,
+		buttonVariants	} from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 </script>
 

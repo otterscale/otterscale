@@ -1,14 +1,14 @@
 <script lang="ts" module>
 	import { type NodeProps } from '@xyflow/svelte';
 
-	import Trigger from '../units/machine-complex-trigger.svelte';
-	import Details from '../units/machine-details.svelte';
-
 	import type {
 		GPURelation_GPU,
 		GPURelation_Machine
 	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as HoverCard from '$lib/components/ui/hover-card';
+
+	import Trigger from '../units/machine-complex-trigger.svelte';
+	import Details from '../units/machine-details.svelte';
 </script>
 
 <script lang="ts">

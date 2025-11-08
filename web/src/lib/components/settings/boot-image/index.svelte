@@ -5,15 +5,9 @@
 	import { SvelteMap } from 'svelte/reactivity';
 	import { writable } from 'svelte/store';
 
-	import Actions from './cell-actions.svelte';
-	import Create from './create.svelte';
-	import Import from './import.svelte';
-	import ReadArchitectures from './read-architectures.svelte';
-
 	import {
-		ConfigurationService,
-		type Configuration
-	} from '$lib/api/configuration/v1/configuration_pb';
+		type Configuration,
+		ConfigurationService	} from '$lib/api/configuration/v1/configuration_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
@@ -21,6 +15,11 @@
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+
+	import Actions from './cell-actions.svelte';
+	import Create from './create.svelte';
+	import Import from './import.svelte';
+	import ReadArchitectures from './read-architectures.svelte';
 </script>
 
 <script lang="ts">

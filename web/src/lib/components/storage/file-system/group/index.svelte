@@ -3,12 +3,12 @@
 	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { DataTable } from './data-table';
-	import * as store from './utils.svelte';
-
 	import { StorageService, type SubvolumeGroup } from '$lib/api/storage/v1/storage_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+
+	import { DataTable } from './data-table';
+	import * as store from './utils.svelte';
 </script>
 
 <script lang="ts">

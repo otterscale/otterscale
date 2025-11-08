@@ -4,7 +4,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { type Machine,MachineService } from '$lib/api/machine/v1/machine_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';

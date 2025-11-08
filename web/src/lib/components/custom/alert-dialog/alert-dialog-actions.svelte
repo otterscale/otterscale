@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 
-	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button/index.js';
+	import { type ButtonVariant,buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { cn } from '$lib/utils.js';
 </script>

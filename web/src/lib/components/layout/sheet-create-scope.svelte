@@ -6,22 +6,18 @@
 	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import type { Plan } from './plans';
-
 	import { resolve } from '$app/paths';
 	import {
-		MachineService,
-		type Machine,
-		CreateMachineRequestSchema,
 		AddMachineTagsRequestSchema,
 		CommissionMachineRequestSchema,
-		GetMachineRequestSchema
-	} from '$lib/api/machine/v1/machine_pb';
+		CreateMachineRequestSchema,
+		GetMachineRequestSchema,
+		type Machine,
+		MachineService	} from '$lib/api/machine/v1/machine_pb';
 	import {
-		OrchestratorService,
-		CreateNodeRequestSchema
-	} from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { ScopeService, CreateScopeRequestSchema } from '$lib/api/scope/v1/scope_pb';
+		CreateNodeRequestSchema,
+		OrchestratorService	} from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import { CreateScopeRequestSchema,ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import { IPv4AddressInput } from '$lib/components/custom/ipv4';
 	import { IPv4CIDRInput } from '$lib/components/custom/ipv4-cidr';
 	import { Badge } from '$lib/components/ui/badge';
@@ -36,6 +32,8 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+
+	import type { Plan } from './plans';
 
 	let { open = $bindable(false), plan = $bindable({} as Plan) }: { open: boolean; plan: Plan } =
 		$props();

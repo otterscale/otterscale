@@ -5,8 +5,8 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		NetworkService,
 		type Network_Fabric,
+		NetworkService,
 		type UpdateFabricRequest
 	} from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';

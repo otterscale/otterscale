@@ -3,7 +3,6 @@
 	import { getContext } from 'svelte';
 
 	import { getAlertIcon } from '../single/alert-icon.svelte';
-
 	import type { IterationManager } from './utils.svelte';
 </script>
 

@@ -4,11 +4,11 @@
 	import { getContext, hasContext } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	import type { InputType } from './types';
-	import { typeToIcon } from './utils.svelte';
-
 	import { Input } from '$lib/components/ui/input';
 	import { cn } from '$lib/utils.js';
+
+	import type { InputType } from './types';
+	import { typeToIcon } from './utils.svelte';
 </script>
 
 <script lang="ts">

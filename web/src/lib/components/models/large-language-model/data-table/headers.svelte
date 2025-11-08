@@ -1,11 +1,11 @@
 <script lang="ts" module>
 	import type { Column, Table } from '@tanstack/table-core';
 
-	import { type LargeLanguageModel } from '../type';
-
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
+
+	import { type LargeLanguageModel } from '../type';
 
 	export const headers = {
 		row_picker,

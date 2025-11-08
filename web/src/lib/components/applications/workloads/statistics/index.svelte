@@ -3,8 +3,6 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import type { Application } from '../types';
-
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
 	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
@@ -12,6 +10,8 @@
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { formatProgressColor } from '$lib/formatter';
+
+	import type { Application } from '../types';
 
 	let { scope, facility }: { scope: string; facility: string } = $props();
 

@@ -2,9 +2,9 @@
 	import Icon from '@iconify/svelte';
 	import { toggleMode } from 'mode-watcher';
 
-	import type { LightSwitchProps } from './types';
-
 	import { Button } from '$lib/components/ui/button';
+
+	import type { LightSwitchProps } from './types';
 
 	let { variant = 'ghost' }: LightSwitchProps = $props();
 </script>
