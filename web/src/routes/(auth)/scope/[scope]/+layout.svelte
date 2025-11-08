@@ -81,7 +81,9 @@
 
 				<!-- Bookmark Popover -->
 				<Popover.Root bind:open>
-					<Popover.Trigger class="-mr-1 ml-auto {buttonVariants({ variant: 'ghost', size: 'icon' })}">
+					<Popover.Trigger
+						class="-mr-1 ml-auto {buttonVariants({ variant: 'ghost', size: 'icon' })}"
+					>
 						<BookmarkIcon fill={isBookmarked ? 'currentColor' : 'none'} />
 						<span class="sr-only">Bookmark</span>
 					</Popover.Trigger>

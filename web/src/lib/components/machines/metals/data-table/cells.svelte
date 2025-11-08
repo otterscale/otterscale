@@ -27,7 +27,7 @@
 		gpu,
 		tags,
 		scope,
-		actions,
+		actions
 	};
 </script>
 
@@ -42,7 +42,7 @@
 		<a
 			class="m-0 p-0 underline hover:no-underline"
 			href={resolve('/(auth)/machines/metal/[id]', {
-				id: row.original.id,
+				id: row.original.id
 			})}
 		>
 			{row.original.fqdn}
@@ -61,7 +61,10 @@
 	<Layout.Cell class="flex-row items-center">
 		<Icon
 			icon={row.original.powerState === 'on' ? 'ph:power' : 'ph:power'}
-			class={cn('size-4', row.original.powerState === 'on' ? 'text-accent-foreground' : 'text-destructive')}
+			class={cn(
+				'size-4',
+				row.original.powerState === 'on' ? 'text-accent-foreground' : 'text-destructive'
+			)}
 		/>
 		<Layout.Cell>
 			{row.original.powerState}
@@ -81,7 +84,7 @@
 			'entering_rescue_mode',
 			'exiting_rescue_mode',
 			'releasing',
-			'testing',
+			'testing'
 		]}
 		<Badge variant="outline">
 			{row.original.status}

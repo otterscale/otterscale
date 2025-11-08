@@ -24,16 +24,16 @@
 		applicationClient
 			.listApplications({
 				scope: scope,
-				facility: facility,
+				facility: facility
 			})
 			.then((response) => {
 				services.set(
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							publicAddress: response.publicAddress,
-						})),
-					),
+							publicAddress: response.publicAddress
+						}))
+					)
 				);
 			})
 			.catch((error) => {
@@ -46,16 +46,16 @@
 		applicationClient
 			.listApplications({
 				scope: scope,
-				facility: facility,
+				facility: facility
 			})
 			.then((response) => {
 				services.set(
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							publicAddress: response.publicAddress,
-						})),
-					),
+							publicAddress: response.publicAddress
+						}))
+					)
 				);
 				isMounted = true;
 			})

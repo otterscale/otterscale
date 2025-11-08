@@ -13,7 +13,9 @@
 <script lang="ts">
 	let { filterManager }: { filterManager: FilterManager } = $props();
 
-	const keywords = $derived([...new Set(filterManager.charts.flatMap((chart) => chart.keywords))].sort());
+	const keywords = $derived(
+		[...new Set(filterManager.charts.flatMap((chart) => chart.keywords))].sort()
+	);
 </script>
 
 <Popover.Root>
@@ -40,7 +42,7 @@
 								icon="ph:check"
 								class={cn(
 									filterManager.isKeywordSelected(keyword) ? 'visible' : 'invisible',
-									'h-4 w-4',
+									'h-4 w-4'
 								)}
 							/>
 							{keyword}

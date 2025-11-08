@@ -18,7 +18,7 @@
 		requests,
 		time_to_first_token,
 		relation,
-		action,
+		action
 	};
 </script>
 

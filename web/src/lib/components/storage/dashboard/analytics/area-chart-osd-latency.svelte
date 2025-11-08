@@ -27,7 +27,7 @@
 	// Prometheus query for Memory usage
 	const query = $derived({
 		Apply: `avg(ceph_osd_apply_latency_ms{juju_model_uuid=~"${scope.uuid}"})`,
-		Commit: `avg(ceph_osd_commit_latency_ms{juju_model_uuid=~"${scope.uuid}"})`,
+		Commit: `avg(ceph_osd_commit_latency_ms{juju_model_uuid=~"${scope.uuid}"})`
 	});
 </script>
 
@@ -40,7 +40,11 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} valueFormatter={formatIO} />
+			<Content
+				data={response}
+				timeRange={formatTimeRange(TIME_RANGE_HOURS)}
+				valueFormatter={formatIO}
+			/>
 		{/snippet}
 	</Layout>
 {:catch}

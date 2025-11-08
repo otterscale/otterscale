@@ -30,9 +30,9 @@
 	class={cn(
 		buttonVariants({
 			variant: isActive ? 'outline' : 'ghost',
-			size,
+			size
 		}),
-		className,
+		className
 	)}
 	children={children || Fallback}
 	{...restProps}

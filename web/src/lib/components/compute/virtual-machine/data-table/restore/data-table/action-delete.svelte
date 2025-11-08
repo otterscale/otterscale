@@ -5,7 +5,10 @@
 	import { toast } from 'svelte-sonner';
 
 	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
-	import type { VirtualMachine_Restore, DeleteVirtualMachineRestoreRequest } from '$lib/api/instance/v1/instance_pb';
+	import type {
+		VirtualMachine_Restore,
+		DeleteVirtualMachineRestoreRequest
+	} from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -27,7 +30,7 @@
 		scope: $currentKubernetes?.scope,
 		facility: $currentKubernetes?.name,
 		name: '',
-		namespace: virtualMachineRestore.namespace,
+		namespace: virtualMachineRestore.namespace
 	} as DeleteVirtualMachineRestoreRequest;
 	let request = $state({ ...defaults });
 	function reset() {
@@ -85,10 +88,10 @@
 								let message = `Failed to delete ${virtualMachineRestore.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

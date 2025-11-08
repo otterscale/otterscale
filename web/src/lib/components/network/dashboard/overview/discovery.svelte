@@ -63,13 +63,13 @@
 				<p class="text-3xl text-green-600 dark:text-green-400">{m.on()}</p>
 				<Icon
 					icon="ph:check"
-					class="text-primary/5 absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+					class="absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 				/>
 			{:else}
 				<p class="text-3xl text-yellow-600 dark:text-yellow-400">{m.off()}</p>
 				<Icon
 					icon="ph:gps-slash"
-					class="text-primary/5 absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+					class="absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 				/>
 			{/if}
 		</Card.Content>

@@ -16,7 +16,7 @@
 		createTime,
 		exportSubvolume,
 		snapshots,
-		actions,
+		actions
 	};
 </script>
 

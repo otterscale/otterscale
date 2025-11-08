@@ -33,9 +33,11 @@
 		bind:value={inputManager.input}
 		class={cn(
 			'ring-1',
-			isInvalid ? 'placeholder:text-destructive/60 placeholder:text-xs focus:placeholder:invisible' : '',
+			isInvalid
+				? 'placeholder:text-xs placeholder:text-destructive/60 focus:placeholder:invisible'
+				: '',
 			isInvalid ? 'ring-destructive' : '',
-			className,
+			className
 		)}
 		placeholder={isInvalid ? 'Required' : ''}
 		onkeydown={(e) => {

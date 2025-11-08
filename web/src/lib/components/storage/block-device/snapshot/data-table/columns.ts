@@ -11,7 +11,7 @@ import { m } from '$lib/paraglide/messages';
 const messages = {
 	name: m.name(),
 	protect: m.protected(),
-	usage: m.usage(),
+	usage: m.usage()
 };
 
 const columns: ColumnDef<Image_Snapshot>[] = [
@@ -24,7 +24,7 @@ const columns: ColumnDef<Image_Snapshot>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -33,7 +33,7 @@ const columns: ColumnDef<Image_Snapshot>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'protect',
@@ -48,8 +48,8 @@ const columns: ColumnDef<Image_Snapshot>[] = [
 				previousRow.original.protected,
 				nextRow.original.protected,
 				(p, n) => Number(p) < Number(n),
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'usage',
@@ -64,8 +64,8 @@ const columns: ColumnDef<Image_Snapshot>[] = [
 				Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes),
 				Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes),
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'actions',
@@ -75,8 +75,8 @@ const columns: ColumnDef<Image_Snapshot>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

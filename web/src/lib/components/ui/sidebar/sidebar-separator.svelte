@@ -3,7 +3,11 @@
 	import { cn } from '$lib/utils.js';
 	import type { ComponentProps } from 'svelte';
 
-	let { ref = $bindable(null), class: className, ...restProps }: ComponentProps<typeof Separator> = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: ComponentProps<typeof Separator> = $props();
 </script>
 
 <Separator

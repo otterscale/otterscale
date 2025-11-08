@@ -26,7 +26,7 @@
 				.then((response) => {
 					prometheusDriver = new PrometheusDriver({
 						endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-						baseURL: response.baseUrl,
+						baseURL: response.baseUrl
 					});
 				})
 				.catch((error) => {

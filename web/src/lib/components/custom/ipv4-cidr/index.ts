@@ -10,7 +10,7 @@ import { isNumber } from './is-number';
  * @returns
  */
 export const safeParseIPv4CIDR = (
-	IPv4CIDR: string | undefined,
+	IPv4CIDR: string | undefined
 ): [string | null, string | null, string | null, string | null, string | null] | undefined => {
 	if (IPv4CIDR === undefined) return undefined;
 	let ip = IPv4CIDR.trim();

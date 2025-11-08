@@ -6,7 +6,7 @@
 		title: 'Need Help?',
 		message:
 			'Visit our documentation or join the community forum for detailed guides, troubleshooting tips, and to connect with other Svelte developers. Our support resources are available 24/7 to assist you with any questions or issues you may encounter.',
-		action: () => console.log('Need Help?'),
+		action: () => console.log('Need Help?')
 	};
 </script>
 

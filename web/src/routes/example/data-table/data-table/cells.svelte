@@ -10,7 +10,7 @@
 		row_picker,
 		id,
 		name,
-		isVerified,
+		isVerified
 	};
 </script>
 

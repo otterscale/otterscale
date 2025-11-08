@@ -9,7 +9,7 @@
 <script lang="ts">
 	let {
 		selectedScope = $bindable(),
-		selectedFacility = $bindable(),
+		selectedFacility = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;

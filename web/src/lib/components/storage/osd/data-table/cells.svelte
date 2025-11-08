@@ -26,7 +26,7 @@
 		placementGroupCount,
 		usage,
 		iops,
-		actions,
+		actions
 	};
 </script>
 
@@ -79,8 +79,8 @@
 				onclick={() => {
 					goto(
 						resolve('/(auth)/machines/metal/[id]', {
-							id: row.original.machine?.id ?? '',
-						}),
+							id: row.original.machine?.id ?? ''
+						})
 					);
 				}}
 			/>

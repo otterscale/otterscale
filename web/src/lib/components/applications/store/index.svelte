@@ -8,7 +8,7 @@
 	import {
 		ApplicationService,
 		type Application_Chart,
-		type Application_Release,
+		type Application_Release
 	} from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 </script>
@@ -39,7 +39,7 @@
 		await applicationClient
 			.listReleases({
 				scope: scope,
-				facility: facility,
+				facility: facility
 			})
 			.then((response) => {
 				releases.set(response.releases);

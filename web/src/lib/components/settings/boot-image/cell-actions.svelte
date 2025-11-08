@@ -4,7 +4,10 @@
 	import Edit from './action-edit.svelte';
 	import SetDefault from './action-set-default.svelte';
 
-	import { type Configuration, type Configuration_BootImage } from '$lib/api/configuration/v1/configuration_pb';
+	import {
+		type Configuration,
+		type Configuration_BootImage
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
 </script>
@@ -12,7 +15,7 @@
 <script lang="ts">
 	let {
 		bootImage,
-		configuration,
+		configuration
 	}: {
 		bootImage: Configuration_BootImage;
 		configuration: Writable<Configuration>;

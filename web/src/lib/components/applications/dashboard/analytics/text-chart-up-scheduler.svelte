@@ -20,7 +20,7 @@
 	const query = $derived(
 		`
 		sum(up{job="kube-scheduler",juju_model_uuid=~"${scope.uuid}"})
-		`,
+		`
 	);
 </script>
 

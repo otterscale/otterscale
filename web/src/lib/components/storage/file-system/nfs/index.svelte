@@ -18,7 +18,7 @@
 		selectedFacility = $bindable(),
 		selectedVolume = $bindable(),
 		selectedSubvolumeGroupName = $bindable(),
-		trigger,
+		trigger
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -39,7 +39,7 @@
 				scope: selectedScope,
 				facility: selectedFacility,
 				volumeName: selectedVolume,
-				groupName: selectedSubvolumeGroupName,
+				groupName: selectedSubvolumeGroupName
 			})
 			.then((response) => {
 				subvolumes.set(response.subvolumes);
@@ -58,7 +58,7 @@
 				scope: selectedScope,
 				facility: selectedFacility,
 				volumeName: selectedVolume,
-				groupName: selectedSubvolumeGroupName,
+				groupName: selectedSubvolumeGroupName
 			})
 			.then((response) => {
 				subvolumes.set(response.subvolumes);
@@ -79,7 +79,12 @@
 	{#if isMounted}
 		<div class="flex items-center justify-between gap-2">
 			{@render trigger()}
-			<Pickers {selectedScope} {selectedFacility} {selectedVolume} bind:selectedSubvolumeGroupName />
+			<Pickers
+				{selectedScope}
+				{selectedFacility}
+				{selectedVolume}
+				bind:selectedSubvolumeGroupName
+			/>
 		</div>
 		<DataTable {subvolumes} {reloadManager} />
 	{:else}

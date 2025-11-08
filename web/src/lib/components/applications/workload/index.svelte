@@ -14,7 +14,7 @@
 		scope,
 		facility,
 		namespace,
-		applicationName,
+		applicationName
 	}: { scope: string; facility: string; namespace: string; applicationName: string } = $props();
 
 	const transport: Transport = getContext('transport');
@@ -30,7 +30,7 @@
 					scope: scope,
 					facility: facility,
 					namespace: namespace,
-					name: applicationName,
+					name: applicationName
 				})
 				.then((response) => {
 					application.set(response);

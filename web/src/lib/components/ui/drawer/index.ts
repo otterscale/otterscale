@@ -37,5 +37,5 @@ export {
 	Title as DrawerTitle,
 	Trigger as DrawerTrigger,
 	Portal as DrawerPortal,
-	Close as DrawerClose,
+	Close as DrawerClose
 };

@@ -36,7 +36,10 @@ class OptionManager {
 
 	isOptionSelected(option: OptionType, parents: OptionType[]): boolean {
 		return this.accessor.value.some((value) => {
-			return JSON.stringify(value) === JSON.stringify([...parents.map((parent) => parent.value), option.value]);
+			return (
+				JSON.stringify(value) ===
+				JSON.stringify([...parents.map((parent) => parent.value), option.value])
+			);
 		});
 	}
 
@@ -55,7 +58,7 @@ class OptionManager {
 
 	all() {
 		const all = getAllAncestralOptions(this.options).map((ancestralOption) =>
-			ancestralOption.map((option) => option.value),
+			ancestralOption.map((option) => option.value)
 		);
 		this.accessor.value = all;
 	}

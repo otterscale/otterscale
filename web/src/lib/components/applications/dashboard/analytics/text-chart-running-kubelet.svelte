@@ -20,7 +20,7 @@
 	const query = $derived(
 		`
 		sum(kubelet_node_name{job="kubelet",juju_model_uuid=~"${scope.uuid}",metrics_path="/metrics"})
-		`,
+		`
 	);
 </script>
 

@@ -4,4 +4,11 @@ import Trigger from './hover-card-trigger.svelte';
 
 const Root = HoverCardPrimitive.Root;
 
-export { Root, Content, Trigger, Root as HoverCard, Content as HoverCardContent, Trigger as HoverCardTrigger };
+export {
+	Root,
+	Content,
+	Trigger,
+	Root as HoverCard,
+	Content as HoverCardContent,
+	Trigger as HoverCardTrigger
+};

@@ -13,8 +13,8 @@
 	breadcrumbs.set([
 		{
 			title: m.scope(),
-			url: resolve('/(auth)/scope/[scope]', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]', { scope: page.params.scope! })
+		}
 	]);
 
 	const cards = $derived([
@@ -22,34 +22,34 @@
 			background: 'bg-[#1c77c3]/30',
 			path: {
 				title: m.models(),
-				url: resolve('/(auth)/scope/[scope]/models', { scope: page.params.scope! }),
+				url: resolve('/(auth)/scope/[scope]/models', { scope: page.params.scope! })
 			},
-			description: m.models_description(),
+			description: m.models_description()
 		},
 		{
 			background: 'bg-[#39a9db]/30',
 			path: {
 				title: m.applications(),
-				url: resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! }),
+				url: resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! })
 			},
-			description: m.applications_description(),
+			description: m.applications_description()
 		},
 		{
 			background: 'bg-[#f39237]/30',
 			path: {
 				title: m.storage(),
-				url: resolve('/(auth)/scope/[scope]/storage', { scope: page.params.scope! }),
+				url: resolve('/(auth)/scope/[scope]/storage', { scope: page.params.scope! })
 			},
-			description: m.storage_description(),
+			description: m.storage_description()
 		},
 		{
 			background: 'bg-[#d63230]/30',
 			path: {
 				title: m.machines(),
-				url: resolve('/(auth)/machines'),
+				url: resolve('/(auth)/machines')
 			},
-			description: m.machines_description(),
-		},
+			description: m.machines_description()
+		}
 	]);
 </script>
 
@@ -79,11 +79,11 @@
 		</div>
 	</div>
 
-	<div class="bg-muted -mx-2 hidden rounded-b-xl py-6 md:-mx-4 md:py-8 lg:-mx-8 lg:block">
+	<div class="-mx-2 hidden rounded-b-xl bg-muted py-6 md:-mx-4 md:py-8 lg:-mx-8 lg:block">
 		<div class="mx-auto max-w-5xl px-6">
 			<div class="grid items-center gap-4 sm:grid-cols-2">
-				<div class="dark:bg-muted/50 relative mx-auto w-fit">
-					<div class="to-muted absolute inset-0 z-10 bg-radial from-transparent to-75%"></div>
+				<div class="relative mx-auto w-fit dark:bg-muted/50">
+					<div class="absolute inset-0 z-10 bg-radial from-transparent to-muted to-75%"></div>
 					<div class="mx-auto mb-2 flex w-fit justify-center gap-2">
 						<HomeCell icon="logos:postgresql" />
 						<HomeCell icon="ph:circle-dashed" color="#f0424d" />
@@ -111,7 +111,9 @@
 						{m.home_integration_description()}
 					</p>
 
-					<Button href={resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! })}>
+					<Button
+						href={resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! })}
+					>
 						{m.home_get_started()}
 						<Icon icon="ph:cursor-click-fill" />
 					</Button>

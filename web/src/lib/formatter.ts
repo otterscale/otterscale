@@ -9,12 +9,12 @@ const TIME_DIVISIONS = [
 	{ amount: 7, name: 'days' },
 	{ amount: 4.34524, name: 'weeks' },
 	{ amount: 12, name: 'months' },
-	{ amount: Number.POSITIVE_INFINITY, name: 'years' },
+	{ amount: Number.POSITIVE_INFINITY, name: 'years' }
 ] as const;
 
 export function formatTimeAgo(date: Date): string {
 	const formatter = new Intl.RelativeTimeFormat(getLocale(), {
-		numeric: 'auto',
+		numeric: 'auto'
 	});
 
 	let duration = (date.getTime() - Date.now()) / 1000;
@@ -161,7 +161,11 @@ export function formatSecond(second: number): { value: string; unit: string } {
  *   - '*:bg-yellow-500' for value > 38% and <= 62%
  *   - '*:bg-green-700' for value <= 38%
  */
-export function formatProgressColor(value: number, isPercent: boolean = true, highIsGood: boolean = true): string {
+export function formatProgressColor(
+	value: number,
+	isPercent: boolean = true,
+	highIsGood: boolean = true
+): string {
 	const percent = isPercent ? value : value * 100;
 
 	if (highIsGood) {

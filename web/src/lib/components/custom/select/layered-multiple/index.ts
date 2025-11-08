@@ -10,7 +10,7 @@ import {
 	Separator,
 	Shortcut,
 	SubContent,
-	SubTrigger,
+	SubTrigger
 } from '../layered-single';
 
 import ActionAll from './select-action-all.svelte';
@@ -45,6 +45,6 @@ export {
 	SubContent,
 	SubTrigger,
 	Trigger,
-	Viewer,
+	Viewer
 };
 export type { AncestralOptionType, OptionType };

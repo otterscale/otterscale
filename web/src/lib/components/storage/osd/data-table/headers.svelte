@@ -18,7 +18,7 @@
 		placementGroupCount,
 		usage,
 		iops,
-		actions,
+		actions
 	};
 </script>
 

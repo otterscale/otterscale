@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	let {
-		model,
+		model
 	}: {
 		model: LargeLanguageModel;
 	} = $props();

@@ -8,7 +8,7 @@ import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
 const messages = {
-	accessKey: m.access_key(),
+	accessKey: m.access_key()
 };
 
 const columns: ColumnDef<User_Key>[] = [
@@ -21,7 +21,7 @@ const columns: ColumnDef<User_Key>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'accessKey',
@@ -30,7 +30,7 @@ const columns: ColumnDef<User_Key>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.accessKey, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'actions',
@@ -40,8 +40,8 @@ const columns: ColumnDef<User_Key>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

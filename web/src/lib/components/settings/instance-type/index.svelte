@@ -18,7 +18,8 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } = $props();
+	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } =
+		$props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -32,7 +33,7 @@
 				scope: scope,
 				facility: facility,
 				namespace: namespace,
-				includeClusterWide: false,
+				includeClusterWide: false
 			})
 			.then((response) => {
 				instanceTypes.set(response.instanceTypes);
@@ -46,7 +47,7 @@
 				scope: scope,
 				facility: facility,
 				namespace: namespace,
-				includeClusterWide: false,
+				includeClusterWide: false
 			});
 			instanceTypes.set(response.instanceTypes);
 			isInstanceTypesLoading = false;
@@ -85,7 +86,9 @@
 			<div class="w-full rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row class="[&_th]:bg-muted *:px-4 [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg">
+						<Table.Row
+							class="*:px-4 [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
+						>
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.namespace()}</Table.Head>
 							<Table.Head class="text-right">{m.cpu_cores()}</Table.Head>

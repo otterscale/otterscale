@@ -10,7 +10,7 @@ import { isNumber } from './is-number';
  * @returns
  */
 export const safeParseIPv4Address = (
-	ipv4Address: string | undefined,
+	ipv4Address: string | undefined
 ): [string | null, string | null, string | null, string | null] | undefined => {
 	if (ipv4Address === undefined) return undefined;
 	let ip = ipv4Address.trim();

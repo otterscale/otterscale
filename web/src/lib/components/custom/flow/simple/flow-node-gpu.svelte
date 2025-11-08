@@ -13,15 +13,20 @@
 </script>
 
 <script lang="ts">
-	let { data, selected, targetPosition, sourcePosition }: Omit<NodeProps, 'data'> & { data: DataType } = $props();
+	let {
+		data,
+		selected,
+		targetPosition,
+		sourcePosition
+	}: Omit<NodeProps, 'data'> & { data: DataType } = $props();
 </script>
 
 <HoverCard.Root>
 	<HoverCard.Trigger>
 		<div
 			class={cn(
-				'bg-card rounded-full border p-4 shadow',
-				selected ? 'bg-primary-foreground ring-primary ring-1' : 'bg-card ring-0',
+				'rounded-full border bg-card p-4 shadow',
+				selected ? 'bg-primary-foreground ring-1 ring-primary' : 'bg-card ring-0'
 			)}
 		>
 			<Icon icon="ph:graphics-card-duotone" class="size-10" />
@@ -35,12 +40,12 @@
 	</HoverCard.Trigger>
 	<HoverCard.Content class="w-fit">
 		<div class="flex gap-2 p-2">
-			<div class="bg-muted-foreground/50 size-fit rounded-full">
+			<div class="size-fit rounded-full bg-muted-foreground/50">
 				<Icon icon={data.icon} class="size-5" />
 			</div>
 			<div>
 				<p class="text-base text-nowrap whitespace-nowrap">{data.name}</p>
-				<p class="text-muted-foreground text-xs font-light text-nowrap whitespace-nowrap">
+				<p class="text-xs font-light text-nowrap whitespace-nowrap text-muted-foreground">
 					{data.model}
 				</p>
 			</div>

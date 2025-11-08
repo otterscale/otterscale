@@ -11,8 +11,14 @@
 	let selectedFacility = $state('ceph-mon');
 
 	breadcrumbs.set([
-		{ title: m.storage(), url: resolve('/(auth)/scope/[scope]/storage', { scope: page.params.scope! }) },
-		{ title: m.osd(), url: resolve('/(auth)/scope/[scope]/storage/osd', { scope: page.params.scope! }) },
+		{
+			title: m.storage(),
+			url: resolve('/(auth)/scope/[scope]/storage', { scope: page.params.scope! })
+		},
+		{
+			title: m.osd(),
+			url: resolve('/(auth)/scope/[scope]/storage/osd', { scope: page.params.scope! })
+		}
 	]);
 </script>
 

@@ -30,7 +30,7 @@
 		port,
 		createTime,
 		vnc,
-		actions,
+		actions
 	};
 </script>
 
@@ -78,7 +78,7 @@
 			<a
 				class="m-0 p-0 underline hover:no-underline"
 				href={resolve('/(auth)/machines/metal/[id]', {
-					id: row.original.machineId,
+					id: row.original.machineId
 				})}
 			>
 				{row.original.hostname}

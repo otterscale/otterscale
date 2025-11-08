@@ -2,7 +2,7 @@ function getSortingFunction(
 	previous: any,
 	next: any,
 	isLess: (previous: any, next: any) => boolean,
-	isEqual: (previous: any, next: any) => boolean,
+	isEqual: (previous: any, next: any) => boolean
 ) {
 	if (!(previous || next)) {
 		return 0;

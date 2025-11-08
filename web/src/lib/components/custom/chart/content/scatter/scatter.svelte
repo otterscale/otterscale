@@ -6,7 +6,7 @@
 	let {
 		data,
 		xKey,
-		yKey,
+		yKey
 	}: {
 		data: Record<string, any>;
 		xKey: string;
@@ -24,11 +24,11 @@
 		grid={false}
 		props={{
 			xAxis: {
-				format: () => '',
+				format: () => ''
 			},
 			yAxis: {
-				format: () => '',
-			},
+				format: () => ''
+			}
 		}}
 	></ScatterChart>
 </Chart.Container>

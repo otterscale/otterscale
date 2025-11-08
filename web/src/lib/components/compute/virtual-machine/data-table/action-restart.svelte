@@ -32,7 +32,7 @@
 			scope: $currentKubernetes?.scope,
 			facility: $currentKubernetes?.name,
 			name: virtualMachine.name,
-			namespace: virtualMachine.namespace,
+			namespace: virtualMachine.namespace
 		};
 
 		toast.promise(() => virtualMachineClient.restartVirtualMachine(request), {
@@ -42,10 +42,10 @@
 				const msg = `Failed to restart virtual machine ${request.name}.`;
 				toast.error(msg, {
 					description: (e as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
+					duration: Number.POSITIVE_INFINITY
 				});
 				return msg;
-			},
+			}
 		});
 	}
 

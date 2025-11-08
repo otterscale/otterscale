@@ -13,7 +13,8 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } = $props();
+	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } =
+		$props();
 
 	const transport: Transport = getContext('transport');
 	let isMounted = $state(false);
@@ -25,7 +26,7 @@
 		VirtualMachineClient.listVirtualMachines({
 			scope: scope,
 			facility: facility,
-			namespace: namespace,
+			namespace: namespace
 		}).then((response) => {
 			virtualMachines.set(response.virtualMachines);
 		});
@@ -36,7 +37,7 @@
 		VirtualMachineClient.listVirtualMachines({
 			scope: scope,
 			facility: facility,
-			namespace: namespace,
+			namespace: namespace
 		})
 			.then((response) => {
 				virtualMachines.set(response.virtualMachines);

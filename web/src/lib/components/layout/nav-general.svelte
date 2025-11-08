@@ -14,7 +14,8 @@
 	const isItemActive = (url: string): boolean => page.url.pathname.startsWith(url);
 	const hasSubItems = (route: Route): boolean => Boolean(route.items?.length);
 	const isDisabled = (url: string): boolean =>
-		(!$currentCeph && getCephPathDisabled(url)) || (!$currentKubernetes && getKubernetesPathDisabled(url));
+		(!$currentCeph && getCephPathDisabled(url)) ||
+		(!$currentKubernetes && getKubernetesPathDisabled(url));
 </script>
 
 <Sidebar.Group>

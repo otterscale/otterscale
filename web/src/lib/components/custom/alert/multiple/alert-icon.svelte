@@ -11,4 +11,7 @@
 	let iterationManager: IterationManager = getContext('IterationManager');
 </script>
 
-<Icon data-slot="alert-icon" icon={getAlertIcon(iterationManager.alerts[iterationManager.value.index].variant)} />
+<Icon
+	data-slot="alert-icon"
+	icon={getAlertIcon(iterationManager.alerts[iterationManager.value.index].variant)}
+/>

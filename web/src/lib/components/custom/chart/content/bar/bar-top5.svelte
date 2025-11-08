@@ -11,7 +11,7 @@
 		xKey,
 		yKey,
 		labelKey,
-		addFormatter,
+		addFormatter
 	}: {
 		data: Record<string, any>[] | Record<string, any>;
 		xKey: string;
@@ -34,7 +34,7 @@
 				...item,
 				id: `item-${index}`,
 				// color: colors[index],
-				color: 'oklch(0.81 0.10 252)',
+				color: 'oklch(0.81 0.10 252)'
 			}));
 	};
 
@@ -55,7 +55,7 @@
 
 	const chartConfig = {
 		views: { label: 'Page Views', color: '' },
-		value: { label: 'Value', color: '' },
+		value: { label: 'Value', color: '' }
 	} satisfies Chart.ChartConfig;
 </script>
 
@@ -81,18 +81,18 @@
 				initialX: 0,
 				motion: {
 					x: { type: 'tween', duration: 500, easing: cubicInOut },
-					width: { type: 'tween', duration: 500, easing: cubicInOut },
-				},
+					width: { type: 'tween', duration: 500, easing: cubicInOut }
+				}
 			},
 			highlight: { area: { fill: 'none' } },
 			yAxis: {
 				tickLabelProps: {
 					textAnchor: 'start',
 					dx: 6,
-					class: 'stroke-none fill-background!',
+					class: 'stroke-none fill-background!'
 				},
-				tickLength: 0,
-			},
+				tickLength: 0
+			}
 		}}
 	>
 		{#snippet tooltip()}

@@ -8,12 +8,12 @@
 	breadcrumbs.set([
 		{
 			title: m.settings(),
-			url: resolve('/(auth)/configuration'),
+			url: resolve('/(auth)/configuration')
 		},
 		{
 			title: m.package_repository(),
-			url: resolve('/(auth)/configuration/package-repository'),
-		},
+			url: resolve('/(auth)/configuration/package-repository')
+		}
 	]);
 </script>
 

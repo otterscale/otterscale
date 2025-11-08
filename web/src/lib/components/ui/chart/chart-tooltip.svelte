@@ -42,7 +42,7 @@
 					item: TooltipPayload;
 					index: number;
 					payload: TooltipPayload[];
-				},
+				}
 			]
 		>;
 	} = $props();
@@ -86,8 +86,8 @@
 <TooltipPrimitive.Root variant="none">
 	<div
 		class={cn(
-			'border-border/50 bg-background grid min-w-[9rem] items-start gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs shadow-xl',
-			className,
+			'grid min-w-[9rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl',
+			className
 		)}
 		{...restProps}
 	>
@@ -101,8 +101,8 @@
 				{@const indicatorColor = color || item.payload?.color || item.color}
 				<div
 					class={cn(
-						'[&>svg]:text-muted-foreground flex w-full flex-wrap items-stretch gap-2 [&>svg]:size-2.5',
-						indicator === 'dot' && 'items-center',
+						'flex w-full flex-wrap items-stretch gap-2 [&>svg]:size-2.5 [&>svg]:text-muted-foreground',
+						indicator === 'dot' && 'items-center'
 					)}
 				>
 					{#if formatter && item.value !== undefined && item.name}
@@ -111,7 +111,7 @@
 							name: item.name,
 							item,
 							index: i,
-							payload: tooltipCtx.payload,
+							payload: tooltipCtx.payload
 						})}
 					{:else}
 						{#if itemConfig?.icon}
@@ -123,14 +123,14 @@
 									'size-2.5': indicator === 'dot',
 									'h-full w-1': indicator === 'line',
 									'w-0 border-[1.5px] border-dashed bg-transparent': indicator === 'dashed',
-									'my-0.5': nestLabel && indicator === 'dashed',
+									'my-0.5': nestLabel && indicator === 'dashed'
 								})}
 							></div>
 						{/if}
 						<div
 							class={cn(
 								'flex flex-1 shrink-0 justify-between leading-none',
-								nestLabel ? 'items-end' : 'items-center',
+								nestLabel ? 'items-end' : 'items-center'
 							)}
 						>
 							<div class="grid gap-1.5">
@@ -142,7 +142,7 @@
 								</span>
 							</div>
 							{#if item.value !== undefined}
-								<span class="text-foreground font-mono font-medium tabular-nums">
+								<span class="font-mono font-medium text-foreground tabular-nums">
 									{item.value.toLocaleString()}
 								</span>
 							{/if}

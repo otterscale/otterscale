@@ -17,7 +17,7 @@
 
 	let {
 		open = $bindable(false),
-		trigger = $bindable(writable(false)),
+		trigger = $bindable(writable(false))
 	}: { open: boolean; trigger: Writable<boolean> } = $props();
 
 	let api = $state<CarouselAPI>();
@@ -54,14 +54,14 @@
 								<div class="absolute inset-0 rounded-lg transition-transform duration-500 ease-out">
 									<img src={plan.image} alt={plan.name} class="object-cover" />
 									<div
-										class="from-background/90 via-background/50 absolute inset-0 overflow-hidden bg-gradient-to-r to-transparent"
+										class="absolute inset-0 overflow-hidden bg-gradient-to-r from-background/90 via-background/50 to-transparent"
 									></div>
 
 									<div class="absolute top-12 left-12 flex min-h-76 flex-col justify-between">
 										<div class="flex max-w-2xl flex-col space-y-4">
 											<Badge
 												variant="secondary"
-												class="bg-primary/10 text-primary flex items-center uppercase"
+												class="flex items-center bg-primary/10 text-primary uppercase"
 											>
 												{#if plan.star}
 													<Icon icon="ph:star-fill" class="text-yellow-500" />
@@ -70,7 +70,7 @@
 											</Badge>
 
 											<h2 class="text-3xl font-semibold tracking-tight">{plan.name}</h2>
-											<p class="text-accent-foreground/80 text-md">{plan.description}</p>
+											<p class="text-md text-accent-foreground/80">{plan.description}</p>
 
 											<div class="flex flex-wrap gap-2">
 												{#each plan.tags as tag}
@@ -112,7 +112,7 @@
 						onclick={() => api?.scrollTo(index)}
 						aria-label="Go to slide {index + 1}"
 						class="size-2 rounded-full transition-all {index + 1 === current
-							? 'bg-primary w-6'
+							? 'w-6 bg-primary'
 							: 'bg-primary/30 hover:bg-primary/50'}"
 					></button>
 				{/each}

@@ -14,9 +14,12 @@
 		InternalObjectService,
 		TestResult,
 		Warp,
-		Warp_Input,
+		Warp_Input
 	} from '$lib/api/configuration/v1/configuration_pb';
-	import { ConfigurationService, Warp_Input_Operation } from '$lib/api/configuration/v1/configuration_pb';
+	import {
+		ConfigurationService,
+		Warp_Input_Operation
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Modal from '$lib/components/custom/modal/mutiple-step';
@@ -30,12 +33,12 @@
 	const warpTarget: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'internalObjectService',
-			label: 'Internal Object Service',
+			label: 'Internal Object Service'
 		},
 		{
 			value: 'externalObjectService',
-			label: 'External Object Service',
-		},
+			label: 'External Object Service'
+		}
 	]);
 
 	// WARP AccessMode
@@ -43,14 +46,14 @@
 		.filter((key) => isNaN(Number(key)))
 		.map((key) => ({
 			value: Warp_Input_Operation[key as keyof typeof Warp_Input_Operation],
-			label: key,
+			label: key
 		}));
 	const warpInputOperation: Writable<SingleSelect.OptionType[]> = writable(Options);
 </script>
 
 <script lang="ts">
 	let {
-		testResult,
+		testResult
 	}: {
 		testResult?: TestResult;
 	} = $props();
@@ -60,13 +63,13 @@
 		? ({
 				target: {
 					value: testResult.kind.value?.target.value,
-					case: testResult.kind.value?.target.case,
-				},
+					case: testResult.kind.value?.target.case
+				}
 			} as Warp)
 		: ({ target: { value: {}, case: {} } } as Warp);
 	const DEFAULT_REQUEST = {
 		kind: { value: DEFAULT_WARP_REQUEST, case: 'warp' },
-		createdBy: page.data.user?.name ?? '',
+		createdBy: page.data.user?.name ?? ''
 	} as CreateTestResultRequest;
 	const DEFAULT_INTERNAL_OBJECT_SERVICE =
 		testResult && testResult.kind.value?.target?.case === 'internalObjectService'
@@ -82,13 +85,15 @@
 			: ({
 					durationSeconds: 60,
 					objectSizeBytes: 4 * 1024 * 1024,
-					objectCount: 500,
+					objectCount: 500
 				} as unknown as Warp_Input);
 
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestWarp: Warp = $state(DEFAULT_WARP_REQUEST);
 	let requestInternalObjectService: InternalObjectService = $state(DEFAULT_INTERNAL_OBJECT_SERVICE);
-	let requestExternalObjectService: ExternalObjectService = $state(DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE);
+	let requestExternalObjectService: ExternalObjectService = $state(
+		DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE
+	);
 	let warpOperation = $state(DEFAULT_WARP_INPUT.operation);
 	let warpDuration = $state(DEFAULT_WARP_INPUT.durationSeconds);
 	let warpObjectSize = $state(DEFAULT_WARP_INPUT.objectSizeBytes);
@@ -126,7 +131,7 @@
 		invalidName ||
 			invalidTarget ||
 			(requestWarp.target.case == 'externalObjectService' &&
-				(invalidEndPoint || invalidAccessKey || invalidSecretKey)),
+				(invalidEndPoint || invalidAccessKey || invalidSecretKey))
 	);
 	const invalidAdvanced = $derived(invalidOperation);
 	const invalid = $derived(invalidBasic || invalidAdvanced);
@@ -202,10 +207,7 @@
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
-																class={cn(
-																	'size-5',
-																	item.icon ? 'visible' : 'invisible',
-																)}
+																class={cn('size-5', item.icon ? 'visible' : 'invisible')}
 															/>
 															{item.label}
 															<SingleSelect.Check option={item} />
@@ -289,10 +291,7 @@
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
-																class={cn(
-																	'size-5',
-																	item.icon ? 'visible' : 'invisible',
-																)}
+																class={cn('size-5', item.icon ? 'visible' : 'invisible')}
 															/>
 															{item.label}
 															<SingleSelect.Check option={item} />
@@ -313,7 +312,7 @@
 										{ value: 1, label: 's' } as SingleInput.UnitType,
 										{ value: 60, label: 'm' } as SingleInput.UnitType,
 										{ value: 3600, label: 'h' } as SingleInput.UnitType,
-										{ value: 86400, label: 'd' } as SingleInput.UnitType,
+										{ value: 86400, label: 'd' } as SingleInput.UnitType
 									]}
 								/>
 							</Form.Field>
@@ -328,7 +327,7 @@
 										{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
 										{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 										{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
-										{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
 									]}
 								/>
 							</Form.Field>
@@ -377,9 +376,13 @@
 							{@const duration = formatSecond(Number(warpDuration))}
 							{@const objectSize = formatCapacity(Number(warpObjectSize))}
 							<Form.Legend>{m.advance()}</Form.Legend>
-							<Form.Description>{m.operation()}: {Warp_Input_Operation[warpOperation]}</Form.Description>
+							<Form.Description
+								>{m.operation()}: {Warp_Input_Operation[warpOperation]}</Form.Description
+							>
 							<Form.Description>{m.duration()}: {duration.value} {duration.unit}</Form.Description>
-							<Form.Description>{m.object_size()}: {objectSize.value} {objectSize.unit}</Form.Description>
+							<Form.Description
+								>{m.object_size()}: {objectSize.value} {objectSize.unit}</Form.Description
+							>
 							{#if warpOperation !== Warp_Input_Operation.PUT}
 								<Form.Description>{m.object_count()}: {warpObjectCount}</Form.Description>
 							{/if}
@@ -411,7 +414,7 @@
 							operation: warpOperation,
 							durationSeconds: BigInt(warpDuration),
 							objectSizeBytes: BigInt(warpObjectSize),
-							objectCount: warpOperation === Warp_Input_Operation.PUT ? 0n : BigInt(warpObjectCount),
+							objectCount: warpOperation === Warp_Input_Operation.PUT ? 0n : BigInt(warpObjectCount)
 						} as Warp_Input;
 						request.kind.value = requestWarp;
 						toast.promise(() => client.createTestResult(request), {
@@ -424,10 +427,10 @@
 								let message = `Fail to test ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

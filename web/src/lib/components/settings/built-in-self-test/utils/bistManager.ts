@@ -75,7 +75,7 @@ class BistDashboardManager<TData = TestResult> {
 			'var(--chart-2)',
 			'var(--chart-3)',
 			'var(--chart-4)',
-			'var(--chart-5)',
+			'var(--chart-5)'
 		];
 
 		// Use a static map to ensure each groupName always gets the same color
@@ -104,13 +104,17 @@ class BistDashboardManager<TData = TestResult> {
 		const outputMap: Record<string, Record<string, FioOutputGroup>> = {
 			read: {},
 			write: {},
-			trim: {},
+			trim: {}
 		};
 
 		this.filteredData.forEach((datum) => {
 			const testResult = datum as TestResult;
 
-			if (testResult.kind.case === 'fio' && testResult.kind.value.output && testResult.kind.value.input) {
+			if (
+				testResult.kind.case === 'fio' &&
+				testResult.kind.value.output &&
+				testResult.kind.value.input
+			) {
 				// const groupName = this.generateFioGroupName(testResult.kind.value.input);
 				const groupName = testResult.name;
 
@@ -126,9 +130,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					};
 
 					if (!outputMap['read'][groupName]) {
@@ -136,7 +140,7 @@ class BistDashboardManager<TData = TestResult> {
 							key: groupName,
 							data: [],
 							// color: this.generateColor(groupName),
-							color: 'var(--chart-1)',
+							color: 'var(--chart-1)'
 						};
 					}
 
@@ -155,9 +159,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					};
 
 					if (!outputMap['write'][groupName]) {
@@ -165,7 +169,7 @@ class BistDashboardManager<TData = TestResult> {
 							key: groupName,
 							data: [],
 							// color: this.generateColor(groupName),
-							color: 'var(--chart-1)',
+							color: 'var(--chart-1)'
 						};
 					}
 
@@ -184,9 +188,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					};
 
 					if (!outputMap['trim'][groupName]) {
@@ -194,7 +198,7 @@ class BistDashboardManager<TData = TestResult> {
 							key: groupName,
 							data: [],
 							// color: this.generateColor(groupName),
-							color: 'var(--chart-1)',
+							color: 'var(--chart-1)'
 						};
 					}
 
@@ -205,7 +209,7 @@ class BistDashboardManager<TData = TestResult> {
 		return {
 			read: outputMap['read'],
 			write: outputMap['write'],
-			trim: outputMap['trim'],
+			trim: outputMap['trim']
 		};
 	}
 
@@ -217,13 +221,17 @@ class BistDashboardManager<TData = TestResult> {
 		const outputMap: Record<string, Record<string, WarpOutputGroup>> = {
 			get: {},
 			put: {},
-			delete: {},
+			delete: {}
 		};
 
 		this.filteredData.forEach((datum) => {
 			const testResult = datum as TestResult;
 
-			if (testResult.kind.case === 'warp' && testResult.kind.value.output && testResult.kind.value.input) {
+			if (
+				testResult.kind.case === 'warp' &&
+				testResult.kind.value.output &&
+				testResult.kind.value.input
+			) {
 				// const groupName = this.generateWarpGroupName(testResult.kind.value.input);
 				const groupName = testResult.name;
 
@@ -243,9 +251,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					};
 
 					if (!outputMap['get'][groupName]) {
@@ -253,7 +261,7 @@ class BistDashboardManager<TData = TestResult> {
 							key: groupName,
 							data: [],
 							// color: this.generateColor(groupName),
-							color: 'var(--chart-1)',
+							color: 'var(--chart-1)'
 						};
 					}
 
@@ -276,9 +284,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					};
 
 					if (!outputMap['put'][groupName]) {
@@ -286,7 +294,7 @@ class BistDashboardManager<TData = TestResult> {
 							key: groupName,
 							data: [],
 							// color: this.generateColor(groupName),
-							color: 'var(--chart-1)',
+							color: 'var(--chart-1)'
 						};
 					}
 
@@ -309,9 +317,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					};
 
 					if (!outputMap['delete'][groupName]) {
@@ -319,7 +327,7 @@ class BistDashboardManager<TData = TestResult> {
 							key: groupName,
 							data: [],
 							// color: this.generateColor(groupName),
-							color: 'var(--chart-1)',
+							color: 'var(--chart-1)'
 						};
 					}
 
@@ -331,9 +339,15 @@ class BistDashboardManager<TData = TestResult> {
 		return {
 			get: outputMap['get'],
 			put: outputMap['put'],
-			delete: outputMap['delete'],
+			delete: outputMap['delete']
 		};
 	}
 }
 
-export { BistDashboardManager, type FioDataPoint, type FioOutputGroup, type WarpDataPoint, type WarpOutputGroup };
+export {
+	BistDashboardManager,
+	type FioDataPoint,
+	type FioOutputGroup,
+	type WarpDataPoint,
+	type WarpOutputGroup
+};

@@ -1,4 +1,14 @@
-import { Action, Content, Description, Footer, Header, Overlay, Portal, Title, Trigger } from '../single-step';
+import {
+	Action,
+	Content,
+	Description,
+	Footer,
+	Header,
+	Overlay,
+	Portal,
+	Title,
+	Trigger
+} from '../single-step';
 
 import Back from './modal-back.svelte';
 import Cancel from './modal-cancel.svelte';
@@ -32,5 +42,5 @@ export {
 	Stepper,
 	Steps,
 	Title,
-	Trigger,
+	Trigger
 };

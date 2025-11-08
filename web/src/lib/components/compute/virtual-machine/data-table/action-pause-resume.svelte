@@ -33,7 +33,7 @@
 			scope: $currentKubernetes?.scope,
 			facility: $currentKubernetes?.name,
 			name: virtualMachine.name,
-			namespace: virtualMachine.namespace,
+			namespace: virtualMachine.namespace
 		};
 
 		toast.promise(() => virtualMachineClient.resumeInstance(request), {
@@ -43,10 +43,10 @@
 				const msg = `Failed to resume virtual machine ${request.name}.`;
 				toast.error(msg, {
 					description: (e as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
+					duration: Number.POSITIVE_INFINITY
 				});
 				return msg;
-			},
+			}
 		});
 	}
 	async function pauseVM() {
@@ -54,7 +54,7 @@
 			scope: $currentKubernetes?.scope,
 			facility: $currentKubernetes?.name,
 			name: virtualMachine.name,
-			namespace: virtualMachine.namespace,
+			namespace: virtualMachine.namespace
 		};
 
 		toast.promise(() => virtualMachineClient.pauseInstance(request), {
@@ -64,10 +64,10 @@
 				const msg = `Failed to pause virtual machine ${request.name}.`;
 				toast.error(msg, {
 					description: (e as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
+					duration: Number.POSITIVE_INFINITY
 				});
 				return msg;
-			},
+			}
 		});
 	}
 

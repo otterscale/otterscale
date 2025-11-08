@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	let {
-		virtualMachine,
+		virtualMachine
 	}: {
 		virtualMachine: VirtualMachine;
 	} = $props();

@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	let {
-		pool,
+		pool
 	}: {
 		pool: Pool;
 	} = $props();

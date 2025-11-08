@@ -106,7 +106,7 @@
 				{/if}
 				<Icon
 					icon="ph:network"
-					class="text-primary/5 absolute top-3 -right-3 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+					class="absolute top-3 -right-3 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 				/>
 			{/if}
 		</Card.Content>

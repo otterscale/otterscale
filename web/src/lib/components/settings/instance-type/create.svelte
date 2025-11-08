@@ -33,7 +33,7 @@
 		name: '',
 		namespace: 'default',
 		cpuCores: 1,
-		memoryBytes: BigInt(1024 ** 3), // 1GB default
+		memoryBytes: BigInt(1024 ** 3) // 1GB default
 	} as CreateInstanceTypeRequest;
 
 	// ==================== Form State ====================
@@ -66,7 +66,12 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.name} bind:invalid={invalidName} />
+					<SingleInput.General
+						required
+						type="text"
+						bind:value={request.name}
+						bind:invalid={invalidName}
+					/>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.namespace()}</Form.Label>
@@ -110,10 +115,10 @@
 								let message = `Failed to create ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

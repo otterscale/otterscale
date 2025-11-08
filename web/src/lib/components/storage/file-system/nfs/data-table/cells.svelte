@@ -27,7 +27,7 @@
 		createTime,
 		exportSubvolume,
 		snapshots,
-		actions,
+		actions
 	};
 </script>
 
@@ -147,7 +147,7 @@
 {#snippet usage(row: Row<Subvolume>)}
 	<Layout.Cell class="items-end">
 		{#if row.original.quotaBytes === 0n}
-			<span class="text-muted-foreground text-sm">Quota limit is not set</span>
+			<span class="text-sm text-muted-foreground">Quota limit is not set</span>
 		{:else}
 			<Progress.Root
 				numerator={Number(row.original.usedBytes)}

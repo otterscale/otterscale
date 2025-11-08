@@ -13,7 +13,7 @@
 <script lang="ts">
 	let {
 		selectedScope = $bindable(),
-		selectedFacility = $bindable(),
+		selectedFacility = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -26,9 +26,11 @@
 
 	const storageClient = createClient(StorageService, transport);
 	const reloadManager = new ReloadManager(() => {
-		storageClient.listImages({ scope: selectedScope, facility: selectedFacility }).then((response) => {
-			images.set(response.images);
-		});
+		storageClient
+			.listImages({ scope: selectedScope, facility: selectedFacility })
+			.then((response) => {
+				images.set(response.images);
+			});
 	});
 	setContext('reloadManager', reloadManager);
 

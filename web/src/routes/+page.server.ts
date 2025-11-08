@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ request, url }) => {
 		{ value: env.AUTH_SECRET, name: 'AUTH_SECRET' },
 		{ value: env.DATABASE_URL, name: 'DATABASE_URL' },
 		{ value: publicEnv.PUBLIC_URL, name: 'PUBLIC_URL' },
-		{ value: publicEnv.PUBLIC_API_URL, name: 'PUBLIC_API_URL' },
+		{ value: publicEnv.PUBLIC_API_URL, name: 'PUBLIC_API_URL' }
 	];
 
 	for (const { value, name } of requiredEnvVars) {
@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ request, url }) => {
 
 	// Check if the user is already authenticated
 	const session = await auth.api.getSession({
-		headers: request.headers,
+		headers: request.headers
 	});
 
 	if (session) {

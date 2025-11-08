@@ -4,7 +4,11 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { Image, Image_Snapshot, RollbackImageSnapshotRequest } from '$lib/api/storage/v1/storage_pb';
+	import type {
+		Image,
+		Image_Snapshot,
+		RollbackImageSnapshotRequest
+	} from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -16,7 +20,7 @@
 
 <script lang="ts">
 	let {
-		snapshot,
+		snapshot
 	}: {
 		snapshot: Image_Snapshot;
 	} = $props();
@@ -31,7 +35,7 @@
 		scope: $currentCeph?.scope,
 		facility: $currentCeph?.name,
 		imageName: image.name,
-		poolName: image.poolName,
+		poolName: image.poolName
 	} as RollbackImageSnapshotRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -87,10 +91,10 @@
 								let message = `Fail to rollback ${request.snapshotName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

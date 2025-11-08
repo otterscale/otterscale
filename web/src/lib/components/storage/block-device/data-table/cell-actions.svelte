@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	let {
-		image,
+		image
 	}: {
 		image: Image;
 	} = $props();

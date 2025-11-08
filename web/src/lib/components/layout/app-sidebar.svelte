@@ -39,13 +39,13 @@
 	const tierMap = {
 		[PremiumTier_Level.BASIC]: m.basic_tier(),
 		[PremiumTier_Level.ADVANCED]: m.advanced_tier(),
-		[PremiumTier_Level.ENTERPRISE]: m.enterprise_tier(),
+		[PremiumTier_Level.ENTERPRISE]: m.enterprise_tier()
 	};
 
 	const skeletonClasses = {
 		avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
 		title: 'bg-sidebar-primary/50 h-3 w-[150px]',
-		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]',
+		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
 	};
 
 	async function fetchScopes() {
@@ -101,7 +101,7 @@
 			await Promise.all([fetchScopes(), fetchEdition()]);
 			const index = Math.max(
 				$scopes.findIndex((scope) => scope.name == page.params.scope),
-				0,
+				0
 			);
 			handleScopeOnSelect(index);
 		} catch (error) {
@@ -110,7 +110,9 @@
 	}
 
 	async function onBookmarkDelete(path: Path) {
-		bookmarks.update((currentBookmarks) => currentBookmarks.filter((bookmark) => bookmark.url !== path.url));
+		bookmarks.update((currentBookmarks) =>
+			currentBookmarks.filter((bookmark) => bookmark.url !== path.url)
+		);
 	}
 
 	onMount(initialize);

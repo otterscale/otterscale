@@ -40,26 +40,26 @@ export const formatXAxisDate = (date: any, timeRange?: TimeRange): string => {
 		case '1h':
 			return date.toLocaleTimeString('en-US', {
 				hour: 'numeric',
-				minute: '2-digit',
+				minute: '2-digit'
 			});
 		case '1d':
 			return date.toLocaleTimeString('en-US', {
-				hour: 'numeric',
+				hour: 'numeric'
 			});
 		case '7d':
 			return date.toLocaleTimeString('en-US', {
 				day: 'numeric',
-				hour: 'numeric',
+				hour: 'numeric'
 			});
 		case '30d':
 			return date.toLocaleDateString('en-US', {
 				month: 'short',
-				day: 'numeric',
+				day: 'numeric'
 			});
 		default:
 			return date.toLocaleDateString('en-US', {
 				month: 'short',
-				day: 'numeric',
+				day: 'numeric'
 			});
 	}
 };
@@ -72,26 +72,26 @@ export const formatTooltipDate = (date: any, timeRange?: TimeRange): string => {
 		case '1h':
 			return date.toLocaleTimeString('en-US', {
 				hour: 'numeric',
-				minute: '2-digit',
+				minute: '2-digit'
 			});
 		case '1d':
 			return date.toLocaleTimeString('en-US', {
-				hour: 'numeric',
+				hour: 'numeric'
 			});
 		case '7d':
 			return date.toLocaleTimeString('en-US', {
 				day: 'numeric',
-				hour: 'numeric',
+				hour: 'numeric'
 			});
 		case '30d':
 			return date.toLocaleDateString('en-US', {
 				month: 'short',
-				day: 'numeric',
+				day: 'numeric'
 			});
 		default:
 			return date.toLocaleDateString('en-US', {
 				month: 'short',
-				day: 'numeric',
+				day: 'numeric'
 			});
 	}
 };

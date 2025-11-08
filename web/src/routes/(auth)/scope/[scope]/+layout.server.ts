@@ -9,7 +9,7 @@ import { auth } from '$lib/auth';
 
 export const load: LayoutServerLoad = async ({ request, url }) => {
 	const session = await auth.api.getSession({
-		headers: request.headers,
+		headers: request.headers
 	});
 
 	if (!session) {
@@ -42,6 +42,6 @@ export const load: LayoutServerLoad = async ({ request, url }) => {
 		'feature-states.stg-general': stgGeneralFeatureState,
 		'feature-states.stg-block': stgBlockFeatureState,
 		'feature-states.stg-file': stgFileFeatureState,
-		'feature-states.stg-object': stgObjectFeatureState,
+		'feature-states.stg-object': stgObjectFeatureState
 	};
 };

@@ -18,7 +18,7 @@
 	const query = $derived(
 		`
 		count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})
-		`,
+		`
 	);
 </script>
 

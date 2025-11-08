@@ -25,7 +25,7 @@
 
 	setToggleGroupCtx({
 		variant,
-		size,
+		size
 	});
 </script>
 
@@ -39,6 +39,9 @@ get along, so we shut typescript up by casting `value` to `never`.
 	data-slot="toggle-group"
 	data-variant={variant}
 	data-size={size}
-	class={cn('group/toggle-group flex w-fit items-center rounded-md data-[variant=outline]:shadow-xs', className)}
+	class={cn(
+		'group/toggle-group flex w-fit items-center rounded-md data-[variant=outline]:shadow-xs',
+		className
+	)}
 	{...restProps}
 />

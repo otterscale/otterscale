@@ -5,7 +5,11 @@
 	import { writable, type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import type { AttachVirtualMachineDiskRequest, DataVolume, VirtualMachine } from '$lib/api/instance/v1/instance_pb';
+	import type {
+		AttachVirtualMachineDiskRequest,
+		DataVolume,
+		VirtualMachine
+	} from '$lib/api/instance/v1/instance_pb';
 	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -16,7 +20,7 @@
 	import { cn } from '$lib/utils';
 
 	let {
-		virtualMachine,
+		virtualMachine
 	}: {
 		virtualMachine: VirtualMachine;
 	} = $props();
@@ -45,19 +49,19 @@
 			const response = await virtualMachineClient.listDataVolumes({
 				scope: $currentKubernetes?.scope,
 				facility: $currentKubernetes?.name,
-				namespace: request.namespace,
+				namespace: request.namespace
 			});
 
 			const dvOptions: SingleSelect.OptionType[] = response.dataVolumes.map((dv: DataVolume) => ({
 				value: dv.name,
 				label: dv.name,
-				icon: 'ph:hard-drive',
+				icon: 'ph:hard-drive'
 			}));
 
 			dataVolumes.set(dvOptions);
 		} catch (error) {
 			toast.error('Failed to load Data Volumes', {
-				description: (error as ConnectError).message.toString(),
+				description: (error as ConnectError).message.toString()
 			});
 		}
 	}
@@ -68,7 +72,7 @@
 		facility: $currentKubernetes?.name,
 		name: virtualMachine.name,
 		namespace: virtualMachine.namespace,
-		dataVolumeName: '',
+		dataVolumeName: ''
 	} as AttachVirtualMachineDiskRequest;
 
 	// ==================== Form State ====================
@@ -156,10 +160,10 @@
 								let message = `Failed to attach ${request.dataVolumeName} to ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

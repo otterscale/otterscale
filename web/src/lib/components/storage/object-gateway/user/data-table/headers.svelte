@@ -12,7 +12,7 @@
 		name,
 		suspended,
 		keys,
-		actions,
+		actions
 	};
 </script>
 

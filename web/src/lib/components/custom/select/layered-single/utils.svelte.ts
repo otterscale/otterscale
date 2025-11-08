@@ -1,6 +1,9 @@
 import type { AccessorType, AncestralOptionType, OptionType } from './types';
 
-const getAllAncestralOptions = (options: OptionType[], parents: OptionType[] = []): AncestralOptionType[] => {
+const getAllAncestralOptions = (
+	options: OptionType[],
+	parents: OptionType[] = []
+): AncestralOptionType[] => {
 	return options.flatMap((option) => {
 		const ancestorOption = [...parents, option];
 

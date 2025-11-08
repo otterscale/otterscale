@@ -26,7 +26,7 @@
 		container,
 		volume,
 		nodeport,
-		actions,
+		actions
 	};
 </script>
 
@@ -43,7 +43,7 @@
 			href={resolve('/(auth)/scope/[scope]/applications/workloads/[namespace]/[application_name]', {
 				scope: page.params.scope!,
 				namespace: row.original.namespace!,
-				application_name: row.original.name!,
+				application_name: row.original.name!
 			})}
 		>
 			{row.original.name}
@@ -67,7 +67,10 @@
 
 {#snippet health(row: Row<Application>)}
 	<Layout.Cell class="items-end">
-		<Progress.Root numerator={Number(row.original.healthies)} denominator={Number(row.original.pods.length)}>
+		<Progress.Root
+			numerator={Number(row.original.healthies)}
+			denominator={Number(row.original.pods.length)}
+		>
 			{#snippet ratio({ numerator, denominator })}
 				{Progress.formatRatio(numerator, denominator)}
 			{/snippet}

@@ -11,7 +11,7 @@
 
 <script lang="ts">
 	let {
-		bootImage,
+		bootImage
 	}: {
 		bootImage: Configuration_BootImage;
 	} = $props();
@@ -42,7 +42,7 @@
 				</Table.Body>
 			</Table.Root>
 		{:else}
-			<p class="text-muted-foreground w-full p-2 text-center text-xs font-light">
+			<p class="w-full p-2 text-center text-xs font-light text-muted-foreground">
 				{m.no_data()}
 			</p>
 		{/if}

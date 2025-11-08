@@ -32,7 +32,7 @@
 			scope: $currentKubernetes?.scope,
 			facility: $currentKubernetes?.name,
 			name: virtualMachine.name,
-			namespace: virtualMachine.namespace,
+			namespace: virtualMachine.namespace
 		};
 
 		toast.promise(() => virtualMachineClient.startVirtualMachine(request), {
@@ -42,10 +42,10 @@
 				const msg = `Failed to start virtual machine ${request.name}.`;
 				toast.error(msg, {
 					description: (e as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
+					duration: Number.POSITIVE_INFINITY
 				});
 				return msg;
-			},
+			}
 		});
 	}
 	async function stopVM() {
@@ -53,7 +53,7 @@
 			scope: $currentKubernetes?.scope,
 			facility: $currentKubernetes?.name,
 			name: virtualMachine.name,
-			namespace: virtualMachine.namespace,
+			namespace: virtualMachine.namespace
 		};
 
 		toast.promise(() => virtualMachineClient.stopVirtualMachine(request), {
@@ -63,10 +63,10 @@
 				const msg = `Failed to stop virtual machine ${request.name}.`;
 				toast.error(msg, {
 					description: (e as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
+					duration: Number.POSITIVE_INFINITY
 				});
 				return msg;
-			},
+			}
 		});
 	}
 

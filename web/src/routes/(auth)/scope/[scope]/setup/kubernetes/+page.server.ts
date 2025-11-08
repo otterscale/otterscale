@@ -15,6 +15,6 @@ export const load: PageServerLoad = async () => {
 	const orchGPUFeatureState = await client.getBooleanValue('orch-gpu', false);
 
 	return {
-		'feature-states.orch-gpu': orchGPUFeatureState,
+		'feature-states.orch-gpu': orchGPUFeatureState
 	};
 };

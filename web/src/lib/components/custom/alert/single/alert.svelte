@@ -14,7 +14,8 @@
 		base: cn(baseAlertVariants.base, '[&>svg]:size-6'),
 		variants: {
 			variant: {
-				default: '*:data-[slot=alert-description]:text-muted-foreground bg-card/10 [&>svg]:text-current',
+				default:
+					'*:data-[slot=alert-description]:text-muted-foreground bg-card/10 [&>svg]:text-current',
 				destructive:
 					'border-destructive/50 text-destructive *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current',
 				success:
@@ -22,12 +23,12 @@
 				warning:
 					'bg-card border-yellow-500/50 text-yellow-700 *:data-[slot=alert-description]:text-yellow-600 dark:border-yellow-500 dark:text-yellow-400 dark:*:data-[slot=alert-description]:text-yellow-700 [&>svg]:text-current',
 				information:
-					'bg-card border-blue-500/50 text-blue-700 *:data-[slot=alert-description]:text-blue-500 dark:border-blue-500 dark:text-blue-400 dark:*:data-[slot=alert-description]:text-blue-600 [&>svg]:text-blue-500',
-			},
+					'bg-card border-blue-500/50 text-blue-700 *:data-[slot=alert-description]:text-blue-500 dark:border-blue-500 dark:text-blue-400 dark:*:data-[slot=alert-description]:text-blue-600 [&>svg]:text-blue-500'
+			}
 		},
 		defaultVariants: {
-			variant: 'default',
-		},
+			variant: 'default'
+		}
 	});
 
 	export type AlertVariant = VariantProps<typeof alertVariants>['variant'];

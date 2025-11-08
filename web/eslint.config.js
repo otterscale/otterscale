@@ -21,14 +21,14 @@ export default defineConfig(
 	prettier,
 	...svelte.configs.prettier,
 	{
-		ignores: ['src/lib/components/ui/**/*', 'src/lib/api/**/*', 'static/vnc/**/*'],
+		ignores: ['src/lib/components/ui/**/*', 'src/lib/api/**/*', 'static/vnc/**/*']
 	},
 	{
 		languageOptions: {
-			globals: { ...globals.browser, ...globals.node },
+			globals: { ...globals.browser, ...globals.node }
 		},
 		plugins: {
-			import: importPlugin,
+			import: importPlugin
 		},
 		rules: {
 			// typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
@@ -40,18 +40,18 @@ export default defineConfig(
 				'error',
 				{
 					argsIgnorePattern: '^_$',
-					varsIgnorePattern: '^_$',
-				},
+					varsIgnorePattern: '^_$'
+				}
 			],
 			'import/order': [
 				'error',
 				{
 					groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
 					'newlines-between': 'always',
-					alphabetize: { order: 'asc', caseInsensitive: true },
-				},
-			],
-		},
+					alphabetize: { order: 'asc', caseInsensitive: true }
+				}
+			]
+		}
 	},
 	{
 		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
@@ -60,8 +60,8 @@ export default defineConfig(
 				projectService: true,
 				extraFileExtensions: ['.svelte'],
 				parser: ts.parser,
-				svelteConfig,
-			},
-		},
-	},
+				svelteConfig
+			}
+		}
+	}
 );

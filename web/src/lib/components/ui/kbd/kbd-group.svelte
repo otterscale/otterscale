@@ -10,6 +10,11 @@
 	}: WithElementRef<HTMLAttributes<HTMLElement>> = $props();
 </script>
 
-<kbd bind:this={ref} data-slot="kbd-group" class={cn('inline-flex items-center gap-1', className)} {...restProps}>
+<kbd
+	bind:this={ref}
+	data-slot="kbd-group"
+	class={cn('inline-flex items-center gap-1', className)}
+	{...restProps}
+>
 	{@render children?.()}
 </kbd>

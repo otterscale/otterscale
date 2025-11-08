@@ -13,6 +13,11 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 </script>
 
-<Alert.Description bind:ref data-slot="alert-description" class={cn('my-2 text-pretty', className)} {...restProps}>
+<Alert.Description
+	bind:ref
+	data-slot="alert-description"
+	class={cn('my-2 text-pretty', className)}
+	{...restProps}
+>
 	{@render children?.()}
 </Alert.Description>

@@ -15,5 +15,5 @@ export {
 	//
 	type AlertType,
 	type AlertVariant,
-	type ValueType,
+	type ValueType
 };

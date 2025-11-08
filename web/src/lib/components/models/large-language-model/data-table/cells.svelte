@@ -23,7 +23,7 @@
 		requests,
 		time_to_first_token,
 		relation,
-		action,
+		action
 	};
 </script>
 
@@ -40,7 +40,7 @@
 			href={resolve('/(auth)/scope/[scope]/applications/workloads/[namespace]/[application_name]', {
 				scope: page.params.scope!,
 				namespace: row.original.application.namespace,
-				application_name: row.original.application.name,
+				application_name: row.original.application.name
 			})}
 		>
 			{row.original.application.name}

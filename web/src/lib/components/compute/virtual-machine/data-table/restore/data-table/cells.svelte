@@ -19,7 +19,7 @@
 		snapshotName,
 		complete,
 		createTime,
-		actions,
+		actions
 	};
 </script>
 

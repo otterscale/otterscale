@@ -26,7 +26,7 @@
 			facility: $currentKubernetes?.name,
 			name: application.name,
 			namespace: application.namespace,
-			type: application.type,
+			type: application.type
 		};
 
 		toast.promise(() => applicationClient.restartApplication(request), {
@@ -40,10 +40,10 @@
 				const msg = `Failed to restart application ${request.name}.`;
 				toast.error(msg, {
 					description: (e as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
+					duration: Number.POSITIVE_INFINITY
 				});
 				return msg;
-			},
+			}
 		});
 	}
 

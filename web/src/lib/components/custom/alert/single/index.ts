@@ -12,5 +12,5 @@ export {
 	Root,
 	Title,
 	//
-	type AlertType,
+	type AlertType
 };

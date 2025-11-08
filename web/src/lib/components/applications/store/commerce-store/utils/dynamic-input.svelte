@@ -31,7 +31,7 @@
 	{#if typeof anyItem === 'object'}
 		<span class="flex flex-col">
 			{#each data as _, i}
-				<div class="bg-muted/50 rounded-lg">
+				<div class="rounded-lg bg-muted/50">
 					<Self bind:data={data[i]} />
 				</div>
 			{/each}

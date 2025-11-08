@@ -30,7 +30,7 @@
 				scope: $currentKubernetes?.scope,
 				facility: $currentKubernetes?.name,
 				name: virtualMachine.name,
-				namespace: virtualMachine.namespace,
+				namespace: virtualMachine.namespace
 			});
 			isMounted = true;
 			vncUrl = `/vnc/vnc.html?autoconnect=true&host=${host}&port=${port || defaultPort}&path=vnc/${response.sessionId}`;

@@ -14,7 +14,7 @@ const messages = {
 	applications: m.applications(),
 	placementGroupState: m.placement_group_state(),
 	usage: m.usage(),
-	iops: m.iops(),
+	iops: m.iops()
 };
 
 const columns: ColumnDef<Pool>[] = [
@@ -27,7 +27,7 @@ const columns: ColumnDef<Pool>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -36,7 +36,7 @@ const columns: ColumnDef<Pool>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'poolType',
@@ -45,7 +45,7 @@ const columns: ColumnDef<Pool>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.type, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'applications',
@@ -55,7 +55,7 @@ const columns: ColumnDef<Pool>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.applications, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'placementGroupState',
@@ -69,7 +69,7 @@ const columns: ColumnDef<Pool>[] = [
 			const values = Object.keys(row.getValue(columnId) ?? {});
 			if (!values.length || !filterValue.length) return true;
 			return values.some((value) => filterValue.includes(value));
-		},
+		}
 	},
 	{
 		accessorKey: 'usage',
@@ -90,8 +90,8 @@ const columns: ColumnDef<Pool>[] = [
 							Number(nextRow.original.usedBytes + nextRow.original.maxBytes)
 					: 0,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'iops',
@@ -100,7 +100,7 @@ const columns: ColumnDef<Pool>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.iops, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'actions',
@@ -110,8 +110,8 @@ const columns: ColumnDef<Pool>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

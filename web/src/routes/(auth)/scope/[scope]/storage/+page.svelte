@@ -9,8 +9,8 @@
 	breadcrumbs.set([
 		{
 			title: m.storage(),
-			url: resolve('/(auth)/scope/[scope]/storage', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/storage', { scope: page.params.scope! })
+		}
 	]);
 </script>
 

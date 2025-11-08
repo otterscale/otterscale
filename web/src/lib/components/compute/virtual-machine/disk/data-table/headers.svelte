@@ -16,7 +16,7 @@
 		phase,
 		boot,
 		size,
-		actions,
+		actions
 		// data, // start script
 	};
 </script>

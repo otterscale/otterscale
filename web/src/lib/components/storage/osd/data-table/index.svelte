@@ -8,7 +8,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
@@ -27,7 +27,7 @@
 <script lang="ts">
 	let {
 		objectStorageDaemons,
-		reloadManager,
+		reloadManager
 	}: {
 		objectStorageDaemons: Writable<OSD[]>;
 		reloadManager: ReloadManager;
@@ -65,7 +65,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -103,7 +103,7 @@
 			}
 		},
 
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 

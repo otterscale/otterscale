@@ -11,9 +11,9 @@
 		{
 			title: page.params.id!,
 			url: resolve('/(auth)/machines/metal/[id]', {
-				id: page.params.id!,
-			}),
-		},
+				id: page.params.id!
+			})
+		}
 	]);
 </script>
 

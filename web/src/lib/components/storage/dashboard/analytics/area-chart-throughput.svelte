@@ -30,7 +30,7 @@
 	// Prometheus query for Memory usage
 	const query = $derived({
 		Read: `sum(irate(ceph_osd_op_r_out_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
-		Write: `sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
+		Write: `sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`
 	});
 </script>
 
@@ -47,7 +47,11 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} valueFormatter={formatCapacity} />
+			<Content
+				data={response}
+				timeRange={formatTimeRange(TIME_RANGE_HOURS)}
+				valueFormatter={formatCapacity}
+			/>
 		{/snippet}
 	</Layout>
 {:catch}

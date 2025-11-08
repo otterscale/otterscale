@@ -39,5 +39,5 @@
 	}}
 	{...restProps}
 >
-	<Icon icon="ph:plus-circle" class="text-primary size-5" />
+	<Icon icon="ph:plus-circle" class="size-5 text-primary" />
 </Button>

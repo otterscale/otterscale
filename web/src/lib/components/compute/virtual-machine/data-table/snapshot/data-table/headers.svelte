@@ -14,7 +14,7 @@
 		phase,
 		ready,
 		createTime,
-		actions,
+		actions
 	};
 </script>
 

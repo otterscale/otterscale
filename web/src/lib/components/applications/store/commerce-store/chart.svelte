@@ -7,7 +7,10 @@
 	import Actions from './chart-actions.svelte';
 	import { fuzzLogosIcon } from './utils';
 
-	import { type Application_Chart, type Application_Release } from '$lib/api/application/v1/application_pb';
+	import {
+		type Application_Chart,
+		type Application_Release
+	} from '$lib/api/application/v1/application_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
@@ -24,7 +27,7 @@
 		chartReleases,
 		charts = $bindable(),
 		releases = $bindable(),
-		children,
+		children
 	}: {
 		chart: Application_Chart;
 		chartReleases: Application_Release[] | undefined;
@@ -43,7 +46,7 @@
 		{@render children()}
 	</Sheet.Trigger>
 	<Sheet.Content side="right" class="min-w-[23vw]">
-		<Sheet.Header class="bg-muted flex items-start justify-between p-6 pb-2">
+		<Sheet.Header class="flex items-start justify-between bg-muted p-6 pb-2">
 			<Sheet.Title class="relative flex w-full items-start gap-2">
 				<Avatar.Root class="h-12 w-12">
 					<Avatar.Image src={chart.icon} />
@@ -53,7 +56,7 @@
 				</Avatar.Root>
 				<span>
 					<h3 class="font-semibold">{chart.name}</h3>
-					<p class="text-muted-foreground flex items-center gap-1 text-sm">
+					<p class="flex items-center gap-1 text-sm text-muted-foreground">
 						{chart.versions[0].chartVersion}
 					</p>
 				</span>
@@ -76,7 +79,7 @@
 				</Tabs.Trigger>
 			</Tabs.List>
 			<Tabs.Content value="information" class="p-4">
-				<div class="text-muted-foreground space-y-4 p-4 text-sm">
+				<div class="space-y-4 p-4 text-sm text-muted-foreground">
 					{#if chart.license}
 						<div class="flex items-center gap-2">
 							<Icon icon="ph:identification-badge" />
@@ -102,7 +105,7 @@
 					{/if}
 				</div>
 
-				<div class="text-muted-foreground space-y-4 p-4 text-sm">
+				<div class="space-y-4 p-4 text-sm text-muted-foreground">
 					{#if chart.dependencies && chart.dependencies.length > 0}
 						<div class="space-y-1">
 							<span class="flex items-center justify-between gap-1">
@@ -123,7 +126,7 @@
 										icon="ph:caret-left"
 										class={cn(
 											'size-4 transition-all',
-											isDependanciesExpand ? 'rotate-90' : '-rotate-90',
+											isDependanciesExpand ? 'rotate-90' : '-rotate-90'
 										)}
 									/>
 								</Button>
@@ -201,7 +204,7 @@
 										icon="ph:caret-left"
 										class={cn(
 											'size-4 transition-all',
-											isSourcesExpand ? 'rotate-90' : '-rotate-90',
+											isSourcesExpand ? 'rotate-90' : '-rotate-90'
 										)}
 									/>
 								</Button>
@@ -213,7 +216,7 @@
 										<a
 											target="_blank"
 											href={source}
-											class="hover:text-primary underline hover:no-underline"
+											class="underline hover:text-primary hover:no-underline"
 										>
 											{source}
 										</a>
@@ -230,7 +233,7 @@
 										<a
 											target="_blank"
 											href={source}
-											class="hover:text-primary underline hover:no-underline"
+											class="underline hover:text-primary hover:no-underline"
 										>
 											{source}
 										</a>
@@ -260,7 +263,7 @@
 										icon="ph:caret-left"
 										class={cn(
 											'size-4 transition-all',
-											isMaintainersExpand ? 'rotate-90' : '-rotate-90',
+											isMaintainersExpand ? 'rotate-90' : '-rotate-90'
 										)}
 									/>
 								</Button>

@@ -14,8 +14,8 @@
 	breadcrumbs.set([
 		{
 			title: m.setup(),
-			url: resolve('/(auth)/scope/[scope]/setup', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/setup', { scope: page.params.scope! })
+		}
 	]);
 
 	// API setup
@@ -30,7 +30,7 @@
 	async function fetchFacilities(scope: string) {
 		try {
 			const response = await facilityClient.listFacilities({
-				scope: scope,
+				scope: scope
 			});
 			facilitiesStore.set(response.facilities);
 		} catch (error) {

@@ -33,7 +33,7 @@
 		action: () => {
 			installExtensions(['instance']);
 		},
-		variant: 'destructive',
+		variant: 'destructive'
 	});
 </script>
 
@@ -46,7 +46,7 @@
 				<p>{alert.message}</p>
 				<div class="flex w-full flex-wrap gap-2">
 					{#each $instanceExtensions.filter((extension) => !extension.current) as extension}
-						<Badge variant="outline" class="border-destructive/50 text-destructive bg-destructive/5"
+						<Badge variant="outline" class="border-destructive/50 bg-destructive/5 text-destructive"
 							>{extension.latest?.name}
 						</Badge>
 					{/each}

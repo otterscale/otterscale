@@ -16,7 +16,7 @@
 	// Props
 	let {
 		facilities,
-		autoRefresh = $bindable(true),
+		autoRefresh = $bindable(true)
 	}: {
 		facilities: Facility[];
 		autoRefresh: boolean;
@@ -51,30 +51,30 @@
 		active: {
 			color: 'green',
 			textClass: 'text-green-600 dark:text-green-400',
-			icon: 'ph:check-bold',
+			icon: 'ph:check-bold'
 		},
 		waiting: {
 			color: 'yellow',
 			textClass: 'text-yellow-600 dark:text-yellow-400',
-			icon: 'ph:spinner-gap',
+			icon: 'ph:spinner-gap'
 		},
 		blocked: {
 			color: 'red',
 			textClass: 'text-red-600 dark:text-red-400',
-			icon: 'ph:exclamation-mark',
+			icon: 'ph:exclamation-mark'
 		},
 		maintenance: {
 			color: 'blue',
 			textClass: 'text-blue-600 dark:text-blue-400',
-			icon: 'ph:wrench',
-		},
+			icon: 'ph:wrench'
+		}
 	} as const;
 
 	const CHARM_NAMES = {
 		kubernetesControlPlane: 'kubernetes-control-plane',
 		kubernetesWorker: 'kubernetes-worker',
 		cephMon: 'ceph-mon',
-		cephOsd: 'ceph-osd',
+		cephOsd: 'ceph-osd'
 	} as const;
 
 	// Utility functions
@@ -91,7 +91,7 @@
 					details,
 					color: 'gray',
 					textClass: 'text-gray-600 dark:text-gray-400',
-					icon: 'ph:question-bold',
+					icon: 'ph:question-bold'
 				};
 	}
 
@@ -101,11 +101,15 @@
 			channel: facility.channel || '',
 			version: facility.version || '',
 			allUnits: facility.units.length,
-			activeUnits,
+			activeUnits
 		};
 	}
 
-	function updateServiceState(facility: Facility, currentState: StateConfig, onlyIfNotActive = false): StateConfig {
+	function updateServiceState(
+		facility: Facility,
+		currentState: StateConfig,
+		onlyIfNotActive = false
+	): StateConfig {
 		const status = facility.status;
 		if (!status || (onlyIfNotActive && status.state === 'active')) {
 			return currentState;
@@ -119,7 +123,7 @@
 
 	function processServiceFacilities(charmMappings: Record<string, string>): ServiceState {
 		const serviceState: ServiceState = {
-			state: toStateConfig('fetching', 'loading...'),
+			state: toStateConfig('fetching', 'loading...')
 		};
 
 		Object.entries(charmMappings).forEach(([key, charmName]) => {
@@ -143,12 +147,12 @@
 	$effect(() => {
 		kubernetes = processServiceFacilities({
 			controlPlane: CHARM_NAMES.kubernetesControlPlane,
-			worker: CHARM_NAMES.kubernetesWorker,
+			worker: CHARM_NAMES.kubernetesWorker
 		});
 
 		ceph = processServiceFacilities({
 			mon: CHARM_NAMES.cephMon,
-			osd: CHARM_NAMES.cephOsd,
+			osd: CHARM_NAMES.cephOsd
 		});
 	});
 </script>
@@ -192,16 +196,20 @@
 <!-- TODO: copy here -->
 {#snippet statusCard(serviceState: ServiceState)}
 	<div
-		class="bg-muted relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 shadow-sm md:p-6 lg:p-10"
+		class="relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg bg-muted p-4 shadow-sm md:p-6 lg:p-10"
 	>
-		<div class="text-primary/5 absolute text-8xl tracking-tight text-nowrap uppercase group-hover:hidden">
+		<div
+			class="absolute text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
+		>
 			<Icon icon={serviceState.state?.icon} class="size-84" />
 		</div>
 		<div class="z-10 mb-8 flex flex-col space-y-2 text-3xl sm:mb-2 lg:text-5xl">
-			<span class="flex space-x-2 truncate overflow-visible capitalize {serviceState.state?.textClass}">
+			<span
+				class="flex space-x-2 truncate overflow-visible capitalize {serviceState.state?.textClass}"
+			>
 				<span>{serviceState.state?.state}</span>
 			</span>
-			<div class="text-muted-foreground text-xs tracking-tight capitalize md:text-base lg:text-lg">
+			<div class="text-xs tracking-tight text-muted-foreground capitalize md:text-base lg:text-lg">
 				{serviceState.state?.details}
 			</div>
 		</div>
@@ -214,9 +222,13 @@
 		href={resolve('/(auth)/scope/[scope]/setup/kubernetes', { scope: page.params.scope! })}
 		class="group relative col-span-2 row-span-2 overflow-clip rounded-lg shadow-sm sm:max-lg:col-span-1"
 	>
-		<img src={ContainerImage} alt="container" class="absolute h-full w-full object-cover object-center" />
+		<img
+			src={ContainerImage}
+			alt="container"
+			class="absolute h-full w-full object-cover object-center"
+		/>
 		<div
-			class="bg-primary/20 text-primary-foreground dark:text-primary hover:bg-primary/30 relative flex h-full w-full flex-col items-start justify-between p-4 transition-colors md:p-6 lg:p-10"
+			class="relative flex h-full w-full flex-col items-start justify-between bg-primary/20 p-4 text-primary-foreground transition-colors hover:bg-primary/30 md:p-6 lg:p-10 dark:text-primary"
 		>
 			<div class="flex items-center gap-4">
 				<Icon icon="logos:kubernetes" class="size-14" />
@@ -230,13 +242,18 @@
 			</div>
 			<div class="flex items-center text-xs font-medium md:text-base lg:text-lg">
 				{m.details()}
-				<Icon icon="ph:arrow-right-bold" class="ml-2 size-6 transition-transform group-hover:translate-x-0.5" />
+				<Icon
+					icon="ph:arrow-right-bold"
+					class="ml-2 size-6 transition-transform group-hover:translate-x-0.5"
+				/>
 			</div>
 		</div>
 	</a>
 
 	<!-- Control Planes Card -->
-	<div class="bg-muted flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10">
+	<div
+		class="flex flex-col justify-between rounded-lg bg-muted p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
+	>
 		{@render unitCount(kubernetes.controlPlane)}
 		<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
 			<Icon icon="ph:compass" class="size-6" />
@@ -248,7 +265,9 @@
 	{@render statusCard(kubernetes)}
 
 	<!-- Workers Card -->
-	<div class="bg-muted flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10">
+	<div
+		class="flex flex-col justify-between rounded-lg bg-muted p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
+	>
 		{@render unitCount(kubernetes.worker)}
 		<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
 			<Icon icon="ph:cube" class="size-6" />
@@ -259,7 +278,9 @@
 
 {#snippet cephCards()}
 	<!-- Monitors Card -->
-	<div class="bg-muted flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10">
+	<div
+		class="flex flex-col justify-between rounded-lg bg-muted p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
+	>
 		{@render unitCount(ceph.mon)}
 		<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
 			<Icon icon="ph:binoculars" class="size-6" />
@@ -277,7 +298,7 @@
 	>
 		<img src={DiskImage} alt="disk" class="absolute h-full w-full object-cover object-center" />
 		<div
-			class="bg-primary/20 text-primary-foreground dark:text-primary hover:bg-primary/30 relative flex h-full w-full flex-col items-start justify-between gap-4 p-4 transition-colors md:flex-row md:items-end md:p-6 lg:p-10"
+			class="relative flex h-full w-full flex-col items-start justify-between gap-4 bg-primary/20 p-4 text-primary-foreground transition-colors hover:bg-primary/30 md:flex-row md:items-end md:p-6 lg:p-10 dark:text-primary"
 		>
 			<div class="flex items-center gap-4">
 				<Icon icon="simple-icons:ceph" class="size-14 text-[#f0424d]" />
@@ -291,13 +312,18 @@
 			</div>
 			<div class="flex shrink-0 items-center text-xs font-medium md:text-base lg:text-lg">
 				{m.details()}
-				<Icon icon="ph:arrow-right-bold" class="ml-2 size-6 transition-transform group-hover:translate-x-0.5" />
+				<Icon
+					icon="ph:arrow-right-bold"
+					class="ml-2 size-6 transition-transform group-hover:translate-x-0.5"
+				/>
 			</div>
 		</div>
 	</a>
 
 	<!-- OSDs Card -->
-	<div class="bg-muted flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10">
+	<div
+		class="flex flex-col justify-between rounded-lg bg-muted p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
+	>
 		{@render unitCount(ceph.osd)}
 		<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
 			<Icon icon="ph:hard-drives" class="size-6" />

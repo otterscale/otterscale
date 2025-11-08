@@ -24,8 +24,13 @@
 </script>
 
 <Collapsible.Root bind:ref bind:open>
-	<Collapsible.Trigger class={cn('relative w-full px-4 text-lg font-bold', className)} {...restProps}>
-		<span class={cn(open ? 'invisible' : 'text-muted-foreground', 'flex items-center justify-center')}>
+	<Collapsible.Trigger
+		class={cn('relative w-full px-4 text-lg font-bold', className)}
+		{...restProps}
+	>
+		<span
+			class={cn(open ? 'invisible' : 'text-muted-foreground', 'flex items-center justify-center')}
+		>
 			{@render descriptor?.({ open })}
 		</span>
 		<Button variant="ghost" size="icon" class=" absolute top-1/2 right-0 -translate-y-1/2">

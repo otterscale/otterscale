@@ -8,12 +8,12 @@
 	breadcrumbs.set([
 		{
 			title: m.settings(),
-			url: resolve('/(auth)/configuration'),
+			url: resolve('/(auth)/configuration')
 		},
 		{
 			title: m.built_in_test(),
-			url: resolve('/(auth)/configuration/built-in-test'),
-		},
+			url: resolve('/(auth)/configuration/built-in-test')
+		}
 	]);
 </script>
 

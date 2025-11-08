@@ -18,7 +18,7 @@
 
 <script lang="ts">
 	let {
-		subvolume,
+		subvolume
 	}: {
 		subvolume: Subvolume;
 	} = $props();
@@ -38,7 +38,7 @@
 		volumeName: get(nfsStore.selectedVolumeName),
 		groupName: get(nfsStore.selectedSubvolumeGroupName),
 		subvolumeName: subvolume.name,
-		quotaBytes: subvolume.quotaBytes,
+		quotaBytes: subvolume.quotaBytes
 	} as UpdateSubvolumeRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -65,7 +65,7 @@
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 						]}
 					/>
 				</Form.Field>
@@ -95,10 +95,10 @@
 								let message = `Fail to update ${request.subvolumeName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

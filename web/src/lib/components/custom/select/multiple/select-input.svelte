@@ -26,7 +26,7 @@
 					accessor: {
 						input: string;
 					};
-				},
+				}
 			]
 		>;
 	} = $props();
@@ -36,7 +36,13 @@
 </script>
 
 <div class="flex items-center gap-1">
-	<Command.Input data-slot="select-input" class={cn(className)} bind:ref {...restProps} bind:value />
+	<Command.Input
+		data-slot="select-input"
+		class={cn(className)}
+		bind:ref
+		{...restProps}
+		bind:value
+	/>
 	{#if addition && isNotFoundInOptions}
 		{@render addition({
 			manager: optionManager,
@@ -46,8 +52,8 @@
 				},
 				get input() {
 					return value;
-				},
-			},
+				}
+			}
 		})}
 	{/if}
 </div>

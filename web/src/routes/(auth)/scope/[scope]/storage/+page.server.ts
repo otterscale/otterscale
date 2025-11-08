@@ -18,7 +18,14 @@ export const load: PageServerLoad = async () => {
 	const stgObjectFeatureState = await client.getBooleanValue('stg-object', false);
 	const stgGeneralFeatureState = await client.getBooleanValue('stg-general', false);
 
-	if (!(stgBlockFeatureState && stgFileFeatureState && stgObjectFeatureState && stgGeneralFeatureState)) {
+	if (
+		!(
+			stgBlockFeatureState &&
+			stgFileFeatureState &&
+			stgObjectFeatureState &&
+			stgGeneralFeatureState
+		)
+	) {
 		throw error(501, `This feature is not implemented.`);
 	}
 };

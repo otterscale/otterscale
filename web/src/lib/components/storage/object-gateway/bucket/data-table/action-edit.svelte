@@ -22,7 +22,7 @@
 
 <script lang="ts">
 	let {
-		bucket,
+		bucket
 	}: {
 		bucket: Bucket;
 	} = $props();
@@ -41,7 +41,7 @@
 		bucketName: bucket.name,
 		owner: bucket.owner,
 		policy: bucket.policy,
-		acl: getAccessControlList(bucket.grants),
+		acl: getAccessControlList(bucket.grants)
 	} as UpdateBucketRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -63,9 +63,9 @@
 							({
 								value: user.id,
 								label: user.id,
-								icon: 'ph:user',
-							}) as SingleSelect.OptionType,
-					),
+								icon: 'ph:user'
+							}) as SingleSelect.OptionType
+					)
 				);
 				isMounted = true;
 			})
@@ -179,10 +179,10 @@
 								let message = `Fail to update ${request.bucketName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

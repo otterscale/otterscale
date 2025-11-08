@@ -4,7 +4,10 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { CreateVirtualMachineRestoreRequest, VirtualMachine } from '$lib/api/instance/v1/instance_pb';
+	import type {
+		CreateVirtualMachineRestoreRequest,
+		VirtualMachine
+	} from '$lib/api/instance/v1/instance_pb';
 	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -37,7 +40,7 @@
 		facility: $currentKubernetes?.name,
 		namespace: virtualMachine.namespace,
 		name: '',
-		virtualMachineName: virtualMachine.name,
+		virtualMachineName: virtualMachine.name
 	} as CreateVirtualMachineRestoreRequest;
 
 	// ==================== Form State ====================
@@ -96,10 +99,10 @@
 								let message = `Failed to create restore ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

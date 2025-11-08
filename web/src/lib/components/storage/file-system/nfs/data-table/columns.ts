@@ -17,7 +17,7 @@ const messages = {
 	mode: m.mode(),
 	createTime: m.create_time(),
 	exportSubvolume: m.export(),
-	snapshots: m.snapshot(),
+	snapshots: m.snapshot()
 };
 
 const columns: ColumnDef<Subvolume>[] = [
@@ -30,7 +30,7 @@ const columns: ColumnDef<Subvolume>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -39,7 +39,7 @@ const columns: ColumnDef<Subvolume>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'poolName',
@@ -48,7 +48,7 @@ const columns: ColumnDef<Subvolume>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.poolName, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'exportSubvolume',
@@ -57,7 +57,7 @@ const columns: ColumnDef<Subvolume>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.exportSubvolume, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'usage',
@@ -76,8 +76,8 @@ const columns: ColumnDef<Subvolume>[] = [
 					? Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes)
 					: 0,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'createTime',
@@ -92,8 +92,8 @@ const columns: ColumnDef<Subvolume>[] = [
 				previousRow.original.createdAt,
 				nextRow.original.createdAt,
 				(p, n) => timestampDate(p) < timestampDate(n),
-				(p, n) => timestampDate(p) === timestampDate(n),
-			),
+				(p, n) => timestampDate(p) === timestampDate(n)
+			)
 	},
 	{
 		accessorKey: 'snapshots',
@@ -108,8 +108,8 @@ const columns: ColumnDef<Subvolume>[] = [
 				previousRow.original.snapshots.length,
 				nextRow.original.snapshots.length,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'actions',
@@ -119,8 +119,8 @@ const columns: ColumnDef<Subvolume>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

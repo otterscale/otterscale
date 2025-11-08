@@ -9,8 +9,8 @@
 	breadcrumbs.set([
 		{
 			title: m.databases(),
-			url: resolve('/(auth)/scope/[scope]/databases', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/databases', { scope: page.params.scope! })
+		}
 	]);
 </script>
 

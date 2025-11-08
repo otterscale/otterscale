@@ -19,24 +19,24 @@
 		<Card.Content class="flex h-[250px] flex-col space-y-4">
 			<div class="space-y-2">
 				<div class="flex items-center justify-between">
-					<span class="text-muted-foreground text-sm">CPU</span>
-					<span class="text-muted-foreground text-sm">{cpu}%</span>
+					<span class="text-sm text-muted-foreground">CPU</span>
+					<span class="text-sm text-muted-foreground">{cpu}%</span>
 				</div>
 				<Progress value={cpu} max={100} class={formatProgressColor(cpu, true, false)} />
 			</div>
 
 			<div class="space-y-2">
 				<div class="flex items-center justify-between">
-					<span class="text-muted-foreground text-sm">RAM</span>
-					<span class="text-muted-foreground text-sm">{ram}%</span>
+					<span class="text-sm text-muted-foreground">RAM</span>
+					<span class="text-sm text-muted-foreground">{ram}%</span>
 				</div>
 				<Progress value={ram} max={100} class={formatProgressColor(ram, true, false)} />
 			</div>
 
 			<div class="space-y-2">
 				<div class="flex items-center justify-between">
-					<span class="text-muted-foreground text-sm">DISK</span>
-					<span class="text-muted-foreground text-sm">{disk}%</span>
+					<span class="text-sm text-muted-foreground">DISK</span>
+					<span class="text-sm text-muted-foreground">{disk}%</span>
 				</div>
 				<Progress value={disk} max={100} class={formatProgressColor(disk, true, false)} />
 			</div>

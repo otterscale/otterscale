@@ -11,7 +11,7 @@
 
 <script lang="ts">
 	let {
-		subvolume,
+		subvolume
 	}: {
 		subvolume: Subvolume;
 	} = $props();

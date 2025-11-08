@@ -36,7 +36,7 @@
 								icon="ph:check"
 								class={cn(
 									filterManager.isDeprecationSelected(deprecation) ? 'visible' : 'invisible',
-									'h-4 w-4',
+									'h-4 w-4'
 								)}
 							/>
 							{#if deprecation === null}

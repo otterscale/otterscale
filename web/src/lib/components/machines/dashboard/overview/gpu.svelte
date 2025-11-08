@@ -22,7 +22,7 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
@@ -30,19 +30,24 @@
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)),
+		$machines.filter((m) =>
+			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
+		)
 	);
-	const totalGPUs = $derived(scopeMachines.reduce((a, machine) => a + Number(machine.gpuDevices.length ?? 0), 0));
+	const totalGPUs = $derived(
+		scopeMachines.reduce((a, machine) => a + Number(machine.gpuDevices.length ?? 0), 0)
+	);
 	let allocatedGPUs = $state([] as SampleValue[]);
 	const trend = $derived(
 		allocatedGPUs.length > 1 && allocatedGPUs[allocatedGPUs.length - 2].value !== 0
-			? (allocatedGPUs[allocatedGPUs.length - 1].value - allocatedGPUs[allocatedGPUs.length - 2].value) /
+			? (allocatedGPUs[allocatedGPUs.length - 1].value -
+					allocatedGPUs[allocatedGPUs.length - 2].value) /
 					allocatedGPUs[allocatedGPUs.length - 2].value
-			: 0,
+			: 0
 	);
 
 	const configuration = {
-		amounts: { label: 'GPUs', color: 'var(--chart-1)' },
+		amounts: { label: 'GPUs', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
@@ -53,7 +58,7 @@
 				`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
-				60 * 60,
+				60 * 60
 			)
 			.then((response) => {
 				allocatedGPUs = response.result && response.result[0] ? response.result[0].values : [];
@@ -101,7 +106,7 @@
 				<Tooltip.Provider>
 					<Tooltip.Root>
 						<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-							<Icon icon="ph:info" class="text-muted-foreground size-5" />
+							<Icon icon="ph:info" class="size-5 text-muted-foreground" />
 						</Tooltip.Trigger>
 						<Tooltip.Content>
 							<p>{m.machine_dashboard_gpu_tooltip()}</p>
@@ -113,7 +118,7 @@
 		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
 			<div class="flex flex-col gap-0.5">
 				<div class="text-3xl font-bold">{totalGPUs}</div>
-				<p class="text-muted-foreground text-sm">{m.pieces()}</p>
+				<p class="text-sm text-muted-foreground">{m.pieces()}</p>
 			</div>
 			<Chart.Container config={configuration} class="h-full w-20">
 				<LineChart
@@ -125,15 +130,15 @@
 						{
 							key: 'value',
 							label: configuration.amounts.label,
-							color: configuration.amounts.color,
-						},
+							color: configuration.amounts.color
+						}
 					]}
 					props={{
 						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
 						},
-						highlight: { points: { r: 4 } },
+						highlight: { points: { r: 4 } }
 					}}
 				>
 					{#snippet tooltip()}
@@ -158,7 +163,7 @@
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
+				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'
 			)}
 		>
 			{Math.abs(trend).toFixed(2)} %

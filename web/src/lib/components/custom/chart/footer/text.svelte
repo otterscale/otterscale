@@ -6,7 +6,7 @@
 	let {
 		title,
 		subtitle,
-		class: className,
+		class: className
 	}: {
 		title: string;
 		subtitle?: string;
@@ -20,7 +20,7 @@
 			{title}
 		</div>
 		{#if subtitle}
-			<div class="text-muted-foreground flex items-center gap-2 leading-none">
+			<div class="flex items-center gap-2 leading-none text-muted-foreground">
 				{subtitle}
 			</div>
 		{/if}

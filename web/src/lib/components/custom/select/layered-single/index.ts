@@ -32,6 +32,6 @@ export {
 	SubTrigger,
 	Trigger,
 	getAllAncestralOptions,
-	getAncestralOptionsMap,
+	getAncestralOptionsMap
 };
 export type { AncestralOptionType, OptionType };

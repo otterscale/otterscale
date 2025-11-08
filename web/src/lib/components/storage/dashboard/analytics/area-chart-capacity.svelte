@@ -30,7 +30,7 @@
 	// Prometheus query for Memory usage
 	const query = $derived({
 		Total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"}`,
-		Used: `ceph_cluster_total_used_bytes{juju_model_uuid=~"${scope.uuid}"}`,
+		Used: `ceph_cluster_total_used_bytes{juju_model_uuid=~"${scope.uuid}"}`
 	});
 </script>
 
@@ -47,7 +47,11 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} valueFormatter={formatCapacity} />
+			<Content
+				data={response}
+				timeRange={formatTimeRange(TIME_RANGE_HOURS)}
+				valueFormatter={formatCapacity}
+			/>
 		{/snippet}
 	</Layout>
 {:catch}

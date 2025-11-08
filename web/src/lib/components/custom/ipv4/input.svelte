@@ -120,8 +120,8 @@
 	onkeydown={onKeydown}
 	type="text"
 	class={cn(
-		'hide-ramp placeholder:text-muted-foreground h-full w-9 border-0 bg-transparent text-center outline-hidden focus:outline-hidden',
-		className,
+		'hide-ramp h-full w-9 border-0 bg-transparent text-center outline-hidden placeholder:text-muted-foreground focus:outline-hidden',
+		className
 	)}
 	{...rest}
 />

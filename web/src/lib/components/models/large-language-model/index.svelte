@@ -45,7 +45,7 @@
 		await applicationClient
 			.listApplications({
 				scope: scope,
-				facility: facility,
+				facility: facility
 			})
 			.then((response) => {
 				applications.set(response.applications);
@@ -56,7 +56,7 @@
 			.then((response) => {
 				prometheusDriver = new PrometheusDriver({
 					endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-					baseURL: response.baseUrl,
+					baseURL: response.baseUrl
 				});
 			})
 			.catch((error) => {
@@ -64,24 +64,28 @@
 			});
 
 		if (prometheusDriver) {
-			await prometheusDriver.instantQuery(`vllm:gpu_cache_usage_perc{scope_uuid="${scope}"}`).then((response) => {
-				gpuCacheUsage = response.result;
-				gpuCacheUsageByPod = new Map(
-					gpuCacheUsage.map((instantVector) => [
-						(instantVector.metric.labels as { pod?: string }).pod ?? '',
-						instantVector.value.value,
-					]),
-				);
-			});
-			await prometheusDriver.instantQuery(`vllm:kv_cache_usage_perc{scope_uuid="${scope}"}`).then((response) => {
-				kvCacheUsage = response.result;
-				kvCacheUsageByPod = new Map(
-					kvCacheUsage.map((instantVector) => [
-						(instantVector.metric.labels as { pod?: string }).pod ?? '',
-						instantVector.value.value,
-					]),
-				);
-			});
+			await prometheusDriver
+				.instantQuery(`vllm:gpu_cache_usage_perc{scope_uuid="${scope}"}`)
+				.then((response) => {
+					gpuCacheUsage = response.result;
+					gpuCacheUsageByPod = new Map(
+						gpuCacheUsage.map((instantVector) => [
+							(instantVector.metric.labels as { pod?: string }).pod ?? '',
+							instantVector.value.value
+						])
+					);
+				});
+			await prometheusDriver
+				.instantQuery(`vllm:kv_cache_usage_perc{scope_uuid="${scope}"}`)
+				.then((response) => {
+					kvCacheUsage = response.result;
+					kvCacheUsageByPod = new Map(
+						kvCacheUsage.map((instantVector) => [
+							(instantVector.metric.labels as { pod?: string }).pod ?? '',
+							instantVector.value.value
+						])
+					);
+				});
 			await prometheusDriver
 				.instantQuery(`vllm:time_to_first_token_seconds_sum{scope_uuid="${scope}"}`)
 				.then((response) => {
@@ -89,8 +93,8 @@
 					timeToFirstTokenByPod = new Map(
 						timeToFirstTokenSeconds.map((instantVector) => [
 							(instantVector.metric.labels as { pod?: string }).pod ?? '',
-							instantVector.value.value,
-						]),
+							instantVector.value.value
+						])
 					);
 				});
 			await prometheusDriver
@@ -100,8 +104,8 @@
 					requestLatencyByPod = new Map(
 						requestLatencySeconds.map((instantVector) => [
 							(instantVector.metric.labels as { pod?: string }).pod ?? '',
-							instantVector.value.value,
-						]),
+							instantVector.value.value
+						])
 					);
 				});
 		}
@@ -116,10 +120,10 @@
 							gpu_cache: gpuCacheUsageByPod.get(model.labels['model-name']) ?? 0,
 							kv_cache: kvCacheUsageByPod.get(model.labels['model-name']) ?? 0,
 							requests: requestLatencyByPod.get(model.labels['model-name']) ?? 0,
-							time_to_first_token: timeToFirstTokenByPod.get(model.labels['model-name']) ?? 0,
-						},
-					}) as LargeLanguageModel,
-			),
+							time_to_first_token: timeToFirstTokenByPod.get(model.labels['model-name']) ?? 0
+						}
+					}) as LargeLanguageModel
+			)
 		);
 	}
 

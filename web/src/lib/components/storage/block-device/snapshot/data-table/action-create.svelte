@@ -25,7 +25,7 @@
 		scope: $currentCeph?.scope,
 		facility: $currentCeph?.name,
 		imageName: image.name,
-		poolName: image.poolName,
+		poolName: image.poolName
 	} as CreateImageSnapshotRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -75,10 +75,10 @@
 								let message = `Fail to create ${request.snapshotName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

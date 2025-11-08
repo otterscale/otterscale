@@ -8,12 +8,15 @@
 	import {
 		ConfigurationService,
 		type Configuration_BootImage,
-		type UpdateBootImageRequest,
+		type UpdateBootImageRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
-	import { Multiple as MultipleSelect, Single as SingleSelect } from '$lib/components/custom/select';
+	import {
+		Multiple as MultipleSelect,
+		Single as SingleSelect
+	} from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 </script>
@@ -36,7 +39,7 @@
 	const defaults = {
 		id: bootImage.id,
 		distroSeries: bootImage.distroSeries,
-		architectures: [...bootImage.architectures],
+		architectures: [...bootImage.architectures]
 	} as UpdateBootImageRequest;
 
 	// Current request state
@@ -61,7 +64,7 @@
 			await client.listBootImageSelections({}).then((response) => {
 				// Find the boot image selection for the current distro series
 				const currentBootImageSelection = response.bootImageSelections.find(
-					(bootImageSelection) => bootImageSelection.distroSeries === bootImage.distroSeries,
+					(bootImageSelection) => bootImageSelection.distroSeries === bootImage.distroSeries
 				);
 
 				if (currentBootImageSelection) {
@@ -69,8 +72,8 @@
 						currentBootImageSelection.architectures.map((architecture) => ({
 							value: architecture,
 							label: architecture,
-							icon: 'ph:empty',
-						})),
+							icon: 'ph:empty'
+						}))
 					);
 				}
 			});
@@ -158,10 +161,10 @@
 								let message = `Failed to edit boot image ${request.distroSeries}: ${architectures}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						// Reset form and close modal
 						reset();

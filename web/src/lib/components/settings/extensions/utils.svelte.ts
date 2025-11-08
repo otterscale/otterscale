@@ -13,7 +13,9 @@ function getAccordionValue(): ExtensionsBundleType[] | undefined {
 }
 
 function installExtensions(extensions: ExtensionsBundleType[]) {
-	const basePath = resolve('/(auth)/scope/[scope]/settings/extensions', { scope: page.params.scope! });
+	const basePath = resolve('/(auth)/scope/[scope]/settings/extensions', {
+		scope: page.params.scope!
+	});
 	const url = new SvelteURL(basePath, window.location.origin);
 	extensions.forEach((extension) => url.searchParams.append(key, extension));
 	goto(url.pathname + url.search); // eslint-disable-line svelte/no-navigation-without-resolve

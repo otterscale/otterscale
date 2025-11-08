@@ -13,7 +13,7 @@
 <script lang="ts">
 	let {
 		selectedScope = $bindable(),
-		selectedFacility = $bindable(),
+		selectedFacility = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -26,9 +26,11 @@
 	const pools = writable([] as Pool[]);
 
 	const reloadManager = new ReloadManager(() => {
-		storageClient.listPools({ scope: selectedScope, facility: selectedFacility }).then((response) => {
-			pools.set(response.pools);
-		});
+		storageClient
+			.listPools({ scope: selectedScope, facility: selectedFacility })
+			.then((response) => {
+				pools.set(response.pools);
+			});
 	});
 	setContext('reloadManager', reloadManager);
 

@@ -20,7 +20,7 @@
 		Loading: 0,
 		Waiting: 1,
 		Installing: 2,
-		Completed: 3,
+		Completed: 3
 	} as const;
 
 	// State
@@ -31,7 +31,7 @@
 	}>({
 		phase: SetupPhase.Loading,
 		messages: [],
-		newURL: '',
+		newURL: ''
 	});
 
 	const { phase, messages, newURL } = $derived($statusStore);
@@ -61,7 +61,7 @@
 						...state,
 						phase: determinePhase(status),
 						messages: [...state.messages.slice(-199), status],
-						newURL: status.newUrl || state.newURL,
+						newURL: status.newUrl || state.newURL
 					}));
 				}
 				break;
@@ -84,7 +84,7 @@
 	});
 </script>
 
-<main class="bg-sidebar relative flex max-h-screen min-h-screen flex-col overflow-hidden">
+<main class="relative flex max-h-screen min-h-screen flex-col overflow-hidden bg-sidebar">
 	<div class="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center opacity-100">
 		<img
 			src={SquareGridImage}
@@ -111,20 +111,20 @@
 </main>
 
 {#snippet loadingView()}
-	<Button class="text-muted-foreground mt-4 text-center text-lg" variant="ghost" size="lg" disabled>
+	<Button class="mt-4 text-center text-lg text-muted-foreground" variant="ghost" size="lg" disabled>
 		<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
 		{m.setup_environment_loading()}
 	</Button>
 {/snippet}
 
 {#snippet waitingView()}
-	<Button class="text-muted-foreground mt-4 text-center text-lg" variant="ghost" size="lg" disabled>
+	<Button class="mt-4 text-center text-lg text-muted-foreground" variant="ghost" size="lg" disabled>
 		<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
 		{m.setup_environment_waiting()}
 	</Button>
 
 	<div class="relative mx-auto flex w-full max-w-6xl flex-grow flex-col sm:mt-48">
-		<p class="text-muted-foreground mt-4 text-center text-lg">
+		<p class="mt-4 text-center text-lg text-muted-foreground">
 			{m.setup_environment_curl_description()}
 		</p>
 
@@ -139,13 +139,13 @@
 {/snippet}
 
 {#snippet installingView()}
-	<Button class="text-muted-foreground mt-4 text-center text-lg" variant="ghost" size="lg" disabled>
+	<Button class="mt-4 text-center text-lg text-muted-foreground" variant="ghost" size="lg" disabled>
 		<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
 		{m.setup_environment_installing()}
 	</Button>
 
 	<div
-		class="border-border bg-secondary dark text-card-foreground mt-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
+		class="dark mt-6 aspect-video w-full max-w-6xl flex-col rounded-xl border border-border bg-secondary font-mono text-sm text-card-foreground shadow-sm"
 	>
 		<div class="flex border-b border-inherit p-4">
 			<div class="flex items-center gap-2">
@@ -174,7 +174,7 @@
 {/snippet}
 
 {#snippet completionView()}
-	<p class="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg">
+	<p class="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
 		{m.setup_environment_complete_description()}
 	</p>
 	<div class="mt-8 text-center">

@@ -14,7 +14,10 @@ import SubHeaderViewer from './layout-sub-header-viewer.svelte';
 import Viewer from './layout-viewer.svelte';
 import Root from './layout.svelte';
 
-import { Label as ActionLabel, Separator as ActionSeparator } from '$lib/components/ui/dropdown-menu/index';
+import {
+	Label as ActionLabel,
+	Separator as ActionSeparator
+} from '$lib/components/ui/dropdown-menu/index';
 
 export {
 	ActionItem,
@@ -33,5 +36,5 @@ export {
 	Statistics,
 	SubCell,
 	SubHeaderViewer,
-	Viewer,
+	Viewer
 };

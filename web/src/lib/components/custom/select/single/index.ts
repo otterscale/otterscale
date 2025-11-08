@@ -30,6 +30,6 @@ export {
 	Options,
 	Root,
 	Shortcut,
-	Trigger,
+	Trigger
 };
 export type { OptionType };

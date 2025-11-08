@@ -25,14 +25,14 @@
 		applicationClient
 			.listApplications({
 				scope: scope,
-				facility: facility,
+				facility: facility
 			})
 			.then((response) => {
 				applications.set(
 					response.applications.map((application) => ({
 						...application,
-						publicAddress: response.publicAddress,
-					})),
+						publicAddress: response.publicAddress
+					}))
 				);
 			})
 			.catch((error) => {
@@ -45,14 +45,14 @@
 		applicationClient
 			.listApplications({
 				scope: scope,
-				facility: facility,
+				facility: facility
 			})
 			.then((response) => {
 				applications.set(
 					response.applications.map((application) => ({
 						...application,
-						publicAddress: response.publicAddress,
-					})),
+						publicAddress: response.publicAddress
+					}))
 				);
 				isMounted = true;
 			})

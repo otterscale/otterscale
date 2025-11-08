@@ -1,4 +1,14 @@
-import { Close, Content, Empty, Group, Item, ItemInformation, List, Options, Shortcut } from '../single';
+import {
+	Close,
+	Content,
+	Empty,
+	Group,
+	Item,
+	ItemInformation,
+	List,
+	Options,
+	Shortcut
+} from '../single';
 
 import ActionAll from './select-action-all.svelte';
 import ActionClear from './select-action-clear.svelte';
@@ -33,6 +43,6 @@ export {
 	Root,
 	Shortcut,
 	Trigger,
-	Viewer,
+	Viewer
 };
 export type { OptionType };

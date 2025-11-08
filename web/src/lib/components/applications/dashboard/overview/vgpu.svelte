@@ -14,13 +14,13 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let memoryUsage: Record<string, number>[] = $state([]);
 
 	const configuration = {
-		usage: { label: 'Usage', color: 'var(--chart-1)' },
+		usage: { label: 'Usage', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
 	let context = $state<ChartContextValue>();
@@ -30,7 +30,7 @@
 			.instantQuery(
 				`
 				topk(10, avg by (nodeid) (nodeGPUMemoryPercentage{juju_model_uuid="${scope.uuid}"}))
-				`,
+				`
 			)
 			.then((response) => {
 				const instanceVectors: InstantVector[] = response.result;
@@ -39,8 +39,8 @@
 					.map((instanceVector) =>
 						Object.fromEntries([
 							['node', (instanceVector.metric.labels as { nodeid?: string }).nodeid],
-							['usage', instanceVector.value.value],
-						]),
+							['usage', instanceVector.value.value]
+						])
 					);
 			})
 			.catch((error) => {
@@ -93,8 +93,8 @@
 						{
 							key: 'usage',
 							label: configuration.usage.label,
-							color: configuration.usage.color,
-						},
+							color: configuration.usage.color
+						}
 					]}
 					props={{
 						bars: {
@@ -103,18 +103,18 @@
 							initialHeight: 0,
 							motion: {
 								y: { type: 'tween', duration: 500, easing: cubicInOut },
-								height: { type: 'tween', duration: 500, easing: cubicInOut },
-							},
+								height: { type: 'tween', duration: 500, easing: cubicInOut }
+							}
 						},
 						highlight: { area: false },
 						yAxis: {
 							tickLabelProps: {
 								textAnchor: 'start',
 								dx: 8,
-								class: 'stroke-none fill-background',
+								class: 'stroke-none fill-background'
 							},
-							tickLength: 0,
-						},
+							tickLength: 0
+						}
 					}}
 				>
 					{#snippet belowMarks()}

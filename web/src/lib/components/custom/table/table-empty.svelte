@@ -9,11 +9,11 @@
 	let {
 		ref = $bindable(null),
 		children,
-		class: className,
+		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {} = $props();
 </script>
 
-<div class={cn('text-muted-foreground p-2 text-center', className)}>
+<div class={cn('p-2 text-center text-muted-foreground', className)}>
 	{#if children}
 		{@render children()}
 	{:else}

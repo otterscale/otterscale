@@ -19,7 +19,7 @@
 
 <script lang="ts">
 	let {
-		application,
+		application
 	}: {
 		application: Writable<Application>;
 	} = $props();
@@ -35,7 +35,7 @@
 			namespace: page.params.namespace ?? '',
 			pod: pod.name,
 			container: '',
-			command: '/bin/sh',
+			command: '/bin/sh'
 		});
 
 		const terminalUrl = `${resolve('/(auth)/tty')}${searchParams.toString()}`;
@@ -49,7 +49,7 @@
 			'menubar=no',
 			'status=no',
 			'scrollbars=no',
-			'resizable=yes',
+			'resizable=yes'
 		].join(',');
 
 		const newWindow = window.open(terminalUrl, windowName, features);
@@ -100,17 +100,18 @@
 				<Table.Cell>
 					{#if pod.lastCondition}
 						{#if pod.lastCondition.reason || pod.lastCondition.message}
-							<div class="text-destructive flex items-center gap-2">
-								<Badge variant="destructive" class={pod.lastCondition.reason ? 'visible' : 'hidden'}>
+							<div class="flex items-center gap-2 text-destructive">
+								<Badge
+									variant="destructive"
+									class={pod.lastCondition.reason ? 'visible' : 'hidden'}
+								>
 									{pod.lastCondition.reason}
 								</Badge>
 								<Tooltip.Provider>
 									<Tooltip.Root>
 										<Tooltip.Trigger>
 											<p
-												class={cn(
-													pod.lastCondition.message ? 'max-w-[1000px] truncate' : 'hidden',
-												)}
+												class={cn(pod.lastCondition.message ? 'max-w-[1000px] truncate' : 'hidden')}
 											>
 												{pod.lastCondition.message}
 											</p>

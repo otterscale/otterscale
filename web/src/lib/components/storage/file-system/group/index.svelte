@@ -16,7 +16,7 @@
 		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
 		selectedVolume = $bindable(),
-		trigger,
+		trigger
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -36,7 +36,7 @@
 			.listSubvolumeGroups({
 				scope: selectedScope,
 				facility: selectedFacility,
-				volumeName: selectedVolume,
+				volumeName: selectedVolume
 			})
 			.then((response) => {
 				subvolumeGroups.set(response.subvolumeGroups);
@@ -53,7 +53,7 @@
 			.listSubvolumeGroups({
 				scope: selectedScope,
 				facility: selectedFacility,
-				volumeName: selectedVolume,
+				volumeName: selectedVolume
 			})
 			.then((response) => {
 				subvolumeGroups.set(response.subvolumeGroups);

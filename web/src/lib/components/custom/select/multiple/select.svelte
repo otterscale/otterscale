@@ -33,7 +33,7 @@
 		},
 		set value(newValues: any[]) {
 			value = newValues;
-		},
+		}
 	});
 	setContext('id', id);
 	setContext('required', required);

@@ -21,7 +21,9 @@
 
 	<Separator />
 
-	<div class="mx-auto grid w-full items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
+	<div
+		class="mx-auto grid w-full items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]"
+	>
 		<NavigationMenu.Root viewport={false} class="flex-col items-start gap-4">
 			<NavigationMenu.List class="w-full flex-col items-start gap-1">
 				{#each items as item}
@@ -35,8 +37,8 @@
 										navigationMenuTriggerStyle(),
 										'h-fit',
 										page.url.pathname === item.url
-											? 'bg-muted gap-2 font-semibold'
-											: 'gap-2 font-normal',
+											? 'gap-2 bg-muted font-semibold'
+											: 'gap-2 font-normal'
 									)}
 								>
 									<Icon
@@ -45,7 +47,7 @@
 									/>
 									<div class="flex flex-col">
 										<p class="text-sm">{item.title}</p>
-										<p class="text-muted-foreground text-xs">{item.type}</p>
+										<p class="text-xs text-muted-foreground">{item.type}</p>
 									</div>
 								</a>
 								<!-- eslint-enable svelte/no-navigation-without-resolve -->

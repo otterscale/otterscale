@@ -9,8 +9,8 @@
 	breadcrumbs.set([
 		{
 			title: m.compute(),
-			url: resolve('/(auth)/scope/[scope]/compute', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/compute', { scope: page.params.scope! })
+		}
 	]);
 </script>
 

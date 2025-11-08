@@ -15,7 +15,7 @@
 		ipAddresses,
 		ipRanges,
 		statistics,
-		actions,
+		actions
 	};
 </script>
 

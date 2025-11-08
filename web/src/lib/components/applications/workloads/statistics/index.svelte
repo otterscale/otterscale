@@ -26,13 +26,17 @@
 	// Computed values
 	const filteredApplications = $derived($applications.filter((a) => a.type === selectedValue));
 
-	const totalPods = $derived(filteredApplications.reduce((total, application) => total + application.pods.length, 0));
-
-	const numberOfServices = $derived(
-		filteredApplications.reduce((total, application) => total + application.services.length, 0),
+	const totalPods = $derived(
+		filteredApplications.reduce((total, application) => total + application.pods.length, 0)
 	);
 
-	const healthyPods = $derived(filteredApplications.reduce((total, application) => total + application.healthies, 0));
+	const numberOfServices = $derived(
+		filteredApplications.reduce((total, application) => total + application.services.length, 0)
+	);
+
+	const healthyPods = $derived(
+		filteredApplications.reduce((total, application) => total + application.healthies, 0)
+	);
 
 	const healthByType = $derived(totalPods > 0 ? (healthyPods * 100) / totalPods : 0);
 
@@ -42,14 +46,14 @@
 		try {
 			const response = await client.listApplications({
 				scope: scope,
-				facility: facility,
+				facility: facility
 			});
 
 			applications.set(
 				response.applications.map((application) => ({
 					...application,
-					publicAddress: response.publicAddress,
-				})),
+					publicAddress: response.publicAddress
+				}))
 			);
 
 			if (response.applications && response.applications[0]) {

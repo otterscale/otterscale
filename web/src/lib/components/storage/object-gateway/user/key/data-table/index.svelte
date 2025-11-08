@@ -8,7 +8,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 
 	import Create from './action-create.svelte';
@@ -23,7 +23,7 @@
 
 <script lang="ts">
 	let {
-		user,
+		user
 	}: {
 		user: User;
 	} = $props();
@@ -61,7 +61,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -98,14 +98,19 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 
 <Layout.Root>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy columnId="access" values={keys.map((row) => row.accessKey)} {messages} {table} />
+			<Filters.StringFuzzy
+				columnId="access"
+				values={keys.map((row) => row.accessKey)}
+				{messages}
+				{table}
+			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

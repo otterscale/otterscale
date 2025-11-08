@@ -8,7 +8,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
@@ -26,7 +26,7 @@
 <script lang="ts">
 	let {
 		virtualMachines,
-		reloadManager,
+		reloadManager
 	}: {
 		virtualMachines: Writable<VirtualMachine[]>;
 		reloadManager: ReloadManager;
@@ -36,7 +36,7 @@
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({
-		createTime: false,
+		createTime: false
 	});
 	let rowSelection = $state<RowSelectionState>({});
 
@@ -66,7 +66,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 
 		onPaginationChange: (updater) => {
@@ -105,14 +105,19 @@
 			}
 		},
 
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 
 <Layout.Root>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy columnId="name" values={$virtualMachines.map((row) => row.name)} {messages} {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$virtualMachines.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.StringMatch
 				columnId="status"
 				values={$virtualMachines.flatMap((row) => row.status)}

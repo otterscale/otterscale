@@ -17,7 +17,7 @@
 		port,
 		createTime,
 		vnc,
-		actions,
+		actions
 	};
 </script>
 

@@ -15,7 +15,7 @@ const messages = {
 	type: m.type(),
 	phase: m.phase(),
 	boot: m.boot(),
-	size: m.size(),
+	size: m.size()
 };
 
 const columns: ColumnDef<EnhancedDisk>[] = [
@@ -28,7 +28,7 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -37,7 +37,7 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'bus',
@@ -46,7 +46,7 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.bus, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'bootOrder',
@@ -55,7 +55,7 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.bootOrder, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'dataVolume',
@@ -64,7 +64,7 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.dataVolume, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'type',
@@ -73,7 +73,7 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.type, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'phase',
@@ -82,7 +82,7 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.phase, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'boot',
@@ -91,7 +91,7 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.boot, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'size',
@@ -100,7 +100,7 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.size, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'actions',
@@ -110,8 +110,8 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

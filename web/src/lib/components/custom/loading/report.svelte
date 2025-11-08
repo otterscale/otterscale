@@ -16,6 +16,6 @@
 
 <div class="flex flex-col gap-2">
 	{#each Array(13)}
-		<Skeleton class={cn('bg-muted h-[30px]', getWidthClass())} />
+		<Skeleton class={cn('h-[30px] bg-muted', getWidthClass())} />
 	{/each}
 </div>

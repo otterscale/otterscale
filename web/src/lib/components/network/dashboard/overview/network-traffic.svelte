@@ -16,7 +16,7 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: {
 		prometheusDriver: PrometheusDriver;
 		scope: Scope;
@@ -33,17 +33,17 @@
 		receives.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmits[index]?.value ?? 0,
-		})),
+			transmit: transmits[index]?.value ?? 0
+		}))
 	);
 	const latestTraffics = $derived({
 		receive: latestReceive,
-		transmit: latestTransmit,
+		transmit: latestTransmit
 	});
 	const trafficsConfigurations = {
 		views: { label: 'Traffic', color: '' },
 		receive: { label: 'Receive', color: 'var(--chart-1)' },
-		transmit: { label: 'Transmit', color: 'var(--chart-2)' },
+		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
 	let trafficsContext = $state<ChartContextValue>();
@@ -52,8 +52,8 @@
 		{
 			key: activeTraffic,
 			label: trafficsConfigurations[activeTraffic].label,
-			color: trafficsConfigurations[activeTraffic].color,
-		},
+			color: trafficsConfigurations[activeTraffic].color
+		}
 	]);
 
 	function fetch() {
@@ -62,7 +62,7 @@
 				`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`,
 				new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
 				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				receives = response.result[0].values;
@@ -72,18 +72,22 @@
 				`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`,
 				new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
 				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				transmits = response.result[0].values;
 			});
 		prometheusDriver
-			.instantQuery(`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`)
+			.instantQuery(
+				`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`
+			)
 			.then((response) => {
 				latestReceive = response.result[0].value.value;
 			});
 		prometheusDriver
-			.instantQuery(`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`)
+			.instantQuery(
+				`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`
+			)
 			.then((response) => {
 				latestTransmit = response.result[0].value.value;
 			});
@@ -123,10 +127,10 @@
 					{@const { value, unit } = formatIO(latestTraffics[key as keyof typeof latestTraffics])}
 					<button
 						data-active={activeTraffic === chart}
-						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
+						class="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
 						onclick={() => (activeTraffic = chart)}
 					>
-						<span class="text-muted-foreground text-xs">
+						<span class="text-xs text-muted-foreground">
 							{trafficsConfigurations[chart].label}
 						</span>
 						<span class="flex items-end gap-1 text-lg leading-none font-bold sm:text-3xl">
@@ -154,15 +158,15 @@
 							initialHeight: 0,
 							motion: {
 								y: { type: 'tween', duration: 500, easing: cubicInOut },
-								height: { type: 'tween', duration: 500, easing: cubicInOut },
-							},
+								height: { type: 'tween', duration: 500, easing: cubicInOut }
+							}
 						},
 						highlight: { area: { fill: 'none' } },
 						xAxis: {
 							format: (v: Date) =>
 								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
-							ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks(),
-						},
+							ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks()
+						}
 					}}
 				>
 					{#snippet belowMarks()}
@@ -177,7 +181,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric',
+									minute: 'numeric'
 								});
 							}}
 						>

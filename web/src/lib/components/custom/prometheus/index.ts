@@ -21,7 +21,13 @@ export interface Series {
 	color: string;
 }
 
-const CHART_COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
+const CHART_COLORS = [
+	'var(--chart-1)',
+	'var(--chart-2)',
+	'var(--chart-3)',
+	'var(--chart-4)',
+	'var(--chart-5)'
+];
 
 /**
  * Auto-generate chartConfig based on data
@@ -47,7 +53,7 @@ export function generateChartConfig(data: DataPoint[]): ChartConfig {
 
 		chartConfig[key] = {
 			label,
-			color,
+			color
 		};
 	});
 	return chartConfig;
@@ -62,7 +68,7 @@ export function getSeries(config: ChartConfig): Series[] {
 	return Object.keys(config).map((key) => ({
 		key: key,
 		label: config[key].label,
-		color: config[key].color,
+		color: config[key].color
 	}));
 }
 
@@ -72,7 +78,7 @@ export function getSeries(config: ChartConfig): Series[] {
  * @returns New format DataPoint array
  */
 export function convertToNewDataFormat(
-	oldFormatData: Array<{ time: Date; value: number; metric: string }>,
+	oldFormatData: Array<{ time: Date; value: number; metric: string }>
 ): DataPoint[] {
 	// Group by time
 	const timeMap = new Map();
@@ -109,7 +115,7 @@ export async function fetchFlattenedRange(
 	timeStart?: Date,
 	timeEnd?: Date,
 	step: number = 15,
-	metricName?: string,
+	metricName?: string
 ): Promise<DataPoint[]> {
 	const start = timeStart || new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
 	const end = timeEnd || new Date(); // Now
@@ -121,7 +127,7 @@ export async function fetchFlattenedRange(
 		return series.values.map((sampleValue: SampleValue) => ({
 			time: sampleValue.time,
 			value: sampleValue.value,
-			metric: resolvedMetricName,
+			metric: resolvedMetricName
 		}));
 	});
 
@@ -142,13 +148,13 @@ export async function fetchMultipleFlattenedRange(
 	queries: Record<string, string>,
 	timeStart?: Date,
 	timeEnd?: Date,
-	step: number = 15,
+	step: number = 15
 ): Promise<DataPoint[]> {
 	const start = timeStart || new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
 	const end = timeEnd || new Date(); // Now
 
 	const queryPromises = Object.entries(queries).map(([metricName, query]) =>
-		executeQueryWithMetricName(client, query, start, end, step, metricName),
+		executeQueryWithMetricName(client, query, start, end, step, metricName)
 	);
 	const allResults = await Promise.all(queryPromises);
 	const combinedOldFormatData = allResults.flat();
@@ -172,7 +178,7 @@ async function executeQueryWithMetricName(
 	start: Date,
 	end: Date,
 	step: number,
-	metricName: string,
+	metricName: string
 ): Promise<Array<{ time: Date; value: number; metric: string }>> {
 	const response = await client.rangeQuery(query, start.getTime(), end.getTime(), step);
 
@@ -181,7 +187,7 @@ async function executeQueryWithMetricName(
 		return series.values.map((sampleValue: SampleValue) => ({
 			time: sampleValue.time,
 			value: sampleValue.value,
-			metric: finalMetricName,
+			metric: finalMetricName
 		}));
 	});
 }

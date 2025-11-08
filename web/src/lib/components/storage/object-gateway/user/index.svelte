@@ -14,7 +14,7 @@
 	let {
 		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
-		trigger,
+		trigger
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -28,9 +28,11 @@
 
 	const storageClient = createClient(StorageService, transport);
 	const reloadManager = new ReloadManager(() => {
-		storageClient.listUsers({ scope: selectedScope, facility: selectedFacility }).then((response) => {
-			users.set(response.users);
-		});
+		storageClient
+			.listUsers({ scope: selectedScope, facility: selectedFacility })
+			.then((response) => {
+				users.set(response.users);
+			});
 	});
 	setContext('reloadManager', reloadManager);
 

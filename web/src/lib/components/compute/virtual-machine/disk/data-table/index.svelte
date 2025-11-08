@@ -8,7 +8,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 
 	import Create from './action-attach.svelte';
@@ -27,7 +27,7 @@
 	let {
 		virtualMachine,
 		enhancedDisks,
-		reloadManager,
+		reloadManager
 	}: {
 		virtualMachine: VirtualMachine;
 		enhancedDisks: EnhancedDisk[];
@@ -64,7 +64,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -101,7 +101,7 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 

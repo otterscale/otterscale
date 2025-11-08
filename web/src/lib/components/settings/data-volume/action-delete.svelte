@@ -31,7 +31,7 @@
 		scope: $currentKubernetes?.scope,
 		facility: $currentKubernetes?.name,
 		namespace: dataVolume.namespace,
-		name: '',
+		name: ''
 	} as DeleteDataVolumeRequest;
 
 	// Current request state
@@ -97,10 +97,10 @@
 								let message = `Failed to delete data volume ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

@@ -14,12 +14,12 @@ const PATH_ICON_MAP: Record<string, string> = {
 	'/models': 'ph:robot',
 	'/networking': 'ph:network',
 	'/settings': 'ph:sliders-horizontal',
-	'/storage': 'ph:hard-drives',
+	'/storage': 'ph:hard-drives'
 };
 
 const CEPH_PATH_DISABLED_MAP: Record<string, boolean> = {
 	'/compute': true,
-	'/storage': true,
+	'/storage': true
 };
 
 const KUBERNETES_PATH_DISABLED_MAP: Record<string, boolean> = {
@@ -28,7 +28,7 @@ const KUBERNETES_PATH_DISABLED_MAP: Record<string, boolean> = {
 	'/databases': true,
 	'/models': true,
 	'/settings': true,
-	'/storage': true,
+	'/storage': true
 };
 
 function findMatchingPath(url: string, pathMap: Record<string, unknown>): string | undefined {

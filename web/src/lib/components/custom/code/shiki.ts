@@ -8,7 +8,7 @@ const bundledLanguages = {
 	javascript: () => import('@shikijs/langs/javascript'),
 	json: () => import('@shikijs/langs/json'),
 	svelte: () => import('@shikijs/langs/svelte'),
-	typescript: () => import('@shikijs/langs/typescript'),
+	typescript: () => import('@shikijs/langs/typescript')
 };
 
 /** The languages configured for the highlighter */
@@ -16,7 +16,10 @@ export type SupportedLanguage = keyof typeof bundledLanguages;
 
 /** A preloaded highlighter instance. */
 export const highlighter = createHighlighterCore({
-	themes: [import('@shikijs/themes/github-light-default'), import('@shikijs/themes/github-dark-default')],
+	themes: [
+		import('@shikijs/themes/github-light-default'),
+		import('@shikijs/themes/github-dark-default')
+	],
 	langs: Object.values(bundledLanguages),
-	engine: createJavaScriptRegexEngine(),
+	engine: createJavaScriptRegexEngine()
 });

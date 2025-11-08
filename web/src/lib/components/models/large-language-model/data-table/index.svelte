@@ -8,7 +8,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
@@ -28,8 +28,9 @@
 <script lang="ts">
 	let {
 		largeLanguageModels,
-		reloadManager,
-	}: { largeLanguageModels: Writable<LargeLanguageModel[]>; reloadManager: ReloadManager } = $props();
+		reloadManager
+	}: { largeLanguageModels: Writable<LargeLanguageModel[]>; reloadManager: ReloadManager } =
+		$props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 9 });
 	let sorting = $state<SortingState>([]);
@@ -61,7 +62,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -98,7 +99,7 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 

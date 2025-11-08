@@ -8,8 +8,8 @@
 	breadcrumbs.set([
 		{
 			title: m.networking(),
-			url: resolve('/(auth)/networking'),
-		},
+			url: resolve('/(auth)/networking')
+		}
 	]);
 </script>
 

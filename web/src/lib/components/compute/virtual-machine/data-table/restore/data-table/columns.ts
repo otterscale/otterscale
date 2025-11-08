@@ -13,7 +13,7 @@ const messages = {
 	targetName: m.target_name(),
 	snapshotName: m.snapshot_name(),
 	complete: m.complete(),
-	createTime: m.create_time(),
+	createTime: m.create_time()
 };
 
 const columns: ColumnDef<VirtualMachine_Restore>[] = [
@@ -26,7 +26,7 @@ const columns: ColumnDef<VirtualMachine_Restore>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -35,7 +35,7 @@ const columns: ColumnDef<VirtualMachine_Restore>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'namespace',
@@ -44,7 +44,7 @@ const columns: ColumnDef<VirtualMachine_Restore>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.namespace, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'targetName',
@@ -53,7 +53,7 @@ const columns: ColumnDef<VirtualMachine_Restore>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.targetName, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'snapshotName',
@@ -62,7 +62,7 @@ const columns: ColumnDef<VirtualMachine_Restore>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.snapshotName, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'complete',
@@ -71,7 +71,7 @@ const columns: ColumnDef<VirtualMachine_Restore>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.complete, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'createTime',
@@ -80,7 +80,7 @@ const columns: ColumnDef<VirtualMachine_Restore>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.createTime, row);
-		},
+		}
 	},
 
 	{
@@ -91,8 +91,8 @@ const columns: ColumnDef<VirtualMachine_Restore>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

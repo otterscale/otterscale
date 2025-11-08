@@ -7,7 +7,7 @@ import { auth } from '$lib/auth';
 
 export const load: LayoutServerLoad = async ({ request, url }) => {
 	const session = await auth.api.getSession({
-		headers: request.headers,
+		headers: request.headers
 	});
 
 	if (!session) {
@@ -15,6 +15,6 @@ export const load: LayoutServerLoad = async ({ request, url }) => {
 	}
 
 	return {
-		user: session.user as User,
+		user: session.user as User
 	};
 };

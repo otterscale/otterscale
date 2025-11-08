@@ -1,6 +1,14 @@
 <script lang="ts" module>
 	import dagre from '@dagrejs/dagre';
-	import { Controls, MiniMap, Panel, Position, SvelteFlow, type Edge, type Node } from '@xyflow/svelte';
+	import {
+		Controls,
+		MiniMap,
+		Panel,
+		Position,
+		SvelteFlow,
+		type Edge,
+		type Node
+	} from '@xyflow/svelte';
 	import '@xyflow/svelte/dist/style.css';
 
 	import { traverse } from '../utils.svelte';
@@ -40,8 +48,8 @@
 				...node,
 				position: {
 					x: nodeWithPosition.x - 0.5 * defaultNodeWidth,
-					y: nodeWithPosition.y * 1.5 - 0.5 * defaultNodeHeight,
-				},
+					y: nodeWithPosition.y * 1.5 - 0.5 * defaultNodeHeight
+				}
 			};
 		});
 
@@ -51,13 +59,16 @@
 	let {
 		initialNodes,
 		initialEdges,
-		class: className,
+		class: className
 	}: { initialNodes: Node[]; initialEdges: Edge[]; class?: string } = $props();
 
 	const dagreGraph = new dagre.graphlib.Graph();
 	dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-	const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initialNodes, initialEdges);
+	const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+		initialNodes,
+		initialEdges
+	);
 
 	let nodes = $state.raw<Node[]>(layoutedNodes);
 	let edges = $state.raw<Edge[]>(layoutedEdges);
@@ -68,11 +79,11 @@
 	nodeTypes={{
 		gpu: FlowNodeGPU,
 		machine: FlowNodeMachine,
-		model: FlowNodeModel,
+		model: FlowNodeModel
 	}}
 	bind:edges
 	edgeTypes={{
-		edge: FlowEdge,
+		edge: FlowEdge
 	}}
 	fitView
 	proOptions={{ hideAttribution: true }}
@@ -82,12 +93,12 @@
 
 		nodes = nodes.map((node) => ({
 			...node,
-			selected: nodestoFocus.has(node.id),
+			selected: nodestoFocus.has(node.id)
 		}));
 
 		edges = edges.map((edge) => ({
 			...edge,
-			selected: edgesToFocus.has(edge.id),
+			selected: edgesToFocus.has(edge.id)
 		}));
 	}}
 >

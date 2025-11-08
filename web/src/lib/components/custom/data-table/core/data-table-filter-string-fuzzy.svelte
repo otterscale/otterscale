@@ -12,8 +12,9 @@
 		table,
 		columnId,
 		messages,
-		values,
-	}: { table: Table<TData>; columnId: string; messages: Record<string, string>; values: any[] } = $props();
+		values
+	}: { table: Table<TData>; columnId: string; messages: Record<string, string>; values: any[] } =
+		$props();
 
 	const suggestions = $derived(([...new Set(values)].sort() as string[]) ?? ([] as string[]));
 	let open = $state(false);
@@ -41,7 +42,7 @@
 			<button
 				class={cn(
 					'absolute top-1/2 right-0 -translate-y-1/2',
-					table.getColumn(columnId)?.getFilterValue() ? 'visible' : 'hidden',
+					table.getColumn(columnId)?.getFilterValue() ? 'visible' : 'hidden'
 				)}
 				onclick={() => {
 					table.getColumn(columnId)?.setFilterValue(undefined);
@@ -52,8 +53,8 @@
 		</div>
 		<Command.List
 			class={cn(
-				'bg-card absolute top-10 left-0 z-50 w-fit min-w-40 rounded-md border shadow',
-				open ? 'visible' : 'hidden',
+				'absolute top-10 left-0 z-50 w-fit min-w-40 rounded-md border bg-card shadow',
+				open ? 'visible' : 'hidden'
 			)}
 		>
 			{#each suggestions as suggestion}

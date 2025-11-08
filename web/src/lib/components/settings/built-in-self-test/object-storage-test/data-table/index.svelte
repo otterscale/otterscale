@@ -8,7 +8,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
@@ -28,7 +28,7 @@
 	let {
 		mode,
 		testResults,
-		reloadManager,
+		reloadManager
 	}: { mode: string; testResults: Writable<TestResult[]>; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 4 });
@@ -39,7 +39,7 @@
 		duration: false,
 		objectSize: false,
 		objectCount: false,
-		completedAt: false,
+		completedAt: false
 	});
 	let rowSelection = $state<RowSelectionState>({});
 
@@ -69,7 +69,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 
 		onPaginationChange: (updater) => {
@@ -108,7 +108,7 @@
 			}
 		},
 
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 
@@ -118,7 +118,12 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy columnId="name" values={$testResults.map((row) => row.name)} {messages} {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$testResults.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.StringMatch
 				columnId="createdBy"
 				values={$testResults.map((row) => row.createdBy)}

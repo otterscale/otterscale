@@ -25,8 +25,8 @@
 		{
 			key: 'available',
 			value: Number(targetSubnet?.subnet?.statistics?.available ?? 0),
-			color: 'var(--chart-2)',
-		},
+			color: 'var(--chart-2)'
+		}
 	]);
 	const availableInternetProtocolsConfiguration = {} satisfies Chart.ChartConfig;
 
@@ -74,7 +74,8 @@
 							{targetSubnet?.subnet?.statistics?.availablePercent}
 						</Tooltip.Trigger>
 						<Tooltip.Content>
-							{targetSubnet?.subnet?.statistics?.available} / {targetSubnet?.subnet?.statistics?.total}
+							{targetSubnet?.subnet?.statistics?.available} / {targetSubnet?.subnet?.statistics
+								?.total}
 						</Tooltip.Content>
 					</Tooltip.Root>
 				</Tooltip.Provider>
@@ -98,11 +99,11 @@
 					series={availableInternetProtocols.map((ip) => ({
 						key: ip.key,
 						color: ip.color,
-						data: [ip],
+						data: [ip]
 					}))}
 					props={{
 						arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
-						tooltip: { context: { hideDelay: 350 } },
+						tooltip: { context: { hideDelay: 350 } }
 					}}
 					tooltip={false}
 				>

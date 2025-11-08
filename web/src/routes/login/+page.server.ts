@@ -16,7 +16,7 @@ const isProviderConfigured = (
 
 export const load: PageServerLoad = async ({ request, url }) => {
 	const session = await auth.api.getSession({
-		headers: request.headers,
+		headers: request.headers
 	});
 
 	if (session) {
@@ -27,10 +27,14 @@ export const load: PageServerLoad = async ({ request, url }) => {
 
 	return {
 		nextPath,
-		apple: isProviderConfigured(env.APPLE_CLIENT_ID, env.APPLE_CLIENT_SECRET, env.APPLE_APP_BUNDLE_IDENTIFIER),
+		apple: isProviderConfigured(
+			env.APPLE_CLIENT_ID,
+			env.APPLE_CLIENT_SECRET,
+			env.APPLE_APP_BUNDLE_IDENTIFIER
+		),
 		github: isProviderConfigured(env.GITHUB_CLIENT_ID, env.GITHUB_CLIENT_SECRET),
 		google: isProviderConfigured(env.GOOGLE_CLIENT_ID, env.GOOGLE_CLIENT_SECRET),
 		oidcProvider: env.AUTH_OIDC_PROVIDER,
-		ssoLoginPrompt: env.SSO_LOGIN_PROMPT,
+		ssoLoginPrompt: env.SSO_LOGIN_PROMPT
 	};
 };

@@ -102,7 +102,7 @@ class Result<T, E> {
 	map<A>(fn: (val: T) => A): Result<A, E> {
 		return this.match(
 			(val) => Ok(fn(val)),
-			(err) => Err(err),
+			(err) => Err(err)
 		);
 	}
 
@@ -147,7 +147,7 @@ class Result<T, E> {
 	mapOr<A>(defaultVal: A, fn: (val: T) => A): A {
 		return this.match(
 			(val) => fn(val),
-			() => defaultVal,
+			() => defaultVal
 		);
 	}
 
@@ -192,7 +192,7 @@ class Result<T, E> {
 	mapOrElse<A>(def: (err: E) => A, fn: (val: T) => A): A {
 		return this.match(
 			(val) => fn(val),
-			(err) => def(err),
+			(err) => def(err)
 		);
 	}
 
@@ -222,7 +222,7 @@ class Result<T, E> {
 	mapErr<A>(fn: (err: E) => A): Result<T, A> {
 		return this.match(
 			(val) => Ok(val),
-			(err) => Err(fn(err)),
+			(err) => Err(fn(err))
 		);
 	}
 
@@ -267,7 +267,7 @@ class Result<T, E> {
 	mapErrOr<A>(defaultVal: A, fn: (err: E) => A): A {
 		return this.match(
 			() => defaultVal,
-			(err) => fn(err),
+			(err) => fn(err)
 		);
 	}
 
@@ -312,7 +312,7 @@ class Result<T, E> {
 	mapErrOrElse<A>(def: (val: T) => A, fn: (err: E) => A): A {
 		return this.match(
 			(val) => def(val),
-			(err) => fn(err),
+			(err) => fn(err)
 		);
 	}
 
@@ -329,7 +329,7 @@ class Result<T, E> {
 	isOk(): boolean {
 		return this.match(
 			() => true,
-			() => false,
+			() => false
 		);
 	}
 
@@ -346,7 +346,7 @@ class Result<T, E> {
 	isErr(): boolean {
 		return this.match(
 			() => false,
-			() => true,
+			() => true
 		);
 	}
 
@@ -387,7 +387,7 @@ class Result<T, E> {
 			(val) => val,
 			() => {
 				throw new Error('Attempted to call `.unwrap()` on a non `Ok` value.');
-			},
+			}
 		);
 	}
 
@@ -428,7 +428,7 @@ class Result<T, E> {
 			() => {
 				throw new Error('Attempted to call `.unwrapErr()` on a non `Err` value.');
 			},
-			(err) => err,
+			(err) => err
 		);
 	}
 
@@ -468,7 +468,7 @@ class Result<T, E> {
 	unwrapOr(defaultVal: T): T {
 		return this.match(
 			(val) => val,
-			() => defaultVal,
+			() => defaultVal
 		);
 	}
 
@@ -508,7 +508,7 @@ class Result<T, E> {
 	unwrapErrOr(defaultVal: E): E {
 		return this.match(
 			() => defaultVal,
-			(err) => err,
+			(err) => err
 		);
 	}
 
@@ -548,7 +548,7 @@ class Result<T, E> {
 	unwrapOrElse(fn: (err: E) => T): T {
 		return this.match(
 			(val) => val,
-			(err) => fn(err),
+			(err) => fn(err)
 		);
 	}
 
@@ -588,7 +588,7 @@ class Result<T, E> {
 	unwrapErrOrElse(fn: (val: T) => E): E {
 		return this.match(
 			(val) => fn(val),
-			(err) => err,
+			(err) => err
 		);
 	}
 
@@ -630,7 +630,7 @@ class Result<T, E> {
 			(val) => val,
 			() => {
 				throw new Error(message);
-			},
+			}
 		);
 	}
 
@@ -672,7 +672,7 @@ class Result<T, E> {
 			() => {
 				throw new Error(message);
 			},
-			(err) => err,
+			(err) => err
 		);
 	}
 }

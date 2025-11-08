@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { type Edge, type Node } from '@xyflow/svelte';
 
-	import { Complex, type GPU, type Machine, type Model, type VGPU } from '$lib/components/custom/flow/index';
+	import {
+		Complex,
+		type GPU,
+		type Machine,
+		type Model,
+		type VGPU
+	} from '$lib/components/custom/flow/index';
 	import '@xyflow/svelte/dist/style.css';
 
 	const position = { x: 0, y: 0 };
@@ -13,9 +19,9 @@
 			data: {
 				name: 'otterscale-vm141.maas',
 				ip: '10.102.197.141',
-				icon: 'simple-icons:maas',
+				icon: 'simple-icons:maas'
 			} as Machine,
-			position,
+			position
 		},
 		{
 			id: 'machine2',
@@ -23,9 +29,9 @@
 			data: {
 				name: 'development-vm183.maas',
 				ip: '10.102.197.164',
-				icon: 'simple-icons:maas',
+				icon: 'simple-icons:maas'
 			} as Machine,
-			position,
+			position
 		},
 		{
 			id: 'gpu2-vgpu1',
@@ -33,9 +39,9 @@
 			data: {
 				name: 'nvidia0',
 				physical: 'proxmox-4090x2-197-113',
-				icon: 'simple-icons:nvidia',
+				icon: 'simple-icons:nvidia'
 			} as VGPU,
-			position,
+			position
 		},
 		{
 			id: 'gpu2-vgpu2',
@@ -43,9 +49,9 @@
 			data: {
 				name: 'nvidia1',
 				physical: 'proxmox-4090x2-197-113',
-				icon: 'simple-icons:nvidia',
+				icon: 'simple-icons:nvidia'
 			} as VGPU,
-			position,
+			position
 		},
 		{
 			id: 'gpu1-vgpu1',
@@ -53,9 +59,9 @@
 			data: {
 				name: 'nvidia0',
 				physical: 'g4201-6000adax8-197-110',
-				icon: 'simple-icons:nvidia',
+				icon: 'simple-icons:nvidia'
 			} as VGPU,
-			position,
+			position
 		},
 		{
 			id: 'gpu1-vgpu2',
@@ -63,9 +69,9 @@
 			data: {
 				name: 'nvidia1',
 				physical: 'g4201-6000adax8-197-110',
-				icon: 'simple-icons:nvidia',
+				icon: 'simple-icons:nvidia'
 			} as VGPU,
-			position,
+			position
 		},
 		{
 			id: 'gpu1-vgpu3',
@@ -73,9 +79,9 @@
 			data: {
 				name: 'nvidia2',
 				physical: 'g4201-6000adax8-197-110',
-				icon: 'simple-icons:nvidia',
+				icon: 'simple-icons:nvidia'
 			} as VGPU,
-			position,
+			position
 		},
 		{
 			id: 'gpu1-vgpu4',
@@ -83,9 +89,9 @@
 			data: {
 				name: 'nvidia3',
 				physical: 'g4201-6000adax8-197-110',
-				icon: 'simple-icons:nvidia',
+				icon: 'simple-icons:nvidia'
 			} as VGPU,
-			position,
+			position
 		},
 
 		{
@@ -94,9 +100,9 @@
 			data: {
 				name: 'g4201-6000adax8-197-110',
 				model: 'NVIDIA RTX 6000 Ada Generation',
-				icon: 'simple-icons:nvidia',
+				icon: 'simple-icons:nvidia'
 			} as GPU,
-			position,
+			position
 		},
 		{
 			id: 'gpu2',
@@ -104,9 +110,9 @@
 			data: {
 				name: 'proxmox-4090x2-197-113',
 				model: 'NVIDIA GeForce RTX 4090',
-				icon: 'simple-icons:nvidia',
+				icon: 'simple-icons:nvidia'
 			} as GPU,
-			position,
+			position
 		},
 		{
 			id: 'model',
@@ -114,10 +120,10 @@
 			data: {
 				name: 'gpt-oss9',
 				framework: 'vllm',
-				icon: 'simple-icons:openai',
+				icon: 'simple-icons:openai'
 			} as Model,
-			position,
-		},
+			position
+		}
 	];
 
 	const initialEdges: Edge[] = [
@@ -134,7 +140,7 @@
 		{ id: '20', type: 'edge', source: 'gpu2', target: 'gpu2-vgpu1', animated: true },
 		{ id: '21', type: 'edge', source: 'gpu2', target: 'gpu2-vgpu2', animated: true },
 		{ id: '17', type: 'edge', source: 'machine1', target: 'gpu1', animated: true },
-		{ id: '22', type: 'edge', source: 'machine2', target: 'gpu2', animated: true },
+		{ id: '22', type: 'edge', source: 'machine2', target: 'gpu2', animated: true }
 	];
 </script>
 

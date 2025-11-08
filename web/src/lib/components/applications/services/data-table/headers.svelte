@@ -14,7 +14,7 @@
 		clusterIp,
 		ports,
 		endpoints,
-		actions,
+		actions
 	};
 </script>
 

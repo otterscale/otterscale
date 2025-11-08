@@ -10,7 +10,7 @@
 		OrchestratorService,
 		type GPURelation_GPU,
 		type GPURelation_Machine,
-		type GPURelation_Pod,
+		type GPURelation_Pod
 	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as Table from '$lib/components/custom/table';
 	import { Complex as Simple } from '$lib/components/flow/index';
@@ -21,12 +21,14 @@
 	import '@xyflow/svelte/dist/style.css';
 
 	let {
-		machine,
+		machine
 	}: {
 		machine: Machine;
 	} = $props();
 
-	const machineScope = $derived(machine.workloadAnnotations['juju-machine-id']?.split('-machine-')[0]);
+	const machineScope = $derived(
+		machine.workloadAnnotations['juju-machine-id']?.split('-machine-')[0]
+	);
 	const isMachineInSelectedScope = $derived(machineScope === $currentKubernetes?.scope);
 
 	const transport: Transport = getContext('transport');
@@ -47,7 +49,7 @@
 			const response = await client.listGPURelationsByMachine({
 				scope: $currentKubernetes?.scope,
 				facility: $currentKubernetes?.name,
-				machineId: machine.id,
+				machineId: machine.id
 			});
 
 			// Extract GPUs and pods once to avoid redundant computation
@@ -68,10 +70,10 @@
 							data: {
 								machine: gpuRelation.entity.value,
 								gpus: gpus.filter(
-									(gpu) => gpu.machineId === (gpuRelation.entity.value as GPURelation_Machine).id,
-								),
+									(gpu) => gpu.machineId === (gpuRelation.entity.value as GPURelation_Machine).id
+								)
 							},
-							position,
+							position
 						};
 					} else if (gpuRelation.entity.case === 'gpu') {
 						return {
@@ -82,22 +84,22 @@
 								devices: pods.flatMap((pod) =>
 									pod.devices.filter((device) => {
 										return device.gpuId === (gpuRelation.entity.value as GPURelation_GPU).id;
-									}),
-								),
+									})
+								)
 							},
-							position,
+							position
 						};
 					} else if (gpuRelation.entity.case === 'pod') {
 						return {
 							type: 'model',
 							id: `pod${gpuRelation.entity.value.namespace}${gpuRelation.entity.value.name}`,
 							data: gpuRelation.entity.value,
-							position,
+							position
 						};
 					} else {
 						return {} as Node;
 					}
-				}),
+				})
 			);
 
 			edges.set(
@@ -111,8 +113,8 @@
 								source: `gpu${gpu.id}`,
 								target: `machine${gpu.machineId}`,
 								animated: true,
-								selectable: false,
-							},
+								selectable: false
+							}
 						];
 					} else if (gpuRelation.entity.case === 'pod') {
 						return gpuRelation.entity.value.devices.map((device) => {
@@ -123,13 +125,13 @@
 								source: `pod${pod.namespace}${pod.name}`,
 								target: `gpu${device.gpuId}`,
 								animated: true,
-								selectable: false,
+								selectable: false
 							};
 						});
 					} else {
 						return [];
 					}
-				}),
+				})
 			);
 
 			hasLoadedData = true;
@@ -205,7 +207,9 @@
 		<HoverCard.Content class="m-0 h-fit w-fit p-0">
 			<Table.Root>
 				<Table.Header>
-					<Table.Row class="bg-muted [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg">
+					<Table.Row
+						class="bg-muted [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
+					>
 						<Table.Head>{m.product()}</Table.Head>
 						<Table.Head>{m.vendor()}</Table.Head>
 						<Table.Head>{m.bus()}</Table.Head>

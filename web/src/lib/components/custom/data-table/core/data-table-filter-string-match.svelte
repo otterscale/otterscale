@@ -18,7 +18,7 @@
 		columnId,
 		messages,
 		values,
-		descriptor = (v: any) => v,
+		descriptor = (v: any) => v
 	}: {
 		table: Table<TData>;
 		columnId: string;
@@ -28,11 +28,15 @@
 	} = $props();
 
 	const options = $derived(([...new Set(values)].sort() as string[]) ?? ([] as string[]));
-	const extractions = $derived((table.getColumn(columnId)?.getFilterValue() as string[]) ?? ([] as string[]));
+	const extractions = $derived(
+		(table.getColumn(columnId)?.getFilterValue() as string[]) ?? ([] as string[])
+	);
 </script>
 
 <Popover.Root>
-	<Popover.Trigger class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs uppercase')}>
+	<Popover.Trigger
+		class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs uppercase')}
+	>
 		<Icon icon="ph:funnel" />
 		{messages[columnId]}
 

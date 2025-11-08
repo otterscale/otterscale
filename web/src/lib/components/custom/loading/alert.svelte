@@ -2,4 +2,4 @@
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 </script>
 
-<Skeleton class="bg-muted h-[100px]" />
+<Skeleton class="h-[100px] bg-muted" />

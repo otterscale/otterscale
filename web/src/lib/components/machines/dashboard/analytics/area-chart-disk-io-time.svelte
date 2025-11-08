@@ -28,7 +28,7 @@
 
 	// Prometheus query for Disk I/O time
 	const query = $derived(
-		`sum(rate(node_disk_io_time_seconds_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`,
+		`sum(rate(node_disk_io_time_seconds_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`
 	);
 </script>
 

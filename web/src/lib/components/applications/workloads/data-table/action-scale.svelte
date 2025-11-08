@@ -37,7 +37,7 @@
 		name: application.name,
 		namespace: application.namespace,
 		type: application.type,
-		replicas: application.replicas,
+		replicas: application.replicas
 	} as ScaleApplicationRequest;
 
 	// Current request state
@@ -113,10 +113,10 @@
 								let message = `Failed to scale ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						// Reset form and close modal
 						reset();

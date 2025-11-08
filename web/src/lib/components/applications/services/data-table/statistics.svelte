@@ -27,7 +27,9 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content value={new Set([...table.getCoreRowModel().rows.map((row) => row.getValue('type'))]).size} />
+			<Content
+				value={new Set([...table.getCoreRowModel().rows.map((row) => row.getValue('type'))]).size}
+			/>
 		{/snippet}
 	</Layout>
 </div>

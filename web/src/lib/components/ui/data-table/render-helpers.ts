@@ -19,7 +19,10 @@ import type { Component, ComponentProps, Snippet } from 'svelte';
 export class RenderComponentConfig<TComponent extends Component> {
 	component: TComponent;
 	props: ComponentProps<TComponent> | Record<string, never>;
-	constructor(component: TComponent, props: ComponentProps<TComponent> | Record<string, never> = {}) {
+	constructor(
+		component: TComponent,
+		props: ComponentProps<TComponent> | Record<string, never> = {}
+	) {
 		this.component = component;
 		this.props = props;
 	}
@@ -74,7 +77,7 @@ export class RenderSnippetConfig<TProps> {
 export function renderComponent<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	T extends Component<any>,
-	Props extends ComponentProps<T>,
+	Props extends ComponentProps<T>
 >(component: T, props: Props = {} as Props) {
 	return new RenderComponentConfig(component, props);
 }

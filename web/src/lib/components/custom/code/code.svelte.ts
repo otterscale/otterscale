@@ -36,7 +36,7 @@ class CodeRootState {
 
 	constructor(
 		readonly opts: CodeRootStateProps,
-		readonly overflow?: CodeOverflowState,
+		readonly overflow?: CodeOverflowState
 	) {
 		highlighter.then((hl) => (this.highlighter = hl));
 	}
@@ -46,7 +46,7 @@ class CodeRootState {
 			lang: this.opts.lang.current,
 			themes: {
 				light: 'github-light-default',
-				dark: 'github-dark-default',
+				dark: 'github-dark-default'
 			},
 			transformers: [
 				{
@@ -65,9 +65,9 @@ class CodeRootState {
 						}
 
 						return node;
-					},
-				},
-			],
+					}
+				}
+			]
 		});
 	}
 

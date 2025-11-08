@@ -32,7 +32,7 @@
 		},
 		set value(newValue) {
 			value = newValue;
-		},
+		}
 	});
 	setContext('id', id);
 	setContext('required', required);

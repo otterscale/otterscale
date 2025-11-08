@@ -9,8 +9,8 @@
 	breadcrumbs.set([
 		{
 			title: m.models(),
-			url: resolve('/(auth)/scope/[scope]/models', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/models', { scope: page.params.scope! })
+		}
 	]);
 </script>
 

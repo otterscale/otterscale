@@ -16,7 +16,7 @@ const columns: ColumnDef<TableRow>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'id',
@@ -41,7 +41,7 @@ const columns: ColumnDef<TableRow>[] = [
 			const [minimum, maximum] = range;
 
 			return minimum <= value && value <= maximum;
-		},
+		}
 	},
 	{
 		accessorKey: 'name',
@@ -50,7 +50,7 @@ const columns: ColumnDef<TableRow>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'isVerified',
@@ -59,8 +59,8 @@ const columns: ColumnDef<TableRow>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.isVerified, row);
-		},
-	},
+		}
+	}
 ];
 
 export { columns };

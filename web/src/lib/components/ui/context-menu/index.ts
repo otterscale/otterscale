@@ -47,5 +47,5 @@ export {
 	SubContent as ContextMenuSubContent,
 	SubTrigger as ContextMenuSubTrigger,
 	CheckboxItem as ContextMenuCheckboxItem,
-	Label as ContextMenuLabel,
+	Label as ContextMenuLabel
 };

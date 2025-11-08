@@ -18,7 +18,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Types
@@ -35,13 +35,13 @@
 	const CHART_CONFIG = {
 		latency: {
 			label: 'Write Latency (ms)',
-			color: 'var(--chart-1)',
-		},
+			color: 'var(--chart-1)'
+		}
 	} satisfies Chart.ChartConfig;
 	const TIME_INTERVALS: Record<TimeInterval, TimeRangeConfig> = {
 		day: { count: 7, label: m.last_7_days(), stepSize: '1d' },
 		week: { count: 5, label: m.last_5_weeks(), stepSize: '1w' },
-		month: { count: 6, label: m.last_6_months(), stepSize: '1M' },
+		month: { count: 6, label: m.last_6_months(), stepSize: '1M' }
 	};
 
 	// Query
@@ -56,7 +56,11 @@
 	const timeRange = $derived(TIME_INTERVALS[selectedInterval]);
 
 	// Helper functions
-	function calculateTimeRange(interval: TimeInterval, index: number, today: Date): { start: Date; end: Date } {
+	function calculateTimeRange(
+		interval: TimeInterval,
+		index: number,
+		today: Date
+	): { start: Date; end: Date } {
 		const start = new SvelteDate(today);
 		const end = new SvelteDate(today);
 
@@ -123,22 +127,32 @@
 				const month = v.toLocaleString('en-US', { month: 'short' });
 				const weekNum = Math.ceil(v.getUTCDate() / 7);
 				return `${month}-W${weekNum}`;
-			},
+			}
 		};
 
 		return formatters[interval];
 	}
 
-	async function fetchLatencyForPeriod(start: Date, end: Date): Promise<{ date: Date; latency: number }> {
+	async function fetchLatencyForPeriod(
+		start: Date,
+		end: Date
+	): Promise<{ date: Date; latency: number }> {
 		try {
 			const query = PROMETHEUS_QUERY(scope.uuid);
-			const response = await client.rangeQuery(query, start.getTime(), end.getTime(), timeRange.stepSize);
+			const response = await client.rangeQuery(
+				query,
+				start.getTime(),
+				end.getTime(),
+				timeRange.stepSize
+			);
 
 			const values = response.result?.[0]?.values;
 			if (values?.length > 0) {
 				const avgLatency =
-					values.reduce((sum: number, v: { value: number | string }) => sum + Number(v.value || 0), 0) /
-					values.length;
+					values.reduce(
+						(sum: number, v: { value: number | string }) => sum + Number(v.value || 0),
+						0
+					) / values.length;
 
 				return { date: start, latency: avgLatency };
 			}
@@ -220,17 +234,17 @@
 						{
 							key: 'latency',
 							label: 'Write Latency',
-							color: CHART_CONFIG.latency.color,
-						},
+							color: CHART_CONFIG.latency.color
+						}
 					]}
 					props={{
 						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
 						xAxis: {
 							format: getXAxisFormat(selectedInterval),
-							ticks: response.length,
+							ticks: response.length
 						},
 						yAxis: { format: () => '' },
-						highlight: { points: { r: 4 } },
+						highlight: { points: { r: 4 } }
 					}}
 				>
 					{#snippet tooltip()}

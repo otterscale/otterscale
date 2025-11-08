@@ -32,7 +32,7 @@
 		Total: `sum(node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}) - sum(node_memory_MemAvailable_bytes{instance=~"${machine.fqdn}"})`,
 		Buffer: `sum(node_memory_Buffers_bytes{instance=~"${machine.fqdn}"})`,
 		Cache: `sum(node_memory_Cached_bytes{instance=~"${machine.fqdn}"})`,
-		Free: `sum(node_memory_MemFree_bytes{instance=~"${machine.fqdn}"})`,
+		Free: `sum(node_memory_MemFree_bytes{instance=~"${machine.fqdn}"})`
 	});
 </script>
 
@@ -49,7 +49,11 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} valueFormatter={formatCapacity} />
+			<Content
+				data={response}
+				timeRange={formatTimeRange(TIME_RANGE_HOURS)}
+				valueFormatter={formatCapacity}
+			/>
 		{/snippet}
 	</Layout>
 {:catch}

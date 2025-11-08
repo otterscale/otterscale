@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	let {
-		subnet,
+		subnet
 	}: {
 		subnet: Network_Subnet;
 	} = $props();

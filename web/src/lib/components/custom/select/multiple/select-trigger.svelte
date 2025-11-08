@@ -36,10 +36,10 @@
 	bind:ref
 	data-slot="select-trigger"
 	class={cn(
-		'data-[state=open]:ring-primary group w-full cursor-pointer',
+		'group w-full cursor-pointer data-[state=open]:ring-primary',
 		buttonVariants({ variant: variant }),
-		isInvalid ? 'ring-destructive ring-1' : 'ring-1',
-		className,
+		isInvalid ? 'ring-1 ring-destructive' : 'ring-1',
+		className
 	)}
 	{...restProps}
 >
@@ -47,7 +47,7 @@
 		{@render children?.()}
 	{:else if isInvalid}
 		<span
-			class="group-data-[state=open]:text-primary group-data-[state=closed]:text-destructive flex items-center gap-1 text-xs"
+			class="flex items-center gap-1 text-xs group-data-[state=closed]:text-destructive group-data-[state=open]:text-primary"
 		>
 			<Icon icon="ph:list" />
 			<p class="group-data-[state=closed]:hidden">Select</p>

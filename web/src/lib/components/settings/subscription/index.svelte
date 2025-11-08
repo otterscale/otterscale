@@ -16,7 +16,7 @@
 			description: m.basic_setup_description(),
 			icons: [
 				{ name: 'simple-icons:ceph', color: '#f0424d', hasAnimation: false },
-				{ name: 'simple-icons:kubernetes', color: '#326de6', hasAnimation: false },
+				{ name: 'simple-icons:kubernetes', color: '#326de6', hasAnimation: false }
 			],
 			features: [
 				m.single_node_ceph(),
@@ -32,9 +32,9 @@
 				m.community_support(),
 				m.community_support_description(),
 				m.usage_limitations(),
-				m.usage_limitations_description(),
+				m.usage_limitations_description()
 			],
-			isRecommended: false,
+			isRecommended: false
 		},
 		{
 			level: PremiumTier_Level.ADVANCED,
@@ -49,9 +49,9 @@
 				m.team_access(),
 				m.team_access_description(),
 				m.priority_support(),
-				m.priority_support_description(),
+				m.priority_support_description()
 			],
-			isRecommended: false,
+			isRecommended: false
 		},
 		{
 			level: PremiumTier_Level.ENTERPRISE,
@@ -59,7 +59,7 @@
 			description: m.enterprise_setup_description(),
 			icons: [
 				{ name: 'simple-icons:ceph', color: '#f0424d', hasAnimation: true },
-				{ name: 'simple-icons:kubernetes', color: '#326de6', hasAnimation: true },
+				{ name: 'simple-icons:kubernetes', color: '#326de6', hasAnimation: true }
 			],
 			features: [
 				m.all_advanced_features(),
@@ -75,10 +75,10 @@
 				m.customization_services(),
 				m.customization_services_description(),
 				m.training_services(),
-				m.training_services_description(),
+				m.training_services_description()
 			],
-			isRecommended: true,
-		},
+			isRecommended: true
+		}
 	];
 </script>
 
@@ -95,10 +95,12 @@
 		<div class="w-full max-w-7xl px-4 xl:px-0">
 			<div class="grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:items-start">
 				{#each tiers as tier}
-					<Card.Root class="flex h-full flex-col {tier.isRecommended ? 'border-primary relative' : ''}">
+					<Card.Root
+						class="flex h-full flex-col {tier.isRecommended ? 'relative border-primary' : ''}"
+					>
 						{#if tier.isRecommended}
 							<div
-								class="bg-primary text-primary-foreground absolute top-0 right-0 rounded-tr-lg rounded-bl-lg px-3 py-1 text-xs font-medium uppercase"
+								class="absolute top-0 right-0 rounded-tr-lg rounded-bl-lg bg-primary px-3 py-1 text-xs font-medium text-primary-foreground uppercase"
 							>
 								{m.recommended()}
 							</div>
@@ -138,11 +140,11 @@
 												icon="ph:check-bold"
 												class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-500"
 											/>
-											<span class="text-foreground text-sm">{feature}</span>
+											<span class="text-sm text-foreground">{feature}</span>
 										</li>
 									{:else}
 										<li class="flex space-x-2 py-1 pl-6">
-											<span class="text-muted-foreground text-xs">{feature}</span>
+											<span class="text-xs text-muted-foreground">{feature}</span>
 										</li>
 									{/if}
 								{/each}

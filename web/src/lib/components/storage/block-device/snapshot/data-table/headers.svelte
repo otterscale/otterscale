@@ -11,7 +11,7 @@
 		name,
 		protect,
 		usage,
-		actions,
+		actions
 	};
 </script>
 

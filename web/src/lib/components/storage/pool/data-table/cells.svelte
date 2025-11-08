@@ -20,7 +20,7 @@
 		placement_group_state,
 		usage,
 		iops,
-		actions,
+		actions
 	};
 </script>
 

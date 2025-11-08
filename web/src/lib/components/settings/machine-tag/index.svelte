@@ -45,7 +45,9 @@
 			<div class="w-full rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row class="[&_th]:bg-muted *:px-4 [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg">
+						<Table.Row
+							class="*:px-4 [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
+						>
 							<Table.Head>{m.tag()}</Table.Head>
 							<Table.Head>{m.comment()}</Table.Head>
 							<Table.Head></Table.Head>

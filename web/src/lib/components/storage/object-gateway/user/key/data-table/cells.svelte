@@ -10,7 +10,7 @@
 	export const cells = {
 		row_picker,
 		accessKey,
-		actions,
+		actions
 	};
 </script>
 

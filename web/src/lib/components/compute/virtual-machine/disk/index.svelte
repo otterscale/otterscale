@@ -6,7 +6,10 @@
 
 	import { DataTable } from './data-table';
 
-	import { InstanceService, VirtualMachine_Disk_Volume_Source_Type } from '$lib/api/instance/v1/instance_pb';
+	import {
+		InstanceService,
+		VirtualMachine_Disk_Volume_Source_Type
+	} from '$lib/api/instance/v1/instance_pb';
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import type { DataVolume } from '$lib/api/instance/v1/instance_pb';
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
@@ -17,7 +20,7 @@
 
 <script lang="ts">
 	let {
-		virtualMachine,
+		virtualMachine
 	}: {
 		virtualMachine: VirtualMachine;
 	} = $props();
@@ -36,7 +39,7 @@
 				scope: $currentKubernetes?.scope,
 				facility: $currentKubernetes?.name,
 				namespace: virtualMachine.namespace,
-				bootImage: false, // Set to true if you only want boot images
+				bootImage: false // Set to true if you only want boot images
 			});
 
 			// Create a map of data volumes by name for quick lookup
@@ -61,7 +64,7 @@
 						sizeBytes: dataVolume?.sizeBytes,
 						phase: dataVolume?.phase,
 						vmName: virtualMachine.name,
-						namespace: virtualMachine.namespace,
+						namespace: virtualMachine.namespace
 					};
 				} else {
 					// Return original disk without DataVolume properties
@@ -71,7 +74,7 @@
 						sizeBytes: undefined,
 						phase: undefined,
 						vmName: virtualMachine.name,
-						namespace: virtualMachine.namespace,
+						namespace: virtualMachine.namespace
 					};
 				}
 			});

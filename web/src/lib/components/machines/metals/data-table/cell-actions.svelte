@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	let {
-		machine,
+		machine
 	}: {
 		machine: Machine;
 	} = $props();
@@ -19,7 +19,8 @@
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem
-		disabled={(machine.status.toLowerCase() !== 'ready' && machine.status.toLowerCase() !== 'releasing') ||
+		disabled={(machine.status.toLowerCase() !== 'ready' &&
+			machine.status.toLowerCase() !== 'releasing') ||
 			!!machine.workloadAnnotations['juju-is-controller']}
 	>
 		<Remove {machine} />

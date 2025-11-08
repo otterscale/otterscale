@@ -22,13 +22,15 @@
 
 		if (selectedFile.size > maxFileSize) {
 			const { value: maxFileSizeValue, unit: maxFileSizeUnit } = formatCapacity(maxFileSize);
-			toast.error(`${selectedFile.name} is too large. Maximum size is ${maxFileSizeValue} ${maxFileSizeUnit}`);
+			toast.error(
+				`${selectedFile.name} is too large. Maximum size is ${maxFileSizeValue} ${maxFileSizeUnit}`
+			);
 			return;
 		}
 
 		if (!selectedFile.name.endsWith('.tgz') && !selectedFile.name.endsWith('.tar.gz')) {
 			toast.error(
-				`${selectedFile.name} is not a valid Helm chart file. Only .tgz and .tar.gz files are supported`,
+				`${selectedFile.name} is not a valid Helm chart file. Only .tgz and .tar.gz files are supported`
 			);
 			return;
 		}
@@ -39,7 +41,7 @@
 			type: selectedFile.type,
 			lastModifiedAt: selectedFile.lastModified,
 			url: Promise.resolve(URL.createObjectURL(selectedFile)),
-			uploadedAt: Date.now(),
+			uploadedAt: Date.now()
 		};
 	};
 
@@ -65,11 +67,11 @@
 
 			const chartContent = await getChartContent(uploadedFile);
 			await client.uploadChart({
-				chartContent: chartContent,
+				chartContent: chartContent
 			});
 
 			toast.success(`Chart uploaded successfully!`, {
-				description: `Saved to local charts directory`,
+				description: `Saved to local charts directory`
 			});
 		} catch (error) {
 			if (error instanceof ConnectError) {
@@ -148,14 +150,14 @@
 	<Modal.Content>
 		<Modal.Header>
 			{m.upload()}
-			<div class="text-muted-foreground text-sm font-normal">
+			<div class="text-sm font-normal text-muted-foreground">
 				{m.applications_store_chart_upload_description()}
 			</div>
 		</Modal.Header>
 		<div
 			class={cn(
-				'hover:bg-muted flex w-full flex-col gap-2 rounded-lg border-2 border-dashed p-6 text-center transition-colors',
-				isDragging ? 'border-blue-400 bg-blue-50' : 'border-gray-300 hover:border-gray-400',
+				'flex w-full flex-col gap-2 rounded-lg border-2 border-dashed p-6 text-center transition-colors hover:bg-muted',
+				isDragging ? 'border-blue-400 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
 			)}
 			role="button"
 			tabindex="0"

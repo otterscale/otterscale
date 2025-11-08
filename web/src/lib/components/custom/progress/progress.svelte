@@ -44,8 +44,8 @@
 						/>
 						<div
 							class={cn(
-								'text-muted-foreground flex items-center justify-end font-light sm:min-w-[100px] md:min-w-[200px]',
-								className,
+								'flex items-center justify-end font-light text-muted-foreground sm:min-w-[100px] md:min-w-[200px]',
+								className
 							)}
 						>
 							{@render ratio?.({ numerator, denominator })}

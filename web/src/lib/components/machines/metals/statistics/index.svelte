@@ -11,9 +11,11 @@
 
 	// Calculate statistics
 	const totalMachines = $derived(machines.length);
-	const totalDisks = $derived(machines.reduce((acc, machine) => acc + machine.blockDevices.length, 0));
+	const totalDisks = $derived(
+		machines.reduce((acc, machine) => acc + machine.blockDevices.length, 0)
+	);
 	const storageFormatted = $derived(
-		formatCapacity(machines.reduce((acc, machine) => acc + machine.storageMb, 0) * 1024 * 1024),
+		formatCapacity(machines.reduce((acc, machine) => acc + machine.storageMb, 0) * 1024 * 1024)
 	);
 	const machinesOn = $derived(machines.filter((m) => m.powerState === 'on').length);
 	const machinesDeployed = $derived(machines.filter((m) => m.status === 'Deployed').length);
@@ -47,7 +49,7 @@
 		{/snippet}
 
 		{#snippet footer()}
-			<p class="text-muted-foreground text-xs">
+			<p class="text-xs text-muted-foreground">
 				over {totalDisks} disks
 			</p>
 		{/snippet}
@@ -67,7 +69,11 @@
 		{/snippet}
 
 		{#snippet footer()}
-			<Progress value={powerOnPercentage} max={100} class={formatProgressColor(powerOnPercentage)} />
+			<Progress
+				value={powerOnPercentage}
+				max={100}
+				class={formatProgressColor(powerOnPercentage)}
+			/>
 		{/snippet}
 	</Layout>
 
@@ -85,7 +91,11 @@
 		{/snippet}
 
 		{#snippet footer()}
-			<Progress value={deploymentPercentage} max={100} class={formatProgressColor(deploymentPercentage)} />
+			<Progress
+				value={deploymentPercentage}
+				max={100}
+				class={formatProgressColor(deploymentPercentage)}
+			/>
 		{/snippet}
 	</Layout>
 </div>

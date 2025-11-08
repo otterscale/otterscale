@@ -7,23 +7,23 @@ const accessControlListOptions = writable([
 	{
 		value: Bucket_ACL.PRIVATE,
 		label: 'PRIVATE',
-		icon: 'ph:user',
+		icon: 'ph:user'
 	},
 	{
 		value: Bucket_ACL.PUBLIC_READ,
 		label: 'PUBLIC_READ',
-		icon: 'ph:users',
+		icon: 'ph:users'
 	},
 	{
 		value: Bucket_ACL.PUBLIC_READ_WRITE,
 		label: 'PUBLIC_READ_WRITE',
-		icon: 'ph:users',
+		icon: 'ph:users'
 	},
 	{
 		value: Bucket_ACL.AUTHENTICATED_READ,
 		label: 'AUTHENTICATED_READ',
-		icon: 'ph:user-plus',
-	},
+		icon: 'ph:user-plus'
+	}
 ]);
 
 function getAccessControlList(grants: Bucket_Grant[]): Bucket_ACL {

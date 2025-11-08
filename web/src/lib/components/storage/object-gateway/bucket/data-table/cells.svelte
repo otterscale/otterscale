@@ -16,7 +16,7 @@
 		owner,
 		usage,
 		createTime,
-		actions,
+		actions
 	};
 </script>
 

@@ -23,5 +23,5 @@ export {
 	RequestManager,
 	Root,
 	Separator,
-	Submit,
+	Submit
 };

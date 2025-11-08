@@ -13,7 +13,7 @@ export default defineConfig({
 		version(),
 		paraglideVitePlugin({
 			project: './project.inlang',
-			outdir: './src/lib/paraglide',
-		}),
-	],
+			outdir: './src/lib/paraglide'
+		})
+	]
 });

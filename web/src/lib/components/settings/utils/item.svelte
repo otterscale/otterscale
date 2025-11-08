@@ -12,13 +12,13 @@
 		name,
 		type,
 		value,
-		children,
+		children
 	}: { icon: string; name: string; type: string; value: string; children?: Snippet } = $props();
 </script>
 
 <Accordion.Item {value} class="border-none">
 	<Accordion.Trigger
-		class="bg-muted rounded-none border p-6 hover:no-underline data-[state=closed]:rounded-lg data-[state=open]:rounded-t-lg"
+		class="rounded-none border bg-muted p-6 hover:no-underline data-[state=closed]:rounded-lg data-[state=open]:rounded-t-lg"
 	>
 		<div class="flex flex-1 items-center gap-4">
 			<div class="relative hidden h-16 w-16 overflow-hidden rounded-md border sm:block">

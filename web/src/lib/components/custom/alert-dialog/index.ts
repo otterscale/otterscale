@@ -10,7 +10,15 @@ import Footer from './alert-dialog-footer.svelte';
 import Header from './alert-dialog-header.svelte';
 import { StateController } from './utils.svelte';
 
-import { Content, Description, Overlay, Portal, Root, Title, Trigger } from '$lib/components/ui/alert-dialog/index.js';
+import {
+	Content,
+	Description,
+	Overlay,
+	Portal,
+	Root,
+	Title,
+	Trigger
+} from '$lib/components/ui/alert-dialog/index.js';
 
 export {
 	Action,
@@ -30,5 +38,5 @@ export {
 	Root,
 	StateController,
 	Title,
-	Trigger,
+	Trigger
 };

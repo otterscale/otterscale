@@ -16,7 +16,7 @@ import {
 	Overlay,
 	Portal,
 	Root,
-	Title,
+	Title
 } from '$lib/components/custom/alert-dialog';
 
 export {
@@ -36,5 +36,5 @@ export {
 	Portal,
 	Root,
 	Title,
-	Trigger,
+	Trigger
 };

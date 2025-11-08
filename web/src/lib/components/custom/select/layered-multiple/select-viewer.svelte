@@ -22,14 +22,22 @@
 </script>
 
 {#if optionManager.selectedAncestralOptions.length}
-	<div bind:this={ref} data-slot="select-viewer" class={cn('flex flex-wrap gap-1', className)} {...restProps}>
+	<div
+		bind:this={ref}
+		data-slot="select-viewer"
+		class={cn('flex flex-wrap gap-1', className)}
+		{...restProps}
+	>
 		{#each optionManager.selectedAncestralOptions as option}
 			<Badge variant="outline" class={cn('flex items-center gap-1 rounded-sm p-1 font-normal')}>
 				{#each option as part, index}
 					{#if index > 0}
 						<Separator class="data-[orientation=vertical]:h-3" orientation="vertical" />
 					{/if}
-					<Icon icon={part.icon ?? 'ph:empty'} class={cn(part.icon && part.icon ? 'visibale' : 'hidden')} />
+					<Icon
+						icon={part.icon ?? 'ph:empty'}
+						class={cn(part.icon && part.icon ? 'visibale' : 'hidden')}
+					/>
 					{part.label}
 				{/each}
 			</Badge>

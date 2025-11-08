@@ -38,7 +38,8 @@ export function parse(address: string): Result<Octets, ParseError> {
 
 	const octets = newAddress.split('.');
 
-	if (octets.length !== 5) return Err({ message: `'${address}' is invalid as it doesn't contain 4 octets.` });
+	if (octets.length !== 5)
+		return Err({ message: `'${address}' is invalid as it doesn't contain 4 octets.` });
 
 	const final: Octets = [0, 0, 0, 0, 0];
 
@@ -96,7 +97,10 @@ export function validate(address: IPv4CIDR): boolean {
  * formatToString([192, 168, 100, 10]); // "192.168.100.10"
  * ```
  */
-export function formatToString(address: IPv4CIDR, separator: '.' | '_' | ' ' = '.'): Result<string, string> {
+export function formatToString(
+	address: IPv4CIDR,
+	separator: '.' | '_' | ' ' = '.'
+): Result<string, string> {
 	if (Array.isArray(address)) return Ok(address.slice(0, 4).join(separator) + '/' + address[4]);
 
 	const parsed = parse(address);

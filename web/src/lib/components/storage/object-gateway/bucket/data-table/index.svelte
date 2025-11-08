@@ -8,7 +8,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
@@ -25,7 +25,8 @@
 </script>
 
 <script lang="ts">
-	let { buckets, reloadManager }: { buckets: Writable<Bucket[]>; reloadManager: ReloadManager } = $props();
+	let { buckets, reloadManager }: { buckets: Writable<Bucket[]>; reloadManager: ReloadManager } =
+		$props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
@@ -58,7 +59,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -95,7 +96,7 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 
@@ -105,8 +106,18 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy columnId="name" values={$buckets.map((row) => row.name)} {messages} {table} />
-			<Filters.StringMatch columnId="owner" values={$buckets.map((row) => row.owner)} {messages} {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$buckets.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
+			<Filters.StringMatch
+				columnId="owner"
+				values={$buckets.map((row) => row.owner)}
+				{messages}
+				{table}
+			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

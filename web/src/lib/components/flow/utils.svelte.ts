@@ -2,7 +2,10 @@ import { type Edge } from '@xyflow/svelte';
 import '@xyflow/svelte/dist/style.css';
 import { SvelteSet } from 'svelte/reactivity';
 
-function traverse(edges: Edge[], rootId: string): { nodestoFocus: SvelteSet<string>; edgesToFocus: SvelteSet<string> } {
+function traverse(
+	edges: Edge[],
+	rootId: string
+): { nodestoFocus: SvelteSet<string>; edgesToFocus: SvelteSet<string> } {
 	function traverseParents(currentId: string) {
 		if (visitedNodes.has(currentId)) return;
 		visitedNodes.add(currentId);

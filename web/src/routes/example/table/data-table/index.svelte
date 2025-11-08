@@ -8,7 +8,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import { writable } from 'svelte/store';
 
@@ -60,7 +60,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -96,7 +96,7 @@
 			} else {
 				rowSelection = updater;
 			}
-		},
+		}
 	});
 </script>
 

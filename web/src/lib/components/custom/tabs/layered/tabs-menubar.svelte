@@ -7,8 +7,16 @@
 </script>
 
 <script lang="ts">
-	let { ref = $bindable(null), class: className, ...restProps }: MenubarPrimitive.RootProps = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: MenubarPrimitive.RootProps = $props();
 </script>
 
-<Menubar.Root bind:ref class={cn('border-none shadow-none [&_svg]:m-1', className)} {...restProps} />
+<Menubar.Root
+	bind:ref
+	class={cn('border-none shadow-none [&_svg]:m-1', className)}
+	{...restProps}
+/>
 <Separator />

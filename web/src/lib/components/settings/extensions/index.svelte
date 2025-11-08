@@ -68,7 +68,7 @@
 
 <Accordion.Root
 	type="multiple"
-	class="group bg-card text-card-foreground w-full overflow-hidden rounded-lg border transition-all duration-300 **:data-[slot='accordion-trigger']:p-6"
+	class="group w-full overflow-hidden rounded-lg border bg-card text-card-foreground transition-all duration-300 **:data-[slot='accordion-trigger']:p-6"
 	value={getAccordionValue()}
 >
 	{#if isInstanceExtensionsLoaded && $instanceExtensions.filter((instanceExtension) => !instanceExtension.latest).length == 0}

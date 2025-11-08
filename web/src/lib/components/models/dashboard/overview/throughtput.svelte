@@ -14,7 +14,7 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let prompts = $state([] as SampleValue[]);
@@ -23,13 +23,13 @@
 		prompts.map((sample, index) => ({
 			time: sample.time,
 			prompt: sample.value,
-			generation: generations[index]?.value ?? 0,
-		})),
+			generation: generations[index]?.value ?? 0
+		}))
 	);
 
 	const configuration = {
 		prompt: { label: 'Prompt', color: 'var(--chart-1)' },
-		generation: { label: 'Generation', color: 'var(--chart-2)' },
+		generation: { label: 'Generation', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
@@ -38,7 +38,7 @@
 				`max(rate(vllm:prompt_tokens_total{juju_model_uuid="${scope.uuid}"}[2m]))`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				prompts = response.result[0]?.values;
@@ -48,7 +48,7 @@
 				`max(rate(vllm:generation_tokens_total{juju_model_uuid="${scope.uuid}"}[2m]))`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				generations = response.result[0]?.values;
@@ -95,26 +95,26 @@
 						{
 							key: 'prompt',
 							label: configuration.prompt.label,
-							color: configuration.prompt.color,
+							color: configuration.prompt.color
 						},
 						{
 							key: 'generation',
 							label: configuration.generation.label,
-							color: configuration.generation.color,
-						},
+							color: configuration.generation.color
+						}
 					]}
 					props={{
 						area: {
 							curve: curveNatural,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween',
+							motion: 'tween'
 						},
 						xAxis: {
 							format: (v: Date) =>
-								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
 						},
-						yAxis: { format: () => '' },
+						yAxis: { format: () => '' }
 					}}
 				>
 					{#snippet tooltip()}
@@ -126,7 +126,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric',
+									minute: 'numeric'
 								});
 							}}
 						>

@@ -33,7 +33,7 @@
 		facility: $currentKubernetes?.name,
 		namespace: enhancedDisk.namespace,
 		name: enhancedDisk.vmName,
-		dataVolumeName: '',
+		dataVolumeName: ''
 	} as DetachVirtualMachineDiskRequest;
 
 	// Current request state
@@ -99,10 +99,10 @@
 								let message = `Failed to detach disk ${enhancedDisk.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

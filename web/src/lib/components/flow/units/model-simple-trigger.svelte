@@ -10,21 +10,27 @@
 </script>
 
 <script lang="ts">
-	let { data, selected, targetPosition, sourcePosition }: Omit<NodeProps, 'data'> & { data: GPURelation_Pod } =
-		$props();
+	let {
+		data,
+		selected,
+		targetPosition,
+		sourcePosition
+	}: Omit<NodeProps, 'data'> & { data: GPURelation_Pod } = $props();
 
-	const link = resolve('/(auth)/scope/[scope]/applications/workloads', { scope: page.params.scope! });
+	const link = resolve('/(auth)/scope/[scope]/applications/workloads', {
+		scope: page.params.scope!
+	});
 </script>
 
 <div
 	class={cn(
-		'bg-card relative rounded-full border p-4 shadow',
-		selected ? 'bg-primary-foreground ring-primary ring-1' : 'bg-card ring-0',
+		'relative rounded-full border bg-card p-4 shadow',
+		selected ? 'bg-primary-foreground ring-1 ring-primary' : 'bg-card ring-0'
 	)}
 >
 	<Icon icon="ph:robot" class="size-10" />
 	<p
-		class="text-muted-foreground absolute bottom-0 left-1/2 max-w-[100px] -translate-x-1/2 truncate text-center text-xs whitespace-nowrap"
+		class="absolute bottom-0 left-1/2 max-w-[100px] -translate-x-1/2 truncate text-center text-xs whitespace-nowrap text-muted-foreground"
 	>
 		{data.modelName}
 	</p>
@@ -37,8 +43,8 @@
 {/if}
 <div
 	class={cn(
-		'bg-card hover:bg-muted absolute top-1 right-1 translate-x-1/2 -translate-y-1/2 rounded-full border p-2 shadow hover:cursor-default',
-		selected ? 'bg-primary-foreground ring-primary ring-1' : 'bg-card ring-0',
+		'absolute top-1 right-1 translate-x-1/2 -translate-y-1/2 rounded-full border bg-card p-2 shadow hover:cursor-default hover:bg-muted',
+		selected ? 'bg-primary-foreground ring-1 ring-primary' : 'bg-card ring-0'
 	)}
 >
 	<Icon

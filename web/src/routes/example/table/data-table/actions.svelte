@@ -8,7 +8,7 @@
 
 <script lang="ts">
 	let {
-		data = $bindable(),
+		data = $bindable()
 	}: {
 		data: Writable<TableRow[]>;
 	} = $props();

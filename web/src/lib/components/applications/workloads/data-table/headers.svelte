@@ -19,7 +19,7 @@
 		container,
 		volume,
 		nodeport,
-		actions,
+		actions
 	};
 </script>
 

@@ -11,7 +11,7 @@
 
 <script lang="ts">
 	let {
-		network,
+		network
 	}: {
 		network: Network;
 	} = $props();

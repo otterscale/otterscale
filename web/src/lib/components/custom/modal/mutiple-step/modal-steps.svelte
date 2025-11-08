@@ -18,6 +18,9 @@
 <Tabs.List
 	bind:ref
 	data-slot="multiple-step-modal-steps"
-	class={cn('h-fit w-full items-start justify-around border-none p-4 transition-all duration-300', className)}
+	class={cn(
+		'h-fit w-full items-start justify-around border-none p-4 transition-all duration-300',
+		className
+	)}
 	{...restProps}
 />

@@ -8,12 +8,12 @@
 	breadcrumbs.set([
 		{
 			title: m.networking(),
-			url: resolve('/(auth)/networking'),
+			url: resolve('/(auth)/networking')
 		},
 		{
 			title: m.subnets(),
-			url: resolve('/(auth)/networking/subnets'),
-		},
+			url: resolve('/(auth)/networking/subnets')
+		}
 	]);
 </script>
 

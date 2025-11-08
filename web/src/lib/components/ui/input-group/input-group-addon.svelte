@@ -9,12 +9,12 @@
 				'block-start':
 					'order-first w-full justify-start px-3 pt-3 group-has-[>input]/input-group:pt-2.5 [.border-b]:pb-3',
 				'block-end':
-					'order-last w-full justify-start px-3 pb-3 group-has-[>input]/input-group:pb-2.5 [.border-t]:pt-3',
-			},
+					'order-last w-full justify-start px-3 pb-3 group-has-[>input]/input-group:pb-2.5 [.border-t]:pt-3'
+			}
 		},
 		defaultVariants: {
-			align: 'inline-start',
-		},
+			align: 'inline-start'
+		}
 	});
 
 	export type InputGroupAddonAlign = VariantProps<typeof inputGroupAddonVariants>['align'];

@@ -10,7 +10,7 @@
 
 <script lang="ts">
 	let {
-		machine,
+		machine
 	}: {
 		machine: Writable<Machine>;
 	} = $props();
@@ -41,7 +41,7 @@
 </Table.Root> -->
 
 <Card.Root class="w-full max-w-sm shadow-none">
-	<Card.Header class="bg-muted -mt-6 rounded-t-lg p-2">
+	<Card.Header class="-mt-6 rounded-t-lg bg-muted p-2">
 		<Card.Title class="text-center">{m.mainboard()}</Card.Title>
 	</Card.Header>
 	<Card.Content>

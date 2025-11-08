@@ -21,6 +21,6 @@ export const load: PageServerLoad = async () => {
 	}
 
 	return {
-		'feature-states.app-container': appContainerFeatureState,
+		'feature-states.app-container': appContainerFeatureState
 	};
 };

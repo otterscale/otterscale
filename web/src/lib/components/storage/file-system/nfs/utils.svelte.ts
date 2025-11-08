@@ -11,7 +11,7 @@ const createNFSStore = (): NFSStore => ({
 	selectedScope: writable<string | undefined>(undefined),
 	selectedFacility: writable<string | undefined>(undefined),
 	selectedVolumeName: writable<string | undefined>(undefined),
-	selectedSubvolumeGroupName: writable<string | undefined>(undefined),
+	selectedSubvolumeGroupName: writable<string | undefined>(undefined)
 });
 
 export { createNFSStore };

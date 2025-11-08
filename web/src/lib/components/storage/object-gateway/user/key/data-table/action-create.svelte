@@ -22,7 +22,7 @@
 	const defaults = {
 		scope: $currentCeph?.scope,
 		facility: $currentCeph?.name,
-		userId: user.id,
+		userId: user.id
 	} as CreateUserKeyRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -43,10 +43,10 @@
 				let message = `Fail to create access key`;
 				toast.error(message, {
 					description: (error as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
+					duration: Number.POSITIVE_INFINITY
 				});
 				return message;
-			},
+			}
 		});
 		reset();
 	}}

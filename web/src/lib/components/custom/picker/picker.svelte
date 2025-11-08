@@ -15,6 +15,10 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & { align?: 'left' | 'right' } = $props();
 </script>
 
-<div bind:this={ref} class={cn('flex gap-2', align === 'right' && 'justify-end', className)} {...restProps}>
+<div
+	bind:this={ref}
+	class={cn('flex gap-2', align === 'right' && 'justify-end', className)}
+	{...restProps}
+>
 	{@render children?.()}
 </div>

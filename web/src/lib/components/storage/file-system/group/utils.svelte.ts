@@ -9,7 +9,7 @@ interface GroupStore {
 const createGroupStore = (): GroupStore => ({
 	selectedScope: writable<string | undefined>(undefined),
 	selectedFacility: writable<string | undefined>(undefined),
-	selectedVolumeName: writable<string | undefined>(undefined),
+	selectedVolumeName: writable<string | undefined>(undefined)
 });
 
 export { createGroupStore };

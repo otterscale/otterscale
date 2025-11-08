@@ -17,11 +17,11 @@
 		class={cn(
 			alignment == 'right'
 				? 'relative flex flex-row-reverse items-center gap-8'
-				: 'relative flex items-center gap-8',
+				: 'relative flex items-center gap-8'
 		)}
 	>
 		<div
-			class="bg-muted/70 ring-muted/30 absolute left-1/2 z-10 flex size-13 -translate-x-1/2 transform items-center justify-center rounded-full border font-bold ring-1 ring-offset-1"
+			class="absolute left-1/2 z-10 flex size-13 -translate-x-1/2 transform items-center justify-center rounded-full border bg-muted/70 font-bold ring-1 ring-muted/30 ring-offset-1"
 		>
 			<Avatar.Root class="size-9">
 				<Avatar.Image src={extension.latest?.icon} />
@@ -41,7 +41,7 @@
 							/>
 							<div class="space-y-1">
 								<h3 class="text-base font-bold">{extension.latest?.name}</h3>
-								<p class="text-muted-foreground text-xs">
+								<p class="text-xs text-muted-foreground">
 									{extension.latest?.version}
 								</p>
 							</div>
@@ -60,7 +60,7 @@
 						{/if}
 					</div>
 
-					<p class="text-muted-foreground text-sm font-light">
+					<p class="text-sm font-light text-muted-foreground">
 						{extension.latest?.description}
 					</p>
 				</Card.Content>

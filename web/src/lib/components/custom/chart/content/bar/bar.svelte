@@ -8,7 +8,7 @@
 	let {
 		activeChart = $bindable(),
 		data,
-		chartConfig,
+		chartConfig
 		// timeRange = '90d',
 	}: {
 		activeChart: string;
@@ -21,8 +21,8 @@
 		{
 			key: activeChart,
 			label: chartConfig[activeChart].label,
-			color: chartConfig[activeChart].color,
-		},
+			color: chartConfig[activeChart].color
+		}
 	]);
 </script>
 
@@ -42,19 +42,19 @@
 				initialHeight: 0,
 				motion: {
 					y: { type: 'tween', duration: 500, easing: cubicInOut },
-					height: { type: 'tween', duration: 500, easing: cubicInOut },
-				},
+					height: { type: 'tween', duration: 500, easing: cubicInOut }
+				}
 			},
 			highlight: { area: { fill: 'none' } },
 			xAxis: {
 				format: (d: Date) => {
 					return d.toLocaleDateString('en-US', {
 						month: 'short',
-						day: '2-digit',
+						day: '2-digit'
 					});
 				},
-				ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks(),
-			},
+				ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks()
+			}
 		}}
 	>
 		{#snippet belowMarks()}
@@ -67,7 +67,7 @@
 					return v.toLocaleDateString('en-US', {
 						month: 'short',
 						day: 'numeric',
-						year: 'numeric',
+						year: 'numeric'
 					});
 				}}
 			/>
