@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { createConnectTransport } from '@connectrpc/connect-web';
 	import { addCollection } from '@iconify/svelte';
-	import Icon from '@iconify/svelte';
 	import logos from '@iconify-json/logos/icons.json';
 	import ph from '@iconify-json/ph/icons.json';
 	import simpleIcons from '@iconify-json/simple-icons/icons.json';
@@ -10,8 +9,8 @@
 	import { setContext } from 'svelte';
 
 	import { env } from '$env/dynamic/public';
-	import favicon from '$lib/assets/favicon.svg';
-	import { Toaster } from '$lib/components/ui/sonner/index.js';
+	import { Toaster } from '$lib/components/ui/sonner';
+	import { Spinner } from '$lib/components/ui/spinner';
 	import '../app.css';
 
 	let { children } = $props();
@@ -28,15 +27,15 @@
 	addCollection(streamlineLogos);
 </script>
 
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
-
 {#snippet loadingIcon()}
-	<Icon icon="ph:spinner" class="animate-spin" />
+	<Spinner />
 {/snippet}
 
 <ModeWatcher />
 <Toaster richColors {loadingIcon} />
 
-{@render children()}
+<div class="app">
+	<main>
+		{@render children()}
+	</main>
+</div>

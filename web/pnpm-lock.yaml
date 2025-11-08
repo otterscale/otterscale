@@ -26,9 +26,6 @@ importers:
       '@iconify/svelte':
         specifier: ^5.1.0
         version: 5.1.0(svelte@5.43.4)
-      '@inlang/paraglide-js':
-        specifier: ^2.4.0
-        version: 2.4.0
       '@openfeature/flagd-provider':
         specifier: ^0.13.3
         version: 0.13.3(@grpc/grpc-js@1.12.6)(@openfeature/core@1.9.1)(@openfeature/server-sdk@1.20.0(@openfeature/core@1.9.1))
@@ -111,6 +108,12 @@ importers:
       '@eslint/js':
         specifier: ^9.39.1
         version: 9.39.1
+      '@fontsource/geist':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/geist-mono':
+        specifier: ^5.2.7
+        version: 5.2.7
       '@iconify-json/logos':
         specifier: ^1.2.10
         version: 1.2.10
@@ -123,6 +126,9 @@ importers:
       '@iconify-json/streamline-logos':
         specifier: ^1.2.0
         version: 1.2.0
+      '@inlang/paraglide-js':
+        specifier: ^2.4.0
+        version: 2.4.0
       '@internationalized/date':
         specifier: ^3.10.0
         version: 3.10.0
@@ -162,6 +168,9 @@ importers:
       '@types/d3-shape':
         specifier: ^3.1.7
         version: 3.1.7
+      '@types/node':
+        specifier: ^24.10.0
+        version: 24.10.0
       '@types/pg':
         specifier: ^8.15.6
         version: 8.15.6
@@ -623,6 +632,12 @@ packages:
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
+
+  '@fontsource/geist-mono@5.2.7':
+    resolution: {integrity: sha512-xVPVFISJg/K0VVd+aQN0Y7X/sw9hUcJPyDWFJ5GpyU3bHELhoRsJkPSRSHXW32mOi0xZCUQDOaPj1sqIFJ1FGg==}
+
+  '@fontsource/geist@5.2.8':
+    resolution: {integrity: sha512-pI54klK6vz8fVpAVyV+iODGLEzw73cs1XJqV9PIXgW8MYMmBcwK6lKKaWqJrNHwEx8ppz9cuhussb6arXQ/PVQ==}
 
   '@gcornut/valibot-json-schema@0.42.0':
     resolution: {integrity: sha512-4Et4AN6wmqeA0PfU5Clkv/IS27wiefsWf6TemAZrb75uzkClYEFavim7SboeKwbll9Nbsn2Iv0LT/HS5H7orZg==}
@@ -4650,6 +4665,10 @@ snapshots:
       '@floating-ui/utils': 0.2.10
 
   '@floating-ui/utils@0.2.10': {}
+
+  '@fontsource/geist-mono@5.2.7': {}
+
+  '@fontsource/geist@5.2.8': {}
 
   '@gcornut/valibot-json-schema@0.42.0(esbuild@0.25.12)(typescript@5.9.3)':
     dependencies:
