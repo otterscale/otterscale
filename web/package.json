@@ -111,12 +111,5 @@
 		"svelte-exmarkdown": "^5.0.2",
 		"svelte-monaco": "^1.0.4",
 		"svelte-toolbelt": "^0.10.6"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@tailwindcss/oxide",
-			"esbuild",
-			"rollup"
-		]
 	}
 }
