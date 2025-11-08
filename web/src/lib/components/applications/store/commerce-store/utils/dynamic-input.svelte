@@ -1,9 +1,9 @@
 <script lang="ts" module>
-	import Self from './dynamic-input.svelte';
-
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch/index.js';
+
+	import Self from './dynamic-input.svelte';
 
 	function getType(object: any) {
 		if (typeof object === 'string') {
@@ -30,8 +30,9 @@
 	{@const [anyItem] = data}
 	{#if typeof anyItem === 'object'}
 		<span class="flex flex-col">
+			<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 			{#each data as _, i}
-				<div class="bg-muted/50 rounded-lg">
+				<div class="rounded-lg bg-muted/50">
 					<Self bind:data={data[i]} />
 				</div>
 			{/each}

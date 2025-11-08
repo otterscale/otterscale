@@ -1,20 +1,16 @@
 <script lang="ts" module>
 	import {
+		type ColumnFiltersState,
 		getCoreRowModel,
 		getFilteredRowModel,
 		getPaginationRowModel,
 		getSortedRowModel,
-		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-
-	import Create from './action-create.svelte';
-	import { columns, messages } from './columns';
-	import Statistics from './statistics.svelte';
 
 	import type { User } from '$lib/api/storage/v1/storage_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
@@ -23,10 +19,15 @@
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { m } from '$lib/paraglide/messages';
+
+	import Create from './action-create.svelte';
+	import { columns, messages } from './columns';
+	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
-	let { users, reloadManager }: { users: Writable<User[]>; reloadManager: ReloadManager } = $props();
+	let { users, reloadManager }: { users: Writable<User[]>; reloadManager: ReloadManager } =
+		$props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
@@ -59,7 +60,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -97,7 +98,7 @@
 			}
 		},
 
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 
@@ -108,7 +109,12 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy columnId="id" values={$users.map((row) => row.id)} {messages} {table} />
-			<Filters.StringMatch columnId="name" values={$users.map((row) => row.name)} {messages} {table} />
+			<Filters.StringMatch
+				columnId="name"
+				values={$users.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.BooleanMatch
 				columnId="suspended"
 				descriptor={(value) => (value ? m.suspended() : m.not_suspended())}

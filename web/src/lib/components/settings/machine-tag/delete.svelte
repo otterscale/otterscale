@@ -5,7 +5,7 @@
 	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { MachineService, type DeleteTagRequest, type Tag } from '$lib/api/machine/v1/machine_pb';
+	import { type DeleteTagRequest, MachineService, type Tag } from '$lib/api/machine/v1/machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -45,7 +45,12 @@
 			<Form.Root>
 				<Form.Fieldset>
 					<Form.Field>
-						<SingleInput.Confirm required target={tag.name} bind:value={request.name} bind:invalid />
+						<SingleInput.Confirm
+							required
+							target={tag.name}
+							bind:value={request.name}
+							bind:invalid
+						/>
 					</Form.Field>
 					<Form.Help>
 						{m.deletion_warning({ identifier: m.name() })}
@@ -76,10 +81,10 @@
 									let message = `Fail to delete ${tag.name}`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY,
+										duration: Number.POSITIVE_INFINITY
 									});
 									return message;
-								},
+								}
 							});
 
 							reset();

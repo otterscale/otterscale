@@ -9,7 +9,7 @@
 	import type {
 		CreateVirtualMachineServiceRequest,
 		UpdateVirtualMachineServiceRequest,
-		VirtualMachine,
+		VirtualMachine
 	} from '$lib/api/instance/v1/instance_pb';
 	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -26,11 +26,11 @@
 	const protocolOptions = writable([
 		{ value: 'TCP', label: 'TCP', icon: 'ph:network' },
 		{ value: 'UDP', label: 'UDP', icon: 'ph:network' },
-		{ value: 'SCTP', label: 'SCTP', icon: 'ph:network' },
+		{ value: 'SCTP', label: 'SCTP', icon: 'ph:network' }
 	]);
 
 	let {
-		virtualMachine,
+		virtualMachine
 	}: {
 		virtualMachine: VirtualMachine;
 	} = $props();
@@ -52,29 +52,32 @@
 		namespace: virtualMachine.namespace,
 		name: virtualMachine.name,
 		virtualMachineName: virtualMachine.name,
-		ports: [] as Application_Service_Port[],
+		ports: [] as Application_Service_Port[]
 	} as CreateVirtualMachineServiceRequest;
 
 	const DEFAULT_UPDATE_REQUEST = {
 		scope: $currentKubernetes?.scope,
 		facility: $currentKubernetes?.name,
 		namespace: virtualMachine.namespace,
-		name: virtualMachine.services.length > 0 ? virtualMachine.services[0].name : virtualMachine.name,
+		name:
+			virtualMachine.services.length > 0 ? virtualMachine.services[0].name : virtualMachine.name,
 		ports:
 			virtualMachine.services.length > 0
 				? [...virtualMachine.services[0].ports]
-				: ([] as Application_Service_Port[]),
+				: ([] as Application_Service_Port[])
 	} as UpdateVirtualMachineServiceRequest;
 	const DEFAULT_PORT = {
 		port: undefined as number | undefined,
 		nodePort: undefined as number | undefined,
 		name: '',
-		protocol: 'TCP',
+		protocol: 'TCP'
 	} as Application_Service_Port;
 
 	// ==================== Form State ====================
 	let request: CreateVirtualMachineServiceRequest | UpdateVirtualMachineServiceRequest = $state(
-		virtualMachine.services.length === 0 ? { ...DEFAULT_CREATE_REQUEST } : { ...DEFAULT_UPDATE_REQUEST },
+		virtualMachine.services.length === 0
+			? { ...DEFAULT_CREATE_REQUEST }
+			: { ...DEFAULT_UPDATE_REQUEST }
 	);
 
 	// New port configuration state
@@ -87,7 +90,7 @@
 		} else {
 			request = {
 				...DEFAULT_UPDATE_REQUEST,
-				ports: [...virtualMachine.services[0].ports],
+				ports: [...virtualMachine.services[0].ports]
 			};
 		}
 		newPort = DEFAULT_PORT;
@@ -101,7 +104,7 @@
 		if (newPort.port && newPort.port > 0) {
 			request.ports = [
 				...request.ports,
-				{ ...newPort, targetPort: newPort.port.toString() } as Application_Service_Port,
+				{ ...newPort, targetPort: newPort.port.toString() } as Application_Service_Port
 			];
 			// Reset newPort to defaults
 			newPort = DEFAULT_PORT;
@@ -197,7 +200,13 @@
 					/>
 				</Form.Field>
 				<div class="flex justify-end">
-					<Button type="button" variant="outline" size="sm" disabled={!newPort.port} onclick={addPort}>
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						disabled={!newPort.port}
+						onclick={addPort}
+					>
 						<Icon icon="ph:plus" class="size-4" />
 						{m.add()}
 					</Button>
@@ -208,13 +217,13 @@
 					<div class="space-y-2">
 						<h4 class="font-medium">Configured Ports</h4>
 						{#each request.ports as port, index}
-							<div class="bg-muted flex items-center justify-between rounded-md px-3 py-2">
+							<div class="flex items-center justify-between rounded-md bg-muted px-3 py-2">
 								<div class="flex-1">
 									<div class="flex items-center gap-2">
 										<Icon icon="ph:network" class="size-4" />
 										<span class="font-medium">{port.name || `Port ${index + 1}`}</span>
 									</div>
-									<div class="text-muted-foreground text-sm">
+									<div class="text-sm text-muted-foreground">
 										{port.port}{#if port.nodePort && port.nodePort > 0}:{port.nodePort}{/if} ({port.protocol})
 									</div>
 								</div>
@@ -249,10 +258,10 @@
 							() =>
 								isUpdate
 									? virtualMachineClient.updateVirtualMachineService(
-											request as UpdateVirtualMachineServiceRequest,
+											request as UpdateVirtualMachineServiceRequest
 										)
 									: virtualMachineClient.createVirtualMachineService(
-											request as CreateVirtualMachineServiceRequest,
+											request as CreateVirtualMachineServiceRequest
 										),
 							{
 								loading: `${actionText} service ${request.name}...`,
@@ -264,11 +273,11 @@
 									let message = `${failureText} service ${request.name}`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY,
+										duration: Number.POSITIVE_INFINITY
 									});
 									return message;
-								},
-							},
+								}
+							}
 						);
 						reset();
 						close();

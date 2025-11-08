@@ -7,11 +7,14 @@
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
-		{ title: m.models(), url: resolve('/(auth)/scope/[scope]/models', { scope: page.params.scope! }) },
+		{
+			title: m.models(),
+			url: resolve('/(auth)/scope/[scope]/models', { scope: page.params.scope! })
+		},
 		{
 			title: m.llm(),
-			url: resolve('/(auth)/scope/[scope]/models/llm', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/models/llm', { scope: page.params.scope! })
+		}
 	]);
 </script>
 

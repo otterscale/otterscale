@@ -17,7 +17,7 @@ const CATEGORY_WORKING = new Set([
 	'repair',
 	'scrubbing',
 	'snaptrim',
-	'snaptrim_wait',
+	'snaptrim_wait'
 ]);
 const CATEGORY_WARNING = new Set([
 	'backfill_toofull',
@@ -30,7 +30,7 @@ const CATEGORY_WARNING = new Set([
 	'remapped',
 	'snaptrim_error',
 	'stale',
-	'undersized',
+	'undersized'
 ]);
 const VALID = CATEGORY_CLEAN.union(CATEGORY_WORKING).union(CATEGORY_WARNING);
 
@@ -39,7 +39,7 @@ function getPlacementGroupStateVariant(placementGroupState: string) {
 		placementGroupState
 			.replace(/[^a-z_]+/g, ' ')
 			.trim()
-			.split(' '),
+			.split(' ')
 	);
 	if (!states.isSubsetOf(VALID)) {
 		return 'secondary';

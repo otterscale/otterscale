@@ -14,6 +14,10 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {} = $props();
 </script>
 
-<div bind:this={ref} class={cn('flex items-center justify-between gap-2', className)} {...restProps}>
+<div
+	bind:this={ref}
+	class={cn('flex items-center justify-between gap-2', className)}
+	{...restProps}
+>
 	{@render children?.()}
 </div>

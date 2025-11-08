@@ -9,7 +9,7 @@
 	let {
 		ref = $bindable(null),
 		children,
-		class: className,
+		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {} = $props();
 </script>
 

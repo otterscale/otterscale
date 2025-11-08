@@ -1,13 +1,13 @@
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { type ColumnDef } from '@tanstack/table-core';
 
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
-
 import { type TestResult } from '$lib/api/configuration/v1/configuration_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
+
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
@@ -22,7 +22,7 @@ const messages = {
 	throughputMedian: m.throughput_median(),
 	createdBy: m.created_by(),
 	startedAt: m.started_at(),
-	completedAt: m.completed_at(),
+	completedAt: m.completed_at()
 };
 
 const columns: ColumnDef<TestResult>[] = [
@@ -35,7 +35,7 @@ const columns: ColumnDef<TestResult>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -44,7 +44,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'status',
@@ -53,7 +53,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.status, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'target',
@@ -62,7 +62,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.target, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'createdBy',
@@ -72,7 +72,7 @@ const columns: ColumnDef<TestResult>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.createdBy, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'operation',
@@ -81,7 +81,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.operation, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'duration',
@@ -90,7 +90,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.duration, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'objectSize',
@@ -99,7 +99,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.objectSize, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'objectCount',
@@ -108,7 +108,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.objectCount, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'throughputFastest',
@@ -117,7 +117,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.throughputFastest, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'throughputSlowest',
@@ -126,7 +126,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.throughputSlowest, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'throughputMedian',
@@ -135,7 +135,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.throughputMedian, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'startedAt',
@@ -150,8 +150,8 @@ const columns: ColumnDef<TestResult>[] = [
 				previousRow.original.startedAt,
 				nextRow.original.startedAt,
 				(p, n) => timestampDate(p) < timestampDate(n),
-				(p, n) => timestampDate(p) === timestampDate(n),
-			),
+				(p, n) => timestampDate(p) === timestampDate(n)
+			)
 	},
 	{
 		accessorKey: 'completedAt',
@@ -166,8 +166,8 @@ const columns: ColumnDef<TestResult>[] = [
 				previousRow.original.completedAt,
 				nextRow.original.completedAt,
 				(p, n) => timestampDate(p) < timestampDate(n),
-				(p, n) => timestampDate(p) === timestampDate(n),
-			),
+				(p, n) => timestampDate(p) === timestampDate(n)
+			)
 	},
 	{
 		accessorKey: 'actions',
@@ -177,8 +177,8 @@ const columns: ColumnDef<TestResult>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

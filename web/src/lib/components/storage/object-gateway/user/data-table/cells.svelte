@@ -2,13 +2,13 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import Actions from './cell-actions.svelte';
-
 	import type { User } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Key } from '$lib/components/storage/object-gateway/user/key';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
+
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,
@@ -16,7 +16,7 @@
 		name,
 		suspended,
 		keys,
-		actions,
+		actions
 	};
 </script>
 

@@ -45,19 +45,19 @@
 		apple: false,
 		github: false,
 		google: false,
-		sso: false,
+		sso: false
 	});
 
 	const signInForm = writable<SignInForm>({
 		email: '',
-		password: '',
+		password: ''
 	});
 
 	const signUpForm = writable<SignUpForm>({
 		firstName: '',
 		lastName: '',
 		email: '',
-		password: '',
+		password: ''
 	});
 
 	// Constants
@@ -68,7 +68,7 @@
 			icon: 'streamline-logos:apple-logo-solid',
 			label: 'Apple',
 			enabled: data.apple,
-			prompt: false,
+			prompt: false
 		},
 		{
 			type: 'social',
@@ -76,7 +76,7 @@
 			icon: 'streamline-logos:github-logo-2-solid',
 			label: 'GitHub',
 			enabled: data.github,
-			prompt: false,
+			prompt: false
 		},
 		{
 			type: 'social',
@@ -84,7 +84,7 @@
 			icon: 'streamline-logos:google-logo-solid',
 			label: 'Google',
 			enabled: data.google,
-			prompt: false,
+			prompt: false
 		},
 		{
 			type: 'oidc',
@@ -92,8 +92,8 @@
 			icon: 'simple-icons:openid',
 			label: 'OIDC Single Sign-On',
 			enabled: Boolean(data.oidcProvider),
-			prompt: Boolean(data.ssoLoginPrompt),
-		},
+			prompt: Boolean(data.ssoLoginPrompt)
+		}
 	];
 
 	// Calculate enabled social providers count
@@ -125,8 +125,8 @@
 				fetchOptions: {
 					// eslint-disable-next-line svelte/no-navigation-without-resolve
 					onSuccess: () => goto(data.nextPath),
-					onError: showError,
-				},
+					onError: showError
+				}
 			});
 		});
 	};
@@ -138,8 +138,8 @@
 				password: $signInForm.password,
 				callbackURL: data.nextPath,
 				fetchOptions: {
-					onError: showError,
-				},
+					onError: showError
+				}
 			});
 		});
 	};
@@ -150,8 +150,8 @@
 				provider: provider,
 				callbackURL: data.nextPath,
 				fetchOptions: {
-					onError: showError,
-				},
+					onError: showError
+				}
 			});
 		});
 	};
@@ -160,7 +160,7 @@
 		await setLoadingState(provider, async () => {
 			await authClient.signIn.sso({
 				providerId: data.oidcProvider,
-				callbackURL: data.nextPath,
+				callbackURL: data.nextPath
 			});
 		});
 	};
@@ -187,7 +187,7 @@
 				<div class="flex flex-col gap-6">
 					<div class="flex flex-col items-center text-center">
 						<h1 class="text-2xl font-bold">{m.login_title()}</h1>
-						<p class="text-muted-foreground text-balance">{m.login_description()}</p>
+						<p class="text-balance text-muted-foreground">{m.login_description()}</p>
 					</div>
 
 					<div class="grid gap-3">
@@ -225,9 +225,9 @@
 					<!-- Social Sign In -->
 					{#if enabledProviders.length > 0}
 						<div
-							class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"
+							class="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border"
 						>
-							<span class="bg-card text-muted-foreground relative z-10 px-2">
+							<span class="relative z-10 bg-card px-2 text-muted-foreground">
 								{m.login_divider()}
 							</span>
 						</div>
@@ -257,8 +257,7 @@
 														<span
 															class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"
 														></span>
-														<span
-															class="relative inline-flex size-3 rounded-full bg-blue-500"
+														<span class="relative inline-flex size-3 rounded-full bg-blue-500"
 														></span>
 													</span>
 												</div>
@@ -286,7 +285,7 @@
 			</form>
 
 			<!-- Placeholder Image -->
-			<div class="bg-muted relative hidden md:block">
+			<div class="relative hidden bg-muted md:block">
 				<img
 					src={LoginImage}
 					alt="placeholder"
@@ -298,7 +297,7 @@
 		<!-- Sign Up Form -->
 		{#if $signUp}
 			<!-- Placeholder Image -->
-			<div class="bg-muted relative hidden md:block">
+			<div class="relative hidden bg-muted md:block">
 				<img
 					src={SignUpImage}
 					alt="placeholder"
@@ -310,7 +309,7 @@
 				<div class="flex flex-col gap-6">
 					<div class="flex flex-col items-center text-center">
 						<h1 class="text-2xl font-bold">{m.sign_up_title()}</h1>
-						<p class="text-muted-foreground text-balance">{m.sign_up_description()}</p>
+						<p class="text-balance text-muted-foreground">{m.sign_up_description()}</p>
 					</div>
 
 					<div class="grid grid-cols-2 gap-4">

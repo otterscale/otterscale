@@ -13,7 +13,7 @@
 		usage,
 		mode,
 		createTime,
-		actions,
+		actions
 	};
 </script>
 

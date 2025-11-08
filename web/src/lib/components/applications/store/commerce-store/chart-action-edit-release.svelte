@@ -5,25 +5,25 @@
 	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
-
 	import {
-		ApplicationService,
 		type Application_Release,
-		type UpdateReleaseRequest,
+		ApplicationService,
+		type UpdateReleaseRequest
 	} from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
+
+	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
 </script>
 
 <script lang="ts">
 	let {
 		release,
 		releases = $bindable(),
-		valuesYaml = '',
+		valuesYaml = ''
 	}: {
 		release: Application_Release;
 		releases: Writable<Application_Release[]>;
@@ -40,7 +40,7 @@
 		namespace: release.namespace,
 		name: release.name,
 		chartRef: release.version?.chartRef,
-		valuesYaml: valuesYaml,
+		valuesYaml: valuesYaml
 	} as UpdateReleaseRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -107,10 +107,10 @@
 							let msg = `Fail to update ${request.name}`;
 							toast.error(msg, {
 								description: (e as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY,
+								duration: Number.POSITIVE_INFINITY
 							});
 							return msg;
-						},
+						}
 					});
 
 					reset();

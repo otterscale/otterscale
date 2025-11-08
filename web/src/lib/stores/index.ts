@@ -1,7 +1,7 @@
-import { writable, type Writable } from 'svelte/store';
+import { type Writable, writable } from 'svelte/store';
 
 import { resolve } from '$app/paths';
-import { PremiumTier_Level, type PremiumTier } from '$lib/api/environment/v1/environment_pb';
+import { type PremiumTier, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 import type { Essential } from '$lib/api/orchestrator/v1/orchestrator_pb';
 import type { Scope } from '$lib/api/scope/v1/scope_pb';
 import { m } from '$lib/paraglide/messages';
@@ -58,7 +58,7 @@ const createStores = (): AppStores => ({
 			archived: false,
 			deleted: false,
 			created: new Date(Date.now() - 86400000),
-			updated: new Date(Date.now() - 86400000),
+			updated: new Date(Date.now() - 86400000)
 		},
 		{
 			id: '2',
@@ -69,7 +69,7 @@ const createStores = (): AppStores => ({
 			archived: false,
 			deleted: false,
 			created: new Date(Date.now() - 3600000),
-			updated: new Date(Date.now() - 3600000),
+			updated: new Date(Date.now() - 3600000)
 		},
 		{
 			id: '3',
@@ -80,7 +80,7 @@ const createStores = (): AppStores => ({
 			archived: false,
 			deleted: false,
 			created: new Date(Date.now() - 7200000),
-			updated: new Date(Date.now() - 7200000),
+			updated: new Date(Date.now() - 7200000)
 		},
 		{
 			id: '4',
@@ -92,11 +92,18 @@ const createStores = (): AppStores => ({
 			archived: false,
 			deleted: false,
 			created: new Date(Date.now() - 1800000),
-			updated: new Date(Date.now() - 1800000),
-		},
-	]),
+			updated: new Date(Date.now() - 1800000)
+		}
+	])
 });
 
 // Export individual stores
-export const { breadcrumbs, premiumTier, activeScope, currentCeph, currentKubernetes, bookmarks, notifications } =
-	createStores();
+export const {
+	breadcrumbs,
+	premiumTier,
+	activeScope,
+	currentCeph,
+	currentKubernetes,
+	bookmarks,
+	notifications
+} = createStores();

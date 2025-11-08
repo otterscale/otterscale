@@ -11,8 +11,14 @@
 	let { open = $bindable(false) }: { open: boolean } = $props();
 
 	const links = [
-		{ icon: 'streamline-logos:github-logo-2-solid', url: 'https://github.com/otterscale/otterscale' },
-		{ icon: 'ph:paper-plane-tilt-fill', url: 'https://github.com/otterscale/otterscale/issues/new/choose' },
+		{
+			icon: 'streamline-logos:github-logo-2-solid',
+			url: 'https://github.com/otterscale/otterscale'
+		},
+		{
+			icon: 'ph:paper-plane-tilt-fill',
+			url: 'https://github.com/otterscale/otterscale/issues/new/choose'
+		}
 	];
 </script>
 
@@ -46,7 +52,7 @@
 					<br />
 					<span class="text-muted-foreground/80"> {m.join_2()} </span>
 				</h2>
-				<div class="text-primary flex justify-center gap-4">
+				<div class="flex justify-center gap-4 text-primary">
 					{#each links as { icon, url }}
 						<Button variant="outline" size="icon" href={url} target="_blank">
 							<Icon {icon} />

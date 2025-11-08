@@ -1,19 +1,18 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import type { Service } from '../types';
-
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
-
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
+
+import type { Service } from '../types';
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
 	type: m.type(),
 	clusterIp: m.cluster_ip(),
-	ports: m.ports(),
+	ports: m.ports()
 };
 
 const columns: ColumnDef<Service>[] = [
@@ -26,7 +25,7 @@ const columns: ColumnDef<Service>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -35,7 +34,7 @@ const columns: ColumnDef<Service>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'type',
@@ -44,7 +43,7 @@ const columns: ColumnDef<Service>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.type, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'clusterIp',
@@ -53,7 +52,7 @@ const columns: ColumnDef<Service>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.clusterIp, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'ports',
@@ -68,8 +67,8 @@ const columns: ColumnDef<Service>[] = [
 				previousRow.original.ports.length,
 				nextRow.original.ports.length,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'endpoints',
@@ -79,7 +78,7 @@ const columns: ColumnDef<Service>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.endpoints, row);
 		},
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'actions',
@@ -89,8 +88,8 @@ const columns: ColumnDef<Service>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

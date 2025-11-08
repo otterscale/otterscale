@@ -1,7 +1,10 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import type { GPURelation_GPU, GPURelation_Pod_Device } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import type {
+		GPURelation_GPU,
+		GPURelation_Pod_Device
+	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 </script>
@@ -11,7 +14,9 @@
 
 	const usedCores = $derived(data.devices.reduce((a, device) => a + device.usedCores, 0));
 	const vRAM = $derived(Number(data.gpu.memoryBytes));
-	const usedvRAM = $derived(data.devices.reduce((a, device) => a + Number(device.usedMemoryBytes), 0));
+	const usedvRAM = $derived(
+		data.devices.reduce((a, device) => a + Number(device.usedMemoryBytes), 0)
+	);
 	const usedCount = data.devices.length;
 
 	const formatedVRAM = $derived(formatCapacity(vRAM));
@@ -22,23 +27,23 @@
 	<p class="text-lg font-bold">{data.gpu.type}</p>
 	<div class="grid auto-rows-auto grid-cols-2 gap-1">
 		<span class="col-span-2 flex items-center gap-2">
-			<Icon icon="ph:identification-badge" class="text-muted-foreground size-6" />
+			<Icon icon="ph:identification-badge" class="size-6 text-muted-foreground" />
 			<div class="flex flex-col gap-0">
-				<p class="text-muted-foreground text-sm">{m.id()}</p>
+				<p class="text-sm text-muted-foreground">{m.id()}</p>
 				{data.gpu.id}
 			</div>
 		</span>
 		<span class="flex items-center gap-2">
-			<Icon icon="ph:tag" class="text-muted-foreground size-6" />
+			<Icon icon="ph:tag" class="size-6 text-muted-foreground" />
 			<div class="flex flex-col gap-0">
-				<p class="text-muted-foreground text-sm">{m.index()}</p>
+				<p class="text-sm text-muted-foreground">{m.index()}</p>
 				{data.gpu.index}
 			</div>
 		</span>
 		<span class="flex items-center gap-2">
-			<Icon icon="ph:heartbeat" class="text-muted-foreground size-6" />
+			<Icon icon="ph:heartbeat" class="size-6 text-muted-foreground" />
 			<div class="flex flex-col gap-0">
-				<p class="text-muted-foreground text-sm">{m.state()}</p>
+				<p class="text-sm text-muted-foreground">{m.state()}</p>
 				{#if data.gpu.health}
 					<p class="text-sm text-green-500">{m.healthy()}</p>
 				{:else}
@@ -47,9 +52,9 @@
 			</div>
 		</span>
 		<span class="flex items-center gap-2">
-			<Icon icon="ph:cpu" class="text-muted-foreground size-6" />
+			<Icon icon="ph:cpu" class="size-6 text-muted-foreground" />
 			<div class="flex flex-col gap-0">
-				<p class="text-muted-foreground text-sm">{m.cores()}</p>
+				<p class="text-sm text-muted-foreground">{m.cores()}</p>
 				<div class="flex gap-1 font-mono">
 					<p>{Number((usedCores * 100) / data.gpu.cores).toFixed(2)}%</p>
 					<p class="text-muted-foreground">
@@ -59,9 +64,9 @@
 			</div>
 		</span>
 		<span class="flex items-center gap-2">
-			<Icon icon="ph:memory" class="text-muted-foreground size-6" />
+			<Icon icon="ph:memory" class="size-6 text-muted-foreground" />
 			<div class="flex flex-col gap-0">
-				<p class="text-muted-foreground text-sm">{m.vram()}</p>
+				<p class="text-sm text-muted-foreground">{m.vram()}</p>
 				<div class="flex gap-1 font-mono">
 					<p>{Number((usedvRAM * 100) / vRAM).toFixed(2)}%</p>
 					<p class="text-muted-foreground">
@@ -71,9 +76,9 @@
 			</div>
 		</span>
 		<span class="flex items-center gap-2">
-			<Icon icon="ph:cube" class="text-muted-foreground size-6" />
+			<Icon icon="ph:cube" class="size-6 text-muted-foreground" />
 			<div class="flex flex-col gap-0">
-				<p class="text-muted-foreground text-sm">{m.gpu_count()}</p>
+				<p class="text-sm text-muted-foreground">{m.gpu_count()}</p>
 				<div class="flex gap-1 font-mono">
 					<p>{Number((usedCount * 100) / data.gpu.count).toFixed(2)}%</p>
 					<p class="text-muted-foreground">

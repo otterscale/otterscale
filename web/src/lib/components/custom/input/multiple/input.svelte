@@ -3,10 +3,10 @@
 	import { setContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 
+	import { cn } from '$lib/utils.js';
+
 	import type { InputType } from './types';
 	import { InputManager, validate, ValuesManager } from './utils.svelte';
-
-	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">
@@ -30,7 +30,7 @@
 	const valuesManager = new ValuesManager(values, {
 		set values(newValue: any[]) {
 			values = newValue;
-		},
+		}
 	});
 	setContext('id', id);
 	setContext('required', required);
@@ -42,6 +42,11 @@
 	});
 </script>
 
-<div bind:this={ref} data-slot="input-controller" class={cn('flex flex-col gap-2', className)} {...restProps}>
+<div
+	bind:this={ref}
+	data-slot="input-controller"
+	class={cn('flex flex-col gap-2', className)}
+	{...restProps}
+>
 	{@render children?.()}
 </div>

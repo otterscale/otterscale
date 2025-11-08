@@ -51,13 +51,17 @@ class BistDashboardManager<TData = TestResult> {
 		const outputMap: Record<string, FioDataPoint[]> = {
 			read: [],
 			write: [],
-			trim: [],
+			trim: []
 		};
 
 		this.filteredData.forEach((datum) => {
 			const testResult = datum as TestResult;
 
-			if (testResult.kind.case === 'fio' && testResult.kind.value.output && testResult.kind.value.input) {
+			if (
+				testResult.kind.case === 'fio' &&
+				testResult.kind.value.output &&
+				testResult.kind.value.input
+			) {
 				// Process read output
 				if (testResult.kind.value.output.read && testResult.kind.value.output.read.latency) {
 					outputMap['read'].push({
@@ -70,9 +74,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					});
 				}
 
@@ -88,9 +92,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					});
 				}
 
@@ -106,9 +110,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					});
 				}
 			}
@@ -116,7 +120,7 @@ class BistDashboardManager<TData = TestResult> {
 		return {
 			read: outputMap['read'],
 			write: outputMap['write'],
-			trim: outputMap['trim'],
+			trim: outputMap['trim']
 		};
 	}
 
@@ -128,13 +132,17 @@ class BistDashboardManager<TData = TestResult> {
 		const outputMap: Record<string, WarpDataPoint[]> = {
 			get: [],
 			put: [],
-			delete: [],
+			delete: []
 		};
 
 		this.filteredData.forEach((datum) => {
 			const testResult = datum as TestResult;
 
-			if (testResult.kind.case === 'warp' && testResult.kind.value.output && testResult.kind.value.input) {
+			if (
+				testResult.kind.case === 'warp' &&
+				testResult.kind.value.output &&
+				testResult.kind.value.input
+			) {
 				// Process get output
 				if (testResult.kind.value.output.get) {
 					outputMap['get'].push({
@@ -151,9 +159,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					});
 				}
 
@@ -173,9 +181,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					});
 				}
 
@@ -195,9 +203,9 @@ class BistDashboardManager<TData = TestResult> {
 						completedAt: testResult.completedAt
 							? new Date(
 									Number(testResult.completedAt.seconds) * 1000 +
-										Number(testResult.completedAt.nanos) / 1000000,
+										Number(testResult.completedAt.nanos) / 1000000
 								)
-							: new Date(),
+							: new Date()
 					});
 				}
 			}
@@ -206,7 +214,7 @@ class BistDashboardManager<TData = TestResult> {
 		return {
 			get: outputMap['get'],
 			put: outputMap['put'],
-			delete: outputMap['delete'],
+			delete: outputMap['delete']
 		};
 	}
 }

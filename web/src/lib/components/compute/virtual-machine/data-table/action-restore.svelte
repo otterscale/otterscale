@@ -1,11 +1,11 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import { DataTable } from './restore/data-table';
-
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
+
+	import { DataTable } from './restore/data-table';
 </script>
 
 <script lang="ts">

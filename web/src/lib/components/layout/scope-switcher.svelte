@@ -1,8 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { writable, type Writable } from 'svelte/store';
-
-	import DialogCreateScope from './dialog-create-scope.svelte';
+	import { type Writable, writable } from 'svelte/store';
 
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
@@ -15,12 +13,14 @@
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
 
+	import DialogCreateScope from './dialog-create-scope.svelte';
+
 	let {
 		active,
 		scopes,
 		tier,
 		onSelect,
-		trigger = $bindable(writable(false)),
+		trigger = $bindable(writable(false))
 	}: {
 		active: Scope;
 		scopes: Scope[];
@@ -42,7 +42,7 @@
 		'ph:number-six',
 		'ph:number-seven',
 		'ph:number-eight',
-		'ph:number-nine',
+		'ph:number-nine'
 	];
 
 	function toggleDialog() {
@@ -54,47 +54,47 @@
 	use:shortcut={{
 		key: '1',
 		ctrl: true,
-		callback: async () => await onSelect(0),
+		callback: async () => await onSelect(0)
 	}}
 	use:shortcut={{
 		key: '2',
 		ctrl: true,
-		callback: async () => await onSelect(1),
+		callback: async () => await onSelect(1)
 	}}
 	use:shortcut={{
 		key: '3',
 		ctrl: true,
-		callback: async () => await onSelect(2),
+		callback: async () => await onSelect(2)
 	}}
 	use:shortcut={{
 		key: '4',
 		ctrl: true,
-		callback: async () => await onSelect(3),
+		callback: async () => await onSelect(3)
 	}}
 	use:shortcut={{
 		key: '5',
 		ctrl: true,
-		callback: async () => await onSelect(4),
+		callback: async () => await onSelect(4)
 	}}
 	use:shortcut={{
 		key: '6',
 		ctrl: true,
-		callback: async () => await onSelect(5),
+		callback: async () => await onSelect(5)
 	}}
 	use:shortcut={{
 		key: '7',
 		ctrl: true,
-		callback: async () => await onSelect(6),
+		callback: async () => await onSelect(6)
 	}}
 	use:shortcut={{
 		key: '8',
 		ctrl: true,
-		callback: async () => await onSelect(7),
+		callback: async () => await onSelect(7)
 	}}
 	use:shortcut={{
 		key: '9',
 		ctrl: true,
-		callback: async () => await onSelect(8),
+		callback: async () => await onSelect(8)
 	}}
 />
 
@@ -112,7 +112,7 @@
 					>
 						<Button
 							href={resolve('/(auth)/scope/[scope]/setup', { scope: page.params.scope! })}
-							class="group/icon bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg transition"
+							class="group/icon flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground transition"
 						>
 							<Icon
 								icon="{scopeIcon(scopes.findIndex((s) => s.name === active.name))}-fill"
@@ -136,7 +136,7 @@
 				side={sidebar.isMobile ? 'bottom' : 'right'}
 				sideOffset={4}
 			>
-				<DropdownMenu.Label class="text-muted-foreground text-xs">{m.scopes()}</DropdownMenu.Label>
+				<DropdownMenu.Label class="text-xs text-muted-foreground">{m.scopes()}</DropdownMenu.Label>
 				{#each scopes as scope, index (scope.name)}
 					<DropdownMenu.Item onSelect={async () => await onSelect(index, true)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
@@ -158,7 +158,7 @@
 					<div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
 						<Icon icon="ph:plus" />
 					</div>
-					<div class="text-muted-foreground font-medium">{m.add_scope()}</div>
+					<div class="font-medium text-muted-foreground">{m.add_scope()}</div>
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>

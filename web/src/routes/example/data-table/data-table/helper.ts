@@ -9,4 +9,4 @@ function user_suspended_descriptor(value: boolean | undefined) {
 		return 'Undetermined';
 	}
 }
-export { USER_SUSPENDED_HELP_TEXT, user_suspended_descriptor };
+export { user_suspended_descriptor, USER_SUSPENDED_HELP_TEXT };

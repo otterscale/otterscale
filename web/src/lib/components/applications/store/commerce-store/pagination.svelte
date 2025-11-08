@@ -1,9 +1,9 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import type { PaginationManager } from './utils';
-
 	import * as Pagination from '$lib/components/ui/pagination';
+
+	import type { PaginationManager } from './utils';
 </script>
 
 <script lang="ts">
@@ -39,7 +39,12 @@
 								paginationManager.activePage = currentPage - 1;
 							}}
 						>
-							<Pagination.Link size="icon" class="h-7 w-7" {page} isActive={currentPage === page.value}>
+							<Pagination.Link
+								size="icon"
+								class="h-7 w-7"
+								{page}
+								isActive={currentPage === page.value}
+							>
 								{page.value}
 							</Pagination.Link>
 						</Pagination.Item>
@@ -51,7 +56,7 @@
 							paginationManager.activePage =
 								Math.min(
 									currentPage + 1,
-									Math.ceil(paginationManager.count / paginationManager.perPage),
+									Math.ceil(paginationManager.count / paginationManager.perPage)
 								) - 1;
 						}}
 					>

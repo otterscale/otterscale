@@ -5,8 +5,8 @@
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/text/text.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { m } from '$lib/paraglide/messages';
 
@@ -24,7 +24,7 @@
 		sum(
 			kubelet_running_pod_count{job="kubelet",juju_model_uuid=~"${scope.uuid}",metrics_path="/metrics"}
 		)
-		`,
+		`
 	);
 </script>
 

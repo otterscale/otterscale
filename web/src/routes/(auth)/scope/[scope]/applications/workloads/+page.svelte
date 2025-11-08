@@ -10,12 +10,12 @@
 	breadcrumbs.set([
 		{
 			title: m.applications(),
-			url: resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! }),
+			url: resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! })
 		},
 		{
 			title: m.workloads(),
-			url: resolve('/(auth)/scope/[scope]/applications/workloads', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/applications/workloads', { scope: page.params.scope! })
+		}
 	]);
 </script>
 

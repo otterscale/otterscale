@@ -15,12 +15,12 @@ const typeToIcon: Record<string, string> = {
 	text: 'ph:textbox',
 	number: 'ph:list-numbers',
 	search: 'ph:magnifying-glass',
-	password: 'ph:password',
+	password: 'ph:password'
 };
 
 function getInputMeasurementUnitByValue(
 	value: number | undefined,
-	units: UnitType[],
+	units: UnitType[]
 ): { value: number | undefined; unit: UnitType | undefined } {
 	const UNITS = units.sort((p, n) => p.value - n.value);
 

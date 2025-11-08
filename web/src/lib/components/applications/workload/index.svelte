@@ -3,10 +3,10 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { Data } from './data';
-
-	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
+	import { type Application, ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
+
+	import { Data } from './data';
 </script>
 
 <script lang="ts">
@@ -14,7 +14,7 @@
 		scope,
 		facility,
 		namespace,
-		applicationName,
+		applicationName
 	}: { scope: string; facility: string; namespace: string; applicationName: string } = $props();
 
 	const transport: Transport = getContext('transport');
@@ -30,7 +30,7 @@
 					scope: scope,
 					facility: facility,
 					namespace: namespace,
-					name: applicationName,
+					name: applicationName
 				})
 				.then((response) => {
 					application.set(response);

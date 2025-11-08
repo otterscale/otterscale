@@ -1,18 +1,18 @@
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
-
 import type { Subvolume_Snapshot } from '$lib/api/storage/v1/storage_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
+
 const messages = {
 	name: m.name(),
 	createTime: m.create_time(),
-	hasPendingClones: m.pending_clones(),
+	hasPendingClones: m.pending_clones()
 };
 
 const columns: ColumnDef<Subvolume_Snapshot>[] = [
@@ -25,7 +25,7 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -34,7 +34,7 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'hasPendingClones',
@@ -43,7 +43,7 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.hasPendingClones, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'createTime',
@@ -58,8 +58,8 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 				previousRow.original.createdAt,
 				nextRow.original.createdAt,
 				(p, n) => timestampDate(p) < timestampDate(n),
-				(p, n) => timestampDate(p) === timestampDate(n),
-			),
+				(p, n) => timestampDate(p) === timestampDate(n)
+			)
 	},
 	{
 		accessorKey: 'actions',
@@ -69,8 +69,8 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

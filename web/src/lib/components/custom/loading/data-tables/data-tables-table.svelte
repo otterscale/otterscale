@@ -18,7 +18,7 @@
 			<Skeleton class="bg-muted" />
 		</div>
 	</div>
-	<Skeleton class="bg-muted h-[50px] w-full " />
+	<Skeleton class="h-[50px] w-full bg-muted " />
 	{#each Array(12)}
 		<div class="flex items-center gap-2 *:h-[30px] *:w-full">
 			{#each Array(3)}

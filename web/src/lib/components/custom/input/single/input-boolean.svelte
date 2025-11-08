@@ -2,11 +2,11 @@
 	import Icon from '@iconify/svelte';
 	import { Switch as SwitchPrimitive, type WithoutChildrenOrChild } from 'bits-ui';
 
-	import { INPUT_CLASSNAME } from './utils.svelte';
-
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Switch from '$lib/components/ui/switch';
 	import { cn } from '$lib/utils.js';
+
+	import { INPUT_CLASSNAME } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -42,8 +42,8 @@
 		'relative flex items-center gap-2',
 		format === 'switch' ? 'ring-1' : 'border-none shadow-none',
 		isInvalid && format === 'switch' ? 'ring-destructive' : '',
-		isInvalid && format === 'checkbox' ? 'ring-destructive ring-1' : '',
-		className,
+		isInvalid && format === 'checkbox' ? 'ring-1 ring-destructive' : '',
+		className
 	)}
 >
 	<span class="pr-15">
@@ -62,7 +62,7 @@
 					<Badge variant="outline">False</Badge>
 				{/if}
 			{:else if isNull}
-				<p class="text-destructive/60 text-xs">Required</p>
+				<p class="text-xs text-destructive/60">Required</p>
 			{:else}
 				<Badge variant="destructive">Invalid</Badge>
 			{/if}
@@ -71,7 +71,7 @@
 
 			{#if isValid}
 				{#if descriptor}
-					<p class={cn('text-sm', checked ? 'text-primary font-bold' : 'text-muted-foreground ')}>
+					<p class={cn('text-sm', checked ? 'font-bold text-primary' : 'text-muted-foreground ')}>
 						{descriptor(checked)}
 					</p>
 				{:else if checked === true}
@@ -89,7 +89,7 @@
 
 	<span
 		class={cn(
-			'absolute top-1/2 right-0 flex -translate-y-1/2 items-center rounded-full hover:cursor-pointer focus:outline-none',
+			'absolute top-1/2 right-0 flex -translate-y-1/2 items-center rounded-full hover:cursor-pointer focus:outline-none'
 			// format === 'checkbox' && isInvalid ? 'ring-destructive ring-1' : ''
 		)}
 	>

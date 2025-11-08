@@ -14,7 +14,7 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let runnings = $state([] as SampleValue[]);
@@ -23,13 +23,13 @@
 		runnings.map((sample, index) => ({
 			time: sample.time,
 			running: sample.value,
-			waiting: waitings[index]?.value ?? 0,
-		})),
+			waiting: waitings[index]?.value ?? 0
+		}))
 	);
 
 	const configuration = {
 		running: { label: 'Running', color: 'var(--chart-1)' },
-		waiting: { label: 'Waiting', color: 'var(--chart-2)' },
+		waiting: { label: 'Waiting', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
@@ -38,7 +38,7 @@
 				`sum(vllm:num_requests_running{juju_model_uuid="${scope.uuid}"})`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				runnings = response.result[0]?.values;
@@ -48,7 +48,7 @@
 				`sum(vllm:num_requests_waiting{juju_model_uuid="${scope.uuid}"})`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				waitings = response.result[0]?.values;
@@ -97,26 +97,26 @@
 						{
 							key: 'running',
 							label: configuration.running.label,
-							color: configuration.running.color,
+							color: configuration.running.color
 						},
 						{
 							key: 'waiting',
 							label: configuration.waiting.label,
-							color: configuration.waiting.color,
-						},
+							color: configuration.waiting.color
+						}
 					]}
 					props={{
 						area: {
 							curve: curveStep,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween',
+							motion: 'tween'
 						},
 						xAxis: {
 							format: (v: Date) =>
-								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
 						},
-						yAxis: { format: () => '' },
+						yAxis: { format: () => '' }
 					}}
 				>
 					{#snippet tooltip()}
@@ -128,7 +128,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric',
+									minute: 'numeric'
 								});
 							}}
 						/>

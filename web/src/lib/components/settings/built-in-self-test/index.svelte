@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { IOTest } from './io-test';
-	import { ObjectStorageTest } from './object-storage-test';
-
 	import * as Tabs from '$lib/components/ui/tabs/index';
 	import { m } from '$lib/paraglide/messages';
+
+	import { IOTest } from './io-test';
+	import { ObjectStorageTest } from './object-storage-test';
 
 	let selectedTab = $state('io-test');
 </script>

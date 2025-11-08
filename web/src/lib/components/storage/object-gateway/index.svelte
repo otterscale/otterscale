@@ -1,15 +1,15 @@
 <script lang="ts" module>
-	import { Bucket } from './bucket';
-	import { User } from './user';
-
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import { m } from '$lib/paraglide/messages';
+
+	import { Bucket } from './bucket';
+	import { User } from './user';
 </script>
 
 <script lang="ts">
 	let {
 		selectedScope = $bindable(),
-		selectedFacility = $bindable(),
+		selectedFacility = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;

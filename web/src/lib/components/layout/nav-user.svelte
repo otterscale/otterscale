@@ -4,8 +4,6 @@
 	import { mode, toggleMode } from 'mode-watcher';
 	import { toast } from 'svelte-sonner';
 
-	import SheetNotification from './sheet-notification.svelte';
-
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
@@ -16,6 +14,8 @@
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
+
+	import SheetNotification from './sheet-notification.svelte';
 
 	let { user }: { user: User } = $props();
 	let locale = $state(getLocale());
@@ -39,8 +39,8 @@
 				onSuccess: () => {
 					toast.success(m.sign_out_success());
 					goto(resolve('/login'));
-				},
-			},
+				}
+			}
 		});
 	};
 
@@ -58,7 +58,7 @@
 	use:shortcut={{
 		key: '/',
 		ctrl: true,
-		callback: toggleNotification,
+		callback: toggleNotification
 	}}
 />
 
@@ -153,7 +153,10 @@
 								<DropdownMenu.RadioItem value="en" onclick={() => handleLanguageChange('en')}>
 									English
 								</DropdownMenu.RadioItem>
-								<DropdownMenu.RadioItem value="zh-hant" onclick={() => handleLanguageChange('zh-hant')}>
+								<DropdownMenu.RadioItem
+									value="zh-hant"
+									onclick={() => handleLanguageChange('zh-hant')}
+								>
 									繁體中文
 								</DropdownMenu.RadioItem>
 							</DropdownMenu.RadioGroup>

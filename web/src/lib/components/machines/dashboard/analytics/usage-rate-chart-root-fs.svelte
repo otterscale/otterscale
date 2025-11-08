@@ -5,8 +5,8 @@
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/arc/arc.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
@@ -27,14 +27,14 @@
 			/
 			sum(node_filesystem_size_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"})
 		)
-		`,
+		`
 	});
 
 	// Data fetching function
 	async function fetchMetrics() {
 		const [descriptionResponse, usageResponse] = await Promise.all([
 			client.instantQuery(queries.description),
-			client.instantQuery(queries.usage),
+			client.instantQuery(queries.usage)
 		]);
 
 		const descriptionValue = descriptionResponse.result[0]?.value?.value;
@@ -45,7 +45,7 @@
 
 		return {
 			description: capacity ? `${capacity.value} ${capacity.unit}` : undefined,
-			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }],
+			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
 		};
 	}
 </script>

@@ -2,17 +2,17 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import ViewIPAddresses from './action-view-ip-addresses.svelte';
-	import ViewSubnet from './action-view-subnet.svelte';
-	import ViewVLAN from './action-view-vlan.svelte';
-	import Actions from './cell-actions.svelte';
-	import { ReservedIPRanges } from './cell-reserved-ip-ranges';
-
 	import type { Network } from '$lib/api/network/v1/network_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { cn } from '$lib/utils';
+
+	import ViewIPAddresses from './action-view-ip-addresses.svelte';
+	import ViewSubnet from './action-view-subnet.svelte';
+	import ViewVLAN from './action-view-vlan.svelte';
+	import Actions from './cell-actions.svelte';
+	import { ReservedIPRanges } from './cell-reserved-ip-ranges';
 
 	export const cells = {
 		row_picker,
@@ -23,7 +23,7 @@
 		ipAddresses,
 		ipRanges,
 		statistics,
-		actions,
+		actions
 	};
 </script>
 

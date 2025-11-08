@@ -3,17 +3,17 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { DataTable } from './data-table';
-
-	import { StorageService, type OSD } from '$lib/api/storage/v1/storage_pb';
+	import { type OSD, StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+
+	import { DataTable } from './data-table';
 </script>
 
 <script lang="ts">
 	let {
 		selectedScope = $bindable(),
-		selectedFacility = $bindable(),
+		selectedFacility = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -26,9 +26,11 @@
 	const objectStorageDaemons = $state(writable([] as OSD[]));
 
 	const reloadManager = new ReloadManager(() => {
-		storageClient.listOSDs({ scope: selectedScope, facility: selectedFacility }).then((response) => {
-			objectStorageDaemons.set(response.osds);
-		});
+		storageClient
+			.listOSDs({ scope: selectedScope, facility: selectedFacility })
+			.then((response) => {
+				objectStorageDaemons.set(response.osds);
+			});
 	});
 	setContext('reloadManager', reloadManager);
 

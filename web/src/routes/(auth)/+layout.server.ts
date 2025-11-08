@@ -1,13 +1,13 @@
 import { redirect } from '@sveltejs/kit';
 import type { User } from 'better-auth';
 
-import type { LayoutServerLoad } from './$types';
-
 import { auth } from '$lib/auth';
+
+import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ request, url }) => {
 	const session = await auth.api.getSession({
-		headers: request.headers,
+		headers: request.headers
 	});
 
 	if (!session) {
@@ -15,6 +15,6 @@ export const load: LayoutServerLoad = async ({ request, url }) => {
 	}
 
 	return {
-		user: session.user as User,
+		user: session.user as User
 	};
 };

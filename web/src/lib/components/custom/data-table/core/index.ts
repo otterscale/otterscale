@@ -14,15 +14,15 @@ const Filters = {
 	BooleanMatch: FilterBooleanMatch,
 	Column: FilterColumn,
 	StringMatch: FilterStringMatch,
-	StringFuzzy: FilterStringFuzzy,
+	StringFuzzy: FilterStringFuzzy
 };
 
 const Cells = {
-	RowPicker: CellRowPicker,
+	RowPicker: CellRowPicker
 };
 
 const Headers = {
-	RowPicker: HeaderRowPicker,
+	RowPicker: HeaderRowPicker
 };
 
 export { Cells, Empty, Filters, Footer, getSortingFunction, Headers, Pagination, Sorter };

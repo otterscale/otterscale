@@ -2,14 +2,14 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
 
-	import Actions from './cell-actions.svelte';
-
 	import type { SubvolumeGroup } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
+
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,
@@ -18,7 +18,7 @@
 		usage,
 		mode,
 		createTime,
-		actions,
+		actions
 	};
 </script>
 
@@ -53,7 +53,7 @@
 {#snippet usage(row: Row<SubvolumeGroup>)}
 	<Layout.Cell class="items-end">
 		{#if row.original.quotaBytes === 0n}
-			<span class="text-muted-foreground text-sm">Quota limit is not set</span>
+			<span class="text-sm text-muted-foreground">Quota limit is not set</span>
 		{:else}
 			<Progress.Root
 				numerator={Number(row.original.usedBytes)}

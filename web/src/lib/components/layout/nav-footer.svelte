@@ -2,10 +2,10 @@
 	import Icon from '@iconify/svelte';
 	import type { ComponentProps } from 'svelte';
 
-	import DialogAbout from './dialog-about.svelte';
-
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
+
+	import DialogAbout from './dialog-about.svelte';
 
 	type Props = ComponentProps<typeof Sidebar.Group>;
 

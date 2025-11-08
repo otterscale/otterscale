@@ -1,20 +1,24 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import type { FilterManager } from './utils';
-
 	import { Button } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+
+	import type { FilterManager } from './utils';
 </script>
 
 <script lang="ts">
 	let { filterManager }: { filterManager: FilterManager } = $props();
 
 	const maintainerNames = $derived([
-		...new Set(filterManager.charts.flatMap((chart) => chart.maintainers.map((maintainer) => maintainer.name))),
+		...new Set(
+			filterManager.charts.flatMap((chart) =>
+				chart.maintainers.map((maintainer) => maintainer.name)
+			)
+		)
 	]);
 </script>
 
@@ -42,7 +46,7 @@
 								icon="ph:check"
 								class={cn(
 									filterManager.isMaintainerSelected(maintainerName) ? 'visible' : 'invisible',
-									'h-4 w-4',
+									'h-4 w-4'
 								)}
 							/>
 							{maintainerName}

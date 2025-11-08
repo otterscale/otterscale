@@ -1,8 +1,8 @@
 <script lang="ts" module>
-	import SubvolumeGroupPicker from '../../utils/subvolume-group-picker.svelte';
-
 	import * as Picker from '$lib/components/custom/picker';
 	import { m } from '$lib/paraglide/messages';
+
+	import SubvolumeGroupPicker from '../../utils/subvolume-group-picker.svelte';
 </script>
 
 <script lang="ts">
@@ -10,7 +10,7 @@
 		selectedScope,
 		selectedFacility,
 		selectedVolume,
-		selectedSubvolumeGroupName = $bindable(),
+		selectedSubvolumeGroupName = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -22,6 +22,11 @@
 <Picker.Root align="left">
 	<Picker.Wrapper class="*:h-8">
 		<Picker.Label>{m.group()}</Picker.Label>
-		<SubvolumeGroupPicker {selectedScope} {selectedFacility} {selectedVolume} bind:selectedSubvolumeGroupName />
+		<SubvolumeGroupPicker
+			{selectedScope}
+			{selectedFacility}
+			{selectedVolume}
+			bind:selectedSubvolumeGroupName
+		/>
 	</Picker.Wrapper>
 </Picker.Root>

@@ -3,12 +3,12 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { DataTable } from './data-table/index';
-	import { Statistics } from './statistics';
-
-	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+
+	import { DataTable } from './data-table/index';
+	import { Statistics } from './statistics';
 </script>
 
 <script lang="ts">

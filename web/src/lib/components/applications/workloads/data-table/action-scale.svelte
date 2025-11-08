@@ -4,8 +4,6 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { Application } from '../types';
-
 	import type { ScaleApplicationRequest } from '$lib/api/application/v1/application_pb';
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -14,6 +12,8 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
+
+	import type { Application } from '../types';
 </script>
 
 <script lang="ts">
@@ -37,7 +37,7 @@
 		name: application.name,
 		namespace: application.namespace,
 		type: application.type,
-		replicas: application.replicas,
+		replicas: application.replicas
 	} as ScaleApplicationRequest;
 
 	// Current request state
@@ -113,10 +113,10 @@
 								let message = `Failed to scale ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						// Reset form and close modal
 						reset();

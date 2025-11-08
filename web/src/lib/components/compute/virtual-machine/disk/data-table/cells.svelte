@@ -2,15 +2,18 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import Actions from './cell-actions.svelte';
-
-	import { VirtualMachine_Disk_Bus, VirtualMachine_Disk_Volume_Source_Type } from '$lib/api/instance/v1/instance_pb';
+	import {
+		VirtualMachine_Disk_Bus,
+		VirtualMachine_Disk_Volume_Source_Type
+	} from '$lib/api/instance/v1/instance_pb';
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity } from '$lib/formatter';
+
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,
@@ -22,7 +25,7 @@
 		phase,
 		boot,
 		size,
-		actions,
+		actions
 	};
 </script>
 

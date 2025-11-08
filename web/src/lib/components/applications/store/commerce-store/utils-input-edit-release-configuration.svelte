@@ -1,4 +1,6 @@
 <script lang="ts">
+	import 'highlight.js/styles/github.css';
+
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import shell from 'highlight.js/lib/languages/shell';
 	import yaml from 'highlight.js/lib/languages/yaml';
@@ -10,21 +12,23 @@
 	import { gfmPlugin } from 'svelte-exmarkdown/gfm';
 	import Monaco from 'svelte-monaco';
 
-	import Unstruct from './utils/dynamic-input.svelte';
-
-	import { ApplicationService, type Application_Chart_Metadata } from '$lib/api/application/v1/application_pb';
+	import {
+		type Application_Chart_Metadata,
+		ApplicationService
+	} from '$lib/api/application/v1/application_pb';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Resizable from '$lib/components/ui/resizable';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
-	import 'highlight.js/styles/github.css';
+
+	import Unstruct from './utils/dynamic-input.svelte';
 
 	let {
 		chartRef,
 		valuesYaml = $bindable(),
-		valuesMap = $bindable(),
+		valuesMap = $bindable()
 	}: {
 		chartRef: string;
 		valuesYaml: string;
@@ -43,7 +47,7 @@
 	async function fetchChartMetadata(chartRef: string) {
 		try {
 			const response = await client.getChartMetadata({
-				chartRef: chartRef,
+				chartRef: chartRef
 			});
 			chartMetadataStore.set(response);
 			values = $chartMetadataStore.valuesYaml;
@@ -58,8 +62,8 @@
 	const plugins: Plugin[] = [
 		gfmPlugin(),
 		{
-			rehypePlugin: [rehypeHighlight, { ignoreMissing: true, languages: { shell, yaml } }],
-		},
+			rehypePlugin: [rehypeHighlight, { ignoreMissing: true, languages: { shell, yaml } }]
+		}
 	];
 	let tab = $state(!valuesMap || Object.keys(valuesMap).length === 0 ? 'advance' : 'basic');
 
@@ -148,7 +152,7 @@
 								options={{
 									language: 'yaml',
 									padding: { top: 32, bottom: 8 },
-									automaticLayout: true,
+									automaticLayout: true
 								}}
 								theme="vs-dark"
 								bind:value={values}

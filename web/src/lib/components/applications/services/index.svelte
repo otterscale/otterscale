@@ -3,12 +3,12 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { DataTable } from './data-table/index';
-	import type { Service } from './types';
-
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+
+	import { DataTable } from './data-table/index';
+	import type { Service } from './types';
 </script>
 
 <script lang="ts">
@@ -24,16 +24,16 @@
 		applicationClient
 			.listApplications({
 				scope: scope,
-				facility: facility,
+				facility: facility
 			})
 			.then((response) => {
 				services.set(
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							publicAddress: response.publicAddress,
-						})),
-					),
+							publicAddress: response.publicAddress
+						}))
+					)
 				);
 			})
 			.catch((error) => {
@@ -46,16 +46,16 @@
 		applicationClient
 			.listApplications({
 				scope: scope,
-				facility: facility,
+				facility: facility
 			})
 			.then((response) => {
 				services.set(
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							publicAddress: response.publicAddress,
-						})),
-					),
+							publicAddress: response.publicAddress
+						}))
+					)
 				);
 				isMounted = true;
 			})

@@ -33,5 +33,5 @@ export {
 	Separator as SelectSeparator,
 	ScrollDownButton as SelectScrollDownButton,
 	ScrollUpButton as SelectScrollUpButton,
-	GroupHeading as SelectGroupHeading,
+	GroupHeading as SelectGroupHeading
 };

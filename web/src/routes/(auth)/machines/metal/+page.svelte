@@ -9,8 +9,8 @@
 		{ title: m.machines(), url: resolve('/(auth)/machines') },
 		{
 			title: m.metal(),
-			url: resolve('/(auth)/machines/metal'),
-		},
+			url: resolve('/(auth)/machines/metal')
+		}
 	]);
 </script>
 

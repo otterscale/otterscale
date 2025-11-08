@@ -8,12 +8,12 @@
 	breadcrumbs.set([
 		{
 			title: m.settings(),
-			url: resolve('/(auth)/configuration'),
+			url: resolve('/(auth)/configuration')
 		},
 		{
 			title: m.helm_repository(),
-			url: resolve('/(auth)/configuration/helm-repository'),
-		},
+			url: resolve('/(auth)/configuration/helm-repository')
+		}
 	]);
 </script>
 

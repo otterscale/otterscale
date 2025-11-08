@@ -3,13 +3,12 @@
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	import type { InputType, UnitType } from './types';
-	import { getInputMeasurementUnitByValue } from './utils.svelte';
-
-	import { General } from '.';
-
 	import * as Select from '$lib/components/ui/select';
 	import { cn } from '$lib/utils.js';
+
+	import { General } from '.';
+	import type { InputType, UnitType } from './types';
+	import { getInputMeasurementUnitByValue } from './utils.svelte';
 </script>
 
 <script lang="ts">

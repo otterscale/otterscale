@@ -6,22 +6,23 @@
 			variant: 'default',
 			title: 'Welcome to Svelte Lab!',
 			message: 'Explore Svelte features and components.',
-			action: () => console.log('Welcome to Svelte Lab!'),
+			action: () => console.log('Welcome to Svelte Lab!')
 		},
 		{
 			variant: 'information',
 			title: 'Svelte Lab is Ready',
 			message:
 				'This is a development environment for Svelte. You can test components, styles, and functionality here before deploying to production.',
-			action: () => console.log('Svelte Lab is Ready'),
+			action: () => console.log('Svelte Lab is Ready')
 		},
 		{
 			variant: 'destructive',
-			title: 'Need Help? We Are Here To Assist You With All Your Technical Questions And Development Challenges In The World Of Svelte Programming',
+			title:
+				'Need Help? We Are Here To Assist You With All Your Technical Questions And Development Challenges In The World Of Svelte Programming',
 			message:
 				'Visit our documentation or join the community forum for detailed guides, troubleshooting tips, and to connect with other Svelte developers. Our support resources are available 24/7 to assist you with any questions or issues you may encounter.',
-			action: () => console.log('Need Help?'),
-		},
+			action: () => console.log('Need Help?')
+		}
 	];
 	let index: number = $state(0);
 </script>

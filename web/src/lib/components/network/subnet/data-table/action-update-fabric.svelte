@@ -4,7 +4,11 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { NetworkService, type Network_Fabric, type UpdateFabricRequest } from '$lib/api/network/v1/network_pb';
+	import {
+		type Network_Fabric,
+		NetworkService,
+		type UpdateFabricRequest
+	} from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -23,7 +27,7 @@
 	const client = createClient(NetworkService, transport);
 	const defaults = {
 		id: fabric.id,
-		name: fabric.name,
+		name: fabric.name
 	} as UpdateFabricRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -73,10 +77,10 @@
 								let message = `Fail to update ${fabric.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 
 						reset();

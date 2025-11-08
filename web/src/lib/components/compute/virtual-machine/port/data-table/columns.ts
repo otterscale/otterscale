@@ -1,17 +1,17 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
-
 import type { Application_Service_Port } from '$lib/api/application/v1/application_pb';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
+
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
 	protocol: m.protocol(),
 	port: m.ports(),
-	nodePort: m.node_port(),
+	nodePort: m.node_port()
 };
 
 const columns: ColumnDef<Application_Service_Port>[] = [
@@ -24,7 +24,7 @@ const columns: ColumnDef<Application_Service_Port>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -33,7 +33,7 @@ const columns: ColumnDef<Application_Service_Port>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'protocol',
@@ -42,7 +42,7 @@ const columns: ColumnDef<Application_Service_Port>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.protocol, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'port',
@@ -51,8 +51,8 @@ const columns: ColumnDef<Application_Service_Port>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.port, row);
-		},
-	},
+		}
+	}
 	// {
 	// 	accessorKey: 'nodePort',
 	// 	header: ({ column }) => {

@@ -1,14 +1,14 @@
 <script lang="ts" module>
 	import type { Writable } from 'svelte/store';
 
-	import type { TableRow } from './type';
-
 	import * as Layout from '$lib/components/custom/data-table/layout';
+
+	import type { TableRow } from './type';
 </script>
 
 <script lang="ts">
 	let {
-		data = $bindable(),
+		data = $bindable()
 	}: {
 		data: Writable<TableRow[]>;
 	} = $props();

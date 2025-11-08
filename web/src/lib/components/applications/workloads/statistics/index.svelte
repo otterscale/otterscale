@@ -3,8 +3,6 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import type { Application } from '../types';
-
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
 	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
@@ -12,6 +10,8 @@
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { formatProgressColor } from '$lib/formatter';
+
+	import type { Application } from '../types';
 
 	let { scope, facility }: { scope: string; facility: string } = $props();
 
@@ -26,13 +26,17 @@
 	// Computed values
 	const filteredApplications = $derived($applications.filter((a) => a.type === selectedValue));
 
-	const totalPods = $derived(filteredApplications.reduce((total, application) => total + application.pods.length, 0));
-
-	const numberOfServices = $derived(
-		filteredApplications.reduce((total, application) => total + application.services.length, 0),
+	const totalPods = $derived(
+		filteredApplications.reduce((total, application) => total + application.pods.length, 0)
 	);
 
-	const healthyPods = $derived(filteredApplications.reduce((total, application) => total + application.healthies, 0));
+	const numberOfServices = $derived(
+		filteredApplications.reduce((total, application) => total + application.services.length, 0)
+	);
+
+	const healthyPods = $derived(
+		filteredApplications.reduce((total, application) => total + application.healthies, 0)
+	);
 
 	const healthByType = $derived(totalPods > 0 ? (healthyPods * 100) / totalPods : 0);
 
@@ -42,14 +46,14 @@
 		try {
 			const response = await client.listApplications({
 				scope: scope,
-				facility: facility,
+				facility: facility
 			});
 
 			applications.set(
 				response.applications.map((application) => ({
 					...application,
-					publicAddress: response.publicAddress,
-				})),
+					publicAddress: response.publicAddress
+				}))
 			);
 
 			if (response.applications && response.applications[0]) {

@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import type { ITerminalOptions, ITerminalInitOnlyOptions, Terminal } from '@xterm/xterm';
-	import { getContext, onMount } from 'svelte';
 	import '@xterm/xterm/css/xterm.css';
+
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import type { ITerminalInitOnlyOptions, ITerminalOptions, Terminal } from '@xterm/xterm';
+	import { getContext, onMount } from 'svelte';
 
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 
@@ -12,7 +13,7 @@
 		namespace,
 		podName,
 		containerName,
-		command,
+		command
 	}: {
 		scope: string;
 		facility: string;
@@ -53,7 +54,7 @@
 		ALT_B: '\x1bb',
 		ALT_F: '\x1bf',
 		ALT_D: '\x1bd',
-		ALT_BACKSPACE: '\x1b\x7f',
+		ALT_BACKSPACE: '\x1b\x7f'
 	} as const;
 
 	const TERMINAL_OPTIONS: ITerminalOptions & ITerminalInitOnlyOptions = {
@@ -63,8 +64,8 @@
 		cursorBlink: true,
 		theme: {
 			background: '#1e1e1e',
-			foreground: '#d4d4d4',
-		},
+			foreground: '#d4d4d4'
+		}
 	};
 
 	const KEYBOARD_MAPPINGS = {
@@ -78,14 +79,14 @@
 			k: CONTROL_SEQUENCES.CTRL_K,
 			u: CONTROL_SEQUENCES.CTRL_U,
 			w: CONTROL_SEQUENCES.CTRL_W,
-			r: CONTROL_SEQUENCES.CTRL_R,
+			r: CONTROL_SEQUENCES.CTRL_R
 		},
 		alt: {
 			b: CONTROL_SEQUENCES.ALT_B,
 			f: CONTROL_SEQUENCES.ALT_F,
 			d: CONTROL_SEQUENCES.ALT_D,
-			Backspace: CONTROL_SEQUENCES.ALT_BACKSPACE,
-		},
+			Backspace: CONTROL_SEQUENCES.ALT_BACKSPACE
+		}
 	} as const;
 
 	// State
@@ -96,7 +97,7 @@
 	let handleResize = $state<() => void>();
 	let terminalState = $state<TerminalState>({
 		sessionId: '',
-		isConnected: false,
+		isConnected: false
 	});
 
 	// Terminal utilities
@@ -140,7 +141,7 @@
 			import('@xterm/addon-search').then((m) => new m.SearchAddon()),
 			import('@xterm/addon-unicode11').then((m) => new m.Unicode11Addon()),
 			import('@xterm/addon-web-links').then((m) => new m.WebLinksAddon()),
-			import('@xterm/addon-webgl').then((m) => new m.WebglAddon()),
+			import('@xterm/addon-webgl').then((m) => new m.WebglAddon())
 		]);
 
 		return { clipboard, fit, search, unicode11, webLinks, webgl };
@@ -179,7 +180,7 @@
 				namespace: namespace,
 				podName: podName,
 				containerName: containerName,
-				command: command,
+				command: command
 			});
 			terminalState.isConnected = true;
 
@@ -214,7 +215,7 @@
 		try {
 			client.writeTTY({
 				sessionId: terminalState.sessionId,
-				stdin: new TextEncoder().encode(data),
+				stdin: new TextEncoder().encode(data)
 			});
 		} catch (error) {
 			writeToTerminal(`Failed to send data: ${error}`, true);

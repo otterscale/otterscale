@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import 'highlight.js/styles/github.css';
+
 	import Monaco from 'svelte-monaco';
 
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
@@ -15,7 +16,7 @@
 		language,
 		required,
 		preview = true,
-		invalid = $bindable(),
+		invalid = $bindable()
 	}: {
 		language: 'bash' | 'json';
 		value: string;
@@ -45,10 +46,14 @@
 
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger
-		class={cn(buttonVariants({ variant: 'outline' }), 'ring-1', isInvalid ? 'ring-destructive' : '')}
+		class={cn(
+			buttonVariants({ variant: 'outline' }),
+			'ring-1',
+			isInvalid ? 'ring-destructive' : ''
+		)}
 	>
 		{#if isInvalid}
-			<p class={cn('text-destructive text-xs')}>{m.required()}</p>
+			<p class={cn('text-xs text-destructive')}>{m.required()}</p>
 		{:else}
 			{m.input_edit()}
 		{/if}
@@ -63,7 +68,7 @@
 				automaticLayout: true,
 				padding: { top: 8, bottom: 8 },
 				overviewRulerBorder: false,
-				hideCursorInOverviewRuler: true,
+				hideCursorInOverviewRuler: true
 			}}
 			theme="vs-dark"
 			bind:value={temporaryValue}

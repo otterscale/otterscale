@@ -30,7 +30,7 @@
 <Table.Caption
 	bind:ref
 	data-slot="table-caption"
-	class={cn('bg-muted m-0 p-1', getCaptionAlignClassName(align), className)}
+	class={cn('m-0 bg-muted p-1', getCaptionAlignClassName(align), className)}
 	{...restProps}
 >
 	{@render children?.()}

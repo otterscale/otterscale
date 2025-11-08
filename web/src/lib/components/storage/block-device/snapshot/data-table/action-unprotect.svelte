@@ -4,7 +4,11 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { Image, Image_Snapshot, UnprotectImageSnapshotRequest } from '$lib/api/storage/v1/storage_pb';
+	import type {
+		Image,
+		Image_Snapshot,
+		UnprotectImageSnapshotRequest
+	} from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
@@ -13,7 +17,7 @@
 
 <script lang="ts">
 	let {
-		snapshot,
+		snapshot
 	}: {
 		snapshot: Image_Snapshot;
 	} = $props();
@@ -28,7 +32,7 @@
 		facility: $currentCeph?.name,
 		imageName: image.name,
 		poolName: image.poolName,
-		snapshotName: snapshot.name,
+		snapshotName: snapshot.name
 	} as UnprotectImageSnapshotRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -49,10 +53,10 @@
 				let message = `Fail to unprotect ${request.snapshotName}`;
 				toast.error(message, {
 					description: (error as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
+					duration: Number.POSITIVE_INFINITY
 				});
 				return message;
-			},
+			}
 		});
 		reset();
 	}}

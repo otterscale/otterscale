@@ -5,12 +5,10 @@
 	import { SvelteMap } from 'svelte/reactivity';
 	import { writable } from 'svelte/store';
 
-	import Actions from './cell-actions.svelte';
-	import Create from './create.svelte';
-	import Import from './import.svelte';
-	import ReadArchitectures from './read-architectures.svelte';
-
-	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
+	import {
+		type Configuration,
+		ConfigurationService
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
@@ -18,6 +16,11 @@
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+
+	import Actions from './cell-actions.svelte';
+	import Create from './create.svelte';
+	import Import from './import.svelte';
+	import ReadArchitectures from './read-architectures.svelte';
 </script>
 
 <script lang="ts">
@@ -66,7 +69,9 @@
 			<div class="w-full rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row class="[&_th]:bg-muted *:px-4 [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg">
+						<Table.Row
+							class="*:px-4 [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
+						>
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.source()}</Table.Head>
 							<Table.Head>{m.distro_series()}</Table.Head>
@@ -113,7 +118,7 @@
 												onclick={() => {
 													expandedArchitectures.set(
 														bootImage.name,
-														!expandedArchitectures.get(bootImage.name),
+														!expandedArchitectures.get(bootImage.name)
 													);
 												}}
 											>
@@ -121,9 +126,7 @@
 													icon="ph:caret-left"
 													class={cn(
 														'size-4 transition-all',
-														expandedArchitectures.get(bootImage.name)
-															? 'rotate-90'
-															: '-rotate-90',
+														expandedArchitectures.get(bootImage.name) ? 'rotate-90' : '-rotate-90'
 													)}
 												/>
 											</Button>

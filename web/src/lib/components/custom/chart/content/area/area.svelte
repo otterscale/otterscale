@@ -5,16 +5,16 @@
 	import { cubicInOut } from 'svelte/easing';
 
 	import {
-		formatXAxisDate,
 		formatTooltipDate,
+		formatXAxisDate,
 		getXAxisTicks,
-		type TimeRange,
+		type TimeRange
 	} from '$lib/components/custom/chart/units/formatter';
 	import {
-		generateChartConfig,
-		getSeries,
-		type DataPoint,
 		type ChartConfig,
+		type DataPoint,
+		generateChartConfig,
+		getSeries
 	} from '$lib/components/custom/prometheus';
 	import ChartContainer from '$lib/components/ui/chart/chart-container.svelte';
 	import * as Chart from '$lib/components/ui/chart/index.js';
@@ -49,7 +49,10 @@
 	const series = $derived(() => getSeries(computedChartConfig()));
 </script>
 
-<ChartContainer config={computedChartConfig()} class="aspect-auto {DEFAULT_CHART_HEIGHT} w-full {className}">
+<ChartContainer
+	config={computedChartConfig()}
+	class="aspect-auto {DEFAULT_CHART_HEIGHT} w-full {className}"
+>
 	<AreaChart
 		legend
 		{data}
@@ -61,15 +64,15 @@
 				curve: curveNatural,
 				'fill-opacity': AREA_FILL_OPACITY,
 				line: { class: 'stroke-1' },
-				motion: 'tween',
+				motion: 'tween'
 			},
 			xAxis: {
 				ticks: getXAxisTicks(timeRange),
-				format: (date: Date) => formatXAxisDate(date, timeRange),
+				format: (date: Date) => formatXAxisDate(date, timeRange)
 			},
 			yAxis: {
-				format: () => '',
-			},
+				format: () => ''
+			}
 		}}
 	>
 		{#snippet marks({ series: chartSeries, getAreaProps })}
@@ -89,8 +92,8 @@
 					width: {
 						type: 'tween',
 						duration: ANIMATION_DURATION,
-						easing: cubicInOut,
-					},
+						easing: cubicInOut
+					}
 				}}
 			>
 				{#each chartSeries as s, i (s.key)}
@@ -114,7 +117,7 @@
 							</div>
 							{#if value !== undefined && value !== null}
 								{@const formatted = valueFormatter(Number(value))}
-								<span class="text-foreground font-mono font-medium tabular-nums">
+								<span class="font-mono font-medium text-foreground tabular-nums">
 									{formatted.value.toLocaleString()}
 									{formatted.unit}
 								</span>
@@ -123,7 +126,10 @@
 					{/snippet}
 				</Chart.Tooltip>
 			{:else}
-				<Chart.Tooltip labelFormatter={(date: Date) => formatTooltipDate(date, timeRange)} indicator="line" />
+				<Chart.Tooltip
+					labelFormatter={(date: Date) => formatTooltipDate(date, timeRange)}
+					indicator="line"
+				/>
 			{/if}
 		{/snippet}
 	</AreaChart>

@@ -1,13 +1,12 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { type LargeLanguageModel } from '../type';
-
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
-
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
+
+import { type LargeLanguageModel } from '../type';
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
@@ -17,7 +16,7 @@ const messages = {
 	healthies: m.health(),
 	kv_cache: m.kv_cache(),
 	requests: m.requests(),
-	time_to_first_token: m.uptime(),
+	time_to_first_token: m.uptime()
 };
 
 const columns: ColumnDef<LargeLanguageModel>[] = [
@@ -30,7 +29,7 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'model',
@@ -39,7 +38,7 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.model, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'name',
@@ -48,7 +47,7 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'replicas',
@@ -63,8 +62,8 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 				previousRow.original.application.replicas,
 				nextRow.original.application.replicas,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'healthies',
@@ -79,8 +78,8 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 				previousRow.original.application.healthies,
 				nextRow.original.application.healthies,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'gpu_cache',
@@ -95,8 +94,8 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 				previousRow.original.metrics.gpu_cache,
 				nextRow.original.metrics.gpu_cache,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'kv_cache',
@@ -111,8 +110,8 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 				previousRow.original.metrics.kv_cache,
 				nextRow.original.metrics.kv_cache,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'requests',
@@ -127,8 +126,8 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 				previousRow.original.metrics.requests,
 				nextRow.original.metrics.requests,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'time_to_first_token',
@@ -143,8 +142,8 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 				previousRow.original.metrics.time_to_first_token,
 				nextRow.original.metrics.time_to_first_token,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'relation',
@@ -154,7 +153,7 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.relation, row);
 		},
-		enableHiding: false,
+		enableHiding: false
 	},
 
 	{
@@ -165,8 +164,8 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.action, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

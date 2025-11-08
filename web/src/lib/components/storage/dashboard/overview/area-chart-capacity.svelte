@@ -19,7 +19,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Types
@@ -30,13 +30,13 @@
 	const CHART_DESCRIPTION = m.capacity_usage_changes();
 	const CHART_CONFIG = {
 		used: { label: 'Used', color: 'var(--chart-1)' },
-		total: { label: 'Total', color: 'var(--chart-3)' },
+		total: { label: 'Total', color: 'var(--chart-3)' }
 	} satisfies Chart.ChartConfig;
 
 	const TIME_INTERVALS: Record<TimeInterval, { count: number; label: string }> = {
 		day: { count: 7, label: m.last_7_days() },
 		week: { count: 5, label: m.last_5_weeks() },
-		month: { count: 6, label: m.last_6_months() },
+		month: { count: 6, label: m.last_6_months() }
 	};
 
 	// State
@@ -46,7 +46,11 @@
 	const timeRange = $derived(TIME_INTERVALS[selectedInterval]);
 
 	// Helper functions
-	function calculateTimeRange(interval: TimeInterval, index: number, today: Date): { start: Date; end: Date } {
+	function calculateTimeRange(
+		interval: TimeInterval,
+		index: number,
+		today: Date
+	): { start: Date; end: Date } {
 		const start = new SvelteDate(today);
 		const end = new SvelteDate(today);
 
@@ -109,32 +113,34 @@
 				const weekNum = Math.ceil(v.getUTCDate() / 7);
 				return `${month}-W${weekNum}`;
 			},
-			month: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+			month: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
 		};
 
 		return formatters[interval];
 	}
 
-	function getYAxisDomain(data: { date: Date; used: number; total: number; available: number }[]): [number, number] {
+	function getYAxisDomain(
+		data: { date: Date; used: number; total: number; available: number }[]
+	): [number, number] {
 		const maxTotal = Math.max(...data.map((d) => d.total || 0));
 		return [0, maxTotal];
 	}
 
 	async function fetchMetricForInterval(
 		intervalStart: Date,
-		intervalEnd: Date,
+		intervalEnd: Date
 	): Promise<{ date: Date; used: number; total: number; available: number }> {
 		const endTimestamp = Math.floor(intervalEnd.getTime() / 1000);
 
 		const queries = {
 			used: `ceph_cluster_total_used_bytes{juju_model_uuid=~"${scope.uuid}"} @ ${endTimestamp}`,
-			total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"} @ ${endTimestamp}`,
+			total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"} @ ${endTimestamp}`
 		};
 
 		try {
 			const [usedResponse, totalResponse] = await Promise.all([
 				client.instantQuery(queries.used),
-				client.instantQuery(queries.total),
+				client.instantQuery(queries.total)
 			]);
 
 			const usedValue = Number(usedResponse.result[0]?.value?.value || 0);
@@ -144,14 +150,14 @@
 				date: intervalStart,
 				used: usedValue,
 				total: totalValue,
-				available: totalValue - usedValue,
+				available: totalValue - usedValue
 			};
 		} catch {
 			return {
 				date: intervalStart,
 				used: 0,
 				total: 0,
-				available: 0,
+				available: 0
 			};
 		}
 	}
@@ -226,8 +232,8 @@
 						{
 							key: 'used',
 							label: 'Used',
-							color: CHART_CONFIG.used.color,
-						},
+							color: CHART_CONFIG.used.color
+						}
 					]}
 					seriesLayout="stack"
 					props={{
@@ -235,13 +241,13 @@
 							curve: curveStep,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween',
+							motion: 'tween'
 						},
 						xAxis: {
 							format: getXAxisFormat(selectedInterval),
-							ticks: response.length,
+							ticks: response.length
 						},
-						yAxis: { format: () => '' },
+						yAxis: { format: () => '' }
 					}}
 				>
 					{#snippet tooltip()}
@@ -252,7 +258,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric',
+									minute: 'numeric'
 								});
 							}}
 						>

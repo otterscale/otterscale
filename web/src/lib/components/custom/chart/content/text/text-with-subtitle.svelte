@@ -8,7 +8,7 @@
 		unit,
 		subtitle,
 		children,
-		class: className,
+		class: className
 	}: {
 		value?: string | number;
 		unit?: string;
@@ -26,6 +26,6 @@
 	{/if}
 	{unit || ''}
 </div>
-<div class="text-muted-foreground text-xs">
+<div class="text-xs text-muted-foreground">
 	{subtitle}
 </div>

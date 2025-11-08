@@ -3,19 +3,23 @@
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
 
-	import type { AncestralOptionType } from './types';
-	import { OptionManager } from './utils.svelte';
-
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { cn } from '$lib/utils';
+
+	import type { AncestralOptionType } from './types';
+	import { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	let { ref = $bindable(null), children, ...restProps }: DropdownMenuPrimitive.TriggerProps & {} = $props();
+	let {
+		ref = $bindable(null),
+		children,
+		...restProps
+	}: DropdownMenuPrimitive.TriggerProps & {} = $props();
 
 	const required: boolean | undefined = getContext('required');
 	const optionManager: OptionManager = getContext('OptionManager');
@@ -27,9 +31,9 @@
 	bind:ref
 	data-slot="select-trigger"
 	class={cn(
-		'data-[state=open]:ring-primary group w-full cursor-pointer',
+		'group w-full cursor-pointer data-[state=open]:ring-primary',
 		buttonVariants({ variant: 'outline' }),
-		isInvalid ? 'ring-destructive ring-1' : 'ring-1',
+		isInvalid ? 'ring-1 ring-destructive' : 'ring-1'
 	)}
 	{...restProps}
 >
@@ -54,7 +58,7 @@
 		</div>
 	{:else if isInvalid}
 		<span
-			class="group-data-[state=open]:text-primary group-data-[state=closed]:text-destructive flex items-center gap-1 text-xs"
+			class="flex items-center gap-1 text-xs group-data-[state=closed]:text-destructive group-data-[state=open]:text-primary"
 		>
 			<Icon icon="ph:list" />
 			<p class="group-data-[state=closed]:hidden">Select</p>
@@ -74,7 +78,10 @@
 			{#if index > 0}
 				<Separator orientation="vertical" />
 			{/if}
-			<Icon icon={part.icon ?? 'ph:empty'} class={cn(part.icon && part.icon ? 'visibale' : 'hidden')} />
+			<Icon
+				icon={part.icon ?? 'ph:empty'}
+				class={cn(part.icon && part.icon ? 'visibale' : 'hidden')}
+			/>
 			{part.label}
 		{/each}
 	</Badge>
@@ -100,7 +107,10 @@
 				{#if index > 0}
 					<Separator orientation="vertical" class="data-[orientation=vertical]:h-3" />
 				{/if}
-				<Icon icon={part.icon ?? 'ph:empty'} class={cn(part.icon && part.icon ? 'visibale' : 'hidden')} />
+				<Icon
+					icon={part.icon ?? 'ph:empty'}
+					class={cn(part.icon && part.icon ? 'visibale' : 'hidden')}
+				/>
 				{part.label}
 			{/each}
 		</span>

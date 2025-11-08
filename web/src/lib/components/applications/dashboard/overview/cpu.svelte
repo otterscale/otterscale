@@ -15,12 +15,12 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let cpuUsages: SampleValue[] = $state([]);
 	const cpuUsagesConfiguration = {
-		usage: { label: 'Usage', color: 'var(--chart-2)' },
+		usage: { label: 'Usage', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 	let allocatableNodesCPU = $state(0);
 	let cpuRequests = $state(0);
@@ -36,7 +36,7 @@
 				`,
 				Date.now() - 60 * 60 * 1000,
 				Date.now(),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				cpuUsages = response.result[0].values;
@@ -47,7 +47,7 @@
 				sum(
 					kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${scope.uuid}",resource="cpu"}
 				)
-				`,
+				`
 			)
 			.then((response) => {
 				allocatableNodesCPU = response.result[0].value.value;
@@ -58,7 +58,7 @@
 				sum(
 					namespace_cpu:kube_pod_container_resource_requests:sum{juju_model_uuid="${scope.uuid}"}
 				)
-				`,
+				`
 			)
 			.then((response) => {
 				cpuRequests = response.result[0].value.value;
@@ -69,7 +69,7 @@
 				sum(
 					namespace_cpu:kube_pod_container_resource_limits:sum{juju_model_uuid="${scope.uuid}"}
 				)
-				`,
+				`
 			)
 			.then((response) => {
 				cpuLimits = response.result[0].value.value;
@@ -102,7 +102,7 @@
 	<Card.Root class="h-full gap-2">
 		<Card.Header>
 			<Card.Title>{m.cpu_usage()}</Card.Title>
-			<Card.Action class="text-muted-foreground flex flex-col gap-0.5 text-sm">
+			<Card.Action class="flex flex-col gap-0.5 text-sm text-muted-foreground">
 				<div class="flex justify-between gap-2">
 					<p>{m.requests()}</p>
 					<Tooltip.Provider>
@@ -142,21 +142,21 @@
 						{
 							key: 'value',
 							label: cpuUsagesConfiguration.usage.label,
-							color: cpuUsagesConfiguration.usage.color,
-						},
+							color: cpuUsagesConfiguration.usage.color
+						}
 					]}
 					props={{
 						area: {
 							curve: curveNatural,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween',
+							motion: 'tween'
 						},
 						xAxis: {
 							format: (v: Date) =>
-								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
 						},
-						yAxis: { format: () => '' },
+						yAxis: { format: () => '' }
 					}}
 				>
 					{#snippet tooltip()}
@@ -168,7 +168,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric',
+									minute: 'numeric'
 								});
 							}}
 						>

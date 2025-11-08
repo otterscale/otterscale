@@ -13,16 +13,16 @@
 <div class="flex flex-col gap-2 p-2 text-base text-nowrap whitespace-nowrap">
 	<p class="text-lg font-bold">{data.modelName}</p>
 	<span class="flex items-center gap-2">
-		<Icon icon="ph:cube" class="text-muted-foreground size-6" />
+		<Icon icon="ph:cube" class="size-6 text-muted-foreground" />
 		<div class="flex flex-col gap-0">
-			<p class="text-muted-foreground text-sm">{m.namespace()}</p>
+			<p class="text-sm text-muted-foreground">{m.namespace()}</p>
 			{data.namespace}
 		</div>
 	</span>
 	<span class="flex items-center gap-2">
-		<Icon icon="ph:cube" class="text-muted-foreground size-6" />
+		<Icon icon="ph:cube" class="size-6 text-muted-foreground" />
 		<div class="flex flex-col gap-0">
-			<p class="text-muted-foreground text-sm">{m.application()}</p>
+			<p class="text-sm text-muted-foreground">{m.application()}</p>
 			<p>
 				{data.name}
 			</p>
@@ -30,25 +30,27 @@
 	</span>
 	<div class="flex flex-col gap-4">
 		{#each data.devices as device}
-			{@const { value: usedMemoryValue, unit: usedMemoryUnit } = formatCapacity(Number(device.usedMemoryBytes))}
-			<div class="bg-muted/50 hover:bg-muted grid auto-rows-auto grid-cols-3 gap-1 rounded-lg p-4">
+			{@const { value: usedMemoryValue, unit: usedMemoryUnit } = formatCapacity(
+				Number(device.usedMemoryBytes)
+			)}
+			<div class="grid auto-rows-auto grid-cols-3 gap-1 rounded-lg bg-muted/50 p-4 hover:bg-muted">
 				<span class="col-span-3 flex items-center gap-2">
-					<Icon icon="ph:identification-badge" class="text-muted-foreground size-6" />
+					<Icon icon="ph:identification-badge" class="size-6 text-muted-foreground" />
 					<p class="flex flex-col gap-0">
 						{device.gpuId}
 					</p>
 				</span>
 				<span class="flex items-center gap-2">
-					<Icon icon="ph:cpu" class="text-muted-foreground size-6" />
+					<Icon icon="ph:cpu" class="size-6 text-muted-foreground" />
 					<div class="flex flex-col gap-0">
-						<p class="text-muted-foreground text-sm">{m.cores()}</p>
+						<p class="text-sm text-muted-foreground">{m.cores()}</p>
 						{device.usedCores}%
 					</div>
 				</span>
 				<span class="flex items-center gap-2">
-					<Icon icon="ph:memory" class="text-muted-foreground size-6" />
+					<Icon icon="ph:memory" class="size-6 text-muted-foreground" />
 					<div class="flex flex-col gap-0">
-						<p class="text-muted-foreground text-sm">{m.vram()}</p>
+						<p class="text-sm text-muted-foreground">{m.vram()}</p>
 						<p>
 							{usedMemoryValue}
 							{usedMemoryUnit}
@@ -56,9 +58,9 @@
 					</div>
 				</span>
 				<span class="flex items-center gap-2">
-					<Icon icon="ph:cube" class="text-muted-foreground size-6" />
+					<Icon icon="ph:cube" class="size-6 text-muted-foreground" />
 					<div class="flex flex-col gap-0">
-						<p class="text-muted-foreground text-sm">{m.gpu_count()}</p>
+						<p class="text-sm text-muted-foreground">{m.gpu_count()}</p>
 						1
 					</div>
 				</span>

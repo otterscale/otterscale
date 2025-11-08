@@ -1,13 +1,12 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import type { Application } from '../types';
-
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
-
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
+
+import type { Application } from '../types';
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
@@ -19,7 +18,7 @@ const messages = {
 	replica: m.replica(),
 	container: m.container(),
 	volume: m.volume(),
-	nodeport: m.nodeport(),
+	nodeport: m.nodeport()
 };
 
 const columns: ColumnDef<Application>[] = [
@@ -32,7 +31,7 @@ const columns: ColumnDef<Application>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -41,7 +40,7 @@ const columns: ColumnDef<Application>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'type',
@@ -51,7 +50,7 @@ const columns: ColumnDef<Application>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.type, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'namespace',
@@ -61,7 +60,7 @@ const columns: ColumnDef<Application>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.namespace, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'health',
@@ -76,8 +75,8 @@ const columns: ColumnDef<Application>[] = [
 				previousRow.original.healthies / previousRow.original.pods.length,
 				nextRow.original.healthies / nextRow.original.pods.length,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'service',
@@ -92,8 +91,8 @@ const columns: ColumnDef<Application>[] = [
 				previousRow.original.services.length,
 				nextRow.original.services.length,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'pod',
@@ -108,8 +107,8 @@ const columns: ColumnDef<Application>[] = [
 				previousRow.original.pods.length,
 				nextRow.original.pods.length,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'replica',
@@ -124,8 +123,8 @@ const columns: ColumnDef<Application>[] = [
 				previousRow.original.replicas,
 				nextRow.original.replicas,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'container',
@@ -140,8 +139,8 @@ const columns: ColumnDef<Application>[] = [
 				previousRow.original.containers.length,
 				nextRow.original.containers.length,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'volume',
@@ -156,8 +155,8 @@ const columns: ColumnDef<Application>[] = [
 				previousRow.original.persistentVolumeClaims.length,
 				nextRow.original.persistentVolumeClaims.length,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'nodeport',
@@ -166,7 +165,7 @@ const columns: ColumnDef<Application>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.nodeport, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'actions',
@@ -176,8 +175,8 @@ const columns: ColumnDef<Application>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

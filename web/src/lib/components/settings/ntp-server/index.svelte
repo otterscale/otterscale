@@ -4,11 +4,14 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import Update from './update.svelte';
-
-	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
+	import {
+		type Configuration,
+		ConfigurationService
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Layout from '$lib/components/settings/layout';
 	import { m } from '$lib/paraglide/messages';
+
+	import Update from './update.svelte';
 </script>
 
 <script lang="ts">
@@ -44,12 +47,12 @@
 				<div class="grid w-full gap-4 space-y-8 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
 					{#each $configuration.ntpServer.addresses as address}
 						<div class="flex flex-col items-center gap-4">
-							<div class="bg-muted/50 m-2 rounded-full p-2 shadow-lg">
+							<div class="m-2 rounded-full bg-muted/50 p-2 shadow-lg">
 								<Icon icon="ph:clock-user" class="m-2 size-20" />
 							</div>
 							<div class="flex flex-col items-center">
 								<p class="text-sm font-bold">{address}</p>
-								<p class="text-muted-foreground text-xs font-semibold">ntp server</p>
+								<p class="text-xs font-semibold text-muted-foreground">ntp server</p>
 							</div>
 						</div>
 					{/each}

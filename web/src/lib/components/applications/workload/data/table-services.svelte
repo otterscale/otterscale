@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	let {
-		application,
+		application
 	}: {
 		application: Writable<Application>;
 	} = $props();

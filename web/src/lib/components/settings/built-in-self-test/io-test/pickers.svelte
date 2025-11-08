@@ -14,7 +14,7 @@
 	const modes = writable<SingleSelect.OptionType[]>([
 		{ value: 'read', label: 'Read', icon: 'ph:download-simple' },
 		{ value: 'write', label: 'Write', icon: 'ph:upload-simple' },
-		{ value: 'trim', label: 'Trim', icon: 'ph:broom' },
+		{ value: 'trim', label: 'Trim', icon: 'ph:broom' }
 	]);
 </script>
 

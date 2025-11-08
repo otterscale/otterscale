@@ -1,5 +1,4 @@
 import { typeToIcon } from '../single';
-
 import type { AccessorType, InputType } from './types';
 
 class InputManager {
@@ -20,7 +19,11 @@ class ValuesManager {
 	accessor: AccessorType;
 
 	constructor(initialValues: any, accessor: AccessorType) {
-		this.values = Array.isArray(initialValues) ? initialValues : initialValues ? [initialValues] : [];
+		this.values = Array.isArray(initialValues)
+			? initialValues
+			: initialValues
+				? [initialValues]
+				: [];
 		this.accessor = accessor;
 	}
 

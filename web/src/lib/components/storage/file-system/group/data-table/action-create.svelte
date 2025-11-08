@@ -5,8 +5,6 @@
 	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { type GroupStore } from '../utils.svelte.js';
-
 	import type { CreateSubvolumeGroupRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -14,6 +12,8 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
+
+	import { type GroupStore } from '../utils.svelte.js';
 </script>
 
 <script lang="ts">
@@ -27,7 +27,7 @@
 	const defaults = {
 		scope: get(groupStore.selectedScope),
 		facility: get(groupStore.selectedFacility),
-		volumeName: get(groupStore.selectedVolumeName),
+		volumeName: get(groupStore.selectedVolumeName)
 	} as CreateSubvolumeGroupRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -61,7 +61,7 @@
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 						]}
 					/>
 				</Form.Field>
@@ -89,10 +89,10 @@
 								let message = `Fail to create ${request.volumeName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

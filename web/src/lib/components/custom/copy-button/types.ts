@@ -13,7 +13,7 @@ export type ButtonPropsWithoutHTML = WithChildren<{
 	onClickPromise?: (
 		e: MouseEvent & {
 			currentTarget: EventTarget & HTMLButtonElement;
-		},
+		}
 	) => Promise<void>;
 }>;
 
@@ -27,4 +27,5 @@ export type CopyButtonPropsWithoutHTML = WithChildren<
 	}
 >;
 
-export type CopyButtonProps = CopyButtonPropsWithoutHTML & WithoutChildren<HTMLAttributes<HTMLButtonElement>>;
+export type CopyButtonProps = CopyButtonPropsWithoutHTML &
+	WithoutChildren<HTMLAttributes<HTMLButtonElement>>;

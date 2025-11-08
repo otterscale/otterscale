@@ -17,7 +17,7 @@
 <Card.Root
 	bind:ref
 	data-slot="layout-statistic"
-	class={cn('h-60', 'ring-none bg-sidebar border-none shadow-none', className)}
+	class={cn('h-60', 'ring-none border-none bg-sidebar shadow-none', className)}
 	{...restProps}
 >
 	{@render children?.()}

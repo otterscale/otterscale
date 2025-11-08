@@ -5,10 +5,8 @@
 	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { accessControlListOptions, getAccessControlList } from './utils.svelte';
-
-	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import type { Bucket, UpdateBucketRequest } from '$lib/api/storage/v1/storage_pb';
+	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
@@ -18,11 +16,13 @@
 	import { m } from '$lib/paraglide/messages.js';
 	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
+
+	import { accessControlListOptions, getAccessControlList } from './utils.svelte';
 </script>
 
 <script lang="ts">
 	let {
-		bucket,
+		bucket
 	}: {
 		bucket: Bucket;
 	} = $props();
@@ -41,7 +41,7 @@
 		bucketName: bucket.name,
 		owner: bucket.owner,
 		policy: bucket.policy,
-		acl: getAccessControlList(bucket.grants),
+		acl: getAccessControlList(bucket.grants)
 	} as UpdateBucketRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -63,9 +63,9 @@
 							({
 								value: user.id,
 								label: user.id,
-								icon: 'ph:user',
-							}) as SingleSelect.OptionType,
-					),
+								icon: 'ph:user'
+							}) as SingleSelect.OptionType
+					)
 				);
 				isMounted = true;
 			})
@@ -179,10 +179,10 @@
 								let message = `Fail to update ${request.bucketName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

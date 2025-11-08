@@ -5,8 +5,8 @@
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { formatTimeRange } from '$lib/components/custom/chart/units/formatter';
 	import { fetchFlattenedRange } from '$lib/components/custom/prometheus';
@@ -28,7 +28,7 @@
 
 	// Prometheus query for Disk I/O time
 	const query = $derived(
-		`sum(rate(node_disk_io_time_seconds_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`,
+		`sum(rate(node_disk_io_time_seconds_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`
 	);
 </script>
 

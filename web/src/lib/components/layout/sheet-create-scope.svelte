@@ -6,19 +6,20 @@
 	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import type { Plan } from './plans';
-
 	import { resolve } from '$app/paths';
 	import {
-		MachineService,
-		type Machine,
-		CreateMachineRequestSchema,
 		AddMachineTagsRequestSchema,
 		CommissionMachineRequestSchema,
+		CreateMachineRequestSchema,
 		GetMachineRequestSchema,
+		type Machine,
+		MachineService
 	} from '$lib/api/machine/v1/machine_pb';
-	import { OrchestratorService, CreateNodeRequestSchema } from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { ScopeService, CreateScopeRequestSchema } from '$lib/api/scope/v1/scope_pb';
+	import {
+		CreateNodeRequestSchema,
+		OrchestratorService
+	} from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import { CreateScopeRequestSchema, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import { IPv4AddressInput } from '$lib/components/custom/ipv4';
 	import { IPv4CIDRInput } from '$lib/components/custom/ipv4-cidr';
 	import { Badge } from '$lib/components/ui/badge';
@@ -34,7 +35,10 @@
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
-	let { open = $bindable(false), plan = $bindable({} as Plan) }: { open: boolean; plan: Plan } = $props();
+	import type { Plan } from './plans';
+
+	let { open = $bindable(false), plan = $bindable({} as Plan) }: { open: boolean; plan: Plan } =
+		$props();
 
 	// Constants
 	const TOAST_DURATION_MS = 1200000; // 20 minutes
@@ -73,13 +77,15 @@
 		isSubmitting = true;
 
 		// Create a loading toast that we can update
-		const toastId = toast.loading(`Creating scope ${scopeName}...`, { duration: TOAST_DURATION_MS });
+		const toastId = toast.loading(`Creating scope ${scopeName}...`, {
+			duration: TOAST_DURATION_MS
+		});
 		handleClose();
 		(async () => {
 			try {
 				// Step 1: Create Scope
 				const createScopeRequest = create(CreateScopeRequestSchema, {
-					name: scopeName,
+					name: scopeName
 				});
 				const scopeResponse = await scopeClient.createScope(createScopeRequest);
 
@@ -87,7 +93,7 @@
 				toast.loading('Adding machine tags...', { id: toastId, duration: TOAST_DURATION_MS });
 				const addMachineTagsRequest = create(AddMachineTagsRequestSchema, {
 					id: selectedMachine,
-					tags: [],
+					tags: []
 				});
 				await machineClient.addMachineTags(addMachineTagsRequest);
 
@@ -98,14 +104,17 @@
 					enableSsh: true,
 					skipBmcConfig: false,
 					skipNetworking: false,
-					skipStorage: false,
+					skipStorage: false
 				});
 				await machineClient.commissionMachine(commissionMachineRequest);
 
 				// Step 4: Wait for machine status to be Ready
-				toast.loading('Waiting for machine to be ready...', { id: toastId, duration: TOAST_DURATION_MS });
+				toast.loading('Waiting for machine to be ready...', {
+					id: toastId,
+					duration: TOAST_DURATION_MS
+				});
 				const getMachineRequest = create(GetMachineRequestSchema, {
-					id: selectedMachine,
+					id: selectedMachine
 				});
 
 				// Poll until machine status is Ready
@@ -124,12 +133,15 @@
 				toast.loading('Creating machine...', { id: toastId, duration: TOAST_DURATION_MS });
 				const createMachineRequest = create(CreateMachineRequestSchema, {
 					id: selectedMachine,
-					scope: scopeResponse.name,
+					scope: scopeResponse.name
 				});
 				const machineResponse = await machineClient.createMachine(createMachineRequest);
 
 				// Step 6: Wait for agent status to be Started
-				toast.loading('Waiting for agent to start...', { id: toastId, duration: TOAST_DURATION_MS });
+				toast.loading('Waiting for agent to start...', {
+					id: toastId,
+					duration: TOAST_DURATION_MS
+				});
 
 				// Poll until agent status is Started
 				let agentStarted = false;
@@ -151,12 +163,15 @@
 					prefixName: prefixName || scopeName,
 					virtualIps: virtualIp ? [virtualIp] : [],
 					calicoCidr: calicoCidr,
-					osdDevices: selectedDevices.map((device) => `${DEVICE_PATH_PREFIX}${device}`),
+					osdDevices: selectedDevices.map((device) => `${DEVICE_PATH_PREFIX}${device}`)
 				});
 				await orchestratorClient.createNode(createNodeRequest);
 
 				// Success
-				toast.success(m.create_scope_success({ name: scopeResponse.name }), { id: toastId, duration: 5000 });
+				toast.success(m.create_scope_success({ name: scopeResponse.name }), {
+					id: toastId,
+					duration: 5000
+				});
 				isSubmitting = false;
 				resetForm();
 			} catch (error) {
@@ -165,7 +180,7 @@
 				toast.error(message, {
 					id: toastId,
 					description: (error as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
+					duration: Number.POSITIVE_INFINITY
 				});
 			}
 		})();
@@ -196,7 +211,7 @@
 			<div class="flex h-full flex-col p-12 lg:max-w-3/5">
 				<!-- Plan Header -->
 				<div class="flex flex-col space-y-4">
-					<Badge variant="secondary" class="bg-primary/10 text-primary flex items-center uppercase">
+					<Badge variant="secondary" class="flex items-center bg-primary/10 text-primary uppercase">
 						{#if plan.star}
 							<Icon icon="ph:star-fill" class="text-yellow-500" />
 						{/if}
@@ -204,7 +219,7 @@
 					</Badge>
 
 					<h2 class="text-3xl font-semibold tracking-tight">{plan.name}</h2>
-					<p class="text-accent-foreground/80 text-md">{plan.description}</p>
+					<p class="text-md text-accent-foreground/80">{plan.description}</p>
 
 					<div class="flex flex-wrap gap-2">
 						{#each plan.tags as tag}
@@ -226,11 +241,17 @@
 									{m.create_scope_name()}
 									<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
 								</Label>
-								<p class="text-muted-foreground text-sm">
+								<p class="text-sm text-muted-foreground">
 									{m.create_scope_name_description()}
 								</p>
 							</div>
-							<Input id="name" type="text" placeholder="scope-name" bind:value={scopeName} required />
+							<Input
+								id="name"
+								type="text"
+								placeholder="scope-name"
+								bind:value={scopeName}
+								required
+							/>
 						</div>
 
 						<!-- Machine Selection -->
@@ -240,7 +261,7 @@
 									{m.create_scope_machine()}
 									<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
 								</Label>
-								<p class="text-muted-foreground text-sm">
+								<p class="text-sm text-muted-foreground">
 									{m.create_scope_machine_description()}
 								</p>
 							</div>
@@ -275,7 +296,7 @@
 										{m.create_scope_storage_devices()}
 										<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
 									</Label>
-									<p class="text-muted-foreground text-sm">
+									<p class="text-sm text-muted-foreground">
 										{m.create_scope_storage_devices_description()}
 									</p>
 								</div>
@@ -285,7 +306,7 @@
 											<Tooltip.Root>
 												<Tooltip.Trigger>
 													<Label
-														class="hover:bg-accent/50 flex items-start gap-x-2 rounded-md border p-2 has-aria-checked:border-slate-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-slate-900 dark:has-aria-checked:bg-slate-950"
+														class="flex items-start gap-x-2 rounded-md border p-2 hover:bg-accent/50 has-aria-checked:border-slate-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-slate-900 dark:has-aria-checked:bg-slate-950"
 													>
 														<Checkbox
 															id={device.name}
@@ -295,7 +316,7 @@
 																	selectedDevices = [...selectedDevices, device.name];
 																} else {
 																	selectedDevices = selectedDevices.filter(
-																		(d) => d !== device.name,
+																		(d) => d !== device.name
 																	);
 																}
 															}}
@@ -322,7 +343,7 @@
 								<div class="grid gap-4">
 									<div class="grid gap-1">
 										<Label for="calico-cidr">{m.create_scope_calico_cidr()} ({m.optional()})</Label>
-										<p class="text-muted-foreground text-sm">
+										<p class="text-sm text-muted-foreground">
 											{m.create_scope_calico_cidr_description()}
 										</p>
 									</div>
@@ -335,7 +356,7 @@
 								<div class="grid gap-4">
 									<div class="grid gap-1">
 										<Label for="virtual-ip">{m.create_scope_virtual_ip()} ({m.optional()})</Label>
-										<p class="text-muted-foreground text-sm">
+										<p class="text-sm text-muted-foreground">
 											{m.create_scope_virtual_ip_description()}
 										</p>
 									</div>
@@ -351,11 +372,16 @@
 							<div class="grid gap-4">
 								<div class="grid gap-1">
 									<Label for="prefix-name">Prefix Name ({m.optional()})</Label>
-									<p class="text-muted-foreground text-sm">
+									<p class="text-sm text-muted-foreground">
 										Prefix for node naming (defaults to scope name if not provided)
 									</p>
 								</div>
-								<Input id="prefix-name" type="text" placeholder="node-prefix" bind:value={prefixName} />
+								<Input
+									id="prefix-name"
+									type="text"
+									placeholder="node-prefix"
+									bind:value={prefixName}
+								/>
 							</div>
 						{/if}
 					</div>
@@ -399,7 +425,7 @@
 		<HoverCard.Root>
 			<HoverCard.Trigger
 				href={resolve('/(auth)/machines/metal/[id]', {
-					id: machine.id,
+					id: machine.id
 				})}
 				target="_blank"
 				rel="noreferrer noopener"
@@ -411,16 +437,16 @@
 				<div class="grid grid-cols-6 gap-x-6 gap-y-2">
 					<!-- General Information -->
 					<h4 class="text-md col-span-6 font-semibold">{m.general()}</h4>
-					<span class="text-muted-foreground text-sm">{m.architecture()}</span>
+					<span class="text-sm text-muted-foreground">{m.architecture()}</span>
 					<span class="text-sm">{machine.architecture}</span>
-					<span class="text-muted-foreground text-sm">{m.cpu()}</span>
+					<span class="text-sm text-muted-foreground">{m.cpu()}</span>
 					<span class="col-span-3 text-sm">{machine.hardwareInformation.cpu_model}</span>
-					<span class="text-muted-foreground text-sm">{m.memory()}</span>
+					<span class="text-sm text-muted-foreground">{m.memory()}</span>
 					<span class="text-sm">
 						{formatCapacity(machine.memoryMb).value}
 						{formatCapacity(machine.memoryMb).unit}
 					</span>
-					<span class="text-muted-foreground text-sm">{m.storage()}</span>
+					<span class="text-sm text-muted-foreground">{m.storage()}</span>
 					<span class="text-sm">
 						{formatCapacity(machine.storageMb).value}
 						{formatCapacity(machine.storageMb).unit}
@@ -430,40 +456,44 @@
 
 					<!-- System Information -->
 					<h4 class="text-md col-span-6 font-semibold">{m.system()}</h4>
-					<span class="text-muted-foreground text-sm">{m.vendor()}</span>
+					<span class="text-sm text-muted-foreground">{m.vendor()}</span>
 					<span class="text-sm">{machine.hardwareInformation.system_vendor}</span>
-					<span class="text-muted-foreground text-sm">{m.product()}</span>
+					<span class="text-sm text-muted-foreground">{m.product()}</span>
 					<span class="col-span-3 text-sm">{machine.hardwareInformation.system_product}</span>
-					<span class="text-muted-foreground text-sm">{m.version()}</span>
+					<span class="text-sm text-muted-foreground">{m.version()}</span>
 					<span class="text-sm">{machine.hardwareInformation.system_version}</span>
-					<span class="text-muted-foreground text-sm">{m.serial()}</span>
+					<span class="text-sm text-muted-foreground">{m.serial()}</span>
 					<span class="col-span-3 text-sm">{machine.hardwareInformation.system_serial}</span>
 
 					<Separator class="col-span-6 my-2" />
 
 					<!-- Mainboard Information -->
 					<h4 class="text-md col-span-6 font-semibold">{m.mainboard()}</h4>
-					<span class="text-muted-foreground text-sm">{m.vendor()}</span>
+					<span class="text-sm text-muted-foreground">{m.vendor()}</span>
 					<span class="text-sm">{machine.hardwareInformation.mainboard_vendor}</span>
-					<span class="text-muted-foreground text-sm">{m.product()}</span>
+					<span class="text-sm text-muted-foreground">{m.product()}</span>
 					<span class="col-span-3 text-sm">{machine.hardwareInformation.mainboard_product}</span>
-					<span class="text-muted-foreground text-sm">{m.firmware()}</span>
+					<span class="text-sm text-muted-foreground">{m.firmware()}</span>
 					<span class="text-sm">{machine.hardwareInformation.mainboard_firmware_vendor}</span>
-					<span class="text-muted-foreground text-sm">{m.version()}</span>
-					<span class="col-span-3 text-sm">{machine.hardwareInformation.mainboard_firmware_version}</span>
-					<span class="text-muted-foreground text-sm">{m.boot_mode()}</span>
+					<span class="text-sm text-muted-foreground">{m.version()}</span>
+					<span class="col-span-3 text-sm"
+						>{machine.hardwareInformation.mainboard_firmware_version}</span
+					>
+					<span class="text-sm text-muted-foreground">{m.boot_mode()}</span>
 					<span class="text-sm">{machine.biosBootMethod}</span>
-					<span class="text-muted-foreground text-sm">{m.date()}</span>
-					<span class="col-span-3 text-sm">{machine.hardwareInformation.mainboard_firmware_date}</span>
+					<span class="text-sm text-muted-foreground">{m.date()}</span>
+					<span class="col-span-3 text-sm"
+						>{machine.hardwareInformation.mainboard_firmware_date}</span
+					>
 
 					<Separator class="col-span-6 my-2" />
 
 					<!-- Network Information -->
 					<h4 class="text-md col-span-6 font-semibold">{m.networking()}</h4>
 					{#each machine.networkInterfaces as network}
-						<span class="text-muted-foreground text-sm">{m.name()}</span>
+						<span class="text-sm text-muted-foreground">{m.name()}</span>
 						<span class="text-sm">{network.name}</span>
-						<span class="text-muted-foreground text-sm">{m.mac_address()}</span>
+						<span class="text-sm text-muted-foreground">{m.mac_address()}</span>
 						<span class="col-span-3 text-sm">{network.macAddress}</span>
 					{/each}
 				</div>

@@ -3,9 +3,6 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import Actions from './cell-actions.svelte';
-	import VNC from './cell-vnc.svelte';
-
 	import { resolve } from '$app/paths';
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { Disk } from '$lib/components/compute/virtual-machine/disk';
@@ -19,6 +16,9 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatTimeAgo } from '$lib/formatter';
 
+	import Actions from './cell-actions.svelte';
+	import VNC from './cell-vnc.svelte';
+
 	export const cells = {
 		row_picker,
 		name,
@@ -30,7 +30,7 @@
 		port,
 		createTime,
 		vnc,
-		actions,
+		actions
 	};
 </script>
 
@@ -78,7 +78,7 @@
 			<a
 				class="m-0 p-0 underline hover:no-underline"
 				href={resolve('/(auth)/machines/metal/[id]', {
-					id: row.original.machineId,
+					id: row.original.machineId
 				})}
 			>
 				{row.original.hostname}

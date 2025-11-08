@@ -34,7 +34,7 @@
 		facility: $currentKubernetes?.name || '',
 		name: dataVolume.name,
 		namespace: dataVolume.namespace,
-		sizeBytes: dataVolume.sizeBytes,
+		sizeBytes: dataVolume.sizeBytes
 	} as ExtendDataVolumeRequest;
 
 	// Current request state
@@ -109,10 +109,10 @@
 								let message = `Failed to extend ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						// Reset form and close modal
 						reset();

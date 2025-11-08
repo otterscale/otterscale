@@ -22,8 +22,8 @@
 	bind:ref
 	data-slot="table-trigger"
 	class={cn(
-		'bg-primary-foreground text-card-foreground relative flex w-full items-center gap-2 p-2 data-[state=closed]:rounded data-[state=open]:rounded-t',
-		className,
+		'relative flex w-full items-center gap-2 bg-primary-foreground p-2 text-card-foreground data-[state=closed]:rounded data-[state=open]:rounded-t',
+		className
 	)}
 	{...restProps}
 >

@@ -27,7 +27,9 @@
 			<Command.Input placeholder="Search" />
 			<Command.List>
 				<Command.Group>
-					{#each table.getAllColumns().filter((column) => column.getCanHide()) as column (column.id)}
+					{#each table
+						.getAllColumns()
+						.filter((column) => column.getCanHide()) as column (column.id)}
 						<Command.Item
 							onSelect={() => column.toggleVisibility(!column.getIsVisible())}
 							class="text-xs uppercase"

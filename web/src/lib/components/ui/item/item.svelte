@@ -7,17 +7,17 @@
 			variant: {
 				default: 'bg-transparent',
 				outline: 'border-border',
-				muted: 'bg-muted/50',
+				muted: 'bg-muted/50'
 			},
 			size: {
 				default: 'gap-4 p-4',
-				sm: 'gap-2.5 px-4 py-3',
-			},
+				sm: 'gap-2.5 px-4 py-3'
+			}
 		},
 		defaultVariants: {
 			variant: 'default',
-			size: 'default',
-		},
+			size: 'default'
+		}
 	});
 
 	export type ItemSize = VariantProps<typeof itemVariants>['size'];
@@ -47,7 +47,7 @@
 		'data-slot': 'item',
 		'data-variant': variant,
 		'data-size': size,
-		...restProps,
+		...restProps
 	});
 </script>
 

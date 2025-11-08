@@ -5,8 +5,8 @@
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { formatTimeRange } from '$lib/components/custom/chart/units/formatter';
 	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
@@ -30,7 +30,7 @@
 	// Prometheus query for Disk Read/Write
 	const query = $derived({
 		Read: `sum (rate(node_disk_read_bytes_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`,
-		Write: `sum (rate(node_disk_written_bytes_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`,
+		Write: `sum (rate(node_disk_written_bytes_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`
 	});
 </script>
 
@@ -47,7 +47,11 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} valueFormatter={formatIO} />
+			<Content
+				data={response}
+				timeRange={formatTimeRange(TIME_RANGE_HOURS)}
+				valueFormatter={formatIO}
+			/>
 		{/snippet}
 	</Layout>
 {:catch}

@@ -1,20 +1,16 @@
 <script lang="ts" module>
 	import {
+		type ColumnFiltersState,
 		getCoreRowModel,
 		getFilteredRowModel,
 		getPaginationRowModel,
 		getSortedRowModel,
-		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-
-	import Create from './action-test.svelte';
-	import { columns, messages } from './columns';
-	import Statistics from './statistics.svelte';
 
 	import { type TestResult } from '$lib/api/configuration/v1/configuration_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
@@ -22,13 +18,17 @@
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+
+	import Create from './action-test.svelte';
+	import { columns, messages } from './columns';
+	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
 	let {
 		mode,
 		testResults,
-		reloadManager,
+		reloadManager
 	}: { mode: string; testResults: Writable<TestResult[]>; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 4 });
@@ -41,7 +41,7 @@
 		blockSize: false,
 		fileSize: false,
 		ioDepth: false,
-		completedAt: false,
+		completedAt: false
 	});
 	let rowSelection = $state<RowSelectionState>({});
 
@@ -71,7 +71,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -109,7 +109,7 @@
 			}
 		},
 
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 
@@ -119,7 +119,12 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy columnId="name" values={$testResults.map((row) => row.name)} {messages} {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$testResults.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.StringMatch
 				columnId="createdBy"
 				values={$testResults.map((row) => row.createdBy)}

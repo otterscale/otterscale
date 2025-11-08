@@ -9,12 +9,12 @@
 	breadcrumbs.set([
 		{
 			title: m.applications(),
-			url: resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! }),
+			url: resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! })
 		},
 		{
 			title: m.store(),
-			url: resolve('/(auth)/scope/[scope]/applications/store', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/applications/store', { scope: page.params.scope! })
+		}
 	]);
 </script>
 

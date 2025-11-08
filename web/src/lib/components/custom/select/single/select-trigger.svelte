@@ -3,11 +3,11 @@
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
 
-	import { validate, type OptionManager } from './utils.svelte';
-
-	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button';
+	import { type ButtonVariant, buttonVariants } from '$lib/components/ui/button';
 	import * as Popover from '$lib/components/ui/popover';
 	import { cn } from '$lib/utils.js';
+
+	import { type OptionManager, validate } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -31,10 +31,10 @@
 	bind:ref
 	data-slot="select-trigger"
 	class={cn(
-		'data-[state=open]:ring-primary group cursor-pointer ring-1',
+		'group cursor-pointer ring-1 data-[state=open]:ring-primary',
 		buttonVariants({ variant: variant }),
 		isInvalid ? 'ring-destructive' : '',
-		className,
+		className
 	)}
 	{...restProps}
 >
@@ -50,7 +50,7 @@
 		</div>
 	{:else if isInvalid}
 		<span
-			class="group-data-[state=open]:text-primary group-data-[state=closed]:text-destructive flex items-center gap-1 text-xs"
+			class="flex items-center gap-1 text-xs group-data-[state=closed]:text-destructive group-data-[state=open]:text-primary"
 		>
 			<Icon icon="ph:list" />
 			<p class="group-data-[state=closed]:hidden">Select</p>

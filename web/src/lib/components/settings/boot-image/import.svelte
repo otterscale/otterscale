@@ -5,7 +5,10 @@
 	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
+	import {
+		type Configuration,
+		ConfigurationService
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 </script>
@@ -54,16 +57,16 @@
 				let message = `Fail to import boot images`;
 				toast.error(message, {
 					description: (error as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
+					duration: Number.POSITIVE_INFINITY
 				});
 				return message;
-			},
+			}
 		});
 	}}
 	class="flex items-center gap-2"
 >
 	{#if isImportingBootImages == true}
-		<Icon icon="ph:spinner" class="text-muted-foreground size-5 animate-spin" />
+		<Icon icon="ph:spinner" class="size-5 animate-spin text-muted-foreground" />
 		{m.importing()}
 	{:else}
 		<Icon icon="ph:arrows-clockwise" />

@@ -3,13 +3,13 @@
 	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { DataTable } from './data-table';
-	import Pickers from './pickers.svelte';
-	import { createNFSStore, type NFSStore } from './utils.svelte';
-
 	import { StorageService, type Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+
+	import { DataTable } from './data-table';
+	import Pickers from './pickers.svelte';
+	import { createNFSStore, type NFSStore } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -18,7 +18,7 @@
 		selectedFacility = $bindable(),
 		selectedVolume = $bindable(),
 		selectedSubvolumeGroupName = $bindable(),
-		trigger,
+		trigger
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -39,7 +39,7 @@
 				scope: selectedScope,
 				facility: selectedFacility,
 				volumeName: selectedVolume,
-				groupName: selectedSubvolumeGroupName,
+				groupName: selectedSubvolumeGroupName
 			})
 			.then((response) => {
 				subvolumes.set(response.subvolumes);
@@ -58,7 +58,7 @@
 				scope: selectedScope,
 				facility: selectedFacility,
 				volumeName: selectedVolume,
-				groupName: selectedSubvolumeGroupName,
+				groupName: selectedSubvolumeGroupName
 			})
 			.then((response) => {
 				subvolumes.set(response.subvolumes);
@@ -79,7 +79,12 @@
 	{#if isMounted}
 		<div class="flex items-center justify-between gap-2">
 			{@render trigger()}
-			<Pickers {selectedScope} {selectedFacility} {selectedVolume} bind:selectedSubvolumeGroupName />
+			<Pickers
+				{selectedScope}
+				{selectedFacility}
+				{selectedVolume}
+				bind:selectedSubvolumeGroupName
+			/>
 		</div>
 		<DataTable {subvolumes} {reloadManager} />
 	{:else}

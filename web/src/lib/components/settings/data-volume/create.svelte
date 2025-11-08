@@ -4,7 +4,10 @@
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { CreateDataVolumeRequest, DataVolume_Source } from '$lib/api/instance/v1/instance_pb';
+	import type {
+		CreateDataVolumeRequest,
+		DataVolume_Source
+	} from '$lib/api/instance/v1/instance_pb';
 	import { DataVolume_Source_Type, InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -35,7 +38,7 @@
 		namespace: 'default',
 		source: { type: DataVolume_Source_Type.HTTP_URL, data: '' } as DataVolume_Source,
 		bootImage: true,
-		sizeBytes: BigInt(10 * 1024 ** 3),
+		sizeBytes: BigInt(10 * 1024 ** 3)
 	} as CreateDataVolumeRequest;
 
 	// ==================== Form State ====================
@@ -68,7 +71,12 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.name} bind:invalid={invalidName} />
+					<SingleInput.General
+						required
+						type="text"
+						bind:value={request.name}
+						bind:invalid={invalidName}
+					/>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.namespace()}</Form.Label>
@@ -82,7 +90,7 @@
 						transformer={(value) => String(value)}
 						units={[
 							{ value: 1024 ** 3, label: 'GB' } as SingleInput.UnitType,
-							{ value: 1024 ** 4, label: 'TB' } as SingleInput.UnitType,
+							{ value: 1024 ** 4, label: 'TB' } as SingleInput.UnitType
 						]}
 					/>
 				</Form.Field>
@@ -131,10 +139,10 @@
 								let message = `Failed to create ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

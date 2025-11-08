@@ -6,9 +6,9 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		ConfigurationService,
 		type Configuration,
-		type UpdateNTPServerRequest,
+		ConfigurationService,
+		type UpdateNTPServerRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Multiple as MultipleInput } from '$lib/components/custom/input';
@@ -23,7 +23,7 @@
 
 	const client = createClient(ConfigurationService, transport);
 	const defaults = {
-		addresses: $configuration.ntpServer?.addresses,
+		addresses: $configuration.ntpServer?.addresses
 	} as UpdateNTPServerRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -81,10 +81,10 @@
 								let message = `Fail to update NTP server`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 
 						reset();

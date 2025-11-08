@@ -2,7 +2,7 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import type { CreatePoolRequest } from '$lib/api/storage/v1/storage_pb';
@@ -11,7 +11,10 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
-	import { Multiple as MultipleSelect, Single as SingleSelect } from '$lib/components/custom/select';
+	import {
+		Multiple as MultipleSelect,
+		Single as SingleSelect
+	} from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
@@ -20,31 +23,31 @@
 		{
 			value: PoolType.ERASURE,
 			label: 'Erasure',
-			icon: 'ph:scales',
+			icon: 'ph:scales'
 		},
 		{
 			value: PoolType.REPLICATED,
 			label: 'Replicated',
-			icon: 'ph:copy-simple',
-		},
+			icon: 'ph:copy-simple'
+		}
 	]);
 
 	export const applications: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'cephfs',
 			label: 'Ceph File System',
-			icon: 'ph:squares-four',
+			icon: 'ph:squares-four'
 		},
 		{
 			value: 'rbd',
 			label: 'RADOS Block Device',
-			icon: 'ph:squares-four',
+			icon: 'ph:squares-four'
 		},
 		{
 			value: 'rgw',
 			label: 'RADOS Gateway',
-			icon: 'ph:squares-four',
-		},
+			icon: 'ph:squares-four'
+		}
 	]);
 </script>
 
@@ -59,7 +62,7 @@
 
 	const defaults = {
 		scope: $currentCeph?.scope,
-		facility: $currentCeph?.name,
+		facility: $currentCeph?.name
 	} as CreatePoolRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -124,7 +127,10 @@
 				{#if request.poolType === PoolType.ERASURE}
 					<Form.Field>
 						<!-- <Form.Label>{m.ec_overwrite()}</Form.Label> -->
-						<SingleInput.Boolean descriptor={() => m.ec_overwrite()} bind:value={request.ecOverwrites} />
+						<SingleInput.Boolean
+							descriptor={() => m.ec_overwrite()}
+							bind:value={request.ecOverwrites}
+						/>
 					</Form.Field>
 				{/if}
 				{#if request.poolType === PoolType.REPLICATED}
@@ -156,10 +162,7 @@
 												<MultipleSelect.Item option={application}>
 													<Icon
 														icon={application.icon ? application.icon : 'ph:empty'}
-														class={cn(
-															'size-5',
-															application.icon ? 'visibale' : 'invisible',
-														)}
+														class={cn('size-5', application.icon ? 'visibale' : 'invisible')}
 													/>
 													{application.label}
 													<MultipleSelect.Check option={application} />
@@ -186,7 +189,7 @@
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 						]}
 					/>
 				</Form.Field>
@@ -223,10 +226,10 @@
 								let message = `Fail to create ${request.poolName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

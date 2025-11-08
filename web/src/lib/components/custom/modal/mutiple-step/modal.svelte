@@ -2,10 +2,10 @@
 	import { type AlertDialogRootPropsWithoutHTML } from 'bits-ui';
 	import { setContext } from 'svelte';
 
+	import * as AlertDialog from '$lib/components/custom/alert-dialog';
+
 	import type { StepManagerState } from './types';
 	import { StepManager } from './utils.svelte';
-
-	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 </script>
 
 <script lang="ts">
@@ -19,7 +19,7 @@
 	setContext('Accessor', {
 		set open(value: boolean) {
 			open = value;
-		},
+		}
 	});
 	setContext(
 		'StepManager',
@@ -29,8 +29,8 @@
 			},
 			set isUpdating(value: boolean) {
 				isUpdating = value;
-			},
-		} as StepManagerState),
+			}
+		} as StepManagerState)
 	);
 </script>
 

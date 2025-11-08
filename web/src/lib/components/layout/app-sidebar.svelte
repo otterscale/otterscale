@@ -6,24 +6,24 @@
 	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
+	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
+	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
+	import * as Sidebar from '$lib/components/ui/sidebar';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { m } from '$lib/paraglide/messages';
+	import type { Path } from '$lib/path';
+	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
+
 	import NavBookmark from './nav-bookmark.svelte';
 	import NavFooter from './nav-footer.svelte';
 	import NavGeneral from './nav-general.svelte';
 	import NavUser from './nav-user.svelte';
 	import { globalRoutes, platformRoutes } from './routes';
 	import ScopeSwitcher from './scope-switcher.svelte';
-
-	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
-	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
-	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
-	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { m } from '$lib/paraglide/messages';
-	import type { Path } from '$lib/path';
-	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 
 	type Props = { user: User } & ComponentProps<typeof Sidebar.Root>;
 
@@ -39,13 +39,13 @@
 	const tierMap = {
 		[PremiumTier_Level.BASIC]: m.basic_tier(),
 		[PremiumTier_Level.ADVANCED]: m.advanced_tier(),
-		[PremiumTier_Level.ENTERPRISE]: m.enterprise_tier(),
+		[PremiumTier_Level.ENTERPRISE]: m.enterprise_tier()
 	};
 
 	const skeletonClasses = {
 		avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
 		title: 'bg-sidebar-primary/50 h-3 w-[150px]',
-		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]',
+		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
 	};
 
 	async function fetchScopes() {
@@ -101,7 +101,7 @@
 			await Promise.all([fetchScopes(), fetchEdition()]);
 			const index = Math.max(
 				$scopes.findIndex((scope) => scope.name == page.params.scope),
-				0,
+				0
 			);
 			handleScopeOnSelect(index);
 		} catch (error) {
@@ -110,7 +110,9 @@
 	}
 
 	async function onBookmarkDelete(path: Path) {
-		bookmarks.update((currentBookmarks) => currentBookmarks.filter((bookmark) => bookmark.url !== path.url));
+		bookmarks.update((currentBookmarks) =>
+			currentBookmarks.filter((bookmark) => bookmark.url !== path.url)
+		);
 	}
 
 	onMount(initialize);

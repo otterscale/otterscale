@@ -8,8 +8,8 @@
 	breadcrumbs.set([
 		{
 			title: m.machines(),
-			url: resolve('/(auth)/machines'),
-		},
+			url: resolve('/(auth)/machines')
+		}
 	]);
 </script>
 

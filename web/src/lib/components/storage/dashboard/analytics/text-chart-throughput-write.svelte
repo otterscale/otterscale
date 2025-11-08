@@ -5,8 +5,8 @@
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/text/text.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
@@ -21,7 +21,7 @@
 	const query = $derived(
 		`
 		sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))
-		`,
+		`
 	);
 </script>
 

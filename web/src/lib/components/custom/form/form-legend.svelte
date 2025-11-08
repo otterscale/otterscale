@@ -14,6 +14,11 @@
 	}: WithElementRef<HTMLAttributes<HTMLLegendElement>> = $props();
 </script>
 
-<legend bind:this={ref} data-slot="form-legend" class={cn('text-lg font-bold', className)} {...restProps}>
+<legend
+	bind:this={ref}
+	data-slot="form-legend"
+	class={cn('text-lg font-bold', className)}
+	{...restProps}
+>
 	{@render children?.()}
 </legend>

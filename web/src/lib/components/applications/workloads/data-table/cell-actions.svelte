@@ -1,12 +1,11 @@
 <script lang="ts" module>
-	import type { Application } from '../types';
-
-	import Restart from './action-restart.svelte';
-	import Scale from './action-scale.svelte';
-
 	import { page } from '$app/state';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
+
+	import type { Application } from '../types';
+	import Restart from './action-restart.svelte';
+	import Scale from './action-scale.svelte';
 </script>
 
 <script lang="ts">

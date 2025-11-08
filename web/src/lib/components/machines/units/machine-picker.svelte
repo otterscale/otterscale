@@ -7,7 +7,10 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { cn } from '$lib/utils';
 
-	let { selectedMachine = $bindable(), machines }: { selectedMachine: Machine; machines: Machine[] } = $props();
+	let {
+		selectedMachine = $bindable(),
+		machines
+	}: { selectedMachine: Machine; machines: Machine[] } = $props();
 
 	const ALL_MACHINE_ID = 'All Machine';
 
@@ -20,7 +23,7 @@
 </script>
 
 <div class="flex items-center gap-2">
-	<p class="bg-muted flex h-8 items-center rounded-lg p-4">Machine</p>
+	<p class="flex h-8 items-center rounded-lg bg-muted p-4">Machine</p>
 	<Popover.Root>
 		<Popover.Trigger>
 			<Button variant="outline" class="h-8 w-full justify-between">

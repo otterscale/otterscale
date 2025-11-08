@@ -3,13 +3,12 @@
 	import { setContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 
-	import { alertVariants } from '../single/alert.svelte';
-
-	import type { AlertType } from './types';
-	import { IterationManager } from './utils.svelte';
-
 	import * as Alert from '$lib/components/ui/alert/index';
 	import { cn } from '$lib/utils.js';
+
+	import { alertVariants } from '../single/alert.svelte';
+	import type { AlertType } from './types';
+	import { IterationManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -35,7 +34,7 @@
 		},
 		set index(newIndex: number) {
 			index = newIndex;
-		},
+		}
 	};
 
 	export const iterationManager = new IterationManager(alerts, duration, value);
@@ -47,10 +46,10 @@
 	data-slot="alert-root"
 	class={cn(
 		alertVariants({
-			variant: alerts[index].variant,
+			variant: alerts[index].variant
 		}),
 		'[&>[data-slot=alert-controller]~*]:pr-7',
-		className,
+		className
 	)}
 	onmouseenter={(e) => {
 		iterationManager.stop();

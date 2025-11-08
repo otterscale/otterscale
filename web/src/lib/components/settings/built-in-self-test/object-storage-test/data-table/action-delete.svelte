@@ -4,7 +4,10 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { DeleteTestResultRequest, TestResult } from '$lib/api/configuration/v1/configuration_pb';
+	import type {
+		DeleteTestResultRequest,
+		TestResult
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import { ConfigurationService } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -15,7 +18,7 @@
 
 <script lang="ts">
 	let {
-		testResult,
+		testResult
 	}: {
 		testResult: TestResult;
 	} = $props();
@@ -28,7 +31,7 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		name: '',
+		name: ''
 	} as DeleteTestResultRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -82,10 +85,10 @@
 								let message = `Fail to delete ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

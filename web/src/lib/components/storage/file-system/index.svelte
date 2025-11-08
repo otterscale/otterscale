@@ -1,9 +1,9 @@
 <script lang="ts" module>
-	import { Group } from './group';
-	import { NFS } from './nfs';
-
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import { m } from '$lib/paraglide/messages';
+
+	import { Group } from './group';
+	import { NFS } from './nfs';
 </script>
 
 <script lang="ts">
@@ -11,7 +11,7 @@
 		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
 		selectedVolume = $bindable(),
-		selectedSubvolumeGroupName = $bindable(),
+		selectedSubvolumeGroupName = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -29,7 +29,13 @@
 
 <Tabs.Root value="nfs">
 	<Tabs.Content value="nfs">
-		<NFS bind:selectedScope bind:selectedFacility bind:selectedVolume bind:selectedSubvolumeGroupName {trigger} />
+		<NFS
+			bind:selectedScope
+			bind:selectedFacility
+			bind:selectedVolume
+			bind:selectedSubvolumeGroupName
+			{trigger}
+		/>
 	</Tabs.Content>
 	<Tabs.Content value="group">
 		<Group bind:selectedScope bind:selectedFacility bind:selectedVolume {trigger} />

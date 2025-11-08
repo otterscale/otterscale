@@ -6,8 +6,8 @@
 		options = [
 			{ value: '90d', label: 'Last 3 months' },
 			{ value: '30d', label: 'Last 30 days' },
-			{ value: '7d', label: 'Last 7 days' },
-		],
+			{ value: '7d', label: 'Last 7 days' }
+		]
 	}: {
 		timeRange: string;
 		options?: Array<{ value: string; label: string }>;

@@ -1,11 +1,11 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
-
 import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
+
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
@@ -15,7 +15,7 @@ const messages = {
 	instanceType: m.instance_type(),
 	disk: m.disk(),
 	port: m.ports(),
-	createTime: m.create_time(),
+	createTime: m.create_time()
 };
 
 const columns: ColumnDef<VirtualMachine>[] = [
@@ -28,7 +28,7 @@ const columns: ColumnDef<VirtualMachine>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -37,7 +37,7 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'status',
@@ -47,7 +47,7 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.status, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'namespace',
@@ -57,7 +57,7 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.namespace, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'machineId',
@@ -67,7 +67,7 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.machineId, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 
 	{
@@ -78,7 +78,7 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.instanceType, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'disk',
@@ -88,7 +88,7 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.disk, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'port',
@@ -98,7 +98,7 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.port, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'createTime',
@@ -108,7 +108,7 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.createTime, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'vnc',
@@ -118,7 +118,7 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.vnc, row);
 		},
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'actions',
@@ -128,8 +128,8 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

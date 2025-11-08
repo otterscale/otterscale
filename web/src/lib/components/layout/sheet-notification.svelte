@@ -10,7 +10,7 @@
 	import { siteConfig } from '$lib/config/site';
 	import { formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { notifications, type Notification } from '$lib/stores';
+	import { type Notification, notifications } from '$lib/stores';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 
@@ -21,7 +21,9 @@
 		notifications.update((items) => items.map((n) => (n.id === id ? { ...n, read: true } : n)));
 	}
 	async function unarchiveNotifition(id: string) {
-		notifications.update((items) => items.map((n) => (n.id === id ? { ...n, archived: false } : n)));
+		notifications.update((items) =>
+			items.map((n) => (n.id === id ? { ...n, archived: false } : n))
+		);
 	}
 	async function archiveNotifition(id: string) {
 		notifications.update((items) => items.map((n) => (n.id === id ? { ...n, archived: true } : n)));
@@ -34,7 +36,7 @@
 <Sheet.Root bind:open>
 	<Sheet.Content side="right" class="rounded-l-lg p-6">
 		<Tabs.Root value="unread" class="space-y-2">
-			<h1 class="text-foreground text-xl font-semibold">{m.notifications()}</h1>
+			<h1 class="text-xl font-semibold text-foreground">{m.notifications()}</h1>
 			<Tabs.List class="grid w-full grid-cols-3">
 				<Tabs.Trigger value="unread">{m.unread()}</Tabs.Trigger>
 				<Tabs.Trigger value="archived">{m.archived()}</Tabs.Trigger>
@@ -62,7 +64,7 @@
 					<Tooltip.Root>
 						<Tooltip.Trigger>
 							<div
-								class="hover:bg-accent flex flex-col items-start gap-2 rounded-lg border p-4 text-left transition-all"
+								class="flex flex-col items-start gap-2 rounded-lg border p-4 text-left transition-all hover:bg-accent"
 							>
 								<div class="flex w-full items-center gap-2">
 									{#if !notification.read}
@@ -131,7 +133,7 @@
 								</div>
 								<div class="flex flex-col space-y-1">
 									<span class="text-xs font-medium">{notification.title}</span>
-									<span class="text-muted-foreground line-clamp-2 text-left text-xs">
+									<span class="line-clamp-2 text-left text-xs text-muted-foreground">
 										{notification.content.substring(0, 300)}
 									</span>
 								</div>

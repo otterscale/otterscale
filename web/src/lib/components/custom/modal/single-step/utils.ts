@@ -10,12 +10,12 @@ const triggerVariants = tv({
 			default: cn(buttonVariants({ variant: 'ghost', size: 'default' }), 'w-fit'),
 			primary: cn(buttonVariants({ variant: 'default', size: 'default' }), 'w-fit'),
 			creative: '',
-			destructive: 'text-destructive **:text-destructive',
-		},
+			destructive: 'text-destructive **:text-destructive'
+		}
 	},
 	defaultVariants: {
-		variant: 'default',
-	},
+		variant: 'default'
+	}
 });
 
 export { triggerVariants };

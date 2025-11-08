@@ -7,4 +7,4 @@
 	let { class: className }: { class?: string } = $props();
 </script>
 
-<Skeleton class={cn('bg-muted h-[30px]', className)} />
+<Skeleton class={cn('h-[30px] bg-muted', className)} />

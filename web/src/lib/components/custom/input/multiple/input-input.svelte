@@ -3,12 +3,11 @@
 	import { getContext } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	import * as Input from '../single';
+	import { cn } from '$lib/utils.js';
 
+	import * as Input from '../single';
 	import { InputManager, ValuesManager } from './utils.svelte';
 	import { validate } from './utils.svelte';
-
-	import { cn } from '$lib/utils.js';
 
 	type Props = WithElementRef<Omit<HTMLInputAttributes, 'value' | 'type'>>;
 </script>
@@ -33,9 +32,11 @@
 		bind:value={inputManager.input}
 		class={cn(
 			'ring-1',
-			isInvalid ? 'placeholder:text-destructive/60 placeholder:text-xs focus:placeholder:invisible' : '',
+			isInvalid
+				? 'placeholder:text-xs placeholder:text-destructive/60 focus:placeholder:invisible'
+				: '',
 			isInvalid ? 'ring-destructive' : '',
-			className,
+			className
 		)}
 		placeholder={isInvalid ? 'Required' : ''}
 		onkeydown={(e) => {

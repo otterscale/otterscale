@@ -30,7 +30,7 @@
 		{ label: '12h', value: msToString(12 * HOUR) },
 		{ label: '1d', value: msToString(1 * DAY) },
 		{ label: '3d', value: msToString(3 * DAY) },
-		{ label: '7d', value: msToString(7 * DAY) },
+		{ label: '7d', value: msToString(7 * DAY) }
 	];
 
 	const transport: Transport = getContext('transport');
@@ -55,11 +55,11 @@
 					namespace,
 					podName: pod.name,
 					containerName: '',
-					duration: durationFromMs(+duration),
+					duration: durationFromMs(+duration)
 				},
 				{
-					signal: signal,
-				},
+					signal: signal
+				}
 			);
 			for await (const response of stream) {
 				if (signal.aborted) {
@@ -122,10 +122,10 @@
 
 	<Sheet.Content class="rounded-l-lg border-none bg-transparent sm:max-w-9/10">
 		<div
-			class="border-border bg-secondary text-card-foreground dark size-full flex-col rounded-l-lg border font-mono text-sm shadow-sm"
+			class="dark size-full flex-col rounded-l-lg border border-border bg-secondary font-mono text-sm text-card-foreground shadow-sm"
 		>
 			<!-- Header with time selector -->
-			<div class="border-border flex items-center justify-between border-b p-4">
+			<div class="flex items-center justify-between border-b border-border p-4">
 				<h3 class="text-lg font-semibold">{m.log()}</h3>
 				<div class="mr-8 flex items-center gap-2">
 					<Select.Root type="single" onValueChange={handleDurationChange}>

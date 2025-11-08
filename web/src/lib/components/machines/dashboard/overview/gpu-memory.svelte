@@ -22,20 +22,21 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let latestMemoryUsage = $state(0);
 	let memoryUsages = $state([] as SampleValue[]);
 	const trend = $derived(
 		memoryUsages.length > 1 && memoryUsages[memoryUsages.length - 2].value !== 0
-			? (memoryUsages[memoryUsages.length - 1].value - memoryUsages[memoryUsages.length - 2].value) /
+			? (memoryUsages[memoryUsages.length - 1].value -
+					memoryUsages[memoryUsages.length - 2].value) /
 					memoryUsages[memoryUsages.length - 2].value
-			: 0,
+			: 0
 	);
 
 	const configuration = {
-		usage: { label: 'Usage', color: 'var(--chart-1)' },
+		usage: { label: 'Usage', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
@@ -43,10 +44,11 @@
 			.instantQuery(
 				`
 				sum(DCGM_FI_DEV_FB_USED{juju_model_uuid="${scope.uuid}"}) + sum(DCGM_FI_DEV_FB_FREE{juju_model_uuid="${scope.uuid}"})
-				`,
+				`
 			)
 			.then((response) => {
-				latestMemoryUsage = response.result && response.result[0] ? response.result[0].value.value : 0;
+				latestMemoryUsage =
+					response.result && response.result[0] ? response.result[0].value.value : 0;
 			});
 		prometheusDriver
 			.rangeQuery(
@@ -55,7 +57,7 @@
 				`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				memoryUsages = response.result && response.result[0] ? response.result[0].values : [];
@@ -99,7 +101,7 @@
 				<Tooltip.Provider>
 					<Tooltip.Root>
 						<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-							<Icon icon="ph:info" class="text-muted-foreground size-5" />
+							<Icon icon="ph:info" class="size-5 text-muted-foreground" />
 						</Tooltip.Trigger>
 						<Tooltip.Content>
 							<p>{m.machine_dashboard_gpu_memory_tooltip()}</p>
@@ -124,15 +126,15 @@
 							{
 								key: 'value',
 								label: configuration.usage.label,
-								color: configuration.usage.color,
-							},
+								color: configuration.usage.color
+							}
 						]}
 						props={{
 							spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
 							xAxis: {
-								format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+								format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
 							},
-							highlight: { points: { r: 4 } },
+							highlight: { points: { r: 4 } }
 						}}
 					>
 						{#snippet tooltip()}
@@ -142,7 +144,9 @@
 										style="--color-bg: {item.color}"
 										class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 									></div>
-									<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+									<div
+										class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
+									>
 										<div class="grid gap-1.5">
 											<span class="text-muted-foreground">{name}</span>
 										</div>
@@ -154,12 +158,12 @@
 					</LineChart>
 				</Chart.Container>
 			</div>
-			<p class="text-muted-foreground text-sm lowercase">{m.total_memory()}</p>
+			<p class="text-sm text-muted-foreground lowercase">{m.total_memory()}</p>
 		</Card.Content>
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-red-500 dark:text-red-400',
+				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'
 			)}
 		>
 			{Math.abs(trend).toFixed(2)} %

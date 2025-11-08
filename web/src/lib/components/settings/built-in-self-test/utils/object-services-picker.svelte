@@ -6,8 +6,8 @@
 
 	import {
 		ConfigurationService,
-		InternalObjectService_Type,
 		type InternalObjectService,
+		InternalObjectService_Type
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
@@ -17,8 +17,9 @@
 </script>
 
 <script lang="ts">
-	let { selectedInternalObjectService = $bindable() }: { selectedInternalObjectService: InternalObjectService } =
-		$props();
+	let {
+		selectedInternalObjectService = $bindable()
+	}: { selectedInternalObjectService: InternalObjectService } = $props();
 
 	let selectedInit = $state({});
 
@@ -31,7 +32,7 @@
 			const response = await client.listInternalObjectServices({
 				scope: $activeScope?.name,
 				cephName: $currentCeph?.name,
-				kubernetesName: $currentKubernetes?.name,
+				kubernetesName: $currentKubernetes?.name
 			});
 			internalObjectServices.set(
 				response.internalObjectServices.map(
@@ -40,9 +41,9 @@
 							value: internalObjectService,
 							label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
 							icon: 'ph:cube',
-							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`,
-						}) as SingleSelect.OptionType,
-				),
+							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`
+						}) as SingleSelect.OptionType
+				)
 			);
 			if (selectedInternalObjectService) {
 				const options = response.internalObjectServices.map(
@@ -51,8 +52,8 @@
 							value: internalObjectService,
 							label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
 							icon: 'ph:cube',
-							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`,
-						}) as SingleSelect.OptionType,
+							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`
+						}) as SingleSelect.OptionType
 				);
 				const matched = options.find(
 					(opt) =>
@@ -60,7 +61,7 @@
 						opt.value.scope === selectedInternalObjectService.scope &&
 						opt.value.facility === selectedInternalObjectService.facility &&
 						opt.value.name === selectedInternalObjectService.name &&
-						opt.value.endpoint === selectedInternalObjectService.endpoint,
+						opt.value.endpoint === selectedInternalObjectService.endpoint
 				);
 				if (matched) {
 					selectedInit = matched.value;
@@ -113,5 +114,5 @@
 		</SingleSelect.Content>
 	</SingleSelect.Root>
 {:else}
-	<Skeleton class="bg-muted w-[100px]" />
+	<Skeleton class="w-[100px] bg-muted" />
 {/if}

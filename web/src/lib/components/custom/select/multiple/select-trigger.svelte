@@ -3,15 +3,15 @@
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
 
-	import type { OptionType } from './types';
-	import { validate, type OptionManager } from './utils.svelte';
-
 	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button';
+	import { type ButtonVariant, buttonVariants } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Popover from '$lib/components/ui/popover';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { cn } from '$lib/utils.js';
+
+	import type { OptionType } from './types';
+	import { type OptionManager, validate } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -36,10 +36,10 @@
 	bind:ref
 	data-slot="select-trigger"
 	class={cn(
-		'data-[state=open]:ring-primary group w-full cursor-pointer',
+		'group w-full cursor-pointer data-[state=open]:ring-primary',
 		buttonVariants({ variant: variant }),
-		isInvalid ? 'ring-destructive ring-1' : 'ring-1',
-		className,
+		isInvalid ? 'ring-1 ring-destructive' : 'ring-1',
+		className
 	)}
 	{...restProps}
 >
@@ -47,7 +47,7 @@
 		{@render children?.()}
 	{:else if isInvalid}
 		<span
-			class="group-data-[state=open]:text-primary group-data-[state=closed]:text-destructive flex items-center gap-1 text-xs"
+			class="flex items-center gap-1 text-xs group-data-[state=closed]:text-destructive group-data-[state=open]:text-primary"
 		>
 			<Icon icon="ph:list" />
 			<p class="group-data-[state=closed]:hidden">Select</p>

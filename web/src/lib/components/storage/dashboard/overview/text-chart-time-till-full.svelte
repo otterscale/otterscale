@@ -12,7 +12,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
@@ -47,7 +47,7 @@
 		juju_unit=~".*",
 		name=~".mgr"
 	} > 0
-	`,
+	`
 	);
 
 	// Format time duration

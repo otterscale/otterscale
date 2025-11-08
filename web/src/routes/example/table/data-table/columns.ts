@@ -1,10 +1,10 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
+import { renderSnippet } from '$lib/components/ui/data-table/index.js';
+
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 import type { TableRow } from './type';
-
-import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 
 const columns: ColumnDef<TableRow>[] = [
 	{
@@ -16,7 +16,7 @@ const columns: ColumnDef<TableRow>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'id',
@@ -41,7 +41,7 @@ const columns: ColumnDef<TableRow>[] = [
 			const [minimum, maximum] = range;
 
 			return minimum <= value && value <= maximum;
-		},
+		}
 	},
 	{
 		accessorKey: 'name',
@@ -50,7 +50,7 @@ const columns: ColumnDef<TableRow>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'isVerified',
@@ -59,8 +59,8 @@ const columns: ColumnDef<TableRow>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.isVerified, row);
-		},
-	},
+		}
+	}
 ];
 
 export { columns };

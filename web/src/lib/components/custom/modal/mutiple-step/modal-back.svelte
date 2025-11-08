@@ -2,14 +2,19 @@
 	import { AlertDialog as AlertDialogPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
 
-	import type { StepManager } from './utils.svelte';
-
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import { cn } from '$lib/utils.js';
+
+	import type { StepManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	let { ref = $bindable(null), class: className, onclick, ...restProps }: AlertDialogPrimitive.ActionProps = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		onclick,
+		...restProps
+	}: AlertDialogPrimitive.ActionProps = $props();
 
 	const stepManager: StepManager = getContext('StepManager');
 </script>

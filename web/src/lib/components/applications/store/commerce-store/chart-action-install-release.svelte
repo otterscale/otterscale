@@ -2,15 +2,13 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
-
 	import {
-		ApplicationService,
 		type Application_Chart,
-		type CreateReleaseRequest,
+		ApplicationService,
+		type CreateReleaseRequest
 	} from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -19,13 +17,15 @@
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
+	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
+
 	// import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
 </script>
 
 <script lang="ts">
 	let {
 		chart,
-		charts = $bindable(),
+		charts = $bindable()
 	}: {
 		chart: Application_Chart;
 		charts: Writable<Application_Chart[]>;
@@ -39,9 +39,9 @@
 			chart.versions.map((version) => ({
 				value: version.chartRef,
 				label: version.chartVersion,
-				icon: 'ph:tag',
-			})),
-		),
+				icon: 'ph:tag'
+			}))
+		)
 	);
 
 	const applicationClient = createClient(ApplicationService, transport);
@@ -147,10 +147,10 @@
 							let message = `Fail to create ${request.name}`;
 							toast.error(message, {
 								description: (error as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY,
+								duration: Number.POSITIVE_INFINITY
 							});
 							return message;
-						},
+						}
 					});
 
 					reset();

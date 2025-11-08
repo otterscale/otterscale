@@ -4,11 +4,11 @@
 	import { getContext, hasContext } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	import type { InputType } from './types';
-	import { typeToIcon } from './utils.svelte';
-
 	import { Input } from '$lib/components/ui/input';
 	import { cn } from '$lib/utils.js';
+
+	import type { InputType } from './types';
+	import { typeToIcon } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -22,7 +22,9 @@
 		transformer = (value) => value,
 		invalid = $bindable(),
 		...restProps
-	}: WithElementRef<Omit<HTMLInputAttributes, 'type' | 'files'> & { type?: InputType | undefined }> & {
+	}: WithElementRef<
+		Omit<HTMLInputAttributes, 'type' | 'files'> & { type?: InputType | undefined }
+	> & {
 		transformer?: (value: any) => void;
 		invalid?: boolean | null | undefined;
 	} = $props();
@@ -45,9 +47,11 @@
 		data-slot="input-general"
 		class={cn(
 			'pl-9 ring-1',
-			isInvalid ? 'placeholder:text-destructive/60 placeholder:text-xs focus:placeholder:invisible' : '',
+			isInvalid
+				? 'placeholder:text-xs placeholder:text-destructive/60 focus:placeholder:invisible'
+				: '',
 			isInvalid ? 'ring-destructive' : '',
-			className,
+			className
 		)}
 		{type}
 		bind:value

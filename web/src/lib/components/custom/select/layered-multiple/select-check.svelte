@@ -4,11 +4,11 @@
 	import { getContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 
-	import type { OptionType } from './types';
-	import type { OptionManager } from './utils.svelte';
-
 	import * as Command from '$lib/components/ui/command';
 	import { cn } from '$lib/utils.js';
+
+	import type { OptionType } from './types';
+	import type { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -27,5 +27,8 @@
 </script>
 
 <Command.Shortcut bind:ref data-slot="select-check" class={cn('p-0', className)} {...restProps}>
-	<Icon icon="ph:check" class={optionManager.isOptionSelected(option, parents) ? 'visible' : 'invisible'} />
+	<Icon
+		icon="ph:check"
+		class={optionManager.isOptionSelected(option, parents) ? 'visible' : 'invisible'}
+	/>
 </Command.Shortcut>

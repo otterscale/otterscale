@@ -5,7 +5,9 @@
 </script>
 
 <MultipleStepModal.Root steps={3}>
-	<MultipleStepModal.Trigger class={cn('hover:cursor-pointer', buttonVariants({ variant: 'outline' }))}>
+	<MultipleStepModal.Trigger
+		class={cn('hover:cursor-pointer', buttonVariants({ variant: 'outline' }))}
+	>
 		Trigger
 	</MultipleStepModal.Trigger>
 	<MultipleStepModal.Content>

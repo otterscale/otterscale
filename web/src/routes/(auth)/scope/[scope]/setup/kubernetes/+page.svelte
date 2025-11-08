@@ -5,7 +5,7 @@
 
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { FacilityService, type Facility } from '$lib/api/facility/v1/facility_pb';
+	import { type Facility, FacilityService } from '$lib/api/facility/v1/facility_pb';
 	import { SetupScopeGrid } from '$lib/components/setup';
 	import { m } from '$lib/paraglide/messages';
 	import { activeScope, breadcrumbs } from '$lib/stores';
@@ -16,41 +16,44 @@
 			name: 'kubernetes-control-plane',
 			icon: 'ph:compass',
 			title: m.control_planes(),
-			gridClass: 'col-span-3 row-span-2',
+			gridClass: 'col-span-3 row-span-2'
 		},
 		kubernetesWorker: {
 			name: 'kubernetes-worker',
 			icon: 'ph:cube',
 			title: m.workers(),
-			gridClass: 'col-span-3 row-span-2',
+			gridClass: 'col-span-3 row-span-2'
 		},
 		kubeapiLoadBalancer: {
 			name: 'kubeapi-load-balancer',
 			icon: 'ph:scales',
 			title: m.load_balancers(),
-			gridClass: 'col-span-2',
+			gridClass: 'col-span-2'
 		},
 		etcd: {
 			name: 'etcd',
 			icon: 'ph:brackets-curly',
 			title: 'etcd',
-			gridClass: 'col-span-2',
+			gridClass: 'col-span-2'
 		},
 		easyrsa: {
 			name: 'easyrsa',
 			icon: 'ph:certificate',
 			title: 'easyrsa',
-			gridClass: 'col-span-2',
-		},
+			gridClass: 'col-span-2'
+		}
 	} as const;
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
-		{ title: m.setup(), url: resolve('/(auth)/scope/[scope]/setup', { scope: page.params.scope! }) },
+		{
+			title: m.setup(),
+			url: resolve('/(auth)/scope/[scope]/setup', { scope: page.params.scope! })
+		},
 		{
 			title: m.kubernetes(),
-			url: resolve('/(auth)/scope/[scope]/setup/kubernetes', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/setup/kubernetes', { scope: page.params.scope! })
+		}
 	]);
 
 	// API setup

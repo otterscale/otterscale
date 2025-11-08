@@ -5,8 +5,8 @@
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/arc/arc.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { m } from '$lib/paraglide/messages';
 
@@ -23,14 +23,14 @@
 			sum(irate(node_cpu_seconds_total{instance=~"${machine.fqdn}",mode!="idle"}[6m]))
 			/
 			sum(irate(node_cpu_seconds_total{instance=~"${machine.fqdn}"}[6m]))
-		`,
+		`
 	});
 
 	// Data fetching function
 	async function fetchMetrics() {
 		const [descriptionResponse, usageResponse] = await Promise.all([
 			client.instantQuery(queries.description),
-			client.instantQuery(queries.usage),
+			client.instantQuery(queries.usage)
 		]);
 
 		// Parse responses
@@ -43,7 +43,7 @@
 
 		return {
 			description: formattedDescription,
-			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }],
+			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
 		};
 	}
 </script>

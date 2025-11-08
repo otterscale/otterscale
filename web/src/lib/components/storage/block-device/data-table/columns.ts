@@ -1,18 +1,18 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
-
 import type { Image } from '$lib/api/storage/v1/storage_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
+
 const messages = {
 	name: m.name(),
 	poolName: m.pool_name(),
 	usage: m.usage(),
-	snapshots: m.snapshot(),
+	snapshots: m.snapshot()
 };
 
 const columns: ColumnDef<Image>[] = [
@@ -25,7 +25,7 @@ const columns: ColumnDef<Image>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -34,7 +34,7 @@ const columns: ColumnDef<Image>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'poolName',
@@ -44,7 +44,7 @@ const columns: ColumnDef<Image>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.poolName, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'usage',
@@ -59,8 +59,8 @@ const columns: ColumnDef<Image>[] = [
 				Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes),
 				Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes),
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'snapshots',
@@ -75,8 +75,8 @@ const columns: ColumnDef<Image>[] = [
 				previousRow.original.snapshots.length,
 				nextRow.original.snapshots.length,
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'actions',
@@ -86,8 +86,8 @@ const columns: ColumnDef<Image>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

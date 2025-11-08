@@ -16,7 +16,7 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let reads = $state([] as SampleValue[]);
@@ -25,12 +25,12 @@
 		reads.map((sample, index) => ({
 			time: sample.time,
 			read: sample.value,
-			write: writes[index]?.value ?? 0,
-		})),
+			write: writes[index]?.value ?? 0
+		}))
 	);
 	const throughputsConfigurations = {
 		read: { label: 'Read', color: 'var(--chart-1)' },
-		write: { label: 'Write', color: 'var(--chart-2)' },
+		write: { label: 'Write', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 	function fetch() {
 		prometheusDriver
@@ -44,7 +44,7 @@
 						`,
 				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
 				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				reads = response.result[0].values;
@@ -60,7 +60,7 @@
 						`,
 				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
 				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				writes = response.result[0].values;
@@ -106,26 +106,26 @@
 						{
 							key: 'read',
 							label: throughputsConfigurations.read.label,
-							color: throughputsConfigurations.read.color,
+							color: throughputsConfigurations.read.color
 						},
 						{
 							key: 'write',
 							label: throughputsConfigurations.write.label,
-							color: throughputsConfigurations.write.color,
-						},
+							color: throughputsConfigurations.write.color
+						}
 					]}
 					props={{
 						area: {
 							curve: curveNatural,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween',
+							motion: 'tween'
 						},
 						xAxis: {
 							format: (v: Date) =>
-								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
 						},
-						yAxis: { format: () => '' },
+						yAxis: { format: () => '' }
 					}}
 				>
 					{#snippet tooltip()}
@@ -137,7 +137,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric',
+									minute: 'numeric'
 								});
 							}}
 						>

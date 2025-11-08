@@ -2,20 +2,20 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
 
-	import Actions from './cell-actions.svelte';
-
 	import type { Subvolume_Snapshot } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatTimeAgo } from '$lib/formatter';
 
+	import Actions from './cell-actions.svelte';
+
 	export const cells = {
 		row_picker,
 		name,
 		createTime,
 		hasPendingClones,
-		actions,
+		actions
 	};
 </script>
 

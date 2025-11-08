@@ -8,12 +8,12 @@
 	breadcrumbs.set([
 		{
 			title: m.settings(),
-			url: resolve('/(auth)/configuration'),
+			url: resolve('/(auth)/configuration')
 		},
 		{
 			title: m.subscription(),
-			url: resolve('/(auth)/configuration/subscription'),
-		},
+			url: resolve('/(auth)/configuration/subscription')
+		}
 	]);
 </script>
 

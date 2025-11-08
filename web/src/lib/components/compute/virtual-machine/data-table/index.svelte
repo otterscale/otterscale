@@ -1,19 +1,16 @@
 <script lang="ts" module>
 	import {
+		type ColumnFiltersState,
 		getCoreRowModel,
 		getFilteredRowModel,
 		getPaginationRowModel,
 		getSortedRowModel,
-		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-
-	import Create from './action-create.svelte';
-	import { columns, messages } from './columns';
 
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
@@ -21,12 +18,15 @@
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+
+	import Create from './action-create.svelte';
+	import { columns, messages } from './columns';
 </script>
 
 <script lang="ts">
 	let {
 		virtualMachines,
-		reloadManager,
+		reloadManager
 	}: {
 		virtualMachines: Writable<VirtualMachine[]>;
 		reloadManager: ReloadManager;
@@ -36,7 +36,7 @@
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({
-		createTime: false,
+		createTime: false
 	});
 	let rowSelection = $state<RowSelectionState>({});
 
@@ -66,7 +66,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 
 		onPaginationChange: (updater) => {
@@ -105,14 +105,19 @@
 			}
 		},
 
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 
 <Layout.Root>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy columnId="name" values={$virtualMachines.map((row) => row.name)} {messages} {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$virtualMachines.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.StringMatch
 				columnId="status"
 				values={$virtualMachines.flatMap((row) => row.status)}

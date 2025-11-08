@@ -14,7 +14,7 @@
 		month,
 		locale,
 		placeholder = $bindable(),
-		monthIndex = 0,
+		monthIndex = 0
 	}: {
 		captionLayout: ComponentProps<typeof RangeCalendar>['captionLayout'];
 		months: ComponentProps<typeof RangeCalendarMonthSelect>['months'];

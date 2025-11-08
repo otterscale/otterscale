@@ -11,7 +11,7 @@
 		name,
 		protocol,
 		port,
-		nodePort,
+		nodePort
 	};
 </script>
 

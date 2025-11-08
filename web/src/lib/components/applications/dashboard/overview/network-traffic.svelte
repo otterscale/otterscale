@@ -16,7 +16,7 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let receives = $state([] as SampleValue[]);
@@ -25,12 +25,12 @@
 		receives.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmits[index]?.value ?? 0,
-		})),
+			transmit: transmits[index]?.value ?? 0
+		}))
 	);
 	const trafficsConfigurations = {
 		receive: { label: 'Receive', color: 'var(--chart-1)' },
-		transmit: { label: 'Transmit', color: 'var(--chart-2)' },
+		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
 	function fetch() {
@@ -45,7 +45,7 @@
 						`,
 				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
 				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				receives = response.result[0].values;
@@ -61,7 +61,7 @@
 						`,
 				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
 				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				transmits = response.result[0].values;
@@ -107,26 +107,26 @@
 						{
 							key: 'receive',
 							label: trafficsConfigurations.receive.label,
-							color: trafficsConfigurations.receive.color,
+							color: trafficsConfigurations.receive.color
 						},
 						{
 							key: 'transmit',
 							label: trafficsConfigurations.transmit.label,
-							color: trafficsConfigurations.transmit.color,
-						},
+							color: trafficsConfigurations.transmit.color
+						}
 					]}
 					props={{
 						area: {
 							curve: curveNatural,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween',
+							motion: 'tween'
 						},
 						xAxis: {
 							format: (v: Date) =>
-								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
 						},
-						yAxis: { format: () => '' },
+						yAxis: { format: () => '' }
 					}}
 				>
 					{#snippet tooltip()}
@@ -138,7 +138,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric',
+									minute: 'numeric'
 								});
 							}}
 						>

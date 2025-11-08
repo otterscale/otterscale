@@ -4,7 +4,7 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
+	import { type Network, NetworkService } from '$lib/api/network/v1/network_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
@@ -63,13 +63,13 @@
 				<p class="text-3xl text-green-600 dark:text-green-400">{m.on()}</p>
 				<Icon
 					icon="ph:check"
-					class="text-primary/5 absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+					class="absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 				/>
 			{:else}
 				<p class="text-3xl text-yellow-600 dark:text-yellow-400">{m.off()}</p>
 				<Icon
 					icon="ph:gps-slash"
-					class="text-primary/5 absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+					class="absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 				/>
 			{/if}
 		</Card.Content>

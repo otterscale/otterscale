@@ -3,18 +3,18 @@
 	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { DataTable } from './data-table';
-
-	import { StorageService, type Bucket } from '$lib/api/storage/v1/storage_pb';
+	import { type Bucket, StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+
+	import { DataTable } from './data-table';
 </script>
 
 <script lang="ts">
 	let {
 		selectedScope = $bindable(),
 		selectedFacility = $bindable(),
-		trigger,
+		trigger
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -28,9 +28,11 @@
 
 	const storageClient = createClient(StorageService, transport);
 	const reloadManager = new ReloadManager(() => {
-		storageClient.listBuckets({ scope: selectedScope, facility: selectedFacility }).then((response) => {
-			buckets.set(response.buckets);
-		});
+		storageClient
+			.listBuckets({ scope: selectedScope, facility: selectedFacility })
+			.then((response) => {
+				buckets.set(response.buckets);
+			});
 	});
 	setContext('reloadManager', reloadManager);
 

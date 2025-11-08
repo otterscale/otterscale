@@ -2,6 +2,11 @@
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 
+	import { type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { Layout } from '$lib/components/custom/instance';
+	import { Badge } from '$lib/components/ui/badge';
+	import { m } from '$lib/paraglide/messages';
+
 	import Alert from './alert.svelte';
 	import StatisticCPU from './statistic-cpu.svelte';
 	import StatisticHardware from './statistic-hardware.svelte';
@@ -10,16 +15,11 @@
 	import StatisticStorage from './statistic-storage.svelte';
 	import TableBlockDevice from './table-block-device.svelte';
 	import TableNetwork from './table-network.svelte';
-
-	import { type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { Layout } from '$lib/components/custom/instance';
-	import { Badge } from '$lib/components/ui/badge';
-	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">
 	let {
-		machine,
+		machine
 	}: {
 		machine: Writable<Machine>;
 	} = $props();

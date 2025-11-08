@@ -5,8 +5,6 @@
 	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { type NFSStore } from '../utils.svelte.js';
-
 	import type { Subvolume, UpdateSubvolumeRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -14,11 +12,13 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
+
+	import { type NFSStore } from '../utils.svelte.js';
 </script>
 
 <script lang="ts">
 	let {
-		subvolume,
+		subvolume
 	}: {
 		subvolume: Subvolume;
 	} = $props();
@@ -38,7 +38,7 @@
 		volumeName: get(nfsStore.selectedVolumeName),
 		groupName: get(nfsStore.selectedSubvolumeGroupName),
 		subvolumeName: subvolume.name,
-		quotaBytes: subvolume.quotaBytes,
+		quotaBytes: subvolume.quotaBytes
 	} as UpdateSubvolumeRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -65,7 +65,7 @@
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 						]}
 					/>
 				</Form.Field>
@@ -95,10 +95,10 @@
 								let message = `Fail to update ${request.subvolumeName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

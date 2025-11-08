@@ -1,14 +1,14 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
+
+	import { type Extension, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import * as Accordion from '$lib/components/ui/accordion/index.js';
 
 	import Node from './extension-node.svelte';
 	import Thumbnail from './extension-thumbnail.svelte';
 	import { getAccordionValue } from './utils.svelte';
-
-	import { OrchestratorService, type Extension } from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import * as Accordion from '$lib/components/ui/accordion/index.js';
 </script>
 
 <script lang="ts">
@@ -68,7 +68,7 @@
 
 <Accordion.Root
 	type="multiple"
-	class="group bg-card text-card-foreground w-full overflow-hidden rounded-lg border transition-all duration-300 **:data-[slot='accordion-trigger']:p-6"
+	class="group w-full overflow-hidden rounded-lg border bg-card text-card-foreground transition-all duration-300 **:data-[slot='accordion-trigger']:p-6"
 	value={getAccordionValue()}
 >
 	{#if isInstanceExtensionsLoaded && $instanceExtensions.filter((instanceExtension) => !instanceExtension.latest).length == 0}

@@ -17,7 +17,7 @@
 <Card.Footer
 	bind:ref
 	data-slot="layout-statistic-footer"
-	class={cn('text-muted-foreground h-10 items-end truncate text-xs font-light', className)}
+	class={cn('h-10 items-end truncate text-xs font-light text-muted-foreground', className)}
 	{...restProps}
 >
 	{@render children?.()}

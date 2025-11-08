@@ -9,7 +9,7 @@
 		['destructive', 'ph:prohibit'],
 		['success', 'ph:check-circle'],
 		['warning', 'ph:warning'],
-		['information', 'ph:info'],
+		['information', 'ph:info']
 	]);
 
 	export function getAlertIcon(variant: AlertVariant): string {

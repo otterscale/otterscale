@@ -1,24 +1,25 @@
 <script lang="ts" module>
+	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/dist/style.css';
+
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { type Edge, type Node } from '@xyflow/svelte';
-	import '@xyflow/svelte/dist/style.css';
 	import { getContext } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
-
-	import type { LargeLanguageModel } from '../type';
+	import { type Writable, writable } from 'svelte/store';
 
 	import {
-		OrchestratorService,
 		type GPURelation_GPU,
 		type GPURelation_Machine,
 		type GPURelation_Pod,
+		OrchestratorService
 	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { Complex as Flow } from '$lib/components/flow/index';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
-	import '@xyflow/svelte/dist/style.css';
+
+	import type { LargeLanguageModel } from '../type';
 </script>
 
 <script lang="ts">
@@ -38,7 +39,7 @@
 			scope: $currentKubernetes?.scope,
 			facility: $currentKubernetes?.name,
 			namespace: model.application.namespace,
-			modelName: model.name,
+			modelName: model.name
 		})
 		.then((response) => {
 			nodes.set(
@@ -53,10 +54,10 @@
 							data: {
 								machine: gpuRelation.entity.value,
 								gpus: gpus.filter(
-									(gpu) => gpu.machineId === (gpuRelation.entity.value as GPURelation_Machine).id,
-								),
+									(gpu) => gpu.machineId === (gpuRelation.entity.value as GPURelation_Machine).id
+								)
 							},
-							position,
+							position
 						};
 					} else if (gpuRelation.entity.case === 'gpu') {
 						const pods = response.gpuRelations
@@ -70,22 +71,22 @@
 								devices: pods.flatMap((pod) =>
 									pod.devices.filter((device) => {
 										return device.gpuId === (gpuRelation.entity.value as GPURelation_GPU).id;
-									}),
-								),
+									})
+								)
 							},
-							position,
+							position
 						};
 					} else if (gpuRelation.entity.case === 'pod') {
 						return {
 							type: 'model',
 							id: `pod${gpuRelation.entity.value.namespace}${gpuRelation.entity.value.name}`,
 							data: gpuRelation.entity.value,
-							position,
+							position
 						};
 					} else {
 						return {} as Node;
 					}
-				}),
+				})
 			);
 
 			edges.set(
@@ -99,8 +100,8 @@
 								source: `gpu${gpu.id}`,
 								target: `machine${gpu.machineId}`,
 								animated: true,
-								selectable: false,
-							},
+								selectable: false
+							}
 						];
 					} else if (gpuRelation.entity.case === 'pod') {
 						return gpuRelation.entity.value.devices.map((device) => {
@@ -111,13 +112,13 @@
 								source: `pod${pod.namespace}${pod.name}`,
 								target: `gpu${device.gpuId}`,
 								animated: true,
-								selectable: false,
+								selectable: false
 							};
 						});
 					} else {
 						return [];
 					}
-				}),
+				})
 			);
 
 			isLoading = false;

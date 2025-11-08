@@ -2,7 +2,11 @@
 	import { AlertDialog as AlertDialogPrimitive } from 'bits-ui';
 
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
-	import { buttonVariants, type ButtonSize, type ButtonVariant } from '$lib/components/ui/button/index.js';
+	import {
+		type ButtonSize,
+		type ButtonVariant,
+		buttonVariants
+	} from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 </script>
 
@@ -25,7 +29,7 @@
 	class={cn(
 		'capitalize hover:cursor-pointer',
 		buttonVariants({ variant: actionVariant, size: actionSize }),
-		className,
+		className
 	)}
 	{...restProps}
 />

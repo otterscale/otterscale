@@ -1,17 +1,17 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
-
 import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
+
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
 
 const messages = {
 	type: m.type(),
 	startIp: m.start_ip(),
 	endIp: m.end_ip(),
-	comment: m.comment(),
+	comment: m.comment()
 };
 
 const columns: ColumnDef<Network_IPRange>[] = [
@@ -24,7 +24,7 @@ const columns: ColumnDef<Network_IPRange>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'startIp',
@@ -33,7 +33,7 @@ const columns: ColumnDef<Network_IPRange>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.startIp, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'endIp',
@@ -42,7 +42,7 @@ const columns: ColumnDef<Network_IPRange>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.endIp, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'type',
@@ -52,7 +52,7 @@ const columns: ColumnDef<Network_IPRange>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.type, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'comment',
@@ -61,8 +61,8 @@ const columns: ColumnDef<Network_IPRange>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.comment, row);
-		},
-	},
+		}
+	}
 ];
 
 export { columns, messages };

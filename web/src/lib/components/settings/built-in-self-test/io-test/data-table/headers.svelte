@@ -25,7 +25,7 @@
 		createdBy,
 		startedAt,
 		completedAt,
-		actions,
+		actions
 	};
 </script>
 

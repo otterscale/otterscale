@@ -9,12 +9,12 @@
 	breadcrumbs.set([
 		{
 			title: m.settings(),
-			url: resolve('/(auth)/scope/[scope]/settings', { scope: page.params.scope! }),
+			url: resolve('/(auth)/scope/[scope]/settings', { scope: page.params.scope! })
 		},
 		{
 			title: m.instance_type(),
-			url: resolve('/(auth)/scope/[scope]/settings/instance-type', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/settings/instance-type', { scope: page.params.scope! })
+		}
 	]);
 </script>
 

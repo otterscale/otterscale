@@ -2,10 +2,10 @@
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 	import { setContext } from 'svelte';
 
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+
 	import type { OptionType } from './types';
 	import { OptionManager, validate } from './utils.svelte';
-
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 </script>
 
 <script lang="ts">
@@ -31,7 +31,7 @@
 		},
 		set value(newValue: any) {
 			value = newValue;
-		},
+		}
 	});
 	setContext('id', id);
 	setContext('required', required);

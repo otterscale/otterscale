@@ -12,7 +12,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
@@ -23,7 +23,7 @@
 	const queries = $derived({
 		in: `sum(ceph_osd_in{juju_model_uuid=~"${scope.uuid}"})`,
 		up: `sum(ceph_osd_up{juju_model_uuid=~"${scope.uuid}"})`,
-		total: `count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`,
+		total: `count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`
 	});
 
 	// Auto Update
@@ -36,7 +36,7 @@
 		const [inResponse, upResponse, totalResponse] = await Promise.all([
 			client.instantQuery(queries.in),
 			client.instantQuery(queries.up),
-			client.instantQuery(queries.total),
+			client.instantQuery(queries.total)
 		]);
 
 		const inValue = inResponse.result[0]?.value?.value;
@@ -46,7 +46,7 @@
 		response = {
 			inNumber: inValue,
 			upNumber: upValue,
-			totalNumber: totalValue,
+			totalNumber: totalValue
 		};
 	}
 

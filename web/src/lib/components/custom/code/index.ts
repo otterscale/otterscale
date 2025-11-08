@@ -1,7 +1,7 @@
 import { tv, type VariantProps } from 'tailwind-variants';
 
-import CopyButton from './code-copy-button.svelte';
 import Root from './code.svelte';
+import CopyButton from './code-copy-button.svelte';
 import type { CodeCopyButtonProps, CodeRootProps } from './types';
 
 export const codeVariants = tv({
@@ -9,11 +9,16 @@ export const codeVariants = tv({
 	variants: {
 		variant: {
 			default: 'border-border bg-card',
-			secondary: 'bg-secondary/50 border-transparent',
-		},
-	},
+			secondary: 'bg-secondary/50 border-transparent'
+		}
+	}
 });
 
 export type CodeVariant = VariantProps<typeof codeVariants>['variant'];
 
-export { Root, CopyButton, type CodeRootProps as RootProps, type CodeCopyButtonProps as CopyButtonProps };
+export {
+	CopyButton,
+	type CodeCopyButtonProps as CopyButtonProps,
+	Root,
+	type CodeRootProps as RootProps
+};

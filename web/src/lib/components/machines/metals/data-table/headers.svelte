@@ -18,7 +18,7 @@
 		gpu,
 		tags,
 		scope,
-		actions,
+		actions
 	};
 </script>
 

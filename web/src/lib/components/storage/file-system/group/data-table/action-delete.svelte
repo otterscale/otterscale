@@ -5,20 +5,20 @@
 	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { type GroupStore } from '../utils.svelte';
-
-	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import type { DeleteSubvolumeGroupRequest, SubvolumeGroup } from '$lib/api/storage/v1/storage_pb';
+	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
+
+	import { type GroupStore } from '../utils.svelte';
 </script>
 
 <script lang="ts">
 	let {
-		subvolumeGroup,
+		subvolumeGroup
 	}: {
 		subvolumeGroup: SubvolumeGroup;
 	} = $props();
@@ -33,7 +33,7 @@
 	const defaults = {
 		scope: get(groupStore.selectedScope),
 		facility: get(groupStore.selectedFacility),
-		volumeName: get(groupStore.selectedVolumeName),
+		volumeName: get(groupStore.selectedVolumeName)
 	} as DeleteSubvolumeGroupRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -90,10 +90,10 @@
 								let message = `Fail to delete ${request.volumeName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

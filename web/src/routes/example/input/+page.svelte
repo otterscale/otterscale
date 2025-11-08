@@ -1,13 +1,13 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import {
 		LayeredMultiple as LayeredMultipleSelect,
 		LayeredSingle as LayeredSingleSelect,
 		Multiple as MultipleSelect,
-		Single as SingleSelect,
+		Single as SingleSelect
 	} from '$lib/components/custom/select';
 	import { cn } from '$lib/utils';
 
@@ -42,14 +42,14 @@
 			{
 				value: 'star',
 				label: 'Star',
-				icon: 'ph:star',
+				icon: 'ph:star'
 			},
 			{
 				value: 'sun',
 				label: 'Sun',
-				icon: 'ph:sun',
-			},
-		]),
+				icon: 'ph:sun'
+			}
+		])
 	);
 	let options2: Writable<MultipleSelect.OptionType[]> = $state(
 		writable([
@@ -57,21 +57,21 @@
 			{
 				value: 'star',
 				label: 'Star',
-				icon: 'ph:star',
+				icon: 'ph:star'
 			},
 			{
 				value: 'sun',
 				label: 'Sun',
-				icon: 'ph:sun',
-			},
-		]),
+				icon: 'ph:sun'
+			}
+		])
 	);
 	let options3: LayeredSingleSelect.OptionType[] = [
 		{ value: 'moon', label: 'Moon', icon: 'ph:moon' },
 		{
 			value: 'star',
 			label: 'Star',
-			icon: 'ph:star',
+			icon: 'ph:star'
 		},
 		{
 			value: 'sun',
@@ -87,19 +87,19 @@
 						{
 							value: 'golden-hour',
 							label: 'Golden Hour',
-							icon: 'ph:clock',
-						},
-					],
-				},
-			],
-		},
+							icon: 'ph:clock'
+						}
+					]
+				}
+			]
+		}
 	];
 	const options4: LayeredMultipleSelect.OptionType[] = [
 		{ value: 'moon', label: 'Moon', icon: 'ph:moon' },
 		{
 			value: 'star',
 			label: 'Star',
-			icon: 'ph:star',
+			icon: 'ph:star'
 		},
 		{
 			value: 'sun',
@@ -115,12 +115,12 @@
 						{
 							value: 'golden-hour',
 							label: 'Golden Hour',
-							icon: 'ph:clock',
-						},
-					],
-				},
-			],
-		},
+							icon: 'ph:clock'
+						}
+					]
+				}
+			]
+		}
 	];
 	let values: Values = $state({} as Values);
 </script>
@@ -143,7 +143,7 @@
 		units={[
 			{ value: 1, label: 'I' } as SingleInput.UnitType,
 			{ value: 2, label: 'II' } as SingleInput.UnitType,
-			{ value: 3, label: 'III' } as SingleInput.UnitType,
+			{ value: 3, label: 'III' } as SingleInput.UnitType
 		]}
 		bind:value={values.value7}
 	/>
@@ -232,7 +232,7 @@
 							options: LayeredSingleSelect.OptionType[],
 							option: LayeredSingleSelect.OptionType,
 							parents: LayeredSingleSelect.OptionType[],
-							level: number = 0,
+							level: number = 0
 						)}
 							<LayeredSingleSelect.Sub>
 								<LayeredSingleSelect.SubTrigger>
@@ -252,7 +252,7 @@
 													icon={option.icon && option.icon ? option.icon : 'ph:empty'}
 													class={cn(
 														'size-5',
-														option.icon && option.icon ? 'visibale' : 'invisible',
+														option.icon && option.icon ? 'visibale' : 'invisible'
 													)}
 												/>
 												{option.label}
@@ -291,7 +291,7 @@
 								options: LayeredMultipleSelect.OptionType[],
 								option: LayeredMultipleSelect.OptionType,
 								parents: LayeredMultipleSelect.OptionType[],
-								level: number = 0,
+								level: number = 0
 							)}
 								<LayeredMultipleSelect.Sub>
 									<LayeredMultipleSelect.SubTrigger>
@@ -304,19 +304,14 @@
 									<LayeredMultipleSelect.SubContent>
 										{#each options as option (option.value)}
 											{#if option.subOptions && option.subOptions.length > 0}
-												{@render Branch(
-													option.subOptions,
-													option,
-													[...parents, option],
-													level + 1,
-												)}
+												{@render Branch(option.subOptions, option, [...parents, option], level + 1)}
 											{:else}
 												<LayeredMultipleSelect.Item {option} {parents}>
 													<Icon
 														icon={option.icon && option.icon ? option.icon : 'ph:empty'}
 														class={cn(
 															'size-5',
-															option.icon && option.icon ? 'visibale' : 'invisible',
+															option.icon && option.icon ? 'visibale' : 'invisible'
 														)}
 													/>
 													{option.label}

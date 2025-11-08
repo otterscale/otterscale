@@ -2,11 +2,9 @@
 	import BookmarkIcon from '@lucide/svelte/icons/bookmark';
 	import type { Snippet } from 'svelte';
 
-	import type { LayoutData } from './$types';
-
 	import { AppSidebar } from '$lib/components/layout';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
-	import { buttonVariants, Button } from '$lib/components/ui/button';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as Popover from '$lib/components/ui/popover';
@@ -15,6 +13,8 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { Path } from '$lib/path';
 	import { bookmarks, breadcrumbs } from '$lib/stores';
+
+	import type { LayoutData } from './$types';
 
 	interface Props {
 		data: LayoutData;
@@ -81,7 +81,9 @@
 
 				<!-- Bookmark Popover -->
 				<Popover.Root bind:open>
-					<Popover.Trigger class="-mr-1 ml-auto {buttonVariants({ variant: 'ghost', size: 'icon' })}">
+					<Popover.Trigger
+						class="-mr-1 ml-auto {buttonVariants({ variant: 'ghost', size: 'icon' })}"
+					>
 						<BookmarkIcon fill={isBookmarked ? 'currentColor' : 'none'} />
 						<span class="sr-only">Bookmark</span>
 					</Popover.Trigger>

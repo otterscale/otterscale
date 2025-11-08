@@ -11,5 +11,5 @@ export {
 	Root as InputOTP,
 	Group as InputOTPGroup,
 	Slot as InputOTPSlot,
-	Separator as InputOTPSeparator,
+	Separator as InputOTPSeparator
 };

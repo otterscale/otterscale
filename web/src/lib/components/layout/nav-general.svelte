@@ -1,20 +1,21 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	import type { Route } from './routes';
-
 	import { page } from '$app/state';
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { getPathIcon, getCephPathDisabled, getKubernetesPathDisabled } from '$lib/path';
+	import { getCephPathDisabled, getKubernetesPathDisabled, getPathIcon } from '$lib/path';
 	import { currentCeph, currentKubernetes } from '$lib/stores';
+
+	import type { Route } from './routes';
 
 	let { title, routes }: { title: string; routes: Route[] } = $props();
 
 	const isItemActive = (url: string): boolean => page.url.pathname.startsWith(url);
 	const hasSubItems = (route: Route): boolean => Boolean(route.items?.length);
 	const isDisabled = (url: string): boolean =>
-		(!$currentCeph && getCephPathDisabled(url)) || (!$currentKubernetes && getKubernetesPathDisabled(url));
+		(!$currentCeph && getCephPathDisabled(url)) ||
+		(!$currentKubernetes && getKubernetesPathDisabled(url));
 </script>
 
 <Sidebar.Group>

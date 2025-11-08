@@ -1,12 +1,12 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
-
 import type { OSD } from '$lib/api/storage/v1/storage_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
+
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
@@ -18,7 +18,7 @@ const messages = {
 	machine: m.machine(),
 	placementGroupCount: m.placement_group(),
 	usage: m.usage(),
-	iops: m.iops(),
+	iops: m.iops()
 };
 
 const columns: ColumnDef<OSD>[] = [
@@ -31,7 +31,7 @@ const columns: ColumnDef<OSD>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'name',
@@ -40,7 +40,7 @@ const columns: ColumnDef<OSD>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'state',
@@ -49,7 +49,7 @@ const columns: ColumnDef<OSD>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.state, row);
-		},
+		}
 	},
 	{
 		id: 'in',
@@ -66,7 +66,7 @@ const columns: ColumnDef<OSD>[] = [
 
 			return row.original.in === filterValue;
 		},
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		id: 'up',
@@ -83,7 +83,7 @@ const columns: ColumnDef<OSD>[] = [
 
 			return row.original.up === filterValue;
 		},
-		enableHiding: false,
+		enableHiding: false
 	},
 	{
 		accessorKey: 'exists',
@@ -93,7 +93,7 @@ const columns: ColumnDef<OSD>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.exists, row);
 		},
-		filterFn: 'equals',
+		filterFn: 'equals'
 	},
 	{
 		accessorKey: 'deviceClass',
@@ -103,7 +103,7 @@ const columns: ColumnDef<OSD>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.deviceClass, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'machine',
@@ -113,7 +113,7 @@ const columns: ColumnDef<OSD>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.machine, row);
 		},
-		filterFn: 'arrIncludesSome',
+		filterFn: 'arrIncludesSome'
 	},
 	{
 		accessorKey: 'placementGroupCount',
@@ -122,7 +122,7 @@ const columns: ColumnDef<OSD>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.placementGroupCount, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'usage',
@@ -137,8 +137,8 @@ const columns: ColumnDef<OSD>[] = [
 				Number(previousRow.original.usedBytes) / Number(previousRow.original.sizeBytes),
 				Number(nextRow.original.usedBytes) / Number(nextRow.original.sizeBytes),
 				(p, n) => p < n,
-				(p, n) => p === n,
-			),
+				(p, n) => p === n
+			)
 	},
 	{
 		accessorKey: 'iops',
@@ -147,7 +147,7 @@ const columns: ColumnDef<OSD>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.iops, row);
-		},
+		}
 	},
 	{
 		accessorKey: 'actions',
@@ -157,8 +157,8 @@ const columns: ColumnDef<OSD>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false,
-	},
+		enableHiding: false
+	}
 ];
 
 export { columns, messages };

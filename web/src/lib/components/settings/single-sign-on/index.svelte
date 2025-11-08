@@ -17,57 +17,57 @@
 			label: m.issuer(),
 			placeholder: 'https://idp.example.com',
 			type: 'text',
-			span: 1,
+			span: 1
 		},
 		{
 			key: 'domain',
 			label: m.domain(),
 			placeholder: 'example.com',
 			type: 'text',
-			span: 1,
+			span: 1
 		},
 		{
 			key: 'clientId',
 			label: m.client_id(),
 			placeholder: 'client-id',
 			type: 'text',
-			span: 1,
+			span: 1
 		},
 		{
 			key: 'clientSecret',
 			label: m.client_secret(),
 			placeholder: 'client-secret',
 			type: 'password',
-			span: 1,
+			span: 1
 		},
 		{
 			key: 'authorizationEndpoint',
 			label: m.authorization_endpoint(),
 			placeholder: 'https://idp.example.com/authorize',
 			type: 'text',
-			span: 2,
+			span: 2
 		},
 		{
 			key: 'tokenEndpoint',
 			label: m.token_endpoint(),
 			placeholder: 'https://idp.example.com/token',
 			type: 'text',
-			span: 2,
+			span: 2
 		},
 		{
 			key: 'jwksEndpoint',
 			label: m.jwks_endpoint(),
 			placeholder: 'https://idp.example.com/jwks',
 			type: 'text',
-			span: 2,
+			span: 2
 		},
 		{
 			key: 'discoveryEndpoint',
 			label: m.discovery_endpoint(),
 			placeholder: 'https://idp.example.com/.well-known/openid-configuration',
 			type: 'text',
-			span: 2,
-		},
+			span: 2
+		}
 	];
 </script>
 
@@ -80,7 +80,7 @@
 		authorizationEndpoint: '',
 		tokenEndpoint: '',
 		jwksEndpoint: '',
-		discoveryEndpoint: '',
+		discoveryEndpoint: ''
 	};
 
 	async function handleSSOSubmit(event: Event) {
@@ -105,15 +105,15 @@
 						email: 'email',
 						emailVerified: 'email_verified',
 						name: 'name',
-						image: 'picture',
-					},
-				},
+						image: 'picture'
+					}
+				}
 			}),
 			{
 				loading: 'Loading...',
 				success: 'OIDC Provider has been updated!',
-				error: 'An error occurred',
-			},
+				error: 'An error occurred'
+			}
 		);
 	}
 </script>

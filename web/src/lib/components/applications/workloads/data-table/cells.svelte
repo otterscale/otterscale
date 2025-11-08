@@ -2,10 +2,6 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import type { Application } from '../types';
-
-	import Actions from './cell-actions.svelte';
-
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Cells } from '$lib/components/custom/data-table/core';
@@ -13,6 +9,9 @@
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
+
+	import type { Application } from '../types';
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,
@@ -26,7 +25,7 @@
 		container,
 		volume,
 		nodeport,
-		actions,
+		actions
 	};
 </script>
 
@@ -43,7 +42,7 @@
 			href={resolve('/(auth)/scope/[scope]/applications/workloads/[namespace]/[application_name]', {
 				scope: page.params.scope!,
 				namespace: row.original.namespace!,
-				application_name: row.original.name!,
+				application_name: row.original.name!
 			})}
 		>
 			{row.original.name}
@@ -67,7 +66,10 @@
 
 {#snippet health(row: Row<Application>)}
 	<Layout.Cell class="items-end">
-		<Progress.Root numerator={Number(row.original.healthies)} denominator={Number(row.original.pods.length)}>
+		<Progress.Root
+			numerator={Number(row.original.healthies)}
+			denominator={Number(row.original.pods.length)}
+		>
 			{#snippet ratio({ numerator, denominator })}
 				{Progress.formatRatio(numerator, denominator)}
 			{/snippet}

@@ -3,7 +3,6 @@
 	import { getContext } from 'svelte';
 
 	import { getAlertIcon } from '../single/alert-icon.svelte';
-
 	import type { IterationManager } from './utils.svelte';
 </script>
 
@@ -11,4 +10,7 @@
 	let iterationManager: IterationManager = getContext('IterationManager');
 </script>
 
-<Icon data-slot="alert-icon" icon={getAlertIcon(iterationManager.alerts[iterationManager.value.index].variant)} />
+<Icon
+	data-slot="alert-icon"
+	icon={getAlertIcon(iterationManager.alerts[iterationManager.value.index].variant)}
+/>

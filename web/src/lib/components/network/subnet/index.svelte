@@ -3,12 +3,12 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { DataTable } from './data-table/index';
-	import { Statistics } from './statistics';
-
-	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
+	import { type Network, NetworkService } from '$lib/api/network/v1/network_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+
+	import { DataTable } from './data-table/index';
+	import { Statistics } from './statistics';
 </script>
 
 <script lang="ts">

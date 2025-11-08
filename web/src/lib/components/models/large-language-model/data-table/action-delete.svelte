@@ -1,15 +1,15 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import type { LargeLanguageModel } from '../type';
-
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
+
+	import type { LargeLanguageModel } from '../type';
 </script>
 
 <script lang="ts">
 	let {
-		model,
+		model
 	}: {
 		model: LargeLanguageModel;
 	} = $props();

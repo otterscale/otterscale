@@ -1,5 +1,15 @@
-import { Action, Content, Description, Footer, Header, Overlay, Portal, Title, Trigger } from '../single-step';
-
+import {
+	Action,
+	Content,
+	Description,
+	Footer,
+	Header,
+	Overlay,
+	Portal,
+	Title,
+	Trigger
+} from '../single-step';
+import Root from './modal.svelte';
 import Back from './modal-back.svelte';
 import Cancel from './modal-cancel.svelte';
 import Confirm from './modal-confirm.svelte';
@@ -10,7 +20,6 @@ import Next from './modal-next.svelte';
 import Step from './modal-step.svelte';
 import Stepper from './modal-stepper.svelte';
 import Steps from './modal-steps.svelte';
-import Root from './modal.svelte';
 
 export {
 	Action,
@@ -32,5 +41,5 @@ export {
 	Stepper,
 	Steps,
 	Title,
-	Trigger,
+	Trigger
 };

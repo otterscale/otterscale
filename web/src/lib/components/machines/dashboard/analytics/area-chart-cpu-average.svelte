@@ -5,8 +5,8 @@
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { formatTimeRange } from '$lib/components/custom/chart/units/formatter';
 	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
@@ -39,7 +39,7 @@
 		'Load Average 15m': `
 		avg(node_load15{instance=~"${machine.fqdn}"})
 		/ on() group_left() avg(count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"})) * 100
-		`,
+		`
 	});
 </script>
 

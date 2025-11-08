@@ -5,8 +5,8 @@
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/arc/arc.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { m } from '$lib/paraglide/messages';
 
@@ -18,7 +18,7 @@
 
 	// Queries
 	const queries = $derived({
-		usage: `apiserver_request:availability30d{juju_model_uuid=~"${scope.uuid}",verb="all"}`,
+		usage: `apiserver_request:availability30d{juju_model_uuid=~"${scope.uuid}",verb="all"}`
 	});
 
 	// Data fetching function
@@ -27,7 +27,7 @@
 		const usageValue = usageResponse.result[0]?.value?.value;
 		const usagePercentage = usageValue != null ? usageValue * 100 : null;
 		return {
-			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }],
+			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
 		};
 	}
 </script>

@@ -5,20 +5,24 @@
 	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import type { NFSStore } from '../../utils.svelte';
-
-	import type { DeleteSubvolumeSnapshotRequest, Subvolume, Subvolume_Snapshot } from '$lib/api/storage/v1/storage_pb';
+	import type {
+		DeleteSubvolumeSnapshotRequest,
+		Subvolume,
+		Subvolume_Snapshot
+	} from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
+
+	import type { NFSStore } from '../../utils.svelte';
 </script>
 
 <script lang="ts">
 	let {
-		snapshot,
+		snapshot
 	}: {
 		snapshot: Subvolume_Snapshot;
 	} = $props();
@@ -36,7 +40,7 @@
 		facility: get(nfsStore.selectedFacility),
 		volumeName: get(nfsStore.selectedVolumeName),
 		groupName: get(nfsStore.selectedSubvolumeGroupName),
-		subvolumeName: subvolume.name,
+		subvolumeName: subvolume.name
 	} as DeleteSubvolumeSnapshotRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -88,10 +92,10 @@
 								let message = `Fail to delete ${request.snapshotName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

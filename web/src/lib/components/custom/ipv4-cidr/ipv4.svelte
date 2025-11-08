@@ -1,12 +1,11 @@
 <script lang="ts">
+	import { cn } from '$lib/utils';
+
+	import { safeParseIPv4CIDR } from '.';
 	import Input from './input.svelte';
 	import * as IPv4CIDR from './ipv4-address';
 	import { isNumber } from './is-number';
 	import type { IPv4CIDRInputProps } from './types';
-
-	import { safeParseIPv4CIDR } from '.';
-
-	import { cn } from '$lib/utils';
 
 	let {
 		separator = '.',
@@ -14,7 +13,7 @@
 		placeholder,
 		class: className,
 		name,
-		valid = $bindable(false),
+		valid = $bindable(false)
 	}: IPv4CIDRInputProps = $props();
 
 	const parsedPlaceholder = $derived(safeParseIPv4CIDR(placeholder));
@@ -70,8 +69,8 @@
 <div
 	aria-invalid={!valid}
 	class={cn(
-		'ring-offset-background border-input bg-background selection:bg-primary dark:bg-input/30 focus-within:ring-ring flex h-9 w-fit place-items-center rounded-md border px-3 font-sans font-light ring-2 ring-transparent focus-within:ring-offset-2',
-		className,
+		'flex h-9 w-fit place-items-center rounded-md border border-input bg-background px-3 font-sans font-light ring-2 ring-transparent ring-offset-background selection:bg-primary focus-within:ring-ring focus-within:ring-offset-2 dark:bg-input/30',
+		className
 	)}
 >
 	<Input

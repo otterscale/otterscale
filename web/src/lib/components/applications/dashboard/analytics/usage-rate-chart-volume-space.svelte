@@ -4,8 +4,8 @@
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/arc/arc.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { m } from '$lib/paraglide/messages';
 
@@ -37,7 +37,7 @@
 		*
 			100
 		)
-		`,
+		`
 	});
 
 	// Data fetching function
@@ -46,7 +46,7 @@
 		const usageValue = usageResponse.result[0]?.value?.value;
 		const usagePercentage = usageValue != null ? usageValue * 100 : null;
 		return {
-			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }],
+			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
 		};
 	}
 </script>

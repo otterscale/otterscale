@@ -1,6 +1,6 @@
 import * as Complex from './complex';
 import * as Simple from './simple';
-import type { GPU, VGPU, Machine, Model } from './types.d.ts';
+import type { GPU, Machine, Model, VGPU } from './types.d.ts';
 
-export type { GPU, VGPU, Machine, Model };
+export type { GPU, Machine, Model, VGPU };
 export { Complex, Simple };

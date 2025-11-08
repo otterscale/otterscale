@@ -2,9 +2,9 @@
 	import type { TabsRootProps } from 'bits-ui';
 	import { getContext } from 'svelte';
 
-	import type { StepManager } from './utils.svelte';
-
 	import * as Tabs from '$lib/components/ui/tabs';
+
+	import type { StepManager } from './utils.svelte';
 </script>
 
 <script lang="ts">

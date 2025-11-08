@@ -16,7 +16,7 @@
 		table,
 		columnId,
 		messages,
-		descriptor = (v: any) => v,
+		descriptor = (v: any) => v
 	}: {
 		table: Table<TData>;
 		columnId: string;
@@ -30,7 +30,9 @@
 </script>
 
 <Popover.Root>
-	<Popover.Trigger class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs uppercase')}>
+	<Popover.Trigger
+		class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs uppercase')}
+	>
 		<Icon icon="ph:funnel" />
 		{messages[columnId]}
 		{#if selectedValue !== undefined}

@@ -1,16 +1,16 @@
 <script lang="ts" module>
 	import type { Column, Table } from '@tanstack/table-core';
 
-	import type { TableRow } from './type';
-
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+
+	import type { TableRow } from './type';
 
 	export const headers = {
 		row_picker,
 		id,
 		name,
-		isVerified,
+		isVerified
 	};
 </script>
 

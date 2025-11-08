@@ -4,7 +4,10 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { Application_Pod, DeleteApplicationPodRequest } from '$lib/api/application/v1/application_pb';
+	import type {
+		Application_Pod,
+		DeleteApplicationPodRequest
+	} from '$lib/api/application/v1/application_pb';
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -27,7 +30,7 @@
 		scope: $currentKubernetes?.scope,
 		facility: $currentKubernetes?.name,
 		namespace: namespace,
-		name: '',
+		name: ''
 	} as DeleteApplicationPodRequest;
 	let request = $state({ ...defaults });
 	function reset() {
@@ -54,7 +57,12 @@
 					<Form.Help>
 						{m.deletion_warning({ identifier: `${m.pod()}` })}
 					</Form.Help>
-					<SingleInput.Confirm required target={pod.name ?? ''} bind:value={request.name} bind:invalid />
+					<SingleInput.Confirm
+						required
+						target={pod.name ?? ''}
+						bind:value={request.name}
+						bind:invalid
+					/>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -80,10 +88,10 @@
 								let message = `Failed to delete ${pod.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

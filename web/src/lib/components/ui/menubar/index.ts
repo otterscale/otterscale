@@ -50,5 +50,5 @@ export {
 	Sub as MenubarSub,
 	RadioGroup as MenubarRadioGroup,
 	Label as MenubarLabel,
-	GroupHeading as MenubarGroupHeading,
+	GroupHeading as MenubarGroupHeading
 };

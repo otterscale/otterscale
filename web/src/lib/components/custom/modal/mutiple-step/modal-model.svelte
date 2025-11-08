@@ -2,14 +2,18 @@
 	import type { TabsContentProps } from 'bits-ui';
 	import { getContext } from 'svelte';
 
-	import type { IndexManager } from './utils.svelte';
-
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { cn } from '$lib/utils.js';
+
+	import type { IndexManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	let { ref = $bindable(null), class: className, ...restProps }: Omit<TabsContentProps, 'value'> = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: Omit<TabsContentProps, 'value'> = $props();
 
 	const indexManager: IndexManager = getContext('IndexManager');
 </script>

@@ -14,7 +14,7 @@ class FilterManager {
 			this.selectedKeywords.length > 0 ||
 			this.selectedMaintainerNames.length > 0 ||
 			this.selectedLicences.length > 0 ||
-			this.selectedDeprecation !== false,
+			this.selectedDeprecation !== false
 	);
 	filteredCharts = $derived(
 		this.charts
@@ -22,14 +22,18 @@ class FilterManager {
 			.filter((chart) =>
 				this.selectedKeywords.length
 					? chart.keywords.some((keyword) => this.selectedKeywords.includes(keyword))
-					: true,
+					: true
 			)
 			.filter((chart) =>
 				this.selectedMaintainerNames.length
-					? chart.maintainers.some((maintainer) => this.selectedMaintainerNames.includes(maintainer.name))
-					: true,
+					? chart.maintainers.some((maintainer) =>
+							this.selectedMaintainerNames.includes(maintainer.name)
+						)
+					: true
 			)
-			.filter((chart) => (this.selectedLicences.length ? this.selectedLicences.includes(chart.license) : true))
+			.filter((chart) =>
+				this.selectedLicences.length ? this.selectedLicences.includes(chart.license) : true
+			)
 			.filter((chart) => {
 				if (this.selectedDeprecation === null) {
 					return true;
@@ -38,7 +42,7 @@ class FilterManager {
 				} else if (this.selectedDeprecation === false) {
 					return !chart.deprecated;
 				}
-			}),
+			})
 	);
 
 	constructor(charts: Application_Chart[]) {
@@ -60,7 +64,9 @@ class FilterManager {
 
 	toggleKeyword(keyword: string) {
 		if (this.isKeywordSelected(keyword)) {
-			this.selectedKeywords = this.selectedKeywords.filter((selectedKeyword) => selectedKeyword !== keyword);
+			this.selectedKeywords = this.selectedKeywords.filter(
+				(selectedKeyword) => selectedKeyword !== keyword
+			);
 		} else {
 			this.selectedKeywords.push(keyword);
 		}
@@ -68,7 +74,7 @@ class FilterManager {
 	toggleMaintainer(maintainerName: string) {
 		if (this.isMaintainerSelected(maintainerName)) {
 			this.selectedMaintainerNames = this.selectedMaintainerNames.filter(
-				(selectedMaintainerName) => selectedMaintainerName !== maintainerName,
+				(selectedMaintainerName) => selectedMaintainerName !== maintainerName
 			);
 		} else {
 			this.selectedMaintainerNames.push(maintainerName);
@@ -76,7 +82,9 @@ class FilterManager {
 	}
 	toggleLicence(licence: string) {
 		if (this.isLicenceSelected(licence)) {
-			this.selectedLicences = this.selectedLicences.filter((selectedLicence) => selectedLicence !== licence);
+			this.selectedLicences = this.selectedLicences.filter(
+				(selectedLicence) => selectedLicence !== licence
+			);
 		} else {
 			this.selectedLicences.push(licence);
 		}

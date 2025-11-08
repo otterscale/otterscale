@@ -8,12 +8,12 @@
 	breadcrumbs.set([
 		{
 			title: m.settings(),
-			url: resolve('/(auth)/configuration'),
+			url: resolve('/(auth)/configuration')
 		},
 		{
 			title: m.single_sign_on(),
-			url: resolve('/(auth)/configuration/single-sign-on'),
-		},
+			url: resolve('/(auth)/configuration/single-sign-on')
+		}
 	]);
 </script>
 

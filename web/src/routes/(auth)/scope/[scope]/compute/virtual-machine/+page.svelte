@@ -7,11 +7,14 @@
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
-		{ title: m.compute(), url: resolve('/(auth)/scope/[scope]/compute', { scope: page.params.scope! }) },
+		{
+			title: m.compute(),
+			url: resolve('/(auth)/scope/[scope]/compute', { scope: page.params.scope! })
+		},
 		{
 			title: m.virtual_machine(),
-			url: resolve('/(auth)/scope/[scope]/compute/virtual-machine', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/compute/virtual-machine', { scope: page.params.scope! })
+		}
 	]);
 </script>
 

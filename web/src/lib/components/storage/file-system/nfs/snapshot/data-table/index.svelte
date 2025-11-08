@@ -1,29 +1,29 @@
 <script lang="ts" module>
 	import {
+		type ColumnFiltersState,
 		getCoreRowModel,
 		getFilteredRowModel,
 		getPaginationRowModel,
 		getSortedRowModel,
-		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
-
-	import Create from './action-create.svelte';
-	import { columns, messages } from './columns';
 
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+
+	import Create from './action-create.svelte';
+	import { columns, messages } from './columns';
 </script>
 
 <script lang="ts">
 	let {
-		subvolume,
+		subvolume
 	}: {
 		subvolume: Subvolume;
 	} = $props();
@@ -57,7 +57,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -94,14 +94,19 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 
 <Layout.Root>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy columnId="name" values={snapshots.map((row) => row.name)} {messages} {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={snapshots.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

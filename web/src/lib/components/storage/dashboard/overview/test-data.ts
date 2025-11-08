@@ -6,7 +6,7 @@ import * as Chart from '$lib/components/ui/chart/index.js';
 export const chartData1 = [{ browser: 'safari', visitors: 1260, color: 'var(--color-safari)' }];
 export const chartConfig1 = {
 	visitors: { label: 'Visitors' },
-	safari: { label: 'Safari', color: 'var(--chart-2)' },
+	safari: { label: 'Safari', color: 'var(--chart-2)' }
 } satisfies Chart.ChartConfig;
 
 export const chartData2 = [
@@ -15,10 +15,10 @@ export const chartData2 = [
 	{ date: new Date('2024-03-01'), desktop: 24 },
 	{ date: new Date('2024-04-01'), desktop: 28 },
 	{ date: new Date('2024-05-01'), desktop: 36 },
-	{ date: new Date('2024-06-01'), desktop: 48 },
+	{ date: new Date('2024-06-01'), desktop: 48 }
 ];
 export const chartConfig2 = {
-	desktop: { label: 'Desktop', color: 'var(--chart-1)', icon: ActivityIcon },
+	desktop: { label: 'Desktop', color: 'var(--chart-1)', icon: ActivityIcon }
 } satisfies Chart.ChartConfig;
 
 export const chartData3 = [
@@ -112,22 +112,22 @@ export const chartData3 = [
 	{ date: new Date('2024-06-27'), desktop: 448, mobile: 490 },
 	{ date: new Date('2024-06-28'), desktop: 149, mobile: 200 },
 	{ date: new Date('2024-06-29'), desktop: 103, mobile: 160 },
-	{ date: new Date('2024-06-30'), desktop: 446, mobile: 400 },
+	{ date: new Date('2024-06-30'), desktop: 446, mobile: 400 }
 ];
 export const chartConfig3 = {
 	views: { label: 'Page Views', color: '' },
 	desktop: { label: 'Desktop', color: 'var(--chart-1)' },
-	mobile: { label: 'Mobile', color: 'var(--chart-3)' },
+	mobile: { label: 'Mobile', color: 'var(--chart-3)' }
 } satisfies Chart.ChartConfig;
 
 export const chartData4 = [
 	// reuse same shape as chartData3 — duplicated values intentionally preserved
-	...chartData3,
+	...chartData3
 ];
 export const chartConfig4 = {
 	views: { label: 'Page Views', color: '' },
 	desktop: { label: 'Desktop', color: 'var(--chart-2)' },
-	mobile: { label: 'Mobile', color: 'var(--chart-4)' },
+	mobile: { label: 'Mobile', color: 'var(--chart-4)' }
 };
 
 export const chartData5 = [
@@ -136,15 +136,15 @@ export const chartData5 = [
 	{ date: new Date('2024-03-01'), desktop: 237 },
 	{ date: new Date('2024-04-01'), desktop: 73 },
 	{ date: new Date('2024-05-01'), desktop: 209 },
-	{ date: new Date('2024-06-01'), desktop: 214 },
+	{ date: new Date('2024-06-01'), desktop: 214 }
 ];
 export const chartConfig5 = {
-	desktop: { label: 'Desktop', color: 'var(--chart-5)' },
+	desktop: { label: 'Desktop', color: 'var(--chart-5)' }
 };
 
 export const chartData6 = [
 	{ browser: 'PCIe', visitors: 275, color: 'var(--color-chrome)' },
-	{ browser: 'SSD', visitors: 200, color: 'var(--color-safari)' },
+	{ browser: 'SSD', visitors: 200, color: 'var(--color-safari)' }
 ];
 export const chartConfig6 = {
 	visitors: { label: 'Visitors' },
@@ -152,7 +152,7 @@ export const chartConfig6 = {
 	safari: { label: 'Safari', color: 'var(--chart-2)' },
 	firefox: { label: 'Firefox', color: 'var(--chart-3)' },
 	edge: { label: 'Edge', color: 'var(--chart-4)' },
-	other: { label: 'Other', color: 'var(--chart-5)' },
+	other: { label: 'Other', color: 'var(--chart-5)' }
 };
 
 export const totalVisitors6 = chartData6.reduce((acc, curr) => acc + curr.visitors, 0);

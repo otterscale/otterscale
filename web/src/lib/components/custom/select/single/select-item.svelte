@@ -2,11 +2,11 @@
 	import { Command as CommandPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
 
-	import type { OptionType } from './types';
-	import { OptionManager } from './utils.svelte';
-
 	import * as Command from '$lib/components/ui/command';
 	import { cn } from '$lib/utils.js';
+
+	import type { OptionType } from './types';
+	import { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">

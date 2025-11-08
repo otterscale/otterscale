@@ -25,7 +25,7 @@
 			<Tooltip.Content
 				bind:ref
 				{sideOffset}
-				class={cn('bg-popover text-popover-foreground border p-2 shadow', className)}
+				class={cn('border bg-popover p-2 text-popover-foreground shadow', className)}
 				{...restProps}
 			>
 				{@render children?.()}

@@ -5,20 +5,23 @@
 	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { type NFSStore } from '../utils.svelte.js';
-
-	import type { GrantSubvolumeExportAccessRequest, Subvolume } from '$lib/api/storage/v1/storage_pb';
+	import type {
+		GrantSubvolumeExportAccessRequest,
+		Subvolume
+	} from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
+
+	import { type NFSStore } from '../utils.svelte.js';
 </script>
 
 <script lang="ts">
 	let {
-		subvolume,
+		subvolume
 	}: {
 		subvolume: Subvolume;
 	} = $props();
@@ -34,7 +37,7 @@
 		scope: get(nfsStore.selectedScope),
 		facility: get(nfsStore.selectedFacility),
 		volumeName: get(nfsStore.selectedVolumeName),
-		subvolumeName: subvolume.name,
+		subvolumeName: subvolume.name
 	} as GrantSubvolumeExportAccessRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -84,10 +87,10 @@
 								let message = `Fail to grant ${request.subvolumeName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

@@ -3,17 +3,18 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { DataTable } from './data-table/index';
-	import ExtensionsAlert from './extensions-alert.svelte';
-	import { Statistics } from './statistics';
-
 	import { InstanceService, type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+
+	import { DataTable } from './data-table/index';
+	import ExtensionsAlert from './extensions-alert.svelte';
+	import { Statistics } from './statistics';
 </script>
 
 <script lang="ts">
-	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } = $props();
+	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } =
+		$props();
 
 	const transport: Transport = getContext('transport');
 	let isMounted = $state(false);
@@ -25,7 +26,7 @@
 		VirtualMachineClient.listVirtualMachines({
 			scope: scope,
 			facility: facility,
-			namespace: namespace,
+			namespace: namespace
 		}).then((response) => {
 			virtualMachines.set(response.virtualMachines);
 		});
@@ -36,7 +37,7 @@
 		VirtualMachineClient.listVirtualMachines({
 			scope: scope,
 			facility: facility,
-			namespace: namespace,
+			namespace: namespace
 		})
 			.then((response) => {
 				virtualMachines.set(response.virtualMachines);

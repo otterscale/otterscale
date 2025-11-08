@@ -5,8 +5,6 @@
 	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { accessControlListOptions } from './utils.svelte';
-
 	import type { CreateBucketRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -19,6 +17,8 @@
 	import { m } from '$lib/paraglide/messages.js';
 	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
+
+	import { accessControlListOptions } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -33,7 +33,7 @@
 	const defaults = {
 		scope: $currentCeph?.scope,
 		facility: $currentCeph?.name,
-		policy: '{}',
+		policy: '{}'
 	} as CreateBucketRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -55,9 +55,9 @@
 							({
 								value: user.id,
 								label: user.id,
-								icon: 'ph:user',
-							}) as SingleSelect.OptionType,
-					),
+								icon: 'ph:user'
+							}) as SingleSelect.OptionType
+					)
 				);
 				isMounted = true;
 			})
@@ -84,7 +84,12 @@
 				<Form.Field>
 					<Form.Label>{m.owner()}</Form.Label>
 					{#if isMounted}
-						<SingleSelect.Root id="owner" bind:options={userOptions} bind:value={request.owner} required>
+						<SingleSelect.Root
+							id="owner"
+							bind:options={userOptions}
+							bind:value={request.owner}
+							required
+						>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
 								<SingleSelect.Options>
@@ -193,10 +198,10 @@
 								let message = `Fail to create ${request.bucketName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

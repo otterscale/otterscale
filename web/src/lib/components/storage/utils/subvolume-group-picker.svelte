@@ -14,7 +14,7 @@
 		selectedScope,
 		selectedFacility,
 		selectedVolume,
-		selectedSubvolumeGroupName = $bindable(),
+		selectedSubvolumeGroupName = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -31,7 +31,7 @@
 			const response = await storageClient.listSubvolumeGroups({
 				scope: selectedScope,
 				facility: selectedFacility,
-				volumeName: selectedVolume,
+				volumeName: selectedVolume
 			});
 
 			subvolumeGroupOptions.set(
@@ -40,17 +40,17 @@
 						({
 							value: subvolumeGroup.name,
 							label: subvolumeGroup.name,
-							icon: 'ph:cube',
-						}) as SingleSelect.OptionType,
-				),
+							icon: 'ph:cube'
+						}) as SingleSelect.OptionType
+				)
 			);
 			subvolumeGroupOptions.update((origin) => [
 				...origin,
 				{
 					value: '',
 					label: 'default',
-					icon: 'ph:cube',
-				} as SingleSelect.OptionType,
+					icon: 'ph:cube'
+				} as SingleSelect.OptionType
 			]);
 		} catch (error) {
 			console.error('Error fetching:', error);

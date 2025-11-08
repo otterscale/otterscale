@@ -4,8 +4,8 @@
 
 <div class="flex flex-col gap-4">
 	<div class="flex flex-col gap-2">
-		<Skeleton class="bg-muted h-[50px] w-[500px]" />
-		<Skeleton class="bg-muted h-[20px] w-[100px]" />
+		<Skeleton class="h-[50px] w-[500px] bg-muted" />
+		<Skeleton class="h-[20px] w-[100px] bg-muted" />
 		<div class="flex items-center gap-2 *:h-[20px] *:w-[100px]">
 			{#each Array(3)}
 				<Skeleton class="bg-muted" />
@@ -21,7 +21,7 @@
 
 	{#each Array(3)}
 		<div class="flex flex-col gap-2">
-			<Skeleton class="bg-muted h-[50px] w-full " />
+			<Skeleton class="h-[50px] w-full bg-muted " />
 			{#each Array(3)}
 				<div class="flex items-center gap-2 *:h-[30px] *:w-full">
 					{#each Array(3)}

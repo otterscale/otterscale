@@ -5,7 +5,7 @@
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 
-	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
+	import { type Network, NetworkService } from '$lib/api/network/v1/network_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Card from '$lib/components/ui/card';
@@ -106,7 +106,7 @@
 				{/if}
 				<Icon
 					icon="ph:network"
-					class="text-primary/5 absolute top-3 -right-3 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+					class="absolute top-3 -right-3 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 				/>
 			{/if}
 		</Card.Content>

@@ -3,11 +3,8 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 
-	import ExtensionsAlert from './extensions-alert.svelte';
-
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
-	import type { Essential } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import Reloader from '$lib/components/custom/reloader/reloader.svelte';
 	import { Overview } from '$lib/components/storage/dashboard/overview';
@@ -15,7 +12,9 @@
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 
-	let { scope, ceph: _ }: { scope: Scope; ceph: Essential } = $props();
+	import ExtensionsAlert from './extensions-alert.svelte';
+
+	let { scope }: { scope: Scope } = $props();
 
 	let isReloading = $state(true);
 
@@ -31,7 +30,7 @@
 				.then((response) => {
 					prometheusDriver = new PrometheusDriver({
 						endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-						baseURL: response.baseUrl,
+						baseURL: response.baseUrl
 					});
 				})
 				.catch((error) => {

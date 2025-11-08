@@ -9,7 +9,7 @@
 	import { writable } from 'svelte/store';
 
 	import { page } from '$app/state';
-	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
@@ -33,30 +33,34 @@
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)),
+		$machines.filter((m) =>
+			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
+		)
 	);
 	const totalNodes = $derived(scopeMachines.length);
 	const monthlyCounts = $derived(
 		scopeMachines.reduce(
 			(acc, m) => {
-				const dateStr = m.lastCommissioned ? timestampDate(m.lastCommissioned).toISOString().slice(0, 7) : null;
+				const dateStr = m.lastCommissioned
+					? timestampDate(m.lastCommissioned).toISOString().slice(0, 7)
+					: null;
 				if (dateStr) {
 					acc[dateStr] = (acc[dateStr] || 0) + 1;
 				}
 				return acc;
 			},
-			{} as Record<string, number>,
-		),
+			{} as Record<string, number>
+		)
 	);
 	const nodes = $derived(
 		months.map((month) => ({
 			date: new Date(month + '-01'),
-			node: monthlyCounts[month] || 0,
-		})),
+			node: monthlyCounts[month] || 0
+		}))
 	);
 
 	const nodesConfiguration = {
-		node: { label: 'Node', color: 'var(--chart-1)' },
+		node: { label: 'Node', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
@@ -92,7 +96,7 @@
 		<Card.Header>
 			<Card.Title class="flex flex-wrap items-center justify-between gap-6">
 				<div class="flex flex-col items-start gap-0.5 truncate text-sm font-medium tracking-tight">
-					<p class="text-muted-foreground text-xs uppercase">{m.over_the_past_6_months()}</p>
+					<p class="text-xs text-muted-foreground uppercase">{m.over_the_past_6_months()}</p>
 					<div class="flex items-center gap-1 text-lg font-medium">
 						<Icon icon="ph:trend-up" class="size-4.5" /> +{totalNodes}
 					</div>
@@ -100,7 +104,7 @@
 				<Tooltip.Provider>
 					<Tooltip.Root>
 						<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-							<Icon icon="ph:info" class="text-muted-foreground size-5" />
+							<Icon icon="ph:info" class="size-5 text-muted-foreground" />
 						</Tooltip.Trigger>
 						<Tooltip.Content>
 							<p>{m.machine_dashboard_nodes_tooltip()}</p>
@@ -121,20 +125,20 @@
 						{
 							key: 'node',
 							label: 'Node',
-							color: nodesConfiguration.node.color,
-						},
+							color: nodesConfiguration.node.color
+						}
 					]}
 					props={{
 						spline: { curve: curveNatural, motion: 'tween', strokeWidth: 2 },
 						highlight: {
 							points: {
 								motion: 'none',
-								r: 6,
-							},
+								r: 6
+							}
 						},
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString(getLocale(), { month: 'short' }),
-						},
+							format: (v: Date) => v.toLocaleDateString(getLocale(), { month: 'short' })
+						}
 					}}
 				>
 					{#snippet tooltip()}

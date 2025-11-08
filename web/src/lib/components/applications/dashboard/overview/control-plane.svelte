@@ -18,11 +18,13 @@
 
 	const facilities = writable<Facility[]>([]);
 	const controlPlane = $derived(
-		$facilities.find((facility) => facility.name.includes('kubernetes-control-plane') && facility.units.length > 0),
+		$facilities.find(
+			(facility) => facility.name.includes('kubernetes-control-plane') && facility.units.length > 0
+		)
 	);
 	const controlPlaneUnits = $derived(controlPlane?.units ?? []);
 	const activeControlPlaneUnits = $derived(
-		controlPlaneUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? [],
+		controlPlaneUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? []
 	);
 
 	async function fetch() {
@@ -57,7 +59,7 @@
 	<Card.Root class="relative h-full gap-2 overflow-hidden">
 		<Icon
 			icon="ph:compass"
-			class="text-primary/5 absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+			class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 		/>
 		<Card.Header>
 			<Card.Title>{m.control_planes()}</Card.Title>

@@ -4,7 +4,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { NetworkService, type CreateNetworkRequest } from '$lib/api/network/v1/network_pb';
+	import { type CreateNetworkRequest, NetworkService } from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -19,7 +19,7 @@
 	const client = createClient(NetworkService, transport);
 	const defaults = {
 		dhcpOn: true,
-		dnsServers: [] as string[],
+		dnsServers: [] as string[]
 	} as CreateNetworkRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -91,10 +91,10 @@
 							let message = `Fail to create ${request.cidr}`;
 							toast.error(message, {
 								description: (error as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY,
+								duration: Number.POSITIVE_INFINITY
 							});
 							return message;
-						},
+						}
 					});
 
 					reset();

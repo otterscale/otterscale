@@ -13,7 +13,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
@@ -24,7 +24,7 @@
 	const query = $derived(
 		`
 		ceph_health_status{juju_model_uuid=~"${scope.uuid}"}
-		`,
+		`
 	);
 
 	// Health status mappings
@@ -33,21 +33,21 @@
 			label: 'HEALTHY',
 			color: 'text-healthy',
 			icon: 'ph:check-bold',
-			iconClass: '-right-6 top-4',
+			iconClass: '-right-6 top-4'
 		},
 		1: {
 			label: 'WARNING',
 			color: 'text-warning',
 			icon: 'ph:exclamation-mark',
-			iconClass: '-right-3 top-2',
+			iconClass: '-right-3 top-2'
 		},
 		2: { label: 'ERROR', color: 'text-error', icon: 'ph:x-bold', iconClass: '-right-3 top-2' },
 		null: {
 			label: 'ERROR',
 			color: 'text-muted-foreground',
 			icon: 'ph:question-bold',
-			iconClass: '-right-3 top-2',
-		},
+			iconClass: '-right-3 top-2'
+		}
 	} as const;
 
 	// Auto Update
@@ -102,7 +102,7 @@
 			{healthStatus?.label}
 			<Icon
 				icon={healthStatus.icon}
-				class="text-primary/5 absolute size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden {healthStatus.iconClass}"
+				class="absolute size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden {healthStatus.iconClass}"
 			/>
 		</Card.Content>
 	</Card.Root>

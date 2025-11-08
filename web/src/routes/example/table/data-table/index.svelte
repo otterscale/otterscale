@@ -1,26 +1,26 @@
 <script lang="ts" module>
 	import {
+		type ColumnFiltersState,
 		getCoreRowModel,
 		getFilteredRowModel,
 		getPaginationRowModel,
 		getSortedRowModel,
-		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import { writable } from 'svelte/store';
-
-	import Actions from './actions.svelte';
-	import { columns } from './columns';
-	import type { TableRow } from './type';
 
 	import { Empty, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+
+	import Actions from './actions.svelte';
+	import { columns } from './columns';
+	import type { TableRow } from './type';
 </script>
 
 <script lang="ts">
@@ -60,7 +60,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -96,7 +96,7 @@
 			} else {
 				rowSelection = updater;
 			}
-		},
+		}
 	});
 </script>
 

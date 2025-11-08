@@ -4,8 +4,8 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import type { UpdateUserRequest, User } from '$lib/api/storage/v1/storage_pb';
+	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -16,7 +16,7 @@
 
 <script lang="ts">
 	let {
-		user,
+		user
 	}: {
 		user: User;
 	} = $props();
@@ -32,7 +32,7 @@
 		facility: $currentCeph?.name,
 		userId: user.id,
 		userName: user.name,
-		suspended: true,
+		suspended: true
 	} as UpdateUserRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -98,10 +98,10 @@
 								let message = `Fail to update ${request.userId}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

@@ -11,7 +11,7 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 	let runningPods = $state(0);
 
@@ -26,7 +26,7 @@
 						sum(
 							kubelet_running_pod_count{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics"}
 						)
-						`,
+						`
 			)
 			.then((response) => {
 				runningPods = response.result[0].value.value;
@@ -59,7 +59,7 @@
 	<Card.Root class="relative h-full gap-2 overflow-hidden">
 		<Icon
 			icon="ph:squares-four"
-			class="text-primary/5 absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+			class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 		/>
 		<Card.Header>
 			<Card.Title>{m.pods()}</Card.Title>

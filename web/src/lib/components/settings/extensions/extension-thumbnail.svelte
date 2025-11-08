@@ -5,8 +5,6 @@
 	import { type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import type { ExtensionsBundleType } from './types';
-
 	import type { Extension } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
@@ -15,6 +13,8 @@
 	import { m } from '$lib/paraglide/messages';
 	import { activeScope } from '$lib/stores';
 	import { cn } from '$lib/utils';
+
+	import type { ExtensionsBundleType } from './types';
 
 	const extensionsBundleConfigurations: Record<
 		ExtensionsBundleType,
@@ -27,23 +27,23 @@
 		general: {
 			name: m.general(),
 			description: m.extensions_general_bundle_description(),
-			icon: 'ph:cube',
+			icon: 'ph:cube'
 		},
 		model: {
 			name: m.model(),
 			description: m.extensions_model_bundle_description(),
-			icon: 'ph:robot',
+			icon: 'ph:robot'
 		},
 		instance: {
 			name: m.virtual_machine(),
 			description: m.extensions_virtual_machine_bundle_description(),
-			icon: 'ph:desktop-tower',
+			icon: 'ph:desktop-tower'
 		},
 		storage: {
 			name: m.storage(),
 			description: m.extensions_storage_bundle_description(),
-			icon: 'ph:hard-drives',
-		},
+			icon: 'ph:hard-drives'
+		}
 	};
 </script>
 
@@ -53,7 +53,7 @@
 		facility,
 		extensionsBundle,
 		extensions,
-		updator,
+		updator
 	}: {
 		scope: string;
 		facility: string;
@@ -77,12 +77,12 @@
 				? 'bg-green-700/20 **:data-[slot="progress-indicator"]:bg-green-700'
 				: installed > 0
 					? 'bg-yellow-500/20 **:data-[slot="progress-indicator"]:bg-yellow-500'
-					: 'bg-red-700/20 **:data-[slot="progress-indicator"]:bg-red-700',
+					: 'bg-red-700/20 **:data-[slot="progress-indicator"]:bg-red-700'
 		)}
 	/>
 	<div class="flex items-center gap-2">
 		<div class="flex h-full items-center justify-between gap-4">
-			<div class="bg-primary/10 rounded-lg p-2">
+			<div class="rounded-lg bg-primary/10 p-2">
 				<Icon icon={extensionsBundleConfigurations[extensionsBundle].icon} class="size-8" />
 			</div>
 			<div>
@@ -91,13 +91,13 @@
 					<Badge>{$activeScope.name}</Badge>
 				</div>
 
-				<p class="text-muted-foreground mt-1 text-sm">
+				<p class="mt-1 text-sm text-muted-foreground">
 					{extensionsBundleConfigurations[extensionsBundle].description}
 				</p>
 			</div>
 		</div>
 		<div class="ml-auto flex flex-col items-center justify-between gap-4">
-			<p class="text-muted-foreground whitespace-nowrap">{installed} / {required}</p>
+			<p class="whitespace-nowrap text-muted-foreground">{installed} / {required}</p>
 			{#if installed < required}
 				<div class="ml-auto">
 					<Button
@@ -111,7 +111,7 @@
 										facility: facility,
 										charts: $extensions
 											.filter((extension) => extension.latest && !extension.current)
-											.map((extension) => extension.latest!),
+											.map((extension) => extension.latest!)
 									}),
 								{
 									loading: `Installing ${extensionsBundle} extensions.`,
@@ -123,11 +123,11 @@
 										let message = `Failed to install ${extensionsBundle} extensions`;
 										toast.error(message, {
 											description: (error as ConnectError).message.toString(),
-											duration: Number.POSITIVE_INFINITY,
+											duration: Number.POSITIVE_INFINITY
 										});
 										return message;
-									},
-								},
+									}
+								}
 							);
 						}}
 					>
@@ -147,7 +147,7 @@
 										facility: facility,
 										charts: $extensions
 											.filter((extension) => extension.latest && extension.current)
-											.map((extension) => extension.latest!),
+											.map((extension) => extension.latest!)
 									}),
 								{
 									loading: `Upgrading ${extensionsBundle} extensions`,
@@ -159,11 +159,11 @@
 										let message = `Failed to upgrade ${extensionsBundle} extensions`;
 										toast.error(message, {
 											description: (error as ConnectError).message.toString(),
-											duration: Number.POSITIVE_INFINITY,
+											duration: Number.POSITIVE_INFINITY
 										});
 										return message;
-									},
-								},
+									}
+								}
 							);
 						}}
 					>

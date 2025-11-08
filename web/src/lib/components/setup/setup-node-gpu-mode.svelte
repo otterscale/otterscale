@@ -15,13 +15,13 @@
 	const gpuModeOptions = [
 		{
 			value: 'vgpu',
-			label: 'Virtual',
+			label: 'Virtual'
 		},
 		{
 			value: 'vm-passthrough',
 			label: 'Passthrough',
-			disabled: true,
-		},
+			disabled: true
+		}
 	];
 </script>
 
@@ -41,7 +41,7 @@
 				scope: $currentKubernetes?.scope,
 				facility: $currentKubernetes?.name,
 				hostname: unit.hostname,
-				all: true,
+				all: true
 			})
 			.then((response) => {
 				selectedGPUMode = response.labels['nvidia.com/gpu.workload.config'];
@@ -94,8 +94,8 @@
 												facility: $currentKubernetes?.name,
 												hostname: unit.hostname,
 												labels: {
-													'nvidia.com/gpu.workload.config': selectedGPUMode,
-												},
+													'nvidia.com/gpu.workload.config': selectedGPUMode
+												}
 											});
 										},
 
@@ -109,11 +109,11 @@
 												let message = `Failed to set ${unit.hostname} as ${selectedGPUMode}`;
 												toast.error(message, {
 													description: (error as ConnectError).message.toString(),
-													duration: Number.POSITIVE_INFINITY,
+													duration: Number.POSITIVE_INFINITY
 												});
 												return message;
-											},
-										},
+											}
+										}
 									);
 									close();
 								}}

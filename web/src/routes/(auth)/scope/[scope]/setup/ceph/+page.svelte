@@ -5,7 +5,7 @@
 
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { FacilityService, type Facility } from '$lib/api/facility/v1/facility_pb';
+	import { type Facility, FacilityService } from '$lib/api/facility/v1/facility_pb';
 	import { SetupScopeGrid } from '$lib/components/setup';
 	import { m } from '$lib/paraglide/messages';
 	import { activeScope, breadcrumbs } from '$lib/stores';
@@ -16,41 +16,44 @@
 			name: 'ceph-mon',
 			icon: 'ph:binoculars',
 			title: m.monitors(),
-			gridClass: 'col-span-3 row-span-2',
+			gridClass: 'col-span-3 row-span-2'
 		},
 		osds: {
 			name: 'ceph-osd',
 			icon: 'ph:hard-drives',
 			title: m.osds(),
-			gridClass: 'col-span-3 row-span-2',
+			gridClass: 'col-span-3 row-span-2'
 		},
 		fileSystem: {
 			name: 'ceph-fs',
 			icon: 'ph:tree-view',
 			title: m.file_system(),
-			gridClass: 'col-span-2',
+			gridClass: 'col-span-2'
 		},
 		objectGateway: {
 			name: 'ceph-radosgw',
 			icon: 'ph:traffic-sign',
 			title: m.object_gateway(),
-			gridClass: 'col-span-2',
+			gridClass: 'col-span-2'
 		},
 		networkFileSystem: {
 			name: 'ceph-nfs',
 			icon: 'ph:network',
 			title: m.network_file_system(),
-			gridClass: 'col-span-2',
-		},
+			gridClass: 'col-span-2'
+		}
 	} as const;
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
-		{ title: m.setup(), url: resolve('/(auth)/scope/[scope]/setup', { scope: page.params.scope! }) },
+		{
+			title: m.setup(),
+			url: resolve('/(auth)/scope/[scope]/setup', { scope: page.params.scope! })
+		},
 		{
 			title: m.ceph(),
-			url: resolve('/(auth)/scope/[scope]/setup/ceph', { scope: page.params.scope! }),
-		},
+			url: resolve('/(auth)/scope/[scope]/setup/ceph', { scope: page.params.scope! })
+		}
 	]);
 
 	// API setup

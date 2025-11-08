@@ -8,8 +8,8 @@
 	breadcrumbs.set([
 		{
 			title: m.account(),
-			url: resolve('/(auth)/account'),
-		},
+			url: resolve('/(auth)/account')
+		}
 	]);
 </script>
 

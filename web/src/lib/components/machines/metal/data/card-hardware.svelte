@@ -11,7 +11,7 @@
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 
 	let {
-		machine,
+		machine
 	}: {
 		machine: Writable<Machine>;
 	} = $props();

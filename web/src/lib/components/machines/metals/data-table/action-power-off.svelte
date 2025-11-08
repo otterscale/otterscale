@@ -4,7 +4,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -14,7 +14,7 @@
 
 <script lang="ts">
 	let {
-		machine,
+		machine
 	}: {
 		machine: Machine;
 	} = $props();
@@ -61,7 +61,7 @@
 						toast.promise(
 							() =>
 								machineClient.powerOffMachine({
-									id: machine.id,
+									id: machine.id
 								}),
 							{
 								loading: 'Loading...',
@@ -73,11 +73,11 @@
 									let message = `Fail to turn off ${machine.fqdn}`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY,
+										duration: Number.POSITIVE_INFINITY
 									});
 									return message;
-								},
-							},
+								}
+							}
 						);
 						close();
 					}}

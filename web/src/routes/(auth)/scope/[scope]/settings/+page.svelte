@@ -1,9 +1,9 @@
 <script lang="ts" module>
 	import { onMount } from 'svelte';
 
-	import { items } from './data';
-
 	import { goto } from '$app/navigation';
+
+	import { items } from './data';
 </script>
 
 <script lang="ts">

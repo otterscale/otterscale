@@ -1,25 +1,30 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import { fuzzLogosIcon } from './utils';
-
-	import { type Application_Chart, type Application_Release } from '$lib/api/application/v1/application_pb';
+	import {
+		type Application_Chart,
+		type Application_Release
+	} from '$lib/api/application/v1/application_pb';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+
+	import { fuzzLogosIcon } from './utils';
 </script>
 
 <script lang="ts">
-	let { chart, chartReleases }: { chart: Application_Chart; chartReleases: Application_Release[] | undefined } =
-		$props();
+	let {
+		chart,
+		chartReleases
+	}: { chart: Application_Chart; chartReleases: Application_Release[] | undefined } = $props();
 </script>
 
 <Card.Root
 	class={cn(
 		chart.deprecated ? 'bg-muted' : 'hover:shadow-lg',
-		'relative flex h-full flex-col justify-between gap-4 overflow-hidden transition-all',
+		'relative flex h-full flex-col justify-between gap-4 overflow-hidden transition-all'
 	)}
 >
 	<Card.Header>
@@ -37,17 +42,17 @@
 			</Avatar.Root>
 			<span>
 				<h3 class="font-semibold">{chart.name}</h3>
-				<p class="text-muted-foreground flex items-center gap-1 text-sm">
+				<p class="flex items-center gap-1 text-sm text-muted-foreground">
 					{chart.versions[0].chartVersion}
 				</p>
 			</span>
 		</div>
 	</Card.Header>
-	<Card.Content class="text-muted-foreground p-8 text-sm">
+	<Card.Content class="p-8 text-sm text-muted-foreground">
 		<p class="line-clamp-3 text-left">{chart.description}</p>
 	</Card.Content>
 	<Card.Footer class="flex items-center justify-between gap-2">
-		<Badge variant="outline" class="text-muted-foreground text-sm">
+		<Badge variant="outline" class="text-sm text-muted-foreground">
 			{chart.license}
 		</Badge>
 		<Badge variant="default" class={chartReleases ? 'visible' : 'hidden'}>{m.installed()}</Badge>

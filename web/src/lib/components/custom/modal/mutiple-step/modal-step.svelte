@@ -4,11 +4,11 @@
 	import { getContext, type Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 
-	import { IndexManager, StepManager } from './utils.svelte';
-
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import { cn } from '$lib/utils.js';
+
+	import { IndexManager, StepManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -39,7 +39,7 @@
 			class={cn(
 				'm-0 h-full w-full rounded-full border transition-all duration-300',
 				stepManager.areStepsActive(value) ? 'bg-primary' : 'bg-muted',
-				stepManager.isStepActive(value) && 'ring-card ring',
+				stepManager.isStepActive(value) && 'ring ring-card'
 			)}
 			onclick={async (e) => {
 				e.preventDefault();
@@ -52,7 +52,7 @@
 				class={cn(
 					'size-6',
 					icon ?? 'invisible',
-					stepManager.areStepsActive(value) ? 'text-card' : 'text-muted-foreground',
+					stepManager.areStepsActive(value) ? 'text-card' : 'text-muted-foreground'
 				)}
 			/>
 		</Button>

@@ -2,10 +2,10 @@
 	import Icon from '@iconify/svelte';
 	import { fade } from 'svelte/transition';
 
-	import { Speed, TimerManager } from './utils.svelte';
-
 	import * as ToggleGroup from '$lib/components/ui/toggle-group/index.js';
 	import { cn } from '$lib/utils';
+
+	import { Speed, TimerManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -16,14 +16,17 @@
 </script>
 
 <div class="flex items-center justify-start gap-2">
-	<div class="bg-muted relative flex h-9 w-9 items-center justify-center rounded-sm p-2">
+	<div class="relative flex h-9 w-9 items-center justify-center rounded-sm bg-muted p-2">
 		{#if timerManager.isProcessing}
 			<div class="absolute" transition:fade={{ duration: 100 }}>
-				<Icon icon="ph:clock-countdown" class={cn('size-5 animate-spin transition duration-2000')} />
+				<Icon
+					icon="ph:clock-countdown"
+					class={cn('size-5 animate-spin transition duration-2000')}
+				/>
 			</div>
 		{:else}
 			<div class="absolute" transition:fade={{ duration: 500 }}>
-				<Icon icon="ph:clock-countdown-fill" class="text-muted-foreground size-5" />
+				<Icon icon="ph:clock-countdown-fill" class="size-5 text-muted-foreground" />
 			</div>
 		{/if}
 	</div>
@@ -43,7 +46,9 @@
 			value={Speed.NORMAL.toString()}
 			onclick={() => {
 				timerManager.interval =
-					timerManager.interval && timerManager.interval === Speed.NORMAL ? undefined : Speed.NORMAL;
+					timerManager.interval && timerManager.interval === Speed.NORMAL
+						? undefined
+						: Speed.NORMAL;
 				timerManager.restart();
 			}}
 		>

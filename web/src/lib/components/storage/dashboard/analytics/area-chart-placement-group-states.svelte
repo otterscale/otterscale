@@ -4,8 +4,8 @@
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { formatTimeRange } from '$lib/components/custom/chart/units/formatter';
 	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
@@ -31,7 +31,7 @@
 		Undersized: `sum(ceph_pg_undersized{juju_model_uuid=~"${scope.uuid}"})`,
 		Degraded: `sum(ceph_pg_degraded{juju_model_uuid=~"${scope.uuid}"})`,
 		Inconsistent: `sum(ceph_pg_inconsistent{juju_model_uuid=~"${scope.uuid}"})`,
-		Down: `sum(ceph_pg_down{juju_model_uuid=~"${scope.uuid}"})`,
+		Down: `sum(ceph_pg_down{juju_model_uuid=~"${scope.uuid}"})`
 	});
 </script>
 

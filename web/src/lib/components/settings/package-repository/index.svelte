@@ -4,12 +4,15 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import Update from './update.svelte';
-
-	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
+	import {
+		type Configuration,
+		ConfigurationService
+	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
 	import { m } from '$lib/paraglide/messages';
+
+	import Update from './update.svelte';
 </script>
 
 <script lang="ts">
@@ -39,7 +42,9 @@
 			<div class="w-full rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row class="[&_th]:bg-muted *:px-4 [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg">
+						<Table.Row
+							class="*:px-4 [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
+						>
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.url()}</Table.Head>
 							<Table.Head>{m.enabled()}</Table.Head>

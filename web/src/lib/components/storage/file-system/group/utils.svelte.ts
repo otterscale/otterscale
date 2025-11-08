@@ -1,4 +1,4 @@
-import { writable, type Writable } from 'svelte/store';
+import { type Writable, writable } from 'svelte/store';
 
 interface GroupStore {
 	selectedScope: Writable<string | undefined>;
@@ -9,7 +9,7 @@ interface GroupStore {
 const createGroupStore = (): GroupStore => ({
 	selectedScope: writable<string | undefined>(undefined),
 	selectedFacility: writable<string | undefined>(undefined),
-	selectedVolumeName: writable<string | undefined>(undefined),
+	selectedVolumeName: writable<string | undefined>(undefined)
 });
 
 export { createGroupStore };

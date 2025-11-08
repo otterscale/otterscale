@@ -16,7 +16,7 @@
 
 <script lang="ts">
 	let {
-		key,
+		key
 	}: {
 		key: User_Key;
 	} = $props();
@@ -31,7 +31,7 @@
 	const defaults = {
 		scope: $currentCeph?.scope,
 		facility: $currentCeph?.name,
-		userId: user.id,
+		userId: user.id
 	} as DeleteUserKeyRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -54,7 +54,12 @@
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.Confirm id="deletion" required target={key.accessKey} bind:value={request.accessKey} />
+					<SingleInput.Confirm
+						id="deletion"
+						required
+						target={key.accessKey}
+						bind:value={request.accessKey}
+					/>
 				</Form.Field>
 				<Form.Help>
 					{m.deletion_warning({ identifier: m.access_key() })}
@@ -83,10 +88,10 @@
 								let message = `Fail to delete ${request.accessKey}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

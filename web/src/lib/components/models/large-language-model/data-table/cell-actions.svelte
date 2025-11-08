@@ -1,15 +1,14 @@
 <script lang="ts" module>
-	import type { LargeLanguageModel } from '../type';
-
-	import Delete from './action-delete.svelte';
-
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
+
+	import type { LargeLanguageModel } from '../type';
+	import Delete from './action-delete.svelte';
 </script>
 
 <script lang="ts">
 	let {
-		model,
+		model
 	}: {
 		model: LargeLanguageModel;
 	} = $props();

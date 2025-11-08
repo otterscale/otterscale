@@ -2,14 +2,14 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
 
-	import Actions from './cell-actions.svelte';
-
 	import type { VirtualMachine_Snapshot } from '$lib/api/instance/v1/instance_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatTimeAgo } from '$lib/formatter';
+
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,
@@ -19,7 +19,7 @@
 		phase,
 		ready,
 		createTime,
-		actions,
+		actions
 	};
 </script>
 

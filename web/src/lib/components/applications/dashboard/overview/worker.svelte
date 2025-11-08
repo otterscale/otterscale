@@ -18,10 +18,14 @@
 
 	const facilities = writable<Facility[]>([]);
 	const worker = $derived(
-		$facilities.find((facility) => facility.name.includes('kubernetes-worker') && facility.units.length > 0),
+		$facilities.find(
+			(facility) => facility.name.includes('kubernetes-worker') && facility.units.length > 0
+		)
 	);
 	const workerUnits = $derived(worker?.units ?? []);
-	const activeWorkerUnits = $derived(workerUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? []);
+	const activeWorkerUnits = $derived(
+		workerUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? []
+	);
 
 	async function fetch() {
 		facilityClient.listFacilities({ scope: scope.name }).then((response) => {
@@ -55,7 +59,7 @@
 	<Card.Root class="relative h-full gap-2 overflow-hidden">
 		<Icon
 			icon="ph:cube"
-			class="text-primary/5 absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+			class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 		/>
 		<Card.Header>
 			<Card.Title>{m.workers()}</Card.Title>

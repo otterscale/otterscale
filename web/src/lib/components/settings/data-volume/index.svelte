@@ -4,10 +4,11 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import Actions from './cell-actions.svelte';
-	import Create from './create.svelte';
-
-	import { DataVolume_Source_Type, InstanceService, type DataVolume } from '$lib/api/instance/v1/instance_pb';
+	import {
+		type DataVolume,
+		DataVolume_Source_Type,
+		InstanceService
+	} from '$lib/api/instance/v1/instance_pb';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
@@ -16,10 +17,14 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+
+	import Actions from './cell-actions.svelte';
+	import Create from './create.svelte';
 </script>
 
 <script lang="ts">
-	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } = $props();
+	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } =
+		$props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -33,7 +38,7 @@
 				scope: scope,
 				facility: facility,
 				namespace: namespace,
-				bootImage: true,
+				bootImage: true
 			})
 			.then((response) => {
 				dataVolumes.set(response.dataVolumes);
@@ -48,7 +53,7 @@
 					scope: scope,
 					facility: facility,
 					namespace: namespace,
-					bootImage: true,
+					bootImage: true
 				})
 				.then((response) => {
 					dataVolumes.set(response.dataVolumes);
@@ -89,7 +94,9 @@
 			<div class="w-full rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row class="[&_th]:bg-muted *:px-4 [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg">
+						<Table.Row
+							class="*:px-4 [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
+						>
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.namespace()}</Table.Head>
 							<Table.Head>{m.phase()}</Table.Head>
@@ -149,21 +156,14 @@
 														<Table.Root>
 															<Table.Body class="text-xs">
 																<Table.Row>
-																	<Table.Head class="text-right"
-																		>{m.type()}</Table.Head
-																	>
+																	<Table.Head class="text-right">{m.type()}</Table.Head>
 																	<Table.Cell
-																		>{DataVolume_Source_Type[
-																			dataVolume.source.type
-																		]}</Table.Cell
+																		>{DataVolume_Source_Type[dataVolume.source.type]}</Table.Cell
 																	>
 																</Table.Row>
 																<Table.Row>
-																	<Table.Head class="text-right"
-																		>{m.source()}</Table.Head
-																	>
-																	<Table.Cell class="break-all"
-																		>{dataVolume.source.data}</Table.Cell
+																	<Table.Head class="text-right">{m.source()}</Table.Head>
+																	<Table.Cell class="break-all">{dataVolume.source.data}</Table.Cell
 																	>
 																</Table.Row>
 															</Table.Body>

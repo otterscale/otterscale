@@ -9,7 +9,7 @@
 	import { writable } from 'svelte/store';
 
 	import { page } from '$app/state';
-	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
@@ -22,7 +22,7 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
@@ -30,19 +30,23 @@
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)),
+		$machines.filter((m) =>
+			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
+		)
 	);
-	const totalCPUCores = $derived(scopeMachines.reduce((sum, m) => sum + Number(m.cpuCount ?? 0), 0));
+	const totalCPUCores = $derived(
+		scopeMachines.reduce((sum, m) => sum + Number(m.cpuCount ?? 0), 0)
+	);
 	let cpuUsages = $state([] as SampleValue[]);
 	const cpuUsagesTrend = $derived(
 		cpuUsages.length > 0
 			? (cpuUsages[cpuUsages.length - 1].value - cpuUsages[cpuUsages.length - 2].value) /
 					cpuUsages[cpuUsages.length - 2].value
-			: 0,
+			: 0
 	);
 
 	const cpuUsagesConfiguration = {
-		usage: { label: 'value', color: 'var(--chart-1)' },
+		usage: { label: 'value', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
@@ -51,7 +55,7 @@
 				`1 - (sum(irate(node_cpu_seconds_total{juju_model_uuid="${scope.uuid}",mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total{juju_model_uuid="${scope.uuid}"}[2m])))`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				cpuUsages = response.result && response.result[0] ? response.result[0]?.values : [];
@@ -95,7 +99,7 @@
 				<Tooltip.Provider>
 					<Tooltip.Root>
 						<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-							<Icon icon="ph:info" class="text-muted-foreground size-5" />
+							<Icon icon="ph:info" class="size-5 text-muted-foreground" />
 						</Tooltip.Trigger>
 						<Tooltip.Content>
 							<p>{m.machine_dashboard_total_cpu_tooltip()}</p>
@@ -107,7 +111,7 @@
 		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
 			<div class="flex flex-col gap-0.5">
 				<div class="text-3xl font-bold">{totalCPUCores}</div>
-				<p class="text-muted-foreground text-sm">{m.cores()}</p>
+				<p class="text-sm text-muted-foreground">{m.cores()}</p>
 			</div>
 			<Chart.Container config={cpuUsagesConfiguration} class="h-full w-20">
 				<LineChart
@@ -119,15 +123,15 @@
 						{
 							key: 'value',
 							label: 'usage',
-							color: cpuUsagesConfiguration.usage.color,
-						},
+							color: cpuUsagesConfiguration.usage.color
+						}
 					]}
 					props={{
 						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
 						},
-						highlight: { points: { r: 4 } },
+						highlight: { points: { r: 4 } }
 					}}
 				>
 					{#snippet tooltip()}
@@ -152,7 +156,9 @@
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				cpuUsagesTrend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
+				cpuUsagesTrend >= 0
+					? 'text-emerald-500 dark:text-emerald-400'
+					: 'text-rose-500 dark:text-rose-400'
 			)}
 		>
 			{Math.abs(cpuUsagesTrend).toFixed(2)} %

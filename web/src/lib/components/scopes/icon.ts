@@ -7,7 +7,7 @@ const SCOPE_ICONS = [
 	'ph:joystick',
 	'ph:clover',
 	'ph:cube',
-	'ph:gavel',
+	'ph:gavel'
 ];
 
 export function scopeIcon(index: number): string {

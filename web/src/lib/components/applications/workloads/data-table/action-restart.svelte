@@ -4,12 +4,12 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { Application } from '../types';
-
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
+
+	import type { Application } from '../types';
 </script>
 
 <script lang="ts">
@@ -26,7 +26,7 @@
 			facility: $currentKubernetes?.name,
 			name: application.name,
 			namespace: application.namespace,
-			type: application.type,
+			type: application.type
 		};
 
 		toast.promise(() => applicationClient.restartApplication(request), {
@@ -40,10 +40,10 @@
 				const msg = `Failed to restart application ${request.name}.`;
 				toast.error(msg, {
 					description: (e as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY,
+					duration: Number.POSITIVE_INFINITY
 				});
 				return msg;
-			},
+			}
 		});
 	}
 

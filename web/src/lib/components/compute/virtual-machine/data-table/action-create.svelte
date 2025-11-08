@@ -2,7 +2,7 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import type { CreateVirtualMachineRequest, DataVolume } from '$lib/api/instance/v1/instance_pb';
@@ -58,24 +58,26 @@
 				scope: $currentKubernetes?.scope,
 				facility: $currentKubernetes?.name,
 				namespace: request.namespace,
-				includeClusterWide: true,
+				includeClusterWide: true
 			});
 
-			const instanceTypeOptions: InstanceTypeOption[] = response.instanceTypes.map((instanceType) => {
-				const memory = formatCapacity(instanceType.memoryBytes);
-				return {
-					value: instanceType.name,
-					label: `${instanceType.name} (CPU: ${instanceType.cpuCores} Core, RAM: ${memory.value} ${memory.unit})`,
-					icon: instanceType.clusterWide ? 'ph:graph' : 'ph:layout',
-					cpuCores: instanceType.cpuCores,
-					memoryBytes: instanceType.memoryBytes,
-				};
-			});
+			const instanceTypeOptions: InstanceTypeOption[] = response.instanceTypes.map(
+				(instanceType) => {
+					const memory = formatCapacity(instanceType.memoryBytes);
+					return {
+						value: instanceType.name,
+						label: `${instanceType.name} (CPU: ${instanceType.cpuCores} Core, RAM: ${memory.value} ${memory.unit})`,
+						icon: instanceType.clusterWide ? 'ph:graph' : 'ph:layout',
+						cpuCores: instanceType.cpuCores,
+						memoryBytes: instanceType.memoryBytes
+					};
+				}
+			);
 
 			instanceTypes.set(instanceTypeOptions);
 		} catch (error) {
 			toast.error('Failed to load instance types', {
-				description: (error as ConnectError).message.toString(),
+				description: (error as ConnectError).message.toString()
 			});
 		}
 	}
@@ -88,20 +90,20 @@
 				scope: $currentKubernetes?.scope,
 				facility: $currentKubernetes?.name,
 				namespace: request.namespace,
-				bootImage: true,
+				bootImage: true
 			});
 
 			const dvOptions: BootDataVolumesOption[] = response.dataVolumes.map((dv: DataVolume) => ({
 				value: dv.name,
 				label: dv.name,
 				icon: 'ph:hard-drive',
-				sizeBytes: dv.sizeBytes,
+				sizeBytes: dv.sizeBytes
 			}));
 
 			bootDataVolumes.set(dvOptions);
 		} catch (error) {
 			toast.error('Failed to load bootable PVCs', {
-				description: (error as ConnectError).message.toString(),
+				description: (error as ConnectError).message.toString()
 			});
 		}
 	}
@@ -114,7 +116,7 @@
 		namespace: 'default',
 		instanceTypeName: '',
 		bootDataVolumeName: '',
-		startupScript: '',
+		startupScript: ''
 	} as CreateVirtualMachineRequest;
 
 	// ==================== Form State ====================
@@ -155,7 +157,12 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.name} bind:invalid={invalidName} />
+					<SingleInput.General
+						required
+						type="text"
+						bind:value={request.name}
+						bind:invalid={invalidName}
+					/>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.namespace()}</Form.Label>
@@ -229,8 +236,10 @@
 			<!-- ==================== Advanced Configuration ==================== -->
 			<Collapsible.Root bind:open={isAdvancedOpen} class="py-4">
 				<div class="flex items-center justify-between gap-2">
-					<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>{m.advance()}</p>
-					<Collapsible.Trigger class="bg-muted rounded-full p-1 ">
+					<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>
+						{m.advance()}
+					</p>
+					<Collapsible.Trigger class="rounded-full bg-muted p-1 ">
 						<Icon
 							icon="ph:caret-left"
 							class={cn('transition-all duration-300', isAdvancedOpen ? '-rotate-90' : 'rotate-0')}
@@ -245,7 +254,11 @@
 							<Code.Root lang="bash" class="w-full" hideLines code={request.startupScript}>
 								<Code.CopyButton />
 							</Code.Root>
-							<SingleInput.Structure preview={false} bind:value={request.startupScript} language="bash" />
+							<SingleInput.Structure
+								preview={false}
+								bind:value={request.startupScript}
+								language="bash"
+							/>
 							<div class="flex justify-end gap-2">
 								<Button
 									variant="outline"
@@ -286,10 +299,10 @@
 								let message = `Failed to create ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

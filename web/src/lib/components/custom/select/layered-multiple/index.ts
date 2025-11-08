@@ -10,17 +10,16 @@ import {
 	Separator,
 	Shortcut,
 	SubContent,
-	SubTrigger,
+	SubTrigger
 } from '../layered-single';
-
+import Root from './select.svelte';
+import Action from './select-action.svelte';
 import ActionAll from './select-action-all.svelte';
 import ActionClear from './select-action-clear.svelte';
-import Action from './select-action.svelte';
 import Actions from './select-actions.svelte';
 import Controller from './select-controller.svelte';
 import Trigger from './select-trigger.svelte';
 import Viewer from './select-viewer.svelte';
-import Root from './select.svelte';
 import type { AncestralOptionType, OptionType } from './types';
 import { OptionManager } from './utils.svelte';
 const Sub = DropdownMenuPrimitive.Sub;
@@ -45,6 +44,6 @@ export {
 	SubContent,
 	SubTrigger,
 	Trigger,
-	Viewer,
+	Viewer
 };
 export type { AncestralOptionType, OptionType };

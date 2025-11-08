@@ -1,7 +1,7 @@
 enum Speed {
 	FAST = 1,
 	NORMAL = 2,
-	SLOW = 3,
+	SLOW = 3
 }
 
 class TimerManager {
@@ -38,4 +38,4 @@ class TimerManager {
 	}
 }
 
-export { TimerManager, Speed };
+export { Speed, TimerManager };

@@ -4,8 +4,8 @@
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { formatTimeRange } from '$lib/components/custom/chart/units/formatter';
 	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
@@ -26,7 +26,7 @@
 
 	// Prometheus query for Memory usage
 	const query = $derived({
-		Recovery: `sum(irate(ceph_osd_recovery_ops{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
+		Recovery: `sum(irate(ceph_osd_recovery_ops{juju_model_uuid=~"${scope.uuid}"}[5m]))`
 	});
 </script>
 
@@ -39,7 +39,11 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} valueFormatter={formatCapacity} />
+			<Content
+				data={response}
+				timeRange={formatTimeRange(TIME_RANGE_HOURS)}
+				valueFormatter={formatCapacity}
+			/>
 		{/snippet}
 	</Layout>
 {:catch}

@@ -5,8 +5,6 @@
 	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import type { NFSStore } from '../../utils.svelte';
-
 	import type { CreateSubvolumeSnapshotRequest, Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -14,6 +12,8 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
+
+	import type { NFSStore } from '../../utils.svelte';
 </script>
 
 <script lang="ts">
@@ -30,7 +30,7 @@
 		facility: get(nfsStore.selectedFacility),
 		volumeName: get(nfsStore.selectedVolumeName),
 		groupName: get(nfsStore.selectedSubvolumeGroupName),
-		subvolumeName: subvolume.name,
+		subvolumeName: subvolume.name
 	} as CreateSubvolumeSnapshotRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -80,10 +80,10 @@
 								let message = `Fail to create ${request.snapshotName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

@@ -8,12 +8,12 @@
 	breadcrumbs.set([
 		{
 			title: m.settings(),
-			url: resolve('/(auth)/configuration'),
+			url: resolve('/(auth)/configuration')
 		},
 		{
 			title: m.boot_image(),
-			url: resolve('/(auth)/configuration/boot-image'),
-		},
+			url: resolve('/(auth)/configuration/boot-image')
+		}
 	]);
 </script>
 

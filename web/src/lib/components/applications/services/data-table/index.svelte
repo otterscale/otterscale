@@ -1,34 +1,33 @@
 <script lang="ts" module>
 	import {
+		type ColumnFiltersState,
 		getCoreRowModel,
 		getExpandedRowModel,
 		getFilteredRowModel,
 		getPaginationRowModel,
 		getSortedRowModel,
-		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-
-	import type { Service } from '../types';
-
-	import { columns, messages } from './columns';
-	import Statistics from './statistics.svelte';
 
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+
+	import type { Service } from '../types';
+	import { columns, messages } from './columns';
+	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
 	let {
 		services,
-		reloadManager,
+		reloadManager
 	}: {
 		services: Writable<Service[]>;
 		reloadManager: ReloadManager;
@@ -67,7 +66,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			},
+			}
 		},
 
 		onPaginationChange: (updater) => {
@@ -106,7 +105,7 @@
 			}
 		},
 
-		autoResetPageIndex: false,
+		autoResetPageIndex: false
 	});
 </script>
 
@@ -114,8 +113,18 @@
 <Layout.Root>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy columnId="name" values={$services.map((row) => row.name)} {messages} {table} />
-			<Filters.StringMatch columnId="type" values={$services.flatMap((row) => row.type)} {messages} {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$services.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
+			<Filters.StringMatch
+				columnId="type"
+				values={$services.flatMap((row) => row.type)}
+				{messages}
+				{table}
+			/>
 			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

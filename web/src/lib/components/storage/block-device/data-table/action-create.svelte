@@ -36,7 +36,7 @@
 		exclusiveLock: true,
 		objectMap: true,
 		fastDiff: true,
-		deepFlatten: true,
+		deepFlatten: true
 	} as CreateImageRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -52,7 +52,7 @@
 		try {
 			const response = await storageClient.listPools({
 				scope: $currentCeph?.scope,
-				facility: $currentCeph?.name,
+				facility: $currentCeph?.name
 			});
 			poolOptions.set(
 				response.pools.map(
@@ -60,9 +60,9 @@
 						({
 							value: pool.name,
 							label: pool.name,
-							icon: 'ph:cube',
-						}) as SingleSelect.OptionType,
-				),
+							icon: 'ph:cube'
+						}) as SingleSelect.OptionType
+				)
 			);
 
 			isPoolsLoading = false;
@@ -141,7 +141,7 @@
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 						]}
 					/>
 				</Form.Field>
@@ -150,7 +150,7 @@
 			<Collapsible.Root bind:open={isAdvancedOpen}>
 				<div class="flex items-center justify-between gap-2">
 					<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>Advance</p>
-					<Collapsible.Trigger class="bg-muted rounded-full p-1 ">
+					<Collapsible.Trigger class="rounded-full bg-muted p-1 ">
 						<Icon
 							icon="ph:caret-left"
 							class={cn('transition-all duration-300', isAdvancedOpen ? '-rotate-90' : 'rotate-0')}
@@ -169,7 +169,7 @@
 								transformer={(value) => String(value)}
 								units={[
 									{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 								]}
 							/>
 						</Form.Field>
@@ -181,7 +181,7 @@
 								transformer={(value) => String(value)}
 								units={[
 									{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 								]}
 							/>
 						</Form.Field>
@@ -258,10 +258,10 @@
 								let message = `Fail to create ${request.imageName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY,
+									duration: Number.POSITIVE_INFINITY
 								});
 								return message;
-							},
+							}
 						});
 						reset();
 						close();

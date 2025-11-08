@@ -18,25 +18,28 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let latestAvailableModels = $state(0);
 	let availableModels = $state([] as SampleValue[]);
 	const trend = $derived(
 		availableModels.length > 1 && availableModels[availableModels.length - 2].value !== 0
-			? (availableModels[availableModels.length - 1].value - availableModels[availableModels.length - 2].value) /
+			? (availableModels[availableModels.length - 1].value -
+					availableModels[availableModels.length - 2].value) /
 					availableModels[availableModels.length - 2].value
-			: 0,
+			: 0
 	);
 
 	const configuration = {
-		usage: { label: 'Models', color: 'var(--chart-1)' },
+		usage: { label: 'Models', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
 		prometheusDriver
-			.instantQuery(`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model_uuid="${scope.uuid}"})`)
+			.instantQuery(
+				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model_uuid="${scope.uuid}"})`
+			)
 			.then((response) => {
 				latestAvailableModels = response.result[0].value.value;
 			});
@@ -45,7 +48,7 @@
 				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model_uuid="${scope.uuid}"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				availableModels = response.result[0]?.values;
@@ -86,7 +89,7 @@
 				<Tooltip.Provider>
 					<Tooltip.Root>
 						<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-							<Icon icon="ph:info" class="text-muted-foreground size-5" />
+							<Icon icon="ph:info" class="size-5 text-muted-foreground" />
 						</Tooltip.Trigger>
 						<Tooltip.Content>
 							<p>{m.llm_dashboard_models_tooltip()}</p>
@@ -98,7 +101,7 @@
 		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
 			<div class="flex flex-col gap-0.5">
 				<div class="text-3xl font-bold">{latestAvailableModels}</div>
-				<p class="text-muted-foreground text-sm">{m.models()}</p>
+				<p class="text-sm text-muted-foreground">{m.models()}</p>
 			</div>
 			<Chart.Container config={configuration} class="h-full w-20">
 				<LineChart
@@ -110,15 +113,15 @@
 						{
 							key: 'value',
 							label: configuration.usage.label,
-							color: configuration.usage.color,
-						},
+							color: configuration.usage.color
+						}
 					]}
 					props={{
 						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
 						},
-						highlight: { points: { r: 4 } },
+						highlight: { points: { r: 4 } }
 					}}
 				>
 					{#snippet tooltip()}
@@ -145,7 +148,7 @@
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
+				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'
 			)}
 		>
 			{Math.abs(trend).toFixed(2)} %

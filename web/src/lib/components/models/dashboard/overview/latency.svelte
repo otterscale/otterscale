@@ -18,7 +18,7 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let latestLatency = $state(0);
@@ -27,17 +27,17 @@
 		latencies.length > 1 && latencies[latencies.length - 2].value !== 0
 			? (latencies[latencies.length - 1].value - latencies[latencies.length - 2].value) /
 					latencies[latencies.length - 2].value
-			: 0,
+			: 0
 	);
 
 	const configuration = {
-		latency: { label: 'Latency', color: 'var(--chart-1)' },
+		latency: { label: 'Latency', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
 		prometheusDriver
 			.instantQuery(
-				`histogram_quantile(0.95, sum by(le) (vllm:e2e_request_latency_seconds_bucket{juju_model_uuid="${scope.uuid}"}))`,
+				`histogram_quantile(0.95, sum by(le) (vllm:e2e_request_latency_seconds_bucket{juju_model_uuid="${scope.uuid}"}))`
 			)
 			.then((response) => {
 				const value = response.result[0].value.value;
@@ -48,7 +48,7 @@
 				`histogram_quantile(0.95, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{juju_model_uuid="${scope.uuid}"}[2m])))`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				const sampleValues: SampleValue[] = response.result[0]?.values ?? [];
@@ -91,7 +91,7 @@
 				<Tooltip.Provider>
 					<Tooltip.Root>
 						<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-							<Icon icon="ph:info" class="text-muted-foreground size-5" />
+							<Icon icon="ph:info" class="size-5 text-muted-foreground" />
 						</Tooltip.Trigger>
 						<Tooltip.Content>
 							<p>{m.llm_dashboard_latency_tooltip()}</p>
@@ -103,7 +103,7 @@
 		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
 			<div class="flex flex-col gap-0.5">
 				<div class="text-3xl font-bold">{latestLatency.toFixed(2)}</div>
-				<p class="text-muted-foreground text-sm">{m.millisecond()}</p>
+				<p class="text-sm text-muted-foreground">{m.millisecond()}</p>
 			</div>
 			<Chart.Container config={configuration} class="h-full w-20">
 				<LineChart
@@ -115,15 +115,15 @@
 						{
 							key: 'value',
 							label: configuration.latency.label,
-							color: configuration.latency.color,
-						},
+							color: configuration.latency.color
+						}
 					]}
 					props={{
 						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
 						},
-						highlight: { points: { r: 4 } },
+						highlight: { points: { r: 4 } }
 					}}
 				>
 					{#snippet tooltip()}
@@ -150,7 +150,7 @@
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
+				trend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'
 			)}
 		>
 			{Math.abs(trend).toFixed(2)} %
