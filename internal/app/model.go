@@ -26,7 +26,7 @@ func NewModelService(model *core.ModelUseCase) *ModelService {
 var _ pbconnect.ModelServiceHandler = (*ModelService)(nil)
 
 func (s *ModelService) ListModels(ctx context.Context, req *pb.ListModelsRequest) (*pb.ListModelsResponse, error) {
-	models, err := s.model.ListModels(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace())
+	models, err := s.model.ListModels(ctx, req.GetScope(), req.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (s *ModelService) ListModels(ctx context.Context, req *pb.ListModelsRequest
 }
 
 func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelRequest) (*pb.Model, error) {
-	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetModelName())
+	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName())
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelReque
 	if r := req.GetLimits(); r != nil {
 		limits = toModelResource(r)
 	}
-	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), requests, limits)
+	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), requests, limits)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelReque
 }
 
 func (s *ModelService) DeleteModel(ctx context.Context, req *pb.DeleteModelRequest) (*emptypb.Empty, error) {
-	if err := s.model.DeleteModel(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.model.DeleteModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -69,7 +69,7 @@ func (s *ModelService) DeleteModel(ctx context.Context, req *pb.DeleteModelReque
 }
 
 func (s *ModelService) ListModelArtifacts(ctx context.Context, req *pb.ListModelArtifactsRequest) (*pb.ListModelArtifactsResponse, error) {
-	artifacts, err := s.model.ListModelArtifacts(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace())
+	artifacts, err := s.model.ListModelArtifacts(ctx, req.GetScope(), req.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (s *ModelService) ListModelArtifacts(ctx context.Context, req *pb.ListModel
 }
 
 func (s *ModelService) CreateModelArtifact(ctx context.Context, req *pb.CreateModelArtifactRequest) (*pb.ModelArtifact, error) {
-	artifact, err := s.model.CreateModelArtifact(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSize())
+	artifact, err := s.model.CreateModelArtifact(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSize())
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func (s *ModelService) CreateModelArtifact(ctx context.Context, req *pb.CreateMo
 }
 
 func (s *ModelService) DeleteModelArtifact(ctx context.Context, req *pb.DeleteModelArtifactRequest) (*emptypb.Empty, error) {
-	if err := s.model.DeleteModelArtifact(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.model.DeleteModelArtifact(ctx, req.GetScope(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}

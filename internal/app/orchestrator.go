@@ -42,7 +42,7 @@ func (s *OrchestratorService) CreateNode(ctx context.Context, req *pb.CreateNode
 }
 
 func (s *OrchestratorService) ListKubernetesNodeLabels(ctx context.Context, req *pb.ListKubernetesNodeLabelsRequest) (*pb.ListKubernetesNodeLabelsResponse, error) {
-	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.GetScope(), req.GetFacility(), req.GetHostname(), req.GetAll())
+	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.GetScope(), req.GetHostname(), req.GetAll())
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (s *OrchestratorService) ListKubernetesNodeLabels(ctx context.Context, req 
 }
 
 func (s *OrchestratorService) UpdateKubernetesNodeLabels(ctx context.Context, req *pb.UpdateKubernetesNodeLabelsRequest) (*pb.UpdateKubernetesNodeLabelsResponse, error) {
-	labels, err := s.uc.UpdateKubernetesNodeLabels(ctx, req.GetScope(), req.GetFacility(), req.GetHostname(), req.GetLabels())
+	labels, err := s.uc.UpdateKubernetesNodeLabels(ctx, req.GetScope(), req.GetHostname(), req.GetLabels())
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (s *OrchestratorService) UpdateKubernetesNodeLabels(ctx context.Context, re
 }
 
 func (s *OrchestratorService) ListGPURelationsByMachine(ctx context.Context, req *pb.ListGPURelationsByMachineRequest) (*pb.ListGPURelationsByMachineResponse, error) {
-	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx, req.GetScope(), req.GetFacility(), req.GetMachineId())
+	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx, req.GetScope(), req.GetMachineId())
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (s *OrchestratorService) ListGPURelationsByMachine(ctx context.Context, req
 }
 
 func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *pb.ListGPURelationsByModelRequest) (*pb.ListGPURelationsByModelResponse, error) {
-	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetModelName())
+	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx, req.GetScope(), req.GetNamespace(), req.GetModelName())
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 }
 
 func (s *OrchestratorService) ListGeneralExtensions(ctx context.Context, req *pb.ListGeneralExtensionsRequest) (*pb.ListGeneralExtensionsResponse, error) {
-	Extensions, err := s.uc.ListGeneralExtensions(ctx, req.GetScope(), req.GetFacility())
+	Extensions, err := s.uc.ListGeneralExtensions(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (s *OrchestratorService) ListGeneralExtensions(ctx context.Context, req *pb
 }
 
 func (s *OrchestratorService) ListModelExtensions(ctx context.Context, req *pb.ListModelExtensionsRequest) (*pb.ListModelExtensionsResponse, error) {
-	Extensions, err := s.uc.ListModelExtensions(ctx, req.GetScope(), req.GetFacility())
+	Extensions, err := s.uc.ListModelExtensions(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,7 @@ func (s *OrchestratorService) ListModelExtensions(ctx context.Context, req *pb.L
 }
 
 func (s *OrchestratorService) ListInstanceExtensions(ctx context.Context, req *pb.ListInstanceExtensionsRequest) (*pb.ListInstanceExtensionsResponse, error) {
-	Extensions, err := s.uc.ListInstanceExtensions(ctx, req.GetScope(), req.GetFacility())
+	Extensions, err := s.uc.ListInstanceExtensions(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (s *OrchestratorService) ListInstanceExtensions(ctx context.Context, req *p
 }
 
 func (s *OrchestratorService) ListStorageExtensions(ctx context.Context, req *pb.ListStorageExtensionsRequest) (*pb.ListStorageExtensionsResponse, error) {
-	Extensions, err := s.uc.ListStorageExtensions(ctx, req.GetScope(), req.GetFacility())
+	Extensions, err := s.uc.ListStorageExtensions(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ func (s *OrchestratorService) ListStorageExtensions(ctx context.Context, req *pb
 }
 
 func (s *OrchestratorService) InstallExtensions(ctx context.Context, req *pb.InstallExtensionsRequest) (*emptypb.Empty, error) {
-	if err := s.uc.InstallExtensions(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+	if err := s.uc.InstallExtensions(ctx, req.GetScope(), toChartRefMap(req.GetCharts())); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -130,7 +130,7 @@ func (s *OrchestratorService) InstallExtensions(ctx context.Context, req *pb.Ins
 }
 
 func (s *OrchestratorService) UpgradeExtensions(ctx context.Context, req *pb.UpgradeExtensionsRequest) (*emptypb.Empty, error) {
-	if err := s.uc.UpgradeExtensions(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+	if err := s.uc.UpgradeExtensions(ctx, req.GetScope(), toChartRefMap(req.GetCharts())); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}

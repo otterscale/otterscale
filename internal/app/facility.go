@@ -113,7 +113,7 @@ func (s *FacilityService) ResolveFacilityUnitErrors(ctx context.Context, req *pb
 }
 
 func (s *FacilityService) ListActions(ctx context.Context, req *pb.ListActionsRequest) (*pb.ListActionsResponse, error) {
-	actions, err := s.facility.ListActions(ctx, req.GetScope(), req.GetFacility())
+	actions, err := s.facility.ListActions(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}

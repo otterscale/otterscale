@@ -37,7 +37,7 @@ func NewApplicationService(chart *core.ChartUseCase, release *core.ReleaseUseCas
 var _ pbconnect.ApplicationServiceHandler = (*ApplicationService)(nil)
 
 func (s *ApplicationService) ListNamespaces(ctx context.Context, req *pb.ListNamespacesRequest) (*pb.ListNamespacesResponse, error) {
-	namespaces, err := s.kubernetes.ListNamespaces(ctx, req.GetScope(), req.GetFacility())
+	namespaces, err := s.kubernetes.ListNamespaces(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -47,11 +47,11 @@ func (s *ApplicationService) ListNamespaces(ctx context.Context, req *pb.ListNam
 }
 
 func (s *ApplicationService) ListApplications(ctx context.Context, req *pb.ListApplicationsRequest) (*pb.ListApplicationsResponse, error) {
-	apps, err := s.kubernetes.ListApplications(ctx, req.GetScope(), req.GetFacility())
+	apps, err := s.kubernetes.ListApplications(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
-	publicAddress, err := s.kubernetes.GetPublicAddress(ctx, req.GetScope(), req.GetFacility())
+	publicAddress, err := s.kubernetes.GetPublicAddress(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -62,11 +62,11 @@ func (s *ApplicationService) ListApplications(ctx context.Context, req *pb.ListA
 }
 
 func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetApplicationRequest) (*pb.Application, error) {
-	app, err := s.kubernetes.GetApplication(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName())
+	app, err := s.kubernetes.GetApplication(ctx, req.GetScope(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
-	chartFile, err := s.chart.GetChartFileFromApplication(ctx, req.GetScope(), req.GetFacility(), app)
+	chartFile, err := s.chart.GetChartFileFromApplication(ctx, req.GetScope(), app)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetAppl
 }
 
 func (s *ApplicationService) RestartApplication(ctx context.Context, req *pb.RestartApplicationRequest) (*emptypb.Empty, error) {
-	err := s.kubernetes.RestartApplication(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetType())
+	err := s.kubernetes.RestartApplication(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetType())
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func (s *ApplicationService) RestartApplication(ctx context.Context, req *pb.Res
 }
 
 func (s *ApplicationService) ScaleApplication(ctx context.Context, req *pb.ScaleApplicationRequest) (*emptypb.Empty, error) {
-	err := s.kubernetes.ScaleApplication(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetType(), req.GetReplicas())
+	err := s.kubernetes.ScaleApplication(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetType(), req.GetReplicas())
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func (s *ApplicationService) ScaleApplication(ctx context.Context, req *pb.Scale
 }
 
 func (s *ApplicationService) DeleteApplicationPod(ctx context.Context, req *pb.DeleteApplicationPodRequest) (*emptypb.Empty, error) {
-	err := s.kubernetes.DeletePod(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName())
+	err := s.kubernetes.DeletePod(ctx, req.GetScope(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func (s *ApplicationService) DeleteApplicationPod(ctx context.Context, req *pb.D
 }
 
 func (s *ApplicationService) WatchLogs(ctx context.Context, req *pb.WatchLogsRequest, stream *connect.ServerStream[pb.WatchLogsResponse]) error {
-	logs, err := s.kubernetes.StreamLogs(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetDuration().AsDuration())
+	logs, err := s.kubernetes.StreamLogs(ctx, req.GetScope(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetDuration().AsDuration())
 	if err != nil {
 		return err
 	}
@@ -152,7 +152,7 @@ func (s *ApplicationService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYR
 	// create stdout channel
 	stdOutChan := make(chan []byte)
 	go func() {
-		_ = s.kubernetes.ExecuteTTY(ctx, sessionID, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetCommand(), stdOutChan)
+		_ = s.kubernetes.ExecuteTTY(ctx, sessionID, req.GetScope(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetCommand(), stdOutChan)
 	}()
 
 	// send stdout to client
@@ -167,7 +167,7 @@ func (s *ApplicationService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYR
 }
 
 func (s *ApplicationService) ListReleases(ctx context.Context, req *pb.ListReleasesRequest) (*pb.ListReleasesResponse, error) {
-	releases, err := s.release.ListReleases(ctx, req.GetScope(), req.GetFacility())
+	releases, err := s.release.ListReleases(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +177,7 @@ func (s *ApplicationService) ListReleases(ctx context.Context, req *pb.ListRelea
 }
 
 func (s *ApplicationService) CreateRelease(ctx context.Context, req *pb.CreateReleaseRequest) (*pb.Application_Release, error) {
-	release, err := s.release.CreateRelease(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml(), req.GetValuesMap())
+	release, err := s.release.CreateRelease(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml(), req.GetValuesMap())
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +186,7 @@ func (s *ApplicationService) CreateRelease(ctx context.Context, req *pb.CreateRe
 }
 
 func (s *ApplicationService) UpdateRelease(ctx context.Context, req *pb.UpdateReleaseRequest) (*pb.Application_Release, error) {
-	release, err := s.release.UpdateRelease(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml())
+	release, err := s.release.UpdateRelease(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml())
 	if err != nil {
 		return nil, err
 	}
@@ -195,7 +195,7 @@ func (s *ApplicationService) UpdateRelease(ctx context.Context, req *pb.UpdateRe
 }
 
 func (s *ApplicationService) DeleteRelease(ctx context.Context, req *pb.DeleteReleaseRequest) (*emptypb.Empty, error) {
-	if err := s.release.DeleteRelease(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetDryRun()); err != nil {
+	if err := s.release.DeleteRelease(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetDryRun()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -203,7 +203,7 @@ func (s *ApplicationService) DeleteRelease(ctx context.Context, req *pb.DeleteRe
 }
 
 func (s *ApplicationService) RollbackRelease(ctx context.Context, req *pb.RollbackReleaseRequest) (*emptypb.Empty, error) {
-	if err := s.release.RollbackRelease(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetName(), req.GetDryRun()); err != nil {
+	if err := s.release.RollbackRelease(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetDryRun()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -238,7 +238,7 @@ func (s *ApplicationService) UploadChart(_ context.Context, req *pb.UploadChartR
 }
 
 func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *pb.ListStorageClassesRequest) (*pb.ListStorageClassesResponse, error) {
-	storageClasses, err := s.kubernetes.ListStorageClasses(ctx, req.GetScope(), req.GetFacility())
+	storageClasses, err := s.kubernetes.ListStorageClasses(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
