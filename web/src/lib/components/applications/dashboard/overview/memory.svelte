@@ -49,7 +49,7 @@
 				2 * 60
 			)
 			.then((response) => {
-				memoryUsages = response.result[0].values;
+				memoryUsages = response.result[0]?.values ?? [];
 			});
 		prometheusDriver
 			.instantQuery(
@@ -60,7 +60,7 @@
 				`
 			)
 			.then((response) => {
-				allocatableNodesMemory = response.result[0].value.value;
+				allocatableNodesMemory = response.result[0]?.value?.value;
 			});
 		prometheusDriver
 			.instantQuery(
@@ -71,7 +71,7 @@
 				`
 			)
 			.then((response) => {
-				memoryRequests = response.result[0].value.value;
+				memoryRequests = response.result[0]?.value?.value;
 			});
 		prometheusDriver
 			.instantQuery(
@@ -82,7 +82,7 @@
 				`
 			)
 			.then((response) => {
-				memoryLimits = response.result[0].value.value;
+				memoryLimits = response.result[0]?.value?.value;
 			});
 	}
 

@@ -30,7 +30,7 @@
 				`
 			)
 			.then((response) => {
-				runningContainers = response.result[0].value.value;
+				runningContainers = response.result[0]?.value?.value;
 			});
 	}
 

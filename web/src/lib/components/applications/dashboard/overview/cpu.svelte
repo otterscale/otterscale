@@ -39,7 +39,7 @@
 				2 * 60
 			)
 			.then((response) => {
-				cpuUsages = response.result[0].values;
+				cpuUsages = response.result[0]?.values ?? [];
 			});
 		prometheusDriver
 			.instantQuery(
@@ -50,7 +50,7 @@
 				`
 			)
 			.then((response) => {
-				allocatableNodesCPU = response.result[0].value.value;
+				allocatableNodesCPU = response.result[0]?.value?.value;
 			});
 		prometheusDriver
 			.instantQuery(
@@ -61,7 +61,7 @@
 				`
 			)
 			.then((response) => {
-				cpuRequests = response.result[0].value.value;
+				cpuRequests = response.result[0]?.value?.value;
 			});
 		prometheusDriver
 			.instantQuery(
@@ -72,7 +72,7 @@
 				`
 			)
 			.then((response) => {
-				cpuLimits = response.result[0].value.value;
+				cpuLimits = response.result[0]?.value?.value;
 			});
 	}
 

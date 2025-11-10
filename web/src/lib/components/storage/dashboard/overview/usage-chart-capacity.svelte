@@ -93,49 +93,55 @@
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
 		</Card.Header>
 		<Card.Content class="flex-1">
-			<Chart.Container config={chartConfig} class="mx-auto aspect-square max-h-[200px]">
-				<ArcChart
-					data={response.usage}
-					outerRadius={88}
-					innerRadius={66}
-					trackOuterRadius={83}
-					trackInnerRadius={72}
-					padding={40}
-					range={[90, -270]}
-					maxValue={100}
-					series={[
-						{
-							key: 'data',
-							color: chartConfig.data.color
-						}
-					]}
-					props={{
-						arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
-						tooltip: { context: { hideDelay: 350 } }
-					}}
-					tooltip={false}
-				>
-					{#snippet belowMarks()}
-						<circle cx="0" cy="0" r="80" class="fill-background" />
-					{/snippet}
-					{#snippet aboveMarks()}
-						<Text
-							value={response.usedValue}
-							textAnchor="middle"
-							verticalAnchor="middle"
-							class="fill-foreground text-4xl! font-bold"
-							dy={3}
-						/>
-						<Text
-							value={response.usedUnit}
-							textAnchor="middle"
-							verticalAnchor="middle"
-							class="fill-muted-foreground!"
-							dy={22}
-						/>
-					{/snippet}
-				</ArcChart>
-			</Chart.Container>
+			{#if response.usedValue !== undefined && response.usedUnit !== undefined}
+				<Chart.Container config={chartConfig} class="mx-auto aspect-square max-h-[200px]">
+					<ArcChart
+						data={response.usage}
+						outerRadius={88}
+						innerRadius={66}
+						trackOuterRadius={83}
+						trackInnerRadius={72}
+						padding={40}
+						range={[90, -270]}
+						maxValue={100}
+						series={[
+							{
+								key: 'data',
+								color: chartConfig.data.color
+							}
+						]}
+						props={{
+							arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
+							tooltip: { context: { hideDelay: 350 } }
+						}}
+						tooltip={false}
+					>
+						{#snippet belowMarks()}
+							<circle cx="0" cy="0" r="80" class="fill-background" />
+						{/snippet}
+						{#snippet aboveMarks()}
+							<Text
+								value={response.usedValue}
+								textAnchor="middle"
+								verticalAnchor="middle"
+								class="fill-foreground text-4xl! font-bold"
+								dy={3}
+							/>
+							<Text
+								value={response.usedUnit}
+								textAnchor="middle"
+								verticalAnchor="middle"
+								class="fill-muted-foreground!"
+								dy={22}
+							/>
+						{/snippet}
+					</ArcChart>
+				</Chart.Container>
+			{:else}
+				<div class="flex h-full items-center justify-center text-muted-foreground">
+					<p>{m.no_data_available()}</p>
+				</div>
+			{/if}
 		</Card.Content>
 	</Card.Root>
 {/if}

@@ -178,7 +178,7 @@
 				</Chart.Container>
 			{:else}
 				<div class="flex h-full items-center justify-center text-muted-foreground">
-					<p>No OSD data available</p>
+					<p>{m.no_data_available()}</p>
 				</div>
 			{/if}
 		</Card.Content>
