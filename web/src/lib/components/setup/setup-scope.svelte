@@ -2,7 +2,6 @@
 	import Icon from '@iconify/svelte';
 
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { type Facility } from '$lib/api/facility/v1/facility_pb';
 	import ContainerImage from '$lib/assets/container.jpg';
