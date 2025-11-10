@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import type { User } from 'better-auth';
 	import type { ComponentProps } from 'svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -16,6 +15,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { m } from '$lib/paraglide/messages';
 	import type { Path } from '$lib/path';
+	import type { User } from '$lib/server';
 	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 
 	import NavBookmark from './nav-bookmark.svelte';

@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>{m.privacy_policy()} | OtterScale 🦦</title>
+	<title>{m.privacy_policy()} | OtterScale</title>
 </svelte:head>
 
 privacy-policy

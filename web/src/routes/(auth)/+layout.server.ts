@@ -1,20 +1,15 @@
 import { redirect } from '@sveltejs/kit';
-import type { User } from 'better-auth';
 
-import { auth } from '$lib/auth';
+import { resolve } from '$app/paths';
 
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ request, url }) => {
-	const session = await auth.api.getSession({
-		headers: request.headers
-	});
-
-	if (!session) {
-		redirect(302, `/?next=${url.pathname}`);
+export const load: LayoutServerLoad = async ({ locals }) => {
+	if (!locals.session || !locals.user) {
+		throw redirect(307, resolve('/'));
 	}
 
 	return {
-		user: session.user as User
+		user: locals.user
 	};
 };
