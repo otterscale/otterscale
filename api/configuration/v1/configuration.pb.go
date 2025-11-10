@@ -1207,7 +1207,6 @@ func (b0 ListBootImageSelectionsResponse_builder) Build() *ListBootImageSelectio
 type CephBlockDevice struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -1249,24 +1248,9 @@ func (x *CephBlockDevice) GetScope() string {
 	return ""
 }
 
-func (x *CephBlockDevice) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CephBlockDevice) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *CephBlockDevice) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *CephBlockDevice) HasScope() bool {
@@ -1276,28 +1260,15 @@ func (x *CephBlockDevice) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CephBlockDevice) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *CephBlockDevice) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CephBlockDevice) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 type CephBlockDevice_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
+	Scope *string
 }
 
 func (b0 CephBlockDevice_builder) Build() *CephBlockDevice {
@@ -1305,12 +1276,8 @@ func (b0 CephBlockDevice_builder) Build() *CephBlockDevice {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Facility = b.Facility
 	}
 	return m0
 }
@@ -1430,7 +1397,6 @@ type InternalObjectService struct {
 	state                  protoimpl.MessageState     `protogen:"opaque.v1"`
 	xxx_hidden_Type        InternalObjectService_Type `protobuf:"varint,1,opt,name=type,enum=otterscale.configuration.v1.InternalObjectService_Type"`
 	xxx_hidden_Scope       *string                    `protobuf:"bytes,2,opt,name=scope"`
-	xxx_hidden_Facility    *string                    `protobuf:"bytes,3,opt,name=facility"`
 	xxx_hidden_Name        *string                    `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_Endpoint    *string                    `protobuf:"bytes,5,opt,name=endpoint"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -1483,16 +1449,6 @@ func (x *InternalObjectService) GetScope() string {
 	return ""
 }
 
-func (x *InternalObjectService) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *InternalObjectService) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -1515,27 +1471,22 @@ func (x *InternalObjectService) GetEndpoint() string {
 
 func (x *InternalObjectService) SetType(v InternalObjectService_Type) {
 	x.xxx_hidden_Type = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *InternalObjectService) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
-}
-
-func (x *InternalObjectService) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *InternalObjectService) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *InternalObjectService) SetEndpoint(v string) {
 	x.xxx_hidden_Endpoint = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *InternalObjectService) HasType() bool {
@@ -1552,25 +1503,18 @@ func (x *InternalObjectService) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *InternalObjectService) HasFacility() bool {
+func (x *InternalObjectService) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *InternalObjectService) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *InternalObjectService) HasEndpoint() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *InternalObjectService) ClearType() {
@@ -1583,18 +1527,13 @@ func (x *InternalObjectService) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *InternalObjectService) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *InternalObjectService) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *InternalObjectService) ClearEndpoint() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Endpoint = nil
 }
 
@@ -1603,7 +1542,6 @@ type InternalObjectService_builder struct {
 
 	Type     *InternalObjectService_Type
 	Scope    *string
-	Facility *string
 	Name     *string
 	Endpoint *string
 }
@@ -1613,23 +1551,19 @@ func (b0 InternalObjectService_builder) Build() *InternalObjectService {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Type = *b.Type
 	}
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Endpoint != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Endpoint = b.Endpoint
 	}
 	return m0
@@ -5174,23 +5108,21 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\timporting\x18\x01 \x01(\bR\timporting\" \n" +
 	"\x1eListBootImageSelectionsRequest\"\x94\x01\n" +
 	"\x1fListBootImageSelectionsResponse\x12q\n" +
-	"\x15boot_image_selections\x18\x01 \x03(\v2=.otterscale.configuration.v1.Configuration.BootImageSelectionR\x13bootImageSelections\"C\n" +
+	"\x15boot_image_selections\x18\x01 \x03(\v2=.otterscale.configuration.v1.Configuration.BootImageSelectionR\x13bootImageSelections\"-\n" +
 	"\x0fCephBlockDevice\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"C\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"C\n" +
 	"\x11NetworkFileSystem\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x12\n" +
-	"\x04path\x18\x02 \x01(\tR\x04path\"\xf4\x01\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path\"\xde\x01\n" +
 	"\x15InternalObjectService\x12K\n" +
 	"\x04type\x18\x01 \x01(\x0e27.otterscale.configuration.v1.InternalObjectService.TypeR\x04type\x12\x14\n" +
-	"\x05scope\x18\x02 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x03 \x01(\tR\bfacility\x12\x12\n" +
+	"\x05scope\x18\x02 \x01(\tR\x05scope\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1a\n" +
 	"\bendpoint\x18\x05 \x01(\tR\bendpoint\",\n" +
 	"\x04Type\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04CEPH\x10\x01\x12\t\n" +
-	"\x05MINIO\x10\x02\"q\n" +
+	"\x05MINIO\x10\x02J\x04\b\x03\x10\x04\"q\n" +
 	"\x15ExternalObjectService\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x1d\n" +
 	"\n" +

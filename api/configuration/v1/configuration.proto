@@ -174,7 +174,7 @@ message ListBootImageSelectionsResponse {
 
 message CephBlockDevice {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message NetworkFileSystem {
@@ -190,7 +190,7 @@ message InternalObjectService {
   }
   Type type = 1;
   string scope = 2;
-  string facility = 3;
+  reserved 3;
   string name = 4;
   string endpoint = 5;
 }
