@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { mode } from 'mode-watcher';
-	import { type Writable, writable } from 'svelte/store';
 
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
@@ -15,10 +14,7 @@
 	import { plans } from './plans';
 	import SheetCreateScope from './sheet-create-scope.svelte';
 
-	let {
-		open = $bindable(false),
-		trigger = $bindable(writable(false))
-	}: { open: boolean; trigger: Writable<boolean> } = $props();
+	let { open = $bindable(false) }: { open: boolean } = $props();
 
 	let api = $state<CarouselAPI>();
 	let current = $state(0);

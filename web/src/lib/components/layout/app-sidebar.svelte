@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import type { ComponentProps } from 'svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { m } from '$lib/paraglide/messages';
 	import type { Path } from '$lib/path';
 	import type { User } from '$lib/server';
@@ -33,7 +33,6 @@
 	const envClient = createClient(EnvironmentService, transport);
 	const orchClient = createClient(OrchestratorService, transport);
 	const scopes = writable<Scope[]>([]);
-	const trigger = writable<boolean>(false);
 
 	const tierMap = {
 		[PremiumTier_Level.BASIC]: m.basic_tier(),
@@ -41,11 +40,11 @@
 		[PremiumTier_Level.ENTERPRISE]: m.enterprise_tier()
 	};
 
-	const skeletonClasses = {
-		avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
-		title: 'bg-sidebar-primary/50 h-3 w-[150px]',
-		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
-	};
+	async function onBookmarkDelete(path: Path) {
+		bookmarks.update((currentBookmarks) =>
+			currentBookmarks.filter((bookmark) => bookmark.url !== path.url)
+		);
+	}
 
 	async function fetchScopes() {
 		try {
@@ -84,41 +83,21 @@
 		const scope = $scopes[index];
 		if (!scope) return;
 
-		// Set store and fetch essentials
-		await fetchEssentials(scope.name);
-
-		// Show success feedback
-		toast.success(m.switch_scope({ name: scope.name }));
-
-		// Go home
-		goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
+		await goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
 	}
 
-	async function initialize() {
+	async function initialize(scope: string) {
 		try {
-			await Promise.all([fetchScopes(), fetchEdition()]);
-			const index = Math.max(
-				$scopes.findIndex((scope) => scope.name == active),
-				0
-			);
-			handleScopeOnSelect(index);
+			await Promise.all([fetchScopes(), fetchEdition(), fetchEssentials(scope)]);
+			toast.success(m.switch_scope({ name: scope }));
 		} catch (error) {
 			console.error('Failed to initialize:', error);
 		}
 	}
 
-	async function onBookmarkDelete(path: Path) {
-		bookmarks.update((currentBookmarks) =>
-			currentBookmarks.filter((bookmark) => bookmark.url !== path.url)
-		);
-	}
-
-	onMount(initialize);
-
 	$effect(() => {
-		if ($trigger) {
-			initialize();
-			trigger.set(false);
+		if (page.params.scope) {
+			initialize(page.params.scope);
 		}
 	});
 </script>
@@ -130,23 +109,7 @@
 			scopes={$scopes}
 			tier={tierMap[$premiumTier.level]}
 			onSelect={handleScopeOnSelect}
-			{trigger}
 		/>
-		<Sidebar.Menu>
-			<Sidebar.MenuItem>
-				<Sidebar.MenuButton size="lg">
-					{#snippet child({ props })}
-						<div {...props}>
-							<Skeleton class={skeletonClasses.avatar} />
-							<div class="grid flex-1 space-y-1 text-left text-sm leading-tight">
-								<Skeleton class={skeletonClasses.title} />
-								<Skeleton class={skeletonClasses.subtitle} />
-							</div>
-						</div>
-					{/snippet}
-				</Sidebar.MenuButton>
-			</Sidebar.MenuItem>
-		</Sidebar.Menu>
 	</Sidebar.Header>
 
 	<Sidebar.Content>
