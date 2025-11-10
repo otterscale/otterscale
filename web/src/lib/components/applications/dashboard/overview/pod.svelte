@@ -29,7 +29,7 @@
 						`
 			)
 			.then((response) => {
-				runningPods = response.result[0].value.value;
+				runningPods = response.result[0]?.value?.value;
 			});
 	}
 

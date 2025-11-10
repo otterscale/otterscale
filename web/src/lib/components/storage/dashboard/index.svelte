@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
@@ -39,6 +39,9 @@
 		} catch (error) {
 			console.error('Failed to initialize Prometheus driver:', error);
 		}
+	});
+	onDestroy(() => {
+		isReloading = false;
 	});
 </script>
 

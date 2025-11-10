@@ -41,7 +41,7 @@
 				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model_uuid="${scope.uuid}"})`
 			)
 			.then((response) => {
-				latestAvailableModels = response.result[0].value.value;
+				latestAvailableModels = response.result[0]?.value?.value;
 			});
 		prometheusDriver
 			.rangeQuery(
@@ -51,7 +51,7 @@
 				2 * 60
 			)
 			.then((response) => {
-				availableModels = response.result[0]?.values;
+				availableModels = response.result[0]?.values ?? [];
 			});
 	}
 

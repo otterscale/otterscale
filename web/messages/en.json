@@ -809,5 +809,6 @@
 	"create_instance_type": "Create Instance Type",
 	"log": "Log",
 	"vnc": "VNC",
-	"index": "Index"
+	"index": "Index",
+	"no_data_available": "No data available"
 }

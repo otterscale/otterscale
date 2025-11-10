@@ -43,7 +43,7 @@
 				2 * 60
 			)
 			.then((response) => {
-				ninety_fives = response.result[0]?.values;
+				ninety_fives = response.result[0]?.values ?? [];
 			});
 		prometheusDriver
 			.rangeQuery(
@@ -53,7 +53,7 @@
 				2 * 60
 			)
 			.then((response) => {
-				ninety_nines = response.result[0]?.values;
+				ninety_nines = response.result[0]?.values ?? [];
 			});
 	}
 
