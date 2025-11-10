@@ -15,8 +15,8 @@
 
 <div class="mx-auto grid w-full gap-6">
 	<div class="grid gap-1">
-		<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.settings()}</h1>
-		<p class="text-muted-foreground">{m.global_settings_description()}</p>
+		<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.configuration()}</h1>
+		<p class="text-muted-foreground">{m.configuration_description()}</p>
 	</div>
 
 	<Separator />

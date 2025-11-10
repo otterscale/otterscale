@@ -7,7 +7,7 @@
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
 		{
-			title: m.settings(),
+			title: m.configuration(),
 			url: resolve('/(auth)/configuration')
 		},
 		{

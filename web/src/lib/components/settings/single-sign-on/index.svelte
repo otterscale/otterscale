@@ -1,15 +1,10 @@
 <script lang="ts" module>
-	import { toast } from 'svelte-sonner';
-
-	import { authClient } from '$lib/auth-client';
 	import * as Layout from '$lib/components/settings/layout';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { m } from '$lib/paraglide/messages';
-
-	const ssoProviderId = 'otterscale-oidc';
 
 	const ssoFormFields = [
 		{
@@ -86,35 +81,7 @@
 	async function handleSSOSubmit(event: Event) {
 		event.preventDefault();
 
-		toast.promise(
-			authClient.sso.register({
-				providerId: ssoProviderId,
-				issuer: ssoFormData.issuer,
-				domain: ssoFormData.domain,
-				oidcConfig: {
-					clientId: ssoFormData.clientId,
-					clientSecret: ssoFormData.clientSecret,
-					authorizationEndpoint: ssoFormData.authorizationEndpoint,
-					tokenEndpoint: ssoFormData.tokenEndpoint,
-					jwksEndpoint: ssoFormData.jwksEndpoint,
-					discoveryEndpoint: ssoFormData.discoveryEndpoint,
-					scopes: ['openid', 'email', 'profile'],
-					pkce: true,
-					mapping: {
-						id: 'sub',
-						email: 'email',
-						emailVerified: 'email_verified',
-						name: 'name',
-						image: 'picture'
-					}
-				}
-			}),
-			{
-				loading: 'Loading...',
-				success: 'OIDC Provider has been updated!',
-				error: 'An error occurred'
-			}
-		);
+		// TODO: implement logic to save SSO settings
 	}
 </script>
 
