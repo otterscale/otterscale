@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { LanguageSwitcher, LightSwitch, LoginForm } from '$lib/components/login';
+	import { LanguageSwitcher, LightSwitch } from '$lib/components/login';
+	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages.js';
 	import { getLocale, type Locale, setLocale } from '$lib/paraglide/runtime.js';
-
-	const { data } = $props();
 
 	const languages = [
 		{ code: 'en', label: 'English' },
@@ -37,7 +36,7 @@
 <div class="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
 	<div class="w-full max-w-sm md:max-w-3xl">
 		<div class="flex flex-col gap-6">
-			<LoginForm {data} />
+			<Button href={resolve('/login/keycloak')}>Sign in with Keycloak (Temporary Login)</Button>
 
 			<!-- Terms and Privacy -->
 			<div
