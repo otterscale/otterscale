@@ -2,7 +2,7 @@ import { type RequestEvent } from '@sveltejs/kit';
 import { decodeIdToken, type OAuth2Tokens } from 'arctic';
 
 import { resolve } from '$app/paths';
-import { KEYCLOAK_CLIENT_ID, KEYCLOAK_REALM_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { keycloak } from '$lib/server/keycloak';
 import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib/server/session';
 import { createUser, getUser } from '$lib/server/user';
@@ -46,15 +46,21 @@ function validateRequest(event: RequestEvent): { code: string; codeVerifier: str
 }
 
 function validateClaims(claims: KeycloakIdTokenClaims): Response | null {
-	if (claims.iss !== KEYCLOAK_REALM_URL) {
+	if (!env.KEYCLOAK_REALM_URL || !env.KEYCLOAK_CLIENT_ID) {
+		return new Response('Server misconfiguration.', {
+			status: 500
+		});
+	}
+
+	if (claims.iss !== env.KEYCLOAK_REALM_URL) {
 		return new Response('Invalid issuer.', {
 			status: 400
 		});
 	}
 
 	const audienceValid =
-		claims.aud === KEYCLOAK_CLIENT_ID ||
-		(Array.isArray(claims.aud) && claims.aud.includes(KEYCLOAK_CLIENT_ID));
+		claims.aud === env.KEYCLOAK_CLIENT_ID ||
+		(Array.isArray(claims.aud) && claims.aud.includes(env.KEYCLOAK_CLIENT_ID));
 
 	if (!audienceValid) {
 		return new Response('Invalid audience.', {

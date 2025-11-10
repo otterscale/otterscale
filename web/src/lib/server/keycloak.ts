@@ -1,16 +1,12 @@
 import { KeyCloak } from 'arctic';
 
 import { resolve } from '$app/paths';
-import {
-	KEYCLOAK_CLIENT_ID,
-	KEYCLOAK_CLIENT_SECRET,
-	KEYCLOAK_REALM_URL
-} from '$env/static/private';
-import { PUBLIC_WEB_URL } from '$env/static/public';
+import { env } from '$env/dynamic/private';
+import { env as publicEnv } from '$env/dynamic/public';
 
 export const keycloak = new KeyCloak(
-	KEYCLOAK_REALM_URL,
-	KEYCLOAK_CLIENT_ID,
-	KEYCLOAK_CLIENT_SECRET,
-	`${PUBLIC_WEB_URL}${resolve('/login/keycloak/callback')}`
+	env.KEYCLOAK_REALM_URL ?? '',
+	env.KEYCLOAK_CLIENT_ID ?? '',
+	env.KEYCLOAK_CLIENT_SECRET ?? '',
+	`${publicEnv.PUBLIC_WEB_URL}${resolve('/login/keycloak/callback')}`
 );

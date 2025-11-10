@@ -1,22 +1,17 @@
 import { error, redirect } from '@sveltejs/kit';
 
 import { resolve } from '$app/paths';
-import {
-	BOOTSTRAP_MODE,
-	KEYCLOAK_CLIENT_ID,
-	KEYCLOAK_CLIENT_SECRET,
-	KEYCLOAK_REALM_URL
-} from '$env/static/private';
-import { PUBLIC_API_URL, PUBLIC_WEB_URL } from '$env/static/public';
+import { env } from '$env/dynamic/private';
+import { env as publicEnv } from '$env/dynamic/public';
 
 import type { PageServerLoad } from './$types';
 
 const REQUIRED_ENV_VARS = [
-	{ value: PUBLIC_WEB_URL, name: 'PUBLIC_WEB_URL' },
-	{ value: PUBLIC_API_URL, name: 'PUBLIC_API_URL' },
-	{ value: KEYCLOAK_REALM_URL, name: 'KEYCLOAK_REALM_URL' },
-	{ value: KEYCLOAK_CLIENT_ID, name: 'KEYCLOAK_CLIENT_ID' },
-	{ value: KEYCLOAK_CLIENT_SECRET, name: 'KEYCLOAK_CLIENT_SECRET' }
+	{ value: publicEnv.PUBLIC_WEB_URL, name: 'PUBLIC_WEB_URL' },
+	{ value: publicEnv.PUBLIC_API_URL, name: 'PUBLIC_API_URL' },
+	{ value: env.KEYCLOAK_REALM_URL, name: 'KEYCLOAK_REALM_URL' },
+	{ value: env.KEYCLOAK_CLIENT_ID, name: 'KEYCLOAK_CLIENT_ID' },
+	{ value: env.KEYCLOAK_CLIENT_SECRET, name: 'KEYCLOAK_CLIENT_SECRET' }
 ] as const;
 
 const isFlexibleBooleanTrue = (envVar: string | undefined): boolean => {
@@ -24,7 +19,7 @@ const isFlexibleBooleanTrue = (envVar: string | undefined): boolean => {
 };
 
 export const load: PageServerLoad = async ({ locals }) => {
-	if (isFlexibleBooleanTrue(BOOTSTRAP_MODE)) {
+	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE)) {
 		throw redirect(307, resolve('/setup'));
 	}
 
