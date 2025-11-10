@@ -5,7 +5,6 @@
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
@@ -17,7 +16,7 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	let memoryUsages: SampleValue[] = $state([]);
 	const memoryUsagesConfiguration = {
@@ -41,7 +40,7 @@
 			.rangeQuery(
 				`
 				sum(
-				container_memory_rss{container!="",job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor"}
+				container_memory_rss{container!="",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor"}
 				)
 						`,
 				Date.now() - 60 * 60 * 1000,
@@ -55,7 +54,7 @@
 			.instantQuery(
 				`
 				sum(
-					kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${scope.uuid}",resource="memory"}
+					kube_node_status_allocatable{job="kube-state-metrics",juju_model="${scope}",resource="memory"}
 				)
 				`
 			)
@@ -66,7 +65,7 @@
 			.instantQuery(
 				`
 				sum(
-					namespace_memory:kube_pod_container_resource_requests:sum{juju_model_uuid="${scope.uuid}"}
+					namespace_memory:kube_pod_container_resource_requests:sum{juju_model="${scope}"}
 				)
 				`
 			)
@@ -77,7 +76,7 @@
 			.instantQuery(
 				`
 				sum(
-					namespace_memory:kube_pod_container_resource_limits:sum{juju_model_uuid="${scope.uuid}"}
+					namespace_memory:kube_pod_container_resource_limits:sum{juju_model="${scope}"}
 				)
 				`
 			)

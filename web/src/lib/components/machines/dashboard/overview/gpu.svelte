@@ -8,9 +8,7 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { page } from '$app/state';
 	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -23,16 +21,14 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) =>
-			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
-		)
+		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(scope))
 	);
 	const totalGPUs = $derived(
 		scopeMachines.reduce((a, machine) => a + Number(machine.gpuDevices.length ?? 0), 0)
@@ -54,7 +50,7 @@
 		prometheusDriver
 			.rangeQuery(
 				`
-				count(sum by (node, deviceuuid) (vGPUPodsDeviceAllocated{juju_model_uuid="${scope.uuid}"}) > bool 0)
+				count(sum by (node, deviceuuid) (vGPUPodsDeviceAllocated{juju_model="${scope}"}) > bool 0)
 				`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),

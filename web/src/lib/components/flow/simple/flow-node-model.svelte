@@ -15,7 +15,7 @@
 		targetPosition,
 		sourcePosition,
 		...restProps
-	}: Omit<NodeProps, 'data'> & { data: GPURelation_Pod } = $props();
+	}: Omit<NodeProps, 'data'> & { data: GPURelation_Pod & { scope: string } } = $props();
 </script>
 
 <HoverCard.Root>

@@ -22,8 +22,10 @@
 	import { currentKubernetes } from '$lib/stores';
 
 	let {
+		scope,
 		machine
 	}: {
+		scope: string;
 		machine: Machine;
 	} = $props();
 
@@ -69,6 +71,7 @@
 							type: 'machine',
 							id: `machine${gpuRelation.entity.value.id}`,
 							data: {
+								scope,
 								machine: gpuRelation.entity.value,
 								gpus: gpus.filter(
 									(gpu) => gpu.machineId === (gpuRelation.entity.value as GPURelation_Machine).id
@@ -81,6 +84,7 @@
 							type: 'gpu',
 							id: `gpu${gpuRelation.entity.value.id}`,
 							data: {
+								scope,
 								gpu: gpuRelation.entity.value,
 								devices: pods.flatMap((pod) =>
 									pod.devices.filter((device) => {

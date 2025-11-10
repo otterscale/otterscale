@@ -8,9 +8,7 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { page } from '$app/state';
 	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -24,16 +22,14 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) =>
-			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
-		)
+		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(scope))
 	);
 	const totalMemoryBytes = $derived(
 		scopeMachines.reduce((sum, m) => sum + Number(m.memoryMb ?? 0), 0) * 1024 * 1024
@@ -55,7 +51,7 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`sum(node_memory_MemTotal_bytes{juju_model_uuid="${scope.uuid}"} - node_memory_MemFree_bytes{juju_model_uuid="${scope.uuid}"} - (node_memory_Cached_bytes{juju_model_uuid="${scope.uuid}"} + node_memory_Buffers_bytes{juju_model_uuid="${scope.uuid}"} + node_memory_SReclaimable_bytes{juju_model_uuid="${scope.uuid}"})) / sum(node_memory_MemTotal_bytes{juju_model_uuid="${scope.uuid}"})`,
+				`sum(node_memory_MemTotal_bytes{juju_model="${scope}"} - node_memory_MemFree_bytes{juju_model="${scope}"} - (node_memory_Cached_bytes{juju_model="${scope}"} + node_memory_Buffers_bytes{juju_model="${scope}"} + node_memory_SReclaimable_bytes{juju_model="${scope}"})) / sum(node_memory_MemTotal_bytes{juju_model="${scope}"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60

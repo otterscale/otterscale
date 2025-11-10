@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
-
 	import { default as AreaCapacity } from './area-chart-capacity.svelte';
 	import { default as AreaOSDReadLatency } from './area-chart-osd-read-latency.svelte';
 	import { default as AreaOSDWriteLatency } from './area-chart-osd-write-latency.svelte';
@@ -19,7 +17,7 @@
 		client,
 		scope,
 		isReloading = $bindable()
-	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { client: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 </script>
 
 <div class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10">

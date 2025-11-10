@@ -8,7 +8,7 @@
 	import { type Facility, FacilityService } from '$lib/api/facility/v1/facility_pb';
 	import { SetupScopeGrid } from '$lib/components/setup';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope, breadcrumbs } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 
 	// Configuration for Ceph services
 	const CEPH_SERVICES = {
@@ -75,23 +75,19 @@
 	}
 
 	$effect(() => {
-		const scope = $activeScope;
-
 		// Clear existing interval
 		if (refreshInterval) {
 			clearInterval(refreshInterval);
 			refreshInterval = null;
 		}
 
-		if (scope) {
-			fetchFacilities(scope.name);
+		fetchFacilities(page.params.scope!);
 
-			// Setup auto-refresh if enabled
-			if (autoRefresh) {
-				refreshInterval = setInterval(() => {
-					fetchFacilities(scope.name);
-				}, 3000);
-			}
+		// Setup auto-refresh if enabled
+		if (autoRefresh) {
+			refreshInterval = setInterval(() => {
+				fetchFacilities(page.params.scope!);
+			}, 3000);
 		}
 
 		// Cleanup on effect destruction
@@ -105,5 +101,10 @@
 </script>
 
 <div class="mx-auto max-w-7xl min-w-7xl">
-	<SetupScopeGrid {facilities} services={CEPH_SERVICES} bind:autoRefresh />
+	<SetupScopeGrid
+		scope={page.params.scope!}
+		{facilities}
+		services={CEPH_SERVICES}
+		bind:autoRefresh
+	/>
 </div>

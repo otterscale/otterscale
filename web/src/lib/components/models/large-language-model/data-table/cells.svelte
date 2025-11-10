@@ -32,6 +32,7 @@
 	</Layout.Cell>
 {/snippet}
 
+<!-- TODO: fix scope -->
 {#snippet model(row: Row<LargeLanguageModel>)}
 	<Layout.Cell class="items-start">
 		<a
@@ -92,10 +93,11 @@
 	</Layout.Cell>
 {/snippet}
 
+<!-- TODO: fix scope -->
 {#snippet relation(row: Row<LargeLanguageModel>)}
 	{#if row.original.application.healthies > 0}
 		<Layout.Cell class="items-end">
-			<Relation model={row.original} />
+			<Relation scope={page.params.scope!} model={row.original} />
 		</Layout.Cell>
 	{/if}
 {/snippet}

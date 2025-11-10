@@ -3,11 +3,11 @@
 	import { page } from '$app/state';
 	import { FileSystem } from '$lib/components/storage/file-system/index';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope, breadcrumbs } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 </script>
 
 <script lang="ts">
-	let selectedScope = $derived($activeScope ? $activeScope.name : '');
+	let selectedScope = $derived(page.params.scope!);
 	let selectedFacility = $state('ceph-mon');
 	let selectedVolume = $state('ceph-fs');
 	let selectedSubvolumeGroupName = $state('');
@@ -24,13 +24,11 @@
 	]);
 </script>
 
-{#if $activeScope}
-	{#key selectedScope + selectedFacility + selectedVolume + selectedSubvolumeGroupName}
-		<FileSystem
-			bind:selectedScope
-			bind:selectedFacility
-			bind:selectedVolume
-			bind:selectedSubvolumeGroupName
-		/>
-	{/key}
-{/if}
+{#key selectedScope + selectedFacility + selectedVolume + selectedSubvolumeGroupName}
+	<FileSystem
+		bind:selectedScope
+		bind:selectedFacility
+		bind:selectedVolume
+		bind:selectedSubvolumeGroupName
+	/>
+{/key}

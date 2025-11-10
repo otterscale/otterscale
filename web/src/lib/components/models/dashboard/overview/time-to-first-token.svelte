@@ -5,7 +5,6 @@
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart';
@@ -15,7 +14,7 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	let ninety_fives = $state([] as SampleValue[]);
 	let ninety_nines = $state([] as SampleValue[]);
@@ -37,7 +36,7 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`histogram_quantile(0.95, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model_uuid="${scope.uuid}"}[2m])))`,
+				`histogram_quantile(0.95, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model="${scope}"}[2m])))`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60
@@ -47,7 +46,7 @@
 			});
 		prometheusDriver
 			.rangeQuery(
-				`histogram_quantile(0.99, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model_uuid="${scope.uuid}"}[2m])))`,
+				`histogram_quantile(0.99, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model="${scope}"}[2m])))`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60

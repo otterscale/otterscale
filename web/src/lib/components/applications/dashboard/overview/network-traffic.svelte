@@ -6,7 +6,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
@@ -17,7 +16,7 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	let receives = $state([] as SampleValue[]);
 	let transmits = $state([] as SampleValue[]);
@@ -39,7 +38,7 @@
 				`
 						sum(
 						irate(
-							container_network_receive_bytes_total{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
+							container_network_receive_bytes_total{job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
 						)
 						)
 						`,
@@ -55,7 +54,7 @@
 				`
 						sum(
 						irate(
-							container_network_transmit_bytes_total{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
+							container_network_transmit_bytes_total{job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
 						)
 						)
 						`,

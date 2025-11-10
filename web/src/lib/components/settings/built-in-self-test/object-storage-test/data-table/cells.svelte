@@ -3,6 +3,7 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
+	import { page } from '$app/state';
 	import {
 		InternalObjectService_Type,
 		type TestResult,
@@ -230,8 +231,9 @@
 	</Layout.Cell>
 {/snippet}
 
+<!-- TODO: fix scope -->
 {#snippet actions(row: Row<TestResult>)}
 	<Layout.Cell class="items-start">
-		<Actions testResult={row.original} />
+		<Actions scope={page.params.scope!} testResult={row.original} />
 	</Layout.Cell>
 {/snippet}

@@ -35,6 +35,7 @@
 	</Layout.Cell>
 {/snippet}
 
+<!-- TODO: fix scope -->
 {#snippet name(row: Row<Application>)}
 	<Layout.Cell class="items-start">
 		<a

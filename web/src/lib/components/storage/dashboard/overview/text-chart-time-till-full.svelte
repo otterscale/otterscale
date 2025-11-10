@@ -2,7 +2,6 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
@@ -13,7 +12,7 @@
 		client,
 		scope,
 		isReloading = $bindable()
-	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { client: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = m.time_till_full();
@@ -26,7 +25,7 @@
 			job=~".+",
 			juju_application=~".*",
 			juju_model=~".*",
-			juju_model_uuid=~"${scope.uuid}",
+			juju_model="${scope}",
 			juju_unit=~".*"
 		} 
 		/ 
@@ -34,7 +33,7 @@
 			job=~".+",
 			juju_application=~".*",
 			juju_model=~".*",
-			juju_model_uuid=~"${scope.uuid}",
+			juju_model="${scope}",
 			juju_unit=~".*"
 		}[6h])
 	) 
@@ -43,7 +42,7 @@
 		job=~".+",
 		juju_application=~".*",
 		juju_model=~".*",
-		juju_model_uuid=~"${scope.uuid}",
+		juju_model="${scope}",
 		juju_unit=~".*",
 		name=~".mgr"
 	} > 0

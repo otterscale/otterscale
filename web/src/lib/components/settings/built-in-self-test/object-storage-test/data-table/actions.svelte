@@ -10,8 +10,10 @@
 
 <script lang="ts">
 	let {
+		scope,
 		testResult
 	}: {
+		scope: string;
 		testResult: TestResult;
 	} = $props();
 </script>
@@ -23,7 +25,7 @@
 		<View {testResult} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Retest {testResult} />
+		<Retest {scope} {testResult} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
 		<Delete {testResult} />

@@ -3,7 +3,6 @@
 	import { type Writable, writable } from 'svelte/store';
 
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { scopeIcon } from '$lib/components/scopes/icon';
@@ -22,7 +21,7 @@
 		onSelect,
 		trigger = $bindable(writable(false))
 	}: {
-		active: Scope;
+		active: string;
 		scopes: Scope[];
 		tier: string;
 		onSelect: (index: number, home?: boolean) => Promise<void>;
@@ -111,18 +110,18 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
 						<Button
-							href={resolve('/(auth)/scope/[scope]/setup', { scope: page.params.scope! })}
+							href={resolve('/(auth)/scope/[scope]/setup', { scope: active })}
 							class="group/icon flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground transition"
 						>
 							<Icon
-								icon="{scopeIcon(scopes.findIndex((s) => s.name === active.name))}-fill"
+								icon="{scopeIcon(scopes.findIndex((s) => s.name === active))}-fill"
 								class="size-4.5 group-hover/icon:hidden"
 							/>
 							<Icon icon="ph:wrench-fill" class="hidden size-4.5 group-hover/icon:block" />
 						</Button>
 						<div {...props} class="flex h-12 w-full items-center">
 							<div class="grid flex-1 text-left text-sm leading-tight">
-								<span class="truncate font-medium">{active.name}</span>
+								<span class="truncate font-medium">{active}</span>
 								<span class="truncate text-xs">{tier}</span>
 							</div>
 							<Icon icon="ph:caret-up-down-bold" class="ml-auto size-4 shrink-0" />
