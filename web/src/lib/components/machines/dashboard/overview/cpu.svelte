@@ -8,9 +8,7 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { page } from '$app/state';
 	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -23,16 +21,14 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) =>
-			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
-		)
+		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(scope))
 	);
 	const totalCPUCores = $derived(
 		scopeMachines.reduce((sum, m) => sum + Number(m.cpuCount ?? 0), 0)
@@ -52,7 +48,7 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`1 - (sum(irate(node_cpu_seconds_total{juju_model_uuid="${scope.uuid}",mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total{juju_model_uuid="${scope.uuid}"}[2m])))`,
+				`1 - (sum(irate(node_cpu_seconds_total{juju_model="${scope}",mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total{juju_model="${scope}"}[2m])))`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60

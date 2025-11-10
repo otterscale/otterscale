@@ -5,6 +5,8 @@
 	import { IOTest } from './io-test';
 	import { ObjectStorageTest } from './object-storage-test';
 
+	let { scope }: { scope: string } = $props();
+
 	let selectedTab = $state('io-test');
 </script>
 
@@ -19,6 +21,6 @@
 		<IOTest {selectedTab} {trigger} />
 	</Tabs.Content>
 	<Tabs.Content value="object-storage-test" class="max-w-[70vw]">
-		<ObjectStorageTest {selectedTab} {trigger} />
+		<ObjectStorageTest {scope} {selectedTab} {trigger} />
 	</Tabs.Content>
 </Tabs.Root>

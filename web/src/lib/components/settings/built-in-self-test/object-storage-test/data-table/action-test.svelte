@@ -53,8 +53,10 @@
 
 <script lang="ts">
 	let {
+		scope,
 		testResult
 	}: {
+		scope: string;
 		testResult?: TestResult;
 	} = $props();
 
@@ -227,6 +229,7 @@
 								<Form.Field>
 									<Form.Label>{m.internal_object_service()}</Form.Label>
 									<ObjectServicesPicker
+										{scope}
 										bind:selectedInternalObjectService={requestInternalObjectService}
 									/>
 								</Form.Field>

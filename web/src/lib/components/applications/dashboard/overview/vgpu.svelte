@@ -5,7 +5,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
@@ -15,7 +14,7 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	let memoryUsage: Record<string, number>[] = $state([]);
 
@@ -29,7 +28,7 @@
 		await prometheusDriver
 			.instantQuery(
 				`
-				topk(10, avg by (nodeid) (nodeGPUMemoryPercentage{juju_model_uuid="${scope.uuid}"}))
+				topk(10, avg by (nodeid) (nodeGPUMemoryPercentage{juju_model="${scope}"}))
 				`
 			)
 			.then((response) => {

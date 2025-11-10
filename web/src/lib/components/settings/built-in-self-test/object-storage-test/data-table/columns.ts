@@ -1,6 +1,7 @@
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { type ColumnDef } from '@tanstack/table-core';
 
+import { page } from '$app/state';
 import { type TestResult } from '$lib/api/configuration/v1/configuration_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';

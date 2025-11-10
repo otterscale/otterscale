@@ -19,7 +19,9 @@
 		sourcePosition,
 		...restProps
 	}: Omit<NodeProps, 'data'> & {
-		data: { gpu: GPURelation_GPU; devices: GPURelation_Pod_Device[] };
+		data: { gpu: GPURelation_GPU & { scope: string }; devices: GPURelation_Pod_Device[] } & {
+			scope: string;
+		};
 	} = $props();
 </script>
 

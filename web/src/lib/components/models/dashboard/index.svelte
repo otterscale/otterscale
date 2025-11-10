@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
@@ -9,7 +9,6 @@
 	import { Overview } from '$lib/components/models/dashboard/overview/index';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope } from '$lib/stores';
 
 	import ExtensionsAlert from './extensions-alert.svelte';
 
@@ -19,8 +18,8 @@
 	const environmentService = createClient(EnvironmentService, transport);
 
 	let isReloading = $state(true);
-
 	let prometheusDriver = $state<PrometheusDriver | null>(null);
+
 	onMount(async () => {
 		try {
 			environmentService
@@ -38,11 +37,15 @@
 			console.error('Failed to initialize Prometheus driver:', error);
 		}
 	});
+
+	onDestroy(() => {
+		isReloading = false;
+	});
 </script>
 
 <main class="space-y-4 py-4">
 	<ExtensionsAlert {scope} {facility} />
-	{#if prometheusDriver && $activeScope}
+	{#if prometheusDriver}
 		<div class="mx-auto grid w-full gap-6">
 			<div class="grid gap-1">
 				<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.dashboard()}</h1>
@@ -60,7 +63,7 @@
 					<Reloader bind:checked={isReloading} />
 				</div>
 				<Tabs.Content value="overview">
-					<Overview {prometheusDriver} scope={$activeScope} bind:isReloading />
+					<Overview {prometheusDriver} {scope} bind:isReloading />
 				</Tabs.Content>
 				<Tabs.Content value="analytics">
 					<!-- <Dashboard client={prometheusDriver} {machines} /> -->

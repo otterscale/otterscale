@@ -2,7 +2,6 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
@@ -13,7 +12,7 @@
 		client,
 		scope,
 		isReloading = $bindable()
-	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { client: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = m.quorum_status();
@@ -21,9 +20,9 @@
 
 	// Queries
 	const queries = $derived({
-		in: `sum(ceph_mon_quorum_status{juju_model_uuid=~"${scope.uuid}"})`,
+		in: `sum(ceph_mon_quorum_status{juju_model="${scope}"})`,
 		total: `
-		count(ceph_mon_quorum_status{juju_model_uuid=~"${scope.uuid}"})
+		count(ceph_mon_quorum_status{juju_model="${scope}"})
 		`
 	});
 

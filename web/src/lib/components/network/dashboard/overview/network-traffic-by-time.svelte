@@ -6,7 +6,6 @@
 	import { cubicInOut } from 'svelte/easing';
 	import { SvelteDate } from 'svelte/reactivity';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
@@ -19,7 +18,7 @@
 		isReloading = $bindable()
 	}: {
 		prometheusDriver: PrometheusDriver;
-		scope: Scope;
+		scope: string;
 		isReloading: boolean;
 	} = $props();
 
@@ -41,7 +40,7 @@
 	function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`sum(increase(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[1h]))`,
+				`sum(increase(node_network_receive_bytes_total{juju_model="${scope}"}[1h]))`,
 				new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
 				new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
 				1 * 60 * 60
@@ -51,7 +50,7 @@
 			});
 		prometheusDriver
 			.rangeQuery(
-				`sum(increase(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[1h]))`,
+				`sum(increase(node_network_transmit_bytes_total{juju_model="${scope}"}[1h]))`,
 				new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
 				new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
 				1 * 60 * 60

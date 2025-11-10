@@ -6,10 +6,12 @@
 
 <script lang="ts">
 	let {
+		scope,
 		testResult
 	}: {
+		scope: string;
 		testResult: TestResult;
 	} = $props();
 </script>
 
-<Test {testResult} />
+<Test {scope} {testResult} />

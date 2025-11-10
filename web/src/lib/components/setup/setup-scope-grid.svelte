@@ -26,6 +26,7 @@
 
 	let {
 		services,
+		scope,
 		facilities,
 		autoRefresh = $bindable(true)
 	}: {
@@ -38,6 +39,7 @@
 				gridClass: string;
 			}
 		>;
+		scope: string;
 		facilities: Writable<Facility[]>;
 		autoRefresh: boolean;
 	} = $props();
@@ -136,7 +138,7 @@
 										toast.promise(
 											() =>
 												facilityClient.resolveFacilityUnitErrors({
-													scope: page.params.scope,
+													scope: scope,
 													unitName: unit.name
 												}),
 											{
@@ -144,7 +146,7 @@
 												success: () => {
 													facilityClient
 														.listFacilities({
-															scope: page.params.scope
+															scope: scope
 														})
 														.then((response) => {
 															facilities.set(response.facilities);

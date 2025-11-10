@@ -6,7 +6,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
@@ -19,7 +18,7 @@
 		client,
 		scope,
 		isReloading = $bindable()
-	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { client: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	// Types
 	type TimeInterval = 'day' | 'week' | 'month';
@@ -45,9 +44,9 @@
 	};
 
 	// Query
-	const PROMETHEUS_QUERY = (uuid: string) =>
-		`quantile(0.95, (rate(ceph_osd_op_r_latency_sum{juju_model_uuid=~"${uuid}"}[5m]) / ` +
-		`on(ceph_daemon) rate(ceph_osd_op_r_latency_count{juju_model_uuid=~"${uuid}"}[5m]) * 1000))`;
+	const PROMETHEUS_QUERY = (scope: string) =>
+		`quantile(0.95, (rate(ceph_osd_op_r_latency_sum{juju_model="${scope}"}[5m]) / ` +
+		`on(ceph_daemon) rate(ceph_osd_op_r_latency_count{juju_model="${scope}"}[5m]) * 1000))`;
 
 	// State
 	let selectedInterval = $state<TimeInterval>('day');
@@ -138,7 +137,7 @@
 		end: Date
 	): Promise<{ date: Date; latency: number }> {
 		try {
-			const query = PROMETHEUS_QUERY(scope.uuid);
+			const query = PROMETHEUS_QUERY(scope);
 			const response = await client.rangeQuery(
 				query,
 				start.getTime(),

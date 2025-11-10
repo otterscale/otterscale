@@ -4,7 +4,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
@@ -18,7 +17,7 @@
 		client,
 		scope,
 		isReloading = $bindable()
-	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { client: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = 'OSD IOPS';
@@ -64,8 +63,8 @@
 
 	// Derived state
 	const queries = $derived({
-		Read: `sum(irate(ceph_osd_op_r{juju_model_uuid=~"${scope.uuid}"}[1h]))`,
-		Write: `sum(irate(ceph_osd_op_w{juju_model_uuid=~"${scope.uuid}"}[1h]))`
+		Read: `sum(irate(ceph_osd_op_r{juju_model="${scope}"}[1h]))`,
+		Write: `sum(irate(ceph_osd_op_w{juju_model="${scope}"}[1h]))`
 	});
 
 	const activeSeries = $derived([

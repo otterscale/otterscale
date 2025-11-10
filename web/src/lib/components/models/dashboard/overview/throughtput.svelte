@@ -5,7 +5,6 @@
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart';
@@ -15,7 +14,7 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	let prompts = $state([] as SampleValue[]);
 	let generations = $state([] as SampleValue[]);
@@ -35,7 +34,7 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`max(rate(vllm:prompt_tokens_total{juju_model_uuid="${scope.uuid}"}[2m]))`,
+				`max(rate(vllm:prompt_tokens_total{juju_model="${scope}"}[2m]))`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60
@@ -45,7 +44,7 @@
 			});
 		prometheusDriver
 			.rangeQuery(
-				`max(rate(vllm:generation_tokens_total{juju_model_uuid="${scope.uuid}"}[2m]))`,
+				`max(rate(vllm:generation_tokens_total{juju_model="${scope}"}[2m]))`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60

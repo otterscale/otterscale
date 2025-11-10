@@ -6,7 +6,6 @@
 	import { cubicInOut } from 'svelte/easing';
 	import { SvelteDate } from 'svelte/reactivity';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
@@ -19,7 +18,7 @@
 		isReloading = $bindable()
 	}: {
 		prometheusDriver: PrometheusDriver;
-		scope: Scope;
+		scope: string;
 		isReloading: boolean;
 	} = $props();
 
@@ -59,7 +58,7 @@
 	function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`,
+				`sum(irate(node_network_receive_bytes_total{juju_model="${scope}"}[4m]))`,
 				new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
 				new SvelteDate().setMinutes(0, 0, 0),
 				2 * 60
@@ -69,7 +68,7 @@
 			});
 		prometheusDriver
 			.rangeQuery(
-				`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`,
+				`sum(irate(node_network_transmit_bytes_total{juju_model="${scope}"}[4m]))`,
 				new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
 				new SvelteDate().setMinutes(0, 0, 0),
 				2 * 60
@@ -78,16 +77,12 @@
 				transmits = response.result[0].values;
 			});
 		prometheusDriver
-			.instantQuery(
-				`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`
-			)
+			.instantQuery(`sum(irate(node_network_receive_bytes_total{juju_model="${scope}"}[4m]))`)
 			.then((response) => {
 				latestReceive = response.result[0].value.value;
 			});
 		prometheusDriver
-			.instantQuery(
-				`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`
-			)
+			.instantQuery(`sum(irate(node_network_transmit_bytes_total{juju_model="${scope}"}[4m]))`)
 			.then((response) => {
 				latestTransmit = response.result[0].value.value;
 			});

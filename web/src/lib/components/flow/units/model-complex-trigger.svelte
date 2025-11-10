@@ -4,7 +4,6 @@
 
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import type { GPURelation_Pod } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { cn } from '$lib/utils';
 </script>
@@ -15,10 +14,10 @@
 		selected,
 		targetPosition,
 		sourcePosition
-	}: Omit<NodeProps, 'data'> & { data: GPURelation_Pod } = $props();
+	}: Omit<NodeProps, 'data'> & { data: GPURelation_Pod & { scope: string } } = $props();
 
 	const link = resolve('/(auth)/scope/[scope]/applications/workloads', {
-		scope: page.params.scope!
+		scope: data.scope
 	});
 </script>
 

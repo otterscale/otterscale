@@ -3,11 +3,11 @@
 	import { page } from '$app/state';
 	import { BlockDevice } from '$lib/components/storage/block-device';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope, breadcrumbs } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 </script>
 
 <script lang="ts">
-	let selectedScope = $derived($activeScope ? $activeScope.name : '');
+	let selectedScope = $derived(page.params.scope!);
 	let selectedFacility = $state('ceph-mon');
 
 	breadcrumbs.set([
@@ -22,8 +22,6 @@
 	]);
 </script>
 
-{#if $activeScope}
-	{#key selectedScope + selectedFacility}
-		<BlockDevice bind:selectedScope bind:selectedFacility />
-	{/key}
-{/if}
+{#key selectedScope + selectedFacility}
+	<BlockDevice bind:selectedScope bind:selectedFacility />
+{/key}
