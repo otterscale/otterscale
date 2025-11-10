@@ -43,6 +43,7 @@ var ProviderSet = wire.NewSet(
 	kube.NewHelmRelease,
 	kube.NewHelmChart,
 	kube.NewInstanceType,
+	kube.NewSMB,
 	kube.NewStorage,
 	kube.NewVirt,
 	kube.NewVirtClone,

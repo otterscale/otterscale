@@ -24,3 +24,9 @@ flags:
       "on": true
       "off": false
     defaultVariant: "on"
+  stg-smb:
+    state: ENABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "off"

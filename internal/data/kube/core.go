@@ -3,6 +3,7 @@ package kube
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"net/url"
 	"time"
@@ -322,6 +323,16 @@ func (r *core) GetPersistentVolumeClaim(ctx context.Context, config *rest.Config
 	return clientset.CoreV1().PersistentVolumeClaims(namespace).Get(ctx, name, opts)
 }
 
+func (r *core) UpdatePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace string, pvc *oscore.PersistentVolumeClaim) (*oscore.PersistentVolumeClaim, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.UpdateOptions{}
+	return clientset.CoreV1().PersistentVolumeClaims(namespace).Update(ctx, pvc, opts)
+}
+
 func (r *core) PatchPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, data []byte) (*oscore.PersistentVolumeClaim, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
@@ -401,6 +412,56 @@ func (r *core) GetSecret(ctx context.Context, config *rest.Config, namespace, na
 
 	opts := metav1.GetOptions{}
 	return clientset.CoreV1().Secrets(namespace).Get(ctx, name, opts)
+}
+
+func (r *core) CreateSecret(ctx context.Context, config *rest.Config, namespace, name string, secretType corev1.SecretType, data map[string]string) (*oscore.Secret, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	secret := &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		Type:       secretType,
+		StringData: data,
+	}
+
+	opts := metav1.CreateOptions{}
+	return clientset.CoreV1().Secrets(namespace).Create(ctx, secret, opts)
+}
+
+func (r *core) UpdateSecret(ctx context.Context, config *rest.Config, namespace, name string, data map[string]string) (*oscore.Secret, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get existing secret first
+	getOpts := metav1.GetOptions{}
+	secret, err := clientset.CoreV1().Secrets(namespace).Get(ctx, name, getOpts)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get secret: %w", err)
+	}
+
+	// Update data
+	secret.StringData = data
+
+	// Update the secret
+	updateOpts := metav1.UpdateOptions{}
+	return clientset.CoreV1().Secrets(namespace).Update(ctx, secret, updateOpts)
+}
+
+func (r *core) DeleteSecret(ctx context.Context, config *rest.Config, namespace, name string) error {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return err
+	}
+
+	opts := metav1.DeleteOptions{}
+	return clientset.CoreV1().Secrets(namespace).Delete(ctx, name, opts)
 }
 
 // https://github.com/kubernetes/kubectl/blob/45c6a75b21af19de57b586862dc509a5d7afc081/pkg/cmd/exec/exec.go#L145

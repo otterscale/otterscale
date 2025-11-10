@@ -116,6 +116,7 @@ type KubeCoreRepo interface {
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
 	ListPersistentVolumeClaimsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]PersistentVolumeClaim, error)
 	GetPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) (*PersistentVolumeClaim, error)
+	UpdatePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace string, pvc *PersistentVolumeClaim) (*PersistentVolumeClaim, error)
 	PatchPersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, data []byte) (*PersistentVolumeClaim, error)
 	DeletePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) error
 
@@ -127,6 +128,9 @@ type KubeCoreRepo interface {
 	CreateExecutor(config *rest.Config, namespace, podName, containerName string, command []string) (remotecommand.Executor, error)
 
 	GetSecret(ctx context.Context, config *rest.Config, namespace, name string) (*Secret, error)
+	CreateSecret(ctx context.Context, config *rest.Config, namespace, name string, secretType corev1.SecretType, data map[string]string) (*Secret, error)
+	UpdateSecret(ctx context.Context, config *rest.Config, namespace, name string, data map[string]string) (*Secret, error)
+	DeleteSecret(ctx context.Context, config *rest.Config, namespace, name string) error
 
 	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error)
 	ListServicesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]Service, error)

@@ -242,6 +242,24 @@ service StorageService {
       name: "stg-object"
     };
   };
+
+  rpc ListSMBShares(ListSMBSharesRequest) returns (ListSMBSharesResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-smb"
+    };
+  };
+
+  rpc CreateSMBShare(CreateSMBShareRequest) returns (SMBShare) {
+    option (otterscale.api.feature) = {
+      name: "stg-smb"
+    };
+  };
+
+  rpc UpdateSMBShare(UpdateSMBShareRequest) returns (SMBShare) {
+    option (otterscale.api.feature) = {
+      name: "stg-smb"
+    };
+  };
 }
 
 enum PoolType {
@@ -390,6 +408,89 @@ message User {
   string name = 2;
   bool suspended = 3;
   repeated Key keys = 21;
+}
+
+message SMBShare {
+  enum SecurityMode {
+    USER = 0;
+    ACTIVE_DIRECTORY = 1;
+  }
+  enum MapToGuest {
+    NEVER = 0;
+    BAD_USER = 1;
+    BAD_PASSWORD = 2;
+  }
+  message User {
+    string username = 1;
+    string password = 2;
+  }
+  message ActiveDirectory {
+    string realm = 1;
+    User join_source = 2;
+  }
+  message LocalUser {
+    repeated User users = 1;
+  }
+  string name = 1;
+  string namespace = 2;
+  string status = 3;
+  uint64 size_bytes = 4;
+  bool browsable = 11;
+  bool read_only = 12;
+  bool guest_ok = 13;
+  MapToGuest map_to_guest = 21;
+  SecurityMode security_mode = 31;
+  oneof auth {
+    ActiveDirectory active_directory = 51;
+    LocalUser local_user = 52;
+  }
+  repeated string valid_users = 41;
+}
+
+message ListSMBSharesRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+}
+
+message ListSMBSharesResponse {
+  repeated SMBShare smb_shares = 1;
+}
+
+message CreateSMBShareRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  bool browsable = 11;
+  bool read_only = 12;
+  bool guest_ok = 13;
+  SMBShare.MapToGuest map_to_guest = 14;
+  uint64 size_bytes = 21;
+  SMBShare.SecurityMode security_mode = 31;
+  oneof auth {
+    SMBShare.ActiveDirectory active_directory = 51;
+    SMBShare.LocalUser local_user = 52;
+  }
+  repeated string valid_users = 41;
+}
+
+message UpdateSMBShareRequest {
+  string scope = 1;
+  string facility = 2;
+  string namespace = 3;
+  string name = 4;
+  bool browsable = 11;
+  bool read_only = 12;
+  bool guest_ok = 13;
+  SMBShare.MapToGuest map_to_guest = 14;
+  uint64 size_bytes = 21;
+  SMBShare.SecurityMode security_mode = 31;
+  oneof auth {
+    SMBShare.ActiveDirectory active_directory = 51;
+    SMBShare.LocalUser local_user = 52;
+  }
+  repeated string valid_users = 41;
 }
 
 message ListMONsRequest {

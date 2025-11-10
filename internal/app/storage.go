@@ -435,6 +435,51 @@ func (s *StorageService) DeleteUserKey(ctx context.Context, req *pb.DeleteUserKe
 	return resp, nil
 }
 
+func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBShareRequest) (*pb.SMBShare, error) {
+	adAuth, localAuth := toCoreSMBShareAuth(req.GetActiveDirectory(), req.GetLocalUser())
+
+	securityMode := ""
+	switch req.GetSecurityMode() {
+	case pb.SMBShare_USER:
+		securityMode = "user"
+	case pb.SMBShare_ACTIVE_DIRECTORY:
+		securityMode = "active-directory"
+	}
+
+	namespace := normalizeNamespace(req.GetNamespace())
+
+	share, err := s.storage.CreateSMBShare(ctx, req.GetScope(), req.GetFacility(), namespace, req.GetName(), toCoreSMBShareConfig(req.GetBrowsable(), req.GetReadOnly(), req.GetGuestOk(), req.GetMapToGuest(), req.GetValidUsers()), req.GetSizeBytes(), securityMode, adAuth, localAuth)
+	if err != nil {
+		return nil, err
+	}
+
+	return toProtoSMBShare(share), nil
+}
+
+func (s *StorageService) ListSMBShares(ctx context.Context, req *pb.ListSMBSharesRequest) (*pb.ListSMBSharesResponse, error) {
+	shares, err := s.storage.ListSMBShares(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListSMBSharesResponse{}
+	resp.SetSmbShares(toProtoSMBShares(shares))
+	return resp, nil
+}
+
+func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBShareRequest) (*pb.SMBShare, error) {
+	adAuth, localAuth := toCoreSMBShareAuth(req.GetActiveDirectory(), req.GetLocalUser())
+
+	namespace := normalizeNamespace(req.GetNamespace())
+
+	share, err := s.storage.UpdateSMBShare(ctx, req.GetScope(), req.GetFacility(), namespace, req.GetName(), toCoreSMBShareConfig(req.GetBrowsable(), req.GetReadOnly(), req.GetGuestOk(), req.GetMapToGuest(), req.GetValidUsers()), req.GetSizeBytes(), localAuth, adAuth)
+	if err != nil {
+		return nil, err
+	}
+
+	return toProtoSMBShare(share), nil
+}
+
 func (s *StorageService) ACL(str string) core.RGWBucketCannedACL {
 	acl := core.RGWBucketCannedACL(strings.ToLower(strings.Join(strings.Split(str, "_"), "-")))
 	if slices.Contains(acl.Values(), acl) {
@@ -760,5 +805,131 @@ func toProtoUserKey(uk *core.RGWUserKey) *pb.User_Key {
 	ret := &pb.User_Key{}
 	ret.SetAccessKey(uk.AccessKey)
 	ret.SetSecretKey(uk.SecretKey)
+	return ret
+}
+
+func toCoreSMBShareConfig(browsable, readOnly, guestOk bool, mapToGuest pb.SMBShare_MapToGuest, validUsers []string) *core.SMBShareConfig {
+	mapToGuestStr := ""
+	switch mapToGuest {
+	case pb.SMBShare_NEVER:
+		mapToGuestStr = "never"
+	case pb.SMBShare_BAD_USER:
+		mapToGuestStr = "bad user"
+	case pb.SMBShare_BAD_PASSWORD:
+		mapToGuestStr = "bad password"
+	}
+
+	validUsersStr := ""
+	if len(validUsers) > 0 {
+		validUsersStr = strings.Join(validUsers, " ")
+	}
+
+	return &core.SMBShareConfig{
+		Browseable: browsable,
+		ReadOnly:   readOnly,
+		GuestOk:    guestOk,
+		ValidUsers: validUsersStr,
+		MapToGuest: mapToGuestStr,
+	}
+}
+
+func toCoreSMBShareAuth(activeDirectory *pb.SMBShare_ActiveDirectory, localUser *pb.SMBShare_LocalUser) (*core.ADAuth, *core.LocalAuth) {
+	var adAuth *core.ADAuth
+	var localAuth *core.LocalAuth
+
+	if activeDirectory != nil {
+		adAuth = &core.ADAuth{
+			Realm:        activeDirectory.GetRealm(),
+			JoinUsername: activeDirectory.GetJoinSource().GetUsername(),
+			JoinPassword: activeDirectory.GetJoinSource().GetPassword(),
+		}
+	}
+
+	if localUser != nil {
+		users := make([]core.SMBUser, 0, len(localUser.GetUsers()))
+		for _, u := range localUser.GetUsers() {
+			users = append(users, core.SMBUser{
+				Username: u.GetUsername(),
+				Password: u.GetPassword(),
+			})
+		}
+		localAuth = &core.LocalAuth{
+			Users: users,
+		}
+	}
+
+	return adAuth, localAuth
+}
+
+func normalizeNamespace(namespace string) string {
+	if namespace == "" {
+		return "default"
+	}
+	return namespace
+}
+
+func toProtoSMBShares(shares []core.SMBShare) []*pb.SMBShare {
+	ret := make([]*pb.SMBShare, 0, len(shares))
+	for i := range shares {
+		ret = append(ret, toProtoSMBShare(&shares[i]))
+	}
+	return ret
+}
+
+func toProtoSMBShare(share *core.SMBShare) *pb.SMBShare {
+	ret := &pb.SMBShare{}
+	ret.SetName(share.Name)
+	ret.SetNamespace(share.Namespace)
+	ret.SetStatus(share.Status)
+	ret.SetSizeBytes(share.SizeBytes)
+	ret.SetBrowsable(share.Browseable)
+	ret.SetReadOnly(share.ReadOnly)
+	ret.SetGuestOk(share.GuestOk)
+
+	switch share.MapToGuest {
+	case "never":
+		ret.SetMapToGuest(pb.SMBShare_NEVER)
+	case "bad user":
+		ret.SetMapToGuest(pb.SMBShare_BAD_USER)
+	case "bad password":
+		ret.SetMapToGuest(pb.SMBShare_BAD_PASSWORD)
+	}
+
+	// Convert string SecurityMode to enum
+	switch share.SecurityMode {
+	case "user":
+		ret.SetSecurityMode(pb.SMBShare_USER)
+	case "active-directory":
+		ret.SetSecurityMode(pb.SMBShare_ACTIVE_DIRECTORY)
+	}
+
+	// Set authentication information
+	if share.ADAuth != nil {
+		adAuth := &pb.SMBShare_ActiveDirectory{}
+		adAuth.SetRealm(share.ADAuth.Realm)
+		if share.ADAuth.JoinUsername != "" {
+			joinSource := &pb.SMBShare_User{}
+			joinSource.SetUsername(share.ADAuth.JoinUsername)
+			adAuth.SetJoinSource(joinSource)
+		}
+		ret.SetActiveDirectory(adAuth)
+	} else if share.LocalAuth != nil {
+		localAuth := &pb.SMBShare_LocalUser{}
+		users := make([]*pb.SMBShare_User, 0, len(share.LocalAuth.Users))
+		for _, u := range share.LocalAuth.Users {
+			user := &pb.SMBShare_User{}
+			user.SetUsername(u.Username)
+			user.SetPassword(u.Password)
+			users = append(users, user)
+		}
+		localAuth.SetUsers(users)
+		ret.SetLocalUser(localAuth)
+	}
+
+	// Set valid users
+	if len(share.ValidUsers) > 0 {
+		ret.SetValidUsers(share.ValidUsers)
+	}
+
 	return ret
 }
