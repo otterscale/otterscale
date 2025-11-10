@@ -44,12 +44,12 @@ const items = [
 		description: m.settings(),
 		url: resolve('/(auth)/configuration/built-in-test')
 	},
-	{
-		icon: 'ph:key',
-		title: m.single_sign_on(),
-		description: m.setting_single_sign_on_description(),
-		url: resolve('/(auth)/configuration/single-sign-on')
-	},
+	// {
+	// 	icon: 'ph:key',
+	// 	title: m.single_sign_on(),
+	// 	description: m.setting_single_sign_on_description(),
+	// 	url: resolve('/(auth)/configuration/single-sign-on')
+	// },
 	{
 		icon: 'ph:wallet',
 		title: m.subscription(),
