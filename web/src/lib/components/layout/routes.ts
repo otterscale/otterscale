@@ -24,7 +24,7 @@ const globalRoutes = (): Route[] => [
 	},
 	{
 		path: {
-			title: m.settings(),
+			title: m.configuration(),
 			url: resolve('/(auth)/configuration')
 		},
 		items: []

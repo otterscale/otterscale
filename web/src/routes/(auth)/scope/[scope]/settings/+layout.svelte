@@ -18,7 +18,7 @@
 	<div class="grid gap-1">
 		<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.settings()}</h1>
 		<p class="text-muted-foreground">
-			{m.scope_based_settings_description({ scope: $activeScope.name })}
+			{m.settings_description({ scope: $activeScope.name })}
 		</p>
 	</div>
 
