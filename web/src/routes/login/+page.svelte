@@ -20,7 +20,7 @@
 </script>
 
 <svelte:head>
-	<title>{m.welcome_to({ name: 'OtterScale 🦦' })}</title>
+	<title>{m.welcome_to({ name: 'OtterScale' })}</title>
 </svelte:head>
 
 <div class="absolute top-4 right-4 flex p-4 md:top-12 md:right-12">

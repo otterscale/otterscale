@@ -53,7 +53,7 @@
 </script>
 
 <svelte:head>
-	<title>{m.welcome_to({ name: 'OtterScale 🦦' })}</title>
+	<title>{m.welcome_to({ name: 'OtterScale' })}</title>
 </svelte:head>
 
 <main
