@@ -41,7 +41,7 @@ const items = [
 	{
 		icon: 'ph:test-tube',
 		title: m.built_in_test(),
-		description: m.settings(),
+		description: m.configuration(),
 		url: resolve('/(auth)/configuration/built-in-test')
 	},
 	// {
