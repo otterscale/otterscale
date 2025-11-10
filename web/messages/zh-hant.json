@@ -809,5 +809,6 @@
 	"create_instance_type": "建立實例類型",
 	"log": "日誌",
 	"vnc": "VNC",
-	"index": "索引"
+	"index": "索引",
+	"no_data_available": "無可用資料"
 }
