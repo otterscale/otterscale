@@ -1436,7 +1436,7 @@ deploy_istio() {
     fi
 
     log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
-    local istio_version="1.26.6"
+    local istio_version="1.27.3"
     local istio_url="https://istio.io/downloadIstio"
     local istio_namespace="istio-system"
     local has_istio=false
