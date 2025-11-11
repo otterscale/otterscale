@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { Reloader } from '$lib/components/custom/reloader';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope, currentKubernetes } from '$lib/stores';
+	import { currentKubernetes } from '$lib/stores';
 
 	import ExtensionsAlert from './extensions-alert.svelte';
 	import Container from './overview/container.svelte';
@@ -21,12 +21,14 @@
 	import VGPU from './overview/vgpu.svelte';
 	import Worker from './overview/worker.svelte';
 
+	let { scope }: { scope: string } = $props();
+
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);
 
 	let isReloading = $state(true);
-
 	let prometheusDriver = $state<PrometheusDriver | null>(null);
+
 	onMount(async () => {
 		try {
 			environmentService
@@ -44,13 +46,17 @@
 			console.error('Failed to initialize Prometheus driver:', error);
 		}
 	});
+
+	onDestroy(() => {
+		isReloading = false;
+	});
 </script>
 
 <main class="space-y-4 py-4">
 	{#if $currentKubernetes}
 		<ExtensionsAlert scope={$currentKubernetes.scope} facility={$currentKubernetes.name} />
 	{/if}
-	{#if prometheusDriver && $activeScope}
+	{#if prometheusDriver}
 		<div class="mx-auto grid w-full gap-6">
 			<div class="grid gap-1">
 				<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.dashboard()}</h1>
@@ -72,36 +78,36 @@
 					class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-12"
 				>
 					<div class="col-span-2">
-						<ControlPlane scope={$activeScope} bind:isReloading />
+						<ControlPlane {scope} bind:isReloading />
 					</div>
 					<div class="col-span-2">
-						<Worker scope={$activeScope} bind:isReloading />
+						<Worker {scope} bind:isReloading />
 					</div>
 					<div class="col-span-4 row-span-2">
-						<CPU {prometheusDriver} scope={$activeScope} bind:isReloading />
+						<CPU {prometheusDriver} {scope} bind:isReloading />
 					</div>
 					<div class="col-span-4 row-span-2">
-						<Memory {prometheusDriver} scope={$activeScope} bind:isReloading />
+						<Memory {prometheusDriver} {scope} bind:isReloading />
 					</div>
 					<div class="col-span-2 col-start-1">
-						<Pod {prometheusDriver} scope={$activeScope} bind:isReloading />
+						<Pod {prometheusDriver} {scope} bind:isReloading />
 					</div>
 					<div class="col-span-2">
-						<Container {prometheusDriver} scope={$activeScope} bind:isReloading />
+						<Container {prometheusDriver} {scope} bind:isReloading />
 					</div>
 					<div class="col-span-4">
-						<VGPU {prometheusDriver} scope={$activeScope} bind:isReloading />
+						<VGPU {prometheusDriver} {scope} bind:isReloading />
 					</div>
 					<div class="col-span-4 col-start-5">
-						<NetworkTraffic {prometheusDriver} scope={$activeScope} bind:isReloading />
+						<NetworkTraffic {prometheusDriver} {scope} bind:isReloading />
 					</div>
 					<div class="col-span-4">
-						<ThroughtPut {prometheusDriver} scope={$activeScope} bind:isReloading />
+						<ThroughtPut {prometheusDriver} {scope} bind:isReloading />
 					</div>
 				</Tabs.Content>
 				<Tabs.Content value="analytics">
-					<!-- {#if isMounted && prometheusDriver && $activeScope}
-				<Dashboard client={prometheusDriver} scope={$activeScope} />
+					<!-- {#if isMounted && prometheusDriver && scope}
+				<Dashboard client={prometheusDriver} scope={scope} />
 			{:else}
 				<Loading />
 			{/if} -->

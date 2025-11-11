@@ -12,9 +12,9 @@ function getAccordionValue(): ExtensionsBundleType[] | undefined {
 	return (page.url.searchParams.getAll(key) as ExtensionsBundleType[]) ?? undefined;
 }
 
-function installExtensions(extensions: ExtensionsBundleType[]) {
+function installExtensions(scope: string, extensions: ExtensionsBundleType[]) {
 	const basePath = resolve('/(auth)/scope/[scope]/settings/extensions', {
-		scope: page.params.scope!
+		scope: scope
 	});
 	const url = new SvelteURL(basePath, window.location.origin);
 	extensions.forEach((extension) => url.searchParams.append(key, extension));

@@ -11,15 +11,15 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { activeScope } from '$lib/stores';
 	import { currentCeph, currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">
 	let {
+		scope,
 		selectedInternalObjectService = $bindable()
-	}: { selectedInternalObjectService: InternalObjectService } = $props();
+	}: { scope: string; selectedInternalObjectService: InternalObjectService } = $props();
 
 	let selectedInit = $state({});
 
@@ -30,7 +30,7 @@
 	async function fetchOptions() {
 		try {
 			const response = await client.listInternalObjectServices({
-				scope: $activeScope?.name,
+				scope: scope,
 				cephName: $currentCeph?.name,
 				kubernetesName: $currentKubernetes?.name
 			});

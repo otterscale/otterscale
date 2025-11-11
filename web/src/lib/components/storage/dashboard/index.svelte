@@ -5,7 +5,6 @@
 
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import Reloader from '$lib/components/custom/reloader/reloader.svelte';
 	import { Overview } from '$lib/components/storage/dashboard/overview';
 	import * as Tabs from '$lib/components/ui/tabs';
@@ -14,13 +13,12 @@
 
 	import ExtensionsAlert from './extensions-alert.svelte';
 
-	let { scope }: { scope: Scope } = $props();
-
-	let isReloading = $state(true);
+	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);
 
+	let isReloading = $state(true);
 	let prometheusDriver = $state<PrometheusDriver | null>(null);
 
 	onMount(async () => {
@@ -40,6 +38,7 @@
 			console.error('Failed to initialize Prometheus driver:', error);
 		}
 	});
+
 	onDestroy(() => {
 		isReloading = false;
 	});

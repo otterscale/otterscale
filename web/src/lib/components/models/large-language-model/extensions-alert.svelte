@@ -31,7 +31,7 @@
 		title: m.extensions_alert_title(),
 		message: m.extensions_alert_description(),
 		action: () => {
-			installExtensions(['model']);
+			installExtensions(scope, ['model']);
 		},
 		variant: 'destructive'
 	});

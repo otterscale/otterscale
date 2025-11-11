@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
-
 	import Latency from './latency.svelte';
 	import Model from './model.svelte';
 	import Request from './request.svelte';
@@ -13,7 +11,7 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 </script>
 
 <div class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-8">

@@ -3,7 +3,6 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
@@ -12,7 +11,7 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 	let runningPods = $state(0);
 
 	async function fetch() {
@@ -20,11 +19,11 @@
 			.instantQuery(
 				`
 						sum(
-							kubelet_running_pods{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics"}
+							kubelet_running_pods{job="kubelet",juju_model="${scope}",metrics_path="/metrics"}
 						)
 						or
 						sum(
-							kubelet_running_pod_count{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics"}
+							kubelet_running_pod_count{job="kubelet",juju_model="${scope}",metrics_path="/metrics"}
 						)
 						`
 			)

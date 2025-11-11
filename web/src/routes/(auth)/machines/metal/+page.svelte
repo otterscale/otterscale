@@ -2,7 +2,7 @@
 	import { resolve } from '$app/paths';
 	import { Metals } from '$lib/components/machines/metals/index';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope, breadcrumbs } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
@@ -14,8 +14,4 @@
 	]);
 </script>
 
-{#if $activeScope}
-	{#key $activeScope.name}
-		<Metals />
-	{/key}
-{/if}
+<Metals />

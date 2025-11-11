@@ -6,7 +6,6 @@
 	import { navigationMenuTriggerStyle } from '$lib/components/ui/navigation-menu/navigation-menu-trigger.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	import { items } from './data';
@@ -18,7 +17,7 @@
 	<div class="grid gap-1">
 		<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.settings()}</h1>
 		<p class="text-muted-foreground">
-			{m.settings_description({ scope: $activeScope.name })}
+			{m.settings_description({ scope: page.params.scope! })}
 		</p>
 	</div>
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import { BuiltInSelfTest } from '$lib/components/settings/built-in-self-test/index';
 	import { m } from '$lib/paraglide/messages';
 	import { breadcrumbs } from '$lib/stores';
@@ -17,4 +18,4 @@
 	]);
 </script>
 
-<BuiltInSelfTest />
+<BuiltInSelfTest scope={page.params.scope!} />

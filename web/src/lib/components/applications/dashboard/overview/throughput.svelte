@@ -6,7 +6,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
@@ -17,7 +16,7 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	let reads = $state([] as SampleValue[]);
 	let writes = $state([] as SampleValue[]);
@@ -38,7 +37,7 @@
 				`
 						sum(
 						rate(
-							container_fs_reads_bytes_total{container!="",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)",job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
+							container_fs_reads_bytes_total{container!="",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
 						)
 						)
 						`,
@@ -54,7 +53,7 @@
 				`
 						sum(
 						rate(
-							container_fs_writes_bytes_total{container!="",job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
+							container_fs_writes_bytes_total{container!="",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
 						)
 						)
 						`,

@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import Dashboard from '$lib/components/storage/dashboard/index.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope, breadcrumbs } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
@@ -14,6 +14,4 @@
 	]);
 </script>
 
-{#if $activeScope}
-	<Dashboard scope={$activeScope} />
-{/if}
+<Dashboard scope={page.params.scope!} />

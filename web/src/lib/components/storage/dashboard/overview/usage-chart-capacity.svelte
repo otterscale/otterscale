@@ -3,7 +3,6 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
@@ -16,7 +15,7 @@
 		client,
 		scope,
 		isReloading = $bindable()
-	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { client: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = m.capacity();
@@ -25,8 +24,8 @@
 
 	// Queries
 	const queries = $derived({
-		used: `ceph_cluster_total_used_bytes{juju_model_uuid=~"${scope.uuid}"}`,
-		total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"}`
+		used: `ceph_cluster_total_used_bytes{juju_model="${scope}"}`,
+		total: `ceph_cluster_total_bytes{juju_model="${scope}"}`
 	});
 
 	// Auto Update

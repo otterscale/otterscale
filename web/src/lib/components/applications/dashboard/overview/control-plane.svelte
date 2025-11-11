@@ -6,12 +6,11 @@
 
 	import type { Facility } from '$lib/api/facility/v1/facility_pb';
 	import { FacilityService } from '$lib/api/facility/v1/facility_pb';
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
 
-	let { scope, isReloading = $bindable() }: { scope: Scope; isReloading: boolean } = $props();
+	let { scope, isReloading = $bindable() }: { scope: string; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const facilityClient = createClient(FacilityService, transport);
@@ -28,7 +27,7 @@
 	);
 
 	async function fetch() {
-		facilityClient.listFacilities({ scope: scope.name }).then((response) => {
+		facilityClient.listFacilities({ scope: scope }).then((response) => {
 			facilities.set(response.facilities);
 		});
 	}

@@ -4,7 +4,6 @@
 
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import type { GPURelation_GPU } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { cn } from '$lib/utils';
 </script>
@@ -15,9 +14,9 @@
 		selected,
 		targetPosition,
 		sourcePosition
-	}: Omit<NodeProps, 'data'> & { data: GPURelation_GPU } = $props();
+	}: Omit<NodeProps, 'data'> & { data: GPURelation_GPU & { scope: string } } = $props();
 
-	const link = resolve('/(auth)/scope/[scope]/setup/kubernetes', { scope: page.params.scope! });
+	const link = resolve('/(auth)/scope/[scope]/setup/kubernetes', { scope: data.scope });
 </script>
 
 <div

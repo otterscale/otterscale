@@ -11,7 +11,6 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	import type { ExtensionsBundleType } from './types';
@@ -88,7 +87,7 @@
 			<div>
 				<div class="flex items-center gap-1">
 					<h3 class="text-lg font-bold">{extensionsBundleConfigurations[extensionsBundle].name}</h3>
-					<Badge>{$activeScope.name}</Badge>
+					<Badge>{scope}</Badge>
 				</div>
 
 				<p class="mt-1 text-sm text-muted-foreground">

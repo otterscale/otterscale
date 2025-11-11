@@ -2,7 +2,6 @@
 	import Icon from '@iconify/svelte';
 
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import { type Facility } from '$lib/api/facility/v1/facility_pb';
 	import ContainerImage from '$lib/assets/container.jpg';
@@ -15,9 +14,11 @@
 
 	// Props
 	let {
+		scope,
 		facilities,
 		autoRefresh = $bindable(true)
 	}: {
+		scope: string;
 		facilities: Facility[];
 		autoRefresh: boolean;
 	} = $props();
@@ -219,7 +220,7 @@
 {#snippet kubernetesCards()}
 	<!-- Kubernetes Main Card -->
 	<a
-		href={resolve('/(auth)/scope/[scope]/setup/kubernetes', { scope: page.params.scope! })}
+		href={resolve('/(auth)/scope/[scope]/setup/kubernetes', { scope: scope })}
 		class="group relative col-span-2 row-span-2 overflow-clip rounded-lg shadow-sm sm:max-lg:col-span-1"
 	>
 		<img
@@ -293,7 +294,7 @@
 
 	<!-- Ceph Main Card -->
 	<a
-		href={resolve('/(auth)/scope/[scope]/setup/ceph', { scope: page.params.scope! })}
+		href={resolve('/(auth)/scope/[scope]/setup/ceph', { scope: scope })}
 		class="group relative col-span-2 row-span-2 overflow-clip rounded-lg shadow-sm sm:max-lg:col-span-1"
 	>
 		<img src={DiskImage} alt="disk" class="absolute h-full w-full object-cover object-center" />

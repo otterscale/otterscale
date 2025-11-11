@@ -9,7 +9,7 @@
 	import { onDestroy, onMount } from 'svelte';
 
 	// import { MachineService } from '$lib/api/machine/v1/machine_pb';
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -23,7 +23,7 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	let latestMemoryUsage = $state(0);
 	let memoryUsages = $state([] as SampleValue[]);
@@ -43,7 +43,7 @@
 		prometheusDriver
 			.instantQuery(
 				`
-				sum(DCGM_FI_DEV_FB_USED{juju_model_uuid="${scope.uuid}"}) + sum(DCGM_FI_DEV_FB_FREE{juju_model_uuid="${scope.uuid}"})
+				sum(DCGM_FI_DEV_FB_USED{juju_model="${scope}"}) + sum(DCGM_FI_DEV_FB_FREE{juju_model="${scope}"})
 				`
 			)
 			.then((response) => {
@@ -53,7 +53,7 @@
 		prometheusDriver
 			.rangeQuery(
 				`
-				avg(DCGM_FI_DEV_FB_USED{juju_model_uuid="${scope.uuid}"} / (DCGM_FI_DEV_FB_USED{juju_model_uuid="${scope.uuid}"} + DCGM_FI_DEV_FB_FREE{juju_model_uuid="${scope.uuid}"}))
+				avg(DCGM_FI_DEV_FB_USED{juju_model="${scope}"} / (DCGM_FI_DEV_FB_USED{juju_model="${scope}"} + DCGM_FI_DEV_FB_FREE{juju_model="${scope}"}))
 				`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),

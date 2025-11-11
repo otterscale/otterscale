@@ -8,9 +8,7 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { page } from '$app/state';
 	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -26,16 +24,14 @@
 		months.push(d.toISOString().slice(0, 7));
 	}
 
-	let { scope, isReloading = $bindable() }: { scope: Scope; isReloading: boolean } = $props();
+	let { scope, isReloading = $bindable() }: { scope: string; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) =>
-			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
-		)
+		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(scope))
 	);
 	const totalNodes = $derived(scopeMachines.length);
 	const monthlyCounts = $derived(
@@ -64,7 +60,7 @@
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
-		machineClient.listMachines({ scope: scope.name }).then((response) => {
+		machineClient.listMachines({ scope: scope }).then((response) => {
 			machines.set(response.machines);
 		});
 	}

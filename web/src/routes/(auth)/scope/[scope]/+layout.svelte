@@ -2,6 +2,7 @@
 	import BookmarkIcon from '@lucide/svelte/icons/bookmark';
 	import type { Snippet } from 'svelte';
 
+	import { page } from '$app/state';
 	import { AppSidebar } from '$lib/components/layout';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
@@ -47,7 +48,7 @@
 </svelte:head>
 
 <Sidebar.Provider>
-	<AppSidebar user={data.user} />
+	<AppSidebar active={page.params.scope!} user={data.user} />
 	<Sidebar.Inset>
 		<header
 			class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"

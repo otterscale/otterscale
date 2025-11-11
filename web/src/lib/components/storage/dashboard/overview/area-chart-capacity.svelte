@@ -6,7 +6,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
@@ -20,7 +19,7 @@
 		client,
 		scope,
 		isReloading = $bindable()
-	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { client: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	// Types
 	type TimeInterval = 'day' | 'week' | 'month';
@@ -133,8 +132,8 @@
 		const endTimestamp = Math.floor(intervalEnd.getTime() / 1000);
 
 		const queries = {
-			used: `ceph_cluster_total_used_bytes{juju_model_uuid=~"${scope.uuid}"} @ ${endTimestamp}`,
-			total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"} @ ${endTimestamp}`
+			used: `ceph_cluster_total_used_bytes{juju_model="${scope}"} @ ${endTimestamp}`,
+			total: `ceph_cluster_total_bytes{juju_model="${scope}"} @ ${endTimestamp}`
 		};
 
 		try {

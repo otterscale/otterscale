@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { Reloader } from '$lib/components/custom/reloader';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope, currentKubernetes } from '$lib/stores';
+	import { currentKubernetes } from '$lib/stores';
 
 	import ExtensionsAlert from './extensions-alert.svelte';
 	import AvailableIPs from './overview/available-ips.svelte';
@@ -18,12 +18,14 @@
 	import NetworkTraffic from './overview/network-traffic.svelte';
 	import NetworkTrafficByTime from './overview/network-traffic-by-time.svelte';
 
+	let { scope }: { scope: string } = $props();
+
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);
 
 	let isReloading = $state(true);
-
 	let prometheusDriver = $state<PrometheusDriver | null>(null);
+
 	onMount(async () => {
 		try {
 			environmentService
@@ -41,13 +43,17 @@
 			console.error('Failed to initialize Prometheus driver:', error);
 		}
 	});
+
+	onDestroy(() => {
+		isReloading = false;
+	});
 </script>
 
 <main class="space-y-4 py-4">
 	{#if $currentKubernetes}
 		<ExtensionsAlert scope={$currentKubernetes.scope} facility={$currentKubernetes.name} />
 	{/if}
-	{#if prometheusDriver && $activeScope}
+	{#if prometheusDriver}
 		<div class="mx-auto grid w-full gap-6">
 			<div class="grid gap-1">
 				<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.networking()}</h1>
@@ -75,13 +81,13 @@
 							<AvailableIPs bind:isReloading />
 						</div>
 						<div class="col-span-4 row-span-2">
-							<NetworkTrafficByTime {prometheusDriver} scope={$activeScope} bind:isReloading />
+							<NetworkTrafficByTime {prometheusDriver} {scope} bind:isReloading />
 						</div>
 						<div class="col-span-2">
 							<DNSServer bind:isReloading />
 						</div>
 						<div class="col-span-4 row-span-2">
-							<NetworkTraffic {prometheusDriver} scope={$activeScope} bind:isReloading />
+							<NetworkTraffic {prometheusDriver} {scope} bind:isReloading />
 						</div>
 					</div>
 				</Tabs.Content>

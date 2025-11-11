@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import { Metal } from '$lib/components/machines/metal/index';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope, breadcrumbs } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 
 	breadcrumbs.set([
 		{ title: m.machines(), url: resolve('/(auth)/machines') },
@@ -17,6 +17,4 @@
 	]);
 </script>
 
-{#if $activeScope}
-	<Metal />
-{/if}
+<Metal />

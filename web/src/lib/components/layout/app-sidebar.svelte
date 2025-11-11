@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import type { ComponentProps } from 'svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	import { derived, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
@@ -12,11 +12,10 @@
 	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { m } from '$lib/paraglide/messages';
 	import type { Path } from '$lib/path';
 	import type { User } from '$lib/server';
-	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
+	import { bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 
 	import NavBookmark from './nav-bookmark.svelte';
 	import NavFooter from './nav-footer.svelte';
@@ -27,16 +26,15 @@
 
 	const EXCLUDED_SCOPES = ['cos', 'cos-dev', 'cos-lite'];
 
-	type Props = { user: User } & ComponentProps<typeof Sidebar.Root>;
+	type Props = { active: string; user: User } & ComponentProps<typeof Sidebar.Root>;
 
-	let { user, ref = $bindable(null), ...restProps }: Props = $props();
+	let { active, user, ref = $bindable(null), ...restProps }: Props = $props();
 
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
 	const envClient = createClient(EnvironmentService, transport);
 	const orchClient = createClient(OrchestratorService, transport);
 	const scopes = writable<Scope[]>([]);
-	const trigger = writable<boolean>(false);
 	const filteredScopes = derived(scopes, ($scopes) =>
 		$scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name))
 	);
@@ -47,11 +45,11 @@
 		[PremiumTier_Level.ENTERPRISE]: m.enterprise_tier()
 	};
 
-	const skeletonClasses = {
-		avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
-		title: 'bg-sidebar-primary/50 h-3 w-[150px]',
-		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
-	};
+	async function onBookmarkDelete(path: Path) {
+		bookmarks.update((currentBookmarks) =>
+			currentBookmarks.filter((bookmark) => bookmark.url !== path.url)
+		);
+	}
 
 	async function fetchScopes() {
 		try {
@@ -90,77 +88,37 @@
 		const scope = $scopes[index];
 		if (!scope) return;
 
-		// Set store and fetch essentials
-		activeScope.set(scope);
-		await fetchEssentials(scope.name);
-
-		// Show success feedback
-		toast.success(m.switch_scope({ name: scope.name }));
-
-		// Go home
-		goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
+		await goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
 	}
 
-	async function initialize() {
+	async function initialize(scope: string) {
 		try {
-			await Promise.all([fetchScopes(), fetchEdition()]);
-			const index = Math.max(
-				$scopes.findIndex((scope) => scope.name == page.params.scope),
-				0
-			);
-			handleScopeOnSelect(index);
+			await Promise.all([fetchScopes(), fetchEdition(), fetchEssentials(scope)]);
+			toast.success(m.switch_scope({ name: scope }));
 		} catch (error) {
 			console.error('Failed to initialize:', error);
 		}
 	}
 
-	async function onBookmarkDelete(path: Path) {
-		bookmarks.update((currentBookmarks) =>
-			currentBookmarks.filter((bookmark) => bookmark.url !== path.url)
-		);
-	}
-
-	onMount(initialize);
-
 	$effect(() => {
-		if ($trigger) {
-			initialize();
-			trigger.set(false);
+		if (page.params.scope) {
+			initialize(page.params.scope);
 		}
 	});
 </script>
 
 <Sidebar.Root bind:ref variant="inset" collapsible="icon" class="p-3" {...restProps}>
 	<Sidebar.Header>
-		{#if $activeScope}
-			<ScopeSwitcher
-				active={$activeScope}
-				scopes={$filteredScopes}
-				tier={tierMap[$premiumTier.level]}
-				onSelect={handleScopeOnSelect}
-				{trigger}
-			/>
-		{:else}
-			<Sidebar.Menu>
-				<Sidebar.MenuItem>
-					<Sidebar.MenuButton size="lg">
-						{#snippet child({ props })}
-							<div {...props}>
-								<Skeleton class={skeletonClasses.avatar} />
-								<div class="grid flex-1 space-y-1 text-left text-sm leading-tight">
-									<Skeleton class={skeletonClasses.title} />
-									<Skeleton class={skeletonClasses.subtitle} />
-								</div>
-							</div>
-						{/snippet}
-					</Sidebar.MenuButton>
-				</Sidebar.MenuItem>
-			</Sidebar.Menu>
-		{/if}
+		<ScopeSwitcher
+			{active}
+			scopes={$filteredScopes}
+			tier={tierMap[$premiumTier.level]}
+			onSelect={handleScopeOnSelect}
+		/>
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavGeneral title={m.platform()} routes={platformRoutes(page.params.scope!)} />
+		<NavGeneral title={m.platform()} routes={platformRoutes(active)} />
 		<NavGeneral title={m.global()} routes={globalRoutes()} />
 		<NavBookmark bookmarks={$bookmarks} onDelete={onBookmarkDelete} />
 		<NavFooter class="mt-auto" />

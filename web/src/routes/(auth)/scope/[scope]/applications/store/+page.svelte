@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import { Store } from '$lib/components/applications/store';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope, breadcrumbs, currentKubernetes } from '$lib/stores';
+	import { breadcrumbs, currentKubernetes } from '$lib/stores';
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
@@ -18,7 +18,7 @@
 	]);
 </script>
 
-{#if $activeScope && $currentKubernetes}
+{#if $currentKubernetes}
 	{@const scope = $currentKubernetes.scope}
 	{@const facility = $currentKubernetes.name}
 	<Store {scope} {facility} />

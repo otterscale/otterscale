@@ -6,7 +6,6 @@
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -19,7 +18,7 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	let latestAvailableModels = $state(0);
 	let availableModels = $state([] as SampleValue[]);
@@ -37,15 +36,13 @@
 
 	async function fetch() {
 		prometheusDriver
-			.instantQuery(
-				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model_uuid="${scope.uuid}"})`
-			)
+			.instantQuery(`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model="${scope}"})`)
 			.then((response) => {
 				latestAvailableModels = response.result[0]?.value?.value;
 			});
 		prometheusDriver
 			.rangeQuery(
-				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model_uuid="${scope.uuid}"})`,
+				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model="${scope}"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60
