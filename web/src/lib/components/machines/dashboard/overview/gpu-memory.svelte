@@ -9,7 +9,6 @@
 	import { onDestroy, onMount } from 'svelte';
 
 	// import { MachineService } from '$lib/api/machine/v1/machine_pb';
-
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';

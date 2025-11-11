@@ -2,7 +2,7 @@
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import type { ComponentProps } from 'svelte';
 	import { getContext } from 'svelte';
-	import { writable } from 'svelte/store';
+	import { derived, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import { goto } from '$app/navigation';
@@ -24,6 +24,8 @@
 	import { globalRoutes, platformRoutes } from './routes';
 	import ScopeSwitcher from './scope-switcher.svelte';
 
+	const EXCLUDED_SCOPES = ['cos', 'cos-dev', 'cos-lite'];
+
 	type Props = { active: string; user: User } & ComponentProps<typeof Sidebar.Root>;
 
 	let { active, user, ref = $bindable(null), ...restProps }: Props = $props();
@@ -33,6 +35,9 @@
 	const envClient = createClient(EnvironmentService, transport);
 	const orchClient = createClient(OrchestratorService, transport);
 	const scopes = writable<Scope[]>([]);
+	const filteredScopes = derived(scopes, ($scopes) =>
+		$scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name))
+	);
 
 	const tierMap = {
 		[PremiumTier_Level.BASIC]: m.basic_tier(),
@@ -106,7 +111,7 @@
 	<Sidebar.Header>
 		<ScopeSwitcher
 			{active}
-			scopes={$scopes}
+			scopes={$filteredScopes}
 			tier={tierMap[$premiumTier.level]}
 			onSelect={handleScopeOnSelect}
 		/>
