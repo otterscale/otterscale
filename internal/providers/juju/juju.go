@@ -15,7 +15,6 @@ import (
 	"github.com/juju/names/v5"
 
 	"github.com/otterscale/otterscale/internal/config"
-	entity "github.com/otterscale/otterscale/internal/core/_entity"
 )
 
 type Juju struct {
@@ -96,7 +95,7 @@ func (m *Juju) Connection(scope string) (api.Connection, error) {
 	return conn, nil
 }
 
-func (m *Juju) waitForCompleted(ctx context.Context, scope, id string, tickInterval, timeoutDuration time.Duration) (*entity.ActionResult, error) {
+func (m *Juju) waitForCompleted(ctx context.Context, scope, id string, tickInterval, timeoutDuration time.Duration) (*action.ActionResult, error) {
 	ticker := time.NewTicker(tickInterval)
 	defer ticker.Stop()
 
@@ -133,7 +132,7 @@ func (m *Juju) waitForCompleted(ctx context.Context, scope, id string, tickInter
 	}
 }
 
-func (m *Juju) RunAction(ctx context.Context, scope, appName, actionName string, params map[string]any) (*entity.ActionResult, error) {
+func (m *Juju) RunAction(ctx context.Context, scope, appName, actionName string, params map[string]any) (*action.ActionResult, error) {
 	conn, err := m.Connection(scope)
 	if err != nil {
 		return nil, err
@@ -165,7 +164,7 @@ func (m *Juju) RunAction(ctx context.Context, scope, appName, actionName string,
 	return m.waitForCompleted(ctx, scope, id, time.Second, time.Minute)
 }
 
-func (m *Juju) RunCommand(ctx context.Context, scope, appName, command string) (*entity.ActionResult, error) {
+func (m *Juju) RunCommand(ctx context.Context, scope, appName, command string) (*action.ActionResult, error) {
 	conn, err := m.Connection(scope)
 	if err != nil {
 		return nil, err

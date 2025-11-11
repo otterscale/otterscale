@@ -5,31 +5,28 @@ import (
 	"os"
 	"sync"
 
-	"github.com/otterscale/kubevirt-client-go/containerizeddataimporter"
-	"github.com/otterscale/kubevirt-client-go/kubevirt"
-	"github.com/otterscale/otterscale/internal/config"
-	"github.com/otterscale/otterscale/internal/providers/juju"
 	"helm.sh/helm/v3/pkg/cli"
 	"helm.sh/helm/v3/pkg/registry"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
+
+	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/providers/juju"
 )
 
-type Kube struct {
+type Kubernetes struct {
 	conf           *config.Config
 	juju           *juju.Juju
 	envSettings    *cli.EnvSettings
 	registryClient *registry.Client
 
-	configs       sync.Map
-	clientsets    sync.Map
-	kvClientsets  sync.Map
-	cdiClientsets sync.Map
+	configs    sync.Map
+	clientsets sync.Map
 }
 
-func New(conf *config.Config, juju *juju.Juju) (*Kube, error) {
+func New(conf *config.Config, juju *juju.Juju) (*Kubernetes, error) {
 	opts := []registry.ClientOption{
 		registry.ClientOptEnableCache(true),
 	}
@@ -37,7 +34,7 @@ func New(conf *config.Config, juju *juju.Juju) (*Kube, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Kube{
+	return &Kubernetes{
 		conf:           conf,
 		juju:           juju,
 		envSettings:    cli.New(),
@@ -45,7 +42,7 @@ func New(conf *config.Config, juju *juju.Juju) (*Kube, error) {
 	}, nil
 }
 
-func (m *Kube) getKubeConfig(ctx context.Context, scope, name string) (*api.Config, error) {
+func (m *Kubernetes) getKubeConfig(ctx context.Context, scope, name string) (*api.Config, error) {
 	result, err := m.juju.RunAction(ctx, scope, name, "get-kubeconfig", nil)
 	if err != nil {
 		return nil, err
@@ -53,7 +50,7 @@ func (m *Kube) getKubeConfig(ctx context.Context, scope, name string) (*api.Conf
 	return clientcmd.Load([]byte(result.Output["kubeconfig"].(string)))
 }
 
-func (m *Kube) writeCAToFile(caData []byte) (string, error) {
+func (m *Kubernetes) writeCAToFile(caData []byte) (string, error) {
 	tmpFile, err := os.CreateTemp("", "otterscale-ca-*.crt")
 	if err != nil {
 		return "", err
@@ -66,7 +63,7 @@ func (m *Kube) writeCAToFile(caData []byte) (string, error) {
 	return tmpFile.Name(), nil
 }
 
-func (m *Kube) newConfig(scope string) (*rest.Config, error) {
+func (m *Kubernetes) newConfig(scope string) (*rest.Config, error) {
 	name := scope + "-kubernetes-control-plane"
 
 	kubeConfig, err := m.getKubeConfig(context.Background(), scope, name)
@@ -91,7 +88,7 @@ func (m *Kube) newConfig(scope string) (*rest.Config, error) {
 	return config, nil
 }
 
-func (m *Kube) config(scope string) (*rest.Config, error) {
+func (m *Kubernetes) Config(scope string) (*rest.Config, error) {
 	if v, ok := m.configs.Load(scope); ok {
 		return v.(*rest.Config), nil
 	}
@@ -106,12 +103,12 @@ func (m *Kube) config(scope string) (*rest.Config, error) {
 	return config, nil
 }
 
-func (m *Kube) Clientset(scope string) (*kubernetes.Clientset, error) {
+func (m *Kubernetes) Clientset(scope string) (*kubernetes.Clientset, error) {
 	if v, ok := m.clientsets.Load(scope); ok {
 		return v.(*kubernetes.Clientset), nil
 	}
 
-	config, err := m.config(scope)
+	config, err := m.Config(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -122,46 +119,6 @@ func (m *Kube) Clientset(scope string) (*kubernetes.Clientset, error) {
 	}
 
 	m.clientsets.Store(scope, clientset)
-
-	return clientset, nil
-}
-
-func (m *Kube) KVClientset(scope string) (*kubevirt.Clientset, error) {
-	if v, ok := m.kvClientsets.Load(scope); ok {
-		return v.(*kubevirt.Clientset), nil
-	}
-
-	config, err := m.config(scope)
-	if err != nil {
-		return nil, err
-	}
-
-	clientset, err := kubevirt.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
-	m.kvClientsets.Store(scope, clientset)
-
-	return clientset, nil
-}
-
-func (m *Kube) CDIClientset(scope string) (*containerizeddataimporter.Clientset, error) {
-	if v, ok := m.cdiClientsets.Load(scope); ok {
-		return v.(*containerizeddataimporter.Clientset), nil
-	}
-
-	config, err := m.config(scope)
-	if err != nil {
-		return nil, err
-	}
-
-	clientset, err := containerizeddataimporter.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
-	m.cdiClientsets.Store(scope, clientset)
 
 	return clientset, nil
 }

@@ -12,10 +12,11 @@ import (
 	"github.com/ceph/go-ceph/rados"
 	"github.com/ceph/go-ceph/rgw/admin"
 	"github.com/juju/juju/api/client/action"
-	"github.com/otterscale/otterscale/internal/config"
-	"github.com/otterscale/otterscale/internal/providers/juju"
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/ini.v1"
+
+	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/providers/juju"
 )
 
 type Ceph struct {
