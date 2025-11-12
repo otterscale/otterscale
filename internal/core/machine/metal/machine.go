@@ -251,7 +251,7 @@ func (uc *MetalUseCase) purgeDisk(ctx context.Context, machineID string) error {
 		return err
 	}
 
-	apps, err := uc.orchestrator.ListApplications(ctx, scope, jujuID)
+	apps, err := uc.facility.List(ctx, scope, jujuID)
 	if err != nil {
 		return err
 	}

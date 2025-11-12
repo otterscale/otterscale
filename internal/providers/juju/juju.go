@@ -95,7 +95,7 @@ func (m *Juju) Connection(scope string) (api.Connection, error) {
 	return conn, nil
 }
 
-func (m *Juju) waitForCompleted(ctx context.Context, scope, id string, tickInterval, timeoutDuration time.Duration) (*action.ActionResult, error) {
+func (m *Juju) waitForCompleted(ctx context.Context, scope, id string, tickInterval, timeoutDuration time.Duration) (map[string]any, error) {
 	ticker := time.NewTicker(tickInterval)
 	defer ticker.Stop()
 
@@ -119,7 +119,7 @@ func (m *Juju) waitForCompleted(ctx context.Context, scope, id string, tickInter
 			}
 
 			if results[0].Status == "completed" {
-				return &results[0], nil
+				return results[0].Output, nil
 			}
 			continue
 
@@ -132,7 +132,7 @@ func (m *Juju) waitForCompleted(ctx context.Context, scope, id string, tickInter
 	}
 }
 
-func (m *Juju) RunAction(ctx context.Context, scope, appName, actionName string, params map[string]any) (*action.ActionResult, error) {
+func (m *Juju) Run(ctx context.Context, scope, appName, actionName string, params map[string]any) (map[string]any, error) {
 	conn, err := m.Connection(scope)
 	if err != nil {
 		return nil, err
@@ -164,7 +164,7 @@ func (m *Juju) RunAction(ctx context.Context, scope, appName, actionName string,
 	return m.waitForCompleted(ctx, scope, id, time.Second, time.Minute)
 }
 
-func (m *Juju) RunCommand(ctx context.Context, scope, appName, command string) (*action.ActionResult, error) {
+func (m *Juju) Execute(ctx context.Context, scope, appName, command string) (map[string]any, error) {
 	conn, err := m.Connection(scope)
 	if err != nil {
 		return nil, err

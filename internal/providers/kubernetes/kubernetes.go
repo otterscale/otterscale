@@ -43,11 +43,11 @@ func New(conf *config.Config, juju *juju.Juju) (*Kubernetes, error) {
 }
 
 func (m *Kubernetes) getKubeConfig(ctx context.Context, scope, name string) (*api.Config, error) {
-	result, err := m.juju.RunAction(ctx, scope, name, "get-kubeconfig", nil)
+	result, err := m.juju.Run(ctx, scope, name, "get-kubeconfig", nil)
 	if err != nil {
 		return nil, err
 	}
-	return clientcmd.Load([]byte(result.Output["kubeconfig"].(string)))
+	return clientcmd.Load([]byte(result["kubeconfig"].(string)))
 }
 
 func (m *Kubernetes) writeCAToFile(caData []byte) (string, error) {

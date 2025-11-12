@@ -11,7 +11,6 @@ import (
 
 	"github.com/ceph/go-ceph/rados"
 	"github.com/ceph/go-ceph/rgw/admin"
-	"github.com/juju/juju/api/client/action"
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/ini.v1"
 
@@ -46,8 +45,8 @@ func New(conf *config.Config, juju *juju.Juju) *Ceph {
 	}
 }
 
-func (m *Ceph) extractAsConnectionConfig(r *action.ActionResult) (connectionConfig, error) {
-	stdout, ok := r.Output["stdout"]
+func (m *Ceph) extractAsConnectionConfig(r map[string]any) (connectionConfig, error) {
+	stdout, ok := r["stdout"]
 	if !ok {
 		return connectionConfig{}, errors.New("ceph config stdout not found")
 	}
@@ -85,7 +84,7 @@ func (m *Ceph) getConnectionConfig(scope string) (connectionConfig, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	result, err := m.juju.RunCommand(ctx, scope, name, "ceph config generate-minimal-conf && ceph auth get client.admin")
+	result, err := m.juju.Execute(ctx, scope, name, "ceph config generate-minimal-conf && ceph auth get client.admin")
 	if err != nil {
 		return connectionConfig{}, err
 	}
@@ -150,8 +149,8 @@ func (m *Ceph) Connection(scope string) (*rados.Conn, error) {
 	return conn, nil
 }
 
-func (m *Ceph) getRGWCommand(r *action.ActionResult) (string, error) {
-	stdout, ok := r.Output["stdout"]
+func (m *Ceph) getRGWCommand(r map[string]any) (string, error) {
+	stdout, ok := r["stdout"]
 	if !ok {
 		return "", errors.New("rgw list config stdout not found")
 	}
@@ -167,8 +166,8 @@ func (m *Ceph) getRGWCommand(r *action.ActionResult) (string, error) {
 	return "radosgw-admin user create --system --uid=otterscale --display-name=OtterScale --format json", nil
 }
 
-func (m *Ceph) extractObjectKeys(r *action.ActionResult) (accessKey, secretKey string, err error) {
-	stdout, ok := r.Output["stdout"]
+func (m *Ceph) extractObjectKeys(r map[string]any) (accessKey, secretKey string, err error) {
+	stdout, ok := r["stdout"]
 	if !ok {
 		return "", "", errors.New("rgw config stdout not found")
 	}
@@ -203,7 +202,7 @@ func (m *Ceph) extractObjectKeys(r *action.ActionResult) (accessKey, secretKey s
 }
 
 func (m *Ceph) getObjectKeys(ctx context.Context, scope, name string) (accessKey, secretKey string, err error) {
-	result, err := m.juju.RunCommand(ctx, scope, name, "radosgw-admin user list")
+	result, err := m.juju.Execute(ctx, scope, name, "radosgw-admin user list")
 	if err != nil {
 		return "", "", err
 	}
@@ -213,7 +212,7 @@ func (m *Ceph) getObjectKeys(ctx context.Context, scope, name string) (accessKey
 		return "", "", err
 	}
 
-	result, err = m.juju.RunCommand(ctx, scope, name, cmd)
+	result, err = m.juju.Execute(ctx, scope, name, cmd)
 	if err != nil {
 		return "", "", err
 	}

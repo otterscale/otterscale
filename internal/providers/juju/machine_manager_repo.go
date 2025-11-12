@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	api "github.com/juju/juju/api/client/machinemanager"
+	"github.com/juju/juju/api/client/machinemanager"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/core/model"
 	"github.com/juju/juju/rpc/params"
@@ -39,7 +39,7 @@ func (r *machineManagerRepo) AddMachines(_ context.Context, scope, uuid, fqdn, b
 		},
 	}
 
-	results, err := api.NewClient(conn).AddMachines(params)
+	results, err := machinemanager.NewClient(conn).AddMachines(params)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func (r *machineManagerRepo) DestroyMachines(_ context.Context, scope string, fo
 		return err
 	}
 
-	results, err := api.NewClient(conn).DestroyMachinesWithParams(force, keep, dryRun, maxWait, machines...)
+	results, err := machinemanager.NewClient(conn).DestroyMachinesWithParams(force, keep, dryRun, maxWait, machines...)
 	if err != nil {
 		return err
 	}

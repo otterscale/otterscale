@@ -5,17 +5,17 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/otterscale/otterscale/internal/core/machine"
+	"github.com/otterscale/otterscale/internal/core/machine/metal"
 )
 
 type Monitor struct {
 	Name    string
-	Machine *machine.Machine
+	Machine *metal.Machine
 }
 
 type ObjectStorageDaemon struct {
 	Hostname string
-	Machine  *machine.Machine
+	Machine  *metal.Machine
 }
 
 type NodeRepo interface {
@@ -27,10 +27,10 @@ type NodeRepo interface {
 type NodeUseCase struct {
 	node NodeRepo
 
-	machine machine.MachineRepo
+	machine metal.MachineRepo
 }
 
-func NewNodeUseCase(node NodeRepo, machine machine.MachineRepo) *NodeUseCase {
+func NewNodeUseCase(node NodeRepo, machine metal.MachineRepo) *NodeUseCase {
 	return &NodeUseCase{
 		node:    node,
 		machine: machine,
@@ -73,7 +73,7 @@ func (uc *NodeUseCase) DoSMART(ctx context.Context, scope string, osd string) (m
 	return uc.node.DoSMART(ctx, scope, osd)
 }
 
-func (uc *NodeUseCase) extractScopeFromMachine(m *machine.Machine) (string, error) {
+func (uc *NodeUseCase) extractScopeFromMachine(m *metal.Machine) (string, error) {
 	v, ok := m.WorkloadAnnotations["juju-machine-id"]
 	if !ok {
 		return "", fmt.Errorf("machine %q missing workload annotation juju-machine-id", m.Hostname)
@@ -87,7 +87,7 @@ func (uc *NodeUseCase) extractScopeFromMachine(m *machine.Machine) (string, erro
 	return token[0], nil
 }
 
-func (uc *NodeUseCase) extractJujuIDFromMachine(m *machine.Machine) (string, error) {
+func (uc *NodeUseCase) extractJujuIDFromMachine(m *metal.Machine) (string, error) {
 	v, ok := m.WorkloadAnnotations["juju-machine-id"]
 	if !ok {
 		return "", fmt.Errorf("machine %q missing workload annotation juju-machine-id", m.Hostname)
@@ -110,7 +110,7 @@ func (uc *NodeUseCase) extractJujuIDFromMonitor(m *Monitor) (string, error) {
 	return token[2], nil
 }
 
-func (uc *NodeUseCase) setObjectStorageDaemonMachine(osds []ObjectStorageDaemon, machines []machine.Machine) {
+func (uc *NodeUseCase) setObjectStorageDaemonMachine(osds []ObjectStorageDaemon, machines []metal.Machine) {
 	for i := range osds {
 		for j := range machines {
 			if osds[i].Hostname != machines[j].Hostname {
@@ -123,7 +123,7 @@ func (uc *NodeUseCase) setObjectStorageDaemonMachine(osds []ObjectStorageDaemon,
 	}
 }
 
-func (uc *NodeUseCase) setMonitorMachine(scope string, monitors []Monitor, machines []machine.Machine) {
+func (uc *NodeUseCase) setMonitorMachine(scope string, monitors []Monitor, machines []metal.Machine) {
 	for i := range monitors {
 		monitorJujuID, err := uc.extractJujuIDFromMonitor(&monitors[i])
 		if err != nil {

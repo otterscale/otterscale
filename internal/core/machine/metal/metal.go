@@ -3,6 +3,7 @@ package metal
 import (
 	"github.com/otterscale/otterscale/internal/core/configuration"
 	"github.com/otterscale/otterscale/internal/core/facility"
+	"github.com/otterscale/otterscale/internal/core/facility/action"
 	"github.com/otterscale/otterscale/internal/core/scope/scope"
 )
 
@@ -12,14 +13,14 @@ type MetalUseCase struct {
 	machineManager MachineManagerRepo
 	nodeDevice     NodeDeviceRepo
 
-	action       facility.ActionRepo
+	action       action.ActionRepo
 	facility     facility.FacilityRepo
 	orchestrator configuration.OrchestratorRepo
 	provisioner  configuration.ProvisionerRepo
 	scope        scope.ScopeRepo
 }
 
-func NewMetalUseCase(event EventRepo, machine MachineRepo, machineManager MachineManagerRepo, nodeDevice NodeDeviceRepo, action facility.ActionRepo, facility facility.FacilityRepo, orchestrator configuration.OrchestratorRepo, provisioner configuration.ProvisionerRepo, scope scope.ScopeRepo) *MetalUseCase {
+func NewMetalUseCase(event EventRepo, machine MachineRepo, machineManager MachineManagerRepo, nodeDevice NodeDeviceRepo, action action.ActionRepo, facility facility.FacilityRepo, orchestrator configuration.OrchestratorRepo, provisioner configuration.ProvisionerRepo, scope scope.ScopeRepo) *MetalUseCase {
 	return &MetalUseCase{
 		event:          event,
 		machine:        machine,
