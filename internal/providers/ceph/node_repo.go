@@ -5,22 +5,22 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/otterscale/otterscale/internal/core/storage"
+	"github.com/otterscale/otterscale/internal/core/storage/node"
 )
 
 type nodeRepo struct {
 	ceph *Ceph
 }
 
-func NewNodeRepo(ceph *Ceph) storage.NodeRepo {
+func NewNodeRepo(ceph *Ceph) node.NodeRepo {
 	return &nodeRepo{
 		ceph: ceph,
 	}
 }
 
-var _ storage.NodeRepo = (*nodeRepo)(nil)
+var _ node.NodeRepo = (*nodeRepo)(nil)
 
-func (r *nodeRepo) ListMonitors(_ context.Context, scope string) ([]storage.Monitor, error) {
+func (r *nodeRepo) ListMonitors(_ context.Context, scope string) ([]node.Monitor, error) {
 	conn, err := r.ceph.Connection(scope)
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func (r *nodeRepo) ListMonitors(_ context.Context, scope string) ([]storage.Moni
 	return r.toMonitors(monDump, monStat), nil
 }
 
-func (r *nodeRepo) ListObjectStorageDaemons(_ context.Context, scope string) ([]storage.ObjectStorageDaemon, error) {
+func (r *nodeRepo) ListObjectStorageDaemons(_ context.Context, scope string) ([]node.ObjectStorageDaemon, error) {
 	conn, err := r.ceph.Connection(scope)
 	if err != nil {
 		return nil, err
@@ -88,8 +88,8 @@ func (r *nodeRepo) DoSMART(_ context.Context, scope, who string) (map[string][]s
 	return outputs, nil
 }
 
-func (r *nodeRepo) toMonitors(d *monDump, s *monStat) []storage.Monitor {
-	ret := []storage.Monitor{}
+func (r *nodeRepo) toMonitors(d *monDump, s *monStat) []node.Monitor {
+	ret := []node.Monitor{}
 	// for i := range d.MONs {
 	// 	ret = append(ret, storage.Monitor{
 	// 		Leader:        d.MONs[i].Name == s.Leader,
@@ -101,8 +101,8 @@ func (r *nodeRepo) toMonitors(d *monDump, s *monStat) []storage.Monitor {
 	return ret
 }
 
-func (r *nodeRepo) toOSDs(d *osdDump, t *osdTree, df *osdDF) []storage.ObjectStorageDaemon {
-	ret := []storage.ObjectStorageDaemon{}
+func (r *nodeRepo) toOSDs(d *osdDump, t *osdTree, df *osdDF) []node.ObjectStorageDaemon {
+	ret := []node.ObjectStorageDaemon{}
 	// for i := range df.Nodes {
 	// 	osd := storage.ObjectStorageDaemon{
 	// 		ID:          df.Nodes[i].ID,
