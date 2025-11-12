@@ -48,3 +48,11 @@ func (r *relationRepo) Delete(_ context.Context, scope string, id int) error {
 // 	_, err = application.NewClient(conn).Consume(*args)
 // 	return err
 // }
+
+// func (r *applicationOffers) GetConsumeDetails(_ context.Context, url string) (params.ConsumeOfferDetails, error) {
+// 	conn, err := r.juju.connection("controller")
+// 	if err != nil {
+// 		return params.ConsumeOfferDetails{}, err
+// 	}
+// 	return api.NewClient(conn).GetConsumeDetails(url)
+// }
