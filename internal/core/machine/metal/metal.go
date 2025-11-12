@@ -4,7 +4,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/configuration"
 	"github.com/otterscale/otterscale/internal/core/facility"
 	"github.com/otterscale/otterscale/internal/core/facility/action"
-	"github.com/otterscale/otterscale/internal/core/scope/scope"
+	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
 type MetalUseCase struct {
