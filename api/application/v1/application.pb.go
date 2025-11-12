@@ -769,13 +769,13 @@ func (b0 ListApplicationsRequest_builder) Build() *ListApplicationsRequest {
 }
 
 type ListApplicationsResponse struct {
-	state                    protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Applications  *[]*Application        `protobuf:"bytes,1,rep,name=applications"`
-	xxx_hidden_PublicAddress *string                `protobuf:"bytes,2,opt,name=public_address,json=publicAddress"`
-	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
-	XXX_presence             [1]uint32
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Applications *[]*Application        `protobuf:"bytes,1,rep,name=applications"`
+	xxx_hidden_Endpoint     *string                `protobuf:"bytes,2,opt,name=endpoint"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *ListApplicationsResponse) Reset() {
@@ -812,10 +812,10 @@ func (x *ListApplicationsResponse) GetApplications() []*Application {
 	return nil
 }
 
-func (x *ListApplicationsResponse) GetPublicAddress() string {
+func (x *ListApplicationsResponse) GetEndpoint() string {
 	if x != nil {
-		if x.xxx_hidden_PublicAddress != nil {
-			return *x.xxx_hidden_PublicAddress
+		if x.xxx_hidden_Endpoint != nil {
+			return *x.xxx_hidden_Endpoint
 		}
 		return ""
 	}
@@ -826,28 +826,28 @@ func (x *ListApplicationsResponse) SetApplications(v []*Application) {
 	x.xxx_hidden_Applications = &v
 }
 
-func (x *ListApplicationsResponse) SetPublicAddress(v string) {
-	x.xxx_hidden_PublicAddress = &v
+func (x *ListApplicationsResponse) SetEndpoint(v string) {
+	x.xxx_hidden_Endpoint = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *ListApplicationsResponse) HasPublicAddress() bool {
+func (x *ListApplicationsResponse) HasEndpoint() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListApplicationsResponse) ClearPublicAddress() {
+func (x *ListApplicationsResponse) ClearEndpoint() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_PublicAddress = nil
+	x.xxx_hidden_Endpoint = nil
 }
 
 type ListApplicationsResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Applications  []*Application
-	PublicAddress *string
+	Applications []*Application
+	Endpoint     *string
 }
 
 func (b0 ListApplicationsResponse_builder) Build() *ListApplicationsResponse {
@@ -855,9 +855,9 @@ func (b0 ListApplicationsResponse_builder) Build() *ListApplicationsResponse {
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Applications = &b.Applications
-	if b.PublicAddress != nil {
+	if b.Endpoint != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_PublicAddress = b.PublicAddress
+		x.xxx_hidden_Endpoint = b.Endpoint
 	}
 	return m0
 }
@@ -6428,10 +6428,10 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"5\n" +
 	"\x17ListApplicationsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"\x8d\x01\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"\x82\x01\n" +
 	"\x18ListApplicationsResponse\x12J\n" +
-	"\fapplications\x18\x01 \x03(\v2&.otterscale.application.v1.ApplicationR\fapplications\x12%\n" +
-	"\x0epublic_address\x18\x02 \x01(\tR\rpublicAddress\"e\n" +
+	"\fapplications\x18\x01 \x03(\v2&.otterscale.application.v1.ApplicationR\fapplications\x12\x1a\n" +
+	"\bendpoint\x18\x02 \x01(\tR\bendpoint\"e\n" +
 	"\x15GetApplicationRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +

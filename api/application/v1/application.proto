@@ -255,7 +255,7 @@ message ListApplicationsRequest {
 
 message ListApplicationsResponse {
   repeated Application applications = 1;
-  string public_address = 2;
+  string endpoint = 2;
 }
 
 message GetApplicationRequest {
