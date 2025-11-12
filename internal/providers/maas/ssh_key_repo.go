@@ -5,7 +5,8 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
-	"github.com/otterscale/otterscale/internal/core/scope"
+
+	"github.com/otterscale/otterscale/internal/core/scope/scope"
 )
 
 type sshKeyRepo struct {
@@ -25,12 +26,15 @@ func (r *sshKeyRepo) First(_ context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	sshKeys, err := client.SSHKeys.Get()
 	if err != nil {
 		return "", err
 	}
+
 	if len(sshKeys) == 0 {
 		return "", connect.NewError(connect.CodeNotFound, errors.New("ssh key not found"))
 	}
+
 	return sshKeys[0].Key, nil
 }
