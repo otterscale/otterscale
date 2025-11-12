@@ -242,7 +242,7 @@ message AddFacilityUnitsResponse {
 
 message ListActionsRequest {
   string scope = 1;
-  string facility = 2;
+  string name = 2;
 }
 
 message ListActionsResponse {

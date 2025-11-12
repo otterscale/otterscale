@@ -2140,7 +2140,7 @@ func (b0 AddFacilityUnitsResponse_builder) Build() *AddFacilityUnitsResponse {
 type ListActionsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -2182,10 +2182,10 @@ func (x *ListActionsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListActionsRequest) GetFacility() string {
+func (x *ListActionsRequest) GetName() string {
 	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
 		}
 		return ""
 	}
@@ -2197,8 +2197,8 @@ func (x *ListActionsRequest) SetScope(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *ListActionsRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
+func (x *ListActionsRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
@@ -2209,7 +2209,7 @@ func (x *ListActionsRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListActionsRequest) HasFacility() bool {
+func (x *ListActionsRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
@@ -2221,16 +2221,16 @@ func (x *ListActionsRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListActionsRequest) ClearFacility() {
+func (x *ListActionsRequest) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
+	x.xxx_hidden_Name = nil
 }
 
 type ListActionsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
+	Scope *string
+	Name  *string
 }
 
 func (b0 ListActionsRequest_builder) Build() *ListActionsRequest {
@@ -2241,9 +2241,9 @@ func (b0 ListActionsRequest_builder) Build() *ListActionsRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
+	if b.Name != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Facility = b.Facility
+		x.xxx_hidden_Name = b.Name
 	}
 	return m0
 }
@@ -4377,10 +4377,10 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"placements\"9\n" +
 	"\x18AddFacilityUnitsResponse\x12\x1d\n" +
 	"\n" +
-	"unit_names\x18\x01 \x03(\tR\tunitNames\"F\n" +
+	"unit_names\x18\x01 \x03(\tR\tunitNames\">\n" +
 	"\x12ListActionsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"X\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\"X\n" +
 	"\x13ListActionsResponse\x12A\n" +
 	"\aactions\x18\x01 \x03(\v2'.otterscale.facility.v1.Facility.ActionR\aactions\"\x11\n" +
 	"\x0fDoActionRequest\"\x13\n" +

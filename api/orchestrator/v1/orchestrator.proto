@@ -148,7 +148,7 @@ message AddClusterUnitsRequest {
 
 message ListKubernetesNodeLabelsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string hostname = 3;
   bool all = 11;
 }
@@ -159,7 +159,7 @@ message ListKubernetesNodeLabelsResponse {
 
 message UpdateKubernetesNodeLabelsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string hostname = 3;
   map<string, string> labels = 4;
 }
@@ -205,7 +205,7 @@ message GPURelation {
 
 message ListGPURelationsByMachineRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string machine_id = 3;
 }
 
@@ -215,7 +215,7 @@ message ListGPURelationsByMachineResponse {
 
 message ListGPURelationsByModelRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string model_name = 4;
 }
@@ -246,7 +246,7 @@ message Extension {
 
 message ListGeneralExtensionsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message ListGeneralExtensionsResponse {
@@ -255,7 +255,7 @@ message ListGeneralExtensionsResponse {
 
 message ListModelExtensionsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message ListModelExtensionsResponse {
@@ -264,7 +264,7 @@ message ListModelExtensionsResponse {
 
 message ListInstanceExtensionsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message ListInstanceExtensionsResponse {
@@ -273,7 +273,7 @@ message ListInstanceExtensionsResponse {
 
 message ListStorageExtensionsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message ListStorageExtensionsResponse {
@@ -282,12 +282,12 @@ message ListStorageExtensionsResponse {
 
 message InstallExtensionsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   repeated Extension.Chart charts = 3;
 }
 
 message UpgradeExtensionsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   repeated Extension.Chart charts = 3;
 }

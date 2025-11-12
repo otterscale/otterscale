@@ -309,7 +309,7 @@ message InstanceType {
 
 message ListVirtualMachinesRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
 }
 
@@ -319,14 +319,14 @@ message ListVirtualMachinesResponse {
 
 message GetVirtualMachineRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message CreateVirtualMachineRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string name = 11;
   string namespace = 12;
   string instance_type_name = 21;
@@ -336,14 +336,14 @@ message CreateVirtualMachineRequest {
 
 message DeleteVirtualMachineRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message AttachVirtualMachineDiskRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
   string data_volume_name = 11;
@@ -351,7 +351,7 @@ message AttachVirtualMachineDiskRequest {
 
 message DetachVirtualMachineDiskRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
   string data_volume_name = 11;
@@ -359,7 +359,7 @@ message DetachVirtualMachineDiskRequest {
 
 message CreateVirtualMachineCloneRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
   string source_virtual_machine_name = 11;
@@ -368,14 +368,14 @@ message CreateVirtualMachineCloneRequest {
 
 message DeleteVirtualMachineCloneRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message CreateVirtualMachineSnapshotRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
   string virtual_machine_name = 11;
@@ -383,14 +383,14 @@ message CreateVirtualMachineSnapshotRequest {
 
 message DeleteVirtualMachineSnapshotRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message CreateVirtualMachineRestoreRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
   string virtual_machine_name = 11;
@@ -399,49 +399,49 @@ message CreateVirtualMachineRestoreRequest {
 
 message DeleteVirtualMachineRestoreRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message StartVirtualMachineRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message StopVirtualMachineRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message RestartVirtualMachineRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message PauseInstanceRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message ResumeInstanceRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message MigrateInstanceRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
   string hostname = 11;
@@ -449,7 +449,7 @@ message MigrateInstanceRequest {
 
 message VNCInstanceRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
@@ -460,7 +460,7 @@ message VNCInstanceResponse {
 
 message ListDataVolumesRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   bool boot_image = 4;
 }
@@ -471,14 +471,14 @@ message ListDataVolumesResponse {
 
 message GetDataVolumeRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message CreateDataVolumeRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string name = 11;
   string namespace = 12;
   DataVolume.Source source = 21;
@@ -488,14 +488,14 @@ message CreateDataVolumeRequest {
 
 message DeleteDataVolumeRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message ExtendDataVolumeRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
   int64 size_bytes = 11;
@@ -503,7 +503,7 @@ message ExtendDataVolumeRequest {
 
 message ListInstanceTypesRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   bool include_cluster_wide = 11;
 }
@@ -514,14 +514,14 @@ message ListInstanceTypesResponse {
 
 message GetInstanceTypeRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message CreateInstanceTypeRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string name = 11;
   string namespace = 12;
   uint32 cpu_cores = 13;
@@ -530,14 +530,14 @@ message CreateInstanceTypeRequest {
 
 message DeleteInstanceTypeRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
 
 message CreateVirtualMachineServiceRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
   string virtual_machine_name = 11;
@@ -546,7 +546,7 @@ message CreateVirtualMachineServiceRequest {
 
 message UpdateVirtualMachineServiceRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
   repeated otterscale.application.v1.Application.Service.Port ports = 12;
@@ -554,7 +554,7 @@ message UpdateVirtualMachineServiceRequest {
 
 message DeleteVirtualMachineServiceRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string namespace = 3;
   string name = 4;
 }
