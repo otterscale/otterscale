@@ -12,7 +12,7 @@ import (
 	"github.com/juju/juju/core/status"
 	"github.com/juju/names/v5"
 
-	"github.com/otterscale/otterscale/internal/core/scope/scope"
+	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
 type scopeRepo struct {

@@ -5,22 +5,22 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 
-	"github.com/otterscale/otterscale/internal/core/machine/metal"
+	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
 type eventRepo struct {
 	maas *MAAS
 }
 
-func NewEventRepo(maas *MAAS) metal.EventRepo {
+func NewEventRepo(maas *MAAS) machine.EventRepo {
 	return &eventRepo{
 		maas: maas,
 	}
 }
 
-var _ metal.EventRepo = (*eventRepo)(nil)
+var _ machine.EventRepo = (*eventRepo)(nil)
 
-func (r *eventRepo) Get(_ context.Context, machineID string) ([]metal.Event, error) {
+func (r *eventRepo) Get(_ context.Context, machineID string) ([]machine.Event, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err
@@ -38,11 +38,11 @@ func (r *eventRepo) Get(_ context.Context, machineID string) ([]metal.Event, err
 	return r.toEvents(resp.Events), nil
 }
 
-func (r *eventRepo) toEvents(es []entity.Event) []metal.Event {
-	ret := make([]metal.Event, 0, len(es))
+func (r *eventRepo) toEvents(es []entity.Event) []machine.Event {
+	ret := make([]machine.Event, 0, len(es))
 
 	for _, e := range es {
-		ret = append(ret, metal.Event{
+		ret = append(ret, machine.Event{
 			Type:    e.Type,
 			Created: e.Created,
 		})

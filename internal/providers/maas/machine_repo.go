@@ -5,22 +5,22 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 
-	"github.com/otterscale/otterscale/internal/core/machine/metal"
+	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
 type machineRepo struct {
 	maas *MAAS
 }
 
-func NewMachineRepo(maas *MAAS) metal.MachineRepo {
+func NewMachineRepo(maas *MAAS) machine.MachineRepo {
 	return &machineRepo{
 		maas: maas,
 	}
 }
 
-var _ metal.MachineRepo = (*machineRepo)(nil)
+var _ machine.MachineRepo = (*machineRepo)(nil)
 
-func (r *machineRepo) List(_ context.Context) ([]metal.Machine, error) {
+func (r *machineRepo) List(_ context.Context) ([]machine.Machine, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (r *machineRepo) List(_ context.Context) ([]metal.Machine, error) {
 	return r.toMachines(machines), nil
 }
 
-func (r *machineRepo) Get(_ context.Context, id string) (*metal.Machine, error) {
+func (r *machineRepo) Get(_ context.Context, id string) (*machine.Machine, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (r *machineRepo) Get(_ context.Context, id string) (*metal.Machine, error) 
 
 }
 
-func (r *machineRepo) Release(_ context.Context, id string, force bool) (*metal.Machine, error) {
+func (r *machineRepo) Release(_ context.Context, id string, force bool) (*machine.Machine, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err
@@ -69,7 +69,7 @@ func (r *machineRepo) Release(_ context.Context, id string, force bool) (*metal.
 	return r.toMachine(machine), nil
 }
 
-func (r *machineRepo) PowerOff(_ context.Context, id, comment string) (*metal.Machine, error) {
+func (r *machineRepo) PowerOff(_ context.Context, id, comment string) (*machine.Machine, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err
@@ -87,7 +87,7 @@ func (r *machineRepo) PowerOff(_ context.Context, id, comment string) (*metal.Ma
 	return r.toMachine(machine), nil
 }
 
-func (r *machineRepo) Commission(_ context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool) (*metal.Machine, error) {
+func (r *machineRepo) Commission(_ context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool) (*machine.Machine, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err
@@ -109,14 +109,14 @@ func (r *machineRepo) Commission(_ context.Context, id string, enableSSH, skipBM
 	return r.toMachine(machine), nil
 }
 
-func (r *machineRepo) toMachine(m *entity.Machine) *metal.Machine {
-	return &metal.Machine{
+func (r *machineRepo) toMachine(m *entity.Machine) *machine.Machine {
+	return &machine.Machine{
 		ID: m.SystemID,
 	}
 }
 
-func (r *machineRepo) toMachines(ms []entity.Machine) []metal.Machine {
-	list := []metal.Machine{}
+func (r *machineRepo) toMachines(ms []entity.Machine) []machine.Machine {
+	list := []machine.Machine{}
 	for _, m := range ms {
 		list = append(list, *r.toMachine(&m))
 	}

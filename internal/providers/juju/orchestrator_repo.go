@@ -6,20 +6,20 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/juju/juju/api/client/client"
-	"github.com/otterscale/otterscale/internal/core/configuration"
+	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
 type orchestratorRepo struct {
 	juju *Juju
 }
 
-func NewOrchestratorRepo(juju *Juju) configuration.OrchestratorRepo {
+func NewOrchestratorRepo(juju *Juju) machine.OrchestratorRepo {
 	return &orchestratorRepo{
 		juju: juju,
 	}
 }
 
-var _ configuration.OrchestratorRepo = (*orchestratorRepo)(nil)
+var _ machine.OrchestratorRepo = (*orchestratorRepo)(nil)
 
 func (r *orchestratorRepo) AgentStatus(ctx context.Context, scope, jujuID string) (string, error) {
 	conn, err := r.juju.Connection(scope)

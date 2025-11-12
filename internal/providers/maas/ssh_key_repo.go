@@ -6,7 +6,7 @@ import (
 
 	"connectrpc.com/connect"
 
-	"github.com/otterscale/otterscale/internal/core/scope/scope"
+	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
 type sshKeyRepo struct {

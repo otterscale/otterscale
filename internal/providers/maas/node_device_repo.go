@@ -5,22 +5,22 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 
-	"github.com/otterscale/otterscale/internal/core/machine/metal"
+	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
 type nodeDeviceRepo struct {
 	maas *MAAS
 }
 
-func NewNodeDeviceRepo(maas *MAAS) metal.NodeDeviceRepo {
+func NewNodeDeviceRepo(maas *MAAS) machine.NodeDeviceRepo {
 	return &nodeDeviceRepo{
 		maas: maas,
 	}
 }
 
-var _ metal.NodeDeviceRepo = (*nodeDeviceRepo)(nil)
+var _ machine.NodeDeviceRepo = (*nodeDeviceRepo)(nil)
 
-func (r *nodeDeviceRepo) ListGPUs(_ context.Context, machineID string) ([]metal.GPU, error) {
+func (r *nodeDeviceRepo) ListGPUs(_ context.Context, machineID string) ([]machine.GPU, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err
@@ -38,11 +38,11 @@ func (r *nodeDeviceRepo) ListGPUs(_ context.Context, machineID string) ([]metal.
 	return r.toGPUs(nodeDevices), nil
 }
 
-func (r *nodeDeviceRepo) toGPUs(nds []entity.NodeDevice) []metal.GPU {
-	gpus := make([]metal.GPU, 0, len(nds))
+func (r *nodeDeviceRepo) toGPUs(nds []entity.NodeDevice) []machine.GPU {
+	gpus := make([]machine.GPU, 0, len(nds))
 
 	for _, nd := range nds {
-		gpu := metal.GPU{
+		gpu := machine.GPU{
 			VendorID:    nd.VendorID,
 			ProductID:   nd.ProductID,
 			VendorName:  nd.VendorName,

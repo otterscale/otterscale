@@ -10,20 +10,20 @@ import (
 	"github.com/juju/juju/core/model"
 	"github.com/juju/juju/rpc/params"
 
-	"github.com/otterscale/otterscale/internal/core/machine/metal"
+	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
 type machineManagerRepo struct {
 	juju *Juju
 }
 
-func NewMachineManagerRepo(juju *Juju) metal.MachineManagerRepo {
+func NewMachineManagerRepo(juju *Juju) machine.MachineManagerRepo {
 	return &machineManagerRepo{
 		juju: juju,
 	}
 }
 
-var _ metal.MachineManagerRepo = (*machineManagerRepo)(nil)
+var _ machine.MachineManagerRepo = (*machineManagerRepo)(nil)
 
 func (r *machineManagerRepo) AddMachines(_ context.Context, scope, uuid, fqdn, baseOS, baseChannel string) error {
 	conn, err := r.juju.Connection(scope)
