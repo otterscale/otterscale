@@ -2,25 +2,26 @@ package ceph
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/ceph/go-ceph/rgw/admin"
-
-	"github.com/otterscale/otterscale/internal/core/storage"
+	"github.com/otterscale/otterscale/internal/core/storage/object"
 )
 
 type userRepo struct {
 	ceph *Ceph
 }
 
-func NewUserRepo(ceph *Ceph) storage.UserRepo {
+func NewUserRepo(ceph *Ceph) object.UserRepo {
 	return &userRepo{
 		ceph: ceph,
 	}
 }
 
-var _ storage.UserRepo = (*userRepo)(nil)
+var _ object.UserRepo = (*userRepo)(nil)
 
-func (r *userRepo) List(ctx context.Context, scope string) ([]storage.User, error) {
+func (r *userRepo) List(ctx context.Context, scope string) ([]object.User, error) {
 	client, err := r.ceph.Client(scope)
 	if err != nil {
 		return nil, err
@@ -32,19 +33,104 @@ func (r *userRepo) List(ctx context.Context, scope string) ([]storage.User, erro
 	}
 
 	if ids == nil {
-		return []storage.User{}, nil
+		return []object.User{}, nil
 	}
 
 	return r.list(ctx, client, *ids)
 }
 
-func (r *userRepo) list(ctx context.Context, client *admin.API, ids []string) ([]storage.User, error) {
+func (r *userRepo) Create(ctx context.Context, scope string, id, name string, suspended bool) (*object.User, error) {
+	client, err := r.ceph.Client(scope)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := client.CreateUser(ctx, admin.User{
+		ID:          id,
+		DisplayName: name,
+		Suspended:   r.intPtr(suspended),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return r.toUser(&user), err
+}
+
+func (r *userRepo) Update(ctx context.Context, scope string, id, name string, suspended bool) (*object.User, error) {
+	client, err := r.ceph.Client(scope)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := client.ModifyUser(ctx, admin.User{
+		ID:          id,
+		DisplayName: name,
+		Suspended:   r.intPtr(suspended),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return r.toUser(&user), err
+}
+
+func (r *userRepo) Delete(ctx context.Context, scope string, id string) error {
+	client, err := r.ceph.Client(scope)
+	if err != nil {
+		return err
+	}
+
+	user := admin.User{
+		ID: id,
+	}
+
+	return client.RemoveUser(ctx, user)
+}
+
+func (r *userRepo) CreateKey(ctx context.Context, scope string, id string) (*object.UserKey, error) {
+	client, err := r.ceph.Client(scope)
+	if err != nil {
+		return nil, err
+	}
+
+	keys, err := client.CreateKey(ctx, admin.UserKeySpec{UID: id})
+	if err != nil {
+		return nil, err
+	}
+
+	if keys == nil {
+		return nil, fmt.Errorf("create key returned nil")
+	}
+
+	if len(*keys) == 0 {
+		return nil, fmt.Errorf("create key returned empty list")
+	}
+
+	return r.toUserKey(&(*keys)[0]), nil
+}
+
+func (r *userRepo) DeleteKey(ctx context.Context, scope string, id, accessKey string) error {
+	client, err := r.ceph.Client(scope)
+	if err != nil {
+		return err
+	}
+
+	key := admin.UserKeySpec{
+		UID:       id,
+		AccessKey: accessKey,
+	}
+
+	return client.RemoveKey(ctx, key)
+}
+
+func (r *userRepo) list(ctx context.Context, client *admin.API, ids []string) ([]object.User, error) {
 	keys := []admin.UserKeySpec{{
 		AccessKey: client.AccessKey,
 		SecretKey: client.SecretKey,
 	}}
 
-	users := []storage.User{}
+	users := []object.User{}
 
 	for _, id := range ids {
 		user, err := client.GetUser(ctx, admin.User{
@@ -60,8 +146,22 @@ func (r *userRepo) list(ctx context.Context, client *admin.API, ids []string) ([
 	return users, nil
 }
 
-func (r *userRepo) toUser(u *admin.User) *storage.User {
-	return &storage.User{
+func (r *userRepo) toUser(u *admin.User) *object.User {
+	return &object.User{
 		ID: u.ID,
 	}
+}
+
+func (r *userRepo) toUserKey(k *admin.UserKeySpec) *object.UserKey {
+	return &object.UserKey{
+		AccessKey: k.AccessKey,
+		SecretKey: k.SecretKey,
+	}
+}
+
+func (r *userRepo) intPtr(b bool) *int {
+	if b {
+		return aws.Int(1)
+	}
+	return nil
 }
