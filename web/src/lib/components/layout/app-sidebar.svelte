@@ -2,7 +2,7 @@
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import type { ComponentProps } from 'svelte';
 	import { getContext } from 'svelte';
-	import { derived, writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import { goto } from '$app/navigation';
@@ -35,10 +35,6 @@
 	const envClient = createClient(EnvironmentService, transport);
 	const orchClient = createClient(OrchestratorService, transport);
 	const scopes = writable<Scope[]>([]);
-	const filteredScopes = derived(scopes, ($scopes) =>
-		$scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name))
-	);
-
 	const tierMap = {
 		[PremiumTier_Level.BASIC]: m.basic_tier(),
 		[PremiumTier_Level.ADVANCED]: m.advanced_tier(),
@@ -54,7 +50,7 @@
 	async function fetchScopes() {
 		try {
 			const response = await scopeClient.listScopes({});
-			scopes.set(response.scopes);
+			scopes.set(response.scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name)));
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
 		}
@@ -111,7 +107,7 @@
 	<Sidebar.Header>
 		<ScopeSwitcher
 			{active}
-			scopes={$filteredScopes}
+			scopes={$scopes}
 			tier={tierMap[$premiumTier.level]}
 			onSelect={handleScopeOnSelect}
 		/>
