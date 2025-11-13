@@ -2,22 +2,18 @@ package release
 
 import (
 	"context"
-	"fmt"
-	"strings"
 
-	"github.com/go-faker/faker/v4"
 	"github.com/goccy/go-yaml"
 	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"golang.org/x/sync/errgroup"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/release"
-	"helm.sh/helm/v3/pkg/strvals"
 )
 
 const (
-	typeLabel        = "otterscale.com/type"
-	releaseNameLabel = "otterscale.com/release-name"
-	chartRefKey      = "chart-ref"
+	TypeLabel        = "otterscale.com/type"
+	ReleaseNameLabel = "otterscale.com/release-name"
+	ChartRefKey      = "chart-ref"
 )
 
 // Release represents a Helm Release resource.
@@ -26,9 +22,9 @@ type Release = release.Release
 type ReleaseRepo interface {
 	List(scope, namespace, selector string) ([]Release, error)
 	Get(restscope, namespace, name string) (*Release, error)
-	Install(scope, namespace, name string, dryRun bool, chartRef string, labelsInSecrets, labels, annotations map[string]string, values map[string]any) (*Release, error)
+	Install(scope, namespace, name string, dryRun bool, chartRef string, labelsInSecrets, labels, annotations map[string]string, valuesYAML string, valuesMap map[string]string) (*Release, error)
 	Uninstall(scope, namespace, name string, dryRun bool) (*Release, error)
-	Upgrade(scope, namespace, name string, dryRun bool, chartRef string, values map[string]any, reuseValues bool) (*Release, error)
+	Upgrade(scope, namespace, name string, dryRun bool, chartRef string, valuesYAML string, valuesMap map[string]string, reuseValues bool) (*Release, error)
 	Rollback(scope, namespace, name string, dryRun bool) error
 	GetValues(scope, namespace, name string) (map[string]any, error)
 }
@@ -47,35 +43,21 @@ func NewReleaseUseCase(release ReleaseRepo, chart chart.ChartRepo) *ReleaseUseCa
 }
 
 func (uc *ReleaseUseCase) ListReleases(ctx context.Context, scope string) ([]Release, error) {
-	selector := "!" + typeLabel
+	selector := "!" + TypeLabel
 	return uc.release.List(scope, "", selector)
 }
 
 func (uc *ReleaseUseCase) CreateRelease(ctx context.Context, scope, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string) (*Release, error) {
-	// chartRef
-	valuesMap[chartRefKey] = chartRef
-
-	// values
-	values, err := uc.toValues(valuesYAML, valuesMap)
-	if err != nil {
-		return nil, err
-	}
-
 	// labels
 	labels := map[string]string{
-		releaseNameLabel: name,
+		ReleaseNameLabel: name,
 	}
 
-	return uc.release.Install(scope, namespace, uc.newName(name), dryRun, chartRef, nil, labels, nil, values)
+	return uc.release.Install(scope, namespace, name, dryRun, chartRef, nil, labels, nil, valuesYAML, valuesMap)
 }
 
 func (uc *ReleaseUseCase) UpdateRelease(ctx context.Context, scope, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*Release, error) {
-	values, err := uc.toValues(valuesYAML, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return uc.release.Upgrade(scope, namespace, name, dryRun, chartRef, values, false)
+	return uc.release.Upgrade(scope, namespace, name, dryRun, chartRef, valuesYAML, nil, false)
 }
 
 func (uc *ReleaseUseCase) DeleteRelease(ctx context.Context, scope, namespace, name string, dryRun bool) error {
@@ -92,7 +74,7 @@ func (uc *ReleaseUseCase) GetChartFileFromApplication(ctx context.Context, scope
 	eg := errgroup.Group{}
 
 	eg.Go(func() error {
-		releaseName, ok := labels[releaseNameLabel]
+		releaseName, ok := labels[ReleaseNameLabel]
 		if ok {
 			v, err := uc.release.GetValues(scope, namespace, releaseName)
 			if err != nil {
@@ -107,7 +89,7 @@ func (uc *ReleaseUseCase) GetChartFileFromApplication(ctx context.Context, scope
 	})
 
 	eg.Go(func() error {
-		releaseName, ok := labels[releaseNameLabel]
+		releaseName, ok := labels[ReleaseNameLabel]
 		if ok {
 			rel, err := uc.release.Get(scope, namespace, releaseName)
 			if err != nil {
@@ -120,7 +102,7 @@ func (uc *ReleaseUseCase) GetChartFileFromApplication(ctx context.Context, scope
 			}
 
 			chartRef := ""
-			if v, ok := rel.Config[chartRefKey]; ok {
+			if v, ok := rel.Config[ChartRefKey]; ok {
 				if str, ok := v.(string); ok {
 					chartRef = str
 				}
@@ -145,33 +127,4 @@ func (uc *ReleaseUseCase) GetChartFileFromApplication(ctx context.Context, scope
 	}
 
 	return file, nil
-}
-
-func (uc *ReleaseUseCase) newName(name string) string {
-	if name != "" {
-		return name
-	}
-	return strings.ToLower(faker.FirstName() + "-" + faker.Username())
-}
-
-func (uc *ReleaseUseCase) toValues(valuesYAML string, valuesMap map[string]string) (map[string]any, error) {
-	// advanced
-	values := map[string]any{}
-	if err := yaml.Unmarshal([]byte(valuesYAML), &values); err != nil {
-		return nil, err
-	}
-
-	// basic
-	vals := []string{}
-	for k, v := range valuesMap {
-		if v != "" {
-			vals = append(vals, fmt.Sprintf("%s=%s", k, v))
-		}
-	}
-
-	if err := strvals.ParseInto(strings.Join(vals, ","), values); err != nil {
-		return nil, err
-	}
-
-	return values, nil
 }

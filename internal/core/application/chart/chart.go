@@ -19,6 +19,8 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
+const RepoURL = "https://otterscale.github.io/charts"
+
 const (
 	localRepoDir   = "./charts"
 	localOCIFormat = "oci://%s:32000/charts"
@@ -40,6 +42,7 @@ type File struct {
 
 type ChartRepo interface {
 	List(ctx context.Context, url string, useCache bool) ([]Chart, error)
+	GetStableVersion(ctx context.Context, url, name string, useCache bool) (*Version, error)
 	Show(chartRef string, format action.ShowOutputFormat) (string, error)
 	Push(chartRef, remoteOCI string) (string, error)
 	Index(dir, url string) error
