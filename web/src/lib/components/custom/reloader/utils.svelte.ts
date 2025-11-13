@@ -5,8 +5,9 @@ class ReloadManager {
 	state: boolean = $state(true);
 	interval: number | undefined = $state(5);
 
-	constructor(reloadFunction: () => void) {
+	constructor(reloadFunction: () => void, initialState: boolean = true) {
 		this.reloadFunction = reloadFunction;
+		this.state = initialState;
 	}
 
 	get isReloading() {
