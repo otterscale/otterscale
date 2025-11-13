@@ -44,6 +44,7 @@ func NewReleaseUseCase(release ReleaseRepo, chart chart.ChartRepo) *ReleaseUseCa
 
 func (uc *ReleaseUseCase) ListReleases(ctx context.Context, scope string) ([]Release, error) {
 	selector := "!" + TypeLabel
+
 	return uc.release.List(scope, "", selector)
 }
 

@@ -156,6 +156,7 @@ func (uc *ChartUseCase) newMicroK8sConfig() (*rest.Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	configAPI, err := clientcmd.Load(kubeConfig)
 	if err != nil {
 		return nil, err

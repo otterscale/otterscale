@@ -22,6 +22,7 @@ type NodeRepo interface {
 	ListMonitors(ctx context.Context, scope string) ([]Monitor, error)
 	ListObjectStorageDaemons(ctx context.Context, scope string) ([]ObjectStorageDaemon, error)
 	DoSMART(ctx context.Context, scope string, who string) (map[string][]string, error)
+	Config(scope string) (host string, id string, key string, err error)
 }
 
 type StorageUseCase struct {

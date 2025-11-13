@@ -44,6 +44,7 @@ func NewModelUseCase(chart chart.ChartRepo, deployment workload.DeploymentRepo, 
 
 func (uc *ModelUseCase) ListModels(ctx context.Context, scope, namespace string) ([]Model, error) {
 	selector := fmt.Sprintf("%s=%s", release.TypeLabel, "model")
+
 	return uc.release.List(scope, namespace, selector)
 }
 
@@ -113,6 +114,7 @@ func (uc *ModelUseCase) DeleteModel(ctx context.Context, scope, namespace, name 
 
 func (uc *ModelUseCase) ListModelArtifacts(ctx context.Context, scope, namespace string) ([]ModelArtifact, error) {
 	selector := fmt.Sprintf("%s=%s", release.TypeLabel, "model-artifact")
+
 	pvcs, err := uc.persistentVolumeClaim.List(ctx, scope, namespace, selector)
 	if err != nil {
 		return nil, err

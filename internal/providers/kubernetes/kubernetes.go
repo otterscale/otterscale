@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"context"
+	"encoding/base64"
 	"os"
 	"sync"
 
@@ -13,6 +14,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd/api"
 
 	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/core/scope"
 	"github.com/otterscale/otterscale/internal/providers/juju"
 )
 
@@ -40,6 +42,20 @@ func New(conf *config.Config, juju *juju.Juju) (*Kubernetes, error) {
 		envSettings:    cli.New(),
 		registryClient: registryClient,
 	}, nil
+}
+
+func (m *Kubernetes) newMicroK8sConfig() (*rest.Config, error) {
+	kubeConfig, err := base64.StdEncoding.DecodeString(m.conf.MicroK8s.Config)
+	if err != nil {
+		return nil, err
+	}
+
+	configAPI, err := clientcmd.Load(kubeConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	return clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
 }
 
 func (m *Kubernetes) getKubeConfig(ctx context.Context, scope, name string) (*api.Config, error) {
@@ -88,12 +104,19 @@ func (m *Kubernetes) newConfig(scope string) (*rest.Config, error) {
 	return config, nil
 }
 
+func (m *Kubernetes) getConfig(scopeName string) (*rest.Config, error) {
+	if scopeName == scope.ReservedName {
+		return m.newMicroK8sConfig()
+	}
+	return m.newConfig(scopeName)
+}
+
 func (m *Kubernetes) Config(scope string) (*rest.Config, error) {
 	if v, ok := m.configs.Load(scope); ok {
 		return v.(*rest.Config), nil
 	}
 
-	config, err := m.newConfig(scope)
+	config, err := m.getConfig(scope)
 	if err != nil {
 		return nil, err
 	}

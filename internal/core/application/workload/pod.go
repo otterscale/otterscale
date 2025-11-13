@@ -33,7 +33,7 @@ type PodRepo interface {
 	Create(ctx context.Context, scope, namespace string, p *Pod) (*Pod, error)
 	Update(ctx context.Context, scope, namespace string, p *Pod) (*Pod, error)
 	Delete(ctx context.Context, scope, namespace, name string) error
-	Stream(ctx context.Context, scope, namespace, podName, containerName string, duration time.Duration) (io.ReadCloser, error)
+	Stream(ctx context.Context, scope, namespace, podName, containerName string, duration time.Duration, follow bool) (io.ReadCloser, error)
 	Execute(scope, namespace, podName, containerName string, command []string) (remotecommand.Executor, error)
 }
 
@@ -42,7 +42,7 @@ func (uc *WorkloadUseCase) DeletePod(ctx context.Context, scope, namespace, name
 }
 
 func (uc *WorkloadUseCase) StreamLogs(ctx context.Context, scope, namespace, podName, containerName string, duration time.Duration) (io.ReadCloser, error) {
-	return uc.pod.Stream(ctx, scope, namespace, podName, containerName, duration)
+	return uc.pod.Stream(ctx, scope, namespace, podName, containerName, duration, true)
 }
 
 func (uc *WorkloadUseCase) WriteToTTYSession(sessionID string, stdIn []byte) error {

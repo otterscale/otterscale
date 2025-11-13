@@ -59,6 +59,8 @@ type BucketRepo interface {
 	UpdateACL(ctx context.Context, scope, bucket string, acl BucketCannedACL) error
 	UpdatePolicy(ctx context.Context, scope, bucket, policy string) error
 	Delete(ctx context.Context, scope, bucket string) error
+	Endpoint(scope string) string
+	Key(scope string) (accessKey string, secretKey string)
 }
 
 func (uc *ObjectUseCase) ListBuckets(ctx context.Context, scope string) ([]Bucket, error) {

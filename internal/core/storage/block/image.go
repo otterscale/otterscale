@@ -14,7 +14,9 @@ const (
 	ImageFeatureDeepFlatten
 )
 
-type Image struct{}
+type Image struct {
+	Name string
+}
 
 // Note: Ceph create and update operations only return error status.
 type ImageRepo interface {

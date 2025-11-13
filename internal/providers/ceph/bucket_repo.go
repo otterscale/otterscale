@@ -127,6 +127,24 @@ func (r *bucketRepo) Delete(ctx context.Context, scope, bucket string) error {
 	return err
 }
 
+func (r *bucketRepo) Endpoint(scope string) string {
+	client, err := r.ceph.Client(scope)
+	if err != nil {
+		return ""
+	}
+
+	return client.Endpoint
+}
+
+func (r *bucketRepo) Key(scope string) (accessKey string, secretKey string) {
+	client, err := r.ceph.Client(scope)
+	if err != nil {
+		return "", ""
+	}
+
+	return client.AccessKey, client.SecretKey
+}
+
 func (r *bucketRepo) s3Client(ctx context.Context, scope string) (*s3.Client, error) {
 	const (
 		cephRegion       = "us-east-1"

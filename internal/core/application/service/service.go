@@ -15,6 +15,7 @@ type ServiceRepo interface {
 	Update(ctx context.Context, scope, namespace string, s *Service) (*Service, error)
 	Create(ctx context.Context, scope, namespace string, s *Service) (*Service, error)
 	Delete(ctx context.Context, scope, namespace, name string) error
+	Host(scope string) string
 }
 
 type ServiceUseCase struct {

@@ -2,7 +2,10 @@ package scope
 
 import (
 	"context"
+	"fmt"
 )
+
+const ReservedName = "otterscale"
 
 type Scope struct {
 	UUID string
@@ -36,6 +39,10 @@ func (uc *ScopeUseCase) ListScopes(ctx context.Context) ([]Scope, error) {
 }
 
 func (uc *ScopeUseCase) CreateScope(ctx context.Context, name string) (*Scope, error) {
+	if name == ReservedName {
+		return nil, fmt.Errorf("scope name %q is reserved", name)
+	}
+
 	sshKey, err := uc.sshKey.First(ctx)
 	if err != nil {
 		return nil, err

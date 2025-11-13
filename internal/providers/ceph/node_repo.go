@@ -88,6 +88,30 @@ func (r *nodeRepo) DoSMART(_ context.Context, scope, who string) (map[string][]s
 	return outputs, nil
 }
 
+func (r *nodeRepo) Config(scope string) (host string, id string, key string, err error) {
+	conn, err := r.ceph.Connection(scope)
+	if err != nil {
+		return "", "", "", err
+	}
+
+	host, err = conn.GetConfigOption("mon_host")
+	if err != nil {
+		return "", "", "", err
+	}
+
+	id, err = conn.GetConfigOption("fsid")
+	if err != nil {
+		return "", "", "", err
+	}
+
+	key, err = conn.GetConfigOption("key")
+	if err != nil {
+		return "", "", "", err
+	}
+
+	return host, id, key, nil
+}
+
 func (r *nodeRepo) toMonitors(d *monDump, s *monStat) []storage.Monitor {
 	ret := []storage.Monitor{}
 	// for i := range d.MONs {
