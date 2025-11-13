@@ -20,7 +20,7 @@ type KeyRepo interface {
 type ScopeRepo interface {
 	List(ctx context.Context) ([]Scope, error)
 	Get(ctx context.Context, name string) (*Scope, error)
-	Create(ctx context.Context, name string) (*Scope, error)
+	Create(ctx context.Context, name string, url string) (*Scope, error)
 }
 
 type ScopeConfigRepo interface {
@@ -34,16 +34,18 @@ type SSHKeyRepo interface {
 }
 
 type ScopeUseCase struct {
-	key    KeyRepo
-	scope  ScopeRepo
-	sshKey SSHKeyRepo
+	key               KeyRepo
+	scope             ScopeRepo
+	sshKey            SSHKeyRepo
+	packageRepository PackageRepositoryRepo
 }
 
-func NewScopeUseCase(key KeyRepo, scope ScopeRepo, sshKey SSHKeyRepo) *ScopeUseCase {
+func NewScopeUseCase(key KeyRepo, scope ScopeRepo, sshKey SSHKeyRepo, packageRepository PackageRepositoryRepo) *ScopeUseCase {
 	return &ScopeUseCase{
-		key:    key,
-		scope:  scope,
-		sshKey: sshKey,
+		key:               key,
+		scope:             scope,
+		sshKey:            sshKey,
+		packageRepository: packageRepository,
 	}
 }
 
@@ -56,7 +58,25 @@ func (uc *ScopeUseCase) CreateScope(ctx context.Context, name string) (*Scope, e
 	if err != nil {
 		return nil, err
 	}
-	scope, err := uc.scope.Create(ctx, name)
+	prs, err := uc.packageRepository.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if len(prs) == 0 {
+		return nil, errors.New("no package repositories configured; please configure at least one before creating a scope")
+	}
+	var url string
+	for _, pr := range prs {
+		if pr.Name == "Ubuntu archive" {
+			url = pr.URL
+			break
+		}
+	}
+	if url == "" {
+		return nil, errors.New("Ubuntu archive package repository not found")
+	}
+
+	scope, err := uc.scope.Create(ctx, name, url)
 	if err != nil {
 		return nil, err
 	}

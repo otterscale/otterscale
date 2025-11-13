@@ -58,14 +58,15 @@ func (r *model) Get(_ context.Context, name string) (*core.Scope, error) {
 	return nil, fmt.Errorf("model %q not found", name)
 }
 
-func (r *model) Create(_ context.Context, name string) (*core.Scope, error) {
+func (r *model) Create(_ context.Context, name string, url string) (*core.Scope, error) {
 	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return nil, err
 	}
 
+	config := map[string]interface{}{"apt-mirror": url}
 	cloudCredential := names.CloudCredentialTag{}
-	model, err := api.NewClient(conn).CreateModel(name, r.juju.username(), r.juju.cloudName(), r.juju.cloudRegion(), cloudCredential, nil)
+	model, err := api.NewClient(conn).CreateModel(name, r.juju.username(), r.juju.cloudName(), r.juju.cloudRegion(), cloudCredential, config)
 	if err != nil {
 		return nil, err
 	}

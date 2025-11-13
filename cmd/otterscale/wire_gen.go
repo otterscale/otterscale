@@ -106,7 +106,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	storageService := app.NewStorageService(storageUseCase)
 	keyRepo := juju.NewKey(jujuJuju)
 	sshKeyRepo := maas.NewSSHKey(maasMAAS)
-	scopeUseCase := core.NewScopeUseCase(keyRepo, scopeRepo, sshKeyRepo)
+	scopeUseCase := core.NewScopeUseCase(keyRepo, scopeRepo, sshKeyRepo, packageRepositoryRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
 	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, storageService, scopeService)
 	command := newCmd(configConfig, bootstrap, jwksProxy, serve)
