@@ -1,14 +1,27 @@
-package core
+package bist
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math"
 	"strconv"
-	"strings"
 	"time"
 
+	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/otterscale/otterscale/internal/core/application/cluster"
+	"github.com/otterscale/otterscale/internal/core/application/release"
+	"github.com/otterscale/otterscale/internal/core/application/workload"
+	"github.com/otterscale/otterscale/internal/core/scope"
+)
+
+const (
+	bistBlockPool  = "bist_pool"
+	bistBlockImage = "bist_image"
 )
 
 type FIO struct {
@@ -23,8 +36,7 @@ type FIOTarget struct {
 }
 
 type FIOTargetCeph struct {
-	Scope    string `json:"scope"`
-	Facility string `json:"facility"`
+	Scope string `json:"scope"`
 }
 
 type FIOTargetNFS struct {
@@ -59,26 +71,15 @@ type FIOThroughput struct {
 	} `json:"lat_ns"`
 }
 
-func (uc *BISTUseCase) CreateFIOResult(ctx context.Context, name, createdBy string, target FIOTarget, input *FIOInput) (*BISTResult, error) {
-	config, err := uc.newMicroK8sConfig()
-	if err != nil {
-		return nil, err
-	}
-
+func (uc *BISTUseCase) CreateFIOResult(ctx context.Context, name, createdBy string, target FIOTarget, input *FIOInput) (*Result, error) {
 	// namespace
-	if err := uc.ensureNamespace(ctx, config); err != nil {
+	if err := uc.ensureNamespace(ctx, scope.ReservedName, bistNamespace); err != nil {
 		return nil, err
 	}
 
 	// name
 	if name == "" {
-		name = fmt.Sprintf("bist-%s", generateHashedName(strconv.FormatInt(time.Now().UnixNano(), 10)))
-	}
-
-	// labels
-	labelName := strings.Split(bistLabel, "=")
-	labels := map[string]string{
-		labelName[0]: labelName[1],
+		name = fmt.Sprintf("bist-%s", newHashedName(strconv.FormatInt(time.Now().UnixNano(), 10)))
 	}
 
 	// annotations
@@ -86,48 +87,58 @@ func (uc *BISTUseCase) CreateFIOResult(ctx context.Context, name, createdBy stri
 		Target: target,
 		Input:  input,
 	})
-	annotations := map[string]string{
-		bistAnnotationCreatedBy: createdBy,
-		bistAnnotationKind:      bistKindFIO,
-		bistAnnotationFIO:       string(fio),
-	}
 
-	// spec
-	var spec *JobSpec
+	// job
+	job := &workload.Job{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: bistNamespace,
+			Labels: map[string]string{
+				release.TypeLabel: "bist",
+				kindLabel:         kindFIO,
+				createdByLabel:    createdBy,
+			},
+			Annotations: map[string]string{
+				fioAnnotation: string(fio),
+			},
+		},
+	}
 
 	// block
 	block := target.Ceph
 	if block != nil {
-		// pool & image
-		if err := uc.ensurePool(ctx, block.Scope, block.Facility, bistBlockPool); err != nil {
+		if err := uc.ensurePool(ctx, block.Scope, bistBlockPool); err != nil {
 			return nil, err
 		}
-		if err := uc.ensureImage(ctx, block.Scope, block.Facility, bistBlockPool, bistBlockImage); err != nil {
+
+		if err := uc.ensureImage(ctx, block.Scope, bistBlockPool, bistBlockImage); err != nil {
 			return nil, err
 		}
-		// config map
-		configMapName := fmt.Sprintf("ceph-conf-%s", generateHashedName(block.Scope+block.Facility))
-		if err := uc.ensureConfigMap(ctx, config, block.Scope, block.Facility, configMapName); err != nil {
+
+		configMapName := fmt.Sprintf("ceph-conf-%s", newHashedName(block.Scope))
+		if err := uc.ensureConfigMap(ctx, scope.ReservedName, bistNamespace, configMapName); err != nil {
 			return nil, err
 		}
-		spec = uc.blockJobSpec(configMapName, input)
+
+		job.Spec = uc.blockJobSpec(configMapName, input)
 	}
 
 	// nfs
 	nfs := target.NFS
 	if nfs != nil {
-		spec = uc.nfsJobSpec(nfs, input)
+		job.Spec = uc.nfsJobSpec(nfs, input)
 	}
 
 	// job
-	job, err := uc.kubeBatch.CreateJob(ctx, config, bistNamespace, name, labels, annotations, spec)
+	job, err := uc.job.Create(ctx, scope.ReservedName, bistNamespace, job)
 	if err != nil {
 		return nil, err
 	}
-	return uc.toBISTResult(ctx, config, job)
+
+	return uc.toResult(ctx, job)
 }
 
-func (uc *BISTUseCase) blockJobSpec(configMapName string, input *FIOInput) *JobSpec {
+func (uc *BISTUseCase) blockJobSpec(configMapName string, input *FIOInput) batchv1.JobSpec {
 	bistJobBackoffLimit := int32(2)
 	privileged := true
 	env := []corev1.EnvVar{
@@ -149,7 +160,8 @@ func (uc *BISTUseCase) blockJobSpec(configMapName string, input *FIOInput) *JobS
 		{Name: "BENCHMARK_ARGS_FIO_CREATE_SERIALIZE", Value: "0"},
 		{Name: "BENCHMARK_ARGS_FIO_RUNTIME", Value: strconv.FormatInt(input.RunTime, 10)},
 	}
-	return &JobSpec{
+
+	return batchv1.JobSpec{
 		BackoffLimit: &bistJobBackoffLimit,
 		Template: corev1.PodTemplateSpec{
 			Spec: corev1.PodSpec{
@@ -213,7 +225,7 @@ func (uc *BISTUseCase) blockJobSpec(configMapName string, input *FIOInput) *JobS
 	}
 }
 
-func (uc *BISTUseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) *JobSpec {
+func (uc *BISTUseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) batchv1.JobSpec {
 	bistJobBackoffLimit := int32(2)
 	privileged := true
 	env := []corev1.EnvVar{
@@ -235,7 +247,8 @@ func (uc *BISTUseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) *JobSpe
 		{Name: "BENCHMARK_ARGS_FIO_CREATE_SERIALIZE", Value: "0"},
 		{Name: "BENCHMARK_ARGS_FIO_RUNTIME", Value: strconv.FormatInt(input.RunTime, 10)},
 	}
-	return &JobSpec{
+
+	return batchv1.JobSpec{
 		BackoffLimit: &bistJobBackoffLimit,
 		Template: corev1.PodTemplateSpec{
 			Spec: corev1.PodSpec{
@@ -253,4 +266,135 @@ func (uc *BISTUseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) *JobSpe
 			},
 		},
 	}
+}
+
+func (uc *BISTUseCase) ensureNamespace(ctx context.Context, scope, namespace string) error {
+	_, err := uc.namespace.Get(ctx, scope, namespace)
+	if apierrors.IsNotFound(err) {
+		namespace := &cluster.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: bistNamespace,
+			},
+		}
+
+		_, err := uc.namespace.Create(ctx, scope, namespace)
+		return err
+	}
+
+	return err
+}
+
+func (uc *BISTUseCase) ensureConfigMap(ctx context.Context, scope, namespace, name string) error {
+	_, err := uc.configMap.Get(ctx, scope, namespace, name)
+	if apierrors.IsNotFound(err) {
+		host, id, key, err := uc.node.Config(scope)
+		if err != nil {
+			return err
+		}
+
+		configMap := &corev1.ConfigMap{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      name,
+				Namespace: namespace,
+			},
+			Data: map[string]string{
+				"ceph.conf": fmt.Sprintf(`[global]\nmon host = %s\nfsid = %s\nkey = %s`, host, id, key),
+			},
+		}
+
+		_, err = uc.configMap.Create(ctx, scope, namespace, configMap)
+		return err
+	}
+
+	return err
+}
+
+func (uc *BISTUseCase) ensurePool(ctx context.Context, scope, pool string) error {
+	pools, err := uc.pool.List(ctx, scope, "")
+	if err != nil {
+		return err
+	}
+
+	for i := range pools {
+		if pools[i].Name == pool {
+			return nil
+		}
+	}
+
+	if err := uc.pool.Create(ctx, scope, pool, "replicated"); err != nil {
+		return err
+	}
+
+	return uc.pool.Enable(ctx, scope, pool, "rbd")
+}
+
+func (uc *BISTUseCase) ensureImage(ctx context.Context, scope, pool, image string) error {
+	images, err := uc.image.List(ctx, scope, pool)
+	if err != nil {
+		return err
+	}
+
+	for i := range images {
+		if images[i].Name == image {
+			return nil
+		}
+	}
+
+	objectSizeBytes := 4194304
+	stripeUnitBytes := uint64(4194304) //nolint:mnd // default 4MB
+	stripeCount := uint64(1)
+	size := uint64(10737418240) //nolint:mnd // default 10GB
+	order := int(math.Round(math.Log2(float64(objectSizeBytes))))
+	features := uint64(61) // 	Layering, ExclusiveLock, ObjectMap, FastDiff, DeepFlatten
+
+	return uc.image.Create(ctx, scope, pool, image, order, stripeUnitBytes, stripeCount, size, features)
+}
+
+func (uc *BISTUseCase) unmarshalFIOOutput(ctx context.Context, job *workload.Job, val **FIOOutput) error {
+	logs, err := uc.fetchLogs(ctx, job)
+	if err != nil {
+		return err
+	}
+
+	jobs, ok := logs["jobs"].([]any)
+	if ok {
+		data, err := json.Marshal(jobs[0])
+		if err != nil {
+			return err
+		}
+
+		return json.Unmarshal(data, &val)
+	}
+
+	return nil
+}
+
+func (uc *BISTUseCase) toFIO(ctx context.Context, job *workload.Job) (*FIO, error) {
+	fio := &FIO{}
+
+	// target & input
+	if err := json.Unmarshal([]byte(job.Annotations[fioAnnotation]), fio); err != nil {
+		return nil, err
+	}
+
+	// output
+	if err := uc.unmarshalFIOOutput(ctx, job, &fio.Output); err != nil {
+		return nil, err
+	}
+
+	if fio.Output != nil {
+		if fio.Output.Read != nil && fio.Output.Read.IOBytes == 0 {
+			fio.Output.Read = nil
+		}
+
+		if fio.Output.Write != nil && fio.Output.Write.IOBytes == 0 {
+			fio.Output.Write = nil
+		}
+
+		if fio.Output.Trim != nil && fio.Output.Trim.IOBytes == 0 {
+			fio.Output.Trim = nil
+		}
+	}
+
+	return fio, nil
 }

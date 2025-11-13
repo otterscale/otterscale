@@ -1,4 +1,4 @@
-package core
+package bist
 
 import (
 	"context"
@@ -9,7 +9,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/otterscale/otterscale/internal/core/application/release"
+	"github.com/otterscale/otterscale/internal/core/application/workload"
+	"github.com/otterscale/otterscale/internal/core/scope"
+	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type Warp struct {
@@ -24,15 +29,14 @@ type WarpTarget struct {
 }
 
 type WarpTargetInternal struct {
-	Type     string `json:"type"`
-	Scope    string `json:"scope"`
-	Facility string `json:"facility"`
-	Name     string `json:"name"`
-	Endpoint string `json:"endpoint"`
+	Type  string `json:"type"`
+	Scope string `json:"scope"`
+	Name  string `json:"name"`
+	Host  string `json:"host"`
 }
 
 type WarpTargetExternal struct {
-	Endpoint  string `json:"endpoint"`
+	Host      string `json:"host"`
 	AccessKey string `json:"access_key"`
 	SecretKey string `json:"secret_key"`
 }
@@ -66,26 +70,15 @@ type WarpOperation struct {
 	} `json:"throughput"`
 }
 
-func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy string, target WarpTarget, input *WarpInput) (*BISTResult, error) {
-	config, err := uc.newMicroK8sConfig()
-	if err != nil {
-		return nil, err
-	}
-
+func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy string, target WarpTarget, input *WarpInput) (*Result, error) {
 	// namespace
-	if err := uc.ensureNamespace(ctx, config); err != nil {
+	if err := uc.ensureNamespace(ctx, scope.ReservedName, bistNamespace); err != nil {
 		return nil, err
 	}
 
 	// name
 	if name == "" {
-		name = fmt.Sprintf("bist-%s", generateHashedName(strconv.FormatInt(time.Now().UnixNano(), 10)))
-	}
-
-	// labels
-	labelName := strings.Split(bistLabel, "=")
-	labels := map[string]string{
-		labelName[0]: labelName[1],
+		name = fmt.Sprintf("bist-%s", newHashedName(strconv.FormatInt(time.Now().UnixNano(), 10)))
 	}
 
 	// annotations
@@ -93,29 +86,41 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 		Target: target,
 		Input:  input,
 	})
-	annotations := map[string]string{
-		bistAnnotationCreatedBy: createdBy,
-		bistAnnotationKind:      bistKindWarp,
-		bistAnnotationWarp:      string(warp),
-	}
 
-	// spec
-	var spec *JobSpec
+	// job
+	job := &workload.Job{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: bistNamespace,
+			Labels: map[string]string{
+				release.TypeLabel: "bist",
+				kindLabel:         kindWarp,
+				createdByLabel:    createdBy,
+			},
+			Annotations: map[string]string{
+				warpAnnotation: string(warp),
+			},
+		},
+	}
 
 	// s3 internal
 	internal := target.Internal
 	if internal != nil {
 		switch internal.Type {
 		case "ceph":
-			spec, err = uc.warpCephObjectGatewayJobSpec(ctx, internal, input)
+			spec, err := uc.warpCephObjectGatewayJobSpec(ctx, internal, input)
 			if err != nil {
 				return nil, err
 			}
+			job.Spec = spec
+
 		case "minio":
-			spec, err = uc.warpMinIOJobSpec(ctx, internal, input)
+			spec, err := uc.warpMinIOJobSpec(ctx, internal, input)
 			if err != nil {
 				return nil, err
 			}
+			job.Spec = spec
+
 		default:
 			return nil, fmt.Errorf("unsupported internal kind %q", internal.Type)
 		}
@@ -124,54 +129,56 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 	// s3 external
 	external := target.External
 	if external != nil {
-		spec = uc.warpJobSpec(external, input)
+		job.Spec = uc.warpJobSpec(external, input)
 	}
 
 	// job
-	job, err := uc.kubeBatch.CreateJob(ctx, config, bistNamespace, name, labels, annotations, spec)
+	job, err := uc.job.Create(ctx, scope.ReservedName, bistNamespace, job)
 	if err != nil {
 		return nil, err
 	}
-	return uc.toBISTResult(ctx, config, job)
+
+	return uc.toResult(ctx, job)
 }
 
-func (uc *BISTUseCase) warpCephObjectGatewayJobSpec(ctx context.Context, target *WarpTargetInternal, input *WarpInput) (*JobSpec, error) {
-	config, err := cephConfig(ctx, uc.facility, uc.action, target.Scope, target.Facility)
-	if err != nil {
-		return nil, err
+func (uc *BISTUseCase) warpCephObjectGatewayJobSpec(ctx context.Context, target *WarpTargetInternal, input *WarpInput) (batchv1.JobSpec, error) {
+	accessKey, secretKey := uc.bucket.Key(target.Scope)
+
+	external := &WarpTargetExternal{
+		Host:      target.Host, // without protocol prefix
+		AccessKey: accessKey,
+		SecretKey: secretKey,
 	}
-	return uc.warpJobSpec(&WarpTargetExternal{
-		Endpoint:  target.Endpoint, // without protocol prefix
-		AccessKey: config.AccessKey,
-		SecretKey: config.SecretKey,
-	}, input), nil
+
+	return uc.warpJobSpec(external, input), nil
 }
 
-func (uc *BISTUseCase) warpMinIOJobSpec(ctx context.Context, target *WarpTargetInternal, input *WarpInput) (*JobSpec, error) {
+func (uc *BISTUseCase) warpMinIOJobSpec(ctx context.Context, target *WarpTargetInternal, input *WarpInput) (batchv1.JobSpec, error) {
 	tmp := strings.Split(target.Name, ".")
 	if len(tmp) != 2 {
-		return nil, fmt.Errorf("invalid name %q", target.Name)
+		return batchv1.JobSpec{}, fmt.Errorf("invalid name %q", target.Name)
 	}
-	kc, err := kubeConfig(ctx, uc.facility, uc.action, target.Scope, target.Facility)
+
+	secret, err := uc.secret.Get(ctx, target.Scope, tmp[0], tmp[1])
 	if err != nil {
-		return nil, err
+		return batchv1.JobSpec{}, err
 	}
-	secret, err := uc.kubeCore.GetSecret(ctx, kc, tmp[0], tmp[1])
-	if err != nil {
-		return nil, err
-	}
-	return uc.warpJobSpec(&WarpTargetExternal{
-		Endpoint:  target.Endpoint,
+
+	external := &WarpTargetExternal{
+		Host:      target.Host,
 		AccessKey: string(secret.Data["root-user"]),
 		SecretKey: string(secret.Data["root-password"]),
-	}, input), nil
+	}
+
+	return uc.warpJobSpec(external, input), nil
 }
 
-func (uc *BISTUseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput) *JobSpec {
+func (uc *BISTUseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput) batchv1.JobSpec {
 	bistJobBackoffLimit := int32(2)
+
 	env := []corev1.EnvVar{
 		{Name: "BENCHMARK_TYPE", Value: "s3"},
-		{Name: "BENCHMARK_ARGS_WARP_HOST", Value: target.Endpoint},
+		{Name: "BENCHMARK_ARGS_WARP_HOST", Value: target.Host},
 		{Name: "BENCHMARK_ARGS_WARP_ACCESS_KEY", Value: target.AccessKey},
 		{Name: "BENCHMARK_ARGS_WARP_SECRET_KEY", Value: target.SecretKey},
 		{Name: "BENCHMARK_ARGS_WARP_ACTION", Value: input.Operation},
@@ -179,10 +186,12 @@ func (uc *BISTUseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput)
 		{Name: "BENCHMARK_ARGS_WARP_CONCURRENT", Value: "2"},
 		{Name: "BENCHMARK_ARGS_WARP_OBJ.SIZE", Value: strconv.FormatInt(input.ObjectSize, 10)},
 	}
+
 	if input.Operation == http.MethodPut {
 		env = append(env, corev1.EnvVar{Name: "BENCHMARK_ARGS_WARP_OBJECTS", Value: strconv.FormatInt(input.ObjectCount, 10)})
 	}
-	return &JobSpec{
+
+	return batchv1.JobSpec{
 		BackoffLimit: &bistJobBackoffLimit,
 		Template: corev1.PodTemplateSpec{
 			Spec: corev1.PodSpec{
@@ -199,4 +208,34 @@ func (uc *BISTUseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput)
 			},
 		},
 	}
+}
+
+func (uc *BISTUseCase) unmarshalWarpOutput(ctx context.Context, job *workload.Job, val **WarpOutput) error {
+	logs, err := uc.fetchLogs(ctx, job)
+	if err != nil {
+		return err
+	}
+
+	data, err := json.Marshal(logs)
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal(data, &val)
+}
+
+func (uc *BISTUseCase) toWarp(ctx context.Context, job *workload.Job) (*Warp, error) {
+	warp := &Warp{}
+
+	// target & input
+	if err := json.Unmarshal([]byte(job.Annotations[warpAnnotation]), warp); err != nil {
+		return nil, err
+	}
+
+	// output
+	if err := uc.unmarshalWarpOutput(ctx, job, &warp.Output); err != nil {
+		return nil, err
+	}
+
+	return warp, nil
 }
