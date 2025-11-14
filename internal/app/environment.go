@@ -9,16 +9,16 @@ import (
 	pb "github.com/otterscale/otterscale/api/environment/v1"
 	"github.com/otterscale/otterscale/api/environment/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/config"
-	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core/environment"
 )
 
 type EnvironmentService struct {
 	pbconnect.UnimplementedEnvironmentServiceHandler
 
-	environment *core.EnvironmentUseCase
+	environment *environment.EnvironmentUseCase
 }
 
-func NewEnvironmentService(environment *core.EnvironmentUseCase) *EnvironmentService {
+func NewEnvironmentService(environment *environment.EnvironmentUseCase) *EnvironmentService {
 	return &EnvironmentService{
 		environment: environment,
 	}
@@ -31,6 +31,7 @@ func (s *EnvironmentService) CheckHealth(ctx context.Context, _ *pb.CheckHealthR
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.CheckHealthResponse{}
 	resp.SetResult(pb.CheckHealthResponse_Result(result))
 	return resp, nil
@@ -40,6 +41,7 @@ func (s *EnvironmentService) UpdateConfig(ctx context.Context, req *pb.UpdateCon
 	if err := s.environment.UpdateConfig(ctx, toConfig(req)); err != nil {
 		return nil, err
 	}
+
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
@@ -49,6 +51,7 @@ func (s *EnvironmentService) GetPrometheus(ctx context.Context, _ *pb.GetPrometh
 	if err != nil {
 		return nil, err
 	}
+
 	resp := toProtoPrometheus()
 	return resp, nil
 }

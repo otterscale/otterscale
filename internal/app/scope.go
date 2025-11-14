@@ -5,16 +5,16 @@ import (
 
 	pb "github.com/otterscale/otterscale/api/scope/v1"
 	"github.com/otterscale/otterscale/api/scope/v1/pbconnect"
-	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
 type ScopeService struct {
 	pbconnect.UnimplementedScopeServiceHandler
 
-	scope *core.ScopeUseCase
+	scope *scope.ScopeUseCase
 }
 
-func NewScopeService(scope *core.ScopeUseCase) *ScopeService {
+func NewScopeService(scope *scope.ScopeUseCase) *ScopeService {
 	return &ScopeService{
 		scope: scope,
 	}
@@ -27,6 +27,7 @@ func (s *ScopeService) ListScopes(ctx context.Context, _ *pb.ListScopesRequest) 
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListScopesResponse{}
 	resp.SetScopes(toProtoScopes(scopes))
 	return resp, nil
@@ -37,19 +38,22 @@ func (s *ScopeService) CreateScope(ctx context.Context, req *pb.CreateScopeReque
 	if err != nil {
 		return nil, err
 	}
+
 	resp := toProtoScope(scope)
 	return resp, nil
 }
 
-func toProtoScopes(ss []core.Scope) []*pb.Scope {
+func toProtoScopes(ss []scope.Scope) []*pb.Scope {
 	ret := []*pb.Scope{}
+
 	for i := range ss {
 		ret = append(ret, toProtoScope(&ss[i]))
 	}
+
 	return ret
 }
 
-func toProtoScope(s *core.Scope) *pb.Scope {
+func toProtoScope(s *scope.Scope) *pb.Scope {
 	ret := &pb.Scope{}
 	ret.SetUuid(s.UUID)
 	ret.SetName(s.Name)
@@ -59,15 +63,19 @@ func toProtoScope(s *core.Scope) *pb.Scope {
 	ret.SetStatus(string(s.Status.Status))
 	ret.SetAgentVersion(s.AgentVersion.String())
 	ret.SetController(s.IsController)
+
 	for _, c := range s.Counts {
 		switch c.Entity {
 		case "machines":
 			ret.SetMachineCount(c.Count)
+
 		case "cores":
 			ret.SetCoreCount(c.Count)
+
 		case "units":
 			ret.SetUnitCount(c.Count)
 		}
 	}
+
 	return ret
 }

@@ -9,25 +9,27 @@ import (
 
 	pb "github.com/otterscale/otterscale/api/bootstrap/v1"
 	"github.com/otterscale/otterscale/api/bootstrap/v1/pbconnect"
-	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core/bootstrap"
 )
 
 type BootstrapService struct {
 	pbconnect.UnimplementedBootstrapServiceHandler
 
-	bootstrap *core.BootstrapUseCase
+	bootstrap *bootstrap.BootstrapUseCase
 
 	statusChan chan *pb.WatchStatusResponse
 	clients    sync.Map
 }
 
-func NewBootstrapService(bootstrap *core.BootstrapUseCase) *BootstrapService {
+func NewBootstrapService(bootstrap *bootstrap.BootstrapUseCase) *BootstrapService {
 	size := 100
 	svc := &BootstrapService{
 		bootstrap:  bootstrap,
 		statusChan: make(chan *pb.WatchStatusResponse, size),
 	}
+
 	go svc.broadcastStatus()
+
 	return svc
 }
 
@@ -56,6 +58,7 @@ func (s *BootstrapService) UpdateStatus(_ context.Context, req *pb.UpdateStatusR
 	status := s.bootstrap.LoadStatus()
 	select {
 	case s.statusChan <- toProtoWatchStatus(status):
+		// Successfully sent status update
 	default:
 		// Non-blocking send to avoid deadlock if channel is full
 	}
@@ -68,15 +71,17 @@ func (s *BootstrapService) broadcastStatus() {
 	for status := range s.statusChan {
 		s.clients.Range(func(key, _ any) bool {
 			stream := key.(*connect.ServerStream[pb.WatchStatusResponse])
+
 			if err := stream.Send(status); err != nil {
 				s.clients.Delete(stream)
 			}
+
 			return true
 		})
 	}
 }
 
-func toProtoWatchStatus(status *core.BootstrapStatus) *pb.WatchStatusResponse {
+func toProtoWatchStatus(status *bootstrap.Status) *pb.WatchStatusResponse {
 	ret := &pb.WatchStatusResponse{}
 	ret.SetPhase(status.Phase)
 	ret.SetMessage(status.Message)
