@@ -1,0 +1,74 @@
+package app
+
+import (
+	"github.com/google/wire"
+
+	"github.com/otterscale/otterscale/internal/core/application/chart"
+	"github.com/otterscale/otterscale/internal/core/application/cluster"
+	"github.com/otterscale/otterscale/internal/core/application/config"
+	"github.com/otterscale/otterscale/internal/core/application/release"
+	"github.com/otterscale/otterscale/internal/core/application/service"
+	"github.com/otterscale/otterscale/internal/core/application/storage"
+	"github.com/otterscale/otterscale/internal/core/application/workload"
+	"github.com/otterscale/otterscale/internal/core/bootstrap"
+	"github.com/otterscale/otterscale/internal/core/configuration"
+	"github.com/otterscale/otterscale/internal/core/configuration/bist"
+	"github.com/otterscale/otterscale/internal/core/environment"
+	"github.com/otterscale/otterscale/internal/core/facility"
+	"github.com/otterscale/otterscale/internal/core/facility/action"
+	"github.com/otterscale/otterscale/internal/core/facility/charm"
+	"github.com/otterscale/otterscale/internal/core/instance/cdi"
+	"github.com/otterscale/otterscale/internal/core/instance/vm"
+	"github.com/otterscale/otterscale/internal/core/instance/vmi"
+	"github.com/otterscale/otterscale/internal/core/instance/vms"
+	"github.com/otterscale/otterscale/internal/core/instance/vnc"
+	"github.com/otterscale/otterscale/internal/core/machine"
+	"github.com/otterscale/otterscale/internal/core/machine/tag"
+	"github.com/otterscale/otterscale/internal/core/model"
+	"github.com/otterscale/otterscale/internal/core/network"
+	"github.com/otterscale/otterscale/internal/core/orchestrator"
+	"github.com/otterscale/otterscale/internal/core/orchestrator/extension"
+	"github.com/otterscale/otterscale/internal/core/orchestrator/gpu"
+	"github.com/otterscale/otterscale/internal/core/orchestrator/standalone"
+	"github.com/otterscale/otterscale/internal/core/scope"
+	"github.com/otterscale/otterscale/internal/core/storage/block"
+	"github.com/otterscale/otterscale/internal/core/storage/file"
+	"github.com/otterscale/otterscale/internal/core/storage/object"
+	"github.com/otterscale/otterscale/internal/core/storage/pool"
+)
+
+var ProviderSet = wire.NewSet(
+	chart.NewChartUseCase,
+	cluster.NewClusterUseCase,
+	config.NewConfigUseCase,
+	release.NewReleaseUseCase,
+	service.NewServiceUseCase,
+	storage.NewStorageUseCase,
+	workload.NewWorkloadUseCase,
+	bootstrap.NewBootstrapUseCase,
+	configuration.NewConfigurationUseCase,
+	bist.NewBISTUseCase,
+	environment.NewEnvironmentUseCase,
+	facility.NewFacilityUseCase,
+	action.NewActionUseCase,
+	charm.NewCharmUseCase,
+	cdi.NewDataVolumeUseCase,
+	vm.NewVirtualMachineUseCase,
+	vmi.NewVirtualMachineInstanceUseCase,
+	vms.NewVirtualMachineServiceUseCase,
+	vnc.NewVNCUseCase,
+	machine.NewMachineUseCase,
+	tag.NewTagUseCase,
+	model.NewModelUseCase,
+	network.NewNetworkUseCase,
+	orchestrator.NewOrchestratorUseCase,
+	extension.NewExtensionUseCase,
+	gpu.NewGPUUseCase,
+	standalone.NewStandaloneUseCase,
+	scope.NewScopeUseCase,
+	storage.NewStorageUseCase,
+	block.NewBlockUseCase,
+	file.NewFileUseCase,
+	object.NewObjectUseCase,
+	pool.NewPoolUseCase,
+)

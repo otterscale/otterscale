@@ -21,6 +21,12 @@ type ActionUseCase struct {
 	action ActionRepo
 }
 
+func NewActionUseCase(action ActionRepo) *ActionUseCase {
+	return &ActionUseCase{
+		action: action,
+	}
+}
+
 func (uc *ActionUseCase) ListActions(ctx context.Context, scope, appName string) ([]Action, error) {
 	return uc.action.List(ctx, scope, appName)
 }
