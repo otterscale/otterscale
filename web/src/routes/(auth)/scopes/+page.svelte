@@ -2,7 +2,6 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
-	import { derived, writable } from 'svelte/store';
 
 	import { resolve } from '$app/paths';
 	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
@@ -17,16 +16,12 @@
 
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
-
-	const scopes = writable<Scope[]>([]);
-	const filteredScopes = derived(scopes, ($scopes) =>
-		$scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name))
-	);
+	let scopes = $state<Scope[]>([]);
 
 	async function fetchScopes() {
 		try {
 			const response = await scopeClient.listScopes({});
-			scopes.set(response.scopes);
+			scopes = response.scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name));
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
 		}
@@ -42,7 +37,7 @@
 	}
 
 	function getScopeIndex(scopeName: string): number {
-		return $scopes.findIndex((scope) => scope.name === scopeName);
+		return scopes.findIndex((scope) => scope.name === scopeName);
 	}
 
 	let mounted = $state(false);
@@ -89,10 +84,10 @@
 
 	<!-- Scopes Grid -->
 	<div class="z-10 mx-auto grid w-full grid-cols-8 gap-4 px-4 py-10 sm:gap-6 xl:px-0 2xl:w-3/4">
-		{#each $filteredScopes as scope, index}
+		{#each scopes as scope, index (scope.name)}
 			<a
 				href={resolve(`/(auth)/scope/[scope]`, { scope: scope.name })}
-				class="group col-span-2 cursor-pointer {getCardColumnClass(index, $filteredScopes.length)}"
+				class="group col-span-2 cursor-pointer {getCardColumnClass(index, scopes.length)}"
 			>
 				<Card.Root>
 					<Card.Header class="gap-0">
