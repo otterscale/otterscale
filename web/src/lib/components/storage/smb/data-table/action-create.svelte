@@ -5,7 +5,7 @@
 	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import type { CreateSMBShareRequest, SMBShare_User } from '$lib/api/storage/v1/storage_pb';
+	import type { CreateSMBShareRequest } from '$lib/api/storage/v1/storage_pb';
 	import {
 		type SMBShare_ActiveDirectory,
 		type SMBShare_LocalUser,
@@ -18,10 +18,11 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
+
+	import CreateUser from './utils/create-user.svelte';
+	import CreateUsers from './utils/create-users.svelte';
 </script>
 
 <script lang="ts">
@@ -47,14 +48,12 @@
 		mapToGuest: SMBShare_MapToGuest.NEVER
 	} as CreateSMBShareRequest;
 	const defaults_activeDirectory = {} as SMBShare_ActiveDirectory;
-	const defaults_localUser = { users: [] as SMBShare_User[] } as SMBShare_LocalUser;
 	const defaults_validUsers = [] as string[];
-	const defaults_user = {} as SMBShare_User;
+	const defaults_localUser = {} as SMBShare_LocalUser;
 
 	let request = $state(defaults);
 	let request_activeDirectory = $state(defaults_activeDirectory);
 	let request_localUser = $state(defaults_localUser);
-	let request_user = $state(defaults_user);
 	let request_validUsers = $state(defaults_validUsers);
 
 	function reset_activeDirectory() {
@@ -63,9 +62,6 @@
 	function reset_localUser() {
 		request_localUser = defaults_localUser;
 	}
-	function reset_user() {
-		request_user = defaults_user;
-	}
 	function reset_validUsers() {
 		request_validUsers = defaults_validUsers;
 	}
@@ -73,7 +69,6 @@
 		request = defaults;
 		reset_activeDirectory();
 		reset_localUser();
-		reset_user();
 		reset_validUsers();
 	}
 
@@ -86,6 +81,8 @@
 	let isGuestOKInvalid = $state(false);
 	let isRealmInvalid = $state(false);
 	let isJoinSourceInvalid = $state(false);
+	let isLocalUsersInvalid = $state(false);
+	let isValidUsersInvalid = $state(false);
 	const invalid = $derived(
 		isNameInvalid ||
 			isSizeInvalid ||
@@ -98,7 +95,8 @@
 				(isRealmInvalid || isJoinSourceInvalid)) ||
 			(request.securityMode === SMBShare_SecurityMode.USER &&
 				request.auth.case === 'localUser' &&
-				request.auth.value.users.length === 0)
+				isLocalUsersInvalid) ||
+			isValidUsersInvalid
 	);
 
 	$effect(() => {
@@ -239,102 +237,15 @@
 					</Form.Field>
 					<Form.Field>
 						<Form.Label>{m.join_source()}</Form.Label>
-						<SingleInput.General
-							type="text"
-							bind:value={request_activeDirectory.joinSource}
+						<CreateUser
+							bind:user={request_activeDirectory.joinSource}
 							bind:invalid={isJoinSourceInvalid}
 						/>
 					</Form.Field>
 				{:else if request.securityMode === SMBShare_SecurityMode.USER}
 					<Form.Field>
 						<Form.Label>{m.users()}</Form.Label>
-						{#if request.auth.case === 'localUser' && request_localUser.users.length > 0}
-							<div class="rounded-lg border p-2">
-								{#each request_localUser.users as user, index (user.username)}
-									<div class="flex items-center gap-2 rounded-lg p-2">
-										<div>
-											<div
-												class={cn(
-													'flex size-8 items-center justify-center rounded-full border-2 transition-all duration-300',
-													request.validUsers.includes(user.username)
-														? 'border-green-500 bg-green-100 text-green-700'
-														: 'border-red-500 bg-red-100 text-red-700'
-												)}
-											>
-												<Tooltip.Provider>
-													<Tooltip.Root>
-														<Tooltip.Trigger>
-															<Icon
-																icon={request.validUsers.includes(user.username)
-																	? 'ph:user-check'
-																	: 'ph:user'}
-																class="size-5"
-															/>
-														</Tooltip.Trigger>
-														<Tooltip.Content>
-															{#if request.validUsers.includes(user.username)}
-																Accessible for SMB Authentication
-															{:else}
-																Not accessible for SMB Authentication
-															{/if}
-														</Tooltip.Content>
-													</Tooltip.Root>
-												</Tooltip.Provider>
-											</div>
-										</div>
-
-										<div class="flex flex-col gap-1">
-											<p class="text-xs text-muted-foreground">{m.user()}</p>
-											<p class="text-sm">{user.username}</p>
-										</div>
-
-										<div class="ml-auto">
-											<Button
-												variant="ghost"
-												size="icon"
-												onclick={() => {
-													if (request.auth.case === 'localUser') {
-														request_localUser.users.splice(index, 1);
-													}
-												}}
-											>
-												<Icon icon="ph:trash" class="size-4 text-destructive" />
-											</Button>
-										</div>
-									</div>
-								{/each}
-							</div>
-						{:else}
-							<div
-								class="rounded-lg border border-red-300 bg-destructive/10 p-4 text-center text-xs text-destructive"
-							>
-								There is no user. Please add users for this share.
-							</div>
-						{/if}
-						<Form.Label>{m.name()}</Form.Label>
-						<SingleInput.General
-							type="text"
-							bind:value={request_user.username}
-							required={request_localUser.users.length === 0}
-						/>
-						<Form.Label>{m.password()}</Form.Label>
-						<SingleInput.General
-							type="password"
-							bind:value={request_user.password}
-							required={request_localUser.users.length === 0}
-						/>
-
-						<Button
-							onclick={() => {
-								if (request.auth.case === 'localUser') {
-									request_localUser.users = [...request_localUser.users, request_user];
-									request_validUsers = [...request_validUsers, request_user.username];
-									reset_user();
-								}
-							}}
-						>
-							<Icon icon="ph:plus" class="size-4" />
-						</Button>
+						<CreateUsers bind:users={request_localUser.users} bind:invalid={isLocalUsersInvalid} />
 					</Form.Field>
 				{/if}
 				<Form.Field>
@@ -375,10 +286,21 @@
 				<Form.Field>
 					<Form.Label>{m.valid_users()}</Form.Label>
 
-					<MultipleInput.Root type="text" bind:values={request.validUsers}>
+					<MultipleInput.Root
+						type="text"
+						icon="ph:user"
+						bind:values={request.validUsers}
+						bind:invalid={isValidUsersInvalid}
+						required
+					>
 						<MultipleInput.Viewer />
 						<MultipleInput.Controller>
 							<MultipleInput.Input />
+							{#if request.securityMode === SMBShare_SecurityMode.USER}
+								<MultipleInput.Import
+									values={request_localUser.users.map((user) => user.username)}
+								/>
+							{/if}
 							<MultipleInput.Add />
 							<MultipleInput.Clear />
 						</MultipleInput.Controller>

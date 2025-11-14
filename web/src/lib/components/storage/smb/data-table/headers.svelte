@@ -67,19 +67,19 @@
 {/snippet}
 
 {#snippet browsable()}
-	<Layout.Header class="justify-start">
+	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>{m.browsable()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet read_only()}
-	<Layout.Header class="justify-start">
+	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>{m.read_only()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet guest_ok()}
-	<Layout.Header class="justify-start">
+	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>{m.guest_accessible()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

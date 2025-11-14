@@ -39,8 +39,6 @@
 		reloadManager: ReloadManager;
 	} = $props();
 
-	const columns = getColumns(scope, facility, namespace, reloadManager);
-
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -51,7 +49,9 @@
 		get data() {
 			return $smbShares;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, facility, namespace, reloadManager)
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -178,11 +178,7 @@
 						{/each}
 					</Table.Row>
 				{:else}
-					<Table.Row>
-						<Table.Cell colspan={columns.length}>
-							<Empty {table} />
-						</Table.Cell>
-					</Table.Row>
+					<Empty {table} />
 				{/each}
 			</Table.Body>
 		</Table.Root>

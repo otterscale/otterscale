@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
 	import type { SMBShare } from '$lib/api/storage/v1/storage_pb';
@@ -6,6 +7,7 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import { TagGroup } from '$lib/components/tag-group';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
 
@@ -58,19 +60,19 @@
 {/snippet}
 
 {#snippet name(row: Row<SMBShare>)}
-	<Layout.Cell class="items-left">
+	<Layout.Cell class="items-start">
 		{row.original.name}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet namespace(row: Row<SMBShare>)}
-	<Layout.Cell class="items-left">
+	<Layout.Cell class="items-start">
 		{row.original.namespace}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet status(row: Row<SMBShare>)}
-	<Layout.Cell class="items-left">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.status}
 		</Badge>
@@ -86,45 +88,44 @@
 {/snippet}
 
 {#snippet browsable(row: Row<SMBShare>)}
-	<Layout.Cell class="items-left">
-		{row.original.browsable}
+	<Layout.Cell class="items-end">
+		{@const value = row.original.browsable}
+		<Icon icon={value ? 'ph:check' : 'ph:x'} class={value ? 'text-green-500' : 'text-red-500'} />
 	</Layout.Cell>
 {/snippet}
 
 {#snippet read_only(row: Row<SMBShare>)}
-	<Layout.Cell class="items-left">
-		{row.original.readOnly}
+	<Layout.Cell class="items-end">
+		{@const value = row.original.readOnly}
+		<Icon icon={value ? 'ph:check' : 'ph:x'} class={value ? 'text-green-500' : 'text-red-500'} />
 	</Layout.Cell>
 {/snippet}
 
 {#snippet guest_ok(row: Row<SMBShare>)}
-	<Layout.Cell class="items-left">
-		{row.original.guestOk}
+	<Layout.Cell class="items-end">
+		{@const value = row.original.guestOk}
+		<Icon icon={value ? 'ph:check' : 'ph:x'} class={value ? 'text-green-500' : 'text-red-500'} />
 	</Layout.Cell>
 {/snippet}
 
 {#snippet map_to_guest(row: Row<SMBShare>)}
-	<Layout.Cell class="items-left">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">{getMapToGuestLabel(row.original.mapToGuest)}</Badge>
 	</Layout.Cell>
 {/snippet}
 
 {#snippet security_mode(row: Row<SMBShare>)}
-	<Layout.Cell class="items-left">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">{getSecurityModeLabel(row.original.securityMode)}</Badge>
 	</Layout.Cell>
 {/snippet}
 
 {#snippet valid_users(row: Row<SMBShare>)}
-	<Layout.Cell class="items-right">
+	<Layout.Cell class="items-start">
 		{#if row.original.validUsers && row.original.validUsers.length > 0}
-			<div class="flex flex-wrap gap-1">
-				{#each row.original.validUsers as user (user)}
-					<Badge variant="outline">{user}</Badge>
-				{/each}
-			</div>
-		{:else}
-			<span class="text-sm text-muted-foreground">No users</span>
+			<TagGroup
+				items={row.original.validUsers.map((validUser) => ({ title: validUser, icon: 'ph:user' }))}
+			/>
 		{/if}
 	</Layout.Cell>
 {/snippet}
@@ -136,7 +137,7 @@
 	row: Row<SMBShare>;
 	reloadManager: ReloadManager;
 })}
-	<Layout.Cell class="items-right">
+	<Layout.Cell class="items-end">
 		<Actions
 			scope={data.scope}
 			facility={data.facility}
