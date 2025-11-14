@@ -104,9 +104,7 @@ func (uc *GPUUseCase) listRelations(ctx context.Context, scope, namespace, selec
 }
 
 func (uc *GPUUseCase) buildRelations(pods []workload.Pod, nodes []cluster.Node, machines []machine.Machine) (*Relations, error) {
-
 	filteredMachines := uc.filterMachines(pods, machines)
-
 	filteredNodes := uc.filterNodes(pods, nodes)
 
 	gpuRelations, err := uc.buildGPURelations(filteredMachines, filteredNodes)

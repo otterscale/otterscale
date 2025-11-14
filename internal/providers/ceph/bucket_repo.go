@@ -8,7 +8,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/ceph/go-ceph/rgw/admin"
 	"github.com/otterscale/otterscale/internal/core/storage/object"
 )
@@ -57,7 +56,7 @@ func (r *bucketRepo) Create(ctx context.Context, scope, bucket string, acl objec
 
 	_, err = s3Client.CreateBucket(ctx, &s3.CreateBucketInput{
 		Bucket: &bucket,
-		ACL:    types.BucketCannedACL(acl),
+		ACL:    acl,
 	})
 	return err
 }
@@ -139,7 +138,7 @@ func (r *bucketRepo) UpdateACL(ctx context.Context, scope, bucket string, acl ob
 
 	_, err = s3Client.PutBucketAcl(ctx, &s3.PutBucketAclInput{
 		Bucket: &bucket,
-		ACL:    types.BucketCannedACL(acl),
+		ACL:    acl,
 	})
 	return err
 }

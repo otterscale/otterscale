@@ -87,7 +87,7 @@ func toProtoFacilityUnit(name string, s *facility.UnitStatus, machineMap map[str
 	ret.SetAgentStatus(toProtoFacilityStatus(&s.AgentStatus))
 	ret.SetWorkloadStatus(toProtoFacilityStatus(&s.WorkloadStatus))
 	ret.SetLeader(s.Leader)
-	ret.SetMachineId(string(machineMap[s.Machine].SystemID))
+	ret.SetMachineId(machineMap[s.Machine].SystemID)
 	ret.SetHostname(machineMap[s.Machine].Hostname)
 	ret.SetIpAddress(s.Address + s.PublicAddress)
 	ret.SetPorts(s.OpenedPorts)

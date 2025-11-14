@@ -398,7 +398,6 @@ func toProtoVirtualMachineDiskVolumeSource(v *vm.VirtualMachineVolumeSource) *pb
 	if v.DataVolume != nil {
 		ret.SetType(pb.VirtualMachine_Disk_Volume_Source_DATA_VOLUME)
 		ret.SetData(v.DataVolume.Name)
-
 	} else if v.CloudInitNoCloud != nil {
 		ret.SetType(pb.VirtualMachine_Disk_Volume_Source_CLOUD_INIT_NO_CLOUD)
 		ret.SetData(v.CloudInitNoCloud.UserData)
@@ -477,10 +476,10 @@ func toProtoVirtualMachines(vmds []vm.VirtualMachineData, its []vmi.VirtualMachi
 
 func toProtoVirtualMachine(vmd *vm.VirtualMachineData, its []vmi.VirtualMachineInstanceTypeData) *pb.VirtualMachine {
 	ret := &pb.VirtualMachine{}
-	ret.SetName(vmd.VirtualMachine.Name)
-	ret.SetNamespace(vmd.VirtualMachine.Namespace)
+	ret.SetName(vmd.Name)
+	ret.SetNamespace(vmd.Namespace)
 
-	instanceType := vmd.VirtualMachine.Spec.Instancetype
+	instanceType := vmd.Spec.Instancetype
 
 	if instanceType != nil {
 		for _, it := range its {

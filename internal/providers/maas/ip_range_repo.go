@@ -47,7 +47,7 @@ func (r *ipRangeRepo) Create(_ context.Context, subnetID int, startIP, endIP, co
 	return client.IPRanges.Create(params)
 }
 
-func (r *ipRangeRepo) Update(ctx context.Context, id int, startIP, endIP, comment string) (*network.IPRange, error) {
+func (r *ipRangeRepo) Update(_ context.Context, id int, startIP, endIP, comment string) (*network.IPRange, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err

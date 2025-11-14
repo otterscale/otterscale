@@ -35,7 +35,6 @@ func (uc *OrchestratorUseCase) ListKubernetesNodeLabels(ctx context.Context, sco
 	}
 
 	return node.Labels, nil
-
 }
 
 func (uc *OrchestratorUseCase) UpdateKubernetesNodeLabels(ctx context.Context, scope, hostname string, labels map[string]string) (map[string]string, error) {

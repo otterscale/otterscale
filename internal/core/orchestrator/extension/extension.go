@@ -81,7 +81,6 @@ func (uc *ExtensionUseCase) UpgradeExtensions(ctx context.Context, scope string,
 }
 
 func (uc *ExtensionUseCase) listExtensions(ctx context.Context, scope string, bases []base) ([]Extension, error) {
-
 	versions := sync.Map{}
 	releases := sync.Map{}
 

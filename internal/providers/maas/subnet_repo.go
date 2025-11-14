@@ -39,7 +39,7 @@ func (r *subnetRepo) Get(_ context.Context, id int) (*network.Subnet, error) {
 	return client.Subnet.Get(id)
 }
 
-func (r *subnetRepo) Create(ctx context.Context, fabricID, vlanID int, cidr, gatewayIP string, dnsServers []string) (*network.Subnet, error) {
+func (r *subnetRepo) Create(_ context.Context, fabricID, vlanID int, cidr, gatewayIP string, dnsServers []string) (*network.Subnet, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func (r *subnetRepo) Create(ctx context.Context, fabricID, vlanID int, cidr, gat
 	return client.Subnets.Create(params)
 }
 
-func (r *subnetRepo) Update(ctx context.Context, id int, name, cidr, gatewayIP string, dnsServers []string, description string, allowDNSResolution bool) (*network.Subnet, error) {
+func (r *subnetRepo) Update(_ context.Context, id int, name, cidr, gatewayIP string, dnsServers []string, description string, allowDNSResolution bool) (*network.Subnet, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err

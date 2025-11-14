@@ -40,7 +40,6 @@ func (r *machineRepo) Get(_ context.Context, id string) (*machine.Machine, error
 	}
 
 	return client.Machine.Get(id)
-
 }
 
 func (r *machineRepo) Release(_ context.Context, id string, force bool) (*machine.Machine, error) {

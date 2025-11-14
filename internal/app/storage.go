@@ -82,11 +82,6 @@ func (s *StorageService) ListPools(ctx context.Context, req *pb.ListPoolsRequest
 }
 
 func (s *StorageService) CreatePool(ctx context.Context, req *pb.CreatePoolRequest) (*pb.Pool, error) {
-	apps := []string{}
-	for _, app := range req.GetApplications() {
-		apps = append(apps, app)
-	}
-
 	pool, err := s.storage.CreatePool(ctx,
 		req.GetScope(),
 		req.GetPoolName(),
@@ -95,7 +90,7 @@ func (s *StorageService) CreatePool(ctx context.Context, req *pb.CreatePoolReque
 		req.GetReplicatedSize(),
 		req.GetQuotaBytes(),
 		req.GetQuotaObjects(),
-		apps,
+		req.GetApplications(),
 	)
 	if err != nil {
 		return nil, err
