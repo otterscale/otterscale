@@ -2,12 +2,35 @@ package vmi
 
 import (
 	"context"
+	"fmt"
+
+	"github.com/google/uuid"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	corev1 "kubevirt.io/api/core/v1"
 )
 
+// VirtualMachineInstanceMigration represents a KubeVirt VirtualMachineInstanceMigration resource.
+type VirtualMachineInstanceMigration = corev1.VirtualMachineInstanceMigration
+
 type VirtualMachineInstanceMigrationRepo interface {
-	Migrate(ctx context.Context, scope, namespace, name, hostname string) error
+	Create(ctx context.Context, scope, namespace string, vmim *VirtualMachineInstanceMigration) (*VirtualMachineInstanceMigration, error)
 }
 
-func (uc *VirtualMachineInstanceUseCase) MigrateInstance(ctx context.Context, scope, namespace, name, hostname string) error {
-	return uc.virtualMachineInstanceMigration.Migrate(ctx, scope, namespace, name, hostname)
+func (uc *VirtualMachineInstanceUseCase) MigrateInstance(ctx context.Context, scope, namespace, name, hostname string) (*VirtualMachineInstanceMigration, error) {
+	return uc.virtualMachineInstanceMigration.Create(ctx, scope, namespace, uc.buildVirtualMachineInstanceMigration(namespace, name, hostname))
+}
+
+func (uc *VirtualMachineInstanceUseCase) buildVirtualMachineInstanceMigration(namespace, name, hostname string) *VirtualMachineInstanceMigration {
+	return &corev1.VirtualMachineInstanceMigration{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fmt.Sprintf("%s-migration-%s", name, uuid.New().String()),
+			Namespace: namespace,
+		},
+		Spec: corev1.VirtualMachineInstanceMigrationSpec{
+			VMIName: name,
+			AddedNodeSelector: map[string]string{
+				"kubernetes.io/hostname": hostname,
+			},
+		},
+	}
 }

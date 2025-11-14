@@ -3,13 +3,18 @@ package cdi
 import (
 	"context"
 	"encoding/json"
+	"strconv"
 
 	"golang.org/x/sync/errgroup"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	cdiv1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 
 	"github.com/otterscale/otterscale/internal/core/application/storage"
 )
+
+const DataVolumeBootImageLabel = "otterscale.com/data-volume.boot-image"
 
 type DataVolumeSourceType int64
 
@@ -28,9 +33,9 @@ type DataVolumeStorage struct {
 }
 
 type DataVolumeRepo interface {
-	List(ctx context.Context, scope, namespace string, bootImage bool) ([]DataVolume, error)
+	List(ctx context.Context, scope, namespace, selector string) ([]DataVolume, error)
 	Get(ctx context.Context, scope, namespace, name string) (*DataVolume, error)
-	Create(ctx context.Context, scope, namespace, name string, srcType DataVolumeSourceType, srcData string, size int64, bootImage bool) (*DataVolume, error)
+	Create(ctx context.Context, scope, namespace string, dv *DataVolume) (*DataVolume, error)
 	Delete(ctx context.Context, scope, namespace, name string) error
 }
 
@@ -58,7 +63,9 @@ func (uc *DataVolumeUseCase) ListDataVolumes(ctx context.Context, scope, namespa
 	eg, egctx := errgroup.WithContext(ctx)
 
 	eg.Go(func() error {
-		v, err := uc.dataVolume.List(ctx, scope, namespace, bootImage)
+		selector := DataVolumeBootImageLabel + "=" + strconv.FormatBool(bootImage)
+
+		v, err := uc.dataVolume.List(ctx, scope, namespace, selector)
 		if err == nil {
 			dataVolumes = v
 		}
@@ -174,7 +181,7 @@ func (uc *DataVolumeUseCase) GetDataVolume(ctx context.Context, scope, namespace
 }
 
 func (uc *DataVolumeUseCase) CreateDataVolume(ctx context.Context, scope, namespace, name string, srcType DataVolumeSourceType, srcData string, size int64, bootImage bool) (*DataVolumeStorage, error) {
-	dataVolume, err := uc.dataVolume.Create(ctx, scope, namespace, name, srcType, srcData, size, bootImage)
+	dataVolume, err := uc.dataVolume.Create(ctx, scope, namespace, uc.buildDataVolume(namespace, name, srcType, srcData, size, bootImage))
 	if err != nil {
 		return nil, err
 	}
@@ -202,4 +209,74 @@ func (uc *DataVolumeUseCase) ExtendDataVolume(ctx context.Context, scope, namesp
 
 	_, err = uc.persistentVolumeClaim.Patch(ctx, scope, namespace, name, data)
 	return err
+}
+
+func (uc *DataVolumeUseCase) buildDataVolume(namespace, name string, srcType DataVolumeSourceType, srcData string, size int64, bootImage bool) *DataVolume {
+	var (
+		source  *cdiv1beta1.DataVolumeSource
+		storage *cdiv1beta1.StorageSpec
+		pvc     *corev1.PersistentVolumeClaimSpec
+	)
+
+	switch srcType {
+	case DataVolumeSourceTypeBlank:
+		source = &cdiv1beta1.DataVolumeSource{
+			Blank: &cdiv1beta1.DataVolumeBlankImage{},
+		}
+
+		storage = &cdiv1beta1.StorageSpec{
+			AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
+			Resources: corev1.VolumeResourceRequirements{
+				Requests: corev1.ResourceList{
+					corev1.ResourceStorage: *resource.NewQuantity(size, resource.BinarySI),
+				},
+			},
+		}
+
+	case DataVolumeSourceTypeHTTP:
+		source = &cdiv1beta1.DataVolumeSource{
+			HTTP: &cdiv1beta1.DataVolumeSourceHTTP{URL: srcData},
+		}
+
+		storage = &cdiv1beta1.StorageSpec{
+			AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
+			Resources: corev1.VolumeResourceRequirements{
+				Requests: corev1.ResourceList{
+					corev1.ResourceStorage: *resource.NewQuantity(size, resource.BinarySI),
+				},
+			},
+		}
+
+	case DataVolumeSourceTypePVC:
+		source = &cdiv1beta1.DataVolumeSource{
+			PVC: &cdiv1beta1.DataVolumeSourcePVC{
+				Namespace: namespace,
+				Name:      srcData,
+			},
+		}
+
+		pvc = &corev1.PersistentVolumeClaimSpec{
+			AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
+			Resources: corev1.VolumeResourceRequirements{
+				Requests: corev1.ResourceList{
+					corev1.ResourceStorage: *resource.NewQuantity(size, resource.BinarySI),
+				},
+			},
+		}
+	}
+
+	return &cdiv1beta1.DataVolume{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+			Labels: map[string]string{
+				DataVolumeBootImageLabel: strconv.FormatBool(bootImage),
+			},
+		},
+		Spec: cdiv1beta1.DataVolumeSpec{
+			Source:  source,
+			Storage: storage,
+			PVC:     pvc,
+		},
+	}
 }

@@ -2,7 +2,9 @@ package vmi
 
 import (
 	"context"
+	"net/http"
 
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	corev1 "kubevirt.io/api/core/v1"
 )
 
@@ -10,7 +12,7 @@ import (
 type VirtualMachineInstance = corev1.VirtualMachineInstance
 
 type VirtualMachineInstanceRepo interface {
-	List(ctx context.Context, scope, namespace string) ([]VirtualMachineInstance, error)
+	List(ctx context.Context, scope, namespace, selector string) ([]VirtualMachineInstance, error)
 	Get(ctx context.Context, scope, namespace, name string) (*VirtualMachineInstance, error)
 	Pause(ctx context.Context, scope, namespace, name string) error
 	Resume(ctx context.Context, scope, namespace, name string) error
@@ -36,4 +38,9 @@ func (uc *VirtualMachineInstanceUseCase) PauseInstance(ctx context.Context, scop
 
 func (uc *VirtualMachineInstanceUseCase) ResumeInstance(ctx context.Context, scope, namespace, name string) error {
 	return uc.virtualMachineInstance.Resume(ctx, scope, namespace, name)
+}
+
+func (uc *VirtualMachineInstanceUseCase) isKeyNotFoundError(err error) bool {
+	statusErr, _ := err.(*k8serrors.StatusError)
+	return statusErr != nil && statusErr.Status().Code == http.StatusNotFound
 }

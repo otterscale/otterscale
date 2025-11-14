@@ -7,6 +7,7 @@ import (
 
 	"golang.org/x/sync/errgroup"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	corev1 "kubevirt.io/api/core/v1"
 
 	"github.com/otterscale/otterscale/internal/core/application/service"
@@ -15,6 +16,11 @@ import (
 )
 
 const VirtualMachineNameLabel = "otterscale.com/virtual-machine.name"
+
+const (
+	groupName = "kubevirt.io"
+	kind      = "VirtualMachine"
+)
 
 type (
 	// VirtualMachine represents a KubeVirt VirtualMachine resource.
@@ -38,10 +44,10 @@ type VirtualMachineData struct {
 }
 
 type VirtualMachineRepo interface {
-	List(ctx context.Context, scope, namespace string) ([]VirtualMachine, error)
+	List(ctx context.Context, scope, namespace, selector string) ([]VirtualMachine, error)
 	Get(ctx context.Context, scope, namespace, name string) (*VirtualMachine, error)
-	Create(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachine, error)
-	Update(ctx context.Context, scope, namespace string, virtualMachine *VirtualMachine) (*VirtualMachine, error)
+	Create(ctx context.Context, scope, namespace string, vm *VirtualMachine) (*VirtualMachine, error)
+	Update(ctx context.Context, scope, namespace string, vm *VirtualMachine) (*VirtualMachine, error)
 	Delete(ctx context.Context, scope, namespace, name string) error
 	Start(ctx context.Context, scope, namespace, name string) error
 	Stop(ctx context.Context, scope, namespace, name string) error
@@ -85,7 +91,7 @@ func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, scope,
 	eg, egctx := errgroup.WithContext(ctx)
 
 	eg.Go(func() error {
-		v, err := uc.virtualMachine.List(egctx, scope, namespace)
+		v, err := uc.virtualMachine.List(egctx, scope, namespace, "")
 		if err == nil {
 			virtualMachines = v
 		}
@@ -93,7 +99,7 @@ func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, scope,
 	})
 
 	eg.Go(func() error {
-		v, err := uc.virtualMachineInstance.List(egctx, scope, namespace)
+		v, err := uc.virtualMachineInstance.List(egctx, scope, namespace, "")
 		if err == nil {
 			instances = v
 		}
@@ -296,7 +302,7 @@ func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, scope, n
 }
 
 func (uc *VirtualMachineUseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {
-	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, name, instanceType, bootDataVolume, startupScript)
+	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript))
 	if err != nil {
 		return nil, err
 	}
@@ -513,6 +519,102 @@ func (uc *VirtualMachineUseCase) filterServices(namespace, name string, services
 	}
 
 	return ret
+}
+
+func (uc *VirtualMachineUseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript string) *VirtualMachine {
+	var (
+		runStrategy   = corev1.RunStrategyHalted
+		enabled       = true
+		bootOrder     = uint(1)
+		osDisk        = "os-disk"
+		cloudInitDisk = "cloud-init-disk"
+		nic1          = "nic1"
+	)
+
+	virtualMachine := &corev1.VirtualMachine{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+			Annotations: map[string]string{
+				"kubevirt.io/allow-pod-bridge-network-live-migration": "true",
+			},
+		},
+		Spec: corev1.VirtualMachineSpec{
+			RunStrategy: &runStrategy,
+			Instancetype: &corev1.InstancetypeMatcher{
+				Name: instanceType,
+			},
+			Template: &corev1.VirtualMachineInstanceTemplateSpec{
+				Spec: corev1.VirtualMachineInstanceSpec{
+					Domain: corev1.DomainSpec{
+						Devices: corev1.Devices{
+							Disks: []corev1.Disk{
+								{
+									Name: osDisk,
+									DiskDevice: corev1.DiskDevice{
+										Disk: &corev1.DiskTarget{
+											Bus: corev1.DiskBusVirtio,
+										},
+									},
+									BootOrder: &bootOrder,
+								},
+							},
+							Interfaces: []corev1.Interface{
+								{
+									Name: nic1,
+									InterfaceBindingMethod: corev1.InterfaceBindingMethod{
+										Bridge: &corev1.InterfaceBridge{},
+									},
+								},
+							},
+							TPM: &corev1.TPMDevice{
+								Enabled: &enabled,
+							},
+						},
+					},
+					Networks: []corev1.Network{
+						{
+							Name: nic1,
+							NetworkSource: corev1.NetworkSource{
+								Pod: &corev1.PodNetwork{},
+							},
+						},
+					},
+					Volumes: []corev1.Volume{
+						{
+							Name: osDisk,
+							VolumeSource: corev1.VolumeSource{
+								DataVolume: &corev1.DataVolumeSource{
+									Name: bootDataVolume,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	if startupScript != "" {
+		virtualMachine.Spec.Template.Spec.Domain.Devices.Disks = append(virtualMachine.Spec.Template.Spec.Domain.Devices.Disks, corev1.Disk{
+			Name: cloudInitDisk,
+			DiskDevice: corev1.DiskDevice{
+				Disk: &corev1.DiskTarget{
+					Bus: corev1.DiskBusVirtio,
+				},
+			},
+		})
+		virtualMachine.Spec.Template.Spec.Volumes = append(virtualMachine.Spec.Template.Spec.Volumes, corev1.Volume{
+			Name: cloudInitDisk,
+			VolumeSource: corev1.VolumeSource{
+				CloudInitNoCloud: &corev1.CloudInitNoCloudSource{
+					UserData: startupScript,
+				},
+			},
+		})
+	}
+
+	return virtualMachine
 }
 
 func (uc *VirtualMachineUseCase) isKeyNotFoundError(err error) bool {
