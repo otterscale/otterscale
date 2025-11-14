@@ -14,8 +14,7 @@ import (
 )
 
 const (
-	PodPhaseRunning = v1.PodRunning
-
+	PodPhaseRunning   = v1.PodRunning
 	PodPhaseSucceeded = v1.PodSucceeded
 )
 
