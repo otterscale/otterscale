@@ -114,7 +114,7 @@ func (uc *VirtualMachineInstanceUseCase) buildVirtualMachineInstanceType(namespa
 
 func (uc *VirtualMachineInstanceUseCase) toVirtualMachineInstanceType(vmcit *VirtualMachineClusterInstanceType) *VirtualMachineInstanceTypeData {
 	return &VirtualMachineInstanceTypeData{
-		VirtualMachineInstanceType: &VirtualMachineInstanceType{
+		Type: &VirtualMachineInstanceType{
 			TypeMeta:   vmcit.TypeMeta,
 			ObjectMeta: vmcit.ObjectMeta,
 			Spec:       vmcit.Spec,

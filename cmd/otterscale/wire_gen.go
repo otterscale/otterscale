@@ -29,6 +29,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/instance/vms"
 	"github.com/otterscale/otterscale/internal/core/instance/vnc"
 	"github.com/otterscale/otterscale/internal/core/machine"
+	"github.com/otterscale/otterscale/internal/core/machine/purge"
 	"github.com/otterscale/otterscale/internal/core/machine/tag"
 	"github.com/otterscale/otterscale/internal/core/model"
 	"github.com/otterscale/otterscale/internal/core/network"
@@ -117,7 +118,8 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	environmentUseCase := environment.NewEnvironmentUseCase(configConfig, actionRepo, scopeRepo)
 	environmentService := app.NewEnvironmentService(environmentUseCase)
 	facilityRepo := juju.NewFacilityRepo(jujuJuju)
-	facilityUseCase := facility.NewFacilityUseCase(facilityRepo)
+	machineRepo := maas.NewMachineRepo(maasMAAS)
+	facilityUseCase := facility.NewFacilityUseCase(facilityRepo, machineRepo)
 	actionUseCase := action.NewActionUseCase(actionRepo)
 	charmRepo := juju.NewCharmRepo(jujuJuju)
 	charmUseCase := charm.NewCharmUseCase(charmRepo)
@@ -134,7 +136,6 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	virtualMachineRestoreRepo := kubevirt.NewVirtualMachineRestoreRepo(kubeVirt)
 	virtualMachineSnapshotRepo := kubevirt.NewVirtualMachineSnapshotRepo(kubeVirt)
 	virtualMachineInstanceRepo := kubevirt.NewVirtualMachineInstanceRepo(kubeVirt)
-	machineRepo := maas.NewMachineRepo(maasMAAS)
 	virtualMachineUseCase := vm.NewVirtualMachineUseCase(virtualMachineRepo, virtualMachineCloneRepo, virtualMachineRestoreRepo, virtualMachineSnapshotRepo, virtualMachineInstanceRepo, serviceRepo, machineRepo)
 	virtualMachineInstanceTypeRepo := kubevirt.NewVirtualMachineInstanceTypeRepo(kubeVirt)
 	virtualMachineInstanceMigrationRepo := kubevirt.NewVirtualMachineInstanceMigrationRepo(kubeVirt)
@@ -147,10 +148,11 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	machineManagerRepo := juju.NewMachineManagerRepo(jujuJuju)
 	nodeDeviceRepo := maas.NewNodeDeviceRepo(maasMAAS)
 	orchestratorRepo := juju.NewOrchestratorRepo(jujuJuju)
-	machineUseCase := machine.NewMachineUseCase(eventRepo, machineRepo, machineManagerRepo, nodeDeviceRepo, orchestratorRepo, actionRepo, facilityRepo, provisionerRepo, scopeRepo)
+	machineUseCase := machine.NewMachineUseCase(eventRepo, machineRepo, machineManagerRepo, nodeDeviceRepo, orchestratorRepo, provisionerRepo, scopeRepo)
+	purgeUseCase := purge.NewPurgeUseCase(actionRepo, facilityRepo, machineRepo)
 	tagRepo := maas.NewTagRepo(maasMAAS)
 	tagUseCase := tag.NewTagUseCase(tagRepo)
-	machineService := app.NewMachineService(machineUseCase, tagUseCase)
+	machineService := app.NewMachineService(machineUseCase, purgeUseCase, tagUseCase)
 	modelUseCase := model.NewModelUseCase(chartRepo, deploymentRepo, releaseRepo, persistentVolumeClaimRepo)
 	modelService := app.NewModelService(modelUseCase)
 	fabricRepo := maas.NewFabricRepo(maasMAAS)

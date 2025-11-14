@@ -15,90 +15,15 @@ service FacilityService {
     };
   };
 
-  rpc GetFacility(GetFacilityRequest) returns (Facility) {
-    option (otterscale.api.feature) = {
-      name: "fac-general"
-    };
-  };
-
-  rpc CreateFacility(CreateFacilityRequest) returns (Facility) {
-    option (otterscale.api.feature) = {
-      name: "fac-debug"
-    };
-  };
-
-  rpc UpdateFacility(UpdateFacilityRequest) returns (Facility) {
-    option (otterscale.api.feature) = {
-      name: "fac-debug"
-    };
-  };
-
-  rpc DeleteFacility(DeleteFacilityRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {
-      name: "fac-debug"
-    };
-  };
-
   rpc ResolveFacilityUnitErrors(ResolveFacilityUnitErrorsRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
       name: "fac-general"
-    };
-  };
-
-  rpc ExposeFacility(ExposeFacilityRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {
-      name: "fac-debug"
-    };
-  };
-
-  rpc AddFacilityUnits(AddFacilityUnitsRequest) returns (AddFacilityUnitsResponse) {
-    option (otterscale.api.feature) = {
-      name: "fac-debug"
-    };
-  };
-
-  rpc ListActions(ListActionsRequest) returns (ListActionsResponse) {
-    option (otterscale.api.feature) = {
-      name: "fac-debug"
-    };
-  };
-
-  rpc DoAction(DoActionRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {
-      name: "fac-debug"
-    };
-  };
-
-  rpc ListCharms(ListCharmsRequest) returns (ListCharmsResponse) {
-    option (otterscale.api.feature) = {
-      name: "fac-debug"
-    };
-  };
-
-  rpc GetCharm(GetCharmRequest) returns (Facility.Charm) {
-    option (otterscale.api.feature) = {
-      name: "fac-debug"
-    };
-  };
-
-  rpc GetCharmMetadata(GetCharmMetadataRequest) returns (Facility.Charm.Metadata) {
-    option (otterscale.api.feature) = {
-      name: "fac-debug"
-    };
-  };
-
-  rpc ListCharmArtifacts(ListCharmArtifactsRequest) returns (ListCharmArtifactsResponse) {
-    option (otterscale.api.feature) = {
-      name: "fac-debug"
     };
   };
 }
 
 message Facility {
   message Charm {
-    message Metadata {
-      string config_yaml = 1;
-    }
     message Base {
       string name = 1;
       string channel = 2;
@@ -155,29 +80,8 @@ message Facility {
   string version = 12;
   int64 revision = 13;
   string channel = 14;
-  Charm.Metadata metadata = 21;
+  reserved 21;
   repeated Unit units = 31;
-}
-
-message Placement {
-  oneof type {
-    bool lxd = 1;
-    bool kvm = 2;
-    bool machine = 3;
-  }
-  string machine_id = 11;
-}
-
-message Constraint {
-  string architecture = 1;
-  uint64 cpu_cores = 2;
-  uint64 memory_mb = 3;
-  repeated string tags = 11;
-}
-
-message Tag {
-  string name = 1;
-  string comment = 2;
 }
 
 message ListFacilitiesRequest {
@@ -188,87 +92,7 @@ message ListFacilitiesResponse {
   repeated Facility facilities = 1;
 }
 
-message GetFacilityRequest {
-  string scope = 1;
-  string name = 2;
-}
-
-message CreateFacilityRequest {
-  string scope = 1;
-  string name = 2;
-  string config_yaml = 11;
-  string charm_name = 21;
-  string channel = 22;
-  int64 revision = 23;
-  int64 number = 24;
-  repeated Placement placements = 31;
-  Constraint constraint = 32;
-  bool trust = 41;
-}
-
-message UpdateFacilityRequest {
-  string scope = 1;
-  string name = 2;
-  string config_yaml = 11;
-}
-
-message DeleteFacilityRequest {
-  string scope = 1;
-  string name = 2;
-  bool destroy_storage = 11;
-  bool force = 12;
-}
-
 message ResolveFacilityUnitErrorsRequest {
   string scope = 1;
   string unit_name = 2;
-}
-
-message ExposeFacilityRequest {
-  string scope = 1;
-  string name = 2;
-}
-
-message AddFacilityUnitsRequest {
-  string scope = 1;
-  string name = 2;
-  int64 number = 11;
-  repeated Placement placements = 21;
-}
-
-message AddFacilityUnitsResponse {
-  repeated string unit_names = 1;
-}
-
-message ListActionsRequest {
-  string scope = 1;
-  string name = 2;
-}
-
-message ListActionsResponse {
-  repeated Facility.Action actions = 1;
-}
-
-message DoActionRequest {}
-
-message ListCharmsRequest {}
-
-message ListCharmsResponse {
-  repeated Facility.Charm charms = 1;
-}
-
-message GetCharmRequest {
-  string name = 1;
-}
-
-message GetCharmMetadataRequest {
-  string name = 1;
-}
-
-message ListCharmArtifactsRequest {
-  string name = 1;
-}
-
-message ListCharmArtifactsResponse {
-  repeated Facility.Charm.Artifact artifacts = 1;
 }

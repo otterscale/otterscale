@@ -2,7 +2,6 @@ package machine
 
 import (
 	"context"
-	"fmt"
 	"slices"
 	"strings"
 	"time"
@@ -11,8 +10,6 @@ import (
 	"github.com/jaypipes/pcidb"
 	"github.com/juju/juju/core/base"
 	"github.com/otterscale/otterscale/internal/core/configuration"
-	"github.com/otterscale/otterscale/internal/core/facility"
-	"github.com/otterscale/otterscale/internal/core/facility/action"
 	"github.com/otterscale/otterscale/internal/core/scope"
 	"golang.org/x/sync/errgroup"
 )
@@ -48,6 +45,8 @@ type MachineRepo interface {
 	Release(ctx context.Context, id string, force bool) (*Machine, error)
 	PowerOff(ctx context.Context, id string, comment string) (*Machine, error)
 	Commission(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool) (*Machine, error)
+	ExtractScope(m *Machine) (string, error)
+	ExtractJujuID(m *Machine) (string, error)
 }
 
 type MachineManagerRepo interface {
@@ -70,21 +69,17 @@ type MachineUseCase struct {
 	nodeDevice     NodeDeviceRepo
 	orchestrator   OrchestratorRepo
 
-	action      action.ActionRepo
-	facility    facility.FacilityRepo
 	provisioner configuration.ProvisionerRepo
 	scope       scope.ScopeRepo
 }
 
-func NewMachineUseCase(event EventRepo, machine MachineRepo, machineManager MachineManagerRepo, nodeDevice NodeDeviceRepo, orchestrator OrchestratorRepo, action action.ActionRepo, facility facility.FacilityRepo, provisioner configuration.ProvisionerRepo, scope scope.ScopeRepo) *MachineUseCase {
+func NewMachineUseCase(event EventRepo, machine MachineRepo, machineManager MachineManagerRepo, nodeDevice NodeDeviceRepo, orchestrator OrchestratorRepo, provisioner configuration.ProvisionerRepo, scope scope.ScopeRepo) *MachineUseCase {
 	return &MachineUseCase{
 		event:          event,
 		machine:        machine,
 		machineManager: machineManager,
 		nodeDevice:     nodeDevice,
 		orchestrator:   orchestrator,
-		action:         action,
-		facility:       facility,
 		provisioner:    provisioner,
 		scope:          scope,
 	}
@@ -129,7 +124,7 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]Mac
 	}
 
 	return slices.DeleteFunc(ret, func(machine MachineData) bool {
-		machineScope, _ := uc.extractScopeFromMachine(machine.Machine)
+		machineScope, _ := uc.machine.ExtractScope(machine.Machine)
 		return !strings.Contains(machineScope, scope) // empty
 	}), nil
 }
@@ -200,13 +195,7 @@ func (uc *MachineUseCase) CreateMachine(ctx context.Context, machineID, scopeNam
 }
 
 // Note: Delete from MAAS only.
-func (uc *MachineUseCase) DeleteMachine(ctx context.Context, id string, force, purgeDisk bool) error {
-	if purgeDisk {
-		if err := uc.purgeDisk(ctx, id); err != nil {
-			return err
-		}
-	}
-
+func (uc *MachineUseCase) DeleteMachine(ctx context.Context, id string, force bool) error {
 	_, err := uc.machine.Release(ctx, id, force)
 	return err
 }
@@ -227,41 +216,13 @@ func (uc *MachineUseCase) PowerOffMachine(ctx context.Context, id, comment strin
 	}, nil
 }
 
-func (uc *MachineUseCase) extractScopeFromMachine(m *Machine) (string, error) {
-	v, ok := m.WorkloadAnnotations["juju-machine-id"]
-	if !ok {
-		return "", fmt.Errorf("machine %q missing workload annotation juju-machine-id", m.Hostname)
-	}
-
-	token := strings.Split(v, "-")
-	if len(token) < 1 {
-		return "", fmt.Errorf("invalid juju-machine-id format for machine %q", m.Hostname)
-	}
-
-	return token[0], nil
-}
-
-func (uc *MachineUseCase) extractJujuIDFromMachine(m *Machine) (string, error) {
-	v, ok := m.WorkloadAnnotations["juju-machine-id"]
-	if !ok {
-		return "", fmt.Errorf("machine %q missing workload annotation juju-machine-id", m.Hostname)
-	}
-
-	token := strings.Split(v, "-")
-	if len(token) < 2 {
-		return "", fmt.Errorf("invalid juju-machine-id format for machine %q", m.Hostname)
-	}
-
-	return token[1], nil
-}
-
 func (uc *MachineUseCase) agentStatus(ctx context.Context, machine *Machine) (string, error) {
-	scope, err := uc.extractScopeFromMachine(machine)
+	scope, err := uc.machine.ExtractScope(machine)
 	if err != nil {
 		return "", nil // ignore
 	}
 
-	jujuID, err := uc.extractJujuIDFromMachine(machine)
+	jujuID, err := uc.machine.ExtractJujuID(machine)
 	if err != nil {
 		return "", nil // ignore
 	}
@@ -282,64 +243,6 @@ func (uc *MachineUseCase) setGPUName(gpus []GPU) error {
 
 		if product, ok := pci.Products[gpus[i].VendorID+gpus[i].ProductID]; ok {
 			gpus[i].ProductName = product.Name
-		}
-	}
-
-	return nil
-}
-
-// TODO: improve performance by parallel execution
-// TODO: osd devices in unit config or app config
-func (uc *MachineUseCase) purgeDisk(ctx context.Context, machineID string) error {
-	machine, err := uc.machine.Get(ctx, machineID)
-	if err != nil {
-		return err
-	}
-
-	scope, err := uc.extractScopeFromMachine(machine)
-	if err != nil {
-		return err
-	}
-
-	jujuID, err := uc.extractJujuIDFromMachine(machine)
-	if err != nil {
-		return err
-	}
-
-	apps, err := uc.facility.List(ctx, scope, jujuID)
-	if err != nil {
-		return err
-	}
-
-	for _, app := range apps {
-		if app.Name != scope+"-ceph-osd" {
-			continue
-		}
-
-		config, err := uc.facility.Config(ctx, scope, app.Name)
-		if err != nil {
-			continue
-		}
-
-		info, ok := config["osd-devices"].(map[string]interface{})
-		if !ok {
-			continue
-		}
-
-		val, ok := info["value"]
-		if !ok || val == nil {
-			continue
-		}
-
-		osdDevices := strings.SplitSeq(val.(string), " ")
-
-		for osdDevice := range osdDevices {
-			for unitName := range app.Status.Units {
-				if _, err := uc.action.Execute(ctx, scope, unitName, fmt.Sprintf("sudo dd if=/dev/zero of=%s bs=1M count=200000", osdDevice)); err != nil {
-					continue
-				}
-				break
-			}
 		}
 	}
 

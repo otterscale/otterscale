@@ -9,6 +9,7 @@ import (
 	pb "github.com/otterscale/otterscale/api/machine/v1"
 	"github.com/otterscale/otterscale/api/machine/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/core/machine"
+	"github.com/otterscale/otterscale/internal/core/machine/purge"
 	"github.com/otterscale/otterscale/internal/core/machine/tag"
 )
 
@@ -16,12 +17,14 @@ type MachineService struct {
 	pbconnect.UnimplementedMachineServiceHandler
 
 	machine *machine.MachineUseCase
+	purge   *purge.PurgeUseCase
 	tag     *tag.TagUseCase
 }
 
-func NewMachineService(machine *machine.MachineUseCase, tag *tag.TagUseCase) *MachineService {
+func NewMachineService(machine *machine.MachineUseCase, purge *purge.PurgeUseCase, tag *tag.TagUseCase) *MachineService {
 	return &MachineService{
 		machine: machine,
+		purge:   purge,
 		tag:     tag,
 	}
 }
@@ -60,8 +63,14 @@ func (s *MachineService) CreateMachine(ctx context.Context, req *pb.CreateMachin
 }
 
 func (s *MachineService) DeleteMachine(ctx context.Context, req *pb.DeleteMachineRequest) (*emptypb.Empty, error) {
-	if err := s.machine.DeleteMachine(ctx, req.GetId(), req.GetForce(), req.GetPurgeDisk()); err != nil {
+	if err := s.machine.DeleteMachine(ctx, req.GetId(), req.GetForce()); err != nil {
 		return nil, err
+	}
+
+	if req.GetPurgeDisk() {
+		if err := s.purge.PurgeDisk(ctx, req.GetId()); err != nil {
+			return nil, err
+		}
 	}
 
 	resp := &emptypb.Empty{}

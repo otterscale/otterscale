@@ -20,7 +20,7 @@ func NewVirtualMachineInstanceTypeRepo(kubevirt *KubeVirt) vmi.VirtualMachineIns
 
 var _ vmi.VirtualMachineInstanceTypeRepo = (*virtualMachineInstanceTypeRepo)(nil)
 
-func (r *virtualMachineInstanceTypeRepo) ListCluster(ctx context.Context, scope, selector string) ([]vmi.VirtualMachineClusterInstancetype, error) {
+func (r *virtualMachineInstanceTypeRepo) ListCluster(ctx context.Context, scope, selector string) ([]vmi.VirtualMachineClusterInstanceType, error) {
 	clientset, err := r.kubevirt.clientset(scope)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (r *virtualMachineInstanceTypeRepo) ListCluster(ctx context.Context, scope,
 	return list.Items, nil
 }
 
-func (r *virtualMachineInstanceTypeRepo) GetCluster(ctx context.Context, scope, name string) (*vmi.VirtualMachineClusterInstancetype, error) {
+func (r *virtualMachineInstanceTypeRepo) GetCluster(ctx context.Context, scope, name string) (*vmi.VirtualMachineClusterInstanceType, error) {
 	clientset, err := r.kubevirt.clientset(scope)
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func (r *virtualMachineInstanceTypeRepo) GetCluster(ctx context.Context, scope, 
 	return clientset.InstancetypeV1beta1().VirtualMachineClusterInstancetypes().Get(ctx, name, opts)
 }
 
-func (r *virtualMachineInstanceTypeRepo) List(ctx context.Context, scope, namespace, selector string) ([]vmi.VirtualMachineInstancetype, error) {
+func (r *virtualMachineInstanceTypeRepo) List(ctx context.Context, scope, namespace, selector string) ([]vmi.VirtualMachineInstanceType, error) {
 	clientset, err := r.kubevirt.clientset(scope)
 	if err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (r *virtualMachineInstanceTypeRepo) List(ctx context.Context, scope, namesp
 	return list.Items, nil
 }
 
-func (r *virtualMachineInstanceTypeRepo) Get(ctx context.Context, scope, namespace, name string) (*vmi.VirtualMachineInstancetype, error) {
+func (r *virtualMachineInstanceTypeRepo) Get(ctx context.Context, scope, namespace, name string) (*vmi.VirtualMachineInstanceType, error) {
 	clientset, err := r.kubevirt.clientset(scope)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (r *virtualMachineInstanceTypeRepo) Get(ctx context.Context, scope, namespa
 	return clientset.InstancetypeV1beta1().VirtualMachineInstancetypes(namespace).Get(ctx, name, opts)
 }
 
-func (r *virtualMachineInstanceTypeRepo) Create(ctx context.Context, scope, namespace string, vmit *vmi.VirtualMachineInstancetype) (*vmi.VirtualMachineInstancetype, error) {
+func (r *virtualMachineInstanceTypeRepo) Create(ctx context.Context, scope, namespace string, vmit *vmi.VirtualMachineInstanceType) (*vmi.VirtualMachineInstanceType, error) {
 	clientset, err := r.kubevirt.clientset(scope)
 	if err != nil {
 		return nil, err

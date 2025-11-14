@@ -88,34 +88,6 @@ func (uc *StorageUseCase) DoSMART(ctx context.Context, scope string, osd string)
 	return uc.node.DoSMART(ctx, scope, osd)
 }
 
-func (uc *StorageUseCase) extractScopeFromMachine(m *machine.Machine) (string, error) {
-	v, ok := m.WorkloadAnnotations["juju-machine-id"]
-	if !ok {
-		return "", fmt.Errorf("machine %q missing workload annotation juju-machine-id", m.Hostname)
-	}
-
-	token := strings.Split(v, "-")
-	if len(token) < 1 {
-		return "", fmt.Errorf("invalid juju-machine-id format for machine %q", m.Hostname)
-	}
-
-	return token[0], nil
-}
-
-func (uc *StorageUseCase) extractJujuIDFromMachine(m *machine.Machine) (string, error) {
-	v, ok := m.WorkloadAnnotations["juju-machine-id"]
-	if !ok {
-		return "", fmt.Errorf("machine %q missing workload annotation juju-machine-id", m.Hostname)
-	}
-
-	token := strings.Split(v, "-")
-	if len(token) < 2 {
-		return "", fmt.Errorf("invalid juju-machine-id format for machine %q", m.Hostname)
-	}
-
-	return token[1], nil
-}
-
 func (uc *StorageUseCase) extractJujuIDFromMonitor(m *Monitor) (string, error) {
 	token := strings.Split(m.Name, "-")
 	if len(token) < 3 {
@@ -146,7 +118,7 @@ func (uc *StorageUseCase) setMonitorMachine(scope string, monitors []Monitor, ma
 		}
 
 		for j := range machines {
-			machineScope, err := uc.extractScopeFromMachine(&machines[j])
+			machineScope, err := uc.machine.ExtractScope(&machines[j])
 			if err != nil {
 				continue
 			}
@@ -155,7 +127,7 @@ func (uc *StorageUseCase) setMonitorMachine(scope string, monitors []Monitor, ma
 				continue
 			}
 
-			machineJujuID, err := uc.extractJujuIDFromMachine(&machines[j])
+			machineJujuID, err := uc.machine.ExtractJujuID(&machines[j])
 			if err != nil {
 				continue
 			}

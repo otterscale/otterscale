@@ -74,7 +74,7 @@ func (uc *StandaloneUseCase) CreateNode(ctx context.Context, scope, machineID st
 	}
 
 	// check juju agent status
-	jujuID, err := uc.extractJujuIDFromMachine(machine)
+	jujuID, err := uc.machine.ExtractJujuID(machine)
 	if err != nil {
 		return err
 	}
@@ -125,20 +125,6 @@ func (uc *StandaloneUseCase) CreateNode(ctx context.Context, scope, machineID st
 	}
 
 	return uc.createCOS(ctx, scope)
-}
-
-func (uc *StandaloneUseCase) extractJujuIDFromMachine(m *machine.Machine) (string, error) {
-	v, ok := m.WorkloadAnnotations["juju-machine-id"]
-	if !ok {
-		return "", fmt.Errorf("machine %q missing workload annotation juju-machine-id", m.Hostname)
-	}
-
-	token := strings.Split(v, "-")
-	if len(token) < 2 {
-		return "", fmt.Errorf("invalid juju-machine-id format for machine %q", m.Hostname)
-	}
-
-	return token[1], nil
 }
 
 func (uc *StandaloneUseCase) applyTags(ctx context.Context, machineID string, tags []string) error {

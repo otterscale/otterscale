@@ -23,6 +23,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/instance/vms"
 	"github.com/otterscale/otterscale/internal/core/instance/vnc"
 	"github.com/otterscale/otterscale/internal/core/machine"
+	"github.com/otterscale/otterscale/internal/core/machine/purge"
 	"github.com/otterscale/otterscale/internal/core/machine/tag"
 	"github.com/otterscale/otterscale/internal/core/model"
 	"github.com/otterscale/otterscale/internal/core/network"
@@ -58,6 +59,7 @@ var ProviderSet = wire.NewSet(
 	vms.NewVirtualMachineServiceUseCase,
 	vnc.NewVNCUseCase,
 	machine.NewMachineUseCase,
+	purge.NewPurgeUseCase,
 	tag.NewTagUseCase,
 	model.NewModelUseCase,
 	network.NewNetworkUseCase,

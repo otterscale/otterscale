@@ -4,11 +4,27 @@ import (
 	"context"
 
 	"github.com/juju/juju/rpc/params"
+
+	"github.com/otterscale/otterscale/internal/core/machine"
+)
+
+type (
+	// Status represents a Juju ApplicationStatus resource.
+	Status = params.ApplicationStatus
+
+	// UnitStatus represents a Juju UnitStatus resource.
+	UnitStatus = params.UnitStatus
+
+	// DetailedStatus represents a Juju DetailedStatus resource.
+	DetailedStatus = params.DetailedStatus
+
+	// MachineStatus represents a Juju MachineStatus resource.
+	MachineStatus = params.MachineStatus
 )
 
 type Facility struct {
 	Name   string
-	Status *params.ApplicationStatus
+	Status *Status
 }
 
 type FacilityRepo interface {
@@ -28,11 +44,14 @@ type RelationRepo interface {
 
 type FacilityUseCase struct {
 	facility FacilityRepo
+
+	machine machine.MachineRepo
 }
 
-func NewFacilityUseCase(facility FacilityRepo) *FacilityUseCase {
+func NewFacilityUseCase(facility FacilityRepo, machine machine.MachineRepo) *FacilityUseCase {
 	return &FacilityUseCase{
 		facility: facility,
+		machine:  machine,
 	}
 }
 
@@ -42,4 +61,33 @@ func (uc *FacilityUseCase) ListFacilities(ctx context.Context, scope string) ([]
 
 func (uc *FacilityUseCase) ResolveFacilityUnitErrors(ctx context.Context, scope, unitName string) error {
 	return uc.facility.Resolve(ctx, scope, unitName)
+}
+
+func (uc *FacilityUseCase) JujuIDMachineMap(ctx context.Context, scope string) (map[string]machine.Machine, error) {
+	machines, err := uc.machine.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	ret := map[string]machine.Machine{}
+
+	for i := range machines {
+		machineScope, err := uc.machine.ExtractScope(&machines[i])
+		if err != nil {
+			continue
+		}
+
+		if machineScope != scope {
+			continue
+		}
+
+		machineJujuID, err := uc.machine.ExtractJujuID(&machines[i])
+		if err != nil {
+			continue
+		}
+
+		ret[machineJujuID] = machines[i]
+	}
+
+	return ret, nil
 }

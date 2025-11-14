@@ -2,6 +2,8 @@ package maas
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/canonical/gomaasclient/entity"
 
@@ -82,6 +84,34 @@ func (r *machineRepo) Commission(_ context.Context, id string, enableSSH, skipBM
 	}
 
 	return client.Machine.Commission(id, params)
+}
+
+func (r *machineRepo) ExtractScope(m *machine.Machine) (string, error) {
+	v, ok := m.WorkloadAnnotations["juju-machine-id"]
+	if !ok {
+		return "", fmt.Errorf("machine %q missing workload annotation juju-machine-id", m.Hostname)
+	}
+
+	token := strings.Split(v, "-")
+	if len(token) < 1 {
+		return "", fmt.Errorf("invalid juju-machine-id format for machine %q", m.Hostname)
+	}
+
+	return token[0], nil
+}
+
+func (r *machineRepo) ExtractJujuID(m *machine.Machine) (string, error) {
+	v, ok := m.WorkloadAnnotations["juju-machine-id"]
+	if !ok {
+		return "", fmt.Errorf("machine %q missing workload annotation juju-machine-id", m.Hostname)
+	}
+
+	token := strings.Split(v, "-")
+	if len(token) < 2 {
+		return "", fmt.Errorf("invalid juju-machine-id format for machine %q", m.Hostname)
+	}
+
+	return token[1], nil
 }
 
 func (r *machineRepo) boolToInt(b bool) int {
