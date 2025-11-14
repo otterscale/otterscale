@@ -270,6 +270,117 @@ This guide helps you resolve common issues when installing, configuring, or runn
    - Verify DHCP/PXE boot settings
    - Check network fabric configuration
 
+### SSH Access to Commissioned Machines
+
+**Problem**: Cannot SSH into commissioned machines. Getting errors like:
+
+```
+ssh user@192.168.197.162
+user@192.168.197.162: Permission denied (publickey).
+```
+
+**Root Causes**:
+
+This error typically occurs when SSH public keys are not properly configured in MAAS before commissioning machines through OtterScale.
+
+**Solutions**:
+
+1. **Add SSH public key to MAAS**:
+
+   Before creating scopes or commissioning machines in OtterScale, you must first add your SSH public key to MAAS:
+
+   ```bash
+   # Generate SSH key if you don't have one
+   ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+   
+   # Add your SSH public key to MAAS
+   maas login admin http://your-maas-server:5240/MAAS/
+   maas admin sshkeys create "key=$(cat ~/.ssh/id_rsa.pub)"
+   ```
+
+   Or via MAAS web interface:
+   - Log into MAAS web UI
+   - Navigate to your user profile (top right)
+   - Click "SSH keys"
+   - Click "Add SSH key"
+   - Paste your public key content
+
+2. **Enable SSH during machine commissioning**:
+
+   When commissioning a machine through OtterScale, ensure the `enable_ssh` parameter is set to `true`. This allows SSH access during and after the commissioning process.
+
+   ```bash
+   # Example API call with enable_ssh
+   curl -X POST http://localhost:8080/api/machine/v1/commission \
+     -d '{"id": "machine-id", "enable_ssh": true}'
+   ```
+
+3. **Use correct username**:
+
+   The default SSH username depends on the operating system deployed:
+
+   ```bash
+   # Ubuntu
+   ssh ubuntu@192.168.197.162
+   
+   # CentOS/RHEL
+   ssh centos@192.168.197.162
+   
+   # Debian
+   ssh debian@192.168.197.162
+   ```
+
+4. **Verify SSH key was injected**:
+
+   If you have console access to the machine, check if authorized_keys file contains your public key:
+
+   ```bash
+   # From the machine console
+   cat ~/.ssh/authorized_keys
+   ```
+
+5. **Check MAAS SSH key configuration**:
+
+   Verify that MAAS has SSH keys configured:
+
+   ```bash
+   maas admin sshkeys read
+   ```
+
+   If no keys are returned, you need to add at least one SSH key to MAAS before OtterScale can inject it into commissioned machines.
+
+6. **Troubleshoot scope creation**:
+
+   If you encounter "ssh key not found" error when creating a scope, it means no SSH keys are configured in MAAS:
+
+   - Add SSH keys to MAAS first (see step 1)
+   - Then retry creating the scope
+
+7. **Network connectivity**:
+
+   Ensure the machine's IP address is reachable from your client:
+
+   ```bash
+   # Test connectivity
+   ping 192.168.197.162
+   
+   # Test SSH port
+   nc -zv 192.168.197.162 22
+   ```
+
+**Common Mistakes to Avoid**:
+
+- ❌ Not adding SSH keys to MAAS before creating scopes
+- ❌ Using wrong username (e.g., `root` or `user` instead of `ubuntu`)
+- ❌ Not enabling SSH during commissioning
+- ❌ Adding private key instead of public key to MAAS
+- ❌ SSH key format issues (ensure it starts with `ssh-rsa`, `ssh-ed25519`, etc.)
+
+**Related Documentation**:
+
+- [MAAS SSH Keys Documentation](https://maas.io/docs/ssh-keys)
+- [OtterScale Scope Management](/docs/scope-management.md)
+
 ## 🔐 Authentication & Security Issues
 
 ### LDAP/AD Integration Problems
