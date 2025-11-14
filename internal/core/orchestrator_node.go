@@ -186,8 +186,9 @@ func (uc *OrchestratorUseCase) deployAddons(ctx context.Context, scope, prefix s
 func (uc *OrchestratorUseCase) kubernetesConfigs(prefix, vips, cidr string) (map[string]string, error) {
 	configs := map[string]map[string]any{
 		"kubernetes-control-plane": {
-			"allow-privileged": "true",
-			"loadbalancer-ips": vips,
+			"register-with-taints": "",
+			"allow-privileged":     "true",
+			"loadbalancer-ips":     vips,
 		},
 		"kubeapi-load-balancer": {
 			"loadbalancer-ips": vips,
