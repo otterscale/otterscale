@@ -34,14 +34,5 @@ func (r *vlanRepo) Update(_ context.Context, fabricID, vid int, name string, mtu
 		DHCPOn:      dhcpOn,
 	}
 
-	vlan, err := client.VLAN.Update(fabricID, vid, params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toVLAN(vlan), nil
-}
-
-func (r *vlanRepo) toVLAN(vlan *entity.VLAN) *network.VLAN {
-	return &network.VLAN{}
+	return client.VLAN.Update(fabricID, vid, params)
 }

@@ -3,7 +3,6 @@ package maas
 import (
 	"context"
 
-	entity "github.com/otterscale/otterscale/internal/core/_entity"
 	"github.com/otterscale/otterscale/internal/core/configuration"
 )
 
@@ -25,12 +24,7 @@ func (r *bootResourceRepo) List(_ context.Context) ([]configuration.BootResource
 		return nil, err
 	}
 
-	resources, err := client.BootResources.Get(nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toBootResources(resources), nil
+	return client.BootResources.Get(nil)
 }
 
 func (r *bootResourceRepo) Import(_ context.Context) error {
@@ -49,10 +43,4 @@ func (r *bootResourceRepo) IsImporting(_ context.Context) (bool, error) {
 	}
 
 	return client.BootResources.IsImporting()
-}
-
-func (r *bootResourceRepo) toBootResources(brs []entity.BootResource) []configuration.BootResource {
-	ret := []configuration.BootResource{}
-
-	return ret
 }

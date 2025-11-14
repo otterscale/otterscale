@@ -54,7 +54,7 @@ func (r *userRepo) Create(ctx context.Context, scope string, id, name string, su
 		return nil, err
 	}
 
-	return r.toUser(&user), err
+	return &user, err
 }
 
 func (r *userRepo) Update(ctx context.Context, scope string, id, name string, suspended bool) (*object.User, error) {
@@ -72,7 +72,7 @@ func (r *userRepo) Update(ctx context.Context, scope string, id, name string, su
 		return nil, err
 	}
 
-	return r.toUser(&user), err
+	return &user, err
 }
 
 func (r *userRepo) Delete(ctx context.Context, scope string, id string) error {
@@ -107,7 +107,7 @@ func (r *userRepo) CreateKey(ctx context.Context, scope string, id string) (*obj
 		return nil, fmt.Errorf("create key returned empty list")
 	}
 
-	return r.toUserKey(&(*keys)[0]), nil
+	return &(*keys)[0], nil
 }
 
 func (r *userRepo) DeleteKey(ctx context.Context, scope string, id, accessKey string) error {
@@ -140,23 +140,10 @@ func (r *userRepo) list(ctx context.Context, client *admin.API, ids []string) ([
 		if err != nil {
 			return nil, err
 		}
-		users = append(users, *r.toUser(&user))
+		users = append(users, user)
 	}
 
 	return users, nil
-}
-
-func (r *userRepo) toUser(u *admin.User) *object.User {
-	return &object.User{
-		ID: u.ID,
-	}
-}
-
-func (r *userRepo) toUserKey(k *admin.UserKeySpec) *object.UserKey {
-	return &object.UserKey{
-		AccessKey: k.AccessKey,
-		SecretKey: k.SecretKey,
-	}
 }
 
 func (r *userRepo) intPtr(b bool) *int {

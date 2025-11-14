@@ -45,11 +45,13 @@ func (r *machineManagerRepo) AddMachines(_ context.Context, scope, uuid, fqdn, b
 	}
 
 	errs := []error{}
+
 	for _, result := range results {
 		if result.Error != nil {
 			errs = append(errs, result.Error)
 		}
 	}
+
 	return errors.Join(errs...)
 }
 
@@ -65,10 +67,12 @@ func (r *machineManagerRepo) DestroyMachines(_ context.Context, scope string, fo
 	}
 
 	errs := []error{}
+
 	for _, result := range results {
 		if result.Error != nil {
 			errs = append(errs, result.Error)
 		}
 	}
+
 	return errors.Join(errs...)
 }

@@ -2,6 +2,7 @@ package ceph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/otterscale/otterscale/internal/core/storage/file"
 )
@@ -84,14 +85,14 @@ func (r *subvolumeGroupRepo) Delete(_ context.Context, scope, volume, group stri
 }
 
 func (r *subvolumeGroupRepo) toSubvolumeGroups(name string, info *subvolumeGroupInfo) *file.SubvolumeGroup {
-	// quota, _ := parseQuota(info.BytesQuota)
-	ret := &file.SubvolumeGroup{
-		// 	Name:      name,
-		// 	Mode:      fmt.Sprintf("%06o", info.Mode),
-		// 	PoolName:  info.DataPool,
-		// 	Quota:     quota,
-		// 	Used:      info.BytesUsed,
-		// 	CreatedAt: info.CreatedAt.Time,
+	quota, _ := parseQuota(info.BytesQuota)
+
+	return &file.SubvolumeGroup{
+		Name:      name,
+		Mode:      fmt.Sprintf("%06o", info.Mode),
+		PoolName:  info.DataPool,
+		Quota:     quota,
+		Used:      info.BytesUsed,
+		CreatedAt: info.CreatedAt.Time,
 	}
-	return ret
 }

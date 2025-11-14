@@ -2,6 +2,7 @@ package ceph
 
 import (
 	"context"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -114,50 +115,61 @@ func (r *nodeRepo) Config(scope string) (host string, id string, key string, err
 
 func (r *nodeRepo) toMonitors(d *monDump, s *monStat) []storage.Monitor {
 	ret := []storage.Monitor{}
-	// for i := range d.MONs {
-	// 	ret = append(ret, storage.Monitor{
-	// 		Leader:        d.MONs[i].Name == s.Leader,
-	// 		Name:          d.MONs[i].Name,
-	// 		Rank:          d.MONs[i].Rank,
-	// 		PublicAddress: d.MONs[i].PublicAddress,
-	// 	})
-	// }
+
+	for i := range d.MONs {
+		ret = append(ret, storage.Monitor{
+			Leader:        d.MONs[i].Name == s.Leader,
+			Name:          d.MONs[i].Name,
+			Rank:          d.MONs[i].Rank,
+			PublicAddress: d.MONs[i].PublicAddress,
+		})
+	}
+
 	return ret
 }
 
 func (r *nodeRepo) toOSDs(d *osdDump, t *osdTree, df *osdDF) []storage.ObjectStorageDaemon {
 	ret := []storage.ObjectStorageDaemon{}
-	// for i := range df.Nodes {
-	// 	osd := storage.ObjectStorageDaemon{
-	// 		ID:          df.Nodes[i].ID,
-	// 		Name:        df.Nodes[i].Name,
-	// 		DeviceClass: df.Nodes[i].DeviceClass,
-	// 		Size:        df.Nodes[i].KB * 1024,
-	// 		Used:        df.Nodes[i].KBUsed * 1024,
-	// 		PGCount:     df.Nodes[i].PGCount,
-	// 	}
-	// 	for j := range t.Nodes {
-	// 		if t.Nodes[j].Type == "osd" && t.Nodes[j].ID == df.Nodes[i].ID && t.Nodes[j].Exists == 1 {
-	// 			osd.Exists = true
-	// 		}
-	// 		if t.Nodes[j].Type == "host" && slices.Contains(t.Nodes[j].Children, df.Nodes[i].ID) {
-	// 			osd.Hostname = t.Nodes[j].Name
-	// 		}
-	// 	}
-	// 	for j := range d.OSDs {
-	// 		if d.OSDs[j].ID != df.Nodes[i].ID {
-	// 			continue
-	// 		}
-	// 		if d.OSDs[j].Up == 1 {
-	// 			osd.Up = true
-	// 		}
-	// 		if d.OSDs[j].In == 1 {
-	// 			osd.In = true
-	// 		}
-	// 		break
-	// 	}
-	// 	ret = append(ret, osd)
-	// }
+
+	for i := range df.Nodes {
+		osd := storage.ObjectStorageDaemon{
+			ID:          df.Nodes[i].ID,
+			Name:        df.Nodes[i].Name,
+			DeviceClass: df.Nodes[i].DeviceClass,
+			Size:        df.Nodes[i].KB * 1024,
+			Used:        df.Nodes[i].KBUsed * 1024,
+			PGCount:     df.Nodes[i].PGCount,
+		}
+
+		for j := range t.Nodes {
+			if t.Nodes[j].Type == "osd" && t.Nodes[j].ID == df.Nodes[i].ID && t.Nodes[j].Exists == 1 {
+				osd.Exists = true
+			}
+
+			if t.Nodes[j].Type == "host" && slices.Contains(t.Nodes[j].Children, df.Nodes[i].ID) {
+				osd.Hostname = t.Nodes[j].Name
+			}
+		}
+
+		for j := range d.OSDs {
+			if d.OSDs[j].ID != df.Nodes[i].ID {
+				continue
+			}
+
+			if d.OSDs[j].Up == 1 {
+				osd.Up = true
+			}
+
+			if d.OSDs[j].In == 1 {
+				osd.In = true
+			}
+
+			break
+		}
+
+		ret = append(ret, osd)
+	}
+
 	return ret
 }
 

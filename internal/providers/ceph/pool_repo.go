@@ -3,6 +3,8 @@ package ceph
 import (
 	"context"
 	"slices"
+	"strconv"
+	"strings"
 
 	"github.com/otterscale/otterscale/internal/core/storage/pool"
 )
@@ -135,42 +137,53 @@ func (r *poolRepo) GetECProfile(_ context.Context, scope, name string) (k, m str
 
 func (r *poolRepo) toPools(d *osdDump, pd *pgDump, df *df) []pool.Pool {
 	ret := []pool.Pool{}
-	// for i := range d.Pools {
-	// 	pool := pool.Pool{
-	// 		ID:                  d.Pools[i].ID,
-	// 		Name:                d.Pools[i].Name,
-	// 		Updating:            d.Pools[i].PgNum+d.Pools[i].PgPlacementNum != d.Pools[i].PgNumTarget+d.Pools[i].PgPlacementNumTarget,
-	// 		ReplicatedSize:      d.Pools[i].Size,
-	// 		PlacementGroupCount: d.Pools[i].PgNum,
-	// 		PlacementGroupState: map[string]int64{},
-	// 		CreatedAt:           d.Pools[i].CreateTime.Time,
-	// 	}
-	// 	switch d.Pools[i].Type {
-	// 	case 1:
-	// 		pool.Type = "replicated"
-	// 	case 3:
-	// 		pool.Type = "erasure"
-	// 	}
-	// 	for j := range df.Pools {
-	// 		if d.Pools[i].ID != df.Pools[j].ID {
-	// 			continue
-	// 		}
-	// 		pool.UsedBytes = df.Pools[j].Stats.UsedBytes
-	// 		pool.UsedObjects = df.Pools[j].Stats.UsedObjects
-	// 		pool.MaxBytes = df.Pools[j].Stats.MaxBytes
-	// 	}
-	// 	for j := range pd.PGMap.PGStats {
-	// 		id := strings.Split(pd.PGMap.PGStats[j].ID, ".")[0]
-	// 		if strconv.FormatInt(d.Pools[i].ID, 10) != id {
-	// 			continue
-	// 		}
-	// 		state := pd.PGMap.PGStats[j].State
-	// 		pool.PlacementGroupState[state]++
-	// 	}
-	// 	for app := range d.Pools[i].ApplicationMetadata {
-	// 		pool.Applications = append(pool.Applications, app)
-	// 	}
-	// 	ret = append(ret, pool)
-	// }
+
+	for i := range d.Pools {
+		pool := pool.Pool{
+			ID:                  d.Pools[i].ID,
+			Name:                d.Pools[i].Name,
+			Updating:            d.Pools[i].PgNum+d.Pools[i].PgPlacementNum != d.Pools[i].PgNumTarget+d.Pools[i].PgPlacementNumTarget,
+			ReplicatedSize:      d.Pools[i].Size,
+			PlacementGroupCount: d.Pools[i].PgNum,
+			PlacementGroupState: map[string]int64{},
+			CreatedAt:           d.Pools[i].CreateTime.Time,
+		}
+
+		switch d.Pools[i].Type {
+		case 1:
+			pool.Type = "replicated"
+
+		case 3:
+			pool.Type = "erasure"
+		}
+
+		for j := range df.Pools {
+			if d.Pools[i].ID != df.Pools[j].ID {
+				continue
+			}
+
+			pool.UsedBytes = df.Pools[j].Stats.UsedBytes
+			pool.UsedObjects = df.Pools[j].Stats.UsedObjects
+			pool.MaxBytes = df.Pools[j].Stats.MaxBytes
+		}
+
+		for j := range pd.PGMap.PGStats {
+			id := strings.Split(pd.PGMap.PGStats[j].ID, ".")[0]
+
+			if strconv.FormatInt(d.Pools[i].ID, 10) != id {
+				continue
+			}
+
+			state := pd.PGMap.PGStats[j].State
+			pool.PlacementGroupState[state]++
+		}
+
+		for app := range d.Pools[i].ApplicationMetadata {
+			pool.Applications = append(pool.Applications, app)
+		}
+
+		ret = append(ret, pool)
+	}
+
 	return ret
 }

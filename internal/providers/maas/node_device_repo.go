@@ -30,26 +30,5 @@ func (r *nodeDeviceRepo) ListGPUs(_ context.Context, machineID string) ([]machin
 		HardwareType: "gpu",
 	}
 
-	nodeDevices, err := client.NodeDevices.Get(machineID, params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toGPUs(nodeDevices), nil
-}
-
-func (r *nodeDeviceRepo) toGPUs(nds []entity.NodeDevice) []machine.GPU {
-	gpus := make([]machine.GPU, 0, len(nds))
-
-	for _, nd := range nds {
-		gpu := machine.GPU{
-			VendorID:    nd.VendorID,
-			ProductID:   nd.ProductID,
-			VendorName:  nd.VendorName,
-			ProductName: nd.ProductName,
-		}
-		gpus = append(gpus, gpu)
-	}
-
-	return gpus
+	return client.NodeDevices.Get(machineID, params)
 }

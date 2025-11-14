@@ -27,12 +27,7 @@ func (r *ipRangeRepo) List(_ context.Context) ([]network.IPRange, error) {
 		return nil, err
 	}
 
-	ipRanges, err := client.IPRanges.Get()
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toIPRanges(ipRanges), nil
+	return client.IPRanges.Get()
 }
 
 func (r *ipRangeRepo) Create(_ context.Context, subnetID int, startIP, endIP, comment string) (*network.IPRange, error) {
@@ -49,12 +44,7 @@ func (r *ipRangeRepo) Create(_ context.Context, subnetID int, startIP, endIP, co
 		Comment: comment,
 	}
 
-	ipRange, err := client.IPRanges.Create(params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toIPRange(ipRange), nil
+	return client.IPRanges.Create(params)
 }
 
 func (r *ipRangeRepo) Update(ctx context.Context, id int, startIP, endIP, comment string) (*network.IPRange, error) {
@@ -69,12 +59,7 @@ func (r *ipRangeRepo) Update(ctx context.Context, id int, startIP, endIP, commen
 		Comment: comment,
 	}
 
-	ipRange, err := client.IPRange.Update(id, params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toIPRange(ipRange), nil
+	return client.IPRange.Update(id, params)
 }
 
 func (r *ipRangeRepo) Delete(_ context.Context, id int) error {
@@ -82,15 +67,6 @@ func (r *ipRangeRepo) Delete(_ context.Context, id int) error {
 	if err != nil {
 		return err
 	}
+
 	return client.IPRange.Delete(id)
-}
-
-func (r *ipRangeRepo) toIPRange(pr *entity.IPRange) *network.IPRange {
-	return &network.IPRange{}
-}
-
-func (r *ipRangeRepo) toIPRanges(prs []entity.IPRange) []network.IPRange {
-	ret := make([]network.IPRange, 0, len(prs))
-
-	return ret
 }

@@ -3,9 +3,10 @@ package ceph
 import (
 	"context"
 	"slices"
+	"time"
 
 	"github.com/ceph/go-ceph/rados"
-	cephrbd "github.com/ceph/go-ceph/rbd"
+	"github.com/ceph/go-ceph/rbd"
 
 	"github.com/otterscale/otterscale/internal/core/storage/block"
 )
@@ -34,7 +35,7 @@ func (r *imageRepo) List(_ context.Context, scope, pool string) ([]block.Image, 
 	}
 	defer ioctx.Destroy()
 
-	imgNames, err := cephrbd.GetImageNames(ioctx)
+	imgNames, err := rbd.GetImageNames(ioctx)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +80,7 @@ func (r *imageRepo) Create(_ context.Context, scope, pool, image string, order i
 	}
 	defer ioctx.Destroy()
 
-	_, err = cephrbd.Create3(ioctx, image, size, features, order, stripeUnit, stripeCount)
+	_, err = rbd.Create3(ioctx, image, size, features, order, stripeUnit, stripeCount)
 	return err
 }
 
@@ -95,7 +96,7 @@ func (r *imageRepo) Resize(_ context.Context, scope, pool, image string, size ui
 	}
 	defer ioctx.Destroy()
 
-	img, err := cephrbd.OpenImage(ioctx, image, cephrbd.NoSnapshot)
+	img, err := rbd.OpenImage(ioctx, image, rbd.NoSnapshot)
 	if err != nil {
 		return err
 	}
@@ -116,11 +117,11 @@ func (r *imageRepo) Delete(_ context.Context, scope, pool, image string) error {
 	}
 	defer ioctx.Destroy()
 
-	return cephrbd.RemoveImage(ioctx, image)
+	return rbd.RemoveImage(ioctx, image)
 }
 
-func (r *imageRepo) sortASnapInfo(snaps []cephrbd.SnapInfo) {
-	slices.SortFunc(snaps, func(a, b cephrbd.SnapInfo) int {
+func (r *imageRepo) sortASnapInfo(snaps []rbd.SnapInfo) {
+	slices.SortFunc(snaps, func(a, b rbd.SnapInfo) int {
 		if a.Id < b.Id {
 			return -1
 		} else if a.Id > b.Id {
@@ -130,30 +131,30 @@ func (r *imageRepo) sortASnapInfo(snaps []cephrbd.SnapInfo) {
 	})
 }
 
-func (r *imageRepo) appendSnapInfo(snaps []cephrbd.SnapInfo, size uint64) []cephrbd.SnapInfo {
+func (r *imageRepo) appendSnapInfo(snaps []rbd.SnapInfo, size uint64) []rbd.SnapInfo {
 	id := uint64(0)
 
 	if len(snaps) > 0 {
 		id = snaps[len(snaps)-1].Id + 1
 	}
 
-	return append(snaps, cephrbd.SnapInfo{
+	return append(snaps, rbd.SnapInfo{
 		Id:   id,
 		Size: size,
 	})
 }
 
-func (r *imageRepo) diskUsage(img *cephrbd.Image, previous, current string, size uint64) (uint64, error) {
+func (r *imageRepo) diskUsage(img *rbd.Image, previous, current string, size uint64) (uint64, error) {
 	if err := img.SetSnapshot(current); err != nil {
 		return 0, err
 	}
 
 	du := uint64(0)
 
-	if err := img.DiffIterate(cephrbd.DiffIterateConfig{
+	if err := img.DiffIterate(rbd.DiffIterateConfig{
 		SnapName:    previous,
 		Length:      size,
-		WholeObject: cephrbd.EnableWholeObject,
+		WholeObject: rbd.EnableWholeObject,
 		Callback: func(_, length uint64, exists int, _ any) int {
 			if exists > 0 {
 				du += length
@@ -167,7 +168,7 @@ func (r *imageRepo) diskUsage(img *cephrbd.Image, previous, current string, size
 	return du, nil
 }
 
-func (r *imageRepo) imageDiskUsage(img *cephrbd.Image, mirrorMode cephrbd.ImageMirrorMode, features uint64, snaps []cephrbd.SnapInfo) ([]block.ImageSnapshot, error) {
+func (r *imageRepo) imageDiskUsage(img *rbd.Image, mirrorMode rbd.ImageMirrorMode, features uint64, snaps []rbd.SnapInfo) ([]block.ImageSnapshot, error) {
 	snapshots := []block.ImageSnapshot{}
 	previous := ""
 
@@ -181,7 +182,7 @@ func (r *imageRepo) imageDiskUsage(img *cephrbd.Image, mirrorMode cephrbd.ImageM
 			Protected: protected,
 		}
 
-		if mirrorMode != cephrbd.ImageMirrorModeSnapshot && r.featureOn(features, block.ImageFeatureFastDiff) {
+		if mirrorMode != rbd.ImageMirrorModeSnapshot && r.featureOn(features, block.ImageFeatureFastDiff) {
 			du, err := r.diskUsage(img, previous, info.Name, info.Size)
 			if err != nil {
 				return nil, err
@@ -197,50 +198,50 @@ func (r *imageRepo) imageDiskUsage(img *cephrbd.Image, mirrorMode cephrbd.ImageM
 }
 
 func (r *imageRepo) openImage(ioctx *rados.IOContext, pool, image string) (*block.Image, error) {
-	// img, err := cephrbd.OpenImage(ioctx, image, cephrbd.NoSnapshot)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// defer img.Close()
+	img, err := rbd.OpenImage(ioctx, image, rbd.NoSnapshot)
+	if err != nil {
+		return nil, err
+	}
+	defer img.Close()
 
-	// info, err := img.Stat()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	info, err := img.Stat()
+	if err != nil {
+		return nil, err
+	}
 
-	// stripeUnit, _ := img.GetStripeUnit()
-	// stripeCount, _ := img.GetStripeCount()
-	// features, _ := img.GetFeatures()
-	// timestamp, _ := img.GetCreateTimestamp()
-	// snaps, _ := img.GetSnapshotNames()
-	// mirrorMode, _ := img.GetImageMirrorMode()
+	stripeUnit, _ := img.GetStripeUnit()
+	stripeCount, _ := img.GetStripeCount()
+	features, _ := img.GetFeatures()
+	timestamp, _ := img.GetCreateTimestamp()
+	snaps, _ := img.GetSnapshotNames()
+	mirrorMode, _ := img.GetImageMirrorMode()
 
 	// // disk usage
-	// r.sortASnapInfo(snaps)
-	// snaps = r.appendSnapInfo(snaps, info.Size)
-	// snapshots, err := r.imageDiskUsage(img, mirrorMode, features, snaps)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// du := snapshots[len(snapshots)-1].Used
-	// snapshots = snapshots[:len(snapshots)-1]
+	r.sortASnapInfo(snaps)
+	snaps = r.appendSnapInfo(snaps, info.Size)
+	snapshots, err := r.imageDiskUsage(img, mirrorMode, features, snaps)
+	if err != nil {
+		return nil, err
+	}
+	du := snapshots[len(snapshots)-1].Used
+	snapshots = snapshots[:len(snapshots)-1]
 
 	return &block.Image{
-		// Name:                 img.GetName(),
-		// PoolName:             pool,
-		// ObjectSize:           info.Obj_size,
-		// StripeUnit:           stripeUnit,
-		// StripeCount:          stripeCount,
-		// Quota:                info.Size,
-		// Used:                 du,
-		// ObjectCount:          info.Num_objs,
-		// FeatureLayering:      r.featureOn(features, block.ImageFeatureLayering),
-		// FeatureExclusiveLock: r.featureOn(features, block.ImageFeatureExclusiveLock),
-		// FeatureObjectMap:     r.featureOn(features, block.ImageFeatureObjectMap),
-		// FeatureFastDiff:      r.featureOn(features, block.ImageFeatureFastDiff),
-		// FeatureDeepFlatten:   r.featureOn(features, block.ImageFeatureDeepFlatten),
-		// CreatedAt:            time.Unix(timestamp.Sec, timestamp.Nsec),
-		// Snapshots:            snapshots,
+		Name:                 img.GetName(),
+		PoolName:             pool,
+		ObjectSize:           info.Obj_size,
+		StripeUnit:           stripeUnit,
+		StripeCount:          stripeCount,
+		Quota:                info.Size,
+		Used:                 du,
+		ObjectCount:          info.Num_objs,
+		FeatureLayering:      r.featureOn(features, block.ImageFeatureLayering),
+		FeatureExclusiveLock: r.featureOn(features, block.ImageFeatureExclusiveLock),
+		FeatureObjectMap:     r.featureOn(features, block.ImageFeatureObjectMap),
+		FeatureFastDiff:      r.featureOn(features, block.ImageFeatureFastDiff),
+		FeatureDeepFlatten:   r.featureOn(features, block.ImageFeatureDeepFlatten),
+		CreatedAt:            time.Unix(timestamp.Sec, timestamp.Nsec),
+		Snapshots:            snapshots,
 	}, nil
 }
 

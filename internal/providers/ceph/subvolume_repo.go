@@ -171,15 +171,15 @@ func (r *subvolumeRepo) exportIndex(ioctx *rados.IOContext, index string) (path 
 }
 
 func (r *subvolumeRepo) toSubvolume(name string, info *subvolumeInfo) *file.Subvolume {
-	// quota, _ := parseQuota(info.BytesQuota)
-	ret := &file.Subvolume{
-		// Name:      name,
-		// Path:      info.Path,
-		// Mode:      fmt.Sprintf("%o", info.Mode),
-		// PoolName:  info.DataPool,
-		// Quota:     quota,
-		// Used:      info.BytesUsed,
-		// CreatedAt: info.CreatedAt.Time,
+	quota, _ := parseQuota(info.BytesQuota)
+
+	return &file.Subvolume{
+		Name:      name,
+		Path:      info.Path,
+		Mode:      fmt.Sprintf("%o", info.Mode),
+		PoolName:  info.DataPool,
+		Quota:     quota,
+		Used:      info.BytesUsed,
+		CreatedAt: info.CreatedAt.Time,
 	}
-	return ret
 }

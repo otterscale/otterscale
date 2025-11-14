@@ -26,12 +26,7 @@ func (r *fabricRepo) List(_ context.Context) ([]network.Fabric, error) {
 		return nil, err
 	}
 
-	frabrics, err := client.Fabrics.Get()
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toFabrics(frabrics), nil
+	return client.Fabrics.Get()
 }
 
 func (r *fabricRepo) Get(_ context.Context, id int) (*network.Fabric, error) {
@@ -40,12 +35,7 @@ func (r *fabricRepo) Get(_ context.Context, id int) (*network.Fabric, error) {
 		return nil, err
 	}
 
-	fabric, err := client.Fabric.Get(id)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toFabric(fabric), nil
+	return client.Fabric.Get(id)
 }
 
 func (r *fabricRepo) Create(_ context.Context) (*network.Fabric, error) {
@@ -56,12 +46,7 @@ func (r *fabricRepo) Create(_ context.Context) (*network.Fabric, error) {
 
 	params := &entity.FabricParams{}
 
-	fabric, err := client.Fabrics.Create(params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toFabric(fabric), nil
+	return client.Fabrics.Create(params)
 }
 
 func (r *fabricRepo) Update(_ context.Context, id int, name string) (*network.Fabric, error) {
@@ -74,12 +59,7 @@ func (r *fabricRepo) Update(_ context.Context, id int, name string) (*network.Fa
 		Name: name,
 	}
 
-	fabric, err := client.Fabric.Update(id, params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toFabric(fabric), nil
+	return client.Fabric.Update(id, params)
 }
 
 func (r *fabricRepo) Delete(_ context.Context, id int) error {
@@ -87,15 +67,6 @@ func (r *fabricRepo) Delete(_ context.Context, id int) error {
 	if err != nil {
 		return err
 	}
+
 	return client.Fabric.Delete(id)
-}
-
-func (r *fabricRepo) toFabric(pr *entity.Fabric) *network.Fabric {
-	return &network.Fabric{}
-}
-
-func (r *fabricRepo) toFabrics(prs []entity.Fabric) []network.Fabric {
-	ret := make([]network.Fabric, 0, len(prs))
-
-	return ret
 }

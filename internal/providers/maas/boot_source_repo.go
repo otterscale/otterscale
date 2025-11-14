@@ -3,7 +3,6 @@ package maas
 import (
 	"context"
 
-	entity "github.com/otterscale/otterscale/internal/core/_entity"
 	"github.com/otterscale/otterscale/internal/core/configuration"
 )
 
@@ -25,20 +24,5 @@ func (r *bootSourceRepo) List(_ context.Context) ([]configuration.BootSource, er
 		return nil, err
 	}
 
-	sources, err := client.BootSources.Get()
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toBootSources(sources), nil
-}
-
-func (r *bootSourceRepo) toBootSources(bss []entity.BootSource) []configuration.BootSource {
-	ret := []configuration.BootSource{}
-	// for _, bs := range bss {
-	// 	ret = append(ret, configuration.BootSource{
-	// 		// ID: bs.ID,
-	// 	})
-	// }
-	return ret
+	return client.BootSources.Get()
 }

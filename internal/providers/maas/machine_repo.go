@@ -28,12 +28,7 @@ func (r *machineRepo) List(_ context.Context) ([]machine.Machine, error) {
 
 	params := &entity.MachinesParams{}
 
-	machines, err := client.Machines.Get(params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toMachines(machines), nil
+	return client.Machines.Get(params)
 }
 
 func (r *machineRepo) Get(_ context.Context, id string) (*machine.Machine, error) {
@@ -42,12 +37,7 @@ func (r *machineRepo) Get(_ context.Context, id string) (*machine.Machine, error
 		return nil, err
 	}
 
-	machine, err := client.Machine.Get(id)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toMachine(machine), nil
+	return client.Machine.Get(id)
 
 }
 
@@ -61,12 +51,7 @@ func (r *machineRepo) Release(_ context.Context, id string, force bool) (*machin
 		Force: force,
 	}
 
-	machine, err := client.Machine.Release(id, params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toMachine(machine), nil
+	return client.Machine.Release(id, params)
 }
 
 func (r *machineRepo) PowerOff(_ context.Context, id, comment string) (*machine.Machine, error) {
@@ -79,12 +64,7 @@ func (r *machineRepo) PowerOff(_ context.Context, id, comment string) (*machine.
 		Comment: comment,
 	}
 
-	machine, err := client.Machine.PowerOff(id, params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toMachine(machine), nil
+	return client.Machine.PowerOff(id, params)
 }
 
 func (r *machineRepo) Commission(_ context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool) (*machine.Machine, error) {
@@ -101,26 +81,7 @@ func (r *machineRepo) Commission(_ context.Context, id string, enableSSH, skipBM
 		SkipStorage:    r.boolToInt(skipStorage),
 	}
 
-	machine, err := client.Machine.Commission(id, params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toMachine(machine), nil
-}
-
-func (r *machineRepo) toMachine(m *entity.Machine) *machine.Machine {
-	return &machine.Machine{
-		Machine: m,
-	}
-}
-
-func (r *machineRepo) toMachines(ms []entity.Machine) []machine.Machine {
-	list := []machine.Machine{}
-	for _, m := range ms {
-		list = append(list, *r.toMachine(&m))
-	}
-	return list
+	return client.Machine.Commission(id, params)
 }
 
 func (r *machineRepo) boolToInt(b bool) int {

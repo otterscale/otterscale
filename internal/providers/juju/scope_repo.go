@@ -38,11 +38,9 @@ func (r *scopeRepo) List(_ context.Context) ([]scope.Scope, error) {
 		return nil, err
 	}
 
-	summaries = slices.DeleteFunc(summaries, func(model base.UserModelSummary) bool {
+	return slices.DeleteFunc(summaries, func(model base.UserModelSummary) bool {
 		return model.Name == "controller" || !status.ValidModelStatus(model.Status.Status)
-	})
-
-	return r.toScopesFromSummary(summaries), nil
+	}), nil
 }
 
 func (r *scopeRepo) Get(ctx context.Context, name string) (*scope.Scope, error) {
@@ -91,24 +89,15 @@ func (r *scopeRepo) addSSHKey(_ context.Context, name, sshKey string) error {
 	return err
 }
 
-func (r *scopeRepo) toScopesFromSummary(ms []base.UserModelSummary) []scope.Scope {
-	scopes := make([]scope.Scope, len(ms))
-	for i, m := range ms {
-		scopes[i] = r.toScopeFromSummary(m)
-	}
-	return scopes
-}
-
-func (r *scopeRepo) toScopeFromSummary(m base.UserModelSummary) scope.Scope {
-	return scope.Scope{
-		UUID: m.UUID,
-		Name: m.Name,
-	}
-}
-
 func (r *scopeRepo) toScopeFromInfo(m base.ModelInfo) *scope.Scope {
 	return &scope.Scope{
-		UUID: m.UUID,
-		Name: m.Name,
+		UUID:         m.UUID,
+		Name:         m.Name,
+		Type:         m.Type,
+		ProviderType: m.ProviderType,
+		Life:         m.Life,
+		Status:       m.Status,
+		AgentVersion: m.AgentVersion,
+		IsController: m.IsController,
 	}
 }

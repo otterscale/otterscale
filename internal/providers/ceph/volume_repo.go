@@ -34,12 +34,14 @@ func (r *volumeRepo) List(_ context.Context, scope string) ([]file.Volume, error
 
 func (r *volumeRepo) toVolumes(d *fsDump) []file.Volume {
 	ret := []file.Volume{}
-	// for i := range d.FileSystems {
-	// 	ret = append(ret, file.Volume{
-	// 		ID:        d.FileSystems[i].ID,
-	// 		Name:      d.FileSystems[i].MDSMap.FileSystemName,
-	// 		CreatedAt: d.FileSystems[i].MDSMap.Created.Time,
-	// 	})
-	// }
+
+	for i := range d.FileSystems {
+		ret = append(ret, file.Volume{
+			ID:        d.FileSystems[i].ID,
+			Name:      d.FileSystems[i].MDSMap.FileSystemName,
+			CreatedAt: d.FileSystems[i].MDSMap.Created.Time,
+		})
+	}
+
 	return ret
 }

@@ -44,5 +44,13 @@ func (r *actionRepo) Execute(ctx context.Context, scope, appName, command string
 
 func (r *actionRepo) toActions(m map[string]api.ActionSpec) []action.Action {
 	ret := []action.Action{}
+
+	for name, spec := range m {
+		ret = append(ret, action.Action{
+			Name: name,
+			Spec: &spec,
+		})
+	}
+
 	return ret
 }

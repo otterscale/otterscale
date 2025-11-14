@@ -70,11 +70,13 @@ func (r *charmRepo) find(ctx context.Context, name string) ([]charm.Charm, error
 	type response struct {
 		Results []charm.Charm `json:"results"`
 	}
+
 	resp := new(response)
 
 	if err := json.Unmarshal(data, resp); err != nil {
 		return nil, err
 	}
+
 	return resp.Results, nil
 }
 
@@ -95,9 +97,11 @@ func (r *charmRepo) info(ctx context.Context, name string) ([]charm.CharmArtifac
 	}
 
 	resp := new(charm.Charm)
+
 	if err := json.Unmarshal(data, resp); err != nil {
 		return nil, err
 	}
+
 	return resp.Artifacts, nil
 }
 

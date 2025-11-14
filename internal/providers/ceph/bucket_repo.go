@@ -31,22 +31,7 @@ func (r *bucketRepo) List(ctx context.Context, scope string) ([]object.Bucket, e
 		return nil, err
 	}
 
-	statBuckets, err := client.ListBucketsWithStat(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	buckets := []object.Bucket{}
-
-	for i := range statBuckets {
-		bucket, err := r.toBucket(ctx, scope, &statBuckets[i])
-		if err != nil {
-			return nil, err
-		}
-		buckets = append(buckets, *bucket)
-	}
-
-	return buckets, nil
+	return client.ListBucketsWithStat(ctx)
 }
 
 func (r *bucketRepo) Get(ctx context.Context, scope, bucket string) (*object.Bucket, error) {
@@ -56,7 +41,7 @@ func (r *bucketRepo) Get(ctx context.Context, scope, bucket string) (*object.Buc
 	}
 
 	for i := range buckets {
-		if buckets[i].Name == bucket {
+		if buckets[i].Bucket == bucket {
 			return &buckets[i], nil
 		}
 	}
@@ -77,6 +62,18 @@ func (r *bucketRepo) Create(ctx context.Context, scope, bucket string, acl objec
 	return err
 }
 
+func (r *bucketRepo) Delete(ctx context.Context, scope, bucket string) error {
+	s3Client, err := r.s3Client(ctx, scope)
+	if err != nil {
+		return err
+	}
+
+	_, err = s3Client.DeleteBucket(ctx, &s3.DeleteBucketInput{
+		Bucket: &bucket,
+	})
+	return err
+}
+
 func (r *bucketRepo) UpdateOwner(ctx context.Context, scope, bucket, owner string) error {
 	client, err := r.ceph.client(scope)
 	if err != nil {
@@ -89,17 +86,20 @@ func (r *bucketRepo) UpdateOwner(ctx context.Context, scope, bucket, owner strin
 	})
 }
 
-func (r *bucketRepo) UpdateACL(ctx context.Context, scope, bucket string, acl object.BucketCannedACL) error {
+func (r *bucketRepo) GetPolicy(ctx context.Context, scope, bucket string) (*string, error) {
 	s3Client, err := r.s3Client(ctx, scope)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = s3Client.PutBucketAcl(ctx, &s3.PutBucketAclInput{
+	resp, err := s3Client.GetBucketPolicy(ctx, &s3.GetBucketPolicyInput{
 		Bucket: &bucket,
-		ACL:    types.BucketCannedACL(acl),
 	})
-	return err
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Policy, nil
 }
 
 func (r *bucketRepo) UpdatePolicy(ctx context.Context, scope, bucket, policy string) error {
@@ -115,14 +115,31 @@ func (r *bucketRepo) UpdatePolicy(ctx context.Context, scope, bucket, policy str
 	return err
 }
 
-func (r *bucketRepo) Delete(ctx context.Context, scope, bucket string) error {
+func (r *bucketRepo) GetACL(ctx context.Context, scope, bucket string) ([]object.Grant, error) {
+	s3Client, err := r.s3Client(ctx, scope)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s3Client.GetBucketAcl(ctx, &s3.GetBucketAclInput{
+		Bucket: &bucket,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Grants, nil
+}
+
+func (r *bucketRepo) UpdateACL(ctx context.Context, scope, bucket string, acl object.BucketCannedACL) error {
 	s3Client, err := r.s3Client(ctx, scope)
 	if err != nil {
 		return err
 	}
 
-	_, err = s3Client.DeleteBucket(ctx, &s3.DeleteBucketInput{
+	_, err = s3Client.PutBucketAcl(ctx, &s3.PutBucketAclInput{
 		Bucket: &bucket,
+		ACL:    types.BucketCannedACL(acl),
 	})
 	return err
 }
@@ -176,50 +193,4 @@ func (r *bucketRepo) s3Client(ctx context.Context, scope string) (*s3.Client, er
 	return s3.NewFromConfig(cfg, func(o *s3.Options) {
 		o.UsePathStyle = true
 	}), nil
-}
-
-func (r *bucketRepo) toBucket(ctx context.Context, scope string, b *admin.Bucket) (*object.Bucket, error) {
-	bucket := &object.Bucket{
-		Name: b.Bucket,
-	}
-
-	s3Client, err := r.s3Client(ctx, scope)
-	if err != nil {
-		return nil, err
-	}
-
-	policy, _ := s3Client.GetBucketPolicy(ctx, &s3.GetBucketPolicyInput{
-		Bucket: &b.Bucket,
-	})
-	if policy != nil {
-		bucket.Policy = policy.Policy
-	}
-
-	acl, _ := s3Client.GetBucketAcl(ctx, &s3.GetBucketAclInput{
-		Bucket: &b.Bucket,
-	})
-	if acl != nil {
-		bucket.Grants = r.toGrants(acl.Grants)
-	}
-
-	return bucket, nil
-}
-
-func (r *bucketRepo) toGrants(gs []types.Grant) []object.BucketGrant {
-	grants := []object.BucketGrant{}
-
-	for _, g := range gs {
-		grants = append(grants, object.BucketGrant{
-			Grantee: &object.Grantee{
-				Type:         object.Type(g.Grantee.Type),
-				DisplayName:  g.Grantee.DisplayName,
-				EmailAddress: g.Grantee.EmailAddress,
-				ID:           g.Grantee.ID,
-				URI:          g.Grantee.URI,
-			},
-			Permission: object.Permission(g.Permission),
-		})
-	}
-
-	return grants
 }

@@ -75,10 +75,9 @@ func (r *subvolumeSnapshotRepo) Delete(_ context.Context, scope, volume, subvolu
 }
 
 func (r *subvolumeSnapshotRepo) toSubvolumeSnapshot(name string, info *subvolumeSnapshotInfo) *file.SubvolumeSnapshot {
-	ret := &file.SubvolumeSnapshot{
-		// Name:             name,
-		// HasPendingClones: info.HasPendingClones,
-		// CreatedAt:        info.CreatedAt.Time,
+	return &file.SubvolumeSnapshot{
+		Name:             name,
+		HasPendingClones: info.HasPendingClones,
+		CreatedAt:        info.CreatedAt.Time,
 	}
-	return ret
 }

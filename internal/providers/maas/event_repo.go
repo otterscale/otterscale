@@ -39,7 +39,7 @@ func (r *eventRepo) Get(_ context.Context, machineID string) ([]machine.Event, e
 }
 
 func (r *eventRepo) toEvents(es []entity.Event) []machine.Event {
-	ret := make([]machine.Event, 0, len(es))
+	ret := []machine.Event{}
 
 	for _, e := range es {
 		ret = append(ret, machine.Event{

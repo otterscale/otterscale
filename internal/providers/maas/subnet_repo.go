@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/canonical/gomaasclient/entity"
-	"github.com/canonical/gomaasclient/entity/subnet"
 
 	"github.com/otterscale/otterscale/internal/core/network"
 )
@@ -28,12 +27,7 @@ func (r *subnetRepo) List(_ context.Context) ([]network.Subnet, error) {
 		return nil, err
 	}
 
-	subnets, err := client.Subnets.Get()
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toSubnets(subnets), nil
+	return client.Subnets.Get()
 }
 
 func (r *subnetRepo) Get(_ context.Context, id int) (*network.Subnet, error) {
@@ -42,12 +36,7 @@ func (r *subnetRepo) Get(_ context.Context, id int) (*network.Subnet, error) {
 		return nil, err
 	}
 
-	subnet, err := client.Subnet.Get(id)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toSubnet(subnet), nil
+	return client.Subnet.Get(id)
 }
 
 func (r *subnetRepo) Create(ctx context.Context, fabricID, vlanID int, cidr, gatewayIP string, dnsServers []string) (*network.Subnet, error) {
@@ -64,12 +53,7 @@ func (r *subnetRepo) Create(ctx context.Context, fabricID, vlanID int, cidr, gat
 		DNSServers: dnsServers,
 	}
 
-	subnet, err := client.Subnets.Create(params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toSubnet(subnet), nil
+	return client.Subnets.Create(params)
 }
 
 func (r *subnetRepo) Update(ctx context.Context, id int, name, cidr, gatewayIP string, dnsServers []string, description string, allowDNSResolution bool) (*network.Subnet, error) {
@@ -87,12 +71,7 @@ func (r *subnetRepo) Update(ctx context.Context, id int, name, cidr, gatewayIP s
 		AllowDNS:    allowDNSResolution,
 	}
 
-	subnet, err := client.Subnet.Update(id, params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toSubnet(subnet), nil
+	return client.Subnet.Update(id, params)
 }
 
 func (r *subnetRepo) Delete(_ context.Context, id int) error {
@@ -110,12 +89,7 @@ func (r *subnetRepo) GetIPAddresses(_ context.Context, id int) ([]network.IPAddr
 		return nil, err
 	}
 
-	ips, err := client.Subnet.GetIPAddresses(id)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toIPAddresses(ips), nil
+	return client.Subnet.GetIPAddresses(id)
 }
 
 func (r *subnetRepo) GetStatistics(_ context.Context, id int) (*network.Statistics, error) {
@@ -124,34 +98,5 @@ func (r *subnetRepo) GetStatistics(_ context.Context, id int) (*network.Statisti
 		return nil, err
 	}
 
-	statistics, err := client.Subnet.GetStatistics(id)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toStatistics(statistics), nil
-}
-
-func (r *subnetRepo) toSubnet(s *entity.Subnet) *network.Subnet {
-	return &network.Subnet{}
-}
-
-func (r *subnetRepo) toSubnets(ss []entity.Subnet) []network.Subnet {
-	ret := make([]network.Subnet, 0, len(ss))
-
-	return ret
-}
-
-func (r *subnetRepo) toIPAddress(ip *subnet.IPAddress) *network.IPAddress {
-	return &network.IPAddress{}
-}
-
-func (r *subnetRepo) toIPAddresses(ips []subnet.IPAddress) []network.IPAddress {
-	ret := make([]network.IPAddress, 0, len(ips))
-
-	return ret
-}
-
-func (r *subnetRepo) toStatistics(s *subnet.Statistics) *network.Statistics {
-	return &network.Statistics{}
+	return client.Subnet.GetStatistics(id)
 }

@@ -26,12 +26,7 @@ func (r *bootSourceSelectionRepo) List(_ context.Context, id int) ([]configurati
 		return nil, err
 	}
 
-	selections, err := client.BootSourceSelections.Get(id)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toBootSourceSelections(selections), nil
+	return client.BootSourceSelections.Get(id)
 }
 
 func (r *bootSourceSelectionRepo) Create(_ context.Context, bootSourceID int, distroSeries string, architectures []string) (*configuration.BootSourceSelection, error) {
@@ -48,12 +43,7 @@ func (r *bootSourceSelectionRepo) Create(_ context.Context, bootSourceID int, di
 		Labels:    []string{"*"},
 	}
 
-	selection, err := client.BootSourceSelections.Create(bootSourceID, params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toBootSourceSelection(selection), nil
+	return client.BootSourceSelections.Create(bootSourceID, params)
 }
 
 func (r *bootSourceSelectionRepo) Update(_ context.Context, bootSourceID, id int, distroSeries string, architectures []string) (*configuration.BootSourceSelection, error) {
@@ -70,21 +60,5 @@ func (r *bootSourceSelectionRepo) Update(_ context.Context, bootSourceID, id int
 		Labels:    []string{"*"},
 	}
 
-	selection, err := client.BootSourceSelection.Update(bootSourceID, id, params)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toBootSourceSelection(selection), nil
-
-}
-
-func (r *bootSourceSelectionRepo) toBootSourceSelection(bss *entity.BootSourceSelection) *configuration.BootSourceSelection {
-	return &configuration.BootSourceSelection{}
-}
-
-func (r *bootSourceSelectionRepo) toBootSourceSelections(bsss []entity.BootSourceSelection) []configuration.BootSourceSelection {
-	ret := []configuration.BootSourceSelection{}
-
-	return ret
+	return client.BootSourceSelection.Update(bootSourceID, id, params)
 }
