@@ -66,14 +66,14 @@ func (uc *ScopeUseCase) CreateScope(ctx context.Context, name string) (*Scope, e
 		return nil, errors.New("no package repositories configured; please configure at least one before creating a scope")
 	}
 	var url string
-	for _, pr := range prs {
-		if pr.Name == "Ubuntu archive" {
-			url = pr.URL
+	for i := range prs {
+		if prs[i].Name == "Ubuntu archive" {
+			url = prs[i].URL
 			break
 		}
 	}
 	if url == "" {
-		return nil, errors.New("Ubuntu archive package repository not found")
+		return nil, errors.New("ubuntu archive package repository not found")
 	}
 
 	scope, err := uc.scope.Create(ctx, name, url)

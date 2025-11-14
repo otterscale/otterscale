@@ -58,7 +58,7 @@ func (r *model) Get(_ context.Context, name string) (*core.Scope, error) {
 	return nil, fmt.Errorf("model %q not found", name)
 }
 
-func (r *model) Create(_ context.Context, name string, url string) (*core.Scope, error) {
+func (r *model) Create(_ context.Context, name, url string) (*core.Scope, error) {
 	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return nil, err
