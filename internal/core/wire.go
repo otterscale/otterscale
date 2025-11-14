@@ -1,4 +1,4 @@
-package app
+package core
 
 import (
 	"github.com/google/wire"
@@ -38,8 +38,8 @@ import (
 )
 
 var ProviderSet = wire.NewSet(
-	cluster.NewClusterUseCase,
 	chart.NewChartUseCase,
+	cluster.NewClusterUseCase,
 	config.NewConfigUseCase,
 	persistent.NewPersistentUseCase,
 	release.NewReleaseUseCase,

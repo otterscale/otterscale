@@ -1,4 +1,4 @@
-package app
+package providers
 
 import (
 	"github.com/google/wire"
@@ -11,6 +11,7 @@ import (
 )
 
 var ProviderSet = wire.NewSet(
+	ceph.New,
 	ceph.NewBucketRepo,
 	ceph.NewImageRepo,
 	ceph.NewImageSnapshotRepo,
@@ -21,6 +22,7 @@ var ProviderSet = wire.NewSet(
 	ceph.NewSubvolumeSnapshotRepo,
 	ceph.NewUserRepo,
 	ceph.NewVolumeRepo,
+	juju.New,
 	juju.NewActionRepo,
 	juju.NewCharmRepo,
 	juju.NewFacilityRepo,
@@ -29,6 +31,7 @@ var ProviderSet = wire.NewSet(
 	juju.NewRelationRepo,
 	juju.NewScopeConfigRepo,
 	juju.NewScopeRepo,
+	kubernetes.New,
 	kubernetes.NewChartRepo,
 	kubernetes.NewConfigMapRepo,
 	kubernetes.NewDaemonSetRepo,
@@ -43,6 +46,7 @@ var ProviderSet = wire.NewSet(
 	kubernetes.NewServiceRepo,
 	kubernetes.NewStatefulSetRepo,
 	kubernetes.NewStorageClassRepo,
+	kubevirt.New,
 	kubevirt.NewDataVolumeRepo,
 	kubevirt.NewVirtualMachineCloneRepo,
 	kubevirt.NewVirtualMachineInstanceMigrationRepo,
@@ -52,6 +56,7 @@ var ProviderSet = wire.NewSet(
 	kubevirt.NewVirtualMachineRestoreRepo,
 	kubevirt.NewVirtualMachineSnapshotRepo,
 	kubevirt.NewVNCRepo,
+	maas.New,
 	maas.NewBootResourceRepo,
 	maas.NewBootSourceRepo,
 	maas.NewBootSourceSelectionRepo,
