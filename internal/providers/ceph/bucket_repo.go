@@ -26,7 +26,7 @@ func NewBucketRepo(ceph *Ceph) object.BucketRepo {
 var _ object.BucketRepo = (*bucketRepo)(nil)
 
 func (r *bucketRepo) List(ctx context.Context, scope string) ([]object.Bucket, error) {
-	client, err := r.ceph.Client(scope)
+	client, err := r.ceph.client(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (r *bucketRepo) Create(ctx context.Context, scope, bucket string, acl objec
 }
 
 func (r *bucketRepo) UpdateOwner(ctx context.Context, scope, bucket, owner string) error {
-	client, err := r.ceph.Client(scope)
+	client, err := r.ceph.client(scope)
 	if err != nil {
 		return err
 	}
@@ -128,7 +128,7 @@ func (r *bucketRepo) Delete(ctx context.Context, scope, bucket string) error {
 }
 
 func (r *bucketRepo) Endpoint(scope string) string {
-	client, err := r.ceph.Client(scope)
+	client, err := r.ceph.client(scope)
 	if err != nil {
 		return ""
 	}
@@ -137,7 +137,7 @@ func (r *bucketRepo) Endpoint(scope string) string {
 }
 
 func (r *bucketRepo) Key(scope string) (accessKey string, secretKey string) {
-	client, err := r.ceph.Client(scope)
+	client, err := r.ceph.client(scope)
 	if err != nil {
 		return "", ""
 	}
@@ -151,7 +151,7 @@ func (r *bucketRepo) s3Client(ctx context.Context, scope string) (*s3.Client, er
 		retryMaxAttempts = 5
 	)
 
-	client, err := r.ceph.Client(scope)
+	client, err := r.ceph.client(scope)
 	if err != nil {
 		return nil, err
 	}

@@ -19,7 +19,7 @@ func NewSubvolumeGroupRepo(ceph *Ceph) file.SubvolumeGroupRepo {
 var _ file.SubvolumeGroupRepo = (*subvolumeGroupRepo)(nil)
 
 func (r *subvolumeGroupRepo) List(_ context.Context, scope, volume string) ([]file.SubvolumeGroup, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (r *subvolumeGroupRepo) List(_ context.Context, scope, volume string) ([]fi
 }
 
 func (r *subvolumeGroupRepo) Get(_ context.Context, scope, volume, group string) (*file.SubvolumeGroup, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (r *subvolumeGroupRepo) Get(_ context.Context, scope, volume, group string)
 }
 
 func (r *subvolumeGroupRepo) Create(_ context.Context, scope, volume, group string, size uint64) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -66,7 +66,7 @@ func (r *subvolumeGroupRepo) Create(_ context.Context, scope, volume, group stri
 }
 
 func (r *subvolumeGroupRepo) Resize(_ context.Context, scope, volume, group string, size uint64) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func (r *subvolumeGroupRepo) Resize(_ context.Context, scope, volume, group stri
 }
 
 func (r *subvolumeGroupRepo) Delete(_ context.Context, scope, volume, group string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}

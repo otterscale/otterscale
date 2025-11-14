@@ -26,7 +26,7 @@ func NewMachineManagerRepo(juju *Juju) machine.MachineManagerRepo {
 var _ machine.MachineManagerRepo = (*machineManagerRepo)(nil)
 
 func (r *machineManagerRepo) AddMachines(_ context.Context, scope, uuid, fqdn, baseOS, baseChannel string) error {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -54,7 +54,7 @@ func (r *machineManagerRepo) AddMachines(_ context.Context, scope, uuid, fqdn, b
 }
 
 func (r *machineManagerRepo) DestroyMachines(_ context.Context, scope string, force, keep, dryRun bool, maxWait *time.Duration, machines ...string) error {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}

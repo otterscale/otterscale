@@ -21,7 +21,7 @@ func NewNodeRepo(ceph *Ceph) storage.NodeRepo {
 var _ storage.NodeRepo = (*nodeRepo)(nil)
 
 func (r *nodeRepo) ListMonitors(_ context.Context, scope string) ([]storage.Monitor, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (r *nodeRepo) ListMonitors(_ context.Context, scope string) ([]storage.Moni
 }
 
 func (r *nodeRepo) ListObjectStorageDaemons(_ context.Context, scope string) ([]storage.ObjectStorageDaemon, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (r *nodeRepo) ListObjectStorageDaemons(_ context.Context, scope string) ([]
 }
 
 func (r *nodeRepo) DoSMART(_ context.Context, scope, who string) (map[string][]string, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (r *nodeRepo) DoSMART(_ context.Context, scope, who string) (map[string][]s
 }
 
 func (r *nodeRepo) Config(scope string) (host string, id string, key string, err error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return "", "", "", err
 	}

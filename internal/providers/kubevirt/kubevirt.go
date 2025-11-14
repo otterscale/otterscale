@@ -25,7 +25,7 @@ func New(conf *config.Config, kubernetes *kubernetes.Kubernetes) (*KubeVirt, err
 	}, nil
 }
 
-func (m *KubeVirt) KVClientset(scope string) (*kubevirt.Clientset, error) {
+func (m *KubeVirt) clientset(scope string) (*kubevirt.Clientset, error) {
 	if v, ok := m.kvClientsets.Load(scope); ok {
 		return v.(*kubevirt.Clientset), nil
 	}
@@ -45,7 +45,7 @@ func (m *KubeVirt) KVClientset(scope string) (*kubevirt.Clientset, error) {
 	return clientset, nil
 }
 
-func (m *KubeVirt) CDIClientset(scope string) (*containerizeddataimporter.Clientset, error) {
+func (m *KubeVirt) cdiClientset(scope string) (*containerizeddataimporter.Clientset, error) {
 	if v, ok := m.cdiClientsets.Load(scope); ok {
 		return v.(*containerizeddataimporter.Clientset), nil
 	}

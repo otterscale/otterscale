@@ -20,7 +20,7 @@ func NewPoolRepo(ceph *Ceph) pool.PoolRepo {
 var _ pool.PoolRepo = (*poolRepo)(nil)
 
 func (r *poolRepo) List(_ context.Context, scope, application string) ([]pool.Pool, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (r *poolRepo) List(_ context.Context, scope, application string) ([]pool.Po
 }
 
 func (r *poolRepo) Create(_ context.Context, scope, pool, poolType string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func (r *poolRepo) Create(_ context.Context, scope, pool, poolType string) error
 }
 
 func (r *poolRepo) Delete(_ context.Context, scope, pool string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -66,7 +66,7 @@ func (r *poolRepo) Delete(_ context.Context, scope, pool string) error {
 }
 
 func (r *poolRepo) Enable(_ context.Context, scope, pool, application string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func (r *poolRepo) Enable(_ context.Context, scope, pool, application string) er
 }
 
 func (r *poolRepo) GetParameter(_ context.Context, scope, pool, key string) (string, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return "", err
 	}
@@ -84,7 +84,7 @@ func (r *poolRepo) GetParameter(_ context.Context, scope, pool, key string) (str
 }
 
 func (r *poolRepo) SetParameter(_ context.Context, scope, pool, key, value string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -93,7 +93,7 @@ func (r *poolRepo) SetParameter(_ context.Context, scope, pool, key, value strin
 }
 
 func (r *poolRepo) GetQuota(_ context.Context, scope, pool string) (maxBytes, maxObjects uint64, err error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return 0, 0, err
 	}
@@ -107,7 +107,7 @@ func (r *poolRepo) GetQuota(_ context.Context, scope, pool string) (maxBytes, ma
 }
 
 func (r *poolRepo) SetQuota(_ context.Context, scope, pool string, maxBytes, maxObjects uint64) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func (r *poolRepo) SetQuota(_ context.Context, scope, pool string, maxBytes, max
 }
 
 func (r *poolRepo) GetECProfile(_ context.Context, scope, name string) (k, m string, err error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return "", "", err
 	}

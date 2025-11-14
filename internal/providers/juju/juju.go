@@ -71,7 +71,7 @@ func (m *Juju) getUUID(scope string) (string, error) {
 	return "", connect.NewError(connect.CodeNotFound, fmt.Errorf("scope %q not found", scope))
 }
 
-func (m *Juju) Connection(scope string) (api.Connection, error) {
+func (m *Juju) connection(scope string) (api.Connection, error) {
 	if v, ok := m.connections.Load(scope); ok {
 		conn := v.(api.Connection)
 		if !conn.IsBroken() {
@@ -105,10 +105,11 @@ func (m *Juju) waitForCompleted(ctx context.Context, scope, id string, tickInter
 		select {
 
 		case <-ticker.C:
-			conn, err := m.Connection(scope)
+			conn, err := m.connection(scope)
 			if err != nil {
 				return nil, err
 			}
+
 			results, err := action.NewClient(conn).Actions([]string{id})
 			if err != nil {
 				return nil, err
@@ -121,6 +122,7 @@ func (m *Juju) waitForCompleted(ctx context.Context, scope, id string, tickInter
 			if results[0].Status == "completed" {
 				return results[0].Output, nil
 			}
+
 			continue
 
 		case <-timeout:
@@ -133,7 +135,7 @@ func (m *Juju) waitForCompleted(ctx context.Context, scope, id string, tickInter
 }
 
 func (m *Juju) Run(ctx context.Context, scope, appName, actionName string, params map[string]any) (map[string]any, error) {
-	conn, err := m.Connection(scope)
+	conn, err := m.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -155,6 +157,7 @@ func (m *Juju) Run(ctx context.Context, scope, appName, actionName string, param
 	if err != nil {
 		return nil, err
 	}
+
 	if len(enqueued.Actions) == 0 || enqueued.Actions[0].Action == nil {
 		return nil, fmt.Errorf("failed to run action %q on %s", actionName, leader)
 	}
@@ -165,7 +168,7 @@ func (m *Juju) Run(ctx context.Context, scope, appName, actionName string, param
 }
 
 func (m *Juju) Execute(ctx context.Context, scope, appName, command string) (map[string]any, error) {
-	conn, err := m.Connection(scope)
+	conn, err := m.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -186,6 +189,7 @@ func (m *Juju) Execute(ctx context.Context, scope, appName, command string) (map
 	if err != nil {
 		return nil, err
 	}
+
 	if len(enqueued.Actions) == 0 || enqueued.Actions[0].Action == nil {
 		return nil, fmt.Errorf("failed to run command %q on %s", command, leader)
 	}
@@ -196,7 +200,7 @@ func (m *Juju) Execute(ctx context.Context, scope, appName, command string) (map
 }
 
 func (m *Juju) GetEndpoint(ctx context.Context, scope, appName string) (string, error) {
-	conn, err := m.Connection(scope)
+	conn, err := m.connection(scope)
 	if err != nil {
 		return "", err
 	}

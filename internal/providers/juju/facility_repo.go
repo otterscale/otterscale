@@ -29,7 +29,7 @@ func NewFacilityRepo(juju *Juju) facility.FacilityRepo {
 var _ facility.FacilityRepo = (*facilityRepo)(nil)
 
 func (r *facilityRepo) List(ctx context.Context, scope, jujuID string) ([]facility.Facility, error) {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (r *facilityRepo) List(ctx context.Context, scope, jujuID string) ([]facili
 }
 
 func (r *facilityRepo) Create(_ context.Context, scope, name, configYAML, charmName, channel string, revision int, series, directive, placementScope string) error {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -88,7 +88,7 @@ func (r *facilityRepo) Create(_ context.Context, scope, name, configYAML, charmN
 
 // Note: This function has not been tested.
 func (r *facilityRepo) Update(_ context.Context, scope, name, configYAML string) error {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func (r *facilityRepo) Update(_ context.Context, scope, name, configYAML string)
 
 // Note: This function has not been tested.
 func (r *facilityRepo) Delete(_ context.Context, scope, name string, destroyStorage, force bool) error {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -122,7 +122,7 @@ func (r *facilityRepo) Delete(_ context.Context, scope, name string, destroyStor
 }
 
 func (r *facilityRepo) Resolve(_ context.Context, scope, unitName string) error {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -132,7 +132,7 @@ func (r *facilityRepo) Resolve(_ context.Context, scope, unitName string) error 
 }
 
 func (r *facilityRepo) Config(_ context.Context, scope, name string) (map[string]any, error) {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +145,7 @@ func (r *facilityRepo) Config(_ context.Context, scope, name string) (map[string
 }
 
 func (r *facilityRepo) PublicAddress(_ context.Context, scope, name string) (string, error) {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return "", err
 	}

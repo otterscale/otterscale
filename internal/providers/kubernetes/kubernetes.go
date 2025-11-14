@@ -126,7 +126,7 @@ func (m *Kubernetes) Config(scope string) (*rest.Config, error) {
 	return config, nil
 }
 
-func (m *Kubernetes) Clientset(scope string) (*kubernetes.Clientset, error) {
+func (m *Kubernetes) clientset(scope string) (*kubernetes.Clientset, error) {
 	if v, ok := m.clientsets.Load(scope); ok {
 		return v.(*kubernetes.Clientset), nil
 	}

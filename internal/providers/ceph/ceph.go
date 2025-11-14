@@ -128,7 +128,7 @@ func (m *Ceph) newConnection(c connectionConfig) (*rados.Conn, error) {
 }
 
 // TODO: Check connection with 'OpenIOContext'
-func (m *Ceph) Connection(scope string) (*rados.Conn, error) {
+func (m *Ceph) connection(scope string) (*rados.Conn, error) {
 	if v, ok := m.connections.Load(scope); ok {
 		conn := v.(*rados.Conn)
 		return conn, nil
@@ -254,7 +254,7 @@ func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
 	return config, nil
 }
 
-func (m *Ceph) Client(scope string) (*admin.API, error) {
+func (m *Ceph) client(scope string) (*admin.API, error) {
 	if v, ok := m.clients.Load(scope); ok {
 		client := v.(*admin.API)
 		return client, nil

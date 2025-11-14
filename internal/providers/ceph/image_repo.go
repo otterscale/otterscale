@@ -23,7 +23,7 @@ func NewImageRepo(ceph *Ceph) block.ImageRepo {
 var _ block.ImageRepo = (*imageRepo)(nil)
 
 func (r *imageRepo) List(_ context.Context, scope, pool string) ([]block.Image, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (r *imageRepo) List(_ context.Context, scope, pool string) ([]block.Image, 
 }
 
 func (r *imageRepo) Get(_ context.Context, scope, pool, image string) (*block.Image, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (r *imageRepo) Get(_ context.Context, scope, pool, image string) (*block.Im
 }
 
 func (r *imageRepo) Create(_ context.Context, scope, pool, image string, order int, stripeUnit, stripeCount, size, features uint64) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -84,7 +84,7 @@ func (r *imageRepo) Create(_ context.Context, scope, pool, image string, order i
 }
 
 func (r *imageRepo) Resize(_ context.Context, scope, pool, image string, size uint64) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (r *imageRepo) Resize(_ context.Context, scope, pool, image string, size ui
 }
 
 func (r *imageRepo) Delete(_ context.Context, scope, pool, image string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}

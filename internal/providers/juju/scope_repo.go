@@ -28,7 +28,7 @@ func NewScopeRepo(juju *Juju) scope.ScopeRepo {
 var _ scope.ScopeRepo = (*scopeRepo)(nil)
 
 func (r *scopeRepo) List(_ context.Context) ([]scope.Scope, error) {
-	conn, err := r.juju.Connection("controller")
+	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +74,7 @@ func (r *scopeRepo) Create(ctx context.Context, name, sshKey string) (*scope.Sco
 }
 
 func (r *scopeRepo) create(_ context.Context, name, sshKey string) (base.ModelInfo, error) {
-	conn, err := r.juju.Connection("controller")
+	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return base.ModelInfo{}, err
 	}
@@ -82,7 +82,7 @@ func (r *scopeRepo) create(_ context.Context, name, sshKey string) (base.ModelIn
 }
 
 func (r *scopeRepo) addSSHKey(_ context.Context, name, sshKey string) error {
-	conn, err := r.juju.Connection(name)
+	conn, err := r.juju.connection(name)
 	if err != nil {
 		return err
 	}

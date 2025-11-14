@@ -22,7 +22,7 @@ func NewScopeConfigRepo(juju *Juju) configuration.ScopeConfigRepo {
 var _ configuration.ScopeConfigRepo = (*scopeConfigRepo)(nil)
 
 func (r *scopeConfigRepo) Set(_ context.Context, config map[string]any) error {
-	conn, err := r.juju.Connection("controller")
+	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return err
 	}
@@ -33,7 +33,7 @@ func (r *scopeConfigRepo) Set(_ context.Context, config map[string]any) error {
 	}
 
 	for i := range summaries {
-		conn, err := r.juju.Connection(summaries[i].Name)
+		conn, err := r.juju.connection(summaries[i].Name)
 		if err != nil {
 			return err
 		}

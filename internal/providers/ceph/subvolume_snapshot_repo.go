@@ -19,7 +19,7 @@ func NewSubvolumeSnapshotRepo(ceph *Ceph) file.SubvolumeSnapshotRepo {
 var _ file.SubvolumeSnapshotRepo = (*subvolumeSnapshotRepo)(nil)
 
 func (r *subvolumeSnapshotRepo) List(_ context.Context, scope, volume, subvolume, group string) ([]file.SubvolumeSnapshot, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (r *subvolumeSnapshotRepo) List(_ context.Context, scope, volume, subvolume
 }
 
 func (r *subvolumeSnapshotRepo) Get(_ context.Context, scope, volume, subvolume, group, snapshot string) (*file.SubvolumeSnapshot, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (r *subvolumeSnapshotRepo) Get(_ context.Context, scope, volume, subvolume,
 }
 
 func (r *subvolumeSnapshotRepo) Create(_ context.Context, scope, volume, subvolume, group, snapshot string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -66,7 +66,7 @@ func (r *subvolumeSnapshotRepo) Create(_ context.Context, scope, volume, subvolu
 }
 
 func (r *subvolumeSnapshotRepo) Delete(_ context.Context, scope, volume, subvolume, group, snapshot string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}

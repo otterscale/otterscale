@@ -21,7 +21,7 @@ func NewActionRepo(juju *Juju) action.ActionRepo {
 var _ action.ActionRepo = (*actionRepo)(nil)
 
 func (r *actionRepo) List(_ context.Context, scope, appName string) ([]action.Action, error) {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err
 	}

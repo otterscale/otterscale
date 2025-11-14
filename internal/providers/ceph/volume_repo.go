@@ -19,7 +19,7 @@ func NewVolumeRepo(ceph *Ceph) file.VolumeRepo {
 var _ file.VolumeRepo = (*volumeRepo)(nil)
 
 func (r *volumeRepo) List(_ context.Context, scope string) ([]file.Volume, error) {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}

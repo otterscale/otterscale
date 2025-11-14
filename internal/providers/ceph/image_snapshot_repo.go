@@ -20,7 +20,7 @@ func NewImageSnapshotRepo(ceph *Ceph) block.ImageSnapshotRepo {
 var _ block.ImageSnapshotRepo = (*imageSnapshotRepo)(nil)
 
 func (r *imageSnapshotRepo) Create(_ context.Context, scope, pool, image, snapshot string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func (r *imageSnapshotRepo) Create(_ context.Context, scope, pool, image, snapsh
 }
 
 func (r *imageSnapshotRepo) Delete(_ context.Context, scope, pool, image, snapshot string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func (r *imageSnapshotRepo) Delete(_ context.Context, scope, pool, image, snapsh
 }
 
 func (r *imageSnapshotRepo) Rollback(_ context.Context, scope, pool, image, snapshot string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -84,7 +84,7 @@ func (r *imageSnapshotRepo) Rollback(_ context.Context, scope, pool, image, snap
 }
 
 func (r *imageSnapshotRepo) Protect(_ context.Context, scope, pool, image, snapshot string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (r *imageSnapshotRepo) Protect(_ context.Context, scope, pool, image, snaps
 }
 
 func (r *imageSnapshotRepo) Unprotect(_ context.Context, scope, pool, image, snapshot string) error {
-	conn, err := r.ceph.Connection(scope)
+	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}

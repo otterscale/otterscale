@@ -21,7 +21,7 @@ func NewRelationRepo(juju *Juju) facility.RelationRepo {
 var _ facility.RelationRepo = (*relationRepo)(nil)
 
 func (r *relationRepo) Create(_ context.Context, scope string, endpoints []string) error {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -31,7 +31,7 @@ func (r *relationRepo) Create(_ context.Context, scope string, endpoints []strin
 }
 
 func (r *relationRepo) Delete(_ context.Context, scope string, id int) error {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
@@ -40,7 +40,7 @@ func (r *relationRepo) Delete(_ context.Context, scope string, id int) error {
 }
 
 // func (r *relationRepo) Consume(_ context.Context, scope string, args *crossmodel.ConsumeApplicationArgs) error {
-// 	conn, err := r.juju.Connection(scope)
+// 	conn, err := r.juju.connection(scope)
 // 	if err != nil {
 // 		return err
 // 	}

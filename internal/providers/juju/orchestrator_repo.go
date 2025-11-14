@@ -22,7 +22,7 @@ func NewOrchestratorRepo(juju *Juju) machine.OrchestratorRepo {
 var _ machine.OrchestratorRepo = (*orchestratorRepo)(nil)
 
 func (r *orchestratorRepo) AgentStatus(ctx context.Context, scope, jujuID string) (string, error) {
-	conn, err := r.juju.Connection(scope)
+	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return "", err
 	}

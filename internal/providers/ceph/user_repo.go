@@ -22,7 +22,7 @@ func NewUserRepo(ceph *Ceph) object.UserRepo {
 var _ object.UserRepo = (*userRepo)(nil)
 
 func (r *userRepo) List(ctx context.Context, scope string) ([]object.User, error) {
-	client, err := r.ceph.Client(scope)
+	client, err := r.ceph.client(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (r *userRepo) List(ctx context.Context, scope string) ([]object.User, error
 }
 
 func (r *userRepo) Create(ctx context.Context, scope string, id, name string, suspended bool) (*object.User, error) {
-	client, err := r.ceph.Client(scope)
+	client, err := r.ceph.client(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (r *userRepo) Create(ctx context.Context, scope string, id, name string, su
 }
 
 func (r *userRepo) Update(ctx context.Context, scope string, id, name string, suspended bool) (*object.User, error) {
-	client, err := r.ceph.Client(scope)
+	client, err := r.ceph.client(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (r *userRepo) Update(ctx context.Context, scope string, id, name string, su
 }
 
 func (r *userRepo) Delete(ctx context.Context, scope string, id string) error {
-	client, err := r.ceph.Client(scope)
+	client, err := r.ceph.client(scope)
 	if err != nil {
 		return err
 	}
@@ -89,7 +89,7 @@ func (r *userRepo) Delete(ctx context.Context, scope string, id string) error {
 }
 
 func (r *userRepo) CreateKey(ctx context.Context, scope string, id string) (*object.UserKey, error) {
-	client, err := r.ceph.Client(scope)
+	client, err := r.ceph.client(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func (r *userRepo) CreateKey(ctx context.Context, scope string, id string) (*obj
 }
 
 func (r *userRepo) DeleteKey(ctx context.Context, scope string, id, accessKey string) error {
-	client, err := r.ceph.Client(scope)
+	client, err := r.ceph.client(scope)
 	if err != nil {
 		return err
 	}
