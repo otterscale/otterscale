@@ -14,6 +14,6 @@ type PersistentVolumeClaimRepo interface {
 	Get(ctx context.Context, scope, namespace, name string) (*PersistentVolumeClaim, error)
 	Create(ctx context.Context, scope, namespace string, pvc *PersistentVolumeClaim) (*PersistentVolumeClaim, error)
 	Update(ctx context.Context, scope, namespace string, pvc *PersistentVolumeClaim) (*PersistentVolumeClaim, error)
-	Delete(ctx context.Context, scope, namespace, name string) error
 	Patch(ctx context.Context, scope, namespace, name string, data []byte) (*PersistentVolumeClaim, error)
+	Delete(ctx context.Context, scope, namespace, name string) error
 }

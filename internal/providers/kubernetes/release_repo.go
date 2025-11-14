@@ -260,11 +260,11 @@ func (uc *releaseRepo) toValues(valuesYAML string, valuesMap map[string]string) 
 }
 
 func pointersToValues[T any](ptrs []*T) []T {
-	result := make([]T, 0, len(ptrs))
+	ret := make([]T, 0, len(ptrs))
 
 	for _, ptr := range ptrs {
-		result = append(result, *ptr)
+		ret = append(ret, *ptr)
 	}
 
-	return result
+	return ret
 }

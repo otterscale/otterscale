@@ -15,5 +15,4 @@ type DeploymentRepo interface {
 	Update(ctx context.Context, scope, namespace string, d *Deployment) (*Deployment, error)
 	Create(ctx context.Context, scope, namespace string, d *Deployment) (*Deployment, error)
 	Delete(ctx context.Context, scope, namespace, name string) error
-	PublicAddress() string
 }

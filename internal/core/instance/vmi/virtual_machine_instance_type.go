@@ -36,10 +36,10 @@ func (uc *VirtualMachineInstanceUseCase) ListInstanceTypes(ctx context.Context, 
 		return nil, err
 	}
 
-	result := make([]VirtualMachineInstanceType, 0, len(vmits))
+	ret := make([]VirtualMachineInstanceType, 0, len(vmits))
 
 	for i := range vmits {
-		result = append(result, VirtualMachineInstanceType{
+		ret = append(ret, VirtualMachineInstanceType{
 			VirtualMachineInstancetype: &vmits[i],
 			ClusterWide:                false,
 		})
@@ -51,10 +51,10 @@ func (uc *VirtualMachineInstanceUseCase) ListInstanceTypes(ctx context.Context, 
 			return nil, err
 		}
 
-		result = append(result, uc.toVirtualMachineInstanceTypes(vmcits)...)
+		ret = append(ret, uc.toVirtualMachineInstanceTypes(vmcits)...)
 	}
 
-	return result, nil
+	return ret, nil
 }
 
 func (uc *VirtualMachineInstanceUseCase) GetInstanceType(ctx context.Context, scope, namespace, name string) (*VirtualMachineInstanceType, error) {
@@ -124,11 +124,11 @@ func (uc *VirtualMachineInstanceUseCase) toVirtualMachineInstanceType(vmcit *Vir
 }
 
 func (uc *VirtualMachineInstanceUseCase) toVirtualMachineInstanceTypes(vmcits []VirtualMachineClusterInstancetype) []VirtualMachineInstanceType {
-	result := make([]VirtualMachineInstanceType, 0, len(vmcits))
+	ret := make([]VirtualMachineInstanceType, 0, len(vmcits))
 
 	for _, vmcit := range vmcits {
-		result = append(result, *uc.toVirtualMachineInstanceType(&vmcit))
+		ret = append(ret, *uc.toVirtualMachineInstanceType(&vmcit))
 	}
 
-	return result
+	return ret
 }

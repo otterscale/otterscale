@@ -21,7 +21,7 @@ type Release = release.Release
 
 type ReleaseRepo interface {
 	List(scope, namespace, selector string) ([]Release, error)
-	Get(restscope, namespace, name string) (*Release, error)
+	Get(scope, namespace, name string) (*Release, error)
 	Install(scope, namespace, name string, dryRun bool, chartRef string, labelsInSecrets, labels, annotations map[string]string, valuesYAML string, valuesMap map[string]string) (*Release, error)
 	Uninstall(scope, namespace, name string, dryRun bool) (*Release, error)
 	Upgrade(scope, namespace, name string, dryRun bool, chartRef string, valuesYAML string, valuesMap map[string]string, reuseValues bool) (*Release, error)

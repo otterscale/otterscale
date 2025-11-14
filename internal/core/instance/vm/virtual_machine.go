@@ -166,7 +166,7 @@ func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, scope,
 		vmiMap[vmi.Namespace+"/"+vmi.Name] = &vmi
 	}
 
-	result := make([]VirtualMachineData, len(virtualMachines))
+	ret := make([]VirtualMachineData, len(virtualMachines))
 
 	for i := range virtualMachines {
 		vm := virtualMachines[i]
@@ -179,7 +179,7 @@ func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, scope,
 			}
 		}
 
-		result[i] = VirtualMachineData{
+		ret[i] = VirtualMachineData{
 			VirtualMachine: &virtualMachines[i],
 			Instance:       instance,
 			Machine:        machine,
@@ -190,7 +190,7 @@ func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, scope,
 		}
 	}
 
-	return result, nil
+	return ret, nil
 }
 
 func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name string) (*VirtualMachineData, error) {
@@ -288,7 +288,7 @@ func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, scope, n
 		}
 	}
 
-	result := &VirtualMachineData{
+	return &VirtualMachineData{
 		VirtualMachine: virtualMachine,
 		Instance:       instance,
 		Machine:        machine,
@@ -296,9 +296,7 @@ func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, scope, n
 		Snapshots:      uc.filterSnapshots(namespace, name, snapshots),
 		Restores:       uc.filterRestores(namespace, name, restores),
 		Services:       uc.filterServices(namespace, name, services),
-	}
-
-	return result, nil
+	}, nil
 }
 
 func (uc *VirtualMachineUseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {

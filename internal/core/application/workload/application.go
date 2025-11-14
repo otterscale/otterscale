@@ -135,7 +135,7 @@ func (uc *WorkloadUseCase) ListApplications(ctx context.Context, scope string) (
 		apps = append(apps, *app)
 	}
 
-	return apps, uc.deployment.PublicAddress(), nil
+	return apps, uc.service.Host(scope), nil
 }
 
 func (uc *WorkloadUseCase) GetApplication(ctx context.Context, scope, namespace, name string) (*Application, error) {

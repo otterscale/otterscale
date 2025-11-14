@@ -42,10 +42,10 @@ type File struct {
 
 type ChartRepo interface {
 	List(ctx context.Context, url string, useCache bool) ([]Chart, error)
-	GetStableVersion(ctx context.Context, url, name string, useCache bool) (*Version, error)
 	Show(chartRef string, format action.ShowOutputFormat) (string, error)
 	Push(chartRef, remoteOCI string) (string, error)
 	Index(dir, url string) error
+	GetStableVersion(ctx context.Context, url, name string, useCache bool) (*Version, error)
 }
 
 type ChartUseCase struct {
@@ -72,7 +72,7 @@ func (uc *ChartUseCase) ListCharts(ctx context.Context) ([]Chart, error) {
 		urls = append(urls, localRepoDir)
 	}
 
-	result := make([][]Chart, len(urls))
+	ret := make([][]Chart, len(urls))
 	eg, egctx := errgroup.WithContext(ctx)
 
 	for i := range urls {
@@ -81,7 +81,7 @@ func (uc *ChartUseCase) ListCharts(ctx context.Context) ([]Chart, error) {
 
 			v, err := uc.chart.List(egctx, urls[i], useCache)
 			if err == nil {
-				result[i] = v
+				ret[i] = v
 			}
 			return err
 		})
@@ -91,7 +91,7 @@ func (uc *ChartUseCase) ListCharts(ctx context.Context) ([]Chart, error) {
 		return nil, err
 	}
 
-	return flatten(result), nil
+	return flatten(ret), nil
 }
 
 func (uc *ChartUseCase) GetChartFile(chartRef string) (*File, error) {
@@ -216,9 +216,9 @@ func flatten[T any](data [][]T) []T {
 		totalLen += len(innerSlice)
 	}
 
-	result := make([]T, 0, totalLen)
+	ret := make([]T, 0, totalLen)
 	for _, innerSlice := range data {
-		result = append(result, innerSlice...)
+		ret = append(ret, innerSlice...)
 	}
-	return result
+	return ret
 }
