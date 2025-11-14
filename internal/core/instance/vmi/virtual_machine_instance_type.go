@@ -126,8 +126,8 @@ func (uc *VirtualMachineInstanceUseCase) toVirtualMachineInstanceType(vmcit *Vir
 func (uc *VirtualMachineInstanceUseCase) toVirtualMachineInstanceTypes(vmcits []VirtualMachineClusterInstanceType) []VirtualMachineInstanceTypeData {
 	ret := make([]VirtualMachineInstanceTypeData, 0, len(vmcits))
 
-	for _, vmcit := range vmcits {
-		ret = append(ret, *uc.toVirtualMachineInstanceType(&vmcit))
+	for i := range vmcits {
+		ret = append(ret, *uc.toVirtualMachineInstanceType(&vmcits[i]))
 	}
 
 	return ret

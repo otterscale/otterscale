@@ -165,45 +165,7 @@ func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, scope,
 		return nil, err
 	}
 
-	machineMap := map[string]*machine.Machine{}
-
-	for i := range machines {
-		m := machines[i]
-		machineMap[m.Hostname] = &m
-	}
-
-	vmiMap := map[string]*vmi.VirtualMachineInstance{}
-
-	for i := range instances {
-		vmi := instances[i]
-		vmiMap[vmi.Namespace+"/"+vmi.Name] = &vmi
-	}
-
-	ret := make([]VirtualMachineData, len(virtualMachines))
-
-	for i := range virtualMachines {
-		vm := virtualMachines[i]
-
-		var machine *machine.Machine
-		instance, ok := vmiMap[vm.Namespace+"/"+vm.Name]
-		if ok {
-			if nodeName := instance.Status.NodeName; nodeName != "" {
-				machine = machineMap[nodeName]
-			}
-		}
-
-		ret[i] = VirtualMachineData{
-			VirtualMachine: &virtualMachines[i],
-			Instance:       instance,
-			Machine:        machine,
-			Clones:         uc.filterClones(virtualMachines[i].Namespace, virtualMachines[i].Name, clones),
-			Snapshots:      uc.filterSnapshots(virtualMachines[i].Namespace, virtualMachines[i].Name, snapshots),
-			Restores:       uc.filterRestores(virtualMachines[i].Namespace, virtualMachines[i].Name, restores),
-			Services:       uc.filterServices(virtualMachines[i].Namespace, virtualMachines[i].Name, services),
-		}
-	}
-
-	return ret, nil
+	return uc.combineVirtualMachines(virtualMachines, instances, machines, clones, snapshots, restores, services), nil
 }
 
 func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name string) (*VirtualMachineData, error) {
@@ -221,6 +183,7 @@ func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, scope, n
 		}
 		return err
 	})
+
 	eg.Go(func() error {
 		v, err := uc.virtualMachineInstance.Get(egctx, scope, namespace, name)
 		if err == nil {
@@ -288,28 +251,7 @@ func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, scope, n
 		return err
 	})
 
-	machineMap := map[string]*machine.Machine{}
-	for i := range machines {
-		m := machines[i]
-		machineMap[m.Hostname] = &m
-	}
-
-	var machine *machine.Machine
-	if instance != nil {
-		if nodeName := instance.Status.NodeName; nodeName != "" {
-			machine = machineMap[nodeName]
-		}
-	}
-
-	return &VirtualMachineData{
-		VirtualMachine: virtualMachine,
-		Instance:       instance,
-		Machine:        machine,
-		Clones:         uc.filterClones(namespace, name, clones),
-		Snapshots:      uc.filterSnapshots(namespace, name, snapshots),
-		Restores:       uc.filterRestores(namespace, name, restores),
-		Services:       uc.filterServices(namespace, name, services),
-	}, nil
+	return uc.combineVirtualMachine(namespace, name, virtualMachine, instance, machines, clones, snapshots, restores, services), nil
 }
 
 func (uc *VirtualMachineUseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {
@@ -530,6 +472,74 @@ func (uc *VirtualMachineUseCase) filterServices(namespace, name string, services
 	}
 
 	return ret
+}
+
+func (uc *VirtualMachineUseCase) combineVirtualMachines(virtualMachines []VirtualMachine, instances []vmi.VirtualMachineInstance, machines []machine.Machine, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, services []service.Service) []VirtualMachineData {
+	machineMap := map[string]*machine.Machine{}
+
+	for i := range machines {
+		m := machines[i]
+		machineMap[m.Hostname] = &m
+	}
+
+	vmiMap := map[string]*vmi.VirtualMachineInstance{}
+
+	for i := range instances {
+		vmi := instances[i]
+		vmiMap[vmi.Namespace+"/"+vmi.Name] = &vmi
+	}
+
+	ret := make([]VirtualMachineData, len(virtualMachines))
+
+	for i := range virtualMachines {
+		vm := virtualMachines[i]
+
+		var machine *machine.Machine
+		instance, ok := vmiMap[vm.Namespace+"/"+vm.Name]
+		if ok {
+			if nodeName := instance.Status.NodeName; nodeName != "" {
+				machine = machineMap[nodeName]
+			}
+		}
+
+		ret[i] = VirtualMachineData{
+			VirtualMachine: &virtualMachines[i],
+			Instance:       instance,
+			Machine:        machine,
+			Clones:         uc.filterClones(virtualMachines[i].Namespace, virtualMachines[i].Name, clones),
+			Snapshots:      uc.filterSnapshots(virtualMachines[i].Namespace, virtualMachines[i].Name, snapshots),
+			Restores:       uc.filterRestores(virtualMachines[i].Namespace, virtualMachines[i].Name, restores),
+			Services:       uc.filterServices(virtualMachines[i].Namespace, virtualMachines[i].Name, services),
+		}
+	}
+
+	return ret
+}
+
+func (uc *VirtualMachineUseCase) combineVirtualMachine(namespace, name string, virtualMachine *VirtualMachine, instance *vmi.VirtualMachineInstance, machines []machine.Machine, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, services []service.Service) *VirtualMachineData {
+	machineMap := map[string]*machine.Machine{}
+
+	for i := range machines {
+		m := machines[i]
+		machineMap[m.Hostname] = &m
+	}
+
+	var machine *machine.Machine
+	if instance != nil {
+		if nodeName := instance.Status.NodeName; nodeName != "" {
+			machine = machineMap[nodeName]
+		}
+	}
+
+	return &VirtualMachineData{
+		VirtualMachine: virtualMachine,
+		Instance:       instance,
+		Machine:        machine,
+		Clones:         uc.filterClones(namespace, name, clones),
+		Snapshots:      uc.filterSnapshots(namespace, name, snapshots),
+		Restores:       uc.filterRestores(namespace, name, restores),
+		Services:       uc.filterServices(namespace, name, services),
+	}
 }
 
 func (uc *VirtualMachineUseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript string) *VirtualMachine {

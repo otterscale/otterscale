@@ -231,12 +231,13 @@ func (uc *BISTUseCase) fetchLogs(ctx context.Context, job *workload.Job) (map[st
 		if err != nil {
 			continue
 		}
-		defer logs.Close()
 
 		data, err := io.ReadAll(logs)
 		if err != nil {
 			continue
 		}
+
+		logs.Close()
 
 		// warp result has redundant message
 		for _, v := range []string{string(data), removeLastTwoLines(string(data))} {

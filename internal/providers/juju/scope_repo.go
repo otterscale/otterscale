@@ -68,7 +68,7 @@ func (r *scopeRepo) Create(ctx context.Context, name, sshKey string) (*scope.Sco
 		return nil, err
 	}
 
-	return r.toScopeFromInfo(info), nil
+	return r.toScopeFromInfo(&info), nil
 }
 
 func (r *scopeRepo) create(_ context.Context, name, sshKey string) (base.ModelInfo, error) {
@@ -89,7 +89,7 @@ func (r *scopeRepo) addSSHKey(_ context.Context, name, sshKey string) error {
 	return err
 }
 
-func (r *scopeRepo) toScopeFromInfo(m base.ModelInfo) *scope.Scope {
+func (r *scopeRepo) toScopeFromInfo(m *base.ModelInfo) *scope.Scope {
 	return &scope.Scope{
 		UUID:         m.UUID,
 		Name:         m.Name,

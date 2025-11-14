@@ -107,33 +107,9 @@ func (uc *WorkloadUseCase) ListApplications(ctx context.Context, scope string) (
 		return nil, "", err
 	}
 
-	apps = []Application{}
-
-	for i := range deployments {
-		app, err := uc.fromDeployment(&deployments[i], pods, services, persistentVolumeClaims, storageClasses)
-		if err != nil {
-			return nil, "", err
-		}
-
-		apps = append(apps, *app)
-	}
-
-	for i := range statefulSets {
-		app, err := uc.fromStatefulSet(&statefulSets[i], pods, services, persistentVolumeClaims, storageClasses)
-		if err != nil {
-			return nil, "", err
-		}
-
-		apps = append(apps, *app)
-	}
-
-	for i := range daemonSets {
-		app, err := uc.fromDaemonSet(&daemonSets[i], pods, services, persistentVolumeClaims, storageClasses)
-		if err != nil {
-			return nil, "", err
-		}
-
-		apps = append(apps, *app)
+	apps, err = uc.combineApplications(deployments, statefulSets, daemonSets, pods, services, persistentVolumeClaims, storageClasses)
+	if err != nil {
+		return nil, "", err
 	}
 
 	return apps, uc.service.Host(scope), nil
@@ -457,4 +433,37 @@ func (uc *WorkloadUseCase) fromDaemonSet(workload *DaemonSet, pods []Pod, servic
 		persistentVolumeClaims,
 		storageClasses,
 	)
+}
+
+func (uc *WorkloadUseCase) combineApplications(deployments []Deployment, statefulSets []StatefulSet, daemonSets []DaemonSet, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) ([]Application, error) {
+	ret := []Application{}
+
+	for i := range deployments {
+		app, err := uc.fromDeployment(&deployments[i], pods, services, persistentVolumeClaims, storageClasses)
+		if err != nil {
+			return nil, err
+		}
+
+		ret = append(ret, *app)
+	}
+
+	for i := range statefulSets {
+		app, err := uc.fromStatefulSet(&statefulSets[i], pods, services, persistentVolumeClaims, storageClasses)
+		if err != nil {
+			return nil, err
+		}
+
+		ret = append(ret, *app)
+	}
+
+	for i := range daemonSets {
+		app, err := uc.fromDaemonSet(&daemonSets[i], pods, services, persistentVolumeClaims, storageClasses)
+		if err != nil {
+			return nil, err
+		}
+
+		ret = append(ret, *app)
+	}
+
+	return ret, nil
 }

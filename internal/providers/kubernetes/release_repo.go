@@ -116,7 +116,7 @@ func (r *releaseRepo) Uninstall(scope, namespace, name string, dryRun bool) (*re
 	return resp.Release, nil
 }
 
-func (r *releaseRepo) Upgrade(scope, namespace, name string, dryRun bool, chartRef string, valuesYAML string, valuesMap map[string]string, reuseValues bool) (*release.Release, error) {
+func (r *releaseRepo) Upgrade(scope, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string, reuseValues bool) (*release.Release, error) {
 	config, err := r.config(scope, namespace)
 	if err != nil {
 		return nil, err

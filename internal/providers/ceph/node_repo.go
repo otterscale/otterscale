@@ -89,7 +89,7 @@ func (r *nodeRepo) DoSMART(_ context.Context, scope, who string) (map[string][]s
 	return outputs, nil
 }
 
-func (r *nodeRepo) Config(scope string) (host string, id string, key string, err error) {
+func (r *nodeRepo) Config(scope string) (host, id, key string, err error) {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return "", "", "", err

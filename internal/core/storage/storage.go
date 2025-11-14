@@ -84,7 +84,7 @@ func (uc *StorageUseCase) ListObjectStorageDaemons(ctx context.Context, scope st
 	return osds, nil
 }
 
-func (uc *StorageUseCase) DoSMART(ctx context.Context, scope string, osd string) (map[string][]string, error) {
+func (uc *StorageUseCase) DoSMART(ctx context.Context, scope, osd string) (map[string][]string, error) {
 	return uc.node.DoSMART(ctx, scope, osd)
 }
 

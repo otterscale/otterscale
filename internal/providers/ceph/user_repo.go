@@ -39,7 +39,7 @@ func (r *userRepo) List(ctx context.Context, scope string) ([]object.User, error
 	return r.list(ctx, client, *ids)
 }
 
-func (r *userRepo) Create(ctx context.Context, scope string, id, name string, suspended bool) (*object.User, error) {
+func (r *userRepo) Create(ctx context.Context, scope, id, name string, suspended bool) (*object.User, error) {
 	client, err := r.ceph.client(scope)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (r *userRepo) Create(ctx context.Context, scope string, id, name string, su
 	return &user, err
 }
 
-func (r *userRepo) Update(ctx context.Context, scope string, id, name string, suspended bool) (*object.User, error) {
+func (r *userRepo) Update(ctx context.Context, scope, id, name string, suspended bool) (*object.User, error) {
 	client, err := r.ceph.client(scope)
 	if err != nil {
 		return nil, err
@@ -75,7 +75,7 @@ func (r *userRepo) Update(ctx context.Context, scope string, id, name string, su
 	return &user, err
 }
 
-func (r *userRepo) Delete(ctx context.Context, scope string, id string) error {
+func (r *userRepo) Delete(ctx context.Context, scope, id string) error {
 	client, err := r.ceph.client(scope)
 	if err != nil {
 		return err
@@ -88,7 +88,7 @@ func (r *userRepo) Delete(ctx context.Context, scope string, id string) error {
 	return client.RemoveUser(ctx, user)
 }
 
-func (r *userRepo) CreateKey(ctx context.Context, scope string, id string) (*object.UserKey, error) {
+func (r *userRepo) CreateKey(ctx context.Context, scope, id string) (*object.UserKey, error) {
 	client, err := r.ceph.client(scope)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (r *userRepo) CreateKey(ctx context.Context, scope string, id string) (*obj
 	return &(*keys)[0], nil
 }
 
-func (r *userRepo) DeleteKey(ctx context.Context, scope string, id, accessKey string) error {
+func (r *userRepo) DeleteKey(ctx context.Context, scope, id, accessKey string) error {
 	client, err := r.ceph.client(scope)
 	if err != nil {
 		return err

@@ -345,7 +345,7 @@ func (uc *BISTUseCase) ensureImage(ctx context.Context, scope, pool, image strin
 	stripeCount := uint64(1)
 	size := uint64(10737418240) //nolint:mnd // default 10GB
 	order := int(math.Round(math.Log2(float64(objectSizeBytes))))
-	features := uint64(61) // 	Layering, ExclusiveLock, ObjectMap, FastDiff, DeepFlatten
+	features := uint64(61) //nolint:mnd // Layering, ExclusiveLock, ObjectMap, FastDiff, DeepFlatten
 
 	return uc.image.Create(ctx, scope, pool, image, order, stripeUnitBytes, stripeCount, size, features)
 }

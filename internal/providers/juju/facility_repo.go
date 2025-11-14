@@ -145,7 +145,9 @@ func (r *facilityRepo) Config(_ context.Context, scope, name string) (map[string
 func (r *facilityRepo) toFacilities(apps map[string]params.ApplicationStatus) []facility.Facility {
 	ret := []facility.Facility{}
 
-	for name, status := range apps {
+	for name := range apps {
+		status := apps[name]
+
 		ret = append(ret, facility.Facility{
 			Name:   name,
 			Status: &status,
