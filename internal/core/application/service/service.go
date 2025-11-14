@@ -12,6 +12,9 @@ type (
 
 	// Port represents a Kubernetes ServicePort resource.
 	Port = v1.ServicePort
+
+	// Protocol represents a Kubernetes Protocol resource.
+	Protocol = v1.Protocol
 )
 
 type ServiceRepo interface {

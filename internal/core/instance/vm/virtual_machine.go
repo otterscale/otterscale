@@ -15,6 +15,13 @@ import (
 	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
+const (
+	VirtualMachineDiskBusVirtio = corev1.DiskBusVirtio
+	VirtualMachineDiskBusSATA   = corev1.DiskBusSATA
+	VirtualMachineDiskBusSCSI   = corev1.DiskBusSCSI
+	VirtualMachineDiskBusUSB    = corev1.DiskBusUSB
+)
+
 const VirtualMachineNameLabel = "otterscale.com/virtual-machine.name"
 
 const (
@@ -31,6 +38,12 @@ type (
 
 	// VirtualMachineVolume represents a KubeVirt Volume resource.
 	VirtualMachineVolume = corev1.Volume
+
+	// VirtualMachineVolumeSource represents a KubeVirt VolumeSource resource.
+	VirtualMachineVolumeSource = corev1.VolumeSource
+
+	// VirtualMachineDiskBus represents a KubeVirt DiskBus resource.
+	VirtualMachineDiskBus = corev1.DiskBus
 )
 
 type VirtualMachineData struct {

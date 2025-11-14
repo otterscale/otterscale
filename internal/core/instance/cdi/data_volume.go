@@ -23,8 +23,19 @@ const (
 	DataVolumeSourceTypePVC
 )
 
-// DataVolume represents a KubeVirt DataVolume resource.
-type DataVolume = cdiv1beta1.DataVolume
+type (
+	// DataVolume represents a KubeVirt DataVolume resource.
+	DataVolume = cdiv1beta1.DataVolume
+
+	// DataVolumeSpec represents a KubeVirt DataVolumeSpec resource.
+	DataVolumeSpec = cdiv1beta1.DataVolumeSpec
+
+	// DataVolumeSource represents a KubeVirt DataVolumeSource resource.
+	DataVolumeSource = cdiv1beta1.DataVolumeSource
+
+	// DataVolumeCondition represents a KubeVirt DataVolumeCondition resource.
+	DataVolumeCondition = cdiv1beta1.DataVolumeCondition
+)
 
 type DataVolumePersistent struct {
 	*DataVolume

@@ -8,8 +8,13 @@ import (
 	snapshotv1beta1 "kubevirt.io/api/snapshot/v1beta1"
 )
 
-// VirtualMachineSnapshot represents a KubeVirt VirtualMachineSnapshot resource.
-type VirtualMachineSnapshot = snapshotv1beta1.VirtualMachineSnapshot
+type (
+	// VirtualMachineSnapshot represents a KubeVirt VirtualMachineSnapshot resource.
+	VirtualMachineSnapshot = snapshotv1beta1.VirtualMachineSnapshot
+
+	// VirtualMachineSnapshotCondition represents a KubeVirt Condition resource.
+	VirtualMachineSnapshotCondition = snapshotv1beta1.Condition
+)
 
 type VirtualMachineSnapshotRepo interface {
 	List(ctx context.Context, scope, namespace, selector string) ([]VirtualMachineSnapshot, error)

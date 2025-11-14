@@ -7,6 +7,13 @@ import (
 	"github.com/ceph/go-ceph/rgw/admin"
 )
 
+const (
+	BucketCannedACLPrivate           = types.BucketCannedACLPrivate
+	BucketCannedACLPublicRead        = types.BucketCannedACLPublicRead
+	BucketCannedACLPublicReadWrite   = types.BucketCannedACLPublicReadWrite
+	BucketCannedACLAuthenticatedRead = types.BucketCannedACLAuthenticatedRead
+)
+
 type (
 	// Bucket represents a Ceph RGW Bucket resource.
 	Bucket = admin.Bucket
@@ -16,13 +23,6 @@ type (
 
 	// Grant represents a AWS Grant resource.
 	Grant = types.Grant
-)
-
-const (
-	BucketCannedACLPrivate           = types.BucketCannedACLPrivate
-	BucketCannedACLPublicRead        = types.BucketCannedACLPublicRead
-	BucketCannedACLPublicReadWrite   = types.BucketCannedACLPublicReadWrite
-	BucketCannedACLAuthenticatedRead = types.BucketCannedACLAuthenticatedRead
 )
 
 type BucketData struct {

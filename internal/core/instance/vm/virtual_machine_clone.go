@@ -8,8 +8,13 @@ import (
 	clonev1beta1 "kubevirt.io/api/clone/v1beta1"
 )
 
-// VirtualMachineClone represents a KubeVirt VirtualMachineClone resource.
-type VirtualMachineClone = clonev1beta1.VirtualMachineClone
+type (
+	// VirtualMachineClone represents a KubeVirt VirtualMachineClone resource.
+	VirtualMachineClone = clonev1beta1.VirtualMachineClone
+
+	// VirtualMachineCloneCondition represents a KubeVirt Condition resource.
+	VirtualMachineCloneCondition = clonev1beta1.Condition
+)
 
 type VirtualMachineCloneRepo interface {
 	List(ctx context.Context, scope, namespace, selector string) ([]VirtualMachineClone, error)

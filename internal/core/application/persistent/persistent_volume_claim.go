@@ -12,6 +12,9 @@ type (
 
 	// PersistentVolumeClaimPhase represents a Kubernetes PersistentVolumeClaimPhase resource.
 	PersistentVolumeClaimPhase = v1.PersistentVolumeClaimPhase
+
+	// PersistentVolumeAccessMode represents a Kubernetes PersistentVolumeAccessMode resource.
+	PersistentVolumeAccessMode = v1.PersistentVolumeAccessMode
 )
 
 type PersistentVolumeClaimRepo interface {
