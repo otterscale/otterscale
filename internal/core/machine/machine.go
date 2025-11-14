@@ -17,8 +17,22 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// Machine represents a MAAS machine.
-type Machine = entity.Machine
+type (
+	// Machine represents a MAAS Machine resource.
+	Machine = entity.Machine
+
+	// NUMANode represents a MAAS NUMANode resource.
+	NUMANode = entity.NUMANode
+
+	// BlockDevice represents a MAAS BlockDevice resource.
+	BlockDevice = entity.BlockDevice
+
+	// NetworkInterface represents a MAAS NetworkInterface resource.
+	NetworkInterface = entity.NetworkInterface
+
+	// GPU represents a MAAS NodeDevice resource.
+	GPU = entity.NodeDevice
+)
 
 type MachineData struct {
 	*Machine
@@ -27,8 +41,6 @@ type MachineData struct {
 	LastCommissionedAt time.Time
 	AgentStatus        string
 }
-
-type GPU = entity.NodeDevice
 
 type MachineRepo interface {
 	List(ctx context.Context) ([]Machine, error)
@@ -156,7 +168,7 @@ func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*MachineDa
 	}, nil
 }
 
-func (uc *MachineUseCase) CreateMachine(ctx context.Context, machineID, scopeName string) (*Machine, error) {
+func (uc *MachineUseCase) CreateMachine(ctx context.Context, machineID, scopeName string) (*MachineData, error) {
 	// validate scope exists
 	scope, err := uc.scope.Get(ctx, scopeName)
 	if err != nil {
@@ -182,7 +194,9 @@ func (uc *MachineUseCase) CreateMachine(ctx context.Context, machineID, scopeNam
 		return nil, err
 	}
 
-	return machine, nil
+	return &MachineData{
+		Machine: machine,
+	}, nil
 }
 
 // Note: Delete from MAAS only.
@@ -192,21 +206,25 @@ func (uc *MachineUseCase) DeleteMachine(ctx context.Context, id string, force, p
 			return err
 		}
 	}
-	if _, err := uc.machine.Release(ctx, id, force); err != nil {
-		return err
-	}
-	return nil
+
+	_, err := uc.machine.Release(ctx, id, force)
+	return err
 }
 
 func (uc *MachineUseCase) CommissionMachine(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool) error {
-	if _, err := uc.machine.Commission(ctx, id, enableSSH, skipBMCConfig, skipNetworking, skipStorage); err != nil {
-		return err
-	}
-	return nil
+	_, err := uc.machine.Commission(ctx, id, enableSSH, skipBMCConfig, skipNetworking, skipStorage)
+	return err
 }
 
-func (uc *MachineUseCase) PowerOffMachine(ctx context.Context, id, comment string) (*Machine, error) {
-	return uc.machine.PowerOff(ctx, id, comment)
+func (uc *MachineUseCase) PowerOffMachine(ctx context.Context, id, comment string) (*MachineData, error) {
+	machine, err := uc.machine.PowerOff(ctx, id, comment)
+	if err != nil {
+		return nil, err
+	}
+
+	return &MachineData{
+		Machine: machine,
+	}, nil
 }
 
 func (uc *MachineUseCase) extractScopeFromMachine(m *Machine) (string, error) {

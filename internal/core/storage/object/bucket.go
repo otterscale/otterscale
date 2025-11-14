@@ -18,6 +18,13 @@ type (
 	Grant = types.Grant
 )
 
+const (
+	BucketCannedACLPrivate           = types.BucketCannedACLPrivate
+	BucketCannedACLPublicRead        = types.BucketCannedACLPublicRead
+	BucketCannedACLPublicReadWrite   = types.BucketCannedACLPublicReadWrite
+	BucketCannedACLAuthenticatedRead = types.BucketCannedACLAuthenticatedRead
+)
+
 type BucketData struct {
 	*Bucket
 	Policy *string
