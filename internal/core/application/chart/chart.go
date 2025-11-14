@@ -13,6 +13,7 @@ import (
 	"github.com/otterscale/otterscale/internal/config"
 	"golang.org/x/sync/errgroup"
 	"helm.sh/helm/v3/pkg/action"
+	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/repo"
 	"k8s.io/client-go/rest"
@@ -26,8 +27,13 @@ const (
 	localOCIFormat = "oci://%s:32000/charts"
 )
 
-// Version represents a Helm ChartVersion resource.
-type Version = repo.ChartVersion
+type (
+	// Version represents a Helm ChartVersion resource.
+	Version = repo.ChartVersion
+
+	// Metadata represents Helm Chart Metadata.
+	Metadata = chart.Metadata
+)
 
 type Chart struct {
 	Name     string

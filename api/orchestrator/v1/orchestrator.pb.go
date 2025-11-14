@@ -71,7 +71,6 @@ type CreateNodeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_MachineId   *string                `protobuf:"bytes,2,opt,name=machine_id,json=machineId"`
-	xxx_hidden_PrefixName  *string                `protobuf:"bytes,3,opt,name=prefix_name,json=prefixName"`
 	xxx_hidden_VirtualIps  []string               `protobuf:"bytes,11,rep,name=virtual_ips,json=virtualIps"`
 	xxx_hidden_CalicoCidr  *string                `protobuf:"bytes,12,opt,name=calico_cidr,json=calicoCidr"`
 	xxx_hidden_OsdDevices  []string               `protobuf:"bytes,21,rep,name=osd_devices,json=osdDevices"`
@@ -126,16 +125,6 @@ func (x *CreateNodeRequest) GetMachineId() string {
 	return ""
 }
 
-func (x *CreateNodeRequest) GetPrefixName() string {
-	if x != nil {
-		if x.xxx_hidden_PrefixName != nil {
-			return *x.xxx_hidden_PrefixName
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreateNodeRequest) GetVirtualIps() []string {
 	if x != nil {
 		return x.xxx_hidden_VirtualIps
@@ -162,17 +151,12 @@ func (x *CreateNodeRequest) GetOsdDevices() []string {
 
 func (x *CreateNodeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *CreateNodeRequest) SetMachineId(v string) {
 	x.xxx_hidden_MachineId = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
-}
-
-func (x *CreateNodeRequest) SetPrefixName(v string) {
-	x.xxx_hidden_PrefixName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *CreateNodeRequest) SetVirtualIps(v []string) {
@@ -181,7 +165,7 @@ func (x *CreateNodeRequest) SetVirtualIps(v []string) {
 
 func (x *CreateNodeRequest) SetCalicoCidr(v string) {
 	x.xxx_hidden_CalicoCidr = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *CreateNodeRequest) SetOsdDevices(v []string) {
@@ -202,18 +186,11 @@ func (x *CreateNodeRequest) HasMachineId() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateNodeRequest) HasPrefixName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *CreateNodeRequest) HasCalicoCidr() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *CreateNodeRequest) ClearScope() {
@@ -226,13 +203,8 @@ func (x *CreateNodeRequest) ClearMachineId() {
 	x.xxx_hidden_MachineId = nil
 }
 
-func (x *CreateNodeRequest) ClearPrefixName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_PrefixName = nil
-}
-
 func (x *CreateNodeRequest) ClearCalicoCidr() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_CalicoCidr = nil
 }
 
@@ -241,7 +213,6 @@ type CreateNodeRequest_builder struct {
 
 	Scope      *string
 	MachineId  *string
-	PrefixName *string
 	VirtualIps []string
 	CalicoCidr *string
 	OsdDevices []string
@@ -252,20 +223,16 @@ func (b0 CreateNodeRequest_builder) Build() *CreateNodeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
 	if b.MachineId != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_MachineId = b.MachineId
-	}
-	if b.PrefixName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
-		x.xxx_hidden_PrefixName = b.PrefixName
 	}
 	x.xxx_hidden_VirtualIps = b.VirtualIps
 	if b.CalicoCidr != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_CalicoCidr = b.CalicoCidr
 	}
 	x.xxx_hidden_OsdDevices = b.OsdDevices
@@ -3708,19 +3675,17 @@ var File_api_orchestrator_v1_orchestrator_proto protoreflect.FileDescriptor
 
 const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\n" +
-	"&api/orchestrator/v1/orchestrator.proto\x12\x1aotterscale.orchestrator.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xcc\x01\n" +
+	"&api/orchestrator/v1/orchestrator.proto\x12\x1aotterscale.orchestrator.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb1\x01\n" +
 	"\x11CreateNodeRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1d\n" +
 	"\n" +
 	"machine_id\x18\x02 \x01(\tR\tmachineId\x12\x1f\n" +
-	"\vprefix_name\x18\x03 \x01(\tR\n" +
-	"prefixName\x12\x1f\n" +
 	"\vvirtual_ips\x18\v \x03(\tR\n" +
 	"virtualIps\x12\x1f\n" +
 	"\vcalico_cidr\x18\f \x01(\tR\n" +
 	"calicoCidr\x12\x1f\n" +
 	"\vosd_devices\x18\x15 \x03(\tR\n" +
-	"osdDevices\"\xcf\x01\n" +
+	"osdDevicesJ\x04\b\x03\x10\x04\"\xcf\x01\n" +
 	"\x14CreateClusterRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1d\n" +
 	"\n" +

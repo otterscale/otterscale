@@ -91,7 +91,7 @@ service OrchestratorService {
 message CreateNodeRequest {
   string scope = 1;
   string machine_id = 2;
-  string prefix_name = 3;
+  reserved 3;
   repeated string virtual_ips = 11;
   string calico_cidr = 12;
   repeated string osd_devices = 21;
