@@ -9,13 +9,25 @@ import (
 )
 
 type Monitor struct {
-	Name    string
-	Machine *machine.Machine
+	Leader        bool
+	Name          string
+	Rank          uint64
+	PublicAddress string
+	Machine       *machine.Machine
 }
 
 type ObjectStorageDaemon struct {
-	Hostname string
-	Machine  *machine.Machine
+	ID          int64
+	Name        string
+	Up          bool
+	In          bool
+	Exists      bool
+	DeviceClass string
+	Size        uint64
+	Used        uint64
+	PGCount     uint64
+	Hostname    string
+	Machine     *machine.Machine
 }
 
 type NodeRepo interface {

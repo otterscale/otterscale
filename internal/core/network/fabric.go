@@ -2,12 +2,12 @@ package network
 
 import (
 	"context"
+
+	"github.com/canonical/gomaasclient/entity"
 )
 
-type Fabric struct {
-	ID    int
-	VLANs []VLAN
-}
+// Fabric represents a MAAS Fabric resource.
+type Fabric = entity.Fabric
 
 type FabricRepo interface {
 	List(ctx context.Context) ([]Fabric, error)

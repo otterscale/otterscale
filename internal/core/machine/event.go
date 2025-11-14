@@ -3,12 +3,12 @@ package machine
 import (
 	"context"
 	"time"
+
+	"github.com/canonical/gomaasclient/entity"
 )
 
-type Event struct {
-	Type    string
-	Created string
-}
+// Event represents a MAAS Event resource.
+type Event = entity.Event
 
 type EventRepo interface {
 	Get(ctx context.Context, machineID string) ([]Event, error)

@@ -1,8 +1,18 @@
 package file
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
-type SubvolumeGroup struct{}
+type SubvolumeGroup struct {
+	Name      string
+	Mode      string
+	PoolName  string
+	Quota     uint64
+	Used      uint64
+	CreatedAt time.Time
+}
 
 // Note: Ceph create and update operations only return error status.
 type SubvolumeGroupRepo interface {

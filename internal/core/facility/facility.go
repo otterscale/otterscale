@@ -2,12 +2,13 @@ package facility
 
 import (
 	"context"
+
+	"github.com/juju/juju/rpc/params"
 )
 
 type Facility struct {
-	Name      string
-	Charm     string
-	UnitNames []string
+	Name   string
+	Status *params.ApplicationStatus
 }
 
 type FacilityRepo interface {
@@ -17,7 +18,6 @@ type FacilityRepo interface {
 	Delete(ctx context.Context, scope, name string, destroyStorage, force bool) error
 	Resolve(ctx context.Context, scope, unitName string) error
 	Config(ctx context.Context, scope string, name string) (map[string]any, error)
-	PublicAddress(ctx context.Context, scope, name string) (string, error)
 }
 
 type RelationRepo interface {

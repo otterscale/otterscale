@@ -1,8 +1,15 @@
 package file
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
-type Volume struct{}
+type Volume struct {
+	ID        int64
+	Name      string
+	CreatedAt time.Time
+}
 
 // Note: Ceph create and update operations only return error status.
 type VolumeRepo interface {

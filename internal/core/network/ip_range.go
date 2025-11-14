@@ -3,7 +3,7 @@ package network
 import (
 	"context"
 
-	entity "github.com/otterscale/otterscale/internal/core/_entity"
+	"github.com/canonical/gomaasclient/entity"
 )
 
 // IPRange represents a MAAS IPRange resource.

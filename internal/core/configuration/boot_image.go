@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 
+	"github.com/canonical/gomaasclient/entity"
 	"github.com/juju/juju/core/base"
 )
 
@@ -35,6 +36,17 @@ var DistroSeriesMap = map[base.SeriesName]BootImageSelection{
 	},
 }
 
+type (
+	// BootResource represents a MAAS BootResource resource.
+	BootResource = entity.BootResource
+
+	// BootSource represents a MAAS BootSource resource.
+	BootSource = entity.BootSource
+
+	// BootSourceSelection represents a MAAS BootSourceSelection resource.
+	BootSourceSelection = entity.BootSourceSelection
+)
+
 type BootImage struct {
 	Source                string
 	DistroSeries          string
@@ -49,26 +61,6 @@ type BootImageSelection struct {
 	DisplayName   string
 	DistroSeries  string
 	Architectures []string
-}
-
-type BootResource struct {
-	ID           int
-	Type         string
-	Name         string
-	Architecture string
-}
-
-type BootSource struct {
-	ID  int
-	URL string
-}
-
-type BootSourceSelection struct {
-	ID           int
-	BootSourceID int
-	Release      string
-	OS           string
-	Arches       []string
 }
 
 type BootResourceRepo interface {

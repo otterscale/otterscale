@@ -17,20 +17,18 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-type Machine struct {
-	*entity.Machine
+// Machine represents a MAAS machine.
+type Machine = entity.Machine
+
+type MachineData struct {
+	*Machine
 
 	GPUs               []GPU
 	LastCommissionedAt time.Time
 	AgentStatus        string
 }
 
-type GPU struct {
-	VendorID    string
-	ProductID   string
-	VendorName  string
-	ProductName string
-}
+type GPU = entity.NodeDevice
 
 type MachineRepo interface {
 	List(ctx context.Context) ([]Machine, error)
@@ -80,22 +78,27 @@ func NewMachineUseCase(event EventRepo, machine MachineRepo, machineManager Mach
 	}
 }
 
-func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]Machine, error) {
+func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]MachineData, error) {
 	machines, err := uc.machine.List(ctx)
 	if err != nil {
 		return nil, err
 	}
 
+	ret := make([]MachineData, len(machines))
+	for i := range machines {
+		ret[i].Machine = &machines[i]
+	}
+
 	eg, ctx := errgroup.WithContext(ctx)
 
-	for i := range machines {
+	for i := range ret {
 		eg.Go(func() error {
 			gpus, err := uc.nodeDevice.ListGPUs(ctx, machines[i].SystemID)
 			if err == nil {
 				if err = uc.setGPUName(gpus); err != nil {
 					return err
 				}
-				machines[i].GPUs = gpus
+				ret[i].GPUs = gpus
 			}
 			return err
 		})
@@ -103,7 +106,7 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]Mac
 		eg.Go(func() error {
 			lastCommissionedAt, err := uc.lastCommissionedAt(ctx, machines[i].SystemID)
 			if err == nil {
-				machines[i].LastCommissionedAt = lastCommissionedAt
+				ret[i].LastCommissionedAt = lastCommissionedAt
 			}
 			return err
 		})
@@ -113,39 +116,44 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]Mac
 		return nil, err
 	}
 
-	return slices.DeleteFunc(machines, func(machine Machine) bool {
-		machineScope, _ := uc.extractScopeFromMachine(&machine)
+	return slices.DeleteFunc(ret, func(machine MachineData) bool {
+		machineScope, _ := uc.extractScopeFromMachine(machine.Machine)
 		return !strings.Contains(machineScope, scope) // empty
 	}), nil
 }
 
-func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*Machine, error) {
+func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*MachineData, error) {
 	machine, err := uc.machine.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
 	// only get agent status when needed
-	machine.AgentStatus, err = uc.agentStatus(ctx, machine)
+	agentStatus, err := uc.agentStatus(ctx, machine)
 	if err != nil {
 		return nil, err
 	}
 
-	machine.GPUs, err = uc.nodeDevice.ListGPUs(ctx, id)
+	gpus, err := uc.nodeDevice.ListGPUs(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = uc.setGPUName(machine.GPUs); err != nil {
+	if err = uc.setGPUName(gpus); err != nil {
 		return nil, err
 	}
 
-	machine.LastCommissionedAt, err = uc.lastCommissionedAt(ctx, id)
+	lastCommissionedAt, err := uc.lastCommissionedAt(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	return machine, nil
+	return &MachineData{
+		Machine:            machine,
+		GPUs:               gpus,
+		LastCommissionedAt: lastCommissionedAt,
+		AgentStatus:        agentStatus,
+	}, nil
 }
 
 func (uc *MachineUseCase) CreateMachine(ctx context.Context, machineID, scopeName string) (*Machine, error) {
@@ -286,7 +294,7 @@ func (uc *MachineUseCase) purgeDisk(ctx context.Context, machineID string) error
 	}
 
 	for _, app := range apps {
-		if !strings.Contains(app.Charm, "ceph-osd") {
+		if app.Name != scope+"-ceph-osd" {
 			continue
 		}
 
@@ -308,7 +316,7 @@ func (uc *MachineUseCase) purgeDisk(ctx context.Context, machineID string) error
 		osdDevices := strings.SplitSeq(val.(string), " ")
 
 		for osdDevice := range osdDevices {
-			for _, unitName := range app.UnitNames {
+			for unitName := range app.Status.Units {
 				if _, err := uc.action.Execute(ctx, scope, unitName, fmt.Sprintf("sudo dd if=/dev/zero of=%s bs=1M count=200000", osdDevice)); err != nil {
 					continue
 				}

@@ -1,10 +1,14 @@
 package action
 
-import "context"
+import (
+	"context"
+
+	"github.com/juju/juju/api/client/action"
+)
 
 type Action struct {
-	Name        string
-	Description string
+	Name string
+	Spec *action.ActionSpec
 }
 
 type ActionRepo interface {

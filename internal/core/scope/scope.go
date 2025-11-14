@@ -3,14 +3,14 @@ package scope
 import (
 	"context"
 	"fmt"
+
+	"github.com/juju/juju/api/base"
 )
 
 const ReservedName = "otterscale"
 
-type Scope struct {
-	UUID string
-	Name string
-}
+// Scope represents a Juju UserModelSummary resource.
+type Scope = base.UserModelSummary
 
 type ScopeRepo interface {
 	List(ctx context.Context) ([]Scope, error)

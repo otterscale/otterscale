@@ -3,6 +3,7 @@ package block
 import (
 	"context"
 	"math"
+	"time"
 )
 
 const (
@@ -15,7 +16,21 @@ const (
 )
 
 type Image struct {
-	Name string
+	Name                 string
+	PoolName             string
+	ObjectSize           uint64
+	StripeUnit           uint64
+	StripeCount          uint64
+	Quota                uint64
+	Used                 uint64
+	ObjectCount          uint64
+	FeatureLayering      bool
+	FeatureExclusiveLock bool
+	FeatureObjectMap     bool
+	FeatureFastDiff      bool
+	FeatureDeepFlatten   bool
+	CreatedAt            time.Time
+	Snapshots            []ImageSnapshot
 }
 
 // Note: Ceph create and update operations only return error status.

@@ -3,6 +3,7 @@ package tag
 import (
 	"context"
 
+	"github.com/canonical/gomaasclient/entity"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -16,7 +17,8 @@ const (
 	CephOSD                = "ceph-osd"
 )
 
-type Tag struct{}
+// Tag represents a MAAS Tag resource.
+type Tag = entity.Tag
 
 type TagRepo interface {
 	List(ctx context.Context) ([]Tag, error)

@@ -2,9 +2,12 @@ package configuration
 
 import (
 	"context"
+
+	"github.com/canonical/gomaasclient/entity"
 )
 
-type PackageRepository struct{}
+// PackageRepository represents a MAAS PackageRepository resource.
+type PackageRepository = entity.PackageRepository
 
 type PackageRepositoryRepo interface {
 	List(ctx context.Context) ([]PackageRepository, error)

@@ -1,8 +1,15 @@
 package file
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
-type SubvolumeSnapshot struct{}
+type SubvolumeSnapshot struct {
+	Name             string
+	HasPendingClones string
+	CreatedAt        time.Time
+}
 
 // Note: Ceph create and update operations only return error status.
 type SubvolumeSnapshotRepo interface {

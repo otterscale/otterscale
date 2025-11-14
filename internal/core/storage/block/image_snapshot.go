@@ -6,9 +6,9 @@ import (
 
 type ImageSnapshot struct {
 	Name      string
-	Protected bool
 	Quota     uint64
 	Used      uint64
+	Protected bool
 }
 
 // Note: Ceph create and update operations only return error status.

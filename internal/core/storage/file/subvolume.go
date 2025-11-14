@@ -3,20 +3,26 @@ package file
 import (
 	"context"
 	"fmt"
+	"time"
 )
 
 type Subvolume struct {
 	Name      string
 	Path      string
-	Snapshots []SubvolumeSnapshot
+	Mode      string
+	PoolName  string
+	Quota     uint64
+	Used      uint64
+	CreatedAt time.Time
 	Export    *SubvolumeExport
+	Snapshots []SubvolumeSnapshot
 }
 
 type SubvolumeExport struct {
 	IP      string
 	Path    string
-	Command string
 	Clients []string
+	Command string
 }
 
 // Note: Ceph create and update operations only return error status.

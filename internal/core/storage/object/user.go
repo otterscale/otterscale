@@ -2,16 +2,17 @@ package object
 
 import (
 	"context"
+
+	"github.com/ceph/go-ceph/rgw/admin"
 )
 
-type User struct {
-	ID string
-}
+type (
+	// User represents a Ceph User resource.
+	User = admin.User
 
-type UserKey struct {
-	AccessKey string
-	SecretKey string
-}
+	// UserKey represents a Ceph UserKey resource.
+	UserKey = admin.UserKeySpec
+)
 
 type UserRepo interface {
 	List(ctx context.Context, scope string) ([]User, error)
