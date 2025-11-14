@@ -2,21 +2,19 @@ package network
 
 import (
 	"context"
+
+	"github.com/canonical/gomaasclient/entity"
+	"github.com/canonical/gomaasclient/entity/subnet"
 )
 
-type Subnet struct {
-	ID   int
-	VLAN VLAN
-	CIDR string
-}
+// Subnet represents a MAAS Subnet resource.
+type Subnet = entity.Subnet
 
-type IPAddress struct {
-	ID int
-}
+// IPAddress represents a MAAS IPAddress resource.
+type IPAddress = subnet.IPAddress
 
-type Statistics struct {
-	ID int
-}
+// Statistics represents MAAS Statistics statistics.
+type Statistics = subnet.Statistics
 
 type SubnetRepo interface {
 	List(ctx context.Context) ([]Subnet, error)

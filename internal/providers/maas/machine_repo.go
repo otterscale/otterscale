@@ -111,7 +111,7 @@ func (r *machineRepo) Commission(_ context.Context, id string, enableSSH, skipBM
 
 func (r *machineRepo) toMachine(m *entity.Machine) *machine.Machine {
 	return &machine.Machine{
-		ID: m.SystemID,
+		Machine: m,
 	}
 }
 

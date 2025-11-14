@@ -2,13 +2,12 @@ package network
 
 import (
 	"context"
-	"net"
+
+	entity "github.com/otterscale/otterscale/internal/core/_entity"
 )
 
-type IPRange struct {
-	StartIP net.IP
-	EndIP   net.IP
-}
+// IPRange represents a MAAS IPRange resource.
+type IPRange = entity.IPRange
 
 type IPRangeRepo interface {
 	List(ctx context.Context) ([]IPRange, error)

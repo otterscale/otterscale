@@ -6,6 +6,16 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+const (
+	BuiltIn                = "built-in"
+	Kubernetes             = "kubernetes"
+	KubernetesControlPlane = "kubernetes-control-plane"
+	KubernetesWorker       = "kubernetes-worker"
+	Ceph                   = "ceph"
+	CephMON                = "ceph-mon"
+	CephOSD                = "ceph-osd"
+)
+
 type Tag struct{}
 
 type TagRepo interface {

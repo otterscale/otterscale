@@ -229,6 +229,10 @@ func (m *Juju) GetEndpoint(ctx context.Context, scope, appName string) (string, 
 	return "", connect.NewError(connect.CodeNotFound, fmt.Errorf("endpoint %q not found", appName))
 }
 
+func (m *Juju) controller() string {
+	return m.conf.Juju.Controller
+}
+
 func (m *Juju) username() string {
 	return m.conf.Juju.Username
 }

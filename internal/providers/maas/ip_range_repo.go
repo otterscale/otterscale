@@ -42,6 +42,7 @@ func (r *ipRangeRepo) Create(_ context.Context, subnetID int, startIP, endIP, co
 	}
 
 	params := &entity.IPRangeParams{
+		Type:    "reserved",
 		Subnet:  strconv.Itoa(subnetID),
 		StartIP: startIP,
 		EndIP:   endIP,

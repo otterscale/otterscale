@@ -48,7 +48,7 @@ func (r *facilityRepo) List(ctx context.Context, scope, jujuID string) ([]facili
 	return r.toFacility(fullStatus.Applications), nil
 }
 
-func (r *facilityRepo) Create(_ context.Context, scope, name, configYAML, charmName, channel string, revision int, series, directive, placementScope string) error {
+func (r *facilityRepo) Create(_ context.Context, scope, name, configYAML, charmName, channel, placementScope string, subordinate bool, directive, series string) error {
 	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
@@ -71,11 +71,7 @@ func (r *facilityRepo) Create(_ context.Context, scope, name, configYAML, charmN
 		args.Channel = &channel
 	}
 
-	if revision != 0 {
-		args.Revision = &revision
-	}
-
-	if directive != "" {
+	if !subordinate && directive != "" {
 		args.Placement = append(args.Placement, &instance.Placement{
 			Scope:     placementScope,
 			Directive: directive,

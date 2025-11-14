@@ -54,7 +54,7 @@ func (uc *ExtensionUseCase) InstallExtensions(ctx context.Context, scope string,
 				return err
 			}
 
-			_, err = uc.release.Install(scope, base.namespace, base.name, false, chartRef, base.labels, base.labels, base.annotations, "", base.valuesMap)
+			_, err = uc.release.Install(scope, base.Namespace, base.Name, false, chartRef, base.Labels, base.Labels, base.Annotations, "", base.ValuesMap)
 			return err
 		})
 	}
@@ -72,7 +72,7 @@ func (uc *ExtensionUseCase) UpgradeExtensions(ctx context.Context, scope string,
 				return err
 			}
 
-			_, err = uc.release.Upgrade(scope, base.namespace, base.name, false, chartRef, "", base.valuesMap, true)
+			_, err = uc.release.Upgrade(scope, base.Namespace, base.Name, false, chartRef, "", base.ValuesMap, true)
 			return err
 		})
 	}
@@ -89,7 +89,7 @@ func (uc *ExtensionUseCase) listExtensions(ctx context.Context, scope string, ba
 
 	for i := range bases {
 		eg.Go(func() error {
-			v, err := uc.chart.GetStableVersion(egctx, bases[i].repoURL, bases[i].name, true)
+			v, err := uc.chart.GetStableVersion(egctx, bases[i].RepoURL, bases[i].Name, true)
 			if err == nil {
 				versions.Store(i, v)
 			}
@@ -97,7 +97,7 @@ func (uc *ExtensionUseCase) listExtensions(ctx context.Context, scope string, ba
 		})
 
 		eg.Go(func() error {
-			v, err := uc.release.Get(scope, bases[i].namespace, bases[i].name)
+			v, err := uc.release.Get(scope, bases[i].Namespace, bases[i].Name)
 			if err == nil {
 				releases.Store(i, v)
 			}
@@ -112,20 +112,20 @@ func (uc *ExtensionUseCase) listExtensions(ctx context.Context, scope string, ba
 	ret := []Extension{}
 
 	for _, base := range bases {
-		r, ok := releases.Load(base.name)
+		r, ok := releases.Load(base.Name)
 		if !ok {
-			return nil, fmt.Errorf("failed to load release for %q", base.name)
+			return nil, fmt.Errorf("failed to load release for %q", base.Name)
 		}
 
-		v, ok := versions.Load(base.name)
+		v, ok := versions.Load(base.Name)
 		if !ok {
-			return nil, fmt.Errorf("failed to load chart version for %q", base.name)
+			return nil, fmt.Errorf("failed to load chart version for %q", base.Name)
 		}
 
 		latest := v.(*chart.Version)
 
 		if len(latest.URLs) == 0 {
-			return nil, fmt.Errorf("no chart URL found for %q", base.name)
+			return nil, fmt.Errorf("no chart URL found for %q", base.Name)
 		}
 
 		ret = append(ret, Extension{

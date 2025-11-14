@@ -15,11 +15,11 @@ import (
 )
 
 type ttySession struct {
-	id        string
-	inReader  *io.PipeReader
-	inWriter  *io.PipeWriter
-	outReader *io.PipeReader
-	outWriter *io.PipeWriter
+	ID        string
+	InReader  *io.PipeReader
+	InWriter  *io.PipeWriter
+	OutReader *io.PipeReader
+	OutWriter *io.PipeWriter
 }
 
 // Pod represents a Kubernetes Pod resource.
@@ -51,7 +51,7 @@ func (uc *WorkloadUseCase) WriteToTTYSession(sessionID string, stdIn []byte) err
 		return connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
 	}
 
-	if _, err := value.(*ttySession).inWriter.Write(stdIn); err != nil {
+	if _, err := value.(*ttySession).InWriter.Write(stdIn); err != nil {
 		return connect.NewError(connect.CodeInternal, fmt.Errorf("failed to write to session: %w", err))
 	}
 
@@ -65,11 +65,11 @@ func (uc *WorkloadUseCase) CreateTTYSession() (string, error) {
 	outReader, outWriter := io.Pipe()
 
 	uc.ttySessions.Store(sessionID, &ttySession{
-		id:        sessionID,
-		inReader:  inReader,
-		inWriter:  inWriter,
-		outReader: outReader,
-		outWriter: outWriter,
+		ID:        sessionID,
+		InReader:  inReader,
+		InWriter:  inWriter,
+		OutReader: outReader,
+		OutWriter: outWriter,
 	})
 
 	return sessionID, nil
@@ -82,10 +82,10 @@ func (uc *WorkloadUseCase) CleanupTTYSession(sessionID string) error {
 	}
 
 	ttySession := value.(*ttySession)
-	ttySession.inReader.Close()
-	ttySession.inWriter.Close()
-	ttySession.outReader.Close()
-	ttySession.outWriter.Close()
+	ttySession.InReader.Close()
+	ttySession.InWriter.Close()
+	ttySession.OutReader.Close()
+	ttySession.OutWriter.Close()
 
 	uc.ttySessions.Delete(sessionID)
 
@@ -116,7 +116,7 @@ func (uc *WorkloadUseCase) ExecuteTTY(ctx context.Context, sessionID, scope, nam
 				return ctx.Err()
 
 			default:
-				n, err := ttySession.outReader.Read(buf)
+				n, err := ttySession.OutReader.Read(buf)
 				if err != nil {
 					if err == io.EOF {
 						return nil
@@ -136,8 +136,8 @@ func (uc *WorkloadUseCase) ExecuteTTY(ctx context.Context, sessionID, scope, nam
 		defer close(stdOut)
 
 		return exec.StreamWithContext(egctx, remotecommand.StreamOptions{
-			Stdin:  ttySession.inReader,
-			Stdout: ttySession.outWriter, // raw TTY manages stdout and stderr over the stdout stream
+			Stdin:  ttySession.InReader,
+			Stdout: ttySession.OutWriter, // raw TTY manages stdout and stderr over the stdout stream
 			Tty:    true,
 		})
 	})

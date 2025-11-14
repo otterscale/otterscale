@@ -9,22 +9,22 @@ import (
 const chartRepoURL = "https://otterscale.github.io/charts"
 
 type base struct {
-	name        string
-	namespace   string
-	version     string
-	repoURL     string
-	labels      map[string]string
-	annotations map[string]string
-	valuesMap   map[string]string
+	Name        string
+	Namespace   string
+	Version     string
+	RepoURL     string
+	Labels      map[string]string
+	Annotations map[string]string
+	ValuesMap   map[string]string
 }
 
 var (
 	general = []base{
 		{
-			name:      "kube-prometheus-stack",
-			namespace: "monitoring",
-			repoURL:   "https://prometheus-community.github.io/helm-charts",
-			valuesMap: map[string]string{
+			Name:      "kube-prometheus-stack",
+			Namespace: "monitoring",
+			RepoURL:   "https://prometheus-community.github.io/helm-charts",
+			ValuesMap: map[string]string{
 				release.TypeLabel: "extension",
 			},
 		},
@@ -32,18 +32,18 @@ var (
 
 	model = []base{
 		{
-			name:      "gpu-operator",
-			namespace: "nvidia-gpu-operator",
-			repoURL:   "https://nvidia.github.io/gpu-operator",
-			valuesMap: map[string]string{
+			Name:      "gpu-operator",
+			Namespace: "nvidia-gpu-operator",
+			RepoURL:   "https://nvidia.github.io/gpu-operator",
+			ValuesMap: map[string]string{
 				release.TypeLabel: "extension",
 			},
 		},
 		{
-			name:      "llm-d-infra",
-			namespace: "llm-d",
-			repoURL:   "https://llm-d-incubation.github.io/llm-d-infra",
-			valuesMap: map[string]string{
+			Name:      "llm-d-infra",
+			Namespace: "llm-d",
+			RepoURL:   "https://llm-d-incubation.github.io/llm-d-infra",
+			ValuesMap: map[string]string{
 				release.TypeLabel: "extension",
 				"nameOverride":    "llm-d-infra",
 				"gateway.gatewayParameters.resources.limits.cpu":    "4",
@@ -55,10 +55,10 @@ var (
 
 	instance = []base{
 		{
-			name:      "kubevirt-infra",
-			namespace: "kubevirt",
-			repoURL:   chartRepoURL,
-			valuesMap: map[string]string{
+			Name:      "kubevirt-infra",
+			Namespace: "kubevirt",
+			RepoURL:   chartRepoURL,
+			ValuesMap: map[string]string{
 				release.TypeLabel: "extension",
 			},
 		},
@@ -66,10 +66,10 @@ var (
 
 	storage = []base{
 		{
-			name:      "samba-operator",
-			namespace: "samba-operator",
-			repoURL:   chartRepoURL,
-			valuesMap: map[string]string{
+			Name:      "samba-operator",
+			Namespace: "samba-operator",
+			RepoURL:   chartRepoURL,
+			ValuesMap: map[string]string{
 				release.TypeLabel: "extension",
 			},
 		},
@@ -84,7 +84,7 @@ func (uc *ExtensionUseCase) base(name string) (base, error) {
 	all = append(all, storage...)
 
 	for _, p := range all {
-		if p.name == name {
+		if p.Name == name {
 			return p, nil
 		}
 	}

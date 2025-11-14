@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/canonical/gomaasclient/entity"
 	"github.com/jaypipes/pcidb"
 	"github.com/juju/juju/core/base"
 	"github.com/otterscale/otterscale/internal/core/configuration"
@@ -17,14 +18,11 @@ import (
 )
 
 type Machine struct {
-	ID                  string
-	Hostname            string
-	AgentStatus         string
-	FQDN                string
-	WorkloadAnnotations map[string]string
-	GPUs                []GPU
+	*entity.Machine
 
+	GPUs               []GPU
 	LastCommissionedAt time.Time
+	AgentStatus        string
 }
 
 type GPU struct {
@@ -92,7 +90,7 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]Mac
 
 	for i := range machines {
 		eg.Go(func() error {
-			gpus, err := uc.nodeDevice.ListGPUs(ctx, machines[i].ID)
+			gpus, err := uc.nodeDevice.ListGPUs(ctx, machines[i].SystemID)
 			if err == nil {
 				if err = uc.setGPUName(gpus); err != nil {
 					return err
@@ -103,7 +101,7 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]Mac
 		})
 
 		eg.Go(func() error {
-			lastCommissionedAt, err := uc.lastCommissionedAt(ctx, machines[i].ID)
+			lastCommissionedAt, err := uc.lastCommissionedAt(ctx, machines[i].SystemID)
 			if err == nil {
 				machines[i].LastCommissionedAt = lastCommissionedAt
 			}

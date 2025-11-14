@@ -12,7 +12,7 @@ type Facility struct {
 
 type FacilityRepo interface {
 	List(ctx context.Context, scope, jujuID string) ([]Facility, error)
-	Create(ctx context.Context, scope, name, configYAML, charmName, channel string, revision int, series, directive, placementScope string) error
+	Create(ctx context.Context, scope, name, configYAML, charmName, channel, placementScope string, subordinate bool, directive, series string) error
 	Update(ctx context.Context, scope, name, configYAML string) error
 	Delete(ctx context.Context, scope, name string, destroyStorage, force bool) error
 	Resolve(ctx context.Context, scope, unitName string) error
@@ -23,8 +23,7 @@ type FacilityRepo interface {
 type RelationRepo interface {
 	Create(ctx context.Context, scope string, endpoints []string) error
 	Delete(ctx context.Context, scope string, id int) error
-	// Consume(ctx context.Context, scope string, args *crossmodel.ConsumeApplicationArgs) error
-	// ConsumeInfo(ctx context.Context, url string) (params.ConsumeOfferDetails, error)
+	Consume(ctx context.Context, scope, url string) error
 }
 
 type FacilityUseCase struct {

@@ -8,19 +8,19 @@ import (
 )
 
 type postRenderer struct {
-	extraLabels      map[string]string
-	extraAnnotations map[string]string
+	ExtraLabels      map[string]string
+	ExtraAnnotations map[string]string
 }
 
 func newPostRenderer(extraLabels, extraAnnotations map[string]string) *postRenderer {
 	return &postRenderer{
-		extraLabels:      extraLabels,
-		extraAnnotations: extraAnnotations,
+		ExtraLabels:      extraLabels,
+		ExtraAnnotations: extraAnnotations,
 	}
 }
 
 func (p *postRenderer) Run(renderedManifests *bytes.Buffer) (*bytes.Buffer, error) {
-	if len(p.extraLabels) == 0 && len(p.extraAnnotations) == 0 {
+	if len(p.ExtraLabels) == 0 && len(p.ExtraAnnotations) == 0 {
 		return renderedManifests, nil
 	}
 
@@ -32,14 +32,14 @@ func (p *postRenderer) Run(renderedManifests *bytes.Buffer) (*bytes.Buffer, erro
 	for _, node := range nodes {
 		// labels
 		labels := node.GetLabels()
-		maps.Copy(labels, p.extraLabels)
+		maps.Copy(labels, p.ExtraLabels)
 		if err := node.SetLabels(labels); err != nil {
 			return nil, err
 		}
 
 		// annotations
 		annotations := node.GetAnnotations()
-		maps.Copy(annotations, p.extraAnnotations)
+		maps.Copy(annotations, p.ExtraAnnotations)
 		if err := node.SetAnnotations(annotations); err != nil {
 			return nil, err
 		}

@@ -203,7 +203,7 @@ func (uc *GPUUseCase) buildGPURelations(machines []machine.Machine, nodes []clus
 				MemoryBytes: int64(nodeDevice.Devmem) * 1024 * 1024, // gigabytes to bytes
 				Type:        nodeDevice.Type,
 				Health:      nodeDevice.Health,
-				MachineID:   machine.ID,
+				MachineID:   machine.SystemID,
 			})
 		}
 	}

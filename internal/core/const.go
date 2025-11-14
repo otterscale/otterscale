@@ -28,17 +28,6 @@ const (
 )
 
 const (
-	environmentHealthOK           = 11
-	environmentHealthNotInstalled = 21
-)
-
-const (
-	ApplicationTypeDeployment  = "Deployment"
-	ApplicationTypeStatefulSet = "StatefulSet"
-	ApplicationTypeDaemonSet   = "DaemonSet"
-)
-
-const (
 	annotationHAMINodeNvidiaRegister   = "hami.io/node-nvidia-register"
 	annotationHAMIVGPUNode             = "hami.io/vgpu-node"
 	annotationHAMIVGPUDevicesAllocated = "hami.io/vgpu-devices-allocated"
@@ -63,20 +52,4 @@ const (
 	minioLabel       = "app.kubernetes.io/name=minio"
 	minioField       = "spec.type=NodePort"
 	minioServiceName = "minio-api"
-)
-
-type DataVolumeSourceType int64
-
-const (
-	DataVolumeSourceTypeBlank DataVolumeSourceType = iota
-	DataVolumeSourceTypeHTTP
-	DataVolumeSourceTypePVC
-)
-
-type EssentialType int32
-
-const (
-	EssentialTypeUnknown EssentialType = iota
-	EssentialTypeKubernetes
-	EssentialTypeCeph
 )

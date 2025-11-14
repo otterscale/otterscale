@@ -27,15 +27,15 @@ type Ceph struct {
 }
 
 type connectionConfig struct {
-	id   string
-	host string
-	key  string
+	ID   string
+	Host string
+	Key  string
 }
 
 type clientConfig struct {
-	endpoint  string
-	accessKey string
-	secretKey string
+	Endpoint  string
+	AccessKey string
+	SecretKey string
 }
 
 func New(conf *config.Config, juju *juju.Juju) *Ceph {
@@ -72,9 +72,9 @@ func (m *Ceph) extractAsConnectionConfig(r map[string]any) (connectionConfig, er
 	}
 
 	return connectionConfig{
-		id:   id,
-		host: host,
-		key:  key,
+		ID:   id,
+		Host: host,
+		Key:  key,
 	}, nil
 }
 
@@ -98,13 +98,13 @@ func (m *Ceph) newConnection(c connectionConfig) (*rados.Conn, error) {
 		return nil, err
 	}
 
-	if err := conn.SetConfigOption("fsid", c.id); err != nil {
+	if err := conn.SetConfigOption("fsid", c.ID); err != nil {
 		return nil, err
 	}
-	if err := conn.SetConfigOption("mon_host", c.host); err != nil {
+	if err := conn.SetConfigOption("mon_host", c.Host); err != nil {
 		return nil, err
 	}
-	if err := conn.SetConfigOption("key", c.key); err != nil {
+	if err := conn.SetConfigOption("key", c.Key); err != nil {
 		return nil, err
 	}
 
@@ -233,8 +233,8 @@ func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
 	eg.Go(func() error {
 		accessKey, secretKey, err := m.getObjectKeys(egctx, scope, name)
 		if err == nil {
-			config.accessKey = accessKey
-			config.secretKey = secretKey
+			config.AccessKey = accessKey
+			config.SecretKey = secretKey
 		}
 		return err
 	})
@@ -242,7 +242,7 @@ func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
 	eg.Go(func() error {
 		endpoint, err := m.juju.GetEndpoint(egctx, scope, rgwName)
 		if err == nil {
-			config.endpoint = endpoint
+			config.Endpoint = endpoint
 		}
 		return err
 	})
@@ -265,7 +265,7 @@ func (m *Ceph) client(scope string) (*admin.API, error) {
 		return nil, err
 	}
 
-	client, err := admin.New(config.endpoint, config.accessKey, config.secretKey, nil)
+	client, err := admin.New(config.Endpoint, config.AccessKey, config.SecretKey, nil)
 	if err != nil {
 		return nil, err
 	}
