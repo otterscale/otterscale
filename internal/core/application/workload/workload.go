@@ -7,11 +7,11 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/service"
 	"github.com/otterscale/otterscale/internal/core/application/storage"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // ObjectMeta represents Kubernetes ObjectMeta.
-type ObjectMeta = v1.ObjectMeta
+type ObjectMeta = metav1.ObjectMeta
 
 type WorkloadUseCase struct {
 	daemonSet   DaemonSetRepo

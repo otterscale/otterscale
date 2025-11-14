@@ -86,7 +86,7 @@ func NewBISTUseCase(conf *conf.Config, bucket object.BucketRepo, configMap confi
 }
 
 func (uc *BISTUseCase) ListResults(ctx context.Context) ([]Result, error) {
-	selector := fmt.Sprintf("%s=%s", release.TypeLabel, "bist")
+	selector := release.TypeLabel + "=" + "bist"
 
 	jobs, err := uc.job.List(ctx, scope.ReservedName, bistNamespace, selector)
 	if err != nil {
@@ -122,7 +122,7 @@ func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, scope str
 }
 
 func (uc *BISTUseCase) listMinIOs(ctx context.Context, scope string) ([]WarpTargetInternal, error) {
-	selector := "app.kubernetes.io/name=minio"
+	selector := "app.kubernetes.io/name" + "=" + "minio"
 
 	services, err := uc.service.List(ctx, scope, "", selector)
 	if err != nil {

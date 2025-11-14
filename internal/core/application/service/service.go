@@ -6,8 +6,13 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-// Service represents a Kubernetes Service resource.
-type Service = v1.Service
+type (
+	// Service represents a Kubernetes Service resource.
+	Service = v1.Service
+
+	// Port represents a Kubernetes ServicePort resource.
+	Port = v1.ServicePort
+)
 
 type ServiceRepo interface {
 	List(ctx context.Context, scope, namespace, selector string) ([]Service, error)

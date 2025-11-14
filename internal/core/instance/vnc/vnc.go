@@ -1,4 +1,4 @@
-package core
+package vnc
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -14,27 +15,43 @@ import (
 	kvcorev1 "github.com/otterscale/kubevirt-client-go/kubevirt/typed/core/v1"
 )
 
-func (uc *InstanceUseCase) CreateVNCSession(ctx context.Context, scope, facility, namespace, name string) (string, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, scope, facility)
-	if err != nil {
-		return "", err
+type VNCRepo interface {
+	Stream(ctx context.Context, scope, namespace, name string) (kvcorev1.StreamInterface, error)
+}
+
+type VNCUseCase struct {
+	vnc VNCRepo
+
+	vncSessions sync.Map
+}
+
+func NewVNCUseCase(vnc VNCRepo) *VNCUseCase {
+	return &VNCUseCase{
+		vnc: vnc,
 	}
+}
+
+func (uc *VNCUseCase) CreateVNCSession(ctx context.Context, scope, namespace, name string) (string, error) {
 	sessionID := uuid.New().String()
-	vnc, err := uc.kubeVirt.VNCInstance(config, namespace, name)
+
+	vnc, err := uc.vnc.Stream(ctx, scope, namespace, name)
 	if err != nil {
 		return "", err
 	}
-	uc.vncSessionMap.Store(sessionID, vnc)
+
+	uc.vncSessions.Store(sessionID, vnc)
+
 	return sessionID, nil
 }
 
-func (uc *InstanceUseCase) VNCPathPrefix() string {
+func (uc *VNCUseCase) VNCPathPrefix() string {
 	return "/vnc/"
 }
 
-func (uc *InstanceUseCase) VNCHandler(w http.ResponseWriter, r *http.Request) {
+func (uc *VNCUseCase) VNCHandler(w http.ResponseWriter, r *http.Request) {
 	// upgrade to websocket
 	upgrader := kvcorev1.NewUpgrader()
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return
@@ -43,22 +60,25 @@ func (uc *InstanceUseCase) VNCHandler(w http.ResponseWriter, r *http.Request) {
 
 	// get vnc session
 	sessionID := strings.TrimPrefix(r.URL.Path, uc.VNCPathPrefix())
+
 	if sessionID == "" {
 		_ = conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "missing VNC session ID"))
 		return
 	}
 
 	// load vnc session
-	value, ok := uc.vncSessionMap.Load(sessionID)
+	value, ok := uc.vncSessions.Load(sessionID)
 	if !ok {
 		_ = conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "VNC session not found"))
 		return
 	}
-	defer uc.vncSessionMap.Delete(sessionID)
+	defer uc.vncSessions.Delete(sessionID)
 
 	// configure websocket connection
 	const wait = 5 * time.Minute
+
 	_ = conn.SetReadDeadline(time.Now().Add(wait))
+
 	conn.SetPongHandler(func(string) error {
 		_ = conn.SetReadDeadline(time.Now().Add(wait))
 		return nil
@@ -77,7 +97,7 @@ func (uc *InstanceUseCase) VNCHandler(w http.ResponseWriter, r *http.Request) {
 	defer pipeOutWriter.Close()
 
 	// start stream handler
-	stream := value.(VirtualMachineStream)
+	stream := value.(kvcorev1.StreamInterface)
 	errChan := make(chan error, 3)
 	go uc.streamHandler(stream, pipeInReader, pipeOutWriter, conn, pipeOutReader, pipeInWriter, errChan)
 
@@ -89,28 +109,31 @@ func (uc *InstanceUseCase) VNCHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (uc *InstanceUseCase) pingHandler(ctx context.Context, conn *websocket.Conn) {
+func (uc *VNCUseCase) pingHandler(ctx context.Context, conn *websocket.Conn) {
 	const (
 		period   = 1 * time.Minute
 		deadline = 10 * time.Second
 	)
+
 	ticker := time.NewTicker(period)
 	defer ticker.Stop()
+
 	for {
 		select {
 		case <-ticker.C:
 			if err := conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(deadline)); err != nil {
 				return
 			}
+
 		case <-ctx.Done():
 			return
 		}
 	}
 }
 
-func (uc *InstanceUseCase) streamHandler(vnc VirtualMachineStream, inReader io.Reader, outWriter io.Writer, conn *websocket.Conn, outReader io.Reader, inWriter io.Writer, errChan chan error) {
+func (uc *VNCUseCase) streamHandler(stream kvcorev1.StreamInterface, inReader io.Reader, outWriter io.Writer, conn *websocket.Conn, outReader io.Reader, inWriter io.Writer, errChan chan error) {
 	go func() {
-		errChan <- vnc.Stream(VirtualMachineStreamOptions{
+		errChan <- stream.Stream(kvcorev1.StreamOptions{
 			In:  inReader,
 			Out: outWriter,
 		})

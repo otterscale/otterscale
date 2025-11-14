@@ -109,6 +109,7 @@ func (uc *WorkloadUseCase) ExecuteTTY(ctx context.Context, sessionID, scope, nam
 
 	eg.Go(func() error {
 		buf := make([]byte, 1024) //nolint:mnd // 1KB buffer
+
 		for {
 			select {
 			case <-ctx.Done():
@@ -133,6 +134,7 @@ func (uc *WorkloadUseCase) ExecuteTTY(ctx context.Context, sessionID, scope, nam
 
 	eg.Go(func() error {
 		defer close(stdOut)
+
 		return exec.StreamWithContext(egctx, remotecommand.StreamOptions{
 			Stdin:  ttySession.inReader,
 			Stdout: ttySession.outWriter, // raw TTY manages stdout and stderr over the stdout stream

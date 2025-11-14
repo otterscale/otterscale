@@ -232,21 +232,19 @@ func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
 
 	eg.Go(func() error {
 		accessKey, secretKey, err := m.getObjectKeys(egctx, scope, name)
-		if err != nil {
-			return err
+		if err == nil {
+			config.accessKey = accessKey
+			config.secretKey = secretKey
 		}
-		config.accessKey = accessKey
-		config.secretKey = secretKey
-		return nil
+		return err
 	})
 
 	eg.Go(func() error {
 		endpoint, err := m.juju.GetEndpoint(egctx, scope, rgwName)
-		if err != nil {
-			return err
+		if err == nil {
+			config.endpoint = endpoint
 		}
-		config.endpoint = endpoint
-		return nil
+		return err
 	})
 
 	if err := eg.Wait(); err != nil {

@@ -83,7 +83,6 @@ func (uc *ChartUseCase) ListCharts(ctx context.Context) ([]Chart, error) {
 			if err == nil {
 				result[i] = v
 			}
-
 			return err
 		})
 	}
