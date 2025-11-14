@@ -20,7 +20,7 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import Create from './action-attach.svelte';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 </script>
 
 <script lang="ts">

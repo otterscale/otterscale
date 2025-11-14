@@ -6,6 +6,7 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
 
@@ -102,8 +103,8 @@
 
 {#snippet iops()}{/snippet}
 
-{#snippet actions(row: Row<Pool>)}
+{#snippet actions(data: { row: Row<Pool>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions pool={row.original} />
+		<Actions pool={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

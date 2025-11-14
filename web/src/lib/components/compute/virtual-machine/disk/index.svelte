@@ -36,8 +36,8 @@
 		try {
 			// Get data volumes
 			const dataVolumesResponse = await virtualMachineClient.listDataVolumes({
-				scope: $currentKubernetes?.scope,
-				facility: $currentKubernetes?.name,
+				scope: scope,
+				,
 				namespace: virtualMachine.namespace,
 				bootImage: false // Set to true if you only want boot images
 			});

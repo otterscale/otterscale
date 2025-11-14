@@ -20,7 +20,7 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import Create from './action-test.svelte';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
@@ -134,7 +134,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create />
+			<Create {scope} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

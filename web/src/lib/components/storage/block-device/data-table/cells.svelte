@@ -5,6 +5,7 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Snapshot } from '$lib/components/storage/block-device/snapshot';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
@@ -64,8 +65,8 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<Image>)}
+{#snippet actions(data: { row: Row<Image>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions image={row.original} />
+		<Actions image={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

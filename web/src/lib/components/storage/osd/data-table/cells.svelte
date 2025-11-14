@@ -125,8 +125,8 @@
 
 {#snippet iops()}{/snippet}
 
-{#snippet actions(row: Row<OSD>)}
+{#snippet actions(data: { row: Row<OSD>; scope: string })}
 	<Layout.Cell class="items-start">
-		<Actions osd={row.original} />
+		<Actions osd={data.row.original} scope={data.scope} />
 	</Layout.Cell>
 {/snippet}

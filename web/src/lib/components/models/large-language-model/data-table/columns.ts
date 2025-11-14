@@ -19,7 +19,10 @@ const messages = {
 	time_to_first_token: m.uptime()
 };
 
-const columns: ColumnDef<LargeLanguageModel>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<LargeLanguageModel>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -168,4 +171,4 @@ const columns: ColumnDef<LargeLanguageModel>[] = [
 	}
 ];
 
-export { columns, messages };
+export { getColumns, messages };

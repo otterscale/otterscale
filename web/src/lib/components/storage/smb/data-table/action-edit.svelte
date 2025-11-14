@@ -28,13 +28,11 @@
 <script lang="ts">
 	let {
 		scope,
-		facility,
 		namespace,
 		smbShare,
 		reloadManager
 	}: {
 		scope: string;
-		facility: string;
 		namespace: string;
 		smbShare: SMBShare;
 		reloadManager: ReloadManager;
@@ -46,7 +44,6 @@
 
 	const defaults = {
 		scope: scope,
-		facility: facility,
 		namespace: namespace,
 		name: smbShare.name,
 		sizeBytes: smbShare.sizeBytes,

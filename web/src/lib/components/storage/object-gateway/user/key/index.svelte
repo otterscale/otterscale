@@ -1,8 +1,8 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
-	import { setContext } from 'svelte';
 
 	import type { User } from '$lib/api/storage/v1/storage_pb';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Sheet from '$lib/components/ui/sheet';
 
 	import { DataTable } from './data-table';
@@ -10,12 +10,14 @@
 
 <script lang="ts">
 	let {
-		user
+		user,
+		scope,
+		reloadManager
 	}: {
 		user: User;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
-
-	setContext('user', user);
 </script>
 
 <div class="flex items-center justify-end gap-1">
@@ -25,7 +27,7 @@
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[38vw] p-4">
-			<DataTable {user} />
+			<DataTable {user} {scope} {reloadManager} />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>

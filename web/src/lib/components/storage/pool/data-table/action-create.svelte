@@ -16,7 +16,6 @@
 		Single as SingleSelect
 	} from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
-	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	export const poolTypes: Writable<SingleSelect.OptionType[]> = writable([
@@ -52,8 +51,15 @@
 </script>
 
 <script lang="ts">
+	let {
+		scope,
+		reloadManager
+	}: {
+		scope: string;
+		reloadManager: ReloadManager;
+	} = $props();
+
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const storageClient = createClient(StorageService, transport);
 	let invalidName: boolean | undefined = $state();
@@ -61,8 +67,7 @@
 	let invalidReplicatedSize: boolean | undefined = $state();
 
 	const defaults = {
-		scope: $currentCeph?.scope,
-		facility: $currentCeph?.name
+		scope: scope
 	} as CreatePoolRequest;
 	let request = $state(defaults);
 	function reset() {

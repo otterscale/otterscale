@@ -11,25 +11,26 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentCeph } from '$lib/stores';
 </script>
 
 <script lang="ts">
 	let {
-		pool
+		pool,
+		scope,
+		reloadManager
 	}: {
 		pool: Pool;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const storageClient = createClient(StorageService, transport);
 	let invalid = $state(false);
 
 	const defaults = {
-		scope: $currentCeph?.scope,
-		facility: $currentCeph?.name,
+		scope: scope,
 		poolName: pool.name,
 		quotaBytes: pool.quotaBytes,
 		quotaObjects: pool.quotaObjects

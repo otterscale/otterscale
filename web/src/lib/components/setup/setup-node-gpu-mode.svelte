@@ -9,7 +9,6 @@
 	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
-	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	const gpuModeOptions = [
@@ -26,7 +25,11 @@
 </script>
 
 <script lang="ts">
-	let { unit, class: className }: { unit: Facility_Unit; class: string } = $props();
+	let {
+		unit,
+		scope,
+		class: className
+	}: { unit: Facility_Unit; scope: string; class: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
@@ -38,8 +41,7 @@
 	async function fetch() {
 		orchestratorClient
 			.listKubernetesNodeLabels({
-				scope: $currentKubernetes?.scope,
-				facility: $currentKubernetes?.name,
+				scope: scope,
 				hostname: unit.hostname,
 				all: true
 			})
@@ -90,8 +92,7 @@
 										() => {
 											selectedGPUMode = option.value;
 											return orchestratorClient.updateKubernetesNodeLabels({
-												scope: $currentKubernetes?.scope,
-												facility: $currentKubernetes?.name,
+												scope: scope,
 												hostname: unit.hostname,
 												labels: {
 													'nvidia.com/gpu.workload.config': selectedGPUMode

@@ -32,8 +32,8 @@
 
 	const defaults = {
 		dryRun: false,
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
+		,
 		namespace: release.namespace
 	} as DeleteReleaseRequest;
 	let request = $state(defaults as DeleteReleaseRequest);

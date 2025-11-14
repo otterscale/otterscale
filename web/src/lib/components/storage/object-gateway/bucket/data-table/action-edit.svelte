@@ -14,7 +14,6 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages.js';
-	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	import { accessControlListOptions, getAccessControlList } from './utils.svelte';
@@ -22,13 +21,16 @@
 
 <script lang="ts">
 	let {
-		bucket
+		bucket,
+		scope,
+		reloadManager
 	}: {
 		bucket: Bucket;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const storageClient = createClient(StorageService, transport);
 	let userOptions = $state(writable<SingleSelect.OptionType[]>([]));
@@ -36,8 +38,7 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		scope: $currentCeph?.scope,
-		facility: $currentCeph?.name,
+		scope: scope,
 		bucketName: bucket.name,
 		owner: bucket.owner,
 		policy: bucket.policy,
@@ -55,7 +56,7 @@
 
 	onMount(() => {
 		storageClient
-			.listUsers({ scope: $currentCeph?.scope, facility: $currentCeph?.name })
+			.listUsers({ scope: scope })
 			.then((response) => {
 				userOptions.set(
 					response.users.map(
@@ -100,7 +101,7 @@
 									<SingleSelect.List>
 										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 										<SingleSelect.Group>
-											{#each $userOptions as option}
+											{#each $userOptions as option (option.value)}
 												<SingleSelect.Item {option}>
 													<Icon
 														icon={option.icon ? option.icon : 'ph:empty'}
@@ -139,7 +140,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each $accessControlListOptions as option}
+										{#each $accessControlListOptions as option (option.value)}
 											<SingleSelect.Item {option}>
 												<Icon
 													icon={option.icon ? option.icon : 'ph:empty'}

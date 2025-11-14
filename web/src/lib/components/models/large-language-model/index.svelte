@@ -130,7 +130,7 @@
 	const reloadManager = new ReloadManager(() => {
 		fetch();
 	});
-	setContext('reloadManager', reloadManager);
+
 	let isMounted = $state(false);
 
 	onMount(async () => {

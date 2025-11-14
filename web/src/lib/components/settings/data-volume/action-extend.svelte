@@ -20,7 +20,6 @@
 
 	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	// Create gRPC client for virtual machine operations
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -30,8 +29,8 @@
 
 	// Default values for the extend data volume request
 	const defaults = {
-		scope: $currentKubernetes?.scope || '',
-		facility: $currentKubernetes?.name || '',
+		scope: scope || '',
+		 || '',
 		name: dataVolume.name,
 		namespace: dataVolume.namespace,
 		sizeBytes: dataVolume.sizeBytes

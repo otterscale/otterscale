@@ -16,14 +16,14 @@
 	let { application }: { application: Application } = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const applicationClient = createClient(ApplicationService, transport);
 	let loading = $state(false);
 
 	async function restartApplication() {
 		const request = {
-			scope: $currentKubernetes?.scope,
-			facility: $currentKubernetes?.name,
+			scope: scope,
+			,
 			name: application.name,
 			namespace: application.namespace,
 			type: application.type

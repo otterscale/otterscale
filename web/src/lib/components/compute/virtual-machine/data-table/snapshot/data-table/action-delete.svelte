@@ -21,14 +21,13 @@
 	let { virtualMachineSnapshot }: { virtualMachineSnapshot: VirtualMachine_Snapshot } = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const virtualMachineClient = createClient(InstanceService, transport);
 	let invalid = $state(false);
 
 	const defaults = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
+		,
 		name: '',
 		namespace: virtualMachineSnapshot.namespace
 	} as DeleteVirtualMachineSnapshotRequest;

@@ -18,7 +18,10 @@ const messages = {
 	statistics: m.statistics()
 };
 
-const columns: ColumnDef<Network>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<Network>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -136,10 +139,10 @@ const columns: ColumnDef<Network>[] = [
 			return renderSnippet(headers.actions, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.actions, row);
+			return renderSnippet(cells.actions, { row, scope, reloadManager });
 		},
 		enableHiding: false
 	}
 ];
 
-export { columns, messages };
+export { getColumns, messages };

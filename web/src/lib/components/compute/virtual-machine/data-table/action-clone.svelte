@@ -21,14 +21,13 @@
 	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const virtualMachineClient = createClient(InstanceService, transport);
 	let invalid = $state(false);
 
 	const defaults = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
+		,
 		namespace: virtualMachine.namespace,
 		name: `clone-${virtualMachine.name}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}`,
 		sourceVirtualMachineName: virtualMachine.name,

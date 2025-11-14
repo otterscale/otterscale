@@ -27,8 +27,8 @@
 	async function getVncUrl() {
 		try {
 			const response = await virtualMachineClient.vNCInstance({
-				scope: $currentKubernetes?.scope,
-				facility: $currentKubernetes?.name,
+				scope: scope,
+				,
 				name: virtualMachine.name,
 				namespace: virtualMachine.namespace
 			});

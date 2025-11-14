@@ -16,7 +16,10 @@ const messages = {
 	createTime: m.create_time()
 };
 
-const columns: ColumnDef<VirtualMachine_Restore>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<VirtualMachine_Restore>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -89,10 +92,10 @@ const columns: ColumnDef<VirtualMachine_Restore>[] = [
 			return renderSnippet(headers.actions, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.actions, row);
+			return renderSnippet(cells.actions, { row, scope, reloadManager });
 		},
 		enableHiding: false
 	}
 ];
 
-export { columns, messages };
+export { getColumns, messages };

@@ -7,9 +7,7 @@
 </script>
 
 <script lang="ts">
-	let selectedScope = $derived(page.params.scope!);
-	let selectedFacility = $state('ceph-mon');
-	let selectedVolume = $state('ceph-fs');
+	const volume = 'ceph-fs';
 	let selectedSubvolumeGroupName = $state('');
 
 	breadcrumbs.set([
@@ -24,11 +22,6 @@
 	]);
 </script>
 
-{#key selectedScope + selectedFacility + selectedVolume + selectedSubvolumeGroupName}
-	<FileSystem
-		bind:selectedScope
-		bind:selectedFacility
-		bind:selectedVolume
-		bind:selectedSubvolumeGroupName
-	/>
+{#key page.params.scope! + selectedSubvolumeGroupName}
+	<FileSystem scope={page.params.scope!} {volume} bind:selectedSubvolumeGroupName />
 {/key}

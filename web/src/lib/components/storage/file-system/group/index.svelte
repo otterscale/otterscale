@@ -43,7 +43,7 @@
 			});
 	});
 	setContext('groupStore', groupStore);
-	setContext('reloadManager', reloadManager);
+
 	onMount(() => {
 		groupStore.selectedScope.set(selectedScope);
 		groupStore.selectedFacility.set(selectedFacility);

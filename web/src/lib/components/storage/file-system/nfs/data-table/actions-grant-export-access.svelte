@@ -2,7 +2,6 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
-	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import type {
@@ -15,28 +14,29 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
-
-	import { type NFSStore } from '../utils.svelte.js';
 </script>
 
 <script lang="ts">
 	let {
-		subvolume
+		subvolume,
+		scope,
+		volume,
+		reloadManager
 	}: {
 		subvolume: Subvolume;
+		scope: string;
+		volume: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
-	const nfsStore: NFSStore = getContext('nfsStore');
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const storageClient = createClient(StorageService, transport);
 	let invalid = $state(false);
 
 	const defaults = {
-		scope: get(nfsStore.selectedScope),
-		facility: get(nfsStore.selectedFacility),
-		volumeName: get(nfsStore.selectedVolumeName),
+		scope: scope,
+		volumeName: volume,
 		subvolumeName: subvolume.name
 	} as GrantSubvolumeExportAccessRequest;
 	let request = $state(defaults);

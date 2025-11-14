@@ -2,7 +2,6 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
-	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import type { CreateSubvolumeRequest } from '$lib/api/storage/v1/storage_pb';
@@ -12,14 +11,22 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
-
-	import { type NFSStore } from '../utils.svelte.js';
 </script>
 
 <script lang="ts">
-	const nfsStore: NFSStore = getContext('nfsStore');
+	let {
+		scope,
+		volume,
+		group,
+		reloadManager
+	}: {
+		scope: string;
+		volume: string;
+		group: string;
+		reloadManager: ReloadManager;
+	} = $props();
+
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	let open = $state(false);
 	function close() {
@@ -29,10 +36,9 @@
 	const storageClient = createClient(StorageService, transport);
 
 	const defaults = {
-		scope: get(nfsStore.selectedScope),
-		facility: get(nfsStore.selectedFacility),
-		volumeName: get(nfsStore.selectedVolumeName),
-		groupName: get(nfsStore.selectedSubvolumeGroupName),
+		scope: scope,
+		volumeName: volume,
+		groupName: group,
 		export: true
 	} as CreateSubvolumeRequest;
 	let request = $state(defaults);
@@ -63,9 +69,7 @@
 						required
 						disabled
 						type="text"
-						value={get(nfsStore.selectedSubvolumeGroupName) === ''
-							? 'default'
-							: get(nfsStore.selectedSubvolumeGroupName)}
+						value={group === '' ? 'default' : group}
 					/>
 				</Form.Field>
 

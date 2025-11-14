@@ -13,11 +13,9 @@
 <script lang="ts">
 	let {
 		scope,
-		facility,
 		namespace
 	}: {
 		scope: string;
-		facility: string;
 		namespace: string;
 	} = $props();
 
@@ -27,7 +25,7 @@
 	const smbShares = writable([] as SMBShare[]);
 	async function fetch() {
 		storageClient
-			.listSMBShares({ scope: scope, facility: facility, namespace: namespace })
+			.listSMBShares({ scope: scope })
 			.then((response) => {
 				smbShares.set(response.smbShares);
 			})
@@ -49,7 +47,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<DataTable {scope} {facility} {namespace} {smbShares} {reloadManager} />
+		<DataTable {scope} {namespace} {smbShares} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

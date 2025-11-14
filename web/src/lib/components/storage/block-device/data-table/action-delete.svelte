@@ -11,25 +11,26 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentCeph } from '$lib/stores';
 </script>
 
 <script lang="ts">
 	let {
-		image
+		image,
+		scope,
+		reloadManager
 	}: {
 		image: Image;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	let isPoolNameInvalid = $state(false);
 	let isImageNameInvalid = $state(false);
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
-		scope: $currentCeph?.scope,
-		facility: $currentCeph?.name
+		scope: scope
 	} as DeleteImageRequest;
 	let request = $state(defaults);
 	function reset() {

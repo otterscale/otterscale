@@ -30,7 +30,6 @@
 			testResults.set(response.testResults.filter((result) => result.kind.case === 'warp'));
 		});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		client

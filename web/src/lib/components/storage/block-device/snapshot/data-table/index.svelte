@@ -14,19 +14,26 @@
 	import type { Image } from '$lib/api/storage/v1/storage_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import Create from './action-create.svelte';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 </script>
 
 <script lang="ts">
 	let {
-		image
+		image,
+		scope,
+		reloadManager
 	}: {
 		image: Image;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
+
+	const columns = getColumns(image, scope, reloadManager);
 
 	let snapshots = $derived(image.snapshots || []);
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
@@ -111,7 +118,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create />
+			<Create {image} {scope} {reloadManager} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>

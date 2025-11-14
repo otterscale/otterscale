@@ -10,11 +10,10 @@
 	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
-	import { currentCeph } from '$lib/stores';
 </script>
 
 <script lang="ts">
-	let { osd }: { osd: OSD } = $props();
+	let { osd, scope }: { osd: OSD; scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
@@ -25,8 +24,7 @@
 	async function fetchSMARTs() {
 		try {
 			const response = await storageClient.doSMART({
-				scope: $currentCeph?.scope,
-				facility: $currentCeph?.name,
+				scope: scope,
 				osdName: osd.name
 			});
 			smarts.set(response.deviceOutputMap);

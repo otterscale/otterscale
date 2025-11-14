@@ -12,24 +12,26 @@
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentCeph } from '$lib/stores';
 </script>
 
 <script lang="ts">
 	let {
-		snapshot
+		snapshot,
+		image,
+		scope,
+		reloadManager
 	}: {
 		snapshot: Image_Snapshot;
+		image: Image;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
-	const image: Image = getContext('image');
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
-		scope: $currentCeph?.scope,
-		facility: $currentCeph?.name,
+		scope: scope,
 		imageName: image.name,
 		poolName: image.poolName,
 		snapshotName: snapshot.name

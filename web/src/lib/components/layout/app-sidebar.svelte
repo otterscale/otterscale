@@ -67,18 +67,6 @@
 		}
 	}
 
-	async function fetchEssentials(scope: string) {
-		try {
-			const response = await orchClient.listEssentials({ scope: scope });
-			const { essentials } = response;
-
-			currentCeph.set(essentials.find((e) => e.type === Essential_Type.CEPH));
-			currentKubernetes.set(essentials.find((e) => e.type === Essential_Type.KUBERNETES));
-		} catch (error) {
-			console.error('Failed to fetch essentials:', error);
-		}
-	}
-
 	async function handleScopeOnSelect(index: number) {
 		const scope = scopes[index];
 		if (!scope) return;
@@ -88,6 +76,7 @@
 
 	async function initialize(scope: string) {
 		try {
+			active = scope;
 			await Promise.all([fetchScopes(), fetchEdition(), fetchEssentials(scope)]);
 			toast.success(m.switch_scope({ name: scope }));
 		} catch (error) {

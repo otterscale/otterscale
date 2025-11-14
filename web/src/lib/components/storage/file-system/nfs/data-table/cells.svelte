@@ -8,6 +8,7 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Snapshot } from '$lib/components/storage/file-system/nfs/snapshot';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as HoverCard from '$lib/components/ui/hover-card';
@@ -194,8 +195,20 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<Subvolume>)}
+{#snippet actions(data: {
+	row: Row<Subvolume>;
+	scope: string;
+	volume: string;
+	group: string;
+	reloadManager: ReloadManager;
+})}
 	<Layout.Cell class="items-start">
-		<Actions subvolume={row.original} />
+		<Actions
+			subvolume={data.row.original}
+			scope={data.scope}
+			volume={data.volume}
+			group={data.group}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}

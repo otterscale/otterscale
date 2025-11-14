@@ -40,7 +40,6 @@
 				console.error('Error during data loading:', error);
 			});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		applicationClient

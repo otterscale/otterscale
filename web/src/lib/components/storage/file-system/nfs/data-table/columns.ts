@@ -3,6 +3,7 @@ import type { ColumnDef } from '@tanstack/table-core';
 
 import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
+import type { ReloadManager } from '$lib/components/custom/reloader';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
@@ -20,107 +21,114 @@ const messages = {
 	snapshots: m.snapshot()
 };
 
-const columns: ColumnDef<Subvolume>[] = [
-	{
-		id: 'select',
-		header: ({ table }) => {
-			return renderSnippet(headers.row_picker, table);
+function getColumns(
+	scope: string,
+	volume: string,
+	group: string,
+	reloadManager: ReloadManager
+): ColumnDef<Subvolume>[] {
+	return [
+		{
+			id: 'select',
+			header: ({ table }) => {
+				return renderSnippet(headers.row_picker, table);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.row_picker, row);
+			},
+			enableSorting: false,
+			enableHiding: false
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.row_picker, row);
+		{
+			accessorKey: 'name',
+			header: ({ column }) => {
+				return renderSnippet(headers.name, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.name, row);
+			}
 		},
-		enableSorting: false,
-		enableHiding: false
-	},
-	{
-		accessorKey: 'name',
-		header: ({ column }) => {
-			return renderSnippet(headers.name, column);
+		{
+			accessorKey: 'poolName',
+			header: ({ column }) => {
+				return renderSnippet(headers.poolName, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.poolName, row);
+			}
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.name, row);
+		{
+			accessorKey: 'exportSubvolume',
+			header: ({ column }) => {
+				return renderSnippet(headers.exportSubvolume, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.exportSubvolume, row);
+			}
+		},
+		{
+			accessorKey: 'usage',
+			header: ({ column }) => {
+				return renderSnippet(headers.usage, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.usage, row);
+			},
+			sortingFn: (previousRow, nextRow) =>
+				getSortingFunction(
+					Number(previousRow.original.quotaBytes) !== 0
+						? Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes)
+						: 0,
+					Number(nextRow.original.quotaBytes) !== 0
+						? Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes)
+						: 0,
+					(p, n) => p < n,
+					(p, n) => p === n
+				)
+		},
+		{
+			accessorKey: 'createTime',
+			header: ({ column }) => {
+				return renderSnippet(headers.createTime, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.createTime, row);
+			},
+			sortingFn: (previousRow, nextRow) =>
+				getSortingFunction(
+					previousRow.original.createdAt,
+					nextRow.original.createdAt,
+					(p, n) => timestampDate(p) < timestampDate(n),
+					(p, n) => timestampDate(p) === timestampDate(n)
+				)
+		},
+		{
+			accessorKey: 'snapshots',
+			header: ({ column }) => {
+				return renderSnippet(headers.snapshots, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.snapshots, row);
+			},
+			sortingFn: (previousRow, nextRow) =>
+				getSortingFunction(
+					previousRow.original.snapshots.length,
+					nextRow.original.snapshots.length,
+					(p, n) => p < n,
+					(p, n) => p === n
+				)
+		},
+		{
+			accessorKey: 'actions',
+			header: ({ column }) => {
+				return renderSnippet(headers.actions, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.actions, { row, scope, volume, group, reloadManager });
+			},
+			enableHiding: false
 		}
-	},
-	{
-		accessorKey: 'poolName',
-		header: ({ column }) => {
-			return renderSnippet(headers.poolName, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.poolName, row);
-		}
-	},
-	{
-		accessorKey: 'exportSubvolume',
-		header: ({ column }) => {
-			return renderSnippet(headers.exportSubvolume, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.exportSubvolume, row);
-		}
-	},
-	{
-		accessorKey: 'usage',
-		header: ({ column }) => {
-			return renderSnippet(headers.usage, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.usage, row);
-		},
-		sortingFn: (previousRow, nextRow) =>
-			getSortingFunction(
-				Number(previousRow.original.quotaBytes) !== 0
-					? Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes)
-					: 0,
-				Number(nextRow.original.quotaBytes) !== 0
-					? Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes)
-					: 0,
-				(p, n) => p < n,
-				(p, n) => p === n
-			)
-	},
-	{
-		accessorKey: 'createTime',
-		header: ({ column }) => {
-			return renderSnippet(headers.createTime, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.createTime, row);
-		},
-		sortingFn: (previousRow, nextRow) =>
-			getSortingFunction(
-				previousRow.original.createdAt,
-				nextRow.original.createdAt,
-				(p, n) => timestampDate(p) < timestampDate(n),
-				(p, n) => timestampDate(p) === timestampDate(n)
-			)
-	},
-	{
-		accessorKey: 'snapshots',
-		header: ({ column }) => {
-			return renderSnippet(headers.snapshots, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.snapshots, row);
-		},
-		sortingFn: (previousRow, nextRow) =>
-			getSortingFunction(
-				previousRow.original.snapshots.length,
-				nextRow.original.snapshots.length,
-				(p, n) => p < n,
-				(p, n) => p === n
-			)
-	},
-	{
-		accessorKey: 'actions',
-		header: ({ column }) => {
-			return renderSnippet(headers.actions, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.actions, row);
-		},
-		enableHiding: false
-	}
-];
+	];
+}
 
-export { columns, messages };
+export { getColumns, messages };

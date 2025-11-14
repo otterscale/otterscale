@@ -13,7 +13,6 @@
 		open = false;
 	}
 
-	const reloadManager: ReloadManager = getContext('reloadManager');
 	onMount(() => {
 		reloadManager.force();
 	});

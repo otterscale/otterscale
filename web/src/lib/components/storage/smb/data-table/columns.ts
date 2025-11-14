@@ -26,7 +26,6 @@ const messages = {
 
 function getColumns(
 	scope: string,
-	facility: string,
 	namespace: string,
 	reloadManager: ReloadManager
 ): ColumnDef<SMBShare>[] {
@@ -122,8 +121,7 @@ function getColumns(
 		{
 			accessorKey: 'actions',
 			header: ({ column }) => renderSnippet(headers.actions, column),
-			cell: ({ row }) =>
-				renderSnippet(cells.actions, { scope, facility, namespace, row, reloadManager }),
+			cell: ({ row }) => renderSnippet(cells.actions, { row, scope, namespace, reloadManager }),
 			enableHiding: false
 		}
 	];

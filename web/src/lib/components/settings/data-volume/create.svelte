@@ -19,7 +19,7 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
@@ -32,8 +32,8 @@
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_REQUEST = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
+		,
 		name: '',
 		namespace: 'default',
 		source: { type: DataVolume_Source_Type.HTTP_URL, data: '' } as DataVolume_Source,

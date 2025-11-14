@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { type Bucket, StorageService } from '$lib/api/storage/v1/storage_pb';
@@ -12,12 +12,10 @@
 
 <script lang="ts">
 	let {
-		selectedScope = $bindable(),
-		selectedFacility = $bindable(),
+		scope,
 		trigger
 	}: {
-		selectedScope: string;
-		selectedFacility: string;
+		scope: string;
 		trigger: Snippet;
 	} = $props();
 
@@ -28,17 +26,14 @@
 
 	const storageClient = createClient(StorageService, transport);
 	const reloadManager = new ReloadManager(() => {
-		storageClient
-			.listBuckets({ scope: selectedScope, facility: selectedFacility })
-			.then((response) => {
-				buckets.set(response.buckets);
-			});
+		storageClient.listBuckets({ scope: scope }).then((response) => {
+			buckets.set(response.buckets);
+		});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		storageClient
-			.listBuckets({ scope: selectedScope, facility: selectedFacility })
+			.listBuckets({ scope: scope })
 			.then((response) => {
 				buckets.set(response.buckets);
 				isMounted = true;
@@ -57,7 +52,7 @@
 <main class="space-y-4 py-4">
 	{#if isMounted}
 		{@render trigger()}
-		<DataTable {buckets} {reloadManager} />
+		<DataTable {scope} {buckets} {reloadManager} />
 	{:else}
 		<Loading.DataTables.Table />
 	{/if}

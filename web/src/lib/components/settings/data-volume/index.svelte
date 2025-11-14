@@ -44,7 +44,6 @@
 				dataVolumes.set(response.dataVolumes);
 			});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(async () => {
 		try {
@@ -78,7 +77,7 @@
 			{m.setting_data_volume_description()}
 		</Layout.Description>
 		<Layout.Controller>
-			<Create />
+			<Create {scope} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

@@ -50,8 +50,8 @@
 
 			const stream = client.watchLogs(
 				{
-					scope: $currentKubernetes?.scope || '',
-					facility: $currentKubernetes?.name || '',
+					scope: scope || '',
+					 || '',
 					namespace,
 					podName: pod.name,
 					containerName: '',

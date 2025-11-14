@@ -19,4 +19,6 @@
 	]);
 </script>
 
-<SMB scope={page.params.scope!} facility="bbb-kubernetes-control-plane" namespace="samba" />
+{#key page.params.scope}
+	<SMB scope={page.params.scope!} namespace={page.params.namespace!} />
+{/key}

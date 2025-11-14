@@ -14,7 +14,10 @@ const messages = {
 	comment: m.comment()
 };
 
-const columns: ColumnDef<Network_IPRange>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<Network_IPRange>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -65,4 +68,4 @@ const columns: ColumnDef<Network_IPRange>[] = [
 	}
 ];
 
-export { columns, messages };
+export { getColumns, messages };

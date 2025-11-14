@@ -30,7 +30,6 @@
 	const nfsStore: NFSStore = getContext('nfsStore');
 	const subvolume: Subvolume = getContext('subvolume');
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	let invalid = $state(false);
 

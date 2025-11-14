@@ -39,7 +39,6 @@
 				instanceTypes.set(response.instanceTypes);
 			});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(async () => {
 		try {
@@ -70,7 +69,7 @@
 			{m.setting_instance_type_description()}
 		</Layout.Description>
 		<Layout.Controller>
-			<Create />
+			<Create {scope} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

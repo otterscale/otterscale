@@ -21,7 +21,10 @@ const messages = {
 	nodeport: m.nodeport()
 };
 
-const columns: ColumnDef<Application>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<Application>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -173,10 +176,10 @@ const columns: ColumnDef<Application>[] = [
 			return renderSnippet(headers.actions, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.actions, row);
+			return renderSnippet(cells.actions, { row, scope, reloadManager });
 		},
 		enableHiding: false
 	}
 ];
 
-export { columns, messages };
+export { getColumns, messages };

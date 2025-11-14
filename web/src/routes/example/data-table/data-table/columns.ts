@@ -6,7 +6,10 @@ import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 import type { TableRow } from './type';
 
-const columns: ColumnDef<TableRow>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<TableRow>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {

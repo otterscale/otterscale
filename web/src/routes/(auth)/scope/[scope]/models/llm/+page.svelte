@@ -19,7 +19,7 @@
 </script>
 
 {#if $currentKubernetes}
-	{#key $currentKubernetes?.scope + $currentKubernetes?.name}
-		<LLM scope={$currentKubernetes?.scope} facility={$currentKubernetes?.name} />
+	{#key scope}
+		<LLM {scope} />
 	{/key}
 {/if}
