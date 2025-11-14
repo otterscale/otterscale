@@ -21,7 +21,10 @@ const messages = {
 	tags: m.tags()
 };
 
-const columns: ColumnDef<Machine>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<Machine>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -180,10 +183,10 @@ const columns: ColumnDef<Machine>[] = [
 			return renderSnippet(headers.actions, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.actions, row);
+			return renderSnippet(cells.actions, { row, scope, reloadManager });
 		},
 		enableHiding: false
 	}
 ];
 
-export { columns, messages };
+export { getColumns, messages };

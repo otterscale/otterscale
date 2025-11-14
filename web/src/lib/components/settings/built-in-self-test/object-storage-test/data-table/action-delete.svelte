@@ -23,8 +23,6 @@
 		testResult: TestResult;
 	} = $props();
 
-	const reloadManager: ReloadManager = getContext('reloadManager');
-
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);
 

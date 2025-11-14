@@ -24,7 +24,6 @@
 			machines.set(response.machines);
 		});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		machineClient

@@ -35,8 +35,8 @@
 
 	const defaults = {
 		dryRun: false,
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
+		,
 		namespace: release.namespace,
 		name: release.name,
 		chartRef: release.version?.chartRef,

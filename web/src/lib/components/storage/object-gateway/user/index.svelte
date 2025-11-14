@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { StorageService, type User } from '$lib/api/storage/v1/storage_pb';
@@ -12,12 +12,10 @@
 
 <script lang="ts">
 	let {
-		selectedScope = $bindable(),
-		selectedFacility = $bindable(),
+		scope,
 		trigger
 	}: {
-		selectedScope: string;
-		selectedFacility: string;
+		scope: string;
 		trigger: Snippet;
 	} = $props();
 
@@ -28,17 +26,14 @@
 
 	const storageClient = createClient(StorageService, transport);
 	const reloadManager = new ReloadManager(() => {
-		storageClient
-			.listUsers({ scope: selectedScope, facility: selectedFacility })
-			.then((response) => {
-				users.set(response.users);
-			});
+		storageClient.listUsers({ scope: scope }).then((response) => {
+			users.set(response.users);
+		});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		storageClient
-			.listUsers({ scope: selectedScope, facility: selectedFacility })
+			.listUsers({ scope: scope })
 			.then((response) => {
 				users.set(response.users);
 				isMounted = true;
@@ -57,7 +52,7 @@
 <main class="space-y-4 py-4">
 	{#if isMounted}
 		{@render trigger()}
-		<DataTable {users} {reloadManager} />
+		<DataTable {users} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTables.Table />
 	{/if}

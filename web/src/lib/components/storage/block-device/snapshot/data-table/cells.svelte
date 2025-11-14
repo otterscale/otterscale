@@ -2,10 +2,11 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import type { Image_Snapshot } from '$lib/api/storage/v1/storage_pb';
+	import type { Image, Image_Snapshot } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { formatCapacity } from '$lib/formatter';
 
 	import Actions from './cell-actions.svelte';
@@ -60,8 +61,18 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<Image_Snapshot>)}
+{#snippet actions(data: {
+	row: Row<Image_Snapshot>;
+	image: Image;
+	scope: string;
+	reloadManager: ReloadManager;
+})}
 	<Layout.Cell class="items-start">
-		<Actions snapshot={row.original} />
+		<Actions
+			snapshot={data.row.original}
+			image={data.image}
+			scope={data.scope}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}

@@ -2,8 +2,10 @@
 	import type { Row } from '@tanstack/table-core';
 
 	import type { User_Key } from '$lib/api/storage/v1/storage_pb';
+	import type { User } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	import Actions from './cell-actions.svelte';
 
@@ -26,8 +28,18 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<User_Key>)}
+{#snippet actions(data: {
+	row: Row<User_Key>;
+	user: User;
+	scope: string;
+	reloadManager: ReloadManager;
+})}
 	<Layout.Cell class="items-start">
-		<Actions key={row.original} />
+		<Actions
+			key={data.row.original}
+			user={data.user}
+			scope={data.scope}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}

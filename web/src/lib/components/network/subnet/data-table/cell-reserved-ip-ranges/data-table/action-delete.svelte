@@ -20,7 +20,6 @@
 	let { ipRange }: { ipRange: Network_IPRange } = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	let invalidStartIP: boolean | undefined = $state();
 	let invalidEndIP: boolean | undefined = $state();

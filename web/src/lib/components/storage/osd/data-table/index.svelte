@@ -20,18 +20,22 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { m } from '$lib/paraglide/messages';
 
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
 	let {
+		scope,
 		objectStorageDaemons,
 		reloadManager
 	}: {
+		scope: string;
 		objectStorageDaemons: Writable<OSD[]>;
 		reloadManager: ReloadManager;
 	} = $props();
+
+	const columns = getColumns(scope);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 9 });
 	let sorting = $state<SortingState>([]);

@@ -21,7 +21,7 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// Form validation state
@@ -29,8 +29,8 @@
 
 	// Default values for the detach disk request
 	const defaults = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
+		,
 		namespace: enhancedDisk.namespace,
 		name: enhancedDisk.vmName,
 		dataVolumeName: ''

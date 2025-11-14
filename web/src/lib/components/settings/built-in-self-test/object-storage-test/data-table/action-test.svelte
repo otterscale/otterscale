@@ -119,7 +119,7 @@
 
 	// grpc
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const client = createClient(ConfigurationService, transport);
 
 	let invalidName = $state(false);

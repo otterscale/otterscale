@@ -19,7 +19,6 @@
 <script lang="ts">
 	const groupStore: GroupStore = getContext('groupStore');
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const storageClient = createClient(StorageService, transport);
 	let invalid = $state(false);

@@ -27,7 +27,6 @@
 
 	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	// Create gRPC client for configuration operations
 	const client = createClient(ConfigurationService, transport);

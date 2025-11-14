@@ -30,9 +30,7 @@
 	async function fetchOptions() {
 		try {
 			const response = await client.listInternalObjectServices({
-				scope: scope,
-				cephName: $currentCeph?.name,
-				kubernetesName: $currentKubernetes?.name
+				scope: scope
 			});
 			internalObjectServices.set(
 				response.internalObjectServices.map(

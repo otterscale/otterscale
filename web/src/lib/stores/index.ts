@@ -26,10 +26,6 @@ interface AppStores {
 	// Premium Tier
 	premiumTier: Writable<PremiumTier>;
 
-	// Scope & Essential
-	currentCeph: Writable<Essential | undefined>;
-	currentKubernetes: Writable<Essential | undefined>;
-
 	// Bookmark
 	bookmarks: Writable<Path[]>;
 
@@ -41,8 +37,6 @@ interface AppStores {
 const createStores = (): AppStores => ({
 	breadcrumbs: writable<Path[]>([{ title: m.home(), url: resolve('/') }]),
 	premiumTier: writable<PremiumTier>({ level: PremiumTier_Level.BASIC } as PremiumTier),
-	currentCeph: writable<Essential | undefined>(undefined),
-	currentKubernetes: writable<Essential | undefined>(undefined),
 	bookmarks: writable<Path[]>([]),
 	// temp
 	notifications: writable<Notification[]>([
@@ -95,11 +89,4 @@ const createStores = (): AppStores => ({
 });
 
 // Export individual stores
-export const {
-	breadcrumbs,
-	premiumTier,
-	currentCeph,
-	currentKubernetes,
-	bookmarks,
-	notifications
-} = createStores();
+export const { breadcrumbs, premiumTier, bookmarks, notifications } = createStores();

@@ -29,8 +29,8 @@
 
 	async function startVM() {
 		const request = {
-			scope: $currentKubernetes?.scope,
-			facility: $currentKubernetes?.name,
+			scope: scope,
+			,
 			name: virtualMachine.name,
 			namespace: virtualMachine.namespace
 		};
@@ -50,8 +50,8 @@
 	}
 	async function stopVM() {
 		const request = {
-			scope: $currentKubernetes?.scope,
-			facility: $currentKubernetes?.name,
+			scope: scope,
+			,
 			name: virtualMachine.name,
 			namespace: virtualMachine.namespace
 		};

@@ -32,7 +32,7 @@
 	const machineScope = $derived(
 		machine.workloadAnnotations['juju-machine-id']?.split('-machine-')[0]
 	);
-	const isMachineInSelectedScope = $derived(machineScope === $currentKubernetes?.scope);
+	const isMachineInSelectedScope = $derived(machineScope === scope);
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(OrchestratorService, transport);
@@ -50,8 +50,8 @@
 		isLoading = true;
 		try {
 			const response = await client.listGPURelationsByMachine({
-				scope: $currentKubernetes?.scope,
-				facility: $currentKubernetes?.name,
+				scope: scope,
+				,
 				machineId: machine.id
 			});
 

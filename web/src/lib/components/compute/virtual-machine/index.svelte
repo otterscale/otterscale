@@ -31,7 +31,6 @@
 			virtualMachines.set(response.virtualMachines);
 		});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		VirtualMachineClient.listVirtualMachines({

@@ -30,8 +30,8 @@
 		}
 
 		const searchParams = new URLSearchParams({
-			scope: $currentKubernetes?.scope ?? '',
-			facility: $currentKubernetes?.name ?? '',
+			scope: scope ?? '',
+			 ?? '',
 			namespace: page.params.namespace ?? '',
 			pod: pod.name,
 			container: '',

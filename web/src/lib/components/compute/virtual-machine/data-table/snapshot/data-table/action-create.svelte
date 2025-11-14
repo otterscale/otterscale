@@ -21,7 +21,7 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
@@ -36,8 +36,8 @@
 
 	// Default request structure for creating a virtual machine snapshot
 	const DEFAULT_REQUEST = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
+		,
 		namespace: virtualMachine.namespace,
 		name: '',
 		virtualMachineName: virtualMachine.name

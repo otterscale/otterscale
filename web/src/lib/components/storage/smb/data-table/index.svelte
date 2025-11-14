@@ -27,13 +27,11 @@
 <script lang="ts">
 	let {
 		scope,
-		facility,
 		namespace,
 		smbShares,
 		reloadManager
 	}: {
 		scope: string;
-		facility: string;
 		namespace: string;
 		smbShares: Writable<SMBShare[]>;
 		reloadManager: ReloadManager;
@@ -50,7 +48,7 @@
 			return $smbShares;
 		},
 		get columns() {
-			return getColumns(scope, facility, namespace, reloadManager);
+			return getColumns(scope, namespace, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),
@@ -137,7 +135,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {scope} {facility} {namespace} {reloadManager} />
+			<Create {scope} {namespace} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

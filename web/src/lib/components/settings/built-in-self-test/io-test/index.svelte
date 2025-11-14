@@ -29,7 +29,6 @@
 			testResults.set(response.testResults.filter((result) => result.kind.case === 'fio'));
 		});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		client

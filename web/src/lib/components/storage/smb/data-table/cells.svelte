@@ -132,7 +132,6 @@
 
 {#snippet actions(data: {
 	scope: string;
-	facility: string;
 	namespace: string;
 	row: Row<SMBShare>;
 	reloadManager: ReloadManager;
@@ -140,7 +139,6 @@
 	<Layout.Cell class="items-end">
 		<Actions
 			scope={data.scope}
-			facility={data.facility}
 			namespace={data.namespace}
 			smbShare={data.row.original}
 			reloadManager={data.reloadManager}

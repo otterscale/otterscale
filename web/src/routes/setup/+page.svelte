@@ -155,7 +155,7 @@
 			</div>
 		</div>
 		<div bind:this={terminal} class="h-[calc(100%-64px)] flex-col overflow-auto p-4">
-			{#each messages as msg, i}
+			{#each messages as msg, i (i)}
 				{@const isLastMessage = i === messages.length - 1}
 				{#if msg.message !== ''}
 					<span class="block" transition:fly={{ y: -5, duration: 500 }}>

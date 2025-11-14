@@ -27,7 +27,7 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
@@ -47,8 +47,8 @@
 			if (!request.namespace) return;
 
 			const response = await virtualMachineClient.listDataVolumes({
-				scope: $currentKubernetes?.scope,
-				facility: $currentKubernetes?.name,
+				scope: scope,
+				,
 				namespace: request.namespace
 			});
 
@@ -68,8 +68,8 @@
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_REQUEST = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
+		,
 		name: virtualMachine.name,
 		namespace: virtualMachine.namespace,
 		dataVolumeName: ''

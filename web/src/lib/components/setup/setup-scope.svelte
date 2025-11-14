@@ -10,7 +10,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch';
 	import { m } from '$lib/paraglide/messages';
-	import { currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
+	import { premiumTier } from '$lib/stores';
 
 	// Props
 	let {
@@ -173,12 +173,12 @@
 		</div>
 
 		<!-- Kubernetes Section -->
-		{#if $currentKubernetes}
+		{#if scope !== 'otterscale'}
 			{@render kubernetesCards()}
 		{/if}
 
 		<!-- Ceph Section -->
-		{#if $currentCeph}
+		{#if scope !== 'otterscale'}
 			{@render cephCards()}
 		{/if}
 	</div>

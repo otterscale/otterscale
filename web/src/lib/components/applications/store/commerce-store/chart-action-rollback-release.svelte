@@ -30,8 +30,8 @@
 	const client = createClient(ApplicationService, transport);
 
 	const defaults = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
+		,
 		namespace: release.namespace
 	} as RollbackReleaseRequest;
 	let request = $state(defaults);

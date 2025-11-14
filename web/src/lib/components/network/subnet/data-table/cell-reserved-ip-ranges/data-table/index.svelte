@@ -19,7 +19,7 @@
 
 	import Create from './action-create.svelte';
 	import Actions from './actions.svelte';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 </script>
 
 <script lang="ts">

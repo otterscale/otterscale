@@ -20,7 +20,7 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// Form validation state
@@ -28,8 +28,8 @@
 
 	// Default values for the delete instance type request
 	const defaults = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
+		,
 		namespace: instanceType.namespace,
 		name: ''
 	} as DeleteInstanceTypeRequest;

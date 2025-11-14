@@ -23,8 +23,6 @@
 		machine: Machine;
 	} = $props();
 
-	const reloadManager: ReloadManager = getContext('reloadManager');
-
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 

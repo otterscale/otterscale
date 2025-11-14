@@ -9,7 +9,6 @@
 	import { Overview } from '$lib/components/storage/dashboard/overview';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 
 	import ExtensionsAlert from './extensions-alert.svelte';
 
@@ -45,9 +44,7 @@
 </script>
 
 <main class="space-y-4 py-4">
-	{#if $currentKubernetes}
-		<ExtensionsAlert scope={$currentKubernetes.scope} facility={$currentKubernetes.name} />
-	{/if}
+	<ExtensionsAlert {scope} />
 	{#if prometheusDriver}
 		<div class="mx-auto grid w-full gap-6">
 			<div class="grid gap-1">

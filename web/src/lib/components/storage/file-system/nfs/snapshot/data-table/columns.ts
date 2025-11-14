@@ -15,7 +15,10 @@ const messages = {
 	hasPendingClones: m.pending_clones()
 };
 
-const columns: ColumnDef<Subvolume_Snapshot>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<Subvolume_Snapshot>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -67,10 +70,10 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 			return renderSnippet(headers.actions, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.actions, row);
+			return renderSnippet(cells.actions, { row, scope, reloadManager });
 		},
 		enableHiding: false
 	}
 ];
 
-export { columns, messages };
+export { getColumns, messages };

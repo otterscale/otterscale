@@ -20,13 +20,18 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import Create from './action-create.svelte';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
-	let { pools, reloadManager }: { pools: Writable<Pool[]>; reloadManager: ReloadManager } =
-		$props();
+	let {
+		scope,
+		pools,
+		reloadManager
+	}: { scope: string; pools: Writable<Pool[]>; reloadManager: ReloadManager } = $props();
+
+	const columns = getColumns(scope, reloadManager);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 9 });
 	let sorting = $state<SortingState>([]);
@@ -129,7 +134,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create />
+			<Create {scope} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

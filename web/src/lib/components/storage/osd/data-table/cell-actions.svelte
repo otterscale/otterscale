@@ -7,12 +7,12 @@
 </script>
 
 <script lang="ts">
-	let { osd }: { osd: OSD } = $props();
+	let { osd, scope }: { osd: OSD; scope: string } = $props();
 </script>
 
 <Layout.Actions>
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionItem>
-		<DoSMART {osd} />
+		<DoSMART {osd} {scope} />
 	</Layout.ActionItem>
 </Layout.Actions>

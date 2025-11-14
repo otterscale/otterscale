@@ -15,7 +15,10 @@ const messages = {
 	ports: m.ports()
 };
 
-const columns: ColumnDef<Service>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<Service>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -86,10 +89,10 @@ const columns: ColumnDef<Service>[] = [
 			return renderSnippet(headers.actions, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.actions, row);
+			return renderSnippet(cells.actions, { row, scope, reloadManager });
 		},
 		enableHiding: false
 	}
 ];
 
-export { columns, messages };
+export { getColumns, messages };

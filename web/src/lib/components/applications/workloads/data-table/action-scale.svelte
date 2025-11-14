@@ -22,7 +22,6 @@
 
 	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	// Create gRPC client for application operations
 	const applicationClient = createClient(ApplicationService, transport);
@@ -32,8 +31,8 @@
 
 	// Default values for the scale application request
 	const defaults = {
-		scope: $currentKubernetes?.scope || '',
-		facility: $currentKubernetes?.name || '',
+		scope: scope || '',
+		 || '',
 		name: application.name,
 		namespace: application.namespace,
 		type: application.type,

@@ -17,7 +17,10 @@ const messages = {
 	createTime: m.create_time()
 };
 
-const columns: ColumnDef<SubvolumeGroup>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<SubvolumeGroup>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -85,10 +88,10 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
 			return renderSnippet(headers.actions, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.actions, row);
+			return renderSnippet(cells.actions, { row, scope, reloadManager });
 		},
 		enableHiding: false
 	}
 ];
 
-export { columns, messages };
+export { getColumns, messages };

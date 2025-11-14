@@ -37,7 +37,7 @@
 	client
 		.listGPURelationsByModel({
 			scope: scope,
-			facility: $currentKubernetes?.name,
+			,
 			namespace: model.application.namespace,
 			modelName: model.name
 		})

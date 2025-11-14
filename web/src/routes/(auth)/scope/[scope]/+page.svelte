@@ -7,7 +7,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import { getCephPathDisabled, getKubernetesPathDisabled } from '$lib/path';
-	import { breadcrumbs, currentCeph, currentKubernetes } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
@@ -17,7 +17,7 @@
 		}
 	]);
 
-	const cards = $derived([
+	const cards = [
 		{
 			background: 'bg-[#1c77c3]/30',
 			path: {
@@ -50,7 +50,7 @@
 			},
 			description: m.machines_description()
 		}
-	]);
+	];
 </script>
 
 <!-- just-in-time  -->
@@ -67,13 +67,13 @@
 <div class="flex h-full flex-col justify-between">
 	<div class="mx-auto flex max-w-5xl px-4 xl:px-0">
 		<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-			{#each cards as card}
+			{#each cards as card (card.path.url)}
 				<HomeCard
 					background={card.background}
 					path={card.path}
 					description={card.description}
-					disabled={(!$currentCeph && getCephPathDisabled(card.path.url)) ||
-						(!$currentKubernetes && getKubernetesPathDisabled(card.path.url))}
+					disabled={(page.params.scope === 'otterscale' && getCephPathDisabled(card.path.url)) ||
+						(page.params.scope === 'otterscale' && getKubernetesPathDisabled(card.path.url))}
 				/>
 			{/each}
 		</div>

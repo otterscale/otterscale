@@ -19,7 +19,7 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import type { Application } from '../types';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 </script>
 
 <script lang="ts">

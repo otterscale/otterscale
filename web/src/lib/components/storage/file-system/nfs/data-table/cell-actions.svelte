@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
 	import Delete from './actions-delete.svelte';
@@ -11,24 +12,32 @@
 
 <script lang="ts">
 	let {
-		subvolume
+		subvolume,
+		scope,
+		volume,
+		group,
+		reloadManager
 	}: {
 		subvolume: Subvolume;
+		scope: string;
+		volume: string;
+		group: string;
+		reloadManager: ReloadManager;
 	} = $props();
 </script>
 
 <Layout.Actions>
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionItem>
-		<Grant {subvolume} />
+		<Grant {subvolume} {scope} {volume} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Revoke {subvolume} />
+		<Revoke {subvolume} {scope} {volume} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Edit {subvolume} />
+		<Edit {subvolume} {scope} {volume} {group} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Delete {subvolume} />
+		<Delete {subvolume} {scope} {volume} {group} {reloadManager} />
 	</Layout.ActionItem>
 </Layout.Actions>

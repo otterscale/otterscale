@@ -133,8 +133,6 @@
 	const configClient = createClient(ConfigurationService, transport);
 	const orchClient = createClient(OrchestratorService, transport);
 
-	const reloadManager: ReloadManager = getContext('reloadManager');
-
 	const cephOptions = writable<SingleSelect.OptionType[]>([]);
 	let isCephsLoading = $state(true);
 	async function fetchCephOptions() {

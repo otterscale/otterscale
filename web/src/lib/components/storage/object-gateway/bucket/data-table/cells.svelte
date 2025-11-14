@@ -5,6 +5,7 @@
 	import type { Bucket } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 
@@ -55,8 +56,8 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<Bucket>)}
+{#snippet actions(data: { row: Row<Bucket>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions bucket={row.original} />
+		<Actions bucket={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

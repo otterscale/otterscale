@@ -23,7 +23,6 @@
 			networks.set(response.networks);
 		});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		networkClient

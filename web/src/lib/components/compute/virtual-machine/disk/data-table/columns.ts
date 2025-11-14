@@ -18,7 +18,10 @@ const messages = {
 	size: m.size()
 };
 
-const columns: ColumnDef<EnhancedDisk>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<EnhancedDisk>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -108,10 +111,10 @@ const columns: ColumnDef<EnhancedDisk>[] = [
 			return renderSnippet(headers.actions, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.actions, row);
+			return renderSnippet(cells.actions, { row, scope, reloadManager });
 		},
 		enableHiding: false
 	}
 ];
 
-export { columns, messages };
+export { getColumns, messages };

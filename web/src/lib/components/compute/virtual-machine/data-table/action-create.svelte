@@ -22,7 +22,7 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
@@ -55,8 +55,8 @@
 		try {
 			// Request both namespace-specific and cluster-wide instance types
 			const response = await virtualMachineClient.listInstanceTypes({
-				scope: $currentKubernetes?.scope,
-				facility: $currentKubernetes?.name,
+				scope: scope,
+				,
 				namespace: request.namespace,
 				includeClusterWide: true
 			});
@@ -87,8 +87,8 @@
 			if (!request.namespace) return;
 
 			const response = await virtualMachineClient.listDataVolumes({
-				scope: $currentKubernetes?.scope,
-				facility: $currentKubernetes?.name,
+				scope: scope,
+				,
 				namespace: request.namespace,
 				bootImage: true
 			});
@@ -110,8 +110,8 @@
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_REQUEST = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
+		,
 		name: '',
 		namespace: 'default',
 		instanceTypeName: '',

@@ -14,7 +14,10 @@ const messages = {
 	nodePort: m.node_port()
 };
 
-const columns: ColumnDef<Application_Service_Port>[] = [
+function getColumns(
+	scope: string,
+	reloadManager: ReloadManager
+):  ColumnDef<Application_Service_Port>[] return [
 	{
 		id: 'select',
 		header: ({ table }) => {
@@ -64,4 +67,4 @@ const columns: ColumnDef<Application_Service_Port>[] = [
 	// },
 ];
 
-export { columns, messages };
+export { getColumns, messages };

@@ -15,7 +15,7 @@
 </script>
 
 {#if $currentKubernetes}
-	{#key $currentKubernetes?.scope + $currentKubernetes?.name}
-		<Dashboard scope={$currentKubernetes?.scope} facility={$currentKubernetes?.name} />
+	{#key scope}
+		<Dashboard {scope} />
 	{/key}
 {/if}
