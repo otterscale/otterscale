@@ -6,8 +6,13 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-// PersistentVolumeClaim represents a Kubernetes PersistentVolumeClaim resource.
-type PersistentVolumeClaim = v1.PersistentVolumeClaim
+type (
+	// PersistentVolumeClaim represents a Kubernetes PersistentVolumeClaim resource.
+	PersistentVolumeClaim = v1.PersistentVolumeClaim
+
+	// PersistentVolumeClaimPhase represents a Kubernetes PersistentVolumeClaimPhase resource.
+	PersistentVolumeClaimPhase = v1.PersistentVolumeClaimPhase
+)
 
 type PersistentVolumeClaimRepo interface {
 	List(ctx context.Context, scope, namespace, selector string) ([]PersistentVolumeClaim, error)

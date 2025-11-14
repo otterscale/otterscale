@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
+
+	v1 "k8s.io/api/core/v1"
 
 	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
@@ -19,12 +22,20 @@ const (
 // Release represents a Helm Release resource.
 type Model = release.Release
 
+type ModelArtifact struct {
+	Name       string
+	Namespace  string
+	Phase      persistent.PersistentVolumeClaimPhase
+	Size       int64
+	VolumeName string
+	Modelname  string
+	CreatedAt  time.Time
+}
+
 type ModelResource struct {
 	VGPU       uint32
 	VGPUMemory uint32
 }
-
-type ModelArtifact struct{}
 
 type ModelUseCase struct {
 	chart                 chart.ChartRepo
@@ -180,18 +191,18 @@ func (uc *ModelUseCase) DeleteModelArtifact(ctx context.Context, scope, namespac
 }
 
 func (uc *ModelUseCase) toModelArtifact(pvc *persistent.PersistentVolumeClaim) *ModelArtifact {
-	// size := int64(0)
-	// capacity, ok := pvc.Status.Capacity[corev1.ResourceStorage]
-	// if ok {
-	// 	size = capacity.Value()
-	// }
+	size := int64(0)
+	capacity, ok := pvc.Status.Capacity[v1.ResourceStorage]
+	if ok {
+		size = capacity.Value()
+	}
 	return &ModelArtifact{
-		// Name:       pvc.Name,
-		// Namespace:  pvc.Namespace,
-		// Modelname:  pvc.Annotations[ModelArtifactModelNameAnnotation],
-		// Phase:      pvc.Status.Phase,
-		// Size:       size,
-		// VolumeName: pvc.Spec.VolumeName,
-		// CreatedAt:  pvc.CreationTimestamp.Time,
+		Name:       pvc.Name,
+		Namespace:  pvc.Namespace,
+		Modelname:  pvc.Annotations[ModelArtifactModelNameAnnotation],
+		Phase:      pvc.Status.Phase,
+		Size:       size,
+		VolumeName: pvc.Spec.VolumeName,
+		CreatedAt:  pvc.CreationTimestamp.Time,
 	}
 }

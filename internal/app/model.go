@@ -8,16 +8,16 @@ import (
 
 	pb "github.com/otterscale/otterscale/api/model/v1"
 	pbconnect "github.com/otterscale/otterscale/api/model/v1/pbconnect"
-	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core/model"
 )
 
 type ModelService struct {
 	pbconnect.UnimplementedModelServiceHandler
 
-	model *core.ModelUseCase
+	model *model.ModelUseCase
 }
 
-func NewModelService(model *core.ModelUseCase) *ModelService {
+func NewModelService(model *model.ModelUseCase) *ModelService {
 	return &ModelService{
 		model: model,
 	}
@@ -30,6 +30,7 @@ func (s *ModelService) ListModels(ctx context.Context, req *pb.ListModelsRequest
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListModelsResponse{}
 	resp.SetModels(toProtoModels(models))
 	return resp, nil
@@ -40,22 +41,26 @@ func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelReque
 	if err != nil {
 		return nil, err
 	}
+
 	resp := toProtoModel(model)
 	return resp, nil
 }
 
 func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelRequest) (*pb.Model, error) {
-	var requests, limits *core.ModelResource
+	var requests, limits *model.ModelResource
 	if r := req.GetRequests(); r != nil {
 		requests = toModelResource(r)
 	}
+
 	if r := req.GetLimits(); r != nil {
 		limits = toModelResource(r)
 	}
+
 	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), requests, limits)
 	if err != nil {
 		return nil, err
 	}
+
 	resp := toProtoModel(model)
 	return resp, nil
 }
@@ -64,6 +69,7 @@ func (s *ModelService) DeleteModel(ctx context.Context, req *pb.DeleteModelReque
 	if err := s.model.DeleteModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
+
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
@@ -73,6 +79,7 @@ func (s *ModelService) ListModelArtifacts(ctx context.Context, req *pb.ListModel
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListModelArtifactsResponse{}
 	resp.SetModelArtifacts(toProtoModelArtifacts(artifacts))
 	return resp, nil
@@ -83,6 +90,7 @@ func (s *ModelService) CreateModelArtifact(ctx context.Context, req *pb.CreateMo
 	if err != nil {
 		return nil, err
 	}
+
 	resp := toProtoModelArtifact(artifact)
 	return resp, nil
 }
@@ -91,30 +99,34 @@ func (s *ModelService) DeleteModelArtifact(ctx context.Context, req *pb.DeleteMo
 	if err := s.model.DeleteModelArtifact(ctx, req.GetScope(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
+
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
 
-func toModelResource(r *pb.Model_Resource) *core.ModelResource {
-	return &core.ModelResource{
+func toModelResource(r *pb.Model_Resource) *model.ModelResource {
+	return &model.ModelResource{
 		VGPU:       r.GetVgpu(),
 		VGPUMemory: r.GetVgpumemPercentage(),
 	}
 }
 
-func toProtoModels(ms []core.Model) []*pb.Model {
+func toProtoModels(ms []model.Model) []*pb.Model {
 	ret := []*pb.Model{}
+
 	for i := range ms {
 		ret = append(ret, toProtoModel(&ms[i]))
 	}
+
 	return ret
 }
 
-func toProtoModel(m *core.Model) *pb.Model {
+func toProtoModel(m *model.Model) *pb.Model {
 	ret := &pb.Model{}
 	ret.SetId("ID") // TODO: waiting for v0.3.0
 	ret.SetName(m.Name)
 	ret.SetNamespace(m.Namespace)
+
 	info := m.Info
 	if info != nil {
 		ret.SetStatus(string(info.Status))
@@ -122,23 +134,27 @@ func toProtoModel(m *core.Model) *pb.Model {
 		ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
 		ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
 	}
+
 	chart := m.Chart
 	if chart != nil && chart.Metadata != nil {
 		ret.SetChartVersion(chart.Metadata.Version)
 		ret.SetAppVersion(chart.Metadata.AppVersion)
 	}
+
 	return ret
 }
 
-func toProtoModelArtifacts(mas []core.ModelArtifact) []*pb.ModelArtifact {
+func toProtoModelArtifacts(mas []model.ModelArtifact) []*pb.ModelArtifact {
 	ret := []*pb.ModelArtifact{}
+
 	for i := range mas {
 		ret = append(ret, toProtoModelArtifact(&mas[i]))
 	}
+
 	return ret
 }
 
-func toProtoModelArtifact(ma *core.ModelArtifact) *pb.ModelArtifact {
+func toProtoModelArtifact(ma *model.ModelArtifact) *pb.ModelArtifact {
 	ret := &pb.ModelArtifact{}
 	ret.SetName(ma.Name)
 	ret.SetNamespace(ma.Namespace)
