@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/otterscale/otterscale/internal/core/application/chart"
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/release"
-	"github.com/otterscale/otterscale/internal/core/application/storage"
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 )
 
@@ -30,10 +30,10 @@ type ModelUseCase struct {
 	chart                 chart.ChartRepo
 	deployment            workload.DeploymentRepo
 	release               release.ReleaseRepo
-	persistentVolumeClaim storage.PersistentVolumeClaimRepo
+	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
 }
 
-func NewModelUseCase(chart chart.ChartRepo, deployment workload.DeploymentRepo, release release.ReleaseRepo, persistentVolumeClaim storage.PersistentVolumeClaimRepo) *ModelUseCase {
+func NewModelUseCase(chart chart.ChartRepo, deployment workload.DeploymentRepo, release release.ReleaseRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *ModelUseCase {
 	return &ModelUseCase{
 		chart:                 chart,
 		deployment:            deployment,
@@ -179,7 +179,7 @@ func (uc *ModelUseCase) DeleteModelArtifact(ctx context.Context, scope, namespac
 	return uc.persistentVolumeClaim.Delete(ctx, scope, namespace, name)
 }
 
-func (uc *ModelUseCase) toModelArtifact(pvc *storage.PersistentVolumeClaim) *ModelArtifact {
+func (uc *ModelUseCase) toModelArtifact(pvc *persistent.PersistentVolumeClaim) *ModelArtifact {
 	// size := int64(0)
 	// capacity, ok := pvc.Status.Capacity[corev1.ResourceStorage]
 	// if ok {

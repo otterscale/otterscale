@@ -5,13 +5,12 @@ import (
 	"encoding/json"
 	"strconv"
 
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"golang.org/x/sync/errgroup"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	cdiv1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
-
-	"github.com/otterscale/otterscale/internal/core/application/storage"
 )
 
 const DataVolumeBootImageLabel = "otterscale.com/data-volume.boot-image"
@@ -27,9 +26,9 @@ const (
 // DataVolume represents a KubeVirt DataVolume resource.
 type DataVolume = cdiv1beta1.DataVolume
 
-type DataVolumeStorage struct {
+type DataVolumePersistent struct {
 	*DataVolume
-	*storage.Storage
+	*persistent.Persistent
 }
 
 type DataVolumeRepo interface {
@@ -42,22 +41,22 @@ type DataVolumeRepo interface {
 type DataVolumeUseCase struct {
 	dataVolume DataVolumeRepo
 
-	persistentVolumeClaim storage.PersistentVolumeClaimRepo
-	storageClass          storage.StorageClassRepo
+	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
+	storageClass          persistent.StorageClassRepo
 }
 
-func NewDataVolumeUseCase(dataVolume DataVolumeRepo, persistentVolumeClaim storage.PersistentVolumeClaimRepo) *DataVolumeUseCase {
+func NewDataVolumeUseCase(dataVolume DataVolumeRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *DataVolumeUseCase {
 	return &DataVolumeUseCase{
 		dataVolume:            dataVolume,
 		persistentVolumeClaim: persistentVolumeClaim,
 	}
 }
 
-func (uc *DataVolumeUseCase) ListDataVolumes(ctx context.Context, scope, namespace string, bootImage bool) ([]DataVolumeStorage, error) {
+func (uc *DataVolumeUseCase) ListDataVolumes(ctx context.Context, scope, namespace string, bootImage bool) ([]DataVolumePersistent, error) {
 	var (
 		dataVolumes            []DataVolume
-		persistentVolumeClaims []storage.PersistentVolumeClaim
-		storageClasses         []storage.StorageClass
+		persistentVolumeClaims []persistent.PersistentVolumeClaim
+		storageClasses         []persistent.StorageClass
 	)
 
 	eg, egctx := errgroup.WithContext(ctx)
@@ -92,13 +91,13 @@ func (uc *DataVolumeUseCase) ListDataVolumes(ctx context.Context, scope, namespa
 		return nil, err
 	}
 
-	storageClassMap := map[string]*storage.StorageClass{}
+	storageClassMap := map[string]*persistent.StorageClass{}
 	for i := range storageClasses {
 		sc := storageClasses[i]
 		storageClassMap[sc.Name] = &sc
 	}
 
-	pvcMap := map[string]*storage.PersistentVolumeClaim{}
+	pvcMap := map[string]*persistent.PersistentVolumeClaim{}
 	for i := range persistentVolumeClaims {
 		pvc := persistentVolumeClaims[i]
 		if pvc.Namespace == namespace {
@@ -106,7 +105,7 @@ func (uc *DataVolumeUseCase) ListDataVolumes(ctx context.Context, scope, namespa
 		}
 	}
 
-	ret := make([]DataVolumeStorage, len(dataVolumes))
+	ret := make([]DataVolumePersistent, len(dataVolumes))
 
 	for i := range ret {
 		dv := dataVolumes[i]
@@ -116,7 +115,7 @@ func (uc *DataVolumeUseCase) ListDataVolumes(ctx context.Context, scope, namespa
 			continue
 		}
 
-		dvStorage := DataVolumeStorage{
+		dvStorage := DataVolumePersistent{
 			DataVolume: &dv,
 		}
 
@@ -134,11 +133,11 @@ func (uc *DataVolumeUseCase) ListDataVolumes(ctx context.Context, scope, namespa
 	return ret, nil
 }
 
-func (uc *DataVolumeUseCase) GetDataVolume(ctx context.Context, scope, namespace, name string) (*DataVolumeStorage, error) {
+func (uc *DataVolumeUseCase) GetDataVolume(ctx context.Context, scope, namespace, name string) (*DataVolumePersistent, error) {
 	var (
 		dataVolume            *DataVolume
-		persistentVolumeClaim *storage.PersistentVolumeClaim
-		storageClass          *storage.StorageClass
+		persistentVolumeClaim *persistent.PersistentVolumeClaim
+		storageClass          *persistent.StorageClass
 	)
 
 	eg, egctx := errgroup.WithContext(ctx)
@@ -171,22 +170,22 @@ func (uc *DataVolumeUseCase) GetDataVolume(ctx context.Context, scope, namespace
 		return nil, err
 	}
 
-	return &DataVolumeStorage{
+	return &DataVolumePersistent{
 		DataVolume: dataVolume,
-		Storage: &storage.Storage{
+		Persistent: &persistent.Persistent{
 			PersistentVolumeClaim: persistentVolumeClaim,
 			StorageClass:          storageClass,
 		},
 	}, nil
 }
 
-func (uc *DataVolumeUseCase) CreateDataVolume(ctx context.Context, scope, namespace, name string, srcType DataVolumeSourceType, srcData string, size int64, bootImage bool) (*DataVolumeStorage, error) {
+func (uc *DataVolumeUseCase) CreateDataVolume(ctx context.Context, scope, namespace, name string, srcType DataVolumeSourceType, srcData string, size int64, bootImage bool) (*DataVolumePersistent, error) {
 	dataVolume, err := uc.dataVolume.Create(ctx, scope, namespace, uc.buildDataVolume(namespace, name, srcType, srcData, size, bootImage))
 	if err != nil {
 		return nil, err
 	}
 
-	return &DataVolumeStorage{
+	return &DataVolumePersistent{
 		DataVolume: dataVolume,
 	}, nil
 }

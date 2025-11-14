@@ -6,22 +6,22 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/otterscale/otterscale/internal/core/application/storage"
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
 )
 
 type persistentVolumeClaimRepo struct {
 	kubernetes *Kubernetes
 }
 
-func NewPersistentVolumeClaimRepo(kubernetes *Kubernetes) storage.PersistentVolumeClaimRepo {
+func NewPersistentVolumeClaimRepo(kubernetes *Kubernetes) persistent.PersistentVolumeClaimRepo {
 	return &persistentVolumeClaimRepo{
 		kubernetes: kubernetes,
 	}
 }
 
-var _ storage.PersistentVolumeClaimRepo = (*persistentVolumeClaimRepo)(nil)
+var _ persistent.PersistentVolumeClaimRepo = (*persistentVolumeClaimRepo)(nil)
 
-func (r *persistentVolumeClaimRepo) List(ctx context.Context, scope, namespace, selector string) ([]storage.PersistentVolumeClaim, error) {
+func (r *persistentVolumeClaimRepo) List(ctx context.Context, scope, namespace, selector string) ([]persistent.PersistentVolumeClaim, error) {
 	clientset, err := r.kubernetes.clientset(scope)
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func (r *persistentVolumeClaimRepo) List(ctx context.Context, scope, namespace, 
 	return list.Items, nil
 }
 
-func (r *persistentVolumeClaimRepo) Get(ctx context.Context, scope, namespace, name string) (*storage.PersistentVolumeClaim, error) {
+func (r *persistentVolumeClaimRepo) Get(ctx context.Context, scope, namespace, name string) (*persistent.PersistentVolumeClaim, error) {
 	clientset, err := r.kubernetes.clientset(scope)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (r *persistentVolumeClaimRepo) Get(ctx context.Context, scope, namespace, n
 	return clientset.CoreV1().PersistentVolumeClaims(namespace).Get(ctx, name, opts)
 }
 
-func (r *persistentVolumeClaimRepo) Create(ctx context.Context, scope, namespace string, pvc *storage.PersistentVolumeClaim) (*storage.PersistentVolumeClaim, error) {
+func (r *persistentVolumeClaimRepo) Create(ctx context.Context, scope, namespace string, pvc *persistent.PersistentVolumeClaim) (*persistent.PersistentVolumeClaim, error) {
 	clientset, err := r.kubernetes.clientset(scope)
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func (r *persistentVolumeClaimRepo) Create(ctx context.Context, scope, namespace
 	return clientset.CoreV1().PersistentVolumeClaims(namespace).Create(ctx, pvc, opts)
 }
 
-func (r *persistentVolumeClaimRepo) Update(ctx context.Context, scope, namespace string, pvc *storage.PersistentVolumeClaim) (*storage.PersistentVolumeClaim, error) {
+func (r *persistentVolumeClaimRepo) Update(ctx context.Context, scope, namespace string, pvc *persistent.PersistentVolumeClaim) (*persistent.PersistentVolumeClaim, error) {
 	clientset, err := r.kubernetes.clientset(scope)
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func (r *persistentVolumeClaimRepo) Update(ctx context.Context, scope, namespace
 	return clientset.CoreV1().PersistentVolumeClaims(namespace).Update(ctx, pvc, opts)
 }
 
-func (r *persistentVolumeClaimRepo) Patch(ctx context.Context, scope, namespace, name string, data []byte) (*storage.PersistentVolumeClaim, error) {
+func (r *persistentVolumeClaimRepo) Patch(ctx context.Context, scope, namespace, name string, data []byte) (*persistent.PersistentVolumeClaim, error) {
 	clientset, err := r.kubernetes.clientset(scope)
 	if err != nil {
 		return nil, err

@@ -6,9 +6,9 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/config"
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/release"
 	"github.com/otterscale/otterscale/internal/core/application/service"
-	"github.com/otterscale/otterscale/internal/core/application/storage"
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 	"github.com/otterscale/otterscale/internal/core/bootstrap"
 	"github.com/otterscale/otterscale/internal/core/configuration"
@@ -31,19 +31,19 @@ import (
 	"github.com/otterscale/otterscale/internal/core/orchestrator/gpu"
 	"github.com/otterscale/otterscale/internal/core/orchestrator/standalone"
 	"github.com/otterscale/otterscale/internal/core/scope"
+	"github.com/otterscale/otterscale/internal/core/storage"
 	"github.com/otterscale/otterscale/internal/core/storage/block"
 	"github.com/otterscale/otterscale/internal/core/storage/file"
 	"github.com/otterscale/otterscale/internal/core/storage/object"
-	"github.com/otterscale/otterscale/internal/core/storage/pool"
 )
 
 var ProviderSet = wire.NewSet(
-	chart.NewChartUseCase,
 	cluster.NewClusterUseCase,
+	chart.NewChartUseCase,
 	config.NewConfigUseCase,
+	persistent.NewPersistentUseCase,
 	release.NewReleaseUseCase,
 	service.NewServiceUseCase,
-	storage.NewStorageUseCase,
 	workload.NewWorkloadUseCase,
 	bootstrap.NewBootstrapUseCase,
 	configuration.NewConfigurationUseCase,
@@ -70,5 +70,4 @@ var ProviderSet = wire.NewSet(
 	block.NewBlockUseCase,
 	file.NewFileUseCase,
 	object.NewObjectUseCase,
-	pool.NewPoolUseCase,
 )

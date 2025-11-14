@@ -6,22 +6,22 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/otterscale/otterscale/internal/core/storage/pool"
+	"github.com/otterscale/otterscale/internal/core/storage"
 )
 
 type poolRepo struct {
 	ceph *Ceph
 }
 
-func NewPoolRepo(ceph *Ceph) pool.PoolRepo {
+func NewPoolRepo(ceph *Ceph) storage.PoolRepo {
 	return &poolRepo{
 		ceph: ceph,
 	}
 }
 
-var _ pool.PoolRepo = (*poolRepo)(nil)
+var _ storage.PoolRepo = (*poolRepo)(nil)
 
-func (r *poolRepo) List(_ context.Context, scope, application string) ([]pool.Pool, error) {
+func (r *poolRepo) List(_ context.Context, scope, application string) ([]storage.Pool, error) {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (r *poolRepo) List(_ context.Context, scope, application string) ([]pool.Po
 
 	pools := r.toPools(osdDump, pgDump, df)
 
-	return slices.DeleteFunc(pools, func(p pool.Pool) bool {
+	return slices.DeleteFunc(pools, func(p storage.Pool) bool {
 		return !slices.Contains(p.Applications, application)
 	}), nil
 }
@@ -135,11 +135,11 @@ func (r *poolRepo) GetECProfile(_ context.Context, scope, name string) (k, m str
 	return profile.K, profile.M, nil
 }
 
-func (r *poolRepo) toPools(d *osdDump, pd *pgDump, df *df) []pool.Pool {
-	ret := []pool.Pool{}
+func (r *poolRepo) toPools(d *osdDump, pd *pgDump, df *df) []storage.Pool {
+	ret := []storage.Pool{}
 
 	for i := range d.Pools {
-		pool := pool.Pool{
+		pool := storage.Pool{
 			ID:                  d.Pools[i].ID,
 			Name:                d.Pools[i].Name,
 			Updating:            d.Pools[i].PgNum+d.Pools[i].PgPlacementNum != d.Pools[i].PgNumTarget+d.Pools[i].PgPlacementNumTarget,

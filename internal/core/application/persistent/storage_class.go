@@ -1,4 +1,4 @@
-package storage
+package persistent
 
 import (
 	"context"
@@ -14,6 +14,6 @@ type StorageClassRepo interface {
 	Get(ctx context.Context, scope, name string) (*StorageClass, error)
 }
 
-func (uc *StorageUseCase) ListStorageClasses(ctx context.Context, scope string) ([]StorageClass, error) {
+func (uc *PersistentUseCase) ListStorageClasses(ctx context.Context, scope string) ([]StorageClass, error) {
 	return uc.storageClass.List(ctx, scope, "")
 }

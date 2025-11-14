@@ -22,7 +22,6 @@ import (
 	"github.com/otterscale/otterscale/internal/core/storage"
 	"github.com/otterscale/otterscale/internal/core/storage/block"
 	"github.com/otterscale/otterscale/internal/core/storage/object"
-	"github.com/otterscale/otterscale/internal/core/storage/pool"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -64,12 +63,12 @@ type BISTUseCase struct {
 	namespace cluster.NamespaceRepo
 	node      storage.NodeRepo
 	pod       workload.PodRepo
-	pool      pool.PoolRepo
+	pool      storage.PoolRepo
 	secret    config.SecretRepo
 	service   service.ServiceRepo
 }
 
-func NewBISTUseCase(conf *conf.Config, bucket object.BucketRepo, configMap config.ConfigMapRepo, image block.ImageRepo, job workload.JobRepo, namespace cluster.NamespaceRepo, node storage.NodeRepo, pod workload.PodRepo, pool pool.PoolRepo, secret config.SecretRepo, service service.ServiceRepo) *BISTUseCase {
+func NewBISTUseCase(conf *conf.Config, bucket object.BucketRepo, configMap config.ConfigMapRepo, image block.ImageRepo, job workload.JobRepo, namespace cluster.NamespaceRepo, node storage.NodeRepo, pod workload.PodRepo, pool storage.PoolRepo, secret config.SecretRepo, service service.ServiceRepo) *BISTUseCase {
 	return &BISTUseCase{
 		conf:      conf,
 		bucket:    bucket,

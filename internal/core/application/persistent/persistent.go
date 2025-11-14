@@ -1,22 +1,22 @@
-package storage
+package persistent
 
 import v1 "k8s.io/api/core/v1"
 
 // Volume represents a Kubernetes Volume resource.
 type Volume = v1.Volume
 
-type Storage struct {
+type Persistent struct {
 	*PersistentVolumeClaim
 	*StorageClass
 }
 
-type StorageUseCase struct {
+type PersistentUseCase struct {
 	persistentVolumeClaim PersistentVolumeClaimRepo
 	storageClass          StorageClassRepo
 }
 
-func NewStorageUseCase(persistentVolumeClaim PersistentVolumeClaimRepo, storageClass StorageClassRepo) *StorageUseCase {
-	return &StorageUseCase{
+func NewPersistentUseCase(persistentVolumeClaim PersistentVolumeClaimRepo, storageClass StorageClassRepo) *PersistentUseCase {
+	return &PersistentUseCase{
 		persistentVolumeClaim: persistentVolumeClaim,
 		storageClass:          storageClass,
 	}

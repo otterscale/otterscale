@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/service"
-	"github.com/otterscale/otterscale/internal/core/application/storage"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -21,8 +21,8 @@ type WorkloadUseCase struct {
 	statefulSet StatefulSetRepo
 
 	service               service.ServiceRepo
-	persistentVolumeClaim storage.PersistentVolumeClaimRepo
-	storageClass          storage.StorageClassRepo
+	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
+	storageClass          persistent.StorageClassRepo
 
 	ttySessions sync.Map
 }

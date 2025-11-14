@@ -5,22 +5,22 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/otterscale/otterscale/internal/core/application/storage"
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
 )
 
 type storageClassRepo struct {
 	kubernetes *Kubernetes
 }
 
-func NewStorageClassRepo(kubernetes *Kubernetes) storage.StorageClassRepo {
+func NewStorageClassRepo(kubernetes *Kubernetes) persistent.StorageClassRepo {
 	return &storageClassRepo{
 		kubernetes: kubernetes,
 	}
 }
 
-var _ storage.StorageClassRepo = (*storageClassRepo)(nil)
+var _ persistent.StorageClassRepo = (*storageClassRepo)(nil)
 
-func (r *storageClassRepo) List(ctx context.Context, scope, selector string) ([]storage.StorageClass, error) {
+func (r *storageClassRepo) List(ctx context.Context, scope, selector string) ([]persistent.StorageClass, error) {
 	clientset, err := r.kubernetes.clientset(scope)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (r *storageClassRepo) List(ctx context.Context, scope, selector string) ([]
 	return list.Items, nil
 }
 
-func (r *storageClassRepo) Get(ctx context.Context, scope, name string) (*storage.StorageClass, error) {
+func (r *storageClassRepo) Get(ctx context.Context, scope, name string) (*persistent.StorageClass, error) {
 	clientset, err := r.kubernetes.clientset(scope)
 	if err != nil {
 		return nil, err

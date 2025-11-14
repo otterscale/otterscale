@@ -6,8 +6,8 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/otterscale/otterscale/internal/core/application/chart"
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/service"
-	"github.com/otterscale/otterscale/internal/core/application/storage"
 	"golang.org/x/sync/errgroup"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -20,17 +20,17 @@ const (
 )
 
 type Application struct {
-	Type       string
-	Name       string
-	Namespace  string
-	Labels     map[string]string
-	Replicas   *int32
-	ObjectMeta ObjectMeta
-	Pods       []Pod
-	Containers []Container
-	Services   []service.Service
-	Storages   []storage.Storage
-	ChartFile  *chart.File // return only when fetching from GetApplication
+	Type        string
+	Name        string
+	Namespace   string
+	Labels      map[string]string
+	Replicas    *int32
+	ObjectMeta  ObjectMeta
+	Pods        []Pod
+	Containers  []Container
+	Services    []service.Service
+	Persistents []persistent.Persistent
+	ChartFile   *chart.File // return only when fetching from GetApplication
 }
 
 func (uc *WorkloadUseCase) ListApplications(ctx context.Context, scope string) (apps []Application, endpoint string, err error) {
@@ -40,8 +40,8 @@ func (uc *WorkloadUseCase) ListApplications(ctx context.Context, scope string) (
 		daemonSets             []DaemonSet
 		pods                   []Pod
 		services               []service.Service
-		persistentVolumeClaims []storage.PersistentVolumeClaim
-		storageClasses         []storage.StorageClass
+		persistentVolumeClaims []persistent.PersistentVolumeClaim
+		storageClasses         []persistent.StorageClass
 	)
 
 	eg, egctx := errgroup.WithContext(ctx)
@@ -145,8 +145,8 @@ func (uc *WorkloadUseCase) GetApplication(ctx context.Context, scope, namespace,
 		daemonSet              *DaemonSet
 		pods                   []Pod
 		services               []service.Service
-		persistentVolumeClaims []storage.PersistentVolumeClaim
-		storageClasses         []storage.StorageClass
+		persistentVolumeClaims []persistent.PersistentVolumeClaim
+		storageClasses         []persistent.StorageClass
 	)
 
 	eg, egctx := errgroup.WithContext(ctx)
@@ -255,14 +255,14 @@ func (uc *WorkloadUseCase) filterPods(selector labels.Selector, namespace string
 	return ret
 }
 
-func (uc *WorkloadUseCase) filterStorages(namespace string, volumes []storage.Volume, persistentVolumeClaims []storage.PersistentVolumeClaim, storageClasses []storage.StorageClass) []storage.Storage {
-	storageClassMap := map[string]*storage.StorageClass{}
+func (uc *WorkloadUseCase) filterPersistents(namespace string, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) []persistent.Persistent {
+	storageClassMap := map[string]*persistent.StorageClass{}
 	for i := range storageClasses {
 		sc := storageClasses[i]
 		storageClassMap[sc.Name] = &sc
 	}
 
-	pvcMap := map[string]*storage.PersistentVolumeClaim{}
+	pvcMap := map[string]*persistent.PersistentVolumeClaim{}
 	for i := range persistentVolumeClaims {
 		pvc := persistentVolumeClaims[i]
 		if pvc.Namespace == namespace {
@@ -270,7 +270,7 @@ func (uc *WorkloadUseCase) filterStorages(namespace string, volumes []storage.Vo
 		}
 	}
 
-	ret := []storage.Storage{}
+	ret := []persistent.Persistent{}
 
 	for i := range volumes {
 		vol := volumes[i]
@@ -284,7 +284,7 @@ func (uc *WorkloadUseCase) filterStorages(namespace string, volumes []storage.Vo
 			continue
 		}
 
-		storage := storage.Storage{
+		persistent := persistent.Persistent{
 			PersistentVolumeClaim: pvc,
 		}
 
@@ -292,37 +292,37 @@ func (uc *WorkloadUseCase) filterStorages(namespace string, volumes []storage.Vo
 		if scName != nil && *scName != "" {
 			sc, found := storageClassMap[*scName]
 			if found {
-				storage.StorageClass = sc
+				persistent.StorageClass = sc
 			}
 		}
 
-		ret = append(ret, storage)
+		ret = append(ret, persistent)
 	}
 
 	return ret
 }
 
-func (uc *WorkloadUseCase) toApplication(ls *v1.LabelSelector, appType, name, namespace string, labels map[string]string, replicas *int32, objectMeta ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []storage.Volume, persistentVolumeClaims []storage.PersistentVolumeClaim, storageClasses []storage.StorageClass) (*Application, error) {
+func (uc *WorkloadUseCase) toApplication(ls *v1.LabelSelector, appType, name, namespace string, labels map[string]string, replicas *int32, objectMeta ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	selector, err := v1.LabelSelectorAsSelector(ls)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create selector: %w", err)
 	}
 
 	return &Application{
-		Type:       appType,
-		Name:       name,
-		Namespace:  namespace,
-		Labels:     labels,
-		Replicas:   replicas,
-		ObjectMeta: objectMeta,
-		Containers: containers,
-		Services:   uc.filterServices(selector, namespace, services),
-		Pods:       uc.filterPods(selector, namespace, pods),
-		Storages:   uc.filterStorages(namespace, volumes, persistentVolumeClaims, storageClasses),
+		Type:        appType,
+		Name:        name,
+		Namespace:   namespace,
+		Labels:      labels,
+		Replicas:    replicas,
+		ObjectMeta:  objectMeta,
+		Containers:  containers,
+		Services:    uc.filterServices(selector, namespace, services),
+		Pods:        uc.filterPods(selector, namespace, pods),
+		Persistents: uc.filterPersistents(namespace, volumes, persistentVolumeClaims, storageClasses),
 	}, nil
 }
 
-func (uc *WorkloadUseCase) fromDeployment(workload *Deployment, pods []Pod, services []service.Service, persistentVolumeClaims []storage.PersistentVolumeClaim, storageClasses []storage.StorageClass) (*Application, error) {
+func (uc *WorkloadUseCase) fromDeployment(workload *Deployment, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	return uc.toApplication(
 		workload.Spec.Selector,
 		ApplicationTypeDeployment,
@@ -340,7 +340,7 @@ func (uc *WorkloadUseCase) fromDeployment(workload *Deployment, pods []Pod, serv
 	)
 }
 
-func (uc *WorkloadUseCase) fromStatefulSet(workload *StatefulSet, pods []Pod, services []service.Service, persistentVolumeClaims []storage.PersistentVolumeClaim, storageClasses []storage.StorageClass) (*Application, error) {
+func (uc *WorkloadUseCase) fromStatefulSet(workload *StatefulSet, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	return uc.toApplication(
 		workload.Spec.Selector,
 		ApplicationTypeStatefulSet,
@@ -358,7 +358,7 @@ func (uc *WorkloadUseCase) fromStatefulSet(workload *StatefulSet, pods []Pod, se
 	)
 }
 
-func (uc *WorkloadUseCase) fromDaemonSet(workload *DaemonSet, pods []Pod, services []service.Service, persistentVolumeClaims []storage.PersistentVolumeClaim, storageClasses []storage.StorageClass) (*Application, error) {
+func (uc *WorkloadUseCase) fromDaemonSet(workload *DaemonSet, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	return uc.toApplication(
 		workload.Spec.Selector,
 		ApplicationTypeDaemonSet,

@@ -39,13 +39,15 @@ type NodeRepo interface {
 
 type StorageUseCase struct {
 	node NodeRepo
+	pool PoolRepo
 
 	machine machine.MachineRepo
 }
 
-func NewStorageUseCase(node NodeRepo, machine machine.MachineRepo) *StorageUseCase {
+func NewStorageUseCase(node NodeRepo, pool PoolRepo, machine machine.MachineRepo) *StorageUseCase {
 	return &StorageUseCase{
 		node:    node,
+		pool:    pool,
 		machine: machine,
 	}
 }
