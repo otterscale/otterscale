@@ -30,12 +30,10 @@
 			.listSMBShares({ scope: scope, facility: facility, namespace: namespace })
 			.then((response) => {
 				smbShares.set(response.smbShares);
-				console.log($smbShares);
 			})
 			.catch((error) => {
 				console.error('Error reloading SMB shares:', error);
 			});
-		console.log('load @', Date.now());
 		isMounted = true;
 	}
 	const reloadManager = new ReloadManager(fetch, false);

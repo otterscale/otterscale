@@ -29,7 +29,6 @@
 		invalid?: boolean | null | undefined;
 	} = $props();
 	const inputManager = new InputManager(type, icon);
-	console.log(inputManager);
 	const valuesManager = new ValuesManager(values, {
 		set values(newValue: any[]) {
 			values = newValue;

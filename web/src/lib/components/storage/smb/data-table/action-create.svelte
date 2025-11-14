@@ -139,19 +139,19 @@
 				value: SMBShare_MapToGuest.NEVER,
 				label: 'Never',
 				icon: 'ph:shield-slash',
-				information: 'Always refuse access'
+				information: m.map_to_guest_never_info()
 			},
 			{
 				value: SMBShare_MapToGuest.BAD_USER,
 				label: 'Bad User',
 				icon: 'ph:shield-warning',
-				information: 'Map to guest when username is incorrect'
+				information: m.map_to_guest_bad_user_info()
 			},
 			{
 				value: SMBShare_MapToGuest.BAD_PASSWORD,
 				label: 'Bad Password',
 				icon: 'ph:shield-warning',
-				information: 'Map to guest when password is incorrect'
+				information: m.map_to_guest_bad_password_info()
 			}
 		])
 	);
@@ -251,7 +251,7 @@
 				<Form.Field>
 					<Form.Label>{m.map_to_guest()}</Form.Label>
 					<Form.Help>
-						Configure authentication failure handling and guest access behavior.
+						{m.map_to_guest_help()}
 					</Form.Help>
 					<SingleSelect.Root
 						bind:options={mapToGuestOptions}
@@ -314,8 +314,7 @@
 					<SingleInput.Boolean
 						bind:value={request.browsable}
 						bind:invalid={isBrowseableInvalid}
-						descriptor={() =>
-							'Allow this share to be visible in network browsing and share enumeration.'}
+						descriptor={() => m.browsable_description()}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -323,8 +322,7 @@
 					<SingleInput.Boolean
 						bind:value={request.readOnly}
 						bind:invalid={isReadOnlyInvalid}
-						descriptor={() =>
-							'Prevent write operations to this share. Users can only read and download files.'}
+						descriptor={() => m.read_only_description()}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -332,7 +330,7 @@
 					<SingleInput.Boolean
 						bind:value={request.guestOk}
 						bind:invalid={isGuestOKInvalid}
-						descriptor={() => 'Allow anonymous guest access without authentication credentials.'}
+						descriptor={() => m.guest_accessible_description()}
 					/>
 				</Form.Field>
 			</Form.Fieldset>

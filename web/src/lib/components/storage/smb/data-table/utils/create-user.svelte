@@ -43,7 +43,7 @@
 	<div
 		class="rounded-lg border border-red-300 bg-destructive/10 p-4 text-center text-xs text-destructive"
 	>
-		There is no user. Please create user for this share.
+		There is no user. Please create a user for this share.
 	</div>
 {/if}
 

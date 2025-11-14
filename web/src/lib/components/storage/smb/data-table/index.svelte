@@ -50,7 +50,7 @@
 			return $smbShares;
 		},
 		get columns() {
-			return getColumns(scope, facility, namespace, reloadManager)
+			return getColumns(scope, facility, namespace, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),

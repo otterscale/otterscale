@@ -3,7 +3,6 @@
 
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { cn } from '$lib/utils';
 
 	import type { Item } from './types';
 
@@ -15,7 +14,7 @@
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger>
-					<div class={cn('flex flex-wrap items-center gap-1')}>
+					<div class="flex flex-wrap items-center gap-1">
 						{#each items.slice(0, limit) as item, index (index)}
 							<Badge variant="outline" class="flex items-center gap-1">
 								{#if item.icon}
@@ -43,5 +42,16 @@
 				</Tooltip.Content>
 			</Tooltip.Root>
 		</Tooltip.Provider>
+	{:else}
+		<div class="flex flex-wrap items-center gap-1">
+			{#each items as item, index (index)}
+				<Badge variant="outline" class="flex items-center gap-1">
+					{#if item.icon}
+						<Icon icon={item.icon} class="size-5" />
+					{/if}
+					<p class="text-xs">{item.title}</p>
+				</Badge>
+			{/each}
+		</div>
 	{/if}
 {/if}

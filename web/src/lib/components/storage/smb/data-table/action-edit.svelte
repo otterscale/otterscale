@@ -175,7 +175,7 @@
 
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
-		<Icon icon="ph:penvil" />
+		<Icon icon="ph:pencil" />
 		{m.update()}
 	</Modal.Trigger>
 	<Modal.Content>
@@ -267,7 +267,7 @@
 				<Form.Field>
 					<Form.Label>{m.map_to_guest()}</Form.Label>
 					<Form.Help>
-						Configure authentication failure handling and guest access behavior.
+						{m.map_to_guest_help()}
 					</Form.Help>
 					<SingleSelect.Root
 						bind:options={mapToGuestOptions}
@@ -330,8 +330,7 @@
 					<SingleInput.Boolean
 						bind:value={request.browsable}
 						bind:invalid={isBrowseableInvalid}
-						descriptor={() =>
-							'Allow this share to be visible in network browsing and share enumeration.'}
+						descriptor={() => m.browsable_description()}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -339,8 +338,7 @@
 					<SingleInput.Boolean
 						bind:value={request.readOnly}
 						bind:invalid={isReadOnlyInvalid}
-						descriptor={() =>
-							'Prevent write operations to this share. Users can only read and download files.'}
+						descriptor={() => m.read_only_description()}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -348,7 +346,7 @@
 					<SingleInput.Boolean
 						bind:value={request.guestOk}
 						bind:invalid={isGuestOKInvalid}
-						descriptor={() => 'Allow anonymous guest access without authentication credentials.'}
+						descriptor={() => m.guest_accessible_description()}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
@@ -365,7 +363,6 @@
 			<Modal.Action
 				disabled={invalid}
 				onclick={() => {
-					console.log(request);
 					toast.promise(() => storageClient.updateSMBShare(request), {
 						loading: `Updating ${request.name}...`,
 						success: () => {
