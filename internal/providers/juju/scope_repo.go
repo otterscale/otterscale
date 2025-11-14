@@ -59,7 +59,7 @@ func (r *scopeRepo) Get(ctx context.Context, name string) (*scope.Scope, error) 
 }
 
 func (r *scopeRepo) Create(ctx context.Context, name, sshKey string) (*scope.Scope, error) {
-	info, err := r.create(ctx, name, sshKey)
+	info, err := r.create(ctx, name)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (r *scopeRepo) Create(ctx context.Context, name, sshKey string) (*scope.Sco
 	return r.toScopeFromInfo(&info), nil
 }
 
-func (r *scopeRepo) create(_ context.Context, name, sshKey string) (base.ModelInfo, error) {
+func (r *scopeRepo) create(_ context.Context, name string) (base.ModelInfo, error) {
 	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return base.ModelInfo{}, err

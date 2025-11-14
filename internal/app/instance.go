@@ -483,15 +483,15 @@ func toProtoVirtualMachine(vmd *vm.VirtualMachineData, its []vmi.VirtualMachineI
 
 	if instanceType != nil {
 		for _, it := range its {
-			if (it.ClusterWide && it.Type.Name == instanceType.Name) || (!it.ClusterWide && it.Type.Namespace == vmd.VirtualMachine.Namespace && it.Type.Name == instanceType.Name) {
+			if (it.ClusterWide && it.Type.Name == instanceType.Name) || (!it.ClusterWide && it.Type.Namespace == vmd.Namespace && it.Type.Name == instanceType.Name) {
 				ret.SetInstanceType(toProtoInstanceType(&it))
 				break
 			}
 		}
 	}
 
-	ret.SetStatus(string(vmd.VirtualMachine.Status.PrintableStatus))
-	ret.SetReady(vmd.VirtualMachine.Status.Ready)
+	ret.SetStatus(string(vmd.Status.PrintableStatus))
+	ret.SetReady(vmd.Status.Ready)
 
 	instance := vmd.Instance
 

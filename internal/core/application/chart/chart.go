@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 	"slices"
 
-	"github.com/otterscale/otterscale/internal/config"
 	"golang.org/x/sync/errgroup"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
@@ -18,6 +17,8 @@ import (
 	"helm.sh/helm/v3/pkg/repo"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 const RepoURL = "https://otterscale.github.io/charts"

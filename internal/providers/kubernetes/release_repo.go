@@ -208,7 +208,7 @@ func (r *releaseRepo) chartInstall(chartPath string, dependencyUpdate bool, keyr
 }
 
 func (r *releaseRepo) config(scope, namespace string) (*action.Configuration, error) {
-	restConfig, err := r.kubernetes.Config("scope")
+	restConfig, err := r.kubernetes.Config(scope)
 	if err != nil {
 		return nil, err
 	}

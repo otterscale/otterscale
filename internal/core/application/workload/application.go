@@ -26,7 +26,7 @@ type Application struct {
 	Namespace   string
 	Labels      map[string]string
 	Replicas    *int32
-	ObjectMeta  ObjectMeta
+	ObjectMeta  *ObjectMeta
 	Pods        []Pod
 	Containers  []Container
 	Services    []service.Service
@@ -361,7 +361,7 @@ func (uc *WorkloadUseCase) filterPersistents(namespace string, volumes []persist
 	return ret
 }
 
-func (uc *WorkloadUseCase) toApplication(ls *v1.LabelSelector, appType, name, namespace string, labels map[string]string, replicas *int32, objectMeta ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
+func (uc *WorkloadUseCase) toApplication(ls *v1.LabelSelector, appType, name, namespace string, labels map[string]string, replicas *int32, objectMeta *ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	selector, err := v1.LabelSelectorAsSelector(ls)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create selector: %w", err)
@@ -389,7 +389,7 @@ func (uc *WorkloadUseCase) fromDeployment(workload *Deployment, pods []Pod, serv
 		workload.Namespace,
 		workload.Labels,
 		workload.Spec.Replicas,
-		workload.ObjectMeta,
+		&workload.ObjectMeta,
 		pods,
 		workload.Spec.Template.Spec.Containers,
 		services,
@@ -407,7 +407,7 @@ func (uc *WorkloadUseCase) fromStatefulSet(workload *StatefulSet, pods []Pod, se
 		workload.Namespace,
 		workload.Labels,
 		workload.Spec.Replicas,
-		workload.ObjectMeta,
+		&workload.ObjectMeta,
 		pods,
 		workload.Spec.Template.Spec.Containers,
 		services,
@@ -425,7 +425,7 @@ func (uc *WorkloadUseCase) fromDaemonSet(workload *DaemonSet, pods []Pod, servic
 		workload.Namespace,
 		workload.Labels,
 		nil,
-		workload.ObjectMeta,
+		&workload.ObjectMeta,
 		pods,
 		workload.Spec.Template.Spec.Containers,
 		services,

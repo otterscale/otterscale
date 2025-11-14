@@ -4,10 +4,11 @@ import (
 	"context"
 
 	"github.com/goccy/go-yaml"
-	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"golang.org/x/sync/errgroup"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/release"
+
+	"github.com/otterscale/otterscale/internal/core/application/chart"
 )
 
 const (

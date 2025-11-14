@@ -108,7 +108,7 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 	if internal != nil {
 		switch internal.Type {
 		case "ceph":
-			spec, err := uc.warpCephObjectGatewayJobSpec(ctx, internal, input)
+			spec, err := uc.warpCephObjectGatewayJobSpec(internal, input)
 			if err != nil {
 				return nil, err
 			}
@@ -141,7 +141,7 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 	return uc.toResult(ctx, job)
 }
 
-func (uc *BISTUseCase) warpCephObjectGatewayJobSpec(ctx context.Context, target *WarpTargetInternal, input *WarpInput) (batchv1.JobSpec, error) {
+func (uc *BISTUseCase) warpCephObjectGatewayJobSpec(target *WarpTargetInternal, input *WarpInput) (batchv1.JobSpec, error) {
 	accessKey, secretKey := uc.bucket.Key(target.Scope)
 
 	external := &WarpTargetExternal{

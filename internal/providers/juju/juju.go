@@ -103,7 +103,6 @@ func (m *Juju) waitForCompleted(ctx context.Context, scope, id string, tickInter
 
 	for {
 		select {
-
 		case <-ticker.C:
 			conn, err := m.connection(scope)
 			if err != nil {

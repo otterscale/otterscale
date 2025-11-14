@@ -152,7 +152,7 @@ func (r *bucketRepo) Endpoint(scope string) string {
 	return client.Endpoint
 }
 
-func (r *bucketRepo) Key(scope string) (accessKey string, secretKey string) {
+func (r *bucketRepo) Key(scope string) (accessKey, secretKey string) {
 	client, err := r.ceph.client(scope)
 	if err != nil {
 		return "", ""

@@ -142,6 +142,7 @@ func (uc *FileUseCase) GrantSubvolumeClient(ctx context.Context, scope, subvolum
 	_, err := uc.action.Run(ctx, scope, uc.nfsAppName(scope), "grant-access", params)
 	return err
 }
+
 func (uc *FileUseCase) RevokeSubvolumeClient(ctx context.Context, scope, subvolume, clientIP string) error {
 	params := map[string]any{
 		"name":   subvolume,
