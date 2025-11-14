@@ -3,6 +3,7 @@ package workload
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"connectrpc.com/connect"
 	"github.com/otterscale/otterscale/internal/core/application/chart"
@@ -136,6 +137,88 @@ func (uc *WorkloadUseCase) ListApplications(ctx context.Context, scope string) (
 	}
 
 	return apps, uc.service.Host(scope), nil
+}
+
+func (uc *WorkloadUseCase) RestartApplication(ctx context.Context, scope, namespace, name, appType string) error {
+	switch appType {
+	case ApplicationTypeDeployment:
+		deployment, err := uc.deployment.Get(ctx, scope, namespace, name)
+		if err != nil {
+			return err
+		}
+
+		if deployment.Spec.Template.Annotations == nil {
+			deployment.Spec.Template.Annotations = map[string]string{}
+		}
+
+		deployment.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
+
+		_, err = uc.deployment.Update(ctx, scope, namespace, deployment)
+		return err
+
+	case ApplicationTypeStatefulSet:
+		statefulSet, err := uc.statefulSet.Get(ctx, scope, namespace, name)
+		if err != nil {
+			return err
+		}
+
+		if statefulSet.Spec.Template.Annotations == nil {
+			statefulSet.Spec.Template.Annotations = map[string]string{}
+		}
+
+		statefulSet.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
+
+		_, err = uc.statefulSet.Update(ctx, scope, namespace, statefulSet)
+		return err
+
+	case ApplicationTypeDaemonSet:
+		daemonSet, err := uc.daemonSet.Get(ctx, scope, namespace, name)
+		if err != nil {
+			return err
+		}
+
+		if daemonSet.Spec.Template.Annotations == nil {
+			daemonSet.Spec.Template.Annotations = map[string]string{}
+		}
+
+		daemonSet.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
+
+		_, err = uc.daemonSet.Update(ctx, scope, namespace, daemonSet)
+		return err
+	}
+
+	return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unknown application type: %s", appType))
+}
+
+func (uc *WorkloadUseCase) ScaleApplication(ctx context.Context, scope, namespace, name, appType string, replicas int32) error {
+	switch appType {
+	case ApplicationTypeDeployment:
+		deployment, err := uc.deployment.Get(ctx, scope, namespace, name)
+		if err != nil {
+			return err
+		}
+
+		deployment.Spec.Replicas = &replicas
+
+		_, err = uc.deployment.Update(ctx, scope, namespace, deployment)
+		return err
+
+	case ApplicationTypeStatefulSet:
+		statefulSet, err := uc.statefulSet.Get(ctx, scope, namespace, name)
+		if err != nil {
+			return err
+		}
+
+		statefulSet.Spec.Replicas = &replicas
+
+		_, err = uc.statefulSet.Update(ctx, scope, namespace, statefulSet)
+		return err
+
+	case ApplicationTypeDaemonSet:
+		return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("daemon set does not support replica scaling"))
+	}
+
+	return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unknown application type: %s", appType))
 }
 
 func (uc *WorkloadUseCase) GetApplication(ctx context.Context, scope, namespace, name string) (*Application, error) {

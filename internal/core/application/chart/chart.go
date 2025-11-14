@@ -33,6 +33,12 @@ type (
 
 	// Metadata represents Helm Chart Metadata.
 	Metadata = chart.Metadata
+
+	// Maintainer represents Helm Chart Maintainer.
+	Maintainer = chart.Maintainer
+
+	// Dependency represents Helm Chart Dependency.
+	Dependency = chart.Dependency
 )
 
 type Chart struct {

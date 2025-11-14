@@ -17,6 +17,9 @@ type (
 	// ObjectMeta represents Kubernetes ObjectMeta.
 	ObjectMeta = metav1.ObjectMeta
 
+	// Time represents Kubernetes Time.
+	Time = metav1.Time
+
 	// ResourceList represents Kubernetes ResourceList.
 	ResourceList = v1.ResourceList
 )

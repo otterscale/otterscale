@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"slices"
 	"time"
 
 	"connectrpc.com/connect"
@@ -12,6 +11,12 @@ import (
 	"golang.org/x/sync/errgroup"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/tools/remotecommand"
+)
+
+const (
+	PodPhaseRunning = v1.PodRunning
+
+	PodPhaseSucceeded = v1.PodSucceeded
 )
 
 type ttySession struct {
@@ -22,11 +27,19 @@ type ttySession struct {
 	OutWriter *io.PipeWriter
 }
 
-// Pod represents a Kubernetes Pod resource.
-type Pod = v1.Pod
+type (
+	// Pod represents a Kubernetes Pod resource.
+	Pod = v1.Pod
 
-// Container represents a Kubernetes Container resource.
-type Container = v1.Container
+	// PodCondition represents a Kubernetes PodCondition resource.
+	PodCondition = v1.PodCondition
+
+	// Container represents a Kubernetes Container resource.
+	Container = v1.Container
+
+	// ContainerStatus represents a Kubernetes ContainerStatus resource.
+	ContainerStatus = v1.ContainerStatus
+)
 
 type PodRepo interface {
 	List(ctx context.Context, scope, namespace, selector string) ([]Pod, error)
@@ -143,11 +156,4 @@ func (uc *WorkloadUseCase) ExecuteTTY(ctx context.Context, sessionID, scope, nam
 	})
 
 	return eg.Wait()
-}
-
-func (uc *WorkloadUseCase) IsPodHealthy(pod *Pod) bool {
-	return slices.Contains([]v1.PodPhase{
-		v1.PodRunning,
-		v1.PodSucceeded,
-	}, pod.Status.Phase)
 }
