@@ -152,14 +152,14 @@ func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, scope,
 		return nil, err
 	}
 
-	machineMap := make(map[string]*machine.Machine)
+	machineMap := map[string]*machine.Machine{}
 
 	for i := range machines {
 		m := machines[i]
 		machineMap[m.Hostname] = &m
 	}
 
-	vmiMap := make(map[string]*vmi.VirtualMachineInstance)
+	vmiMap := map[string]*vmi.VirtualMachineInstance{}
 
 	for i := range instances {
 		vmi := instances[i]
@@ -275,7 +275,7 @@ func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, scope, n
 		return err
 	})
 
-	machineMap := make(map[string]*machine.Machine)
+	machineMap := map[string]*machine.Machine{}
 	for i := range machines {
 		m := machines[i]
 		machineMap[m.Hostname] = &m

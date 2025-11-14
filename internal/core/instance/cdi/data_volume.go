@@ -92,13 +92,13 @@ func (uc *DataVolumeUseCase) ListDataVolumes(ctx context.Context, scope, namespa
 		return nil, err
 	}
 
-	storageClassMap := make(map[string]*storage.StorageClass)
+	storageClassMap := map[string]*storage.StorageClass{}
 	for i := range storageClasses {
 		sc := storageClasses[i]
 		storageClassMap[sc.Name] = &sc
 	}
 
-	pvcMap := make(map[string]*storage.PersistentVolumeClaim)
+	pvcMap := map[string]*storage.PersistentVolumeClaim{}
 	for i := range persistentVolumeClaims {
 		pvc := persistentVolumeClaims[i]
 		if pvc.Namespace == namespace {

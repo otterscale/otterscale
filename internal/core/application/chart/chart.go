@@ -160,6 +160,7 @@ func (uc *ChartUseCase) newMicroK8sConfig() (*rest.Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
 }
 
@@ -186,12 +187,15 @@ func (uc *ChartUseCase) extractMetadata(chartContent []byte) (name, version stri
 	}
 
 	metadata := chart.Metadata
+
 	if metadata == nil {
 		return "", "", fmt.Errorf("chart metadata not found")
 	}
+
 	if metadata.Name == "" {
 		return "", "", fmt.Errorf("chart name not found")
 	}
+
 	if metadata.Version == "" {
 		return "", "", fmt.Errorf("chart version not found")
 	}
@@ -204,21 +208,26 @@ func checkDirExists(dir string) (bool, error) {
 	if os.IsNotExist(err) {
 		return false, nil
 	}
+
 	if err != nil {
 		return false, err
 	}
+
 	return info.IsDir(), nil
 }
 
 func flatten[T any](data [][]T) []T {
 	totalLen := 0
+
 	for _, innerSlice := range data {
 		totalLen += len(innerSlice)
 	}
 
 	ret := make([]T, 0, totalLen)
+
 	for _, innerSlice := range data {
 		ret = append(ret, innerSlice...)
 	}
+
 	return ret
 }

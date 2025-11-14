@@ -256,13 +256,13 @@ func (uc *WorkloadUseCase) filterPods(selector labels.Selector, namespace string
 }
 
 func (uc *WorkloadUseCase) filterStorages(namespace string, volumes []storage.Volume, persistentVolumeClaims []storage.PersistentVolumeClaim, storageClasses []storage.StorageClass) []storage.Storage {
-	storageClassMap := make(map[string]*storage.StorageClass)
+	storageClassMap := map[string]*storage.StorageClass{}
 	for i := range storageClasses {
 		sc := storageClasses[i]
 		storageClassMap[sc.Name] = &sc
 	}
 
-	pvcMap := make(map[string]*storage.PersistentVolumeClaim)
+	pvcMap := map[string]*storage.PersistentVolumeClaim{}
 	for i := range persistentVolumeClaims {
 		pvc := persistentVolumeClaims[i]
 		if pvc.Namespace == namespace {
