@@ -1,0 +1,74 @@
+package providers
+
+import (
+	"github.com/google/wire"
+
+	"github.com/otterscale/otterscale/internal/providers/ceph"
+	"github.com/otterscale/otterscale/internal/providers/juju"
+	"github.com/otterscale/otterscale/internal/providers/kubernetes"
+	"github.com/otterscale/otterscale/internal/providers/kubevirt"
+	"github.com/otterscale/otterscale/internal/providers/maas"
+)
+
+var ProviderSet = wire.NewSet(
+	ceph.New,
+	ceph.NewBucketRepo,
+	ceph.NewImageRepo,
+	ceph.NewImageSnapshotRepo,
+	ceph.NewNodeRepo,
+	ceph.NewPoolRepo,
+	ceph.NewSubvolumeGroupRepo,
+	ceph.NewSubvolumeRepo,
+	ceph.NewSubvolumeSnapshotRepo,
+	ceph.NewUserRepo,
+	ceph.NewVolumeRepo,
+	juju.New,
+	juju.NewActionRepo,
+	juju.NewCharmRepo,
+	juju.NewFacilityRepo,
+	juju.NewMachineManagerRepo,
+	juju.NewOrchestratorRepo,
+	juju.NewRelationRepo,
+	juju.NewScopeConfigRepo,
+	juju.NewScopeRepo,
+	kubernetes.New,
+	kubernetes.NewChartRepo,
+	kubernetes.NewConfigMapRepo,
+	kubernetes.NewDaemonSetRepo,
+	kubernetes.NewDeploymentRepo,
+	kubernetes.NewJobRepo,
+	kubernetes.NewNamespaceRepo,
+	kubernetes.NewNodeRepo,
+	kubernetes.NewPersistentVolumeClaimRepo,
+	kubernetes.NewPodRepo,
+	kubernetes.NewReleaseRepo,
+	kubernetes.NewSecretRepo,
+	kubernetes.NewServiceRepo,
+	kubernetes.NewStatefulSetRepo,
+	kubernetes.NewStorageClassRepo,
+	kubevirt.New,
+	kubevirt.NewDataVolumeRepo,
+	kubevirt.NewVirtualMachineCloneRepo,
+	kubevirt.NewVirtualMachineInstanceMigrationRepo,
+	kubevirt.NewVirtualMachineInstanceRepo,
+	kubevirt.NewVirtualMachineInstanceTypeRepo,
+	kubevirt.NewVirtualMachineRepo,
+	kubevirt.NewVirtualMachineRestoreRepo,
+	kubevirt.NewVirtualMachineSnapshotRepo,
+	kubevirt.NewVNCRepo,
+	maas.New,
+	maas.NewBootResourceRepo,
+	maas.NewBootSourceRepo,
+	maas.NewBootSourceSelectionRepo,
+	maas.NewEventRepo,
+	maas.NewFabricRepo,
+	maas.NewIPRangeRepo,
+	maas.NewMachineRepo,
+	maas.NewNodeDeviceRepo,
+	maas.NewPackageRepositoryRepo,
+	maas.NewProvisionerRepo,
+	maas.NewSSHKeyRepo,
+	maas.NewSubnetRepo,
+	maas.NewTagRepo,
+	maas.NewVLANRepo,
+)
