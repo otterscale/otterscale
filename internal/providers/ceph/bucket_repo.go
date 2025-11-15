@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/ceph/go-ceph/rgw/admin"
+
 	"github.com/otterscale/otterscale/internal/core/storage/object"
 )
 

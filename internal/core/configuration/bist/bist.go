@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	conf "github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/config"
@@ -22,7 +24,6 @@ import (
 	"github.com/otterscale/otterscale/internal/core/storage"
 	"github.com/otterscale/otterscale/internal/core/storage/block"
 	"github.com/otterscale/otterscale/internal/core/storage/object"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 const bistNamespace = "bist"

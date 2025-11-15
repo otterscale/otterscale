@@ -514,9 +514,9 @@ func toProtoVirtualMachine(vmd *vm.VirtualMachineData, its []vmi.VirtualMachineI
 		ret.SetIpAddresses(ipAddresses)
 	}
 
-	ret.SetCreatedAt(timestamppb.New(vmd.VirtualMachine.CreationTimestamp.Time))
+	ret.SetCreatedAt(timestamppb.New(vmd.CreationTimestamp.Time))
 	ret.SetServices(toProtoServices(vmd.Services))
-	ret.SetDisks(toProtoVirtualMachineDisks(vmd.VirtualMachine.Spec.Template.Spec.Domain.Devices.Disks, vmd.VirtualMachine.Spec.Template.Spec.Volumes))
+	ret.SetDisks(toProtoVirtualMachineDisks(vmd.Spec.Template.Spec.Domain.Devices.Disks, vmd.Spec.Template.Spec.Volumes))
 	ret.SetClones(toProtoVirtualMachineClones(vmd.Clones))
 	ret.SetSnapshots(toProtoVirtualMachineSnapshots(vmd.Snapshots))
 	ret.SetRestores(toProtoVirtualMachineRestores(vmd.Restores))

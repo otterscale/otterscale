@@ -9,9 +9,10 @@ import (
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/jaypipes/pcidb"
 	"github.com/juju/juju/core/base"
+	"golang.org/x/sync/errgroup"
+
 	"github.com/otterscale/otterscale/internal/core/configuration"
 	"github.com/otterscale/otterscale/internal/core/scope"
-	"golang.org/x/sync/errgroup"
 )
 
 type (

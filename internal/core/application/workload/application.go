@@ -6,12 +6,13 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
-	"github.com/otterscale/otterscale/internal/core/application/chart"
-	"github.com/otterscale/otterscale/internal/core/application/persistent"
-	"github.com/otterscale/otterscale/internal/core/application/service"
 	"golang.org/x/sync/errgroup"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
+
+	"github.com/otterscale/otterscale/internal/core/application/chart"
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
+	"github.com/otterscale/otterscale/internal/core/application/service"
 )
 
 const (

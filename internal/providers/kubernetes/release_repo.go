@@ -237,7 +237,7 @@ func (uc *releaseRepo) newName(name string) string {
 	return strings.ToLower(faker.FirstName() + "-" + faker.Username())
 }
 
-func (uc *releaseRepo) toValues(valuesYAML string, valuesMap map[string]string) (map[string]any, error) {
+func (r *releaseRepo) toValues(valuesYAML string, valuesMap map[string]string) (map[string]any, error) {
 	// advanced
 	values := map[string]any{}
 	if err := yaml.Unmarshal([]byte(valuesYAML), &values); err != nil {

@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"sync"
 
+	"golang.org/x/sync/errgroup"
+
 	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/release"
-	"golang.org/x/sync/errgroup"
 )
 
 type Extension struct {

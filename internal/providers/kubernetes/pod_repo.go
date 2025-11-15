@@ -11,6 +11,7 @@ import (
 	"k8s.io/client-go/tools/remotecommand"
 
 	"github.com/otterscale/kubevirt-client-go/containerizeddataimporter/scheme"
+
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 )
 

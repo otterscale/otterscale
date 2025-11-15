@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Project-HAMi/HAMi/pkg/device"
+
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 	"github.com/otterscale/otterscale/internal/core/machine"

@@ -8,14 +8,15 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/canonical/gomaasclient/entity/node"
+	"golang.org/x/sync/errgroup"
+	"gopkg.in/yaml.v2"
+
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core/configuration"
 	"github.com/otterscale/otterscale/internal/core/facility"
 	"github.com/otterscale/otterscale/internal/core/machine"
 	"github.com/otterscale/otterscale/internal/core/machine/tag"
 	"github.com/otterscale/otterscale/internal/core/network"
-	"golang.org/x/sync/errgroup"
-	"gopkg.in/yaml.v2"
 )
 
 type charm struct {

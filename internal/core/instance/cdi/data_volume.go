@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"golang.org/x/sync/errgroup"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	cdiv1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
+
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
 )
 
 const DataVolumeBootImageLabel = "otterscale.com/data-volume.boot-image"

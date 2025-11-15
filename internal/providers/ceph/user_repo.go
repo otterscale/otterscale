@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/ceph/go-ceph/rgw/admin"
+
 	"github.com/otterscale/otterscale/internal/core/storage/object"
 )
 

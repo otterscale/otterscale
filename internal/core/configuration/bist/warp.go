@@ -9,12 +9,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/otterscale/otterscale/internal/core/application/release"
-	"github.com/otterscale/otterscale/internal/core/application/workload"
-	"github.com/otterscale/otterscale/internal/core/scope"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/otterscale/otterscale/internal/core/application/release"
+	"github.com/otterscale/otterscale/internal/core/application/workload"
+	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
 type Warp struct {
@@ -108,11 +109,7 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 	if internal != nil {
 		switch internal.Type {
 		case "ceph":
-			spec, err := uc.warpCephObjectGatewayJobSpec(internal, input)
-			if err != nil {
-				return nil, err
-			}
-			job.Spec = spec
+			job.Spec = uc.warpCephObjectGatewayJobSpec(internal, input)
 
 		case "minio":
 			spec, err := uc.warpMinIOJobSpec(ctx, internal, input)
@@ -141,7 +138,7 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 	return uc.toResult(ctx, job)
 }
 
-func (uc *BISTUseCase) warpCephObjectGatewayJobSpec(target *WarpTargetInternal, input *WarpInput) (batchv1.JobSpec, error) {
+func (uc *BISTUseCase) warpCephObjectGatewayJobSpec(target *WarpTargetInternal, input *WarpInput) batchv1.JobSpec {
 	accessKey, secretKey := uc.bucket.Key(target.Scope)
 
 	external := &WarpTargetExternal{
@@ -150,7 +147,7 @@ func (uc *BISTUseCase) warpCephObjectGatewayJobSpec(target *WarpTargetInternal, 
 		SecretKey: secretKey,
 	}
 
-	return uc.warpJobSpec(external, input), nil
+	return uc.warpJobSpec(external, input)
 }
 
 func (uc *BISTUseCase) warpMinIOJobSpec(ctx context.Context, target *WarpTargetInternal, input *WarpInput) (batchv1.JobSpec, error) {

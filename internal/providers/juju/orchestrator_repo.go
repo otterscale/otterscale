@@ -6,6 +6,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/juju/juju/api/client/client"
+
 	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
