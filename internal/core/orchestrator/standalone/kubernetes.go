@@ -37,8 +37,9 @@ func (k *kubernetes) Charms() []charm {
 func (k *kubernetes) Configs() (string, error) {
 	configs := map[string]map[string]any{
 		"kubernetes-control-plane": {
-			"allow-privileged": "true",
-			"loadbalancer-ips": strings.Join(k.VirtualIPs, " "),
+			"register-with-taints": "",
+			"allow-privileged":     "true",
+			"loadbalancer-ips":     strings.Join(k.VirtualIPs, " "),
 		},
 		"kubeapi-load-balancer": {
 			"loadbalancer-ips": strings.Join(k.VirtualIPs, " "),
