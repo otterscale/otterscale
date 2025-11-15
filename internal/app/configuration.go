@@ -53,7 +53,7 @@ func (s *ConfigurationService) UpdateNTPServer(ctx context.Context, req *pb.Upda
 }
 
 func (s *ConfigurationService) UpdatePackageRepository(ctx context.Context, req *pb.UpdatePackageRepositoryRequest) (*pb.Configuration_PackageRepository, error) {
-	repo, err := s.configuration.UpdatePackageRepository(ctx, int(req.GetId()), req.GetUrl(), req.GetSkipJuju())
+	repo, err := s.configuration.UpdatePackageRepository(ctx, int(req.GetId()), req.GetUrl())
 	if err != nil {
 		return nil, err
 	}
