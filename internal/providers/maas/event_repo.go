@@ -8,6 +8,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
+// Note: MAAS API do not support context.
 type eventRepo struct {
 	maas *MAAS
 }

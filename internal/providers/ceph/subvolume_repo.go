@@ -20,6 +20,7 @@ var (
 	validClients = regexp.MustCompile(`Clients = (?<Clients>.+);`)
 )
 
+// Note: Ceph API do not support context.
 type subvolumeRepo struct {
 	ceph *Ceph
 }
@@ -97,7 +98,7 @@ func (r *subvolumeRepo) Delete(_ context.Context, scope, volume, subvolume, grou
 	return removeSubvolume(conn, volume, subvolume, group)
 }
 
-func (r *subvolumeRepo) ListExportClients(ctx context.Context, scope, pool string) (map[string][]string, error) {
+func (r *subvolumeRepo) ListExportClients(_ context.Context, scope, pool string) (map[string][]string, error) {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err

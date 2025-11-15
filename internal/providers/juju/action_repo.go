@@ -8,6 +8,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/facility/action"
 )
 
+// Note: Juju API do not support context.
 type actionRepo struct {
 	juju *Juju
 }

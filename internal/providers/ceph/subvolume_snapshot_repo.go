@@ -6,6 +6,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/storage/file"
 )
 
+// Note: Ceph API do not support context.
 type subvolumeSnapshotRepo struct {
 	ceph *Ceph
 }

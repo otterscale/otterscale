@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"os"
 	"sync"
+	"time"
 
 	"helm.sh/helm/v3/pkg/cli"
 	"helm.sh/helm/v3/pkg/registry"
@@ -82,7 +83,10 @@ func (m *Kubernetes) writeCAToFile(caData []byte) (string, error) {
 func (m *Kubernetes) newConfig(scope string) (*rest.Config, error) {
 	name := scope + "-kubernetes-control-plane"
 
-	kubeConfig, err := m.getKubeConfig(context.Background(), scope, name)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	kubeConfig, err := m.getKubeConfig(ctx, scope, name)
 	if err != nil {
 		return nil, err
 	}

@@ -46,7 +46,7 @@ func (uc *ExtensionUseCase) ListStorageExtensions(ctx context.Context, scope str
 }
 
 func (uc *ExtensionUseCase) InstallExtensions(ctx context.Context, scope string, chartRefMap map[string]string) error {
-	eg, _ := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 
 	for name, chartRef := range chartRefMap {
 		eg.Go(func() error {
@@ -55,7 +55,7 @@ func (uc *ExtensionUseCase) InstallExtensions(ctx context.Context, scope string,
 				return err
 			}
 
-			_, err = uc.release.Install(scope, base.Namespace, base.Name, false, chartRef, base.Labels, base.Labels, base.Annotations, "", base.ValuesMap)
+			_, err = uc.release.Install(egctx, scope, base.Namespace, base.Name, false, chartRef, base.Labels, base.Labels, base.Annotations, "", base.ValuesMap)
 			return err
 		})
 	}
@@ -64,7 +64,7 @@ func (uc *ExtensionUseCase) InstallExtensions(ctx context.Context, scope string,
 }
 
 func (uc *ExtensionUseCase) UpgradeExtensions(ctx context.Context, scope string, chartRefMap map[string]string) error {
-	eg, _ := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 
 	for name, chartRef := range chartRefMap {
 		eg.Go(func() error {
@@ -73,7 +73,7 @@ func (uc *ExtensionUseCase) UpgradeExtensions(ctx context.Context, scope string,
 				return err
 			}
 
-			_, err = uc.release.Upgrade(scope, base.Namespace, base.Name, false, chartRef, "", base.ValuesMap, true)
+			_, err = uc.release.Upgrade(egctx, scope, base.Namespace, base.Name, false, chartRef, "", base.ValuesMap, true)
 			return err
 		})
 	}
@@ -97,7 +97,7 @@ func (uc *ExtensionUseCase) listExtensions(ctx context.Context, scope string, ba
 		})
 
 		eg.Go(func() error {
-			v, err := uc.release.Get(scope, bases[i].Namespace, bases[i].Name)
+			v, err := uc.release.Get(egctx, scope, bases[i].Namespace, bases[i].Name)
 			if err == nil {
 				releases.Store(i, v)
 			}

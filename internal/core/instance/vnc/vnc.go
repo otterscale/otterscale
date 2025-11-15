@@ -16,7 +16,7 @@ import (
 )
 
 type VNCRepo interface {
-	Stream(ctx context.Context, scope, namespace, name string) (kvcorev1.StreamInterface, error)
+	Stream(scope, namespace, name string) (kvcorev1.StreamInterface, error)
 }
 
 type VNCUseCase struct {
@@ -31,10 +31,10 @@ func NewVNCUseCase(vnc VNCRepo) *VNCUseCase {
 	}
 }
 
-func (uc *VNCUseCase) CreateVNCSession(ctx context.Context, scope, namespace, name string) (string, error) {
+func (uc *VNCUseCase) CreateVNCSession(scope, namespace, name string) (string, error) {
 	sessionID := uuid.New().String()
 
-	vnc, err := uc.vnc.Stream(ctx, scope, namespace, name)
+	vnc, err := uc.vnc.Stream(scope, namespace, name)
 	if err != nil {
 		return "", err
 	}

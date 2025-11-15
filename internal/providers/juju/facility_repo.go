@@ -13,6 +13,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/facility"
 )
 
+// Note: Juju API do not support context.
 type facilityRepo struct {
 	juju *Juju
 }
@@ -25,7 +26,7 @@ func NewFacilityRepo(juju *Juju) facility.FacilityRepo {
 
 var _ facility.FacilityRepo = (*facilityRepo)(nil)
 
-func (r *facilityRepo) List(ctx context.Context, scope, jujuID string) ([]facility.Facility, error) {
+func (r *facilityRepo) List(_ context.Context, scope, jujuID string) ([]facility.Facility, error) {
 	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return nil, err

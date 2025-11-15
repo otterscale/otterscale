@@ -9,6 +9,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
+// Note: MAAS API do not support context.
 type sshKeyRepo struct {
 	maas *MAAS
 }

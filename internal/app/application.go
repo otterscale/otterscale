@@ -251,8 +251,8 @@ func (s *ApplicationService) ListCharts(ctx context.Context, _ *pb.ListChartsReq
 	return resp, nil
 }
 
-func (s *ApplicationService) GetChartMetadata(_ context.Context, req *pb.GetChartMetadataRequest) (*pb.Application_Chart_Metadata, error) {
-	file, err := s.chart.GetChartFile(req.GetChartRef())
+func (s *ApplicationService) GetChartMetadata(ctx context.Context, req *pb.GetChartMetadataRequest) (*pb.Application_Chart_Metadata, error) {
+	file, err := s.chart.GetChartFile(ctx, req.GetChartRef())
 	if err != nil {
 		return nil, err
 	}
@@ -261,8 +261,8 @@ func (s *ApplicationService) GetChartMetadata(_ context.Context, req *pb.GetChar
 	return resp, nil
 }
 
-func (s *ApplicationService) UploadChart(_ context.Context, req *pb.UploadChartRequest) (*emptypb.Empty, error) {
-	err := s.chart.UploadChart(req.GetChartContent())
+func (s *ApplicationService) UploadChart(ctx context.Context, req *pb.UploadChartRequest) (*emptypb.Empty, error) {
+	err := s.chart.UploadChart(ctx, req.GetChartContent())
 	if err != nil {
 		return nil, err
 	}

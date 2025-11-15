@@ -10,6 +10,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
+// Note: Juju API do not support context.
 type orchestratorRepo struct {
 	juju *Juju
 }
@@ -22,7 +23,7 @@ func NewOrchestratorRepo(juju *Juju) machine.OrchestratorRepo {
 
 var _ machine.OrchestratorRepo = (*orchestratorRepo)(nil)
 
-func (r *orchestratorRepo) AgentStatus(ctx context.Context, scope, jujuID string) (string, error) {
+func (r *orchestratorRepo) AgentStatus(_ context.Context, scope, jujuID string) (string, error) {
 	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return "", err

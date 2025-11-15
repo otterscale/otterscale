@@ -13,6 +13,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/facility/charm"
 )
 
+// Note: Juju API do not support context.
 type charmRepo struct {
 	juju *Juju
 }

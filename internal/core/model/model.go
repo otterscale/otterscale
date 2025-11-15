@@ -56,7 +56,7 @@ func NewModelUseCase(chart chart.ChartRepo, deployment workload.DeploymentRepo, 
 func (uc *ModelUseCase) ListModels(ctx context.Context, scope, namespace string) ([]Model, error) {
 	selector := release.TypeLabel + "=" + "model"
 
-	return uc.release.List(scope, namespace, selector)
+	return uc.release.List(ctx, scope, namespace, selector)
 }
 
 func (uc *ModelUseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string) (*Model, error) {
@@ -86,11 +86,11 @@ func (uc *ModelUseCase) CreateModel(ctx context.Context, scope, namespace, name,
 	// values
 	valuesMap := map[string]string{} // TODO: waiting for v0.3.0
 
-	return uc.release.Install(scope, namespace, name, false, chartRef, labels, labels, annotations, "", valuesMap)
+	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, "", valuesMap)
 }
 
 func (uc *ModelUseCase) UpdateModel(ctx context.Context, scope, namespace, name string, requests, limits *ModelResource) (*Model, error) {
-	rel, err := uc.release.Get(scope, namespace, name)
+	rel, err := uc.release.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return nil, err
 	}
@@ -115,11 +115,11 @@ func (uc *ModelUseCase) UpdateModel(ctx context.Context, scope, namespace, name 
 	_, _ = requests, limits          // TODO: waiting for v0.3.0
 	valuesMap := map[string]string{} // TODO: waiting for v0.3.0
 
-	return uc.release.Upgrade(scope, namespace, name, false, chartRef, "", valuesMap, true)
+	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, "", valuesMap, true)
 }
 
 func (uc *ModelUseCase) DeleteModel(ctx context.Context, scope, namespace, name string) error {
-	_, err := uc.release.Uninstall(scope, namespace, name, false)
+	_, err := uc.release.Uninstall(ctx, scope, namespace, name, false)
 	return err
 }
 
@@ -172,7 +172,7 @@ func (uc *ModelUseCase) CreateModelArtifact(ctx context.Context, scope, namespac
 	}
 
 	// install
-	if _, err := uc.release.Install(scope, namespace, (name), false, chartRef, labels, labels, annotations, "", valuesMap); err != nil {
+	if _, err := uc.release.Install(ctx, scope, namespace, (name), false, chartRef, labels, labels, annotations, "", valuesMap); err != nil {
 		return nil, err
 	}
 

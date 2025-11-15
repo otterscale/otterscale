@@ -55,9 +55,9 @@ type File struct {
 
 type ChartRepo interface {
 	List(ctx context.Context, url string, useCache bool) ([]Chart, error)
-	Show(chartRef string, format action.ShowOutputFormat) (string, error)
-	Push(chartRef, remoteOCI string) (string, error)
-	Index(dir, url string) error
+	Show(ctx context.Context, chartRef string, format action.ShowOutputFormat) (string, error)
+	Push(ctx context.Context, chartRef, remoteOCI string) (string, error)
+	Index(ctx context.Context, dir, url string) error
 	GetStableVersion(ctx context.Context, url, name string, useCache bool) (*Version, error)
 }
 
@@ -107,12 +107,12 @@ func (uc *ChartUseCase) ListCharts(ctx context.Context) ([]Chart, error) {
 	return flatten(ret), nil
 }
 
-func (uc *ChartUseCase) GetChartFile(chartRef string) (*File, error) {
+func (uc *ChartUseCase) GetChartFile(ctx context.Context, chartRef string) (*File, error) {
 	file := &File{}
-	eg := errgroup.Group{}
+	eg, egctx := errgroup.WithContext(ctx)
 
 	eg.Go(func() error {
-		v, err := uc.chart.Show(chartRef, action.ShowValues)
+		v, err := uc.chart.Show(egctx, chartRef, action.ShowValues)
 		if err == nil {
 			file.ValuesYAML = v
 		}
@@ -120,7 +120,7 @@ func (uc *ChartUseCase) GetChartFile(chartRef string) (*File, error) {
 	})
 
 	eg.Go(func() error {
-		v, err := uc.chart.Show(chartRef, action.ShowReadme)
+		v, err := uc.chart.Show(egctx, chartRef, action.ShowReadme)
 		if err == nil {
 			file.ReadmeMarkdown = v
 		}
@@ -135,7 +135,7 @@ func (uc *ChartUseCase) GetChartFile(chartRef string) (*File, error) {
 }
 
 // TODO: multiple service on kubernetes
-func (uc *ChartUseCase) UploadChart(chartContent []byte) error {
+func (uc *ChartUseCase) UploadChart(ctx context.Context, chartContent []byte) error {
 	if err := os.MkdirAll(localRepoDir, 0o700); err != nil { //nolint:mnd // default folder permission
 		return err
 	}
@@ -155,11 +155,11 @@ func (uc *ChartUseCase) UploadChart(chartContent []byte) error {
 		return err
 	}
 
-	if _, err := uc.chart.Push(fileName, localOCI); err != nil {
+	if _, err := uc.chart.Push(ctx, fileName, localOCI); err != nil {
 		return err
 	}
 
-	return uc.chart.Index(localRepoDir, localOCI)
+	return uc.chart.Index(ctx, localRepoDir, localOCI)
 }
 
 // TODO: replace with remote flag

@@ -97,7 +97,7 @@ func (r *podRepo) Stream(ctx context.Context, scope, namespace, podName, contain
 
 	opts := corev1.PodLogOptions{
 		Container: containerName,
-		Follow:    true,
+		Follow:    follow,
 	}
 
 	if duration > 0 {
@@ -108,7 +108,7 @@ func (r *podRepo) Stream(ctx context.Context, scope, namespace, podName, contain
 	return clientset.CoreV1().Pods(namespace).GetLogs(podName, &opts).Stream(ctx)
 }
 
-func (r *podRepo) Execute(scope, namespace, podName, containerName string, command []string) (remotecommand.Executor, error) {
+func (r *podRepo) Executer(scope, namespace, podName, containerName string, command []string) (remotecommand.Executor, error) {
 	clientset, err := r.kubernetes.clientset(scope)
 	if err != nil {
 		return nil, err

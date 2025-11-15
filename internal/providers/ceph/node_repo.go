@@ -9,6 +9,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/storage"
 )
 
+// Note: Ceph API do not support context.
 type nodeRepo struct {
 	ceph *Ceph
 }

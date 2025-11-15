@@ -22,6 +22,7 @@ import (
 
 const repoIndexCacheDuration = time.Hour * 4
 
+// Note: Helm API do not support context.
 type repoIndex struct {
 	file      *repo.IndexFile
 	lastFetch time.Time
@@ -58,7 +59,7 @@ func (r *chartRepo) List(ctx context.Context, url string, useCache bool) ([]char
 	return r.buildChartsFromIndex(indexFile), nil
 }
 
-func (r *chartRepo) Show(chartRef string, format action.ShowOutputFormat) (string, error) {
+func (r *chartRepo) Show(_ context.Context, chartRef string, format action.ShowOutputFormat) (string, error) {
 	client := action.NewShow(format)
 	client.SetRegistryClient(r.kubernetes.registryClient)
 
@@ -70,7 +71,7 @@ func (r *chartRepo) Show(chartRef string, format action.ShowOutputFormat) (strin
 	return client.Run(chartPath)
 }
 
-func (r *chartRepo) Push(chartRef, remoteOCI string) (string, error) {
+func (r *chartRepo) Push(_ context.Context, chartRef, remoteOCI string) (string, error) {
 	config := &action.Configuration{
 		RegistryClient: r.kubernetes.registryClient,
 	}
@@ -81,7 +82,7 @@ func (r *chartRepo) Push(chartRef, remoteOCI string) (string, error) {
 	return client.Run(chartRef, remoteOCI)
 }
 
-func (r *chartRepo) Index(dir, url string) error {
+func (r *chartRepo) Index(_ context.Context, dir, url string) error {
 	out := filepath.Join(dir, "index.yaml")
 
 	i, err := repo.IndexDirectory(dir, url)

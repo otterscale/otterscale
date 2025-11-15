@@ -97,11 +97,11 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]Mac
 		ret[i].Machine = &machines[i]
 	}
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 
 	for i := range ret {
 		eg.Go(func() error {
-			gpus, err := uc.nodeDevice.ListGPUs(ctx, machines[i].SystemID)
+			gpus, err := uc.nodeDevice.ListGPUs(egctx, machines[i].SystemID)
 			if err == nil {
 				if err = uc.setGPUName(gpus); err != nil {
 					return err
@@ -112,7 +112,7 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]Mac
 		})
 
 		eg.Go(func() error {
-			lastCommissionedAt, err := uc.lastCommissionedAt(ctx, machines[i].SystemID)
+			lastCommissionedAt, err := uc.lastCommissionedAt(egctx, machines[i].SystemID)
 			if err == nil {
 				ret[i].LastCommissionedAt = lastCommissionedAt
 			}

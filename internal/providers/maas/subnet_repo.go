@@ -9,6 +9,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/network"
 )
 
+// Note: MAAS API do not support context.
 type subnetRepo struct {
 	maas *MAAS
 }

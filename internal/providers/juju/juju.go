@@ -198,7 +198,7 @@ func (m *Juju) Execute(ctx context.Context, scope, appName, command string) (map
 	return m.waitForCompleted(ctx, scope, id, time.Second, time.Minute)
 }
 
-func (m *Juju) GetEndpoint(ctx context.Context, scope, appName string) (string, error) {
+func (m *Juju) GetEndpoint(_ context.Context, scope, appName string) (string, error) {
 	conn, err := m.connection(scope)
 	if err != nil {
 		return "", err

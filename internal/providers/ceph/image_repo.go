@@ -11,6 +11,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/storage/block"
 )
 
+// Note: Ceph API do not support context.
 type imageRepo struct {
 	ceph *Ceph
 }

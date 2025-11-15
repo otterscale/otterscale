@@ -6,6 +6,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/configuration"
 )
 
+// Note: MAAS API do not support context.
 type bootSourceRepo struct {
 	maas *MAAS
 }

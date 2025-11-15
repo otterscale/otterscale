@@ -1,6 +1,7 @@
 package kubernetes
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"strings"
@@ -19,6 +20,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/release"
 )
 
+// Note: Helm API do not support context.
 type releaseRepo struct {
 	kubernetes *Kubernetes
 }
@@ -29,7 +31,7 @@ func NewReleaseRepo(kubernetes *Kubernetes) (release.ReleaseRepo, error) {
 	}, nil
 }
 
-func (r *releaseRepo) List(scope, namespace, selector string) ([]release.Release, error) {
+func (r *releaseRepo) List(_ context.Context, scope, namespace, selector string) ([]release.Release, error) {
 	config, err := r.config(scope, namespace)
 	if err != nil {
 		return nil, err
@@ -47,7 +49,7 @@ func (r *releaseRepo) List(scope, namespace, selector string) ([]release.Release
 	return pointersToValues(releases), nil
 }
 
-func (r *releaseRepo) Get(scope, namespace, name string) (*release.Release, error) {
+func (r *releaseRepo) Get(_ context.Context, scope, namespace, name string) (*release.Release, error) {
 	config, err := r.config(scope, namespace)
 	if err != nil {
 		return nil, err
@@ -58,7 +60,7 @@ func (r *releaseRepo) Get(scope, namespace, name string) (*release.Release, erro
 	return client.Run(name)
 }
 
-func (r *releaseRepo) Install(scope, namespace, name string, dryRun bool, chartRef string, labelsInSecrets, labels, annotations map[string]string, valuesYAML string, valuesMap map[string]string) (*release.Release, error) {
+func (r *releaseRepo) Install(_ context.Context, scope, namespace, name string, dryRun bool, chartRef string, labelsInSecrets, labels, annotations map[string]string, valuesYAML string, valuesMap map[string]string) (*release.Release, error) {
 	name = r.newName(name)
 
 	if !action.ValidName.MatchString(name) {
@@ -98,7 +100,7 @@ func (r *releaseRepo) Install(scope, namespace, name string, dryRun bool, chartR
 	return client.Run(chart, values)
 }
 
-func (r *releaseRepo) Uninstall(scope, namespace, name string, dryRun bool) (*release.Release, error) {
+func (r *releaseRepo) Uninstall(_ context.Context, scope, namespace, name string, dryRun bool) (*release.Release, error) {
 	config, err := r.config(scope, namespace)
 	if err != nil {
 		return nil, err
@@ -116,7 +118,7 @@ func (r *releaseRepo) Uninstall(scope, namespace, name string, dryRun bool) (*re
 	return resp.Release, nil
 }
 
-func (r *releaseRepo) Upgrade(scope, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string, reuseValues bool) (*release.Release, error) {
+func (r *releaseRepo) Upgrade(_ context.Context, scope, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string, reuseValues bool) (*release.Release, error) {
 	config, err := r.config(scope, namespace)
 	if err != nil {
 		return nil, err
@@ -147,7 +149,7 @@ func (r *releaseRepo) Upgrade(scope, namespace, name string, dryRun bool, chartR
 	return client.Run(name, chart, values)
 }
 
-func (r *releaseRepo) Rollback(scope, namespace, name string, dryRun bool) error {
+func (r *releaseRepo) Rollback(_ context.Context, scope, namespace, name string, dryRun bool) error {
 	config, err := r.config(scope, namespace)
 	if err != nil {
 		return err
@@ -159,7 +161,7 @@ func (r *releaseRepo) Rollback(scope, namespace, name string, dryRun bool) error
 	return client.Run(name)
 }
 
-func (r *releaseRepo) GetValues(scope, namespace, name string) (map[string]any, error) {
+func (r *releaseRepo) GetValues(_ context.Context, scope, namespace, name string) (map[string]any, error) {
 	config, err := r.config(scope, namespace)
 	if err != nil {
 		return nil, err

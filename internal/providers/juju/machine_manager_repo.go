@@ -13,6 +13,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
+// Note: Juju API do not support context.
 type machineManagerRepo struct {
 	juju *Juju
 }

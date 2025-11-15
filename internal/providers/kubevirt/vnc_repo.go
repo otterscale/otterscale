@@ -1,7 +1,6 @@
 package kubevirt
 
 import (
-	"context"
 	"net/url"
 	"strconv"
 
@@ -22,7 +21,7 @@ func NewVNCRepo(kubevirt *KubeVirt) vnc.VNCRepo {
 
 var _ vnc.VNCRepo = (*vncRepo)(nil)
 
-func (r *vncRepo) Stream(ctx context.Context, scope, namespace, name string) (kvcorev1.StreamInterface, error) {
+func (r *vncRepo) Stream(scope, namespace, name string) (kvcorev1.StreamInterface, error) {
 	config, err := r.kubevirt.kubernetes.Config(scope)
 	if err != nil {
 		return nil, err

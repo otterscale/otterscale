@@ -7,6 +7,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/configuration"
 )
 
+// Note: MAAS API do not support context.
 type provisionerRepo struct {
 	maas *MAAS
 }

@@ -2,6 +2,7 @@ package workload
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"time"
@@ -46,7 +47,7 @@ type PodRepo interface {
 	Update(ctx context.Context, scope, namespace string, p *Pod) (*Pod, error)
 	Delete(ctx context.Context, scope, namespace, name string) error
 	Stream(ctx context.Context, scope, namespace, podName, containerName string, duration time.Duration, follow bool) (io.ReadCloser, error)
-	Execute(scope, namespace, podName, containerName string, command []string) (remotecommand.Executor, error)
+	Executer(scope, namespace, podName, containerName string, command []string) (remotecommand.Executor, error)
 }
 
 func (uc *WorkloadUseCase) DeletePod(ctx context.Context, scope, namespace, name string) error {
@@ -112,7 +113,7 @@ func (uc *WorkloadUseCase) ExecuteTTY(ctx context.Context, sessionID, scope, nam
 
 	ttySession := value.(*ttySession)
 
-	exec, err := uc.pod.Execute(scope, namespace, podName, containerName, command)
+	exec, err := uc.pod.Executer(scope, namespace, podName, containerName, command)
 	if err != nil {
 		return err
 	}
@@ -130,9 +131,10 @@ func (uc *WorkloadUseCase) ExecuteTTY(ctx context.Context, sessionID, scope, nam
 			default:
 				n, err := ttySession.OutReader.Read(buf)
 				if err != nil {
-					if err == io.EOF {
+					if errors.Is(err, io.EOF) {
 						return nil
 					}
+
 					return err
 				}
 

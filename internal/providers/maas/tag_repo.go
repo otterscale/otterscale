@@ -8,6 +8,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/machine/tag"
 )
 
+// Note: MAAS API do not support context.
 type tagRepo struct {
 	maas *MAAS
 }

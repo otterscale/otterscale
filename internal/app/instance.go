@@ -230,8 +230,8 @@ func (s *InstanceService) MigrateInstance(ctx context.Context, req *pb.MigrateIn
 	return resp, nil
 }
 
-func (s *InstanceService) VNCInstance(ctx context.Context, req *pb.VNCInstanceRequest) (*pb.VNCInstanceResponse, error) {
-	sessionID, err := s.vnc.CreateVNCSession(ctx, req.GetScope(), req.GetNamespace(), req.GetName())
+func (s *InstanceService) VNCInstance(_ context.Context, req *pb.VNCInstanceRequest) (*pb.VNCInstanceResponse, error) {
+	sessionID, err := s.vnc.CreateVNCSession(req.GetScope(), req.GetNamespace(), req.GetName())
 	if err != nil {
 		return nil, err
 	}

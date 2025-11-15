@@ -11,6 +11,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/facility"
 )
 
+// Note: Juju API do not support context.
 type relationRepo struct {
 	juju *Juju
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/configuration"
 )
 
+// Note: Juju API do not support context.
 type scopeConfigRepo struct {
 	juju *Juju
 }

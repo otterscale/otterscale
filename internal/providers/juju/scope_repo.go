@@ -15,6 +15,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
+// Note: Juju API do not support context.
 type scopeRepo struct {
 	juju *Juju
 }

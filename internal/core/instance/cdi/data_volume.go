@@ -76,7 +76,7 @@ func (uc *DataVolumeUseCase) ListDataVolumes(ctx context.Context, scope, namespa
 	eg.Go(func() error {
 		selector := DataVolumeBootImageLabel + "=" + strconv.FormatBool(bootImage)
 
-		v, err := uc.dataVolume.List(ctx, scope, namespace, selector)
+		v, err := uc.dataVolume.List(egctx, scope, namespace, selector)
 		if err == nil {
 			dataVolumes = v
 		}

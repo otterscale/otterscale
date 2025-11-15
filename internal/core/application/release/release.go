@@ -21,13 +21,13 @@ const (
 type Release = release.Release
 
 type ReleaseRepo interface {
-	List(scope, namespace, selector string) ([]Release, error)
-	Get(scope, namespace, name string) (*Release, error)
-	Install(scope, namespace, name string, dryRun bool, chartRef string, labelsInSecrets, labels, annotations map[string]string, valuesYAML string, valuesMap map[string]string) (*Release, error)
-	Uninstall(scope, namespace, name string, dryRun bool) (*Release, error)
-	Upgrade(scope, namespace, name string, dryRun bool, chartRef string, valuesYAML string, valuesMap map[string]string, reuseValues bool) (*Release, error)
-	Rollback(scope, namespace, name string, dryRun bool) error
-	GetValues(scope, namespace, name string) (map[string]any, error)
+	List(ctx context.Context, scope, namespace, selector string) ([]Release, error)
+	Get(ctx context.Context, scope, namespace, name string) (*Release, error)
+	Install(ctx context.Context, scope, namespace, name string, dryRun bool, chartRef string, labelsInSecrets, labels, annotations map[string]string, valuesYAML string, valuesMap map[string]string) (*Release, error)
+	Uninstall(ctx context.Context, scope, namespace, name string, dryRun bool) (*Release, error)
+	Upgrade(ctx context.Context, scope, namespace, name string, dryRun bool, chartRef string, valuesYAML string, valuesMap map[string]string, reuseValues bool) (*Release, error)
+	Rollback(ctx context.Context, scope, namespace, name string, dryRun bool) error
+	GetValues(ctx context.Context, scope, namespace, name string) (map[string]any, error)
 }
 
 type ReleaseUseCase struct {
@@ -46,7 +46,7 @@ func NewReleaseUseCase(release ReleaseRepo, chart chart.ChartRepo) *ReleaseUseCa
 func (uc *ReleaseUseCase) ListReleases(ctx context.Context, scope string) ([]Release, error) {
 	selector := "!" + TypeLabel
 
-	return uc.release.List(scope, "", selector)
+	return uc.release.List(ctx, scope, "", selector)
 }
 
 func (uc *ReleaseUseCase) CreateRelease(ctx context.Context, scope, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string) (*Release, error) {
@@ -55,30 +55,30 @@ func (uc *ReleaseUseCase) CreateRelease(ctx context.Context, scope, namespace, n
 		ReleaseNameLabel: name,
 	}
 
-	return uc.release.Install(scope, namespace, name, dryRun, chartRef, nil, labels, nil, valuesYAML, valuesMap)
+	return uc.release.Install(ctx, scope, namespace, name, dryRun, chartRef, nil, labels, nil, valuesYAML, valuesMap)
 }
 
 func (uc *ReleaseUseCase) UpdateRelease(ctx context.Context, scope, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*Release, error) {
-	return uc.release.Upgrade(scope, namespace, name, dryRun, chartRef, valuesYAML, nil, false)
+	return uc.release.Upgrade(ctx, scope, namespace, name, dryRun, chartRef, valuesYAML, nil, false)
 }
 
 func (uc *ReleaseUseCase) DeleteRelease(ctx context.Context, scope, namespace, name string, dryRun bool) error {
-	_, err := uc.release.Uninstall(scope, namespace, name, dryRun)
+	_, err := uc.release.Uninstall(ctx, scope, namespace, name, dryRun)
 	return err
 }
 
 func (uc *ReleaseUseCase) RollbackRelease(ctx context.Context, scope, namespace, name string, dryRun bool) error {
-	return uc.release.Rollback(scope, namespace, name, dryRun)
+	return uc.release.Rollback(ctx, scope, namespace, name, dryRun)
 }
 
 func (uc *ReleaseUseCase) GetChartFileFromApplication(ctx context.Context, scope, namespace string, labels map[string]string) (*chart.File, error) {
 	file := &chart.File{}
-	eg := errgroup.Group{}
+	eg, egctx := errgroup.WithContext(ctx)
 
 	eg.Go(func() error {
 		releaseName, ok := labels[ReleaseNameLabel]
 		if ok {
-			v, err := uc.release.GetValues(scope, namespace, releaseName)
+			v, err := uc.release.GetValues(egctx, scope, namespace, releaseName)
 			if err != nil {
 				return err
 			}
@@ -93,7 +93,7 @@ func (uc *ReleaseUseCase) GetChartFileFromApplication(ctx context.Context, scope
 	eg.Go(func() error {
 		releaseName, ok := labels[ReleaseNameLabel]
 		if ok {
-			rel, err := uc.release.Get(scope, namespace, releaseName)
+			rel, err := uc.release.Get(egctx, scope, namespace, releaseName)
 			if err != nil {
 				return err
 			}
@@ -113,7 +113,7 @@ func (uc *ReleaseUseCase) GetChartFileFromApplication(ctx context.Context, scope
 				return nil // skip if chartRef is empty
 			}
 
-			v, err := uc.chart.Show(chartRef, action.ShowReadme)
+			v, err := uc.chart.Show(egctx, chartRef, action.ShowReadme)
 			if err != nil {
 				return err
 			}
