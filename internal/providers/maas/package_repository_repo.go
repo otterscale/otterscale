@@ -21,7 +21,7 @@ func NewPackageRepositoryRepo(maas *MAAS) configuration.PackageRepositoryRepo {
 
 var _ configuration.PackageRepositoryRepo = (*packageRepositoryRepo)(nil)
 
-func (r *packageRepositoryRepo) List() ([]configuration.PackageRepository, error) {
+func (r *packageRepositoryRepo) List(_ context.Context) ([]configuration.PackageRepository, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func (r *packageRepositoryRepo) List() ([]configuration.PackageRepository, error
 	return client.PackageRepositories.Get()
 }
 
-func (r *packageRepositoryRepo) Update(, id int, url string) (*configuration.PackageRepository, error) {
+func (r *packageRepositoryRepo) Update(_ context.Context, id int, url string) (*configuration.PackageRepository, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err
