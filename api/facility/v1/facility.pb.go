@@ -24,15 +24,14 @@ const (
 )
 
 type Facility struct {
-	state                  protoimpl.MessageState   `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                  `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Status      *Facility_Status         `protobuf:"bytes,2,opt,name=status"`
-	xxx_hidden_CharmName   *string                  `protobuf:"bytes,11,opt,name=charm_name,json=charmName"`
-	xxx_hidden_Version     *string                  `protobuf:"bytes,12,opt,name=version"`
-	xxx_hidden_Revision    int64                    `protobuf:"varint,13,opt,name=revision"`
-	xxx_hidden_Channel     *string                  `protobuf:"bytes,14,opt,name=channel"`
-	xxx_hidden_Metadata    *Facility_Charm_Metadata `protobuf:"bytes,21,opt,name=metadata"`
-	xxx_hidden_Units       *[]*Facility_Unit        `protobuf:"bytes,31,rep,name=units"`
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Status      *Facility_Status       `protobuf:"bytes,2,opt,name=status"`
+	xxx_hidden_CharmName   *string                `protobuf:"bytes,11,opt,name=charm_name,json=charmName"`
+	xxx_hidden_Version     *string                `protobuf:"bytes,12,opt,name=version"`
+	xxx_hidden_Revision    int64                  `protobuf:"varint,13,opt,name=revision"`
+	xxx_hidden_Channel     *string                `protobuf:"bytes,14,opt,name=channel"`
+	xxx_hidden_Units       *[]*Facility_Unit      `protobuf:"bytes,31,rep,name=units"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -118,13 +117,6 @@ func (x *Facility) GetChannel() string {
 	return ""
 }
 
-func (x *Facility) GetMetadata() *Facility_Charm_Metadata {
-	if x != nil {
-		return x.xxx_hidden_Metadata
-	}
-	return nil
-}
-
 func (x *Facility) GetUnits() []*Facility_Unit {
 	if x != nil {
 		if x.xxx_hidden_Units != nil {
@@ -136,7 +128,7 @@ func (x *Facility) GetUnits() []*Facility_Unit {
 
 func (x *Facility) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
 }
 
 func (x *Facility) SetStatus(v *Facility_Status) {
@@ -145,26 +137,22 @@ func (x *Facility) SetStatus(v *Facility_Status) {
 
 func (x *Facility) SetCharmName(v string) {
 	x.xxx_hidden_CharmName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
 }
 
 func (x *Facility) SetVersion(v string) {
 	x.xxx_hidden_Version = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
 }
 
 func (x *Facility) SetRevision(v int64) {
 	x.xxx_hidden_Revision = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
 }
 
 func (x *Facility) SetChannel(v string) {
 	x.xxx_hidden_Channel = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 8)
-}
-
-func (x *Facility) SetMetadata(v *Facility_Charm_Metadata) {
-	x.xxx_hidden_Metadata = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 7)
 }
 
 func (x *Facility) SetUnits(v []*Facility_Unit) {
@@ -213,13 +201,6 @@ func (x *Facility) HasChannel() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *Facility) HasMetadata() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_Metadata != nil
-}
-
 func (x *Facility) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
@@ -249,10 +230,6 @@ func (x *Facility) ClearChannel() {
 	x.xxx_hidden_Channel = nil
 }
 
-func (x *Facility) ClearMetadata() {
-	x.xxx_hidden_Metadata = nil
-}
-
 type Facility_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -262,7 +239,6 @@ type Facility_builder struct {
 	Version   *string
 	Revision  *int64
 	Channel   *string
-	Metadata  *Facility_Charm_Metadata
 	Units     []*Facility_Unit
 }
 
@@ -271,529 +247,27 @@ func (b0 Facility_builder) Build() *Facility {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
 		x.xxx_hidden_Name = b.Name
 	}
 	x.xxx_hidden_Status = b.Status
 	if b.CharmName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
 		x.xxx_hidden_CharmName = b.CharmName
 	}
 	if b.Version != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
 		x.xxx_hidden_Version = b.Version
 	}
 	if b.Revision != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
 		x.xxx_hidden_Revision = *b.Revision
 	}
 	if b.Channel != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 7)
 		x.xxx_hidden_Channel = b.Channel
 	}
-	x.xxx_hidden_Metadata = b.Metadata
 	x.xxx_hidden_Units = &b.Units
-	return m0
-}
-
-type Placement struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Type        isPlacement_Type       `protobuf_oneof:"type"`
-	xxx_hidden_MachineId   *string                `protobuf:"bytes,11,opt,name=machine_id,json=machineId"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *Placement) Reset() {
-	*x = Placement{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Placement) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Placement) ProtoMessage() {}
-
-func (x *Placement) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *Placement) GetLxd() bool {
-	if x != nil {
-		if x, ok := x.xxx_hidden_Type.(*placement_Lxd); ok {
-			return x.Lxd
-		}
-	}
-	return false
-}
-
-func (x *Placement) GetKvm() bool {
-	if x != nil {
-		if x, ok := x.xxx_hidden_Type.(*placement_Kvm); ok {
-			return x.Kvm
-		}
-	}
-	return false
-}
-
-func (x *Placement) GetMachine() bool {
-	if x != nil {
-		if x, ok := x.xxx_hidden_Type.(*placement_Machine); ok {
-			return x.Machine
-		}
-	}
-	return false
-}
-
-func (x *Placement) GetMachineId() string {
-	if x != nil {
-		if x.xxx_hidden_MachineId != nil {
-			return *x.xxx_hidden_MachineId
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *Placement) SetLxd(v bool) {
-	x.xxx_hidden_Type = &placement_Lxd{v}
-}
-
-func (x *Placement) SetKvm(v bool) {
-	x.xxx_hidden_Type = &placement_Kvm{v}
-}
-
-func (x *Placement) SetMachine(v bool) {
-	x.xxx_hidden_Type = &placement_Machine{v}
-}
-
-func (x *Placement) SetMachineId(v string) {
-	x.xxx_hidden_MachineId = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
-}
-
-func (x *Placement) HasType() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_Type != nil
-}
-
-func (x *Placement) HasLxd() bool {
-	if x == nil {
-		return false
-	}
-	_, ok := x.xxx_hidden_Type.(*placement_Lxd)
-	return ok
-}
-
-func (x *Placement) HasKvm() bool {
-	if x == nil {
-		return false
-	}
-	_, ok := x.xxx_hidden_Type.(*placement_Kvm)
-	return ok
-}
-
-func (x *Placement) HasMachine() bool {
-	if x == nil {
-		return false
-	}
-	_, ok := x.xxx_hidden_Type.(*placement_Machine)
-	return ok
-}
-
-func (x *Placement) HasMachineId() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *Placement) ClearType() {
-	x.xxx_hidden_Type = nil
-}
-
-func (x *Placement) ClearLxd() {
-	if _, ok := x.xxx_hidden_Type.(*placement_Lxd); ok {
-		x.xxx_hidden_Type = nil
-	}
-}
-
-func (x *Placement) ClearKvm() {
-	if _, ok := x.xxx_hidden_Type.(*placement_Kvm); ok {
-		x.xxx_hidden_Type = nil
-	}
-}
-
-func (x *Placement) ClearMachine() {
-	if _, ok := x.xxx_hidden_Type.(*placement_Machine); ok {
-		x.xxx_hidden_Type = nil
-	}
-}
-
-func (x *Placement) ClearMachineId() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_MachineId = nil
-}
-
-const Placement_Type_not_set_case case_Placement_Type = 0
-const Placement_Lxd_case case_Placement_Type = 1
-const Placement_Kvm_case case_Placement_Type = 2
-const Placement_Machine_case case_Placement_Type = 3
-
-func (x *Placement) WhichType() case_Placement_Type {
-	if x == nil {
-		return Placement_Type_not_set_case
-	}
-	switch x.xxx_hidden_Type.(type) {
-	case *placement_Lxd:
-		return Placement_Lxd_case
-	case *placement_Kvm:
-		return Placement_Kvm_case
-	case *placement_Machine:
-		return Placement_Machine_case
-	default:
-		return Placement_Type_not_set_case
-	}
-}
-
-type Placement_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	// Fields of oneof xxx_hidden_Type:
-	Lxd     *bool
-	Kvm     *bool
-	Machine *bool
-	// -- end of xxx_hidden_Type
-	MachineId *string
-}
-
-func (b0 Placement_builder) Build() *Placement {
-	m0 := &Placement{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Lxd != nil {
-		x.xxx_hidden_Type = &placement_Lxd{*b.Lxd}
-	}
-	if b.Kvm != nil {
-		x.xxx_hidden_Type = &placement_Kvm{*b.Kvm}
-	}
-	if b.Machine != nil {
-		x.xxx_hidden_Type = &placement_Machine{*b.Machine}
-	}
-	if b.MachineId != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_MachineId = b.MachineId
-	}
-	return m0
-}
-
-type case_Placement_Type protoreflect.FieldNumber
-
-func (x case_Placement_Type) String() string {
-	md := file_api_facility_v1_facility_proto_msgTypes[1].Descriptor()
-	if x == 0 {
-		return "not set"
-	}
-	return protoimpl.X.MessageFieldStringOf(md, protoreflect.FieldNumber(x))
-}
-
-type isPlacement_Type interface {
-	isPlacement_Type()
-}
-
-type placement_Lxd struct {
-	Lxd bool `protobuf:"varint,1,opt,name=lxd,oneof"`
-}
-
-type placement_Kvm struct {
-	Kvm bool `protobuf:"varint,2,opt,name=kvm,oneof"`
-}
-
-type placement_Machine struct {
-	Machine bool `protobuf:"varint,3,opt,name=machine,oneof"`
-}
-
-func (*placement_Lxd) isPlacement_Type() {}
-
-func (*placement_Kvm) isPlacement_Type() {}
-
-func (*placement_Machine) isPlacement_Type() {}
-
-type Constraint struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Architecture *string                `protobuf:"bytes,1,opt,name=architecture"`
-	xxx_hidden_CpuCores     uint64                 `protobuf:"varint,2,opt,name=cpu_cores,json=cpuCores"`
-	xxx_hidden_MemoryMb     uint64                 `protobuf:"varint,3,opt,name=memory_mb,json=memoryMb"`
-	xxx_hidden_Tags         []string               `protobuf:"bytes,11,rep,name=tags"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
-}
-
-func (x *Constraint) Reset() {
-	*x = Constraint{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Constraint) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Constraint) ProtoMessage() {}
-
-func (x *Constraint) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *Constraint) GetArchitecture() string {
-	if x != nil {
-		if x.xxx_hidden_Architecture != nil {
-			return *x.xxx_hidden_Architecture
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *Constraint) GetCpuCores() uint64 {
-	if x != nil {
-		return x.xxx_hidden_CpuCores
-	}
-	return 0
-}
-
-func (x *Constraint) GetMemoryMb() uint64 {
-	if x != nil {
-		return x.xxx_hidden_MemoryMb
-	}
-	return 0
-}
-
-func (x *Constraint) GetTags() []string {
-	if x != nil {
-		return x.xxx_hidden_Tags
-	}
-	return nil
-}
-
-func (x *Constraint) SetArchitecture(v string) {
-	x.xxx_hidden_Architecture = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *Constraint) SetCpuCores(v uint64) {
-	x.xxx_hidden_CpuCores = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
-}
-
-func (x *Constraint) SetMemoryMb(v uint64) {
-	x.xxx_hidden_MemoryMb = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
-}
-
-func (x *Constraint) SetTags(v []string) {
-	x.xxx_hidden_Tags = v
-}
-
-func (x *Constraint) HasArchitecture() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *Constraint) HasCpuCores() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *Constraint) HasMemoryMb() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *Constraint) ClearArchitecture() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Architecture = nil
-}
-
-func (x *Constraint) ClearCpuCores() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_CpuCores = 0
-}
-
-func (x *Constraint) ClearMemoryMb() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_MemoryMb = 0
-}
-
-type Constraint_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Architecture *string
-	CpuCores     *uint64
-	MemoryMb     *uint64
-	Tags         []string
-}
-
-func (b0 Constraint_builder) Build() *Constraint {
-	m0 := &Constraint{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Architecture != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_Architecture = b.Architecture
-	}
-	if b.CpuCores != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_CpuCores = *b.CpuCores
-	}
-	if b.MemoryMb != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
-		x.xxx_hidden_MemoryMb = *b.MemoryMb
-	}
-	x.xxx_hidden_Tags = b.Tags
-	return m0
-}
-
-type Tag struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Comment     *string                `protobuf:"bytes,2,opt,name=comment"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *Tag) Reset() {
-	*x = Tag{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Tag) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Tag) ProtoMessage() {}
-
-func (x *Tag) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *Tag) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *Tag) GetComment() string {
-	if x != nil {
-		if x.xxx_hidden_Comment != nil {
-			return *x.xxx_hidden_Comment
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *Tag) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *Tag) SetComment(v string) {
-	x.xxx_hidden_Comment = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
-}
-
-func (x *Tag) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *Tag) HasComment() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *Tag) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Name = nil
-}
-
-func (x *Tag) ClearComment() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Comment = nil
-}
-
-type Tag_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Name    *string
-	Comment *string
-}
-
-func (b0 Tag_builder) Build() *Tag {
-	m0 := &Tag{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Name = b.Name
-	}
-	if b.Comment != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Comment = b.Comment
-	}
 	return m0
 }
 
@@ -808,7 +282,7 @@ type ListFacilitiesRequest struct {
 
 func (x *ListFacilitiesRequest) Reset() {
 	*x = ListFacilitiesRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[4]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -820,7 +294,7 @@ func (x *ListFacilitiesRequest) String() string {
 func (*ListFacilitiesRequest) ProtoMessage() {}
 
 func (x *ListFacilitiesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[4]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -884,7 +358,7 @@ type ListFacilitiesResponse struct {
 
 func (x *ListFacilitiesResponse) Reset() {
 	*x = ListFacilitiesResponse{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[5]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -896,7 +370,7 @@ func (x *ListFacilitiesResponse) String() string {
 func (*ListFacilitiesResponse) ProtoMessage() {}
 
 func (x *ListFacilitiesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[5]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -934,773 +408,6 @@ func (b0 ListFacilitiesResponse_builder) Build() *ListFacilitiesResponse {
 	return m0
 }
 
-type GetFacilityRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *GetFacilityRequest) Reset() {
-	*x = GetFacilityRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetFacilityRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetFacilityRequest) ProtoMessage() {}
-
-func (x *GetFacilityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *GetFacilityRequest) GetScope() string {
-	if x != nil {
-		if x.xxx_hidden_Scope != nil {
-			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *GetFacilityRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *GetFacilityRequest) SetScope(v string) {
-	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *GetFacilityRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
-}
-
-func (x *GetFacilityRequest) HasScope() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *GetFacilityRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *GetFacilityRequest) ClearScope() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Scope = nil
-}
-
-func (x *GetFacilityRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Name = nil
-}
-
-type GetFacilityRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Scope *string
-	Name  *string
-}
-
-func (b0 GetFacilityRequest_builder) Build() *GetFacilityRequest {
-	m0 := &GetFacilityRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Name = b.Name
-	}
-	return m0
-}
-
-type CreateFacilityRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
-	xxx_hidden_ConfigYaml  *string                `protobuf:"bytes,11,opt,name=config_yaml,json=configYaml"`
-	xxx_hidden_CharmName   *string                `protobuf:"bytes,21,opt,name=charm_name,json=charmName"`
-	xxx_hidden_Channel     *string                `protobuf:"bytes,22,opt,name=channel"`
-	xxx_hidden_Revision    int64                  `protobuf:"varint,23,opt,name=revision"`
-	xxx_hidden_Number      int64                  `protobuf:"varint,24,opt,name=number"`
-	xxx_hidden_Placements  *[]*Placement          `protobuf:"bytes,31,rep,name=placements"`
-	xxx_hidden_Constraint  *Constraint            `protobuf:"bytes,32,opt,name=constraint"`
-	xxx_hidden_Trust       bool                   `protobuf:"varint,41,opt,name=trust"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *CreateFacilityRequest) Reset() {
-	*x = CreateFacilityRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateFacilityRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateFacilityRequest) ProtoMessage() {}
-
-func (x *CreateFacilityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *CreateFacilityRequest) GetScope() string {
-	if x != nil {
-		if x.xxx_hidden_Scope != nil {
-			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateFacilityRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateFacilityRequest) GetConfigYaml() string {
-	if x != nil {
-		if x.xxx_hidden_ConfigYaml != nil {
-			return *x.xxx_hidden_ConfigYaml
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateFacilityRequest) GetCharmName() string {
-	if x != nil {
-		if x.xxx_hidden_CharmName != nil {
-			return *x.xxx_hidden_CharmName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateFacilityRequest) GetChannel() string {
-	if x != nil {
-		if x.xxx_hidden_Channel != nil {
-			return *x.xxx_hidden_Channel
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateFacilityRequest) GetRevision() int64 {
-	if x != nil {
-		return x.xxx_hidden_Revision
-	}
-	return 0
-}
-
-func (x *CreateFacilityRequest) GetNumber() int64 {
-	if x != nil {
-		return x.xxx_hidden_Number
-	}
-	return 0
-}
-
-func (x *CreateFacilityRequest) GetPlacements() []*Placement {
-	if x != nil {
-		if x.xxx_hidden_Placements != nil {
-			return *x.xxx_hidden_Placements
-		}
-	}
-	return nil
-}
-
-func (x *CreateFacilityRequest) GetConstraint() *Constraint {
-	if x != nil {
-		return x.xxx_hidden_Constraint
-	}
-	return nil
-}
-
-func (x *CreateFacilityRequest) GetTrust() bool {
-	if x != nil {
-		return x.xxx_hidden_Trust
-	}
-	return false
-}
-
-func (x *CreateFacilityRequest) SetScope(v string) {
-	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 10)
-}
-
-func (x *CreateFacilityRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 10)
-}
-
-func (x *CreateFacilityRequest) SetConfigYaml(v string) {
-	x.xxx_hidden_ConfigYaml = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 10)
-}
-
-func (x *CreateFacilityRequest) SetCharmName(v string) {
-	x.xxx_hidden_CharmName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 10)
-}
-
-func (x *CreateFacilityRequest) SetChannel(v string) {
-	x.xxx_hidden_Channel = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 10)
-}
-
-func (x *CreateFacilityRequest) SetRevision(v int64) {
-	x.xxx_hidden_Revision = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 10)
-}
-
-func (x *CreateFacilityRequest) SetNumber(v int64) {
-	x.xxx_hidden_Number = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 10)
-}
-
-func (x *CreateFacilityRequest) SetPlacements(v []*Placement) {
-	x.xxx_hidden_Placements = &v
-}
-
-func (x *CreateFacilityRequest) SetConstraint(v *Constraint) {
-	x.xxx_hidden_Constraint = v
-}
-
-func (x *CreateFacilityRequest) SetTrust(v bool) {
-	x.xxx_hidden_Trust = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 10)
-}
-
-func (x *CreateFacilityRequest) HasScope() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *CreateFacilityRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *CreateFacilityRequest) HasConfigYaml() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *CreateFacilityRequest) HasCharmName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *CreateFacilityRequest) HasChannel() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
-func (x *CreateFacilityRequest) HasRevision() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
-}
-
-func (x *CreateFacilityRequest) HasNumber() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
-}
-
-func (x *CreateFacilityRequest) HasConstraint() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_Constraint != nil
-}
-
-func (x *CreateFacilityRequest) HasTrust() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
-}
-
-func (x *CreateFacilityRequest) ClearScope() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Scope = nil
-}
-
-func (x *CreateFacilityRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Name = nil
-}
-
-func (x *CreateFacilityRequest) ClearConfigYaml() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_ConfigYaml = nil
-}
-
-func (x *CreateFacilityRequest) ClearCharmName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_CharmName = nil
-}
-
-func (x *CreateFacilityRequest) ClearChannel() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Channel = nil
-}
-
-func (x *CreateFacilityRequest) ClearRevision() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
-	x.xxx_hidden_Revision = 0
-}
-
-func (x *CreateFacilityRequest) ClearNumber() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
-	x.xxx_hidden_Number = 0
-}
-
-func (x *CreateFacilityRequest) ClearConstraint() {
-	x.xxx_hidden_Constraint = nil
-}
-
-func (x *CreateFacilityRequest) ClearTrust() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
-	x.xxx_hidden_Trust = false
-}
-
-type CreateFacilityRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Scope      *string
-	Name       *string
-	ConfigYaml *string
-	CharmName  *string
-	Channel    *string
-	Revision   *int64
-	Number     *int64
-	Placements []*Placement
-	Constraint *Constraint
-	Trust      *bool
-}
-
-func (b0 CreateFacilityRequest_builder) Build() *CreateFacilityRequest {
-	m0 := &CreateFacilityRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 10)
-		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 10)
-		x.xxx_hidden_Name = b.Name
-	}
-	if b.ConfigYaml != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 10)
-		x.xxx_hidden_ConfigYaml = b.ConfigYaml
-	}
-	if b.CharmName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 10)
-		x.xxx_hidden_CharmName = b.CharmName
-	}
-	if b.Channel != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 10)
-		x.xxx_hidden_Channel = b.Channel
-	}
-	if b.Revision != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 10)
-		x.xxx_hidden_Revision = *b.Revision
-	}
-	if b.Number != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 10)
-		x.xxx_hidden_Number = *b.Number
-	}
-	x.xxx_hidden_Placements = &b.Placements
-	x.xxx_hidden_Constraint = b.Constraint
-	if b.Trust != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 10)
-		x.xxx_hidden_Trust = *b.Trust
-	}
-	return m0
-}
-
-type UpdateFacilityRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
-	xxx_hidden_ConfigYaml  *string                `protobuf:"bytes,11,opt,name=config_yaml,json=configYaml"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *UpdateFacilityRequest) Reset() {
-	*x = UpdateFacilityRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[8]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *UpdateFacilityRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateFacilityRequest) ProtoMessage() {}
-
-func (x *UpdateFacilityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[8]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *UpdateFacilityRequest) GetScope() string {
-	if x != nil {
-		if x.xxx_hidden_Scope != nil {
-			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateFacilityRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateFacilityRequest) GetConfigYaml() string {
-	if x != nil {
-		if x.xxx_hidden_ConfigYaml != nil {
-			return *x.xxx_hidden_ConfigYaml
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateFacilityRequest) SetScope(v string) {
-	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *UpdateFacilityRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
-}
-
-func (x *UpdateFacilityRequest) SetConfigYaml(v string) {
-	x.xxx_hidden_ConfigYaml = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
-}
-
-func (x *UpdateFacilityRequest) HasScope() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *UpdateFacilityRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *UpdateFacilityRequest) HasConfigYaml() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *UpdateFacilityRequest) ClearScope() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Scope = nil
-}
-
-func (x *UpdateFacilityRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Name = nil
-}
-
-func (x *UpdateFacilityRequest) ClearConfigYaml() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_ConfigYaml = nil
-}
-
-type UpdateFacilityRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Scope      *string
-	Name       *string
-	ConfigYaml *string
-}
-
-func (b0 UpdateFacilityRequest_builder) Build() *UpdateFacilityRequest {
-	m0 := &UpdateFacilityRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
-		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Name = b.Name
-	}
-	if b.ConfigYaml != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
-		x.xxx_hidden_ConfigYaml = b.ConfigYaml
-	}
-	return m0
-}
-
-type DeleteFacilityRequest struct {
-	state                     protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Name           *string                `protobuf:"bytes,2,opt,name=name"`
-	xxx_hidden_DestroyStorage bool                   `protobuf:"varint,11,opt,name=destroy_storage,json=destroyStorage"`
-	xxx_hidden_Force          bool                   `protobuf:"varint,12,opt,name=force"`
-	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
-	XXX_presence              [1]uint32
-	unknownFields             protoimpl.UnknownFields
-	sizeCache                 protoimpl.SizeCache
-}
-
-func (x *DeleteFacilityRequest) Reset() {
-	*x = DeleteFacilityRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[9]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DeleteFacilityRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteFacilityRequest) ProtoMessage() {}
-
-func (x *DeleteFacilityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[9]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *DeleteFacilityRequest) GetScope() string {
-	if x != nil {
-		if x.xxx_hidden_Scope != nil {
-			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteFacilityRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteFacilityRequest) GetDestroyStorage() bool {
-	if x != nil {
-		return x.xxx_hidden_DestroyStorage
-	}
-	return false
-}
-
-func (x *DeleteFacilityRequest) GetForce() bool {
-	if x != nil {
-		return x.xxx_hidden_Force
-	}
-	return false
-}
-
-func (x *DeleteFacilityRequest) SetScope(v string) {
-	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteFacilityRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
-}
-
-func (x *DeleteFacilityRequest) SetDestroyStorage(v bool) {
-	x.xxx_hidden_DestroyStorage = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
-}
-
-func (x *DeleteFacilityRequest) SetForce(v bool) {
-	x.xxx_hidden_Force = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
-}
-
-func (x *DeleteFacilityRequest) HasScope() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *DeleteFacilityRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *DeleteFacilityRequest) HasDestroyStorage() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *DeleteFacilityRequest) HasForce() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *DeleteFacilityRequest) ClearScope() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Scope = nil
-}
-
-func (x *DeleteFacilityRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Name = nil
-}
-
-func (x *DeleteFacilityRequest) ClearDestroyStorage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_DestroyStorage = false
-}
-
-func (x *DeleteFacilityRequest) ClearForce() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Force = false
-}
-
-type DeleteFacilityRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Scope          *string
-	Name           *string
-	DestroyStorage *bool
-	Force          *bool
-}
-
-func (b0 DeleteFacilityRequest_builder) Build() *DeleteFacilityRequest {
-	m0 := &DeleteFacilityRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Name = b.Name
-	}
-	if b.DestroyStorage != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
-		x.xxx_hidden_DestroyStorage = *b.DestroyStorage
-	}
-	if b.Force != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_Force = *b.Force
-	}
-	return m0
-}
-
 type ResolveFacilityUnitErrorsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
@@ -1713,7 +420,7 @@ type ResolveFacilityUnitErrorsRequest struct {
 
 func (x *ResolveFacilityUnitErrorsRequest) Reset() {
 	*x = ResolveFacilityUnitErrorsRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[10]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1725,7 +432,7 @@ func (x *ResolveFacilityUnitErrorsRequest) String() string {
 func (*ResolveFacilityUnitErrorsRequest) ProtoMessage() {}
 
 func (x *ResolveFacilityUnitErrorsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[10]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1812,939 +519,6 @@ func (b0 ResolveFacilityUnitErrorsRequest_builder) Build() *ResolveFacilityUnitE
 	return m0
 }
 
-type ExposeFacilityRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *ExposeFacilityRequest) Reset() {
-	*x = ExposeFacilityRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[11]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ExposeFacilityRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ExposeFacilityRequest) ProtoMessage() {}
-
-func (x *ExposeFacilityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[11]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *ExposeFacilityRequest) GetScope() string {
-	if x != nil {
-		if x.xxx_hidden_Scope != nil {
-			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ExposeFacilityRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ExposeFacilityRequest) SetScope(v string) {
-	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *ExposeFacilityRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
-}
-
-func (x *ExposeFacilityRequest) HasScope() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *ExposeFacilityRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *ExposeFacilityRequest) ClearScope() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Scope = nil
-}
-
-func (x *ExposeFacilityRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Name = nil
-}
-
-type ExposeFacilityRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Scope *string
-	Name  *string
-}
-
-func (b0 ExposeFacilityRequest_builder) Build() *ExposeFacilityRequest {
-	m0 := &ExposeFacilityRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Name = b.Name
-	}
-	return m0
-}
-
-type AddFacilityUnitsRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
-	xxx_hidden_Number      int64                  `protobuf:"varint,11,opt,name=number"`
-	xxx_hidden_Placements  *[]*Placement          `protobuf:"bytes,21,rep,name=placements"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *AddFacilityUnitsRequest) Reset() {
-	*x = AddFacilityUnitsRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[12]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *AddFacilityUnitsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AddFacilityUnitsRequest) ProtoMessage() {}
-
-func (x *AddFacilityUnitsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[12]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *AddFacilityUnitsRequest) GetScope() string {
-	if x != nil {
-		if x.xxx_hidden_Scope != nil {
-			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *AddFacilityUnitsRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *AddFacilityUnitsRequest) GetNumber() int64 {
-	if x != nil {
-		return x.xxx_hidden_Number
-	}
-	return 0
-}
-
-func (x *AddFacilityUnitsRequest) GetPlacements() []*Placement {
-	if x != nil {
-		if x.xxx_hidden_Placements != nil {
-			return *x.xxx_hidden_Placements
-		}
-	}
-	return nil
-}
-
-func (x *AddFacilityUnitsRequest) SetScope(v string) {
-	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *AddFacilityUnitsRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
-}
-
-func (x *AddFacilityUnitsRequest) SetNumber(v int64) {
-	x.xxx_hidden_Number = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
-}
-
-func (x *AddFacilityUnitsRequest) SetPlacements(v []*Placement) {
-	x.xxx_hidden_Placements = &v
-}
-
-func (x *AddFacilityUnitsRequest) HasScope() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *AddFacilityUnitsRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *AddFacilityUnitsRequest) HasNumber() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *AddFacilityUnitsRequest) ClearScope() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Scope = nil
-}
-
-func (x *AddFacilityUnitsRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Name = nil
-}
-
-func (x *AddFacilityUnitsRequest) ClearNumber() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Number = 0
-}
-
-type AddFacilityUnitsRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Scope      *string
-	Name       *string
-	Number     *int64
-	Placements []*Placement
-}
-
-func (b0 AddFacilityUnitsRequest_builder) Build() *AddFacilityUnitsRequest {
-	m0 := &AddFacilityUnitsRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
-		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Name = b.Name
-	}
-	if b.Number != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
-		x.xxx_hidden_Number = *b.Number
-	}
-	x.xxx_hidden_Placements = &b.Placements
-	return m0
-}
-
-type AddFacilityUnitsResponse struct {
-	state                protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_UnitNames []string               `protobuf:"bytes,1,rep,name=unit_names,json=unitNames"`
-	unknownFields        protoimpl.UnknownFields
-	sizeCache            protoimpl.SizeCache
-}
-
-func (x *AddFacilityUnitsResponse) Reset() {
-	*x = AddFacilityUnitsResponse{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[13]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *AddFacilityUnitsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AddFacilityUnitsResponse) ProtoMessage() {}
-
-func (x *AddFacilityUnitsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[13]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *AddFacilityUnitsResponse) GetUnitNames() []string {
-	if x != nil {
-		return x.xxx_hidden_UnitNames
-	}
-	return nil
-}
-
-func (x *AddFacilityUnitsResponse) SetUnitNames(v []string) {
-	x.xxx_hidden_UnitNames = v
-}
-
-type AddFacilityUnitsResponse_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	UnitNames []string
-}
-
-func (b0 AddFacilityUnitsResponse_builder) Build() *AddFacilityUnitsResponse {
-	m0 := &AddFacilityUnitsResponse{}
-	b, x := &b0, m0
-	_, _ = b, x
-	x.xxx_hidden_UnitNames = b.UnitNames
-	return m0
-}
-
-type ListActionsRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *ListActionsRequest) Reset() {
-	*x = ListActionsRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[14]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListActionsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListActionsRequest) ProtoMessage() {}
-
-func (x *ListActionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[14]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *ListActionsRequest) GetScope() string {
-	if x != nil {
-		if x.xxx_hidden_Scope != nil {
-			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ListActionsRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ListActionsRequest) SetScope(v string) {
-	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *ListActionsRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
-}
-
-func (x *ListActionsRequest) HasScope() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *ListActionsRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *ListActionsRequest) ClearScope() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Scope = nil
-}
-
-func (x *ListActionsRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
-type ListActionsRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Scope    *string
-	Facility *string
-}
-
-func (b0 ListActionsRequest_builder) Build() *ListActionsRequest {
-	m0 := &ListActionsRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Facility = b.Facility
-	}
-	return m0
-}
-
-type ListActionsResponse struct {
-	state              protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Actions *[]*Facility_Action    `protobuf:"bytes,1,rep,name=actions"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
-}
-
-func (x *ListActionsResponse) Reset() {
-	*x = ListActionsResponse{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[15]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListActionsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListActionsResponse) ProtoMessage() {}
-
-func (x *ListActionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[15]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *ListActionsResponse) GetActions() []*Facility_Action {
-	if x != nil {
-		if x.xxx_hidden_Actions != nil {
-			return *x.xxx_hidden_Actions
-		}
-	}
-	return nil
-}
-
-func (x *ListActionsResponse) SetActions(v []*Facility_Action) {
-	x.xxx_hidden_Actions = &v
-}
-
-type ListActionsResponse_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Actions []*Facility_Action
-}
-
-func (b0 ListActionsResponse_builder) Build() *ListActionsResponse {
-	m0 := &ListActionsResponse{}
-	b, x := &b0, m0
-	_, _ = b, x
-	x.xxx_hidden_Actions = &b.Actions
-	return m0
-}
-
-type DoActionRequest struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *DoActionRequest) Reset() {
-	*x = DoActionRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[16]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DoActionRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DoActionRequest) ProtoMessage() {}
-
-func (x *DoActionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[16]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-type DoActionRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-}
-
-func (b0 DoActionRequest_builder) Build() *DoActionRequest {
-	m0 := &DoActionRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	return m0
-}
-
-type ListCharmsRequest struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListCharmsRequest) Reset() {
-	*x = ListCharmsRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[17]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListCharmsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListCharmsRequest) ProtoMessage() {}
-
-func (x *ListCharmsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[17]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-type ListCharmsRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-}
-
-func (b0 ListCharmsRequest_builder) Build() *ListCharmsRequest {
-	m0 := &ListCharmsRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	return m0
-}
-
-type ListCharmsResponse struct {
-	state             protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Charms *[]*Facility_Charm     `protobuf:"bytes,1,rep,name=charms"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
-}
-
-func (x *ListCharmsResponse) Reset() {
-	*x = ListCharmsResponse{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[18]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListCharmsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListCharmsResponse) ProtoMessage() {}
-
-func (x *ListCharmsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[18]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *ListCharmsResponse) GetCharms() []*Facility_Charm {
-	if x != nil {
-		if x.xxx_hidden_Charms != nil {
-			return *x.xxx_hidden_Charms
-		}
-	}
-	return nil
-}
-
-func (x *ListCharmsResponse) SetCharms(v []*Facility_Charm) {
-	x.xxx_hidden_Charms = &v
-}
-
-type ListCharmsResponse_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Charms []*Facility_Charm
-}
-
-func (b0 ListCharmsResponse_builder) Build() *ListCharmsResponse {
-	m0 := &ListCharmsResponse{}
-	b, x := &b0, m0
-	_, _ = b, x
-	x.xxx_hidden_Charms = &b.Charms
-	return m0
-}
-
-type GetCharmRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *GetCharmRequest) Reset() {
-	*x = GetCharmRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[19]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetCharmRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetCharmRequest) ProtoMessage() {}
-
-func (x *GetCharmRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[19]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *GetCharmRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *GetCharmRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
-}
-
-func (x *GetCharmRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *GetCharmRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Name = nil
-}
-
-type GetCharmRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Name *string
-}
-
-func (b0 GetCharmRequest_builder) Build() *GetCharmRequest {
-	m0 := &GetCharmRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_Name = b.Name
-	}
-	return m0
-}
-
-type GetCharmMetadataRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *GetCharmMetadataRequest) Reset() {
-	*x = GetCharmMetadataRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[20]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetCharmMetadataRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetCharmMetadataRequest) ProtoMessage() {}
-
-func (x *GetCharmMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[20]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *GetCharmMetadataRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *GetCharmMetadataRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
-}
-
-func (x *GetCharmMetadataRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *GetCharmMetadataRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Name = nil
-}
-
-type GetCharmMetadataRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Name *string
-}
-
-func (b0 GetCharmMetadataRequest_builder) Build() *GetCharmMetadataRequest {
-	m0 := &GetCharmMetadataRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_Name = b.Name
-	}
-	return m0
-}
-
-type ListCharmArtifactsRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *ListCharmArtifactsRequest) Reset() {
-	*x = ListCharmArtifactsRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[21]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListCharmArtifactsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListCharmArtifactsRequest) ProtoMessage() {}
-
-func (x *ListCharmArtifactsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[21]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *ListCharmArtifactsRequest) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ListCharmArtifactsRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
-}
-
-func (x *ListCharmArtifactsRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *ListCharmArtifactsRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Name = nil
-}
-
-type ListCharmArtifactsRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Name *string
-}
-
-func (b0 ListCharmArtifactsRequest_builder) Build() *ListCharmArtifactsRequest {
-	m0 := &ListCharmArtifactsRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_Name = b.Name
-	}
-	return m0
-}
-
-type ListCharmArtifactsResponse struct {
-	state                protoimpl.MessageState      `protogen:"opaque.v1"`
-	xxx_hidden_Artifacts *[]*Facility_Charm_Artifact `protobuf:"bytes,1,rep,name=artifacts"`
-	unknownFields        protoimpl.UnknownFields
-	sizeCache            protoimpl.SizeCache
-}
-
-func (x *ListCharmArtifactsResponse) Reset() {
-	*x = ListCharmArtifactsResponse{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[22]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListCharmArtifactsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListCharmArtifactsResponse) ProtoMessage() {}
-
-func (x *ListCharmArtifactsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[22]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *ListCharmArtifactsResponse) GetArtifacts() []*Facility_Charm_Artifact {
-	if x != nil {
-		if x.xxx_hidden_Artifacts != nil {
-			return *x.xxx_hidden_Artifacts
-		}
-	}
-	return nil
-}
-
-func (x *ListCharmArtifactsResponse) SetArtifacts(v []*Facility_Charm_Artifact) {
-	x.xxx_hidden_Artifacts = &v
-}
-
-type ListCharmArtifactsResponse_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Artifacts []*Facility_Charm_Artifact
-}
-
-func (b0 ListCharmArtifactsResponse_builder) Build() *ListCharmArtifactsResponse {
-	m0 := &ListCharmArtifactsResponse{}
-	b, x := &b0, m0
-	_, _ = b, x
-	x.xxx_hidden_Artifacts = &b.Artifacts
-	return m0
-}
-
 type Facility_Charm struct {
 	state                      protoimpl.MessageState   `protogen:"opaque.v1"`
 	xxx_hidden_Id              *string                  `protobuf:"bytes,1,opt,name=id"`
@@ -2770,7 +544,7 @@ type Facility_Charm struct {
 
 func (x *Facility_Charm) Reset() {
 	*x = Facility_Charm{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[23]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2782,7 +556,7 @@ func (x *Facility_Charm) String() string {
 func (*Facility_Charm) ProtoMessage() {}
 
 func (x *Facility_Charm) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[23]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3248,7 +1022,7 @@ type Facility_Action struct {
 
 func (x *Facility_Action) Reset() {
 	*x = Facility_Action{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[24]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3260,7 +1034,7 @@ func (x *Facility_Action) String() string {
 func (*Facility_Action) ProtoMessage() {}
 
 func (x *Facility_Action) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[24]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3360,7 +1134,7 @@ type Facility_Status struct {
 
 func (x *Facility_Status) Reset() {
 	*x = Facility_Status{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[25]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3372,7 +1146,7 @@ func (x *Facility_Status) String() string {
 func (*Facility_Status) ProtoMessage() {}
 
 func (x *Facility_Status) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[25]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3504,7 +1278,7 @@ type Facility_Unit struct {
 
 func (x *Facility_Unit) Reset() {
 	*x = Facility_Unit{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[26]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3516,7 +1290,7 @@ func (x *Facility_Unit) String() string {
 func (*Facility_Unit) ProtoMessage() {}
 
 func (x *Facility_Unit) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[26]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3836,84 +1610,6 @@ func (b0 Facility_Unit_builder) Build() *Facility_Unit {
 	return m0
 }
 
-type Facility_Charm_Metadata struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ConfigYaml  *string                `protobuf:"bytes,1,opt,name=config_yaml,json=configYaml"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *Facility_Charm_Metadata) Reset() {
-	*x = Facility_Charm_Metadata{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[27]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Facility_Charm_Metadata) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Facility_Charm_Metadata) ProtoMessage() {}
-
-func (x *Facility_Charm_Metadata) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[27]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *Facility_Charm_Metadata) GetConfigYaml() string {
-	if x != nil {
-		if x.xxx_hidden_ConfigYaml != nil {
-			return *x.xxx_hidden_ConfigYaml
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *Facility_Charm_Metadata) SetConfigYaml(v string) {
-	x.xxx_hidden_ConfigYaml = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
-}
-
-func (x *Facility_Charm_Metadata) HasConfigYaml() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *Facility_Charm_Metadata) ClearConfigYaml() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_ConfigYaml = nil
-}
-
-type Facility_Charm_Metadata_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	ConfigYaml *string
-}
-
-func (b0 Facility_Charm_Metadata_builder) Build() *Facility_Charm_Metadata {
-	m0 := &Facility_Charm_Metadata{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.ConfigYaml != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_ConfigYaml = b.ConfigYaml
-	}
-	return m0
-}
-
 type Facility_Charm_Base struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name         *string                `protobuf:"bytes,1,opt,name=name"`
@@ -3927,7 +1623,7 @@ type Facility_Charm_Base struct {
 
 func (x *Facility_Charm_Base) Reset() {
 	*x = Facility_Charm_Base{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[28]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3939,7 +1635,7 @@ func (x *Facility_Charm_Base) String() string {
 func (*Facility_Charm_Base) ProtoMessage() {}
 
 func (x *Facility_Charm_Base) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[28]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4073,7 +1769,7 @@ type Facility_Charm_Artifact struct {
 
 func (x *Facility_Charm_Artifact) Reset() {
 	*x = Facility_Charm_Artifact{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[29]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4085,7 +1781,7 @@ func (x *Facility_Charm_Artifact) String() string {
 func (*Facility_Charm_Artifact) ProtoMessage() {}
 
 func (x *Facility_Charm_Artifact) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[29]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4244,7 +1940,7 @@ var File_api_facility_v1_facility_proto protoreflect.FileDescriptor
 
 const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\n" +
-	"\x1eapi/facility/v1/facility.proto\x12\x16otterscale.facility.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8a\x0e\n" +
+	"\x1eapi/facility/v1/facility.proto\x12\x16otterscale.facility.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x96\r\n" +
 	"\bFacility\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12?\n" +
 	"\x06status\x18\x02 \x01(\v2'.otterscale.facility.v1.Facility.StatusR\x06status\x12\x1d\n" +
@@ -4252,9 +1948,8 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"charm_name\x18\v \x01(\tR\tcharmName\x12\x18\n" +
 	"\aversion\x18\f \x01(\tR\aversion\x12\x1a\n" +
 	"\brevision\x18\r \x01(\x03R\brevision\x12\x18\n" +
-	"\achannel\x18\x0e \x01(\tR\achannel\x12K\n" +
-	"\bmetadata\x18\x15 \x01(\v2/.otterscale.facility.v1.Facility.Charm.MetadataR\bmetadata\x12;\n" +
-	"\x05units\x18\x1f \x03(\v2%.otterscale.facility.v1.Facility.UnitR\x05units\x1a\xb3\x06\n" +
+	"\achannel\x18\x0e \x01(\tR\achannel\x12;\n" +
+	"\x05units\x18\x1f \x03(\v2%.otterscale.facility.v1.Facility.UnitR\x05units\x1a\x86\x06\n" +
 	"\x05Charm\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12\x12\n" +
@@ -4272,10 +1967,7 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\alicense\x18\x12 \x01(\tR\alicense\x12\x1b\n" +
 	"\tstore_url\x18\x15 \x01(\tR\bstoreUrl\x12\x18\n" +
 	"\awebsite\x18\x16 \x01(\tR\awebsite\x12Z\n" +
-	"\x10default_artifact\x18\x1f \x01(\v2/.otterscale.facility.v1.Facility.Charm.ArtifactR\x0fdefaultArtifact\x1a+\n" +
-	"\bMetadata\x12\x1f\n" +
-	"\vconfig_yaml\x18\x01 \x01(\tR\n" +
-	"configYaml\x1aX\n" +
+	"\x10default_artifact\x18\x1f \x01(\v2/.otterscale.facility.v1.Facility.Charm.ArtifactR\x0fdefaultArtifact\x1aX\n" +
 	"\x04Base\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
 	"\achannel\x18\x02 \x01(\tR\achannel\x12\"\n" +
@@ -4309,209 +2001,57 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\n" +
 	"charm_name\x18\x15 \x01(\tR\tcharmName\x12\x18\n" +
 	"\aversion\x18\x16 \x01(\tR\aversion\x12I\n" +
-	"\fsubordinates\x18\x1f \x03(\v2%.otterscale.facility.v1.Facility.UnitR\fsubordinates\"v\n" +
-	"\tPlacement\x12\x12\n" +
-	"\x03lxd\x18\x01 \x01(\bH\x00R\x03lxd\x12\x12\n" +
-	"\x03kvm\x18\x02 \x01(\bH\x00R\x03kvm\x12\x1a\n" +
-	"\amachine\x18\x03 \x01(\bH\x00R\amachine\x12\x1d\n" +
-	"\n" +
-	"machine_id\x18\v \x01(\tR\tmachineIdB\x06\n" +
-	"\x04type\"~\n" +
-	"\n" +
-	"Constraint\x12\"\n" +
-	"\farchitecture\x18\x01 \x01(\tR\farchitecture\x12\x1b\n" +
-	"\tcpu_cores\x18\x02 \x01(\x04R\bcpuCores\x12\x1b\n" +
-	"\tmemory_mb\x18\x03 \x01(\x04R\bmemoryMb\x12\x12\n" +
-	"\x04tags\x18\v \x03(\tR\x04tags\"3\n" +
-	"\x03Tag\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
-	"\acomment\x18\x02 \x01(\tR\acomment\"-\n" +
+	"\fsubordinates\x18\x1f \x03(\v2%.otterscale.facility.v1.Facility.UnitR\fsubordinatesJ\x04\b\x15\x10\x16\"-\n" +
 	"\x15ListFacilitiesRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\"Z\n" +
 	"\x16ListFacilitiesResponse\x12@\n" +
 	"\n" +
 	"facilities\x18\x01 \x03(\v2 .otterscale.facility.v1.FacilityR\n" +
-	"facilities\">\n" +
-	"\x12GetFacilityRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\"\xec\x02\n" +
-	"\x15CreateFacilityRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1f\n" +
-	"\vconfig_yaml\x18\v \x01(\tR\n" +
-	"configYaml\x12\x1d\n" +
-	"\n" +
-	"charm_name\x18\x15 \x01(\tR\tcharmName\x12\x18\n" +
-	"\achannel\x18\x16 \x01(\tR\achannel\x12\x1a\n" +
-	"\brevision\x18\x17 \x01(\x03R\brevision\x12\x16\n" +
-	"\x06number\x18\x18 \x01(\x03R\x06number\x12A\n" +
-	"\n" +
-	"placements\x18\x1f \x03(\v2!.otterscale.facility.v1.PlacementR\n" +
-	"placements\x12B\n" +
-	"\n" +
-	"constraint\x18  \x01(\v2\".otterscale.facility.v1.ConstraintR\n" +
-	"constraint\x12\x14\n" +
-	"\x05trust\x18) \x01(\bR\x05trust\"b\n" +
-	"\x15UpdateFacilityRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1f\n" +
-	"\vconfig_yaml\x18\v \x01(\tR\n" +
-	"configYaml\"\x80\x01\n" +
-	"\x15DeleteFacilityRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12'\n" +
-	"\x0fdestroy_storage\x18\v \x01(\bR\x0edestroyStorage\x12\x14\n" +
-	"\x05force\x18\f \x01(\bR\x05force\"U\n" +
+	"facilities\"U\n" +
 	" ResolveFacilityUnitErrorsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
-	"\tunit_name\x18\x02 \x01(\tR\bunitName\"A\n" +
-	"\x15ExposeFacilityRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\"\x9e\x01\n" +
-	"\x17AddFacilityUnitsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
-	"\x06number\x18\v \x01(\x03R\x06number\x12A\n" +
-	"\n" +
-	"placements\x18\x15 \x03(\v2!.otterscale.facility.v1.PlacementR\n" +
-	"placements\"9\n" +
-	"\x18AddFacilityUnitsResponse\x12\x1d\n" +
-	"\n" +
-	"unit_names\x18\x01 \x03(\tR\tunitNames\"F\n" +
-	"\x12ListActionsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"X\n" +
-	"\x13ListActionsResponse\x12A\n" +
-	"\aactions\x18\x01 \x03(\v2'.otterscale.facility.v1.Facility.ActionR\aactions\"\x11\n" +
-	"\x0fDoActionRequest\"\x13\n" +
-	"\x11ListCharmsRequest\"T\n" +
-	"\x12ListCharmsResponse\x12>\n" +
-	"\x06charms\x18\x01 \x03(\v2&.otterscale.facility.v1.Facility.CharmR\x06charms\"%\n" +
-	"\x0fGetCharmRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"-\n" +
-	"\x17GetCharmMetadataRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"/\n" +
-	"\x19ListCharmArtifactsRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"k\n" +
-	"\x1aListCharmArtifactsResponse\x12M\n" +
-	"\tartifacts\x18\x01 \x03(\v2/.otterscale.facility.v1.Facility.Charm.ArtifactR\tartifacts2\xae\r\n" +
+	"\tunit_name\x18\x02 \x01(\tR\bunitName2\x9b\x02\n" +
 	"\x0fFacilityService\x12\x83\x01\n" +
 	"\x0eListFacilities\x12-.otterscale.facility.v1.ListFacilitiesRequest\x1a..otterscale.facility.v1.ListFacilitiesResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vfac-general\x12o\n" +
-	"\vGetFacility\x12*.otterscale.facility.v1.GetFacilityRequest\x1a .otterscale.facility.v1.Facility\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vfac-general\x12s\n" +
-	"\x0eCreateFacility\x12-.otterscale.facility.v1.CreateFacilityRequest\x1a .otterscale.facility.v1.Facility\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debug\x12s\n" +
-	"\x0eUpdateFacility\x12-.otterscale.facility.v1.UpdateFacilityRequest\x1a .otterscale.facility.v1.Facility\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debug\x12i\n" +
-	"\x0eDeleteFacility\x12-.otterscale.facility.v1.DeleteFacilityRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debug\x12\x81\x01\n" +
+	"\vfac-general\x12\x81\x01\n" +
 	"\x19ResolveFacilityUnitErrors\x128.otterscale.facility.v1.ResolveFacilityUnitErrorsRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vfac-general\x12i\n" +
-	"\x0eExposeFacility\x12-.otterscale.facility.v1.ExposeFacilityRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debug\x12\x87\x01\n" +
-	"\x10AddFacilityUnits\x12/.otterscale.facility.v1.AddFacilityUnitsRequest\x1a0.otterscale.facility.v1.AddFacilityUnitsResponse\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debug\x12x\n" +
-	"\vListActions\x12*.otterscale.facility.v1.ListActionsRequest\x1a+.otterscale.facility.v1.ListActionsResponse\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debug\x12]\n" +
-	"\bDoAction\x12'.otterscale.facility.v1.DoActionRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debug\x12u\n" +
-	"\n" +
-	"ListCharms\x12).otterscale.facility.v1.ListCharmsRequest\x1a*.otterscale.facility.v1.ListCharmsResponse\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debug\x12m\n" +
-	"\bGetCharm\x12'.otterscale.facility.v1.GetCharmRequest\x1a&.otterscale.facility.v1.Facility.Charm\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debug\x12\x86\x01\n" +
-	"\x10GetCharmMetadata\x12/.otterscale.facility.v1.GetCharmMetadataRequest\x1a/.otterscale.facility.v1.Facility.Charm.Metadata\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debug\x12\x8d\x01\n" +
-	"\x12ListCharmArtifacts\x121.otterscale.facility.v1.ListCharmArtifactsRequest\x1a2.otterscale.facility.v1.ListCharmArtifactsResponse\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tfac-debugB5Z3github.com/otterscale/otterscale/api/facility/v1;pbb\beditionsp\xe8\a"
+	"\vfac-generalB5Z3github.com/otterscale/otterscale/api/facility/v1;pbb\beditionsp\xe8\a"
 
-var file_api_facility_v1_facility_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
+var file_api_facility_v1_facility_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_api_facility_v1_facility_proto_goTypes = []any{
 	(*Facility)(nil),                         // 0: otterscale.facility.v1.Facility
-	(*Placement)(nil),                        // 1: otterscale.facility.v1.Placement
-	(*Constraint)(nil),                       // 2: otterscale.facility.v1.Constraint
-	(*Tag)(nil),                              // 3: otterscale.facility.v1.Tag
-	(*ListFacilitiesRequest)(nil),            // 4: otterscale.facility.v1.ListFacilitiesRequest
-	(*ListFacilitiesResponse)(nil),           // 5: otterscale.facility.v1.ListFacilitiesResponse
-	(*GetFacilityRequest)(nil),               // 6: otterscale.facility.v1.GetFacilityRequest
-	(*CreateFacilityRequest)(nil),            // 7: otterscale.facility.v1.CreateFacilityRequest
-	(*UpdateFacilityRequest)(nil),            // 8: otterscale.facility.v1.UpdateFacilityRequest
-	(*DeleteFacilityRequest)(nil),            // 9: otterscale.facility.v1.DeleteFacilityRequest
-	(*ResolveFacilityUnitErrorsRequest)(nil), // 10: otterscale.facility.v1.ResolveFacilityUnitErrorsRequest
-	(*ExposeFacilityRequest)(nil),            // 11: otterscale.facility.v1.ExposeFacilityRequest
-	(*AddFacilityUnitsRequest)(nil),          // 12: otterscale.facility.v1.AddFacilityUnitsRequest
-	(*AddFacilityUnitsResponse)(nil),         // 13: otterscale.facility.v1.AddFacilityUnitsResponse
-	(*ListActionsRequest)(nil),               // 14: otterscale.facility.v1.ListActionsRequest
-	(*ListActionsResponse)(nil),              // 15: otterscale.facility.v1.ListActionsResponse
-	(*DoActionRequest)(nil),                  // 16: otterscale.facility.v1.DoActionRequest
-	(*ListCharmsRequest)(nil),                // 17: otterscale.facility.v1.ListCharmsRequest
-	(*ListCharmsResponse)(nil),               // 18: otterscale.facility.v1.ListCharmsResponse
-	(*GetCharmRequest)(nil),                  // 19: otterscale.facility.v1.GetCharmRequest
-	(*GetCharmMetadataRequest)(nil),          // 20: otterscale.facility.v1.GetCharmMetadataRequest
-	(*ListCharmArtifactsRequest)(nil),        // 21: otterscale.facility.v1.ListCharmArtifactsRequest
-	(*ListCharmArtifactsResponse)(nil),       // 22: otterscale.facility.v1.ListCharmArtifactsResponse
-	(*Facility_Charm)(nil),                   // 23: otterscale.facility.v1.Facility.Charm
-	(*Facility_Action)(nil),                  // 24: otterscale.facility.v1.Facility.Action
-	(*Facility_Status)(nil),                  // 25: otterscale.facility.v1.Facility.Status
-	(*Facility_Unit)(nil),                    // 26: otterscale.facility.v1.Facility.Unit
-	(*Facility_Charm_Metadata)(nil),          // 27: otterscale.facility.v1.Facility.Charm.Metadata
-	(*Facility_Charm_Base)(nil),              // 28: otterscale.facility.v1.Facility.Charm.Base
-	(*Facility_Charm_Artifact)(nil),          // 29: otterscale.facility.v1.Facility.Charm.Artifact
-	(*timestamppb.Timestamp)(nil),            // 30: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                    // 31: google.protobuf.Empty
+	(*ListFacilitiesRequest)(nil),            // 1: otterscale.facility.v1.ListFacilitiesRequest
+	(*ListFacilitiesResponse)(nil),           // 2: otterscale.facility.v1.ListFacilitiesResponse
+	(*ResolveFacilityUnitErrorsRequest)(nil), // 3: otterscale.facility.v1.ResolveFacilityUnitErrorsRequest
+	(*Facility_Charm)(nil),                   // 4: otterscale.facility.v1.Facility.Charm
+	(*Facility_Action)(nil),                  // 5: otterscale.facility.v1.Facility.Action
+	(*Facility_Status)(nil),                  // 6: otterscale.facility.v1.Facility.Status
+	(*Facility_Unit)(nil),                    // 7: otterscale.facility.v1.Facility.Unit
+	(*Facility_Charm_Base)(nil),              // 8: otterscale.facility.v1.Facility.Charm.Base
+	(*Facility_Charm_Artifact)(nil),          // 9: otterscale.facility.v1.Facility.Charm.Artifact
+	(*timestamppb.Timestamp)(nil),            // 10: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                    // 11: google.protobuf.Empty
 }
 var file_api_facility_v1_facility_proto_depIdxs = []int32{
-	25, // 0: otterscale.facility.v1.Facility.status:type_name -> otterscale.facility.v1.Facility.Status
-	27, // 1: otterscale.facility.v1.Facility.metadata:type_name -> otterscale.facility.v1.Facility.Charm.Metadata
-	26, // 2: otterscale.facility.v1.Facility.units:type_name -> otterscale.facility.v1.Facility.Unit
-	0,  // 3: otterscale.facility.v1.ListFacilitiesResponse.facilities:type_name -> otterscale.facility.v1.Facility
-	1,  // 4: otterscale.facility.v1.CreateFacilityRequest.placements:type_name -> otterscale.facility.v1.Placement
-	2,  // 5: otterscale.facility.v1.CreateFacilityRequest.constraint:type_name -> otterscale.facility.v1.Constraint
-	1,  // 6: otterscale.facility.v1.AddFacilityUnitsRequest.placements:type_name -> otterscale.facility.v1.Placement
-	24, // 7: otterscale.facility.v1.ListActionsResponse.actions:type_name -> otterscale.facility.v1.Facility.Action
-	23, // 8: otterscale.facility.v1.ListCharmsResponse.charms:type_name -> otterscale.facility.v1.Facility.Charm
-	29, // 9: otterscale.facility.v1.ListCharmArtifactsResponse.artifacts:type_name -> otterscale.facility.v1.Facility.Charm.Artifact
-	29, // 10: otterscale.facility.v1.Facility.Charm.default_artifact:type_name -> otterscale.facility.v1.Facility.Charm.Artifact
-	30, // 11: otterscale.facility.v1.Facility.Status.created_at:type_name -> google.protobuf.Timestamp
-	25, // 12: otterscale.facility.v1.Facility.Unit.agent_status:type_name -> otterscale.facility.v1.Facility.Status
-	25, // 13: otterscale.facility.v1.Facility.Unit.workload_status:type_name -> otterscale.facility.v1.Facility.Status
-	26, // 14: otterscale.facility.v1.Facility.Unit.subordinates:type_name -> otterscale.facility.v1.Facility.Unit
-	28, // 15: otterscale.facility.v1.Facility.Charm.Artifact.bases:type_name -> otterscale.facility.v1.Facility.Charm.Base
-	30, // 16: otterscale.facility.v1.Facility.Charm.Artifact.created_at:type_name -> google.protobuf.Timestamp
-	4,  // 17: otterscale.facility.v1.FacilityService.ListFacilities:input_type -> otterscale.facility.v1.ListFacilitiesRequest
-	6,  // 18: otterscale.facility.v1.FacilityService.GetFacility:input_type -> otterscale.facility.v1.GetFacilityRequest
-	7,  // 19: otterscale.facility.v1.FacilityService.CreateFacility:input_type -> otterscale.facility.v1.CreateFacilityRequest
-	8,  // 20: otterscale.facility.v1.FacilityService.UpdateFacility:input_type -> otterscale.facility.v1.UpdateFacilityRequest
-	9,  // 21: otterscale.facility.v1.FacilityService.DeleteFacility:input_type -> otterscale.facility.v1.DeleteFacilityRequest
-	10, // 22: otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors:input_type -> otterscale.facility.v1.ResolveFacilityUnitErrorsRequest
-	11, // 23: otterscale.facility.v1.FacilityService.ExposeFacility:input_type -> otterscale.facility.v1.ExposeFacilityRequest
-	12, // 24: otterscale.facility.v1.FacilityService.AddFacilityUnits:input_type -> otterscale.facility.v1.AddFacilityUnitsRequest
-	14, // 25: otterscale.facility.v1.FacilityService.ListActions:input_type -> otterscale.facility.v1.ListActionsRequest
-	16, // 26: otterscale.facility.v1.FacilityService.DoAction:input_type -> otterscale.facility.v1.DoActionRequest
-	17, // 27: otterscale.facility.v1.FacilityService.ListCharms:input_type -> otterscale.facility.v1.ListCharmsRequest
-	19, // 28: otterscale.facility.v1.FacilityService.GetCharm:input_type -> otterscale.facility.v1.GetCharmRequest
-	20, // 29: otterscale.facility.v1.FacilityService.GetCharmMetadata:input_type -> otterscale.facility.v1.GetCharmMetadataRequest
-	21, // 30: otterscale.facility.v1.FacilityService.ListCharmArtifacts:input_type -> otterscale.facility.v1.ListCharmArtifactsRequest
-	5,  // 31: otterscale.facility.v1.FacilityService.ListFacilities:output_type -> otterscale.facility.v1.ListFacilitiesResponse
-	0,  // 32: otterscale.facility.v1.FacilityService.GetFacility:output_type -> otterscale.facility.v1.Facility
-	0,  // 33: otterscale.facility.v1.FacilityService.CreateFacility:output_type -> otterscale.facility.v1.Facility
-	0,  // 34: otterscale.facility.v1.FacilityService.UpdateFacility:output_type -> otterscale.facility.v1.Facility
-	31, // 35: otterscale.facility.v1.FacilityService.DeleteFacility:output_type -> google.protobuf.Empty
-	31, // 36: otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors:output_type -> google.protobuf.Empty
-	31, // 37: otterscale.facility.v1.FacilityService.ExposeFacility:output_type -> google.protobuf.Empty
-	13, // 38: otterscale.facility.v1.FacilityService.AddFacilityUnits:output_type -> otterscale.facility.v1.AddFacilityUnitsResponse
-	15, // 39: otterscale.facility.v1.FacilityService.ListActions:output_type -> otterscale.facility.v1.ListActionsResponse
-	31, // 40: otterscale.facility.v1.FacilityService.DoAction:output_type -> google.protobuf.Empty
-	18, // 41: otterscale.facility.v1.FacilityService.ListCharms:output_type -> otterscale.facility.v1.ListCharmsResponse
-	23, // 42: otterscale.facility.v1.FacilityService.GetCharm:output_type -> otterscale.facility.v1.Facility.Charm
-	27, // 43: otterscale.facility.v1.FacilityService.GetCharmMetadata:output_type -> otterscale.facility.v1.Facility.Charm.Metadata
-	22, // 44: otterscale.facility.v1.FacilityService.ListCharmArtifacts:output_type -> otterscale.facility.v1.ListCharmArtifactsResponse
-	31, // [31:45] is the sub-list for method output_type
-	17, // [17:31] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	6,  // 0: otterscale.facility.v1.Facility.status:type_name -> otterscale.facility.v1.Facility.Status
+	7,  // 1: otterscale.facility.v1.Facility.units:type_name -> otterscale.facility.v1.Facility.Unit
+	0,  // 2: otterscale.facility.v1.ListFacilitiesResponse.facilities:type_name -> otterscale.facility.v1.Facility
+	9,  // 3: otterscale.facility.v1.Facility.Charm.default_artifact:type_name -> otterscale.facility.v1.Facility.Charm.Artifact
+	10, // 4: otterscale.facility.v1.Facility.Status.created_at:type_name -> google.protobuf.Timestamp
+	6,  // 5: otterscale.facility.v1.Facility.Unit.agent_status:type_name -> otterscale.facility.v1.Facility.Status
+	6,  // 6: otterscale.facility.v1.Facility.Unit.workload_status:type_name -> otterscale.facility.v1.Facility.Status
+	7,  // 7: otterscale.facility.v1.Facility.Unit.subordinates:type_name -> otterscale.facility.v1.Facility.Unit
+	8,  // 8: otterscale.facility.v1.Facility.Charm.Artifact.bases:type_name -> otterscale.facility.v1.Facility.Charm.Base
+	10, // 9: otterscale.facility.v1.Facility.Charm.Artifact.created_at:type_name -> google.protobuf.Timestamp
+	1,  // 10: otterscale.facility.v1.FacilityService.ListFacilities:input_type -> otterscale.facility.v1.ListFacilitiesRequest
+	3,  // 11: otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors:input_type -> otterscale.facility.v1.ResolveFacilityUnitErrorsRequest
+	2,  // 12: otterscale.facility.v1.FacilityService.ListFacilities:output_type -> otterscale.facility.v1.ListFacilitiesResponse
+	11, // 13: otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors:output_type -> google.protobuf.Empty
+	12, // [12:14] is the sub-list for method output_type
+	10, // [10:12] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_api_facility_v1_facility_proto_init() }
@@ -4519,18 +2059,13 @@ func file_api_facility_v1_facility_proto_init() {
 	if File_api_facility_v1_facility_proto != nil {
 		return
 	}
-	file_api_facility_v1_facility_proto_msgTypes[1].OneofWrappers = []any{
-		(*placement_Lxd)(nil),
-		(*placement_Kvm)(nil),
-		(*placement_Machine)(nil),
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_facility_v1_facility_proto_rawDesc), len(file_api_facility_v1_facility_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   30,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

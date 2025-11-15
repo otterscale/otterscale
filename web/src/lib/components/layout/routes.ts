@@ -79,6 +79,10 @@ const platformRoutes = (scope: string): Route[] => [
 				url: resolve('/(auth)/scope/[scope]/storage/file-system', { scope: scope })
 			},
 			{
+				title: m.smb(),
+				url: resolve('/(auth)/scope/[scope]/storage/smb', { scope: scope })
+			},
+			{
 				title: m.object_gateway(),
 				url: resolve('/(auth)/scope/[scope]/storage/object-gateway', { scope: scope })
 			}

@@ -523,7 +523,6 @@ func (b0 Model_builder) Build() *Model {
 type ListModelsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -566,16 +565,6 @@ func (x *ListModelsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListModelsRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListModelsRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -588,17 +577,12 @@ func (x *ListModelsRequest) GetNamespace() string {
 
 func (x *ListModelsRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *ListModelsRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *ListModelsRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *ListModelsRequest) HasScope() bool {
@@ -608,18 +592,11 @@ func (x *ListModelsRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListModelsRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListModelsRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *ListModelsRequest) ClearScope() {
@@ -627,13 +604,8 @@ func (x *ListModelsRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListModelsRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *ListModelsRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
@@ -641,7 +613,6 @@ type ListModelsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 }
 
@@ -650,15 +621,11 @@ func (b0 ListModelsRequest_builder) Build() *ListModelsRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
@@ -761,7 +728,6 @@ func (b0 ListModelsResponse_builder) Build() *ListModelsResponse {
 type CreateModelRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_ModelName   *string                `protobuf:"bytes,11,opt,name=model_name,json=modelName"`
@@ -806,16 +772,6 @@ func (x *CreateModelRequest) GetScope() string {
 	return ""
 }
 
-func (x *CreateModelRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreateModelRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -848,27 +804,22 @@ func (x *CreateModelRequest) GetModelName() string {
 
 func (x *CreateModelRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *CreateModelRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *CreateModelRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *CreateModelRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *CreateModelRequest) SetModelName(v string) {
 	x.xxx_hidden_ModelName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *CreateModelRequest) HasScope() bool {
@@ -878,32 +829,25 @@ func (x *CreateModelRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateModelRequest) HasFacility() bool {
+func (x *CreateModelRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateModelRequest) HasNamespace() bool {
+func (x *CreateModelRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateModelRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *CreateModelRequest) HasModelName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *CreateModelRequest) ClearScope() {
@@ -911,23 +855,18 @@ func (x *CreateModelRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateModelRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateModelRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *CreateModelRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *CreateModelRequest) ClearModelName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_ModelName = nil
 }
 
@@ -935,7 +874,6 @@ type CreateModelRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 	ModelName *string
@@ -946,23 +884,19 @@ func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.ModelName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_ModelName = b.ModelName
 	}
 	return m0
@@ -971,7 +905,6 @@ func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
 type UpdateModelRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_Limits      *Model_Resource        `protobuf:"bytes,11,opt,name=limits"`
@@ -1017,16 +950,6 @@ func (x *UpdateModelRequest) GetScope() string {
 	return ""
 }
 
-func (x *UpdateModelRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *UpdateModelRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -1063,22 +986,17 @@ func (x *UpdateModelRequest) GetRequests() *Model_Resource {
 
 func (x *UpdateModelRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *UpdateModelRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *UpdateModelRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *UpdateModelRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *UpdateModelRequest) SetLimits(v *Model_Resource) {
@@ -1096,25 +1014,18 @@ func (x *UpdateModelRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UpdateModelRequest) HasFacility() bool {
+func (x *UpdateModelRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdateModelRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *UpdateModelRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *UpdateModelRequest) HasLimits() bool {
@@ -1136,18 +1047,13 @@ func (x *UpdateModelRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *UpdateModelRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *UpdateModelRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *UpdateModelRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -1163,7 +1069,6 @@ type UpdateModelRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 	Limits    *Model_Resource
@@ -1175,19 +1080,15 @@ func (b0 UpdateModelRequest_builder) Build() *UpdateModelRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	x.xxx_hidden_Limits = b.Limits
@@ -1198,7 +1099,6 @@ func (b0 UpdateModelRequest_builder) Build() *UpdateModelRequest {
 type DeleteModelRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -1242,16 +1142,6 @@ func (x *DeleteModelRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteModelRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteModelRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -1274,22 +1164,17 @@ func (x *DeleteModelRequest) GetName() string {
 
 func (x *DeleteModelRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteModelRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteModelRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteModelRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteModelRequest) HasScope() bool {
@@ -1299,25 +1184,18 @@ func (x *DeleteModelRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteModelRequest) HasFacility() bool {
+func (x *DeleteModelRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteModelRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteModelRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteModelRequest) ClearScope() {
@@ -1325,18 +1203,13 @@ func (x *DeleteModelRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteModelRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteModelRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *DeleteModelRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -1344,7 +1217,6 @@ type DeleteModelRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -1354,19 +1226,15 @@ func (b0 DeleteModelRequest_builder) Build() *DeleteModelRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -1640,7 +1508,6 @@ func (b0 ModelArtifact_builder) Build() *ModelArtifact {
 type ListModelArtifactsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -1683,16 +1550,6 @@ func (x *ListModelArtifactsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListModelArtifactsRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListModelArtifactsRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -1705,17 +1562,12 @@ func (x *ListModelArtifactsRequest) GetNamespace() string {
 
 func (x *ListModelArtifactsRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *ListModelArtifactsRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *ListModelArtifactsRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *ListModelArtifactsRequest) HasScope() bool {
@@ -1725,18 +1577,11 @@ func (x *ListModelArtifactsRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListModelArtifactsRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListModelArtifactsRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *ListModelArtifactsRequest) ClearScope() {
@@ -1744,13 +1589,8 @@ func (x *ListModelArtifactsRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListModelArtifactsRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *ListModelArtifactsRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
@@ -1758,7 +1598,6 @@ type ListModelArtifactsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 }
 
@@ -1767,15 +1606,11 @@ func (b0 ListModelArtifactsRequest_builder) Build() *ListModelArtifactsRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
@@ -1843,7 +1678,6 @@ func (b0 ListModelArtifactsResponse_builder) Build() *ListModelArtifactsResponse
 type CreateModelArtifactRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_ModelName   *string                `protobuf:"bytes,11,opt,name=model_name,json=modelName"`
@@ -1889,16 +1723,6 @@ func (x *CreateModelArtifactRequest) GetScope() string {
 	return ""
 }
 
-func (x *CreateModelArtifactRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreateModelArtifactRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -1938,32 +1762,27 @@ func (x *CreateModelArtifactRequest) GetSize() int64 {
 
 func (x *CreateModelArtifactRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *CreateModelArtifactRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *CreateModelArtifactRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *CreateModelArtifactRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *CreateModelArtifactRequest) SetModelName(v string) {
 	x.xxx_hidden_ModelName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *CreateModelArtifactRequest) SetSize(v int64) {
 	x.xxx_hidden_Size = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *CreateModelArtifactRequest) HasScope() bool {
@@ -1973,39 +1792,32 @@ func (x *CreateModelArtifactRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateModelArtifactRequest) HasFacility() bool {
+func (x *CreateModelArtifactRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateModelArtifactRequest) HasNamespace() bool {
+func (x *CreateModelArtifactRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateModelArtifactRequest) HasName() bool {
+func (x *CreateModelArtifactRequest) HasModelName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreateModelArtifactRequest) HasModelName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *CreateModelArtifactRequest) HasSize() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *CreateModelArtifactRequest) ClearScope() {
@@ -2013,28 +1825,23 @@ func (x *CreateModelArtifactRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateModelArtifactRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateModelArtifactRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *CreateModelArtifactRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *CreateModelArtifactRequest) ClearModelName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_ModelName = nil
 }
 
 func (x *CreateModelArtifactRequest) ClearSize() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_Size = 0
 }
 
@@ -2042,7 +1849,6 @@ type CreateModelArtifactRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 	ModelName *string
@@ -2054,27 +1860,23 @@ func (b0 CreateModelArtifactRequest_builder) Build() *CreateModelArtifactRequest
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.ModelName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_ModelName = b.ModelName
 	}
 	if b.Size != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_Size = *b.Size
 	}
 	return m0
@@ -2083,7 +1885,6 @@ func (b0 CreateModelArtifactRequest_builder) Build() *CreateModelArtifactRequest
 type DeleteModelArtifactRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -2127,16 +1928,6 @@ func (x *DeleteModelArtifactRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteModelArtifactRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteModelArtifactRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -2159,22 +1950,17 @@ func (x *DeleteModelArtifactRequest) GetName() string {
 
 func (x *DeleteModelArtifactRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteModelArtifactRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteModelArtifactRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteModelArtifactRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteModelArtifactRequest) HasScope() bool {
@@ -2184,25 +1970,18 @@ func (x *DeleteModelArtifactRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteModelArtifactRequest) HasFacility() bool {
+func (x *DeleteModelArtifactRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteModelArtifactRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteModelArtifactRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteModelArtifactRequest) ClearScope() {
@@ -2210,18 +1989,13 @@ func (x *DeleteModelArtifactRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteModelArtifactRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteModelArtifactRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *DeleteModelArtifactRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -2229,7 +2003,6 @@ type DeleteModelArtifactRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -2239,19 +2012,15 @@ func (b0 DeleteModelArtifactRequest_builder) Build() *DeleteModelArtifactRequest
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -2385,33 +2154,29 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x06limits\x18  \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06limits\x1aM\n" +
 	"\bResource\x12\x12\n" +
 	"\x04vgpu\x18\x01 \x01(\rR\x04vgpu\x12-\n" +
-	"\x12vgpumem_percentage\x18\x02 \x01(\rR\x11vgpumemPercentage\"c\n" +
+	"\x12vgpumem_percentage\x18\x02 \x01(\rR\x11vgpumemPercentage\"M\n" +
 	"\x11ListModelsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\"o\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespaceJ\x04\b\x02\x10\x03\"o\n" +
 	"\x12ListModelsResponse\x122\n" +
 	"\x06models\x18\x01 \x03(\v2\x1a.otterscale.model.v1.ModelR\x06models\x12%\n" +
-	"\x0epublic_address\x18\x02 \x01(\tR\rpublicAddress\"\x97\x01\n" +
+	"\x0epublic_address\x18\x02 \x01(\tR\rpublicAddress\"\x81\x01\n" +
 	"\x12CreateModelRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
-	"model_name\x18\v \x01(\tR\tmodelName\"\xf6\x01\n" +
+	"model_name\x18\v \x01(\tR\tmodelNameJ\x04\b\x02\x10\x03\"\xe0\x01\n" +
 	"\x12UpdateModelRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12;\n" +
 	"\x06limits\x18\v \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06limits\x12?\n" +
-	"\brequests\x18\f \x01(\v2#.otterscale.model.v1.Model.ResourceR\brequests\"x\n" +
+	"\brequests\x18\f \x01(\v2#.otterscale.model.v1.Model.ResourceR\brequestsJ\x04\b\x02\x10\x03\"b\n" +
 	"\x12DeleteModelRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xe6\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xe6\x01\n" +
 	"\rModelArtifact\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1d\n" +
@@ -2422,26 +2187,23 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\vvolume_name\x18\x1f \x01(\tR\n" +
 	"volumeName\x129\n" +
 	"\n" +
-	"created_at\x18) \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"k\n" +
+	"created_at\x18) \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"U\n" +
 	"\x19ListModelArtifactsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\"i\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespaceJ\x04\b\x02\x10\x03\"i\n" +
 	"\x1aListModelArtifactsResponse\x12K\n" +
-	"\x0fmodel_artifacts\x18\x01 \x03(\v2\".otterscale.model.v1.ModelArtifactR\x0emodelArtifacts\"\xb3\x01\n" +
+	"\x0fmodel_artifacts\x18\x01 \x03(\v2\".otterscale.model.v1.ModelArtifactR\x0emodelArtifacts\"\x9d\x01\n" +
 	"\x1aCreateModelArtifactRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
 	"model_name\x18\v \x01(\tR\tmodelName\x12\x12\n" +
-	"\x04size\x18\f \x01(\x03R\x04size\"\x80\x01\n" +
+	"\x04size\x18\f \x01(\x03R\x04sizeJ\x04\b\x02\x10\x03\"j\n" +
 	"\x1aDeleteModelArtifactRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name2\xb5\x06\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x032\xb5\x06\n" +
 	"\fModelService\x12q\n" +
 	"\n" +
 	"ListModels\x12&.otterscale.model.v1.ListModelsRequest\x1a'.otterscale.model.v1.ListModelsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +

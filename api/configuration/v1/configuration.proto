@@ -174,7 +174,7 @@ message ListBootImageSelectionsResponse {
 
 message CephBlockDevice {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message NetworkFileSystem {
@@ -190,13 +190,13 @@ message InternalObjectService {
   }
   Type type = 1;
   string scope = 2;
-  string facility = 3;
+  reserved 3;
   string name = 4;
-  string endpoint = 5;
+  string host = 5;
 }
 
 message ExternalObjectService {
-  string endpoint = 1;
+  string host = 1;
   string access_key = 2;
   string secret_key = 3;
 }
@@ -326,8 +326,6 @@ message DeleteTestResultRequest {
 
 message ListInternalObjectServicesRequest {
   string scope = 1;
-  string kubernetes_name = 2;
-  string ceph_name = 3;
 }
 
 message ListInternalObjectServicesResponse {

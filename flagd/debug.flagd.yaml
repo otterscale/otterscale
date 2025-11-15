@@ -1,11 +1,5 @@
 # yaml-language-server: $schema=https://flagd.dev/schema/v0/flags.json
 flags:
-  fac-debug:
-    state: DISABLED
-    variants:
-      "on": true
-      "off": false
-    defaultVariant: "off"
   env-debug:
     state: DISABLED
     variants:

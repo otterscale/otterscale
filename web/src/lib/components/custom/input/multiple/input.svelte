@@ -18,15 +18,17 @@
 		id,
 		required,
 		type,
+		icon,
 		invalid = $bindable(),
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		values?: any[];
 		required?: boolean;
 		type?: InputType;
+		icon?: string;
 		invalid?: boolean | null | undefined;
 	} = $props();
-	const inputManager = new InputManager(type);
+	const inputManager = new InputManager(type, icon);
 	const valuesManager = new ValuesManager(values, {
 		set values(newValue: any[]) {
 			values = newValue;
