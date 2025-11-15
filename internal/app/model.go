@@ -47,7 +47,7 @@ func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelReque
 }
 
 func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelRequest) (*pb.Model, error) {
-	var requests, limits *model.ModelResource
+	var requests, limits *model.Resource
 	if r := req.GetRequests(); r != nil {
 		requests = toModelResource(r)
 	}
@@ -104,8 +104,8 @@ func (s *ModelService) DeleteModelArtifact(ctx context.Context, req *pb.DeleteMo
 	return resp, nil
 }
 
-func toModelResource(r *pb.Model_Resource) *model.ModelResource {
-	return &model.ModelResource{
+func toModelResource(r *pb.Model_Resource) *model.Resource {
+	return &model.Resource{
 		VGPU:       r.GetVgpu(),
 		VGPUMemory: r.GetVgpumemPercentage(),
 	}
@@ -144,7 +144,7 @@ func toProtoModel(m *model.Model) *pb.Model {
 	return ret
 }
 
-func toProtoModelArtifacts(mas []model.ModelArtifact) []*pb.ModelArtifact {
+func toProtoModelArtifacts(mas []model.Artifact) []*pb.ModelArtifact {
 	ret := []*pb.ModelArtifact{}
 
 	for i := range mas {
@@ -154,7 +154,7 @@ func toProtoModelArtifacts(mas []model.ModelArtifact) []*pb.ModelArtifact {
 	return ret
 }
 
-func toProtoModelArtifact(ma *model.ModelArtifact) *pb.ModelArtifact {
+func toProtoModelArtifact(ma *model.Artifact) *pb.ModelArtifact {
 	ret := &pb.ModelArtifact{}
 	ret.SetName(ma.Name)
 	ret.SetNamespace(ma.Namespace)

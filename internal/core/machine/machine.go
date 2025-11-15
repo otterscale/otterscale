@@ -32,6 +32,7 @@ type (
 	GPU = entity.NodeDevice
 )
 
+//nolint:revive // allows this exported struct name.
 type MachineData struct {
 	*Machine
 

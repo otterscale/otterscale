@@ -28,6 +28,7 @@ type Relations struct {
 	Pods     []PodRelation
 }
 
+//nolint:revive // allows this exported struct name.
 type GPURelation struct {
 	ID          string
 	Index       uint32

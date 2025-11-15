@@ -8,12 +8,15 @@ import (
 
 type (
 	// PersistentVolumeClaim represents a Kubernetes PersistentVolumeClaim resource.
+	//nolint:revive // allows this type alias for brevity.
 	PersistentVolumeClaim = v1.PersistentVolumeClaim
 
 	// PersistentVolumeClaimPhase represents a Kubernetes PersistentVolumeClaimPhase resource.
+	//nolint:revive // allows this type alias for brevity.
 	PersistentVolumeClaimPhase = v1.PersistentVolumeClaimPhase
 
 	// PersistentVolumeAccessMode represents a Kubernetes PersistentVolumeAccessMode resource.
+	//nolint:revive // allows this type alias for brevity.
 	PersistentVolumeAccessMode = v1.PersistentVolumeAccessMode
 )
 

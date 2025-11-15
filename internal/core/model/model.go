@@ -22,7 +22,7 @@ const (
 // Release represents a Helm Release resource.
 type Model = release.Release
 
-type ModelArtifact struct {
+type Artifact struct {
 	Name       string
 	Namespace  string
 	Phase      persistent.PersistentVolumeClaimPhase
@@ -32,7 +32,7 @@ type ModelArtifact struct {
 	CreatedAt  time.Time
 }
 
-type ModelResource struct {
+type Resource struct {
 	VGPU       uint32
 	VGPUMemory uint32
 }
@@ -89,7 +89,7 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, "", valuesMap)
 }
 
-func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, requests, limits *ModelResource) (*Model, error) {
+func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, requests, limits *Resource) (*Model, error) {
 	rel, err := uc.release.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return nil, err
@@ -123,7 +123,7 @@ func (uc *UseCase) DeleteModel(ctx context.Context, scope, namespace, name strin
 	return err
 }
 
-func (uc *UseCase) ListModelArtifacts(ctx context.Context, scope, namespace string) ([]ModelArtifact, error) {
+func (uc *UseCase) ListModelArtifacts(ctx context.Context, scope, namespace string) ([]Artifact, error) {
 	selector := release.TypeLabel + "=" + "model-artifact"
 
 	pvcs, err := uc.persistentVolumeClaim.List(ctx, scope, namespace, selector)
@@ -131,16 +131,16 @@ func (uc *UseCase) ListModelArtifacts(ctx context.Context, scope, namespace stri
 		return nil, err
 	}
 
-	artifacts := make([]ModelArtifact, len(pvcs))
+	artifacts := make([]Artifact, len(pvcs))
 	for i := range pvcs {
-		artifact := uc.toModelArtifact(&pvcs[i])
+		artifact := uc.toArtifact(&pvcs[i])
 		artifacts[i] = *artifact
 	}
 
 	return artifacts, nil
 }
 
-func (uc *UseCase) CreateModelArtifact(ctx context.Context, scope, namespace, name, modelName string, size int64) (*ModelArtifact, error) {
+func (uc *UseCase) CreateModelArtifact(ctx context.Context, scope, namespace, name, modelName string, size int64) (*Artifact, error) {
 	// find chart ref
 	version, err := uc.chart.GetStableVersion(ctx, chart.RepoURL, "model-artifact", true)
 	if err != nil {
@@ -183,20 +183,20 @@ func (uc *UseCase) CreateModelArtifact(ctx context.Context, scope, namespace, na
 	}
 
 	// convert to model artifact
-	return uc.toModelArtifact(pvc), nil
+	return uc.toArtifact(pvc), nil
 }
 
 func (uc *UseCase) DeleteModelArtifact(ctx context.Context, scope, namespace, name string) error {
 	return uc.persistentVolumeClaim.Delete(ctx, scope, namespace, name)
 }
 
-func (uc *UseCase) toModelArtifact(pvc *persistent.PersistentVolumeClaim) *ModelArtifact {
+func (uc *UseCase) toArtifact(pvc *persistent.PersistentVolumeClaim) *Artifact {
 	size := int64(0)
 	capacity, ok := pvc.Status.Capacity[v1.ResourceStorage]
 	if ok {
 		size = capacity.Value()
 	}
-	return &ModelArtifact{
+	return &Artifact{
 		Name:       pvc.Name,
 		Namespace:  pvc.Namespace,
 		Modelname:  pvc.Annotations[ModelArtifactModelNameAnnotation],

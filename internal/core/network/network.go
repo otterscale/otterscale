@@ -8,10 +8,10 @@ import (
 type Network struct {
 	Fabric *Fabric
 	VLAN   *VLAN
-	Subnet *NetworkSubnet
+	Subnet *SubnetData
 }
 
-type NetworkSubnet struct {
+type SubnetData struct {
 	*Subnet
 	Statistics  *Statistics
 	IPAddresses []IPAddress
@@ -40,13 +40,13 @@ func (uc *UseCase) ListNetworks(ctx context.Context) ([]Network, error) {
 		return nil, err
 	}
 
-	networkSubnets := make([]NetworkSubnet, len(subnets))
+	subnetDatas := make([]SubnetData, len(subnets))
 	for i := range subnets {
-		ns, err := uc.getNetworkSubnet(ctx, &subnets[i])
+		ns, err := uc.getSubnetData(ctx, &subnets[i])
 		if err != nil {
 			return nil, err
 		}
-		networkSubnets[i] = *ns
+		subnetDatas[i] = *ns
 	}
 
 	fabrics, err := uc.fabric.List(ctx)
@@ -59,15 +59,15 @@ func (uc *UseCase) ListNetworks(ctx context.Context) ([]Network, error) {
 		for j := range fabrics[i].VLANs {
 			exist := false
 
-			for k := range networkSubnets {
-				if networkSubnets[k].VLAN.ID != fabrics[i].VLANs[j].ID { // not only one
+			for k := range subnetDatas {
+				if subnetDatas[k].VLAN.ID != fabrics[i].VLANs[j].ID { // not only one
 					continue
 				}
 
 				networks = append(networks, Network{
 					Fabric: &fabrics[i],
 					VLAN:   &fabrics[i].VLANs[j],
-					Subnet: &networkSubnets[k],
+					Subnet: &subnetDatas[k],
 				})
 
 				exist = true
@@ -104,7 +104,7 @@ func (uc *UseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP string, dn
 		}
 	}
 
-	networkSubnet, err := uc.getNetworkSubnet(ctx, subnet)
+	subnetData, err := uc.getSubnetData(ctx, subnet)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (uc *UseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP string, dn
 	return &Network{
 		Fabric: fabric,
 		VLAN:   &vlan,
-		Subnet: networkSubnet,
+		Subnet: subnetData,
 	}, nil
 }
 
@@ -148,7 +148,7 @@ func (uc *UseCase) DeleteNetwork(ctx context.Context, id int) error {
 	return uc.fabric.Delete(ctx, id)
 }
 
-func (uc *UseCase) getNetworkSubnet(ctx context.Context, subnet *Subnet) (*NetworkSubnet, error) {
+func (uc *UseCase) getSubnetData(ctx context.Context, subnet *Subnet) (*SubnetData, error) {
 	statistics, err := uc.subnet.GetStatistics(ctx, subnet.ID)
 	if err != nil {
 		return nil, err
@@ -177,7 +177,7 @@ func (uc *UseCase) getNetworkSubnet(ctx context.Context, subnet *Subnet) (*Netwo
 		}
 	}
 
-	return &NetworkSubnet{
+	return &SubnetData{
 		Subnet:      subnet,
 		Statistics:  statistics,
 		IPAddresses: ipAddresses,

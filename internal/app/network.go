@@ -203,7 +203,7 @@ func toProtoVLAN(v *network.VLAN) *pb.Network_VLAN {
 	return ret
 }
 
-func toProtoSubnet(ns *network.NetworkSubnet) *pb.Network_Subnet {
+func toProtoSubnet(ns *network.SubnetData) *pb.Network_Subnet {
 	dnsServers := make([]string, len(ns.DNSServers))
 	for i, dns := range ns.DNSServers {
 		dnsServers[i] = dns.String()

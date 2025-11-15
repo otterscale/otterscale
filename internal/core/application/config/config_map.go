@@ -7,6 +7,8 @@ import (
 )
 
 // ConfigMap represents a Kubernetes ConfigMap resource.
+//
+//nolint:revive // allows this type alias for brevity.
 type ConfigMap = v1.ConfigMap
 
 //nolint:revive // allows this exported interface name for specific domain clarity.
