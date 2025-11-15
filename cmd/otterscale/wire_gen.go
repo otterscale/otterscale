@@ -179,7 +179,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	objectUseCase := object.NewUseCase(bucketRepo, userRepo)
 	storageService := app.NewStorageService(storageUseCase, blockUseCase, fileUseCase, objectUseCase)
 	sshKeyRepo := maas.NewSSHKeyRepo(maasMAAS)
-	scopeUseCase := scope.NewUseCase(scopeRepo, sshKeyRepo)
+	scopeUseCase := scope.NewUseCase(scopeRepo, sshKeyRepo, packageRepositoryRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
 	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, storageService, scopeService)
 	command := newCmd(configConfig, muxBootstrap, jwksProxy, serve)

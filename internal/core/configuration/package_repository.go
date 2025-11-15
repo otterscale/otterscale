@@ -6,6 +6,8 @@ import (
 	"github.com/canonical/gomaasclient/entity"
 )
 
+const MAASUbuntuArchive = "Ubuntu archive"
+
 // PackageRepository represents a MAAS PackageRepository resource.
 type PackageRepository = entity.PackageRepository
 
@@ -18,13 +20,13 @@ type ScopeConfigRepo interface {
 	Set(ctx context.Context, config map[string]any) error
 }
 
-func (uc *UseCase) UpdatePackageRepository(ctx context.Context, id int, url string, skipJuju bool) (*PackageRepository, error) {
+func (uc *UseCase) UpdatePackageRepository(ctx context.Context, id int, url string) (*PackageRepository, error) {
 	packageRepository, err := uc.packageRepository.Update(ctx, id, url)
 	if err != nil {
 		return nil, err
 	}
 
-	if !skipJuju {
+	if packageRepository.Name == MAASUbuntuArchive {
 		if err := uc.scopeConfig.Set(ctx, map[string]any{"apt-mirror": url}); err != nil {
 			return nil, err
 		}
