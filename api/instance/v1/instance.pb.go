@@ -1117,7 +1117,6 @@ func (b0 InstanceType_builder) Build() *InstanceType {
 type ListVirtualMachinesRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -1160,16 +1159,6 @@ func (x *ListVirtualMachinesRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListVirtualMachinesRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListVirtualMachinesRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -1182,17 +1171,12 @@ func (x *ListVirtualMachinesRequest) GetNamespace() string {
 
 func (x *ListVirtualMachinesRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *ListVirtualMachinesRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *ListVirtualMachinesRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *ListVirtualMachinesRequest) HasScope() bool {
@@ -1202,18 +1186,11 @@ func (x *ListVirtualMachinesRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListVirtualMachinesRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListVirtualMachinesRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *ListVirtualMachinesRequest) ClearScope() {
@@ -1221,13 +1198,8 @@ func (x *ListVirtualMachinesRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListVirtualMachinesRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *ListVirtualMachinesRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
@@ -1235,7 +1207,6 @@ type ListVirtualMachinesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 }
 
@@ -1244,15 +1215,11 @@ func (b0 ListVirtualMachinesRequest_builder) Build() *ListVirtualMachinesRequest
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
@@ -1320,7 +1287,6 @@ func (b0 ListVirtualMachinesResponse_builder) Build() *ListVirtualMachinesRespon
 type GetVirtualMachineRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -1364,16 +1330,6 @@ func (x *GetVirtualMachineRequest) GetScope() string {
 	return ""
 }
 
-func (x *GetVirtualMachineRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *GetVirtualMachineRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -1396,22 +1352,17 @@ func (x *GetVirtualMachineRequest) GetName() string {
 
 func (x *GetVirtualMachineRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *GetVirtualMachineRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *GetVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *GetVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *GetVirtualMachineRequest) HasScope() bool {
@@ -1421,25 +1372,18 @@ func (x *GetVirtualMachineRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GetVirtualMachineRequest) HasFacility() bool {
+func (x *GetVirtualMachineRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GetVirtualMachineRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *GetVirtualMachineRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *GetVirtualMachineRequest) ClearScope() {
@@ -1447,18 +1391,13 @@ func (x *GetVirtualMachineRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *GetVirtualMachineRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *GetVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *GetVirtualMachineRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -1466,7 +1405,6 @@ type GetVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -1476,19 +1414,15 @@ func (b0 GetVirtualMachineRequest_builder) Build() *GetVirtualMachineRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -1497,7 +1431,6 @@ func (b0 GetVirtualMachineRequest_builder) Build() *GetVirtualMachineRequest {
 type CreateVirtualMachineRequest struct {
 	state                         protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope              *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility           *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Name               *string                `protobuf:"bytes,11,opt,name=name"`
 	xxx_hidden_Namespace          *string                `protobuf:"bytes,12,opt,name=namespace"`
 	xxx_hidden_InstanceTypeName   *string                `protobuf:"bytes,21,opt,name=instance_type_name,json=instanceTypeName"`
@@ -1538,16 +1471,6 @@ func (x *CreateVirtualMachineRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateVirtualMachineRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -1606,37 +1529,32 @@ func (x *CreateVirtualMachineRequest) GetStartupScript() string {
 
 func (x *CreateVirtualMachineRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
-}
-
-func (x *CreateVirtualMachineRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
 func (x *CreateVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
 func (x *CreateVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
 }
 
 func (x *CreateVirtualMachineRequest) SetInstanceTypeName(v string) {
 	x.xxx_hidden_InstanceTypeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
 }
 
 func (x *CreateVirtualMachineRequest) SetBootDataVolumeName(v string) {
 	x.xxx_hidden_BootDataVolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
 }
 
 func (x *CreateVirtualMachineRequest) SetStartupScript(v string) {
 	x.xxx_hidden_StartupScript = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
 }
 
 func (x *CreateVirtualMachineRequest) HasScope() bool {
@@ -1646,46 +1564,39 @@ func (x *CreateVirtualMachineRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateVirtualMachineRequest) HasFacility() bool {
+func (x *CreateVirtualMachineRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateVirtualMachineRequest) HasName() bool {
+func (x *CreateVirtualMachineRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateVirtualMachineRequest) HasNamespace() bool {
+func (x *CreateVirtualMachineRequest) HasInstanceTypeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreateVirtualMachineRequest) HasInstanceTypeName() bool {
+func (x *CreateVirtualMachineRequest) HasBootDataVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *CreateVirtualMachineRequest) HasBootDataVolumeName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
-}
-
 func (x *CreateVirtualMachineRequest) HasStartupScript() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
 func (x *CreateVirtualMachineRequest) ClearScope() {
@@ -1693,33 +1604,28 @@ func (x *CreateVirtualMachineRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateVirtualMachineRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateVirtualMachineRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *CreateVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *CreateVirtualMachineRequest) ClearInstanceTypeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_InstanceTypeName = nil
 }
 
 func (x *CreateVirtualMachineRequest) ClearBootDataVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_BootDataVolumeName = nil
 }
 
 func (x *CreateVirtualMachineRequest) ClearStartupScript() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_StartupScript = nil
 }
 
@@ -1727,7 +1633,6 @@ type CreateVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope              *string
-	Facility           *string
 	Name               *string
 	Namespace          *string
 	InstanceTypeName   *string
@@ -1740,31 +1645,27 @@ func (b0 CreateVirtualMachineRequest_builder) Build() *CreateVirtualMachineReque
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.InstanceTypeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
 		x.xxx_hidden_InstanceTypeName = b.InstanceTypeName
 	}
 	if b.BootDataVolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
 		x.xxx_hidden_BootDataVolumeName = b.BootDataVolumeName
 	}
 	if b.StartupScript != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
 		x.xxx_hidden_StartupScript = b.StartupScript
 	}
 	return m0
@@ -1773,7 +1674,6 @@ func (b0 CreateVirtualMachineRequest_builder) Build() *CreateVirtualMachineReque
 type DeleteVirtualMachineRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -1817,16 +1717,6 @@ func (x *DeleteVirtualMachineRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteVirtualMachineRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteVirtualMachineRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -1849,22 +1739,17 @@ func (x *DeleteVirtualMachineRequest) GetName() string {
 
 func (x *DeleteVirtualMachineRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteVirtualMachineRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteVirtualMachineRequest) HasScope() bool {
@@ -1874,25 +1759,18 @@ func (x *DeleteVirtualMachineRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteVirtualMachineRequest) HasFacility() bool {
+func (x *DeleteVirtualMachineRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteVirtualMachineRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteVirtualMachineRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteVirtualMachineRequest) ClearScope() {
@@ -1900,18 +1778,13 @@ func (x *DeleteVirtualMachineRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteVirtualMachineRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *DeleteVirtualMachineRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -1919,7 +1792,6 @@ type DeleteVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -1929,19 +1801,15 @@ func (b0 DeleteVirtualMachineRequest_builder) Build() *DeleteVirtualMachineReque
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -1950,7 +1818,6 @@ func (b0 DeleteVirtualMachineRequest_builder) Build() *DeleteVirtualMachineReque
 type AttachVirtualMachineDiskRequest struct {
 	state                     protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility       *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace      *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name           *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_DataVolumeName *string                `protobuf:"bytes,11,opt,name=data_volume_name,json=dataVolumeName"`
@@ -1995,16 +1862,6 @@ func (x *AttachVirtualMachineDiskRequest) GetScope() string {
 	return ""
 }
 
-func (x *AttachVirtualMachineDiskRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *AttachVirtualMachineDiskRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -2037,27 +1894,22 @@ func (x *AttachVirtualMachineDiskRequest) GetDataVolumeName() string {
 
 func (x *AttachVirtualMachineDiskRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *AttachVirtualMachineDiskRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *AttachVirtualMachineDiskRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *AttachVirtualMachineDiskRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *AttachVirtualMachineDiskRequest) SetDataVolumeName(v string) {
 	x.xxx_hidden_DataVolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *AttachVirtualMachineDiskRequest) HasScope() bool {
@@ -2067,32 +1919,25 @@ func (x *AttachVirtualMachineDiskRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *AttachVirtualMachineDiskRequest) HasFacility() bool {
+func (x *AttachVirtualMachineDiskRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *AttachVirtualMachineDiskRequest) HasNamespace() bool {
+func (x *AttachVirtualMachineDiskRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *AttachVirtualMachineDiskRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *AttachVirtualMachineDiskRequest) HasDataVolumeName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *AttachVirtualMachineDiskRequest) ClearScope() {
@@ -2100,23 +1945,18 @@ func (x *AttachVirtualMachineDiskRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *AttachVirtualMachineDiskRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *AttachVirtualMachineDiskRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *AttachVirtualMachineDiskRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *AttachVirtualMachineDiskRequest) ClearDataVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_DataVolumeName = nil
 }
 
@@ -2124,7 +1964,6 @@ type AttachVirtualMachineDiskRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope          *string
-	Facility       *string
 	Namespace      *string
 	Name           *string
 	DataVolumeName *string
@@ -2135,23 +1974,19 @@ func (b0 AttachVirtualMachineDiskRequest_builder) Build() *AttachVirtualMachineD
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.DataVolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_DataVolumeName = b.DataVolumeName
 	}
 	return m0
@@ -2160,7 +1995,6 @@ func (b0 AttachVirtualMachineDiskRequest_builder) Build() *AttachVirtualMachineD
 type DetachVirtualMachineDiskRequest struct {
 	state                     protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility       *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace      *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name           *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_DataVolumeName *string                `protobuf:"bytes,11,opt,name=data_volume_name,json=dataVolumeName"`
@@ -2205,16 +2039,6 @@ func (x *DetachVirtualMachineDiskRequest) GetScope() string {
 	return ""
 }
 
-func (x *DetachVirtualMachineDiskRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DetachVirtualMachineDiskRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -2247,27 +2071,22 @@ func (x *DetachVirtualMachineDiskRequest) GetDataVolumeName() string {
 
 func (x *DetachVirtualMachineDiskRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *DetachVirtualMachineDiskRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *DetachVirtualMachineDiskRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *DetachVirtualMachineDiskRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *DetachVirtualMachineDiskRequest) SetDataVolumeName(v string) {
 	x.xxx_hidden_DataVolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *DetachVirtualMachineDiskRequest) HasScope() bool {
@@ -2277,32 +2096,25 @@ func (x *DetachVirtualMachineDiskRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DetachVirtualMachineDiskRequest) HasFacility() bool {
+func (x *DetachVirtualMachineDiskRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DetachVirtualMachineDiskRequest) HasNamespace() bool {
+func (x *DetachVirtualMachineDiskRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *DetachVirtualMachineDiskRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *DetachVirtualMachineDiskRequest) HasDataVolumeName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *DetachVirtualMachineDiskRequest) ClearScope() {
@@ -2310,23 +2122,18 @@ func (x *DetachVirtualMachineDiskRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DetachVirtualMachineDiskRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DetachVirtualMachineDiskRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *DetachVirtualMachineDiskRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *DetachVirtualMachineDiskRequest) ClearDataVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_DataVolumeName = nil
 }
 
@@ -2334,7 +2141,6 @@ type DetachVirtualMachineDiskRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope          *string
-	Facility       *string
 	Namespace      *string
 	Name           *string
 	DataVolumeName *string
@@ -2345,23 +2151,19 @@ func (b0 DetachVirtualMachineDiskRequest_builder) Build() *DetachVirtualMachineD
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.DataVolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_DataVolumeName = b.DataVolumeName
 	}
 	return m0
@@ -2370,7 +2172,6 @@ func (b0 DetachVirtualMachineDiskRequest_builder) Build() *DetachVirtualMachineD
 type CreateVirtualMachineCloneRequest struct {
 	state                               protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope                    *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility                 *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace                *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name                     *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_SourceVirtualMachineName *string                `protobuf:"bytes,11,opt,name=source_virtual_machine_name,json=sourceVirtualMachineName"`
@@ -2410,16 +2211,6 @@ func (x *CreateVirtualMachineCloneRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateVirtualMachineCloneRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -2468,32 +2259,27 @@ func (x *CreateVirtualMachineCloneRequest) GetTargetVirtualMachineName() string 
 
 func (x *CreateVirtualMachineCloneRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *CreateVirtualMachineCloneRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *CreateVirtualMachineCloneRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *CreateVirtualMachineCloneRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *CreateVirtualMachineCloneRequest) SetSourceVirtualMachineName(v string) {
 	x.xxx_hidden_SourceVirtualMachineName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *CreateVirtualMachineCloneRequest) SetTargetVirtualMachineName(v string) {
 	x.xxx_hidden_TargetVirtualMachineName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *CreateVirtualMachineCloneRequest) HasScope() bool {
@@ -2503,39 +2289,32 @@ func (x *CreateVirtualMachineCloneRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateVirtualMachineCloneRequest) HasFacility() bool {
+func (x *CreateVirtualMachineCloneRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateVirtualMachineCloneRequest) HasNamespace() bool {
+func (x *CreateVirtualMachineCloneRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateVirtualMachineCloneRequest) HasName() bool {
+func (x *CreateVirtualMachineCloneRequest) HasSourceVirtualMachineName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreateVirtualMachineCloneRequest) HasSourceVirtualMachineName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *CreateVirtualMachineCloneRequest) HasTargetVirtualMachineName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *CreateVirtualMachineCloneRequest) ClearScope() {
@@ -2543,28 +2322,23 @@ func (x *CreateVirtualMachineCloneRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateVirtualMachineCloneRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateVirtualMachineCloneRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *CreateVirtualMachineCloneRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *CreateVirtualMachineCloneRequest) ClearSourceVirtualMachineName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_SourceVirtualMachineName = nil
 }
 
 func (x *CreateVirtualMachineCloneRequest) ClearTargetVirtualMachineName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_TargetVirtualMachineName = nil
 }
 
@@ -2572,7 +2346,6 @@ type CreateVirtualMachineCloneRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope                    *string
-	Facility                 *string
 	Namespace                *string
 	Name                     *string
 	SourceVirtualMachineName *string
@@ -2584,27 +2357,23 @@ func (b0 CreateVirtualMachineCloneRequest_builder) Build() *CreateVirtualMachine
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.SourceVirtualMachineName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_SourceVirtualMachineName = b.SourceVirtualMachineName
 	}
 	if b.TargetVirtualMachineName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_TargetVirtualMachineName = b.TargetVirtualMachineName
 	}
 	return m0
@@ -2613,7 +2382,6 @@ func (b0 CreateVirtualMachineCloneRequest_builder) Build() *CreateVirtualMachine
 type DeleteVirtualMachineCloneRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -2657,16 +2425,6 @@ func (x *DeleteVirtualMachineCloneRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteVirtualMachineCloneRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteVirtualMachineCloneRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -2689,22 +2447,17 @@ func (x *DeleteVirtualMachineCloneRequest) GetName() string {
 
 func (x *DeleteVirtualMachineCloneRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteVirtualMachineCloneRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteVirtualMachineCloneRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteVirtualMachineCloneRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteVirtualMachineCloneRequest) HasScope() bool {
@@ -2714,25 +2467,18 @@ func (x *DeleteVirtualMachineCloneRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteVirtualMachineCloneRequest) HasFacility() bool {
+func (x *DeleteVirtualMachineCloneRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteVirtualMachineCloneRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteVirtualMachineCloneRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteVirtualMachineCloneRequest) ClearScope() {
@@ -2740,18 +2486,13 @@ func (x *DeleteVirtualMachineCloneRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteVirtualMachineCloneRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteVirtualMachineCloneRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *DeleteVirtualMachineCloneRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -2759,7 +2500,6 @@ type DeleteVirtualMachineCloneRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -2769,19 +2509,15 @@ func (b0 DeleteVirtualMachineCloneRequest_builder) Build() *DeleteVirtualMachine
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -2790,7 +2526,6 @@ func (b0 DeleteVirtualMachineCloneRequest_builder) Build() *DeleteVirtualMachine
 type CreateVirtualMachineSnapshotRequest struct {
 	state                         protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope              *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility           *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name               *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_VirtualMachineName *string                `protobuf:"bytes,11,opt,name=virtual_machine_name,json=virtualMachineName"`
@@ -2835,16 +2570,6 @@ func (x *CreateVirtualMachineSnapshotRequest) GetScope() string {
 	return ""
 }
 
-func (x *CreateVirtualMachineSnapshotRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreateVirtualMachineSnapshotRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -2877,27 +2602,22 @@ func (x *CreateVirtualMachineSnapshotRequest) GetVirtualMachineName() string {
 
 func (x *CreateVirtualMachineSnapshotRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *CreateVirtualMachineSnapshotRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *CreateVirtualMachineSnapshotRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *CreateVirtualMachineSnapshotRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *CreateVirtualMachineSnapshotRequest) SetVirtualMachineName(v string) {
 	x.xxx_hidden_VirtualMachineName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *CreateVirtualMachineSnapshotRequest) HasScope() bool {
@@ -2907,32 +2627,25 @@ func (x *CreateVirtualMachineSnapshotRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateVirtualMachineSnapshotRequest) HasFacility() bool {
+func (x *CreateVirtualMachineSnapshotRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateVirtualMachineSnapshotRequest) HasNamespace() bool {
+func (x *CreateVirtualMachineSnapshotRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateVirtualMachineSnapshotRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *CreateVirtualMachineSnapshotRequest) HasVirtualMachineName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *CreateVirtualMachineSnapshotRequest) ClearScope() {
@@ -2940,23 +2653,18 @@ func (x *CreateVirtualMachineSnapshotRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateVirtualMachineSnapshotRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateVirtualMachineSnapshotRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *CreateVirtualMachineSnapshotRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *CreateVirtualMachineSnapshotRequest) ClearVirtualMachineName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_VirtualMachineName = nil
 }
 
@@ -2964,7 +2672,6 @@ type CreateVirtualMachineSnapshotRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope              *string
-	Facility           *string
 	Namespace          *string
 	Name               *string
 	VirtualMachineName *string
@@ -2975,23 +2682,19 @@ func (b0 CreateVirtualMachineSnapshotRequest_builder) Build() *CreateVirtualMach
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.VirtualMachineName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_VirtualMachineName = b.VirtualMachineName
 	}
 	return m0
@@ -3000,7 +2703,6 @@ func (b0 CreateVirtualMachineSnapshotRequest_builder) Build() *CreateVirtualMach
 type DeleteVirtualMachineSnapshotRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -3044,16 +2746,6 @@ func (x *DeleteVirtualMachineSnapshotRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteVirtualMachineSnapshotRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteVirtualMachineSnapshotRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -3076,22 +2768,17 @@ func (x *DeleteVirtualMachineSnapshotRequest) GetName() string {
 
 func (x *DeleteVirtualMachineSnapshotRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteVirtualMachineSnapshotRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteVirtualMachineSnapshotRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteVirtualMachineSnapshotRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteVirtualMachineSnapshotRequest) HasScope() bool {
@@ -3101,25 +2788,18 @@ func (x *DeleteVirtualMachineSnapshotRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteVirtualMachineSnapshotRequest) HasFacility() bool {
+func (x *DeleteVirtualMachineSnapshotRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteVirtualMachineSnapshotRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteVirtualMachineSnapshotRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteVirtualMachineSnapshotRequest) ClearScope() {
@@ -3127,18 +2807,13 @@ func (x *DeleteVirtualMachineSnapshotRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteVirtualMachineSnapshotRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteVirtualMachineSnapshotRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *DeleteVirtualMachineSnapshotRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -3146,7 +2821,6 @@ type DeleteVirtualMachineSnapshotRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -3156,19 +2830,15 @@ func (b0 DeleteVirtualMachineSnapshotRequest_builder) Build() *DeleteVirtualMach
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -3177,7 +2847,6 @@ func (b0 DeleteVirtualMachineSnapshotRequest_builder) Build() *DeleteVirtualMach
 type CreateVirtualMachineRestoreRequest struct {
 	state                         protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope              *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility           *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name               *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_VirtualMachineName *string                `protobuf:"bytes,11,opt,name=virtual_machine_name,json=virtualMachineName"`
@@ -3217,16 +2886,6 @@ func (x *CreateVirtualMachineRestoreRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateVirtualMachineRestoreRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -3275,32 +2934,27 @@ func (x *CreateVirtualMachineRestoreRequest) GetSnapshotName() string {
 
 func (x *CreateVirtualMachineRestoreRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *CreateVirtualMachineRestoreRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *CreateVirtualMachineRestoreRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *CreateVirtualMachineRestoreRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *CreateVirtualMachineRestoreRequest) SetVirtualMachineName(v string) {
 	x.xxx_hidden_VirtualMachineName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *CreateVirtualMachineRestoreRequest) SetSnapshotName(v string) {
 	x.xxx_hidden_SnapshotName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *CreateVirtualMachineRestoreRequest) HasScope() bool {
@@ -3310,39 +2964,32 @@ func (x *CreateVirtualMachineRestoreRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateVirtualMachineRestoreRequest) HasFacility() bool {
+func (x *CreateVirtualMachineRestoreRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateVirtualMachineRestoreRequest) HasNamespace() bool {
+func (x *CreateVirtualMachineRestoreRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateVirtualMachineRestoreRequest) HasName() bool {
+func (x *CreateVirtualMachineRestoreRequest) HasVirtualMachineName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreateVirtualMachineRestoreRequest) HasVirtualMachineName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *CreateVirtualMachineRestoreRequest) HasSnapshotName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *CreateVirtualMachineRestoreRequest) ClearScope() {
@@ -3350,28 +2997,23 @@ func (x *CreateVirtualMachineRestoreRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateVirtualMachineRestoreRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateVirtualMachineRestoreRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *CreateVirtualMachineRestoreRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *CreateVirtualMachineRestoreRequest) ClearVirtualMachineName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_VirtualMachineName = nil
 }
 
 func (x *CreateVirtualMachineRestoreRequest) ClearSnapshotName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_SnapshotName = nil
 }
 
@@ -3379,7 +3021,6 @@ type CreateVirtualMachineRestoreRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope              *string
-	Facility           *string
 	Namespace          *string
 	Name               *string
 	VirtualMachineName *string
@@ -3391,27 +3032,23 @@ func (b0 CreateVirtualMachineRestoreRequest_builder) Build() *CreateVirtualMachi
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.VirtualMachineName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_VirtualMachineName = b.VirtualMachineName
 	}
 	if b.SnapshotName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_SnapshotName = b.SnapshotName
 	}
 	return m0
@@ -3420,7 +3057,6 @@ func (b0 CreateVirtualMachineRestoreRequest_builder) Build() *CreateVirtualMachi
 type DeleteVirtualMachineRestoreRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -3464,16 +3100,6 @@ func (x *DeleteVirtualMachineRestoreRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteVirtualMachineRestoreRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteVirtualMachineRestoreRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -3496,22 +3122,17 @@ func (x *DeleteVirtualMachineRestoreRequest) GetName() string {
 
 func (x *DeleteVirtualMachineRestoreRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteVirtualMachineRestoreRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteVirtualMachineRestoreRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteVirtualMachineRestoreRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteVirtualMachineRestoreRequest) HasScope() bool {
@@ -3521,25 +3142,18 @@ func (x *DeleteVirtualMachineRestoreRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteVirtualMachineRestoreRequest) HasFacility() bool {
+func (x *DeleteVirtualMachineRestoreRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteVirtualMachineRestoreRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteVirtualMachineRestoreRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteVirtualMachineRestoreRequest) ClearScope() {
@@ -3547,18 +3161,13 @@ func (x *DeleteVirtualMachineRestoreRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteVirtualMachineRestoreRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteVirtualMachineRestoreRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *DeleteVirtualMachineRestoreRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -3566,7 +3175,6 @@ type DeleteVirtualMachineRestoreRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -3576,19 +3184,15 @@ func (b0 DeleteVirtualMachineRestoreRequest_builder) Build() *DeleteVirtualMachi
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -3597,7 +3201,6 @@ func (b0 DeleteVirtualMachineRestoreRequest_builder) Build() *DeleteVirtualMachi
 type StartVirtualMachineRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -3641,16 +3244,6 @@ func (x *StartVirtualMachineRequest) GetScope() string {
 	return ""
 }
 
-func (x *StartVirtualMachineRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *StartVirtualMachineRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -3673,22 +3266,17 @@ func (x *StartVirtualMachineRequest) GetName() string {
 
 func (x *StartVirtualMachineRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *StartVirtualMachineRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *StartVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *StartVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *StartVirtualMachineRequest) HasScope() bool {
@@ -3698,25 +3286,18 @@ func (x *StartVirtualMachineRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *StartVirtualMachineRequest) HasFacility() bool {
+func (x *StartVirtualMachineRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *StartVirtualMachineRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *StartVirtualMachineRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *StartVirtualMachineRequest) ClearScope() {
@@ -3724,18 +3305,13 @@ func (x *StartVirtualMachineRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *StartVirtualMachineRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *StartVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *StartVirtualMachineRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -3743,7 +3319,6 @@ type StartVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -3753,19 +3328,15 @@ func (b0 StartVirtualMachineRequest_builder) Build() *StartVirtualMachineRequest
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -3774,7 +3345,6 @@ func (b0 StartVirtualMachineRequest_builder) Build() *StartVirtualMachineRequest
 type StopVirtualMachineRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -3818,16 +3388,6 @@ func (x *StopVirtualMachineRequest) GetScope() string {
 	return ""
 }
 
-func (x *StopVirtualMachineRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *StopVirtualMachineRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -3850,22 +3410,17 @@ func (x *StopVirtualMachineRequest) GetName() string {
 
 func (x *StopVirtualMachineRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *StopVirtualMachineRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *StopVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *StopVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *StopVirtualMachineRequest) HasScope() bool {
@@ -3875,25 +3430,18 @@ func (x *StopVirtualMachineRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *StopVirtualMachineRequest) HasFacility() bool {
+func (x *StopVirtualMachineRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *StopVirtualMachineRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *StopVirtualMachineRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *StopVirtualMachineRequest) ClearScope() {
@@ -3901,18 +3449,13 @@ func (x *StopVirtualMachineRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *StopVirtualMachineRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *StopVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *StopVirtualMachineRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -3920,7 +3463,6 @@ type StopVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -3930,19 +3472,15 @@ func (b0 StopVirtualMachineRequest_builder) Build() *StopVirtualMachineRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -3951,7 +3489,6 @@ func (b0 StopVirtualMachineRequest_builder) Build() *StopVirtualMachineRequest {
 type RestartVirtualMachineRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -3995,16 +3532,6 @@ func (x *RestartVirtualMachineRequest) GetScope() string {
 	return ""
 }
 
-func (x *RestartVirtualMachineRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *RestartVirtualMachineRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -4027,22 +3554,17 @@ func (x *RestartVirtualMachineRequest) GetName() string {
 
 func (x *RestartVirtualMachineRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *RestartVirtualMachineRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *RestartVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *RestartVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *RestartVirtualMachineRequest) HasScope() bool {
@@ -4052,25 +3574,18 @@ func (x *RestartVirtualMachineRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *RestartVirtualMachineRequest) HasFacility() bool {
+func (x *RestartVirtualMachineRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *RestartVirtualMachineRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *RestartVirtualMachineRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *RestartVirtualMachineRequest) ClearScope() {
@@ -4078,18 +3593,13 @@ func (x *RestartVirtualMachineRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *RestartVirtualMachineRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *RestartVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *RestartVirtualMachineRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -4097,7 +3607,6 @@ type RestartVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -4107,19 +3616,15 @@ func (b0 RestartVirtualMachineRequest_builder) Build() *RestartVirtualMachineReq
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -4128,7 +3633,6 @@ func (b0 RestartVirtualMachineRequest_builder) Build() *RestartVirtualMachineReq
 type PauseInstanceRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -4172,16 +3676,6 @@ func (x *PauseInstanceRequest) GetScope() string {
 	return ""
 }
 
-func (x *PauseInstanceRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *PauseInstanceRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -4204,22 +3698,17 @@ func (x *PauseInstanceRequest) GetName() string {
 
 func (x *PauseInstanceRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *PauseInstanceRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *PauseInstanceRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *PauseInstanceRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *PauseInstanceRequest) HasScope() bool {
@@ -4229,25 +3718,18 @@ func (x *PauseInstanceRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *PauseInstanceRequest) HasFacility() bool {
+func (x *PauseInstanceRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *PauseInstanceRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *PauseInstanceRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *PauseInstanceRequest) ClearScope() {
@@ -4255,18 +3737,13 @@ func (x *PauseInstanceRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *PauseInstanceRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *PauseInstanceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *PauseInstanceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -4274,7 +3751,6 @@ type PauseInstanceRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -4284,19 +3760,15 @@ func (b0 PauseInstanceRequest_builder) Build() *PauseInstanceRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -4305,7 +3777,6 @@ func (b0 PauseInstanceRequest_builder) Build() *PauseInstanceRequest {
 type ResumeInstanceRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -4349,16 +3820,6 @@ func (x *ResumeInstanceRequest) GetScope() string {
 	return ""
 }
 
-func (x *ResumeInstanceRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ResumeInstanceRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -4381,22 +3842,17 @@ func (x *ResumeInstanceRequest) GetName() string {
 
 func (x *ResumeInstanceRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *ResumeInstanceRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *ResumeInstanceRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *ResumeInstanceRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *ResumeInstanceRequest) HasScope() bool {
@@ -4406,25 +3862,18 @@ func (x *ResumeInstanceRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ResumeInstanceRequest) HasFacility() bool {
+func (x *ResumeInstanceRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ResumeInstanceRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *ResumeInstanceRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *ResumeInstanceRequest) ClearScope() {
@@ -4432,18 +3881,13 @@ func (x *ResumeInstanceRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ResumeInstanceRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *ResumeInstanceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *ResumeInstanceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -4451,7 +3895,6 @@ type ResumeInstanceRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -4461,19 +3904,15 @@ func (b0 ResumeInstanceRequest_builder) Build() *ResumeInstanceRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -4482,7 +3921,6 @@ func (b0 ResumeInstanceRequest_builder) Build() *ResumeInstanceRequest {
 type MigrateInstanceRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_Hostname    *string                `protobuf:"bytes,11,opt,name=hostname"`
@@ -4527,16 +3965,6 @@ func (x *MigrateInstanceRequest) GetScope() string {
 	return ""
 }
 
-func (x *MigrateInstanceRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *MigrateInstanceRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -4569,27 +3997,22 @@ func (x *MigrateInstanceRequest) GetHostname() string {
 
 func (x *MigrateInstanceRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *MigrateInstanceRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *MigrateInstanceRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *MigrateInstanceRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *MigrateInstanceRequest) SetHostname(v string) {
 	x.xxx_hidden_Hostname = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *MigrateInstanceRequest) HasScope() bool {
@@ -4599,32 +4022,25 @@ func (x *MigrateInstanceRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *MigrateInstanceRequest) HasFacility() bool {
+func (x *MigrateInstanceRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *MigrateInstanceRequest) HasNamespace() bool {
+func (x *MigrateInstanceRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *MigrateInstanceRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *MigrateInstanceRequest) HasHostname() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *MigrateInstanceRequest) ClearScope() {
@@ -4632,23 +4048,18 @@ func (x *MigrateInstanceRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *MigrateInstanceRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *MigrateInstanceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *MigrateInstanceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *MigrateInstanceRequest) ClearHostname() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Hostname = nil
 }
 
@@ -4656,7 +4067,6 @@ type MigrateInstanceRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 	Hostname  *string
@@ -4667,23 +4077,19 @@ func (b0 MigrateInstanceRequest_builder) Build() *MigrateInstanceRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Hostname != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Hostname = b.Hostname
 	}
 	return m0
@@ -4692,7 +4098,6 @@ func (b0 MigrateInstanceRequest_builder) Build() *MigrateInstanceRequest {
 type VNCInstanceRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -4736,16 +4141,6 @@ func (x *VNCInstanceRequest) GetScope() string {
 	return ""
 }
 
-func (x *VNCInstanceRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *VNCInstanceRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -4768,22 +4163,17 @@ func (x *VNCInstanceRequest) GetName() string {
 
 func (x *VNCInstanceRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *VNCInstanceRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *VNCInstanceRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *VNCInstanceRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *VNCInstanceRequest) HasScope() bool {
@@ -4793,25 +4183,18 @@ func (x *VNCInstanceRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *VNCInstanceRequest) HasFacility() bool {
+func (x *VNCInstanceRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *VNCInstanceRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *VNCInstanceRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *VNCInstanceRequest) ClearScope() {
@@ -4819,18 +4202,13 @@ func (x *VNCInstanceRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *VNCInstanceRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *VNCInstanceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *VNCInstanceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -4838,7 +4216,6 @@ type VNCInstanceRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -4848,19 +4225,15 @@ func (b0 VNCInstanceRequest_builder) Build() *VNCInstanceRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -4947,7 +4320,6 @@ func (b0 VNCInstanceResponse_builder) Build() *VNCInstanceResponse {
 type ListDataVolumesRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_BootImage   bool                   `protobuf:"varint,4,opt,name=boot_image,json=bootImage"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -4991,16 +4363,6 @@ func (x *ListDataVolumesRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListDataVolumesRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListDataVolumesRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -5020,22 +4382,17 @@ func (x *ListDataVolumesRequest) GetBootImage() bool {
 
 func (x *ListDataVolumesRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *ListDataVolumesRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *ListDataVolumesRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *ListDataVolumesRequest) SetBootImage(v bool) {
 	x.xxx_hidden_BootImage = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *ListDataVolumesRequest) HasScope() bool {
@@ -5045,25 +4402,18 @@ func (x *ListDataVolumesRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListDataVolumesRequest) HasFacility() bool {
+func (x *ListDataVolumesRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListDataVolumesRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *ListDataVolumesRequest) HasBootImage() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *ListDataVolumesRequest) ClearScope() {
@@ -5071,18 +4421,13 @@ func (x *ListDataVolumesRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListDataVolumesRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *ListDataVolumesRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *ListDataVolumesRequest) ClearBootImage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_BootImage = false
 }
 
@@ -5090,7 +4435,6 @@ type ListDataVolumesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	BootImage *bool
 }
@@ -5100,19 +4444,15 @@ func (b0 ListDataVolumesRequest_builder) Build() *ListDataVolumesRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.BootImage != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_BootImage = *b.BootImage
 	}
 	return m0
@@ -5180,7 +4520,6 @@ func (b0 ListDataVolumesResponse_builder) Build() *ListDataVolumesResponse {
 type GetDataVolumeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -5224,16 +4563,6 @@ func (x *GetDataVolumeRequest) GetScope() string {
 	return ""
 }
 
-func (x *GetDataVolumeRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *GetDataVolumeRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -5256,22 +4585,17 @@ func (x *GetDataVolumeRequest) GetName() string {
 
 func (x *GetDataVolumeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *GetDataVolumeRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *GetDataVolumeRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *GetDataVolumeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *GetDataVolumeRequest) HasScope() bool {
@@ -5281,25 +4605,18 @@ func (x *GetDataVolumeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GetDataVolumeRequest) HasFacility() bool {
+func (x *GetDataVolumeRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GetDataVolumeRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *GetDataVolumeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *GetDataVolumeRequest) ClearScope() {
@@ -5307,18 +4624,13 @@ func (x *GetDataVolumeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *GetDataVolumeRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *GetDataVolumeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *GetDataVolumeRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -5326,7 +4638,6 @@ type GetDataVolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -5336,19 +4647,15 @@ func (b0 GetDataVolumeRequest_builder) Build() *GetDataVolumeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -5357,7 +4664,6 @@ func (b0 GetDataVolumeRequest_builder) Build() *GetDataVolumeRequest {
 type CreateDataVolumeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,11,opt,name=name"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,12,opt,name=namespace"`
 	xxx_hidden_Source      *DataVolume_Source     `protobuf:"bytes,21,opt,name=source"`
@@ -5398,16 +4704,6 @@ func (x *CreateDataVolumeRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateDataVolumeRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -5457,22 +4753,17 @@ func (x *CreateDataVolumeRequest) GetSizeBytes() int64 {
 
 func (x *CreateDataVolumeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
-}
-
-func (x *CreateDataVolumeRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
 func (x *CreateDataVolumeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
 func (x *CreateDataVolumeRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
 }
 
 func (x *CreateDataVolumeRequest) SetSource(v *DataVolume_Source) {
@@ -5481,12 +4772,12 @@ func (x *CreateDataVolumeRequest) SetSource(v *DataVolume_Source) {
 
 func (x *CreateDataVolumeRequest) SetBootImage(v bool) {
 	x.xxx_hidden_BootImage = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
 }
 
 func (x *CreateDataVolumeRequest) SetSizeBytes(v int64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
 }
 
 func (x *CreateDataVolumeRequest) HasScope() bool {
@@ -5496,25 +4787,18 @@ func (x *CreateDataVolumeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateDataVolumeRequest) HasFacility() bool {
+func (x *CreateDataVolumeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateDataVolumeRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *CreateDataVolumeRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *CreateDataVolumeRequest) HasSource() bool {
@@ -5528,14 +4812,14 @@ func (x *CreateDataVolumeRequest) HasBootImage() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *CreateDataVolumeRequest) HasSizeBytes() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
 func (x *CreateDataVolumeRequest) ClearScope() {
@@ -5543,18 +4827,13 @@ func (x *CreateDataVolumeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateDataVolumeRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateDataVolumeRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *CreateDataVolumeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
@@ -5563,12 +4842,12 @@ func (x *CreateDataVolumeRequest) ClearSource() {
 }
 
 func (x *CreateDataVolumeRequest) ClearBootImage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_BootImage = false
 }
 
 func (x *CreateDataVolumeRequest) ClearSizeBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_SizeBytes = 0
 }
 
@@ -5576,7 +4855,6 @@ type CreateDataVolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Name      *string
 	Namespace *string
 	Source    *DataVolume_Source
@@ -5589,28 +4867,24 @@ func (b0 CreateDataVolumeRequest_builder) Build() *CreateDataVolumeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	x.xxx_hidden_Source = b.Source
 	if b.BootImage != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
 		x.xxx_hidden_BootImage = *b.BootImage
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
 	return m0
@@ -5619,7 +4893,6 @@ func (b0 CreateDataVolumeRequest_builder) Build() *CreateDataVolumeRequest {
 type DeleteDataVolumeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -5663,16 +4936,6 @@ func (x *DeleteDataVolumeRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteDataVolumeRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteDataVolumeRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -5695,22 +4958,17 @@ func (x *DeleteDataVolumeRequest) GetName() string {
 
 func (x *DeleteDataVolumeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteDataVolumeRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteDataVolumeRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteDataVolumeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteDataVolumeRequest) HasScope() bool {
@@ -5720,25 +4978,18 @@ func (x *DeleteDataVolumeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteDataVolumeRequest) HasFacility() bool {
+func (x *DeleteDataVolumeRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteDataVolumeRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteDataVolumeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteDataVolumeRequest) ClearScope() {
@@ -5746,18 +4997,13 @@ func (x *DeleteDataVolumeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteDataVolumeRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteDataVolumeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *DeleteDataVolumeRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -5765,7 +5011,6 @@ type DeleteDataVolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -5775,19 +5020,15 @@ func (b0 DeleteDataVolumeRequest_builder) Build() *DeleteDataVolumeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -5796,7 +5037,6 @@ func (b0 DeleteDataVolumeRequest_builder) Build() *DeleteDataVolumeRequest {
 type ExtendDataVolumeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_SizeBytes   int64                  `protobuf:"varint,11,opt,name=size_bytes,json=sizeBytes"`
@@ -5841,16 +5081,6 @@ func (x *ExtendDataVolumeRequest) GetScope() string {
 	return ""
 }
 
-func (x *ExtendDataVolumeRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ExtendDataVolumeRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -5880,27 +5110,22 @@ func (x *ExtendDataVolumeRequest) GetSizeBytes() int64 {
 
 func (x *ExtendDataVolumeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *ExtendDataVolumeRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *ExtendDataVolumeRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *ExtendDataVolumeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *ExtendDataVolumeRequest) SetSizeBytes(v int64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *ExtendDataVolumeRequest) HasScope() bool {
@@ -5910,32 +5135,25 @@ func (x *ExtendDataVolumeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ExtendDataVolumeRequest) HasFacility() bool {
+func (x *ExtendDataVolumeRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ExtendDataVolumeRequest) HasNamespace() bool {
+func (x *ExtendDataVolumeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *ExtendDataVolumeRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *ExtendDataVolumeRequest) HasSizeBytes() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *ExtendDataVolumeRequest) ClearScope() {
@@ -5943,23 +5161,18 @@ func (x *ExtendDataVolumeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ExtendDataVolumeRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *ExtendDataVolumeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *ExtendDataVolumeRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *ExtendDataVolumeRequest) ClearSizeBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_SizeBytes = 0
 }
 
@@ -5967,7 +5180,6 @@ type ExtendDataVolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 	SizeBytes *int64
@@ -5978,23 +5190,19 @@ func (b0 ExtendDataVolumeRequest_builder) Build() *ExtendDataVolumeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
 	return m0
@@ -6003,7 +5211,6 @@ func (b0 ExtendDataVolumeRequest_builder) Build() *ExtendDataVolumeRequest {
 type ListInstanceTypesRequest struct {
 	state                         protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope              *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility           *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_IncludeClusterWide bool                   `protobuf:"varint,11,opt,name=include_cluster_wide,json=includeClusterWide"`
 	XXX_raceDetectHookData        protoimpl.RaceDetectHookData
@@ -6047,16 +5254,6 @@ func (x *ListInstanceTypesRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListInstanceTypesRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListInstanceTypesRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -6076,22 +5273,17 @@ func (x *ListInstanceTypesRequest) GetIncludeClusterWide() bool {
 
 func (x *ListInstanceTypesRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *ListInstanceTypesRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *ListInstanceTypesRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *ListInstanceTypesRequest) SetIncludeClusterWide(v bool) {
 	x.xxx_hidden_IncludeClusterWide = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *ListInstanceTypesRequest) HasScope() bool {
@@ -6101,25 +5293,18 @@ func (x *ListInstanceTypesRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListInstanceTypesRequest) HasFacility() bool {
+func (x *ListInstanceTypesRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListInstanceTypesRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *ListInstanceTypesRequest) HasIncludeClusterWide() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *ListInstanceTypesRequest) ClearScope() {
@@ -6127,18 +5312,13 @@ func (x *ListInstanceTypesRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListInstanceTypesRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *ListInstanceTypesRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *ListInstanceTypesRequest) ClearIncludeClusterWide() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_IncludeClusterWide = false
 }
 
@@ -6146,7 +5326,6 @@ type ListInstanceTypesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope              *string
-	Facility           *string
 	Namespace          *string
 	IncludeClusterWide *bool
 }
@@ -6156,19 +5335,15 @@ func (b0 ListInstanceTypesRequest_builder) Build() *ListInstanceTypesRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.IncludeClusterWide != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_IncludeClusterWide = *b.IncludeClusterWide
 	}
 	return m0
@@ -6236,7 +5411,6 @@ func (b0 ListInstanceTypesResponse_builder) Build() *ListInstanceTypesResponse {
 type GetInstanceTypeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -6280,16 +5454,6 @@ func (x *GetInstanceTypeRequest) GetScope() string {
 	return ""
 }
 
-func (x *GetInstanceTypeRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *GetInstanceTypeRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -6312,22 +5476,17 @@ func (x *GetInstanceTypeRequest) GetName() string {
 
 func (x *GetInstanceTypeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *GetInstanceTypeRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *GetInstanceTypeRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *GetInstanceTypeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *GetInstanceTypeRequest) HasScope() bool {
@@ -6337,25 +5496,18 @@ func (x *GetInstanceTypeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GetInstanceTypeRequest) HasFacility() bool {
+func (x *GetInstanceTypeRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GetInstanceTypeRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *GetInstanceTypeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *GetInstanceTypeRequest) ClearScope() {
@@ -6363,18 +5515,13 @@ func (x *GetInstanceTypeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *GetInstanceTypeRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *GetInstanceTypeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *GetInstanceTypeRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -6382,7 +5529,6 @@ type GetInstanceTypeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -6392,19 +5538,15 @@ func (b0 GetInstanceTypeRequest_builder) Build() *GetInstanceTypeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -6413,7 +5555,6 @@ func (b0 GetInstanceTypeRequest_builder) Build() *GetInstanceTypeRequest {
 type CreateInstanceTypeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,11,opt,name=name"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,12,opt,name=namespace"`
 	xxx_hidden_CpuCores    uint32                 `protobuf:"varint,13,opt,name=cpu_cores,json=cpuCores"`
@@ -6459,16 +5600,6 @@ func (x *CreateInstanceTypeRequest) GetScope() string {
 	return ""
 }
 
-func (x *CreateInstanceTypeRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreateInstanceTypeRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -6505,32 +5636,27 @@ func (x *CreateInstanceTypeRequest) GetMemoryBytes() int64 {
 
 func (x *CreateInstanceTypeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *CreateInstanceTypeRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *CreateInstanceTypeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *CreateInstanceTypeRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *CreateInstanceTypeRequest) SetCpuCores(v uint32) {
 	x.xxx_hidden_CpuCores = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *CreateInstanceTypeRequest) SetMemoryBytes(v int64) {
 	x.xxx_hidden_MemoryBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *CreateInstanceTypeRequest) HasScope() bool {
@@ -6540,39 +5666,32 @@ func (x *CreateInstanceTypeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateInstanceTypeRequest) HasFacility() bool {
+func (x *CreateInstanceTypeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateInstanceTypeRequest) HasName() bool {
+func (x *CreateInstanceTypeRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateInstanceTypeRequest) HasNamespace() bool {
+func (x *CreateInstanceTypeRequest) HasCpuCores() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreateInstanceTypeRequest) HasCpuCores() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *CreateInstanceTypeRequest) HasMemoryBytes() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *CreateInstanceTypeRequest) ClearScope() {
@@ -6580,28 +5699,23 @@ func (x *CreateInstanceTypeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateInstanceTypeRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateInstanceTypeRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *CreateInstanceTypeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *CreateInstanceTypeRequest) ClearCpuCores() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_CpuCores = 0
 }
 
 func (x *CreateInstanceTypeRequest) ClearMemoryBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_MemoryBytes = 0
 }
 
@@ -6609,7 +5723,6 @@ type CreateInstanceTypeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope       *string
-	Facility    *string
 	Name        *string
 	Namespace   *string
 	CpuCores    *uint32
@@ -6621,27 +5734,23 @@ func (b0 CreateInstanceTypeRequest_builder) Build() *CreateInstanceTypeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.CpuCores != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_CpuCores = *b.CpuCores
 	}
 	if b.MemoryBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_MemoryBytes = *b.MemoryBytes
 	}
 	return m0
@@ -6650,7 +5759,6 @@ func (b0 CreateInstanceTypeRequest_builder) Build() *CreateInstanceTypeRequest {
 type DeleteInstanceTypeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -6694,16 +5802,6 @@ func (x *DeleteInstanceTypeRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteInstanceTypeRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteInstanceTypeRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -6726,22 +5824,17 @@ func (x *DeleteInstanceTypeRequest) GetName() string {
 
 func (x *DeleteInstanceTypeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteInstanceTypeRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteInstanceTypeRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteInstanceTypeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteInstanceTypeRequest) HasScope() bool {
@@ -6751,25 +5844,18 @@ func (x *DeleteInstanceTypeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteInstanceTypeRequest) HasFacility() bool {
+func (x *DeleteInstanceTypeRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteInstanceTypeRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteInstanceTypeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteInstanceTypeRequest) ClearScope() {
@@ -6777,18 +5863,13 @@ func (x *DeleteInstanceTypeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteInstanceTypeRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteInstanceTypeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *DeleteInstanceTypeRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -6796,7 +5877,6 @@ type DeleteInstanceTypeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -6806,19 +5886,15 @@ func (b0 DeleteInstanceTypeRequest_builder) Build() *DeleteInstanceTypeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -6827,7 +5903,6 @@ func (b0 DeleteInstanceTypeRequest_builder) Build() *DeleteInstanceTypeRequest {
 type CreateVirtualMachineServiceRequest struct {
 	state                         protoimpl.MessageState          `protogen:"opaque.v1"`
 	xxx_hidden_Scope              *string                         `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility           *string                         `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace          *string                         `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name               *string                         `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_VirtualMachineName *string                         `protobuf:"bytes,11,opt,name=virtual_machine_name,json=virtualMachineName"`
@@ -6867,16 +5942,6 @@ func (x *CreateVirtualMachineServiceRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateVirtualMachineServiceRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -6924,27 +5989,22 @@ func (x *CreateVirtualMachineServiceRequest) GetPorts() []*v1.Application_Servic
 
 func (x *CreateVirtualMachineServiceRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *CreateVirtualMachineServiceRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *CreateVirtualMachineServiceRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *CreateVirtualMachineServiceRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *CreateVirtualMachineServiceRequest) SetVirtualMachineName(v string) {
 	x.xxx_hidden_VirtualMachineName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *CreateVirtualMachineServiceRequest) SetPorts(v []*v1.Application_Service_Port) {
@@ -6958,32 +6018,25 @@ func (x *CreateVirtualMachineServiceRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateVirtualMachineServiceRequest) HasFacility() bool {
+func (x *CreateVirtualMachineServiceRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateVirtualMachineServiceRequest) HasNamespace() bool {
+func (x *CreateVirtualMachineServiceRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateVirtualMachineServiceRequest) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *CreateVirtualMachineServiceRequest) HasVirtualMachineName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *CreateVirtualMachineServiceRequest) ClearScope() {
@@ -6991,23 +6044,18 @@ func (x *CreateVirtualMachineServiceRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateVirtualMachineServiceRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateVirtualMachineServiceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *CreateVirtualMachineServiceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *CreateVirtualMachineServiceRequest) ClearVirtualMachineName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_VirtualMachineName = nil
 }
 
@@ -7015,7 +6063,6 @@ type CreateVirtualMachineServiceRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope              *string
-	Facility           *string
 	Namespace          *string
 	Name               *string
 	VirtualMachineName *string
@@ -7027,23 +6074,19 @@ func (b0 CreateVirtualMachineServiceRequest_builder) Build() *CreateVirtualMachi
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.VirtualMachineName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_VirtualMachineName = b.VirtualMachineName
 	}
 	x.xxx_hidden_Ports = &b.Ports
@@ -7053,7 +6096,6 @@ func (b0 CreateVirtualMachineServiceRequest_builder) Build() *CreateVirtualMachi
 type UpdateVirtualMachineServiceRequest struct {
 	state                  protoimpl.MessageState          `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                         `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                         `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                         `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                         `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_Ports       *[]*v1.Application_Service_Port `protobuf:"bytes,12,rep,name=ports"`
@@ -7098,16 +6140,6 @@ func (x *UpdateVirtualMachineServiceRequest) GetScope() string {
 	return ""
 }
 
-func (x *UpdateVirtualMachineServiceRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *UpdateVirtualMachineServiceRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -7139,22 +6171,17 @@ func (x *UpdateVirtualMachineServiceRequest) GetPorts() []*v1.Application_Servic
 
 func (x *UpdateVirtualMachineServiceRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *UpdateVirtualMachineServiceRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *UpdateVirtualMachineServiceRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *UpdateVirtualMachineServiceRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *UpdateVirtualMachineServiceRequest) SetPorts(v []*v1.Application_Service_Port) {
@@ -7168,25 +6195,18 @@ func (x *UpdateVirtualMachineServiceRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UpdateVirtualMachineServiceRequest) HasFacility() bool {
+func (x *UpdateVirtualMachineServiceRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdateVirtualMachineServiceRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *UpdateVirtualMachineServiceRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *UpdateVirtualMachineServiceRequest) ClearScope() {
@@ -7194,18 +6214,13 @@ func (x *UpdateVirtualMachineServiceRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *UpdateVirtualMachineServiceRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *UpdateVirtualMachineServiceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *UpdateVirtualMachineServiceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -7213,7 +6228,6 @@ type UpdateVirtualMachineServiceRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 	Ports     []*v1.Application_Service_Port
@@ -7224,19 +6238,15 @@ func (b0 UpdateVirtualMachineServiceRequest_builder) Build() *UpdateVirtualMachi
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	x.xxx_hidden_Ports = &b.Ports
@@ -7246,7 +6256,6 @@ func (b0 UpdateVirtualMachineServiceRequest_builder) Build() *UpdateVirtualMachi
 type DeleteVirtualMachineServiceRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -7290,16 +6299,6 @@ func (x *DeleteVirtualMachineServiceRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteVirtualMachineServiceRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteVirtualMachineServiceRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -7322,22 +6321,17 @@ func (x *DeleteVirtualMachineServiceRequest) GetName() string {
 
 func (x *DeleteVirtualMachineServiceRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteVirtualMachineServiceRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteVirtualMachineServiceRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteVirtualMachineServiceRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteVirtualMachineServiceRequest) HasScope() bool {
@@ -7347,25 +6341,18 @@ func (x *DeleteVirtualMachineServiceRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteVirtualMachineServiceRequest) HasFacility() bool {
+func (x *DeleteVirtualMachineServiceRequest) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteVirtualMachineServiceRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteVirtualMachineServiceRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteVirtualMachineServiceRequest) ClearScope() {
@@ -7373,18 +6360,13 @@ func (x *DeleteVirtualMachineServiceRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteVirtualMachineServiceRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteVirtualMachineServiceRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *DeleteVirtualMachineServiceRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
@@ -7392,7 +6374,6 @@ type DeleteVirtualMachineServiceRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	Namespace *string
 	Name      *string
 }
@@ -7402,19 +6383,15 @@ func (b0 DeleteVirtualMachineServiceRequest_builder) Build() *DeleteVirtualMachi
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -9020,194 +7997,163 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\fmemory_bytes\x18\x04 \x01(\x03R\vmemoryBytes\x12!\n" +
 	"\fcluster_wide\x18\v \x01(\bR\vclusterWide\x129\n" +
 	"\n" +
-	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"l\n" +
+	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"V\n" +
 	"\x1aListVirtualMachinesRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\"p\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespaceJ\x04\b\x02\x10\x03\"p\n" +
 	"\x1bListVirtualMachinesResponse\x12Q\n" +
-	"\x10virtual_machines\x18\x01 \x03(\v2&.otterscale.instance.v1.VirtualMachineR\x0fvirtualMachines\"~\n" +
+	"\x10virtual_machines\x18\x01 \x03(\v2&.otterscale.instance.v1.VirtualMachineR\x0fvirtualMachines\"h\n" +
 	"\x18GetVirtualMachineRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\x89\x02\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xf3\x01\n" +
 	"\x1bCreateVirtualMachineRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x12\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
 	"\x04name\x18\v \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\f \x01(\tR\tnamespace\x12,\n" +
 	"\x12instance_type_name\x18\x15 \x01(\tR\x10instanceTypeName\x121\n" +
 	"\x15boot_data_volume_name\x18\x16 \x01(\tR\x12bootDataVolumeName\x12%\n" +
-	"\x0estartup_script\x18\x1f \x01(\tR\rstartupScript\"\x81\x01\n" +
+	"\x0estartup_script\x18\x1f \x01(\tR\rstartupScriptJ\x04\b\x02\x10\x03\"k\n" +
 	"\x1bDeleteVirtualMachineRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xaf\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\x99\x01\n" +
 	"\x1fAttachVirtualMachineDiskRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12(\n" +
-	"\x10data_volume_name\x18\v \x01(\tR\x0edataVolumeName\"\xaf\x01\n" +
+	"\x10data_volume_name\x18\v \x01(\tR\x0edataVolumeNameJ\x04\b\x02\x10\x03\"\x99\x01\n" +
 	"\x1fDetachVirtualMachineDiskRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12(\n" +
-	"\x10data_volume_name\x18\v \x01(\tR\x0edataVolumeName\"\x84\x02\n" +
+	"\x10data_volume_name\x18\v \x01(\tR\x0edataVolumeNameJ\x04\b\x02\x10\x03\"\xee\x01\n" +
 	" CreateVirtualMachineCloneRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12=\n" +
 	"\x1bsource_virtual_machine_name\x18\v \x01(\tR\x18sourceVirtualMachineName\x12=\n" +
-	"\x1btarget_virtual_machine_name\x18\f \x01(\tR\x18targetVirtualMachineName\"\x86\x01\n" +
+	"\x1btarget_virtual_machine_name\x18\f \x01(\tR\x18targetVirtualMachineNameJ\x04\b\x02\x10\x03\"p\n" +
 	" DeleteVirtualMachineCloneRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xbb\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xa5\x01\n" +
 	"#CreateVirtualMachineSnapshotRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x120\n" +
-	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineName\"\x89\x01\n" +
+	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineNameJ\x04\b\x02\x10\x03\"s\n" +
 	"#DeleteVirtualMachineSnapshotRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xdf\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xc9\x01\n" +
 	"\"CreateVirtualMachineRestoreRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x120\n" +
 	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineName\x12#\n" +
-	"\rsnapshot_name\x18\f \x01(\tR\fsnapshotName\"\x88\x01\n" +
+	"\rsnapshot_name\x18\f \x01(\tR\fsnapshotNameJ\x04\b\x02\x10\x03\"r\n" +
 	"\"DeleteVirtualMachineRestoreRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\x80\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"j\n" +
 	"\x1aStartVirtualMachineRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\x7f\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"i\n" +
 	"\x19StopVirtualMachineRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\x82\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"l\n" +
 	"\x1cRestartVirtualMachineRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"z\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"d\n" +
 	"\x14PauseInstanceRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"{\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"e\n" +
 	"\x15ResumeInstanceRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\x98\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\x82\x01\n" +
 	"\x16MigrateInstanceRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1a\n" +
-	"\bhostname\x18\v \x01(\tR\bhostname\"x\n" +
+	"\bhostname\x18\v \x01(\tR\bhostnameJ\x04\b\x02\x10\x03\"b\n" +
 	"\x12VNCInstanceRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"4\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"4\n" +
 	"\x13VNCInstanceResponse\x12\x1d\n" +
 	"\n" +
-	"session_id\x18\x01 \x01(\tR\tsessionId\"\x87\x01\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\"q\n" +
 	"\x16ListDataVolumesRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x1d\n" +
 	"\n" +
-	"boot_image\x18\x04 \x01(\bR\tbootImage\"`\n" +
+	"boot_image\x18\x04 \x01(\bR\tbootImageJ\x04\b\x02\x10\x03\"`\n" +
 	"\x17ListDataVolumesResponse\x12E\n" +
-	"\fdata_volumes\x18\x01 \x03(\v2\".otterscale.instance.v1.DataVolumeR\vdataVolumes\"z\n" +
+	"\fdata_volumes\x18\x01 \x03(\v2\".otterscale.instance.v1.DataVolumeR\vdataVolumes\"d\n" +
 	"\x14GetDataVolumeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xfe\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xe8\x01\n" +
 	"\x17CreateDataVolumeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x12\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
 	"\x04name\x18\v \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\f \x01(\tR\tnamespace\x12A\n" +
 	"\x06source\x18\x15 \x01(\v2).otterscale.instance.v1.DataVolume.SourceR\x06source\x12\x1d\n" +
 	"\n" +
 	"boot_image\x18\x16 \x01(\bR\tbootImage\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\x1f \x01(\x03R\tsizeBytes\"}\n" +
+	"size_bytes\x18\x1f \x01(\x03R\tsizeBytesJ\x04\b\x02\x10\x03\"g\n" +
 	"\x17DeleteDataVolumeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\x9c\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\x86\x01\n" +
 	"\x17ExtendDataVolumeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\v \x01(\x03R\tsizeBytes\"\x9c\x01\n" +
+	"size_bytes\x18\v \x01(\x03R\tsizeBytesJ\x04\b\x02\x10\x03\"\x86\x01\n" +
 	"\x18ListInstanceTypesRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x120\n" +
-	"\x14include_cluster_wide\x18\v \x01(\bR\x12includeClusterWide\"h\n" +
+	"\x14include_cluster_wide\x18\v \x01(\bR\x12includeClusterWideJ\x04\b\x02\x10\x03\"h\n" +
 	"\x19ListInstanceTypesResponse\x12K\n" +
-	"\x0einstance_types\x18\x01 \x03(\v2$.otterscale.instance.v1.InstanceTypeR\rinstanceTypes\"|\n" +
+	"\x0einstance_types\x18\x01 \x03(\v2$.otterscale.instance.v1.InstanceTypeR\rinstanceTypes\"f\n" +
 	"\x16GetInstanceTypeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\xbf\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xa9\x01\n" +
 	"\x19CreateInstanceTypeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x12\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
 	"\x04name\x18\v \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\f \x01(\tR\tnamespace\x12\x1b\n" +
 	"\tcpu_cores\x18\r \x01(\rR\bcpuCores\x12!\n" +
-	"\fmemory_bytes\x18\x0e \x01(\x03R\vmemoryBytes\"\x7f\n" +
+	"\fmemory_bytes\x18\x0e \x01(\x03R\vmemoryBytesJ\x04\b\x02\x10\x03\"i\n" +
 	"\x19DeleteInstanceTypeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\"\x85\x02\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xef\x01\n" +
 	"\"CreateVirtualMachineServiceRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x120\n" +
 	"\x14virtual_machine_name\x18\v \x01(\tR\x12virtualMachineName\x12I\n" +
-	"\x05ports\x18\f \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\"\xd3\x01\n" +
+	"\x05ports\x18\f \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05portsJ\x04\b\x02\x10\x03\"\xbd\x01\n" +
 	"\"UpdateVirtualMachineServiceRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12I\n" +
-	"\x05ports\x18\f \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05ports\"\x88\x01\n" +
+	"\x05ports\x18\f \x03(\v23.otterscale.application.v1.Application.Service.PortR\x05portsJ\x04\b\x02\x10\x03\"r\n" +
 	"\"DeleteVirtualMachineServiceRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1c\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name2\xef\x1f\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x032\xef\x1f\n" +
 	"\x0fInstanceService\x12\x91\x01\n" +
 	"\x13ListVirtualMachines\x122.otterscale.instance.v1.ListVirtualMachinesRequest\x1a3.otterscale.instance.v1.ListVirtualMachinesResponse\"\x11\x8a\xdf\xd5\x1d\f\n" +
 	"\n" +

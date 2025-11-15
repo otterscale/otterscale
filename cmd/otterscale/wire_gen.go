@@ -9,12 +9,45 @@ package main
 import (
 	"github.com/otterscale/otterscale/internal/app"
 	"github.com/otterscale/otterscale/internal/config"
-	"github.com/otterscale/otterscale/internal/core"
-	"github.com/otterscale/otterscale/internal/data/ceph"
-	"github.com/otterscale/otterscale/internal/data/juju"
-	"github.com/otterscale/otterscale/internal/data/kube"
-	"github.com/otterscale/otterscale/internal/data/maas"
+	"github.com/otterscale/otterscale/internal/core/application/chart"
+	"github.com/otterscale/otterscale/internal/core/application/cluster"
+	config2 "github.com/otterscale/otterscale/internal/core/application/config"
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
+	"github.com/otterscale/otterscale/internal/core/application/release"
+	"github.com/otterscale/otterscale/internal/core/application/service"
+	"github.com/otterscale/otterscale/internal/core/application/workload"
+	"github.com/otterscale/otterscale/internal/core/bootstrap"
+	"github.com/otterscale/otterscale/internal/core/configuration"
+	"github.com/otterscale/otterscale/internal/core/configuration/bist"
+	"github.com/otterscale/otterscale/internal/core/environment"
+	"github.com/otterscale/otterscale/internal/core/facility"
+	"github.com/otterscale/otterscale/internal/core/facility/action"
+	"github.com/otterscale/otterscale/internal/core/facility/charm"
+	"github.com/otterscale/otterscale/internal/core/instance/cdi"
+	"github.com/otterscale/otterscale/internal/core/instance/vm"
+	"github.com/otterscale/otterscale/internal/core/instance/vmi"
+	"github.com/otterscale/otterscale/internal/core/instance/vms"
+	"github.com/otterscale/otterscale/internal/core/instance/vnc"
+	"github.com/otterscale/otterscale/internal/core/machine"
+	"github.com/otterscale/otterscale/internal/core/machine/purge"
+	"github.com/otterscale/otterscale/internal/core/machine/tag"
+	"github.com/otterscale/otterscale/internal/core/model"
+	"github.com/otterscale/otterscale/internal/core/network"
+	"github.com/otterscale/otterscale/internal/core/orchestrator"
+	"github.com/otterscale/otterscale/internal/core/orchestrator/extension"
+	"github.com/otterscale/otterscale/internal/core/orchestrator/gpu"
+	"github.com/otterscale/otterscale/internal/core/orchestrator/standalone"
+	"github.com/otterscale/otterscale/internal/core/scope"
+	"github.com/otterscale/otterscale/internal/core/storage"
+	"github.com/otterscale/otterscale/internal/core/storage/block"
+	"github.com/otterscale/otterscale/internal/core/storage/file"
+	"github.com/otterscale/otterscale/internal/core/storage/object"
 	"github.com/otterscale/otterscale/internal/mux"
+	"github.com/otterscale/otterscale/internal/providers/ceph"
+	"github.com/otterscale/otterscale/internal/providers/juju"
+	"github.com/otterscale/otterscale/internal/providers/kubernetes"
+	"github.com/otterscale/otterscale/internal/providers/kubevirt"
+	"github.com/otterscale/otterscale/internal/providers/maas"
 	"github.com/spf13/cobra"
 )
 
@@ -25,91 +58,131 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	bootstrapUseCase := core.NewBootstrapUseCase(configConfig)
-	bootstrapService := app.NewBootstrapService(bootstrapUseCase)
-	bootstrap := mux.NewBootstrap(bootstrapService)
+	useCase := bootstrap.NewUseCase(configConfig)
+	bootstrapService := app.NewBootstrapService(useCase)
+	muxBootstrap := mux.NewBootstrap(bootstrapService)
 	jwksProxy := mux.NewJWKSProxy()
 	jujuJuju := juju.New(configConfig)
-	actionRepo := juju.NewAction(jujuJuju)
-	kubeKube, err := kube.New(configConfig)
+	kubernetesKubernetes, err := kubernetes.New(configConfig, jujuJuju)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	chartRepo, err := kube.NewHelmChart(kubeKube)
+	namespaceRepo := kubernetes.NewNamespaceRepo(kubernetesKubernetes)
+	nodeRepo := kubernetes.NewNodeRepo(kubernetesKubernetes)
+	clusterUseCase := cluster.NewUseCase(namespaceRepo, nodeRepo)
+	chartRepo, err := kubernetes.NewChartRepo(kubernetesKubernetes)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	facilityRepo := juju.NewApplication(jujuJuju)
-	releaseRepo, err := kube.NewHelmRelease(kubeKube)
+	chartUseCase := chart.NewUseCase(configConfig, chartRepo)
+	configMapRepo := kubernetes.NewConfigMapRepo(kubernetesKubernetes)
+	secretRepo := kubernetes.NewSecretRepo(kubernetesKubernetes)
+	configUseCase := config2.NewUseCase(configMapRepo, secretRepo)
+	persistentVolumeClaimRepo := kubernetes.NewPersistentVolumeClaimRepo(kubernetesKubernetes)
+	storageClassRepo := kubernetes.NewStorageClassRepo(kubernetesKubernetes)
+	persistentUseCase := persistent.NewUseCase(persistentVolumeClaimRepo, storageClassRepo)
+	releaseRepo, err := kubernetes.NewReleaseRepo(kubernetesKubernetes)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	chartUseCase := core.NewChartUseCase(configConfig, actionRepo, chartRepo, facilityRepo, releaseRepo)
-	releaseUseCase := core.NewReleaseUseCase(actionRepo, chartRepo, facilityRepo, releaseRepo)
-	clientRepo := juju.NewClient(jujuJuju)
-	kubeAppsRepo := kube.NewApps(kubeKube)
-	kubeCoreRepo := kube.NewCore(kubeKube)
-	kubeStorageRepo := kube.NewStorage(kubeKube)
-	kubernetesUseCase := core.NewKubernetesUseCase(actionRepo, clientRepo, facilityRepo, kubeAppsRepo, kubeCoreRepo, kubeStorageRepo)
-	applicationService := app.NewApplicationService(chartUseCase, releaseUseCase, kubernetesUseCase)
+	releaseUseCase := release.NewUseCase(releaseRepo, chartRepo)
+	serviceRepo := kubernetes.NewServiceRepo(kubernetesKubernetes)
+	serviceUseCase := service.NewUseCase(serviceRepo)
+	daemonSetRepo := kubernetes.NewDaemonSetRepo(kubernetesKubernetes)
+	deploymentRepo := kubernetes.NewDeploymentRepo(kubernetesKubernetes)
+	jobRepo := kubernetes.NewJobRepo(kubernetesKubernetes)
+	podRepo := kubernetes.NewPodRepo(kubernetesKubernetes)
+	statefulSetRepo := kubernetes.NewStatefulSetRepo(kubernetesKubernetes)
+	workloadUseCase := workload.NewUseCase(daemonSetRepo, deploymentRepo, jobRepo, podRepo, statefulSetRepo)
+	applicationService := app.NewApplicationService(clusterUseCase, chartUseCase, configUseCase, persistentUseCase, releaseUseCase, serviceUseCase, workloadUseCase)
 	maasMAAS := maas.New(configConfig)
-	bootResourceRepo := maas.NewBootResource(maasMAAS)
-	bootSourceRepo := maas.NewBootSource(maasMAAS)
-	bootSourceSelectionRepo := maas.NewBootSourceSelection(maasMAAS)
-	packageRepositoryRepo := maas.NewPackageRepository(maasMAAS)
-	scopeRepo := juju.NewModel(jujuJuju)
-	scopeConfigRepo := juju.NewModelConfig(jujuJuju)
-	serverRepo := maas.NewServer(maasMAAS)
-	configurationUseCase := core.NewConfigurationUseCase(configConfig, bootResourceRepo, bootSourceRepo, bootSourceSelectionRepo, packageRepositoryRepo, scopeRepo, scopeConfigRepo, serverRepo)
-	cephCeph := ceph.New(configConfig)
-	cephClusterRepo := ceph.NewCluster(cephCeph)
-	cephRBDRepo := ceph.NewRBD(cephCeph)
-	kubeBatchRepo := kube.NewBatch(kubeKube)
-	bistUseCase := core.NewBISTUseCase(configConfig, actionRepo, cephClusterRepo, cephRBDRepo, clientRepo, facilityRepo, kubeBatchRepo, kubeCoreRepo, scopeRepo)
+	bootResourceRepo := maas.NewBootResourceRepo(maasMAAS)
+	bootSourceRepo := maas.NewBootSourceRepo(maasMAAS)
+	bootSourceSelectionRepo := maas.NewBootSourceSelectionRepo(maasMAAS)
+	packageRepositoryRepo := maas.NewPackageRepositoryRepo(maasMAAS)
+	provisionerRepo := maas.NewProvisionerRepo(maasMAAS)
+	scopeConfigRepo := juju.NewScopeConfigRepo(jujuJuju)
+	configurationUseCase := configuration.NewUseCase(configConfig, bootResourceRepo, bootSourceRepo, bootSourceSelectionRepo, packageRepositoryRepo, provisionerRepo, scopeConfigRepo)
+	cephCeph := ceph.New(configConfig, jujuJuju)
+	bucketRepo := ceph.NewBucketRepo(cephCeph)
+	imageRepo := ceph.NewImageRepo(cephCeph)
+	storageNodeRepo := ceph.NewNodeRepo(cephCeph)
+	poolRepo := ceph.NewPoolRepo(cephCeph)
+	bistUseCase := bist.NewUseCase(configConfig, bucketRepo, configMapRepo, imageRepo, jobRepo, namespaceRepo, storageNodeRepo, podRepo, poolRepo, secretRepo, serviceRepo)
 	configurationService := app.NewConfigurationService(configurationUseCase, bistUseCase)
-	environmentUseCase := core.NewEnvironmentUseCase(configConfig, actionRepo, facilityRepo, scopeRepo)
+	actionRepo := juju.NewActionRepo(jujuJuju)
+	scopeRepo := juju.NewScopeRepo(jujuJuju)
+	environmentUseCase := environment.NewUseCase(configConfig, actionRepo, scopeRepo)
 	environmentService := app.NewEnvironmentService(environmentUseCase)
-	charmRepo := juju.NewCharm(jujuJuju)
-	machineRepo := maas.NewMachine(maasMAAS)
-	facilityUseCase := core.NewFacilityUseCase(actionRepo, charmRepo, clientRepo, facilityRepo, machineRepo, serverRepo)
-	facilityService := app.NewFacilityService(facilityUseCase)
-	kubeCDIRepo := kube.NewCDI(kubeKube)
-	kubeInstanceTypeRepo := kube.NewInstanceType(kubeKube)
-	kubeVirtRepo := kube.NewVirt(kubeKube)
-	kubeVirtCloneRepo := kube.NewVirtClone(kubeKube)
-	kubeVirtSnapshotRepo := kube.NewVirtSnapshot(kubeKube)
-	instanceUseCase := core.NewInstanceUseCase(actionRepo, facilityRepo, kubeCDIRepo, kubeCoreRepo, kubeInstanceTypeRepo, kubeStorageRepo, kubeVirtRepo, kubeVirtCloneRepo, kubeVirtSnapshotRepo, releaseRepo, machineRepo)
-	instanceService := app.NewInstanceService(instanceUseCase)
-	eventRepo := maas.NewEvent(maasMAAS)
-	machineManagerRepo := juju.NewMachine(jujuJuju)
-	nodeDeviceRepo := maas.NewNodeDevice(maasMAAS)
-	tagRepo := maas.NewTag(maasMAAS)
-	machineUseCase := core.NewMachineUseCase(actionRepo, clientRepo, eventRepo, facilityRepo, machineRepo, machineManagerRepo, nodeDeviceRepo, scopeRepo, serverRepo, tagRepo)
-	machineService := app.NewMachineService(machineUseCase)
-	modelUseCase := core.NewModelUseCase(actionRepo, chartRepo, facilityRepo, kubeCoreRepo, releaseRepo)
+	facilityRepo := juju.NewFacilityRepo(jujuJuju)
+	machineRepo := maas.NewMachineRepo(maasMAAS)
+	facilityUseCase := facility.NewUseCase(facilityRepo, machineRepo)
+	actionUseCase := action.NewUseCase(actionRepo)
+	charmRepo := juju.NewCharmRepo(jujuJuju)
+	charmUseCase := charm.NewUseCase(charmRepo)
+	facilityService := app.NewFacilityService(facilityUseCase, actionUseCase, charmUseCase)
+	kubeVirt, err := kubevirt.New(configConfig, kubernetesKubernetes)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	dataVolumeRepo := kubevirt.NewDataVolumeRepo(kubeVirt)
+	cdiUseCase := cdi.NewUseCase(dataVolumeRepo, persistentVolumeClaimRepo)
+	virtualMachineRepo := kubevirt.NewVirtualMachineRepo(kubeVirt)
+	virtualMachineCloneRepo := kubevirt.NewVirtualMachineCloneRepo(kubeVirt)
+	virtualMachineRestoreRepo := kubevirt.NewVirtualMachineRestoreRepo(kubeVirt)
+	virtualMachineSnapshotRepo := kubevirt.NewVirtualMachineSnapshotRepo(kubeVirt)
+	virtualMachineInstanceRepo := kubevirt.NewVirtualMachineInstanceRepo(kubeVirt)
+	vmUseCase := vm.NewUseCase(virtualMachineRepo, virtualMachineCloneRepo, virtualMachineRestoreRepo, virtualMachineSnapshotRepo, virtualMachineInstanceRepo, serviceRepo, machineRepo)
+	virtualMachineInstanceTypeRepo := kubevirt.NewVirtualMachineInstanceTypeRepo(kubeVirt)
+	virtualMachineInstanceMigrationRepo := kubevirt.NewVirtualMachineInstanceMigrationRepo(kubeVirt)
+	vmiUseCase := vmi.NewUseCase(virtualMachineInstanceRepo, virtualMachineInstanceTypeRepo, virtualMachineInstanceMigrationRepo)
+	vmsUseCase := vms.NewUseCase(serviceRepo)
+	vncRepo := kubevirt.NewVNCRepo(kubeVirt)
+	vncUseCase := vnc.NewUseCase(vncRepo)
+	instanceService := app.NewInstanceService(cdiUseCase, vmUseCase, vmiUseCase, vmsUseCase, vncUseCase)
+	eventRepo := maas.NewEventRepo(maasMAAS)
+	machineManagerRepo := juju.NewMachineManagerRepo(jujuJuju)
+	nodeDeviceRepo := maas.NewNodeDeviceRepo(maasMAAS)
+	orchestratorRepo := juju.NewOrchestratorRepo(jujuJuju)
+	machineUseCase := machine.NewUseCase(eventRepo, machineRepo, machineManagerRepo, nodeDeviceRepo, orchestratorRepo, provisionerRepo, scopeRepo)
+	purgeUseCase := purge.NewUseCase(actionRepo, facilityRepo, machineRepo)
+	tagRepo := maas.NewTagRepo(maasMAAS)
+	tagUseCase := tag.NewUseCase(tagRepo)
+	machineService := app.NewMachineService(machineUseCase, purgeUseCase, tagUseCase)
+	modelUseCase := model.NewUseCase(chartRepo, deploymentRepo, releaseRepo, persistentVolumeClaimRepo)
 	modelService := app.NewModelService(modelUseCase)
-	fabricRepo := maas.NewFabric(maasMAAS)
-	ipRangeRepo := maas.NewIPRange(maasMAAS)
-	subnetRepo := maas.NewSubnet(maasMAAS)
-	vlanRepo := maas.NewVLAN(maasMAAS)
-	networkUseCase := core.NewNetworkUseCase(fabricRepo, ipRangeRepo, subnetRepo, vlanRepo)
+	fabricRepo := maas.NewFabricRepo(maasMAAS)
+	subnetRepo := maas.NewSubnetRepo(maasMAAS)
+	ipRangeRepo := maas.NewIPRangeRepo(maasMAAS)
+	vlanRepo := maas.NewVLANRepo(maasMAAS)
+	networkUseCase := network.NewUseCase(fabricRepo, subnetRepo, ipRangeRepo, vlanRepo)
 	networkService := app.NewNetworkService(networkUseCase)
-	facilityOffersRepo := juju.NewApplicationOffers(jujuJuju)
-	orchestratorUseCase := core.NewOrchestratorUseCase(configConfig, actionRepo, chartRepo, clientRepo, facilityRepo, facilityOffersRepo, ipRangeRepo, kubeAppsRepo, kubeCoreRepo, machineRepo, releaseRepo, scopeRepo, serverRepo, subnetRepo, tagRepo)
-	orchestratorService := app.NewOrchestratorService(orchestratorUseCase)
-	cephFSRepo := ceph.NewFS(cephCeph)
-	cephRGWRepo := ceph.NewRGW(cephCeph)
-	storageUseCase := core.NewStorageUseCase(actionRepo, facilityRepo, cephClusterRepo, cephFSRepo, cephRBDRepo, cephRGWRepo, machineRepo)
-	storageService := app.NewStorageService(storageUseCase)
-	keyRepo := juju.NewKey(jujuJuju)
-	sshKeyRepo := maas.NewSSHKey(maasMAAS)
-	scopeUseCase := core.NewScopeUseCase(keyRepo, scopeRepo, sshKeyRepo)
+	orchestratorUseCase := orchestrator.NewUseCase(nodeRepo)
+	extensionUseCase := extension.NewUseCase(chartRepo, releaseRepo)
+	gpuUseCase := gpu.NewUseCase(machineRepo, nodeRepo, podRepo)
+	relationRepo := juju.NewRelationRepo(jujuJuju)
+	standaloneUseCase := standalone.NewUseCase(configConfig, facilityRepo, ipRangeRepo, machineRepo, orchestratorRepo, provisionerRepo, relationRepo, subnetRepo, tagRepo)
+	orchestratorService := app.NewOrchestratorService(orchestratorUseCase, extensionUseCase, gpuUseCase, standaloneUseCase)
+	storageUseCase := storage.NewUseCase(storageNodeRepo, poolRepo, machineRepo)
+	imageSnapshotRepo := ceph.NewImageSnapshotRepo(cephCeph)
+	blockUseCase := block.NewUseCase(imageRepo, imageSnapshotRepo, poolRepo)
+	volumeRepo := ceph.NewVolumeRepo(cephCeph)
+	subvolumeGroupRepo := ceph.NewSubvolumeGroupRepo(cephCeph)
+	subvolumeRepo := ceph.NewSubvolumeRepo(cephCeph)
+	subvolumeSnapshotRepo := ceph.NewSubvolumeSnapshotRepo(cephCeph)
+	fileUseCase := file.NewUseCase(volumeRepo, subvolumeGroupRepo, subvolumeRepo, subvolumeSnapshotRepo, actionRepo, facilityRepo)
+	userRepo := ceph.NewUserRepo(cephCeph)
+	objectUseCase := object.NewUseCase(bucketRepo, userRepo)
+	storageService := app.NewStorageService(storageUseCase, blockUseCase, fileUseCase, objectUseCase)
+	sshKeyRepo := maas.NewSSHKeyRepo(maasMAAS)
+	scopeUseCase := scope.NewUseCase(scopeRepo, sshKeyRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
 	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, storageService, scopeService)
-	command := newCmd(configConfig, bootstrap, jwksProxy, serve)
+	command := newCmd(configConfig, muxBootstrap, jwksProxy, serve)
 	return command, func() {
 		cleanup()
 	}, nil
