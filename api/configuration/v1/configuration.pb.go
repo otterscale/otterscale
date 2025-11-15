@@ -1207,7 +1207,6 @@ func (b0 ListBootImageSelectionsResponse_builder) Build() *ListBootImageSelectio
 type CephBlockDevice struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -1249,24 +1248,9 @@ func (x *CephBlockDevice) GetScope() string {
 	return ""
 }
 
-func (x *CephBlockDevice) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CephBlockDevice) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *CephBlockDevice) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *CephBlockDevice) HasScope() bool {
@@ -1276,28 +1260,15 @@ func (x *CephBlockDevice) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CephBlockDevice) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *CephBlockDevice) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CephBlockDevice) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 type CephBlockDevice_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
+	Scope *string
 }
 
 func (b0 CephBlockDevice_builder) Build() *CephBlockDevice {
@@ -1305,12 +1276,8 @@ func (b0 CephBlockDevice_builder) Build() *CephBlockDevice {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Facility = b.Facility
 	}
 	return m0
 }
@@ -1430,9 +1397,8 @@ type InternalObjectService struct {
 	state                  protoimpl.MessageState     `protogen:"opaque.v1"`
 	xxx_hidden_Type        InternalObjectService_Type `protobuf:"varint,1,opt,name=type,enum=otterscale.configuration.v1.InternalObjectService_Type"`
 	xxx_hidden_Scope       *string                    `protobuf:"bytes,2,opt,name=scope"`
-	xxx_hidden_Facility    *string                    `protobuf:"bytes,3,opt,name=facility"`
 	xxx_hidden_Name        *string                    `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Endpoint    *string                    `protobuf:"bytes,5,opt,name=endpoint"`
+	xxx_hidden_Host        *string                    `protobuf:"bytes,5,opt,name=host"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -1483,16 +1449,6 @@ func (x *InternalObjectService) GetScope() string {
 	return ""
 }
 
-func (x *InternalObjectService) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *InternalObjectService) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -1503,10 +1459,10 @@ func (x *InternalObjectService) GetName() string {
 	return ""
 }
 
-func (x *InternalObjectService) GetEndpoint() string {
+func (x *InternalObjectService) GetHost() string {
 	if x != nil {
-		if x.xxx_hidden_Endpoint != nil {
-			return *x.xxx_hidden_Endpoint
+		if x.xxx_hidden_Host != nil {
+			return *x.xxx_hidden_Host
 		}
 		return ""
 	}
@@ -1515,27 +1471,22 @@ func (x *InternalObjectService) GetEndpoint() string {
 
 func (x *InternalObjectService) SetType(v InternalObjectService_Type) {
 	x.xxx_hidden_Type = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *InternalObjectService) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
-}
-
-func (x *InternalObjectService) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *InternalObjectService) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *InternalObjectService) SetEndpoint(v string) {
-	x.xxx_hidden_Endpoint = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+func (x *InternalObjectService) SetHost(v string) {
+	x.xxx_hidden_Host = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *InternalObjectService) HasType() bool {
@@ -1552,25 +1503,18 @@ func (x *InternalObjectService) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *InternalObjectService) HasFacility() bool {
+func (x *InternalObjectService) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *InternalObjectService) HasName() bool {
+func (x *InternalObjectService) HasHost() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
-func (x *InternalObjectService) HasEndpoint() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *InternalObjectService) ClearType() {
@@ -1583,29 +1527,23 @@ func (x *InternalObjectService) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *InternalObjectService) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *InternalObjectService) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
-func (x *InternalObjectService) ClearEndpoint() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Endpoint = nil
+func (x *InternalObjectService) ClearHost() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Host = nil
 }
 
 type InternalObjectService_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Type     *InternalObjectService_Type
-	Scope    *string
-	Facility *string
-	Name     *string
-	Endpoint *string
+	Type  *InternalObjectService_Type
+	Scope *string
+	Name  *string
+	Host  *string
 }
 
 func (b0 InternalObjectService_builder) Build() *InternalObjectService {
@@ -1613,31 +1551,27 @@ func (b0 InternalObjectService_builder) Build() *InternalObjectService {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Type = *b.Type
 	}
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
-	if b.Endpoint != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_Endpoint = b.Endpoint
+	if b.Host != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_Host = b.Host
 	}
 	return m0
 }
 
 type ExternalObjectService struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Endpoint    *string                `protobuf:"bytes,1,opt,name=endpoint"`
+	xxx_hidden_Host        *string                `protobuf:"bytes,1,opt,name=host"`
 	xxx_hidden_AccessKey   *string                `protobuf:"bytes,2,opt,name=access_key,json=accessKey"`
 	xxx_hidden_SecretKey   *string                `protobuf:"bytes,3,opt,name=secret_key,json=secretKey"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -1671,10 +1605,10 @@ func (x *ExternalObjectService) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ExternalObjectService) GetEndpoint() string {
+func (x *ExternalObjectService) GetHost() string {
 	if x != nil {
-		if x.xxx_hidden_Endpoint != nil {
-			return *x.xxx_hidden_Endpoint
+		if x.xxx_hidden_Host != nil {
+			return *x.xxx_hidden_Host
 		}
 		return ""
 	}
@@ -1701,8 +1635,8 @@ func (x *ExternalObjectService) GetSecretKey() string {
 	return ""
 }
 
-func (x *ExternalObjectService) SetEndpoint(v string) {
-	x.xxx_hidden_Endpoint = &v
+func (x *ExternalObjectService) SetHost(v string) {
+	x.xxx_hidden_Host = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
@@ -1716,7 +1650,7 @@ func (x *ExternalObjectService) SetSecretKey(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *ExternalObjectService) HasEndpoint() bool {
+func (x *ExternalObjectService) HasHost() bool {
 	if x == nil {
 		return false
 	}
@@ -1737,9 +1671,9 @@ func (x *ExternalObjectService) HasSecretKey() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *ExternalObjectService) ClearEndpoint() {
+func (x *ExternalObjectService) ClearHost() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Endpoint = nil
+	x.xxx_hidden_Host = nil
 }
 
 func (x *ExternalObjectService) ClearAccessKey() {
@@ -1755,7 +1689,7 @@ func (x *ExternalObjectService) ClearSecretKey() {
 type ExternalObjectService_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Endpoint  *string
+	Host      *string
 	AccessKey *string
 	SecretKey *string
 }
@@ -1764,9 +1698,9 @@ func (b0 ExternalObjectService_builder) Build() *ExternalObjectService {
 	m0 := &ExternalObjectService{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Endpoint != nil {
+	if b.Host != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
-		x.xxx_hidden_Endpoint = b.Endpoint
+		x.xxx_hidden_Host = b.Host
 	}
 	if b.AccessKey != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
@@ -2995,14 +2929,12 @@ func (b0 DeleteTestResultRequest_builder) Build() *DeleteTestResultRequest {
 }
 
 type ListInternalObjectServicesRequest struct {
-	state                     protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_KubernetesName *string                `protobuf:"bytes,2,opt,name=kubernetes_name,json=kubernetesName"`
-	xxx_hidden_CephName       *string                `protobuf:"bytes,3,opt,name=ceph_name,json=cephName"`
-	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
-	XXX_presence              [1]uint32
-	unknownFields             protoimpl.UnknownFields
-	sizeCache                 protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ListInternalObjectServicesRequest) Reset() {
@@ -3040,39 +2972,9 @@ func (x *ListInternalObjectServicesRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListInternalObjectServicesRequest) GetKubernetesName() string {
-	if x != nil {
-		if x.xxx_hidden_KubernetesName != nil {
-			return *x.xxx_hidden_KubernetesName
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ListInternalObjectServicesRequest) GetCephName() string {
-	if x != nil {
-		if x.xxx_hidden_CephName != nil {
-			return *x.xxx_hidden_CephName
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListInternalObjectServicesRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *ListInternalObjectServicesRequest) SetKubernetesName(v string) {
-	x.xxx_hidden_KubernetesName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
-}
-
-func (x *ListInternalObjectServicesRequest) SetCephName(v string) {
-	x.xxx_hidden_CephName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *ListInternalObjectServicesRequest) HasScope() bool {
@@ -3082,41 +2984,15 @@ func (x *ListInternalObjectServicesRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListInternalObjectServicesRequest) HasKubernetesName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *ListInternalObjectServicesRequest) HasCephName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *ListInternalObjectServicesRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListInternalObjectServicesRequest) ClearKubernetesName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_KubernetesName = nil
-}
-
-func (x *ListInternalObjectServicesRequest) ClearCephName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_CephName = nil
-}
-
 type ListInternalObjectServicesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope          *string
-	KubernetesName *string
-	CephName       *string
+	Scope *string
 }
 
 func (b0 ListInternalObjectServicesRequest_builder) Build() *ListInternalObjectServicesRequest {
@@ -3124,16 +3000,8 @@ func (b0 ListInternalObjectServicesRequest_builder) Build() *ListInternalObjectS
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.KubernetesName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_KubernetesName = b.KubernetesName
-	}
-	if b.CephName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
-		x.xxx_hidden_CephName = b.CephName
 	}
 	return m0
 }
@@ -5174,25 +5042,23 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\timporting\x18\x01 \x01(\bR\timporting\" \n" +
 	"\x1eListBootImageSelectionsRequest\"\x94\x01\n" +
 	"\x1fListBootImageSelectionsResponse\x12q\n" +
-	"\x15boot_image_selections\x18\x01 \x03(\v2=.otterscale.configuration.v1.Configuration.BootImageSelectionR\x13bootImageSelections\"C\n" +
+	"\x15boot_image_selections\x18\x01 \x03(\v2=.otterscale.configuration.v1.Configuration.BootImageSelectionR\x13bootImageSelections\"-\n" +
 	"\x0fCephBlockDevice\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"C\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"C\n" +
 	"\x11NetworkFileSystem\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x12\n" +
-	"\x04path\x18\x02 \x01(\tR\x04path\"\xf4\x01\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path\"\xd6\x01\n" +
 	"\x15InternalObjectService\x12K\n" +
 	"\x04type\x18\x01 \x01(\x0e27.otterscale.configuration.v1.InternalObjectService.TypeR\x04type\x12\x14\n" +
-	"\x05scope\x18\x02 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x03 \x01(\tR\bfacility\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1a\n" +
-	"\bendpoint\x18\x05 \x01(\tR\bendpoint\",\n" +
+	"\x05scope\x18\x02 \x01(\tR\x05scope\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12\x12\n" +
+	"\x04host\x18\x05 \x01(\tR\x04host\",\n" +
 	"\x04Type\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04CEPH\x10\x01\x12\t\n" +
-	"\x05MINIO\x10\x02\"q\n" +
-	"\x15ExternalObjectService\x12\x1a\n" +
-	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x1d\n" +
+	"\x05MINIO\x10\x02J\x04\b\x03\x10\x04\"i\n" +
+	"\x15ExternalObjectService\x12\x12\n" +
+	"\x04host\x18\x01 \x01(\tR\x04host\x12\x1d\n" +
 	"\n" +
 	"access_key\x18\x02 \x01(\tR\taccessKey\x12\x1d\n" +
 	"\n" +
@@ -5307,11 +5173,9 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x04warp\x18f \x01(\v2!.otterscale.configuration.v1.WarpH\x00R\x04warpB\x06\n" +
 	"\x04kind\"-\n" +
 	"\x17DeleteTestResultRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"\x7f\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"9\n" +
 	"!ListInternalObjectServicesRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12'\n" +
-	"\x0fkubernetes_name\x18\x02 \x01(\tR\x0ekubernetesName\x12\x1b\n" +
-	"\tceph_name\x18\x03 \x01(\tR\bcephName\"\x92\x01\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\"\x92\x01\n" +
 	"\"ListInternalObjectServicesResponse\x12l\n" +
 	"\x18internal_object_services\x18\x01 \x03(\v22.otterscale.configuration.v1.InternalObjectServiceR\x16internalObjectServices2\xda\x10\n" +
 	"\x14ConfigurationService\x12\x88\x01\n" +

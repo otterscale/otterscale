@@ -8,190 +8,178 @@ import (
 
 	pb "github.com/otterscale/otterscale/api/orchestrator/v1"
 	"github.com/otterscale/otterscale/api/orchestrator/v1/pbconnect"
-	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core/application/chart"
+	"github.com/otterscale/otterscale/internal/core/machine"
+	"github.com/otterscale/otterscale/internal/core/orchestrator"
+	"github.com/otterscale/otterscale/internal/core/orchestrator/extension"
+	"github.com/otterscale/otterscale/internal/core/orchestrator/gpu"
+	"github.com/otterscale/otterscale/internal/core/orchestrator/standalone"
 )
 
 type OrchestratorService struct {
 	pbconnect.UnimplementedOrchestratorServiceHandler
 
-	uc *core.OrchestratorUseCase
+	orchestrator *orchestrator.UseCase
+	extension    *extension.UseCase
+	gpu          *gpu.UseCase
+	standalone   *standalone.UseCase
 }
 
-func NewOrchestratorService(uc *core.OrchestratorUseCase) *OrchestratorService {
-	return &OrchestratorService{uc: uc}
+func NewOrchestratorService(orchestrator *orchestrator.UseCase, extension *extension.UseCase, gpu *gpu.UseCase, standalone *standalone.UseCase) *OrchestratorService {
+	return &OrchestratorService{
+		orchestrator: orchestrator,
+		extension:    extension,
+		gpu:          gpu,
+		standalone:   standalone,
+	}
 }
 
 var _ pbconnect.OrchestratorServiceHandler = (*OrchestratorService)(nil)
 
-func (s *OrchestratorService) ListEssentials(ctx context.Context, req *pb.ListEssentialsRequest) (*pb.ListEssentialsResponse, error) {
-	essentials, err := s.uc.ListEssentials(ctx, core.EssentialType(req.GetType()), req.GetScope())
-	if err != nil {
-		return nil, err
-	}
-	resp := &pb.ListEssentialsResponse{}
-	resp.SetEssentials(toProtoEssentials(essentials))
-	return resp, nil
-}
-
 func (s *OrchestratorService) CreateNode(ctx context.Context, req *pb.CreateNodeRequest) (*emptypb.Empty, error) {
-	if err := s.uc.CreateNode(ctx, req.GetScope(), req.GetMachineId(), req.GetPrefixName(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
+	if err := s.standalone.CreateNode(ctx, req.GetScope(), req.GetMachineId(), req.GetVirtualIps(), req.GetCalicoCidr(), req.GetOsdDevices()); err != nil {
 		return nil, err
 	}
+
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
 
 func (s *OrchestratorService) ListKubernetesNodeLabels(ctx context.Context, req *pb.ListKubernetesNodeLabelsRequest) (*pb.ListKubernetesNodeLabelsResponse, error) {
-	labels, err := s.uc.ListKubernetesNodeLabels(ctx, req.GetScope(), req.GetFacility(), req.GetHostname(), req.GetAll())
+	labels, err := s.orchestrator.ListKubernetesNodeLabels(ctx, req.GetScope(), req.GetHostname(), req.GetAll())
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListKubernetesNodeLabelsResponse{}
 	resp.SetLabels(labels)
 	return resp, nil
 }
 
 func (s *OrchestratorService) UpdateKubernetesNodeLabels(ctx context.Context, req *pb.UpdateKubernetesNodeLabelsRequest) (*pb.UpdateKubernetesNodeLabelsResponse, error) {
-	labels, err := s.uc.UpdateKubernetesNodeLabels(ctx, req.GetScope(), req.GetFacility(), req.GetHostname(), req.GetLabels())
+	labels, err := s.orchestrator.UpdateKubernetesNodeLabels(ctx, req.GetScope(), req.GetHostname(), req.GetLabels())
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.UpdateKubernetesNodeLabelsResponse{}
 	resp.SetLabels(labels)
 	return resp, nil
 }
 
 func (s *OrchestratorService) ListGPURelationsByMachine(ctx context.Context, req *pb.ListGPURelationsByMachineRequest) (*pb.ListGPURelationsByMachineResponse, error) {
-	gpuRelations, err := s.uc.ListGPURelationsByMachine(ctx, req.GetScope(), req.GetFacility(), req.GetMachineId())
+	relations, err := s.gpu.ListGPURelationsByMachine(ctx, req.GetScope(), req.GetMachineId())
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListGPURelationsByMachineResponse{}
-	resp.SetGpuRelations(toProtoGPURelations(gpuRelations))
+	resp.SetGpuRelations(toProtoGPURelations(relations))
 	return resp, nil
 }
 
 func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *pb.ListGPURelationsByModelRequest) (*pb.ListGPURelationsByModelResponse, error) {
-	gpuRelations, err := s.uc.ListGPURelationsByModel(ctx, req.GetScope(), req.GetFacility(), req.GetNamespace(), req.GetModelName())
+	relations, err := s.gpu.ListGPURelationsByModel(ctx, req.GetScope(), req.GetNamespace(), req.GetModelName())
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListGPURelationsByModelResponse{}
-	resp.SetGpuRelations(toProtoGPURelations(gpuRelations))
+	resp.SetGpuRelations(toProtoGPURelations(relations))
 	return resp, nil
 }
 
 func (s *OrchestratorService) ListGeneralExtensions(ctx context.Context, req *pb.ListGeneralExtensionsRequest) (*pb.ListGeneralExtensionsResponse, error) {
-	Extensions, err := s.uc.ListGeneralExtensions(ctx, req.GetScope(), req.GetFacility())
+	extensions, err := s.extension.ListGeneralExtensions(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListGeneralExtensionsResponse{}
-	resp.SetExtensions(toProtoExtensions(Extensions))
+	resp.SetExtensions(toProtoExtensions(extensions))
 	return resp, nil
 }
 
 func (s *OrchestratorService) ListModelExtensions(ctx context.Context, req *pb.ListModelExtensionsRequest) (*pb.ListModelExtensionsResponse, error) {
-	Extensions, err := s.uc.ListModelExtensions(ctx, req.GetScope(), req.GetFacility())
+	extensions, err := s.extension.ListModelExtensions(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListModelExtensionsResponse{}
-	resp.SetExtensions(toProtoExtensions(Extensions))
+	resp.SetExtensions(toProtoExtensions(extensions))
 	return resp, nil
 }
 
 func (s *OrchestratorService) ListInstanceExtensions(ctx context.Context, req *pb.ListInstanceExtensionsRequest) (*pb.ListInstanceExtensionsResponse, error) {
-	Extensions, err := s.uc.ListInstanceExtensions(ctx, req.GetScope(), req.GetFacility())
+	extensions, err := s.extension.ListInstanceExtensions(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListInstanceExtensionsResponse{}
-	resp.SetExtensions(toProtoExtensions(Extensions))
+	resp.SetExtensions(toProtoExtensions(extensions))
 	return resp, nil
 }
 
 func (s *OrchestratorService) ListStorageExtensions(ctx context.Context, req *pb.ListStorageExtensionsRequest) (*pb.ListStorageExtensionsResponse, error) {
-	Extensions, err := s.uc.ListStorageExtensions(ctx, req.GetScope(), req.GetFacility())
+	extensions, err := s.extension.ListStorageExtensions(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListStorageExtensionsResponse{}
-	resp.SetExtensions(toProtoExtensions(Extensions))
+	resp.SetExtensions(toProtoExtensions(extensions))
 	return resp, nil
 }
 
 func (s *OrchestratorService) InstallExtensions(ctx context.Context, req *pb.InstallExtensionsRequest) (*emptypb.Empty, error) {
-	if err := s.uc.InstallExtensions(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+	if err := s.extension.InstallExtensions(ctx, req.GetScope(), toChartRefMap(req.GetCharts())); err != nil {
 		return nil, err
 	}
+
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
 
 func (s *OrchestratorService) UpgradeExtensions(ctx context.Context, req *pb.UpgradeExtensionsRequest) (*emptypb.Empty, error) {
-	if err := s.uc.UpgradeExtensions(ctx, req.GetScope(), req.GetFacility(), toChartRefMap(req.GetCharts())); err != nil {
+	if err := s.extension.UpgradeExtensions(ctx, req.GetScope(), toChartRefMap(req.GetCharts())); err != nil {
 		return nil, err
 	}
+
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
 
 func toChartRefMap(cs []*pb.Extension_Chart) map[string]string {
 	ret := map[string]string{}
+
 	for _, c := range cs {
 		ret[c.GetName()] = c.GetRef()
 	}
+
 	return ret
 }
 
-func toProtoEssentials(es []core.Essential) []*pb.Essential {
-	ret := []*pb.Essential{}
-	for i := range es {
-		ret = append(ret, toProtoEssential(&es[i]))
-	}
-	return ret
-}
-
-func toProtoEssential(e *core.Essential) *pb.Essential {
-	ret := &pb.Essential{}
-	ret.SetType(pb.Essential_Type(e.Type))
-	ret.SetName(e.Name)
-	ret.SetScope(e.Scope)
-	ret.SetUnits(toProtoEssentialUnits(e.Units))
-	return ret
-}
-
-func toProtoEssentialUnits(eus []core.EssentialUnit) []*pb.Essential_Unit {
-	ret := []*pb.Essential_Unit{}
-	for i := range eus {
-		ret = append(ret, toProtoEssentialUnit(&eus[i]))
-	}
-	return ret
-}
-
-func toProtoEssentialUnit(eu *core.EssentialUnit) *pb.Essential_Unit {
-	ret := &pb.Essential_Unit{}
-	ret.SetName(eu.Name)
-	ret.SetDirective(eu.Directive)
-	return ret
-}
-
-func toProtoGPURelations(rs *core.GPURelations) []*pb.GPURelation {
+func toProtoGPURelations(rs *gpu.Relations) []*pb.GPURelation {
 	ret := []*pb.GPURelation{}
+
 	for i := range rs.Machines {
 		ret = append(ret, toProtoGPURelationFromMachine(&rs.Machines[i]))
 	}
+
 	for i := range rs.GPUs {
 		ret = append(ret, toProtoGPURelationFromGPU(&rs.GPUs[i]))
 	}
+
 	for i := range rs.Pods {
 		ret = append(ret, toProtoGPURelationFromPod(&rs.Pods[i]))
 	}
+
 	return ret
 }
 
-func toProtoGPURelationFromMachine(m *core.Machine) *pb.GPURelation {
+func toProtoGPURelationFromMachine(m *machine.Machine) *pb.GPURelation {
 	machine := &pb.GPURelation_Machine{}
 	machine.SetId(m.SystemID)
 	machine.SetHostname(m.Hostname)
@@ -201,7 +189,7 @@ func toProtoGPURelationFromMachine(m *core.Machine) *pb.GPURelation {
 	return ret
 }
 
-func toProtoGPURelationFromGPU(g *core.GPURelationsGPU) *pb.GPURelation {
+func toProtoGPURelationFromGPU(g *gpu.GPURelation) *pb.GPURelation {
 	gpu := &pb.GPURelation_GPU{}
 	gpu.SetId(g.ID)
 	gpu.SetIndex(g.Index)
@@ -217,15 +205,17 @@ func toProtoGPURelationFromGPU(g *core.GPURelationsGPU) *pb.GPURelation {
 	return ret
 }
 
-func toProtoGPURelationFromPod(p *core.GPURelationsPod) *pb.GPURelation {
+func toProtoGPURelationFromPod(p *gpu.PodRelation) *pb.GPURelation {
 	pod := &pb.GPURelation_Pod{}
 	pod.SetName(p.Name)
 	pod.SetNamespace(p.Namespace)
 	pod.SetModelName(p.ModelName)
 	pod.SetBindingPhase(p.BindingPhase)
+
 	if !p.BoundAt.IsZero() {
 		pod.SetBoundAt(timestamppb.New(p.BoundAt))
 	}
+
 	pod.SetDevices(toProtoGPURelationPodDevices(p.PodDevices))
 
 	ret := &pb.GPURelation{}
@@ -233,15 +223,17 @@ func toProtoGPURelationFromPod(p *core.GPURelationsPod) *pb.GPURelation {
 	return ret
 }
 
-func toProtoGPURelationPodDevices(pds []core.GPURelationPodDevice) []*pb.GPURelation_Pod_Device {
+func toProtoGPURelationPodDevices(pds []gpu.PodDevice) []*pb.GPURelation_Pod_Device {
 	ret := []*pb.GPURelation_Pod_Device{}
+
 	for i := range pds {
 		ret = append(ret, toProtoGPURelationPodDevice(&pds[i]))
 	}
+
 	return ret
 }
 
-func toProtoGPURelationPodDevice(pd *core.GPURelationPodDevice) *pb.GPURelation_Pod_Device {
+func toProtoGPURelationPodDevice(pd *gpu.PodDevice) *pb.GPURelation_Pod_Device {
 	ret := &pb.GPURelation_Pod_Device{}
 	ret.SetGpuId(pd.GPUID)
 	ret.SetUsedCores(pd.UsedCores)
@@ -249,21 +241,27 @@ func toProtoGPURelationPodDevice(pd *core.GPURelationPodDevice) *pb.GPURelation_
 	return ret
 }
 
-func toProtoExtensions(ps []core.Extension) []*pb.Extension {
+func toProtoExtensions(ps []extension.Extension) []*pb.Extension {
 	ret := []*pb.Extension{}
+
 	for i := range ps {
 		ret = append(ret, toProtoExtension(&ps[i]))
 	}
+
 	return ret
 }
 
-func toProtoExtension(p *core.Extension) *pb.Extension {
+func toProtoExtension(p *extension.Extension) *pb.Extension {
 	ret := &pb.Extension{}
+
 	release := p.Release
+
 	if release != nil {
 		ret.SetName(release.Name)
 		ret.SetNamespace(release.Namespace)
+
 		info := release.Info
+
 		if info != nil {
 			ret.SetStatus(info.Status.String())
 			ret.SetDescription(info.Description)
@@ -273,19 +271,24 @@ func toProtoExtension(p *core.Extension) *pb.Extension {
 				ret.SetDeletedAt(timestamppb.New(info.Deleted.Time))
 			}
 		}
+
 		current := release.Chart
+
 		if current != nil && current.Metadata != nil {
 			ret.SetCurrent(toProtoExtensionChart(current.Metadata, ""))
 		}
 	}
+
 	latest := p.Latest
+
 	if latest != nil && latest.Metadata != nil {
 		ret.SetLatest(toProtoExtensionChart(latest.Metadata, p.LatestURL))
 	}
+
 	return ret
 }
 
-func toProtoExtensionChart(md *core.ChartMetadata, ref string) *pb.Extension_Chart {
+func toProtoExtensionChart(md *chart.Metadata, ref string) *pb.Extension_Chart {
 	ret := &pb.Extension_Chart{}
 	ret.SetName(md.Name)
 	ret.SetVersion(md.Version)

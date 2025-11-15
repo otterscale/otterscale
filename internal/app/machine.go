@@ -8,18 +8,24 @@ import (
 
 	pb "github.com/otterscale/otterscale/api/machine/v1"
 	"github.com/otterscale/otterscale/api/machine/v1/pbconnect"
-	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core/machine"
+	"github.com/otterscale/otterscale/internal/core/machine/purge"
+	"github.com/otterscale/otterscale/internal/core/machine/tag"
 )
 
 type MachineService struct {
 	pbconnect.UnimplementedMachineServiceHandler
 
-	machine *core.MachineUseCase
+	machine *machine.UseCase
+	purge   *purge.UseCase
+	tag     *tag.UseCase
 }
 
-func NewMachineService(machine *core.MachineUseCase) *MachineService {
+func NewMachineService(machine *machine.UseCase, purge *purge.UseCase, tag *tag.UseCase) *MachineService {
 	return &MachineService{
 		machine: machine,
+		purge:   purge,
+		tag:     tag,
 	}
 }
 
@@ -30,6 +36,7 @@ func (s *MachineService) ListMachines(ctx context.Context, req *pb.ListMachinesR
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListMachinesResponse{}
 	resp.SetMachines(toProtoMachines(machines))
 	return resp, nil
@@ -40,6 +47,7 @@ func (s *MachineService) GetMachine(ctx context.Context, req *pb.GetMachineReque
 	if err != nil {
 		return nil, err
 	}
+
 	resp := toProtoMachine(machine)
 	return resp, nil
 }
@@ -49,14 +57,22 @@ func (s *MachineService) CreateMachine(ctx context.Context, req *pb.CreateMachin
 	if err != nil {
 		return nil, err
 	}
+
 	resp := toProtoMachine(machine)
 	return resp, nil
 }
 
 func (s *MachineService) DeleteMachine(ctx context.Context, req *pb.DeleteMachineRequest) (*emptypb.Empty, error) {
-	if err := s.machine.DeleteMachine(ctx, req.GetId(), req.GetForce(), req.GetPurgeDisk()); err != nil {
+	if err := s.machine.DeleteMachine(ctx, req.GetId(), req.GetForce()); err != nil {
 		return nil, err
 	}
+
+	if req.GetPurgeDisk() {
+		if err := s.purge.PurgeDisk(ctx, req.GetId()); err != nil {
+			return nil, err
+		}
+	}
+
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
@@ -65,6 +81,7 @@ func (s *MachineService) CommissionMachine(ctx context.Context, req *pb.Commissi
 	if err := s.machine.CommissionMachine(ctx, req.GetId(), req.GetEnableSsh(), req.GetSkipBmcConfig(), req.GetSkipNetworking(), req.GetSkipStorage()); err != nil {
 		return nil, err
 	}
+
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
@@ -74,80 +91,93 @@ func (s *MachineService) PowerOffMachine(ctx context.Context, req *pb.PowerOffMa
 	if err != nil {
 		return nil, err
 	}
+
 	resp := toProtoMachine(machine)
 	return resp, nil
 }
 
 func (s *MachineService) AddMachineTags(ctx context.Context, req *pb.AddMachineTagsRequest) (*emptypb.Empty, error) {
-	if err := s.machine.AddMachineTags(ctx, req.GetId(), req.GetTags()); err != nil {
+	if err := s.tag.AddMachineTags(ctx, req.GetId(), req.GetTags()); err != nil {
 		return nil, err
 	}
+
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
 
 func (s *MachineService) RemoveMachineTags(ctx context.Context, req *pb.RemoveMachineTagsRequest) (*emptypb.Empty, error) {
-	if err := s.machine.RemoveMachineTags(ctx, req.GetId(), req.GetTags()); err != nil {
+	if err := s.tag.RemoveMachineTags(ctx, req.GetId(), req.GetTags()); err != nil {
 		return nil, err
 	}
+
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
 
 func (s *MachineService) ListTags(ctx context.Context, _ *pb.ListTagsRequest) (*pb.ListTagsResponse, error) {
-	tags, err := s.machine.ListTags(ctx)
+	tags, err := s.tag.ListTags(ctx)
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &pb.ListTagsResponse{}
 	resp.SetTags(toProtoTags(tags))
 	return resp, nil
 }
 
 func (s *MachineService) GetTag(ctx context.Context, req *pb.GetTagRequest) (*pb.Tag, error) {
-	tag, err := s.machine.GetTag(ctx, req.GetName())
+	tag, err := s.tag.GetTag(ctx, req.GetName())
 	if err != nil {
 		return nil, err
 	}
+
 	resp := toProtoTag(tag)
 	return resp, nil
 }
 
 func (s *MachineService) CreateTag(ctx context.Context, req *pb.CreateTagRequest) (*pb.Tag, error) {
-	tag, err := s.machine.CreateTag(ctx, req.GetName(), req.GetComment())
+	tag, err := s.tag.CreateTag(ctx, req.GetName(), req.GetComment())
 	if err != nil {
 		return nil, err
 	}
+
 	resp := toProtoTag(tag)
 	return resp, nil
 }
 
 func (s *MachineService) DeleteTag(ctx context.Context, req *pb.DeleteTagRequest) (*emptypb.Empty, error) {
-	if err := s.machine.DeleteTag(ctx, req.GetName()); err != nil {
+	if err := s.tag.DeleteTag(ctx, req.GetName()); err != nil {
 		return nil, err
 	}
+
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
 
-func toProtoMachines(ms []core.Machine) []*pb.Machine {
+func toProtoMachines(ms []machine.MachineData) []*pb.Machine {
 	ret := []*pb.Machine{}
+
 	for i := range ms {
 		ret = append(ret, toProtoMachine(&ms[i]))
 	}
+
 	return ret
 }
 
-func toProtoMachine(m *core.Machine) *pb.Machine {
+func toProtoMachine(m *machine.MachineData) *pb.Machine {
 	ipAddresses := make([]string, len(m.IPAddresses))
+
 	for i, ip := range m.IPAddresses {
 		ipAddresses[i] = ip.String()
 	}
+
 	ret := &pb.Machine{}
 	ret.SetId(m.SystemID)
-	if !m.LastCommissioned.IsZero() {
-		ret.SetLastCommissioned(timestamppb.New(m.LastCommissioned))
+
+	if !m.LastCommissionedAt.IsZero() {
+		ret.SetLastCommissioned(timestamppb.New(m.LastCommissionedAt))
 	}
+
 	ret.SetHardwareUuid(m.HardwareUUID)
 	ret.SetHostname(m.Hostname)
 	ret.SetFqdn(m.FQDN)
@@ -155,7 +185,7 @@ func toProtoMachine(m *core.Machine) *pb.Machine {
 	ret.SetDescription(m.Description)
 	ret.SetStatus(m.StatusName)
 	ret.SetStatusMessage(m.StatusMessage)
-	ret.SetAgentStatus(m.AgentStatus.Status)
+	ret.SetAgentStatus(m.AgentStatus)
 	ret.SetPowerState(m.PowerState)
 	ret.SetPowerType(m.PowerType)
 	ret.SetOsystem(m.OSystem)
@@ -177,15 +207,17 @@ func toProtoMachine(m *core.Machine) *pb.Machine {
 	return ret
 }
 
-func toProtoNUMANodes(ns []core.NUMANode) []*pb.Machine_NUMANode {
+func toProtoNUMANodes(ns []machine.NUMANode) []*pb.Machine_NUMANode {
 	ret := []*pb.Machine_NUMANode{}
+
 	for i := range ns {
 		ret = append(ret, toProtoNUMANode(&ns[i]))
 	}
+
 	return ret
 }
 
-func toProtoNUMANode(n *core.NUMANode) *pb.Machine_NUMANode {
+func toProtoNUMANode(n *machine.NUMANode) *pb.Machine_NUMANode {
 	ret := &pb.Machine_NUMANode{}
 	ret.SetIndex(int64(n.Index))
 	ret.SetCpuCores(int64(len(n.Cores)))
@@ -193,15 +225,17 @@ func toProtoNUMANode(n *core.NUMANode) *pb.Machine_NUMANode {
 	return ret
 }
 
-func toProtoBlockDevices(bds []core.BlockDevice, bootDiskID int) []*pb.Machine_BlockDevice {
+func toProtoBlockDevices(bds []machine.BlockDevice, bootDiskID int) []*pb.Machine_BlockDevice {
 	ret := []*pb.Machine_BlockDevice{}
+
 	for i := range bds {
 		ret = append(ret, toProtoBlockDevice(&bds[i], bootDiskID))
 	}
+
 	return ret
 }
 
-func toProtoBlockDevice(bd *core.BlockDevice, bootDiskID int) *pb.Machine_BlockDevice {
+func toProtoBlockDevice(bd *machine.BlockDevice, bootDiskID int) *pb.Machine_BlockDevice {
 	ret := &pb.Machine_BlockDevice{}
 	ret.SetBootDisk(bd.ID == bootDiskID)
 	ret.SetName(bd.Name)
@@ -215,24 +249,28 @@ func toProtoBlockDevice(bd *core.BlockDevice, bootDiskID int) *pb.Machine_BlockD
 	return ret
 }
 
-func toProtoNetworkInterfaces(nis []core.NetworkInterface, bootInterfaceID int) []*pb.Machine_NetworkInterface {
+func toProtoNetworkInterfaces(nis []machine.NetworkInterface, bootInterfaceID int) []*pb.Machine_NetworkInterface {
 	ret := []*pb.Machine_NetworkInterface{}
+
 	for i := range nis {
 		ret = append(ret, toProtoNetworkInterface(&nis[i], bootInterfaceID))
 	}
+
 	return ret
 }
 
-func toProtoNetworkInterface(ni *core.NetworkInterface, bootInterfaceID int) *pb.Machine_NetworkInterface {
+func toProtoNetworkInterface(ni *machine.NetworkInterface, bootInterfaceID int) *pb.Machine_NetworkInterface {
 	subnetName := ""
 	subnetID := 0
 	ipAdress := ""
+
 	for i := range ni.Links {
 		subnetName = ni.Links[i].Subnet.Name
 		subnetID = ni.Links[i].Subnet.ID
 		ipAdress = ni.Links[i].IPAddress
 		break
 	}
+
 	ret := &pb.Machine_NetworkInterface{}
 	ret.SetBootInterface(ni.ID == bootInterfaceID)
 	ret.SetName(ni.Name)
@@ -252,15 +290,17 @@ func toProtoNetworkInterface(ni *core.NetworkInterface, bootInterfaceID int) *pb
 	return ret
 }
 
-func toProtoNodeDevices(ns []core.NodeDevice) []*pb.Machine_NodeDevice {
+func toProtoNodeDevices(ns []machine.GPU) []*pb.Machine_NodeDevice {
 	ret := []*pb.Machine_NodeDevice{}
+
 	for i := range ns {
 		ret = append(ret, toProtoNodeDevice(&ns[i]))
 	}
+
 	return ret
 }
 
-func toProtoNodeDevice(n *core.NodeDevice) *pb.Machine_NodeDevice {
+func toProtoNodeDevice(n *machine.GPU) *pb.Machine_NodeDevice {
 	ret := &pb.Machine_NodeDevice{}
 	ret.SetVendorId(n.VendorID)
 	ret.SetVendorName(n.VendorName)
@@ -271,15 +311,17 @@ func toProtoNodeDevice(n *core.NodeDevice) *pb.Machine_NodeDevice {
 	return ret
 }
 
-func toProtoTags(ts []core.Tag) []*pb.Tag {
+func toProtoTags(ts []tag.Tag) []*pb.Tag {
 	ret := []*pb.Tag{}
+
 	for i := range ts {
 		ret = append(ret, toProtoTag(&ts[i]))
 	}
+
 	return ret
 }
 
-func toProtoTag(t *core.Tag) *pb.Tag {
+func toProtoTag(t *tag.Tag) *pb.Tag {
 	ret := &pb.Tag{}
 	ret.SetName(t.Name)
 	ret.SetComment(t.Comment)

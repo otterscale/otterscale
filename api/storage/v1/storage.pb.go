@@ -2842,7 +2842,6 @@ func (b0 User_builder) Build() *User {
 type ListMONsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -2884,24 +2883,9 @@ func (x *ListMONsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListMONsRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListMONsRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *ListMONsRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *ListMONsRequest) HasScope() bool {
@@ -2911,28 +2895,15 @@ func (x *ListMONsRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListMONsRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListMONsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListMONsRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 type ListMONsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
+	Scope *string
 }
 
 func (b0 ListMONsRequest_builder) Build() *ListMONsRequest {
@@ -2940,12 +2911,8 @@ func (b0 ListMONsRequest_builder) Build() *ListMONsRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Facility = b.Facility
 	}
 	return m0
 }
@@ -3012,7 +2979,6 @@ func (b0 ListMONsResponse_builder) Build() *ListMONsResponse {
 type ListOSDsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -3054,24 +3020,9 @@ func (x *ListOSDsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListOSDsRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListOSDsRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *ListOSDsRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *ListOSDsRequest) HasScope() bool {
@@ -3081,28 +3032,15 @@ func (x *ListOSDsRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListOSDsRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListOSDsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListOSDsRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 type ListOSDsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
+	Scope *string
 }
 
 func (b0 ListOSDsRequest_builder) Build() *ListOSDsRequest {
@@ -3110,12 +3048,8 @@ func (b0 ListOSDsRequest_builder) Build() *ListOSDsRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Facility = b.Facility
 	}
 	return m0
 }
@@ -3182,7 +3116,6 @@ func (b0 ListOSDsResponse_builder) Build() *ListOSDsResponse {
 type DoSMARTRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_OsdName     *string                `protobuf:"bytes,3,opt,name=osd_name,json=osdName"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -3225,16 +3158,6 @@ func (x *DoSMARTRequest) GetScope() string {
 	return ""
 }
 
-func (x *DoSMARTRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DoSMARTRequest) GetOsdName() string {
 	if x != nil {
 		if x.xxx_hidden_OsdName != nil {
@@ -3247,17 +3170,12 @@ func (x *DoSMARTRequest) GetOsdName() string {
 
 func (x *DoSMARTRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *DoSMARTRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *DoSMARTRequest) SetOsdName(v string) {
 	x.xxx_hidden_OsdName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *DoSMARTRequest) HasScope() bool {
@@ -3267,18 +3185,11 @@ func (x *DoSMARTRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DoSMARTRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *DoSMARTRequest) HasOsdName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *DoSMARTRequest) ClearScope() {
@@ -3286,22 +3197,16 @@ func (x *DoSMARTRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DoSMARTRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DoSMARTRequest) ClearOsdName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_OsdName = nil
 }
 
 type DoSMARTRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
-	OsdName  *string
+	Scope   *string
+	OsdName *string
 }
 
 func (b0 DoSMARTRequest_builder) Build() *DoSMARTRequest {
@@ -3309,15 +3214,11 @@ func (b0 DoSMARTRequest_builder) Build() *DoSMARTRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.OsdName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_OsdName = b.OsdName
 	}
 	return m0
@@ -3383,7 +3284,6 @@ func (b0 DoSMARTResponse_builder) Build() *DoSMARTResponse {
 type ListPoolsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_Application *string                `protobuf:"bytes,11,opt,name=application"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -3426,16 +3326,6 @@ func (x *ListPoolsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListPoolsRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListPoolsRequest) GetApplication() string {
 	if x != nil {
 		if x.xxx_hidden_Application != nil {
@@ -3448,17 +3338,12 @@ func (x *ListPoolsRequest) GetApplication() string {
 
 func (x *ListPoolsRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *ListPoolsRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *ListPoolsRequest) SetApplication(v string) {
 	x.xxx_hidden_Application = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *ListPoolsRequest) HasScope() bool {
@@ -3468,18 +3353,11 @@ func (x *ListPoolsRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListPoolsRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListPoolsRequest) HasApplication() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *ListPoolsRequest) ClearScope() {
@@ -3487,13 +3365,8 @@ func (x *ListPoolsRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListPoolsRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *ListPoolsRequest) ClearApplication() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Application = nil
 }
 
@@ -3501,7 +3374,6 @@ type ListPoolsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope       *string
-	Facility    *string
 	Application *string
 }
 
@@ -3510,15 +3382,11 @@ func (b0 ListPoolsRequest_builder) Build() *ListPoolsRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.Application != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_Application = b.Application
 	}
 	return m0
@@ -3586,7 +3454,6 @@ func (b0 ListPoolsResponse_builder) Build() *ListPoolsResponse {
 type CreatePoolRequest struct {
 	state                     protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility       *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_PoolName       *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	xxx_hidden_PoolType       PoolType               `protobuf:"varint,11,opt,name=pool_type,json=poolType,enum=otterscale.storage.v1.PoolType"`
 	xxx_hidden_EcOverwrites   bool                   `protobuf:"varint,21,opt,name=ec_overwrites,json=ecOverwrites"`
@@ -3635,16 +3502,6 @@ func (x *CreatePoolRequest) GetScope() string {
 	return ""
 }
 
-func (x *CreatePoolRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreatePoolRequest) GetPoolName() string {
 	if x != nil {
 		if x.xxx_hidden_PoolName != nil {
@@ -3657,7 +3514,7 @@ func (x *CreatePoolRequest) GetPoolName() string {
 
 func (x *CreatePoolRequest) GetPoolType() PoolType {
 	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 3) {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 2) {
 			return x.xxx_hidden_PoolType
 		}
 	}
@@ -3701,42 +3558,37 @@ func (x *CreatePoolRequest) GetApplications() []string {
 
 func (x *CreatePoolRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 9)
-}
-
-func (x *CreatePoolRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 8)
 }
 
 func (x *CreatePoolRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 8)
 }
 
 func (x *CreatePoolRequest) SetPoolType(v PoolType) {
 	x.xxx_hidden_PoolType = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 8)
 }
 
 func (x *CreatePoolRequest) SetEcOverwrites(v bool) {
 	x.xxx_hidden_EcOverwrites = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 8)
 }
 
 func (x *CreatePoolRequest) SetReplicatedSize(v uint64) {
 	x.xxx_hidden_ReplicatedSize = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 8)
 }
 
 func (x *CreatePoolRequest) SetQuotaBytes(v uint64) {
 	x.xxx_hidden_QuotaBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 8)
 }
 
 func (x *CreatePoolRequest) SetQuotaObjects(v uint64) {
 	x.xxx_hidden_QuotaObjects = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 8)
 }
 
 func (x *CreatePoolRequest) SetApplications(v []string) {
@@ -3750,53 +3602,46 @@ func (x *CreatePoolRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreatePoolRequest) HasFacility() bool {
+func (x *CreatePoolRequest) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreatePoolRequest) HasPoolName() bool {
+func (x *CreatePoolRequest) HasPoolType() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreatePoolRequest) HasPoolType() bool {
+func (x *CreatePoolRequest) HasEcOverwrites() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreatePoolRequest) HasEcOverwrites() bool {
+func (x *CreatePoolRequest) HasReplicatedSize() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *CreatePoolRequest) HasReplicatedSize() bool {
+func (x *CreatePoolRequest) HasQuotaBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *CreatePoolRequest) HasQuotaBytes() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
-}
-
 func (x *CreatePoolRequest) HasQuotaObjects() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
 func (x *CreatePoolRequest) ClearScope() {
@@ -3804,38 +3649,33 @@ func (x *CreatePoolRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreatePoolRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreatePoolRequest) ClearPoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_PoolName = nil
 }
 
 func (x *CreatePoolRequest) ClearPoolType() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_PoolType = PoolType_UNSPECIFIED
 }
 
 func (x *CreatePoolRequest) ClearEcOverwrites() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_EcOverwrites = false
 }
 
 func (x *CreatePoolRequest) ClearReplicatedSize() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_ReplicatedSize = 0
 }
 
 func (x *CreatePoolRequest) ClearQuotaBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_QuotaBytes = 0
 }
 
 func (x *CreatePoolRequest) ClearQuotaObjects() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_QuotaObjects = 0
 }
 
@@ -3843,7 +3683,6 @@ type CreatePoolRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope          *string
-	Facility       *string
 	PoolName       *string
 	PoolType       *PoolType
 	EcOverwrites   *bool
@@ -3858,35 +3697,31 @@ func (b0 CreatePoolRequest_builder) Build() *CreatePoolRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 8)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 9)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 8)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.PoolType != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
 		x.xxx_hidden_PoolType = *b.PoolType
 	}
 	if b.EcOverwrites != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 8)
 		x.xxx_hidden_EcOverwrites = *b.EcOverwrites
 	}
 	if b.ReplicatedSize != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 8)
 		x.xxx_hidden_ReplicatedSize = *b.ReplicatedSize
 	}
 	if b.QuotaBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 8)
 		x.xxx_hidden_QuotaBytes = *b.QuotaBytes
 	}
 	if b.QuotaObjects != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 8)
 		x.xxx_hidden_QuotaObjects = *b.QuotaObjects
 	}
 	x.xxx_hidden_Applications = b.Applications
@@ -3896,7 +3731,6 @@ func (b0 CreatePoolRequest_builder) Build() *CreatePoolRequest {
 type UpdatePoolRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope        *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility     *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_PoolName     *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	xxx_hidden_QuotaBytes   uint64                 `protobuf:"varint,41,opt,name=quota_bytes,json=quotaBytes"`
 	xxx_hidden_QuotaObjects uint64                 `protobuf:"varint,42,opt,name=quota_objects,json=quotaObjects"`
@@ -3941,16 +3775,6 @@ func (x *UpdatePoolRequest) GetScope() string {
 	return ""
 }
 
-func (x *UpdatePoolRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *UpdatePoolRequest) GetPoolName() string {
 	if x != nil {
 		if x.xxx_hidden_PoolName != nil {
@@ -3977,27 +3801,22 @@ func (x *UpdatePoolRequest) GetQuotaObjects() uint64 {
 
 func (x *UpdatePoolRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *UpdatePoolRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *UpdatePoolRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *UpdatePoolRequest) SetQuotaBytes(v uint64) {
 	x.xxx_hidden_QuotaBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *UpdatePoolRequest) SetQuotaObjects(v uint64) {
 	x.xxx_hidden_QuotaObjects = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *UpdatePoolRequest) HasScope() bool {
@@ -4007,32 +3826,25 @@ func (x *UpdatePoolRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UpdatePoolRequest) HasFacility() bool {
+func (x *UpdatePoolRequest) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdatePoolRequest) HasPoolName() bool {
+func (x *UpdatePoolRequest) HasQuotaBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UpdatePoolRequest) HasQuotaBytes() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *UpdatePoolRequest) HasQuotaObjects() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *UpdatePoolRequest) ClearScope() {
@@ -4040,23 +3852,18 @@ func (x *UpdatePoolRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *UpdatePoolRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *UpdatePoolRequest) ClearPoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_PoolName = nil
 }
 
 func (x *UpdatePoolRequest) ClearQuotaBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_QuotaBytes = 0
 }
 
 func (x *UpdatePoolRequest) ClearQuotaObjects() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_QuotaObjects = 0
 }
 
@@ -4064,7 +3871,6 @@ type UpdatePoolRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope        *string
-	Facility     *string
 	PoolName     *string
 	QuotaBytes   *uint64
 	QuotaObjects *uint64
@@ -4075,23 +3881,19 @@ func (b0 UpdatePoolRequest_builder) Build() *UpdatePoolRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.QuotaBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_QuotaBytes = *b.QuotaBytes
 	}
 	if b.QuotaObjects != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_QuotaObjects = *b.QuotaObjects
 	}
 	return m0
@@ -4100,7 +3902,6 @@ func (b0 UpdatePoolRequest_builder) Build() *UpdatePoolRequest {
 type DeletePoolRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_PoolName    *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -4143,16 +3944,6 @@ func (x *DeletePoolRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeletePoolRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeletePoolRequest) GetPoolName() string {
 	if x != nil {
 		if x.xxx_hidden_PoolName != nil {
@@ -4165,17 +3956,12 @@ func (x *DeletePoolRequest) GetPoolName() string {
 
 func (x *DeletePoolRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *DeletePoolRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *DeletePoolRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *DeletePoolRequest) HasScope() bool {
@@ -4185,18 +3971,11 @@ func (x *DeletePoolRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeletePoolRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *DeletePoolRequest) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *DeletePoolRequest) ClearScope() {
@@ -4204,13 +3983,8 @@ func (x *DeletePoolRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeletePoolRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeletePoolRequest) ClearPoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_PoolName = nil
 }
 
@@ -4218,7 +3992,6 @@ type DeletePoolRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope    *string
-	Facility *string
 	PoolName *string
 }
 
@@ -4227,15 +4000,11 @@ func (b0 DeletePoolRequest_builder) Build() *DeletePoolRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	return m0
@@ -4244,7 +4013,6 @@ func (b0 DeletePoolRequest_builder) Build() *DeletePoolRequest {
 type ListImagesRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -4286,24 +4054,9 @@ func (x *ListImagesRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListImagesRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListImagesRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *ListImagesRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *ListImagesRequest) HasScope() bool {
@@ -4313,28 +4066,15 @@ func (x *ListImagesRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListImagesRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListImagesRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListImagesRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 type ListImagesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
+	Scope *string
 }
 
 func (b0 ListImagesRequest_builder) Build() *ListImagesRequest {
@@ -4342,12 +4082,8 @@ func (b0 ListImagesRequest_builder) Build() *ListImagesRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Facility = b.Facility
 	}
 	return m0
 }
@@ -4414,7 +4150,6 @@ func (b0 ListImagesResponse_builder) Build() *ListImagesResponse {
 type CreateImageRequest struct {
 	state                      protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope           *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility        *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_PoolName        *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	xxx_hidden_ImageName       *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
 	xxx_hidden_ObjectSizeBytes uint64                 `protobuf:"varint,11,opt,name=object_size_bytes,json=objectSizeBytes"`
@@ -4461,16 +4196,6 @@ func (x *CreateImageRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateImageRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -4562,67 +4287,62 @@ func (x *CreateImageRequest) GetDeepFlatten() bool {
 
 func (x *CreateImageRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 13)
-}
-
-func (x *CreateImageRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 12)
 }
 
 func (x *CreateImageRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 12)
 }
 
 func (x *CreateImageRequest) SetImageName(v string) {
 	x.xxx_hidden_ImageName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 12)
 }
 
 func (x *CreateImageRequest) SetObjectSizeBytes(v uint64) {
 	x.xxx_hidden_ObjectSizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 12)
 }
 
 func (x *CreateImageRequest) SetStripeUnitBytes(v uint64) {
 	x.xxx_hidden_StripeUnitBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 12)
 }
 
 func (x *CreateImageRequest) SetStripeCount(v uint64) {
 	x.xxx_hidden_StripeCount = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 12)
 }
 
 func (x *CreateImageRequest) SetQuotaBytes(v uint64) {
 	x.xxx_hidden_QuotaBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 12)
 }
 
 func (x *CreateImageRequest) SetLayering(v bool) {
 	x.xxx_hidden_Layering = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 12)
 }
 
 func (x *CreateImageRequest) SetExclusiveLock(v bool) {
 	x.xxx_hidden_ExclusiveLock = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 12)
 }
 
 func (x *CreateImageRequest) SetObjectMap(v bool) {
 	x.xxx_hidden_ObjectMap = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 12)
 }
 
 func (x *CreateImageRequest) SetFastDiff(v bool) {
 	x.xxx_hidden_FastDiff = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 12)
 }
 
 func (x *CreateImageRequest) SetDeepFlatten(v bool) {
 	x.xxx_hidden_DeepFlatten = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 12)
 }
 
 func (x *CreateImageRequest) HasScope() bool {
@@ -4632,88 +4352,81 @@ func (x *CreateImageRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateImageRequest) HasFacility() bool {
+func (x *CreateImageRequest) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateImageRequest) HasPoolName() bool {
+func (x *CreateImageRequest) HasImageName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateImageRequest) HasImageName() bool {
+func (x *CreateImageRequest) HasObjectSizeBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreateImageRequest) HasObjectSizeBytes() bool {
+func (x *CreateImageRequest) HasStripeUnitBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *CreateImageRequest) HasStripeUnitBytes() bool {
+func (x *CreateImageRequest) HasStripeCount() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *CreateImageRequest) HasStripeCount() bool {
+func (x *CreateImageRequest) HasQuotaBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
-func (x *CreateImageRequest) HasQuotaBytes() bool {
+func (x *CreateImageRequest) HasLayering() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
-func (x *CreateImageRequest) HasLayering() bool {
+func (x *CreateImageRequest) HasExclusiveLock() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
-func (x *CreateImageRequest) HasExclusiveLock() bool {
+func (x *CreateImageRequest) HasObjectMap() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
 }
 
-func (x *CreateImageRequest) HasObjectMap() bool {
+func (x *CreateImageRequest) HasFastDiff() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 10)
 }
 
-func (x *CreateImageRequest) HasFastDiff() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 11)
-}
-
 func (x *CreateImageRequest) HasDeepFlatten() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 12)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 11)
 }
 
 func (x *CreateImageRequest) ClearScope() {
@@ -4721,63 +4434,58 @@ func (x *CreateImageRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateImageRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateImageRequest) ClearPoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_PoolName = nil
 }
 
 func (x *CreateImageRequest) ClearImageName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_ImageName = nil
 }
 
 func (x *CreateImageRequest) ClearObjectSizeBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_ObjectSizeBytes = 0
 }
 
 func (x *CreateImageRequest) ClearStripeUnitBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_StripeUnitBytes = 0
 }
 
 func (x *CreateImageRequest) ClearStripeCount() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_StripeCount = 0
 }
 
 func (x *CreateImageRequest) ClearQuotaBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_QuotaBytes = 0
 }
 
 func (x *CreateImageRequest) ClearLayering() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
 	x.xxx_hidden_Layering = false
 }
 
 func (x *CreateImageRequest) ClearExclusiveLock() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
 	x.xxx_hidden_ExclusiveLock = false
 }
 
 func (x *CreateImageRequest) ClearObjectMap() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 10)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
 	x.xxx_hidden_ObjectMap = false
 }
 
 func (x *CreateImageRequest) ClearFastDiff() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 10)
 	x.xxx_hidden_FastDiff = false
 }
 
 func (x *CreateImageRequest) ClearDeepFlatten() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 12)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
 	x.xxx_hidden_DeepFlatten = false
 }
 
@@ -4785,7 +4493,6 @@ type CreateImageRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope           *string
-	Facility        *string
 	PoolName        *string
 	ImageName       *string
 	ObjectSizeBytes *uint64
@@ -4804,55 +4511,51 @@ func (b0 CreateImageRequest_builder) Build() *CreateImageRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 12)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 13)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 12)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.ImageName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 12)
 		x.xxx_hidden_ImageName = b.ImageName
 	}
 	if b.ObjectSizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 12)
 		x.xxx_hidden_ObjectSizeBytes = *b.ObjectSizeBytes
 	}
 	if b.StripeUnitBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 12)
 		x.xxx_hidden_StripeUnitBytes = *b.StripeUnitBytes
 	}
 	if b.StripeCount != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 12)
 		x.xxx_hidden_StripeCount = *b.StripeCount
 	}
 	if b.QuotaBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 12)
 		x.xxx_hidden_QuotaBytes = *b.QuotaBytes
 	}
 	if b.Layering != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 12)
 		x.xxx_hidden_Layering = *b.Layering
 	}
 	if b.ExclusiveLock != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 12)
 		x.xxx_hidden_ExclusiveLock = *b.ExclusiveLock
 	}
 	if b.ObjectMap != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 12)
 		x.xxx_hidden_ObjectMap = *b.ObjectMap
 	}
 	if b.FastDiff != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 12)
 		x.xxx_hidden_FastDiff = *b.FastDiff
 	}
 	if b.DeepFlatten != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 12)
 		x.xxx_hidden_DeepFlatten = *b.DeepFlatten
 	}
 	return m0
@@ -4861,7 +4564,6 @@ func (b0 CreateImageRequest_builder) Build() *CreateImageRequest {
 type UpdateImageRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_PoolName    *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	xxx_hidden_ImageName   *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
 	xxx_hidden_QuotaBytes  uint64                 `protobuf:"varint,11,opt,name=quota_bytes,json=quotaBytes"`
@@ -4906,16 +4608,6 @@ func (x *UpdateImageRequest) GetScope() string {
 	return ""
 }
 
-func (x *UpdateImageRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *UpdateImageRequest) GetPoolName() string {
 	if x != nil {
 		if x.xxx_hidden_PoolName != nil {
@@ -4945,27 +4637,22 @@ func (x *UpdateImageRequest) GetQuotaBytes() uint64 {
 
 func (x *UpdateImageRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *UpdateImageRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *UpdateImageRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *UpdateImageRequest) SetImageName(v string) {
 	x.xxx_hidden_ImageName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *UpdateImageRequest) SetQuotaBytes(v uint64) {
 	x.xxx_hidden_QuotaBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *UpdateImageRequest) HasScope() bool {
@@ -4975,32 +4662,25 @@ func (x *UpdateImageRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UpdateImageRequest) HasFacility() bool {
+func (x *UpdateImageRequest) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdateImageRequest) HasPoolName() bool {
+func (x *UpdateImageRequest) HasImageName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UpdateImageRequest) HasImageName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *UpdateImageRequest) HasQuotaBytes() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *UpdateImageRequest) ClearScope() {
@@ -5008,23 +4688,18 @@ func (x *UpdateImageRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *UpdateImageRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *UpdateImageRequest) ClearPoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_PoolName = nil
 }
 
 func (x *UpdateImageRequest) ClearImageName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_ImageName = nil
 }
 
 func (x *UpdateImageRequest) ClearQuotaBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_QuotaBytes = 0
 }
 
@@ -5032,7 +4707,6 @@ type UpdateImageRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope      *string
-	Facility   *string
 	PoolName   *string
 	ImageName  *string
 	QuotaBytes *uint64
@@ -5043,23 +4717,19 @@ func (b0 UpdateImageRequest_builder) Build() *UpdateImageRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.ImageName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_ImageName = b.ImageName
 	}
 	if b.QuotaBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_QuotaBytes = *b.QuotaBytes
 	}
 	return m0
@@ -5068,7 +4738,6 @@ func (b0 UpdateImageRequest_builder) Build() *UpdateImageRequest {
 type DeleteImageRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_PoolName    *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	xxx_hidden_ImageName   *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -5112,16 +4781,6 @@ func (x *DeleteImageRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteImageRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteImageRequest) GetPoolName() string {
 	if x != nil {
 		if x.xxx_hidden_PoolName != nil {
@@ -5144,22 +4803,17 @@ func (x *DeleteImageRequest) GetImageName() string {
 
 func (x *DeleteImageRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteImageRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteImageRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteImageRequest) SetImageName(v string) {
 	x.xxx_hidden_ImageName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteImageRequest) HasScope() bool {
@@ -5169,25 +4823,18 @@ func (x *DeleteImageRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteImageRequest) HasFacility() bool {
+func (x *DeleteImageRequest) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteImageRequest) HasPoolName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteImageRequest) HasImageName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteImageRequest) ClearScope() {
@@ -5195,18 +4842,13 @@ func (x *DeleteImageRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteImageRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteImageRequest) ClearPoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_PoolName = nil
 }
 
 func (x *DeleteImageRequest) ClearImageName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_ImageName = nil
 }
 
@@ -5214,7 +4856,6 @@ type DeleteImageRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	PoolName  *string
 	ImageName *string
 }
@@ -5224,19 +4865,15 @@ func (b0 DeleteImageRequest_builder) Build() *DeleteImageRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.ImageName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_ImageName = b.ImageName
 	}
 	return m0
@@ -5245,7 +4882,6 @@ func (b0 DeleteImageRequest_builder) Build() *DeleteImageRequest {
 type CreateImageSnapshotRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope        *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility     *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_PoolName     *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	xxx_hidden_ImageName    *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
 	xxx_hidden_SnapshotName *string                `protobuf:"bytes,5,opt,name=snapshot_name,json=snapshotName"`
@@ -5290,16 +4926,6 @@ func (x *CreateImageSnapshotRequest) GetScope() string {
 	return ""
 }
 
-func (x *CreateImageSnapshotRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreateImageSnapshotRequest) GetPoolName() string {
 	if x != nil {
 		if x.xxx_hidden_PoolName != nil {
@@ -5332,27 +4958,22 @@ func (x *CreateImageSnapshotRequest) GetSnapshotName() string {
 
 func (x *CreateImageSnapshotRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *CreateImageSnapshotRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *CreateImageSnapshotRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *CreateImageSnapshotRequest) SetImageName(v string) {
 	x.xxx_hidden_ImageName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *CreateImageSnapshotRequest) SetSnapshotName(v string) {
 	x.xxx_hidden_SnapshotName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *CreateImageSnapshotRequest) HasScope() bool {
@@ -5362,32 +4983,25 @@ func (x *CreateImageSnapshotRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateImageSnapshotRequest) HasFacility() bool {
+func (x *CreateImageSnapshotRequest) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateImageSnapshotRequest) HasPoolName() bool {
+func (x *CreateImageSnapshotRequest) HasImageName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateImageSnapshotRequest) HasImageName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *CreateImageSnapshotRequest) HasSnapshotName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *CreateImageSnapshotRequest) ClearScope() {
@@ -5395,23 +5009,18 @@ func (x *CreateImageSnapshotRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateImageSnapshotRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateImageSnapshotRequest) ClearPoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_PoolName = nil
 }
 
 func (x *CreateImageSnapshotRequest) ClearImageName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_ImageName = nil
 }
 
 func (x *CreateImageSnapshotRequest) ClearSnapshotName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_SnapshotName = nil
 }
 
@@ -5419,7 +5028,6 @@ type CreateImageSnapshotRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope        *string
-	Facility     *string
 	PoolName     *string
 	ImageName    *string
 	SnapshotName *string
@@ -5430,23 +5038,19 @@ func (b0 CreateImageSnapshotRequest_builder) Build() *CreateImageSnapshotRequest
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.ImageName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_ImageName = b.ImageName
 	}
 	if b.SnapshotName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_SnapshotName = b.SnapshotName
 	}
 	return m0
@@ -5455,7 +5059,6 @@ func (b0 CreateImageSnapshotRequest_builder) Build() *CreateImageSnapshotRequest
 type DeleteImageSnapshotRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope        *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility     *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_PoolName     *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	xxx_hidden_ImageName    *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
 	xxx_hidden_SnapshotName *string                `protobuf:"bytes,5,opt,name=snapshot_name,json=snapshotName"`
@@ -5500,16 +5103,6 @@ func (x *DeleteImageSnapshotRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteImageSnapshotRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteImageSnapshotRequest) GetPoolName() string {
 	if x != nil {
 		if x.xxx_hidden_PoolName != nil {
@@ -5542,27 +5135,22 @@ func (x *DeleteImageSnapshotRequest) GetSnapshotName() string {
 
 func (x *DeleteImageSnapshotRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *DeleteImageSnapshotRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *DeleteImageSnapshotRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *DeleteImageSnapshotRequest) SetImageName(v string) {
 	x.xxx_hidden_ImageName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *DeleteImageSnapshotRequest) SetSnapshotName(v string) {
 	x.xxx_hidden_SnapshotName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *DeleteImageSnapshotRequest) HasScope() bool {
@@ -5572,32 +5160,25 @@ func (x *DeleteImageSnapshotRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteImageSnapshotRequest) HasFacility() bool {
+func (x *DeleteImageSnapshotRequest) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteImageSnapshotRequest) HasPoolName() bool {
+func (x *DeleteImageSnapshotRequest) HasImageName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *DeleteImageSnapshotRequest) HasImageName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *DeleteImageSnapshotRequest) HasSnapshotName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *DeleteImageSnapshotRequest) ClearScope() {
@@ -5605,23 +5186,18 @@ func (x *DeleteImageSnapshotRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteImageSnapshotRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteImageSnapshotRequest) ClearPoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_PoolName = nil
 }
 
 func (x *DeleteImageSnapshotRequest) ClearImageName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_ImageName = nil
 }
 
 func (x *DeleteImageSnapshotRequest) ClearSnapshotName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_SnapshotName = nil
 }
 
@@ -5629,7 +5205,6 @@ type DeleteImageSnapshotRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope        *string
-	Facility     *string
 	PoolName     *string
 	ImageName    *string
 	SnapshotName *string
@@ -5640,23 +5215,19 @@ func (b0 DeleteImageSnapshotRequest_builder) Build() *DeleteImageSnapshotRequest
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.ImageName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_ImageName = b.ImageName
 	}
 	if b.SnapshotName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_SnapshotName = b.SnapshotName
 	}
 	return m0
@@ -5665,7 +5236,6 @@ func (b0 DeleteImageSnapshotRequest_builder) Build() *DeleteImageSnapshotRequest
 type RollbackImageSnapshotRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope        *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility     *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_PoolName     *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	xxx_hidden_ImageName    *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
 	xxx_hidden_SnapshotName *string                `protobuf:"bytes,5,opt,name=snapshot_name,json=snapshotName"`
@@ -5710,16 +5280,6 @@ func (x *RollbackImageSnapshotRequest) GetScope() string {
 	return ""
 }
 
-func (x *RollbackImageSnapshotRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *RollbackImageSnapshotRequest) GetPoolName() string {
 	if x != nil {
 		if x.xxx_hidden_PoolName != nil {
@@ -5752,27 +5312,22 @@ func (x *RollbackImageSnapshotRequest) GetSnapshotName() string {
 
 func (x *RollbackImageSnapshotRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *RollbackImageSnapshotRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *RollbackImageSnapshotRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *RollbackImageSnapshotRequest) SetImageName(v string) {
 	x.xxx_hidden_ImageName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *RollbackImageSnapshotRequest) SetSnapshotName(v string) {
 	x.xxx_hidden_SnapshotName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *RollbackImageSnapshotRequest) HasScope() bool {
@@ -5782,32 +5337,25 @@ func (x *RollbackImageSnapshotRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *RollbackImageSnapshotRequest) HasFacility() bool {
+func (x *RollbackImageSnapshotRequest) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *RollbackImageSnapshotRequest) HasPoolName() bool {
+func (x *RollbackImageSnapshotRequest) HasImageName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *RollbackImageSnapshotRequest) HasImageName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *RollbackImageSnapshotRequest) HasSnapshotName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *RollbackImageSnapshotRequest) ClearScope() {
@@ -5815,23 +5363,18 @@ func (x *RollbackImageSnapshotRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *RollbackImageSnapshotRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *RollbackImageSnapshotRequest) ClearPoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_PoolName = nil
 }
 
 func (x *RollbackImageSnapshotRequest) ClearImageName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_ImageName = nil
 }
 
 func (x *RollbackImageSnapshotRequest) ClearSnapshotName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_SnapshotName = nil
 }
 
@@ -5839,7 +5382,6 @@ type RollbackImageSnapshotRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope        *string
-	Facility     *string
 	PoolName     *string
 	ImageName    *string
 	SnapshotName *string
@@ -5850,23 +5392,19 @@ func (b0 RollbackImageSnapshotRequest_builder) Build() *RollbackImageSnapshotReq
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.ImageName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_ImageName = b.ImageName
 	}
 	if b.SnapshotName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_SnapshotName = b.SnapshotName
 	}
 	return m0
@@ -5875,7 +5413,6 @@ func (b0 RollbackImageSnapshotRequest_builder) Build() *RollbackImageSnapshotReq
 type ProtectImageSnapshotRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope        *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility     *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_PoolName     *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	xxx_hidden_ImageName    *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
 	xxx_hidden_SnapshotName *string                `protobuf:"bytes,5,opt,name=snapshot_name,json=snapshotName"`
@@ -5920,16 +5457,6 @@ func (x *ProtectImageSnapshotRequest) GetScope() string {
 	return ""
 }
 
-func (x *ProtectImageSnapshotRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ProtectImageSnapshotRequest) GetPoolName() string {
 	if x != nil {
 		if x.xxx_hidden_PoolName != nil {
@@ -5962,27 +5489,22 @@ func (x *ProtectImageSnapshotRequest) GetSnapshotName() string {
 
 func (x *ProtectImageSnapshotRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *ProtectImageSnapshotRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *ProtectImageSnapshotRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *ProtectImageSnapshotRequest) SetImageName(v string) {
 	x.xxx_hidden_ImageName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *ProtectImageSnapshotRequest) SetSnapshotName(v string) {
 	x.xxx_hidden_SnapshotName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *ProtectImageSnapshotRequest) HasScope() bool {
@@ -5992,32 +5514,25 @@ func (x *ProtectImageSnapshotRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ProtectImageSnapshotRequest) HasFacility() bool {
+func (x *ProtectImageSnapshotRequest) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ProtectImageSnapshotRequest) HasPoolName() bool {
+func (x *ProtectImageSnapshotRequest) HasImageName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *ProtectImageSnapshotRequest) HasImageName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *ProtectImageSnapshotRequest) HasSnapshotName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *ProtectImageSnapshotRequest) ClearScope() {
@@ -6025,23 +5540,18 @@ func (x *ProtectImageSnapshotRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ProtectImageSnapshotRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *ProtectImageSnapshotRequest) ClearPoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_PoolName = nil
 }
 
 func (x *ProtectImageSnapshotRequest) ClearImageName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_ImageName = nil
 }
 
 func (x *ProtectImageSnapshotRequest) ClearSnapshotName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_SnapshotName = nil
 }
 
@@ -6049,7 +5559,6 @@ type ProtectImageSnapshotRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope        *string
-	Facility     *string
 	PoolName     *string
 	ImageName    *string
 	SnapshotName *string
@@ -6060,23 +5569,19 @@ func (b0 ProtectImageSnapshotRequest_builder) Build() *ProtectImageSnapshotReque
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.ImageName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_ImageName = b.ImageName
 	}
 	if b.SnapshotName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_SnapshotName = b.SnapshotName
 	}
 	return m0
@@ -6085,7 +5590,6 @@ func (b0 ProtectImageSnapshotRequest_builder) Build() *ProtectImageSnapshotReque
 type UnprotectImageSnapshotRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope        *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility     *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_PoolName     *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	xxx_hidden_ImageName    *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
 	xxx_hidden_SnapshotName *string                `protobuf:"bytes,5,opt,name=snapshot_name,json=snapshotName"`
@@ -6130,16 +5634,6 @@ func (x *UnprotectImageSnapshotRequest) GetScope() string {
 	return ""
 }
 
-func (x *UnprotectImageSnapshotRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *UnprotectImageSnapshotRequest) GetPoolName() string {
 	if x != nil {
 		if x.xxx_hidden_PoolName != nil {
@@ -6172,27 +5666,22 @@ func (x *UnprotectImageSnapshotRequest) GetSnapshotName() string {
 
 func (x *UnprotectImageSnapshotRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *UnprotectImageSnapshotRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *UnprotectImageSnapshotRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *UnprotectImageSnapshotRequest) SetImageName(v string) {
 	x.xxx_hidden_ImageName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *UnprotectImageSnapshotRequest) SetSnapshotName(v string) {
 	x.xxx_hidden_SnapshotName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *UnprotectImageSnapshotRequest) HasScope() bool {
@@ -6202,32 +5691,25 @@ func (x *UnprotectImageSnapshotRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UnprotectImageSnapshotRequest) HasFacility() bool {
+func (x *UnprotectImageSnapshotRequest) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UnprotectImageSnapshotRequest) HasPoolName() bool {
+func (x *UnprotectImageSnapshotRequest) HasImageName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UnprotectImageSnapshotRequest) HasImageName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *UnprotectImageSnapshotRequest) HasSnapshotName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *UnprotectImageSnapshotRequest) ClearScope() {
@@ -6235,23 +5717,18 @@ func (x *UnprotectImageSnapshotRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *UnprotectImageSnapshotRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *UnprotectImageSnapshotRequest) ClearPoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_PoolName = nil
 }
 
 func (x *UnprotectImageSnapshotRequest) ClearImageName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_ImageName = nil
 }
 
 func (x *UnprotectImageSnapshotRequest) ClearSnapshotName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_SnapshotName = nil
 }
 
@@ -6259,7 +5736,6 @@ type UnprotectImageSnapshotRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope        *string
-	Facility     *string
 	PoolName     *string
 	ImageName    *string
 	SnapshotName *string
@@ -6270,23 +5746,19 @@ func (b0 UnprotectImageSnapshotRequest_builder) Build() *UnprotectImageSnapshotR
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.ImageName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_ImageName = b.ImageName
 	}
 	if b.SnapshotName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_SnapshotName = b.SnapshotName
 	}
 	return m0
@@ -6295,7 +5767,6 @@ func (b0 UnprotectImageSnapshotRequest_builder) Build() *UnprotectImageSnapshotR
 type ListVolumesRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -6337,24 +5808,9 @@ func (x *ListVolumesRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListVolumesRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListVolumesRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *ListVolumesRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *ListVolumesRequest) HasScope() bool {
@@ -6364,28 +5820,15 @@ func (x *ListVolumesRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListVolumesRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListVolumesRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListVolumesRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 type ListVolumesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
+	Scope *string
 }
 
 func (b0 ListVolumesRequest_builder) Build() *ListVolumesRequest {
@@ -6393,12 +5836,8 @@ func (b0 ListVolumesRequest_builder) Build() *ListVolumesRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Facility = b.Facility
 	}
 	return m0
 }
@@ -6465,7 +5904,6 @@ func (b0 ListVolumesResponse_builder) Build() *ListVolumesResponse {
 type ListSubvolumesRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName  *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_GroupName   *string                `protobuf:"bytes,4,opt,name=group_name,json=groupName"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -6509,16 +5947,6 @@ func (x *ListSubvolumesRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListSubvolumesRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListSubvolumesRequest) GetVolumeName() string {
 	if x != nil {
 		if x.xxx_hidden_VolumeName != nil {
@@ -6541,22 +5969,17 @@ func (x *ListSubvolumesRequest) GetGroupName() string {
 
 func (x *ListSubvolumesRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *ListSubvolumesRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *ListSubvolumesRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *ListSubvolumesRequest) SetGroupName(v string) {
 	x.xxx_hidden_GroupName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *ListSubvolumesRequest) HasScope() bool {
@@ -6566,25 +5989,18 @@ func (x *ListSubvolumesRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListSubvolumesRequest) HasFacility() bool {
+func (x *ListSubvolumesRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListSubvolumesRequest) HasVolumeName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *ListSubvolumesRequest) HasGroupName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *ListSubvolumesRequest) ClearScope() {
@@ -6592,18 +6008,13 @@ func (x *ListSubvolumesRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListSubvolumesRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *ListSubvolumesRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
 func (x *ListSubvolumesRequest) ClearGroupName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_GroupName = nil
 }
 
@@ -6611,7 +6022,6 @@ type ListSubvolumesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope      *string
-	Facility   *string
 	VolumeName *string
 	GroupName  *string
 }
@@ -6621,19 +6031,15 @@ func (b0 ListSubvolumesRequest_builder) Build() *ListSubvolumesRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	if b.GroupName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_GroupName = b.GroupName
 	}
 	return m0
@@ -6701,7 +6107,6 @@ func (b0 ListSubvolumesResponse_builder) Build() *ListSubvolumesResponse {
 type CreateSubvolumeRequest struct {
 	state                    protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope         *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility      *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName    *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_GroupName     *string                `protobuf:"bytes,4,opt,name=group_name,json=groupName"`
 	xxx_hidden_SubvolumeName *string                `protobuf:"bytes,5,opt,name=subvolume_name,json=subvolumeName"`
@@ -6742,16 +6147,6 @@ func (x *CreateSubvolumeRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateSubvolumeRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -6804,37 +6199,32 @@ func (x *CreateSubvolumeRequest) GetExport() bool {
 
 func (x *CreateSubvolumeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
-}
-
-func (x *CreateSubvolumeRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
 func (x *CreateSubvolumeRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
 func (x *CreateSubvolumeRequest) SetGroupName(v string) {
 	x.xxx_hidden_GroupName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
 }
 
 func (x *CreateSubvolumeRequest) SetSubvolumeName(v string) {
 	x.xxx_hidden_SubvolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
 }
 
 func (x *CreateSubvolumeRequest) SetQuotaBytes(v uint64) {
 	x.xxx_hidden_QuotaBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
 }
 
 func (x *CreateSubvolumeRequest) SetExport(v bool) {
 	x.xxx_hidden_Export = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
 }
 
 func (x *CreateSubvolumeRequest) HasScope() bool {
@@ -6844,46 +6234,39 @@ func (x *CreateSubvolumeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateSubvolumeRequest) HasFacility() bool {
+func (x *CreateSubvolumeRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateSubvolumeRequest) HasVolumeName() bool {
+func (x *CreateSubvolumeRequest) HasGroupName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateSubvolumeRequest) HasGroupName() bool {
+func (x *CreateSubvolumeRequest) HasSubvolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreateSubvolumeRequest) HasSubvolumeName() bool {
+func (x *CreateSubvolumeRequest) HasQuotaBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *CreateSubvolumeRequest) HasQuotaBytes() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
-}
-
 func (x *CreateSubvolumeRequest) HasExport() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
 func (x *CreateSubvolumeRequest) ClearScope() {
@@ -6891,33 +6274,28 @@ func (x *CreateSubvolumeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateSubvolumeRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateSubvolumeRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
 func (x *CreateSubvolumeRequest) ClearGroupName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_GroupName = nil
 }
 
 func (x *CreateSubvolumeRequest) ClearSubvolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_SubvolumeName = nil
 }
 
 func (x *CreateSubvolumeRequest) ClearQuotaBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_QuotaBytes = 0
 }
 
 func (x *CreateSubvolumeRequest) ClearExport() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_Export = false
 }
 
@@ -6925,7 +6303,6 @@ type CreateSubvolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope         *string
-	Facility      *string
 	VolumeName    *string
 	GroupName     *string
 	SubvolumeName *string
@@ -6938,31 +6315,27 @@ func (b0 CreateSubvolumeRequest_builder) Build() *CreateSubvolumeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	if b.GroupName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
 		x.xxx_hidden_GroupName = b.GroupName
 	}
 	if b.SubvolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
 		x.xxx_hidden_SubvolumeName = b.SubvolumeName
 	}
 	if b.QuotaBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
 		x.xxx_hidden_QuotaBytes = *b.QuotaBytes
 	}
 	if b.Export != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
 		x.xxx_hidden_Export = *b.Export
 	}
 	return m0
@@ -6971,7 +6344,6 @@ func (b0 CreateSubvolumeRequest_builder) Build() *CreateSubvolumeRequest {
 type UpdateSubvolumeRequest struct {
 	state                    protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope         *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility      *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName    *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_GroupName     *string                `protobuf:"bytes,4,opt,name=group_name,json=groupName"`
 	xxx_hidden_SubvolumeName *string                `protobuf:"bytes,5,opt,name=subvolume_name,json=subvolumeName"`
@@ -7017,16 +6389,6 @@ func (x *UpdateSubvolumeRequest) GetScope() string {
 	return ""
 }
 
-func (x *UpdateSubvolumeRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *UpdateSubvolumeRequest) GetVolumeName() string {
 	if x != nil {
 		if x.xxx_hidden_VolumeName != nil {
@@ -7066,32 +6428,27 @@ func (x *UpdateSubvolumeRequest) GetQuotaBytes() uint64 {
 
 func (x *UpdateSubvolumeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *UpdateSubvolumeRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *UpdateSubvolumeRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *UpdateSubvolumeRequest) SetGroupName(v string) {
 	x.xxx_hidden_GroupName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *UpdateSubvolumeRequest) SetSubvolumeName(v string) {
 	x.xxx_hidden_SubvolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *UpdateSubvolumeRequest) SetQuotaBytes(v uint64) {
 	x.xxx_hidden_QuotaBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *UpdateSubvolumeRequest) HasScope() bool {
@@ -7101,39 +6458,32 @@ func (x *UpdateSubvolumeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UpdateSubvolumeRequest) HasFacility() bool {
+func (x *UpdateSubvolumeRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdateSubvolumeRequest) HasVolumeName() bool {
+func (x *UpdateSubvolumeRequest) HasGroupName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UpdateSubvolumeRequest) HasGroupName() bool {
+func (x *UpdateSubvolumeRequest) HasSubvolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *UpdateSubvolumeRequest) HasSubvolumeName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *UpdateSubvolumeRequest) HasQuotaBytes() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *UpdateSubvolumeRequest) ClearScope() {
@@ -7141,28 +6491,23 @@ func (x *UpdateSubvolumeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *UpdateSubvolumeRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *UpdateSubvolumeRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
 func (x *UpdateSubvolumeRequest) ClearGroupName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_GroupName = nil
 }
 
 func (x *UpdateSubvolumeRequest) ClearSubvolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_SubvolumeName = nil
 }
 
 func (x *UpdateSubvolumeRequest) ClearQuotaBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_QuotaBytes = 0
 }
 
@@ -7170,7 +6515,6 @@ type UpdateSubvolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope         *string
-	Facility      *string
 	VolumeName    *string
 	GroupName     *string
 	SubvolumeName *string
@@ -7182,27 +6526,23 @@ func (b0 UpdateSubvolumeRequest_builder) Build() *UpdateSubvolumeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	if b.GroupName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_GroupName = b.GroupName
 	}
 	if b.SubvolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_SubvolumeName = b.SubvolumeName
 	}
 	if b.QuotaBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_QuotaBytes = *b.QuotaBytes
 	}
 	return m0
@@ -7211,7 +6551,6 @@ func (b0 UpdateSubvolumeRequest_builder) Build() *UpdateSubvolumeRequest {
 type DeleteSubvolumeRequest struct {
 	state                    protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope         *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility      *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName    *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_GroupName     *string                `protobuf:"bytes,4,opt,name=group_name,json=groupName"`
 	xxx_hidden_SubvolumeName *string                `protobuf:"bytes,5,opt,name=subvolume_name,json=subvolumeName"`
@@ -7256,16 +6595,6 @@ func (x *DeleteSubvolumeRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteSubvolumeRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteSubvolumeRequest) GetVolumeName() string {
 	if x != nil {
 		if x.xxx_hidden_VolumeName != nil {
@@ -7298,27 +6627,22 @@ func (x *DeleteSubvolumeRequest) GetSubvolumeName() string {
 
 func (x *DeleteSubvolumeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *DeleteSubvolumeRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *DeleteSubvolumeRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *DeleteSubvolumeRequest) SetGroupName(v string) {
 	x.xxx_hidden_GroupName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *DeleteSubvolumeRequest) SetSubvolumeName(v string) {
 	x.xxx_hidden_SubvolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *DeleteSubvolumeRequest) HasScope() bool {
@@ -7328,32 +6652,25 @@ func (x *DeleteSubvolumeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteSubvolumeRequest) HasFacility() bool {
+func (x *DeleteSubvolumeRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteSubvolumeRequest) HasVolumeName() bool {
+func (x *DeleteSubvolumeRequest) HasGroupName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *DeleteSubvolumeRequest) HasGroupName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *DeleteSubvolumeRequest) HasSubvolumeName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *DeleteSubvolumeRequest) ClearScope() {
@@ -7361,23 +6678,18 @@ func (x *DeleteSubvolumeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteSubvolumeRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteSubvolumeRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
 func (x *DeleteSubvolumeRequest) ClearGroupName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_GroupName = nil
 }
 
 func (x *DeleteSubvolumeRequest) ClearSubvolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_SubvolumeName = nil
 }
 
@@ -7385,7 +6697,6 @@ type DeleteSubvolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope         *string
-	Facility      *string
 	VolumeName    *string
 	GroupName     *string
 	SubvolumeName *string
@@ -7396,23 +6707,19 @@ func (b0 DeleteSubvolumeRequest_builder) Build() *DeleteSubvolumeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	if b.GroupName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_GroupName = b.GroupName
 	}
 	if b.SubvolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_SubvolumeName = b.SubvolumeName
 	}
 	return m0
@@ -7421,7 +6728,6 @@ func (b0 DeleteSubvolumeRequest_builder) Build() *DeleteSubvolumeRequest {
 type GrantSubvolumeExportAccessRequest struct {
 	state                    protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope         *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility      *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName    *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_SubvolumeName *string                `protobuf:"bytes,4,opt,name=subvolume_name,json=subvolumeName"`
 	xxx_hidden_ClientIp      *string                `protobuf:"bytes,11,opt,name=client_ip,json=clientIp"`
@@ -7466,16 +6772,6 @@ func (x *GrantSubvolumeExportAccessRequest) GetScope() string {
 	return ""
 }
 
-func (x *GrantSubvolumeExportAccessRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *GrantSubvolumeExportAccessRequest) GetVolumeName() string {
 	if x != nil {
 		if x.xxx_hidden_VolumeName != nil {
@@ -7508,27 +6804,22 @@ func (x *GrantSubvolumeExportAccessRequest) GetClientIp() string {
 
 func (x *GrantSubvolumeExportAccessRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *GrantSubvolumeExportAccessRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *GrantSubvolumeExportAccessRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *GrantSubvolumeExportAccessRequest) SetSubvolumeName(v string) {
 	x.xxx_hidden_SubvolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *GrantSubvolumeExportAccessRequest) SetClientIp(v string) {
 	x.xxx_hidden_ClientIp = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *GrantSubvolumeExportAccessRequest) HasScope() bool {
@@ -7538,32 +6829,25 @@ func (x *GrantSubvolumeExportAccessRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GrantSubvolumeExportAccessRequest) HasFacility() bool {
+func (x *GrantSubvolumeExportAccessRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GrantSubvolumeExportAccessRequest) HasVolumeName() bool {
+func (x *GrantSubvolumeExportAccessRequest) HasSubvolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *GrantSubvolumeExportAccessRequest) HasSubvolumeName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *GrantSubvolumeExportAccessRequest) HasClientIp() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *GrantSubvolumeExportAccessRequest) ClearScope() {
@@ -7571,23 +6855,18 @@ func (x *GrantSubvolumeExportAccessRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *GrantSubvolumeExportAccessRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *GrantSubvolumeExportAccessRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
 func (x *GrantSubvolumeExportAccessRequest) ClearSubvolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_SubvolumeName = nil
 }
 
 func (x *GrantSubvolumeExportAccessRequest) ClearClientIp() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_ClientIp = nil
 }
 
@@ -7595,7 +6874,6 @@ type GrantSubvolumeExportAccessRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope         *string
-	Facility      *string
 	VolumeName    *string
 	SubvolumeName *string
 	ClientIp      *string
@@ -7606,23 +6884,19 @@ func (b0 GrantSubvolumeExportAccessRequest_builder) Build() *GrantSubvolumeExpor
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	if b.SubvolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_SubvolumeName = b.SubvolumeName
 	}
 	if b.ClientIp != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_ClientIp = b.ClientIp
 	}
 	return m0
@@ -7631,7 +6905,6 @@ func (b0 GrantSubvolumeExportAccessRequest_builder) Build() *GrantSubvolumeExpor
 type RevokeSubvolumeExportAccessRequest struct {
 	state                    protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope         *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility      *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName    *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_SubvolumeName *string                `protobuf:"bytes,4,opt,name=subvolume_name,json=subvolumeName"`
 	xxx_hidden_ClientIp      *string                `protobuf:"bytes,11,opt,name=client_ip,json=clientIp"`
@@ -7676,16 +6949,6 @@ func (x *RevokeSubvolumeExportAccessRequest) GetScope() string {
 	return ""
 }
 
-func (x *RevokeSubvolumeExportAccessRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *RevokeSubvolumeExportAccessRequest) GetVolumeName() string {
 	if x != nil {
 		if x.xxx_hidden_VolumeName != nil {
@@ -7718,27 +6981,22 @@ func (x *RevokeSubvolumeExportAccessRequest) GetClientIp() string {
 
 func (x *RevokeSubvolumeExportAccessRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *RevokeSubvolumeExportAccessRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *RevokeSubvolumeExportAccessRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *RevokeSubvolumeExportAccessRequest) SetSubvolumeName(v string) {
 	x.xxx_hidden_SubvolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *RevokeSubvolumeExportAccessRequest) SetClientIp(v string) {
 	x.xxx_hidden_ClientIp = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *RevokeSubvolumeExportAccessRequest) HasScope() bool {
@@ -7748,32 +7006,25 @@ func (x *RevokeSubvolumeExportAccessRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *RevokeSubvolumeExportAccessRequest) HasFacility() bool {
+func (x *RevokeSubvolumeExportAccessRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *RevokeSubvolumeExportAccessRequest) HasVolumeName() bool {
+func (x *RevokeSubvolumeExportAccessRequest) HasSubvolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *RevokeSubvolumeExportAccessRequest) HasSubvolumeName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *RevokeSubvolumeExportAccessRequest) HasClientIp() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *RevokeSubvolumeExportAccessRequest) ClearScope() {
@@ -7781,23 +7032,18 @@ func (x *RevokeSubvolumeExportAccessRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *RevokeSubvolumeExportAccessRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *RevokeSubvolumeExportAccessRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
 func (x *RevokeSubvolumeExportAccessRequest) ClearSubvolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_SubvolumeName = nil
 }
 
 func (x *RevokeSubvolumeExportAccessRequest) ClearClientIp() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_ClientIp = nil
 }
 
@@ -7805,7 +7051,6 @@ type RevokeSubvolumeExportAccessRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope         *string
-	Facility      *string
 	VolumeName    *string
 	SubvolumeName *string
 	ClientIp      *string
@@ -7816,23 +7061,19 @@ func (b0 RevokeSubvolumeExportAccessRequest_builder) Build() *RevokeSubvolumeExp
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	if b.SubvolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_SubvolumeName = b.SubvolumeName
 	}
 	if b.ClientIp != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_ClientIp = b.ClientIp
 	}
 	return m0
@@ -7841,7 +7082,6 @@ func (b0 RevokeSubvolumeExportAccessRequest_builder) Build() *RevokeSubvolumeExp
 type CreateSubvolumeSnapshotRequest struct {
 	state                    protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope         *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility      *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName    *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_SubvolumeName *string                `protobuf:"bytes,4,opt,name=subvolume_name,json=subvolumeName"`
 	xxx_hidden_GroupName     *string                `protobuf:"bytes,5,opt,name=group_name,json=groupName"`
@@ -7881,16 +7121,6 @@ func (x *CreateSubvolumeSnapshotRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateSubvolumeSnapshotRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -7939,32 +7169,27 @@ func (x *CreateSubvolumeSnapshotRequest) GetSnapshotName() string {
 
 func (x *CreateSubvolumeSnapshotRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *CreateSubvolumeSnapshotRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *CreateSubvolumeSnapshotRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *CreateSubvolumeSnapshotRequest) SetSubvolumeName(v string) {
 	x.xxx_hidden_SubvolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *CreateSubvolumeSnapshotRequest) SetGroupName(v string) {
 	x.xxx_hidden_GroupName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *CreateSubvolumeSnapshotRequest) SetSnapshotName(v string) {
 	x.xxx_hidden_SnapshotName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *CreateSubvolumeSnapshotRequest) HasScope() bool {
@@ -7974,39 +7199,32 @@ func (x *CreateSubvolumeSnapshotRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateSubvolumeSnapshotRequest) HasFacility() bool {
+func (x *CreateSubvolumeSnapshotRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateSubvolumeSnapshotRequest) HasVolumeName() bool {
+func (x *CreateSubvolumeSnapshotRequest) HasSubvolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateSubvolumeSnapshotRequest) HasSubvolumeName() bool {
+func (x *CreateSubvolumeSnapshotRequest) HasGroupName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreateSubvolumeSnapshotRequest) HasGroupName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *CreateSubvolumeSnapshotRequest) HasSnapshotName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *CreateSubvolumeSnapshotRequest) ClearScope() {
@@ -8014,28 +7232,23 @@ func (x *CreateSubvolumeSnapshotRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateSubvolumeSnapshotRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateSubvolumeSnapshotRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
 func (x *CreateSubvolumeSnapshotRequest) ClearSubvolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_SubvolumeName = nil
 }
 
 func (x *CreateSubvolumeSnapshotRequest) ClearGroupName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_GroupName = nil
 }
 
 func (x *CreateSubvolumeSnapshotRequest) ClearSnapshotName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_SnapshotName = nil
 }
 
@@ -8043,7 +7256,6 @@ type CreateSubvolumeSnapshotRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope         *string
-	Facility      *string
 	VolumeName    *string
 	SubvolumeName *string
 	GroupName     *string
@@ -8055,27 +7267,23 @@ func (b0 CreateSubvolumeSnapshotRequest_builder) Build() *CreateSubvolumeSnapsho
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	if b.SubvolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_SubvolumeName = b.SubvolumeName
 	}
 	if b.GroupName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_GroupName = b.GroupName
 	}
 	if b.SnapshotName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_SnapshotName = b.SnapshotName
 	}
 	return m0
@@ -8084,7 +7292,6 @@ func (b0 CreateSubvolumeSnapshotRequest_builder) Build() *CreateSubvolumeSnapsho
 type DeleteSubvolumeSnapshotRequest struct {
 	state                    protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope         *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility      *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName    *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_SubvolumeName *string                `protobuf:"bytes,4,opt,name=subvolume_name,json=subvolumeName"`
 	xxx_hidden_GroupName     *string                `protobuf:"bytes,5,opt,name=group_name,json=groupName"`
@@ -8124,16 +7331,6 @@ func (x *DeleteSubvolumeSnapshotRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *DeleteSubvolumeSnapshotRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
 		}
 		return ""
 	}
@@ -8182,32 +7379,27 @@ func (x *DeleteSubvolumeSnapshotRequest) GetSnapshotName() string {
 
 func (x *DeleteSubvolumeSnapshotRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *DeleteSubvolumeSnapshotRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *DeleteSubvolumeSnapshotRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *DeleteSubvolumeSnapshotRequest) SetSubvolumeName(v string) {
 	x.xxx_hidden_SubvolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *DeleteSubvolumeSnapshotRequest) SetGroupName(v string) {
 	x.xxx_hidden_GroupName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *DeleteSubvolumeSnapshotRequest) SetSnapshotName(v string) {
 	x.xxx_hidden_SnapshotName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *DeleteSubvolumeSnapshotRequest) HasScope() bool {
@@ -8217,39 +7409,32 @@ func (x *DeleteSubvolumeSnapshotRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteSubvolumeSnapshotRequest) HasFacility() bool {
+func (x *DeleteSubvolumeSnapshotRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteSubvolumeSnapshotRequest) HasVolumeName() bool {
+func (x *DeleteSubvolumeSnapshotRequest) HasSubvolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *DeleteSubvolumeSnapshotRequest) HasSubvolumeName() bool {
+func (x *DeleteSubvolumeSnapshotRequest) HasGroupName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *DeleteSubvolumeSnapshotRequest) HasGroupName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *DeleteSubvolumeSnapshotRequest) HasSnapshotName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *DeleteSubvolumeSnapshotRequest) ClearScope() {
@@ -8257,28 +7442,23 @@ func (x *DeleteSubvolumeSnapshotRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteSubvolumeSnapshotRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteSubvolumeSnapshotRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
 func (x *DeleteSubvolumeSnapshotRequest) ClearSubvolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_SubvolumeName = nil
 }
 
 func (x *DeleteSubvolumeSnapshotRequest) ClearGroupName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_GroupName = nil
 }
 
 func (x *DeleteSubvolumeSnapshotRequest) ClearSnapshotName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_SnapshotName = nil
 }
 
@@ -8286,7 +7466,6 @@ type DeleteSubvolumeSnapshotRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope         *string
-	Facility      *string
 	VolumeName    *string
 	SubvolumeName *string
 	GroupName     *string
@@ -8298,27 +7477,23 @@ func (b0 DeleteSubvolumeSnapshotRequest_builder) Build() *DeleteSubvolumeSnapsho
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	if b.SubvolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_SubvolumeName = b.SubvolumeName
 	}
 	if b.GroupName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_GroupName = b.GroupName
 	}
 	if b.SnapshotName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_SnapshotName = b.SnapshotName
 	}
 	return m0
@@ -8327,7 +7502,6 @@ func (b0 DeleteSubvolumeSnapshotRequest_builder) Build() *DeleteSubvolumeSnapsho
 type ListSubvolumeGroupsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName  *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -8370,16 +7544,6 @@ func (x *ListSubvolumeGroupsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListSubvolumeGroupsRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListSubvolumeGroupsRequest) GetVolumeName() string {
 	if x != nil {
 		if x.xxx_hidden_VolumeName != nil {
@@ -8392,17 +7556,12 @@ func (x *ListSubvolumeGroupsRequest) GetVolumeName() string {
 
 func (x *ListSubvolumeGroupsRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *ListSubvolumeGroupsRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *ListSubvolumeGroupsRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *ListSubvolumeGroupsRequest) HasScope() bool {
@@ -8412,18 +7571,11 @@ func (x *ListSubvolumeGroupsRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListSubvolumeGroupsRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListSubvolumeGroupsRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *ListSubvolumeGroupsRequest) ClearScope() {
@@ -8431,13 +7583,8 @@ func (x *ListSubvolumeGroupsRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListSubvolumeGroupsRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *ListSubvolumeGroupsRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
@@ -8445,7 +7592,6 @@ type ListSubvolumeGroupsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope      *string
-	Facility   *string
 	VolumeName *string
 }
 
@@ -8454,15 +7600,11 @@ func (b0 ListSubvolumeGroupsRequest_builder) Build() *ListSubvolumeGroupsRequest
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	return m0
@@ -8530,7 +7672,6 @@ func (b0 ListSubvolumeGroupsResponse_builder) Build() *ListSubvolumeGroupsRespon
 type CreateSubvolumeGroupRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName  *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_GroupName   *string                `protobuf:"bytes,4,opt,name=group_name,json=groupName"`
 	xxx_hidden_QuotaBytes  uint64                 `protobuf:"varint,11,opt,name=quota_bytes,json=quotaBytes"`
@@ -8575,16 +7716,6 @@ func (x *CreateSubvolumeGroupRequest) GetScope() string {
 	return ""
 }
 
-func (x *CreateSubvolumeGroupRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreateSubvolumeGroupRequest) GetVolumeName() string {
 	if x != nil {
 		if x.xxx_hidden_VolumeName != nil {
@@ -8614,27 +7745,22 @@ func (x *CreateSubvolumeGroupRequest) GetQuotaBytes() uint64 {
 
 func (x *CreateSubvolumeGroupRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *CreateSubvolumeGroupRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *CreateSubvolumeGroupRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *CreateSubvolumeGroupRequest) SetGroupName(v string) {
 	x.xxx_hidden_GroupName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *CreateSubvolumeGroupRequest) SetQuotaBytes(v uint64) {
 	x.xxx_hidden_QuotaBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *CreateSubvolumeGroupRequest) HasScope() bool {
@@ -8644,32 +7770,25 @@ func (x *CreateSubvolumeGroupRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateSubvolumeGroupRequest) HasFacility() bool {
+func (x *CreateSubvolumeGroupRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateSubvolumeGroupRequest) HasVolumeName() bool {
+func (x *CreateSubvolumeGroupRequest) HasGroupName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateSubvolumeGroupRequest) HasGroupName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *CreateSubvolumeGroupRequest) HasQuotaBytes() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *CreateSubvolumeGroupRequest) ClearScope() {
@@ -8677,23 +7796,18 @@ func (x *CreateSubvolumeGroupRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateSubvolumeGroupRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateSubvolumeGroupRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
 func (x *CreateSubvolumeGroupRequest) ClearGroupName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_GroupName = nil
 }
 
 func (x *CreateSubvolumeGroupRequest) ClearQuotaBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_QuotaBytes = 0
 }
 
@@ -8701,7 +7815,6 @@ type CreateSubvolumeGroupRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope      *string
-	Facility   *string
 	VolumeName *string
 	GroupName  *string
 	QuotaBytes *uint64
@@ -8712,23 +7825,19 @@ func (b0 CreateSubvolumeGroupRequest_builder) Build() *CreateSubvolumeGroupReque
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	if b.GroupName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_GroupName = b.GroupName
 	}
 	if b.QuotaBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_QuotaBytes = *b.QuotaBytes
 	}
 	return m0
@@ -8737,7 +7846,6 @@ func (b0 CreateSubvolumeGroupRequest_builder) Build() *CreateSubvolumeGroupReque
 type UpdateSubvolumeGroupRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName  *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_GroupName   *string                `protobuf:"bytes,4,opt,name=group_name,json=groupName"`
 	xxx_hidden_QuotaBytes  uint64                 `protobuf:"varint,11,opt,name=quota_bytes,json=quotaBytes"`
@@ -8782,16 +7890,6 @@ func (x *UpdateSubvolumeGroupRequest) GetScope() string {
 	return ""
 }
 
-func (x *UpdateSubvolumeGroupRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *UpdateSubvolumeGroupRequest) GetVolumeName() string {
 	if x != nil {
 		if x.xxx_hidden_VolumeName != nil {
@@ -8821,27 +7919,22 @@ func (x *UpdateSubvolumeGroupRequest) GetQuotaBytes() uint64 {
 
 func (x *UpdateSubvolumeGroupRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *UpdateSubvolumeGroupRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *UpdateSubvolumeGroupRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *UpdateSubvolumeGroupRequest) SetGroupName(v string) {
 	x.xxx_hidden_GroupName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *UpdateSubvolumeGroupRequest) SetQuotaBytes(v uint64) {
 	x.xxx_hidden_QuotaBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *UpdateSubvolumeGroupRequest) HasScope() bool {
@@ -8851,32 +7944,25 @@ func (x *UpdateSubvolumeGroupRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UpdateSubvolumeGroupRequest) HasFacility() bool {
+func (x *UpdateSubvolumeGroupRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdateSubvolumeGroupRequest) HasVolumeName() bool {
+func (x *UpdateSubvolumeGroupRequest) HasGroupName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UpdateSubvolumeGroupRequest) HasGroupName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *UpdateSubvolumeGroupRequest) HasQuotaBytes() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *UpdateSubvolumeGroupRequest) ClearScope() {
@@ -8884,23 +7970,18 @@ func (x *UpdateSubvolumeGroupRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *UpdateSubvolumeGroupRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *UpdateSubvolumeGroupRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
 func (x *UpdateSubvolumeGroupRequest) ClearGroupName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_GroupName = nil
 }
 
 func (x *UpdateSubvolumeGroupRequest) ClearQuotaBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_QuotaBytes = 0
 }
 
@@ -8908,7 +7989,6 @@ type UpdateSubvolumeGroupRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope      *string
-	Facility   *string
 	VolumeName *string
 	GroupName  *string
 	QuotaBytes *uint64
@@ -8919,23 +7999,19 @@ func (b0 UpdateSubvolumeGroupRequest_builder) Build() *UpdateSubvolumeGroupReque
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	if b.GroupName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_GroupName = b.GroupName
 	}
 	if b.QuotaBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_QuotaBytes = *b.QuotaBytes
 	}
 	return m0
@@ -8944,7 +8020,6 @@ func (b0 UpdateSubvolumeGroupRequest_builder) Build() *UpdateSubvolumeGroupReque
 type DeleteSubvolumeGroupRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_VolumeName  *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_GroupName   *string                `protobuf:"bytes,4,opt,name=group_name,json=groupName"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -8988,16 +8063,6 @@ func (x *DeleteSubvolumeGroupRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteSubvolumeGroupRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteSubvolumeGroupRequest) GetVolumeName() string {
 	if x != nil {
 		if x.xxx_hidden_VolumeName != nil {
@@ -9020,22 +8085,17 @@ func (x *DeleteSubvolumeGroupRequest) GetGroupName() string {
 
 func (x *DeleteSubvolumeGroupRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteSubvolumeGroupRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteSubvolumeGroupRequest) SetVolumeName(v string) {
 	x.xxx_hidden_VolumeName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteSubvolumeGroupRequest) SetGroupName(v string) {
 	x.xxx_hidden_GroupName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteSubvolumeGroupRequest) HasScope() bool {
@@ -9045,25 +8105,18 @@ func (x *DeleteSubvolumeGroupRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteSubvolumeGroupRequest) HasFacility() bool {
+func (x *DeleteSubvolumeGroupRequest) HasVolumeName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteSubvolumeGroupRequest) HasVolumeName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteSubvolumeGroupRequest) HasGroupName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteSubvolumeGroupRequest) ClearScope() {
@@ -9071,18 +8124,13 @@ func (x *DeleteSubvolumeGroupRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteSubvolumeGroupRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteSubvolumeGroupRequest) ClearVolumeName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VolumeName = nil
 }
 
 func (x *DeleteSubvolumeGroupRequest) ClearGroupName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_GroupName = nil
 }
 
@@ -9090,7 +8138,6 @@ type DeleteSubvolumeGroupRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope      *string
-	Facility   *string
 	VolumeName *string
 	GroupName  *string
 }
@@ -9100,19 +8147,15 @@ func (b0 DeleteSubvolumeGroupRequest_builder) Build() *DeleteSubvolumeGroupReque
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.VolumeName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_VolumeName = b.VolumeName
 	}
 	if b.GroupName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_GroupName = b.GroupName
 	}
 	return m0
@@ -9121,7 +8164,6 @@ func (b0 DeleteSubvolumeGroupRequest_builder) Build() *DeleteSubvolumeGroupReque
 type ListBucketsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -9163,24 +8205,9 @@ func (x *ListBucketsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListBucketsRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListBucketsRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *ListBucketsRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *ListBucketsRequest) HasScope() bool {
@@ -9190,28 +8217,15 @@ func (x *ListBucketsRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListBucketsRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListBucketsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListBucketsRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 type ListBucketsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
+	Scope *string
 }
 
 func (b0 ListBucketsRequest_builder) Build() *ListBucketsRequest {
@@ -9219,12 +8233,8 @@ func (b0 ListBucketsRequest_builder) Build() *ListBucketsRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Facility = b.Facility
 	}
 	return m0
 }
@@ -9291,7 +8301,6 @@ func (b0 ListBucketsResponse_builder) Build() *ListBucketsResponse {
 type CreateBucketRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_BucketName  *string                `protobuf:"bytes,3,opt,name=bucket_name,json=bucketName"`
 	xxx_hidden_Owner       *string                `protobuf:"bytes,11,opt,name=owner"`
 	xxx_hidden_Policy      *string                `protobuf:"bytes,12,opt,name=policy"`
@@ -9337,16 +8346,6 @@ func (x *CreateBucketRequest) GetScope() string {
 	return ""
 }
 
-func (x *CreateBucketRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreateBucketRequest) GetBucketName() string {
 	if x != nil {
 		if x.xxx_hidden_BucketName != nil {
@@ -9379,7 +8378,7 @@ func (x *CreateBucketRequest) GetPolicy() string {
 
 func (x *CreateBucketRequest) GetAcl() Bucket_ACL {
 	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 5) {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 4) {
 			return x.xxx_hidden_Acl
 		}
 	}
@@ -9388,32 +8387,27 @@ func (x *CreateBucketRequest) GetAcl() Bucket_ACL {
 
 func (x *CreateBucketRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *CreateBucketRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *CreateBucketRequest) SetBucketName(v string) {
 	x.xxx_hidden_BucketName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *CreateBucketRequest) SetOwner(v string) {
 	x.xxx_hidden_Owner = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *CreateBucketRequest) SetPolicy(v string) {
 	x.xxx_hidden_Policy = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *CreateBucketRequest) SetAcl(v Bucket_ACL) {
 	x.xxx_hidden_Acl = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *CreateBucketRequest) HasScope() bool {
@@ -9423,39 +8417,32 @@ func (x *CreateBucketRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateBucketRequest) HasFacility() bool {
+func (x *CreateBucketRequest) HasBucketName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateBucketRequest) HasBucketName() bool {
+func (x *CreateBucketRequest) HasOwner() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateBucketRequest) HasOwner() bool {
+func (x *CreateBucketRequest) HasPolicy() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreateBucketRequest) HasPolicy() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *CreateBucketRequest) HasAcl() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *CreateBucketRequest) ClearScope() {
@@ -9463,28 +8450,23 @@ func (x *CreateBucketRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateBucketRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateBucketRequest) ClearBucketName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_BucketName = nil
 }
 
 func (x *CreateBucketRequest) ClearOwner() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Owner = nil
 }
 
 func (x *CreateBucketRequest) ClearPolicy() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Policy = nil
 }
 
 func (x *CreateBucketRequest) ClearAcl() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_Acl = Bucket_PRIVATE
 }
 
@@ -9492,7 +8474,6 @@ type CreateBucketRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope      *string
-	Facility   *string
 	BucketName *string
 	Owner      *string
 	Policy     *string
@@ -9504,27 +8485,23 @@ func (b0 CreateBucketRequest_builder) Build() *CreateBucketRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.BucketName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_BucketName = b.BucketName
 	}
 	if b.Owner != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Owner = b.Owner
 	}
 	if b.Policy != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_Policy = b.Policy
 	}
 	if b.Acl != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_Acl = *b.Acl
 	}
 	return m0
@@ -9533,7 +8510,6 @@ func (b0 CreateBucketRequest_builder) Build() *CreateBucketRequest {
 type UpdateBucketRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_BucketName  *string                `protobuf:"bytes,3,opt,name=bucket_name,json=bucketName"`
 	xxx_hidden_Owner       *string                `protobuf:"bytes,11,opt,name=owner"`
 	xxx_hidden_Policy      *string                `protobuf:"bytes,12,opt,name=policy"`
@@ -9579,16 +8555,6 @@ func (x *UpdateBucketRequest) GetScope() string {
 	return ""
 }
 
-func (x *UpdateBucketRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *UpdateBucketRequest) GetBucketName() string {
 	if x != nil {
 		if x.xxx_hidden_BucketName != nil {
@@ -9621,7 +8587,7 @@ func (x *UpdateBucketRequest) GetPolicy() string {
 
 func (x *UpdateBucketRequest) GetAcl() Bucket_ACL {
 	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 5) {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 4) {
 			return x.xxx_hidden_Acl
 		}
 	}
@@ -9630,32 +8596,27 @@ func (x *UpdateBucketRequest) GetAcl() Bucket_ACL {
 
 func (x *UpdateBucketRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *UpdateBucketRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *UpdateBucketRequest) SetBucketName(v string) {
 	x.xxx_hidden_BucketName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *UpdateBucketRequest) SetOwner(v string) {
 	x.xxx_hidden_Owner = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *UpdateBucketRequest) SetPolicy(v string) {
 	x.xxx_hidden_Policy = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *UpdateBucketRequest) SetAcl(v Bucket_ACL) {
 	x.xxx_hidden_Acl = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *UpdateBucketRequest) HasScope() bool {
@@ -9665,39 +8626,32 @@ func (x *UpdateBucketRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UpdateBucketRequest) HasFacility() bool {
+func (x *UpdateBucketRequest) HasBucketName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdateBucketRequest) HasBucketName() bool {
+func (x *UpdateBucketRequest) HasOwner() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UpdateBucketRequest) HasOwner() bool {
+func (x *UpdateBucketRequest) HasPolicy() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *UpdateBucketRequest) HasPolicy() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *UpdateBucketRequest) HasAcl() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *UpdateBucketRequest) ClearScope() {
@@ -9705,28 +8659,23 @@ func (x *UpdateBucketRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *UpdateBucketRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *UpdateBucketRequest) ClearBucketName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_BucketName = nil
 }
 
 func (x *UpdateBucketRequest) ClearOwner() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Owner = nil
 }
 
 func (x *UpdateBucketRequest) ClearPolicy() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Policy = nil
 }
 
 func (x *UpdateBucketRequest) ClearAcl() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_Acl = Bucket_PRIVATE
 }
 
@@ -9734,7 +8683,6 @@ type UpdateBucketRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope      *string
-	Facility   *string
 	BucketName *string
 	Owner      *string
 	Policy     *string
@@ -9746,27 +8694,23 @@ func (b0 UpdateBucketRequest_builder) Build() *UpdateBucketRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.BucketName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_BucketName = b.BucketName
 	}
 	if b.Owner != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Owner = b.Owner
 	}
 	if b.Policy != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_Policy = b.Policy
 	}
 	if b.Acl != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_Acl = *b.Acl
 	}
 	return m0
@@ -9775,7 +8719,6 @@ func (b0 UpdateBucketRequest_builder) Build() *UpdateBucketRequest {
 type DeleteBucketRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_BucketName  *string                `protobuf:"bytes,3,opt,name=bucket_name,json=bucketName"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -9818,16 +8761,6 @@ func (x *DeleteBucketRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteBucketRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteBucketRequest) GetBucketName() string {
 	if x != nil {
 		if x.xxx_hidden_BucketName != nil {
@@ -9840,17 +8773,12 @@ func (x *DeleteBucketRequest) GetBucketName() string {
 
 func (x *DeleteBucketRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *DeleteBucketRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *DeleteBucketRequest) SetBucketName(v string) {
 	x.xxx_hidden_BucketName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *DeleteBucketRequest) HasScope() bool {
@@ -9860,18 +8788,11 @@ func (x *DeleteBucketRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteBucketRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *DeleteBucketRequest) HasBucketName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *DeleteBucketRequest) ClearScope() {
@@ -9879,13 +8800,8 @@ func (x *DeleteBucketRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteBucketRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteBucketRequest) ClearBucketName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_BucketName = nil
 }
 
@@ -9893,7 +8809,6 @@ type DeleteBucketRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope      *string
-	Facility   *string
 	BucketName *string
 }
 
@@ -9902,15 +8817,11 @@ func (b0 DeleteBucketRequest_builder) Build() *DeleteBucketRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.BucketName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_BucketName = b.BucketName
 	}
 	return m0
@@ -9919,7 +8830,6 @@ func (b0 DeleteBucketRequest_builder) Build() *DeleteBucketRequest {
 type ListUsersRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -9961,24 +8871,9 @@ func (x *ListUsersRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListUsersRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListUsersRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *ListUsersRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *ListUsersRequest) HasScope() bool {
@@ -9988,28 +8883,15 @@ func (x *ListUsersRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListUsersRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListUsersRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListUsersRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 type ListUsersRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
+	Scope *string
 }
 
 func (b0 ListUsersRequest_builder) Build() *ListUsersRequest {
@@ -10017,12 +8899,8 @@ func (b0 ListUsersRequest_builder) Build() *ListUsersRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Facility = b.Facility
 	}
 	return m0
 }
@@ -10089,7 +8967,6 @@ func (b0 ListUsersResponse_builder) Build() *ListUsersResponse {
 type CreateUserRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_UserId      *string                `protobuf:"bytes,3,opt,name=user_id,json=userId"`
 	xxx_hidden_UserName    *string                `protobuf:"bytes,11,opt,name=user_name,json=userName"`
 	xxx_hidden_Suspended   bool                   `protobuf:"varint,12,opt,name=suspended"`
@@ -10134,16 +9011,6 @@ func (x *CreateUserRequest) GetScope() string {
 	return ""
 }
 
-func (x *CreateUserRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreateUserRequest) GetUserId() string {
 	if x != nil {
 		if x.xxx_hidden_UserId != nil {
@@ -10173,27 +9040,22 @@ func (x *CreateUserRequest) GetSuspended() bool {
 
 func (x *CreateUserRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *CreateUserRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *CreateUserRequest) SetUserId(v string) {
 	x.xxx_hidden_UserId = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *CreateUserRequest) SetUserName(v string) {
 	x.xxx_hidden_UserName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *CreateUserRequest) SetSuspended(v bool) {
 	x.xxx_hidden_Suspended = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *CreateUserRequest) HasScope() bool {
@@ -10203,32 +9065,25 @@ func (x *CreateUserRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateUserRequest) HasFacility() bool {
+func (x *CreateUserRequest) HasUserId() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateUserRequest) HasUserId() bool {
+func (x *CreateUserRequest) HasUserName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateUserRequest) HasUserName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *CreateUserRequest) HasSuspended() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *CreateUserRequest) ClearScope() {
@@ -10236,23 +9091,18 @@ func (x *CreateUserRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateUserRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateUserRequest) ClearUserId() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_UserId = nil
 }
 
 func (x *CreateUserRequest) ClearUserName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_UserName = nil
 }
 
 func (x *CreateUserRequest) ClearSuspended() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Suspended = false
 }
 
@@ -10260,7 +9110,6 @@ type CreateUserRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	UserId    *string
 	UserName  *string
 	Suspended *bool
@@ -10271,23 +9120,19 @@ func (b0 CreateUserRequest_builder) Build() *CreateUserRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.UserId != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_UserId = b.UserId
 	}
 	if b.UserName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_UserName = b.UserName
 	}
 	if b.Suspended != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Suspended = *b.Suspended
 	}
 	return m0
@@ -10296,7 +9141,6 @@ func (b0 CreateUserRequest_builder) Build() *CreateUserRequest {
 type UpdateUserRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_UserId      *string                `protobuf:"bytes,3,opt,name=user_id,json=userId"`
 	xxx_hidden_UserName    *string                `protobuf:"bytes,11,opt,name=user_name,json=userName"`
 	xxx_hidden_Suspended   bool                   `protobuf:"varint,12,opt,name=suspended"`
@@ -10341,16 +9185,6 @@ func (x *UpdateUserRequest) GetScope() string {
 	return ""
 }
 
-func (x *UpdateUserRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *UpdateUserRequest) GetUserId() string {
 	if x != nil {
 		if x.xxx_hidden_UserId != nil {
@@ -10380,27 +9214,22 @@ func (x *UpdateUserRequest) GetSuspended() bool {
 
 func (x *UpdateUserRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
-}
-
-func (x *UpdateUserRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *UpdateUserRequest) SetUserId(v string) {
 	x.xxx_hidden_UserId = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *UpdateUserRequest) SetUserName(v string) {
 	x.xxx_hidden_UserName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *UpdateUserRequest) SetSuspended(v bool) {
 	x.xxx_hidden_Suspended = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *UpdateUserRequest) HasScope() bool {
@@ -10410,32 +9239,25 @@ func (x *UpdateUserRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UpdateUserRequest) HasFacility() bool {
+func (x *UpdateUserRequest) HasUserId() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdateUserRequest) HasUserId() bool {
+func (x *UpdateUserRequest) HasUserName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UpdateUserRequest) HasUserName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *UpdateUserRequest) HasSuspended() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *UpdateUserRequest) ClearScope() {
@@ -10443,23 +9265,18 @@ func (x *UpdateUserRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *UpdateUserRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *UpdateUserRequest) ClearUserId() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_UserId = nil
 }
 
 func (x *UpdateUserRequest) ClearUserName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_UserName = nil
 }
 
 func (x *UpdateUserRequest) ClearSuspended() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Suspended = false
 }
 
@@ -10467,7 +9284,6 @@ type UpdateUserRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	UserId    *string
 	UserName  *string
 	Suspended *bool
@@ -10478,23 +9294,19 @@ func (b0 UpdateUserRequest_builder) Build() *UpdateUserRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.UserId != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_UserId = b.UserId
 	}
 	if b.UserName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_UserName = b.UserName
 	}
 	if b.Suspended != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Suspended = *b.Suspended
 	}
 	return m0
@@ -10503,7 +9315,6 @@ func (b0 UpdateUserRequest_builder) Build() *UpdateUserRequest {
 type DeleteUserRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_UserId      *string                `protobuf:"bytes,3,opt,name=user_id,json=userId"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -10546,16 +9357,6 @@ func (x *DeleteUserRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteUserRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteUserRequest) GetUserId() string {
 	if x != nil {
 		if x.xxx_hidden_UserId != nil {
@@ -10568,17 +9369,12 @@ func (x *DeleteUserRequest) GetUserId() string {
 
 func (x *DeleteUserRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *DeleteUserRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *DeleteUserRequest) SetUserId(v string) {
 	x.xxx_hidden_UserId = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *DeleteUserRequest) HasScope() bool {
@@ -10588,18 +9384,11 @@ func (x *DeleteUserRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteUserRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *DeleteUserRequest) HasUserId() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *DeleteUserRequest) ClearScope() {
@@ -10607,22 +9396,16 @@ func (x *DeleteUserRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteUserRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteUserRequest) ClearUserId() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_UserId = nil
 }
 
 type DeleteUserRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
-	UserId   *string
+	Scope  *string
+	UserId *string
 }
 
 func (b0 DeleteUserRequest_builder) Build() *DeleteUserRequest {
@@ -10630,15 +9413,11 @@ func (b0 DeleteUserRequest_builder) Build() *DeleteUserRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.UserId != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_UserId = b.UserId
 	}
 	return m0
@@ -10647,7 +9426,6 @@ func (b0 DeleteUserRequest_builder) Build() *DeleteUserRequest {
 type CreateUserKeyRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_UserId      *string                `protobuf:"bytes,3,opt,name=user_id,json=userId"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -10690,16 +9468,6 @@ func (x *CreateUserKeyRequest) GetScope() string {
 	return ""
 }
 
-func (x *CreateUserKeyRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreateUserKeyRequest) GetUserId() string {
 	if x != nil {
 		if x.xxx_hidden_UserId != nil {
@@ -10712,17 +9480,12 @@ func (x *CreateUserKeyRequest) GetUserId() string {
 
 func (x *CreateUserKeyRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *CreateUserKeyRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *CreateUserKeyRequest) SetUserId(v string) {
 	x.xxx_hidden_UserId = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *CreateUserKeyRequest) HasScope() bool {
@@ -10732,18 +9495,11 @@ func (x *CreateUserKeyRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateUserKeyRequest) HasFacility() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *CreateUserKeyRequest) HasUserId() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *CreateUserKeyRequest) ClearScope() {
@@ -10751,22 +9507,16 @@ func (x *CreateUserKeyRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateUserKeyRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *CreateUserKeyRequest) ClearUserId() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_UserId = nil
 }
 
 type CreateUserKeyRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope    *string
-	Facility *string
-	UserId   *string
+	Scope  *string
+	UserId *string
 }
 
 func (b0 CreateUserKeyRequest_builder) Build() *CreateUserKeyRequest {
@@ -10774,15 +9524,11 @@ func (b0 CreateUserKeyRequest_builder) Build() *CreateUserKeyRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.UserId != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_UserId = b.UserId
 	}
 	return m0
@@ -10791,7 +9537,6 @@ func (b0 CreateUserKeyRequest_builder) Build() *CreateUserKeyRequest {
 type DeleteUserKeyRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Facility    *string                `protobuf:"bytes,2,opt,name=facility"`
 	xxx_hidden_UserId      *string                `protobuf:"bytes,3,opt,name=user_id,json=userId"`
 	xxx_hidden_AccessKey   *string                `protobuf:"bytes,4,opt,name=access_key,json=accessKey"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -10835,16 +9580,6 @@ func (x *DeleteUserKeyRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteUserKeyRequest) GetFacility() string {
-	if x != nil {
-		if x.xxx_hidden_Facility != nil {
-			return *x.xxx_hidden_Facility
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteUserKeyRequest) GetUserId() string {
 	if x != nil {
 		if x.xxx_hidden_UserId != nil {
@@ -10867,22 +9602,17 @@ func (x *DeleteUserKeyRequest) GetAccessKey() string {
 
 func (x *DeleteUserKeyRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
-}
-
-func (x *DeleteUserKeyRequest) SetFacility(v string) {
-	x.xxx_hidden_Facility = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteUserKeyRequest) SetUserId(v string) {
 	x.xxx_hidden_UserId = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteUserKeyRequest) SetAccessKey(v string) {
 	x.xxx_hidden_AccessKey = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteUserKeyRequest) HasScope() bool {
@@ -10892,25 +9622,18 @@ func (x *DeleteUserKeyRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteUserKeyRequest) HasFacility() bool {
+func (x *DeleteUserKeyRequest) HasUserId() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteUserKeyRequest) HasUserId() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *DeleteUserKeyRequest) HasAccessKey() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *DeleteUserKeyRequest) ClearScope() {
@@ -10918,18 +9641,13 @@ func (x *DeleteUserKeyRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteUserKeyRequest) ClearFacility() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Facility = nil
-}
-
 func (x *DeleteUserKeyRequest) ClearUserId() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_UserId = nil
 }
 
 func (x *DeleteUserKeyRequest) ClearAccessKey() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_AccessKey = nil
 }
 
@@ -10937,7 +9655,6 @@ type DeleteUserKeyRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope     *string
-	Facility  *string
 	UserId    *string
 	AccessKey *string
 }
@@ -10947,19 +9664,15 @@ func (b0 DeleteUserKeyRequest_builder) Build() *DeleteUserKeyRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Facility != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Facility = b.Facility
-	}
 	if b.UserId != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_UserId = b.UserId
 	}
 	if b.AccessKey != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_AccessKey = b.AccessKey
 	}
 	return m0
@@ -11954,37 +10667,32 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"access_key\x18\x01 \x01(\tR\taccessKey\x12\x1d\n" +
 	"\n" +
-	"secret_key\x18\x02 \x01(\tR\tsecretKey\"C\n" +
+	"secret_key\x18\x02 \x01(\tR\tsecretKey\"-\n" +
 	"\x0fListMONsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"B\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"B\n" +
 	"\x10ListMONsResponse\x12.\n" +
-	"\x04mons\x18\x01 \x03(\v2\x1a.otterscale.storage.v1.MONR\x04mons\"C\n" +
+	"\x04mons\x18\x01 \x03(\v2\x1a.otterscale.storage.v1.MONR\x04mons\"-\n" +
 	"\x0fListOSDsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"B\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"B\n" +
 	"\x10ListOSDsResponse\x12.\n" +
-	"\x04osds\x18\x01 \x03(\v2\x1a.otterscale.storage.v1.OSDR\x04osds\"]\n" +
+	"\x04osds\x18\x01 \x03(\v2\x1a.otterscale.storage.v1.OSDR\x04osds\"G\n" +
 	"\x0eDoSMARTRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x19\n" +
-	"\bosd_name\x18\x03 \x01(\tR\aosdName\"\x8d\x02\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x19\n" +
+	"\bosd_name\x18\x03 \x01(\tR\aosdNameJ\x04\b\x02\x10\x03\"\x8d\x02\n" +
 	"\x0fDoSMARTResponse\x12g\n" +
 	"\x11device_output_map\x18\x01 \x03(\v2;.otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntryR\x0fdeviceOutputMap\x1a\x1e\n" +
 	"\x06Output\x12\x14\n" +
 	"\x05lines\x18\x01 \x03(\tR\x05lines\x1aq\n" +
 	"\x14DeviceOutputMapEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12C\n" +
-	"\x05value\x18\x02 \x01(\v2-.otterscale.storage.v1.DoSMARTResponse.OutputR\x05value:\x028\x01\"f\n" +
+	"\x05value\x18\x02 \x01(\v2-.otterscale.storage.v1.DoSMARTResponse.OutputR\x05value:\x028\x01\"P\n" +
 	"\x10ListPoolsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12 \n" +
-	"\vapplication\x18\v \x01(\tR\vapplication\"F\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12 \n" +
+	"\vapplication\x18\v \x01(\tR\vapplicationJ\x04\b\x02\x10\x03\"F\n" +
 	"\x11ListPoolsResponse\x121\n" +
-	"\x05pools\x18\x01 \x03(\v2\x1b.otterscale.storage.v1.PoolR\x05pools\"\xd8\x02\n" +
+	"\x05pools\x18\x01 \x03(\v2\x1b.otterscale.storage.v1.PoolR\x05pools\"\xc2\x02\n" +
 	"\x11CreatePoolRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1b\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12<\n" +
 	"\tpool_type\x18\v \x01(\x0e2\x1f.otterscale.storage.v1.PoolTypeR\bpoolType\x12#\n" +
 	"\rec_overwrites\x18\x15 \x01(\bR\fecOverwrites\x12'\n" +
@@ -11992,26 +10700,22 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\vquota_bytes\x18) \x01(\x04R\n" +
 	"quotaBytes\x12#\n" +
 	"\rquota_objects\x18* \x01(\x04R\fquotaObjects\x12\"\n" +
-	"\fapplications\x18= \x03(\tR\fapplications\"\xa8\x01\n" +
+	"\fapplications\x18= \x03(\tR\fapplicationsJ\x04\b\x02\x10\x03\"\x92\x01\n" +
 	"\x11UpdatePoolRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1b\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1f\n" +
 	"\vquota_bytes\x18) \x01(\x04R\n" +
 	"quotaBytes\x12#\n" +
-	"\rquota_objects\x18* \x01(\x04R\fquotaObjects\"b\n" +
+	"\rquota_objects\x18* \x01(\x04R\fquotaObjectsJ\x04\b\x02\x10\x03\"L\n" +
 	"\x11DeletePoolRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1b\n" +
-	"\tpool_name\x18\x03 \x01(\tR\bpoolName\"E\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
+	"\tpool_name\x18\x03 \x01(\tR\bpoolNameJ\x04\b\x02\x10\x03\"/\n" +
 	"\x11ListImagesRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"J\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"J\n" +
 	"\x12ListImagesResponse\x124\n" +
-	"\x06images\x18\x01 \x03(\v2\x1c.otterscale.storage.v1.ImageR\x06images\"\xc0\x03\n" +
+	"\x06images\x18\x01 \x03(\v2\x1c.otterscale.storage.v1.ImageR\x06images\"\xaa\x03\n" +
 	"\x12CreateImageRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1b\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x04 \x01(\tR\timageName\x12*\n" +
@@ -12025,75 +10729,65 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"object_map\x18! \x01(\bR\tobjectMap\x12\x1b\n" +
 	"\tfast_diff\x18\" \x01(\bR\bfastDiff\x12!\n" +
-	"\fdeep_flatten\x18# \x01(\bR\vdeepFlatten\"\xa3\x01\n" +
+	"\fdeep_flatten\x18# \x01(\bR\vdeepFlattenJ\x04\b\x02\x10\x03\"\x8d\x01\n" +
 	"\x12UpdateImageRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1b\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x04 \x01(\tR\timageName\x12\x1f\n" +
 	"\vquota_bytes\x18\v \x01(\x04R\n" +
-	"quotaBytes\"\x82\x01\n" +
+	"quotaBytesJ\x04\b\x02\x10\x03\"l\n" +
 	"\x12DeleteImageRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1b\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
 	"\n" +
-	"image_name\x18\x04 \x01(\tR\timageName\"\xaf\x01\n" +
+	"image_name\x18\x04 \x01(\tR\timageNameJ\x04\b\x02\x10\x03\"\x99\x01\n" +
 	"\x1aCreateImageSnapshotRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1b\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x04 \x01(\tR\timageName\x12#\n" +
-	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotName\"\xaf\x01\n" +
+	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotNameJ\x04\b\x02\x10\x03\"\x99\x01\n" +
 	"\x1aDeleteImageSnapshotRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1b\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x04 \x01(\tR\timageName\x12#\n" +
-	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotName\"\xb1\x01\n" +
+	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotNameJ\x04\b\x02\x10\x03\"\x9b\x01\n" +
 	"\x1cRollbackImageSnapshotRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1b\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x04 \x01(\tR\timageName\x12#\n" +
-	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotName\"\xb0\x01\n" +
+	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotNameJ\x04\b\x02\x10\x03\"\x9a\x01\n" +
 	"\x1bProtectImageSnapshotRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1b\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x04 \x01(\tR\timageName\x12#\n" +
-	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotName\"\xb2\x01\n" +
+	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotNameJ\x04\b\x02\x10\x03\"\x9c\x01\n" +
 	"\x1dUnprotectImageSnapshotRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1b\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x04 \x01(\tR\timageName\x12#\n" +
-	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotName\"F\n" +
+	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotNameJ\x04\b\x02\x10\x03\"0\n" +
 	"\x12ListVolumesRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"N\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"N\n" +
 	"\x13ListVolumesResponse\x127\n" +
-	"\avolumes\x18\x01 \x03(\v2\x1d.otterscale.storage.v1.VolumeR\avolumes\"\x89\x01\n" +
+	"\avolumes\x18\x01 \x03(\v2\x1d.otterscale.storage.v1.VolumeR\avolumes\"s\n" +
 	"\x15ListSubvolumesRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
 	"volumeName\x12\x1d\n" +
 	"\n" +
-	"group_name\x18\x04 \x01(\tR\tgroupName\"Z\n" +
+	"group_name\x18\x04 \x01(\tR\tgroupNameJ\x04\b\x02\x10\x03\"Z\n" +
 	"\x16ListSubvolumesResponse\x12@\n" +
 	"\n" +
 	"subvolumes\x18\x01 \x03(\v2 .otterscale.storage.v1.SubvolumeR\n" +
-	"subvolumes\"\xea\x01\n" +
+	"subvolumes\"\xd4\x01\n" +
 	"\x16CreateSubvolumeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
 	"volumeName\x12\x1d\n" +
 	"\n" +
@@ -12101,146 +10795,126 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\x0esubvolume_name\x18\x05 \x01(\tR\rsubvolumeName\x12\x1f\n" +
 	"\vquota_bytes\x18\v \x01(\x04R\n" +
 	"quotaBytes\x12\x16\n" +
-	"\x06export\x18e \x01(\bR\x06export\"\xd2\x01\n" +
+	"\x06export\x18e \x01(\bR\x06exportJ\x04\b\x02\x10\x03\"\xbc\x01\n" +
 	"\x16UpdateSubvolumeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
 	"volumeName\x12\x1d\n" +
 	"\n" +
 	"group_name\x18\x04 \x01(\tR\tgroupName\x12%\n" +
 	"\x0esubvolume_name\x18\x05 \x01(\tR\rsubvolumeName\x12\x1f\n" +
 	"\vquota_bytes\x18\v \x01(\x04R\n" +
-	"quotaBytes\"\xb1\x01\n" +
+	"quotaBytesJ\x04\b\x02\x10\x03\"\x9b\x01\n" +
 	"\x16DeleteSubvolumeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
 	"volumeName\x12\x1d\n" +
 	"\n" +
 	"group_name\x18\x04 \x01(\tR\tgroupName\x12%\n" +
-	"\x0esubvolume_name\x18\x05 \x01(\tR\rsubvolumeName\"\xba\x01\n" +
+	"\x0esubvolume_name\x18\x05 \x01(\tR\rsubvolumeNameJ\x04\b\x02\x10\x03\"\xa4\x01\n" +
 	"!GrantSubvolumeExportAccessRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
 	"volumeName\x12%\n" +
 	"\x0esubvolume_name\x18\x04 \x01(\tR\rsubvolumeName\x12\x1b\n" +
-	"\tclient_ip\x18\v \x01(\tR\bclientIp\"\xbb\x01\n" +
+	"\tclient_ip\x18\v \x01(\tR\bclientIpJ\x04\b\x02\x10\x03\"\xa5\x01\n" +
 	"\"RevokeSubvolumeExportAccessRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
 	"volumeName\x12%\n" +
 	"\x0esubvolume_name\x18\x04 \x01(\tR\rsubvolumeName\x12\x1b\n" +
-	"\tclient_ip\x18\v \x01(\tR\bclientIp\"\xde\x01\n" +
+	"\tclient_ip\x18\v \x01(\tR\bclientIpJ\x04\b\x02\x10\x03\"\xc8\x01\n" +
 	"\x1eCreateSubvolumeSnapshotRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
 	"volumeName\x12%\n" +
 	"\x0esubvolume_name\x18\x04 \x01(\tR\rsubvolumeName\x12\x1d\n" +
 	"\n" +
 	"group_name\x18\x05 \x01(\tR\tgroupName\x12#\n" +
-	"\rsnapshot_name\x18\x06 \x01(\tR\fsnapshotName\"\xde\x01\n" +
+	"\rsnapshot_name\x18\x06 \x01(\tR\fsnapshotNameJ\x04\b\x02\x10\x03\"\xc8\x01\n" +
 	"\x1eDeleteSubvolumeSnapshotRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
 	"volumeName\x12%\n" +
 	"\x0esubvolume_name\x18\x04 \x01(\tR\rsubvolumeName\x12\x1d\n" +
 	"\n" +
 	"group_name\x18\x05 \x01(\tR\tgroupName\x12#\n" +
-	"\rsnapshot_name\x18\x06 \x01(\tR\fsnapshotName\"o\n" +
+	"\rsnapshot_name\x18\x06 \x01(\tR\fsnapshotNameJ\x04\b\x02\x10\x03\"Y\n" +
 	"\x1aListSubvolumeGroupsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
-	"volumeName\"o\n" +
+	"volumeNameJ\x04\b\x02\x10\x03\"o\n" +
 	"\x1bListSubvolumeGroupsResponse\x12P\n" +
-	"\x10subvolume_groups\x18\x01 \x03(\v2%.otterscale.storage.v1.SubvolumeGroupR\x0fsubvolumeGroups\"\xb0\x01\n" +
+	"\x10subvolume_groups\x18\x01 \x03(\v2%.otterscale.storage.v1.SubvolumeGroupR\x0fsubvolumeGroups\"\x9a\x01\n" +
 	"\x1bCreateSubvolumeGroupRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
 	"volumeName\x12\x1d\n" +
 	"\n" +
 	"group_name\x18\x04 \x01(\tR\tgroupName\x12\x1f\n" +
 	"\vquota_bytes\x18\v \x01(\x04R\n" +
-	"quotaBytes\"\xb0\x01\n" +
+	"quotaBytesJ\x04\b\x02\x10\x03\"\x9a\x01\n" +
 	"\x1bUpdateSubvolumeGroupRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
 	"volumeName\x12\x1d\n" +
 	"\n" +
 	"group_name\x18\x04 \x01(\tR\tgroupName\x12\x1f\n" +
 	"\vquota_bytes\x18\v \x01(\x04R\n" +
-	"quotaBytes\"\x8f\x01\n" +
+	"quotaBytesJ\x04\b\x02\x10\x03\"y\n" +
 	"\x1bDeleteSubvolumeGroupRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vvolume_name\x18\x03 \x01(\tR\n" +
 	"volumeName\x12\x1d\n" +
 	"\n" +
-	"group_name\x18\x04 \x01(\tR\tgroupName\"F\n" +
+	"group_name\x18\x04 \x01(\tR\tgroupNameJ\x04\b\x02\x10\x03\"0\n" +
 	"\x12ListBucketsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"N\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"N\n" +
 	"\x13ListBucketsResponse\x127\n" +
-	"\abuckets\x18\x01 \x03(\v2\x1d.otterscale.storage.v1.BucketR\abuckets\"\xcb\x01\n" +
+	"\abuckets\x18\x01 \x03(\v2\x1d.otterscale.storage.v1.BucketR\abuckets\"\xb5\x01\n" +
 	"\x13CreateBucketRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vbucket_name\x18\x03 \x01(\tR\n" +
 	"bucketName\x12\x14\n" +
 	"\x05owner\x18\v \x01(\tR\x05owner\x12\x16\n" +
 	"\x06policy\x18\f \x01(\tR\x06policy\x123\n" +
-	"\x03acl\x18\x15 \x01(\x0e2!.otterscale.storage.v1.Bucket.ACLR\x03acl\"\xcb\x01\n" +
+	"\x03acl\x18\x15 \x01(\x0e2!.otterscale.storage.v1.Bucket.ACLR\x03aclJ\x04\b\x02\x10\x03\"\xb5\x01\n" +
 	"\x13UpdateBucketRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vbucket_name\x18\x03 \x01(\tR\n" +
 	"bucketName\x12\x14\n" +
 	"\x05owner\x18\v \x01(\tR\x05owner\x12\x16\n" +
 	"\x06policy\x18\f \x01(\tR\x06policy\x123\n" +
-	"\x03acl\x18\x15 \x01(\x0e2!.otterscale.storage.v1.Bucket.ACLR\x03acl\"h\n" +
+	"\x03acl\x18\x15 \x01(\x0e2!.otterscale.storage.v1.Bucket.ACLR\x03aclJ\x04\b\x02\x10\x03\"R\n" +
 	"\x13DeleteBucketRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x1f\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vbucket_name\x18\x03 \x01(\tR\n" +
-	"bucketName\"D\n" +
+	"bucketNameJ\x04\b\x02\x10\x03\".\n" +
 	"\x10ListUsersRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\"F\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"F\n" +
 	"\x11ListUsersResponse\x121\n" +
-	"\x05users\x18\x01 \x03(\v2\x1b.otterscale.storage.v1.UserR\x05users\"\x99\x01\n" +
+	"\x05users\x18\x01 \x03(\v2\x1b.otterscale.storage.v1.UserR\x05users\"\x83\x01\n" +
 	"\x11CreateUserRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x17\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x1b\n" +
 	"\tuser_name\x18\v \x01(\tR\buserName\x12\x1c\n" +
-	"\tsuspended\x18\f \x01(\bR\tsuspended\"\x99\x01\n" +
+	"\tsuspended\x18\f \x01(\bR\tsuspendedJ\x04\b\x02\x10\x03\"\x83\x01\n" +
 	"\x11UpdateUserRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x17\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x1b\n" +
 	"\tuser_name\x18\v \x01(\tR\buserName\x12\x1c\n" +
-	"\tsuspended\x18\f \x01(\bR\tsuspended\"^\n" +
+	"\tsuspended\x18\f \x01(\bR\tsuspendedJ\x04\b\x02\x10\x03\"H\n" +
 	"\x11DeleteUserRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x17\n" +
-	"\auser_id\x18\x03 \x01(\tR\x06userId\"a\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userIdJ\x04\b\x02\x10\x03\"K\n" +
 	"\x14CreateUserKeyRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x17\n" +
-	"\auser_id\x18\x03 \x01(\tR\x06userId\"\x80\x01\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userIdJ\x04\b\x02\x10\x03\"j\n" +
 	"\x14DeleteUserKeyRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
-	"\bfacility\x18\x02 \x01(\tR\bfacility\x12\x17\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x1d\n" +
 	"\n" +
-	"access_key\x18\x04 \x01(\tR\taccessKey*8\n" +
+	"access_key\x18\x04 \x01(\tR\taccessKeyJ\x04\b\x02\x10\x03*8\n" +
 	"\bPoolType\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\v\n" +
 	"\aERASURE\x10\x01\x12\x0e\n" +

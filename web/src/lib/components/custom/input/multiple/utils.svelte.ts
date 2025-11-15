@@ -4,9 +4,11 @@ import type { AccessorType, InputType } from './types';
 class InputManager {
 	input: any = $state();
 	type: InputType | undefined;
+	icon: string | undefined;
 
-	constructor(type: InputType | undefined) {
+	constructor(type: InputType | undefined, icon: string | undefined) {
 		this.type = type ?? 'text';
+		this.icon = icon ?? typeToIcon[this.type];
 	}
 
 	reset() {

@@ -394,7 +394,7 @@ message User {
 
 message ListMONsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message ListMONsResponse {
@@ -403,7 +403,7 @@ message ListMONsResponse {
 
 message ListOSDsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message ListOSDsResponse {
@@ -412,7 +412,7 @@ message ListOSDsResponse {
 
 message DoSMARTRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string osd_name = 3;
 }
 
@@ -425,7 +425,7 @@ message DoSMARTResponse {
 
 message ListPoolsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string application = 11;
 }
 
@@ -435,7 +435,7 @@ message ListPoolsResponse {
 
 message CreatePoolRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string pool_name = 3;
   PoolType pool_type = 11;
   bool ec_overwrites = 21;      // erasure
@@ -447,7 +447,7 @@ message CreatePoolRequest {
 
 message UpdatePoolRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string pool_name = 3;
   uint64 quota_bytes = 41;
   uint64 quota_objects = 42;
@@ -455,13 +455,13 @@ message UpdatePoolRequest {
 
 message DeletePoolRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string pool_name = 3;
 }
 
 message ListImagesRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message ListImagesResponse {
@@ -470,7 +470,7 @@ message ListImagesResponse {
 
 message CreateImageRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string pool_name = 3;
   string image_name = 4;
   uint64 object_size_bytes = 11;
@@ -486,7 +486,7 @@ message CreateImageRequest {
 
 message UpdateImageRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string pool_name = 3;
   string image_name = 4;
   uint64 quota_bytes = 11;
@@ -494,14 +494,14 @@ message UpdateImageRequest {
 
 message DeleteImageRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string pool_name = 3;
   string image_name = 4;
 }
 
 message CreateImageSnapshotRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string pool_name = 3;
   string image_name = 4;
   string snapshot_name = 5;
@@ -509,7 +509,7 @@ message CreateImageSnapshotRequest {
 
 message DeleteImageSnapshotRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string pool_name = 3;
   string image_name = 4;
   string snapshot_name = 5;
@@ -517,7 +517,7 @@ message DeleteImageSnapshotRequest {
 
 message RollbackImageSnapshotRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string pool_name = 3;
   string image_name = 4;
   string snapshot_name = 5;
@@ -525,7 +525,7 @@ message RollbackImageSnapshotRequest {
 
 message ProtectImageSnapshotRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string pool_name = 3;
   string image_name = 4;
   string snapshot_name = 5;
@@ -533,7 +533,7 @@ message ProtectImageSnapshotRequest {
 
 message UnprotectImageSnapshotRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string pool_name = 3;
   string image_name = 4;
   string snapshot_name = 5;
@@ -541,7 +541,7 @@ message UnprotectImageSnapshotRequest {
 
 message ListVolumesRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message ListVolumesResponse {
@@ -550,7 +550,7 @@ message ListVolumesResponse {
 
 message ListSubvolumesRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
   string group_name = 4;
 }
@@ -561,7 +561,7 @@ message ListSubvolumesResponse {
 
 message CreateSubvolumeRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
@@ -571,7 +571,7 @@ message CreateSubvolumeRequest {
 
 message UpdateSubvolumeRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
@@ -580,7 +580,7 @@ message UpdateSubvolumeRequest {
 
 message DeleteSubvolumeRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
@@ -588,7 +588,7 @@ message DeleteSubvolumeRequest {
 
 message GrantSubvolumeExportAccessRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
   string subvolume_name = 4;
   string client_ip = 11;
@@ -596,7 +596,7 @@ message GrantSubvolumeExportAccessRequest {
 
 message RevokeSubvolumeExportAccessRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
   string subvolume_name = 4;
   string client_ip = 11;
@@ -604,7 +604,7 @@ message RevokeSubvolumeExportAccessRequest {
 
 message CreateSubvolumeSnapshotRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
   string subvolume_name = 4;
   string group_name = 5;
@@ -613,7 +613,7 @@ message CreateSubvolumeSnapshotRequest {
 
 message DeleteSubvolumeSnapshotRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
   string subvolume_name = 4;
   string group_name = 5;
@@ -622,7 +622,7 @@ message DeleteSubvolumeSnapshotRequest {
 
 message ListSubvolumeGroupsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
 }
 
@@ -632,7 +632,7 @@ message ListSubvolumeGroupsResponse {
 
 message CreateSubvolumeGroupRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
   string group_name = 4;
   uint64 quota_bytes = 11;
@@ -640,7 +640,7 @@ message CreateSubvolumeGroupRequest {
 
 message UpdateSubvolumeGroupRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
   string group_name = 4;
   uint64 quota_bytes = 11;
@@ -648,14 +648,14 @@ message UpdateSubvolumeGroupRequest {
 
 message DeleteSubvolumeGroupRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string volume_name = 3;
   string group_name = 4;
 }
 
 message ListBucketsRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message ListBucketsResponse {
@@ -664,7 +664,7 @@ message ListBucketsResponse {
 
 message CreateBucketRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string bucket_name = 3;
   string owner = 11;
   string policy = 12;
@@ -673,7 +673,7 @@ message CreateBucketRequest {
 
 message UpdateBucketRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string bucket_name = 3;
   string owner = 11;
   string policy = 12;
@@ -682,13 +682,13 @@ message UpdateBucketRequest {
 
 message DeleteBucketRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string bucket_name = 3;
 }
 
 message ListUsersRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
 }
 
 message ListUsersResponse {
@@ -697,7 +697,7 @@ message ListUsersResponse {
 
 message CreateUserRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string user_id = 3;
   string user_name = 11;
   bool suspended = 12;
@@ -705,7 +705,7 @@ message CreateUserRequest {
 
 message UpdateUserRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string user_id = 3;
   string user_name = 11;
   bool suspended = 12;
@@ -713,19 +713,19 @@ message UpdateUserRequest {
 
 message DeleteUserRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string user_id = 3;
 }
 
 message CreateUserKeyRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string user_id = 3;
 }
 
 message DeleteUserKeyRequest {
   string scope = 1;
-  string facility = 2;
+  reserved 2;
   string user_id = 3;
   string access_key = 4;
 }

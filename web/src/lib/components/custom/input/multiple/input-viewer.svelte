@@ -1,14 +1,14 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
-	import { getContext, hasContext } from 'svelte';
+	import { getContext } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
 
 	import { Badge, type BadgeVariant } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { cn } from '$lib/utils';
 
-	import { InputManager, typeToIcon, ValuesManager } from './utils.svelte';
+	import { InputManager, ValuesManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -30,7 +30,7 @@
 
 {#if valuesManager.values.length > 0}
 	<div class="flex flex-wrap gap-1">
-		{#each valuesManager.values as value}
+		{#each valuesManager.values as value (value)}
 			{#if !(value == undefined || value == null)}
 				<Badge
 					{href}
@@ -41,13 +41,7 @@
 					{variant}
 				>
 					<span class="flex items-center gap-1">
-						<Icon
-							icon={hasContext('icon')
-								? getContext('icon')
-								: inputManager.type
-									? typeToIcon[inputManager.type]
-									: 'ph:cube'}
-						/>
+						<Icon icon={inputManager.icon ?? 'ph:cube'} />
 						{value}
 					</span>
 					<Button
