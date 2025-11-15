@@ -43,14 +43,14 @@ func NewEnvironmentUseCase(conf *config.Config, action action.ActionRepo, scope 
 	}
 }
 
-func (uc *EnvironmentUseCase) CheckHealth(_ context.Context) (int32, error) {
+func (uc *EnvironmentUseCase) CheckHealth() (int32, error) {
 	if !isMAASConfigured(uc.conf) {
 		return healthNotInstalled, nil
 	}
 	return healthOK, nil
 }
 
-func (uc *EnvironmentUseCase) UpdateConfig(_ context.Context, conf *config.Config) error {
+func (uc *EnvironmentUseCase) UpdateConfig(conf *config.Config) error {
 	uc.conf.MAAS = conf.MAAS
 	uc.conf.Juju = conf.Juju
 	uc.conf.MicroK8s = conf.MicroK8s

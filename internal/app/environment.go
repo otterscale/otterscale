@@ -26,8 +26,8 @@ func NewEnvironmentService(environment *environment.EnvironmentUseCase) *Environ
 
 var _ pbconnect.EnvironmentServiceHandler = (*EnvironmentService)(nil)
 
-func (s *EnvironmentService) CheckHealth(ctx context.Context, _ *pb.CheckHealthRequest) (*pb.CheckHealthResponse, error) {
-	result, err := s.environment.CheckHealth(ctx)
+func (s *EnvironmentService) CheckHealth(_ context.Context, _ *pb.CheckHealthRequest) (*pb.CheckHealthResponse, error) {
+	result, err := s.environment.CheckHealth()
 	if err != nil {
 		return nil, err
 	}
@@ -37,8 +37,8 @@ func (s *EnvironmentService) CheckHealth(ctx context.Context, _ *pb.CheckHealthR
 	return resp, nil
 }
 
-func (s *EnvironmentService) UpdateConfig(ctx context.Context, req *pb.UpdateConfigRequest) (*emptypb.Empty, error) {
-	if err := s.environment.UpdateConfig(ctx, toConfig(req)); err != nil {
+func (s *EnvironmentService) UpdateConfig(_ context.Context, req *pb.UpdateConfigRequest) (*emptypb.Empty, error) {
+	if err := s.environment.UpdateConfig(toConfig(req)); err != nil {
 		return nil, err
 	}
 
