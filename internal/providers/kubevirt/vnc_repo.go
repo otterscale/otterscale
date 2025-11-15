@@ -21,7 +21,7 @@ func NewVNCRepo(kubevirt *KubeVirt) vnc.VNCRepo {
 
 var _ vnc.VNCRepo = (*vncRepo)(nil)
 
-func (r *vncRepo) Stream(scope, namespace, name string) (kvcorev1.StreamInterface, error) {
+func (r *vncRepo) Streamer(scope, namespace, name string) (kvcorev1.StreamInterface, error) {
 	config, err := r.kubevirt.kubernetes.Config(scope)
 	if err != nil {
 		return nil, err
