@@ -232,7 +232,7 @@ func (r *releaseRepo) config(scope, namespace string) (*action.Configuration, er
 	return config, nil
 }
 
-func (uc *releaseRepo) newName(name string) string {
+func (r *releaseRepo) newName(name string) string {
 	if name != "" {
 		return name
 	}
