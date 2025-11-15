@@ -5,7 +5,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/facility/action"
 )
 
-type FileUseCase struct {
+type UseCase struct {
 	volume            VolumeRepo
 	subvolumeGroup    SubvolumeGroupRepo
 	subvolume         SubvolumeRepo
@@ -15,8 +15,8 @@ type FileUseCase struct {
 	facility facility.FacilityRepo
 }
 
-func NewFileUseCase(volume VolumeRepo, subvolumeGroup SubvolumeGroupRepo, subvolume SubvolumeRepo, subvolumeSnapshot SubvolumeSnapshotRepo, action action.ActionRepo, facility facility.FacilityRepo) *FileUseCase {
-	return &FileUseCase{
+func NewUseCase(volume VolumeRepo, subvolumeGroup SubvolumeGroupRepo, subvolume SubvolumeRepo, subvolumeSnapshot SubvolumeSnapshotRepo, action action.ActionRepo, facility facility.FacilityRepo) *UseCase {
+	return &UseCase{
 		volume:            volume,
 		subvolumeGroup:    subvolumeGroup,
 		subvolume:         subvolume,

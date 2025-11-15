@@ -14,7 +14,7 @@ type EventRepo interface {
 	Get(ctx context.Context, machineID string) ([]Event, error)
 }
 
-func (uc *MachineUseCase) lastCommissionedAt(ctx context.Context, machineID string) (time.Time, error) {
+func (uc *UseCase) lastCommissionedAt(ctx context.Context, machineID string) (time.Time, error) {
 	events, err := uc.event.Get(ctx, machineID)
 	if err != nil {
 		return time.Time{}, err

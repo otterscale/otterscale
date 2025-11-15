@@ -10,17 +10,17 @@ import (
 	"github.com/otterscale/otterscale/internal/core/instance/vm"
 )
 
-type VirtualMachineServiceUseCase struct {
+type UseCase struct {
 	service service.ServiceRepo
 }
 
-func NewVirtualMachineServiceUseCase(service service.ServiceRepo) *VirtualMachineServiceUseCase {
-	return &VirtualMachineServiceUseCase{
+func NewUseCase(service service.ServiceRepo) *UseCase {
+	return &UseCase{
 		service: service,
 	}
 }
 
-func (uc *VirtualMachineServiceUseCase) CreateVirtualMachineService(ctx context.Context, scope, namespace, name, vmName string, ports []service.Port) (*service.Service, error) {
+func (uc *UseCase) CreateVirtualMachineService(ctx context.Context, scope, namespace, name, vmName string, ports []service.Port) (*service.Service, error) {
 	service := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -38,7 +38,7 @@ func (uc *VirtualMachineServiceUseCase) CreateVirtualMachineService(ctx context.
 	return uc.service.Create(ctx, scope, namespace, service)
 }
 
-func (uc *VirtualMachineServiceUseCase) UpdateVirtualMachineService(ctx context.Context, scope, namespace, name string, ports []service.Port) (*service.Service, error) {
+func (uc *UseCase) UpdateVirtualMachineService(ctx context.Context, scope, namespace, name string, ports []service.Port) (*service.Service, error) {
 	service, err := uc.service.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return nil, err
@@ -49,6 +49,6 @@ func (uc *VirtualMachineServiceUseCase) UpdateVirtualMachineService(ctx context.
 	return uc.service.Update(ctx, scope, namespace, service)
 }
 
-func (uc *VirtualMachineServiceUseCase) DeleteVirtualMachineService(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) DeleteVirtualMachineService(ctx context.Context, scope, namespace, name string) error {
 	return uc.service.Delete(ctx, scope, namespace, name)
 }

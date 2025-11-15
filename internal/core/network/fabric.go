@@ -17,6 +17,6 @@ type FabricRepo interface {
 	Delete(ctx context.Context, id int) error
 }
 
-func (uc *NetworkUseCase) UpdateFabric(ctx context.Context, id int, name string) (*Fabric, error) {
+func (uc *UseCase) UpdateFabric(ctx context.Context, id int, name string) (*Fabric, error) {
 	return uc.fabric.Update(ctx, id, name)
 }

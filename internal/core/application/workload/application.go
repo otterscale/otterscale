@@ -35,7 +35,7 @@ type Application struct {
 	ChartFile   *chart.File // return only when fetching from GetApplication
 }
 
-func (uc *WorkloadUseCase) ListApplications(ctx context.Context, scope string) (apps []Application, endpoint string, err error) {
+func (uc *UseCase) ListApplications(ctx context.Context, scope string) (apps []Application, endpoint string, err error) {
 	var (
 		deployments            []Deployment
 		statefulSets           []StatefulSet
@@ -116,7 +116,7 @@ func (uc *WorkloadUseCase) ListApplications(ctx context.Context, scope string) (
 	return apps, uc.service.Host(scope), nil
 }
 
-func (uc *WorkloadUseCase) RestartApplication(ctx context.Context, scope, namespace, name, appType string) error {
+func (uc *UseCase) RestartApplication(ctx context.Context, scope, namespace, name, appType string) error {
 	switch appType {
 	case ApplicationTypeDeployment:
 		deployment, err := uc.deployment.Get(ctx, scope, namespace, name)
@@ -167,7 +167,7 @@ func (uc *WorkloadUseCase) RestartApplication(ctx context.Context, scope, namesp
 	return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unknown application type: %s", appType))
 }
 
-func (uc *WorkloadUseCase) ScaleApplication(ctx context.Context, scope, namespace, name, appType string, replicas int32) error {
+func (uc *UseCase) ScaleApplication(ctx context.Context, scope, namespace, name, appType string, replicas int32) error {
 	switch appType {
 	case ApplicationTypeDeployment:
 		deployment, err := uc.deployment.Get(ctx, scope, namespace, name)
@@ -198,7 +198,7 @@ func (uc *WorkloadUseCase) ScaleApplication(ctx context.Context, scope, namespac
 	return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unknown application type: %s", appType))
 }
 
-func (uc *WorkloadUseCase) GetApplication(ctx context.Context, scope, namespace, name string) (*Application, error) {
+func (uc *UseCase) GetApplication(ctx context.Context, scope, namespace, name string) (*Application, error) {
 	var (
 		deployment             *Deployment
 		statefulSet            *StatefulSet
@@ -291,7 +291,7 @@ func (uc *WorkloadUseCase) GetApplication(ctx context.Context, scope, namespace,
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("application %q in namespace %q not found", name, namespace))
 }
 
-func (uc *WorkloadUseCase) filterServices(selector labels.Selector, namespace string, services []service.Service) []service.Service {
+func (uc *UseCase) filterServices(selector labels.Selector, namespace string, services []service.Service) []service.Service {
 	ret := []service.Service{}
 
 	for i := range services {
@@ -303,7 +303,7 @@ func (uc *WorkloadUseCase) filterServices(selector labels.Selector, namespace st
 	return ret
 }
 
-func (uc *WorkloadUseCase) filterPods(selector labels.Selector, namespace string, pods []Pod) []Pod {
+func (uc *UseCase) filterPods(selector labels.Selector, namespace string, pods []Pod) []Pod {
 	ret := []Pod{}
 
 	for i := range pods {
@@ -315,7 +315,7 @@ func (uc *WorkloadUseCase) filterPods(selector labels.Selector, namespace string
 	return ret
 }
 
-func (uc *WorkloadUseCase) filterPersistents(namespace string, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) []persistent.Persistent {
+func (uc *UseCase) filterPersistents(namespace string, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) []persistent.Persistent {
 	storageClassMap := map[string]*persistent.StorageClass{}
 	for i := range storageClasses {
 		sc := storageClasses[i]
@@ -362,7 +362,7 @@ func (uc *WorkloadUseCase) filterPersistents(namespace string, volumes []persist
 	return ret
 }
 
-func (uc *WorkloadUseCase) toApplication(ls *v1.LabelSelector, appType, name, namespace string, labels map[string]string, replicas *int32, objectMeta *ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
+func (uc *UseCase) toApplication(ls *v1.LabelSelector, appType, name, namespace string, labels map[string]string, replicas *int32, objectMeta *ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	selector, err := v1.LabelSelectorAsSelector(ls)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create selector: %w", err)
@@ -382,7 +382,7 @@ func (uc *WorkloadUseCase) toApplication(ls *v1.LabelSelector, appType, name, na
 	}, nil
 }
 
-func (uc *WorkloadUseCase) fromDeployment(workload *Deployment, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
+func (uc *UseCase) fromDeployment(workload *Deployment, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	return uc.toApplication(
 		workload.Spec.Selector,
 		ApplicationTypeDeployment,
@@ -400,7 +400,7 @@ func (uc *WorkloadUseCase) fromDeployment(workload *Deployment, pods []Pod, serv
 	)
 }
 
-func (uc *WorkloadUseCase) fromStatefulSet(workload *StatefulSet, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
+func (uc *UseCase) fromStatefulSet(workload *StatefulSet, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	return uc.toApplication(
 		workload.Spec.Selector,
 		ApplicationTypeStatefulSet,
@@ -418,7 +418,7 @@ func (uc *WorkloadUseCase) fromStatefulSet(workload *StatefulSet, pods []Pod, se
 	)
 }
 
-func (uc *WorkloadUseCase) fromDaemonSet(workload *DaemonSet, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
+func (uc *UseCase) fromDaemonSet(workload *DaemonSet, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	return uc.toApplication(
 		workload.Spec.Selector,
 		ApplicationTypeDaemonSet,
@@ -436,7 +436,7 @@ func (uc *WorkloadUseCase) fromDaemonSet(workload *DaemonSet, pods []Pod, servic
 	)
 }
 
-func (uc *WorkloadUseCase) combineApplications(deployments []Deployment, statefulSets []StatefulSet, daemonSets []DaemonSet, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) ([]Application, error) {
+func (uc *UseCase) combineApplications(deployments []Deployment, statefulSets []StatefulSet, daemonSets []DaemonSet, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) ([]Application, error) {
 	ret := []Application{}
 
 	for i := range deployments {

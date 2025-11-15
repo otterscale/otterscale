@@ -20,6 +20,7 @@ const (
 // Release represents a Helm Release resource.
 type Release = release.Release
 
+//nolint:revive // allows this exported interface name for specific domain clarity.
 type ReleaseRepo interface {
 	List(ctx context.Context, scope, namespace, selector string) ([]Release, error)
 	Get(ctx context.Context, scope, namespace, name string) (*Release, error)
@@ -30,26 +31,26 @@ type ReleaseRepo interface {
 	GetValues(ctx context.Context, scope, namespace, name string) (map[string]any, error)
 }
 
-type ReleaseUseCase struct {
+type UseCase struct {
 	release ReleaseRepo
 
 	chart chart.ChartRepo
 }
 
-func NewReleaseUseCase(release ReleaseRepo, chart chart.ChartRepo) *ReleaseUseCase {
-	return &ReleaseUseCase{
+func NewUseCase(release ReleaseRepo, chart chart.ChartRepo) *UseCase {
+	return &UseCase{
 		release: release,
 		chart:   chart,
 	}
 }
 
-func (uc *ReleaseUseCase) ListReleases(ctx context.Context, scope string) ([]Release, error) {
+func (uc *UseCase) ListReleases(ctx context.Context, scope string) ([]Release, error) {
 	selector := "!" + TypeLabel
 
 	return uc.release.List(ctx, scope, "", selector)
 }
 
-func (uc *ReleaseUseCase) CreateRelease(ctx context.Context, scope, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string) (*Release, error) {
+func (uc *UseCase) CreateRelease(ctx context.Context, scope, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string) (*Release, error) {
 	// labels
 	labels := map[string]string{
 		ReleaseNameLabel: name,
@@ -58,20 +59,20 @@ func (uc *ReleaseUseCase) CreateRelease(ctx context.Context, scope, namespace, n
 	return uc.release.Install(ctx, scope, namespace, name, dryRun, chartRef, nil, labels, nil, valuesYAML, valuesMap)
 }
 
-func (uc *ReleaseUseCase) UpdateRelease(ctx context.Context, scope, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*Release, error) {
+func (uc *UseCase) UpdateRelease(ctx context.Context, scope, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*Release, error) {
 	return uc.release.Upgrade(ctx, scope, namespace, name, dryRun, chartRef, valuesYAML, nil, false)
 }
 
-func (uc *ReleaseUseCase) DeleteRelease(ctx context.Context, scope, namespace, name string, dryRun bool) error {
+func (uc *UseCase) DeleteRelease(ctx context.Context, scope, namespace, name string, dryRun bool) error {
 	_, err := uc.release.Uninstall(ctx, scope, namespace, name, dryRun)
 	return err
 }
 
-func (uc *ReleaseUseCase) RollbackRelease(ctx context.Context, scope, namespace, name string, dryRun bool) error {
+func (uc *UseCase) RollbackRelease(ctx context.Context, scope, namespace, name string, dryRun bool) error {
 	return uc.release.Rollback(ctx, scope, namespace, name, dryRun)
 }
 
-func (uc *ReleaseUseCase) GetChartFileFromApplication(ctx context.Context, scope, namespace string, labels map[string]string) (*chart.File, error) {
+func (uc *UseCase) GetChartFileFromApplication(ctx context.Context, scope, namespace string, labels map[string]string) (*chart.File, error) {
 	file := &chart.File{}
 	eg, egctx := errgroup.WithContext(ctx)
 

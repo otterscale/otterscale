@@ -13,7 +13,7 @@ type Configuration struct {
 	HelmRepositorys     []string
 }
 
-type ConfigurationUseCase struct {
+type UseCase struct {
 	conf *config.Config
 
 	bootResource        BootResourceRepo
@@ -24,8 +24,8 @@ type ConfigurationUseCase struct {
 	scopeConfig         ScopeConfigRepo
 }
 
-func NewConfigurationUseCase(conf *config.Config, bootResource BootResourceRepo, bootSource BootSourceRepo, bootSourceSelection BootSourceSelectionRepo, packageRepository PackageRepositoryRepo, provisioner ProvisionerRepo, scopeConfig ScopeConfigRepo) *ConfigurationUseCase {
-	return &ConfigurationUseCase{
+func NewUseCase(conf *config.Config, bootResource BootResourceRepo, bootSource BootSourceRepo, bootSourceSelection BootSourceSelectionRepo, packageRepository PackageRepositoryRepo, provisioner ProvisionerRepo, scopeConfig ScopeConfigRepo) *UseCase {
+	return &UseCase{
 		conf:                conf,
 		bootResource:        bootResource,
 		bootSource:          bootSource,
@@ -36,7 +36,7 @@ func NewConfigurationUseCase(conf *config.Config, bootResource BootResourceRepo,
 	}
 }
 
-func (uc *ConfigurationUseCase) GetConfiguration(ctx context.Context) (*Configuration, error) {
+func (uc *UseCase) GetConfiguration(ctx context.Context) (*Configuration, error) {
 	ntpServers, err := uc.listNTPServers(ctx)
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (uc *ConfigurationUseCase) GetConfiguration(ctx context.Context) (*Configur
 	}, nil
 }
 
-func (uc *ConfigurationUseCase) UpdateHelmRepository(urls []string) ([]string, error) {
+func (uc *UseCase) UpdateHelmRepository(urls []string) ([]string, error) {
 	uc.conf.Kube.HelmRepositoryURLs = urls
 
 	if err := uc.conf.Override(uc.conf); err != nil {

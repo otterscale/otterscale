@@ -30,7 +30,7 @@ type VirtualMachineInstanceTypeRepo interface {
 	Delete(ctx context.Context, scope, namespace, name string) error
 }
 
-func (uc *VirtualMachineInstanceUseCase) ListInstanceTypes(ctx context.Context, scope, namespace string, includeClusterWide bool) ([]VirtualMachineInstanceTypeData, error) {
+func (uc *UseCase) ListInstanceTypes(ctx context.Context, scope, namespace string, includeClusterWide bool) ([]VirtualMachineInstanceTypeData, error) {
 	vmits, err := uc.virtualMachineInstanceType.List(ctx, scope, namespace, "")
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (uc *VirtualMachineInstanceUseCase) ListInstanceTypes(ctx context.Context, 
 	return ret, nil
 }
 
-func (uc *VirtualMachineInstanceUseCase) GetInstanceType(ctx context.Context, scope, namespace, name string) (*VirtualMachineInstanceTypeData, error) {
+func (uc *UseCase) GetInstanceType(ctx context.Context, scope, namespace, name string) (*VirtualMachineInstanceTypeData, error) {
 	vmcit, err := uc.virtualMachineInstanceType.GetCluster(ctx, scope, name)
 	if uc.isKeyNotFoundError(err) {
 		vmit, err := uc.virtualMachineInstanceType.Get(ctx, scope, namespace, name)
@@ -77,7 +77,7 @@ func (uc *VirtualMachineInstanceUseCase) GetInstanceType(ctx context.Context, sc
 	return uc.toVirtualMachineInstanceType(vmcit), nil
 }
 
-func (uc *VirtualMachineInstanceUseCase) CreateInstanceType(ctx context.Context, scope, namespace, name string, cpu uint32, memory int64) (*VirtualMachineInstanceTypeData, error) {
+func (uc *UseCase) CreateInstanceType(ctx context.Context, scope, namespace, name string, cpu uint32, memory int64) (*VirtualMachineInstanceTypeData, error) {
 	vmit, err := uc.virtualMachineInstanceType.Create(ctx, scope, namespace, uc.buildVirtualMachineInstanceType(namespace, name, cpu, memory))
 	if err != nil {
 		return nil, err
@@ -89,11 +89,11 @@ func (uc *VirtualMachineInstanceUseCase) CreateInstanceType(ctx context.Context,
 	}, nil
 }
 
-func (uc *VirtualMachineInstanceUseCase) DeleteInstanceType(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) DeleteInstanceType(ctx context.Context, scope, namespace, name string) error {
 	return uc.virtualMachineInstanceType.Delete(ctx, scope, namespace, name)
 }
 
-func (uc *VirtualMachineInstanceUseCase) buildVirtualMachineInstanceType(namespace, name string, cpu uint32, memory int64) *VirtualMachineInstanceType {
+func (uc *UseCase) buildVirtualMachineInstanceType(namespace, name string, cpu uint32, memory int64) *VirtualMachineInstanceType {
 	memoryQuantity := resource.NewQuantity(memory, resource.BinarySI)
 
 	return &VirtualMachineInstanceType{
@@ -112,7 +112,7 @@ func (uc *VirtualMachineInstanceUseCase) buildVirtualMachineInstanceType(namespa
 	}
 }
 
-func (uc *VirtualMachineInstanceUseCase) toVirtualMachineInstanceType(vmcit *VirtualMachineClusterInstanceType) *VirtualMachineInstanceTypeData {
+func (uc *UseCase) toVirtualMachineInstanceType(vmcit *VirtualMachineClusterInstanceType) *VirtualMachineInstanceTypeData {
 	return &VirtualMachineInstanceTypeData{
 		Type: &VirtualMachineInstanceType{
 			TypeMeta:   vmcit.TypeMeta,
@@ -123,7 +123,7 @@ func (uc *VirtualMachineInstanceUseCase) toVirtualMachineInstanceType(vmcit *Vir
 	}
 }
 
-func (uc *VirtualMachineInstanceUseCase) toVirtualMachineInstanceTypes(vmcits []VirtualMachineClusterInstanceType) []VirtualMachineInstanceTypeData {
+func (uc *UseCase) toVirtualMachineInstanceTypes(vmcits []VirtualMachineClusterInstanceType) []VirtualMachineInstanceTypeData {
 	ret := make([]VirtualMachineInstanceTypeData, 0, len(vmcits))
 
 	for i := range vmcits {

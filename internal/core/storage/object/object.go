@@ -1,12 +1,12 @@
 package object
 
-type ObjectUseCase struct {
+type UseCase struct {
 	bucket BucketRepo
 	user   UserRepo
 }
 
-func NewObjectUseCase(bucket BucketRepo, user UserRepo) *ObjectUseCase {
-	return &ObjectUseCase{
+func NewUseCase(bucket BucketRepo, user UserRepo) *UseCase {
+	return &UseCase{
 		bucket: bucket,
 		user:   user,
 	}

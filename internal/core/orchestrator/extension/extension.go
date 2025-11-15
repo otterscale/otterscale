@@ -17,35 +17,35 @@ type Extension struct {
 	LatestURL string
 }
 
-type ExtensionUseCase struct {
+type UseCase struct {
 	chart   chart.ChartRepo
 	release release.ReleaseRepo
 }
 
-func NewExtensionUseCase(chart chart.ChartRepo, release release.ReleaseRepo) *ExtensionUseCase {
-	return &ExtensionUseCase{
+func NewUseCase(chart chart.ChartRepo, release release.ReleaseRepo) *UseCase {
+	return &UseCase{
 		chart:   chart,
 		release: release,
 	}
 }
 
-func (uc *ExtensionUseCase) ListGeneralExtensions(ctx context.Context, scope string) ([]Extension, error) {
+func (uc *UseCase) ListGeneralExtensions(ctx context.Context, scope string) ([]Extension, error) {
 	return uc.listExtensions(ctx, scope, general)
 }
 
-func (uc *ExtensionUseCase) ListModelExtensions(ctx context.Context, scope string) ([]Extension, error) {
+func (uc *UseCase) ListModelExtensions(ctx context.Context, scope string) ([]Extension, error) {
 	return uc.listExtensions(ctx, scope, model)
 }
 
-func (uc *ExtensionUseCase) ListInstanceExtensions(ctx context.Context, scope string) ([]Extension, error) {
+func (uc *UseCase) ListInstanceExtensions(ctx context.Context, scope string) ([]Extension, error) {
 	return uc.listExtensions(ctx, scope, instance)
 }
 
-func (uc *ExtensionUseCase) ListStorageExtensions(ctx context.Context, scope string) ([]Extension, error) {
+func (uc *UseCase) ListStorageExtensions(ctx context.Context, scope string) ([]Extension, error) {
 	return uc.listExtensions(ctx, scope, storage)
 }
 
-func (uc *ExtensionUseCase) InstallExtensions(ctx context.Context, scope string, chartRefMap map[string]string) error {
+func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, chartRefMap map[string]string) error {
 	eg, egctx := errgroup.WithContext(ctx)
 
 	for name, chartRef := range chartRefMap {
@@ -63,7 +63,7 @@ func (uc *ExtensionUseCase) InstallExtensions(ctx context.Context, scope string,
 	return eg.Wait()
 }
 
-func (uc *ExtensionUseCase) UpgradeExtensions(ctx context.Context, scope string, chartRefMap map[string]string) error {
+func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, chartRefMap map[string]string) error {
 	eg, egctx := errgroup.WithContext(ctx)
 
 	for name, chartRef := range chartRefMap {
@@ -81,7 +81,7 @@ func (uc *ExtensionUseCase) UpgradeExtensions(ctx context.Context, scope string,
 	return eg.Wait()
 }
 
-func (uc *ExtensionUseCase) listExtensions(ctx context.Context, scope string, bases []base) ([]Extension, error) {
+func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []base) ([]Extension, error) {
 	versions := sync.Map{}
 	releases := sync.Map{}
 

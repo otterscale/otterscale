@@ -15,10 +15,10 @@ import (
 type EnvironmentService struct {
 	pbconnect.UnimplementedEnvironmentServiceHandler
 
-	environment *environment.EnvironmentUseCase
+	environment *environment.UseCase
 }
 
-func NewEnvironmentService(environment *environment.EnvironmentUseCase) *EnvironmentService {
+func NewEnvironmentService(environment *environment.UseCase) *EnvironmentService {
 	return &EnvironmentService{
 		environment: environment,
 	}

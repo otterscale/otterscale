@@ -17,15 +17,15 @@ type VirtualMachineRestoreRepo interface {
 	Delete(ctx context.Context, scope, namespace, name string) error
 }
 
-func (uc *VirtualMachineUseCase) CreateVirtualMachineRestore(ctx context.Context, scope, namespace, name, vmName, snapshot string) (*VirtualMachineRestore, error) {
+func (uc *UseCase) CreateVirtualMachineRestore(ctx context.Context, scope, namespace, name, vmName, snapshot string) (*VirtualMachineRestore, error) {
 	return uc.virtualMachineRestore.Create(ctx, scope, namespace, uc.buildVirtualMachineRestore(namespace, name, vmName, snapshot))
 }
 
-func (uc *VirtualMachineUseCase) DeleteVirtualMachineRestore(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) DeleteVirtualMachineRestore(ctx context.Context, scope, namespace, name string) error {
 	return uc.virtualMachineRestore.Delete(ctx, scope, namespace, name)
 }
 
-func (uc *VirtualMachineUseCase) buildVirtualMachineRestore(namespace, name, vmName, snapshot string) *VirtualMachineRestore {
+func (uc *UseCase) buildVirtualMachineRestore(namespace, name, vmName, snapshot string) *VirtualMachineRestore {
 	apiGroup := groupName
 
 	return &snapshotv1beta1.VirtualMachineRestore{

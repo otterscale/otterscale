@@ -25,7 +25,7 @@ type traefikProxiedEndpoints struct {
 	} `json:"prometheus/0"`
 }
 
-type EnvironmentUseCase struct {
+type UseCase struct {
 	conf *config.Config
 
 	action action.ActionRepo
@@ -34,8 +34,8 @@ type EnvironmentUseCase struct {
 	prometheusURL *url.URL
 }
 
-func NewEnvironmentUseCase(conf *config.Config, action action.ActionRepo, scope scope.ScopeRepo) *EnvironmentUseCase {
-	return &EnvironmentUseCase{
+func NewUseCase(conf *config.Config, action action.ActionRepo, scope scope.ScopeRepo) *UseCase {
+	return &UseCase{
 		conf:          conf,
 		action:        action,
 		scope:         scope,
@@ -43,34 +43,34 @@ func NewEnvironmentUseCase(conf *config.Config, action action.ActionRepo, scope 
 	}
 }
 
-func (uc *EnvironmentUseCase) CheckHealth() (int32, error) {
+func (uc *UseCase) CheckHealth() (int32, error) {
 	if !isMAASConfigured(uc.conf) {
 		return healthNotInstalled, nil
 	}
 	return healthOK, nil
 }
 
-func (uc *EnvironmentUseCase) UpdateConfig(conf *config.Config) error {
+func (uc *UseCase) UpdateConfig(conf *config.Config) error {
 	uc.conf.MAAS = conf.MAAS
 	uc.conf.Juju = conf.Juju
 	uc.conf.MicroK8s = conf.MicroK8s
 	return uc.conf.Override(uc.conf)
 }
 
-func (uc *EnvironmentUseCase) GetConfigHelmRepos() []string {
+func (uc *UseCase) GetConfigHelmRepos() []string {
 	return uc.conf.Kube.HelmRepositoryURLs
 }
 
-func (uc *EnvironmentUseCase) UpdateConfigHelmRepos(urls []string) error {
+func (uc *UseCase) UpdateConfigHelmRepos(urls []string) error {
 	uc.conf.Kube.HelmRepositoryURLs = urls
 	return uc.conf.Override(uc.conf)
 }
 
-func (uc *EnvironmentUseCase) GetPrometheusURL() *url.URL {
+func (uc *UseCase) GetPrometheusURL() *url.URL {
 	return uc.prometheusURL
 }
 
-func (uc *EnvironmentUseCase) DiscoverPrometheusURL(ctx context.Context) (*url.URL, error) {
+func (uc *UseCase) DiscoverPrometheusURL(ctx context.Context) (*url.URL, error) {
 	if uc.prometheusURL.Scheme != "" {
 		return uc.prometheusURL, nil
 	}

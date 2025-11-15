@@ -17,6 +17,7 @@ type (
 	PersistentVolumeAccessMode = v1.PersistentVolumeAccessMode
 )
 
+//nolint:revive // allows this exported interface name for specific domain clarity.
 type PersistentVolumeClaimRepo interface {
 	List(ctx context.Context, scope, namespace, selector string) ([]PersistentVolumeClaim, error)
 	Get(ctx context.Context, scope, namespace, name string) (*PersistentVolumeClaim, error)

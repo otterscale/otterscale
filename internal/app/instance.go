@@ -26,14 +26,14 @@ import (
 type InstanceService struct {
 	pbconnect.UnimplementedInstanceServiceHandler
 
-	dataVolume             *cdi.DataVolumeUseCase
-	virtualMachine         *vm.VirtualMachineUseCase
-	virtualMachineInstance *vmi.VirtualMachineInstanceUseCase
-	virtualMachineService  *vms.VirtualMachineServiceUseCase
-	vnc                    *vnc.VNCUseCase
+	dataVolume             *cdi.UseCase
+	virtualMachine         *vm.UseCase
+	virtualMachineInstance *vmi.UseCase
+	virtualMachineService  *vms.UseCase
+	vnc                    *vnc.UseCase
 }
 
-func NewInstanceService(dataVolume *cdi.DataVolumeUseCase, virtualMachine *vm.VirtualMachineUseCase, virtualMachineInstance *vmi.VirtualMachineInstanceUseCase, virtualMachineService *vms.VirtualMachineServiceUseCase, vnc *vnc.VNCUseCase) *InstanceService {
+func NewInstanceService(dataVolume *cdi.UseCase, virtualMachine *vm.UseCase, virtualMachineInstance *vmi.UseCase, virtualMachineService *vms.UseCase, vnc *vnc.UseCase) *InstanceService {
 	return &InstanceService{
 		dataVolume:             dataVolume,
 		virtualMachine:         virtualMachine,

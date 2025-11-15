@@ -53,6 +53,7 @@ type File struct {
 	Customization  map[string]any
 }
 
+//nolint:revive // allows this exported interface name for specific domain clarity.
 type ChartRepo interface {
 	List(ctx context.Context, url string, useCache bool) ([]Chart, error)
 	Show(ctx context.Context, chartRef string, format action.ShowOutputFormat) (string, error)
@@ -61,19 +62,19 @@ type ChartRepo interface {
 	GetStableVersion(ctx context.Context, url, name string, useCache bool) (*Version, error)
 }
 
-type ChartUseCase struct {
+type UseCase struct {
 	conf  *config.Config
 	chart ChartRepo
 }
 
-func NewChartUseCase(conf *config.Config, chart ChartRepo) *ChartUseCase {
-	return &ChartUseCase{
+func NewUseCase(conf *config.Config, chart ChartRepo) *UseCase {
+	return &UseCase{
 		conf:  conf,
 		chart: chart,
 	}
 }
 
-func (uc *ChartUseCase) ListCharts(ctx context.Context) ([]Chart, error) {
+func (uc *UseCase) ListCharts(ctx context.Context) ([]Chart, error) {
 	urls := slices.Clone(uc.conf.Kube.HelmRepositoryURLs)
 
 	exists, err := checkDirExists(localRepoDir)
@@ -107,7 +108,7 @@ func (uc *ChartUseCase) ListCharts(ctx context.Context) ([]Chart, error) {
 	return flatten(ret), nil
 }
 
-func (uc *ChartUseCase) GetChartFile(ctx context.Context, chartRef string) (*File, error) {
+func (uc *UseCase) GetChartFile(ctx context.Context, chartRef string) (*File, error) {
 	file := &File{}
 	eg, egctx := errgroup.WithContext(ctx)
 
@@ -135,7 +136,7 @@ func (uc *ChartUseCase) GetChartFile(ctx context.Context, chartRef string) (*Fil
 }
 
 // TODO: multiple service on kubernetes
-func (uc *ChartUseCase) UploadChart(ctx context.Context, chartContent []byte) error {
+func (uc *UseCase) UploadChart(ctx context.Context, chartContent []byte) error {
 	if err := os.MkdirAll(localRepoDir, 0o700); err != nil { //nolint:mnd // default folder permission
 		return err
 	}
@@ -163,7 +164,7 @@ func (uc *ChartUseCase) UploadChart(ctx context.Context, chartContent []byte) er
 }
 
 // TODO: replace with remote flag
-func (uc *ChartUseCase) newMicroK8sConfig() (*rest.Config, error) {
+func (uc *UseCase) newMicroK8sConfig() (*rest.Config, error) {
 	kubeConfig, err := base64.StdEncoding.DecodeString(uc.conf.MicroK8s.Config)
 	if err != nil {
 		return nil, err
@@ -177,7 +178,7 @@ func (uc *ChartUseCase) newMicroK8sConfig() (*rest.Config, error) {
 	return clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
 }
 
-func (uc *ChartUseCase) localOCI() (string, error) {
+func (uc *UseCase) localOCI() (string, error) {
 	config, err := uc.newMicroK8sConfig()
 	if err != nil {
 		return "", err
@@ -191,7 +192,7 @@ func (uc *ChartUseCase) localOCI() (string, error) {
 	return fmt.Sprintf(localOCIFormat, url.Hostname()), nil
 }
 
-func (uc *ChartUseCase) extractMetadata(chartContent []byte) (name, version string, err error) {
+func (uc *UseCase) extractMetadata(chartContent []byte) (name, version string, err error) {
 	reader := bytes.NewReader(chartContent)
 
 	chart, err := loader.LoadArchive(reader)

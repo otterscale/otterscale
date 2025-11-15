@@ -35,7 +35,7 @@ type SubvolumeRepo interface {
 	ListExportClients(ctx context.Context, scope string, pool string) (map[string][]string, error)
 }
 
-func (uc *FileUseCase) ListSubvolumes(ctx context.Context, scope, volume, group string) ([]Subvolume, error) {
+func (uc *UseCase) ListSubvolumes(ctx context.Context, scope, volume, group string) ([]Subvolume, error) {
 	subvolumes, err := uc.subvolume.List(ctx, scope, volume, group)
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (uc *FileUseCase) ListSubvolumes(ctx context.Context, scope, volume, group 
 	return subvolumes, nil
 }
 
-func (uc *FileUseCase) CreateSubvolume(ctx context.Context, scope, volume, subvolume, group string, size uint64, export bool) (*Subvolume, error) {
+func (uc *UseCase) CreateSubvolume(ctx context.Context, scope, volume, subvolume, group string, size uint64, export bool) (*Subvolume, error) {
 	if !export {
 		if err := uc.subvolume.Create(ctx, scope, volume, subvolume, group, size); err != nil {
 			return nil, err
@@ -89,7 +89,7 @@ func (uc *FileUseCase) CreateSubvolume(ctx context.Context, scope, volume, subvo
 	return uc.subvolume.Get(ctx, scope, volume, subvolume, "")
 }
 
-func (uc *FileUseCase) UpdateSubvolume(ctx context.Context, scope, volume, subvolume, group string, size uint64) (*Subvolume, error) {
+func (uc *UseCase) UpdateSubvolume(ctx context.Context, scope, volume, subvolume, group string, size uint64) (*Subvolume, error) {
 	export, err := uc.isSubvolumeExport(ctx, scope, volume, subvolume, group)
 	if err != nil {
 		return nil, err
@@ -115,7 +115,7 @@ func (uc *FileUseCase) UpdateSubvolume(ctx context.Context, scope, volume, subvo
 	return uc.subvolume.Get(ctx, scope, volume, subvolume, "")
 }
 
-func (uc *FileUseCase) DeleteSubvolume(ctx context.Context, scope, volume, subvolume, group string) error {
+func (uc *UseCase) DeleteSubvolume(ctx context.Context, scope, volume, subvolume, group string) error {
 	export, err := uc.isSubvolumeExport(ctx, scope, volume, subvolume, group)
 	if err != nil {
 		return err
@@ -133,7 +133,7 @@ func (uc *FileUseCase) DeleteSubvolume(ctx context.Context, scope, volume, subvo
 	return err
 }
 
-func (uc *FileUseCase) GrantSubvolumeClient(ctx context.Context, scope, subvolume, clientIP string) error {
+func (uc *UseCase) GrantSubvolumeClient(ctx context.Context, scope, subvolume, clientIP string) error {
 	params := map[string]any{
 		"name":   subvolume,
 		"client": clientIP,
@@ -143,7 +143,7 @@ func (uc *FileUseCase) GrantSubvolumeClient(ctx context.Context, scope, subvolum
 	return err
 }
 
-func (uc *FileUseCase) RevokeSubvolumeClient(ctx context.Context, scope, subvolume, clientIP string) error {
+func (uc *UseCase) RevokeSubvolumeClient(ctx context.Context, scope, subvolume, clientIP string) error {
 	params := map[string]any{
 		"name":   subvolume,
 		"client": clientIP,
@@ -154,7 +154,7 @@ func (uc *FileUseCase) RevokeSubvolumeClient(ctx context.Context, scope, subvolu
 }
 
 // TODO: multiple ceph-nfs charms
-func (uc *FileUseCase) isSubvolumeExport(ctx context.Context, scope, volume, subvolume, group string) (bool, error) {
+func (uc *UseCase) isSubvolumeExport(ctx context.Context, scope, volume, subvolume, group string) (bool, error) {
 	m, err := uc.subvolume.ListExportClients(ctx, scope, uc.nfsAppName(scope))
 	if err != nil {
 		return false, err
@@ -169,7 +169,7 @@ func (uc *FileUseCase) isSubvolumeExport(ctx context.Context, scope, volume, sub
 	return ok, nil
 }
 
-func (uc *FileUseCase) vip(ctx context.Context, scope string) (string, error) {
+func (uc *UseCase) vip(ctx context.Context, scope string) (string, error) {
 	config, err := uc.facility.Config(ctx, scope, uc.nfsAppName(scope))
 	if err != nil {
 		return "", err
@@ -188,6 +188,6 @@ func (uc *FileUseCase) vip(ctx context.Context, scope string) (string, error) {
 	return value.(string), nil
 }
 
-func (uc *FileUseCase) nfsAppName(scope string) string {
+func (uc *UseCase) nfsAppName(scope string) string {
 	return scope + "-ceph-nfs"
 }

@@ -17,12 +17,12 @@ import (
 type FacilityService struct {
 	pbconnect.UnimplementedFacilityServiceHandler
 
-	facility *facility.FacilityUseCase
-	action   *action.ActionUseCase
-	charm    *charm.CharmUseCase
+	facility *facility.UseCase
+	action   *action.UseCase
+	charm    *charm.UseCase
 }
 
-func NewFacilityService(facility *facility.FacilityUseCase, action *action.ActionUseCase, charm *charm.CharmUseCase) *FacilityService {
+func NewFacilityService(facility *facility.UseCase, action *action.UseCase, charm *charm.UseCase) *FacilityService {
 	return &FacilityService{
 		facility: facility,
 		action:   action,

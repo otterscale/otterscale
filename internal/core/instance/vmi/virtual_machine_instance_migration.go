@@ -16,11 +16,11 @@ type VirtualMachineInstanceMigrationRepo interface {
 	Create(ctx context.Context, scope, namespace string, vmim *VirtualMachineInstanceMigration) (*VirtualMachineInstanceMigration, error)
 }
 
-func (uc *VirtualMachineInstanceUseCase) MigrateInstance(ctx context.Context, scope, namespace, name, hostname string) (*VirtualMachineInstanceMigration, error) {
+func (uc *UseCase) MigrateInstance(ctx context.Context, scope, namespace, name, hostname string) (*VirtualMachineInstanceMigration, error) {
 	return uc.virtualMachineInstanceMigration.Create(ctx, scope, namespace, uc.buildVirtualMachineInstanceMigration(namespace, name, hostname))
 }
 
-func (uc *VirtualMachineInstanceUseCase) buildVirtualMachineInstanceMigration(namespace, name, hostname string) *VirtualMachineInstanceMigration {
+func (uc *UseCase) buildVirtualMachineInstanceMigration(namespace, name, hostname string) *VirtualMachineInstanceMigration {
 	return &corev1.VirtualMachineInstanceMigration{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("%s-migration-%s", name, uuid.New().String()),

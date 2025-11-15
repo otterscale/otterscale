@@ -22,15 +22,15 @@ type VirtualMachineCloneRepo interface {
 	Delete(ctx context.Context, scope, namespace, name string) error
 }
 
-func (uc *VirtualMachineUseCase) CreateVirtualMachineClone(ctx context.Context, scope, namespace, name, source, target string) (*VirtualMachineClone, error) {
+func (uc *UseCase) CreateVirtualMachineClone(ctx context.Context, scope, namespace, name, source, target string) (*VirtualMachineClone, error) {
 	return uc.virtualMachineClone.Create(ctx, scope, namespace, uc.buildVirtualMachineClone(namespace, name, source, target))
 }
 
-func (uc *VirtualMachineUseCase) DeleteVirtualMachineClone(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) DeleteVirtualMachineClone(ctx context.Context, scope, namespace, name string) error {
 	return uc.virtualMachineClone.Delete(ctx, scope, namespace, name)
 }
 
-func (uc *VirtualMachineUseCase) buildVirtualMachineClone(namespace, name, source, target string) *VirtualMachineClone {
+func (uc *UseCase) buildVirtualMachineClone(namespace, name, source, target string) *VirtualMachineClone {
 	apiGroup := groupName
 
 	return &clonev1beta1.VirtualMachineClone{

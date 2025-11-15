@@ -71,7 +71,7 @@ type WarpOperation struct {
 	} `json:"throughput"`
 }
 
-func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy string, target WarpTarget, input *WarpInput) (*Result, error) {
+func (uc *UseCase) CreateWarpResult(ctx context.Context, name, createdBy string, target WarpTarget, input *WarpInput) (*Result, error) {
 	// namespace
 	if err := uc.ensureNamespace(ctx, scope.ReservedName, bistNamespace); err != nil {
 		return nil, err
@@ -138,7 +138,7 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 	return uc.toResult(ctx, job)
 }
 
-func (uc *BISTUseCase) warpCephObjectGatewayJobSpec(target *WarpTargetInternal, input *WarpInput) batchv1.JobSpec {
+func (uc *UseCase) warpCephObjectGatewayJobSpec(target *WarpTargetInternal, input *WarpInput) batchv1.JobSpec {
 	accessKey, secretKey := uc.bucket.Key(target.Scope)
 
 	external := &WarpTargetExternal{
@@ -150,7 +150,7 @@ func (uc *BISTUseCase) warpCephObjectGatewayJobSpec(target *WarpTargetInternal, 
 	return uc.warpJobSpec(external, input)
 }
 
-func (uc *BISTUseCase) warpMinIOJobSpec(ctx context.Context, target *WarpTargetInternal, input *WarpInput) (batchv1.JobSpec, error) {
+func (uc *UseCase) warpMinIOJobSpec(ctx context.Context, target *WarpTargetInternal, input *WarpInput) (batchv1.JobSpec, error) {
 	tmp := strings.Split(target.Name, ".")
 	if len(tmp) != 2 {
 		return batchv1.JobSpec{}, fmt.Errorf("invalid name %q", target.Name)
@@ -170,7 +170,7 @@ func (uc *BISTUseCase) warpMinIOJobSpec(ctx context.Context, target *WarpTargetI
 	return uc.warpJobSpec(external, input), nil
 }
 
-func (uc *BISTUseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput) batchv1.JobSpec {
+func (uc *UseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput) batchv1.JobSpec {
 	bistJobBackoffLimit := int32(2)
 
 	env := []corev1.EnvVar{
@@ -207,7 +207,7 @@ func (uc *BISTUseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput)
 	}
 }
 
-func (uc *BISTUseCase) unmarshalWarpOutput(ctx context.Context, job *workload.Job, val **WarpOutput) error {
+func (uc *UseCase) unmarshalWarpOutput(ctx context.Context, job *workload.Job, val **WarpOutput) error {
 	logs, err := uc.fetchLogs(ctx, job)
 	if err != nil {
 		return err
@@ -221,7 +221,7 @@ func (uc *BISTUseCase) unmarshalWarpOutput(ctx context.Context, job *workload.Jo
 	return json.Unmarshal(data, &val)
 }
 
-func (uc *BISTUseCase) toWarp(ctx context.Context, job *workload.Job) (*Warp, error) {
+func (uc *UseCase) toWarp(ctx context.Context, job *workload.Job) (*Warp, error) {
 	warp := &Warp{}
 
 	// target & input

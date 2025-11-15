@@ -23,26 +23,26 @@ type UserRepo interface {
 	DeleteKey(ctx context.Context, scope, id, accessKey string) error
 }
 
-func (uc *ObjectUseCase) ListUsers(ctx context.Context, scope string) ([]User, error) {
+func (uc *UseCase) ListUsers(ctx context.Context, scope string) ([]User, error) {
 	return uc.user.List(ctx, scope)
 }
 
-func (uc *ObjectUseCase) CreateUser(ctx context.Context, scope, id, name string, suspended bool) (*User, error) {
+func (uc *UseCase) CreateUser(ctx context.Context, scope, id, name string, suspended bool) (*User, error) {
 	return uc.user.Create(ctx, scope, id, name, suspended)
 }
 
-func (uc *ObjectUseCase) UpdateUser(ctx context.Context, scope, id, name string, suspended bool) (*User, error) {
+func (uc *UseCase) UpdateUser(ctx context.Context, scope, id, name string, suspended bool) (*User, error) {
 	return uc.user.Update(ctx, scope, id, name, suspended)
 }
 
-func (uc *ObjectUseCase) DeleteUser(ctx context.Context, scope, id string) error {
+func (uc *UseCase) DeleteUser(ctx context.Context, scope, id string) error {
 	return uc.user.Delete(ctx, scope, id)
 }
 
-func (uc *ObjectUseCase) CreateUserKey(ctx context.Context, scope, id string) (*UserKey, error) {
+func (uc *UseCase) CreateUserKey(ctx context.Context, scope, id string) (*UserKey, error) {
 	return uc.user.CreateKey(ctx, scope, id)
 }
 
-func (uc *ObjectUseCase) DeleteUserKey(ctx context.Context, scope, id, accessKey string) error {
+func (uc *UseCase) DeleteUserKey(ctx context.Context, scope, id, accessKey string) error {
 	return uc.user.DeleteKey(ctx, scope, id, accessKey)
 }

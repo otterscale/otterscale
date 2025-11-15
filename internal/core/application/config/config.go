@@ -1,12 +1,12 @@
 package config
 
-type ConfigUseCase struct {
+type UseCase struct {
 	configMap ConfigMapRepo
 	secret    SecretRepo
 }
 
-func NewConfigUseCase(configMap ConfigMapRepo, secret SecretRepo) *ConfigUseCase {
-	return &ConfigUseCase{
+func NewUseCase(configMap ConfigMapRepo, secret SecretRepo) *UseCase {
+	return &UseCase{
 		configMap: configMap,
 		secret:    secret,
 	}

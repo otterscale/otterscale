@@ -10,13 +10,13 @@ type Persistent struct {
 	*StorageClass
 }
 
-type PersistentUseCase struct {
+type UseCase struct {
 	persistentVolumeClaim PersistentVolumeClaimRepo
 	storageClass          StorageClassRepo
 }
 
-func NewPersistentUseCase(persistentVolumeClaim PersistentVolumeClaimRepo, storageClass StorageClassRepo) *PersistentUseCase {
-	return &PersistentUseCase{
+func NewUseCase(persistentVolumeClaim PersistentVolumeClaimRepo, storageClass StorageClassRepo) *UseCase {
+	return &UseCase{
 		persistentVolumeClaim: persistentVolumeClaim,
 		storageClass:          storageClass,
 	}

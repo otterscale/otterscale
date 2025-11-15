@@ -6,7 +6,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (uc *StandaloneUseCase) createCOS(ctx context.Context, scope string) error {
+func (uc *UseCase) createCOS(ctx context.Context, scope string) error {
 	// consume
 	offerURLs := []string{
 		uc.conf.Juju.Username + "/cos.global-prometheus",

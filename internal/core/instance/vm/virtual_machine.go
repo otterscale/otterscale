@@ -67,7 +67,7 @@ type VirtualMachineRepo interface {
 	Restart(ctx context.Context, scope, namespace, name string) error
 }
 
-type VirtualMachineUseCase struct {
+type UseCase struct {
 	virtualMachine         VirtualMachineRepo
 	virtualMachineClone    VirtualMachineCloneRepo
 	virtualMachineRestore  VirtualMachineRestoreRepo
@@ -78,8 +78,8 @@ type VirtualMachineUseCase struct {
 	machine                machine.MachineRepo
 }
 
-func NewVirtualMachineUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo, service service.ServiceRepo, machine machine.MachineRepo) *VirtualMachineUseCase {
-	return &VirtualMachineUseCase{
+func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo, service service.ServiceRepo, machine machine.MachineRepo) *UseCase {
+	return &UseCase{
 		virtualMachine:         virtualMachine,
 		virtualMachineClone:    virtualMachineClone,
 		virtualMachineRestore:  virtualMachineRestore,
@@ -90,7 +90,7 @@ func NewVirtualMachineUseCase(virtualMachine VirtualMachineRepo, virtualMachineC
 	}
 }
 
-func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, scope, namespace string) ([]VirtualMachineData, error) {
+func (uc *UseCase) ListVirtualMachines(ctx context.Context, scope, namespace string) ([]VirtualMachineData, error) {
 	var (
 		virtualMachines []VirtualMachine
 		instances       []vmi.VirtualMachineInstance
@@ -168,7 +168,7 @@ func (uc *VirtualMachineUseCase) ListVirtualMachines(ctx context.Context, scope,
 	return uc.combineVirtualMachines(virtualMachines, instances, machines, clones, snapshots, restores, services), nil
 }
 
-func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name string) (*VirtualMachineData, error) {
+func (uc *UseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name string) (*VirtualMachineData, error) {
 	var (
 		virtualMachine *VirtualMachine
 		instance       *vmi.VirtualMachineInstance
@@ -254,7 +254,7 @@ func (uc *VirtualMachineUseCase) GetVirtualMachine(ctx context.Context, scope, n
 	return uc.combineVirtualMachine(namespace, name, virtualMachine, instance, machines, clones, snapshots, restores, services), nil
 }
 
-func (uc *VirtualMachineUseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {
+func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {
 	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript))
 	if err != nil {
 		return nil, err
@@ -265,7 +265,7 @@ func (uc *VirtualMachineUseCase) CreateVirtualMachine(ctx context.Context, scope
 	}, nil
 }
 
-func (uc *VirtualMachineUseCase) DeleteVirtualMachine(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) DeleteVirtualMachine(ctx context.Context, scope, namespace, name string) error {
 	// Get related services before deleting the virtual machine
 	selector := VirtualMachineNameLabel + "=" + name
 
@@ -298,7 +298,7 @@ func (uc *VirtualMachineUseCase) DeleteVirtualMachine(ctx context.Context, scope
 	return nil
 }
 
-func (uc *VirtualMachineUseCase) AttachVirtualMachineDisk(ctx context.Context, scope, namespace, name, dvName string) (disk *VirtualMachineDisk, volume *VirtualMachineVolume, err error) {
+func (uc *UseCase) AttachVirtualMachineDisk(ctx context.Context, scope, namespace, name, dvName string) (disk *VirtualMachineDisk, volume *VirtualMachineVolume, err error) {
 	vm, err := uc.virtualMachine.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return nil, nil, err
@@ -361,7 +361,7 @@ func (uc *VirtualMachineUseCase) AttachVirtualMachineDisk(ctx context.Context, s
 	return disk, volume, nil
 }
 
-func (uc *VirtualMachineUseCase) DetachVirtualMachineDisk(ctx context.Context, scope, namespace, name, dvName string) error {
+func (uc *UseCase) DetachVirtualMachineDisk(ctx context.Context, scope, namespace, name, dvName string) error {
 	vm, err := uc.virtualMachine.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return err
@@ -414,19 +414,19 @@ func (uc *VirtualMachineUseCase) DetachVirtualMachineDisk(ctx context.Context, s
 	return nil
 }
 
-func (uc *VirtualMachineUseCase) StartVirtualMachine(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) StartVirtualMachine(ctx context.Context, scope, namespace, name string) error {
 	return uc.virtualMachine.Start(ctx, scope, namespace, name)
 }
 
-func (uc *VirtualMachineUseCase) StopVirtualMachine(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) StopVirtualMachine(ctx context.Context, scope, namespace, name string) error {
 	return uc.virtualMachine.Stop(ctx, scope, namespace, name)
 }
 
-func (uc *VirtualMachineUseCase) RestartVirtualMachine(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) RestartVirtualMachine(ctx context.Context, scope, namespace, name string) error {
 	return uc.virtualMachine.Restart(ctx, scope, namespace, name)
 }
 
-func (uc *VirtualMachineUseCase) filterClones(namespace, name string, clones []VirtualMachineClone) []VirtualMachineClone {
+func (uc *UseCase) filterClones(namespace, name string, clones []VirtualMachineClone) []VirtualMachineClone {
 	ret := []VirtualMachineClone{}
 
 	for i := range clones {
@@ -438,7 +438,7 @@ func (uc *VirtualMachineUseCase) filterClones(namespace, name string, clones []V
 	return ret
 }
 
-func (uc *VirtualMachineUseCase) filterSnapshots(namespace, name string, snapshots []VirtualMachineSnapshot) []VirtualMachineSnapshot {
+func (uc *UseCase) filterSnapshots(namespace, name string, snapshots []VirtualMachineSnapshot) []VirtualMachineSnapshot {
 	ret := []VirtualMachineSnapshot{}
 
 	for i := range snapshots {
@@ -450,7 +450,7 @@ func (uc *VirtualMachineUseCase) filterSnapshots(namespace, name string, snapsho
 	return ret
 }
 
-func (uc *VirtualMachineUseCase) filterRestores(namespace, name string, restores []VirtualMachineRestore) []VirtualMachineRestore {
+func (uc *UseCase) filterRestores(namespace, name string, restores []VirtualMachineRestore) []VirtualMachineRestore {
 	ret := []VirtualMachineRestore{}
 
 	for i := range restores {
@@ -462,7 +462,7 @@ func (uc *VirtualMachineUseCase) filterRestores(namespace, name string, restores
 	return ret
 }
 
-func (uc *VirtualMachineUseCase) filterServices(namespace, name string, services []service.Service) []service.Service {
+func (uc *UseCase) filterServices(namespace, name string, services []service.Service) []service.Service {
 	ret := []service.Service{}
 
 	for i := range services {
@@ -474,7 +474,7 @@ func (uc *VirtualMachineUseCase) filterServices(namespace, name string, services
 	return ret
 }
 
-func (uc *VirtualMachineUseCase) combineVirtualMachines(virtualMachines []VirtualMachine, instances []vmi.VirtualMachineInstance, machines []machine.Machine, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, services []service.Service) []VirtualMachineData {
+func (uc *UseCase) combineVirtualMachines(virtualMachines []VirtualMachine, instances []vmi.VirtualMachineInstance, machines []machine.Machine, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, services []service.Service) []VirtualMachineData {
 	machineMap := map[string]*machine.Machine{}
 
 	for i := range machines {
@@ -516,7 +516,7 @@ func (uc *VirtualMachineUseCase) combineVirtualMachines(virtualMachines []Virtua
 	return ret
 }
 
-func (uc *VirtualMachineUseCase) combineVirtualMachine(namespace, name string, virtualMachine *VirtualMachine, instance *vmi.VirtualMachineInstance, machines []machine.Machine, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, services []service.Service) *VirtualMachineData {
+func (uc *UseCase) combineVirtualMachine(namespace, name string, virtualMachine *VirtualMachine, instance *vmi.VirtualMachineInstance, machines []machine.Machine, clones []VirtualMachineClone, snapshots []VirtualMachineSnapshot, restores []VirtualMachineRestore, services []service.Service) *VirtualMachineData {
 	machineMap := map[string]*machine.Machine{}
 
 	for i := range machines {
@@ -542,7 +542,7 @@ func (uc *VirtualMachineUseCase) combineVirtualMachine(namespace, name string, v
 	}
 }
 
-func (uc *VirtualMachineUseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript string) *VirtualMachine {
+func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript string) *VirtualMachine {
 	var (
 		runStrategy   = corev1.RunStrategyHalted
 		enabled       = true
@@ -638,7 +638,7 @@ func (uc *VirtualMachineUseCase) buildVirtualMachine(namespace, name, instanceTy
 	return virtualMachine
 }
 
-func (uc *VirtualMachineUseCase) isKeyNotFoundError(err error) bool {
+func (uc *UseCase) isKeyNotFoundError(err error) bool {
 	statusErr, _ := err.(*k8serrors.StatusError)
 	return statusErr != nil && statusErr.Status().Code == http.StatusNotFound
 }

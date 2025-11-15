@@ -16,12 +16,12 @@ import (
 type MachineService struct {
 	pbconnect.UnimplementedMachineServiceHandler
 
-	machine *machine.MachineUseCase
-	purge   *purge.PurgeUseCase
-	tag     *tag.TagUseCase
+	machine *machine.UseCase
+	purge   *purge.UseCase
+	tag     *tag.UseCase
 }
 
-func NewMachineService(machine *machine.MachineUseCase, purge *purge.PurgeUseCase, tag *tag.TagUseCase) *MachineService {
+func NewMachineService(machine *machine.UseCase, purge *purge.UseCase, tag *tag.UseCase) *MachineService {
 	return &MachineService{
 		machine: machine,
 		purge:   purge,

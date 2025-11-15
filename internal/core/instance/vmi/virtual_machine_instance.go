@@ -18,29 +18,29 @@ type VirtualMachineInstanceRepo interface {
 	Resume(ctx context.Context, scope, namespace, name string) error
 }
 
-type VirtualMachineInstanceUseCase struct {
+type UseCase struct {
 	virtualMachineInstance          VirtualMachineInstanceRepo
 	virtualMachineInstanceType      VirtualMachineInstanceTypeRepo
 	virtualMachineInstanceMigration VirtualMachineInstanceMigrationRepo
 }
 
-func NewVirtualMachineInstanceUseCase(virtualMachineInstance VirtualMachineInstanceRepo, virtualMachineInstanceType VirtualMachineInstanceTypeRepo, virtualMachineInstanceMigration VirtualMachineInstanceMigrationRepo) *VirtualMachineInstanceUseCase {
-	return &VirtualMachineInstanceUseCase{
+func NewUseCase(virtualMachineInstance VirtualMachineInstanceRepo, virtualMachineInstanceType VirtualMachineInstanceTypeRepo, virtualMachineInstanceMigration VirtualMachineInstanceMigrationRepo) *UseCase {
+	return &UseCase{
 		virtualMachineInstance:          virtualMachineInstance,
 		virtualMachineInstanceType:      virtualMachineInstanceType,
 		virtualMachineInstanceMigration: virtualMachineInstanceMigration,
 	}
 }
 
-func (uc *VirtualMachineInstanceUseCase) PauseInstance(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) PauseInstance(ctx context.Context, scope, namespace, name string) error {
 	return uc.virtualMachineInstance.Pause(ctx, scope, namespace, name)
 }
 
-func (uc *VirtualMachineInstanceUseCase) ResumeInstance(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) ResumeInstance(ctx context.Context, scope, namespace, name string) error {
 	return uc.virtualMachineInstance.Resume(ctx, scope, namespace, name)
 }
 
-func (uc *VirtualMachineInstanceUseCase) isKeyNotFoundError(err error) bool {
+func (uc *UseCase) isKeyNotFoundError(err error) bool {
 	statusErr, _ := err.(*k8serrors.StatusError)
 	return statusErr != nil && statusErr.Status().Code == http.StatusNotFound
 }

@@ -15,13 +15,13 @@ import (
 type BootstrapService struct {
 	pbconnect.UnimplementedBootstrapServiceHandler
 
-	bootstrap *bootstrap.BootstrapUseCase
+	bootstrap *bootstrap.UseCase
 
 	statusChan chan *pb.WatchStatusResponse
 	clients    sync.Map
 }
 
-func NewBootstrapService(bootstrap *bootstrap.BootstrapUseCase) *BootstrapService {
+func NewBootstrapService(bootstrap *bootstrap.UseCase) *BootstrapService {
 	size := 100
 	svc := &BootstrapService{
 		bootstrap:  bootstrap,

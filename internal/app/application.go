@@ -27,16 +27,16 @@ import (
 type ApplicationService struct {
 	pbconnect.UnimplementedApplicationServiceHandler
 
-	cluster    *cluster.ClusterUseCase
-	chart      *chart.ChartUseCase
-	config     *config.ConfigUseCase
-	persistent *persistent.PersistentUseCase
-	release    *release.ReleaseUseCase
-	service    *service.ServiceUseCase
-	workload   *workload.WorkloadUseCase
+	cluster    *cluster.UseCase
+	chart      *chart.UseCase
+	config     *config.UseCase
+	persistent *persistent.UseCase
+	release    *release.UseCase
+	service    *service.UseCase
+	workload   *workload.UseCase
 }
 
-func NewApplicationService(cluster *cluster.ClusterUseCase, chart *chart.ChartUseCase, config *config.ConfigUseCase, persistent *persistent.PersistentUseCase, release *release.ReleaseUseCase, service *service.ServiceUseCase, workload *workload.WorkloadUseCase) *ApplicationService {
+func NewApplicationService(cluster *cluster.UseCase, chart *chart.UseCase, config *config.UseCase, persistent *persistent.UseCase, release *release.UseCase, service *service.UseCase, workload *workload.UseCase) *ApplicationService {
 	return &ApplicationService{
 		cluster:    cluster,
 		chart:      chart,

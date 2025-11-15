@@ -19,13 +19,13 @@ type SubvolumeSnapshotRepo interface {
 	Delete(ctx context.Context, scope string, volume, subvolume, group, snapshot string) error
 }
 
-func (uc *FileUseCase) CreateSubvolumeSnapshot(ctx context.Context, scope, volume, subvolume, group, snapshot string) (*SubvolumeSnapshot, error) {
+func (uc *UseCase) CreateSubvolumeSnapshot(ctx context.Context, scope, volume, subvolume, group, snapshot string) (*SubvolumeSnapshot, error) {
 	if err := uc.subvolumeSnapshot.Create(ctx, scope, volume, subvolume, group, snapshot); err != nil {
 		return nil, err
 	}
 	return uc.subvolumeSnapshot.Get(ctx, scope, volume, subvolume, group, snapshot)
 }
 
-func (uc *FileUseCase) DeleteSubvolumeSnapshot(ctx context.Context, scope, volume, subvolume, group, snapshot string) error {
+func (uc *UseCase) DeleteSubvolumeSnapshot(ctx context.Context, scope, volume, subvolume, group, snapshot string) error {
 	return uc.subvolumeSnapshot.Delete(ctx, scope, volume, subvolume, group, snapshot)
 }

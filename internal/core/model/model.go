@@ -37,15 +37,15 @@ type ModelResource struct {
 	VGPUMemory uint32
 }
 
-type ModelUseCase struct {
+type UseCase struct {
 	chart                 chart.ChartRepo
 	deployment            workload.DeploymentRepo
 	release               release.ReleaseRepo
 	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
 }
 
-func NewModelUseCase(chart chart.ChartRepo, deployment workload.DeploymentRepo, release release.ReleaseRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *ModelUseCase {
-	return &ModelUseCase{
+func NewUseCase(chart chart.ChartRepo, deployment workload.DeploymentRepo, release release.ReleaseRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *UseCase {
+	return &UseCase{
 		chart:                 chart,
 		deployment:            deployment,
 		release:               release,
@@ -53,13 +53,13 @@ func NewModelUseCase(chart chart.ChartRepo, deployment workload.DeploymentRepo, 
 	}
 }
 
-func (uc *ModelUseCase) ListModels(ctx context.Context, scope, namespace string) ([]Model, error) {
+func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) ([]Model, error) {
 	selector := release.TypeLabel + "=" + "model"
 
 	return uc.release.List(ctx, scope, namespace, selector)
 }
 
-func (uc *ModelUseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string) (*Model, error) {
+func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string) (*Model, error) {
 	// find chart ref
 	version, err := uc.chart.GetStableVersion(ctx, chart.RepoURL, "llm-d-modelservice", true)
 	if err != nil {
@@ -89,7 +89,7 @@ func (uc *ModelUseCase) CreateModel(ctx context.Context, scope, namespace, name,
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, "", valuesMap)
 }
 
-func (uc *ModelUseCase) UpdateModel(ctx context.Context, scope, namespace, name string, requests, limits *ModelResource) (*Model, error) {
+func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, requests, limits *ModelResource) (*Model, error) {
 	rel, err := uc.release.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return nil, err
@@ -118,12 +118,12 @@ func (uc *ModelUseCase) UpdateModel(ctx context.Context, scope, namespace, name 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, "", valuesMap, true)
 }
 
-func (uc *ModelUseCase) DeleteModel(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) DeleteModel(ctx context.Context, scope, namespace, name string) error {
 	_, err := uc.release.Uninstall(ctx, scope, namespace, name, false)
 	return err
 }
 
-func (uc *ModelUseCase) ListModelArtifacts(ctx context.Context, scope, namespace string) ([]ModelArtifact, error) {
+func (uc *UseCase) ListModelArtifacts(ctx context.Context, scope, namespace string) ([]ModelArtifact, error) {
 	selector := release.TypeLabel + "=" + "model-artifact"
 
 	pvcs, err := uc.persistentVolumeClaim.List(ctx, scope, namespace, selector)
@@ -140,7 +140,7 @@ func (uc *ModelUseCase) ListModelArtifacts(ctx context.Context, scope, namespace
 	return artifacts, nil
 }
 
-func (uc *ModelUseCase) CreateModelArtifact(ctx context.Context, scope, namespace, name, modelName string, size int64) (*ModelArtifact, error) {
+func (uc *UseCase) CreateModelArtifact(ctx context.Context, scope, namespace, name, modelName string, size int64) (*ModelArtifact, error) {
 	// find chart ref
 	version, err := uc.chart.GetStableVersion(ctx, chart.RepoURL, "model-artifact", true)
 	if err != nil {
@@ -186,11 +186,11 @@ func (uc *ModelUseCase) CreateModelArtifact(ctx context.Context, scope, namespac
 	return uc.toModelArtifact(pvc), nil
 }
 
-func (uc *ModelUseCase) DeleteModelArtifact(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) DeleteModelArtifact(ctx context.Context, scope, namespace, name string) error {
 	return uc.persistentVolumeClaim.Delete(ctx, scope, namespace, name)
 }
 
-func (uc *ModelUseCase) toModelArtifact(pvc *persistent.PersistentVolumeClaim) *ModelArtifact {
+func (uc *UseCase) toModelArtifact(pvc *persistent.PersistentVolumeClaim) *ModelArtifact {
 	size := int64(0)
 	capacity, ok := pvc.Status.Capacity[v1.ResourceStorage]
 	if ok {

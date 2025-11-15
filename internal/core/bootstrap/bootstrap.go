@@ -12,19 +12,19 @@ type Status struct {
 	NewURL  string
 }
 
-type BootstrapUseCase struct {
+type UseCase struct {
 	conf *config.Config
 
 	m sync.Map
 }
 
-func NewBootstrapUseCase(conf *config.Config) *BootstrapUseCase {
-	return &BootstrapUseCase{
+func NewUseCase(conf *config.Config) *UseCase {
+	return &UseCase{
 		conf: conf,
 	}
 }
 
-func (uc *BootstrapUseCase) LoadStatus() *Status {
+func (uc *UseCase) LoadStatus() *Status {
 	v, ok := uc.m.Load("default")
 	if ok {
 		return v.(*Status)
@@ -32,7 +32,7 @@ func (uc *BootstrapUseCase) LoadStatus() *Status {
 	return &Status{}
 }
 
-func (uc *BootstrapUseCase) StoreStatus(phase, message, newURL string) {
+func (uc *UseCase) StoreStatus(phase, message, newURL string) {
 	uc.m.Store("default", &Status{
 		Phase:   phase,
 		Message: message,

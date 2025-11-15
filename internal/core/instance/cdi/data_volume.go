@@ -50,21 +50,21 @@ type DataVolumeRepo interface {
 	Delete(ctx context.Context, scope, namespace, name string) error
 }
 
-type DataVolumeUseCase struct {
+type UseCase struct {
 	dataVolume DataVolumeRepo
 
 	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
 	storageClass          persistent.StorageClassRepo
 }
 
-func NewDataVolumeUseCase(dataVolume DataVolumeRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *DataVolumeUseCase {
-	return &DataVolumeUseCase{
+func NewUseCase(dataVolume DataVolumeRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *UseCase {
+	return &UseCase{
 		dataVolume:            dataVolume,
 		persistentVolumeClaim: persistentVolumeClaim,
 	}
 }
 
-func (uc *DataVolumeUseCase) ListDataVolumes(ctx context.Context, scope, namespace string, bootImage bool) ([]DataVolumePersistent, error) {
+func (uc *UseCase) ListDataVolumes(ctx context.Context, scope, namespace string, bootImage bool) ([]DataVolumePersistent, error) {
 	var (
 		dataVolumes            []DataVolume
 		persistentVolumeClaims []persistent.PersistentVolumeClaim
@@ -145,7 +145,7 @@ func (uc *DataVolumeUseCase) ListDataVolumes(ctx context.Context, scope, namespa
 	return ret, nil
 }
 
-func (uc *DataVolumeUseCase) GetDataVolume(ctx context.Context, scope, namespace, name string) (*DataVolumePersistent, error) {
+func (uc *UseCase) GetDataVolume(ctx context.Context, scope, namespace, name string) (*DataVolumePersistent, error) {
 	var (
 		dataVolume            *DataVolume
 		persistentVolumeClaim *persistent.PersistentVolumeClaim
@@ -191,7 +191,7 @@ func (uc *DataVolumeUseCase) GetDataVolume(ctx context.Context, scope, namespace
 	}, nil
 }
 
-func (uc *DataVolumeUseCase) CreateDataVolume(ctx context.Context, scope, namespace, name string, srcType DataVolumeSourceType, srcData string, size int64, bootImage bool) (*DataVolumePersistent, error) {
+func (uc *UseCase) CreateDataVolume(ctx context.Context, scope, namespace, name string, srcType DataVolumeSourceType, srcData string, size int64, bootImage bool) (*DataVolumePersistent, error) {
 	dataVolume, err := uc.dataVolume.Create(ctx, scope, namespace, uc.buildDataVolume(namespace, name, srcType, srcData, size, bootImage))
 	if err != nil {
 		return nil, err
@@ -202,11 +202,11 @@ func (uc *DataVolumeUseCase) CreateDataVolume(ctx context.Context, scope, namesp
 	}, nil
 }
 
-func (uc *DataVolumeUseCase) DeleteDataVolume(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) DeleteDataVolume(ctx context.Context, scope, namespace, name string) error {
 	return uc.dataVolume.Delete(ctx, scope, namespace, name)
 }
 
-func (uc *DataVolumeUseCase) ExtendDataVolume(ctx context.Context, scope, namespace, name string, newSize int64) error {
+func (uc *UseCase) ExtendDataVolume(ctx context.Context, scope, namespace, name string, newSize int64) error {
 	data, err := json.Marshal([]map[string]any{
 		{
 			"op":    "replace",
@@ -222,7 +222,7 @@ func (uc *DataVolumeUseCase) ExtendDataVolume(ctx context.Context, scope, namesp
 	return err
 }
 
-func (uc *DataVolumeUseCase) buildDataVolume(namespace, name string, srcType DataVolumeSourceType, srcData string, size int64, bootImage bool) *DataVolume {
+func (uc *UseCase) buildDataVolume(namespace, name string, srcType DataVolumeSourceType, srcData string, size int64, bootImage bool) *DataVolume {
 	var (
 		source  *cdiv1beta1.DataVolumeSource
 		storage *cdiv1beta1.StorageSpec

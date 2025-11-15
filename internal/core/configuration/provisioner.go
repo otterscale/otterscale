@@ -10,7 +10,7 @@ type ProvisionerRepo interface {
 	Update(ctx context.Context, name, value string) error
 }
 
-func (uc *ConfigurationUseCase) UpdateNTPServer(ctx context.Context, addresses []string) ([]string, error) {
+func (uc *UseCase) UpdateNTPServer(ctx context.Context, addresses []string) ([]string, error) {
 	if err := uc.provisioner.Update(ctx, "ntp_servers", strings.Join(addresses, " ")); err != nil {
 		return nil, err
 	}
@@ -18,7 +18,7 @@ func (uc *ConfigurationUseCase) UpdateNTPServer(ctx context.Context, addresses [
 	return uc.listNTPServers(ctx)
 }
 
-func (uc *ConfigurationUseCase) SetDefaultBootImage(ctx context.Context, distroSeries string) error {
+func (uc *UseCase) SetDefaultBootImage(ctx context.Context, distroSeries string) error {
 	if err := uc.provisioner.Update(ctx, "default_osystem", "ubuntu"); err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func (uc *ConfigurationUseCase) SetDefaultBootImage(ctx context.Context, distroS
 	return uc.provisioner.Update(ctx, "commissioning_distro_series", distroSeries)
 }
 
-func (uc *ConfigurationUseCase) listNTPServers(ctx context.Context) ([]string, error) {
+func (uc *UseCase) listNTPServers(ctx context.Context) ([]string, error) {
 	ntpServers, err := uc.provisioner.Get(ctx, "ntp_servers")
 	if err != nil {
 		return nil, err

@@ -19,11 +19,11 @@ import (
 type ConfigurationService struct {
 	pbconnect.UnimplementedConfigurationServiceHandler
 
-	configuration *configuration.ConfigurationUseCase
-	bist          *bist.BISTUseCase
+	configuration *configuration.UseCase
+	bist          *bist.UseCase
 }
 
-func NewConfigurationService(configuration *configuration.ConfigurationUseCase, bist *bist.BISTUseCase) *ConfigurationService {
+func NewConfigurationService(configuration *configuration.UseCase, bist *bist.UseCase) *ConfigurationService {
 	return &ConfigurationService{
 		configuration: configuration,
 		bist:          bist,

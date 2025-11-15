@@ -26,7 +26,7 @@ type SubnetRepo interface {
 	GetStatistics(ctx context.Context, id int) (*Statistics, error)
 }
 
-func (uc *NetworkUseCase) UpdateSubnet(ctx context.Context, id int, name, cidr, gatewayIP string, dnsServers []string, description string, allowDNSResolution bool) (*NetworkSubnet, error) {
+func (uc *UseCase) UpdateSubnet(ctx context.Context, id int, name, cidr, gatewayIP string, dnsServers []string, description string, allowDNSResolution bool) (*NetworkSubnet, error) {
 	subnet, err := uc.subnet.Update(ctx, id, name, cidr, gatewayIP, dnsServers, description, allowDNSResolution)
 	if err != nil {
 		return nil, err

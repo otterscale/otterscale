@@ -11,10 +11,10 @@ import (
 type ScopeService struct {
 	pbconnect.UnimplementedScopeServiceHandler
 
-	scope *scope.ScopeUseCase
+	scope *scope.UseCase
 }
 
-func NewScopeService(scope *scope.ScopeUseCase) *ScopeService {
+func NewScopeService(scope *scope.UseCase) *ScopeService {
 	return &ScopeService{
 		scope: scope,
 	}

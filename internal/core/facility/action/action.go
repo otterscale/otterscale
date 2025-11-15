@@ -11,22 +11,23 @@ type Action struct {
 	Spec *action.ActionSpec
 }
 
+//nolint:revive // allows this exported interface name for specific domain clarity.
 type ActionRepo interface {
 	List(ctx context.Context, scope, appName string) ([]Action, error)
 	Run(ctx context.Context, scope, appName, actionName string, params map[string]any) (map[string]any, error)
 	Execute(ctx context.Context, scope, appName, command string) (map[string]any, error)
 }
 
-type ActionUseCase struct {
+type UseCase struct {
 	action ActionRepo
 }
 
-func NewActionUseCase(action ActionRepo) *ActionUseCase {
-	return &ActionUseCase{
+func NewUseCase(action ActionRepo) *UseCase {
+	return &UseCase{
 		action: action,
 	}
 }
 
-func (uc *ActionUseCase) ListActions(ctx context.Context, scope, appName string) ([]Action, error) {
+func (uc *UseCase) ListActions(ctx context.Context, scope, appName string) ([]Action, error) {
 	return uc.action.List(ctx, scope, appName)
 }

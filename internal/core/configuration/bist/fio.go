@@ -71,7 +71,7 @@ type FIOThroughput struct {
 	} `json:"lat_ns"`
 }
 
-func (uc *BISTUseCase) CreateFIOResult(ctx context.Context, name, createdBy string, target FIOTarget, input *FIOInput) (*Result, error) {
+func (uc *UseCase) CreateFIOResult(ctx context.Context, name, createdBy string, target FIOTarget, input *FIOInput) (*Result, error) {
 	// namespace
 	if err := uc.ensureNamespace(ctx, scope.ReservedName, bistNamespace); err != nil {
 		return nil, err
@@ -138,7 +138,7 @@ func (uc *BISTUseCase) CreateFIOResult(ctx context.Context, name, createdBy stri
 	return uc.toResult(ctx, job)
 }
 
-func (uc *BISTUseCase) blockJobSpec(configMapName string, input *FIOInput) batchv1.JobSpec {
+func (uc *UseCase) blockJobSpec(configMapName string, input *FIOInput) batchv1.JobSpec {
 	bistJobBackoffLimit := int32(2)
 	privileged := true
 	env := []corev1.EnvVar{
@@ -225,7 +225,7 @@ func (uc *BISTUseCase) blockJobSpec(configMapName string, input *FIOInput) batch
 	}
 }
 
-func (uc *BISTUseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) batchv1.JobSpec {
+func (uc *UseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) batchv1.JobSpec {
 	bistJobBackoffLimit := int32(2)
 	privileged := true
 	env := []corev1.EnvVar{
@@ -268,7 +268,7 @@ func (uc *BISTUseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) batchv1
 	}
 }
 
-func (uc *BISTUseCase) ensureNamespace(ctx context.Context, scope, namespace string) error {
+func (uc *UseCase) ensureNamespace(ctx context.Context, scope, namespace string) error {
 	_, err := uc.namespace.Get(ctx, scope, namespace)
 	if apierrors.IsNotFound(err) {
 		namespace := &cluster.Namespace{
@@ -284,7 +284,7 @@ func (uc *BISTUseCase) ensureNamespace(ctx context.Context, scope, namespace str
 	return err
 }
 
-func (uc *BISTUseCase) ensureConfigMap(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) ensureConfigMap(ctx context.Context, scope, namespace, name string) error {
 	_, err := uc.configMap.Get(ctx, scope, namespace, name)
 	if apierrors.IsNotFound(err) {
 		host, id, key, err := uc.node.Config(scope)
@@ -309,7 +309,7 @@ func (uc *BISTUseCase) ensureConfigMap(ctx context.Context, scope, namespace, na
 	return err
 }
 
-func (uc *BISTUseCase) ensurePool(ctx context.Context, scope, pool string) error {
+func (uc *UseCase) ensurePool(ctx context.Context, scope, pool string) error {
 	pools, err := uc.pool.List(ctx, scope, "")
 	if err != nil {
 		return err
@@ -328,7 +328,7 @@ func (uc *BISTUseCase) ensurePool(ctx context.Context, scope, pool string) error
 	return uc.pool.Enable(ctx, scope, pool, "rbd")
 }
 
-func (uc *BISTUseCase) ensureImage(ctx context.Context, scope, pool, image string) error {
+func (uc *UseCase) ensureImage(ctx context.Context, scope, pool, image string) error {
 	images, err := uc.image.List(ctx, scope, pool)
 	if err != nil {
 		return err
@@ -350,7 +350,7 @@ func (uc *BISTUseCase) ensureImage(ctx context.Context, scope, pool, image strin
 	return uc.image.Create(ctx, scope, pool, image, order, stripeUnitBytes, stripeCount, size, features)
 }
 
-func (uc *BISTUseCase) unmarshalFIOOutput(ctx context.Context, job *workload.Job, val **FIOOutput) error {
+func (uc *UseCase) unmarshalFIOOutput(ctx context.Context, job *workload.Job, val **FIOOutput) error {
 	logs, err := uc.fetchLogs(ctx, job)
 	if err != nil {
 		return err
@@ -369,7 +369,7 @@ func (uc *BISTUseCase) unmarshalFIOOutput(ctx context.Context, job *workload.Job
 	return nil
 }
 
-func (uc *BISTUseCase) toFIO(ctx context.Context, job *workload.Job) (*FIO, error) {
+func (uc *UseCase) toFIO(ctx context.Context, job *workload.Job) (*FIO, error) {
 	fio := &FIO{}
 
 	// target & input

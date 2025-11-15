@@ -37,22 +37,22 @@ type NodeRepo interface {
 	Config(scope string) (host string, id string, key string, err error)
 }
 
-type StorageUseCase struct {
+type UseCase struct {
 	node NodeRepo
 	pool PoolRepo
 
 	machine machine.MachineRepo
 }
 
-func NewStorageUseCase(node NodeRepo, pool PoolRepo, machine machine.MachineRepo) *StorageUseCase {
-	return &StorageUseCase{
+func NewUseCase(node NodeRepo, pool PoolRepo, machine machine.MachineRepo) *UseCase {
+	return &UseCase{
 		node:    node,
 		pool:    pool,
 		machine: machine,
 	}
 }
 
-func (uc *StorageUseCase) ListMonitors(ctx context.Context, scope string) ([]Monitor, error) {
+func (uc *UseCase) ListMonitors(ctx context.Context, scope string) ([]Monitor, error) {
 	monitors, err := uc.node.ListMonitors(ctx, scope)
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (uc *StorageUseCase) ListMonitors(ctx context.Context, scope string) ([]Mon
 	return monitors, nil
 }
 
-func (uc *StorageUseCase) ListObjectStorageDaemons(ctx context.Context, scope string) ([]ObjectStorageDaemon, error) {
+func (uc *UseCase) ListObjectStorageDaemons(ctx context.Context, scope string) ([]ObjectStorageDaemon, error) {
 	osds, err := uc.node.ListObjectStorageDaemons(ctx, scope)
 	if err != nil {
 		return nil, err
@@ -84,11 +84,11 @@ func (uc *StorageUseCase) ListObjectStorageDaemons(ctx context.Context, scope st
 	return osds, nil
 }
 
-func (uc *StorageUseCase) DoSMART(ctx context.Context, scope, osd string) (map[string][]string, error) {
+func (uc *UseCase) DoSMART(ctx context.Context, scope, osd string) (map[string][]string, error) {
 	return uc.node.DoSMART(ctx, scope, osd)
 }
 
-func (uc *StorageUseCase) extractJujuIDFromMonitor(m *Monitor) (string, error) {
+func (uc *UseCase) extractJujuIDFromMonitor(m *Monitor) (string, error) {
 	token := strings.Split(m.Name, "-")
 	if len(token) < 3 {
 		return "", fmt.Errorf("invalid monitor name format for monitor %q", m.Name)
@@ -97,7 +97,7 @@ func (uc *StorageUseCase) extractJujuIDFromMonitor(m *Monitor) (string, error) {
 	return token[2], nil
 }
 
-func (uc *StorageUseCase) setObjectStorageDaemonMachine(osds []ObjectStorageDaemon, machines []machine.Machine) {
+func (uc *UseCase) setObjectStorageDaemonMachine(osds []ObjectStorageDaemon, machines []machine.Machine) {
 	for i := range osds {
 		for j := range machines {
 			if osds[i].Hostname != machines[j].Hostname {
@@ -110,7 +110,7 @@ func (uc *StorageUseCase) setObjectStorageDaemonMachine(osds []ObjectStorageDaem
 	}
 }
 
-func (uc *StorageUseCase) setMonitorMachine(scope string, monitors []Monitor, machines []machine.Machine) {
+func (uc *UseCase) setMonitorMachine(scope string, monitors []Monitor, machines []machine.Machine) {
 	for i := range monitors {
 		monitorJujuID, err := uc.extractJujuIDFromMonitor(&monitors[i])
 		if err != nil {

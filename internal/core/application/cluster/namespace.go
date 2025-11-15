@@ -17,6 +17,6 @@ type NamespaceRepo interface {
 	Delete(ctx context.Context, scope, name string) error
 }
 
-func (uc *ClusterUseCase) ListNamespaces(ctx context.Context, scope string) ([]Namespace, error) {
+func (uc *UseCase) ListNamespaces(ctx context.Context, scope string) ([]Namespace, error) {
 	return uc.namespace.List(ctx, scope, "")
 }

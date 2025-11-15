@@ -40,6 +40,7 @@ type MachineData struct {
 	AgentStatus        string
 }
 
+//nolint:revive // allows this exported interface name for specific domain clarity.
 type MachineRepo interface {
 	List(ctx context.Context) ([]Machine, error)
 	Get(ctx context.Context, id string) (*Machine, error)
@@ -50,6 +51,7 @@ type MachineRepo interface {
 	ExtractJujuID(m *Machine) (string, error)
 }
 
+//nolint:revive // allows this exported interface name for specific domain clarity.
 type MachineManagerRepo interface {
 	AddMachines(ctx context.Context, scope, uuid, fqdn, baseOS, baseChannel string) error
 	DestroyMachines(ctx context.Context, scope string, force, keep, dryRun bool, maxWait *time.Duration, machines ...string) error
@@ -63,7 +65,7 @@ type OrchestratorRepo interface {
 	AgentStatus(ctx context.Context, scope string, jujuID string) (string, error)
 }
 
-type MachineUseCase struct {
+type UseCase struct {
 	event          EventRepo
 	machine        MachineRepo
 	machineManager MachineManagerRepo
@@ -74,8 +76,8 @@ type MachineUseCase struct {
 	scope       scope.ScopeRepo
 }
 
-func NewMachineUseCase(event EventRepo, machine MachineRepo, machineManager MachineManagerRepo, nodeDevice NodeDeviceRepo, orchestrator OrchestratorRepo, provisioner configuration.ProvisionerRepo, scope scope.ScopeRepo) *MachineUseCase {
-	return &MachineUseCase{
+func NewUseCase(event EventRepo, machine MachineRepo, machineManager MachineManagerRepo, nodeDevice NodeDeviceRepo, orchestrator OrchestratorRepo, provisioner configuration.ProvisionerRepo, scope scope.ScopeRepo) *UseCase {
+	return &UseCase{
 		event:          event,
 		machine:        machine,
 		machineManager: machineManager,
@@ -86,7 +88,7 @@ func NewMachineUseCase(event EventRepo, machine MachineRepo, machineManager Mach
 	}
 }
 
-func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]MachineData, error) {
+func (uc *UseCase) ListMachines(ctx context.Context, scope string) ([]MachineData, error) {
 	machines, err := uc.machine.List(ctx)
 	if err != nil {
 		return nil, err
@@ -130,7 +132,7 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scope string) ([]Mac
 	}), nil
 }
 
-func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*MachineData, error) {
+func (uc *UseCase) GetMachine(ctx context.Context, id string) (*MachineData, error) {
 	machine, err := uc.machine.Get(ctx, id)
 	if err != nil {
 		return nil, err
@@ -164,7 +166,7 @@ func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*MachineDa
 	}, nil
 }
 
-func (uc *MachineUseCase) CreateMachine(ctx context.Context, machineID, scopeName string) (*MachineData, error) {
+func (uc *UseCase) CreateMachine(ctx context.Context, machineID, scopeName string) (*MachineData, error) {
 	// validate scope exists
 	scope, err := uc.scope.Get(ctx, scopeName)
 	if err != nil {
@@ -196,17 +198,17 @@ func (uc *MachineUseCase) CreateMachine(ctx context.Context, machineID, scopeNam
 }
 
 // Note: Delete from MAAS only.
-func (uc *MachineUseCase) DeleteMachine(ctx context.Context, id string, force bool) error {
+func (uc *UseCase) DeleteMachine(ctx context.Context, id string, force bool) error {
 	_, err := uc.machine.Release(ctx, id, force)
 	return err
 }
 
-func (uc *MachineUseCase) CommissionMachine(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool) error {
+func (uc *UseCase) CommissionMachine(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool) error {
 	_, err := uc.machine.Commission(ctx, id, enableSSH, skipBMCConfig, skipNetworking, skipStorage)
 	return err
 }
 
-func (uc *MachineUseCase) PowerOffMachine(ctx context.Context, id, comment string) (*MachineData, error) {
+func (uc *UseCase) PowerOffMachine(ctx context.Context, id, comment string) (*MachineData, error) {
 	machine, err := uc.machine.PowerOff(ctx, id, comment)
 	if err != nil {
 		return nil, err
@@ -217,7 +219,7 @@ func (uc *MachineUseCase) PowerOffMachine(ctx context.Context, id, comment strin
 	}, nil
 }
 
-func (uc *MachineUseCase) agentStatus(ctx context.Context, machine *Machine) (string, error) {
+func (uc *UseCase) agentStatus(ctx context.Context, machine *Machine) (string, error) {
 	scope, err := uc.machine.ExtractScope(machine)
 	if err != nil {
 		return "", nil // ignore
@@ -231,7 +233,7 @@ func (uc *MachineUseCase) agentStatus(ctx context.Context, machine *Machine) (st
 	return uc.orchestrator.AgentStatus(ctx, scope, jujuID)
 }
 
-func (uc *MachineUseCase) setGPUName(gpus []GPU) error {
+func (uc *UseCase) setGPUName(gpus []GPU) error {
 	pci, err := pcidb.New()
 	if err != nil {
 		return err

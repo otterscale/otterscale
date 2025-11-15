@@ -14,10 +14,10 @@ import (
 type ModelService struct {
 	pbconnect.UnimplementedModelServiceHandler
 
-	model *model.ModelUseCase
+	model *model.UseCase
 }
 
-func NewModelService(model *model.ModelUseCase) *ModelService {
+func NewModelService(model *model.UseCase) *ModelService {
 	return &ModelService{
 		model: model,
 	}

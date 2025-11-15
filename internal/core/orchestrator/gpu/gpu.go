@@ -54,21 +54,21 @@ type PodDevice struct {
 	UsedMemoryBytes int64
 }
 
-type GPUUseCase struct {
+type UseCase struct {
 	machine machine.MachineRepo
 	node    cluster.NodeRepo
 	pod     workload.PodRepo
 }
 
-func NewGPUUseCase(machine machine.MachineRepo, node cluster.NodeRepo, pod workload.PodRepo) *GPUUseCase {
-	return &GPUUseCase{
+func NewUseCase(machine machine.MachineRepo, node cluster.NodeRepo, pod workload.PodRepo) *UseCase {
+	return &UseCase{
 		machine: machine,
 		node:    node,
 		pod:     pod,
 	}
 }
 
-func (uc *GPUUseCase) ListGPURelationsByMachine(ctx context.Context, scope, machineID string) (*Relations, error) {
+func (uc *UseCase) ListGPURelationsByMachine(ctx context.Context, scope, machineID string) (*Relations, error) {
 	machine, err := uc.machine.Get(ctx, machineID)
 	if err != nil {
 		return nil, err
@@ -79,13 +79,13 @@ func (uc *GPUUseCase) ListGPURelationsByMachine(ctx context.Context, scope, mach
 	return uc.listRelations(ctx, scope, "", labelSelector)
 }
 
-func (uc *GPUUseCase) ListGPURelationsByModel(ctx context.Context, scope, namespace, modelName string) (*Relations, error) {
+func (uc *UseCase) ListGPURelationsByModel(ctx context.Context, scope, namespace, modelName string) (*Relations, error) {
 	labelSelector := model.ModelNameAnnotation + "=" + modelName
 
 	return uc.listRelations(ctx, scope, namespace, labelSelector)
 }
 
-func (uc *GPUUseCase) listRelations(ctx context.Context, scope, namespace, selector string) (*Relations, error) {
+func (uc *UseCase) listRelations(ctx context.Context, scope, namespace, selector string) (*Relations, error) {
 	pods, err := uc.pod.List(ctx, scope, namespace, selector)
 	if err != nil {
 		return nil, err
@@ -104,7 +104,7 @@ func (uc *GPUUseCase) listRelations(ctx context.Context, scope, namespace, selec
 	return uc.buildRelations(pods, nodes, machines)
 }
 
-func (uc *GPUUseCase) buildRelations(pods []workload.Pod, nodes []cluster.Node, machines []machine.Machine) (*Relations, error) {
+func (uc *UseCase) buildRelations(pods []workload.Pod, nodes []cluster.Node, machines []machine.Machine) (*Relations, error) {
 	filteredMachines := uc.filterMachines(pods, machines)
 	filteredNodes := uc.filterNodes(pods, nodes)
 
@@ -125,7 +125,7 @@ func (uc *GPUUseCase) buildRelations(pods []workload.Pod, nodes []cluster.Node, 
 	}, nil
 }
 
-func (uc *GPUUseCase) filterMachines(pods []workload.Pod, machines []machine.Machine) []machine.Machine {
+func (uc *UseCase) filterMachines(pods []workload.Pod, machines []machine.Machine) []machine.Machine {
 	nodeNames := []string{}
 
 	for i := range pods {
@@ -147,7 +147,7 @@ func (uc *GPUUseCase) filterMachines(pods []workload.Pod, machines []machine.Mac
 	return ret
 }
 
-func (uc *GPUUseCase) filterNodes(pods []workload.Pod, nodes []cluster.Node) []cluster.Node {
+func (uc *UseCase) filterNodes(pods []workload.Pod, nodes []cluster.Node) []cluster.Node {
 	nodeNames := []string{}
 
 	for i := range pods {
@@ -169,7 +169,7 @@ func (uc *GPUUseCase) filterNodes(pods []workload.Pod, nodes []cluster.Node) []c
 	return ret
 }
 
-func (uc *GPUUseCase) buildGPURelations(machines []machine.Machine, nodes []cluster.Node) ([]GPURelation, error) {
+func (uc *UseCase) buildGPURelations(machines []machine.Machine, nodes []cluster.Node) ([]GPURelation, error) {
 	machineMap := map[string]machine.Machine{}
 	for i := range machines {
 		machineMap[machines[i].Hostname] = machines[i]
@@ -210,7 +210,7 @@ func (uc *GPUUseCase) buildGPURelations(machines []machine.Machine, nodes []clus
 	return gpus, nil
 }
 
-func (uc *GPUUseCase) extractPodDevices(pod *workload.Pod, checkList map[string]string) ([]PodDevice, error) {
+func (uc *UseCase) extractPodDevices(pod *workload.Pod, checkList map[string]string) ([]PodDevice, error) {
 	podDevices, err := device.DecodePodDevices(checkList, pod.Annotations)
 	if err != nil {
 		return nil, err
@@ -233,7 +233,7 @@ func (uc *GPUUseCase) extractPodDevices(pod *workload.Pod, checkList map[string]
 	return devices, nil
 }
 
-func (uc *GPUUseCase) buildPodRelations(pods []workload.Pod) ([]PodRelation, error) {
+func (uc *UseCase) buildPodRelations(pods []workload.Pod) ([]PodRelation, error) {
 	checkList := map[string]string{
 		"NVIDIA": hamiVGPUDevicesAllocatedAnnotation,
 	}

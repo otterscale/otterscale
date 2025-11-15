@@ -18,15 +18,15 @@ type NetworkSubnet struct {
 	IPRanges    []IPRange
 }
 
-type NetworkUseCase struct {
+type UseCase struct {
 	fabric  FabricRepo
 	subnet  SubnetRepo
 	ipRange IPRangeRepo
 	vlan    VLANRepo
 }
 
-func NewNetworkUseCase(fabric FabricRepo, subnet SubnetRepo, ipRange IPRangeRepo, vlan VLANRepo) *NetworkUseCase {
-	return &NetworkUseCase{
+func NewUseCase(fabric FabricRepo, subnet SubnetRepo, ipRange IPRangeRepo, vlan VLANRepo) *UseCase {
+	return &UseCase{
 		fabric:  fabric,
 		subnet:  subnet,
 		ipRange: ipRange,
@@ -34,7 +34,7 @@ func NewNetworkUseCase(fabric FabricRepo, subnet SubnetRepo, ipRange IPRangeRepo
 	}
 }
 
-func (uc *NetworkUseCase) ListNetworks(ctx context.Context) ([]Network, error) {
+func (uc *UseCase) ListNetworks(ctx context.Context) ([]Network, error) {
 	subnets, err := uc.subnet.List(ctx)
 	if err != nil {
 		return nil, err
@@ -85,7 +85,7 @@ func (uc *NetworkUseCase) ListNetworks(ctx context.Context) ([]Network, error) {
 	return networks, nil
 }
 
-func (uc *NetworkUseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP string, dnsServers []string, dhcpOn bool) (*Network, error) {
+func (uc *UseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP string, dnsServers []string, dhcpOn bool) (*Network, error) {
 	fabric, err := uc.fabric.Create(ctx)
 	if err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ func (uc *NetworkUseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP str
 	}, nil
 }
 
-func (uc *NetworkUseCase) DeleteNetwork(ctx context.Context, id int) error {
+func (uc *UseCase) DeleteNetwork(ctx context.Context, id int) error {
 	fabric, err := uc.fabric.Get(ctx, id)
 	if err != nil {
 		return err
@@ -148,7 +148,7 @@ func (uc *NetworkUseCase) DeleteNetwork(ctx context.Context, id int) error {
 	return uc.fabric.Delete(ctx, id)
 }
 
-func (uc *NetworkUseCase) getNetworkSubnet(ctx context.Context, subnet *Subnet) (*NetworkSubnet, error) {
+func (uc *UseCase) getNetworkSubnet(ctx context.Context, subnet *Subnet) (*NetworkSubnet, error) {
 	statistics, err := uc.subnet.GetStatistics(ctx, subnet.ID)
 	if err != nil {
 		return nil, err

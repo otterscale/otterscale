@@ -16,14 +16,14 @@ type IPRangeRepo interface {
 	Delete(ctx context.Context, id int) error
 }
 
-func (uc *NetworkUseCase) CreateIPRange(ctx context.Context, subnetID int, startIP, endIP, comment string) (*IPRange, error) {
+func (uc *UseCase) CreateIPRange(ctx context.Context, subnetID int, startIP, endIP, comment string) (*IPRange, error) {
 	return uc.ipRange.Create(ctx, subnetID, startIP, endIP, comment)
 }
 
-func (uc *NetworkUseCase) UpdateIPRange(ctx context.Context, id int, startIP, endIP, comment string) (*IPRange, error) {
+func (uc *UseCase) UpdateIPRange(ctx context.Context, id int, startIP, endIP, comment string) (*IPRange, error) {
 	return uc.ipRange.Update(ctx, id, startIP, endIP, comment)
 }
 
-func (uc *NetworkUseCase) DeleteIPRange(ctx context.Context, id int) error {
+func (uc *UseCase) DeleteIPRange(ctx context.Context, id int) error {
 	return uc.ipRange.Delete(ctx, id)
 }

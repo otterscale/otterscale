@@ -13,10 +13,10 @@ import (
 type NetworkService struct {
 	pbconnect.UnimplementedNetworkServiceHandler
 
-	network *network.NetworkUseCase
+	network *network.UseCase
 }
 
-func NewNetworkService(network *network.NetworkUseCase) *NetworkService {
+func NewNetworkService(network *network.UseCase) *NetworkService {
 	return &NetworkService{
 		network: network,
 	}

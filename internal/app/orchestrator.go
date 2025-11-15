@@ -19,13 +19,13 @@ import (
 type OrchestratorService struct {
 	pbconnect.UnimplementedOrchestratorServiceHandler
 
-	orchestrator *orchestrator.OrchestratorUseCase
-	extension    *extension.ExtensionUseCase
-	gpu          *gpu.GPUUseCase
-	standalone   *standalone.StandaloneUseCase
+	orchestrator *orchestrator.UseCase
+	extension    *extension.UseCase
+	gpu          *gpu.UseCase
+	standalone   *standalone.UseCase
 }
 
-func NewOrchestratorService(orchestrator *orchestrator.OrchestratorUseCase, extension *extension.ExtensionUseCase, gpu *gpu.GPUUseCase, standalone *standalone.StandaloneUseCase) *OrchestratorService {
+func NewOrchestratorService(orchestrator *orchestrator.UseCase, extension *extension.UseCase, gpu *gpu.UseCase, standalone *standalone.UseCase) *OrchestratorService {
 	return &OrchestratorService{
 		orchestrator: orchestrator,
 		extension:    extension,

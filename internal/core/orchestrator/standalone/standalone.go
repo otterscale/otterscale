@@ -26,7 +26,7 @@ type charm struct {
 	Subordinate    bool
 }
 
-type StandaloneUseCase struct {
+type UseCase struct {
 	conf *config.Config
 
 	facility     facility.FacilityRepo
@@ -39,8 +39,8 @@ type StandaloneUseCase struct {
 	tag          tag.TagRepo
 }
 
-func NewStandaloneUseCase(conf *config.Config, facility facility.FacilityRepo, ipRange network.IPRangeRepo, machine machine.MachineRepo, orchestrator machine.OrchestratorRepo, provisioner configuration.ProvisionerRepo, relation facility.RelationRepo, subnet network.SubnetRepo, tag tag.TagRepo) *StandaloneUseCase {
-	return &StandaloneUseCase{
+func NewUseCase(conf *config.Config, facility facility.FacilityRepo, ipRange network.IPRangeRepo, machine machine.MachineRepo, orchestrator machine.OrchestratorRepo, provisioner configuration.ProvisionerRepo, relation facility.RelationRepo, subnet network.SubnetRepo, tag tag.TagRepo) *UseCase {
+	return &UseCase{
 		conf:         conf,
 		facility:     facility,
 		ipRange:      ipRange,
@@ -53,7 +53,7 @@ func NewStandaloneUseCase(conf *config.Config, facility facility.FacilityRepo, i
 	}
 }
 
-func (uc *StandaloneUseCase) CreateNode(ctx context.Context, scope, machineID string, virtualIPs []string, calicoCIDR string, osdDevices []string) (err error) {
+func (uc *UseCase) CreateNode(ctx context.Context, scope, machineID string, virtualIPs []string, calicoCIDR string, osdDevices []string) (err error) {
 	// cleanup reserved IPs on error
 	releaseFunc := []func() error{}
 	defer func() {
@@ -128,7 +128,7 @@ func (uc *StandaloneUseCase) CreateNode(ctx context.Context, scope, machineID st
 	return uc.createCOS(ctx, scope)
 }
 
-func (uc *StandaloneUseCase) applyTags(ctx context.Context, machineID string, tags []string) error {
+func (uc *UseCase) applyTags(ctx context.Context, machineID string, tags []string) error {
 	for _, t := range tags {
 		_, _ = uc.tag.Create(ctx, t, tag.BuiltIn) // Ignore error if tag already exists
 
@@ -140,7 +140,7 @@ func (uc *StandaloneUseCase) applyTags(ctx context.Context, machineID string, ta
 	return nil
 }
 
-func (uc *StandaloneUseCase) deploy(ctx context.Context, scope, maasID, jujuID string, base base) error {
+func (uc *UseCase) deploy(ctx context.Context, scope, maasID, jujuID string, base base) error {
 	series, err := uc.provisioner.Get(ctx, "default_distro_series")
 	if err != nil {
 		return err

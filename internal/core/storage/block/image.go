@@ -42,7 +42,7 @@ type ImageRepo interface {
 	Delete(ctx context.Context, scope string, pool, image string) error
 }
 
-func (uc *BlockUseCase) ListImages(ctx context.Context, scope string) ([]Image, error) {
+func (uc *UseCase) ListImages(ctx context.Context, scope string) ([]Image, error) {
 	pools, err := uc.pool.List(ctx, scope, "rbd")
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func (uc *BlockUseCase) ListImages(ctx context.Context, scope string) ([]Image, 
 	return images, nil
 }
 
-func (uc *BlockUseCase) CreateImage(ctx context.Context, scope, pool, image string, objectSizeBytes, stripeUnitBytes, stripeCount, size uint64, layering, exclusiveLock, objectMap, fastDiff, deepFlatten bool) (*Image, error) {
+func (uc *UseCase) CreateImage(ctx context.Context, scope, pool, image string, objectSizeBytes, stripeUnitBytes, stripeCount, size uint64, layering, exclusiveLock, objectMap, fastDiff, deepFlatten bool) (*Image, error) {
 	order := int(math.Round(math.Log2(float64(objectSizeBytes))))
 	features := uc.toImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten)
 
@@ -72,7 +72,7 @@ func (uc *BlockUseCase) CreateImage(ctx context.Context, scope, pool, image stri
 	return uc.image.Get(ctx, scope, pool, image)
 }
 
-func (uc *BlockUseCase) UpdateImage(ctx context.Context, scope, pool, image string, size uint64) (*Image, error) {
+func (uc *UseCase) UpdateImage(ctx context.Context, scope, pool, image string, size uint64) (*Image, error) {
 	if err := uc.image.Resize(ctx, scope, pool, image, size); err != nil {
 		return nil, err
 	}
@@ -80,11 +80,11 @@ func (uc *BlockUseCase) UpdateImage(ctx context.Context, scope, pool, image stri
 	return uc.image.Get(ctx, scope, pool, image)
 }
 
-func (uc *BlockUseCase) DeleteImage(ctx context.Context, scope, pool, image string) error {
+func (uc *UseCase) DeleteImage(ctx context.Context, scope, pool, image string) error {
 	return uc.image.Delete(ctx, scope, pool, image)
 }
 
-func (uc *BlockUseCase) toImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten bool) uint64 {
+func (uc *UseCase) toImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten bool) uint64 {
 	var features uint64
 
 	if layering {

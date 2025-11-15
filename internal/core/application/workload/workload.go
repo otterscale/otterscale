@@ -25,7 +25,7 @@ type (
 	ResourceList = v1.ResourceList
 )
 
-type WorkloadUseCase struct {
+type UseCase struct {
 	daemonSet   DaemonSetRepo
 	deployment  DeploymentRepo
 	job         JobRepo
@@ -39,8 +39,8 @@ type WorkloadUseCase struct {
 	ttySessions sync.Map
 }
 
-func NewWorkloadUseCase(daemonSet DaemonSetRepo, deployment DeploymentRepo, job JobRepo, pod PodRepo, statefulSet StatefulSetRepo) *WorkloadUseCase {
-	return &WorkloadUseCase{
+func NewUseCase(daemonSet DaemonSetRepo, deployment DeploymentRepo, job JobRepo, pod PodRepo, statefulSet StatefulSetRepo) *UseCase {
+	return &UseCase{
 		daemonSet:   daemonSet,
 		deployment:  deployment,
 		job:         job,
@@ -49,7 +49,7 @@ func NewWorkloadUseCase(daemonSet DaemonSetRepo, deployment DeploymentRepo, job 
 	}
 }
 
-func (uc *WorkloadUseCase) isKeyNotFoundError(err error) bool {
+func (uc *UseCase) isKeyNotFoundError(err error) bool {
 	statusErr, _ := err.(*k8serrors.StatusError)
 	return statusErr != nil && statusErr.Status().Code == http.StatusNotFound
 }

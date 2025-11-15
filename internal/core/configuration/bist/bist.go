@@ -54,7 +54,7 @@ type Result struct {
 	Warp           *Warp
 }
 
-type BISTUseCase struct {
+type UseCase struct {
 	conf *conf.Config
 
 	bucket    object.BucketRepo
@@ -69,8 +69,8 @@ type BISTUseCase struct {
 	service   service.ServiceRepo
 }
 
-func NewBISTUseCase(conf *conf.Config, bucket object.BucketRepo, configMap config.ConfigMapRepo, image block.ImageRepo, job workload.JobRepo, namespace cluster.NamespaceRepo, node storage.NodeRepo, pod workload.PodRepo, pool storage.PoolRepo, secret config.SecretRepo, service service.ServiceRepo) *BISTUseCase {
-	return &BISTUseCase{
+func NewUseCase(conf *conf.Config, bucket object.BucketRepo, configMap config.ConfigMapRepo, image block.ImageRepo, job workload.JobRepo, namespace cluster.NamespaceRepo, node storage.NodeRepo, pod workload.PodRepo, pool storage.PoolRepo, secret config.SecretRepo, service service.ServiceRepo) *UseCase {
+	return &UseCase{
 		conf:      conf,
 		bucket:    bucket,
 		configMap: configMap,
@@ -85,7 +85,7 @@ func NewBISTUseCase(conf *conf.Config, bucket object.BucketRepo, configMap confi
 	}
 }
 
-func (uc *BISTUseCase) ListResults(ctx context.Context) ([]Result, error) {
+func (uc *UseCase) ListResults(ctx context.Context) ([]Result, error) {
 	selector := release.TypeLabel + "=" + "bist"
 
 	jobs, err := uc.job.List(ctx, scope.ReservedName, bistNamespace, selector)
@@ -96,11 +96,11 @@ func (uc *BISTUseCase) ListResults(ctx context.Context) ([]Result, error) {
 	return uc.toResults(ctx, jobs)
 }
 
-func (uc *BISTUseCase) DeleteResult(ctx context.Context, name string) error {
+func (uc *UseCase) DeleteResult(ctx context.Context, name string) error {
 	return uc.job.Delete(ctx, scope.ReservedName, bistNamespace, name)
 }
 
-func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, scope string) ([]WarpTargetInternal, error) {
+func (uc *UseCase) ListInternalObjectServices(ctx context.Context, scope string) ([]WarpTargetInternal, error) {
 	targets, err := uc.listMinIOs(ctx, scope)
 	if err != nil {
 		return nil, err
@@ -121,7 +121,7 @@ func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, scope str
 	return targets, nil
 }
 
-func (uc *BISTUseCase) listMinIOs(ctx context.Context, scope string) ([]WarpTargetInternal, error) {
+func (uc *UseCase) listMinIOs(ctx context.Context, scope string) ([]WarpTargetInternal, error) {
 	selector := "app.kubernetes.io/name" + "=" + "minio"
 
 	services, err := uc.service.List(ctx, scope, "", selector)
@@ -153,7 +153,7 @@ func (uc *BISTUseCase) listMinIOs(ctx context.Context, scope string) ([]WarpTarg
 	return targets, nil
 }
 
-func (uc *BISTUseCase) toResultStatus(job *workload.Job) string {
+func (uc *UseCase) toResultStatus(job *workload.Job) string {
 	if job.Status.Succeeded > 0 {
 		return "succeeded"
 	}
@@ -163,7 +163,7 @@ func (uc *BISTUseCase) toResultStatus(job *workload.Job) string {
 	return "running"
 }
 
-func (uc *BISTUseCase) toResult(ctx context.Context, job *workload.Job) (*Result, error) {
+func (uc *UseCase) toResult(ctx context.Context, job *workload.Job) (*Result, error) {
 	labels := job.GetLabels()
 
 	kind, ok := labels[kindLabel]
@@ -197,7 +197,7 @@ func (uc *BISTUseCase) toResult(ctx context.Context, job *workload.Job) (*Result
 	return result, nil
 }
 
-func (uc *BISTUseCase) toResults(ctx context.Context, jobs []workload.Job) ([]Result, error) {
+func (uc *UseCase) toResults(ctx context.Context, jobs []workload.Job) ([]Result, error) {
 	results := []Result{}
 
 	for i := range jobs {
@@ -212,7 +212,7 @@ func (uc *BISTUseCase) toResults(ctx context.Context, jobs []workload.Job) ([]Re
 	return results, nil
 }
 
-func (uc *BISTUseCase) fetchLogs(ctx context.Context, job *workload.Job) (map[string]any, error) {
+func (uc *UseCase) fetchLogs(ctx context.Context, job *workload.Job) (map[string]any, error) {
 	if job.Status.CompletionTime == nil {
 		return map[string]any{}, nil
 	}

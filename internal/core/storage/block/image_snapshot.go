@@ -20,7 +20,7 @@ type ImageSnapshotRepo interface {
 	Unprotect(ctx context.Context, scope string, pool, image, snapshot string) error
 }
 
-func (uc *BlockUseCase) CreateImageSnapshot(ctx context.Context, scope, pool, image, snapshot string) (*ImageSnapshot, error) {
+func (uc *UseCase) CreateImageSnapshot(ctx context.Context, scope, pool, image, snapshot string) (*ImageSnapshot, error) {
 	if err := uc.imageSnapshot.Create(ctx, scope, pool, image, snapshot); err != nil {
 		return nil, err
 	}
@@ -30,18 +30,18 @@ func (uc *BlockUseCase) CreateImageSnapshot(ctx context.Context, scope, pool, im
 	}, nil
 }
 
-func (uc *BlockUseCase) DeleteImageSnapshot(ctx context.Context, scope, pool, image, snapshot string) error {
+func (uc *UseCase) DeleteImageSnapshot(ctx context.Context, scope, pool, image, snapshot string) error {
 	return uc.imageSnapshot.Delete(ctx, scope, pool, image, snapshot)
 }
 
-func (uc *BlockUseCase) RollbackImageSnapshot(ctx context.Context, scope, pool, image, snapshot string) error {
+func (uc *UseCase) RollbackImageSnapshot(ctx context.Context, scope, pool, image, snapshot string) error {
 	return uc.imageSnapshot.Rollback(ctx, scope, pool, image, snapshot)
 }
 
-func (uc *BlockUseCase) ProtectImageSnapshot(ctx context.Context, scope, pool, image, snapshot string) error {
+func (uc *UseCase) ProtectImageSnapshot(ctx context.Context, scope, pool, image, snapshot string) error {
 	return uc.imageSnapshot.Protect(ctx, scope, pool, image, snapshot)
 }
 
-func (uc *BlockUseCase) UnprotectImageSnapshot(ctx context.Context, scope, pool, image, snapshot string) error {
+func (uc *UseCase) UnprotectImageSnapshot(ctx context.Context, scope, pool, image, snapshot string) error {
 	return uc.imageSnapshot.Unprotect(ctx, scope, pool, image, snapshot)
 }

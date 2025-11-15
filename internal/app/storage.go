@@ -20,13 +20,13 @@ import (
 type StorageService struct {
 	pbconnect.UnimplementedStorageServiceHandler
 
-	storage *storage.StorageUseCase
-	block   *block.BlockUseCase
-	file    *file.FileUseCase
-	object  *object.ObjectUseCase
+	storage *storage.UseCase
+	block   *block.UseCase
+	file    *file.UseCase
+	object  *object.UseCase
 }
 
-func NewStorageService(storage *storage.StorageUseCase, block *block.BlockUseCase, file *file.FileUseCase, object *object.ObjectUseCase) *StorageService {
+func NewStorageService(storage *storage.UseCase, block *block.UseCase, file *file.UseCase, object *object.UseCase) *StorageService {
 	return &StorageService{
 		storage: storage,
 		block:   block,

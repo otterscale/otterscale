@@ -22,15 +22,15 @@ type VirtualMachineSnapshotRepo interface {
 	Delete(ctx context.Context, scope, namespace, name string) error
 }
 
-func (uc *VirtualMachineUseCase) CreateVirtualMachineSnapshot(ctx context.Context, scope, namespace, name, vmName string) (*VirtualMachineSnapshot, error) {
+func (uc *UseCase) CreateVirtualMachineSnapshot(ctx context.Context, scope, namespace, name, vmName string) (*VirtualMachineSnapshot, error) {
 	return uc.virtualMachineSnapshot.Create(ctx, scope, namespace, uc.buildVirtualMachineSnapshot(namespace, name, vmName))
 }
 
-func (uc *VirtualMachineUseCase) DeleteVirtualMachineSnapshot(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) DeleteVirtualMachineSnapshot(ctx context.Context, scope, namespace, name string) error {
 	return uc.virtualMachineSnapshot.Delete(ctx, scope, namespace, name)
 }
 
-func (uc *VirtualMachineUseCase) buildVirtualMachineSnapshot(namespace, name, vmName string) *VirtualMachineSnapshot {
+func (uc *UseCase) buildVirtualMachineSnapshot(namespace, name, vmName string) *VirtualMachineSnapshot {
 	apiGroup := groupName
 
 	return &snapshotv1beta1.VirtualMachineSnapshot{

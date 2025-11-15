@@ -45,7 +45,7 @@ func (r *charmRepo) Get(ctx context.Context, name string) (*charm.Charm, error) 
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("charm name %q not found", name))
 }
 
-func (r *charmRepo) ListArtifacts(ctx context.Context, name string) ([]charm.CharmArtifact, error) {
+func (r *charmRepo) ListArtifacts(ctx context.Context, name string) ([]charm.Artifact, error) {
 	return r.info(ctx, name)
 }
 
@@ -81,7 +81,7 @@ func (r *charmRepo) find(ctx context.Context, name string) ([]charm.Charm, error
 	return resp.Results, nil
 }
 
-func (r *charmRepo) info(ctx context.Context, name string) ([]charm.CharmArtifact, error) {
+func (r *charmRepo) info(ctx context.Context, name string) ([]charm.Artifact, error) {
 	queryURL, err := url.ParseRequestURI(r.juju.charmhubAPIURL())
 	if err != nil {
 		return nil, err

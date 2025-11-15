@@ -50,15 +50,15 @@ type PodRepo interface {
 	Executer(scope, namespace, podName, containerName string, command []string) (remotecommand.Executor, error)
 }
 
-func (uc *WorkloadUseCase) DeletePod(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) DeletePod(ctx context.Context, scope, namespace, name string) error {
 	return uc.pod.Delete(ctx, scope, namespace, name)
 }
 
-func (uc *WorkloadUseCase) StreamLogs(ctx context.Context, scope, namespace, podName, containerName string, duration time.Duration) (io.ReadCloser, error) {
+func (uc *UseCase) StreamLogs(ctx context.Context, scope, namespace, podName, containerName string, duration time.Duration) (io.ReadCloser, error) {
 	return uc.pod.Stream(ctx, scope, namespace, podName, containerName, duration, true)
 }
 
-func (uc *WorkloadUseCase) WriteToTTYSession(sessionID string, stdIn []byte) error {
+func (uc *UseCase) WriteToTTYSession(sessionID string, stdIn []byte) error {
 	value, ok := uc.ttySessions.Load(sessionID)
 	if !ok {
 		return connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
@@ -71,7 +71,7 @@ func (uc *WorkloadUseCase) WriteToTTYSession(sessionID string, stdIn []byte) err
 	return nil
 }
 
-func (uc *WorkloadUseCase) CreateTTYSession() (string, error) {
+func (uc *UseCase) CreateTTYSession() (string, error) {
 	sessionID := uuid.New().String()
 
 	inReader, inWriter := io.Pipe()
@@ -88,7 +88,7 @@ func (uc *WorkloadUseCase) CreateTTYSession() (string, error) {
 	return sessionID, nil
 }
 
-func (uc *WorkloadUseCase) CleanupTTYSession(sessionID string) error {
+func (uc *UseCase) CleanupTTYSession(sessionID string) error {
 	value, ok := uc.ttySessions.Load(sessionID)
 	if !ok {
 		return connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))
@@ -105,7 +105,7 @@ func (uc *WorkloadUseCase) CleanupTTYSession(sessionID string) error {
 	return nil
 }
 
-func (uc *WorkloadUseCase) ExecuteTTY(ctx context.Context, sessionID, scope, namespace, podName, containerName string, command []string, stdOut chan<- []byte) error {
+func (uc *UseCase) ExecuteTTY(ctx context.Context, sessionID, scope, namespace, podName, containerName string, command []string, stdOut chan<- []byte) error {
 	value, ok := uc.ttySessions.Load(sessionID)
 	if !ok {
 		return connect.NewError(connect.CodeNotFound, fmt.Errorf("session %s not found", sessionID))

@@ -10,17 +10,17 @@ import (
 
 const DomainLabel = "otterscale.com"
 
-type OrchestratorUseCase struct {
+type UseCase struct {
 	node cluster.NodeRepo
 }
 
-func NewOrchestratorUseCase(node cluster.NodeRepo) *OrchestratorUseCase {
-	return &OrchestratorUseCase{
+func NewUseCase(node cluster.NodeRepo) *UseCase {
+	return &UseCase{
 		node: node,
 	}
 }
 
-func (uc *OrchestratorUseCase) ListKubernetesNodeLabels(ctx context.Context, scope, hostname string, all bool) (map[string]string, error) {
+func (uc *UseCase) ListKubernetesNodeLabels(ctx context.Context, scope, hostname string, all bool) (map[string]string, error) {
 	node, err := uc.node.Get(ctx, scope, hostname)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (uc *OrchestratorUseCase) ListKubernetesNodeLabels(ctx context.Context, sco
 	return node.Labels, nil
 }
 
-func (uc *OrchestratorUseCase) UpdateKubernetesNodeLabels(ctx context.Context, scope, hostname string, labels map[string]string) (map[string]string, error) {
+func (uc *UseCase) UpdateKubernetesNodeLabels(ctx context.Context, scope, hostname string, labels map[string]string) (map[string]string, error) {
 	node, err := uc.node.Get(ctx, scope, hostname)
 	if err != nil {
 		return nil, err

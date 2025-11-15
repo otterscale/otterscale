@@ -27,6 +27,7 @@ type Facility struct {
 	Status *Status
 }
 
+//nolint:revive // allows this exported interface name for specific domain clarity.
 type FacilityRepo interface {
 	List(ctx context.Context, scope, jujuID string) ([]Facility, error)
 	Create(ctx context.Context, scope, name, configYAML, charmName, channel, placementScope string, subordinate bool, directive, series string) error
@@ -42,28 +43,28 @@ type RelationRepo interface {
 	Consume(ctx context.Context, scope, url string) error
 }
 
-type FacilityUseCase struct {
+type UseCase struct {
 	facility FacilityRepo
 
 	machine machine.MachineRepo
 }
 
-func NewFacilityUseCase(facility FacilityRepo, machine machine.MachineRepo) *FacilityUseCase {
-	return &FacilityUseCase{
+func NewUseCase(facility FacilityRepo, machine machine.MachineRepo) *UseCase {
+	return &UseCase{
 		facility: facility,
 		machine:  machine,
 	}
 }
 
-func (uc *FacilityUseCase) ListFacilities(ctx context.Context, scope string) ([]Facility, error) {
+func (uc *UseCase) ListFacilities(ctx context.Context, scope string) ([]Facility, error) {
 	return uc.facility.List(ctx, scope, "")
 }
 
-func (uc *FacilityUseCase) ResolveFacilityUnitErrors(ctx context.Context, scope, unitName string) error {
+func (uc *UseCase) ResolveFacilityUnitErrors(ctx context.Context, scope, unitName string) error {
 	return uc.facility.Resolve(ctx, scope, unitName)
 }
 
-func (uc *FacilityUseCase) JujuIDMachineMap(ctx context.Context, scope string) (map[string]machine.Machine, error) {
+func (uc *UseCase) JujuIDMachineMap(ctx context.Context, scope string) (map[string]machine.Machine, error) {
 	machines, err := uc.machine.List(ctx)
 	if err != nil {
 		return nil, err

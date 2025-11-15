@@ -17,6 +17,7 @@ type (
 	Protocol = v1.Protocol
 )
 
+//nolint:revive // allows this exported interface name for specific domain clarity.
 type ServiceRepo interface {
 	List(ctx context.Context, scope, namespace, selector string) ([]Service, error)
 	Get(ctx context.Context, scope, namespace, name string) (*Service, error)
@@ -26,12 +27,12 @@ type ServiceRepo interface {
 	Host(scope string) string
 }
 
-type ServiceUseCase struct {
+type UseCase struct {
 	service ServiceRepo
 }
 
-func NewServiceUseCase(service ServiceRepo) *ServiceUseCase {
-	return &ServiceUseCase{
+func NewUseCase(service ServiceRepo) *UseCase {
+	return &UseCase{
 		service: service,
 	}
 }

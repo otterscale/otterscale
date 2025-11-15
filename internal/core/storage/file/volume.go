@@ -16,6 +16,6 @@ type VolumeRepo interface {
 	List(ctx context.Context, scope string) ([]Volume, error)
 }
 
-func (uc *FileUseCase) ListVolumes(ctx context.Context, scope string) ([]Volume, error) {
+func (uc *UseCase) ListVolumes(ctx context.Context, scope string) ([]Volume, error) {
 	return uc.volume.List(ctx, scope)
 }

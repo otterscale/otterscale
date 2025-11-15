@@ -12,7 +12,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/network"
 )
 
-func (uc *StandaloneUseCase) reserveIP(ctx context.Context, machine *machine.Machine, comment string) (ip net.IP, releaseFunc func() error, err error) {
+func (uc *UseCase) reserveIP(ctx context.Context, machine *machine.Machine, comment string) (ip net.IP, releaseFunc func() error, err error) {
 	links := machine.BootInterface.Links
 	if len(links) == 0 {
 		return nil, nil, connect.NewError(connect.CodeInvalidArgument, errors.New("machine has no network links"))
@@ -33,7 +33,7 @@ func (uc *StandaloneUseCase) reserveIP(ctx context.Context, machine *machine.Mac
 	return ip, func() error { return uc.ipRange.Delete(ctx, ipRange.ID) }, nil
 }
 
-func (uc *StandaloneUseCase) getFreeIP(ctx context.Context, subnet *network.Subnet) (net.IP, error) {
+func (uc *UseCase) getFreeIP(ctx context.Context, subnet *network.Subnet) (net.IP, error) {
 	skip := []uint32{}
 
 	used, err := uc.getUsedIPs(ctx, subnet.ID)
@@ -77,7 +77,7 @@ func (uc *StandaloneUseCase) getFreeIP(ctx context.Context, subnet *network.Subn
 	return nil, connect.NewError(connect.CodeResourceExhausted, errors.New("no free IP found"))
 }
 
-func (uc *StandaloneUseCase) getUsedIPs(ctx context.Context, subnetID int) ([]uint32, error) {
+func (uc *UseCase) getUsedIPs(ctx context.Context, subnetID int) ([]uint32, error) {
 	ips, err := uc.subnet.GetIPAddresses(ctx, subnetID)
 	if err != nil {
 		return nil, err
@@ -92,7 +92,7 @@ func (uc *StandaloneUseCase) getUsedIPs(ctx context.Context, subnetID int) ([]ui
 	return record, nil
 }
 
-func (uc *StandaloneUseCase) getReservedIPs(ctx context.Context, cidr string) ([]uint32, error) {
+func (uc *UseCase) getReservedIPs(ctx context.Context, cidr string) ([]uint32, error) {
 	_, ipNet, err := net.ParseCIDR(cidr)
 	if err != nil {
 		return nil, err

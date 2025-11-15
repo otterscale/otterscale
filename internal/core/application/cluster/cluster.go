@@ -1,12 +1,12 @@
 package cluster
 
-type ClusterUseCase struct {
+type UseCase struct {
 	namespace NamespaceRepo
 	node      NodeRepo
 }
 
-func NewClusterUseCase(namespace NamespaceRepo, node NodeRepo) *ClusterUseCase {
-	return &ClusterUseCase{
+func NewUseCase(namespace NamespaceRepo, node NodeRepo) *UseCase {
+	return &UseCase{
 		namespace: namespace,
 		node:      node,
 	}

@@ -46,7 +46,7 @@ type BucketRepo interface {
 	Key(scope string) (accessKey string, secretKey string)
 }
 
-func (uc *ObjectUseCase) ListBuckets(ctx context.Context, scope string) ([]BucketData, error) {
+func (uc *UseCase) ListBuckets(ctx context.Context, scope string) ([]BucketData, error) {
 	buckets, err := uc.bucket.List(ctx, scope)
 	if err != nil {
 		return nil, err
@@ -75,7 +75,7 @@ func (uc *ObjectUseCase) ListBuckets(ctx context.Context, scope string) ([]Bucke
 	return ret, nil
 }
 
-func (uc *ObjectUseCase) CreateBucket(ctx context.Context, scope, bucket, owner, policy string, acl BucketCannedACL) (*BucketData, error) {
+func (uc *UseCase) CreateBucket(ctx context.Context, scope, bucket, owner, policy string, acl BucketCannedACL) (*BucketData, error) {
 	if err := uc.bucket.Create(ctx, scope, bucket, acl); err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (uc *ObjectUseCase) CreateBucket(ctx context.Context, scope, bucket, owner,
 	}, nil
 }
 
-func (uc *ObjectUseCase) UpdateBucket(ctx context.Context, scope, bucket, owner, policy string, acl BucketCannedACL) (*BucketData, error) {
+func (uc *UseCase) UpdateBucket(ctx context.Context, scope, bucket, owner, policy string, acl BucketCannedACL) (*BucketData, error) {
 	if err := uc.bucket.UpdateOwner(ctx, scope, bucket, owner); err != nil {
 		return nil, err
 	}
@@ -149,6 +149,6 @@ func (uc *ObjectUseCase) UpdateBucket(ctx context.Context, scope, bucket, owner,
 	}, nil
 }
 
-func (uc *ObjectUseCase) DeleteBucket(ctx context.Context, scope, bucket string) error {
+func (uc *UseCase) DeleteBucket(ctx context.Context, scope, bucket string) error {
 	return uc.bucket.Delete(ctx, scope, bucket)
 }

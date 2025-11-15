@@ -18,7 +18,7 @@ type ScopeConfigRepo interface {
 	Set(ctx context.Context, config map[string]any) error
 }
 
-func (uc *ConfigurationUseCase) UpdatePackageRepository(ctx context.Context, id int, url string, skipJuju bool) (*PackageRepository, error) {
+func (uc *UseCase) UpdatePackageRepository(ctx context.Context, id int, url string, skipJuju bool) (*PackageRepository, error) {
 	packageRepository, err := uc.packageRepository.Update(ctx, id, url)
 	if err != nil {
 		return nil, err

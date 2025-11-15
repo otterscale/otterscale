@@ -76,7 +76,7 @@ var (
 	}
 )
 
-func (uc *ExtensionUseCase) base(name string) (base, error) {
+func (uc *UseCase) base(name string) (base, error) {
 	all := []base{}
 	all = append(all, general...)
 	all = append(all, model...)

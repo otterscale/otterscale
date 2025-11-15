@@ -79,7 +79,7 @@ type BootSourceSelectionRepo interface {
 	Update(ctx context.Context, bootSourceID int, id int, distroSeries string, architectures []string) (*BootSourceSelection, error)
 }
 
-func (uc *ConfigurationUseCase) CreateBootImage(ctx context.Context, distroSeries string, architectures []string) (*BootImage, error) {
+func (uc *UseCase) CreateBootImage(ctx context.Context, distroSeries string, architectures []string) (*BootImage, error) {
 	if len(architectures) == 0 {
 		architectures = []string{"amd64"} // set default
 	}
@@ -103,7 +103,7 @@ func (uc *ConfigurationUseCase) CreateBootImage(ctx context.Context, distroSerie
 	}, nil
 }
 
-func (uc *ConfigurationUseCase) UpdateBootImage(ctx context.Context, id int, distroSeries string, architectures []string) (*BootImage, error) {
+func (uc *UseCase) UpdateBootImage(ctx context.Context, id int, distroSeries string, architectures []string) (*BootImage, error) {
 	if len(architectures) == 0 {
 		architectures = []string{"amd64"} // set default
 	}
@@ -127,15 +127,15 @@ func (uc *ConfigurationUseCase) UpdateBootImage(ctx context.Context, id int, dis
 	}, nil
 }
 
-func (uc *ConfigurationUseCase) ImportBootImages(ctx context.Context) error {
+func (uc *UseCase) ImportBootImages(ctx context.Context) error {
 	return uc.bootResource.Import(ctx)
 }
 
-func (uc *ConfigurationUseCase) IsImportingBootImages(ctx context.Context) (bool, error) {
+func (uc *UseCase) IsImportingBootImages(ctx context.Context) (bool, error) {
 	return uc.bootResource.IsImporting(ctx)
 }
 
-func (uc *ConfigurationUseCase) ListBootImageSelections() ([]BootImageSelection, error) {
+func (uc *UseCase) ListBootImageSelections() ([]BootImageSelection, error) {
 	selections := []BootImageSelection{}
 
 	for distro := range DistroSeriesMap {
@@ -145,7 +145,7 @@ func (uc *ConfigurationUseCase) ListBootImageSelections() ([]BootImageSelection,
 	return selections, nil
 }
 
-func (uc *ConfigurationUseCase) listBootImages(ctx context.Context) ([]BootImage, error) {
+func (uc *UseCase) listBootImages(ctx context.Context) ([]BootImage, error) {
 	defaultDistro, err := uc.provisioner.Get(ctx, "default_distro_series")
 	if err != nil {
 		return nil, err

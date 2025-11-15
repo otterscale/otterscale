@@ -15,23 +15,24 @@ import (
 	kvcorev1 "github.com/otterscale/kubevirt-client-go/kubevirt/typed/core/v1"
 )
 
+//nolint:revive // allows this exported interface name for specific domain clarity.
 type VNCRepo interface {
 	Streamer(scope, namespace, name string) (kvcorev1.StreamInterface, error)
 }
 
-type VNCUseCase struct {
+type UseCase struct {
 	vnc VNCRepo
 
 	vncSessions sync.Map
 }
 
-func NewVNCUseCase(vnc VNCRepo) *VNCUseCase {
-	return &VNCUseCase{
+func NewUseCase(vnc VNCRepo) *UseCase {
+	return &UseCase{
 		vnc: vnc,
 	}
 }
 
-func (uc *VNCUseCase) CreateVNCSession(scope, namespace, name string) (string, error) {
+func (uc *UseCase) CreateVNCSession(scope, namespace, name string) (string, error) {
 	sessionID := uuid.New().String()
 
 	vnc, err := uc.vnc.Streamer(scope, namespace, name)
@@ -44,11 +45,11 @@ func (uc *VNCUseCase) CreateVNCSession(scope, namespace, name string) (string, e
 	return sessionID, nil
 }
 
-func (uc *VNCUseCase) VNCPathPrefix() string {
+func (uc *UseCase) VNCPathPrefix() string {
 	return "/vnc/"
 }
 
-func (uc *VNCUseCase) VNCHandler(w http.ResponseWriter, r *http.Request) {
+func (uc *UseCase) VNCHandler(w http.ResponseWriter, r *http.Request) {
 	// upgrade to websocket
 	upgrader := kvcorev1.NewUpgrader()
 
@@ -109,7 +110,7 @@ func (uc *VNCUseCase) VNCHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (uc *VNCUseCase) pingHandler(ctx context.Context, conn *websocket.Conn) {
+func (uc *UseCase) pingHandler(ctx context.Context, conn *websocket.Conn) {
 	const (
 		period   = 1 * time.Minute
 		deadline = 10 * time.Second
@@ -131,7 +132,7 @@ func (uc *VNCUseCase) pingHandler(ctx context.Context, conn *websocket.Conn) {
 	}
 }
 
-func (uc *VNCUseCase) streamHandler(stream kvcorev1.StreamInterface, inReader io.Reader, outWriter io.Writer, conn *websocket.Conn, outReader io.Reader, inWriter io.Writer, errChan chan error) {
+func (uc *UseCase) streamHandler(stream kvcorev1.StreamInterface, inReader io.Reader, outWriter io.Writer, conn *websocket.Conn, outReader io.Reader, inWriter io.Writer, errChan chan error) {
 	go func() {
 		errChan <- stream.Stream(kvcorev1.StreamOptions{
 			In:  inReader,

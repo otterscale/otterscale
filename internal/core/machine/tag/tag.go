@@ -20,6 +20,7 @@ const (
 // Tag represents a MAAS Tag resource.
 type Tag = entity.Tag
 
+//nolint:revive // allows this exported interface name for specific domain clarity.
 type TagRepo interface {
 	List(ctx context.Context) ([]Tag, error)
 	Get(ctx context.Context, name string) (*Tag, error)
@@ -29,33 +30,33 @@ type TagRepo interface {
 	RemoveMachines(ctx context.Context, name string, machineIDs []string) error
 }
 
-type TagUseCase struct {
+type UseCase struct {
 	tag TagRepo
 }
 
-func NewTagUseCase(tag TagRepo) *TagUseCase {
-	return &TagUseCase{
+func NewUseCase(tag TagRepo) *UseCase {
+	return &UseCase{
 		tag: tag,
 	}
 }
 
-func (uc *TagUseCase) ListTags(ctx context.Context) ([]Tag, error) {
+func (uc *UseCase) ListTags(ctx context.Context) ([]Tag, error) {
 	return uc.tag.List(ctx)
 }
 
-func (uc *TagUseCase) GetTag(ctx context.Context, name string) (*Tag, error) {
+func (uc *UseCase) GetTag(ctx context.Context, name string) (*Tag, error) {
 	return uc.tag.Get(ctx, name)
 }
 
-func (uc *TagUseCase) CreateTag(ctx context.Context, name, comment string) (*Tag, error) {
+func (uc *UseCase) CreateTag(ctx context.Context, name, comment string) (*Tag, error) {
 	return uc.tag.Create(ctx, name, comment)
 }
 
-func (uc *TagUseCase) DeleteTag(ctx context.Context, name string) error {
+func (uc *UseCase) DeleteTag(ctx context.Context, name string) error {
 	return uc.tag.Delete(ctx, name)
 }
 
-func (uc *TagUseCase) AddMachineTags(ctx context.Context, id string, tags []string) error {
+func (uc *UseCase) AddMachineTags(ctx context.Context, id string, tags []string) error {
 	eg, egctx := errgroup.WithContext(ctx)
 
 	for _, tag := range tags {
@@ -67,7 +68,7 @@ func (uc *TagUseCase) AddMachineTags(ctx context.Context, id string, tags []stri
 	return eg.Wait()
 }
 
-func (uc *TagUseCase) RemoveMachineTags(ctx context.Context, id string, tags []string) error {
+func (uc *UseCase) RemoveMachineTags(ctx context.Context, id string, tags []string) error {
 	eg, egctx := errgroup.WithContext(ctx)
 
 	for _, tag := range tags {

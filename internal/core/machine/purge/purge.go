@@ -10,14 +10,14 @@ import (
 	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
-type PurgeUseCase struct {
+type UseCase struct {
 	action   action.ActionRepo
 	facility facility.FacilityRepo
 	machine  machine.MachineRepo
 }
 
-func NewPurgeUseCase(action action.ActionRepo, facility facility.FacilityRepo, machine machine.MachineRepo) *PurgeUseCase {
-	return &PurgeUseCase{
+func NewUseCase(action action.ActionRepo, facility facility.FacilityRepo, machine machine.MachineRepo) *UseCase {
+	return &UseCase{
 		action:   action,
 		facility: facility,
 		machine:  machine,
@@ -26,7 +26,7 @@ func NewPurgeUseCase(action action.ActionRepo, facility facility.FacilityRepo, m
 
 // TODO: improve performance by parallel execution
 // TODO: osd devices in unit config or app config
-func (uc *PurgeUseCase) PurgeDisk(ctx context.Context, machineID string) error {
+func (uc *UseCase) PurgeDisk(ctx context.Context, machineID string) error {
 	machine, err := uc.machine.Get(ctx, machineID)
 	if err != nil {
 		return err

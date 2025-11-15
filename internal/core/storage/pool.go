@@ -39,7 +39,7 @@ type PoolRepo interface {
 	GetECProfile(ctx context.Context, scope string, pool string) (k, m string, err error)
 }
 
-func (uc *StorageUseCase) ListPools(ctx context.Context, scope, application string) ([]Pool, error) {
+func (uc *UseCase) ListPools(ctx context.Context, scope, application string) ([]Pool, error) {
 	pools, err := uc.pool.List(ctx, scope, application)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (uc *StorageUseCase) ListPools(ctx context.Context, scope, application stri
 	return pools, nil
 }
 
-func (uc *StorageUseCase) CreatePool(ctx context.Context, scope, pool, poolType string, ecOverwrites bool, replicatedSize, quotaMaxBytes, quotaMaxObjects uint64, applications []string) (*Pool, error) {
+func (uc *UseCase) CreatePool(ctx context.Context, scope, pool, poolType string, ecOverwrites bool, replicatedSize, quotaMaxBytes, quotaMaxObjects uint64, applications []string) (*Pool, error) {
 	if err := uc.pool.Create(ctx, scope, pool, poolType); err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (uc *StorageUseCase) CreatePool(ctx context.Context, scope, pool, poolType 
 	}, nil
 }
 
-func (uc *StorageUseCase) UpdatePool(ctx context.Context, scope, pool string, quotaMaxBytes, quotaMaxObjects uint64) (*Pool, error) {
+func (uc *UseCase) UpdatePool(ctx context.Context, scope, pool string, quotaMaxBytes, quotaMaxObjects uint64) (*Pool, error) {
 	if err := uc.pool.SetQuota(ctx, scope, pool, quotaMaxBytes, quotaMaxObjects); err != nil {
 		return nil, err
 	}
@@ -92,11 +92,11 @@ func (uc *StorageUseCase) UpdatePool(ctx context.Context, scope, pool string, qu
 	}, nil
 }
 
-func (uc *StorageUseCase) DeletePool(ctx context.Context, scope, pool string) error {
+func (uc *UseCase) DeletePool(ctx context.Context, scope, pool string) error {
 	return uc.pool.Delete(ctx, scope, pool)
 }
 
-func (uc *StorageUseCase) setPoolParameters(ctx context.Context, scope string, pools []Pool) {
+func (uc *UseCase) setPoolParameters(ctx context.Context, scope string, pools []Pool) {
 	for i := range pools {
 		if pools[i].Type == "erasure" {
 			ecOverwrites, _ := uc.pool.GetParameter(ctx, scope, pools[i].Name, "allow_ec_overwrites")
