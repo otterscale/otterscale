@@ -18,7 +18,7 @@
 </script>
 
 <script lang="ts">
-	let { fabric, vlan }: { fabric: Network_Fabric; vlan: Network_VLAN } = $props();
+	let { fabric, vlan, reloadManager }: { fabric: Network_Fabric; vlan: Network_VLAN; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
 

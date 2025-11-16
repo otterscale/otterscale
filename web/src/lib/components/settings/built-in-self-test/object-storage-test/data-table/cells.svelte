@@ -17,6 +17,7 @@
 	import { formatCapacity, formatSecond, formatTimeAgo } from '$lib/formatter';
 
 	import Actions from './actions.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	export const cells = {
 		row_picker,
@@ -231,9 +232,8 @@
 	</Layout.Cell>
 {/snippet}
 
-<!-- TODO: fix scope -->
-{#snippet actions(row: Row<TestResult>)}
+{#snippet actions(data: {row: Row<TestResult>; scope: string; reloadManager: ReloadManager;})}
 	<Layout.Cell class="items-start">
-		<Actions scope={page.params.scope!} testResult={row.original} />
+		<Actions testResult={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

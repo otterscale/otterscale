@@ -17,9 +17,9 @@
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);
 
-	let isReloading = $state(true);
 	let prometheusDriver = $state<PrometheusDriver | null>(null);
-
+		
+	let isReloading = $state(true);
 	onMount(async () => {
 		try {
 			environmentService

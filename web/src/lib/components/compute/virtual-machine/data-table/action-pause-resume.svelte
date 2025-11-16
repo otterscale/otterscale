@@ -6,11 +6,10 @@
 
 	import { InstanceService, type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
-	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
+	let { virtualMachine, scope }: { virtualMachine: VirtualMachine; scope: string; } = $props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -31,7 +30,6 @@
 	async function resumeVM() {
 		const request = {
 			scope: scope,
-			,
 			name: virtualMachine.name,
 			namespace: virtualMachine.namespace
 		};
@@ -52,7 +50,6 @@
 	async function pauseVM() {
 		const request = {
 			scope: scope,
-			,
 			name: virtualMachine.name,
 			namespace: virtualMachine.namespace
 		};

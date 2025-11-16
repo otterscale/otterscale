@@ -49,13 +49,11 @@
 <script lang="ts">
 	let {
 		scope,
-		facility,
 		extensionsBundle,
 		extensions,
 		updator
 	}: {
 		scope: string;
-		facility: string;
 		extensionsBundle: ExtensionsBundleType;
 		extensions: Writable<Extension[]>;
 		updator: () => void;
@@ -107,7 +105,6 @@
 								() =>
 									orchestratorClient.installExtensions({
 										scope: scope,
-										facility: facility,
 										charts: $extensions
 											.filter((extension) => extension.latest && !extension.current)
 											.map((extension) => extension.latest!)
@@ -143,7 +140,6 @@
 								() =>
 									orchestratorClient.upgradeExtensions({
 										scope: scope,
-										facility: facility,
 										charts: $extensions
 											.filter((extension) => extension.latest && extension.current)
 											.map((extension) => extension.latest!)

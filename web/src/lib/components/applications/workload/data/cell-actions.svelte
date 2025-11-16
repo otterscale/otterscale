@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import type { Application_Pod } from '$lib/api/application/v1/application_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
 	import Delete from './action-delete.svelte';
@@ -9,7 +10,7 @@
 </script>
 
 <script lang="ts">
-	let { namespace, pod }: { namespace: string; pod: Application_Pod } = $props();
+	let { pod, scope, namespace, reloadManager }: { pod: Application_Pod; scope: string; namespace: string; reloadManager: ReloadManager } = $props();
 </script>
 
 {#if page.data['feature-states.app-container']}
@@ -17,10 +18,10 @@
 		<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 		<Layout.ActionSeparator />
 		<Layout.ActionItem>
-			<Log {namespace} {pod} />
+			<Log {pod} {scope} {namespace}  />
 		</Layout.ActionItem>
 		<Layout.ActionItem>
-			<Delete {namespace} {pod} />
+			<Delete {pod} {scope} {namespace} {reloadManager} />
 		</Layout.ActionItem>
 	</Layout.Actions>
 {/if}

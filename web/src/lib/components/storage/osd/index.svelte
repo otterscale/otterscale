@@ -18,19 +18,10 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const storageClient = createClient(StorageService, transport);
 
 	const objectStorageDaemons = $state(writable([] as OSD[]));
-
-	const reloadManager = new ReloadManager(() => {
-		storageClient.listOSDs({ scope: scope }).then((response) => {
-			objectStorageDaemons.set(response.osds);
-		});
-	});
-
-	let isMounted = $state(false);
-	onMount(() => {
+	async function fetch() {
 		storageClient
 			.listOSDs({ scope: scope })
 			.then((response) => {
@@ -40,8 +31,13 @@
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
 			});
+	}
+	const reloadManager = new ReloadManager(fetch, false);
 
-		reloadManager.start();
+	let isMounted = $state(false);
+	onMount(async () => {
+		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -50,7 +46,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<DataTable {scope} {objectStorageDaemons} {reloadManager} />
+		<DataTable {objectStorageDaemons} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

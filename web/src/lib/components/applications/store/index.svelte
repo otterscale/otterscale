@@ -14,7 +14,7 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility }: { scope: string; facility: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -39,7 +39,6 @@
 		await applicationClient
 			.listReleases({
 				scope: scope,
-				facility: facility
 			})
 			.then((response) => {
 				releases.set(response.releases);
@@ -52,7 +51,7 @@
 </script>
 
 {#if isMounted}
-	<CommerceStore bind:charts bind:releases />
+	<CommerceStore {scope} bind:charts bind:releases />
 {:else}
 	<Loading.ApplicationStore />
 {/if}

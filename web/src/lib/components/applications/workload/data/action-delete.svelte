@@ -14,11 +14,10 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
-	let { namespace, pod }: { namespace: string; pod: Application_Pod } = $props();
+	let { pod, scope, namespace, reloadManager }: { pod: Application_Pod; scope: string; namespace: string; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -27,7 +26,6 @@
 
 	const defaults = {
 		scope: scope,
-		,
 		namespace: namespace,
 		name: ''
 	} as DeleteApplicationPodRequest;
@@ -80,7 +78,7 @@
 						toast.promise(() => applicationClient.deleteApplicationPod(request), {
 							loading: `Deleting ${pod.name}...`,
 							success: () => {
-								reloadManager.force();
+								reloadManager.force()
 								return `Successfully deleted ${pod.name}`;
 							},
 							error: (error) => {

@@ -10,6 +10,12 @@ const items = [
 		default: true
 	},
 	{
+		icon: 'ph:test-tube',
+		title: m.built_in_test(),
+		description: m.configuration(),
+		url: resolve('/(auth)/scope/[scope]/settings/built-in-test', { scope: page.params.scope! })
+	},
+	{
 		icon: 'ph:hard-drives',
 		title: m.data_volume(),
 		type: m.virtual_machine(),
@@ -20,7 +26,7 @@ const items = [
 		title: m.instance_type(),
 		type: m.virtual_machine(),
 		url: resolve('/(auth)/scope/[scope]/settings/instance-type', { scope: page.params.scope! })
-	}
+	},
 ];
 
 export { items };

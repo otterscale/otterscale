@@ -11,7 +11,6 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { currentCeph, currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils.js';
 </script>
 

@@ -1,4 +1,4 @@
-<!-- <script lang="ts">
+<script lang="ts">
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { BuiltInSelfTest } from '$lib/components/settings/built-in-self-test/index';
@@ -8,14 +8,16 @@
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
 		{
-			title: m.configuration(),
-			url: resolve('/(auth)/configuration')
+			title: m.settings(),
+			url: resolve('/(auth)/scope/[scope]/settings', { scope: page.params.scope! })
 		},
 		{
 			title: m.built_in_test(),
-			url: resolve('/(auth)/configuration/built-in-test')
+			url: resolve('/(auth)/scope/[scope]/settings/built-in-test', { scope: page.params.scope! })
 		}
 	]);
 </script>
 
-<BuiltInSelfTest scope={page.params.scope!} /> -->
+{#key page.params.scope!}
+	<BuiltInSelfTest scope={page.params.scope!} />
+{/key}

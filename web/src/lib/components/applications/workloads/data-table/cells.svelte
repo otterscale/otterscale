@@ -12,6 +12,7 @@
 
 	import type { Application } from '../types';
 	import Actions from './cell-actions.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	export const cells = {
 		row_picker,
@@ -132,8 +133,8 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<Application>)}
+{#snippet actions(data: { row: Row<Application>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions application={row.original} />
+		<Actions application={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

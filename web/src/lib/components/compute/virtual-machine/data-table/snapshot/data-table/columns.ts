@@ -6,6 +6,7 @@ import { m } from '$lib/paraglide/messages';
 
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import type { ReloadManager } from '$lib/components/custom/reloader';
 
 const messages = {
 	name: m.name(),
@@ -19,83 +20,85 @@ const messages = {
 function getColumns(
 	scope: string,
 	reloadManager: ReloadManager
-):  ColumnDef<VirtualMachine_Snapshot>[] return [
-	{
-		id: 'select',
-		header: ({ table }) => {
-			return renderSnippet(headers.row_picker, table);
+):  ColumnDef<VirtualMachine_Snapshot>[] {
+	return [
+		{
+			id: 'select',
+			header: ({ table }) => {
+				return renderSnippet(headers.row_picker, table);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.row_picker, row);
+			},
+			enableSorting: false,
+			enableHiding: false
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.row_picker, row);
+		{
+			accessorKey: 'name',
+			header: ({ column }) => {
+				return renderSnippet(headers.name, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.name, row);
+			}
 		},
-		enableSorting: false,
-		enableHiding: false
-	},
-	{
-		accessorKey: 'name',
-		header: ({ column }) => {
-			return renderSnippet(headers.name, column);
+		{
+			accessorKey: 'namespace',
+			header: ({ column }) => {
+				return renderSnippet(headers.namespace, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.namespace, row);
+			}
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.name, row);
-		}
-	},
-	{
-		accessorKey: 'namespace',
-		header: ({ column }) => {
-			return renderSnippet(headers.namespace, column);
+		{
+			accessorKey: 'sourceName',
+			header: ({ column }) => {
+				return renderSnippet(headers.sourceName, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.sourceName, row);
+			}
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.namespace, row);
-		}
-	},
-	{
-		accessorKey: 'sourceName',
-		header: ({ column }) => {
-			return renderSnippet(headers.sourceName, column);
+		{
+			accessorKey: 'phase',
+			header: ({ column }) => {
+				return renderSnippet(headers.phase, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.phase, row);
+			}
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.sourceName, row);
-		}
-	},
-	{
-		accessorKey: 'phase',
-		header: ({ column }) => {
-			return renderSnippet(headers.phase, column);
+		{
+			accessorKey: 'ready',
+			header: ({ column }) => {
+				return renderSnippet(headers.ready, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.ready, row);
+			}
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.phase, row);
-		}
-	},
-	{
-		accessorKey: 'ready',
-		header: ({ column }) => {
-			return renderSnippet(headers.ready, column);
+		{
+			accessorKey: 'createTime',
+			header: ({ column }) => {
+				return renderSnippet(headers.createTime, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.createTime, row);
+			}
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.ready, row);
-		}
-	},
-	{
-		accessorKey: 'createTime',
-		header: ({ column }) => {
-			return renderSnippet(headers.createTime, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.createTime, row);
-		}
-	},
 
-	{
-		accessorKey: 'actions',
-		header: ({ column }) => {
-			return renderSnippet(headers.actions, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.actions, { row, scope, reloadManager });
-		},
-		enableHiding: false
-	}
-];
+		{
+			accessorKey: 'actions',
+			header: ({ column }) => {
+				return renderSnippet(headers.actions, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.actions, { row, scope, reloadManager });
+			},
+			enableHiding: false
+		}
+	];
+}
 
 export { getColumns, messages };

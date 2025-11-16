@@ -26,12 +26,10 @@
 
 <script lang="ts">
 	let {
-		scope,
 		buckets,
+		scope,
 		reloadManager
-	}: { scope: string; buckets: Writable<Bucket[]>; reloadManager: ReloadManager } = $props();
-
-	const columns = getColumns(scope, reloadManager);
+	}: { buckets: Writable<Bucket[]>; scope: string; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
@@ -43,7 +41,9 @@
 		get data() {
 			return $buckets;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, reloadManager);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

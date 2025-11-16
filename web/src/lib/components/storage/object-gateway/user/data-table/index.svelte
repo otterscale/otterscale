@@ -32,8 +32,6 @@
 		scope
 	}: { users: Writable<User[]>; reloadManager: ReloadManager; scope: string } = $props();
 
-	const columns = getColumns(scope, reloadManager);
-
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -44,7 +42,10 @@
 		get data() {
 			return $users;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, reloadManager);
+		},
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),

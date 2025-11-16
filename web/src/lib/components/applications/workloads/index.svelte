@@ -13,19 +13,16 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility }: { scope: string; facility: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
-	let isMounted = $state(false);
+	const applicationClient = createClient(ApplicationService, transport);
 
 	const applications = writable<Application[]>([]);
-
-	const applicationClient = createClient(ApplicationService, transport);
-	const reloadManager = new ReloadManager(() => {
+	async function fetch() {
 		applicationClient
 			.listApplications({
 				scope: scope,
-				facility: facility
 			})
 			.then((response) => {
 				applications.set(
@@ -38,28 +35,13 @@
 			.catch((error) => {
 				console.error('Error during data loading:', error);
 			});
-	});
+	}
+	const reloadManager = new ReloadManager(fetch, false);
 
-	onMount(() => {
-		applicationClient
-			.listApplications({
-				scope: scope,
-				facility: facility
-			})
-			.then((response) => {
-				applications.set(
-					response.applications.map((application) => ({
-						...application,
-						publicAddress: response.publicAddress
-					}))
-				);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
-
-		reloadManager.start();
+	let isMounted = $state(false);
+	onMount(async () => {
+		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -68,8 +50,8 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Statistics {scope} {facility} />
-		<DataTable {applications} {reloadManager} />
+		<Statistics {scope} />
+		<DataTable {applications} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

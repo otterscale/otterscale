@@ -1,21 +1,27 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
-	import { setContext } from 'svelte';
 
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import * as Sheet from '$lib/components/ui/sheet';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	import { DataTable } from './data-table';
 </script>
 
 <script lang="ts">
 	let {
-		subvolume
+		subvolume,
+		scope,
+		volume,
+		group,
+		reloadManager
 	}: {
 		subvolume: Subvolume;
+		scope: string;
+		volume: string;
+		group: string;
+		reloadManager: ReloadManager;
 	} = $props();
-
-	setContext('subvolume', subvolume);
 </script>
 
 <div class="flex items-center justify-end gap-1">
@@ -25,7 +31,7 @@
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[50vw] p-4">
-			<DataTable {subvolume} />
+			<DataTable {subvolume} {scope} {volume} {group} {reloadManager}  />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>

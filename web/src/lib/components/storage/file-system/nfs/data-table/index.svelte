@@ -39,8 +39,6 @@
 		reloadManager: ReloadManager;
 	} = $props();
 
-	const columns = getColumns(scope, volume, group, reloadManager);
-
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -51,7 +49,9 @@
 		get data() {
 			return $subvolumes;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, volume, group, reloadManager);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

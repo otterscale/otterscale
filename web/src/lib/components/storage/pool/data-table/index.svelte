@@ -26,12 +26,10 @@
 
 <script lang="ts">
 	let {
-		scope,
 		pools,
+		scope,
 		reloadManager
-	}: { scope: string; pools: Writable<Pool[]>; reloadManager: ReloadManager } = $props();
-
-	const columns = getColumns(scope, reloadManager);
+	}: { pools: Writable<Pool[]>; scope: string; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 9 });
 	let sorting = $state<SortingState>([]);
@@ -43,7 +41,9 @@
 		get data() {
 			return $pools;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, reloadManager);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

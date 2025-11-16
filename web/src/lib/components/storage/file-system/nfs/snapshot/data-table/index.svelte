@@ -14,6 +14,7 @@
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
@@ -23,10 +24,19 @@
 
 <script lang="ts">
 	let {
-		subvolume
+		subvolume,
+		scope,
+		volume,
+		group,
+		reloadManager
 	}: {
 		subvolume: Subvolume;
+		scope: string;
+		volume: string;
+		group: string;
+		reloadManager: ReloadManager;
 	} = $props();
+
 	let snapshots = $derived(subvolume.snapshots);
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -37,7 +47,10 @@
 		get data() {
 			return snapshots;
 		},
-		columns,
+		get columns() {
+			return getColumns(subvolume, scope, volume, group, reloadManager);
+		},
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -94,6 +107,7 @@
 				rowSelection = updater;
 			}
 		},
+
 		autoResetPageIndex: false
 	});
 </script>
@@ -110,7 +124,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {scope} {reloadManager} />
+			<Create {subvolume} {scope} {volume} {group} {reloadManager} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -141,11 +155,7 @@
 						{/each}
 					</Table.Row>
 				{:else}
-					<Table.Row>
-						<Table.Cell colspan={columns.length}>
-							<Empty {table} />
-						</Table.Cell>
-					</Table.Row>
+					<Empty {table} />
 				{/each}
 			</Table.Body>
 		</Table.Root>

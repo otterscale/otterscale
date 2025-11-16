@@ -17,7 +17,7 @@
 </script>
 
 <script lang="ts">
-	let { fabric }: { fabric: Network_Fabric } = $props();
+	let { fabric, reloadManager }: { fabric: Network_Fabric; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
 

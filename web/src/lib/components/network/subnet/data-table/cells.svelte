@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
@@ -85,10 +86,10 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet ipRanges(row: Row<Network>)}
+{#snippet ipRanges(data: {row: Row<Network>; reloadManager: ReloadManager})}
 	<Layout.Cell class="items-end">
-		{#if row.original.subnet}
-			<ReservedIPRanges subnet={row.original.subnet} />
+		{#if data.row.original.subnet}
+			<ReservedIPRanges subnet={data.row.original.subnet} reloadManager={data.reloadManager} />
 		{/if}
 	</Layout.Cell>
 {/snippet}
@@ -111,8 +112,8 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<Network>)}
+{#snippet actions(data: {row: Row<Network>; reloadManager: ReloadManager})}
 	<Layout.Cell class="items-start">
-		<Actions network={row.original} />
+		<Actions network={data.row.original} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

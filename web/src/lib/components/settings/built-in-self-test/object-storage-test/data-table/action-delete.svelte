@@ -18,9 +18,11 @@
 
 <script lang="ts">
 	let {
-		testResult
+		testResult,
+		reloadManager
 	}: {
 		testResult: TestResult;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	const transport: Transport = getContext('transport');

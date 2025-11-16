@@ -18,29 +18,25 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
-	const images = $state(writable([] as Image[]));
-	let isMounted = $state(false);
-
 	const storageClient = createClient(StorageService, transport);
-	const reloadManager = new ReloadManager(() => {
-		storageClient.listImages({ scope: scope }).then((response) => {
-			images.set(response.images);
-		});
-	});
 
-	onMount(() => {
+	const images = writable([] as Image[]);
+	async function fetch() {
 		storageClient
 			.listImages({ scope: scope })
 			.then((response) => {
 				images.set(response.images);
-				isMounted = true;
 			})
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
 			});
+	}
+	const reloadManager = new ReloadManager(fetch, false);
 
-		reloadManager.start();
+	let isMounted = $state(false);
+	onMount(async () => {
+		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();

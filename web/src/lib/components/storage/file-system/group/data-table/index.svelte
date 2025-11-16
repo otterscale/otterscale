@@ -27,9 +27,13 @@
 <script lang="ts">
 	let {
 		subvolumeGroups,
+		scope,
+		volume,
 		reloadManager
 	}: {
 		subvolumeGroups: Writable<SubvolumeGroup[]>;
+		scope: string;
+		volume: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -43,7 +47,9 @@
 		get data() {
 			return $subvolumeGroups;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, volume, reloadManager);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -129,7 +135,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {scope} {reloadManager} />
+			<Create {scope} {volume} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {
@@ -170,11 +176,7 @@
 						{/each}
 					</Table.Row>
 				{:else}
-					<Table.Row>
-						<Table.Cell colspan={columns.length}>
-							<Empty {table} />
-						</Table.Cell>
-					</Table.Row>
+					<Empty {table} />
 				{/each}
 			</Table.Body>
 		</Table.Root>

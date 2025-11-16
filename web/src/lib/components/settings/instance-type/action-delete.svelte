@@ -11,16 +11,14 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
 	// Component props - accepts an instance type object
-	let { instanceType }: { instanceType: InstanceType } = $props();
+	let { instanceType, scope, reloadManager }: { instanceType: InstanceType; scope: string; reloadManager: ReloadManager } = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// Form validation state
@@ -29,7 +27,6 @@
 	// Default values for the delete instance type request
 	const defaults = {
 		scope: scope,
-		,
 		namespace: instanceType.namespace,
 		name: ''
 	} as DeleteInstanceTypeRequest;
@@ -41,11 +38,10 @@
 	function reset() {
 		request = { ...defaults };
 	}
-
+	
 	// Modal open/close state
-	let open = $state(false);
-
 	// Close modal function
+	let open = $state(false);
 	function close() {
 		open = false;
 	}

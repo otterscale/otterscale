@@ -43,7 +43,9 @@
 		get data() {
 			return $services;
 		},
-		columns,
+		get columns() {
+			return getColumns();
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

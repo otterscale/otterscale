@@ -16,16 +16,7 @@
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
-
-	let isMounted = $state(false);
-
-	const reloadManager = new ReloadManager(() => {
-		machineClient.listMachines({}).then((response) => {
-			machines.set(response.machines);
-		});
-	});
-
-	onMount(() => {
+	async function fetch() {
 		machineClient
 			.listMachines({})
 			.then((response) => {
@@ -35,8 +26,13 @@
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
 			});
+	}
+	const reloadManager = new ReloadManager(fetch, false);
 
-		reloadManager.start();
+	let isMounted = $state(false);
+	onMount(async () => {
+		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();

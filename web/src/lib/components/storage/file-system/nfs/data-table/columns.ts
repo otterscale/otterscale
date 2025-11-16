@@ -108,7 +108,7 @@ function getColumns(
 				return renderSnippet(headers.snapshots, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.snapshots, row);
+				return renderSnippet(cells.snapshots, { row, scope, volume, group, reloadManager });
 			},
 			sortingFn: (previousRow, nextRow) =>
 				getSortingFunction(

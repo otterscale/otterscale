@@ -13,29 +13,15 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } =
-		$props();
+	let { scope, namespace }: { scope: string; namespace: string } = $props();
 
 	const transport: Transport = getContext('transport');
-	let isMounted = $state(false);
-
-	const virtualMachines = writable<VirtualMachine[]>([]);
-
 	const VirtualMachineClient = createClient(InstanceService, transport);
-	const reloadManager = new ReloadManager(() => {
+	
+	const virtualMachines = writable<VirtualMachine[]>([]);
+	async function fetch() {
 		VirtualMachineClient.listVirtualMachines({
 			scope: scope,
-			facility: facility,
-			namespace: namespace
-		}).then((response) => {
-			virtualMachines.set(response.virtualMachines);
-		});
-	});
-
-	onMount(() => {
-		VirtualMachineClient.listVirtualMachines({
-			scope: scope,
-			facility: facility,
 			namespace: namespace
 		})
 			.then((response) => {
@@ -45,8 +31,13 @@
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
 			});
+	}
+	const reloadManager = new ReloadManager(fetch, false);
 
-		reloadManager.start();
+	let isMounted = $state(false);
+	onMount(async () => {
+		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -54,10 +45,10 @@
 </script>
 
 <main class="space-y-4 py-4">
-	<ExtensionsAlert {scope} {facility} />
+	<ExtensionsAlert {scope} />
 	{#if isMounted}
 		<Statistics virtualMachines={$virtualMachines} />
-		<DataTable {virtualMachines} {reloadManager} />
+		<DataTable {virtualMachines} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility }: { scope: string; facility: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	let isMounted = $state(false);
@@ -24,7 +24,6 @@
 		applicationClient
 			.listApplications({
 				scope: scope,
-				facility: facility
 			})
 			.then((response) => {
 				services.set(
@@ -45,7 +44,6 @@
 		applicationClient
 			.listApplications({
 				scope: scope,
-				facility: facility
 			})
 			.then((response) => {
 				services.set(

@@ -12,27 +12,29 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
-
-	import { type GroupStore } from '../utils.svelte';
 </script>
 
 <script lang="ts">
 	let {
-		subvolumeGroup
+		subvolumeGroup,
+		scope,
+		volume,
+		reloadManager
 	}: {
 		subvolumeGroup: SubvolumeGroup;
+		scope: string;
+		volume: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
-	const groupStore: GroupStore = getContext('groupStore');
 	const transport: Transport = getContext('transport');
-
 	const storageClient = createClient(StorageService, transport);
+
 	let invalid = $state(false);
 
 	const defaults = {
-		scope: get(groupStore.selectedScope),
-		facility: get(groupStore.selectedFacility),
-		volumeName: get(groupStore.selectedVolumeName)
+		scope: scope,
+		volumeName: volume
 	} as DeleteSubvolumeGroupRequest;
 	let request = $state(defaults);
 	function reset() {

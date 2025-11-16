@@ -10,6 +10,7 @@
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 
 	import Actions from './cell-actions.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	export const cells = {
 		row_picker,
@@ -85,8 +86,8 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<SubvolumeGroup>)}
+{#snippet actions(data: {row: Row<SubvolumeGroup>; scope: string; volume: string; reloadManager: ReloadManager;})}
 	<Layout.Cell class="items-right">
-		<Actions subvolumeGroup={row.original} />
+		<Actions subvolumeGroup={data.row.original} scope={data.scope} volume={data.volume} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

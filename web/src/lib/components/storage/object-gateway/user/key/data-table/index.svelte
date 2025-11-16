@@ -34,7 +34,6 @@
 	} = $props();
 
 	let keys = $derived(user.keys || []);
-	const columns = getColumns(scope, user, reloadManager);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -46,7 +45,9 @@
 		get data() {
 			return keys;
 		},
-		columns: columns,
+		get columns() {
+			return getColumns(scope, user, reloadManager);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

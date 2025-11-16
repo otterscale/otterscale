@@ -189,9 +189,21 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet snapshots(row: Row<Subvolume>)}
+{#snippet snapshots(data: {
+	row: Row<Subvolume>;
+	scope: string;
+	volume: string;
+	group: string;
+	reloadManager: ReloadManager;
+})}
 	<Layout.Cell class="items-end">
-		<Snapshot subvolume={row.original} />
+		<Snapshot
+			subvolume={data.row.original}
+			scope={data.scope}
+			volume={data.volume}
+			group={data.group}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}
 

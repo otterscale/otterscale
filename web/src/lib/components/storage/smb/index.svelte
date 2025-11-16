@@ -32,13 +32,13 @@
 			.catch((error) => {
 				console.error('Error reloading SMB shares:', error);
 			});
-		isMounted = true;
 	}
 	const reloadManager = new ReloadManager(fetch, false);
 
 	let isMounted = $state(false);
 	onMount(async () => {
 		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -47,7 +47,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<DataTable {scope} {namespace} {smbShares} {reloadManager} />
+		<DataTable {smbShares} {scope} {namespace} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

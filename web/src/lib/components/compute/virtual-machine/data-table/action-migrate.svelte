@@ -11,11 +11,10 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
-	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
+	let { virtualMachine, scope, reloadManager }: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -24,7 +23,6 @@
 
 	const defaults = {
 		scope: scope,
-		,
 		namespace: virtualMachine.namespace,
 		name: virtualMachine.name,
 		hostname: ''

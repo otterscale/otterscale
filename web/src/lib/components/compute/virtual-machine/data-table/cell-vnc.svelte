@@ -8,11 +8,10 @@
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
-	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
+	let { virtualMachine, scope }: { virtualMachine: VirtualMachine; scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -28,7 +27,6 @@
 		try {
 			const response = await virtualMachineClient.vNCInstance({
 				scope: scope,
-				,
 				name: virtualMachine.name,
 				namespace: virtualMachine.namespace
 			});
