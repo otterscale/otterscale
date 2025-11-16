@@ -53,11 +53,13 @@
 
 <script lang="ts">
 	let {
+		testResult,
 		scope,
-		testResult
+		reloadManager
 	}: {
-		scope: string;
 		testResult?: TestResult;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	// Request

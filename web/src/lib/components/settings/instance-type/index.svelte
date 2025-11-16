@@ -18,51 +18,39 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } =
-		$props();
+	let { scope, namespace }: { scope: string; namespace: string } = $props();
 
 	const transport: Transport = getContext('transport');
-	const virtualMachineClient = createClient(InstanceService, transport);
+	const instanceClient = createClient(InstanceService, transport);
 
 	const instanceTypes = writable<InstanceType[]>();
-	let isInstanceTypesLoading = $state(true);
-
-	const reloadManager = new ReloadManager(() => {
-		virtualMachineClient
+	async function fetch() {
+		instanceClient
 			.listInstanceTypes({
 				scope: scope,
-				facility: facility,
 				namespace: namespace,
 				includeClusterWide: false
 			})
 			.then((response) => {
 				instanceTypes.set(response.instanceTypes);
+			}).catch((error) => {
+				console.error('Error reloading instance types:', error);
 			});
-	});
+	}
 
+	const reloadManager = new ReloadManager(fetch, false);
+	
+	let isMounted = $state(false);
 	onMount(async () => {
-		try {
-			const response = await virtualMachineClient.listInstanceTypes({
-				scope: scope,
-				facility: facility,
-				namespace: namespace,
-				includeClusterWide: false
-			});
-			instanceTypes.set(response.instanceTypes);
-			isInstanceTypesLoading = false;
-
-			reloadManager.start();
-		} catch (error) {
-			console.error('Error during initial data load:', error);
-		}
+		await fetch();
+		isMounted = true;
 	});
-
 	onDestroy(() => {
 		reloadManager.stop();
 	});
 </script>
 
-{#if !isInstanceTypesLoading}
+{#if isMounted}
 	<Layout.Root>
 		<Layout.Title>{m.instance_type()}</Layout.Title>
 		<Layout.Description>
@@ -127,7 +115,7 @@
 									{/if}
 								</Table.Cell>
 								<Table.Cell class="p-0">
-									<Actions {instanceType} />
+									<Actions {instanceType} {scope} {reloadManager} />
 								</Table.Cell>
 							</Table.Row>
 						{/each}

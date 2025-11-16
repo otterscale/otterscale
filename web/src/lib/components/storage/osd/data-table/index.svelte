@@ -26,16 +26,14 @@
 
 <script lang="ts">
 	let {
-		scope,
 		objectStorageDaemons,
+		scope,
 		reloadManager
 	}: {
-		scope: string;
 		objectStorageDaemons: Writable<OSD[]>;
+		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
-
-	const columns = getColumns(scope);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 9 });
 	let sorting = $state<SortingState>([]);
@@ -47,7 +45,9 @@
 		get data() {
 			return $objectStorageDaemons;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

@@ -25,9 +25,11 @@
 <script lang="ts">
 	let {
 		applications,
+		scope,
 		reloadManager
 	}: {
 		applications: Writable<Application[]>;
+		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -41,7 +43,9 @@
 		get data() {
 			return $applications;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, reloadManager);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

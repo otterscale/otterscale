@@ -27,14 +27,14 @@
 
 <script lang="ts">
 	let {
+		smbShare,
 		scope,
 		namespace,
-		smbShare,
 		reloadManager
 	}: {
+		smbShare: SMBShare;
 		scope: string;
 		namespace: string;
-		smbShare: SMBShare;
 		reloadManager: ReloadManager;
 	} = $props();
 

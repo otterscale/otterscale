@@ -25,38 +25,26 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
+	const storageClient = createClient(StorageService, transport);
+
+	const subvolumes = $state(writable([] as Subvolume[]));
+	async function fetch() {
+		storageClient
+			.listSubvolumes({
+				scope: scope,
+				volumeName: volume,
+				groupName: selectedSubvolumeGroupName
+			})
+			.then((response) => {
+				subvolumes.set(response.subvolumes);
+			});
+	}
+	const reloadManager = new ReloadManager(fetch, false);
 
 	let isMounted = $state(false);
-	const subvolumes = $state(writable([] as Subvolume[]));
-	const storageClient = createClient(StorageService, transport);
-	const reloadManager = new ReloadManager(() => {
-		storageClient
-			.listSubvolumes({
-				scope: scope,
-				volumeName: volume,
-				groupName: selectedSubvolumeGroupName
-			})
-			.then((response) => {
-				subvolumes.set(response.subvolumes);
-			});
-	});
-
-	onMount(() => {
-		storageClient
-			.listSubvolumes({
-				scope: scope,
-				volumeName: volume,
-				groupName: selectedSubvolumeGroupName
-			})
-			.then((response) => {
-				subvolumes.set(response.subvolumes);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
-
-		reloadManager.start();
+	onMount(async () => {
+		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();

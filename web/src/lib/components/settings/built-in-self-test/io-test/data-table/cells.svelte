@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
@@ -295,8 +296,8 @@
 	{/if}
 {/snippet}
 
-{#snippet actions(row: Row<TestResult>)}
+{#snippet actions(data: {row: Row<TestResult>; reloadManager: ReloadManager;})}
 	<Layout.Cell class="items-start">
-		<Actions testResult={row.original} />
+		<Actions testResult={data.row.original} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

@@ -17,7 +17,7 @@
 </script>
 
 <script lang="ts">
-	let { subnet }: { subnet: Network_Subnet } = $props();
+	let { subnet, reloadManager }: { subnet: Network_Subnet; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
 

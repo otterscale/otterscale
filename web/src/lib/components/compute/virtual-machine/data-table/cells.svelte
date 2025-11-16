@@ -18,6 +18,7 @@
 
 	import Actions from './cell-actions.svelte';
 	import VNC from './cell-vnc.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	export const cells = {
 		row_picker,
@@ -178,16 +179,16 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet vnc(row: Row<VirtualMachine>)}
+{#snippet vnc(data: {row: Row<VirtualMachine>; scope: string})}
 	<Layout.Cell class="items-end">
-		{#if row.original.status === 'Running'}
-			<VNC virtualMachine={row.original} />
+		{#if data.row.original.status === 'Running'}
+			<VNC virtualMachine={data.row.original} scope={data.scope} />
 		{/if}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<VirtualMachine>)}
+{#snippet actions(data: {row: Row<VirtualMachine>; scope: string; reloadManager: ReloadManager})}
 	<Layout.Cell class="items-start">
-		<Actions virtualMachine={row.original} />
+		<Actions virtualMachine={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

@@ -20,18 +20,10 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
+	const storageClient = createClient(StorageService, transport);
 
 	const buckets = $state(writable([] as Bucket[]));
-	let isMounted = $state(false);
-
-	const storageClient = createClient(StorageService, transport);
-	const reloadManager = new ReloadManager(() => {
-		storageClient.listBuckets({ scope: scope }).then((response) => {
-			buckets.set(response.buckets);
-		});
-	});
-
-	onMount(() => {
+	async function fetch() {
 		storageClient
 			.listBuckets({ scope: scope })
 			.then((response) => {
@@ -41,8 +33,13 @@
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
 			});
+	}
+	const reloadManager = new ReloadManager(fetch, false);
 
-		reloadManager.start();
+	let isMounted = $state(false);
+	onMount(async () => {
+		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -52,7 +49,7 @@
 <main class="space-y-4 py-4">
 	{#if isMounted}
 		{@render trigger()}
-		<DataTable {scope} {buckets} {reloadManager} />
+		<DataTable {buckets} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTables.Table />
 	{/if}

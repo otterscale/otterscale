@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility }: { scope: string; facility: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const orchestratorClient = createClient(OrchestratorService, transport);
@@ -28,7 +28,7 @@
 
 	onMount(async () => {
 		orchestratorClient
-			.listInstanceExtensions({ scope: scope, facility: facility })
+			.listInstanceExtensions({ scope: scope })
 			.then((response) => {
 				instanceExtensions.set(response.Extensions);
 				isInstanceExtensionsLoaded = true;
@@ -37,7 +37,7 @@
 				console.error('Failed to fetch instance extensions:', error);
 			});
 		orchestratorClient
-			.listModelExtensions({ scope: scope, facility: facility })
+			.listModelExtensions({ scope: scope })
 			.then((response) => {
 				modelExtensions.set(response.Extensions);
 				isModelExtensionsLoaded = true;
@@ -46,7 +46,7 @@
 				console.error('Failed to fetch model extensions:', error);
 			});
 		orchestratorClient
-			.listStorageExtensions({ scope: scope, facility: facility })
+			.listStorageExtensions({ scope: scope })
 			.then((response) => {
 				storageExtensions.set(response.Extensions);
 				isStorageExtensionsLoaded = true;
@@ -55,7 +55,7 @@
 				console.error('Failed to fetch storage extensions:', error);
 			});
 		orchestratorClient
-			.listGeneralExtensions({ scope: scope, facility: facility })
+			.listGeneralExtensions({ scope: scope })
 			.then((response) => {
 				generalExtensions.set(response.Extensions);
 				isGeneralExtensionsLoaded = true;
@@ -76,12 +76,11 @@
 			<Accordion.Trigger>
 				<Thumbnail
 					{scope}
-					{facility}
 					extensionsBundle="instance"
 					extensions={instanceExtensions}
 					updator={() => {
 						orchestratorClient
-							.listInstanceExtensions({ scope: scope, facility: facility })
+							.listInstanceExtensions({ scope: scope })
 							.then((response) => {
 								instanceExtensions.set(response.Extensions);
 							})
@@ -104,12 +103,11 @@
 			<Accordion.Trigger>
 				<Thumbnail
 					{scope}
-					{facility}
 					extensionsBundle="model"
 					extensions={modelExtensions}
 					updator={() => {
 						orchestratorClient
-							.listModelExtensions({ scope: scope, facility: facility })
+							.listModelExtensions({ scope: scope })
 							.then((response) => {
 								modelExtensions.set(response.Extensions);
 							})
@@ -132,12 +130,11 @@
 			<Accordion.Trigger>
 				<Thumbnail
 					{scope}
-					{facility}
 					extensionsBundle="storage"
 					extensions={storageExtensions}
 					updator={() => {
 						orchestratorClient
-							.listStorageExtensions({ scope: scope, facility: facility })
+							.listStorageExtensions({ scope: scope })
 							.then((response) => {
 								storageExtensions.set(response.Extensions);
 							})
@@ -160,12 +157,11 @@
 			<Accordion.Trigger>
 				<Thumbnail
 					{scope}
-					{facility}
 					extensionsBundle="general"
 					extensions={generalExtensions}
 					updator={() => {
 						orchestratorClient
-							.listGeneralExtensions({ scope: scope, facility: facility })
+							.listGeneralExtensions({ scope: scope })
 							.then((response) => {
 								generalExtensions.set(response.Extensions);
 							})

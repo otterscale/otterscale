@@ -14,10 +14,9 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 
 	// Props
-	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
+	let { virtualMachine, scope, reloadManager  }: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
@@ -37,7 +36,6 @@
 	// Default request structure for creating a virtual machine snapshot
 	const DEFAULT_REQUEST = {
 		scope: scope,
-		,
 		namespace: virtualMachine.namespace,
 		name: '',
 		virtualMachineName: virtualMachine.name

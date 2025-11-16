@@ -15,9 +15,11 @@
 
 <script lang="ts">
 	let {
-		machine
+		machine,
+		reloadManager
 	}: {
 		machine: Machine;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	const transport: Transport = getContext('transport');

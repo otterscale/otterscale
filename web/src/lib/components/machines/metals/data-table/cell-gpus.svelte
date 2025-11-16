@@ -19,7 +19,6 @@
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 
 	let {
 		scope,
@@ -51,7 +50,6 @@
 		try {
 			const response = await client.listGPURelationsByMachine({
 				scope: scope,
-				,
 				machineId: machine.id
 			});
 

@@ -8,7 +8,6 @@
 	import { Reloader } from '$lib/components/custom/reloader';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 
 	import ExtensionsAlert from './extensions-alert.svelte';
 	import Container from './overview/container.svelte';
@@ -20,6 +19,7 @@
 	import ThroughtPut from './overview/throughput.svelte';
 	import VGPU from './overview/vgpu.svelte';
 	import Worker from './overview/worker.svelte';
+	import { page } from '$app/state';
 
 	let { scope }: { scope: string } = $props();
 
@@ -53,9 +53,7 @@
 </script>
 
 <main class="space-y-4 py-4">
-	{#if $currentKubernetes}
-		<ExtensionsAlert scope={$currentKubernetes.scope} facility={$currentKubernetes.name} />
-	{/if}
+	<ExtensionsAlert scope={page.params.scope!} />
 	{#if prometheusDriver}
 		<div class="mx-auto grid w-full gap-6">
 			<div class="grid gap-1">

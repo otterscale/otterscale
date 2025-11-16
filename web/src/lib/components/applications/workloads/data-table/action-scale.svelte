@@ -11,14 +11,13 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 
 	import type { Application } from '../types';
 </script>
 
 <script lang="ts">
 	// Component props - accepts an Application object
-	let { application }: { application: Application } = $props();
+	let { application, scope, reloadManager }: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
 
 	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');
@@ -31,8 +30,7 @@
 
 	// Default values for the scale application request
 	const defaults = {
-		scope: scope || '',
-		 || '',
+		scope: scope,
 		name: application.name,
 		namespace: application.namespace,
 		type: application.type,

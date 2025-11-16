@@ -13,7 +13,7 @@
 
 	import type { Application } from '../types';
 
-	let { scope, facility }: { scope: string; facility: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	// Client setup
 	const transport: Transport = getContext('transport');
@@ -46,7 +46,6 @@
 		try {
 			const response = await client.listApplications({
 				scope: scope,
-				facility: facility
 			});
 
 			applications.set(

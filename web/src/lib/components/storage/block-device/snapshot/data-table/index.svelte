@@ -33,8 +33,6 @@
 		reloadManager: ReloadManager;
 	} = $props();
 
-	const columns = getColumns(image, scope, reloadManager);
-
 	let snapshots = $derived(image.snapshots || []);
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -45,7 +43,10 @@
 		get data() {
 			return snapshots;
 		},
-		columns: columns,
+		get columns() {
+			return getColumns(image, scope, reloadManager);
+		},
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),

@@ -37,7 +37,9 @@
 		get data() {
 			return $machines;
 		},
-		columns,
+		get columns() {
+			return getColumns(reloadManager);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

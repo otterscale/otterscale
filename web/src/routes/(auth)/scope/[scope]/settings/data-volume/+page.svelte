@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import { DataVolume } from '$lib/components/settings/data-volume';
 	import { m } from '$lib/paraglide/messages';
-	import { breadcrumbs, currentKubernetes } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
@@ -18,10 +18,6 @@
 	]);
 </script>
 
-{#if $currentKubernetes}
-	{@const scope = $currentKubernetes.scope}
-	{@const facility = $currentKubernetes.name}
-	{@const namespace = page.params.namespace ?? ''}
-
-	<DataVolume {scope} {facility} {namespace} />
-{/if}
+{#key page.params.scope! + page.params.namespace! }
+	<DataVolume scope={page.params.scope!} namespace={page.params.namespace!} />
+{/key}

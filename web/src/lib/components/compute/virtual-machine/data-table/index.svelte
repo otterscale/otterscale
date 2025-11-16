@@ -26,9 +26,11 @@
 <script lang="ts">
 	let {
 		virtualMachines,
+		scope,
 		reloadManager
 	}: {
 		virtualMachines: Writable<VirtualMachine[]>;
+		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -44,7 +46,9 @@
 		get data() {
 			return $virtualMachines;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, reloadManager)
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

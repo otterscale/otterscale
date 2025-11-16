@@ -7,9 +7,6 @@
 </script>
 
 <script lang="ts">
-	let selectedScope = $derived(page.params.scope!);
-	let selectedFacility = $state('ceph-mon');
-
 	breadcrumbs.set([
 		{
 			title: m.storage(),
@@ -22,6 +19,6 @@
 	]);
 </script>
 
-{#key selectedScope + selectedFacility}
-	<BlockDevice bind:selectedScope bind:selectedFacility />
+{#key page.params.scope!}
+	<BlockDevice scope={page.params.scope!} />
 {/key}

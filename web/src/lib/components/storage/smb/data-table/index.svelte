@@ -26,14 +26,14 @@
 
 <script lang="ts">
 	let {
+		smbShares,
 		scope,
 		namespace,
-		smbShares,
 		reloadManager
 	}: {
+		smbShares: Writable<SMBShare[]>;
 		scope: string;
 		namespace: string;
-		smbShares: Writable<SMBShare[]>;
 		reloadManager: ReloadManager;
 	} = $props();
 

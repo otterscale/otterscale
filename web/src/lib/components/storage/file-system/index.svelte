@@ -24,7 +24,6 @@
 		<Tabs.Trigger value="group">{m.group()}</Tabs.Trigger>
 	</Tabs.List>
 {/snippet}
-
 <Tabs.Root value="nfs">
 	<Tabs.Content value="nfs">
 		<NFS {scope} {volume} bind:selectedSubvolumeGroupName {trigger} />

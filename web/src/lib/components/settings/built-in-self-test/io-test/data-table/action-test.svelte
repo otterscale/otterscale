@@ -53,9 +53,11 @@
 
 <script lang="ts">
 	let {
-		testResult
+		testResult,
+		reloadManager
 	}: {
 		testResult?: TestResult;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	// Request
@@ -94,11 +96,7 @@
 			? (testResult.kind.value.target.value?.scope ?? '')
 			: ''
 	);
-	let selectedFacility = $state(
-		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-			? (testResult.kind.value.target.value?.facility ?? '')
-			: ''
-	);
+	
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestFio: FIO = $state(DEFAULT_FIO_REQUEST);
 	let requestCephBlockDevice: CephBlockDevice = $state(DEFAULT_CEPH_BLOCK_DEVICE);
@@ -142,7 +140,7 @@
 				response.essentials.map(
 					(essential) =>
 						({
-							value: { scope: essential.scope, facility: essential.name },
+							value: { scope: essential.scope },
 							label: `${essential.scope}-${essential.name}`,
 							icon: 'ph:cube'
 						}) as SingleSelect.OptionType
@@ -248,7 +246,6 @@
 																	{option}
 																	onclick={() => {
 																		selectedScope = option.value.scope;
-																		selectedFacility = option.value.facility;
 																	}}
 																>
 																	<Icon
@@ -394,7 +391,6 @@
 							<Form.Description>{m.target()}: {requestFio.target.case}</Form.Description>
 							{#if requestFio.target.case == 'cephBlockDevice'}
 								<Form.Description>{m.scope()}: {selectedScope}</Form.Description>
-								<Form.Description>{m.facility()}: {selectedFacility}</Form.Description>
 							{:else if requestFio.target.case == 'networkFileSystem'}
 								<Form.Description>{m.type()}: {requestNetworkFileSystem.endpoint}</Form.Description>
 								<Form.Description>{m.name()}: {requestNetworkFileSystem.path}</Form.Description>
@@ -436,7 +432,6 @@
 						// prepare request
 						if (requestFio.target.case == 'cephBlockDevice') {
 							requestCephBlockDevice.scope = selectedScope;
-							requestCephBlockDevice.facility = selectedFacility;
 							requestFio.target.value = requestCephBlockDevice;
 						} else if (requestFio.target.case == 'networkFileSystem') {
 							requestFio.target.value = requestNetworkFileSystem;

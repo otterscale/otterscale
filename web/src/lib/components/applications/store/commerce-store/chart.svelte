@@ -25,12 +25,14 @@
 	let {
 		chart,
 		chartReleases,
+		scope,
 		charts = $bindable(),
 		releases = $bindable(),
 		children
 	}: {
 		chart: Application_Chart;
 		chartReleases: Application_Release[] | undefined;
+		scope: string;
 		charts: Writable<Application_Chart[]>;
 		releases: Writable<Application_Release[]>;
 		children: Snippet;
@@ -320,7 +322,7 @@
 										{release.revision}
 									</Table.Cell>
 									<Table.Cell>
-										<Actions {release} bind:releases />
+										<Actions {release} {scope} bind:releases />
 									</Table.Cell>
 								</Table.Row>
 							{/each}

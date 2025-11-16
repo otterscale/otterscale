@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import Icon from '@iconify/svelte';
 
 	import type { Network_Subnet } from '$lib/api/network/v1/network_pb';
@@ -9,9 +10,11 @@
 
 <script lang="ts">
 	let {
-		subnet
+		subnet,
+		reloadManager
 	}: {
 		subnet: Network_Subnet;
+		reloadManager: ReloadManager;
 	} = $props();
 </script>
 
@@ -22,7 +25,7 @@
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[50vw] p-4">
-			<DataTable {subnet} />
+			<DataTable {subnet} {reloadManager} />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>

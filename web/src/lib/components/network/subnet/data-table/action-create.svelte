@@ -13,6 +13,8 @@
 </script>
 
 <script lang="ts">
+	let { reloadManager }: { reloadManager: ReloadManager } = $props();
+	
 	const transport: Transport = getContext('transport');
 
 	const client = createClient(NetworkService, transport);

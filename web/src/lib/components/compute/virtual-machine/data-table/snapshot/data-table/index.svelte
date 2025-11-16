@@ -19,13 +19,18 @@
 
 	import Create from './action-create.svelte';
 	import { getColumns, messages } from './columns';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">
 	let {
-		virtualMachine
+		virtualMachine,
+		scope,
+		reloadManager
 	}: {
 		virtualMachine: VirtualMachine;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	// let snapshots = $derived(image.snapshots || []);
@@ -38,7 +43,10 @@
 		get data() {
 			return virtualMachine.snapshots;
 		},
-		columns: columns,
+		get columns() {
+			return getColumns(scope, reloadManager);
+		},
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -111,7 +119,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {virtualMachine} />
+			<Create {virtualMachine} {scope} {reloadManager} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>

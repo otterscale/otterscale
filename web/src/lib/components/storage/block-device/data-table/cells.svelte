@@ -59,9 +59,9 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet snapshots(row: Row<Image>)}
+{#snippet snapshots(data: { row: Row<Image>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-end">
-		<Snapshot image={row.original} />
+		<Snapshot image={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}
 

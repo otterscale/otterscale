@@ -22,9 +22,10 @@
 
 <script lang="ts">
 	let {
+		scope,
 		charts = $bindable(),
 		releases = $bindable()
-	}: { charts: Writable<Application_Chart[]>; releases: Writable<Application_Release[]> } =
+	}: { scope: string; charts: Writable<Application_Chart[]>; releases: Writable<Application_Release[]> } =
 		$props();
 
 	const releasesFromChartName = $derived(
@@ -67,6 +68,7 @@
 			<Chart
 				{chart}
 				chartReleases={releasesFromChartName.get(chart.name)}
+				{scope}
 				bind:charts
 				bind:releases
 			>
