@@ -156,6 +156,8 @@
 	"add_scope": "Add scope",
 	"create_scope": "Create Scope",
 	"create_scope_description": "Organize users into groups with specific permissions. Resources are isolated between scopes.",
+	"create_scope_prefix_name_description": "Prefix for node naming (defaults to scope name if not provided)",
+	"prefix_name": "Prefix Name",
 	"scope_name": "Name",
 	"scope_name_description": "Enter scope name",
 	"create": "Create",
