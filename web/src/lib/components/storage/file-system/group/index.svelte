@@ -35,7 +35,7 @@
 				subvolumeGroups.set(response.subvolumeGroups);
 			})
 			.catch((error) => {
-				console.error('Error reloading SMB shares:', error);
+				console.error('Error fetching subvolume groups:', error);
 			});
 	}
 	const reloadManager = new ReloadManager(fetch, false);

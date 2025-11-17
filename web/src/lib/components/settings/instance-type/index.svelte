@@ -35,7 +35,7 @@
 				instanceTypes.set(response.instanceTypes);
 			})
 			.catch((error) => {
-				console.error('Error reloading instance types:', error);
+				console.error('Error fetching instance types:', error);
 			});
 	}
 

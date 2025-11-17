@@ -40,7 +40,7 @@
 				dataVolumes.set(response.dataVolumes);
 			})
 			.catch((error) => {
-				console.error('Error reloading SMB shares:', error);
+				console.error('Error fetching data volumes:', error);
 			});
 	}
 
