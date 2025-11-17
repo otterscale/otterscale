@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
@@ -18,10 +18,8 @@
 		ConfigurationService,
 		FIO_Input_AccessMode
 	} from '$lib/api/configuration/v1/configuration_pb';
-	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
-	import * as Loading from '$lib/components/custom/loading';
 	import { MultipleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
@@ -129,36 +127,6 @@
 	// grpc
 	const transport: Transport = getContext('transport');
 	const configClient = createClient(ConfigurationService, transport);
-	const orchClient = createClient(OrchestratorService, transport);
-
-	const cephOptions = writable<SingleSelect.OptionType[]>([]);
-	let isCephsLoading = $state(true);
-	async function fetchCephOptions() {
-		try {
-			const response = await orchClient.listEssentials({ type: Essential_Type.CEPH });
-			cephOptions.set(
-				response.essentials.map(
-					(essential) =>
-						({
-							value: { scope: essential.scope },
-							label: `${essential.scope}-${essential.name}`,
-							icon: 'ph:cube'
-						}) as SingleSelect.OptionType
-				)
-			);
-			isCephsLoading = false;
-		} catch (error) {
-			console.error('Error fetching:', error);
-		}
-	}
-
-	onMount(async () => {
-		try {
-			await fetchCephOptions();
-		} catch (error) {
-			console.error('Error during initial data load:', error);
-		}
-	});
 </script>
 
 <Modal.Root bind:open steps={3}>
@@ -224,47 +192,7 @@
 								</SingleSelect.Root>
 							</Form.Field>
 						</Form.Fieldset>
-						<!-- Target -->
-						{#if requestFio.target.case == 'cephBlockDevice'}
-							<Form.Fieldset>
-								<Form.Legend>{m.target()}</Form.Legend>
-								<Form.Field>
-									<Form.Label>{m.ceph()}</Form.Label>
-									{#if isCephsLoading}
-										<Loading.Selection />
-									{:else}
-										<SingleSelect.Root options={cephOptions}>
-											<SingleSelect.Trigger />
-											<SingleSelect.Content>
-												<SingleSelect.Options>
-													<SingleSelect.Input />
-													<SingleSelect.List>
-														<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
-														<SingleSelect.Group>
-															{#each $cephOptions as option}
-																<SingleSelect.Item
-																	{option}
-																	onclick={() => {
-																		selectedScope = option.value.scope;
-																	}}
-																>
-																	<Icon
-																		icon={option.icon ? option.icon : 'ph:empty'}
-																		class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
-																	/>
-																	{option.label}
-																	<SingleSelect.Check {option} />
-																</SingleSelect.Item>
-															{/each}
-														</SingleSelect.Group>
-													</SingleSelect.List>
-												</SingleSelect.Options>
-											</SingleSelect.Content>
-										</SingleSelect.Root>
-									{/if}
-								</Form.Field>
-							</Form.Fieldset>
-						{:else if requestFio.target.case == 'networkFileSystem'}
+						{#if requestFio.target.case == 'networkFileSystem'}
 							<Form.Fieldset>
 								<Form.Legend>{m.target()}</Form.Legend>
 								<Form.Field>

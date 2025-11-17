@@ -282,6 +282,7 @@
 	"empty_bookmark": "空白",
 	"root_disk": "根磁碟",
 	"error_generic": "發生錯誤！",
+	"host": "主機位址",
 	"hosts": "主機",
 	"pools": "儲存池",
 	"osd_in_ratio": "OSD In 比率",

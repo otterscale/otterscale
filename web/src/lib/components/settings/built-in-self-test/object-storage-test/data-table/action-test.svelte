@@ -126,7 +126,7 @@
 
 	let invalidName = $state(false);
 	let invalidTarget = $state(false);
-	let invalidEndPoint = $state(false);
+	let invalidHost = $state(false);
 	let invalidAccessKey = $state(false);
 	let invalidSecretKey = $state(false);
 	let invalidOperation = $state(false);
@@ -135,7 +135,7 @@
 		invalidName ||
 			invalidTarget ||
 			(requestWarp.target.case == 'externalObjectService' &&
-				(invalidEndPoint || invalidAccessKey || invalidSecretKey))
+				(invalidHost || invalidAccessKey || invalidSecretKey))
 	);
 	const invalidAdvanced = $derived(invalidOperation);
 	const invalid = $derived(invalidBasic || invalidAdvanced);
@@ -240,12 +240,12 @@
 							<Form.Fieldset>
 								<Form.Legend>{m.target()}</Form.Legend>
 								<Form.Field>
-									<Form.Label>{m.endpoint()}</Form.Label>
+									<Form.Label>{m.host()}</Form.Label>
 									<SingleInput.General
 										type="text"
 										required
-										bind:value={requestExternalObjectService.endpoint}
-										bind:invalid={invalidEndPoint}
+										bind:value={requestExternalObjectService.host}
+										bind:invalid={invalidHost}
 									/>
 								</Form.Field>
 								<Form.Field>
@@ -361,13 +361,9 @@
 							{#if requestWarp.target.case == 'internalObjectService'}
 								<Form.Description>{m.type()}: {requestInternalObjectService.type}</Form.Description>
 								<Form.Description>{m.name()}: {requestInternalObjectService.name}</Form.Description>
-								<Form.Description
-									>{m.endpoint()}: {requestInternalObjectService.endpoint}</Form.Description
-								>
+								<Form.Description>{m.host()}: {requestInternalObjectService.host}</Form.Description>
 							{:else if requestWarp.target.case == 'externalObjectService'}
-								<Form.Description
-									>{m.endpoint()}: {requestExternalObjectService.endpoint}</Form.Description
-								>
+								<Form.Description>{m.host()}: {requestExternalObjectService.host}</Form.Description>
 								<Form.Description
 									>{m.access_key()}: {requestExternalObjectService.accessKey}</Form.Description
 								>

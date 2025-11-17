@@ -70,7 +70,7 @@
 				</Badge>
 			{:else if row.original.kind.value.target.case === 'externalObjectService'}
 				<Badge variant="outline">
-					{row.original.kind.value.target.value.endpoint}
+					{row.original.kind.value.target.value.host}
 				</Badge>
 			{/if}
 		{/if}

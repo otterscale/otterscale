@@ -38,7 +38,7 @@
 							value: internalObjectService,
 							label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
 							icon: 'ph:cube',
-							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`
+							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.host})`
 						}) as SingleSelect.OptionType
 				)
 			);
@@ -49,16 +49,15 @@
 							value: internalObjectService,
 							label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
 							icon: 'ph:cube',
-							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`
+							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.host})`
 						}) as SingleSelect.OptionType
 				);
 				const matched = options.find(
 					(opt) =>
 						opt.value.type === selectedInternalObjectService.type &&
 						opt.value.scope === selectedInternalObjectService.scope &&
-						opt.value.facility === selectedInternalObjectService.facility &&
 						opt.value.name === selectedInternalObjectService.name &&
-						opt.value.endpoint === selectedInternalObjectService.endpoint
+						opt.value.host === selectedInternalObjectService.host
 				);
 				if (matched) {
 					selectedInit = matched.value;

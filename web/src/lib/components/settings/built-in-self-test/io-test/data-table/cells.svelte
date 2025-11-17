@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
@@ -11,6 +10,7 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatSecond, formatTimeAgo } from '$lib/formatter';
@@ -67,9 +67,9 @@
 {#snippet target(row: Row<TestResult>)}
 	<Layout.Cell class="items-start">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
-			{#if row.original.kind.value.target.case === 'cephBlockDevice' && row.original.kind.value.target.value.facility}
+			{#if row.original.kind.value.target.case === 'cephBlockDevice'}
 				<Badge variant="outline">
-					{row.original.kind.value.target.value.facility}
+					{row.original.kind.value.target.value.scope}
 				</Badge>
 			{:else if row.original.kind.value.target.case === 'networkFileSystem' && row.original.kind.value.target.value.endpoint}
 				<Badge variant="outline">

@@ -284,6 +284,7 @@
 	"empty_bookmark": "Empty",
 	"root_disk": "Root Disk",
 	"error_generic": "Something went wrong!",
+	"host": "Host",
 	"hosts": "Hosts",
 	"pools": "Pools",
 	"osd_in_ratio": "OSD In Ratio",
