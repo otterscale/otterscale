@@ -50,7 +50,7 @@ func (r *charmRepo) ListArtifacts(ctx context.Context, name string) ([]charm.Art
 }
 
 func (r *charmRepo) find(ctx context.Context, name string) ([]charm.Charm, error) {
-	queryURL, err := url.ParseRequestURI(r.juju.charmhubAPIURL())
+	queryURL, err := url.ParseRequestURI(r.juju.conf.JujuCharmhubAPIURL())
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (r *charmRepo) find(ctx context.Context, name string) ([]charm.Charm, error
 }
 
 func (r *charmRepo) info(ctx context.Context, name string) ([]charm.Artifact, error) {
-	queryURL, err := url.ParseRequestURI(r.juju.charmhubAPIURL())
+	queryURL, err := url.ParseRequestURI(r.juju.conf.JujuCharmhubAPIURL())
 	if err != nil {
 		return nil, err
 	}

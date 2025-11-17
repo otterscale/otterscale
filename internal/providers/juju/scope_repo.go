@@ -34,7 +34,7 @@ func (r *scopeRepo) List(_ context.Context) ([]scope.Scope, error) {
 		return nil, err
 	}
 
-	summaries, err := modelmanager.NewClient(conn).ListModelSummaries(r.juju.username(), true)
+	summaries, err := modelmanager.NewClient(conn).ListModelSummaries(r.juju.conf.JujuUsername(), true)
 	if err != nil {
 		return nil, err
 	}
@@ -78,9 +78,9 @@ func (r *scopeRepo) create(_ context.Context, name, aptMirrorURL string) (base.M
 		return base.ModelInfo{}, err
 	}
 
-	userName := r.juju.username()
-	cloudName := r.juju.cloudName()
-	cloudRegion := r.juju.cloudRegion()
+	userName := r.juju.conf.JujuUsername()
+	cloudName := r.juju.conf.JujuCloudName()
+	cloudRegion := r.juju.conf.JujuCloudRegion()
 	cloudCredential := names.CloudCredentialTag{}
 	config := map[string]any{"apt-mirror": aptMirrorURL}
 
@@ -93,7 +93,7 @@ func (r *scopeRepo) addSSHKey(_ context.Context, name, sshKey string) error {
 		return err
 	}
 
-	_, err = keymanager.NewClient(conn).AddKeys(r.juju.username(), sshKey)
+	_, err = keymanager.NewClient(conn).AddKeys(r.juju.conf.JujuUsername(), sshKey)
 	return err
 }
 

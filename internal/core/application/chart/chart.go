@@ -3,22 +3,18 @@ package chart
 import (
 	"bytes"
 	"context"
-	"encoding/base64"
 	"fmt"
-	"net/url"
 	"os"
 	"path/filepath"
-	"slices"
 
 	"golang.org/x/sync/errgroup"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/repo"
-	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
 const RepoURL = "https://otterscale.github.io/charts"
@@ -60,6 +56,7 @@ type ChartRepo interface {
 	Push(ctx context.Context, chartRef, remoteOCI string) (string, error)
 	Index(ctx context.Context, dir, url string) error
 	GetStableVersion(ctx context.Context, url, name string, useCache bool) (*Version, error)
+	LocalOCI(scope string) (string, error)
 }
 
 type UseCase struct {
@@ -75,7 +72,7 @@ func NewUseCase(conf *config.Config, chart ChartRepo) *UseCase {
 }
 
 func (uc *UseCase) ListCharts(ctx context.Context) ([]Chart, error) {
-	urls := slices.Clone(uc.conf.Kube.HelmRepositoryURLs)
+	urls := uc.conf.KubeHelmRepositoryURLs()
 
 	exists, err := checkDirExists(localRepoDir)
 	if err != nil {
@@ -163,33 +160,13 @@ func (uc *UseCase) UploadChart(ctx context.Context, chartContent []byte) error {
 	return uc.chart.Index(ctx, localRepoDir, localOCI)
 }
 
-// TODO: replace with remote flag
-func (uc *UseCase) newMicroK8sConfig() (*rest.Config, error) {
-	kubeConfig, err := base64.StdEncoding.DecodeString(uc.conf.MicroK8s.Config)
-	if err != nil {
-		return nil, err
-	}
-
-	configAPI, err := clientcmd.Load(kubeConfig)
-	if err != nil {
-		return nil, err
-	}
-
-	return clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
-}
-
 func (uc *UseCase) localOCI() (string, error) {
-	config, err := uc.newMicroK8sConfig()
+	hostname, err := uc.chart.LocalOCI(scope.ReservedName)
 	if err != nil {
 		return "", err
 	}
 
-	url, err := url.Parse(config.Host)
-	if err != nil {
-		return "", err
-	}
-
-	return fmt.Sprintf(localOCIFormat, url.Hostname()), nil
+	return fmt.Sprintf(localOCIFormat, hostname), nil
 }
 
 func (uc *UseCase) extractMetadata(chartContent []byte) (name, version string, err error) {

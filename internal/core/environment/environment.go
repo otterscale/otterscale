@@ -50,20 +50,9 @@ func (uc *UseCase) CheckHealth() (int32, error) {
 	return healthOK, nil
 }
 
-func (uc *UseCase) UpdateConfig(conf *config.Config) error {
-	uc.conf.MAAS = conf.MAAS
-	uc.conf.Juju = conf.Juju
-	uc.conf.MicroK8s = conf.MicroK8s
-	return uc.conf.Override(uc.conf)
-}
-
-func (uc *UseCase) GetConfigHelmRepos() []string {
-	return uc.conf.Kube.HelmRepositoryURLs
-}
-
-func (uc *UseCase) UpdateConfigHelmRepos(urls []string) error {
-	uc.conf.Kube.HelmRepositoryURLs = urls
-	return uc.conf.Override(uc.conf)
+// TODO: update kubernetes config map
+func (uc *UseCase) UpdateConfig(_ *config.Schema) error {
+	return errors.ErrUnsupported
 }
 
 func (uc *UseCase) GetPrometheusURL() *url.URL {
@@ -114,5 +103,5 @@ func (uc *UseCase) DiscoverPrometheusURL(ctx context.Context) (*url.URL, error) 
 }
 
 func isMAASConfigured(conf *config.Config) bool {
-	return conf.MAAS.Key != "::"
+	return conf.MAASKey() != "::"
 }

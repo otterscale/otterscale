@@ -8,9 +8,10 @@ import (
 
 func (uc *UseCase) createCOS(ctx context.Context, scope string) error {
 	// consume
+	username := uc.conf.JujuUsername()
 	offerURLs := []string{
-		uc.conf.Juju.Username + "/cos.global-prometheus",
-		uc.conf.Juju.Username + "/cos.global-grafana",
+		username + "/cos.global-prometheus",
+		username + "/cos.global-grafana",
 	}
 
 	for _, url := range offerURLs {

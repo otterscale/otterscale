@@ -14,7 +14,7 @@ func NewInit() *cobra.Command {
 		Example: "otterscale init > config.yaml\notterscale init > /path/to/config.yaml",
 		Args:    cobra.NoArgs,
 		RunE: func(_ *cobra.Command, _ []string) error {
-			return config.PrintDefaultConfig()
+			return config.PrintDefault()
 		},
 	}
 	return cmd

@@ -38,7 +38,7 @@ func (s *EnvironmentService) CheckHealth(_ context.Context, _ *pb.CheckHealthReq
 }
 
 func (s *EnvironmentService) UpdateConfig(_ context.Context, req *pb.UpdateConfigRequest) (*emptypb.Empty, error) {
-	if err := s.environment.UpdateConfig(toConfig(req)); err != nil {
+	if err := s.environment.UpdateConfig(toConfigSchema(req)); err != nil {
 		return nil, err
 	}
 
@@ -65,8 +65,8 @@ func (s *EnvironmentService) GetPrometheusURL() *url.URL {
 	return s.environment.GetPrometheusURL()
 }
 
-func toConfig(req *pb.UpdateConfigRequest) *config.Config {
-	return &config.Config{
+func toConfigSchema(req *pb.UpdateConfigRequest) *config.Schema {
+	return &config.Schema{
 		MAAS: config.MAAS{
 			URL:     req.GetMaasUrl(),
 			Key:     req.GetMaasKey(),

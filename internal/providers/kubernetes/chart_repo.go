@@ -125,6 +125,20 @@ func (r *chartRepo) buildChartsFromIndex(indexFile *repo.IndexFile) []chart.Char
 	return charts
 }
 
+func (r *chartRepo) LocalOCI(scope string) (string, error) {
+	config, err := r.kubernetes.Config(scope)
+	if err != nil {
+		return "", err
+	}
+
+	url, err := url.Parse(config.Host)
+	if err != nil {
+		return "", err
+	}
+
+	return url.Hostname(), nil
+}
+
 func (r *chartRepo) getRepoIndexCache(url string) (*repoIndex, bool) {
 	v, ok := r.repoIndexCache.Load(url)
 	if !ok {

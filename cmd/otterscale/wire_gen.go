@@ -54,10 +54,7 @@ import (
 // Injectors from wire.go:
 
 func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
-	configConfig, cleanup, err := config.New()
-	if err != nil {
-		return nil, nil, err
-	}
+	configConfig := config.New()
 	useCase := bootstrap.NewUseCase(configConfig)
 	bootstrapService := app.NewBootstrapService(useCase)
 	muxBootstrap := mux.NewBootstrap(bootstrapService)
@@ -65,7 +62,6 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	jujuJuju := juju.New(configConfig)
 	kubernetesKubernetes, err := kubernetes.New(configConfig, jujuJuju)
 	if err != nil {
-		cleanup()
 		return nil, nil, err
 	}
 	namespaceRepo := kubernetes.NewNamespaceRepo(kubernetesKubernetes)
@@ -73,7 +69,6 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	clusterUseCase := cluster.NewUseCase(namespaceRepo, nodeRepo)
 	chartRepo, err := kubernetes.NewChartRepo(kubernetesKubernetes)
 	if err != nil {
-		cleanup()
 		return nil, nil, err
 	}
 	chartUseCase := chart.NewUseCase(configConfig, chartRepo)
@@ -85,7 +80,6 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	persistentUseCase := persistent.NewUseCase(persistentVolumeClaimRepo, storageClassRepo)
 	releaseRepo, err := kubernetes.NewReleaseRepo(kubernetesKubernetes)
 	if err != nil {
-		cleanup()
 		return nil, nil, err
 	}
 	releaseUseCase := release.NewUseCase(releaseRepo, chartRepo)
@@ -126,7 +120,6 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	facilityService := app.NewFacilityService(facilityUseCase, actionUseCase, charmUseCase)
 	kubeVirt, err := kubevirt.New(configConfig, kubernetesKubernetes)
 	if err != nil {
-		cleanup()
 		return nil, nil, err
 	}
 	dataVolumeRepo := kubevirt.NewDataVolumeRepo(kubeVirt)
@@ -184,6 +177,5 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, storageService, scopeService)
 	command := newCmd(configConfig, muxBootstrap, jwksProxy, serve)
 	return command, func() {
-		cleanup()
 	}, nil
 }
