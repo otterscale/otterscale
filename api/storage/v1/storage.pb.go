@@ -114,6 +114,91 @@ func (x Bucket_ACL) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
+type SMBShare_SecurityMode int32
+
+const (
+	SMBShare_USER             SMBShare_SecurityMode = 0
+	SMBShare_ACTIVE_DIRECTORY SMBShare_SecurityMode = 1
+)
+
+// Enum value maps for SMBShare_SecurityMode.
+var (
+	SMBShare_SecurityMode_name = map[int32]string{
+		0: "USER",
+		1: "ACTIVE_DIRECTORY",
+	}
+	SMBShare_SecurityMode_value = map[string]int32{
+		"USER":             0,
+		"ACTIVE_DIRECTORY": 1,
+	}
+)
+
+func (x SMBShare_SecurityMode) Enum() *SMBShare_SecurityMode {
+	p := new(SMBShare_SecurityMode)
+	*p = x
+	return p
+}
+
+func (x SMBShare_SecurityMode) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (SMBShare_SecurityMode) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_storage_v1_storage_proto_enumTypes[2].Descriptor()
+}
+
+func (SMBShare_SecurityMode) Type() protoreflect.EnumType {
+	return &file_api_storage_v1_storage_proto_enumTypes[2]
+}
+
+func (x SMBShare_SecurityMode) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+type SMBShare_MapToGuest int32
+
+const (
+	SMBShare_NEVER        SMBShare_MapToGuest = 0
+	SMBShare_BAD_USER     SMBShare_MapToGuest = 1
+	SMBShare_BAD_PASSWORD SMBShare_MapToGuest = 2
+)
+
+// Enum value maps for SMBShare_MapToGuest.
+var (
+	SMBShare_MapToGuest_name = map[int32]string{
+		0: "NEVER",
+		1: "BAD_USER",
+		2: "BAD_PASSWORD",
+	}
+	SMBShare_MapToGuest_value = map[string]int32{
+		"NEVER":        0,
+		"BAD_USER":     1,
+		"BAD_PASSWORD": 2,
+	}
+)
+
+func (x SMBShare_MapToGuest) Enum() *SMBShare_MapToGuest {
+	p := new(SMBShare_MapToGuest)
+	*p = x
+	return p
+}
+
+func (x SMBShare_MapToGuest) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (SMBShare_MapToGuest) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_storage_v1_storage_proto_enumTypes[3].Descriptor()
+}
+
+func (SMBShare_MapToGuest) Type() protoreflect.EnumType {
+	return &file_api_storage_v1_storage_proto_enumTypes[3]
+}
+
+func (x SMBShare_MapToGuest) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 type Machine struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
@@ -2839,6 +2924,476 @@ func (b0 User_builder) Build() *User {
 	return m0
 }
 
+type SMBShare struct {
+	state                     protoimpl.MessageState    `protogen:"opaque.v1"`
+	xxx_hidden_Name           *string                   `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Namespace      *string                   `protobuf:"bytes,2,opt,name=namespace"`
+	xxx_hidden_Status         *string                   `protobuf:"bytes,3,opt,name=status"`
+	xxx_hidden_SizeBytes      uint64                    `protobuf:"varint,4,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_Browsable      bool                      `protobuf:"varint,11,opt,name=browsable"`
+	xxx_hidden_ReadOnly       bool                      `protobuf:"varint,12,opt,name=read_only,json=readOnly"`
+	xxx_hidden_GuestOk        bool                      `protobuf:"varint,13,opt,name=guest_ok,json=guestOk"`
+	xxx_hidden_MapToGuest     SMBShare_MapToGuest       `protobuf:"varint,21,opt,name=map_to_guest,json=mapToGuest,enum=otterscale.storage.v1.SMBShare_MapToGuest"`
+	xxx_hidden_SecurityMode   SMBShare_SecurityMode     `protobuf:"varint,31,opt,name=security_mode,json=securityMode,enum=otterscale.storage.v1.SMBShare_SecurityMode"`
+	xxx_hidden_ValidUsers     []string                  `protobuf:"bytes,41,rep,name=valid_users,json=validUsers"`
+	xxx_hidden_Authentication isSMBShare_Authentication `protobuf_oneof:"authentication"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
+}
+
+func (x *SMBShare) Reset() {
+	*x = SMBShare{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SMBShare) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SMBShare) ProtoMessage() {}
+
+func (x *SMBShare) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *SMBShare) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *SMBShare) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *SMBShare) GetStatus() string {
+	if x != nil {
+		if x.xxx_hidden_Status != nil {
+			return *x.xxx_hidden_Status
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *SMBShare) GetSizeBytes() uint64 {
+	if x != nil {
+		return x.xxx_hidden_SizeBytes
+	}
+	return 0
+}
+
+func (x *SMBShare) GetBrowsable() bool {
+	if x != nil {
+		return x.xxx_hidden_Browsable
+	}
+	return false
+}
+
+func (x *SMBShare) GetReadOnly() bool {
+	if x != nil {
+		return x.xxx_hidden_ReadOnly
+	}
+	return false
+}
+
+func (x *SMBShare) GetGuestOk() bool {
+	if x != nil {
+		return x.xxx_hidden_GuestOk
+	}
+	return false
+}
+
+func (x *SMBShare) GetMapToGuest() SMBShare_MapToGuest {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 7) {
+			return x.xxx_hidden_MapToGuest
+		}
+	}
+	return SMBShare_NEVER
+}
+
+func (x *SMBShare) GetSecurityMode() SMBShare_SecurityMode {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 8) {
+			return x.xxx_hidden_SecurityMode
+		}
+	}
+	return SMBShare_USER
+}
+
+func (x *SMBShare) GetValidUsers() []string {
+	if x != nil {
+		return x.xxx_hidden_ValidUsers
+	}
+	return nil
+}
+
+func (x *SMBShare) GetActiveDirectory() *SMBShare_ActiveDirectory {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Authentication.(*sMBShare_ActiveDirectory_); ok {
+			return x.ActiveDirectory
+		}
+	}
+	return nil
+}
+
+func (x *SMBShare) GetLocal() *SMBShare_Local {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Authentication.(*sMBShare_Local_); ok {
+			return x.Local
+		}
+	}
+	return nil
+}
+
+func (x *SMBShare) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
+}
+
+func (x *SMBShare) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
+}
+
+func (x *SMBShare) SetStatus(v string) {
+	x.xxx_hidden_Status = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
+}
+
+func (x *SMBShare) SetSizeBytes(v uint64) {
+	x.xxx_hidden_SizeBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
+}
+
+func (x *SMBShare) SetBrowsable(v bool) {
+	x.xxx_hidden_Browsable = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
+}
+
+func (x *SMBShare) SetReadOnly(v bool) {
+	x.xxx_hidden_ReadOnly = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
+}
+
+func (x *SMBShare) SetGuestOk(v bool) {
+	x.xxx_hidden_GuestOk = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
+}
+
+func (x *SMBShare) SetMapToGuest(v SMBShare_MapToGuest) {
+	x.xxx_hidden_MapToGuest = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
+}
+
+func (x *SMBShare) SetSecurityMode(v SMBShare_SecurityMode) {
+	x.xxx_hidden_SecurityMode = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 11)
+}
+
+func (x *SMBShare) SetValidUsers(v []string) {
+	x.xxx_hidden_ValidUsers = v
+}
+
+func (x *SMBShare) SetActiveDirectory(v *SMBShare_ActiveDirectory) {
+	if v == nil {
+		x.xxx_hidden_Authentication = nil
+		return
+	}
+	x.xxx_hidden_Authentication = &sMBShare_ActiveDirectory_{v}
+}
+
+func (x *SMBShare) SetLocal(v *SMBShare_Local) {
+	if v == nil {
+		x.xxx_hidden_Authentication = nil
+		return
+	}
+	x.xxx_hidden_Authentication = &sMBShare_Local_{v}
+}
+
+func (x *SMBShare) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *SMBShare) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *SMBShare) HasStatus() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *SMBShare) HasSizeBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *SMBShare) HasBrowsable() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *SMBShare) HasReadOnly() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *SMBShare) HasGuestOk() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+}
+
+func (x *SMBShare) HasMapToGuest() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
+}
+
+func (x *SMBShare) HasSecurityMode() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
+}
+
+func (x *SMBShare) HasAuthentication() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Authentication != nil
+}
+
+func (x *SMBShare) HasActiveDirectory() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Authentication.(*sMBShare_ActiveDirectory_)
+	return ok
+}
+
+func (x *SMBShare) HasLocal() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Authentication.(*sMBShare_Local_)
+	return ok
+}
+
+func (x *SMBShare) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *SMBShare) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *SMBShare) ClearStatus() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Status = nil
+}
+
+func (x *SMBShare) ClearSizeBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_SizeBytes = 0
+}
+
+func (x *SMBShare) ClearBrowsable() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_Browsable = false
+}
+
+func (x *SMBShare) ClearReadOnly() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_ReadOnly = false
+}
+
+func (x *SMBShare) ClearGuestOk() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	x.xxx_hidden_GuestOk = false
+}
+
+func (x *SMBShare) ClearMapToGuest() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	x.xxx_hidden_MapToGuest = SMBShare_NEVER
+}
+
+func (x *SMBShare) ClearSecurityMode() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	x.xxx_hidden_SecurityMode = SMBShare_USER
+}
+
+func (x *SMBShare) ClearAuthentication() {
+	x.xxx_hidden_Authentication = nil
+}
+
+func (x *SMBShare) ClearActiveDirectory() {
+	if _, ok := x.xxx_hidden_Authentication.(*sMBShare_ActiveDirectory_); ok {
+		x.xxx_hidden_Authentication = nil
+	}
+}
+
+func (x *SMBShare) ClearLocal() {
+	if _, ok := x.xxx_hidden_Authentication.(*sMBShare_Local_); ok {
+		x.xxx_hidden_Authentication = nil
+	}
+}
+
+const SMBShare_Authentication_not_set_case case_SMBShare_Authentication = 0
+const SMBShare_ActiveDirectory_case case_SMBShare_Authentication = 51
+const SMBShare_Local_case case_SMBShare_Authentication = 52
+
+func (x *SMBShare) WhichAuthentication() case_SMBShare_Authentication {
+	if x == nil {
+		return SMBShare_Authentication_not_set_case
+	}
+	switch x.xxx_hidden_Authentication.(type) {
+	case *sMBShare_ActiveDirectory_:
+		return SMBShare_ActiveDirectory_case
+	case *sMBShare_Local_:
+		return SMBShare_Local_case
+	default:
+		return SMBShare_Authentication_not_set_case
+	}
+}
+
+type SMBShare_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Name         *string
+	Namespace    *string
+	Status       *string
+	SizeBytes    *uint64
+	Browsable    *bool
+	ReadOnly     *bool
+	GuestOk      *bool
+	MapToGuest   *SMBShare_MapToGuest
+	SecurityMode *SMBShare_SecurityMode
+	ValidUsers   []string
+	// Fields of oneof xxx_hidden_Authentication:
+	ActiveDirectory *SMBShare_ActiveDirectory
+	Local           *SMBShare_Local
+	// -- end of xxx_hidden_Authentication
+}
+
+func (b0 SMBShare_builder) Build() *SMBShare {
+	m0 := &SMBShare{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Status != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
+		x.xxx_hidden_Status = b.Status
+	}
+	if b.SizeBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
+		x.xxx_hidden_SizeBytes = *b.SizeBytes
+	}
+	if b.Browsable != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
+		x.xxx_hidden_Browsable = *b.Browsable
+	}
+	if b.ReadOnly != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
+		x.xxx_hidden_ReadOnly = *b.ReadOnly
+	}
+	if b.GuestOk != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
+		x.xxx_hidden_GuestOk = *b.GuestOk
+	}
+	if b.MapToGuest != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
+		x.xxx_hidden_MapToGuest = *b.MapToGuest
+	}
+	if b.SecurityMode != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 11)
+		x.xxx_hidden_SecurityMode = *b.SecurityMode
+	}
+	x.xxx_hidden_ValidUsers = b.ValidUsers
+	if b.ActiveDirectory != nil {
+		x.xxx_hidden_Authentication = &sMBShare_ActiveDirectory_{b.ActiveDirectory}
+	}
+	if b.Local != nil {
+		x.xxx_hidden_Authentication = &sMBShare_Local_{b.Local}
+	}
+	return m0
+}
+
+type case_SMBShare_Authentication protoreflect.FieldNumber
+
+func (x case_SMBShare_Authentication) String() string {
+	md := file_api_storage_v1_storage_proto_msgTypes[10].Descriptor()
+	if x == 0 {
+		return "not set"
+	}
+	return protoimpl.X.MessageFieldStringOf(md, protoreflect.FieldNumber(x))
+}
+
+type isSMBShare_Authentication interface {
+	isSMBShare_Authentication()
+}
+
+type sMBShare_ActiveDirectory_ struct {
+	ActiveDirectory *SMBShare_ActiveDirectory `protobuf:"bytes,51,opt,name=active_directory,json=activeDirectory,oneof"`
+}
+
+type sMBShare_Local_ struct {
+	Local *SMBShare_Local `protobuf:"bytes,52,opt,name=local,oneof"`
+}
+
+func (*sMBShare_ActiveDirectory_) isSMBShare_Authentication() {}
+
+func (*sMBShare_Local_) isSMBShare_Authentication() {}
+
 type ListMONsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
@@ -2850,7 +3405,7 @@ type ListMONsRequest struct {
 
 func (x *ListMONsRequest) Reset() {
 	*x = ListMONsRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[10]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2862,7 +3417,7 @@ func (x *ListMONsRequest) String() string {
 func (*ListMONsRequest) ProtoMessage() {}
 
 func (x *ListMONsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[10]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2926,7 +3481,7 @@ type ListMONsResponse struct {
 
 func (x *ListMONsResponse) Reset() {
 	*x = ListMONsResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[11]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2938,7 +3493,7 @@ func (x *ListMONsResponse) String() string {
 func (*ListMONsResponse) ProtoMessage() {}
 
 func (x *ListMONsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[11]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2987,7 +3542,7 @@ type ListOSDsRequest struct {
 
 func (x *ListOSDsRequest) Reset() {
 	*x = ListOSDsRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[12]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2999,7 +3554,7 @@ func (x *ListOSDsRequest) String() string {
 func (*ListOSDsRequest) ProtoMessage() {}
 
 func (x *ListOSDsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[12]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3063,7 +3618,7 @@ type ListOSDsResponse struct {
 
 func (x *ListOSDsResponse) Reset() {
 	*x = ListOSDsResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[13]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3075,7 +3630,7 @@ func (x *ListOSDsResponse) String() string {
 func (*ListOSDsResponse) ProtoMessage() {}
 
 func (x *ListOSDsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[13]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3125,7 +3680,7 @@ type DoSMARTRequest struct {
 
 func (x *DoSMARTRequest) Reset() {
 	*x = DoSMARTRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[14]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3137,7 +3692,7 @@ func (x *DoSMARTRequest) String() string {
 func (*DoSMARTRequest) ProtoMessage() {}
 
 func (x *DoSMARTRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[14]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3233,7 +3788,7 @@ type DoSMARTResponse struct {
 
 func (x *DoSMARTResponse) Reset() {
 	*x = DoSMARTResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[15]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3245,7 +3800,7 @@ func (x *DoSMARTResponse) String() string {
 func (*DoSMARTResponse) ProtoMessage() {}
 
 func (x *DoSMARTResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[15]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3293,7 +3848,7 @@ type ListPoolsRequest struct {
 
 func (x *ListPoolsRequest) Reset() {
 	*x = ListPoolsRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[16]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3305,7 +3860,7 @@ func (x *ListPoolsRequest) String() string {
 func (*ListPoolsRequest) ProtoMessage() {}
 
 func (x *ListPoolsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[16]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3401,7 +3956,7 @@ type ListPoolsResponse struct {
 
 func (x *ListPoolsResponse) Reset() {
 	*x = ListPoolsResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[17]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3413,7 +3968,7 @@ func (x *ListPoolsResponse) String() string {
 func (*ListPoolsResponse) ProtoMessage() {}
 
 func (x *ListPoolsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[17]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3469,7 +4024,7 @@ type CreatePoolRequest struct {
 
 func (x *CreatePoolRequest) Reset() {
 	*x = CreatePoolRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[18]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3481,7 +4036,7 @@ func (x *CreatePoolRequest) String() string {
 func (*CreatePoolRequest) ProtoMessage() {}
 
 func (x *CreatePoolRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[18]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3742,7 +4297,7 @@ type UpdatePoolRequest struct {
 
 func (x *UpdatePoolRequest) Reset() {
 	*x = UpdatePoolRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[19]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3754,7 +4309,7 @@ func (x *UpdatePoolRequest) String() string {
 func (*UpdatePoolRequest) ProtoMessage() {}
 
 func (x *UpdatePoolRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[19]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3911,7 +4466,7 @@ type DeletePoolRequest struct {
 
 func (x *DeletePoolRequest) Reset() {
 	*x = DeletePoolRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[20]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3923,7 +4478,7 @@ func (x *DeletePoolRequest) String() string {
 func (*DeletePoolRequest) ProtoMessage() {}
 
 func (x *DeletePoolRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[20]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4021,7 +4576,7 @@ type ListImagesRequest struct {
 
 func (x *ListImagesRequest) Reset() {
 	*x = ListImagesRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[21]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4033,7 +4588,7 @@ func (x *ListImagesRequest) String() string {
 func (*ListImagesRequest) ProtoMessage() {}
 
 func (x *ListImagesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[21]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4097,7 +4652,7 @@ type ListImagesResponse struct {
 
 func (x *ListImagesResponse) Reset() {
 	*x = ListImagesResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[22]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4109,7 +4664,7 @@ func (x *ListImagesResponse) String() string {
 func (*ListImagesResponse) ProtoMessage() {}
 
 func (x *ListImagesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[22]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4169,7 +4724,7 @@ type CreateImageRequest struct {
 
 func (x *CreateImageRequest) Reset() {
 	*x = CreateImageRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[23]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4181,7 +4736,7 @@ func (x *CreateImageRequest) String() string {
 func (*CreateImageRequest) ProtoMessage() {}
 
 func (x *CreateImageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[23]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4575,7 +5130,7 @@ type UpdateImageRequest struct {
 
 func (x *UpdateImageRequest) Reset() {
 	*x = UpdateImageRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[24]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4587,7 +5142,7 @@ func (x *UpdateImageRequest) String() string {
 func (*UpdateImageRequest) ProtoMessage() {}
 
 func (x *UpdateImageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[24]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4748,7 +5303,7 @@ type DeleteImageRequest struct {
 
 func (x *DeleteImageRequest) Reset() {
 	*x = DeleteImageRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[25]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4760,7 +5315,7 @@ func (x *DeleteImageRequest) String() string {
 func (*DeleteImageRequest) ProtoMessage() {}
 
 func (x *DeleteImageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[25]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4893,7 +5448,7 @@ type CreateImageSnapshotRequest struct {
 
 func (x *CreateImageSnapshotRequest) Reset() {
 	*x = CreateImageSnapshotRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[26]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4905,7 +5460,7 @@ func (x *CreateImageSnapshotRequest) String() string {
 func (*CreateImageSnapshotRequest) ProtoMessage() {}
 
 func (x *CreateImageSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[26]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5070,7 +5625,7 @@ type DeleteImageSnapshotRequest struct {
 
 func (x *DeleteImageSnapshotRequest) Reset() {
 	*x = DeleteImageSnapshotRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[27]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5082,7 +5637,7 @@ func (x *DeleteImageSnapshotRequest) String() string {
 func (*DeleteImageSnapshotRequest) ProtoMessage() {}
 
 func (x *DeleteImageSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[27]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5247,7 +5802,7 @@ type RollbackImageSnapshotRequest struct {
 
 func (x *RollbackImageSnapshotRequest) Reset() {
 	*x = RollbackImageSnapshotRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[28]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5259,7 +5814,7 @@ func (x *RollbackImageSnapshotRequest) String() string {
 func (*RollbackImageSnapshotRequest) ProtoMessage() {}
 
 func (x *RollbackImageSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[28]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5424,7 +5979,7 @@ type ProtectImageSnapshotRequest struct {
 
 func (x *ProtectImageSnapshotRequest) Reset() {
 	*x = ProtectImageSnapshotRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[29]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5436,7 +5991,7 @@ func (x *ProtectImageSnapshotRequest) String() string {
 func (*ProtectImageSnapshotRequest) ProtoMessage() {}
 
 func (x *ProtectImageSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[29]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5601,7 +6156,7 @@ type UnprotectImageSnapshotRequest struct {
 
 func (x *UnprotectImageSnapshotRequest) Reset() {
 	*x = UnprotectImageSnapshotRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[30]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5613,7 +6168,7 @@ func (x *UnprotectImageSnapshotRequest) String() string {
 func (*UnprotectImageSnapshotRequest) ProtoMessage() {}
 
 func (x *UnprotectImageSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[30]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5775,7 +6330,7 @@ type ListVolumesRequest struct {
 
 func (x *ListVolumesRequest) Reset() {
 	*x = ListVolumesRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[31]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5787,7 +6342,7 @@ func (x *ListVolumesRequest) String() string {
 func (*ListVolumesRequest) ProtoMessage() {}
 
 func (x *ListVolumesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[31]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5851,7 +6406,7 @@ type ListVolumesResponse struct {
 
 func (x *ListVolumesResponse) Reset() {
 	*x = ListVolumesResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[32]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5863,7 +6418,7 @@ func (x *ListVolumesResponse) String() string {
 func (*ListVolumesResponse) ProtoMessage() {}
 
 func (x *ListVolumesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[32]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5914,7 +6469,7 @@ type ListSubvolumesRequest struct {
 
 func (x *ListSubvolumesRequest) Reset() {
 	*x = ListSubvolumesRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[33]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5926,7 +6481,7 @@ func (x *ListSubvolumesRequest) String() string {
 func (*ListSubvolumesRequest) ProtoMessage() {}
 
 func (x *ListSubvolumesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[33]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6054,7 +6609,7 @@ type ListSubvolumesResponse struct {
 
 func (x *ListSubvolumesResponse) Reset() {
 	*x = ListSubvolumesResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[34]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6066,7 +6621,7 @@ func (x *ListSubvolumesResponse) String() string {
 func (*ListSubvolumesResponse) ProtoMessage() {}
 
 func (x *ListSubvolumesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[34]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6120,7 +6675,7 @@ type CreateSubvolumeRequest struct {
 
 func (x *CreateSubvolumeRequest) Reset() {
 	*x = CreateSubvolumeRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[35]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6132,7 +6687,7 @@ func (x *CreateSubvolumeRequest) String() string {
 func (*CreateSubvolumeRequest) ProtoMessage() {}
 
 func (x *CreateSubvolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[35]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6356,7 +6911,7 @@ type UpdateSubvolumeRequest struct {
 
 func (x *UpdateSubvolumeRequest) Reset() {
 	*x = UpdateSubvolumeRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[36]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6368,7 +6923,7 @@ func (x *UpdateSubvolumeRequest) String() string {
 func (*UpdateSubvolumeRequest) ProtoMessage() {}
 
 func (x *UpdateSubvolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[36]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6562,7 +7117,7 @@ type DeleteSubvolumeRequest struct {
 
 func (x *DeleteSubvolumeRequest) Reset() {
 	*x = DeleteSubvolumeRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[37]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6574,7 +7129,7 @@ func (x *DeleteSubvolumeRequest) String() string {
 func (*DeleteSubvolumeRequest) ProtoMessage() {}
 
 func (x *DeleteSubvolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[37]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6739,7 +7294,7 @@ type GrantSubvolumeExportAccessRequest struct {
 
 func (x *GrantSubvolumeExportAccessRequest) Reset() {
 	*x = GrantSubvolumeExportAccessRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[38]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6751,7 +7306,7 @@ func (x *GrantSubvolumeExportAccessRequest) String() string {
 func (*GrantSubvolumeExportAccessRequest) ProtoMessage() {}
 
 func (x *GrantSubvolumeExportAccessRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[38]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6916,7 +7471,7 @@ type RevokeSubvolumeExportAccessRequest struct {
 
 func (x *RevokeSubvolumeExportAccessRequest) Reset() {
 	*x = RevokeSubvolumeExportAccessRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[39]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6928,7 +7483,7 @@ func (x *RevokeSubvolumeExportAccessRequest) String() string {
 func (*RevokeSubvolumeExportAccessRequest) ProtoMessage() {}
 
 func (x *RevokeSubvolumeExportAccessRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[39]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7094,7 +7649,7 @@ type CreateSubvolumeSnapshotRequest struct {
 
 func (x *CreateSubvolumeSnapshotRequest) Reset() {
 	*x = CreateSubvolumeSnapshotRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[40]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7106,7 +7661,7 @@ func (x *CreateSubvolumeSnapshotRequest) String() string {
 func (*CreateSubvolumeSnapshotRequest) ProtoMessage() {}
 
 func (x *CreateSubvolumeSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[40]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7304,7 +7859,7 @@ type DeleteSubvolumeSnapshotRequest struct {
 
 func (x *DeleteSubvolumeSnapshotRequest) Reset() {
 	*x = DeleteSubvolumeSnapshotRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[41]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7316,7 +7871,7 @@ func (x *DeleteSubvolumeSnapshotRequest) String() string {
 func (*DeleteSubvolumeSnapshotRequest) ProtoMessage() {}
 
 func (x *DeleteSubvolumeSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[41]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7511,7 +8066,7 @@ type ListSubvolumeGroupsRequest struct {
 
 func (x *ListSubvolumeGroupsRequest) Reset() {
 	*x = ListSubvolumeGroupsRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[42]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7523,7 +8078,7 @@ func (x *ListSubvolumeGroupsRequest) String() string {
 func (*ListSubvolumeGroupsRequest) ProtoMessage() {}
 
 func (x *ListSubvolumeGroupsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[42]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7619,7 +8174,7 @@ type ListSubvolumeGroupsResponse struct {
 
 func (x *ListSubvolumeGroupsResponse) Reset() {
 	*x = ListSubvolumeGroupsResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[43]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7631,7 +8186,7 @@ func (x *ListSubvolumeGroupsResponse) String() string {
 func (*ListSubvolumeGroupsResponse) ProtoMessage() {}
 
 func (x *ListSubvolumeGroupsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[43]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7683,7 +8238,7 @@ type CreateSubvolumeGroupRequest struct {
 
 func (x *CreateSubvolumeGroupRequest) Reset() {
 	*x = CreateSubvolumeGroupRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[44]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7695,7 +8250,7 @@ func (x *CreateSubvolumeGroupRequest) String() string {
 func (*CreateSubvolumeGroupRequest) ProtoMessage() {}
 
 func (x *CreateSubvolumeGroupRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[44]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7857,7 +8412,7 @@ type UpdateSubvolumeGroupRequest struct {
 
 func (x *UpdateSubvolumeGroupRequest) Reset() {
 	*x = UpdateSubvolumeGroupRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[45]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7869,7 +8424,7 @@ func (x *UpdateSubvolumeGroupRequest) String() string {
 func (*UpdateSubvolumeGroupRequest) ProtoMessage() {}
 
 func (x *UpdateSubvolumeGroupRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[45]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8030,7 +8585,7 @@ type DeleteSubvolumeGroupRequest struct {
 
 func (x *DeleteSubvolumeGroupRequest) Reset() {
 	*x = DeleteSubvolumeGroupRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[46]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8042,7 +8597,7 @@ func (x *DeleteSubvolumeGroupRequest) String() string {
 func (*DeleteSubvolumeGroupRequest) ProtoMessage() {}
 
 func (x *DeleteSubvolumeGroupRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[46]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8172,7 +8727,7 @@ type ListBucketsRequest struct {
 
 func (x *ListBucketsRequest) Reset() {
 	*x = ListBucketsRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[47]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8184,7 +8739,7 @@ func (x *ListBucketsRequest) String() string {
 func (*ListBucketsRequest) ProtoMessage() {}
 
 func (x *ListBucketsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[47]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8248,7 +8803,7 @@ type ListBucketsResponse struct {
 
 func (x *ListBucketsResponse) Reset() {
 	*x = ListBucketsResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[48]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8260,7 +8815,7 @@ func (x *ListBucketsResponse) String() string {
 func (*ListBucketsResponse) ProtoMessage() {}
 
 func (x *ListBucketsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[48]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8313,7 +8868,7 @@ type CreateBucketRequest struct {
 
 func (x *CreateBucketRequest) Reset() {
 	*x = CreateBucketRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[49]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8325,7 +8880,7 @@ func (x *CreateBucketRequest) String() string {
 func (*CreateBucketRequest) ProtoMessage() {}
 
 func (x *CreateBucketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[49]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8522,7 +9077,7 @@ type UpdateBucketRequest struct {
 
 func (x *UpdateBucketRequest) Reset() {
 	*x = UpdateBucketRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[50]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8534,7 +9089,7 @@ func (x *UpdateBucketRequest) String() string {
 func (*UpdateBucketRequest) ProtoMessage() {}
 
 func (x *UpdateBucketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[50]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8728,7 +9283,7 @@ type DeleteBucketRequest struct {
 
 func (x *DeleteBucketRequest) Reset() {
 	*x = DeleteBucketRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[51]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8740,7 +9295,7 @@ func (x *DeleteBucketRequest) String() string {
 func (*DeleteBucketRequest) ProtoMessage() {}
 
 func (x *DeleteBucketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[51]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8838,7 +9393,7 @@ type ListUsersRequest struct {
 
 func (x *ListUsersRequest) Reset() {
 	*x = ListUsersRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[52]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8850,7 +9405,7 @@ func (x *ListUsersRequest) String() string {
 func (*ListUsersRequest) ProtoMessage() {}
 
 func (x *ListUsersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[52]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8914,7 +9469,7 @@ type ListUsersResponse struct {
 
 func (x *ListUsersResponse) Reset() {
 	*x = ListUsersResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[53]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8926,7 +9481,7 @@ func (x *ListUsersResponse) String() string {
 func (*ListUsersResponse) ProtoMessage() {}
 
 func (x *ListUsersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[53]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8978,7 +9533,7 @@ type CreateUserRequest struct {
 
 func (x *CreateUserRequest) Reset() {
 	*x = CreateUserRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[54]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8990,7 +9545,7 @@ func (x *CreateUserRequest) String() string {
 func (*CreateUserRequest) ProtoMessage() {}
 
 func (x *CreateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[54]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9152,7 +9707,7 @@ type UpdateUserRequest struct {
 
 func (x *UpdateUserRequest) Reset() {
 	*x = UpdateUserRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[55]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9164,7 +9719,7 @@ func (x *UpdateUserRequest) String() string {
 func (*UpdateUserRequest) ProtoMessage() {}
 
 func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[55]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9324,7 +9879,7 @@ type DeleteUserRequest struct {
 
 func (x *DeleteUserRequest) Reset() {
 	*x = DeleteUserRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[56]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9336,7 +9891,7 @@ func (x *DeleteUserRequest) String() string {
 func (*DeleteUserRequest) ProtoMessage() {}
 
 func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[56]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9435,7 +9990,7 @@ type CreateUserKeyRequest struct {
 
 func (x *CreateUserKeyRequest) Reset() {
 	*x = CreateUserKeyRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[57]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9447,7 +10002,7 @@ func (x *CreateUserKeyRequest) String() string {
 func (*CreateUserKeyRequest) ProtoMessage() {}
 
 func (x *CreateUserKeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[57]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9547,7 +10102,7 @@ type DeleteUserKeyRequest struct {
 
 func (x *DeleteUserKeyRequest) Reset() {
 	*x = DeleteUserKeyRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[58]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9559,7 +10114,7 @@ func (x *DeleteUserKeyRequest) String() string {
 func (*DeleteUserKeyRequest) ProtoMessage() {}
 
 func (x *DeleteUserKeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[58]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9678,6 +10233,1116 @@ func (b0 DeleteUserKeyRequest_builder) Build() *DeleteUserKeyRequest {
 	return m0
 }
 
+type ListSMBSharesRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ListSMBSharesRequest) Reset() {
+	*x = ListSMBSharesRequest{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[60]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSMBSharesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSMBSharesRequest) ProtoMessage() {}
+
+func (x *ListSMBSharesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[60]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListSMBSharesRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListSMBSharesRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListSMBSharesRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *ListSMBSharesRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ListSMBSharesRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ListSMBSharesRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListSMBSharesRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+func (x *ListSMBSharesRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Namespace = nil
+}
+
+type ListSMBSharesRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope     *string
+	Namespace *string
+}
+
+func (b0 ListSMBSharesRequest_builder) Build() *ListSMBSharesRequest {
+	m0 := &ListSMBSharesRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	return m0
+}
+
+type ListSMBSharesResponse struct {
+	state                protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_SmbShares *[]*SMBShare           `protobuf:"bytes,1,rep,name=smb_shares,json=smbShares"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *ListSMBSharesResponse) Reset() {
+	*x = ListSMBSharesResponse{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[61]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSMBSharesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSMBSharesResponse) ProtoMessage() {}
+
+func (x *ListSMBSharesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[61]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListSMBSharesResponse) GetSmbShares() []*SMBShare {
+	if x != nil {
+		if x.xxx_hidden_SmbShares != nil {
+			return *x.xxx_hidden_SmbShares
+		}
+	}
+	return nil
+}
+
+func (x *ListSMBSharesResponse) SetSmbShares(v []*SMBShare) {
+	x.xxx_hidden_SmbShares = &v
+}
+
+type ListSMBSharesResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	SmbShares []*SMBShare
+}
+
+func (b0 ListSMBSharesResponse_builder) Build() *ListSMBSharesResponse {
+	m0 := &ListSMBSharesResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_SmbShares = &b.SmbShares
+	return m0
+}
+
+type CreateSMBShareRequest struct {
+	state                     protoimpl.MessageState                 `protogen:"opaque.v1"`
+	xxx_hidden_Scope          *string                                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Namespace      *string                                `protobuf:"bytes,2,opt,name=namespace"`
+	xxx_hidden_Name           *string                                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Browsable      bool                                   `protobuf:"varint,11,opt,name=browsable"`
+	xxx_hidden_ReadOnly       bool                                   `protobuf:"varint,12,opt,name=read_only,json=readOnly"`
+	xxx_hidden_GuestOk        bool                                   `protobuf:"varint,13,opt,name=guest_ok,json=guestOk"`
+	xxx_hidden_MapToGuest     SMBShare_MapToGuest                    `protobuf:"varint,14,opt,name=map_to_guest,json=mapToGuest,enum=otterscale.storage.v1.SMBShare_MapToGuest"`
+	xxx_hidden_SizeBytes      uint64                                 `protobuf:"varint,21,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_SecurityMode   SMBShare_SecurityMode                  `protobuf:"varint,31,opt,name=security_mode,json=securityMode,enum=otterscale.storage.v1.SMBShare_SecurityMode"`
+	xxx_hidden_ValidUsers     []string                               `protobuf:"bytes,41,rep,name=valid_users,json=validUsers"`
+	xxx_hidden_Authentication isCreateSMBShareRequest_Authentication `protobuf_oneof:"authentication"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
+}
+
+func (x *CreateSMBShareRequest) Reset() {
+	*x = CreateSMBShareRequest{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[62]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSMBShareRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSMBShareRequest) ProtoMessage() {}
+
+func (x *CreateSMBShareRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[62]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *CreateSMBShareRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateSMBShareRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateSMBShareRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateSMBShareRequest) GetBrowsable() bool {
+	if x != nil {
+		return x.xxx_hidden_Browsable
+	}
+	return false
+}
+
+func (x *CreateSMBShareRequest) GetReadOnly() bool {
+	if x != nil {
+		return x.xxx_hidden_ReadOnly
+	}
+	return false
+}
+
+func (x *CreateSMBShareRequest) GetGuestOk() bool {
+	if x != nil {
+		return x.xxx_hidden_GuestOk
+	}
+	return false
+}
+
+func (x *CreateSMBShareRequest) GetMapToGuest() SMBShare_MapToGuest {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 6) {
+			return x.xxx_hidden_MapToGuest
+		}
+	}
+	return SMBShare_NEVER
+}
+
+func (x *CreateSMBShareRequest) GetSizeBytes() uint64 {
+	if x != nil {
+		return x.xxx_hidden_SizeBytes
+	}
+	return 0
+}
+
+func (x *CreateSMBShareRequest) GetSecurityMode() SMBShare_SecurityMode {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 8) {
+			return x.xxx_hidden_SecurityMode
+		}
+	}
+	return SMBShare_USER
+}
+
+func (x *CreateSMBShareRequest) GetValidUsers() []string {
+	if x != nil {
+		return x.xxx_hidden_ValidUsers
+	}
+	return nil
+}
+
+func (x *CreateSMBShareRequest) GetActiveDirectory() *SMBShare_ActiveDirectory {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Authentication.(*createSMBShareRequest_ActiveDirectory); ok {
+			return x.ActiveDirectory
+		}
+	}
+	return nil
+}
+
+func (x *CreateSMBShareRequest) GetLocal() *SMBShare_Local {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Authentication.(*createSMBShareRequest_Local); ok {
+			return x.Local
+		}
+	}
+	return nil
+}
+
+func (x *CreateSMBShareRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
+}
+
+func (x *CreateSMBShareRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
+}
+
+func (x *CreateSMBShareRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
+}
+
+func (x *CreateSMBShareRequest) SetBrowsable(v bool) {
+	x.xxx_hidden_Browsable = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
+}
+
+func (x *CreateSMBShareRequest) SetReadOnly(v bool) {
+	x.xxx_hidden_ReadOnly = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
+}
+
+func (x *CreateSMBShareRequest) SetGuestOk(v bool) {
+	x.xxx_hidden_GuestOk = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
+}
+
+func (x *CreateSMBShareRequest) SetMapToGuest(v SMBShare_MapToGuest) {
+	x.xxx_hidden_MapToGuest = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
+}
+
+func (x *CreateSMBShareRequest) SetSizeBytes(v uint64) {
+	x.xxx_hidden_SizeBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
+}
+
+func (x *CreateSMBShareRequest) SetSecurityMode(v SMBShare_SecurityMode) {
+	x.xxx_hidden_SecurityMode = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 11)
+}
+
+func (x *CreateSMBShareRequest) SetValidUsers(v []string) {
+	x.xxx_hidden_ValidUsers = v
+}
+
+func (x *CreateSMBShareRequest) SetActiveDirectory(v *SMBShare_ActiveDirectory) {
+	if v == nil {
+		x.xxx_hidden_Authentication = nil
+		return
+	}
+	x.xxx_hidden_Authentication = &createSMBShareRequest_ActiveDirectory{v}
+}
+
+func (x *CreateSMBShareRequest) SetLocal(v *SMBShare_Local) {
+	if v == nil {
+		x.xxx_hidden_Authentication = nil
+		return
+	}
+	x.xxx_hidden_Authentication = &createSMBShareRequest_Local{v}
+}
+
+func (x *CreateSMBShareRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateSMBShareRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *CreateSMBShareRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *CreateSMBShareRequest) HasBrowsable() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *CreateSMBShareRequest) HasReadOnly() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *CreateSMBShareRequest) HasGuestOk() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *CreateSMBShareRequest) HasMapToGuest() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+}
+
+func (x *CreateSMBShareRequest) HasSizeBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
+}
+
+func (x *CreateSMBShareRequest) HasSecurityMode() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
+}
+
+func (x *CreateSMBShareRequest) HasAuthentication() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Authentication != nil
+}
+
+func (x *CreateSMBShareRequest) HasActiveDirectory() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Authentication.(*createSMBShareRequest_ActiveDirectory)
+	return ok
+}
+
+func (x *CreateSMBShareRequest) HasLocal() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Authentication.(*createSMBShareRequest_Local)
+	return ok
+}
+
+func (x *CreateSMBShareRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+func (x *CreateSMBShareRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *CreateSMBShareRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *CreateSMBShareRequest) ClearBrowsable() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Browsable = false
+}
+
+func (x *CreateSMBShareRequest) ClearReadOnly() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_ReadOnly = false
+}
+
+func (x *CreateSMBShareRequest) ClearGuestOk() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_GuestOk = false
+}
+
+func (x *CreateSMBShareRequest) ClearMapToGuest() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	x.xxx_hidden_MapToGuest = SMBShare_NEVER
+}
+
+func (x *CreateSMBShareRequest) ClearSizeBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	x.xxx_hidden_SizeBytes = 0
+}
+
+func (x *CreateSMBShareRequest) ClearSecurityMode() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	x.xxx_hidden_SecurityMode = SMBShare_USER
+}
+
+func (x *CreateSMBShareRequest) ClearAuthentication() {
+	x.xxx_hidden_Authentication = nil
+}
+
+func (x *CreateSMBShareRequest) ClearActiveDirectory() {
+	if _, ok := x.xxx_hidden_Authentication.(*createSMBShareRequest_ActiveDirectory); ok {
+		x.xxx_hidden_Authentication = nil
+	}
+}
+
+func (x *CreateSMBShareRequest) ClearLocal() {
+	if _, ok := x.xxx_hidden_Authentication.(*createSMBShareRequest_Local); ok {
+		x.xxx_hidden_Authentication = nil
+	}
+}
+
+const CreateSMBShareRequest_Authentication_not_set_case case_CreateSMBShareRequest_Authentication = 0
+const CreateSMBShareRequest_ActiveDirectory_case case_CreateSMBShareRequest_Authentication = 51
+const CreateSMBShareRequest_Local_case case_CreateSMBShareRequest_Authentication = 52
+
+func (x *CreateSMBShareRequest) WhichAuthentication() case_CreateSMBShareRequest_Authentication {
+	if x == nil {
+		return CreateSMBShareRequest_Authentication_not_set_case
+	}
+	switch x.xxx_hidden_Authentication.(type) {
+	case *createSMBShareRequest_ActiveDirectory:
+		return CreateSMBShareRequest_ActiveDirectory_case
+	case *createSMBShareRequest_Local:
+		return CreateSMBShareRequest_Local_case
+	default:
+		return CreateSMBShareRequest_Authentication_not_set_case
+	}
+}
+
+type CreateSMBShareRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope        *string
+	Namespace    *string
+	Name         *string
+	Browsable    *bool
+	ReadOnly     *bool
+	GuestOk      *bool
+	MapToGuest   *SMBShare_MapToGuest
+	SizeBytes    *uint64
+	SecurityMode *SMBShare_SecurityMode
+	ValidUsers   []string
+	// Fields of oneof xxx_hidden_Authentication:
+	ActiveDirectory *SMBShare_ActiveDirectory
+	Local           *SMBShare_Local
+	// -- end of xxx_hidden_Authentication
+}
+
+func (b0 CreateSMBShareRequest_builder) Build() *CreateSMBShareRequest {
+	m0 := &CreateSMBShareRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.Browsable != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
+		x.xxx_hidden_Browsable = *b.Browsable
+	}
+	if b.ReadOnly != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
+		x.xxx_hidden_ReadOnly = *b.ReadOnly
+	}
+	if b.GuestOk != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
+		x.xxx_hidden_GuestOk = *b.GuestOk
+	}
+	if b.MapToGuest != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
+		x.xxx_hidden_MapToGuest = *b.MapToGuest
+	}
+	if b.SizeBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
+		x.xxx_hidden_SizeBytes = *b.SizeBytes
+	}
+	if b.SecurityMode != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 11)
+		x.xxx_hidden_SecurityMode = *b.SecurityMode
+	}
+	x.xxx_hidden_ValidUsers = b.ValidUsers
+	if b.ActiveDirectory != nil {
+		x.xxx_hidden_Authentication = &createSMBShareRequest_ActiveDirectory{b.ActiveDirectory}
+	}
+	if b.Local != nil {
+		x.xxx_hidden_Authentication = &createSMBShareRequest_Local{b.Local}
+	}
+	return m0
+}
+
+type case_CreateSMBShareRequest_Authentication protoreflect.FieldNumber
+
+func (x case_CreateSMBShareRequest_Authentication) String() string {
+	md := file_api_storage_v1_storage_proto_msgTypes[62].Descriptor()
+	if x == 0 {
+		return "not set"
+	}
+	return protoimpl.X.MessageFieldStringOf(md, protoreflect.FieldNumber(x))
+}
+
+type isCreateSMBShareRequest_Authentication interface {
+	isCreateSMBShareRequest_Authentication()
+}
+
+type createSMBShareRequest_ActiveDirectory struct {
+	ActiveDirectory *SMBShare_ActiveDirectory `protobuf:"bytes,51,opt,name=active_directory,json=activeDirectory,oneof"`
+}
+
+type createSMBShareRequest_Local struct {
+	Local *SMBShare_Local `protobuf:"bytes,52,opt,name=local,oneof"`
+}
+
+func (*createSMBShareRequest_ActiveDirectory) isCreateSMBShareRequest_Authentication() {}
+
+func (*createSMBShareRequest_Local) isCreateSMBShareRequest_Authentication() {}
+
+type UpdateSMBShareRequest struct {
+	state                     protoimpl.MessageState                 `protogen:"opaque.v1"`
+	xxx_hidden_Scope          *string                                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Namespace      *string                                `protobuf:"bytes,2,opt,name=namespace"`
+	xxx_hidden_Name           *string                                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Browsable      bool                                   `protobuf:"varint,11,opt,name=browsable"`
+	xxx_hidden_ReadOnly       bool                                   `protobuf:"varint,12,opt,name=read_only,json=readOnly"`
+	xxx_hidden_GuestOk        bool                                   `protobuf:"varint,13,opt,name=guest_ok,json=guestOk"`
+	xxx_hidden_MapToGuest     SMBShare_MapToGuest                    `protobuf:"varint,14,opt,name=map_to_guest,json=mapToGuest,enum=otterscale.storage.v1.SMBShare_MapToGuest"`
+	xxx_hidden_SizeBytes      uint64                                 `protobuf:"varint,21,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_SecurityMode   SMBShare_SecurityMode                  `protobuf:"varint,31,opt,name=security_mode,json=securityMode,enum=otterscale.storage.v1.SMBShare_SecurityMode"`
+	xxx_hidden_ValidUsers     []string                               `protobuf:"bytes,41,rep,name=valid_users,json=validUsers"`
+	xxx_hidden_Authentication isUpdateSMBShareRequest_Authentication `protobuf_oneof:"authentication"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
+}
+
+func (x *UpdateSMBShareRequest) Reset() {
+	*x = UpdateSMBShareRequest{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[63]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSMBShareRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSMBShareRequest) ProtoMessage() {}
+
+func (x *UpdateSMBShareRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[63]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *UpdateSMBShareRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateSMBShareRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateSMBShareRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateSMBShareRequest) GetBrowsable() bool {
+	if x != nil {
+		return x.xxx_hidden_Browsable
+	}
+	return false
+}
+
+func (x *UpdateSMBShareRequest) GetReadOnly() bool {
+	if x != nil {
+		return x.xxx_hidden_ReadOnly
+	}
+	return false
+}
+
+func (x *UpdateSMBShareRequest) GetGuestOk() bool {
+	if x != nil {
+		return x.xxx_hidden_GuestOk
+	}
+	return false
+}
+
+func (x *UpdateSMBShareRequest) GetMapToGuest() SMBShare_MapToGuest {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 6) {
+			return x.xxx_hidden_MapToGuest
+		}
+	}
+	return SMBShare_NEVER
+}
+
+func (x *UpdateSMBShareRequest) GetSizeBytes() uint64 {
+	if x != nil {
+		return x.xxx_hidden_SizeBytes
+	}
+	return 0
+}
+
+func (x *UpdateSMBShareRequest) GetSecurityMode() SMBShare_SecurityMode {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 8) {
+			return x.xxx_hidden_SecurityMode
+		}
+	}
+	return SMBShare_USER
+}
+
+func (x *UpdateSMBShareRequest) GetValidUsers() []string {
+	if x != nil {
+		return x.xxx_hidden_ValidUsers
+	}
+	return nil
+}
+
+func (x *UpdateSMBShareRequest) GetActiveDirectory() *SMBShare_ActiveDirectory {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Authentication.(*updateSMBShareRequest_ActiveDirectory); ok {
+			return x.ActiveDirectory
+		}
+	}
+	return nil
+}
+
+func (x *UpdateSMBShareRequest) GetLocal() *SMBShare_Local {
+	if x != nil {
+		if x, ok := x.xxx_hidden_Authentication.(*updateSMBShareRequest_Local); ok {
+			return x.Local
+		}
+	}
+	return nil
+}
+
+func (x *UpdateSMBShareRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
+}
+
+func (x *UpdateSMBShareRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
+}
+
+func (x *UpdateSMBShareRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
+}
+
+func (x *UpdateSMBShareRequest) SetBrowsable(v bool) {
+	x.xxx_hidden_Browsable = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
+}
+
+func (x *UpdateSMBShareRequest) SetReadOnly(v bool) {
+	x.xxx_hidden_ReadOnly = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
+}
+
+func (x *UpdateSMBShareRequest) SetGuestOk(v bool) {
+	x.xxx_hidden_GuestOk = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
+}
+
+func (x *UpdateSMBShareRequest) SetMapToGuest(v SMBShare_MapToGuest) {
+	x.xxx_hidden_MapToGuest = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
+}
+
+func (x *UpdateSMBShareRequest) SetSizeBytes(v uint64) {
+	x.xxx_hidden_SizeBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
+}
+
+func (x *UpdateSMBShareRequest) SetSecurityMode(v SMBShare_SecurityMode) {
+	x.xxx_hidden_SecurityMode = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 11)
+}
+
+func (x *UpdateSMBShareRequest) SetValidUsers(v []string) {
+	x.xxx_hidden_ValidUsers = v
+}
+
+func (x *UpdateSMBShareRequest) SetActiveDirectory(v *SMBShare_ActiveDirectory) {
+	if v == nil {
+		x.xxx_hidden_Authentication = nil
+		return
+	}
+	x.xxx_hidden_Authentication = &updateSMBShareRequest_ActiveDirectory{v}
+}
+
+func (x *UpdateSMBShareRequest) SetLocal(v *SMBShare_Local) {
+	if v == nil {
+		x.xxx_hidden_Authentication = nil
+		return
+	}
+	x.xxx_hidden_Authentication = &updateSMBShareRequest_Local{v}
+}
+
+func (x *UpdateSMBShareRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *UpdateSMBShareRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *UpdateSMBShareRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *UpdateSMBShareRequest) HasBrowsable() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *UpdateSMBShareRequest) HasReadOnly() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *UpdateSMBShareRequest) HasGuestOk() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *UpdateSMBShareRequest) HasMapToGuest() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+}
+
+func (x *UpdateSMBShareRequest) HasSizeBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
+}
+
+func (x *UpdateSMBShareRequest) HasSecurityMode() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
+}
+
+func (x *UpdateSMBShareRequest) HasAuthentication() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Authentication != nil
+}
+
+func (x *UpdateSMBShareRequest) HasActiveDirectory() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Authentication.(*updateSMBShareRequest_ActiveDirectory)
+	return ok
+}
+
+func (x *UpdateSMBShareRequest) HasLocal() bool {
+	if x == nil {
+		return false
+	}
+	_, ok := x.xxx_hidden_Authentication.(*updateSMBShareRequest_Local)
+	return ok
+}
+
+func (x *UpdateSMBShareRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+func (x *UpdateSMBShareRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *UpdateSMBShareRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *UpdateSMBShareRequest) ClearBrowsable() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Browsable = false
+}
+
+func (x *UpdateSMBShareRequest) ClearReadOnly() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_ReadOnly = false
+}
+
+func (x *UpdateSMBShareRequest) ClearGuestOk() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_GuestOk = false
+}
+
+func (x *UpdateSMBShareRequest) ClearMapToGuest() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	x.xxx_hidden_MapToGuest = SMBShare_NEVER
+}
+
+func (x *UpdateSMBShareRequest) ClearSizeBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	x.xxx_hidden_SizeBytes = 0
+}
+
+func (x *UpdateSMBShareRequest) ClearSecurityMode() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	x.xxx_hidden_SecurityMode = SMBShare_USER
+}
+
+func (x *UpdateSMBShareRequest) ClearAuthentication() {
+	x.xxx_hidden_Authentication = nil
+}
+
+func (x *UpdateSMBShareRequest) ClearActiveDirectory() {
+	if _, ok := x.xxx_hidden_Authentication.(*updateSMBShareRequest_ActiveDirectory); ok {
+		x.xxx_hidden_Authentication = nil
+	}
+}
+
+func (x *UpdateSMBShareRequest) ClearLocal() {
+	if _, ok := x.xxx_hidden_Authentication.(*updateSMBShareRequest_Local); ok {
+		x.xxx_hidden_Authentication = nil
+	}
+}
+
+const UpdateSMBShareRequest_Authentication_not_set_case case_UpdateSMBShareRequest_Authentication = 0
+const UpdateSMBShareRequest_ActiveDirectory_case case_UpdateSMBShareRequest_Authentication = 51
+const UpdateSMBShareRequest_Local_case case_UpdateSMBShareRequest_Authentication = 52
+
+func (x *UpdateSMBShareRequest) WhichAuthentication() case_UpdateSMBShareRequest_Authentication {
+	if x == nil {
+		return UpdateSMBShareRequest_Authentication_not_set_case
+	}
+	switch x.xxx_hidden_Authentication.(type) {
+	case *updateSMBShareRequest_ActiveDirectory:
+		return UpdateSMBShareRequest_ActiveDirectory_case
+	case *updateSMBShareRequest_Local:
+		return UpdateSMBShareRequest_Local_case
+	default:
+		return UpdateSMBShareRequest_Authentication_not_set_case
+	}
+}
+
+type UpdateSMBShareRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope        *string
+	Namespace    *string
+	Name         *string
+	Browsable    *bool
+	ReadOnly     *bool
+	GuestOk      *bool
+	MapToGuest   *SMBShare_MapToGuest
+	SizeBytes    *uint64
+	SecurityMode *SMBShare_SecurityMode
+	ValidUsers   []string
+	// Fields of oneof xxx_hidden_Authentication:
+	ActiveDirectory *SMBShare_ActiveDirectory
+	Local           *SMBShare_Local
+	// -- end of xxx_hidden_Authentication
+}
+
+func (b0 UpdateSMBShareRequest_builder) Build() *UpdateSMBShareRequest {
+	m0 := &UpdateSMBShareRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.Browsable != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
+		x.xxx_hidden_Browsable = *b.Browsable
+	}
+	if b.ReadOnly != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
+		x.xxx_hidden_ReadOnly = *b.ReadOnly
+	}
+	if b.GuestOk != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
+		x.xxx_hidden_GuestOk = *b.GuestOk
+	}
+	if b.MapToGuest != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
+		x.xxx_hidden_MapToGuest = *b.MapToGuest
+	}
+	if b.SizeBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
+		x.xxx_hidden_SizeBytes = *b.SizeBytes
+	}
+	if b.SecurityMode != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 11)
+		x.xxx_hidden_SecurityMode = *b.SecurityMode
+	}
+	x.xxx_hidden_ValidUsers = b.ValidUsers
+	if b.ActiveDirectory != nil {
+		x.xxx_hidden_Authentication = &updateSMBShareRequest_ActiveDirectory{b.ActiveDirectory}
+	}
+	if b.Local != nil {
+		x.xxx_hidden_Authentication = &updateSMBShareRequest_Local{b.Local}
+	}
+	return m0
+}
+
+type case_UpdateSMBShareRequest_Authentication protoreflect.FieldNumber
+
+func (x case_UpdateSMBShareRequest_Authentication) String() string {
+	md := file_api_storage_v1_storage_proto_msgTypes[63].Descriptor()
+	if x == 0 {
+		return "not set"
+	}
+	return protoimpl.X.MessageFieldStringOf(md, protoreflect.FieldNumber(x))
+}
+
+type isUpdateSMBShareRequest_Authentication interface {
+	isUpdateSMBShareRequest_Authentication()
+}
+
+type updateSMBShareRequest_ActiveDirectory struct {
+	ActiveDirectory *SMBShare_ActiveDirectory `protobuf:"bytes,51,opt,name=active_directory,json=activeDirectory,oneof"`
+}
+
+type updateSMBShareRequest_Local struct {
+	Local *SMBShare_Local `protobuf:"bytes,52,opt,name=local,oneof"`
+}
+
+func (*updateSMBShareRequest_ActiveDirectory) isUpdateSMBShareRequest_Authentication() {}
+
+func (*updateSMBShareRequest_Local) isUpdateSMBShareRequest_Authentication() {}
+
 type Image_Snapshot struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
@@ -9692,7 +11357,7 @@ type Image_Snapshot struct {
 
 func (x *Image_Snapshot) Reset() {
 	*x = Image_Snapshot{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[60]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9704,7 +11369,7 @@ func (x *Image_Snapshot) String() string {
 func (*Image_Snapshot) ProtoMessage() {}
 
 func (x *Image_Snapshot) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[60]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9859,7 +11524,7 @@ type Subvolume_Snapshot struct {
 
 func (x *Subvolume_Snapshot) Reset() {
 	*x = Subvolume_Snapshot{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[61]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9871,7 +11536,7 @@ func (x *Subvolume_Snapshot) String() string {
 func (*Subvolume_Snapshot) ProtoMessage() {}
 
 func (x *Subvolume_Snapshot) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[61]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9996,7 +11661,7 @@ type Subvolume_Export struct {
 
 func (x *Subvolume_Export) Reset() {
 	*x = Subvolume_Export{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[62]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -10008,7 +11673,7 @@ func (x *Subvolume_Export) String() string {
 func (*Subvolume_Export) ProtoMessage() {}
 
 func (x *Subvolume_Export) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[62]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10155,7 +11820,7 @@ type Bucket_Grant struct {
 
 func (x *Bucket_Grant) Reset() {
 	*x = Bucket_Grant{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[63]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -10167,7 +11832,7 @@ func (x *Bucket_Grant) String() string {
 func (*Bucket_Grant) ProtoMessage() {}
 
 func (x *Bucket_Grant) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[63]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10362,7 +12027,7 @@ type User_Key struct {
 
 func (x *User_Key) Reset() {
 	*x = User_Key{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[64]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -10374,7 +12039,7 @@ func (x *User_Key) String() string {
 func (*User_Key) ProtoMessage() {}
 
 func (x *User_Key) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[64]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10461,6 +12126,279 @@ func (b0 User_Key_builder) Build() *User_Key {
 	return m0
 }
 
+type SMBShare_User struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Username    *string                `protobuf:"bytes,1,opt,name=username"`
+	xxx_hidden_Password    *string                `protobuf:"bytes,2,opt,name=password"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *SMBShare_User) Reset() {
+	*x = SMBShare_User{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[70]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SMBShare_User) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SMBShare_User) ProtoMessage() {}
+
+func (x *SMBShare_User) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[70]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *SMBShare_User) GetUsername() string {
+	if x != nil {
+		if x.xxx_hidden_Username != nil {
+			return *x.xxx_hidden_Username
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *SMBShare_User) GetPassword() string {
+	if x != nil {
+		if x.xxx_hidden_Password != nil {
+			return *x.xxx_hidden_Password
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *SMBShare_User) SetUsername(v string) {
+	x.xxx_hidden_Username = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *SMBShare_User) SetPassword(v string) {
+	x.xxx_hidden_Password = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *SMBShare_User) HasUsername() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *SMBShare_User) HasPassword() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *SMBShare_User) ClearUsername() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Username = nil
+}
+
+func (x *SMBShare_User) ClearPassword() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Password = nil
+}
+
+type SMBShare_User_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Username *string
+	Password *string
+}
+
+func (b0 SMBShare_User_builder) Build() *SMBShare_User {
+	m0 := &SMBShare_User{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Username != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Username = b.Username
+	}
+	if b.Password != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Password = b.Password
+	}
+	return m0
+}
+
+type SMBShare_ActiveDirectory struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Realm       *string                `protobuf:"bytes,1,opt,name=realm"`
+	xxx_hidden_JoinSource  *SMBShare_User         `protobuf:"bytes,2,opt,name=join_source,json=joinSource"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *SMBShare_ActiveDirectory) Reset() {
+	*x = SMBShare_ActiveDirectory{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[71]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SMBShare_ActiveDirectory) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SMBShare_ActiveDirectory) ProtoMessage() {}
+
+func (x *SMBShare_ActiveDirectory) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[71]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *SMBShare_ActiveDirectory) GetRealm() string {
+	if x != nil {
+		if x.xxx_hidden_Realm != nil {
+			return *x.xxx_hidden_Realm
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *SMBShare_ActiveDirectory) GetJoinSource() *SMBShare_User {
+	if x != nil {
+		return x.xxx_hidden_JoinSource
+	}
+	return nil
+}
+
+func (x *SMBShare_ActiveDirectory) SetRealm(v string) {
+	x.xxx_hidden_Realm = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *SMBShare_ActiveDirectory) SetJoinSource(v *SMBShare_User) {
+	x.xxx_hidden_JoinSource = v
+}
+
+func (x *SMBShare_ActiveDirectory) HasRealm() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *SMBShare_ActiveDirectory) HasJoinSource() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_JoinSource != nil
+}
+
+func (x *SMBShare_ActiveDirectory) ClearRealm() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Realm = nil
+}
+
+func (x *SMBShare_ActiveDirectory) ClearJoinSource() {
+	x.xxx_hidden_JoinSource = nil
+}
+
+type SMBShare_ActiveDirectory_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Realm      *string
+	JoinSource *SMBShare_User
+}
+
+func (b0 SMBShare_ActiveDirectory_builder) Build() *SMBShare_ActiveDirectory {
+	m0 := &SMBShare_ActiveDirectory{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Realm != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Realm = b.Realm
+	}
+	x.xxx_hidden_JoinSource = b.JoinSource
+	return m0
+}
+
+type SMBShare_Local struct {
+	state            protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Users *[]*SMBShare_User      `protobuf:"bytes,1,rep,name=users"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *SMBShare_Local) Reset() {
+	*x = SMBShare_Local{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[72]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SMBShare_Local) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SMBShare_Local) ProtoMessage() {}
+
+func (x *SMBShare_Local) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[72]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *SMBShare_Local) GetUsers() []*SMBShare_User {
+	if x != nil {
+		if x.xxx_hidden_Users != nil {
+			return *x.xxx_hidden_Users
+		}
+	}
+	return nil
+}
+
+func (x *SMBShare_Local) SetUsers(v []*SMBShare_User) {
+	x.xxx_hidden_Users = &v
+}
+
+type SMBShare_Local_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Users []*SMBShare_User
+}
+
+func (b0 SMBShare_Local_builder) Build() *SMBShare_Local {
+	m0 := &SMBShare_Local{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Users = &b.Users
+	return m0
+}
+
 type DoSMARTResponse_Output struct {
 	state            protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Lines []string               `protobuf:"bytes,1,rep,name=lines"`
@@ -10470,7 +12408,7 @@ type DoSMARTResponse_Output struct {
 
 func (x *DoSMARTResponse_Output) Reset() {
 	*x = DoSMARTResponse_Output{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[65]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -10482,7 +12420,7 @@ func (x *DoSMARTResponse_Output) String() string {
 func (*DoSMARTResponse_Output) ProtoMessage() {}
 
 func (x *DoSMARTResponse_Output) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[65]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10667,7 +12605,41 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"access_key\x18\x01 \x01(\tR\taccessKey\x12\x1d\n" +
 	"\n" +
-	"secret_key\x18\x02 \x01(\tR\tsecretKey\"-\n" +
+	"secret_key\x18\x02 \x01(\tR\tsecretKey\"\x98\a\n" +
+	"\bSMBShare\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x16\n" +
+	"\x06status\x18\x03 \x01(\tR\x06status\x12\x1d\n" +
+	"\n" +
+	"size_bytes\x18\x04 \x01(\x04R\tsizeBytes\x12\x1c\n" +
+	"\tbrowsable\x18\v \x01(\bR\tbrowsable\x12\x1b\n" +
+	"\tread_only\x18\f \x01(\bR\breadOnly\x12\x19\n" +
+	"\bguest_ok\x18\r \x01(\bR\aguestOk\x12L\n" +
+	"\fmap_to_guest\x18\x15 \x01(\x0e2*.otterscale.storage.v1.SMBShare.MapToGuestR\n" +
+	"mapToGuest\x12Q\n" +
+	"\rsecurity_mode\x18\x1f \x01(\x0e2,.otterscale.storage.v1.SMBShare.SecurityModeR\fsecurityMode\x12\x1f\n" +
+	"\vvalid_users\x18) \x03(\tR\n" +
+	"validUsers\x12\\\n" +
+	"\x10active_directory\x183 \x01(\v2/.otterscale.storage.v1.SMBShare.ActiveDirectoryH\x00R\x0factiveDirectory\x12=\n" +
+	"\x05local\x184 \x01(\v2%.otterscale.storage.v1.SMBShare.LocalH\x00R\x05local\x1a>\n" +
+	"\x04User\x12\x1a\n" +
+	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\x1an\n" +
+	"\x0fActiveDirectory\x12\x14\n" +
+	"\x05realm\x18\x01 \x01(\tR\x05realm\x12E\n" +
+	"\vjoin_source\x18\x02 \x01(\v2$.otterscale.storage.v1.SMBShare.UserR\n" +
+	"joinSource\x1aC\n" +
+	"\x05Local\x12:\n" +
+	"\x05users\x18\x01 \x03(\v2$.otterscale.storage.v1.SMBShare.UserR\x05users\".\n" +
+	"\fSecurityMode\x12\b\n" +
+	"\x04USER\x10\x00\x12\x14\n" +
+	"\x10ACTIVE_DIRECTORY\x10\x01\"7\n" +
+	"\n" +
+	"MapToGuest\x12\t\n" +
+	"\x05NEVER\x10\x00\x12\f\n" +
+	"\bBAD_USER\x10\x01\x12\x10\n" +
+	"\fBAD_PASSWORD\x10\x02B\x10\n" +
+	"\x0eauthentication\"-\n" +
 	"\x0fListMONsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"B\n" +
 	"\x10ListMONsResponse\x12.\n" +
@@ -10914,12 +12886,52 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x1d\n" +
 	"\n" +
-	"access_key\x18\x04 \x01(\tR\taccessKeyJ\x04\b\x02\x10\x03*8\n" +
+	"access_key\x18\x04 \x01(\tR\taccessKeyJ\x04\b\x02\x10\x03\"J\n" +
+	"\x14ListSMBSharesRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
+	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"W\n" +
+	"\x15ListSMBSharesResponse\x12>\n" +
+	"\n" +
+	"smb_shares\x18\x01 \x03(\v2\x1f.otterscale.storage.v1.SMBShareR\tsmbShares\"\xc5\x04\n" +
+	"\x15CreateSMBShareRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
+	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tbrowsable\x18\v \x01(\bR\tbrowsable\x12\x1b\n" +
+	"\tread_only\x18\f \x01(\bR\breadOnly\x12\x19\n" +
+	"\bguest_ok\x18\r \x01(\bR\aguestOk\x12L\n" +
+	"\fmap_to_guest\x18\x0e \x01(\x0e2*.otterscale.storage.v1.SMBShare.MapToGuestR\n" +
+	"mapToGuest\x12\x1d\n" +
+	"\n" +
+	"size_bytes\x18\x15 \x01(\x04R\tsizeBytes\x12Q\n" +
+	"\rsecurity_mode\x18\x1f \x01(\x0e2,.otterscale.storage.v1.SMBShare.SecurityModeR\fsecurityMode\x12\x1f\n" +
+	"\vvalid_users\x18) \x03(\tR\n" +
+	"validUsers\x12\\\n" +
+	"\x10active_directory\x183 \x01(\v2/.otterscale.storage.v1.SMBShare.ActiveDirectoryH\x00R\x0factiveDirectory\x12=\n" +
+	"\x05local\x184 \x01(\v2%.otterscale.storage.v1.SMBShare.LocalH\x00R\x05localB\x10\n" +
+	"\x0eauthentication\"\xc5\x04\n" +
+	"\x15UpdateSMBShareRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
+	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tbrowsable\x18\v \x01(\bR\tbrowsable\x12\x1b\n" +
+	"\tread_only\x18\f \x01(\bR\breadOnly\x12\x19\n" +
+	"\bguest_ok\x18\r \x01(\bR\aguestOk\x12L\n" +
+	"\fmap_to_guest\x18\x0e \x01(\x0e2*.otterscale.storage.v1.SMBShare.MapToGuestR\n" +
+	"mapToGuest\x12\x1d\n" +
+	"\n" +
+	"size_bytes\x18\x15 \x01(\x04R\tsizeBytes\x12Q\n" +
+	"\rsecurity_mode\x18\x1f \x01(\x0e2,.otterscale.storage.v1.SMBShare.SecurityModeR\fsecurityMode\x12\x1f\n" +
+	"\vvalid_users\x18) \x03(\tR\n" +
+	"validUsers\x12\\\n" +
+	"\x10active_directory\x183 \x01(\v2/.otterscale.storage.v1.SMBShare.ActiveDirectoryH\x00R\x0factiveDirectory\x12=\n" +
+	"\x05local\x184 \x01(\v2%.otterscale.storage.v1.SMBShare.LocalH\x00R\x05localB\x10\n" +
+	"\x0eauthentication*8\n" +
 	"\bPoolType\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\v\n" +
 	"\aERASURE\x10\x01\x12\x0e\n" +
 	"\n" +
-	"REPLICATED\x10\x022\xbe#\n" +
+	"REPLICATED\x10\x022\x9c&\n" +
 	"\x0eStorageService\x12o\n" +
 	"\bListMONs\x12&.otterscale.storage.v1.ListMONsRequest\x1a'.otterscale.storage.v1.ListMONsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vstg-general\x12o\n" +
@@ -11028,197 +13040,234 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"stg-object\x12g\n" +
 	"\rDeleteUserKey\x12+.otterscale.storage.v1.DeleteUserKeyRequest\x1a\x16.google.protobuf.Empty\"\x11\x8a\xdf\xd5\x1d\f\n" +
 	"\n" +
-	"stg-objectB4Z2github.com/otterscale/otterscale/api/storage/v1;pbb\beditionsp\xe8\a"
+	"stg-object\x12z\n" +
+	"\rListSMBShares\x12+.otterscale.storage.v1.ListSMBSharesRequest\x1a,.otterscale.storage.v1.ListSMBSharesResponse\"\x0e\x8a\xdf\xd5\x1d\t\n" +
+	"\astg-smb\x12o\n" +
+	"\x0eCreateSMBShare\x12,.otterscale.storage.v1.CreateSMBShareRequest\x1a\x1f.otterscale.storage.v1.SMBShare\"\x0e\x8a\xdf\xd5\x1d\t\n" +
+	"\astg-smb\x12o\n" +
+	"\x0eUpdateSMBShare\x12,.otterscale.storage.v1.UpdateSMBShareRequest\x1a\x1f.otterscale.storage.v1.SMBShare\"\x0e\x8a\xdf\xd5\x1d\t\n" +
+	"\astg-smbB4Z2github.com/otterscale/otterscale/api/storage/v1;pbb\beditionsp\xe8\a"
 
-var file_api_storage_v1_storage_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_api_storage_v1_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 67)
+var file_api_storage_v1_storage_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
+var file_api_storage_v1_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 75)
 var file_api_storage_v1_storage_proto_goTypes = []any{
 	(PoolType)(0),                              // 0: otterscale.storage.v1.PoolType
 	(Bucket_ACL)(0),                            // 1: otterscale.storage.v1.Bucket.ACL
-	(*Machine)(nil),                            // 2: otterscale.storage.v1.Machine
-	(*MON)(nil),                                // 3: otterscale.storage.v1.MON
-	(*OSD)(nil),                                // 4: otterscale.storage.v1.OSD
-	(*Pool)(nil),                               // 5: otterscale.storage.v1.Pool
-	(*Image)(nil),                              // 6: otterscale.storage.v1.Image
-	(*Volume)(nil),                             // 7: otterscale.storage.v1.Volume
-	(*Subvolume)(nil),                          // 8: otterscale.storage.v1.Subvolume
-	(*SubvolumeGroup)(nil),                     // 9: otterscale.storage.v1.SubvolumeGroup
-	(*Bucket)(nil),                             // 10: otterscale.storage.v1.Bucket
-	(*User)(nil),                               // 11: otterscale.storage.v1.User
-	(*ListMONsRequest)(nil),                    // 12: otterscale.storage.v1.ListMONsRequest
-	(*ListMONsResponse)(nil),                   // 13: otterscale.storage.v1.ListMONsResponse
-	(*ListOSDsRequest)(nil),                    // 14: otterscale.storage.v1.ListOSDsRequest
-	(*ListOSDsResponse)(nil),                   // 15: otterscale.storage.v1.ListOSDsResponse
-	(*DoSMARTRequest)(nil),                     // 16: otterscale.storage.v1.DoSMARTRequest
-	(*DoSMARTResponse)(nil),                    // 17: otterscale.storage.v1.DoSMARTResponse
-	(*ListPoolsRequest)(nil),                   // 18: otterscale.storage.v1.ListPoolsRequest
-	(*ListPoolsResponse)(nil),                  // 19: otterscale.storage.v1.ListPoolsResponse
-	(*CreatePoolRequest)(nil),                  // 20: otterscale.storage.v1.CreatePoolRequest
-	(*UpdatePoolRequest)(nil),                  // 21: otterscale.storage.v1.UpdatePoolRequest
-	(*DeletePoolRequest)(nil),                  // 22: otterscale.storage.v1.DeletePoolRequest
-	(*ListImagesRequest)(nil),                  // 23: otterscale.storage.v1.ListImagesRequest
-	(*ListImagesResponse)(nil),                 // 24: otterscale.storage.v1.ListImagesResponse
-	(*CreateImageRequest)(nil),                 // 25: otterscale.storage.v1.CreateImageRequest
-	(*UpdateImageRequest)(nil),                 // 26: otterscale.storage.v1.UpdateImageRequest
-	(*DeleteImageRequest)(nil),                 // 27: otterscale.storage.v1.DeleteImageRequest
-	(*CreateImageSnapshotRequest)(nil),         // 28: otterscale.storage.v1.CreateImageSnapshotRequest
-	(*DeleteImageSnapshotRequest)(nil),         // 29: otterscale.storage.v1.DeleteImageSnapshotRequest
-	(*RollbackImageSnapshotRequest)(nil),       // 30: otterscale.storage.v1.RollbackImageSnapshotRequest
-	(*ProtectImageSnapshotRequest)(nil),        // 31: otterscale.storage.v1.ProtectImageSnapshotRequest
-	(*UnprotectImageSnapshotRequest)(nil),      // 32: otterscale.storage.v1.UnprotectImageSnapshotRequest
-	(*ListVolumesRequest)(nil),                 // 33: otterscale.storage.v1.ListVolumesRequest
-	(*ListVolumesResponse)(nil),                // 34: otterscale.storage.v1.ListVolumesResponse
-	(*ListSubvolumesRequest)(nil),              // 35: otterscale.storage.v1.ListSubvolumesRequest
-	(*ListSubvolumesResponse)(nil),             // 36: otterscale.storage.v1.ListSubvolumesResponse
-	(*CreateSubvolumeRequest)(nil),             // 37: otterscale.storage.v1.CreateSubvolumeRequest
-	(*UpdateSubvolumeRequest)(nil),             // 38: otterscale.storage.v1.UpdateSubvolumeRequest
-	(*DeleteSubvolumeRequest)(nil),             // 39: otterscale.storage.v1.DeleteSubvolumeRequest
-	(*GrantSubvolumeExportAccessRequest)(nil),  // 40: otterscale.storage.v1.GrantSubvolumeExportAccessRequest
-	(*RevokeSubvolumeExportAccessRequest)(nil), // 41: otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
-	(*CreateSubvolumeSnapshotRequest)(nil),     // 42: otterscale.storage.v1.CreateSubvolumeSnapshotRequest
-	(*DeleteSubvolumeSnapshotRequest)(nil),     // 43: otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
-	(*ListSubvolumeGroupsRequest)(nil),         // 44: otterscale.storage.v1.ListSubvolumeGroupsRequest
-	(*ListSubvolumeGroupsResponse)(nil),        // 45: otterscale.storage.v1.ListSubvolumeGroupsResponse
-	(*CreateSubvolumeGroupRequest)(nil),        // 46: otterscale.storage.v1.CreateSubvolumeGroupRequest
-	(*UpdateSubvolumeGroupRequest)(nil),        // 47: otterscale.storage.v1.UpdateSubvolumeGroupRequest
-	(*DeleteSubvolumeGroupRequest)(nil),        // 48: otterscale.storage.v1.DeleteSubvolumeGroupRequest
-	(*ListBucketsRequest)(nil),                 // 49: otterscale.storage.v1.ListBucketsRequest
-	(*ListBucketsResponse)(nil),                // 50: otterscale.storage.v1.ListBucketsResponse
-	(*CreateBucketRequest)(nil),                // 51: otterscale.storage.v1.CreateBucketRequest
-	(*UpdateBucketRequest)(nil),                // 52: otterscale.storage.v1.UpdateBucketRequest
-	(*DeleteBucketRequest)(nil),                // 53: otterscale.storage.v1.DeleteBucketRequest
-	(*ListUsersRequest)(nil),                   // 54: otterscale.storage.v1.ListUsersRequest
-	(*ListUsersResponse)(nil),                  // 55: otterscale.storage.v1.ListUsersResponse
-	(*CreateUserRequest)(nil),                  // 56: otterscale.storage.v1.CreateUserRequest
-	(*UpdateUserRequest)(nil),                  // 57: otterscale.storage.v1.UpdateUserRequest
-	(*DeleteUserRequest)(nil),                  // 58: otterscale.storage.v1.DeleteUserRequest
-	(*CreateUserKeyRequest)(nil),               // 59: otterscale.storage.v1.CreateUserKeyRequest
-	(*DeleteUserKeyRequest)(nil),               // 60: otterscale.storage.v1.DeleteUserKeyRequest
-	nil,                                        // 61: otterscale.storage.v1.Pool.PlacementGroupStateEntry
-	(*Image_Snapshot)(nil),                     // 62: otterscale.storage.v1.Image.Snapshot
-	(*Subvolume_Snapshot)(nil),                 // 63: otterscale.storage.v1.Subvolume.Snapshot
-	(*Subvolume_Export)(nil),                   // 64: otterscale.storage.v1.Subvolume.Export
-	(*Bucket_Grant)(nil),                       // 65: otterscale.storage.v1.Bucket.Grant
-	(*User_Key)(nil),                           // 66: otterscale.storage.v1.User.Key
-	(*DoSMARTResponse_Output)(nil),             // 67: otterscale.storage.v1.DoSMARTResponse.Output
-	nil,                                        // 68: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
-	(*timestamppb.Timestamp)(nil),              // 69: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                      // 70: google.protobuf.Empty
+	(SMBShare_SecurityMode)(0),                 // 2: otterscale.storage.v1.SMBShare.SecurityMode
+	(SMBShare_MapToGuest)(0),                   // 3: otterscale.storage.v1.SMBShare.MapToGuest
+	(*Machine)(nil),                            // 4: otterscale.storage.v1.Machine
+	(*MON)(nil),                                // 5: otterscale.storage.v1.MON
+	(*OSD)(nil),                                // 6: otterscale.storage.v1.OSD
+	(*Pool)(nil),                               // 7: otterscale.storage.v1.Pool
+	(*Image)(nil),                              // 8: otterscale.storage.v1.Image
+	(*Volume)(nil),                             // 9: otterscale.storage.v1.Volume
+	(*Subvolume)(nil),                          // 10: otterscale.storage.v1.Subvolume
+	(*SubvolumeGroup)(nil),                     // 11: otterscale.storage.v1.SubvolumeGroup
+	(*Bucket)(nil),                             // 12: otterscale.storage.v1.Bucket
+	(*User)(nil),                               // 13: otterscale.storage.v1.User
+	(*SMBShare)(nil),                           // 14: otterscale.storage.v1.SMBShare
+	(*ListMONsRequest)(nil),                    // 15: otterscale.storage.v1.ListMONsRequest
+	(*ListMONsResponse)(nil),                   // 16: otterscale.storage.v1.ListMONsResponse
+	(*ListOSDsRequest)(nil),                    // 17: otterscale.storage.v1.ListOSDsRequest
+	(*ListOSDsResponse)(nil),                   // 18: otterscale.storage.v1.ListOSDsResponse
+	(*DoSMARTRequest)(nil),                     // 19: otterscale.storage.v1.DoSMARTRequest
+	(*DoSMARTResponse)(nil),                    // 20: otterscale.storage.v1.DoSMARTResponse
+	(*ListPoolsRequest)(nil),                   // 21: otterscale.storage.v1.ListPoolsRequest
+	(*ListPoolsResponse)(nil),                  // 22: otterscale.storage.v1.ListPoolsResponse
+	(*CreatePoolRequest)(nil),                  // 23: otterscale.storage.v1.CreatePoolRequest
+	(*UpdatePoolRequest)(nil),                  // 24: otterscale.storage.v1.UpdatePoolRequest
+	(*DeletePoolRequest)(nil),                  // 25: otterscale.storage.v1.DeletePoolRequest
+	(*ListImagesRequest)(nil),                  // 26: otterscale.storage.v1.ListImagesRequest
+	(*ListImagesResponse)(nil),                 // 27: otterscale.storage.v1.ListImagesResponse
+	(*CreateImageRequest)(nil),                 // 28: otterscale.storage.v1.CreateImageRequest
+	(*UpdateImageRequest)(nil),                 // 29: otterscale.storage.v1.UpdateImageRequest
+	(*DeleteImageRequest)(nil),                 // 30: otterscale.storage.v1.DeleteImageRequest
+	(*CreateImageSnapshotRequest)(nil),         // 31: otterscale.storage.v1.CreateImageSnapshotRequest
+	(*DeleteImageSnapshotRequest)(nil),         // 32: otterscale.storage.v1.DeleteImageSnapshotRequest
+	(*RollbackImageSnapshotRequest)(nil),       // 33: otterscale.storage.v1.RollbackImageSnapshotRequest
+	(*ProtectImageSnapshotRequest)(nil),        // 34: otterscale.storage.v1.ProtectImageSnapshotRequest
+	(*UnprotectImageSnapshotRequest)(nil),      // 35: otterscale.storage.v1.UnprotectImageSnapshotRequest
+	(*ListVolumesRequest)(nil),                 // 36: otterscale.storage.v1.ListVolumesRequest
+	(*ListVolumesResponse)(nil),                // 37: otterscale.storage.v1.ListVolumesResponse
+	(*ListSubvolumesRequest)(nil),              // 38: otterscale.storage.v1.ListSubvolumesRequest
+	(*ListSubvolumesResponse)(nil),             // 39: otterscale.storage.v1.ListSubvolumesResponse
+	(*CreateSubvolumeRequest)(nil),             // 40: otterscale.storage.v1.CreateSubvolumeRequest
+	(*UpdateSubvolumeRequest)(nil),             // 41: otterscale.storage.v1.UpdateSubvolumeRequest
+	(*DeleteSubvolumeRequest)(nil),             // 42: otterscale.storage.v1.DeleteSubvolumeRequest
+	(*GrantSubvolumeExportAccessRequest)(nil),  // 43: otterscale.storage.v1.GrantSubvolumeExportAccessRequest
+	(*RevokeSubvolumeExportAccessRequest)(nil), // 44: otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
+	(*CreateSubvolumeSnapshotRequest)(nil),     // 45: otterscale.storage.v1.CreateSubvolumeSnapshotRequest
+	(*DeleteSubvolumeSnapshotRequest)(nil),     // 46: otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
+	(*ListSubvolumeGroupsRequest)(nil),         // 47: otterscale.storage.v1.ListSubvolumeGroupsRequest
+	(*ListSubvolumeGroupsResponse)(nil),        // 48: otterscale.storage.v1.ListSubvolumeGroupsResponse
+	(*CreateSubvolumeGroupRequest)(nil),        // 49: otterscale.storage.v1.CreateSubvolumeGroupRequest
+	(*UpdateSubvolumeGroupRequest)(nil),        // 50: otterscale.storage.v1.UpdateSubvolumeGroupRequest
+	(*DeleteSubvolumeGroupRequest)(nil),        // 51: otterscale.storage.v1.DeleteSubvolumeGroupRequest
+	(*ListBucketsRequest)(nil),                 // 52: otterscale.storage.v1.ListBucketsRequest
+	(*ListBucketsResponse)(nil),                // 53: otterscale.storage.v1.ListBucketsResponse
+	(*CreateBucketRequest)(nil),                // 54: otterscale.storage.v1.CreateBucketRequest
+	(*UpdateBucketRequest)(nil),                // 55: otterscale.storage.v1.UpdateBucketRequest
+	(*DeleteBucketRequest)(nil),                // 56: otterscale.storage.v1.DeleteBucketRequest
+	(*ListUsersRequest)(nil),                   // 57: otterscale.storage.v1.ListUsersRequest
+	(*ListUsersResponse)(nil),                  // 58: otterscale.storage.v1.ListUsersResponse
+	(*CreateUserRequest)(nil),                  // 59: otterscale.storage.v1.CreateUserRequest
+	(*UpdateUserRequest)(nil),                  // 60: otterscale.storage.v1.UpdateUserRequest
+	(*DeleteUserRequest)(nil),                  // 61: otterscale.storage.v1.DeleteUserRequest
+	(*CreateUserKeyRequest)(nil),               // 62: otterscale.storage.v1.CreateUserKeyRequest
+	(*DeleteUserKeyRequest)(nil),               // 63: otterscale.storage.v1.DeleteUserKeyRequest
+	(*ListSMBSharesRequest)(nil),               // 64: otterscale.storage.v1.ListSMBSharesRequest
+	(*ListSMBSharesResponse)(nil),              // 65: otterscale.storage.v1.ListSMBSharesResponse
+	(*CreateSMBShareRequest)(nil),              // 66: otterscale.storage.v1.CreateSMBShareRequest
+	(*UpdateSMBShareRequest)(nil),              // 67: otterscale.storage.v1.UpdateSMBShareRequest
+	nil,                                        // 68: otterscale.storage.v1.Pool.PlacementGroupStateEntry
+	(*Image_Snapshot)(nil),                     // 69: otterscale.storage.v1.Image.Snapshot
+	(*Subvolume_Snapshot)(nil),                 // 70: otterscale.storage.v1.Subvolume.Snapshot
+	(*Subvolume_Export)(nil),                   // 71: otterscale.storage.v1.Subvolume.Export
+	(*Bucket_Grant)(nil),                       // 72: otterscale.storage.v1.Bucket.Grant
+	(*User_Key)(nil),                           // 73: otterscale.storage.v1.User.Key
+	(*SMBShare_User)(nil),                      // 74: otterscale.storage.v1.SMBShare.User
+	(*SMBShare_ActiveDirectory)(nil),           // 75: otterscale.storage.v1.SMBShare.ActiveDirectory
+	(*SMBShare_Local)(nil),                     // 76: otterscale.storage.v1.SMBShare.Local
+	(*DoSMARTResponse_Output)(nil),             // 77: otterscale.storage.v1.DoSMARTResponse.Output
+	nil,                                        // 78: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
+	(*timestamppb.Timestamp)(nil),              // 79: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                      // 80: google.protobuf.Empty
 }
 var file_api_storage_v1_storage_proto_depIdxs = []int32{
-	2,  // 0: otterscale.storage.v1.MON.machine:type_name -> otterscale.storage.v1.Machine
-	2,  // 1: otterscale.storage.v1.OSD.machine:type_name -> otterscale.storage.v1.Machine
+	4,  // 0: otterscale.storage.v1.MON.machine:type_name -> otterscale.storage.v1.Machine
+	4,  // 1: otterscale.storage.v1.OSD.machine:type_name -> otterscale.storage.v1.Machine
 	0,  // 2: otterscale.storage.v1.Pool.pool_type:type_name -> otterscale.storage.v1.PoolType
-	61, // 3: otterscale.storage.v1.Pool.placement_group_state:type_name -> otterscale.storage.v1.Pool.PlacementGroupStateEntry
-	69, // 4: otterscale.storage.v1.Pool.created_at:type_name -> google.protobuf.Timestamp
-	69, // 5: otterscale.storage.v1.Image.created_at:type_name -> google.protobuf.Timestamp
-	62, // 6: otterscale.storage.v1.Image.snapshots:type_name -> otterscale.storage.v1.Image.Snapshot
-	69, // 7: otterscale.storage.v1.Volume.created_at:type_name -> google.protobuf.Timestamp
-	69, // 8: otterscale.storage.v1.Subvolume.created_at:type_name -> google.protobuf.Timestamp
-	64, // 9: otterscale.storage.v1.Subvolume.export:type_name -> otterscale.storage.v1.Subvolume.Export
-	63, // 10: otterscale.storage.v1.Subvolume.snapshots:type_name -> otterscale.storage.v1.Subvolume.Snapshot
-	69, // 11: otterscale.storage.v1.SubvolumeGroup.created_at:type_name -> google.protobuf.Timestamp
-	65, // 12: otterscale.storage.v1.Bucket.grants:type_name -> otterscale.storage.v1.Bucket.Grant
-	69, // 13: otterscale.storage.v1.Bucket.created_at:type_name -> google.protobuf.Timestamp
-	66, // 14: otterscale.storage.v1.User.keys:type_name -> otterscale.storage.v1.User.Key
-	3,  // 15: otterscale.storage.v1.ListMONsResponse.mons:type_name -> otterscale.storage.v1.MON
-	4,  // 16: otterscale.storage.v1.ListOSDsResponse.osds:type_name -> otterscale.storage.v1.OSD
-	68, // 17: otterscale.storage.v1.DoSMARTResponse.device_output_map:type_name -> otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
-	5,  // 18: otterscale.storage.v1.ListPoolsResponse.pools:type_name -> otterscale.storage.v1.Pool
-	0,  // 19: otterscale.storage.v1.CreatePoolRequest.pool_type:type_name -> otterscale.storage.v1.PoolType
-	6,  // 20: otterscale.storage.v1.ListImagesResponse.images:type_name -> otterscale.storage.v1.Image
-	7,  // 21: otterscale.storage.v1.ListVolumesResponse.volumes:type_name -> otterscale.storage.v1.Volume
-	8,  // 22: otterscale.storage.v1.ListSubvolumesResponse.subvolumes:type_name -> otterscale.storage.v1.Subvolume
-	9,  // 23: otterscale.storage.v1.ListSubvolumeGroupsResponse.subvolume_groups:type_name -> otterscale.storage.v1.SubvolumeGroup
-	10, // 24: otterscale.storage.v1.ListBucketsResponse.buckets:type_name -> otterscale.storage.v1.Bucket
-	1,  // 25: otterscale.storage.v1.CreateBucketRequest.acl:type_name -> otterscale.storage.v1.Bucket.ACL
-	1,  // 26: otterscale.storage.v1.UpdateBucketRequest.acl:type_name -> otterscale.storage.v1.Bucket.ACL
-	11, // 27: otterscale.storage.v1.ListUsersResponse.users:type_name -> otterscale.storage.v1.User
-	69, // 28: otterscale.storage.v1.Subvolume.Snapshot.created_at:type_name -> google.protobuf.Timestamp
-	67, // 29: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry.value:type_name -> otterscale.storage.v1.DoSMARTResponse.Output
-	12, // 30: otterscale.storage.v1.StorageService.ListMONs:input_type -> otterscale.storage.v1.ListMONsRequest
-	14, // 31: otterscale.storage.v1.StorageService.ListOSDs:input_type -> otterscale.storage.v1.ListOSDsRequest
-	16, // 32: otterscale.storage.v1.StorageService.DoSMART:input_type -> otterscale.storage.v1.DoSMARTRequest
-	18, // 33: otterscale.storage.v1.StorageService.ListPools:input_type -> otterscale.storage.v1.ListPoolsRequest
-	20, // 34: otterscale.storage.v1.StorageService.CreatePool:input_type -> otterscale.storage.v1.CreatePoolRequest
-	21, // 35: otterscale.storage.v1.StorageService.UpdatePool:input_type -> otterscale.storage.v1.UpdatePoolRequest
-	22, // 36: otterscale.storage.v1.StorageService.DeletePool:input_type -> otterscale.storage.v1.DeletePoolRequest
-	23, // 37: otterscale.storage.v1.StorageService.ListImages:input_type -> otterscale.storage.v1.ListImagesRequest
-	25, // 38: otterscale.storage.v1.StorageService.CreateImage:input_type -> otterscale.storage.v1.CreateImageRequest
-	26, // 39: otterscale.storage.v1.StorageService.UpdateImage:input_type -> otterscale.storage.v1.UpdateImageRequest
-	27, // 40: otterscale.storage.v1.StorageService.DeleteImage:input_type -> otterscale.storage.v1.DeleteImageRequest
-	28, // 41: otterscale.storage.v1.StorageService.CreateImageSnapshot:input_type -> otterscale.storage.v1.CreateImageSnapshotRequest
-	29, // 42: otterscale.storage.v1.StorageService.DeleteImageSnapshot:input_type -> otterscale.storage.v1.DeleteImageSnapshotRequest
-	30, // 43: otterscale.storage.v1.StorageService.RollbackImageSnapshot:input_type -> otterscale.storage.v1.RollbackImageSnapshotRequest
-	31, // 44: otterscale.storage.v1.StorageService.ProtectImageSnapshot:input_type -> otterscale.storage.v1.ProtectImageSnapshotRequest
-	32, // 45: otterscale.storage.v1.StorageService.UnprotectImageSnapshot:input_type -> otterscale.storage.v1.UnprotectImageSnapshotRequest
-	33, // 46: otterscale.storage.v1.StorageService.ListVolumes:input_type -> otterscale.storage.v1.ListVolumesRequest
-	35, // 47: otterscale.storage.v1.StorageService.ListSubvolumes:input_type -> otterscale.storage.v1.ListSubvolumesRequest
-	37, // 48: otterscale.storage.v1.StorageService.CreateSubvolume:input_type -> otterscale.storage.v1.CreateSubvolumeRequest
-	38, // 49: otterscale.storage.v1.StorageService.UpdateSubvolume:input_type -> otterscale.storage.v1.UpdateSubvolumeRequest
-	39, // 50: otterscale.storage.v1.StorageService.DeleteSubvolume:input_type -> otterscale.storage.v1.DeleteSubvolumeRequest
-	40, // 51: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:input_type -> otterscale.storage.v1.GrantSubvolumeExportAccessRequest
-	41, // 52: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:input_type -> otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
-	42, // 53: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:input_type -> otterscale.storage.v1.CreateSubvolumeSnapshotRequest
-	43, // 54: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:input_type -> otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
-	44, // 55: otterscale.storage.v1.StorageService.ListSubvolumeGroups:input_type -> otterscale.storage.v1.ListSubvolumeGroupsRequest
-	46, // 56: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:input_type -> otterscale.storage.v1.CreateSubvolumeGroupRequest
-	47, // 57: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:input_type -> otterscale.storage.v1.UpdateSubvolumeGroupRequest
-	48, // 58: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:input_type -> otterscale.storage.v1.DeleteSubvolumeGroupRequest
-	49, // 59: otterscale.storage.v1.StorageService.ListBuckets:input_type -> otterscale.storage.v1.ListBucketsRequest
-	51, // 60: otterscale.storage.v1.StorageService.CreateBucket:input_type -> otterscale.storage.v1.CreateBucketRequest
-	52, // 61: otterscale.storage.v1.StorageService.UpdateBucket:input_type -> otterscale.storage.v1.UpdateBucketRequest
-	53, // 62: otterscale.storage.v1.StorageService.DeleteBucket:input_type -> otterscale.storage.v1.DeleteBucketRequest
-	54, // 63: otterscale.storage.v1.StorageService.ListUsers:input_type -> otterscale.storage.v1.ListUsersRequest
-	56, // 64: otterscale.storage.v1.StorageService.CreateUser:input_type -> otterscale.storage.v1.CreateUserRequest
-	57, // 65: otterscale.storage.v1.StorageService.UpdateUser:input_type -> otterscale.storage.v1.UpdateUserRequest
-	58, // 66: otterscale.storage.v1.StorageService.DeleteUser:input_type -> otterscale.storage.v1.DeleteUserRequest
-	59, // 67: otterscale.storage.v1.StorageService.CreateUserKey:input_type -> otterscale.storage.v1.CreateUserKeyRequest
-	60, // 68: otterscale.storage.v1.StorageService.DeleteUserKey:input_type -> otterscale.storage.v1.DeleteUserKeyRequest
-	13, // 69: otterscale.storage.v1.StorageService.ListMONs:output_type -> otterscale.storage.v1.ListMONsResponse
-	15, // 70: otterscale.storage.v1.StorageService.ListOSDs:output_type -> otterscale.storage.v1.ListOSDsResponse
-	17, // 71: otterscale.storage.v1.StorageService.DoSMART:output_type -> otterscale.storage.v1.DoSMARTResponse
-	19, // 72: otterscale.storage.v1.StorageService.ListPools:output_type -> otterscale.storage.v1.ListPoolsResponse
-	5,  // 73: otterscale.storage.v1.StorageService.CreatePool:output_type -> otterscale.storage.v1.Pool
-	5,  // 74: otterscale.storage.v1.StorageService.UpdatePool:output_type -> otterscale.storage.v1.Pool
-	70, // 75: otterscale.storage.v1.StorageService.DeletePool:output_type -> google.protobuf.Empty
-	24, // 76: otterscale.storage.v1.StorageService.ListImages:output_type -> otterscale.storage.v1.ListImagesResponse
-	6,  // 77: otterscale.storage.v1.StorageService.CreateImage:output_type -> otterscale.storage.v1.Image
-	6,  // 78: otterscale.storage.v1.StorageService.UpdateImage:output_type -> otterscale.storage.v1.Image
-	70, // 79: otterscale.storage.v1.StorageService.DeleteImage:output_type -> google.protobuf.Empty
-	62, // 80: otterscale.storage.v1.StorageService.CreateImageSnapshot:output_type -> otterscale.storage.v1.Image.Snapshot
-	70, // 81: otterscale.storage.v1.StorageService.DeleteImageSnapshot:output_type -> google.protobuf.Empty
-	70, // 82: otterscale.storage.v1.StorageService.RollbackImageSnapshot:output_type -> google.protobuf.Empty
-	70, // 83: otterscale.storage.v1.StorageService.ProtectImageSnapshot:output_type -> google.protobuf.Empty
-	70, // 84: otterscale.storage.v1.StorageService.UnprotectImageSnapshot:output_type -> google.protobuf.Empty
-	34, // 85: otterscale.storage.v1.StorageService.ListVolumes:output_type -> otterscale.storage.v1.ListVolumesResponse
-	36, // 86: otterscale.storage.v1.StorageService.ListSubvolumes:output_type -> otterscale.storage.v1.ListSubvolumesResponse
-	8,  // 87: otterscale.storage.v1.StorageService.CreateSubvolume:output_type -> otterscale.storage.v1.Subvolume
-	8,  // 88: otterscale.storage.v1.StorageService.UpdateSubvolume:output_type -> otterscale.storage.v1.Subvolume
-	70, // 89: otterscale.storage.v1.StorageService.DeleteSubvolume:output_type -> google.protobuf.Empty
-	70, // 90: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:output_type -> google.protobuf.Empty
-	70, // 91: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:output_type -> google.protobuf.Empty
-	63, // 92: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:output_type -> otterscale.storage.v1.Subvolume.Snapshot
-	70, // 93: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:output_type -> google.protobuf.Empty
-	45, // 94: otterscale.storage.v1.StorageService.ListSubvolumeGroups:output_type -> otterscale.storage.v1.ListSubvolumeGroupsResponse
-	9,  // 95: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
-	9,  // 96: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
-	70, // 97: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:output_type -> google.protobuf.Empty
-	50, // 98: otterscale.storage.v1.StorageService.ListBuckets:output_type -> otterscale.storage.v1.ListBucketsResponse
-	10, // 99: otterscale.storage.v1.StorageService.CreateBucket:output_type -> otterscale.storage.v1.Bucket
-	10, // 100: otterscale.storage.v1.StorageService.UpdateBucket:output_type -> otterscale.storage.v1.Bucket
-	70, // 101: otterscale.storage.v1.StorageService.DeleteBucket:output_type -> google.protobuf.Empty
-	55, // 102: otterscale.storage.v1.StorageService.ListUsers:output_type -> otterscale.storage.v1.ListUsersResponse
-	11, // 103: otterscale.storage.v1.StorageService.CreateUser:output_type -> otterscale.storage.v1.User
-	11, // 104: otterscale.storage.v1.StorageService.UpdateUser:output_type -> otterscale.storage.v1.User
-	70, // 105: otterscale.storage.v1.StorageService.DeleteUser:output_type -> google.protobuf.Empty
-	66, // 106: otterscale.storage.v1.StorageService.CreateUserKey:output_type -> otterscale.storage.v1.User.Key
-	70, // 107: otterscale.storage.v1.StorageService.DeleteUserKey:output_type -> google.protobuf.Empty
-	69, // [69:108] is the sub-list for method output_type
-	30, // [30:69] is the sub-list for method input_type
-	30, // [30:30] is the sub-list for extension type_name
-	30, // [30:30] is the sub-list for extension extendee
-	0,  // [0:30] is the sub-list for field type_name
+	68, // 3: otterscale.storage.v1.Pool.placement_group_state:type_name -> otterscale.storage.v1.Pool.PlacementGroupStateEntry
+	79, // 4: otterscale.storage.v1.Pool.created_at:type_name -> google.protobuf.Timestamp
+	79, // 5: otterscale.storage.v1.Image.created_at:type_name -> google.protobuf.Timestamp
+	69, // 6: otterscale.storage.v1.Image.snapshots:type_name -> otterscale.storage.v1.Image.Snapshot
+	79, // 7: otterscale.storage.v1.Volume.created_at:type_name -> google.protobuf.Timestamp
+	79, // 8: otterscale.storage.v1.Subvolume.created_at:type_name -> google.protobuf.Timestamp
+	71, // 9: otterscale.storage.v1.Subvolume.export:type_name -> otterscale.storage.v1.Subvolume.Export
+	70, // 10: otterscale.storage.v1.Subvolume.snapshots:type_name -> otterscale.storage.v1.Subvolume.Snapshot
+	79, // 11: otterscale.storage.v1.SubvolumeGroup.created_at:type_name -> google.protobuf.Timestamp
+	72, // 12: otterscale.storage.v1.Bucket.grants:type_name -> otterscale.storage.v1.Bucket.Grant
+	79, // 13: otterscale.storage.v1.Bucket.created_at:type_name -> google.protobuf.Timestamp
+	73, // 14: otterscale.storage.v1.User.keys:type_name -> otterscale.storage.v1.User.Key
+	3,  // 15: otterscale.storage.v1.SMBShare.map_to_guest:type_name -> otterscale.storage.v1.SMBShare.MapToGuest
+	2,  // 16: otterscale.storage.v1.SMBShare.security_mode:type_name -> otterscale.storage.v1.SMBShare.SecurityMode
+	75, // 17: otterscale.storage.v1.SMBShare.active_directory:type_name -> otterscale.storage.v1.SMBShare.ActiveDirectory
+	76, // 18: otterscale.storage.v1.SMBShare.local:type_name -> otterscale.storage.v1.SMBShare.Local
+	5,  // 19: otterscale.storage.v1.ListMONsResponse.mons:type_name -> otterscale.storage.v1.MON
+	6,  // 20: otterscale.storage.v1.ListOSDsResponse.osds:type_name -> otterscale.storage.v1.OSD
+	78, // 21: otterscale.storage.v1.DoSMARTResponse.device_output_map:type_name -> otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
+	7,  // 22: otterscale.storage.v1.ListPoolsResponse.pools:type_name -> otterscale.storage.v1.Pool
+	0,  // 23: otterscale.storage.v1.CreatePoolRequest.pool_type:type_name -> otterscale.storage.v1.PoolType
+	8,  // 24: otterscale.storage.v1.ListImagesResponse.images:type_name -> otterscale.storage.v1.Image
+	9,  // 25: otterscale.storage.v1.ListVolumesResponse.volumes:type_name -> otterscale.storage.v1.Volume
+	10, // 26: otterscale.storage.v1.ListSubvolumesResponse.subvolumes:type_name -> otterscale.storage.v1.Subvolume
+	11, // 27: otterscale.storage.v1.ListSubvolumeGroupsResponse.subvolume_groups:type_name -> otterscale.storage.v1.SubvolumeGroup
+	12, // 28: otterscale.storage.v1.ListBucketsResponse.buckets:type_name -> otterscale.storage.v1.Bucket
+	1,  // 29: otterscale.storage.v1.CreateBucketRequest.acl:type_name -> otterscale.storage.v1.Bucket.ACL
+	1,  // 30: otterscale.storage.v1.UpdateBucketRequest.acl:type_name -> otterscale.storage.v1.Bucket.ACL
+	13, // 31: otterscale.storage.v1.ListUsersResponse.users:type_name -> otterscale.storage.v1.User
+	14, // 32: otterscale.storage.v1.ListSMBSharesResponse.smb_shares:type_name -> otterscale.storage.v1.SMBShare
+	3,  // 33: otterscale.storage.v1.CreateSMBShareRequest.map_to_guest:type_name -> otterscale.storage.v1.SMBShare.MapToGuest
+	2,  // 34: otterscale.storage.v1.CreateSMBShareRequest.security_mode:type_name -> otterscale.storage.v1.SMBShare.SecurityMode
+	75, // 35: otterscale.storage.v1.CreateSMBShareRequest.active_directory:type_name -> otterscale.storage.v1.SMBShare.ActiveDirectory
+	76, // 36: otterscale.storage.v1.CreateSMBShareRequest.local:type_name -> otterscale.storage.v1.SMBShare.Local
+	3,  // 37: otterscale.storage.v1.UpdateSMBShareRequest.map_to_guest:type_name -> otterscale.storage.v1.SMBShare.MapToGuest
+	2,  // 38: otterscale.storage.v1.UpdateSMBShareRequest.security_mode:type_name -> otterscale.storage.v1.SMBShare.SecurityMode
+	75, // 39: otterscale.storage.v1.UpdateSMBShareRequest.active_directory:type_name -> otterscale.storage.v1.SMBShare.ActiveDirectory
+	76, // 40: otterscale.storage.v1.UpdateSMBShareRequest.local:type_name -> otterscale.storage.v1.SMBShare.Local
+	79, // 41: otterscale.storage.v1.Subvolume.Snapshot.created_at:type_name -> google.protobuf.Timestamp
+	74, // 42: otterscale.storage.v1.SMBShare.ActiveDirectory.join_source:type_name -> otterscale.storage.v1.SMBShare.User
+	74, // 43: otterscale.storage.v1.SMBShare.Local.users:type_name -> otterscale.storage.v1.SMBShare.User
+	77, // 44: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry.value:type_name -> otterscale.storage.v1.DoSMARTResponse.Output
+	15, // 45: otterscale.storage.v1.StorageService.ListMONs:input_type -> otterscale.storage.v1.ListMONsRequest
+	17, // 46: otterscale.storage.v1.StorageService.ListOSDs:input_type -> otterscale.storage.v1.ListOSDsRequest
+	19, // 47: otterscale.storage.v1.StorageService.DoSMART:input_type -> otterscale.storage.v1.DoSMARTRequest
+	21, // 48: otterscale.storage.v1.StorageService.ListPools:input_type -> otterscale.storage.v1.ListPoolsRequest
+	23, // 49: otterscale.storage.v1.StorageService.CreatePool:input_type -> otterscale.storage.v1.CreatePoolRequest
+	24, // 50: otterscale.storage.v1.StorageService.UpdatePool:input_type -> otterscale.storage.v1.UpdatePoolRequest
+	25, // 51: otterscale.storage.v1.StorageService.DeletePool:input_type -> otterscale.storage.v1.DeletePoolRequest
+	26, // 52: otterscale.storage.v1.StorageService.ListImages:input_type -> otterscale.storage.v1.ListImagesRequest
+	28, // 53: otterscale.storage.v1.StorageService.CreateImage:input_type -> otterscale.storage.v1.CreateImageRequest
+	29, // 54: otterscale.storage.v1.StorageService.UpdateImage:input_type -> otterscale.storage.v1.UpdateImageRequest
+	30, // 55: otterscale.storage.v1.StorageService.DeleteImage:input_type -> otterscale.storage.v1.DeleteImageRequest
+	31, // 56: otterscale.storage.v1.StorageService.CreateImageSnapshot:input_type -> otterscale.storage.v1.CreateImageSnapshotRequest
+	32, // 57: otterscale.storage.v1.StorageService.DeleteImageSnapshot:input_type -> otterscale.storage.v1.DeleteImageSnapshotRequest
+	33, // 58: otterscale.storage.v1.StorageService.RollbackImageSnapshot:input_type -> otterscale.storage.v1.RollbackImageSnapshotRequest
+	34, // 59: otterscale.storage.v1.StorageService.ProtectImageSnapshot:input_type -> otterscale.storage.v1.ProtectImageSnapshotRequest
+	35, // 60: otterscale.storage.v1.StorageService.UnprotectImageSnapshot:input_type -> otterscale.storage.v1.UnprotectImageSnapshotRequest
+	36, // 61: otterscale.storage.v1.StorageService.ListVolumes:input_type -> otterscale.storage.v1.ListVolumesRequest
+	38, // 62: otterscale.storage.v1.StorageService.ListSubvolumes:input_type -> otterscale.storage.v1.ListSubvolumesRequest
+	40, // 63: otterscale.storage.v1.StorageService.CreateSubvolume:input_type -> otterscale.storage.v1.CreateSubvolumeRequest
+	41, // 64: otterscale.storage.v1.StorageService.UpdateSubvolume:input_type -> otterscale.storage.v1.UpdateSubvolumeRequest
+	42, // 65: otterscale.storage.v1.StorageService.DeleteSubvolume:input_type -> otterscale.storage.v1.DeleteSubvolumeRequest
+	43, // 66: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:input_type -> otterscale.storage.v1.GrantSubvolumeExportAccessRequest
+	44, // 67: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:input_type -> otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
+	45, // 68: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:input_type -> otterscale.storage.v1.CreateSubvolumeSnapshotRequest
+	46, // 69: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:input_type -> otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
+	47, // 70: otterscale.storage.v1.StorageService.ListSubvolumeGroups:input_type -> otterscale.storage.v1.ListSubvolumeGroupsRequest
+	49, // 71: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:input_type -> otterscale.storage.v1.CreateSubvolumeGroupRequest
+	50, // 72: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:input_type -> otterscale.storage.v1.UpdateSubvolumeGroupRequest
+	51, // 73: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:input_type -> otterscale.storage.v1.DeleteSubvolumeGroupRequest
+	52, // 74: otterscale.storage.v1.StorageService.ListBuckets:input_type -> otterscale.storage.v1.ListBucketsRequest
+	54, // 75: otterscale.storage.v1.StorageService.CreateBucket:input_type -> otterscale.storage.v1.CreateBucketRequest
+	55, // 76: otterscale.storage.v1.StorageService.UpdateBucket:input_type -> otterscale.storage.v1.UpdateBucketRequest
+	56, // 77: otterscale.storage.v1.StorageService.DeleteBucket:input_type -> otterscale.storage.v1.DeleteBucketRequest
+	57, // 78: otterscale.storage.v1.StorageService.ListUsers:input_type -> otterscale.storage.v1.ListUsersRequest
+	59, // 79: otterscale.storage.v1.StorageService.CreateUser:input_type -> otterscale.storage.v1.CreateUserRequest
+	60, // 80: otterscale.storage.v1.StorageService.UpdateUser:input_type -> otterscale.storage.v1.UpdateUserRequest
+	61, // 81: otterscale.storage.v1.StorageService.DeleteUser:input_type -> otterscale.storage.v1.DeleteUserRequest
+	62, // 82: otterscale.storage.v1.StorageService.CreateUserKey:input_type -> otterscale.storage.v1.CreateUserKeyRequest
+	63, // 83: otterscale.storage.v1.StorageService.DeleteUserKey:input_type -> otterscale.storage.v1.DeleteUserKeyRequest
+	64, // 84: otterscale.storage.v1.StorageService.ListSMBShares:input_type -> otterscale.storage.v1.ListSMBSharesRequest
+	66, // 85: otterscale.storage.v1.StorageService.CreateSMBShare:input_type -> otterscale.storage.v1.CreateSMBShareRequest
+	67, // 86: otterscale.storage.v1.StorageService.UpdateSMBShare:input_type -> otterscale.storage.v1.UpdateSMBShareRequest
+	16, // 87: otterscale.storage.v1.StorageService.ListMONs:output_type -> otterscale.storage.v1.ListMONsResponse
+	18, // 88: otterscale.storage.v1.StorageService.ListOSDs:output_type -> otterscale.storage.v1.ListOSDsResponse
+	20, // 89: otterscale.storage.v1.StorageService.DoSMART:output_type -> otterscale.storage.v1.DoSMARTResponse
+	22, // 90: otterscale.storage.v1.StorageService.ListPools:output_type -> otterscale.storage.v1.ListPoolsResponse
+	7,  // 91: otterscale.storage.v1.StorageService.CreatePool:output_type -> otterscale.storage.v1.Pool
+	7,  // 92: otterscale.storage.v1.StorageService.UpdatePool:output_type -> otterscale.storage.v1.Pool
+	80, // 93: otterscale.storage.v1.StorageService.DeletePool:output_type -> google.protobuf.Empty
+	27, // 94: otterscale.storage.v1.StorageService.ListImages:output_type -> otterscale.storage.v1.ListImagesResponse
+	8,  // 95: otterscale.storage.v1.StorageService.CreateImage:output_type -> otterscale.storage.v1.Image
+	8,  // 96: otterscale.storage.v1.StorageService.UpdateImage:output_type -> otterscale.storage.v1.Image
+	80, // 97: otterscale.storage.v1.StorageService.DeleteImage:output_type -> google.protobuf.Empty
+	69, // 98: otterscale.storage.v1.StorageService.CreateImageSnapshot:output_type -> otterscale.storage.v1.Image.Snapshot
+	80, // 99: otterscale.storage.v1.StorageService.DeleteImageSnapshot:output_type -> google.protobuf.Empty
+	80, // 100: otterscale.storage.v1.StorageService.RollbackImageSnapshot:output_type -> google.protobuf.Empty
+	80, // 101: otterscale.storage.v1.StorageService.ProtectImageSnapshot:output_type -> google.protobuf.Empty
+	80, // 102: otterscale.storage.v1.StorageService.UnprotectImageSnapshot:output_type -> google.protobuf.Empty
+	37, // 103: otterscale.storage.v1.StorageService.ListVolumes:output_type -> otterscale.storage.v1.ListVolumesResponse
+	39, // 104: otterscale.storage.v1.StorageService.ListSubvolumes:output_type -> otterscale.storage.v1.ListSubvolumesResponse
+	10, // 105: otterscale.storage.v1.StorageService.CreateSubvolume:output_type -> otterscale.storage.v1.Subvolume
+	10, // 106: otterscale.storage.v1.StorageService.UpdateSubvolume:output_type -> otterscale.storage.v1.Subvolume
+	80, // 107: otterscale.storage.v1.StorageService.DeleteSubvolume:output_type -> google.protobuf.Empty
+	80, // 108: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:output_type -> google.protobuf.Empty
+	80, // 109: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:output_type -> google.protobuf.Empty
+	70, // 110: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:output_type -> otterscale.storage.v1.Subvolume.Snapshot
+	80, // 111: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:output_type -> google.protobuf.Empty
+	48, // 112: otterscale.storage.v1.StorageService.ListSubvolumeGroups:output_type -> otterscale.storage.v1.ListSubvolumeGroupsResponse
+	11, // 113: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
+	11, // 114: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
+	80, // 115: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:output_type -> google.protobuf.Empty
+	53, // 116: otterscale.storage.v1.StorageService.ListBuckets:output_type -> otterscale.storage.v1.ListBucketsResponse
+	12, // 117: otterscale.storage.v1.StorageService.CreateBucket:output_type -> otterscale.storage.v1.Bucket
+	12, // 118: otterscale.storage.v1.StorageService.UpdateBucket:output_type -> otterscale.storage.v1.Bucket
+	80, // 119: otterscale.storage.v1.StorageService.DeleteBucket:output_type -> google.protobuf.Empty
+	58, // 120: otterscale.storage.v1.StorageService.ListUsers:output_type -> otterscale.storage.v1.ListUsersResponse
+	13, // 121: otterscale.storage.v1.StorageService.CreateUser:output_type -> otterscale.storage.v1.User
+	13, // 122: otterscale.storage.v1.StorageService.UpdateUser:output_type -> otterscale.storage.v1.User
+	80, // 123: otterscale.storage.v1.StorageService.DeleteUser:output_type -> google.protobuf.Empty
+	73, // 124: otterscale.storage.v1.StorageService.CreateUserKey:output_type -> otterscale.storage.v1.User.Key
+	80, // 125: otterscale.storage.v1.StorageService.DeleteUserKey:output_type -> google.protobuf.Empty
+	65, // 126: otterscale.storage.v1.StorageService.ListSMBShares:output_type -> otterscale.storage.v1.ListSMBSharesResponse
+	14, // 127: otterscale.storage.v1.StorageService.CreateSMBShare:output_type -> otterscale.storage.v1.SMBShare
+	14, // 128: otterscale.storage.v1.StorageService.UpdateSMBShare:output_type -> otterscale.storage.v1.SMBShare
+	87, // [87:129] is the sub-list for method output_type
+	45, // [45:87] is the sub-list for method input_type
+	45, // [45:45] is the sub-list for extension type_name
+	45, // [45:45] is the sub-list for extension extendee
+	0,  // [0:45] is the sub-list for field type_name
 }
 
 func init() { file_api_storage_v1_storage_proto_init() }
@@ -11226,13 +13275,25 @@ func file_api_storage_v1_storage_proto_init() {
 	if File_api_storage_v1_storage_proto != nil {
 		return
 	}
+	file_api_storage_v1_storage_proto_msgTypes[10].OneofWrappers = []any{
+		(*sMBShare_ActiveDirectory_)(nil),
+		(*sMBShare_Local_)(nil),
+	}
+	file_api_storage_v1_storage_proto_msgTypes[62].OneofWrappers = []any{
+		(*createSMBShareRequest_ActiveDirectory)(nil),
+		(*createSMBShareRequest_Local)(nil),
+	}
+	file_api_storage_v1_storage_proto_msgTypes[63].OneofWrappers = []any{
+		(*updateSMBShareRequest_ActiveDirectory)(nil),
+		(*updateSMBShareRequest_Local)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_storage_v1_storage_proto_rawDesc), len(file_api_storage_v1_storage_proto_rawDesc)),
-			NumEnums:      2,
-			NumMessages:   67,
+			NumEnums:      4,
+			NumMessages:   75,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
