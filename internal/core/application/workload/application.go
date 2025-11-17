@@ -291,11 +291,13 @@ func (uc *UseCase) GetApplication(ctx context.Context, scope, namespace, name st
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("application %q in namespace %q not found", name, namespace))
 }
 
-func (uc *UseCase) filterServices(selector labels.Selector, namespace string, services []service.Service) []service.Service {
+func (uc *UseCase) filterServices(podLabels map[string]string, namespace string, services []service.Service) []service.Service {
 	ret := []service.Service{}
 
 	for i := range services {
-		if services[i].Namespace == namespace && selector.Matches(labels.Set(services[i].Spec.Selector)) {
+		selector := labels.SelectorFromSet(services[i].Spec.Selector)
+
+		if services[i].Namespace == namespace && selector.Matches(labels.Set(podLabels)) {
 			ret = append(ret, services[i])
 		}
 	}
@@ -362,8 +364,8 @@ func (uc *UseCase) filterPersistents(namespace string, volumes []persistent.Volu
 	return ret
 }
 
-func (uc *UseCase) toApplication(ls *v1.LabelSelector, appType, name, namespace string, labels map[string]string, replicas *int32, objectMeta *ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
-	selector, err := v1.LabelSelectorAsSelector(ls)
+func (uc *UseCase) toApplication(labelSelector *v1.LabelSelector, podLabels map[string]string, appType, name, namespace string, labels map[string]string, replicas *int32, objectMeta *ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
+	selector, err := v1.LabelSelectorAsSelector(labelSelector)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create selector: %w", err)
 	}
@@ -376,7 +378,7 @@ func (uc *UseCase) toApplication(ls *v1.LabelSelector, appType, name, namespace 
 		Replicas:    replicas,
 		ObjectMeta:  objectMeta,
 		Containers:  containers,
-		Services:    uc.filterServices(selector, namespace, services),
+		Services:    uc.filterServices(podLabels, namespace, services),
 		Pods:        uc.filterPods(selector, namespace, pods),
 		Persistents: uc.filterPersistents(namespace, volumes, persistentVolumeClaims, storageClasses),
 	}, nil
@@ -385,6 +387,7 @@ func (uc *UseCase) toApplication(ls *v1.LabelSelector, appType, name, namespace 
 func (uc *UseCase) fromDeployment(workload *Deployment, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	return uc.toApplication(
 		workload.Spec.Selector,
+		workload.Spec.Template.Labels,
 		ApplicationTypeDeployment,
 		workload.Name,
 		workload.Namespace,
@@ -403,6 +406,7 @@ func (uc *UseCase) fromDeployment(workload *Deployment, pods []Pod, services []s
 func (uc *UseCase) fromStatefulSet(workload *StatefulSet, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	return uc.toApplication(
 		workload.Spec.Selector,
+		workload.Spec.Template.Labels,
 		ApplicationTypeStatefulSet,
 		workload.Name,
 		workload.Namespace,
@@ -421,6 +425,7 @@ func (uc *UseCase) fromStatefulSet(workload *StatefulSet, pods []Pod, services [
 func (uc *UseCase) fromDaemonSet(workload *DaemonSet, pods []Pod, services []service.Service, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	return uc.toApplication(
 		workload.Spec.Selector,
+		workload.Spec.Template.Labels,
 		ApplicationTypeDaemonSet,
 		workload.Name,
 		workload.Namespace,

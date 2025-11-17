@@ -148,6 +148,15 @@ const (
 	// StorageServiceDeleteUserKeyProcedure is the fully-qualified name of the StorageService's
 	// DeleteUserKey RPC.
 	StorageServiceDeleteUserKeyProcedure = "/otterscale.storage.v1.StorageService/DeleteUserKey"
+	// StorageServiceListSMBSharesProcedure is the fully-qualified name of the StorageService's
+	// ListSMBShares RPC.
+	StorageServiceListSMBSharesProcedure = "/otterscale.storage.v1.StorageService/ListSMBShares"
+	// StorageServiceCreateSMBShareProcedure is the fully-qualified name of the StorageService's
+	// CreateSMBShare RPC.
+	StorageServiceCreateSMBShareProcedure = "/otterscale.storage.v1.StorageService/CreateSMBShare"
+	// StorageServiceUpdateSMBShareProcedure is the fully-qualified name of the StorageService's
+	// UpdateSMBShare RPC.
+	StorageServiceUpdateSMBShareProcedure = "/otterscale.storage.v1.StorageService/UpdateSMBShare"
 )
 
 // StorageServiceClient is a client for the otterscale.storage.v1.StorageService service.
@@ -191,6 +200,9 @@ type StorageServiceClient interface {
 	DeleteUser(context.Context, *v1.DeleteUserRequest) (*emptypb.Empty, error)
 	CreateUserKey(context.Context, *v1.CreateUserKeyRequest) (*v1.User_Key, error)
 	DeleteUserKey(context.Context, *v1.DeleteUserKeyRequest) (*emptypb.Empty, error)
+	ListSMBShares(context.Context, *v1.ListSMBSharesRequest) (*v1.ListSMBSharesResponse, error)
+	CreateSMBShare(context.Context, *v1.CreateSMBShareRequest) (*v1.SMBShare, error)
+	UpdateSMBShare(context.Context, *v1.UpdateSMBShareRequest) (*v1.SMBShare, error)
 }
 
 // NewStorageServiceClient constructs a client for the otterscale.storage.v1.StorageService service.
@@ -438,6 +450,24 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(storageServiceMethods.ByName("DeleteUserKey")),
 			connect.WithClientOptions(opts...),
 		),
+		listSMBShares: connect.NewClient[v1.ListSMBSharesRequest, v1.ListSMBSharesResponse](
+			httpClient,
+			baseURL+StorageServiceListSMBSharesProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListSMBShares")),
+			connect.WithClientOptions(opts...),
+		),
+		createSMBShare: connect.NewClient[v1.CreateSMBShareRequest, v1.SMBShare](
+			httpClient,
+			baseURL+StorageServiceCreateSMBShareProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("CreateSMBShare")),
+			connect.WithClientOptions(opts...),
+		),
+		updateSMBShare: connect.NewClient[v1.UpdateSMBShareRequest, v1.SMBShare](
+			httpClient,
+			baseURL+StorageServiceUpdateSMBShareProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("UpdateSMBShare")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -482,6 +512,9 @@ type storageServiceClient struct {
 	deleteUser                  *connect.Client[v1.DeleteUserRequest, emptypb.Empty]
 	createUserKey               *connect.Client[v1.CreateUserKeyRequest, v1.User_Key]
 	deleteUserKey               *connect.Client[v1.DeleteUserKeyRequest, emptypb.Empty]
+	listSMBShares               *connect.Client[v1.ListSMBSharesRequest, v1.ListSMBSharesResponse]
+	createSMBShare              *connect.Client[v1.CreateSMBShareRequest, v1.SMBShare]
+	updateSMBShare              *connect.Client[v1.UpdateSMBShareRequest, v1.SMBShare]
 }
 
 // ListMONs calls otterscale.storage.v1.StorageService.ListMONs.
@@ -836,6 +869,33 @@ func (c *storageServiceClient) DeleteUserKey(ctx context.Context, req *v1.Delete
 	return nil, err
 }
 
+// ListSMBShares calls otterscale.storage.v1.StorageService.ListSMBShares.
+func (c *storageServiceClient) ListSMBShares(ctx context.Context, req *v1.ListSMBSharesRequest) (*v1.ListSMBSharesResponse, error) {
+	response, err := c.listSMBShares.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// CreateSMBShare calls otterscale.storage.v1.StorageService.CreateSMBShare.
+func (c *storageServiceClient) CreateSMBShare(ctx context.Context, req *v1.CreateSMBShareRequest) (*v1.SMBShare, error) {
+	response, err := c.createSMBShare.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// UpdateSMBShare calls otterscale.storage.v1.StorageService.UpdateSMBShare.
+func (c *storageServiceClient) UpdateSMBShare(ctx context.Context, req *v1.UpdateSMBShareRequest) (*v1.SMBShare, error) {
+	response, err := c.updateSMBShare.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // StorageServiceHandler is an implementation of the otterscale.storage.v1.StorageService service.
 type StorageServiceHandler interface {
 	ListMONs(context.Context, *v1.ListMONsRequest) (*v1.ListMONsResponse, error)
@@ -877,6 +937,9 @@ type StorageServiceHandler interface {
 	DeleteUser(context.Context, *v1.DeleteUserRequest) (*emptypb.Empty, error)
 	CreateUserKey(context.Context, *v1.CreateUserKeyRequest) (*v1.User_Key, error)
 	DeleteUserKey(context.Context, *v1.DeleteUserKeyRequest) (*emptypb.Empty, error)
+	ListSMBShares(context.Context, *v1.ListSMBSharesRequest) (*v1.ListSMBSharesResponse, error)
+	CreateSMBShare(context.Context, *v1.CreateSMBShareRequest) (*v1.SMBShare, error)
+	UpdateSMBShare(context.Context, *v1.UpdateSMBShareRequest) (*v1.SMBShare, error)
 }
 
 // NewStorageServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -1120,6 +1183,24 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		connect.WithSchema(storageServiceMethods.ByName("DeleteUserKey")),
 		connect.WithHandlerOptions(opts...),
 	)
+	storageServiceListSMBSharesHandler := connect.NewUnaryHandlerSimple(
+		StorageServiceListSMBSharesProcedure,
+		svc.ListSMBShares,
+		connect.WithSchema(storageServiceMethods.ByName("ListSMBShares")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceCreateSMBShareHandler := connect.NewUnaryHandlerSimple(
+		StorageServiceCreateSMBShareProcedure,
+		svc.CreateSMBShare,
+		connect.WithSchema(storageServiceMethods.ByName("CreateSMBShare")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceUpdateSMBShareHandler := connect.NewUnaryHandlerSimple(
+		StorageServiceUpdateSMBShareProcedure,
+		svc.UpdateSMBShare,
+		connect.WithSchema(storageServiceMethods.ByName("UpdateSMBShare")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.storage.v1.StorageService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case StorageServiceListMONsProcedure:
@@ -1200,6 +1281,12 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 			storageServiceCreateUserKeyHandler.ServeHTTP(w, r)
 		case StorageServiceDeleteUserKeyProcedure:
 			storageServiceDeleteUserKeyHandler.ServeHTTP(w, r)
+		case StorageServiceListSMBSharesProcedure:
+			storageServiceListSMBSharesHandler.ServeHTTP(w, r)
+		case StorageServiceCreateSMBShareProcedure:
+			storageServiceCreateSMBShareHandler.ServeHTTP(w, r)
+		case StorageServiceUpdateSMBShareProcedure:
+			storageServiceUpdateSMBShareHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1363,4 +1450,16 @@ func (UnimplementedStorageServiceHandler) CreateUserKey(context.Context, *v1.Cre
 
 func (UnimplementedStorageServiceHandler) DeleteUserKey(context.Context, *v1.DeleteUserKeyRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteUserKey is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListSMBShares(context.Context, *v1.ListSMBSharesRequest) (*v1.ListSMBSharesResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListSMBShares is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) CreateSMBShare(context.Context, *v1.CreateSMBShareRequest) (*v1.SMBShare, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateSMBShare is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) UpdateSMBShare(context.Context, *v1.UpdateSMBShareRequest) (*v1.SMBShare, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdateSMBShare is not implemented"))
 }
