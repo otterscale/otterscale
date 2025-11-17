@@ -190,8 +190,7 @@ message InternalObjectService {
   }
   Type type = 1;
   string scope = 2;
-  reserved 3;
-  string name = 4;
+  reserved 3 to 4;
   string host = 5;
 }
 
