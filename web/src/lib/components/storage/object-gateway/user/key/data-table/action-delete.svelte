@@ -4,33 +4,36 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { DeleteUserKeyRequest, User, User_Key } from '$lib/api/storage/v1/storage_pb';
+	import type { DeleteUserKeyRequest, User_Key } from '$lib/api/storage/v1/storage_pb';
+	import type { User } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentCeph } from '$lib/stores';
 </script>
 
 <script lang="ts">
 	let {
-		key
+		key,
+		user,
+		scope,
+		reloadManager
 	}: {
 		key: User_Key;
+		user: User;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
-	const user: User = getContext('user');
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const storageClient = createClient(StorageService, transport);
 	let invalid = $state(false);
 
 	const defaults = {
-		scope: $currentCeph?.scope,
-		facility: $currentCeph?.name,
+		scope: scope,
 		userId: user.id
 	} as DeleteUserKeyRequest;
 	let request = $state(defaults);

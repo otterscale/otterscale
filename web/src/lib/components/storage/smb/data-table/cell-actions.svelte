@@ -9,23 +9,21 @@
 
 <script lang="ts">
 	let {
-		scope,
-		facility,
-		namespace,
 		smbShare,
+		scope,
+		namespace,
 		reloadManager
 	}: {
+		smbShare: SMBShare;
 		scope: string;
-		facility: string;
 		namespace: string;
 		reloadManager: ReloadManager;
-		smbShare: SMBShare;
 	} = $props();
 </script>
 
 <Layout.Actions>
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionItem>
-		<Edit {scope} {facility} {namespace} {smbShare} {reloadManager} />
+		<Edit {smbShare} {scope} {namespace} {reloadManager} />
 	</Layout.ActionItem>
 </Layout.Actions>

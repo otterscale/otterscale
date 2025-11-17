@@ -14,15 +14,16 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
 	let {
 		release,
+		scope,
 		releases = $bindable()
 	}: {
 		release: Application_Release;
+		scope: string;
 		releases: Writable<Application_Release[]>;
 	} = $props();
 
@@ -30,8 +31,7 @@
 	const client = createClient(ApplicationService, transport);
 
 	const defaults = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
 		namespace: release.namespace
 	} as RollbackReleaseRequest;
 	let request = $state(defaults);

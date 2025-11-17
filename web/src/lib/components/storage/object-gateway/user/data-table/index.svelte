@@ -21,13 +21,16 @@
 	import { m } from '$lib/paraglide/messages';
 
 	import Create from './action-create.svelte';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
-	let { users, reloadManager }: { users: Writable<User[]>; reloadManager: ReloadManager } =
-		$props();
+	let {
+		users,
+		reloadManager,
+		scope
+	}: { users: Writable<User[]>; reloadManager: ReloadManager; scope: string } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
@@ -39,7 +42,10 @@
 		get data() {
 			return $users;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, reloadManager);
+		},
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -124,7 +130,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create />
+			<Create {scope} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

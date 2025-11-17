@@ -8,14 +8,12 @@
 
 <script lang="ts">
 	let {
-		selectedScope = $bindable(),
-		selectedFacility = $bindable(),
-		selectedVolume = $bindable(),
+		scope,
+		volume,
 		selectedSubvolumeGroupName = $bindable()
 	}: {
-		selectedScope: string;
-		selectedFacility: string;
-		selectedVolume: string;
+		scope: string;
+		volume: string;
 		selectedSubvolumeGroupName: string;
 	} = $props();
 </script>
@@ -26,18 +24,11 @@
 		<Tabs.Trigger value="group">{m.group()}</Tabs.Trigger>
 	</Tabs.List>
 {/snippet}
-
 <Tabs.Root value="nfs">
 	<Tabs.Content value="nfs">
-		<NFS
-			bind:selectedScope
-			bind:selectedFacility
-			bind:selectedVolume
-			bind:selectedSubvolumeGroupName
-			{trigger}
-		/>
+		<NFS {scope} {volume} bind:selectedSubvolumeGroupName {trigger} />
 	</Tabs.Content>
 	<Tabs.Content value="group">
-		<Group bind:selectedScope bind:selectedFacility bind:selectedVolume {trigger} />
+		<Group {scope} {volume} {trigger} />
 	</Tabs.Content>
 </Tabs.Root>

@@ -21,144 +21,146 @@ const messages = {
 	iops: m.iops()
 };
 
-const columns: ColumnDef<OSD>[] = [
-	{
-		id: 'select',
-		header: ({ table }) => {
-			return renderSnippet(headers.row_picker, table);
+function getColumns(scope: string): ColumnDef<OSD>[] {
+	return [
+		{
+			id: 'select',
+			header: ({ table }) => {
+				return renderSnippet(headers.row_picker, table);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.row_picker, row);
+			},
+			enableSorting: false,
+			enableHiding: false
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.row_picker, row);
-		},
-		enableSorting: false,
-		enableHiding: false
-	},
-	{
-		accessorKey: 'name',
-		header: ({ column }) => {
-			return renderSnippet(headers.name, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.name, row);
-		}
-	},
-	{
-		accessorKey: 'state',
-		header: ({ column }) => {
-			return renderSnippet(headers.state, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.state, row);
-		}
-	},
-	{
-		id: 'in',
-		header: ({ column }) => {
-			return renderSnippet(headers.osdIn, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.osdIn, row);
-		},
-		filterFn: (row, columnId, filterValue: boolean) => {
-			if (filterValue === undefined) {
-				return true;
+		{
+			accessorKey: 'name',
+			header: ({ column }) => {
+				return renderSnippet(headers.name, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.name, row);
 			}
-
-			return row.original.in === filterValue;
 		},
-		enableHiding: false
-	},
-	{
-		id: 'up',
-		header: ({ column }) => {
-			return renderSnippet(headers.osdUp, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.osdUp, row);
-		},
-		filterFn: (row, columnId, filterValue: boolean) => {
-			if (filterValue === undefined) {
-				return true;
+		{
+			accessorKey: 'state',
+			header: ({ column }) => {
+				return renderSnippet(headers.state, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.state, row);
 			}
+		},
+		{
+			id: 'in',
+			header: ({ column }) => {
+				return renderSnippet(headers.osdIn, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.osdIn, row);
+			},
+			filterFn: (row, columnId, filterValue: boolean) => {
+				if (filterValue === undefined) {
+					return true;
+				}
 
-			return row.original.up === filterValue;
+				return row.original.in === filterValue;
+			},
+			enableHiding: false
 		},
-		enableHiding: false
-	},
-	{
-		accessorKey: 'exists',
-		header: ({ column }) => {
-			return renderSnippet(headers.exists, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.exists, row);
-		},
-		filterFn: 'equals'
-	},
-	{
-		accessorKey: 'deviceClass',
-		header: ({ column }) => {
-			return renderSnippet(headers.deviceClass, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.deviceClass, row);
-		},
-		filterFn: 'arrIncludesSome'
-	},
-	{
-		accessorKey: 'machine',
-		header: ({ column }) => {
-			return renderSnippet(headers.machine, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.machine, row);
-		},
-		filterFn: 'arrIncludesSome'
-	},
-	{
-		accessorKey: 'placementGroupCount',
-		header: ({ column }) => {
-			return renderSnippet(headers.placementGroupCount, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.placementGroupCount, row);
-		}
-	},
-	{
-		accessorKey: 'usage',
-		header: ({ column }) => {
-			return renderSnippet(headers.usage, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.usage, row);
-		},
-		sortingFn: (previousRow, nextRow) =>
-			getSortingFunction(
-				Number(previousRow.original.usedBytes) / Number(previousRow.original.sizeBytes),
-				Number(nextRow.original.usedBytes) / Number(nextRow.original.sizeBytes),
-				(p, n) => p < n,
-				(p, n) => p === n
-			)
-	},
-	{
-		accessorKey: 'iops',
-		header: ({ column }) => {
-			return renderSnippet(headers.iops, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.iops, row);
-		}
-	},
-	{
-		accessorKey: 'actions',
-		header: ({ column }) => {
-			return renderSnippet(headers.actions, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.actions, row);
-		},
-		enableHiding: false
-	}
-];
+		{
+			id: 'up',
+			header: ({ column }) => {
+				return renderSnippet(headers.osdUp, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.osdUp, row);
+			},
+			filterFn: (row, columnId, filterValue: boolean) => {
+				if (filterValue === undefined) {
+					return true;
+				}
 
-export { columns, messages };
+				return row.original.up === filterValue;
+			},
+			enableHiding: false
+		},
+		{
+			accessorKey: 'exists',
+			header: ({ column }) => {
+				return renderSnippet(headers.exists, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.exists, row);
+			},
+			filterFn: 'equals'
+		},
+		{
+			accessorKey: 'deviceClass',
+			header: ({ column }) => {
+				return renderSnippet(headers.deviceClass, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.deviceClass, row);
+			},
+			filterFn: 'arrIncludesSome'
+		},
+		{
+			accessorKey: 'machine',
+			header: ({ column }) => {
+				return renderSnippet(headers.machine, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.machine, row);
+			},
+			filterFn: 'arrIncludesSome'
+		},
+		{
+			accessorKey: 'placementGroupCount',
+			header: ({ column }) => {
+				return renderSnippet(headers.placementGroupCount, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.placementGroupCount, row);
+			}
+		},
+		{
+			accessorKey: 'usage',
+			header: ({ column }) => {
+				return renderSnippet(headers.usage, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.usage, row);
+			},
+			sortingFn: (previousRow, nextRow) =>
+				getSortingFunction(
+					Number(previousRow.original.usedBytes) / Number(previousRow.original.sizeBytes),
+					Number(nextRow.original.usedBytes) / Number(nextRow.original.sizeBytes),
+					(p, n) => p < n,
+					(p, n) => p === n
+				)
+		},
+		{
+			accessorKey: 'iops',
+			header: ({ column }) => {
+				return renderSnippet(headers.iops, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.iops, row);
+			}
+		},
+		{
+			accessorKey: 'actions',
+			header: ({ column }) => {
+				return renderSnippet(headers.actions, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.actions, { row, scope });
+			},
+			enableHiding: false
+		}
+	];
+}
+
+export { getColumns, messages };

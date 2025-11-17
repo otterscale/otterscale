@@ -5,6 +5,7 @@
 	import type { User } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Key } from '$lib/components/storage/object-gateway/user/key';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 
@@ -48,14 +49,14 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet keys(row: Row<User>)}
+{#snippet keys(data: { row: Row<User>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-end">
-		<Key user={row.original} />
+		<Key user={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<User>)}
+{#snippet actions(data: { row: Row<User>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions user={row.original} />
+		<Actions user={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

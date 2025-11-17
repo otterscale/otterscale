@@ -5,13 +5,16 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import Actions from './actions.svelte';
 
 	export const cells = {
 		row_picker,
 		type,
 		startIp,
 		endIp,
-		comment
+		comment,
+		actions
 	};
 </script>
 
@@ -44,5 +47,11 @@
 {#snippet comment(row: Row<Network_IPRange>)}
 	<Layout.Cell class="items-start">
 		{row.original.comment}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet actions(data: { row: Row<Network_IPRange>; reloadManager: ReloadManager })}
+	<Layout.Cell class="items-start">
+		<Actions ipRange={data.row.original} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
 	import PowerOff from './action-power-off.svelte';
@@ -9,9 +10,11 @@
 
 <script lang="ts">
 	let {
-		machine
+		machine,
+		reloadManager
 	}: {
 		machine: Machine;
+		reloadManager: ReloadManager;
 	} = $props();
 </script>
 
@@ -23,7 +26,7 @@
 			machine.status.toLowerCase() !== 'releasing') ||
 			!!machine.workloadAnnotations['juju-is-controller']}
 	>
-		<Remove {machine} />
+		<Remove {machine} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem
 		disabled={machine.powerState.toLowerCase() !== 'on' ||
@@ -31,6 +34,6 @@
 			machine.status.toLowerCase() === 'testing' ||
 			machine.status.toLowerCase() === 'deploying'}
 	>
-		<PowerOff {machine} />
+		<PowerOff {machine} {reloadManager} />
 	</Layout.ActionItem>
 </Layout.Actions>

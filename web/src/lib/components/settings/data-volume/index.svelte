@@ -23,62 +23,47 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility, namespace }: { scope: string; facility: string; namespace: string } =
-		$props();
+	let { scope, namespace }: { scope: string; namespace: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	const dataVolumes = writable<DataVolume[]>();
-	let isConfigurationLoading = $state(true);
-
-	const reloadManager = new ReloadManager(() => {
+	async function fetch() {
 		virtualMachineClient
 			.listDataVolumes({
 				scope: scope,
-				facility: facility,
 				namespace: namespace,
 				bootImage: true
 			})
 			.then((response) => {
 				dataVolumes.set(response.dataVolumes);
+			})
+			.catch((error) => {
+				console.error('Error fetching data volumes:', error);
 			});
-	});
-	setContext('reloadManager', reloadManager);
+	}
 
+	const reloadManager = new ReloadManager(fetch, false);
+
+	let isMounted = $state(false);
 	onMount(async () => {
-		try {
-			await virtualMachineClient
-				.listDataVolumes({
-					scope: scope,
-					facility: facility,
-					namespace: namespace,
-					bootImage: true
-				})
-				.then((response) => {
-					dataVolumes.set(response.dataVolumes);
-					isConfigurationLoading = false;
-				});
-
-			reloadManager.start();
-		} catch (error) {
-			console.error('Error during initial data load:', error);
-		}
+		await fetch();
+		isMounted = true;
 	});
-
 	onDestroy(() => {
 		reloadManager.stop();
 	});
 </script>
 
-{#if !isConfigurationLoading}
+{#if isMounted}
 	<Layout.Root>
 		<Layout.Title>{m.virtual_machine_data_volume()}</Layout.Title>
 		<Layout.Description>
 			{m.setting_data_volume_description()}
 		</Layout.Description>
 		<Layout.Controller>
-			<Create />
+			<Create {scope} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {
@@ -182,7 +167,7 @@
 									<span class="flex items-center justify-end gap-1">{capacity} {unit}</span>
 								</Table.Cell>
 								<Table.Cell class="p-0">
-									<Actions {dataVolume} />
+									<Actions {dataVolume} {scope} {reloadManager} />
 								</Table.Cell>
 							</Table.Row>
 						{/each}

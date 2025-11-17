@@ -19,7 +19,6 @@
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 
 	let {
 		scope,
@@ -32,7 +31,7 @@
 	const machineScope = $derived(
 		machine.workloadAnnotations['juju-machine-id']?.split('-machine-')[0]
 	);
-	const isMachineInSelectedScope = $derived(machineScope === $currentKubernetes?.scope);
+	const isMachineInSelectedScope = $derived(machineScope === scope);
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(OrchestratorService, transport);
@@ -50,8 +49,7 @@
 		isLoading = true;
 		try {
 			const response = await client.listGPURelationsByMachine({
-				scope: $currentKubernetes?.scope,
-				facility: $currentKubernetes?.name,
+				scope: scope,
 				machineId: machine.id
 			});
 

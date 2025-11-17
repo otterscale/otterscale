@@ -2,6 +2,7 @@
 	import Icon from '@iconify/svelte';
 
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
 	import type { LargeLanguageModel } from '../type';
@@ -9,9 +10,11 @@
 
 <script lang="ts">
 	let {
-		model
+		model,
+		reloadManager
 	}: {
 		model: LargeLanguageModel;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	let open = $state(false);
@@ -34,6 +37,7 @@
 			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
+					reloadManager.force();
 					close();
 				}}
 			>

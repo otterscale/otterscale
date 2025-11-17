@@ -13,9 +13,11 @@
 <script lang="ts">
 	let {
 		release,
+		scope,
 		releases = $bindable()
 	}: {
 		release: Application_Release;
+		scope: string;
 		releases: Writable<Application_Release[]>;
 	} = $props();
 </script>
@@ -26,13 +28,13 @@
 	</Layout.ActionLabel>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
-		<Edit {release} bind:releases />
+		<Edit {release} {scope} bind:releases />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Rollback {release} bind:releases />
+		<Rollback {release} {scope} bind:releases />
 	</Layout.ActionItem>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
-		<Delete {release} bind:releases />
+		<Delete {release} {scope} bind:releases />
 	</Layout.ActionItem>
 </Layout.Actions>

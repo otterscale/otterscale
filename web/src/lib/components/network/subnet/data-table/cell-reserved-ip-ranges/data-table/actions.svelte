@@ -7,13 +7,16 @@
 
 	import Delete from './action-delete.svelte';
 	import Update from './action-update.svelte';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">
 	let {
-		row
+		ipRange,
+		reloadManager
 	}: {
-		row: Row<Network_IPRange>;
+		ipRange: Network_IPRange;
+		reloadManager: ReloadManager;
 	} = $props();
 </script>
 
@@ -21,9 +24,9 @@
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
-		<Update ipRange={row.original} />
+		<Update {ipRange} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Delete ipRange={row.original} />
+		<Delete {ipRange} {reloadManager} />
 	</Layout.ActionItem>
 </Layout.Actions>

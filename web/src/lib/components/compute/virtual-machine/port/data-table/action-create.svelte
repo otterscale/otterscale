@@ -19,7 +19,6 @@
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	// Protocol options
@@ -30,14 +29,18 @@
 	]);
 
 	let {
-		virtualMachine
+		virtualMachine,
+		scope,
+		reloadManager
 	}: {
 		virtualMachine: VirtualMachine;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
@@ -47,8 +50,7 @@
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_CREATE_REQUEST = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
 		namespace: virtualMachine.namespace,
 		name: virtualMachine.name,
 		virtualMachineName: virtualMachine.name,
@@ -56,8 +58,7 @@
 	} as CreateVirtualMachineServiceRequest;
 
 	const DEFAULT_UPDATE_REQUEST = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
 		namespace: virtualMachine.namespace,
 		name:
 			virtualMachine.services.length > 0 ? virtualMachine.services[0].name : virtualMachine.name,

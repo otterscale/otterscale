@@ -20,15 +20,17 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import Create from './action-create.svelte';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 </script>
 
 <script lang="ts">
 	let {
 		virtualMachines,
+		scope,
 		reloadManager
 	}: {
 		virtualMachines: Writable<VirtualMachine[]>;
+		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -44,7 +46,9 @@
 		get data() {
 			return $virtualMachines;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, reloadManager);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -127,7 +131,7 @@
 			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create />
+			<Create {scope} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

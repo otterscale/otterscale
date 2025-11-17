@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount, setContext } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility }: { scope: string; facility: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	let isMounted = $state(false);
@@ -23,15 +23,14 @@
 	const reloadManager = new ReloadManager(() => {
 		applicationClient
 			.listApplications({
-				scope: scope,
-				facility: facility
+				scope: scope
 			})
 			.then((response) => {
 				services.set(
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							publicAddress: response.publicAddress
+							endpoint: response.endpoint
 						}))
 					)
 				);
@@ -40,20 +39,18 @@
 				console.error('Error during data loading:', error);
 			});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		applicationClient
 			.listApplications({
-				scope: scope,
-				facility: facility
+				scope: scope
 			})
 			.then((response) => {
 				services.set(
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							publicAddress: response.publicAddress
+							endpoint: response.endpoint
 						}))
 					)
 				);

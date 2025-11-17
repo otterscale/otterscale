@@ -11,7 +11,8 @@
 		type,
 		startIp,
 		endIp,
-		comment
+		comment,
+		actions
 	};
 </script>
 
@@ -57,3 +58,5 @@
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
+
+{#snippet actions()}{/snippet}

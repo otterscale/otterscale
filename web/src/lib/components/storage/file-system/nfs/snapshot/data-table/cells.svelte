@@ -2,13 +2,14 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
 
-	import type { Subvolume_Snapshot } from '$lib/api/storage/v1/storage_pb';
+	import type { Subvolume, Subvolume_Snapshot } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatTimeAgo } from '$lib/formatter';
 
 	import Actions from './cell-actions.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	export const cells = {
 		row_picker,
@@ -45,8 +46,22 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<Subvolume_Snapshot>)}
+{#snippet actions(data: {
+	row: Row<Subvolume_Snapshot>;
+	subvolume: Subvolume;
+	scope: string;
+	volume: string;
+	group: string;
+	reloadManager: ReloadManager;
+})}
 	<Layout.Cell class="items-start">
-		<Actions snapshot={row.original} />
+		<Actions
+			snapshot={data.row.original}
+			subvolume={data.subvolume}
+			scope={data.scope}
+			volume={data.volume}
+			group={data.group}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}

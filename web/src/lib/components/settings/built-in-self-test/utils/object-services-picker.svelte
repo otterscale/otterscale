@@ -11,7 +11,6 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { currentCeph, currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils.js';
 </script>
 
@@ -30,9 +29,7 @@
 	async function fetchOptions() {
 		try {
 			const response = await client.listInternalObjectServices({
-				scope: scope,
-				cephName: $currentCeph?.name,
-				kubernetesName: $currentKubernetes?.name
+				scope: scope
 			});
 			internalObjectServices.set(
 				response.internalObjectServices.map(
@@ -41,7 +38,7 @@
 							value: internalObjectService,
 							label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
 							icon: 'ph:cube',
-							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`
+							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.host})`
 						}) as SingleSelect.OptionType
 				)
 			);
@@ -52,16 +49,15 @@
 							value: internalObjectService,
 							label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
 							icon: 'ph:cube',
-							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`
+							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.host})`
 						}) as SingleSelect.OptionType
 				);
 				const matched = options.find(
 					(opt) =>
 						opt.value.type === selectedInternalObjectService.type &&
 						opt.value.scope === selectedInternalObjectService.scope &&
-						opt.value.facility === selectedInternalObjectService.facility &&
 						opt.value.name === selectedInternalObjectService.name &&
-						opt.value.endpoint === selectedInternalObjectService.endpoint
+						opt.value.host === selectedInternalObjectService.host
 				);
 				if (matched) {
 					selectedInit = matched.value;

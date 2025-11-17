@@ -19,15 +19,17 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import type { Application } from '../types';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 </script>
 
 <script lang="ts">
 	let {
 		applications,
+		scope,
 		reloadManager
 	}: {
 		applications: Writable<Application[]>;
+		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -41,7 +43,9 @@
 		get data() {
 			return $applications;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, reloadManager);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

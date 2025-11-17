@@ -8,11 +8,9 @@
 
 <script lang="ts">
 	let {
-		selectedScope = $bindable(),
-		selectedFacility = $bindable()
+		scope
 	}: {
-		selectedScope: string;
-		selectedFacility: string;
+		scope: string;
 	} = $props();
 </script>
 
@@ -24,9 +22,9 @@
 {/snippet}
 <Tabs.Root value="bucket">
 	<Tabs.Content value="bucket">
-		<Bucket bind:selectedScope bind:selectedFacility {trigger} />
+		<Bucket {scope} {trigger} />
 	</Tabs.Content>
 	<Tabs.Content value="user">
-		<User bind:selectedScope bind:selectedFacility {trigger} />
+		<User {scope} {trigger} />
 	</Tabs.Content>
 </Tabs.Root>

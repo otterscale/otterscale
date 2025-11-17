@@ -12,7 +12,7 @@
 
 	import ExtensionsAlert from './extensions-alert.svelte';
 
-	let { scope, facility }: { scope: string; facility: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);
@@ -44,7 +44,7 @@
 </script>
 
 <main class="space-y-4 py-4">
-	<ExtensionsAlert {scope} {facility} />
+	<ExtensionsAlert {scope} />
 	{#if prometheusDriver}
 		<div class="mx-auto grid w-full gap-6">
 			<div class="grid gap-1">

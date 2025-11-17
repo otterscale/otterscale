@@ -16,30 +16,34 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-
-	import type { NFSStore } from '../../utils.svelte';
 </script>
 
 <script lang="ts">
 	let {
-		snapshot
+		snapshot,
+		subvolume,
+		scope,
+		volume,
+		group,
+		reloadManager
 	}: {
 		snapshot: Subvolume_Snapshot;
+		subvolume: Subvolume;
+		scope: string;
+		volume: string;
+		group: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
-	const nfsStore: NFSStore = getContext('nfsStore');
-	const subvolume: Subvolume = getContext('subvolume');
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+	const storageClient = createClient(StorageService, transport);
 
 	let invalid = $state(false);
 
-	const storageClient = createClient(StorageService, transport);
 	const defaults = {
-		scope: get(nfsStore.selectedScope),
-		facility: get(nfsStore.selectedFacility),
-		volumeName: get(nfsStore.selectedVolumeName),
-		groupName: get(nfsStore.selectedSubvolumeGroupName),
+		scope: scope,
+		volumeName: volume,
+		groupName: group,
 		subvolumeName: subvolume.name
 	} as DeleteSubvolumeSnapshotRequest;
 	let request = $state(defaults);

@@ -18,12 +18,12 @@
 
 <script lang="ts">
 	let {
-		testResult
+		testResult,
+		reloadManager
 	}: {
 		testResult: TestResult;
+		reloadManager: ReloadManager;
 	} = $props();
-
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);

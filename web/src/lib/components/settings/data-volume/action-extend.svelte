@@ -11,16 +11,18 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
 	// Component props - accepts a DataVolume object
-	let { dataVolume }: { dataVolume: DataVolume } = $props();
+	let {
+		dataVolume,
+		scope,
+		reloadManager
+	}: { dataVolume: DataVolume; scope: string; reloadManager: ReloadManager } = $props();
 
 	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	// Create gRPC client for virtual machine operations
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -30,8 +32,7 @@
 
 	// Default values for the extend data volume request
 	const defaults = {
-		scope: $currentKubernetes?.scope || '',
-		facility: $currentKubernetes?.name || '',
+		scope: scope,
 		name: dataVolume.name,
 		namespace: dataVolume.namespace,
 		sizeBytes: dataVolume.sizeBytes

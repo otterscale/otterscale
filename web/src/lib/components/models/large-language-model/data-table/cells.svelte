@@ -5,6 +5,7 @@
 	import { page } from '$app/state';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { formatBigNumber } from '$lib/formatter';
 
 	import { type LargeLanguageModel } from '../type';
@@ -102,8 +103,12 @@
 	{/if}
 {/snippet}
 
-{#snippet action(row: Row<LargeLanguageModel>)}
+{#snippet action(data: {
+	row: Row<LargeLanguageModel>;
+	scope: string;
+	reloadManager: ReloadManager;
+})}
 	<Layout.Cell class="items-end">
-		<Actions model={row.original} />
+		<Actions model={data.row.original} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

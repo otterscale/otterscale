@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount, setContext } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { type OSD, StorageService } from '$lib/api/storage/v1/storage_pb';
@@ -12,32 +12,18 @@
 
 <script lang="ts">
 	let {
-		selectedScope = $bindable(),
-		selectedFacility = $bindable()
+		scope
 	}: {
-		selectedScope: string;
-		selectedFacility: string;
+		scope: string;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const storageClient = createClient(StorageService, transport);
 
 	const objectStorageDaemons = $state(writable([] as OSD[]));
-
-	const reloadManager = new ReloadManager(() => {
+	async function fetch() {
 		storageClient
-			.listOSDs({ scope: selectedScope, facility: selectedFacility })
-			.then((response) => {
-				objectStorageDaemons.set(response.osds);
-			});
-	});
-	setContext('reloadManager', reloadManager);
-
-	let isMounted = $state(false);
-	onMount(() => {
-		storageClient
-			.listOSDs({ scope: selectedScope, facility: selectedFacility })
+			.listOSDs({ scope: scope })
 			.then((response) => {
 				objectStorageDaemons.set(response.osds);
 				isMounted = true;
@@ -45,8 +31,13 @@
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
 			});
+	}
+	const reloadManager = new ReloadManager(fetch, false);
 
-		reloadManager.start();
+	let isMounted = $state(false);
+	onMount(async () => {
+		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -55,7 +46,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<DataTable {objectStorageDaemons} {reloadManager} />
+		<DataTable {objectStorageDaemons} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

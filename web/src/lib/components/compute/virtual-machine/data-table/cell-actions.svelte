@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
 	import Clone from './action-clone.svelte';
@@ -14,20 +15,24 @@
 </script>
 
 <script lang="ts">
-	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
+	let {
+		virtualMachine,
+		scope,
+		reloadManager
+	}: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
 </script>
 
 <Layout.Actions>
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
-		<PauseResume {virtualMachine} />
+		<PauseResume {virtualMachine} {scope} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<StartStop {virtualMachine} />
+		<StartStop {virtualMachine} {scope} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Restart {virtualMachine} />
+		<Restart {virtualMachine} {scope} />
 	</Layout.ActionItem>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
@@ -38,12 +43,12 @@
 	</Layout.ActionItem>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
-		<Clone {virtualMachine} />
+		<Clone {virtualMachine} {scope} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Migrate {virtualMachine} />
+		<Migrate {virtualMachine} {scope} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Delete {virtualMachine} />
+		<Delete {virtualMachine} {scope} {reloadManager} />
 	</Layout.ActionItem>
 </Layout.Actions>

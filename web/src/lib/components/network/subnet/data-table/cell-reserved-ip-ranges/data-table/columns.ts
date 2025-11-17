@@ -6,6 +6,7 @@ import { m } from '$lib/paraglide/messages';
 
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import type { ReloadManager } from '$lib/components/custom/reloader';
 
 const messages = {
 	type: m.type(),
@@ -14,55 +15,67 @@ const messages = {
 	comment: m.comment()
 };
 
-const columns: ColumnDef<Network_IPRange>[] = [
-	{
-		id: 'select',
-		header: ({ table }) => {
-			return renderSnippet(headers.row_picker, table);
+function getColumns(reloadManager: ReloadManager): ColumnDef<Network_IPRange>[] {
+	return [
+		{
+			id: 'select',
+			header: ({ table }) => {
+				return renderSnippet(headers.row_picker, table);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.row_picker, row);
+			},
+			enableSorting: false,
+			enableHiding: false
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.row_picker, row);
+		{
+			accessorKey: 'startIp',
+			header: ({ column }) => {
+				return renderSnippet(headers.startIp, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.startIp, row);
+			}
 		},
-		enableSorting: false,
-		enableHiding: false
-	},
-	{
-		accessorKey: 'startIp',
-		header: ({ column }) => {
-			return renderSnippet(headers.startIp, column);
+		{
+			accessorKey: 'endIp',
+			header: ({ column }) => {
+				return renderSnippet(headers.endIp, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.endIp, row);
+			}
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.startIp, row);
+		{
+			accessorKey: 'type',
+			header: ({ column }) => {
+				return renderSnippet(headers.type, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.type, row);
+			},
+			filterFn: 'arrIncludesSome'
+		},
+		{
+			accessorKey: 'comment',
+			header: ({ column }) => {
+				return renderSnippet(headers.comment, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.comment, row);
+			}
+		},
+		{
+			accessorKey: 'actions',
+			header: ({ column }) => {
+				return renderSnippet(headers.actions, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.actions, { row, reloadManager });
+			},
+			enableHiding: false
 		}
-	},
-	{
-		accessorKey: 'endIp',
-		header: ({ column }) => {
-			return renderSnippet(headers.endIp, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.endIp, row);
-		}
-	},
-	{
-		accessorKey: 'type',
-		header: ({ column }) => {
-			return renderSnippet(headers.type, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.type, row);
-		},
-		filterFn: 'arrIncludesSome'
-	},
-	{
-		accessorKey: 'comment',
-		header: ({ column }) => {
-			return renderSnippet(headers.comment, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.comment, row);
-		}
-	}
-];
+	];
+}
 
-export { columns, messages };
+export { getColumns, messages };

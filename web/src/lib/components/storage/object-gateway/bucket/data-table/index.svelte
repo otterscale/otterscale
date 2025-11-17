@@ -20,13 +20,16 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import Create from './action-create.svelte';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
-	let { buckets, reloadManager }: { buckets: Writable<Bucket[]>; reloadManager: ReloadManager } =
-		$props();
+	let {
+		buckets,
+		scope,
+		reloadManager
+	}: { buckets: Writable<Bucket[]>; scope: string; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
@@ -38,7 +41,10 @@
 		get data() {
 			return $buckets;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, reloadManager);
+		},
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -121,7 +127,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create />
+			<Create {scope} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
 
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -8,21 +7,19 @@
 </script>
 
 <script lang="ts">
+	let { scope, reloadManager }: { scope: string; reloadManager: ReloadManager } = $props();
+
 	let open = $state(false);
 	function close() {
 		open = false;
 	}
-
-	const reloadManager: ReloadManager = getContext('reloadManager');
-	onMount(() => {
-		reloadManager.force();
-	});
 </script>
 
 <Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
+		{scope}
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.create()}</Modal.Header>
@@ -32,6 +29,7 @@
 			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
+					reloadManager.force();
 					close();
 				}}
 			>

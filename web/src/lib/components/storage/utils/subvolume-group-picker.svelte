@@ -11,14 +11,12 @@
 
 <script lang="ts">
 	let {
-		selectedScope,
-		selectedFacility,
-		selectedVolume,
+		scope,
+		volume,
 		selectedSubvolumeGroupName = $bindable()
 	}: {
-		selectedScope: string;
-		selectedFacility: string;
-		selectedVolume: string;
+		scope: string;
+		volume: string;
 		selectedSubvolumeGroupName: string;
 	} = $props();
 
@@ -29,9 +27,8 @@
 	async function fetchVolumeOptions() {
 		try {
 			const response = await storageClient.listSubvolumeGroups({
-				scope: selectedScope,
-				facility: selectedFacility,
-				volumeName: selectedVolume
+				scope: scope,
+				volumeName: volume
 			});
 
 			subvolumeGroupOptions.set(
@@ -77,14 +74,8 @@
 				<SingleSelect.List>
 					<SingleSelect.Empty>No results found.</SingleSelect.Empty>
 					<SingleSelect.Group>
-						{#each $subvolumeGroupOptions as option}
-							<SingleSelect.Item
-								{option}
-								onclick={() => {
-									selectedScope = option.value.scope;
-									selectedFacility = option.value.facility;
-								}}
-							>
+						{#each $subvolumeGroupOptions as option (option.value)}
+							<SingleSelect.Item {option}>
 								<Icon
 									icon={option.icon ? option.icon : 'ph:empty'}
 									class={cn('size-5', option.icon ? 'visibale' : 'invisible')}

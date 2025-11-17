@@ -14,54 +14,56 @@ const messages = {
 	nodePort: m.node_port()
 };
 
-const columns: ColumnDef<Application_Service_Port>[] = [
-	{
-		id: 'select',
-		header: ({ table }) => {
-			return renderSnippet(headers.row_picker, table);
+function getColumns(): ColumnDef<Application_Service_Port>[] {
+	return [
+		{
+			id: 'select',
+			header: ({ table }) => {
+				return renderSnippet(headers.row_picker, table);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.row_picker, row);
+			},
+			enableSorting: false,
+			enableHiding: false
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.row_picker, row);
+		{
+			accessorKey: 'name',
+			header: ({ column }) => {
+				return renderSnippet(headers.name, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.name, row);
+			}
 		},
-		enableSorting: false,
-		enableHiding: false
-	},
-	{
-		accessorKey: 'name',
-		header: ({ column }) => {
-			return renderSnippet(headers.name, column);
+		{
+			accessorKey: 'protocol',
+			header: ({ column }) => {
+				return renderSnippet(headers.protocol, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.protocol, row);
+			}
 		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.name, row);
+		{
+			accessorKey: 'port',
+			header: ({ column }) => {
+				return renderSnippet(headers.port, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.port, row);
+			}
 		}
-	},
-	{
-		accessorKey: 'protocol',
-		header: ({ column }) => {
-			return renderSnippet(headers.protocol, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.protocol, row);
-		}
-	},
-	{
-		accessorKey: 'port',
-		header: ({ column }) => {
-			return renderSnippet(headers.port, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.port, row);
-		}
-	}
-	// {
-	// 	accessorKey: 'nodePort',
-	// 	header: ({ column }) => {
-	// 		return renderSnippet(headers.nodePort, column);
-	// 	},
-	// 	cell: ({ row }) => {
-	// 		return renderSnippet(cells.nodePort, row);
-	// 	},
-	// },
-];
+		// {
+		// 	accessorKey: 'nodePort',
+		// 	header: ({ column }) => {
+		// 		return renderSnippet(headers.nodePort, column);
+		// 	},
+		// 	cell: ({ row }) => {
+		// 		return renderSnippet(cells.nodePort, row);
+		// 	},
+		// },
+	];
+}
 
-export { columns, messages };
+export { getColumns, messages };

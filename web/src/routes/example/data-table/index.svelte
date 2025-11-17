@@ -10,23 +10,22 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable } from 'svelte/store';
+	import type { Writable } from 'svelte/store';
 
 	import { Empty, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
-	import Actions from './actions.svelte';
-	import { columns } from './columns';
+	import { getColumns } from './columns';
 	import type { TableRow } from './type';
 </script>
 
 <script lang="ts">
-	let { dataset }: { dataset: TableRow[] } = $props();
-
-	let data = $state(writable(dataset));
+	let { dataset, reloadManager }: { dataset: Writable<TableRow[]>; reloadManager: ReloadManager } =
+		$props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -36,10 +35,12 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $data;
+			return $dataset;
+		},
+		get columns() {
+			return getColumns(reloadManager);
 		},
 
-		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -102,17 +103,6 @@
 
 <Layout.Root>
 	<Layout.Controller>
-		<Layout.ControllerFilter>
-			<!-- <Filter.StringFuzzy columnId="name" values={$data.map((row) => row.name)} {table} />
-			<Filter.StringMatch columnId="name" values={$data.map((row) => row.name)} {table} />
-			<Filter.BooleanMatch
-				columnId="isVerified"
-				values={$data.map((row) => row.isVerified)}
-				{table}
-			/>
-			<Filter.NumberRange columnId="id" values={$data.map((row) => row.id)} {table} />
-			<ColumnViewer {table} /> -->
-		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Button class="h-10">Create</Button>
 		</Layout.ControllerAction>
@@ -144,10 +134,6 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
-
-						<Table.Cell>
-							<Actions bind:data />
-						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Empty {table} />

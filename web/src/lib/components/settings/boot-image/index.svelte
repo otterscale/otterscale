@@ -36,7 +36,6 @@
 			configuration.set(response);
 		});
 	});
-	setContext('reloadManager', reloadManager);
 
 	onMount(async () => {
 		try {

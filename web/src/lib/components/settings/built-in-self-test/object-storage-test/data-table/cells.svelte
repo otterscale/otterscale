@@ -3,7 +3,6 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import { page } from '$app/state';
 	import {
 		InternalObjectService_Type,
 		type TestResult,
@@ -12,6 +11,7 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatSecond, formatTimeAgo } from '$lib/formatter';
@@ -66,12 +66,11 @@
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
 			{#if row.original.kind.value.target.case === 'internalObjectService'}
 				<Badge variant="outline">
-					{InternalObjectService_Type[row.original.kind.value.target.value.type]}-{row.original.kind
-						.value.target.value.facility}
+					{InternalObjectService_Type[row.original.kind.value.target.value.type]}
 				</Badge>
 			{:else if row.original.kind.value.target.case === 'externalObjectService'}
 				<Badge variant="outline">
-					{row.original.kind.value.target.value.endpoint}
+					{row.original.kind.value.target.value.host}
 				</Badge>
 			{/if}
 		{/if}
@@ -231,9 +230,8 @@
 	</Layout.Cell>
 {/snippet}
 
-<!-- TODO: fix scope -->
-{#snippet actions(row: Row<TestResult>)}
+{#snippet actions(data: { row: Row<TestResult>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions scope={page.params.scope!} testResult={row.original} />
+		<Actions testResult={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

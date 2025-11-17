@@ -131,18 +131,16 @@
 {/snippet}
 
 {#snippet actions(data: {
-	scope: string;
-	facility: string;
-	namespace: string;
 	row: Row<SMBShare>;
+	scope: string;
+	namespace: string;
 	reloadManager: ReloadManager;
 })}
 	<Layout.Cell class="items-end">
 		<Actions
-			scope={data.scope}
-			facility={data.facility}
-			namespace={data.namespace}
 			smbShare={data.row.original}
+			scope={data.scope}
+			namespace={data.namespace}
 			reloadManager={data.reloadManager}
 		/>
 	</Layout.Cell>

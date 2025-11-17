@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { BuiltInSelfTest } from '$lib/components/settings/built-in-self-test/index';
@@ -18,4 +18,4 @@
 	]);
 </script>
 
-<BuiltInSelfTest scope={page.params.scope!} />
+<BuiltInSelfTest scope={page.params.scope!} /> -->

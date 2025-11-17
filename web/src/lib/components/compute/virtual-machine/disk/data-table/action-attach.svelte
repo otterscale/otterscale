@@ -16,18 +16,21 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	let {
-		virtualMachine
+		virtualMachine,
+		scope,
+		reloadManager
 	}: {
 		virtualMachine: VirtualMachine;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
@@ -47,8 +50,7 @@
 			if (!request.namespace) return;
 
 			const response = await virtualMachineClient.listDataVolumes({
-				scope: $currentKubernetes?.scope,
-				facility: $currentKubernetes?.name,
+				scope: scope,
 				namespace: request.namespace
 			});
 
@@ -68,8 +70,7 @@
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_REQUEST = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
 		name: virtualMachine.name,
 		namespace: virtualMachine.namespace,
 		dataVolumeName: ''

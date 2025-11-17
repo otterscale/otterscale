@@ -2,6 +2,7 @@
 	import Icon from '@iconify/svelte';
 
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Sheet from '$lib/components/ui/sheet';
 
 	import { DataTable } from './data-table';
@@ -9,9 +10,13 @@
 
 <script lang="ts">
 	let {
-		virtualMachine
+		virtualMachine,
+		scope,
+		reloadManager
 	}: {
 		virtualMachine: VirtualMachine;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 </script>
 
@@ -22,7 +27,7 @@
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[38vw] p-4">
-			<DataTable {virtualMachine} />
+			<DataTable {virtualMachine} {scope} {reloadManager} />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>

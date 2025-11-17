@@ -7,23 +7,25 @@
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 
 	import type { Application } from '../types';
 </script>
 
 <script lang="ts">
-	let { application }: { application: Application } = $props();
+	let {
+		application,
+		scope,
+		reloadManager
+	}: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const applicationClient = createClient(ApplicationService, transport);
 	let loading = $state(false);
 
 	async function restartApplication() {
 		const request = {
-			scope: $currentKubernetes?.scope,
-			facility: $currentKubernetes?.name,
+			scope: scope,
 			name: application.name,
 			namespace: application.namespace,
 			type: application.type

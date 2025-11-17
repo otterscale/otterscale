@@ -13,7 +13,7 @@
 
 	import type { Application } from '../types';
 
-	let { scope, facility }: { scope: string; facility: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	// Client setup
 	const transport: Transport = getContext('transport');
@@ -45,14 +45,13 @@
 	onMount(async () => {
 		try {
 			const response = await client.listApplications({
-				scope: scope,
-				facility: facility
+				scope: scope
 			});
 
 			applications.set(
 				response.applications.map((application) => ({
 					...application,
-					publicAddress: response.publicAddress
+					endpoint: response.endpoint
 				}))
 			);
 

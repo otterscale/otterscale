@@ -20,7 +20,7 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import type { Service } from '../types';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
@@ -43,7 +43,9 @@
 		get data() {
 			return $services;
 		},
-		columns,
+		get columns() {
+			return getColumns();
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

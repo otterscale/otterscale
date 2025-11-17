@@ -20,16 +20,22 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import Create from './actions-create.svelte';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
 	let {
 		subvolumes,
+		scope,
+		volume,
+		group,
 		reloadManager
 	}: {
 		subvolumes: Writable<Subvolume[]>;
+		scope: string;
+		volume: string;
+		group: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -43,7 +49,9 @@
 		get data() {
 			return $subvolumes;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, volume, group, reloadManager);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -129,7 +137,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create />
+			<Create {scope} {volume} {group} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

@@ -20,16 +20,20 @@
 
 	import type { LargeLanguageModel } from '../type';
 	import Create from './action-create.svelte';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
 	let {
 		largeLanguageModels,
+		scope,
 		reloadManager
-	}: { largeLanguageModels: Writable<LargeLanguageModel[]>; reloadManager: ReloadManager } =
-		$props();
+	}: {
+		largeLanguageModels: Writable<LargeLanguageModel[]>;
+		scope: string;
+		reloadManager: ReloadManager;
+	} = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 9 });
 	let sorting = $state<SortingState>([]);
@@ -41,7 +45,10 @@
 		get data() {
 			return $largeLanguageModels;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope, reloadManager);
+		},
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -117,7 +124,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create />
+			<Create {scope} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

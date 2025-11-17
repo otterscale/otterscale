@@ -38,12 +38,6 @@ const items = [
 		type: m.application(),
 		url: resolve('/(auth)/configuration/helm-repository')
 	},
-	{
-		icon: 'ph:test-tube',
-		title: m.built_in_test(),
-		description: m.configuration(),
-		url: resolve('/(auth)/configuration/built-in-test')
-	},
 	// {
 	// 	icon: 'ph:key',
 	// 	title: m.single_sign_on(),

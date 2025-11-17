@@ -9,19 +9,24 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { currentCeph } from '$lib/stores';
 </script>
 
 <script lang="ts">
-	const user: User = getContext('user');
+	let {
+		user,
+		scope,
+		reloadManager
+	}: {
+		user: User;
+		scope: string;
+		reloadManager: ReloadManager;
+	} = $props();
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const storageClient = createClient(StorageService, transport);
 
 	const defaults = {
-		scope: $currentCeph?.scope,
-		facility: $currentCeph?.name,
+		scope: scope,
 		userId: user.id
 	} as CreateUserKeyRequest;
 	let request = $state(defaults);

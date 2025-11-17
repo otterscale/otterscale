@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import { Extensions } from '$lib/components/settings/extensions';
 	import { m } from '$lib/paraglide/messages';
-	import { breadcrumbs, currentKubernetes } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
@@ -18,9 +18,6 @@
 	]);
 </script>
 
-{#if $currentKubernetes}
-	{@const scope = $currentKubernetes.scope}
-	{@const facility = $currentKubernetes.name}
-
-	<Extensions {scope} {facility} />
-{/if}
+{#key page.params.scope!}
+	<Extensions scope={page.params.scope!} />
+{/key}

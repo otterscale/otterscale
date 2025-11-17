@@ -12,16 +12,23 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
 	// Component props - accepts a virtual machine disk object
-	let { enhancedDisk }: { enhancedDisk: EnhancedDisk } = $props();
+	let {
+		enhancedDisk,
+		scope,
+		reloadManager
+	}: {
+		enhancedDisk: EnhancedDisk;
+		scope: string;
+		reloadManager: ReloadManager;
+	} = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// Form validation state
@@ -29,8 +36,7 @@
 
 	// Default values for the detach disk request
 	const defaults = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
 		namespace: enhancedDisk.namespace,
 		name: enhancedDisk.vmName,
 		dataVolumeName: ''

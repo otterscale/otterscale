@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import Dashboard from '$lib/components/models/dashboard/index.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { breadcrumbs, currentKubernetes } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
@@ -14,8 +14,6 @@
 	]);
 </script>
 
-{#if $currentKubernetes}
-	{#key $currentKubernetes?.scope + $currentKubernetes?.name}
-		<Dashboard scope={$currentKubernetes?.scope} facility={$currentKubernetes?.name} />
-	{/key}
-{/if}
+{#key page.params.scope!}
+	<Dashboard scope={page.params.scope!} />
+{/key}

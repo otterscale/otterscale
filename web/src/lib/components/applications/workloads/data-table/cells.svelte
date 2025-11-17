@@ -7,6 +7,7 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 
@@ -113,15 +114,15 @@
 
 {#snippet nodeport(row: Row<Application>)}
 	<Layout.Cell class="items-start">
-		{#each row.original.services as service}
-			{#each service.ports as port}
+		{#each row.original.services as service (service.name)}
+			{#each service.ports as port, index (index)}
 				{#if port.nodePort > 0}
 					<span class="flex items-center">
 						<Badge variant="outline">{port.targetPort}</Badge>
 						<Button
 							variant="ghost"
 							target="_blank"
-							href={`http://${row.original.publicAddress}:${port.nodePort}`}
+							href={`http://${row.original.endpoint}:${port.nodePort}`}
 						>
 							<Icon icon="ph:arrow-square-out" />
 						</Button>
@@ -132,8 +133,12 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<Application>)}
+{#snippet actions(data: { row: Row<Application>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions application={row.original} />
+		<Actions
+			application={data.row.original}
+			scope={data.scope}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}

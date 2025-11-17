@@ -2,7 +2,6 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
-	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import type { Subvolume, UpdateSubvolumeRequest } from '$lib/api/storage/v1/storage_pb';
@@ -12,20 +11,24 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
-
-	import { type NFSStore } from '../utils.svelte.js';
 </script>
 
 <script lang="ts">
 	let {
-		subvolume
+		subvolume,
+		scope,
+		volume,
+		group,
+		reloadManager
 	}: {
 		subvolume: Subvolume;
+		scope: string;
+		volume: string;
+		group: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
-	const nfsStore: NFSStore = getContext('nfsStore');
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	let open = $state(false);
 	function close() {
@@ -33,10 +36,9 @@
 	}
 
 	const defaults = {
-		scope: get(nfsStore.selectedScope),
-		facility: get(nfsStore.selectedFacility),
-		volumeName: get(nfsStore.selectedVolumeName),
-		groupName: get(nfsStore.selectedSubvolumeGroupName),
+		scope: scope,
+		volumeName: volume,
+		groupName: group,
 		subvolumeName: subvolume.name,
 		quotaBytes: subvolume.quotaBytes
 	} as UpdateSubvolumeRequest;

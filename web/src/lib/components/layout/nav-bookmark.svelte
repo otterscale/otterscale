@@ -4,18 +4,22 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
 	import { getPathIcon, type Path } from '$lib/path';
+	import { bookmarks } from '$lib/stores';
 
-	let { bookmarks, onDelete }: { bookmarks: Path[]; onDelete: (url: Path) => Promise<void> } =
-		$props();
-
-	let visibleCount = $state(3);
 	const increment = 3;
+	let visibleCount = $state(3);
 
-	const visibleBookmarks = $derived(bookmarks.slice(0, visibleCount));
-	const hasMoreBookmarks = $derived(bookmarks.length > visibleCount);
+	const visibleBookmarks = $derived($bookmarks.slice(0, visibleCount));
+	const hasMoreBookmarks = $derived($bookmarks.length > visibleCount);
 
 	function showMoreBookmarks(): void {
 		visibleCount += increment;
+	}
+
+	async function onBookmarkDelete(path: Path) {
+		bookmarks.update((currentBookmarks) =>
+			currentBookmarks.filter((bookmark) => bookmark.url !== path.url)
+		);
 	}
 </script>
 
@@ -34,7 +38,7 @@
 						<!-- eslint-enable svelte/no-navigation-without-resolve -->
 					{/snippet}
 				</Sidebar.MenuButton>
-				<Sidebar.MenuAction showOnHover onclick={() => onDelete(bookmark)}>
+				<Sidebar.MenuAction showOnHover onclick={() => onBookmarkDelete(bookmark)}>
 					<Icon icon="ph:x-bold" class="text-red-500" />
 					<span class="sr-only">Delete {bookmark.title}</span>
 				</Sidebar.MenuAction>
@@ -50,7 +54,7 @@
 			</Sidebar.MenuItem>
 		{/if}
 
-		{#if bookmarks.length === 0}
+		{#if $bookmarks.length === 0}
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton aria-disabled>
 					<Icon icon="ph:empty" />

@@ -11,7 +11,7 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility }: { scope: string; facility: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const orchestratorClient = createClient(OrchestratorService, transport);
@@ -19,7 +19,7 @@
 	const generalExtension: Writable<Extension[]> = writable([]);
 
 	orchestratorClient
-		.listGeneralExtensions({ scope: scope, facility: facility })
+		.listGeneralExtensions({ scope: scope })
 		.then((response) => {
 			generalExtension.set(response.Extensions);
 		})

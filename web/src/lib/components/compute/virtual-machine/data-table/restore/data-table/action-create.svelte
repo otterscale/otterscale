@@ -14,14 +14,17 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 
 	// Props
-	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
+	let {
+		virtualMachine,
+		scope,
+		reloadManager
+	}: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
@@ -36,8 +39,7 @@
 
 	// Default request structure for creating a virtual machine restore
 	const DEFAULT_REQUEST = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
 		namespace: virtualMachine.namespace,
 		name: '',
 		virtualMachineName: virtualMachine.name

@@ -5,18 +5,20 @@
 	import type { ITerminalInitOnlyOptions, ITerminalOptions, Terminal } from '@xterm/xterm';
 	import { getContext, onMount } from 'svelte';
 
-	import { ApplicationService } from '$lib/api/application/v1/application_pb';
+	import {
+		ApplicationService,
+		type ExecuteTTYRequest,
+		type ExecuteTTYResponse
+	} from '$lib/api/application/v1/application_pb';
 
 	let {
 		scope,
-		facility,
 		namespace,
 		podName,
 		containerName,
 		command
 	}: {
 		scope: string;
-		facility: string;
 		namespace: string;
 		podName: string;
 		containerName: string;
@@ -91,7 +93,7 @@
 
 	// State
 	const transport: Transport = getContext('transport');
-	const client = createClient(ApplicationService, transport);
+	const applicationClient = createClient(ApplicationService, transport);
 
 	let container = $state<HTMLElement>();
 	let handleResize = $state<() => void>();
@@ -174,14 +176,13 @@
 	// TTY communication
 	async function startTTYSession(): Promise<void> {
 		try {
-			const stream = client.executeTTY({
+			const stream = applicationClient.executeTTY({
 				scope: scope,
-				facility: facility,
 				namespace: namespace,
 				podName: podName,
 				containerName: containerName,
 				command: command
-			});
+			} as ExecuteTTYRequest);
 			terminalState.isConnected = true;
 
 			for await (const response of stream) {
@@ -193,7 +194,7 @@
 		}
 	}
 
-	function handleTTYResponse(response: any): void {
+	function handleTTYResponse(response: ExecuteTTYResponse): void {
 		if (!terminalState.sessionId && response.sessionId) {
 			terminalState.sessionId = response.sessionId;
 		}
@@ -213,7 +214,7 @@
 		if (!terminalState.sessionId || !terminalState.isConnected) return;
 
 		try {
-			client.writeTTY({
+			applicationClient.writeTTY({
 				sessionId: terminalState.sessionId,
 				stdin: new TextEncoder().encode(data)
 			});

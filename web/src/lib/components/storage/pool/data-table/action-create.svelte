@@ -16,7 +16,6 @@
 		Single as SingleSelect
 	} from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
-	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	export const poolTypes: Writable<SingleSelect.OptionType[]> = writable([
@@ -52,17 +51,23 @@
 </script>
 
 <script lang="ts">
+	let {
+		scope,
+		reloadManager
+	}: {
+		scope: string;
+		reloadManager: ReloadManager;
+	} = $props();
+
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const storageClient = createClient(StorageService, transport);
-	let invalidName: boolean | undefined = $state();
-	let invalidType: boolean | undefined = $state();
-	let invalidReplicatedSize: boolean | undefined = $state();
+	let isNameInvalid: boolean | undefined = $state();
+	let isTypeInvalid: boolean | undefined = $state();
+	let isReplicatedSizeInvalid: boolean | undefined = $state();
 
 	const defaults = {
-		scope: $currentCeph?.scope,
-		facility: $currentCeph?.name
+		scope: scope
 	} as CreatePoolRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -90,7 +95,7 @@
 						required
 						type="text"
 						bind:value={request.poolName}
-						bind:invalid={invalidName}
+						bind:invalid={isNameInvalid}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -99,7 +104,7 @@
 						required
 						options={poolTypes}
 						bind:value={request.poolType}
-						bind:invalid={invalidType}
+						bind:invalid={isTypeInvalid}
 					>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -139,7 +144,7 @@
 						<SingleInput.General
 							required
 							bind:value={request.replicatedSize}
-							bind:invalid={invalidReplicatedSize}
+							bind:invalid={isReplicatedSizeInvalid}
 						/>
 					</Form.Field>
 					<Form.Help>
@@ -212,9 +217,9 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalidName ||
-						invalidType ||
-						(request.poolType === PoolType.REPLICATED && invalidReplicatedSize)}
+					disabled={isNameInvalid ||
+						isTypeInvalid ||
+						(request.poolType === PoolType.REPLICATED && isReplicatedSizeInvalid)}
 					onclick={() => {
 						toast.promise(() => storageClient.createPool(request), {
 							loading: `Creating ${request.poolName}...`,

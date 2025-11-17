@@ -52,7 +52,7 @@
 </svelte:head>
 
 <main
-	class="relative flex min-h-screen flex-col overflow-hidden bg-sidebar px-2 py-20 md:px-4 md:py-24"
+	class="relative flex min-h-[calc(100vh-24*var(--spacing))] flex-col overflow-hidden px-2 py-20 md:px-4 md:py-24"
 >
 	<!-- Background Image -->
 	<div class="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center opacity-100">

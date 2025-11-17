@@ -14,7 +14,6 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 
 	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
 </script>
@@ -22,12 +21,14 @@
 <script lang="ts">
 	let {
 		release,
-		releases = $bindable(),
-		valuesYaml = ''
+		scope,
+		valuesYaml = '',
+		releases = $bindable()
 	}: {
 		release: Application_Release;
-		releases: Writable<Application_Release[]>;
+		scope: string;
 		valuesYaml?: string;
+		releases: Writable<Application_Release[]>;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -35,8 +36,7 @@
 
 	const defaults = {
 		dryRun: false,
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
 		namespace: release.namespace,
 		name: release.name,
 		chartRef: release.version?.chartRef,

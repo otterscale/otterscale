@@ -1,6 +1,7 @@
 <script lang="ts" module>
-	import type { Image_Snapshot } from '$lib/api/storage/v1/storage_pb';
+	import type { Image, Image_Snapshot } from '$lib/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
 	import Delete from './action-delete.svelte';
@@ -11,24 +12,30 @@
 
 <script lang="ts">
 	let {
-		snapshot
+		snapshot,
+		image,
+		scope,
+		reloadManager
 	}: {
 		snapshot: Image_Snapshot;
+		image: Image;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 </script>
 
 <Layout.Actions>
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionItem>
-		<Rollback {snapshot} />
+		<Rollback {snapshot} {image} {scope} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem disabled={snapshot.protected}>
-		<Protect {snapshot} />
+		<Protect {snapshot} {image} {scope} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem disabled={!snapshot.protected}>
-		<Unprotect {snapshot} />
+		<Unprotect {snapshot} {image} {scope} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Delete {snapshot} />
+		<Delete {snapshot} {image} {scope} {reloadManager} />
 	</Layout.ActionItem>
 </Layout.Actions>

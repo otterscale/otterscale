@@ -11,25 +11,20 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
+
+	let { scope, reloadManager }: { scope: string; reloadManager: ReloadManager } = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
-
-	// UI state
-	let open = $state(false);
-
-	// Form validation state
-	let invalidName: boolean | undefined = $state();
+	let isNameInvalid: boolean | undefined = $state();
 
 	// ==================== Default Values & Constants ====================
+
 	const DEFAULT_REQUEST = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
 		name: '',
 		namespace: 'default',
 		cpuCores: 1,
@@ -38,11 +33,13 @@
 
 	// ==================== Form State ====================
 	let request: CreateInstanceTypeRequest = $state({ ...DEFAULT_REQUEST });
+
 	// ==================== Utility Functions ====================
 	function reset() {
 		request = { ...DEFAULT_REQUEST };
 	}
 
+	let open = $state(false);
 	function close() {
 		open = false;
 	}
@@ -70,7 +67,7 @@
 						required
 						type="text"
 						bind:value={request.name}
-						bind:invalid={invalidName}
+						bind:invalid={isNameInvalid}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -103,7 +100,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalidName}
+					disabled={isNameInvalid}
 					onclick={() => {
 						toast.promise(() => virtualMachineClient.createInstanceType(request), {
 							loading: `Creating ${request.name}...`,

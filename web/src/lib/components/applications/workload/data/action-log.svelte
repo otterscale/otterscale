@@ -10,9 +10,9 @@
 	import * as Select from '$lib/components/ui/select';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 
-	let { namespace, pod }: { namespace: string; pod: Application_Pod } = $props();
+	let { pod, scope, namespace }: { pod: Application_Pod; scope: string; namespace: string } =
+		$props();
 
 	const msToString = (ms: number): string => String(ms);
 	const MINUTE = 60 * 1000;
@@ -50,8 +50,7 @@
 
 			const stream = client.watchLogs(
 				{
-					scope: $currentKubernetes?.scope || '',
-					facility: $currentKubernetes?.name || '',
+					scope,
 					namespace,
 					podName: pod.name,
 					containerName: '',

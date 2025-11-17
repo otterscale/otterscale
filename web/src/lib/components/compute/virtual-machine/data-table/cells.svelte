@@ -10,6 +10,7 @@
 	import { getStatusInfo } from '$lib/components/compute/virtual-machine/units/type';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Table from '$lib/components/ui/table';
@@ -178,16 +179,20 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet vnc(row: Row<VirtualMachine>)}
+{#snippet vnc(data: { row: Row<VirtualMachine>; scope: string })}
 	<Layout.Cell class="items-end">
-		{#if row.original.status === 'Running'}
-			<VNC virtualMachine={row.original} />
+		{#if data.row.original.status === 'Running'}
+			<VNC virtualMachine={data.row.original} scope={data.scope} />
 		{/if}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<VirtualMachine>)}
+{#snippet actions(data: { row: Row<VirtualMachine>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions virtualMachine={row.original} />
+		<Actions
+			virtualMachine={data.row.original}
+			scope={data.scope}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}

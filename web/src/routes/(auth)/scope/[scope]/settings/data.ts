@@ -10,6 +10,12 @@ const items = [
 		default: true
 	},
 	{
+		icon: 'ph:test-tube',
+		title: m.built_in_test(),
+		description: m.configuration(),
+		url: resolve('/(auth)/scope/[scope]/settings/built-in-test', { scope: page.params.scope! })
+	},
+	{
 		icon: 'ph:hard-drives',
 		title: m.data_volume(),
 		type: m.virtual_machine(),

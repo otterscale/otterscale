@@ -11,17 +11,23 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	import Actions from './cell-actions.svelte';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">
 	let {
-		application
+		application,
+		scope,
+		namespace,
+		reloadManager
 	}: {
 		application: Writable<Application>;
+		scope: string;
+		namespace: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	function openTerminal(pod: Application_Pod) {
@@ -30,8 +36,7 @@
 		}
 
 		const searchParams = new URLSearchParams({
-			scope: $currentKubernetes?.scope ?? '',
-			facility: $currentKubernetes?.name ?? '',
+			scope,
 			namespace: page.params.namespace ?? '',
 			pod: pod.name,
 			container: '',
@@ -137,7 +142,7 @@
 					</Table.Cell>
 				{/if}
 				<Table.Cell class="p-0">
-					<Actions {pod} namespace={$application.namespace} />
+					<Actions {pod} {scope} {namespace} {reloadManager} />
 				</Table.Cell>
 			</Table.Row>
 		{/each}

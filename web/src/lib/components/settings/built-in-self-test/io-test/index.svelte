@@ -17,21 +17,13 @@
 <script lang="ts">
 	let { selectedTab, trigger }: { selectedTab: string; trigger: Snippet } = $props();
 
-	const transport: Transport = getContext('transport');
-
-	const testResults = writable<TestResult[]>([]);
-	let isMounted = $state(false);
 	let mode = $state('read');
 
+	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);
-	const reloadManager = new ReloadManager(() => {
-		client.listTestResults({}).then((response) => {
-			testResults.set(response.testResults.filter((result) => result.kind.case === 'fio'));
-		});
-	});
-	setContext('reloadManager', reloadManager);
 
-	onMount(() => {
+	const testResults = writable<TestResult[]>([]);
+	async function fetch() {
 		client
 			.listTestResults({})
 			.then((response) => {
@@ -41,8 +33,13 @@
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
 			});
+	}
+	const reloadManager = new ReloadManager(fetch, false);
 
-		reloadManager.start();
+	let isMounted = $state(false);
+	onMount(async () => {
+		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();

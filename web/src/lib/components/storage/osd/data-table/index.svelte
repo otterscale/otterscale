@@ -20,16 +20,18 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { m } from '$lib/paraglide/messages';
 
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
 	let {
 		objectStorageDaemons,
+		scope,
 		reloadManager
 	}: {
 		objectStorageDaemons: Writable<OSD[]>;
+		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -43,7 +45,9 @@
 		get data() {
 			return $objectStorageDaemons;
 		},
-		columns,
+		get columns() {
+			return getColumns(scope);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),

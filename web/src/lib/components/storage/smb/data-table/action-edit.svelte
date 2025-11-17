@@ -27,16 +27,14 @@
 
 <script lang="ts">
 	let {
-		scope,
-		facility,
-		namespace,
 		smbShare,
+		scope,
+		namespace,
 		reloadManager
 	}: {
-		scope: string;
-		facility: string;
-		namespace: string;
 		smbShare: SMBShare;
+		scope: string;
+		namespace: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -46,7 +44,6 @@
 
 	const defaults = {
 		scope: scope,
-		facility: facility,
 		namespace: namespace,
 		name: smbShare.name,
 		sizeBytes: smbShare.sizeBytes,

@@ -15,13 +15,19 @@
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import { m } from '$lib/paraglide/messages';
-	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">
+	let {
+		scope,
+		reloadManager
+	}: {
+		scope: string;
+		reloadManager: ReloadManager;
+	} = $props();
+
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	let isAdvancedOpen = $state(false);
 	let isPoolsLoading = $state(true);
@@ -30,8 +36,7 @@
 	let poolOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
-		scope: $currentCeph?.scope,
-		facility: $currentCeph?.name,
+		scope: scope,
 		layering: true,
 		exclusiveLock: true,
 		objectMap: true,
@@ -51,8 +56,7 @@
 	async function fetchVolumeOptions() {
 		try {
 			const response = await storageClient.listPools({
-				scope: $currentCeph?.scope,
-				facility: $currentCeph?.name
+				scope: scope
 			});
 			poolOptions.set(
 				response.pools.map(

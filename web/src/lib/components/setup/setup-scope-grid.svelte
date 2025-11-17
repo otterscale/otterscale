@@ -107,109 +107,109 @@
 
 			<Separator class="z-10" />
 
-			<div class="z-10 pb-8 sm:pb-12">
-				{@render facilityDisplay(facility)}
-			</div>
+			{#if facility}
+				<div class="z-10 pb-8 sm:pb-12">
+					{@render facilityDisplay(facility)}
+				</div>
+			{/if}
 		</div>
 	{/each}
 </div>
 
-{#snippet facilityDisplay(facility: Facility | undefined)}
-	{#if facility}
-		<Accordion.Root
-			type="multiple"
-			value={facility.units
-				.filter((unit) => unit.workloadStatus?.state !== 'active')
-				.map((unit) => unit.name)}
-		>
-			{#each facility.units.sort((a, b) => a.name.localeCompare(b.name)) as unit}
-				<Accordion.Item value={unit.name}>
-					<Accordion.Trigger class="py-4">
-						<div class="flex flex-col space-y-1">
-							<div class="flex items-center space-x-2">
-								<span class="text-xs font-medium md:text-base lg:text-lg">
-									{unit.name}
-								</span>
+{#snippet facilityDisplay(facility: Facility)}
+	<Accordion.Root
+		type="multiple"
+		value={facility.units
+			.filter((unit) => unit.workloadStatus?.state !== 'active')
+			.map((unit) => unit.name)}
+	>
+		{#each facility.units.sort((a, b) => a.name.localeCompare(b.name)) as unit}
+			<Accordion.Item value={unit.name}>
+				<Accordion.Trigger class="py-4">
+					<div class="flex flex-col space-y-1">
+						<div class="flex items-center space-x-2">
+							<span class="text-xs font-medium md:text-base lg:text-lg">
+								{unit.name}
+							</span>
 
-								<button
-									class="hover:cursor-pointer"
-									onclick={(e) => {
-										e.stopPropagation();
-										toast.promise(
-											() =>
-												facilityClient.resolveFacilityUnitErrors({
-													scope: scope,
-													unitName: unit.name
-												}),
-											{
-												loading: 'Loading...',
-												success: () => {
-													facilityClient
-														.listFacilities({
-															scope: scope
-														})
-														.then((response) => {
-															facilities.set(response.facilities);
-														});
-
-													return `Resolve ${unit.name} success`;
-												},
-												error: (e) => {
-													let msg = `Fail to resolve ${unit.name}`;
-													toast.error(msg, {
-														description: (e as ConnectError).message.toString(),
-														duration: Number.POSITIVE_INFINITY
+							<button
+								class="hover:cursor-pointer"
+								onclick={(e) => {
+									e.stopPropagation();
+									toast.promise(
+										() =>
+											facilityClient.resolveFacilityUnitErrors({
+												scope: scope,
+												unitName: unit.name
+											}),
+										{
+											loading: 'Loading...',
+											success: () => {
+												facilityClient
+													.listFacilities({
+														scope: scope
+													})
+													.then((response) => {
+														facilities.set(response.facilities);
 													});
-													return msg;
-												}
+
+												return `Resolve ${unit.name} success`;
+											},
+											error: (e) => {
+												let msg = `Fail to resolve ${unit.name}`;
+												toast.error(msg, {
+													description: (e as ConnectError).message.toString(),
+													duration: Number.POSITIVE_INFINITY
+												});
+												return msg;
 											}
-										);
-									}}
+										}
+									);
+								}}
+							>
+								<Icon icon="ph:arrow-counter-clockwise" class="size-4" />
+							</button>
+
+							{#if unit.machineId}
+								<a
+									href={resolve('/(auth)/machines/metal/[id]', {
+										id: unit.machineId
+									})}
 								>
-									<Icon icon="ph:arrow-counter-clockwise" class="size-4" />
-								</button>
+									<Icon icon="ph:computer-tower" class="size-4" />
+								</a>
+							{/if}
 
+							{#if page.data['feature-states.orch-gpu']}
 								{#if unit.machineId}
-									<a
-										href={resolve('/(auth)/machines/metal/[id]', {
-											id: unit.machineId
-										})}
-									>
-										<Icon icon="ph:computer-tower" class="size-4" />
-									</a>
+									<SetupNodeGPUMode {unit} {scope} class="hover:cursor-pointer" />
 								{/if}
+							{/if}
 
-								{#if page.data['feature-states.orch-gpu']}
-									{#if unit.machineId}
-										<SetupNodeGPUMode {unit} class="hover:cursor-pointer" />
-									{/if}
-								{/if}
-
-								{#if unit.leader}
-									<Icon icon="ph:star-fill" class="size-4 text-yellow-400" />
-								{/if}
-							</div>
-
-							<div class="flex items-center space-x-2 font-normal">
-								<span class="text-sm leading-none text-muted-foreground">
-									{unit.version !== '' ? unit.version : '-'}
-								</span>
-
-								<span class="text-sm leading-none {getStatusClass(unit.workloadStatus)}">
-									{unit.workloadStatus?.details}
-								</span>
-							</div>
+							{#if unit.leader}
+								<Icon icon="ph:star-fill" class="size-4 text-yellow-400" />
+							{/if}
 						</div>
-					</Accordion.Trigger>
-					<Accordion.Content class="space-y-4">
-						{@render subordinatesDisplay(
-							unit.subordinates.sort((a, b) => a.name.localeCompare(b.name))
-						)}
-					</Accordion.Content>
-				</Accordion.Item>
-			{/each}
-		</Accordion.Root>
-	{/if}
+
+						<div class="flex items-center space-x-2 font-normal">
+							<span class="text-sm leading-none text-muted-foreground">
+								{unit.version !== '' ? unit.version : '-'}
+							</span>
+
+							<span class="text-sm leading-none {getStatusClass(unit.workloadStatus)}">
+								{unit.workloadStatus?.details}
+							</span>
+						</div>
+					</div>
+				</Accordion.Trigger>
+				<Accordion.Content class="space-y-4">
+					{@render subordinatesDisplay(
+						unit.subordinates.sort((a, b) => a.name.localeCompare(b.name))
+					)}
+				</Accordion.Content>
+			</Accordion.Item>
+		{/each}
+	</Accordion.Root>
 {/snippet}
 
 {#snippet subordinatesDisplay(subordinates: Facility_Unit[])}

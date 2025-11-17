@@ -15,6 +15,7 @@
 	import Actions from './cell-actions.svelte';
 	import GPUs from './cell-gpus.svelte';
 	import Tags from './cell-tags.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	export const cells = {
 		row_picker,
@@ -147,9 +148,9 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet tags(row: Row<Machine>)}
+{#snippet tags(data: { row: Row<Machine>; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Tags machine={row.original} />
+		<Tags machine={data.row.original} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}
 
@@ -168,8 +169,8 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<Machine>)}
+{#snippet actions(data: { row: Row<Machine>; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions machine={row.original} />
+		<Actions machine={data.row.original} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

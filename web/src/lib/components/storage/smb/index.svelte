@@ -13,11 +13,9 @@
 <script lang="ts">
 	let {
 		scope,
-		facility,
 		namespace
 	}: {
 		scope: string;
-		facility: string;
 		namespace: string;
 	} = $props();
 
@@ -27,20 +25,20 @@
 	const smbShares = writable([] as SMBShare[]);
 	async function fetch() {
 		storageClient
-			.listSMBShares({ scope: scope, facility: facility, namespace: namespace })
+			.listSMBShares({ scope: scope })
 			.then((response) => {
 				smbShares.set(response.smbShares);
 			})
 			.catch((error) => {
 				console.error('Error reloading SMB shares:', error);
 			});
-		isMounted = true;
 	}
 	const reloadManager = new ReloadManager(fetch, false);
 
 	let isMounted = $state(false);
 	onMount(async () => {
 		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -49,7 +47,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<DataTable {scope} {facility} {namespace} {smbShares} {reloadManager} />
+		<DataTable {smbShares} {scope} {namespace} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

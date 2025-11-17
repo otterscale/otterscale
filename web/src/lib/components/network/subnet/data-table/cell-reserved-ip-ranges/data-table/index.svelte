@@ -19,14 +19,18 @@
 
 	import Create from './action-create.svelte';
 	import Actions from './actions.svelte';
-	import { columns, messages } from './columns';
+	import { getColumns, messages } from './columns';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { get } from 'http';
 </script>
 
 <script lang="ts">
 	let {
-		subnet
+		subnet,
+		reloadManager
 	}: {
 		subnet: Network_Subnet;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	let ipRanges = $derived(subnet.ipRanges || []);
@@ -40,7 +44,9 @@
 		get data() {
 			return ipRanges;
 		},
-		columns,
+		get columns() {
+			return getColumns(reloadManager);
+		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -122,7 +128,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {subnet} />
+			<Create {subnet} {reloadManager} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -152,9 +158,6 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
-						<Table.Cell>
-							<Actions {row} />
-						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Empty {table} />

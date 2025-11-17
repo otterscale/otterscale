@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { InstantVector, PrometheusDriver } from 'prometheus-query';
-	import { getContext, onDestroy, onMount, setContext } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { env } from '$env/dynamic/public';
@@ -16,7 +16,7 @@
 </script>
 
 <script lang="ts">
-	let { scope, facility }: { scope: string; facility: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	const largeLanguageModels = writable<LargeLanguageModel[]>([]);
 
@@ -44,8 +44,7 @@
 
 		await applicationClient
 			.listApplications({
-				scope: scope,
-				facility: facility
+				scope: scope
 			})
 			.then((response) => {
 				applications.set(response.applications);
@@ -130,7 +129,7 @@
 	const reloadManager = new ReloadManager(() => {
 		fetch();
 	});
-	setContext('reloadManager', reloadManager);
+
 	let isMounted = $state(false);
 
 	onMount(async () => {
@@ -144,9 +143,9 @@
 </script>
 
 <main class="space-y-4 py-4">
-	<ExtensionsAlert {scope} {facility} />
+	<ExtensionsAlert {scope} />
 	{#if isMounted}
-		<DataTable {largeLanguageModels} {reloadManager} />
+		<DataTable {largeLanguageModels} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

@@ -8,62 +8,42 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	import { DataTable } from './data-table';
-	import * as store from './utils.svelte';
 </script>
 
 <script lang="ts">
 	let {
-		selectedScope = $bindable(),
-		selectedFacility = $bindable(),
-		selectedVolume = $bindable(),
+		scope,
+		volume,
 		trigger
 	}: {
-		selectedScope: string;
-		selectedFacility: string;
-		selectedVolume: string;
+		scope: string;
+		volume: string;
 		trigger: Snippet;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
-	let isMounted = $state(false);
-
-	const subvolumeGroups = $state(writable([] as SubvolumeGroup[]));
-	const groupStore: store.GroupStore = store.createGroupStore();
 	const storageClient = createClient(StorageService, transport);
-	const reloadManager = new ReloadManager(() => {
-		storageClient
-			.listSubvolumeGroups({
-				scope: selectedScope,
-				facility: selectedFacility,
-				volumeName: selectedVolume
-			})
-			.then((response) => {
-				subvolumeGroups.set(response.subvolumeGroups);
-			});
-	});
-	setContext('groupStore', groupStore);
-	setContext('reloadManager', reloadManager);
-	onMount(() => {
-		groupStore.selectedScope.set(selectedScope);
-		groupStore.selectedFacility.set(selectedFacility);
-		groupStore.selectedVolumeName.set(selectedVolume);
 
+	const subvolumeGroups = writable([] as SubvolumeGroup[]);
+	async function fetch() {
 		storageClient
 			.listSubvolumeGroups({
-				scope: selectedScope,
-				facility: selectedFacility,
-				volumeName: selectedVolume
+				scope: scope,
+				volumeName: volume
 			})
 			.then((response) => {
 				subvolumeGroups.set(response.subvolumeGroups);
-				isMounted = true;
 			})
 			.catch((error) => {
-				console.error('Error during initial data load:', error);
+				console.error('Error fetching subvolume groups:', error);
 			});
+	}
+	const reloadManager = new ReloadManager(fetch, false);
 
-		reloadManager.start();
+	let isMounted = $state(false);
+	onMount(async () => {
+		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -73,7 +53,7 @@
 <main class="space-y-4 py-4">
 	{#if isMounted}
 		{@render trigger()}
-		<DataTable {subvolumeGroups} {reloadManager} />
+		<DataTable {subvolumeGroups} {scope} {volume} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

@@ -14,21 +14,26 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
-	let { virtualMachineSnapshot }: { virtualMachineSnapshot: VirtualMachine_Snapshot } = $props();
+	let {
+		virtualMachineSnapshot,
+		scope,
+		reloadManager
+	}: {
+		virtualMachineSnapshot: VirtualMachine_Snapshot;
+		scope: string;
+		reloadManager: ReloadManager;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const virtualMachineClient = createClient(InstanceService, transport);
 	let invalid = $state(false);
 
 	const defaults = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
 		name: '',
 		namespace: virtualMachineSnapshot.namespace
 	} as DeleteVirtualMachineSnapshotRequest;

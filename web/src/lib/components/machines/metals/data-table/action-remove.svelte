@@ -18,12 +18,12 @@
 
 <script lang="ts">
 	let {
-		machine
+		machine,
+		reloadManager
 	}: {
 		machine: Machine;
+		reloadManager: ReloadManager;
 	} = $props();
-
-	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);

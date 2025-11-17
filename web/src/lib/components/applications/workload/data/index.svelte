@@ -13,13 +13,20 @@
 	import StatisticStorageClasses from './statistic-storage-classes.svelte';
 	import TablePods from './table-pods.svelte';
 	import TableServices from './table-services.svelte';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">
 	let {
-		application
+		application,
+		scope,
+		namespace,
+		reloadManager
 	}: {
 		application: Writable<Application>;
+		scope: string;
+		namespace: string;
+		reloadManager: ReloadManager;
 	} = $props();
 </script>
 
@@ -56,7 +63,7 @@
 				{m.applications_workload_pods()}
 			</Layout.Table.Trigger>
 			<Layout.Table.Content>
-				<TablePods {application} />
+				<TablePods {application} {scope} {namespace} {reloadManager} />
 			</Layout.Table.Content>
 		</Layout.Table.Root>
 

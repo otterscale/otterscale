@@ -11,16 +11,19 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 </script>
 
 <script lang="ts">
 	// Component props - accepts a virtual machine disk object
-	let { dataVolume }: { dataVolume: DataVolume } = $props();
+	let {
+		dataVolume,
+		scope,
+		reloadManager
+	}: { dataVolume: DataVolume; scope: string; reloadManager: ReloadManager } = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('reloadManager');
+
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// Form validation state
@@ -28,8 +31,7 @@
 
 	// Default values for the delete data volume request
 	const defaults = {
-		scope: $currentKubernetes?.scope,
-		facility: $currentKubernetes?.name,
+		scope: scope,
 		namespace: dataVolume.namespace,
 		name: ''
 	} as DeleteDataVolumeRequest;

@@ -28,11 +28,9 @@
 <script lang="ts">
 	let {
 		scope,
-		facility,
 		namespace,
 		reloadManager
-	}: { scope: string; facility: string; namespace: string; reloadManager: ReloadManager } =
-		$props();
+	}: { scope: string; namespace: string; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -40,7 +38,6 @@
 
 	const defaults = {
 		scope: scope,
-		facility: facility,
 		namespace: namespace,
 		browsable: true,
 		guestOk: false,

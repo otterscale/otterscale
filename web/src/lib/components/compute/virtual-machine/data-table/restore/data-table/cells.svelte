@@ -10,6 +10,7 @@
 	import { formatTimeAgo } from '$lib/formatter';
 
 	import Actions from './cell-actions.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	export const cells = {
 		row_picker,
@@ -82,8 +83,16 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<VirtualMachine_Restore>)}
+{#snippet actions(data: {
+	row: Row<VirtualMachine_Restore>;
+	scope: string;
+	reloadManager: ReloadManager;
+})}
 	<Layout.Cell class="items-start">
-		<Actions virtualMachineRestore={row.original} />
+		<Actions
+			virtualMachineRestore={data.row.original}
+			scope={data.scope}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}
