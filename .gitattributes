@@ -1,0 +1,4 @@
+web/src/lib/api/** linguist-generated
+
+web/src/lib/components/ui/** linguist-vendored
+web/static/vnc/** linguist-vendored
