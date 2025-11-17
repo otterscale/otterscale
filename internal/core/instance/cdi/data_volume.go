@@ -57,10 +57,11 @@ type UseCase struct {
 	storageClass          persistent.StorageClassRepo
 }
 
-func NewUseCase(dataVolume DataVolumeRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *UseCase {
+func NewUseCase(dataVolume DataVolumeRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, storageClass persistent.StorageClassRepo) *UseCase {
 	return &UseCase{
 		dataVolume:            dataVolume,
 		persistentVolumeClaim: persistentVolumeClaim,
+		storageClass:          storageClass,
 	}
 }
 

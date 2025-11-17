@@ -39,13 +39,16 @@ type UseCase struct {
 	ttySessions sync.Map
 }
 
-func NewUseCase(daemonSet DaemonSetRepo, deployment DeploymentRepo, job JobRepo, pod PodRepo, statefulSet StatefulSetRepo) *UseCase {
+func NewUseCase(daemonSet DaemonSetRepo, deployment DeploymentRepo, job JobRepo, pod PodRepo, statefulSet StatefulSetRepo, service service.ServiceRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, storageClass persistent.StorageClassRepo) *UseCase {
 	return &UseCase{
-		daemonSet:   daemonSet,
-		deployment:  deployment,
-		job:         job,
-		pod:         pod,
-		statefulSet: statefulSet,
+		daemonSet:             daemonSet,
+		deployment:            deployment,
+		job:                   job,
+		pod:                   pod,
+		statefulSet:           statefulSet,
+		service:               service,
+		persistentVolumeClaim: persistentVolumeClaim,
+		storageClass:          storageClass,
 	}
 }
 
