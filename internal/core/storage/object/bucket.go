@@ -55,15 +55,8 @@ func (uc *UseCase) ListBuckets(ctx context.Context, scope string) ([]BucketData,
 	ret := []BucketData{}
 
 	for i := range buckets {
-		policy, err := uc.bucket.GetPolicy(ctx, scope, buckets[i].Bucket)
-		if err != nil {
-			return nil, err
-		}
-
-		grants, err := uc.bucket.GetACL(ctx, scope, buckets[i].Bucket)
-		if err != nil {
-			return nil, err
-		}
+		policy, _ := uc.bucket.GetPolicy(ctx, scope, buckets[i].Bucket)
+		grants, _ := uc.bucket.GetACL(ctx, scope, buckets[i].Bucket)
 
 		ret = append(ret, BucketData{
 			Bucket: &buckets[i],

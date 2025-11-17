@@ -1367,7 +1367,6 @@ type InternalObjectService struct {
 	state                  protoimpl.MessageState     `protogen:"opaque.v1"`
 	xxx_hidden_Type        InternalObjectService_Type `protobuf:"varint,1,opt,name=type,enum=otterscale.configuration.v1.InternalObjectService_Type"`
 	xxx_hidden_Scope       *string                    `protobuf:"bytes,2,opt,name=scope"`
-	xxx_hidden_Name        *string                    `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_Host        *string                    `protobuf:"bytes,5,opt,name=host"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -1419,16 +1418,6 @@ func (x *InternalObjectService) GetScope() string {
 	return ""
 }
 
-func (x *InternalObjectService) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *InternalObjectService) GetHost() string {
 	if x != nil {
 		if x.xxx_hidden_Host != nil {
@@ -1441,22 +1430,17 @@ func (x *InternalObjectService) GetHost() string {
 
 func (x *InternalObjectService) SetType(v InternalObjectService_Type) {
 	x.xxx_hidden_Type = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *InternalObjectService) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
-}
-
-func (x *InternalObjectService) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *InternalObjectService) SetHost(v string) {
 	x.xxx_hidden_Host = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *InternalObjectService) HasType() bool {
@@ -1473,18 +1457,11 @@ func (x *InternalObjectService) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *InternalObjectService) HasName() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *InternalObjectService) HasHost() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *InternalObjectService) ClearType() {
@@ -1497,13 +1474,8 @@ func (x *InternalObjectService) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *InternalObjectService) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Name = nil
-}
-
 func (x *InternalObjectService) ClearHost() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Host = nil
 }
 
@@ -1512,7 +1484,6 @@ type InternalObjectService_builder struct {
 
 	Type  *InternalObjectService_Type
 	Scope *string
-	Name  *string
 	Host  *string
 }
 
@@ -1521,19 +1492,15 @@ func (b0 InternalObjectService_builder) Build() *InternalObjectService {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Type = *b.Type
 	}
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
-		x.xxx_hidden_Name = b.Name
-	}
 	if b.Host != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Host = b.Host
 	}
 	return m0
@@ -5016,16 +4983,15 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"C\n" +
 	"\x11NetworkFileSystem\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x12\n" +
-	"\x04path\x18\x02 \x01(\tR\x04path\"\xd6\x01\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path\"\xc2\x01\n" +
 	"\x15InternalObjectService\x12K\n" +
 	"\x04type\x18\x01 \x01(\x0e27.otterscale.configuration.v1.InternalObjectService.TypeR\x04type\x12\x14\n" +
 	"\x05scope\x18\x02 \x01(\tR\x05scope\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12\x12\n" +
 	"\x04host\x18\x05 \x01(\tR\x04host\",\n" +
 	"\x04Type\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04CEPH\x10\x01\x12\t\n" +
-	"\x05MINIO\x10\x02J\x04\b\x03\x10\x04\"i\n" +
+	"\x05MINIO\x10\x02J\x04\b\x03\x10\x05\"i\n" +
 	"\x15ExternalObjectService\x12\x12\n" +
 	"\x04host\x18\x01 \x01(\tR\x04host\x12\x1d\n" +
 	"\n" +

@@ -216,7 +216,6 @@ func toCoreWarpTarget(i *pb.InternalObjectService, e *pb.ExternalObjectService) 
 		ret.Internal = &bist.WarpTargetInternal{
 			Type:  strings.ToLower(i.GetType().String()),
 			Scope: i.GetScope(),
-			Name:  i.GetName(),
 			Host:  i.GetHost(),
 		}
 	}
@@ -477,7 +476,6 @@ func toProtoInternalObjectService(s *bist.WarpTargetInternal) *pb.InternalObject
 	ret := &pb.InternalObjectService{}
 	ret.SetType(toProtoInternalObjectServiceType(s.Type))
 	ret.SetScope(s.Scope)
-	ret.SetName(s.Name)
 	ret.SetHost(s.Host)
 	return ret
 }

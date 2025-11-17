@@ -2,10 +2,11 @@ package extension
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"sync"
 
 	"golang.org/x/sync/errgroup"
+	"helm.sh/helm/v3/pkg/storage/driver"
 
 	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/release"
@@ -82,8 +83,10 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, chartRef
 }
 
 func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []base) ([]Extension, error) {
-	versions := sync.Map{}
-	releases := sync.Map{}
+	var (
+		latest  *chart.Version
+		release *release.Release
+	)
 
 	eg, egctx := errgroup.WithContext(ctx)
 
@@ -91,7 +94,7 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 		eg.Go(func() error {
 			v, err := uc.chart.GetStableVersion(egctx, bases[i].RepoURL, bases[i].Name, true)
 			if err == nil {
-				versions.Store(i, v)
+				latest = v
 			}
 			return err
 		})
@@ -99,7 +102,10 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 		eg.Go(func() error {
 			v, err := uc.release.Get(egctx, scope, bases[i].Namespace, bases[i].Name)
 			if err == nil {
-				releases.Store(i, v)
+				release = v
+			}
+			if errors.Is(err, driver.ErrReleaseNotFound) {
+				return nil
 			}
 			return err
 		})
@@ -112,24 +118,12 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 	ret := []Extension{}
 
 	for _, base := range bases {
-		r, ok := releases.Load(base.Name)
-		if !ok {
-			return nil, fmt.Errorf("failed to load release for %q", base.Name)
-		}
-
-		v, ok := versions.Load(base.Name)
-		if !ok {
-			return nil, fmt.Errorf("failed to load chart version for %q", base.Name)
-		}
-
-		latest := v.(*chart.Version)
-
 		if len(latest.URLs) == 0 {
 			return nil, fmt.Errorf("no chart URL found for %q", base.Name)
 		}
 
 		ret = append(ret, Extension{
-			Release:   r.(*release.Release),
+			Release:   release,
 			Latest:    latest,
 			LatestURL: latest.URLs[0],
 		})
