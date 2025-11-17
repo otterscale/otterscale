@@ -1,3 +1,5 @@
+type SortType = 'downloads' | 'likes';
+
 type ModelTagCategory = 'region' | 'language' | 'license' | 'library' | 'pipeline_tag';
 
 type ModelTag = {
@@ -15,4 +17,4 @@ type HuggingFaceModel = {
 	createdAt: string;
 };
 
-export type { HuggingFaceModel, ModelTag, ModelTagCategory };
+export type { HuggingFaceModel, ModelTag, ModelTagCategory, SortType };

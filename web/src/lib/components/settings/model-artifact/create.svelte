@@ -68,7 +68,7 @@
 	}
 
 	onMount(async () => {
-		await fetchModels('RedHatAI', undefined, undefined, 13)
+		await fetchModels('RedHatAI', [], 'downloads', 10)
 			.then((response) => {
 				huggingFaceModels = response;
 

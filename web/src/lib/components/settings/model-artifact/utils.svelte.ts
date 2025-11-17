@@ -1,22 +1,25 @@
-import { CodeGeneratorResponse_FileSchema } from '@bufbuild/protobuf/wkt';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 
-import type { HuggingFaceModel, ModelTag, ModelTagCategory } from './types';
+import type { HuggingFaceModel, ModelTag, ModelTagCategory, SortType } from './types';
 
 async function fetchModels(
 	author: string,
-	filter: string = '',
-	sort: 'downloads' | 'likes' = 'downloads',
-	limit: number = 10,
+	tags: string[],
+	sort: SortType,
+	limit?: number,
 ): Promise<HuggingFaceModel[]> {
 	const base = 'https://huggingface.co/api/models';
 	const queryParameters = new SvelteURLSearchParams({
 		author: author,
-		filter: filter,
 		sort: sort,
-		limit: String(limit),
 		direction: '-1',
 	});
+	tags.forEach((tag) => {
+		queryParameters.append('filter', tag);
+	});
+	if (limit) {
+		queryParameters.append('limit', String(limit));
+	}
 
 	try {
 		const response = await fetch(`${base}?${queryParameters}`);
@@ -24,6 +27,8 @@ async function fetchModels(
 			throw new Error(`Failed to fetch models: ${response.status} ${response.statusText}`);
 		}
 		const data = await response.json();
+		console.log(`${base}?${queryParameters}`);
+		console.log(data);
 		return data;
 	} catch (error) {
 		throw new Error(error instanceof Error ? error.message : String(error));
@@ -37,7 +42,6 @@ async function fetchModelTypes(modelTagCategory: ModelTagCategory): Promise<Mode
 	});
 
 	try {
-		console.log(`${base}?${queryParameters}`);
 		const response = await fetch(`${base}?${queryParameters}`);
 		if (!response.ok) {
 			throw new Error(`Failed to fetch model types: ${response.status} ${response.statusText}`);
