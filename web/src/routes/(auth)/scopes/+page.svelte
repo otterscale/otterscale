@@ -13,7 +13,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
 
-	const EXCLUDED_SCOPES = ['cos', 'cos-dev', 'cos-lite', 'aaa', 'bbb', 'ccc', 'zzz'];
+	const EXCLUDED_SCOPES = ['cos', 'cos-dev', 'cos-lite'];
 
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
