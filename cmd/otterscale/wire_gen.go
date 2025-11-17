@@ -96,7 +96,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	jobRepo := kubernetes.NewJobRepo(kubernetesKubernetes)
 	podRepo := kubernetes.NewPodRepo(kubernetesKubernetes)
 	statefulSetRepo := kubernetes.NewStatefulSetRepo(kubernetesKubernetes)
-	workloadUseCase := workload.NewUseCase(daemonSetRepo, deploymentRepo, jobRepo, podRepo, statefulSetRepo)
+	workloadUseCase := workload.NewUseCase(daemonSetRepo, deploymentRepo, jobRepo, podRepo, statefulSetRepo, serviceRepo, persistentVolumeClaimRepo, storageClassRepo)
 	applicationService := app.NewApplicationService(clusterUseCase, chartUseCase, configUseCase, persistentUseCase, releaseUseCase, serviceUseCase, workloadUseCase)
 	maasMAAS := maas.New(configConfig)
 	bootResourceRepo := maas.NewBootResourceRepo(maasMAAS)
@@ -130,7 +130,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 		return nil, nil, err
 	}
 	dataVolumeRepo := kubevirt.NewDataVolumeRepo(kubeVirt)
-	cdiUseCase := cdi.NewUseCase(dataVolumeRepo, persistentVolumeClaimRepo)
+	cdiUseCase := cdi.NewUseCase(dataVolumeRepo, persistentVolumeClaimRepo, storageClassRepo)
 	virtualMachineRepo := kubevirt.NewVirtualMachineRepo(kubeVirt)
 	virtualMachineCloneRepo := kubevirt.NewVirtualMachineCloneRepo(kubeVirt)
 	virtualMachineRestoreRepo := kubevirt.NewVirtualMachineRestoreRepo(kubeVirt)
