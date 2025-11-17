@@ -562,18 +562,18 @@ func (uc *KubernetesUseCase) ListStorageClasses(ctx context.Context, scope, faci
 }
 
 func fromDeployment(d *appsv1.Deployment, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*Application, error) {
-	return toApplication(d.Spec.Selector, ApplicationTypeDeployment, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
+	return toApplication(d.Spec.Selector, d.Spec.Template.Labels, ApplicationTypeDeployment, d.Name, d.GetNamespace(), &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
 }
 
 func fromStatefulSet(d *appsv1.StatefulSet, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*Application, error) {
-	return toApplication(d.Spec.Selector, ApplicationTypeStatefulSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
+	return toApplication(d.Spec.Selector, d.Spec.Template.Labels, ApplicationTypeStatefulSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
 }
 
 func fromDaemonSet(d *appsv1.DaemonSet, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*Application, error) {
-	return toApplication(d.Spec.Selector, ApplicationTypeDaemonSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, nil, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
+	return toApplication(d.Spec.Selector, d.Spec.Template.Labels, ApplicationTypeDaemonSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, nil, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
 }
 
-func toApplication(ls *metav1.LabelSelector, appType, name, namespace string, objectMeta *metav1.ObjectMeta, labels map[string]string, replicas *int32, containers []corev1.Container, vs []corev1.Volume, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*Application, error) {
+func toApplication(ls *metav1.LabelSelector, podTemplateLabels map[string]string, appType, name, namespace string, objectMeta *metav1.ObjectMeta, labels map[string]string, replicas *int32, containers []corev1.Container, vs []corev1.Volume, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*Application, error) {
 	selector, err := metav1.LabelSelectorAsSelector(ls)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create selector: %w", err)
@@ -586,16 +586,17 @@ func toApplication(ls *metav1.LabelSelector, appType, name, namespace string, ob
 		Labels:     labels,
 		Replicas:   replicas,
 		Containers: containers,
-		Services:   filterServices(svcs, namespace, selector),
+		Services:   filterServices(svcs, namespace, podTemplateLabels),
 		Pods:       filterPods(pods, namespace, selector),
 		Storages:   filterStorages(pvcs, vs, namespace, scm),
 	}, nil
 }
 
-func filterServices(svcs []corev1.Service, namespace string, s labels.Selector) []corev1.Service {
+func filterServices(svcs []corev1.Service, namespace string, podLabels map[string]string) []corev1.Service {
 	ret := []corev1.Service{}
 	for i := range svcs {
-		if svcs[i].Namespace == namespace && s.Matches(labels.Set(svcs[i].Spec.Selector)) {
+		svcSelector := labels.SelectorFromSet(svcs[i].Spec.Selector)
+		if svcs[i].Namespace == namespace && svcSelector.Matches(labels.Set(podLabels)) {
 			ret = append(ret, svcs[i])
 		}
 	}

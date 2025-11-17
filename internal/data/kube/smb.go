@@ -2,6 +2,7 @@ package kube
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"math"
 	"strings"
@@ -31,11 +32,26 @@ func NewSMB(kube *Kube) oscore.KubeSMBRepo {
 var _ oscore.KubeSMBRepo = (*smb)(nil)
 
 const (
-	smbGroup   = "samba-operator.samba.org"
-	smbVersion = "v1alpha1"
-	guestOkYes = "yes"
-	guestOkNo  = "no"
+	smbGroup              = "samba-operator.samba.org"
+	smbVersion            = "v1alpha1"
+	guestOkYes            = "yes"
+	guestOkNo             = "no"
+	securityModeUser      = "user"
+	securityModeActiveDir = "active-directory"
 )
+
+type sambaUser struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
+type sambaUsers struct {
+	AllEntries []sambaUser `json:"all_entries"`
+}
+
+type sambaConfig struct {
+	Users sambaUsers `json:"users"`
+}
 
 var (
 	smbShareGVR = schema.GroupVersionResource{
@@ -186,7 +202,7 @@ func (r *smb) UpdateSMBSecurityConfig(ctx context.Context, config *rest.Config, 
 	spec["mode"] = mode
 
 	switch mode {
-	case "active-directory":
+	case securityModeActiveDir:
 		spec["realm"] = realm
 		if secretName != "" {
 			spec["joinSources"] = []interface{}{
@@ -199,7 +215,7 @@ func (r *smb) UpdateSMBSecurityConfig(ctx context.Context, config *rest.Config, 
 			}
 		}
 		delete(spec, "users")
-	case "user":
+	case securityModeUser:
 		spec["users"] = map[string]interface{}{
 			"secret": secretName,
 			"key":    "users",
@@ -419,7 +435,7 @@ func (r *smb) CreateSMBSecurityConfig(ctx context.Context, config *rest.Config, 
 	spec := securityConfig.Object["spec"].(map[string]interface{})
 
 	switch mode {
-	case "active-directory":
+	case securityModeActiveDir:
 		spec["realm"] = realm
 		if secretName != "" {
 			spec["joinSources"] = []interface{}{
@@ -431,7 +447,7 @@ func (r *smb) CreateSMBSecurityConfig(ctx context.Context, config *rest.Config, 
 				},
 			}
 		}
-	case "user":
+	case securityModeUser:
 		spec["users"] = map[string]interface{}{
 			"secret": secretName,
 			"key":    "users",
@@ -517,6 +533,62 @@ func (r *smb) CreateSMBShare(ctx context.Context, config *rest.Config, namespace
 	return nil
 }
 
+func (r *smb) parseUserSecretData(ctx context.Context, clientset *kubernetes.Clientset, namespace, userSecretName string) *oscore.LocalAuth {
+	secret, err := clientset.CoreV1().Secrets(namespace).Get(ctx, userSecretName, metav1.GetOptions{})
+	if err != nil {
+		return nil
+	}
+
+	userData, ok := secret.Data["users"]
+	if !ok || len(userData) == 0 {
+		return nil
+	}
+
+	var config sambaConfig
+	if err := json.Unmarshal(userData, &config); err != nil {
+		return nil
+	}
+
+	users := make([]oscore.SMBUser, 0, len(config.Users.AllEntries))
+	for _, u := range config.Users.AllEntries {
+		users = append(users, oscore.SMBUser{
+			Username: u.Name,
+		})
+	}
+
+	return &oscore.LocalAuth{
+		Users: users,
+	}
+}
+
+func (r *smb) parseSecurityConfig(ctx context.Context, dynamicClient dynamic.Interface, clientset *kubernetes.Clientset, namespace string, share *oscore.SMBShare, securityConfigName string) {
+	securityConfigObj, err := dynamicClient.Resource(smbSecurityConfigGVR).Namespace(namespace).Get(ctx, securityConfigName, metav1.GetOptions{})
+	if err != nil {
+		return
+	}
+
+	mode, found, _ := unstructured.NestedString(securityConfigObj.Object, "spec", "mode")
+	if !found {
+		return
+	}
+
+	share.SecurityMode = mode
+
+	switch mode {
+	case securityModeActiveDir:
+		if realm, found, _ := unstructured.NestedString(securityConfigObj.Object, "spec", "realm"); found {
+			share.Realm = realm
+			share.ADAuth = &oscore.ADAuth{
+				Realm: realm,
+			}
+		}
+	case securityModeUser:
+		if userSecretName, found, _ := unstructured.NestedString(securityConfigObj.Object, "spec", "users", "secret"); found {
+			share.LocalAuth = r.parseUserSecretData(ctx, clientset, namespace, userSecretName)
+		}
+	}
+}
+
 func (r *smb) convertUnstructuredToSMBShare(ctx context.Context, dynamicClient dynamic.Interface, clientset *kubernetes.Clientset, namespace string, obj *unstructured.Unstructured) oscore.SMBShare {
 	share := oscore.SMBShare{
 		Name:       obj.GetName(),
@@ -578,18 +650,7 @@ func (r *smb) convertUnstructuredToSMBShare(ctx context.Context, dynamicClient d
 	// Get securityConfig name
 	securityConfigName, _, _ := unstructured.NestedString(obj.Object, "spec", "securityConfig")
 	if securityConfigName != "" {
-		securityConfigObj, err := dynamicClient.Resource(smbSecurityConfigGVR).Namespace(namespace).Get(ctx, securityConfigName, metav1.GetOptions{})
-		if err == nil {
-			if mode, found, _ := unstructured.NestedString(securityConfigObj.Object, "spec", "mode"); found {
-				share.SecurityMode = mode
-			}
-			if realm, found, _ := unstructured.NestedString(securityConfigObj.Object, "spec", "realm"); found {
-				share.Realm = realm
-				share.ADAuth = &oscore.ADAuth{
-					Realm: realm,
-				}
-			}
-		}
+		r.parseSecurityConfig(ctx, dynamicClient, clientset, namespace, &share, securityConfigName)
 	}
 
 	return share
