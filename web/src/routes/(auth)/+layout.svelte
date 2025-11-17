@@ -14,7 +14,6 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
-	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import CreateBookmark from '$lib/components/layout/create-bookmark.svelte';
 	import NavBookmark from '$lib/components/layout/nav-bookmark.svelte';
@@ -29,7 +28,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import { breadcrumbs, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
+	import { breadcrumbs, premiumTier } from '$lib/stores';
 
 	import type { LayoutData } from './$types';
 
@@ -53,7 +52,6 @@
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
 	const envClient = createClient(EnvironmentService, transport);
-	const orchClient = createClient(OrchestratorService, transport);
 
 	const scopes = writable<Scope[]>([]);
 	let activeScope = $state(page.params.scope || GLOBAL_SCOPE);
@@ -79,19 +77,6 @@
 		}
 	}
 
-	// TODO: remove
-	async function fetchEssentials(scope: string) {
-		try {
-			const response = await orchClient.listEssentials({ scope: scope });
-			const { essentials } = response;
-
-			currentCeph.set(essentials.find((e) => e.type === Essential_Type.CEPH));
-			currentKubernetes.set(essentials.find((e) => e.type === Essential_Type.KUBERNETES));
-		} catch (error) {
-			console.error('Failed to fetch essentials:', error);
-		}
-	}
-
 	async function handleScopeOnSelect(index: number) {
 		const scope = $scopes[index];
 		if (!scope) return;
@@ -102,7 +87,7 @@
 	async function initialize(scope: string) {
 		try {
 			activeScope = scope;
-			await Promise.all([fetchScopes(), fetchEdition(), fetchEssentials(scope)]);
+			await Promise.all([fetchScopes(), fetchEdition()]);
 			toast.success(m.switch_scope({ name: scope }));
 		} catch (error) {
 			console.error('Failed to initialize:', error);
@@ -132,8 +117,8 @@
 		</Sidebar.Header>
 
 		<Sidebar.Content>
-			<NavGeneral title={m.platform()} routes={platformRoutes(activeScope)} />
-			<NavGeneral title={m.global()} routes={globalRoutes()} />
+			<NavGeneral scope={activeScope} title={m.platform()} routes={platformRoutes(activeScope)} />
+			<NavGeneral scope={activeScope} title={m.global()} routes={globalRoutes()} />
 			<NavBookmark />
 			<NavFooter class="mt-auto" />
 		</Sidebar.Content>

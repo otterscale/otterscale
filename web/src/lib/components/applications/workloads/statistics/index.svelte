@@ -51,7 +51,7 @@
 			applications.set(
 				response.applications.map((application) => ({
 					...application,
-					publicAddress: response.publicAddress
+					endpoint: response.endpoint
 				}))
 			);
 

@@ -8,13 +8,11 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
-	import { Essential_Type, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import type { Path } from '$lib/path';
 	import type { User } from '$lib/server';
-	import { bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
+	import { premiumTier } from '$lib/stores';
 
 	import NavBookmark from './nav-bookmark.svelte';
 	import NavFooter from './nav-footer.svelte';
@@ -32,19 +30,12 @@
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
 	const envClient = createClient(EnvironmentService, transport);
-	const orchClient = createClient(OrchestratorService, transport);
 	const tierMap = {
 		[PremiumTier_Level.BASIC]: m.basic_tier(),
 		[PremiumTier_Level.ADVANCED]: m.advanced_tier(),
 		[PremiumTier_Level.ENTERPRISE]: m.enterprise_tier()
 	};
 	let scopes = $state<Scope[]>([]);
-
-	async function onBookmarkDelete(path: Path) {
-		bookmarks.update((currentBookmarks) =>
-			currentBookmarks.filter((bookmark) => bookmark.url !== path.url)
-		);
-	}
 
 	async function fetchScopes() {
 		try {
@@ -77,7 +68,7 @@
 	async function initialize(scope: string) {
 		try {
 			active = scope;
-			await Promise.all([fetchScopes(), fetchEdition(), fetchEssentials(scope)]);
+			await Promise.all([fetchScopes(), fetchEdition()]);
 			toast.success(m.switch_scope({ name: scope }));
 		} catch (error) {
 			console.error('Failed to initialize:', error);
@@ -102,9 +93,9 @@
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavGeneral title={m.platform()} routes={platformRoutes(active)} />
-		<NavGeneral title={m.global()} routes={globalRoutes()} />
-		<NavBookmark bookmarks={$bookmarks} onDelete={onBookmarkDelete} />
+		<NavGeneral scope={active} title={m.platform()} routes={platformRoutes(active)} />
+		<NavGeneral scope={active} title={m.global()} routes={globalRoutes()} />
+		<NavBookmark />
 		<NavFooter class="mt-auto" />
 	</Sidebar.Content>
 

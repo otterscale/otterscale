@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount, setContext } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
@@ -30,7 +30,7 @@
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							publicAddress: response.publicAddress
+							endpoint: response.endpoint
 						}))
 					)
 				);
@@ -50,7 +50,7 @@
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							publicAddress: response.publicAddress
+							endpoint: response.endpoint
 						}))
 					)
 				);

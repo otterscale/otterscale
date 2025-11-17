@@ -5,17 +5,16 @@
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { getCephPathDisabled, getKubernetesPathDisabled, getPathIcon } from '$lib/path';
-	import { currentCeph, currentKubernetes } from '$lib/stores';
 
 	import type { Route } from './routes';
 
-	let { title, routes }: { title: string; routes: Route[] } = $props();
+	let { scope, title, routes }: { scope: string; title: string; routes: Route[] } = $props();
 
 	const isItemActive = (url: string): boolean => page.url.pathname.startsWith(url);
 	const hasSubItems = (route: Route): boolean => Boolean(route.items?.length);
 	const isDisabled = (url: string): boolean =>
-		(!$currentCeph && getCephPathDisabled(url)) ||
-		(!$currentKubernetes && getKubernetesPathDisabled(url));
+		(scope === 'otterscale' && getCephPathDisabled(url)) ||
+		(scope === 'otterscale' && getKubernetesPathDisabled(url));
 </script>
 
 <Sidebar.Group>

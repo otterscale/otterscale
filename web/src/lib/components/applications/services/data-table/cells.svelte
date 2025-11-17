@@ -71,7 +71,7 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each row.original.ports as port}
+						{#each row.original.ports as port, index (index)}
 							<Table.Row>
 								<Table.Cell class="text-start">
 									{port.protocol}
@@ -100,8 +100,8 @@
 {#snippet endpoints(row: Row<Service>)}
 	{#if row.original.type === 'NodePort'}
 		<Layout.Cell class="items-start">
-			{#each row.original.ports as port}
-				{@const url = `http://${row.original.publicAddress}:${port.nodePort}`}
+			{#each row.original.ports as port, index (index)}
+				{@const url = `http://${row.original.endpoint}:${port.nodePort}`}
 				<div class="group flex items-center gap-1">
 					<Tooltip.Provider>
 						<Tooltip.Root delayDuration={13}>
