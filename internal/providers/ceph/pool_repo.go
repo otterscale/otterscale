@@ -45,6 +45,10 @@ func (r *poolRepo) List(_ context.Context, scope, application string) ([]storage
 
 	pools := r.toPools(osdDump, pgDump, df)
 
+	if application == "" {
+		return pools, nil
+	}
+
 	return slices.DeleteFunc(pools, func(p storage.Pool) bool {
 		return !slices.Contains(p.Applications, application)
 	}), nil
