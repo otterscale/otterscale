@@ -37,63 +37,15 @@ const (
 	// FacilityServiceListFacilitiesProcedure is the fully-qualified name of the FacilityService's
 	// ListFacilities RPC.
 	FacilityServiceListFacilitiesProcedure = "/otterscale.facility.v1.FacilityService/ListFacilities"
-	// FacilityServiceGetFacilityProcedure is the fully-qualified name of the FacilityService's
-	// GetFacility RPC.
-	FacilityServiceGetFacilityProcedure = "/otterscale.facility.v1.FacilityService/GetFacility"
-	// FacilityServiceCreateFacilityProcedure is the fully-qualified name of the FacilityService's
-	// CreateFacility RPC.
-	FacilityServiceCreateFacilityProcedure = "/otterscale.facility.v1.FacilityService/CreateFacility"
-	// FacilityServiceUpdateFacilityProcedure is the fully-qualified name of the FacilityService's
-	// UpdateFacility RPC.
-	FacilityServiceUpdateFacilityProcedure = "/otterscale.facility.v1.FacilityService/UpdateFacility"
-	// FacilityServiceDeleteFacilityProcedure is the fully-qualified name of the FacilityService's
-	// DeleteFacility RPC.
-	FacilityServiceDeleteFacilityProcedure = "/otterscale.facility.v1.FacilityService/DeleteFacility"
 	// FacilityServiceResolveFacilityUnitErrorsProcedure is the fully-qualified name of the
 	// FacilityService's ResolveFacilityUnitErrors RPC.
 	FacilityServiceResolveFacilityUnitErrorsProcedure = "/otterscale.facility.v1.FacilityService/ResolveFacilityUnitErrors"
-	// FacilityServiceExposeFacilityProcedure is the fully-qualified name of the FacilityService's
-	// ExposeFacility RPC.
-	FacilityServiceExposeFacilityProcedure = "/otterscale.facility.v1.FacilityService/ExposeFacility"
-	// FacilityServiceAddFacilityUnitsProcedure is the fully-qualified name of the FacilityService's
-	// AddFacilityUnits RPC.
-	FacilityServiceAddFacilityUnitsProcedure = "/otterscale.facility.v1.FacilityService/AddFacilityUnits"
-	// FacilityServiceListActionsProcedure is the fully-qualified name of the FacilityService's
-	// ListActions RPC.
-	FacilityServiceListActionsProcedure = "/otterscale.facility.v1.FacilityService/ListActions"
-	// FacilityServiceDoActionProcedure is the fully-qualified name of the FacilityService's DoAction
-	// RPC.
-	FacilityServiceDoActionProcedure = "/otterscale.facility.v1.FacilityService/DoAction"
-	// FacilityServiceListCharmsProcedure is the fully-qualified name of the FacilityService's
-	// ListCharms RPC.
-	FacilityServiceListCharmsProcedure = "/otterscale.facility.v1.FacilityService/ListCharms"
-	// FacilityServiceGetCharmProcedure is the fully-qualified name of the FacilityService's GetCharm
-	// RPC.
-	FacilityServiceGetCharmProcedure = "/otterscale.facility.v1.FacilityService/GetCharm"
-	// FacilityServiceGetCharmMetadataProcedure is the fully-qualified name of the FacilityService's
-	// GetCharmMetadata RPC.
-	FacilityServiceGetCharmMetadataProcedure = "/otterscale.facility.v1.FacilityService/GetCharmMetadata"
-	// FacilityServiceListCharmArtifactsProcedure is the fully-qualified name of the FacilityService's
-	// ListCharmArtifacts RPC.
-	FacilityServiceListCharmArtifactsProcedure = "/otterscale.facility.v1.FacilityService/ListCharmArtifacts"
 )
 
 // FacilityServiceClient is a client for the otterscale.facility.v1.FacilityService service.
 type FacilityServiceClient interface {
 	ListFacilities(context.Context, *v1.ListFacilitiesRequest) (*v1.ListFacilitiesResponse, error)
-	GetFacility(context.Context, *v1.GetFacilityRequest) (*v1.Facility, error)
-	CreateFacility(context.Context, *v1.CreateFacilityRequest) (*v1.Facility, error)
-	UpdateFacility(context.Context, *v1.UpdateFacilityRequest) (*v1.Facility, error)
-	DeleteFacility(context.Context, *v1.DeleteFacilityRequest) (*emptypb.Empty, error)
 	ResolveFacilityUnitErrors(context.Context, *v1.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error)
-	ExposeFacility(context.Context, *v1.ExposeFacilityRequest) (*emptypb.Empty, error)
-	AddFacilityUnits(context.Context, *v1.AddFacilityUnitsRequest) (*v1.AddFacilityUnitsResponse, error)
-	ListActions(context.Context, *v1.ListActionsRequest) (*v1.ListActionsResponse, error)
-	DoAction(context.Context, *v1.DoActionRequest) (*emptypb.Empty, error)
-	ListCharms(context.Context, *v1.ListCharmsRequest) (*v1.ListCharmsResponse, error)
-	GetCharm(context.Context, *v1.GetCharmRequest) (*v1.Facility_Charm, error)
-	GetCharmMetadata(context.Context, *v1.GetCharmMetadataRequest) (*v1.Facility_Charm_Metadata, error)
-	ListCharmArtifacts(context.Context, *v1.ListCharmArtifactsRequest) (*v1.ListCharmArtifactsResponse, error)
 }
 
 // NewFacilityServiceClient constructs a client for the otterscale.facility.v1.FacilityService
@@ -113,82 +65,10 @@ func NewFacilityServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(facilityServiceMethods.ByName("ListFacilities")),
 			connect.WithClientOptions(opts...),
 		),
-		getFacility: connect.NewClient[v1.GetFacilityRequest, v1.Facility](
-			httpClient,
-			baseURL+FacilityServiceGetFacilityProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("GetFacility")),
-			connect.WithClientOptions(opts...),
-		),
-		createFacility: connect.NewClient[v1.CreateFacilityRequest, v1.Facility](
-			httpClient,
-			baseURL+FacilityServiceCreateFacilityProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("CreateFacility")),
-			connect.WithClientOptions(opts...),
-		),
-		updateFacility: connect.NewClient[v1.UpdateFacilityRequest, v1.Facility](
-			httpClient,
-			baseURL+FacilityServiceUpdateFacilityProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("UpdateFacility")),
-			connect.WithClientOptions(opts...),
-		),
-		deleteFacility: connect.NewClient[v1.DeleteFacilityRequest, emptypb.Empty](
-			httpClient,
-			baseURL+FacilityServiceDeleteFacilityProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("DeleteFacility")),
-			connect.WithClientOptions(opts...),
-		),
 		resolveFacilityUnitErrors: connect.NewClient[v1.ResolveFacilityUnitErrorsRequest, emptypb.Empty](
 			httpClient,
 			baseURL+FacilityServiceResolveFacilityUnitErrorsProcedure,
 			connect.WithSchema(facilityServiceMethods.ByName("ResolveFacilityUnitErrors")),
-			connect.WithClientOptions(opts...),
-		),
-		exposeFacility: connect.NewClient[v1.ExposeFacilityRequest, emptypb.Empty](
-			httpClient,
-			baseURL+FacilityServiceExposeFacilityProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("ExposeFacility")),
-			connect.WithClientOptions(opts...),
-		),
-		addFacilityUnits: connect.NewClient[v1.AddFacilityUnitsRequest, v1.AddFacilityUnitsResponse](
-			httpClient,
-			baseURL+FacilityServiceAddFacilityUnitsProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("AddFacilityUnits")),
-			connect.WithClientOptions(opts...),
-		),
-		listActions: connect.NewClient[v1.ListActionsRequest, v1.ListActionsResponse](
-			httpClient,
-			baseURL+FacilityServiceListActionsProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("ListActions")),
-			connect.WithClientOptions(opts...),
-		),
-		doAction: connect.NewClient[v1.DoActionRequest, emptypb.Empty](
-			httpClient,
-			baseURL+FacilityServiceDoActionProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("DoAction")),
-			connect.WithClientOptions(opts...),
-		),
-		listCharms: connect.NewClient[v1.ListCharmsRequest, v1.ListCharmsResponse](
-			httpClient,
-			baseURL+FacilityServiceListCharmsProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("ListCharms")),
-			connect.WithClientOptions(opts...),
-		),
-		getCharm: connect.NewClient[v1.GetCharmRequest, v1.Facility_Charm](
-			httpClient,
-			baseURL+FacilityServiceGetCharmProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("GetCharm")),
-			connect.WithClientOptions(opts...),
-		),
-		getCharmMetadata: connect.NewClient[v1.GetCharmMetadataRequest, v1.Facility_Charm_Metadata](
-			httpClient,
-			baseURL+FacilityServiceGetCharmMetadataProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("GetCharmMetadata")),
-			connect.WithClientOptions(opts...),
-		),
-		listCharmArtifacts: connect.NewClient[v1.ListCharmArtifactsRequest, v1.ListCharmArtifactsResponse](
-			httpClient,
-			baseURL+FacilityServiceListCharmArtifactsProcedure,
-			connect.WithSchema(facilityServiceMethods.ByName("ListCharmArtifacts")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -197,60 +77,12 @@ func NewFacilityServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 // facilityServiceClient implements FacilityServiceClient.
 type facilityServiceClient struct {
 	listFacilities            *connect.Client[v1.ListFacilitiesRequest, v1.ListFacilitiesResponse]
-	getFacility               *connect.Client[v1.GetFacilityRequest, v1.Facility]
-	createFacility            *connect.Client[v1.CreateFacilityRequest, v1.Facility]
-	updateFacility            *connect.Client[v1.UpdateFacilityRequest, v1.Facility]
-	deleteFacility            *connect.Client[v1.DeleteFacilityRequest, emptypb.Empty]
 	resolveFacilityUnitErrors *connect.Client[v1.ResolveFacilityUnitErrorsRequest, emptypb.Empty]
-	exposeFacility            *connect.Client[v1.ExposeFacilityRequest, emptypb.Empty]
-	addFacilityUnits          *connect.Client[v1.AddFacilityUnitsRequest, v1.AddFacilityUnitsResponse]
-	listActions               *connect.Client[v1.ListActionsRequest, v1.ListActionsResponse]
-	doAction                  *connect.Client[v1.DoActionRequest, emptypb.Empty]
-	listCharms                *connect.Client[v1.ListCharmsRequest, v1.ListCharmsResponse]
-	getCharm                  *connect.Client[v1.GetCharmRequest, v1.Facility_Charm]
-	getCharmMetadata          *connect.Client[v1.GetCharmMetadataRequest, v1.Facility_Charm_Metadata]
-	listCharmArtifacts        *connect.Client[v1.ListCharmArtifactsRequest, v1.ListCharmArtifactsResponse]
 }
 
 // ListFacilities calls otterscale.facility.v1.FacilityService.ListFacilities.
 func (c *facilityServiceClient) ListFacilities(ctx context.Context, req *v1.ListFacilitiesRequest) (*v1.ListFacilitiesResponse, error) {
 	response, err := c.listFacilities.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// GetFacility calls otterscale.facility.v1.FacilityService.GetFacility.
-func (c *facilityServiceClient) GetFacility(ctx context.Context, req *v1.GetFacilityRequest) (*v1.Facility, error) {
-	response, err := c.getFacility.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// CreateFacility calls otterscale.facility.v1.FacilityService.CreateFacility.
-func (c *facilityServiceClient) CreateFacility(ctx context.Context, req *v1.CreateFacilityRequest) (*v1.Facility, error) {
-	response, err := c.createFacility.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// UpdateFacility calls otterscale.facility.v1.FacilityService.UpdateFacility.
-func (c *facilityServiceClient) UpdateFacility(ctx context.Context, req *v1.UpdateFacilityRequest) (*v1.Facility, error) {
-	response, err := c.updateFacility.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// DeleteFacility calls otterscale.facility.v1.FacilityService.DeleteFacility.
-func (c *facilityServiceClient) DeleteFacility(ctx context.Context, req *v1.DeleteFacilityRequest) (*emptypb.Empty, error) {
-	response, err := c.deleteFacility.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -266,95 +98,11 @@ func (c *facilityServiceClient) ResolveFacilityUnitErrors(ctx context.Context, r
 	return nil, err
 }
 
-// ExposeFacility calls otterscale.facility.v1.FacilityService.ExposeFacility.
-func (c *facilityServiceClient) ExposeFacility(ctx context.Context, req *v1.ExposeFacilityRequest) (*emptypb.Empty, error) {
-	response, err := c.exposeFacility.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// AddFacilityUnits calls otterscale.facility.v1.FacilityService.AddFacilityUnits.
-func (c *facilityServiceClient) AddFacilityUnits(ctx context.Context, req *v1.AddFacilityUnitsRequest) (*v1.AddFacilityUnitsResponse, error) {
-	response, err := c.addFacilityUnits.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// ListActions calls otterscale.facility.v1.FacilityService.ListActions.
-func (c *facilityServiceClient) ListActions(ctx context.Context, req *v1.ListActionsRequest) (*v1.ListActionsResponse, error) {
-	response, err := c.listActions.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// DoAction calls otterscale.facility.v1.FacilityService.DoAction.
-func (c *facilityServiceClient) DoAction(ctx context.Context, req *v1.DoActionRequest) (*emptypb.Empty, error) {
-	response, err := c.doAction.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// ListCharms calls otterscale.facility.v1.FacilityService.ListCharms.
-func (c *facilityServiceClient) ListCharms(ctx context.Context, req *v1.ListCharmsRequest) (*v1.ListCharmsResponse, error) {
-	response, err := c.listCharms.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// GetCharm calls otterscale.facility.v1.FacilityService.GetCharm.
-func (c *facilityServiceClient) GetCharm(ctx context.Context, req *v1.GetCharmRequest) (*v1.Facility_Charm, error) {
-	response, err := c.getCharm.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// GetCharmMetadata calls otterscale.facility.v1.FacilityService.GetCharmMetadata.
-func (c *facilityServiceClient) GetCharmMetadata(ctx context.Context, req *v1.GetCharmMetadataRequest) (*v1.Facility_Charm_Metadata, error) {
-	response, err := c.getCharmMetadata.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// ListCharmArtifacts calls otterscale.facility.v1.FacilityService.ListCharmArtifacts.
-func (c *facilityServiceClient) ListCharmArtifacts(ctx context.Context, req *v1.ListCharmArtifactsRequest) (*v1.ListCharmArtifactsResponse, error) {
-	response, err := c.listCharmArtifacts.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
 // FacilityServiceHandler is an implementation of the otterscale.facility.v1.FacilityService
 // service.
 type FacilityServiceHandler interface {
 	ListFacilities(context.Context, *v1.ListFacilitiesRequest) (*v1.ListFacilitiesResponse, error)
-	GetFacility(context.Context, *v1.GetFacilityRequest) (*v1.Facility, error)
-	CreateFacility(context.Context, *v1.CreateFacilityRequest) (*v1.Facility, error)
-	UpdateFacility(context.Context, *v1.UpdateFacilityRequest) (*v1.Facility, error)
-	DeleteFacility(context.Context, *v1.DeleteFacilityRequest) (*emptypb.Empty, error)
 	ResolveFacilityUnitErrors(context.Context, *v1.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error)
-	ExposeFacility(context.Context, *v1.ExposeFacilityRequest) (*emptypb.Empty, error)
-	AddFacilityUnits(context.Context, *v1.AddFacilityUnitsRequest) (*v1.AddFacilityUnitsResponse, error)
-	ListActions(context.Context, *v1.ListActionsRequest) (*v1.ListActionsResponse, error)
-	DoAction(context.Context, *v1.DoActionRequest) (*emptypb.Empty, error)
-	ListCharms(context.Context, *v1.ListCharmsRequest) (*v1.ListCharmsResponse, error)
-	GetCharm(context.Context, *v1.GetCharmRequest) (*v1.Facility_Charm, error)
-	GetCharmMetadata(context.Context, *v1.GetCharmMetadataRequest) (*v1.Facility_Charm_Metadata, error)
-	ListCharmArtifacts(context.Context, *v1.ListCharmArtifactsRequest) (*v1.ListCharmArtifactsResponse, error)
 }
 
 // NewFacilityServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -370,114 +118,18 @@ func NewFacilityServiceHandler(svc FacilityServiceHandler, opts ...connect.Handl
 		connect.WithSchema(facilityServiceMethods.ByName("ListFacilities")),
 		connect.WithHandlerOptions(opts...),
 	)
-	facilityServiceGetFacilityHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceGetFacilityProcedure,
-		svc.GetFacility,
-		connect.WithSchema(facilityServiceMethods.ByName("GetFacility")),
-		connect.WithHandlerOptions(opts...),
-	)
-	facilityServiceCreateFacilityHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceCreateFacilityProcedure,
-		svc.CreateFacility,
-		connect.WithSchema(facilityServiceMethods.ByName("CreateFacility")),
-		connect.WithHandlerOptions(opts...),
-	)
-	facilityServiceUpdateFacilityHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceUpdateFacilityProcedure,
-		svc.UpdateFacility,
-		connect.WithSchema(facilityServiceMethods.ByName("UpdateFacility")),
-		connect.WithHandlerOptions(opts...),
-	)
-	facilityServiceDeleteFacilityHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceDeleteFacilityProcedure,
-		svc.DeleteFacility,
-		connect.WithSchema(facilityServiceMethods.ByName("DeleteFacility")),
-		connect.WithHandlerOptions(opts...),
-	)
 	facilityServiceResolveFacilityUnitErrorsHandler := connect.NewUnaryHandlerSimple(
 		FacilityServiceResolveFacilityUnitErrorsProcedure,
 		svc.ResolveFacilityUnitErrors,
 		connect.WithSchema(facilityServiceMethods.ByName("ResolveFacilityUnitErrors")),
 		connect.WithHandlerOptions(opts...),
 	)
-	facilityServiceExposeFacilityHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceExposeFacilityProcedure,
-		svc.ExposeFacility,
-		connect.WithSchema(facilityServiceMethods.ByName("ExposeFacility")),
-		connect.WithHandlerOptions(opts...),
-	)
-	facilityServiceAddFacilityUnitsHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceAddFacilityUnitsProcedure,
-		svc.AddFacilityUnits,
-		connect.WithSchema(facilityServiceMethods.ByName("AddFacilityUnits")),
-		connect.WithHandlerOptions(opts...),
-	)
-	facilityServiceListActionsHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceListActionsProcedure,
-		svc.ListActions,
-		connect.WithSchema(facilityServiceMethods.ByName("ListActions")),
-		connect.WithHandlerOptions(opts...),
-	)
-	facilityServiceDoActionHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceDoActionProcedure,
-		svc.DoAction,
-		connect.WithSchema(facilityServiceMethods.ByName("DoAction")),
-		connect.WithHandlerOptions(opts...),
-	)
-	facilityServiceListCharmsHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceListCharmsProcedure,
-		svc.ListCharms,
-		connect.WithSchema(facilityServiceMethods.ByName("ListCharms")),
-		connect.WithHandlerOptions(opts...),
-	)
-	facilityServiceGetCharmHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceGetCharmProcedure,
-		svc.GetCharm,
-		connect.WithSchema(facilityServiceMethods.ByName("GetCharm")),
-		connect.WithHandlerOptions(opts...),
-	)
-	facilityServiceGetCharmMetadataHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceGetCharmMetadataProcedure,
-		svc.GetCharmMetadata,
-		connect.WithSchema(facilityServiceMethods.ByName("GetCharmMetadata")),
-		connect.WithHandlerOptions(opts...),
-	)
-	facilityServiceListCharmArtifactsHandler := connect.NewUnaryHandlerSimple(
-		FacilityServiceListCharmArtifactsProcedure,
-		svc.ListCharmArtifacts,
-		connect.WithSchema(facilityServiceMethods.ByName("ListCharmArtifacts")),
-		connect.WithHandlerOptions(opts...),
-	)
 	return "/otterscale.facility.v1.FacilityService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case FacilityServiceListFacilitiesProcedure:
 			facilityServiceListFacilitiesHandler.ServeHTTP(w, r)
-		case FacilityServiceGetFacilityProcedure:
-			facilityServiceGetFacilityHandler.ServeHTTP(w, r)
-		case FacilityServiceCreateFacilityProcedure:
-			facilityServiceCreateFacilityHandler.ServeHTTP(w, r)
-		case FacilityServiceUpdateFacilityProcedure:
-			facilityServiceUpdateFacilityHandler.ServeHTTP(w, r)
-		case FacilityServiceDeleteFacilityProcedure:
-			facilityServiceDeleteFacilityHandler.ServeHTTP(w, r)
 		case FacilityServiceResolveFacilityUnitErrorsProcedure:
 			facilityServiceResolveFacilityUnitErrorsHandler.ServeHTTP(w, r)
-		case FacilityServiceExposeFacilityProcedure:
-			facilityServiceExposeFacilityHandler.ServeHTTP(w, r)
-		case FacilityServiceAddFacilityUnitsProcedure:
-			facilityServiceAddFacilityUnitsHandler.ServeHTTP(w, r)
-		case FacilityServiceListActionsProcedure:
-			facilityServiceListActionsHandler.ServeHTTP(w, r)
-		case FacilityServiceDoActionProcedure:
-			facilityServiceDoActionHandler.ServeHTTP(w, r)
-		case FacilityServiceListCharmsProcedure:
-			facilityServiceListCharmsHandler.ServeHTTP(w, r)
-		case FacilityServiceGetCharmProcedure:
-			facilityServiceGetCharmHandler.ServeHTTP(w, r)
-		case FacilityServiceGetCharmMetadataProcedure:
-			facilityServiceGetCharmMetadataHandler.ServeHTTP(w, r)
-		case FacilityServiceListCharmArtifactsProcedure:
-			facilityServiceListCharmArtifactsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -491,54 +143,6 @@ func (UnimplementedFacilityServiceHandler) ListFacilities(context.Context, *v1.L
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.ListFacilities is not implemented"))
 }
 
-func (UnimplementedFacilityServiceHandler) GetFacility(context.Context, *v1.GetFacilityRequest) (*v1.Facility, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.GetFacility is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) CreateFacility(context.Context, *v1.CreateFacilityRequest) (*v1.Facility, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.CreateFacility is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) UpdateFacility(context.Context, *v1.UpdateFacilityRequest) (*v1.Facility, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.UpdateFacility is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) DeleteFacility(context.Context, *v1.DeleteFacilityRequest) (*emptypb.Empty, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.DeleteFacility is not implemented"))
-}
-
 func (UnimplementedFacilityServiceHandler) ResolveFacilityUnitErrors(context.Context, *v1.ResolveFacilityUnitErrorsRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) ExposeFacility(context.Context, *v1.ExposeFacilityRequest) (*emptypb.Empty, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.ExposeFacility is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) AddFacilityUnits(context.Context, *v1.AddFacilityUnitsRequest) (*v1.AddFacilityUnitsResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.AddFacilityUnits is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) ListActions(context.Context, *v1.ListActionsRequest) (*v1.ListActionsResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.ListActions is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) DoAction(context.Context, *v1.DoActionRequest) (*emptypb.Empty, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.DoAction is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) ListCharms(context.Context, *v1.ListCharmsRequest) (*v1.ListCharmsResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.ListCharms is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) GetCharm(context.Context, *v1.GetCharmRequest) (*v1.Facility_Charm, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.GetCharm is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) GetCharmMetadata(context.Context, *v1.GetCharmMetadataRequest) (*v1.Facility_Charm_Metadata, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.GetCharmMetadata is not implemented"))
-}
-
-func (UnimplementedFacilityServiceHandler) ListCharmArtifacts(context.Context, *v1.ListCharmArtifactsRequest) (*v1.ListCharmArtifactsResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.facility.v1.FacilityService.ListCharmArtifacts is not implemented"))
 }

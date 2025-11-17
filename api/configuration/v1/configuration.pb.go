@@ -458,7 +458,6 @@ type UpdatePackageRepositoryRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id          int64                  `protobuf:"varint,1,opt,name=id"`
 	xxx_hidden_Url         *string                `protobuf:"bytes,2,opt,name=url"`
-	xxx_hidden_SkipJuju    bool                   `protobuf:"varint,3,opt,name=skip_juju,json=skipJuju"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -507,26 +506,14 @@ func (x *UpdatePackageRepositoryRequest) GetUrl() string {
 	return ""
 }
 
-func (x *UpdatePackageRepositoryRequest) GetSkipJuju() bool {
-	if x != nil {
-		return x.xxx_hidden_SkipJuju
-	}
-	return false
-}
-
 func (x *UpdatePackageRepositoryRequest) SetId(v int64) {
 	x.xxx_hidden_Id = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *UpdatePackageRepositoryRequest) SetUrl(v string) {
 	x.xxx_hidden_Url = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
-}
-
-func (x *UpdatePackageRepositoryRequest) SetSkipJuju(v bool) {
-	x.xxx_hidden_SkipJuju = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *UpdatePackageRepositoryRequest) HasId() bool {
@@ -543,13 +530,6 @@ func (x *UpdatePackageRepositoryRequest) HasUrl() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdatePackageRepositoryRequest) HasSkipJuju() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *UpdatePackageRepositoryRequest) ClearId() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Id = 0
@@ -560,17 +540,11 @@ func (x *UpdatePackageRepositoryRequest) ClearUrl() {
 	x.xxx_hidden_Url = nil
 }
 
-func (x *UpdatePackageRepositoryRequest) ClearSkipJuju() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_SkipJuju = false
-}
-
 type UpdatePackageRepositoryRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Id       *int64
-	Url      *string
-	SkipJuju *bool
+	Id  *int64
+	Url *string
 }
 
 func (b0 UpdatePackageRepositoryRequest_builder) Build() *UpdatePackageRepositoryRequest {
@@ -578,16 +552,12 @@ func (b0 UpdatePackageRepositoryRequest_builder) Build() *UpdatePackageRepositor
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Id = *b.Id
 	}
 	if b.Url != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_Url = b.Url
-	}
-	if b.SkipJuju != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
-		x.xxx_hidden_SkipJuju = *b.SkipJuju
 	}
 	return m0
 }
@@ -5020,11 +4990,10 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x04urls\x18\x01 \x03(\tR\x04urls\"\x19\n" +
 	"\x17GetConfigurationRequest\"6\n" +
 	"\x16UpdateNTPServerRequest\x12\x1c\n" +
-	"\taddresses\x18\x01 \x03(\tR\taddresses\"_\n" +
+	"\taddresses\x18\x01 \x03(\tR\taddresses\"H\n" +
 	"\x1eUpdatePackageRepositoryRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x10\n" +
-	"\x03url\x18\x02 \x01(\tR\x03url\x12\x1b\n" +
-	"\tskip_juju\x18\x03 \x01(\bR\bskipJuju\"1\n" +
+	"\x03url\x18\x02 \x01(\tR\x03urlJ\x04\b\x03\x10\x04\"1\n" +
 	"\x1bUpdateHelmRepositoryRequest\x12\x12\n" +
 	"\x04urls\x18\x01 \x03(\tR\x04urls\"c\n" +
 	"\x16CreateBootImageRequest\x12#\n" +

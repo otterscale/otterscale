@@ -136,7 +136,7 @@ message UpdateNTPServerRequest {
 message UpdatePackageRepositoryRequest {
   int64 id = 1;
   string url = 2;
-  bool skip_juju = 3;
+  reserved 3;
 }
 
 message UpdateHelmRepositoryRequest {

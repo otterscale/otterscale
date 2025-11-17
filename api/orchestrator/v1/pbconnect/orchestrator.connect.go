@@ -34,9 +34,6 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// OrchestratorServiceListEssentialsProcedure is the fully-qualified name of the
-	// OrchestratorService's ListEssentials RPC.
-	OrchestratorServiceListEssentialsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListEssentials"
 	// OrchestratorServiceCreateNodeProcedure is the fully-qualified name of the OrchestratorService's
 	// CreateNode RPC.
 	OrchestratorServiceCreateNodeProcedure = "/otterscale.orchestrator.v1.OrchestratorService/CreateNode"
@@ -81,7 +78,6 @@ const (
 // OrchestratorServiceClient is a client for the otterscale.orchestrator.v1.OrchestratorService
 // service.
 type OrchestratorServiceClient interface {
-	ListEssentials(context.Context, *v1.ListEssentialsRequest) (*v1.ListEssentialsResponse, error)
 	CreateNode(context.Context, *v1.CreateNodeRequest) (*emptypb.Empty, error)
 	CreateCluster(context.Context, *v1.CreateClusterRequest) (*emptypb.Empty, error)
 	AddClusterUnits(context.Context, *v1.AddClusterUnitsRequest) (*emptypb.Empty, error)
@@ -109,12 +105,6 @@ func NewOrchestratorServiceClient(httpClient connect.HTTPClient, baseURL string,
 	baseURL = strings.TrimRight(baseURL, "/")
 	orchestratorServiceMethods := v1.File_api_orchestrator_v1_orchestrator_proto.Services().ByName("OrchestratorService").Methods()
 	return &orchestratorServiceClient{
-		listEssentials: connect.NewClient[v1.ListEssentialsRequest, v1.ListEssentialsResponse](
-			httpClient,
-			baseURL+OrchestratorServiceListEssentialsProcedure,
-			connect.WithSchema(orchestratorServiceMethods.ByName("ListEssentials")),
-			connect.WithClientOptions(opts...),
-		),
 		createNode: connect.NewClient[v1.CreateNodeRequest, emptypb.Empty](
 			httpClient,
 			baseURL+OrchestratorServiceCreateNodeProcedure,
@@ -198,7 +188,6 @@ func NewOrchestratorServiceClient(httpClient connect.HTTPClient, baseURL string,
 
 // orchestratorServiceClient implements OrchestratorServiceClient.
 type orchestratorServiceClient struct {
-	listEssentials             *connect.Client[v1.ListEssentialsRequest, v1.ListEssentialsResponse]
 	createNode                 *connect.Client[v1.CreateNodeRequest, emptypb.Empty]
 	createCluster              *connect.Client[v1.CreateClusterRequest, emptypb.Empty]
 	addClusterUnits            *connect.Client[v1.AddClusterUnitsRequest, emptypb.Empty]
@@ -212,15 +201,6 @@ type orchestratorServiceClient struct {
 	listStorageExtensions      *connect.Client[v1.ListStorageExtensionsRequest, v1.ListStorageExtensionsResponse]
 	installExtensions          *connect.Client[v1.InstallExtensionsRequest, emptypb.Empty]
 	upgradeExtensions          *connect.Client[v1.UpgradeExtensionsRequest, emptypb.Empty]
-}
-
-// ListEssentials calls otterscale.orchestrator.v1.OrchestratorService.ListEssentials.
-func (c *orchestratorServiceClient) ListEssentials(ctx context.Context, req *v1.ListEssentialsRequest) (*v1.ListEssentialsResponse, error) {
-	response, err := c.listEssentials.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
 }
 
 // CreateNode calls otterscale.orchestrator.v1.OrchestratorService.CreateNode.
@@ -348,7 +328,6 @@ func (c *orchestratorServiceClient) UpgradeExtensions(ctx context.Context, req *
 // OrchestratorServiceHandler is an implementation of the
 // otterscale.orchestrator.v1.OrchestratorService service.
 type OrchestratorServiceHandler interface {
-	ListEssentials(context.Context, *v1.ListEssentialsRequest) (*v1.ListEssentialsResponse, error)
 	CreateNode(context.Context, *v1.CreateNodeRequest) (*emptypb.Empty, error)
 	CreateCluster(context.Context, *v1.CreateClusterRequest) (*emptypb.Empty, error)
 	AddClusterUnits(context.Context, *v1.AddClusterUnitsRequest) (*emptypb.Empty, error)
@@ -371,12 +350,6 @@ type OrchestratorServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	orchestratorServiceMethods := v1.File_api_orchestrator_v1_orchestrator_proto.Services().ByName("OrchestratorService").Methods()
-	orchestratorServiceListEssentialsHandler := connect.NewUnaryHandlerSimple(
-		OrchestratorServiceListEssentialsProcedure,
-		svc.ListEssentials,
-		connect.WithSchema(orchestratorServiceMethods.ByName("ListEssentials")),
-		connect.WithHandlerOptions(opts...),
-	)
 	orchestratorServiceCreateNodeHandler := connect.NewUnaryHandlerSimple(
 		OrchestratorServiceCreateNodeProcedure,
 		svc.CreateNode,
@@ -457,8 +430,6 @@ func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...conne
 	)
 	return "/otterscale.orchestrator.v1.OrchestratorService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case OrchestratorServiceListEssentialsProcedure:
-			orchestratorServiceListEssentialsHandler.ServeHTTP(w, r)
 		case OrchestratorServiceCreateNodeProcedure:
 			orchestratorServiceCreateNodeHandler.ServeHTTP(w, r)
 		case OrchestratorServiceCreateClusterProcedure:
@@ -493,10 +464,6 @@ func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...conne
 
 // UnimplementedOrchestratorServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedOrchestratorServiceHandler struct{}
-
-func (UnimplementedOrchestratorServiceHandler) ListEssentials(context.Context, *v1.ListEssentialsRequest) (*v1.ListEssentialsResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListEssentials is not implemented"))
-}
 
 func (UnimplementedOrchestratorServiceHandler) CreateNode(context.Context, *v1.CreateNodeRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.CreateNode is not implemented"))

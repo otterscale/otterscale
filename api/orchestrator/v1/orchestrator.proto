@@ -9,12 +9,6 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/otterscale/otterscale/api/orchestrator/v1;pb";
 
 service OrchestratorService {
-  rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse) {
-    option (otterscale.api.feature) = {
-      name: "orch-general"
-    };
-  };
-
   rpc CreateNode(CreateNodeRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
       name: "orch-general"
@@ -94,35 +88,10 @@ service OrchestratorService {
   };
 }
 
-message Essential {
-  enum Type {
-    UNKNOWN = 0;
-    KUBERNETES = 1;
-    CEPH = 2;
-  }
-  message Unit {
-    string name = 1;
-    string directive = 2;
-  }
-  Type type = 1;
-  string name = 2;
-  string scope = 11;
-  repeated Unit units = 21;
-}
-
-message ListEssentialsRequest {
-  Essential.Type type = 1;
-  string scope = 2;
-}
-
-message ListEssentialsResponse {
-  repeated Essential essentials = 1;
-}
-
 message CreateNodeRequest {
   string scope = 1;
   string machine_id = 2;
-  string prefix_name = 3;
+  reserved 3;
   repeated string virtual_ips = 11;
   string calico_cidr = 12;
   repeated string osd_devices = 21;
@@ -138,7 +107,12 @@ message CreateClusterRequest {
 }
 
 message AddClusterUnitsRequest {
-  Essential.Type type = 1;
+  enum Type {
+    UNSPECIFIED = 0;
+    KUBERNETES = 1;
+    CEPH = 2;
+  }
+  Type type = 1;
   string scope = 2;
   string name = 3;
   int32 number = 4;
