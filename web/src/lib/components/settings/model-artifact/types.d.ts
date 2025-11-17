@@ -1,3 +1,12 @@
+type ModelTagCategory = 'region' | 'language' | 'license' | 'library' | 'pipeline_tag';
+
+type ModelTag = {
+	id: string;
+	type: string;
+	subType: string;
+	label: string;
+};
+
 type HuggingFaceModel = {
 	id: string;
 	tags: string[];
@@ -6,4 +15,4 @@ type HuggingFaceModel = {
 	createdAt: string;
 };
 
-export type { HuggingFaceModel };
+export type { HuggingFaceModel, ModelTag, ModelTagCategory };

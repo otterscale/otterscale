@@ -1,6 +1,7 @@
+import { CodeGeneratorResponse_FileSchema } from '@bufbuild/protobuf/wkt';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 
-import type { HuggingFaceModel } from './types';
+import type { HuggingFaceModel, ModelTag, ModelTagCategory } from './types';
 
 async function fetchModels(
 	author: string,
@@ -23,10 +24,29 @@ async function fetchModels(
 			throw new Error(`Failed to fetch models: ${response.status} ${response.statusText}`);
 		}
 		const data = await response.json();
-		return data as HuggingFaceModel[];
+		return data;
 	} catch (error) {
 		throw new Error(error instanceof Error ? error.message : String(error));
 	}
 }
 
-export { fetchModels };
+async function fetchModelTypes(modelTagCategory: ModelTagCategory): Promise<ModelTag[]> {
+	const base = 'https://huggingface.co/api/models-tags-by-type';
+	const queryParameters = new SvelteURLSearchParams({
+		type: modelTagCategory,
+	});
+
+	try {
+		console.log(`${base}?${queryParameters}`);
+		const response = await fetch(`${base}?${queryParameters}`);
+		if (!response.ok) {
+			throw new Error(`Failed to fetch model types: ${response.status} ${response.statusText}`);
+		}
+		const data = await response.json();
+		return data[modelTagCategory];
+	} catch (error) {
+		throw new Error(error instanceof Error ? error.message : String(error));
+	}
+}
+
+export { fetchModels, fetchModelTypes };
