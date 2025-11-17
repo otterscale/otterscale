@@ -59,7 +59,7 @@ func (r *relationRepo) Consume(_ context.Context, scope, url string) error {
 		return err
 	}
 
-	offerURL.Source = r.juju.controller()
+	offerURL.Source = r.juju.conf.JujuController()
 	details.Offer.OfferURL = offerURL.String()
 
 	args := crossmodel.ConsumeApplicationArgs{

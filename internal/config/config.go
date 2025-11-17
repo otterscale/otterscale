@@ -3,11 +3,12 @@ package config
 import (
 	"fmt"
 	"log/slog"
-	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/goccy/go-yaml"
+	"github.com/spf13/viper"
 )
 
 type MAAS struct {
@@ -39,7 +40,7 @@ type Ceph struct {
 	RADOSTimeout time.Duration `yaml:"rados_timeout"`
 }
 
-type Config struct {
+type Schema struct {
 	// System
 	MAAS     MAAS     `yaml:"maas"`
 	Juju     Juju     `yaml:"juju"`
@@ -48,96 +49,102 @@ type Config struct {
 	// User
 	Kube Kube `yaml:"kube"`
 	Ceph Ceph `yaml:"ceph"`
-
-	watcher *fsnotify.Watcher
-	path    string
 }
 
-func New() (*Config, func(), error) {
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		return nil, nil, err
+type Config struct {
+	v *viper.Viper
+}
+
+func New() *Config {
+	return &Config{
+		v: viper.New(),
 	}
-	conf := &Config{
-		watcher: watcher,
-	}
-	return conf, func() { conf.Close() }, nil
 }
 
 func (c *Config) Load(path string) error {
-	c.path = path
-	if err := c.scan(); err != nil {
+	extension := filepath.Ext(path)
+	if len(extension) < 2 {
+		return fmt.Errorf("extension not found in filename: %q", path)
+	}
+
+	filename := filepath.Base(path)
+	filenameOnly := filename[0 : len(filename)-len(extension)]
+
+	c.v.AddConfigPath(filepath.Dir(path))
+	c.v.SetConfigName(filenameOnly)
+	c.v.SetConfigType(extension[1:]) // remove dot
+
+	if err := c.v.ReadInConfig(); err != nil {
 		return err
 	}
-	if err := c.watch(); err != nil {
-		return err
-	}
+
+	c.v.WatchConfig()
+
+	c.v.OnConfigChange(func(in fsnotify.Event) {
+		slog.Info("configuration file changed", "file", in.Name)
+	})
+
 	return nil
 }
 
-func (c *Config) Close() error {
-	return c.watcher.Close()
+func (c *Config) MAASURL() string {
+	return c.v.GetString("maas.url")
 }
 
-func (c *Config) Override(config *Config) error {
-	const filePerm600 os.FileMode = 0o600
-	data, err := yaml.Marshal(config)
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(c.path, data, filePerm600)
+func (c *Config) MAASKey() string {
+	return c.v.GetString("maas.key")
 }
 
-func (c *Config) scan() error {
-	data, err := os.ReadFile(c.path)
-	if err != nil {
-		return err
-	}
-	if err := yaml.Unmarshal(data, c); err != nil {
-		return err
-	}
-	return nil
+func (c *Config) MAASVersion() string {
+	return c.v.GetString("maas.version")
 }
 
-func (c *Config) watch() error {
-	if err := c.watcher.Add(c.path); err != nil {
-		return err
-	}
-	go func() {
-		for {
-			select {
-			case event, ok := <-c.watcher.Events:
-				if !ok {
-					return
-				}
-				if event.Op == fsnotify.Rename {
-					_, err := os.Stat(event.Name)
-					if err == nil || os.IsExist(err) {
-						slog.Debug("config event renamed", "name", event.Name)
-						if err := c.watcher.Add(event.Name); err != nil {
-							return
-						}
-					}
-				}
-				if event.Has(fsnotify.Write) {
-					slog.Debug("config event modified", "name", event.Name)
-				}
-				if err := c.scan(); err != nil {
-					slog.Error("config event error", "name", event.Name, "err", err)
-				}
-			case err, ok := <-c.watcher.Errors:
-				if !ok {
-					return
-				}
-				slog.Error("config watcher error", "err", err)
-			}
-		}
-	}()
-	return nil
+func (c *Config) JujuController() string {
+	return c.v.GetString("juju.controller")
 }
 
-func PrintDefaultConfig() error {
-	data, err := yaml.Marshal(defaultConfig())
+func (c *Config) JujuControllerAddresses() []string {
+	return c.v.GetStringSlice("juju.controller_addresses")
+}
+
+func (c *Config) JujuUsername() string {
+	return c.v.GetString("juju.username")
+}
+
+func (c *Config) JujuPassword() string {
+	return c.v.GetString("juju.password")
+}
+
+func (c *Config) JujuCACert() string {
+	return c.v.GetString("juju.ca_cert")
+}
+
+func (c *Config) JujuCloudName() string {
+	return c.v.GetString("juju.cloud_name")
+}
+
+func (c *Config) JujuCloudRegion() string {
+	return c.v.GetString("juju.cloud_region")
+}
+
+func (c *Config) JujuCharmhubAPIURL() string {
+	return c.v.GetString("juju.charmhub_api_url")
+}
+
+func (c *Config) MicroK8sConfig() string {
+	return c.v.GetString("micro_k8s.config")
+}
+
+func (c *Config) KubeHelmRepositoryURLs() []string {
+	return c.v.GetStringSlice("kube.helm_repository_urls")
+}
+
+func (c *Config) CephRADOSTimeout() time.Duration {
+	return c.v.GetDuration("ceph.rados_timeout")
+}
+
+func PrintDefault() error {
+	data, err := yaml.Marshal(defaultSchema())
 	if err != nil {
 		return err
 	}
@@ -145,8 +152,8 @@ func PrintDefaultConfig() error {
 	return nil
 }
 
-func defaultConfig() *Config {
-	return &Config{
+func defaultSchema() *Schema {
+	return &Schema{
 		MAAS: MAAS{
 			URL:     "http://localhost:5240/MAAS/",
 			Key:     "::",

@@ -17,6 +17,9 @@ func New(conf *config.Config) *MAAS {
 }
 
 func (m *MAAS) Client() (*client.Client, error) {
-	maas := m.conf.MAAS
-	return client.GetClient(maas.URL, maas.Key, maas.Version)
+	return client.GetClient(
+		m.conf.MAASURL(),
+		m.conf.MAASKey(),
+		m.conf.MAASVersion(),
+	)
 }

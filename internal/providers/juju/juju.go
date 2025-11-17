@@ -30,13 +30,12 @@ func New(conf *config.Config) *Juju {
 }
 
 func (m *Juju) newConnection(uuid string) (api.Connection, error) {
-	juju := m.conf.Juju
 	opts := connector.SimpleConfig{
 		ModelUUID:           uuid,
-		ControllerAddresses: juju.ControllerAddresses,
-		Username:            juju.Username,
-		Password:            juju.Password,
-		CACert:              juju.CACert,
+		ControllerAddresses: m.conf.JujuControllerAddresses(),
+		Username:            m.conf.JujuUsername(),
+		Password:            m.conf.JujuPassword(),
+		CACert:              m.conf.JujuCACert(),
 	}
 
 	sc, err := connector.NewSimple(opts)
@@ -57,7 +56,7 @@ func (m *Juju) getUUID(scope string) (string, error) {
 	}
 	defer client.Close()
 
-	models, err := modelmanager.NewClient(client).ListModels(m.username())
+	models, err := modelmanager.NewClient(client).ListModels(m.conf.JujuUsername())
 	if err != nil {
 		return "", err
 	}
@@ -226,24 +225,4 @@ func (m *Juju) GetEndpoint(_ context.Context, scope, appName string) (string, er
 	}
 
 	return "", connect.NewError(connect.CodeNotFound, fmt.Errorf("endpoint %q not found", appName))
-}
-
-func (m *Juju) controller() string {
-	return m.conf.Juju.Controller
-}
-
-func (m *Juju) username() string {
-	return m.conf.Juju.Username
-}
-
-func (m *Juju) cloudName() string {
-	return m.conf.Juju.CloudName
-}
-
-func (m *Juju) cloudRegion() string {
-	return m.conf.Juju.CloudRegion
-}
-
-func (m *Juju) charmhubAPIURL() string {
-	return m.conf.Juju.CharmhubAPIURL
 }

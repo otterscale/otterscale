@@ -28,7 +28,7 @@ func (r *scopeConfigRepo) Set(_ context.Context, config map[string]any) error {
 		return err
 	}
 
-	summaries, err := modelmanager.NewClient(conn).ListModelSummaries(r.juju.username(), true)
+	summaries, err := modelmanager.NewClient(conn).ListModelSummaries(r.juju.conf.JujuUsername(), true)
 	if err != nil {
 		return err
 	}

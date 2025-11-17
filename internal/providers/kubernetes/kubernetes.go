@@ -46,7 +46,7 @@ func New(conf *config.Config, juju *juju.Juju) (*Kubernetes, error) {
 }
 
 func (m *Kubernetes) newMicroK8sConfig() (*rest.Config, error) {
-	kubeConfig, err := base64.StdEncoding.DecodeString(m.conf.MicroK8s.Config)
+	kubeConfig, err := base64.StdEncoding.DecodeString(m.conf.MicroK8sConfig())
 	if err != nil {
 		return nil, err
 	}

@@ -101,22 +101,27 @@ func (m *Ceph) newConnection(c connectionConfig) (*rados.Conn, error) {
 	if err := conn.SetConfigOption("fsid", c.ID); err != nil {
 		return nil, err
 	}
+
 	if err := conn.SetConfigOption("mon_host", c.Host); err != nil {
 		return nil, err
 	}
+
 	if err := conn.SetConfigOption("key", c.Key); err != nil {
 		return nil, err
 	}
 
-	radosTimeout := time.Second * 3
-	if m.conf.Ceph.RADOSTimeout > 0 {
-		radosTimeout = m.conf.Ceph.RADOSTimeout
+	radosTimeout := m.conf.CephRADOSTimeout()
+
+	if radosTimeout <= 0 {
+		radosTimeout = time.Second * 3
 	}
+
 	timeout := strconv.FormatFloat(radosTimeout.Seconds(), 'f', -1, 64)
 
 	if err = conn.SetConfigOption("rados_mon_op_timeout", timeout); err != nil {
 		return nil, err
 	}
+
 	if err = conn.SetConfigOption("rados_osd_op_timeout", timeout); err != nil {
 		return nil, err
 	}
@@ -124,6 +129,7 @@ func (m *Ceph) newConnection(c connectionConfig) (*rados.Conn, error) {
 	if err := conn.Connect(); err != nil {
 		return nil, err
 	}
+
 	return conn, nil
 }
 
