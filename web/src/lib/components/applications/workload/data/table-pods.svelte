@@ -22,7 +22,7 @@
 		application,
 		scope,
 		namespace,
-		reloadManager,
+		reloadManager
 	}: {
 		application: Writable<Application>;
 		scope: string;

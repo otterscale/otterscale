@@ -22,7 +22,7 @@
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);
-	
+
 	const testResults = writable<TestResult[]>([]);
 	async function fetch() {
 		client

@@ -16,7 +16,11 @@
 	import { m } from '$lib/paraglide/messages';
 
 	// Props
-	let { virtualMachine, scope, reloadManager  }: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
+	let {
+		virtualMachine,
+		scope,
+		reloadManager
+	}: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');

@@ -38,7 +38,7 @@
 			});
 		await applicationClient
 			.listReleases({
-				scope: scope,
+				scope: scope
 			})
 			.then((response) => {
 				releases.set(response.releases);

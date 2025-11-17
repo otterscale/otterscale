@@ -18,10 +18,10 @@
 	let { selectedTab, trigger }: { selectedTab: string; trigger: Snippet } = $props();
 
 	let mode = $state('read');
-	
+
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);
-	
+
 	const testResults = writable<TestResult[]>([]);
 	async function fetch() {
 		client

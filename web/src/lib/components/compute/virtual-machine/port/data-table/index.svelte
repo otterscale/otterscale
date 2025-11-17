@@ -14,6 +14,7 @@
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
@@ -23,9 +24,13 @@
 
 <script lang="ts">
 	let {
-		virtualMachine
+		virtualMachine,
+		scope,
+		reloadManager
 	}: {
 		virtualMachine: VirtualMachine;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	// let snapshots = $derived(image.snapshots || []);
@@ -38,7 +43,10 @@
 		get data() {
 			return virtualMachine.services.length > 0 ? virtualMachine.services[0].ports : [];
 		},
-		columns: columns,
+		get columns() {
+			return getColumns();
+		},
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -111,7 +119,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {virtualMachine} />
+			<Create {virtualMachine} {scope} {reloadManager} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>

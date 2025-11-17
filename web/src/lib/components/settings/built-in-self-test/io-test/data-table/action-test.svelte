@@ -96,7 +96,7 @@
 			? (testResult.kind.value.target.value?.scope ?? '')
 			: ''
 	);
-	
+
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestFio: FIO = $state(DEFAULT_FIO_REQUEST);
 	let requestCephBlockDevice: CephBlockDevice = $state(DEFAULT_CEPH_BLOCK_DEVICE);

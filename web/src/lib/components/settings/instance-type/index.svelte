@@ -33,13 +33,14 @@
 			})
 			.then((response) => {
 				instanceTypes.set(response.instanceTypes);
-			}).catch((error) => {
+			})
+			.catch((error) => {
 				console.error('Error reloading instance types:', error);
 			});
 	}
 
 	const reloadManager = new ReloadManager(fetch, false);
-	
+
 	let isMounted = $state(false);
 	onMount(async () => {
 		await fetch();

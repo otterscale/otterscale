@@ -19,10 +19,7 @@ const messages = {
 	createTime: m.create_time()
 };
 
-function getColumns(
-	scope: string,
-	reloadManager: ReloadManager
-):  ColumnDef<VirtualMachine>[] {
+function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<VirtualMachine>[] {
 	return [
 		{
 			id: 'select',

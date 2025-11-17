@@ -8,7 +8,15 @@
 </script>
 
 <script lang="ts">
-	let { virtualMachineRestore, scope, reloadManager }: { virtualMachineRestore: VirtualMachine_Restore; scope: string; reloadManager: ReloadManager } = $props();
+	let {
+		virtualMachineRestore,
+		scope,
+		reloadManager
+	}: {
+		virtualMachineRestore: VirtualMachine_Restore;
+		scope: string;
+		reloadManager: ReloadManager;
+	} = $props();
 </script>
 
 <Layout.Actions>

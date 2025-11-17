@@ -8,7 +8,11 @@
 </script>
 
 <script lang="ts">
-	let { instanceType, scope, reloadManager }: { instanceType: InstanceType; scope: string; reloadManager: ReloadManager } = $props();
+	let {
+		instanceType,
+		scope,
+		reloadManager
+	}: { instanceType: InstanceType; scope: string; reloadManager: ReloadManager } = $props();
 </script>
 
 <Layout.Actions>

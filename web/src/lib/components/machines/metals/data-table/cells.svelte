@@ -148,7 +148,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet tags(data: {row: Row<Machine>, reloadManager: ReloadManager})}
+{#snippet tags(data: { row: Row<Machine>; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
 		<Tags machine={data.row.original} reloadManager={data.reloadManager} />
 	</Layout.Cell>
@@ -169,7 +169,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(data: {row: Row<Machine>, reloadManager: ReloadManager})}
+{#snippet actions(data: { row: Row<Machine>; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
 		<Actions machine={data.row.original} reloadManager={data.reloadManager} />
 	</Layout.Cell>

@@ -26,7 +26,7 @@ const items = [
 		title: m.instance_type(),
 		type: m.virtual_machine(),
 		url: resolve('/(auth)/scope/[scope]/settings/instance-type', { scope: page.params.scope! })
-	},
+	}
 ];
 
 export { items };

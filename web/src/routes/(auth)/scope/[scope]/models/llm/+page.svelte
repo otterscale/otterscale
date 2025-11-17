@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import LLM from '$lib/components/models/large-language-model/index.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { breadcrumbs, currentKubernetes } from '$lib/stores';
+	import { breadcrumbs } from '$lib/stores';
 
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
@@ -18,8 +18,6 @@
 	]);
 </script>
 
-{#if $currentKubernetes}
-	{#key scope}
-		<LLM {scope} />
-	{/key}
-{/if}
+{#key page.params.scope!}
+	<LLM scope={page.params.scope!} />
+{/key}

@@ -45,7 +45,7 @@
 	onMount(async () => {
 		try {
 			const response = await client.listApplications({
-				scope: scope,
+				scope: scope
 			});
 
 			applications.set(

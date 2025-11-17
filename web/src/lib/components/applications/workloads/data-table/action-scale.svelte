@@ -17,7 +17,11 @@
 
 <script lang="ts">
 	// Component props - accepts an Application object
-	let { application, scope, reloadManager }: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
+	let {
+		application,
+		scope,
+		reloadManager
+	}: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
 
 	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');

@@ -30,7 +30,8 @@
 			})
 			.then((response) => {
 				application.set(response);
-			}).catch((error) => {
+			})
+			.catch((error) => {
 				console.error('Error during initial data load:', error);
 			});
 	}

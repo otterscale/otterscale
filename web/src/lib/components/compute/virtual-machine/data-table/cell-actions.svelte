@@ -15,7 +15,11 @@
 </script>
 
 <script lang="ts">
-	let { virtualMachine, scope, reloadManager }: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
+	let {
+		virtualMachine,
+		scope,
+		reloadManager
+	}: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
 </script>
 
 <Layout.Actions>

@@ -17,7 +17,8 @@
 </script>
 
 <script lang="ts">
-	let { ipRange, reloadManager }: { ipRange: Network_IPRange; reloadManager: ReloadManager } = $props();
+	let { ipRange, reloadManager }: { ipRange: Network_IPRange; reloadManager: ReloadManager } =
+		$props();
 
 	const transport: Transport = getContext('transport');
 

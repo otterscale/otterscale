@@ -17,7 +17,7 @@
 	import { m } from '$lib/paraglide/messages';
 
 	let { scope, reloadManager }: { scope: string; reloadManager: ReloadManager } = $props();
-	
+
 	// Context dependencies
 	const transport: Transport = getContext('transport');
 

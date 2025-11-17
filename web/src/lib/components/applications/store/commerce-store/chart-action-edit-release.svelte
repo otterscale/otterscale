@@ -23,7 +23,7 @@
 		release,
 		scope,
 		valuesYaml = '',
-		releases = $bindable(),
+		releases = $bindable()
 	}: {
 		release: Application_Release;
 		scope: string;

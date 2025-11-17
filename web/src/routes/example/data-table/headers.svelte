@@ -10,7 +10,8 @@
 		row_picker,
 		id,
 		name,
-		isVerified
+		isVerified,
+		actions
 	};
 </script>
 
@@ -48,3 +49,5 @@
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
+
+{#snippet actions()}{/snippet}

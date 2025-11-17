@@ -26,10 +26,7 @@ const messages = {
 	completedAt: m.completed_at()
 };
 
-function getColumns(
-	scope: string,
-	reloadManager: ReloadManager
-):  ColumnDef<TestResult>[] {
+function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<TestResult>[] {
 	return [
 		{
 			id: 'select',

@@ -22,7 +22,7 @@ function getColumns(
 	volume: string,
 	group: string,
 	reloadManager: ReloadManager
-):  ColumnDef<Subvolume_Snapshot>[] {
+): ColumnDef<Subvolume_Snapshot>[] {
 	return [
 		{
 			id: 'select',
@@ -75,7 +75,15 @@ function getColumns(
 				return renderSnippet(headers.actions, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.actions, { row, subvolume, scope, volume, group, reloadManager })},
+				return renderSnippet(cells.actions, {
+					row,
+					subvolume,
+					scope,
+					volume,
+					group,
+					reloadManager
+				});
+			},
 			enableHiding: false
 		}
 	];

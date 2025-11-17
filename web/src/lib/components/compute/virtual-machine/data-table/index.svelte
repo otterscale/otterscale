@@ -47,7 +47,7 @@
 			return $virtualMachines;
 		},
 		get columns() {
-			return getColumns(scope, reloadManager)
+			return getColumns(scope, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),

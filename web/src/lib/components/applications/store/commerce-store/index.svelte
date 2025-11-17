@@ -25,8 +25,11 @@
 		scope,
 		charts = $bindable(),
 		releases = $bindable()
-	}: { scope: string; charts: Writable<Application_Chart[]>; releases: Writable<Application_Release[]> } =
-		$props();
+	}: {
+		scope: string;
+		charts: Writable<Application_Chart[]>;
+		releases: Writable<Application_Release[]>;
+	} = $props();
 
 	const releasesFromChartName = $derived(
 		$releases.reduce((mapping, release) => {

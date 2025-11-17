@@ -86,7 +86,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet ipRanges(data: {row: Row<Network>; reloadManager: ReloadManager})}
+{#snippet ipRanges(data: { row: Row<Network>; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-end">
 		{#if data.row.original.subnet}
 			<ReservedIPRanges subnet={data.row.original.subnet} reloadManager={data.reloadManager} />
@@ -112,7 +112,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(data: {row: Row<Network>; reloadManager: ReloadManager})}
+{#snippet actions(data: { row: Row<Network>; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
 		<Actions network={data.row.original} reloadManager={data.reloadManager} />
 	</Layout.Cell>

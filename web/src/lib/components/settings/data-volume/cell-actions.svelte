@@ -9,7 +9,11 @@
 </script>
 
 <script lang="ts">
-	let { dataVolume, scope, reloadManager }: { dataVolume: DataVolume; scope: string; reloadManager: ReloadManager  } = $props();
+	let {
+		dataVolume,
+		scope,
+		reloadManager
+	}: { dataVolume: DataVolume; scope: string; reloadManager: ReloadManager } = $props();
 </script>
 
 <Layout.Actions>

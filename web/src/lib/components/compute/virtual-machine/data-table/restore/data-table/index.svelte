@@ -38,8 +38,8 @@
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
-	
-		const table = createSvelteTable({
+
+	const table = createSvelteTable({
 		get data() {
 			return virtualMachine.restores;
 		},

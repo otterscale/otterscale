@@ -9,6 +9,7 @@
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity } from '$lib/formatter';
@@ -127,8 +128,12 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(row: Row<EnhancedDisk>)}
+{#snippet actions(data: { row: Row<EnhancedDisk>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions enhancedDisk={row.original} />
+		<Actions
+			enhancedDisk={data.row.original}
+			scope={data.scope}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}

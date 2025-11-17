@@ -17,7 +17,13 @@
 </script>
 
 <script lang="ts">
-	let { pod, scope, namespace, reloadManager }: { pod: Application_Pod; scope: string; namespace: string; reloadManager: ReloadManager } = $props();
+	let {
+		pod,
+		scope,
+		namespace,
+		reloadManager
+	}: { pod: Application_Pod; scope: string; namespace: string; reloadManager: ReloadManager } =
+		$props();
 
 	const transport: Transport = getContext('transport');
 
@@ -78,7 +84,7 @@
 						toast.promise(() => applicationClient.deleteApplicationPod(request), {
 							loading: `Deleting ${pod.name}...`,
 							success: () => {
-								reloadManager.force()
+								reloadManager.force();
 								return `Successfully deleted ${pod.name}`;
 							},
 							error: (error) => {

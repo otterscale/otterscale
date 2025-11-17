@@ -22,7 +22,7 @@
 	async function fetch() {
 		applicationClient
 			.listApplications({
-				scope: scope,
+				scope: scope
 			})
 			.then((response) => {
 				applications.set(

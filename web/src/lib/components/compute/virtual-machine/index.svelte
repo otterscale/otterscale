@@ -17,7 +17,7 @@
 
 	const transport: Transport = getContext('transport');
 	const VirtualMachineClient = createClient(InstanceService, transport);
-	
+
 	const virtualMachines = writable<VirtualMachine[]>([]);
 	async function fetch() {
 		VirtualMachineClient.listVirtualMachines({

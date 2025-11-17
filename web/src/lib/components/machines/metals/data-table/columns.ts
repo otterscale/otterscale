@@ -22,9 +22,7 @@ const messages = {
 	tags: m.tags()
 };
 
-function getColumns(
-	reloadManager: ReloadManager
-):  ColumnDef<Machine>[] {
+function getColumns(reloadManager: ReloadManager): ColumnDef<Machine>[] {
 	return [
 		{
 			id: 'select',

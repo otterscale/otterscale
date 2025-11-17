@@ -11,7 +11,8 @@
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
 
-	let { pod, scope, namespace }: { pod: Application_Pod; scope: string; namespace: string } = $props();
+	let { pod, scope, namespace }: { pod: Application_Pod; scope: string; namespace: string } =
+		$props();
 
 	const msToString = (ms: number): string => String(ms);
 	const MINUTE = 60 * 1000;

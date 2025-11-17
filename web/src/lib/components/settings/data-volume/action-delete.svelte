@@ -15,7 +15,11 @@
 
 <script lang="ts">
 	// Component props - accepts a virtual machine disk object
-	let { dataVolume, scope, reloadManager }: { dataVolume: DataVolume; scope: string; reloadManager: ReloadManager  } = $props();
+	let {
+		dataVolume,
+		scope,
+		reloadManager
+	}: { dataVolume: DataVolume; scope: string; reloadManager: ReloadManager } = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');

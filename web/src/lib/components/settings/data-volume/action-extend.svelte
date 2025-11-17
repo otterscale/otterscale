@@ -15,7 +15,11 @@
 
 <script lang="ts">
 	// Component props - accepts a DataVolume object
-	let { dataVolume, scope, reloadManager }: { dataVolume: DataVolume; scope: string; reloadManager: ReloadManager  } = $props();
+	let {
+		dataVolume,
+		scope,
+		reloadManager
+	}: { dataVolume: DataVolume; scope: string; reloadManager: ReloadManager } = $props();
 
 	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');

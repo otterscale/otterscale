@@ -15,7 +15,11 @@
 
 <script lang="ts">
 	// Component props - accepts an instance type object
-	let { instanceType, scope, reloadManager }: { instanceType: InstanceType; scope: string; reloadManager: ReloadManager } = $props();
+	let {
+		instanceType,
+		scope,
+		reloadManager
+	}: { instanceType: InstanceType; scope: string; reloadManager: ReloadManager } = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
@@ -38,7 +42,7 @@
 	function reset() {
 		request = { ...defaults };
 	}
-	
+
 	// Modal open/close state
 	// Close modal function
 	let open = $state(false);

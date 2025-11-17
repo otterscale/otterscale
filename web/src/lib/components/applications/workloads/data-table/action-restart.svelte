@@ -12,7 +12,11 @@
 </script>
 
 <script lang="ts">
-	let { application, scope, reloadManager }: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
+	let {
+		application,
+		scope,
+		reloadManager
+	}: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
 

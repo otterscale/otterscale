@@ -13,16 +13,17 @@
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Sheet from '$lib/components/ui/sheet';
-	import { currentKubernetes } from '$lib/stores';
 
 	import { DataTable } from './data-table';
 </script>
 
 <script lang="ts">
 	let {
-		virtualMachine
+		virtualMachine,
+		scope
 	}: {
 		virtualMachine: VirtualMachine;
+		scope: string;
 	} = $props();
 
 	// Context dependencies
@@ -37,7 +38,6 @@
 			// Get data volumes
 			const dataVolumesResponse = await virtualMachineClient.listDataVolumes({
 				scope: scope,
-				,
 				namespace: virtualMachine.namespace,
 				bootImage: false // Set to true if you only want boot images
 			});
@@ -110,7 +110,7 @@
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[70vw] p-4">
-			<DataTable {virtualMachine} {enhancedDisks} {reloadManager} />
+			<DataTable {virtualMachine} {enhancedDisks} {scope} {reloadManager} />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>

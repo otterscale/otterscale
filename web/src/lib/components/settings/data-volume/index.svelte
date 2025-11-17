@@ -23,8 +23,7 @@
 </script>
 
 <script lang="ts">
-	let { scope, namespace }: { scope: string; namespace: string } =
-		$props();
+	let { scope, namespace }: { scope: string; namespace: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -39,13 +38,14 @@
 			})
 			.then((response) => {
 				dataVolumes.set(response.dataVolumes);
-			}).catch((error) => {
+			})
+			.catch((error) => {
 				console.error('Error reloading SMB shares:', error);
 			});
 	}
-	
+
 	const reloadManager = new ReloadManager(fetch, false);
-	
+
 	let isMounted = $state(false);
 	onMount(async () => {
 		await fetch();

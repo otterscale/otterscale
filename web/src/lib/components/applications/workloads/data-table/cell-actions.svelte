@@ -10,7 +10,11 @@
 </script>
 
 <script lang="ts">
-	let { application, scope, reloadManager }: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
+	let {
+		application,
+		scope,
+		reloadManager
+	}: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
 </script>
 
 {#if page.data['feature-states.app-container']}

@@ -10,7 +10,13 @@
 </script>
 
 <script lang="ts">
-	let { pod, scope, namespace, reloadManager }: { pod: Application_Pod; scope: string; namespace: string; reloadManager: ReloadManager } = $props();
+	let {
+		pod,
+		scope,
+		namespace,
+		reloadManager
+	}: { pod: Application_Pod; scope: string; namespace: string; reloadManager: ReloadManager } =
+		$props();
 </script>
 
 {#if page.data['feature-states.app-container']}
@@ -18,7 +24,7 @@
 		<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 		<Layout.ActionSeparator />
 		<Layout.ActionItem>
-			<Log {pod} {scope} {namespace}  />
+			<Log {pod} {scope} {namespace} />
 		</Layout.ActionItem>
 		<Layout.ActionItem>
 			<Delete {pod} {scope} {namespace} {reloadManager} />

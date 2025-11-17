@@ -19,7 +19,6 @@
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	// Protocol options
@@ -30,9 +29,13 @@
 	]);
 
 	let {
-		virtualMachine
+		virtualMachine,
+		scope,
+		reloadManager
 	}: {
 		virtualMachine: VirtualMachine;
+		scope: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	// Context dependencies
@@ -48,7 +51,6 @@
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_CREATE_REQUEST = {
 		scope: scope,
-		,
 		namespace: virtualMachine.namespace,
 		name: virtualMachine.name,
 		virtualMachineName: virtualMachine.name,
@@ -57,7 +59,6 @@
 
 	const DEFAULT_UPDATE_REQUEST = {
 		scope: scope,
-		,
 		namespace: virtualMachine.namespace,
 		name:
 			virtualMachine.services.length > 0 ? virtualMachine.services[0].name : virtualMachine.name,

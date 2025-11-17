@@ -17,7 +17,6 @@
 	import { Complex as Flow } from '$lib/components/flow/index';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 
 	import type { LargeLanguageModel } from '../type';
 </script>
@@ -37,7 +36,6 @@
 	client
 		.listGPURelationsByModel({
 			scope: scope,
-			,
 			namespace: model.application.namespace,
 			modelName: model.name
 		})

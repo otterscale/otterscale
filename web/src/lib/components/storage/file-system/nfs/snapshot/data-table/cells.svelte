@@ -46,8 +46,22 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(data: {row: Row<Subvolume_Snapshot>; subvolume: Subvolume; scope: string; volume: string; group: string; reloadManager: ReloadManager;})}
+{#snippet actions(data: {
+	row: Row<Subvolume_Snapshot>;
+	subvolume: Subvolume;
+	scope: string;
+	volume: string;
+	group: string;
+	reloadManager: ReloadManager;
+})}
 	<Layout.Cell class="items-start">
-		<Actions snapshot={data.row.original} subvolume={data.subvolume} scope={data.scope} volume={data.volume} group={data.group} reloadManager={data.reloadManager} />
+		<Actions
+			snapshot={data.row.original}
+			subvolume={data.subvolume}
+			scope={data.scope}
+			volume={data.volume}
+			group={data.group}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}

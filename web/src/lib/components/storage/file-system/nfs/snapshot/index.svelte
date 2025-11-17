@@ -31,7 +31,7 @@
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[50vw] p-4">
-			<DataTable {subvolume} {scope} {volume} {group} {reloadManager}  />
+			<DataTable {subvolume} {scope} {volume} {group} {reloadManager} />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>

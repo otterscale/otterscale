@@ -35,5 +35,9 @@
 </script>
 
 {#key page.params.scope! + page.params.namespace! + page.params.application_name!}
-	<Workload scope={page.params.scope!} namespace={page.params.namespace!} applicationName={page.params.application_name!} />
+	<Workload
+		scope={page.params.scope!}
+		namespace={page.params.namespace!}
+		applicationName={page.params.application_name!}
+	/>
 {/key}

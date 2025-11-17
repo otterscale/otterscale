@@ -1,25 +1,26 @@
 <script lang="ts" module>
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
-	import { m } from '$lib/paraglide/messages';
 
-	import type { LargeLanguageModel } from '../type';
-	import Delete from './action-delete.svelte';
+	import type { TableRow } from './type';
 </script>
 
 <script lang="ts">
 	let {
-		model,
+		row,
 		reloadManager
 	}: {
-		model: LargeLanguageModel;
+		row: TableRow;
 		reloadManager: ReloadManager;
 	} = $props();
 </script>
 
 <Layout.Actions>
-	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
-	<Layout.ActionItem>
-		<Delete {model} {reloadManager} />
-	</Layout.ActionItem>
+	<Layout.ActionLabel>Actions</Layout.ActionLabel>
+	<Layout.ActionItem
+		onclick={() => {
+			reloadManager.force();
+		}}>Update</Layout.ActionItem
+	>
+	<Layout.ActionItem>Delete {row.id}</Layout.ActionItem>
 </Layout.Actions>

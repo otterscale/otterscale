@@ -10,6 +10,7 @@
 	import { getStatusInfo } from '$lib/components/compute/virtual-machine/units/type';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Table from '$lib/components/ui/table';
@@ -18,7 +19,6 @@
 
 	import Actions from './cell-actions.svelte';
 	import VNC from './cell-vnc.svelte';
-	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	export const cells = {
 		row_picker,
@@ -179,7 +179,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet vnc(data: {row: Row<VirtualMachine>; scope: string})}
+{#snippet vnc(data: { row: Row<VirtualMachine>; scope: string })}
 	<Layout.Cell class="items-end">
 		{#if data.row.original.status === 'Running'}
 			<VNC virtualMachine={data.row.original} scope={data.scope} />
@@ -187,8 +187,12 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(data: {row: Row<VirtualMachine>; scope: string; reloadManager: ReloadManager})}
+{#snippet actions(data: { row: Row<VirtualMachine>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions virtualMachine={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
+		<Actions
+			virtualMachine={data.row.original}
+			scope={data.scope}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}

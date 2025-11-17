@@ -17,7 +17,15 @@
 </script>
 
 <script lang="ts">
-	let { virtualMachineSnapshot, scope, reloadManager }: { virtualMachineSnapshot: VirtualMachine_Snapshot; scope: string; reloadManager: ReloadManager } = $props();
+	let {
+		virtualMachineSnapshot,
+		scope,
+		reloadManager
+	}: {
+		virtualMachineSnapshot: VirtualMachine_Snapshot;
+		scope: string;
+		reloadManager: ReloadManager;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 

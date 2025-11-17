@@ -22,10 +22,7 @@ const messages = {
 	nodeport: m.nodeport()
 };
 
-function getColumns(
-	scope: string,
-	reloadManager: ReloadManager
-):  ColumnDef<Application>[] {
+function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Application>[] {
 	return [
 		{
 			id: 'select',

@@ -135,6 +135,10 @@
 
 {#snippet actions(data: { row: Row<Application>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions application={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
+		<Actions
+			application={data.row.original}
+			scope={data.scope}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}

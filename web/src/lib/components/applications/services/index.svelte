@@ -23,7 +23,7 @@
 	const reloadManager = new ReloadManager(() => {
 		applicationClient
 			.listApplications({
-				scope: scope,
+				scope: scope
 			})
 			.then((response) => {
 				services.set(
@@ -43,7 +43,7 @@
 	onMount(() => {
 		applicationClient
 			.listApplications({
-				scope: scope,
+				scope: scope
 			})
 			.then((response) => {
 				services.set(

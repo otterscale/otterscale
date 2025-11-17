@@ -27,10 +27,12 @@
 	let {
 		virtualMachine,
 		enhancedDisks,
+		scope,
 		reloadManager
 	}: {
 		virtualMachine: VirtualMachine;
 		enhancedDisks: EnhancedDisk[];
+		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -44,7 +46,10 @@
 		get data() {
 			return enhancedDisks;
 		},
-		columns: columns,
+		get columns() {
+			return getColumns(scope, reloadManager);
+		},
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -117,7 +122,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {virtualMachine} />
+			<Create {virtualMachine} {scope} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

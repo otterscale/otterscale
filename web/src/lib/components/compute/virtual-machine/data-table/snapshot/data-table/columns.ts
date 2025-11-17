@@ -20,7 +20,7 @@ const messages = {
 function getColumns(
 	scope: string,
 	reloadManager: ReloadManager
-):  ColumnDef<VirtualMachine_Snapshot>[] {
+): ColumnDef<VirtualMachine_Snapshot>[] {
 	return [
 		{
 			id: 'select',

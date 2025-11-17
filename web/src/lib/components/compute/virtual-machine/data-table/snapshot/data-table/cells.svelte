@@ -83,8 +83,16 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(data: {row: Row<VirtualMachine_Snapshot>, scope: string; reloadManager: ReloadManager})}
+{#snippet actions(data: {
+	row: Row<VirtualMachine_Snapshot>;
+	scope: string;
+	reloadManager: ReloadManager;
+})}
 	<Layout.Cell class="items-start">
-		<Actions virtualMachineSnapshot={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
+		<Actions
+			virtualMachineSnapshot={data.row.original}
+			scope={data.scope}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}

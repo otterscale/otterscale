@@ -33,7 +33,7 @@
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
 			});
-		}
+	}
 	const reloadManager = new ReloadManager(fetch, false);
 
 	let isMounted = $state(false);

@@ -12,7 +12,7 @@
 		startIp,
 		endIp,
 		comment,
-		actions,
+		actions
 	};
 </script>
 

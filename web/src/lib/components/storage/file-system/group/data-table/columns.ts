@@ -22,7 +22,7 @@ function getColumns(
 	scope: string,
 	volume: string,
 	reloadManager: ReloadManager
-):  ColumnDef<SubvolumeGroup>[] {
+): ColumnDef<SubvolumeGroup>[] {
 	return [
 		{
 			id: 'select',

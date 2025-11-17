@@ -14,7 +14,7 @@
 		startIp,
 		endIp,
 		comment,
-		actions,
+		actions
 	};
 </script>
 
@@ -50,8 +50,7 @@
 	</Layout.Cell>
 {/snippet}
 
-
-{#snippet actions(data: {row: Row<Network_IPRange>; reloadManager: ReloadManager})}
+{#snippet actions(data: { row: Row<Network_IPRange>; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
 		<Actions ipRange={data.row.original} reloadManager={data.reloadManager} />
 	</Layout.Cell>
