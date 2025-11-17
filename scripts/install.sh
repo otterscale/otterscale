@@ -1400,14 +1400,14 @@ config_bridge() {
 
         if nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask" >/dev/null 2>&1; then
             log "INFO" "Add $OTTERSCALE_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-            
+
             log "INFO" "Waiting ipv4 bind to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
             while true; do
                 if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
                     log "INFO" "Success bind IP $OTTERSCALE_WEB_IP to network device $OTTERSCALE_BRIDGE_NAME"
                     break
                 fi
-                
+
                 sleep 1
             done
 
@@ -1421,7 +1421,7 @@ config_bridge() {
                         break
                     fi
                 fi
-                
+
                 sleep 1
             done
         fi
@@ -1436,7 +1436,7 @@ deploy_istio() {
     fi
 
     log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
-    local istio_version="1.27.3"
+    local istio_version="1.26.6"
     local istio_url="https://istio.io/downloadIstio"
     local istio_namespace="istio-system"
     local has_istio=false
@@ -1611,7 +1611,6 @@ main() {
 
     deploy_istio
     deploy_helm
-    
 
     log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
 }
