@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount, setContext } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';

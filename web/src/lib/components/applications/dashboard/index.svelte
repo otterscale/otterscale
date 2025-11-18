@@ -3,6 +3,7 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onDestroy, onMount } from 'svelte';
 
+	import { page } from '$app/state';
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { Reloader } from '$lib/components/custom/reloader';
@@ -19,7 +20,6 @@
 	import ThroughtPut from './overview/throughput.svelte';
 	import VGPU from './overview/vgpu.svelte';
 	import Worker from './overview/worker.svelte';
-	import { page } from '$app/state';
 
 	let { scope }: { scope: string } = $props();
 

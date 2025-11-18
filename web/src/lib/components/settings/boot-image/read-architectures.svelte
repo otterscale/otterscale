@@ -31,7 +31,7 @@
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each Object.entries(bootImage.architectureStatusMap) as [architecture, status]}
+					{#each Object.entries(bootImage.architectureStatusMap) as [architecture, status] (architecture)}
 						<Table.Row>
 							<Table.Cell>{architecture}</Table.Cell>
 							<Table.Cell>

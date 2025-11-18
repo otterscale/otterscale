@@ -2,7 +2,6 @@ import { type Writable, writable } from 'svelte/store';
 
 import { resolve } from '$app/paths';
 import { type PremiumTier, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
-import type { Essential } from '$lib/api/orchestrator/v1/orchestrator_pb';
 import { m } from '$lib/paraglide/messages';
 import type { Path } from '$lib/path';
 
