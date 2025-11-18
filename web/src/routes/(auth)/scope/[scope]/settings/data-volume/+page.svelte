@@ -18,6 +18,6 @@
 	]);
 </script>
 
-{#key page.params.scope! + page.params.namespace!}
-	<DataVolume scope={page.params.scope!} namespace={page.params.namespace!} />
+{#key page.params.scope!}
+	<DataVolume scope={page.params.scope!} />
 {/key}
