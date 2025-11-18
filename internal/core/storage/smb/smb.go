@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/samba-in-kubernetes/samba-operator/api/v1alpha1"
+	"golang.org/x/sync/errgroup"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
@@ -98,61 +99,85 @@ func NewUseCase(smbCommonConfig SMBCommonConfigRepo, smbShare SMBShareRepo, smbS
 }
 
 func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) ([]ShareData, error) {
-	commonConfigs, err := uc.smbCommonConfig.List(ctx, scope, namespace, "")
-	if err != nil {
-		return nil, err
-	}
-
-	commonConfigMap := map[string]*CommonConfig{}
-	for i := range commonConfigs {
-		cc := commonConfigs[i]
-		commonConfigMap[cc.Name] = &cc
-	}
-
-	securityConfigs, err := uc.smbSecurityConfig.List(ctx, scope, namespace, "")
-	if err != nil {
-		return nil, err
-	}
-
-	securityConfigMap := map[string]*SecurityConfig{}
-	for i := range securityConfigs {
-		sc := securityConfigs[i]
-		securityConfigMap[sc.Name] = &sc
-	}
+	var (
+		commonConfigMap   map[string]*CommonConfig
+		securityConfigMap map[string]*SecurityConfig
+		deploymentMap     map[string]*workload.Deployment
+		allPods           []workload.Pod
+		allShares         []Share
+	)
 
 	selector := release.TypeLabel + "=" + "samba"
+	eg, egctx := errgroup.WithContext(ctx)
 
-	deployments, err := uc.deployment.List(ctx, scope, namespace, selector)
-	if err != nil {
-		return nil, err
-	}
+	eg.Go(func() error {
+		commonConfigs, err := uc.smbCommonConfig.List(egctx, scope, namespace, "")
+		if err == nil {
+			commonConfigMap = map[string]*CommonConfig{}
 
-	deploymentMap := map[string]*workload.Deployment{}
-	for i := range deployments {
-		d := deployments[i]
-		deploymentMap[d.Name] = &d
-	}
+			for i := range commonConfigs {
+				cc := commonConfigs[i]
+				commonConfigMap[cc.Name] = &cc
+			}
+		}
 
-	pods, err := uc.pod.List(ctx, scope, namespace, selector)
-	if err != nil {
-		return nil, err
-	}
+		return err
+	})
 
-	podMap := map[string]*workload.Pod{}
-	for i := range pods {
-		p := pods[i]
-		podMap[p.Name] = &p
-	}
+	eg.Go(func() error {
+		securityConfigs, err := uc.smbSecurityConfig.List(egctx, scope, namespace, "")
+		if err == nil {
+			securityConfigMap = map[string]*SecurityConfig{}
 
-	shares, err := uc.smbShare.List(ctx, scope, namespace, "")
-	if err != nil {
+			for i := range securityConfigs {
+				sc := securityConfigs[i]
+				securityConfigMap[sc.Name] = &sc
+			}
+		}
+
+		return err
+	})
+
+	eg.Go(func() error {
+		deployments, err := uc.deployment.List(egctx, scope, namespace, selector)
+		if err == nil {
+			deploymentMap := map[string]*workload.Deployment{}
+
+			for i := range deployments {
+				d := deployments[i]
+				deploymentMap[d.Name] = &d
+			}
+		}
+
+		return err
+	})
+
+	eg.Go(func() error {
+		pods, err := uc.pod.List(egctx, scope, namespace, selector)
+		if err == nil {
+			allPods = pods
+		}
+		return err
+	})
+
+	eg.Go(func() error {
+		shares, err := uc.smbShare.List(egctx, scope, namespace, "")
+		if err == nil {
+			allShares = shares
+		}
+		return err
+	})
+
+	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
 
 	ret := []ShareData{}
 
-	for i := range shares {
-		deployment, ok := deploymentMap[shares[i].Name]
+	for i := range allShares {
+		share := allShares[i]
+
+		deployment, ok := deploymentMap[share.Name]
 		if !ok {
 			continue
 		}
@@ -163,11 +188,11 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (
 		}
 
 		ret = append(ret, ShareData{
-			Share:          &shares[i],
-			CommonConfig:   commonConfigMap[shares[i].Spec.CommonConfig],
-			SecurityConfig: securityConfigMap[shares[i].Spec.SecurityConfig],
+			Share:          &share,
+			CommonConfig:   commonConfigMap[share.Spec.CommonConfig],
+			SecurityConfig: securityConfigMap[share.Spec.SecurityConfig],
 			Deployment:     deployment,
-			Pods:           uc.filterPods(selector, namespace, pods),
+			Pods:           uc.filterPods(selector, namespace, allPods),
 		})
 	}
 
