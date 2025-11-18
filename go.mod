@@ -14,6 +14,7 @@ ignore (
 replace (
 	github.com/Project-HAMi/HAMi => github.com/Project-HAMi/HAMi v0.0.0-20250926102846-38714d526792 // v2.7.0
 	github.com/juju/juju => github.com/juju/juju v0.0.0-20251015133347-17876b918429 // v3.6.11
+	github.com/samba-in-kubernetes/samba-operator => github.com/otterscale/samba-operator v0.0.1
 	gopkg.in/yaml.v2 => github.com/juju/yaml/v2 v2.0.0
 )
 
@@ -44,8 +45,10 @@ require (
 	github.com/open-feature/go-sdk v1.16.0
 	github.com/open-feature/go-sdk-contrib/providers/flagd v0.3.0
 	github.com/otterscale/kubevirt-client-go v1.6.1
+	github.com/otterscale/samba-operator-client-go v0.0.1
 	github.com/prometheus/client_golang v1.23.2
 	github.com/rs/cors v1.11.1
+	github.com/samba-in-kubernetes/samba-operator v0.0.0-20250925054557-7a96dbc17391
 	github.com/spf13/cobra v1.10.1
 	github.com/spf13/viper v1.19.0
 	go.opentelemetry.io/otel v1.38.0

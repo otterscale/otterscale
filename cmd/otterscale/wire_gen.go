@@ -42,12 +42,14 @@ import (
 	"github.com/otterscale/otterscale/internal/core/storage/block"
 	"github.com/otterscale/otterscale/internal/core/storage/file"
 	"github.com/otterscale/otterscale/internal/core/storage/object"
+	"github.com/otterscale/otterscale/internal/core/storage/smb"
 	"github.com/otterscale/otterscale/internal/mux"
 	"github.com/otterscale/otterscale/internal/providers/ceph"
 	"github.com/otterscale/otterscale/internal/providers/juju"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
 	"github.com/otterscale/otterscale/internal/providers/kubevirt"
 	"github.com/otterscale/otterscale/internal/providers/maas"
+	"github.com/otterscale/otterscale/internal/providers/samba"
 	"github.com/spf13/cobra"
 )
 
@@ -170,7 +172,15 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	fileUseCase := file.NewUseCase(volumeRepo, subvolumeGroupRepo, subvolumeRepo, subvolumeSnapshotRepo, actionRepo, facilityRepo)
 	userRepo := ceph.NewUserRepo(cephCeph)
 	objectUseCase := object.NewUseCase(bucketRepo, userRepo)
-	storageService := app.NewStorageService(storageUseCase, blockUseCase, fileUseCase, objectUseCase)
+	sambaSamba, err := samba.New(configConfig, kubernetesKubernetes)
+	if err != nil {
+		return nil, nil, err
+	}
+	smbCommonConfigRepo := samba.NewSMBCommonConfigRepo(sambaSamba)
+	smbShareRepo := samba.NewSMBShareRepo(sambaSamba)
+	smbSecurityConfigRepo := samba.NewSMBSecurityConfigRepo(sambaSamba)
+	smbUseCase := smb.NewUseCase(smbCommonConfigRepo, smbShareRepo, smbSecurityConfigRepo)
+	storageService := app.NewStorageService(storageUseCase, blockUseCase, fileUseCase, objectUseCase, smbUseCase)
 	sshKeyRepo := maas.NewSSHKeyRepo(maasMAAS)
 	scopeUseCase := scope.NewUseCase(scopeRepo, sshKeyRepo, packageRepositoryRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
