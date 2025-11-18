@@ -8,9 +8,11 @@
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
-	import { items } from './data';
+	import { getItems } from './data';
 
 	let { children } = $props();
+
+	const items = $derived(getItems(page.params.scope!));
 </script>
 
 <div class="mx-auto grid w-full gap-6">
@@ -28,7 +30,7 @@
 	>
 		<NavigationMenu.Root viewport={false} class="flex-col items-start gap-4">
 			<NavigationMenu.List class="w-full flex-col items-start gap-1">
-				{#each items as item}
+				{#each items as item (item.url)}
 					<NavigationMenu.Item>
 						<NavigationMenu.Link>
 							{#snippet child()}

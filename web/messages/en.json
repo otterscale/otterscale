@@ -35,7 +35,7 @@
 	"no_sql": "NoSQL",
 	"applications": "Applications",
 	"applications_description": "Kubernetes applications with integrated app store",
-	"extensions": "extensions",
+	"extensions": "Extensions",
 	"extensions_upgrade": "Upgrade",
 	"extensions_alert_title": "Incomplete Plugin Readiness",
 	"extensions_alert_description": "One or more essential extensions are absent or not operating correctly. To restore full functionality, install the missing plugins using the button below.",
