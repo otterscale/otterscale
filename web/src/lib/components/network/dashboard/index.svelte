@@ -9,15 +9,12 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
 
-	import ExtensionsAlert from './extensions-alert.svelte';
 	import AvailableIPs from './overview/available-ips.svelte';
 	import DHCP from './overview/dhcp.svelte';
 	import Discovery from './overview/discovery.svelte';
 	import DNSServer from './overview/dns-server.svelte';
 	import NetworkTraffic from './overview/network-traffic.svelte';
 	import NetworkTrafficByTime from './overview/network-traffic-by-time.svelte';
-
-	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);
@@ -49,7 +46,6 @@
 </script>
 
 <main class="space-y-4 py-4">
-	<ExtensionsAlert {scope} />
 	{#if prometheusDriver}
 		<div class="mx-auto grid w-full gap-6">
 			<div class="grid gap-1">
@@ -78,13 +74,13 @@
 							<AvailableIPs bind:isReloading />
 						</div>
 						<div class="col-span-4 row-span-2">
-							<NetworkTrafficByTime {prometheusDriver} {scope} bind:isReloading />
+							<NetworkTrafficByTime {prometheusDriver} bind:isReloading />
 						</div>
 						<div class="col-span-2">
 							<DNSServer bind:isReloading />
 						</div>
 						<div class="col-span-4 row-span-2">
-							<NetworkTraffic {prometheusDriver} {scope} bind:isReloading />
+							<NetworkTraffic {prometheusDriver} bind:isReloading />
 						</div>
 					</div>
 				</Tabs.Content>
