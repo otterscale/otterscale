@@ -50,7 +50,7 @@
 	const envClient = createClient(EnvironmentService, transport);
 
 	const scopes = writable<Scope[]>([]);
-	let activeScope = $state(page.params.scope || 'Otterscale');
+	let activeScope = $derived(page.params.scope || 'Otterscale');
 
 	async function fetchScopes() {
 		try {

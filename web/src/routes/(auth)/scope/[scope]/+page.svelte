@@ -68,13 +68,7 @@
 	<div class="mx-auto flex max-w-5xl px-4 xl:px-0">
 		<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
 			{#each cards as card (card.path.url)}
-				<HomeCard
-					background={card.background}
-					path={card.path}
-					description={card.description}
-					disabled={(page.params.scope === 'otterscale' && getCephPathDisabled(card.path.url)) ||
-						(page.params.scope === 'otterscale' && getKubernetesPathDisabled(card.path.url))}
-				/>
+				<HomeCard background={card.background} path={card.path} description={card.description} />
 			{/each}
 		</div>
 	</div>
