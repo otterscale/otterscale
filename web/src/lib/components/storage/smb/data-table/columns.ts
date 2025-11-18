@@ -24,11 +24,7 @@ const messages = {
 	actions: m.actions()
 };
 
-function getColumns(
-	scope: string,
-	namespace: string,
-	reloadManager: ReloadManager
-): ColumnDef<SMBShare>[] {
+function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<SMBShare>[] {
 	return [
 		{
 			id: 'select',
@@ -88,8 +84,8 @@ function getColumns(
 			cell: ({ row }) => renderSnippet(cells.map_to_guest, row),
 			sortingFn: (previousRow, nextRow) =>
 				getSortingFunction(
-					Number(previousRow.original.mapToGuest),
-					Number(nextRow.original.mapToGuest),
+					Number(previousRow.original.commonConfig?.mapToGuest),
+					Number(nextRow.original.commonConfig?.mapToGuest),
 					(p, n) => p < n,
 					(p, n) => p === n
 				)
@@ -100,8 +96,8 @@ function getColumns(
 			cell: ({ row }) => renderSnippet(cells.security_mode, row),
 			sortingFn: (previousRow, nextRow) =>
 				getSortingFunction(
-					Number(previousRow.original.securityMode),
-					Number(nextRow.original.securityMode),
+					Number(previousRow.original.securityConfig?.mode),
+					Number(nextRow.original.securityConfig?.mode),
 					(p, n) => p < n,
 					(p, n) => p === n
 				)
@@ -121,7 +117,7 @@ function getColumns(
 		{
 			accessorKey: 'actions',
 			header: ({ column }) => renderSnippet(headers.actions, column),
-			cell: ({ row }) => renderSnippet(cells.actions, { row, scope, namespace, reloadManager }),
+			cell: ({ row }) => renderSnippet(cells.actions, { row, scope, reloadManager }),
 			enableHiding: false
 		}
 	];

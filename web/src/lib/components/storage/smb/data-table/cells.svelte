@@ -3,7 +3,10 @@
 	import type { Row } from '@tanstack/table-core';
 
 	import type { SMBShare } from '$lib/api/storage/v1/storage_pb';
-	import { SMBShare_MapToGuest, SMBShare_SecurityMode } from '$lib/api/storage/v1/storage_pb';
+	import {
+		SMBShare_CommonConfig_MapToGuest,
+		SMBShare_SecurityConfig_Mode
+	} from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
@@ -28,24 +31,24 @@
 		actions
 	};
 
-	function getMapToGuestLabel(mapToGuest: SMBShare_MapToGuest): string {
+	function getMapToGuestLabel(mapToGuest: SMBShare_CommonConfig_MapToGuest): string {
 		switch (mapToGuest) {
-			case SMBShare_MapToGuest.NEVER:
+			case SMBShare_CommonConfig_MapToGuest.NEVER:
 				return 'Never';
-			case SMBShare_MapToGuest.BAD_USER:
+			case SMBShare_CommonConfig_MapToGuest.BAD_USER:
 				return 'Bad User';
-			case SMBShare_MapToGuest.BAD_PASSWORD:
+			case SMBShare_CommonConfig_MapToGuest.BAD_PASSWORD:
 				return 'Bad Password';
 			default:
 				return 'Unknown';
 		}
 	}
 
-	const getSecurityModeLabel = (securityMode: SMBShare_SecurityMode) => {
+	const getSecurityModeLabel = (securityMode: SMBShare_SecurityConfig_Mode) => {
 		switch (securityMode) {
-			case SMBShare_SecurityMode.USER:
+			case SMBShare_SecurityConfig_Mode.USER:
 				return 'User';
-			case SMBShare_SecurityMode.ACTIVE_DIRECTORY:
+			case SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY:
 				return 'Active Directory';
 			default:
 				return 'Unknown';
@@ -74,7 +77,7 @@
 {#snippet status(row: Row<SMBShare>)}
 	<Layout.Cell class="items-start">
 		<Badge variant="outline">
-			{row.original.status}
+			{row.original.healthies}
 		</Badge>
 	</Layout.Cell>
 {/snippet}
@@ -109,15 +112,19 @@
 {/snippet}
 
 {#snippet map_to_guest(row: Row<SMBShare>)}
-	<Layout.Cell class="items-start">
-		<Badge variant="outline">{getMapToGuestLabel(row.original.mapToGuest)}</Badge>
-	</Layout.Cell>
+	{#if row.original.commonConfig}
+		<Layout.Cell class="items-start">
+			<Badge variant="outline">{getMapToGuestLabel(row.original.commonConfig.mapToGuest)}</Badge>
+		</Layout.Cell>
+	{/if}
 {/snippet}
 
 {#snippet security_mode(row: Row<SMBShare>)}
-	<Layout.Cell class="items-start">
-		<Badge variant="outline">{getSecurityModeLabel(row.original.securityMode)}</Badge>
-	</Layout.Cell>
+	{#if row.original.securityConfig}
+		<Layout.Cell class="items-start">
+			<Badge variant="outline">{getSecurityModeLabel(row.original.securityConfig.mode)}</Badge>
+		</Layout.Cell>
+	{/if}
 {/snippet}
 
 {#snippet valid_users(row: Row<SMBShare>)}
@@ -130,18 +137,8 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet actions(data: {
-	row: Row<SMBShare>;
-	scope: string;
-	namespace: string;
-	reloadManager: ReloadManager;
-})}
+{#snippet actions(data: { row: Row<SMBShare>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-end">
-		<Actions
-			smbShare={data.row.original}
-			scope={data.scope}
-			namespace={data.namespace}
-			reloadManager={data.reloadManager}
-		/>
+		<Actions smbShare={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}
