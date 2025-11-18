@@ -3,6 +3,7 @@ package vmi
 import (
 	"context"
 
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	instancetypev1beta1 "kubevirt.io/api/instancetype/v1beta1"
@@ -59,7 +60,7 @@ func (uc *UseCase) ListInstanceTypes(ctx context.Context, scope, namespace strin
 
 func (uc *UseCase) GetInstanceType(ctx context.Context, scope, namespace, name string) (*VirtualMachineInstanceTypeData, error) {
 	vmcit, err := uc.virtualMachineInstanceType.GetCluster(ctx, scope, name)
-	if uc.isKeyNotFoundError(err) {
+	if k8serrors.IsNotFound(err) {
 		vmit, err := uc.virtualMachineInstanceType.Get(ctx, scope, namespace, name)
 		if err != nil {
 			return nil, err

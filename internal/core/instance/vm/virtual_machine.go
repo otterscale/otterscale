@@ -3,7 +3,6 @@ package vm
 import (
 	"context"
 	"fmt"
-	"net/http"
 
 	"golang.org/x/sync/errgroup"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
@@ -189,7 +188,7 @@ func (uc *UseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name
 		if err == nil {
 			instance = v
 		}
-		if uc.isKeyNotFoundError(err) {
+		if k8serrors.IsNotFound(err) {
 			return nil
 		}
 		return err
@@ -636,9 +635,4 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 	}
 
 	return virtualMachine
-}
-
-func (uc *UseCase) isKeyNotFoundError(err error) bool {
-	statusErr, _ := err.(*k8serrors.StatusError)
-	return statusErr != nil && statusErr.Status().Code == http.StatusNotFound
 }
