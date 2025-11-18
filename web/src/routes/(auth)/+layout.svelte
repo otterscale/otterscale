@@ -3,7 +3,6 @@
 	import HouseIcon from '@lucide/svelte/icons/house';
 	import type { Snippet } from 'svelte';
 	import { getContext } from 'svelte';
-	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import { goto } from '$app/navigation';
@@ -28,6 +27,8 @@
 
 	import type { LayoutData } from './$types';
 
+	const EXCLUDED_SCOPES = ['cos', 'cos-dev', 'cos-lite'];
+
 	let {
 		data,
 		children
@@ -49,13 +50,13 @@
 	const scopeClient = createClient(ScopeService, transport);
 	const envClient = createClient(EnvironmentService, transport);
 
-	const scopes = writable<Scope[]>([]);
+	let scopes = $state<Scope[]>([]);
 	let activeScope = $derived(page.params.scope || 'Otterscale');
 
 	async function fetchScopes() {
 		try {
 			const response = await scopeClient.listScopes({});
-			scopes.set(response.scopes);
+			scopes = response.scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name));
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
 		}
@@ -74,7 +75,7 @@
 	}
 
 	async function handleScopeOnSelect(index: number) {
-		const scope = $scopes[index];
+		const scope = scopes[index];
 		if (!scope) return;
 
 		await goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
@@ -106,7 +107,7 @@
 		<Sidebar.Header>
 			<ScopeSwitcher
 				active={activeScope}
-				scopes={$scopes}
+				{scopes}
 				tier={tierMap[$premiumTier.level]}
 				onSelect={handleScopeOnSelect}
 			/>
