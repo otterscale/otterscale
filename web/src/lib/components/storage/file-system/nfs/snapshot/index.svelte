@@ -2,8 +2,8 @@
 	import Icon from '@iconify/svelte';
 
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
-	import * as Sheet from '$lib/components/ui/sheet';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Sheet from '$lib/components/ui/sheet';
 
 	import { DataTable } from './data-table';
 </script>
