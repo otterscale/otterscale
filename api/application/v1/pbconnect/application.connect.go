@@ -88,6 +88,12 @@ const (
 	// ApplicationServiceListNamespacesProcedure is the fully-qualified name of the ApplicationService's
 	// ListNamespaces RPC.
 	ApplicationServiceListNamespacesProcedure = "/otterscale.application.v1.ApplicationService/ListNamespaces"
+	// ApplicationServiceListConfigMapsProcedure is the fully-qualified name of the ApplicationService's
+	// ListConfigMaps RPC.
+	ApplicationServiceListConfigMapsProcedure = "/otterscale.application.v1.ApplicationService/ListConfigMaps"
+	// ApplicationServiceListSecretsProcedure is the fully-qualified name of the ApplicationService's
+	// ListSecrets RPC.
+	ApplicationServiceListSecretsProcedure = "/otterscale.application.v1.ApplicationService/ListSecrets"
 	// ApplicationServiceListStorageClassesProcedure is the fully-qualified name of the
 	// ApplicationService's ListStorageClasses RPC.
 	ApplicationServiceListStorageClassesProcedure = "/otterscale.application.v1.ApplicationService/ListStorageClasses"
@@ -115,6 +121,8 @@ type ApplicationServiceClient interface {
 	GetChartMetadata(context.Context, *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error)
 	UploadChart(context.Context, *v1.UploadChartRequest) (*emptypb.Empty, error)
 	ListNamespaces(context.Context, *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error)
+	ListConfigMaps(context.Context, *v1.ListConfigMapsRequest) (*v1.ListConfigMapsResponse, error)
+	ListSecrets(context.Context, *v1.ListSecretsRequest) (*v1.ListSecretsResponse, error)
 	ListStorageClasses(context.Context, *v1.ListStorageClassesRequest) (*v1.ListStorageClassesResponse, error)
 }
 
@@ -238,6 +246,18 @@ func NewApplicationServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			connect.WithSchema(applicationServiceMethods.ByName("ListNamespaces")),
 			connect.WithClientOptions(opts...),
 		),
+		listConfigMaps: connect.NewClient[v1.ListConfigMapsRequest, v1.ListConfigMapsResponse](
+			httpClient,
+			baseURL+ApplicationServiceListConfigMapsProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("ListConfigMaps")),
+			connect.WithClientOptions(opts...),
+		),
+		listSecrets: connect.NewClient[v1.ListSecretsRequest, v1.ListSecretsResponse](
+			httpClient,
+			baseURL+ApplicationServiceListSecretsProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("ListSecrets")),
+			connect.WithClientOptions(opts...),
+		),
 		listStorageClasses: connect.NewClient[v1.ListStorageClassesRequest, v1.ListStorageClassesResponse](
 			httpClient,
 			baseURL+ApplicationServiceListStorageClassesProcedure,
@@ -267,6 +287,8 @@ type applicationServiceClient struct {
 	getChartMetadata     *connect.Client[v1.GetChartMetadataRequest, v1.Application_Chart_Metadata]
 	uploadChart          *connect.Client[v1.UploadChartRequest, emptypb.Empty]
 	listNamespaces       *connect.Client[v1.ListNamespacesRequest, v1.ListNamespacesResponse]
+	listConfigMaps       *connect.Client[v1.ListConfigMapsRequest, v1.ListConfigMapsResponse]
+	listSecrets          *connect.Client[v1.ListSecretsRequest, v1.ListSecretsResponse]
 	listStorageClasses   *connect.Client[v1.ListStorageClassesRequest, v1.ListStorageClassesResponse]
 }
 
@@ -424,6 +446,24 @@ func (c *applicationServiceClient) ListNamespaces(ctx context.Context, req *v1.L
 	return nil, err
 }
 
+// ListConfigMaps calls otterscale.application.v1.ApplicationService.ListConfigMaps.
+func (c *applicationServiceClient) ListConfigMaps(ctx context.Context, req *v1.ListConfigMapsRequest) (*v1.ListConfigMapsResponse, error) {
+	response, err := c.listConfigMaps.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListSecrets calls otterscale.application.v1.ApplicationService.ListSecrets.
+func (c *applicationServiceClient) ListSecrets(ctx context.Context, req *v1.ListSecretsRequest) (*v1.ListSecretsResponse, error) {
+	response, err := c.listSecrets.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // ListStorageClasses calls otterscale.application.v1.ApplicationService.ListStorageClasses.
 func (c *applicationServiceClient) ListStorageClasses(ctx context.Context, req *v1.ListStorageClassesRequest) (*v1.ListStorageClassesResponse, error) {
 	response, err := c.listStorageClasses.CallUnary(ctx, connect.NewRequest(req))
@@ -455,6 +495,8 @@ type ApplicationServiceHandler interface {
 	GetChartMetadata(context.Context, *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error)
 	UploadChart(context.Context, *v1.UploadChartRequest) (*emptypb.Empty, error)
 	ListNamespaces(context.Context, *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error)
+	ListConfigMaps(context.Context, *v1.ListConfigMapsRequest) (*v1.ListConfigMapsResponse, error)
+	ListSecrets(context.Context, *v1.ListSecretsRequest) (*v1.ListSecretsResponse, error)
 	ListStorageClasses(context.Context, *v1.ListStorageClassesRequest) (*v1.ListStorageClassesResponse, error)
 }
 
@@ -573,6 +615,18 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 		connect.WithSchema(applicationServiceMethods.ByName("ListNamespaces")),
 		connect.WithHandlerOptions(opts...),
 	)
+	applicationServiceListConfigMapsHandler := connect.NewUnaryHandlerSimple(
+		ApplicationServiceListConfigMapsProcedure,
+		svc.ListConfigMaps,
+		connect.WithSchema(applicationServiceMethods.ByName("ListConfigMaps")),
+		connect.WithHandlerOptions(opts...),
+	)
+	applicationServiceListSecretsHandler := connect.NewUnaryHandlerSimple(
+		ApplicationServiceListSecretsProcedure,
+		svc.ListSecrets,
+		connect.WithSchema(applicationServiceMethods.ByName("ListSecrets")),
+		connect.WithHandlerOptions(opts...),
+	)
 	applicationServiceListStorageClassesHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceListStorageClassesProcedure,
 		svc.ListStorageClasses,
@@ -617,6 +671,10 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 			applicationServiceUploadChartHandler.ServeHTTP(w, r)
 		case ApplicationServiceListNamespacesProcedure:
 			applicationServiceListNamespacesHandler.ServeHTTP(w, r)
+		case ApplicationServiceListConfigMapsProcedure:
+			applicationServiceListConfigMapsHandler.ServeHTTP(w, r)
+		case ApplicationServiceListSecretsProcedure:
+			applicationServiceListSecretsHandler.ServeHTTP(w, r)
 		case ApplicationServiceListStorageClassesProcedure:
 			applicationServiceListStorageClassesHandler.ServeHTTP(w, r)
 		default:
@@ -698,6 +756,14 @@ func (UnimplementedApplicationServiceHandler) UploadChart(context.Context, *v1.U
 
 func (UnimplementedApplicationServiceHandler) ListNamespaces(context.Context, *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListNamespaces is not implemented"))
+}
+
+func (UnimplementedApplicationServiceHandler) ListConfigMaps(context.Context, *v1.ListConfigMapsRequest) (*v1.ListConfigMapsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListConfigMaps is not implemented"))
+}
+
+func (UnimplementedApplicationServiceHandler) ListSecrets(context.Context, *v1.ListSecretsRequest) (*v1.ListSecretsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListSecrets is not implemented"))
 }
 
 func (UnimplementedApplicationServiceHandler) ListStorageClasses(context.Context, *v1.ListStorageClassesRequest) (*v1.ListStorageClassesResponse, error) {
