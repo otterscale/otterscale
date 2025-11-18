@@ -10,7 +10,6 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { get } from 'http';
 
 	import type { Network_Subnet } from '$lib/api/network/v1/network_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
@@ -20,7 +19,6 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import Create from './action-create.svelte';
-	import Actions from './actions.svelte';
 	import { getColumns, messages } from './columns';
 </script>
 

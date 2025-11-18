@@ -2,7 +2,6 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
-	import { get } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import type { DeleteSubvolumeGroupRequest, SubvolumeGroup } from '$lib/api/storage/v1/storage_pb';

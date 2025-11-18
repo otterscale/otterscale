@@ -70,7 +70,7 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Imag
 				return renderSnippet(headers.snapshots, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.snapshots, row);
+				return renderSnippet(cells.snapshots, { row, scope, reloadManager });
 			},
 			sortingFn: (previousRow, nextRow) =>
 				getSortingFunction(

@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import {
