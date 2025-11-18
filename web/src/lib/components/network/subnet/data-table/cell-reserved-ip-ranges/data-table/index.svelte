@@ -18,10 +18,8 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import Create from './action-create.svelte';
-	import Actions from './actions.svelte';
 	import { getColumns, messages } from './columns';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
-	import { get } from 'http';
 </script>
 
 <script lang="ts">

@@ -14,4 +14,6 @@
 	]);
 </script>
 
-<Dashboard scope={page.params.scope!} />
+{#key page.params.scope!}
+	<Dashboard scope={page.params.scope!} />
+{/key}

@@ -18,7 +18,7 @@
 	} = $props();
 </script>
 
-{#snippet trigger()}
+{#snippet tabsTrigger()}
 	<Tabs.List>
 		<Tabs.Trigger value="nfs">{m.network_file_system()}</Tabs.Trigger>
 		<Tabs.Trigger value="group">{m.group()}</Tabs.Trigger>
@@ -26,9 +26,9 @@
 {/snippet}
 <Tabs.Root value="nfs">
 	<Tabs.Content value="nfs">
-		<NFS {scope} {volume} bind:selectedSubvolumeGroupName {trigger} />
+		<NFS {scope} {volume} bind:selectedSubvolumeGroupName trigger={tabsTrigger} />
 	</Tabs.Content>
 	<Tabs.Content value="group">
-		<Group {scope} {volume} {trigger} />
+		<Group {scope} {volume} trigger={tabsTrigger} />
 	</Tabs.Content>
 </Tabs.Root>

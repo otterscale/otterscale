@@ -88,7 +88,7 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Virt
 				return renderSnippet(headers.disk, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.disk, row);
+				return renderSnippet(cells.disk, { row, scope });
 			},
 			filterFn: 'arrIncludesSome'
 		},
@@ -98,7 +98,7 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Virt
 				return renderSnippet(headers.port, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.port, row);
+				return renderSnippet(cells.port, { row, scope, reloadManager });
 			},
 			filterFn: 'arrIncludesSome'
 		},

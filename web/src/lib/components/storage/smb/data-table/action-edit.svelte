@@ -8,7 +8,7 @@
 	import type { SMBShare, UpdateSMBShareRequest } from '$lib/api/storage/v1/storage_pb';
 	import {
 		type SMBShare_ActiveDirectory,
-		type SMBShare_LocalUser,
+		type SMBShare_Local,
 		SMBShare_MapToGuest,
 		SMBShare_SecurityMode,
 		StorageService
@@ -48,7 +48,7 @@
 		name: smbShare.name,
 		sizeBytes: smbShare.sizeBytes,
 		securityMode: smbShare.securityMode,
-		auth: smbShare.auth,
+		authentication: smbShare.authentication,
 		mapToGuest: smbShare.mapToGuest,
 		browsable: smbShare.browsable,
 		guestOk: smbShare.guestOk,
@@ -56,23 +56,25 @@
 		validUsers: smbShare.validUsers
 	} as UpdateSMBShareRequest;
 	const defaults_activeDirectory =
-		smbShare.auth.case === 'activeDirectory'
-			? smbShare.auth.value
+		smbShare.authentication.case === 'activeDirectory'
+			? smbShare.authentication.value
 			: ({} as SMBShare_ActiveDirectory);
-	const defaults_localUser =
-		smbShare.auth.case === 'localUser' ? smbShare.auth.value : ({} as SMBShare_LocalUser);
+	const defaults_local =
+		smbShare.authentication.case === 'local'
+			? smbShare.authentication.value
+			: ({} as SMBShare_Local);
 	const defaults_validUsers = smbShare.validUsers;
 
 	let request = $state(defaults);
 	let request_activeDirectory = $state(defaults_activeDirectory);
-	let request_localUser = $state(defaults_localUser);
+	let request_local = $state(defaults_local);
 	let request_validUsers = $state(defaults_validUsers);
 
 	function reset_activeDirectory() {
 		request_activeDirectory = defaults_activeDirectory;
 	}
 	function reset_localUser() {
-		request_localUser = defaults_localUser;
+		request_local = defaults_local;
 	}
 	function reset_validUsers() {
 		request_validUsers = defaults_validUsers;
@@ -87,14 +89,14 @@
 
 	$effect(() => {
 		if (request.securityMode === SMBShare_SecurityMode.ACTIVE_DIRECTORY) {
-			request.auth = {
+			request.authentication = {
 				value: request_activeDirectory,
 				case: 'activeDirectory'
 			};
 		} else if (request.securityMode === SMBShare_SecurityMode.USER) {
-			request.auth = {
-				value: request_localUser,
-				case: 'localUser'
+			request.authentication = {
+				value: request_local,
+				case: 'lcoal'
 			};
 		}
 		request.validUsers = request_validUsers;
@@ -104,7 +106,7 @@
 	let isSizeInvalid = $state(false);
 	let isSecurityModeInvalid = $state(false);
 	let isMapToGuestInvalid = $state(false);
-	let isBrowseableInvalid = $state(false);
+	let isBrowsableInvalid = $state(false);
 	let isReadOnlyInvalid = $state(false);
 	let isGuestOKInvalid = $state(false);
 	let isRealmInvalid = $state(false);
@@ -116,13 +118,13 @@
 			isSizeInvalid ||
 			isSecurityModeInvalid ||
 			isMapToGuestInvalid ||
-			isBrowseableInvalid ||
+			isBrowsableInvalid ||
 			isReadOnlyInvalid ||
 			isGuestOKInvalid ||
 			(request.securityMode === SMBShare_SecurityMode.ACTIVE_DIRECTORY &&
 				(isRealmInvalid || isJoinSourceInvalid)) ||
 			(request.securityMode === SMBShare_SecurityMode.USER &&
-				request.auth.case === 'localUser' &&
+				request.authentication.case === 'local' &&
 				isLocalUsersInvalid) ||
 			isValidUsersInvalid
 	);
@@ -258,7 +260,7 @@
 				{:else if request.securityMode === SMBShare_SecurityMode.USER}
 					<Form.Field>
 						<Form.Label>{m.users()}</Form.Label>
-						<CreateUsers bind:users={request_localUser.users} bind:invalid={isLocalUsersInvalid} />
+						<CreateUsers bind:users={request_local.users} bind:invalid={isLocalUsersInvalid} />
 					</Form.Field>
 				{/if}
 				<Form.Field>
@@ -310,9 +312,7 @@
 						<MultipleInput.Controller>
 							<MultipleInput.Input />
 							{#if request.securityMode === SMBShare_SecurityMode.USER}
-								<MultipleInput.Import
-									values={request_localUser.users.map((user) => user.username)}
-								/>
+								<MultipleInput.Import values={request_local.users.map((user) => user.username)} />
 							{/if}
 							<MultipleInput.Add />
 							<MultipleInput.Clear />
@@ -326,7 +326,7 @@
 					<Form.Label>{m.browsable()}</Form.Label>
 					<SingleInput.Boolean
 						bind:value={request.browsable}
-						bind:invalid={isBrowseableInvalid}
+						bind:invalid={isBrowsableInvalid}
 						descriptor={() => m.browsable_description()}
 					/>
 				</Form.Field>

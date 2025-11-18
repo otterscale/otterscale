@@ -104,7 +104,7 @@ function getColumns(reloadManager: ReloadManager): ColumnDef<Network>[] {
 				return renderSnippet(headers.ipRanges, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.ipRanges, row);
+				return renderSnippet(cells.ipRanges, { row, reloadManager });
 			},
 			sortingFn: (previousRow, nextRow) =>
 				getSortingFunction(

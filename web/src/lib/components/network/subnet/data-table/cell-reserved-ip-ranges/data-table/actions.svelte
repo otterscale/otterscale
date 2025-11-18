@@ -1,6 +1,4 @@
 <script lang="ts" module>
-	import type { Row } from '@tanstack/table-core';
-
 	import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';

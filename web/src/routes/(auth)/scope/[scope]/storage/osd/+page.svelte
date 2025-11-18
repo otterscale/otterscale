@@ -19,6 +19,6 @@
 	]);
 </script>
 
-{#key page.params.scope}
+{#key page.params.scope!}
 	<OSD scope={page.params.scope!} />
 {/key}

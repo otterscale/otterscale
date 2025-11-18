@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount, setContext } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	import { InstanceService, type InstanceType } from '$lib/api/instance/v1/instance_pb';
