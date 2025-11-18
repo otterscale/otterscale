@@ -19,3 +19,7 @@ type ConfigMapRepo interface {
 	Update(ctx context.Context, scope, namespace string, cm *ConfigMap) (*ConfigMap, error)
 	Delete(ctx context.Context, scope, namespace, name string) error
 }
+
+func (uc *UseCase) ListConfigMaps(ctx context.Context, scope, namespace string) ([]ConfigMap, error) {
+	return uc.configMap.List(ctx, scope, namespace, "")
+}
