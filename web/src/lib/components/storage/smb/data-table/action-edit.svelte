@@ -69,11 +69,11 @@
 		guestOk: smbShare.guestOk,
 		readOnly: smbShare.readOnly,
 		validUsers: smbShare.validUsers,
-		commonConfig: smbShare.commonConfig,
-		securityConfig: smbShare.securityConfig
+		commonConfig: { ...smbShare.commonConfig },
+		securityConfig: { ...smbShare.securityConfig }
 	} as UpdateSMBShareRequest;
 
-	let request = $state({ ...defaults });
+	let request = $state(defaults);
 
 	function reset() {
 		request = defaults;
@@ -298,20 +298,24 @@
 
 					<Form.Field>
 						<Form.Label>{m.join_sources()}</Form.Label>
-						<div class="rounded-lg border p-2">
-							{#each request.securityConfig.joinSources as user, index (index)}
-								<div class="flex items-center gap-2 rounded-lg p-2">
-									<div class={cn('flex size-8 items-center justify-center rounded-full border-2')}>
-										<Icon icon="ph:user" class="size-5" />
-									</div>
+						{#if request.securityConfig.joinSources?.length > 0}
+							<div class="max-h-20 overflow-y-auto rounded-lg border p-2">
+								{#each request.securityConfig.joinSources as user, index (index)}
+									<div class="flex items-center gap-2 rounded-lg p-2">
+										<div
+											class={cn('flex size-8 items-center justify-center rounded-full border-2')}
+										>
+											<Icon icon="ph:user" class="size-5" />
+										</div>
 
-									<div class="flex flex-col gap-1">
-										<p class="text-xs text-muted-foreground">{m.user()}</p>
-										<p class="text-sm">{user.username}</p>
+										<div class="flex flex-col gap-1">
+											<p class="text-xs text-muted-foreground">{m.user()}</p>
+											<p class="text-sm">{user.username}</p>
+										</div>
 									</div>
-								</div>
-							{/each}
-						</div>
+								{/each}
+							</div>
+						{/if}
 						<CreateUsers bind:users={request.securityConfig.joinSources} />
 					</Form.Field>
 				{/if}

@@ -125,8 +125,14 @@
 				{table}
 			/>
 			<Filters.StringMatch
-				columnId="status"
-				values={$smbShares.map((row) => row.status)}
+				columnId="namespace"
+				values={$smbShares.map((row) => row.namespace)}
+				{messages}
+				{table}
+			/>
+			<Filters.StringMatch
+				columnId="valid_users"
+				values={$smbShares.flatMap((row) => row.validUsers)}
 				{messages}
 				{table}
 			/>

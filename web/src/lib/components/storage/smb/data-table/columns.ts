@@ -12,15 +12,16 @@ import { headers } from './headers.svelte';
 const messages = {
 	name: m.name(),
 	namespace: m.namespace(),
-	status: m.status(),
+	replicas: m.replicas(),
+	healthies: m.healthies(),
 	size: m.size(),
 	browsable: m.browsable(),
-	readOnly: m.read_only(),
-	guestOk: m.guest_accessible(),
-	mapToGuest: m.map_to_guest(),
-	securityMode: m.security_mode(),
+	read_only: m.read_only(),
+	guest_ok: m.guest_accessible(),
+	map_to_guest: m.map_to_guest(),
+	mode: m.mode(),
 	auth: m.auth(),
-	validUsers: m.valid_users(),
+	valid_users: m.valid_users(),
 	actions: m.actions()
 };
 
@@ -44,9 +45,14 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<SMBS
 			cell: ({ row }) => renderSnippet(cells.namespace, row)
 		},
 		{
-			accessorKey: 'status',
-			header: ({ column }) => renderSnippet(headers.status, column),
-			cell: ({ row }) => renderSnippet(cells.status, row)
+			accessorKey: 'replicas',
+			header: ({ column }) => renderSnippet(headers.replicas, column),
+			cell: ({ row }) => renderSnippet(cells.replicas, row)
+		},
+		{
+			accessorKey: 'healthies',
+			header: ({ column }) => renderSnippet(headers.healthies, column),
+			cell: ({ row }) => renderSnippet(cells.healthies, row)
 		},
 		{
 			accessorKey: 'size',
@@ -91,9 +97,9 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<SMBS
 				)
 		},
 		{
-			accessorKey: 'security_mode',
-			header: ({ column }) => renderSnippet(headers.security_mode, column),
-			cell: ({ row }) => renderSnippet(cells.security_mode, row),
+			accessorKey: 'mode',
+			header: ({ column }) => renderSnippet(headers.mode, column),
+			cell: ({ row }) => renderSnippet(cells.mode, row),
 			sortingFn: (previousRow, nextRow) =>
 				getSortingFunction(
 					Number(previousRow.original.securityConfig?.mode),

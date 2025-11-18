@@ -290,8 +290,8 @@
 
 					<Form.Field>
 						<Form.Label>{m.join_sources()}</Form.Label>
-						{#if request.securityConfig.joinSources}
-							<div class="rounded-lg border p-2">
+						{#if request.securityConfig.joinSources?.length > 0}
+							<div class="max-h-40 overflow-y-auto rounded-lg border p-2">
 								{#each request.securityConfig.joinSources as user, index (index)}
 									<div class="flex items-center gap-2 rounded-lg p-2">
 										<div

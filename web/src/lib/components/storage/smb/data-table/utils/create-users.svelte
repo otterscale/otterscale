@@ -40,7 +40,7 @@
 	<Modal.Trigger variant="primary" class="w-full">{m.create()}/{m.edit()}</Modal.Trigger>
 	<Modal.Content>
 		{#if users.length > 0}
-			<div class="rounded-lg border p-2">
+			<div class="max-h-40 overflow-y-auto rounded-lg border p-2">
 				{#each users as user, index (index)}
 					<div class="flex items-center gap-2 rounded-lg p-2">
 						<div class={cn('flex size-8 items-center justify-center rounded-full border-2')}>
@@ -84,20 +84,41 @@
 			required={users.length === 0}
 		/>
 
-		<Button
-			onclick={() => {
-				users = [...users, request];
-			}}
-		>
-			<Icon icon="ph:plus" />
-		</Button>
-		<Button
-			onclick={() => {
-				reset();
-				close();
-			}}
-		>
-			{m.confirm()}
-		</Button>
+		<Modal.Footer>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
+				{m.cancel()}
+			</Modal.Cancel>
+			<div>
+				<Button
+					variant="destructive"
+					disabled={invalid}
+					onclick={() => {
+						users = [];
+					}}
+				>
+					{m.clear()}
+				</Button>
+				<Button
+					onclick={() => {
+						users = [...users, request];
+					}}
+				>
+					{m.add()}
+				</Button>
+				<Modal.Action
+					disabled={invalid}
+					onclick={() => {
+						reset();
+						close();
+					}}
+				>
+					{m.confirm()}
+				</Modal.Action>
+			</div>
+		</Modal.Footer>
 	</Modal.Content>
 </Modal.Root>

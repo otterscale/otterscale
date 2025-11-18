@@ -20,13 +20,14 @@
 		row_picker,
 		name,
 		namespace,
-		status,
+		replicas,
+		healthies,
 		size,
 		browsable,
 		read_only,
 		guest_ok,
 		map_to_guest,
-		security_mode,
+		mode,
 		valid_users,
 		actions
 	};
@@ -74,11 +75,15 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet status(row: Row<SMBShare>)}
-	<Layout.Cell class="items-start">
-		<Badge variant="outline">
-			{row.original.healthies}
-		</Badge>
+{#snippet replicas(row: Row<SMBShare>)}
+	<Layout.Cell class="items-end">
+		{row.original.replicas}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet healthies(row: Row<SMBShare>)}
+	<Layout.Cell class="items-end">
+		{row.original.healthies}
 	</Layout.Cell>
 {/snippet}
 
@@ -119,7 +124,7 @@
 	{/if}
 {/snippet}
 
-{#snippet security_mode(row: Row<SMBShare>)}
+{#snippet mode(row: Row<SMBShare>)}
 	{#if row.original.securityConfig}
 		<Layout.Cell class="items-start">
 			<Badge variant="outline">{getSecurityModeLabel(row.original.securityConfig.mode)}</Badge>
