@@ -391,7 +391,7 @@ func (uc *UseCase) extractSecrets(secretMap map[string]*config.Secret, usersSecr
 
 	usersSecret, ok := secretMap[usersSecretName]
 	if ok {
-		if err := json.Unmarshal([]byte(usersSecret.Data["users"]), &config); err != nil {
+		if err := json.Unmarshal(usersSecret.Data["users"], &config); err != nil {
 			return nil, nil, fmt.Errorf("failed to unmarshal join secret: %w", err)
 		}
 
@@ -407,7 +407,7 @@ func (uc *UseCase) extractSecrets(secretMap map[string]*config.Secret, usersSecr
 
 	joinSecret, ok := secretMap[joinSecretName]
 	if ok {
-		if err := json.Unmarshal([]byte(joinSecret.Data["join"]), &joinSource); err != nil {
+		if err := json.Unmarshal(joinSecret.Data["join"], &joinSource); err != nil {
 			return nil, nil, fmt.Errorf("failed to unmarshal join secret: %w", err)
 		}
 	}
