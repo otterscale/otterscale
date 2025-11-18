@@ -36,6 +36,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/storage/block"
 	"github.com/otterscale/otterscale/internal/core/storage/file"
 	"github.com/otterscale/otterscale/internal/core/storage/object"
+	"github.com/otterscale/otterscale/internal/core/storage/smb"
 )
 
 var ProviderSet = wire.NewSet(
@@ -72,4 +73,5 @@ var ProviderSet = wire.NewSet(
 	block.NewUseCase,
 	file.NewUseCase,
 	object.NewUseCase,
+	smb.NewUseCase,
 )

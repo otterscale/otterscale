@@ -36,3 +36,5 @@ func NewUseCase(service ServiceRepo) *UseCase {
 		service: service,
 	}
 }
+
+// TODO: HTTP ROUTE

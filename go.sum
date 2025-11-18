@@ -750,6 +750,10 @@ github.com/openshift/custom-resource-status v1.1.2 h1:C3DL44LEbvlbItfd8mT5jWrqPf
 github.com/openshift/custom-resource-status v1.1.2/go.mod h1:DB/Mf2oTeiAmVVX1gN+NEqweonAPY0TKUwADizj8+ZA=
 github.com/otterscale/kubevirt-client-go v1.6.1 h1:Td9ZlgxXsHjSI2xOMiuGbffT7TWSq3680UxHdAl9sNM=
 github.com/otterscale/kubevirt-client-go v1.6.1/go.mod h1:t7hrI6H4z5ZnR278UCLK21xBk3URHKwYTLvfpm5jTf8=
+github.com/otterscale/samba-operator v0.0.1 h1:JhyDr801+6wXSFYipKdUq/56Sbi5JUa00MREaA4cAOo=
+github.com/otterscale/samba-operator v0.0.1/go.mod h1:LaNmRsWmqtKX3g4pJvGSV8yGcplqjiUrQd/imMoW6RM=
+github.com/otterscale/samba-operator-client-go v0.0.1 h1:PpRkS8zjXtTWYMhjAff3fV9EI3XlzASZLKfYOcuwGtY=
+github.com/otterscale/samba-operator-client-go v0.0.1/go.mod h1:3CENw32jo7LdU9Slk/cJMx200seFSfYyLeSsx/eY9QA=
 github.com/pelletier/go-toml/v2 v2.2.3 h1:YmeHyLY8mFWbdkNWwpr+qIL2bEqT0o95WSdkNHvL12M=
 github.com/pelletier/go-toml/v2 v2.2.3/go.mod h1:MfCQTFTvCcUyyvvwm1+G6H/jORL20Xlb6rzQu9GuUkc=
 github.com/peterbourgon/diskv v2.0.1+incompatible h1:UBdAOUP5p4RWqPBg048CAvpKN+vxiaj6gdUUzhl4XmI=
