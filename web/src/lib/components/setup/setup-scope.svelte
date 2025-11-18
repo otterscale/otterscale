@@ -173,12 +173,12 @@
 		</div>
 
 		<!-- Kubernetes Section -->
-		{#if scope !== 'otterscale'}
+		{#if scope !== 'Otterscale'}
 			{@render kubernetesCards()}
 		{/if}
 
 		<!-- Ceph Section -->
-		{#if scope !== 'otterscale'}
+		{#if scope !== 'Otterscale'}
 			{@render cephCards()}
 		{/if}
 	</div>

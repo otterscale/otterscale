@@ -11,7 +11,6 @@
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
 
-	import { GLOBAL_SCOPE } from '../../../routes/(auth)/+layout.svelte';
 	import DialogCreateScope from './dialog-create-scope.svelte';
 
 	let {
@@ -100,7 +99,7 @@
 <Sidebar.Menu>
 	<Sidebar.MenuItem>
 		<DropdownMenu.Root>
-			<DropdownMenu.Trigger disabled={active === GLOBAL_SCOPE}>
+			<DropdownMenu.Trigger>
 				{#snippet child({ props })}
 					<Sidebar.MenuButton
 						data-state={props['data-state']}
@@ -108,7 +107,6 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
 						<Button
-							disabled={active === GLOBAL_SCOPE}
 							href={resolve('/(auth)/scope/[scope]/setup', { scope: active })}
 							class="group/icon flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground transition"
 						>

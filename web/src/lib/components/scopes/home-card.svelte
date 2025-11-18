@@ -7,10 +7,10 @@
 		background: string;
 		path: Path;
 		description: string;
-		disabled: boolean;
+		disabled?: boolean;
 	}
 
-	let { background, path, description, disabled }: Props = $props();
+	let { background, path, description, disabled = false }: Props = $props();
 </script>
 
 <!-- eslint-disable svelte/no-navigation-without-resolve -->
