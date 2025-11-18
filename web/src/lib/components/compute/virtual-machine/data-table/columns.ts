@@ -1,12 +1,12 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
 import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
+import type { ReloadManager } from '$lib/components/custom/reloader';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
-import type { ReloadManager } from '$lib/components/custom/reloader';
 
 const messages = {
 	name: m.name(),
@@ -88,7 +88,7 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Virt
 				return renderSnippet(headers.disk, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.disk, row);
+				return renderSnippet(cells.disk, { row, scope });
 			},
 			filterFn: 'arrIncludesSome'
 		},
@@ -98,7 +98,7 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Virt
 				return renderSnippet(headers.port, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.port, row);
+				return renderSnippet(cells.port, { row, scope, reloadManager });
 			},
 			filterFn: 'arrIncludesSome'
 		},

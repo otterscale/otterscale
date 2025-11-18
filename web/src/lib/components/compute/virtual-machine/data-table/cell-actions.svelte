@@ -36,10 +36,10 @@
 	</Layout.ActionItem>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
-		<Snapshot {virtualMachine} />
+		<Snapshot {virtualMachine} {scope} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Restore {virtualMachine} />
+		<Restore {virtualMachine} {scope} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
