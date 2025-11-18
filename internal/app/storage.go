@@ -571,8 +571,8 @@ func toSecurityMode(s pb.SMBShare_SecurityConfig_Mode) string {
 
 func toUser(u *pb.SMBShare_SecurityConfig_User) *smb.User {
 	return &smb.User{
-		Secret: u.GetSecret(),
-		Key:    u.GetKey(),
+		Username: u.GetUsername(),
+		Password: u.GetPassword(),
 	}
 }
 
@@ -1004,15 +1004,15 @@ func toProtoSMBShareSecurityConfigUsers(us []smb.JoinSpec) []*pb.SMBShare_Securi
 
 func toProtoSMBShareSecurityConfigUserFromUserJoin(uj *smb.UserJoinSpec) *pb.SMBShare_SecurityConfig_User {
 	ret := &pb.SMBShare_SecurityConfig_User{}
-	ret.SetSecret(uj.Secret)
-	ret.SetKey("********") // hide
+	// ret.SetUsername(uj.Username)
+	// ret.SetPassword("********") // hide
 	return ret
 }
 
 func toProtoSMBShareSecurityConfigUserFromUser(u *smb.UserSpec) *pb.SMBShare_SecurityConfig_User {
 	ret := &pb.SMBShare_SecurityConfig_User{}
-	ret.SetSecret(u.Secret)
-	ret.SetKey("********") // hide
+	// ret.SetSecret(u.Secret)
+	// ret.SetKey("********") // hide
 	return ret
 }
 
@@ -1065,29 +1065,44 @@ func toProtoSMBShare(sd *smb.ShareData) *pb.SMBShare {
 	if share != nil {
 		ret.SetName(share.Name)
 		ret.SetNamespace(share.Namespace)
-		ret.SetStatus("??")
+
+		deployment := sd.Deployment
+		if deployment != nil {
+			replicas := deployment.Spec.Replicas
+			if replicas != nil {
+				ret.SetReplicas(*replicas)
+			}
+		}
+
+		ret.SetHealthies(countHealthies(sd.Pods))
 
 		pvc := share.Spec.Storage.Pvc
-		if pvc != nil && pvc.Spec != nil {
-			sizeBytes, _ := pvc.Spec.Resources.Requests.Storage().AsInt64()
-			ret.SetSizeBytes(uint64(sizeBytes)) //nolint:gosec // ignore
+		if pvc != nil {
+			spec := pvc.Spec
+			if spec != nil {
+				sizeBytes, _ := spec.Resources.Requests.Storage().AsInt64()
+				ret.SetSizeBytes(uint64(sizeBytes)) //nolint:gosec // ignore
+			}
 		}
 
 		ret.SetBrowsable(share.Spec.Browseable)
 		ret.SetReadOnly(share.Spec.ReadOnly)
 
 		config := share.Spec.CustomShareConfig
-		if config != nil && config.Configs != nil {
-			if val, ok := config.Configs[smb.GuestOKkey]; ok {
-				ret.SetGuestOk(strings.EqualFold(val, "yes") || strings.EqualFold(val, "true") || strings.EqualFold(val, "1"))
-			}
-
-			if val, ok := config.Configs[smb.ValidUsersKey]; ok {
-				users := strings.Split(val, " ")
-				for i := range users {
-					users[i] = strings.TrimSpace(users[i])
+		if config != nil {
+			configs := config.Configs
+			if configs != nil {
+				if val, ok := configs[smb.GuestOKkey]; ok {
+					ret.SetGuestOk(strings.EqualFold(val, "yes") || strings.EqualFold(val, "true") || strings.EqualFold(val, "1"))
 				}
-				ret.SetValidUsers(users)
+
+				if val, ok := configs[smb.ValidUsersKey]; ok {
+					users := strings.Split(val, " ")
+					for i := range users {
+						users[i] = strings.TrimSpace(users[i])
+					}
+					ret.SetValidUsers(users)
+				}
 			}
 		}
 	}
