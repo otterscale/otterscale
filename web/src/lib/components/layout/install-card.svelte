@@ -87,11 +87,10 @@
 	</Carousel.Content>
 
 	<div class="absolute top-14 right-12 flex items-center space-x-2">
-		<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-		{#each plans as _, index (index)}
+		{#each plans as plan, index (index)}
 			<button
 				onclick={() => api?.scrollTo(index)}
-				aria-label="Go to slide {index + 1}"
+				aria-label="Go to slide {index + 1}: {plan.name}"
 				class="size-2 rounded-full transition-all {index + 1 === current
 					? 'w-6 bg-primary'
 					: 'bg-primary/30 hover:bg-primary/50'}"
