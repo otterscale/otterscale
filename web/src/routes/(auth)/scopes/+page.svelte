@@ -87,7 +87,7 @@
 								<!-- Add Scope Info -->
 								<div class="grid -space-y-1">
 									<Card.Description class="capitalize">{m.create()}</Card.Description>
-									<Card.Title class="text-2xl text-nowrap">New Scope</Card.Title>
+									<Card.Title class="text-2xl text-nowrap">{m.new_scope()}</Card.Title>
 								</div>
 							</div>
 

@@ -156,6 +156,7 @@
 	"create_scope_description": "將使用者組織成具有特定權限的群組。資源在範圍之間是隔離的。",
 	"create_scope_prefix_name_description": "節點命名的前綴（如果未提供，則預設為範圍名稱）",
 	"prefix_name": "前綴名稱",
+	"new_scope": "新範圍",
 	"scope_name": "名稱",
 	"scope_name_description": "輸入範圍名稱",
 	"create": "建立",
