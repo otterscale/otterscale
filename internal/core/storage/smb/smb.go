@@ -172,7 +172,7 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (
 	eg.Go(func() error {
 		deployments, err := uc.deployment.List(egctx, scope, namespace, selector)
 		if err == nil {
-			deploymentMap := map[string]*workload.Deployment{}
+			deploymentMap = map[string]*workload.Deployment{}
 
 			for i := range deployments {
 				d := deployments[i]
