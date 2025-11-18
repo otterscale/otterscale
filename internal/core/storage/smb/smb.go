@@ -318,7 +318,7 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 	if len(localUsers) > 0 {
 		usersSecret := uc.buildUsersSecret(namespace, names.UsersSecret, localUsers)
 
-		if err := uc.upsertSecret(ctx, scope, namespace, usersSecret); err != nil {
+		if err := uc.upsertSecret(ctx, scope, namespace, names.UsersSecret, usersSecret); err != nil {
 			return nil, err
 		}
 	} else {
@@ -329,7 +329,7 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 	if joinSource != nil {
 		joinSecret := uc.buildJoinSecret(namespace, names.JoinSecret, joinSource)
 
-		if err := uc.upsertSecret(ctx, scope, namespace, joinSecret); err != nil {
+		if err := uc.upsertSecret(ctx, scope, namespace, names.JoinSecret, joinSecret); err != nil {
 			return nil, err
 		}
 	} else {
@@ -564,9 +564,8 @@ func (uc *UseCase) buildShare(namespace, name string, browsable, readOnly bool, 
 	}
 }
 
-func (uc *UseCase) upsertSecret(ctx context.Context, scope, namespace string, secret *config.Secret) error {
-	secret, err := uc.secret.Get(ctx, scope, namespace, secret.Name)
-	if err != nil {
+func (uc *UseCase) upsertSecret(ctx context.Context, scope, namespace, name string, secret *config.Secret) error {
+	if _, err := uc.secret.Get(ctx, scope, namespace, name); err != nil {
 		if k8serrors.IsNotFound(err) {
 			_, err = uc.secret.Create(ctx, scope, namespace, secret)
 			return err
@@ -574,6 +573,6 @@ func (uc *UseCase) upsertSecret(ctx context.Context, scope, namespace string, se
 		return err
 	}
 
-	_, err = uc.secret.Update(ctx, scope, namespace, secret)
+	_, err := uc.secret.Update(ctx, scope, namespace, secret)
 	return err
 }
