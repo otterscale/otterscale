@@ -623,6 +623,8 @@
 	"endpoint": "Endpoint",
 	"endpoints": "Endpoints",
 	"secret_key": "Secret Key",
+	"secrets": "Secrets",
+	"immutable": "Immutable",
 	"parameter": "Parameter",
 	"back": "Back",
 	"next": "Next",
