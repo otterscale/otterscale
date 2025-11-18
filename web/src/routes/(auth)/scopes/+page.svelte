@@ -71,6 +71,84 @@
 			{m.scope_selector()}
 		</h2>
 		<p class="mt-4 text-center text-lg text-muted-foreground">{m.scope_selector_description()}</p>
+		<!-- Scopes Grid -->
+		<div class="z-10 mx-auto grid w-full grid-cols-8 gap-4 px-4 py-10 sm:gap-6 xl:px-0 2xl:w-3/4">
+			{#if scopes.length === 0}
+				<!-- Add Scope Card -->
+				<button onclick={() => (open = true)} class="group col-span-2 col-start-4 cursor-pointer">
+					<Card.Root class="transition-all duration-200 hover:scale-105 hover:shadow-lg">
+						<Card.Header class="gap-0">
+							<div class="flex items-center gap-4">
+								<!-- Add Icon -->
+								<div class="flex size-10 items-center justify-center rounded-lg bg-primary">
+									<Icon icon="ph:plus-bold" class="size-6 text-card" />
+								</div>
+
+								<!-- Add Scope Info -->
+								<div class="grid -space-y-1">
+									<Card.Description class="capitalize">{m.create()}</Card.Description>
+									<Card.Title class="text-2xl text-nowrap">New Scope</Card.Title>
+								</div>
+							</div>
+
+							<!-- Action -->
+							<Card.Action class="overflow-hidden group-hover:self-center">
+								<div
+									class="hidden size-10 items-center justify-center rounded-full text-muted-foreground transition-colors group-hover:inline-flex group-hover:bg-primary group-hover:text-primary-foreground"
+								>
+									<Icon icon="ph:arrow-right" class="size-6" />
+								</div>
+							</Card.Action>
+						</Card.Header>
+					</Card.Root>
+				</button>
+				<DialogCreateScope bind:open />
+			{:else}
+				{#each scopes as scope, index (scope.name)}
+					<a
+						href={resolve(`/(auth)/scope/[scope]`, { scope: scope.name })}
+						class="group col-span-2 cursor-pointer {getCardColumnClass(index, scopes.length)}"
+					>
+						<Card.Root>
+							<Card.Header class="gap-0">
+								<div class="flex items-center gap-4">
+									<!-- Scope Icon -->
+									<div class="flex size-10 items-center justify-center rounded-lg bg-primary">
+										<Icon
+											icon="{scopeIcon(getScopeIndex(scope.name))}-fill"
+											class="size-6 text-primary-foreground"
+										/>
+									</div>
+
+									<!-- Scope Info -->
+									<div class="grid -space-y-1">
+										<Card.Description class="capitalize">
+											{scope.status}
+										</Card.Description>
+										<Card.Title class="text-2xl text-nowrap">{scope.name}</Card.Title>
+									</div>
+								</div>
+
+								<!-- Scope Stats and Action -->
+								<Card.Action class="overflow-hidden group-hover:self-center">
+									<Badge variant="outline" class="hidden group-hover:hidden lg:block">
+										<span class="text-green-600">
+											{m.machines()}: {scope.machineCount > 0 ? scope.machineCount : '-'} /
+											{m.unit()}: {scope.unitCount > 0 ? scope.unitCount : '-'}
+										</span>
+									</Badge>
+									<div
+										class="hidden size-10 items-center justify-center rounded-full text-muted-foreground transition-colors group-hover:inline-flex group-hover:bg-primary group-hover:text-primary-foreground"
+									>
+										<Icon icon="ph:arrow-right" class="size-6" />
+									</div>
+								</Card.Action>
+							</Card.Header>
+						</Card.Root>
+					</a>
+				{/each}
+			{/if}
+		</div>
 	{:else}
 		<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">
 			{m.scope_selector_loading()}
@@ -85,82 +163,4 @@
 			{m.scope_selector_loading_description()}
 		</Button>
 	{/if}
-	<!-- Scopes Grid -->
-	<div class="z-10 mx-auto grid w-full grid-cols-8 gap-4 px-4 py-10 sm:gap-6 xl:px-0 2xl:w-3/4">
-		{#if scopes.length === 0}
-			<!-- Add Scope Card -->
-			<button onclick={() => (open = true)} class="group col-span-2 col-start-4 cursor-pointer">
-				<Card.Root class="transition-all duration-200 hover:scale-105 hover:shadow-lg">
-					<Card.Header class="gap-0">
-						<div class="flex items-center gap-4">
-							<!-- Add Icon -->
-							<div class="flex size-10 items-center justify-center rounded-lg bg-primary">
-								<Icon icon="ph:plus-bold" class="size-6 text-card" />
-							</div>
-
-							<!-- Add Scope Info -->
-							<div class="grid -space-y-1">
-								<Card.Description class="capitalize">{m.create()}</Card.Description>
-								<Card.Title class="text-2xl text-nowrap">New Scope</Card.Title>
-							</div>
-						</div>
-
-						<!-- Action -->
-						<Card.Action class="overflow-hidden group-hover:self-center">
-							<div
-								class="hidden size-10 items-center justify-center rounded-full text-muted-foreground transition-colors group-hover:inline-flex group-hover:bg-primary group-hover:text-primary-foreground"
-							>
-								<Icon icon="ph:arrow-right" class="size-6" />
-							</div>
-						</Card.Action>
-					</Card.Header>
-				</Card.Root>
-			</button>
-			<DialogCreateScope bind:open />
-		{:else}
-			{#each scopes as scope, index (scope.name)}
-				<a
-					href={resolve(`/(auth)/scope/[scope]`, { scope: scope.name })}
-					class="group col-span-2 cursor-pointer {getCardColumnClass(index, scopes.length)}"
-				>
-					<Card.Root>
-						<Card.Header class="gap-0">
-							<div class="flex items-center gap-4">
-								<!-- Scope Icon -->
-								<div class="flex size-10 items-center justify-center rounded-lg bg-primary">
-									<Icon
-										icon="{scopeIcon(getScopeIndex(scope.name))}-fill"
-										class="size-6 text-primary-foreground"
-									/>
-								</div>
-
-								<!-- Scope Info -->
-								<div class="grid -space-y-1">
-									<Card.Description class="capitalize">
-										{scope.status}
-									</Card.Description>
-									<Card.Title class="text-2xl text-nowrap">{scope.name}</Card.Title>
-								</div>
-							</div>
-
-							<!-- Scope Stats and Action -->
-							<Card.Action class="overflow-hidden group-hover:self-center">
-								<Badge variant="outline" class="hidden group-hover:hidden lg:block">
-									<span class="text-green-600">
-										{m.machines()}: {scope.machineCount > 0 ? scope.machineCount : '-'} /
-										{m.unit()}: {scope.unitCount > 0 ? scope.unitCount : '-'}
-									</span>
-								</Badge>
-								<div
-									class="hidden size-10 items-center justify-center rounded-full text-muted-foreground transition-colors group-hover:inline-flex group-hover:bg-primary group-hover:text-primary-foreground"
-								>
-									<Icon icon="ph:arrow-right" class="size-6" />
-								</div>
-							</Card.Action>
-						</Card.Header>
-					</Card.Root>
-				</a>
-			{/each}
-		{/if}
-	</div>
 </main>

@@ -1,7 +1,3 @@
-<script lang="ts" module>
-	export const GLOBAL_SCOPE = 'otterscale';
-</script>
-
 <script lang="ts">
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import HouseIcon from '@lucide/svelte/icons/house';
@@ -54,7 +50,7 @@
 	const envClient = createClient(EnvironmentService, transport);
 
 	const scopes = writable<Scope[]>([]);
-	let activeScope = $state(page.params.scope || GLOBAL_SCOPE);
+	let activeScope = $state(page.params.scope || 'Otterscale');
 
 	async function fetchScopes() {
 		try {
@@ -95,8 +91,8 @@
 	}
 
 	$effect(() => {
-		if (page.params.scope) {
-			initialize(page.params.scope);
+		if (activeScope) {
+			initialize(activeScope);
 		}
 	});
 </script>
