@@ -18,7 +18,7 @@
 </script>
 
 <script lang="ts">
-	let { scope, namespace }: { scope: string; namespace: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const instanceClient = createClient(InstanceService, transport);
@@ -28,7 +28,6 @@
 		instanceClient
 			.listInstanceTypes({
 				scope: scope,
-				namespace: namespace,
 				includeClusterWide: false
 			})
 			.then((response) => {

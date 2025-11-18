@@ -23,7 +23,7 @@
 </script>
 
 <script lang="ts">
-	let { scope, namespace }: { scope: string; namespace: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -33,7 +33,6 @@
 		virtualMachineClient
 			.listDataVolumes({
 				scope: scope,
-				namespace: namespace,
 				bootImage: true
 			})
 			.then((response) => {

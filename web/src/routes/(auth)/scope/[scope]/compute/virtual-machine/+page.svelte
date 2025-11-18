@@ -18,6 +18,6 @@
 	]);
 </script>
 
-{#if page.params.scope! + page.params.namespace!}
-	<VirtualMachine scope={page.params.scope!} namespace={page.params.namespace!} />
+{#if page.params.scope!}
+	<VirtualMachine scope={page.params.scope!} />
 {/if}
