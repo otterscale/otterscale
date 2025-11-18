@@ -19,20 +19,14 @@
 
 	let {
 		prometheusDriver,
-		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
-	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(scope))
-	);
-	const totalCPUCores = $derived(
-		scopeMachines.reduce((sum, m) => sum + Number(m.cpuCount ?? 0), 0)
-	);
+	const totalCPUCores = $derived($machines.reduce((sum, m) => sum + Number(m.cpuCount ?? 0), 0));
 	let cpuUsages = $state([] as SampleValue[]);
 	const cpuUsagesTrend = $derived(
 		cpuUsages.length > 0
@@ -48,7 +42,7 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`1 - (sum(irate(node_cpu_seconds_total{juju_model="${scope}",mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total{juju_model="${scope}"}[2m])))`,
+				`1 - (sum(irate(node_cpu_seconds_total{juju_model=~".*",mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total{juju_model=~".*"}[2m])))`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60

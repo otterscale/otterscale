@@ -12,9 +12,8 @@
 
 	let {
 		prometheusDriver,
-		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 
 	const systemLoadConfiguration = {
 		one: { label: '1 min', color: 'var(--chart-1)' },
@@ -34,7 +33,7 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`sum(node_load1{juju_model="${scope}"})`,
+				`sum(node_load1{juju_model=~".*"})`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60
@@ -44,7 +43,7 @@
 			});
 		prometheusDriver
 			.rangeQuery(
-				`sum(node_load5{juju_model="${scope}"})`,
+				`sum(node_load5{juju_model=~".*"})`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60

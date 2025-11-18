@@ -11,19 +11,16 @@
 	import * as Chart from '$lib/components/ui/chart';
 	import { m } from '$lib/paraglide/messages';
 
-	let { scope, isReloading = $bindable() }: { scope: string; isReloading: boolean } = $props();
+	let { isReloading = $bindable() }: { isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
-	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(scope))
-	);
-	const totalNodes = $derived(scopeMachines.length);
+	const totalNodes = $derived($machines.length);
 
-	const virtualNodes = $derived(scopeMachines.filter((m) => m.tags.includes('virtual')).length);
-	const physicalNodes = $derived(scopeMachines.length - virtualNodes);
+	const virtualNodes = $derived($machines.filter((m) => m.tags.includes('virtual')).length);
+	const physicalNodes = $derived($machines.length - virtualNodes);
 
 	const nodeProportions = $derived([
 		{ node: 'physical', nodes: physicalNodes, color: 'var(--color-physical)' },
@@ -37,7 +34,7 @@
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
-		machineClient.listMachines({ scope: scope }).then((response) => {
+		machineClient.listMachines({}).then((response) => {
 			machines.set(response.machines);
 		});
 	}

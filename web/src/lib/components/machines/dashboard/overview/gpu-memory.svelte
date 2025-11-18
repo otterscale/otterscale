@@ -20,9 +20,8 @@
 
 	let {
 		prometheusDriver,
-		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 
 	let latestMemoryUsage = $state(0);
 	let memoryUsages = $state([] as SampleValue[]);
@@ -42,7 +41,7 @@
 		prometheusDriver
 			.instantQuery(
 				`
-				sum(DCGM_FI_DEV_FB_USED{juju_model="${scope}"}) + sum(DCGM_FI_DEV_FB_FREE{juju_model="${scope}"})
+				sum(DCGM_FI_DEV_FB_USED{juju_model=~".*"}) + sum(DCGM_FI_DEV_FB_FREE{juju_model=~".*"})
 				`
 			)
 			.then((response) => {
@@ -52,7 +51,7 @@
 		prometheusDriver
 			.rangeQuery(
 				`
-				avg(DCGM_FI_DEV_FB_USED{juju_model="${scope}"} / (DCGM_FI_DEV_FB_USED{juju_model="${scope}"} + DCGM_FI_DEV_FB_FREE{juju_model="${scope}"}))
+				avg(DCGM_FI_DEV_FB_USED{juju_model=~".*"} / (DCGM_FI_DEV_FB_USED{juju_model=~".*"} + DCGM_FI_DEV_FB_FREE{juju_model=~".*"}))
 				`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
@@ -71,7 +70,7 @@
 			await fetch();
 			isLoading = false;
 		} catch (error) {
-			console.error(`Fail to fetch data in scope ${scope}:`, error);
+			console.error('Fail to fetch data:', error);
 		}
 	});
 	onDestroy(() => {
