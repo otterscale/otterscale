@@ -2928,7 +2928,8 @@ type SMBShare struct {
 	state                     protoimpl.MessageState   `protogen:"opaque.v1"`
 	xxx_hidden_Name           *string                  `protobuf:"bytes,1,opt,name=name"`
 	xxx_hidden_Namespace      *string                  `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_Status         *string                  `protobuf:"bytes,3,opt,name=status"`
+	xxx_hidden_Replicas       int32                    `protobuf:"varint,3,opt,name=replicas"`
+	xxx_hidden_Healthies      int32                    `protobuf:"varint,4,opt,name=healthies"`
 	xxx_hidden_SizeBytes      uint64                   `protobuf:"varint,11,opt,name=size_bytes,json=sizeBytes"`
 	xxx_hidden_Browsable      bool                     `protobuf:"varint,21,opt,name=browsable"`
 	xxx_hidden_ReadOnly       bool                     `protobuf:"varint,22,opt,name=read_only,json=readOnly"`
@@ -2987,14 +2988,18 @@ func (x *SMBShare) GetNamespace() string {
 	return ""
 }
 
-func (x *SMBShare) GetStatus() string {
+func (x *SMBShare) GetReplicas() int32 {
 	if x != nil {
-		if x.xxx_hidden_Status != nil {
-			return *x.xxx_hidden_Status
-		}
-		return ""
+		return x.xxx_hidden_Replicas
 	}
-	return ""
+	return 0
+}
+
+func (x *SMBShare) GetHealthies() int32 {
+	if x != nil {
+		return x.xxx_hidden_Healthies
+	}
+	return 0
 }
 
 func (x *SMBShare) GetSizeBytes() uint64 {
@@ -3048,37 +3053,42 @@ func (x *SMBShare) GetSecurityConfig() *SMBShare_SecurityConfig {
 
 func (x *SMBShare) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
 }
 
 func (x *SMBShare) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
 }
 
-func (x *SMBShare) SetStatus(v string) {
-	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 10)
+func (x *SMBShare) SetReplicas(v int32) {
+	x.xxx_hidden_Replicas = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
+}
+
+func (x *SMBShare) SetHealthies(v int32) {
+	x.xxx_hidden_Healthies = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
 }
 
 func (x *SMBShare) SetSizeBytes(v uint64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
 }
 
 func (x *SMBShare) SetBrowsable(v bool) {
 	x.xxx_hidden_Browsable = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
 }
 
 func (x *SMBShare) SetReadOnly(v bool) {
 	x.xxx_hidden_ReadOnly = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
 }
 
 func (x *SMBShare) SetGuestOk(v bool) {
 	x.xxx_hidden_GuestOk = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
 }
 
 func (x *SMBShare) SetValidUsers(v []string) {
@@ -3107,39 +3117,46 @@ func (x *SMBShare) HasNamespace() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *SMBShare) HasStatus() bool {
+func (x *SMBShare) HasReplicas() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *SMBShare) HasSizeBytes() bool {
+func (x *SMBShare) HasHealthies() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *SMBShare) HasBrowsable() bool {
+func (x *SMBShare) HasSizeBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *SMBShare) HasReadOnly() bool {
+func (x *SMBShare) HasBrowsable() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *SMBShare) HasGuestOk() bool {
+func (x *SMBShare) HasReadOnly() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+}
+
+func (x *SMBShare) HasGuestOk() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
 func (x *SMBShare) HasCommonConfig() bool {
@@ -3166,28 +3183,33 @@ func (x *SMBShare) ClearNamespace() {
 	x.xxx_hidden_Namespace = nil
 }
 
-func (x *SMBShare) ClearStatus() {
+func (x *SMBShare) ClearReplicas() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Status = nil
+	x.xxx_hidden_Replicas = 0
+}
+
+func (x *SMBShare) ClearHealthies() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Healthies = 0
 }
 
 func (x *SMBShare) ClearSizeBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_SizeBytes = 0
 }
 
 func (x *SMBShare) ClearBrowsable() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_Browsable = false
 }
 
 func (x *SMBShare) ClearReadOnly() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_ReadOnly = false
 }
 
 func (x *SMBShare) ClearGuestOk() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
 	x.xxx_hidden_GuestOk = false
 }
 
@@ -3204,7 +3226,8 @@ type SMBShare_builder struct {
 
 	Name           *string
 	Namespace      *string
-	Status         *string
+	Replicas       *int32
+	Healthies      *int32
 	SizeBytes      *uint64
 	Browsable      *bool
 	ReadOnly       *bool
@@ -3219,31 +3242,35 @@ func (b0 SMBShare_builder) Build() *SMBShare {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
-	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 10)
-		x.xxx_hidden_Status = b.Status
+	if b.Replicas != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
+		x.xxx_hidden_Replicas = *b.Replicas
+	}
+	if b.Healthies != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
+		x.xxx_hidden_Healthies = *b.Healthies
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
 	if b.Browsable != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
 		x.xxx_hidden_Browsable = *b.Browsable
 	}
 	if b.ReadOnly != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
 		x.xxx_hidden_ReadOnly = *b.ReadOnly
 	}
 	if b.GuestOk != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
 		x.xxx_hidden_GuestOk = *b.GuestOk
 	}
 	x.xxx_hidden_ValidUsers = b.ValidUsers
@@ -11930,8 +11957,8 @@ func (b0 SMBShare_SecurityConfig_builder) Build() *SMBShare_SecurityConfig {
 
 type SMBShare_SecurityConfig_User struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Secret      *string                `protobuf:"bytes,1,opt,name=secret"`
-	xxx_hidden_Key         *string                `protobuf:"bytes,2,opt,name=key"`
+	xxx_hidden_Username    *string                `protobuf:"bytes,1,opt,name=username"`
+	xxx_hidden_Password    *string                `protobuf:"bytes,2,opt,name=password"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -11963,78 +11990,78 @@ func (x *SMBShare_SecurityConfig_User) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *SMBShare_SecurityConfig_User) GetSecret() string {
+func (x *SMBShare_SecurityConfig_User) GetUsername() string {
 	if x != nil {
-		if x.xxx_hidden_Secret != nil {
-			return *x.xxx_hidden_Secret
+		if x.xxx_hidden_Username != nil {
+			return *x.xxx_hidden_Username
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *SMBShare_SecurityConfig_User) GetKey() string {
+func (x *SMBShare_SecurityConfig_User) GetPassword() string {
 	if x != nil {
-		if x.xxx_hidden_Key != nil {
-			return *x.xxx_hidden_Key
+		if x.xxx_hidden_Password != nil {
+			return *x.xxx_hidden_Password
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *SMBShare_SecurityConfig_User) SetSecret(v string) {
-	x.xxx_hidden_Secret = &v
+func (x *SMBShare_SecurityConfig_User) SetUsername(v string) {
+	x.xxx_hidden_Username = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *SMBShare_SecurityConfig_User) SetKey(v string) {
-	x.xxx_hidden_Key = &v
+func (x *SMBShare_SecurityConfig_User) SetPassword(v string) {
+	x.xxx_hidden_Password = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *SMBShare_SecurityConfig_User) HasSecret() bool {
+func (x *SMBShare_SecurityConfig_User) HasUsername() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *SMBShare_SecurityConfig_User) HasKey() bool {
+func (x *SMBShare_SecurityConfig_User) HasPassword() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *SMBShare_SecurityConfig_User) ClearSecret() {
+func (x *SMBShare_SecurityConfig_User) ClearUsername() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Secret = nil
+	x.xxx_hidden_Username = nil
 }
 
-func (x *SMBShare_SecurityConfig_User) ClearKey() {
+func (x *SMBShare_SecurityConfig_User) ClearPassword() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Key = nil
+	x.xxx_hidden_Password = nil
 }
 
 type SMBShare_SecurityConfig_User_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Secret *string
-	Key    *string
+	Username *string
+	Password *string
 }
 
 func (b0 SMBShare_SecurityConfig_User_builder) Build() *SMBShare_SecurityConfig_User {
 	m0 := &SMBShare_SecurityConfig_User{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Secret != nil {
+	if b.Username != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Secret = b.Secret
+		x.xxx_hidden_Username = b.Username
 	}
-	if b.Key != nil {
+	if b.Password != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Key = b.Key
+		x.xxx_hidden_Password = b.Password
 	}
 	return m0
 }
@@ -12245,11 +12272,12 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"access_key\x18\x01 \x01(\tR\taccessKey\x12\x1d\n" +
 	"\n" +
-	"secret_key\x18\x02 \x01(\tR\tsecretKey\"\xb3\a\n" +
+	"secret_key\x18\x02 \x01(\tR\tsecretKey\"\xe3\a\n" +
 	"\bSMBShare\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x16\n" +
-	"\x06status\x18\x03 \x01(\tR\x06status\x12\x1d\n" +
+	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1a\n" +
+	"\breplicas\x18\x03 \x01(\x05R\breplicas\x12\x1c\n" +
+	"\thealthies\x18\x04 \x01(\x05R\thealthies\x12\x1d\n" +
 	"\n" +
 	"size_bytes\x18\v \x01(\x04R\tsizeBytes\x12\x1c\n" +
 	"\tbrowsable\x18\x15 \x01(\bR\tbrowsable\x12\x1b\n" +
@@ -12266,16 +12294,16 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"MapToGuest\x12\t\n" +
 	"\x05NEVER\x10\x00\x12\f\n" +
 	"\bBAD_USER\x10\x01\x12\x10\n" +
-	"\fBAD_PASSWORD\x10\x02\x1a\xf5\x02\n" +
+	"\fBAD_PASSWORD\x10\x02\x1a\x83\x03\n" +
 	"\x0eSecurityConfig\x12G\n" +
 	"\x04mode\x18\x01 \x01(\x0e23.otterscale.storage.v1.SMBShare.SecurityConfig.ModeR\x04mode\x12R\n" +
 	"\n" +
 	"local_user\x18\v \x01(\v23.otterscale.storage.v1.SMBShare.SecurityConfig.UserR\tlocalUser\x12\x14\n" +
 	"\x05realm\x18\x15 \x01(\tR\x05realm\x12V\n" +
-	"\fjoin_sources\x18\x16 \x03(\v23.otterscale.storage.v1.SMBShare.SecurityConfig.UserR\vjoinSources\x1a0\n" +
-	"\x04User\x12\x16\n" +
-	"\x06secret\x18\x01 \x01(\tR\x06secret\x12\x10\n" +
-	"\x03key\x18\x02 \x01(\tR\x03key\"&\n" +
+	"\fjoin_sources\x18\x16 \x03(\v23.otterscale.storage.v1.SMBShare.SecurityConfig.UserR\vjoinSources\x1a>\n" +
+	"\x04User\x12\x1a\n" +
+	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"&\n" +
 	"\x04Mode\x12\b\n" +
 	"\x04USER\x10\x00\x12\x14\n" +
 	"\x10ACTIVE_DIRECTORY\x10\x01\"-\n" +
@@ -12562,7 +12590,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\vUNSPECIFIED\x10\x00\x12\v\n" +
 	"\aERASURE\x10\x01\x12\x0e\n" +
 	"\n" +
-	"REPLICATED\x10\x022\xa5&\n" +
+	"REPLICATED\x10\x022\x9c&\n" +
 	"\x0eStorageService\x12o\n" +
 	"\bListMONs\x12&.otterscale.storage.v1.ListMONsRequest\x1a'.otterscale.storage.v1.ListMONsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vstg-general\x12o\n" +
@@ -12671,16 +12699,13 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"stg-object\x12g\n" +
 	"\rDeleteUserKey\x12+.otterscale.storage.v1.DeleteUserKeyRequest\x1a\x16.google.protobuf.Empty\"\x11\x8a\xdf\xd5\x1d\f\n" +
 	"\n" +
-	"stg-object\x12}\n" +
-	"\rListSMBShares\x12+.otterscale.storage.v1.ListSMBSharesRequest\x1a,.otterscale.storage.v1.ListSMBSharesResponse\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12r\n" +
-	"\x0eCreateSMBShare\x12,.otterscale.storage.v1.CreateSMBShareRequest\x1a\x1f.otterscale.storage.v1.SMBShare\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12r\n" +
-	"\x0eUpdateSMBShare\x12,.otterscale.storage.v1.UpdateSMBShareRequest\x1a\x1f.otterscale.storage.v1.SMBShare\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-objectB4Z2github.com/otterscale/otterscale/api/storage/v1;pbb\beditionsp\xe8\a"
+	"stg-object\x12z\n" +
+	"\rListSMBShares\x12+.otterscale.storage.v1.ListSMBSharesRequest\x1a,.otterscale.storage.v1.ListSMBSharesResponse\"\x0e\x8a\xdf\xd5\x1d\t\n" +
+	"\astg-smb\x12o\n" +
+	"\x0eCreateSMBShare\x12,.otterscale.storage.v1.CreateSMBShareRequest\x1a\x1f.otterscale.storage.v1.SMBShare\"\x0e\x8a\xdf\xd5\x1d\t\n" +
+	"\astg-smb\x12o\n" +
+	"\x0eUpdateSMBShare\x12,.otterscale.storage.v1.UpdateSMBShareRequest\x1a\x1f.otterscale.storage.v1.SMBShare\"\x0e\x8a\xdf\xd5\x1d\t\n" +
+	"\astg-smbB4Z2github.com/otterscale/otterscale/api/storage/v1;pbb\beditionsp\xe8\a"
 
 var file_api_storage_v1_storage_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_api_storage_v1_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 75)
