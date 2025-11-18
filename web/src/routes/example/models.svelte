@@ -154,270 +154,300 @@
 	<AlertDialog.Trigger class={buttonVariants({ variant: 'outline' })}>
 		<Icon icon="ph:plus" />
 	</AlertDialog.Trigger>
-	<AlertDialog.Content class="max-h-[50vh] min-h-[77vh] min-w-[77vw] space-y-8 overflow-y-auto p-8">
-		<div class="flex max-h-12 items-start gap-1">
-			{#if isPipelineTagsLoaded}
-				<Popover.Root>
-					<Popover.Trigger>
-						<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
-							<Icon icon="ph:cylinder" class="size-4" />
-							Pipeline
-							{#if selectedPipelineTags.length > 0}
-								<Separator orientation="vertical" class="h-4" />
-								{selectedPipelineTags.length}
-								<Icon icon="ph:tag" class="size-4" />
-							{/if}
-							<Icon icon="ph:caret-down" class="size-4" />
-						</Button>
-					</Popover.Trigger>
-					<Popover.Content class="p-0">
-						<Command.Root>
-							<Command.Input placeholder="Search" />
-							<Command.List>
-								<Command.Empty>{m.no_result()}</Command.Empty>
-								<Command.Group>
-									{#each $pipelineTags as tag}
-										<Command.Item
-											onclick={() => {
-												handlePipelineTagSelect(tag);
-											}}
-										>
-											<Icon
-												icon="ph:check"
-												class={cn(isTagSelected(tag) ? 'visible' : 'invisible', 'h-4 w-4')}
-											/>
-											<div class="flex flex-col items-start justify-start gap-1">
-												<h6 class="text-sm">{tag.label}</h6>
-												{#if tag.subType}
-													<span class="flex items-center gap-1">
-														<Icon icon="ph:tag" class="size-4" />
-														<p class="text-muted-foreground text-xs">
-															{tag.subType}
-														</p>
-													</span>
-												{/if}
-											</div>
-										</Command.Item>
-									{/each}
-								</Command.Group>
-							</Command.List>
-						</Command.Root>
-					</Popover.Content>
-				</Popover.Root>
-			{/if}
-			{#if isLibraryTagsLoaded}
-				<Popover.Root>
-					<Popover.Trigger>
-						<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
-							<Icon icon="ph:package" class="size-4" />
-							Library
-							{#if selectedLibraryTags.length > 0}
-								<Separator orientation="vertical" class="h-4" />
-								{selectedLibraryTags.length}
-								<Icon icon="ph:tag" class="size-4" />
-							{/if}
-							<Icon icon="ph:caret-down" class="size-4" />
-						</Button>
-					</Popover.Trigger>
-					<Popover.Content class="p-0">
-						<Command.Root>
-							<Command.Input placeholder="Search" />
-							<Command.List>
-								<Command.Empty>{m.no_result()}</Command.Empty>
-								<Command.Group>
-									{#each $libraryTags as tag}
-										<Command.Item
-											onclick={() => {
-												handleLibraryTagSelect(tag);
-											}}
-										>
-											<Icon
-												icon="ph:check"
-												class={cn(isTagSelected(tag) ? 'visible' : 'invisible', 'h-4 w-4')}
-											/>
-											<div class="flex flex-col items-start justify-start gap-1">
-												<h6 class="text-sm">{tag.label}</h6>
-												{#if tag.subType}
-													<span class="flex items-center gap-1">
-														<Icon icon="ph:tag" class="size-4" />
-														<p class="text-muted-foreground text-xs">
-															{tag.subType}
-														</p>
-													</span>
-												{/if}
-											</div>
-										</Command.Item>
-									{/each}
-								</Command.Group>
-							</Command.List>
-						</Command.Root>
-					</Popover.Content>
-				</Popover.Root>
-			{/if}
-			{#if isLicenseTagsLoaded}
-				<Popover.Root>
-					<Popover.Trigger>
-						<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
-							<Icon icon="ph:identification-badge" class="size-4" />
-							License
-							{#if selectedLicenseTags.length > 0}
-								<Separator orientation="vertical" class="h-4" />
-								{selectedLicenseTags.length}
-								<Icon icon="ph:tag" class="size-4" />
-							{/if}
-							<Icon icon="ph:caret-down" class="size-4" />
-						</Button>
-					</Popover.Trigger>
-					<Popover.Content class="p-0">
-						<Command.Root>
-							<Command.Input placeholder="Search" />
-							<Command.List>
-								<Command.Empty>{m.no_result()}</Command.Empty>
-								<Command.Group>
-									{#each $licenseTags as tag}
-										<Command.Item
-											onclick={() => {
-												handleLicenseTagSelect(tag);
-											}}
-										>
-											<Icon
-												icon="ph:check"
-												class={cn(isTagSelected(tag) ? 'visible' : 'invisible', 'h-4 w-4')}
-											/>
-											<div class="flex flex-col items-start justify-start gap-1">
-												<h6 class="text-sm">{tag.label}</h6>
-												{#if tag.subType}
-													<span class="flex items-center gap-1">
-														<Icon icon="ph:tag" class="size-4" />
-														<p class="text-muted-foreground text-xs">
-															{tag.subType}
-														</p>
-													</span>
-												{/if}
-											</div>
-										</Command.Item>
-									{/each}
-								</Command.Group>
-							</Command.List>
-						</Command.Root>
-					</Popover.Content>
-				</Popover.Root>
-			{/if}
-			<Popover.Root>
-				<Popover.Trigger>
-					<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
-						<Icon icon="ph:funnel" class="size-4" />
-						<p class="capitalize">{sort}</p>
-						<Icon icon="ph:caret-down" class="size-4" />
-					</Button>
-				</Popover.Trigger>
-				<Popover.Content class="p-0">
-					<Command.Root>
-						<Command.List>
-							<Command.Group>
-								<Command.Item
-									onclick={() => {
-										sort = 'downloads';
-									}}
-								>
-									<Icon icon={sort === 'downloads' ? 'ph:download-fill' : 'ph:download'} />
-									<p>Downloads</p>
-								</Command.Item>
-								<Command.Item
-									onclick={() => {
-										sort = 'likes';
-									}}
-								>
-									<Icon icon={sort === 'likes' ? 'ph:heart-fill' : 'ph:heart'} />
-									<p>Likes</p>
-								</Command.Item>
-							</Command.Group>
-						</Command.List>
-					</Command.Root>
-				</Popover.Content>
-			</Popover.Root>
-			<SingleInput.General type="number" class="h-8 w-24" bind:value={limit} min={0} step={6} />
+	<AlertDialog.Content class="max-h-[77vh] min-h-[50vh] min-w-[77vw] overflow-y-auto ">
+		<div class="h-full space-y-8">
+			<AlertDialog.Header>
+				<AlertDialog.Title>Select Model</AlertDialog.Title>
+				<AlertDialog.Description>
+					Browse and select from available Hugging Face models. Use filters to narrow down your search by
+					pipeline, library, and license type.
+				</AlertDialog.Description>
+			</AlertDialog.Header>
 			{#if selectedModel}
-				<Button
-					class="ml-auto h-8"
-					onclick={() => {
-						value = selectedModel;
-						close();
-					}}
-				>
-					Confirm
-				</Button>
-			{/if}
-		</div>
-		{#if selectedModel}
-			<div
-				class="text-muted-foreground bg-muted flex h-40 flex-col items-center justify-center gap-4 rounded-lg text-center text-sm"
-			>
-				<Icon icon="ph:robot" class="size-24" />
-				{selectedModel.id}
-			</div>
-		{/if}
-		{#if huggingFaceModels.length === 0 && isModelsLoaded}
-			<div
-				class="text-muted-foreground flex h-full flex-col items-center justify-center gap-4 rounded-lg bg-red-50 text-center text-sm"
-			>
-				<Icon icon="ph:robot-fill" class="size-60 animate-pulse" />
-				<p>There is no model matching the selected filters.</p>
-				<Button
-					variant="destructive"
-					onclick={() => {
-						reset();
-					}}
-				>
-					Reset
-				</Button>
-			</div>
-		{:else}
-			<div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-				{#each huggingFaceModels as model}
-					<Card.Root
-						class={cn('hover:bg-muted/50', selectedModel?.id === model.id ? 'bg-muted' : 'bg-transparent')}
+				<div class="flex w-full items-center justify-between">
+					<div class="flex h-12 w-full items-center gap-2 text-center">
+						<Icon icon="ph:robot" class="size-8" />
+						<div class="space-y-1">
+							<p class="text-sm">{selectedModel.id}</p>
+							<div class="text-muted-foreground hidden items-center text-xs md:flex">
+								<span class="flex items-center gap-1">
+									<Icon icon="ph:clock" />
+									<p>{formatTimeAgo(new Date(selectedModel.createdAt))}</p>
+								</span>
+								<Icon icon="ph:dot-bold" />
+								<span class="flex items-center gap-1">
+									<Icon icon="ph:download-simple" />
+									<p>{formatBigNumber(selectedModel.downloads)}</p>
+								</span>
+								<Icon icon="ph:dot-bold" />
+								<span class="flex items-center gap-1">
+									<Icon icon="ph:heart" />
+									<p>{formatBigNumber(selectedModel.likes)}</p>
+								</span>
+							</div>
+						</div>
+					</div>
+					<Button
+						class="ml-auto h-8"
 						onclick={() => {
-							selectedModel = model;
+							value = selectedModel;
+							close();
 						}}
 					>
-						<Card.Content>
-							<div class="flex items-center gap-2">
-								<span class="bg-muted h-fit w-fit rounded-full p-3">
-									<Icon icon="ph:robot" class="size-8" />
-								</span>
-								<div class="space-y-2">
-									<p class="text-sm">{model.id}</p>
-									<span class="flex gap-1">
-										{#each model.tags.slice(0, 3) as tag}
-											<Badge>{tag}</Badge>
+						Confirm
+					</Button>
+				</div>
+			{/if}
+			<div class="flex h-12 items-center gap-1">
+				{#if isPipelineTagsLoaded}
+					<Popover.Root>
+						<Popover.Trigger>
+							<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
+								<Icon icon="ph:cylinder" class="size-4" />
+								Pipeline
+								{#if selectedPipelineTags.length > 0}
+									<Separator orientation="vertical" class="h-4" />
+									{selectedPipelineTags.length}
+									<Icon icon="ph:tag" class="size-4" />
+								{/if}
+								<Icon icon="ph:caret-down" class="size-4" />
+							</Button>
+						</Popover.Trigger>
+						<Popover.Content class="p-0">
+							<Command.Root>
+								<Command.Input placeholder="Search" />
+								<Command.List>
+									<Command.Empty>{m.no_result()}</Command.Empty>
+									<Command.Group>
+										{#each $pipelineTags as tag}
+											<Command.Item
+												onclick={() => {
+													handlePipelineTagSelect(tag);
+												}}
+											>
+												<Icon
+													icon="ph:check"
+													class={cn(isTagSelected(tag) ? 'visible' : 'invisible', 'h-4 w-4')}
+												/>
+												<div class="flex flex-col items-start justify-start gap-1">
+													<h6 class="text-sm">{tag.label}</h6>
+													{#if tag.subType}
+														<span class="flex items-center gap-1">
+															<Icon icon="ph:tag" class="size-4" />
+															<p class="text-muted-foreground text-xs">
+																{tag.subType}
+															</p>
+														</span>
+													{/if}
+												</div>
+											</Command.Item>
 										{/each}
-										{#if model.tags.length > 3}
-											<Badge variant="outline">+{model.tags.length - 3}</Badge>
-										{/if}
+									</Command.Group>
+								</Command.List>
+							</Command.Root>
+						</Popover.Content>
+					</Popover.Root>
+				{/if}
+				{#if isLibraryTagsLoaded}
+					<Popover.Root>
+						<Popover.Trigger>
+							<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
+								<Icon icon="ph:package" class="size-4" />
+								Library
+								{#if selectedLibraryTags.length > 0}
+									<Separator orientation="vertical" class="h-4" />
+									{selectedLibraryTags.length}
+									<Icon icon="ph:tag" class="size-4" />
+								{/if}
+								<Icon icon="ph:caret-down" class="size-4" />
+							</Button>
+						</Popover.Trigger>
+						<Popover.Content class="p-0">
+							<Command.Root>
+								<Command.Input placeholder="Search" />
+								<Command.List>
+									<Command.Empty>{m.no_result()}</Command.Empty>
+									<Command.Group>
+										{#each $libraryTags as tag}
+											<Command.Item
+												onclick={() => {
+													handleLibraryTagSelect(tag);
+												}}
+											>
+												<Icon
+													icon="ph:check"
+													class={cn(isTagSelected(tag) ? 'visible' : 'invisible', 'h-4 w-4')}
+												/>
+												<div class="flex flex-col items-start justify-start gap-1">
+													<h6 class="text-sm">{tag.label}</h6>
+													{#if tag.subType}
+														<span class="flex items-center gap-1">
+															<Icon icon="ph:tag" class="size-4" />
+															<p class="text-muted-foreground text-xs">
+																{tag.subType}
+															</p>
+														</span>
+													{/if}
+												</div>
+											</Command.Item>
+										{/each}
+									</Command.Group>
+								</Command.List>
+							</Command.Root>
+						</Popover.Content>
+					</Popover.Root>
+				{/if}
+				{#if isLicenseTagsLoaded}
+					<Popover.Root>
+						<Popover.Trigger>
+							<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
+								<Icon icon="ph:identification-badge" class="size-4" />
+								License
+								{#if selectedLicenseTags.length > 0}
+									<Separator orientation="vertical" class="h-4" />
+									{selectedLicenseTags.length}
+									<Icon icon="ph:tag" class="size-4" />
+								{/if}
+								<Icon icon="ph:caret-down" class="size-4" />
+							</Button>
+						</Popover.Trigger>
+						<Popover.Content class="p-0">
+							<Command.Root>
+								<Command.Input placeholder="Search" />
+								<Command.List>
+									<Command.Empty>{m.no_result()}</Command.Empty>
+									<Command.Group>
+										{#each $licenseTags as tag}
+											<Command.Item
+												onclick={() => {
+													handleLicenseTagSelect(tag);
+												}}
+											>
+												<Icon
+													icon="ph:check"
+													class={cn(isTagSelected(tag) ? 'visible' : 'invisible', 'h-4 w-4')}
+												/>
+												<div class="flex flex-col items-start justify-start gap-1">
+													<h6 class="text-sm">{tag.label}</h6>
+													{#if tag.subType}
+														<span class="flex items-center gap-1">
+															<Icon icon="ph:tag" class="size-4" />
+															<p class="text-muted-foreground text-xs">
+																{tag.subType}
+															</p>
+														</span>
+													{/if}
+												</div>
+											</Command.Item>
+										{/each}
+									</Command.Group>
+								</Command.List>
+							</Command.Root>
+						</Popover.Content>
+					</Popover.Root>
+				{/if}
+				<Popover.Root>
+					<Popover.Trigger>
+						<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
+							<Icon icon="ph:funnel" class="size-4" />
+							<p class="capitalize">{sort}</p>
+							<Icon icon="ph:caret-down" class="size-4" />
+						</Button>
+					</Popover.Trigger>
+					<Popover.Content class="p-0">
+						<Command.Root>
+							<Command.List>
+								<Command.Group>
+									<Command.Item
+										onclick={() => {
+											sort = 'downloads';
+										}}
+									>
+										<Icon icon={sort === 'downloads' ? 'ph:download-fill' : 'ph:download'} />
+										<p>Downloads</p>
+									</Command.Item>
+									<Command.Item
+										onclick={() => {
+											sort = 'likes';
+										}}
+									>
+										<Icon icon={sort === 'likes' ? 'ph:heart-fill' : 'ph:heart'} />
+										<p>Likes</p>
+									</Command.Item>
+								</Command.Group>
+							</Command.List>
+						</Command.Root>
+					</Popover.Content>
+				</Popover.Root>
+				<SingleInput.General type="number" class="h-8 w-24" bind:value={limit} min={0} step={6} />
+			</div>
+			{#if huggingFaceModels.length > 0}
+				<div class="grid gap-4 border sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+					{#each huggingFaceModels as model}
+						<Card.Root
+							class={cn(
+								'hover:bg-muted/50 h-40',
+								selectedModel?.id === model.id ? 'bg-muted' : 'bg-transparent',
+							)}
+							onclick={() => {
+								selectedModel = model;
+							}}
+						>
+							<Card.Content>
+								<div class="flex items-center gap-2">
+									<span class="bg-muted h-fit w-fit rounded-full p-3">
+										<Icon icon="ph:robot" class="size-8" />
 									</span>
-									<div class="text-muted-foreground ml-auto flex items-center text-xs">
-										<span class="flex items-center gap-1">
-											<Icon icon="ph:clock" />
-											<p>{formatTimeAgo(new Date(model.createdAt))}</p>
-										</span>
-										<Icon icon="ph:dot-bold" />
-										<span class="flex items-center gap-1">
-											<Icon icon="ph:download-simple" />
-											<p>{formatBigNumber(model.downloads)}</p>
-										</span>
-										<Icon icon="ph:dot-bold" />
-										<span class="flex items-center gap-1">
-											<Icon icon="ph:heart" />
-											<p>{formatBigNumber(model.likes)}</p>
-										</span>
+									<div class="space-y-2">
+										<p class="text-sm">{model.id}</p>
+										<div class="text-muted-foreground ml-auto flex items-center text-xs">
+											<span class="flex items-center gap-1">
+												<Icon icon="ph:clock" />
+												<p>{formatTimeAgo(new Date(model.createdAt))}</p>
+											</span>
+											<Icon icon="ph:dot-bold" />
+											<span class="flex items-center gap-1">
+												<Icon icon="ph:download-simple" />
+												<p>{formatBigNumber(model.downloads)}</p>
+											</span>
+											<Icon icon="ph:dot-bold" />
+											<span class="flex items-center gap-1">
+												<Icon icon="ph:heart" />
+												<p>{formatBigNumber(model.likes)}</p>
+											</span>
+										</div>
 									</div>
 								</div>
-							</div>
-						</Card.Content>
-					</Card.Root>
-				{/each}
-			</div>
-		{/if}
+							</Card.Content>
+							<Card.Footer class="mt-auto">
+								<span class="flex gap-1">
+									{#each model.tags.slice(0, 3) as tag}
+										<Badge>{tag}</Badge>
+									{/each}
+									{#if model.tags.length > 3}
+										<Badge variant="outline">+{model.tags.length - 3}</Badge>
+									{/if}
+								</span>
+							</Card.Footer>
+						</Card.Root>
+					{/each}
+				</div>
+			{:else if isModelsLoaded}
+				<div
+					class="text-muted-foreground flex h-fit flex-col items-center justify-center gap-4 rounded-lg bg-red-50 p-8 text-center text-sm"
+				>
+					<Icon icon="ph:robot-fill" class="size-60 animate-pulse" />
+					<p>There is no model matching the selected filters.</p>
+					<Button
+						variant="destructive"
+						onclick={() => {
+							reset();
+						}}
+					>
+						Reset
+					</Button>
+				</div>
+			{/if}
+		</div>
 	</AlertDialog.Content>
 </AlertDialog.Root>
