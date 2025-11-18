@@ -984,7 +984,7 @@ func toProtoSMBShareSecurityConfigUsers(us []smb.User) []*pb.SMBShare_SecurityCo
 func toProtoSMBShareSecurityConfigUser(u *smb.User) *pb.SMBShare_SecurityConfig_User {
 	ret := &pb.SMBShare_SecurityConfig_User{}
 	ret.SetUsername(u.Username)
-	ret.SetPassword("********") // hide
+	// ret.SetPassword(u.Password) // ignore password in proto for security reason
 	return ret
 }
 

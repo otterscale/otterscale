@@ -129,11 +129,13 @@ func NewUseCase(smbCommonConfig SMBCommonConfigRepo, smbShare SMBShareRepo, smbS
 	}
 }
 
+//nolint:funlen // ignore
 func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (shareData []ShareData, host string, err error) {
 	var (
 		commonConfigMap   map[string]*CommonConfig
 		securityConfigMap map[string]*SecurityConfig
 		deploymentMap     map[string]*workload.Deployment
+		secretMap         map[string]*config.Secret
 		allPods           []workload.Pod
 		allShares         []Share
 	)
@@ -147,8 +149,7 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (
 			commonConfigMap = map[string]*CommonConfig{}
 
 			for i := range commonConfigs {
-				cc := commonConfigs[i]
-				commonConfigMap[cc.Name] = &cc
+				commonConfigMap[commonConfigs[i].Name] = &commonConfigs[i]
 			}
 		}
 
@@ -161,8 +162,7 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (
 			securityConfigMap = map[string]*SecurityConfig{}
 
 			for i := range securityConfigs {
-				sc := securityConfigs[i]
-				securityConfigMap[sc.Name] = &sc
+				securityConfigMap[securityConfigs[i].Name] = &securityConfigs[i]
 			}
 		}
 
@@ -175,11 +175,22 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (
 			deploymentMap = map[string]*workload.Deployment{}
 
 			for i := range deployments {
-				d := deployments[i]
-				deploymentMap[d.Name] = &d
+				deploymentMap[deployments[i].Name] = &deployments[i]
 			}
 		}
 
+		return err
+	})
+
+	eg.Go(func() error {
+		secrets, err := uc.secret.List(egctx, scope, namespace, selector)
+		if err == nil {
+			secretMap = map[string]*config.Secret{}
+
+			for i := range secrets {
+				secretMap[secrets[i].Name] = &secrets[i]
+			}
+		}
 		return err
 	})
 
@@ -218,10 +229,18 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (
 			return nil, "", fmt.Errorf("failed to create selector: %w", err)
 		}
 
+		names := uc.newNames(share.Name)
+		localUsers, joinSource, err := uc.extractSecrets(secretMap, names.UsersSecret, names.JoinSecret)
+		if err != nil {
+			return nil, "", err
+		}
+
 		ret = append(ret, ShareData{
 			Share:          &share,
 			CommonConfig:   commonConfigMap[share.Spec.CommonConfig],
 			SecurityConfig: securityConfigMap[share.Spec.SecurityConfig],
+			LocalUsers:     localUsers,
+			JoinSource:     joinSource,
 			Deployment:     deployment,
 			Pods:           uc.filterPods(selector, namespace, allPods),
 		})
@@ -367,6 +386,35 @@ func (uc *UseCase) newNames(name string) names {
 	}
 }
 
+func (uc *UseCase) extractSecrets(secretMap map[string]*config.Secret, usersSecretName, joinSecretName string) (localUsers []User, joinSource *User, err error) {
+	var config *sambaContainerConfig
+
+	usersSecret, ok := secretMap[usersSecretName]
+	if ok {
+		if err := json.Unmarshal([]byte(usersSecret.Data["users"]), &config); err != nil {
+			return nil, nil, fmt.Errorf("failed to unmarshal join secret: %w", err)
+		}
+
+		if entries, ok := config.Users["all_entries"]; ok {
+			for _, entry := range entries {
+				localUsers = append(localUsers, User{
+					Username: entry.Name,
+					Password: entry.Password,
+				})
+			}
+		}
+	}
+
+	joinSecret, ok := secretMap[joinSecretName]
+	if ok {
+		if err := json.Unmarshal([]byte(joinSecret.Data["join"]), &joinSource); err != nil {
+			return nil, nil, fmt.Errorf("failed to unmarshal join secret: %w", err)
+		}
+	}
+
+	return localUsers, joinSource, nil
+}
+
 func (uc *UseCase) buildUsersSecret(namespace, name string, users []User) *config.Secret {
 	userEntries := []userEntry{}
 
@@ -388,6 +436,9 @@ func (uc *UseCase) buildUsersSecret(namespace, name string, users []User) *confi
 		ObjectMeta: v1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
+			Labels: map[string]string{
+				"app.kubernetes.io/name": "samba",
+			},
 		},
 		Type: corev1.SecretTypeOpaque,
 		StringData: map[string]string{
@@ -406,6 +457,9 @@ func (uc *UseCase) buildJoinSecret(namespace, name string, user *User) *config.S
 		ObjectMeta: v1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
+			Labels: map[string]string{
+				"app.kubernetes.io/name": "samba",
+			},
 		},
 		Type: corev1.SecretTypeOpaque,
 		StringData: map[string]string{
