@@ -11,12 +11,10 @@
 	let {
 		smbShare,
 		scope,
-		namespace,
 		reloadManager
 	}: {
 		smbShare: SMBShare;
 		scope: string;
-		namespace: string;
 		reloadManager: ReloadManager;
 	} = $props();
 </script>
@@ -24,6 +22,6 @@
 <Layout.Actions>
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionItem>
-		<Edit {smbShare} {scope} {namespace} {reloadManager} />
+		<Edit {smbShare} {scope} {reloadManager} />
 	</Layout.ActionItem>
 </Layout.Actions>

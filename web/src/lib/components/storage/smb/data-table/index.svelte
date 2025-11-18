@@ -28,12 +28,10 @@
 	let {
 		smbShares,
 		scope,
-		namespace,
 		reloadManager
 	}: {
 		smbShares: Writable<SMBShare[]>;
 		scope: string;
-		namespace: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -48,7 +46,7 @@
 			return $smbShares;
 		},
 		get columns() {
-			return getColumns(scope, namespace, reloadManager);
+			return getColumns(scope, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),
@@ -127,15 +125,21 @@
 				{table}
 			/>
 			<Filters.StringMatch
-				columnId="status"
-				values={$smbShares.map((row) => row.status)}
+				columnId="namespace"
+				values={$smbShares.map((row) => row.namespace)}
+				{messages}
+				{table}
+			/>
+			<Filters.StringMatch
+				columnId="valid_users"
+				values={$smbShares.flatMap((row) => row.validUsers)}
 				{messages}
 				{table}
 			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {scope} {namespace} {reloadManager} />
+			<Create {scope} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

@@ -19,6 +19,6 @@
 	]);
 </script>
 
-{#key page.params.scope! + page.params.namespace!}
-	<SMB scope={page.params.scope!} namespace={page.params.namespace!} />
+{#key page.params.scope!}
+	<SMB scope={page.params.scope!} />
 {/key}

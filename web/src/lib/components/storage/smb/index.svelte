@@ -12,11 +12,9 @@
 
 <script lang="ts">
 	let {
-		scope,
-		namespace
+		scope
 	}: {
 		scope: string;
-		namespace: string;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -47,7 +45,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<DataTable {smbShares} {scope} {namespace} {reloadManager} />
+		<DataTable {smbShares} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}
