@@ -12,6 +12,7 @@
 		SMBShare_SecurityConfig_Mode,
 		StorageService
 	} from '$lib/api/storage/v1/storage_pb';
+	import CopyButton from '$lib/components/custom/copy-button/copy-button.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
@@ -275,20 +276,29 @@
 					</Form.Field>
 
 					<Form.Field>
-						<Form.Label>{m.local_user()}</Form.Label>
-						<div class="rounded-lg border p-2">
-							<div class="flex items-center gap-2 rounded-lg p-2">
-								<div class={cn('flex size-8 items-center justify-center rounded-full border-2')}>
-									<Icon icon="ph:user" class="size-5" />
-								</div>
-
-								<div class="flex flex-col gap-1">
-									<p class="text-xs text-muted-foreground">{m.user()}</p>
-									<p class="text-sm">{request.securityConfig.localUser?.username}</p>
-								</div>
+						<Form.Label>{m.local_users()}</Form.Label>
+						{#if request.securityConfig.localUsers?.length > 0}
+							<div class="group max-h-40 overflow-y-auto rounded-lg border p-2">
+								{#each request.securityConfig.localUsers as user, index (index)}
+									<div class="flex items-center gap-2 rounded-lg p-2">
+										<div
+											class={cn('flex size-8 items-center justify-center rounded-full border-2')}
+										>
+											<Icon icon="ph:user" class="size-5" />
+										</div>
+										<div class="flex flex-col gap-1">
+											<p class="text-xs text-muted-foreground">{m.user()}</p>
+											<p class="text-sm">{user.username}</p>
+										</div>
+										<CopyButton
+											class="invisible  ml-auto size-4 group-hover:visible"
+											text={user.username}
+										/>
+									</div>
+								{/each}
 							</div>
-						</div>
-						<CreateUser bind:user={request.securityConfig.localUser} />
+						{/if}
+						<CreateUsers bind:users={request.securityConfig.localUsers} />
 					</Form.Field>
 
 					<Form.Field>
@@ -297,26 +307,22 @@
 					</Form.Field>
 
 					<Form.Field>
-						<Form.Label>{m.join_sources()}</Form.Label>
-						{#if request.securityConfig.joinSources?.length > 0}
-							<div class="max-h-20 overflow-y-auto rounded-lg border p-2">
-								{#each request.securityConfig.joinSources as user, index (index)}
-									<div class="flex items-center gap-2 rounded-lg p-2">
-										<div
-											class={cn('flex size-8 items-center justify-center rounded-full border-2')}
-										>
-											<Icon icon="ph:user" class="size-5" />
-										</div>
-
-										<div class="flex flex-col gap-1">
-											<p class="text-xs text-muted-foreground">{m.user()}</p>
-											<p class="text-sm">{user.username}</p>
-										</div>
+						<Form.Label>{m.join_source()}</Form.Label>
+						{#if request.securityConfig.joinSource}
+							<div class="rounded-lg border p-2">
+								<div class="flex items-center gap-2 rounded-lg p-2">
+									<div class={cn('flex size-8 items-center justify-center rounded-full border-2')}>
+										<Icon icon="ph:user" class="size-5" />
 									</div>
-								{/each}
+
+									<div class="flex flex-col gap-1">
+										<p class="text-xs text-muted-foreground">{m.user()}</p>
+										<p class="text-sm">{request.securityConfig.joinSource.username}</p>
+									</div>
+								</div>
 							</div>
 						{/if}
-						<CreateUsers bind:users={request.securityConfig.joinSources} />
+						<CreateUser bind:user={request.securityConfig.joinSource} />
 					</Form.Field>
 				{/if}
 
