@@ -325,7 +325,7 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 		_ = uc.secret.Delete(ctx, scope, namespace, names.UsersSecret)
 	}
 
-	// Create join secret
+	// Update join secret
 	if joinSource != nil {
 		joinSecret := uc.buildJoinSecret(namespace, names.JoinSecret, joinSource)
 
@@ -336,21 +336,21 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 		_ = uc.secret.Delete(ctx, scope, namespace, names.JoinSecret)
 	}
 
-	// Create security config
+	// Update security config
 	securityConfig := uc.buildSecurityConfig(namespace, names.SecurityConfig, securityMode, names.UsersSecret, realm, names.JoinSecret)
 
 	if _, err := uc.smbSecurityConfig.Update(ctx, scope, namespace, securityConfig); err != nil {
 		return nil, err
 	}
 
-	// Create common config
+	// Update common config
 	commonConfig := uc.buildCommonConfig(namespace, names.CommonConfig, mapToGuest)
 
 	if _, err := uc.smbCommonConfig.Update(ctx, scope, namespace, commonConfig); err != nil {
 		return nil, err
 	}
 
-	// Create share
+	// Update share
 	shareConfig := uc.buildShareConfig(guestOK, validUsers)
 	share := uc.buildShare(namespace, names.Share, browsable, readOnly, sizeBytes, names.SecurityConfig, names.CommonConfig, shareConfig)
 
