@@ -23,7 +23,10 @@
 
 <script lang="ts">
 	// Component props - accepts a BootImage object
-	let { bootImage }: { bootImage: Configuration_BootImage } = $props();
+	let {
+		bootImage,
+		reloadManager
+	}: { bootImage: Configuration_BootImage; reloadManager: ReloadManager } = $props();
 
 	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');
@@ -106,7 +109,7 @@
 									<MultipleSelect.List>
 										<MultipleSelect.Empty>{m.no_result()}</MultipleSelect.Empty>
 										<MultipleSelect.Group>
-											{#each $architecturesOptions as option}
+											{#each $architecturesOptions as option (option.value)}
 												<MultipleSelect.Item {option}>
 													<Icon
 														icon={option.icon ? option.icon : 'ph:empty'}

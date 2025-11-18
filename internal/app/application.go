@@ -50,17 +50,6 @@ func NewApplicationService(cluster *cluster.UseCase, chart *chart.UseCase, confi
 
 var _ pbconnect.ApplicationServiceHandler = (*ApplicationService)(nil)
 
-func (s *ApplicationService) ListNamespaces(ctx context.Context, req *pb.ListNamespacesRequest) (*pb.ListNamespacesResponse, error) {
-	namespaces, err := s.cluster.ListNamespaces(ctx, req.GetScope())
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &pb.ListNamespacesResponse{}
-	resp.SetNamespaces(toProtoNamespaces(namespaces))
-	return resp, nil
-}
-
 func (s *ApplicationService) ListApplications(ctx context.Context, req *pb.ListApplicationsRequest) (*pb.ListApplicationsResponse, error) {
 	apps, endpoint, err := s.workload.ListApplications(ctx, req.GetScope())
 	if err != nil {
@@ -270,6 +259,39 @@ func (s *ApplicationService) UploadChart(ctx context.Context, req *pb.UploadChar
 	return &emptypb.Empty{}, nil
 }
 
+func (s *ApplicationService) ListNamespaces(ctx context.Context, req *pb.ListNamespacesRequest) (*pb.ListNamespacesResponse, error) {
+	namespaces, err := s.cluster.ListNamespaces(ctx, req.GetScope())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListNamespacesResponse{}
+	resp.SetNamespaces(toProtoNamespaces(namespaces))
+	return resp, nil
+}
+
+func (s *ApplicationService) ListConfigMaps(ctx context.Context, req *pb.ListConfigMapsRequest) (*pb.ListConfigMapsResponse, error) {
+	configMaps, err := s.config.ListConfigMaps(ctx, req.GetScope(), req.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListConfigMapsResponse{}
+	resp.SetConfigMaps(toProtoConfigMaps(configMaps))
+	return resp, nil
+}
+
+func (s *ApplicationService) ListSecrets(ctx context.Context, req *pb.ListSecretsRequest) (*pb.ListSecretsResponse, error) {
+	secrets, err := s.config.ListSecrets(ctx, req.GetScope(), req.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListSecretsResponse{}
+	resp.SetSecrets(toProtoSecrets(secrets))
+	return resp, nil
+}
+
 func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *pb.ListStorageClassesRequest) (*pb.ListStorageClassesResponse, error) {
 	storageClasses, err := s.persistent.ListStorageClasses(ctx, req.GetScope())
 	if err != nil {
@@ -279,24 +301,6 @@ func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *pb.Lis
 	resp := &pb.ListStorageClassesResponse{}
 	resp.SetStorageClasses(toProtoStorageClasses(storageClasses))
 	return resp, nil
-}
-
-func toProtoNamespaces(ns []cluster.Namespace) []*pb.Namespace {
-	ret := []*pb.Namespace{}
-
-	for i := range ns {
-		ret = append(ret, toProtoNamespace(&ns[i]))
-	}
-
-	return ret
-}
-
-func toProtoNamespace(n *cluster.Namespace) *pb.Namespace {
-	ret := &pb.Namespace{}
-	ret.SetName(n.Name)
-	ret.SetLabels(n.Labels)
-	ret.SetCreatedAt(timestamppb.New(n.CreationTimestamp.Time))
-	return ret
 }
 
 func toProtoApplications(as []workload.Application) []*pb.Application {
@@ -569,6 +573,79 @@ func toProtoChartVersion(v *chart.Version) *pb.Application_Chart_Version {
 	if len(v.URLs) > 0 {
 		ret.SetChartRef(v.URLs[0])
 	}
+
+	return ret
+}
+
+func toProtoNamespaces(ns []cluster.Namespace) []*pb.Namespace {
+	ret := []*pb.Namespace{}
+
+	for i := range ns {
+		ret = append(ret, toProtoNamespace(&ns[i]))
+	}
+
+	return ret
+}
+
+func toProtoNamespace(n *cluster.Namespace) *pb.Namespace {
+	ret := &pb.Namespace{}
+	ret.SetName(n.Name)
+	ret.SetLabels(n.Labels)
+	ret.SetCreatedAt(timestamppb.New(n.CreationTimestamp.Time))
+	return ret
+}
+
+func toProtoConfigMaps(cms []config.ConfigMap) []*pb.ConfigMap {
+	ret := []*pb.ConfigMap{}
+
+	for i := range cms {
+		ret = append(ret, toProtoConfigMap(&cms[i]))
+	}
+
+	return ret
+}
+
+func toProtoConfigMap(cm *config.ConfigMap) *pb.ConfigMap {
+	ret := &pb.ConfigMap{}
+	ret.SetName(cm.Name)
+	ret.SetNamespace(cm.Namespace)
+	ret.SetLabels(cm.Labels)
+	ret.SetData(cm.Data)
+	ret.SetBinaryData(cm.BinaryData)
+
+	if cm.Immutable != nil {
+		ret.SetImmutable(*cm.Immutable)
+	}
+
+	ret.SetCreatedAt(timestamppb.New(cm.CreationTimestamp.Time))
+
+	return ret
+}
+
+func toProtoSecrets(ss []config.Secret) []*pb.Secret {
+	ret := []*pb.Secret{}
+
+	for i := range ss {
+		ret = append(ret, toProtoSecret(&ss[i]))
+	}
+
+	return ret
+}
+
+func toProtoSecret(s *config.Secret) *pb.Secret {
+	ret := &pb.Secret{}
+	ret.SetName(s.Name)
+	ret.SetNamespace(s.Namespace)
+	ret.SetLabels(s.Labels)
+	ret.SetData(s.Data)
+	ret.SetType(string(s.Type))
+	ret.SetStringData(s.StringData)
+
+	if s.Immutable != nil {
+		ret.SetImmutable(*s.Immutable)
+	}
+
+	ret.SetCreatedAt(timestamppb.New(s.CreationTimestamp.Time))
 
 	return ret
 }

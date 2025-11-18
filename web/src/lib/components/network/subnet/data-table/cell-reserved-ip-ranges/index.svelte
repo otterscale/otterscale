@@ -1,8 +1,8 @@
 <script lang="ts" module>
-	import { ReloadManager } from '$lib/components/custom/reloader';
 	import Icon from '@iconify/svelte';
 
 	import type { Network_Subnet } from '$lib/api/network/v1/network_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Sheet from '$lib/components/ui/sheet';
 
 	import { DataTable } from './data-table';

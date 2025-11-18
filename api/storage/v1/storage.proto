@@ -425,8 +425,8 @@ message SMBShare {
       ACTIVE_DIRECTORY = 1;
     }
     message User {
-      string secret = 1;
-      string key = 2;
+      string username = 1;
+      string password = 2;
     }
     Mode mode = 1;
     User local_user = 11;
@@ -435,7 +435,8 @@ message SMBShare {
   }
   string name = 1;
   string namespace = 2;
-  string status = 3;
+  int32 replicas = 3;
+  int32 healthies = 4;
   uint64 size_bytes = 11;
   bool browsable = 21;
   bool read_only = 22;

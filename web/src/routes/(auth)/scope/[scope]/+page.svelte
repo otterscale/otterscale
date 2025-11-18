@@ -6,7 +6,6 @@
 	import { HomeCard, HomeCell } from '$lib/components/scopes';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
-	import { getCephPathDisabled, getKubernetesPathDisabled } from '$lib/path';
 	import { breadcrumbs } from '$lib/stores';
 
 	// Set breadcrumbs navigation

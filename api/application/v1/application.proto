@@ -120,6 +120,18 @@ service ApplicationService {
     };
   };
 
+  rpc ListConfigMaps(ListConfigMapsRequest) returns (ListConfigMapsResponse) {
+    option (otterscale.api.feature) = {
+      name: "app-resource"
+    };
+  };
+
+  rpc ListSecrets(ListSecretsRequest) returns (ListSecretsResponse) {
+    option (otterscale.api.feature) = {
+      name: "app-resource"
+    };
+  };
+
   rpc ListStorageClasses(ListStorageClassesRequest) returns (ListStorageClassesResponse) {
     option (otterscale.api.feature) = {
       name: "app-resource"
@@ -245,6 +257,27 @@ message StorageClass {
   string reclaim_policy = 3;
   string volume_binding_mode = 4;
   map<string, string> parameters = 5;
+  google.protobuf.Timestamp created_at = 201;
+}
+
+message ConfigMap {
+  string name = 1;
+  string namespace = 2;
+  map<string, string> labels = 3;
+  map<string, string> data = 11;
+  map<string, bytes> binary_data = 12;
+  bool immutable = 13;
+  google.protobuf.Timestamp created_at = 201;
+}
+
+message Secret {
+  string name = 1;
+  string namespace = 2;
+  map<string, string> labels = 3;
+  map<string, bytes> data = 11;
+  string type = 12;
+  map<string, string> string_data = 13;
+  bool immutable = 14;
   google.protobuf.Timestamp created_at = 201;
 }
 
@@ -381,6 +414,15 @@ message GetChartMetadataRequest {
   string chart_ref = 1;
 }
 
+message ListConfigMapsRequest {
+  string scope = 1;
+  string namespace = 2;
+}
+
+message ListConfigMapsResponse {
+  repeated ConfigMap config_maps = 1;
+}
+
 message ListNamespacesRequest {
   string scope = 1;
   reserved 2;
@@ -388,6 +430,15 @@ message ListNamespacesRequest {
 
 message ListNamespacesResponse {
   repeated Namespace namespaces = 1;
+}
+
+message ListSecretsRequest {
+  string scope = 1;
+  string namespace = 2;
+}
+
+message ListSecretsResponse {
+  repeated Secret secrets = 1;
 }
 
 message ListStorageClassesRequest {

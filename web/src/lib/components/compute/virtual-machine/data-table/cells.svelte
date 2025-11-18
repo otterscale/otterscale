@@ -150,15 +150,19 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet disk(row: Row<VirtualMachine>)}
+{#snippet disk(data: { row: Row<VirtualMachine>; scope: string })}
 	<Layout.Cell class="items-end">
-		<Disk virtualMachine={row.original} />
+		<Disk virtualMachine={data.row.original} scope={data.scope} />
 	</Layout.Cell>
 {/snippet}
 
-{#snippet port(row: Row<VirtualMachine>)}
+{#snippet port(data: { row: Row<VirtualMachine>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-end">
-		<Port virtualMachine={row.original} />
+		<Port
+			virtualMachine={data.row.original}
+			scope={data.scope}
+			reloadManager={data.reloadManager}
+		/>
 	</Layout.Cell>
 {/snippet}
 

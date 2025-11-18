@@ -6,6 +6,7 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import type { Application, Application_Pod } from '$lib/api/application/v1/application_pb';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
@@ -14,7 +15,6 @@
 	import { cn } from '$lib/utils';
 
 	import Actions from './cell-actions.svelte';
-	import type { ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">

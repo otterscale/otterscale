@@ -6,11 +6,11 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 
 	import Actions from './cell-actions.svelte';
-	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	export const cells = {
 		row_picker,

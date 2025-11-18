@@ -31,8 +31,7 @@
 	const client = createClient(ConfigurationService, transport);
 	const defaults = {
 		id: packageRepository.id,
-		url: packageRepository.url,
-		skipJuju: false
+		url: packageRepository.url
 	} as UpdatePackageRepositoryRequest;
 	let request = $state(defaults);
 	function reset() {
