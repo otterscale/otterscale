@@ -38,10 +38,5 @@ async function runMigrations() {
 }
 
 (async () => {
-	try {
-		await runMigrations();
-	} catch (error) {
-		console.error('Fatal Error: An unexpected error occurred outside the migration block.', error);
-		process.exit(1);
-	}
+	await runMigrations();
 })();
