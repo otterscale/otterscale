@@ -11,5 +11,5 @@ bun.lockb
 # API
 /src/lib/api/
 
-# Migrations
-/src/lib/server/db/migrations
+# Drizzle
+/drizzle/

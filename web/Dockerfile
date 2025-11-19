@@ -30,8 +30,12 @@ COPY package.json pnpm-lock.yaml ./
 # Install only production dependencies
 RUN pnpm install --production --frozen-lockfile && pnpm store prune
 
-# # Copy built application from builder stage
+# Copy built application from builder stage
 COPY --from=builder --chown=nobody:nobody /src/build ./build
+
+# Copy migration script and drizzle migration files
+COPY --from=builder --chown=nobody:nobody /src/scripts/migrate.js ./scripts/migrate.js
+COPY --from=builder --chown=nobody:nobody /src/drizzle ./drizzle
 
 # Switch to non-root user
 USER nobody
@@ -45,4 +49,4 @@ EXPOSE 3000
 # Labels
 LABEL maintainer="Chung-Hsuan Tsai <paul_tsai@phison.com>"
 
-CMD ["node", "./build"]
+CMD ["/bin/sh", "-c", "node ./scripts/migrate.js && node ./build/index.js"]
