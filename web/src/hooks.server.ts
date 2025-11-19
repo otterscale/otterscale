@@ -2,6 +2,7 @@ import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 import { env } from '$env/dynamic/private';
+import { isFlexibleBooleanTrue } from '$lib/helper';
 import { paraglideMiddleware } from '$lib/paraglide/server';
 import {
 	deleteSessionTokenCookie,
@@ -19,7 +20,7 @@ const handleParaglide: Handle = ({ event, resolve }) =>
 	});
 
 const handleAuth: Handle = async ({ event, resolve }) => {
-	if (env.BOOTSTRAP_MODE) {
+	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE)) {
 		return resolve(event);
 	}
 
