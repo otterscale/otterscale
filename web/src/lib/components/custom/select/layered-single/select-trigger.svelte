@@ -43,7 +43,7 @@
 			{/if}
 			<Icon
 				icon={option.icon ?? 'ph:empty'}
-				class={cn(option.icon && option.icon ? 'visibale' : 'hidden')}
+				class={cn(option.icon && option.icon ? 'visible' : 'hidden')}
 			/>
 			{option.label}
 		{/each}

@@ -117,7 +117,7 @@
 											<SingleSelect.Item option={type}>
 												<Icon
 													icon={type.icon ? type.icon : 'ph:empty'}
-													class={cn('size-5', type.icon ? 'visibale' : 'invisible')}
+													class={cn('size-5', type.icon ? 'visible' : 'invisible')}
 												/>
 												{type.label}
 												<SingleSelect.Check option={type} />
@@ -167,7 +167,7 @@
 												<MultipleSelect.Item option={application}>
 													<Icon
 														icon={application.icon ? application.icon : 'ph:empty'}
-														class={cn('size-5', application.icon ? 'visibale' : 'invisible')}
+														class={cn('size-5', application.icon ? 'visible' : 'invisible')}
 													/>
 													{application.label}
 													<MultipleSelect.Check option={application} />

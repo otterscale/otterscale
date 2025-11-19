@@ -81,7 +81,7 @@
 	<Badge variant="outline" class={cn('flex items-center gap-1 rounded-sm p-1 font-normal')}>
 		<Icon
 			icon={selectedOption.icon ? selectedOption.icon : 'ph:empty'}
-			class={cn('size-3', selectedOption.icon ? 'visibale' : 'hidden')}
+			class={cn('size-3', selectedOption.icon ? 'visible' : 'hidden')}
 		/>
 		{selectedOption.label}
 	</Badge>
@@ -105,7 +105,7 @@
 		<span class="flex items-center gap-1">
 			<Icon
 				icon={option.icon ? option.icon : 'ph:empty'}
-				class={cn('size-3', option.icon ? 'visibale' : 'invisible')}
+				class={cn('size-3', option.icon ? 'visible' : 'invisible')}
 			/>
 			<p class="text-xs select-none">{option.label}</p>
 		</span>
