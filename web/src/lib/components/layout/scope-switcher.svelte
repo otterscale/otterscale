@@ -93,7 +93,6 @@
 		callback: async () => await onSelect(8)
 	}}
 />
-
 <DialogCreateScope bind:open />
 
 <Sidebar.Menu>

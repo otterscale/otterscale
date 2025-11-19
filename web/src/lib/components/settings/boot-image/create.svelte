@@ -25,7 +25,7 @@
 	let { configuration }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
-	let distroSeriesOptions = $state(writable<SingleSelect.OptionType[]>([]));
+	const distroSeriesOptions = writable<SingleSelect.OptionType[]>([]);
 	let distroSeriesArchitecturesMap: Record<string, Writable<SingleSelect.OptionType[]>> = {};
 	const client = createClient(ConfigurationService, transport);
 	const defaults = {} as CreateBootImageRequest;
@@ -53,7 +53,7 @@
 					response.bootImageSelections.map((bootImageSelection) => ({
 						value: bootImageSelection.distroSeries,
 						label: bootImageSelection.name,
-						icon: 'ph:empty'
+						icon: 'ph:binary'
 					}))
 				);
 				distroSeriesArchitecturesMap = Object.fromEntries(
@@ -98,7 +98,7 @@
 											<SingleSelect.Item {option}>
 												<Icon
 													icon={option.icon ? option.icon : 'ph:empty'}
-													class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+													class={cn('size-5', option.icon ? 'visible' : 'invisible')}
 												/>
 												{option.label}
 												<SingleSelect.Check {option} />
@@ -128,7 +128,7 @@
 													<MultipleSelect.Item {option}>
 														<Icon
 															icon={option.icon ? option.icon : 'ph:empty'}
-															class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+															class={cn('size-5', option.icon ? 'visible' : 'invisible')}
 														/>
 														{option.label}
 														<MultipleSelect.Check {option} />

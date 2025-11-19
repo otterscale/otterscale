@@ -44,7 +44,7 @@
 		<div class="flex items-center gap-1 rounded-sm p-1 font-normal">
 			<Icon
 				icon={optionManager.selectedOption.icon ?? 'ph:empty'}
-				class={cn('size-4', optionManager.selectedOption ? 'visibale' : 'hidden')}
+				class={cn('size-4', optionManager.selectedOption ? 'visible' : 'hidden')}
 			/>
 			{optionManager.selectedOption.label}
 		</div>

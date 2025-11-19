@@ -80,7 +80,7 @@
 			{/if}
 			<Icon
 				icon={part.icon ?? 'ph:empty'}
-				class={cn(part.icon && part.icon ? 'visibale' : 'hidden')}
+				class={cn(part.icon && part.icon ? 'visible' : 'hidden')}
 			/>
 			{part.label}
 		{/each}
@@ -109,7 +109,7 @@
 				{/if}
 				<Icon
 					icon={part.icon ?? 'ph:empty'}
-					class={cn(part.icon && part.icon ? 'visibale' : 'hidden')}
+					class={cn(part.icon && part.icon ? 'visible' : 'hidden')}
 				/>
 				{part.label}
 			{/each}

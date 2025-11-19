@@ -19,6 +19,6 @@
 	]);
 </script>
 
-{#key page.params.scope}
+{#key page.params.scope!}
 	<Pool scope={page.params.scope!} />
 {/key}

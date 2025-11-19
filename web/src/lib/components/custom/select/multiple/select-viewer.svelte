@@ -31,7 +31,7 @@
 			<Badge variant="outline" class={cn('flex items-center gap-1 rounded-sm p-1 font-normal')}>
 				<Icon
 					icon={option.icon ? option.icon : 'ph:empty'}
-					class={cn('size-3', option.icon ? 'visibale' : 'hidden')}
+					class={cn('size-3', option.icon ? 'visible' : 'hidden')}
 				/>
 				{option.label}
 			</Badge>

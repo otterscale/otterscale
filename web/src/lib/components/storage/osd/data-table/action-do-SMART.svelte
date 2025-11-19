@@ -18,7 +18,7 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 	let open = $state(false);
-	let smarts = $state(writable<Record<string, DoSMARTResponse_Output>>({}));
+	const smarts = writable<Record<string, DoSMARTResponse_Output>>({});
 	let isSMARTsLoading = $state(true);
 
 	async function fetchSMARTs() {
