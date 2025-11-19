@@ -19,19 +19,15 @@
 
 	let {
 		prometheusDriver,
-		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
-	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(scope))
-	);
 	const totalGPUs = $derived(
-		scopeMachines.reduce((a, machine) => a + Number(machine.gpuDevices.length ?? 0), 0)
+		$machines.reduce((a, machine) => a + Number(machine.gpuDevices.length ?? 0), 0)
 	);
 	let allocatedGPUs = $state([] as SampleValue[]);
 	const trend = $derived(
@@ -50,7 +46,7 @@
 		prometheusDriver
 			.rangeQuery(
 				`
-				count(sum by (node, deviceuuid) (vGPUPodsDeviceAllocated{juju_model="${scope}"}) > bool 0)
+				count(sum by (node, deviceuuid) (vGPUPodsDeviceAllocated{juju_model=~".*"}) > bool 0)
 				`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
@@ -73,7 +69,7 @@
 			await fetch();
 			isLoading = false;
 		} catch (error) {
-			console.error(`Fail to fetch data in scope ${scope}:`, error);
+			console.error('Fail to fetch data:', error);
 		}
 	});
 	onDestroy(() => {

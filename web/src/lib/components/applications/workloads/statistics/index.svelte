@@ -51,7 +51,7 @@
 			applications.set(
 				response.applications.map((application) => ({
 					...application,
-					endpoint: response.endpoint
+					hostname: response.hostname
 				}))
 			);
 

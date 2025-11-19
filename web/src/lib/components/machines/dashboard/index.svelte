@@ -10,10 +10,6 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
 
-	import ExtensionsAlert from './extensions-alert.svelte';
-
-	let { scope }: { scope: string } = $props();
-
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);
 
@@ -44,7 +40,6 @@
 </script>
 
 <main class="space-y-4 py-4">
-	<ExtensionsAlert {scope} />
 	{#if prometheusDriver}
 		<div class="mx-auto grid w-full gap-6">
 			<div class="grid gap-1">
@@ -63,7 +58,7 @@
 					<Reloader bind:checked={isReloading} />
 				</div>
 				<Tabs.Content value="overview">
-					<Overview {prometheusDriver} {scope} bind:isReloading />
+					<Overview {prometheusDriver} bind:isReloading />
 				</Tabs.Content>
 				<Tabs.Content value="analytics">
 					<!-- <Dashboard client={prometheusDriver} {machines} /> -->

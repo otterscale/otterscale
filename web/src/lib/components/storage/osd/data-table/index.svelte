@@ -12,7 +12,7 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
-	import type { OSD } from '$lib/api/storage/v1/storage_pb';
+	import type { ObjectStorageDaemon } from '$lib/api/storage/v1/storage_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
@@ -30,7 +30,7 @@
 		scope,
 		reloadManager
 	}: {
-		objectStorageDaemons: Writable<OSD[]>;
+		objectStorageDaemons: Writable<ObjectStorageDaemon[]>;
 		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();

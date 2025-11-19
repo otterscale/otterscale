@@ -13,8 +13,8 @@
 	const isItemActive = (url: string): boolean => page.url.pathname.startsWith(url);
 	const hasSubItems = (route: Route): boolean => Boolean(route.items?.length);
 	const isDisabled = (url: string): boolean =>
-		(scope === 'Otterscale' && getCephPathDisabled(url)) ||
-		(scope === 'Otterscale' && getKubernetesPathDisabled(url));
+		(scope === 'OtterScale' && getCephPathDisabled(url)) ||
+		(scope === 'OtterScale' && getKubernetesPathDisabled(url));
 </script>
 
 <Sidebar.Group>

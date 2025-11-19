@@ -20,17 +20,13 @@
 
 	let {
 		prometheusDriver,
-		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
-	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(scope))
-	);
 	let storageUsages = $state([] as SampleValue[]);
 	const storageUsagesConfiguration = {
 		usage: { label: 'value', color: 'var(--chart-1)' }
@@ -43,7 +39,7 @@
 			: 0
 	);
 	const blockDevices = $derived(
-		scopeMachines.flatMap((m) => m.blockDevices).filter((d) => !d.bootDisk)
+		$machines.flatMap((m) => m.blockDevices).filter((d) => !d.bootDisk)
 	);
 	const totalDisks = $derived(blockDevices.length);
 	const totalStorageBytes = $derived(
@@ -53,7 +49,7 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`1 - sum(node_filesystem_avail_bytes{juju_model="${scope}"}) / sum(node_filesystem_size_bytes{juju_model="${scope}"})`,
+				`1 - sum(node_filesystem_avail_bytes{juju_model=~".*"}) / sum(node_filesystem_size_bytes{juju_model=~".*"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60
@@ -62,7 +58,7 @@
 				storageUsages = response.result[0]?.values ?? [];
 			});
 
-		machineClient.listMachines({ scope: scope }).then((response) => {
+		machineClient.listMachines({}).then((response) => {
 			machines.set(response.machines);
 		});
 	}

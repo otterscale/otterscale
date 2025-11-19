@@ -12,34 +12,33 @@
 
 	let {
 		prometheusDriver,
-		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 </script>
 
 <div class="grid auto-rows-auto grid-cols-3 gap-5 pt-4 md:grid-cols-6 lg:grid-cols-9">
 	<div class="col-span-2">
-		<CPU {prometheusDriver} {scope} bind:isReloading />
+		<CPU {prometheusDriver} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<Memory {prometheusDriver} {scope} bind:isReloading />
+		<Memory {prometheusDriver} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<Storage {prometheusDriver} {scope} bind:isReloading />
+		<Storage {prometheusDriver} bind:isReloading />
 	</div>
 	<div class="col-span-3 row-span-2">
-		<Nodes {scope} bind:isReloading />
+		<Nodes bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<GPU {prometheusDriver} {scope} bind:isReloading />
+		<GPU {prometheusDriver} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<GPUMemory {prometheusDriver} {scope} bind:isReloading />
+		<GPUMemory {prometheusDriver} bind:isReloading />
 	</div>
 	<div class="col-span-6">
-		<SystemLoad {prometheusDriver} {scope} bind:isReloading />
+		<SystemLoad {prometheusDriver} bind:isReloading />
 	</div>
 	<div class="col-span-3">
-		<NodeProportion {scope} bind:isReloading />
+		<NodeProportion bind:isReloading />
 	</div>
 </div>
