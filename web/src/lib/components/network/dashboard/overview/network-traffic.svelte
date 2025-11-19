@@ -14,11 +14,9 @@
 
 	let {
 		prometheusDriver,
-		scope,
 		isReloading = $bindable()
 	}: {
 		prometheusDriver: PrometheusDriver;
-		scope: string;
 		isReloading: boolean;
 	} = $props();
 
@@ -29,11 +27,11 @@
 	let activeTraffic = $state<keyof typeof trafficsConfigurations>('receive');
 
 	const traffics = $derived(
-		receives.map((sample, index) => ({
+		receives?.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmits[index]?.value ?? 0
-		}))
+			transmit: transmits?.[index]?.value ?? 0
+		})) ?? []
 	);
 	const latestTraffics = $derived({
 		receive: latestReceive,
@@ -58,33 +56,33 @@
 	function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`sum(irate(node_network_receive_bytes_total{juju_model="${scope}"}[4m]))`,
+				`sum(irate(node_network_receive_bytes_total[4m]))`,
 				new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
 				new SvelteDate().setMinutes(0, 0, 0),
 				2 * 60
 			)
 			.then((response) => {
-				receives = response.result[0].values;
+				receives = response.result[0]?.values ?? [];
 			});
 		prometheusDriver
 			.rangeQuery(
-				`sum(irate(node_network_transmit_bytes_total{juju_model="${scope}"}[4m]))`,
+				`sum(irate(node_network_transmit_bytes_total[4m]))`,
 				new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
 				new SvelteDate().setMinutes(0, 0, 0),
 				2 * 60
 			)
 			.then((response) => {
-				transmits = response.result[0].values;
+				transmits = response.result[0]?.values ?? [];
 			});
 		prometheusDriver
-			.instantQuery(`sum(irate(node_network_receive_bytes_total{juju_model="${scope}"}[4m]))`)
+			.instantQuery(`sum(irate(node_network_receive_bytes_total[4m]))`)
 			.then((response) => {
-				latestReceive = response.result[0].value.value;
+				latestReceive = response.result[0]?.value?.value ?? 0;
 			});
 		prometheusDriver
-			.instantQuery(`sum(irate(node_network_transmit_bytes_total{juju_model="${scope}"}[4m]))`)
+			.instantQuery(`sum(irate(node_network_transmit_bytes_total[4m]))`)
 			.then((response) => {
-				latestTransmit = response.result[0].value.value;
+				latestTransmit = response.result[0]?.value?.value ?? 0;
 			});
 	}
 
