@@ -22,7 +22,7 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	const buckets = $state(writable([] as Bucket[]));
+	const buckets = writable([] as Bucket[]);
 	async function fetch() {
 		storageClient
 			.listBuckets({ scope: scope })

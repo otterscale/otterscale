@@ -23,8 +23,8 @@
 <script lang="ts">
 	let {
 		scope,
-		charts = $bindable(),
-		releases = $bindable()
+		charts,
+		releases
 	}: {
 		scope: string;
 		charts: Writable<Application_Chart[]>;

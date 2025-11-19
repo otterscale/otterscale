@@ -20,7 +20,7 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	const objectStorageDaemons = $state(writable([] as OSD[]));
+	const objectStorageDaemons = writable([] as OSD[]);
 	async function fetch() {
 		storageClient
 			.listOSDs({ scope: scope })

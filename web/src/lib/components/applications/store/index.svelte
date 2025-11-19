@@ -18,11 +18,12 @@
 
 	const transport: Transport = getContext('transport');
 
-	let charts = $state(writable<Application_Chart[]>([]));
-	let releases = $state(writable<Application_Release[]>([]));
+	const charts = writable<Application_Chart[]>([]);
+	const releases = writable<Application_Release[]>([]);
+
 	let isChartsLoading = $state(true);
 	let isReleasesLoading = $state(true);
-	let isMounted = $derived(!isChartsLoading && !isReleasesLoading);
+	const isMounted = $derived(!isChartsLoading && !isReleasesLoading);
 
 	const applicationClient = createClient(ApplicationService, transport);
 
@@ -51,7 +52,7 @@
 </script>
 
 {#if isMounted}
-	<CommerceStore {scope} bind:charts bind:releases />
+	<CommerceStore {scope} {charts} {releases} />
 {:else}
 	<Loading.ApplicationStore />
 {/if}

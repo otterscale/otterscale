@@ -25,7 +25,7 @@
 	let { configuration }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
-	let distroSeriesOptions = $state(writable<SingleSelect.OptionType[]>([]));
+	let distroSeriesOptions = writable<SingleSelect.OptionType[]>([]);
 	let distroSeriesArchitecturesMap: Record<string, Writable<SingleSelect.OptionType[]>> = {};
 	const client = createClient(ConfigurationService, transport);
 	const defaults = {} as CreateBootImageRequest;
@@ -53,7 +53,7 @@
 					response.bootImageSelections.map((bootImageSelection) => ({
 						value: bootImageSelection.distroSeries,
 						label: bootImageSelection.name,
-						icon: 'ph:empty'
+						icon: 'ph:binary'
 					}))
 				);
 				distroSeriesArchitecturesMap = Object.fromEntries(

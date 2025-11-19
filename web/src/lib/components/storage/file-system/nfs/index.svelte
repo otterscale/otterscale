@@ -27,7 +27,7 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	const subvolumes = $state(writable([] as Subvolume[]));
+	const subvolumes = writable([] as Subvolume[]);
 	async function fetch() {
 		storageClient
 			.listSubvolumes({

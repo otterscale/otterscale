@@ -12,6 +12,7 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import {
 		Multiple as MultipleSelect,
 		Single as SingleSelect
@@ -34,7 +35,7 @@
 	const client = createClient(ConfigurationService, transport);
 
 	// Architecture options for the current distro series
-	let architecturesOptions = $state(writable<SingleSelect.OptionType[]>([]));
+	const architecturesOptions = writable<SingleSelect.OptionType[]>([]);
 
 	// Default values for the update boot image request
 	const defaults = {
@@ -73,7 +74,7 @@
 						currentBootImageSelection.architectures.map((architecture) => ({
 							value: architecture,
 							label: architecture,
-							icon: 'ph:empty'
+							icon: 'ph:binary'
 						}))
 					);
 				}

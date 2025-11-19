@@ -33,7 +33,7 @@
 	let isPoolsLoading = $state(true);
 	let isImageNameInvalid = $state(false);
 	let isPoolNameInvalid = $state(false);
-	let poolOptions = $state(writable<SingleSelect.OptionType[]>([]));
+	const poolOptions = writable<SingleSelect.OptionType[]>([]);
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
 		scope: scope,
@@ -109,7 +109,7 @@
 					{:else}
 						<SingleSelect.Root
 							required
-							bind:options={poolOptions}
+							options={poolOptions}
 							bind:value={request.poolName}
 							bind:invalid={isPoolNameInvalid}
 						>
