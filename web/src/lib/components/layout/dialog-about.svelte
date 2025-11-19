@@ -12,7 +12,7 @@
 
 	const links = [
 		{
-			icon: 'streamline-logos:github-logo-2-solid',
+			icon: 'simple-icons:github',
 			url: 'https://github.com/otterscale/otterscale'
 		},
 		{

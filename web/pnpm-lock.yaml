@@ -129,6 +129,9 @@ importers:
       '@fontsource/geist-mono':
         specifier: ^5.2.7
         version: 5.2.7
+      '@fontsource/noto-sans-tc':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@iconify-json/logos':
         specifier: ^1.2.10
         version: 1.2.10
@@ -138,9 +141,6 @@ importers:
       '@iconify-json/simple-icons':
         specifier: ^1.2.59
         version: 1.2.59
-      '@iconify-json/streamline-logos':
-        specifier: ^1.2.0
-        version: 1.2.0
       '@inlang/paraglide-js':
         specifier: ^2.5.0
         version: 2.5.0
@@ -623,6 +623,9 @@ packages:
   '@fontsource/geist@5.2.8':
     resolution: {integrity: sha512-pI54klK6vz8fVpAVyV+iODGLEzw73cs1XJqV9PIXgW8MYMmBcwK6lKKaWqJrNHwEx8ppz9cuhussb6arXQ/PVQ==}
 
+  '@fontsource/noto-sans-tc@5.2.8':
+    resolution: {integrity: sha512-YGeoh/XCBJm9iSUuyDIpw0pd7I+XiO7HI3Tq+38j4fuIjykURHhUDRtjkIFkEzjg8BKZ6MNdyyXHXor1fdoGQg==}
+
   '@gcornut/valibot-json-schema@0.42.0':
     resolution: {integrity: sha512-4Et4AN6wmqeA0PfU5Clkv/IS27wiefsWf6TemAZrb75uzkClYEFavim7SboeKwbll9Nbsn2Iv0LT/HS5H7orZg==}
     hasBin: true
@@ -666,9 +669,6 @@ packages:
 
   '@iconify-json/simple-icons@1.2.59':
     resolution: {integrity: sha512-fYx/InyQsWFW4wVxWka3CGDJ6m/fXoTqWBSl+oA3FBXO5RhPAb6S3Y5bRgCPnrYevErH8VjAL0TZevIqlN2PhQ==}
-
-  '@iconify-json/streamline-logos@1.2.0':
-    resolution: {integrity: sha512-eEMC8BvJTCUiR/xdAjKuJwRGnKV5v9Prp2wgONFLKILq1om/5Pz+EUsFXVqYSVeIAUfguaB2tjy1wM7wJbs0IQ==}
 
   '@iconify/svelte@5.1.0':
     resolution: {integrity: sha512-I14nSqo0pNXO5OKsT61ZO3XIPF4yRHA2ErgPsaZ1sPJdKXn80o7o8jOe1xpWphbb9FihdX6by9zlKKBss61mFw==}
@@ -3960,6 +3960,8 @@ snapshots:
 
   '@fontsource/geist@5.2.8': {}
 
+  '@fontsource/noto-sans-tc@5.2.8': {}
+
   '@gcornut/valibot-json-schema@0.42.0(esbuild@0.25.12)(typescript@5.9.3)':
     dependencies:
       valibot: 0.42.1(typescript@5.9.3)
@@ -4011,10 +4013,6 @@ snapshots:
       '@iconify/types': 2.0.0
 
   '@iconify-json/simple-icons@1.2.59':
-    dependencies:
-      '@iconify/types': 2.0.0
-
-  '@iconify-json/streamline-logos@1.2.0':
     dependencies:
       '@iconify/types': 2.0.0
 

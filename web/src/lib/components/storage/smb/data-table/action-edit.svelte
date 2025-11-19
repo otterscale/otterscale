@@ -171,7 +171,7 @@
 												<SingleSelect.Item {option}>
 													<Icon
 														icon={option.icon ? option.icon : 'ph:empty'}
-														class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+														class={cn('size-5', option.icon ? 'visible' : 'invisible')}
 													/>
 													<span class="flex flex-col">
 														<p>{option.label}</p>
@@ -227,7 +227,7 @@
 												<SingleSelect.Item {option}>
 													<Icon
 														icon={option.icon ? option.icon : 'ph:empty'}
-														class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+														class={cn('size-5', option.icon ? 'visible' : 'invisible')}
 													/>
 													<span class="flex flex-col">
 														<p>{option.label}</p>
@@ -262,7 +262,7 @@
 												<SingleSelect.Item {option}>
 													<Icon
 														icon={option.icon ? option.icon : 'ph:empty'}
-														class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+														class={cn('size-5', option.icon ? 'visible' : 'invisible')}
 													/>
 													{option.label}
 													<SingleSelect.Check {option} />
