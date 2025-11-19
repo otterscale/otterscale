@@ -14,22 +14,20 @@
 
 	let {
 		prometheusDriver,
-		scope,
 		isReloading = $bindable()
 	}: {
 		prometheusDriver: PrometheusDriver;
-		scope: string;
 		isReloading: boolean;
 	} = $props();
 
 	let receivesByTime = $state([] as SampleValue[]);
 	let transmitsByTime = $state([] as SampleValue[]);
 	const trafficsByTime = $derived(
-		receivesByTime.map((sample, index) => ({
+		receivesByTime?.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmitsByTime[index]?.value ?? 0
-		}))
+			transmit: transmitsByTime?.[index]?.value ?? 0
+		})) ?? []
 	);
 	let trafficsByTimeContext = $state<ChartContextValue>();
 	const trafficsByTimeConfiguration = {
@@ -40,23 +38,23 @@
 	function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`sum(increase(node_network_receive_bytes_total{juju_model="${scope}"}[1h]))`,
+				`sum(increase(node_network_receive_bytes_total[1h]))`,
 				new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
 				new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
 				1 * 60 * 60
 			)
 			.then((response) => {
-				receivesByTime = response.result[0]?.values;
+				receivesByTime = response.result[0]?.values ?? [];
 			});
 		prometheusDriver
 			.rangeQuery(
-				`sum(increase(node_network_transmit_bytes_total{juju_model="${scope}"}[1h]))`,
+				`sum(increase(node_network_transmit_bytes_total[1h]))`,
 				new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
 				new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
 				1 * 60 * 60
 			)
 			.then((response) => {
-				transmitsByTime = response.result[0]?.values;
+				transmitsByTime = response.result[0]?.values ?? [];
 			});
 	}
 

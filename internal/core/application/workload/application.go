@@ -36,7 +36,7 @@ type Application struct {
 	ChartFile   *chart.File // return only when fetching from GetApplication
 }
 
-func (uc *UseCase) ListApplications(ctx context.Context, scope string) (apps []Application, endpoint string, err error) {
+func (uc *UseCase) ListApplications(ctx context.Context, scope string) (apps []Application, hostname string, err error) {
 	var (
 		deployments            []Deployment
 		statefulSets           []StatefulSet
@@ -114,7 +114,12 @@ func (uc *UseCase) ListApplications(ctx context.Context, scope string) (apps []A
 		return nil, "", err
 	}
 
-	return apps, uc.service.Host(scope), nil
+	url, err := uc.service.URL(scope)
+	if err != nil {
+		return nil, "", err
+	}
+
+	return apps, url.Hostname(), nil
 }
 
 func (uc *UseCase) RestartApplication(ctx context.Context, scope, namespace, name, appType string) error {

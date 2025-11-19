@@ -288,7 +288,7 @@ message ListApplicationsRequest {
 
 message ListApplicationsResponse {
   repeated Application applications = 1;
-  string endpoint = 2;
+  string hostname = 2;
 }
 
 message GetApplicationRequest {

@@ -310,7 +310,7 @@ func (b0 Machine_builder) Build() *Machine {
 	return m0
 }
 
-type MON struct {
+type Monitor struct {
 	state                    protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Leader        bool                   `protobuf:"varint,1,opt,name=leader"`
 	xxx_hidden_Name          *string                `protobuf:"bytes,2,opt,name=name"`
@@ -323,20 +323,20 @@ type MON struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *MON) Reset() {
-	*x = MON{}
+func (x *Monitor) Reset() {
+	*x = Monitor{}
 	mi := &file_api_storage_v1_storage_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *MON) String() string {
+func (x *Monitor) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MON) ProtoMessage() {}
+func (*Monitor) ProtoMessage() {}
 
-func (x *MON) ProtoReflect() protoreflect.Message {
+func (x *Monitor) ProtoReflect() protoreflect.Message {
 	mi := &file_api_storage_v1_storage_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -348,14 +348,14 @@ func (x *MON) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *MON) GetLeader() bool {
+func (x *Monitor) GetLeader() bool {
 	if x != nil {
 		return x.xxx_hidden_Leader
 	}
 	return false
 }
 
-func (x *MON) GetName() string {
+func (x *Monitor) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
@@ -365,14 +365,14 @@ func (x *MON) GetName() string {
 	return ""
 }
 
-func (x *MON) GetRank() uint64 {
+func (x *Monitor) GetRank() uint64 {
 	if x != nil {
 		return x.xxx_hidden_Rank
 	}
 	return 0
 }
 
-func (x *MON) GetPublicAddress() string {
+func (x *Monitor) GetPublicAddress() string {
 	if x != nil {
 		if x.xxx_hidden_PublicAddress != nil {
 			return *x.xxx_hidden_PublicAddress
@@ -382,97 +382,97 @@ func (x *MON) GetPublicAddress() string {
 	return ""
 }
 
-func (x *MON) GetMachine() *Machine {
+func (x *Monitor) GetMachine() *Machine {
 	if x != nil {
 		return x.xxx_hidden_Machine
 	}
 	return nil
 }
 
-func (x *MON) SetLeader(v bool) {
+func (x *Monitor) SetLeader(v bool) {
 	x.xxx_hidden_Leader = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
-func (x *MON) SetName(v string) {
+func (x *Monitor) SetName(v string) {
 	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
-func (x *MON) SetRank(v uint64) {
+func (x *Monitor) SetRank(v uint64) {
 	x.xxx_hidden_Rank = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
-func (x *MON) SetPublicAddress(v string) {
+func (x *Monitor) SetPublicAddress(v string) {
 	x.xxx_hidden_PublicAddress = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *MON) SetMachine(v *Machine) {
+func (x *Monitor) SetMachine(v *Machine) {
 	x.xxx_hidden_Machine = v
 }
 
-func (x *MON) HasLeader() bool {
+func (x *Monitor) HasLeader() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *MON) HasName() bool {
+func (x *Monitor) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *MON) HasRank() bool {
+func (x *Monitor) HasRank() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *MON) HasPublicAddress() bool {
+func (x *Monitor) HasPublicAddress() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *MON) HasMachine() bool {
+func (x *Monitor) HasMachine() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Machine != nil
 }
 
-func (x *MON) ClearLeader() {
+func (x *Monitor) ClearLeader() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Leader = false
 }
 
-func (x *MON) ClearName() {
+func (x *Monitor) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
-func (x *MON) ClearRank() {
+func (x *Monitor) ClearRank() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Rank = 0
 }
 
-func (x *MON) ClearPublicAddress() {
+func (x *Monitor) ClearPublicAddress() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_PublicAddress = nil
 }
 
-func (x *MON) ClearMachine() {
+func (x *Monitor) ClearMachine() {
 	x.xxx_hidden_Machine = nil
 }
 
-type MON_builder struct {
+type Monitor_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Leader        *bool
@@ -482,8 +482,8 @@ type MON_builder struct {
 	Machine       *Machine
 }
 
-func (b0 MON_builder) Build() *MON {
-	m0 := &MON{}
+func (b0 Monitor_builder) Build() *Monitor {
+	m0 := &Monitor{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Leader != nil {
@@ -506,7 +506,7 @@ func (b0 MON_builder) Build() *MON {
 	return m0
 }
 
-type OSD struct {
+type ObjectStorageDaemon struct {
 	state                          protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id                  int64                  `protobuf:"varint,1,opt,name=id"`
 	xxx_hidden_Name                *string                `protobuf:"bytes,2,opt,name=name"`
@@ -524,20 +524,20 @@ type OSD struct {
 	sizeCache                      protoimpl.SizeCache
 }
 
-func (x *OSD) Reset() {
-	*x = OSD{}
+func (x *ObjectStorageDaemon) Reset() {
+	*x = ObjectStorageDaemon{}
 	mi := &file_api_storage_v1_storage_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *OSD) String() string {
+func (x *ObjectStorageDaemon) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*OSD) ProtoMessage() {}
+func (*ObjectStorageDaemon) ProtoMessage() {}
 
-func (x *OSD) ProtoReflect() protoreflect.Message {
+func (x *ObjectStorageDaemon) ProtoReflect() protoreflect.Message {
 	mi := &file_api_storage_v1_storage_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -549,14 +549,14 @@ func (x *OSD) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *OSD) GetId() int64 {
+func (x *ObjectStorageDaemon) GetId() int64 {
 	if x != nil {
 		return x.xxx_hidden_Id
 	}
 	return 0
 }
 
-func (x *OSD) GetName() string {
+func (x *ObjectStorageDaemon) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
@@ -566,28 +566,28 @@ func (x *OSD) GetName() string {
 	return ""
 }
 
-func (x *OSD) GetUp() bool {
+func (x *ObjectStorageDaemon) GetUp() bool {
 	if x != nil {
 		return x.xxx_hidden_Up
 	}
 	return false
 }
 
-func (x *OSD) GetIn() bool {
+func (x *ObjectStorageDaemon) GetIn() bool {
 	if x != nil {
 		return x.xxx_hidden_In
 	}
 	return false
 }
 
-func (x *OSD) GetExists() bool {
+func (x *ObjectStorageDaemon) GetExists() bool {
 	if x != nil {
 		return x.xxx_hidden_Exists
 	}
 	return false
 }
 
-func (x *OSD) GetDeviceClass() string {
+func (x *ObjectStorageDaemon) GetDeviceClass() string {
 	if x != nil {
 		if x.xxx_hidden_DeviceClass != nil {
 			return *x.xxx_hidden_DeviceClass
@@ -597,203 +597,203 @@ func (x *OSD) GetDeviceClass() string {
 	return ""
 }
 
-func (x *OSD) GetSizeBytes() uint64 {
+func (x *ObjectStorageDaemon) GetSizeBytes() uint64 {
 	if x != nil {
 		return x.xxx_hidden_SizeBytes
 	}
 	return 0
 }
 
-func (x *OSD) GetUsedBytes() uint64 {
+func (x *ObjectStorageDaemon) GetUsedBytes() uint64 {
 	if x != nil {
 		return x.xxx_hidden_UsedBytes
 	}
 	return 0
 }
 
-func (x *OSD) GetPlacementGroupCount() uint64 {
+func (x *ObjectStorageDaemon) GetPlacementGroupCount() uint64 {
 	if x != nil {
 		return x.xxx_hidden_PlacementGroupCount
 	}
 	return 0
 }
 
-func (x *OSD) GetMachine() *Machine {
+func (x *ObjectStorageDaemon) GetMachine() *Machine {
 	if x != nil {
 		return x.xxx_hidden_Machine
 	}
 	return nil
 }
 
-func (x *OSD) SetId(v int64) {
+func (x *ObjectStorageDaemon) SetId(v int64) {
 	x.xxx_hidden_Id = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 10)
 }
 
-func (x *OSD) SetName(v string) {
+func (x *ObjectStorageDaemon) SetName(v string) {
 	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 10)
 }
 
-func (x *OSD) SetUp(v bool) {
+func (x *ObjectStorageDaemon) SetUp(v bool) {
 	x.xxx_hidden_Up = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 10)
 }
 
-func (x *OSD) SetIn(v bool) {
+func (x *ObjectStorageDaemon) SetIn(v bool) {
 	x.xxx_hidden_In = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 10)
 }
 
-func (x *OSD) SetExists(v bool) {
+func (x *ObjectStorageDaemon) SetExists(v bool) {
 	x.xxx_hidden_Exists = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 10)
 }
 
-func (x *OSD) SetDeviceClass(v string) {
+func (x *ObjectStorageDaemon) SetDeviceClass(v string) {
 	x.xxx_hidden_DeviceClass = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 10)
 }
 
-func (x *OSD) SetSizeBytes(v uint64) {
+func (x *ObjectStorageDaemon) SetSizeBytes(v uint64) {
 	x.xxx_hidden_SizeBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 10)
 }
 
-func (x *OSD) SetUsedBytes(v uint64) {
+func (x *ObjectStorageDaemon) SetUsedBytes(v uint64) {
 	x.xxx_hidden_UsedBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 10)
 }
 
-func (x *OSD) SetPlacementGroupCount(v uint64) {
+func (x *ObjectStorageDaemon) SetPlacementGroupCount(v uint64) {
 	x.xxx_hidden_PlacementGroupCount = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 10)
 }
 
-func (x *OSD) SetMachine(v *Machine) {
+func (x *ObjectStorageDaemon) SetMachine(v *Machine) {
 	x.xxx_hidden_Machine = v
 }
 
-func (x *OSD) HasId() bool {
+func (x *ObjectStorageDaemon) HasId() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *OSD) HasName() bool {
+func (x *ObjectStorageDaemon) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *OSD) HasUp() bool {
+func (x *ObjectStorageDaemon) HasUp() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *OSD) HasIn() bool {
+func (x *ObjectStorageDaemon) HasIn() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *OSD) HasExists() bool {
+func (x *ObjectStorageDaemon) HasExists() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *OSD) HasDeviceClass() bool {
+func (x *ObjectStorageDaemon) HasDeviceClass() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *OSD) HasSizeBytes() bool {
+func (x *ObjectStorageDaemon) HasSizeBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
-func (x *OSD) HasUsedBytes() bool {
+func (x *ObjectStorageDaemon) HasUsedBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
-func (x *OSD) HasPlacementGroupCount() bool {
+func (x *ObjectStorageDaemon) HasPlacementGroupCount() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
-func (x *OSD) HasMachine() bool {
+func (x *ObjectStorageDaemon) HasMachine() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Machine != nil
 }
 
-func (x *OSD) ClearId() {
+func (x *ObjectStorageDaemon) ClearId() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Id = 0
 }
 
-func (x *OSD) ClearName() {
+func (x *ObjectStorageDaemon) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
-func (x *OSD) ClearUp() {
+func (x *ObjectStorageDaemon) ClearUp() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Up = false
 }
 
-func (x *OSD) ClearIn() {
+func (x *ObjectStorageDaemon) ClearIn() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_In = false
 }
 
-func (x *OSD) ClearExists() {
+func (x *ObjectStorageDaemon) ClearExists() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_Exists = false
 }
 
-func (x *OSD) ClearDeviceClass() {
+func (x *ObjectStorageDaemon) ClearDeviceClass() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_DeviceClass = nil
 }
 
-func (x *OSD) ClearSizeBytes() {
+func (x *ObjectStorageDaemon) ClearSizeBytes() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_SizeBytes = 0
 }
 
-func (x *OSD) ClearUsedBytes() {
+func (x *ObjectStorageDaemon) ClearUsedBytes() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
 	x.xxx_hidden_UsedBytes = 0
 }
 
-func (x *OSD) ClearPlacementGroupCount() {
+func (x *ObjectStorageDaemon) ClearPlacementGroupCount() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
 	x.xxx_hidden_PlacementGroupCount = 0
 }
 
-func (x *OSD) ClearMachine() {
+func (x *ObjectStorageDaemon) ClearMachine() {
 	x.xxx_hidden_Machine = nil
 }
 
-type OSD_builder struct {
+type ObjectStorageDaemon_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Id                  *int64
@@ -808,8 +808,8 @@ type OSD_builder struct {
 	Machine             *Machine
 }
 
-func (b0 OSD_builder) Build() *OSD {
-	m0 := &OSD{}
+func (b0 ObjectStorageDaemon_builder) Build() *ObjectStorageDaemon {
+	m0 := &ObjectStorageDaemon{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
@@ -2928,15 +2928,16 @@ type SMBShare struct {
 	state                     protoimpl.MessageState   `protogen:"opaque.v1"`
 	xxx_hidden_Name           *string                  `protobuf:"bytes,1,opt,name=name"`
 	xxx_hidden_Namespace      *string                  `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_Replicas       int32                    `protobuf:"varint,3,opt,name=replicas"`
-	xxx_hidden_Healthies      int32                    `protobuf:"varint,4,opt,name=healthies"`
-	xxx_hidden_SizeBytes      uint64                   `protobuf:"varint,11,opt,name=size_bytes,json=sizeBytes"`
-	xxx_hidden_Browsable      bool                     `protobuf:"varint,21,opt,name=browsable"`
-	xxx_hidden_ReadOnly       bool                     `protobuf:"varint,22,opt,name=read_only,json=readOnly"`
-	xxx_hidden_GuestOk        bool                     `protobuf:"varint,31,opt,name=guest_ok,json=guestOk"`
-	xxx_hidden_ValidUsers     []string                 `protobuf:"bytes,32,rep,name=valid_users,json=validUsers"`
-	xxx_hidden_CommonConfig   *SMBShare_CommonConfig   `protobuf:"bytes,41,opt,name=common_config,json=commonConfig"`
-	xxx_hidden_SecurityConfig *SMBShare_SecurityConfig `protobuf:"bytes,51,opt,name=security_config,json=securityConfig"`
+	xxx_hidden_Uri            *string                  `protobuf:"bytes,3,opt,name=uri"`
+	xxx_hidden_Replicas       int32                    `protobuf:"varint,11,opt,name=replicas"`
+	xxx_hidden_Healthies      int32                    `protobuf:"varint,12,opt,name=healthies"`
+	xxx_hidden_SizeBytes      uint64                   `protobuf:"varint,21,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_Browsable      bool                     `protobuf:"varint,31,opt,name=browsable"`
+	xxx_hidden_ReadOnly       bool                     `protobuf:"varint,32,opt,name=read_only,json=readOnly"`
+	xxx_hidden_GuestOk        bool                     `protobuf:"varint,41,opt,name=guest_ok,json=guestOk"`
+	xxx_hidden_ValidUsers     []string                 `protobuf:"bytes,42,rep,name=valid_users,json=validUsers"`
+	xxx_hidden_CommonConfig   *SMBShare_CommonConfig   `protobuf:"bytes,51,opt,name=common_config,json=commonConfig"`
+	xxx_hidden_SecurityConfig *SMBShare_SecurityConfig `protobuf:"bytes,61,opt,name=security_config,json=securityConfig"`
 	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
 	XXX_presence              [1]uint32
 	unknownFields             protoimpl.UnknownFields
@@ -2982,6 +2983,16 @@ func (x *SMBShare) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
 			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *SMBShare) GetUri() string {
+	if x != nil {
+		if x.xxx_hidden_Uri != nil {
+			return *x.xxx_hidden_Uri
 		}
 		return ""
 	}
@@ -3053,42 +3064,47 @@ func (x *SMBShare) GetSecurityConfig() *SMBShare_SecurityConfig {
 
 func (x *SMBShare) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 12)
 }
 
 func (x *SMBShare) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 12)
+}
+
+func (x *SMBShare) SetUri(v string) {
+	x.xxx_hidden_Uri = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 12)
 }
 
 func (x *SMBShare) SetReplicas(v int32) {
 	x.xxx_hidden_Replicas = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 12)
 }
 
 func (x *SMBShare) SetHealthies(v int32) {
 	x.xxx_hidden_Healthies = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 12)
 }
 
 func (x *SMBShare) SetSizeBytes(v uint64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 12)
 }
 
 func (x *SMBShare) SetBrowsable(v bool) {
 	x.xxx_hidden_Browsable = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 12)
 }
 
 func (x *SMBShare) SetReadOnly(v bool) {
 	x.xxx_hidden_ReadOnly = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 12)
 }
 
 func (x *SMBShare) SetGuestOk(v bool) {
 	x.xxx_hidden_GuestOk = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 12)
 }
 
 func (x *SMBShare) SetValidUsers(v []string) {
@@ -3117,46 +3133,53 @@ func (x *SMBShare) HasNamespace() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *SMBShare) HasReplicas() bool {
+func (x *SMBShare) HasUri() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *SMBShare) HasHealthies() bool {
+func (x *SMBShare) HasReplicas() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *SMBShare) HasSizeBytes() bool {
+func (x *SMBShare) HasHealthies() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *SMBShare) HasBrowsable() bool {
+func (x *SMBShare) HasSizeBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *SMBShare) HasReadOnly() bool {
+func (x *SMBShare) HasBrowsable() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
-func (x *SMBShare) HasGuestOk() bool {
+func (x *SMBShare) HasReadOnly() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
+}
+
+func (x *SMBShare) HasGuestOk() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
 func (x *SMBShare) HasCommonConfig() bool {
@@ -3183,33 +3206,38 @@ func (x *SMBShare) ClearNamespace() {
 	x.xxx_hidden_Namespace = nil
 }
 
-func (x *SMBShare) ClearReplicas() {
+func (x *SMBShare) ClearUri() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Uri = nil
+}
+
+func (x *SMBShare) ClearReplicas() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Replicas = 0
 }
 
 func (x *SMBShare) ClearHealthies() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_Healthies = 0
 }
 
 func (x *SMBShare) ClearSizeBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_SizeBytes = 0
 }
 
 func (x *SMBShare) ClearBrowsable() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_Browsable = false
 }
 
 func (x *SMBShare) ClearReadOnly() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
 	x.xxx_hidden_ReadOnly = false
 }
 
 func (x *SMBShare) ClearGuestOk() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
 	x.xxx_hidden_GuestOk = false
 }
 
@@ -3226,6 +3254,7 @@ type SMBShare_builder struct {
 
 	Name           *string
 	Namespace      *string
+	Uri            *string
 	Replicas       *int32
 	Healthies      *int32
 	SizeBytes      *uint64
@@ -3242,35 +3271,39 @@ func (b0 SMBShare_builder) Build() *SMBShare {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 12)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 12)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
+	if b.Uri != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 12)
+		x.xxx_hidden_Uri = b.Uri
+	}
 	if b.Replicas != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 12)
 		x.xxx_hidden_Replicas = *b.Replicas
 	}
 	if b.Healthies != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 12)
 		x.xxx_hidden_Healthies = *b.Healthies
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 12)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
 	if b.Browsable != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 12)
 		x.xxx_hidden_Browsable = *b.Browsable
 	}
 	if b.ReadOnly != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 12)
 		x.xxx_hidden_ReadOnly = *b.ReadOnly
 	}
 	if b.GuestOk != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 12)
 		x.xxx_hidden_GuestOk = *b.GuestOk
 	}
 	x.xxx_hidden_ValidUsers = b.ValidUsers
@@ -3279,7 +3312,7 @@ func (b0 SMBShare_builder) Build() *SMBShare {
 	return m0
 }
 
-type ListMONsRequest struct {
+type ListMonitorsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -3288,20 +3321,20 @@ type ListMONsRequest struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *ListMONsRequest) Reset() {
-	*x = ListMONsRequest{}
+func (x *ListMonitorsRequest) Reset() {
+	*x = ListMonitorsRequest{}
 	mi := &file_api_storage_v1_storage_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListMONsRequest) String() string {
+func (x *ListMonitorsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListMONsRequest) ProtoMessage() {}
+func (*ListMonitorsRequest) ProtoMessage() {}
 
-func (x *ListMONsRequest) ProtoReflect() protoreflect.Message {
+func (x *ListMonitorsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_storage_v1_storage_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3313,7 +3346,7 @@ func (x *ListMONsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListMONsRequest) GetScope() string {
+func (x *ListMonitorsRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
@@ -3323,31 +3356,31 @@ func (x *ListMONsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListMONsRequest) SetScope(v string) {
+func (x *ListMonitorsRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
-func (x *ListMONsRequest) HasScope() bool {
+func (x *ListMonitorsRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListMONsRequest) ClearScope() {
+func (x *ListMonitorsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-type ListMONsRequest_builder struct {
+type ListMonitorsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope *string
 }
 
-func (b0 ListMONsRequest_builder) Build() *ListMONsRequest {
-	m0 := &ListMONsRequest{}
+func (b0 ListMonitorsRequest_builder) Build() *ListMonitorsRequest {
+	m0 := &ListMonitorsRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
@@ -3357,27 +3390,27 @@ func (b0 ListMONsRequest_builder) Build() *ListMONsRequest {
 	return m0
 }
 
-type ListMONsResponse struct {
-	state           protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Mons *[]*MON                `protobuf:"bytes,1,rep,name=mons"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+type ListMonitorsResponse struct {
+	state               protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Monitors *[]*Monitor            `protobuf:"bytes,1,rep,name=monitors"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
-func (x *ListMONsResponse) Reset() {
-	*x = ListMONsResponse{}
+func (x *ListMonitorsResponse) Reset() {
+	*x = ListMonitorsResponse{}
 	mi := &file_api_storage_v1_storage_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListMONsResponse) String() string {
+func (x *ListMonitorsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListMONsResponse) ProtoMessage() {}
+func (*ListMonitorsResponse) ProtoMessage() {}
 
-func (x *ListMONsResponse) ProtoReflect() protoreflect.Message {
+func (x *ListMonitorsResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_storage_v1_storage_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3389,34 +3422,34 @@ func (x *ListMONsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListMONsResponse) GetMons() []*MON {
+func (x *ListMonitorsResponse) GetMonitors() []*Monitor {
 	if x != nil {
-		if x.xxx_hidden_Mons != nil {
-			return *x.xxx_hidden_Mons
+		if x.xxx_hidden_Monitors != nil {
+			return *x.xxx_hidden_Monitors
 		}
 	}
 	return nil
 }
 
-func (x *ListMONsResponse) SetMons(v []*MON) {
-	x.xxx_hidden_Mons = &v
+func (x *ListMonitorsResponse) SetMonitors(v []*Monitor) {
+	x.xxx_hidden_Monitors = &v
 }
 
-type ListMONsResponse_builder struct {
+type ListMonitorsResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Mons []*MON
+	Monitors []*Monitor
 }
 
-func (b0 ListMONsResponse_builder) Build() *ListMONsResponse {
-	m0 := &ListMONsResponse{}
+func (b0 ListMonitorsResponse_builder) Build() *ListMonitorsResponse {
+	m0 := &ListMonitorsResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_Mons = &b.Mons
+	x.xxx_hidden_Monitors = &b.Monitors
 	return m0
 }
 
-type ListOSDsRequest struct {
+type ListObjectStorageDaemonsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -3425,20 +3458,20 @@ type ListOSDsRequest struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *ListOSDsRequest) Reset() {
-	*x = ListOSDsRequest{}
+func (x *ListObjectStorageDaemonsRequest) Reset() {
+	*x = ListObjectStorageDaemonsRequest{}
 	mi := &file_api_storage_v1_storage_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListOSDsRequest) String() string {
+func (x *ListObjectStorageDaemonsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListOSDsRequest) ProtoMessage() {}
+func (*ListObjectStorageDaemonsRequest) ProtoMessage() {}
 
-func (x *ListOSDsRequest) ProtoReflect() protoreflect.Message {
+func (x *ListObjectStorageDaemonsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_storage_v1_storage_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3450,7 +3483,7 @@ func (x *ListOSDsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListOSDsRequest) GetScope() string {
+func (x *ListObjectStorageDaemonsRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
@@ -3460,31 +3493,31 @@ func (x *ListOSDsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListOSDsRequest) SetScope(v string) {
+func (x *ListObjectStorageDaemonsRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
-func (x *ListOSDsRequest) HasScope() bool {
+func (x *ListObjectStorageDaemonsRequest) HasScope() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListOSDsRequest) ClearScope() {
+func (x *ListObjectStorageDaemonsRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-type ListOSDsRequest_builder struct {
+type ListObjectStorageDaemonsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope *string
 }
 
-func (b0 ListOSDsRequest_builder) Build() *ListOSDsRequest {
-	m0 := &ListOSDsRequest{}
+func (b0 ListObjectStorageDaemonsRequest_builder) Build() *ListObjectStorageDaemonsRequest {
+	m0 := &ListObjectStorageDaemonsRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
@@ -3494,27 +3527,27 @@ func (b0 ListOSDsRequest_builder) Build() *ListOSDsRequest {
 	return m0
 }
 
-type ListOSDsResponse struct {
-	state           protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Osds *[]*OSD                `protobuf:"bytes,1,rep,name=osds"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+type ListObjectStorageDaemonsResponse struct {
+	state                           protoimpl.MessageState  `protogen:"opaque.v1"`
+	xxx_hidden_ObjectStorageDaemons *[]*ObjectStorageDaemon `protobuf:"bytes,1,rep,name=object_storage_daemons,json=objectStorageDaemons"`
+	unknownFields                   protoimpl.UnknownFields
+	sizeCache                       protoimpl.SizeCache
 }
 
-func (x *ListOSDsResponse) Reset() {
-	*x = ListOSDsResponse{}
+func (x *ListObjectStorageDaemonsResponse) Reset() {
+	*x = ListObjectStorageDaemonsResponse{}
 	mi := &file_api_storage_v1_storage_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListOSDsResponse) String() string {
+func (x *ListObjectStorageDaemonsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListOSDsResponse) ProtoMessage() {}
+func (*ListObjectStorageDaemonsResponse) ProtoMessage() {}
 
-func (x *ListOSDsResponse) ProtoReflect() protoreflect.Message {
+func (x *ListObjectStorageDaemonsResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_storage_v1_storage_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3526,30 +3559,30 @@ func (x *ListOSDsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListOSDsResponse) GetOsds() []*OSD {
+func (x *ListObjectStorageDaemonsResponse) GetObjectStorageDaemons() []*ObjectStorageDaemon {
 	if x != nil {
-		if x.xxx_hidden_Osds != nil {
-			return *x.xxx_hidden_Osds
+		if x.xxx_hidden_ObjectStorageDaemons != nil {
+			return *x.xxx_hidden_ObjectStorageDaemons
 		}
 	}
 	return nil
 }
 
-func (x *ListOSDsResponse) SetOsds(v []*OSD) {
-	x.xxx_hidden_Osds = &v
+func (x *ListObjectStorageDaemonsResponse) SetObjectStorageDaemons(v []*ObjectStorageDaemon) {
+	x.xxx_hidden_ObjectStorageDaemons = &v
 }
 
-type ListOSDsResponse_builder struct {
+type ListObjectStorageDaemonsResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Osds []*OSD
+	ObjectStorageDaemons []*ObjectStorageDaemon
 }
 
-func (b0 ListOSDsResponse_builder) Build() *ListOSDsResponse {
-	m0 := &ListOSDsResponse{}
+func (b0 ListObjectStorageDaemonsResponse_builder) Build() *ListObjectStorageDaemonsResponse {
+	m0 := &ListObjectStorageDaemonsResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_Osds = &b.Osds
+	x.xxx_hidden_ObjectStorageDaemons = &b.ObjectStorageDaemons
 	return m0
 }
 
@@ -10230,13 +10263,10 @@ func (b0 ListSMBSharesRequest_builder) Build() *ListSMBSharesRequest {
 }
 
 type ListSMBSharesResponse struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_SmbShares   *[]*SMBShare           `protobuf:"bytes,1,rep,name=smb_shares,json=smbShares"`
-	xxx_hidden_Endpoint    *string                `protobuf:"bytes,2,opt,name=endpoint"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_SmbShares *[]*SMBShare           `protobuf:"bytes,1,rep,name=smb_shares,json=smbShares"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *ListSMBSharesResponse) Reset() {
@@ -10273,42 +10303,14 @@ func (x *ListSMBSharesResponse) GetSmbShares() []*SMBShare {
 	return nil
 }
 
-func (x *ListSMBSharesResponse) GetEndpoint() string {
-	if x != nil {
-		if x.xxx_hidden_Endpoint != nil {
-			return *x.xxx_hidden_Endpoint
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListSMBSharesResponse) SetSmbShares(v []*SMBShare) {
 	x.xxx_hidden_SmbShares = &v
-}
-
-func (x *ListSMBSharesResponse) SetEndpoint(v string) {
-	x.xxx_hidden_Endpoint = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
-}
-
-func (x *ListSMBSharesResponse) HasEndpoint() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *ListSMBSharesResponse) ClearEndpoint() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Endpoint = nil
 }
 
 type ListSMBSharesResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	SmbShares []*SMBShare
-	Endpoint  *string
 }
 
 func (b0 ListSMBSharesResponse_builder) Build() *ListSMBSharesResponse {
@@ -10316,10 +10318,6 @@ func (b0 ListSMBSharesResponse_builder) Build() *ListSMBSharesResponse {
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_SmbShares = &b.SmbShares
-	if b.Endpoint != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Endpoint = b.Endpoint
-	}
 	return m0
 }
 
@@ -12165,14 +12163,14 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\x1capi/storage/v1/storage.proto\x12\x15otterscale.storage.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"5\n" +
 	"\aMachine\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1a\n" +
-	"\bhostname\x18\x02 \x01(\tR\bhostname\"\xa6\x01\n" +
-	"\x03MON\x12\x16\n" +
+	"\bhostname\x18\x02 \x01(\tR\bhostname\"\xaa\x01\n" +
+	"\aMonitor\x12\x16\n" +
 	"\x06leader\x18\x01 \x01(\bR\x06leader\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
 	"\x04rank\x18\x03 \x01(\x04R\x04rank\x12%\n" +
 	"\x0epublic_address\x18\x04 \x01(\tR\rpublicAddress\x128\n" +
-	"\amachine\x18e \x01(\v2\x1e.otterscale.storage.v1.MachineR\amachine\"\xb0\x02\n" +
-	"\x03OSD\x12\x0e\n" +
+	"\amachine\x18e \x01(\v2\x1e.otterscale.storage.v1.MachineR\amachine\"\xc0\x02\n" +
+	"\x13ObjectStorageDaemon\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x0e\n" +
 	"\x02up\x18\x03 \x01(\bR\x02up\x12\x0e\n" +
@@ -12307,21 +12305,22 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"access_key\x18\x01 \x01(\tR\taccessKey\x12\x1d\n" +
 	"\n" +
-	"secret_key\x18\x02 \x01(\tR\tsecretKey\"\xe3\a\n" +
+	"secret_key\x18\x02 \x01(\tR\tsecretKey\"\xf5\a\n" +
 	"\bSMBShare\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1a\n" +
-	"\breplicas\x18\x03 \x01(\x05R\breplicas\x12\x1c\n" +
-	"\thealthies\x18\x04 \x01(\x05R\thealthies\x12\x1d\n" +
+	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x10\n" +
+	"\x03uri\x18\x03 \x01(\tR\x03uri\x12\x1a\n" +
+	"\breplicas\x18\v \x01(\x05R\breplicas\x12\x1c\n" +
+	"\thealthies\x18\f \x01(\x05R\thealthies\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\v \x01(\x04R\tsizeBytes\x12\x1c\n" +
-	"\tbrowsable\x18\x15 \x01(\bR\tbrowsable\x12\x1b\n" +
-	"\tread_only\x18\x16 \x01(\bR\breadOnly\x12\x19\n" +
-	"\bguest_ok\x18\x1f \x01(\bR\aguestOk\x12\x1f\n" +
-	"\vvalid_users\x18  \x03(\tR\n" +
+	"size_bytes\x18\x15 \x01(\x04R\tsizeBytes\x12\x1c\n" +
+	"\tbrowsable\x18\x1f \x01(\bR\tbrowsable\x12\x1b\n" +
+	"\tread_only\x18  \x01(\bR\breadOnly\x12\x19\n" +
+	"\bguest_ok\x18) \x01(\bR\aguestOk\x12\x1f\n" +
+	"\vvalid_users\x18* \x03(\tR\n" +
 	"validUsers\x12Q\n" +
-	"\rcommon_config\x18) \x01(\v2,.otterscale.storage.v1.SMBShare.CommonConfigR\fcommonConfig\x12W\n" +
-	"\x0fsecurity_config\x183 \x01(\v2..otterscale.storage.v1.SMBShare.SecurityConfigR\x0esecurityConfig\x1a\xa2\x01\n" +
+	"\rcommon_config\x183 \x01(\v2,.otterscale.storage.v1.SMBShare.CommonConfigR\fcommonConfig\x12W\n" +
+	"\x0fsecurity_config\x18= \x01(\v2..otterscale.storage.v1.SMBShare.SecurityConfigR\x0esecurityConfig\x1a\xa2\x01\n" +
 	"\fCommonConfig\x12Y\n" +
 	"\fmap_to_guest\x18\x01 \x01(\x0e27.otterscale.storage.v1.SMBShare.CommonConfig.MapToGuestR\n" +
 	"mapToGuest\"7\n" +
@@ -12342,15 +12341,15 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"&\n" +
 	"\x04Mode\x12\b\n" +
 	"\x04USER\x10\x00\x12\x14\n" +
-	"\x10ACTIVE_DIRECTORY\x10\x01\"-\n" +
-	"\x0fListMONsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"B\n" +
-	"\x10ListMONsResponse\x12.\n" +
-	"\x04mons\x18\x01 \x03(\v2\x1a.otterscale.storage.v1.MONR\x04mons\"-\n" +
-	"\x0fListOSDsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"B\n" +
-	"\x10ListOSDsResponse\x12.\n" +
-	"\x04osds\x18\x01 \x03(\v2\x1a.otterscale.storage.v1.OSDR\x04osds\"G\n" +
+	"\x10ACTIVE_DIRECTORY\x10\x01\"1\n" +
+	"\x13ListMonitorsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"R\n" +
+	"\x14ListMonitorsResponse\x12:\n" +
+	"\bmonitors\x18\x01 \x03(\v2\x1e.otterscale.storage.v1.MonitorR\bmonitors\"=\n" +
+	"\x1fListObjectStorageDaemonsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"\x84\x01\n" +
+	" ListObjectStorageDaemonsResponse\x12`\n" +
+	"\x16object_storage_daemons\x18\x01 \x03(\v2*.otterscale.storage.v1.ObjectStorageDaemonR\x14objectStorageDaemons\"G\n" +
 	"\x0eDoSMARTRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x19\n" +
 	"\bosd_name\x18\x03 \x01(\tR\aosdNameJ\x04\b\x02\x10\x03\"\x8d\x02\n" +
@@ -12592,11 +12591,10 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"access_key\x18\x04 \x01(\tR\taccessKeyJ\x04\b\x02\x10\x03\"J\n" +
 	"\x14ListSMBSharesRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"s\n" +
+	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"W\n" +
 	"\x15ListSMBSharesResponse\x12>\n" +
 	"\n" +
-	"smb_shares\x18\x01 \x03(\v2\x1f.otterscale.storage.v1.SMBShareR\tsmbShares\x12\x1a\n" +
-	"\bendpoint\x18\x02 \x01(\tR\bendpoint\"\xa1\x03\n" +
+	"smb_shares\x18\x01 \x03(\v2\x1f.otterscale.storage.v1.SMBShareR\tsmbShares\"\xa1\x03\n" +
 	"\x15CreateSMBShareRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x12\n" +
@@ -12627,11 +12625,11 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\vUNSPECIFIED\x10\x00\x12\v\n" +
 	"\aERASURE\x10\x01\x12\x0e\n" +
 	"\n" +
-	"REPLICATED\x10\x022\x9c&\n" +
-	"\x0eStorageService\x12o\n" +
-	"\bListMONs\x12&.otterscale.storage.v1.ListMONsRequest\x1a'.otterscale.storage.v1.ListMONsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vstg-general\x12o\n" +
-	"\bListOSDs\x12&.otterscale.storage.v1.ListOSDsRequest\x1a'.otterscale.storage.v1.ListOSDsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"REPLICATED\x10\x022\xd9&\n" +
+	"\x0eStorageService\x12{\n" +
+	"\fListMonitors\x12*.otterscale.storage.v1.ListMonitorsRequest\x1a+.otterscale.storage.v1.ListMonitorsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
+	"\vstg-general\x12\x9f\x01\n" +
+	"\x18ListObjectStorageDaemons\x126.otterscale.storage.v1.ListObjectStorageDaemonsRequest\x1a7.otterscale.storage.v1.ListObjectStorageDaemonsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vstg-general\x12l\n" +
 	"\aDoSMART\x12%.otterscale.storage.v1.DoSMARTRequest\x1a&.otterscale.storage.v1.DoSMARTResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vstg-general\x12r\n" +
@@ -12752,8 +12750,8 @@ var file_api_storage_v1_storage_proto_goTypes = []any{
 	(SMBShare_CommonConfig_MapToGuest)(0),      // 2: otterscale.storage.v1.SMBShare.CommonConfig.MapToGuest
 	(SMBShare_SecurityConfig_Mode)(0),          // 3: otterscale.storage.v1.SMBShare.SecurityConfig.Mode
 	(*Machine)(nil),                            // 4: otterscale.storage.v1.Machine
-	(*MON)(nil),                                // 5: otterscale.storage.v1.MON
-	(*OSD)(nil),                                // 6: otterscale.storage.v1.OSD
+	(*Monitor)(nil),                            // 5: otterscale.storage.v1.Monitor
+	(*ObjectStorageDaemon)(nil),                // 6: otterscale.storage.v1.ObjectStorageDaemon
 	(*Pool)(nil),                               // 7: otterscale.storage.v1.Pool
 	(*Image)(nil),                              // 8: otterscale.storage.v1.Image
 	(*Volume)(nil),                             // 9: otterscale.storage.v1.Volume
@@ -12762,10 +12760,10 @@ var file_api_storage_v1_storage_proto_goTypes = []any{
 	(*Bucket)(nil),                             // 12: otterscale.storage.v1.Bucket
 	(*User)(nil),                               // 13: otterscale.storage.v1.User
 	(*SMBShare)(nil),                           // 14: otterscale.storage.v1.SMBShare
-	(*ListMONsRequest)(nil),                    // 15: otterscale.storage.v1.ListMONsRequest
-	(*ListMONsResponse)(nil),                   // 16: otterscale.storage.v1.ListMONsResponse
-	(*ListOSDsRequest)(nil),                    // 17: otterscale.storage.v1.ListOSDsRequest
-	(*ListOSDsResponse)(nil),                   // 18: otterscale.storage.v1.ListOSDsResponse
+	(*ListMonitorsRequest)(nil),                // 15: otterscale.storage.v1.ListMonitorsRequest
+	(*ListMonitorsResponse)(nil),               // 16: otterscale.storage.v1.ListMonitorsResponse
+	(*ListObjectStorageDaemonsRequest)(nil),    // 17: otterscale.storage.v1.ListObjectStorageDaemonsRequest
+	(*ListObjectStorageDaemonsResponse)(nil),   // 18: otterscale.storage.v1.ListObjectStorageDaemonsResponse
 	(*DoSMARTRequest)(nil),                     // 19: otterscale.storage.v1.DoSMARTRequest
 	(*DoSMARTResponse)(nil),                    // 20: otterscale.storage.v1.DoSMARTResponse
 	(*ListPoolsRequest)(nil),                   // 21: otterscale.storage.v1.ListPoolsRequest
@@ -12830,8 +12828,8 @@ var file_api_storage_v1_storage_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),                      // 80: google.protobuf.Empty
 }
 var file_api_storage_v1_storage_proto_depIdxs = []int32{
-	4,  // 0: otterscale.storage.v1.MON.machine:type_name -> otterscale.storage.v1.Machine
-	4,  // 1: otterscale.storage.v1.OSD.machine:type_name -> otterscale.storage.v1.Machine
+	4,  // 0: otterscale.storage.v1.Monitor.machine:type_name -> otterscale.storage.v1.Machine
+	4,  // 1: otterscale.storage.v1.ObjectStorageDaemon.machine:type_name -> otterscale.storage.v1.Machine
 	0,  // 2: otterscale.storage.v1.Pool.pool_type:type_name -> otterscale.storage.v1.PoolType
 	68, // 3: otterscale.storage.v1.Pool.placement_group_state:type_name -> otterscale.storage.v1.Pool.PlacementGroupStateEntry
 	79, // 4: otterscale.storage.v1.Pool.created_at:type_name -> google.protobuf.Timestamp
@@ -12847,8 +12845,8 @@ var file_api_storage_v1_storage_proto_depIdxs = []int32{
 	73, // 14: otterscale.storage.v1.User.keys:type_name -> otterscale.storage.v1.User.Key
 	74, // 15: otterscale.storage.v1.SMBShare.common_config:type_name -> otterscale.storage.v1.SMBShare.CommonConfig
 	75, // 16: otterscale.storage.v1.SMBShare.security_config:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig
-	5,  // 17: otterscale.storage.v1.ListMONsResponse.mons:type_name -> otterscale.storage.v1.MON
-	6,  // 18: otterscale.storage.v1.ListOSDsResponse.osds:type_name -> otterscale.storage.v1.OSD
+	5,  // 17: otterscale.storage.v1.ListMonitorsResponse.monitors:type_name -> otterscale.storage.v1.Monitor
+	6,  // 18: otterscale.storage.v1.ListObjectStorageDaemonsResponse.object_storage_daemons:type_name -> otterscale.storage.v1.ObjectStorageDaemon
 	78, // 19: otterscale.storage.v1.DoSMARTResponse.device_output_map:type_name -> otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
 	7,  // 20: otterscale.storage.v1.ListPoolsResponse.pools:type_name -> otterscale.storage.v1.Pool
 	0,  // 21: otterscale.storage.v1.CreatePoolRequest.pool_type:type_name -> otterscale.storage.v1.PoolType
@@ -12871,8 +12869,8 @@ var file_api_storage_v1_storage_proto_depIdxs = []int32{
 	76, // 38: otterscale.storage.v1.SMBShare.SecurityConfig.local_users:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.User
 	76, // 39: otterscale.storage.v1.SMBShare.SecurityConfig.join_source:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.User
 	77, // 40: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry.value:type_name -> otterscale.storage.v1.DoSMARTResponse.Output
-	15, // 41: otterscale.storage.v1.StorageService.ListMONs:input_type -> otterscale.storage.v1.ListMONsRequest
-	17, // 42: otterscale.storage.v1.StorageService.ListOSDs:input_type -> otterscale.storage.v1.ListOSDsRequest
+	15, // 41: otterscale.storage.v1.StorageService.ListMonitors:input_type -> otterscale.storage.v1.ListMonitorsRequest
+	17, // 42: otterscale.storage.v1.StorageService.ListObjectStorageDaemons:input_type -> otterscale.storage.v1.ListObjectStorageDaemonsRequest
 	19, // 43: otterscale.storage.v1.StorageService.DoSMART:input_type -> otterscale.storage.v1.DoSMARTRequest
 	21, // 44: otterscale.storage.v1.StorageService.ListPools:input_type -> otterscale.storage.v1.ListPoolsRequest
 	23, // 45: otterscale.storage.v1.StorageService.CreatePool:input_type -> otterscale.storage.v1.CreatePoolRequest
@@ -12913,8 +12911,8 @@ var file_api_storage_v1_storage_proto_depIdxs = []int32{
 	64, // 80: otterscale.storage.v1.StorageService.ListSMBShares:input_type -> otterscale.storage.v1.ListSMBSharesRequest
 	66, // 81: otterscale.storage.v1.StorageService.CreateSMBShare:input_type -> otterscale.storage.v1.CreateSMBShareRequest
 	67, // 82: otterscale.storage.v1.StorageService.UpdateSMBShare:input_type -> otterscale.storage.v1.UpdateSMBShareRequest
-	16, // 83: otterscale.storage.v1.StorageService.ListMONs:output_type -> otterscale.storage.v1.ListMONsResponse
-	18, // 84: otterscale.storage.v1.StorageService.ListOSDs:output_type -> otterscale.storage.v1.ListOSDsResponse
+	16, // 83: otterscale.storage.v1.StorageService.ListMonitors:output_type -> otterscale.storage.v1.ListMonitorsResponse
+	18, // 84: otterscale.storage.v1.StorageService.ListObjectStorageDaemons:output_type -> otterscale.storage.v1.ListObjectStorageDaemonsResponse
 	20, // 85: otterscale.storage.v1.StorageService.DoSMART:output_type -> otterscale.storage.v1.DoSMARTResponse
 	22, // 86: otterscale.storage.v1.StorageService.ListPools:output_type -> otterscale.storage.v1.ListPoolsResponse
 	7,  // 87: otterscale.storage.v1.StorageService.CreatePool:output_type -> otterscale.storage.v1.Pool

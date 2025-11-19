@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"slices"
 	"strings"
 
@@ -40,25 +41,25 @@ func NewStorageService(storage *storage.UseCase, block *block.UseCase, file *fil
 
 var _ pbconnect.StorageServiceHandler = (*StorageService)(nil)
 
-func (s *StorageService) ListMONs(ctx context.Context, req *pb.ListMONsRequest) (*pb.ListMONsResponse, error) {
+func (s *StorageService) ListMonitors(ctx context.Context, req *pb.ListMonitorsRequest) (*pb.ListMonitorsResponse, error) {
 	mons, err := s.storage.ListMonitors(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &pb.ListMONsResponse{}
-	resp.SetMons(toProtoMONs(mons))
+	resp := &pb.ListMonitorsResponse{}
+	resp.SetMonitors(toProtoMonitors(mons))
 	return resp, nil
 }
 
-func (s *StorageService) ListOSDs(ctx context.Context, req *pb.ListOSDsRequest) (*pb.ListOSDsResponse, error) {
+func (s *StorageService) ListObjectStorageDaemons(ctx context.Context, req *pb.ListObjectStorageDaemonsRequest) (*pb.ListObjectStorageDaemonsResponse, error) {
 	osds, err := s.storage.ListObjectStorageDaemons(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &pb.ListOSDsResponse{}
-	resp.SetOsds(toProtoOSDs(osds))
+	resp := &pb.ListObjectStorageDaemonsResponse{}
+	resp.SetObjectStorageDaemons(toProtoObjectStorageDaemons(osds))
 	return resp, nil
 }
 
@@ -449,14 +450,13 @@ func (s *StorageService) DeleteUserKey(ctx context.Context, req *pb.DeleteUserKe
 }
 
 func (s *StorageService) ListSMBShares(ctx context.Context, req *pb.ListSMBSharesRequest) (*pb.ListSMBSharesResponse, error) {
-	shares, host, err := s.smb.ListSMBShares(ctx, req.GetScope(), req.GetNamespace())
+	shares, hostname, err := s.smb.ListSMBShares(ctx, req.GetScope(), req.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
 
 	resp := &pb.ListSMBSharesResponse{}
-	resp.SetSmbShares(toProtoSMBShares(shares))
-	resp.SetEndpoint(host)
+	resp.SetSmbShares(toProtoSMBShares(shares, hostname))
 	return resp, nil
 }
 
@@ -482,7 +482,7 @@ func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBSh
 		joinSource = toUser(securityConfig.GetJoinSource())
 	}
 
-	share, err := s.smb.CreateSMBShare(ctx,
+	share, hostname, err := s.smb.CreateSMBShare(ctx,
 		req.GetScope(),
 		req.GetNamespace(),
 		req.GetName(),
@@ -500,7 +500,7 @@ func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBSh
 		return nil, err
 	}
 
-	resp := toProtoSMBShare(share)
+	resp := toProtoSMBShare(share, hostname)
 	return resp, nil
 }
 
@@ -526,7 +526,7 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 		joinSource = toUser(securityConfig.GetJoinSource())
 	}
 
-	share, err := s.smb.UpdateSMBShare(ctx,
+	share, hostname, err := s.smb.UpdateSMBShare(ctx,
 		req.GetScope(),
 		req.GetNamespace(),
 		req.GetName(),
@@ -544,7 +544,7 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 		return nil, err
 	}
 
-	resp := toProtoSMBShare(share)
+	resp := toProtoSMBShare(share, hostname)
 	return resp, nil
 }
 
@@ -594,18 +594,18 @@ func toProtoStorageMachine(m *machine.Machine) *pb.Machine {
 	return ret
 }
 
-func toProtoMONs(ms []storage.Monitor) []*pb.MON {
-	ret := []*pb.MON{}
+func toProtoMonitors(ms []storage.Monitor) []*pb.Monitor {
+	ret := []*pb.Monitor{}
 
 	for i := range ms {
-		ret = append(ret, toProtoMON(&ms[i]))
+		ret = append(ret, toProtoMonitor(&ms[i]))
 	}
 
 	return ret
 }
 
-func toProtoMON(m *storage.Monitor) *pb.MON {
-	ret := &pb.MON{}
+func toProtoMonitor(m *storage.Monitor) *pb.Monitor {
+	ret := &pb.Monitor{}
 	ret.SetLeader(m.Leader)
 	ret.SetName(m.Name)
 	ret.SetRank(m.Rank)
@@ -618,18 +618,18 @@ func toProtoMON(m *storage.Monitor) *pb.MON {
 	return ret
 }
 
-func toProtoOSDs(os []storage.ObjectStorageDaemon) []*pb.OSD {
-	ret := []*pb.OSD{}
+func toProtoObjectStorageDaemons(os []storage.ObjectStorageDaemon) []*pb.ObjectStorageDaemon {
+	ret := []*pb.ObjectStorageDaemon{}
 
 	for i := range os {
-		ret = append(ret, toProtoOSD(&os[i]))
+		ret = append(ret, toProtoObjectStorageDaemon(&os[i]))
 	}
 
 	return ret
 }
 
-func toProtoOSD(o *storage.ObjectStorageDaemon) *pb.OSD {
-	ret := &pb.OSD{}
+func toProtoObjectStorageDaemon(o *storage.ObjectStorageDaemon) *pb.ObjectStorageDaemon {
+	ret := &pb.ObjectStorageDaemon{}
 	ret.SetId(o.ID)
 	ret.SetName(o.Name)
 	ret.SetUp(o.Up)
@@ -1014,23 +1014,34 @@ func toProtoSMBShareSecurityConfig(sc *smb.SecurityConfig, localUsers []smb.User
 	return ret
 }
 
-func toProtoSMBShares(sds []smb.ShareData) []*pb.SMBShare {
+func toProtoSMBShares(sds []smb.ShareData, hostname string) []*pb.SMBShare {
 	ret := []*pb.SMBShare{}
 
 	for i := range sds {
-		ret = append(ret, toProtoSMBShare(&sds[i]))
+		ret = append(ret, toProtoSMBShare(&sds[i], hostname))
 	}
 
 	return ret
 }
 
-func toProtoSMBShare(sd *smb.ShareData) *pb.SMBShare {
+func toProtoSMBShare(sd *smb.ShareData, hostname string) *pb.SMBShare {
 	ret := &pb.SMBShare{}
 
 	share := sd.Share
 	if share != nil {
 		ret.SetName(share.Name)
 		ret.SetNamespace(share.Namespace)
+
+		service := sd.Service
+		if service != nil {
+			ports := service.Spec.Ports
+			if len(ports) > 0 {
+				port := ports[0].NodePort
+				uri := fmt.Sprintf("smb://%s:%d/%s", hostname, port, sd.Share.Name)
+
+				ret.SetUri(uri)
+			}
+		}
 
 		deployment := sd.Deployment
 		if deployment != nil {

@@ -85,7 +85,7 @@ message ListModelsRequest {
 
 message ListModelsResponse {
   repeated Model models = 1;
-  string public_address = 2;
+  string service_uri = 2;
 }
 
 message CreateModelRequest {
