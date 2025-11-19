@@ -10230,10 +10230,13 @@ func (b0 ListSMBSharesRequest_builder) Build() *ListSMBSharesRequest {
 }
 
 type ListSMBSharesResponse struct {
-	state                protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_SmbShares *[]*SMBShare           `protobuf:"bytes,1,rep,name=smb_shares,json=smbShares"`
-	unknownFields        protoimpl.UnknownFields
-	sizeCache            protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_SmbShares   *[]*SMBShare           `protobuf:"bytes,1,rep,name=smb_shares,json=smbShares"`
+	xxx_hidden_Endpoint    *string                `protobuf:"bytes,2,opt,name=endpoint"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ListSMBSharesResponse) Reset() {
@@ -10270,14 +10273,42 @@ func (x *ListSMBSharesResponse) GetSmbShares() []*SMBShare {
 	return nil
 }
 
+func (x *ListSMBSharesResponse) GetEndpoint() string {
+	if x != nil {
+		if x.xxx_hidden_Endpoint != nil {
+			return *x.xxx_hidden_Endpoint
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *ListSMBSharesResponse) SetSmbShares(v []*SMBShare) {
 	x.xxx_hidden_SmbShares = &v
+}
+
+func (x *ListSMBSharesResponse) SetEndpoint(v string) {
+	x.xxx_hidden_Endpoint = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ListSMBSharesResponse) HasEndpoint() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListSMBSharesResponse) ClearEndpoint() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Endpoint = nil
 }
 
 type ListSMBSharesResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	SmbShares []*SMBShare
+	Endpoint  *string
 }
 
 func (b0 ListSMBSharesResponse_builder) Build() *ListSMBSharesResponse {
@@ -10285,6 +10316,10 @@ func (b0 ListSMBSharesResponse_builder) Build() *ListSMBSharesResponse {
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_SmbShares = &b.SmbShares
+	if b.Endpoint != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Endpoint = b.Endpoint
+	}
 	return m0
 }
 
@@ -11807,9 +11842,9 @@ func (b0 SMBShare_CommonConfig_builder) Build() *SMBShare_CommonConfig {
 type SMBShare_SecurityConfig struct {
 	state                  protoimpl.MessageState           `protogen:"opaque.v1"`
 	xxx_hidden_Mode        SMBShare_SecurityConfig_Mode     `protobuf:"varint,1,opt,name=mode,enum=otterscale.storage.v1.SMBShare_SecurityConfig_Mode"`
-	xxx_hidden_LocalUser   *SMBShare_SecurityConfig_User    `protobuf:"bytes,11,opt,name=local_user,json=localUser"`
+	xxx_hidden_LocalUsers  *[]*SMBShare_SecurityConfig_User `protobuf:"bytes,11,rep,name=local_users,json=localUsers"`
 	xxx_hidden_Realm       *string                          `protobuf:"bytes,21,opt,name=realm"`
-	xxx_hidden_JoinSources *[]*SMBShare_SecurityConfig_User `protobuf:"bytes,22,rep,name=join_sources,json=joinSources"`
+	xxx_hidden_JoinSource  *SMBShare_SecurityConfig_User    `protobuf:"bytes,22,opt,name=join_source,json=joinSource"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -11850,9 +11885,11 @@ func (x *SMBShare_SecurityConfig) GetMode() SMBShare_SecurityConfig_Mode {
 	return SMBShare_SecurityConfig_USER
 }
 
-func (x *SMBShare_SecurityConfig) GetLocalUser() *SMBShare_SecurityConfig_User {
+func (x *SMBShare_SecurityConfig) GetLocalUsers() []*SMBShare_SecurityConfig_User {
 	if x != nil {
-		return x.xxx_hidden_LocalUser
+		if x.xxx_hidden_LocalUsers != nil {
+			return *x.xxx_hidden_LocalUsers
+		}
 	}
 	return nil
 }
@@ -11867,11 +11904,9 @@ func (x *SMBShare_SecurityConfig) GetRealm() string {
 	return ""
 }
 
-func (x *SMBShare_SecurityConfig) GetJoinSources() []*SMBShare_SecurityConfig_User {
+func (x *SMBShare_SecurityConfig) GetJoinSource() *SMBShare_SecurityConfig_User {
 	if x != nil {
-		if x.xxx_hidden_JoinSources != nil {
-			return *x.xxx_hidden_JoinSources
-		}
+		return x.xxx_hidden_JoinSource
 	}
 	return nil
 }
@@ -11881,8 +11916,8 @@ func (x *SMBShare_SecurityConfig) SetMode(v SMBShare_SecurityConfig_Mode) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *SMBShare_SecurityConfig) SetLocalUser(v *SMBShare_SecurityConfig_User) {
-	x.xxx_hidden_LocalUser = v
+func (x *SMBShare_SecurityConfig) SetLocalUsers(v []*SMBShare_SecurityConfig_User) {
+	x.xxx_hidden_LocalUsers = &v
 }
 
 func (x *SMBShare_SecurityConfig) SetRealm(v string) {
@@ -11890,8 +11925,8 @@ func (x *SMBShare_SecurityConfig) SetRealm(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *SMBShare_SecurityConfig) SetJoinSources(v []*SMBShare_SecurityConfig_User) {
-	x.xxx_hidden_JoinSources = &v
+func (x *SMBShare_SecurityConfig) SetJoinSource(v *SMBShare_SecurityConfig_User) {
+	x.xxx_hidden_JoinSource = v
 }
 
 func (x *SMBShare_SecurityConfig) HasMode() bool {
@@ -11901,13 +11936,6 @@ func (x *SMBShare_SecurityConfig) HasMode() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *SMBShare_SecurityConfig) HasLocalUser() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_LocalUser != nil
-}
-
 func (x *SMBShare_SecurityConfig) HasRealm() bool {
 	if x == nil {
 		return false
@@ -11915,13 +11943,16 @@ func (x *SMBShare_SecurityConfig) HasRealm() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
+func (x *SMBShare_SecurityConfig) HasJoinSource() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_JoinSource != nil
+}
+
 func (x *SMBShare_SecurityConfig) ClearMode() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Mode = SMBShare_SecurityConfig_USER
-}
-
-func (x *SMBShare_SecurityConfig) ClearLocalUser() {
-	x.xxx_hidden_LocalUser = nil
 }
 
 func (x *SMBShare_SecurityConfig) ClearRealm() {
@@ -11929,13 +11960,17 @@ func (x *SMBShare_SecurityConfig) ClearRealm() {
 	x.xxx_hidden_Realm = nil
 }
 
+func (x *SMBShare_SecurityConfig) ClearJoinSource() {
+	x.xxx_hidden_JoinSource = nil
+}
+
 type SMBShare_SecurityConfig_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Mode        *SMBShare_SecurityConfig_Mode
-	LocalUser   *SMBShare_SecurityConfig_User
-	Realm       *string
-	JoinSources []*SMBShare_SecurityConfig_User
+	Mode       *SMBShare_SecurityConfig_Mode
+	LocalUsers []*SMBShare_SecurityConfig_User
+	Realm      *string
+	JoinSource *SMBShare_SecurityConfig_User
 }
 
 func (b0 SMBShare_SecurityConfig_builder) Build() *SMBShare_SecurityConfig {
@@ -11946,12 +11981,12 @@ func (b0 SMBShare_SecurityConfig_builder) Build() *SMBShare_SecurityConfig {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Mode = *b.Mode
 	}
-	x.xxx_hidden_LocalUser = b.LocalUser
+	x.xxx_hidden_LocalUsers = &b.LocalUsers
 	if b.Realm != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Realm = b.Realm
 	}
-	x.xxx_hidden_JoinSources = &b.JoinSources
+	x.xxx_hidden_JoinSource = b.JoinSource
 	return m0
 }
 
@@ -12296,11 +12331,12 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\bBAD_USER\x10\x01\x12\x10\n" +
 	"\fBAD_PASSWORD\x10\x02\x1a\x83\x03\n" +
 	"\x0eSecurityConfig\x12G\n" +
-	"\x04mode\x18\x01 \x01(\x0e23.otterscale.storage.v1.SMBShare.SecurityConfig.ModeR\x04mode\x12R\n" +
-	"\n" +
-	"local_user\x18\v \x01(\v23.otterscale.storage.v1.SMBShare.SecurityConfig.UserR\tlocalUser\x12\x14\n" +
-	"\x05realm\x18\x15 \x01(\tR\x05realm\x12V\n" +
-	"\fjoin_sources\x18\x16 \x03(\v23.otterscale.storage.v1.SMBShare.SecurityConfig.UserR\vjoinSources\x1a>\n" +
+	"\x04mode\x18\x01 \x01(\x0e23.otterscale.storage.v1.SMBShare.SecurityConfig.ModeR\x04mode\x12T\n" +
+	"\vlocal_users\x18\v \x03(\v23.otterscale.storage.v1.SMBShare.SecurityConfig.UserR\n" +
+	"localUsers\x12\x14\n" +
+	"\x05realm\x18\x15 \x01(\tR\x05realm\x12T\n" +
+	"\vjoin_source\x18\x16 \x01(\v23.otterscale.storage.v1.SMBShare.SecurityConfig.UserR\n" +
+	"joinSource\x1a>\n" +
 	"\x04User\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"&\n" +
@@ -12556,10 +12592,11 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"access_key\x18\x04 \x01(\tR\taccessKeyJ\x04\b\x02\x10\x03\"J\n" +
 	"\x14ListSMBSharesRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"W\n" +
+	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"s\n" +
 	"\x15ListSMBSharesResponse\x12>\n" +
 	"\n" +
-	"smb_shares\x18\x01 \x03(\v2\x1f.otterscale.storage.v1.SMBShareR\tsmbShares\"\xa1\x03\n" +
+	"smb_shares\x18\x01 \x03(\v2\x1f.otterscale.storage.v1.SMBShareR\tsmbShares\x12\x1a\n" +
+	"\bendpoint\x18\x02 \x01(\tR\bendpoint\"\xa1\x03\n" +
 	"\x15CreateSMBShareRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x12\n" +
@@ -12831,8 +12868,8 @@ var file_api_storage_v1_storage_proto_depIdxs = []int32{
 	79, // 35: otterscale.storage.v1.Subvolume.Snapshot.created_at:type_name -> google.protobuf.Timestamp
 	2,  // 36: otterscale.storage.v1.SMBShare.CommonConfig.map_to_guest:type_name -> otterscale.storage.v1.SMBShare.CommonConfig.MapToGuest
 	3,  // 37: otterscale.storage.v1.SMBShare.SecurityConfig.mode:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.Mode
-	76, // 38: otterscale.storage.v1.SMBShare.SecurityConfig.local_user:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.User
-	76, // 39: otterscale.storage.v1.SMBShare.SecurityConfig.join_sources:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.User
+	76, // 38: otterscale.storage.v1.SMBShare.SecurityConfig.local_users:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.User
+	76, // 39: otterscale.storage.v1.SMBShare.SecurityConfig.join_source:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.User
 	77, // 40: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry.value:type_name -> otterscale.storage.v1.DoSMARTResponse.Output
 	15, // 41: otterscale.storage.v1.StorageService.ListMONs:input_type -> otterscale.storage.v1.ListMONsRequest
 	17, // 42: otterscale.storage.v1.StorageService.ListOSDs:input_type -> otterscale.storage.v1.ListOSDsRequest

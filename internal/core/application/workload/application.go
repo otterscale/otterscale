@@ -7,6 +7,7 @@ import (
 
 	"connectrpc.com/connect"
 	"golang.org/x/sync/errgroup"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
@@ -215,7 +216,7 @@ func (uc *UseCase) GetApplication(ctx context.Context, scope, namespace, name st
 		v, err := uc.deployment.Get(egctx, scope, namespace, name)
 		if err == nil {
 			deployment = v
-		} else if uc.isKeyNotFoundError(err) {
+		} else if k8serrors.IsNotFound(err) {
 			return nil
 		}
 		return err
@@ -225,7 +226,7 @@ func (uc *UseCase) GetApplication(ctx context.Context, scope, namespace, name st
 		v, err := uc.statefulSet.Get(egctx, scope, namespace, name)
 		if err == nil {
 			statefulSet = v
-		} else if uc.isKeyNotFoundError(err) {
+		} else if k8serrors.IsNotFound(err) {
 			return nil
 		}
 		return err
@@ -235,7 +236,7 @@ func (uc *UseCase) GetApplication(ctx context.Context, scope, namespace, name st
 		v, err := uc.daemonSet.Get(egctx, scope, namespace, name)
 		if err == nil {
 			daemonSet = v
-		} else if uc.isKeyNotFoundError(err) {
+		} else if k8serrors.IsNotFound(err) {
 			return nil
 		}
 		return err

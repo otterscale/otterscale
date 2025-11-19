@@ -449,13 +449,14 @@ func (s *StorageService) DeleteUserKey(ctx context.Context, req *pb.DeleteUserKe
 }
 
 func (s *StorageService) ListSMBShares(ctx context.Context, req *pb.ListSMBSharesRequest) (*pb.ListSMBSharesResponse, error) {
-	shares, err := s.smb.ListSMBShares(ctx, req.GetScope(), req.GetNamespace())
+	shares, host, err := s.smb.ListSMBShares(ctx, req.GetScope(), req.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
 
 	resp := &pb.ListSMBSharesResponse{}
 	resp.SetSmbShares(toProtoSMBShares(shares))
+	resp.SetEndpoint(host)
 	return resp, nil
 }
 
@@ -463,9 +464,9 @@ func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBSh
 	var (
 		mapToGuest   string
 		securityMode string
-		localUser    *smb.User
+		localUsers   []smb.User
 		realm        string
-		joinSources  []smb.User
+		joinSource   *smb.User
 	)
 
 	commonConfig := req.GetCommonConfig()
@@ -476,9 +477,9 @@ func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBSh
 	securityConfig := req.GetSecurityConfig()
 	if securityConfig != nil {
 		securityMode = toSecurityMode(securityConfig.GetMode())
-		localUser = toUser(securityConfig.GetLocalUser())
+		localUsers = toUsers(securityConfig.GetLocalUsers())
 		realm = securityConfig.GetRealm()
-		joinSources = toJoinSources(securityConfig.GetJoinSources())
+		joinSource = toUser(securityConfig.GetJoinSource())
 	}
 
 	share, err := s.smb.CreateSMBShare(ctx,
@@ -492,9 +493,9 @@ func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBSh
 		req.GetValidUsers(),
 		mapToGuest,
 		securityMode,
-		localUser,
+		localUsers,
 		realm,
-		joinSources)
+		joinSource)
 	if err != nil {
 		return nil, err
 	}
@@ -507,9 +508,9 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 	var (
 		mapToGuest   string
 		securityMode string
-		localUser    *smb.User
+		localUsers   []smb.User
 		realm        string
-		joinSources  []smb.User
+		joinSource   *smb.User
 	)
 
 	commonConfig := req.GetCommonConfig()
@@ -520,9 +521,9 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 	securityConfig := req.GetSecurityConfig()
 	if securityConfig != nil {
 		securityMode = toSecurityMode(securityConfig.GetMode())
-		localUser = toUser(securityConfig.GetLocalUser())
+		localUsers = toUsers(securityConfig.GetLocalUsers())
 		realm = securityConfig.GetRealm()
-		joinSources = toJoinSources(securityConfig.GetJoinSources())
+		joinSource = toUser(securityConfig.GetJoinSource())
 	}
 
 	share, err := s.smb.UpdateSMBShare(ctx,
@@ -536,9 +537,9 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 		req.GetValidUsers(),
 		mapToGuest,
 		securityMode,
-		localUser,
+		localUsers,
 		realm,
-		joinSources)
+		joinSource)
 	if err != nil {
 		return nil, err
 	}
@@ -576,7 +577,7 @@ func toUser(u *pb.SMBShare_SecurityConfig_User) *smb.User {
 	}
 }
 
-func toJoinSources(us []*pb.SMBShare_SecurityConfig_User) []smb.User {
+func toUsers(us []*pb.SMBShare_SecurityConfig_User) []smb.User {
 	ret := []smb.User{}
 
 	for _, u := range us {
@@ -954,23 +955,6 @@ func toProtoUserKey(uk *object.UserKey) *pb.User_Key {
 	return ret
 }
 
-/*
-
-for i := range shares {
-		spec := shares[i].Spec
-		fmt.Println(spec.Browseable, spec.ReadOnly, spec.CommonConfig)
-
-		if cc, ok := commonConfigMap[spec.CommonConfig]; ok {
-			fmt.Println(cc.Spec.CustomGlobalConfig.Configs[GuestOKkey])
-		}
-
-		if sc, ok := securityConfigMap[spec.SecurityConfig]; ok {
-			fmt.Println(sc.Name, sc.Spec.Users, sc.Spec.Realm, sc.Spec.JoinSources, sc.Spec.Mode) // return ******
-		}
-
-	}
-*/
-
 func toProtoSMBShareCommonConfigMapToGuest(mapToGuest string) pb.SMBShare_CommonConfig_MapToGuest {
 	if strings.EqualFold(mapToGuest, "bad user") {
 		return pb.SMBShare_CommonConfig_BAD_USER
@@ -987,32 +971,20 @@ func toProtoSMBShareSecurityConfigMode(mode string) pb.SMBShare_SecurityConfig_M
 	return pb.SMBShare_SecurityConfig_USER
 }
 
-func toProtoSMBShareSecurityConfigUsers(us []smb.JoinSpec) []*pb.SMBShare_SecurityConfig_User {
+func toProtoSMBShareSecurityConfigUsers(us []smb.User) []*pb.SMBShare_SecurityConfig_User {
 	ret := []*pb.SMBShare_SecurityConfig_User{}
 
 	for i := range us {
-		userJoin := us[i].UserJoin
-		if userJoin == nil {
-			continue
-		}
-
-		ret = append(ret, toProtoSMBShareSecurityConfigUserFromUserJoin(userJoin))
+		ret = append(ret, toProtoSMBShareSecurityConfigUser(&us[i]))
 	}
 
 	return ret
 }
 
-func toProtoSMBShareSecurityConfigUserFromUserJoin(uj *smb.UserJoinSpec) *pb.SMBShare_SecurityConfig_User {
+// ignore password in proto for security reason
+func toProtoSMBShareSecurityConfigUser(u *smb.User) *pb.SMBShare_SecurityConfig_User {
 	ret := &pb.SMBShare_SecurityConfig_User{}
-	// ret.SetUsername(uj.Username)
-	// ret.SetPassword("********") // hide
-	return ret
-}
-
-func toProtoSMBShareSecurityConfigUserFromUser(u *smb.UserSpec) *pb.SMBShare_SecurityConfig_User {
-	ret := &pb.SMBShare_SecurityConfig_User{}
-	// ret.SetSecret(u.Secret)
-	// ret.SetKey("********") // hide
+	ret.SetUsername(u.Username)
 	return ret
 }
 
@@ -1029,20 +1001,14 @@ func toProtoSMBShareCommonConfig(cc *smb.CommonConfig) *pb.SMBShare_CommonConfig
 	return ret
 }
 
-func toProtoSMBShareSecurityConfig(sc *smb.SecurityConfig) *pb.SMBShare_SecurityConfig {
+func toProtoSMBShareSecurityConfig(sc *smb.SecurityConfig, localUsers []smb.User, joinSource *smb.User) *pb.SMBShare_SecurityConfig {
 	ret := &pb.SMBShare_SecurityConfig{}
 	ret.SetMode(toProtoSMBShareSecurityConfigMode(sc.Spec.Mode))
-
-	user := sc.Spec.Users
-	if user != nil {
-		ret.SetLocalUser(toProtoSMBShareSecurityConfigUserFromUser(user))
-	}
-
+	ret.SetLocalUsers(toProtoSMBShareSecurityConfigUsers(localUsers))
 	ret.SetRealm(sc.Spec.Realm)
 
-	joinSources := sc.Spec.JoinSources
-	if joinSources != nil {
-		ret.SetJoinSources(toProtoSMBShareSecurityConfigUsers(joinSources))
+	if joinSource != nil {
+		ret.SetJoinSource(toProtoSMBShareSecurityConfigUser(joinSource))
 	}
 
 	return ret
@@ -1114,7 +1080,7 @@ func toProtoSMBShare(sd *smb.ShareData) *pb.SMBShare {
 
 	securityConfig := sd.SecurityConfig
 	if securityConfig != nil {
-		ret.SetSecurityConfig(toProtoSMBShareSecurityConfig(securityConfig))
+		ret.SetSecurityConfig(toProtoSMBShareSecurityConfig(securityConfig, sd.LocalUsers, sd.JoinSource))
 	}
 
 	return ret
