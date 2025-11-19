@@ -34,10 +34,12 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// StorageServiceListMONsProcedure is the fully-qualified name of the StorageService's ListMONs RPC.
-	StorageServiceListMONsProcedure = "/otterscale.storage.v1.StorageService/ListMONs"
-	// StorageServiceListOSDsProcedure is the fully-qualified name of the StorageService's ListOSDs RPC.
-	StorageServiceListOSDsProcedure = "/otterscale.storage.v1.StorageService/ListOSDs"
+	// StorageServiceListMonitorsProcedure is the fully-qualified name of the StorageService's
+	// ListMonitors RPC.
+	StorageServiceListMonitorsProcedure = "/otterscale.storage.v1.StorageService/ListMonitors"
+	// StorageServiceListObjectStorageDaemonsProcedure is the fully-qualified name of the
+	// StorageService's ListObjectStorageDaemons RPC.
+	StorageServiceListObjectStorageDaemonsProcedure = "/otterscale.storage.v1.StorageService/ListObjectStorageDaemons"
 	// StorageServiceDoSMARTProcedure is the fully-qualified name of the StorageService's DoSMART RPC.
 	StorageServiceDoSMARTProcedure = "/otterscale.storage.v1.StorageService/DoSMART"
 	// StorageServiceListPoolsProcedure is the fully-qualified name of the StorageService's ListPools
@@ -161,8 +163,8 @@ const (
 
 // StorageServiceClient is a client for the otterscale.storage.v1.StorageService service.
 type StorageServiceClient interface {
-	ListMONs(context.Context, *v1.ListMONsRequest) (*v1.ListMONsResponse, error)
-	ListOSDs(context.Context, *v1.ListOSDsRequest) (*v1.ListOSDsResponse, error)
+	ListMonitors(context.Context, *v1.ListMonitorsRequest) (*v1.ListMonitorsResponse, error)
+	ListObjectStorageDaemons(context.Context, *v1.ListObjectStorageDaemonsRequest) (*v1.ListObjectStorageDaemonsResponse, error)
 	DoSMART(context.Context, *v1.DoSMARTRequest) (*v1.DoSMARTResponse, error)
 	ListPools(context.Context, *v1.ListPoolsRequest) (*v1.ListPoolsResponse, error)
 	CreatePool(context.Context, *v1.CreatePoolRequest) (*v1.Pool, error)
@@ -216,16 +218,16 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 	baseURL = strings.TrimRight(baseURL, "/")
 	storageServiceMethods := v1.File_api_storage_v1_storage_proto.Services().ByName("StorageService").Methods()
 	return &storageServiceClient{
-		listMONs: connect.NewClient[v1.ListMONsRequest, v1.ListMONsResponse](
+		listMonitors: connect.NewClient[v1.ListMonitorsRequest, v1.ListMonitorsResponse](
 			httpClient,
-			baseURL+StorageServiceListMONsProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("ListMONs")),
+			baseURL+StorageServiceListMonitorsProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListMonitors")),
 			connect.WithClientOptions(opts...),
 		),
-		listOSDs: connect.NewClient[v1.ListOSDsRequest, v1.ListOSDsResponse](
+		listObjectStorageDaemons: connect.NewClient[v1.ListObjectStorageDaemonsRequest, v1.ListObjectStorageDaemonsResponse](
 			httpClient,
-			baseURL+StorageServiceListOSDsProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("ListOSDs")),
+			baseURL+StorageServiceListObjectStorageDaemonsProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListObjectStorageDaemons")),
 			connect.WithClientOptions(opts...),
 		),
 		doSMART: connect.NewClient[v1.DoSMARTRequest, v1.DoSMARTResponse](
@@ -473,8 +475,8 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // storageServiceClient implements StorageServiceClient.
 type storageServiceClient struct {
-	listMONs                    *connect.Client[v1.ListMONsRequest, v1.ListMONsResponse]
-	listOSDs                    *connect.Client[v1.ListOSDsRequest, v1.ListOSDsResponse]
+	listMonitors                *connect.Client[v1.ListMonitorsRequest, v1.ListMonitorsResponse]
+	listObjectStorageDaemons    *connect.Client[v1.ListObjectStorageDaemonsRequest, v1.ListObjectStorageDaemonsResponse]
 	doSMART                     *connect.Client[v1.DoSMARTRequest, v1.DoSMARTResponse]
 	listPools                   *connect.Client[v1.ListPoolsRequest, v1.ListPoolsResponse]
 	createPool                  *connect.Client[v1.CreatePoolRequest, v1.Pool]
@@ -517,18 +519,18 @@ type storageServiceClient struct {
 	updateSMBShare              *connect.Client[v1.UpdateSMBShareRequest, v1.SMBShare]
 }
 
-// ListMONs calls otterscale.storage.v1.StorageService.ListMONs.
-func (c *storageServiceClient) ListMONs(ctx context.Context, req *v1.ListMONsRequest) (*v1.ListMONsResponse, error) {
-	response, err := c.listMONs.CallUnary(ctx, connect.NewRequest(req))
+// ListMonitors calls otterscale.storage.v1.StorageService.ListMonitors.
+func (c *storageServiceClient) ListMonitors(ctx context.Context, req *v1.ListMonitorsRequest) (*v1.ListMonitorsResponse, error) {
+	response, err := c.listMonitors.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
 	return nil, err
 }
 
-// ListOSDs calls otterscale.storage.v1.StorageService.ListOSDs.
-func (c *storageServiceClient) ListOSDs(ctx context.Context, req *v1.ListOSDsRequest) (*v1.ListOSDsResponse, error) {
-	response, err := c.listOSDs.CallUnary(ctx, connect.NewRequest(req))
+// ListObjectStorageDaemons calls otterscale.storage.v1.StorageService.ListObjectStorageDaemons.
+func (c *storageServiceClient) ListObjectStorageDaemons(ctx context.Context, req *v1.ListObjectStorageDaemonsRequest) (*v1.ListObjectStorageDaemonsResponse, error) {
+	response, err := c.listObjectStorageDaemons.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -898,8 +900,8 @@ func (c *storageServiceClient) UpdateSMBShare(ctx context.Context, req *v1.Updat
 
 // StorageServiceHandler is an implementation of the otterscale.storage.v1.StorageService service.
 type StorageServiceHandler interface {
-	ListMONs(context.Context, *v1.ListMONsRequest) (*v1.ListMONsResponse, error)
-	ListOSDs(context.Context, *v1.ListOSDsRequest) (*v1.ListOSDsResponse, error)
+	ListMonitors(context.Context, *v1.ListMonitorsRequest) (*v1.ListMonitorsResponse, error)
+	ListObjectStorageDaemons(context.Context, *v1.ListObjectStorageDaemonsRequest) (*v1.ListObjectStorageDaemonsResponse, error)
 	DoSMART(context.Context, *v1.DoSMARTRequest) (*v1.DoSMARTResponse, error)
 	ListPools(context.Context, *v1.ListPoolsRequest) (*v1.ListPoolsResponse, error)
 	CreatePool(context.Context, *v1.CreatePoolRequest) (*v1.Pool, error)
@@ -949,16 +951,16 @@ type StorageServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	storageServiceMethods := v1.File_api_storage_v1_storage_proto.Services().ByName("StorageService").Methods()
-	storageServiceListMONsHandler := connect.NewUnaryHandlerSimple(
-		StorageServiceListMONsProcedure,
-		svc.ListMONs,
-		connect.WithSchema(storageServiceMethods.ByName("ListMONs")),
+	storageServiceListMonitorsHandler := connect.NewUnaryHandlerSimple(
+		StorageServiceListMonitorsProcedure,
+		svc.ListMonitors,
+		connect.WithSchema(storageServiceMethods.ByName("ListMonitors")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceListOSDsHandler := connect.NewUnaryHandlerSimple(
-		StorageServiceListOSDsProcedure,
-		svc.ListOSDs,
-		connect.WithSchema(storageServiceMethods.ByName("ListOSDs")),
+	storageServiceListObjectStorageDaemonsHandler := connect.NewUnaryHandlerSimple(
+		StorageServiceListObjectStorageDaemonsProcedure,
+		svc.ListObjectStorageDaemons,
+		connect.WithSchema(storageServiceMethods.ByName("ListObjectStorageDaemons")),
 		connect.WithHandlerOptions(opts...),
 	)
 	storageServiceDoSMARTHandler := connect.NewUnaryHandlerSimple(
@@ -1203,10 +1205,10 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 	)
 	return "/otterscale.storage.v1.StorageService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case StorageServiceListMONsProcedure:
-			storageServiceListMONsHandler.ServeHTTP(w, r)
-		case StorageServiceListOSDsProcedure:
-			storageServiceListOSDsHandler.ServeHTTP(w, r)
+		case StorageServiceListMonitorsProcedure:
+			storageServiceListMonitorsHandler.ServeHTTP(w, r)
+		case StorageServiceListObjectStorageDaemonsProcedure:
+			storageServiceListObjectStorageDaemonsHandler.ServeHTTP(w, r)
 		case StorageServiceDoSMARTProcedure:
 			storageServiceDoSMARTHandler.ServeHTTP(w, r)
 		case StorageServiceListPoolsProcedure:
@@ -1296,12 +1298,12 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 // UnimplementedStorageServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedStorageServiceHandler struct{}
 
-func (UnimplementedStorageServiceHandler) ListMONs(context.Context, *v1.ListMONsRequest) (*v1.ListMONsResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListMONs is not implemented"))
+func (UnimplementedStorageServiceHandler) ListMonitors(context.Context, *v1.ListMonitorsRequest) (*v1.ListMonitorsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListMonitors is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) ListOSDs(context.Context, *v1.ListOSDsRequest) (*v1.ListOSDsResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListOSDs is not implemented"))
+func (UnimplementedStorageServiceHandler) ListObjectStorageDaemons(context.Context, *v1.ListObjectStorageDaemonsRequest) (*v1.ListObjectStorageDaemonsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListObjectStorageDaemons is not implemented"))
 }
 
 func (UnimplementedStorageServiceHandler) DoSMART(context.Context, *v1.DoSMARTRequest) (*v1.DoSMARTResponse, error) {

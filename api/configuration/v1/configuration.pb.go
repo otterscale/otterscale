@@ -1254,7 +1254,7 @@ func (b0 CephBlockDevice_builder) Build() *CephBlockDevice {
 
 type NetworkFileSystem struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Endpoint    *string                `protobuf:"bytes,1,opt,name=endpoint"`
+	xxx_hidden_Host        *string                `protobuf:"bytes,1,opt,name=host"`
 	xxx_hidden_Path        *string                `protobuf:"bytes,2,opt,name=path"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -1287,10 +1287,10 @@ func (x *NetworkFileSystem) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *NetworkFileSystem) GetEndpoint() string {
+func (x *NetworkFileSystem) GetHost() string {
 	if x != nil {
-		if x.xxx_hidden_Endpoint != nil {
-			return *x.xxx_hidden_Endpoint
+		if x.xxx_hidden_Host != nil {
+			return *x.xxx_hidden_Host
 		}
 		return ""
 	}
@@ -1307,8 +1307,8 @@ func (x *NetworkFileSystem) GetPath() string {
 	return ""
 }
 
-func (x *NetworkFileSystem) SetEndpoint(v string) {
-	x.xxx_hidden_Endpoint = &v
+func (x *NetworkFileSystem) SetHost(v string) {
+	x.xxx_hidden_Host = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
@@ -1317,7 +1317,7 @@ func (x *NetworkFileSystem) SetPath(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *NetworkFileSystem) HasEndpoint() bool {
+func (x *NetworkFileSystem) HasHost() bool {
 	if x == nil {
 		return false
 	}
@@ -1331,9 +1331,9 @@ func (x *NetworkFileSystem) HasPath() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *NetworkFileSystem) ClearEndpoint() {
+func (x *NetworkFileSystem) ClearHost() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Endpoint = nil
+	x.xxx_hidden_Host = nil
 }
 
 func (x *NetworkFileSystem) ClearPath() {
@@ -1344,17 +1344,17 @@ func (x *NetworkFileSystem) ClearPath() {
 type NetworkFileSystem_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Endpoint *string
-	Path     *string
+	Host *string
+	Path *string
 }
 
 func (b0 NetworkFileSystem_builder) Build() *NetworkFileSystem {
 	m0 := &NetworkFileSystem{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Endpoint != nil {
+	if b.Host != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Endpoint = b.Endpoint
+		x.xxx_hidden_Host = b.Host
 	}
 	if b.Path != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
@@ -4980,9 +4980,9 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x1fListBootImageSelectionsResponse\x12q\n" +
 	"\x15boot_image_selections\x18\x01 \x03(\v2=.otterscale.configuration.v1.Configuration.BootImageSelectionR\x13bootImageSelections\"-\n" +
 	"\x0fCephBlockDevice\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"C\n" +
-	"\x11NetworkFileSystem\x12\x1a\n" +
-	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x12\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\";\n" +
+	"\x11NetworkFileSystem\x12\x12\n" +
+	"\x04host\x18\x01 \x01(\tR\x04host\x12\x12\n" +
 	"\x04path\x18\x02 \x01(\tR\x04path\"\xc2\x01\n" +
 	"\x15InternalObjectService\x12K\n" +
 	"\x04type\x18\x01 \x01(\x0e27.otterscale.configuration.v1.InternalObjectService.TypeR\x04type\x12\x14\n" +

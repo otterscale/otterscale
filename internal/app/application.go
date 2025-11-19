@@ -51,14 +51,14 @@ func NewApplicationService(cluster *cluster.UseCase, chart *chart.UseCase, confi
 var _ pbconnect.ApplicationServiceHandler = (*ApplicationService)(nil)
 
 func (s *ApplicationService) ListApplications(ctx context.Context, req *pb.ListApplicationsRequest) (*pb.ListApplicationsResponse, error) {
-	apps, endpoint, err := s.workload.ListApplications(ctx, req.GetScope())
+	apps, hostname, err := s.workload.ListApplications(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
 
 	resp := &pb.ListApplicationsResponse{}
 	resp.SetApplications(toProtoApplications(apps))
-	resp.SetEndpoint(endpoint)
+	resp.SetHostname(hostname)
 	return resp, nil
 }
 

@@ -632,13 +632,13 @@ func (b0 ListModelsRequest_builder) Build() *ListModelsRequest {
 }
 
 type ListModelsResponse struct {
-	state                    protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Models        *[]*Model              `protobuf:"bytes,1,rep,name=models"`
-	xxx_hidden_PublicAddress *string                `protobuf:"bytes,2,opt,name=public_address,json=publicAddress"`
-	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
-	XXX_presence             [1]uint32
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Models      *[]*Model              `protobuf:"bytes,1,rep,name=models"`
+	xxx_hidden_ServiceUri  *string                `protobuf:"bytes,2,opt,name=service_uri,json=serviceUri"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ListModelsResponse) Reset() {
@@ -675,10 +675,10 @@ func (x *ListModelsResponse) GetModels() []*Model {
 	return nil
 }
 
-func (x *ListModelsResponse) GetPublicAddress() string {
+func (x *ListModelsResponse) GetServiceUri() string {
 	if x != nil {
-		if x.xxx_hidden_PublicAddress != nil {
-			return *x.xxx_hidden_PublicAddress
+		if x.xxx_hidden_ServiceUri != nil {
+			return *x.xxx_hidden_ServiceUri
 		}
 		return ""
 	}
@@ -689,28 +689,28 @@ func (x *ListModelsResponse) SetModels(v []*Model) {
 	x.xxx_hidden_Models = &v
 }
 
-func (x *ListModelsResponse) SetPublicAddress(v string) {
-	x.xxx_hidden_PublicAddress = &v
+func (x *ListModelsResponse) SetServiceUri(v string) {
+	x.xxx_hidden_ServiceUri = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *ListModelsResponse) HasPublicAddress() bool {
+func (x *ListModelsResponse) HasServiceUri() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListModelsResponse) ClearPublicAddress() {
+func (x *ListModelsResponse) ClearServiceUri() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_PublicAddress = nil
+	x.xxx_hidden_ServiceUri = nil
 }
 
 type ListModelsResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Models        []*Model
-	PublicAddress *string
+	Models     []*Model
+	ServiceUri *string
 }
 
 func (b0 ListModelsResponse_builder) Build() *ListModelsResponse {
@@ -718,9 +718,9 @@ func (b0 ListModelsResponse_builder) Build() *ListModelsResponse {
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Models = &b.Models
-	if b.PublicAddress != nil {
+	if b.ServiceUri != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_PublicAddress = b.PublicAddress
+		x.xxx_hidden_ServiceUri = b.ServiceUri
 	}
 	return m0
 }
@@ -2157,10 +2157,11 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x12vgpumem_percentage\x18\x02 \x01(\rR\x11vgpumemPercentage\"M\n" +
 	"\x11ListModelsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespaceJ\x04\b\x02\x10\x03\"o\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespaceJ\x04\b\x02\x10\x03\"i\n" +
 	"\x12ListModelsResponse\x122\n" +
-	"\x06models\x18\x01 \x03(\v2\x1a.otterscale.model.v1.ModelR\x06models\x12%\n" +
-	"\x0epublic_address\x18\x02 \x01(\tR\rpublicAddress\"\x81\x01\n" +
+	"\x06models\x18\x01 \x03(\v2\x1a.otterscale.model.v1.ModelR\x06models\x12\x1f\n" +
+	"\vservice_uri\x18\x02 \x01(\tR\n" +
+	"serviceUri\"\x81\x01\n" +
 	"\x12CreateModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +

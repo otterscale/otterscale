@@ -178,7 +178,7 @@ message CephBlockDevice {
 }
 
 message NetworkFileSystem {
-  string endpoint = 1;
+  string host = 1;
   string path = 2;
 }
 

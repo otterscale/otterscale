@@ -40,8 +40,8 @@ type FIOTargetCeph struct {
 }
 
 type FIOTargetNFS struct {
-	Endpoint string `json:"endpoint"`
-	Path     string `json:"path"`
+	Host string `json:"host"`
+	Path string `json:"path"`
 }
 
 type FIOInput struct {
@@ -230,7 +230,7 @@ func (uc *UseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) batchv1.Job
 	privileged := true
 	env := []corev1.EnvVar{
 		{Name: "BENCHMARK_TYPE", Value: "nfs"},
-		{Name: "BENCHMARK_ARGS_NFS_ENDPOINT", Value: target.Endpoint},
+		{Name: "BENCHMARK_ARGS_NFS_ENDPOINT", Value: target.Host},
 		{Name: "BENCHMARK_ARGS_NFS_PATH", Value: target.Path},
 		{Name: "BENCHMARK_ARGS_FIO_DIRECT", Value: "1"},
 		{Name: "BENCHMARK_ARGS_FIO_FILESIZE", Value: strconv.FormatInt(input.FileSize, 10)},

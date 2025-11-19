@@ -122,6 +122,11 @@ func (uc *UseCase) ListInternalObjectServices(ctx context.Context, scope string)
 }
 
 func (uc *UseCase) listMinIOs(ctx context.Context, scope string) ([]WarpTargetInternal, error) {
+	url, err := uc.service.URL(scope)
+	if err != nil {
+		return nil, err
+	}
+
 	selector := "app.kubernetes.io/name" + "=" + "minio"
 
 	services, err := uc.service.List(ctx, scope, "", selector)
@@ -145,7 +150,7 @@ func (uc *UseCase) listMinIOs(ctx context.Context, scope string) ([]WarpTargetIn
 				Type:  "minio",
 				Scope: scope,
 				Name:  fmt.Sprintf("%s.%s", services[i].GetNamespace(), services[i].GetName()),
-				Host:  fmt.Sprintf("%s:%d", uc.service.Host(scope), port.NodePort),
+				Host:  fmt.Sprintf("%s:%d", url.Hostname(), port.NodePort),
 			})
 		}
 	}

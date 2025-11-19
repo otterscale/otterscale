@@ -9,13 +9,13 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/otterscale/otterscale/api/storage/v1;pb";
 
 service StorageService {
-  rpc ListMONs(ListMONsRequest) returns (ListMONsResponse) {
+  rpc ListMonitors(ListMonitorsRequest) returns (ListMonitorsResponse) {
     option (otterscale.api.feature) = {
       name: "stg-general"
     };
   };
 
-  rpc ListOSDs(ListOSDsRequest) returns (ListOSDsResponse) {
+  rpc ListObjectStorageDaemons(ListObjectStorageDaemonsRequest) returns (ListObjectStorageDaemonsResponse) {
     option (otterscale.api.feature) = {
       name: "stg-general"
     };
@@ -273,7 +273,7 @@ message Machine {
   string hostname = 2;
 }
 
-message MON {
+message Monitor {
   bool leader = 1;
   string name = 2;
   uint64 rank = 3;
@@ -281,7 +281,7 @@ message MON {
   Machine machine = 101;
 }
 
-message OSD {
+message ObjectStorageDaemon {
   int64 id = 1;
   string name = 2;
   bool up = 3;
@@ -435,33 +435,34 @@ message SMBShare {
   }
   string name = 1;
   string namespace = 2;
-  int32 replicas = 3;
-  int32 healthies = 4;
-  uint64 size_bytes = 11;
-  bool browsable = 21;
-  bool read_only = 22;
-  bool guest_ok = 31;
-  repeated string valid_users = 32;
-  CommonConfig common_config = 41;
-  SecurityConfig security_config = 51;
+  string uri = 3;
+  int32 replicas = 11;
+  int32 healthies = 12;
+  uint64 size_bytes = 21;
+  bool browsable = 31;
+  bool read_only = 32;
+  bool guest_ok = 41;
+  repeated string valid_users = 42;
+  CommonConfig common_config = 51;
+  SecurityConfig security_config = 61;
 }
 
-message ListMONsRequest {
+message ListMonitorsRequest {
   string scope = 1;
   reserved 2;
 }
 
-message ListMONsResponse {
-  repeated MON mons = 1;
+message ListMonitorsResponse {
+  repeated Monitor monitors = 1;
 }
 
-message ListOSDsRequest {
+message ListObjectStorageDaemonsRequest {
   string scope = 1;
   reserved 2;
 }
 
-message ListOSDsResponse {
-  repeated OSD osds = 1;
+message ListObjectStorageDaemonsResponse {
+  repeated ObjectStorageDaemon object_storage_daemons = 1;
 }
 
 message DoSMARTRequest {
@@ -791,7 +792,6 @@ message ListSMBSharesRequest {
 
 message ListSMBSharesResponse {
   repeated SMBShare smb_shares = 1;
-  string endpoint = 2;
 }
 
 message CreateSMBShareRequest {
