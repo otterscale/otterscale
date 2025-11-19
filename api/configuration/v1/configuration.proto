@@ -178,7 +178,7 @@ message CephBlockDevice {
 }
 
 message NetworkFileSystem {
-  string endpoint = 1;
+  string host = 1;
   string path = 2;
 }
 
@@ -191,7 +191,7 @@ message InternalObjectService {
   Type type = 1;
   string scope = 2;
   reserved 3 to 4;
-  string host = 5;
+  string service_uri = 5;
 }
 
 message ExternalObjectService {

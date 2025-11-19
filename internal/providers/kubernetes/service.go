@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"context"
+	"net/url"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -82,11 +83,11 @@ func (r *serviceRepo) Delete(ctx context.Context, scope, namespace, name string)
 	return clientset.CoreV1().Services(namespace).Delete(ctx, name, opts)
 }
 
-func (r *serviceRepo) Host(scope string) string {
+func (r *serviceRepo) URL(scope string) (*url.URL, error) {
 	config, err := r.kubernetes.Config(scope)
 	if err != nil {
-		return ""
+		return nil, err
 	}
 
-	return config.Host
+	return url.Parse(config.Host)
 }
