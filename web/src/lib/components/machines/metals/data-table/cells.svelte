@@ -8,6 +8,7 @@
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { cn } from '$lib/utils';
@@ -15,7 +16,6 @@
 	import Actions from './cell-actions.svelte';
 	import GPUs from './cell-gpus.svelte';
 	import Tags from './cell-tags.svelte';
-	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	export const cells = {
 		row_picker,

@@ -94,7 +94,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each $distroSeriesOptions as option}
+										{#each $distroSeriesOptions as option (option.value)}
 											<SingleSelect.Item {option}>
 												<Icon
 													icon={option.icon ? option.icon : 'ph:empty'}
@@ -124,7 +124,7 @@
 										<MultipleSelect.List>
 											<MultipleSelect.Empty>{m.no_result()}</MultipleSelect.Empty>
 											<MultipleSelect.Group>
-												{#each $architecturesOptions as option}
+												{#each $architecturesOptions as option (option.value)}
 													<MultipleSelect.Item {option}>
 														<Icon
 															icon={option.icon ? option.icon : 'ph:empty'}

@@ -36,9 +36,9 @@
 					(internalObjectService) =>
 						({
 							value: internalObjectService,
-							label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
+							label: `${InternalObjectService_Type[internalObjectService.type]}`,
 							icon: 'ph:cube',
-							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.host})`
+							information: `${InternalObjectService_Type[internalObjectService.type]} (${internalObjectService.host})`
 						}) as SingleSelect.OptionType
 				)
 			);
@@ -47,16 +47,15 @@
 					(internalObjectService) =>
 						({
 							value: internalObjectService,
-							label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
+							label: `${InternalObjectService_Type[internalObjectService.type]}`,
 							icon: 'ph:cube',
-							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.host})`
+							information: `${InternalObjectService_Type[internalObjectService.type]} (${internalObjectService.host})`
 						}) as SingleSelect.OptionType
 				);
 				const matched = options.find(
 					(opt) =>
 						opt.value.type === selectedInternalObjectService.type &&
 						opt.value.scope === selectedInternalObjectService.scope &&
-						opt.value.name === selectedInternalObjectService.name &&
 						opt.value.host === selectedInternalObjectService.host
 				);
 				if (matched) {

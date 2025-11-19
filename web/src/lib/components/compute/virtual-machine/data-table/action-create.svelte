@@ -182,7 +182,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each $instanceTypes as instanceType}
+										{#each $instanceTypes as instanceType (instanceType.value)}
 											<SingleSelect.Item option={instanceType}>
 												<Icon
 													icon={instanceType.icon ? instanceType.icon : 'ph:empty'}
@@ -214,7 +214,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each $bootDataVolumes as dv}
+										{#each $bootDataVolumes as dv (dv.value)}
 											<SingleSelect.Item option={dv}>
 												<Icon
 													icon={dv.icon ? dv.icon : 'ph:empty'}

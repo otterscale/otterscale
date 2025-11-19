@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { ReloadManager } from '$lib/components/custom/reloader';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
@@ -7,6 +6,7 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { cn } from '$lib/utils';
 
 	import ViewIPAddresses from './action-view-ip-addresses.svelte';

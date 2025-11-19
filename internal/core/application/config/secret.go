@@ -16,3 +16,7 @@ type SecretRepo interface {
 	Update(ctx context.Context, scope, namespace string, s *Secret) (*Secret, error)
 	Delete(ctx context.Context, scope, namespace, name string) error
 }
+
+func (uc *UseCase) ListSecrets(ctx context.Context, scope, namespace string) ([]Secret, error) {
+	return uc.secret.List(ctx, scope, namespace, "")
+}

@@ -411,40 +411,39 @@ message User {
 }
 
 message SMBShare {
-  enum SecurityMode {
-    USER = 0;
-    ACTIVE_DIRECTORY = 1;
+  message CommonConfig {
+    enum MapToGuest {
+      NEVER = 0;
+      BAD_USER = 1;
+      BAD_PASSWORD = 2;
+    }
+    MapToGuest map_to_guest = 1;
   }
-  enum MapToGuest {
-    NEVER = 0;
-    BAD_USER = 1;
-    BAD_PASSWORD = 2;
-  }
-  message User {
-    string username = 1;
-    string password = 2;
-  }
-  message ActiveDirectory {
-    string realm = 1;
-    User join_source = 2;
-  }
-  message Local {
-    repeated User users = 1;
+  message SecurityConfig {
+    enum Mode {
+      USER = 0;
+      ACTIVE_DIRECTORY = 1;
+    }
+    message User {
+      string username = 1;
+      string password = 2;
+    }
+    Mode mode = 1;
+    repeated User local_users = 11;
+    string realm = 21;
+    User join_source = 22;
   }
   string name = 1;
   string namespace = 2;
-  string status = 3;
-  uint64 size_bytes = 4;
-  bool browsable = 11;
-  bool read_only = 12;
-  bool guest_ok = 13;
-  MapToGuest map_to_guest = 21;
-  SecurityMode security_mode = 31;
-  repeated string valid_users = 41;
-  oneof authentication {
-    ActiveDirectory active_directory = 51;
-    Local local = 52;
-  }
+  int32 replicas = 3;
+  int32 healthies = 4;
+  uint64 size_bytes = 11;
+  bool browsable = 21;
+  bool read_only = 22;
+  bool guest_ok = 31;
+  repeated string valid_users = 32;
+  CommonConfig common_config = 41;
+  SecurityConfig security_config = 51;
 }
 
 message ListMONsRequest {
@@ -792,38 +791,31 @@ message ListSMBSharesRequest {
 
 message ListSMBSharesResponse {
   repeated SMBShare smb_shares = 1;
+  string endpoint = 2;
 }
 
 message CreateSMBShareRequest {
   string scope = 1;
   string namespace = 2;
   string name = 3;
-  bool browsable = 11;
-  bool read_only = 12;
-  bool guest_ok = 13;
-  SMBShare.MapToGuest map_to_guest = 14;
-  uint64 size_bytes = 21;
-  SMBShare.SecurityMode security_mode = 31;
-  repeated string valid_users = 41;
-  oneof authentication {
-    SMBShare.ActiveDirectory active_directory = 51;
-    SMBShare.Local local = 52;
-  }
+  uint64 size_bytes = 11;
+  bool browsable = 21;
+  bool read_only = 22;
+  bool guest_ok = 31;
+  repeated string valid_users = 32;
+  SMBShare.CommonConfig common_config = 41;
+  SMBShare.SecurityConfig security_config = 51;
 }
 
 message UpdateSMBShareRequest {
   string scope = 1;
   string namespace = 2;
   string name = 3;
-  bool browsable = 11;
-  bool read_only = 12;
-  bool guest_ok = 13;
-  SMBShare.MapToGuest map_to_guest = 14;
-  uint64 size_bytes = 21;
-  SMBShare.SecurityMode security_mode = 31;
-  repeated string valid_users = 41;
-  oneof authentication {
-    SMBShare.ActiveDirectory active_directory = 51;
-    SMBShare.Local local = 52;
-  }
+  uint64 size_bytes = 11;
+  bool browsable = 21;
+  bool read_only = 22;
+  bool guest_ok = 31;
+  repeated string valid_users = 32;
+  SMBShare.CommonConfig common_config = 41;
+  SMBShare.SecurityConfig security_config = 51;
 }

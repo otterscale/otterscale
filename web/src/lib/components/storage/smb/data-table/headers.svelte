@@ -10,13 +10,14 @@
 		row_picker,
 		name,
 		namespace,
-		status,
+		replicas,
+		healthies,
 		size,
 		browsable,
 		read_only,
 		guest_ok,
 		map_to_guest,
-		security_mode,
+		mode,
 		valid_users,
 		actions
 	};
@@ -48,9 +49,18 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet status(column: Column<SMBShare>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.status()}</Layout.HeaderViewer>
+{#snippet replicas(column: Column<SMBShare>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderViewer>{m.replicas()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet healthies(column: Column<SMBShare>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderViewer>{m.healthies()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -93,9 +103,9 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet security_mode(column: Column<SMBShare>)}
+{#snippet mode(column: Column<SMBShare>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.security_mode()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.mode()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>

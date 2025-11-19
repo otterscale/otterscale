@@ -5,9 +5,9 @@
 
 	import { type Application, ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	import { Data } from './data';
-	import { ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">

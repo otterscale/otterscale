@@ -4,6 +4,7 @@
 
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Layout } from '$lib/components/custom/instance';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import { m } from '$lib/paraglide/messages';
 
@@ -13,7 +14,6 @@
 	import StatisticStorageClasses from './statistic-storage-classes.svelte';
 	import TablePods from './table-pods.svelte';
 	import TableServices from './table-services.svelte';
-	import type { ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">

@@ -5,11 +5,11 @@
 	import type { Subvolume, Subvolume_Snapshot } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatTimeAgo } from '$lib/formatter';
 
 	import Actions from './cell-actions.svelte';
-	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	export const cells = {
 		row_picker,

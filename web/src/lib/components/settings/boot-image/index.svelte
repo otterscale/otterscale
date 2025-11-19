@@ -81,7 +81,7 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each $configuration.bootImages as bootImage}
+						{#each $configuration.bootImages as bootImage (bootImage.id)}
 							<Table.Row class="*:px-4">
 								<Table.Cell>{bootImage.name}</Table.Cell>
 								<Table.Cell>{bootImage.source}</Table.Cell>
@@ -95,7 +95,7 @@
 									<div class="flex items-center justify-end gap-1">
 										<div class="flex flex-wrap gap-1">
 											{#if !expandedArchitectures.get(bootImage.name)}
-												{#each bootImage.architectures.slice(0, 3) as architecture}
+												{#each bootImage.architectures.slice(0, 3) as architecture (architecture)}
 													<Badge variant="outline">{architecture}</Badge>
 												{/each}
 												{#if bootImage.architectures.length > 3}
@@ -104,7 +104,7 @@
 													</Badge>
 												{/if}
 											{:else}
-												{#each bootImage.architectures as architecture}
+												{#each bootImage.architectures as architecture (architecture)}
 													<Badge variant="outline">{architecture}</Badge>
 												{/each}
 											{/if}
@@ -139,7 +139,7 @@
 									</span>
 								</Table.Cell>
 								<Table.Cell class="p-0">
-									<Actions {bootImage} {configuration} />
+									<Actions {bootImage} {configuration} {reloadManager} />
 								</Table.Cell>
 							</Table.Row>
 						{/each}

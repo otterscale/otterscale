@@ -1,12 +1,12 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
 import type { VirtualMachine_Snapshot } from '$lib/api/instance/v1/instance_pb';
+import type { ReloadManager } from '$lib/components/custom/reloader';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
 import { headers } from './headers.svelte';
 import { cells } from './cells.svelte';
-import type { ReloadManager } from '$lib/components/custom/reloader';
 
 const messages = {
 	name: m.name(),

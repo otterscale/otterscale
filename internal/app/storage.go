@@ -15,6 +15,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/storage/block"
 	"github.com/otterscale/otterscale/internal/core/storage/file"
 	"github.com/otterscale/otterscale/internal/core/storage/object"
+	"github.com/otterscale/otterscale/internal/core/storage/smb"
 )
 
 type StorageService struct {
@@ -24,14 +25,16 @@ type StorageService struct {
 	block   *block.UseCase
 	file    *file.UseCase
 	object  *object.UseCase
+	smb     *smb.UseCase
 }
 
-func NewStorageService(storage *storage.UseCase, block *block.UseCase, file *file.UseCase, object *object.UseCase) *StorageService {
+func NewStorageService(storage *storage.UseCase, block *block.UseCase, file *file.UseCase, object *object.UseCase, smb *smb.UseCase) *StorageService {
 	return &StorageService{
 		storage: storage,
 		block:   block,
 		file:    file,
 		object:  object,
+		smb:     smb,
 	}
 }
 
@@ -66,7 +69,7 @@ func (s *StorageService) DoSMART(ctx context.Context, req *pb.DoSMARTRequest) (*
 	}
 
 	resp := &pb.DoSMARTResponse{}
-	resp.SetDeviceOutputMap(toDeviceOutputMap(outputs))
+	resp.SetDeviceOutputMap(toProtoDeviceOutputMap(outputs))
 	return resp, nil
 }
 
@@ -358,7 +361,7 @@ func (s *StorageService) ListBuckets(ctx context.Context, req *pb.ListBucketsReq
 }
 
 func (s *StorageService) CreateBucket(ctx context.Context, req *pb.CreateBucketRequest) (*pb.Bucket, error) {
-	bucket, err := s.object.CreateBucket(ctx, req.GetScope(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), s.ACL(req.GetAcl().String()))
+	bucket, err := s.object.CreateBucket(ctx, req.GetScope(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), toACL(req.GetAcl().String()))
 	if err != nil {
 		return nil, err
 	}
@@ -368,7 +371,7 @@ func (s *StorageService) CreateBucket(ctx context.Context, req *pb.CreateBucketR
 }
 
 func (s *StorageService) UpdateBucket(ctx context.Context, req *pb.UpdateBucketRequest) (*pb.Bucket, error) {
-	bucket, err := s.object.UpdateBucket(ctx, req.GetScope(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), s.ACL(req.GetAcl().String()))
+	bucket, err := s.object.UpdateBucket(ctx, req.GetScope(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), toACL(req.GetAcl().String()))
 	if err != nil {
 		return nil, err
 	}
@@ -445,7 +448,107 @@ func (s *StorageService) DeleteUserKey(ctx context.Context, req *pb.DeleteUserKe
 	return resp, nil
 }
 
-func (s *StorageService) ACL(str string) object.BucketCannedACL {
+func (s *StorageService) ListSMBShares(ctx context.Context, req *pb.ListSMBSharesRequest) (*pb.ListSMBSharesResponse, error) {
+	shares, host, err := s.smb.ListSMBShares(ctx, req.GetScope(), req.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListSMBSharesResponse{}
+	resp.SetSmbShares(toProtoSMBShares(shares))
+	resp.SetEndpoint(host)
+	return resp, nil
+}
+
+func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBShareRequest) (*pb.SMBShare, error) {
+	var (
+		mapToGuest   string
+		securityMode string
+		localUsers   []smb.User
+		realm        string
+		joinSource   *smb.User
+	)
+
+	commonConfig := req.GetCommonConfig()
+	if commonConfig != nil {
+		mapToGuest = toMapToGuest(commonConfig.GetMapToGuest())
+	}
+
+	securityConfig := req.GetSecurityConfig()
+	if securityConfig != nil {
+		securityMode = toSecurityMode(securityConfig.GetMode())
+		localUsers = toUsers(securityConfig.GetLocalUsers())
+		realm = securityConfig.GetRealm()
+		joinSource = toUser(securityConfig.GetJoinSource())
+	}
+
+	share, err := s.smb.CreateSMBShare(ctx,
+		req.GetScope(),
+		req.GetNamespace(),
+		req.GetName(),
+		req.GetSizeBytes(),
+		req.GetBrowsable(),
+		req.GetReadOnly(),
+		req.GetGuestOk(),
+		req.GetValidUsers(),
+		mapToGuest,
+		securityMode,
+		localUsers,
+		realm,
+		joinSource)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := toProtoSMBShare(share)
+	return resp, nil
+}
+
+func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBShareRequest) (*pb.SMBShare, error) {
+	var (
+		mapToGuest   string
+		securityMode string
+		localUsers   []smb.User
+		realm        string
+		joinSource   *smb.User
+	)
+
+	commonConfig := req.GetCommonConfig()
+	if commonConfig != nil {
+		mapToGuest = toMapToGuest(commonConfig.GetMapToGuest())
+	}
+
+	securityConfig := req.GetSecurityConfig()
+	if securityConfig != nil {
+		securityMode = toSecurityMode(securityConfig.GetMode())
+		localUsers = toUsers(securityConfig.GetLocalUsers())
+		realm = securityConfig.GetRealm()
+		joinSource = toUser(securityConfig.GetJoinSource())
+	}
+
+	share, err := s.smb.UpdateSMBShare(ctx,
+		req.GetScope(),
+		req.GetNamespace(),
+		req.GetName(),
+		req.GetSizeBytes(),
+		req.GetBrowsable(),
+		req.GetReadOnly(),
+		req.GetGuestOk(),
+		req.GetValidUsers(),
+		mapToGuest,
+		securityMode,
+		localUsers,
+		realm,
+		joinSource)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := toProtoSMBShare(share)
+	return resp, nil
+}
+
+func toACL(str string) object.BucketCannedACL {
 	acl := object.BucketCannedACL(strings.ToLower(strings.Join(strings.Split(str, "_"), "-")))
 
 	if slices.Contains(acl.Values(), acl) {
@@ -453,6 +556,35 @@ func (s *StorageService) ACL(str string) object.BucketCannedACL {
 	}
 
 	return object.BucketCannedACLPrivate
+}
+
+func toMapToGuest(s pb.SMBShare_CommonConfig_MapToGuest) string {
+	ret := strings.ToLower(s.String())
+	ret = strings.ReplaceAll(ret, "_", " ")
+	return ret
+}
+
+func toSecurityMode(s pb.SMBShare_SecurityConfig_Mode) string {
+	ret := strings.ToLower(s.String())
+	ret = strings.ReplaceAll(ret, "_", "-")
+	return ret
+}
+
+func toUser(u *pb.SMBShare_SecurityConfig_User) *smb.User {
+	return &smb.User{
+		Username: u.GetUsername(),
+		Password: u.GetPassword(),
+	}
+}
+
+func toUsers(us []*pb.SMBShare_SecurityConfig_User) []smb.User {
+	ret := []smb.User{}
+
+	for _, u := range us {
+		ret = append(ret, *toUser(u))
+	}
+
+	return ret
 }
 
 func toProtoStorageMachine(m *machine.Machine) *pb.Machine {
@@ -515,7 +647,7 @@ func toProtoOSD(o *storage.ObjectStorageDaemon) *pb.OSD {
 	return ret
 }
 
-func toDeviceOutputMap(m map[string][]string) map[string]*pb.DoSMARTResponse_Output {
+func toProtoDeviceOutputMap(m map[string][]string) map[string]*pb.DoSMARTResponse_Output {
 	ret := map[string]*pb.DoSMARTResponse_Output{}
 
 	for device, lines := range m {
@@ -820,5 +952,136 @@ func toProtoUserKey(uk *object.UserKey) *pb.User_Key {
 	ret := &pb.User_Key{}
 	ret.SetAccessKey(uk.AccessKey)
 	ret.SetSecretKey(uk.SecretKey)
+	return ret
+}
+
+func toProtoSMBShareCommonConfigMapToGuest(mapToGuest string) pb.SMBShare_CommonConfig_MapToGuest {
+	if strings.EqualFold(mapToGuest, "bad user") {
+		return pb.SMBShare_CommonConfig_BAD_USER
+	} else if strings.EqualFold(mapToGuest, "bad password") {
+		return pb.SMBShare_CommonConfig_BAD_PASSWORD
+	}
+	return pb.SMBShare_CommonConfig_NEVER
+}
+
+func toProtoSMBShareSecurityConfigMode(mode string) pb.SMBShare_SecurityConfig_Mode {
+	if strings.EqualFold(mode, "active-directory") {
+		return pb.SMBShare_SecurityConfig_ACTIVE_DIRECTORY
+	}
+	return pb.SMBShare_SecurityConfig_USER
+}
+
+func toProtoSMBShareSecurityConfigUsers(us []smb.User) []*pb.SMBShare_SecurityConfig_User {
+	ret := []*pb.SMBShare_SecurityConfig_User{}
+
+	for i := range us {
+		ret = append(ret, toProtoSMBShareSecurityConfigUser(&us[i]))
+	}
+
+	return ret
+}
+
+// ignore password in proto for security reason
+func toProtoSMBShareSecurityConfigUser(u *smb.User) *pb.SMBShare_SecurityConfig_User {
+	ret := &pb.SMBShare_SecurityConfig_User{}
+	ret.SetUsername(u.Username)
+	return ret
+}
+
+func toProtoSMBShareCommonConfig(cc *smb.CommonConfig) *pb.SMBShare_CommonConfig {
+	mapToGuest := ""
+
+	globalConfig := cc.Spec.CustomGlobalConfig
+	if globalConfig != nil && globalConfig.Configs != nil {
+		mapToGuest = globalConfig.Configs[smb.MapToGuestKey]
+	}
+
+	ret := &pb.SMBShare_CommonConfig{}
+	ret.SetMapToGuest(toProtoSMBShareCommonConfigMapToGuest(mapToGuest))
+	return ret
+}
+
+func toProtoSMBShareSecurityConfig(sc *smb.SecurityConfig, localUsers []smb.User, joinSource *smb.User) *pb.SMBShare_SecurityConfig {
+	ret := &pb.SMBShare_SecurityConfig{}
+	ret.SetMode(toProtoSMBShareSecurityConfigMode(sc.Spec.Mode))
+	ret.SetLocalUsers(toProtoSMBShareSecurityConfigUsers(localUsers))
+	ret.SetRealm(sc.Spec.Realm)
+
+	if joinSource != nil {
+		ret.SetJoinSource(toProtoSMBShareSecurityConfigUser(joinSource))
+	}
+
+	return ret
+}
+
+func toProtoSMBShares(sds []smb.ShareData) []*pb.SMBShare {
+	ret := []*pb.SMBShare{}
+
+	for i := range sds {
+		ret = append(ret, toProtoSMBShare(&sds[i]))
+	}
+
+	return ret
+}
+
+func toProtoSMBShare(sd *smb.ShareData) *pb.SMBShare {
+	ret := &pb.SMBShare{}
+
+	share := sd.Share
+	if share != nil {
+		ret.SetName(share.Name)
+		ret.SetNamespace(share.Namespace)
+
+		deployment := sd.Deployment
+		if deployment != nil {
+			replicas := deployment.Spec.Replicas
+			if replicas != nil {
+				ret.SetReplicas(*replicas)
+			}
+		}
+
+		ret.SetHealthies(countHealthies(sd.Pods))
+
+		pvc := share.Spec.Storage.Pvc
+		if pvc != nil {
+			spec := pvc.Spec
+			if spec != nil {
+				sizeBytes, _ := spec.Resources.Requests.Storage().AsInt64()
+				ret.SetSizeBytes(uint64(sizeBytes)) //nolint:gosec // ignore
+			}
+		}
+
+		ret.SetBrowsable(share.Spec.Browseable)
+		ret.SetReadOnly(share.Spec.ReadOnly)
+
+		config := share.Spec.CustomShareConfig
+		if config != nil {
+			configs := config.Configs
+			if configs != nil {
+				if val, ok := configs[smb.GuestOKkey]; ok {
+					ret.SetGuestOk(strings.EqualFold(val, "yes") || strings.EqualFold(val, "true") || strings.EqualFold(val, "1"))
+				}
+
+				if val, ok := configs[smb.ValidUsersKey]; ok {
+					users := strings.Split(val, " ")
+					for i := range users {
+						users[i] = strings.TrimSpace(users[i])
+					}
+					ret.SetValidUsers(users)
+				}
+			}
+		}
+	}
+
+	commonConfig := sd.CommonConfig
+	if commonConfig != nil {
+		ret.SetCommonConfig(toProtoSMBShareCommonConfig(commonConfig))
+	}
+
+	securityConfig := sd.SecurityConfig
+	if securityConfig != nil {
+		ret.SetSecurityConfig(toProtoSMBShareSecurityConfig(securityConfig, sd.LocalUsers, sd.JoinSource))
+	}
+
 	return ret
 }

@@ -207,7 +207,7 @@
 											<SingleSelect.List>
 												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
-													{#each $warpTarget as item}
+													{#each $warpTarget as item (item.value)}
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
@@ -292,7 +292,7 @@
 											<SingleSelect.List>
 												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
-													{#each $warpInputOperation as item}
+													{#each $warpInputOperation as item (item.value)}
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
@@ -360,7 +360,9 @@
 							<Form.Description>{m.target()}: {requestWarp.target.case}</Form.Description>
 							{#if requestWarp.target.case == 'internalObjectService'}
 								<Form.Description>{m.type()}: {requestInternalObjectService.type}</Form.Description>
-								<Form.Description>{m.name()}: {requestInternalObjectService.name}</Form.Description>
+								<Form.Description
+									>{m.scope()}: {requestInternalObjectService.scope}</Form.Description
+								>
 								<Form.Description>{m.host()}: {requestInternalObjectService.host}</Form.Description>
 							{:else if requestWarp.target.case == 'externalObjectService'}
 								<Form.Description>{m.host()}: {requestExternalObjectService.host}</Form.Description>

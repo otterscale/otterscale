@@ -2,6 +2,7 @@
 	import Icon from '@iconify/svelte';
 
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
 
@@ -9,7 +10,11 @@
 </script>
 
 <script lang="ts">
-	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
+	let {
+		virtualMachine,
+		scope,
+		reloadManager
+	}: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
 </script>
 
 <div class="flex items-center justify-end gap-1">
@@ -20,7 +25,7 @@
 		</Sheet.Trigger>
 
 		<Sheet.Content class="min-w-[70vw] p-4">
-			<DataTable {virtualMachine} />
+			<DataTable {virtualMachine} {scope} {reloadManager} />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>

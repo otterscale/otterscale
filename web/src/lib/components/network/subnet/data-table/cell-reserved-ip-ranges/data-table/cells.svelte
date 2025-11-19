@@ -4,8 +4,9 @@
 	import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import { Badge } from '$lib/components/ui/badge';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import { Badge } from '$lib/components/ui/badge';
+
 	import Actions from './actions.svelte';
 
 	export const cells = {

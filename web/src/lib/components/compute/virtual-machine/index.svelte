@@ -13,7 +13,7 @@
 </script>
 
 <script lang="ts">
-	let { scope, namespace }: { scope: string; namespace: string } = $props();
+	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const VirtualMachineClient = createClient(InstanceService, transport);
@@ -21,8 +21,7 @@
 	const virtualMachines = writable<VirtualMachine[]>([]);
 	async function fetch() {
 		VirtualMachineClient.listVirtualMachines({
-			scope: scope,
-			namespace: namespace
+			scope: scope
 		})
 			.then((response) => {
 				virtualMachines.set(response.virtualMachines);
