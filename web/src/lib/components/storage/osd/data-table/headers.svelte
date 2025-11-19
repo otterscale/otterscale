@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Column, Table } from '@tanstack/table-core';
 
-	import type { OSD } from '$lib/api/storage/v1/storage_pb';
+	import type { ObjectStorageDaemon } from '$lib/api/storage/v1/storage_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
@@ -22,7 +22,7 @@
 	};
 </script>
 
-{#snippet row_picker(table: Table<OSD>)}
+{#snippet row_picker(table: Table<ObjectStorageDaemon>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
 			<Headers.RowPicker {table} />
@@ -30,7 +30,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet name(column: Column<OSD>)}
+{#snippet name(column: Column<ObjectStorageDaemon>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -53,7 +53,7 @@
 	<Layout.Header class="hidden" />
 {/snippet}
 
-{#snippet exists(column: Column<OSD>)}
+{#snippet exists(column: Column<ObjectStorageDaemon>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.osd_exists()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -62,7 +62,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet deviceClass(column: Column<OSD>)}
+{#snippet deviceClass(column: Column<ObjectStorageDaemon>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.device_class()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -71,7 +71,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet machine(column: Column<OSD>)}
+{#snippet machine(column: Column<ObjectStorageDaemon>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.machine()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -80,7 +80,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet placementGroupCount(column: Column<OSD>)}
+{#snippet placementGroupCount(column: Column<ObjectStorageDaemon>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -89,7 +89,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet usage(column: Column<OSD>)}
+{#snippet usage(column: Column<ObjectStorageDaemon>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
