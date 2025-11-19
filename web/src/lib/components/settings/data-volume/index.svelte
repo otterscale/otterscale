@@ -33,6 +33,7 @@
 		virtualMachineClient
 			.listDataVolumes({
 				scope: scope,
+				namespace: '',
 				bootImage: true
 			})
 			.then((response) => {
@@ -91,7 +92,7 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each $dataVolumes as dataVolume}
+						{#each $dataVolumes as dataVolume (`${dataVolume.namespace}/${dataVolume.name}`)}
 							<Table.Row class="*:px-4">
 								<Table.Cell>{dataVolume.name}</Table.Cell>
 								<Table.Cell><Badge variant="outline">{dataVolume.namespace}</Badge></Table.Cell>

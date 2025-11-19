@@ -147,6 +147,7 @@
 	"last_name": "Last Name",
 	"email": "Email",
 	"password": "Password",
+	"login_with": "Login with {provider}",
 	"login": "Login",
 	"sign_up": "Sign Up",
 	"scope_selector_loading": "Loading",
