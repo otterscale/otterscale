@@ -119,7 +119,7 @@ func (uc *UseCase) ListDataVolumes(ctx context.Context, scope, namespace string,
 		}
 	}
 
-	ret := make([]DataVolumePersistent, 0, len(dataVolumes))
+	ret := make([]DataVolumePersistent, 0)
 
 	for i := range dataVolumes {
 		dv := dataVolumes[i]
