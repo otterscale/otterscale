@@ -90,13 +90,13 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	const claimsError = validateClaims(claims);
 	if (claimsError) return claimsError;
 
-	const existingUser = getUser(claims.sub);
+	const existingUser = await getUser(claims.sub);
 	const user =
 		existingUser ??
-		createUser(claims.sub, claims.email ?? '', claims.name ?? '', claims.picture ?? '');
+		(await createUser(claims.sub, claims.email ?? '', claims.name ?? '', claims.picture ?? ''));
 
 	const sessionToken = generateSessionToken();
-	const session = createSession(sessionToken, user.id);
+	const session = await createSession(sessionToken, user.id);
 	setSessionTokenCookie(event.cookies, sessionToken, session.expiresAt);
 
 	return new Response(null, {

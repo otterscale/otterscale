@@ -1,39 +1,35 @@
-import type { Row } from '@pilcrowjs/db-query';
+import { eq } from 'drizzle-orm';
 
 import { db } from './db';
+import { usersTable } from './db/schema';
 
-export interface User {
-	id: number;
-	sub: string;
-	name: string;
-	picture: string;
-	email: string;
-}
+export type User = typeof usersTable.$inferSelect;
 
-function mapRowToUser(row: Row, offset = 0): User {
-	return {
-		id: row.number(offset),
-		sub: row.string(offset + 1),
-		email: row.string(offset + 2),
-		name: row.string(offset + 3),
-		picture: row.string(offset + 4)
-	};
-}
+export async function createUser(
+	sub: string,
+	email: string,
+	name: string,
+	picture: string
+): Promise<User> {
+	const users = await db
+		.insert(usersTable)
+		.values({
+			sub,
+			email,
+			name,
+			picture
+		})
+		.returning();
 
-export function createUser(sub: string, email: string, name: string, picture: string): User {
-	const row = db.queryOne(
-		'INSERT INTO user (sub, email, name, picture) VALUES (?, ?, ?, ?) RETURNING id, sub, email, name, picture',
-		[sub, email, name, picture]
-	);
-
-	if (!row) {
+	if (users.length === 0) {
 		throw new Error('Failed to create user');
 	}
 
-	return mapRowToUser(row);
+	return users[0];
 }
 
-export function getUser(sub: string): User | null {
-	const row = db.queryOne('SELECT id, sub, email, name, picture FROM user WHERE sub = ?', [sub]);
-	return row ? mapRowToUser(row) : null;
+export async function getUser(sub: string): Promise<User | null> {
+	const users = await db.select().from(usersTable).where(eq(usersTable.sub, sub));
+
+	return users.length > 0 ? users[0] : null;
 }
