@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
-	import { LanguageSwitcher, LightSwitch } from '$lib/components/login';
-	import { Button } from '$lib/components/ui/button';
+	import { LanguageSwitcher, LightSwitch, LoginForm } from '$lib/components/login';
 	import { m } from '$lib/paraglide/messages.js';
 	import { getLocale, type Locale, setLocale } from '$lib/paraglide/runtime.js';
 
@@ -34,20 +32,7 @@
 </div>
 
 <div class="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
-	<div class="w-full max-w-sm md:max-w-3xl">
-		<div class="flex flex-col gap-6">
-			<Button href={resolve('/login/keycloak')}>Sign in with Keycloak (Temporary Login)</Button>
-
-			<!-- Terms and Privacy -->
-			<div
-				class="text-center text-xs text-balance text-muted-foreground *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary"
-			>
-				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				{@html m.login_footer({
-					terms_of_service: `<a href="${resolve('/terms-of-service')}">${m.terms_of_service()}</a>`,
-					privacy_policy: `<a href="${resolve('/privacy-policy')}">${m.privacy_policy()}</a>`
-				})}
-			</div>
-		</div>
+	<div class="w-full max-w-sm md:max-w-md">
+		<LoginForm />
 	</div>
 </div>
