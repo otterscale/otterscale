@@ -1,15 +1,14 @@
 <script lang="ts" module>
-	import * as Picker from '$lib/components/custom/picker';
-	import { m } from '$lib/paraglide/messages';
-
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
-	import * as Loading from '$lib/components/custom/loading';
 	import { writable } from 'svelte/store';
 
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
+	import * as Loading from '$lib/components/custom/loading';
+	import * as Picker from '$lib/components/custom/picker';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils.js';
 </script>
 
