@@ -26,13 +26,14 @@ func NewModelService(model *model.UseCase) *ModelService {
 var _ pbconnect.ModelServiceHandler = (*ModelService)(nil)
 
 func (s *ModelService) ListModels(ctx context.Context, req *pb.ListModelsRequest) (*pb.ListModelsResponse, error) {
-	models, err := s.model.ListModels(ctx, req.GetScope(), req.GetNamespace())
+	models, uri, err := s.model.ListModels(ctx, req.GetScope(), req.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
 
 	resp := &pb.ListModelsResponse{}
 	resp.SetModels(toProtoModels(models))
+	resp.SetServiceUri(uri)
 	return resp, nil
 }
 
