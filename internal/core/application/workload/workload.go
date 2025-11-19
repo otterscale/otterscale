@@ -1,11 +1,9 @@
 package workload
 
 import (
-	"net/http"
 	"sync"
 
 	v1 "k8s.io/api/core/v1"
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
@@ -50,9 +48,4 @@ func NewUseCase(daemonSet DaemonSetRepo, deployment DeploymentRepo, job JobRepo,
 		persistentVolumeClaim: persistentVolumeClaim,
 		storageClass:          storageClass,
 	}
-}
-
-func (uc *UseCase) isKeyNotFoundError(err error) bool {
-	statusErr, _ := err.(*k8serrors.StatusError)
-	return statusErr != nil && statusErr.Status().Code == http.StatusNotFound
 }

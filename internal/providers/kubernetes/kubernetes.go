@@ -81,7 +81,7 @@ func (m *Kubernetes) writeCAToFile(caData []byte) (string, error) {
 }
 
 func (m *Kubernetes) newConfig(scope string) (*rest.Config, error) {
-	name := "bbb-kubernetes-control-plane"
+	name := scope + "-kubernetes-control-plane"
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()

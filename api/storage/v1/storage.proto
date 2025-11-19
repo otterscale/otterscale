@@ -429,9 +429,9 @@ message SMBShare {
       string password = 2;
     }
     Mode mode = 1;
-    User local_user = 11;
+    repeated User local_users = 11;
     string realm = 21;
-    repeated User join_sources = 22;
+    User join_source = 22;
   }
   string name = 1;
   string namespace = 2;
@@ -791,6 +791,7 @@ message ListSMBSharesRequest {
 
 message ListSMBSharesResponse {
   repeated SMBShare smb_shares = 1;
+  string endpoint = 2;
 }
 
 message CreateSMBShareRequest {
