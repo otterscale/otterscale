@@ -143,11 +143,13 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
+					<Form.Help>Must not start with a number and be at most 10 characters long.</Form.Help>
 					<SingleInput.General
 						required
 						type="text"
 						bind:value={request.name}
 						bind:invalid={invalidities.name}
+						validator={(value) => !/^\d/.test(value) && value.length <= 10}
 					/>
 				</Form.Field>
 				<Form.Field>
