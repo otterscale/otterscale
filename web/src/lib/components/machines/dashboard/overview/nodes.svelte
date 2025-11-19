@@ -24,18 +24,15 @@
 		months.push(d.toISOString().slice(0, 7));
 	}
 
-	let { scope, isReloading = $bindable() }: { scope: string; isReloading: boolean } = $props();
+	let { isReloading = $bindable() }: { isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
-	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(scope))
-	);
-	const totalNodes = $derived(scopeMachines.length);
+	const totalNodes = $derived($machines.length);
 	const monthlyCounts = $derived(
-		scopeMachines.reduce(
+		$machines.reduce(
 			(acc, m) => {
 				const dateStr = m.lastCommissioned
 					? timestampDate(m.lastCommissioned).toISOString().slice(0, 7)
@@ -60,7 +57,7 @@
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
-		machineClient.listMachines({ scope: scope }).then((response) => {
+		machineClient.listMachines({}).then((response) => {
 			machines.set(response.machines);
 		});
 	}

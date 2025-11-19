@@ -20,19 +20,15 @@
 
 	let {
 		prometheusDriver,
-		scope,
 		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
-	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(scope))
-	);
 	const totalMemoryBytes = $derived(
-		scopeMachines.reduce((sum, m) => sum + Number(m.memoryMb ?? 0), 0) * 1024 * 1024
+		$machines.reduce((sum, m) => sum + Number(m.memoryMb ?? 0), 0) * 1024 * 1024
 	);
 
 	let memoryUsages = $state([] as SampleValue[]);
@@ -51,7 +47,7 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`sum(node_memory_MemTotal_bytes{juju_model="${scope}"} - node_memory_MemFree_bytes{juju_model="${scope}"} - (node_memory_Cached_bytes{juju_model="${scope}"} + node_memory_Buffers_bytes{juju_model="${scope}"} + node_memory_SReclaimable_bytes{juju_model="${scope}"})) / sum(node_memory_MemTotal_bytes{juju_model="${scope}"})`,
+				`sum(node_memory_MemTotal_bytes{juju_model=~".*"} - node_memory_MemFree_bytes{juju_model=~".*"} - (node_memory_Cached_bytes{juju_model=~".*"} + node_memory_Buffers_bytes{juju_model=~".*"} + node_memory_SReclaimable_bytes{juju_model=~".*"})) / sum(node_memory_MemTotal_bytes{juju_model=~".*"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60
