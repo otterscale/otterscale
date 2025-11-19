@@ -1220,7 +1220,7 @@ func (b0 ListApplicationsRequest_builder) Build() *ListApplicationsRequest {
 type ListApplicationsResponse struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Applications *[]*Application        `protobuf:"bytes,1,rep,name=applications"`
-	xxx_hidden_Endpoint     *string                `protobuf:"bytes,2,opt,name=endpoint"`
+	xxx_hidden_Hostname     *string                `protobuf:"bytes,2,opt,name=hostname"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -1261,10 +1261,10 @@ func (x *ListApplicationsResponse) GetApplications() []*Application {
 	return nil
 }
 
-func (x *ListApplicationsResponse) GetEndpoint() string {
+func (x *ListApplicationsResponse) GetHostname() string {
 	if x != nil {
-		if x.xxx_hidden_Endpoint != nil {
-			return *x.xxx_hidden_Endpoint
+		if x.xxx_hidden_Hostname != nil {
+			return *x.xxx_hidden_Hostname
 		}
 		return ""
 	}
@@ -1275,28 +1275,28 @@ func (x *ListApplicationsResponse) SetApplications(v []*Application) {
 	x.xxx_hidden_Applications = &v
 }
 
-func (x *ListApplicationsResponse) SetEndpoint(v string) {
-	x.xxx_hidden_Endpoint = &v
+func (x *ListApplicationsResponse) SetHostname(v string) {
+	x.xxx_hidden_Hostname = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *ListApplicationsResponse) HasEndpoint() bool {
+func (x *ListApplicationsResponse) HasHostname() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListApplicationsResponse) ClearEndpoint() {
+func (x *ListApplicationsResponse) ClearHostname() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Endpoint = nil
+	x.xxx_hidden_Hostname = nil
 }
 
 type ListApplicationsResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Applications []*Application
-	Endpoint     *string
+	Hostname     *string
 }
 
 func (b0 ListApplicationsResponse_builder) Build() *ListApplicationsResponse {
@@ -1304,9 +1304,9 @@ func (b0 ListApplicationsResponse_builder) Build() *ListApplicationsResponse {
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Applications = &b.Applications
-	if b.Endpoint != nil {
+	if b.Hostname != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Endpoint = b.Endpoint
+		x.xxx_hidden_Hostname = b.Hostname
 	}
 	return m0
 }
@@ -7259,7 +7259,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"\x82\x01\n" +
 	"\x18ListApplicationsResponse\x12J\n" +
 	"\fapplications\x18\x01 \x03(\v2&.otterscale.application.v1.ApplicationR\fapplications\x12\x1a\n" +
-	"\bendpoint\x18\x02 \x01(\tR\bendpoint\"e\n" +
+	"\bhostname\x18\x02 \x01(\tR\bhostname\"e\n" +
 	"\x15GetApplicationRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +

@@ -52,6 +52,7 @@ type ShareData struct {
 	LocalUsers     []User
 	JoinSource     *User
 
+	Service    *service.Service
 	Deployment *workload.Deployment
 	Pods       []workload.Pod
 }
@@ -130,12 +131,13 @@ func NewUseCase(smbCommonConfig SMBCommonConfigRepo, smbShare SMBShareRepo, smbS
 }
 
 //nolint:funlen // ignore
-func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (shareData []ShareData, host string, err error) {
+func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (data []ShareData, hostname string, err error) {
 	var (
 		commonConfigMap   map[string]*CommonConfig
 		securityConfigMap map[string]*SecurityConfig
 		deploymentMap     map[string]*workload.Deployment
 		secretMap         map[string]*config.Secret
+		allServices       []service.Service
 		allPods           []workload.Pod
 		allShares         []Share
 	)
@@ -195,6 +197,14 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (
 	})
 
 	eg.Go(func() error {
+		services, err := uc.service.List(egctx, scope, namespace, selector)
+		if err == nil {
+			allServices = services
+		}
+		return err
+	})
+
+	eg.Go(func() error {
 		pods, err := uc.pod.List(egctx, scope, namespace, selector)
 		if err == nil {
 			allPods = pods
@@ -241,15 +251,21 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (
 			SecurityConfig: securityConfigMap[share.Spec.SecurityConfig],
 			LocalUsers:     localUsers,
 			JoinSource:     joinSource,
+			Service:        uc.filterService(deployment.Spec.Template.Labels, namespace, allServices),
 			Deployment:     deployment,
 			Pods:           uc.filterPods(selector, namespace, allPods),
 		})
 	}
 
-	return ret, uc.service.Host(scope), nil
+	url, err := uc.service.URL(scope)
+	if err != nil {
+		return nil, "", err
+	}
+
+	return ret, url.Hostname(), nil
 }
 
-func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name string, sizeBytes uint64, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (shareData *ShareData, err error) {
+func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name string, sizeBytes uint64, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
 	names := uc.newNames(name)
 
 	// Cleanup on error
@@ -268,7 +284,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 		usersSecret := uc.buildUsersSecret(namespace, names.UsersSecret, localUsers)
 
 		if _, err = uc.secret.Create(ctx, scope, namespace, usersSecret); err != nil {
-			return nil, err
+			return nil, "", err
 		}
 	}
 
@@ -277,7 +293,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 		joinSecret := uc.buildJoinSecret(namespace, names.JoinSecret, joinSource)
 
 		if _, err = uc.secret.Create(ctx, scope, namespace, joinSecret); err != nil {
-			return nil, err
+			return nil, "", err
 		}
 	}
 
@@ -286,7 +302,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 
 	_, err = uc.smbSecurityConfig.Create(ctx, scope, namespace, securityConfig)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	// Create common config
@@ -294,7 +310,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 
 	_, err = uc.smbCommonConfig.Create(ctx, scope, namespace, commonConfig)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	// Create share
@@ -303,15 +319,20 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 
 	newShare, err := uc.smbShare.Create(ctx, scope, namespace, share)
 	if err != nil {
-		return nil, err
+		return nil, "", err
+	}
+
+	url, err := uc.service.URL(scope)
+	if err != nil {
+		return nil, "", err
 	}
 
 	return &ShareData{
 		Share: newShare,
-	}, nil
+	}, url.Hostname(), nil
 }
 
-func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name string, sizeBytes uint64, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (*ShareData, error) {
+func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name string, sizeBytes uint64, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
 	names := uc.newNames(name)
 
 	// Update users secret
@@ -319,7 +340,7 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 		usersSecret := uc.buildUsersSecret(namespace, names.UsersSecret, localUsers)
 
 		if err := uc.upsertSecret(ctx, scope, namespace, names.UsersSecret, usersSecret); err != nil {
-			return nil, err
+			return nil, "", err
 		}
 	} else {
 		_ = uc.secret.Delete(ctx, scope, namespace, names.UsersSecret)
@@ -330,7 +351,7 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 		joinSecret := uc.buildJoinSecret(namespace, names.JoinSecret, joinSource)
 
 		if err := uc.upsertSecret(ctx, scope, namespace, names.JoinSecret, joinSecret); err != nil {
-			return nil, err
+			return nil, "", err
 		}
 	} else {
 		_ = uc.secret.Delete(ctx, scope, namespace, names.JoinSecret)
@@ -340,14 +361,14 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 	securityConfig := uc.buildSecurityConfig(namespace, names.SecurityConfig, securityMode, names.UsersSecret, realm, names.JoinSecret)
 
 	if _, err := uc.smbSecurityConfig.Update(ctx, scope, namespace, securityConfig); err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	// Update common config
 	commonConfig := uc.buildCommonConfig(namespace, names.CommonConfig, mapToGuest)
 
 	if _, err := uc.smbCommonConfig.Update(ctx, scope, namespace, commonConfig); err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	// Update share
@@ -356,12 +377,30 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 
 	newShare, err := uc.smbShare.Update(ctx, scope, namespace, share)
 	if err != nil {
-		return nil, err
+		return nil, "", err
+	}
+
+	url, err := uc.service.URL(scope)
+	if err != nil {
+		return nil, "", err
 	}
 
 	return &ShareData{
 		Share: newShare,
-	}, nil
+	}, url.Hostname(), nil
+}
+
+// only return the first matched service
+func (uc *UseCase) filterService(podLabels map[string]string, namespace string, services []service.Service) *service.Service {
+	for i := range services {
+		selector := labels.SelectorFromSet(services[i].Spec.Selector)
+
+		if services[i].Namespace == namespace && selector.Matches(labels.Set(podLabels)) {
+			return &services[i]
+		}
+	}
+
+	return nil
 }
 
 func (uc *UseCase) filterPods(selector labels.Selector, namespace string, pods []workload.Pod) []workload.Pod {
