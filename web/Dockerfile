@@ -7,7 +7,7 @@ WORKDIR /src
 RUN npm install -g pnpm
 
 # Copy dependency files first for better caching
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install --frozen-lockfile && pnpm store prune
 
 # Copy source code

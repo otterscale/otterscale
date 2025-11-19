@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
 		throw error(401, 'Unauthorized');
 	}
 
-	invalidateSession(locals.session.id);
+	await invalidateSession(locals.session.id);
 	deleteSessionTokenCookie(cookies);
 
 	throw redirect(307, resolve('/'));

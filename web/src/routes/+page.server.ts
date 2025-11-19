@@ -19,7 +19,8 @@ const REQUIRED_ENV_VARS_NORMAL: readonly EnvVar[] = [
 	{ value: publicEnv.PUBLIC_WEB_URL, name: 'PUBLIC_WEB_URL' },
 	{ value: env.KEYCLOAK_REALM_URL, name: 'KEYCLOAK_REALM_URL' },
 	{ value: env.KEYCLOAK_CLIENT_ID, name: 'KEYCLOAK_CLIENT_ID' },
-	{ value: env.KEYCLOAK_CLIENT_SECRET, name: 'KEYCLOAK_CLIENT_SECRET' }
+	{ value: env.KEYCLOAK_CLIENT_SECRET, name: 'KEYCLOAK_CLIENT_SECRET' },
+	{ value: env.DATABASE_URL, name: 'DATABASE_URL' }
 ];
 
 const isFlexibleBooleanTrue = (envVar: string | undefined): boolean => {
@@ -30,7 +31,7 @@ const checkRequiredEnvVars = (envVars: readonly EnvVar[]): void => {
 	for (const { value, name } of envVars) {
 		if (!value) {
 			console.error(`Missing required environment variable: ${name}`);
-			throw error(503, `Service Unavailable: Configuration Error (${name} is not set)`);
+			throw error(503, `${name} is not set`);
 		}
 	}
 };
