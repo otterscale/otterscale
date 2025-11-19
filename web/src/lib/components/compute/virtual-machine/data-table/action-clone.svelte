@@ -14,6 +14,7 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -24,9 +25,7 @@
 	}: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
-	let invalid = $state(false);
 
 	const defaults = {
 		scope: scope,
@@ -35,6 +34,7 @@
 		sourceVirtualMachineName: virtualMachine.name,
 		targetVirtualMachineName: ''
 	} as CreateVirtualMachineCloneRequest;
+
 	let request = $state({ ...defaults });
 	function reset() {
 		request = { ...defaults };
@@ -44,6 +44,11 @@
 	function close() {
 		open = false;
 	}
+
+	let invalidities = $state({} as Booleanified<CreateVirtualMachineCloneRequest>);
+	const invalid = $derived(
+		invalidities.name || invalidities.namespace || invalidities.targetVirtualMachineName
+	);
 </script>
 
 <Modal.Root bind:open>
@@ -57,11 +62,21 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.namespace()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.namespace} bind:invalid />
+					<SingleInput.General
+						required
+						type="text"
+						bind:value={request.namespace}
+						bind:invalid={invalidities.namespace}
+					/>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.name} bind:invalid />
+					<SingleInput.General
+						required
+						type="text"
+						bind:value={request.name}
+						bind:invalid={invalidities.name}
+					/>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.source()}</Form.Label>
@@ -75,7 +90,7 @@
 						required
 						type="text"
 						bind:value={request.targetVirtualMachineName}
-						bind:invalid
+						bind:invalid={invalidities.targetVirtualMachineName}
 					/>
 				</Form.Field>
 			</Form.Fieldset>

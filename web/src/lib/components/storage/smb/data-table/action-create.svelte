@@ -27,6 +27,7 @@
 
 	import CreateUser from './utils/create-user.svelte';
 	import CreateUsers from './utils/create-users.svelte';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -70,10 +71,8 @@
 		request = defaults;
 	}
 
-	let isNameInvalid = $state(false);
-	let isNamespaceInvalid = $state(false);
-	let isSizeInvalid = $state(false);
-	const invalid = $derived(isNameInvalid || isNamespaceInvalid || isSizeInvalid);
+	let invalidities = $state({} as Booleanified<CreateSMBShareRequest>);
+	const invalid = $derived(invalidities.name || invalidities.namespace || invalidities.sizeBytes);
 
 	let open = $state(false);
 	function close() {
@@ -138,7 +137,7 @@
 						required
 						type="text"
 						bind:value={request.name}
-						bind:invalid={isNameInvalid}
+						bind:invalid={invalidities.name}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -148,7 +147,7 @@
 							required
 							options={namespaceOptions}
 							bind:value={request.namespace}
-							bind:invalid={isNamespaceInvalid}
+							bind:invalid={invalidities.namespace}
 						>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
@@ -165,7 +164,7 @@
 													/>
 													<span class="flex flex-col">
 														<p>{option.label}</p>
-														<p class="text-xs text-muted-foreground">{option.information}</p>
+														<p class="text-muted-foreground text-xs">{option.information}</p>
 													</span>
 													<SingleSelect.Check {option} />
 												</SingleSelect.Item>
@@ -186,7 +185,7 @@
 						type="number"
 						transformer={(value) => String(value)}
 						bind:value={request.sizeBytes}
-						bind:invalid={isSizeInvalid}
+						bind:invalid={invalidities.sizeBytes}
 						units={[
 							{ value: 1024 ** 2, label: 'MB' } as SingleInput.UnitType,
 							{ value: 1024 ** 3, label: 'GB' } as SingleInput.UnitType,
@@ -221,7 +220,7 @@
 													/>
 													<span class="flex flex-col">
 														<p>{option.label}</p>
-														<p class="text-xs text-muted-foreground">{option.information}</p>
+														<p class="text-muted-foreground text-xs">{option.information}</p>
 													</span>
 													<SingleSelect.Check {option} />
 												</SingleSelect.Item>
@@ -277,7 +276,7 @@
 											<Icon icon="ph:user" class="size-5" />
 										</div>
 										<div class="flex flex-col gap-1">
-											<p class="text-xs text-muted-foreground">{m.user()}</p>
+											<p class="text-muted-foreground text-xs">{m.user()}</p>
 											<p class="text-sm">{user.username}</p>
 										</div>
 										<CopyButton
@@ -306,7 +305,7 @@
 									</div>
 
 									<div class="flex flex-col gap-1">
-										<p class="text-xs text-muted-foreground">{m.user()}</p>
+										<p class="text-muted-foreground text-xs">{m.user()}</p>
 										<p class="text-sm">{request.securityConfig.joinSource.username}</p>
 									</div>
 								</div>

@@ -50,7 +50,7 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.delete_bucket()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<SingleInput.Confirm
@@ -58,6 +58,7 @@
 						id="deletion"
 						target={bucket.name}
 						bind:value={request.bucketName}
+						bind:invalid
 					/>
 				</Form.Field>
 				<Form.Help>

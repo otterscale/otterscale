@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { pool_name, image_name } from './../../../../paraglide/messages/zh-hant.js';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
@@ -16,6 +17,7 @@
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -31,8 +33,7 @@
 
 	let isAdvancedOpen = $state(false);
 	let isPoolsLoading = $state(true);
-	let isImageNameInvalid = $state(false);
-	let isPoolNameInvalid = $state(false);
+
 	const poolOptions = writable<SingleSelect.OptionType[]>([]);
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
@@ -52,6 +53,9 @@
 	function close() {
 		open = false;
 	}
+
+	let invalidities = $state({} as Booleanified<CreateImageRequest>);
+	const invalid = $derived(invalidities.poolName || invalidities.imageName);
 
 	async function fetchVolumeOptions() {
 		try {
@@ -98,7 +102,7 @@
 						required
 						type="text"
 						bind:value={request.imageName}
-						bind:invalid={isImageNameInvalid}
+						bind:invalid={invalidities.imageName}
 					/>
 				</Form.Field>
 
@@ -111,7 +115,7 @@
 							required
 							options={poolOptions}
 							bind:value={request.poolName}
-							bind:invalid={isPoolNameInvalid}
+							bind:invalid={invalidities.poolName}
 						>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
@@ -154,7 +158,7 @@
 			<Collapsible.Root bind:open={isAdvancedOpen}>
 				<div class="flex items-center justify-between gap-2">
 					<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>Advance</p>
-					<Collapsible.Trigger class="rounded-full bg-muted p-1 ">
+					<Collapsible.Trigger class="bg-muted rounded-full p-1 ">
 						<Icon
 							icon="ph:caret-left"
 							class={cn('transition-all duration-300', isAdvancedOpen ? '-rotate-90' : 'rotate-0')}
@@ -250,7 +254,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={isImageNameInvalid || isPoolNameInvalid}
+					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => storageClient.createImage(request), {
 							loading: `Creating ${request.imageName}...`,

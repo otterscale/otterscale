@@ -56,7 +56,7 @@
 		<Modal.Header>
 			{m.rollback_release()}
 		</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Help>
 					{m.deletion_warning({ identifier: m.name() })}
@@ -67,6 +67,7 @@
 						id="deletion"
 						target={release.name}
 						bind:value={request.name}
+						bind:invalid
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -76,6 +77,7 @@
 		</Form.Root>
 		<Modal.Footer>
 			<Modal.Cancel
+				disabled={invalid}
 				onclick={() => {
 					reset();
 				}}

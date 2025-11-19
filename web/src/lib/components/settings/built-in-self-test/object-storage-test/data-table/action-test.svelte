@@ -124,6 +124,7 @@
 
 	const client = createClient(ConfigurationService, transport);
 
+	// TODO: Refactor with Booneanified type of Request
 	let invalidName = $state(false);
 	let invalidTarget = $state(false);
 	let invalidHost = $state(false);

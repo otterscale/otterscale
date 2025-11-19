@@ -18,6 +18,7 @@
 	import { cn } from '$lib/utils';
 
 	import { accessControlListOptions } from './utils.svelte';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -34,7 +35,6 @@
 	const storageClient = createClient(StorageService, transport);
 	let userOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	let isMounted = $state(false);
-	let invalid = $state(false);
 
 	const defaults = {
 		scope: scope,
@@ -44,6 +44,9 @@
 	function reset() {
 		request = defaults;
 	}
+
+	let invalidities = $state({} as Booleanified<CreateBucketRequest>);
+	const invalid = $derived(invalidities.bucketName || invalidities.owner);
 
 	let open = $state(false);
 	function close() {
@@ -79,11 +82,17 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.create_bucket()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General id="name" required type="text" bind:value={request.bucketName} />
+					<SingleInput.General
+						id="name"
+						required
+						type="text"
+						bind:value={request.bucketName}
+						bind:invalid={invalidities.bucketName}
+					/>
 				</Form.Field>
 
 				<Form.Field>
@@ -94,6 +103,7 @@
 							bind:options={userOptions}
 							bind:value={request.owner}
 							required
+							bind:invalid={invalidities.owner}
 						>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>

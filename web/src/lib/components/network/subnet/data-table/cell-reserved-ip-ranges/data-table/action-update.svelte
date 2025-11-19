@@ -14,6 +14,7 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -22,8 +23,8 @@
 
 	const transport: Transport = getContext('transport');
 
-	let invalidStartIP: boolean | undefined = $state();
-	let invalidEndIP: boolean | undefined = $state();
+	let invalidities = $state({} as Booleanified<Network_IPRange>);
+	const invalid = $derived(invalidities.startIp || invalidities.endIp);
 
 	const client = createClient(NetworkService, transport);
 	const defaults = {
@@ -58,7 +59,7 @@
 						required
 						type="text"
 						bind:value={request.startIp}
-						bind:invalid={invalidStartIP}
+						bind:invalid={invalidities.startIp}
 					/>
 				</Form.Field>
 
@@ -68,7 +69,7 @@
 						required
 						type="text"
 						bind:value={request.endIp}
-						bind:invalid={invalidEndIP}
+						bind:invalid={invalidities.endIp}
 					/>
 				</Form.Field>
 
@@ -87,7 +88,7 @@
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
-				disabled={invalidStartIP || invalidEndIP}
+				disabled={invalid}
 				onclick={() => {
 					toast.promise(() => client.updateIPRange(request), {
 						loading: 'Loading...',

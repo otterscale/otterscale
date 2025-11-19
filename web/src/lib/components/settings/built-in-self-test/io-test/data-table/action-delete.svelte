@@ -58,7 +58,12 @@
 				</Form.Help>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.Confirm required target={testResult.name ?? ''} bind:value={request.name} />
+					<SingleInput.Confirm
+						required
+						target={testResult.name ?? ''}
+						bind:value={request.name}
+						bind:invalid
+					/>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>

@@ -33,6 +33,7 @@
 	let open = $state(false);
 
 	// Form validation state
+	// TODO: Refactor with Booneanified type of Request
 	let invalidName: boolean | undefined = $state();
 	let invalidInstanceTypeName: boolean | undefined = $state();
 	let invalidBootDataVolumeName: boolean | undefined = $state();
@@ -237,7 +238,7 @@
 					<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>
 						{m.advance()}
 					</p>
-					<Collapsible.Trigger class="rounded-full bg-muted p-1 ">
+					<Collapsible.Trigger class="bg-muted rounded-full p-1 ">
 						<Icon
 							icon="ph:caret-left"
 							class={cn('transition-all duration-300', isAdvancedOpen ? '-rotate-90' : 'rotate-0')}

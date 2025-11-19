@@ -33,6 +33,7 @@
 	let open = $state(false);
 
 	// Form validation state
+	// TODO: Refactor with Booneanified type of Request
 	let invalidSnapshotName: boolean | undefined = $state();
 
 	// ==================== Default Values & Constants ====================

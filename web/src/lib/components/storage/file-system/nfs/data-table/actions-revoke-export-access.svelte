@@ -56,11 +56,11 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.revoke_export_access()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.client_ip()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.clientIp} />
+					<SingleInput.General required type="text" bind:value={request.clientIp} bind:invalid />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>

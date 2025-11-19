@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { start_ip, end_ip } from './../../../../../../paraglide/messages/zh-hant.js';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -14,6 +15,7 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -21,9 +23,6 @@
 		$props();
 
 	const transport: Transport = getContext('transport');
-
-	let invalidStartIP: boolean | undefined = $state();
-	let invalidEndIP: boolean | undefined = $state();
 
 	const client = createClient(NetworkService, transport);
 	const defaults = {
@@ -33,6 +32,9 @@
 	function reset() {
 		request = defaults;
 	}
+
+	let invalidities = $state({} as Booleanified<Network_IPRange>);
+	const invalid = $derived(invalidities.startIp || invalidities.endIp);
 
 	let open = $state(false);
 	function close() {
@@ -51,11 +53,15 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.start_ip()}</Form.Label>
-					<SingleInput.Confirm required target={ipRange.startIp} bind:invalid={invalidStartIP} />
+					<SingleInput.Confirm
+						required
+						target={ipRange.startIp}
+						bind:invalid={invalidities.startIp}
+					/>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.end_ip()}</Form.Label>
-					<SingleInput.Confirm required target={ipRange.endIp} bind:invalid={invalidEndIP} />
+					<SingleInput.Confirm required target={ipRange.endIp} bind:invalid={invalidities.endIp} />
 				</Form.Field>
 				<Form.Help>
 					{m.deletion_warning({ identifier: m.range() })}
@@ -72,7 +78,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalidStartIP || invalidEndIP}
+					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => client.deleteIPRange(request), {
 							loading: 'Loading...',

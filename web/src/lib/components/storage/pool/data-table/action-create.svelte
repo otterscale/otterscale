@@ -17,6 +17,7 @@
 	} from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 
 	export const poolTypes: Writable<SingleSelect.OptionType[]> = writable([
 		{
@@ -60,11 +61,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const storageClient = createClient(StorageService, transport);
-	let isNameInvalid: boolean | undefined = $state();
-	let isTypeInvalid: boolean | undefined = $state();
-	let isReplicatedSizeInvalid: boolean | undefined = $state();
 
 	const defaults = {
 		scope: scope
@@ -73,6 +70,13 @@
 	function reset() {
 		request = defaults;
 	}
+
+	let invalidities = $state({} as Booleanified<CreatePoolRequest>);
+	const invalid = $derived(
+		invalidities.poolName ||
+			invalidities.poolType ||
+			(request.poolType === PoolType.REPLICATED && invalidities.replicatedSize)
+	);
 
 	let open = $state(false);
 	function close() {
@@ -95,7 +99,7 @@
 						required
 						type="text"
 						bind:value={request.poolName}
-						bind:invalid={isNameInvalid}
+						bind:invalid={invalidities.poolName}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -104,7 +108,7 @@
 						required
 						options={poolTypes}
 						bind:value={request.poolType}
-						bind:invalid={isTypeInvalid}
+						bind:invalid={invalidities.poolType}
 					>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -144,7 +148,7 @@
 						<SingleInput.General
 							required
 							bind:value={request.replicatedSize}
-							bind:invalid={isReplicatedSizeInvalid}
+							bind:invalid={invalidities.replicatedSize}
 						/>
 					</Form.Field>
 					<Form.Help>
@@ -217,9 +221,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={isNameInvalid ||
-						isTypeInvalid ||
-						(request.poolType === PoolType.REPLICATED && isReplicatedSizeInvalid)}
+					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => storageClient.createPool(request), {
 							loading: `Creating ${request.poolName}...`,
