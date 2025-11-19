@@ -1,20 +1,21 @@
 <script lang="ts" module>
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
+	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import type { SMBShare, UpdateSMBShareRequest } from '$lib/api/storage/v1/storage_pb';
 	import {
-		type SMBShare_ActiveDirectory,
-		type SMBShare_LocalUser,
-		SMBShare_MapToGuest,
-		SMBShare_SecurityMode,
+		SMBShare_CommonConfig_MapToGuest,
+		SMBShare_SecurityConfig_Mode,
 		StorageService
 	} from '$lib/api/storage/v1/storage_pb';
+	import CopyButton from '$lib/components/custom/copy-button/copy-button.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
+	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
@@ -29,103 +30,60 @@
 	let {
 		smbShare,
 		scope,
-		namespace,
 		reloadManager
 	}: {
 		smbShare: SMBShare;
 		scope: string;
-		namespace: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
 
 	const storageClient = createClient(StorageService, transport);
+	const applicationClient = createClient(ApplicationService, transport);
+
+	let isNamespaceOptionsLoaded = $state(false);
+	const namespaceOptions: Writable<SingleSelect.OptionType[]> = writable([]);
+	async function fetchNamespaces() {
+		applicationClient
+			.listNamespaces({ scope })
+			.then((response) => {
+				namespaceOptions.set(
+					response.namespaces.map((namespace) => ({
+						value: namespace.name,
+						label: namespace.name,
+						icon: 'ph:cube'
+					}))
+				);
+			})
+			.catch((error) => {
+				console.debug('Failed to fetch namespaces:', error);
+			});
+	}
 
 	const defaults = {
 		scope: scope,
-		namespace: namespace,
+		namespace: smbShare.namespace,
 		name: smbShare.name,
 		sizeBytes: smbShare.sizeBytes,
-		securityMode: smbShare.securityMode,
-		auth: smbShare.auth,
-		mapToGuest: smbShare.mapToGuest,
 		browsable: smbShare.browsable,
 		guestOk: smbShare.guestOk,
 		readOnly: smbShare.readOnly,
-		validUsers: smbShare.validUsers
+		validUsers: smbShare.validUsers,
+		commonConfig: { ...smbShare.commonConfig },
+		securityConfig: { ...smbShare.securityConfig }
 	} as UpdateSMBShareRequest;
-	const defaults_activeDirectory =
-		smbShare.auth.case === 'activeDirectory'
-			? smbShare.auth.value
-			: ({} as SMBShare_ActiveDirectory);
-	const defaults_localUser =
-		smbShare.auth.case === 'localUser' ? smbShare.auth.value : ({} as SMBShare_LocalUser);
-	const defaults_validUsers = smbShare.validUsers;
 
 	let request = $state(defaults);
-	let request_activeDirectory = $state(defaults_activeDirectory);
-	let request_localUser = $state(defaults_localUser);
-	let request_validUsers = $state(defaults_validUsers);
-
-	function reset_activeDirectory() {
-		request_activeDirectory = defaults_activeDirectory;
-	}
-	function reset_localUser() {
-		request_localUser = defaults_localUser;
-	}
-	function reset_validUsers() {
-		request_validUsers = defaults_validUsers;
-	}
 
 	function reset() {
 		request = defaults;
-		reset_activeDirectory();
-		reset_localUser();
-		reset_validUsers();
 	}
 
-	$effect(() => {
-		if (request.securityMode === SMBShare_SecurityMode.ACTIVE_DIRECTORY) {
-			request.auth = {
-				value: request_activeDirectory,
-				case: 'activeDirectory'
-			};
-		} else if (request.securityMode === SMBShare_SecurityMode.USER) {
-			request.auth = {
-				value: request_localUser,
-				case: 'localUser'
-			};
-		}
-		request.validUsers = request_validUsers;
-	});
-
 	let isNameInvalid = $state(false);
+	let isNamespaceInvalid = $state(false);
 	let isSizeInvalid = $state(false);
-	let isSecurityModeInvalid = $state(false);
-	let isMapToGuestInvalid = $state(false);
-	let isBrowseableInvalid = $state(false);
-	let isReadOnlyInvalid = $state(false);
-	let isGuestOKInvalid = $state(false);
-	let isRealmInvalid = $state(false);
-	let isJoinSourceInvalid = $state(false);
-	let isLocalUsersInvalid = $state(false);
-	let isValidUsersInvalid = $state(false);
-	const invalid = $derived(
-		isNameInvalid ||
-			isSizeInvalid ||
-			isSecurityModeInvalid ||
-			isMapToGuestInvalid ||
-			isBrowseableInvalid ||
-			isReadOnlyInvalid ||
-			isGuestOKInvalid ||
-			(request.securityMode === SMBShare_SecurityMode.ACTIVE_DIRECTORY &&
-				(isRealmInvalid || isJoinSourceInvalid)) ||
-			(request.securityMode === SMBShare_SecurityMode.USER &&
-				request.auth.case === 'localUser' &&
-				isLocalUsersInvalid) ||
-			isValidUsersInvalid
-	);
+	const invalid = $derived(isNameInvalid || isNamespaceInvalid || isSizeInvalid);
 
 	let open = $state(false);
 	function close() {
@@ -135,12 +93,12 @@
 	let securityModeOptions: Writable<SingleSelect.OptionType[]> = $state(
 		writable([
 			{
-				value: SMBShare_SecurityMode.ACTIVE_DIRECTORY,
+				value: SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY,
 				label: 'Active Directory',
 				icon: 'ph:database'
 			},
 			{
-				value: SMBShare_SecurityMode.USER,
+				value: SMBShare_SecurityConfig_Mode.USER,
 				label: 'User',
 				icon: 'ph:textbox'
 			}
@@ -149,25 +107,30 @@
 	let mapToGuestOptions: Writable<SingleSelect.OptionType[]> = $state(
 		writable([
 			{
-				value: SMBShare_MapToGuest.NEVER,
+				value: SMBShare_CommonConfig_MapToGuest.NEVER,
 				label: 'Never',
 				icon: 'ph:shield-slash',
 				information: 'Always refuse access'
 			},
 			{
-				value: SMBShare_MapToGuest.BAD_USER,
+				value: SMBShare_CommonConfig_MapToGuest.BAD_USER,
 				label: 'Bad User',
 				icon: 'ph:shield-warning',
 				information: 'Map to guest when username is incorrect'
 			},
 			{
-				value: SMBShare_MapToGuest.BAD_PASSWORD,
+				value: SMBShare_CommonConfig_MapToGuest.BAD_PASSWORD,
 				label: 'Bad Password',
 				icon: 'ph:shield-warning',
 				information: 'Map to guest when password is incorrect'
 			}
 		])
 	);
+
+	onMount(async () => {
+		await fetchNamespaces();
+		isNamespaceOptionsLoaded = true;
+	});
 </script>
 
 <Modal.Root bind:open>
@@ -189,6 +152,44 @@
 					/>
 				</Form.Field>
 				<Form.Field>
+					<Form.Label>{m.namespace()}</Form.Label>
+					{#if isNamespaceOptionsLoaded}
+						<SingleSelect.Root
+							required
+							options={namespaceOptions}
+							bind:value={request.namespace}
+							bind:invalid={isNamespaceInvalid}
+						>
+							<SingleSelect.Trigger />
+							<SingleSelect.Content>
+								<SingleSelect.Options>
+									<SingleSelect.Input />
+									<SingleSelect.List>
+										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+										<SingleSelect.Group>
+											{#each $namespaceOptions as option (option.value)}
+												<SingleSelect.Item {option}>
+													<Icon
+														icon={option.icon ? option.icon : 'ph:empty'}
+														class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+													/>
+													<span class="flex flex-col">
+														<p>{option.label}</p>
+														<p class="text-xs text-muted-foreground">{option.information}</p>
+													</span>
+													<SingleSelect.Check {option} />
+												</SingleSelect.Item>
+											{/each}
+										</SingleSelect.Group>
+									</SingleSelect.List>
+								</SingleSelect.Options>
+							</SingleSelect.Content>
+						</SingleSelect.Root>
+					{:else}
+						<Loading.Selection />
+					{/if}
+				</Form.Field>
+				<Form.Field>
 					<Form.Label>{m.size()}</Form.Label>
 					<SingleInput.Measurement
 						required
@@ -206,114 +207,131 @@
 			</Form.Fieldset>
 
 			<Form.Fieldset>
-				<Form.Field>
-					<Form.Label>{m.security_mode()}</Form.Label>
-					<SingleSelect.Root
-						required
-						bind:options={securityModeOptions}
-						bind:value={request.securityMode}
-						bind:invalid={isSecurityModeInvalid}
-					>
-						<SingleSelect.Trigger />
-						<SingleSelect.Content>
-							<SingleSelect.Options>
-								<SingleSelect.Input class="border-0 ring-0" />
-								<SingleSelect.List>
-									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
-									<SingleSelect.Group>
-										{#each $securityModeOptions as option (option.value)}
-											<SingleSelect.Item {option}>
-												<Icon
-													icon={option.icon ? option.icon : 'ph:empty'}
-													class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
-												/>
-												{option.label}
-												<SingleSelect.Check {option} />
-											</SingleSelect.Item>
-										{/each}
-									</SingleSelect.Group>
-								</SingleSelect.List>
-							</SingleSelect.Options>
-						</SingleSelect.Content>
-					</SingleSelect.Root>
-				</Form.Field>
-
-				{#if request.securityMode === SMBShare_SecurityMode.ACTIVE_DIRECTORY}
+				{#if request.commonConfig}
 					<Form.Field>
-						<Form.Label>{m.realm()}</Form.Label>
-						<SingleInput.General
-							type="text"
-							required={request.securityMode === SMBShare_SecurityMode.ACTIVE_DIRECTORY}
-							bind:value={request_activeDirectory.realm}
-							bind:invalid={isRealmInvalid}
-						/>
-					</Form.Field>
-					<Form.Field>
-						<Form.Label>{m.join_source()}</Form.Label>
-						<CreateUser
-							bind:user={request_activeDirectory.joinSource}
-							bind:invalid={isJoinSourceInvalid}
-						/>
-					</Form.Field>
-				{:else if request.securityMode === SMBShare_SecurityMode.USER}
-					<Form.Field>
-						<Form.Label>{m.users()}</Form.Label>
-						<CreateUsers bind:users={request_localUser.users} bind:invalid={isLocalUsersInvalid} />
+						<Form.Label>{m.map_to_guest()}</Form.Label>
+						<Form.Help>
+							{m.map_to_guest_help()}
+						</Form.Help>
+						<SingleSelect.Root
+							bind:options={mapToGuestOptions}
+							bind:value={request.commonConfig.mapToGuest}
+						>
+							<SingleSelect.Trigger />
+							<SingleSelect.Content>
+								<SingleSelect.Options>
+									<SingleSelect.List>
+										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+										<SingleSelect.Group>
+											{#each $mapToGuestOptions as option (option.value)}
+												<SingleSelect.Item {option}>
+													<Icon
+														icon={option.icon ? option.icon : 'ph:empty'}
+														class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+													/>
+													<span class="flex flex-col">
+														<p>{option.label}</p>
+														<p class="text-xs text-muted-foreground">{option.information}</p>
+													</span>
+													<SingleSelect.Check {option} />
+												</SingleSelect.Item>
+											{/each}
+										</SingleSelect.Group>
+									</SingleSelect.List>
+								</SingleSelect.Options>
+							</SingleSelect.Content>
+						</SingleSelect.Root>
 					</Form.Field>
 				{/if}
-				<Form.Field>
-					<Form.Label>{m.map_to_guest()}</Form.Label>
-					<Form.Help>
-						{m.map_to_guest_help()}
-					</Form.Help>
-					<SingleSelect.Root
-						bind:options={mapToGuestOptions}
-						bind:value={request.mapToGuest}
-						bind:invalid={isMapToGuestInvalid}
-					>
-						<SingleSelect.Trigger />
-						<SingleSelect.Content>
-							<SingleSelect.Options>
-								<SingleSelect.List>
-									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
-									<SingleSelect.Group>
-										{#each $mapToGuestOptions as option (option.value)}
-											<SingleSelect.Item {option}>
-												<Icon
-													icon={option.icon ? option.icon : 'ph:empty'}
-													class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
-												/>
-												<span class="flex flex-col">
-													<p>{option.label}</p>
-													<p class="text-xs text-muted-foreground">{option.information}</p>
-												</span>
-												<SingleSelect.Check {option} />
-											</SingleSelect.Item>
-										{/each}
-									</SingleSelect.Group>
-								</SingleSelect.List>
-							</SingleSelect.Options>
-						</SingleSelect.Content>
-					</SingleSelect.Root>
-				</Form.Field>
+
+				{#if request.securityConfig}
+					<Form.Field>
+						<Form.Label>{m.mode()}</Form.Label>
+						<SingleSelect.Root
+							bind:options={securityModeOptions}
+							bind:value={request.securityConfig.mode}
+						>
+							<SingleSelect.Trigger />
+							<SingleSelect.Content>
+								<SingleSelect.Options>
+									<SingleSelect.Input class="border-0 ring-0" />
+									<SingleSelect.List>
+										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+										<SingleSelect.Group>
+											{#each $securityModeOptions as option (option.value)}
+												<SingleSelect.Item {option}>
+													<Icon
+														icon={option.icon ? option.icon : 'ph:empty'}
+														class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+													/>
+													{option.label}
+													<SingleSelect.Check {option} />
+												</SingleSelect.Item>
+											{/each}
+										</SingleSelect.Group>
+									</SingleSelect.List>
+								</SingleSelect.Options>
+							</SingleSelect.Content>
+						</SingleSelect.Root>
+					</Form.Field>
+
+					<Form.Field>
+						<Form.Label>{m.local_users()}</Form.Label>
+						{#if request.securityConfig.localUsers?.length > 0}
+							<div class="group max-h-40 overflow-y-auto rounded-lg border p-2">
+								{#each request.securityConfig.localUsers as user, index (index)}
+									<div class="flex items-center gap-2 rounded-lg p-2">
+										<div
+											class={cn('flex size-8 items-center justify-center rounded-full border-2')}
+										>
+											<Icon icon="ph:user" class="size-5" />
+										</div>
+										<div class="flex flex-col gap-1">
+											<p class="text-xs text-muted-foreground">{m.user()}</p>
+											<p class="text-sm">{user.username}</p>
+										</div>
+										<CopyButton
+											class="invisible  ml-auto size-4 group-hover:visible"
+											text={user.username}
+										/>
+									</div>
+								{/each}
+							</div>
+						{/if}
+						<CreateUsers bind:users={request.securityConfig.localUsers} />
+					</Form.Field>
+
+					<Form.Field>
+						<Form.Label>{m.realm()}</Form.Label>
+						<SingleInput.General type="text" bind:value={request.securityConfig.realm} />
+					</Form.Field>
+
+					<Form.Field>
+						<Form.Label>{m.join_source()}</Form.Label>
+						{#if request.securityConfig.joinSource}
+							<div class="rounded-lg border p-2">
+								<div class="flex items-center gap-2 rounded-lg p-2">
+									<div class={cn('flex size-8 items-center justify-center rounded-full border-2')}>
+										<Icon icon="ph:user" class="size-5" />
+									</div>
+
+									<div class="flex flex-col gap-1">
+										<p class="text-xs text-muted-foreground">{m.user()}</p>
+										<p class="text-sm">{request.securityConfig.joinSource.username}</p>
+									</div>
+								</div>
+							</div>
+						{/if}
+						<CreateUser bind:user={request.securityConfig.joinSource} />
+					</Form.Field>
+				{/if}
+
 				<Form.Field>
 					<Form.Label>{m.valid_users()}</Form.Label>
-
-					<MultipleInput.Root
-						type="text"
-						icon="ph:user"
-						bind:values={request.validUsers}
-						bind:invalid={isValidUsersInvalid}
-						required
-					>
+					<MultipleInput.Root type="text" icon="ph:user" bind:values={request.validUsers}>
 						<MultipleInput.Viewer />
 						<MultipleInput.Controller>
 							<MultipleInput.Input />
-							{#if request.securityMode === SMBShare_SecurityMode.USER}
-								<MultipleInput.Import
-									values={request_localUser.users.map((user) => user.username)}
-								/>
-							{/if}
 							<MultipleInput.Add />
 							<MultipleInput.Clear />
 						</MultipleInput.Controller>
@@ -326,7 +344,6 @@
 					<Form.Label>{m.browsable()}</Form.Label>
 					<SingleInput.Boolean
 						bind:value={request.browsable}
-						bind:invalid={isBrowseableInvalid}
 						descriptor={() => m.browsable_description()}
 					/>
 				</Form.Field>
@@ -334,7 +351,6 @@
 					<Form.Label>{m.read_only()}</Form.Label>
 					<SingleInput.Boolean
 						bind:value={request.readOnly}
-						bind:invalid={isReadOnlyInvalid}
 						descriptor={() => m.read_only_description()}
 					/>
 				</Form.Field>
@@ -342,7 +358,6 @@
 					<Form.Label>{m.guest_accessible()}</Form.Label>
 					<SingleInput.Boolean
 						bind:value={request.guestOk}
-						bind:invalid={isGuestOKInvalid}
 						descriptor={() => m.guest_accessible_description()}
 					/>
 				</Form.Field>

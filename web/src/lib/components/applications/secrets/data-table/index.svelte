@@ -12,30 +12,32 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
-	import type { SMBShare } from '$lib/api/storage/v1/storage_pb';
+	import type { Secret } from '$lib/api/application/v1/application_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
-	import Create from './action-create.svelte';
 	import { getColumns, messages } from './columns';
+	import Pickers from './pickers.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
 	let {
-		smbShares,
+		secrets,
 		scope,
+		selectedNamespace = $bindable(),
 		reloadManager
 	}: {
-		smbShares: Writable<SMBShare[]>;
+		secrets: Writable<Secret[]>;
 		scope: string;
+		selectedNamespace: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 13 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
@@ -43,10 +45,10 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $smbShares;
+			return $secrets;
 		},
 		get columns() {
-			return getColumns(scope, reloadManager);
+			return getColumns();
 		},
 
 		getCoreRowModel: getCoreRowModel(),
@@ -112,34 +114,32 @@
 	});
 </script>
 
+<Statistics {table} />
 <Layout.Root>
-	<Layout.Statistics>
-		<Statistics {table} />
-	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
 				columnId="name"
-				values={$smbShares.map((row) => row.name)}
+				values={$secrets.map((row) => row.name)}
 				{messages}
 				{table}
 			/>
 			<Filters.StringMatch
 				columnId="namespace"
-				values={$smbShares.map((row) => row.namespace)}
+				values={$secrets.map((row) => row.namespace)}
 				{messages}
 				{table}
 			/>
 			<Filters.StringMatch
-				columnId="valid_users"
-				values={$smbShares.flatMap((row) => row.validUsers)}
+				columnId="type"
+				values={$secrets.map((row) => row.type)}
 				{messages}
 				{table}
 			/>
-			<Filters.Column {table} {messages} />
+			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {scope} {reloadManager} />
+			<Pickers {scope} bind:selectedNamespace />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

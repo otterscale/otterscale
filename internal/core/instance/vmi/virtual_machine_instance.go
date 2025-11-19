@@ -2,9 +2,7 @@ package vmi
 
 import (
 	"context"
-	"net/http"
 
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	corev1 "kubevirt.io/api/core/v1"
 )
 
@@ -38,9 +36,4 @@ func (uc *UseCase) PauseInstance(ctx context.Context, scope, namespace, name str
 
 func (uc *UseCase) ResumeInstance(ctx context.Context, scope, namespace, name string) error {
 	return uc.virtualMachineInstance.Resume(ctx, scope, namespace, name)
-}
-
-func (uc *UseCase) isKeyNotFoundError(err error) bool {
-	statusErr, _ := err.(*k8serrors.StatusError)
-	return statusErr != nil && statusErr.Status().Code == http.StatusNotFound
 }
