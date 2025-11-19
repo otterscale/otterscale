@@ -3,7 +3,7 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { type OSD, StorageService } from '$lib/api/storage/v1/storage_pb';
+	import { type ObjectStorageDaemon, StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 
@@ -20,12 +20,12 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	const objectStorageDaemons = $state(writable([] as OSD[]));
+	const objectStorageDaemons = $state(writable([] as ObjectStorageDaemon[]));
 	async function fetch() {
 		storageClient
-			.listOSDs({ scope: scope })
+			.listObjectStorageDaemons({ scope: scope })
 			.then((response) => {
-				objectStorageDaemons.set(response.osds);
+				objectStorageDaemons.set(response.objectStorageDaemons);
 				isMounted = true;
 			})
 			.catch((error) => {

@@ -1,6 +1,6 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import type { OSD } from '$lib/api/storage/v1/storage_pb';
+import type { ObjectStorageDaemon } from '$lib/api/storage/v1/storage_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
@@ -21,7 +21,7 @@ const messages = {
 	iops: m.iops()
 };
 
-function getColumns(scope: string): ColumnDef<OSD>[] {
+function getColumns(scope: string): ColumnDef<ObjectStorageDaemon>[] {
 	return [
 		{
 			id: 'select',

@@ -196,11 +196,11 @@
 							<Form.Fieldset>
 								<Form.Legend>{m.target()}</Form.Legend>
 								<Form.Field>
-									<Form.Label>{m.endpoint()}</Form.Label>
+									<Form.Label>{m.host()}</Form.Label>
 									<SingleInput.General
 										type="text"
 										required
-										bind:value={requestNetworkFileSystem.endpoint}
+										bind:value={requestNetworkFileSystem.host}
 									/>
 								</Form.Field>
 								<Form.Field>
@@ -320,7 +320,7 @@
 							{#if requestFio.target.case == 'cephBlockDevice'}
 								<Form.Description>{m.scope()}: {selectedScope}</Form.Description>
 							{:else if requestFio.target.case == 'networkFileSystem'}
-								<Form.Description>{m.type()}: {requestNetworkFileSystem.endpoint}</Form.Description>
+								<Form.Description>{m.type()}: {requestNetworkFileSystem.host}</Form.Description>
 								<Form.Description>{m.name()}: {requestNetworkFileSystem.path}</Form.Description>
 							{/if}
 						</Form.Fieldset>
