@@ -141,7 +141,7 @@ func (uc *UseCase) ListDataVolumes(ctx context.Context, scope, namespace string,
 		if scName != nil && *scName != "" {
 			sc, found := storageClassMap[*scName]
 			if found {
-				dvStorage.Persistent.StorageClass = sc
+				dvStorage.StorageClass = sc
 			}
 		}
 
