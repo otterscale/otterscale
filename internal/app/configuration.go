@@ -201,8 +201,8 @@ func toCoreFIOTarget(c *pb.CephBlockDevice, n *pb.NetworkFileSystem) bist.FIOTar
 
 	if n != nil {
 		ret.NFS = &bist.FIOTargetNFS{
-			Endpoint: n.GetEndpoint(),
-			Path:     n.GetPath(),
+			Host: n.GetHost(),
+			Path: n.GetPath(),
 		}
 	}
 
@@ -391,7 +391,7 @@ func toProtoCephBlockDevice(f *bist.FIOTargetCeph) *pb.CephBlockDevice {
 
 func toProtoNetworkFileSystem(f *bist.FIOTargetNFS) *pb.NetworkFileSystem {
 	ret := &pb.NetworkFileSystem{}
-	ret.SetEndpoint(f.Endpoint)
+	ret.SetHost(f.Host)
 	ret.SetPath(f.Path)
 	return ret
 }

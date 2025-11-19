@@ -148,7 +148,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	tagRepo := maas.NewTagRepo(maasMAAS)
 	tagUseCase := tag.NewUseCase(tagRepo)
 	machineService := app.NewMachineService(machineUseCase, purgeUseCase, tagUseCase)
-	modelUseCase := model.NewUseCase(chartRepo, deploymentRepo, releaseRepo, persistentVolumeClaimRepo)
+	modelUseCase := model.NewUseCase(chartRepo, deploymentRepo, releaseRepo, persistentVolumeClaimRepo, serviceRepo)
 	modelService := app.NewModelService(modelUseCase)
 	fabricRepo := maas.NewFabricRepo(maasMAAS)
 	subnetRepo := maas.NewSubnetRepo(maasMAAS)
