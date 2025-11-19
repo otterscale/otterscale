@@ -11,6 +11,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/release"
+	"github.com/otterscale/otterscale/internal/core/application/service"
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 )
 
@@ -42,21 +43,36 @@ type UseCase struct {
 	deployment            workload.DeploymentRepo
 	release               release.ReleaseRepo
 	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
+	service               service.ServiceRepo
 }
 
-func NewUseCase(chart chart.ChartRepo, deployment workload.DeploymentRepo, release release.ReleaseRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *UseCase {
+func NewUseCase(chart chart.ChartRepo, deployment workload.DeploymentRepo, release release.ReleaseRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, service service.ServiceRepo) *UseCase {
 	return &UseCase{
 		chart:                 chart,
 		deployment:            deployment,
 		release:               release,
 		persistentVolumeClaim: persistentVolumeClaim,
+		service:               service,
 	}
 }
 
-func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) ([]Model, error) {
+func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (models []Model, uri string, err error) {
 	selector := release.TypeLabel + "=" + "model"
 
-	return uc.release.List(ctx, scope, namespace, selector)
+	models, err = uc.release.List(ctx, scope, namespace, selector)
+	if err != nil {
+		return nil, "", err
+	}
+
+	url, err := uc.service.URL(scope)
+	if err != nil {
+		return nil, "", err
+	}
+
+	// TODO: get port from service
+	uri = fmt.Sprintf("http://%s:8080", url.Hostname())
+
+	return models, uri, nil
 }
 
 func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string) (*Model, error) {
