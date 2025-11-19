@@ -25,7 +25,7 @@
 	let { configuration }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
-	let distroSeriesOptions = writable<SingleSelect.OptionType[]>([]);
+	const distroSeriesOptions = writable<SingleSelect.OptionType[]>([]);
 	let distroSeriesArchitecturesMap: Record<string, Writable<SingleSelect.OptionType[]>> = {};
 	const client = createClient(ConfigurationService, transport);
 	const defaults = {} as CreateBootImageRequest;

@@ -21,9 +21,9 @@
 	const charts = writable<Application_Chart[]>([]);
 	const releases = writable<Application_Release[]>([]);
 
-	let isChartsLoading = $state(true);
-	let isReleasesLoading = $state(true);
-	const isMounted = $derived(!isChartsLoading && !isReleasesLoading);
+	let isChartsLoaded = $state(false);
+	let isReleasesLoaded = $state(false);
+	const isMounted = $derived(isChartsLoaded && isReleasesLoaded);
 
 	const applicationClient = createClient(ApplicationService, transport);
 
@@ -32,7 +32,7 @@
 			.listCharts({})
 			.then((response) => {
 				charts.set(response.charts.sort((p, n) => p.name.localeCompare(n.name)));
-				isChartsLoading = false;
+				isChartsLoaded = true;
 			})
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
@@ -43,7 +43,7 @@
 			})
 			.then((response) => {
 				releases.set(response.releases);
-				isReleasesLoading = false;
+				isReleasesLoaded = true;
 			})
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
