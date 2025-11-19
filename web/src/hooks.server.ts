@@ -1,6 +1,7 @@
 import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
+import { env } from '$env/dynamic/private';
 import { paraglideMiddleware } from '$lib/paraglide/server';
 import {
 	deleteSessionTokenCookie,
@@ -18,6 +19,10 @@ const handleParaglide: Handle = ({ event, resolve }) =>
 	});
 
 const handleAuth: Handle = async ({ event, resolve }) => {
+	if (env.BOOTSTRAP_MODE) {
+		return resolve(event);
+	}
+
 	const token = event.cookies.get('OS_SESSION') ?? null;
 	if (!token) {
 		event.locals.user = null;
