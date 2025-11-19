@@ -15,7 +15,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 	const sessions = await db
 		.select()
 		.from(sessionsTable)
-		.leftJoin(usersTable, eq(sessionsTable.userId, usersTable.id))
+		.innerJoin(usersTable, eq(sessionsTable.userId, usersTable.id))
 		.where(eq(sessionsTable.id, sessionId));
 
 	if (sessions.length === 0) {
@@ -25,23 +25,22 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 	const session = sessions[0].sessions;
 	const user = sessions[0].users;
 
-	if (!user) {
-		await db.delete(sessionsTable).where(eq(sessionsTable.id, session.id));
-		return { session: null, user: null };
-	}
-
 	if (Date.now() >= session.expiresAt.getTime()) {
 		await db.delete(sessionsTable).where(eq(sessionsTable.id, session.id));
 		return { session: null, user: null };
 	}
 
 	if (Date.now() >= session.expiresAt.getTime() - 1000 * 60 * 60 * 24 * 15) {
+		const newExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
+
 		await db
 			.update(sessionsTable)
 			.set({
-				expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
+				expiresAt: newExpiresAt
 			})
 			.where(eq(sessionsTable.id, session.id));
+
+		session.expiresAt = newExpiresAt;
 	}
 
 	return { session, user };
