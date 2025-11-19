@@ -113,34 +113,39 @@ func (uc *UseCase) ListDataVolumes(ctx context.Context, scope, namespace string,
 	pvcMap := map[string]*persistent.PersistentVolumeClaim{}
 	for i := range persistentVolumeClaims {
 		pvc := persistentVolumeClaims[i]
-		if pvc.Namespace == namespace {
-			pvcMap[pvc.Name] = &pvc
+		if namespace == "" || pvc.Namespace == namespace {
+			key := pvc.Namespace + "/" + pvc.Name
+			pvcMap[key] = &pvc
 		}
 	}
 
-	ret := make([]DataVolumePersistent, len(dataVolumes))
+	ret := make([]DataVolumePersistent, 0, len(dataVolumes))
 
-	for i := range ret {
+	for i := range dataVolumes {
 		dv := dataVolumes[i]
 
-		pvc, found := pvcMap[dv.Name]
+		key := dv.Namespace + "/" + dv.Name
+		pvc, found := pvcMap[key]
 		if !found {
 			continue
 		}
 
 		dvStorage := DataVolumePersistent{
 			DataVolume: &dv,
+			Persistent: &persistent.Persistent{
+				PersistentVolumeClaim: pvc,
+			},
 		}
 
 		scName := pvc.Spec.StorageClassName
 		if scName != nil && *scName != "" {
 			sc, found := storageClassMap[*scName]
 			if found {
-				dvStorage.StorageClass = sc
+				dvStorage.Persistent.StorageClass = sc
 			}
 		}
 
-		ret[i] = dvStorage
+		ret = append(ret, dvStorage)
 	}
 
 	return ret, nil
