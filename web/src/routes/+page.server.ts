@@ -3,6 +3,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
 import { env } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public';
+import { isFlexibleBooleanTrue } from '$lib/helper';
 
 import type { PageServerLoad } from './$types';
 
@@ -22,10 +23,6 @@ const REQUIRED_ENV_VARS_NORMAL: readonly EnvVar[] = [
 	{ value: env.KEYCLOAK_CLIENT_SECRET, name: 'KEYCLOAK_CLIENT_SECRET' },
 	{ value: env.DATABASE_URL, name: 'DATABASE_URL' }
 ];
-
-const isFlexibleBooleanTrue = (envVar: string | undefined): boolean => {
-	return ['true', '1', 'yes', 'on'].includes((envVar || '').toLowerCase());
-};
 
 const checkRequiredEnvVars = (envVars: readonly EnvVar[]): void => {
 	for (const { value, name } of envVars) {
