@@ -33,7 +33,7 @@ RUN pnpm install --production --frozen-lockfile && pnpm store prune
 # Copy built application from builder stage
 COPY --from=builder --chown=nobody:nobody /src/build ./build
 
-# Copy migration script and drizzle migration files 
+# Copy migration script and drizzle migration files
 COPY --from=builder --chown=nobody:nobody /src/scripts/migrate.js ./scripts/migrate.js
 COPY --from=builder --chown=nobody:nobody /src/drizzle ./drizzle
 
