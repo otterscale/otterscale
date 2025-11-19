@@ -6,7 +6,6 @@
 	import logos from '@iconify-json/logos/icons.json';
 	import ph from '@iconify-json/ph/icons.json';
 	import simpleIcons from '@iconify-json/simple-icons/icons.json';
-	import streamlineLogos from '@iconify-json/streamline-logos/icons.json';
 	import { ModeWatcher } from 'mode-watcher';
 	import { setContext } from 'svelte';
 
@@ -25,7 +24,6 @@
 	addCollection(logos);
 	addCollection(ph);
 	addCollection(simpleIcons);
-	addCollection(streamlineLogos);
 </script>
 
 {#snippet loadingIcon()}
