@@ -19,6 +19,7 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 
 	"github.com/otterscale/otterscale/internal/core/application/config"
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/service"
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 )
@@ -133,21 +134,23 @@ type UseCase struct {
 	smbShare          SMBShareRepo
 	smbSecurityConfig SMBSecurityConfigRepo
 
-	deployment workload.DeploymentRepo
-	pod        workload.PodRepo
-	secret     config.SecretRepo
-	service    service.ServiceRepo
+	deployment            workload.DeploymentRepo
+	pod                   workload.PodRepo
+	secret                config.SecretRepo
+	service               service.ServiceRepo
+	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
 }
 
-func NewUseCase(smbCommonConfig SMBCommonConfigRepo, smbShare SMBShareRepo, smbSecurityConfig SMBSecurityConfigRepo, deployment workload.DeploymentRepo, pod workload.PodRepo, secret config.SecretRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(smbCommonConfig SMBCommonConfigRepo, smbShare SMBShareRepo, smbSecurityConfig SMBSecurityConfigRepo, deployment workload.DeploymentRepo, pod workload.PodRepo, secret config.SecretRepo, service service.ServiceRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *UseCase {
 	return &UseCase{
-		smbCommonConfig:   smbCommonConfig,
-		smbShare:          smbShare,
-		smbSecurityConfig: smbSecurityConfig,
-		deployment:        deployment,
-		pod:               pod,
-		secret:            secret,
-		service:           service,
+		smbCommonConfig:       smbCommonConfig,
+		smbShare:              smbShare,
+		smbSecurityConfig:     smbSecurityConfig,
+		deployment:            deployment,
+		pod:                   pod,
+		secret:                secret,
+		service:               service,
+		persistentVolumeClaim: persistentVolumeClaim,
 	}
 }
 
@@ -361,56 +364,70 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name string, sizeBytes uint64, port int32, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
 	names := uc.newNames(name)
 
-	// Update users secret
-	if len(localUsers) > 0 {
-		usersSecret := uc.buildUsersSecret(namespace, names.UsersSecret, localUsers)
-
-		if err := uc.upsertSecret(ctx, scope, namespace, names.UsersSecret, usersSecret); err != nil {
-			return nil, "", err
+	// Update secrets based on security mode
+	if securityMode == "active-directory" {
+		if joinSource != nil && joinSource.Username != "" && joinSource.Password != "" {
+			joinSecret := uc.buildJoinSecret(namespace, names.JoinSecret, joinSource)
+			if err := uc.upsertSecret(ctx, scope, namespace, names.JoinSecret, joinSecret); err != nil {
+				return nil, "", err
+			}
 		}
-	} else {
 		_ = uc.secret.Delete(ctx, scope, namespace, names.UsersSecret)
-	}
-
-	// Update join secret
-	if joinSource != nil {
-		joinSecret := uc.buildJoinSecret(namespace, names.JoinSecret, joinSource)
-
-		if err := uc.upsertSecret(ctx, scope, namespace, names.JoinSecret, joinSecret); err != nil {
-			return nil, "", err
-		}
 	} else {
+		if len(localUsers) > 0 {
+			usersSecret := uc.buildUsersSecret(namespace, names.UsersSecret, localUsers)
+			if err := uc.upsertSecret(ctx, scope, namespace, names.UsersSecret, usersSecret); err != nil {
+				return nil, "", err
+			}
+		}
 		_ = uc.secret.Delete(ctx, scope, namespace, names.JoinSecret)
 	}
 
 	// Update security config
 	securityConfig := uc.buildSecurityConfig(namespace, names.SecurityConfig, securityMode, names.UsersSecret, realm, names.JoinSecret)
-
-	if _, err := uc.smbSecurityConfig.Update(ctx, scope, namespace, securityConfig); err != nil {
+	updatedSecurityConfig, err := uc.upsertSecurityConfig(ctx, scope, namespace, securityConfig)
+	if err != nil {
 		return nil, "", err
 	}
 
 	// Update common config
 	commonConfig := uc.buildCommonConfig(namespace, names.CommonConfig, mapToGuest)
-
-	if _, err := uc.smbCommonConfig.Update(ctx, scope, namespace, commonConfig); err != nil {
+	updatedCommonConfig, err := uc.upsertCommonConfig(ctx, scope, namespace, commonConfig)
+	if err != nil {
 		return nil, "", err
 	}
 
 	// Update share
 	shareConfig := uc.buildShareConfig(guestOK, validUsers)
 	share := uc.buildShare(namespace, names.Share, browsable, readOnly, sizeBytes, names.SecurityConfig, names.CommonConfig, shareConfig)
-
-	newShare, err := uc.smbShare.Update(ctx, scope, namespace, share)
+	newShare, err := uc.upsertShare(ctx, scope, namespace, share)
 	if err != nil {
 		return nil, "", err
 	}
 
+	// Update PVC if size changed
+	if sizeBytes > 0 {
+		pvcName := names.Share + "-pvc"
+		pvc := uc.buildPVC(namespace, pvcName, sizeBytes)
+		if err := uc.upsertPVC(ctx, scope, namespace, pvc); err != nil {
+			return nil, "", fmt.Errorf("failed to update PVC: %w", err)
+		}
+	}
+
 	// Update service with NodePort
+	var svc *service.Service
 	if port > 0 {
-		if err := uc.updateSMBService(ctx, scope, namespace, names.Share, port); err != nil {
+		updatedSvc, err := uc.setServiceNodePort(ctx, scope, namespace, names.Share, port)
+		if err != nil {
 			return nil, "", err
 		}
+		svc = updatedSvc
+	} else {
+		retrievedSvc, err := uc.service.Get(ctx, scope, namespace, names.Share)
+		if err != nil && !k8serrors.IsNotFound(err) {
+			return nil, "", fmt.Errorf("failed to get service: %w", err)
+		}
+		svc = retrievedSvc
 	}
 
 	url, err := uc.service.URL(scope)
@@ -419,7 +436,12 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 	}
 
 	return &ShareData{
-		Share: newShare,
+		Share:          newShare,
+		CommonConfig:   updatedCommonConfig,
+		SecurityConfig: updatedSecurityConfig,
+		LocalUsers:     localUsers,
+		JoinSource:     joinSource,
+		Service:        svc,
 	}, url.Hostname(), nil
 }
 
@@ -636,8 +658,45 @@ func (uc *UseCase) buildShare(namespace, name string, browsable, readOnly bool, 
 	}
 }
 
+func (uc *UseCase) buildPVC(namespace, name string, sizeBytes uint64) *persistent.PersistentVolumeClaim {
+	return &persistent.PersistentVolumeClaim{
+		ObjectMeta: v1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		Spec: corev1.PersistentVolumeClaimSpec{
+			Resources: corev1.VolumeResourceRequirements{
+				Requests: corev1.ResourceList{
+					corev1.ResourceStorage: *resource.NewQuantity(int64(sizeBytes), resource.BinarySI), //nolint:gosec // ignore
+				},
+			},
+		},
+	}
+}
+
+func (uc *UseCase) buildService(namespace, name string, nodePort int32) *service.Service {
+	return &service.Service{
+		ObjectMeta: v1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		Spec: corev1.ServiceSpec{
+			Type: corev1.ServiceTypeNodePort,
+			Ports: []corev1.ServicePort{
+				{
+					Name:     "smb",
+					Port:     445,
+					NodePort: nodePort,
+					Protocol: corev1.ProtocolTCP,
+				},
+			},
+		},
+	}
+}
+
 func (uc *UseCase) upsertSecret(ctx context.Context, scope, namespace, name string, secret *config.Secret) error {
-	if _, err := uc.secret.Get(ctx, scope, namespace, name); err != nil {
+	existingSecret, err := uc.secret.Get(ctx, scope, namespace, name)
+	if err != nil {
 		if k8serrors.IsNotFound(err) {
 			_, err = uc.secret.Create(ctx, scope, namespace, secret)
 			return err
@@ -645,49 +704,101 @@ func (uc *UseCase) upsertSecret(ctx context.Context, scope, namespace, name stri
 		return err
 	}
 
-	_, err := uc.secret.Update(ctx, scope, namespace, secret)
+	// Update existing secret with new data
+	existingSecret.StringData = secret.StringData
+	existingSecret.Data = secret.Data
+	if existingSecret.Labels == nil {
+		existingSecret.Labels = map[string]string{}
+	}
+	for k, v := range secret.Labels {
+		existingSecret.Labels[k] = v
+	}
+
+	_, err = uc.secret.Update(ctx, scope, namespace, existingSecret)
 	return err
 }
 
-func (uc *UseCase) updateSMBService(ctx context.Context, scope, namespace, name string, nodePort int32) error {
-	svc, err := uc.service.Get(ctx, scope, namespace, name)
+func (uc *UseCase) upsertSecurityConfig(ctx context.Context, scope, namespace string, securityConfig *SecurityConfig) (*SecurityConfig, error) {
+	existing, err := uc.smbSecurityConfig.Get(ctx, scope, namespace, securityConfig.ObjectMeta.Name)
 	if err != nil {
+		return nil, err
+	}
+
+	// Update specific fields while preserving metadata
+	existing.Spec.Mode = securityConfig.Spec.Mode
+	existing.Spec.Users = securityConfig.Spec.Users
+	existing.Spec.DNS = securityConfig.Spec.DNS
+	existing.Spec.Realm = securityConfig.Spec.Realm
+	existing.Spec.JoinSources = securityConfig.Spec.JoinSources
+
+	return uc.smbSecurityConfig.Update(ctx, scope, namespace, existing)
+}
+
+func (uc *UseCase) upsertCommonConfig(ctx context.Context, scope, namespace string, commonConfig *CommonConfig) (*CommonConfig, error) {
+	existing, err := uc.smbCommonConfig.Get(ctx, scope, namespace, commonConfig.ObjectMeta.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	// Update specific fields while preserving metadata
+	existing.Spec.CustomGlobalConfig = commonConfig.Spec.CustomGlobalConfig
+
+	return uc.smbCommonConfig.Update(ctx, scope, namespace, existing)
+}
+
+func (uc *UseCase) upsertShare(ctx context.Context, scope, namespace string, share *Share) (*Share, error) {
+	existing, err := uc.smbShare.Get(ctx, scope, namespace, share.ObjectMeta.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	// Update specific fields while preserving metadata and config references
+	existing.Spec.Browseable = share.Spec.Browseable
+	existing.Spec.ReadOnly = share.Spec.ReadOnly
+	existing.Spec.CustomShareConfig = share.Spec.CustomShareConfig
+	if share.Spec.Storage.Pvc != nil && share.Spec.Storage.Pvc.Spec != nil {
+		if existing.Spec.Storage.Pvc == nil {
+			existing.Spec.Storage.Pvc = &v1alpha1.SmbSharePvcSpec{}
+		}
+		if existing.Spec.Storage.Pvc.Spec == nil {
+			existing.Spec.Storage.Pvc.Spec = &corev1.PersistentVolumeClaimSpec{}
+		}
+		existing.Spec.Storage.Pvc.Spec.Resources = share.Spec.Storage.Pvc.Spec.Resources
+	}
+
+	return uc.smbShare.Update(ctx, scope, namespace, existing)
+}
+
+func (uc *UseCase) upsertPVC(ctx context.Context, scope, namespace string, pvc *persistent.PersistentVolumeClaim) error {
+	existing, err := uc.persistentVolumeClaim.Get(ctx, scope, namespace, pvc.Name)
+	if err != nil {
+		if k8serrors.IsNotFound(err) {
+			return nil
+		}
 		return err
 	}
 
-	svc.Spec.Type = corev1.ServiceTypeNodePort
-	if len(svc.Spec.Ports) > 0 {
-		svc.Spec.Ports[0].NodePort = nodePort
-	} else {
-		svc.Spec.Ports = []corev1.ServicePort{
-			{
-				Name:     "smb",
-				Port:     445,
-				NodePort: nodePort,
-				Protocol: corev1.ProtocolTCP,
-			},
-		}
-	}
+	existing.Spec.Resources = pvc.Spec.Resources
 
-	_, err = uc.service.Update(ctx, scope, namespace, svc)
+	_, err = uc.persistentVolumeClaim.Update(ctx, scope, namespace, existing)
 	return err
 }
 
-func (uc *UseCase) UpdateSMBShareService(ctx context.Context, scope, namespace, name string, ports []service.Port) (*service.Service, error) {
-	svc, err := uc.service.Get(ctx, scope, namespace, name)
+func (uc *UseCase) upsertService(ctx context.Context, scope, namespace string, svc *service.Service) (*service.Service, error) {
+	existing, err := uc.service.Get(ctx, scope, namespace, svc.Name)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get service: %w", err)
+		return nil, err
 	}
 
-	svc.Spec.Ports = ports
-	svc.Spec.Type = corev1.ServiceTypeNodePort
+	// Update spec while preserving metadata
+	existing.Spec = svc.Spec
 
-	updatedSvc, err := uc.service.Update(ctx, scope, namespace, svc)
-	if err != nil {
-		return nil, fmt.Errorf("failed to update service: %w", err)
-	}
+	return uc.service.Update(ctx, scope, namespace, existing)
+}
 
-	return updatedSvc, nil
+func (uc *UseCase) setServiceNodePort(ctx context.Context, scope, namespace, name string, nodePort int32) (*service.Service, error) {
+	svc := uc.buildService(namespace, name, nodePort)
+	return uc.upsertService(ctx, scope, namespace, svc)
 }
 
 func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, searchUsername string) (*ADValidateResult, error) {
@@ -824,7 +935,7 @@ func (uc *UseCase) waitAndUpdateServiceNodePort(parentCtx context.Context, scope
 		case <-ticker.C:
 			_, err := uc.service.Get(ctx, scope, namespace, name)
 			if err == nil {
-				_ = uc.updateSMBService(context.Background(), scope, namespace, name, port)
+				_, _ = uc.setServiceNodePort(context.Background(), scope, namespace, name, port)
 				return
 			}
 		}
