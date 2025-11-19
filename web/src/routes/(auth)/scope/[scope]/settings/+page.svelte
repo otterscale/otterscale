@@ -3,10 +3,14 @@
 
 	import { goto } from '$app/navigation';
 
-	import { items } from './data';
+	import { getItems } from './data';
 </script>
 
 <script lang="ts">
+	import { page } from '$app/state';
+
+	const items = $derived(getItems(page.params.scope!));
+
 	onMount(() => {
 		const defaultItem = items.find((item) => item.default);
 		const [firstItem] = items;
