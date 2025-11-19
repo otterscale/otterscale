@@ -30,7 +30,7 @@
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							endpoint: response.endpoint
+							hostname: response.hostname
 						}))
 					)
 				);
@@ -50,7 +50,7 @@
 					response.applications.flatMap((application) =>
 						application.services.map((service) => ({
 							...service,
-							endpoint: response.endpoint
+							hostname: response.hostname
 						}))
 					)
 				);

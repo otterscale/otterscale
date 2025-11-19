@@ -4,7 +4,7 @@
 
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import type { OSD } from '$lib/api/storage/v1/storage_pb';
+	import type { ObjectStorageDaemon } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress';
@@ -30,19 +30,19 @@
 	};
 </script>
 
-{#snippet row_picker(row: Row<OSD>)}
+{#snippet row_picker(row: Row<ObjectStorageDaemon>)}
 	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
 	</Layout.Cell>
 {/snippet}
 
-{#snippet name(row: Row<OSD>)}
+{#snippet name(row: Row<ObjectStorageDaemon>)}
 	<Layout.Cell class="items-start">
 		{row.original.name}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet state(row: Row<OSD>)}
+{#snippet state(row: Row<ObjectStorageDaemon>)}
 	<Layout.Cell class="flex-row items-center">
 		{#if row.original.in}
 			<Badge variant="outline">{m.osd_in()}</Badge>
@@ -57,7 +57,7 @@
 
 {#snippet osdIn()}{/snippet}
 
-{#snippet exists(row: Row<OSD>)}
+{#snippet exists(row: Row<ObjectStorageDaemon>)}
 	<Layout.Cell class="items-start">
 		{#if !row.original.exists}
 			<Icon icon="ph:x" class="text-destructive" />
@@ -67,7 +67,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet machine(row: Row<OSD>)}
+{#snippet machine(row: Row<ObjectStorageDaemon>)}
 	<Layout.Cell class="items-start">
 		<div class="flex items-center gap-1">
 			<Badge variant="outline">
@@ -88,7 +88,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet deviceClass(row: Row<OSD>)}
+{#snippet deviceClass(row: Row<ObjectStorageDaemon>)}
 	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.deviceClass}
@@ -96,13 +96,13 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet placementGroupCount(row: Row<OSD>)}
+{#snippet placementGroupCount(row: Row<ObjectStorageDaemon>)}
 	<Layout.Cell class="items-end">
 		{row.original.placementGroupCount}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet usage(row: Row<OSD>)}
+{#snippet usage(row: Row<ObjectStorageDaemon>)}
 	<Layout.Cell class="items-end">
 		<Progress.Root
 			numerator={Number(row.original.usedBytes)}
@@ -125,7 +125,7 @@
 
 {#snippet iops()}{/snippet}
 
-{#snippet actions(data: { row: Row<OSD>; scope: string })}
+{#snippet actions(data: { row: Row<ObjectStorageDaemon>; scope: string })}
 	<Layout.Cell class="items-start">
 		<Actions osd={data.row.original} scope={data.scope} />
 	</Layout.Cell>

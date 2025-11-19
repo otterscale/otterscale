@@ -122,7 +122,7 @@
 						<Button
 							variant="ghost"
 							target="_blank"
-							href={`http://${row.original.endpoint}:${port.nodePort}`}
+							href={`http://${row.original.hostname}:${port.nodePort}`}
 						>
 							<Icon icon="ph:arrow-square-out" />
 						</Button>

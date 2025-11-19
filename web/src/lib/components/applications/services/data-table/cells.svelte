@@ -101,7 +101,7 @@
 	{#if row.original.type === 'NodePort'}
 		<Layout.Cell class="items-start">
 			{#each row.original.ports as port, index (index)}
-				{@const url = `http://${row.original.endpoint}:${port.nodePort}`}
+				{@const url = `http://${row.original.hostname}:${port.nodePort}`}
 				<div class="group flex items-center gap-1">
 					<Tooltip.Provider>
 						<Tooltip.Root delayDuration={13}>

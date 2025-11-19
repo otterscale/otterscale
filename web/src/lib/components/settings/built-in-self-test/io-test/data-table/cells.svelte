@@ -71,9 +71,9 @@
 				<Badge variant="outline">
 					{row.original.kind.value.target.value.scope}
 				</Badge>
-			{:else if row.original.kind.value.target.case === 'networkFileSystem' && row.original.kind.value.target.value.endpoint}
+			{:else if row.original.kind.value.target.case === 'networkFileSystem' && row.original.kind.value.target.value.host}
 				<Badge variant="outline">
-					{row.original.kind.value.target.value.endpoint}
+					{row.original.kind.value.target.value.host}
 				</Badge>
 			{/if}
 		{/if}
