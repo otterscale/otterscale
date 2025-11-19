@@ -36,7 +36,8 @@ const (
 )
 
 const (
-	EntityTypeUnknown int = iota
+	ldapDefaultPort   uint16 = 389
+	EntityTypeUnknown int    = iota
 	EntityTypeUser
 	EntityTypeGroup
 )
@@ -719,7 +720,7 @@ func (uc *UseCase) upsertSecret(ctx context.Context, scope, namespace, name stri
 }
 
 func (uc *UseCase) upsertSecurityConfig(ctx context.Context, scope, namespace string, securityConfig *SecurityConfig) (*SecurityConfig, error) {
-	existing, err := uc.smbSecurityConfig.Get(ctx, scope, namespace, securityConfig.ObjectMeta.Name)
+	existing, err := uc.smbSecurityConfig.Get(ctx, scope, namespace, securityConfig.ObjectMeta.Name) //nolint:staticcheck // ObjectMeta is embedded
 	if err != nil {
 		return nil, err
 	}
@@ -735,7 +736,7 @@ func (uc *UseCase) upsertSecurityConfig(ctx context.Context, scope, namespace st
 }
 
 func (uc *UseCase) upsertCommonConfig(ctx context.Context, scope, namespace string, commonConfig *CommonConfig) (*CommonConfig, error) {
-	existing, err := uc.smbCommonConfig.Get(ctx, scope, namespace, commonConfig.ObjectMeta.Name)
+	existing, err := uc.smbCommonConfig.Get(ctx, scope, namespace, commonConfig.ObjectMeta.Name) //nolint:staticcheck // ObjectMeta is embedded
 	if err != nil {
 		return nil, err
 	}
@@ -747,7 +748,7 @@ func (uc *UseCase) upsertCommonConfig(ctx context.Context, scope, namespace stri
 }
 
 func (uc *UseCase) upsertShare(ctx context.Context, scope, namespace string, share *Share) (*Share, error) {
-	existing, err := uc.smbShare.Get(ctx, scope, namespace, share.ObjectMeta.Name)
+	existing, err := uc.smbShare.Get(ctx, scope, namespace, share.ObjectMeta.Name) //nolint:staticcheck // ObjectMeta is embedded
 	if err != nil {
 		return nil, err
 	}
@@ -801,21 +802,16 @@ func (uc *UseCase) setServiceNodePort(ctx context.Context, scope, namespace, nam
 	return uc.upsertService(ctx, scope, namespace, svc)
 }
 
-func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, searchUsername string) (*ADValidateResult, error) {
-	var serverName string
-	var port uint16 = 389
-
+func (uc *UseCase) parseSearchUsername(searchUsername string) (string, *ADValidateResult) {
 	result := &ADValidateResult{EntityType: EntityTypeUnknown}
-	searchUsername = strings.TrimSpace(searchUsername)
-
-	// Validate and parse searchUsername format
 	actualSearchName := searchUsername
+
 	if strings.HasPrefix(searchUsername, "@\"") {
 		// Must end with " if starts with @"
 		if !strings.HasSuffix(searchUsername, "\"") {
 			result.IsValid = false
 			result.Message = "invalid format: missing closing quote"
-			return result, nil
+			return "", result
 		}
 
 		// Remove @" prefix and " suffix
@@ -826,7 +822,7 @@ func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, sear
 		if strings.Contains(actualSearchName, "/") {
 			result.IsValid = false
 			result.Message = "invalid format: use backslash (\\) instead of forward slash (/)"
-			return result, nil
+			return "", result
 		}
 
 		// If format is "DOMAIN\NAME", extract the NAME part
@@ -834,30 +830,32 @@ func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, sear
 			actualSearchName = actualSearchName[idx+1:]
 		}
 	}
-	actualSearchName = strings.TrimSpace(actualSearchName)
 
-	// Validate actualSearchName is not empty
+	actualSearchName = strings.TrimSpace(actualSearchName)
 	if actualSearchName == "" {
 		result.IsValid = false
 		result.Message = "invalid format: empty username or group name"
-		return result, nil
+		return "", result
 	}
 
-	// Try to lookup LDAP SRV records
+	return actualSearchName, nil
+}
+
+func (uc *UseCase) resolveLDAPServer(realm string) (serverName string, port uint16, err error) {
 	resolver := &net.Resolver{}
 	_, srvs, err := resolver.LookupSRV(context.Background(), "ldap", "tcp", realm)
 	if err == nil && len(srvs) > 0 {
-		serverName = strings.TrimSuffix(srvs[0].Target, ".")
-		port = srvs[0].Port
-	} else {
-		if addrs, err := resolver.LookupHost(context.Background(), realm); err == nil && len(addrs) > 0 {
-			serverName = realm
-		} else {
-			result.Message = "LDAP server not found"
-			return result, fmt.Errorf("failed to lookup LDAP server: unable to resolve %s", realm)
-		}
+		return strings.TrimSuffix(srvs[0].Target, "."), srvs[0].Port, nil
 	}
 
+	if addrs, err := resolver.LookupHost(context.Background(), realm); err == nil && len(addrs) > 0 {
+		return realm, ldapDefaultPort, nil
+	}
+
+	return "", 0, fmt.Errorf("failed to lookup LDAP server: unable to resolve %s", realm)
+}
+
+func (uc *UseCase) connectLDAP(serverName string, port uint16) (*ldap.Conn, error) {
 	ldapURL := fmt.Sprintf("%s:%d", serverName, port)
 
 	// Try LDAPS first (TLS from the start)
@@ -868,22 +866,50 @@ func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, sear
 		// LDAPS failed, try LDAP without TLS
 		conn, err = ldap.DialURL(fmt.Sprintf("ldap://%s", ldapURL))
 		if err != nil {
-			result.Message = "failed to connect"
-			return result, fmt.Errorf("failed to connect to LDAP server: %w", err)
+			return nil, fmt.Errorf("failed to connect to LDAP server: %w", err)
 		}
+	}
+
+	return conn, nil
+}
+
+func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, searchUsername string) (*ADValidateResult, error) {
+	result := &ADValidateResult{EntityType: EntityTypeUnknown}
+	searchUsername = strings.TrimSpace(searchUsername)
+
+	// Parse and validate searchUsername format
+	actualSearchName, parseResult := uc.parseSearchUsername(searchUsername)
+	if parseResult != nil {
+		return parseResult, nil
+	}
+
+	// Resolve LDAP server
+	serverName, port, err := uc.resolveLDAPServer(realm)
+	if err != nil {
+		result.Message = "LDAP server not found"
+		return result, err
+	}
+
+	// Connect to LDAP server
+	conn, err := uc.connectLDAP(serverName, port)
+	if err != nil {
+		result.Message = "failed to connect"
+		return result, err
 	}
 	defer conn.Close()
 
+	// Format username for binding
 	if !strings.Contains(username, "@") && !strings.Contains(username, "=") {
 		username = fmt.Sprintf("%s@%s", username, strings.ToUpper(realm))
 	}
 
+	// Bind to LDAP
 	if err = conn.Bind(username, password); err != nil {
 		result.Message = "authentication failed"
 		return result, fmt.Errorf("LDAP bind failed: %w", err)
 	}
 
-	// Search for user or group using the parsed name
+	// Search for user or group
 	sr, err := conn.Search(ldap.NewSearchRequest(
 		"DC="+strings.Join(strings.Split(strings.ToLower(realm), "."), ",DC="),
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
