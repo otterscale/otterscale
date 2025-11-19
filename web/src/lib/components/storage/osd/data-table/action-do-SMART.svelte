@@ -4,7 +4,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import type { DoSMARTResponse_Output, OSD } from '$lib/api/storage/v1/storage_pb';
+	import type { DoSMARTResponse_Output, ObjectStorageDaemon } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Code from '$lib/components/custom/code';
 	import * as Loading from '$lib/components/custom/loading';
@@ -13,7 +13,7 @@
 </script>
 
 <script lang="ts">
-	let { osd, scope }: { osd: OSD; scope: string } = $props();
+	let { osd, scope }: { osd: ObjectStorageDaemon; scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
