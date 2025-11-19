@@ -2,10 +2,14 @@ package smb
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"net"
 	"strings"
+	"time"
 
+	"github.com/go-ldap/ldap/v3"
 	"github.com/samba-in-kubernetes/samba-operator/api/v1alpha1"
 	"golang.org/x/sync/errgroup"
 	corev1 "k8s.io/api/core/v1"
@@ -20,9 +24,20 @@ import (
 )
 
 const (
+	servicePollingTimeout  = 5 * time.Minute
+	servicePollingInterval = 5 * time.Second
+)
+
+const (
 	GuestOKkey    = "guest ok"
 	MapToGuestKey = "map to guest"
 	ValidUsersKey = "valid users"
+)
+
+const (
+	EntityTypeUnknown int = iota
+	EntityTypeUser
+	EntityTypeGroup
 )
 
 type (
@@ -60,6 +75,12 @@ type ShareData struct {
 type User struct {
 	Username string `json:"username"`
 	Password string `json:"password,omitempty"`
+}
+
+type ADValidateResult struct {
+	IsValid    bool
+	EntityType int
+	Message    string
 }
 
 type names struct {
@@ -265,7 +286,7 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (
 	return ret, url.Hostname(), nil
 }
 
-func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name string, sizeBytes uint64, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
+func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name string, sizeBytes uint64, port int32, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
 	names := uc.newNames(name)
 
 	// Cleanup on error
@@ -322,6 +343,11 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 		return nil, "", err
 	}
 
+	// Wait for service to be created automatically and update NodePort in background
+	if port > 0 {
+		go uc.waitAndUpdateServiceNodePort(context.Background(), scope, namespace, names.Share, port)
+	}
+
 	url, err := uc.service.URL(scope)
 	if err != nil {
 		return nil, "", err
@@ -332,7 +358,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 	}, url.Hostname(), nil
 }
 
-func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name string, sizeBytes uint64, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
+func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name string, sizeBytes uint64, port int32, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
 	names := uc.newNames(name)
 
 	// Update users secret
@@ -378,6 +404,13 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 	newShare, err := uc.smbShare.Update(ctx, scope, namespace, share)
 	if err != nil {
 		return nil, "", err
+	}
+
+	// Update service with NodePort
+	if port > 0 {
+		if err := uc.updateSMBService(ctx, scope, namespace, names.Share, port); err != nil {
+			return nil, "", err
+		}
 	}
 
 	url, err := uc.service.URL(scope)
@@ -614,4 +647,186 @@ func (uc *UseCase) upsertSecret(ctx context.Context, scope, namespace, name stri
 
 	_, err := uc.secret.Update(ctx, scope, namespace, secret)
 	return err
+}
+
+func (uc *UseCase) updateSMBService(ctx context.Context, scope, namespace, name string, nodePort int32) error {
+	svc, err := uc.service.Get(ctx, scope, namespace, name)
+	if err != nil {
+		return err
+	}
+
+	svc.Spec.Type = corev1.ServiceTypeNodePort
+	if len(svc.Spec.Ports) > 0 {
+		svc.Spec.Ports[0].NodePort = nodePort
+	} else {
+		svc.Spec.Ports = []corev1.ServicePort{
+			{
+				Name:     "smb",
+				Port:     445,
+				NodePort: nodePort,
+				Protocol: corev1.ProtocolTCP,
+			},
+		}
+	}
+
+	_, err = uc.service.Update(ctx, scope, namespace, svc)
+	return err
+}
+
+func (uc *UseCase) UpdateSMBShareService(ctx context.Context, scope, namespace, name string, ports []service.Port) (*service.Service, error) {
+	svc, err := uc.service.Get(ctx, scope, namespace, name)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get service: %w", err)
+	}
+
+	svc.Spec.Ports = ports
+	svc.Spec.Type = corev1.ServiceTypeNodePort
+
+	updatedSvc, err := uc.service.Update(ctx, scope, namespace, svc)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update service: %w", err)
+	}
+
+	return updatedSvc, nil
+}
+
+func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, searchUsername string) (*ADValidateResult, error) {
+	var serverName string
+	var port uint16 = 389
+
+	result := &ADValidateResult{EntityType: EntityTypeUnknown}
+	searchUsername = strings.TrimSpace(searchUsername)
+
+	// Validate and parse searchUsername format
+	actualSearchName := searchUsername
+	if strings.HasPrefix(searchUsername, "@\"") {
+		// Must end with " if starts with @"
+		if !strings.HasSuffix(searchUsername, "\"") {
+			result.IsValid = false
+			result.Message = "invalid format: missing closing quote"
+			return result, nil
+		}
+
+		// Remove @" prefix and " suffix
+		actualSearchName = strings.TrimPrefix(searchUsername, "@\"")
+		actualSearchName = strings.TrimSuffix(actualSearchName, "\"")
+
+		// Reject invalid format with forward slash
+		if strings.Contains(actualSearchName, "/") {
+			result.IsValid = false
+			result.Message = "invalid format: use backslash (\\) instead of forward slash (/)"
+			return result, nil
+		}
+
+		// If format is "DOMAIN\NAME", extract the NAME part
+		if idx := strings.Index(actualSearchName, "\\"); idx != -1 {
+			actualSearchName = actualSearchName[idx+1:]
+		}
+	}
+	actualSearchName = strings.TrimSpace(actualSearchName)
+
+	// Validate actualSearchName is not empty
+	if actualSearchName == "" {
+		result.IsValid = false
+		result.Message = "invalid format: empty username or group name"
+		return result, nil
+	}
+
+	// Try to lookup LDAP SRV records
+	resolver := &net.Resolver{}
+	_, srvs, err := resolver.LookupSRV(context.Background(), "ldap", "tcp", realm)
+	if err == nil && len(srvs) > 0 {
+		serverName = strings.TrimSuffix(srvs[0].Target, ".")
+		port = srvs[0].Port
+	} else {
+		if addrs, err := resolver.LookupHost(context.Background(), realm); err == nil && len(addrs) > 0 {
+			serverName = realm
+		} else {
+			result.Message = "LDAP server not found"
+			return result, fmt.Errorf("failed to lookup LDAP server: unable to resolve %s", realm)
+		}
+	}
+
+	ldapURL := fmt.Sprintf("%s:%d", serverName, port)
+
+	// Try LDAPS first (TLS from the start)
+	//nolint:gosec // Self-signed certificates are common in AD environments
+	conn, err := ldap.DialURL(fmt.Sprintf("ldaps://%s", ldapURL),
+		ldap.DialWithTLSConfig(&tls.Config{ServerName: serverName, InsecureSkipVerify: true}))
+	if err != nil {
+		// LDAPS failed, try LDAP without TLS
+		conn, err = ldap.DialURL(fmt.Sprintf("ldap://%s", ldapURL))
+		if err != nil {
+			result.Message = "failed to connect"
+			return result, fmt.Errorf("failed to connect to LDAP server: %w", err)
+		}
+	}
+	defer conn.Close()
+
+	if !strings.Contains(username, "@") && !strings.Contains(username, "=") {
+		username = fmt.Sprintf("%s@%s", username, strings.ToUpper(realm))
+	}
+
+	if err = conn.Bind(username, password); err != nil {
+		result.Message = "authentication failed"
+		return result, fmt.Errorf("LDAP bind failed: %w", err)
+	}
+
+	// Search for user or group using the parsed name
+	sr, err := conn.Search(ldap.NewSearchRequest(
+		"DC="+strings.Join(strings.Split(strings.ToLower(realm), "."), ",DC="),
+		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
+		fmt.Sprintf("(sAMAccountName=%s)", ldap.EscapeFilter(actualSearchName)),
+		[]string{"objectClass"}, nil,
+	))
+	if err != nil {
+		result.Message = "search failed"
+		return result, fmt.Errorf("LDAP search failed: %w", err)
+	}
+
+	if len(sr.Entries) == 0 {
+		result.Message = "user or group not found"
+		return result, nil
+	}
+
+	result.IsValid = true
+	result.EntityType = determineEntityType(sr.Entries[0].GetAttributeValues("objectClass"))
+	result.Message = "validation successful"
+
+	return result, nil
+}
+
+func determineEntityType(objectClasses []string) int {
+	for _, c := range objectClasses {
+		if cl := strings.ToLower(c); cl == "group" {
+			return EntityTypeGroup
+		}
+	}
+	for _, c := range objectClasses {
+		if cl := strings.ToLower(c); cl == "user" || cl == "person" || cl == "inetorgperson" {
+			return EntityTypeUser
+		}
+	}
+	return EntityTypeUnknown
+}
+
+func (uc *UseCase) waitAndUpdateServiceNodePort(parentCtx context.Context, scope, namespace, name string, port int32) {
+	ctx, cancel := context.WithTimeout(parentCtx, servicePollingTimeout)
+	defer cancel()
+
+	ticker := time.NewTicker(servicePollingInterval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			_, err := uc.service.Get(ctx, scope, namespace, name)
+			if err == nil {
+				_ = uc.updateSMBService(context.Background(), scope, namespace, name, port)
+				return
+			}
+		}
+	}
 }

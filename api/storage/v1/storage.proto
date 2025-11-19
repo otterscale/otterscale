@@ -260,6 +260,12 @@ service StorageService {
       name: "stg-smb"
     };
   };
+
+  rpc ValidateSMBUser(ValidateSMBUserRequest) returns (ValidateSMBUserResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-smb"
+    };
+  };
 }
 
 enum PoolType {
@@ -799,6 +805,7 @@ message CreateSMBShareRequest {
   string namespace = 2;
   string name = 3;
   uint64 size_bytes = 11;
+  int32 port = 12;
   bool browsable = 21;
   bool read_only = 22;
   bool guest_ok = 31;
@@ -812,10 +819,29 @@ message UpdateSMBShareRequest {
   string namespace = 2;
   string name = 3;
   uint64 size_bytes = 11;
+  int32 port = 12;
   bool browsable = 21;
   bool read_only = 22;
   bool guest_ok = 31;
   repeated string valid_users = 32;
   SMBShare.CommonConfig common_config = 41;
   SMBShare.SecurityConfig security_config = 51;
+}
+
+message ValidateSMBUserRequest {
+  string realm = 1;
+  string username = 2;
+  string password = 3;
+  string search_username = 4;
+}
+
+message ValidateSMBUserResponse {
+  enum EntityType {
+    UNKNOWN = 0;
+    USER = 1;
+    GROUP = 2;
+  }
+  bool is_valid = 1;
+  EntityType entity_type = 2;
+  string message = 3;
 }

@@ -487,6 +487,7 @@ func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBSh
 		req.GetNamespace(),
 		req.GetName(),
 		req.GetSizeBytes(),
+		req.GetPort(),
 		req.GetBrowsable(),
 		req.GetReadOnly(),
 		req.GetGuestOk(),
@@ -531,6 +532,7 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 		req.GetNamespace(),
 		req.GetName(),
 		req.GetSizeBytes(),
+		req.GetPort(),
 		req.GetBrowsable(),
 		req.GetReadOnly(),
 		req.GetGuestOk(),
@@ -546,6 +548,35 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 
 	resp := toProtoSMBShare(share, hostname)
 	return resp, nil
+}
+
+func (s *StorageService) ValidateSMBUser(ctx context.Context, req *pb.ValidateSMBUserRequest) (*pb.ValidateSMBUserResponse, error) {
+	result, err := s.smb.ADValidate(ctx,
+		req.GetRealm(),
+		req.GetUsername(),
+		req.GetPassword(),
+		req.GetSearchUsername())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ValidateSMBUserResponse{}
+	resp.SetIsValid(result.IsValid)
+	resp.SetEntityType(toProtoEntityType(result.EntityType))
+	resp.SetMessage(result.Message)
+
+	return resp, nil
+}
+
+func toProtoEntityType(et int) pb.ValidateSMBUserResponse_EntityType {
+	switch et {
+	case smb.EntityTypeUser:
+		return pb.ValidateSMBUserResponse_USER
+	case smb.EntityTypeGroup:
+		return pb.ValidateSMBUserResponse_GROUP
+	default:
+		return pb.ValidateSMBUserResponse_UNKNOWN
+	}
 }
 
 func toACL(str string) object.BucketCannedACL {
