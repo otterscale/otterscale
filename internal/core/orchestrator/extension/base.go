@@ -99,13 +99,13 @@ var (
 	model = []base{
 		{
 			ID:          "gpu-operator",
-			Name:        "NVIDIA GPU Operator",
-			Description: "NVIDIA GPU Operator creates, configures, and manages GPUs in Kubernetes.",
-			Logo:        "https://github.com/nvidia.png",
+			Name:        "GPU Operator",
+			Description: "GPU Operator creates, configures, and manages GPUs in Kubernetes.",
+			Logo:        "https://github.com/otterscale.png",
 			Charts: []chartManifest{
 				{
-					Namespace: "nvidia-gpu-operator",
-					RepoURL:   "https://nvidia.github.io/gpu-operator",
+					Namespace: "gpu-operator",
+					RepoURL:   chartRepoURL,
 					ValuesMap: map[string]string{
 						release.TypeLabel: "extension",
 					},
