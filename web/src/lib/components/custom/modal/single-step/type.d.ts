@@ -7,4 +7,4 @@ type Booleanified<T> = {
 	[K in keyof T]: boolean;
 };
 
-export type { TriggerSize, TriggerVariant, Booleanified };
+export type { Booleanified, TriggerSize, TriggerVariant };
