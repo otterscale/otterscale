@@ -180,7 +180,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	smbCommonConfigRepo := samba.NewSMBCommonConfigRepo(sambaSamba)
 	smbShareRepo := samba.NewSMBShareRepo(sambaSamba)
 	smbSecurityConfigRepo := samba.NewSMBSecurityConfigRepo(sambaSamba)
-	smbUseCase := smb.NewUseCase(smbCommonConfigRepo, smbShareRepo, smbSecurityConfigRepo, deploymentRepo, podRepo, secretRepo, serviceRepo)
+	smbUseCase := smb.NewUseCase(smbCommonConfigRepo, smbShareRepo, smbSecurityConfigRepo, deploymentRepo, podRepo, secretRepo, serviceRepo, persistentVolumeClaimRepo)
 	storageService := app.NewStorageService(storageUseCase, blockUseCase, fileUseCase, objectUseCase, smbUseCase)
 	sshKeyRepo := maas.NewSSHKeyRepo(maasMAAS)
 	scopeUseCase := scope.NewUseCase(scopeRepo, sshKeyRepo, packageRepositoryRepo)
