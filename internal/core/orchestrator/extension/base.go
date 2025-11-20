@@ -38,7 +38,7 @@ var (
 			ID:          "gateway-api",
 			Name:        "Gateway API",
 			Description: "Gateway API is an official Kubernetes project focused on L4 and L7 routing in Kubernetes.",
-			Logo:        "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/refs/tags/v1.3.0/site-src/images/logo/logo.svg",
+			Logo:        "https://github.com/kubernetes-sigs.png",
 			CRD: &crdManifest{
 				Version:              "v1.3.0",
 				RepoURL:              "https://github.com/kubernetes-sigs/gateway-api.git/config/crd",
@@ -49,7 +49,7 @@ var (
 			ID:          "gateway-api-inference-extension",
 			Name:        "Gateway API Inference Extension",
 			Description: "Gateway API Inference Extension is an official Kubernetes project that optimizes self-hosting Generative Models on Kubernetes.",
-			Logo:        "",
+			Logo:        "https://github.com/kubernetes-sigs.png",
 			CRD: &crdManifest{
 				Version:              "v1.1.0",
 				RepoURL:              "https://github.com/kubernetes-sigs/gateway-api-inference-extension.git/config/crd",
@@ -75,6 +75,7 @@ var (
 					RepoURL:   "https://istio-release.storage.googleapis.com/charts",
 					ValuesMap: map[string]string{
 						release.TypeLabel: "extension",
+						"env.ENABLE_GATEWAY_API_INFERENCE_EXTENSION": "true",
 					},
 				},
 			},
@@ -156,7 +157,7 @@ var (
 			ID:          "samba-operator",
 			Name:        "Samba",
 			Description: "An operator for Samba as a service on PVCs in Kubernetes.",
-			Logo:        "",
+			Logo:        "https://github.com/otterscale.png",
 			Charts: []chartManifest{
 				{
 					Namespace: "samba-operator",
