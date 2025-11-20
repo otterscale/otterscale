@@ -88,7 +88,7 @@ func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifest
 
 				chartRef := version.URLs[0]
 
-				if _, err = uc.release.Install(egctx, scope, chart.Namespace, base.Name, false, chartRef, chart.Labels, chart.Labels, chart.Annotations, "", chart.ValuesMap); err != nil {
+				if _, err := uc.release.Install(egctx, scope, chart.Namespace, base.Name, false, chartRef, chart.Labels, chart.Labels, chart.Annotations, "", chart.ValuesMap); err != nil {
 					return err
 				}
 			}
@@ -100,6 +100,9 @@ func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifest
 				k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
 
 				m, err := k.Run(fSys, uc.remoteCRDFormat(crd.RepoURL, manifest.Version))
+				if err != nil {
+					return err
+				}
 
 				for _, node := range m.Resources() {
 					data, err := node.AsYAML()
@@ -107,17 +110,15 @@ func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifest
 						return err
 					}
 
-					var crd *apiextensionsv1.CustomResourceDefinition
-					if err := yaml.Unmarshal(data, &crd); err != nil {
+					var def *apiextensionsv1.CustomResourceDefinition
+					if err := yaml.Unmarshal(data, &def); err != nil {
 						return err
 					}
 
-					if _, err := uc.customResourceDefinition.Create(ctx, scope, crd); err != nil {
+					if _, err := uc.customResourceDefinition.Create(egctx, scope, def); err != nil {
 						return err
 					}
 				}
-
-				return err
 			}
 
 			return nil
@@ -151,7 +152,7 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, manifest
 
 				chartRef := version.URLs[0]
 
-				if _, err = uc.release.Upgrade(egctx, scope, chart.Namespace, base.Name, false, chartRef, "", chart.ValuesMap, true); err != nil {
+				if _, err := uc.release.Upgrade(egctx, scope, chart.Namespace, base.Name, false, chartRef, "", chart.ValuesMap, true); err != nil {
 					return err
 				}
 			}
@@ -163,6 +164,9 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, manifest
 				k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
 
 				m, err := k.Run(fSys, uc.remoteCRDFormat(crd.RepoURL, manifest.Version))
+				if err != nil {
+					return err
+				}
 
 				for _, node := range m.Resources() {
 					data, err := node.AsYAML()
@@ -170,17 +174,15 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, manifest
 						return err
 					}
 
-					var crd *apiextensionsv1.CustomResourceDefinition
-					if err := yaml.Unmarshal(data, &crd); err != nil {
+					var def *apiextensionsv1.CustomResourceDefinition
+					if err := yaml.Unmarshal(data, &def); err != nil {
 						return err
 					}
 
-					if _, err := uc.customResourceDefinition.Update(ctx, scope, crd); err != nil {
+					if _, err := uc.customResourceDefinition.Update(egctx, scope, def); err != nil {
 						return err
 					}
 				}
-
-				return err
 			}
 
 			return nil
@@ -197,6 +199,14 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 	crds := make([]cluster.CustomResourceDefinition, len(bases))
 
 	eg, egctx := errgroup.WithContext(ctx)
+
+	eg.Go(func() error {
+		v, err := uc.customResourceDefinition.List(egctx, scope, "")
+		if err == nil {
+			crds = v
+		}
+		return err
+	})
 
 	for i := range bases {
 		base := bases[i]
@@ -227,14 +237,6 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 		crd := base.CRD
 
 		if crd != nil {
-			eg.Go(func() error {
-				v, err := uc.customResourceDefinition.List(egctx, scope, "")
-				if err == nil {
-					crds = v
-				}
-				return err
-			})
-
 			eg.Go(func() error {
 				fSys := filesys.MakeFsOnDisk()
 				k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
