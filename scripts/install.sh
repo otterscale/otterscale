@@ -560,15 +560,18 @@ select_bridge() {
 }
 
 prompt_bridge_creation() {
+    # Makesure NetworkManager service is active
     if ! systemctl is-active --quiet NetworkManager; then
         error_exit "NetworkManager is not active, stop network bridge creation."
     fi
 
+    # Get current network config
     get_default_interface
     get_default_gateway
     get_default_cidr
     get_default_dns "$CURRENT_INTERFACE"
 
+    # Create bridge by NetworkManager command line
     log "INFO" "Create network bridge $OTTERSCALE_BRIDGE_NAME" "NETWORK"
     local CURRENT_CONNECTION=$(nmcli -t -f NAME,DEVICE connection show --active | grep "$CURRENT_INTERFACE" | cut -d: -f1)
     if ! nmcli connection add type bridge ifname "$OTTERSCALE_BRIDGE_NAME" con-name "$OTTERSCALE_BRIDGE_NAME" \
@@ -807,9 +810,9 @@ create_boot_source() {
 start_import() {
     log "INFO" "Starting MAAS boot image download..." "MAAS_IMAGES"
 
+    # Stop then start
     maas admin boot-resources stop-import >>"$TEMP_LOG" 2>&1 || true
     sleep 10
-
     execute_cmd "maas admin boot-resources import" "start MAAS image download"
     sleep 10
 
@@ -1005,6 +1008,7 @@ create_maas_lxd_project() {
         if ! lxc project create maas >>"$TEMP_LOG" 2>&1; then
             error_exit "Failed to create LXD project 'maas'"
         fi
+
         log "INFO" "Created LXD project 'maas'" "LXD_PROJECT"
     else
         log "INFO" "LXD project 'maas' already exists" "LXD_PROJECT"
@@ -1076,6 +1080,7 @@ create_vm_from_maas() {
     wait_commissioning "$juju_machine_id"
 }
 
+# Check commissioning every 10 seconds
 wait_commissioning() {
     local machine_id="$1"
 
@@ -1201,20 +1206,24 @@ bootstrap_juju() {
 prepare_microk8s_config() {
     log "INFO" "Configuring MicroK8s for user $NON_ROOT_USER..." "MICROK8S_CONFIG"
 
+    # User group
     usermod -aG microk8s "$NON_ROOT_USER"
     log "INFO" "Added $NON_ROOT_USER to microk8s group" "MICROK8S_CONFIG"
 
+    # kubeconfig
     local kube_folder="/home/$NON_ROOT_USER/.kube"
     if [[ ! -d "$kube_folder" ]]; then
         mkdir -p "$kube_folder"
     fi
     chown "$NON_ROOT_USER":"$NON_ROOT_USER" "$kube_folder"
 
+    # Deploy calico
     log "INFO" "Updating MicroK8s Calico DaemonSet for bridge $OTTERSCALE_BRIDGE_NAME" "MICROK8S_CONFIG"
     if [[ -z "$OTTERSCALE_BRIDGE_NAME" ]]; then
         error_exit "Bridge name is empty"
     fi
 
+    # Config calico
     if ! microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD="interface=$OTTERSCALE_BRIDGE_NAME" >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to update MicroK8s Calico environment"
     fi
@@ -1370,7 +1379,9 @@ wait_for_deployment() {
     done
 }
 
+# Add second ipv4 addrese to bridge
 config_bridge() {
+    # Check variable $OTTERSCALE_WEB_IP value
     if [[ -z "$OTTERSCALE_WEB_IP" ]]; then
         enter_otterscale_web_ip
     else
@@ -1378,6 +1389,7 @@ config_bridge() {
     fi
 
     log "INFO" "Detect network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
+
     if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
         log "INFO" "Detect that IP $OTTERSCALE_WEB_IP exists on network $OTTERSCALE_BRIDGE_NAME" "NETWORK"
     else
@@ -1422,11 +1434,13 @@ deploy_istio() {
     fi
 
     log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
-    local istio_version="1.26.6"
+
+    local istio_version="1.27.3"
     local istio_url="https://istio.io/downloadIstio"
     local istio_namespace="istio-system"
     local arch
     arch=$(uname -m)
+
     case "$arch" in
         x86_64|amd64) arch="x86_64" ;;
         aarch64|arm64) arch="arm64" ;;
@@ -1451,25 +1465,61 @@ deploy_istio() {
     fi
 }
 
+add_helm_repository() {
+    local repository_url=$1
+    local repository_name=$2
+
+    if [[ -n $(microk8s helm3 repo list -o json | jq ".[] | select(.name==\"$repository_name\")") ]]; then
+        log "INFO" "Helm repository $repository_name exist" "HELM_REPO"
+    else
+        log "Add helm repository $repository_name" "HELM_REPO"
+        execute_cmd "microk8s helm3 repo add $repository_name $repository_url" "helm repository add"
+    fi
+}
+
 deploy_helm() {
     log "INFO" "Process microk8s helm3" "HELM_CHECK"
-    local repository_url="https://otterscale.github.io/charts"
-    local repository_name="otterscale-charts"
-    local deploy_name="otterscale"
-    local namespace="otterscale"
-    local otterscale_endpoint="http://$OTTERSCALE_WEB_IP"
 
-    if ! microk8s helm3 repo list -o yaml | grep -qw "$repository_name" >/dev/null ; then
-        log "INFO" "Add helm repository $repository_name" "HELM_REPO"
-        execute_cmd "microk8s helm3 repo add $repository_name $repository_url" "helm repository add"
-    else
-        log "WARN" "Helm repository $repository_name already exist" "HELM_REPO"
-    fi
+    log "INFO" "Check helm repository" "HELM_REPO"
+    add_helm_repository "https://otterscale.github.io/charts" "otterscale-charts"
+    add_helm_repository "https://open-feature.github.io/open-feature-operator" "openfeature"
+    add_helm_repository "https://charts.jetstack.io" "jetstack"
 
     log "INFO" "Update helm repository" "HELM_REPO"
     execute_cmd "microk8s helm3 repo update" "helm repository update"
 
-    if ! microk8s helm3 list -n "$namespace" | grep -qw "$deploy_name" >/dev/null ; then
+    local otterscale_endpoint="http://$OTTERSCALE_WEB_IP"
+    local repository_name
+    local deploy_name
+    local namespace
+
+    log "INFO" "Check helm chart cert-manager" "HELM_CHART"
+    repository_name="jetstack"
+    deploy_name="cert-manager"
+    namespace="cert-manager"
+    if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
+        log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name/$deploy_name --version v1.19.1 -n $namespace --create-namespace --set crds.enabled=true" "helm install cert $deploy_name"
+    else
+        log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
+    fi
+
+    log "INFO" "Check helm chart open-feature-operator" "HELM_CHART"
+    repository_name="openfeature"
+    deploy_name="open-feature-operator"
+    namespace="open-feature-operator"
+    if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
+        log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name/$deploy_name -n $namespace --create-namespace --set sidecarConfiguration.port=8080 --set controllerManager.kubeRbacProxy.resources.limits.cpu=400m -n $namespace" "helm install $deploy_name"
+    else
+        log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
+    fi
+
+    log "INFO" "Check helm chart otterscale" "HELM_CHART"
+    repository_name="otterscale-charts"
+    deploy_name="otterscale"
+    namespace="otterscale"
+    if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
         log "INFO" "Collecting configuration data for helm deployment" "HELM_CONFIG"
 
         # Collect MAAS configuration
@@ -1491,20 +1541,29 @@ deploy_helm() {
         local ca_cert_file="/tmp/juju-ca-cert.pem"
         echo "$juju_cacert" > "$ca_cert_file"
 
-        # Generate token
+        # Generate keycloak token
         local charset="${CHARSET:-A-Za-z0-9}"
-        local keycloak_admin_paswd
-        local keycloak_secret_token
+
+        local keycloak_clientID="otterscale"
+        log "INFO" "KeyCloak Client ID: $keycloak_clientID" "OTTERSCALE"
+
         local keycloak_admin_paswd=$(base64 /dev/urandom 2>/dev/null | tr -dc "$charset" | head -c 8)
-        echo "4"
         log "INFO" "KeyCloak admin password: $keycloak_admin_paswd" "OTTERSCALE"
 
-        keycloak_secret_token=$(base64 /dev/urandom 2>/dev/null | tr -dc "$charset" | head -c 32)
+        local keycloak_secret_token=$(base64 /dev/urandom 2>/dev/null | tr -dc "$charset" | head -c 32)
         log "INFO" "KeyCloak client secret: $keycloak_secret_token" "OTTERSCALE"
 
         # Create values file
         otterscale_helm_values="/tmp/otterscale_helm_values_$(date '+%Y%m%d_%H%M%S').yaml"
         cat > "$otterscale_helm_values" << EOF
+otterscaleWeb:
+  env:
+    publicWebUrl: "http://$OTTERSCALE_INTERFACE_IP/"
+    publicApiUrl: "http://$OTTERSCALE_INTERFACE_IP/api/"
+    keycloakRealmUrl: "http://$OTTERSCALE_INTERFACE_IP/auth/"
+    keycloakClientID: "$keycloak_clientID"
+    keycloakClientSecret: "$keycloak_secret_token"
+
 postgresql:
   auth:
     postgresPassword: "postgres-otterscale"
@@ -1576,13 +1635,13 @@ $(echo "$juju_cacert" | sed 's/^/      /')
     rados_timeout: 0s
 EOF
 
-        log "INFO" "Deploy OtterScale helm chart with configuration" "HELM_DEPLOY"
+        log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
         execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "Deploy OtterScale chart"
 
         rm -f "$ca_cert_file"
         send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
     else
-        log "INFO" "Helm releases already has otterscale" "HELM_CHECK"
+        log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
     fi
 
     log "INFO" "You can visit web UI from $otterscale_endpoint" "FINISHED"
