@@ -15,52 +15,33 @@
 	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
-	let isMounted = $state(false);
-
+	const applicationClient = createClient(ApplicationService, transport);
 	const services = writable<Service[]>([]);
 
-	const applicationClient = createClient(ApplicationService, transport);
-	const reloadManager = new ReloadManager(() => {
-		applicationClient
-			.listApplications({
+	async function fetch() {
+		try {
+			const response = await applicationClient.listApplications({
 				scope: scope
-			})
-			.then((response) => {
-				services.set(
-					response.applications.flatMap((application) =>
-						application.services.map((service) => ({
-							...service,
-							hostname: response.hostname
-						}))
-					)
-				);
-			})
-			.catch((error) => {
-				console.error('Error during data loading:', error);
 			});
-	});
+			services.set(
+				response.applications.flatMap((application) =>
+					application.services.map((service) => ({
+						...service,
+						hostname: response.hostname
+					}))
+				)
+			);
+		} catch (error) {
+			console.error('Failed to fetch services:', error);
+		}
+	}
 
-	onMount(() => {
-		applicationClient
-			.listApplications({
-				scope: scope
-			})
-			.then((response) => {
-				services.set(
-					response.applications.flatMap((application) =>
-						application.services.map((service) => ({
-							...service,
-							hostname: response.hostname
-						}))
-					)
-				);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+	const reloadManager = new ReloadManager(fetch);
 
-		reloadManager.start(); //TODO: Remove
+	let isMounted = $state(false);
+	onMount(async () => {
+		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();

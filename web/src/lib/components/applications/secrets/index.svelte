@@ -20,32 +20,30 @@
 
 	const secrets = writable<Secret[]>([]);
 	async function fetch() {
-		applicationClient
-			.listSecrets({
+		try {
+			const response = await applicationClient.listSecrets({
 				scope: scope,
 				namespace: selectedNamespace
-			})
-			.then((response) => {
-				secrets.set(response.secrets);
-			})
-			.catch((error) => {
-				console.error('Failed to fetch secrets:', error);
 			});
+			secrets.set(response.secrets);
+		} catch (error) {
+			console.error('Failed to fetch secrets:', error);
+		}
 	}
 	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
-	$effect(() => {
-		if (selectedNamespace) {
-			reloadManager.force();
-		}
-	});
 	onMount(async () => {
 		await fetch();
 		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
+	});
+	$effect(() => {
+		if (selectedNamespace) {
+			reloadManager.force();
+		}
 	});
 </script>
 
