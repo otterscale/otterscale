@@ -33,6 +33,11 @@
 			description: m.extensions_model_bundle_description(),
 			icon: 'ph:robot'
 		},
+		registry: {
+			name: m.container_registry(),
+			description: m.extensions_registry_bundle_description(),
+			icon: 'ph:shipping-container'
+		},
 		instance: {
 			name: m.virtual_machine(),
 			description: m.extensions_virtual_machine_bundle_description(),
