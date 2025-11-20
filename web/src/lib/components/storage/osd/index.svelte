@@ -19,7 +19,6 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
-	const reloadManager = new ReloadManager(fetch);
 
 	const objectStorageDaemons = writable([] as ObjectStorageDaemon[]);
 	async function fetch() {
@@ -30,6 +29,8 @@
 			console.error('Error during initial data load:', error);
 		}
 	}
+
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {
