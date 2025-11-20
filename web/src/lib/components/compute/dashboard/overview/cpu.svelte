@@ -1,0 +1,167 @@
+<script lang="ts">
+	import { scaleUtc } from 'd3-scale';
+	import { curveNatural } from 'd3-shape';
+	import { Area, AreaChart, LinearGradient } from 'layerchart';
+	import { PrometheusDriver, SampleValue } from 'prometheus-query';
+	import { onDestroy, onMount } from 'svelte';
+	import { SvelteDate } from 'svelte/reactivity';
+
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart/index.js';
+	import { m } from '$lib/paraglide/messages';
+
+	let {
+		prometheusDriver,
+		scope,
+		isReloading = $bindable()
+	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
+
+	const configuration = {
+		usage: { label: 'Usage', color: 'var(--chart-2)' }
+	} satisfies Chart.ChartConfig;
+
+	let cpuUsages: SampleValue[] = $state([] as SampleValue[]);
+	async function fetchCPUUsage() {
+		const response = await prometheusDriver.rangeQuery(
+			`avg(rate(kubevirt_vmi_cpu_usage_seconds_total[5m])) * 100`,
+			new SvelteDate().setMinutes(0, 0, 0) - 60 * 60 * 1000,
+			new SvelteDate().setMinutes(0, 0, 0),
+			2 * 60
+		);
+		cpuUsages = response.result[0]?.values ?? [];
+	}
+
+	let cpuWait: SampleValue = $state({} as SampleValue);
+	async function fetchCPUWait() {
+		const response = await prometheusDriver.instantQuery(
+			`avg(rate(kubevirt_vmi_vcpu_wait_seconds_total[5m])) * 100`
+		);
+		cpuWait = response.result[0]?.value?.value ?? {};
+	}
+
+	let cpuDelay: SampleValue = $state({} as SampleValue);
+	async function fetchCPUDelay() {
+		const response = await prometheusDriver.instantQuery(
+			`avg(rate(kubevirt_vmi_vcpu_delay_seconds_total[5m])) * 100`
+		);
+		cpuDelay = response.result[0]?.value?.value ?? {};
+	}
+
+	let isLoaded = $state(false);
+	async function fetch() {
+		try {
+			await Promise.all([fetchCPUUsage(), fetchCPUWait(), fetchCPUDelay()]);
+			isLoaded = true;
+		} catch (error) {
+			console.error('Failed to fetch cpu data:', error);
+		}
+	}
+
+	const reloadManager = new ReloadManager(fetch);
+
+	$effect(() => {
+		if (isReloading) {
+			reloadManager.restart();
+		} else {
+			reloadManager.stop();
+		}
+	});
+
+	onMount(async () => {
+		await fetch();
+	});
+	onDestroy(() => {
+		reloadManager.stop();
+	});
+</script>
+
+{#if isLoaded}
+	<Card.Root class="h-full gap-2">
+		<Card.Header>
+			<Card.Title>{m.cpu_usage()}</Card.Title>
+			<Card.Action class="flex flex-col gap-0.5 text-sm text-muted-foreground">
+				<div class="flex justify-between gap-2">
+					<p>{m.wait()}</p>
+					<p class="font-mono">{Number(cpuWait).toFixed(2)}%</p>
+				</div>
+				<div class="flex justify-between gap-2">
+					<p>{m.delay()}</p>
+					<p class="font-mono">{Number(cpuDelay).toFixed(2)}%</p>
+				</div>
+			</Card.Action>
+		</Card.Header>
+		<Card.Content>
+			<Chart.Container config={configuration}>
+				<AreaChart
+					data={cpuUsages}
+					x="time"
+					xScale={scaleUtc()}
+					yPadding={[0, 25]}
+					series={[
+						{
+							key: 'value',
+							label: configuration.usage.label,
+							color: configuration.usage.color
+						}
+					]}
+					props={{
+						area: {
+							curve: curveNatural,
+							'fill-opacity': 0.4,
+							line: { class: 'stroke-1' },
+							motion: 'tween'
+						},
+						xAxis: {
+							format: (v: Date) =>
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
+						},
+						yAxis: { format: () => '' }
+					}}
+				>
+					{#snippet tooltip()}
+						<Chart.Tooltip
+							indicator="dot"
+							labelFormatter={(v: Date) => {
+								return v.toLocaleDateString('en-US', {
+									year: 'numeric',
+									month: 'short',
+									day: 'numeric',
+									hour: 'numeric',
+									minute: 'numeric'
+								});
+							}}
+						>
+							{#snippet formatter({ item, name, value })}
+								<div
+									style="--color-bg: {item.color}"
+									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+								></div>
+								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+									<div class="grid gap-1.5">
+										<span class="text-muted-foreground">{name}</span>
+									</div>
+									<p class="font-mono">{(Number(value) * 100).toFixed(2)}%</p>
+								</div>
+							{/snippet}
+						</Chart.Tooltip>
+					{/snippet}
+					{#snippet marks({ series, getAreaProps })}
+						{#each series as s, i (s.key)}
+							<LinearGradient
+								stops={[s.color ?? '', 'color-mix(in lch, ' + s.color + ' 10%, transparent)']}
+								vertical
+							>
+								{#snippet children({ gradient })}
+									<Area {...getAreaProps(s, i)} fill={gradient} />
+								{/snippet}
+							</LinearGradient>
+						{/each}
+					{/snippet}
+				</AreaChart>
+			</Chart.Container>
+		</Card.Content>
+	</Card.Root>
+{:else}
+	Loading
+{/if}
