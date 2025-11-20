@@ -34,17 +34,17 @@
 {#snippet name(row: Row<Secret>)}
 	<Layout.Cell class="items-start">
 		<Dialog.Root>
-			<Dialog.Header>
-				<Dialog.Trigger>
-					<p class="cursor-default underline hover:no-underline">
-						{row.original.name}
-					</p>
-				</Dialog.Trigger>
-			</Dialog.Header>
+			<Dialog.Trigger>
+				<p class="cursor-default underline hover:no-underline">
+					{row.original.name}
+				</p>
+			</Dialog.Trigger>
 			<Dialog.Content class="overflow-y-auto">
-				<Dialog.Title>
-					<h1 class="text-center text-2xl">{m.secrets()}</h1>
-				</Dialog.Title>
+				<Dialog.Header>
+					<Dialog.Title>
+						<h1 class="text-center text-2xl">{m.secrets()}</h1>
+					</Dialog.Title>
+				</Dialog.Header>
 				<div class="grid gap-4">
 					{#each Object.entries(row.original.data) as [key, value] (key)}
 						{@const secret = btoa(String.fromCharCode(...value))}
