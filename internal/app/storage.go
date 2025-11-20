@@ -1036,7 +1036,7 @@ func toProtoSMBShareSecurityConfig(sc *smb.SecurityConfig, localUsers []smb.User
 	ret.SetLocalUsers(toProtoSMBShareSecurityConfigUsers(localUsers))
 	ret.SetRealm(sc.Spec.Realm)
 
-	if joinSource != nil && joinSource.Username != "" {
+	if joinSource != nil {
 		ret.SetJoinSource(toProtoSMBShareSecurityConfigUser(joinSource))
 	}
 
