@@ -94,7 +94,7 @@
 	function handleSheetOpen() {
 		if (!isLoaded) {
 			loadEnhancedDisks();
-			reloadManager.start();
+			reloadManager.start(); //TODO: Remove
 		}
 	}
 

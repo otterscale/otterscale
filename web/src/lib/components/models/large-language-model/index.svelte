@@ -135,7 +135,7 @@
 	onMount(async () => {
 		await fetch();
 		isMounted = true;
-		reloadManager.start();
+		reloadManager.start(); //TODO: Remove
 	});
 	onDestroy(() => {
 		reloadManager.stop();

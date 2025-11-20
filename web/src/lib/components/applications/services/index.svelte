@@ -60,7 +60,7 @@
 				console.error('Error during initial data load:', error);
 			});
 
-		reloadManager.start();
+		reloadManager.start(); //TODO: Remove
 	});
 	onDestroy(() => {
 		reloadManager.stop();

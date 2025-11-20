@@ -27,7 +27,7 @@
 				console.error('Error during initial data load:', error);
 			});
 	}
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {

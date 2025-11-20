@@ -90,8 +90,6 @@
 	}
 
 	async function fetch() {
-		isLoaded = false;
-
 		try {
 			await Promise.all([
 				fetchReceives(),

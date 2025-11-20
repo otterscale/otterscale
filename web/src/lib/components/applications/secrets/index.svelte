@@ -32,7 +32,7 @@
 				console.error('Failed to fetch secrets:', error);
 			});
 	}
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	$effect(() => {
