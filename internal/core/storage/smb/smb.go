@@ -333,7 +333,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, name string, sizeB
 	}
 
 	// Wait for service to be created automatically and update NodePort in background
-	go uc.waitAndUpdateServiceNodePort(context.Background(), scope, namespace, names.Share, port)
+	go uc.waitAndUpdateServiceNodePort(scope, namespace, names.Share, port)
 
 	return &ShareData{
 		Share: newShare,
@@ -471,7 +471,7 @@ func (uc *UseCase) extractSecrets(secretMap map[string]*config.Secret, usersSecr
 	return localUsers, joinSource, nil
 }
 
-func (uc *UseCase) waitAndUpdateServiceNodePort(ctx context.Context, scope, namespace, name string, port int32) {
+func (uc *UseCase) waitAndUpdateServiceNodePort(scope, namespace, name string, port int32) {
 	const (
 		timeout  = 5 * time.Minute
 		interval = 5 * time.Second

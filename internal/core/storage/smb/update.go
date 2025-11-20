@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"maps"
 
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+
 	"github.com/otterscale/otterscale/internal/core/application/config"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/service"
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 )
 
 func mergeUsers(existing, desired []userEntry) []User {
@@ -36,7 +37,7 @@ func mergeUsers(existing, desired []userEntry) []User {
 	}
 
 	// Remove users not in desired list
-	maps.DeleteFunc(userMap, func(k string, v userEntry) bool {
+	maps.DeleteFunc(userMap, func(k string, _ userEntry) bool {
 		for _, u := range desired {
 			if u.Name == k {
 				return false

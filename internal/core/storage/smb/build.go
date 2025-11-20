@@ -4,13 +4,15 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/otterscale/otterscale/internal/core/application/config"
-	"github.com/otterscale/otterscale/internal/core/application/persistent"
-	"github.com/otterscale/otterscale/internal/core/application/service"
-	"github.com/samba-in-kubernetes/samba-operator/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/samba-in-kubernetes/samba-operator/api/v1alpha1"
+
+	"github.com/otterscale/otterscale/internal/core/application/config"
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
+	"github.com/otterscale/otterscale/internal/core/application/service"
 )
 
 func (uc *UseCase) buildUsersSecret(namespace, name string, users []User) *config.Secret {
