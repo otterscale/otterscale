@@ -10,6 +10,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import {
 		Multiple as MultipleSelect,
@@ -17,7 +18,6 @@
 	} from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 
 	export const poolTypes: Writable<SingleSelect.OptionType[]> = writable([
 		{
@@ -71,11 +71,11 @@
 		request = defaults;
 	}
 
-	let invalidities = $state({} as Booleanified<CreatePoolRequest>);
+	let invalidity = $state({} as Booleanified<CreatePoolRequest>);
 	const invalid = $derived(
-		invalidities.poolName ||
-			invalidities.poolType ||
-			(request.poolType === PoolType.REPLICATED && invalidities.replicatedSize)
+		invalidity.poolName ||
+			invalidity.poolType ||
+			(request.poolType === PoolType.REPLICATED && invalidity.replicatedSize)
 	);
 
 	let open = $state(false);
@@ -99,7 +99,7 @@
 						required
 						type="text"
 						bind:value={request.poolName}
-						bind:invalid={invalidities.poolName}
+						bind:invalid={invalidity.poolName}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -108,7 +108,7 @@
 						required
 						options={poolTypes}
 						bind:value={request.poolType}
-						bind:invalid={invalidities.poolType}
+						bind:invalid={invalidity.poolType}
 					>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -148,7 +148,7 @@
 						<SingleInput.General
 							required
 							bind:value={request.replicatedSize}
-							bind:invalid={invalidities.replicatedSize}
+							bind:invalid={invalidity.replicatedSize}
 						/>
 					</Form.Field>
 					<Form.Help>

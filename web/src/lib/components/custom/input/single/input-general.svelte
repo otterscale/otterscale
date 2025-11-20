@@ -20,19 +20,19 @@
 		required,
 		oninput,
 		transformer = (value) => value,
-		validator = (value) => true,
+		validator = () => true,
 		invalid = $bindable(),
 		...restProps
 	}: WithElementRef<
 		Omit<HTMLInputAttributes, 'type' | 'files'> & { type?: InputType | undefined }
 	> & {
 		transformer?: (value: any) => void;
-		validator?: (value: any) => boolean;
+		validator?: (value?: any) => boolean;
 		invalid?: boolean | null | undefined;
 	} = $props();
 
 	const isNull = $derived(required && (value === null || value === undefined || value === ''));
-	const isValidated = validator(value);
+	const isValidated = $derived(value ? validator(value) : true);
 	const isInvalid = $derived(isNull || !isValidated);
 	$effect(() => {
 		invalid = isInvalid;
@@ -52,7 +52,7 @@
 		class={cn(
 			'pl-9 ring-1',
 			isInvalid
-				? 'placeholder:text-destructive/60 placeholder:text-xs focus:placeholder:invisible'
+				? 'text-destructive/62 placeholder:text-xs placeholder:text-destructive/60 focus:placeholder:invisible'
 				: '',
 			isInvalid ? 'ring-destructive' : '',
 			className

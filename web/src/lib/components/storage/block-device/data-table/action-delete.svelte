@@ -9,9 +9,9 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -36,8 +36,8 @@
 		request = defaults;
 	}
 
-	let invalidities = $state({} as Booleanified<DeleteImageRequest>);
-	const invalid = $derived(invalidities.poolName || invalidities.imageName);
+	let invalidity = $state({} as Booleanified<DeleteImageRequest>);
+	const invalid = $derived(invalidity.poolName || invalidity.imageName);
 
 	let open = $state(false);
 	function close() {
@@ -63,7 +63,7 @@
 						required
 						target={image.name}
 						bind:value={request.imageName}
-						bind:invalid={invalidities.imageName}
+						bind:invalid={invalidity.imageName}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -75,7 +75,7 @@
 						required
 						target={image.poolName}
 						bind:value={request.poolName}
-						bind:invalid={invalidities.poolName}
+						bind:invalid={invalidity.poolName}
 					/>
 				</Form.Field>
 			</Form.Fieldset>

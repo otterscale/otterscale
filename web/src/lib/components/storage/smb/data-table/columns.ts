@@ -10,9 +10,7 @@ import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
 const messages = {
-	name: m.name(),
-	namespace: m.namespace(),
-	replicas: m.replicas(),
+	uri: m.uri(),
 	healthies: m.healthies(),
 	size: m.size(),
 	browsable: m.browsable(),
@@ -35,19 +33,9 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<SMBS
 			enableHiding: false
 		},
 		{
-			accessorKey: 'name',
-			header: ({ column }) => renderSnippet(headers.name, column),
-			cell: ({ row }) => renderSnippet(cells.name, row)
-		},
-		{
-			accessorKey: 'namespace',
-			header: ({ column }) => renderSnippet(headers.namespace, column),
-			cell: ({ row }) => renderSnippet(cells.namespace, row)
-		},
-		{
-			accessorKey: 'replicas',
-			header: ({ column }) => renderSnippet(headers.replicas, column),
-			cell: ({ row }) => renderSnippet(cells.replicas, row)
+			accessorKey: 'uri',
+			header: ({ column }) => renderSnippet(headers.uri, column),
+			cell: ({ row }) => renderSnippet(cells.uri, row)
 		},
 		{
 			accessorKey: 'healthies',

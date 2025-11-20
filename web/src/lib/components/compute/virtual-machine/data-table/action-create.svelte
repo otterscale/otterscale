@@ -11,6 +11,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -33,10 +34,10 @@
 	let open = $state(false);
 
 	// Form validation state
-	// TODO: Refactor with Booneanified type of Request
-	let invalidName: boolean | undefined = $state();
-	let invalidInstanceTypeName: boolean | undefined = $state();
-	let invalidBootDataVolumeName: boolean | undefined = $state();
+	let invalidity = $state({} as Booleanified<CreateVirtualMachineRequest>);
+	const invalid = $derived(
+		invalidity.name || invalidity.instanceTypeName || invalidity.bootDataVolumeName
+	);
 
 	// ==================== Local Dropdown Options ====================
 	const bootDataVolumes: Writable<SingleSelect.OptionType[]> = writable([]);
@@ -160,7 +161,7 @@
 						required
 						type="text"
 						bind:value={request.name}
-						bind:invalid={invalidName}
+						bind:invalid={invalidity.name}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -174,7 +175,7 @@
 						required
 						options={instanceTypes}
 						bind:value={request.instanceTypeName}
-						bind:invalid={invalidInstanceTypeName}
+						bind:invalid={invalidity.instanceTypeName}
 					>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -206,7 +207,7 @@
 						options={bootDataVolumes}
 						required
 						bind:value={request.bootDataVolumeName}
-						bind:invalid={invalidBootDataVolumeName}
+						bind:invalid={invalidity.bootDataVolumeName}
 					>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -238,7 +239,7 @@
 					<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>
 						{m.advance()}
 					</p>
-					<Collapsible.Trigger class="bg-muted rounded-full p-1 ">
+					<Collapsible.Trigger class="rounded-full bg-muted p-1 ">
 						<Icon
 							icon="ph:caret-left"
 							class={cn('transition-all duration-300', isAdvancedOpen ? '-rotate-90' : 'rotate-0')}
@@ -286,7 +287,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalidName}
+					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => virtualMachineClient.createVirtualMachine(request), {
 							loading: `Creating ${request.name}...`,

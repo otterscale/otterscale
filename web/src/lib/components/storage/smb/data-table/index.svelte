@@ -119,14 +119,8 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
-				columnId="name"
-				values={$smbShares.map((row) => row.name)}
-				{messages}
-				{table}
-			/>
-			<Filters.StringMatch
-				columnId="namespace"
-				values={$smbShares.map((row) => row.namespace)}
+				columnId="uri"
+				values={$smbShares.map((row) => row.uri)}
 				{messages}
 				{table}
 			/>

@@ -11,6 +11,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -18,7 +19,6 @@
 	import { cn } from '$lib/utils';
 
 	import { accessControlListOptions } from './utils.svelte';
-	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -45,8 +45,8 @@
 		request = defaults;
 	}
 
-	let invalidities = $state({} as Booleanified<CreateBucketRequest>);
-	const invalid = $derived(invalidities.bucketName || invalidities.owner);
+	let invalidity = $state({} as Booleanified<CreateBucketRequest>);
+	const invalid = $derived(invalidity.bucketName || invalidity.owner);
 
 	let open = $state(false);
 	function close() {
@@ -91,7 +91,7 @@
 						required
 						type="text"
 						bind:value={request.bucketName}
-						bind:invalid={invalidities.bucketName}
+						bind:invalid={invalidity.bucketName}
 					/>
 				</Form.Field>
 
@@ -103,7 +103,7 @@
 							bind:options={userOptions}
 							bind:value={request.owner}
 							required
-							bind:invalid={invalidities.owner}
+							bind:invalid={invalidity.owner}
 						>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>

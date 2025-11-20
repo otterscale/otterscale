@@ -12,9 +12,9 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -45,9 +45,9 @@
 		open = false;
 	}
 
-	let invalidities = $state({} as Booleanified<CreateVirtualMachineCloneRequest>);
+	let invalidity = $state({} as Booleanified<CreateVirtualMachineCloneRequest>);
 	const invalid = $derived(
-		invalidities.name || invalidities.namespace || invalidities.targetVirtualMachineName
+		invalidity.name || invalidity.namespace || invalidity.targetVirtualMachineName
 	);
 </script>
 
@@ -66,7 +66,7 @@
 						required
 						type="text"
 						bind:value={request.namespace}
-						bind:invalid={invalidities.namespace}
+						bind:invalid={invalidity.namespace}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -75,7 +75,7 @@
 						required
 						type="text"
 						bind:value={request.name}
-						bind:invalid={invalidities.name}
+						bind:invalid={invalidity.name}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -90,7 +90,7 @@
 						required
 						type="text"
 						bind:value={request.targetVirtualMachineName}
-						bind:invalid={invalidities.targetVirtualMachineName}
+						bind:invalid={invalidity.targetVirtualMachineName}
 					/>
 				</Form.Field>
 			</Form.Fieldset>

@@ -9,9 +9,9 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
-	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -36,8 +36,8 @@
 		request = defaults;
 	}
 
-	let invalidities = $state({} as Booleanified<CreateUserRequest>);
-	const invalid = $derived(invalidities.userId || invalidities.userName);
+	let invalidity = $state({} as Booleanified<CreateUserRequest>);
+	const invalid = $derived(invalidity.userId || invalidity.userName);
 
 	let open = $state(false);
 	function close() {
@@ -62,7 +62,7 @@
 						required
 						type="text"
 						bind:value={request.userId}
-						bind:invalid={invalidities.userId}
+						bind:invalid={invalidity.userId}
 					/>
 				</Form.Field>
 
@@ -72,7 +72,7 @@
 						required
 						type="text"
 						bind:value={request.userName}
-						bind:invalid={invalidities.userName}
+						bind:invalid={invalidity.userName}
 					/>
 				</Form.Field>
 

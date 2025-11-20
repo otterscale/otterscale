@@ -39,8 +39,7 @@
 	let open = $state(false);
 
 	// Form validation state
-	// TODO: Refactor with Booneanified type of Request
-	let invalidDataVolumnName: boolean | undefined = $state();
+	let invalid: boolean | undefined = $state();
 
 	// ==================== Local Dropdown Options ====================
 	const dataVolumes: Writable<SingleSelect.OptionType[]> = writable([]);
@@ -112,7 +111,7 @@
 						required
 						options={dataVolumes}
 						bind:value={request.dataVolumeName}
-						bind:invalid={invalidDataVolumnName}
+						bind:invalid
 					>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -150,7 +149,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalidDataVolumnName}
+					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => virtualMachineClient.attachVirtualMachineDisk(request), {
 							loading: `Attaching ${request.dataVolumeName} to ${request.name}...`,

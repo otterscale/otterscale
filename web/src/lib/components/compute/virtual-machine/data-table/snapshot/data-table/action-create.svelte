@@ -33,8 +33,7 @@
 	let open = $state(false);
 
 	// Form validation state
-	// TODO: Refactor with Booneanified type of Request
-	let invalidSnapshotName: boolean | undefined = $state();
+	let invalid: boolean | undefined = $state();
 
 	// ==================== Default Values & Constants ====================
 
@@ -70,12 +69,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General
-						required
-						type="text"
-						bind:value={request.name}
-						bind:invalid={invalidSnapshotName}
-					/>
+					<SingleInput.General required type="text" bind:value={request.name} bind:invalid />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -90,7 +84,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalidSnapshotName || !request.name}
+					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => virtualMachineClient.createVirtualMachineSnapshot(request), {
 							loading: `Creating snapshot ${request.name}...`,

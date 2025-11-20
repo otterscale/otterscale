@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { start_ip, end_ip } from './../../../../../../paraglide/messages/zh-hant.js';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -13,9 +12,9 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -33,8 +32,8 @@
 		request = defaults;
 	}
 
-	let invalidities = $state({} as Booleanified<Network_IPRange>);
-	const invalid = $derived(invalidities.startIp || invalidities.endIp);
+	let invalidity = $state({} as Booleanified<Network_IPRange>);
+	const invalid = $derived(invalidity.startIp || invalidity.endIp);
 
 	let open = $state(false);
 	function close() {
@@ -56,12 +55,12 @@
 					<SingleInput.Confirm
 						required
 						target={ipRange.startIp}
-						bind:invalid={invalidities.startIp}
+						bind:invalid={invalidity.startIp}
 					/>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.end_ip()}</Form.Label>
-					<SingleInput.Confirm required target={ipRange.endIp} bind:invalid={invalidities.endIp} />
+					<SingleInput.Confirm required target={ipRange.endIp} bind:invalid={invalidity.endIp} />
 				</Form.Field>
 				<Form.Help>
 					{m.deletion_warning({ identifier: m.range() })}

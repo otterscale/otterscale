@@ -12,9 +12,9 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 </script>
 
 <script lang="ts">
@@ -23,8 +23,8 @@
 
 	const transport: Transport = getContext('transport');
 
-	let invalidities = $state({} as Booleanified<Network_IPRange>);
-	const invalid = $derived(invalidities.startIp || invalidities.endIp);
+	let invalidity = $state({} as Booleanified<Network_IPRange>);
+	const invalid = $derived(invalidity.startIp || invalidity.endIp);
 
 	const client = createClient(NetworkService, transport);
 	const defaults = {
@@ -59,7 +59,7 @@
 						required
 						type="text"
 						bind:value={request.startIp}
-						bind:invalid={invalidities.startIp}
+						bind:invalid={invalidity.startIp}
 					/>
 				</Form.Field>
 
@@ -69,7 +69,7 @@
 						required
 						type="text"
 						bind:value={request.endIp}
-						bind:invalid={invalidities.endIp}
+						bind:invalid={invalidity.endIp}
 					/>
 				</Form.Field>
 
