@@ -26,6 +26,7 @@
 		},
 		variant: 'destructive'
 	});
+
 	onMount(async () => {
 		try {
 			const response = await orchestratorClient.listInstanceExtensions({ scope: scope });
