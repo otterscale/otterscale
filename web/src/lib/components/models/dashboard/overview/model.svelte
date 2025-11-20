@@ -34,31 +34,46 @@
 		usage: { label: 'Models', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
-	async function fetch() {
-		prometheusDriver
-			.instantQuery(`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model="${scope}"})`)
-			.then((response) => {
-				latestAvailableModels = response.result[0]?.value?.value;
-			});
-		prometheusDriver
-			.rangeQuery(
+	async function fetchLatestAvailableModels() {
+		try {
+			const response = await prometheusDriver.instantQuery(
+				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model="${scope}"})`
+			);
+			latestAvailableModels = response.result[0]?.value?.value;
+		} catch (error) {
+			console.error(`Fail to fetch latest available models in scope ${scope}:`, error);
+		}
+	}
+
+	async function fetchAvailableModels() {
+		try {
+			const response = await prometheusDriver.rangeQuery(
 				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model="${scope}"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60
-			)
-			.then((response) => {
-				availableModels = response.result[0]?.values ?? [];
-			});
+			);
+			availableModels = response.result[0]?.values ?? [];
+		} catch (error) {
+			console.error(`Fail to fetch available models in scope ${scope}:`, error);
+		}
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([fetchLatestAvailableModels(), fetchAvailableModels()]);
+		} catch (error) {
+			console.error(`Fail to fetch models data in scope ${scope}:`, error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		try {
 			await fetch();
-			isLoading = false;
+			isLoaded = true;
 		} catch (error) {
 			console.error(`Fail to fetch data in scope ${scope}:`, error);
 		}
@@ -73,7 +88,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

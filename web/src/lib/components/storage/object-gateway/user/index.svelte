@@ -24,17 +24,14 @@
 
 	const users = writable([] as User[]);
 	async function fetch() {
-		storageClient
-			.listUsers({ scope: scope })
-			.then((response) => {
-				users.set(response.users);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+		try {
+			const response = await storageClient.listUsers({ scope: scope });
+			users.set(response.users);
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
 	}
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {

@@ -15,29 +15,26 @@
 	let runningPods = $state(0);
 
 	async function fetch() {
-		prometheusDriver
-			.instantQuery(
+		try {
+			const response = await prometheusDriver.instantQuery(
 				`
-						sum(
-							kubelet_running_pods{job="kubelet",juju_model="${scope}",metrics_path="/metrics"}
-						)
-						or
-						sum(
-							kubelet_running_pod_count{job="kubelet",juju_model="${scope}",metrics_path="/metrics"}
-						)
-						`
-			)
-			.then((response) => {
-				runningPods = response.result[0]?.value?.value;
-			});
+				sum(kubelet_running_pods{job="kubelet",juju_model="${scope}",metrics_path="/metrics"})
+				or
+				sum(kubelet_running_pod_count{job="kubelet",juju_model="${scope}",metrics_path="/metrics"})
+				`
+			);
+			runningPods = response.result[0]?.value?.value;
+		} catch (error) {
+			console.error('Error fetching running pods:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -52,7 +49,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="relative h-full gap-2 overflow-hidden">

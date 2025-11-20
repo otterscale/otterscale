@@ -14,27 +14,24 @@
 	const transport: Transport = getContext('transport');
 
 	const networks = writable<Network[]>([]);
-	let isMounted = $state(false);
+	let isLoaded = $state(false);
 
 	const networkClient = createClient(NetworkService, transport);
-	const reloadManager = new ReloadManager(() => {
-		networkClient.listNetworks({}).then((response) => {
+
+	async function fetch() {
+		try {
+			const response = await networkClient.listNetworks({});
 			networks.set(response.networks);
-		});
-	});
+		} catch (error) {
+			console.error('Failed to fetch networks:', error);
+		}
+	}
 
-	onMount(() => {
-		networkClient
-			.listNetworks({})
-			.then((response) => {
-				networks.set(response.networks);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+	const reloadManager = new ReloadManager(fetch);
 
-		reloadManager.start();
+	onMount(async () => {
+		await fetch();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -42,7 +39,7 @@
 </script>
 
 <main class="space-y-4 py-4">
-	{#if isMounted}
+	{#if isLoaded}
 		<DataTable {networks} {reloadManager} />
 	{:else}
 		<Loading.DataTable />

@@ -27,24 +27,22 @@
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
-
 	const dataVolumes = writable<DataVolume[]>();
+
 	async function fetch() {
-		virtualMachineClient
-			.listDataVolumes({
+		try {
+			const response = await virtualMachineClient.listDataVolumes({
 				scope: scope,
 				namespace: '',
 				bootImage: true
-			})
-			.then((response) => {
-				dataVolumes.set(response.dataVolumes);
-			})
-			.catch((error) => {
-				console.error('Error fetching data volumes:', error);
 			});
+			dataVolumes.set(response.dataVolumes);
+		} catch (error) {
+			console.error('Error fetching data volumes:', error);
+		}
 	}
 
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {

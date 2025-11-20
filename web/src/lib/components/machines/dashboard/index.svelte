@@ -20,17 +20,11 @@
 
 	onMount(async () => {
 		try {
-			environmentService
-				.getPrometheus({})
-				.then((response) => {
-					prometheusDriver = new PrometheusDriver({
-						endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-						baseURL: response.baseUrl
-					});
-				})
-				.catch((error) => {
-					console.error('Failed to initialize Prometheus driver:', error);
-				});
+			const envResponse = await environmentService.getPrometheus({});
+			prometheusDriver = new PrometheusDriver({
+				endpoint: `${env.PUBLIC_API_URL}/prometheus`,
+				baseURL: envResponse.baseUrl
+			});
 		} catch (error) {
 			console.error('Failed to initialize Prometheus driver:', error);
 		}

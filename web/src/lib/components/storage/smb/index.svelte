@@ -22,16 +22,14 @@
 
 	const smbShares = writable([] as SMBShare[]);
 	async function fetch() {
-		storageClient
-			.listSMBShares({ scope: scope })
-			.then((response) => {
-				smbShares.set(response.smbShares);
-			})
-			.catch((error) => {
-				console.error('Error reloading SMB shares:', error);
-			});
+		try {
+			const response = await storageClient.listSMBShares({ scope: scope });
+			smbShares.set(response.smbShares);
+		} catch (error) {
+			console.error('Error reloading SMB shares:', error);
+		}
 	}
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {

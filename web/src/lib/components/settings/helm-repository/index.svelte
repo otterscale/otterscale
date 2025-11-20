@@ -19,17 +19,20 @@
 	const configurationClient = createClient(ConfigurationService, transport);
 
 	const configuration = writable<Configuration>();
-	let isConfigurationLoading = $state(true);
 
-	onMount(async () => {
+	async function fetch() {
 		try {
-			await configurationClient.getConfiguration({}).then((response) => {
-				configuration.set(response);
-				isConfigurationLoading = false;
-			});
+			const response = await configurationClient.getConfiguration({});
+			configuration.set(response);
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
+	}
+
+	let isConfigurationLoading = $state(true);
+	onMount(async () => {
+		await fetch();
+		isConfigurationLoading = false;
 	});
 </script>
 
