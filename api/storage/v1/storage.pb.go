@@ -11087,6 +11087,7 @@ type ValidateSMBUserRequest struct {
 	xxx_hidden_Username       *string                `protobuf:"bytes,2,opt,name=username"`
 	xxx_hidden_Password       *string                `protobuf:"bytes,3,opt,name=password"`
 	xxx_hidden_SearchUsername *string                `protobuf:"bytes,4,opt,name=search_username,json=searchUsername"`
+	xxx_hidden_Tls            bool                   `protobuf:"varint,5,opt,name=tls"`
 	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
 	XXX_presence              [1]uint32
 	unknownFields             protoimpl.UnknownFields
@@ -11158,24 +11159,36 @@ func (x *ValidateSMBUserRequest) GetSearchUsername() string {
 	return ""
 }
 
+func (x *ValidateSMBUserRequest) GetTls() bool {
+	if x != nil {
+		return x.xxx_hidden_Tls
+	}
+	return false
+}
+
 func (x *ValidateSMBUserRequest) SetRealm(v string) {
 	x.xxx_hidden_Realm = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *ValidateSMBUserRequest) SetUsername(v string) {
 	x.xxx_hidden_Username = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *ValidateSMBUserRequest) SetPassword(v string) {
 	x.xxx_hidden_Password = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *ValidateSMBUserRequest) SetSearchUsername(v string) {
 	x.xxx_hidden_SearchUsername = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *ValidateSMBUserRequest) SetTls(v bool) {
+	x.xxx_hidden_Tls = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *ValidateSMBUserRequest) HasRealm() bool {
@@ -11206,6 +11219,13 @@ func (x *ValidateSMBUserRequest) HasSearchUsername() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
+func (x *ValidateSMBUserRequest) HasTls() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
 func (x *ValidateSMBUserRequest) ClearRealm() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Realm = nil
@@ -11226,6 +11246,11 @@ func (x *ValidateSMBUserRequest) ClearSearchUsername() {
 	x.xxx_hidden_SearchUsername = nil
 }
 
+func (x *ValidateSMBUserRequest) ClearTls() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_Tls = false
+}
+
 type ValidateSMBUserRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -11233,6 +11258,7 @@ type ValidateSMBUserRequest_builder struct {
 	Username       *string
 	Password       *string
 	SearchUsername *string
+	Tls            *bool
 }
 
 func (b0 ValidateSMBUserRequest_builder) Build() *ValidateSMBUserRequest {
@@ -11240,20 +11266,24 @@ func (b0 ValidateSMBUserRequest_builder) Build() *ValidateSMBUserRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Realm != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Realm = b.Realm
 	}
 	if b.Username != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_Username = b.Username
 	}
 	if b.Password != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Password = b.Password
 	}
 	if b.SearchUsername != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_SearchUsername = b.SearchUsername
+	}
+	if b.Tls != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_Tls = *b.Tls
 	}
 	return m0
 }
@@ -13043,12 +13073,13 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\vvalid_users\x18  \x03(\tR\n" +
 	"validUsers\x12Q\n" +
 	"\rcommon_config\x18) \x01(\v2,.otterscale.storage.v1.SMBShare.CommonConfigR\fcommonConfig\x12W\n" +
-	"\x0fsecurity_config\x183 \x01(\v2..otterscale.storage.v1.SMBShare.SecurityConfigR\x0esecurityConfig\"\x8f\x01\n" +
+	"\x0fsecurity_config\x183 \x01(\v2..otterscale.storage.v1.SMBShare.SecurityConfigR\x0esecurityConfig\"\xa1\x01\n" +
 	"\x16ValidateSMBUserRequest\x12\x14\n" +
 	"\x05realm\x18\x01 \x01(\tR\x05realm\x12\x1a\n" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x03 \x01(\tR\bpassword\x12'\n" +
-	"\x0fsearch_username\x18\x04 \x01(\tR\x0esearchUsername\"\xda\x01\n" +
+	"\x0fsearch_username\x18\x04 \x01(\tR\x0esearchUsername\x12\x10\n" +
+	"\x03tls\x18\x05 \x01(\bR\x03tls\"\xda\x01\n" +
 	"\x17ValidateSMBUserResponse\x12\x19\n" +
 	"\bis_valid\x18\x01 \x01(\bR\aisValid\x12Z\n" +
 	"\ventity_type\x18\x02 \x01(\x0e29.otterscale.storage.v1.ValidateSMBUserResponse.EntityTypeR\n" +

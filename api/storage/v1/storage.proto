@@ -833,6 +833,7 @@ message ValidateSMBUserRequest {
   string username = 2;
   string password = 3;
   string search_username = 4;
+  bool tls = 5;
 }
 
 message ValidateSMBUserResponse {

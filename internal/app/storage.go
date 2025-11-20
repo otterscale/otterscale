@@ -555,7 +555,8 @@ func (s *StorageService) ValidateSMBUser(ctx context.Context, req *pb.ValidateSM
 		req.GetRealm(),
 		req.GetUsername(),
 		req.GetPassword(),
-		req.GetSearchUsername())
+		req.GetSearchUsername(),
+		req.GetTls())
 	if err != nil {
 		return nil, err
 	}

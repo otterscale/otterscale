@@ -859,25 +859,30 @@ func (uc *UseCase) resolveLDAPServer(realm string) (serverName string, port uint
 	return "", 0, fmt.Errorf("failed to lookup LDAP server: unable to resolve %s", realm)
 }
 
-func (uc *UseCase) connectLDAP(serverName string, port uint16) (*ldap.Conn, error) {
+func (uc *UseCase) connectLDAP(serverName string, port uint16, useTLS bool) (*ldap.Conn, error) {
 	ldapURL := fmt.Sprintf("%s:%d", serverName, port)
 
-	// Try LDAPS first (TLS from the start)
-	//nolint:gosec // Self-signed certificates are common in AD environments
-	conn, err := ldap.DialURL(fmt.Sprintf("ldaps://%s", ldapURL),
-		ldap.DialWithTLSConfig(&tls.Config{ServerName: serverName, InsecureSkipVerify: true}))
-	if err != nil {
-		// LDAPS failed, try LDAP without TLS
-		conn, err = ldap.DialURL(fmt.Sprintf("ldap://%s", ldapURL))
+	if useTLS {
+		conn, err := ldap.DialURL(fmt.Sprintf("ldaps://%s", ldapURL),
+			ldap.DialWithTLSConfig(&tls.Config{
+				ServerName:         serverName,
+				InsecureSkipVerify: false,
+				MinVersion:         tls.VersionTLS12,
+			}))
 		if err != nil {
 			return nil, fmt.Errorf("failed to connect to LDAP server: %w", err)
 		}
+		return conn, nil
+	} else {
+		conn, err := ldap.DialURL(fmt.Sprintf("ldap://%s", ldapURL))
+		if err != nil {
+			return nil, fmt.Errorf("failed to connect to LDAP server: %w", err)
+		}
+		return conn, nil
 	}
-
-	return conn, nil
 }
 
-func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, searchUsername string) (*ADValidateResult, error) {
+func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, searchUsername string, useTLS bool) (*ADValidateResult, error) {
 	result := &ADValidateResult{EntityType: EntityTypeUnknown}
 	searchUsername = strings.TrimSpace(searchUsername)
 
@@ -895,7 +900,7 @@ func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, sear
 	}
 
 	// Connect to LDAP server
-	conn, err := uc.connectLDAP(serverName, port)
+	conn, err := uc.connectLDAP(serverName, port, useTLS)
 	if err != nil {
 		result.Message = "failed to connect"
 		return result, err
