@@ -2971,7 +2971,6 @@ func (b0 User_builder) Build() *User {
 type SMBShare struct {
 	state                     protoimpl.MessageState   `protogen:"opaque.v1"`
 	xxx_hidden_Name           *string                  `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace      *string                  `protobuf:"bytes,2,opt,name=namespace"`
 	xxx_hidden_Uri            *string                  `protobuf:"bytes,3,opt,name=uri"`
 	xxx_hidden_Replicas       int32                    `protobuf:"varint,11,opt,name=replicas"`
 	xxx_hidden_Healthies      int32                    `protobuf:"varint,12,opt,name=healthies"`
@@ -3017,16 +3016,6 @@ func (x *SMBShare) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *SMBShare) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
 		}
 		return ""
 	}
@@ -3108,47 +3097,42 @@ func (x *SMBShare) GetSecurityConfig() *SMBShare_SecurityConfig {
 
 func (x *SMBShare) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 12)
-}
-
-func (x *SMBShare) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
 }
 
 func (x *SMBShare) SetUri(v string) {
 	x.xxx_hidden_Uri = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
 }
 
 func (x *SMBShare) SetReplicas(v int32) {
 	x.xxx_hidden_Replicas = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
 }
 
 func (x *SMBShare) SetHealthies(v int32) {
 	x.xxx_hidden_Healthies = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
 }
 
 func (x *SMBShare) SetSizeBytes(v uint64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
 }
 
 func (x *SMBShare) SetBrowsable(v bool) {
 	x.xxx_hidden_Browsable = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
 }
 
 func (x *SMBShare) SetReadOnly(v bool) {
 	x.xxx_hidden_ReadOnly = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
 }
 
 func (x *SMBShare) SetGuestOk(v bool) {
 	x.xxx_hidden_GuestOk = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
 }
 
 func (x *SMBShare) SetValidUsers(v []string) {
@@ -3170,60 +3154,53 @@ func (x *SMBShare) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *SMBShare) HasNamespace() bool {
+func (x *SMBShare) HasUri() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *SMBShare) HasUri() bool {
+func (x *SMBShare) HasReplicas() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *SMBShare) HasReplicas() bool {
+func (x *SMBShare) HasHealthies() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *SMBShare) HasHealthies() bool {
+func (x *SMBShare) HasSizeBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *SMBShare) HasSizeBytes() bool {
+func (x *SMBShare) HasBrowsable() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *SMBShare) HasBrowsable() bool {
+func (x *SMBShare) HasReadOnly() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
-func (x *SMBShare) HasReadOnly() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
-}
-
 func (x *SMBShare) HasGuestOk() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
 func (x *SMBShare) HasCommonConfig() bool {
@@ -3245,43 +3222,38 @@ func (x *SMBShare) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *SMBShare) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Namespace = nil
-}
-
 func (x *SMBShare) ClearUri() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Uri = nil
 }
 
 func (x *SMBShare) ClearReplicas() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Replicas = 0
 }
 
 func (x *SMBShare) ClearHealthies() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Healthies = 0
 }
 
 func (x *SMBShare) ClearSizeBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_SizeBytes = 0
 }
 
 func (x *SMBShare) ClearBrowsable() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_Browsable = false
 }
 
 func (x *SMBShare) ClearReadOnly() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_ReadOnly = false
 }
 
 func (x *SMBShare) ClearGuestOk() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
 	x.xxx_hidden_GuestOk = false
 }
 
@@ -3297,7 +3269,6 @@ type SMBShare_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Name           *string
-	Namespace      *string
 	Uri            *string
 	Replicas       *int32
 	Healthies      *int32
@@ -3315,39 +3286,35 @@ func (b0 SMBShare_builder) Build() *SMBShare {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
 		x.xxx_hidden_Name = b.Name
 	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 12)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
 	if b.Uri != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
 		x.xxx_hidden_Uri = b.Uri
 	}
 	if b.Replicas != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
 		x.xxx_hidden_Replicas = *b.Replicas
 	}
 	if b.Healthies != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
 		x.xxx_hidden_Healthies = *b.Healthies
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
 	if b.Browsable != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
 		x.xxx_hidden_Browsable = *b.Browsable
 	}
 	if b.ReadOnly != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
 		x.xxx_hidden_ReadOnly = *b.ReadOnly
 	}
 	if b.GuestOk != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
 		x.xxx_hidden_GuestOk = *b.GuestOk
 	}
 	x.xxx_hidden_ValidUsers = b.ValidUsers
@@ -10198,7 +10165,6 @@ func (b0 DeleteUserKeyRequest_builder) Build() *DeleteUserKeyRequest {
 type ListSMBSharesRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -10240,24 +10206,9 @@ func (x *ListSMBSharesRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListSMBSharesRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListSMBSharesRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
-func (x *ListSMBSharesRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *ListSMBSharesRequest) HasScope() bool {
@@ -10267,28 +10218,15 @@ func (x *ListSMBSharesRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListSMBSharesRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListSMBSharesRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListSMBSharesRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Namespace = nil
-}
-
 type ListSMBSharesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope     *string
-	Namespace *string
+	Scope *string
 }
 
 func (b0 ListSMBSharesRequest_builder) Build() *ListSMBSharesRequest {
@@ -10296,12 +10234,8 @@ func (b0 ListSMBSharesRequest_builder) Build() *ListSMBSharesRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Scope = b.Scope
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
@@ -10368,7 +10302,6 @@ func (b0 ListSMBSharesResponse_builder) Build() *ListSMBSharesResponse {
 type CreateSMBShareRequest struct {
 	state                     protoimpl.MessageState   `protogen:"opaque.v1"`
 	xxx_hidden_Scope          *string                  `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Namespace      *string                  `protobuf:"bytes,2,opt,name=namespace"`
 	xxx_hidden_Name           *string                  `protobuf:"bytes,3,opt,name=name"`
 	xxx_hidden_SizeBytes      uint64                   `protobuf:"varint,11,opt,name=size_bytes,json=sizeBytes"`
 	xxx_hidden_Port           int32                    `protobuf:"varint,12,opt,name=port"`
@@ -10413,16 +10346,6 @@ func (x *CreateSMBShareRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreateSMBShareRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
 		}
 		return ""
 	}
@@ -10497,42 +10420,37 @@ func (x *CreateSMBShareRequest) GetSecurityConfig() *SMBShare_SecurityConfig {
 
 func (x *CreateSMBShareRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
-}
-
-func (x *CreateSMBShareRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 10)
 }
 
 func (x *CreateSMBShareRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 10)
 }
 
 func (x *CreateSMBShareRequest) SetSizeBytes(v uint64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 10)
 }
 
 func (x *CreateSMBShareRequest) SetPort(v int32) {
 	x.xxx_hidden_Port = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 10)
 }
 
 func (x *CreateSMBShareRequest) SetBrowsable(v bool) {
 	x.xxx_hidden_Browsable = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 10)
 }
 
 func (x *CreateSMBShareRequest) SetReadOnly(v bool) {
 	x.xxx_hidden_ReadOnly = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 10)
 }
 
 func (x *CreateSMBShareRequest) SetGuestOk(v bool) {
 	x.xxx_hidden_GuestOk = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 10)
 }
 
 func (x *CreateSMBShareRequest) SetValidUsers(v []string) {
@@ -10554,53 +10472,46 @@ func (x *CreateSMBShareRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateSMBShareRequest) HasNamespace() bool {
+func (x *CreateSMBShareRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateSMBShareRequest) HasName() bool {
+func (x *CreateSMBShareRequest) HasSizeBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateSMBShareRequest) HasSizeBytes() bool {
+func (x *CreateSMBShareRequest) HasPort() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreateSMBShareRequest) HasPort() bool {
+func (x *CreateSMBShareRequest) HasBrowsable() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *CreateSMBShareRequest) HasBrowsable() bool {
+func (x *CreateSMBShareRequest) HasReadOnly() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *CreateSMBShareRequest) HasReadOnly() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
-}
-
 func (x *CreateSMBShareRequest) HasGuestOk() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
 func (x *CreateSMBShareRequest) HasCommonConfig() bool {
@@ -10622,38 +10533,33 @@ func (x *CreateSMBShareRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *CreateSMBShareRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Namespace = nil
-}
-
 func (x *CreateSMBShareRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *CreateSMBShareRequest) ClearSizeBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_SizeBytes = 0
 }
 
 func (x *CreateSMBShareRequest) ClearPort() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Port = 0
 }
 
 func (x *CreateSMBShareRequest) ClearBrowsable() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_Browsable = false
 }
 
 func (x *CreateSMBShareRequest) ClearReadOnly() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_ReadOnly = false
 }
 
 func (x *CreateSMBShareRequest) ClearGuestOk() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_GuestOk = false
 }
 
@@ -10669,7 +10575,6 @@ type CreateSMBShareRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope          *string
-	Namespace      *string
 	Name           *string
 	SizeBytes      *uint64
 	Port           *int32
@@ -10686,35 +10591,31 @@ func (b0 CreateSMBShareRequest_builder) Build() *CreateSMBShareRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 10)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 10)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 10)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
 	if b.Port != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 10)
 		x.xxx_hidden_Port = *b.Port
 	}
 	if b.Browsable != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 10)
 		x.xxx_hidden_Browsable = *b.Browsable
 	}
 	if b.ReadOnly != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 10)
 		x.xxx_hidden_ReadOnly = *b.ReadOnly
 	}
 	if b.GuestOk != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 10)
 		x.xxx_hidden_GuestOk = *b.GuestOk
 	}
 	x.xxx_hidden_ValidUsers = b.ValidUsers
@@ -10726,7 +10627,6 @@ func (b0 CreateSMBShareRequest_builder) Build() *CreateSMBShareRequest {
 type UpdateSMBShareRequest struct {
 	state                     protoimpl.MessageState   `protogen:"opaque.v1"`
 	xxx_hidden_Scope          *string                  `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Namespace      *string                  `protobuf:"bytes,2,opt,name=namespace"`
 	xxx_hidden_Name           *string                  `protobuf:"bytes,3,opt,name=name"`
 	xxx_hidden_SizeBytes      uint64                   `protobuf:"varint,11,opt,name=size_bytes,json=sizeBytes"`
 	xxx_hidden_Port           int32                    `protobuf:"varint,12,opt,name=port"`
@@ -10771,16 +10671,6 @@ func (x *UpdateSMBShareRequest) GetScope() string {
 	if x != nil {
 		if x.xxx_hidden_Scope != nil {
 			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateSMBShareRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
 		}
 		return ""
 	}
@@ -10855,42 +10745,37 @@ func (x *UpdateSMBShareRequest) GetSecurityConfig() *SMBShare_SecurityConfig {
 
 func (x *UpdateSMBShareRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
-}
-
-func (x *UpdateSMBShareRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 10)
 }
 
 func (x *UpdateSMBShareRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 10)
 }
 
 func (x *UpdateSMBShareRequest) SetSizeBytes(v uint64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 10)
 }
 
 func (x *UpdateSMBShareRequest) SetPort(v int32) {
 	x.xxx_hidden_Port = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 10)
 }
 
 func (x *UpdateSMBShareRequest) SetBrowsable(v bool) {
 	x.xxx_hidden_Browsable = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 10)
 }
 
 func (x *UpdateSMBShareRequest) SetReadOnly(v bool) {
 	x.xxx_hidden_ReadOnly = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 10)
 }
 
 func (x *UpdateSMBShareRequest) SetGuestOk(v bool) {
 	x.xxx_hidden_GuestOk = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 10)
 }
 
 func (x *UpdateSMBShareRequest) SetValidUsers(v []string) {
@@ -10912,53 +10797,46 @@ func (x *UpdateSMBShareRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UpdateSMBShareRequest) HasNamespace() bool {
+func (x *UpdateSMBShareRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdateSMBShareRequest) HasName() bool {
+func (x *UpdateSMBShareRequest) HasSizeBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UpdateSMBShareRequest) HasSizeBytes() bool {
+func (x *UpdateSMBShareRequest) HasPort() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *UpdateSMBShareRequest) HasPort() bool {
+func (x *UpdateSMBShareRequest) HasBrowsable() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *UpdateSMBShareRequest) HasBrowsable() bool {
+func (x *UpdateSMBShareRequest) HasReadOnly() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *UpdateSMBShareRequest) HasReadOnly() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
-}
-
 func (x *UpdateSMBShareRequest) HasGuestOk() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
 func (x *UpdateSMBShareRequest) HasCommonConfig() bool {
@@ -10980,38 +10858,33 @@ func (x *UpdateSMBShareRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *UpdateSMBShareRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Namespace = nil
-}
-
 func (x *UpdateSMBShareRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *UpdateSMBShareRequest) ClearSizeBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_SizeBytes = 0
 }
 
 func (x *UpdateSMBShareRequest) ClearPort() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Port = 0
 }
 
 func (x *UpdateSMBShareRequest) ClearBrowsable() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_Browsable = false
 }
 
 func (x *UpdateSMBShareRequest) ClearReadOnly() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_ReadOnly = false
 }
 
 func (x *UpdateSMBShareRequest) ClearGuestOk() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_GuestOk = false
 }
 
@@ -11027,7 +10900,6 @@ type UpdateSMBShareRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope          *string
-	Namespace      *string
 	Name           *string
 	SizeBytes      *uint64
 	Port           *int32
@@ -11044,35 +10916,31 @@ func (b0 UpdateSMBShareRequest_builder) Build() *UpdateSMBShareRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 10)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 10)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 10)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
 	if b.Port != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 10)
 		x.xxx_hidden_Port = *b.Port
 	}
 	if b.Browsable != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 10)
 		x.xxx_hidden_Browsable = *b.Browsable
 	}
 	if b.ReadOnly != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 10)
 		x.xxx_hidden_ReadOnly = *b.ReadOnly
 	}
 	if b.GuestOk != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 10)
 		x.xxx_hidden_GuestOk = *b.GuestOk
 	}
 	x.xxx_hidden_ValidUsers = b.ValidUsers
@@ -12756,10 +12624,9 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"access_key\x18\x01 \x01(\tR\taccessKey\x12\x1d\n" +
 	"\n" +
-	"secret_key\x18\x02 \x01(\tR\tsecretKey\"\xf5\a\n" +
+	"secret_key\x18\x02 \x01(\tR\tsecretKey\"\xdd\a\n" +
 	"\bSMBShare\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x10\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x10\n" +
 	"\x03uri\x18\x03 \x01(\tR\x03uri\x12\x1a\n" +
 	"\breplicas\x18\v \x01(\x05R\breplicas\x12\x1c\n" +
 	"\thealthies\x18\f \x01(\x05R\thealthies\x12\x1d\n" +
@@ -12792,7 +12659,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"&\n" +
 	"\x04Mode\x12\b\n" +
 	"\x04USER\x10\x00\x12\x14\n" +
-	"\x10ACTIVE_DIRECTORY\x10\x01\"1\n" +
+	"\x10ACTIVE_DIRECTORY\x10\x01J\x04\b\x02\x10\x03\"1\n" +
 	"\x13ListMonitorsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"R\n" +
 	"\x14ListMonitorsResponse\x12:\n" +
@@ -13039,16 +12906,14 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x1d\n" +
 	"\n" +
-	"access_key\x18\x04 \x01(\tR\taccessKeyJ\x04\b\x02\x10\x03\"J\n" +
+	"access_key\x18\x04 \x01(\tR\taccessKeyJ\x04\b\x02\x10\x03\"2\n" +
 	"\x14ListSMBSharesRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"W\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"W\n" +
 	"\x15ListSMBSharesResponse\x12>\n" +
 	"\n" +
-	"smb_shares\x18\x01 \x03(\v2\x1f.otterscale.storage.v1.SMBShareR\tsmbShares\"\xb5\x03\n" +
+	"smb_shares\x18\x01 \x03(\v2\x1f.otterscale.storage.v1.SMBShareR\tsmbShares\"\x9d\x03\n" +
 	"\x15CreateSMBShareRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
 	"size_bytes\x18\v \x01(\x04R\tsizeBytes\x12\x12\n" +
@@ -13059,10 +12924,9 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\vvalid_users\x18  \x03(\tR\n" +
 	"validUsers\x12Q\n" +
 	"\rcommon_config\x18) \x01(\v2,.otterscale.storage.v1.SMBShare.CommonConfigR\fcommonConfig\x12W\n" +
-	"\x0fsecurity_config\x183 \x01(\v2..otterscale.storage.v1.SMBShare.SecurityConfigR\x0esecurityConfig\"\xb5\x03\n" +
+	"\x0fsecurity_config\x183 \x01(\v2..otterscale.storage.v1.SMBShare.SecurityConfigR\x0esecurityConfigJ\x04\b\x02\x10\x03\"\x9d\x03\n" +
 	"\x15UpdateSMBShareRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x12\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
 	"size_bytes\x18\v \x01(\x04R\tsizeBytes\x12\x12\n" +
@@ -13073,7 +12937,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\vvalid_users\x18  \x03(\tR\n" +
 	"validUsers\x12Q\n" +
 	"\rcommon_config\x18) \x01(\v2,.otterscale.storage.v1.SMBShare.CommonConfigR\fcommonConfig\x12W\n" +
-	"\x0fsecurity_config\x183 \x01(\v2..otterscale.storage.v1.SMBShare.SecurityConfigR\x0esecurityConfig\"\xa1\x01\n" +
+	"\x0fsecurity_config\x183 \x01(\v2..otterscale.storage.v1.SMBShare.SecurityConfigR\x0esecurityConfigJ\x04\b\x02\x10\x03\"\xa1\x01\n" +
 	"\x16ValidateSMBUserRequest\x12\x14\n" +
 	"\x05realm\x18\x01 \x01(\tR\x05realm\x12\x1a\n" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x1a\n" +

@@ -440,7 +440,7 @@ message SMBShare {
     User join_source = 22;
   }
   string name = 1;
-  string namespace = 2;
+  reserved 2;
   string uri = 3;
   int32 replicas = 11;
   int32 healthies = 12;
@@ -793,7 +793,7 @@ message DeleteUserKeyRequest {
 
 message ListSMBSharesRequest {
   string scope = 1;
-  string namespace = 2;
+  reserved 2;
 }
 
 message ListSMBSharesResponse {
@@ -802,7 +802,7 @@ message ListSMBSharesResponse {
 
 message CreateSMBShareRequest {
   string scope = 1;
-  string namespace = 2;
+  reserved 2;
   string name = 3;
   uint64 size_bytes = 11;
   int32 port = 12;
@@ -816,7 +816,7 @@ message CreateSMBShareRequest {
 
 message UpdateSMBShareRequest {
   string scope = 1;
-  string namespace = 2;
+  reserved 2;
   string name = 3;
   uint64 size_bytes = 11;
   int32 port = 12;
