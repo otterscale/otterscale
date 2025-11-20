@@ -74,8 +74,9 @@ func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifest
 				return err
 			}
 
-			chart := base.Chart
-			if chart != nil {
+			for i := range base.Charts {
+				chart := base.Charts[i]
+
 				version, err := uc.chart.GetStableVersion(egctx, chart.RepoURL, base.ID, true)
 				if err != nil {
 					return err
@@ -87,11 +88,13 @@ func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifest
 
 				chartRef := version.URLs[0]
 
-				_, err = uc.release.Install(egctx, scope, chart.Namespace, base.Name, false, chartRef, chart.Labels, chart.Labels, chart.Annotations, "", chart.ValuesMap)
-				return err
+				if _, err = uc.release.Install(egctx, scope, chart.Namespace, base.Name, false, chartRef, chart.Labels, chart.Labels, chart.Annotations, "", chart.ValuesMap); err != nil {
+					return err
+				}
 			}
 
 			crd := base.CRD
+
 			if crd != nil {
 				fSys := filesys.MakeFsOnDisk()
 				k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
@@ -134,8 +137,9 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, manifest
 				return err
 			}
 
-			chart := base.Chart
-			if chart != nil {
+			for i := range base.Charts {
+				chart := base.Charts[i]
+
 				version, err := uc.chart.GetStableVersion(egctx, chart.RepoURL, base.ID, true)
 				if err != nil {
 					return err
@@ -147,11 +151,13 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, manifest
 
 				chartRef := version.URLs[0]
 
-				_, err = uc.release.Upgrade(egctx, scope, chart.Namespace, base.Name, false, chartRef, "", chart.ValuesMap, true)
-				return err
+				if _, err = uc.release.Upgrade(egctx, scope, chart.Namespace, base.Name, false, chartRef, "", chart.ValuesMap, true); err != nil {
+					return err
+				}
 			}
 
 			crd := base.CRD
+
 			if crd != nil {
 				fSys := filesys.MakeFsOnDisk()
 				k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
@@ -194,10 +200,10 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 
 	for i := range bases {
 		base := bases[i]
-		chart := base.Chart
-		crd := base.CRD
 
-		if chart != nil {
+		if len(base.Charts) > 0 {
+			chart := base.Charts[0] // only get the parent chart
+
 			eg.Go(func() error {
 				v, err := uc.chart.GetStableVersion(egctx, chart.RepoURL, base.ID, true)
 				if err == nil {
@@ -217,6 +223,8 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 				return err
 			})
 		}
+
+		crd := base.CRD
 
 		if crd != nil {
 			eg.Go(func() error {
@@ -248,22 +256,22 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 	ret := []Extension{}
 
 	for i := range bases {
-		chart := bases[i].Chart
+		base := bases[i]
 
-		if chart != nil {
-			ret = append(ret, *uc.buildExtensionFromChart(&bases[i], &releases[i], &versions[i]))
+		if len(base.Charts) > 0 {
+			ret = append(ret, *uc.buildExtensionFromChart(&base, &releases[i], &versions[i]))
 
 			continue
 		}
 
-		crd := bases[i].CRD
+		crd := base.CRD
 
 		if crd != nil {
 			if len(resMaps[i].Resources()) == 0 {
-				return nil, fmt.Errorf("no crd resource found for %q", bases[i].ID)
+				return nil, fmt.Errorf("no crd resource found for %q", base.ID)
 			}
 
-			ret = append(ret, *uc.buildExtensionFromCRD(&bases[i], resMaps[i], crds, crd.AnnotationVersionKey))
+			ret = append(ret, *uc.buildExtensionFromCRD(&base, resMaps[i], crds, crd.AnnotationVersionKey))
 
 			continue
 		}
