@@ -25,34 +25,32 @@
 	let context = $state<ChartContextValue>();
 
 	async function fetch() {
-		await prometheusDriver
-			.instantQuery(
+		try {
+			const response = await prometheusDriver.instantQuery(
 				`
 				topk(10, avg by (nodeid) (nodeGPUMemoryPercentage{juju_model="${scope}"}))
 				`
-			)
-			.then((response) => {
-				const instanceVectors: InstantVector[] = response.result;
-				memoryUsage = instanceVectors
-					.sort((p, n) => n.value.value - p.value.value)
-					.map((instanceVector) =>
-						Object.fromEntries([
-							['node', (instanceVector.metric.labels as { nodeid?: string }).nodeid],
-							['usage', instanceVector.value.value]
-						])
-					);
-			})
-			.catch((error) => {
-				console.error('Failed to fetch VGPU memory usage:', error);
-			});
+			);
+			const instanceVectors: InstantVector[] = response.result;
+			memoryUsage = instanceVectors
+				.sort((p, n) => n.value.value - p.value.value)
+				.map((instanceVector) =>
+					Object.fromEntries([
+						['node', (instanceVector.metric.labels as { nodeid?: string }).nodeid],
+						['usage', instanceVector.value.value]
+					])
+				);
+		} catch (error) {
+			console.error('Failed to fetch VGPU memory usage:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -67,7 +65,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root>

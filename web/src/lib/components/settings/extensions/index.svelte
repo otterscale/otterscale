@@ -26,43 +26,53 @@
 	const generalExtensions: Writable<Extension[]> = writable([]);
 	let isGeneralExtensionsLoaded = $state(false);
 
-	onMount(async () => {
-		orchestratorClient
-			.listInstanceExtensions({ scope: scope })
-			.then((response) => {
-				instanceExtensions.set(response.Extensions);
-				isInstanceExtensionsLoaded = true;
-			})
-			.catch((error) => {
-				console.error('Failed to fetch instance extensions:', error);
-			});
-		orchestratorClient
-			.listModelExtensions({ scope: scope })
-			.then((response) => {
-				modelExtensions.set(response.Extensions);
-				isModelExtensionsLoaded = true;
-			})
-			.catch((error) => {
-				console.error('Failed to fetch model extensions:', error);
-			});
-		orchestratorClient
-			.listStorageExtensions({ scope: scope })
-			.then((response) => {
-				storageExtensions.set(response.Extensions);
-				isStorageExtensionsLoaded = true;
-			})
-			.catch((error) => {
-				console.error('Failed to fetch storage extensions:', error);
-			});
-		orchestratorClient
-			.listGeneralExtensions({ scope: scope })
-			.then((response) => {
-				generalExtensions.set(response.Extensions);
-				isGeneralExtensionsLoaded = true;
-			})
-			.catch((error) => {
-				console.error('Failed to fetch general extensions:', error);
-			});
+	async function fetchInstanceExtensions() {
+		try {
+			const response = await orchestratorClient.listInstanceExtensions({ scope: scope });
+			instanceExtensions.set(response.Extensions);
+			isInstanceExtensionsLoaded = true;
+		} catch (error) {
+			console.error('Failed to fetch instance extensions:', error);
+		}
+	}
+
+	async function fetchModelExtensions() {
+		try {
+			const response = await orchestratorClient.listModelExtensions({ scope: scope });
+			modelExtensions.set(response.Extensions);
+			isModelExtensionsLoaded = true;
+		} catch (error) {
+			console.error('Failed to fetch model extensions:', error);
+		}
+	}
+
+	async function fetchStorageExtensions() {
+		try {
+			const response = await orchestratorClient.listStorageExtensions({ scope: scope });
+			storageExtensions.set(response.Extensions);
+			isStorageExtensionsLoaded = true;
+		} catch (error) {
+			console.error('Failed to fetch storage extensions:', error);
+		}
+	}
+
+	async function fetchGeneralExtensions() {
+		try {
+			const response = await orchestratorClient.listGeneralExtensions({ scope: scope });
+			generalExtensions.set(response.Extensions);
+			isGeneralExtensionsLoaded = true;
+		} catch (error) {
+			console.error('Failed to fetch general extensions:', error);
+		}
+	}
+
+	onMount(() => {
+		Promise.all([
+			fetchInstanceExtensions(),
+			fetchModelExtensions(),
+			fetchStorageExtensions(),
+			fetchGeneralExtensions()
+		]);
 	});
 </script>
 
@@ -78,20 +88,11 @@
 					{scope}
 					extensionsBundle="instance"
 					extensions={instanceExtensions}
-					updator={() => {
-						orchestratorClient
-							.listInstanceExtensions({ scope: scope })
-							.then((response) => {
-								instanceExtensions.set(response.Extensions);
-							})
-							.catch((error) => {
-								console.error('Failed to fetch instance extensions:', error);
-							});
-					}}
+					updator={fetchInstanceExtensions}
 				/>
 			</Accordion.Trigger>
 			<Accordion.Content>
-				{#each $instanceExtensions as instanceExtension, index}
+				{#each $instanceExtensions as instanceExtension, index (index)}
 					<Node extension={instanceExtension} alignment={index % 2 ? 'right' : 'left'} />
 				{/each}
 			</Accordion.Content>
@@ -105,20 +106,11 @@
 					{scope}
 					extensionsBundle="model"
 					extensions={modelExtensions}
-					updator={() => {
-						orchestratorClient
-							.listModelExtensions({ scope: scope })
-							.then((response) => {
-								modelExtensions.set(response.Extensions);
-							})
-							.catch((error) => {
-								console.error('Failed to fetch model extensions:', error);
-							});
-					}}
+					updator={fetchModelExtensions}
 				/>
 			</Accordion.Trigger>
 			<Accordion.Content>
-				{#each $modelExtensions as modelExtension, index}
+				{#each $modelExtensions as modelExtension, index (index)}
 					<Node extension={modelExtension} alignment={index % 2 ? 'right' : 'left'} />
 				{/each}
 			</Accordion.Content>
@@ -132,20 +124,11 @@
 					{scope}
 					extensionsBundle="storage"
 					extensions={storageExtensions}
-					updator={() => {
-						orchestratorClient
-							.listStorageExtensions({ scope: scope })
-							.then((response) => {
-								storageExtensions.set(response.Extensions);
-							})
-							.catch((error) => {
-								console.error('Failed to fetch storage extensions:', error);
-							});
-					}}
+					updator={fetchStorageExtensions}
 				/>
 			</Accordion.Trigger>
 			<Accordion.Content>
-				{#each $storageExtensions as storageExtension, index}
+				{#each $storageExtensions as storageExtension, index (index)}
 					<Node extension={storageExtension} alignment={index % 2 ? 'right' : 'left'} />
 				{/each}
 			</Accordion.Content>
@@ -159,20 +142,11 @@
 					{scope}
 					extensionsBundle="general"
 					extensions={generalExtensions}
-					updator={() => {
-						orchestratorClient
-							.listGeneralExtensions({ scope: scope })
-							.then((response) => {
-								generalExtensions.set(response.Extensions);
-							})
-							.catch((error) => {
-								console.error('Failed to fetch general extensions:', error);
-							});
-					}}
+					updator={fetchGeneralExtensions}
 				/>
 			</Accordion.Trigger>
 			<Accordion.Content>
-				{#each $generalExtensions as generalExtension, index}
+				{#each $generalExtensions as generalExtension, index (index)}
 					<Node extension={generalExtension} alignment={index % 2 ? 'right' : 'left'} />
 				{/each}
 			</Accordion.Content>

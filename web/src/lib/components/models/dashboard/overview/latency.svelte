@@ -33,36 +33,49 @@
 		latency: { label: 'Latency', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
-	async function fetch() {
-		prometheusDriver
-			.instantQuery(
+	async function fetchLatestLatency() {
+		try {
+			const response = await prometheusDriver.instantQuery(
 				`histogram_quantile(0.95, sum by(le) (vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}))`
-			)
-			.then((response) => {
-				const value = response.result[0]?.value?.value;
-				latestLatency = isNaN(Number(value)) ? 0 : value;
-			});
-		prometheusDriver
-			.rangeQuery(
+			);
+			const value = response.result[0]?.value;
+			latestLatency = isNaN(Number(value)) ? 0 : value;
+		} catch (error) {
+			console.error(`Fail to fetch latest latency in scope ${scope}:`, error);
+		}
+	}
+
+	async function fetchLatencies() {
+		try {
+			const response = await prometheusDriver.rangeQuery(
 				`histogram_quantile(0.95, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}[2m])))`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60
-			)
-			.then((response) => {
-				const sampleValues: SampleValue[] = response.result[0]?.values ?? [];
-				const filtered = sampleValues.filter((sampleValue) => !isNaN(Number(sampleValue.value)));
-				latencies = filtered.length > 0 ? filtered : [];
-			});
+			);
+			const sampleValues: SampleValue[] = response.result[0]?.values ?? [];
+			const filtered = sampleValues.filter((sampleValue) => !isNaN(Number(sampleValue.value)));
+			latencies = filtered.length > 0 ? filtered : [];
+		} catch (error) {
+			console.error(`Fail to fetch latencies in scope ${scope}:`, error);
+		}
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([fetchLatestLatency(), fetchLatencies()]);
+		} catch (error) {
+			console.error(`Fail to fetch data in scope ${scope}:`, error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		try {
 			await fetch();
-			isLoading = false;
+			isLoaded = true;
 		} catch (error) {
 			console.error(`Fail to fetch data in scope ${scope}:`, error);
 		}
@@ -77,7 +90,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

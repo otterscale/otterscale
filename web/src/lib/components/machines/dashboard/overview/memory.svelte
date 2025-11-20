@@ -44,29 +44,35 @@
 		usage: { label: 'value', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
-	async function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`sum(node_memory_MemTotal_bytes{juju_model=~".*"} - node_memory_MemFree_bytes{juju_model=~".*"} - (node_memory_Cached_bytes{juju_model=~".*"} + node_memory_Buffers_bytes{juju_model=~".*"} + node_memory_SReclaimable_bytes{juju_model=~".*"})) / sum(node_memory_MemTotal_bytes{juju_model=~".*"})`,
-				Date.now() - 10 * 60 * 1000,
-				Date.now(),
-				2 * 60
-			)
-			.then((response) => {
-				memoryUsages = response.result[0]?.values ?? [];
-			});
+	async function fetchMemoryUsages() {
+		const response = await prometheusDriver.rangeQuery(
+			`sum(node_memory_MemTotal_bytes{juju_model=~".*"} - node_memory_MemFree_bytes{juju_model=~".*"} - (node_memory_Cached_bytes{juju_model=~".*"} + node_memory_Buffers_bytes{juju_model=~".*"} + node_memory_SReclaimable_bytes{juju_model=~".*"})) / sum(node_memory_MemTotal_bytes{juju_model=~".*"})`,
+			Date.now() - 10 * 60 * 1000,
+			Date.now(),
+			2 * 60
+		);
+		memoryUsages = response.result && response.result[0] ? response.result[0]?.values : [];
+	}
 
-		machineClient.listMachines({}).then((response) => {
-			machines.set(response.machines);
-		});
+	async function fetchMachines() {
+		const response = await machineClient.listMachines({});
+		machines.set(response.machines);
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([fetchMemoryUsages(), fetchMachines()]);
+		} catch (error) {
+			console.error('Fail to fetch data:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -81,7 +87,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

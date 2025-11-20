@@ -33,36 +33,35 @@
 		ninety_nine: { label: '99', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
+	async function fetchTimesToFirstToken(quantile: number) {
+		const response = await prometheusDriver.rangeQuery(
+			`histogram_quantile(${quantile}, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model="${scope}"}[2m])))`,
+			Date.now() - 24 * 60 * 60 * 1000,
+			Date.now(),
+			2 * 60
+		);
+		if (quantile === 0.95) {
+			ninety_fives = response.result[0]?.values ?? [];
+		} else if (quantile === 0.99) {
+			ninety_nines = response.result[0]?.values ?? [];
+		}
+	}
+
 	async function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`histogram_quantile(0.95, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model="${scope}"}[2m])))`,
-				Date.now() - 24 * 60 * 60 * 1000,
-				Date.now(),
-				2 * 60
-			)
-			.then((response) => {
-				ninety_fives = response.result[0]?.values ?? [];
-			});
-		prometheusDriver
-			.rangeQuery(
-				`histogram_quantile(0.99, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model="${scope}"}[2m])))`,
-				Date.now() - 24 * 60 * 60 * 1000,
-				Date.now(),
-				2 * 60
-			)
-			.then((response) => {
-				ninety_nines = response.result[0]?.values ?? [];
-			});
+		try {
+			await Promise.all([fetchTimesToFirstToken(0.95), fetchTimesToFirstToken(0.99)]);
+		} catch (error) {
+			console.error(`Fail to fetch time to first token data in scope ${scope}:`, error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		try {
 			await fetch();
-			isLoading = false;
+			isLoaded = true;
 		} catch (error) {
 			console.error(`Fail to fetch data in scope ${scope}:`, error);
 		}
@@ -77,7 +76,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full">

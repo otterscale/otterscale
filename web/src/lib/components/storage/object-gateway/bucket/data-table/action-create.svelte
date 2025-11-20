@@ -53,25 +53,23 @@
 		open = false;
 	}
 
-	onMount(() => {
-		storageClient
-			.listUsers({ scope: scope })
-			.then((response) => {
-				userOptions.set(
-					response.users.map(
-						(user) =>
-							({
-								value: user.id,
-								label: user.id,
-								icon: 'ph:user'
-							}) as SingleSelect.OptionType
-					)
-				);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+	onMount(async () => {
+		try {
+			const response = await storageClient.listUsers({ scope: scope });
+			userOptions.set(
+				response.users.map(
+					(user) =>
+						({
+							value: user.id,
+							label: user.id,
+							icon: 'ph:user'
+						}) as SingleSelect.OptionType
+				)
+			);
+			isMounted = true;
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
 	});
 </script>
 

@@ -45,7 +45,6 @@
 
 	const defaults = {
 		scope: scope,
-		namespace: smbShare.namespace,
 		name: smbShare.name,
 		sizeBytes: smbShare.sizeBytes,
 		browsable: smbShare.browsable,

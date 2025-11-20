@@ -32,47 +32,48 @@
 		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
-	function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`
-						sum(
-						irate(
-							container_network_receive_bytes_total{job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
-						)
-						)
-						`,
-				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
-				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60
+	async function fetchReceives() {
+		const response = await prometheusDriver.rangeQuery(
+			`
+			sum(
+			irate(container_network_receive_bytes_total{job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m])
 			)
-			.then((response) => {
-				receives = response.result[0]?.values ?? [];
-			});
-		prometheusDriver
-			.rangeQuery(
-				`
-						sum(
-						irate(
-							container_network_transmit_bytes_total{job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
-						)
-						)
-						`,
-				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
-				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60
+			`,
+			new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
+			new SvelteDate().setMinutes(0, 0, 0),
+			2 * 60
+		);
+		receives = response.result[0]?.values ?? [];
+	}
+
+	async function fetchTransmits() {
+		const response = await prometheusDriver.rangeQuery(
+			`
+			sum(
+			irate(container_network_transmit_bytes_total{job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m])
 			)
-			.then((response) => {
-				transmits = response.result[0]?.values ?? [];
-			});
+			`,
+			new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
+			new SvelteDate().setMinutes(0, 0, 0),
+			2 * 60
+		);
+		transmits = response.result[0]?.values ?? [];
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([fetchReceives(), fetchTransmits()]);
+		} catch (error) {
+			console.error('Error fetching network traffic data:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -87,7 +88,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

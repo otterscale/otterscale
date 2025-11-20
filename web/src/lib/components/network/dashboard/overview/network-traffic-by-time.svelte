@@ -35,35 +35,41 @@
 		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
-	function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`sum(increase(node_network_receive_bytes_total[1h]))`,
-				new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
-				new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
-				1 * 60 * 60
-			)
-			.then((response) => {
-				receivesByTime = response.result[0]?.values ?? [];
-			});
-		prometheusDriver
-			.rangeQuery(
-				`sum(increase(node_network_transmit_bytes_total[1h]))`,
-				new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
-				new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
-				1 * 60 * 60
-			)
-			.then((response) => {
-				transmitsByTime = response.result[0]?.values ?? [];
-			});
+	let isLoaded = $state(false);
+
+	async function fetchReceive() {
+		const response = await prometheusDriver.rangeQuery(
+			`sum(increase(node_network_receive_bytes_total[1h]))`,
+			new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
+			new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
+			1 * 60 * 60
+		);
+		receivesByTime = response.result[0]?.values ?? [];
+	}
+
+	async function fetchTransmit() {
+		const response = await prometheusDriver.rangeQuery(
+			`sum(increase(node_network_transmit_bytes_total[1h]))`,
+			new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
+			new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
+			1 * 60 * 60
+		);
+		transmitsByTime = response.result[0]?.values ?? [];
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([fetchReceive(), fetchTransmit()]);
+			isLoaded = true;
+		} catch (error) {
+			console.error('Failed to fetch network traffic data:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -78,7 +84,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

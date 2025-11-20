@@ -20,14 +20,12 @@
 
 	const namespaces: Writable<Namespace[]> = writable([]);
 	async function fetch() {
-		applicationClient
-			.listNamespaces({ scope })
-			.then((response) => {
-				namespaces.set(response.namespaces);
-			})
-			.catch((error) => {
-				console.debug('Failed to fetch namespaces:', error);
-			});
+		try {
+			const response = await applicationClient.listNamespaces({ scope });
+			namespaces.set(response.namespaces);
+		} catch (error) {
+			console.debug('Failed to fetch namespaces:', error);
+		}
 	}
 
 	let isLoaded = $state(false);

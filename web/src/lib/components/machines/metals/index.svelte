@@ -17,17 +17,14 @@
 
 	const machines = writable<Machine[]>([]);
 	async function fetch() {
-		machineClient
-			.listMachines({})
-			.then((response) => {
-				machines.set(response.machines);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+		try {
+			const response = await machineClient.listMachines({});
+			machines.set(response.machines);
+		} catch (error) {
+			console.error('Failed to fetch machines:', error);
+		}
 	}
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {

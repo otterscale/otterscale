@@ -30,15 +30,13 @@
 	]);
 	const availableInternetProtocolsConfiguration = {} satisfies Chart.ChartConfig;
 
-	function fetch() {
-		networkClient
-			.listNetworks({})
-			.then((response) => {
-				networks.set(response.networks);
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+	async function fetch() {
+		try {
+			const response = await networkClient.listNetworks({});
+			networks.set(response.networks);
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);

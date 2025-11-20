@@ -5,7 +5,7 @@ class ReloadManager {
 	state: boolean = $state(true);
 	interval: number | undefined = $state(5);
 
-	constructor(reloadFunction: () => void, initialState: boolean = true) {
+	constructor(reloadFunction: () => void, initialState: boolean = false) {
 		this.reloadFunction = reloadFunction;
 		this.state = initialState;
 	}

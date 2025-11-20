@@ -31,22 +31,24 @@
 	let isConfigurationLoading = $state(true);
 	let expandedArchitectures = new SvelteMap<string, boolean>();
 
-	const reloadManager = new ReloadManager(() => {
-		configurationClient.getConfiguration({}).then((response) => {
+	async function fetch() {
+		try {
+			const response = await configurationClient.getConfiguration({});
 			configuration.set(response);
-		});
-	});
+		} catch (error) {
+			console.error('Error fetching configuration:', error);
+		}
+	}
+
+	const reloadManager = new ReloadManager(fetch);
 
 	onMount(async () => {
 		try {
-			await configurationClient.getConfiguration({}).then((response) => {
-				configuration.set(response);
-				isConfigurationLoading = false;
-			});
+			await fetch();
+			isConfigurationLoading = false;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
-		reloadManager.start();
 	});
 
 	onDestroy(() => {
