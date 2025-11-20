@@ -9,6 +9,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
 </script>
@@ -25,7 +26,6 @@
 	const transport: Transport = getContext('transport');
 
 	const storageClient = createClient(StorageService, transport);
-	let invalid = $state(false);
 
 	const defaults = {
 		scope: scope,
@@ -35,6 +35,9 @@
 	function reset() {
 		request = defaults;
 	}
+
+	let invalidity = $state({} as Booleanified<CreateUserRequest>);
+	const invalid = $derived(invalidity.userId || invalidity.userName);
 
 	let open = $state(false);
 	function close() {
@@ -51,16 +54,26 @@
 		<Modal.Header>
 			{m.create_user()}
 		</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.id()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.userId} />
+					<SingleInput.General
+						required
+						type="text"
+						bind:value={request.userId}
+						bind:invalid={invalidity.userId}
+					/>
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.userName} />
+					<SingleInput.General
+						required
+						type="text"
+						bind:value={request.userName}
+						bind:invalid={invalidity.userName}
+					/>
 				</Form.Field>
 
 				<Form.Field>

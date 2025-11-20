@@ -9,6 +9,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 </script>
@@ -25,10 +26,8 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
-	let isPoolNameInvalid = $state(false);
-	let isImageNameInvalid = $state(false);
 	const storageClient = createClient(StorageService, transport);
+
 	const defaults = {
 		scope: scope
 	} as DeleteImageRequest;
@@ -36,6 +35,9 @@
 	function reset() {
 		request = defaults;
 	}
+
+	let invalidity = $state({} as Booleanified<DeleteImageRequest>);
+	const invalid = $derived(invalidity.poolName || invalidity.imageName);
 
 	let open = $state(false);
 	function close() {
@@ -61,7 +63,7 @@
 						required
 						target={image.name}
 						bind:value={request.imageName}
-						bind:invalid={isImageNameInvalid}
+						bind:invalid={invalidity.imageName}
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -73,7 +75,7 @@
 						required
 						target={image.poolName}
 						bind:value={request.poolName}
-						bind:invalid={isPoolNameInvalid}
+						bind:invalid={invalidity.poolName}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
@@ -88,7 +90,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={isPoolNameInvalid || isImageNameInvalid}
+					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => storageClient.deleteImage(request), {
 							loading: `Deleting ${request.imageName}...`,

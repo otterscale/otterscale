@@ -1,14 +1,14 @@
 <script lang="ts" module>
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import type {
 		CreateSMBShareRequest,
-		SMBShare_CommonConfig
+		SMBShare_CommonConfig,
+		SMBShare_SecurityConfig
 	} from '$lib/api/storage/v1/storage_pb';
 	import {
 		SMBShare_CommonConfig_MapToGuest,
@@ -18,8 +18,8 @@
 	import CopyButton from '$lib/components/custom/copy-button/copy-button.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
-	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages.js';
@@ -33,26 +33,7 @@
 	let { scope, reloadManager }: { scope: string; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const storageClient = createClient(StorageService, transport);
-	const applicationClient = createClient(ApplicationService, transport);
-
-	let isNamespaceOptionsLoaded = $state(false);
-	const namespaceOptions: Writable<SingleSelect.OptionType[]> = writable([]);
-	async function fetchNamespaces() {
-		try {
-			const response = await applicationClient.listNamespaces({ scope });
-			namespaceOptions.set(
-				response.namespaces.map((namespace) => ({
-					value: namespace.name,
-					label: namespace.name,
-					icon: 'ph:cube'
-				}))
-			);
-		} catch (error) {
-			console.debug('Failed to fetch namespaces:', error);
-		}
-	}
 
 	const defaults = {
 		scope: scope,
@@ -68,57 +49,55 @@
 		request = defaults;
 	}
 
-	let isNameInvalid = $state(false);
-	let isNamespaceInvalid = $state(false);
-	let isSizeInvalid = $state(false);
-	const invalid = $derived(isNameInvalid || isNamespaceInvalid || isSizeInvalid);
+	let invaliditySMBShare = $state({} as Booleanified<CreateSMBShareRequest>);
+	let invaliditySecurityConfig = $state({} as Booleanified<SMBShare_SecurityConfig>);
+	const invalid = $derived(
+		invaliditySMBShare.name ||
+			invaliditySMBShare.sizeBytes ||
+			invaliditySecurityConfig.mode ||
+			(request.securityConfig?.mode === SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY &&
+				(invaliditySecurityConfig.realm || invaliditySecurityConfig.joinSource)) ||
+			(request.securityConfig?.mode === SMBShare_SecurityConfig_Mode.USER &&
+				invaliditySecurityConfig.localUsers)
+	);
 
 	let open = $state(false);
 	function close() {
 		open = false;
 	}
 
-	let securityModeOptions: Writable<SingleSelect.OptionType[]> = $state(
-		writable([
-			{
-				value: SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY,
-				label: 'Active Directory',
-				icon: 'ph:database'
-			},
-			{
-				value: SMBShare_SecurityConfig_Mode.USER,
-				label: 'User',
-				icon: 'ph:textbox'
-			}
-		])
-	);
-	let mapToGuestOptions: Writable<SingleSelect.OptionType[]> = $state(
-		writable([
-			{
-				value: SMBShare_CommonConfig_MapToGuest.NEVER,
-				label: 'Never',
-				icon: 'ph:shield-slash',
-				information: m.map_to_guest_never_info()
-			},
-			{
-				value: SMBShare_CommonConfig_MapToGuest.BAD_USER,
-				label: 'Bad User',
-				icon: 'ph:shield-warning',
-				information: m.map_to_guest_bad_user_info()
-			},
-			{
-				value: SMBShare_CommonConfig_MapToGuest.BAD_PASSWORD,
-				label: 'Bad Password',
-				icon: 'ph:shield-warning',
-				information: m.map_to_guest_bad_password_info()
-			}
-		])
-	);
-
-	onMount(async () => {
-		await fetchNamespaces();
-		isNamespaceOptionsLoaded = true;
-	});
+	const securityModeOptions: Writable<SingleSelect.OptionType[]> = writable([
+		{
+			value: SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY,
+			label: 'Active Directory',
+			icon: 'ph:database'
+		},
+		{
+			value: SMBShare_SecurityConfig_Mode.USER,
+			label: 'User',
+			icon: 'ph:textbox'
+		}
+	]);
+	const mapToGuestOptions: Writable<SingleSelect.OptionType[]> = writable([
+		{
+			value: SMBShare_CommonConfig_MapToGuest.NEVER,
+			label: 'Never',
+			icon: 'ph:shield-slash',
+			information: m.map_to_guest_never_info()
+		},
+		{
+			value: SMBShare_CommonConfig_MapToGuest.BAD_USER,
+			label: 'Bad User',
+			icon: 'ph:shield-warning',
+			information: m.map_to_guest_bad_user_info()
+		},
+		{
+			value: SMBShare_CommonConfig_MapToGuest.BAD_PASSWORD,
+			label: 'Bad Password',
+			icon: 'ph:shield-warning',
+			information: m.map_to_guest_bad_password_info()
+		}
+	]);
 </script>
 
 <Modal.Root bind:open>
@@ -132,50 +111,14 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
+					<Form.Help>{m.smb_share_name_constraint()}</Form.Help>
 					<SingleInput.General
 						required
 						type="text"
 						bind:value={request.name}
-						bind:invalid={isNameInvalid}
+						bind:invalid={invaliditySMBShare.name}
+						validator={(value) => !/^\d/.test(value) && value.length <= 10}
 					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>{m.namespace()}</Form.Label>
-					{#if isNamespaceOptionsLoaded}
-						<SingleSelect.Root
-							required
-							options={namespaceOptions}
-							bind:value={request.namespace}
-							bind:invalid={isNamespaceInvalid}
-						>
-							<SingleSelect.Trigger />
-							<SingleSelect.Content>
-								<SingleSelect.Options>
-									<SingleSelect.Input />
-									<SingleSelect.List>
-										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
-										<SingleSelect.Group>
-											{#each $namespaceOptions as option (option.value)}
-												<SingleSelect.Item {option}>
-													<Icon
-														icon={option.icon ? option.icon : 'ph:empty'}
-														class={cn('size-5', option.icon ? 'visible' : 'invisible')}
-													/>
-													<span class="flex flex-col">
-														<p>{option.label}</p>
-														<p class="text-xs text-muted-foreground">{option.information}</p>
-													</span>
-													<SingleSelect.Check {option} />
-												</SingleSelect.Item>
-											{/each}
-										</SingleSelect.Group>
-									</SingleSelect.List>
-								</SingleSelect.Options>
-							</SingleSelect.Content>
-						</SingleSelect.Root>
-					{:else}
-						<Loading.Selection />
-					{/if}
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.size()}</Form.Label>
@@ -184,9 +127,8 @@
 						type="number"
 						transformer={(value) => String(value)}
 						bind:value={request.sizeBytes}
-						bind:invalid={isSizeInvalid}
+						bind:invalid={invaliditySMBShare.sizeBytes}
 						units={[
-							{ value: 1024 ** 2, label: 'MB' } as SingleInput.UnitType,
 							{ value: 1024 ** 3, label: 'GB' } as SingleInput.UnitType,
 							{ value: 1024 ** 4, label: 'TB' } as SingleInput.UnitType
 						]}
@@ -202,7 +144,7 @@
 							{m.map_to_guest_help()}
 						</Form.Help>
 						<SingleSelect.Root
-							bind:options={mapToGuestOptions}
+							options={mapToGuestOptions}
 							bind:value={request.commonConfig.mapToGuest}
 						>
 							<SingleSelect.Trigger />
@@ -236,8 +178,10 @@
 					<Form.Field>
 						<Form.Label>{m.mode()}</Form.Label>
 						<SingleSelect.Root
-							bind:options={securityModeOptions}
+							required
+							options={securityModeOptions}
 							bind:value={request.securityConfig.mode}
+							bind:invalid={invaliditySecurityConfig.mode}
 						>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
@@ -263,55 +207,76 @@
 						</SingleSelect.Root>
 					</Form.Field>
 
-					<Form.Field>
-						<Form.Label>{m.local_users()}</Form.Label>
-						{#if request.securityConfig.localUsers?.length > 0}
-							<div class="group max-h-40 overflow-y-auto rounded-lg border p-2">
-								{#each request.securityConfig.localUsers as user, index (index)}
+					{#if request.securityConfig.mode === SMBShare_SecurityConfig_Mode.USER}
+						<Form.Field>
+							<Form.Label>{m.local_users()}</Form.Label>
+							{#if request.securityConfig.localUsers?.length > 0}
+								<div class="group max-h-40 overflow-y-auto rounded-lg border p-2">
+									{#each request.securityConfig.localUsers as user, index (index)}
+										<div class="flex items-center gap-2 rounded-lg p-2">
+											<div
+												class={cn('flex size-8 items-center justify-center rounded-full border-2')}
+											>
+												<Icon icon="ph:user" class="size-5" />
+											</div>
+											<div class="flex flex-col gap-1">
+												<p class="text-xs text-muted-foreground">{m.user()}</p>
+												<p class="text-sm">{user.username}</p>
+											</div>
+											<CopyButton
+												class="invisible ml-auto size-4 group-hover:visible"
+												text={user.username}
+											/>
+										</div>
+									{/each}
+								</div>
+							{/if}
+							<CreateUsers
+								required={request.securityConfig.mode === SMBShare_SecurityConfig_Mode.USER}
+								bind:users={request.securityConfig.localUsers}
+								bind:invalid={invaliditySecurityConfig.localUsers}
+							/>
+						</Form.Field>
+					{/if}
+
+					{#if request.securityConfig.mode === SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY}
+						<Form.Field>
+							<Form.Label>{m.realm()}</Form.Label>
+							<SingleInput.General
+								type="text"
+								bind:value={request.securityConfig.realm}
+								bind:invalid={invaliditySecurityConfig.realm}
+								required={request.securityConfig.mode ===
+									SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY}
+							/>
+						</Form.Field>
+
+						<Form.Field>
+							<Form.Label>{m.join_source()}</Form.Label>
+							{#if request.securityConfig.joinSource}
+								<div class="rounded-lg border p-2">
 									<div class="flex items-center gap-2 rounded-lg p-2">
 										<div
 											class={cn('flex size-8 items-center justify-center rounded-full border-2')}
 										>
 											<Icon icon="ph:user" class="size-5" />
 										</div>
+
 										<div class="flex flex-col gap-1">
 											<p class="text-xs text-muted-foreground">{m.user()}</p>
-											<p class="text-sm">{user.username}</p>
+											<p class="text-sm">{request.securityConfig.joinSource.username}</p>
 										</div>
-										<CopyButton
-											class="invisible ml-auto size-4 group-hover:visible"
-											text={user.username}
-										/>
-									</div>
-								{/each}
-							</div>
-						{/if}
-						<CreateUsers bind:users={request.securityConfig.localUsers} />
-					</Form.Field>
-
-					<Form.Field>
-						<Form.Label>{m.realm()}</Form.Label>
-						<SingleInput.General type="text" bind:value={request.securityConfig.realm} />
-					</Form.Field>
-
-					<Form.Field>
-						<Form.Label>{m.join_source()}</Form.Label>
-						{#if request.securityConfig.joinSource}
-							<div class="rounded-lg border p-2">
-								<div class="flex items-center gap-2 rounded-lg p-2">
-									<div class={cn('flex size-8 items-center justify-center rounded-full border-2')}>
-										<Icon icon="ph:user" class="size-5" />
-									</div>
-
-									<div class="flex flex-col gap-1">
-										<p class="text-xs text-muted-foreground">{m.user()}</p>
-										<p class="text-sm">{request.securityConfig.joinSource.username}</p>
 									</div>
 								</div>
-							</div>
-						{/if}
-						<CreateUser bind:user={request.securityConfig.joinSource} />
-					</Form.Field>
+							{/if}
+							<CreateUser
+								bind:user={request.securityConfig.joinSource}
+								bind:invalid={invaliditySecurityConfig.joinSource}
+								required={request.securityConfig.mode ===
+									SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY}
+							/>
+						</Form.Field>
+					{/if}
 				{/if}
 
 				<Form.Field>
@@ -363,7 +328,6 @@
 			<Modal.Action
 				disabled={invalid}
 				onclick={() => {
-					console.log(request);
 					toast.promise(() => storageClient.createSMBShare(request), {
 						loading: `Creating ${request.name}...`,
 						success: () => {

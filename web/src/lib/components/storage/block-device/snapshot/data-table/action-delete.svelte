@@ -57,7 +57,7 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.delete_snapshot()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<SingleInput.Confirm

@@ -54,7 +54,7 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.delete_key()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<SingleInput.Confirm
@@ -62,6 +62,7 @@
 						required
 						target={key.accessKey}
 						bind:value={request.accessKey}
+						bind:invalid
 					/>
 				</Form.Field>
 				<Form.Help>

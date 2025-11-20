@@ -11,6 +11,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -34,7 +35,6 @@
 	const storageClient = createClient(StorageService, transport);
 	let userOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	let isMounted = $state(false);
-	let invalid = $state(false);
 
 	const defaults = {
 		scope: scope,
@@ -44,6 +44,9 @@
 	function reset() {
 		request = defaults;
 	}
+
+	let invalidity = $state({} as Booleanified<CreateBucketRequest>);
+	const invalid = $derived(invalidity.bucketName || invalidity.owner);
 
 	let open = $state(false);
 	function close() {
@@ -77,11 +80,17 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.create_bucket()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General id="name" required type="text" bind:value={request.bucketName} />
+					<SingleInput.General
+						id="name"
+						required
+						type="text"
+						bind:value={request.bucketName}
+						bind:invalid={invalidity.bucketName}
+					/>
 				</Form.Field>
 
 				<Form.Field>
@@ -92,6 +101,7 @@
 							bind:options={userOptions}
 							bind:value={request.owner}
 							required
+							bind:invalid={invalidity.owner}
 						>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>

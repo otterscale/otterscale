@@ -58,13 +58,14 @@
 		<Modal.Header>
 			{m.delete_nfs()}
 		</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<SingleInput.Confirm
 						required
 						target={subvolume.name}
 						bind:value={request.subvolumeName}
+						bind:invalid
 					/>
 				</Form.Field>
 				<Form.Help>

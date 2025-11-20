@@ -62,14 +62,10 @@
 						{m.deletion_warning({ identifier: m.fqdn() })}
 					</Form.Help>
 					<Form.Field>
-						<SingleInput.Boolean required descriptor={() => m.force()} bind:value={request.force} />
+						<SingleInput.Boolean descriptor={() => m.force()} bind:value={request.force} />
 					</Form.Field>
 					<Form.Field>
-						<SingleInput.Boolean
-							required
-							descriptor={() => m.purge_disk()}
-							bind:value={request.purgeDisk}
-						/>
+						<SingleInput.Boolean descriptor={() => m.purge_disk()} bind:value={request.purgeDisk} />
 					</Form.Field>
 				</Form.Field>
 			</Form.Fieldset>
