@@ -10,6 +10,8 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
 
+	import { Dashboard } from './analytics';
+
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);
 
@@ -49,11 +51,11 @@
 				</p>
 			</div>
 
-			<Tabs.Root value="overview">
+			<Tabs.Root value="analytics">
 				<div class="flex justify-between gap-2">
 					<Tabs.List>
 						<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
-						<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
+						<Tabs.Trigger value="analytics">{m.analytics()}</Tabs.Trigger>
 					</Tabs.List>
 					<Reloader bind:checked={isReloading} />
 				</div>
@@ -61,7 +63,7 @@
 					<Overview {prometheusDriver} bind:isReloading />
 				</Tabs.Content>
 				<Tabs.Content value="analytics">
-					<!-- <Dashboard client={prometheusDriver} {machines} /> -->
+					<Dashboard client={prometheusDriver} />
 				</Tabs.Content>
 			</Tabs.Root>
 		</div>

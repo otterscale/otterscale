@@ -525,6 +525,8 @@
 	"family": "系列",
 	"chassis": "機箱",
 	"network": "網路",
+	"networks": "網路",
+	"available_subnets": "可用子網路",
 	"disks": "磁碟",
 	"hardware_information": "硬體資訊",
 	"ip_range": "IP 範圍",

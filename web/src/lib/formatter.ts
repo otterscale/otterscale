@@ -93,6 +93,20 @@ export function formatBigNumber(number: number | bigint) {
 	return number.toLocaleString('en-US');
 }
 
+export function formatPercentage(
+	numerator: number,
+	denominator: number,
+	decimalPlaces: number = 2
+): string | null {
+	if (denominator === 0) {
+		return null;
+	} else if (numerator === 0) {
+		return '0';
+	} else {
+		return ((numerator * 100) / denominator).toFixed(decimalPlaces);
+	}
+}
+
 // export const formatTime = (v: Date | number): string => {
 //     return dayjs(v).format('HH:mm');
 // };
@@ -170,19 +184,19 @@ export function formatProgressColor(
 
 	if (highIsGood) {
 		if (percent > 62) {
-			return '*:bg-green-700';
+			return '*:bg-green-700 dark:*:bg-green-800 bg-green-50 dark:bg-green-950';
 		} else if (percent > 38) {
-			return '*:bg-yellow-500';
+			return '*:bg-yellow-500 dark:*:bg-yellow-600 bg-yellow-50 dark:bg-yellow-950';
 		} else {
-			return '*:bg-red-700';
+			return '*:bg-red-700 dark:*:bg-red-800 bg-red-50 dark:bg-red-950';
 		}
 	} else {
 		if (percent > 62) {
-			return '*:bg-red-700';
+			return '*:bg-red-700 dark:*:bg-red-800 bg-red-50 dark:bg-red-950';
 		} else if (percent > 38) {
-			return '*:bg-yellow-500';
+			return '*:bg-yellow-500 dark:*:bg-yellow-600 bg-yellow-50 dark:bg-yellow-950';
 		} else {
-			return '*:bg-green-700';
+			return '*:bg-green-700 dark:*:bg-green-800 bg-green-50 dark:bg-green-950';
 		}
 	}
 }

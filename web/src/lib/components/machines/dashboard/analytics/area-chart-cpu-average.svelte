@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
@@ -12,7 +11,7 @@
 	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
 	import { m } from '$lib/paraglide/messages';
 
-	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
+	let { client, fqdn }: { client: PrometheusDriver; fqdn: string } = $props();
 
 	// Constants
 	const STEP_SECONDS = 60; // 1 minute step
@@ -29,16 +28,16 @@
 	// Prometheus query for CPU load average
 	const query = $derived({
 		'Load Average 1m': `
-		avg(node_load1{instance=~"${machine.fqdn}"})
-		/ on() group_left() avg(count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"})) * 100
+		avg(node_load1{instance=~"${fqdn}"})
+		/ on() group_left() avg(count by (instance) (node_cpu_seconds_total{instance=~"${fqdn}", mode="idle"})) * 100
 		`,
 		'Load Average 5m': `
-		avg(node_load5{instance=~"${machine.fqdn}"})
-		/ on() group_left() avg(count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"})) * 100
+		avg(node_load5{instance=~"${fqdn}"})
+		/ on() group_left() avg(count by (instance) (node_cpu_seconds_total{instance=~"${fqdn}", mode="idle"})) * 100
 		`,
 		'Load Average 15m': `
-		avg(node_load15{instance=~"${machine.fqdn}"})
-		/ on() group_left() avg(count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"})) * 100
+		avg(node_load15{instance=~"${fqdn}"})
+		/ on() group_left() avg(count by (instance) (node_cpu_seconds_total{instance=~"${fqdn}", mode="idle"})) * 100
 		`
 	});
 </script>

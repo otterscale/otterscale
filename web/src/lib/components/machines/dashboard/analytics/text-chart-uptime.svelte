@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/text/text.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
@@ -10,7 +9,7 @@
 	import { formatDuration } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
-	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
+	let { client, fqdn }: { client: PrometheusDriver; fqdn: string } = $props();
 
 	// Constants
 	const CHART_TITLE = m.uptime();
@@ -18,9 +17,9 @@
 	// Query
 	const query = $derived(
 		`
-		node_time_seconds{instance=~"${machine.fqdn}"}
+		node_time_seconds{instance=~"${fqdn}"}
 		-
-		node_boot_time_seconds{instance=~"${machine.fqdn}"}
+		node_boot_time_seconds{instance=~"${fqdn}"}
 		`
 	);
 </script>

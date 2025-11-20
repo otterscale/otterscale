@@ -130,8 +130,8 @@
 				<!-- Preferences -->
 				<DropdownMenu.Group>
 					<DropdownMenu.Item onclick={toggleMode}>
-						<Icon icon={mode.current === 'light' ? 'ph:sun' : 'ph:moon'} />
-						{mode.current === 'light' ? m.light_mode() : m.dark_mode()}
+						<Icon icon={mode.current === 'light' ? 'ph:moon' : 'ph:sun'} />
+						{mode.current === 'light' ? m.dark_mode() : m.light_mode()}
 					</DropdownMenu.Item>
 
 					<DropdownMenu.Sub>

@@ -1,18 +1,26 @@
 <script lang="ts">
-	import { type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
-	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
-	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
-	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
-	import Title from '$lib/components/custom/chart/title.svelte';
-	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { formatProgressColor } from '$lib/formatter';
-	// import { formatCapacity } from '$lib/formatter';
+	import Icon from '@iconify/svelte';
+	import { type Table } from '@tanstack/table-core';
 
-	let { virtualMachines }: { virtualMachines: VirtualMachine[] } = $props();
+	import { type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
+	import * as Card from '$lib/components/ui/card';
+	import { m } from '$lib/paraglide/messages';
+
+	let {
+		table,
+		scope: _
+	}: {
+		table: Table<VirtualMachine>;
+		scope: string;
+	} = $props();
+
+	const filteredVirtualMachines = $derived(
+		table.getFilteredRowModel().rows.map((row) => row.original)
+	);
 
 	// Calculate statistics
-	const totalMachines = $derived(virtualMachines.length);
-	const totalDisks = $derived(virtualMachines.reduce((acc, vm) => acc + vm.disks.length, 0));
+	// const totalMachines = $derived(virtualMachines.length);
+	// const totalDisks = $derived(virtualMachines.reduce((acc, vm) => acc + vm.disks.length, 0));
 	// const totalDataVolumes = $derived(
 	// 	virtualMachines.reduce(
 	// 		(acc, vm) => acc + vm.disks.filter((disk) => disk.sourceData.case === 'dataVolume').length,
@@ -34,13 +42,14 @@
 	// 		}, 0),
 	// 	),
 	// );
-	const machinesOn = $derived(virtualMachines.filter((vm) => vm.status === 'Running').length);
-	const powerOnPercentage = $derived(
-		totalMachines === 0 ? 0 : Math.round((machinesOn / totalMachines) * 100)
-	);
+	// const machinesOn = $derived(virtualMachines.filter((vm) => vm.status === 'Running').length);
+	// const powerOnPercentage = $derived(
+	// 	totalMachines === 0 ? 0 : Math.round((machinesOn / totalMachines) * 100)
+	// );
 </script>
 
 <div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+	<!-- 	
 	<Layout>
 		{#snippet title()}
 			<Title title="VIRTUAL MACHINE" />
@@ -59,7 +68,7 @@
 		{#snippet content()}
 			<Content value={totalDisks} />
 		{/snippet}
-	</Layout>
+	</Layout> -->
 
 	<!-- <Layout>
 		{#snippet title()}
@@ -81,7 +90,7 @@
 			</p>
 		{/snippet}
 	</Layout> -->
-
+	<!-- 
 	<Layout>
 		{#snippet title()}
 			<Title title="POWER ON" />
@@ -102,5 +111,33 @@
 				class={formatProgressColor(powerOnPercentage)}
 			/>
 		{/snippet}
-	</Layout>
+	</Layout> -->
+
+	{#snippet VirtualMachines()}
+		{@const title = m.virtual_machine()}
+		{@const titleIcon = 'ph:chart-bar-bold'}
+		{@const backgroundIcon = 'ph:desktop-tower'}
+		{@const virtualMachines = filteredVirtualMachines.length}
+		<Card.Root class="relative overflow-hidden">
+			<Card.Header class="gap-3">
+				<Card.Title class="flex items-center gap-2 font-medium">
+					<div
+						class="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"
+					>
+						<Icon icon={titleIcon} class="size-5" />
+					</div>
+					<p class="font-bold">{title}</p>
+				</Card.Title>
+			</Card.Header>
+			<Card.Content class="lg:max-[1100px]:flex-col lg:max-[1100px]:items-start">
+				<p class="text-7xl font-semibold">{virtualMachines}</p>
+			</Card.Content>
+			<div
+				class="absolute top-0 -right-16 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
+			>
+				<Icon icon={backgroundIcon} class="size-72" />
+			</div>
+		</Card.Root>
+	{/snippet}
+	{@render VirtualMachines()}
 </div>

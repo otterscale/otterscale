@@ -9,7 +9,6 @@
 
 	import { DataTable } from './data-table/index';
 	import ExtensionsAlert from './extensions-alert.svelte';
-	import { Statistics } from './statistics';
 </script>
 
 <script lang="ts">
@@ -46,7 +45,6 @@
 <main class="space-y-4 py-4">
 	<ExtensionsAlert {scope} />
 	{#if isMounted}
-		<Statistics virtualMachines={$virtualMachines} />
 		<DataTable {virtualMachines} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />

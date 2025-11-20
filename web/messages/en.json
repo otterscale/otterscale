@@ -527,6 +527,8 @@
 	"family": "Family",
 	"chassis": "Chassis",
 	"network": "Network",
+	"networks": "Networks",
+	"available_subnets": "Available Subnets",
 	"disks": "Disks",
 	"hardware_information": "Hardware Information",
 	"ip_range": "IP Range",

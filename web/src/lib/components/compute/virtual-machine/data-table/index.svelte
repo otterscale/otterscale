@@ -21,6 +21,7 @@
 
 	import Create from './action-create.svelte';
 	import { getColumns, messages } from './columns';
+	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
@@ -114,6 +115,9 @@
 </script>
 
 <Layout.Root>
+	<Layout.Statistics>
+		<Statistics {table} {scope} />
+	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy

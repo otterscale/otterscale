@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import { on } from 'events';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -8,7 +9,6 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	import { DataTable } from './data-table/index';
-	import { Statistics } from './statistics';
 </script>
 
 <script lang="ts">
@@ -16,20 +16,31 @@
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
+	// async function fetch() {
+	// 	machineClient
+	// 		.listMachines({})
+	// 		.then((response) => {
+	// 			machines.set(response.machines);
+	// 			// isMachinesLoaded = true;
+	// 		})
+	// 		.catch((error) => {
+	// 			console.error('Error during initial data load:', error);
+	// 		});
+	// }
 	async function fetch() {
-		machineClient
-			.listMachines({})
-			.then((response) => {
-				machines.set(response.machines);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+		const response = await machineClient.listMachines({});
+		machines.set(response.machines);
 	}
+
+	// async function fetch2() {
+	// 	const response = await machineClient.listMachines({});
+	// 	machines.set(response.machines);
+	// }
+	let isMounted = $state(false);
+
 	const reloadManager = new ReloadManager(fetch, false);
 
-	let isMounted = $state(false);
+	// const isMounted = $derived(isMachinesLoaded);
 	onMount(async () => {
 		await fetch();
 		isMounted = true;
@@ -41,7 +52,6 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Statistics machines={$machines} />
 		<DataTable {machines} {reloadManager} />
 	{:else}
 		<Loading.DataTable />

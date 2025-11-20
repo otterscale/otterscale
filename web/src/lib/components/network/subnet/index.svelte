@@ -8,7 +8,6 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	import { DataTable } from './data-table/index';
-	import { Statistics } from './statistics';
 </script>
 
 <script lang="ts">
@@ -44,7 +43,6 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Statistics networks={$networks} />
 		<DataTable {networks} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
