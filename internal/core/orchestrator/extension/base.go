@@ -111,6 +111,10 @@ var (
 					ValuesMap: map[string]string{
 						release.TypeLabel: "extension",
 					},
+					PostFunc: func(_ string) error {
+						// Run Juju Config on Scope
+						return nil
+					},
 				},
 			},
 		},
@@ -128,10 +132,6 @@ var (
 					RepoURL:   chartRepoURL,
 					ValuesMap: map[string]string{
 						release.TypeLabel: "extension",
-					},
-					PostFunc: func(_ string) error {
-						// Run Juju Config on Scope
-						return nil
 					},
 				},
 			},
