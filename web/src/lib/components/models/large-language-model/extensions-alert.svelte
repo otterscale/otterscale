@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 
 	import { type Extension, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
@@ -18,15 +18,6 @@
 
 	const modelExtensions: Writable<Extension[]> = writable([]);
 
-	orchestratorClient
-		.listModelExtensions({ scope: scope })
-		.then((response) => {
-			modelExtensions.set(response.Extensions);
-		})
-		.catch((error) => {
-			console.error('Failed to fetch extensions:', error);
-		});
-
 	const alert: Alert.AlertType = $derived({
 		title: m.extensions_alert_title(),
 		message: m.extensions_alert_description(),
@@ -34,6 +25,15 @@
 			installExtensions(scope, ['model']);
 		},
 		variant: 'destructive'
+	});
+
+	onMount(async () => {
+		try {
+			const response = await orchestratorClient.listModelExtensions({ scope: scope });
+			modelExtensions.set(response.Extensions);
+		} catch (error) {
+			console.error('Failed to fetch extensions:', error);
+		}
 	});
 </script>
 

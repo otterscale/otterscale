@@ -31,36 +31,43 @@
 		generation: { label: 'Generation', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
+	async function fetchPrompts() {
+		try {
+			const response = await prometheusDriver.instantQuery(
+				`max(rate(vllm:prompt_tokens_total{juju_model="${scope}"}[2m]))`
+			);
+			prompts = response.result[0]?.values ?? [];
+		} catch (error) {
+			console.error(`Fail to fetch latest prompt throughput in scope ${scope}:`, error);
+		}
+	}
+
+	async function fetchGenerations() {
+		try {
+			const response = await prometheusDriver.instantQuery(
+				`max(rate(vllm:generation_tokens_total{juju_model="${scope}"}[2m]))`
+			);
+			generations = response.result[0]?.values ?? [];
+		} catch (error) {
+			console.error(`Fail to fetch latest generation throughput in scope ${scope}:`, error);
+		}
+	}
+
 	async function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`max(rate(vllm:prompt_tokens_total{juju_model="${scope}"}[2m]))`,
-				Date.now() - 24 * 60 * 60 * 1000,
-				Date.now(),
-				2 * 60
-			)
-			.then((response) => {
-				prompts = response.result[0]?.values ?? [];
-			});
-		prometheusDriver
-			.rangeQuery(
-				`max(rate(vllm:generation_tokens_total{juju_model="${scope}"}[2m]))`,
-				Date.now() - 24 * 60 * 60 * 1000,
-				Date.now(),
-				2 * 60
-			)
-			.then((response) => {
-				generations = response.result[0]?.values ?? [];
-			});
+		try {
+			await Promise.all([fetchPrompts(), fetchGenerations()]);
+		} catch (error) {
+			console.error(`Fail to fetch throughputs data in scope ${scope}:`, error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		try {
 			await fetch();
-			isLoading = false;
+			isLoaded = true;
 		} catch (error) {
 			console.error(`Fail to fetch data in scope ${scope}:`, error);
 		}
@@ -75,7 +82,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full">
