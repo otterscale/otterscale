@@ -21,7 +21,7 @@
 
 	const sidebar = useSidebar();
 
-	const getUserInitials = (name: string) => {
+	const getUserInitials = (name: string | null) => {
 		return (
 			name
 				?.split(' ')

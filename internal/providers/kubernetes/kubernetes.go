@@ -9,6 +9,7 @@ import (
 
 	"helm.sh/helm/v3/pkg/cli"
 	"helm.sh/helm/v3/pkg/registry"
+	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -25,8 +26,9 @@ type Kubernetes struct {
 	envSettings    *cli.EnvSettings
 	registryClient *registry.Client
 
-	configs    sync.Map
-	clientsets sync.Map
+	configs       sync.Map
+	clientsets    sync.Map
+	extClientsets sync.Map
 }
 
 func New(conf *config.Config, juju *juju.Juju) (*Kubernetes, error) {
@@ -146,6 +148,26 @@ func (m *Kubernetes) clientset(scope string) (*kubernetes.Clientset, error) {
 	}
 
 	m.clientsets.Store(scope, clientset)
+
+	return clientset, nil
+}
+
+func (m *Kubernetes) extClientset(scope string) (*clientset.Clientset, error) {
+	if v, ok := m.extClientsets.Load(scope); ok {
+		return v.(*clientset.Clientset), nil
+	}
+
+	config, err := m.Config(scope)
+	if err != nil {
+		return nil, err
+	}
+
+	clientset, err := clientset.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
+	m.extClientsets.Store(scope, clientset)
 
 	return clientset, nil
 }

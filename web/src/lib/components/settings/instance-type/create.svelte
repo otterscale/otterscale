@@ -19,7 +19,7 @@
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
-	let isNameInvalid: boolean | undefined = $state();
+	let invalid: boolean | undefined = $state();
 
 	// ==================== Default Values & Constants ====================
 
@@ -63,12 +63,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General
-						required
-						type="text"
-						bind:value={request.name}
-						bind:invalid={isNameInvalid}
-					/>
+					<SingleInput.General required type="text" bind:value={request.name} bind:invalid />
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.namespace()}</Form.Label>
@@ -76,12 +71,11 @@
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.cpu_cores()}</Form.Label>
-					<SingleInput.General required type="number" bind:value={request.cpuCores} min="1" />
+					<SingleInput.General type="number" bind:value={request.cpuCores} min="1" />
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.memory()}</Form.Label>
 					<SingleInput.Measurement
-						required
 						bind:value={request.memoryBytes}
 						transformer={(value) => String(value)}
 						units={[{ value: 1024 ** 3, label: 'GB' } as SingleInput.UnitType]}
@@ -100,7 +94,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={isNameInvalid}
+					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => virtualMachineClient.createInstanceType(request), {
 							loading: `Creating ${request.name}...`,

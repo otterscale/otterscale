@@ -35,6 +35,7 @@ var ProviderSet = wire.NewSet(
 	kubernetes.New,
 	kubernetes.NewChartRepo,
 	kubernetes.NewConfigMapRepo,
+	kubernetes.NewCustomResourceDefinitionRepo,
 	kubernetes.NewDaemonSetRepo,
 	kubernetes.NewDeploymentRepo,
 	kubernetes.NewJobRepo,

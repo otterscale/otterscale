@@ -63,10 +63,15 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.delete_snapshot()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.Confirm required target={snapshot.name} bind:value={request.snapshotName} />
+					<SingleInput.Confirm
+						required
+						target={snapshot.name}
+						bind:value={request.snapshotName}
+						bind:invalid
+					/>
 				</Form.Field>
 				<Form.Help>
 					{m.deletion_warning({ identifier: m.snapshot_name() })}

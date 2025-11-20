@@ -21,6 +21,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Modal from '$lib/components/custom/modal/mutiple-step';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { formatCapacity, formatSecond } from '$lib/formatter';
@@ -124,21 +125,19 @@
 
 	const client = createClient(ConfigurationService, transport);
 
-	let invalidName = $state(false);
-	let invalidTarget = $state(false);
-	let invalidHost = $state(false);
-	let invalidAccessKey = $state(false);
-	let invalidSecretKey = $state(false);
-	let invalidOperation = $state(false);
-
-	const invalidBasic = $derived(
-		invalidName ||
-			invalidTarget ||
+	let invalidTestResult = $state({} as Booleanified<TestResult>);
+	let invalidWarp = $state({} as Booleanified<Warp>);
+	let invalidWarpInput = $state({} as Booleanified<Warp_Input>);
+	let invalidExternalObjectService = $state({} as Booleanified<ExternalObjectService>);
+	const invalid = $derived(
+		invalidTestResult.name ||
+			invalidWarp.target ||
 			(requestWarp.target.case == 'externalObjectService' &&
-				(invalidHost || invalidAccessKey || invalidSecretKey))
+				(invalidExternalObjectService.host ||
+					invalidExternalObjectService.accessKey ||
+					invalidExternalObjectService.secretKey)) ||
+			invalidWarpInput.operation
 	);
-	const invalidAdvanced = $derived(invalidOperation);
-	const invalid = $derived(invalidBasic || invalidAdvanced);
 </script>
 
 <Modal.Root bind:open steps={3}>
@@ -188,7 +187,7 @@
 									id="name"
 									required
 									bind:value={request.name}
-									bind:invalid={invalidName}
+									bind:invalid={invalidTestResult.name}
 								/>
 							</Form.Field>
 							<!-- Choose Target -->
@@ -198,7 +197,7 @@
 									options={warpTarget}
 									required
 									bind:value={requestWarp.target.case}
-									bind:invalid={invalidTarget}
+									bind:invalid={invalidWarp.target}
 								>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
@@ -245,7 +244,7 @@
 										type="text"
 										required
 										bind:value={requestExternalObjectService.host}
-										bind:invalid={invalidHost}
+										bind:invalid={invalidExternalObjectService.host}
 									/>
 								</Form.Field>
 								<Form.Field>
@@ -254,7 +253,7 @@
 										type="text"
 										required
 										bind:value={requestExternalObjectService.accessKey}
-										bind:invalid={invalidAccessKey}
+										bind:invalid={invalidExternalObjectService.accessKey}
 									/>
 								</Form.Field>
 								<Form.Field>
@@ -263,7 +262,7 @@
 										type="text"
 										required
 										bind:value={requestExternalObjectService.secretKey}
-										bind:invalid={invalidSecretKey}
+										bind:invalid={invalidExternalObjectService.secretKey}
 									/>
 								</Form.Field>
 							</Form.Fieldset>
@@ -283,7 +282,7 @@
 									options={warpInputOperation}
 									required
 									bind:value={warpOperation}
-									bind:invalid={invalidOperation}
+									bind:invalid={invalidWarpInput.operation}
 								>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>

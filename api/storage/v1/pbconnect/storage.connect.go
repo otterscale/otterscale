@@ -159,6 +159,9 @@ const (
 	// StorageServiceUpdateSMBShareProcedure is the fully-qualified name of the StorageService's
 	// UpdateSMBShare RPC.
 	StorageServiceUpdateSMBShareProcedure = "/otterscale.storage.v1.StorageService/UpdateSMBShare"
+	// StorageServiceValidateSMBUserProcedure is the fully-qualified name of the StorageService's
+	// ValidateSMBUser RPC.
+	StorageServiceValidateSMBUserProcedure = "/otterscale.storage.v1.StorageService/ValidateSMBUser"
 )
 
 // StorageServiceClient is a client for the otterscale.storage.v1.StorageService service.
@@ -205,6 +208,7 @@ type StorageServiceClient interface {
 	ListSMBShares(context.Context, *v1.ListSMBSharesRequest) (*v1.ListSMBSharesResponse, error)
 	CreateSMBShare(context.Context, *v1.CreateSMBShareRequest) (*v1.SMBShare, error)
 	UpdateSMBShare(context.Context, *v1.UpdateSMBShareRequest) (*v1.SMBShare, error)
+	ValidateSMBUser(context.Context, *v1.ValidateSMBUserRequest) (*v1.ValidateSMBUserResponse, error)
 }
 
 // NewStorageServiceClient constructs a client for the otterscale.storage.v1.StorageService service.
@@ -470,6 +474,12 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(storageServiceMethods.ByName("UpdateSMBShare")),
 			connect.WithClientOptions(opts...),
 		),
+		validateSMBUser: connect.NewClient[v1.ValidateSMBUserRequest, v1.ValidateSMBUserResponse](
+			httpClient,
+			baseURL+StorageServiceValidateSMBUserProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ValidateSMBUser")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -517,6 +527,7 @@ type storageServiceClient struct {
 	listSMBShares               *connect.Client[v1.ListSMBSharesRequest, v1.ListSMBSharesResponse]
 	createSMBShare              *connect.Client[v1.CreateSMBShareRequest, v1.SMBShare]
 	updateSMBShare              *connect.Client[v1.UpdateSMBShareRequest, v1.SMBShare]
+	validateSMBUser             *connect.Client[v1.ValidateSMBUserRequest, v1.ValidateSMBUserResponse]
 }
 
 // ListMonitors calls otterscale.storage.v1.StorageService.ListMonitors.
@@ -898,6 +909,15 @@ func (c *storageServiceClient) UpdateSMBShare(ctx context.Context, req *v1.Updat
 	return nil, err
 }
 
+// ValidateSMBUser calls otterscale.storage.v1.StorageService.ValidateSMBUser.
+func (c *storageServiceClient) ValidateSMBUser(ctx context.Context, req *v1.ValidateSMBUserRequest) (*v1.ValidateSMBUserResponse, error) {
+	response, err := c.validateSMBUser.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // StorageServiceHandler is an implementation of the otterscale.storage.v1.StorageService service.
 type StorageServiceHandler interface {
 	ListMonitors(context.Context, *v1.ListMonitorsRequest) (*v1.ListMonitorsResponse, error)
@@ -942,6 +962,7 @@ type StorageServiceHandler interface {
 	ListSMBShares(context.Context, *v1.ListSMBSharesRequest) (*v1.ListSMBSharesResponse, error)
 	CreateSMBShare(context.Context, *v1.CreateSMBShareRequest) (*v1.SMBShare, error)
 	UpdateSMBShare(context.Context, *v1.UpdateSMBShareRequest) (*v1.SMBShare, error)
+	ValidateSMBUser(context.Context, *v1.ValidateSMBUserRequest) (*v1.ValidateSMBUserResponse, error)
 }
 
 // NewStorageServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -1203,6 +1224,12 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		connect.WithSchema(storageServiceMethods.ByName("UpdateSMBShare")),
 		connect.WithHandlerOptions(opts...),
 	)
+	storageServiceValidateSMBUserHandler := connect.NewUnaryHandlerSimple(
+		StorageServiceValidateSMBUserProcedure,
+		svc.ValidateSMBUser,
+		connect.WithSchema(storageServiceMethods.ByName("ValidateSMBUser")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.storage.v1.StorageService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case StorageServiceListMonitorsProcedure:
@@ -1289,6 +1316,8 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 			storageServiceCreateSMBShareHandler.ServeHTTP(w, r)
 		case StorageServiceUpdateSMBShareProcedure:
 			storageServiceUpdateSMBShareHandler.ServeHTTP(w, r)
+		case StorageServiceValidateSMBUserProcedure:
+			storageServiceValidateSMBUserHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1464,4 +1493,8 @@ func (UnimplementedStorageServiceHandler) CreateSMBShare(context.Context, *v1.Cr
 
 func (UnimplementedStorageServiceHandler) UpdateSMBShare(context.Context, *v1.UpdateSMBShareRequest) (*v1.SMBShare, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdateSMBShare is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ValidateSMBUser(context.Context, *v1.ValidateSMBUserRequest) (*v1.ValidateSMBUserResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ValidateSMBUser is not implemented"))
 }

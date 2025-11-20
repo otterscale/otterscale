@@ -50,10 +50,10 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.delete_user()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.Confirm required target={user.id} bind:value={request.userId} />
+					<SingleInput.Confirm required target={user.id} bind:value={request.userId} bind:invalid />
 				</Form.Field>
 				<Form.Help>
 					{m.deletion_warning({ identifier: m.user_id() })}

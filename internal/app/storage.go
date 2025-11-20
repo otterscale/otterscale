@@ -450,7 +450,7 @@ func (s *StorageService) DeleteUserKey(ctx context.Context, req *pb.DeleteUserKe
 }
 
 func (s *StorageService) ListSMBShares(ctx context.Context, req *pb.ListSMBSharesRequest) (*pb.ListSMBSharesResponse, error) {
-	shares, hostname, err := s.smb.ListSMBShares(ctx, req.GetScope(), req.GetNamespace())
+	shares, hostname, err := s.smb.ListSMBShares(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -484,9 +484,9 @@ func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBSh
 
 	share, hostname, err := s.smb.CreateSMBShare(ctx,
 		req.GetScope(),
-		req.GetNamespace(),
 		req.GetName(),
 		req.GetSizeBytes(),
+		req.GetPort(),
 		req.GetBrowsable(),
 		req.GetReadOnly(),
 		req.GetGuestOk(),
@@ -528,9 +528,9 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 
 	share, hostname, err := s.smb.UpdateSMBShare(ctx,
 		req.GetScope(),
-		req.GetNamespace(),
 		req.GetName(),
 		req.GetSizeBytes(),
+		req.GetPort(),
 		req.GetBrowsable(),
 		req.GetReadOnly(),
 		req.GetGuestOk(),
@@ -546,6 +546,35 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 
 	resp := toProtoSMBShare(share, hostname)
 	return resp, nil
+}
+
+func (s *StorageService) ValidateSMBUser(ctx context.Context, req *pb.ValidateSMBUserRequest) (*pb.ValidateSMBUserResponse, error) {
+	result, err := s.smb.ValidateSMBUser(ctx,
+		req.GetRealm(),
+		req.GetUsername(),
+		req.GetPassword(),
+		req.GetSearchUsername(),
+		req.GetTls())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ValidateSMBUserResponse{}
+	resp.SetValid(result.Valid)
+	resp.SetEntityType(toProtoEntityType(result.EntityType))
+	resp.SetMessage(result.Message)
+	return resp, nil
+}
+
+func toProtoEntityType(et int) pb.ValidateSMBUserResponse_EntityType {
+	switch et {
+	case smb.EntityTypeUser:
+		return pb.ValidateSMBUserResponse_USER
+	case smb.EntityTypeGroup:
+		return pb.ValidateSMBUserResponse_GROUP
+	default:
+		return pb.ValidateSMBUserResponse_UNKNOWN
+	}
 }
 
 func toACL(str string) object.BucketCannedACL {
@@ -1030,7 +1059,6 @@ func toProtoSMBShare(sd *smb.ShareData, hostname string) *pb.SMBShare {
 	share := sd.Share
 	if share != nil {
 		ret.SetName(share.Name)
-		ret.SetNamespace(share.Namespace)
 
 		service := sd.Service
 		if service != nil {

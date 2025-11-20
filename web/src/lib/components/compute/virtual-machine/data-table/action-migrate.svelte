@@ -53,7 +53,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.hostname()}</Form.Label>
-					<SingleInput.General type="text" bind:value={request.hostname} bind:invalid />
+					<SingleInput.General type="text" bind:value={request.hostname} required bind:invalid />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>

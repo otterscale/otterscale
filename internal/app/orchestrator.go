@@ -8,7 +8,6 @@ import (
 
 	pb "github.com/otterscale/otterscale/api/orchestrator/v1"
 	"github.com/otterscale/otterscale/api/orchestrator/v1/pbconnect"
-	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/machine"
 	"github.com/otterscale/otterscale/internal/core/orchestrator"
 	"github.com/otterscale/otterscale/internal/core/orchestrator/extension"
@@ -134,7 +133,7 @@ func (s *OrchestratorService) ListStorageExtensions(ctx context.Context, req *pb
 }
 
 func (s *OrchestratorService) InstallExtensions(ctx context.Context, req *pb.InstallExtensionsRequest) (*emptypb.Empty, error) {
-	if err := s.extension.InstallExtensions(ctx, req.GetScope(), toChartRefMap(req.GetCharts())); err != nil {
+	if err := s.extension.InstallExtensions(ctx, req.GetScope(), toManifests(req.GetManifests())); err != nil {
 		return nil, err
 	}
 
@@ -143,7 +142,7 @@ func (s *OrchestratorService) InstallExtensions(ctx context.Context, req *pb.Ins
 }
 
 func (s *OrchestratorService) UpgradeExtensions(ctx context.Context, req *pb.UpgradeExtensionsRequest) (*emptypb.Empty, error) {
-	if err := s.extension.UpgradeExtensions(ctx, req.GetScope(), toChartRefMap(req.GetCharts())); err != nil {
+	if err := s.extension.UpgradeExtensions(ctx, req.GetScope(), toManifests(req.GetManifests())); err != nil {
 		return nil, err
 	}
 
@@ -151,11 +150,14 @@ func (s *OrchestratorService) UpgradeExtensions(ctx context.Context, req *pb.Upg
 	return resp, nil
 }
 
-func toChartRefMap(cs []*pb.Extension_Chart) map[string]string {
-	ret := map[string]string{}
+func toManifests(ms []*pb.Extension_Manifest) []extension.Manifest {
+	ret := []extension.Manifest{}
 
-	for _, c := range cs {
-		ret[c.GetName()] = c.GetRef()
+	for _, m := range ms {
+		ret = append(ret, extension.Manifest{
+			ID:      m.GetId(),
+			Version: m.GetVersion(),
+		})
 	}
 
 	return ret
@@ -253,48 +255,25 @@ func toProtoExtensions(ps []extension.Extension) []*pb.Extension {
 
 func toProtoExtension(p *extension.Extension) *pb.Extension {
 	ret := &pb.Extension{}
-
-	release := p.Release
-
-	if release != nil {
-		ret.SetName(release.Name)
-		ret.SetNamespace(release.Namespace)
-
-		info := release.Info
-
-		if info != nil {
-			ret.SetStatus(info.Status.String())
-			ret.SetDescription(info.Description)
-			ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
-			ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
-			if !info.Deleted.IsZero() {
-				ret.SetDeletedAt(timestamppb.New(info.Deleted.Time))
-			}
-		}
-
-		current := release.Chart
-
-		if current != nil && current.Metadata != nil {
-			ret.SetCurrent(toProtoExtensionChart(current.Metadata, ""))
-		}
+	ret.SetName(p.Name)
+	ret.SetDescription(p.Description)
+	ret.SetIcon(p.Icon)
+	ret.SetStatus(p.Status)
+	if p.DeployedAt != nil {
+		ret.SetDeployedAt(timestamppb.New(*p.DeployedAt))
 	}
-
-	latest := p.Latest
-
-	if latest != nil && latest.Metadata != nil {
-		ret.SetLatest(toProtoExtensionChart(latest.Metadata, p.LatestURL))
+	if p.Current != nil {
+		ret.SetCurrent(toProtoExtensionManifest(p.Current))
 	}
-
+	if p.Latest != nil {
+		ret.SetLatest(toProtoExtensionManifest(p.Latest))
+	}
 	return ret
 }
 
-func toProtoExtensionChart(md *chart.Metadata, ref string) *pb.Extension_Chart {
-	ret := &pb.Extension_Chart{}
-	ret.SetName(md.Name)
-	ret.SetVersion(md.Version)
-	ret.SetAppVersion(md.AppVersion)
-	ret.SetDescription(md.Description)
-	ret.SetIcon(md.Icon)
-	ret.SetRef(ref)
+func toProtoExtensionManifest(m *extension.Manifest) *pb.Extension_Manifest {
+	ret := &pb.Extension_Manifest{}
+	ret.SetId(m.ID)
+	ret.SetVersion(m.Version)
 	return ret
 }

@@ -2,8 +2,7 @@
 @import 'tw-animate-css';
 @import '@fontsource/geist';
 @import '@fontsource/geist-mono';
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/typography';
+@import '@fontsource/noto-sans-tc';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -90,7 +89,7 @@
 
 @theme inline {
 	/* font */
-	--font-sans: 'Geist', sans-serif;
+	--font-sans: 'Geist', 'Noto Sans TC', sans-serif;
 	--font-mono: 'Geist Mono', monospace;
 
 	/* custom */
