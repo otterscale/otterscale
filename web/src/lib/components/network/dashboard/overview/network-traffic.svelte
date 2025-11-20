@@ -53,8 +53,6 @@
 		}
 	]);
 
-	let isLoaded = $state(false);
-
 	async function fetchReceives() {
 		const response = await prometheusDriver.rangeQuery(
 			`sum(irate(node_network_receive_bytes_total[4m]))`,
@@ -97,7 +95,6 @@
 				fetchLatestReceive(),
 				fetchLatestTransmit()
 			]);
-			isLoaded = true;
 		} catch (error) {
 			console.error('Failed to fetch network traffic data:', error);
 		}
@@ -105,8 +102,10 @@
 
 	const reloadManager = new ReloadManager(fetch);
 
-	onMount(() => {
-		fetch();
+	let isLoaded = $state(false);
+	onMount(async () => {
+		await fetch();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
