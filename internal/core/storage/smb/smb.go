@@ -869,13 +869,13 @@ func (uc *UseCase) connectLDAP(serverName string, port uint16, useTLS bool) (*ld
 			return nil, fmt.Errorf("failed to connect to LDAP server: %w", err)
 		}
 		return conn, nil
-	} else {
-		conn, err := ldap.DialURL(fmt.Sprintf("ldap://%s", ldapURL))
-		if err != nil {
-			return nil, fmt.Errorf("failed to connect to LDAP server: %w", err)
-		}
-		return conn, nil
 	}
+
+	conn, err := ldap.DialURL(fmt.Sprintf("ldap://%s", ldapURL))
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to LDAP server: %w", err)
+	}
+	return conn, nil
 }
 
 func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, searchUsername string, useTLS bool) (*ADValidateResult, error) {
