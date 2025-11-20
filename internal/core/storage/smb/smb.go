@@ -80,7 +80,7 @@ type User struct {
 }
 
 type ADValidateResult struct {
-	IsValid    bool
+	Valid      bool
 	EntityType int
 	Message    string
 }
@@ -314,7 +314,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 	}
 
 	// Create join secret
-	if joinSource != nil {
+	if joinSource != nil && joinSource.Username != "" && joinSource.Password != "" {
 		joinSecret := uc.buildJoinSecret(namespace, names.JoinSecret, joinSource)
 
 		if _, err = uc.secret.Create(ctx, scope, namespace, joinSecret); err != nil {
@@ -349,11 +349,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 
 	// Wait for service to be created automatically and update NodePort in background
 	if port > 0 {
-		go func() {
-			ctxWithTimeout, cancel := context.WithTimeout(ctx, servicePollingTimeout)
-			defer cancel()
-			uc.waitAndUpdateServiceNodePort(ctxWithTimeout, scope, namespace, names.Share, port)
-		}()
+		go uc.waitAndUpdateServiceNodePort(context.Background(), scope, namespace, names.Share, port)
 	}
 
 	url, err := uc.service.URL(scope)
@@ -813,7 +809,7 @@ func (uc *UseCase) parseSearchUsername(searchUsername string) (string, *ADValida
 	if strings.HasPrefix(searchUsername, "@\"") {
 		// Must end with " if starts with @"
 		if !strings.HasSuffix(searchUsername, "\"") {
-			result.IsValid = false
+			result.Valid = false
 			result.Message = "invalid format: missing closing quote"
 			return "", result
 		}
@@ -824,7 +820,7 @@ func (uc *UseCase) parseSearchUsername(searchUsername string) (string, *ADValida
 
 		// Reject invalid format with forward slash
 		if strings.Contains(actualSearchName, "/") {
-			result.IsValid = false
+			result.Valid = false
 			result.Message = "invalid format: use backslash (\\) instead of forward slash (/)"
 			return "", result
 		}
@@ -837,7 +833,7 @@ func (uc *UseCase) parseSearchUsername(searchUsername string) (string, *ADValida
 
 	actualSearchName = strings.TrimSpace(actualSearchName)
 	if actualSearchName == "" {
-		result.IsValid = false
+		result.Valid = false
 		result.Message = "invalid format: empty username or group name"
 		return "", result
 	}
@@ -935,7 +931,7 @@ func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, sear
 		return result, nil
 	}
 
-	result.IsValid = true
+	result.Valid = true
 	result.EntityType = determineEntityType(sr.Entries[0].GetAttributeValues("objectClass"))
 	result.Message = "validation successful"
 

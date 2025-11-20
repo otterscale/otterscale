@@ -19,6 +19,8 @@ import (
 	"github.com/otterscale/otterscale/internal/core/storage/smb"
 )
 
+const DefaultSMBNamespace = "samba-operator-system"
+
 type StorageService struct {
 	pbconnect.UnimplementedStorageServiceHandler
 
@@ -450,7 +452,7 @@ func (s *StorageService) DeleteUserKey(ctx context.Context, req *pb.DeleteUserKe
 }
 
 func (s *StorageService) ListSMBShares(ctx context.Context, req *pb.ListSMBSharesRequest) (*pb.ListSMBSharesResponse, error) {
-	shares, hostname, err := s.smb.ListSMBShares(ctx, req.GetScope(), req.GetNamespace())
+	shares, hostname, err := s.smb.ListSMBShares(ctx, req.GetScope(), DefaultSMBNamespace)
 	if err != nil {
 		return nil, err
 	}
@@ -484,7 +486,7 @@ func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBSh
 
 	share, hostname, err := s.smb.CreateSMBShare(ctx,
 		req.GetScope(),
-		req.GetNamespace(),
+		DefaultSMBNamespace,
 		req.GetName(),
 		req.GetSizeBytes(),
 		req.GetPort(),
@@ -529,7 +531,7 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 
 	share, hostname, err := s.smb.UpdateSMBShare(ctx,
 		req.GetScope(),
-		req.GetNamespace(),
+		DefaultSMBNamespace,
 		req.GetName(),
 		req.GetSizeBytes(),
 		req.GetPort(),
@@ -562,7 +564,7 @@ func (s *StorageService) ValidateSMBUser(ctx context.Context, req *pb.ValidateSM
 	}
 
 	resp := &pb.ValidateSMBUserResponse{}
-	resp.SetIsValid(result.IsValid)
+	resp.SetValid(result.Valid)
 	resp.SetEntityType(toProtoEntityType(result.EntityType))
 	resp.SetMessage(result.Message)
 
@@ -1039,7 +1041,7 @@ func toProtoSMBShareSecurityConfig(sc *smb.SecurityConfig, localUsers []smb.User
 	ret.SetLocalUsers(toProtoSMBShareSecurityConfigUsers(localUsers))
 	ret.SetRealm(sc.Spec.Realm)
 
-	if joinSource != nil {
+	if joinSource != nil && joinSource.Username != "" {
 		ret.SetJoinSource(toProtoSMBShareSecurityConfigUser(joinSource))
 	}
 

@@ -11290,7 +11290,7 @@ func (b0 ValidateSMBUserRequest_builder) Build() *ValidateSMBUserRequest {
 
 type ValidateSMBUserResponse struct {
 	state                  protoimpl.MessageState             `protogen:"opaque.v1"`
-	xxx_hidden_IsValid     bool                               `protobuf:"varint,1,opt,name=is_valid,json=isValid"`
+	xxx_hidden_Valid       bool                               `protobuf:"varint,1,opt,name=valid"`
 	xxx_hidden_EntityType  ValidateSMBUserResponse_EntityType `protobuf:"varint,2,opt,name=entity_type,json=entityType,enum=otterscale.storage.v1.ValidateSMBUserResponse_EntityType"`
 	xxx_hidden_Message     *string                            `protobuf:"bytes,3,opt,name=message"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -11324,9 +11324,9 @@ func (x *ValidateSMBUserResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ValidateSMBUserResponse) GetIsValid() bool {
+func (x *ValidateSMBUserResponse) GetValid() bool {
 	if x != nil {
-		return x.xxx_hidden_IsValid
+		return x.xxx_hidden_Valid
 	}
 	return false
 }
@@ -11350,8 +11350,8 @@ func (x *ValidateSMBUserResponse) GetMessage() string {
 	return ""
 }
 
-func (x *ValidateSMBUserResponse) SetIsValid(v bool) {
-	x.xxx_hidden_IsValid = v
+func (x *ValidateSMBUserResponse) SetValid(v bool) {
+	x.xxx_hidden_Valid = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
@@ -11365,7 +11365,7 @@ func (x *ValidateSMBUserResponse) SetMessage(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *ValidateSMBUserResponse) HasIsValid() bool {
+func (x *ValidateSMBUserResponse) HasValid() bool {
 	if x == nil {
 		return false
 	}
@@ -11386,9 +11386,9 @@ func (x *ValidateSMBUserResponse) HasMessage() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *ValidateSMBUserResponse) ClearIsValid() {
+func (x *ValidateSMBUserResponse) ClearValid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_IsValid = false
+	x.xxx_hidden_Valid = false
 }
 
 func (x *ValidateSMBUserResponse) ClearEntityType() {
@@ -11404,7 +11404,7 @@ func (x *ValidateSMBUserResponse) ClearMessage() {
 type ValidateSMBUserResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	IsValid    *bool
+	Valid      *bool
 	EntityType *ValidateSMBUserResponse_EntityType
 	Message    *string
 }
@@ -11413,9 +11413,9 @@ func (b0 ValidateSMBUserResponse_builder) Build() *ValidateSMBUserResponse {
 	m0 := &ValidateSMBUserResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.IsValid != nil {
+	if b.Valid != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
-		x.xxx_hidden_IsValid = *b.IsValid
+		x.xxx_hidden_Valid = *b.Valid
 	}
 	if b.EntityType != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
@@ -13079,9 +13079,9 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x03 \x01(\tR\bpassword\x12'\n" +
 	"\x0fsearch_username\x18\x04 \x01(\tR\x0esearchUsername\x12\x10\n" +
-	"\x03tls\x18\x05 \x01(\bR\x03tls\"\xda\x01\n" +
-	"\x17ValidateSMBUserResponse\x12\x19\n" +
-	"\bis_valid\x18\x01 \x01(\bR\aisValid\x12Z\n" +
+	"\x03tls\x18\x05 \x01(\bR\x03tls\"\xd5\x01\n" +
+	"\x17ValidateSMBUserResponse\x12\x14\n" +
+	"\x05valid\x18\x01 \x01(\bR\x05valid\x12Z\n" +
 	"\ventity_type\x18\x02 \x01(\x0e29.otterscale.storage.v1.ValidateSMBUserResponse.EntityTypeR\n" +
 	"entityType\x12\x18\n" +
 	"\amessage\x18\x03 \x01(\tR\amessage\".\n" +
