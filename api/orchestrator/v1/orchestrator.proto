@@ -199,23 +199,17 @@ message ListGPURelationsByModelResponse {
 }
 
 message Extension {
-  message Chart {
-    string name = 1;
+  message Manifest {
+    string id = 1;
     string version = 2;
-    string app_version = 3;
-    string description = 4;
-    string icon = 5;
-    string ref = 6;
   }
   string name = 1;
-  string namespace = 2;
-  string status = 3;
-  string description = 4;
-  google.protobuf.Timestamp first_deployed_at = 5;
-  google.protobuf.Timestamp last_deployed_at = 6;
-  google.protobuf.Timestamp deleted_at = 7;
-  Chart current = 11;
-  Chart latest = 12;
+  string description = 2;
+  string icon = 3;
+  string status = 11;
+  google.protobuf.Timestamp deployed_at = 12;
+  Manifest current = 21;
+  Manifest latest = 22;
 }
 
 message ListGeneralExtensionsRequest {
@@ -257,11 +251,11 @@ message ListStorageExtensionsResponse {
 message InstallExtensionsRequest {
   string scope = 1;
   reserved 2;
-  repeated Extension.Chart charts = 3;
+  repeated Extension.Manifest manifests = 3;
 }
 
 message UpgradeExtensionsRequest {
   string scope = 1;
   reserved 2;
-  repeated Extension.Chart charts = 3;
+  repeated Extension.Manifest manifests = 3;
 }
