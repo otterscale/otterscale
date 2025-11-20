@@ -105,7 +105,7 @@
 								() =>
 									orchestratorClient.installExtensions({
 										scope: scope,
-										charts: $extensions
+										manifests: $extensions
 											.filter((extension) => extension.latest && !extension.current)
 											.map((extension) => extension.latest!)
 									}),
@@ -140,7 +140,7 @@
 								() =>
 									orchestratorClient.upgradeExtensions({
 										scope: scope,
-										charts: $extensions
+										manifests: $extensions
 											.filter((extension) => extension.latest && extension.current)
 											.map((extension) => extension.latest!)
 									}),

@@ -4,7 +4,6 @@
 	import type { Extension } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as Card from '$lib/components/ui/card';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { cn } from '$lib/utils';
 </script>
 
@@ -24,7 +23,7 @@
 			class="absolute left-1/2 z-10 flex size-13 -translate-x-1/2 transform items-center justify-center rounded-full border bg-muted/70 font-bold ring-1 ring-muted/30 ring-offset-1"
 		>
 			<Avatar.Root class="size-9">
-				<Avatar.Image src={extension.latest?.icon} />
+				<Avatar.Image src={extension.icon} />
 				<Avatar.Fallback>
 					<Icon icon="ph:puzzle-piece" class="size-6" />
 				</Avatar.Fallback>
@@ -40,28 +39,16 @@
 								class={cn(extension.current ? 'text-green-500' : 'text-red-500', 'size-6')}
 							/>
 							<div class="space-y-1">
-								<h3 class="text-base font-bold">{extension.latest?.name}</h3>
+								<h3 class="text-sm font-bold">{extension.name}</h3>
 								<p class="text-xs text-muted-foreground">
-									{extension.latest?.version}
+									{extension.current ? extension.current.version : extension.latest?.version}
 								</p>
 							</div>
 						</div>
-						{#if extension.latest?.ref}
-							<Tooltip.Provider>
-								<Tooltip.Root>
-									<Tooltip.Trigger>
-										<Icon icon="ph:archive-bold" class="size-4" />
-									</Tooltip.Trigger>
-									<Tooltip.Content>
-										{extension.latest?.ref}
-									</Tooltip.Content>
-								</Tooltip.Root>
-							</Tooltip.Provider>
-						{/if}
 					</div>
 
 					<p class="text-sm font-light text-muted-foreground">
-						{extension.latest?.description}
+						{extension.description}
 					</p>
 				</Card.Content>
 			</Card.Root>
