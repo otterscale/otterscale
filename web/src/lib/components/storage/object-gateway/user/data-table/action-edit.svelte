@@ -53,16 +53,16 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.edit_user()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.id()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.userId} />
+					<SingleInput.General required type="text" bind:value={request.userId} bind:invalid />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.userName} />
+					<SingleInput.General type="text" bind:value={request.userName} />
 				</Form.Field>
 
 				<Form.Field>

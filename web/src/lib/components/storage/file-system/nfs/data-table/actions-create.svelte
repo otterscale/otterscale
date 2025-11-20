@@ -56,21 +56,21 @@
 		<Modal.Header class="flex items-center justify-center text-xl font-bold">
 			{m.create_nfs()}
 		</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.subvolumeName} />
+					<SingleInput.General
+						required
+						type="text"
+						bind:value={request.subvolumeName}
+						bind:invalid
+					/>
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>{m.group()}</Form.Label>
-					<SingleInput.General
-						required
-						disabled
-						type="text"
-						value={group === '' ? 'default' : group}
-					/>
+					<SingleInput.General disabled type="text" value={group === '' ? 'default' : group} />
 				</Form.Field>
 
 				<Form.Field>

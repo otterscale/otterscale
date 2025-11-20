@@ -83,17 +83,17 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.edit_bucket()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.bucketName} />
+					<SingleInput.General required type="text" bind:value={request.bucketName} bind:invalid />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>{m.owner()}</Form.Label>
 					{#if isMounted}
-						<SingleSelect.Root bind:options={userOptions} bind:value={request.owner} required>
+						<SingleSelect.Root bind:options={userOptions} bind:value={request.owner}>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
 								<SingleSelect.Options>

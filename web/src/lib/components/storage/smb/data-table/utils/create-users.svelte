@@ -5,7 +5,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import Button, { buttonVariants } from '$lib/components/ui/button/button.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
 </script>
@@ -13,8 +13,9 @@
 <script lang="ts">
 	let {
 		users = $bindable<SMBShare_SecurityConfig_User[]>(),
-		invalid = $bindable<boolean>()
-	}: { users: SMBShare_SecurityConfig_User[]; invalid?: boolean } = $props();
+		invalid = $bindable<boolean>(),
+		required = $bindable<boolean>()
+	}: { users: SMBShare_SecurityConfig_User[]; invalid?: boolean; required?: boolean } = $props();
 
 	if (!users) {
 		users = [];
@@ -37,7 +38,15 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger variant="primary" class="w-full">{m.create()}/{m.edit()}</Modal.Trigger>
+	<Modal.Trigger
+		variant="default"
+		class={cn(
+			'w-full ring-1 ring-primary',
+			required && !(users && users.length > 0)
+				? 'text-destructive ring-destructive'
+				: buttonVariants({ variant: 'outline' })
+		)}>{m.create()}/{m.edit()}</Modal.Trigger
+	>
 	<Modal.Content>
 		{#if users.length > 0}
 			<div class="max-h-40 overflow-y-auto rounded-lg border p-2">

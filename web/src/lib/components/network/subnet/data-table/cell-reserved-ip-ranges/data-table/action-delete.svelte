@@ -12,6 +12,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 </script>
@@ -22,9 +23,6 @@
 
 	const transport: Transport = getContext('transport');
 
-	let invalidStartIP: boolean | undefined = $state();
-	let invalidEndIP: boolean | undefined = $state();
-
 	const client = createClient(NetworkService, transport);
 	const defaults = {
 		id: ipRange.id
@@ -33,6 +31,9 @@
 	function reset() {
 		request = defaults;
 	}
+
+	let invalidity = $state({} as Booleanified<Network_IPRange>);
+	const invalid = $derived(invalidity.startIp || invalidity.endIp);
 
 	let open = $state(false);
 	function close() {
@@ -51,11 +52,15 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.start_ip()}</Form.Label>
-					<SingleInput.Confirm required target={ipRange.startIp} bind:invalid={invalidStartIP} />
+					<SingleInput.Confirm
+						required
+						target={ipRange.startIp}
+						bind:invalid={invalidity.startIp}
+					/>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.end_ip()}</Form.Label>
-					<SingleInput.Confirm required target={ipRange.endIp} bind:invalid={invalidEndIP} />
+					<SingleInput.Confirm required target={ipRange.endIp} bind:invalid={invalidity.endIp} />
 				</Form.Field>
 				<Form.Help>
 					{m.deletion_warning({ identifier: m.range() })}
@@ -72,7 +77,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalidStartIP || invalidEndIP}
+					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => client.deleteIPRange(request), {
 							loading: 'Loading...',

@@ -53,7 +53,7 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.delete_group()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<SingleInput.Confirm
@@ -61,6 +61,7 @@
 						required
 						target={subvolumeGroup.name}
 						bind:value={request.groupName}
+						bind:invalid
 					/>
 				</Form.Field>
 				<Form.Help>

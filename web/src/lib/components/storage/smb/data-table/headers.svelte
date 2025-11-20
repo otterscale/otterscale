@@ -8,9 +8,7 @@
 
 	export const headers = {
 		row_picker,
-		name,
-		namespace,
-		replicas,
+		uri,
 		healthies,
 		size,
 		browsable,
@@ -31,39 +29,21 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet name(column: Column<SMBShare>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet namespace(column: Column<SMBShare>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.namespace()}</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet replicas(column: Column<SMBShare>)}
+{#snippet uri(column: Column<SMBShare>)}
 	<Layout.Header class="justify-end">
-		<Layout.HeaderViewer>{m.replicas()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
+		<Layout.HeaderViewer>{m.uri()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet healthies(column: Column<SMBShare>)}
 	<Layout.Header class="justify-end">
-		<Layout.HeaderViewer>{m.healthies()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
+		<Layout.HeaderViewer>{m.healthies()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

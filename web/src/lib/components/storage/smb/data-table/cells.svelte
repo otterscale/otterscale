@@ -18,9 +18,7 @@
 
 	export const cells = {
 		row_picker,
-		name,
-		namespace,
-		replicas,
+		uri,
 		healthies,
 		size,
 		browsable,
@@ -63,27 +61,15 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet name(row: Row<SMBShare>)}
+{#snippet uri(row: Row<SMBShare>)}
 	<Layout.Cell class="items-start">
-		{row.original.name}
-	</Layout.Cell>
-{/snippet}
-
-{#snippet namespace(row: Row<SMBShare>)}
-	<Layout.Cell class="items-start">
-		{row.original.namespace}
-	</Layout.Cell>
-{/snippet}
-
-{#snippet replicas(row: Row<SMBShare>)}
-	<Layout.Cell class="items-end">
-		{row.original.replicas}
+		{row.original.uri}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet healthies(row: Row<SMBShare>)}
 	<Layout.Cell class="items-end">
-		{row.original.healthies}
+		{row.original.healthies}/{row.original.replicas}
 	</Layout.Cell>
 {/snippet}
 

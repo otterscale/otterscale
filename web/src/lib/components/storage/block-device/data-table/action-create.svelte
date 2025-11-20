@@ -11,6 +11,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import * as Collapsible from '$lib/components/ui/collapsible';
@@ -31,8 +32,7 @@
 
 	let isAdvancedOpen = $state(false);
 	let isPoolsLoading = $state(true);
-	let isImageNameInvalid = $state(false);
-	let isPoolNameInvalid = $state(false);
+
 	const poolOptions = writable<SingleSelect.OptionType[]>([]);
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
@@ -52,6 +52,9 @@
 	function close() {
 		open = false;
 	}
+
+	let invalidity = $state({} as Booleanified<CreateImageRequest>);
+	const invalid = $derived(invalidity.poolName || invalidity.imageName);
 
 	async function fetchVolumeOptions() {
 		try {
@@ -98,7 +101,7 @@
 						required
 						type="text"
 						bind:value={request.imageName}
-						bind:invalid={isImageNameInvalid}
+						bind:invalid={invalidity.imageName}
 					/>
 				</Form.Field>
 
@@ -111,7 +114,7 @@
 							required
 							options={poolOptions}
 							bind:value={request.poolName}
-							bind:invalid={isPoolNameInvalid}
+							bind:invalid={invalidity.poolName}
 						>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
@@ -250,7 +253,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={isImageNameInvalid || isPoolNameInvalid}
+					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => storageClient.createImage(request), {
 							loading: `Creating ${request.imageName}...`,
