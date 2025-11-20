@@ -22,10 +22,7 @@
 	// const totalMachines = $derived(virtualMachines.length);
 	// const totalDisks = $derived(virtualMachines.reduce((acc, vm) => acc + vm.disks.length, 0));
 	// const totalDataVolumes = $derived(
-	// 	virtualMachines.reduce(
-	// 		(acc, vm) => acc + vm.disks.filter((disk) => disk.sourceData.case === 'dataVolume').length,
-	// 		0,
-	// 	),
+
 	// );
 	// const storageFormatted = $derived(
 	// 	formatCapacity(
@@ -140,4 +137,32 @@
 		</Card.Root>
 	{/snippet}
 	{@render VirtualMachines()}
+
+	{#snippet power()}
+		{@const title = m.power()}
+		{@const titleIcon = 'ph:chart-bar-bold'}
+		{@const backgroundIcon = 'ph:cube'}
+		{@const on = filteredVirtualMachines.filter((vm) => vm.status === 'Running').length}
+		<Card.Root class="relative overflow-hidden">
+			<Card.Header class="gap-3">
+				<Card.Title class="flex items-center gap-2 font-medium">
+					<div
+						class="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"
+					>
+						<Icon icon={titleIcon} class="size-5" />
+					</div>
+					<p class="font-bold">{title}</p>
+				</Card.Title>
+			</Card.Header>
+			<Card.Content class="lg:max-[1100px]:flex-col lg:max-[1100px]:items-start">
+				<p class="text-7xl font-semibold">{on}</p>
+			</Card.Content>
+			<div
+				class="absolute top-0 -right-16 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
+			>
+				<Icon icon={backgroundIcon} class="size-72" />
+			</div>
+		</Card.Root>
+	{/snippet}
+	{@render power()}
 </div>
