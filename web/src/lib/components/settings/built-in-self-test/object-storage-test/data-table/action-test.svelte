@@ -125,7 +125,6 @@
 
 	const client = createClient(ConfigurationService, transport);
 
-	// TODO: Refactor with Booneanified type of Request
 	let invalidTestResult = $state({} as Booleanified<TestResult>);
 	let invalidWarp = $state({} as Booleanified<Warp>);
 	let invalidWarpInput = $state({} as Booleanified<Warp_Input>);

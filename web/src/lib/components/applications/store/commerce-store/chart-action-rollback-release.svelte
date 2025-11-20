@@ -77,7 +77,6 @@
 		</Form.Root>
 		<Modal.Footer>
 			<Modal.Cancel
-				disabled={invalid}
 				onclick={() => {
 					reset();
 				}}
@@ -85,6 +84,7 @@
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
+				disabled={invalid}
 				onclick={() => {
 					toast.promise(() => client.rollbackRelease(request), {
 						loading: 'Loading...',

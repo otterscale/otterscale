@@ -111,7 +111,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<Form.Help>Must not start with a number and be at most 10 characters long.</Form.Help>
+					<Form.Help>{m.smb_share_name_constraint()}</Form.Help>
 					<SingleInput.General
 						required
 						type="text"

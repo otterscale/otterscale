@@ -56,7 +56,7 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.delete_release()}</Modal.Header>
-		<Form.Root >
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Help>
 					{m.deletion_warning({ identifier: m.name() })}

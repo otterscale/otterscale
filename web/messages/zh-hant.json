@@ -57,6 +57,7 @@
 	"network_file_system": "NFS",
 	"file_system": "檔案系統",
 	"smb": "SMB",
+	"smb_share_name_constraint": "不得以數字開頭，且最多 10 個字元。",
 	"browsable": "可瀏覽",
 	"read_only": "唯讀",
 	"guest_accessible": "訪客可存取",
