@@ -21,18 +21,15 @@
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);
-
 	const testResults = writable<TestResult[]>([]);
+
 	async function fetch() {
-		client
-			.listTestResults({})
-			.then((response) => {
-				testResults.set(response.testResults.filter((result) => result.kind.case === 'fio'));
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+		try {
+			const response = await client.listTestResults({});
+			testResults.set(response.testResults.filter((result) => result.kind.case === 'fio'));
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
 	}
 	const reloadManager = new ReloadManager(fetch);
 

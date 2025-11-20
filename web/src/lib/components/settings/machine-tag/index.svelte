@@ -16,19 +16,21 @@
 <script lang="ts">
 	const transport: Transport = getContext('transport');
 	const client = createClient(MachineService, transport);
-
 	const tags = writable<Tag[]>();
-	let isTagLoading = $state(true);
 
-	onMount(async () => {
+	async function fetch() {
 		try {
-			await client.listTags({}).then((response) => {
-				tags.set(response.tags);
-				isTagLoading = false;
-			});
+			const response = await client.listTags({});
+			tags.set(response.tags);
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
+	}
+
+	let isTagLoading = $state(true);
+	onMount(async () => {
+		await fetch();
+		isTagLoading = false;
 	});
 </script>
 
