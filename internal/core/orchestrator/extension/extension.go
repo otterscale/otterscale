@@ -83,18 +83,15 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, chartRef
 }
 
 func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []base) ([]Extension, error) {
-	var (
-		latest  *chart.Version
-		release *release.Release
-	)
-
+	versions := make([]chart.Version, len(bases))
+	releases := make([]release.Release, len(bases))
 	eg, egctx := errgroup.WithContext(ctx)
 
 	for i := range bases {
 		eg.Go(func() error {
 			v, err := uc.chart.GetStableVersion(egctx, bases[i].RepoURL, bases[i].Name, true)
 			if err == nil {
-				latest = v
+				versions[i] = *v
 			}
 			return err
 		})
@@ -102,7 +99,7 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 		eg.Go(func() error {
 			v, err := uc.release.Get(egctx, scope, bases[i].Namespace, bases[i].Name)
 			if err == nil {
-				release = v
+				releases[i] = *v
 			}
 			if errors.Is(err, driver.ErrReleaseNotFound) {
 				return nil
@@ -117,15 +114,15 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 
 	ret := []Extension{}
 
-	for _, base := range bases {
-		if len(latest.URLs) == 0 {
-			return nil, fmt.Errorf("no chart URL found for %q", base.Name)
+	for i := range bases {
+		if len(versions[i].URLs) == 0 {
+			return nil, fmt.Errorf("no chart URL found for %q", bases[i].Name)
 		}
 
 		ret = append(ret, Extension{
-			Release:   release,
-			Latest:    latest,
-			LatestURL: latest.URLs[0],
+			Release:   &releases[i],
+			Latest:    &versions[i],
+			LatestURL: versions[i].URLs[0],
 		})
 	}
 

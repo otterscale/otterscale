@@ -3,8 +3,6 @@
 @import '@fontsource/geist';
 @import '@fontsource/geist-mono';
 @import '@fontsource/noto-sans-tc';
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
 

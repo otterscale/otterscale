@@ -1,6 +1,8 @@
 import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
+import { env } from '$env/dynamic/private';
+import { isFlexibleBooleanTrue } from '$lib/helper';
 import { paraglideMiddleware } from '$lib/paraglide/server';
 import {
 	deleteSessionTokenCookie,
@@ -18,6 +20,10 @@ const handleParaglide: Handle = ({ event, resolve }) =>
 	});
 
 const handleAuth: Handle = async ({ event, resolve }) => {
+	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE)) {
+		return resolve(event);
+	}
+
 	const token = event.cookies.get('OS_SESSION') ?? null;
 	if (!token) {
 		event.locals.user = null;
@@ -25,7 +31,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	const { session, user } = validateSessionToken(token);
+	const { session, user } = await validateSessionToken(token);
 	if (session) {
 		setSessionTokenCookie(event.cookies, token, session.expiresAt);
 	} else {
