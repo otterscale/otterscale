@@ -15,6 +15,7 @@ type chartManifest struct {
 	Labels      map[string]string
 	Annotations map[string]string
 	ValuesMap   map[string]string
+	PostFunc    func(scope string) error
 }
 
 type crdManifest struct {
@@ -97,6 +98,24 @@ var (
 		},
 	}
 
+	registry = []base{
+		{
+			ID:          "kubevirt-infra", // helm chart name
+			Name:        "Registry",
+			Description: "",
+			Logo:        "https://github.com/distribution.png",
+			Charts: []chartManifest{
+				{
+					Namespace: "distribution",
+					RepoURL:   chartRepoURL,
+					ValuesMap: map[string]string{
+						release.TypeLabel: "extension",
+					},
+				},
+			},
+		},
+	}
+
 	model = []base{
 		{
 			ID:          "gpu-operator",
@@ -109,6 +128,10 @@ var (
 					RepoURL:   chartRepoURL,
 					ValuesMap: map[string]string{
 						release.TypeLabel: "extension",
+					},
+					PostFunc: func(_ string) error {
+						// Run Juju Config on Scope
+						return nil
 					},
 				},
 			},
@@ -174,6 +197,7 @@ var (
 func (uc *UseCase) base(id string) (base, error) {
 	all := []base{}
 	all = append(all, general...)
+	all = append(all, registry...)
 	all = append(all, model...)
 	all = append(all, instance...)
 	all = append(all, storage...)
