@@ -45,10 +45,12 @@ readonly OTTERSCALE_CHARMHUB_URL="https://api.charmhub.io"
 readonly OTTERSCALE_MAAS_ADMIN_USER="admin"
 readonly OTTERSCALE_MAAS_ADMIN_PASS="admin"
 readonly OTTERSCALE_MAAS_ADMIN_EMAIL="admin@example.com"
-readonly OTTERSCALE_INSTALL_DIR=$(dirname "$(readlink -f "$0")")
+OTTERSCALE_INSTALL_DIR=$(dirname "$(readlink -f "$0")")
+readonly OTTERSCALE_INSTALL_DIR
 
 # Runtime variables
-readonly TEMP_LOG=$(mktemp)
+TEMP_LOG=$(mktemp)
+readonly TEMP_LOG
 readonly LOG="$OTTERSCALE_INSTALL_DIR/setup.log"
 MAAS_DHCP_START_IP=""
 MAAS_DHCP_END_IP=""
@@ -203,9 +205,13 @@ is_ip_in_network() {
     local ip=$1
     local network=$2
     local mask=$3
-    local ip_number=$(ip_to_number $ip)
-    local network_number=$(network_to_number $network $mask)
-    local mask_number=$(ip_to_number $mask)
+    local ip_number
+    local network_number
+    local mask_number
+    ip_number=$(ip_to_number "$ip")
+    network_number=$(network_to_number "$network" "$mask")
+    mask_number=$(ip_to_number "$mask")
+
 
     if [[ $((ip_number & mask_number)) -eq "$network_number" ]]; then
         return 0
@@ -571,7 +577,8 @@ prompt_bridge_creation() {
     get_default_dns "$CURRENT_INTERFACE"
 
     log "INFO" "Create network bridge $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-    local CURRENT_CONNECTION=$(nmcli -t -f NAME,DEVICE connection show --active | grep "$CURRENT_INTERFACE" | cut -d: -f1)
+    local CURRENT_CONNECTION
+    CURRENT_CONNECTION=$(nmcli -t -f NAME,DEVICE connection show --active | grep "$CURRENT_INTERFACE" | cut -d: -f1)
     if ! nmcli connection add type bridge ifname "$OTTERSCALE_BRIDGE_NAME" con-name "$OTTERSCALE_BRIDGE_NAME" \
         ipv4.method manual \
         ipv4.addresses "$CURRENT_CIDR" \
@@ -615,7 +622,7 @@ check_bridge() {
 # USER MANAGEMENT FUNCTIONS
 # =============================================================================
 find_first_non_root_user() {
-    if [ -z $NON_ROOT_USER ]; then
+    if [ -z "$NON_ROOT_USER" ]; then
         for user_home in /home/*; do
             if [[ -d "$user_home" ]]; then
                 NON_ROOT_USER=$(basename "$user_home")
@@ -879,12 +886,13 @@ get_dhcp_subnet_and_ip() {
 }
 
 update_fabric_dns() {
-    local FABRIC_DNS=$(maas admin subnet read "$MAAS_NETWORK_SUBNET" | jq -r '.dns_servers[]')
+    local FABRIC_DNS
+    FABRIC_DNS=$(maas admin subnet read "$MAAS_NETWORK_SUBNET" | jq -r '.dns_servers[]')
     log "INFO" "Update MAAS dns $CURRENT_DNS to fabric $MAAS_NETWORK_SUBNET" "MAAS_DNS"
 
-    if [[ "$FABRIC_DNS" =~ "$CURRENT_DNS" ]]; then
+    if [[ "$FABRIC_DNS" =~ $CURRENT_DNS ]]; then
         log "INFO" "Current dns already existed, skipping..." "MAAS_DNS"
-    elif [ ! -n "$maas_current_dns" ]; then
+    elif [ -z "$maas_current_dns" ]; then
         if [ -z "$FABRIC_DNS" ]; then
             dns_value="$CURRENT_DNS"
         else
@@ -917,7 +925,7 @@ create_dhcp_iprange() {
 update_dhcp_config() {
     local ENABLED=$1
     log "INFO" "Set MAAS VLAN DHCP to $ENABLED" "MAAS_DHCP"
-    if ! maas admin vlan update $FABRIC_ID $VLAN_TAG dhcp_on=$ENABLED primary_rack=$PRIMARY_RACK >>"$TEMP_LOG" 2>&1; then
+    if ! maas admin vlan update "$FABRIC_ID" "$VLAN_TAG" dhcp_on="$ENABLED" primary_rack="$PRIMARY_RACK" >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to set MAAS DHCP to $ENABLED"
     fi
 }
@@ -1073,7 +1081,7 @@ create_vm_from_maas() {
 
     # Check if juju-vm already exists
     juju_machine_id=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
-    if [[ ! -z $juju_machine_id ]]; then
+    if [[ -n $juju_machine_id ]]; then
         log "INFO" "Machine juju-vm (id: $juju_machine_id) already exists - skipping creation" "VM_CREATE"
         return 0
     fi
@@ -1395,8 +1403,10 @@ config_bridge() {
     if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
         log "INFO" "Detect that IP $OTTERSCALE_WEB_IP exists on network $OTTERSCALE_BRIDGE_NAME" "NETWORK"
     else
-        local mask=$(nmcli device show $OTTERSCALE_BRIDGE_NAME | grep "^IP4.ADDRESS" | head -n 1 | awk '{print $2}' | cut -d'/' -f2)
-        local metallb_svc=$(microk8s kubectl get svc metallb-webhook-service -n metallb-system -o json | jq -r .spec.clusterIP)
+        local mask
+        local metallb_svc
+        mask=$(nmcli device show "$OTTERSCALE_BRIDGE_NAME" | grep "^IP4.ADDRESS" | head -n 1 | awk '{print $2}' | cut -d'/' -f2)
+        metallb_svc=$(microk8s kubectl get svc metallb-webhook-service -n metallb-system -o json | jq -r .spec.clusterIP)
 
         if nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask" >/dev/null 2>&1; then
             log "INFO" "Add $OTTERSCALE_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
@@ -1439,7 +1449,6 @@ deploy_istio() {
     local istio_version="1.26.6"
     local istio_url="https://istio.io/downloadIstio"
     local istio_namespace="istio-system"
-    local has_istio=false
     local arch
     arch=$(uname -m)
     case "$arch" in
@@ -1509,9 +1518,68 @@ deploy_helm() {
         local ca_cert_file="/tmp/juju-ca-cert.pem"
         echo "$juju_cacert" > "$ca_cert_file"
 
-        # Create temporary values file
-        values_file="/tmp/otterscale-values.yaml"
-        cat > "$values_file" << EOF
+        # Generate token
+        local charset="${CHARSET:-A-Za-z0-9}"
+        local keycloak_admin_paswd
+        local keycloak_secret_token
+
+        keycloak_admin_paswd=$(base64 /dev/urandom 2>/dev/null | tr -dc "$charset" | head -c 8)
+        log "INFO" "KeyCloak admin password: $keycloak_admin_paswd" "OTTERSCALE"
+
+        keycloak_secret_token=$(base64 /dev/urandom 2>/dev/null | tr -dc "$charset" | head -c 32)
+        log "INFO" "KeyCloak client secret: $keycloak_secret_token" "OTTERSCALE"
+
+        # Create values file
+        otterscale_helm_values="/tmp/otterscale_helm_values.yaml"
+        cat > "$otterscale_helm_values" << EOF
+postgresql:
+  auth:
+    postgresPassword: "postgres-otterscale"
+    password: "otterscale"
+
+keycloak:
+  auth:
+    adminPassword: "$keycloak_admin_paswd"
+
+  keycloakConfigCli:
+    configuration:
+      phison-realm.json: |
+        {
+          "realm": "Phison",
+          "enabled": true,
+          "registrationAllowed": true,
+          "rememberMe": true,
+          "resetPasswordAllowed": true,
+          "clients": [
+            {
+              "enabled": true,
+              "clientId": "otterscale",
+              "clientAuthenticatorType": "client-secret",
+              "secret": "$keycloak_secret_token",
+              "protocol": "openid-connect",
+              "authorizationServicesEnabled": false,
+              "directAccessGrantsEnabled": false,
+              "publicClient": false,
+              "serviceAccountsEnabled": false,
+              "standardFlowEnabled": true,
+              "implicitFlowEnabled": true,
+              "frontchannelLogout": true,
+              "adminUrl": "https://otters.phison.com",
+              "rootUrl": "https://otters.phison.com",
+              "redirectUris": [
+                "https://otters.phison.com/api/auth/sso/callback/otterscale-oidc"
+              ],
+              "webOrigins": [
+                "https://otters.phison.com"
+              ],
+              "attributes": {
+                "frontchannel.logout.session.required": "true",
+                "pkce.code.challenge.method": "S256"
+              }
+            }
+          ]
+        }
+
 configContent: |
   maas:
     url: $maas_endpoint
@@ -1535,7 +1603,7 @@ $(echo "$juju_cacert" | sed 's/^/      /')
     rados_timeout: 0s
 EOF
 
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace -f $values_file --wait" "Deploy OtterScale chart"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "Deploy OtterScale chart"
         rm -f "$ca_cert_file"
         send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
     else
