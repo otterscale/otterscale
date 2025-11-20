@@ -22,15 +22,12 @@
 
 	const pools = writable([] as Pool[]);
 	async function fetch() {
-		storageClient
-			.listPools({ scope: scope })
-			.then((response) => {
-				pools.set(response.pools);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+		try {
+			const response = await storageClient.listPools({ scope: scope });
+			pools.set(response.pools);
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
 	}
 	const reloadManager = new ReloadManager(fetch, false);
 

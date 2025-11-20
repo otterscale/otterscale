@@ -24,15 +24,12 @@
 
 	const buckets = writable([] as Bucket[]);
 	async function fetch() {
-		storageClient
-			.listBuckets({ scope: scope })
-			.then((response) => {
-				buckets.set(response.buckets);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+		try {
+			const response = await storageClient.listBuckets({ scope: scope });
+			buckets.set(response.buckets);
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
 	}
 	const reloadManager = new ReloadManager(fetch, false);
 

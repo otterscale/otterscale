@@ -40,20 +40,18 @@
 	let isNamespaceOptionsLoaded = $state(false);
 	const namespaceOptions: Writable<SingleSelect.OptionType[]> = writable([]);
 	async function fetchNamespaces() {
-		applicationClient
-			.listNamespaces({ scope })
-			.then((response) => {
-				namespaceOptions.set(
-					response.namespaces.map((namespace) => ({
-						value: namespace.name,
-						label: namespace.name,
-						icon: 'ph:cube'
-					}))
-				);
-			})
-			.catch((error) => {
-				console.debug('Failed to fetch namespaces:', error);
-			});
+		try {
+			const response = await applicationClient.listNamespaces({ scope });
+			namespaceOptions.set(
+				response.namespaces.map((namespace) => ({
+					value: namespace.name,
+					label: namespace.name,
+					icon: 'ph:cube'
+				}))
+			);
+		} catch (error) {
+			console.debug('Failed to fetch namespaces:', error);
+		}
 	}
 
 	const defaults = {

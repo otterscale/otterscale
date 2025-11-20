@@ -26,17 +26,15 @@
 
 	const subvolumeGroups = writable([] as SubvolumeGroup[]);
 	async function fetch() {
-		storageClient
-			.listSubvolumeGroups({
+		try {
+			const response = await storageClient.listSubvolumeGroups({
 				scope: scope,
 				volumeName: volume
-			})
-			.then((response) => {
-				subvolumeGroups.set(response.subvolumeGroups);
-			})
-			.catch((error) => {
-				console.error('Error fetching subvolume groups:', error);
 			});
+			subvolumeGroups.set(response.subvolumeGroups);
+		} catch (error) {
+			console.error('Error fetching subvolume groups:', error);
+		}
 	}
 	const reloadManager = new ReloadManager(fetch, false);
 
