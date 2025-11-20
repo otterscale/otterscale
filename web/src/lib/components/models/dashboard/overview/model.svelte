@@ -39,8 +39,7 @@
 			const response = await prometheusDriver.instantQuery(
 				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model="${scope}"})`
 			);
-			const value = response.result[0]?.value;
-			latestAvailableModels = isNaN(Number(value)) ? 0 : value;
+			latestAvailableModels = response.result[0]?.value?.value;
 		} catch (error) {
 			console.error(`Fail to fetch latest available models in scope ${scope}:`, error);
 		}
@@ -54,9 +53,7 @@
 				Date.now(),
 				2 * 60
 			);
-			const sampleValues: SampleValue[] = response.result[0]?.values ?? [];
-			const filtered = sampleValues.filter((sampleValue) => !isNaN(Number(sampleValue.value)));
-			availableModels = filtered.length > 0 ? filtered : [];
+			availableModels = response.result[0]?.values ?? [];
 		} catch (error) {
 			console.error(`Fail to fetch available models in scope ${scope}:`, error);
 		}

@@ -33,8 +33,11 @@
 
 	async function fetchRunnings() {
 		try {
-			const response = await prometheusDriver.instantQuery(
-				`sum(vllm:num_requests_running{juju_model="${scope}"})`
+			const response = await prometheusDriver.rangeQuery(
+				`sum(vllm:num_requests_running{juju_model="${scope}"})`,
+				Date.now() - 24 * 60 * 60 * 1000,
+				Date.now(),
+				2 * 60
 			);
 			runnings = response.result[0]?.values ?? [];
 		} catch (error) {
@@ -44,8 +47,11 @@
 
 	async function fetchWaitings() {
 		try {
-			const response = await prometheusDriver.instantQuery(
-				`sum(vllm:num_requests_waiting{juju_model="${scope}"})`
+			const response = await prometheusDriver.rangeQuery(
+				`sum(vllm:num_requests_waiting{juju_model="${scope}"})`,
+				Date.now() - 24 * 60 * 60 * 1000,
+				Date.now(),
+				2 * 60
 			);
 			waitings = response.result[0]?.values ?? [];
 		} catch (error) {

@@ -33,8 +33,11 @@
 
 	async function fetchPrompts() {
 		try {
-			const response = await prometheusDriver.instantQuery(
-				`max(rate(vllm:prompt_tokens_total{juju_model="${scope}"}[2m]))`
+			const response = await prometheusDriver.rangeQuery(
+				`max(rate(vllm:prompt_tokens_total{juju_model="${scope}"}[2m]))`,
+				Date.now() - 24 * 60 * 60 * 1000,
+				Date.now(),
+				2 * 60
 			);
 			prompts = response.result[0]?.values ?? [];
 		} catch (error) {
@@ -44,8 +47,11 @@
 
 	async function fetchGenerations() {
 		try {
-			const response = await prometheusDriver.instantQuery(
-				`max(rate(vllm:generation_tokens_total{juju_model="${scope}"}[2m]))`
+			const response = await prometheusDriver.rangeQuery(
+				`max(rate(vllm:generation_tokens_total{juju_model="${scope}"}[2m]))`,
+				Date.now() - 24 * 60 * 60 * 1000,
+				Date.now(),
+				2 * 60
 			);
 			generations = response.result[0]?.values ?? [];
 		} catch (error) {
