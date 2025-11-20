@@ -6,7 +6,7 @@ import { page } from '$app/state';
 
 import type { ExtensionsBundleType } from './types';
 
-const key = 'ps';
+const key = 'bundle';
 
 function getAccordionValue(): ExtensionsBundleType[] | undefined {
 	return (page.url.searchParams.getAll(key) as ExtensionsBundleType[]) ?? undefined;
