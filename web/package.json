@@ -30,7 +30,7 @@
 		"@iconify-json/simple-icons": "^1.2.59",
 		"@inlang/paraglide-js": "^2.5.0",
 		"@internationalized/date": "^3.10.0",
-		"@lucide/svelte": "^0.544.0",
+		"@lucide/svelte": "^0.554.0",
 		"@neoconfetti/svelte": "^2.2.2",
 		"@playwright/test": "^1.56.1",
 		"@sveltejs/adapter-node": "^5.4.0",
