@@ -12,6 +12,7 @@ import (
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"sigs.k8s.io/kustomize/api/krusty"
 	"sigs.k8s.io/kustomize/api/resmap"
+	"sigs.k8s.io/kustomize/api/resource"
 	"sigs.k8s.io/kustomize/kyaml/filesys"
 
 	"github.com/otterscale/otterscale/internal/core/application/chart"
@@ -273,7 +274,9 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 				return nil, fmt.Errorf("no crd resource found for %q", base.ID)
 			}
 
-			ret = append(ret, *uc.buildExtensionFromCRD(&base, resMaps[i], crds, crd.AnnotationVersionKey))
+			resource := resMaps[i].Resources()[0]
+
+			ret = append(ret, *uc.buildExtensionFromCRD(&base, crds, resource, crd.AnnotationVersionKey))
 
 			continue
 		}
@@ -317,7 +320,7 @@ func (uc *UseCase) buildExtensionFromChart(base *base, release *release.Release,
 	}
 }
 
-func (uc *UseCase) buildExtensionFromCRD(base *base, resMap resmap.ResMap, crds []cluster.CustomResourceDefinition, annotationVersionKey string) *Extension {
+func (uc *UseCase) buildExtensionFromCRD(base *base, crds []cluster.CustomResourceDefinition, resource *resource.Resource, annotationVersionKey string) *Extension {
 	var (
 		status     string
 		deployedAt *time.Time
@@ -337,9 +340,7 @@ func (uc *UseCase) buildExtensionFromCRD(base *base, resMap resmap.ResMap, crds 
 		}
 	}
 
-	annotations := resMap.Resources()[0].GetAnnotations()
-
-	if version, ok := annotations[annotationVersionKey]; ok {
+	if version, ok := resource.GetAnnotations()[annotationVersionKey]; ok {
 		latest = &Manifest{
 			ID:      base.ID,
 			Version: version,

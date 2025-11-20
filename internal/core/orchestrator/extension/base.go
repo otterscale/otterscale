@@ -59,7 +59,7 @@ var (
 		{
 			ID:          "base",
 			Name:        "Istio",
-			Description: "Istio is an open source service mesh that layers transparently onto existing distributed applications. ",
+			Description: "Istio is an open source service mesh that layers transparently onto existing distributed applications.",
 			Logo:        "https://github.com/istio.png",
 			Charts: []chartManifest{
 				{
