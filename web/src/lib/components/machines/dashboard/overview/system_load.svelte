@@ -30,35 +30,40 @@
 		}))
 	);
 
+	async function fetchSystemOnes() {
+		const response = await prometheusDriver.rangeQuery(
+			`sum(node_load1{juju_model=~".*"})`,
+			Date.now() - 24 * 60 * 60 * 1000,
+			Date.now(),
+			2 * 60
+		);
+		ones = response.result && response.result[0] ? response.result[0].values : [];
+	}
+
+	async function fetchSystemFives() {
+		const response = await prometheusDriver.rangeQuery(
+			`sum(node_load5{juju_model=~".*"})`,
+			Date.now() - 24 * 60 * 60 * 1000,
+			Date.now(),
+			2 * 60
+		);
+		fives = response.result && response.result[0] ? response.result[0].values : [];
+	}
+
 	async function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`sum(node_load1{juju_model=~".*"})`,
-				Date.now() - 24 * 60 * 60 * 1000,
-				Date.now(),
-				2 * 60
-			)
-			.then((response) => {
-				ones = response.result[0]?.values ?? [];
-			});
-		prometheusDriver
-			.rangeQuery(
-				`sum(node_load5{juju_model=~".*"})`,
-				Date.now() - 24 * 60 * 60 * 1000,
-				Date.now(),
-				2 * 60
-			)
-			.then((response) => {
-				fives = response.result[0]?.values ?? [];
-			});
+		try {
+			await Promise.all([fetchSystemOnes(), fetchSystemFives()]);
+		} catch (error) {
+			console.error('Fail to fetch data:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -73,7 +78,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full">

@@ -57,17 +57,20 @@
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
-		machineClient.listMachines({}).then((response) => {
+		try {
+			const response = await machineClient.listMachines({});
 			machines.set(response.machines);
-		});
+		} catch (error) {
+			console.error('Error fetching machines:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -82,7 +85,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

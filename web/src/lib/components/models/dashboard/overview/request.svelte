@@ -31,36 +31,49 @@
 		waiting: { label: 'Waiting', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
-	async function fetch() {
-		prometheusDriver
-			.rangeQuery(
+	async function fetchRunnings() {
+		try {
+			const response = await prometheusDriver.rangeQuery(
 				`sum(vllm:num_requests_running{juju_model="${scope}"})`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60
-			)
-			.then((response) => {
-				runnings = response.result[0]?.values ?? [];
-			});
-		prometheusDriver
-			.rangeQuery(
+			);
+			runnings = response.result[0]?.values ?? [];
+		} catch (error) {
+			console.error(`Fail to fetch latest running requests in scope ${scope}:`, error);
+		}
+	}
+
+	async function fetchWaitings() {
+		try {
+			const response = await prometheusDriver.rangeQuery(
 				`sum(vllm:num_requests_waiting{juju_model="${scope}"})`,
 				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60
-			)
-			.then((response) => {
-				waitings = response.result[0]?.values ?? [];
-			});
+			);
+			waitings = response.result[0]?.values ?? [];
+		} catch (error) {
+			console.error(`Fail to fetch latest waiting requests in scope ${scope}:`, error);
+		}
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([fetchRunnings(), fetchWaitings()]);
+		} catch (error) {
+			console.error(`Fail to fetch requests data in scope ${scope}:`, error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		try {
 			await fetch();
-			isLoading = false;
+			isLoaded = true;
 		} catch (error) {
 			console.error(`Fail to fetch data in scope ${scope}:`, error);
 		}
@@ -75,7 +88,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full">

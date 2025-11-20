@@ -48,27 +48,26 @@
 
 	onMount(async () => {
 		try {
-			await client.listBootImageSelections({}).then((response) => {
-				distroSeriesOptions.set(
-					response.bootImageSelections.map((bootImageSelection) => ({
-						value: bootImageSelection.distroSeries,
-						label: bootImageSelection.name,
-						icon: 'ph:binary'
-					}))
-				);
-				distroSeriesArchitecturesMap = Object.fromEntries(
-					response.bootImageSelections.map((bootImageSelection) => [
-						bootImageSelection.distroSeries,
-						writable(
-							bootImageSelection.architectures.map((architecture) => ({
-								value: architecture,
-								label: architecture,
-								icon: 'ph:empty'
-							}))
-						)
-					])
-				);
-			});
+			const response = await client.listBootImageSelections({});
+			distroSeriesOptions.set(
+				response.bootImageSelections.map((bootImageSelection) => ({
+					value: bootImageSelection.distroSeries,
+					label: bootImageSelection.name,
+					icon: 'ph:binary'
+				}))
+			);
+			distroSeriesArchitecturesMap = Object.fromEntries(
+				response.bootImageSelections.map((bootImageSelection) => [
+					bootImageSelection.distroSeries,
+					writable(
+						bootImageSelection.architectures.map((architecture) => ({
+							value: architecture,
+							label: architecture,
+							icon: 'ph:empty'
+						}))
+					)
+				])
+			);
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

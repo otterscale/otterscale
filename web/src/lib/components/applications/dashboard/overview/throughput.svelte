@@ -31,47 +31,53 @@
 		read: { label: 'Read', color: 'var(--chart-1)' },
 		write: { label: 'Write', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
-	function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`
-						sum(
-						rate(
-							container_fs_reads_bytes_total{container!="",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
-						)
-						)
-						`,
-				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
-				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60
+
+	async function fetchReads() {
+		const response = await prometheusDriver.rangeQuery(
+			`
+			sum(
+			rate(
+				container_fs_reads_bytes_total{container!="",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
 			)
-			.then((response) => {
-				reads = response.result[0]?.values ?? [];
-			});
-		prometheusDriver
-			.rangeQuery(
-				`
-						sum(
-						rate(
-							container_fs_writes_bytes_total{container!="",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
-						)
-						)
-						`,
-				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
-				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60
 			)
-			.then((response) => {
-				writes = response.result[0]?.values ?? [];
-			});
+			`,
+			new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
+			new SvelteDate().setMinutes(0, 0, 0),
+			2 * 60
+		);
+		reads = response.result[0]?.values ?? [];
+	}
+
+	async function fetchWrites() {
+		const response = await prometheusDriver.rangeQuery(
+			`
+			sum(
+			rate(
+				container_fs_writes_bytes_total{container!="",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
+			)
+			)
+			`,
+			new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
+			new SvelteDate().setMinutes(0, 0, 0),
+			2 * 60
+		);
+		writes = response.result[0]?.values ?? [];
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([fetchReads(), fetchWrites()]);
+		} catch (error) {
+			console.error('Failed to fetch throughput data:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -86,7 +92,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

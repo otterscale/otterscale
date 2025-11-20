@@ -22,20 +22,18 @@
 
 	const application = writable<Application>();
 	async function fetch() {
-		client
-			.getApplication({
+		try {
+			const response = await client.getApplication({
 				scope: scope,
 				namespace: namespace,
 				name: applicationName
-			})
-			.then((response) => {
-				application.set(response);
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
 			});
+			application.set(response);
+		} catch (error) {
+			console.error('Failed to fetch application:', error);
+		}
 	}
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {

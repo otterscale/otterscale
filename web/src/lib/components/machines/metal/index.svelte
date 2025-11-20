@@ -19,14 +19,11 @@
 
 	onMount(async () => {
 		try {
-			machineClient
-				.getMachine({
-					id: page.params.id
-				})
-				.then((response) => {
-					machine.set(response);
-					isMounted = true;
-				});
+			const response = await machineClient.getMachine({
+				id: page.params.id
+			});
+			machine.set(response);
+			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

@@ -37,41 +37,41 @@
 		usage: { label: 'Usage', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
+	async function fetchLatestMemoryUsage() {
+		const response = await prometheusDriver.instantQuery(
+			`
+			sum(DCGM_FI_DEV_FB_USED{juju_model=~".*"}) + sum(DCGM_FI_DEV_FB_FREE{juju_model=~".*"})
+			`
+		);
+		latestMemoryUsage = response.result && response.result[0] ? response.result[0].value.value : 0;
+	}
+
+	async function fetchMemoryUsages() {
+		const response = await prometheusDriver.rangeQuery(
+			`
+			avg(DCGM_FI_DEV_FB_USED{juju_model=~".*"} / (DCGM_FI_DEV_FB_USED{juju_model=~".*"} + DCGM_FI_DEV_FB_FREE{juju_model=~".*"}))
+			`,
+			Date.now() - 10 * 60 * 1000,
+			Date.now(),
+			2 * 60
+		);
+		memoryUsages = response.result && response.result[0] ? response.result[0].values : [];
+	}
+
 	async function fetch() {
-		prometheusDriver
-			.instantQuery(
-				`
-				sum(DCGM_FI_DEV_FB_USED{juju_model=~".*"}) + sum(DCGM_FI_DEV_FB_FREE{juju_model=~".*"})
-				`
-			)
-			.then((response) => {
-				latestMemoryUsage =
-					response.result && response.result[0] ? response.result[0].value.value : 0;
-			});
-		prometheusDriver
-			.rangeQuery(
-				`
-				avg(DCGM_FI_DEV_FB_USED{juju_model=~".*"} / (DCGM_FI_DEV_FB_USED{juju_model=~".*"} + DCGM_FI_DEV_FB_FREE{juju_model=~".*"}))
-				`,
-				Date.now() - 10 * 60 * 1000,
-				Date.now(),
-				2 * 60
-			)
-			.then((response) => {
-				memoryUsages = response.result && response.result[0] ? response.result[0].values : [];
-			});
+		try {
+			await Promise.all([fetchLatestMemoryUsage(), fetchMemoryUsages()]);
+		} catch (error) {
+			console.error('Failed to fetch GPU memory data:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
-		try {
-			await fetch();
-			isLoading = false;
-		} catch (error) {
-			console.error('Fail to fetch data:', error);
-		}
+		await fetch();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -86,7 +86,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

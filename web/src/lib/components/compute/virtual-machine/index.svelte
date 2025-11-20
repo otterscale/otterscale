@@ -20,18 +20,16 @@
 
 	const virtualMachines = writable<VirtualMachine[]>([]);
 	async function fetch() {
-		VirtualMachineClient.listVirtualMachines({
-			scope: scope
-		})
-			.then((response) => {
-				virtualMachines.set(response.virtualMachines);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
+		try {
+			const response = await VirtualMachineClient.listVirtualMachines({
+				scope: scope
 			});
+			virtualMachines.set(response.virtualMachines);
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
 	}
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {
