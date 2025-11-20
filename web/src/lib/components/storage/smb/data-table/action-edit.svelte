@@ -5,9 +5,9 @@
 	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
+	import type { SMBShare, UpdateSMBShareRequest } from '$lib/api/storage/v1/storage_pb';
 	import type {
 		CreateSMBShareRequest,
-		SMBShare_CommonConfig,
 		SMBShare_SecurityConfig
 	} from '$lib/api/storage/v1/storage_pb';
 	import {
@@ -30,19 +30,31 @@
 </script>
 
 <script lang="ts">
-	let { scope, reloadManager }: { scope: string; reloadManager: ReloadManager } = $props();
+	let {
+		smbShare,
+		scope,
+		reloadManager
+	}: {
+		smbShare: SMBShare;
+		scope: string;
+		reloadManager: ReloadManager;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
 	const defaults = {
 		scope: scope,
-		browsable: true,
-		guestOk: false,
-		readOnly: true,
-		commonConfig: { mapToGuest: SMBShare_CommonConfig_MapToGuest.NEVER } as SMBShare_CommonConfig,
-		securityConfig: { mode: SMBShare_SecurityConfig_Mode.USER }
-	} as CreateSMBShareRequest;
+		namespace: smbShare.namespace,
+		name: smbShare.name,
+		sizeBytes: smbShare.sizeBytes,
+		browsable: smbShare.browsable,
+		guestOk: smbShare.guestOk,
+		readOnly: smbShare.readOnly,
+		validUsers: smbShare.validUsers,
+		commonConfig: { ...smbShare.commonConfig },
+		securityConfig: { ...smbShare.securityConfig }
+	} as UpdateSMBShareRequest;
 
 	let request = $state(defaults);
 	function reset() {
@@ -52,8 +64,7 @@
 	let invaliditySMBShare = $state({} as Booleanified<CreateSMBShareRequest>);
 	let invaliditySecurityConfig = $state({} as Booleanified<SMBShare_SecurityConfig>);
 	const invalid = $derived(
-		invaliditySMBShare.name ||
-			invaliditySMBShare.sizeBytes ||
+		invaliditySMBShare.sizeBytes ||
 			invaliditySecurityConfig.mode ||
 			(request.securityConfig?.mode === SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY &&
 				(invaliditySecurityConfig.realm || invaliditySecurityConfig.joinSource)) ||
@@ -101,24 +112,17 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger variant="default">
-		<Icon icon="ph:plus" />
-		{m.create()}
+	<Modal.Trigger variant="destructive">
+		<Icon icon="ph:pencil" />
+		{m.update()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.create_group()}</Modal.Header>
+		<Modal.Header>{m.update()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<Form.Help>{m.smb_share_name_constraint()}</Form.Help>
-					<SingleInput.General
-						required
-						type="text"
-						bind:value={request.name}
-						bind:invalid={invaliditySMBShare.name}
-						validator={(value) => !/^\d/.test(value) && value.length <= 10}
-					/>
+					<SingleInput.General disabled type="text" bind:value={request.name} />
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.size()}</Form.Label>
@@ -328,14 +332,14 @@
 			<Modal.Action
 				disabled={invalid}
 				onclick={() => {
-					toast.promise(() => storageClient.createSMBShare(request), {
-						loading: `Creating ${request.name}...`,
+					toast.promise(() => storageClient.updateSMBShare(request), {
+						loading: `Updating ${request.name}...`,
 						success: () => {
 							reloadManager.force();
-							return `Create ${request.name} successfully`;
+							return `Update ${request.name} successfully`;
 						},
 						error: (error) => {
-							let message = `Fail to create ${request.name}`;
+							let message = `Fail to update ${request.name}`;
 							toast.error(message, {
 								description: (error as ConnectError).message.toString(),
 								duration: Number.POSITIVE_INFINITY
