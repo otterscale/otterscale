@@ -349,7 +349,11 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 
 	// Wait for service to be created automatically and update NodePort in background
 	if port > 0 {
-		go uc.waitAndUpdateServiceNodePort(context.Background(), scope, namespace, names.Share, port)
+		go func() {
+			ctxWithTimeout, cancel := context.WithTimeout(ctx, servicePollingTimeout)
+			defer cancel()
+			uc.waitAndUpdateServiceNodePort(ctxWithTimeout, scope, namespace, names.Share, port)
+		}()
 	}
 
 	url, err := uc.service.URL(scope)
@@ -906,7 +910,7 @@ func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, sear
 	// Bind to LDAP
 	if err = conn.Bind(username, password); err != nil {
 		result.Message = "authentication failed"
-		return result, fmt.Errorf("LDAP bind failed: %w", err)
+		return result, fmt.Errorf("LDAP bind failed")
 	}
 
 	// Search for user or group
@@ -918,7 +922,7 @@ func (uc *UseCase) ADValidate(_ context.Context, realm, username, password, sear
 	))
 	if err != nil {
 		result.Message = "search failed"
-		return result, fmt.Errorf("LDAP search failed: %w", err)
+		return result, fmt.Errorf("LDAP search failed")
 	}
 
 	if len(sr.Entries) == 0 {
