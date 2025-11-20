@@ -328,7 +328,6 @@
 			<Modal.Action
 				disabled={invalid}
 				onclick={() => {
-					console.log(request);
 					toast.promise(() => storageClient.createSMBShare(request), {
 						loading: `Creating ${request.name}...`,
 						success: () => {
