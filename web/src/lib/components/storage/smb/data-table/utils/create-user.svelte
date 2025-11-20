@@ -3,15 +3,17 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import Button, { buttonVariants } from '$lib/components/ui/button/button.svelte';
 	import { m } from '$lib/paraglide/messages.js';
+	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">
 	let {
 		user = $bindable<SMBShare_SecurityConfig_User>(),
-		invalid = $bindable<boolean>()
-	}: { user?: SMBShare_SecurityConfig_User; invalid?: boolean } = $props();
+		invalid = $bindable<boolean>(),
+		required = $bindable<boolean>()
+	}: { user?: SMBShare_SecurityConfig_User; invalid?: boolean; required?: boolean } = $props();
 
 	const defaults = {} as SMBShare_SecurityConfig_User;
 
@@ -31,7 +33,17 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger variant="primary" class="w-full">{m.create()}/{m.edit()}</Modal.Trigger>
+	<Modal.Trigger
+		variant="default"
+		class={cn(
+			'w-full ring-1 ring-primary',
+			required && !user
+				? 'text-destructive ring-destructive'
+				: buttonVariants({ variant: 'outline' })
+		)}
+	>
+		{m.create()}/{m.edit()}
+	</Modal.Trigger>
 	<Modal.Content>
 		<Form.Label>{m.name()}</Form.Label>
 		<SingleInput.General type="text" bind:value={request.username} required={invalid} />

@@ -51,11 +51,11 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.create_group()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.groupName} />
+					<SingleInput.General required type="text" bind:value={request.groupName} bind:invalid />
 				</Form.Field>
 
 				<Form.Field>

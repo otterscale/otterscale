@@ -29,7 +29,7 @@
 	let open = $state(false);
 
 	// Form validation state
-	let invalidName: boolean | undefined = $state();
+	let invalid: boolean | undefined = $state();
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_REQUEST = {
@@ -71,12 +71,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General
-						required
-						type="text"
-						bind:value={request.name}
-						bind:invalid={invalidName}
-					/>
+					<SingleInput.General required type="text" bind:value={request.name} bind:invalid />
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.namespace()}</Form.Label>
@@ -85,7 +80,6 @@
 				<Form.Field>
 					<Form.Label>{m.size()}</Form.Label>
 					<SingleInput.Measurement
-						required
 						bind:value={request.sizeBytes}
 						transformer={(value) => String(value)}
 						units={[
@@ -127,7 +121,7 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalidName}
+					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => virtualMachineClient.createDataVolume(request), {
 							loading: `Creating ${request.name}...`,

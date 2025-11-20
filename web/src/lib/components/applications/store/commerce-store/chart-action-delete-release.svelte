@@ -56,7 +56,7 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.delete_release()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Help>
 					{m.deletion_warning({ identifier: m.name() })}
@@ -67,6 +67,7 @@
 						id="deletion"
 						target={release.name}
 						bind:value={request.name}
+						bind:invalid
 					/>
 				</Form.Field>
 				<Form.Field>
@@ -83,6 +84,7 @@
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
+				disabled={invalid}
 				onclick={() => {
 					toast.promise(() => client.deleteRelease(request), {
 						loading: 'Loading...',

@@ -57,11 +57,17 @@
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.grant_export_access()}</Modal.Header>
-		<Form.Root bind:invalid>
+		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.client_ip()}</Form.Label>
-					<SingleInput.General id="client_ip" required type="text" bind:value={request.clientIp} />
+					<SingleInput.General
+						id="client_ip"
+						required
+						type="text"
+						bind:value={request.clientIp}
+						bind:invalid
+					/>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
