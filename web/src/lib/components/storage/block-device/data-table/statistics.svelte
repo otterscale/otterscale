@@ -3,7 +3,7 @@
 	import { type Table } from '@tanstack/table-core';
 
 	import type { Image } from '$lib/api/storage/v1/storage_pb';
-	import { formatProgressColor } from '$lib/components/custom/progress/utils.svelte';
+	import { getProgressColor } from '$lib/components/custom/progress/utils.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import { formatCapacity, formatPercentage } from '$lib/formatter';
@@ -84,7 +84,7 @@
 				value={Number(percentage ?? 0)}
 				max={100}
 				class={cn(
-					formatProgressColor(totalUsed, totalQuota, 'STB'),
+					getProgressColor(totalUsed, totalQuota, 'STB'),
 					'absolute top-0 left-0 h-2 rounded-none'
 				)}
 			/>

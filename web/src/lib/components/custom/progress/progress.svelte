@@ -5,7 +5,7 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	import {
-		formatProgressColor,
+		getProgressColor,
 		type ProgressTargetType
 	} from '$lib/components/custom/progress/utils.svelte';
 	import { Progress } from '$lib/components/ui/progress';
@@ -43,7 +43,7 @@
 						<Progress
 							value={progressRatio}
 							max={1}
-							class={formatProgressColor(numerator, denominator, target)}
+							class={getProgressColor(numerator, denominator, target)}
 						/>
 						<div
 							class={cn(
@@ -64,7 +64,7 @@
 		<Progress
 			value={progressRatio}
 			max={1}
-			class={formatProgressColor(numerator, denominator, target)}
+			class={getProgressColor(numerator, denominator, target)}
 		/>
 	{/if}
 {:else}

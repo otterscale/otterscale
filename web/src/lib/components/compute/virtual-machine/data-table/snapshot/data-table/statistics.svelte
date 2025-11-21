@@ -3,7 +3,7 @@
 	import { type Table } from '@tanstack/table-core';
 
 	import type { VirtualMachine_Snapshot } from '$lib/api/instance/v1/instance_pb';
-	import { formatProgressColor } from '$lib/components/custom/progress/utils.svelte';
+	import { getProgressColor } from '$lib/components/custom/progress/utils.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import { formatBigNumber, formatPercentage } from '$lib/formatter';
@@ -76,7 +76,7 @@
 				value={Number(percentage ?? 0)}
 				max={100}
 				class={cn(
-					formatProgressColor(readySnapshots, totalSnapshots, 'LTB'),
+					getProgressColor(readySnapshots, totalSnapshots, 'LTB'),
 					'bg- absolute top-0 left-0 h-2 rounded-none'
 				)}
 			/>

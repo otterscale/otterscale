@@ -3,7 +3,7 @@
 	import { type Table } from '@tanstack/table-core';
 
 	import { type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
-	import { formatProgressColor } from '$lib/components/custom/progress/utils.svelte';
+	import { getProgressColor } from '$lib/components/custom/progress/utils.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
@@ -93,7 +93,7 @@
 				value={Number(percentage ?? 0)}
 				max={100}
 				class={cn(
-					formatProgressColor(powerOnVirtualMachines, totalVirtualMachines, 'LTB'),
+					getProgressColor(powerOnVirtualMachines, totalVirtualMachines, 'LTB'),
 					'absolute top-0 left-0 h-2 rounded-none'
 				)}
 			/>

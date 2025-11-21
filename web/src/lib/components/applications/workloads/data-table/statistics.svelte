@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
 
-	import { formatProgressColor } from '$lib/components/custom/progress/utils.svelte';
+	import { getProgressColor } from '$lib/components/custom/progress/utils.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { Progress } from '$lib/components/ui/progress/index.js';
@@ -132,7 +132,7 @@
 				value={Number(percentage ?? 0)}
 				max={100}
 				class={cn(
-					formatProgressColor(healthPods, totalPods, 'LTB'),
+					getProgressColor(healthPods, totalPods, 'LTB'),
 					'absolute top-0 left-0 h-2 rounded-none'
 				)}
 			/>

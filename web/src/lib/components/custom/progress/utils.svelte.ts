@@ -25,7 +25,7 @@ const processVariant = {
 
 type ProgressTargetType = 'LTB' | 'STB';
 
-function formatProgressColor(
+function getProgressColor(
 	numerator: number,
 	denominator: number,
 	target: ProgressTargetType
@@ -54,4 +54,4 @@ function formatProgressColor(
 }
 
 export type { ProgressTargetType };
-export { formatProgressColor, formatRatio };
+export { formatRatio, getProgressColor };
