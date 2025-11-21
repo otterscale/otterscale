@@ -1,6 +1,6 @@
-package storage
-
 //go:generate go run -mod=mod golang.org/x/tools/cmd/stringer -type=PoolType -output=pool_type_string.go -linecomment=true
+
+package storage
 
 type PoolType int32
 
