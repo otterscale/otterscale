@@ -66,7 +66,7 @@ var (
 				{
 					Namespace: "istio-system",
 					RepoURL:   "https://istio-release.storage.googleapis.com/charts",
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
 				},
@@ -74,8 +74,10 @@ var (
 					ID:        "istiod",
 					Namespace: "istio-system",
 					RepoURL:   "https://istio-release.storage.googleapis.com/charts",
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
+					},
+					ValuesMap: map[string]string{
 						"env.ENABLE_GATEWAY_API_INFERENCE_EXTENSION": "true",
 					},
 				},
@@ -90,7 +92,7 @@ var (
 				{
 					Namespace: "monitoring",
 					RepoURL:   "https://prometheus-community.github.io/helm-charts",
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
 				},
@@ -108,7 +110,7 @@ var (
 				{
 					Namespace: "distribution",
 					RepoURL:   chartRepoURL,
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
 					PostFunc: func(_ string) error {
@@ -130,7 +132,7 @@ var (
 				{
 					Namespace: "gpu-operator",
 					RepoURL:   chartRepoURL,
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
 				},
@@ -145,11 +147,13 @@ var (
 				{
 					Namespace: "llm-d",
 					RepoURL:   "https://llm-d-incubation.github.io/llm-d-infra",
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
-						"nameOverride":    "llm-d-infra",
-						"gateway.gatewayParameters.resources.limits.cpu":    "4",
-						"gateway.gatewayParameters.resources.limits.memory": "2Gi",
+					},
+					ValuesMap: map[string]string{
+						"nameOverride": "llm-d-gateway",
+						"gateway.gatewayParameters.resources.limits.cpu":    "2",
+						"gateway.gatewayParameters.resources.limits.memory": "1Gi",
 						"gateway.service.type":                              "NodePort",
 					},
 				},
@@ -167,7 +171,7 @@ var (
 				{
 					Namespace: "kubevirt",
 					RepoURL:   chartRepoURL,
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
 				},
@@ -185,7 +189,7 @@ var (
 				{
 					Namespace: "samba-operator",
 					RepoURL:   chartRepoURL,
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
 				},
