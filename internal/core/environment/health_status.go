@@ -1,6 +1,6 @@
-package environment
-
 //go:generate go run -mod=mod golang.org/x/tools/cmd/stringer -type=HealthStatus -output=health_status_string.go
+
+package environment
 
 type HealthStatus int32
 
