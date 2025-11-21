@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/arc/arc.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
@@ -10,7 +9,7 @@
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { m } from '$lib/paraglide/messages';
 
-	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
+	let { client, fqdn }: { client: PrometheusDriver; fqdn: string } = $props();
 
 	// Constants
 	const CHART_TITLE = m.cpu();
@@ -18,11 +17,11 @@
 
 	// Queries
 	const queries = $derived({
-		description: `count(count by (cpu, instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}"}))`,
+		description: `count(count by (cpu, instance) (node_cpu_seconds_total{instance=~"${fqdn}"}))`,
 		usage: `
-			sum(irate(node_cpu_seconds_total{instance=~"${machine.fqdn}",mode!="idle"}[6m]))
+			sum(irate(node_cpu_seconds_total{instance=~"${fqdn}",mode!="idle"}[6m]))
 			/
-			sum(irate(node_cpu_seconds_total{instance=~"${machine.fqdn}"}[6m]))
+			sum(irate(node_cpu_seconds_total{instance=~"${fqdn}"}[6m]))
 		`
 	});
 

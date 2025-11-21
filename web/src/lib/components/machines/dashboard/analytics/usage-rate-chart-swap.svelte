@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/arc/arc.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
@@ -11,22 +10,22 @@
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
-	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
+	let { client, fqdn }: { client: PrometheusDriver; fqdn: string } = $props();
 
 	// Constants
 	const CHART_TITLE = m.swap();
 
 	// Queries
 	const queries = $derived({
-		description: `sum(node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"})`,
+		description: `sum(node_memory_SwapTotal_bytes{instance=~"${fqdn}"})`,
 		usage: `
 		(
-			sum(node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"})
+			sum(node_memory_SwapTotal_bytes{instance=~"${fqdn}"})
 			-
-			sum(node_memory_SwapFree_bytes{instance=~"${machine.fqdn}"})
+			sum(node_memory_SwapFree_bytes{instance=~"${fqdn}"})
 		)
 		/
-		sum(node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"})
+		sum(node_memory_SwapTotal_bytes{instance=~"${fqdn}"})
 		`
 	});
 

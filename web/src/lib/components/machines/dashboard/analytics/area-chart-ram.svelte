@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
@@ -13,7 +12,7 @@
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
-	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
+	let { client, fqdn }: { client: PrometheusDriver; fqdn: string } = $props();
 
 	// Constants
 	const STEP_SECONDS = 60; // 1 minute step
@@ -29,10 +28,10 @@
 
 	// Prometheus query for Memory usage
 	const query = $derived({
-		Total: `sum(node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}) - sum(node_memory_MemAvailable_bytes{instance=~"${machine.fqdn}"})`,
-		Buffer: `sum(node_memory_Buffers_bytes{instance=~"${machine.fqdn}"})`,
-		Cache: `sum(node_memory_Cached_bytes{instance=~"${machine.fqdn}"})`,
-		Free: `sum(node_memory_MemFree_bytes{instance=~"${machine.fqdn}"})`
+		Total: `sum(node_memory_MemTotal_bytes{instance=~"${fqdn}"}) - sum(node_memory_MemAvailable_bytes{instance=~"${fqdn}"})`,
+		Buffer: `sum(node_memory_Buffers_bytes{instance=~"${fqdn}"})`,
+		Cache: `sum(node_memory_Cached_bytes{instance=~"${fqdn}"})`,
+		Free: `sum(node_memory_MemFree_bytes{instance=~"${fqdn}"})`
 	});
 </script>
 

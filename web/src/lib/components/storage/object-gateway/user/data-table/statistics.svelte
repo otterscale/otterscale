@@ -1,26 +1,42 @@
-<script lang="ts" module>
+<script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
 
-	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
-	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
-	import Title from '$lib/components/custom/chart/title.svelte';
-</script>
+	import type { User } from '$lib/api/storage/v1/storage_pb';
+	import * as Card from '$lib/components/ui/card';
+	import { m } from '$lib/paraglide/messages';
 
-<script lang="ts" generics="TData">
-	let { table }: { table: Table<TData> } = $props();
+	let { table }: { table: Table<User> } = $props();
 
-	const filteredData = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
+	const filteredUsers = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
 </script>
 
 <div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-	<Layout>
-		{#snippet title()}
-			<Title title="User" />
-		{/snippet}
-
-		{#snippet content()}
-			{@const nameList = filteredData.map((datum) => datum['userId' as keyof TData])}
-			<Content value={nameList.length} />
-		{/snippet}
-	</Layout>
+	{#snippet Users()}
+		{@const title = m.user()}
+		{@const titleIcon = 'ph:chart-bar-bold'}
+		{@const backgroundIcon = 'ph:user'}
+		{@const users = filteredUsers.length}
+		<Card.Root class="relative overflow-hidden">
+			<Card.Header class="gap-3">
+				<Card.Title class="flex items-center gap-2 font-medium">
+					<div
+						class="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"
+					>
+						<Icon icon={titleIcon} class="size-5" />
+					</div>
+					<p class="font-bold">{title}</p>
+				</Card.Title>
+			</Card.Header>
+			<Card.Content class="lg:max-[1100px]:flex-col lg:max-[1100px]:items-start">
+				<p class="text-7xl font-semibold">{users}</p>
+			</Card.Content>
+			<div
+				class="absolute top-0 -right-8 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
+			>
+				<Icon icon={backgroundIcon} class="size-64" />
+			</div>
+		</Card.Root>
+	{/snippet}
+	{@render Users()}
 </div>

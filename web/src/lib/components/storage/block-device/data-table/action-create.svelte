@@ -33,8 +33,9 @@
 	let isAdvancedOpen = $state(false);
 	let isPoolsLoading = $state(true);
 
-	const poolOptions = writable<SingleSelect.OptionType[]>([]);
+	let poolOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	const storageClient = createClient(StorageService, transport);
+
 	const defaults = {
 		scope: scope,
 		layering: true,

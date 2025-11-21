@@ -2,25 +2,25 @@
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
 
-	import type { Image } from '$lib/api/storage/v1/storage_pb';
+	import type { Image_Snapshot } from '$lib/api/storage/v1/storage_pb';
 	import { getProgressColor } from '$lib/components/custom/progress/utils.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
-	import { formatCapacity, formatPercentage } from '$lib/formatter';
+	import { formatBigNumber, formatPercentage } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
-	let { table }: { table: Table<Image> } = $props();
+	let { table }: { table: Table<Image_Snapshot> } = $props();
 
-	const filteredImages = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
+	const filteredSnapshots = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
 </script>
 
-<div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-	{#snippet Images()}
-		{@const title = m.image()}
+<div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+	{#snippet Snapshots()}
+		{@const title = m.snapshot()}
 		{@const titleIcon = 'ph:chart-bar-bold'}
-		{@const backgroundIcon = 'ph:cube'}
-		{@const images = filteredImages.length}
+		{@const backgroundIcon = 'ph:camera'}
+		{@const snapshots = filteredSnapshots.length}
 		<Card.Root class="relative overflow-hidden">
 			<Card.Header class="gap-3">
 				<Card.Title class="flex items-center gap-2 font-medium">
@@ -33,7 +33,7 @@
 				</Card.Title>
 			</Card.Header>
 			<Card.Content class="lg:max-[1100px]:flex-col lg:max-[1100px]:items-start">
-				<p class="text-7xl font-semibold">{images}</p>
+				<p class="text-7xl font-semibold">{snapshots}</p>
 			</Card.Content>
 			<div
 				class="absolute top-0 -right-16 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
@@ -42,21 +42,15 @@
 			</div>
 		</Card.Root>
 	{/snippet}
-	{@render Images()}
+	{@render Snapshots()}
 
-	{#snippet Usage()}
-		{@const title = m.usage()}
+	{#snippet Protected()}
+		{@const title = m.protected()}
 		{@const titleIcon = 'ph:chart-pie-bold'}
-		{@const backgroundIcon = 'ph:disc'}
-		{@const totalQuota = filteredImages
-			.map((image) => Number(image.quotaBytes))
-			.reduce((a, current) => a + current, 0)}
-		{@const totalUsed = filteredImages
-			.map((image) => Number(image.usedBytes))
-			.reduce((a, current) => a + current, 0)}
-		{@const { value: totalQuotaValue, unit: totalQuotaUnit } = formatCapacity(totalQuota)}
-		{@const { value: totalUsedValue, unit: totalUsedUnit } = formatCapacity(totalUsed)}
-		{@const percentage = formatPercentage(totalUsed, totalQuota)}
+		{@const backgroundIcon = 'ph:shield-checkered'}
+		{@const protectedSnapshots = filteredSnapshots.filter((snapshot) => snapshot.protected).length}
+		{@const totalSnapshots = filteredSnapshots.length}
+		{@const percentage = formatPercentage(protectedSnapshots, totalSnapshots)}
 		<Card.Root class="relative overflow-hidden">
 			<Card.Header class="gap-3">
 				<Card.Title>
@@ -74,9 +68,7 @@
 				<div class="space-y-1">
 					<p class="text-5xl font-semibold">{percentage ? `${percentage} %` : 'NaN'}</p>
 					<p class="text-3xl text-muted-foreground">
-						{totalUsedValue}
-						{totalUsedUnit} / {totalQuotaValue}
-						{totalQuotaUnit}
+						{formatBigNumber(protectedSnapshots)}/{formatBigNumber(totalSnapshots)}
 					</p>
 				</div>
 			</Card.Content>
@@ -84,16 +76,16 @@
 				value={Number(percentage ?? 0)}
 				max={100}
 				class={cn(
-					getProgressColor(totalUsed, totalQuota, 'STB'),
+					getProgressColor(protectedSnapshots, totalSnapshots, 'LTB'),
 					'absolute top-0 left-0 h-2 rounded-none'
 				)}
 			/>
 			<div
-				class="absolute top-0 -right-16 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
+				class="absolute -top-8 -right-16 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 			>
 				<Icon icon={backgroundIcon} class="size-72" />
 			</div>
 		</Card.Root>
 	{/snippet}
-	{@render Usage()}
+	{@render Protected()}
 </div>

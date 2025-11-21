@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
@@ -13,7 +12,7 @@
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
-	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
+	let { client, fqdn }: { client: PrometheusDriver; fqdn: string } = $props();
 
 	// Constants
 	const STEP_SECONDS = 60; // 1 minute step
@@ -29,7 +28,7 @@
 
 	// Prometheus query for CPU load average
 	const query = $derived(
-		`sum by (device) (rate(node_network_receive_bytes_total{instance=~"${machine.fqdn}", device!="lo"}[5m]))`
+		`sum by (device) (rate(node_network_receive_bytes_total{instance=~"${fqdn}", device!="lo"}[5m]))`
 	);
 </script>
 

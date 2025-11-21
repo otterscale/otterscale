@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area-stock.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
@@ -12,7 +11,7 @@
 	import { fetchFlattenedRange } from '$lib/components/custom/prometheus';
 	import { m } from '$lib/paraglide/messages';
 
-	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
+	let { client, fqdn }: { client: PrometheusDriver; fqdn: string } = $props();
 
 	// Constants
 	const STEP_SECONDS = 60; // 1 minute step
@@ -29,7 +28,7 @@
 	// The Prometheus query, derived from component props
 	const query = $derived(
 		`
-		sum by (cpu) (rate(node_cpu_seconds_total{instance=~"${machine.fqdn}", mode!="idle"}[5m])) * 100
+		sum by (cpu) (rate(node_cpu_seconds_total{instance=~"${fqdn}", mode!="idle"}[5m])) * 100
 		`
 	);
 </script>

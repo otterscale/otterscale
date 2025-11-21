@@ -8,7 +8,6 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	import { DataTable } from './data-table/index';
-	import { Statistics } from './statistics';
 	import type { Application } from './types';
 </script>
 
@@ -48,7 +47,6 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Statistics {scope} />
 		<DataTable {applications} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />

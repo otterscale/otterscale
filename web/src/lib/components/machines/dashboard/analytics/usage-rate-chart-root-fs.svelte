@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/arc/arc.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
@@ -11,21 +10,21 @@
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
-	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
+	let { client, fqdn }: { client: PrometheusDriver; fqdn: string } = $props();
 
 	// Constants
 	const CHART_TITLE = m.root_disk();
 
 	// Queries
 	const queries = $derived({
-		description: `sum(node_filesystem_size_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"})`,
+		description: `sum(node_filesystem_size_bytes{fstype!="rootfs",instance=~"${fqdn}",mountpoint="/"})`,
 		usage: `
 		1
 		-
 		(
-			sum(node_filesystem_avail_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"})
+			sum(node_filesystem_avail_bytes{fstype!="rootfs",instance=~"${fqdn}",mountpoint="/"})
 			/
-			sum(node_filesystem_size_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"})
+			sum(node_filesystem_size_bytes{fstype!="rootfs",instance=~"${fqdn}",mountpoint="/"})
 		)
 		`
 	});

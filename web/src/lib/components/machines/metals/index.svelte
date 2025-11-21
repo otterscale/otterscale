@@ -8,7 +8,6 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	import { DataTable } from './data-table/index';
-	import { Statistics } from './statistics';
 </script>
 
 <script lang="ts">
@@ -16,6 +15,7 @@
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
+
 	async function fetch() {
 		try {
 			const response = await machineClient.listMachines({});
@@ -24,12 +24,13 @@
 			console.error('Failed to fetch machines:', error);
 		}
 	}
-	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
+
+	const reloadManager = new ReloadManager(fetch, false);
+
 	onMount(async () => {
 		await fetch();
-		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -38,7 +39,6 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Statistics machines={$machines} />
 		<DataTable {machines} {reloadManager} />
 	{:else}
 		<Loading.DataTable />

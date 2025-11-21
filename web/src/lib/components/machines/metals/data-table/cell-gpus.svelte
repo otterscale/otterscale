@@ -21,17 +21,14 @@
 	import { m } from '$lib/paraglide/messages';
 
 	let {
-		scope,
 		machine
 	}: {
-		scope: string;
 		machine: Machine;
 	} = $props();
 
 	const machineScope = $derived(
 		machine.workloadAnnotations['juju-machine-id']?.split('-machine-')[0]
 	);
-	const isMachineInSelectedScope = $derived(machineScope === scope);
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(OrchestratorService, transport);
@@ -49,7 +46,7 @@
 		isLoading = true;
 		try {
 			const response = await client.listGPURelationsByMachine({
-				scope: scope,
+				scope: machineScope,
 				machineId: machine.id
 			});
 
@@ -69,7 +66,7 @@
 							type: 'machine',
 							id: `machine${gpuRelation.entity.value.id}`,
 							data: {
-								scope,
+								machineScope,
 								machine: gpuRelation.entity.value,
 								gpus: gpus.filter(
 									(gpu) => gpu.machineId === (gpuRelation.entity.value as GPURelation_Machine).id
@@ -82,7 +79,7 @@
 							type: 'gpu',
 							id: `gpu${gpuRelation.entity.value.id}`,
 							data: {
-								scope,
+								machineScope,
 								gpu: gpuRelation.entity.value,
 								devices: pods.flatMap((pod) =>
 									pod.devices.filter((device) => {
@@ -148,7 +145,7 @@
 	let open = $state(false);
 </script>
 
-{#if isMachineInSelectedScope}
+{#if machineScope}
 	<Sheet.Root bind:open onOpenChange={loadGPURelations}>
 		<Sheet.Trigger>
 			<span class="flex items-center gap-1">
@@ -162,7 +159,7 @@
 					<Sheet.Title class="text-center text-lg">{m.details()}</Sheet.Title>
 				</Sheet.Header>
 				{#if isLoading}
-					<div class="flex items-center justify-center p-8">
+					<div class="flex h-full items-center justify-center p-8">
 						<Icon icon="ph:circle-notch" class="h-8 w-8 animate-spin" />
 					</div>
 				{:else}

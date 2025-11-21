@@ -4,7 +4,6 @@
 	import type { Row } from '@tanstack/table-core';
 
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -144,7 +143,7 @@
 <!-- TODO: fix scope -->
 {#snippet gpu(row: Row<Machine>)}
 	<Layout.Cell class="items-end">
-		<GPUs scope={page.params.scope!} machine={row.original} />
+		<GPUs machine={row.original} />
 	</Layout.Cell>
 {/snippet}
 
