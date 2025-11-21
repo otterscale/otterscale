@@ -77,7 +77,7 @@
 				max={100}
 				class={cn(
 					getProgressColor(readySnapshots, totalSnapshots, 'LTB'),
-					'bg- absolute top-0 left-0 h-2 rounded-none'
+					'absolute top-0 left-0 h-2 rounded-none'
 				)}
 			/>
 			<div

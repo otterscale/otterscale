@@ -14,7 +14,7 @@ function formatRatio(numerator: number, denominator: number) {
 /**
  * Returns a Tailwind CSS background color class based on the given value.
  *
- * @param target - LTB (Lower The Better) or STB (Stronger The Better)
+ * @param target - LTB (Larger The Better) or STB (Smaller The Better)
  * @returns A string representing the Tailwind CSS background color class.
  */
 const processVariant = {

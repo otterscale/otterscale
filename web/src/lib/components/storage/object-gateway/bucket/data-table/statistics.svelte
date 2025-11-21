@@ -17,7 +17,7 @@
 		{@const title = m.bucket()}
 		{@const titleIcon = 'ph:chart-bar-bold'}
 		{@const backgroundIcon = 'ph:cube'}
-		{@const buckets = filteredBuckets.map((bucket) => bucket.name).length}
+		{@const buckets = filteredBuckets.length}
 		<Card.Root class="relative overflow-hidden">
 			<Card.Header class="gap-3">
 				<Card.Title class="flex items-center gap-2 font-medium">

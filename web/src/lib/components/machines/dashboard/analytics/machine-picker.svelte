@@ -13,31 +13,35 @@
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
-
+	
 	const fqdnOptions: Writable<SingleSelect.OptionType[]> = writable([]);
+	async function fetchFQDNOptions() {
+		try {
+			const response = await machineClient.listMachines({});
+			fqdnOptions.set([
+				{
+					value: '.*',
+					label: 'All Machines',
+					icon: 'ph:desktop',
+				},
+				...response.machines
+					.filter((machine) => machine.workloadAnnotations?.['juju-machine-id']?.includes('-machine-'))
+					.map((machine) => ({
+						value: machine.fqdn,
+						label: machine.fqdn,
+						icon: 'ph:desktop',
+					})),
+			]);
+			selectedFQDN = $fqdnOptions[0].value;
+		} catch (error) {
+			console.error('Failed to fetch machines:', error);
+		}
+	}
 
 	let isLoaded = $state(false);
 	onMount(async () => {
-		machineClient
-			.listMachines({})
-			.then((response) => {
-				fqdnOptions.set(
-					response.machines
-						.filter((machine) =>
-							machine.workloadAnnotations?.['juju-machine-id']?.includes('-machine-')
-						)
-						.map((machine) => ({
-							value: machine.fqdn,
-							label: machine.fqdn,
-							icon: 'ph:desktop'
-						}))
-				);
-				selectedFQDN = $fqdnOptions.length > 1 ? $fqdnOptions[1].value : $fqdnOptions[0].value;
-				isLoaded = true;
-			})
-			.catch((error) => {
-				console.error('Failed to fetch machines:', error);
-			});
+		await fetchFQDNOptions()
+		isLoaded = true
 	});
 </script>
 
