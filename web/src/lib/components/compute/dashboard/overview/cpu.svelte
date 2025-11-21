@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
@@ -21,10 +22,10 @@
 		usage: { label: 'Usage', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
-	let cpuUsages: SampleValue[] = $state([] as SampleValue[]);
+	let cpuUsages: SampleValue[] | undefined = $state([] as SampleValue[]);
 	async function fetchCPUUsage() {
 		const response = await prometheusDriver.rangeQuery(
-			`avg(rate(kubevirt_vmi_cpu_usage_seconds_total[5m])) * 100`,
+			`avg(rate(kubevirt_vmi_cpu_usage_seconds_total{juju_model="${scope}"}[5m])) * 100`,
 			new SvelteDate().setMinutes(0, 0, 0) - 60 * 60 * 1000,
 			new SvelteDate().setMinutes(0, 0, 0),
 			2 * 60
@@ -35,21 +36,21 @@
 	let cpuWait: SampleValue = $state({} as SampleValue);
 	async function fetchCPUWait() {
 		const response = await prometheusDriver.instantQuery(
-			`avg(rate(kubevirt_vmi_vcpu_wait_seconds_total[5m])) * 100`
+			`avg(rate(kubevirt_vmi_vcpu_wait_seconds_total{juju_model="${scope}"}[5m])) * 100`
 		);
-		cpuWait = response.result[0]?.value?.value ?? {};
+		cpuWait = response.result[0]?.value ?? {};
 	}
 
 	let cpuDelay: SampleValue = $state({} as SampleValue);
 	async function fetchCPUDelay() {
 		const response = await prometheusDriver.instantQuery(
-			`avg(rate(kubevirt_vmi_vcpu_delay_seconds_total[5m])) * 100`
+			`avg(rate(kubevirt_vmi_vcpu_delay_seconds_total{juju_model="${scope}"}[5m])) * 100`
 		);
-		cpuDelay = response.result[0]?.value?.value ?? {};
+		cpuDelay = response.result[0]?.value ?? {};
 	}
 
 	let isLoaded = $state(false);
-	async function fetch() {
+	async function fetchData() {
 		try {
 			await Promise.all([fetchCPUUsage(), fetchCPUWait(), fetchCPUDelay()]);
 			isLoaded = true;
@@ -58,7 +59,7 @@
 		}
 	}
 
-	const reloadManager = new ReloadManager(fetch);
+	const reloadManager = new ReloadManager(fetchData);
 
 	$effect(() => {
 		if (isReloading) {
@@ -69,29 +70,42 @@
 	});
 
 	onMount(async () => {
-		await fetch();
+		await fetchData();
 	});
 	onDestroy(() => {
 		reloadManager.stop();
 	});
 </script>
 
-{#if isLoaded}
-	<Card.Root class="h-full gap-2">
-		<Card.Header>
-			<Card.Title>{m.cpu_usage()}</Card.Title>
-			<Card.Action class="flex flex-col gap-0.5 text-sm text-muted-foreground">
+<Card.Root class="h-full gap-2">
+	<Card.Header>
+		<Card.Title>{m.cpu_usage()}</Card.Title>
+		<Card.Action class="flex flex-col gap-0.5 text-sm text-muted-foreground">
+			{#if cpuWait.value}
 				<div class="flex justify-between gap-2">
 					<p>{m.wait()}</p>
 					<p class="font-mono">{Number(cpuWait).toFixed(2)}%</p>
 				</div>
+			{/if}
+			{#if cpuDelay.value}
 				<div class="flex justify-between gap-2">
 					<p>{m.delay()}</p>
 					<p class="font-mono">{Number(cpuDelay).toFixed(2)}%</p>
 				</div>
-			</Card.Action>
-		</Card.Header>
-		<Card.Content>
+			{/if}
+		</Card.Action>
+	</Card.Header>
+	<Card.Content class="h-full">
+		{#if !isLoaded}
+			<div class="flex h-full w-full items-center justify-center border">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-24" />
+			</div>
+		{:else if !cpuUsages?.length}
+			<div class="flex h-full w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-line-fill" class="size-60 animate-pulse text-muted-foreground" />
+				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
+			</div>
+		{:else}
 			<Chart.Container config={configuration}>
 				<AreaChart
 					data={cpuUsages}
@@ -160,8 +174,6 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		</Card.Content>
-	</Card.Root>
-{:else}
-	Loading
-{/if}
+		{/if}
+	</Card.Content>
+</Card.Root>

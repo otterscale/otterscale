@@ -846,5 +846,6 @@
 	"index": "索引",
 	"no_data_available": "無可用資料",
 	"wait": "等待",
-	"delay": "延遲"
+	"delay": "延遲",
+	"no_data_display": "沒有資料以顯示"
 }

@@ -848,5 +848,6 @@
 	"index": "Index",
 	"no_data_available": "No data available",
 	"wait": "Wait",
-	"delay": "Delay"
+	"delay": "Delay",
+	"no_data_display": "No data to display"
 }

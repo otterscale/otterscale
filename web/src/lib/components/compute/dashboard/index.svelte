@@ -34,7 +34,7 @@
 				.getPrometheus({})
 				.then((response) => {
 					prometheusDriver = new PrometheusDriver({
-						endpoint: `http://10.102.197.102:10900`,
+						endpoint: `${env.PUBLIC_API_URL}/prometheus`,
 						baseURL: response.baseUrl
 					});
 				})

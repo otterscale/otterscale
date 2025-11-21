@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
@@ -26,7 +27,7 @@
 	let reads: SampleValue[] = $state([] as SampleValue[]);
 	async function fetchReads() {
 		const response = await prometheusDriver.rangeQuery(
-			`avg(rate(kubevirt_vmi_storage_read_traffic_bytes_total[5m]))`,
+			`avg(rate(kubevirt_vmi_storage_read_traffic_bytes_total{juju_model="${scope}"}[5m]))`,
 			new SvelteDate().setMinutes(0, 0, 0) - 60 * 60 * 1000,
 			new SvelteDate().setMinutes(0, 0, 0),
 			2 * 60
@@ -37,7 +38,7 @@
 	let writes: SampleValue[] = $state([] as SampleValue[]);
 	async function fetchWrites() {
 		const response = await prometheusDriver.rangeQuery(
-			`avg(rate(kubevirt_vmi_storage_write_traffic_bytes_total[5m]))`,
+			`avg(rate(kubevirt_vmi_storage_write_traffic_bytes_total{juju_model="${scope}"}[5m]))`,
 			new SvelteDate().setMinutes(0, 0, 0) - 60 * 60 * 1000,
 			new SvelteDate().setMinutes(0, 0, 0),
 			2 * 60
@@ -45,7 +46,16 @@
 		writes = response.result[0]?.values ?? [];
 	}
 
-	const reloadManager = new ReloadManager(fetch);
+	let isLoaded = $state(false);
+	async function fetchData() {
+		try {
+			await Promise.all([fetchReads(), fetchWrites()]);
+			isLoaded = true;
+		} catch (error) {
+			console.error('Failed to fetch network data:', error);
+		}
+	}
+	const reloadManager = new ReloadManager(fetchData);
 
 	const throughputs = $derived(
 		reads.map((sample, index) => ({
@@ -63,31 +73,30 @@
 		}
 	});
 
-	let isLoaded = $state(false);
-	async function fetch() {
-		try {
-			await Promise.all([fetchReads(), fetchWrites()]);
-			isLoaded = true;
-		} catch (error) {
-			console.error('Failed to fetch network data:', error);
-		}
-	}
-
 	onMount(async () => {
-		await fetch();
+		await fetchData();
 	});
 	onDestroy(() => {
 		reloadManager.stop();
 	});
 </script>
 
-{#if isLoaded}
-	<Card.Root class="h-full gap-2">
-		<Card.Header>
-			<Card.Title>{m.storage_throughPut()}</Card.Title>
-			<Card.Description>{m.read_and_write()}</Card.Description>
-		</Card.Header>
-		<Card.Content>
+<Card.Root class="h-full gap-2">
+	<Card.Header>
+		<Card.Title>{m.storage_throughPut()}</Card.Title>
+		<Card.Description>{m.read_and_write()}</Card.Description>
+	</Card.Header>
+	<Card.Content class="h-full">
+		{#if !isLoaded}
+			<div class="flex h-full w-full items-center justify-center border">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-24" />
+			</div>
+		{:else if !reads?.length || !writes?.length}
+			<div class="flex h-full w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-line-fill" class="size-60 animate-pulse text-muted-foreground" />
+				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
+			</div>
+		{:else}
 			<Chart.Container config={configuration}>
 				<AreaChart
 					data={throughputs}
@@ -164,6 +173,6 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		</Card.Content>
-	</Card.Root>
-{/if}
+		{/if}
+	</Card.Content>
+</Card.Root>
