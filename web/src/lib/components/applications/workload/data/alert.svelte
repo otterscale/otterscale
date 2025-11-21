@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
-	import { type Writable } from 'svelte/store';
 
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import * as Alert from '$lib/components/ui/alert/index.js';
@@ -11,11 +10,11 @@
 	let {
 		application
 	}: {
-		application: Writable<Application>;
+		application: Application;
 	} = $props();
 </script>
 
-{#if $application.healthies !== $application.pods.length}
+{#if application.healthies !== application.pods.length}
 	<Alert.Root variant="destructive" class="border-destructive">
 		<Icon icon="ph:warning" class="size-5" />
 		<Alert.Title>
@@ -23,8 +22,8 @@
 		</Alert.Title>
 		<Alert.Description>
 			{m.workload_health_description({
-				unhealthies: $application.pods.length - $application.healthies,
-				total: $application.pods.length
+				unhealthies: application.pods.length - application.healthies,
+				total: application.pods.length
 			})}
 		</Alert.Description>
 	</Alert.Root>

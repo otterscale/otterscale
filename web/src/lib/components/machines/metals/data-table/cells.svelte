@@ -2,6 +2,10 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
+	import { scaleUtc } from 'd3-scale';
+	import { curveLinear } from 'd3-shape';
+	import { LineChart } from 'layerchart';
+	import { SampleValue } from 'prometheus-query';
 
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
@@ -10,9 +14,11 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
+	import * as Chart from '$lib/components/ui/chart';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { cn } from '$lib/utils';
 
+	import type { Metrics } from '../types';
 	import Actions from './cell-actions.svelte';
 	import GPUs from './cell-gpus.svelte';
 	import Tags from './cell-tags.svelte';
@@ -20,7 +26,7 @@
 	export const cells = {
 		row_picker,
 		fqdn_ip,
-		powerState,
+		power_state,
 		status,
 		cores_arch,
 		ram,
@@ -29,6 +35,8 @@
 		gpu,
 		tags,
 		scope,
+		memory_metric,
+		storage_metric,
 		actions
 	};
 </script>
@@ -59,7 +67,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet powerState(row: Row<Machine>)}
+{#snippet power_state(row: Row<Machine>)}
 	<Layout.Cell class="flex-row items-center">
 		<Icon
 			icon={row.original.powerState === 'on' ? 'ph:power' : 'ph:power'}
@@ -167,6 +175,108 @@
 			{/if}
 		{/if}
 	</Layout.Cell>
+{/snippet}
+
+{#snippet memory_metric(data: { row: Row<Machine>; metrics: Metrics })}
+	{@const configuation = {
+		usage: { label: 'usage', color: 'var(--chart-2)' }
+	} satisfies Chart.ChartConfig}
+	{@const usage: SampleValue[] = data.metrics.memory.get(data.row.original.fqdn) ?? []}
+	{#if usage.length > 0}
+		<Layout.Cell class="justify-center">
+			<Chart.Container config={configuation} class="h-10 w-20">
+				<LineChart
+					data={usage}
+					x="time"
+					series={[
+						{
+							key: 'value',
+							label: configuation.usage.label,
+							color: configuation.usage.color
+						}
+					]}
+					xScale={scaleUtc()}
+					yDomain={[0, 1]}
+					axis={false}
+					props={{
+						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
+						xAxis: {
+							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+						},
+						highlight: { points: { r: 4 } }
+					}}
+				>
+					{#snippet tooltip()}
+						<Chart.Tooltip hideLabel>
+							{#snippet formatter({ item, name, value })}
+								<div
+									style="--color-bg: {item.color}"
+									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+								></div>
+								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+									<div class="grid gap-1.5">
+										<span class="text-muted-foreground">{name}</span>
+									</div>
+									<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
+								</div>
+							{/snippet}
+						</Chart.Tooltip>
+					{/snippet}
+				</LineChart>
+			</Chart.Container>
+		</Layout.Cell>
+	{/if}
+{/snippet}
+
+{#snippet storage_metric(data: { row: Row<Machine>; metrics: Metrics })}
+	{@const configuation = {
+		usage: { label: 'usage', color: 'var(--chart-2)' }
+	} satisfies Chart.ChartConfig}
+	{@const usage: SampleValue[] = data.metrics.storage.get(data.row.original.fqdn) ?? []}
+	{#if usage.length > 0}
+		<Layout.Cell class="justify-center">
+			<Chart.Container config={configuation} class="h-10 w-20">
+				<LineChart
+					data={usage}
+					x="time"
+					series={[
+						{
+							key: 'value',
+							label: configuation.usage.label,
+							color: configuation.usage.color
+						}
+					]}
+					xScale={scaleUtc()}
+					yDomain={[0, 1]}
+					axis={false}
+					props={{
+						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
+						xAxis: {
+							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+						},
+						highlight: { points: { r: 4 } }
+					}}
+				>
+					{#snippet tooltip()}
+						<Chart.Tooltip hideLabel>
+							{#snippet formatter({ item, name, value })}
+								<div
+									style="--color-bg: {item.color}"
+									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+								></div>
+								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+									<div class="grid gap-1.5">
+										<span class="text-muted-foreground">{name}</span>
+									</div>
+									<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
+								</div>
+							{/snippet}
+						</Chart.Tooltip>
+					{/snippet}
+				</LineChart>
+			</Chart.Container>
+		</Layout.Cell>
+	{/if}
 {/snippet}
 
 {#snippet actions(data: { row: Row<Machine>; reloadManager: ReloadManager })}

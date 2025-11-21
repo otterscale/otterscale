@@ -15,6 +15,7 @@
 	}: WithElementRef<HTMLAttributes<HTMLSpanElement>> = $props();
 
 	const stepManager: StepManager = getContext('StepManager');
+	stepManager.reset();
 	setContext('IndexManager', new IndexManager(stepManager.steps));
 </script>
 

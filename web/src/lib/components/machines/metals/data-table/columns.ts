@@ -6,12 +6,13 @@ import type { ReloadManager } from '$lib/components/custom/reloader';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
+import type { Metrics } from '../types';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
 const messages = {
 	fqdn_ip: m.fqdn(),
-	powerState: m.power(),
+	power_state: m.power(),
 	status: m.status(),
 	cores_arch: m.core(),
 	ram: m.ram(),
@@ -19,10 +20,12 @@ const messages = {
 	storage: m.storage(),
 	gpu: m.gpu(),
 	scope: m.scope(),
+	memory_metric: m.memory(),
+	storage_metric: m.storage(),
 	tags: m.tags()
 };
 
-function getColumns(reloadManager: ReloadManager): ColumnDef<Machine>[] {
+function getColumns(metrics: Metrics, reloadManager: ReloadManager): ColumnDef<Machine>[] {
 	return [
 		{
 			id: 'select',
@@ -59,14 +62,20 @@ function getColumns(reloadManager: ReloadManager): ColumnDef<Machine>[] {
 			}
 		},
 		{
-			accessorKey: 'powerState',
+			accessorKey: 'power_state',
 			header: ({ column }) => {
-				return renderSnippet(headers.powerState, column);
+				return renderSnippet(headers.power_state, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.powerState, row);
+				return renderSnippet(cells.power_state, row);
 			},
-			filterFn: 'arrIncludesSome'
+			filterFn: (row, columnId, filterValue) => {
+				if (!filterValue) {
+					return true;
+				}
+
+				return row.original.powerState ? filterValue.includes(row.original.powerState) : false;
+			}
 		},
 		{
 			accessorKey: 'status',
@@ -175,6 +184,24 @@ function getColumns(reloadManager: ReloadManager): ColumnDef<Machine>[] {
 					(p, n) => p < n,
 					(p, n) => p === n
 				)
+		},
+		{
+			accessorKey: 'memory_metric',
+			header: ({ column }) => {
+				return renderSnippet(headers.memory_metric, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.memory_metric, { row, metrics });
+			}
+		},
+		{
+			accessorKey: 'storage_metric',
+			header: ({ column }) => {
+				return renderSnippet(headers.storage_metric, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.storage_metric, { row, metrics });
+			}
 		},
 		{
 			accessorKey: 'actions',
