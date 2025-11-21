@@ -1,6 +1,6 @@
-package bist
-
 //go:generate go run -mod=mod golang.org/x/tools/cmd/stringer -type=WarpOperationType -output=warp_operation_type_string.go -linecomment=true
+
+package bist
 
 type WarpOperationType int32
 

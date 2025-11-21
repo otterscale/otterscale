@@ -1,6 +1,6 @@
-package bist
-
 //go:generate go run -mod=mod golang.org/x/tools/cmd/stringer -type=FIOAccessMode -output=fio_access_mode_string.go -linecomment=true
+
+package bist
 
 type FIOAccessMode int32
 
