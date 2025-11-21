@@ -4,9 +4,12 @@
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 
+	import {
+		formatProgressColor,
+		type ProgressTargetType
+	} from '$lib/components/custom/progress/utils.svelte';
 	import { Progress } from '$lib/components/ui/progress';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { formatProgressColor } from '$lib/formatter';
 	import { cn } from '$lib/utils.js';
 </script>
 
@@ -18,14 +21,14 @@
 		denominator,
 		ratio,
 		detail,
-		highIsGood = true,
+		target,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		numerator: number;
 		denominator: number;
 		ratio?: Snippet<[{ numerator: number; denominator: number }]>;
 		detail?: Snippet<[{ numerator: number; denominator: number }]>;
-		highIsGood?: boolean;
+		target: ProgressTargetType;
 	} = $props();
 
 	const progressRatio = $derived(denominator > 0 ? numerator / denominator : 0);
@@ -40,7 +43,7 @@
 						<Progress
 							value={progressRatio}
 							max={1}
-							class={formatProgressColor(progressRatio, false, highIsGood)}
+							class={formatProgressColor(numerator, denominator, target)}
 						/>
 						<div
 							class={cn(
@@ -57,6 +60,12 @@
 				</Tooltip.Content>
 			</Tooltip.Root>
 		</Tooltip.Provider>
+	{:else}
+		<Progress
+			value={progressRatio}
+			max={1}
+			class={formatProgressColor(numerator, denominator, target)}
+		/>
 	{/if}
 {:else}
 	<Icon icon="ph:infinity" />

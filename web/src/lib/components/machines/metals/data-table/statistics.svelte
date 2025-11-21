@@ -3,14 +3,10 @@
 	import { type Table } from '@tanstack/table-core';
 
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { formatProgressColor } from '$lib/components/custom/progress/utils.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
-	import {
-		formatBigNumber,
-		formatCapacity,
-		formatPercentage,
-		formatProgressColor
-	} from '$lib/formatter';
+	import { formatBigNumber, formatCapacity, formatPercentage } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
@@ -84,7 +80,7 @@
 				value={Number(percentage ?? 0)}
 				max={100}
 				class={cn(
-					formatProgressColor(Number(percentage ?? 0)),
+					formatProgressColor(powerOnMachines, totalMachines, 'LTB'),
 					'absolute top-0 left-0 h-2 rounded-none'
 				)}
 			/>
@@ -131,7 +127,7 @@
 				value={Number(percentage ?? 0)}
 				max={100}
 				class={cn(
-					formatProgressColor(Number(percentage ?? 0)),
+					formatProgressColor(deployedMachines, totalMachines, 'LTB'),
 					'absolute top-0 left-0 h-2 rounded-none'
 				)}
 			/>

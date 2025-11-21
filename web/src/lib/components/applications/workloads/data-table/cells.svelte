@@ -71,6 +71,7 @@
 		<Progress.Root
 			numerator={Number(row.original.healthies)}
 			denominator={Number(row.original.pods.length)}
+			target="LTB"
 		>
 			{#snippet ratio({ numerator, denominator })}
 				{Progress.formatRatio(numerator, denominator)}

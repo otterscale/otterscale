@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { on } from 'events';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -16,34 +15,19 @@
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
-	// async function fetch() {
-	// 	machineClient
-	// 		.listMachines({})
-	// 		.then((response) => {
-	// 			machines.set(response.machines);
-	// 			// isMachinesLoaded = true;
-	// 		})
-	// 		.catch((error) => {
-	// 			console.error('Error during initial data load:', error);
-	// 		});
-	// }
+
 	async function fetch() {
 		const response = await machineClient.listMachines({});
 		machines.set(response.machines);
+		isMounted = true;
 	}
 
-	// async function fetch2() {
-	// 	const response = await machineClient.listMachines({});
-	// 	machines.set(response.machines);
-	// }
 	let isMounted = $state(false);
 
 	const reloadManager = new ReloadManager(fetch, false);
 
-	// const isMounted = $derived(isMachinesLoaded);
 	onMount(async () => {
 		await fetch();
-		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();

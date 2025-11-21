@@ -448,6 +448,7 @@
 	"group": "群組",
 	"create_time": "建立時間",
 	"pending_clones": "待處理的複製",
+	"nfs": "NFS",
 	"nfs_quota_size_direction": "子卷的大小是透過設定其配額來指定。如果留空或輸入 0，配額將為無限。",
 	"path": "路徑",
 	"mode": "模式",

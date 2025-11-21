@@ -11,4 +11,47 @@ function formatRatio(numerator: number, denominator: number) {
 	}
 }
 
-export { formatRatio };
+/**
+ * Returns a Tailwind CSS background color class based on the given value.
+ *
+ * @param target - LTB (Lower The Better) or STB (Stronger The Better)
+ * @returns A string representing the Tailwind CSS background color class.
+ */
+const processVariant = {
+	error: '*:bg-red-700 dark:*:bg-red-800 bg-red-100 dark:bg-red-900',
+	warning: '*:bg-yellow-500 dark:*:bg-yellow-600 bg-yellow-100 dark:bg-yellow-900',
+	information: '*:bg-green-700 dark:*:bg-green-800 bg-green-50 dark:bg-green-950'
+};
+
+type ProgressTargetType = 'LTB' | 'STB';
+
+function formatProgressColor(
+	numerator: number,
+	denominator: number,
+	target: ProgressTargetType
+): string {
+	const percent = (numerator / denominator) * 100;
+
+	if (target === 'LTB') {
+		if (percent > 62) {
+			return processVariant.information;
+		} else if (percent > 38) {
+			return processVariant.warning;
+		} else {
+			return processVariant.error;
+		}
+	} else if (target === 'STB') {
+		if (percent < 38) {
+			return processVariant.information;
+		} else if (percent < 62) {
+			return processVariant.warning;
+		} else {
+			return processVariant.error;
+		}
+	} else {
+		return '';
+	}
+}
+
+export type { ProgressTargetType };
+export { formatProgressColor, formatRatio };

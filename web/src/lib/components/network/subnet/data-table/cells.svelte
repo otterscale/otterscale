@@ -100,6 +100,7 @@
 			<Progress.Root
 				numerator={Number(row.original.subnet.statistics.available)}
 				denominator={Number(row.original.subnet.statistics.total)}
+				target="LTB"
 			>
 				{#snippet ratio({ numerator, denominator })}
 					{Progress.formatRatio(numerator, denominator)}
