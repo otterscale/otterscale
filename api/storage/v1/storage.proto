@@ -269,9 +269,9 @@ service StorageService {
 }
 
 enum PoolType {
-  UNSPECIFIED = 0;
-  ERASURE = 1;
-  REPLICATED = 2;
+  POOL_TYPE_UNSPECIFIED = 0;
+  POOL_TYPE_ERASURE = 1;
+  POOL_TYPE_REPLICATED = 2;
 }
 
 message Machine {
@@ -384,10 +384,10 @@ message SubvolumeGroup {
 
 message Bucket {
   enum ACL {
-    PRIVATE = 0;
-    PUBLIC_READ = 1;
-    PUBLIC_READ_WRITE = 2;
-    AUTHENTICATED_READ = 3;
+    ACL_PRIVATE = 0;
+    ACL_PUBLIC_READ = 1;
+    ACL_PUBLIC_READ_WRITE = 2;
+    ACL_AUTHENTICATED_READ = 3;
   }
   message Grant {
     string type = 1;
@@ -419,16 +419,16 @@ message User {
 message SMBShare {
   message CommonConfig {
     enum MapToGuest {
-      NEVER = 0;
-      BAD_USER = 1;
-      BAD_PASSWORD = 2;
+      MAP_TO_GUEST_NEVER = 0;
+      MAP_TO_GUEST_BAD_USER = 1;
+      MAP_TO_GUEST_BAD_PASSWORD = 2;
     }
     MapToGuest map_to_guest = 1;
   }
   message SecurityConfig {
     enum Mode {
-      USER = 0;
-      ACTIVE_DIRECTORY = 1;
+      MODE_USER = 0;
+      MODE_ACTIVE_DIRECTORY = 1;
     }
     message User {
       string username = 1;
@@ -838,9 +838,9 @@ message ValidateSMBUserRequest {
 
 message ValidateSMBUserResponse {
   enum EntityType {
-    UNKNOWN = 0;
-    USER = 1;
-    GROUP = 2;
+    ENTITY_TYPE_UNKNOWN = 0;
+    ENTITY_TYPE_USER = 1;
+    ENTITY_TYPE_GROUP = 2;
   }
   bool valid = 1;
   EntityType entity_type = 2;
