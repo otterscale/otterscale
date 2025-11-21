@@ -1,6 +1,6 @@
-package bist
-
 //go:generate go run -mod=mod golang.org/x/tools/cmd/stringer -type=ResultStatus -output=result_status_string.go
+
+package bist
 
 type ResultStatus int32
 
