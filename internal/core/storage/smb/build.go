@@ -68,7 +68,7 @@ func (uc *UseCase) buildJoinSecret(namespace, name string, user *User) *config.S
 	}
 }
 
-func (uc *UseCase) buildCommonConfig(namespace, name, mapToGuest string) *CommonConfig {
+func (uc *UseCase) buildCommonConfig(namespace, name string, mapToGuest MapToGuest) *CommonConfig {
 	return &CommonConfig{
 		ObjectMeta: v1.ObjectMeta{
 			Name:      name,
@@ -78,21 +78,21 @@ func (uc *UseCase) buildCommonConfig(namespace, name, mapToGuest string) *Common
 			CustomGlobalConfig: &v1alpha1.SmbCommonConfigGlobalConfig{
 				UseUnsafeCustomConfig: true,
 				Configs: map[string]string{
-					MapToGuestKey: mapToGuest,
+					MapToGuestKey: mapToGuest.String(),
 				},
 			},
 		},
 	}
 }
 
-func (uc *UseCase) buildSecurityConfig(namespace, name, securityMode, usersSecretName, realm, joinSecretName string) *SecurityConfig {
+func (uc *UseCase) buildSecurityConfig(namespace, name string, securityMode SecurityMode, usersSecretName, realm, joinSecretName string) *SecurityConfig {
 	return &SecurityConfig{
 		ObjectMeta: v1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
 		Spec: v1alpha1.SmbSecurityConfigSpec{
-			Mode: securityMode,
+			Mode: securityMode.String(),
 			Users: &v1alpha1.SmbSecurityUsersSpec{
 				Secret: usersSecretName,
 				Key:    "users",

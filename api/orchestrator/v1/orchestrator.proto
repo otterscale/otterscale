@@ -90,9 +90,9 @@ message CreateClusterRequest {
 
 message AddClusterUnitsRequest {
   enum Type {
-    UNSPECIFIED = 0;
-    KUBERNETES = 1;
-    CEPH = 2;
+    TYPE_UNSPECIFIED = 0;
+    TYPE_KUBERNETES = 1;
+    TYPE_CEPH = 2;
   }
   Type type = 1;
   string scope = 2;
@@ -182,12 +182,12 @@ message ListGPURelationsByModelResponse {
 
 message Extension {
   enum Type {
-    UNSPECIFIED = 0;
-    GENERAL = 1;
-    REGISTRY = 2;
-    MODEL = 3;
-    INSTANCE = 4;
-    STORAGE = 5;
+    TYPE_UNSPECIFIED = 0;
+    TYPE_GENERAL = 1;
+    TYPE_REGISTRY = 2;
+    TYPE_MODEL = 3;
+    TYPE_INSTANCE = 4;
+    TYPE_STORAGE = 5;
   }
   message Manifest {
     string id = 1;

@@ -396,10 +396,10 @@ func toProtoVirtualMachineDiskVolumeSource(v *vm.VirtualMachineVolumeSource) *pb
 	ret := &pb.VirtualMachine_Disk_Volume_Source{}
 
 	if v.DataVolume != nil {
-		ret.SetType(pb.VirtualMachine_Disk_Volume_Source_DATA_VOLUME)
+		ret.SetType(pb.VirtualMachine_Disk_Volume_Source_TYPE_DATA_VOLUME)
 		ret.SetData(v.DataVolume.Name)
 	} else if v.CloudInitNoCloud != nil {
-		ret.SetType(pb.VirtualMachine_Disk_Volume_Source_CLOUD_INIT_NO_CLOUD)
+		ret.SetType(pb.VirtualMachine_Disk_Volume_Source_TYPE_CLOUD_INIT_NO_CLOUD)
 		ret.SetData(v.CloudInitNoCloud.UserData)
 	}
 
@@ -429,7 +429,7 @@ func toProtoVirtualMachineDisk(d *vm.VirtualMachineDisk, vs []vm.VirtualMachineV
 
 	disk := d.Disk
 	if disk != nil {
-		ret.SetBus(convertDiskBusToProto(disk.Bus))
+		ret.SetBus(toProtoVirtualMachineDiskBus(disk.Bus))
 	}
 
 	bootOrder := d.BootOrder
@@ -446,22 +446,23 @@ func toProtoVirtualMachineDisk(d *vm.VirtualMachineDisk, vs []vm.VirtualMachineV
 	return ret
 }
 
-func convertDiskBusToProto(bus vm.VirtualMachineDiskBus) pb.VirtualMachine_Disk_Bus {
+func toProtoVirtualMachineDiskBus(bus vm.VirtualMachineDiskBus) pb.VirtualMachine_Disk_Bus {
 	switch bus {
 	case vm.VirtualMachineDiskBusVirtio:
-		return pb.VirtualMachine_Disk_VIRTIO
+		return pb.VirtualMachine_Disk_BUS_VIRTIO
 
 	case vm.VirtualMachineDiskBusSATA:
-		return pb.VirtualMachine_Disk_SATA
+		return pb.VirtualMachine_Disk_BUS_SATA
 
 	case vm.VirtualMachineDiskBusSCSI:
-		return pb.VirtualMachine_Disk_SCSI
+		return pb.VirtualMachine_Disk_BUS_SCSI
 
 	case vm.VirtualMachineDiskBusUSB:
-		return pb.VirtualMachine_Disk_USB
-	}
+		return pb.VirtualMachine_Disk_BUS_USB
 
-	return pb.VirtualMachine_Disk_VIRTIO
+	default:
+		return pb.VirtualMachine_Disk_BUS_VIRTIO
+	}
 }
 
 func toProtoVirtualMachines(vmds []vm.VirtualMachineData, its []vmi.VirtualMachineInstanceTypeData) []*pb.VirtualMachine {
@@ -686,15 +687,15 @@ func toProtoDataVolumeSource(s *cdi.DataVolumeSource) *pb.DataVolume_Source {
 
 	switch {
 	case s.Blank != nil:
-		ret.SetType(pb.DataVolume_Source_BLANK_IMAGE)
+		ret.SetType(pb.DataVolume_Source_TYPE_BLANK_IMAGE)
 		ret.SetData("")
 
 	case s.HTTP != nil:
-		ret.SetType(pb.DataVolume_Source_HTTP_URL)
+		ret.SetType(pb.DataVolume_Source_TYPE_HTTP_URL)
 		ret.SetData(s.HTTP.URL)
 
 	case s.PVC != nil:
-		ret.SetType(pb.DataVolume_Source_EXISTING_PERSISTENT_VOLUME_CLAIM)
+		ret.SetType(pb.DataVolume_Source_TYPE_EXISTING_PERSISTENT_VOLUME_CLAIM)
 		ret.SetData(s.PVC.Name)
 	}
 

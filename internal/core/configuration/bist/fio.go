@@ -17,6 +17,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/release"
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 	"github.com/otterscale/otterscale/internal/core/scope"
+	"github.com/otterscale/otterscale/internal/core/storage"
 )
 
 const (
@@ -45,12 +46,12 @@ type FIOTargetNFS struct {
 }
 
 type FIOInput struct {
-	AccessMode string `json:"access_mode"`
-	JobCount   int64  `json:"job_count"`
-	RunTime    int64  `json:"run_time"`
-	BlockSize  int64  `json:"block_size"`
-	FileSize   int64  `json:"file_size"`
-	IODepth    int64  `json:"io_depth"`
+	AccessMode FIOAccessMode `json:"access_mode"`
+	JobCount   int64         `json:"job_count"`
+	RunTime    int64         `json:"run_time"`
+	BlockSize  int64         `json:"block_size"`
+	FileSize   int64         `json:"file_size"`
+	IODepth    int64         `json:"io_depth"`
 }
 
 type FIOOutput struct {
@@ -153,7 +154,7 @@ func (uc *UseCase) blockJobSpec(configMapName string, input *FIOInput) batchv1.J
 		{Name: "BENCHMARK_ARGS_FIO_NORANDOMMAP", Value: "True"},
 		{Name: "BENCHMARK_ARGS_FIO_BS", Value: strconv.FormatInt(input.BlockSize, 10)},
 		{Name: "BENCHMARK_ARGS_FIO_BUFFER_COMPRESS_PERCENTAGE", Value: "0"},
-		{Name: "BENCHMARK_ARGS_FIO_RW", Value: input.AccessMode},
+		{Name: "BENCHMARK_ARGS_FIO_RW", Value: input.AccessMode.String()},
 		{Name: "BENCHMARK_ARGS_FIO_STARTDELAY", Value: "5"},
 		{Name: "BENCHMARK_ARGS_FIO_TIME_BASED", Value: "True"},
 		{Name: "BENCHMARK_ARGS_FIO_EXITALL_ON_ERROR", Value: "True"},
@@ -240,7 +241,7 @@ func (uc *UseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) batchv1.Job
 		{Name: "BENCHMARK_ARGS_FIO_NORANDOMMAP", Value: "True"},
 		{Name: "BENCHMARK_ARGS_FIO_BS", Value: strconv.FormatInt(input.BlockSize, 10)},
 		{Name: "BENCHMARK_ARGS_FIO_BUFFER_COMPRESS_PERCENTAGE", Value: "0"},
-		{Name: "BENCHMARK_ARGS_FIO_RW", Value: input.AccessMode},
+		{Name: "BENCHMARK_ARGS_FIO_RW", Value: input.AccessMode.String()},
 		{Name: "BENCHMARK_ARGS_FIO_STARTDELAY", Value: "5"},
 		{Name: "BENCHMARK_ARGS_FIO_TIME_BASED", Value: "True"},
 		{Name: "BENCHMARK_ARGS_FIO_EXITALL_ON_ERROR", Value: "True"},
@@ -321,7 +322,7 @@ func (uc *UseCase) ensurePool(ctx context.Context, scope, pool string) error {
 		}
 	}
 
-	if err := uc.pool.Create(ctx, scope, pool, "replicated"); err != nil {
+	if err := uc.pool.Create(ctx, scope, pool, storage.PoolTypeReplicated); err != nil {
 		return err
 	}
 
