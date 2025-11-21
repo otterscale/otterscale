@@ -554,18 +554,8 @@ func (s *StorageService) ValidateSMBUser(_ context.Context, req *pb.ValidateSMBU
 		req.GetPassword(),
 		req.GetSearchUsername(),
 		req.GetTls())
-	if err != nil {
-		return nil, err
-	}
 
-	resp := &pb.ValidateSMBUserResponse{}
-	resp.SetValid(entityType != smb.EntityTypeUnknown)
-	resp.SetEntityType(toProtoEntityType(entityType))
-	if entityType != smb.EntityTypeUnknown {
-		resp.SetMessage("validation successful")
-	} else {
-		resp.SetMessage("validation failed")
-	}
+	resp := toValidateSMBUserResponse(entityType, err)
 	return resp, nil
 }
 
@@ -1186,4 +1176,18 @@ func toProtoEntityType(et smb.EntityType) pb.ValidateSMBUserResponse_EntityType 
 	default:
 		return pb.ValidateSMBUserResponse_ENTITY_TYPE_UNKNOWN
 	}
+}
+
+func toValidateSMBUserResponse(et smb.EntityType, err error) *pb.ValidateSMBUserResponse {
+	valid := et != smb.EntityTypeUnknown
+
+	ret := &pb.ValidateSMBUserResponse{}
+	ret.SetValid(valid)
+	ret.SetEntityType(toProtoEntityType(et))
+
+	if err != nil {
+		ret.SetMessage(err.Error())
+	}
+
+	return ret
 }

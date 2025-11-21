@@ -45,27 +45,23 @@ func (uc *UseCase) parseSearchUsername(searchUsername string) (string, error) {
 	return actualSearchName, nil
 }
 
-func (uc *UseCase) connectLDAP(serverName string, port uint16, useTLS bool) (*ldap.Conn, error) {
-	var scheme string
-	var opts []ldap.DialOpt
-
-	ldapURL := fmt.Sprintf("%s:%d", serverName, port)
+func (uc *UseCase) connectLDAP(serverName string, useTLS bool) (*ldap.Conn, error) {
+	scheme := "ldap"
+	port := ldapDefaultPort
+	opts := []ldap.DialOpt{}
 
 	if useTLS {
 		scheme = "ldaps"
+		port = ldapsDefaultPort
 		opts = append(opts, ldap.DialWithTLSConfig(&tls.Config{
 			ServerName: serverName,
 			MinVersion: tls.VersionTLS12,
 		}))
-	} else {
-		scheme = "ldap"
 	}
 
-	conn, err := ldap.DialURL(fmt.Sprintf("%s://%s", scheme, ldapURL), opts...)
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to LDAP server: %w", err)
-	}
-	return conn, nil
+	addr := fmt.Sprintf("%s://%s:%d", scheme, serverName, port)
+
+	return ldap.DialURL(addr, opts...)
 }
 
 func (uc *UseCase) ValidateSMBUser(realm, username, password, searchUsername string, useTLS bool) (EntityType, error) {
@@ -75,13 +71,8 @@ func (uc *UseCase) ValidateSMBUser(realm, username, password, searchUsername str
 		return EntityTypeUnknown, err
 	}
 
-	port := ldapDefaultPort
-	if useTLS {
-		port = ldapsDefaultPort
-	}
-
 	// Connect to LDAP server
-	conn, err := uc.connectLDAP(realm, port, useTLS)
+	conn, err := uc.connectLDAP(realm, useTLS)
 	if err != nil {
 		return EntityTypeUnknown, fmt.Errorf("failed to connect: %w", err)
 	}
@@ -98,11 +89,19 @@ func (uc *UseCase) ValidateSMBUser(realm, username, password, searchUsername str
 	}
 
 	// Search for user or group
+	baseDN := "DC=" + strings.Join(strings.Split(strings.ToLower(realm), "."), ",DC=")
+	filter := fmt.Sprintf("(sAMAccountName=%s)", ldap.EscapeFilter(actualSearchName))
+	controls := []string{"objectClass"}
+
 	sr, err := conn.Search(ldap.NewSearchRequest(
-		"DC="+strings.Join(strings.Split(strings.ToLower(realm), "."), ",DC="),
-		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-		fmt.Sprintf("(sAMAccountName=%s)", ldap.EscapeFilter(actualSearchName)),
-		[]string{"objectClass"}, nil,
+		baseDN,
+		ldap.ScopeWholeSubtree,
+		ldap.NeverDerefAliases,
+		0,
+		0,
+		false,
+		filter,
+		controls, nil,
 	))
 	if err != nil {
 		return EntityTypeUnknown, fmt.Errorf("LDAP search failed: %w", err)
@@ -112,20 +111,21 @@ func (uc *UseCase) ValidateSMBUser(realm, username, password, searchUsername str
 		return EntityTypeUnknown, fmt.Errorf("user or group not found")
 	}
 
-	entityType := determineEntityType(sr.Entries[0].GetAttributeValues("objectClass"))
-	return entityType, nil
+	objectClasses := sr.Entries[0].GetAttributeValues("objectClass")
+
+	return determineEntityType(objectClasses), nil
 }
 
 func determineEntityType(objectClasses []string) EntityType {
-	for _, c := range objectClasses {
-		if cl := strings.ToLower(c); cl == "group" {
+	for _, oc := range objectClasses {
+		ocLower := strings.ToLower(oc)
+		switch ocLower {
+		case "group":
 			return EntityTypeGroup
-		}
-	}
-	for _, c := range objectClasses {
-		if cl := strings.ToLower(c); cl == "user" || cl == "person" || cl == "inetorgperson" {
+		case "user", "person", "inetorgperson":
 			return EntityTypeUser
 		}
 	}
+
 	return EntityTypeUnknown
 }
