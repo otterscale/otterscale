@@ -94,8 +94,10 @@ func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifest
 					return err
 				}
 
-				if err := chart.PostFunc(scope); err != nil {
-					return err
+				if chart.PostFunc != nil {
+					if err := chart.PostFunc(scope); err != nil {
+						return err
+					}
 				}
 			}
 
