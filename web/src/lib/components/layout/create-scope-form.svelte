@@ -66,7 +66,6 @@
 	let selectedDevices = $state<string[]>([]);
 	let calicoCidr = $state('');
 	let virtualIp = $state('');
-	let prefixName = $state('');
 	let isSubmitting = $state(false);
 
 	async function fetchMachines() {
@@ -206,7 +205,6 @@
 		selectedDevices = [];
 		calicoCidr = '';
 		virtualIp = '';
-		prefixName = '';
 		isSubmitting = false;
 	}
 
@@ -216,9 +214,9 @@
 </script>
 
 <!--  -->
-<div class="flex h-full w-full flex-col px-12 pt-12 pb-10">
+<div class="flex h-full w-full flex-col p-12">
 	<!-- Plan Header -->
-	<div class="flex flex-col space-y-3">
+	<div class="flex flex-col space-y-4">
 		<Badge variant="secondary" class="flex items-center bg-primary/10 text-primary uppercase">
 			{#if plan.star}
 				<Icon icon="ph:star-fill" class="text-yellow-500" />
@@ -366,17 +364,6 @@
 							bind:value={virtualIp}
 						/>
 					</div>
-				</div>
-
-				<!-- Prefix Name (optional) -->
-				<div class="grid gap-3">
-					<div class="grid gap-1">
-						<Label for="prefix-name">{m.prefix_name()} ({m.optional()})</Label>
-						<p class="text-sm text-muted-foreground">
-							{m.create_scope_prefix_name_description()}
-						</p>
-					</div>
-					<Input id="prefix-name" type="text" placeholder="node-prefix" bind:value={prefixName} />
 				</div>
 			{/if}
 		</div>
