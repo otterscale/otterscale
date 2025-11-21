@@ -47,6 +47,7 @@ import (
 	"github.com/otterscale/otterscale/internal/providers/ceph"
 	"github.com/otterscale/otterscale/internal/providers/juju"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
+	"github.com/otterscale/otterscale/internal/providers/kubernetessigs"
 	"github.com/otterscale/otterscale/internal/providers/kubevirt"
 	"github.com/otterscale/otterscale/internal/providers/maas"
 	"github.com/otterscale/otterscale/internal/providers/samba"
@@ -85,8 +86,13 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 		return nil, nil, err
 	}
 	releaseUseCase := release.NewUseCase(releaseRepo, chartRepo)
+	kubernetesSigs, err := kubernetessigs.New(configConfig, kubernetesKubernetes)
+	if err != nil {
+		return nil, nil, err
+	}
+	httpRouteRepo := kubernetessigs.NewHTTPRouteRepo(kubernetesSigs)
 	serviceRepo := kubernetes.NewServiceRepo(kubernetesKubernetes)
-	serviceUseCase := service.NewUseCase(serviceRepo)
+	serviceUseCase := service.NewUseCase(httpRouteRepo, serviceRepo)
 	daemonSetRepo := kubernetes.NewDaemonSetRepo(kubernetesKubernetes)
 	deploymentRepo := kubernetes.NewDeploymentRepo(kubernetesKubernetes)
 	jobRepo := kubernetes.NewJobRepo(kubernetesKubernetes)
@@ -148,7 +154,8 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	tagRepo := maas.NewTagRepo(maasMAAS)
 	tagUseCase := tag.NewUseCase(tagRepo)
 	machineService := app.NewMachineService(machineUseCase, purgeUseCase, tagUseCase)
-	modelUseCase := model.NewUseCase(chartRepo, deploymentRepo, releaseRepo, persistentVolumeClaimRepo, serviceRepo)
+	inferencePoolRepo := kubernetessigs.NewInferencePoolRepo(kubernetesSigs)
+	modelUseCase := model.NewUseCase(inferencePoolRepo, chartRepo, deploymentRepo, httpRouteRepo, persistentVolumeClaimRepo, releaseRepo, serviceRepo)
 	modelService := app.NewModelService(modelUseCase)
 	fabricRepo := maas.NewFabricRepo(maasMAAS)
 	subnetRepo := maas.NewSubnetRepo(maasMAAS)

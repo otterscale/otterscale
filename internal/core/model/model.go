@@ -39,19 +39,24 @@ type Resource struct {
 }
 
 type UseCase struct {
+	inferencePoolRepo InferencePoolRepo
+
 	chart                 chart.ChartRepo
 	deployment            workload.DeploymentRepo
-	release               release.ReleaseRepo
+	httpRoute             service.HTTPRouteRepo
 	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
+	release               release.ReleaseRepo
 	service               service.ServiceRepo
 }
 
-func NewUseCase(chart chart.ChartRepo, deployment workload.DeploymentRepo, release release.ReleaseRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(inferencePoolRepo InferencePoolRepo, chart chart.ChartRepo, deployment workload.DeploymentRepo, httpRoute service.HTTPRouteRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, release release.ReleaseRepo, service service.ServiceRepo) *UseCase {
 	return &UseCase{
+		inferencePoolRepo:     inferencePoolRepo,
 		chart:                 chart,
 		deployment:            deployment,
-		release:               release,
+		httpRoute:             httpRoute,
 		persistentVolumeClaim: persistentVolumeClaim,
+		release:               release,
 		service:               service,
 	}
 }
