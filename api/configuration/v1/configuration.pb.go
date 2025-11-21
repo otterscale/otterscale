@@ -26,22 +26,22 @@ const (
 type InternalObjectService_Type int32
 
 const (
-	InternalObjectService_UNSPECIFIED InternalObjectService_Type = 0
-	InternalObjectService_CEPH        InternalObjectService_Type = 1
-	InternalObjectService_MINIO       InternalObjectService_Type = 2
+	InternalObjectService_TYPE_UNSPECIFIED InternalObjectService_Type = 0
+	InternalObjectService_TYPE_CEPH        InternalObjectService_Type = 1
+	InternalObjectService_TYPE_MINIO       InternalObjectService_Type = 2
 )
 
 // Enum value maps for InternalObjectService_Type.
 var (
 	InternalObjectService_Type_name = map[int32]string{
-		0: "UNSPECIFIED",
-		1: "CEPH",
-		2: "MINIO",
+		0: "TYPE_UNSPECIFIED",
+		1: "TYPE_CEPH",
+		2: "TYPE_MINIO",
 	}
 	InternalObjectService_Type_value = map[string]int32{
-		"UNSPECIFIED": 0,
-		"CEPH":        1,
-		"MINIO":       2,
+		"TYPE_UNSPECIFIED": 0,
+		"TYPE_CEPH":        1,
+		"TYPE_MINIO":       2,
 	}
 )
 
@@ -70,43 +70,43 @@ func (x InternalObjectService_Type) Number() protoreflect.EnumNumber {
 type FIO_Input_AccessMode int32
 
 const (
-	FIO_Input_READ            FIO_Input_AccessMode = 0
-	FIO_Input_WRITE           FIO_Input_AccessMode = 1
-	FIO_Input_TRIM            FIO_Input_AccessMode = 2
-	FIO_Input_READ_WRITE      FIO_Input_AccessMode = 3
-	FIO_Input_TRIM_WRITE      FIO_Input_AccessMode = 4
-	FIO_Input_RAND_READ       FIO_Input_AccessMode = 5
-	FIO_Input_RAND_WRITE      FIO_Input_AccessMode = 6
-	FIO_Input_RAND_TRIM       FIO_Input_AccessMode = 7
-	FIO_Input_RAND_RW         FIO_Input_AccessMode = 8
-	FIO_Input_RAND_TRIM_WRITE FIO_Input_AccessMode = 9
+	FIO_Input_ACCESS_MODE_READ            FIO_Input_AccessMode = 0
+	FIO_Input_ACCESS_MODE_WRITE           FIO_Input_AccessMode = 1
+	FIO_Input_ACCESS_MODE_TRIM            FIO_Input_AccessMode = 2
+	FIO_Input_ACCESS_MODE_READ_WRITE      FIO_Input_AccessMode = 3
+	FIO_Input_ACCESS_MODE_TRIM_WRITE      FIO_Input_AccessMode = 4
+	FIO_Input_ACCESS_MODE_RAND_READ       FIO_Input_AccessMode = 5
+	FIO_Input_ACCESS_MODE_RAND_WRITE      FIO_Input_AccessMode = 6
+	FIO_Input_ACCESS_MODE_RAND_TRIM       FIO_Input_AccessMode = 7
+	FIO_Input_ACCESS_MODE_RAND_READ_WRITE FIO_Input_AccessMode = 8
+	FIO_Input_ACCESS_MODE_RAND_TRIM_WRITE FIO_Input_AccessMode = 9
 )
 
 // Enum value maps for FIO_Input_AccessMode.
 var (
 	FIO_Input_AccessMode_name = map[int32]string{
-		0: "READ",
-		1: "WRITE",
-		2: "TRIM",
-		3: "READ_WRITE",
-		4: "TRIM_WRITE",
-		5: "RAND_READ",
-		6: "RAND_WRITE",
-		7: "RAND_TRIM",
-		8: "RAND_RW",
-		9: "RAND_TRIM_WRITE",
+		0: "ACCESS_MODE_READ",
+		1: "ACCESS_MODE_WRITE",
+		2: "ACCESS_MODE_TRIM",
+		3: "ACCESS_MODE_READ_WRITE",
+		4: "ACCESS_MODE_TRIM_WRITE",
+		5: "ACCESS_MODE_RAND_READ",
+		6: "ACCESS_MODE_RAND_WRITE",
+		7: "ACCESS_MODE_RAND_TRIM",
+		8: "ACCESS_MODE_RAND_READ_WRITE",
+		9: "ACCESS_MODE_RAND_TRIM_WRITE",
 	}
 	FIO_Input_AccessMode_value = map[string]int32{
-		"READ":            0,
-		"WRITE":           1,
-		"TRIM":            2,
-		"READ_WRITE":      3,
-		"TRIM_WRITE":      4,
-		"RAND_READ":       5,
-		"RAND_WRITE":      6,
-		"RAND_TRIM":       7,
-		"RAND_RW":         8,
-		"RAND_TRIM_WRITE": 9,
+		"ACCESS_MODE_READ":            0,
+		"ACCESS_MODE_WRITE":           1,
+		"ACCESS_MODE_TRIM":            2,
+		"ACCESS_MODE_READ_WRITE":      3,
+		"ACCESS_MODE_TRIM_WRITE":      4,
+		"ACCESS_MODE_RAND_READ":       5,
+		"ACCESS_MODE_RAND_WRITE":      6,
+		"ACCESS_MODE_RAND_TRIM":       7,
+		"ACCESS_MODE_RAND_READ_WRITE": 8,
+		"ACCESS_MODE_RAND_TRIM_WRITE": 9,
 	}
 )
 
@@ -135,31 +135,31 @@ func (x FIO_Input_AccessMode) Number() protoreflect.EnumNumber {
 type Warp_Input_Operation int32
 
 const (
-	Warp_Input_GET    Warp_Input_Operation = 0
-	Warp_Input_PUT    Warp_Input_Operation = 1
-	Warp_Input_DELETE Warp_Input_Operation = 2
-	Warp_Input_LIST   Warp_Input_Operation = 3
-	Warp_Input_STAT   Warp_Input_Operation = 4
-	Warp_Input_MIXED  Warp_Input_Operation = 5
+	Warp_Input_OPERATION_GET    Warp_Input_Operation = 0
+	Warp_Input_OPERATION_PUT    Warp_Input_Operation = 1
+	Warp_Input_OPERATION_DELETE Warp_Input_Operation = 2
+	Warp_Input_OPERATION_LIST   Warp_Input_Operation = 3
+	Warp_Input_OPERATION_STAT   Warp_Input_Operation = 4
+	Warp_Input_OPERATION_MIXED  Warp_Input_Operation = 5
 )
 
 // Enum value maps for Warp_Input_Operation.
 var (
 	Warp_Input_Operation_name = map[int32]string{
-		0: "GET",
-		1: "PUT",
-		2: "DELETE",
-		3: "LIST",
-		4: "STAT",
-		5: "MIXED",
+		0: "OPERATION_GET",
+		1: "OPERATION_PUT",
+		2: "OPERATION_DELETE",
+		3: "OPERATION_LIST",
+		4: "OPERATION_STAT",
+		5: "OPERATION_MIXED",
 	}
 	Warp_Input_Operation_value = map[string]int32{
-		"GET":    0,
-		"PUT":    1,
-		"DELETE": 2,
-		"LIST":   3,
-		"STAT":   4,
-		"MIXED":  5,
+		"OPERATION_GET":    0,
+		"OPERATION_PUT":    1,
+		"OPERATION_DELETE": 2,
+		"OPERATION_LIST":   3,
+		"OPERATION_STAT":   4,
+		"OPERATION_MIXED":  5,
 	}
 )
 
@@ -188,22 +188,22 @@ func (x Warp_Input_Operation) Number() protoreflect.EnumNumber {
 type TestResult_Status int32
 
 const (
-	TestResult_RUNNING   TestResult_Status = 0
-	TestResult_SUCCEEDED TestResult_Status = 1
-	TestResult_FAILED    TestResult_Status = 2
+	TestResult_STATUS_RUNNING   TestResult_Status = 0
+	TestResult_STATUS_SUCCEEDED TestResult_Status = 1
+	TestResult_STATUS_FAILED    TestResult_Status = 2
 )
 
 // Enum value maps for TestResult_Status.
 var (
 	TestResult_Status_name = map[int32]string{
-		0: "RUNNING",
-		1: "SUCCEEDED",
-		2: "FAILED",
+		0: "STATUS_RUNNING",
+		1: "STATUS_SUCCEEDED",
+		2: "STATUS_FAILED",
 	}
 	TestResult_Status_value = map[string]int32{
-		"RUNNING":   0,
-		"SUCCEEDED": 1,
-		"FAILED":    2,
+		"STATUS_RUNNING":   0,
+		"STATUS_SUCCEEDED": 1,
+		"STATUS_FAILED":    2,
 	}
 )
 
@@ -1405,7 +1405,7 @@ func (x *InternalObjectService) GetType() InternalObjectService_Type {
 			return x.xxx_hidden_Type
 		}
 	}
-	return InternalObjectService_UNSPECIFIED
+	return InternalObjectService_TYPE_UNSPECIFIED
 }
 
 func (x *InternalObjectService) GetScope() string {
@@ -1466,7 +1466,7 @@ func (x *InternalObjectService) HasHost() bool {
 
 func (x *InternalObjectService) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Type = InternalObjectService_UNSPECIFIED
+	x.xxx_hidden_Type = InternalObjectService_TYPE_UNSPECIFIED
 }
 
 func (x *InternalObjectService) ClearScope() {
@@ -2158,7 +2158,7 @@ func (x *TestResult) GetStatus() TestResult_Status {
 			return x.xxx_hidden_Status
 		}
 	}
-	return TestResult_RUNNING
+	return TestResult_STATUS_RUNNING
 }
 
 func (x *TestResult) GetCreatedBy() string {
@@ -2324,7 +2324,7 @@ func (x *TestResult) ClearName() {
 
 func (x *TestResult) ClearStatus() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Status = TestResult_RUNNING
+	x.xxx_hidden_Status = TestResult_STATUS_RUNNING
 }
 
 func (x *TestResult) ClearCreatedBy() {
@@ -3689,7 +3689,7 @@ func (x *FIO_Input) GetAccessMode() FIO_Input_AccessMode {
 			return x.xxx_hidden_AccessMode
 		}
 	}
-	return FIO_Input_READ
+	return FIO_Input_ACCESS_MODE_READ
 }
 
 func (x *FIO_Input) GetJobCount() int64 {
@@ -3801,7 +3801,7 @@ func (x *FIO_Input) HasIoDepth() bool {
 
 func (x *FIO_Input) ClearAccessMode() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_AccessMode = FIO_Input_READ
+	x.xxx_hidden_AccessMode = FIO_Input_ACCESS_MODE_READ
 }
 
 func (x *FIO_Input) ClearJobCount() {
@@ -4357,7 +4357,7 @@ func (x *Warp_Input) GetOperation() Warp_Input_Operation {
 			return x.xxx_hidden_Operation
 		}
 	}
-	return Warp_Input_GET
+	return Warp_Input_OPERATION_GET
 }
 
 func (x *Warp_Input) GetDurationSeconds() int64 {
@@ -4431,7 +4431,7 @@ func (x *Warp_Input) HasObjectCount() bool {
 
 func (x *Warp_Input) ClearOperation() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Operation = Warp_Input_GET
+	x.xxx_hidden_Operation = Warp_Input_OPERATION_GET
 }
 
 func (x *Warp_Input) ClearDurationSeconds() {
@@ -4983,27 +4983,27 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\";\n" +
 	"\x11NetworkFileSystem\x12\x12\n" +
 	"\x04host\x18\x01 \x01(\tR\x04host\x12\x12\n" +
-	"\x04path\x18\x02 \x01(\tR\x04path\"\xc2\x01\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path\"\xd1\x01\n" +
 	"\x15InternalObjectService\x12K\n" +
 	"\x04type\x18\x01 \x01(\x0e27.otterscale.configuration.v1.InternalObjectService.TypeR\x04type\x12\x14\n" +
 	"\x05scope\x18\x02 \x01(\tR\x05scope\x12\x12\n" +
-	"\x04host\x18\x05 \x01(\tR\x04host\",\n" +
-	"\x04Type\x12\x0f\n" +
-	"\vUNSPECIFIED\x10\x00\x12\b\n" +
-	"\x04CEPH\x10\x01\x12\t\n" +
-	"\x05MINIO\x10\x02J\x04\b\x03\x10\x05\"i\n" +
+	"\x04host\x18\x05 \x01(\tR\x04host\";\n" +
+	"\x04Type\x12\x14\n" +
+	"\x10TYPE_UNSPECIFIED\x10\x00\x12\r\n" +
+	"\tTYPE_CEPH\x10\x01\x12\x0e\n" +
+	"\n" +
+	"TYPE_MINIO\x10\x02J\x04\b\x03\x10\x05\"i\n" +
 	"\x15ExternalObjectService\x12\x12\n" +
 	"\x04host\x18\x01 \x01(\tR\x04host\x12\x1d\n" +
 	"\n" +
 	"access_key\x18\x02 \x01(\tR\taccessKey\x12\x1d\n" +
 	"\n" +
-	"secret_key\x18\x03 \x01(\tR\tsecretKey\"\xd4\n" +
-	"\n" +
+	"secret_key\x18\x03 \x01(\tR\tsecretKey\"\xd4\v\n" +
 	"\x03FIO\x12Z\n" +
 	"\x11ceph_block_device\x18\x01 \x01(\v2,.otterscale.configuration.v1.CephBlockDeviceH\x00R\x0fcephBlockDevice\x12`\n" +
 	"\x13network_file_system\x18\x02 \x01(\v2..otterscale.configuration.v1.NetworkFileSystemH\x00R\x11networkFileSystem\x12<\n" +
 	"\x05input\x18\v \x01(\v2&.otterscale.configuration.v1.FIO.InputR\x05input\x12?\n" +
-	"\x06output\x18\f \x01(\v2'.otterscale.configuration.v1.FIO.OutputR\x06output\x1a\xad\x03\n" +
+	"\x06output\x18\f \x01(\v2'.otterscale.configuration.v1.FIO.OutputR\x06output\x1a\xad\x04\n" +
 	"\x05Input\x12R\n" +
 	"\vaccess_mode\x18\x01 \x01(\x0e21.otterscale.configuration.v1.FIO.Input.AccessModeR\n" +
 	"accessMode\x12\x1b\n" +
@@ -5011,22 +5011,19 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x10run_time_seconds\x18) \x01(\x03R\x0erunTimeSeconds\x12(\n" +
 	"\x10block_size_bytes\x18G \x01(\x03R\x0eblockSizeBytes\x12&\n" +
 	"\x0ffile_size_bytes\x18[ \x01(\x03R\rfileSizeBytes\x12\x19\n" +
-	"\bio_depth\x18y \x01(\x03R\aioDepth\"\x9b\x01\n" +
+	"\bio_depth\x18y \x01(\x03R\aioDepth\"\x9b\x02\n" +
 	"\n" +
-	"AccessMode\x12\b\n" +
-	"\x04READ\x10\x00\x12\t\n" +
-	"\x05WRITE\x10\x01\x12\b\n" +
-	"\x04TRIM\x10\x02\x12\x0e\n" +
-	"\n" +
-	"READ_WRITE\x10\x03\x12\x0e\n" +
-	"\n" +
-	"TRIM_WRITE\x10\x04\x12\r\n" +
-	"\tRAND_READ\x10\x05\x12\x0e\n" +
-	"\n" +
-	"RAND_WRITE\x10\x06\x12\r\n" +
-	"\tRAND_TRIM\x10\a\x12\v\n" +
-	"\aRAND_RW\x10\b\x12\x13\n" +
-	"\x0fRAND_TRIM_WRITE\x10\t\x1a\xd5\x04\n" +
+	"AccessMode\x12\x14\n" +
+	"\x10ACCESS_MODE_READ\x10\x00\x12\x15\n" +
+	"\x11ACCESS_MODE_WRITE\x10\x01\x12\x14\n" +
+	"\x10ACCESS_MODE_TRIM\x10\x02\x12\x1a\n" +
+	"\x16ACCESS_MODE_READ_WRITE\x10\x03\x12\x1a\n" +
+	"\x16ACCESS_MODE_TRIM_WRITE\x10\x04\x12\x19\n" +
+	"\x15ACCESS_MODE_RAND_READ\x10\x05\x12\x1a\n" +
+	"\x16ACCESS_MODE_RAND_WRITE\x10\x06\x12\x19\n" +
+	"\x15ACCESS_MODE_RAND_TRIM\x10\a\x12\x1f\n" +
+	"\x1bACCESS_MODE_RAND_READ_WRITE\x10\b\x12\x1f\n" +
+	"\x1bACCESS_MODE_RAND_TRIM_WRITE\x10\t\x1a\xd5\x04\n" +
 	"\x06Output\x12F\n" +
 	"\x04read\x18\x01 \x01(\v22.otterscale.configuration.v1.FIO.Output.ThroughputR\x04read\x12H\n" +
 	"\x05write\x18\x02 \x01(\v22.otterscale.configuration.v1.FIO.Output.ThroughputR\x05write\x12F\n" +
@@ -5042,26 +5039,25 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x0fmin_nanoseconds\x18\x01 \x01(\x03R\x0eminNanoseconds\x12'\n" +
 	"\x0fmax_nanoseconds\x18\x02 \x01(\x03R\x0emaxNanoseconds\x12)\n" +
 	"\x10mean_nanoseconds\x18\x03 \x01(\x01R\x0fmeanNanosecondsB\b\n" +
-	"\x06target\"\xb0\n" +
+	"\x06target\"\xed\n" +
 	"\n" +
 	"\x04Warp\x12l\n" +
 	"\x17internal_object_service\x18\x01 \x01(\v22.otterscale.configuration.v1.InternalObjectServiceH\x00R\x15internalObjectService\x12l\n" +
 	"\x17external_object_service\x18\x02 \x01(\v22.otterscale.configuration.v1.ExternalObjectServiceH\x00R\x15externalObjectService\x12=\n" +
 	"\x05input\x18\v \x01(\v2'.otterscale.configuration.v1.Warp.InputR\x05input\x12@\n" +
-	"\x06output\x18\f \x01(\v2(.otterscale.configuration.v1.Warp.OutputR\x06output\x1a\x9c\x02\n" +
+	"\x06output\x18\f \x01(\v2(.otterscale.configuration.v1.Warp.OutputR\x06output\x1a\xd9\x02\n" +
 	"\x05Input\x12O\n" +
 	"\toperation\x18\x01 \x01(\x0e21.otterscale.configuration.v1.Warp.Input.OperationR\toperation\x12)\n" +
 	"\x10duration_seconds\x18\x15 \x01(\x03R\x0fdurationSeconds\x12*\n" +
 	"\x11object_size_bytes\x18\x1f \x01(\x03R\x0fobjectSizeBytes\x12!\n" +
-	"\fobject_count\x18  \x01(\x03R\vobjectCount\"H\n" +
-	"\tOperation\x12\a\n" +
-	"\x03GET\x10\x00\x12\a\n" +
-	"\x03PUT\x10\x01\x12\n" +
-	"\n" +
-	"\x06DELETE\x10\x02\x12\b\n" +
-	"\x04LIST\x10\x03\x12\b\n" +
-	"\x04STAT\x10\x04\x12\t\n" +
-	"\x05MIXED\x10\x05\x1a\xa1\x05\n" +
+	"\fobject_count\x18  \x01(\x03R\vobjectCount\"\x84\x01\n" +
+	"\tOperation\x12\x11\n" +
+	"\rOPERATION_GET\x10\x00\x12\x11\n" +
+	"\rOPERATION_PUT\x10\x01\x12\x14\n" +
+	"\x10OPERATION_DELETE\x10\x02\x12\x12\n" +
+	"\x0eOPERATION_LIST\x10\x03\x12\x12\n" +
+	"\x0eOPERATION_STAT\x10\x04\x12\x13\n" +
+	"\x0fOPERATION_MIXED\x10\x05\x1a\xa1\x05\n" +
 	"\x06Output\x12E\n" +
 	"\x03get\x18\v \x01(\v23.otterscale.configuration.v1.Warp.Output.ThroughputR\x03get\x12E\n" +
 	"\x03put\x18\f \x01(\v23.otterscale.configuration.v1.Warp.Output.ThroughputR\x03put\x12K\n" +
@@ -5078,7 +5074,7 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x12fastest_per_second\x18\x01 \x01(\x01R\x10fastestPerSecond\x12*\n" +
 	"\x11median_per_second\x18\x02 \x01(\x01R\x0fmedianPerSecond\x12,\n" +
 	"\x12slowest_per_second\x18\x03 \x01(\x01R\x10slowestPerSecondB\b\n" +
-	"\x06target\"\xbc\x03\n" +
+	"\x06target\"\xd1\x03\n" +
 	"\n" +
 	"TestResult\x12\x10\n" +
 	"\x03uid\x18\x01 \x01(\tR\x03uid\x12\x12\n" +
@@ -5090,12 +5086,11 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"started_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tstartedAt\x12=\n" +
 	"\fcompleted_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x124\n" +
 	"\x03fio\x18e \x01(\v2 .otterscale.configuration.v1.FIOH\x00R\x03fio\x127\n" +
-	"\x04warp\x18f \x01(\v2!.otterscale.configuration.v1.WarpH\x00R\x04warp\"0\n" +
-	"\x06Status\x12\v\n" +
-	"\aRUNNING\x10\x00\x12\r\n" +
-	"\tSUCCEEDED\x10\x01\x12\n" +
-	"\n" +
-	"\x06FAILED\x10\x02B\x06\n" +
+	"\x04warp\x18f \x01(\v2!.otterscale.configuration.v1.WarpH\x00R\x04warp\"E\n" +
+	"\x06Status\x12\x12\n" +
+	"\x0eSTATUS_RUNNING\x10\x00\x12\x14\n" +
+	"\x10STATUS_SUCCEEDED\x10\x01\x12\x11\n" +
+	"\rSTATUS_FAILED\x10\x02B\x06\n" +
 	"\x04kind\"\x18\n" +
 	"\x16ListTestResultsRequest\"e\n" +
 	"\x17ListTestResultsResponse\x12J\n" +

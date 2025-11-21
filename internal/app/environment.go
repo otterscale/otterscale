@@ -33,7 +33,7 @@ func (s *EnvironmentService) CheckHealth(_ context.Context, _ *pb.CheckHealthReq
 	}
 
 	resp := &pb.CheckHealthResponse{}
-	resp.SetResult(pb.CheckHealthResponse_Result(result))
+	resp.SetStatus(toProtoHealthStatus(result))
 	return resp, nil
 }
 
@@ -85,6 +85,19 @@ func toConfigSchema(req *pb.UpdateConfigRequest) *config.Schema {
 		MicroK8s: config.MicroK8s{
 			Config: req.GetMicroK8SConfig(),
 		},
+	}
+}
+
+func toProtoHealthStatus(s environment.HealthStatus) pb.CheckHealthResponse_Status {
+	switch s {
+	case environment.HealthStatusOK:
+		return pb.CheckHealthResponse_STATUS_OK
+
+	case environment.HealthStatusNotInstalled:
+		return pb.CheckHealthResponse_STATUS_NOT_INSTALLED
+
+	default:
+		return pb.CheckHealthResponse_STATUS_UNKNOWN
 	}
 }
 

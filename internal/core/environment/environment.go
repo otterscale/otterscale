@@ -14,11 +14,6 @@ import (
 	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
-const (
-	healthOK           = 11
-	healthNotInstalled = 21
-)
-
 type traefikProxiedEndpoints struct {
 	Prometheus struct {
 		URL string `json:"url"`
@@ -43,11 +38,11 @@ func NewUseCase(conf *config.Config, action action.ActionRepo, scope scope.Scope
 	}
 }
 
-func (uc *UseCase) CheckHealth() (int32, error) {
+func (uc *UseCase) CheckHealth() (HealthStatus, error) {
 	if !isMAASConfigured(uc.conf) {
-		return healthNotInstalled, nil
+		return HealthStatusNotInstalled, nil
 	}
-	return healthOK, nil
+	return HealthStatusOK, nil
 }
 
 // TODO: update kubernetes config map

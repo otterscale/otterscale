@@ -22,69 +22,69 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type CheckHealthResponse_Result int32
+type CheckHealthResponse_Status int32
 
 const (
-	CheckHealthResponse_UNSPECIFIED   CheckHealthResponse_Result = 0
-	CheckHealthResponse_OK            CheckHealthResponse_Result = 11
-	CheckHealthResponse_NOT_INSTALLED CheckHealthResponse_Result = 21
+	CheckHealthResponse_STATUS_UNKNOWN       CheckHealthResponse_Status = 0
+	CheckHealthResponse_STATUS_OK            CheckHealthResponse_Status = 11
+	CheckHealthResponse_STATUS_NOT_INSTALLED CheckHealthResponse_Status = 21
 )
 
-// Enum value maps for CheckHealthResponse_Result.
+// Enum value maps for CheckHealthResponse_Status.
 var (
-	CheckHealthResponse_Result_name = map[int32]string{
-		0:  "UNSPECIFIED",
-		11: "OK",
-		21: "NOT_INSTALLED",
+	CheckHealthResponse_Status_name = map[int32]string{
+		0:  "STATUS_UNKNOWN",
+		11: "STATUS_OK",
+		21: "STATUS_NOT_INSTALLED",
 	}
-	CheckHealthResponse_Result_value = map[string]int32{
-		"UNSPECIFIED":   0,
-		"OK":            11,
-		"NOT_INSTALLED": 21,
+	CheckHealthResponse_Status_value = map[string]int32{
+		"STATUS_UNKNOWN":       0,
+		"STATUS_OK":            11,
+		"STATUS_NOT_INSTALLED": 21,
 	}
 )
 
-func (x CheckHealthResponse_Result) Enum() *CheckHealthResponse_Result {
-	p := new(CheckHealthResponse_Result)
+func (x CheckHealthResponse_Status) Enum() *CheckHealthResponse_Status {
+	p := new(CheckHealthResponse_Status)
 	*p = x
 	return p
 }
 
-func (x CheckHealthResponse_Result) String() string {
+func (x CheckHealthResponse_Status) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (CheckHealthResponse_Result) Descriptor() protoreflect.EnumDescriptor {
+func (CheckHealthResponse_Status) Descriptor() protoreflect.EnumDescriptor {
 	return file_api_environment_v1_environment_proto_enumTypes[0].Descriptor()
 }
 
-func (CheckHealthResponse_Result) Type() protoreflect.EnumType {
+func (CheckHealthResponse_Status) Type() protoreflect.EnumType {
 	return &file_api_environment_v1_environment_proto_enumTypes[0]
 }
 
-func (x CheckHealthResponse_Result) Number() protoreflect.EnumNumber {
+func (x CheckHealthResponse_Status) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
 type PremiumTier_Level int32
 
 const (
-	PremiumTier_BASIC      PremiumTier_Level = 0
-	PremiumTier_ADVANCED   PremiumTier_Level = 1
-	PremiumTier_ENTERPRISE PremiumTier_Level = 2
+	PremiumTier_LEVEL_BASIC      PremiumTier_Level = 0
+	PremiumTier_LEVEL_ADVANCED   PremiumTier_Level = 1
+	PremiumTier_LEVEL_ENTERPRISE PremiumTier_Level = 2
 )
 
 // Enum value maps for PremiumTier_Level.
 var (
 	PremiumTier_Level_name = map[int32]string{
-		0: "BASIC",
-		1: "ADVANCED",
-		2: "ENTERPRISE",
+		0: "LEVEL_BASIC",
+		1: "LEVEL_ADVANCED",
+		2: "LEVEL_ENTERPRISE",
 	}
 	PremiumTier_Level_value = map[string]int32{
-		"BASIC":      0,
-		"ADVANCED":   1,
-		"ENTERPRISE": 2,
+		"LEVEL_BASIC":      0,
+		"LEVEL_ADVANCED":   1,
+		"LEVEL_ENTERPRISE": 2,
 	}
 )
 
@@ -155,7 +155,7 @@ func (b0 CheckHealthRequest_builder) Build() *CheckHealthRequest {
 
 type CheckHealthResponse struct {
 	state                  protoimpl.MessageState     `protogen:"opaque.v1"`
-	xxx_hidden_Result      CheckHealthResponse_Result `protobuf:"varint,1,opt,name=result,enum=otterscale.environment.v1.CheckHealthResponse_Result"`
+	xxx_hidden_Status      CheckHealthResponse_Status `protobuf:"varint,1,opt,name=status,enum=otterscale.environment.v1.CheckHealthResponse_Status"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -187,45 +187,45 @@ func (x *CheckHealthResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *CheckHealthResponse) GetResult() CheckHealthResponse_Result {
+func (x *CheckHealthResponse) GetStatus() CheckHealthResponse_Status {
 	if x != nil {
 		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
-			return x.xxx_hidden_Result
+			return x.xxx_hidden_Status
 		}
 	}
-	return CheckHealthResponse_UNSPECIFIED
+	return CheckHealthResponse_STATUS_UNKNOWN
 }
 
-func (x *CheckHealthResponse) SetResult(v CheckHealthResponse_Result) {
-	x.xxx_hidden_Result = v
+func (x *CheckHealthResponse) SetStatus(v CheckHealthResponse_Status) {
+	x.xxx_hidden_Status = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
-func (x *CheckHealthResponse) HasResult() bool {
+func (x *CheckHealthResponse) HasStatus() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CheckHealthResponse) ClearResult() {
+func (x *CheckHealthResponse) ClearStatus() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Result = CheckHealthResponse_UNSPECIFIED
+	x.xxx_hidden_Status = CheckHealthResponse_STATUS_UNKNOWN
 }
 
 type CheckHealthResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Result *CheckHealthResponse_Result
+	Status *CheckHealthResponse_Status
 }
 
 func (b0 CheckHealthResponse_builder) Build() *CheckHealthResponse {
 	m0 := &CheckHealthResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Result != nil {
+	if b.Status != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_Result = *b.Result
+		x.xxx_hidden_Status = *b.Status
 	}
 	return m0
 }
@@ -813,7 +813,7 @@ func (x *PremiumTier) GetLevel() PremiumTier_Level {
 			return x.xxx_hidden_Level
 		}
 	}
-	return PremiumTier_BASIC
+	return PremiumTier_LEVEL_BASIC
 }
 
 func (x *PremiumTier) SetLevel(v PremiumTier_Level) {
@@ -830,7 +830,7 @@ func (x *PremiumTier) HasLevel() bool {
 
 func (x *PremiumTier) ClearLevel() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Level = PremiumTier_BASIC
+	x.xxx_hidden_Level = PremiumTier_LEVEL_BASIC
 }
 
 type PremiumTier_builder struct {
@@ -898,13 +898,13 @@ var File_api_environment_v1_environment_proto protoreflect.FileDescriptor
 const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\n" +
 	"$api/environment/v1/environment.proto\x12\x19otterscale.environment.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\"\x14\n" +
-	"\x12CheckHealthRequest\"\x9a\x01\n" +
+	"\x12CheckHealthRequest\"\xab\x01\n" +
 	"\x13CheckHealthResponse\x12M\n" +
-	"\x06result\x18\x01 \x01(\x0e25.otterscale.environment.v1.CheckHealthResponse.ResultR\x06result\"4\n" +
-	"\x06Result\x12\x0f\n" +
-	"\vUNSPECIFIED\x10\x00\x12\x06\n" +
-	"\x02OK\x10\v\x12\x11\n" +
-	"\rNOT_INSTALLED\x10\x15\"\xf6\x03\n" +
+	"\x06status\x18\x01 \x01(\x0e25.otterscale.environment.v1.CheckHealthResponse.StatusR\x06status\"E\n" +
+	"\x06Status\x12\x12\n" +
+	"\x0eSTATUS_UNKNOWN\x10\x00\x12\r\n" +
+	"\tSTATUS_OK\x10\v\x12\x18\n" +
+	"\x14STATUS_NOT_INSTALLED\x10\x15\"\xf6\x03\n" +
 	"\x13UpdateConfigRequest\x12\x19\n" +
 	"\bmaas_url\x18\x01 \x01(\tR\amaasUrl\x12\x19\n" +
 	"\bmaas_key\x18\x02 \x01(\tR\amaasKey\x12!\n" +
@@ -922,14 +922,13 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\n" +
 	"Prometheus\x12\x19\n" +
 	"\bbase_url\x18\x02 \x01(\tR\abaseUrlJ\x04\b\x01\x10\x02\"\x16\n" +
-	"\x14GetPrometheusRequest\"\x83\x01\n" +
+	"\x14GetPrometheusRequest\"\x95\x01\n" +
 	"\vPremiumTier\x12B\n" +
-	"\x05level\x18\x01 \x01(\x0e2,.otterscale.environment.v1.PremiumTier.LevelR\x05level\"0\n" +
-	"\x05Level\x12\t\n" +
-	"\x05BASIC\x10\x00\x12\f\n" +
-	"\bADVANCED\x10\x01\x12\x0e\n" +
-	"\n" +
-	"ENTERPRISE\x10\x02\"\x17\n" +
+	"\x05level\x18\x01 \x01(\x0e2,.otterscale.environment.v1.PremiumTier.LevelR\x05level\"B\n" +
+	"\x05Level\x12\x0f\n" +
+	"\vLEVEL_BASIC\x10\x00\x12\x12\n" +
+	"\x0eLEVEL_ADVANCED\x10\x01\x12\x14\n" +
+	"\x10LEVEL_ENTERPRISE\x10\x02\"\x17\n" +
 	"\x15GetPremiumTierRequest2\xfe\x03\n" +
 	"\x12EnvironmentService\x12\x80\x01\n" +
 	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
@@ -944,7 +943,7 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 var file_api_environment_v1_environment_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_api_environment_v1_environment_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_api_environment_v1_environment_proto_goTypes = []any{
-	(CheckHealthResponse_Result)(0), // 0: otterscale.environment.v1.CheckHealthResponse.Result
+	(CheckHealthResponse_Status)(0), // 0: otterscale.environment.v1.CheckHealthResponse.Status
 	(PremiumTier_Level)(0),          // 1: otterscale.environment.v1.PremiumTier.Level
 	(*CheckHealthRequest)(nil),      // 2: otterscale.environment.v1.CheckHealthRequest
 	(*CheckHealthResponse)(nil),     // 3: otterscale.environment.v1.CheckHealthResponse
@@ -956,7 +955,7 @@ var file_api_environment_v1_environment_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),           // 9: google.protobuf.Empty
 }
 var file_api_environment_v1_environment_proto_depIdxs = []int32{
-	0, // 0: otterscale.environment.v1.CheckHealthResponse.result:type_name -> otterscale.environment.v1.CheckHealthResponse.Result
+	0, // 0: otterscale.environment.v1.CheckHealthResponse.status:type_name -> otterscale.environment.v1.CheckHealthResponse.Status
 	1, // 1: otterscale.environment.v1.PremiumTier.level:type_name -> otterscale.environment.v1.PremiumTier.Level
 	2, // 2: otterscale.environment.v1.EnvironmentService.CheckHealth:input_type -> otterscale.environment.v1.CheckHealthRequest
 	6, // 3: otterscale.environment.v1.EnvironmentService.GetPrometheus:input_type -> otterscale.environment.v1.GetPrometheusRequest

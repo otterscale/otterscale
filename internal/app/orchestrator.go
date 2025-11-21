@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"strings"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -90,7 +89,7 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 }
 
 func (s *OrchestratorService) ListExtensions(ctx context.Context, req *pb.ListExtensionsRequest) (*pb.ListExtensionsResponse, error) {
-	extensions, err := s.extension.ListExtensions(ctx, req.GetScope(), strings.ToLower(req.GetType().String()))
+	extensions, err := s.extension.ListExtensions(ctx, req.GetScope(), toExtensionType(req.GetType()))
 	if err != nil {
 		return nil, err
 	}
@@ -129,6 +128,28 @@ func toManifests(ms []*pb.Extension_Manifest) []extension.Manifest {
 	}
 
 	return ret
+}
+
+func toExtensionType(t pb.Extension_Type) extension.Type {
+	switch t {
+	case pb.Extension_TYPE_GENERAL:
+		return extension.TypeGeneral
+
+	case pb.Extension_TYPE_REGISTRY:
+		return extension.TypeRegistry
+
+	case pb.Extension_TYPE_MODEL:
+		return extension.TypeModel
+
+	case pb.Extension_TYPE_INSTANCE:
+		return extension.TypeInstance
+
+	case pb.Extension_TYPE_STORAGE:
+		return extension.TypeStorage
+
+	default:
+		return extension.TypeGeneral
+	}
 }
 
 func toProtoGPURelations(rs *gpu.Relations) []*pb.GPURelation {

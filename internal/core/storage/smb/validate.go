@@ -12,20 +12,14 @@ import (
 
 const ldapDefaultPort uint16 = 389
 
-const (
-	EntityTypeUnknown int = iota
-	EntityTypeUser
-	EntityTypeGroup
-)
-
-type ADValidateResult struct {
+type ValidateResult struct {
 	Valid      bool
-	EntityType int
+	EntityType EntityType
 	Message    string
 }
 
-func (uc *UseCase) parseSearchUsername(searchUsername string) (string, *ADValidateResult) {
-	result := &ADValidateResult{EntityType: EntityTypeUnknown}
+func (uc *UseCase) parseSearchUsername(searchUsername string) (string, *ValidateResult) {
+	result := &ValidateResult{EntityType: EntityTypeUnknown}
 	actualSearchName := searchUsername
 
 	if strings.HasPrefix(searchUsername, "@\"") {
@@ -99,8 +93,8 @@ func (uc *UseCase) connectLDAP(serverName string, port uint16, useTLS bool) (*ld
 	return conn, nil
 }
 
-func (uc *UseCase) ValidateSMBUser(ctx context.Context, realm, username, password, searchUsername string, useTLS bool) (*ADValidateResult, error) {
-	result := &ADValidateResult{EntityType: EntityTypeUnknown}
+func (uc *UseCase) ValidateSMBUser(ctx context.Context, realm, username, password, searchUsername string, useTLS bool) (*ValidateResult, error) {
+	result := &ValidateResult{EntityType: EntityTypeUnknown}
 	searchUsername = strings.TrimSpace(searchUsername)
 
 	// Parse and validate searchUsername format
@@ -159,7 +153,7 @@ func (uc *UseCase) ValidateSMBUser(ctx context.Context, realm, username, passwor
 	return result, nil
 }
 
-func determineEntityType(objectClasses []string) int {
+func determineEntityType(objectClasses []string) EntityType {
 	for _, c := range objectClasses {
 		if cl := strings.ToLower(c); cl == "group" {
 			return EntityTypeGroup
