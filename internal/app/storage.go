@@ -547,21 +547,15 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 	return resp, nil
 }
 
-func (s *StorageService) ValidateSMBUser(ctx context.Context, req *pb.ValidateSMBUserRequest) (*pb.ValidateSMBUserResponse, error) {
-	result, err := s.smb.ValidateSMBUser(ctx,
+func (s *StorageService) ValidateSMBUser(_ context.Context, req *pb.ValidateSMBUserRequest) (*pb.ValidateSMBUserResponse, error) {
+	entityType, err := s.smb.ValidateSMBUser(
 		req.GetRealm(),
 		req.GetUsername(),
 		req.GetPassword(),
 		req.GetSearchUsername(),
 		req.GetTls())
-	if err != nil {
-		return nil, err
-	}
 
-	resp := &pb.ValidateSMBUserResponse{}
-	resp.SetValid(result.Valid)
-	resp.SetEntityType(toProtoEntityType(result.EntityType))
-	resp.SetMessage(result.Message)
+	resp := toValidateSMBUserResponse(entityType, err)
 	return resp, nil
 }
 
@@ -1182,4 +1176,18 @@ func toProtoEntityType(et smb.EntityType) pb.ValidateSMBUserResponse_EntityType 
 	default:
 		return pb.ValidateSMBUserResponse_ENTITY_TYPE_UNKNOWN
 	}
+}
+
+func toValidateSMBUserResponse(et smb.EntityType, err error) *pb.ValidateSMBUserResponse {
+	valid := et != smb.EntityTypeUnknown
+
+	ret := &pb.ValidateSMBUserResponse{}
+	ret.SetValid(valid)
+	ret.SetEntityType(toProtoEntityType(et))
+
+	if err != nil {
+		ret.SetMessage(err.Error())
+	}
+
+	return ret
 }
