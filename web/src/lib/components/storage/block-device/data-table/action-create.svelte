@@ -32,10 +32,10 @@
 
 	let isAdvancedOpen = $state(false);
 	let isPoolsLoading = $state(true);
-	let isImageNameInvalid = $state(false);
-	let isPoolNameInvalid = $state(false);
+
 	let poolOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	const storageClient = createClient(StorageService, transport);
+
 	const defaults = {
 		scope: scope,
 		layering: true,

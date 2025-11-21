@@ -34,7 +34,6 @@
 						icon: 'ph:desktop'
 					}))
 			]);
-
 			selectedFQDN = $fqdnOptions[0].value;
 		} catch (error) {
 			console.error('Failed to fetch machines:', error);

@@ -5,8 +5,8 @@ import type { ReloadManager } from '$lib/components/custom/reloader';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
-import { headers } from './headers.svelte';
 import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
