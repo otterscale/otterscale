@@ -111,7 +111,7 @@ func (r *machineRepo) ExtractJujuID(m *machine.Machine) (string, error) {
 		return "", fmt.Errorf("invalid juju-machine-id format for machine %q", m.Hostname)
 	}
 
-	return token[1], nil
+	return token[2], nil
 }
 
 func (r *machineRepo) boolToInt(b bool) int {
