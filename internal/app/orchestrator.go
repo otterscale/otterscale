@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"strings"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -88,46 +89,13 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 	return resp, nil
 }
 
-func (s *OrchestratorService) ListGeneralExtensions(ctx context.Context, req *pb.ListGeneralExtensionsRequest) (*pb.ListGeneralExtensionsResponse, error) {
-	extensions, err := s.extension.ListGeneralExtensions(ctx, req.GetScope())
+func (s *OrchestratorService) ListExtensions(ctx context.Context, req *pb.ListExtensionsRequest) (*pb.ListExtensionsResponse, error) {
+	extensions, err := s.extension.ListExtensions(ctx, req.GetScope(), strings.ToLower(req.GetType().String()))
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &pb.ListGeneralExtensionsResponse{}
-	resp.SetExtensions(toProtoExtensions(extensions))
-	return resp, nil
-}
-
-func (s *OrchestratorService) ListModelExtensions(ctx context.Context, req *pb.ListModelExtensionsRequest) (*pb.ListModelExtensionsResponse, error) {
-	extensions, err := s.extension.ListModelExtensions(ctx, req.GetScope())
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &pb.ListModelExtensionsResponse{}
-	resp.SetExtensions(toProtoExtensions(extensions))
-	return resp, nil
-}
-
-func (s *OrchestratorService) ListInstanceExtensions(ctx context.Context, req *pb.ListInstanceExtensionsRequest) (*pb.ListInstanceExtensionsResponse, error) {
-	extensions, err := s.extension.ListInstanceExtensions(ctx, req.GetScope())
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &pb.ListInstanceExtensionsResponse{}
-	resp.SetExtensions(toProtoExtensions(extensions))
-	return resp, nil
-}
-
-func (s *OrchestratorService) ListStorageExtensions(ctx context.Context, req *pb.ListStorageExtensionsRequest) (*pb.ListStorageExtensionsResponse, error) {
-	extensions, err := s.extension.ListStorageExtensions(ctx, req.GetScope())
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &pb.ListStorageExtensionsResponse{}
+	resp := &pb.ListExtensionsResponse{}
 	resp.SetExtensions(toProtoExtensions(extensions))
 	return resp, nil
 }

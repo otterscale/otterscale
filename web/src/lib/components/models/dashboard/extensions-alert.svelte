@@ -3,7 +3,11 @@
 	import { getContext, onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 
-	import { type Extension, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import {
+		type Extension,
+		Extension_Type,
+		OrchestratorService
+	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { Single as Alert } from '$lib/components/custom/alert';
 	import { installExtensions } from '$lib/components/settings/extensions/utils.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
@@ -30,7 +34,10 @@
 
 	async function fetchModelExtensions() {
 		try {
-			const response = await orchestratorClient.listModelExtensions({ scope: scope });
+			const response = await orchestratorClient.listExtensions({
+				scope: scope,
+				type: Extension_Type.MODEL
+			});
 			modelExtensions.set(response.Extensions);
 		} catch (error) {
 			console.error('Failed to fetch model extensions:', error);
@@ -39,7 +46,10 @@
 
 	async function fetchGeneralExtensions() {
 		try {
-			const response = await orchestratorClient.listGeneralExtensions({ scope: scope });
+			const response = await orchestratorClient.listExtensions({
+				scope: scope,
+				type: Extension_Type.GENERAL
+			});
 			generalExtension.set(response.Extensions);
 		} catch (error) {
 			console.error('Failed to fetch general extensions:', error);

@@ -1,3 +1,3 @@
-type ExtensionsBundleType = 'general' | 'instance' | 'model' | 'storage';
+type ExtensionsBundleType = 'general' | 'registry' | 'instance' | 'model' | 'storage';
 
 export type { ExtensionsBundleType };
