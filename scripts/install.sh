@@ -1556,6 +1556,158 @@ deploy_helm() {
         # Create values file
         otterscale_helm_values="/tmp/otterscale_helm_values_$(date '+%Y%m%d_%H%M%S').yaml"
         cat > "$otterscale_helm_values" << EOF
+otterscale:
+  openfeature:
+    sidecar:
+      enabled: true
+    flagconfiguration: "application-flags,default-flags,instance-flags,model-flags,storage-flags"
+    flags:
+      application-flags:
+        enabled: true
+        spec:
+          app-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          app-container:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          app-helm-chart:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+
+      default.flags:
+        enabled: true
+        spec:
+          app-resource:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          bs-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          cfg-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          cfg-built-in-self-test:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          env-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          fac-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          mch-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          mch-tag:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          net-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          orch-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          scp-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+
+      instance-flags:
+        enabled: true
+        spec:
+          vm-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+
+      model-flags:
+        enabled: true
+        spec:
+          mdl-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+
+      storage-flags:
+        enabled: true
+        spec:
+          stg-general:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          stg-block:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          stg-file:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          stg-object:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+          stg-smb:
+            state: ENABLED
+            variants:
+              "on": true
+              "off": false
+            defaultVariant: "on"
+
 otterscaleWeb:
   env:
     publicWebUrl: "http://$OTTERSCALE_INTERFACE_IP/"
