@@ -22,23 +22,21 @@
 
 	const transport: Transport = getContext('transport');
 	const instanceClient = createClient(InstanceService, transport);
-
 	const instanceTypes = writable<InstanceType[]>();
+
 	async function fetch() {
-		instanceClient
-			.listInstanceTypes({
+		try {
+			const response = await instanceClient.listInstanceTypes({
 				scope: scope,
 				includeClusterWide: false
-			})
-			.then((response) => {
-				instanceTypes.set(response.instanceTypes);
-			})
-			.catch((error) => {
-				console.error('Error fetching instance types:', error);
 			});
+			instanceTypes.set(response.instanceTypes);
+		} catch (error) {
+			console.error('Error fetching instance types:', error);
+		}
 	}
 
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {

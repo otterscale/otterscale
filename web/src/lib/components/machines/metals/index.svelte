@@ -11,7 +11,6 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	import { DataTable } from './data-table/index';
-	import { Statistics } from './statistics';
 	import type { Metrics } from './types';
 	import { getMapInstanceToMetric } from './utils.svelte';
 </script>
@@ -23,16 +22,8 @@
 
 	const machines = writable<Machine[]>([]);
 	async function fetchMachines() {
-		machineClient
-			.listMachines({})
-			.then((response) => {
-				machines.set(response.machines);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
-		return $machines;
+  		const response = await machineClient.listMachines({});
+			machines.set(response.machines);
 	}
 
 	let prometheusDriver = $state<PrometheusDriver | null>(null);
@@ -82,12 +73,13 @@
 			console.error('Error during initial data load:', error);
 		}
 	}
-	const reloadManager = new ReloadManager(fetch, false);
 
 	let isMounted = $state(false);
+
+	const reloadManager = new ReloadManager(fetch, false);
+
 	onMount(async () => {
 		await fetch();
-		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -96,8 +88,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Statistics machines={$machines} />
-		<DataTable {machines} {metrics} {reloadManager} />
+		<DataTable {machines} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

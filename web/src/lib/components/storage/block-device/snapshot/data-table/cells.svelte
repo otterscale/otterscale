@@ -46,7 +46,7 @@
 	{@const denominator = Number(row.original.quotaBytes)}
 	{@const numerator = Number(row.original.usedBytes)}
 	<Layout.Cell class="items-end">
-		<Progress.Root {numerator} {denominator}>
+		<Progress.Root {numerator} {denominator} target="STB">
 			{#snippet ratio({ numerator, denominator })}
 				{Progress.formatRatio(numerator, denominator)}
 			{/snippet}

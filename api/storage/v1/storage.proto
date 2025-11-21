@@ -260,12 +260,18 @@ service StorageService {
       name: "stg-smb"
     };
   };
+
+  rpc ValidateSMBUser(ValidateSMBUserRequest) returns (ValidateSMBUserResponse) {
+    option (otterscale.api.feature) = {
+      name: "stg-smb"
+    };
+  };
 }
 
 enum PoolType {
-  UNSPECIFIED = 0;
-  ERASURE = 1;
-  REPLICATED = 2;
+  POOL_TYPE_UNSPECIFIED = 0;
+  POOL_TYPE_ERASURE = 1;
+  POOL_TYPE_REPLICATED = 2;
 }
 
 message Machine {
@@ -378,10 +384,10 @@ message SubvolumeGroup {
 
 message Bucket {
   enum ACL {
-    PRIVATE = 0;
-    PUBLIC_READ = 1;
-    PUBLIC_READ_WRITE = 2;
-    AUTHENTICATED_READ = 3;
+    ACL_PRIVATE = 0;
+    ACL_PUBLIC_READ = 1;
+    ACL_PUBLIC_READ_WRITE = 2;
+    ACL_AUTHENTICATED_READ = 3;
   }
   message Grant {
     string type = 1;
@@ -413,16 +419,16 @@ message User {
 message SMBShare {
   message CommonConfig {
     enum MapToGuest {
-      NEVER = 0;
-      BAD_USER = 1;
-      BAD_PASSWORD = 2;
+      MAP_TO_GUEST_NEVER = 0;
+      MAP_TO_GUEST_BAD_USER = 1;
+      MAP_TO_GUEST_BAD_PASSWORD = 2;
     }
     MapToGuest map_to_guest = 1;
   }
   message SecurityConfig {
     enum Mode {
-      USER = 0;
-      ACTIVE_DIRECTORY = 1;
+      MODE_USER = 0;
+      MODE_ACTIVE_DIRECTORY = 1;
     }
     message User {
       string username = 1;
@@ -434,7 +440,7 @@ message SMBShare {
     User join_source = 22;
   }
   string name = 1;
-  string namespace = 2;
+  reserved 2;
   string uri = 3;
   int32 replicas = 11;
   int32 healthies = 12;
@@ -787,7 +793,7 @@ message DeleteUserKeyRequest {
 
 message ListSMBSharesRequest {
   string scope = 1;
-  string namespace = 2;
+  reserved 2;
 }
 
 message ListSMBSharesResponse {
@@ -796,9 +802,10 @@ message ListSMBSharesResponse {
 
 message CreateSMBShareRequest {
   string scope = 1;
-  string namespace = 2;
+  reserved 2;
   string name = 3;
   uint64 size_bytes = 11;
+  int32 port = 12;
   bool browsable = 21;
   bool read_only = 22;
   bool guest_ok = 31;
@@ -809,13 +816,33 @@ message CreateSMBShareRequest {
 
 message UpdateSMBShareRequest {
   string scope = 1;
-  string namespace = 2;
+  reserved 2;
   string name = 3;
   uint64 size_bytes = 11;
+  int32 port = 12;
   bool browsable = 21;
   bool read_only = 22;
   bool guest_ok = 31;
   repeated string valid_users = 32;
   SMBShare.CommonConfig common_config = 41;
   SMBShare.SecurityConfig security_config = 51;
+}
+
+message ValidateSMBUserRequest {
+  string realm = 1;
+  string username = 2;
+  string password = 3;
+  string search_username = 4;
+  bool tls = 5;
+}
+
+message ValidateSMBUserResponse {
+  enum EntityType {
+    ENTITY_TYPE_UNKNOWN = 0;
+    ENTITY_TYPE_USER = 1;
+    ENTITY_TYPE_GROUP = 2;
+  }
+  bool valid = 1;
+  EntityType entity_type = 2;
+  string message = 3;
 }

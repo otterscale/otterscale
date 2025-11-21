@@ -17,41 +17,47 @@
 	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
+	const applicationClient = createClient(ApplicationService, transport);
 
 	const charts = writable<Application_Chart[]>([]);
 	const releases = writable<Application_Release[]>([]);
 
-	let isChartsLoaded = $state(false);
-	let isReleasesLoaded = $state(false);
-	const isMounted = $derived(isChartsLoaded && isReleasesLoaded);
+	async function fetchCharts() {
+		try {
+			const response = await applicationClient.listCharts({});
+			charts.set(response.charts.sort((p, n) => p.name.localeCompare(n.name)));
+		} catch (error) {
+			console.error('Failed to fetch charts:', error);
+		}
+	}
 
-	const applicationClient = createClient(ApplicationService, transport);
-
-	onMount(async () => {
-		await applicationClient
-			.listCharts({})
-			.then((response) => {
-				charts.set(response.charts.sort((p, n) => p.name.localeCompare(n.name)));
-				isChartsLoaded = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
-		await applicationClient
-			.listReleases({
+	async function fetchReleases() {
+		try {
+			const response = await applicationClient.listReleases({
 				scope: scope
-			})
-			.then((response) => {
-				releases.set(response.releases);
-				isReleasesLoaded = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
 			});
+			releases.set(response.releases);
+		} catch (error) {
+			console.error('Failed to fetch releases:', error);
+		}
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([fetchCharts(), fetchReleases()]);
+		} catch (error) {
+			console.error('Error during data loading:', error);
+		}
+	}
+
+	let isLoaded = $state(false);
+	onMount(async () => {
+		await fetch();
+		isLoaded = true;
 	});
 </script>
 
-{#if isMounted}
+{#if isLoaded}
 	<CommerceStore {scope} {charts} {releases} />
 {:else}
 	<Loading.ApplicationStore />

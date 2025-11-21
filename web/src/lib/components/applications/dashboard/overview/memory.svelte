@@ -35,62 +35,64 @@
 		formatCapacity(memoryLimits)
 	);
 
-	function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`
-				sum(
-				container_memory_rss{container!="",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor"}
-				)
-						`,
-				Date.now() - 60 * 60 * 1000,
-				Date.now(),
-				2 * 60
-			)
-			.then((response) => {
-				memoryUsages = response.result[0]?.values ?? [];
-			});
-		prometheusDriver
-			.instantQuery(
-				`
-				sum(
-					kube_node_status_allocatable{job="kube-state-metrics",juju_model="${scope}",resource="memory"}
-				)
-				`
-			)
-			.then((response) => {
-				allocatableNodesMemory = response.result[0]?.value?.value;
-			});
-		prometheusDriver
-			.instantQuery(
-				`
-				sum(
-					namespace_memory:kube_pod_container_resource_requests:sum{juju_model="${scope}"}
-				)
-				`
-			)
-			.then((response) => {
-				memoryRequests = response.result[0]?.value?.value;
-			});
-		prometheusDriver
-			.instantQuery(
-				`
-				sum(
-					namespace_memory:kube_pod_container_resource_limits:sum{juju_model="${scope}"}
-				)
-				`
-			)
-			.then((response) => {
-				memoryLimits = response.result[0]?.value?.value;
-			});
+	async function fetchMemoryUsages() {
+		const response = await prometheusDriver.rangeQuery(
+			`
+			sum(container_memory_rss{container!="",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor"})
+			`,
+			Date.now() - 60 * 60 * 1000,
+			Date.now(),
+			2 * 60
+		);
+		memoryUsages = response.result[0]?.values ?? [];
+	}
+
+	async function fetchAllocatableNodesMemory() {
+		const response = await prometheusDriver.instantQuery(
+			`
+			sum(kube_node_status_allocatable{job="kube-state-metrics",juju_model="${scope}",resource="memory"})
+			`
+		);
+		allocatableNodesMemory = response.result[0]?.value?.value;
+	}
+
+	async function fetchMemoryRequests() {
+		const response = await prometheusDriver.instantQuery(
+			`
+			sum(namespace_memory:kube_pod_container_resource_requests:sum{juju_model="${scope}"})
+			`
+		);
+		memoryRequests = response.result[0]?.value?.value;
+	}
+
+	async function fetchMemoryLimits() {
+		const response = await prometheusDriver.instantQuery(
+			`
+			sum(namespace_memory:kube_pod_container_resource_limits:sum{juju_model="${scope}"})
+			`
+		);
+		memoryLimits = response.result[0]?.value?.value;
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([
+				fetchMemoryUsages(),
+				fetchAllocatableNodesMemory(),
+				fetchMemoryRequests(),
+				fetchMemoryLimits()
+			]);
+		} catch (error) {
+			console.error('Failed to fetch memory data:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -105,7 +107,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

@@ -4,20 +4,22 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
+	"log/slog"
+	"time"
 
 	"github.com/samba-in-kubernetes/samba-operator/api/v1alpha1"
 	"golang.org/x/sync/errgroup"
-	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
 	"github.com/otterscale/otterscale/internal/core/application/config"
+	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/service"
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 )
+
+const namespace = "samba-operator-system"
 
 const (
 	GuestOKkey    = "guest ok"
@@ -63,11 +65,12 @@ type User struct {
 }
 
 type names struct {
-	UsersSecret    string
-	JoinSecret     string
-	SecurityConfig string
-	CommonConfig   string
-	Share          string
+	UsersSecret           string
+	JoinSecret            string
+	SecurityConfig        string
+	CommonConfig          string
+	Share                 string
+	PersistentVolumeClaim string
 }
 
 type userEntry struct {
@@ -112,26 +115,28 @@ type UseCase struct {
 	smbShare          SMBShareRepo
 	smbSecurityConfig SMBSecurityConfigRepo
 
-	deployment workload.DeploymentRepo
-	pod        workload.PodRepo
-	secret     config.SecretRepo
-	service    service.ServiceRepo
+	deployment            workload.DeploymentRepo
+	pod                   workload.PodRepo
+	secret                config.SecretRepo
+	service               service.ServiceRepo
+	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
 }
 
-func NewUseCase(smbCommonConfig SMBCommonConfigRepo, smbShare SMBShareRepo, smbSecurityConfig SMBSecurityConfigRepo, deployment workload.DeploymentRepo, pod workload.PodRepo, secret config.SecretRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(smbCommonConfig SMBCommonConfigRepo, smbShare SMBShareRepo, smbSecurityConfig SMBSecurityConfigRepo, deployment workload.DeploymentRepo, pod workload.PodRepo, secret config.SecretRepo, service service.ServiceRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *UseCase {
 	return &UseCase{
-		smbCommonConfig:   smbCommonConfig,
-		smbShare:          smbShare,
-		smbSecurityConfig: smbSecurityConfig,
-		deployment:        deployment,
-		pod:               pod,
-		secret:            secret,
-		service:           service,
+		smbCommonConfig:       smbCommonConfig,
+		smbShare:              smbShare,
+		smbSecurityConfig:     smbSecurityConfig,
+		deployment:            deployment,
+		pod:                   pod,
+		secret:                secret,
+		service:               service,
+		persistentVolumeClaim: persistentVolumeClaim,
 	}
 }
 
 //nolint:funlen // ignore
-func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (data []ShareData, hostname string, err error) {
+func (uc *UseCase) ListSMBShares(ctx context.Context, scope string) (data []ShareData, hostname string, err error) {
 	var (
 		commonConfigMap   map[string]*CommonConfig
 		securityConfigMap map[string]*SecurityConfig
@@ -265,7 +270,7 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope, namespace string) (
 	return ret, url.Hostname(), nil
 }
 
-func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name string, sizeBytes uint64, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
+func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, name string, sizeBytes uint64, port int32, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest MapToGuest, securityMode SecurityMode, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
 	names := uc.newNames(name)
 
 	// Cleanup on error
@@ -289,7 +294,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 	}
 
 	// Create join secret
-	if joinSource != nil {
+	if joinSource != nil && joinSource.Username != "" && joinSource.Password != "" {
 		joinSecret := uc.buildJoinSecret(namespace, names.JoinSecret, joinSource)
 
 		if _, err = uc.secret.Create(ctx, scope, namespace, joinSecret); err != nil {
@@ -327,19 +332,22 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, namespace, name st
 		return nil, "", err
 	}
 
+	// Wait for service to be created automatically and update NodePort in background
+	go uc.waitAndUpdateServiceNodePort(scope, namespace, names.Share, port)
+
 	return &ShareData{
 		Share: newShare,
 	}, url.Hostname(), nil
 }
 
-func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name string, sizeBytes uint64, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
+func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, name string, sizeBytes uint64, port int32, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest MapToGuest, securityMode SecurityMode, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
 	names := uc.newNames(name)
 
 	// Update users secret
 	if len(localUsers) > 0 {
 		usersSecret := uc.buildUsersSecret(namespace, names.UsersSecret, localUsers)
 
-		if err := uc.upsertSecret(ctx, scope, namespace, names.UsersSecret, usersSecret); err != nil {
+		if err := uc.upsertUsersSecret(ctx, scope, namespace, names.UsersSecret, usersSecret); err != nil {
 			return nil, "", err
 		}
 	} else {
@@ -347,10 +355,10 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 	}
 
 	// Update join secret
-	if joinSource != nil {
+	if joinSource != nil && joinSource.Username != "" && joinSource.Password != "" {
 		joinSecret := uc.buildJoinSecret(namespace, names.JoinSecret, joinSource)
 
-		if err := uc.upsertSecret(ctx, scope, namespace, names.JoinSecret, joinSecret); err != nil {
+		if err := uc.upsertJoinSecret(ctx, scope, namespace, names.JoinSecret, joinSecret); err != nil {
 			return nil, "", err
 		}
 	} else {
@@ -360,14 +368,14 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 	// Update security config
 	securityConfig := uc.buildSecurityConfig(namespace, names.SecurityConfig, securityMode, names.UsersSecret, realm, names.JoinSecret)
 
-	if _, err := uc.smbSecurityConfig.Update(ctx, scope, namespace, securityConfig); err != nil {
+	if err := uc.updateSecurityConfig(ctx, scope, namespace, names.SecurityConfig, securityConfig); err != nil {
 		return nil, "", err
 	}
 
 	// Update common config
 	commonConfig := uc.buildCommonConfig(namespace, names.CommonConfig, mapToGuest)
 
-	if _, err := uc.smbCommonConfig.Update(ctx, scope, namespace, commonConfig); err != nil {
+	if err := uc.updateCommonConfig(ctx, scope, namespace, names.CommonConfig, commonConfig); err != nil {
 		return nil, "", err
 	}
 
@@ -375,7 +383,26 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, namespace, name st
 	shareConfig := uc.buildShareConfig(guestOK, validUsers)
 	share := uc.buildShare(namespace, names.Share, browsable, readOnly, sizeBytes, names.SecurityConfig, names.CommonConfig, shareConfig)
 
-	newShare, err := uc.smbShare.Update(ctx, scope, namespace, share)
+	if err := uc.updateShare(ctx, scope, namespace, names.Share, share); err != nil {
+		return nil, "", err
+	}
+
+	// Update persistent volume claim
+	pvc := uc.buildPersistentVolumeClaim(namespace, names.PersistentVolumeClaim, sizeBytes)
+
+	if err := uc.updatePersistentVolumeClaim(ctx, scope, namespace, pvc); err != nil {
+		return nil, "", err
+	}
+
+	// Update service
+	service := uc.buildService(namespace, names.Share, port)
+
+	if err := uc.updateService(ctx, scope, namespace, names.Share, service); err != nil {
+		return nil, "", err
+	}
+
+	// Get updated share
+	newShare, err := uc.smbShare.Get(ctx, scope, namespace, names.Share)
 	if err != nil {
 		return nil, "", err
 	}
@@ -415,16 +442,6 @@ func (uc *UseCase) filterPods(selector labels.Selector, namespace string, pods [
 	return ret
 }
 
-func (uc *UseCase) newNames(name string) names {
-	return names{
-		UsersSecret:    name + "-users",
-		JoinSecret:     name + "-join",
-		SecurityConfig: name + "-security",
-		CommonConfig:   name + "-common",
-		Share:          name + "-share",
-	}
-}
-
 func (uc *UseCase) extractSecrets(secretMap map[string]*config.Secret, usersSecretName, joinSecretName string) (localUsers []User, joinSource *User, err error) {
 	var config *sambaContainerConfig
 
@@ -454,164 +471,44 @@ func (uc *UseCase) extractSecrets(secretMap map[string]*config.Secret, usersSecr
 	return localUsers, joinSource, nil
 }
 
-func (uc *UseCase) buildUsersSecret(namespace, name string, users []User) *config.Secret {
-	userEntries := []userEntry{}
+func (uc *UseCase) waitAndUpdateServiceNodePort(scope, namespace, name string, port int32) {
+	const (
+		timeout  = 5 * time.Minute
+		interval = 5 * time.Second
+	)
 
-	for _, user := range users {
-		userEntries = append(userEntries, userEntry{
-			Name:     user.Username,
-			Password: user.Password,
-		})
-	}
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
 
-	data, _ := json.Marshal(&sambaContainerConfig{
-		SCCVersion: "v0",
-		Users: map[string][]userEntry{
-			"all_entries": userEntries,
-		},
-	})
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
 
-	return &config.Secret{
-		ObjectMeta: v1.ObjectMeta{
-			Name:      name,
-			Namespace: namespace,
-			Labels: map[string]string{
-				"app.kubernetes.io/name": "samba",
-			},
-		},
-		Type: corev1.SecretTypeOpaque,
-		StringData: map[string]string{
-			"users": string(data),
-		},
-	}
-}
+	newService := uc.buildService(namespace, name, port)
 
-func (uc *UseCase) buildJoinSecret(namespace, name string, user *User) *config.Secret {
-	data, _ := json.Marshal(&User{
-		Username: user.Username,
-		Password: user.Password,
-	})
+	for {
+		select {
+		case <-ctx.Done():
+			return
 
-	return &config.Secret{
-		ObjectMeta: v1.ObjectMeta{
-			Name:      name,
-			Namespace: namespace,
-			Labels: map[string]string{
-				"app.kubernetes.io/name": "samba",
-			},
-		},
-		Type: corev1.SecretTypeOpaque,
-		StringData: map[string]string{
-			"join": string(data),
-		},
-	}
-}
-
-func (uc *UseCase) buildCommonConfig(namespace, name, mapToGuest string) *CommonConfig {
-	return &CommonConfig{
-		ObjectMeta: v1.ObjectMeta{
-			Name:      name,
-			Namespace: namespace,
-		},
-		Spec: v1alpha1.SmbCommonConfigSpec{
-			CustomGlobalConfig: &v1alpha1.SmbCommonConfigGlobalConfig{
-				UseUnsafeCustomConfig: true,
-				Configs: map[string]string{
-					MapToGuestKey: mapToGuest,
-				},
-			},
-		},
-	}
-}
-
-func (uc *UseCase) buildSecurityConfig(namespace, name, securityMode, usersSecretName, realm, joinSecretName string) *SecurityConfig {
-	return &SecurityConfig{
-		ObjectMeta: v1.ObjectMeta{
-			Name:      name,
-			Namespace: namespace,
-		},
-		Spec: v1alpha1.SmbSecurityConfigSpec{
-			Mode: securityMode,
-			Users: &v1alpha1.SmbSecurityUsersSpec{
-				Secret: usersSecretName,
-				Key:    "users",
-			},
-			DNS: &v1alpha1.SmbSecurityDNSSpec{
-				Register: "cluster-ip",
-			},
-			Realm: realm,
-			JoinSources: []v1alpha1.SmbSecurityJoinSpec{
-				{
-					UserJoin: &v1alpha1.SmbSecurityUserJoinSpec{
-						Secret: joinSecretName,
-						Key:    "join",
-					},
-				},
-			},
-		},
-	}
-}
-
-func (uc *UseCase) buildShareConfig(guestOK bool, validUsers []string) *v1alpha1.SmbShareConfig {
-	configs := map[string]string{}
-
-	if guestOK {
-		configs[GuestOKkey] = "yes"
-	}
-
-	if len(validUsers) > 0 {
-		configs[ValidUsersKey] = strings.Join(validUsers, " ")
-	}
-
-	return &v1alpha1.SmbShareConfig{
-		UseUnsafeCustomConfig: true,
-		Configs:               configs,
-	}
-}
-
-func (uc *UseCase) buildShare(namespace, name string, browsable, readOnly bool, sizeBytes uint64, securityConfigName, commonConfigName string, customShareConfig *v1alpha1.SmbShareConfig) *v1alpha1.SmbShare {
-	storageClassName := "cephfs"
-
-	return &Share{
-		ObjectMeta: v1.ObjectMeta{
-			Name:      name,
-			Namespace: namespace,
-		},
-		Spec: v1alpha1.SmbShareSpec{
-			ShareName:  name,
-			Browseable: browsable,
-			ReadOnly:   readOnly,
-			Storage: v1alpha1.SmbShareStorageSpec{
-				Pvc: &v1alpha1.SmbSharePvcSpec{
-					Spec: &corev1.PersistentVolumeClaimSpec{
-						AccessModes: []corev1.PersistentVolumeAccessMode{
-							corev1.ReadWriteMany,
-						},
-						Resources: corev1.VolumeResourceRequirements{
-							Requests: corev1.ResourceList{
-								"storage": *resource.NewQuantity(int64(sizeBytes), resource.BinarySI), //nolint:gosec // ignore
-							},
-						},
-						StorageClassName: &storageClassName,
-					},
-				},
-			},
-			SecurityConfig:    securityConfigName,
-			CommonConfig:      commonConfigName,
-			CustomShareConfig: customShareConfig,
-		},
-	}
-}
-
-func (uc *UseCase) upsertSecret(ctx context.Context, scope, namespace, name string, secret *config.Secret) error {
-	if _, err := uc.secret.Get(ctx, scope, namespace, name); err != nil {
-		if k8serrors.IsNotFound(err) {
-			_, err = uc.secret.Create(ctx, scope, namespace, secret)
-			return err
+		case <-ticker.C:
+			if err := uc.updateService(ctx, scope, namespace, name, newService); err != nil {
+				if k8serrors.IsNotFound(err) {
+					continue
+				}
+				slog.Error("failed to update service", "error", err)
+				return
+			}
 		}
-		return err
 	}
+}
 
-	_, err := uc.secret.Update(ctx, scope, namespace, secret)
-	return err
+func (uc *UseCase) newNames(name string) names {
+	return names{
+		UsersSecret:           name + "-users",
+		JoinSecret:            name + "-join",
+		SecurityConfig:        name + "-security",
+		CommonConfig:          name + "-common",
+		Share:                 name + "-share",
+		PersistentVolumeClaim: name + "-pvc",
+	}
 }

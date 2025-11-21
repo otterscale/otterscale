@@ -12,7 +12,6 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
-	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -22,6 +21,7 @@
 
 	import type { Metrics } from '../types';
 	import { getColumns, messages } from './columns';
+	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
@@ -109,6 +109,9 @@
 </script>
 
 <Layout.Root>
+	<Layout.Statistics>
+		<Statistics {table} />
+	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
@@ -150,16 +153,16 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
-							{#if header.column.id !== 'gpu' || page.data['feature-states.mdl-general']}
-								<Table.Head>
-									{#if !header.isPlaceholder}
-										<FlexRender
-											content={header.column.columnDef.header}
-											context={header.getContext()}
-										/>
-									{/if}
-								</Table.Head>
-							{/if}
+							<!-- {#if header.column.id !== 'gpu' || page.data['feature-states.mdl-general']} -->
+							<Table.Head>
+								{#if !header.isPlaceholder}
+									<FlexRender
+										content={header.column.columnDef.header}
+										context={header.getContext()}
+									/>
+								{/if}
+							</Table.Head>
+							<!-- {/if} -->
 						{/each}
 					</Table.Row>
 				{/each}
@@ -168,11 +171,11 @@
 				{#each table.getRowModel().rows as row (row.id)}
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
-							{#if cell.column.id !== 'gpu' || page.data['feature-states.mdl-general']}
-								<Table.Cell>
-									<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-								</Table.Cell>
-							{/if}
+							<!-- {#if cell.column.id !== 'gpu' || page.data['feature-states.mdl-general']} -->
+							<Table.Cell>
+								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+							</Table.Cell>
+							<!-- {/if} -->
 						{/each}
 					</Table.Row>
 				{:else}

@@ -30,10 +30,10 @@ type WarpTarget struct {
 }
 
 type WarpTargetInternal struct {
-	Type  string `json:"type"`
-	Scope string `json:"scope"`
-	Name  string `json:"name"`
-	Host  string `json:"host"`
+	Type  ObjectServiceType `json:"type"`
+	Scope string            `json:"scope"`
+	Name  string            `json:"name"`
+	Host  string            `json:"host"`
 }
 
 type WarpTargetExternal struct {
@@ -43,10 +43,10 @@ type WarpTargetExternal struct {
 }
 
 type WarpInput struct {
-	Operation   string `json:"operation"`
-	Duration    int64  `json:"duration"`
-	ObjectSize  int64  `json:"object_size"`
-	ObjectCount int64  `json:"object_count"`
+	Operation   WarpOperationType `json:"operation"`
+	Duration    int64             `json:"duration"`
+	ObjectSize  int64             `json:"object_size"`
+	ObjectCount int64             `json:"object_count"`
 }
 
 type WarpOutput struct {
@@ -108,10 +108,10 @@ func (uc *UseCase) CreateWarpResult(ctx context.Context, name, createdBy string,
 	internal := target.Internal
 	if internal != nil {
 		switch internal.Type {
-		case "ceph":
+		case ObjectServiceTypeCeph:
 			job.Spec = uc.warpCephObjectGatewayJobSpec(internal, input)
 
-		case "minio":
+		case ObjectServiceTypeMinIO:
 			spec, err := uc.warpMinIOJobSpec(ctx, internal, input)
 			if err != nil {
 				return nil, err
@@ -178,13 +178,13 @@ func (uc *UseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput) bat
 		{Name: "BENCHMARK_ARGS_WARP_HOST", Value: target.Host},
 		{Name: "BENCHMARK_ARGS_WARP_ACCESS_KEY", Value: target.AccessKey},
 		{Name: "BENCHMARK_ARGS_WARP_SECRET_KEY", Value: target.SecretKey},
-		{Name: "BENCHMARK_ARGS_WARP_ACTION", Value: input.Operation},
+		{Name: "BENCHMARK_ARGS_WARP_ACTION", Value: input.Operation.String()},
 		{Name: "BENCHMARK_ARGS_WARP_DURATION", Value: strconv.FormatInt(input.Duration, 10) + "s"}, // with unit
 		{Name: "BENCHMARK_ARGS_WARP_CONCURRENT", Value: "2"},
 		{Name: "BENCHMARK_ARGS_WARP_OBJ.SIZE", Value: strconv.FormatInt(input.ObjectSize, 10)},
 	}
 
-	if input.Operation == http.MethodPut {
+	if strings.EqualFold(input.Operation.String(), http.MethodPut) {
 		env = append(env, corev1.EnvVar{Name: "BENCHMARK_ARGS_WARP_OBJECTS", Value: strconv.FormatInt(input.ObjectCount, 10)})
 	}
 

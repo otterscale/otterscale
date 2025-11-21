@@ -51,27 +51,9 @@ service OrchestratorService {
     };
   };
 
-  rpc ListGeneralExtensions(ListGeneralExtensionsRequest) returns (ListGeneralExtensionsResponse) {
+  rpc ListExtensions(ListExtensionsRequest) returns (ListExtensionsResponse) {
     option (otterscale.api.feature) = {
       name: "orch-general"
-    };
-  };
-
-  rpc ListModelExtensions(ListModelExtensionsRequest) returns (ListModelExtensionsResponse) {
-    option (otterscale.api.feature) = {
-      name: "mdl-general"
-    };
-  };
-
-  rpc ListInstanceExtensions(ListInstanceExtensionsRequest) returns (ListInstanceExtensionsResponse) {
-    option (otterscale.api.feature) = {
-      name: "vm-general"
-    };
-  };
-
-  rpc ListStorageExtensions(ListStorageExtensionsRequest) returns (ListStorageExtensionsResponse) {
-    option (otterscale.api.feature) = {
-      name: "stg-general"
     };
   };
 
@@ -108,9 +90,9 @@ message CreateClusterRequest {
 
 message AddClusterUnitsRequest {
   enum Type {
-    UNSPECIFIED = 0;
-    KUBERNETES = 1;
-    CEPH = 2;
+    TYPE_UNSPECIFIED = 0;
+    TYPE_KUBERNETES = 1;
+    TYPE_CEPH = 2;
   }
   Type type = 1;
   string scope = 2;
@@ -199,52 +181,35 @@ message ListGPURelationsByModelResponse {
 }
 
 message Extension {
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_GENERAL = 1;
+    TYPE_REGISTRY = 2;
+    TYPE_MODEL = 3;
+    TYPE_INSTANCE = 4;
+    TYPE_STORAGE = 5;
+  }
   message Manifest {
     string id = 1;
     string version = 2;
   }
-  string name = 1;
-  string description = 2;
-  string icon = 3;
+  Type type = 1;
+  string name = 2;
+  string description = 3;
+  string icon = 4;
   string status = 11;
   google.protobuf.Timestamp deployed_at = 12;
   Manifest current = 21;
   Manifest latest = 22;
 }
 
-message ListGeneralExtensionsRequest {
+message ListExtensionsRequest {
   string scope = 1;
   reserved 2;
+  Extension.Type type = 3;
 }
 
-message ListGeneralExtensionsResponse {
-  repeated Extension Extensions = 1;
-}
-
-message ListModelExtensionsRequest {
-  string scope = 1;
-  reserved 2;
-}
-
-message ListModelExtensionsResponse {
-  repeated Extension Extensions = 1;
-}
-
-message ListInstanceExtensionsRequest {
-  string scope = 1;
-  reserved 2;
-}
-
-message ListInstanceExtensionsResponse {
-  repeated Extension Extensions = 1;
-}
-
-message ListStorageExtensionsRequest {
-  string scope = 1;
-  reserved 2;
-}
-
-message ListStorageExtensionsResponse {
+message ListExtensionsResponse {
   repeated Extension Extensions = 1;
 }
 

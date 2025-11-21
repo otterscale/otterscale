@@ -46,29 +46,35 @@
 		blockDevices.reduce((sum, m) => sum + Number(m.storageMb ?? 0), 0) * 1024 * 1024
 	);
 
-	async function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`1 - sum(node_filesystem_avail_bytes{juju_model=~".*"}) / sum(node_filesystem_size_bytes{juju_model=~".*"})`,
-				Date.now() - 10 * 60 * 1000,
-				Date.now(),
-				2 * 60
-			)
-			.then((response) => {
-				storageUsages = response.result[0]?.values ?? [];
-			});
+	async function fetchStorageUsages() {
+		const response = await prometheusDriver.rangeQuery(
+			`1 - sum(node_filesystem_avail_bytes{juju_model=~".*"}) / sum(node_filesystem_size_bytes{juju_model=~".*"})`,
+			Date.now() - 10 * 60 * 1000,
+			Date.now(),
+			2 * 60
+		);
+		storageUsages = response.result && response.result[0] ? response.result[0]?.values : [];
+	}
 
-		machineClient.listMachines({}).then((response) => {
-			machines.set(response.machines);
-		});
+	async function fetchMachines() {
+		const response = await machineClient.listMachines({});
+		machines.set(response.machines);
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([fetchStorageUsages(), fetchMachines()]);
+		} catch (error) {
+			console.error('Fail to fetch data:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -83,7 +89,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

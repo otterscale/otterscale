@@ -27,25 +27,25 @@ const (
 type VirtualMachine_Disk_Bus int32
 
 const (
-	VirtualMachine_Disk_VIRTIO VirtualMachine_Disk_Bus = 0
-	VirtualMachine_Disk_SATA   VirtualMachine_Disk_Bus = 1
-	VirtualMachine_Disk_SCSI   VirtualMachine_Disk_Bus = 2
-	VirtualMachine_Disk_USB    VirtualMachine_Disk_Bus = 3
+	VirtualMachine_Disk_BUS_VIRTIO VirtualMachine_Disk_Bus = 0
+	VirtualMachine_Disk_BUS_SATA   VirtualMachine_Disk_Bus = 1
+	VirtualMachine_Disk_BUS_SCSI   VirtualMachine_Disk_Bus = 2
+	VirtualMachine_Disk_BUS_USB    VirtualMachine_Disk_Bus = 3
 )
 
 // Enum value maps for VirtualMachine_Disk_Bus.
 var (
 	VirtualMachine_Disk_Bus_name = map[int32]string{
-		0: "VIRTIO",
-		1: "SATA",
-		2: "SCSI",
-		3: "USB",
+		0: "BUS_VIRTIO",
+		1: "BUS_SATA",
+		2: "BUS_SCSI",
+		3: "BUS_USB",
 	}
 	VirtualMachine_Disk_Bus_value = map[string]int32{
-		"VIRTIO": 0,
-		"SATA":   1,
-		"SCSI":   2,
-		"USB":    3,
+		"BUS_VIRTIO": 0,
+		"BUS_SATA":   1,
+		"BUS_SCSI":   2,
+		"BUS_USB":    3,
 	}
 )
 
@@ -74,22 +74,22 @@ func (x VirtualMachine_Disk_Bus) Number() protoreflect.EnumNumber {
 type VirtualMachine_Disk_Volume_Source_Type int32
 
 const (
-	VirtualMachine_Disk_Volume_Source_UNKNOWN             VirtualMachine_Disk_Volume_Source_Type = 0
-	VirtualMachine_Disk_Volume_Source_DATA_VOLUME         VirtualMachine_Disk_Volume_Source_Type = 1
-	VirtualMachine_Disk_Volume_Source_CLOUD_INIT_NO_CLOUD VirtualMachine_Disk_Volume_Source_Type = 2
+	VirtualMachine_Disk_Volume_Source_TYPE_UNKNOWN             VirtualMachine_Disk_Volume_Source_Type = 0
+	VirtualMachine_Disk_Volume_Source_TYPE_DATA_VOLUME         VirtualMachine_Disk_Volume_Source_Type = 1
+	VirtualMachine_Disk_Volume_Source_TYPE_CLOUD_INIT_NO_CLOUD VirtualMachine_Disk_Volume_Source_Type = 2
 )
 
 // Enum value maps for VirtualMachine_Disk_Volume_Source_Type.
 var (
 	VirtualMachine_Disk_Volume_Source_Type_name = map[int32]string{
-		0: "UNKNOWN",
-		1: "DATA_VOLUME",
-		2: "CLOUD_INIT_NO_CLOUD",
+		0: "TYPE_UNKNOWN",
+		1: "TYPE_DATA_VOLUME",
+		2: "TYPE_CLOUD_INIT_NO_CLOUD",
 	}
 	VirtualMachine_Disk_Volume_Source_Type_value = map[string]int32{
-		"UNKNOWN":             0,
-		"DATA_VOLUME":         1,
-		"CLOUD_INIT_NO_CLOUD": 2,
+		"TYPE_UNKNOWN":             0,
+		"TYPE_DATA_VOLUME":         1,
+		"TYPE_CLOUD_INIT_NO_CLOUD": 2,
 	}
 )
 
@@ -118,22 +118,22 @@ func (x VirtualMachine_Disk_Volume_Source_Type) Number() protoreflect.EnumNumber
 type DataVolume_Source_Type int32
 
 const (
-	DataVolume_Source_BLANK_IMAGE                      DataVolume_Source_Type = 0
-	DataVolume_Source_HTTP_URL                         DataVolume_Source_Type = 1
-	DataVolume_Source_EXISTING_PERSISTENT_VOLUME_CLAIM DataVolume_Source_Type = 2
+	DataVolume_Source_TYPE_BLANK_IMAGE                      DataVolume_Source_Type = 0
+	DataVolume_Source_TYPE_HTTP_URL                         DataVolume_Source_Type = 1
+	DataVolume_Source_TYPE_EXISTING_PERSISTENT_VOLUME_CLAIM DataVolume_Source_Type = 2
 )
 
 // Enum value maps for DataVolume_Source_Type.
 var (
 	DataVolume_Source_Type_name = map[int32]string{
-		0: "BLANK_IMAGE",
-		1: "HTTP_URL",
-		2: "EXISTING_PERSISTENT_VOLUME_CLAIM",
+		0: "TYPE_BLANK_IMAGE",
+		1: "TYPE_HTTP_URL",
+		2: "TYPE_EXISTING_PERSISTENT_VOLUME_CLAIM",
 	}
 	DataVolume_Source_Type_value = map[string]int32{
-		"BLANK_IMAGE":                      0,
-		"HTTP_URL":                         1,
-		"EXISTING_PERSISTENT_VOLUME_CLAIM": 2,
+		"TYPE_BLANK_IMAGE":                      0,
+		"TYPE_HTTP_URL":                         1,
+		"TYPE_EXISTING_PERSISTENT_VOLUME_CLAIM": 2,
 	}
 )
 
@@ -7224,7 +7224,7 @@ func (x *VirtualMachine_Disk) GetBus() VirtualMachine_Disk_Bus {
 			return x.xxx_hidden_Bus
 		}
 	}
-	return VirtualMachine_Disk_VIRTIO
+	return VirtualMachine_Disk_BUS_VIRTIO
 }
 
 func (x *VirtualMachine_Disk) GetBootOrder() uint32 {
@@ -7295,7 +7295,7 @@ func (x *VirtualMachine_Disk) ClearName() {
 
 func (x *VirtualMachine_Disk) ClearBus() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Bus = VirtualMachine_Disk_VIRTIO
+	x.xxx_hidden_Bus = VirtualMachine_Disk_BUS_VIRTIO
 }
 
 func (x *VirtualMachine_Disk) ClearBootOrder() {
@@ -7480,7 +7480,7 @@ func (x *VirtualMachine_Disk_Volume_Source) GetType() VirtualMachine_Disk_Volume
 			return x.xxx_hidden_Type
 		}
 	}
-	return VirtualMachine_Disk_Volume_Source_UNKNOWN
+	return VirtualMachine_Disk_Volume_Source_TYPE_UNKNOWN
 }
 
 func (x *VirtualMachine_Disk_Volume_Source) GetData() string {
@@ -7519,7 +7519,7 @@ func (x *VirtualMachine_Disk_Volume_Source) HasData() bool {
 
 func (x *VirtualMachine_Disk_Volume_Source) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Type = VirtualMachine_Disk_Volume_Source_UNKNOWN
+	x.xxx_hidden_Type = VirtualMachine_Disk_Volume_Source_TYPE_UNKNOWN
 }
 
 func (x *VirtualMachine_Disk_Volume_Source) ClearData() {
@@ -7590,7 +7590,7 @@ func (x *DataVolume_Source) GetType() DataVolume_Source_Type {
 			return x.xxx_hidden_Type
 		}
 	}
-	return DataVolume_Source_BLANK_IMAGE
+	return DataVolume_Source_TYPE_BLANK_IMAGE
 }
 
 func (x *DataVolume_Source) GetData() string {
@@ -7629,7 +7629,7 @@ func (x *DataVolume_Source) HasData() bool {
 
 func (x *DataVolume_Source) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Type = DataVolume_Source_BLANK_IMAGE
+	x.xxx_hidden_Type = DataVolume_Source_TYPE_BLANK_IMAGE
 }
 
 func (x *DataVolume_Source) ClearData() {
@@ -7890,7 +7890,7 @@ var File_api_instance_v1_instance_proto protoreflect.FileDescriptor
 
 const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\n" +
-	"\x1eapi/instance/v1/instance.proto\x12\x16otterscale.instance.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x92\x11\n" +
+	"\x1eapi/instance/v1/instance.proto\x12\x16otterscale.instance.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb1\x11\n" +
 	"\x0eVirtualMachine\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x16\n" +
@@ -7940,29 +7940,29 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\bcomplete\x18\v \x01(\bR\bcomplete\x129\n" +
 	"\n" +
 	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12W\n" +
-	"\x0elast_condition\x18\x1f \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x1a\x9c\x04\n" +
+	"\x0elast_condition\x18\x1f \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x1a\xbb\x04\n" +
 	"\x04Disk\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12A\n" +
 	"\x03bus\x18\x02 \x01(\x0e2/.otterscale.instance.v1.VirtualMachine.Disk.BusR\x03bus\x12\x1d\n" +
 	"\n" +
 	"boot_order\x18\x03 \x01(\rR\tbootOrder\x12J\n" +
-	"\x06volume\x18\x04 \x01(\v22.otterscale.instance.v1.VirtualMachine.Disk.VolumeR\x06volume\x1a\xa1\x02\n" +
+	"\x06volume\x18\x04 \x01(\v22.otterscale.instance.v1.VirtualMachine.Disk.VolumeR\x06volume\x1a\xb0\x02\n" +
 	"\x06Volume\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12Q\n" +
-	"\x06source\x18\x02 \x01(\v29.otterscale.instance.v1.VirtualMachine.Disk.Volume.SourceR\x06source\x1a\xaf\x01\n" +
+	"\x06source\x18\x02 \x01(\v29.otterscale.instance.v1.VirtualMachine.Disk.Volume.SourceR\x06source\x1a\xbe\x01\n" +
 	"\x06Source\x12R\n" +
 	"\x04type\x18\x01 \x01(\x0e2>.otterscale.instance.v1.VirtualMachine.Disk.Volume.Source.TypeR\x04type\x12\x12\n" +
-	"\x04data\x18\x02 \x01(\tR\x04data\"=\n" +
-	"\x04Type\x12\v\n" +
-	"\aUNKNOWN\x10\x00\x12\x0f\n" +
-	"\vDATA_VOLUME\x10\x01\x12\x17\n" +
-	"\x13CLOUD_INIT_NO_CLOUD\x10\x02\".\n" +
-	"\x03Bus\x12\n" +
+	"\x04data\x18\x02 \x01(\tR\x04data\"L\n" +
+	"\x04Type\x12\x10\n" +
+	"\fTYPE_UNKNOWN\x10\x00\x12\x14\n" +
+	"\x10TYPE_DATA_VOLUME\x10\x01\x12\x1c\n" +
+	"\x18TYPE_CLOUD_INIT_NO_CLOUD\x10\x02\">\n" +
+	"\x03Bus\x12\x0e\n" +
 	"\n" +
-	"\x06VIRTIO\x10\x00\x12\b\n" +
-	"\x04SATA\x10\x01\x12\b\n" +
-	"\x04SCSI\x10\x02\x12\a\n" +
-	"\x03USB\x10\x03\"\xde\x06\n" +
+	"BUS_VIRTIO\x10\x00\x12\f\n" +
+	"\bBUS_SATA\x10\x01\x12\f\n" +
+	"\bBUS_SCSI\x10\x02\x12\v\n" +
+	"\aBUS_USB\x10\x03\"\xed\x06\n" +
 	"\n" +
 	"DataVolume\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
@@ -7975,14 +7975,14 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\n" +
 	"size_bytes\x18\x1f \x01(\x03R\tsizeBytes\x12t\n" +
 	"\x17persistent_volume_claim\x18  \x01(\v2<.otterscale.application.v1.Application.PersistentVolumeClaimR\x15persistentVolumeClaim\x12S\n" +
-	"\x0elast_condition\x18) \x01(\v2,.otterscale.instance.v1.DataVolume.ConditionR\rlastCondition\x1a\xad\x01\n" +
+	"\x0elast_condition\x18) \x01(\v2,.otterscale.instance.v1.DataVolume.ConditionR\rlastCondition\x1a\xbc\x01\n" +
 	"\x06Source\x12B\n" +
 	"\x04type\x18\x01 \x01(\x0e2..otterscale.instance.v1.DataVolume.Source.TypeR\x04type\x12\x12\n" +
-	"\x04data\x18\x02 \x01(\tR\x04data\"K\n" +
-	"\x04Type\x12\x0f\n" +
-	"\vBLANK_IMAGE\x10\x00\x12\f\n" +
-	"\bHTTP_URL\x10\x01\x12$\n" +
-	" EXISTING_PERSISTENT_VOLUME_CLAIM\x10\x02\x1a\xef\x01\n" +
+	"\x04data\x18\x02 \x01(\tR\x04data\"Z\n" +
+	"\x04Type\x12\x14\n" +
+	"\x10TYPE_BLANK_IMAGE\x10\x00\x12\x11\n" +
+	"\rTYPE_HTTP_URL\x10\x01\x12)\n" +
+	"%TYPE_EXISTING_PERSISTENT_VOLUME_CLAIM\x10\x02\x1a\xef\x01\n" +
 	"\tCondition\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x16\n" +

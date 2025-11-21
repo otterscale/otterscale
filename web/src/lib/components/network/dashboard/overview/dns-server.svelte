@@ -23,15 +23,13 @@
 
 	const targetSubnet = $derived($networks.find((network) => network?.vlan?.dhcpOn != null));
 
-	function fetch() {
-		networkClient
-			.listNetworks({})
-			.then((response) => {
-				networks.set(response.networks);
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+	async function fetch() {
+		try {
+			const response = await networkClient.listNetworks({});
+			networks.set(response.networks);
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
@@ -71,7 +69,7 @@
 					</div>
 				{:else if targetSubnet?.subnet?.dnsServers.length > 1}
 					<div class="flex flex-col gap-1">
-						{#each targetSubnet?.subnet?.dnsServers as dnsServer, index}
+						{#each targetSubnet?.subnet?.dnsServers as dnsServer, index (index)}
 							{#if index === 0}
 								<div class="flex items-center gap-2">
 									<div class="flex items-center gap-1">

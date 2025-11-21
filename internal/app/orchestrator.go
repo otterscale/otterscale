@@ -88,46 +88,13 @@ func (s *OrchestratorService) ListGPURelationsByModel(ctx context.Context, req *
 	return resp, nil
 }
 
-func (s *OrchestratorService) ListGeneralExtensions(ctx context.Context, req *pb.ListGeneralExtensionsRequest) (*pb.ListGeneralExtensionsResponse, error) {
-	extensions, err := s.extension.ListGeneralExtensions(ctx, req.GetScope())
+func (s *OrchestratorService) ListExtensions(ctx context.Context, req *pb.ListExtensionsRequest) (*pb.ListExtensionsResponse, error) {
+	extensions, err := s.extension.ListExtensions(ctx, req.GetScope(), toExtensionType(req.GetType()))
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &pb.ListGeneralExtensionsResponse{}
-	resp.SetExtensions(toProtoExtensions(extensions))
-	return resp, nil
-}
-
-func (s *OrchestratorService) ListModelExtensions(ctx context.Context, req *pb.ListModelExtensionsRequest) (*pb.ListModelExtensionsResponse, error) {
-	extensions, err := s.extension.ListModelExtensions(ctx, req.GetScope())
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &pb.ListModelExtensionsResponse{}
-	resp.SetExtensions(toProtoExtensions(extensions))
-	return resp, nil
-}
-
-func (s *OrchestratorService) ListInstanceExtensions(ctx context.Context, req *pb.ListInstanceExtensionsRequest) (*pb.ListInstanceExtensionsResponse, error) {
-	extensions, err := s.extension.ListInstanceExtensions(ctx, req.GetScope())
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &pb.ListInstanceExtensionsResponse{}
-	resp.SetExtensions(toProtoExtensions(extensions))
-	return resp, nil
-}
-
-func (s *OrchestratorService) ListStorageExtensions(ctx context.Context, req *pb.ListStorageExtensionsRequest) (*pb.ListStorageExtensionsResponse, error) {
-	extensions, err := s.extension.ListStorageExtensions(ctx, req.GetScope())
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &pb.ListStorageExtensionsResponse{}
+	resp := &pb.ListExtensionsResponse{}
 	resp.SetExtensions(toProtoExtensions(extensions))
 	return resp, nil
 }
@@ -161,6 +128,28 @@ func toManifests(ms []*pb.Extension_Manifest) []extension.Manifest {
 	}
 
 	return ret
+}
+
+func toExtensionType(t pb.Extension_Type) extension.Type {
+	switch t {
+	case pb.Extension_TYPE_GENERAL:
+		return extension.TypeGeneral
+
+	case pb.Extension_TYPE_REGISTRY:
+		return extension.TypeRegistry
+
+	case pb.Extension_TYPE_MODEL:
+		return extension.TypeModel
+
+	case pb.Extension_TYPE_INSTANCE:
+		return extension.TypeInstance
+
+	case pb.Extension_TYPE_STORAGE:
+		return extension.TypeStorage
+
+	default:
+		return extension.TypeGeneral
+	}
 }
 
 func toProtoGPURelations(rs *gpu.Relations) []*pb.GPURelation {

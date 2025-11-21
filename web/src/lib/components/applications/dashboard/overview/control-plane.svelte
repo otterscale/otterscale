@@ -27,17 +27,20 @@
 	);
 
 	async function fetch() {
-		facilityClient.listFacilities({ scope: scope }).then((response) => {
+		try {
+			const response = await facilityClient.listFacilities({ scope: scope });
 			facilities.set(response.facilities);
-		});
+		} catch (error) {
+			console.error('Failed to fetch facilities:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -52,7 +55,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="relative h-full gap-2 overflow-hidden">

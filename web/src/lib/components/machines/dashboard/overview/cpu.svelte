@@ -39,29 +39,35 @@
 		usage: { label: 'value', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
-	async function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`1 - (sum(irate(node_cpu_seconds_total{juju_model=~".*",mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total{juju_model=~".*"}[2m])))`,
-				Date.now() - 10 * 60 * 1000,
-				Date.now(),
-				2 * 60
-			)
-			.then((response) => {
-				cpuUsages = response.result && response.result[0] ? response.result[0]?.values : [];
-			});
+	async function fetchCPUUsages() {
+		const response = await prometheusDriver.rangeQuery(
+			`1 - (sum(irate(node_cpu_seconds_total{juju_model=~".*",mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total{juju_model=~".*"}[2m])))`,
+			Date.now() - 10 * 60 * 1000,
+			Date.now(),
+			2 * 60
+		);
+		cpuUsages = response.result && response.result[0] ? response.result[0]?.values : [];
+	}
 
-		machineClient.listMachines({}).then((response) => {
-			machines.set(response.machines);
-		});
+	async function fetchMachines() {
+		const response = await machineClient.listMachines({});
+		machines.set(response.machines);
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([fetchCPUUsages(), fetchMachines()]);
+		} catch (error) {
+			console.error('Failed to fetch CPU overview data:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -76,7 +82,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

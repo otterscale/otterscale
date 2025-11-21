@@ -6,6 +6,7 @@
 	import Icon from '@iconify/svelte';
 	import { type Edge, type Node } from '@xyflow/svelte';
 	import { getContext } from 'svelte';
+	import { onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 
 	import {
@@ -31,15 +32,14 @@
 
 	const nodes: Writable<Node[]> = writable([]);
 	const edges: Writable<Edge[]> = writable([]);
-	let isLoading = $state(true);
 
-	client
-		.listGPURelationsByModel({
-			scope: scope,
-			namespace: model.application.namespace,
-			modelName: model.name
-		})
-		.then((response) => {
+	async function fetch() {
+		try {
+			const response = await client.listGPURelationsByModel({
+				scope: scope,
+				namespace: model.application.namespace,
+				modelName: model.name
+			});
 			nodes.set(
 				response.gpuRelations.map((gpuRelation) => {
 					if (gpuRelation.entity.case === 'machine') {
@@ -120,11 +120,17 @@
 					}
 				})
 			);
-
-			isLoading = false;
-		});
+		} catch (error) {
+			console.error('Failed to fetch GPU relations:', error);
+		}
+	}
 
 	let open = $state(false);
+	let isLoading = $state(true);
+	onMount(async () => {
+		await fetch();
+		isLoading = false;
+	});
 </script>
 
 {#if isLoading}

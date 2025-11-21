@@ -49,20 +49,26 @@ func NewUseCase(chart chart.ChartRepo, customResourceDefinition cluster.CustomRe
 	}
 }
 
-func (uc *UseCase) ListGeneralExtensions(ctx context.Context, scope string) ([]Extension, error) {
-	return uc.listExtensions(ctx, scope, general)
-}
+func (uc *UseCase) ListExtensions(ctx context.Context, scope string, extType Type) ([]Extension, error) {
+	switch extType {
+	case TypeGeneral:
+		return uc.listExtensions(ctx, scope, general)
 
-func (uc *UseCase) ListModelExtensions(ctx context.Context, scope string) ([]Extension, error) {
-	return uc.listExtensions(ctx, scope, model)
-}
+	case TypeRegistry:
+		return uc.listExtensions(ctx, scope, registry)
 
-func (uc *UseCase) ListInstanceExtensions(ctx context.Context, scope string) ([]Extension, error) {
-	return uc.listExtensions(ctx, scope, instance)
-}
+	case TypeModel:
+		return uc.listExtensions(ctx, scope, model)
 
-func (uc *UseCase) ListStorageExtensions(ctx context.Context, scope string) ([]Extension, error) {
-	return uc.listExtensions(ctx, scope, storage)
+	case TypeInstance:
+		return uc.listExtensions(ctx, scope, instance)
+
+	case TypeStorage:
+		return uc.listExtensions(ctx, scope, storage)
+
+	default:
+		return nil, fmt.Errorf("unknown extension type: %v", extType)
+	}
 }
 
 func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifests []Manifest) error {
@@ -91,6 +97,12 @@ func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifest
 
 				if _, err := uc.release.Install(egctx, scope, chart.Namespace, base.Name, false, chartRef, chart.Labels, chart.Labels, chart.Annotations, "", chart.ValuesMap); err != nil {
 					return err
+				}
+
+				if chart.PostFunc != nil {
+					if err := chart.PostFunc(scope); err != nil {
+						return err
+					}
 				}
 			}
 

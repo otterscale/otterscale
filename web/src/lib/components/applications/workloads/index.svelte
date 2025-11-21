@@ -8,7 +8,6 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	import { DataTable } from './data-table/index';
-	import { Statistics } from './statistics';
 	import type { Application } from './types';
 </script>
 
@@ -20,23 +19,21 @@
 
 	const applications = writable<Application[]>([]);
 	async function fetch() {
-		applicationClient
-			.listApplications({
+		try {
+			const response = await applicationClient.listApplications({
 				scope: scope
-			})
-			.then((response) => {
-				applications.set(
-					response.applications.map((application) => ({
-						...application,
-						hostname: response.hostname
-					}))
-				);
-			})
-			.catch((error) => {
-				console.error('Error during data loading:', error);
 			});
+			applications.set(
+				response.applications.map((application) => ({
+					...application,
+					hostname: response.hostname
+				}))
+			);
+		} catch (error) {
+			console.error('Failed to fetch applications:', error);
+		}
 	}
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {
@@ -50,7 +47,6 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Statistics {scope} />
 		<DataTable {applications} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />

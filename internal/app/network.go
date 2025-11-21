@@ -147,11 +147,11 @@ func toProtoIPAddresses(ipas []network.IPAddress) []*pb.Network_IPAddress {
 
 func toProtoIPAddress(ipa *network.IPAddress) *pb.Network_IPAddress {
 	ret := &pb.Network_IPAddress{}
-	ret.SetType(network.AllocType(ipa.AllocType).String())
+	ret.SetType(network.AllocType(ipa.AllocType).String()) //nolint:gosec // ignore
 	ret.SetIp(ipa.IP.String())
 	ret.SetUser(ipa.User)
 	ret.SetMachineId(ipa.NodeSummary.SystemID)
-	ret.SetNodeType(network.NodeType(ipa.NodeSummary.NodeType).String())
+	ret.SetNodeType(network.NodeType(ipa.NodeSummary.NodeType).String()) //nolint:gosec // ignore
 	ret.SetHostname(ipa.NodeSummary.Hostname)
 	return ret
 }

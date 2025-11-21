@@ -93,6 +93,20 @@ export function formatBigNumber(number: number | bigint) {
 	return number.toLocaleString('en-US');
 }
 
+export function formatPercentage(
+	numerator: number,
+	denominator: number,
+	decimalPlaces: number = 2
+): string | null {
+	if (denominator === 0) {
+		return null;
+	} else if (numerator === 0) {
+		return '0';
+	} else {
+		return ((numerator * 100) / denominator).toFixed(decimalPlaces);
+	}
+}
+
 // export const formatTime = (v: Date | number): string => {
 //     return dayjs(v).format('HH:mm');
 // };
@@ -142,47 +156,5 @@ export function formatSecond(second: number): { value: string; unit: string } {
 		return { value: `${Math.round(minute * 100) / 100}`, unit: 'm' };
 	} else {
 		return { value: `${Math.round(second * 100) / 100}`, unit: 's' };
-	}
-}
-
-/**
- * Returns a Tailwind CSS background color class based on the given value.
- *
- * @param value - The input value, either as a percentage (0~100) or a decimal (0~1).
- * @param isPercent - Whether the value is in percentage format (default: true).
- * @param highIsGood - Whether higher values should be green (true) or red (false) (default: true).
- * @returns A string representing the Tailwind CSS background color class:
- *   When highIsGood is true:
- *   - '*:bg-green-700' for value > 62%
- *   - '*:bg-yellow-500' for value > 38% and <= 62%
- *   - '*:bg-red-700' for value <= 38%
- *   When highIsGood is false:
- *   - '*:bg-red-700' for value > 62%
- *   - '*:bg-yellow-500' for value > 38% and <= 62%
- *   - '*:bg-green-700' for value <= 38%
- */
-export function formatProgressColor(
-	value: number,
-	isPercent: boolean = true,
-	highIsGood: boolean = true
-): string {
-	const percent = isPercent ? value : value * 100;
-
-	if (highIsGood) {
-		if (percent > 62) {
-			return '*:bg-green-700';
-		} else if (percent > 38) {
-			return '*:bg-yellow-500';
-		} else {
-			return '*:bg-red-700';
-		}
-	} else {
-		if (percent > 62) {
-			return '*:bg-red-700';
-		} else if (percent > 38) {
-			return '*:bg-yellow-500';
-		} else {
-			return '*:bg-green-700';
-		}
 	}
 }

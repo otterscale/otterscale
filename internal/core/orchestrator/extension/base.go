@@ -15,6 +15,7 @@ type chartManifest struct {
 	Labels      map[string]string
 	Annotations map[string]string
 	ValuesMap   map[string]string
+	PostFunc    func(scope string) error
 }
 
 type crdManifest struct {
@@ -65,7 +66,7 @@ var (
 				{
 					Namespace: "istio-system",
 					RepoURL:   "https://istio-release.storage.googleapis.com/charts",
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
 				},
@@ -73,8 +74,10 @@ var (
 					ID:        "istiod",
 					Namespace: "istio-system",
 					RepoURL:   "https://istio-release.storage.googleapis.com/charts",
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
+					},
+					ValuesMap: map[string]string{
 						"env.ENABLE_GATEWAY_API_INFERENCE_EXTENSION": "true",
 					},
 				},
@@ -89,8 +92,30 @@ var (
 				{
 					Namespace: "monitoring",
 					RepoURL:   "https://prometheus-community.github.io/helm-charts",
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
+					},
+				},
+			},
+		},
+	}
+
+	registry = []base{
+		{
+			ID:          "kubevirt-infra", // helm chart name
+			Name:        "Registry",
+			Description: "",
+			Logo:        "https://github.com/distribution.png",
+			Charts: []chartManifest{
+				{
+					Namespace: "distribution",
+					RepoURL:   chartRepoURL,
+					Labels: map[string]string{
+						release.TypeLabel: "extension",
+					},
+					PostFunc: func(_ string) error {
+						// Run Juju Config on Scope
+						return nil
 					},
 				},
 			},
@@ -107,7 +132,7 @@ var (
 				{
 					Namespace: "gpu-operator",
 					RepoURL:   chartRepoURL,
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
 				},
@@ -122,11 +147,13 @@ var (
 				{
 					Namespace: "llm-d",
 					RepoURL:   "https://llm-d-incubation.github.io/llm-d-infra",
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
-						"nameOverride":    "llm-d-infra",
-						"gateway.gatewayParameters.resources.limits.cpu":    "4",
-						"gateway.gatewayParameters.resources.limits.memory": "2Gi",
+					},
+					ValuesMap: map[string]string{
+						"nameOverride": "llm-d-gateway",
+						"gateway.gatewayParameters.resources.limits.cpu":    "2",
+						"gateway.gatewayParameters.resources.limits.memory": "1Gi",
 						"gateway.service.type":                              "NodePort",
 					},
 				},
@@ -144,7 +171,7 @@ var (
 				{
 					Namespace: "kubevirt",
 					RepoURL:   chartRepoURL,
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
 				},
@@ -162,7 +189,7 @@ var (
 				{
 					Namespace: "samba-operator",
 					RepoURL:   chartRepoURL,
-					ValuesMap: map[string]string{
+					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
 				},
@@ -174,6 +201,7 @@ var (
 func (uc *UseCase) base(id string) (base, error) {
 	all := []base{}
 	all = append(all, general...)
+	all = append(all, registry...)
 	all = append(all, model...)
 	all = append(all, instance...)
 	all = append(all, storage...)

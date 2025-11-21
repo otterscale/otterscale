@@ -6,6 +6,7 @@ import (
 	"github.com/otterscale/otterscale/internal/providers/ceph"
 	"github.com/otterscale/otterscale/internal/providers/juju"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
+	"github.com/otterscale/otterscale/internal/providers/kubernetessigs"
 	"github.com/otterscale/otterscale/internal/providers/kubevirt"
 	"github.com/otterscale/otterscale/internal/providers/maas"
 	"github.com/otterscale/otterscale/internal/providers/samba"
@@ -48,6 +49,9 @@ var ProviderSet = wire.NewSet(
 	kubernetes.NewServiceRepo,
 	kubernetes.NewStatefulSetRepo,
 	kubernetes.NewStorageClassRepo,
+	kubernetessigs.New,
+	kubernetessigs.NewHTTPRouteRepo,
+	kubernetessigs.NewInferencePoolRepo,
 	kubevirt.New,
 	kubevirt.NewDataVolumeRepo,
 	kubevirt.NewVirtualMachineCloneRepo,

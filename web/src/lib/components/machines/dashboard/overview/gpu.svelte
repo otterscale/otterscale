@@ -42,35 +42,36 @@
 		amounts: { label: 'GPUs', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
-	async function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`
-				count(sum by (node, deviceuuid) (vGPUPodsDeviceAllocated{juju_model=~".*"}) > bool 0)
-				`,
-				Date.now() - 24 * 60 * 60 * 1000,
-				Date.now(),
-				60 * 60
-			)
-			.then((response) => {
-				allocatedGPUs = response.result && response.result[0] ? response.result[0].values : [];
-			});
-
-		machineClient.listMachines({}).then((response) => {
-			machines.set(response.machines);
-		});
+	async function fetchAllocatedGPUs() {
+		const response = await prometheusDriver.rangeQuery(
+			`
+			count(sum by (node, deviceuuid) (vGPUPodsDeviceAllocated{juju_model=~".*"}) > bool 0)
+			`,
+			Date.now() - 24 * 60 * 60 * 1000,
+			Date.now(),
+			60 * 60
+		);
+		allocatedGPUs = response.result && response.result[0] ? response.result[0].values : [];
 	}
 
-	const reloadManager = new ReloadManager(fetch);
+	async function fetchMachines() {
+		const response = await machineClient.listMachines({});
+		machines.set(response.machines);
+	}
 
-	let isLoading = $state(true);
-	onMount(async () => {
+	async function fetch() {
 		try {
-			await fetch();
-			isLoading = false;
+			await Promise.all([fetchAllocatedGPUs(), fetchMachines()]);
 		} catch (error) {
 			console.error('Fail to fetch data:', error);
 		}
+	}
+	const reloadManager = new ReloadManager(fetch);
+
+	let isLoaded = $state(false);
+	onMount(async () => {
+		await fetch();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -85,7 +86,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">

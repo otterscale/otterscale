@@ -20,19 +20,17 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	const objectStorageDaemons = $state(writable([] as ObjectStorageDaemon[]));
+	const objectStorageDaemons = writable([] as ObjectStorageDaemon[]);
 	async function fetch() {
-		storageClient
-			.listObjectStorageDaemons({ scope: scope })
-			.then((response) => {
-				objectStorageDaemons.set(response.objectStorageDaemons);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
+		try {
+			const response = await storageClient.listObjectStorageDaemons({ scope: scope });
+			objectStorageDaemons.set(response.objectStorageDaemons);
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
 	}
-	const reloadManager = new ReloadManager(fetch, false);
+
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {

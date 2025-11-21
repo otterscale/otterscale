@@ -54,7 +54,7 @@ func (r *poolRepo) List(_ context.Context, scope, application string) ([]storage
 	}), nil
 }
 
-func (r *poolRepo) Create(_ context.Context, scope, pool, poolType string) error {
+func (r *poolRepo) Create(_ context.Context, scope, pool string, poolType storage.PoolType) error {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
@@ -156,10 +156,10 @@ func (r *poolRepo) toPools(d *osdDump, pd *pgDump, df *df) []storage.Pool {
 
 		switch d.Pools[i].Type {
 		case 1:
-			pool.Type = "replicated"
+			pool.Type = storage.PoolTypeReplicated
 
 		case 3:
-			pool.Type = "erasure"
+			pool.Type = storage.PoolTypeErasure
 		}
 
 		for j := range df.Pools {

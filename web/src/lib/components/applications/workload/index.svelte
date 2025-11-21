@@ -33,7 +33,7 @@
 			console.error('Failed to fetch application:', error);
 		}
 	}
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
@@ -13,7 +12,7 @@
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
-	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
+	let { client, fqdn }: { client: PrometheusDriver; fqdn: string } = $props();
 
 	// Constants
 	const STEP_SECONDS = 60; // 1 minute step
@@ -29,8 +28,8 @@
 
 	// Prometheus query for Disk Read/Write
 	const query = $derived({
-		Read: `sum (rate(node_disk_read_bytes_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`,
-		Write: `sum (rate(node_disk_written_bytes_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`
+		Read: `sum (rate(node_disk_read_bytes_total{instance=~"${fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`,
+		Write: `sum (rate(node_disk_written_bytes_total{instance=~"${fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`
 	});
 </script>
 

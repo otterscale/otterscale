@@ -63,22 +63,20 @@
 	// Load available architectures for the current distro series
 	onMount(async () => {
 		try {
-			await client.listBootImageSelections({}).then((response) => {
-				// Find the boot image selection for the current distro series
-				const currentBootImageSelection = response.bootImageSelections.find(
-					(bootImageSelection) => bootImageSelection.distroSeries === bootImage.distroSeries
+			const response = await client.listBootImageSelections({});
+			// Find the boot image selection for the current distro series
+			const currentBootImageSelection = response.bootImageSelections.find(
+				(bootImageSelection) => bootImageSelection.distroSeries === bootImage.distroSeries
+			);
+			if (currentBootImageSelection) {
+				architecturesOptions.set(
+					currentBootImageSelection.architectures.map((architecture) => ({
+						value: architecture,
+						label: architecture,
+						icon: 'ph:binary'
+					}))
 				);
-
-				if (currentBootImageSelection) {
-					architecturesOptions.set(
-						currentBootImageSelection.architectures.map((architecture) => ({
-							value: architecture,
-							label: architecture,
-							icon: 'ph:binary'
-						}))
-					);
-				}
-			});
+			}
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

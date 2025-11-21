@@ -29,17 +29,18 @@
 
 	const subvolumes = writable([] as Subvolume[]);
 	async function fetch() {
-		storageClient
-			.listSubvolumes({
+		try {
+			const response = await storageClient.listSubvolumes({
 				scope: scope,
 				volumeName: volume,
 				groupName: selectedSubvolumeGroupName
-			})
-			.then((response) => {
-				subvolumes.set(response.subvolumes);
 			});
+			subvolumes.set(response.subvolumes);
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
 	}
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {

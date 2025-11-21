@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/environment/v1/environment.proto.
  */
 export const file_api_environment_v1_environment: GenFile = /*@__PURE__*/
-  fileDesc("CiRhcGkvZW52aXJvbm1lbnQvdjEvZW52aXJvbm1lbnQucHJvdG8SGW90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEiFAoSQ2hlY2tIZWFsdGhSZXF1ZXN0IpIBChNDaGVja0hlYWx0aFJlc3BvbnNlEkUKBnJlc3VsdBgBIAEoDjI1Lm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGhSZXNwb25zZS5SZXN1bHQiNAoGUmVzdWx0Eg8KC1VOU1BFQ0lGSUVEEAASBgoCT0sQCxIRCg1OT1RfSU5TVEFMTEVEEBUiwgIKE1VwZGF0ZUNvbmZpZ1JlcXVlc3QSEAoIbWFhc191cmwYASABKAkSEAoIbWFhc19rZXkYAiABKAkSFAoMbWFhc192ZXJzaW9uGAMgASgJEhcKD2p1anVfY29udHJvbGxlchgLIAEoCRIhChlqdWp1X2NvbnRyb2xsZXJfYWRkcmVzc2VzGAwgAygJEhUKDWp1anVfdXNlcm5hbWUYDSABKAkSFQoNanVqdV9wYXNzd29yZBgOIAEoCRIUCgxqdWp1X2NhX2NlcnQYDyABKAkSFwoPanVqdV9jbG91ZF9uYW1lGBUgASgJEhkKEWp1anVfY2xvdWRfcmVnaW9uGBYgASgJEh0KFWp1anVfY2hhcm1odWJfYXBpX3VybBgXIAEoCRIYChBtaWNyb19rOHNfY29uZmlnGCEgASgJSgQIHxAhIiQKClByb21ldGhldXMSEAoIYmFzZV91cmwYAiABKAlKBAgBEAIiFgoUR2V0UHJvbWV0aGV1c1JlcXVlc3QifAoLUHJlbWl1bVRpZXISOwoFbGV2ZWwYASABKA4yLC5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLlByZW1pdW1UaWVyLkxldmVsIjAKBUxldmVsEgkKBUJBU0lDEAASDAoIQURWQU5DRUQQARIOCgpFTlRFUlBSSVNFEAIiFwoVR2V0UHJlbWl1bVRpZXJSZXF1ZXN0Mv4DChJFbnZpcm9ubWVudFNlcnZpY2USgAEKC0NoZWNrSGVhbHRoEi0ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5DaGVja0hlYWx0aFJlcXVlc3QaLi5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLkNoZWNrSGVhbHRoUmVzcG9uc2UiEorf1R0NCgtlbnYtZ2VuZXJhbBJ7Cg1HZXRQcm9tZXRoZXVzEi8ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5HZXRQcm9tZXRoZXVzUmVxdWVzdBolLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuUHJvbWV0aGV1cyISit/VHQ0KC2Vudi1nZW5lcmFsEn4KDkdldFByZW1pdW1UaWVyEjAub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5HZXRQcmVtaXVtVGllclJlcXVlc3QaJi5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLlByZW1pdW1UaWVyIhKK39UdDQoLZW52LWdlbmVyYWwSaAoMVXBkYXRlQ29uZmlnEi4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5VcGRhdGVDb25maWdSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhCK39UdCwoJZW52LWRlYnVnQjhaNmdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9lbnZpcm9ubWVudC92MTtwYmIIZWRpdGlvbnNw6Ac", [file_api_annotations, file_google_protobuf_empty]);
+  fileDesc("CiRhcGkvZW52aXJvbm1lbnQvdjEvZW52aXJvbm1lbnQucHJvdG8SGW90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEiFAoSQ2hlY2tIZWFsdGhSZXF1ZXN0IqMBChNDaGVja0hlYWx0aFJlc3BvbnNlEkUKBnN0YXR1cxgBIAEoDjI1Lm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGhSZXNwb25zZS5TdGF0dXMiRQoGU3RhdHVzEhIKDlNUQVRVU19VTktOT1dOEAASDQoJU1RBVFVTX09LEAsSGAoUU1RBVFVTX05PVF9JTlNUQUxMRUQQFSLCAgoTVXBkYXRlQ29uZmlnUmVxdWVzdBIQCghtYWFzX3VybBgBIAEoCRIQCghtYWFzX2tleRgCIAEoCRIUCgxtYWFzX3ZlcnNpb24YAyABKAkSFwoPanVqdV9jb250cm9sbGVyGAsgASgJEiEKGWp1anVfY29udHJvbGxlcl9hZGRyZXNzZXMYDCADKAkSFQoNanVqdV91c2VybmFtZRgNIAEoCRIVCg1qdWp1X3Bhc3N3b3JkGA4gASgJEhQKDGp1anVfY2FfY2VydBgPIAEoCRIXCg9qdWp1X2Nsb3VkX25hbWUYFSABKAkSGQoRanVqdV9jbG91ZF9yZWdpb24YFiABKAkSHQoVanVqdV9jaGFybWh1Yl9hcGlfdXJsGBcgASgJEhgKEG1pY3JvX2s4c19jb25maWcYISABKAlKBAgfECEiJAoKUHJvbWV0aGV1cxIQCghiYXNlX3VybBgCIAEoCUoECAEQAiIWChRHZXRQcm9tZXRoZXVzUmVxdWVzdCKOAQoLUHJlbWl1bVRpZXISOwoFbGV2ZWwYASABKA4yLC5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLlByZW1pdW1UaWVyLkxldmVsIkIKBUxldmVsEg8KC0xFVkVMX0JBU0lDEAASEgoOTEVWRUxfQURWQU5DRUQQARIUChBMRVZFTF9FTlRFUlBSSVNFEAIiFwoVR2V0UHJlbWl1bVRpZXJSZXF1ZXN0Mv4DChJFbnZpcm9ubWVudFNlcnZpY2USgAEKC0NoZWNrSGVhbHRoEi0ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5DaGVja0hlYWx0aFJlcXVlc3QaLi5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLkNoZWNrSGVhbHRoUmVzcG9uc2UiEorf1R0NCgtlbnYtZ2VuZXJhbBJ7Cg1HZXRQcm9tZXRoZXVzEi8ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5HZXRQcm9tZXRoZXVzUmVxdWVzdBolLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuUHJvbWV0aGV1cyISit/VHQ0KC2Vudi1nZW5lcmFsEn4KDkdldFByZW1pdW1UaWVyEjAub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5HZXRQcmVtaXVtVGllclJlcXVlc3QaJi5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLlByZW1pdW1UaWVyIhKK39UdDQoLZW52LWdlbmVyYWwSaAoMVXBkYXRlQ29uZmlnEi4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5VcGRhdGVDb25maWdSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhCK39UdCwoJZW52LWRlYnVnQjhaNmdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9lbnZpcm9ubWVudC92MTtwYmIIZWRpdGlvbnNw6Ac", [file_api_annotations, file_google_protobuf_empty]);
 
 /**
  * @generated from message otterscale.environment.v1.CheckHealthRequest
@@ -33,9 +33,9 @@ export const CheckHealthRequestSchema: GenMessage<CheckHealthRequest> = /*@__PUR
  */
 export type CheckHealthResponse = Message<"otterscale.environment.v1.CheckHealthResponse"> & {
   /**
-   * @generated from field: otterscale.environment.v1.CheckHealthResponse.Result result = 1;
+   * @generated from field: otterscale.environment.v1.CheckHealthResponse.Status status = 1;
    */
-  result: CheckHealthResponse_Result;
+  status: CheckHealthResponse_Status;
 };
 
 /**
@@ -46,29 +46,29 @@ export const CheckHealthResponseSchema: GenMessage<CheckHealthResponse> = /*@__P
   messageDesc(file_api_environment_v1_environment, 1);
 
 /**
- * @generated from enum otterscale.environment.v1.CheckHealthResponse.Result
+ * @generated from enum otterscale.environment.v1.CheckHealthResponse.Status
  */
-export enum CheckHealthResponse_Result {
+export enum CheckHealthResponse_Status {
   /**
-   * @generated from enum value: UNSPECIFIED = 0;
+   * @generated from enum value: STATUS_UNKNOWN = 0;
    */
-  UNSPECIFIED = 0,
+  UNKNOWN = 0,
 
   /**
-   * @generated from enum value: OK = 11;
+   * @generated from enum value: STATUS_OK = 11;
    */
   OK = 11,
 
   /**
-   * @generated from enum value: NOT_INSTALLED = 21;
+   * @generated from enum value: STATUS_NOT_INSTALLED = 21;
    */
   NOT_INSTALLED = 21,
 }
 
 /**
- * Describes the enum otterscale.environment.v1.CheckHealthResponse.Result.
+ * Describes the enum otterscale.environment.v1.CheckHealthResponse.Status.
  */
-export const CheckHealthResponse_ResultSchema: GenEnum<CheckHealthResponse_Result> = /*@__PURE__*/
+export const CheckHealthResponse_StatusSchema: GenEnum<CheckHealthResponse_Status> = /*@__PURE__*/
   enumDesc(file_api_environment_v1_environment, 1, 0);
 
 /**
@@ -195,17 +195,17 @@ export const PremiumTierSchema: GenMessage<PremiumTier> = /*@__PURE__*/
  */
 export enum PremiumTier_Level {
   /**
-   * @generated from enum value: BASIC = 0;
+   * @generated from enum value: LEVEL_BASIC = 0;
    */
   BASIC = 0,
 
   /**
-   * @generated from enum value: ADVANCED = 1;
+   * @generated from enum value: LEVEL_ADVANCED = 1;
    */
   ADVANCED = 1,
 
   /**
-   * @generated from enum value: ENTERPRISE = 2;
+   * @generated from enum value: LEVEL_ENTERPRISE = 2;
    */
   ENTERPRISE = 2,
 }

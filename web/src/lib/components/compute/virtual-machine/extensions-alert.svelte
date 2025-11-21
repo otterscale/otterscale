@@ -1,9 +1,13 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 
-	import { type Extension, OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import {
+		type Extension,
+		Extension_Type,
+		OrchestratorService
+	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { Single as Alert } from '$lib/components/custom/alert';
 	import { installExtensions } from '$lib/components/settings/extensions/utils.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
@@ -18,15 +22,6 @@
 
 	const instanceExtensions: Writable<Extension[]> = writable([]);
 
-	orchestratorClient
-		.listInstanceExtensions({ scope: scope })
-		.then((response) => {
-			instanceExtensions.set(response.Extensions);
-		})
-		.catch((error) => {
-			console.error('Failed to fetch extensions:', error);
-		});
-
 	const alert: Alert.AlertType = $derived({
 		title: m.extensions_alert_title(),
 		message: m.extensions_alert_description(),
@@ -34,6 +29,18 @@
 			installExtensions(scope, ['instance']);
 		},
 		variant: 'destructive'
+	});
+
+	onMount(async () => {
+		try {
+			const response = await orchestratorClient.listExtensions({
+				scope: scope,
+				type: Extension_Type.INSTANCE
+			});
+			instanceExtensions.set(response.Extensions);
+		} catch (error) {
+			console.error('Failed to fetch extensions:', error);
+		}
 	});
 </script>
 

@@ -36,12 +36,12 @@ service EnvironmentService {
 message CheckHealthRequest {}
 
 message CheckHealthResponse {
-  enum Result {
-    UNSPECIFIED = 0;
-    OK = 11;
-    NOT_INSTALLED = 21;
+  enum Status {
+    STATUS_UNKNOWN = 0;
+    STATUS_OK = 11;
+    STATUS_NOT_INSTALLED = 21;
   }
-  Result result = 1;
+  Status status = 1;
 }
 
 message UpdateConfigRequest {
@@ -69,9 +69,9 @@ message GetPrometheusRequest {}
 
 message PremiumTier {
   enum Level {
-    BASIC = 0;
-    ADVANCED = 1;
-    ENTERPRISE = 2;
+    LEVEL_BASIC = 0;
+    LEVEL_ADVANCED = 1;
+    LEVEL_ENTERPRISE = 2;
   }
   Level level = 1;
 }

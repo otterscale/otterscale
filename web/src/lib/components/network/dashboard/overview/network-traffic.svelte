@@ -53,45 +53,59 @@
 		}
 	]);
 
-	function fetch() {
-		prometheusDriver
-			.rangeQuery(
-				`sum(irate(node_network_receive_bytes_total[4m]))`,
-				new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
-				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60
-			)
-			.then((response) => {
-				receives = response.result[0]?.values ?? [];
-			});
-		prometheusDriver
-			.rangeQuery(
-				`sum(irate(node_network_transmit_bytes_total[4m]))`,
-				new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
-				new SvelteDate().setMinutes(0, 0, 0),
-				2 * 60
-			)
-			.then((response) => {
-				transmits = response.result[0]?.values ?? [];
-			});
-		prometheusDriver
-			.instantQuery(`sum(irate(node_network_receive_bytes_total[4m]))`)
-			.then((response) => {
-				latestReceive = response.result[0]?.value?.value ?? 0;
-			});
-		prometheusDriver
-			.instantQuery(`sum(irate(node_network_transmit_bytes_total[4m]))`)
-			.then((response) => {
-				latestTransmit = response.result[0]?.value?.value ?? 0;
-			});
+	async function fetchReceives() {
+		const response = await prometheusDriver.rangeQuery(
+			`sum(irate(node_network_receive_bytes_total[4m]))`,
+			new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
+			new SvelteDate().setMinutes(0, 0, 0),
+			2 * 60
+		);
+		receives = response.result[0]?.values ?? [];
+	}
+
+	async function fetchTransmits() {
+		const response = await prometheusDriver.rangeQuery(
+			`sum(irate(node_network_transmit_bytes_total[4m]))`,
+			new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
+			new SvelteDate().setMinutes(0, 0, 0),
+			2 * 60
+		);
+		transmits = response.result[0]?.values ?? [];
+	}
+
+	async function fetchLatestReceive() {
+		const response = await prometheusDriver.instantQuery(
+			`sum(irate(node_network_receive_bytes_total[4m]))`
+		);
+		latestReceive = response.result[0]?.value?.value ?? 0;
+	}
+
+	async function fetchLatestTransmit() {
+		const response = await prometheusDriver.instantQuery(
+			`sum(irate(node_network_transmit_bytes_total[4m]))`
+		);
+		latestTransmit = response.result[0]?.value?.value ?? 0;
+	}
+
+	async function fetch() {
+		try {
+			await Promise.all([
+				fetchReceives(),
+				fetchTransmits(),
+				fetchLatestReceive(),
+				fetchLatestTransmit()
+			]);
+		} catch (error) {
+			console.error('Failed to fetch network traffic data:', error);
+		}
 	}
 
 	const reloadManager = new ReloadManager(fetch);
 
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -106,7 +120,7 @@
 	});
 </script>
 
-{#if isLoading}
+{#if !isLoaded}
 	Loading
 {:else}
 	<Card.Root class="h-full gap-2">
