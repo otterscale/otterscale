@@ -17,9 +17,12 @@
 	const machines = writable<Machine[]>([]);
 
 	async function fetch() {
-		const response = await machineClient.listMachines({});
-		machines.set(response.machines);
-		isMounted = true;
+		try {
+			const response = await machineClient.listMachines({});
+			machines.set(response.machines);
+		} catch (error) {
+			console.error('Failed to fetch machines:', error);
+		}
 	}
 
 	let isMounted = $state(false);
