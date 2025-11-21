@@ -5,7 +5,7 @@ package bist
 type ObjectServiceType int32
 
 const (
-	ObjectServiceTypeUnspecified ObjectServiceType = iota
-	ObjectServiceTypeCeph                          // ceph
-	ObjectServiceTypeMinIO                         // minio
+	ObjectServiceTypeUnspecified ObjectServiceType = iota // unspecified
+	ObjectServiceTypeCeph                                 // ceph
+	ObjectServiceTypeMinIO                                // minio
 )

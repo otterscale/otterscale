@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"strings"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -190,6 +189,81 @@ func (s *ConfigurationService) ListInternalObjectServices(ctx context.Context, r
 	return resp, nil
 }
 
+func toObjectServiceType(t pb.InternalObjectService_Type) bist.ObjectServiceType {
+	switch t {
+	case pb.InternalObjectService_TYPE_CEPH:
+		return bist.ObjectServiceTypeCeph
+
+	case pb.InternalObjectService_TYPE_MINIO:
+		return bist.ObjectServiceTypeMinIO
+
+	default:
+		return bist.ObjectServiceTypeUnspecified
+	}
+}
+
+func toFIOAccessMode(am pb.FIO_Input_AccessMode) bist.FIOAccessMode {
+	switch am {
+	case pb.FIO_Input_ACCESS_MODE_READ:
+		return bist.FIOAccessModeRead
+
+	case pb.FIO_Input_ACCESS_MODE_WRITE:
+		return bist.FIOAccessModeWrite
+
+	case pb.FIO_Input_ACCESS_MODE_TRIM:
+		return bist.FIOAccessModeTrim
+
+	case pb.FIO_Input_ACCESS_MODE_READ_WRITE:
+		return bist.FIOAccessModeReadWrite
+
+	case pb.FIO_Input_ACCESS_MODE_TRIM_WRITE:
+		return bist.FIOAccessModeTrimWrite
+
+	case pb.FIO_Input_ACCESS_MODE_RAND_READ:
+		return bist.FIOAccessModeRandRead
+
+	case pb.FIO_Input_ACCESS_MODE_RAND_WRITE:
+		return bist.FIOAccessModeRandWrite
+
+	case pb.FIO_Input_ACCESS_MODE_RAND_TRIM:
+		return bist.FIOAccessModeRandTrim
+
+	case pb.FIO_Input_ACCESS_MODE_RAND_READ_WRITE:
+		return bist.FIOAccessModeRandReadWrite
+
+	case pb.FIO_Input_ACCESS_MODE_RAND_TRIM_WRITE:
+		return bist.FIOAccessModeRandTrimWrite
+
+	default:
+		return bist.FIOAccessModeRead
+	}
+}
+
+func toWarpOperationType(io pb.Warp_Input_Operation) bist.WarpOperationType {
+	switch io {
+	case pb.Warp_Input_OPERATION_GET:
+		return bist.WarpOperationTypeGet
+
+	case pb.Warp_Input_OPERATION_PUT:
+		return bist.WarpOperationTypePut
+
+	case pb.Warp_Input_OPERATION_DELETE:
+		return bist.WarpOperationTypeDelete
+
+	case pb.Warp_Input_OPERATION_LIST:
+		return bist.WarpOperationTypeList
+
+	case pb.Warp_Input_OPERATION_STAT:
+		return bist.WarpOperationTypeStat
+
+	case pb.Warp_Input_OPERATION_MIXED:
+		return bist.WarpOperationTypeMixed
+
+	default:
+		return bist.WarpOperationTypeGet
+	}
+}
+
 func toCoreFIOTarget(c *pb.CephBlockDevice, n *pb.NetworkFileSystem) bist.FIOTarget {
 	ret := bist.FIOTarget{}
 
@@ -214,7 +288,7 @@ func toCoreWarpTarget(i *pb.InternalObjectService, e *pb.ExternalObjectService) 
 
 	if i != nil {
 		ret.Internal = &bist.WarpTargetInternal{
-			Type:  strings.ToLower(i.GetType().String()),
+			Type:  toObjectServiceType(i.GetType()),
 			Scope: i.GetScope(),
 			Host:  i.GetHost(),
 		}
@@ -233,7 +307,7 @@ func toCoreWarpTarget(i *pb.InternalObjectService, e *pb.ExternalObjectService) 
 
 func toCoreFIOInput(p *pb.FIO_Input) *bist.FIOInput {
 	return &bist.FIOInput{
-		AccessMode: strings.ToLower(strings.ReplaceAll(p.GetAccessMode().String(), "_", "")),
+		AccessMode: toFIOAccessMode(p.GetAccessMode()),
 		JobCount:   p.GetJobCount(),
 		RunTime:    p.GetRunTimeSeconds(),
 		BlockSize:  p.GetBlockSizeBytes(),
@@ -244,7 +318,7 @@ func toCoreFIOInput(p *pb.FIO_Input) *bist.FIOInput {
 
 func toCoreWarpInput(p *pb.Warp_Input) *bist.WarpInput {
 	return &bist.WarpInput{
-		Operation:   strings.ToLower(p.GetOperation().String()),
+		Operation:   toWarpOperationType(p.GetOperation()),
 		Duration:    p.GetDurationSeconds(),
 		ObjectSize:  p.GetObjectSizeBytes(),
 		ObjectCount: p.GetObjectCount(),
@@ -537,78 +611,93 @@ func toProtoWarpOutputThroughput(f *bist.WarpOperation) *pb.Warp_Output_Throughp
 	return ret
 }
 
-func toProtoTestResultStatus(s string) pb.TestResult_Status {
-	v, ok := pb.TestResult_Status_value[strings.ToUpper(s)]
-	if ok {
-		return pb.TestResult_Status(v)
-	}
-	return pb.TestResult_RUNNING
-}
-
-func toProtoFIOInputAccessMode(s string) pb.FIO_Input_AccessMode {
+func toProtoTestResultStatus(s bist.ResultStatus) pb.TestResult_Status {
 	switch s {
-	case "read":
-		return pb.FIO_Input_READ
+	case bist.ResultStatusRunning:
+		return pb.TestResult_STATUS_RUNNING
 
-	case "write":
-		return pb.FIO_Input_WRITE
+	case bist.ResultStatusSucceeded:
+		return pb.TestResult_STATUS_SUCCEEDED
 
-	case "trim":
-		return pb.FIO_Input_TRIM
+	case bist.ResultStatusFailed:
+		return pb.TestResult_STATUS_FAILED
 
-	case "readwrite":
-		return pb.FIO_Input_READ_WRITE
-
-	case "trimwrite":
-		return pb.FIO_Input_TRIM_WRITE
-
-	case "randread":
-		return pb.FIO_Input_RAND_READ
-
-	case "randwrite":
-		return pb.FIO_Input_RAND_WRITE
-
-	case "randtrim":
-		return pb.FIO_Input_RAND_TRIM
-
-	case "randrw":
-		return pb.FIO_Input_RAND_RW
-
-	case "randtrimwrite":
-		return pb.FIO_Input_RAND_TRIM_WRITE
+	default:
+		return pb.TestResult_STATUS_RUNNING
 	}
-
-	return pb.FIO_Input_READ
 }
 
-func toProtoWarpInputOperation(s string) pb.Warp_Input_Operation {
-	switch s {
-	case "get":
-		return pb.Warp_Input_GET
+func toProtoFIOInputAccessMode(am bist.FIOAccessMode) pb.FIO_Input_AccessMode {
+	switch am {
+	case bist.FIOAccessModeRead:
+		return pb.FIO_Input_ACCESS_MODE_READ
 
-	case "put":
-		return pb.Warp_Input_PUT
+	case bist.FIOAccessModeWrite:
+		return pb.FIO_Input_ACCESS_MODE_WRITE
 
-	case "delete":
-		return pb.Warp_Input_DELETE
+	case bist.FIOAccessModeTrim:
+		return pb.FIO_Input_ACCESS_MODE_TRIM
 
-	case "list":
-		return pb.Warp_Input_LIST
+	case bist.FIOAccessModeReadWrite:
+		return pb.FIO_Input_ACCESS_MODE_READ_WRITE
 
-	case "stat":
-		return pb.Warp_Input_STAT
+	case bist.FIOAccessModeTrimWrite:
+		return pb.FIO_Input_ACCESS_MODE_TRIM_WRITE
 
-	case "mixed":
-		return pb.Warp_Input_MIXED
+	case bist.FIOAccessModeRandRead:
+		return pb.FIO_Input_ACCESS_MODE_RAND_READ
+
+	case bist.FIOAccessModeRandWrite:
+		return pb.FIO_Input_ACCESS_MODE_RAND_WRITE
+
+	case bist.FIOAccessModeRandTrim:
+		return pb.FIO_Input_ACCESS_MODE_RAND_TRIM
+
+	case bist.FIOAccessModeRandReadWrite:
+		return pb.FIO_Input_ACCESS_MODE_RAND_READ_WRITE
+
+	case bist.FIOAccessModeRandTrimWrite:
+		return pb.FIO_Input_ACCESS_MODE_RAND_TRIM_WRITE
+
+	default:
+		return pb.FIO_Input_ACCESS_MODE_READ
 	}
-
-	return pb.Warp_Input_GET
 }
 
-func toProtoInternalObjectServiceType(s string) pb.InternalObjectService_Type {
-	v, ok := pb.InternalObjectService_Type_value[strings.ToUpper(s)]
-	if ok {
-		return pb.InternalObjectService_Type(v)
+func toProtoWarpInputOperation(ot bist.WarpOperationType) pb.Warp_Input_Operation {
+	switch ot {
+	case bist.WarpOperationTypeGet:
+		return pb.Warp_Input_OPERATION_GET
+
+	case bist.WarpOperationTypePut:
+		return pb.Warp_Input_OPERATION_PUT
+
+	case bist.WarpOperationTypeDelete:
+		return pb.Warp_Input_OPERATION_DELETE
+
+	case bist.WarpOperationTypeList:
+		return pb.Warp_Input_OPERATION_LIST
+
+	case bist.WarpOperationTypeStat:
+		return pb.Warp_Input_OPERATION_STAT
+
+	case bist.WarpOperationTypeMixed:
+		return pb.Warp_Input_OPERATION_MIXED
+
+	default:
+		return pb.Warp_Input_OPERATION_GET
 	}
-	return pb.InternalObjectService_UNSPECIFIED
+}
+
+func toProtoInternalObjectServiceType(st bist.ObjectServiceType) pb.InternalObjectService_Type {
+	switch st {
+	case bist.ObjectServiceTypeCeph:
+		return pb.InternalObjectService_TYPE_CEPH
+
+	case bist.ObjectServiceTypeMinIO:
+		return pb.InternalObjectService_TYPE_MINIO
+
+	default:
+		return pb.InternalObjectService_TYPE_UNSPECIFIED
+	}
 }

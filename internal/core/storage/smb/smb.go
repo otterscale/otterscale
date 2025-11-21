@@ -270,7 +270,7 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope string) (data []Shar
 	return ret, url.Hostname(), nil
 }
 
-func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, name string, sizeBytes uint64, port int32, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
+func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, name string, sizeBytes uint64, port int32, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest MapToGuest, securityMode SecurityMode, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
 	names := uc.newNames(name)
 
 	// Cleanup on error
@@ -340,7 +340,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, name string, sizeB
 	}, url.Hostname(), nil
 }
 
-func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, name string, sizeBytes uint64, port int32, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest, securityMode string, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
+func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, name string, sizeBytes uint64, port int32, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest MapToGuest, securityMode SecurityMode, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
 	names := uc.newNames(name)
 
 	// Update users secret

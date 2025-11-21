@@ -5,7 +5,7 @@ package storage
 type PoolType int32
 
 const (
-	PoolTypeUnspecified PoolType = iota
-	PoolTypeErasure              // erasure
-	PoolTypeReplicated           // replicated
+	PoolTypeUnspecified PoolType = iota // unspecified
+	PoolTypeErasure                     // erasure
+	PoolTypeReplicated                  // replicated
 )

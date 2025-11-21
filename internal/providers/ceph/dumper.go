@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/ceph/go-ceph/rados"
+
+	"github.com/otterscale/otterscale/internal/core/storage"
 )
 
 type cephTime struct {
@@ -371,15 +373,15 @@ func dumpPG(conn *rados.Conn) (*pgDump, error) {
 	return &pgDump, nil
 }
 
-func createOSDPool(conn *rados.Conn, pool, poolType string) error {
+func createOSDPool(conn *rados.Conn, pool string, poolType storage.PoolType) error {
 	cmd := map[string]string{
 		"prefix":    "osd pool create",
 		"pool":      pool,
-		"pool_type": poolType,
+		"pool_type": poolType.String(),
 		"format":    "json",
 	}
 
-	if poolType == "erasure" {
+	if poolType == storage.PoolTypeErasure {
 		cmd["erasure_code_profile"] = "default"
 	}
 

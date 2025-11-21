@@ -46,7 +46,7 @@ const (
 type Result struct {
 	UID            string
 	Name           string
-	Status         string
+	Status         ResultStatus
 	CreatedBy      string
 	StartTime      time.Time
 	CompletionTime time.Time
@@ -112,7 +112,7 @@ func (uc *UseCase) ListInternalObjectServices(ctx context.Context, scope string)
 	}
 
 	targets = append(targets, WarpTargetInternal{
-		Type:  "ceph",
+		Type:  ObjectServiceTypeCeph,
 		Scope: scope,
 		Name:  scope,
 		Host:  url.Host,
@@ -147,7 +147,7 @@ func (uc *UseCase) listMinIOs(ctx context.Context, scope string) ([]WarpTargetIn
 			}
 
 			targets = append(targets, WarpTargetInternal{
-				Type:  "minio",
+				Type:  ObjectServiceTypeMinIO,
 				Scope: scope,
 				Name:  fmt.Sprintf("%s.%s", services[i].GetNamespace(), services[i].GetName()),
 				Host:  fmt.Sprintf("%s:%d", url.Hostname(), port.NodePort),
@@ -158,14 +158,14 @@ func (uc *UseCase) listMinIOs(ctx context.Context, scope string) ([]WarpTargetIn
 	return targets, nil
 }
 
-func (uc *UseCase) toResultStatus(job *workload.Job) string {
+func (uc *UseCase) toResultStatus(job *workload.Job) ResultStatus {
 	if job.Status.Succeeded > 0 {
-		return "succeeded"
+		return ResultStatusSucceeded
 	}
 	if job.Status.Failed > 0 {
-		return "failed"
+		return ResultStatusFailed
 	}
-	return "running"
+	return ResultStatusRunning
 }
 
 func (uc *UseCase) toResult(ctx context.Context, job *workload.Job) (*Result, error) {

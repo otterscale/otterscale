@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	"slices"
 	"strings"
 
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -89,7 +88,7 @@ func (s *StorageService) CreatePool(ctx context.Context, req *pb.CreatePoolReque
 	pool, err := s.storage.CreatePool(ctx,
 		req.GetScope(),
 		req.GetPoolName(),
-		strings.ToLower(req.GetPoolType().String()),
+		toPoolType(req.GetPoolType()),
 		req.GetEcOverwrites(),
 		req.GetReplicatedSize(),
 		req.GetQuotaBytes(),
@@ -362,7 +361,7 @@ func (s *StorageService) ListBuckets(ctx context.Context, req *pb.ListBucketsReq
 }
 
 func (s *StorageService) CreateBucket(ctx context.Context, req *pb.CreateBucketRequest) (*pb.Bucket, error) {
-	bucket, err := s.object.CreateBucket(ctx, req.GetScope(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), toACL(req.GetAcl().String()))
+	bucket, err := s.object.CreateBucket(ctx, req.GetScope(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), toACL(req.GetAcl()))
 	if err != nil {
 		return nil, err
 	}
@@ -372,7 +371,7 @@ func (s *StorageService) CreateBucket(ctx context.Context, req *pb.CreateBucketR
 }
 
 func (s *StorageService) UpdateBucket(ctx context.Context, req *pb.UpdateBucketRequest) (*pb.Bucket, error) {
-	bucket, err := s.object.UpdateBucket(ctx, req.GetScope(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), toACL(req.GetAcl().String()))
+	bucket, err := s.object.UpdateBucket(ctx, req.GetScope(), req.GetBucketName(), req.GetOwner(), req.GetPolicy(), toACL(req.GetAcl()))
 	if err != nil {
 		return nil, err
 	}
@@ -462,8 +461,8 @@ func (s *StorageService) ListSMBShares(ctx context.Context, req *pb.ListSMBShare
 
 func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBShareRequest) (*pb.SMBShare, error) {
 	var (
-		mapToGuest   string
-		securityMode string
+		mapToGuest   smb.MapToGuest
+		securityMode smb.SecurityMode
 		localUsers   []smb.User
 		realm        string
 		joinSource   *smb.User
@@ -506,8 +505,8 @@ func (s *StorageService) CreateSMBShare(ctx context.Context, req *pb.CreateSMBSh
 
 func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBShareRequest) (*pb.SMBShare, error) {
 	var (
-		mapToGuest   string
-		securityMode string
+		mapToGuest   smb.MapToGuest
+		securityMode smb.SecurityMode
 		localUsers   []smb.User
 		realm        string
 		joinSource   *smb.User
@@ -566,37 +565,65 @@ func (s *StorageService) ValidateSMBUser(ctx context.Context, req *pb.ValidateSM
 	return resp, nil
 }
 
-func toProtoEntityType(et int) pb.ValidateSMBUserResponse_EntityType {
-	switch et {
-	case smb.EntityTypeUser:
-		return pb.ValidateSMBUserResponse_USER
-	case smb.EntityTypeGroup:
-		return pb.ValidateSMBUserResponse_GROUP
+func toPoolType(pt pb.PoolType) storage.PoolType {
+	switch pt {
+	case pb.PoolType_POOL_TYPE_ERASURE:
+		return storage.PoolTypeErasure
+
+	case pb.PoolType_POOL_TYPE_REPLICATED:
+		return storage.PoolTypeReplicated
+
 	default:
-		return pb.ValidateSMBUserResponse_UNKNOWN
+		return storage.PoolTypeUnspecified
 	}
 }
 
-func toACL(str string) object.BucketCannedACL {
-	acl := object.BucketCannedACL(strings.ToLower(strings.Join(strings.Split(str, "_"), "-")))
+func toACL(acl pb.Bucket_ACL) object.BucketCannedACL {
+	switch acl {
+	case pb.Bucket_ACL_PRIVATE:
+		return object.BucketCannedACLPrivate
 
-	if slices.Contains(acl.Values(), acl) {
-		return acl
+	case pb.Bucket_ACL_PUBLIC_READ:
+		return object.BucketCannedACLPublicRead
+
+	case pb.Bucket_ACL_PUBLIC_READ_WRITE:
+		return object.BucketCannedACLPublicReadWrite
+
+	case pb.Bucket_ACL_AUTHENTICATED_READ:
+		return object.BucketCannedACLAuthenticatedRead
+
+	default:
+		return object.BucketCannedACLPrivate
 	}
-
-	return object.BucketCannedACLPrivate
 }
 
-func toMapToGuest(s pb.SMBShare_CommonConfig_MapToGuest) string {
-	ret := strings.ToLower(s.String())
-	ret = strings.ReplaceAll(ret, "_", " ")
-	return ret
+func toMapToGuest(mtg pb.SMBShare_CommonConfig_MapToGuest) smb.MapToGuest {
+	switch mtg {
+	case pb.SMBShare_CommonConfig_MAP_TO_GUEST_NEVER:
+		return smb.MapToGuestNever
+
+	case pb.SMBShare_CommonConfig_MAP_TO_GUEST_BAD_USER:
+		return smb.MapToGuestBadUser
+
+	case pb.SMBShare_CommonConfig_MAP_TO_GUEST_BAD_PASSWORD:
+		return smb.MapToGuestBadPassword
+
+	default:
+		return smb.MapToGuestNever
+	}
 }
 
-func toSecurityMode(s pb.SMBShare_SecurityConfig_Mode) string {
-	ret := strings.ToLower(s.String())
-	ret = strings.ReplaceAll(ret, "_", "-")
-	return ret
+func toSecurityMode(sm pb.SMBShare_SecurityConfig_Mode) smb.SecurityMode {
+	switch sm {
+	case pb.SMBShare_SecurityConfig_MODE_USER:
+		return smb.SecurityModeUser
+
+	case pb.SMBShare_SecurityConfig_MODE_ACTIVE_DIRECTORY:
+		return smb.SecurityModeActiveDirectory
+
+	default:
+		return smb.SecurityModeUser
+	}
 }
 
 func toUser(u *pb.SMBShare_SecurityConfig_User) *smb.User {
@@ -698,11 +725,17 @@ func toProtoPools(ps []storage.Pool) []*pb.Pool {
 	return ret
 }
 
-func toProtoPoolType(s string) pb.PoolType {
-	if pt, ok := pb.PoolType_value[strings.ToUpper(s)]; ok {
-		return pb.PoolType(pt)
+func toProtoPoolType(pt storage.PoolType) pb.PoolType {
+	switch pt {
+	case storage.PoolTypeErasure:
+		return pb.PoolType_POOL_TYPE_ERASURE
+
+	case storage.PoolTypeReplicated:
+		return pb.PoolType_POOL_TYPE_REPLICATED
+
+	default:
+		return pb.PoolType_POOL_TYPE_UNSPECIFIED
 	}
-	return pb.PoolType_UNSPECIFIED
 }
 
 func toProtoPool(p *storage.Pool) *pb.Pool {
@@ -984,20 +1017,33 @@ func toProtoUserKey(uk *object.UserKey) *pb.User_Key {
 	return ret
 }
 
-func toProtoSMBShareCommonConfigMapToGuest(mapToGuest string) pb.SMBShare_CommonConfig_MapToGuest {
-	if strings.EqualFold(mapToGuest, "bad user") {
-		return pb.SMBShare_CommonConfig_BAD_USER
-	} else if strings.EqualFold(mapToGuest, "bad password") {
-		return pb.SMBShare_CommonConfig_BAD_PASSWORD
+func toProtoSMBShareCommonConfigMapToGuest(mtg string) pb.SMBShare_CommonConfig_MapToGuest {
+	switch mtg {
+	case smb.MapToGuestNever.String():
+		return pb.SMBShare_CommonConfig_MAP_TO_GUEST_NEVER
+
+	case smb.MapToGuestBadUser.String():
+		return pb.SMBShare_CommonConfig_MAP_TO_GUEST_BAD_USER
+
+	case smb.MapToGuestBadPassword.String():
+		return pb.SMBShare_CommonConfig_MAP_TO_GUEST_BAD_PASSWORD
+
+	default:
+		return pb.SMBShare_CommonConfig_MAP_TO_GUEST_NEVER
 	}
-	return pb.SMBShare_CommonConfig_NEVER
 }
 
-func toProtoSMBShareSecurityConfigMode(mode string) pb.SMBShare_SecurityConfig_Mode {
-	if strings.EqualFold(mode, "active-directory") {
-		return pb.SMBShare_SecurityConfig_ACTIVE_DIRECTORY
+func toProtoSMBShareSecurityConfigMode(sm string) pb.SMBShare_SecurityConfig_Mode {
+	switch sm {
+	case smb.SecurityModeUser.String():
+		return pb.SMBShare_SecurityConfig_MODE_USER
+
+	case smb.SecurityModeActiveDirectory.String():
+		return pb.SMBShare_SecurityConfig_MODE_ACTIVE_DIRECTORY
+
+	default:
+		return pb.SMBShare_SecurityConfig_MODE_USER
 	}
-	return pb.SMBShare_SecurityConfig_USER
 }
 
 func toProtoSMBShareSecurityConfigUsers(us []smb.User) []*pb.SMBShare_SecurityConfig_User {
@@ -1123,4 +1169,17 @@ func toProtoSMBShare(sd *smb.ShareData, hostname string) *pb.SMBShare {
 	}
 
 	return ret
+}
+
+func toProtoEntityType(et smb.EntityType) pb.ValidateSMBUserResponse_EntityType {
+	switch et {
+	case smb.EntityTypeUser:
+		return pb.ValidateSMBUserResponse_ENTITY_TYPE_USER
+
+	case smb.EntityTypeGroup:
+		return pb.ValidateSMBUserResponse_ENTITY_TYPE_GROUP
+
+	default:
+		return pb.ValidateSMBUserResponse_ENTITY_TYPE_UNKNOWN
+	}
 }
