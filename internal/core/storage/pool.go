@@ -10,7 +10,7 @@ type Pool struct {
 	ID                  int64
 	Name                string
 	Updating            bool
-	Type                string
+	Type                PoolType
 	ECOverwrites        bool
 	DataChunks          uint64
 	CodingChunks        uint64
@@ -29,7 +29,7 @@ type Pool struct {
 // Note: Ceph create and update operations only return error status.
 type PoolRepo interface {
 	List(ctx context.Context, scope, application string) ([]Pool, error)
-	Create(ctx context.Context, scope string, pool, poolType string) error
+	Create(ctx context.Context, scope string, pool string, poolType PoolType) error
 	Delete(ctx context.Context, scope string, pool string) error
 	Enable(ctx context.Context, scope string, pool, application string) error
 	GetParameter(ctx context.Context, scope string, pool, key string) (string, error)
@@ -50,18 +50,18 @@ func (uc *UseCase) ListPools(ctx context.Context, scope, application string) ([]
 	return pools, nil
 }
 
-func (uc *UseCase) CreatePool(ctx context.Context, scope, pool, poolType string, ecOverwrites bool, replicatedSize, quotaMaxBytes, quotaMaxObjects uint64, applications []string) (*Pool, error) {
+func (uc *UseCase) CreatePool(ctx context.Context, scope, pool string, poolType PoolType, ecOverwrites bool, replicatedSize, quotaMaxBytes, quotaMaxObjects uint64, applications []string) (*Pool, error) {
 	if err := uc.pool.Create(ctx, scope, pool, poolType); err != nil {
 		return nil, err
 	}
 
-	if poolType == "erasure" && ecOverwrites {
+	if poolType == PoolTypeErasure && ecOverwrites {
 		if err := uc.pool.SetParameter(ctx, scope, pool, "allow_ec_overwrites", "true"); err != nil {
 			return nil, err
 		}
 	}
 
-	if poolType == "replicated" && replicatedSize > 1 {
+	if poolType == PoolTypeReplicated && replicatedSize > 1 {
 		if err := uc.pool.SetParameter(ctx, scope, pool, "size", strconv.FormatUint(replicatedSize, 10)); err != nil {
 			return nil, err
 		}
@@ -98,7 +98,7 @@ func (uc *UseCase) DeletePool(ctx context.Context, scope, pool string) error {
 
 func (uc *UseCase) setPoolParameters(ctx context.Context, scope string, pools []Pool) {
 	for i := range pools {
-		if pools[i].Type == "erasure" {
+		if pools[i].Type == PoolTypeErasure {
 			ecOverwrites, _ := uc.pool.GetParameter(ctx, scope, pools[i].Name, "allow_ec_overwrites")
 			if ecOverwrites == "true" {
 				pools[i].ECOverwrites = true

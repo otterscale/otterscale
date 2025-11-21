@@ -184,9 +184,9 @@ message NetworkFileSystem {
 
 message InternalObjectService {
   enum Type {
-    UNSPECIFIED = 0;
-    CEPH = 1;
-    MINIO = 2;
+    TYPE_UNSPECIFIED = 0;
+    TYPE_CEPH = 1;
+    TYPE_MINIO = 2;
   }
   Type type = 1;
   string scope = 2;
@@ -203,16 +203,16 @@ message ExternalObjectService {
 message FIO {
   message Input {
     enum AccessMode {
-      READ = 0;
-      WRITE = 1;
-      TRIM = 2;
-      READ_WRITE = 3;
-      TRIM_WRITE = 4;
-      RAND_READ = 5;
-      RAND_WRITE = 6;
-      RAND_TRIM = 7;
-      RAND_RW = 8;
-      RAND_TRIM_WRITE = 9;
+      ACCESS_MODE_READ = 0;
+      ACCESS_MODE_WRITE = 1;
+      ACCESS_MODE_TRIM = 2;
+      ACCESS_MODE_READ_WRITE = 3;
+      ACCESS_MODE_TRIM_WRITE = 4;
+      ACCESS_MODE_RAND_READ = 5;
+      ACCESS_MODE_RAND_WRITE = 6;
+      ACCESS_MODE_RAND_TRIM = 7;
+      ACCESS_MODE_RAND_READ_WRITE = 8;
+      ACCESS_MODE_RAND_TRIM_WRITE = 9;
     }
     AccessMode access_mode = 1;
     int64 job_count = 31;         // 1.13.3 Job description
@@ -249,12 +249,12 @@ message FIO {
 message Warp {
   message Input {
     enum Operation {
-      GET = 0;
-      PUT = 1;
-      DELETE = 2;
-      LIST = 3;
-      STAT = 4;
-      MIXED = 5;
+      OPERATION_GET = 0;
+      OPERATION_PUT = 1;
+      OPERATION_DELETE = 2;
+      OPERATION_LIST = 3;
+      OPERATION_STAT = 4;
+      OPERATION_MIXED = 5;
     }
     Operation operation = 1;
     int64 duration_seconds = 21;
@@ -288,9 +288,9 @@ message Warp {
 
 message TestResult {
   enum Status {
-    RUNNING = 0;
-    SUCCEEDED = 1;
-    FAILED = 2;
+    STATUS_RUNNING = 0;
+    STATUS_SUCCEEDED = 1;
+    STATUS_FAILED = 2;
   }
   string uid = 1;
   string name = 2;

@@ -49,18 +49,23 @@ func NewUseCase(chart chart.ChartRepo, customResourceDefinition cluster.CustomRe
 	}
 }
 
-func (uc *UseCase) ListExtensions(ctx context.Context, scope, extType string) ([]Extension, error) {
+func (uc *UseCase) ListExtensions(ctx context.Context, scope string, extType Type) ([]Extension, error) {
 	switch extType {
-	case "general":
+	case TypeGeneral:
 		return uc.listExtensions(ctx, scope, general)
-	case "registry":
+
+	case TypeRegistry:
 		return uc.listExtensions(ctx, scope, registry)
-	case "model":
+
+	case TypeModel:
 		return uc.listExtensions(ctx, scope, model)
-	case "instance":
+
+	case TypeInstance:
 		return uc.listExtensions(ctx, scope, instance)
-	case "storage":
+
+	case TypeStorage:
 		return uc.listExtensions(ctx, scope, storage)
+
 	default:
 		return nil, fmt.Errorf("unknown extension type: %v", extType)
 	}

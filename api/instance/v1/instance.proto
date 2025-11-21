@@ -229,17 +229,17 @@ message VirtualMachine {
   }
   message Disk {
     enum Bus {
-      VIRTIO = 0;
-      SATA = 1;
-      SCSI = 2;
-      USB = 3;
+      BUS_VIRTIO = 0;
+      BUS_SATA = 1;
+      BUS_SCSI = 2;
+      BUS_USB = 3;
     }
     message Volume {
       message Source {
         enum Type {
-          UNKNOWN = 0;
-          DATA_VOLUME = 1;
-          CLOUD_INIT_NO_CLOUD = 2;
+          TYPE_UNKNOWN = 0;
+          TYPE_DATA_VOLUME = 1;
+          TYPE_CLOUD_INIT_NO_CLOUD = 2;
         }
         Type type = 1;
         string data = 2;
@@ -272,9 +272,9 @@ message VirtualMachine {
 message DataVolume {
   message Source {
     enum Type {
-      BLANK_IMAGE = 0;
-      HTTP_URL = 1;
-      EXISTING_PERSISTENT_VOLUME_CLAIM = 2;
+      TYPE_BLANK_IMAGE = 0;
+      TYPE_HTTP_URL = 1;
+      TYPE_EXISTING_PERSISTENT_VOLUME_CLAIM = 2;
     }
     Type type = 1;
     string data = 2;

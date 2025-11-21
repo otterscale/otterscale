@@ -26,22 +26,22 @@ const (
 type AddClusterUnitsRequest_Type int32
 
 const (
-	AddClusterUnitsRequest_UNSPECIFIED AddClusterUnitsRequest_Type = 0
-	AddClusterUnitsRequest_KUBERNETES  AddClusterUnitsRequest_Type = 1
-	AddClusterUnitsRequest_CEPH        AddClusterUnitsRequest_Type = 2
+	AddClusterUnitsRequest_TYPE_UNSPECIFIED AddClusterUnitsRequest_Type = 0
+	AddClusterUnitsRequest_TYPE_KUBERNETES  AddClusterUnitsRequest_Type = 1
+	AddClusterUnitsRequest_TYPE_CEPH        AddClusterUnitsRequest_Type = 2
 )
 
 // Enum value maps for AddClusterUnitsRequest_Type.
 var (
 	AddClusterUnitsRequest_Type_name = map[int32]string{
-		0: "UNSPECIFIED",
-		1: "KUBERNETES",
-		2: "CEPH",
+		0: "TYPE_UNSPECIFIED",
+		1: "TYPE_KUBERNETES",
+		2: "TYPE_CEPH",
 	}
 	AddClusterUnitsRequest_Type_value = map[string]int32{
-		"UNSPECIFIED": 0,
-		"KUBERNETES":  1,
-		"CEPH":        2,
+		"TYPE_UNSPECIFIED": 0,
+		"TYPE_KUBERNETES":  1,
+		"TYPE_CEPH":        2,
 	}
 )
 
@@ -70,31 +70,31 @@ func (x AddClusterUnitsRequest_Type) Number() protoreflect.EnumNumber {
 type Extension_Type int32
 
 const (
-	Extension_UNSPECIFIED Extension_Type = 0
-	Extension_GENERAL     Extension_Type = 1
-	Extension_REGISTRY    Extension_Type = 2
-	Extension_MODEL       Extension_Type = 3
-	Extension_INSTANCE    Extension_Type = 4
-	Extension_STORAGE     Extension_Type = 5
+	Extension_TYPE_UNSPECIFIED Extension_Type = 0
+	Extension_TYPE_GENERAL     Extension_Type = 1
+	Extension_TYPE_REGISTRY    Extension_Type = 2
+	Extension_TYPE_MODEL       Extension_Type = 3
+	Extension_TYPE_INSTANCE    Extension_Type = 4
+	Extension_TYPE_STORAGE     Extension_Type = 5
 )
 
 // Enum value maps for Extension_Type.
 var (
 	Extension_Type_name = map[int32]string{
-		0: "UNSPECIFIED",
-		1: "GENERAL",
-		2: "REGISTRY",
-		3: "MODEL",
-		4: "INSTANCE",
-		5: "STORAGE",
+		0: "TYPE_UNSPECIFIED",
+		1: "TYPE_GENERAL",
+		2: "TYPE_REGISTRY",
+		3: "TYPE_MODEL",
+		4: "TYPE_INSTANCE",
+		5: "TYPE_STORAGE",
 	}
 	Extension_Type_value = map[string]int32{
-		"UNSPECIFIED": 0,
-		"GENERAL":     1,
-		"REGISTRY":    2,
-		"MODEL":       3,
-		"INSTANCE":    4,
-		"STORAGE":     5,
+		"TYPE_UNSPECIFIED": 0,
+		"TYPE_GENERAL":     1,
+		"TYPE_REGISTRY":    2,
+		"TYPE_MODEL":       3,
+		"TYPE_INSTANCE":    4,
+		"TYPE_STORAGE":     5,
 	}
 )
 
@@ -542,7 +542,7 @@ func (x *AddClusterUnitsRequest) GetType() AddClusterUnitsRequest_Type {
 			return x.xxx_hidden_Type
 		}
 	}
-	return AddClusterUnitsRequest_UNSPECIFIED
+	return AddClusterUnitsRequest_TYPE_UNSPECIFIED
 }
 
 func (x *AddClusterUnitsRequest) GetScope() string {
@@ -652,7 +652,7 @@ func (x *AddClusterUnitsRequest) HasForce() bool {
 
 func (x *AddClusterUnitsRequest) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Type = AddClusterUnitsRequest_UNSPECIFIED
+	x.xxx_hidden_Type = AddClusterUnitsRequest_TYPE_UNSPECIFIED
 }
 
 func (x *AddClusterUnitsRequest) ClearScope() {
@@ -1729,7 +1729,7 @@ func (x *Extension) GetType() Extension_Type {
 			return x.xxx_hidden_Type
 		}
 	}
-	return Extension_UNSPECIFIED
+	return Extension_TYPE_UNSPECIFIED
 }
 
 func (x *Extension) GetName() string {
@@ -1888,7 +1888,7 @@ func (x *Extension) HasLatest() bool {
 
 func (x *Extension) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Type = Extension_UNSPECIFIED
+	x.xxx_hidden_Type = Extension_TYPE_UNSPECIFIED
 }
 
 func (x *Extension) ClearName() {
@@ -2017,7 +2017,7 @@ func (x *ListExtensionsRequest) GetType() Extension_Type {
 			return x.xxx_hidden_Type
 		}
 	}
-	return Extension_UNSPECIFIED
+	return Extension_TYPE_UNSPECIFIED
 }
 
 func (x *ListExtensionsRequest) SetScope(v string) {
@@ -2051,7 +2051,7 @@ func (x *ListExtensionsRequest) ClearScope() {
 
 func (x *ListExtensionsRequest) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Type = Extension_UNSPECIFIED
+	x.xxx_hidden_Type = Extension_TYPE_UNSPECIFIED
 }
 
 type ListExtensionsRequest_builder struct {
@@ -3221,7 +3221,7 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\vcalico_cidr\x18\f \x01(\tR\n" +
 	"calicoCidr\x12\x1f\n" +
 	"\vosd_devices\x18\x15 \x03(\tR\n" +
-	"osdDevices\"\x91\x02\n" +
+	"osdDevices\"\xa0\x02\n" +
 	"\x16AddClusterUnitsRequest\x12K\n" +
 	"\x04type\x18\x01 \x01(\x0e27.otterscale.orchestrator.v1.AddClusterUnitsRequest.TypeR\x04type\x12\x14\n" +
 	"\x05scope\x18\x02 \x01(\tR\x05scope\x12\x12\n" +
@@ -3229,12 +3229,11 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\x06number\x18\x04 \x01(\x05R\x06number\x12\x1f\n" +
 	"\vmachine_ids\x18\x05 \x03(\tR\n" +
 	"machineIds\x12\x14\n" +
-	"\x05force\x18\v \x01(\bR\x05force\"1\n" +
-	"\x04Type\x12\x0f\n" +
-	"\vUNSPECIFIED\x10\x00\x12\x0e\n" +
-	"\n" +
-	"KUBERNETES\x10\x01\x12\b\n" +
-	"\x04CEPH\x10\x02\"k\n" +
+	"\x05force\x18\v \x01(\bR\x05force\"@\n" +
+	"\x04Type\x12\x14\n" +
+	"\x10TYPE_UNSPECIFIED\x10\x00\x12\x13\n" +
+	"\x0fTYPE_KUBERNETES\x10\x01\x12\r\n" +
+	"\tTYPE_CEPH\x10\x02\"k\n" +
 	"\x1fListKubernetesNodeLabelsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1a\n" +
 	"\bhostname\x18\x03 \x01(\tR\bhostname\x12\x10\n" +
@@ -3299,7 +3298,7 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\n" +
 	"model_name\x18\x04 \x01(\tR\tmodelNameJ\x04\b\x02\x10\x03\"o\n" +
 	"\x1fListGPURelationsByModelResponse\x12L\n" +
-	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\x8c\x04\n" +
+	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\xaa\x04\n" +
 	"\tExtension\x12>\n" +
 	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Extension.TypeR\x04type\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
@@ -3312,14 +3311,15 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\x06latest\x18\x16 \x01(\v2..otterscale.orchestrator.v1.Extension.ManifestR\x06latest\x1a4\n" +
 	"\bManifest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
-	"\aversion\x18\x02 \x01(\tR\aversion\"X\n" +
-	"\x04Type\x12\x0f\n" +
-	"\vUNSPECIFIED\x10\x00\x12\v\n" +
-	"\aGENERAL\x10\x01\x12\f\n" +
-	"\bREGISTRY\x10\x02\x12\t\n" +
-	"\x05MODEL\x10\x03\x12\f\n" +
-	"\bINSTANCE\x10\x04\x12\v\n" +
-	"\aSTORAGE\x10\x05\"s\n" +
+	"\aversion\x18\x02 \x01(\tR\aversion\"v\n" +
+	"\x04Type\x12\x14\n" +
+	"\x10TYPE_UNSPECIFIED\x10\x00\x12\x10\n" +
+	"\fTYPE_GENERAL\x10\x01\x12\x11\n" +
+	"\rTYPE_REGISTRY\x10\x02\x12\x0e\n" +
+	"\n" +
+	"TYPE_MODEL\x10\x03\x12\x11\n" +
+	"\rTYPE_INSTANCE\x10\x04\x12\x10\n" +
+	"\fTYPE_STORAGE\x10\x05\"s\n" +
 	"\x15ListExtensionsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12>\n" +
 	"\x04type\x18\x03 \x01(\x0e2*.otterscale.orchestrator.v1.Extension.TypeR\x04typeJ\x04\b\x02\x10\x03\"_\n" +

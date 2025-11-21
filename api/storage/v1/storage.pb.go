@@ -26,22 +26,22 @@ const (
 type PoolType int32
 
 const (
-	PoolType_UNSPECIFIED PoolType = 0
-	PoolType_ERASURE     PoolType = 1
-	PoolType_REPLICATED  PoolType = 2
+	PoolType_POOL_TYPE_UNSPECIFIED PoolType = 0
+	PoolType_POOL_TYPE_ERASURE     PoolType = 1
+	PoolType_POOL_TYPE_REPLICATED  PoolType = 2
 )
 
 // Enum value maps for PoolType.
 var (
 	PoolType_name = map[int32]string{
-		0: "UNSPECIFIED",
-		1: "ERASURE",
-		2: "REPLICATED",
+		0: "POOL_TYPE_UNSPECIFIED",
+		1: "POOL_TYPE_ERASURE",
+		2: "POOL_TYPE_REPLICATED",
 	}
 	PoolType_value = map[string]int32{
-		"UNSPECIFIED": 0,
-		"ERASURE":     1,
-		"REPLICATED":  2,
+		"POOL_TYPE_UNSPECIFIED": 0,
+		"POOL_TYPE_ERASURE":     1,
+		"POOL_TYPE_REPLICATED":  2,
 	}
 )
 
@@ -70,25 +70,25 @@ func (x PoolType) Number() protoreflect.EnumNumber {
 type Bucket_ACL int32
 
 const (
-	Bucket_PRIVATE            Bucket_ACL = 0
-	Bucket_PUBLIC_READ        Bucket_ACL = 1
-	Bucket_PUBLIC_READ_WRITE  Bucket_ACL = 2
-	Bucket_AUTHENTICATED_READ Bucket_ACL = 3
+	Bucket_ACL_PRIVATE            Bucket_ACL = 0
+	Bucket_ACL_PUBLIC_READ        Bucket_ACL = 1
+	Bucket_ACL_PUBLIC_READ_WRITE  Bucket_ACL = 2
+	Bucket_ACL_AUTHENTICATED_READ Bucket_ACL = 3
 )
 
 // Enum value maps for Bucket_ACL.
 var (
 	Bucket_ACL_name = map[int32]string{
-		0: "PRIVATE",
-		1: "PUBLIC_READ",
-		2: "PUBLIC_READ_WRITE",
-		3: "AUTHENTICATED_READ",
+		0: "ACL_PRIVATE",
+		1: "ACL_PUBLIC_READ",
+		2: "ACL_PUBLIC_READ_WRITE",
+		3: "ACL_AUTHENTICATED_READ",
 	}
 	Bucket_ACL_value = map[string]int32{
-		"PRIVATE":            0,
-		"PUBLIC_READ":        1,
-		"PUBLIC_READ_WRITE":  2,
-		"AUTHENTICATED_READ": 3,
+		"ACL_PRIVATE":            0,
+		"ACL_PUBLIC_READ":        1,
+		"ACL_PUBLIC_READ_WRITE":  2,
+		"ACL_AUTHENTICATED_READ": 3,
 	}
 )
 
@@ -117,22 +117,22 @@ func (x Bucket_ACL) Number() protoreflect.EnumNumber {
 type SMBShare_CommonConfig_MapToGuest int32
 
 const (
-	SMBShare_CommonConfig_NEVER        SMBShare_CommonConfig_MapToGuest = 0
-	SMBShare_CommonConfig_BAD_USER     SMBShare_CommonConfig_MapToGuest = 1
-	SMBShare_CommonConfig_BAD_PASSWORD SMBShare_CommonConfig_MapToGuest = 2
+	SMBShare_CommonConfig_MAP_TO_GUEST_NEVER        SMBShare_CommonConfig_MapToGuest = 0
+	SMBShare_CommonConfig_MAP_TO_GUEST_BAD_USER     SMBShare_CommonConfig_MapToGuest = 1
+	SMBShare_CommonConfig_MAP_TO_GUEST_BAD_PASSWORD SMBShare_CommonConfig_MapToGuest = 2
 )
 
 // Enum value maps for SMBShare_CommonConfig_MapToGuest.
 var (
 	SMBShare_CommonConfig_MapToGuest_name = map[int32]string{
-		0: "NEVER",
-		1: "BAD_USER",
-		2: "BAD_PASSWORD",
+		0: "MAP_TO_GUEST_NEVER",
+		1: "MAP_TO_GUEST_BAD_USER",
+		2: "MAP_TO_GUEST_BAD_PASSWORD",
 	}
 	SMBShare_CommonConfig_MapToGuest_value = map[string]int32{
-		"NEVER":        0,
-		"BAD_USER":     1,
-		"BAD_PASSWORD": 2,
+		"MAP_TO_GUEST_NEVER":        0,
+		"MAP_TO_GUEST_BAD_USER":     1,
+		"MAP_TO_GUEST_BAD_PASSWORD": 2,
 	}
 )
 
@@ -161,19 +161,19 @@ func (x SMBShare_CommonConfig_MapToGuest) Number() protoreflect.EnumNumber {
 type SMBShare_SecurityConfig_Mode int32
 
 const (
-	SMBShare_SecurityConfig_USER             SMBShare_SecurityConfig_Mode = 0
-	SMBShare_SecurityConfig_ACTIVE_DIRECTORY SMBShare_SecurityConfig_Mode = 1
+	SMBShare_SecurityConfig_MODE_USER             SMBShare_SecurityConfig_Mode = 0
+	SMBShare_SecurityConfig_MODE_ACTIVE_DIRECTORY SMBShare_SecurityConfig_Mode = 1
 )
 
 // Enum value maps for SMBShare_SecurityConfig_Mode.
 var (
 	SMBShare_SecurityConfig_Mode_name = map[int32]string{
-		0: "USER",
-		1: "ACTIVE_DIRECTORY",
+		0: "MODE_USER",
+		1: "MODE_ACTIVE_DIRECTORY",
 	}
 	SMBShare_SecurityConfig_Mode_value = map[string]int32{
-		"USER":             0,
-		"ACTIVE_DIRECTORY": 1,
+		"MODE_USER":             0,
+		"MODE_ACTIVE_DIRECTORY": 1,
 	}
 )
 
@@ -202,22 +202,22 @@ func (x SMBShare_SecurityConfig_Mode) Number() protoreflect.EnumNumber {
 type ValidateSMBUserResponse_EntityType int32
 
 const (
-	ValidateSMBUserResponse_UNKNOWN ValidateSMBUserResponse_EntityType = 0
-	ValidateSMBUserResponse_USER    ValidateSMBUserResponse_EntityType = 1
-	ValidateSMBUserResponse_GROUP   ValidateSMBUserResponse_EntityType = 2
+	ValidateSMBUserResponse_ENTITY_TYPE_UNKNOWN ValidateSMBUserResponse_EntityType = 0
+	ValidateSMBUserResponse_ENTITY_TYPE_USER    ValidateSMBUserResponse_EntityType = 1
+	ValidateSMBUserResponse_ENTITY_TYPE_GROUP   ValidateSMBUserResponse_EntityType = 2
 )
 
 // Enum value maps for ValidateSMBUserResponse_EntityType.
 var (
 	ValidateSMBUserResponse_EntityType_name = map[int32]string{
-		0: "UNKNOWN",
-		1: "USER",
-		2: "GROUP",
+		0: "ENTITY_TYPE_UNKNOWN",
+		1: "ENTITY_TYPE_USER",
+		2: "ENTITY_TYPE_GROUP",
 	}
 	ValidateSMBUserResponse_EntityType_value = map[string]int32{
-		"UNKNOWN": 0,
-		"USER":    1,
-		"GROUP":   2,
+		"ENTITY_TYPE_UNKNOWN": 0,
+		"ENTITY_TYPE_USER":    1,
+		"ENTITY_TYPE_GROUP":   2,
 	}
 )
 
@@ -976,7 +976,7 @@ func (x *Pool) GetPoolType() PoolType {
 			return x.xxx_hidden_PoolType
 		}
 	}
-	return PoolType_UNSPECIFIED
+	return PoolType_POOL_TYPE_UNSPECIFIED
 }
 
 func (x *Pool) GetEcOverwrites() bool {
@@ -1274,7 +1274,7 @@ func (x *Pool) ClearUpdating() {
 
 func (x *Pool) ClearPoolType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_PoolType = PoolType_UNSPECIFIED
+	x.xxx_hidden_PoolType = PoolType_POOL_TYPE_UNSPECIFIED
 }
 
 func (x *Pool) ClearEcOverwrites() {
@@ -4002,7 +4002,7 @@ func (x *CreatePoolRequest) GetPoolType() PoolType {
 			return x.xxx_hidden_PoolType
 		}
 	}
-	return PoolType_UNSPECIFIED
+	return PoolType_POOL_TYPE_UNSPECIFIED
 }
 
 func (x *CreatePoolRequest) GetEcOverwrites() bool {
@@ -4140,7 +4140,7 @@ func (x *CreatePoolRequest) ClearPoolName() {
 
 func (x *CreatePoolRequest) ClearPoolType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_PoolType = PoolType_UNSPECIFIED
+	x.xxx_hidden_PoolType = PoolType_POOL_TYPE_UNSPECIFIED
 }
 
 func (x *CreatePoolRequest) ClearEcOverwrites() {
@@ -8866,7 +8866,7 @@ func (x *CreateBucketRequest) GetAcl() Bucket_ACL {
 			return x.xxx_hidden_Acl
 		}
 	}
-	return Bucket_PRIVATE
+	return Bucket_ACL_PRIVATE
 }
 
 func (x *CreateBucketRequest) SetScope(v string) {
@@ -8951,7 +8951,7 @@ func (x *CreateBucketRequest) ClearPolicy() {
 
 func (x *CreateBucketRequest) ClearAcl() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Acl = Bucket_PRIVATE
+	x.xxx_hidden_Acl = Bucket_ACL_PRIVATE
 }
 
 type CreateBucketRequest_builder struct {
@@ -9075,7 +9075,7 @@ func (x *UpdateBucketRequest) GetAcl() Bucket_ACL {
 			return x.xxx_hidden_Acl
 		}
 	}
-	return Bucket_PRIVATE
+	return Bucket_ACL_PRIVATE
 }
 
 func (x *UpdateBucketRequest) SetScope(v string) {
@@ -9160,7 +9160,7 @@ func (x *UpdateBucketRequest) ClearPolicy() {
 
 func (x *UpdateBucketRequest) ClearAcl() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Acl = Bucket_PRIVATE
+	x.xxx_hidden_Acl = Bucket_ACL_PRIVATE
 }
 
 type UpdateBucketRequest_builder struct {
@@ -11205,7 +11205,7 @@ func (x *ValidateSMBUserResponse) GetEntityType() ValidateSMBUserResponse_Entity
 			return x.xxx_hidden_EntityType
 		}
 	}
-	return ValidateSMBUserResponse_UNKNOWN
+	return ValidateSMBUserResponse_ENTITY_TYPE_UNKNOWN
 }
 
 func (x *ValidateSMBUserResponse) GetMessage() string {
@@ -11261,7 +11261,7 @@ func (x *ValidateSMBUserResponse) ClearValid() {
 
 func (x *ValidateSMBUserResponse) ClearEntityType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_EntityType = ValidateSMBUserResponse_UNKNOWN
+	x.xxx_hidden_EntityType = ValidateSMBUserResponse_ENTITY_TYPE_UNKNOWN
 }
 
 func (x *ValidateSMBUserResponse) ClearMessage() {
@@ -12119,7 +12119,7 @@ func (x *SMBShare_CommonConfig) GetMapToGuest() SMBShare_CommonConfig_MapToGuest
 			return x.xxx_hidden_MapToGuest
 		}
 	}
-	return SMBShare_CommonConfig_NEVER
+	return SMBShare_CommonConfig_MAP_TO_GUEST_NEVER
 }
 
 func (x *SMBShare_CommonConfig) SetMapToGuest(v SMBShare_CommonConfig_MapToGuest) {
@@ -12136,7 +12136,7 @@ func (x *SMBShare_CommonConfig) HasMapToGuest() bool {
 
 func (x *SMBShare_CommonConfig) ClearMapToGuest() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_MapToGuest = SMBShare_CommonConfig_NEVER
+	x.xxx_hidden_MapToGuest = SMBShare_CommonConfig_MAP_TO_GUEST_NEVER
 }
 
 type SMBShare_CommonConfig_builder struct {
@@ -12199,7 +12199,7 @@ func (x *SMBShare_SecurityConfig) GetMode() SMBShare_SecurityConfig_Mode {
 			return x.xxx_hidden_Mode
 		}
 	}
-	return SMBShare_SecurityConfig_USER
+	return SMBShare_SecurityConfig_MODE_USER
 }
 
 func (x *SMBShare_SecurityConfig) GetLocalUsers() []*SMBShare_SecurityConfig_User {
@@ -12269,7 +12269,7 @@ func (x *SMBShare_SecurityConfig) HasJoinSource() bool {
 
 func (x *SMBShare_SecurityConfig) ClearMode() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Mode = SMBShare_SecurityConfig_USER
+	x.xxx_hidden_Mode = SMBShare_SecurityConfig_MODE_USER
 }
 
 func (x *SMBShare_SecurityConfig) ClearRealm() {
@@ -12591,7 +12591,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"used_bytes\x18\x16 \x01(\x04R\tusedBytes\x129\n" +
 	"\n" +
-	"created_at\x18\x1f \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\xcb\x03\n" +
+	"created_at\x18\x1f \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\xdb\x03\n" +
 	"\x06Bucket\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05owner\x18\x02 \x01(\tR\x05owner\x12\x16\n" +
@@ -12609,12 +12609,12 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\x03uri\x18\x04 \x01(\tR\x03uri\x12\x1e\n" +
 	"\n" +
 	"permission\x18\x05 \x01(\tR\n" +
-	"permission\"R\n" +
-	"\x03ACL\x12\v\n" +
-	"\aPRIVATE\x10\x00\x12\x0f\n" +
-	"\vPUBLIC_READ\x10\x01\x12\x15\n" +
-	"\x11PUBLIC_READ_WRITE\x10\x02\x12\x16\n" +
-	"\x12AUTHENTICATED_READ\x10\x03\"\xc2\x01\n" +
+	"permission\"b\n" +
+	"\x03ACL\x12\x0f\n" +
+	"\vACL_PRIVATE\x10\x00\x12\x13\n" +
+	"\x0fACL_PUBLIC_READ\x10\x01\x12\x19\n" +
+	"\x15ACL_PUBLIC_READ_WRITE\x10\x02\x12\x1a\n" +
+	"\x16ACL_AUTHENTICATED_READ\x10\x03\"\xc2\x01\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1c\n" +
@@ -12624,7 +12624,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"access_key\x18\x01 \x01(\tR\taccessKey\x12\x1d\n" +
 	"\n" +
-	"secret_key\x18\x02 \x01(\tR\tsecretKey\"\xdd\a\n" +
+	"secret_key\x18\x02 \x01(\tR\tsecretKey\"\x8e\b\n" +
 	"\bSMBShare\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x10\n" +
 	"\x03uri\x18\x03 \x01(\tR\x03uri\x12\x1a\n" +
@@ -12638,15 +12638,15 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\vvalid_users\x18* \x03(\tR\n" +
 	"validUsers\x12Q\n" +
 	"\rcommon_config\x183 \x01(\v2,.otterscale.storage.v1.SMBShare.CommonConfigR\fcommonConfig\x12W\n" +
-	"\x0fsecurity_config\x18= \x01(\v2..otterscale.storage.v1.SMBShare.SecurityConfigR\x0esecurityConfig\x1a\xa2\x01\n" +
+	"\x0fsecurity_config\x18= \x01(\v2..otterscale.storage.v1.SMBShare.SecurityConfigR\x0esecurityConfig\x1a\xc9\x01\n" +
 	"\fCommonConfig\x12Y\n" +
 	"\fmap_to_guest\x18\x01 \x01(\x0e27.otterscale.storage.v1.SMBShare.CommonConfig.MapToGuestR\n" +
-	"mapToGuest\"7\n" +
+	"mapToGuest\"^\n" +
 	"\n" +
-	"MapToGuest\x12\t\n" +
-	"\x05NEVER\x10\x00\x12\f\n" +
-	"\bBAD_USER\x10\x01\x12\x10\n" +
-	"\fBAD_PASSWORD\x10\x02\x1a\x83\x03\n" +
+	"MapToGuest\x12\x16\n" +
+	"\x12MAP_TO_GUEST_NEVER\x10\x00\x12\x19\n" +
+	"\x15MAP_TO_GUEST_BAD_USER\x10\x01\x12\x1d\n" +
+	"\x19MAP_TO_GUEST_BAD_PASSWORD\x10\x02\x1a\x8d\x03\n" +
 	"\x0eSecurityConfig\x12G\n" +
 	"\x04mode\x18\x01 \x01(\x0e23.otterscale.storage.v1.SMBShare.SecurityConfig.ModeR\x04mode\x12T\n" +
 	"\vlocal_users\x18\v \x03(\v23.otterscale.storage.v1.SMBShare.SecurityConfig.UserR\n" +
@@ -12656,10 +12656,10 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"joinSource\x1a>\n" +
 	"\x04User\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"&\n" +
-	"\x04Mode\x12\b\n" +
-	"\x04USER\x10\x00\x12\x14\n" +
-	"\x10ACTIVE_DIRECTORY\x10\x01J\x04\b\x02\x10\x03\"1\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"0\n" +
+	"\x04Mode\x12\r\n" +
+	"\tMODE_USER\x10\x00\x12\x19\n" +
+	"\x15MODE_ACTIVE_DIRECTORY\x10\x01J\x04\b\x02\x10\x03\"1\n" +
 	"\x13ListMonitorsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"R\n" +
 	"\x14ListMonitorsResponse\x12:\n" +
@@ -12943,22 +12943,21 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x03 \x01(\tR\bpassword\x12'\n" +
 	"\x0fsearch_username\x18\x04 \x01(\tR\x0esearchUsername\x12\x10\n" +
-	"\x03tls\x18\x05 \x01(\bR\x03tls\"\xd5\x01\n" +
+	"\x03tls\x18\x05 \x01(\bR\x03tls\"\xf9\x01\n" +
 	"\x17ValidateSMBUserResponse\x12\x14\n" +
 	"\x05valid\x18\x01 \x01(\bR\x05valid\x12Z\n" +
 	"\ventity_type\x18\x02 \x01(\x0e29.otterscale.storage.v1.ValidateSMBUserResponse.EntityTypeR\n" +
 	"entityType\x12\x18\n" +
-	"\amessage\x18\x03 \x01(\tR\amessage\".\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\"R\n" +
 	"\n" +
-	"EntityType\x12\v\n" +
-	"\aUNKNOWN\x10\x00\x12\b\n" +
-	"\x04USER\x10\x01\x12\t\n" +
-	"\x05GROUP\x10\x02*8\n" +
-	"\bPoolType\x12\x0f\n" +
-	"\vUNSPECIFIED\x10\x00\x12\v\n" +
-	"\aERASURE\x10\x01\x12\x0e\n" +
-	"\n" +
-	"REPLICATED\x10\x022\xdc'\n" +
+	"EntityType\x12\x17\n" +
+	"\x13ENTITY_TYPE_UNKNOWN\x10\x00\x12\x14\n" +
+	"\x10ENTITY_TYPE_USER\x10\x01\x12\x15\n" +
+	"\x11ENTITY_TYPE_GROUP\x10\x02*V\n" +
+	"\bPoolType\x12\x19\n" +
+	"\x15POOL_TYPE_UNSPECIFIED\x10\x00\x12\x15\n" +
+	"\x11POOL_TYPE_ERASURE\x10\x01\x12\x18\n" +
+	"\x14POOL_TYPE_REPLICATED\x10\x022\xdc'\n" +
 	"\x0eStorageService\x12{\n" +
 	"\fListMonitors\x12*.otterscale.storage.v1.ListMonitorsRequest\x1a+.otterscale.storage.v1.ListMonitorsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
 	"\vstg-general\x12\x9f\x01\n" +
