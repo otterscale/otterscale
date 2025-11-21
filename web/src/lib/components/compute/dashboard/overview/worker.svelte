@@ -16,7 +16,7 @@
 	let workers: SampleValue = $state({} as SampleValue);
 	async function fetchWorkers() {
 		const response = await prometheusDriver.instantQuery(
-			`count(kubevirt_info{juju_model="${scope}"})`
+			`sum(kubevirt_vmi_phase_count{juju_model="${scope}"})`
 		);
 		workers = response.result[0]?.value ?? {};
 	}

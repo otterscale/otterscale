@@ -84,13 +84,13 @@
 			{#if cpuWait.value}
 				<div class="flex justify-between gap-2">
 					<p>{m.wait()}</p>
-					<p class="font-mono">{Number(cpuWait).toFixed(2)}%</p>
+					<p class="font-mono">{Number(cpuWait.value).toFixed(2)}%</p>
 				</div>
 			{/if}
 			{#if cpuDelay.value}
 				<div class="flex justify-between gap-2">
 					<p>{m.delay()}</p>
-					<p class="font-mono">{Number(cpuDelay).toFixed(2)}%</p>
+					<p class="font-mono">{Number(cpuDelay.value).toFixed(2)}%</p>
 				</div>
 			{/if}
 		</Card.Action>

@@ -12,7 +12,6 @@
 	let { ref = $bindable(null), class: className, ...restProps }: TabsPrimitive.ListProps = $props();
 
 	const stepManager: StepManager = getContext('StepManager');
-	stepManager.reset();
 	setContext('IndexManager', new IndexManager(stepManager.steps));
 </script>
 

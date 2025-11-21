@@ -52,7 +52,7 @@
 			await Promise.all([fetchReads(), fetchWrites()]);
 			isLoaded = true;
 		} catch (error) {
-			console.error('Failed to fetch network data:', error);
+			console.error('Failed to fetch throughput data:', error);
 		}
 	}
 	const reloadManager = new ReloadManager(fetchData);
