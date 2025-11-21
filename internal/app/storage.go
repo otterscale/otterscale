@@ -547,8 +547,8 @@ func (s *StorageService) UpdateSMBShare(ctx context.Context, req *pb.UpdateSMBSh
 	return resp, nil
 }
 
-func (s *StorageService) ValidateSMBUser(ctx context.Context, req *pb.ValidateSMBUserRequest) (*pb.ValidateSMBUserResponse, error) {
-	result, err := s.smb.ValidateSMBUser(ctx,
+func (s *StorageService) ValidateSMBUser(_ context.Context, req *pb.ValidateSMBUserRequest) (*pb.ValidateSMBUserResponse, error) {
+	entityType, err := s.smb.ValidateSMBUser(
 		req.GetRealm(),
 		req.GetUsername(),
 		req.GetPassword(),
@@ -559,9 +559,13 @@ func (s *StorageService) ValidateSMBUser(ctx context.Context, req *pb.ValidateSM
 	}
 
 	resp := &pb.ValidateSMBUserResponse{}
-	resp.SetValid(result.Valid)
-	resp.SetEntityType(toProtoEntityType(result.EntityType))
-	resp.SetMessage(result.Message)
+	resp.SetValid(entityType != smb.EntityTypeUnknown)
+	resp.SetEntityType(toProtoEntityType(entityType))
+	if entityType != smb.EntityTypeUnknown {
+		resp.SetMessage("validation successful")
+	} else {
+		resp.SetMessage("validation failed")
+	}
 	return resp, nil
 }
 

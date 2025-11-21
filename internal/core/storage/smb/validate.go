@@ -1,33 +1,25 @@
 package smb
 
 import (
-	"context"
 	"crypto/tls"
 	"fmt"
-	"net"
 	"strings"
 
 	"github.com/go-ldap/ldap/v3"
 )
 
-const ldapDefaultPort uint16 = 389
+const (
+	ldapDefaultPort  uint16 = 389
+	ldapsDefaultPort uint16 = 636
+)
 
-type ValidateResult struct {
-	Valid      bool
-	EntityType EntityType
-	Message    string
-}
-
-func (uc *UseCase) parseSearchUsername(searchUsername string) (string, *ValidateResult) {
-	result := &ValidateResult{EntityType: EntityTypeUnknown}
+func (uc *UseCase) parseSearchUsername(searchUsername string) (string, error) {
 	actualSearchName := searchUsername
 
 	if strings.HasPrefix(searchUsername, "@\"") {
 		// Must end with " if starts with @"
 		if !strings.HasSuffix(searchUsername, "\"") {
-			result.Valid = false
-			result.Message = "invalid format: missing closing quote"
-			return "", result
+			return "", fmt.Errorf("invalid format: missing closing quote")
 		}
 
 		// Remove @" prefix and " suffix
@@ -36,9 +28,7 @@ func (uc *UseCase) parseSearchUsername(searchUsername string) (string, *Validate
 
 		// Reject invalid format with forward slash
 		if strings.Contains(actualSearchName, "/") {
-			result.Valid = false
-			result.Message = "invalid format: use backslash (\\) instead of forward slash (/)"
-			return "", result
+			return "", fmt.Errorf("invalid format: use backslash (\\) instead of forward slash (/)")
 		}
 
 		// If format is "DOMAIN\NAME", extract the NAME part
@@ -49,72 +39,51 @@ func (uc *UseCase) parseSearchUsername(searchUsername string) (string, *Validate
 
 	actualSearchName = strings.TrimSpace(actualSearchName)
 	if actualSearchName == "" {
-		result.Valid = false
-		result.Message = "invalid format: empty username or group name"
-		return "", result
+		return "", fmt.Errorf("invalid format: empty username or group name")
 	}
 
 	return actualSearchName, nil
 }
 
-func (uc *UseCase) resolveLDAPServer(ctx context.Context, realm string) (serverName string, port uint16, err error) {
-	resolver := &net.Resolver{}
-	_, srvs, err := resolver.LookupSRV(ctx, "ldap", "tcp", realm)
-	if err == nil && len(srvs) > 0 {
-		return strings.TrimSuffix(srvs[0].Target, "."), srvs[0].Port, nil
-	}
-
-	if addrs, err := resolver.LookupHost(ctx, realm); err == nil && len(addrs) > 0 {
-		return realm, ldapDefaultPort, nil
-	}
-
-	return "", 0, fmt.Errorf("failed to lookup LDAP server: unable to resolve %s", realm)
-}
-
 func (uc *UseCase) connectLDAP(serverName string, port uint16, useTLS bool) (*ldap.Conn, error) {
+	var scheme string
+	var opts []ldap.DialOpt
+
 	ldapURL := fmt.Sprintf("%s:%d", serverName, port)
 
 	if useTLS {
-		conn, err := ldap.DialURL(fmt.Sprintf("ldaps://%s", ldapURL),
-			ldap.DialWithTLSConfig(&tls.Config{
-				ServerName: serverName,
-				MinVersion: tls.VersionTLS12,
-			}))
-		if err != nil {
-			return nil, fmt.Errorf("failed to connect to LDAP server: %w", err)
-		}
-		return conn, nil
+		scheme = "ldaps"
+		opts = append(opts, ldap.DialWithTLSConfig(&tls.Config{
+			ServerName: serverName,
+			MinVersion: tls.VersionTLS12,
+		}))
+	} else {
+		scheme = "ldap"
 	}
 
-	conn, err := ldap.DialURL(fmt.Sprintf("ldap://%s", ldapURL))
+	conn, err := ldap.DialURL(fmt.Sprintf("%s://%s", scheme, ldapURL), opts...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to LDAP server: %w", err)
 	}
 	return conn, nil
 }
 
-func (uc *UseCase) ValidateSMBUser(ctx context.Context, realm, username, password, searchUsername string, useTLS bool) (*ValidateResult, error) {
-	result := &ValidateResult{EntityType: EntityTypeUnknown}
-	searchUsername = strings.TrimSpace(searchUsername)
-
+func (uc *UseCase) ValidateSMBUser(realm, username, password, searchUsername string, useTLS bool) (EntityType, error) {
 	// Parse and validate searchUsername format
-	actualSearchName, parseResult := uc.parseSearchUsername(searchUsername)
-	if parseResult != nil {
-		return parseResult, nil
+	actualSearchName, err := uc.parseSearchUsername(searchUsername)
+	if err != nil {
+		return EntityTypeUnknown, err
 	}
 
-	// Resolve LDAP server
-	serverName, port, err := uc.resolveLDAPServer(ctx, realm)
-	if err != nil {
-		result.Message = "LDAP server not found"
-		return result, err
+	port := ldapDefaultPort
+	if useTLS {
+		port = ldapsDefaultPort
 	}
 
 	// Connect to LDAP server
-	conn, err := uc.connectLDAP(serverName, port, useTLS)
+	conn, err := uc.connectLDAP(realm, port, useTLS)
 	if err != nil {
-		result.Message = "failed to connect"
-		return result, err
+		return EntityTypeUnknown, fmt.Errorf("failed to connect: %w", err)
 	}
 	defer conn.Close()
 
@@ -125,8 +94,7 @@ func (uc *UseCase) ValidateSMBUser(ctx context.Context, realm, username, passwor
 
 	// Bind to LDAP
 	if err = conn.Bind(username, password); err != nil {
-		result.Message = "authentication failed"
-		return result, fmt.Errorf("LDAP bind failed")
+		return EntityTypeUnknown, fmt.Errorf("authentication failed: %w", err)
 	}
 
 	// Search for user or group
@@ -137,20 +105,15 @@ func (uc *UseCase) ValidateSMBUser(ctx context.Context, realm, username, passwor
 		[]string{"objectClass"}, nil,
 	))
 	if err != nil {
-		result.Message = "search failed"
-		return result, fmt.Errorf("LDAP search failed")
+		return EntityTypeUnknown, fmt.Errorf("LDAP search failed: %w", err)
 	}
 
 	if len(sr.Entries) == 0 {
-		result.Message = "user or group not found"
-		return result, nil
+		return EntityTypeUnknown, fmt.Errorf("user or group not found")
 	}
 
-	result.Valid = true
-	result.EntityType = determineEntityType(sr.Entries[0].GetAttributeValues("objectClass"))
-	result.Message = "validation successful"
-
-	return result, nil
+	entityType := determineEntityType(sr.Entries[0].GetAttributeValues("objectClass"))
+	return entityType, nil
 }
 
 func determineEntityType(objectClasses []string) EntityType {
