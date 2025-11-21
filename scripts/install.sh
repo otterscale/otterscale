@@ -1489,6 +1489,8 @@ deploy_helm() {
     execute_cmd "microk8s helm3 repo update" "helm repository update"
 
     local otterscale_endpoint="http://$OTTERSCALE_WEB_IP"
+    local keycloak_realm="otters"
+
     local repository_name
     local deploy_name
     local namespace
@@ -1547,10 +1549,9 @@ deploy_helm() {
         local keycloak_clientID="otterscale"
         log "INFO" "KeyCloak Client ID: $keycloak_clientID" "OTTERSCALE"
 
-        local keycloak_admin_paswd=$(base64 /dev/urandom 2>/dev/null | tr -dc "$charset" | head -c 8)
-        log "INFO" "KeyCloak admin password: $keycloak_admin_paswd" "OTTERSCALE"
-
+        local keycloak_admin_paswd=$(base64 /dev/urandom 2>/dev/null | tr -dc "$charset" | head -c 32)
         local keycloak_secret_token=$(base64 /dev/urandom 2>/dev/null | tr -dc "$charset" | head -c 32)
+        log "INFO" "KeyCloak admin password: $keycloak_admin_paswd" "OTTERSCALE"
         log "INFO" "KeyCloak client secret: $keycloak_secret_token" "OTTERSCALE"
 
         # Create values file
@@ -1558,9 +1559,6 @@ deploy_helm() {
         cat > "$otterscale_helm_values" << EOF
 otterscale:
   openfeature:
-    sidecar:
-      enabled: true
-    flagconfiguration: "application-flags,default-flags,instance-flags,model-flags,storage-flags"
     flags:
       application-flags:
         enabled: true
@@ -1584,7 +1582,7 @@ otterscale:
               "off": false
             defaultVariant: "on"
 
-      default.flags:
+      default-flags:
         enabled: true
         spec:
           app-resource:
@@ -1710,9 +1708,9 @@ otterscale:
 
 otterscaleWeb:
   env:
-    publicWebUrl: "http://$OTTERSCALE_INTERFACE_IP/"
-    publicApiUrl: "http://$OTTERSCALE_INTERFACE_IP/api/"
-    keycloakRealmUrl: "http://$OTTERSCALE_INTERFACE_IP/auth/"
+    publicWebUrl: "http://$OTTERSCALE_WEB_IP"
+    publicApiUrl: "http://$OTTERSCALE_WEB_IP/api"
+    keycloakRealmUrl: "http://$OTTERSCALE_WEB_IP/auth/realms/$keycloak_realm"
     keycloakClientID: "$keycloak_clientID"
     keycloakClientSecret: "$keycloak_secret_token"
 
@@ -1729,7 +1727,7 @@ keycloak:
     configuration:
       phison-realm.json: |
         {
-          "realm": "Phison",
+          "realm": "$keycloak_realm",
           "enabled": true,
           "registrationAllowed": true,
           "rememberMe": true,
@@ -1746,15 +1744,12 @@ keycloak:
               "publicClient": false,
               "serviceAccountsEnabled": false,
               "standardFlowEnabled": true,
-              "implicitFlowEnabled": true,
               "frontchannelLogout": true,
-              "adminUrl": "https://otters.phison.com",
-              "rootUrl": "https://otters.phison.com",
               "redirectUris": [
-                "https://otters.phison.com/api/auth/sso/callback/otterscale-oidc"
+                "http://$OTTERSCALE_WEB_IP/*"
               ],
               "webOrigins": [
-                "https://otters.phison.com"
+                "http://$OTTERSCALE_WEB_IP"
               ],
               "attributes": {
                 "frontchannel.logout.session.required": "true",
