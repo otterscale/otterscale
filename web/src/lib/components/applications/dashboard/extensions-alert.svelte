@@ -55,7 +55,7 @@
 				<div class="flex w-full flex-wrap gap-2">
 					{#each $generalExtensions.filter((extension) => !extension.current) as extension}
 						<Badge variant="outline" class="border-destructive/50 bg-destructive/5 text-destructive"
-							>{extension.name}</Badge
+							>{extension.displayName}</Badge
 						>
 					{/each}
 				</div>
