@@ -4083,143 +4083,6 @@ func (b0 ListConfigMapsResponse_builder) Build() *ListConfigMapsResponse {
 	return m0
 }
 
-type ListNamespacesRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *ListNamespacesRequest) Reset() {
-	*x = ListNamespacesRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[28]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListNamespacesRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListNamespacesRequest) ProtoMessage() {}
-
-func (x *ListNamespacesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[28]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *ListNamespacesRequest) GetScope() string {
-	if x != nil {
-		if x.xxx_hidden_Scope != nil {
-			return *x.xxx_hidden_Scope
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ListNamespacesRequest) SetScope(v string) {
-	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
-}
-
-func (x *ListNamespacesRequest) HasScope() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *ListNamespacesRequest) ClearScope() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Scope = nil
-}
-
-type ListNamespacesRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Scope *string
-}
-
-func (b0 ListNamespacesRequest_builder) Build() *ListNamespacesRequest {
-	m0 := &ListNamespacesRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_Scope = b.Scope
-	}
-	return m0
-}
-
-type ListNamespacesResponse struct {
-	state                 protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Namespaces *[]*Namespace          `protobuf:"bytes,1,rep,name=namespaces"`
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
-}
-
-func (x *ListNamespacesResponse) Reset() {
-	*x = ListNamespacesResponse{}
-	mi := &file_api_application_v1_application_proto_msgTypes[29]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListNamespacesResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListNamespacesResponse) ProtoMessage() {}
-
-func (x *ListNamespacesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[29]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *ListNamespacesResponse) GetNamespaces() []*Namespace {
-	if x != nil {
-		if x.xxx_hidden_Namespaces != nil {
-			return *x.xxx_hidden_Namespaces
-		}
-	}
-	return nil
-}
-
-func (x *ListNamespacesResponse) SetNamespaces(v []*Namespace) {
-	x.xxx_hidden_Namespaces = &v
-}
-
-type ListNamespacesResponse_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Namespaces []*Namespace
-}
-
-func (b0 ListNamespacesResponse_builder) Build() *ListNamespacesResponse {
-	m0 := &ListNamespacesResponse{}
-	b, x := &b0, m0
-	_, _ = b, x
-	x.xxx_hidden_Namespaces = &b.Namespaces
-	return m0
-}
-
 type ListSecretsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
@@ -4232,7 +4095,7 @@ type ListSecretsRequest struct {
 
 func (x *ListSecretsRequest) Reset() {
 	*x = ListSecretsRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[30]
+	mi := &file_api_application_v1_application_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4244,7 +4107,7 @@ func (x *ListSecretsRequest) String() string {
 func (*ListSecretsRequest) ProtoMessage() {}
 
 func (x *ListSecretsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[30]
+	mi := &file_api_application_v1_application_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4340,7 +4203,7 @@ type ListSecretsResponse struct {
 
 func (x *ListSecretsResponse) Reset() {
 	*x = ListSecretsResponse{}
-	mi := &file_api_application_v1_application_proto_msgTypes[31]
+	mi := &file_api_application_v1_application_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4352,7 +4215,7 @@ func (x *ListSecretsResponse) String() string {
 func (*ListSecretsResponse) ProtoMessage() {}
 
 func (x *ListSecretsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[31]
+	mi := &file_api_application_v1_application_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4401,7 +4264,7 @@ type ListStorageClassesRequest struct {
 
 func (x *ListStorageClassesRequest) Reset() {
 	*x = ListStorageClassesRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[32]
+	mi := &file_api_application_v1_application_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4413,7 +4276,7 @@ func (x *ListStorageClassesRequest) String() string {
 func (*ListStorageClassesRequest) ProtoMessage() {}
 
 func (x *ListStorageClassesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[32]
+	mi := &file_api_application_v1_application_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4465,6 +4328,143 @@ func (b0 ListStorageClassesRequest_builder) Build() *ListStorageClassesRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Scope = b.Scope
 	}
+	return m0
+}
+
+type ListNamespacesRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ListNamespacesRequest) Reset() {
+	*x = ListNamespacesRequest{}
+	mi := &file_api_application_v1_application_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListNamespacesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListNamespacesRequest) ProtoMessage() {}
+
+func (x *ListNamespacesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_application_v1_application_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListNamespacesRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListNamespacesRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *ListNamespacesRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ListNamespacesRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+type ListNamespacesRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope *string
+}
+
+func (b0 ListNamespacesRequest_builder) Build() *ListNamespacesRequest {
+	m0 := &ListNamespacesRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	return m0
+}
+
+type ListNamespacesResponse struct {
+	state                 protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Namespaces *[]*Namespace          `protobuf:"bytes,1,rep,name=namespaces"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *ListNamespacesResponse) Reset() {
+	*x = ListNamespacesResponse{}
+	mi := &file_api_application_v1_application_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListNamespacesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListNamespacesResponse) ProtoMessage() {}
+
+func (x *ListNamespacesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_application_v1_application_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListNamespacesResponse) GetNamespaces() []*Namespace {
+	if x != nil {
+		if x.xxx_hidden_Namespaces != nil {
+			return *x.xxx_hidden_Namespaces
+		}
+	}
+	return nil
+}
+
+func (x *ListNamespacesResponse) SetNamespaces(v []*Namespace) {
+	x.xxx_hidden_Namespaces = &v
+}
+
+type ListNamespacesResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Namespaces []*Namespace
+}
+
+func (b0 ListNamespacesResponse_builder) Build() *ListNamespacesResponse {
+	m0 := &ListNamespacesResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Namespaces = &b.Namespaces
 	return m0
 }
 
@@ -7348,69 +7348,67 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"_\n" +
 	"\x16ListConfigMapsResponse\x12E\n" +
 	"\vconfig_maps\x18\x01 \x03(\v2$.otterscale.application.v1.ConfigMapR\n" +
-	"configMaps\"3\n" +
-	"\x15ListNamespacesRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"^\n" +
-	"\x16ListNamespacesResponse\x12D\n" +
-	"\n" +
-	"namespaces\x18\x01 \x03(\v2$.otterscale.application.v1.NamespaceR\n" +
-	"namespaces\"H\n" +
+	"configMaps\"H\n" +
 	"\x12ListSecretsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"R\n" +
 	"\x13ListSecretsResponse\x12;\n" +
 	"\asecrets\x18\x01 \x03(\v2!.otterscale.application.v1.SecretR\asecrets\"7\n" +
 	"\x19ListStorageClassesRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"n\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"3\n" +
+	"\x15ListNamespacesRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"^\n" +
+	"\x16ListNamespacesResponse\x12D\n" +
+	"\n" +
+	"namespaces\x18\x01 \x03(\v2$.otterscale.application.v1.NamespaceR\n" +
+	"namespaces\"n\n" +
 	"\x1aListStorageClassesResponse\x12P\n" +
 	"\x0fstorage_classes\x18\x01 \x03(\v2'.otterscale.application.v1.StorageClassR\x0estorageClasses\"9\n" +
 	"\x12UploadChartRequest\x12#\n" +
-	"\rchart_content\x18\x01 \x01(\fR\fchartContent2\xbc\x15\n" +
-	"\x12ApplicationService\x12\x8f\x01\n" +
-	"\x10ListApplications\x122.otterscale.application.v1.ListApplicationsRequest\x1a3.otterscale.application.v1.ListApplicationsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vapp-general\x12~\n" +
-	"\x0eGetApplication\x120.otterscale.application.v1.GetApplicationRequest\x1a&.otterscale.application.v1.Application\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vapp-general\x12x\n" +
-	"\x12RestartApplication\x124.otterscale.application.v1.RestartApplicationRequest\x1a\x16.google.protobuf.Empty\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
-	"\rapp-container\x12t\n" +
-	"\x10ScaleApplication\x122.otterscale.application.v1.ScaleApplicationRequest\x1a\x16.google.protobuf.Empty\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
-	"\rapp-container\x12|\n" +
-	"\x14DeleteApplicationPod\x126.otterscale.application.v1.DeleteApplicationPodRequest\x1a\x16.google.protobuf.Empty\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
-	"\rapp-container\x12~\n" +
-	"\tWatchLogs\x12+.otterscale.application.v1.WatchLogsRequest\x1a,.otterscale.application.v1.WatchLogsResponse\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
-	"\rapp-container0\x01\x12\x81\x01\n" +
+	"\rchart_content\x18\x01 \x01(\fR\fchartContent2\x84\x16\n" +
+	"\x12ApplicationService\x12\x97\x01\n" +
+	"\x10ListApplications\x122.otterscale.application.v1.ListApplicationsRequest\x1a3.otterscale.application.v1.ListApplicationsResponse\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12\x86\x01\n" +
+	"\x0eGetApplication\x120.otterscale.application.v1.GetApplicationRequest\x1a&.otterscale.application.v1.Application\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12~\n" +
+	"\x12RestartApplication\x124.otterscale.application.v1.RestartApplicationRequest\x1a\x16.google.protobuf.Empty\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12z\n" +
+	"\x10ScaleApplication\x122.otterscale.application.v1.ScaleApplicationRequest\x1a\x16.google.protobuf.Empty\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12\x82\x01\n" +
+	"\x14DeleteApplicationPod\x126.otterscale.application.v1.DeleteApplicationPodRequest\x1a\x16.google.protobuf.Empty\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12\x84\x01\n" +
+	"\tWatchLogs\x12+.otterscale.application.v1.WatchLogsRequest\x1a,.otterscale.application.v1.WatchLogsResponse\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled0\x01\x12\x87\x01\n" +
 	"\n" +
-	"ExecuteTTY\x12,.otterscale.application.v1.ExecuteTTYRequest\x1a-.otterscale.application.v1.ExecuteTTYResponse\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
-	"\rapp-container0\x01\x12d\n" +
-	"\bWriteTTY\x12*.otterscale.application.v1.WriteTTYRequest\x1a\x16.google.protobuf.Empty\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
-	"\rapp-container\x12\x86\x01\n" +
-	"\fListReleases\x12..otterscale.application.v1.ListReleasesRequest\x1a/.otterscale.application.v1.ListReleasesResponse\"\x15\x8a\xdf\xd5\x1d\x10\n" +
-	"\x0eapp-helm-chart\x12\x87\x01\n" +
-	"\rCreateRelease\x12/.otterscale.application.v1.CreateReleaseRequest\x1a..otterscale.application.v1.Application.Release\"\x15\x8a\xdf\xd5\x1d\x10\n" +
-	"\x0eapp-helm-chart\x12\x87\x01\n" +
-	"\rUpdateRelease\x12/.otterscale.application.v1.UpdateReleaseRequest\x1a..otterscale.application.v1.Application.Release\"\x15\x8a\xdf\xd5\x1d\x10\n" +
-	"\x0eapp-helm-chart\x12o\n" +
-	"\rDeleteRelease\x12/.otterscale.application.v1.DeleteReleaseRequest\x1a\x16.google.protobuf.Empty\"\x15\x8a\xdf\xd5\x1d\x10\n" +
-	"\x0eapp-helm-chart\x12s\n" +
-	"\x0fRollbackRelease\x121.otterscale.application.v1.RollbackReleaseRequest\x1a\x16.google.protobuf.Empty\"\x15\x8a\xdf\xd5\x1d\x10\n" +
-	"\x0eapp-helm-chart\x12\x80\x01\n" +
+	"ExecuteTTY\x12,.otterscale.application.v1.ExecuteTTYRequest\x1a-.otterscale.application.v1.ExecuteTTYResponse\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled0\x01\x12j\n" +
+	"\bWriteTTY\x12*.otterscale.application.v1.WriteTTYRequest\x1a\x16.google.protobuf.Empty\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12\x8b\x01\n" +
+	"\fListReleases\x12..otterscale.application.v1.ListReleasesRequest\x1a/.otterscale.application.v1.ListReleasesResponse\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12\x8c\x01\n" +
+	"\rCreateRelease\x12/.otterscale.application.v1.CreateReleaseRequest\x1a..otterscale.application.v1.Application.Release\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12\x8c\x01\n" +
+	"\rUpdateRelease\x12/.otterscale.application.v1.UpdateReleaseRequest\x1a..otterscale.application.v1.Application.Release\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12t\n" +
+	"\rDeleteRelease\x12/.otterscale.application.v1.DeleteReleaseRequest\x1a\x16.google.protobuf.Empty\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12x\n" +
+	"\x0fRollbackRelease\x121.otterscale.application.v1.RollbackReleaseRequest\x1a\x16.google.protobuf.Empty\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12\x85\x01\n" +
 	"\n" +
-	"ListCharts\x12,.otterscale.application.v1.ListChartsRequest\x1a-.otterscale.application.v1.ListChartsResponse\"\x15\x8a\xdf\xd5\x1d\x10\n" +
-	"\x0eapp-helm-chart\x12{\n" +
-	"\bGetChart\x12*.otterscale.application.v1.GetChartRequest\x1a,.otterscale.application.v1.Application.Chart\"\x15\x8a\xdf\xd5\x1d\x10\n" +
-	"\x0eapp-helm-chart\x12\x94\x01\n" +
-	"\x10GetChartMetadata\x122.otterscale.application.v1.GetChartMetadataRequest\x1a5.otterscale.application.v1.Application.Chart.Metadata\"\x15\x8a\xdf\xd5\x1d\x10\n" +
-	"\x0eapp-helm-chart\x12k\n" +
-	"\vUploadChart\x12-.otterscale.application.v1.UploadChartRequest\x1a\x16.google.protobuf.Empty\"\x15\x8a\xdf\xd5\x1d\x10\n" +
-	"\x0eapp-helm-chart\x12\x8a\x01\n" +
-	"\x0eListNamespaces\x120.otterscale.application.v1.ListNamespacesRequest\x1a1.otterscale.application.v1.ListNamespacesResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\fapp-resource\x12\x8a\x01\n" +
-	"\x0eListConfigMaps\x120.otterscale.application.v1.ListConfigMapsRequest\x1a1.otterscale.application.v1.ListConfigMapsResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\fapp-resource\x12\x81\x01\n" +
-	"\vListSecrets\x12-.otterscale.application.v1.ListSecretsRequest\x1a..otterscale.application.v1.ListSecretsResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\fapp-resource\x12\x96\x01\n" +
-	"\x12ListStorageClasses\x124.otterscale.application.v1.ListStorageClassesRequest\x1a5.otterscale.application.v1.ListStorageClassesResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\fapp-resourceB8Z6github.com/otterscale/otterscale/api/application/v1;pbb\beditionsp\xe8\a"
+	"ListCharts\x12,.otterscale.application.v1.ListChartsRequest\x1a-.otterscale.application.v1.ListChartsResponse\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12\x80\x01\n" +
+	"\bGetChart\x12*.otterscale.application.v1.GetChartRequest\x1a,.otterscale.application.v1.Application.Chart\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12\x99\x01\n" +
+	"\x10GetChartMetadata\x122.otterscale.application.v1.GetChartMetadataRequest\x1a5.otterscale.application.v1.Application.Chart.Metadata\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12p\n" +
+	"\vUploadChart\x12-.otterscale.application.v1.UploadChartRequest\x1a\x16.google.protobuf.Empty\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12\x91\x01\n" +
+	"\x0eListConfigMaps\x120.otterscale.application.v1.ListConfigMapsRequest\x1a1.otterscale.application.v1.ListConfigMapsResponse\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12\x88\x01\n" +
+	"\vListSecrets\x12-.otterscale.application.v1.ListSecretsRequest\x1a..otterscale.application.v1.ListSecretsResponse\"\x1a\x8a\xdf\xd5\x1d\x15\n" +
+	"\x13application-enabled\x12u\n" +
+	"\x0eListNamespaces\x120.otterscale.application.v1.ListNamespacesRequest\x1a1.otterscale.application.v1.ListNamespacesResponse\x12\x81\x01\n" +
+	"\x12ListStorageClasses\x124.otterscale.application.v1.ListStorageClassesRequest\x1a5.otterscale.application.v1.ListStorageClassesResponseB8Z6github.com/otterscale/otterscale/api/application/v1;pbb\beditionsp\xe8\a"
 
 var file_api_application_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 58)
 var file_api_application_v1_application_proto_goTypes = []any{
@@ -7442,11 +7440,11 @@ var file_api_application_v1_application_proto_goTypes = []any{
 	(*GetChartMetadataRequest)(nil),           // 25: otterscale.application.v1.GetChartMetadataRequest
 	(*ListConfigMapsRequest)(nil),             // 26: otterscale.application.v1.ListConfigMapsRequest
 	(*ListConfigMapsResponse)(nil),            // 27: otterscale.application.v1.ListConfigMapsResponse
-	(*ListNamespacesRequest)(nil),             // 28: otterscale.application.v1.ListNamespacesRequest
-	(*ListNamespacesResponse)(nil),            // 29: otterscale.application.v1.ListNamespacesResponse
-	(*ListSecretsRequest)(nil),                // 30: otterscale.application.v1.ListSecretsRequest
-	(*ListSecretsResponse)(nil),               // 31: otterscale.application.v1.ListSecretsResponse
-	(*ListStorageClassesRequest)(nil),         // 32: otterscale.application.v1.ListStorageClassesRequest
+	(*ListSecretsRequest)(nil),                // 28: otterscale.application.v1.ListSecretsRequest
+	(*ListSecretsResponse)(nil),               // 29: otterscale.application.v1.ListSecretsResponse
+	(*ListStorageClassesRequest)(nil),         // 30: otterscale.application.v1.ListStorageClassesRequest
+	(*ListNamespacesRequest)(nil),             // 31: otterscale.application.v1.ListNamespacesRequest
+	(*ListNamespacesResponse)(nil),            // 32: otterscale.application.v1.ListNamespacesResponse
 	(*ListStorageClassesResponse)(nil),        // 33: otterscale.application.v1.ListStorageClassesResponse
 	(*UploadChartRequest)(nil),                // 34: otterscale.application.v1.UploadChartRequest
 	nil,                                       // 35: otterscale.application.v1.Namespace.LabelsEntry
@@ -7503,8 +7501,8 @@ var file_api_application_v1_application_proto_depIdxs = []int32{
 	57, // 22: otterscale.application.v1.CreateReleaseRequest.values_map:type_name -> otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
 	36, // 23: otterscale.application.v1.ListChartsResponse.charts:type_name -> otterscale.application.v1.Application.Chart
 	3,  // 24: otterscale.application.v1.ListConfigMapsResponse.config_maps:type_name -> otterscale.application.v1.ConfigMap
-	0,  // 25: otterscale.application.v1.ListNamespacesResponse.namespaces:type_name -> otterscale.application.v1.Namespace
-	4,  // 26: otterscale.application.v1.ListSecretsResponse.secrets:type_name -> otterscale.application.v1.Secret
+	4,  // 25: otterscale.application.v1.ListSecretsResponse.secrets:type_name -> otterscale.application.v1.Secret
+	0,  // 26: otterscale.application.v1.ListNamespacesResponse.namespaces:type_name -> otterscale.application.v1.Namespace
 	2,  // 27: otterscale.application.v1.ListStorageClassesResponse.storage_classes:type_name -> otterscale.application.v1.StorageClass
 	46, // 28: otterscale.application.v1.Application.Chart.maintainers:type_name -> otterscale.application.v1.Application.Chart.Maintainer
 	47, // 29: otterscale.application.v1.Application.Chart.dependencies:type_name -> otterscale.application.v1.Application.Chart.Dependency
@@ -7537,10 +7535,10 @@ var file_api_application_v1_application_proto_depIdxs = []int32{
 	24, // 56: otterscale.application.v1.ApplicationService.GetChart:input_type -> otterscale.application.v1.GetChartRequest
 	25, // 57: otterscale.application.v1.ApplicationService.GetChartMetadata:input_type -> otterscale.application.v1.GetChartMetadataRequest
 	34, // 58: otterscale.application.v1.ApplicationService.UploadChart:input_type -> otterscale.application.v1.UploadChartRequest
-	28, // 59: otterscale.application.v1.ApplicationService.ListNamespaces:input_type -> otterscale.application.v1.ListNamespacesRequest
-	26, // 60: otterscale.application.v1.ApplicationService.ListConfigMaps:input_type -> otterscale.application.v1.ListConfigMapsRequest
-	30, // 61: otterscale.application.v1.ApplicationService.ListSecrets:input_type -> otterscale.application.v1.ListSecretsRequest
-	32, // 62: otterscale.application.v1.ApplicationService.ListStorageClasses:input_type -> otterscale.application.v1.ListStorageClassesRequest
+	26, // 59: otterscale.application.v1.ApplicationService.ListConfigMaps:input_type -> otterscale.application.v1.ListConfigMapsRequest
+	28, // 60: otterscale.application.v1.ApplicationService.ListSecrets:input_type -> otterscale.application.v1.ListSecretsRequest
+	31, // 61: otterscale.application.v1.ApplicationService.ListNamespaces:input_type -> otterscale.application.v1.ListNamespacesRequest
+	30, // 62: otterscale.application.v1.ApplicationService.ListStorageClasses:input_type -> otterscale.application.v1.ListStorageClassesRequest
 	6,  // 63: otterscale.application.v1.ApplicationService.ListApplications:output_type -> otterscale.application.v1.ListApplicationsResponse
 	1,  // 64: otterscale.application.v1.ApplicationService.GetApplication:output_type -> otterscale.application.v1.Application
 	61, // 65: otterscale.application.v1.ApplicationService.RestartApplication:output_type -> google.protobuf.Empty
@@ -7558,9 +7556,9 @@ var file_api_application_v1_application_proto_depIdxs = []int32{
 	36, // 77: otterscale.application.v1.ApplicationService.GetChart:output_type -> otterscale.application.v1.Application.Chart
 	45, // 78: otterscale.application.v1.ApplicationService.GetChartMetadata:output_type -> otterscale.application.v1.Application.Chart.Metadata
 	61, // 79: otterscale.application.v1.ApplicationService.UploadChart:output_type -> google.protobuf.Empty
-	29, // 80: otterscale.application.v1.ApplicationService.ListNamespaces:output_type -> otterscale.application.v1.ListNamespacesResponse
-	27, // 81: otterscale.application.v1.ApplicationService.ListConfigMaps:output_type -> otterscale.application.v1.ListConfigMapsResponse
-	31, // 82: otterscale.application.v1.ApplicationService.ListSecrets:output_type -> otterscale.application.v1.ListSecretsResponse
+	27, // 80: otterscale.application.v1.ApplicationService.ListConfigMaps:output_type -> otterscale.application.v1.ListConfigMapsResponse
+	29, // 81: otterscale.application.v1.ApplicationService.ListSecrets:output_type -> otterscale.application.v1.ListSecretsResponse
+	32, // 82: otterscale.application.v1.ApplicationService.ListNamespaces:output_type -> otterscale.application.v1.ListNamespacesResponse
 	33, // 83: otterscale.application.v1.ApplicationService.ListStorageClasses:output_type -> otterscale.application.v1.ListStorageClassesResponse
 	63, // [63:84] is the sub-list for method output_type
 	42, // [42:63] is the sub-list for method input_type

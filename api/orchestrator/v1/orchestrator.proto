@@ -9,65 +9,33 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/otterscale/otterscale/api/orchestrator/v1;pb";
 
 service OrchestratorService {
-  rpc CreateNode(CreateNodeRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {
-      name: "orch-general"
-    };
-  };
+  rpc CreateNode(CreateNodeRequest) returns (google.protobuf.Empty);
 
-  rpc CreateCluster(CreateClusterRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {
-      name: "orch-general"
-    };
-  };
+  rpc CreateCluster(CreateClusterRequest) returns (google.protobuf.Empty);
 
-  rpc AddClusterUnits(AddClusterUnitsRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {
-      name: "orch-general"
-    };
-  };
+  rpc AddClusterUnits(AddClusterUnitsRequest) returns (google.protobuf.Empty);
 
-  rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse) {
-    option (otterscale.api.feature) = {
-      name: "orch-general"
-    };
-  };
+  rpc ListKubernetesNodeLabels(ListKubernetesNodeLabelsRequest) returns (ListKubernetesNodeLabelsResponse);
 
-  rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse) {
-    option (otterscale.api.feature) = {
-      name: "orch-general"
-    };
-  };
+  rpc UpdateKubernetesNodeLabels(UpdateKubernetesNodeLabelsRequest) returns (UpdateKubernetesNodeLabelsResponse);
 
   rpc ListGPURelationsByMachine(ListGPURelationsByMachineRequest) returns (ListGPURelationsByMachineResponse) {
     option (otterscale.api.feature) = {
-      name: "mdl-general"
+      name: "model-enabled"
     };
   };
 
   rpc ListGPURelationsByModel(ListGPURelationsByModelRequest) returns (ListGPURelationsByModelResponse) {
     option (otterscale.api.feature) = {
-      name: "mdl-general"
+      name: "model-enabled"
     };
   };
 
-  rpc ListExtensions(ListExtensionsRequest) returns (ListExtensionsResponse) {
-    option (otterscale.api.feature) = {
-      name: "orch-general"
-    };
-  };
+  rpc ListExtensions(ListExtensionsRequest) returns (ListExtensionsResponse);
 
-  rpc InstallExtensions(InstallExtensionsRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {
-      name: "orch-general"
-    };
-  };
+  rpc InstallExtensions(InstallExtensionsRequest) returns (google.protobuf.Empty);
 
-  rpc UpgradeExtensions(UpgradeExtensionsRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {
-      name: "orch-general"
-    };
-  };
+  rpc UpgradeExtensions(UpgradeExtensionsRequest) returns (google.protobuf.Empty);
 }
 
 message CreateNodeRequest {
