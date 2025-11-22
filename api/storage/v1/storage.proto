@@ -842,7 +842,5 @@ message ValidateSMBUserResponse {
     ENTITY_TYPE_USER = 1;
     ENTITY_TYPE_GROUP = 2;
   }
-  bool valid = 1;
-  EntityType entity_type = 2;
-  string message = 3;
+  EntityType entity_type = 1;
 }

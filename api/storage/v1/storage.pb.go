@@ -11158,9 +11158,7 @@ func (b0 ValidateSMBUserRequest_builder) Build() *ValidateSMBUserRequest {
 
 type ValidateSMBUserResponse struct {
 	state                  protoimpl.MessageState             `protogen:"opaque.v1"`
-	xxx_hidden_Valid       bool                               `protobuf:"varint,1,opt,name=valid"`
-	xxx_hidden_EntityType  ValidateSMBUserResponse_EntityType `protobuf:"varint,2,opt,name=entity_type,json=entityType,enum=otterscale.storage.v1.ValidateSMBUserResponse_EntityType"`
-	xxx_hidden_Message     *string                            `protobuf:"bytes,3,opt,name=message"`
+	xxx_hidden_EntityType  ValidateSMBUserResponse_EntityType `protobuf:"varint,1,opt,name=entity_type,json=entityType,enum=otterscale.storage.v1.ValidateSMBUserResponse_EntityType"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -11192,106 +11190,45 @@ func (x *ValidateSMBUserResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ValidateSMBUserResponse) GetValid() bool {
-	if x != nil {
-		return x.xxx_hidden_Valid
-	}
-	return false
-}
-
 func (x *ValidateSMBUserResponse) GetEntityType() ValidateSMBUserResponse_EntityType {
 	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 1) {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
 			return x.xxx_hidden_EntityType
 		}
 	}
 	return ValidateSMBUserResponse_ENTITY_TYPE_UNKNOWN
 }
 
-func (x *ValidateSMBUserResponse) GetMessage() string {
-	if x != nil {
-		if x.xxx_hidden_Message != nil {
-			return *x.xxx_hidden_Message
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ValidateSMBUserResponse) SetValid(v bool) {
-	x.xxx_hidden_Valid = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
 func (x *ValidateSMBUserResponse) SetEntityType(v ValidateSMBUserResponse_EntityType) {
 	x.xxx_hidden_EntityType = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
-}
-
-func (x *ValidateSMBUserResponse) SetMessage(v string) {
-	x.xxx_hidden_Message = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
-}
-
-func (x *ValidateSMBUserResponse) HasValid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *ValidateSMBUserResponse) HasEntityType() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *ValidateSMBUserResponse) HasMessage() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *ValidateSMBUserResponse) ClearValid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Valid = false
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
 func (x *ValidateSMBUserResponse) ClearEntityType() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_EntityType = ValidateSMBUserResponse_ENTITY_TYPE_UNKNOWN
-}
-
-func (x *ValidateSMBUserResponse) ClearMessage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Message = nil
 }
 
 type ValidateSMBUserResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Valid      *bool
 	EntityType *ValidateSMBUserResponse_EntityType
-	Message    *string
 }
 
 func (b0 ValidateSMBUserResponse_builder) Build() *ValidateSMBUserResponse {
 	m0 := &ValidateSMBUserResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Valid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
-		x.xxx_hidden_Valid = *b.Valid
-	}
 	if b.EntityType != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_EntityType = *b.EntityType
-	}
-	if b.Message != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
-		x.xxx_hidden_Message = b.Message
 	}
 	return m0
 }
@@ -12943,12 +12880,10 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x03 \x01(\tR\bpassword\x12'\n" +
 	"\x0fsearch_username\x18\x04 \x01(\tR\x0esearchUsername\x12\x10\n" +
-	"\x03tls\x18\x05 \x01(\bR\x03tls\"\xf9\x01\n" +
-	"\x17ValidateSMBUserResponse\x12\x14\n" +
-	"\x05valid\x18\x01 \x01(\bR\x05valid\x12Z\n" +
-	"\ventity_type\x18\x02 \x01(\x0e29.otterscale.storage.v1.ValidateSMBUserResponse.EntityTypeR\n" +
-	"entityType\x12\x18\n" +
-	"\amessage\x18\x03 \x01(\tR\amessage\"R\n" +
+	"\x03tls\x18\x05 \x01(\bR\x03tls\"\xc9\x01\n" +
+	"\x17ValidateSMBUserResponse\x12Z\n" +
+	"\ventity_type\x18\x01 \x01(\x0e29.otterscale.storage.v1.ValidateSMBUserResponse.EntityTypeR\n" +
+	"entityType\"R\n" +
 	"\n" +
 	"EntityType\x12\x17\n" +
 	"\x13ENTITY_TYPE_UNKNOWN\x10\x00\x12\x14\n" +
