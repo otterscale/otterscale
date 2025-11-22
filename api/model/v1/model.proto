@@ -52,19 +52,12 @@ service ModelService {
   };
 }
 
-// TODO: namespace -> httproute
-message HTTPRoute {}
-
-// TODO: selector -> model
-message InferencePool {}
-
 message Model {
   message Resource {
     uint32 vgpu = 1;
     uint32 vgpumem_percentage = 2;
   }
   string id = 1;
-  string inference_pool_name = 2;
   string name = 11;
   string namespace = 12;
   string status = 13;
@@ -94,6 +87,9 @@ message CreateModelRequest {
   string namespace = 3;
   string name = 4;
   string model_name = 11;
+  uint64 size_bytes = 12;
+  Model.Resource limits = 21;
+  Model.Resource requests = 22;
 }
 
 message UpdateModelRequest {
@@ -101,8 +97,8 @@ message UpdateModelRequest {
   reserved 2;
   string namespace = 3;
   string name = 4;
-  Model.Resource limits = 11;
-  Model.Resource requests = 12;
+  Model.Resource limits = 21;
+  Model.Resource requests = 22;
 }
 
 message DeleteModelRequest {
