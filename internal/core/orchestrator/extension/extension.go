@@ -11,8 +11,6 @@ import (
 	"helm.sh/helm/v3/pkg/storage/driver"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"sigs.k8s.io/kustomize/api/krusty"
-	"sigs.k8s.io/kustomize/api/resmap"
-	"sigs.k8s.io/kustomize/api/resource"
 	"sigs.k8s.io/kustomize/kyaml/filesys"
 
 	"github.com/otterscale/otterscale/internal/core/application/chart"
@@ -21,12 +19,12 @@ import (
 )
 
 type Manifest struct {
-	ID      string
+	Name    string
 	Version string
 }
 
 type Extension struct {
-	Name        string
+	DisplayName string
 	Description string
 	Icon        string
 	Status      string
@@ -76,7 +74,7 @@ func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifest
 
 	for _, manifest := range manifests {
 		eg.Go(func() error {
-			base, err := uc.base(manifest.ID)
+			base, err := uc.base(manifest.Name)
 			if err != nil {
 				return err
 			}
@@ -84,18 +82,7 @@ func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifest
 			for i := range base.Charts {
 				chart := base.Charts[i]
 
-				version, err := uc.chart.GetVersion(egctx, chart.RepoURL, base.ID, chart.Version, true)
-				if err != nil {
-					return err
-				}
-
-				if len(version.URLs) == 0 {
-					return fmt.Errorf("no chart url found for %q version %q", base.ID, manifest.Version)
-				}
-
-				chartRef := version.URLs[0]
-
-				if _, err := uc.release.Install(egctx, scope, chart.Namespace, base.Name, false, chartRef, chart.Labels, chart.Labels, chart.Annotations, "", chart.ValuesMap); err != nil {
+				if _, err := uc.release.Install(egctx, scope, base.Namespace, base.Name, false, chart.Ref, chart.Labels, chart.Labels, chart.Annotations, "", chart.ValuesMap); err != nil {
 					return err
 				}
 
@@ -112,7 +99,7 @@ func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifest
 				fSys := filesys.MakeFsOnDisk()
 				k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
 
-				m, err := k.Run(fSys, uc.remoteCRDFormat(crd.RepoURL, manifest.Version))
+				m, err := k.Run(fSys, crd.Ref)
 				if err != nil {
 					return err
 				}
@@ -146,7 +133,7 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, manifest
 
 	for _, manifest := range manifests {
 		eg.Go(func() error {
-			base, err := uc.base(manifest.ID)
+			base, err := uc.base(manifest.Name)
 			if err != nil {
 				return err
 			}
@@ -154,18 +141,7 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, manifest
 			for i := range base.Charts {
 				chart := base.Charts[i]
 
-				version, err := uc.chart.GetVersion(egctx, chart.RepoURL, base.ID, chart.Version, true)
-				if err != nil {
-					return err
-				}
-
-				if len(version.URLs) == 0 {
-					return fmt.Errorf("no chart url found for %q version %q", base.ID, manifest.Version)
-				}
-
-				chartRef := version.URLs[0]
-
-				if _, err := uc.release.Upgrade(egctx, scope, chart.Namespace, base.Name, false, chartRef, "", chart.ValuesMap, true); err != nil {
+				if _, err := uc.release.Upgrade(egctx, scope, base.Namespace, base.Name, false, chart.Ref, "", chart.ValuesMap, true); err != nil {
 					return err
 				}
 			}
@@ -176,7 +152,7 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, manifest
 				fSys := filesys.MakeFsOnDisk()
 				k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
 
-				m, err := k.Run(fSys, uc.remoteCRDFormat(crd.RepoURL, manifest.Version))
+				m, err := k.Run(fSys, crd.Ref)
 				if err != nil {
 					return err
 				}
@@ -206,37 +182,17 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, manifest
 }
 
 func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []base) ([]Extension, error) {
-	versions := make([]chart.Version, len(bases))
 	releases := make([]release.Release, len(bases))
-	resMaps := make([]resmap.ResMap, len(bases))
-	crds := make([]cluster.CustomResourceDefinition, len(bases))
+	crds := []cluster.CustomResourceDefinition{}
 
 	eg, egctx := errgroup.WithContext(ctx)
-
-	eg.Go(func() error {
-		v, err := uc.customResourceDefinition.List(egctx, scope, "")
-		if err == nil {
-			crds = v
-		}
-		return err
-	})
 
 	for i := range bases {
 		base := bases[i]
 
 		if len(base.Charts) > 0 {
-			chart := base.Charts[0] // only get the parent chart
-
 			eg.Go(func() error {
-				v, err := uc.chart.GetVersion(egctx, chart.RepoURL, base.ID, chart.Version, true)
-				if err == nil {
-					versions[i] = *v
-				}
-				return err
-			})
-
-			eg.Go(func() error {
-				v, err := uc.release.Get(egctx, scope, chart.Namespace, base.ID)
+				v, err := uc.release.Get(egctx, scope, base.Namespace, base.Name)
 				if err == nil {
 					releases[i] = *v
 				}
@@ -246,23 +202,15 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 				return err
 			})
 		}
-
-		crd := base.CRD
-
-		if crd != nil {
-			eg.Go(func() error {
-				fSys := filesys.MakeFsOnDisk()
-				k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
-
-				resMap, err := k.Run(fSys, uc.remoteCRDFormat(crd.RepoURL, crd.Version))
-				if err == nil {
-					resMaps[i] = resMap
-				}
-
-				return err
-			})
-		}
 	}
+
+	eg.Go(func() error {
+		v, err := uc.customResourceDefinition.List(egctx, scope, "")
+		if err == nil {
+			crds = v
+		}
+		return err
+	})
 
 	if err := eg.Wait(); err != nil {
 		return nil, err
@@ -274,30 +222,20 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 		base := bases[i]
 
 		if len(base.Charts) > 0 {
-			ret = append(ret, *uc.buildExtensionFromChart(&base, &releases[i], &versions[i]))
-
-			continue
+			ret = append(ret, *uc.buildExtensionFromChart(&base, &releases[i]))
 		}
 
 		crd := base.CRD
 
 		if crd != nil {
-			if len(resMaps[i].Resources()) == 0 {
-				return nil, fmt.Errorf("no crd resource found for %q", base.ID)
-			}
-
-			resource := resMaps[i].Resources()[0]
-
-			ret = append(ret, *uc.buildExtensionFromCRD(&base, crds, resource, crd.AnnotationVersionKey))
-
-			continue
+			ret = append(ret, *uc.buildExtensionFromCRD(&base, crds, crd.AnnotationVersionKey))
 		}
 	}
 
 	return ret, nil
 }
 
-func (uc *UseCase) buildExtensionFromChart(base *base, release *release.Release, version *chart.Version) *Extension {
+func (uc *UseCase) buildExtensionFromChart(base *base, release *release.Release) *Extension {
 	var (
 		status     string
 		deployedAt *time.Time
@@ -309,20 +247,24 @@ func (uc *UseCase) buildExtensionFromChart(base *base, release *release.Release,
 		status = release.Info.Status.String()
 		deployedAt = &release.Info.LastDeployed.Time
 		current = &Manifest{
-			ID:      release.Chart.Metadata.Name,
+			Name:    release.Chart.Metadata.Name,
 			Version: release.Chart.Metadata.Version,
 		}
 	}
 
-	if len(version.URLs) > 0 {
+	charts := base.Charts
+
+	if len(charts) > 0 {
+		chart := charts[0]
+
 		latest = &Manifest{
-			ID:      version.Name,
-			Version: version.Version,
+			Name:    base.Name,
+			Version: chart.Version,
 		}
 	}
 
 	return &Extension{
-		Name:        base.Name,
+		DisplayName: base.DisplayName,
 		Description: base.Description,
 		Icon:        base.Logo,
 		Status:      status,
@@ -332,7 +274,7 @@ func (uc *UseCase) buildExtensionFromChart(base *base, release *release.Release,
 	}
 }
 
-func (uc *UseCase) buildExtensionFromCRD(base *base, crds []cluster.CustomResourceDefinition, resource *resource.Resource, annotationVersionKey string) *Extension {
+func (uc *UseCase) buildExtensionFromCRD(base *base, crds []cluster.CustomResourceDefinition, annotationVersionKey string) *Extension {
 	var (
 		status     string
 		deployedAt *time.Time
@@ -345,22 +287,24 @@ func (uc *UseCase) buildExtensionFromCRD(base *base, crds []cluster.CustomResour
 			status = "deployed"
 			deployedAt = &crds[i].CreationTimestamp.Time
 			current = &Manifest{
-				ID:      base.ID,
+				Name:    base.Name,
 				Version: version,
 			}
 			break
 		}
 	}
 
-	if version, ok := resource.GetAnnotations()[annotationVersionKey]; ok {
+	crd := base.CRD
+
+	if crd != nil {
 		latest = &Manifest{
-			ID:      base.ID,
-			Version: version,
+			Name:    base.Name,
+			Version: crd.Version,
 		}
 	}
 
 	return &Extension{
-		Name:        base.Name,
+		DisplayName: base.DisplayName,
 		Description: base.Description,
 		Icon:        base.Logo,
 		Status:      status,
@@ -368,8 +312,4 @@ func (uc *UseCase) buildExtensionFromCRD(base *base, crds []cluster.CustomResour
 		Current:     current,
 		Latest:      latest,
 	}
-}
-
-func (uc *UseCase) remoteCRDFormat(repoURL, version string) string {
-	return fmt.Sprintf("%s?ref=%s", repoURL, version)
 }

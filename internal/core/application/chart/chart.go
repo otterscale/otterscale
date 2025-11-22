@@ -55,7 +55,6 @@ type ChartRepo interface {
 	Show(ctx context.Context, chartRef string, format action.ShowOutputFormat) (string, error)
 	Push(ctx context.Context, chartRef, remoteOCI string) (string, error)
 	Index(ctx context.Context, dir, url string) error
-	GetVersion(ctx context.Context, url, name, version string, useCache bool) (*Version, error)
 	LocalOCI(scope string) (string, error)
 }
 
