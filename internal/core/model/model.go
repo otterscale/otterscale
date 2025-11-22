@@ -78,7 +78,7 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*Model, error) {
 	gatewayName := "llm-d-inference-gateway" // from llm-d-infra helm chart (.Values.nameOverride)
 	inferencePoolName := "inferencepool-" + shortID(modelName)
-	inferencePoolPort := int32(8000)
+	inferencePoolPort := int32(8000) //nolint:mnd // default port for inference pool
 	httpRouteName := "httproute-" + shortID(gatewayName+inferencePoolName)
 
 	// check gateway exists
@@ -126,7 +126,7 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 		return nil, fmt.Errorf("modelArtifacts.size is not a int64")
 	}
 
-	return uc.upgradeModelService(ctx, scope, namespace, name, modelName, uint64(sizeBytes), limits, requests)
+	return uc.upgradeModelService(ctx, scope, namespace, name, modelName, uint64(sizeBytes), limits, requests) //nolint:gosec // ignore
 }
 
 func (uc *UseCase) DeleteModel(ctx context.Context, scope, namespace, name string) error {

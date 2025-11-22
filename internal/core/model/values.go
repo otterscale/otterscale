@@ -104,6 +104,8 @@ istio:
 `
 
 // llm-d Model Service v0.3.6
+//
+//nolint:misspell // ignore
 const modelServiceValuesYAML = `# yaml-language-server: $schema=values.schema.json
 # This values.yaml file is a default values file. It can be overridden using another.
 
