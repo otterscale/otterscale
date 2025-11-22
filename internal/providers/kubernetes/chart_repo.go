@@ -95,10 +95,10 @@ func (r *chartRepo) Index(_ context.Context, dir, url string) error {
 	return i.WriteFile(out, 0o644) //nolint:mnd // default file permission
 }
 
-func (r *chartRepo) GetStableVersion(ctx context.Context, url, name string, useCache bool) (*chart.Version, error) {
+func (r *chartRepo) GetVersion(ctx context.Context, url, name, version string, useCache bool) (*chart.Version, error) {
 	if useCache {
 		if repoIndex, ok := r.getRepoIndexCache(url); ok {
-			return repoIndex.file.Get(name, "")
+			return repoIndex.file.Get(name, version)
 		}
 	}
 
@@ -109,7 +109,7 @@ func (r *chartRepo) GetStableVersion(ctx context.Context, url, name string, useC
 
 	r.setRepoIndexCache(url, indexFile)
 
-	return indexFile.Get(name, "")
+	return indexFile.Get(name, version)
 }
 
 func (r *chartRepo) buildChartsFromIndex(indexFile *repo.IndexFile) []chart.Chart {

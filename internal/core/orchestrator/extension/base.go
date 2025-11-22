@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/otterscale/otterscale/internal/core/application/release"
+	"github.com/otterscale/otterscale/internal/core/versions"
 )
 
 const chartRepoURL = "https://otterscale.github.io/charts"
@@ -11,6 +12,7 @@ const chartRepoURL = "https://otterscale.github.io/charts"
 type chartManifest struct {
 	ID          string // If a value is present, it indicates a child chart.
 	Namespace   string
+	Version     string
 	RepoURL     string
 	Labels      map[string]string
 	Annotations map[string]string
@@ -41,7 +43,7 @@ var (
 			Description: "Gateway API is an official Kubernetes project focused on L4 and L7 routing in Kubernetes.",
 			Logo:        "https://github.com/kubernetes-sigs.png",
 			CRD: &crdManifest{
-				Version:              "v1.3.0",
+				Version:              versions.GatewayAPI,
 				RepoURL:              "https://github.com/kubernetes-sigs/gateway-api.git/config/crd",
 				AnnotationVersionKey: "gateway.networking.k8s.io/bundle-version",
 			},
@@ -52,7 +54,7 @@ var (
 			Description: "Gateway API Inference Extension is an official Kubernetes project that optimizes self-hosting Generative Models on Kubernetes.",
 			Logo:        "https://github.com/kubernetes-sigs.png",
 			CRD: &crdManifest{
-				Version:              "v1.1.0",
+				Version:              versions.GatewayAPIInferenceExtension,
 				RepoURL:              "https://github.com/kubernetes-sigs/gateway-api-inference-extension.git/config/crd",
 				AnnotationVersionKey: "inference.networking.k8s.io/bundle-version",
 			},
@@ -65,6 +67,7 @@ var (
 			Charts: []chartManifest{
 				{
 					Namespace: "istio-system",
+					Version:   versions.Istio,
 					RepoURL:   "https://istio-release.storage.googleapis.com/charts",
 					Labels: map[string]string{
 						release.TypeLabel: "extension",
@@ -73,6 +76,7 @@ var (
 				{
 					ID:        "istiod",
 					Namespace: "istio-system",
+					Version:   versions.Istio,
 					RepoURL:   "https://istio-release.storage.googleapis.com/charts",
 					Labels: map[string]string{
 						release.TypeLabel: "extension",
@@ -91,6 +95,7 @@ var (
 			Charts: []chartManifest{
 				{
 					Namespace: "monitoring",
+					Version:   versions.KubePrometheusStack,
 					RepoURL:   "https://prometheus-community.github.io/helm-charts",
 					Labels: map[string]string{
 						release.TypeLabel: "extension",
@@ -110,6 +115,7 @@ var (
 				{
 					Namespace: "distribution",
 					RepoURL:   chartRepoURL,
+					Version:   versions.KubeVirtInfra,
 					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
@@ -146,12 +152,13 @@ var (
 			Charts: []chartManifest{
 				{
 					Namespace: "llm-d",
+					Version:   versions.LLMDInfra,
 					RepoURL:   "https://llm-d-incubation.github.io/llm-d-infra",
 					Labels: map[string]string{
 						release.TypeLabel: "extension",
 					},
 					ValuesMap: map[string]string{
-						"nameOverride": "llm-d-gateway",
+						"nameOverride": "llm-d",
 						"gateway.gatewayParameters.resources.limits.cpu":    "2",
 						"gateway.gatewayParameters.resources.limits.memory": "1Gi",
 						"gateway.service.type":                              "NodePort",
@@ -170,6 +177,7 @@ var (
 			Charts: []chartManifest{
 				{
 					Namespace: "kubevirt",
+					Version:   versions.KubeVirtInfra,
 					RepoURL:   chartRepoURL,
 					Labels: map[string]string{
 						release.TypeLabel: "extension",
@@ -188,6 +196,7 @@ var (
 			Charts: []chartManifest{
 				{
 					Namespace: "samba-operator",
+					Version:   versions.SambaOperator,
 					RepoURL:   chartRepoURL,
 					Labels: map[string]string{
 						release.TypeLabel: "extension",

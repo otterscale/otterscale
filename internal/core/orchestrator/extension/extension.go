@@ -84,7 +84,7 @@ func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifest
 			for i := range base.Charts {
 				chart := base.Charts[i]
 
-				version, err := uc.chart.GetStableVersion(egctx, chart.RepoURL, base.ID, true)
+				version, err := uc.chart.GetVersion(egctx, chart.RepoURL, base.ID, chart.Version, true)
 				if err != nil {
 					return err
 				}
@@ -154,7 +154,7 @@ func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, manifest
 			for i := range base.Charts {
 				chart := base.Charts[i]
 
-				version, err := uc.chart.GetStableVersion(egctx, chart.RepoURL, base.ID, true)
+				version, err := uc.chart.GetVersion(egctx, chart.RepoURL, base.ID, chart.Version, true)
 				if err != nil {
 					return err
 				}
@@ -228,7 +228,7 @@ func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []bas
 			chart := base.Charts[0] // only get the parent chart
 
 			eg.Go(func() error {
-				v, err := uc.chart.GetStableVersion(egctx, chart.RepoURL, base.ID, true)
+				v, err := uc.chart.GetVersion(egctx, chart.RepoURL, base.ID, chart.Version, true)
 				if err == nil {
 					versions[i] = *v
 				}
