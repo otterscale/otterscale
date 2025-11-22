@@ -2,6 +2,9 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
+	import { scaleUtc } from 'd3-scale';
+	import { LineChart } from 'layerchart';
+	import { SampleValue } from 'prometheus-query';
 
 	import { resolve } from '$app/paths';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
@@ -9,9 +12,11 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
+	import * as Chart from '$lib/components/ui/chart';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { cn } from '$lib/utils';
 
+	import type { Metrics } from '../types';
 	import Actions from './cell-actions.svelte';
 	import GPUs from './cell-gpus.svelte';
 	import Tags from './cell-tags.svelte';
@@ -19,7 +24,7 @@
 	export const cells = {
 		row_picker,
 		fqdn_ip,
-		powerState,
+		power_state,
 		status,
 		cores_arch,
 		ram,
@@ -28,6 +33,8 @@
 		gpu,
 		tags,
 		scope,
+		memory_metric,
+		storage_metric,
 		actions
 	};
 </script>
@@ -58,7 +65,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet powerState(row: Row<Machine>)}
+{#snippet power_state(row: Row<Machine>)}
 	<Layout.Cell class="flex-row items-center">
 		<Icon
 			icon={row.original.powerState === 'on' ? 'ph:power' : 'ph:power'}
@@ -166,6 +173,92 @@
 			{/if}
 		{/if}
 	</Layout.Cell>
+{/snippet}
+
+{#snippet memory_metric(data: { row: Row<Machine>; metrics: Metrics })}
+	{@const configuation = {
+		value: { label: 'usage', color: 'var(--chart-2)' }
+	} satisfies Chart.ChartConfig}
+	{@const usage: SampleValue[] = data.metrics.memory.get(data.row.original.fqdn) ?? []}
+	{#if usage.length > 0}
+		<Layout.Cell class="justify-center">
+			<Chart.Container config={configuation} class="h-10 w-full">
+				<LineChart
+					data={usage}
+					x="time"
+					series={[
+						{
+							key: 'value',
+							label: configuation['value'].label,
+							color: configuation['value'].color
+						}
+					]}
+					axis={false}
+					xScale={scaleUtc()}
+					yDomain={[0, 1]}
+					grid={false}
+				>
+					{#snippet tooltip()}
+						<Chart.Tooltip hideLabel>
+							{#snippet formatter({ item, name, value })}
+								<div
+									class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
+									style="--color-bg: {item.color}"
+								>
+									<Icon icon="ph:square-fill" class="text-(--color-bg)" />
+									<h1 class="font-semibold text-muted-foreground">{name}</h1>
+									<p class="ml-auto">{(Number(value) * 100).toFixed(2)} %</p>
+								</div>
+							{/snippet}
+						</Chart.Tooltip>
+					{/snippet}
+				</LineChart>
+			</Chart.Container>
+		</Layout.Cell>
+	{/if}
+{/snippet}
+
+{#snippet storage_metric(data: { row: Row<Machine>; metrics: Metrics })}
+	{@const configuation = {
+		value: { label: 'usage', color: 'var(--chart-2)' }
+	} satisfies Chart.ChartConfig}
+	{@const usage: SampleValue[] = data.metrics.storage.get(data.row.original.fqdn) ?? []}
+	{#if usage.length > 0}
+		<Layout.Cell class="justify-center">
+			<Chart.Container config={configuation} class="h-10 w-full">
+				<LineChart
+					data={usage}
+					x="time"
+					series={[
+						{
+							key: 'value',
+							label: configuation['value'].label,
+							color: configuation['value'].color
+						}
+					]}
+					axis={false}
+					xScale={scaleUtc()}
+					yDomain={[0, 1]}
+					grid={false}
+				>
+					{#snippet tooltip()}
+						<Chart.Tooltip hideLabel>
+							{#snippet formatter({ item, name, value })}
+								<div
+									class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
+									style="--color-bg: {item.color}"
+								>
+									<Icon icon="ph:square-fill" class="text-(--color-bg)" />
+									<h1 class="font-semibold text-muted-foreground">{name}</h1>
+									<p class="ml-auto">{(Number(value) * 100).toFixed(2)} %</p>
+								</div>
+							{/snippet}
+						</Chart.Tooltip>
+					{/snippet}
+				</LineChart>
+			</Chart.Container>
+		</Layout.Cell>
+	{/if}
 {/snippet}
 
 {#snippet actions(data: { row: Row<Machine>; reloadManager: ReloadManager })}

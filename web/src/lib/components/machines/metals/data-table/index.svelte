@@ -19,13 +19,20 @@
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
+	import type { Metrics } from '../types';
 	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
-	let { machines, reloadManager }: { machines: Writable<Machine[]>; reloadManager: ReloadManager } =
-		$props();
+	let {
+		machines,
+		metrics,
+		reloadManager
+	}: { machines: Writable<Machine[]>; metrics: Metrics; reloadManager: ReloadManager } = $props();
+
+	console.log(machines);
+	console.log(metrics);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
@@ -38,7 +45,7 @@
 			return $machines;
 		},
 		get columns() {
-			return getColumns(reloadManager);
+			return getColumns(metrics, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),
@@ -117,7 +124,7 @@
 				{table}
 			/>
 			<Filters.StringMatch
-				columnId="powerState"
+				columnId="power_state"
 				values={$machines.flatMap((row) => row.powerState)}
 				{messages}
 				{table}
@@ -149,7 +156,6 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
-							<!-- {#if header.column.id !== 'gpu' || page.data['feature-states.mdl-general']} -->
 							<Table.Head>
 								{#if !header.isPlaceholder}
 									<FlexRender
@@ -158,7 +164,6 @@
 									/>
 								{/if}
 							</Table.Head>
-							<!-- {/if} -->
 						{/each}
 					</Table.Row>
 				{/each}
@@ -167,11 +172,9 @@
 				{#each table.getRowModel().rows as row (row.id)}
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
-							<!-- {#if cell.column.id !== 'gpu' || page.data['feature-states.mdl-general']} -->
 							<Table.Cell>
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
-							<!-- {/if} -->
 						{/each}
 					</Table.Row>
 				{:else}

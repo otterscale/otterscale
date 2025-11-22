@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { Construction } from '$lib/components/construction';
+	import Dashboard from '$lib/components/compute/dashboard/index.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { breadcrumbs } from '$lib/stores';
 
@@ -14,4 +14,4 @@
 	]);
 </script>
 
-<Construction />
+<Dashboard scope={page.params.scope!} />

@@ -9,7 +9,7 @@
 	export const headers = {
 		row_picker,
 		fqdn_ip,
-		powerState,
+		power_state,
 		status,
 		cores_arch,
 		ram,
@@ -18,6 +18,8 @@
 		gpu,
 		tags,
 		scope,
+		memory_metric,
+		storage_metric,
 		actions
 	};
 </script>
@@ -44,7 +46,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet powerState(column: Column<Machine>)}
+{#snippet power_state(column: Column<Machine>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.power()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -125,6 +127,22 @@
 			<Layout.SubHeaderViewer>
 				{m.last_commissioned()}
 			</Layout.SubHeaderViewer>
+		</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet memory_metric()}
+	<Layout.Header class="justify-center">
+		<Layout.HeaderViewer>
+			{m.memory()}
+		</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet storage_metric()}
+	<Layout.Header class="justify-center">
+		<Layout.HeaderViewer>
+			{m.storage()}
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

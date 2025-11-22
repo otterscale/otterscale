@@ -31,7 +31,7 @@
 </script>
 
 <main class="space-y-4 py-4">
-	<Alert {application} />
+	<Alert application={$application} />
 
 	<div class="space-y-4 py-4">
 		<div class="flex items-end gap-2 text-5xl">
