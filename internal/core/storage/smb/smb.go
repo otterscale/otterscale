@@ -491,10 +491,11 @@ func (uc *UseCase) waitAndUpdateServiceNodePort(scope, namespace, name string, p
 			return
 
 		case <-ticker.C:
-			if err := uc.updateService(ctx, scope, namespace, name, newService); err != nil {
-				if k8serrors.IsNotFound(err) {
-					continue
-				}
+			err := uc.updateService(ctx, scope, namespace, name, newService)
+			if k8serrors.IsNotFound(err) {
+				continue
+			}
+			if err != nil {
 				slog.Error("failed to update service", "error", err)
 				return
 			}
