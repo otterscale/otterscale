@@ -8,7 +8,6 @@ import (
 
 	v1 "k8s.io/api/core/v1"
 
-	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/release"
 	"github.com/otterscale/otterscale/internal/core/versions"
@@ -44,18 +43,25 @@ func (uc *UseCase) ListModelArtifacts(ctx context.Context, scope, namespace stri
 }
 
 func (uc *UseCase) CreateModelArtifact(ctx context.Context, scope, namespace, name, modelName string, size int64) (*Artifact, error) {
-	// find chart ref
-	version, err := uc.chart.GetVersion(ctx, chart.RepoURL, "model-artifact", versions.ModelArtifact, true)
+	if err := uc.installModelArtifact(ctx, scope, namespace, name, modelName, size); err != nil {
+		return nil, err
+	}
+
+	pvc, err := uc.persistentVolumeClaim.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return nil, err
 	}
 
-	// check URLs
-	if len(version.URLs) == 0 {
-		return nil, fmt.Errorf("no URLs found for chart model-artifact")
-	}
+	return uc.toArtifact(pvc), nil
+}
 
-	chartRef := version.URLs[0]
+func (uc *UseCase) DeleteModelArtifact(ctx context.Context, scope, namespace, name string) error {
+	return uc.persistentVolumeClaim.Delete(ctx, scope, namespace, name)
+}
+
+func (uc *UseCase) installModelArtifact(ctx context.Context, scope, namespace, name, modelName string, size int64) error {
+	// chart ref
+	chartRef := fmt.Sprintf("https://github.com/otterscale/charts/releases/download/model-artifact-%[1]s/model-artifact-%[1]s.tgz", versions.ModelArtifact)
 
 	// labels
 	labels := map[string]string{
@@ -75,30 +81,18 @@ func (uc *UseCase) CreateModelArtifact(ctx context.Context, scope, namespace, na
 	}
 
 	// install
-	if _, err := uc.release.Install(ctx, scope, namespace, (name), false, chartRef, labels, labels, annotations, "", valuesMap); err != nil {
-		return nil, err
-	}
-
-	// get pvc
-	pvc, err := uc.persistentVolumeClaim.Get(ctx, scope, namespace, name)
-	if err != nil {
-		return nil, err
-	}
-
-	// convert to model artifact
-	return uc.toArtifact(pvc), nil
-}
-
-func (uc *UseCase) DeleteModelArtifact(ctx context.Context, scope, namespace, name string) error {
-	return uc.persistentVolumeClaim.Delete(ctx, scope, namespace, name)
+	_, err := uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, "", valuesMap)
+	return err
 }
 
 func (uc *UseCase) toArtifact(pvc *persistent.PersistentVolumeClaim) *Artifact {
 	size := int64(0)
+
 	capacity, ok := pvc.Status.Capacity[v1.ResourceStorage]
 	if ok {
 		size = capacity.Value()
 	}
+
 	return &Artifact{
 		Name:       pvc.Name,
 		Namespace:  pvc.Namespace,
