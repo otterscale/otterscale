@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/otterscale/otterscale/internal/core/machine/tag"
+	"github.com/otterscale/otterscale/internal/core/versions"
 )
 
 type ceph struct {
@@ -22,12 +23,12 @@ func newCeph(scope string, osdDevices []string, nfsVIP string) base {
 
 func (c *ceph) Charms() []charm {
 	return []charm{
-		{Name: "ch:ceph-mon", Channel: "squid/stable", PlacementScope: "lxd"},
-		{Name: "ch:ceph-osd", Channel: "squid/stable", PlacementScope: "#"},
-		{Name: "ch:ceph-fs", Channel: "squid/stable", PlacementScope: "lxd"},
-		{Name: "ch:ceph-radosgw", Channel: "squid/stable", PlacementScope: "lxd"},
-		{Name: "ch:ceph-nfs", Channel: "squid/stable", PlacementScope: "lxd"},
-		{Name: "ch:hacluster", Channel: "2.8/stable", Subordinate: true},
+		{Name: "ch:ceph-mon", Channel: versions.Ceph, PlacementScope: "lxd"},
+		{Name: "ch:ceph-osd", Channel: versions.Ceph, PlacementScope: "#"},
+		{Name: "ch:ceph-fs", Channel: versions.Ceph, PlacementScope: "lxd"},
+		{Name: "ch:ceph-radosgw", Channel: versions.Ceph, PlacementScope: "lxd"},
+		{Name: "ch:ceph-nfs", Channel: versions.Ceph, PlacementScope: "lxd"},
+		{Name: "ch:hacluster", Channel: versions.HACluster, Subordinate: true},
 	}
 }
 

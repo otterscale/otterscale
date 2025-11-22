@@ -1685,7 +1685,7 @@ func (b0 ListGPURelationsByModelResponse_builder) Build() *ListGPURelationsByMod
 type Extension struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Type        Extension_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.orchestrator.v1.Extension_Type"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
+	xxx_hidden_DisplayName *string                `protobuf:"bytes,2,opt,name=display_name,json=displayName"`
 	xxx_hidden_Description *string                `protobuf:"bytes,3,opt,name=description"`
 	xxx_hidden_Icon        *string                `protobuf:"bytes,4,opt,name=icon"`
 	xxx_hidden_Status      *string                `protobuf:"bytes,11,opt,name=status"`
@@ -1732,10 +1732,10 @@ func (x *Extension) GetType() Extension_Type {
 	return Extension_TYPE_UNSPECIFIED
 }
 
-func (x *Extension) GetName() string {
+func (x *Extension) GetDisplayName() string {
 	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
+		if x.xxx_hidden_DisplayName != nil {
+			return *x.xxx_hidden_DisplayName
 		}
 		return ""
 	}
@@ -1798,8 +1798,8 @@ func (x *Extension) SetType(v Extension_Type) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 8)
 }
 
-func (x *Extension) SetName(v string) {
-	x.xxx_hidden_Name = &v
+func (x *Extension) SetDisplayName(v string) {
+	x.xxx_hidden_DisplayName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 8)
 }
 
@@ -1837,7 +1837,7 @@ func (x *Extension) HasType() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *Extension) HasName() bool {
+func (x *Extension) HasDisplayName() bool {
 	if x == nil {
 		return false
 	}
@@ -1891,9 +1891,9 @@ func (x *Extension) ClearType() {
 	x.xxx_hidden_Type = Extension_TYPE_UNSPECIFIED
 }
 
-func (x *Extension) ClearName() {
+func (x *Extension) ClearDisplayName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Name = nil
+	x.xxx_hidden_DisplayName = nil
 }
 
 func (x *Extension) ClearDescription() {
@@ -1927,7 +1927,7 @@ type Extension_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Type        *Extension_Type
-	Name        *string
+	DisplayName *string
 	Description *string
 	Icon        *string
 	Status      *string
@@ -1944,9 +1944,9 @@ func (b0 Extension_builder) Build() *Extension {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 8)
 		x.xxx_hidden_Type = *b.Type
 	}
-	if b.Name != nil {
+	if b.DisplayName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 8)
-		x.xxx_hidden_Name = b.Name
+		x.xxx_hidden_DisplayName = b.DisplayName
 	}
 	if b.Description != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
@@ -3086,7 +3086,7 @@ func (b0 GPURelation_Pod_Device_builder) Build() *GPURelation_Pod_Device {
 
 type Extension_Manifest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
 	xxx_hidden_Version     *string                `protobuf:"bytes,2,opt,name=version"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -3119,10 +3119,10 @@ func (x *Extension_Manifest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Extension_Manifest) GetId() string {
+func (x *Extension_Manifest) GetName() string {
 	if x != nil {
-		if x.xxx_hidden_Id != nil {
-			return *x.xxx_hidden_Id
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
 		}
 		return ""
 	}
@@ -3139,8 +3139,8 @@ func (x *Extension_Manifest) GetVersion() string {
 	return ""
 }
 
-func (x *Extension_Manifest) SetId(v string) {
-	x.xxx_hidden_Id = &v
+func (x *Extension_Manifest) SetName(v string) {
+	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
@@ -3149,7 +3149,7 @@ func (x *Extension_Manifest) SetVersion(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *Extension_Manifest) HasId() bool {
+func (x *Extension_Manifest) HasName() bool {
 	if x == nil {
 		return false
 	}
@@ -3163,9 +3163,9 @@ func (x *Extension_Manifest) HasVersion() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Extension_Manifest) ClearId() {
+func (x *Extension_Manifest) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Id = nil
+	x.xxx_hidden_Name = nil
 }
 
 func (x *Extension_Manifest) ClearVersion() {
@@ -3176,7 +3176,7 @@ func (x *Extension_Manifest) ClearVersion() {
 type Extension_Manifest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Id      *string
+	Name    *string
 	Version *string
 }
 
@@ -3184,9 +3184,9 @@ func (b0 Extension_Manifest_builder) Build() *Extension_Manifest {
 	m0 := &Extension_Manifest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Id != nil {
+	if b.Name != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Id = b.Id
+		x.xxx_hidden_Name = b.Name
 	}
 	if b.Version != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
@@ -3298,19 +3298,19 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\n" +
 	"model_name\x18\x04 \x01(\tR\tmodelNameJ\x04\b\x02\x10\x03\"o\n" +
 	"\x1fListGPURelationsByModelResponse\x12L\n" +
-	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\xaa\x04\n" +
+	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\xbd\x04\n" +
 	"\tExtension\x12>\n" +
-	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Extension.TypeR\x04type\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Extension.TypeR\x04type\x12!\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x12\n" +
 	"\x04icon\x18\x04 \x01(\tR\x04icon\x12\x16\n" +
 	"\x06status\x18\v \x01(\tR\x06status\x12;\n" +
 	"\vdeployed_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"deployedAt\x12H\n" +
 	"\acurrent\x18\x15 \x01(\v2..otterscale.orchestrator.v1.Extension.ManifestR\acurrent\x12F\n" +
-	"\x06latest\x18\x16 \x01(\v2..otterscale.orchestrator.v1.Extension.ManifestR\x06latest\x1a4\n" +
-	"\bManifest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
+	"\x06latest\x18\x16 \x01(\v2..otterscale.orchestrator.v1.Extension.ManifestR\x06latest\x1a8\n" +
+	"\bManifest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\"v\n" +
 	"\x04Type\x12\x14\n" +
 	"\x10TYPE_UNSPECIFIED\x10\x00\x12\x10\n" +

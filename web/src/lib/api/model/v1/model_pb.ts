@@ -13,37 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/model/v1/model.proto.
  */
 export const file_api_model_v1_model: GenFile = /*@__PURE__*/
-  fileDesc("ChhhcGkvbW9kZWwvdjEvbW9kZWwucHJvdG8SE290dGVyc2NhbGUubW9kZWwudjEiCwoJSFRUUFJvdXRlIg8KDUluZmVyZW5jZVBvb2wisQMKBU1vZGVsEgoKAmlkGAEgASgJEhsKE2luZmVyZW5jZV9wb29sX25hbWUYAiABKAkSDAoEbmFtZRgLIAEoCRIRCgluYW1lc3BhY2UYDCABKAkSDgoGc3RhdHVzGA0gASgJEhMKC2Rlc2NyaXB0aW9uGA4gASgJEjUKEWZpcnN0X2RlcGxveWVkX2F0GA8gASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI0ChBsYXN0X2RlcGxveWVkX2F0GBAgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIVCg1jaGFydF92ZXJzaW9uGBUgASgJEhMKC2FwcF92ZXJzaW9uGBYgASgJEjUKCHJlcXVlc3RzGB8gASgLMiMub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5SZXNvdXJjZRIzCgZsaW1pdHMYICABKAsyIy5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsLlJlc291cmNlGjQKCFJlc291cmNlEgwKBHZncHUYASABKA0SGgoSdmdwdW1lbV9wZXJjZW50YWdlGAIgASgNIjsKEUxpc3RNb2RlbHNSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCUoECAIQAyJVChJMaXN0TW9kZWxzUmVzcG9uc2USKgoGbW9kZWxzGAEgAygLMhoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbBITCgtzZXJ2aWNlX3VyaRgCIAEoCSJeChJDcmVhdGVNb2RlbFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAkSEgoKbW9kZWxfbmFtZRgLIAEoCUoECAIQAyK2AQoSVXBkYXRlTW9kZWxSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEjMKBmxpbWl0cxgLIAEoCzIjLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuUmVzb3VyY2USNQoIcmVxdWVzdHMYDCABKAsyIy5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsLlJlc291cmNlSgQIAhADIkoKEkRlbGV0ZU1vZGVsUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCUoECAIQAyKmAQoNTW9kZWxBcnRpZmFjdBIMCgRuYW1lGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRISCgptb2RlbF9uYW1lGAsgASgJEg0KBXBoYXNlGBUgASgJEgwKBHNpemUYFiABKAMSEwoLdm9sdW1lX25hbWUYHyABKAkSLgoKY3JlYXRlZF9hdBgpIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiQwoZTGlzdE1vZGVsQXJ0aWZhY3RzUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAlKBAgCEAMiWQoaTGlzdE1vZGVsQXJ0aWZhY3RzUmVzcG9uc2USOwoPbW9kZWxfYXJ0aWZhY3RzGAEgAygLMiIub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbEFydGlmYWN0InQKGkNyZWF0ZU1vZGVsQXJ0aWZhY3RSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEhIKCm1vZGVsX25hbWUYCyABKAkSDAoEc2l6ZRgMIAEoA0oECAIQAyJSChpEZWxldGVNb2RlbEFydGlmYWN0UmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCUoECAIQAzLEBgoMTW9kZWxTZXJ2aWNlEnMKCkxpc3RNb2RlbHMSJi5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbHNSZXF1ZXN0Gicub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxzUmVzcG9uc2UiFIrf1R0PCg1tb2RlbC1lbmFibGVkEmgKC0NyZWF0ZU1vZGVsEicub3R0ZXJzY2FsZS5tb2RlbC52MS5DcmVhdGVNb2RlbFJlcXVlc3QaGi5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsIhSK39UdDwoNbW9kZWwtZW5hYmxlZBJoCgtVcGRhdGVNb2RlbBInLm90dGVyc2NhbGUubW9kZWwudjEuVXBkYXRlTW9kZWxSZXF1ZXN0Ghoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbCIUit/VHQ8KDW1vZGVsLWVuYWJsZWQSZAoLRGVsZXRlTW9kZWwSJy5vdHRlcnNjYWxlLm1vZGVsLnYxLkRlbGV0ZU1vZGVsUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIUit/VHQ8KDW1vZGVsLWVuYWJsZWQSiwEKEkxpc3RNb2RlbEFydGlmYWN0cxIuLm90dGVyc2NhbGUubW9kZWwudjEuTGlzdE1vZGVsQXJ0aWZhY3RzUmVxdWVzdBovLm90dGVyc2NhbGUubW9kZWwudjEuTGlzdE1vZGVsQXJ0aWZhY3RzUmVzcG9uc2UiFIrf1R0PCg1tb2RlbC1lbmFibGVkEoABChNDcmVhdGVNb2RlbEFydGlmYWN0Ei8ub3R0ZXJzY2FsZS5tb2RlbC52MS5DcmVhdGVNb2RlbEFydGlmYWN0UmVxdWVzdBoiLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWxBcnRpZmFjdCIUit/VHQ8KDW1vZGVsLWVuYWJsZWQSdAoTRGVsZXRlTW9kZWxBcnRpZmFjdBIvLm90dGVyc2NhbGUubW9kZWwudjEuRGVsZXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiFIrf1R0PCg1tb2RlbC1lbmFibGVkQjJaMGdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9tb2RlbC92MTtwYmIIZWRpdGlvbnNw6Ac", [file_api_annotations, file_google_protobuf_empty, file_google_protobuf_timestamp]);
-
-/**
- * TODO: namespace -> httproute
- *
- * @generated from message otterscale.model.v1.HTTPRoute
- */
-export type HTTPRoute = Message<"otterscale.model.v1.HTTPRoute"> & {
-};
-
-/**
- * Describes the message otterscale.model.v1.HTTPRoute.
- * Use `create(HTTPRouteSchema)` to create a new message.
- */
-export const HTTPRouteSchema: GenMessage<HTTPRoute> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 0);
-
-/**
- * TODO: selector -> model
- *
- * @generated from message otterscale.model.v1.InferencePool
- */
-export type InferencePool = Message<"otterscale.model.v1.InferencePool"> & {
-};
-
-/**
- * Describes the message otterscale.model.v1.InferencePool.
- * Use `create(InferencePoolSchema)` to create a new message.
- */
-export const InferencePoolSchema: GenMessage<InferencePool> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 1);
+  fileDesc("ChhhcGkvbW9kZWwvdjEvbW9kZWwucHJvdG8SE290dGVyc2NhbGUubW9kZWwudjEilAMKBU1vZGVsEgoKAmlkGAEgASgJEgwKBG5hbWUYCyABKAkSEQoJbmFtZXNwYWNlGAwgASgJEg4KBnN0YXR1cxgNIAEoCRITCgtkZXNjcmlwdGlvbhgOIAEoCRI1ChFmaXJzdF9kZXBsb3llZF9hdBgPIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASNAoQbGFzdF9kZXBsb3llZF9hdBgQIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFQoNY2hhcnRfdmVyc2lvbhgVIAEoCRITCgthcHBfdmVyc2lvbhgWIAEoCRI1CghyZXF1ZXN0cxgfIAEoCzIjLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuUmVzb3VyY2USMwoGbGltaXRzGCAgASgLMiMub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5SZXNvdXJjZRo0CghSZXNvdXJjZRIMCgR2Z3B1GAEgASgNEhoKEnZncHVtZW1fcGVyY2VudGFnZRgCIAEoDSI7ChFMaXN0TW9kZWxzUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAlKBAgCEAMiVQoSTGlzdE1vZGVsc1Jlc3BvbnNlEioKBm1vZGVscxgBIAMoCzIaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwSEwoLc2VydmljZV91cmkYAiABKAki3gEKEkNyZWF0ZU1vZGVsUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRISCgptb2RlbF9uYW1lGAsgASgJEhIKCnNpemVfYnl0ZXMYDCABKAQSMwoGbGltaXRzGBUgASgLMiMub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5SZXNvdXJjZRI1CghyZXF1ZXN0cxgWIAEoCzIjLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuUmVzb3VyY2VKBAgCEAMitgEKElVwZGF0ZU1vZGVsUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRIzCgZsaW1pdHMYFSABKAsyIy5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsLlJlc291cmNlEjUKCHJlcXVlc3RzGBYgASgLMiMub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5SZXNvdXJjZUoECAIQAyJKChJEZWxldGVNb2RlbFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAlKBAgCEAMipgEKDU1vZGVsQXJ0aWZhY3QSDAoEbmFtZRgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSEgoKbW9kZWxfbmFtZRgLIAEoCRINCgVwaGFzZRgVIAEoCRIMCgRzaXplGBYgASgDEhMKC3ZvbHVtZV9uYW1lGB8gASgJEi4KCmNyZWF0ZWRfYXQYKSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkMKGUxpc3RNb2RlbEFydGlmYWN0c1JlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJSgQIAhADIlkKGkxpc3RNb2RlbEFydGlmYWN0c1Jlc3BvbnNlEjsKD21vZGVsX2FydGlmYWN0cxgBIAMoCzIiLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWxBcnRpZmFjdCJ0ChpDcmVhdGVNb2RlbEFydGlmYWN0UmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRISCgptb2RlbF9uYW1lGAsgASgJEgwKBHNpemUYDCABKANKBAgCEAMiUgoaRGVsZXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAlKBAgCEAMyxAYKDE1vZGVsU2VydmljZRJzCgpMaXN0TW9kZWxzEiYub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxzUmVxdWVzdBonLm90dGVyc2NhbGUubW9kZWwudjEuTGlzdE1vZGVsc1Jlc3BvbnNlIhSK39UdDwoNbW9kZWwtZW5hYmxlZBJoCgtDcmVhdGVNb2RlbBInLm90dGVyc2NhbGUubW9kZWwudjEuQ3JlYXRlTW9kZWxSZXF1ZXN0Ghoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbCIUit/VHQ8KDW1vZGVsLWVuYWJsZWQSaAoLVXBkYXRlTW9kZWwSJy5vdHRlcnNjYWxlLm1vZGVsLnYxLlVwZGF0ZU1vZGVsUmVxdWVzdBoaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwiFIrf1R0PCg1tb2RlbC1lbmFibGVkEmQKC0RlbGV0ZU1vZGVsEicub3R0ZXJzY2FsZS5tb2RlbC52MS5EZWxldGVNb2RlbFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiFIrf1R0PCg1tb2RlbC1lbmFibGVkEosBChJMaXN0TW9kZWxBcnRpZmFjdHMSLi5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbEFydGlmYWN0c1JlcXVlc3QaLy5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbEFydGlmYWN0c1Jlc3BvbnNlIhSK39UdDwoNbW9kZWwtZW5hYmxlZBKAAQoTQ3JlYXRlTW9kZWxBcnRpZmFjdBIvLm90dGVyc2NhbGUubW9kZWwudjEuQ3JlYXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QaIi5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsQXJ0aWZhY3QiFIrf1R0PCg1tb2RlbC1lbmFibGVkEnQKE0RlbGV0ZU1vZGVsQXJ0aWZhY3QSLy5vdHRlcnNjYWxlLm1vZGVsLnYxLkRlbGV0ZU1vZGVsQXJ0aWZhY3RSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhSK39UdDwoNbW9kZWwtZW5hYmxlZEIyWjBnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvbW9kZWwvdjE7cGJiCGVkaXRpb25zcOgH", [file_api_annotations, file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message otterscale.model.v1.Model
@@ -53,11 +23,6 @@ export type Model = Message<"otterscale.model.v1.Model"> & {
    * @generated from field: string id = 1;
    */
   id: string;
-
-  /**
-   * @generated from field: string inference_pool_name = 2;
-   */
-  inferencePoolName: string;
 
   /**
    * @generated from field: string name = 11;
@@ -115,7 +80,7 @@ export type Model = Message<"otterscale.model.v1.Model"> & {
  * Use `create(ModelSchema)` to create a new message.
  */
 export const ModelSchema: GenMessage<Model> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 2);
+  messageDesc(file_api_model_v1_model, 0);
 
 /**
  * @generated from message otterscale.model.v1.Model.Resource
@@ -137,7 +102,7 @@ export type Model_Resource = Message<"otterscale.model.v1.Model.Resource"> & {
  * Use `create(Model_ResourceSchema)` to create a new message.
  */
 export const Model_ResourceSchema: GenMessage<Model_Resource> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 2, 0);
+  messageDesc(file_api_model_v1_model, 0, 0);
 
 /**
  * @generated from message otterscale.model.v1.ListModelsRequest
@@ -159,7 +124,7 @@ export type ListModelsRequest = Message<"otterscale.model.v1.ListModelsRequest">
  * Use `create(ListModelsRequestSchema)` to create a new message.
  */
 export const ListModelsRequestSchema: GenMessage<ListModelsRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 3);
+  messageDesc(file_api_model_v1_model, 1);
 
 /**
  * @generated from message otterscale.model.v1.ListModelsResponse
@@ -181,7 +146,7 @@ export type ListModelsResponse = Message<"otterscale.model.v1.ListModelsResponse
  * Use `create(ListModelsResponseSchema)` to create a new message.
  */
 export const ListModelsResponseSchema: GenMessage<ListModelsResponse> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 4);
+  messageDesc(file_api_model_v1_model, 2);
 
 /**
  * @generated from message otterscale.model.v1.CreateModelRequest
@@ -206,6 +171,21 @@ export type CreateModelRequest = Message<"otterscale.model.v1.CreateModelRequest
    * @generated from field: string model_name = 11;
    */
   modelName: string;
+
+  /**
+   * @generated from field: uint64 size_bytes = 12;
+   */
+  sizeBytes: bigint;
+
+  /**
+   * @generated from field: otterscale.model.v1.Model.Resource limits = 21;
+   */
+  limits?: Model_Resource;
+
+  /**
+   * @generated from field: otterscale.model.v1.Model.Resource requests = 22;
+   */
+  requests?: Model_Resource;
 };
 
 /**
@@ -213,7 +193,7 @@ export type CreateModelRequest = Message<"otterscale.model.v1.CreateModelRequest
  * Use `create(CreateModelRequestSchema)` to create a new message.
  */
 export const CreateModelRequestSchema: GenMessage<CreateModelRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 5);
+  messageDesc(file_api_model_v1_model, 3);
 
 /**
  * @generated from message otterscale.model.v1.UpdateModelRequest
@@ -235,12 +215,12 @@ export type UpdateModelRequest = Message<"otterscale.model.v1.UpdateModelRequest
   name: string;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource limits = 11;
+   * @generated from field: otterscale.model.v1.Model.Resource limits = 21;
    */
   limits?: Model_Resource;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource requests = 12;
+   * @generated from field: otterscale.model.v1.Model.Resource requests = 22;
    */
   requests?: Model_Resource;
 };
@@ -250,7 +230,7 @@ export type UpdateModelRequest = Message<"otterscale.model.v1.UpdateModelRequest
  * Use `create(UpdateModelRequestSchema)` to create a new message.
  */
 export const UpdateModelRequestSchema: GenMessage<UpdateModelRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 6);
+  messageDesc(file_api_model_v1_model, 4);
 
 /**
  * @generated from message otterscale.model.v1.DeleteModelRequest
@@ -277,7 +257,7 @@ export type DeleteModelRequest = Message<"otterscale.model.v1.DeleteModelRequest
  * Use `create(DeleteModelRequestSchema)` to create a new message.
  */
 export const DeleteModelRequestSchema: GenMessage<DeleteModelRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 7);
+  messageDesc(file_api_model_v1_model, 5);
 
 /**
  * @generated from message otterscale.model.v1.ModelArtifact
@@ -324,7 +304,7 @@ export type ModelArtifact = Message<"otterscale.model.v1.ModelArtifact"> & {
  * Use `create(ModelArtifactSchema)` to create a new message.
  */
 export const ModelArtifactSchema: GenMessage<ModelArtifact> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 8);
+  messageDesc(file_api_model_v1_model, 6);
 
 /**
  * @generated from message otterscale.model.v1.ListModelArtifactsRequest
@@ -346,7 +326,7 @@ export type ListModelArtifactsRequest = Message<"otterscale.model.v1.ListModelAr
  * Use `create(ListModelArtifactsRequestSchema)` to create a new message.
  */
 export const ListModelArtifactsRequestSchema: GenMessage<ListModelArtifactsRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 9);
+  messageDesc(file_api_model_v1_model, 7);
 
 /**
  * @generated from message otterscale.model.v1.ListModelArtifactsResponse
@@ -363,7 +343,7 @@ export type ListModelArtifactsResponse = Message<"otterscale.model.v1.ListModelA
  * Use `create(ListModelArtifactsResponseSchema)` to create a new message.
  */
 export const ListModelArtifactsResponseSchema: GenMessage<ListModelArtifactsResponse> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 10);
+  messageDesc(file_api_model_v1_model, 8);
 
 /**
  * @generated from message otterscale.model.v1.CreateModelArtifactRequest
@@ -400,7 +380,7 @@ export type CreateModelArtifactRequest = Message<"otterscale.model.v1.CreateMode
  * Use `create(CreateModelArtifactRequestSchema)` to create a new message.
  */
 export const CreateModelArtifactRequestSchema: GenMessage<CreateModelArtifactRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 11);
+  messageDesc(file_api_model_v1_model, 9);
 
 /**
  * @generated from message otterscale.model.v1.DeleteModelArtifactRequest
@@ -427,7 +407,7 @@ export type DeleteModelArtifactRequest = Message<"otterscale.model.v1.DeleteMode
  * Use `create(DeleteModelArtifactRequestSchema)` to create a new message.
  */
 export const DeleteModelArtifactRequestSchema: GenMessage<DeleteModelArtifactRequest> = /*@__PURE__*/
-  messageDesc(file_api_model_v1_model, 12);
+  messageDesc(file_api_model_v1_model, 10);
 
 /**
  * @generated from service otterscale.model.v1.ModelService

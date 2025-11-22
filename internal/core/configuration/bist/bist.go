@@ -268,7 +268,7 @@ func removeLastTwoLines(input string) string {
 	return strings.Join(lines, "\n")
 }
 
-func newHashedName(input string) string {
+func shortID(input string) string {
 	hash := sha256.Sum256([]byte(input))
 	return hex.EncodeToString(hash[:4])
 }
