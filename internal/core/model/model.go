@@ -2,36 +2,29 @@ package model
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
-	"strconv"
-	"time"
+	"regexp"
+	"strings"
 
-	v1 "k8s.io/api/core/v1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "sigs.k8s.io/gateway-api-inference-extension/api/v1"
+	gav1 "sigs.k8s.io/gateway-api/apis/v1"
 
 	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/release"
 	"github.com/otterscale/otterscale/internal/core/application/service"
 	"github.com/otterscale/otterscale/internal/core/application/workload"
+	"github.com/otterscale/otterscale/internal/core/versions"
 )
 
-const (
-	ModelNameAnnotation              = "otterscale.com/model.name"
-	ModelArtifactModelNameAnnotation = "otterscale.com/model-artifact.model-name"
-)
+const ModelNameAnnotation = "otterscale.com/model.name"
 
 // Release represents a Helm Release resource.
 type Model = release.Release
-
-type Artifact struct {
-	Name       string
-	Namespace  string
-	Phase      persistent.PersistentVolumeClaimPhase
-	Size       int64
-	VolumeName string
-	Modelname  string
-	CreatedAt  time.Time
-}
 
 type Resource struct {
 	VGPU       uint32
@@ -39,21 +32,23 @@ type Resource struct {
 }
 
 type UseCase struct {
-	inferencePoolRepo InferencePoolRepo
+	inferencePool InferencePoolRepo
 
 	chart                 chart.ChartRepo
 	deployment            workload.DeploymentRepo
+	gateway               service.GatewayRepo
 	httpRoute             service.HTTPRouteRepo
 	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
 	release               release.ReleaseRepo
 	service               service.ServiceRepo
 }
 
-func NewUseCase(inferencePoolRepo InferencePoolRepo, chart chart.ChartRepo, deployment workload.DeploymentRepo, httpRoute service.HTTPRouteRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, release release.ReleaseRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployment workload.DeploymentRepo, gateway service.GatewayRepo, httpRoute service.HTTPRouteRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, release release.ReleaseRepo, service service.ServiceRepo) *UseCase {
 	return &UseCase{
-		inferencePoolRepo:     inferencePoolRepo,
+		inferencePool:         inferencePool,
 		chart:                 chart,
 		deployment:            deployment,
+		gateway:               gateway,
 		httpRoute:             httpRoute,
 		persistentVolumeClaim: persistentVolumeClaim,
 		release:               release,
@@ -80,19 +75,175 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 	return models, uri, nil
 }
 
-func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string) (*Model, error) {
-	// find chart ref
-	version, err := uc.chart.GetStableVersion(ctx, chart.RepoURL, "llm-d-modelservice", true)
+func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*Model, error) {
+	gatewayName := "llm-d-inference-gateway" // from llm-d-infra helm chart (.Values.nameOverride)
+	inferencePoolName := "inferencepool-" + shortID(modelName)
+	inferencePoolPort := int32(8000)
+	httpRouteName := "httproute-" + shortID(gatewayName+inferencePoolName)
+
+	// check gateway exists
+	if _, err := uc.gateway.Get(ctx, scope, namespace, gatewayName); err != nil {
+		return nil, err
+	}
+
+	// reconcile inference pool
+	if err := uc.reconcileInferencePool(ctx, scope, namespace, inferencePoolName, modelName, inferencePoolPort); err != nil {
+		return nil, err
+	}
+
+	// reconcile http route
+	if err := uc.reconcileHTTPRoute(ctx, scope, namespace, httpRouteName, gatewayName, inferencePoolName, inferencePoolPort); err != nil {
+		return nil, err
+	}
+
+	// deploy model service
+	return uc.installModelService(ctx, scope, namespace, name, modelName, sizeBytes, limits, requests)
+}
+
+func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, requests, limits *Resource) (*Model, error) {
+	rel, err := uc.release.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return nil, err
 	}
 
-	// check URLs
-	if len(version.URLs) == 0 {
-		return nil, fmt.Errorf("no URLs found for chart model-artifact")
+	vname, ok := rel.Config["modelArtifacts.name"]
+	if !ok {
+		return nil, fmt.Errorf("modelArtifacts.name not found in release config")
 	}
 
-	chartRef := version.URLs[0]
+	vsize, ok := rel.Config["modelArtifacts.size"]
+	if !ok {
+		return nil, fmt.Errorf("modelArtifacts.size not found in release config")
+	}
+
+	modelName, ok := vname.(string)
+	if !ok {
+		return nil, fmt.Errorf("modelArtifacts.name is not a string")
+	}
+
+	sizeBytes, ok := vsize.(int)
+	if !ok {
+		return nil, fmt.Errorf("modelArtifacts.size is not a int64")
+	}
+
+	return uc.upgradeModelService(ctx, scope, namespace, name, modelName, uint64(sizeBytes), limits, requests)
+}
+
+func (uc *UseCase) DeleteModel(ctx context.Context, scope, namespace, name string) error {
+	_, err := uc.release.Uninstall(ctx, scope, namespace, name, false)
+	return err
+}
+
+func (uc *UseCase) reconcileHTTPRoute(ctx context.Context, scope, namespace, name, gatewayName, inferencePoolName string, inferencePoolPort int32) error {
+	_, err := uc.httpRoute.Get(ctx, scope, namespace, name)
+
+	if k8serrors.IsNotFound(err) {
+		httpRoute := uc.buildHTTPRoute(namespace, name, gatewayName, inferencePoolName, inferencePoolPort)
+
+		_, err := uc.httpRoute.Create(ctx, scope, namespace, httpRoute)
+		return err
+	}
+
+	return err
+}
+
+func (uc *UseCase) buildHTTPRoute(namespace, name, gatewayName, inferencePoolName string, inferencePoolPort int32) *service.HTTPRoute {
+	// parent reference
+	parentGroup := gav1.Group(gav1.GroupName)
+	parentKind := gav1.Kind("Gateway")
+
+	// matches
+	pathMatchType := gav1.PathMatchPathPrefix
+
+	// backend references
+	backendGroup := gav1.Group(v1.GroupName)
+	backendKind := gav1.Kind("InferencePool")
+	weight := int32(1)
+
+	// timeouts
+	timeout := gav1.Duration("0s")
+
+	return &service.HTTPRoute{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		Spec: gav1.HTTPRouteSpec{
+			CommonRouteSpec: gav1.CommonRouteSpec{
+				ParentRefs: []gav1.ParentReference{
+					{
+						Group: &parentGroup,
+						Kind:  &parentKind,
+						Name:  gav1.ObjectName(gatewayName), // from llm-d-infra helm chart (.Values.nameOverride)
+					},
+				},
+			},
+			Rules: []gav1.HTTPRouteRule{
+				{
+					Matches: []gav1.HTTPRouteMatch{
+						{
+							Path: &gav1.HTTPPathMatch{
+								Type: &pathMatchType,
+							},
+						},
+					},
+					BackendRefs: []gav1.HTTPBackendRef{
+						{
+							BackendRef: gav1.BackendRef{
+								BackendObjectReference: gav1.BackendObjectReference{
+									Group: &backendGroup,
+									Kind:  &backendKind,
+									Name:  gav1.ObjectName(inferencePoolName),
+									Port:  &inferencePoolPort,
+								},
+								Weight: &weight,
+							},
+						},
+					},
+					Timeouts: &gav1.HTTPRouteTimeouts{
+						Request:        &timeout,
+						BackendRequest: &timeout,
+					},
+				},
+			},
+		},
+	}
+}
+
+func (uc *UseCase) reconcileInferencePool(ctx context.Context, scope, namespace, name, modelName string, port int32) error {
+	_, err := uc.inferencePool.Get(ctx, scope, namespace, name)
+
+	if k8serrors.IsNotFound(err) {
+		return uc.installInferencePool(ctx, scope, namespace, name, modelName, port)
+	}
+
+	return err
+}
+
+func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, name, modelName string, port int32) error {
+	// chart ref
+	chartRef := fmt.Sprintf("oci://registry.k8s.io/gateway-api-inference-extension/charts/inferencepool:v%s", versions.GatewayAPIInferenceExtension)
+
+	// labels
+	labels := map[string]string{
+		release.TypeLabel: "inference-pool",
+	}
+
+	// annotations
+	annotations := map[string]string{
+		ModelNameAnnotation: modelName,
+	}
+
+	// values
+	valuesYAML := fmt.Sprintf(inferencePoolValuesYAML, port)
+
+	_, err := uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
+	return err
+}
+
+func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*Model, error) {
+	// chart ref
+	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
 	// labels
 	labels := map[string]string{
@@ -105,125 +256,30 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 	}
 
 	// values
-	valuesMap := map[string]string{} // TODO: waiting for v0.3.0
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), sizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
-	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, "", valuesMap)
+	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
 }
 
-func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, requests, limits *Resource) (*Model, error) {
-	rel, err := uc.release.Get(ctx, scope, namespace, name)
-	if err != nil {
-		return nil, err
-	}
-
-	chart := rel.Chart
-	if chart == nil {
-		return nil, fmt.Errorf("chart not found in release %s", name)
-	}
-
-	chartRef := ""
-	if v, ok := rel.Config[release.ChartRefKey]; ok {
-		if str, ok := v.(string); ok {
-			chartRef = str
-		}
-	}
-
-	if chartRef == "" {
-		return nil, fmt.Errorf("chart ref not found in release %s", name)
-	}
+func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*Model, error) {
+	// chart ref
+	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
 	// values
-	_, _ = requests, limits          // TODO: waiting for v0.3.0
-	valuesMap := map[string]string{} // TODO: waiting for v0.3.0
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), sizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
-	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, "", valuesMap, true)
+	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
 }
 
-func (uc *UseCase) DeleteModel(ctx context.Context, scope, namespace, name string) error {
-	_, err := uc.release.Uninstall(ctx, scope, namespace, name, false)
-	return err
+func shortID(input string) string {
+	hash := sha256.Sum256([]byte(input))
+	return hex.EncodeToString(hash[:4])
 }
 
-func (uc *UseCase) ListModelArtifacts(ctx context.Context, scope, namespace string) ([]Artifact, error) {
-	selector := release.TypeLabel + "=" + "model-artifact"
-
-	pvcs, err := uc.persistentVolumeClaim.List(ctx, scope, namespace, selector)
-	if err != nil {
-		return nil, err
-	}
-
-	artifacts := make([]Artifact, len(pvcs))
-	for i := range pvcs {
-		artifact := uc.toArtifact(&pvcs[i])
-		artifacts[i] = *artifact
-	}
-
-	return artifacts, nil
-}
-
-func (uc *UseCase) CreateModelArtifact(ctx context.Context, scope, namespace, name, modelName string, size int64) (*Artifact, error) {
-	// find chart ref
-	version, err := uc.chart.GetStableVersion(ctx, chart.RepoURL, "model-artifact", true)
-	if err != nil {
-		return nil, err
-	}
-
-	// check URLs
-	if len(version.URLs) == 0 {
-		return nil, fmt.Errorf("no URLs found for chart model-artifact")
-	}
-
-	chartRef := version.URLs[0]
-
-	// labels
-	labels := map[string]string{
-		release.TypeLabel: "model-artifact",
-	}
-
-	// annotations
-	annotations := map[string]string{
-		ModelArtifactModelNameAnnotation: modelName,
-	}
-
-	// values
-	valuesMap := map[string]string{
-		"model.name": modelName,
-		"pvc.name":   name,
-		"pvc.size":   strconv.FormatInt(size, 10),
-	}
-
-	// install
-	if _, err := uc.release.Install(ctx, scope, namespace, (name), false, chartRef, labels, labels, annotations, "", valuesMap); err != nil {
-		return nil, err
-	}
-
-	// get pvc
-	pvc, err := uc.persistentVolumeClaim.Get(ctx, scope, namespace, name)
-	if err != nil {
-		return nil, err
-	}
-
-	// convert to model artifact
-	return uc.toArtifact(pvc), nil
-}
-
-func (uc *UseCase) DeleteModelArtifact(ctx context.Context, scope, namespace, name string) error {
-	return uc.persistentVolumeClaim.Delete(ctx, scope, namespace, name)
-}
-
-func (uc *UseCase) toArtifact(pvc *persistent.PersistentVolumeClaim) *Artifact {
-	size := int64(0)
-	capacity, ok := pvc.Status.Capacity[v1.ResourceStorage]
-	if ok {
-		size = capacity.Value()
-	}
-	return &Artifact{
-		Name:       pvc.Name,
-		Namespace:  pvc.Namespace,
-		Modelname:  pvc.Annotations[ModelArtifactModelNameAnnotation],
-		Phase:      pvc.Status.Phase,
-		Size:       size,
-		VolumeName: pvc.Spec.VolumeName,
-		CreatedAt:  pvc.CreationTimestamp.Time,
-	}
+func formatLabel(input string) string {
+	regex := regexp.MustCompile("[^a-zA-Z0-9]+")
+	output := regex.ReplaceAllString(input, "-")
+	trimRegex := regexp.MustCompile("^-|-$")
+	finalOutput := trimRegex.ReplaceAllString(output, "")
+	return strings.ToLower(finalOutput)
 }
