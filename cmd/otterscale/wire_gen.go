@@ -90,9 +90,10 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	gatewayRepo := kubernetessigs.NewGatewayRepo(kubernetesSigs)
 	httpRouteRepo := kubernetessigs.NewHTTPRouteRepo(kubernetesSigs)
 	serviceRepo := kubernetes.NewServiceRepo(kubernetesKubernetes)
-	serviceUseCase := service.NewUseCase(httpRouteRepo, serviceRepo)
+	serviceUseCase := service.NewUseCase(gatewayRepo, httpRouteRepo, serviceRepo)
 	daemonSetRepo := kubernetes.NewDaemonSetRepo(kubernetesKubernetes)
 	deploymentRepo := kubernetes.NewDeploymentRepo(kubernetesKubernetes)
 	jobRepo := kubernetes.NewJobRepo(kubernetesKubernetes)
@@ -155,7 +156,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	tagUseCase := tag.NewUseCase(tagRepo)
 	machineService := app.NewMachineService(machineUseCase, purgeUseCase, tagUseCase)
 	inferencePoolRepo := kubernetessigs.NewInferencePoolRepo(kubernetesSigs)
-	modelUseCase := model.NewUseCase(inferencePoolRepo, chartRepo, deploymentRepo, httpRouteRepo, persistentVolumeClaimRepo, releaseRepo, serviceRepo)
+	modelUseCase := model.NewUseCase(inferencePoolRepo, chartRepo, deploymentRepo, gatewayRepo, httpRouteRepo, persistentVolumeClaimRepo, releaseRepo, serviceRepo)
 	modelService := app.NewModelService(modelUseCase)
 	fabricRepo := maas.NewFabricRepo(maasMAAS)
 	subnetRepo := maas.NewSubnetRepo(maasMAAS)

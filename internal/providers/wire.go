@@ -50,6 +50,7 @@ var ProviderSet = wire.NewSet(
 	kubernetes.NewStatefulSetRepo,
 	kubernetes.NewStorageClassRepo,
 	kubernetessigs.New,
+	kubernetessigs.NewGatewayRepo,
 	kubernetessigs.NewHTTPRouteRepo,
 	kubernetessigs.NewInferencePoolRepo,
 	kubevirt.New,
