@@ -61,7 +61,7 @@
 	<Card.Content class="h-full">
 		{#if !isLoaded}
 			<div class="flex h-full w-full items-center justify-center">
-				<Icon icon="svg-spinners:3-dots-fade" class="size-8" />
+				<Icon icon="svg-spinners:3-dots-bounce" class="size-8" />
 			</div>
 		{:else if !workers.value}
 			<div class="flex h-full w-full flex-col items-center justify-center">

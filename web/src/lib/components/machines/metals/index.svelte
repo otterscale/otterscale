@@ -22,8 +22,8 @@
 
 	const machines = writable<Machine[]>([]);
 	async function fetchMachines() {
-  		const response = await machineClient.listMachines({});
-			machines.set(response.machines);
+		const response = await machineClient.listMachines({});
+		machines.set(response.machines);
 	}
 
 	let prometheusDriver = $state<PrometheusDriver | null>(null);
@@ -55,7 +55,7 @@
 
 		const storageResponse = await prometheusDriver.rangeQuery(
 			`
-				node_load1
+				1 - sum by (instance) (node_filesystem_avail_bytes) / sum by (instance) (node_filesystem_size_bytes)
 			`,
 			Date.now() - 10 * 60 * 1000,
 			Date.now(),
@@ -68,7 +68,8 @@
 
 	async function fetch() {
 		try {
-			await Promise.all([fetchMachines(), fetchMetrics()]);
+			fetchMachines();
+			fetchMetrics();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -80,6 +81,7 @@
 
 	onMount(async () => {
 		await fetch();
+		isMounted = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -88,7 +90,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<DataTable {machines} {reloadManager} />
+		<DataTable {machines} {metrics} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

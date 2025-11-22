@@ -3,7 +3,6 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 	import { scaleUtc } from 'd3-scale';
-	import { curveLinear } from 'd3-shape';
 	import { LineChart } from 'layerchart';
 	import { SampleValue } from 'prometheus-query';
 
@@ -178,45 +177,37 @@
 
 {#snippet memory_metric(data: { row: Row<Machine>; metrics: Metrics })}
 	{@const configuation = {
-		usage: { label: 'usage', color: 'var(--chart-2)' }
+		value: { label: 'usage', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig}
 	{@const usage: SampleValue[] = data.metrics.memory.get(data.row.original.fqdn) ?? []}
 	{#if usage.length > 0}
 		<Layout.Cell class="justify-center">
-			<Chart.Container config={configuation} class="h-10 w-20">
+			<Chart.Container config={configuation} class="h-10 w-full">
 				<LineChart
 					data={usage}
 					x="time"
 					series={[
 						{
 							key: 'value',
-							label: configuation.usage.label,
-							color: configuation.usage.color
+							label: configuation['value'].label,
+							color: configuation['value'].color
 						}
 					]}
+					axis={false}
 					xScale={scaleUtc()}
 					yDomain={[0, 1]}
-					axis={false}
-					props={{
-						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
-						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
-						},
-						highlight: { points: { r: 4 } }
-					}}
+					grid={false}
 				>
 					{#snippet tooltip()}
 						<Chart.Tooltip hideLabel>
 							{#snippet formatter({ item, name, value })}
 								<div
+									class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
 									style="--color-bg: {item.color}"
-									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
-								></div>
-								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
-									<div class="grid gap-1.5">
-										<span class="text-muted-foreground">{name}</span>
-									</div>
-									<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
+								>
+									<Icon icon="ph:square-fill" class="text-(--color-bg)" />
+									<h1 class="font-semibold text-muted-foreground">{name}</h1>
+									<p class="ml-auto">{(Number(value) * 100).toFixed(2)} %</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>
@@ -229,45 +220,37 @@
 
 {#snippet storage_metric(data: { row: Row<Machine>; metrics: Metrics })}
 	{@const configuation = {
-		usage: { label: 'usage', color: 'var(--chart-2)' }
+		value: { label: 'usage', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig}
 	{@const usage: SampleValue[] = data.metrics.storage.get(data.row.original.fqdn) ?? []}
 	{#if usage.length > 0}
 		<Layout.Cell class="justify-center">
-			<Chart.Container config={configuation} class="h-10 w-20">
+			<Chart.Container config={configuation} class="h-10 w-full">
 				<LineChart
 					data={usage}
 					x="time"
 					series={[
 						{
 							key: 'value',
-							label: configuation.usage.label,
-							color: configuation.usage.color
+							label: configuation['value'].label,
+							color: configuation['value'].color
 						}
 					]}
+					axis={false}
 					xScale={scaleUtc()}
 					yDomain={[0, 1]}
-					axis={false}
-					props={{
-						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
-						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
-						},
-						highlight: { points: { r: 4 } }
-					}}
+					grid={false}
 				>
 					{#snippet tooltip()}
 						<Chart.Tooltip hideLabel>
 							{#snippet formatter({ item, name, value })}
 								<div
+									class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
 									style="--color-bg: {item.color}"
-									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
-								></div>
-								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
-									<div class="grid gap-1.5">
-										<span class="text-muted-foreground">{name}</span>
-									</div>
-									<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
+								>
+									<Icon icon="ph:square-fill" class="text-(--color-bg)" />
+									<h1 class="font-semibold text-muted-foreground">{name}</h1>
+									<p class="ml-auto">{(Number(value) * 100).toFixed(2)} %</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>

@@ -1,8 +1,12 @@
 <script lang="ts">
-	import { cn, type WithoutChildrenOrChild } from '$lib/utils.js';
 	import { Progress as ProgressPrimitive } from 'bits-ui';
+
+	import {
+		getProgressColor,
+		type ProgressTargetType
+	} from '$lib/components/custom/progress/utils.svelte';
 	import * as Progress from '$lib/components/ui/progress/index.ts';
-	import { getProgressColor } from '$lib/components/custom/progress/utils.svelte';
+	import { cn, type WithoutChildrenOrChild } from '$lib/utils.js';
 
 	let {
 		ref = $bindable(null),
@@ -14,7 +18,7 @@
 	}: Omit<WithoutChildrenOrChild<ProgressPrimitive.RootProps>, 'value' | 'max'> & {
 		numerator: number;
 		denominator: number;
-		target?: number;
+		target: ProgressTargetType;
 	} = $props();
 </script>
 
@@ -23,8 +27,9 @@
 	value={numerator / denominator}
 	max={1}
 	class={cn(
-		getProgressColor(numerator, denominator, 'LTB'),
-		'absolute top-0 left-0 h-2 rounded-none'
+		getProgressColor(numerator, denominator, target),
+		'absolute top-0 left-0 h-2 rounded-none',
+		className
 	)}
 	{...restProps}
 />

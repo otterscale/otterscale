@@ -12,11 +12,13 @@
 </script>
 
 <script lang="ts">
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { cn, type WithElementRef } from '$lib/utils.js';
-	import * as Card from '$lib/components/ui/card';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
+	import type { HTMLAttributes } from 'svelte/elements';
+
+	import * as Card from '$lib/components/ui/card';
+	import { cn, type WithElementRef } from '$lib/utils.js';
+
 	import type { Type } from './types';
 
 	let {
@@ -35,10 +37,8 @@
 	class={cn('flex items-center gap-2 font-bold', className)}
 	{...restProps}
 >
-	<div
-		class="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"
-	>
-		<Icon icon={getIcon(type)} class="size-5" />
+	<div class="flex shrink-0 items-center justify-center rounded-md bg-primary/10 p-2 text-primary">
+		<Icon data-slot="data-table-statistics-title-icon" icon={getIcon(type)} class="size-5" />
 	</div>
 	{@render children?.()}
 </Card.Title>
