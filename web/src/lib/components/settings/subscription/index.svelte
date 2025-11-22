@@ -11,9 +11,9 @@
 	// Tier configurations
 	const tiers = [
 		{
-			level: PremiumTier_Level.BASIC,
-			title: m.basic_tier(),
-			description: m.basic_setup_description(),
+			level: PremiumTier_Level.STANDARD,
+			title: m.standard_tier(),
+			description: m.standard_setup_description(),
 			icons: [
 				{ name: 'simple-icons:ceph', color: '#f0424d', hasAnimation: false },
 				{ name: 'simple-icons:kubernetes', color: '#326de6', hasAnimation: false }
@@ -37,13 +37,13 @@
 			isRecommended: false
 		},
 		{
-			level: PremiumTier_Level.ADVANCED,
-			title: m.advanced_tier(),
-			description: m.advanced_setup_description(),
+			level: PremiumTier_Level.PREMIUM,
+			title: m.premium_tier(),
+			description: m.premium_setup_description(),
 			icons: [{ name: 'simple-icons:ceph', color: '#f0424d', hasAnimation: true }],
 			features: [
-				m.all_basic_features(),
-				m.all_basic_features_description(),
+				m.all_standard_features(),
+				m.all_standard_features_description(),
 				m.multi_node_ceph(),
 				m.multi_node_ceph_description(),
 				m.team_access(),
@@ -62,8 +62,8 @@
 				{ name: 'simple-icons:kubernetes', color: '#326de6', hasAnimation: true }
 			],
 			features: [
-				m.all_advanced_features(),
-				m.all_advanced_features_description(),
+				m.all_premium_features(),
+				m.all_premium_features_description(),
 				m.enterprise_multi_node_ceph(),
 				m.enterprise_multi_node_ceph_description(),
 				m.multi_node_kubernetes(),
@@ -136,10 +136,7 @@
 								{#each tier.features as feature, index}
 									{#if index % 2 === 0}
 										<li class="flex space-x-2 pt-4">
-											<Icon
-												icon="ph:check-bold"
-												class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-500"
-											/>
+											<Icon icon="ph:check-bold" class="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
 											<span class="text-sm text-foreground">{feature}</span>
 										</li>
 									{:else}
