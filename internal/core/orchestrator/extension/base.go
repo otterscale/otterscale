@@ -40,7 +40,7 @@ var (
 			Description: "Gateway API is an official Kubernetes project focused on L4 and L7 routing in Kubernetes.",
 			Logo:        "https://github.com/kubernetes-sigs.png",
 			CRD: &crdManifest{
-				Ref:                  "https://github.com/kubernetes-sigs/gateway-api.git/config/crd?ref=" + versions.GatewayAPI,
+				Ref:                  fmt.Sprintf("https://github.com/kubernetes-sigs/gateway-api.git/config/crd?ref=v%s", versions.GatewayAPI),
 				Version:              versions.GatewayAPI,
 				AnnotationVersionKey: "gateway.networking.k8s.io/bundle-version",
 			},
@@ -51,7 +51,7 @@ var (
 			Description: "Gateway API Inference Extension is an official Kubernetes project that optimizes self-hosting Generative Models on Kubernetes.",
 			Logo:        "https://github.com/kubernetes-sigs.png",
 			CRD: &crdManifest{
-				Ref:                  "https://github.com/kubernetes-sigs/gateway-api-inference-extension.git/config/crd?ref=" + versions.GatewayAPIInferenceExtension,
+				Ref:                  fmt.Sprintf("https://github.com/kubernetes-sigs/gateway-api-inference-extension.git/config/crd?ref=v%s", versions.GatewayAPIInferenceExtension),
 				Version:              versions.GatewayAPIInferenceExtension,
 				AnnotationVersionKey: "inference.networking.k8s.io/bundle-version",
 			},

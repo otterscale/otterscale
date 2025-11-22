@@ -12,15 +12,14 @@ const (
 const (
 	KubePrometheusStack = "79.7.1"
 	Istio               = "1.28.0"
-	InferencePool       = "0.1.0" // ?
 	LLMDInfra           = "1.3.3"
 	LLMDModelService    = "0.3.6"
 )
 
 // Kubernetes Custom Resource Definition
 const (
-	GatewayAPI                   = "v1.3.0"
-	GatewayAPIInferenceExtension = "v1.1.0"
+	GatewayAPI                   = "1.3.0"
+	GatewayAPIInferenceExtension = "1.1.0"
 )
 
 // Juju Charm
