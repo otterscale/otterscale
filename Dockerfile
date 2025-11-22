@@ -32,6 +32,7 @@ RUN apt-get update && apt-get install -y \
     librados2 \
     pciutils \
     ca-certificates \
+    git \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
