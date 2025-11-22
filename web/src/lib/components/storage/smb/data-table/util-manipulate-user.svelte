@@ -13,7 +13,7 @@
 		user = $bindable(),
 		type,
 		invalid = $bindable(),
-		required = $bindabl()
+		required = $bindable()
 	}: {
 		user?: SMBShare_SecurityConfig_User;
 		type: 'create' | 'update';

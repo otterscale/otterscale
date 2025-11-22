@@ -284,6 +284,24 @@
 
 					<Form.Field>
 						<Form.Label>{m.valid_users()}</Form.Label>
+						{#if request.validUsers?.length > 0}
+							<div class="group max-h-40 overflow-y-auto rounded-lg border p-2">
+								{#each request.validUsers as user, index (index)}
+									<div class="flex items-center gap-2 rounded-lg p-2">
+										<div
+											class={cn('flex size-8 items-center justify-center rounded-full border-2')}
+										>
+											<Icon icon="ph:user" class="size-5" />
+										</div>
+										<div class="flex flex-col gap-1">
+											<p class="text-xs text-muted-foreground">{m.valid_user()}</p>
+											<p class="text-sm">{user}</p>
+										</div>
+										<CopyButton class="invisible ml-auto size-4 group-hover:visible" text={user} />
+									</div>
+								{/each}
+							</div>
+						{/if}
 						{#if request.securityConfig.mode === SMBShare_SecurityConfig_Mode.USER}
 							<ManipulateValidUsers bind:validUsers={request.validUsers} type="create" />
 						{:else if request.securityConfig.mode === SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY}
