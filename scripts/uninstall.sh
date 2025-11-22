@@ -101,4 +101,5 @@ main() {
     remove_pkg
     remove_juju_file
 }
+
 main
