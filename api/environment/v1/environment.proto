@@ -69,9 +69,10 @@ message GetPrometheusRequest {}
 
 message PremiumTier {
   enum Level {
-    LEVEL_BASIC = 0;
-    LEVEL_ADVANCED = 1;
-    LEVEL_ENTERPRISE = 2;
+    LEVEL_COMMUNITY = 0;
+    LEVEL_STANDARD = 1;
+    LEVEL_PREMIUM = 2;
+    LEVEL_ENTERPRISE = 3;
   }
   Level level = 1;
 }

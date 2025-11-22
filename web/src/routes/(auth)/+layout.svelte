@@ -41,8 +41,9 @@
 	const current = $derived($breadcrumbs.at(-1));
 
 	const tierMap = {
-		[PremiumTier_Level.BASIC]: m.basic_tier(),
-		[PremiumTier_Level.ADVANCED]: m.advanced_tier(),
+		[PremiumTier_Level.COMMUNITY]: m.community_tier(),
+		[PremiumTier_Level.STANDARD]: m.standard_tier(),
+		[PremiumTier_Level.PREMIUM]: m.premium_tier(),
 		[PremiumTier_Level.ENTERPRISE]: m.enterprise_tier()
 	};
 
