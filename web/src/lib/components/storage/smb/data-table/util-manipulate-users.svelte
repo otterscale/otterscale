@@ -12,10 +12,16 @@
 
 <script lang="ts">
 	let {
-		users = $bindable<SMBShare_SecurityConfig_User[]>(),
-		invalid = $bindable<boolean>(),
-		required = $bindable<boolean>()
-	}: { users: SMBShare_SecurityConfig_User[]; invalid?: boolean; required?: boolean } = $props();
+		users = $bindable(),
+		type,
+		invalid = $bindable(),
+		required = $bindable()
+	}: {
+		users: SMBShare_SecurityConfig_User[];
+		type: 'create' | 'update';
+		invalid?: boolean;
+		required?: boolean;
+	} = $props();
 
 	if (!users) {
 		users = [];
@@ -45,8 +51,14 @@
 			required && !(users && users.length > 0)
 				? 'text-destructive ring-destructive'
 				: buttonVariants({ variant: 'outline' })
-		)}>{m.create()}/{m.edit()}</Modal.Trigger
+		)}
 	>
+		{#if type === 'create'}
+			{m.create_users()}
+		{:else if type === 'update'}
+			{m.edit_users()}
+		{/if}
+	</Modal.Trigger>
 	<Modal.Content>
 		{#if users.length > 0}
 			<div class="max-h-40 overflow-y-auto rounded-lg border p-2">

@@ -10,10 +10,16 @@
 
 <script lang="ts">
 	let {
-		user = $bindable<SMBShare_SecurityConfig_User>(),
-		invalid = $bindable<boolean>(),
-		required = $bindable<boolean>()
-	}: { user?: SMBShare_SecurityConfig_User; invalid?: boolean; required?: boolean } = $props();
+		user = $bindable(),
+		type,
+		invalid = $bindable(),
+		required = $bindabl()
+	}: {
+		user?: SMBShare_SecurityConfig_User;
+		type: 'create' | 'update';
+		invalid?: boolean;
+		required?: boolean;
+	} = $props();
 
 	const defaults = {} as SMBShare_SecurityConfig_User;
 
@@ -42,7 +48,11 @@
 				: buttonVariants({ variant: 'outline' })
 		)}
 	>
-		{m.create()}/{m.edit()}
+		{#if type === 'create'}
+			{m.create_users()}
+		{:else if type === 'update'}
+			{m.edit_users()}
+		{/if}
 	</Modal.Trigger>
 	<Modal.Content>
 		<Form.Label>{m.name()}</Form.Label>

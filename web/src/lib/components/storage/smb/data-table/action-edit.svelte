@@ -25,8 +25,10 @@
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
 
-	import CreateUser from './utils/create-user.svelte';
-	import CreateUsers from './utils/create-users.svelte';
+	import ManipulateUser from './util-manipulate-user.svelte';
+	import ManipulateUsers from './util-manipulate-users.svelte';
+	import ManipulateValidUsers from './util-manipulate-valid-users.svelte';
+	import ManipulateVerifiedValidUsers from './util-manipulate-verified-valid-users.svelte';
 </script>
 
 <script lang="ts">
@@ -234,7 +236,8 @@
 									{/each}
 								</div>
 							{/if}
-							<CreateUsers
+							<ManipulateUsers
+								type="update"
 								required={request.securityConfig.mode === SMBShare_SecurityConfig_Mode.USER}
 								bind:users={request.securityConfig.localUsers}
 								bind:invalid={invaliditySecurityConfig.localUsers}
@@ -272,7 +275,8 @@
 									</div>
 								</div>
 							{/if}
-							<CreateUser
+							<ManipulateUser
+								type="update"
 								bind:user={request.securityConfig.joinSource}
 								bind:invalid={invaliditySecurityConfig.joinSource}
 								required={request.securityConfig.mode ===
@@ -280,19 +284,21 @@
 							/>
 						</Form.Field>
 					{/if}
-				{/if}
 
-				<Form.Field>
-					<Form.Label>{m.valid_users()}</Form.Label>
-					<MultipleInput.Root type="text" icon="ph:user" bind:values={request.validUsers}>
-						<MultipleInput.Viewer />
-						<MultipleInput.Controller>
-							<MultipleInput.Input />
-							<MultipleInput.Add />
-							<MultipleInput.Clear />
-						</MultipleInput.Controller>
-					</MultipleInput.Root>
-				</Form.Field>
+					<Form.Field>
+						<Form.Label>{m.valid_users()}</Form.Label>
+						{#if request.securityConfig.mode === SMBShare_SecurityConfig_Mode.USER}
+							<ManipulateValidUsers bind:validUsers={request.validUsers} type="update" />
+						{:else if request.securityConfig.mode === SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY}
+							<ManipulateVerifiedValidUsers
+								bind:validUsers={request.validUsers}
+								type="update"
+								realm={request.securityConfig.realm}
+								joinSource={request.securityConfig.joinSource}
+							/>
+						{/if}
+					</Form.Field>
+				{/if}
 			</Form.Fieldset>
 
 			<Form.Fieldset>
