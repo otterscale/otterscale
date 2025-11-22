@@ -7,7 +7,6 @@
 package pb
 
 import (
-	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -1940,7 +1939,7 @@ var File_api_facility_v1_facility_proto protoreflect.FileDescriptor
 
 const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\n" +
-	"\x1eapi/facility/v1/facility.proto\x12\x16otterscale.facility.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x96\r\n" +
+	"\x1eapi/facility/v1/facility.proto\x12\x16otterscale.facility.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x96\r\n" +
 	"\bFacility\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12?\n" +
 	"\x06status\x18\x02 \x01(\v2'.otterscale.facility.v1.Facility.StatusR\x06status\x12\x1d\n" +
@@ -2010,12 +2009,10 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"facilities\"U\n" +
 	" ResolveFacilityUnitErrorsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
-	"\tunit_name\x18\x02 \x01(\tR\bunitName2\x9b\x02\n" +
-	"\x0fFacilityService\x12\x83\x01\n" +
-	"\x0eListFacilities\x12-.otterscale.facility.v1.ListFacilitiesRequest\x1a..otterscale.facility.v1.ListFacilitiesResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vfac-general\x12\x81\x01\n" +
-	"\x19ResolveFacilityUnitErrors\x128.otterscale.facility.v1.ResolveFacilityUnitErrorsRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vfac-generalB5Z3github.com/otterscale/otterscale/api/facility/v1;pbb\beditionsp\xe8\a"
+	"\tunit_name\x18\x02 \x01(\tR\bunitName2\xf1\x01\n" +
+	"\x0fFacilityService\x12o\n" +
+	"\x0eListFacilities\x12-.otterscale.facility.v1.ListFacilitiesRequest\x1a..otterscale.facility.v1.ListFacilitiesResponse\x12m\n" +
+	"\x19ResolveFacilityUnitErrors\x128.otterscale.facility.v1.ResolveFacilityUnitErrorsRequest\x1a\x16.google.protobuf.EmptyB5Z3github.com/otterscale/otterscale/api/facility/v1;pbb\beditionsp\xe8\a"
 
 var file_api_facility_v1_facility_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_api_facility_v1_facility_proto_goTypes = []any{

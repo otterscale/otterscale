@@ -1,32 +1,43 @@
 # yaml-language-server: $schema=https://flagd.dev/schema/v0/flags.json
 flags:
-  stg-general:
+  model-enabled:
     state: ENABLED
     variants:
       "on": true
       "off": false
     defaultVariant: "on"
-  stg-block:
+
+  large-language-model-enabled:
     state: ENABLED
     variants:
       "on": true
       "off": false
     defaultVariant: "on"
-  stg-file:
+
+  application-enabled:
     state: ENABLED
     variants:
       "on": true
       "off": false
     defaultVariant: "on"
-  stg-object:
+
+  virtual-machine-enabled:
     state: ENABLED
     variants:
       "on": true
       "off": false
     defaultVariant: "on"
-  stg-smb:
+
+  distributed-storage-enabled:
     state: ENABLED
     variants:
       "on": true
       "off": false
     defaultVariant: "on"
+
+  debug:
+    state: DISABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "off"

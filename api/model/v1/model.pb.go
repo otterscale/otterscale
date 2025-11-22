@@ -2204,23 +2204,23 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x1aDeleteModelArtifactRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x032\xb5\x06\n" +
-	"\fModelService\x12q\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x032\xc4\x06\n" +
+	"\fModelService\x12s\n" +
 	"\n" +
-	"ListModels\x12&.otterscale.model.v1.ListModelsRequest\x1a'.otterscale.model.v1.ListModelsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12f\n" +
-	"\vCreateModel\x12'.otterscale.model.v1.CreateModelRequest\x1a\x1a.otterscale.model.v1.Model\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12f\n" +
-	"\vUpdateModel\x12'.otterscale.model.v1.UpdateModelRequest\x1a\x1a.otterscale.model.v1.Model\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12b\n" +
-	"\vDeleteModel\x12'.otterscale.model.v1.DeleteModelRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12\x89\x01\n" +
-	"\x12ListModelArtifacts\x12..otterscale.model.v1.ListModelArtifactsRequest\x1a/.otterscale.model.v1.ListModelArtifactsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12~\n" +
-	"\x13CreateModelArtifact\x12/.otterscale.model.v1.CreateModelArtifactRequest\x1a\".otterscale.model.v1.ModelArtifact\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12r\n" +
-	"\x13DeleteModelArtifact\x12/.otterscale.model.v1.DeleteModelArtifactRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-generalB2Z0github.com/otterscale/otterscale/api/model/v1;pbb\beditionsp\xe8\a"
+	"ListModels\x12&.otterscale.model.v1.ListModelsRequest\x1a'.otterscale.model.v1.ListModelsResponse\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12h\n" +
+	"\vCreateModel\x12'.otterscale.model.v1.CreateModelRequest\x1a\x1a.otterscale.model.v1.Model\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12h\n" +
+	"\vUpdateModel\x12'.otterscale.model.v1.UpdateModelRequest\x1a\x1a.otterscale.model.v1.Model\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12d\n" +
+	"\vDeleteModel\x12'.otterscale.model.v1.DeleteModelRequest\x1a\x16.google.protobuf.Empty\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12\x8b\x01\n" +
+	"\x12ListModelArtifacts\x12..otterscale.model.v1.ListModelArtifactsRequest\x1a/.otterscale.model.v1.ListModelArtifactsResponse\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12\x80\x01\n" +
+	"\x13CreateModelArtifact\x12/.otterscale.model.v1.CreateModelArtifactRequest\x1a\".otterscale.model.v1.ModelArtifact\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12t\n" +
+	"\x13DeleteModelArtifact\x12/.otterscale.model.v1.DeleteModelArtifactRequest\x1a\x16.google.protobuf.Empty\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabledB2Z0github.com/otterscale/otterscale/api/model/v1;pbb\beditionsp\xe8\a"
 
 var file_api_model_v1_model_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_api_model_v1_model_proto_goTypes = []any{

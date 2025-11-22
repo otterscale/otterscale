@@ -933,16 +933,13 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\x0eLEVEL_STANDARD\x10\x01\x12\x11\n" +
 	"\rLEVEL_PREMIUM\x10\x02\x12\x14\n" +
 	"\x10LEVEL_ENTERPRISE\x10\x03\"\x17\n" +
-	"\x15GetPremiumTierRequest2\xfe\x03\n" +
-	"\x12EnvironmentService\x12\x80\x01\n" +
-	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\venv-general\x12{\n" +
-	"\rGetPrometheus\x12/.otterscale.environment.v1.GetPrometheusRequest\x1a%.otterscale.environment.v1.Prometheus\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\venv-general\x12~\n" +
-	"\x0eGetPremiumTier\x120.otterscale.environment.v1.GetPremiumTierRequest\x1a&.otterscale.environment.v1.PremiumTier\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\venv-general\x12h\n" +
-	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tenv-debugB8Z6github.com/otterscale/otterscale/api/environment/v1;pbb\beditionsp\xe8\a"
+	"\x15GetPremiumTierRequest2\xbd\x03\n" +
+	"\x12EnvironmentService\x12l\n" +
+	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\x12g\n" +
+	"\rGetPrometheus\x12/.otterscale.environment.v1.GetPrometheusRequest\x1a%.otterscale.environment.v1.Prometheus\x12j\n" +
+	"\x0eGetPremiumTier\x120.otterscale.environment.v1.GetPremiumTierRequest\x1a&.otterscale.environment.v1.PremiumTier\x12d\n" +
+	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\"\f\x8a\xdf\xd5\x1d\a\n" +
+	"\x05debugB8Z6github.com/otterscale/otterscale/api/environment/v1;pbb\beditionsp\xe8\a"
 
 var file_api_environment_v1_environment_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_api_environment_v1_environment_proto_msgTypes = make([]protoimpl.MessageInfo, 7)

@@ -3332,29 +3332,21 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\tmanifests\x18\x03 \x03(\v2..otterscale.orchestrator.v1.Extension.ManifestR\tmanifestsJ\x04\b\x02\x10\x03\"\x84\x01\n" +
 	"\x18UpgradeExtensionsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12L\n" +
-	"\tmanifests\x18\x03 \x03(\v2..otterscale.orchestrator.v1.Extension.ManifestR\tmanifestsJ\x04\b\x02\x10\x032\x9a\v\n" +
-	"\x13OrchestratorService\x12h\n" +
+	"\tmanifests\x18\x03 \x03(\v2..otterscale.orchestrator.v1.Extension.ManifestR\tmanifestsJ\x04\b\x02\x10\x032\xf5\t\n" +
+	"\x13OrchestratorService\x12S\n" +
 	"\n" +
-	"CreateNode\x12-.otterscale.orchestrator.v1.CreateNodeRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\forch-general\x12n\n" +
-	"\rCreateCluster\x120.otterscale.orchestrator.v1.CreateClusterRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\forch-general\x12r\n" +
-	"\x0fAddClusterUnits\x122.otterscale.orchestrator.v1.AddClusterUnitsRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\forch-general\x12\xaa\x01\n" +
-	"\x18ListKubernetesNodeLabels\x12;.otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest\x1a<.otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\forch-general\x12\xb0\x01\n" +
-	"\x1aUpdateKubernetesNodeLabels\x12=.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest\x1a>.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\forch-general\x12\xac\x01\n" +
-	"\x19ListGPURelationsByMachine\x12<.otterscale.orchestrator.v1.ListGPURelationsByMachineRequest\x1a=.otterscale.orchestrator.v1.ListGPURelationsByMachineResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12\xa6\x01\n" +
-	"\x17ListGPURelationsByModel\x12:.otterscale.orchestrator.v1.ListGPURelationsByModelRequest\x1a;.otterscale.orchestrator.v1.ListGPURelationsByModelResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12\x8c\x01\n" +
-	"\x0eListExtensions\x121.otterscale.orchestrator.v1.ListExtensionsRequest\x1a2.otterscale.orchestrator.v1.ListExtensionsResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\forch-general\x12v\n" +
-	"\x11InstallExtensions\x124.otterscale.orchestrator.v1.InstallExtensionsRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\forch-general\x12v\n" +
-	"\x11UpgradeExtensions\x124.otterscale.orchestrator.v1.UpgradeExtensionsRequest\x1a\x16.google.protobuf.Empty\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\forch-generalB9Z7github.com/otterscale/otterscale/api/orchestrator/v1;pbb\beditionsp\xe8\a"
+	"CreateNode\x12-.otterscale.orchestrator.v1.CreateNodeRequest\x1a\x16.google.protobuf.Empty\x12Y\n" +
+	"\rCreateCluster\x120.otterscale.orchestrator.v1.CreateClusterRequest\x1a\x16.google.protobuf.Empty\x12]\n" +
+	"\x0fAddClusterUnits\x122.otterscale.orchestrator.v1.AddClusterUnitsRequest\x1a\x16.google.protobuf.Empty\x12\x95\x01\n" +
+	"\x18ListKubernetesNodeLabels\x12;.otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest\x1a<.otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse\x12\x9b\x01\n" +
+	"\x1aUpdateKubernetesNodeLabels\x12=.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest\x1a>.otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse\x12\xae\x01\n" +
+	"\x19ListGPURelationsByMachine\x12<.otterscale.orchestrator.v1.ListGPURelationsByMachineRequest\x1a=.otterscale.orchestrator.v1.ListGPURelationsByMachineResponse\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12\xa8\x01\n" +
+	"\x17ListGPURelationsByModel\x12:.otterscale.orchestrator.v1.ListGPURelationsByModelRequest\x1a;.otterscale.orchestrator.v1.ListGPURelationsByModelResponse\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12w\n" +
+	"\x0eListExtensions\x121.otterscale.orchestrator.v1.ListExtensionsRequest\x1a2.otterscale.orchestrator.v1.ListExtensionsResponse\x12a\n" +
+	"\x11InstallExtensions\x124.otterscale.orchestrator.v1.InstallExtensionsRequest\x1a\x16.google.protobuf.Empty\x12a\n" +
+	"\x11UpgradeExtensions\x124.otterscale.orchestrator.v1.UpgradeExtensionsRequest\x1a\x16.google.protobuf.EmptyB9Z7github.com/otterscale/otterscale/api/orchestrator/v1;pbb\beditionsp\xe8\a"
 
 var file_api_orchestrator_v1_orchestrator_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_api_orchestrator_v1_orchestrator_proto_msgTypes = make([]protoimpl.MessageInfo, 25)

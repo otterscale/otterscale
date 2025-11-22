@@ -11,259 +11,259 @@ option go_package = "github.com/otterscale/otterscale/api/storage/v1;pb";
 service StorageService {
   rpc ListMonitors(ListMonitorsRequest) returns (ListMonitorsResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-general"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ListObjectStorageDaemons(ListObjectStorageDaemonsRequest) returns (ListObjectStorageDaemonsResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-general"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc DoSMART(DoSMARTRequest) returns (DoSMARTResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-general"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-general"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc CreatePool(CreatePoolRequest) returns (Pool) {
     option (otterscale.api.feature) = {
-      name: "stg-general"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc UpdatePool(UpdatePoolRequest) returns (Pool) {
     option (otterscale.api.feature) = {
-      name: "stg-general"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-general"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ListImages(ListImagesRequest) returns (ListImagesResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-block"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc CreateImage(CreateImageRequest) returns (Image) {
     option (otterscale.api.feature) = {
-      name: "stg-block"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc UpdateImage(UpdateImageRequest) returns (Image) {
     option (otterscale.api.feature) = {
-      name: "stg-block"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc DeleteImage(DeleteImageRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-block"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc CreateImageSnapshot(CreateImageSnapshotRequest) returns (Image.Snapshot) {
     option (otterscale.api.feature) = {
-      name: "stg-block"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc DeleteImageSnapshot(DeleteImageSnapshotRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-block"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc RollbackImageSnapshot(RollbackImageSnapshotRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-block"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ProtectImageSnapshot(ProtectImageSnapshotRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-block"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc UnprotectImageSnapshot(UnprotectImageSnapshotRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-block"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ListVolumes(ListVolumesRequest) returns (ListVolumesResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ListSubvolumes(ListSubvolumesRequest) returns (ListSubvolumesResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc CreateSubvolume(CreateSubvolumeRequest) returns (Subvolume) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc UpdateSubvolume(UpdateSubvolumeRequest) returns (Subvolume) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc DeleteSubvolume(DeleteSubvolumeRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc GrantSubvolumeExportAccess(GrantSubvolumeExportAccessRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc RevokeSubvolumeExportAccess(RevokeSubvolumeExportAccessRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc CreateSubvolumeSnapshot(CreateSubvolumeSnapshotRequest) returns (Subvolume.Snapshot) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc DeleteSubvolumeSnapshot(DeleteSubvolumeSnapshotRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc CreateSubvolumeGroup(CreateSubvolumeGroupRequest) returns (SubvolumeGroup) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc UpdateSubvolumeGroup(UpdateSubvolumeGroupRequest) returns (SubvolumeGroup) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc DeleteSubvolumeGroup(DeleteSubvolumeGroupRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-file"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ListBuckets(ListBucketsRequest) returns (ListBucketsResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-object"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc CreateBucket(CreateBucketRequest) returns (Bucket) {
     option (otterscale.api.feature) = {
-      name: "stg-object"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc UpdateBucket(UpdateBucketRequest) returns (Bucket) {
     option (otterscale.api.feature) = {
-      name: "stg-object"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc DeleteBucket(DeleteBucketRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-object"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-object"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc CreateUser(CreateUserRequest) returns (User) {
     option (otterscale.api.feature) = {
-      name: "stg-object"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc UpdateUser(UpdateUserRequest) returns (User) {
     option (otterscale.api.feature) = {
-      name: "stg-object"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-object"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc CreateUserKey(CreateUserKeyRequest) returns (User.Key) {
     option (otterscale.api.feature) = {
-      name: "stg-object"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc DeleteUserKey(DeleteUserKeyRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "stg-object"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ListSMBShares(ListSMBSharesRequest) returns (ListSMBSharesResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-smb"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc CreateSMBShare(CreateSMBShareRequest) returns (SMBShare) {
     option (otterscale.api.feature) = {
-      name: "stg-smb"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc UpdateSMBShare(UpdateSMBShareRequest) returns (SMBShare) {
     option (otterscale.api.feature) = {
-      name: "stg-smb"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ValidateSMBUser(ValidateSMBUserRequest) returns (ValidateSMBUserResponse) {
     option (otterscale.api.feature) = {
-      name: "stg-smb"
+      name: "distributed-storage-enabled"
     };
   };
 }
