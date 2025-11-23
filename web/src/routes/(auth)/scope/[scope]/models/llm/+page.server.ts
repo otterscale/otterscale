@@ -10,12 +10,10 @@ export const load: PageServerLoad = async () => {
 	} catch (error) {
 		console.error('Failed to initialize provider:', error);
 	}
-
 	const client = OpenFeature.getClient();
 
-	const mdlGeneralFeatureState = await client.getBooleanValue('mdl-general', false);
-
-	if (!mdlGeneralFeatureState) {
+	const modelEnabled = await client.getBooleanValue("model-enabled", false);
+	if (!modelEnabled) {
 		throw error(501, `This feature is not implemented.`);
 	}
 };

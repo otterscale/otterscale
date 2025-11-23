@@ -11,7 +11,7 @@ export const load: PageServerLoad = async () => {
 		console.error('Failed to initialize provider:', error);
 	}
 
-	const client = OpenFeature.getClient();
+	const client = ();
 
 	const stgFileFeatureState = await client.getBooleanValue('stg-file', false);
 

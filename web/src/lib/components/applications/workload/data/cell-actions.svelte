@@ -19,15 +19,13 @@
 		$props();
 </script>
 
-{#if page.data['feature-states.app-container']}
-	<Layout.Actions>
-		<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
-		<Layout.ActionSeparator />
-		<Layout.ActionItem>
-			<Log {pod} {scope} {namespace} />
-		</Layout.ActionItem>
-		<Layout.ActionItem>
-			<Delete {pod} {scope} {namespace} {reloadManager} />
-		</Layout.ActionItem>
-	</Layout.Actions>
-{/if}
+<Layout.Actions>
+	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
+	<Layout.ActionSeparator />
+	<Layout.ActionItem>
+		<Log {pod} {scope} {namespace} />
+	</Layout.ActionItem>
+	<Layout.ActionItem>
+		<Delete {pod} {scope} {namespace} {reloadManager} />
+	</Layout.ActionItem>
+</Layout.Actions>

@@ -10,13 +10,10 @@ export const load: PageServerLoad = async () => {
 	} catch (error) {
 		console.error('Failed to initialize provider:', error);
 	}
-
 	const client = OpenFeature.getClient();
 
-	const appGeneralFeatureState = await client.getBooleanValue('app-general', false);
-	const appHelmChartFeatureState = await client.getBooleanValue('app-helm-chart', false);
-
-	if (!(appGeneralFeatureState && appHelmChartFeatureState)) {
+	const applicationEnabled = await client.getBooleanValue('application-enabled', false);
+	if (!applicationEnabled) {
 		throw error(501, `This feature is not implemented.`);
 	}
 };

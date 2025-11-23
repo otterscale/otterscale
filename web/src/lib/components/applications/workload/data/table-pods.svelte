@@ -83,11 +83,9 @@
 			<Table.Head>
 				{m.last_condition()}
 			</Table.Head>
-			{#if page.data['feature-states.app-container']}
-				<Table.Head>
-					{m.terminal()}
-				</Table.Head>
-			{/if}
+			<Table.Head>
+				{m.terminal()}
+			</Table.Head>
 			<Table.Head></Table.Head>
 		</Table.Row>
 	</Table.Header>
@@ -134,13 +132,11 @@
 						{/if}
 					{/if}
 				</Table.Cell>
-				{#if page.data['feature-states.app-container']}
-					<Table.Cell>
-						<Button variant="secondary" size="icon" onclick={() => openTerminal(pod)}>
-							<Icon icon="ph:terminal-window" />
-						</Button>
-					</Table.Cell>
-				{/if}
+				<Table.Cell>
+					<Button variant="secondary" size="icon" onclick={() => openTerminal(pod)}>
+						<Icon icon="ph:terminal-window" />
+					</Button>
+				</Table.Cell>
 				<Table.Cell class="p-0">
 					<Actions {pod} {scope} {namespace} {reloadManager} />
 				</Table.Cell>

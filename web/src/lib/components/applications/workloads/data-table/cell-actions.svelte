@@ -17,15 +17,13 @@
 	}: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
 </script>
 
-{#if page.data['feature-states.app-container']}
-	<Layout.Actions>
-		<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
-		<Layout.ActionSeparator />
-		<Layout.ActionItem>
-			<Restart {application} {scope} {reloadManager} />
-		</Layout.ActionItem>
-		<Layout.ActionItem>
-			<Scale {application} {scope} {reloadManager} />
-		</Layout.ActionItem>
-	</Layout.Actions>
-{/if}
+<Layout.Actions>
+	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
+	<Layout.ActionSeparator />
+	<Layout.ActionItem>
+		<Restart {application} {scope} {reloadManager} />
+	</Layout.ActionItem>
+	<Layout.ActionItem>
+		<Scale {application} {scope} {reloadManager} />
+	</Layout.ActionItem>
+</Layout.Actions>

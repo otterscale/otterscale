@@ -2,7 +2,7 @@ import { FlagdProvider } from '@openfeature/flagd-provider';
 import { OpenFeature } from '@openfeature/server-sdk';
 import { error } from '@sveltejs/kit';
 
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from '../$types';
 
 export const load: PageServerLoad = async () => {
 	try {
@@ -10,12 +10,10 @@ export const load: PageServerLoad = async () => {
 	} catch (error) {
 		console.error('Failed to initialize provider:', error);
 	}
-
 	const client = OpenFeature.getClient();
 
-	const mdlGeneralFeatureState = await client.getBooleanValue('mdl-general', false);
-
-	if (!mdlGeneralFeatureState) {
-		throw error(501, `This feature is not implemented.`);
-	}
+	const modelEnabled = await client.getBooleanValue('model-enabled', false);
+	return {
+		'model-enabled': modelEnabled
+	};
 };
