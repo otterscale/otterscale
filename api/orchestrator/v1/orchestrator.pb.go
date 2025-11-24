@@ -1684,8 +1684,7 @@ func (b0 ListGPURelationsByModelResponse_builder) Build() *ListGPURelationsByMod
 
 type Extension struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Type        Extension_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.orchestrator.v1.Extension_Type"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
+	xxx_hidden_DisplayName *string                `protobuf:"bytes,2,opt,name=display_name,json=displayName"`
 	xxx_hidden_Description *string                `protobuf:"bytes,3,opt,name=description"`
 	xxx_hidden_Icon        *string                `protobuf:"bytes,4,opt,name=icon"`
 	xxx_hidden_Status      *string                `protobuf:"bytes,11,opt,name=status"`
@@ -1723,19 +1722,10 @@ func (x *Extension) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Extension) GetType() Extension_Type {
+func (x *Extension) GetDisplayName() string {
 	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
-			return x.xxx_hidden_Type
-		}
-	}
-	return Extension_TYPE_UNSPECIFIED
-}
-
-func (x *Extension) GetName() string {
-	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
+		if x.xxx_hidden_DisplayName != nil {
+			return *x.xxx_hidden_DisplayName
 		}
 		return ""
 	}
@@ -1793,29 +1783,24 @@ func (x *Extension) GetLatest() *Extension_Manifest {
 	return nil
 }
 
-func (x *Extension) SetType(v Extension_Type) {
-	x.xxx_hidden_Type = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 8)
-}
-
-func (x *Extension) SetName(v string) {
-	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 8)
+func (x *Extension) SetDisplayName(v string) {
+	x.xxx_hidden_DisplayName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
 }
 
 func (x *Extension) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
 }
 
 func (x *Extension) SetIcon(v string) {
 	x.xxx_hidden_Icon = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
 }
 
 func (x *Extension) SetStatus(v string) {
 	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
 }
 
 func (x *Extension) SetDeployedAt(v *timestamppb.Timestamp) {
@@ -1830,39 +1815,32 @@ func (x *Extension) SetLatest(v *Extension_Manifest) {
 	x.xxx_hidden_Latest = v
 }
 
-func (x *Extension) HasType() bool {
+func (x *Extension) HasDisplayName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *Extension) HasName() bool {
+func (x *Extension) HasDescription() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Extension) HasDescription() bool {
+func (x *Extension) HasIcon() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *Extension) HasIcon() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *Extension) HasStatus() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *Extension) HasDeployedAt() bool {
@@ -1886,28 +1864,23 @@ func (x *Extension) HasLatest() bool {
 	return x.xxx_hidden_Latest != nil
 }
 
-func (x *Extension) ClearType() {
+func (x *Extension) ClearDisplayName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Type = Extension_TYPE_UNSPECIFIED
-}
-
-func (x *Extension) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Name = nil
+	x.xxx_hidden_DisplayName = nil
 }
 
 func (x *Extension) ClearDescription() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Description = nil
 }
 
 func (x *Extension) ClearIcon() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Icon = nil
 }
 
 func (x *Extension) ClearStatus() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Status = nil
 }
 
@@ -1926,8 +1899,7 @@ func (x *Extension) ClearLatest() {
 type Extension_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Type        *Extension_Type
-	Name        *string
+	DisplayName *string
 	Description *string
 	Icon        *string
 	Status      *string
@@ -1940,24 +1912,20 @@ func (b0 Extension_builder) Build() *Extension {
 	m0 := &Extension{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 8)
-		x.xxx_hidden_Type = *b.Type
-	}
-	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 8)
-		x.xxx_hidden_Name = b.Name
+	if b.DisplayName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
+		x.xxx_hidden_DisplayName = b.DisplayName
 	}
 	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
 		x.xxx_hidden_Description = b.Description
 	}
 	if b.Icon != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
 		x.xxx_hidden_Icon = b.Icon
 	}
 	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
 		x.xxx_hidden_Status = b.Status
 	}
 	x.xxx_hidden_DeployedAt = b.DeployedAt
@@ -3086,7 +3054,7 @@ func (b0 GPURelation_Pod_Device_builder) Build() *GPURelation_Pod_Device {
 
 type Extension_Manifest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
 	xxx_hidden_Version     *string                `protobuf:"bytes,2,opt,name=version"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -3119,10 +3087,10 @@ func (x *Extension_Manifest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Extension_Manifest) GetId() string {
+func (x *Extension_Manifest) GetName() string {
 	if x != nil {
-		if x.xxx_hidden_Id != nil {
-			return *x.xxx_hidden_Id
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
 		}
 		return ""
 	}
@@ -3139,8 +3107,8 @@ func (x *Extension_Manifest) GetVersion() string {
 	return ""
 }
 
-func (x *Extension_Manifest) SetId(v string) {
-	x.xxx_hidden_Id = &v
+func (x *Extension_Manifest) SetName(v string) {
+	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
@@ -3149,7 +3117,7 @@ func (x *Extension_Manifest) SetVersion(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *Extension_Manifest) HasId() bool {
+func (x *Extension_Manifest) HasName() bool {
 	if x == nil {
 		return false
 	}
@@ -3163,9 +3131,9 @@ func (x *Extension_Manifest) HasVersion() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Extension_Manifest) ClearId() {
+func (x *Extension_Manifest) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Id = nil
+	x.xxx_hidden_Name = nil
 }
 
 func (x *Extension_Manifest) ClearVersion() {
@@ -3176,7 +3144,7 @@ func (x *Extension_Manifest) ClearVersion() {
 type Extension_Manifest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Id      *string
+	Name    *string
 	Version *string
 }
 
@@ -3184,9 +3152,9 @@ func (b0 Extension_Manifest_builder) Build() *Extension_Manifest {
 	m0 := &Extension_Manifest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Id != nil {
+	if b.Name != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Id = b.Id
+		x.xxx_hidden_Name = b.Name
 	}
 	if b.Version != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
@@ -3298,19 +3266,18 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\n" +
 	"model_name\x18\x04 \x01(\tR\tmodelNameJ\x04\b\x02\x10\x03\"o\n" +
 	"\x1fListGPURelationsByModelResponse\x12L\n" +
-	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\xaa\x04\n" +
-	"\tExtension\x12>\n" +
-	"\x04type\x18\x01 \x01(\x0e2*.otterscale.orchestrator.v1.Extension.TypeR\x04type\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\x83\x04\n" +
+	"\tExtension\x12!\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x12\n" +
 	"\x04icon\x18\x04 \x01(\tR\x04icon\x12\x16\n" +
 	"\x06status\x18\v \x01(\tR\x06status\x12;\n" +
 	"\vdeployed_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"deployedAt\x12H\n" +
 	"\acurrent\x18\x15 \x01(\v2..otterscale.orchestrator.v1.Extension.ManifestR\acurrent\x12F\n" +
-	"\x06latest\x18\x16 \x01(\v2..otterscale.orchestrator.v1.Extension.ManifestR\x06latest\x1a4\n" +
-	"\bManifest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
+	"\x06latest\x18\x16 \x01(\v2..otterscale.orchestrator.v1.Extension.ManifestR\x06latest\x1a8\n" +
+	"\bManifest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\"v\n" +
 	"\x04Type\x12\x14\n" +
 	"\x10TYPE_UNSPECIFIED\x10\x00\x12\x10\n" +
@@ -3319,7 +3286,7 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\n" +
 	"TYPE_MODEL\x10\x03\x12\x11\n" +
 	"\rTYPE_INSTANCE\x10\x04\x12\x10\n" +
-	"\fTYPE_STORAGE\x10\x05\"s\n" +
+	"\fTYPE_STORAGE\x10\x05J\x04\b\x01\x10\x02\"s\n" +
 	"\x15ListExtensionsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12>\n" +
 	"\x04type\x18\x03 \x01(\x0e2*.otterscale.orchestrator.v1.Extension.TypeR\x04typeJ\x04\b\x02\x10\x03\"_\n" +
@@ -3391,41 +3358,40 @@ var file_api_orchestrator_v1_orchestrator_proto_depIdxs = []int32{
 	24, // 6: otterscale.orchestrator.v1.GPURelation.machine:type_name -> otterscale.orchestrator.v1.GPURelation.Machine
 	9,  // 7: otterscale.orchestrator.v1.ListGPURelationsByMachineResponse.gpu_relations:type_name -> otterscale.orchestrator.v1.GPURelation
 	9,  // 8: otterscale.orchestrator.v1.ListGPURelationsByModelResponse.gpu_relations:type_name -> otterscale.orchestrator.v1.GPURelation
-	1,  // 9: otterscale.orchestrator.v1.Extension.type:type_name -> otterscale.orchestrator.v1.Extension.Type
-	27, // 10: otterscale.orchestrator.v1.Extension.deployed_at:type_name -> google.protobuf.Timestamp
-	26, // 11: otterscale.orchestrator.v1.Extension.current:type_name -> otterscale.orchestrator.v1.Extension.Manifest
-	26, // 12: otterscale.orchestrator.v1.Extension.latest:type_name -> otterscale.orchestrator.v1.Extension.Manifest
-	1,  // 13: otterscale.orchestrator.v1.ListExtensionsRequest.type:type_name -> otterscale.orchestrator.v1.Extension.Type
-	14, // 14: otterscale.orchestrator.v1.ListExtensionsResponse.Extensions:type_name -> otterscale.orchestrator.v1.Extension
-	26, // 15: otterscale.orchestrator.v1.InstallExtensionsRequest.manifests:type_name -> otterscale.orchestrator.v1.Extension.Manifest
-	26, // 16: otterscale.orchestrator.v1.UpgradeExtensionsRequest.manifests:type_name -> otterscale.orchestrator.v1.Extension.Manifest
-	27, // 17: otterscale.orchestrator.v1.GPURelation.Pod.bound_at:type_name -> google.protobuf.Timestamp
-	25, // 18: otterscale.orchestrator.v1.GPURelation.Pod.devices:type_name -> otterscale.orchestrator.v1.GPURelation.Pod.Device
-	2,  // 19: otterscale.orchestrator.v1.OrchestratorService.CreateNode:input_type -> otterscale.orchestrator.v1.CreateNodeRequest
-	3,  // 20: otterscale.orchestrator.v1.OrchestratorService.CreateCluster:input_type -> otterscale.orchestrator.v1.CreateClusterRequest
-	4,  // 21: otterscale.orchestrator.v1.OrchestratorService.AddClusterUnits:input_type -> otterscale.orchestrator.v1.AddClusterUnitsRequest
-	5,  // 22: otterscale.orchestrator.v1.OrchestratorService.ListKubernetesNodeLabels:input_type -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest
-	7,  // 23: otterscale.orchestrator.v1.OrchestratorService.UpdateKubernetesNodeLabels:input_type -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest
-	10, // 24: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByMachine:input_type -> otterscale.orchestrator.v1.ListGPURelationsByMachineRequest
-	12, // 25: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel:input_type -> otterscale.orchestrator.v1.ListGPURelationsByModelRequest
-	15, // 26: otterscale.orchestrator.v1.OrchestratorService.ListExtensions:input_type -> otterscale.orchestrator.v1.ListExtensionsRequest
-	17, // 27: otterscale.orchestrator.v1.OrchestratorService.InstallExtensions:input_type -> otterscale.orchestrator.v1.InstallExtensionsRequest
-	18, // 28: otterscale.orchestrator.v1.OrchestratorService.UpgradeExtensions:input_type -> otterscale.orchestrator.v1.UpgradeExtensionsRequest
-	28, // 29: otterscale.orchestrator.v1.OrchestratorService.CreateNode:output_type -> google.protobuf.Empty
-	28, // 30: otterscale.orchestrator.v1.OrchestratorService.CreateCluster:output_type -> google.protobuf.Empty
-	28, // 31: otterscale.orchestrator.v1.OrchestratorService.AddClusterUnits:output_type -> google.protobuf.Empty
-	6,  // 32: otterscale.orchestrator.v1.OrchestratorService.ListKubernetesNodeLabels:output_type -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse
-	8,  // 33: otterscale.orchestrator.v1.OrchestratorService.UpdateKubernetesNodeLabels:output_type -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse
-	11, // 34: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByMachine:output_type -> otterscale.orchestrator.v1.ListGPURelationsByMachineResponse
-	13, // 35: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel:output_type -> otterscale.orchestrator.v1.ListGPURelationsByModelResponse
-	16, // 36: otterscale.orchestrator.v1.OrchestratorService.ListExtensions:output_type -> otterscale.orchestrator.v1.ListExtensionsResponse
-	28, // 37: otterscale.orchestrator.v1.OrchestratorService.InstallExtensions:output_type -> google.protobuf.Empty
-	28, // 38: otterscale.orchestrator.v1.OrchestratorService.UpgradeExtensions:output_type -> google.protobuf.Empty
-	29, // [29:39] is the sub-list for method output_type
-	19, // [19:29] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	27, // 9: otterscale.orchestrator.v1.Extension.deployed_at:type_name -> google.protobuf.Timestamp
+	26, // 10: otterscale.orchestrator.v1.Extension.current:type_name -> otterscale.orchestrator.v1.Extension.Manifest
+	26, // 11: otterscale.orchestrator.v1.Extension.latest:type_name -> otterscale.orchestrator.v1.Extension.Manifest
+	1,  // 12: otterscale.orchestrator.v1.ListExtensionsRequest.type:type_name -> otterscale.orchestrator.v1.Extension.Type
+	14, // 13: otterscale.orchestrator.v1.ListExtensionsResponse.Extensions:type_name -> otterscale.orchestrator.v1.Extension
+	26, // 14: otterscale.orchestrator.v1.InstallExtensionsRequest.manifests:type_name -> otterscale.orchestrator.v1.Extension.Manifest
+	26, // 15: otterscale.orchestrator.v1.UpgradeExtensionsRequest.manifests:type_name -> otterscale.orchestrator.v1.Extension.Manifest
+	27, // 16: otterscale.orchestrator.v1.GPURelation.Pod.bound_at:type_name -> google.protobuf.Timestamp
+	25, // 17: otterscale.orchestrator.v1.GPURelation.Pod.devices:type_name -> otterscale.orchestrator.v1.GPURelation.Pod.Device
+	2,  // 18: otterscale.orchestrator.v1.OrchestratorService.CreateNode:input_type -> otterscale.orchestrator.v1.CreateNodeRequest
+	3,  // 19: otterscale.orchestrator.v1.OrchestratorService.CreateCluster:input_type -> otterscale.orchestrator.v1.CreateClusterRequest
+	4,  // 20: otterscale.orchestrator.v1.OrchestratorService.AddClusterUnits:input_type -> otterscale.orchestrator.v1.AddClusterUnitsRequest
+	5,  // 21: otterscale.orchestrator.v1.OrchestratorService.ListKubernetesNodeLabels:input_type -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsRequest
+	7,  // 22: otterscale.orchestrator.v1.OrchestratorService.UpdateKubernetesNodeLabels:input_type -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsRequest
+	10, // 23: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByMachine:input_type -> otterscale.orchestrator.v1.ListGPURelationsByMachineRequest
+	12, // 24: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel:input_type -> otterscale.orchestrator.v1.ListGPURelationsByModelRequest
+	15, // 25: otterscale.orchestrator.v1.OrchestratorService.ListExtensions:input_type -> otterscale.orchestrator.v1.ListExtensionsRequest
+	17, // 26: otterscale.orchestrator.v1.OrchestratorService.InstallExtensions:input_type -> otterscale.orchestrator.v1.InstallExtensionsRequest
+	18, // 27: otterscale.orchestrator.v1.OrchestratorService.UpgradeExtensions:input_type -> otterscale.orchestrator.v1.UpgradeExtensionsRequest
+	28, // 28: otterscale.orchestrator.v1.OrchestratorService.CreateNode:output_type -> google.protobuf.Empty
+	28, // 29: otterscale.orchestrator.v1.OrchestratorService.CreateCluster:output_type -> google.protobuf.Empty
+	28, // 30: otterscale.orchestrator.v1.OrchestratorService.AddClusterUnits:output_type -> google.protobuf.Empty
+	6,  // 31: otterscale.orchestrator.v1.OrchestratorService.ListKubernetesNodeLabels:output_type -> otterscale.orchestrator.v1.ListKubernetesNodeLabelsResponse
+	8,  // 32: otterscale.orchestrator.v1.OrchestratorService.UpdateKubernetesNodeLabels:output_type -> otterscale.orchestrator.v1.UpdateKubernetesNodeLabelsResponse
+	11, // 33: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByMachine:output_type -> otterscale.orchestrator.v1.ListGPURelationsByMachineResponse
+	13, // 34: otterscale.orchestrator.v1.OrchestratorService.ListGPURelationsByModel:output_type -> otterscale.orchestrator.v1.ListGPURelationsByModelResponse
+	16, // 35: otterscale.orchestrator.v1.OrchestratorService.ListExtensions:output_type -> otterscale.orchestrator.v1.ListExtensionsResponse
+	28, // 36: otterscale.orchestrator.v1.OrchestratorService.InstallExtensions:output_type -> google.protobuf.Empty
+	28, // 37: otterscale.orchestrator.v1.OrchestratorService.UpgradeExtensions:output_type -> google.protobuf.Empty
+	28, // [28:38] is the sub-list for method output_type
+	18, // [18:28] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_api_orchestrator_v1_orchestrator_proto_init() }

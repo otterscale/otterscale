@@ -60,11 +60,11 @@ func mergeUsers(existing, desired []userEntry) []User {
 
 func (uc *UseCase) upsertUsersSecret(ctx context.Context, scope, namespace, name string, secret *config.Secret) error {
 	existing, err := uc.secret.Get(ctx, scope, namespace, name)
+	if k8serrors.IsNotFound(err) {
+		_, err := uc.secret.Create(ctx, scope, namespace, secret)
+		return err
+	}
 	if err != nil {
-		if k8serrors.IsNotFound(err) {
-			_, err = uc.secret.Create(ctx, scope, namespace, secret)
-			return err
-		}
 		return err
 	}
 
@@ -124,11 +124,11 @@ func (uc *UseCase) extractJoinSource(secret *config.Secret) (*User, error) {
 
 func (uc *UseCase) upsertJoinSecret(ctx context.Context, scope, namespace, name string, secret *config.Secret) error {
 	existing, err := uc.secret.Get(ctx, scope, namespace, name)
+	if k8serrors.IsNotFound(err) {
+		_, err := uc.secret.Create(ctx, scope, namespace, secret)
+		return err
+	}
 	if err != nil {
-		if k8serrors.IsNotFound(err) {
-			_, err = uc.secret.Create(ctx, scope, namespace, secret)
-			return err
-		}
 		return err
 	}
 

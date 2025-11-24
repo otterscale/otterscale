@@ -15,7 +15,7 @@
 	import { default as UsageRateRootFS } from './usage-rate-chart-root-fs.svelte';
 	import { default as UsageRateSWAP } from './usage-rate-chart-swap.svelte';
 
-	let { client }: { client: PrometheusDriver } = $props();
+	let { selectedTab, client }: { selectedTab: string; client: PrometheusDriver } = $props();
 
 	let selectedFQDN = $state(undefined);
 </script>
@@ -24,7 +24,7 @@
 	<div class="mr-auto flex flex-wrap items-center gap-2">
 		<FQDNPicker bind:selectedFQDN />
 	</div>
-	{#if selectedFQDN}
+	{#if selectedFQDN && selectedTab === 'analytics'}
 		{#key selectedFQDN}
 			<div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
 				<span class="col-span-1">

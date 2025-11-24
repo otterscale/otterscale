@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/otterscale/otterscale/internal/core/machine/tag"
+	"github.com/otterscale/otterscale/internal/core/versions"
 )
 
 const defaultCalicoCIDR = "198.19.0.0/16"
@@ -24,13 +25,13 @@ func newKubernetes(scope string, virtualIPs []string, calicoCIDR string) base {
 
 func (k *kubernetes) Charms() []charm {
 	return []charm{
-		{Name: "ch:kubernetes-control-plane", Channel: "1.33/stable", PlacementScope: "#"},
-		{Name: "ch:etcd", Channel: "1.33/stable", PlacementScope: "lxd"},
-		{Name: "ch:easyrsa", Channel: "1.33/stable", PlacementScope: "lxd"},
-		{Name: "ch:kubeapi-load-balancer", Channel: "1.33/stable", PlacementScope: "lxd"},
-		{Name: "ch:calico", Channel: "1.33/stable", Subordinate: true},
-		{Name: "ch:containerd", Channel: "1.33/stable", Subordinate: true},
-		{Name: "ch:keepalived", Channel: "1.33/stable", Subordinate: true},
+		{Name: "ch:kubernetes-control-plane", Channel: versions.Kubernetes, PlacementScope: "#"},
+		{Name: "ch:etcd", Channel: versions.Kubernetes, PlacementScope: "lxd"},
+		{Name: "ch:easyrsa", Channel: versions.Kubernetes, PlacementScope: "lxd"},
+		{Name: "ch:kubeapi-load-balancer", Channel: versions.Kubernetes, PlacementScope: "lxd"},
+		{Name: "ch:calico", Channel: versions.Kubernetes, Subordinate: true},
+		{Name: "ch:containerd", Channel: versions.Kubernetes, Subordinate: true},
+		{Name: "ch:keepalived", Channel: versions.Kubernetes, Subordinate: true},
 	}
 }
 

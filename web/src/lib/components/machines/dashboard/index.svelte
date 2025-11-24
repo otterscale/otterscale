@@ -17,6 +17,7 @@
 
 	let isReloading = $state(true);
 	let prometheusDriver = $state<PrometheusDriver | null>(null);
+	let selectedTab = $state('overview');
 
 	onMount(async () => {
 		try {
@@ -45,7 +46,7 @@
 				</p>
 			</div>
 
-			<Tabs.Root value="analytics">
+			<Tabs.Root bind:value={selectedTab}>
 				<div class="flex justify-between gap-2">
 					<Tabs.List>
 						<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
@@ -54,10 +55,10 @@
 					<Reloader bind:checked={isReloading} />
 				</div>
 				<Tabs.Content value="overview">
-					<Overview {prometheusDriver} bind:isReloading />
+					<Overview {selectedTab} {prometheusDriver} bind:isReloading />
 				</Tabs.Content>
 				<Tabs.Content value="analytics">
-					<Dashboard client={prometheusDriver} />
+					<Dashboard {selectedTab} client={prometheusDriver} />
 				</Tabs.Content>
 			</Tabs.Root>
 		</div>

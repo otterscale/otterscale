@@ -1,5 +1,7 @@
 package standalone
 
+import "github.com/otterscale/otterscale/internal/core/versions"
+
 type addons struct {
 	Scope string
 }
@@ -12,7 +14,7 @@ func newAddons(scope string) base {
 
 func (a *addons) Charms() []charm {
 	return []charm{
-		{Name: "ch:ceph-csi", Channel: "1.33/stable", Subordinate: true},
+		{Name: "ch:ceph-csi", Channel: versions.Kubernetes, Subordinate: true},
 		{Name: "ch:grafana-agent", Subordinate: true},
 	}
 }

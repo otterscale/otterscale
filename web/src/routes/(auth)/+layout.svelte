@@ -52,7 +52,8 @@
 	const envClient = createClient(EnvironmentService, transport);
 
 	let scopes = $state<Scope[]>([]);
-	let activeScope = $derived(page.params.scope || 'OtterScale');
+	let previousScope = $state<string>('');
+	let activeScope = $derived(page.params.scope || previousScope || 'OtterScale');
 
 	async function fetchScopes() {
 		try {
@@ -84,7 +85,6 @@
 
 	async function initialize(scope: string) {
 		try {
-			activeScope = scope;
 			await Promise.all([fetchScopes(), fetchEdition()]);
 			toast.success(m.switch_scope({ name: scope }));
 		} catch (error) {
@@ -93,7 +93,8 @@
 	}
 
 	$effect(() => {
-		if (activeScope) {
+		if (activeScope && activeScope !== previousScope) {
+			previousScope = activeScope;
 			initialize(activeScope);
 		}
 	});

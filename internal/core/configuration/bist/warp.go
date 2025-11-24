@@ -79,7 +79,7 @@ func (uc *UseCase) CreateWarpResult(ctx context.Context, name, createdBy string,
 
 	// name
 	if name == "" {
-		name = fmt.Sprintf("bist-%s", newHashedName(strconv.FormatInt(time.Now().UnixNano(), 10)))
+		name = fmt.Sprintf("bist-%s", shortID(strconv.FormatInt(time.Now().UnixNano(), 10)))
 	}
 
 	// annotations
