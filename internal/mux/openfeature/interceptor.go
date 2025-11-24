@@ -51,6 +51,10 @@ func (i *Interceptor) intercept(next connect.UnaryFunc) connect.UnaryFunc {
 			return nil, err
 		}
 
+		if featureName == "" {
+			return next(ctx, req)
+		}
+
 		enabled, err := i.client.BooleanValue(ctx, featureName, false, openfeature.EvaluationContext{})
 		if err != nil {
 			return nil, connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("failed to evaluate feature %q: %w", featureName, err))
