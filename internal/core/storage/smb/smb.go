@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/samba-in-kubernetes/samba-operator/api/v1alpha1"
@@ -19,7 +20,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 )
 
-const namespace = "samba-operator-system"
+const namespace = "samba-operator"
 
 const (
 	GuestOKkey    = "guest ok"
@@ -142,7 +143,7 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope string) (data []Shar
 		securityConfigMap map[string]*SecurityConfig
 		deploymentMap     map[string]*workload.Deployment
 		secretMap         map[string]*config.Secret
-		allServices       []service.Service
+		serviceMap        map[string]*service.Service
 		allPods           []workload.Pod
 		allShares         []Share
 	)
@@ -204,7 +205,11 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope string) (data []Shar
 	eg.Go(func() error {
 		services, err := uc.service.List(egctx, scope, namespace, selector)
 		if err == nil {
-			allServices = services
+			serviceMap = map[string]*service.Service{}
+
+			for i := range services {
+				serviceMap[services[i].Name] = &services[i]
+			}
 		}
 		return err
 	})
@@ -233,6 +238,13 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope string) (data []Shar
 
 	for i := range allShares {
 		share := allShares[i]
+		name := strings.TrimSuffix(share.Name, "-share")
+		names := uc.newNames(name)
+
+		localUsers, joinSource, err := uc.extractSecrets(secretMap, names.UsersSecret, names.JoinSecret)
+		if err != nil {
+			return nil, "", err
+		}
 
 		deployment, ok := deploymentMap[share.Name]
 		if !ok {
@@ -244,19 +256,13 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope string) (data []Shar
 			return nil, "", fmt.Errorf("failed to create selector: %w", err)
 		}
 
-		names := uc.newNames(share.Name)
-		localUsers, joinSource, err := uc.extractSecrets(secretMap, names.UsersSecret, names.JoinSecret)
-		if err != nil {
-			return nil, "", err
-		}
-
 		ret = append(ret, ShareData{
 			Share:          &share,
 			CommonConfig:   commonConfigMap[share.Spec.CommonConfig],
 			SecurityConfig: securityConfigMap[share.Spec.SecurityConfig],
 			LocalUsers:     localUsers,
 			JoinSource:     joinSource,
-			Service:        uc.filterService(deployment.Spec.Template.Labels, namespace, allServices),
+			Service:        serviceMap[share.Name],
 			Deployment:     deployment,
 			Pods:           uc.filterPods(selector, namespace, allPods),
 		})
@@ -415,19 +421,6 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, name string, sizeB
 	return &ShareData{
 		Share: newShare,
 	}, url.Hostname(), nil
-}
-
-// only return the first matched service
-func (uc *UseCase) filterService(podLabels map[string]string, namespace string, services []service.Service) *service.Service {
-	for i := range services {
-		selector := labels.SelectorFromSet(services[i].Spec.Selector)
-
-		if services[i].Namespace == namespace && selector.Matches(labels.Set(podLabels)) {
-			return &services[i]
-		}
-	}
-
-	return nil
 }
 
 func (uc *UseCase) filterPods(selector labels.Selector, namespace string, pods []workload.Pod) []workload.Pod {
