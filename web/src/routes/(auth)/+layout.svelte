@@ -24,6 +24,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
 	import { breadcrumbs, premiumTier } from '$lib/stores';
+	import { scopeStore } from '$lib/stores/scope.svelte';
 
 	import type { LayoutData } from './$types';
 
@@ -52,7 +53,7 @@
 	const envClient = createClient(EnvironmentService, transport);
 
 	let scopes = $state<Scope[]>([]);
-	let activeScope = $derived(page.params.scope || 'OtterScale');
+	let activeScope = $derived(page.params.scope || scopeStore.value || 'OtterScale'); // hotfix for SSR issue
 
 	async function fetchScopes() {
 		try {
@@ -93,7 +94,8 @@
 	}
 
 	$effect(() => {
-		if (activeScope) {
+		if (activeScope && activeScope !== scopeStore.value) {
+			scopeStore.set(activeScope);
 			initialize(activeScope);
 		}
 	});
