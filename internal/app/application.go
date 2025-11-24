@@ -68,7 +68,7 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetAppl
 		return nil, err
 	}
 
-	chartFile, err := s.release.GetChartFileFromApplication(ctx, req.GetScope(), req.GetNamespace(), app.Labels)
+	chartFile, err := s.release.GetChartFileFromApplication(ctx, req.GetScope(), req.GetNamespace(), app.Labels, app.Annotations)
 	if err != nil {
 		return nil, err
 	}
@@ -331,7 +331,7 @@ func toProtoApplication(a *workload.Application) *pb.Application {
 	ret.SetServices(toProtoServices(a.Services))
 	ret.SetPods(toProtoPods(a.Pods))
 	ret.SetPersistentVolumeClaims(toProtoPersistentVolumeClaims(a.Persistents))
-	ret.SetCreatedAt(timestamppb.New(a.ObjectMeta.CreationTimestamp.Time))
+	ret.SetCreatedAt(timestamppb.New(a.CreatedAt))
 
 	if a.ChartFile != nil {
 		ret.SetMetadata(toProtoChartMetadata(a.ChartFile))
