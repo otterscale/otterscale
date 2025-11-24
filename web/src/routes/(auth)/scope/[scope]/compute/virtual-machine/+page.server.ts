@@ -1,17 +1,10 @@
-import { FlagdProvider } from '@openfeature/flagd-provider';
-import { OpenFeature } from '@openfeature/server-sdk';
 import { error } from '@sveltejs/kit';
+
+import { client } from '$lib/server/flagd';
 
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-	try {
-		await OpenFeature.setProviderAndWait(new FlagdProvider({}));
-	} catch (error) {
-		console.error('Failed to initialize provider:', error);
-	}
-	const client = OpenFeature.getClient();
-
 	const virtualMachineEnabled = await client.getBooleanValue('virtual-machine-enabled', false);
 	if (!virtualMachineEnabled) {
 		throw error(501, `This feature is not implemented.`);
