@@ -20,7 +20,7 @@
 		"db:migrate": "drizzle-kit migrate"
 	},
 	"devDependencies": {
-		"@eslint/compat": "^1.4.1",
+		"@eslint/compat": "^2.0.0",
 		"@eslint/js": "^9.39.1",
 		"@fontsource/geist": "^5.2.8",
 		"@fontsource/geist-mono": "^5.2.7",
