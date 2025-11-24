@@ -1,11 +1,11 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
+import type { Model } from '$lib/api/model/v1/model_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import type { ReloadManager } from '$lib/components/custom/reloader';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
-import { type LargeLanguageModel } from '../type';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
@@ -20,7 +20,7 @@ const messages = {
 	time_to_first_token: m.uptime()
 };
 
-function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<LargeLanguageModel>[] {
+function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Model>[] {
 	return [
 		{
 			id: 'select',

@@ -1,11 +1,10 @@
 <script lang="ts" module>
 	import type { Column, Table } from '@tanstack/table-core';
 
+	import type { Model } from '$lib/api/model/v1/model_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
-
-	import { type LargeLanguageModel } from '../type';
 
 	export const headers = {
 		row_picker,
@@ -22,7 +21,7 @@
 	};
 </script>
 
-{#snippet row_picker(table: Table<LargeLanguageModel>)}
+{#snippet row_picker(table: Table<Model>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
 			<Headers.RowPicker {table} />
@@ -36,7 +35,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet name(column: Column<LargeLanguageModel>)}
+{#snippet name(column: Column<Model>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.model_name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -45,7 +44,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet replicas(column: Column<LargeLanguageModel>)}
+{#snippet replicas(column: Column<Model>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -54,7 +53,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet healthies(column: Column<LargeLanguageModel>)}
+{#snippet healthies(column: Column<Model>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -63,7 +62,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet gpu_cache(column: Column<LargeLanguageModel>)}
+{#snippet gpu_cache(column: Column<Model>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -72,7 +71,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet kv_cache(column: Column<LargeLanguageModel>)}
+{#snippet kv_cache(column: Column<Model>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -81,7 +80,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet requests(column: Column<LargeLanguageModel>)}
+{#snippet requests(column: Column<Model>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -90,7 +89,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet time_to_first_token(column: Column<LargeLanguageModel>)}
+{#snippet time_to_first_token(column: Column<Model>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />

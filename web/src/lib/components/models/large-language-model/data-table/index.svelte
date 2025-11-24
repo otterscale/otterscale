@@ -1,7 +1,9 @@
 <script lang="ts" module>
 	import {
 		type ColumnFiltersState,
+		type ExpandedState,
 		getCoreRowModel,
+		getExpandedRowModel,
 		getFilteredRowModel,
 		getPaginationRowModel,
 		getSortedRowModel,
@@ -12,13 +14,15 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
+	import type { Model } from '$lib/api/model/v1/model_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import { cn } from '$lib/utils';
 
-	import type { LargeLanguageModel } from '../type';
+	import type { Meta } from '../types';
 	import Create from './action-create.svelte';
 	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
@@ -26,11 +30,11 @@
 
 <script lang="ts">
 	let {
-		largeLanguageModels,
+		models,
 		scope,
 		reloadManager
 	}: {
-		largeLanguageModels: Writable<LargeLanguageModel[]>;
+		models: Writable<Model[]>;
 		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
@@ -40,10 +44,11 @@
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
+	let expanded = $state<ExpandedState>({});
 
 	const table = createSvelteTable({
 		get data() {
-			return $largeLanguageModels;
+			return $models;
 		},
 		get columns() {
 			return getColumns(scope, reloadManager);
@@ -53,6 +58,8 @@
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+		getExpandedRowModel: getExpandedRowModel(),
+
 		state: {
 			get pagination() {
 				return pagination;
@@ -68,8 +75,12 @@
 			},
 			get rowSelection() {
 				return rowSelection;
+			},
+			get expanded() {
+				return expanded;
 			}
 		},
+
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
 				pagination = updater(pagination);
@@ -105,7 +116,16 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetPageIndex: false
+		onExpandedChange: (updater) => {
+			if (typeof updater === 'function') {
+				expanded = updater(expanded);
+			} else {
+				expanded = updater;
+			}
+		},
+
+		autoResetPageIndex: false,
+		getRowCanExpand: () => true
 	});
 </script>
 
@@ -117,7 +137,7 @@
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
 				columnId="name"
-				values={$largeLanguageModels.map((row) => row.name)}
+				values={$models.map((row) => row.name)}
 				{messages}
 				{table}
 			/>
@@ -143,7 +163,8 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
-							<Table.Head>
+							{@const metadata = header.column.columnDef.meta as Meta}
+							<Table.Head class={cn(metadata?.isRowAction ? 'm-0 p-0' : '')}>
 								{#if !header.isPlaceholder}
 									<FlexRender
 										content={header.column.columnDef.header}
@@ -159,11 +180,16 @@
 				{#each table.getRowModel().rows as row (row.id)}
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
-							<Table.Cell>
+							{@const metadata = cell.column.columnDef.meta as Meta}
+							<Table.Cell class={cn(metadata?.isRowAction ? 'm-0 p-0' : '')}>
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
 					</Table.Row>
+					{#if row.getIsExpanded()}
+						<!-- <Pods {metrics} {row} {table} /> -->
+						123
+					{/if}
 				{:else}
 					<Empty {table} />
 				{/each}

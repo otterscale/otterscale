@@ -1,3 +1,3 @@
-import Workloads from './index.svelte';
+import LargeLanguageModels from './index.svelte';
 
-export { Workloads };
+export { LargeLanguageModels };

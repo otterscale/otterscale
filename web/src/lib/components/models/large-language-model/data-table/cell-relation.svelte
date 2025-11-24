@@ -9,6 +9,7 @@
 	import { onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 
+	import type { Model } from '$lib/api/model/v1/model_pb';
 	import {
 		type GPURelation_GPU,
 		type GPURelation_Machine,
@@ -18,12 +19,10 @@
 	import { Complex as Flow } from '$lib/components/flow/index';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
-
-	import type { LargeLanguageModel } from '../type';
 </script>
 
 <script lang="ts">
-	let { scope, model }: { scope: string; model: LargeLanguageModel } = $props();
+	let { scope, model }: { scope: string; model: Model } = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(OrchestratorService, transport);
