@@ -7,6 +7,7 @@
 	import { getContext } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 
+	import { page } from '$app/state';
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import {
 		type GPURelation_GPU,
@@ -143,9 +144,11 @@
 	}
 
 	let open = $state(false);
+
+	const isModelEnabled = $derived(page.data['model-enabled']);
 </script>
 
-{#if machineScope}
+{#if machineScope && isModelEnabled}
 	<Sheet.Root bind:open onOpenChange={loadGPURelations}>
 		<Sheet.Trigger>
 			<span class="flex items-center gap-1">

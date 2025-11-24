@@ -1,6 +1,5 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { page } from '$app/state';
 import type { Machine } from '$lib/api/machine/v1/machine_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -146,10 +145,10 @@ function getColumns(reloadManager: ReloadManager): ColumnDef<Machine>[] {
 		{
 			accessorKey: 'gpu',
 			header: ({ column }) => {
-				return page.data['feature-states.mdl-general'] ? renderSnippet(headers.gpu, column) : null;
+				return renderSnippet(headers.gpu, column);
 			},
 			cell: ({ row }) => {
-				return page.data['feature-states.mdl-general'] ? renderSnippet(cells.gpu, row) : null;
+				return renderSnippet(cells.gpu, row);
 			}
 		},
 		{

@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { page } from '$app/state';
 	import type { Application_Pod } from '$lib/api/application/v1/application_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -19,15 +18,13 @@
 		$props();
 </script>
 
-{#if page.data['feature-states.app-container']}
-	<Layout.Actions>
-		<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
-		<Layout.ActionSeparator />
-		<Layout.ActionItem>
-			<Log {pod} {scope} {namespace} />
-		</Layout.ActionItem>
-		<Layout.ActionItem>
-			<Delete {pod} {scope} {namespace} {reloadManager} />
-		</Layout.ActionItem>
-	</Layout.Actions>
-{/if}
+<Layout.Actions>
+	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
+	<Layout.ActionSeparator />
+	<Layout.ActionItem>
+		<Log {pod} {scope} {namespace} />
+	</Layout.ActionItem>
+	<Layout.ActionItem>
+		<Delete {pod} {scope} {namespace} {reloadManager} />
+	</Layout.ActionItem>
+</Layout.Actions>

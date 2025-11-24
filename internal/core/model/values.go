@@ -294,7 +294,12 @@ decode:
       #   type: string
       # @schema
       args:
-      - --enforce-eager
+      - --max-model-len
+      - "2048"
+      - --enable-chunked-prefill
+      - --max-num-seqs
+      - "256"
+      - --enable-prefix-caching
       - --kv-transfer-config
       - '{"kv_connector":"NixlConnector", "kv_role":"kv_consumer"}'
       # @schema
@@ -486,7 +491,12 @@ prefill:
       #   type: string
       # @schema
       args:
-      - --enforce-eager
+      - --max-model-len
+      - "2048"
+      - --enable-chunked-prefill
+      - --max-num-seqs
+      - "256"
+      - --enable-prefix-caching
       - --kv-transfer-config
       - '{"kv_connector":"NixlConnector", "kv_role":"kv_producer"}'
       # @schema
