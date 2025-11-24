@@ -8,7 +8,8 @@
 	import type {
 		CreateSMBShareRequest,
 		SMBShare_CommonConfig,
-		SMBShare_SecurityConfig
+		SMBShare_SecurityConfig,
+		SMBShare_SecurityConfig_User
 	} from '$lib/api/storage/v1/storage_pb';
 	import {
 		SMBShare_CommonConfig_MapToGuest,
@@ -17,7 +18,7 @@
 	} from '$lib/api/storage/v1/storage_pb';
 	import CopyButton from '$lib/components/custom/copy-button/copy-button.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
+	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -47,6 +48,13 @@
 	} as CreateSMBShareRequest;
 
 	let request = $state(defaults);
+	function resetSecurityConfigValues() {
+		if (request.securityConfig) {
+			request.securityConfig.realm = '';
+			request.securityConfig.joinSource = {} as SMBShare_SecurityConfig_User;
+			request.securityConfig.localUsers = [] as SMBShare_SecurityConfig_User[];
+		}
+	}
 	function reset() {
 		request = defaults;
 	}
@@ -108,7 +116,7 @@
 		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.create_group()}</Modal.Header>
+		<Modal.Header>{m.create_smb_share()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
@@ -193,7 +201,12 @@
 										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 										<SingleSelect.Group>
 											{#each $securityModeOptions as option (option.value)}
-												<SingleSelect.Item {option}>
+												<SingleSelect.Item
+													{option}
+													onclick={() => {
+														resetSecurityConfigValues();
+													}}
+												>
 													<Icon
 														icon={option.icon ? option.icon : 'ph:empty'}
 														class={cn('size-5', option.icon ? 'visible' : 'invisible')}
@@ -234,9 +247,8 @@
 								</div>
 							{/if}
 							<ManipulateUsers
-								type="create"
 								required={request.securityConfig.mode === SMBShare_SecurityConfig_Mode.USER}
-								bind:users={request.securityConfig.localUsers}
+								bind:values={request.securityConfig.localUsers}
 								bind:invalid={invaliditySecurityConfig.localUsers}
 							/>
 						</Form.Field>
@@ -256,7 +268,7 @@
 
 						<Form.Field>
 							<Form.Label>{m.join_source()}</Form.Label>
-							{#if request.securityConfig.joinSource}
+							{#if request.securityConfig.joinSource && request.securityConfig.joinSource.username}
 								<div class="rounded-lg border p-2">
 									<div class="flex items-center gap-2 rounded-lg p-2">
 										<div
@@ -273,8 +285,7 @@
 								</div>
 							{/if}
 							<ManipulateUser
-								type="create"
-								bind:user={request.securityConfig.joinSource}
+								bind:value={request.securityConfig.joinSource}
 								bind:invalid={invaliditySecurityConfig.joinSource}
 								required={request.securityConfig.mode ===
 									SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY}
@@ -294,7 +305,7 @@
 											<Icon icon="ph:user" class="size-5" />
 										</div>
 										<div class="flex flex-col gap-1">
-											<p class="text-xs text-muted-foreground">{m.valid_user()}</p>
+											<p class="text-xs text-muted-foreground">{m.valid_users()}</p>
 											<p class="text-sm">{user}</p>
 										</div>
 										<CopyButton class="invisible ml-auto size-4 group-hover:visible" text={user} />
@@ -302,15 +313,15 @@
 								{/each}
 							</div>
 						{/if}
-						{#if request.securityConfig.mode === SMBShare_SecurityConfig_Mode.USER}
-							<ManipulateValidUsers bind:validUsers={request.validUsers} type="create" />
-						{:else if request.securityConfig.mode === SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY}
+						{#if request.securityConfig.mode === SMBShare_SecurityConfig_Mode.ACTIVE_DIRECTORY}
 							<ManipulateVerifiedValidUsers
-								bind:validUsers={request.validUsers}
-								type="create"
+								disabled={invaliditySecurityConfig.realm || invaliditySecurityConfig.joinSource}
+								bind:values={request.validUsers}
 								realm={request.securityConfig.realm}
-								joinSource={request.securityConfig.joinSource}
+								joinSource={request.securityConfig.joinSource!}
 							/>
+						{:else if request.securityConfig.mode === SMBShare_SecurityConfig_Mode.USER}
+							<ManipulateValidUsers bind:values={request.validUsers} />
 						{/if}
 					</Form.Field>
 				{/if}

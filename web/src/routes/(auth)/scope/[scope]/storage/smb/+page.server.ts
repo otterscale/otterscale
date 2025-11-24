@@ -16,6 +16,6 @@ export const load: PageServerLoad = async () => {
 	const stgFileFeatureState = await client.getBooleanValue('stg-file', false);
 
 	if (!stgFileFeatureState) {
-		throw error(501, `This feature is not implemented.`);
+		// throw error(501, `This feature is not implemented.`);
 	}
 };

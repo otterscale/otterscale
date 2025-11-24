@@ -1,10 +1,12 @@
 <script lang="ts" module>
-	import { toast } from 'svelte-sonner';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	import {
-		StorageService,
-		type SMBShare_SecurityConfig_User
+		type SMBShare_SecurityConfig_User,
+		StorageService
 	} from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -12,59 +14,70 @@
 	import Button, { buttonVariants } from '$lib/components/ui/button/button.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
-	import { getContext } from 'svelte';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 </script>
 
 <script lang="ts">
 	let {
-		validUsers = $bindable(),
-		type,
+		values = $bindable(),
 		realm,
-		joinSource
+		joinSource,
+		disabled
 	}: {
-		validUsers: string[];
-		type: 'create' | 'update';
+		values: string[];
 		realm: string;
-		joinSource?: SMBShare_SecurityConfig_User;
+		joinSource: SMBShare_SecurityConfig_User;
+		disabled?: boolean;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	if (!validUsers) {
-		validUsers = [];
+	if (!values) {
+		values = [];
 	}
 
-	const defaults = '';
-	let request = $state(defaults);
+	const defaultUser = '';
+	let requestUser = $state(defaultUser);
+	function resetUser() {
+		requestUser = defaultUser;
+	}
+
+	const defaultUsers = $derived([...values]);
+	let requestUsers = $derived([...defaultUsers]);
+	function resetUsers() {
+		requestUsers = [...defaultUsers];
+	}
+
 	function reset() {
-		request = defaults;
+		resetUser();
+		resetUsers();
 	}
 
 	let open = $state(false);
 	function close() {
 		open = false;
 	}
-
-	const isNull = $derived(validUsers.length === 0);
 </script>
 
 <Modal.Root bind:open>
 	<Modal.Trigger
 		variant="default"
-		class={cn('w-full ring-1 ring-primary', buttonVariants({ variant: 'outline' }))}
+		class={cn(
+			'w-full ring-1 ring-primary hover:ring-primary',
+			buttonVariants({ variant: 'outline' })
+		)}
+		{disabled}
 	>
-		{#if type === 'create'}
-			{m.create_users()}
-		{:else if type === 'update'}
-			{m.edit_users()}
+		{#if !(values && values.length === 0)}
+			{m.edit()}
+		{:else}
+			{m.add()}
 		{/if}
 	</Modal.Trigger>
 	<Modal.Content>
-		{#if validUsers.length > 0}
+		{#if requestUsers.length > 0}
 			<div class="max-h-40 overflow-y-auto rounded-lg border p-2">
-				{#each validUsers as validUser, index (index)}
+				{#each requestUsers as user, index (index)}
 					<div class="flex items-center gap-2 rounded-lg p-2">
 						<div class={cn('flex size-8 items-center justify-center rounded-full border-2')}>
 							<Icon icon="ph:user" class="size-5" />
@@ -72,7 +85,7 @@
 
 						<div class="flex flex-col gap-1">
 							<p class="text-xs text-muted-foreground">{m.user()}</p>
-							<p class="text-sm">{validUser}</p>
+							<p class="text-sm">{user}</p>
 						</div>
 
 						<div class="ml-auto">
@@ -80,7 +93,7 @@
 								variant="ghost"
 								size="icon"
 								onclick={() => {
-									validUsers.splice(index, 1);
+									requestUsers.splice(index, 1);
 								}}
 							>
 								<Icon icon="ph:trash" class="size-4 text-destructive" />
@@ -98,7 +111,7 @@
 		{/if}
 
 		<Form.Label>{m.name()}</Form.Label>
-		<SingleInput.General type="text" bind:value={request} />
+		<SingleInput.General type="text" bind:value={requestUser} />
 
 		<Modal.Footer>
 			<Modal.Cancel
@@ -111,9 +124,9 @@
 			<div>
 				<Button
 					variant="destructive"
-					disabled={isNull}
+					disabled={requestUsers.length === 0}
 					onclick={() => {
-						validUsers = [];
+						reset();
 					}}
 				>
 					{m.clear()}
@@ -126,17 +139,17 @@
 									realm: realm,
 									username: joinSource.username,
 									password: joinSource.password,
-									searchUsername: request,
-									tls: true
+									searchUsername: requestUser,
+									tls: false
 								}),
 							{
-								loading: `Validating ${request}...`,
+								loading: `Validating ${requestUser}...`,
 								success: () => {
-									validUsers = [...validUsers, request];
-									return `Validated ${request} successfully`;
+									requestUsers = [...requestUsers, requestUser];
+									return `Validated ${requestUser} successfully`;
 								},
 								error: (error) => {
-									let message = `Fail to validate ${request}`;
+									let message = `Fail to validate ${requestUser}`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
 										duration: Number.POSITIVE_INFINITY
@@ -150,7 +163,7 @@
 					{m.add()}
 				</Button>
 				<Modal.Action
-					disabled={isNull}
+					disabled={requestUsers.length === 0}
 					onclick={() => {
 						reset();
 						close();
