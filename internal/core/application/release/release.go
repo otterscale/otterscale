@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	TypeLabel        = "otterscale.com/type"
-	ReleaseNameLabel = "otterscale.com/release-name"
-	ChartRefKey      = "chart-ref"
+	TypeLabel          = "otterscale.com/type"
+	ReleaseNameLabel   = "otterscale.com/release-name"
+	ChartRefAnnotation = "otterscale.com/chart-ref"
 )
 
 // Release represents a Helm Release resource.
@@ -72,7 +72,7 @@ func (uc *UseCase) RollbackRelease(ctx context.Context, scope, namespace, name s
 	return uc.release.Rollback(ctx, scope, namespace, name, dryRun)
 }
 
-func (uc *UseCase) GetChartFileFromApplication(ctx context.Context, scope, namespace string, labels map[string]string) (*chart.File, error) {
+func (uc *UseCase) GetChartFileFromApplication(ctx context.Context, scope, namespace string, labels, annotations map[string]string) (*chart.File, error) {
 	file := &chart.File{}
 	eg, egctx := errgroup.WithContext(ctx)
 
@@ -92,28 +92,8 @@ func (uc *UseCase) GetChartFileFromApplication(ctx context.Context, scope, names
 	})
 
 	eg.Go(func() error {
-		releaseName, ok := labels[ReleaseNameLabel]
+		chartRef, ok := annotations[ChartRefAnnotation]
 		if ok {
-			rel, err := uc.release.Get(egctx, scope, namespace, releaseName)
-			if err != nil {
-				return err
-			}
-
-			chart := rel.Chart
-			if chart == nil {
-				return nil // skip if chart is nil
-			}
-
-			chartRef := ""
-			if v, ok := rel.Config[ChartRefKey]; ok {
-				if str, ok := v.(string); ok {
-					chartRef = str
-				}
-			}
-			if chartRef == "" {
-				return nil // skip if chartRef is empty
-			}
-
 			v, err := uc.chart.Show(egctx, chartRef, action.ShowReadme)
 			if err != nil {
 				return err
