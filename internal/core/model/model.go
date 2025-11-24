@@ -64,13 +64,10 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 		return nil, "", err
 	}
 
-	url, err := uc.service.URL(scope)
+	uri, err = uc.gatewayURL(ctx, scope)
 	if err != nil {
 		return nil, "", err
 	}
-
-	// TODO: get port from service
-	uri = fmt.Sprintf("http://%s:8080", url.Hostname())
 
 	return models, uri, nil
 }
@@ -132,6 +129,28 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 func (uc *UseCase) DeleteModel(ctx context.Context, scope, namespace, name string) error {
 	_, err := uc.release.Uninstall(ctx, scope, namespace, name, false)
 	return err
+}
+
+func (uc *UseCase) gatewayURL(ctx context.Context, scope string) (string, error) {
+	url, err := uc.service.URL(scope)
+	if err != nil {
+		return "", err
+	}
+
+	service, err := uc.service.Get(ctx, scope, "llm-d", "llm-d-inference-gateway-istio")
+	if err != nil {
+		return "", err
+	}
+
+	port := int32(0)
+	for _, sp := range service.Spec.Ports {
+		if sp.Name == "default" {
+			port = sp.Port
+			break
+		}
+	}
+
+	return fmt.Sprintf("http://%s:%d", url.Hostname(), port), nil
 }
 
 func (uc *UseCase) reconcileHTTPRoute(ctx context.Context, scope, namespace, name, gatewayName, inferencePoolName string, inferencePoolPort int32) error {
