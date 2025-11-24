@@ -53,7 +53,7 @@
 	const envClient = createClient(EnvironmentService, transport);
 
 	let scopes = $state<Scope[]>([]);
-	let activeScope = $derived(page.params.scope || scopeStore.value || 'OtterScale');		// hotfix for SSR issue
+	let activeScope = $derived(page.params.scope || scopeStore.value || 'OtterScale'); // hotfix for SSR issue
 
 	async function fetchScopes() {
 		try {
