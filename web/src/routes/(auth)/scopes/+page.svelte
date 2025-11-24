@@ -118,7 +118,9 @@
 							<!-- Add Scope Info -->
 							<div class="grid content-between">
 								<Card.Title class="text-xl text-nowrap">{m.create()}</Card.Title>
-								<Card.Description class="capitalize">{m.new_scope()}</Card.Description>
+								<span class="truncate">
+									<Card.Description class="capitalize">{m.new_scope()}</Card.Description>
+								</span>
 							</div>
 						</div>
 					</Card.Header>
