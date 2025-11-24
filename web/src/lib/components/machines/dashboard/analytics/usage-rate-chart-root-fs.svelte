@@ -94,7 +94,6 @@
 						{/snippet}
 					</ArcChart>
 				</Chart.Container>
-				<Statistics.Progress numerator={using} denominator={total} target="STB" />
 			{:else}
 				<div class="flex h-full w-full flex-col items-center justify-center">
 					<Icon icon="ph:chart-bar-fill" class="size-24 animate-pulse text-muted-foreground" />
@@ -108,5 +107,4 @@
 			</div>
 		{/await}
 	</Statistics.Content>
-	<Statistics.Background icon="ph:hard-drives" class="-top-20 right-20 size-10" />
 </Statistics.Root>

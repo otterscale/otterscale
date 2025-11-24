@@ -45,7 +45,7 @@
 			<Statistics.Title class="h-8 **:data-[slot=data-table-statistics-title-icon]:size-6">
 				<div class="flex flex-col justify-between">
 					{m.networking()}
-					<p class="text-sm text-muted-foreground">receive</p>
+					<p class="text-sm text-muted-foreground">{m.received()}</p>
 				</div>
 			</Statistics.Title>
 			<div class="relative ml-auto">

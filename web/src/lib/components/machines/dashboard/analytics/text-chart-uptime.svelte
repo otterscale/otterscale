@@ -21,7 +21,7 @@
 	<Statistics.Header>
 		<Statistics.Title>{m.uptime()}</Statistics.Title>
 	</Statistics.Header>
-	<Statistics.Content class="min-h-16">
+	<Statistics.Content class="min-h-20">
 		{#await client.instantQuery(query)}
 			<div class="flex h-full w-full items-center justify-center">
 				<Icon icon="svg-spinners:3-dots-bounce" class="m-8 size-8" />
@@ -36,7 +36,10 @@
 			{:else}
 				{@const uptime = result[0].value.value}
 				{@const duration = formatDuration(uptime)}
-				<p class="text-5xl font-semibold">{duration.value.toFixed(1)} {duration.unit}</p>
+				<p class="flex h-[250px] items-center justify-center text-5xl font-semibold">
+					{duration.value.toFixed(1)}
+					{duration.unit}
+				</p>
 			{/if}
 		{:catch}
 			<div class="flex h-full w-full flex-col items-center justify-center">
@@ -45,5 +48,4 @@
 			</div>
 		{/await}
 	</Statistics.Content>
-	<Statistics.Background icon="ph:power" class="top-0 -right-12" />
 </Statistics.Root>
