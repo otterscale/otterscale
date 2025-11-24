@@ -6,7 +6,6 @@ import (
 	"errors"
 	"slices"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -249,9 +248,6 @@ func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
 	eg.Go(func() error {
 		endpoint, err := m.juju.GetEndpoint(egctx, scope, rgwName)
 		if err == nil {
-			if !strings.HasPrefix(endpoint, "http://") && !strings.HasPrefix(endpoint, "https://") {
-				endpoint = "http://" + endpoint
-			}
 			config.Endpoint = endpoint
 		}
 		return err

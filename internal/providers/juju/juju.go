@@ -220,7 +220,7 @@ func (m *Juju) GetEndpoint(_ context.Context, scope, appName string) (string, er
 
 	for i := range units {
 		if units[i].Tag == tag.String() {
-			return units[i].PublicAddress, nil
+			return "http://" + units[i].PublicAddress, nil
 		}
 	}
 
