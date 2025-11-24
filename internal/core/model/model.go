@@ -281,11 +281,9 @@ func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, n
 		return fmt.Errorf("no containers found in deployment %s", deployment.Name)
 	}
 
-	deployment.Spec.Template.Spec.Containers[0].Args =
-		slices.DeleteFunc(containers[0].Args, func(arg string) bool {
-			return arg == "--tracing=false"
-
-		})
+	deployment.Spec.Template.Spec.Containers[0].Args = slices.DeleteFunc(containers[0].Args, func(arg string) bool {
+		return arg == "--tracing=false"
+	})
 
 	_, err = uc.deployment.Update(ctx, scope, namespace, deployment)
 	return err
@@ -306,7 +304,8 @@ func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, na
 	}
 
 	// values
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strconv.Itoa(int(sizeBytes)), limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
+	strSizeBytes := strconv.Itoa(int(sizeBytes)) //nolint:gosec // ignore
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
 }
@@ -316,7 +315,8 @@ func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, na
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
 	// values
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strconv.Itoa(int(sizeBytes)), limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
+	strSizeBytes := strconv.Itoa(int(sizeBytes)) //nolint:gosec // ignore
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
 }
