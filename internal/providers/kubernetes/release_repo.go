@@ -240,22 +240,18 @@ func (r *releaseRepo) newName(name string) string {
 }
 
 func (r *releaseRepo) toValues(valuesYAML string, valuesMap map[string]string) (map[string]any, error) {
-	// advanced
 	values := map[string]any{}
-	if err := yaml.Unmarshal([]byte(valuesYAML), &values); err != nil {
-		return nil, err
-	}
 
-	// basic
-	vals := []string{}
-	for k, v := range valuesMap {
-		if v != "" {
-			vals = append(vals, fmt.Sprintf("%s=%s", k, v))
+	if valuesYAML != "" {
+		if err := yaml.Unmarshal([]byte(valuesYAML), &values); err != nil {
+			return nil, err
 		}
 	}
 
-	if err := strvals.ParseInto(strings.Join(vals, ","), values); err != nil {
-		return nil, err
+	for k, v := range valuesMap {
+		if err := strvals.ParseInto(fmt.Sprintf("%s=%q", k, v), values); err != nil {
+			return nil, err
+		}
 	}
 
 	return values, nil
