@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
-	"strings"
 	"time"
 
 	"github.com/samba-in-kubernetes/samba-operator/api/v1alpha1"
@@ -238,8 +237,7 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope string) (data []Shar
 
 	for i := range allShares {
 		share := allShares[i]
-		name := strings.TrimSuffix(share.Name, "-share")
-		names := uc.newNames(name)
+		names := uc.newNames(share.Name)
 
 		localUsers, joinSource, err := uc.extractSecrets(secretMap, names.UsersSecret, names.JoinSecret)
 		if err != nil {
@@ -502,7 +500,7 @@ func (uc *UseCase) newNames(name string) names {
 		JoinSecret:            name + "-join",
 		SecurityConfig:        name + "-security",
 		CommonConfig:          name + "-common",
-		Share:                 name + "-share",
+		Share:                 name,
 		PersistentVolumeClaim: name + "-pvc",
 	}
 }
