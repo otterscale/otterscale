@@ -49,6 +49,7 @@
 	const defaults = {
 		scope: scope,
 		name: smbShare.name,
+		port: Number(new URL(smbShare.uri).port),
 		sizeBytes: smbShare.sizeBytes,
 		browsable: smbShare.browsable,
 		guestOk: smbShare.guestOk,
@@ -133,6 +134,10 @@
 					<Form.Label>{m.name()}</Form.Label>
 					<Form.Help>{m.smb_share_name_constraint()}</Form.Help>
 					<SingleInput.General disabled required type="text" bind:value={request.name} />
+				</Form.Field>
+				<Form.Field>
+					<Form.Label>{m.port()}</Form.Label>
+					<SingleInput.General type="number" bind:value={request.port} />
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.size()}</Form.Label>
