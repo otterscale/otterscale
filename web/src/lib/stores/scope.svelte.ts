@@ -1,10 +1,3 @@
-let currentScope = $state<string>('');
+import { writable } from 'svelte/store';
 
-export const scopeStore = {
-	get value() {
-		return currentScope;
-	},
-	set(value: string) {
-		currentScope = value;
-	}
-};
+export const scopeStore = writable<string>('');

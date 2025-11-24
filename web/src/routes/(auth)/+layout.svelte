@@ -53,7 +53,7 @@
 	const envClient = createClient(EnvironmentService, transport);
 
 	let scopes = $state<Scope[]>([]);
-	let activeScope = $derived(page.params.scope || scopeStore.value || 'OtterScale'); // hotfix for SSR issue
+	let activeScope = $derived(page.params.scope || $scopeStore || 'OtterScale');
 
 	async function fetchScopes() {
 		try {
@@ -85,7 +85,6 @@
 
 	async function initialize(scope: string) {
 		try {
-			activeScope = scope;
 			await Promise.all([fetchScopes(), fetchEdition()]);
 			toast.success(m.switch_scope({ name: scope }));
 		} catch (error) {
@@ -94,7 +93,7 @@
 	}
 
 	$effect(() => {
-		if (activeScope && activeScope !== scopeStore.value) {
+		if (activeScope && activeScope !== $scopeStore) {
 			scopeStore.set(activeScope);
 			initialize(activeScope);
 		}
