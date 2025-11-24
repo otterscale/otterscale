@@ -11,52 +11,46 @@ option go_package = "github.com/otterscale/otterscale/api/model/v1;pb";
 service ModelService {
   rpc ListModels(ListModelsRequest) returns (ListModelsResponse) {
     option (otterscale.api.feature) = {
-      name: "mdl-general"
+      name: "model-enabled"
     };
   };
 
   rpc CreateModel(CreateModelRequest) returns (Model) {
     option (otterscale.api.feature) = {
-      name: "mdl-general"
+      name: "model-enabled"
     };
   };
 
   rpc UpdateModel(UpdateModelRequest) returns (Model) {
     option (otterscale.api.feature) = {
-      name: "mdl-general"
+      name: "model-enabled"
     };
   };
 
   rpc DeleteModel(DeleteModelRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "mdl-general"
+      name: "model-enabled"
     };
   };
 
   rpc ListModelArtifacts(ListModelArtifactsRequest) returns (ListModelArtifactsResponse) {
     option (otterscale.api.feature) = {
-      name: "mdl-general"
+      name: "model-enabled"
     };
   };
 
   rpc CreateModelArtifact(CreateModelArtifactRequest) returns (ModelArtifact) {
     option (otterscale.api.feature) = {
-      name: "mdl-general"
+      name: "model-enabled"
     };
   };
 
   rpc DeleteModelArtifact(DeleteModelArtifactRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "mdl-general"
+      name: "model-enabled"
     };
   };
 }
-
-// TODO: namespace -> httproute
-message HTTPRoute {}
-
-// TODO: selector -> model
-message InferencePool {}
 
 message Model {
   message Resource {
@@ -64,7 +58,6 @@ message Model {
     uint32 vgpumem_percentage = 2;
   }
   string id = 1;
-  string inference_pool_name = 2;
   string name = 11;
   string namespace = 12;
   string status = 13;
@@ -94,6 +87,9 @@ message CreateModelRequest {
   string namespace = 3;
   string name = 4;
   string model_name = 11;
+  uint64 size_bytes = 12;
+  Model.Resource limits = 21;
+  Model.Resource requests = 22;
 }
 
 message UpdateModelRequest {
@@ -101,8 +97,8 @@ message UpdateModelRequest {
   reserved 2;
   string namespace = 3;
   string name = 4;
-  Model.Resource limits = 11;
-  Model.Resource requests = 12;
+  Model.Resource limits = 21;
+  Model.Resource requests = 22;
 }
 
 message DeleteModelRequest {

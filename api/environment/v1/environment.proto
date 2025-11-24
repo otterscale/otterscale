@@ -8,27 +8,15 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/otterscale/otterscale/api/environment/v1;pb";
 
 service EnvironmentService {
-  rpc CheckHealth(CheckHealthRequest) returns (CheckHealthResponse) {
-    option (otterscale.api.feature) = {
-      name: "env-general"
-    };
-  };
+  rpc CheckHealth(CheckHealthRequest) returns (CheckHealthResponse);
 
-  rpc GetPrometheus(GetPrometheusRequest) returns (Prometheus) {
-    option (otterscale.api.feature) = {
-      name: "env-general"
-    };
-  };
+  rpc GetPrometheus(GetPrometheusRequest) returns (Prometheus);
 
-  rpc GetPremiumTier(GetPremiumTierRequest) returns (PremiumTier) {
-    option (otterscale.api.feature) = {
-      name: "env-general"
-    };
-  };
+  rpc GetPremiumTier(GetPremiumTierRequest) returns (PremiumTier);
 
   rpc UpdateConfig(UpdateConfigRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "env-debug"
+      name: "debug"
     };
   };
 }
@@ -69,9 +57,10 @@ message GetPrometheusRequest {}
 
 message PremiumTier {
   enum Level {
-    LEVEL_BASIC = 0;
-    LEVEL_ADVANCED = 1;
-    LEVEL_ENTERPRISE = 2;
+    LEVEL_COMMUNITY = 0;
+    LEVEL_STANDARD = 1;
+    LEVEL_PREMIUM = 2;
+    LEVEL_ENTERPRISE = 3;
   }
   Level level = 1;
 }

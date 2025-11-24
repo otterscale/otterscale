@@ -1,0 +1,645 @@
+package model
+
+// Gateway API Inference Extension v1.1.0
+const inferencePoolValuesYAML = `inferenceExtension:
+  replicas: 1
+  image:
+    name: llm-d-inference-scheduler
+    hub: ghcr.io/llm-d
+    tag: v0.3.2
+    pullPolicy: Always
+  extProcPort: 9002
+  env: []
+  pluginsConfigFile: "default-plugins.yaml"
+  # Define additional container ports
+  extraContainerPorts: []
+  # Define additional service ports
+  extraServicePorts: []
+
+  # This is the plugins configuration file.
+  # pluginsCustomConfig:
+  #   custom-plugins.yaml: |
+  #     apiVersion: inference.networking.x-k8s.io/v1alpha1
+  #     kind: EndpointPickerConfig
+  #     plugins:
+  #     - type: custom-scorer
+  #       parameters:
+  #         custom-threshold: 64
+  #     schedulingProfiles:
+  #     - name: default
+  #       plugins:
+  #       - pluginRef: custom-scorer
+
+  # Example environment variables:
+  # env:
+  #   ENABLE_EXPERIMENTAL_FEATURE: "true"
+
+  flags:
+    # Log verbosity
+    - name: v
+      value: 1
+
+  affinity: {}
+
+  tolerations: []
+
+  # Monitoring configuration for EPP
+  monitoring:
+    interval: "10s"
+    # Prometheus ServiceMonitor will be created when enabled for EPP metrics collection
+    prometheus:
+      enabled: true
+      auth:
+        enabled: true
+        # Service account token secret for authentication
+        secretName: inference-gateway-sa-metrics-reader-secret
+      # additional labels for the ServiceMonitor
+      extraLabels: {}
+
+    # DEPRECATED: The 'gke' configuration will be removed in the next release.
+    gke:
+      enabled: false
+  tracing:
+    enabled: false
+    otelExporterEndpoint: "http://localhost:4317"
+    sampling:
+      sampler: "parentbased_traceidratio"
+      samplerArg: "0.1"
+
+inferencePool:
+  targetPorts:
+    - number: %d
+  modelServerType: vllm # vllm, triton-tensorrt-llm
+  apiVersion: inference.networking.k8s.io/v1 
+  modelServers:
+    matchLabels:
+      llm-d.ai/inferenceServing: "true"
+
+  # Should only used if apiVersion is inference.networking.x-k8s.io/v1alpha2, 
+  # This will soon be deprecated when upstream GW providers support v1, just doing something simple for now.
+  targetPortNumber: 8000
+
+# Options: ["gke", "istio", "none"]
+provider:
+  name: istio
+
+  # GKE-specific configuration.
+  # This block is only used if name is "gke".
+  gke:
+    # Set to true if the cluster is an Autopilot cluster.
+    autopilot: false
+
+istio:
+  destinationRule:
+    # Provide a way to override the default calculated host
+    host: "" 
+    # Optional: Enables customization of the traffic policy
+    trafficPolicy:
+      tls:
+        insecureSkipVerify: true
+        mode: SIMPLE
+      # connectionPool:
+      #   http:
+      #     maxRequestsPerConnection: 256000
+`
+
+// llm-d Model Service v0.3.6
+//
+//nolint:misspell // ignore
+const modelServiceValuesYAML = `# yaml-language-server: $schema=values.schema.json
+# This values.yaml file is a default values file. It can be overridden using another.
+
+# @schema
+# additionalProperties: true
+# @schema
+# -- Common configuration values
+common: {}
+
+# -- Usually used when using llm-d-modelservice as a subchart
+enabled: true
+
+# -- String to fully override common.names.fullname
+fullnameOverride: ""
+
+# -- Override to default pod serviceAccountName
+serviceAccountOverride: ""
+
+# schedulerName -- Name of the scheduler to use for scheduling model pods
+# schedulerName: default-scheduler
+
+modelArtifacts:
+  # name is the value of the model parameter in OpenAI requests
+  # Required
+  name: %s
+  # Labels that will be added to the pods serving the model.
+  # These should match the labels of any associated InferencePool
+  # In addition, the label llm-d.ai/role will be added with the value 'prefill'
+  # or 'decode' depending on the role of the pod.
+  labels:
+    llm-d.ai/inferenceServing: "true"
+    llm-d.ai/model: %s
+
+  # model URI. One of:
+  #   hf://model/name - model as defined on Hugging Face
+  #   pvc://pvc_name/path/to/model - model on existing persistant storage volume
+  #   oci:// not yet supported
+  uri: "hf://{{ .Values.modelArtifacts.name }}"
+  # size of volume to create to hold the model
+  size: %d
+  # name of secret containing credentials for accessing the model (e.g., HF_TOKEN)
+  authSecretName: ""
+  # location where model volume will be mounted (used when mountModelVolume: true)
+  mountPath: /model-cache
+
+# When true, a LeaderWorkerSet is used instead of a Deployment
+multinode: false
+
+# Global accelerator configuration
+# Supported types: nvidia, intel-i915, intel-xe, intel-gaudi, amd, google
+accelerator:
+  # Type of accelerator to use
+  type: nvidia
+  # Resource names for different accelerator types
+  resources:
+    nvidia: otterscale.com/vgpu
+    intel-i915: "gpu.intel.com/i915"
+    intel-xe: "gpu.intel.com/xe"
+    intel-gaudi: "habana.ai/gaudi"
+    amd: "amd.com/gpu"
+    google: "google.com/tpu"
+  # Environment variables specific to accelerator types
+  env:
+    intel-i915:
+      - name: VLLM_USE_V1
+        value: "1"
+      - name: TORCH_LLM_ALLREDUCE
+        value: "1"
+      - name: VLLM_WORKER_MULTIPROC_METHOD
+        value: "spawn"
+
+# @schema
+# additionalProperties: true
+# @schema
+# -- Requester configuration part of the dual-pod solution for FMA
+requester:
+  enable: false
+  image: "ghcr.io/llm-d-incubation/llm-d-fast-model-actuation-requester:latest"
+  adminPort: 8081
+  port:
+    probes: 8080
+    spi: 8081
+  readinessProbe:
+    initialDelaySeconds: 2
+    periodSeconds: 5
+  resources:
+    limits:
+      gpus: 1
+      cpus: 1
+      memory: 250Mi
+
+# @schema
+# additionalProperties: true
+# @schema
+dra:
+  enabled: false # true: use this block instead of the accelerator
+  type: nvidia # which claimTemplates entry to use
+  claimTemplates:
+    - name: nvidia
+      class: gpu.nvidia.com
+      match: "exactly"
+      count: 1
+      selectors: []
+    - name: google
+      class: tpu.google.com
+      match: "exactly"
+      count: 1
+      selectors: []
+    - name: intel
+      class: gpu.intel.com
+      match: "exactly"
+      count: 1
+      selectors: []
+    - name: amd
+      class: gpu.amd.com
+      match: "exactly"
+      count: 1
+      selectors: []
+
+# Describe routing requirements. In addition to service level routing (OpenAI model name, service port)
+# also describes elements for Gateway API Inference Extension configuration
+routing:
+  # Deprecated
+  # modelName: random/modelId
+  # port the inference engine (vLLM) listens
+  # when a sidecar (proxy) is used it will listen on this port and forward to VLLM on proxy.targetPort
+  servicePort: 8000
+
+  # @schema
+  # additionalProperties: true
+  # @schema
+  # Configuration of VLLM routing sidecar
+  # cf. https://github.com/llm-d/llm-d-routing-sidecar/
+  proxy:
+    enabled: true
+    image: ghcr.io/llm-d/llm-d-routing-sidecar:v0.3.0
+    imagePullPolicy: Always
+    # target port on which VLLM should listen
+    targetPort: 8200
+    # Specify a conenctor. For example, nixl, nixlv2
+    connector: nixlv2
+
+    # Boolean: adds the --secure-proxy flag to the routingSidecar with your chosen value.  Arg is ommitted by default for compatability with legacy sidecar images.
+    secure: false
+
+    # Boolean: whether to use TLS when sending requests to prefillers. Arg is ommitted by default for compatability with legacy sidecar images.
+    # prefillerUseTLS: true
+
+    # The path to the certificate for secure proxy.  Arg is ommitted by default for compatability with legacy sidecar images.
+    # certPath: "/certs"
+
+    # Overwrite the verbosity of logging in the sidecar (defaults to 5)
+    # debugLevel: 5
+
+# @schema
+# additionalProperties: true
+# @schema
+# -- Decode pod configuration
+decode:
+  create: true
+  autoscaling:
+    enabled: true
+
+  replicas: 1
+  # schedulerName -- Name of the scheduler to use for scheduling decode pods (overrides global schedulerName)
+  # schedulerName: decode-scheduler
+
+  # @schema
+  # type: array
+  # items:
+  #   type: object
+  #   additionalProperties: true
+  # @schema
+  containers:
+    - name: "vllm"
+      image: "ghcr.io/llm-d/llm-d:v0.2.0"
+      # type of command:
+      #   vllmServe - modelservice will add the command vllm serve to the container
+      #   imageDefault - no command will be added; the default command defined in the image will be used
+      #   custom - use user provided "command"
+      modelCommand: vllmServe
+      # Required when modelCommand is "custom"
+      command: []
+      # @schema
+      # items:
+      #   type: string
+      # @schema
+      args:
+      - --max-model-len
+      - "2048"
+      - --enable-chunked-prefill
+      - --max-num-seqs
+      - "256"
+      - --enable-prefix-caching
+      - --kv-transfer-config
+      - '{"kv_connector":"NixlConnector", "kv_role":"kv_consumer"}'
+      # @schema
+      # items:
+      #   $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.EnvVar
+      # @schema
+      env:
+      - name: CUDA_VISIBLE_DEVICES
+        value: "0"
+      - name: UCX_TLS
+        value: cuda_ipc,cuda_copy,tcp
+      - name: VLLM_NIXL_SIDE_CHANNEL_HOST
+        valueFrom:
+          fieldRef:
+            fieldPath: status.podIP
+      - name: VLLM_NIXL_SIDE_CHANNEL_PORT
+        value: "5557"
+      - name: VLLM_LOGGING_LEVEL
+        value: DEBUG
+      imagePullPolicy: ""
+      # list of ports exposed by the container
+      # @schema
+      # items:
+      #   $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.ContainerPort
+      # @schema
+      ports:
+      - containerPort: 5557
+        protocol: TCP
+      - containerPort: 8200
+        name: metrics
+        protocol: TCP
+      
+      extraConfig:
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8200
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /v1/models
+            port: 8200
+          periodSeconds: 5
+          timeoutSeconds: 2
+        startupProbe:
+          failureThreshold: 60
+          httpGet:
+            path: /v1/models
+            port: 8200
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+      
+      #   - containerPort: 8200  # matches routing.proxy.targetPort, set for metrics scraping with  monitoring.podmonitor.enabled true
+      #     name: metrics
+      #     protocol: TCP
+      # @schema
+      # $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.ResourceRequirements
+      # @schema
+      resources:
+        # @schema
+        # additionalProperties: true
+        # @schema
+        limits:
+          otterscale.com/vgpu: "%[4]d"
+          otterscale.com/vgpumem-percentage: "%[5]d"
+        # @schema
+        # additionalProperties: true
+        # @schema
+        requests:
+          otterscale.com/vgpu: "%[6]d"
+          otterscale.com/vgpumem-percentage: "%[7]d"
+        # @schema
+        # additionalProperties: true
+        # @schema
+        claims: {}
+      # when set, a volumeMount (and volume) is created for model storage
+      mountModelVolume: true
+      # @schema
+      # type: array
+      # items:
+      #   type: object
+      #   additionalProperties: true
+      # @schema
+      volumeMounts:
+        - name: metrics-volume
+          mountPath: /.config
+        - name: torch-compile-cache
+          mountPath: /.cache
+  # @schema
+  # type: array
+  # items:
+  #   type: object
+  #   additionalProperties: true
+  # @schema
+  volumes:
+    - name: metrics-volume
+      emptyDir: {}
+    - name: torch-compile-cache
+      emptyDir: {}
+
+  # hostIPC -- Boolean: Use the host's ipc namespace.
+  # -- Not set by default.
+  # -- Only an option for LWS (multinode) See: https://github.com/kubernetes-sigs/lws/blob/main/config/crd/bases/leaderworkerset.x-k8s.io_leaderworkersets.yaml#L12196.
+  # hostIPC: false
+
+  # hostPID -- Boolean: Use the host's pid namespace.
+  # -- Not set by default.
+  # -- Only an option for LWS (multinode) See: https://github.com/kubernetes-sigs/lws/blob/main/config/crd/bases/leaderworkerset.x-k8s.io_leaderworkersets.yaml#L12207.
+  # hostPID: false
+
+  # subGroupPolicy -- object: SubGroupPolicy describes the policy that will be applied when creating subgroups in each replica.
+  # -- Not set by default
+  # -- Only an option for LWS (multinode) See: https://github.com/kubernetes-sigs/lws/blob/main/config/crd/bases/leaderworkerset.x-k8s.io_leaderworkersets.yaml#L8207
+  # subGroupPolicy:
+  #   subGroupSize: 8
+
+  # subGroupExclusiveToplogy -- Boolean: Should the subgroup-exclusive-topology annotation be added to the LWS
+  # -- Not set by default
+  # -- Only an option for LWS (multinode)
+  # subGroupExclusiveToplogy: true
+
+  # XPU-specific node affinity
+  acceleratorTypes:
+    labelKey: ""
+    # @schema
+    # items:
+    #   type: string
+    # @schema
+    labelValues: []
+
+  # @schema
+  # additionalProperties: true
+  # @schema
+  # Monitoring configuration for decode pods
+  monitoring:
+    # PodMonitor configuration for Prometheus Operator
+    podmonitor:
+      # enabled -- Create PodMonitor resource for decode deployment
+      enabled: true
+      # portName -- Port name to scrape metrics from (must match container port name)
+      portName: "metrics"
+      # path -- HTTP path to scrape metrics from
+      path: "/metrics"
+      # interval -- Interval at which metrics should be scraped
+      interval: "30s"
+      # scrapeTimeout -- Timeout after which the scrape is ended
+      # scrapeTimeout: "10s"
+      # labels -- Additional labels to be added to the PodMonitor
+      labels: {}
+      # annotations -- Additional annotations to be added to the PodMonitor
+      annotations: {}
+      # relabelings -- RelabelConfigs to apply to samples before scraping
+      relabelings: []
+      # metricRelabelings -- MetricRelabelConfigs to apply to samples before ingestion
+      metricRelabelings: []
+      # namespaceSelector -- Selector to select which namespaces the Endpoints objects are discovered from
+      # namespaceSelector: {}
+
+# @schema
+# additionalProperties: true
+# @schema
+# Prefill pod configuation
+prefill:
+  create: true
+  autoscaling:
+    enabled: true
+
+  replicas: 1
+  # schedulerName -- Name of the scheduler to use for scheduling prefill pods (overrides global schedulerName)
+  # schedulerName: prefill-scheduler
+
+  # @schema
+  # type: array
+  # items:
+  #   type: object
+  #   additionalProperties: true
+  # @schema
+  containers:
+    - name: "vllm"
+      image: ghcr.io/llm-d/llm-d:v0.2.0
+      modelCommand: vllmServe
+      mountModelVolume: true
+      # @schema
+      # items:
+      #   type: string
+      # @schema
+      args:
+      - --max-model-len
+      - "2048"
+      - --enable-chunked-prefill
+      - --max-num-seqs
+      - "256"
+      - --enable-prefix-caching
+      - --kv-transfer-config
+      - '{"kv_connector":"NixlConnector", "kv_role":"kv_producer"}'
+      # @schema
+      # items:
+      #   $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.EnvVar
+      # @schema
+      env:
+      - name: CUDA_VISIBLE_DEVICES
+        value: "0"
+      - name: UCX_TLS
+        value: cuda_ipc,cuda_copy,tcp
+      - name: VLLM_NIXL_SIDE_CHANNEL_HOST
+        valueFrom:
+          fieldRef:
+            fieldPath: status.podIP
+      - name: VLLM_NIXL_SIDE_CHANNEL_PORT
+        value: "5557"
+      - name: VLLM_LOGGING_LEVEL
+        value: DEBUG
+      imagePullPolicy: ""
+      command: []
+      # list of ports exposed by the container
+      # @schema
+      # items:
+      #   $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.ContainerPort
+      # @schema
+      ports:
+      - containerPort: 5557
+        protocol: TCP
+      - containerPort: 8200
+        name: metrics
+        protocol: TCP
+      #   - containerPort: 8000  # matches routing.servicePort, set for metrics scraping with  monitoring.podmonitor.enabled true
+      #     name: metrics
+      #     protocol: TCP
+      # @schema
+      # $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.ResourceRequirements
+      # @schema
+      resources:
+        # @schema
+        # additionalProperties: true
+        # @schema
+        limits:
+          otterscale.com/vgpu: "1"
+          otterscale.com/vgpumem-percentage: "40"
+        # @schema
+        # additionalProperties: true
+        # @schema
+        requests:
+          otterscale.com/vgpu: "1"
+          otterscale.com/vgpumem-percentage: "40"
+      # @schema
+      # type: array
+      # items:
+      #   type: object
+      #   additionalProperties: true
+      # @schema
+      volumeMounts:
+        - name: metrics-volume
+          mountPath: /.config
+        - name: torch-compile-cache
+          mountPath: /.cache
+  # @schema
+  # type: array
+  # items:
+  #   type: object
+  #   additionalProperties: true
+  # @schema
+  volumes:
+    - name: metrics-volume
+      emptyDir: {}
+    - name: torch-compile-cache
+      emptyDir: {}
+
+  # hostIPC -- Boolean: Use the host's ipc namespace.
+  # -- Not set by default.
+  # -- Only an option for LWS (multinode) See: https://github.com/kubernetes-sigs/lws/blob/main/config/crd/bases/leaderworkerset.x-k8s.io_leaderworkersets.yaml#L12196.
+  # hostIPC: false
+
+  # hostPID -- Boolean: Use the host's pid namespace.
+  # -- Not set by default.
+  # -- Only an option for LWS (multinode) See: https://github.com/kubernetes-sigs/lws/blob/main/config/crd/bases/leaderworkerset.x-k8s.io_leaderworkersets.yaml#L12207.
+  # hostPID: false
+
+  # subGroupPolicy -- object: SubGroupPolicy describes the policy that will be applied when creating subgroups in each replica.
+  # -- Not set by default
+  # -- Only an option for LWS (multinode) See: https://github.com/kubernetes-sigs/lws/blob/main/config/crd/bases/leaderworkerset.x-k8s.io_leaderworkersets.yaml#L8207
+  # subGroupPolicy:
+  #   subGroupSize: 8
+
+  # subGroupExclusiveToplogy -- Boolean: Should the subgroup-exclusive-topology annotation be added to the LWS
+  # -- Not set by default
+  # -- Only an option for LWS (multinode)
+  # subGroupExclusiveToplogy: true
+
+  # XPU-specific node affinity
+  acceleratorTypes:
+    labelKey: ""
+    # @schema
+    # items:
+    #   type: string
+    # @schema
+    labelValues: []
+
+  # @schema
+  # additionalProperties: true
+  # @schema
+  # Monitoring configuration for prefill pods
+  monitoring:
+    # PodMonitor configuration for Prometheus Operator
+    podmonitor:
+      # enabled -- Create PodMonitor resource for prefill deployment
+      enabled: true
+      # portName -- Port name to scrape metrics from (must match container port name)
+      portName: "metrics"
+      # path -- HTTP path to scrape metrics from
+      path: "/metrics"
+      # interval -- Interval at which metrics should be scraped
+      interval: "30s"
+      # scrapeTimeout -- Timeout after which the scrape is ended
+      # scrapeTimeout: "10s"
+      # labels -- Additional labels to be added to the PodMonitor
+      labels: {}
+      # annotations -- Additional annotations to be added to the PodMonitor
+      annotations: {}
+      # relabelings -- RelabelConfigs to apply to samples before scraping
+      relabelings: []
+      # metricRelabelings -- MetricRelabelConfigs to apply to samples before ingestion
+      metricRelabelings: []
+      # namespaceSelector -- Selector to select which namespaces the Endpoints objects are discovered from
+      # namespaceSelector: {}
+
+# @schema
+# items:
+#   type: object
+# @schema
+# -- Extra objects to be deployed alongside the main application
+extraObjects: []
+# Example:
+# extraObjects:
+#   - apiVersion: v1
+#     kind: ConfigMap
+#     metadata:
+#       name: example-config
+#     data:
+#       key: value`

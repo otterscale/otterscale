@@ -35,7 +35,7 @@ interface AppStores {
 // Create stores
 const createStores = (): AppStores => ({
 	breadcrumbs: writable<Path[]>([{ title: m.home(), url: resolve('/') }]),
-	premiumTier: writable<PremiumTier>({ level: PremiumTier_Level.BASIC } as PremiumTier),
+	premiumTier: writable<PremiumTier>({ level: PremiumTier_Level.COMMUNITY } as PremiumTier),
 	bookmarks: writable<Path[]>([]),
 	// temp
 	notifications: writable<Notification[]>([

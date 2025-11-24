@@ -23,117 +23,28 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// TODO: namespace -> httproute
-type HTTPRoute struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *HTTPRoute) Reset() {
-	*x = HTTPRoute{}
-	mi := &file_api_model_v1_model_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *HTTPRoute) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*HTTPRoute) ProtoMessage() {}
-
-func (x *HTTPRoute) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-type HTTPRoute_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-}
-
-func (b0 HTTPRoute_builder) Build() *HTTPRoute {
-	m0 := &HTTPRoute{}
-	b, x := &b0, m0
-	_, _ = b, x
-	return m0
-}
-
-// TODO: selector -> model
-type InferencePool struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *InferencePool) Reset() {
-	*x = InferencePool{}
-	mi := &file_api_model_v1_model_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *InferencePool) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*InferencePool) ProtoMessage() {}
-
-func (x *InferencePool) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-type InferencePool_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-}
-
-func (b0 InferencePool_builder) Build() *InferencePool {
-	m0 := &InferencePool{}
-	b, x := &b0, m0
-	_, _ = b, x
-	return m0
-}
-
 type Model struct {
-	state                        protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Id                *string                `protobuf:"bytes,1,opt,name=id"`
-	xxx_hidden_InferencePoolName *string                `protobuf:"bytes,2,opt,name=inference_pool_name,json=inferencePoolName"`
-	xxx_hidden_Name              *string                `protobuf:"bytes,11,opt,name=name"`
-	xxx_hidden_Namespace         *string                `protobuf:"bytes,12,opt,name=namespace"`
-	xxx_hidden_Status            *string                `protobuf:"bytes,13,opt,name=status"`
-	xxx_hidden_Description       *string                `protobuf:"bytes,14,opt,name=description"`
-	xxx_hidden_FirstDeployedAt   *timestamppb.Timestamp `protobuf:"bytes,15,opt,name=first_deployed_at,json=firstDeployedAt"`
-	xxx_hidden_LastDeployedAt    *timestamppb.Timestamp `protobuf:"bytes,16,opt,name=last_deployed_at,json=lastDeployedAt"`
-	xxx_hidden_ChartVersion      *string                `protobuf:"bytes,21,opt,name=chart_version,json=chartVersion"`
-	xxx_hidden_AppVersion        *string                `protobuf:"bytes,22,opt,name=app_version,json=appVersion"`
-	xxx_hidden_Requests          *Model_Resource        `protobuf:"bytes,31,opt,name=requests"`
-	xxx_hidden_Limits            *Model_Resource        `protobuf:"bytes,32,opt,name=limits"`
-	XXX_raceDetectHookData       protoimpl.RaceDetectHookData
-	XXX_presence                 [1]uint32
-	unknownFields                protoimpl.UnknownFields
-	sizeCache                    protoimpl.SizeCache
+	state                      protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Id              *string                `protobuf:"bytes,1,opt,name=id"`
+	xxx_hidden_Name            *string                `protobuf:"bytes,11,opt,name=name"`
+	xxx_hidden_Namespace       *string                `protobuf:"bytes,12,opt,name=namespace"`
+	xxx_hidden_Status          *string                `protobuf:"bytes,13,opt,name=status"`
+	xxx_hidden_Description     *string                `protobuf:"bytes,14,opt,name=description"`
+	xxx_hidden_FirstDeployedAt *timestamppb.Timestamp `protobuf:"bytes,15,opt,name=first_deployed_at,json=firstDeployedAt"`
+	xxx_hidden_LastDeployedAt  *timestamppb.Timestamp `protobuf:"bytes,16,opt,name=last_deployed_at,json=lastDeployedAt"`
+	xxx_hidden_ChartVersion    *string                `protobuf:"bytes,21,opt,name=chart_version,json=chartVersion"`
+	xxx_hidden_AppVersion      *string                `protobuf:"bytes,22,opt,name=app_version,json=appVersion"`
+	xxx_hidden_Requests        *Model_Resource        `protobuf:"bytes,31,opt,name=requests"`
+	xxx_hidden_Limits          *Model_Resource        `protobuf:"bytes,32,opt,name=limits"`
+	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
+	XXX_presence               [1]uint32
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
 func (x *Model) Reset() {
 	*x = Model{}
-	mi := &file_api_model_v1_model_proto_msgTypes[2]
+	mi := &file_api_model_v1_model_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -145,7 +56,7 @@ func (x *Model) String() string {
 func (*Model) ProtoMessage() {}
 
 func (x *Model) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[2]
+	mi := &file_api_model_v1_model_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -160,16 +71,6 @@ func (x *Model) GetId() string {
 	if x != nil {
 		if x.xxx_hidden_Id != nil {
 			return *x.xxx_hidden_Id
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *Model) GetInferencePoolName() string {
-	if x != nil {
-		if x.xxx_hidden_InferencePoolName != nil {
-			return *x.xxx_hidden_InferencePoolName
 		}
 		return ""
 	}
@@ -266,32 +167,27 @@ func (x *Model) GetLimits() *Model_Resource {
 
 func (x *Model) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 12)
-}
-
-func (x *Model) SetInferencePoolName(v string) {
-	x.xxx_hidden_InferencePoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
 }
 
 func (x *Model) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
 }
 
 func (x *Model) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
 }
 
 func (x *Model) SetStatus(v string) {
 	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
 }
 
 func (x *Model) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
 }
 
 func (x *Model) SetFirstDeployedAt(v *timestamppb.Timestamp) {
@@ -304,12 +200,12 @@ func (x *Model) SetLastDeployedAt(v *timestamppb.Timestamp) {
 
 func (x *Model) SetChartVersion(v string) {
 	x.xxx_hidden_ChartVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
 }
 
 func (x *Model) SetAppVersion(v string) {
 	x.xxx_hidden_AppVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 11)
 }
 
 func (x *Model) SetRequests(v *Model_Resource) {
@@ -327,39 +223,32 @@ func (x *Model) HasId() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *Model) HasInferencePoolName() bool {
+func (x *Model) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Model) HasName() bool {
+func (x *Model) HasNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *Model) HasNamespace() bool {
+func (x *Model) HasStatus() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *Model) HasStatus() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *Model) HasDescription() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *Model) HasFirstDeployedAt() bool {
@@ -380,14 +269,14 @@ func (x *Model) HasChartVersion() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
 func (x *Model) HasAppVersion() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
 func (x *Model) HasRequests() bool {
@@ -409,28 +298,23 @@ func (x *Model) ClearId() {
 	x.xxx_hidden_Id = nil
 }
 
-func (x *Model) ClearInferencePoolName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_InferencePoolName = nil
-}
-
 func (x *Model) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *Model) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *Model) ClearStatus() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Status = nil
 }
 
 func (x *Model) ClearDescription() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_Description = nil
 }
 
@@ -443,12 +327,12 @@ func (x *Model) ClearLastDeployedAt() {
 }
 
 func (x *Model) ClearChartVersion() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
 	x.xxx_hidden_ChartVersion = nil
 }
 
 func (x *Model) ClearAppVersion() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
 	x.xxx_hidden_AppVersion = nil
 }
 
@@ -463,18 +347,17 @@ func (x *Model) ClearLimits() {
 type Model_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Id                *string
-	InferencePoolName *string
-	Name              *string
-	Namespace         *string
-	Status            *string
-	Description       *string
-	FirstDeployedAt   *timestamppb.Timestamp
-	LastDeployedAt    *timestamppb.Timestamp
-	ChartVersion      *string
-	AppVersion        *string
-	Requests          *Model_Resource
-	Limits            *Model_Resource
+	Id              *string
+	Name            *string
+	Namespace       *string
+	Status          *string
+	Description     *string
+	FirstDeployedAt *timestamppb.Timestamp
+	LastDeployedAt  *timestamppb.Timestamp
+	ChartVersion    *string
+	AppVersion      *string
+	Requests        *Model_Resource
+	Limits          *Model_Resource
 }
 
 func (b0 Model_builder) Build() *Model {
@@ -482,37 +365,33 @@ func (b0 Model_builder) Build() *Model {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
 		x.xxx_hidden_Id = b.Id
 	}
-	if b.InferencePoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 12)
-		x.xxx_hidden_InferencePoolName = b.InferencePoolName
-	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
 		x.xxx_hidden_Status = b.Status
 	}
 	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
 		x.xxx_hidden_Description = b.Description
 	}
 	x.xxx_hidden_FirstDeployedAt = b.FirstDeployedAt
 	x.xxx_hidden_LastDeployedAt = b.LastDeployedAt
 	if b.ChartVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
 		x.xxx_hidden_ChartVersion = b.ChartVersion
 	}
 	if b.AppVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 11)
 		x.xxx_hidden_AppVersion = b.AppVersion
 	}
 	x.xxx_hidden_Requests = b.Requests
@@ -532,7 +411,7 @@ type ListModelsRequest struct {
 
 func (x *ListModelsRequest) Reset() {
 	*x = ListModelsRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[3]
+	mi := &file_api_model_v1_model_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -544,7 +423,7 @@ func (x *ListModelsRequest) String() string {
 func (*ListModelsRequest) ProtoMessage() {}
 
 func (x *ListModelsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[3]
+	mi := &file_api_model_v1_model_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -643,7 +522,7 @@ type ListModelsResponse struct {
 
 func (x *ListModelsResponse) Reset() {
 	*x = ListModelsResponse{}
-	mi := &file_api_model_v1_model_proto_msgTypes[4]
+	mi := &file_api_model_v1_model_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -655,7 +534,7 @@ func (x *ListModelsResponse) String() string {
 func (*ListModelsResponse) ProtoMessage() {}
 
 func (x *ListModelsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[4]
+	mi := &file_api_model_v1_model_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -731,6 +610,9 @@ type CreateModelRequest struct {
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_ModelName   *string                `protobuf:"bytes,11,opt,name=model_name,json=modelName"`
+	xxx_hidden_SizeBytes   uint64                 `protobuf:"varint,12,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_Limits      *Model_Resource        `protobuf:"bytes,21,opt,name=limits"`
+	xxx_hidden_Requests    *Model_Resource        `protobuf:"bytes,22,opt,name=requests"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -739,7 +621,7 @@ type CreateModelRequest struct {
 
 func (x *CreateModelRequest) Reset() {
 	*x = CreateModelRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[5]
+	mi := &file_api_model_v1_model_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -751,7 +633,7 @@ func (x *CreateModelRequest) String() string {
 func (*CreateModelRequest) ProtoMessage() {}
 
 func (x *CreateModelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[5]
+	mi := &file_api_model_v1_model_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -802,24 +684,58 @@ func (x *CreateModelRequest) GetModelName() string {
 	return ""
 }
 
+func (x *CreateModelRequest) GetSizeBytes() uint64 {
+	if x != nil {
+		return x.xxx_hidden_SizeBytes
+	}
+	return 0
+}
+
+func (x *CreateModelRequest) GetLimits() *Model_Resource {
+	if x != nil {
+		return x.xxx_hidden_Limits
+	}
+	return nil
+}
+
+func (x *CreateModelRequest) GetRequests() *Model_Resource {
+	if x != nil {
+		return x.xxx_hidden_Requests
+	}
+	return nil
+}
+
 func (x *CreateModelRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
 }
 
 func (x *CreateModelRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
 }
 
 func (x *CreateModelRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
 }
 
 func (x *CreateModelRequest) SetModelName(v string) {
 	x.xxx_hidden_ModelName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
+}
+
+func (x *CreateModelRequest) SetSizeBytes(v uint64) {
+	x.xxx_hidden_SizeBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
+}
+
+func (x *CreateModelRequest) SetLimits(v *Model_Resource) {
+	x.xxx_hidden_Limits = v
+}
+
+func (x *CreateModelRequest) SetRequests(v *Model_Resource) {
+	x.xxx_hidden_Requests = v
 }
 
 func (x *CreateModelRequest) HasScope() bool {
@@ -850,6 +766,27 @@ func (x *CreateModelRequest) HasModelName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
+func (x *CreateModelRequest) HasSizeBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *CreateModelRequest) HasLimits() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Limits != nil
+}
+
+func (x *CreateModelRequest) HasRequests() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Requests != nil
+}
+
 func (x *CreateModelRequest) ClearScope() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Scope = nil
@@ -870,6 +807,19 @@ func (x *CreateModelRequest) ClearModelName() {
 	x.xxx_hidden_ModelName = nil
 }
 
+func (x *CreateModelRequest) ClearSizeBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_SizeBytes = 0
+}
+
+func (x *CreateModelRequest) ClearLimits() {
+	x.xxx_hidden_Limits = nil
+}
+
+func (x *CreateModelRequest) ClearRequests() {
+	x.xxx_hidden_Requests = nil
+}
+
 type CreateModelRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -877,6 +827,9 @@ type CreateModelRequest_builder struct {
 	Namespace *string
 	Name      *string
 	ModelName *string
+	SizeBytes *uint64
+	Limits    *Model_Resource
+	Requests  *Model_Resource
 }
 
 func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
@@ -884,21 +837,27 @@ func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
 		x.xxx_hidden_Scope = b.Scope
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.ModelName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
 		x.xxx_hidden_ModelName = b.ModelName
 	}
+	if b.SizeBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
+		x.xxx_hidden_SizeBytes = *b.SizeBytes
+	}
+	x.xxx_hidden_Limits = b.Limits
+	x.xxx_hidden_Requests = b.Requests
 	return m0
 }
 
@@ -907,8 +866,8 @@ type UpdateModelRequest struct {
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Limits      *Model_Resource        `protobuf:"bytes,11,opt,name=limits"`
-	xxx_hidden_Requests    *Model_Resource        `protobuf:"bytes,12,opt,name=requests"`
+	xxx_hidden_Limits      *Model_Resource        `protobuf:"bytes,21,opt,name=limits"`
+	xxx_hidden_Requests    *Model_Resource        `protobuf:"bytes,22,opt,name=requests"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -917,7 +876,7 @@ type UpdateModelRequest struct {
 
 func (x *UpdateModelRequest) Reset() {
 	*x = UpdateModelRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[6]
+	mi := &file_api_model_v1_model_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -929,7 +888,7 @@ func (x *UpdateModelRequest) String() string {
 func (*UpdateModelRequest) ProtoMessage() {}
 
 func (x *UpdateModelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[6]
+	mi := &file_api_model_v1_model_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1109,7 +1068,7 @@ type DeleteModelRequest struct {
 
 func (x *DeleteModelRequest) Reset() {
 	*x = DeleteModelRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[7]
+	mi := &file_api_model_v1_model_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1121,7 +1080,7 @@ func (x *DeleteModelRequest) String() string {
 func (*DeleteModelRequest) ProtoMessage() {}
 
 func (x *DeleteModelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[7]
+	mi := &file_api_model_v1_model_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1257,7 +1216,7 @@ type ModelArtifact struct {
 
 func (x *ModelArtifact) Reset() {
 	*x = ModelArtifact{}
-	mi := &file_api_model_v1_model_proto_msgTypes[8]
+	mi := &file_api_model_v1_model_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1269,7 +1228,7 @@ func (x *ModelArtifact) String() string {
 func (*ModelArtifact) ProtoMessage() {}
 
 func (x *ModelArtifact) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[8]
+	mi := &file_api_model_v1_model_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1517,7 +1476,7 @@ type ListModelArtifactsRequest struct {
 
 func (x *ListModelArtifactsRequest) Reset() {
 	*x = ListModelArtifactsRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[9]
+	mi := &file_api_model_v1_model_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1529,7 +1488,7 @@ func (x *ListModelArtifactsRequest) String() string {
 func (*ListModelArtifactsRequest) ProtoMessage() {}
 
 func (x *ListModelArtifactsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[9]
+	mi := &file_api_model_v1_model_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1625,7 +1584,7 @@ type ListModelArtifactsResponse struct {
 
 func (x *ListModelArtifactsResponse) Reset() {
 	*x = ListModelArtifactsResponse{}
-	mi := &file_api_model_v1_model_proto_msgTypes[10]
+	mi := &file_api_model_v1_model_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1637,7 +1596,7 @@ func (x *ListModelArtifactsResponse) String() string {
 func (*ListModelArtifactsResponse) ProtoMessage() {}
 
 func (x *ListModelArtifactsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[10]
+	mi := &file_api_model_v1_model_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1690,7 +1649,7 @@ type CreateModelArtifactRequest struct {
 
 func (x *CreateModelArtifactRequest) Reset() {
 	*x = CreateModelArtifactRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[11]
+	mi := &file_api_model_v1_model_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1702,7 +1661,7 @@ func (x *CreateModelArtifactRequest) String() string {
 func (*CreateModelArtifactRequest) ProtoMessage() {}
 
 func (x *CreateModelArtifactRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[11]
+	mi := &file_api_model_v1_model_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1895,7 +1854,7 @@ type DeleteModelArtifactRequest struct {
 
 func (x *DeleteModelArtifactRequest) Reset() {
 	*x = DeleteModelArtifactRequest{}
-	mi := &file_api_model_v1_model_proto_msgTypes[12]
+	mi := &file_api_model_v1_model_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1907,7 +1866,7 @@ func (x *DeleteModelArtifactRequest) String() string {
 func (*DeleteModelArtifactRequest) ProtoMessage() {}
 
 func (x *DeleteModelArtifactRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[12]
+	mi := &file_api_model_v1_model_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2038,7 +1997,7 @@ type Model_Resource struct {
 
 func (x *Model_Resource) Reset() {
 	*x = Model_Resource{}
-	mi := &file_api_model_v1_model_proto_msgTypes[13]
+	mi := &file_api_model_v1_model_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2050,7 +2009,7 @@ func (x *Model_Resource) String() string {
 func (*Model_Resource) ProtoMessage() {}
 
 func (x *Model_Resource) ProtoReflect() protoreflect.Message {
-	mi := &file_api_model_v1_model_proto_msgTypes[13]
+	mi := &file_api_model_v1_model_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2135,12 +2094,9 @@ var File_api_model_v1_model_proto protoreflect.FileDescriptor
 
 const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
-	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\v\n" +
-	"\tHTTPRoute\"\x0f\n" +
-	"\rInferencePool\"\xd4\x04\n" +
+	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa4\x04\n" +
 	"\x05Model\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12.\n" +
-	"\x13inference_pool_name\x18\x02 \x01(\tR\x11inferencePoolName\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\v \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\f \x01(\tR\tnamespace\x12\x16\n" +
 	"\x06status\x18\r \x01(\tR\x06status\x12 \n" +
@@ -2161,19 +2117,23 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x12ListModelsResponse\x122\n" +
 	"\x06models\x18\x01 \x03(\v2\x1a.otterscale.model.v1.ModelR\x06models\x12\x1f\n" +
 	"\vservice_uri\x18\x02 \x01(\tR\n" +
-	"serviceUri\"\x81\x01\n" +
+	"serviceUri\"\x9e\x02\n" +
 	"\x12CreateModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
-	"model_name\x18\v \x01(\tR\tmodelNameJ\x04\b\x02\x10\x03\"\xe0\x01\n" +
+	"model_name\x18\v \x01(\tR\tmodelName\x12\x1d\n" +
+	"\n" +
+	"size_bytes\x18\f \x01(\x04R\tsizeBytes\x12;\n" +
+	"\x06limits\x18\x15 \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06limits\x12?\n" +
+	"\brequests\x18\x16 \x01(\v2#.otterscale.model.v1.Model.ResourceR\brequestsJ\x04\b\x02\x10\x03\"\xe0\x01\n" +
 	"\x12UpdateModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12;\n" +
-	"\x06limits\x18\v \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06limits\x12?\n" +
-	"\brequests\x18\f \x01(\v2#.otterscale.model.v1.Model.ResourceR\brequestsJ\x04\b\x02\x10\x03\"b\n" +
+	"\x06limits\x18\x15 \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06limits\x12?\n" +
+	"\brequests\x18\x16 \x01(\v2#.otterscale.model.v1.Model.ResourceR\brequestsJ\x04\b\x02\x10\x03\"b\n" +
 	"\x12DeleteModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
@@ -2204,72 +2164,72 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x1aDeleteModelArtifactRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x032\xb5\x06\n" +
-	"\fModelService\x12q\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x032\xc4\x06\n" +
+	"\fModelService\x12s\n" +
 	"\n" +
-	"ListModels\x12&.otterscale.model.v1.ListModelsRequest\x1a'.otterscale.model.v1.ListModelsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12f\n" +
-	"\vCreateModel\x12'.otterscale.model.v1.CreateModelRequest\x1a\x1a.otterscale.model.v1.Model\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12f\n" +
-	"\vUpdateModel\x12'.otterscale.model.v1.UpdateModelRequest\x1a\x1a.otterscale.model.v1.Model\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12b\n" +
-	"\vDeleteModel\x12'.otterscale.model.v1.DeleteModelRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12\x89\x01\n" +
-	"\x12ListModelArtifacts\x12..otterscale.model.v1.ListModelArtifactsRequest\x1a/.otterscale.model.v1.ListModelArtifactsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12~\n" +
-	"\x13CreateModelArtifact\x12/.otterscale.model.v1.CreateModelArtifactRequest\x1a\".otterscale.model.v1.ModelArtifact\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-general\x12r\n" +
-	"\x13DeleteModelArtifact\x12/.otterscale.model.v1.DeleteModelArtifactRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vmdl-generalB2Z0github.com/otterscale/otterscale/api/model/v1;pbb\beditionsp\xe8\a"
+	"ListModels\x12&.otterscale.model.v1.ListModelsRequest\x1a'.otterscale.model.v1.ListModelsResponse\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12h\n" +
+	"\vCreateModel\x12'.otterscale.model.v1.CreateModelRequest\x1a\x1a.otterscale.model.v1.Model\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12h\n" +
+	"\vUpdateModel\x12'.otterscale.model.v1.UpdateModelRequest\x1a\x1a.otterscale.model.v1.Model\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12d\n" +
+	"\vDeleteModel\x12'.otterscale.model.v1.DeleteModelRequest\x1a\x16.google.protobuf.Empty\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12\x8b\x01\n" +
+	"\x12ListModelArtifacts\x12..otterscale.model.v1.ListModelArtifactsRequest\x1a/.otterscale.model.v1.ListModelArtifactsResponse\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12\x80\x01\n" +
+	"\x13CreateModelArtifact\x12/.otterscale.model.v1.CreateModelArtifactRequest\x1a\".otterscale.model.v1.ModelArtifact\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabled\x12t\n" +
+	"\x13DeleteModelArtifact\x12/.otterscale.model.v1.DeleteModelArtifactRequest\x1a\x16.google.protobuf.Empty\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
+	"\rmodel-enabledB2Z0github.com/otterscale/otterscale/api/model/v1;pbb\beditionsp\xe8\a"
 
-var file_api_model_v1_model_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_api_model_v1_model_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_api_model_v1_model_proto_goTypes = []any{
-	(*HTTPRoute)(nil),                  // 0: otterscale.model.v1.HTTPRoute
-	(*InferencePool)(nil),              // 1: otterscale.model.v1.InferencePool
-	(*Model)(nil),                      // 2: otterscale.model.v1.Model
-	(*ListModelsRequest)(nil),          // 3: otterscale.model.v1.ListModelsRequest
-	(*ListModelsResponse)(nil),         // 4: otterscale.model.v1.ListModelsResponse
-	(*CreateModelRequest)(nil),         // 5: otterscale.model.v1.CreateModelRequest
-	(*UpdateModelRequest)(nil),         // 6: otterscale.model.v1.UpdateModelRequest
-	(*DeleteModelRequest)(nil),         // 7: otterscale.model.v1.DeleteModelRequest
-	(*ModelArtifact)(nil),              // 8: otterscale.model.v1.ModelArtifact
-	(*ListModelArtifactsRequest)(nil),  // 9: otterscale.model.v1.ListModelArtifactsRequest
-	(*ListModelArtifactsResponse)(nil), // 10: otterscale.model.v1.ListModelArtifactsResponse
-	(*CreateModelArtifactRequest)(nil), // 11: otterscale.model.v1.CreateModelArtifactRequest
-	(*DeleteModelArtifactRequest)(nil), // 12: otterscale.model.v1.DeleteModelArtifactRequest
-	(*Model_Resource)(nil),             // 13: otterscale.model.v1.Model.Resource
-	(*timestamppb.Timestamp)(nil),      // 14: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),              // 15: google.protobuf.Empty
+	(*Model)(nil),                      // 0: otterscale.model.v1.Model
+	(*ListModelsRequest)(nil),          // 1: otterscale.model.v1.ListModelsRequest
+	(*ListModelsResponse)(nil),         // 2: otterscale.model.v1.ListModelsResponse
+	(*CreateModelRequest)(nil),         // 3: otterscale.model.v1.CreateModelRequest
+	(*UpdateModelRequest)(nil),         // 4: otterscale.model.v1.UpdateModelRequest
+	(*DeleteModelRequest)(nil),         // 5: otterscale.model.v1.DeleteModelRequest
+	(*ModelArtifact)(nil),              // 6: otterscale.model.v1.ModelArtifact
+	(*ListModelArtifactsRequest)(nil),  // 7: otterscale.model.v1.ListModelArtifactsRequest
+	(*ListModelArtifactsResponse)(nil), // 8: otterscale.model.v1.ListModelArtifactsResponse
+	(*CreateModelArtifactRequest)(nil), // 9: otterscale.model.v1.CreateModelArtifactRequest
+	(*DeleteModelArtifactRequest)(nil), // 10: otterscale.model.v1.DeleteModelArtifactRequest
+	(*Model_Resource)(nil),             // 11: otterscale.model.v1.Model.Resource
+	(*timestamppb.Timestamp)(nil),      // 12: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),              // 13: google.protobuf.Empty
 }
 var file_api_model_v1_model_proto_depIdxs = []int32{
-	14, // 0: otterscale.model.v1.Model.first_deployed_at:type_name -> google.protobuf.Timestamp
-	14, // 1: otterscale.model.v1.Model.last_deployed_at:type_name -> google.protobuf.Timestamp
-	13, // 2: otterscale.model.v1.Model.requests:type_name -> otterscale.model.v1.Model.Resource
-	13, // 3: otterscale.model.v1.Model.limits:type_name -> otterscale.model.v1.Model.Resource
-	2,  // 4: otterscale.model.v1.ListModelsResponse.models:type_name -> otterscale.model.v1.Model
-	13, // 5: otterscale.model.v1.UpdateModelRequest.limits:type_name -> otterscale.model.v1.Model.Resource
-	13, // 6: otterscale.model.v1.UpdateModelRequest.requests:type_name -> otterscale.model.v1.Model.Resource
-	14, // 7: otterscale.model.v1.ModelArtifact.created_at:type_name -> google.protobuf.Timestamp
-	8,  // 8: otterscale.model.v1.ListModelArtifactsResponse.model_artifacts:type_name -> otterscale.model.v1.ModelArtifact
-	3,  // 9: otterscale.model.v1.ModelService.ListModels:input_type -> otterscale.model.v1.ListModelsRequest
-	5,  // 10: otterscale.model.v1.ModelService.CreateModel:input_type -> otterscale.model.v1.CreateModelRequest
-	6,  // 11: otterscale.model.v1.ModelService.UpdateModel:input_type -> otterscale.model.v1.UpdateModelRequest
-	7,  // 12: otterscale.model.v1.ModelService.DeleteModel:input_type -> otterscale.model.v1.DeleteModelRequest
-	9,  // 13: otterscale.model.v1.ModelService.ListModelArtifacts:input_type -> otterscale.model.v1.ListModelArtifactsRequest
-	11, // 14: otterscale.model.v1.ModelService.CreateModelArtifact:input_type -> otterscale.model.v1.CreateModelArtifactRequest
-	12, // 15: otterscale.model.v1.ModelService.DeleteModelArtifact:input_type -> otterscale.model.v1.DeleteModelArtifactRequest
-	4,  // 16: otterscale.model.v1.ModelService.ListModels:output_type -> otterscale.model.v1.ListModelsResponse
-	2,  // 17: otterscale.model.v1.ModelService.CreateModel:output_type -> otterscale.model.v1.Model
-	2,  // 18: otterscale.model.v1.ModelService.UpdateModel:output_type -> otterscale.model.v1.Model
-	15, // 19: otterscale.model.v1.ModelService.DeleteModel:output_type -> google.protobuf.Empty
-	10, // 20: otterscale.model.v1.ModelService.ListModelArtifacts:output_type -> otterscale.model.v1.ListModelArtifactsResponse
-	8,  // 21: otterscale.model.v1.ModelService.CreateModelArtifact:output_type -> otterscale.model.v1.ModelArtifact
-	15, // 22: otterscale.model.v1.ModelService.DeleteModelArtifact:output_type -> google.protobuf.Empty
-	16, // [16:23] is the sub-list for method output_type
-	9,  // [9:16] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	12, // 0: otterscale.model.v1.Model.first_deployed_at:type_name -> google.protobuf.Timestamp
+	12, // 1: otterscale.model.v1.Model.last_deployed_at:type_name -> google.protobuf.Timestamp
+	11, // 2: otterscale.model.v1.Model.requests:type_name -> otterscale.model.v1.Model.Resource
+	11, // 3: otterscale.model.v1.Model.limits:type_name -> otterscale.model.v1.Model.Resource
+	0,  // 4: otterscale.model.v1.ListModelsResponse.models:type_name -> otterscale.model.v1.Model
+	11, // 5: otterscale.model.v1.CreateModelRequest.limits:type_name -> otterscale.model.v1.Model.Resource
+	11, // 6: otterscale.model.v1.CreateModelRequest.requests:type_name -> otterscale.model.v1.Model.Resource
+	11, // 7: otterscale.model.v1.UpdateModelRequest.limits:type_name -> otterscale.model.v1.Model.Resource
+	11, // 8: otterscale.model.v1.UpdateModelRequest.requests:type_name -> otterscale.model.v1.Model.Resource
+	12, // 9: otterscale.model.v1.ModelArtifact.created_at:type_name -> google.protobuf.Timestamp
+	6,  // 10: otterscale.model.v1.ListModelArtifactsResponse.model_artifacts:type_name -> otterscale.model.v1.ModelArtifact
+	1,  // 11: otterscale.model.v1.ModelService.ListModels:input_type -> otterscale.model.v1.ListModelsRequest
+	3,  // 12: otterscale.model.v1.ModelService.CreateModel:input_type -> otterscale.model.v1.CreateModelRequest
+	4,  // 13: otterscale.model.v1.ModelService.UpdateModel:input_type -> otterscale.model.v1.UpdateModelRequest
+	5,  // 14: otterscale.model.v1.ModelService.DeleteModel:input_type -> otterscale.model.v1.DeleteModelRequest
+	7,  // 15: otterscale.model.v1.ModelService.ListModelArtifacts:input_type -> otterscale.model.v1.ListModelArtifactsRequest
+	9,  // 16: otterscale.model.v1.ModelService.CreateModelArtifact:input_type -> otterscale.model.v1.CreateModelArtifactRequest
+	10, // 17: otterscale.model.v1.ModelService.DeleteModelArtifact:input_type -> otterscale.model.v1.DeleteModelArtifactRequest
+	2,  // 18: otterscale.model.v1.ModelService.ListModels:output_type -> otterscale.model.v1.ListModelsResponse
+	0,  // 19: otterscale.model.v1.ModelService.CreateModel:output_type -> otterscale.model.v1.Model
+	0,  // 20: otterscale.model.v1.ModelService.UpdateModel:output_type -> otterscale.model.v1.Model
+	13, // 21: otterscale.model.v1.ModelService.DeleteModel:output_type -> google.protobuf.Empty
+	8,  // 22: otterscale.model.v1.ModelService.ListModelArtifacts:output_type -> otterscale.model.v1.ListModelArtifactsResponse
+	6,  // 23: otterscale.model.v1.ModelService.CreateModelArtifact:output_type -> otterscale.model.v1.ModelArtifact
+	13, // 24: otterscale.model.v1.ModelService.DeleteModelArtifact:output_type -> google.protobuf.Empty
+	18, // [18:25] is the sub-list for method output_type
+	11, // [11:18] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_api_model_v1_model_proto_init() }
@@ -2283,7 +2243,7 @@ func file_api_model_v1_model_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_model_v1_model_proto_rawDesc), len(file_api_model_v1_model_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

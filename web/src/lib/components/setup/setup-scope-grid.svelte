@@ -6,7 +6,6 @@
 	import { toast } from 'svelte-sonner';
 
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import {
 		type Facility,
@@ -66,7 +65,7 @@
 
 <div class="grid w-full grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-6">
 	<div class="col-span-3 flex justify-end space-x-4 rounded-lg sm:space-x-6 lg:col-span-6">
-		<Button variant="ghost" disabled={$premiumTier.level === PremiumTier_Level.BASIC}>
+		<Button variant="ghost" disabled={$premiumTier.level === PremiumTier_Level.COMMUNITY}>
 			<Icon icon="ph:plus" class="size-4" />
 			{m.add_node()}
 		</Button>
@@ -180,10 +179,8 @@
 								</a>
 							{/if}
 
-							{#if page.data['feature-states.orch-gpu']}
-								{#if unit.machineId}
-									<SetupNodeGPUMode {unit} {scope} class="hover:cursor-pointer" />
-								{/if}
+							{#if unit.machineId}
+								<SetupNodeGPUMode {unit} {scope} class="hover:cursor-pointer" />
 							{/if}
 
 							{#if unit.leader}

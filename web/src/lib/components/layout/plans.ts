@@ -19,22 +19,22 @@ interface Plan {
 
 const plans: Plan[] = [
 	{
-		tier: m.basic_tier(),
+		tier: m.standard_tier(),
 		star: false,
-		name: m.basic_tier_name(),
-		description: m.basic_tier_description(),
+		name: m.standard_tier_name(),
+		description: m.standard_tier_description(),
 		tags: [m.ceph(), m.kubernetes(), m.single_node()],
 		image: BasicTierImage,
-		disabled: get(premiumTier).level < PremiumTier_Level.BASIC
+		disabled: get(premiumTier).level < PremiumTier_Level.STANDARD
 	},
 	{
-		tier: m.advanced_tier(),
+		tier: m.premium_tier(),
 		star: true,
-		name: m.advanced_tier_name(),
-		description: m.advanced_tier_description(),
+		name: m.premium_tier_name(),
+		description: m.premium_tier_description(),
 		tags: [m.ceph(), m.kubernetes(), m.multi_node(), m.cluster()],
 		image: AdvancedTierImage,
-		disabled: get(premiumTier).level < PremiumTier_Level.ADVANCED
+		disabled: get(premiumTier).level < PremiumTier_Level.PREMIUM
 	},
 	{
 		tier: m.enterprise_tier(),

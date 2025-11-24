@@ -13,130 +13,122 @@ option go_package = "github.com/otterscale/otterscale/api/application/v1;pb";
 service ApplicationService {
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse) {
     option (otterscale.api.feature) = {
-      name: "app-general"
+      name: "application-enabled"
     };
   };
 
   rpc GetApplication(GetApplicationRequest) returns (Application) {
     option (otterscale.api.feature) = {
-      name: "app-general"
+      name: "application-enabled"
     };
   };
 
   rpc RestartApplication(RestartApplicationRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "app-container"
+      name: "application-enabled"
     };
   };
 
   rpc ScaleApplication(ScaleApplicationRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "app-container"
+      name: "application-enabled"
     };
   };
 
   rpc DeleteApplicationPod(DeleteApplicationPodRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "app-container"
+      name: "application-enabled"
     };
   };
 
   rpc WatchLogs(WatchLogsRequest) returns (stream WatchLogsResponse) {
     option (otterscale.api.feature) = {
-      name: "app-container"
+      name: "application-enabled"
     };
   };
 
   // Due to browser limitations, bidirectional streaming cannot be used.
   rpc ExecuteTTY(ExecuteTTYRequest) returns (stream ExecuteTTYResponse) {
     option (otterscale.api.feature) = {
-      name: "app-container"
+      name: "application-enabled"
     };
   };
 
   rpc WriteTTY(WriteTTYRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "app-container"
+      name: "application-enabled"
     };
   };
 
   rpc ListReleases(ListReleasesRequest) returns (ListReleasesResponse) {
     option (otterscale.api.feature) = {
-      name: "app-helm-chart"
+      name: "application-enabled"
     };
   };
 
   rpc CreateRelease(CreateReleaseRequest) returns (Application.Release) {
     option (otterscale.api.feature) = {
-      name: "app-helm-chart"
+      name: "application-enabled"
     };
   };
 
   rpc UpdateRelease(UpdateReleaseRequest) returns (Application.Release) {
     option (otterscale.api.feature) = {
-      name: "app-helm-chart"
+      name: "application-enabled"
     };
   };
 
   rpc DeleteRelease(DeleteReleaseRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "app-helm-chart"
+      name: "application-enabled"
     };
   };
 
   rpc RollbackRelease(RollbackReleaseRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "app-helm-chart"
+      name: "application-enabled"
     };
   };
 
   rpc ListCharts(ListChartsRequest) returns (ListChartsResponse) {
     option (otterscale.api.feature) = {
-      name: "app-helm-chart"
+      name: "application-enabled"
     };
   };
 
   rpc GetChart(GetChartRequest) returns (Application.Chart) {
     option (otterscale.api.feature) = {
-      name: "app-helm-chart"
+      name: "application-enabled"
     };
   };
 
   rpc GetChartMetadata(GetChartMetadataRequest) returns (Application.Chart.Metadata) {
     option (otterscale.api.feature) = {
-      name: "app-helm-chart"
+      name: "application-enabled"
     };
   };
 
   rpc UploadChart(UploadChartRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "app-helm-chart"
-    };
-  };
-
-  rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse) {
-    option (otterscale.api.feature) = {
-      name: "app-resource"
+      name: "application-enabled"
     };
   };
 
   rpc ListConfigMaps(ListConfigMapsRequest) returns (ListConfigMapsResponse) {
     option (otterscale.api.feature) = {
-      name: "app-resource"
+      name: "application-enabled"
     };
   };
 
   rpc ListSecrets(ListSecretsRequest) returns (ListSecretsResponse) {
     option (otterscale.api.feature) = {
-      name: "app-resource"
+      name: "application-enabled"
     };
   };
 
-  rpc ListStorageClasses(ListStorageClassesRequest) returns (ListStorageClassesResponse) {
-    option (otterscale.api.feature) = {
-      name: "app-resource"
-    };
-  };
+  rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse);
+
+  rpc ListStorageClasses(ListStorageClassesRequest) returns (ListStorageClassesResponse);
 }
 
 message Namespace {
@@ -423,15 +415,6 @@ message ListConfigMapsResponse {
   repeated ConfigMap config_maps = 1;
 }
 
-message ListNamespacesRequest {
-  string scope = 1;
-  reserved 2;
-}
-
-message ListNamespacesResponse {
-  repeated Namespace namespaces = 1;
-}
-
 message ListSecretsRequest {
   string scope = 1;
   string namespace = 2;
@@ -444,6 +427,15 @@ message ListSecretsResponse {
 message ListStorageClassesRequest {
   string scope = 1;
   reserved 2;
+}
+
+message ListNamespacesRequest {
+  string scope = 1;
+  reserved 2;
+}
+
+message ListNamespacesResponse {
+  repeated Namespace namespaces = 1;
 }
 
 message ListStorageClassesResponse {

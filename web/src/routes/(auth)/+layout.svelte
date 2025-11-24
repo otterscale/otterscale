@@ -41,8 +41,9 @@
 	const current = $derived($breadcrumbs.at(-1));
 
 	const tierMap = {
-		[PremiumTier_Level.BASIC]: m.basic_tier(),
-		[PremiumTier_Level.ADVANCED]: m.advanced_tier(),
+		[PremiumTier_Level.COMMUNITY]: m.community_tier(),
+		[PremiumTier_Level.STANDARD]: m.standard_tier(),
+		[PremiumTier_Level.PREMIUM]: m.premium_tier(),
 		[PremiumTier_Level.ENTERPRISE]: m.enterprise_tier()
 	};
 
@@ -51,7 +52,8 @@
 	const envClient = createClient(EnvironmentService, transport);
 
 	let scopes = $state<Scope[]>([]);
-	let activeScope = $derived(page.params.scope || 'OtterScale');
+	let previousScope = $state<string>('');
+	let activeScope = $derived(page.params.scope || previousScope || 'OtterScale');
 
 	async function fetchScopes() {
 		try {
@@ -83,7 +85,6 @@
 
 	async function initialize(scope: string) {
 		try {
-			activeScope = scope;
 			await Promise.all([fetchScopes(), fetchEdition()]);
 			toast.success(m.switch_scope({ name: scope }));
 		} catch (error) {
@@ -92,7 +93,8 @@
 	}
 
 	$effect(() => {
-		if (activeScope) {
+		if (activeScope && activeScope !== previousScope) {
+			previousScope = activeScope;
 			initialize(activeScope);
 		}
 	});

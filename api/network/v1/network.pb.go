@@ -7,7 +7,6 @@
 package pb
 
 import (
-	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -2847,7 +2846,7 @@ var File_api_network_v1_network_proto protoreflect.FileDescriptor
 
 const file_api_network_v1_network_proto_rawDesc = "" +
 	"\n" +
-	"\x1capi/network/v1/network.proto\x12\x15otterscale.network.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xe4\n" +
+	"\x1capi/network/v1/network.proto\x12\x15otterscale.network.v1\x1a\x1bgoogle/protobuf/empty.proto\"\xe4\n" +
 	"\n" +
 	"\aNetwork\x12=\n" +
 	"\x06fabric\x18\x01 \x01(\v2%.otterscale.network.v1.Network.FabricR\x06fabric\x127\n" +
@@ -2945,27 +2944,18 @@ const file_api_network_v1_network_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x19\n" +
 	"\bstart_ip\x18\v \x01(\tR\astartIp\x12\x15\n" +
 	"\x06end_ip\x18\f \x01(\tR\x05endIp\x12\x18\n" +
-	"\acomment\x18\r \x01(\tR\acomment2\xa6\b\n" +
-	"\x0eNetworkService\x12{\n" +
-	"\fListNetworks\x12*.otterscale.network.v1.ListNetworksRequest\x1a+.otterscale.network.v1.ListNetworksResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vnet-general\x12p\n" +
-	"\rCreateNetwork\x12+.otterscale.network.v1.CreateNetworkRequest\x1a\x1e.otterscale.network.v1.Network\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vnet-general\x12x\n" +
-	"\rCreateIPRange\x12+.otterscale.network.v1.CreateIPRangeRequest\x1a&.otterscale.network.v1.Network.IPRange\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vnet-general\x12h\n" +
-	"\rDeleteNetwork\x12+.otterscale.network.v1.DeleteNetworkRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vnet-general\x12h\n" +
-	"\rDeleteIPRange\x12+.otterscale.network.v1.DeleteIPRangeRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vnet-general\x12u\n" +
-	"\fUpdateFabric\x12*.otterscale.network.v1.UpdateFabricRequest\x1a%.otterscale.network.v1.Network.Fabric\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vnet-general\x12o\n" +
+	"\acomment\x18\r \x01(\tR\acomment2\xf2\x06\n" +
+	"\x0eNetworkService\x12g\n" +
+	"\fListNetworks\x12*.otterscale.network.v1.ListNetworksRequest\x1a+.otterscale.network.v1.ListNetworksResponse\x12\\\n" +
+	"\rCreateNetwork\x12+.otterscale.network.v1.CreateNetworkRequest\x1a\x1e.otterscale.network.v1.Network\x12d\n" +
+	"\rCreateIPRange\x12+.otterscale.network.v1.CreateIPRangeRequest\x1a&.otterscale.network.v1.Network.IPRange\x12T\n" +
+	"\rDeleteNetwork\x12+.otterscale.network.v1.DeleteNetworkRequest\x1a\x16.google.protobuf.Empty\x12T\n" +
+	"\rDeleteIPRange\x12+.otterscale.network.v1.DeleteIPRangeRequest\x1a\x16.google.protobuf.Empty\x12a\n" +
+	"\fUpdateFabric\x12*.otterscale.network.v1.UpdateFabricRequest\x1a%.otterscale.network.v1.Network.Fabric\x12[\n" +
 	"\n" +
-	"UpdateVLAN\x12(.otterscale.network.v1.UpdateVLANRequest\x1a#.otterscale.network.v1.Network.VLAN\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vnet-general\x12u\n" +
-	"\fUpdateSubnet\x12*.otterscale.network.v1.UpdateSubnetRequest\x1a%.otterscale.network.v1.Network.Subnet\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vnet-general\x12x\n" +
-	"\rUpdateIPRange\x12+.otterscale.network.v1.UpdateIPRangeRequest\x1a&.otterscale.network.v1.Network.IPRange\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vnet-generalB4Z2github.com/otterscale/otterscale/api/network/v1;pbb\beditionsp\xe8\a"
+	"UpdateVLAN\x12(.otterscale.network.v1.UpdateVLANRequest\x1a#.otterscale.network.v1.Network.VLAN\x12a\n" +
+	"\fUpdateSubnet\x12*.otterscale.network.v1.UpdateSubnetRequest\x1a%.otterscale.network.v1.Network.Subnet\x12d\n" +
+	"\rUpdateIPRange\x12+.otterscale.network.v1.UpdateIPRangeRequest\x1a&.otterscale.network.v1.Network.IPRangeB4Z2github.com/otterscale/otterscale/api/network/v1;pbb\beditionsp\xe8\a"
 
 var file_api_network_v1_network_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_api_network_v1_network_proto_goTypes = []any{

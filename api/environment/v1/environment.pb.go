@@ -69,22 +69,25 @@ func (x CheckHealthResponse_Status) Number() protoreflect.EnumNumber {
 type PremiumTier_Level int32
 
 const (
-	PremiumTier_LEVEL_BASIC      PremiumTier_Level = 0
-	PremiumTier_LEVEL_ADVANCED   PremiumTier_Level = 1
-	PremiumTier_LEVEL_ENTERPRISE PremiumTier_Level = 2
+	PremiumTier_LEVEL_COMMUNITY  PremiumTier_Level = 0
+	PremiumTier_LEVEL_STANDARD   PremiumTier_Level = 1
+	PremiumTier_LEVEL_PREMIUM    PremiumTier_Level = 2
+	PremiumTier_LEVEL_ENTERPRISE PremiumTier_Level = 3
 )
 
 // Enum value maps for PremiumTier_Level.
 var (
 	PremiumTier_Level_name = map[int32]string{
-		0: "LEVEL_BASIC",
-		1: "LEVEL_ADVANCED",
-		2: "LEVEL_ENTERPRISE",
+		0: "LEVEL_COMMUNITY",
+		1: "LEVEL_STANDARD",
+		2: "LEVEL_PREMIUM",
+		3: "LEVEL_ENTERPRISE",
 	}
 	PremiumTier_Level_value = map[string]int32{
-		"LEVEL_BASIC":      0,
-		"LEVEL_ADVANCED":   1,
-		"LEVEL_ENTERPRISE": 2,
+		"LEVEL_COMMUNITY":  0,
+		"LEVEL_STANDARD":   1,
+		"LEVEL_PREMIUM":    2,
+		"LEVEL_ENTERPRISE": 3,
 	}
 )
 
@@ -813,7 +816,7 @@ func (x *PremiumTier) GetLevel() PremiumTier_Level {
 			return x.xxx_hidden_Level
 		}
 	}
-	return PremiumTier_LEVEL_BASIC
+	return PremiumTier_LEVEL_COMMUNITY
 }
 
 func (x *PremiumTier) SetLevel(v PremiumTier_Level) {
@@ -830,7 +833,7 @@ func (x *PremiumTier) HasLevel() bool {
 
 func (x *PremiumTier) ClearLevel() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Level = PremiumTier_LEVEL_BASIC
+	x.xxx_hidden_Level = PremiumTier_LEVEL_COMMUNITY
 }
 
 type PremiumTier_builder struct {
@@ -922,23 +925,21 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\n" +
 	"Prometheus\x12\x19\n" +
 	"\bbase_url\x18\x02 \x01(\tR\abaseUrlJ\x04\b\x01\x10\x02\"\x16\n" +
-	"\x14GetPrometheusRequest\"\x95\x01\n" +
+	"\x14GetPrometheusRequest\"\xac\x01\n" +
 	"\vPremiumTier\x12B\n" +
-	"\x05level\x18\x01 \x01(\x0e2,.otterscale.environment.v1.PremiumTier.LevelR\x05level\"B\n" +
-	"\x05Level\x12\x0f\n" +
-	"\vLEVEL_BASIC\x10\x00\x12\x12\n" +
-	"\x0eLEVEL_ADVANCED\x10\x01\x12\x14\n" +
-	"\x10LEVEL_ENTERPRISE\x10\x02\"\x17\n" +
-	"\x15GetPremiumTierRequest2\xfe\x03\n" +
-	"\x12EnvironmentService\x12\x80\x01\n" +
-	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\venv-general\x12{\n" +
-	"\rGetPrometheus\x12/.otterscale.environment.v1.GetPrometheusRequest\x1a%.otterscale.environment.v1.Prometheus\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\venv-general\x12~\n" +
-	"\x0eGetPremiumTier\x120.otterscale.environment.v1.GetPremiumTierRequest\x1a&.otterscale.environment.v1.PremiumTier\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\venv-general\x12h\n" +
-	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tenv-debugB8Z6github.com/otterscale/otterscale/api/environment/v1;pbb\beditionsp\xe8\a"
+	"\x05level\x18\x01 \x01(\x0e2,.otterscale.environment.v1.PremiumTier.LevelR\x05level\"Y\n" +
+	"\x05Level\x12\x13\n" +
+	"\x0fLEVEL_COMMUNITY\x10\x00\x12\x12\n" +
+	"\x0eLEVEL_STANDARD\x10\x01\x12\x11\n" +
+	"\rLEVEL_PREMIUM\x10\x02\x12\x14\n" +
+	"\x10LEVEL_ENTERPRISE\x10\x03\"\x17\n" +
+	"\x15GetPremiumTierRequest2\xbd\x03\n" +
+	"\x12EnvironmentService\x12l\n" +
+	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\x12g\n" +
+	"\rGetPrometheus\x12/.otterscale.environment.v1.GetPrometheusRequest\x1a%.otterscale.environment.v1.Prometheus\x12j\n" +
+	"\x0eGetPremiumTier\x120.otterscale.environment.v1.GetPremiumTierRequest\x1a&.otterscale.environment.v1.PremiumTier\x12d\n" +
+	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\"\f\x8a\xdf\xd5\x1d\a\n" +
+	"\x05debugB8Z6github.com/otterscale/otterscale/api/environment/v1;pbb\beditionsp\xe8\a"
 
 var file_api_environment_v1_environment_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_api_environment_v1_environment_proto_msgTypes = make([]protoimpl.MessageInfo, 7)

@@ -80,7 +80,7 @@ func (uc *UseCase) CreateFIOResult(ctx context.Context, name, createdBy string, 
 
 	// name
 	if name == "" {
-		name = fmt.Sprintf("bist-%s", newHashedName(strconv.FormatInt(time.Now().UnixNano(), 10)))
+		name = fmt.Sprintf("bist-%s", shortID(strconv.FormatInt(time.Now().UnixNano(), 10)))
 	}
 
 	// annotations
@@ -116,7 +116,7 @@ func (uc *UseCase) CreateFIOResult(ctx context.Context, name, createdBy string, 
 			return nil, err
 		}
 
-		configMapName := fmt.Sprintf("ceph-conf-%s", newHashedName(block.Scope))
+		configMapName := fmt.Sprintf("ceph-conf-%s", shortID(block.Scope))
 		if err := uc.ensureConfigMap(ctx, scope.ReservedName, bistNamespace, configMapName); err != nil {
 			return nil, err
 		}

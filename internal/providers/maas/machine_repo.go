@@ -77,10 +77,10 @@ func (r *machineRepo) Commission(_ context.Context, id string, enableSSH, skipBM
 
 	params := &entity.MachineCommissionParams{
 		TestingScripts: "",
-		EnableSSH:      r.boolToInt(enableSSH),
-		SkipBMCConfig:  r.boolToInt(skipBMCConfig),
-		SkipNetworking: r.boolToInt(skipNetworking),
-		SkipStorage:    r.boolToInt(skipStorage),
+		EnableSSH:      enableSSH,
+		SkipBMCConfig:  skipBMCConfig,
+		SkipNetworking: skipNetworking,
+		SkipStorage:    skipStorage,
 	}
 
 	return client.Machine.Commission(id, params)
@@ -112,11 +112,4 @@ func (r *machineRepo) ExtractJujuID(m *machine.Machine) (string, error) {
 	}
 
 	return token[2], nil
-}
-
-func (r *machineRepo) boolToInt(b bool) int {
-	if b {
-		return 1
-	}
-	return 0
 }

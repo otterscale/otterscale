@@ -122,7 +122,7 @@ func toManifests(ms []*pb.Extension_Manifest) []extension.Manifest {
 
 	for _, m := range ms {
 		ret = append(ret, extension.Manifest{
-			ID:      m.GetId(),
+			Name:    m.GetName(),
 			Version: m.GetVersion(),
 		})
 	}
@@ -244,7 +244,7 @@ func toProtoExtensions(ps []extension.Extension) []*pb.Extension {
 
 func toProtoExtension(p *extension.Extension) *pb.Extension {
 	ret := &pb.Extension{}
-	ret.SetName(p.Name)
+	ret.SetDisplayName(p.DisplayName)
 	ret.SetDescription(p.Description)
 	ret.SetIcon(p.Icon)
 	ret.SetStatus(p.Status)
@@ -262,7 +262,7 @@ func toProtoExtension(p *extension.Extension) *pb.Extension {
 
 func toProtoExtensionManifest(m *extension.Manifest) *pb.Extension_Manifest {
 	ret := &pb.Extension_Manifest{}
-	ret.SetId(m.ID)
+	ret.SetName(m.Name)
 	ret.SetVersion(m.Version)
 	return ret
 }

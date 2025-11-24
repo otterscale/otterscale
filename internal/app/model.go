@@ -38,7 +38,17 @@ func (s *ModelService) ListModels(ctx context.Context, req *pb.ListModelsRequest
 }
 
 func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelRequest) (*pb.Model, error) {
-	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName())
+	var requests, limits *model.Resource
+
+	if r := req.GetRequests(); r != nil {
+		requests = toModelResource(r)
+	}
+
+	if r := req.GetLimits(); r != nil {
+		limits = toModelResource(r)
+	}
+
+	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSizeBytes(), limits, requests)
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +59,7 @@ func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelReque
 
 func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelRequest) (*pb.Model, error) {
 	var requests, limits *model.Resource
+
 	if r := req.GetRequests(); r != nil {
 		requests = toModelResource(r)
 	}

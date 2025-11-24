@@ -11158,9 +11158,7 @@ func (b0 ValidateSMBUserRequest_builder) Build() *ValidateSMBUserRequest {
 
 type ValidateSMBUserResponse struct {
 	state                  protoimpl.MessageState             `protogen:"opaque.v1"`
-	xxx_hidden_Valid       bool                               `protobuf:"varint,1,opt,name=valid"`
-	xxx_hidden_EntityType  ValidateSMBUserResponse_EntityType `protobuf:"varint,2,opt,name=entity_type,json=entityType,enum=otterscale.storage.v1.ValidateSMBUserResponse_EntityType"`
-	xxx_hidden_Message     *string                            `protobuf:"bytes,3,opt,name=message"`
+	xxx_hidden_EntityType  ValidateSMBUserResponse_EntityType `protobuf:"varint,1,opt,name=entity_type,json=entityType,enum=otterscale.storage.v1.ValidateSMBUserResponse_EntityType"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -11192,106 +11190,45 @@ func (x *ValidateSMBUserResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ValidateSMBUserResponse) GetValid() bool {
-	if x != nil {
-		return x.xxx_hidden_Valid
-	}
-	return false
-}
-
 func (x *ValidateSMBUserResponse) GetEntityType() ValidateSMBUserResponse_EntityType {
 	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 1) {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
 			return x.xxx_hidden_EntityType
 		}
 	}
 	return ValidateSMBUserResponse_ENTITY_TYPE_UNKNOWN
 }
 
-func (x *ValidateSMBUserResponse) GetMessage() string {
-	if x != nil {
-		if x.xxx_hidden_Message != nil {
-			return *x.xxx_hidden_Message
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ValidateSMBUserResponse) SetValid(v bool) {
-	x.xxx_hidden_Valid = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
 func (x *ValidateSMBUserResponse) SetEntityType(v ValidateSMBUserResponse_EntityType) {
 	x.xxx_hidden_EntityType = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
-}
-
-func (x *ValidateSMBUserResponse) SetMessage(v string) {
-	x.xxx_hidden_Message = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
-}
-
-func (x *ValidateSMBUserResponse) HasValid() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *ValidateSMBUserResponse) HasEntityType() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *ValidateSMBUserResponse) HasMessage() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *ValidateSMBUserResponse) ClearValid() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Valid = false
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
 func (x *ValidateSMBUserResponse) ClearEntityType() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_EntityType = ValidateSMBUserResponse_ENTITY_TYPE_UNKNOWN
-}
-
-func (x *ValidateSMBUserResponse) ClearMessage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Message = nil
 }
 
 type ValidateSMBUserResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Valid      *bool
 	EntityType *ValidateSMBUserResponse_EntityType
-	Message    *string
 }
 
 func (b0 ValidateSMBUserResponse_builder) Build() *ValidateSMBUserResponse {
 	m0 := &ValidateSMBUserResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Valid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
-		x.xxx_hidden_Valid = *b.Valid
-	}
 	if b.EntityType != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_EntityType = *b.EntityType
-	}
-	if b.Message != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
-		x.xxx_hidden_Message = b.Message
 	}
 	return m0
 }
@@ -12943,12 +12880,10 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x03 \x01(\tR\bpassword\x12'\n" +
 	"\x0fsearch_username\x18\x04 \x01(\tR\x0esearchUsername\x12\x10\n" +
-	"\x03tls\x18\x05 \x01(\bR\x03tls\"\xf9\x01\n" +
-	"\x17ValidateSMBUserResponse\x12\x14\n" +
-	"\x05valid\x18\x01 \x01(\bR\x05valid\x12Z\n" +
-	"\ventity_type\x18\x02 \x01(\x0e29.otterscale.storage.v1.ValidateSMBUserResponse.EntityTypeR\n" +
-	"entityType\x12\x18\n" +
-	"\amessage\x18\x03 \x01(\tR\amessage\"R\n" +
+	"\x03tls\x18\x05 \x01(\bR\x03tls\"\xc9\x01\n" +
+	"\x17ValidateSMBUserResponse\x12Z\n" +
+	"\ventity_type\x18\x01 \x01(\x0e29.otterscale.storage.v1.ValidateSMBUserResponse.EntityTypeR\n" +
+	"entityType\"R\n" +
 	"\n" +
 	"EntityType\x12\x17\n" +
 	"\x13ENTITY_TYPE_UNKNOWN\x10\x00\x12\x14\n" +
@@ -12957,124 +12892,101 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\bPoolType\x12\x19\n" +
 	"\x15POOL_TYPE_UNSPECIFIED\x10\x00\x12\x15\n" +
 	"\x11POOL_TYPE_ERASURE\x10\x01\x12\x18\n" +
-	"\x14POOL_TYPE_REPLICATED\x10\x022\xdc'\n" +
-	"\x0eStorageService\x12{\n" +
-	"\fListMonitors\x12*.otterscale.storage.v1.ListMonitorsRequest\x1a+.otterscale.storage.v1.ListMonitorsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vstg-general\x12\x9f\x01\n" +
-	"\x18ListObjectStorageDaemons\x126.otterscale.storage.v1.ListObjectStorageDaemonsRequest\x1a7.otterscale.storage.v1.ListObjectStorageDaemonsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vstg-general\x12l\n" +
-	"\aDoSMART\x12%.otterscale.storage.v1.DoSMARTRequest\x1a&.otterscale.storage.v1.DoSMARTResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vstg-general\x12r\n" +
-	"\tListPools\x12'.otterscale.storage.v1.ListPoolsRequest\x1a(.otterscale.storage.v1.ListPoolsResponse\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vstg-general\x12g\n" +
+	"\x14POOL_TYPE_REPLICATED\x10\x022\xf3-\n" +
+	"\x0eStorageService\x12\x8b\x01\n" +
+	"\fListMonitors\x12*.otterscale.storage.v1.ListMonitorsRequest\x1a+.otterscale.storage.v1.ListMonitorsResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\xaf\x01\n" +
+	"\x18ListObjectStorageDaemons\x126.otterscale.storage.v1.ListObjectStorageDaemonsRequest\x1a7.otterscale.storage.v1.ListObjectStorageDaemonsResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12|\n" +
+	"\aDoSMART\x12%.otterscale.storage.v1.DoSMARTRequest\x1a&.otterscale.storage.v1.DoSMARTResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x82\x01\n" +
+	"\tListPools\x12'.otterscale.storage.v1.ListPoolsRequest\x1a(.otterscale.storage.v1.ListPoolsResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12w\n" +
 	"\n" +
-	"CreatePool\x12(.otterscale.storage.v1.CreatePoolRequest\x1a\x1b.otterscale.storage.v1.Pool\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vstg-general\x12g\n" +
+	"CreatePool\x12(.otterscale.storage.v1.CreatePoolRequest\x1a\x1b.otterscale.storage.v1.Pool\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12w\n" +
 	"\n" +
-	"UpdatePool\x12(.otterscale.storage.v1.UpdatePoolRequest\x1a\x1b.otterscale.storage.v1.Pool\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vstg-general\x12b\n" +
+	"UpdatePool\x12(.otterscale.storage.v1.UpdatePoolRequest\x1a\x1b.otterscale.storage.v1.Pool\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12r\n" +
 	"\n" +
-	"DeletePool\x12(.otterscale.storage.v1.DeletePoolRequest\x1a\x16.google.protobuf.Empty\"\x12\x8a\xdf\xd5\x1d\r\n" +
-	"\vstg-general\x12s\n" +
+	"DeletePool\x12(.otterscale.storage.v1.DeletePoolRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x85\x01\n" +
 	"\n" +
-	"ListImages\x12(.otterscale.storage.v1.ListImagesRequest\x1a).otterscale.storage.v1.ListImagesResponse\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tstg-block\x12h\n" +
-	"\vCreateImage\x12).otterscale.storage.v1.CreateImageRequest\x1a\x1c.otterscale.storage.v1.Image\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tstg-block\x12h\n" +
-	"\vUpdateImage\x12).otterscale.storage.v1.UpdateImageRequest\x1a\x1c.otterscale.storage.v1.Image\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tstg-block\x12b\n" +
-	"\vDeleteImage\x12).otterscale.storage.v1.DeleteImageRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tstg-block\x12\x81\x01\n" +
-	"\x13CreateImageSnapshot\x121.otterscale.storage.v1.CreateImageSnapshotRequest\x1a%.otterscale.storage.v1.Image.Snapshot\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tstg-block\x12r\n" +
-	"\x13DeleteImageSnapshot\x121.otterscale.storage.v1.DeleteImageSnapshotRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tstg-block\x12v\n" +
-	"\x15RollbackImageSnapshot\x123.otterscale.storage.v1.RollbackImageSnapshotRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tstg-block\x12t\n" +
-	"\x14ProtectImageSnapshot\x122.otterscale.storage.v1.ProtectImageSnapshotRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tstg-block\x12x\n" +
-	"\x16UnprotectImageSnapshot\x124.otterscale.storage.v1.UnprotectImageSnapshotRequest\x1a\x16.google.protobuf.Empty\"\x10\x8a\xdf\xd5\x1d\v\n" +
-	"\tstg-block\x12u\n" +
-	"\vListVolumes\x12).otterscale.storage.v1.ListVolumesRequest\x1a*.otterscale.storage.v1.ListVolumesResponse\"\x0f\x8a\xdf\xd5\x1d\n" +
+	"ListImages\x12(.otterscale.storage.v1.ListImagesRequest\x1a).otterscale.storage.v1.ListImagesResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12z\n" +
+	"\vCreateImage\x12).otterscale.storage.v1.CreateImageRequest\x1a\x1c.otterscale.storage.v1.Image\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12z\n" +
+	"\vUpdateImage\x12).otterscale.storage.v1.UpdateImageRequest\x1a\x1c.otterscale.storage.v1.Image\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12t\n" +
+	"\vDeleteImage\x12).otterscale.storage.v1.DeleteImageRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x93\x01\n" +
+	"\x13CreateImageSnapshot\x121.otterscale.storage.v1.CreateImageSnapshotRequest\x1a%.otterscale.storage.v1.Image.Snapshot\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x84\x01\n" +
+	"\x13DeleteImageSnapshot\x121.otterscale.storage.v1.DeleteImageSnapshotRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x88\x01\n" +
+	"\x15RollbackImageSnapshot\x123.otterscale.storage.v1.RollbackImageSnapshotRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x86\x01\n" +
+	"\x14ProtectImageSnapshot\x122.otterscale.storage.v1.ProtectImageSnapshotRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x8a\x01\n" +
+	"\x16UnprotectImageSnapshot\x124.otterscale.storage.v1.UnprotectImageSnapshotRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x88\x01\n" +
+	"\vListVolumes\x12).otterscale.storage.v1.ListVolumesRequest\x1a*.otterscale.storage.v1.ListVolumesResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x91\x01\n" +
+	"\x0eListSubvolumes\x12,.otterscale.storage.v1.ListSubvolumesRequest\x1a-.otterscale.storage.v1.ListSubvolumesResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x86\x01\n" +
+	"\x0fCreateSubvolume\x12-.otterscale.storage.v1.CreateSubvolumeRequest\x1a .otterscale.storage.v1.Subvolume\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x86\x01\n" +
+	"\x0fUpdateSubvolume\x12-.otterscale.storage.v1.UpdateSubvolumeRequest\x1a .otterscale.storage.v1.Subvolume\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12|\n" +
+	"\x0fDeleteSubvolume\x12-.otterscale.storage.v1.DeleteSubvolumeRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x92\x01\n" +
+	"\x1aGrantSubvolumeExportAccess\x128.otterscale.storage.v1.GrantSubvolumeExportAccessRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x94\x01\n" +
+	"\x1bRevokeSubvolumeExportAccess\x129.otterscale.storage.v1.RevokeSubvolumeExportAccessRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x9f\x01\n" +
+	"\x17CreateSubvolumeSnapshot\x125.otterscale.storage.v1.CreateSubvolumeSnapshotRequest\x1a).otterscale.storage.v1.Subvolume.Snapshot\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x8c\x01\n" +
+	"\x17DeleteSubvolumeSnapshot\x125.otterscale.storage.v1.DeleteSubvolumeSnapshotRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\xa0\x01\n" +
+	"\x13ListSubvolumeGroups\x121.otterscale.storage.v1.ListSubvolumeGroupsRequest\x1a2.otterscale.storage.v1.ListSubvolumeGroupsResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x95\x01\n" +
+	"\x14CreateSubvolumeGroup\x122.otterscale.storage.v1.CreateSubvolumeGroupRequest\x1a%.otterscale.storage.v1.SubvolumeGroup\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x95\x01\n" +
+	"\x14UpdateSubvolumeGroup\x122.otterscale.storage.v1.UpdateSubvolumeGroupRequest\x1a%.otterscale.storage.v1.SubvolumeGroup\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x86\x01\n" +
+	"\x14DeleteSubvolumeGroup\x122.otterscale.storage.v1.DeleteSubvolumeGroupRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x88\x01\n" +
+	"\vListBuckets\x12).otterscale.storage.v1.ListBucketsRequest\x1a*.otterscale.storage.v1.ListBucketsResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12}\n" +
+	"\fCreateBucket\x12*.otterscale.storage.v1.CreateBucketRequest\x1a\x1d.otterscale.storage.v1.Bucket\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12}\n" +
+	"\fUpdateBucket\x12*.otterscale.storage.v1.UpdateBucketRequest\x1a\x1d.otterscale.storage.v1.Bucket\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12v\n" +
+	"\fDeleteBucket\x12*.otterscale.storage.v1.DeleteBucketRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x82\x01\n" +
+	"\tListUsers\x12'.otterscale.storage.v1.ListUsersRequest\x1a(.otterscale.storage.v1.ListUsersResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12w\n" +
 	"\n" +
-	"\bstg-file\x12~\n" +
-	"\x0eListSubvolumes\x12,.otterscale.storage.v1.ListSubvolumesRequest\x1a-.otterscale.storage.v1.ListSubvolumesResponse\"\x0f\x8a\xdf\xd5\x1d\n" +
+	"CreateUser\x12(.otterscale.storage.v1.CreateUserRequest\x1a\x1b.otterscale.storage.v1.User\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12w\n" +
 	"\n" +
-	"\bstg-file\x12s\n" +
-	"\x0fCreateSubvolume\x12-.otterscale.storage.v1.CreateSubvolumeRequest\x1a .otterscale.storage.v1.Subvolume\"\x0f\x8a\xdf\xd5\x1d\n" +
+	"UpdateUser\x12(.otterscale.storage.v1.UpdateUserRequest\x1a\x1b.otterscale.storage.v1.User\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12r\n" +
 	"\n" +
-	"\bstg-file\x12s\n" +
-	"\x0fUpdateSubvolume\x12-.otterscale.storage.v1.UpdateSubvolumeRequest\x1a .otterscale.storage.v1.Subvolume\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\bstg-file\x12i\n" +
-	"\x0fDeleteSubvolume\x12-.otterscale.storage.v1.DeleteSubvolumeRequest\x1a\x16.google.protobuf.Empty\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\bstg-file\x12\x7f\n" +
-	"\x1aGrantSubvolumeExportAccess\x128.otterscale.storage.v1.GrantSubvolumeExportAccessRequest\x1a\x16.google.protobuf.Empty\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\bstg-file\x12\x81\x01\n" +
-	"\x1bRevokeSubvolumeExportAccess\x129.otterscale.storage.v1.RevokeSubvolumeExportAccessRequest\x1a\x16.google.protobuf.Empty\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\bstg-file\x12\x8c\x01\n" +
-	"\x17CreateSubvolumeSnapshot\x125.otterscale.storage.v1.CreateSubvolumeSnapshotRequest\x1a).otterscale.storage.v1.Subvolume.Snapshot\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\bstg-file\x12y\n" +
-	"\x17DeleteSubvolumeSnapshot\x125.otterscale.storage.v1.DeleteSubvolumeSnapshotRequest\x1a\x16.google.protobuf.Empty\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\bstg-file\x12\x8d\x01\n" +
-	"\x13ListSubvolumeGroups\x121.otterscale.storage.v1.ListSubvolumeGroupsRequest\x1a2.otterscale.storage.v1.ListSubvolumeGroupsResponse\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\bstg-file\x12\x82\x01\n" +
-	"\x14CreateSubvolumeGroup\x122.otterscale.storage.v1.CreateSubvolumeGroupRequest\x1a%.otterscale.storage.v1.SubvolumeGroup\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\bstg-file\x12\x82\x01\n" +
-	"\x14UpdateSubvolumeGroup\x122.otterscale.storage.v1.UpdateSubvolumeGroupRequest\x1a%.otterscale.storage.v1.SubvolumeGroup\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\bstg-file\x12s\n" +
-	"\x14DeleteSubvolumeGroup\x122.otterscale.storage.v1.DeleteSubvolumeGroupRequest\x1a\x16.google.protobuf.Empty\"\x0f\x8a\xdf\xd5\x1d\n" +
-	"\n" +
-	"\bstg-file\x12w\n" +
-	"\vListBuckets\x12).otterscale.storage.v1.ListBucketsRequest\x1a*.otterscale.storage.v1.ListBucketsResponse\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12l\n" +
-	"\fCreateBucket\x12*.otterscale.storage.v1.CreateBucketRequest\x1a\x1d.otterscale.storage.v1.Bucket\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12l\n" +
-	"\fUpdateBucket\x12*.otterscale.storage.v1.UpdateBucketRequest\x1a\x1d.otterscale.storage.v1.Bucket\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12e\n" +
-	"\fDeleteBucket\x12*.otterscale.storage.v1.DeleteBucketRequest\x1a\x16.google.protobuf.Empty\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12q\n" +
-	"\tListUsers\x12'.otterscale.storage.v1.ListUsersRequest\x1a(.otterscale.storage.v1.ListUsersResponse\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12f\n" +
-	"\n" +
-	"CreateUser\x12(.otterscale.storage.v1.CreateUserRequest\x1a\x1b.otterscale.storage.v1.User\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12f\n" +
-	"\n" +
-	"UpdateUser\x12(.otterscale.storage.v1.UpdateUserRequest\x1a\x1b.otterscale.storage.v1.User\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12a\n" +
-	"\n" +
-	"DeleteUser\x12(.otterscale.storage.v1.DeleteUserRequest\x1a\x16.google.protobuf.Empty\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12p\n" +
-	"\rCreateUserKey\x12+.otterscale.storage.v1.CreateUserKeyRequest\x1a\x1f.otterscale.storage.v1.User.Key\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12g\n" +
-	"\rDeleteUserKey\x12+.otterscale.storage.v1.DeleteUserKeyRequest\x1a\x16.google.protobuf.Empty\"\x11\x8a\xdf\xd5\x1d\f\n" +
-	"\n" +
-	"stg-object\x12z\n" +
-	"\rListSMBShares\x12+.otterscale.storage.v1.ListSMBSharesRequest\x1a,.otterscale.storage.v1.ListSMBSharesResponse\"\x0e\x8a\xdf\xd5\x1d\t\n" +
-	"\astg-smb\x12o\n" +
-	"\x0eCreateSMBShare\x12,.otterscale.storage.v1.CreateSMBShareRequest\x1a\x1f.otterscale.storage.v1.SMBShare\"\x0e\x8a\xdf\xd5\x1d\t\n" +
-	"\astg-smb\x12o\n" +
-	"\x0eUpdateSMBShare\x12,.otterscale.storage.v1.UpdateSMBShareRequest\x1a\x1f.otterscale.storage.v1.SMBShare\"\x0e\x8a\xdf\xd5\x1d\t\n" +
-	"\astg-smb\x12\x80\x01\n" +
-	"\x0fValidateSMBUser\x12-.otterscale.storage.v1.ValidateSMBUserRequest\x1a..otterscale.storage.v1.ValidateSMBUserResponse\"\x0e\x8a\xdf\xd5\x1d\t\n" +
-	"\astg-smbB4Z2github.com/otterscale/otterscale/api/storage/v1;pbb\beditionsp\xe8\a"
+	"DeleteUser\x12(.otterscale.storage.v1.DeleteUserRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x81\x01\n" +
+	"\rCreateUserKey\x12+.otterscale.storage.v1.CreateUserKeyRequest\x1a\x1f.otterscale.storage.v1.User.Key\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12x\n" +
+	"\rDeleteUserKey\x12+.otterscale.storage.v1.DeleteUserKeyRequest\x1a\x16.google.protobuf.Empty\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x8e\x01\n" +
+	"\rListSMBShares\x12+.otterscale.storage.v1.ListSMBSharesRequest\x1a,.otterscale.storage.v1.ListSMBSharesResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x83\x01\n" +
+	"\x0eCreateSMBShare\x12,.otterscale.storage.v1.CreateSMBShareRequest\x1a\x1f.otterscale.storage.v1.SMBShare\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x83\x01\n" +
+	"\x0eUpdateSMBShare\x12,.otterscale.storage.v1.UpdateSMBShareRequest\x1a\x1f.otterscale.storage.v1.SMBShare\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabled\x12\x94\x01\n" +
+	"\x0fValidateSMBUser\x12-.otterscale.storage.v1.ValidateSMBUserRequest\x1a..otterscale.storage.v1.ValidateSMBUserResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
+	"\x1bdistributed-storage-enabledB4Z2github.com/otterscale/otterscale/api/storage/v1;pbb\beditionsp\xe8\a"
 
 var file_api_storage_v1_storage_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
 var file_api_storage_v1_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 77)

@@ -162,7 +162,7 @@
 <div class="mx-auto max-w-7xl min-w-7xl">
 	<div class="grid w-full grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
 		<div class="col-span-2 flex justify-end space-x-4 rounded-lg sm:space-x-6 lg:col-span-4">
-			<Button variant="ghost" disabled={$premiumTier.level === PremiumTier_Level.BASIC}>
+			<Button variant="ghost" disabled={$premiumTier.level === PremiumTier_Level.COMMUNITY}>
 				<Icon icon="ph:plus" class="size-4" />
 				{m.add_node()}
 			</Button>

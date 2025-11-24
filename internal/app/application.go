@@ -259,17 +259,6 @@ func (s *ApplicationService) UploadChart(ctx context.Context, req *pb.UploadChar
 	return &emptypb.Empty{}, nil
 }
 
-func (s *ApplicationService) ListNamespaces(ctx context.Context, req *pb.ListNamespacesRequest) (*pb.ListNamespacesResponse, error) {
-	namespaces, err := s.cluster.ListNamespaces(ctx, req.GetScope())
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &pb.ListNamespacesResponse{}
-	resp.SetNamespaces(toProtoNamespaces(namespaces))
-	return resp, nil
-}
-
 func (s *ApplicationService) ListConfigMaps(ctx context.Context, req *pb.ListConfigMapsRequest) (*pb.ListConfigMapsResponse, error) {
 	configMaps, err := s.config.ListConfigMaps(ctx, req.GetScope(), req.GetNamespace())
 	if err != nil {
@@ -289,6 +278,17 @@ func (s *ApplicationService) ListSecrets(ctx context.Context, req *pb.ListSecret
 
 	resp := &pb.ListSecretsResponse{}
 	resp.SetSecrets(toProtoSecrets(secrets))
+	return resp, nil
+}
+
+func (s *ApplicationService) ListNamespaces(ctx context.Context, req *pb.ListNamespacesRequest) (*pb.ListNamespacesResponse, error) {
+	namespaces, err := s.cluster.ListNamespaces(ctx, req.GetScope())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListNamespacesResponse{}
+	resp.SetNamespaces(toProtoNamespaces(namespaces))
 	return resp, nil
 }
 
@@ -577,24 +577,6 @@ func toProtoChartVersion(v *chart.Version) *pb.Application_Chart_Version {
 	return ret
 }
 
-func toProtoNamespaces(ns []cluster.Namespace) []*pb.Namespace {
-	ret := []*pb.Namespace{}
-
-	for i := range ns {
-		ret = append(ret, toProtoNamespace(&ns[i]))
-	}
-
-	return ret
-}
-
-func toProtoNamespace(n *cluster.Namespace) *pb.Namespace {
-	ret := &pb.Namespace{}
-	ret.SetName(n.Name)
-	ret.SetLabels(n.Labels)
-	ret.SetCreatedAt(timestamppb.New(n.CreationTimestamp.Time))
-	return ret
-}
-
 func toProtoConfigMaps(cms []config.ConfigMap) []*pb.ConfigMap {
 	ret := []*pb.ConfigMap{}
 
@@ -647,6 +629,24 @@ func toProtoSecret(s *config.Secret) *pb.Secret {
 
 	ret.SetCreatedAt(timestamppb.New(s.CreationTimestamp.Time))
 
+	return ret
+}
+
+func toProtoNamespaces(ns []cluster.Namespace) []*pb.Namespace {
+	ret := []*pb.Namespace{}
+
+	for i := range ns {
+		ret = append(ret, toProtoNamespace(&ns[i]))
+	}
+
+	return ret
+}
+
+func toProtoNamespace(n *cluster.Namespace) *pb.Namespace {
+	ret := &pb.Namespace{}
+	ret.SetName(n.Name)
+	ret.SetLabels(n.Labels)
+	ret.SetCreatedAt(timestamppb.New(n.CreationTimestamp.Time))
 	return ret
 }
 

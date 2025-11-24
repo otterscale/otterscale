@@ -29,12 +29,14 @@ type ServiceRepo interface {
 }
 
 type UseCase struct {
+	gateway   GatewayRepo
 	httpRoute HTTPRouteRepo
 	service   ServiceRepo
 }
 
-func NewUseCase(httpRoute HTTPRouteRepo, service ServiceRepo) *UseCase {
+func NewUseCase(gateway GatewayRepo, httpRoute HTTPRouteRepo, service ServiceRepo) *UseCase {
 	return &UseCase{
+		gateway:   gateway,
 		httpRoute: httpRoute,
 		service:   service,
 	}

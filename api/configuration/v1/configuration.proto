@@ -9,87 +9,47 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/otterscale/otterscale/api/configuration/v1;pb";
 
 service ConfigurationService {
-  rpc GetConfiguration(GetConfigurationRequest) returns (Configuration) {
-    option (otterscale.api.feature) = {
-      name: "cfg-general"
-    };
-  };
+  rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
 
-  rpc UpdateNTPServer(UpdateNTPServerRequest) returns (Configuration.NTPServer) {
-    option (otterscale.api.feature) = {
-      name: "cfg-general"
-    };
-  };
+  rpc UpdateNTPServer(UpdateNTPServerRequest) returns (Configuration.NTPServer);
 
-  rpc UpdatePackageRepository(UpdatePackageRepositoryRequest) returns (Configuration.PackageRepository) {
-    option (otterscale.api.feature) = {
-      name: "cfg-general"
-    };
-  };
+  rpc UpdatePackageRepository(UpdatePackageRepositoryRequest) returns (Configuration.PackageRepository);
 
-  rpc UpdateHelmRepository(UpdateHelmRepositoryRequest) returns (Configuration.HelmRepository) {
-    option (otterscale.api.feature) = {
-      name: "cfg-general"
-    };
-  };
+  rpc UpdateHelmRepository(UpdateHelmRepositoryRequest) returns (Configuration.HelmRepository);
 
-  rpc CreateBootImage(CreateBootImageRequest) returns (Configuration.BootImage) {
-    option (otterscale.api.feature) = {
-      name: "cfg-general"
-    };
-  };
+  rpc CreateBootImage(CreateBootImageRequest) returns (Configuration.BootImage);
 
-  rpc UpdateBootImage(UpdateBootImageRequest) returns (Configuration.BootImage) {
-    option (otterscale.api.feature) = {
-      name: "cfg-general"
-    };
-  };
+  rpc UpdateBootImage(UpdateBootImageRequest) returns (Configuration.BootImage);
 
-  rpc SetDefaultBootImage(SetDefaultBootImageRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {
-      name: "cfg-general"
-    };
-  };
+  rpc SetDefaultBootImage(SetDefaultBootImageRequest) returns (google.protobuf.Empty);
 
-  rpc ImportBootImages(ImportBootImagesRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {
-      name: "cfg-general"
-    };
-  };
+  rpc ImportBootImages(ImportBootImagesRequest) returns (google.protobuf.Empty);
 
-  rpc IsImportingBootImages(IsImportingBootImagesRequest) returns (IsImportingBootImagesResponse) {
-    option (otterscale.api.feature) = {
-      name: "cfg-general"
-    };
-  };
+  rpc IsImportingBootImages(IsImportingBootImagesRequest) returns (IsImportingBootImagesResponse);
 
-  rpc ListBootImageSelections(ListBootImageSelectionsRequest) returns (ListBootImageSelectionsResponse) {
-    option (otterscale.api.feature) = {
-      name: "cfg-general"
-    };
-  };
+  rpc ListBootImageSelections(ListBootImageSelectionsRequest) returns (ListBootImageSelectionsResponse);
 
   rpc ListTestResults(ListTestResultsRequest) returns (ListTestResultsResponse) {
     option (otterscale.api.feature) = {
-      name: "cfg-built-in-self-test"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc CreateTestResult(CreateTestResultRequest) returns (TestResult) {
     option (otterscale.api.feature) = {
-      name: "cfg-built-in-self-test"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc DeleteTestResult(DeleteTestResultRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
-      name: "cfg-built-in-self-test"
+      name: "distributed-storage-enabled"
     };
   };
 
   rpc ListInternalObjectServices(ListInternalObjectServicesRequest) returns (ListInternalObjectServicesResponse) {
     option (otterscale.api.feature) = {
-      name: "cfg-built-in-self-test"
+      name: "distributed-storage-enabled"
     };
   };
 }

@@ -39,7 +39,7 @@
 								class={cn(extension.current ? 'text-green-500' : 'text-red-500', 'size-6')}
 							/>
 							<div class="space-y-1">
-								<h3 class="text-sm font-bold">{extension.name}</h3>
+								<h3 class="text-sm font-bold">{extension.displayName}</h3>
 								<p class="text-xs text-muted-foreground">
 									{extension.current ? extension.current.version : extension.latest?.version}
 								</p>
