@@ -24,7 +24,6 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
 	import { breadcrumbs, premiumTier } from '$lib/stores';
-	import { scopeStore } from '$lib/stores/scope.svelte';
 
 	import type { LayoutData } from './$types';
 
@@ -53,7 +52,8 @@
 	const envClient = createClient(EnvironmentService, transport);
 
 	let scopes = $state<Scope[]>([]);
-	let activeScope = $derived(page.params.scope || $scopeStore || 'OtterScale');
+	let previousScope = $state<string>('');
+	let activeScope = $derived(page.params.scope || previousScope || 'OtterScale');
 
 	async function fetchScopes() {
 		try {
@@ -93,8 +93,8 @@
 	}
 
 	$effect(() => {
-		if (activeScope && activeScope !== $scopeStore) {
-			scopeStore.set(activeScope);
+		if (activeScope && activeScope !== previousScope) {
+			previousScope = activeScope;
 			initialize(activeScope);
 		}
 	});
