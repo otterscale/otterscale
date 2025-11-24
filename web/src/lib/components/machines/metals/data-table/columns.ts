@@ -1,6 +1,5 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
-import { page } from '$app/state';
 import type { Machine } from '$lib/api/machine/v1/machine_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import type { ReloadManager } from '$lib/components/custom/reloader';

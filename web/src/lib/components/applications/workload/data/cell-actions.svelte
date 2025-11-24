@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { page } from '$app/state';
 	import type { Application_Pod } from '$lib/api/application/v1/application_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { ReloadManager } from '$lib/components/custom/reloader';

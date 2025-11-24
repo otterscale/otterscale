@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { page } from '$app/state';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
