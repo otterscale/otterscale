@@ -12,11 +12,8 @@ export const load: PageServerLoad = async () => {
 	}
 	const client = OpenFeature.getClient();
 
-	const distributedStorageEnabled = await client.getBooleanValue(
-		'distributed-storage-enabled',
-		false
-	);
-	if (!distributedStorageEnabled) {
+	const modelEnabled = await client.getBooleanValue('model-enabled', false);
+	if (!modelEnabled) {
 		throw error(501, `This feature is not implemented.`);
 	}
 };

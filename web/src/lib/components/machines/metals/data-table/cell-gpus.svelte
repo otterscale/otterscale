@@ -7,6 +7,7 @@
 	import { getContext } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 
+	import { page } from '$app/state';
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import {
 		type GPURelation_GPU,
@@ -19,7 +20,6 @@
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
-	import { page } from '$app/state';
 
 	let {
 		machine
@@ -144,98 +144,96 @@
 	}
 
 	let open = $state(false);
+
+	const isModelEnabled = $derived(page.data['model-enabled']);
 </script>
 
-{#if page.data['model-enbaled']}
-	{#if machineScope}
-		<Sheet.Root bind:open onOpenChange={loadGPURelations}>
-			<Sheet.Trigger>
-				<span class="flex items-center gap-1">
-					{machine.gpuDevices.length}
-					<Icon icon="ph:arrow-square-out" />
-				</span>
-			</Sheet.Trigger>
-			<Sheet.Content side="right" class="min-w-[38vw] p-4">
-				{#if open}
-					<Sheet.Header>
-						<Sheet.Title class="text-center text-lg">{m.details()}</Sheet.Title>
-					</Sheet.Header>
-					{#if isLoading}
-						<div class="flex h-full items-center justify-center p-8">
-							<Icon icon="ph:circle-notch" class="h-8 w-8 animate-spin" />
-						</div>
-					{:else}
-						<Simple.Flow initialNodes={$nodes} initialEdges={$edges} />
-					{/if}
-					<div class="mt-auto rounded-lg border shadow">
-						<Table.Root>
-							<Table.Header>
-								<Table.Row
-									class="bg-muted [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
-								>
-									<Table.Head>{m.product()}</Table.Head>
-									<Table.Head>{m.vendor()}</Table.Head>
-									<Table.Head>{m.bus()}</Table.Head>
-									<Table.Head>{m.pci_address()}</Table.Head>
-								</Table.Row>
-							</Table.Header>
-							<Table.Body>
-								{#each machine.gpuDevices as gpuDevice}
-									<Table.Row>
-										<Table.Cell>
-											{gpuDevice.productName !== '' ? gpuDevice.productName : gpuDevice.productId}
-										</Table.Cell>
-										<Table.Cell>
-											{gpuDevice.vendorName !== '' ? gpuDevice.vendorName : gpuDevice.vendorId}
-										</Table.Cell>
-										<Table.Cell>{gpuDevice.busName}</Table.Cell>
-										<Table.Cell>{gpuDevice.pciAddress}</Table.Cell>
-									</Table.Row>
-								{/each}
-							</Table.Body>
-						</Table.Root>
+{#if machineScope && isModelEnabled}
+	<Sheet.Root bind:open onOpenChange={loadGPURelations}>
+		<Sheet.Trigger>
+			<span class="flex items-center gap-1">
+				{machine.gpuDevices.length}
+				<Icon icon="ph:arrow-square-out" />
+			</span>
+		</Sheet.Trigger>
+		<Sheet.Content side="right" class="min-w-[38vw] p-4">
+			{#if open}
+				<Sheet.Header>
+					<Sheet.Title class="text-center text-lg">{m.details()}</Sheet.Title>
+				</Sheet.Header>
+				{#if isLoading}
+					<div class="flex h-full items-center justify-center p-8">
+						<Icon icon="ph:circle-notch" class="h-8 w-8 animate-spin" />
 					</div>
+				{:else}
+					<Simple.Flow initialNodes={$nodes} initialEdges={$edges} />
 				{/if}
-			</Sheet.Content>
-		</Sheet.Root>
-	{:else}
-		<HoverCard.Root>
-			<HoverCard.Trigger>
-				<span class="flex items-center gap-1">
-					{machine.gpuDevices.length}
-					<Icon icon="ph:info" />
-				</span>
-			</HoverCard.Trigger>
-			<HoverCard.Content class="m-0 h-fit w-fit p-0">
-				<Table.Root>
-					<Table.Header>
-						<Table.Row
-							class="bg-muted [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
-						>
-							<Table.Head>{m.product()}</Table.Head>
-							<Table.Head>{m.vendor()}</Table.Head>
-							<Table.Head>{m.bus()}</Table.Head>
-							<Table.Head>{m.pci_address()}</Table.Head>
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
-						{#each machine.gpuDevices as gpuDevice}
-							<Table.Row>
-								<Table.Cell>
-									{gpuDevice.productName !== '' ? gpuDevice.productName : gpuDevice.productId}
-								</Table.Cell>
-								<Table.Cell>
-									{gpuDevice.vendorName !== '' ? gpuDevice.vendorName : gpuDevice.vendorId}
-								</Table.Cell>
-								<Table.Cell>{gpuDevice.busName}</Table.Cell>
-								<Table.Cell>{gpuDevice.pciAddress}</Table.Cell>
+				<div class="mt-auto rounded-lg border shadow">
+					<Table.Root>
+						<Table.Header>
+							<Table.Row
+								class="bg-muted [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
+							>
+								<Table.Head>{m.product()}</Table.Head>
+								<Table.Head>{m.vendor()}</Table.Head>
+								<Table.Head>{m.bus()}</Table.Head>
+								<Table.Head>{m.pci_address()}</Table.Head>
 							</Table.Row>
-						{/each}
-					</Table.Body>
-				</Table.Root>
-			</HoverCard.Content>
-		</HoverCard.Root>
-	{/if}
+						</Table.Header>
+						<Table.Body>
+							{#each machine.gpuDevices as gpuDevice}
+								<Table.Row>
+									<Table.Cell>
+										{gpuDevice.productName !== '' ? gpuDevice.productName : gpuDevice.productId}
+									</Table.Cell>
+									<Table.Cell>
+										{gpuDevice.vendorName !== '' ? gpuDevice.vendorName : gpuDevice.vendorId}
+									</Table.Cell>
+									<Table.Cell>{gpuDevice.busName}</Table.Cell>
+									<Table.Cell>{gpuDevice.pciAddress}</Table.Cell>
+								</Table.Row>
+							{/each}
+						</Table.Body>
+					</Table.Root>
+				</div>
+			{/if}
+		</Sheet.Content>
+	</Sheet.Root>
 {:else}
-	This feature is not implemente.
+	<HoverCard.Root>
+		<HoverCard.Trigger>
+			<span class="flex items-center gap-1">
+				{machine.gpuDevices.length}
+				<Icon icon="ph:info" />
+			</span>
+		</HoverCard.Trigger>
+		<HoverCard.Content class="m-0 h-fit w-fit p-0">
+			<Table.Root>
+				<Table.Header>
+					<Table.Row
+						class="bg-muted [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
+					>
+						<Table.Head>{m.product()}</Table.Head>
+						<Table.Head>{m.vendor()}</Table.Head>
+						<Table.Head>{m.bus()}</Table.Head>
+						<Table.Head>{m.pci_address()}</Table.Head>
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{#each machine.gpuDevices as gpuDevice}
+						<Table.Row>
+							<Table.Cell>
+								{gpuDevice.productName !== '' ? gpuDevice.productName : gpuDevice.productId}
+							</Table.Cell>
+							<Table.Cell>
+								{gpuDevice.vendorName !== '' ? gpuDevice.vendorName : gpuDevice.vendorId}
+							</Table.Cell>
+							<Table.Cell>{gpuDevice.busName}</Table.Cell>
+							<Table.Cell>{gpuDevice.pciAddress}</Table.Cell>
+						</Table.Row>
+					{/each}
+				</Table.Body>
+			</Table.Root>
+		</HoverCard.Content>
+	</HoverCard.Root>
 {/if}

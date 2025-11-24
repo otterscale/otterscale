@@ -17,6 +17,7 @@
 			url: resolve('/(auth)/scope/[scope]/applications/workloads', { scope: page.params.scope! })
 		}
 	]);
+	console.log(page.data);
 </script>
 
 {#key page.params.scope!}

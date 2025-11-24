@@ -146,10 +146,10 @@ function getColumns(reloadManager: ReloadManager): ColumnDef<Machine>[] {
 		{
 			accessorKey: 'gpu',
 			header: ({ column }) => {
-				return page.data['feature-states.mdl-general'] ? renderSnippet(headers.gpu, column) : null;
+				return renderSnippet(headers.gpu, column);
 			},
 			cell: ({ row }) => {
-				return page.data['feature-states.mdl-general'] ? renderSnippet(cells.gpu, row) : null;
+				return renderSnippet(cells.gpu, row);
 			}
 		},
 		{
