@@ -6,7 +6,6 @@
 	import { toast } from 'svelte-sonner';
 
 	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
 	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import {
 		type Facility,
@@ -180,10 +179,8 @@
 								</a>
 							{/if}
 
-							{#if page.data['feature-states.orch-gpu']}
-								{#if unit.machineId}
-									<SetupNodeGPUMode {unit} {scope} class="hover:cursor-pointer" />
-								{/if}
+							{#if unit.machineId}
+								<SetupNodeGPUMode {unit} {scope} class="hover:cursor-pointer" />
 							{/if}
 
 							{#if unit.leader}
