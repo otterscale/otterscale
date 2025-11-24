@@ -2,7 +2,7 @@
 	"name": "otterscale-web",
 	"packageManager": "pnpm@10.22.0",
 	"private": true,
-	"version": "v0.6.0-alpha.5",
+	"version": "v0.6.0-alpha.6",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
