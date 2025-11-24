@@ -6,7 +6,10 @@ import (
 	"encoding/hex"
 	"fmt"
 	"regexp"
+	"slices"
+	"strconv"
 	"strings"
+	"time"
 
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -64,7 +67,7 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 		return nil, "", err
 	}
 
-	uri, err = uc.gatewayURL(ctx, scope, "llm-d", "llm-d-inference-gateway-istio")
+	uri, err = uc.gatewayURL(ctx, scope, "llm-d", "llm-d-infra-inference-gateway-istio")
 	if err != nil {
 		return nil, "", err
 	}
@@ -73,7 +76,7 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 }
 
 func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*Model, error) {
-	gatewayName := "llm-d-inference-gateway" // from llm-d-infra helm chart (.Values.nameOverride)
+	gatewayName := "llm-d-infra-inference-gateway" // from llm-d-infra helm chart (.Values.nameOverride)
 	inferencePoolName := "inferencepool-" + shortID(modelName)
 	inferencePoolPort := int32(8000) //nolint:mnd // default port for inference pool
 	httpRouteName := "httproute-" + shortID(gatewayName+inferencePoolName)
@@ -151,7 +154,7 @@ func (uc *UseCase) gatewayURL(ctx context.Context, scope, namespace, serviceName
 	}
 
 	if port == 0 {
-		return "", fmt.Errorf("default port not found for llm-d-inference-gateway-istio service")
+		return "", fmt.Errorf("default port not found for llm-d-infra-inference-gateway-istio service")
 	}
 
 	return fmt.Sprintf("http://%s:%d", url.Hostname(), port), nil
@@ -258,9 +261,31 @@ func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, n
 	}
 
 	// values
-	valuesYAML := fmt.Sprintf(inferencePoolValuesYAML, port)
+	valuesYAML := fmt.Sprintf(inferencePoolValuesYAML, name, port)
 
 	_, err := uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
+	if err != nil {
+		return err
+	}
+
+	// FIXME: workaround to remove tracing arg until supported in llm-d-inference-scheduler
+	time.Sleep(2 * time.Second)
+
+	deployment, err := uc.deployment.Get(ctx, scope, namespace, name+"-epp")
+	if err != nil {
+		return err
+	}
+
+	containers := deployment.Spec.Template.Spec.Containers
+	if len(containers) == 0 {
+		return fmt.Errorf("no containers found in deployment %s", deployment.Name)
+	}
+
+	deployment.Spec.Template.Spec.Containers[0].Args = slices.DeleteFunc(containers[0].Args, func(arg string) bool {
+		return arg == "--tracing=false"
+	})
+
+	_, err = uc.deployment.Update(ctx, scope, namespace, deployment)
 	return err
 }
 
@@ -279,7 +304,8 @@ func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, na
 	}
 
 	// values
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), sizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
+	strSizeBytes := strconv.Itoa(int(sizeBytes)) //nolint:gosec // ignore
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
 }
@@ -289,7 +315,8 @@ func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, na
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
 	// values
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), sizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
+	strSizeBytes := strconv.Itoa(int(sizeBytes)) //nolint:gosec // ignore
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
 }

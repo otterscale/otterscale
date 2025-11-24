@@ -154,7 +154,6 @@ var (
 						release.TypeLabel: "extension",
 					},
 					ValuesMap: map[string]string{
-						"nameOverride": "llm-d",
 						"gateway.gatewayParameters.resources.limits.cpu":    "2",
 						"gateway.gatewayParameters.resources.limits.memory": "1Gi",
 						"gateway.service.type":                              "NodePort",
