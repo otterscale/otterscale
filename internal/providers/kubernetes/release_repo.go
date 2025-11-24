@@ -67,6 +67,12 @@ func (r *releaseRepo) Install(_ context.Context, scope, namespace, name string, 
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid release name %q", name))
 	}
 
+	if len(annotations) == 0 {
+		annotations = map[string]string{}
+	}
+
+	annotations[release.ChartRefAnnotation] = chartRef
+
 	config, err := r.config(scope, namespace)
 	if err != nil {
 		return nil, err
@@ -89,8 +95,6 @@ func (r *releaseRepo) Install(_ context.Context, scope, namespace, name string, 
 	if err != nil {
 		return nil, err
 	}
-
-	valuesMap[release.ChartRefKey] = chartRef
 
 	values, err := r.toValues(valuesYAML, valuesMap)
 	if err != nil {
@@ -138,8 +142,6 @@ func (r *releaseRepo) Upgrade(_ context.Context, scope, namespace, name string, 
 	if err != nil {
 		return nil, err
 	}
-
-	valuesMap[release.ChartRefKey] = chartRef
 
 	values, err := r.toValues(valuesYAML, valuesMap)
 	if err != nil {
@@ -240,22 +242,18 @@ func (r *releaseRepo) newName(name string) string {
 }
 
 func (r *releaseRepo) toValues(valuesYAML string, valuesMap map[string]string) (map[string]any, error) {
-	// advanced
 	values := map[string]any{}
-	if err := yaml.Unmarshal([]byte(valuesYAML), &values); err != nil {
-		return nil, err
-	}
 
-	// basic
-	vals := []string{}
-	for k, v := range valuesMap {
-		if v != "" {
-			vals = append(vals, fmt.Sprintf("%s=%s", k, v))
+	if valuesYAML != "" {
+		if err := yaml.Unmarshal([]byte(valuesYAML), &values); err != nil {
+			return nil, err
 		}
 	}
 
-	if err := strvals.ParseInto(strings.Join(vals, ","), values); err != nil {
-		return nil, err
+	for k, v := range valuesMap {
+		if err := strvals.ParseInto(fmt.Sprintf("%s=%s", k, v), values); err != nil {
+			return nil, err
+		}
 	}
 
 	return values, nil
