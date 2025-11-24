@@ -131,6 +131,10 @@
 					/>
 				</Form.Field>
 				<Form.Field>
+					<Form.Label>{m.port()}</Form.Label>
+					<SingleInput.General type="number" bind:value={request.port} />
+				</Form.Field>
+				<Form.Field>
 					<Form.Label>{m.size()}</Form.Label>
 					<SingleInput.Measurement
 						required
