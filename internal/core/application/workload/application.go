@@ -27,8 +27,9 @@ type Application struct {
 	Name        string
 	Namespace   string
 	Labels      map[string]string
+	Annotations map[string]string
+	CreatedAt   time.Time
 	Replicas    *int32
-	ObjectMeta  *ObjectMeta
 	Pods        []Pod
 	Containers  []Container
 	Services    []service.Service
@@ -373,7 +374,7 @@ func (uc *UseCase) filterPersistents(namespace string, volumes []persistent.Volu
 	return ret
 }
 
-func (uc *UseCase) toApplication(labelSelector *v1.LabelSelector, podLabels map[string]string, appType, name, namespace string, labels map[string]string, replicas *int32, objectMeta *ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
+func (uc *UseCase) toApplication(labelSelector *v1.LabelSelector, podLabels map[string]string, appType, name, namespace string, replicas *int32, objectMeta *ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	selector, err := v1.LabelSelectorAsSelector(labelSelector)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create selector: %w", err)
@@ -383,9 +384,10 @@ func (uc *UseCase) toApplication(labelSelector *v1.LabelSelector, podLabels map[
 		Type:        appType,
 		Name:        name,
 		Namespace:   namespace,
-		Labels:      labels,
+		Labels:      objectMeta.Labels,
+		Annotations: objectMeta.Annotations,
+		CreatedAt:   objectMeta.CreationTimestamp.Time,
 		Replicas:    replicas,
-		ObjectMeta:  objectMeta,
 		Containers:  containers,
 		Services:    uc.filterServices(podLabels, namespace, services),
 		Pods:        uc.filterPods(selector, namespace, pods),
@@ -400,7 +402,6 @@ func (uc *UseCase) fromDeployment(workload *Deployment, pods []Pod, services []s
 		ApplicationTypeDeployment,
 		workload.Name,
 		workload.Namespace,
-		workload.Labels,
 		workload.Spec.Replicas,
 		&workload.ObjectMeta,
 		pods,
@@ -419,7 +420,6 @@ func (uc *UseCase) fromStatefulSet(workload *StatefulSet, pods []Pod, services [
 		ApplicationTypeStatefulSet,
 		workload.Name,
 		workload.Namespace,
-		workload.Labels,
 		workload.Spec.Replicas,
 		&workload.ObjectMeta,
 		pods,
@@ -438,7 +438,6 @@ func (uc *UseCase) fromDaemonSet(workload *DaemonSet, pods []Pod, services []ser
 		ApplicationTypeDaemonSet,
 		workload.Name,
 		workload.Namespace,
-		workload.Labels,
 		nil,
 		&workload.ObjectMeta,
 		pods,
