@@ -14,19 +14,18 @@
 		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
-	let instances: SampleValue = $state({} as SampleValue);
+	let instances: SampleValue | undefined = $state(undefined);
 	async function fetchInstances() {
 		const response = await prometheusDriver.instantQuery(
-			`count(kubevirt_info{juju_model="${scope}"})`
+			`count(kubevirt_vmi_info{juju_model="${scope}"})`
 		);
-		instances = response.result[0]?.value ?? {};
+		instances = response.result[0]?.value ?? undefined;
 	}
 
 	let isLoaded = $state(false);
-	async function fetchData() {
+	async function fetch() {
 		try {
 			await fetchInstances();
-			isLoaded = true;
 		} catch (error) {
 			console.error('Failed to fetch instance data:', error);
 		}
@@ -40,10 +39,11 @@
 		}
 	});
 
-	const reloadManager = new ReloadManager(fetchData);
+	const reloadManager = new ReloadManager(fetch);
 
 	onMount(async () => {
-		await fetchData();
+		await fetch();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -64,7 +64,7 @@
 			<div class="flex h-full w-full items-center justify-center">
 				<Icon icon="svg-spinners:3-dots-bounce" class="size-8" />
 			</div>
-		{:else if !instances.value}
+		{:else if !instances}
 			<div class="flex h-full w-full flex-col items-center justify-center">
 				<Icon icon="ph:chart-bar-fill" class="size-24 animate-pulse text-muted-foreground" />
 				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>

@@ -24,7 +24,7 @@
 		write: { label: 'Write', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
-	let reads: SampleValue[] = $state([] as SampleValue[]);
+	let reads: SampleValue[] = $state([]);
 	async function fetchReads() {
 		const response = await prometheusDriver.rangeQuery(
 			`avg(rate(kubevirt_vmi_storage_read_traffic_bytes_total{juju_model="${scope}"}[5m]))`,
@@ -35,7 +35,7 @@
 		reads = response.result[0]?.values ?? [];
 	}
 
-	let writes: SampleValue[] = $state([] as SampleValue[]);
+	let writes: SampleValue[] = $state([]);
 	async function fetchWrites() {
 		const response = await prometheusDriver.rangeQuery(
 			`avg(rate(kubevirt_vmi_storage_write_traffic_bytes_total{juju_model="${scope}"}[5m]))`,
@@ -46,11 +46,9 @@
 		writes = response.result[0]?.values ?? [];
 	}
 
-	let isLoaded = $state(false);
 	async function fetchData() {
 		try {
 			await Promise.all([fetchReads(), fetchWrites()]);
-			isLoaded = true;
 		} catch (error) {
 			console.error('Failed to fetch throughput data:', error);
 		}
@@ -73,8 +71,10 @@
 		}
 	});
 
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetchData();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();

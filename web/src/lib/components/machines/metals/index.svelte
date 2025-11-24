@@ -68,17 +68,15 @@
 
 	async function fetch() {
 		try {
-			fetchMachines();
-			fetchMetrics();
+			await Promise.all([fetchMachines(), fetchMetrics()]);
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
 	}
 
-	let isMounted = $state(false);
-
 	const reloadManager = new ReloadManager(fetch, false);
 
+	let isMounted = $state(false);
 	onMount(async () => {
 		await fetch();
 		isMounted = true;

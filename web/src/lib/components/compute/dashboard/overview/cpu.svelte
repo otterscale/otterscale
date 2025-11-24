@@ -22,10 +22,10 @@
 		usage: { label: 'Usage', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
-	let cpuUsages: SampleValue[] | undefined = $state([] as SampleValue[]);
+	let cpuUsages: SampleValue[] = $state([]);
 	async function fetchCPUUsage() {
 		const response = await prometheusDriver.rangeQuery(
-			`avg(rate(kubevirt_vmi_cpu_usage_seconds_total{juju_model="${scope}"}[5m])) * 100`,
+			`avg(rate(kubevirt_vmi_cpu_usage_seconds_total{juju_model="${scope}"}[5m]))`,
 			new SvelteDate().setMinutes(0, 0, 0) - 60 * 60 * 1000,
 			new SvelteDate().setMinutes(0, 0, 0),
 			2 * 60
@@ -33,33 +33,32 @@
 		cpuUsages = response.result[0]?.values ?? [];
 	}
 
-	let cpuWait: SampleValue = $state({} as SampleValue);
+	let cpuWait: SampleValue | undefined = $state(undefined);
 	async function fetchCPUWait() {
 		const response = await prometheusDriver.instantQuery(
-			`avg(rate(kubevirt_vmi_vcpu_wait_seconds_total{juju_model="${scope}"}[5m])) * 100`
+			`avg(rate(kubevirt_vmi_vcpu_wait_seconds_total{juju_model="${scope}"}[5m]))`
 		);
-		cpuWait = response.result[0]?.value ?? {};
+		cpuWait = response.result[0]?.value ?? undefined;
 	}
 
-	let cpuDelay: SampleValue = $state({} as SampleValue);
+	let cpuDelay: SampleValue | undefined = $state(undefined);
 	async function fetchCPUDelay() {
 		const response = await prometheusDriver.instantQuery(
-			`avg(rate(kubevirt_vmi_vcpu_delay_seconds_total{juju_model="${scope}"}[5m])) * 100`
+			`avg(rate(kubevirt_vmi_vcpu_delay_seconds_total{juju_model="${scope}"}[5m]))`
 		);
-		cpuDelay = response.result[0]?.value ?? {};
+		cpuDelay = response.result[0]?.value ?? undefined;
 	}
 
 	let isLoaded = $state(false);
-	async function fetchData() {
+	async function fetch() {
 		try {
 			await Promise.all([fetchCPUUsage(), fetchCPUWait(), fetchCPUDelay()]);
-			isLoaded = true;
 		} catch (error) {
 			console.error('Failed to fetch cpu data:', error);
 		}
 	}
 
-	const reloadManager = new ReloadManager(fetchData);
+	const reloadManager = new ReloadManager(fetch);
 
 	$effect(() => {
 		if (isReloading) {
@@ -70,7 +69,8 @@
 	});
 
 	onMount(async () => {
-		await fetchData();
+		await fetch();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -81,16 +81,16 @@
 	<Card.Header>
 		<Card.Title>{m.cpu_usage()}</Card.Title>
 		<Card.Action class="flex flex-col gap-0.5 text-sm text-muted-foreground">
-			{#if cpuWait.value}
+			{#if cpuWait}
 				<div class="flex justify-between gap-2">
 					<p>{m.wait()}</p>
-					<p class="font-mono">{Number(cpuWait.value).toFixed(2)}%</p>
+					<p class="font-mono">{(Number(cpuWait.value) * 100).toFixed(2)}%</p>
 				</div>
 			{/if}
-			{#if cpuDelay.value}
+			{#if cpuDelay}
 				<div class="flex justify-between gap-2">
 					<p>{m.delay()}</p>
-					<p class="font-mono">{Number(cpuDelay.value).toFixed(2)}%</p>
+					<p class="font-mono">{(Number(cpuDelay.value) * 100).toFixed(2)}%</p>
 				</div>
 			{/if}
 		</Card.Action>

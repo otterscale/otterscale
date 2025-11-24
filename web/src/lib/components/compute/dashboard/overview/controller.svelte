@@ -5,6 +5,7 @@
 
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
+	import { formatPercentage } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
@@ -13,33 +14,32 @@
 		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
-	let readyControllers: SampleValue = $state({} as SampleValue);
+	let readyControllers: SampleValue | undefined = $state(undefined);
 	async function fetchReadyControllers() {
 		const response = await prometheusDriver.instantQuery(
 			`count(kubevirt_virt_controller_ready_status{juju_model="${scope}"})`
 		);
-		readyControllers = response.result[0]?.value ?? {};
+		readyControllers = response.result[0]?.value ?? undefined;
 	}
 
-	let healthControllers: SampleValue = $state({} as SampleValue);
+	let healthControllers: SampleValue | undefined = $state(undefined);
 	async function fetchHealthControllers() {
 		const response = await prometheusDriver.instantQuery(
 			`sum(kubevirt_virt_controller_ready_status{juju_model="${scope}"})`
 		);
-		healthControllers = response.result[0]?.value ?? {};
+		healthControllers = response.result[0]?.value ?? undefined;
 	}
 
 	let isLoaded = $state(false);
-	async function fetchData() {
+	async function fetch() {
 		try {
 			await Promise.all([fetchReadyControllers(), fetchHealthControllers()]);
-			isLoaded = true;
 		} catch (error) {
 			console.error('Failed to fetch cpu data:', error);
 		}
 	}
 
-	const reloadManager = new ReloadManager(fetchData);
+	const reloadManager = new ReloadManager(fetch);
 
 	$effect(() => {
 		if (isReloading) {
@@ -50,7 +50,8 @@
 	});
 
 	onMount(async () => {
-		await fetchData();
+		await fetch();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -71,13 +72,20 @@
 			<div class="flex h-full w-full items-center justify-center">
 				<Icon icon="svg-spinners:3-dots-bounce" class="size-8" />
 			</div>
-		{:else if !healthControllers.value || !readyControllers.value}
+		{:else if !healthControllers || !readyControllers}
 			<div class="flex h-full w-full flex-col items-center justify-center">
 				<Icon icon="ph:chart-bar-fill" class="size-24 animate-pulse text-muted-foreground" />
 				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
 			</div>
 		{:else}
-			<p class="text-3xl">{healthControllers.value} / {readyControllers.value}</p>
+			<div class="space-y-1">
+				<p class="text-5xl">
+					{formatPercentage(healthControllers.value, readyControllers.value, 0)}%
+				</p>
+				<p class="text-3xl text-muted-foreground">
+					{healthControllers.value} / {readyControllers.value}
+				</p>
+			</div>
 		{/if}
 	</Card.Content>
 </Card.Root>

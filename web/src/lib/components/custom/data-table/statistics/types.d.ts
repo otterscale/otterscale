@@ -1,3 +1,3 @@
 type Type = 'count' | 'ratio';
 
-export type { Type }
+export type { Type };

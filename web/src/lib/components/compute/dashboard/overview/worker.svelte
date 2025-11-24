@@ -13,25 +13,23 @@
 		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
-	let workers: SampleValue = $state({} as SampleValue);
+	let workers: SampleValue | undefined = $state(undefined);
 	async function fetchWorkers() {
 		const response = await prometheusDriver.instantQuery(
-			`sum(kubevirt_vmi_phase_count{juju_model="${scope}"})`
+			`count(kubevirt_info{juju_model="${scope}"})`
 		);
-		workers = response.result[0]?.value ?? {};
+		workers = response.result[0]?.value ?? undefined;
 	}
 
-	let isLoaded = $state(false);
-	async function fetchData() {
+	async function fetch() {
 		try {
 			await fetchWorkers();
-			isLoaded = true;
 		} catch (error) {
 			console.error('Failed to fetch worker data:', error);
 		}
 	}
 
-	const reloadManager = new ReloadManager(fetchData);
+	const reloadManager = new ReloadManager(fetch);
 
 	$effect(() => {
 		if (isReloading) {
@@ -41,8 +39,10 @@
 		}
 	});
 
+	let isLoaded = $state(false);
 	onMount(async () => {
-		await fetchData();
+		await fetch();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -63,7 +63,7 @@
 			<div class="flex h-full w-full items-center justify-center">
 				<Icon icon="svg-spinners:3-dots-bounce" class="size-8" />
 			</div>
-		{:else if !workers.value}
+		{:else if !workers}
 			<div class="flex h-full w-full flex-col items-center justify-center">
 				<Icon icon="ph:chart-bar-fill" class="size-24 animate-pulse text-muted-foreground" />
 				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>

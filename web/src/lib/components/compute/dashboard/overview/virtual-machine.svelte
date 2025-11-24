@@ -14,25 +14,23 @@
 		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
-	let virtualMachines: SampleValue = $state({} as SampleValue);
+	let virtualMachines: SampleValue | undefined = $state(undefined);
 	async function fetchVirtualMachines() {
 		const response = await prometheusDriver.instantQuery(
-			`count(kubevirt_info{juju_model="${scope}"})`
+			`count(kubevirt_vm_starting_status_last_transition_timestamp_seconds{juju_model="${scope}"})`
 		);
-		virtualMachines = response.result[0]?.value ?? {};
+		virtualMachines = response.result[0]?.value ?? undefined;
 	}
 
-	let isLoaded = $state(false);
-	async function fetchData() {
+	async function fetch() {
 		try {
 			await fetchVirtualMachines();
-			isLoaded = true;
 		} catch (error) {
 			console.error('Failed to fetch virtual machine data:', error);
 		}
 	}
 
-	const reloadManager = new ReloadManager(fetchData);
+	const reloadManager = new ReloadManager(fetch);
 
 	$effect(() => {
 		if (isReloading) {
@@ -42,8 +40,10 @@
 		}
 	});
 
+	let isLoaded = $state(false);
 	onMount(async () => {
-		await fetchData();
+		await fetch();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -64,7 +64,7 @@
 			<div class="flex h-full w-full items-center justify-center">
 				<Icon icon="svg-spinners:3-dots-bounce" class="size-8" />
 			</div>
-		{:else if !virtualMachines.value}
+		{:else if !virtualMachines}
 			<div class="flex h-full w-full flex-col items-center justify-center">
 				<Icon icon="ph:chart-bar-fill" class="size-24 animate-pulse text-muted-foreground" />
 				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>

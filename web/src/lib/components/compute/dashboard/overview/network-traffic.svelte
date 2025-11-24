@@ -24,7 +24,7 @@
 		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
-	let receives: SampleValue[] = $state([] as SampleValue[]);
+	let receives: SampleValue[] = $state([]);
 	async function fetchReceives() {
 		const response = await prometheusDriver.rangeQuery(
 			`avg(rate(kubevirt_vmi_network_receive_bytes_total{juju_model="${scope}"}[5m]))`,
@@ -35,7 +35,7 @@
 		receives = response.result[0]?.values ?? [];
 	}
 
-	let transmits: SampleValue[] = $state([] as SampleValue[]);
+	let transmits: SampleValue[] = $state([]);
 	async function fetchTransmits() {
 		const response = await prometheusDriver.rangeQuery(
 			`avg(rate(kubevirt_vmi_network_transmit_bytes_total{juju_model="${scope}"}[5m]))`,
@@ -46,24 +46,24 @@
 		transmits = response.result[0]?.values ?? [];
 	}
 
-	let isLoaded = $state(false);
-	async function fetchData() {
+	async function fetch() {
 		try {
 			await Promise.all([fetchReceives(), fetchTransmits()]);
-			isLoaded = true;
 		} catch (error) {
 			console.error('Failed to fetch network data:', error);
 		}
 	}
 
-	const reloadManager = new ReloadManager(fetchData);
+	const reloadManager = new ReloadManager(fetch);
 
 	const traffics = $derived(
-		receives.map((sample, index) => ({
-			time: sample.time,
-			receive: sample.value,
-			transmit: transmits[index]?.value ?? 0
-		}))
+		receives && transmits
+			? receives.map((sample, index) => ({
+					time: sample.time,
+					receive: sample.value,
+					transmit: transmits[index]?.value ?? 0
+				}))
+			: []
 	);
 
 	$effect(() => {
@@ -74,8 +74,10 @@
 		}
 	});
 
+	let isLoaded = $state(false);
 	onMount(async () => {
-		await fetchData();
+		await fetch();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();

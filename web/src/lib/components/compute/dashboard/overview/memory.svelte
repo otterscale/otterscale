@@ -10,7 +10,6 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
@@ -26,7 +25,7 @@
 	let memoryUsages: SampleValue[] = $state([]);
 	async function fetchMemoryUsage() {
 		const response = await prometheusDriver.rangeQuery(
-			`avg(kubevirt_vmi_memory_resident_bytes{juju_model="${scope}"})`,
+			`avg(kubevirt_vmi_memory_resident_bytes{juju_model="${scope}"}) / avg(kubevirt_vmi_memory_domain_bytes{juju_model="${scope}"})`,
 			new SvelteDate().setMinutes(0, 0, 0) - 60 * 60 * 1000,
 			new SvelteDate().setMinutes(0, 0, 0),
 			2 * 60
@@ -35,16 +34,15 @@
 	}
 
 	let isLoaded = $state(false);
-	async function fetchData() {
+	async function fetch() {
 		try {
 			await fetchMemoryUsage();
-			isLoaded = true;
 		} catch (error) {
 			console.error('Failed to fetch memory data:', error);
 		}
 	}
 
-	const reloadManager = new ReloadManager(fetchData);
+	const reloadManager = new ReloadManager(fetch);
 
 	$effect(() => {
 		if (isReloading) {
@@ -55,7 +53,8 @@
 	});
 
 	onMount(async () => {
-		await fetchData();
+		await fetch();
+		isLoaded = true;
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -118,7 +117,6 @@
 							}}
 						>
 							{#snippet formatter({ item, name, value })}
-								{@const { value: capacity, unit } = formatCapacity(Number(value))}
 								<div
 									style="--color-bg: {item.color}"
 									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
@@ -127,7 +125,7 @@
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{capacity} {unit}</p>
+									<p class="font-mono">{(Number(value) * 100).toFixed(2)}%</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>

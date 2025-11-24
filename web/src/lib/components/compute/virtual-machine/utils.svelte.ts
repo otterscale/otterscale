@@ -3,13 +3,13 @@ import { SvelteMap } from 'svelte/reactivity';
 
 import type { Metric } from './types';
 
-function getMapInstanceToMetric(rangeVectors: RangeVector[]): Metric {
+function getMapNameToMetric(rangeVectors: RangeVector[]): Metric {
 	return new SvelteMap(
 		rangeVectors.map((rangeVector) => [
-			(rangeVector.metric.labels as { instance: string }).instance,
+			(rangeVector.metric.labels as { name: string }).name,
 			rangeVector.values
 		])
 	);
 }
 
-export { getMapInstanceToMetric };
+export { getMapNameToMetric };
