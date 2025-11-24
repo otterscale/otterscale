@@ -161,7 +161,7 @@ message Extension {
     string name = 1;
     string version = 2;
   }
-  Type type = 1;
+  reserved 1;
   string display_name = 2;
   string description = 3;
   string icon = 4;
