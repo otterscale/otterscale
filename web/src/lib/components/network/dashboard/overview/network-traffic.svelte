@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
 	import { BarChart, type ChartContextValue, Highlight } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
@@ -121,10 +122,21 @@
 </script>
 
 {#if !isLoaded}
-	Loading
+	<Card.Root class="relative h-full gap-2 overflow-hidden">
+		<Card.Header class="flex h-20 flex-col items-stretch space-y-0 border-b p-0  sm:flex-row">
+			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+				<Card.Title>{m.discovery()}</Card.Title>
+			</div>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-[200px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
+			</div>
+		</Card.Content>
+	</Card.Root>
 {:else}
 	<Card.Root class="h-full gap-2">
-		<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+		<Card.Header class="flex h-20 flex-col items-stretch space-y-0 border-b p-0  sm:flex-row">
 			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
 				<Card.Title>{m.network_traffic()}</Card.Title>
 			</div>
@@ -134,7 +146,7 @@
 					{@const { value, unit } = formatIO(latestTraffics[key as keyof typeof latestTraffics])}
 					<button
 						data-active={activeTraffic === chart}
-						class="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
+						class="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-14 sm:py-6"
 						onclick={() => (activeTraffic = chart)}
 					>
 						<span class="text-xs text-muted-foreground">
@@ -148,8 +160,8 @@
 				{/each}
 			</div>
 		</Card.Header>
-		<Card.Content class="px-6 pt-6">
-			<Chart.Container config={trafficsConfigurations} class="aspect-auto h-[120px] w-full">
+		<Card.Content>
+			<Chart.Container config={trafficsConfigurations} class="aspect-auto h-[200px] w-full">
 				<BarChart
 					bind:context={trafficsContext}
 					data={traffics}

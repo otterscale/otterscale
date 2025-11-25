@@ -73,7 +73,7 @@
 						<div class="col-span-2">
 							<DNSServer bind:isReloading />
 						</div>
-						<div class="col-span-4 row-span-2">
+						<div class="col-span-10 row-span-2">
 							<NetworkTraffic {prometheusDriver} bind:isReloading />
 						</div>
 					</div>
