@@ -184,7 +184,7 @@ func (uc *UseCase) buildHTTPRoute(namespace, name, gatewayName, inferencePoolNam
 	// backend references
 	backendGroup := gav1.Group(v1.GroupName)
 	backendKind := gav1.Kind("InferencePool")
-	weight := int32(1)
+	weight := int32(100)
 
 	// timeouts
 	timeout := gav1.Duration("0s")
