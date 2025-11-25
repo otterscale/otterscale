@@ -27,9 +27,16 @@ import (
 
 const ModelNameAnnotation = "otterscale.com/model.name"
 
+const (
+	resourceVGPU              = "otterscale.com/vgpu"
+	resourceVGPUMemPercentage = "otterscale.com/vgpumem-percentage"
+)
+
 type Model struct {
 	ID      string
 	Release *release.Release
+	Prefill *Resource
+	Decode  *Resource
 	Pods    []workload.Pod
 }
 
@@ -90,6 +97,8 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 		models = append(models, Model{
 			ID:      modelName,
 			Release: &releases[i],
+			Prefill: extractResource(releases[i].Config, "prefill"),
+			Decode:  extractResource(releases[i].Config, "decode"),
 			Pods:    pods,
 		})
 	}
@@ -102,7 +111,7 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 	return models, uri, nil
 }
 
-func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*Model, error) {
+func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill, decode *Resource) (*Model, error) {
 	gatewayName := "llm-d-infra-inference-gateway" // from llm-d-infra helm chart (.Values.nameOverride)
 	inferencePoolName := "inferencepool-" + shortID(modelName)
 	inferencePoolPort := int32(8000) //nolint:mnd // default port for inference pool
@@ -124,7 +133,7 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 	}
 
 	// deploy model service
-	release, err := uc.installModelService(ctx, scope, namespace, name, modelName, sizeBytes, limits, requests)
+	release, err := uc.installModelService(ctx, scope, namespace, name, modelName, sizeBytes, prefill, decode)
 	if err != nil {
 		return nil, err
 	}
@@ -132,10 +141,12 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 	return &Model{
 		ID:      modelName,
 		Release: release,
+		Prefill: extractResource(release.Config, "prefill"),
+		Decode:  extractResource(release.Config, "decode"),
 	}, nil
 }
 
-func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, requests, limits *Resource) (*Model, error) {
+func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, prefill, decode *Resource) (*Model, error) {
 	rel, err := uc.release.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return nil, err
@@ -166,7 +177,7 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 		return nil, fmt.Errorf("failed to parse modelArtifacts.size: %w", err)
 	}
 
-	release, err := uc.upgradeModelService(ctx, scope, namespace, name, modelName, sizeBytes, limits, requests)
+	release, err := uc.upgradeModelService(ctx, scope, namespace, name, modelName, sizeBytes, prefill, decode)
 	if err != nil {
 		return nil, err
 	}
@@ -174,6 +185,8 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 	return &Model{
 		ID:      modelName,
 		Release: release,
+		Prefill: extractResource(release.Config, "prefill"),
+		Decode:  extractResource(release.Config, "decode"),
 	}, nil
 }
 
@@ -320,7 +333,7 @@ func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, n
 	return uc.removeTracingFlag(ctx, scope, namespace, name)
 }
 
-func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*release.Release, error) {
+func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill, decode *Resource) (*release.Release, error) {
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
@@ -336,18 +349,18 @@ func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, na
 
 	// values
 	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, prefill.VGPU, prefill.VGPUMemory, decode.VGPU, decode.VGPUMemory)
 
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
 }
 
-func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*release.Release, error) {
+func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill, decode *Resource) (*release.Release, error) {
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
 	// values
 	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, prefill.VGPU, prefill.VGPUMemory, decode.VGPU, decode.VGPUMemory)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
 }
@@ -390,6 +403,62 @@ func extractModelName(config map[string]any) (string, bool) {
 	}
 
 	return name, ok
+}
+
+func extractResource(config map[string]any, key string) *Resource {
+	v, ok := config[key]
+	if !ok {
+		return nil
+	}
+
+	m, ok := v.(map[string]any)
+	if !ok {
+		return nil
+	}
+
+	containers, ok := m["containers"].([]any)
+	if !ok || len(containers) == 0 {
+		return nil
+	}
+
+	cm, ok := containers[0].(map[string]any)
+	if !ok {
+		return nil
+	}
+
+	resources, ok := cm["resources"].(map[string]any)
+	if !ok {
+		return nil
+	}
+
+	requests, ok := resources["requests"].(map[string]any)
+	if !ok {
+		return nil
+	}
+
+	return &Resource{
+		VGPU:       parseResourceValue(requests, resourceVGPU),
+		VGPUMemory: parseResourceValue(requests, resourceVGPUMemPercentage),
+	}
+}
+
+func parseResourceValue(requests map[string]any, key string) uint32 {
+	value, ok := requests[key]
+	if !ok {
+		return 0
+	}
+
+	strValue, ok := value.(string)
+	if !ok {
+		return 0
+	}
+
+	parsed, err := strconv.ParseUint(strValue, 10, 32)
+	if err != nil {
+		return 0
+	}
+
+	return uint32(parsed)
 }
 
 func shortID(input string) string {
