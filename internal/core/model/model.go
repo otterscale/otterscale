@@ -27,10 +27,7 @@ import (
 
 const ModelNameAnnotation = "otterscale.com/model.name"
 
-const (
-	resourceVGPU              = "otterscale.com/vgpu"
-	resourceVGPUMemPercentage = "otterscale.com/vgpumem-percentage"
-)
+const resourceVGPUMemPercentage = "otterscale.com/vgpumem-percentage"
 
 type Model struct {
 	ID      string
@@ -87,7 +84,7 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 			continue
 		}
 
-		selector := "llm-d.ai/model" + "=" + formatLabel(modelName)
+		selector := "llm-d.ai/model" + "=" + FormatLabel(modelName)
 
 		pods, err := uc.pod.List(ctx, scope, namespace, selector)
 		if err != nil {
@@ -349,7 +346,7 @@ func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, na
 
 	// values
 	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, prefill.VGPU, prefill.VGPUMemory, decode.VGPU, decode.VGPUMemory)
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, FormatLabel(modelName), strSizeBytes, prefill.VGPU, prefill.VGPUMemory, decode.VGPU, decode.VGPUMemory)
 
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
 }
@@ -360,7 +357,7 @@ func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, na
 
 	// values
 	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, prefill.VGPU, prefill.VGPUMemory, decode.VGPU, decode.VGPUMemory)
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, FormatLabel(modelName), strSizeBytes, prefill.VGPU, prefill.VGPUMemory, decode.VGPU, decode.VGPUMemory)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
 }
@@ -416,30 +413,46 @@ func extractResource(config map[string]any, key string) *Resource {
 		return nil
 	}
 
-	containers, ok := m["containers"].([]any)
+	vgpu := extractVGPU(m)
+	vgpuMemory := extractVGPUMemory(m)
+
+	return &Resource{
+		VGPU:       vgpu,
+		VGPUMemory: vgpuMemory,
+	}
+}
+
+func extractVGPU(config map[string]any) uint32 {
+	parallelism, ok := config["parallelism"].(map[string]any)
+	if !ok {
+		return 1
+	}
+
+	return parseResourceValue(parallelism, "tensor")
+}
+
+func extractVGPUMemory(config map[string]any) uint32 {
+	containers, ok := config["containers"].([]any)
 	if !ok || len(containers) == 0 {
-		return nil
+		return 0
 	}
 
 	cm, ok := containers[0].(map[string]any)
 	if !ok {
-		return nil
+		return 0
 	}
 
 	resources, ok := cm["resources"].(map[string]any)
 	if !ok {
-		return nil
+		return 0
 	}
 
 	requests, ok := resources["requests"].(map[string]any)
 	if !ok {
-		return nil
+		return 0
 	}
 
-	return &Resource{
-		VGPU:       parseResourceValue(requests, resourceVGPU),
-		VGPUMemory: parseResourceValue(requests, resourceVGPUMemPercentage),
-	}
+	return parseResourceValue(requests, resourceVGPUMemPercentage)
 }
 
 func parseResourceValue(requests map[string]any, key string) uint32 {
@@ -466,7 +479,7 @@ func shortID(input string) string {
 	return hex.EncodeToString(hash[:4])
 }
 
-func formatLabel(input string) string {
+func FormatLabel(input string) string {
 	regex := regexp.MustCompile("[^a-zA-Z0-9]+")
 	output := regex.ReplaceAllString(input, "-")
 	trimRegex := regexp.MustCompile("^-|-$")
