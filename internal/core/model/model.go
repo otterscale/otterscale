@@ -155,12 +155,15 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 		return nil, fmt.Errorf("modelArtifacts.name is not a string")
 	}
 
-	sizeBytes, ok := m["size"].(int)
+	strSizeBytes, ok := m["size"].(string)
 	if !ok {
-		return nil, fmt.Errorf("modelArtifacts.size is not a int64")
+		return nil, fmt.Errorf("modelArtifacts.size is not a string")
 	}
 
-	return nil, fmt.Errorf("test")
+	sizeBytes, err := strconv.ParseUint(strSizeBytes, 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse modelArtifacts.size: %w", err)
+	}
 
 	release, err := uc.upgradeModelService(ctx, scope, namespace, name, modelName, uint64(sizeBytes), limits, requests) //nolint:gosec // ignore
 	if err != nil {
