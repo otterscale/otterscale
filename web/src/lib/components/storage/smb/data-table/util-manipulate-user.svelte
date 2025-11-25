@@ -10,16 +10,19 @@
 
 <script lang="ts">
 	let {
-		user = $bindable<SMBShare_SecurityConfig_User>(),
-		invalid = $bindable<boolean>(),
-		required = $bindable<boolean>()
-	}: { user?: SMBShare_SecurityConfig_User; invalid?: boolean; required?: boolean } = $props();
+		value = $bindable(),
+		invalid = $bindable(),
+		required = $bindable()
+	}: {
+		value?: SMBShare_SecurityConfig_User;
+		invalid?: boolean;
+		required?: boolean;
+	} = $props();
 
-	const defaults = {} as SMBShare_SecurityConfig_User;
-
-	let request = $state(defaults);
+	const defaultUser = value ?? ({} as SMBShare_SecurityConfig_User);
+	let requestUser = $state({ ...defaultUser });
 	function reset() {
-		request = defaults;
+		requestUser = { ...defaultUser };
 	}
 
 	let open = $state(false);
@@ -28,7 +31,7 @@
 	}
 
 	$effect(() => {
-		invalid = !user;
+		invalid = !(value && value.username && value.password);
 	});
 </script>
 
@@ -36,24 +39,36 @@
 	<Modal.Trigger
 		variant="default"
 		class={cn(
-			'w-full ring-1 ring-primary',
-			required && !user
+			'w-full ring-1 ring-primary hover:ring-primary',
+			required && !(value && value.username && value.password)
 				? 'text-destructive ring-destructive'
 				: buttonVariants({ variant: 'outline' })
 		)}
 	>
-		{m.create()}/{m.edit()}
+		{#if !(value && value.username && value.password)}
+			{m.create()}
+		{:else}
+			{m.edit()}
+		{/if}
 	</Modal.Trigger>
 	<Modal.Content>
 		<Form.Label>{m.name()}</Form.Label>
-		<SingleInput.General type="text" bind:value={request.username} required={invalid} />
+		<SingleInput.General
+			type="text"
+			bind:value={requestUser.username}
+			required={!(requestUser && requestUser.username)}
+		/>
 
 		<Form.Label>{m.password()}</Form.Label>
-		<SingleInput.General type="password" bind:value={request.password} required={invalid} />
+		<SingleInput.General
+			type="password"
+			bind:value={requestUser.password}
+			required={!(requestUser && requestUser.password)}
+		/>
 
 		<Button
 			onclick={() => {
-				user = request;
+				value = { ...requestUser };
 				reset();
 				close();
 			}}

@@ -30,11 +30,11 @@
 {/snippet}
 
 {#snippet uri(column: Column<SMBShare>)}
-	<Layout.Header class="justify-end">
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.uri()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.uri()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

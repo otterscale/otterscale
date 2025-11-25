@@ -12,19 +12,34 @@
 
 <script lang="ts">
 	let {
-		users = $bindable<SMBShare_SecurityConfig_User[]>(),
-		invalid = $bindable<boolean>(),
-		required = $bindable<boolean>()
-	}: { users: SMBShare_SecurityConfig_User[]; invalid?: boolean; required?: boolean } = $props();
+		values = $bindable(),
+		invalid = $bindable(),
+		required = $bindable()
+	}: {
+		values: SMBShare_SecurityConfig_User[];
+		invalid?: boolean;
+		required?: boolean;
+	} = $props();
 
-	if (!users) {
-		users = [];
+	if (!values) {
+		values = [];
 	}
 
-	const defaults = {} as SMBShare_SecurityConfig_User;
-	let request = $state(defaults);
+	const defaultUser = {} as SMBShare_SecurityConfig_User;
+	let requestUser = $state({ ...defaultUser });
+	function resetUser() {
+		requestUser = { ...defaultUser };
+	}
+
+	const defaultUsers = $derived([...values]);
+	let requestUsers = $derived([...defaultUsers]);
+	function resetUsers() {
+		requestUsers = [...defaultUsers];
+	}
+
 	function reset() {
-		request = defaults;
+		resetUser();
+		resetUsers();
 	}
 
 	let open = $state(false);
@@ -33,7 +48,7 @@
 	}
 
 	$effect(() => {
-		invalid = !(users && users.length > 0);
+		invalid = !(values && values.length > 0);
 	});
 </script>
 
@@ -41,16 +56,22 @@
 	<Modal.Trigger
 		variant="default"
 		class={cn(
-			'w-full ring-1 ring-primary',
-			required && !(users && users.length > 0)
+			'w-full ring-1 ring-primary hover:ring-primary',
+			required && !(values && values.length > 0)
 				? 'text-destructive ring-destructive'
 				: buttonVariants({ variant: 'outline' })
-		)}>{m.create()}/{m.edit()}</Modal.Trigger
+		)}
 	>
+		{#if !(values && values.length > 0)}
+			{m.create()}
+		{:else}
+			{m.edit()}
+		{/if}
+	</Modal.Trigger>
 	<Modal.Content>
-		{#if users.length > 0}
+		{#if requestUsers.length > 0}
 			<div class="max-h-40 overflow-y-auto rounded-lg border p-2">
-				{#each users as user, index (index)}
+				{#each requestUsers as user, index (index)}
 					<div class="flex items-center gap-2 rounded-lg p-2">
 						<div class={cn('flex size-8 items-center justify-center rounded-full border-2')}>
 							<Icon icon="ph:user" class="size-5" />
@@ -66,7 +87,7 @@
 								variant="ghost"
 								size="icon"
 								onclick={() => {
-									users.splice(index, 1);
+									requestUsers.splice(index, 1);
 								}}
 							>
 								<Icon icon="ph:trash" class="size-4 text-destructive" />
@@ -83,20 +104,31 @@
 			</div>
 		{/if}
 
-		<Form.Label>{m.name()}</Form.Label>
-		<SingleInput.General type="text" bind:value={request.username} required={users.length === 0} />
+		<Form.Root>
+			<Form.Fieldset>
+				<Form.Field>
+					<Form.Label>{m.name()}</Form.Label>
+					<SingleInput.General
+						type="text"
+						bind:value={requestUser.username}
+						required={requestUsers.length === 0}
+					/>
 
-		<Form.Label>{m.password()}</Form.Label>
-		<SingleInput.General
-			type="password"
-			bind:value={request.password}
-			required={users.length === 0}
-		/>
+					<Form.Label>{m.password()}</Form.Label>
+					<SingleInput.General
+						type="password"
+						bind:value={requestUser.password}
+						required={requestUsers.length === 0}
+					/>
+				</Form.Field>
+			</Form.Fieldset>
+		</Form.Root>
 
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
 					reset();
+					close();
 				}}
 			>
 				{m.cancel()}
@@ -104,23 +136,27 @@
 			<div>
 				<Button
 					variant="destructive"
-					disabled={invalid}
+					disabled={requestUsers.length === 0}
 					onclick={() => {
-						users = [];
+						reset();
 					}}
 				>
 					{m.clear()}
 				</Button>
 				<Button
 					onclick={() => {
-						users = [...users, request];
+						if (requestUser.username && requestUser.password) {
+							requestUsers = [...requestUsers, requestUser];
+							resetUser();
+						}
 					}}
 				>
 					{m.add()}
 				</Button>
 				<Modal.Action
-					disabled={invalid}
+					disabled={requestUsers.length === 0}
 					onclick={() => {
+						values = requestUsers;
 						reset();
 						close();
 					}}
