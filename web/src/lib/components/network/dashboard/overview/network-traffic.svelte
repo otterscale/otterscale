@@ -161,7 +161,10 @@
 			</div>
 		</Card.Header>
 		<Card.Content>
-			<Chart.Container config={trafficsConfigurations} class="aspect-auto h-[200px] w-full">
+			<Chart.Container
+				config={trafficsConfigurations}
+				class="aspect-auto h-[200px] w-full px-2 pt-2"
+			>
 				<BarChart
 					bind:context={trafficsContext}
 					data={traffics}
