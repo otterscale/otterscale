@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"log/slog"
 	"regexp"
 	"slices"
 	"strconv"
@@ -26,8 +27,11 @@ import (
 
 const ModelNameAnnotation = "otterscale.com/model.name"
 
-// Release represents a Helm Release resource.
-type Model = release.Release
+type Model struct {
+	ID      string
+	Release *release.Release
+	Pods    []workload.Pod
+}
 
 type Resource struct {
 	VGPU       uint32
@@ -42,11 +46,12 @@ type UseCase struct {
 	gateway               service.GatewayRepo
 	httpRoute             service.HTTPRouteRepo
 	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
+	pod                   workload.PodRepo
 	release               release.ReleaseRepo
 	service               service.ServiceRepo
 }
 
-func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployment workload.DeploymentRepo, gateway service.GatewayRepo, httpRoute service.HTTPRouteRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, release release.ReleaseRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployment workload.DeploymentRepo, gateway service.GatewayRepo, httpRoute service.HTTPRouteRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, pod workload.PodRepo, release release.ReleaseRepo, service service.ServiceRepo) *UseCase {
 	return &UseCase{
 		inferencePool:         inferencePool,
 		chart:                 chart,
@@ -54,6 +59,7 @@ func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployme
 		gateway:               gateway,
 		httpRoute:             httpRoute,
 		persistentVolumeClaim: persistentVolumeClaim,
+		pod:                   pod,
 		release:               release,
 		service:               service,
 	}
@@ -62,9 +68,29 @@ func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployme
 func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (models []Model, uri string, err error) {
 	selector := release.TypeLabel + "=" + "model"
 
-	models, err = uc.release.List(ctx, scope, namespace, selector)
+	releases, err := uc.release.List(ctx, scope, namespace, selector)
 	if err != nil {
 		return nil, "", err
+	}
+
+	for i := range releases {
+		modelName, ok := extractModelName(releases[i].Config)
+		if !ok {
+			slog.Error("model name not found in release config", "release", releases[i].Name)
+			continue
+		}
+
+		selector := "llm-d.ai/model" + "=" + formatLabel(modelName)
+
+		pods, err := uc.pod.List(ctx, scope, namespace, selector)
+		if err != nil {
+			return nil, "", err
+		}
+
+		models = append(models, Model{
+			Release: &releases[i],
+			Pods:    pods,
+		})
 	}
 
 	uri, err = uc.gatewayURL(ctx, scope, "llm-d", "llm-d-infra-inference-gateway-istio")
@@ -97,7 +123,15 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 	}
 
 	// deploy model service
-	return uc.installModelService(ctx, scope, namespace, name, modelName, sizeBytes, limits, requests)
+	release, err := uc.installModelService(ctx, scope, namespace, name, modelName, sizeBytes, limits, requests)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Model{
+		ID:      modelName,
+		Release: release,
+	}, nil
 }
 
 func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, requests, limits *Resource) (*Model, error) {
@@ -106,27 +140,37 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 		return nil, err
 	}
 
-	vname, ok := rel.Config["modelArtifacts.name"]
+	v, ok := rel.Config["modelArtifacts"]
 	if !ok {
-		return nil, fmt.Errorf("modelArtifacts.name not found in release config")
+		return nil, fmt.Errorf("modelArtifacts not found in release config")
 	}
 
-	vsize, ok := rel.Config["modelArtifacts.size"]
+	m, ok := v.(map[string]any)
 	if !ok {
-		return nil, fmt.Errorf("modelArtifacts.size not found in release config")
+		return nil, fmt.Errorf("modelArtifacts is not a map")
 	}
 
-	modelName, ok := vname.(string)
+	modelName, ok := m["name"].(string)
 	if !ok {
 		return nil, fmt.Errorf("modelArtifacts.name is not a string")
 	}
 
-	sizeBytes, ok := vsize.(int)
+	sizeBytes, ok := m["size"].(int)
 	if !ok {
 		return nil, fmt.Errorf("modelArtifacts.size is not a int64")
 	}
 
-	return uc.upgradeModelService(ctx, scope, namespace, name, modelName, uint64(sizeBytes), limits, requests) //nolint:gosec // ignore
+	return nil, fmt.Errorf("test")
+
+	release, err := uc.upgradeModelService(ctx, scope, namespace, name, modelName, uint64(sizeBytes), limits, requests) //nolint:gosec // ignore
+	if err != nil {
+		return nil, err
+	}
+
+	return &Model{
+		ID:      modelName,
+		Release: release,
+	}, nil
 }
 
 func (uc *UseCase) DeleteModel(ctx context.Context, scope, namespace, name string) error {
@@ -289,7 +333,7 @@ func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, n
 	return err
 }
 
-func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*Model, error) {
+func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*release.Release, error) {
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
@@ -310,7 +354,7 @@ func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, na
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
 }
 
-func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*Model, error) {
+func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*release.Release, error) {
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
@@ -319,6 +363,25 @@ func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, na
 	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
+}
+
+func extractModelName(config map[string]any) (string, bool) {
+	v, ok := config["modelArtifacts"]
+	if !ok {
+		return "", false
+	}
+
+	m, ok := v.(map[string]any)
+	if !ok {
+		return "", false
+	}
+
+	name, ok := m["name"].(string)
+	if !ok {
+		return "", false
+	}
+
+	return name, ok
 }
 
 func shortID(input string) string {

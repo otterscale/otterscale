@@ -156,7 +156,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	tagUseCase := tag.NewUseCase(tagRepo)
 	machineService := app.NewMachineService(machineUseCase, purgeUseCase, tagUseCase)
 	inferencePoolRepo := kubernetessigs.NewInferencePoolRepo(kubernetesSigs)
-	modelUseCase := model.NewUseCase(inferencePoolRepo, chartRepo, deploymentRepo, gatewayRepo, httpRouteRepo, persistentVolumeClaimRepo, releaseRepo, serviceRepo)
+	modelUseCase := model.NewUseCase(inferencePoolRepo, chartRepo, deploymentRepo, gatewayRepo, httpRouteRepo, persistentVolumeClaimRepo, podRepo, releaseRepo, serviceRepo)
 	modelService := app.NewModelService(modelUseCase)
 	fabricRepo := maas.NewFabricRepo(maasMAAS)
 	subnetRepo := maas.NewSubnetRepo(maasMAAS)
