@@ -3,6 +3,7 @@ edition = "2023";
 package otterscale.model.v1;
 
 import "api/annotations.proto";
+import "api/application/v1/application.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -68,6 +69,7 @@ message Model {
   string app_version = 22;
   Resource requests = 31;
   Resource limits = 32;
+  repeated otterscale.application.v1.Application.Pod pods = 41;
 }
 
 message ListModelsRequest {

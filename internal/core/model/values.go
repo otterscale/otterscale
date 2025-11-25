@@ -6,7 +6,7 @@ const inferencePoolValuesYAML = `inferenceExtension:
   image:
     name: llm-d-inference-scheduler
     hub: ghcr.io/llm-d
-    tag: v0.3.2
+    tag: v0.3.2-with-sidecar-fix
     pullPolicy: Always
   extProcPort: 9002
   env: []
