@@ -123,6 +123,25 @@ func toModelResource(r *pb.Model_Resource) *model.Resource {
 	}
 }
 
+func toProtoModelID(config map[string]any) string {
+	v, ok := config["modelArtifacts"]
+	if !ok {
+		return ""
+	}
+
+	m, ok := v.(map[string]any)
+	if !ok {
+		return ""
+	}
+
+	name, ok := m["name"].(string)
+	if !ok {
+		return ""
+	}
+
+	return name
+}
+
 func toProtoModels(ms []model.Model) []*pb.Model {
 	ret := []*pb.Model{}
 
@@ -135,7 +154,7 @@ func toProtoModels(ms []model.Model) []*pb.Model {
 
 func toProtoModel(m *model.Model) *pb.Model {
 	ret := &pb.Model{}
-	ret.SetId("ID") // TODO: waiting for v0.3.0
+	ret.SetId(toProtoModelID(m.Config))
 	ret.SetName(m.Name)
 	ret.SetNamespace(m.Namespace)
 
