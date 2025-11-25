@@ -35,7 +35,7 @@
 		try {
 			await Promise.all([fetchReadyControllers(), fetchHealthControllers()]);
 		} catch (error) {
-			console.error('Failed to fetch cpu data:', error);
+			console.error('Failed to fetch controller data:', error);
 		}
 	}
 
