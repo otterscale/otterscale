@@ -1501,7 +1501,7 @@ deploy_helm() {
     namespace="cert-manager"
     if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/$deploy_name --version v1.19.1 -n $namespace --create-namespace --set crds.enabled=true" "helm install cert $deploy_name"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name/$deploy_name --version v1.19.1 -n $namespace --create-namespace --set crds.enabled=true --wait --timeout 10m" "helm install cert $deploy_name"
     else
         log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
     fi
@@ -1512,7 +1512,7 @@ deploy_helm() {
     namespace="open-feature-operator"
     if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/$deploy_name -n $namespace --create-namespace --set sidecarConfiguration.port=8080 --set controllerManager.kubeRbacProxy.resources.limits.cpu=400m -n $namespace" "helm install $deploy_name"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name/$deploy_name -n $namespace --create-namespace --set sidecarConfiguration.port=8080 --set controllerManager.kubeRbacProxy.resources.limits.cpu=400m -n $namespace --wait --timeout 10m" "helm install $deploy_name"
     else
         log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
     fi
