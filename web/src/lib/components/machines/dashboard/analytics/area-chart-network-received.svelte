@@ -1,57 +1,180 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
+	import { scaleUtc } from 'd3-scale';
+	import { curveNatural } from 'd3-shape';
+	import { Area, AreaChart, ChartClipPath } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
+	import { cubicInOut } from 'svelte/easing';
 
-	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
-	import Content from '$lib/components/custom/chart/content/area/area.svelte';
-	import Description from '$lib/components/custom/chart/description.svelte';
-	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
-	import Title from '$lib/components/custom/chart/title.svelte';
-	import { formatTimeRange } from '$lib/components/custom/chart/units/formatter';
-	import { fetchFlattenedRange } from '$lib/components/custom/prometheus';
+	import {
+		formatTimeRange,
+		formatXAxisDate,
+		getXAxisTicks
+	} from '$lib/components/custom/chart/units/formatter';
+	import * as Statistics from '$lib/components/custom/data-table/statistics/index';
+	import {
+		fetchFlattenedRange,
+		generateChartConfig,
+		getSeries
+	} from '$lib/components/custom/prometheus';
+	import ChartContainer from '$lib/components/ui/chart/chart-container.svelte';
+	import * as Chart from '$lib/components/ui/chart/index.js';
+	import Input from '$lib/components/ui/input/input.svelte';
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+	import { cn } from '$lib/utils';
 
 	let { client, fqdn }: { client: PrometheusDriver; fqdn: string } = $props();
 
-	// Constants
-	const STEP_SECONDS = 60; // 1 minute step
-	const TIME_RANGE_HOURS = 1; // 1 hour of data
+	const STEP_SECONDS = 60;
+	const TIME_RANGE_HOURS = 1;
 
-	// Chart configuration
-	const CHART_TITLE = m.networking();
-	const CHART_DESCRIPTION = m.received();
-
-	// Time range calculation
 	const endTime = new Date();
 	const startTime = new Date(endTime.getTime() - TIME_RANGE_HOURS * 60 * 60 * 1000);
 
-	// Prometheus query for CPU load average
+	let topk = $state(10);
+
 	const query = $derived(
-		`sum by (device) (rate(node_network_receive_bytes_total{instance=~"${fqdn}", device!="lo"}[5m]))`
+		`topk(${topk}, sum by (device) (rate(node_network_receive_bytes_total{instance=~"${fqdn}", device!="lo"}[5m])))`
 	);
 </script>
 
-{#await fetchFlattenedRange(client, query, startTime, endTime, STEP_SECONDS)}
-	<ComponentLoading />
-{:then response}
-	<Layout>
-		{#snippet title()}
-			<Title title={CHART_TITLE} />
-		{/snippet}
+<Statistics.Root type="count" class="overflow-visible">
+	<Statistics.Header>
+		<div class="flex">
+			<Statistics.Title class="h-8 **:data-[slot=data-table-statistics-title-icon]:size-6">
+				<div class="flex flex-col justify-between">
+					{m.networking()}
+					<p class="text-sm text-muted-foreground">{m.received()}</p>
+				</div>
+			</Statistics.Title>
+			<div class="relative ml-auto">
+				<span class="absolute top-1/2 left-3 -translate-y-1/2 items-center">
+					<Icon icon="ph:funnel-duotone" />
+				</span>
+				<Input type="number" bind:value={topk} min={0} step={5} class="h-8 w-22 pl-9 text-lg" />
+			</div>
+		</div>
+	</Statistics.Header>
+	<Statistics.Content class="min-h-16">
+		{#await fetchFlattenedRange(client, query, startTime, endTime, STEP_SECONDS)}
+			<div class="flex h-[250px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:blocks-wave" class="m-8 size-32 text-muted-foreground/50" />
+			</div>
+		{:then response}
+			{#if response.length === 0}
+				<div class="flex h-[250px] w-full flex-col items-center justify-center">
+					<Icon icon="ph:chart-line-fill" class="size-60 animate-pulse text-muted-foreground" />
+					<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
+				</div>
+			{:else}
+				{@const data = response}
+				{@const chartConfig = generateChartConfig(data)}
+				<ChartContainer config={chartConfig} class="aspect-auto h-[250px] w-full">
+					<AreaChart
+						{data}
+						x="date"
+						xScale={scaleUtc()}
+						series={getSeries(chartConfig)}
+						props={{
+							area: {
+								curve: curveNatural,
+								'fill-opacity': 0.4,
+								line: { class: 'stroke-1' },
+								motion: 'tween'
+							},
+							xAxis: {
+								ticks: getXAxisTicks(formatTimeRange(TIME_RANGE_HOURS)),
+								format: (date: Date) => formatXAxisDate(date, formatTimeRange(TIME_RANGE_HOURS))
+							},
+							yAxis: {
+								format: () => ''
+							}
+						}}
+					>
+						{#snippet marks({ series: chartSeries, getAreaProps })}
+							<defs>
+								{#each chartSeries as series (series.key)}
+									{@const key = series.key.replace(/\s+/g, '')}
+									<linearGradient id="fill{key}" x1="0" y1="0" x2="0" y2="1">
+										<stop offset="5%" stop-color={series.color} stop-opacity={1.0} />
+										<stop offset="95%" stop-color={series.color} stop-opacity={0.4} />
+									</linearGradient>
+								{/each}
+							</defs>
 
-		{#snippet description()}
-			<Description description={CHART_DESCRIPTION} />
-		{/snippet}
+							<ChartClipPath
+								initialWidth={0}
+								motion={{
+									width: {
+										type: 'tween',
+										duration: 1000,
+										easing: cubicInOut
+									}
+								}}
+							>
+								{#each chartSeries as series, index (series.key)}
+									{@const key = series.key.replace(/\s+/g, '')}
+									<Area {...getAreaProps(series, index)} fill="url(#fill{key})" />
+								{/each}
+							</ChartClipPath>
+						{/snippet}
 
-		{#snippet content()}
-			<Content
-				data={response}
-				timeRange={formatTimeRange(TIME_RANGE_HOURS)}
-				valueFormatter={formatIO}
-			/>
-		{/snippet}
-	</Layout>
-{:catch}
-	<ErrorLayout title={CHART_TITLE} description={CHART_DESCRIPTION} />
-{/await}
+						{#snippet tooltip()}
+							<Chart.Tooltip
+								labelFormatter={(v: Date) => {
+									return v.toLocaleDateString('en-US', {
+										year: 'numeric',
+										month: 'long',
+										day: 'numeric',
+										hour: 'numeric',
+										minute: 'numeric'
+									});
+								}}
+							>
+								{#snippet formatter({ name, value, payload })}
+									{@const top3 = payload
+										.map((datum) => datum.value)
+										.sort((p, n) => n - p)
+										.slice(0, 3)}
+									<div
+										class="flex w-full shrink-0 items-center justify-between gap-4 leading-none"
+										style="--color-bg: var(--color-{name})"
+									>
+										{#if value !== undefined && value !== null}
+											{@const { value: ioValue, unit: ioUnit } = formatIO(Number(value))}
+											<span class="flex w-full items-center gap-1">
+												<Icon icon="ph:square-fill" class="text-(--color-bg)" />
+												<p
+													class={top3.includes(value)
+														? 'fond-bold text-destructive'
+														: 'text-foreground'}
+												>
+													{name}
+												</p>
+											</span>
+											<p
+												class={cn(
+													'font-mono font-medium whitespace-nowrap tabular-nums',
+													top3.includes(value) ? 'fond-bold text-destructive' : 'text-foreground'
+												)}
+											>
+												{ioValue.toLocaleString()}
+												{ioUnit}
+											</p>
+										{/if}
+									</div>
+								{/snippet}
+							</Chart.Tooltip>
+						{/snippet}
+					</AreaChart>
+				</ChartContainer>
+			{/if}
+		{:catch}
+			<div class="flex h-[250px] w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-bar-fill" class="size-24 animate-pulse text-muted-foreground" />
+				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
+			</div>
+		{/await}
+	</Statistics.Content>
+</Statistics.Root>

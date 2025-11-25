@@ -18,6 +18,7 @@
 		placementGroupCount,
 		usage,
 		iops,
+		throughput,
 		actions
 	};
 </script>
@@ -99,8 +100,14 @@
 {/snippet}
 
 {#snippet iops()}
-	<Layout.Header class="justify-start">
+	<Layout.Header class="justify-center">
 		<Layout.HeaderViewer>{m.iops()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet throughput()}
+	<Layout.Header class="justify-center">
+		<Layout.HeaderViewer>{m.throughput()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

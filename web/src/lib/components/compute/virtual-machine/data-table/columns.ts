@@ -5,6 +5,7 @@ import type { ReloadManager } from '$lib/components/custom/reloader';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
+import type { Metrics } from '../types';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
@@ -16,10 +17,17 @@ const messages = {
 	instanceType: m.instance_type(),
 	disk: m.disk(),
 	port: m.ports(),
+	cpu_metric: m.cpu(),
+	memory_metric: m.memory(),
+	storage_metric: m.storage(),
 	createTime: m.create_time()
 };
 
-function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<VirtualMachine>[] {
+function getColumns(
+	metrics: Metrics,
+	scope: string,
+	reloadManager: ReloadManager
+): ColumnDef<VirtualMachine>[] {
 	return [
 		{
 			id: 'select',
@@ -111,6 +119,34 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Virt
 				return renderSnippet(cells.createTime, row);
 			},
 			filterFn: 'arrIncludesSome'
+		},
+
+		{
+			accessorKey: 'cpu_metric',
+			header: ({ column }) => {
+				return renderSnippet(headers.cpu_metric, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.cpu_metric, { row, metrics });
+			}
+		},
+		{
+			accessorKey: 'memory_metric',
+			header: ({ column }) => {
+				return renderSnippet(headers.memory_metric, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.memory_metric, { row, metrics });
+			}
+		},
+		{
+			accessorKey: 'storage_metric',
+			header: ({ column }) => {
+				return renderSnippet(headers.storage_metric, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.storage_metric, { row, metrics });
+			}
 		},
 		{
 			accessorKey: 'vnc',
