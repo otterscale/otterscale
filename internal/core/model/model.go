@@ -416,30 +416,46 @@ func extractResource(config map[string]any, key string) *Resource {
 		return nil
 	}
 
-	containers, ok := m["containers"].([]any)
+	vgpu := extractVGPU(m)
+	vgpuMemory := extractVGPUMemory(m)
+
+	return &Resource{
+		VGPU:       vgpu,
+		VGPUMemory: vgpuMemory,
+	}
+}
+
+func extractVGPU(config map[string]any) uint32 {
+	parallelism, ok := config["parallelism"].(map[string]any)
+	if !ok {
+		return 1
+	}
+
+	return parseResourceValue(parallelism, "tensor")
+}
+
+func extractVGPUMemory(config map[string]any) uint32 {
+	containers, ok := config["containers"].([]any)
 	if !ok || len(containers) == 0 {
-		return nil
+		return 0
 	}
 
 	cm, ok := containers[0].(map[string]any)
 	if !ok {
-		return nil
+		return 0
 	}
 
 	resources, ok := cm["resources"].(map[string]any)
 	if !ok {
-		return nil
+		return 0
 	}
 
 	requests, ok := resources["requests"].(map[string]any)
 	if !ok {
-		return nil
+		return 0
 	}
 
-	return &Resource{
-		VGPU:       parseResourceValue(requests, resourceVGPU),
-		VGPUMemory: parseResourceValue(requests, resourceVGPUMemPercentage),
-	}
+	return parseResourceValue(requests, resourceVGPUMemPercentage)
 }
 
 func parseResourceValue(requests map[string]any, key string) uint32 {

@@ -279,6 +279,9 @@ decode:
   autoscaling:
     enabled: true
 
+  parallelism:
+    tensor: "%[6]d"
+
   replicas: 1
   # schedulerName -- Name of the scheduler to use for scheduling decode pods (overrides global schedulerName)
   # schedulerName: decode-scheduler
@@ -377,13 +380,11 @@ decode:
         # additionalProperties: true
         # @schema
         limits:
-          otterscale.com/vgpu: "%[6]d"
           otterscale.com/vgpumem-percentage: "%[7]d"          
         # @schema
         # additionalProperties: true
         # @schema
         requests:
-          otterscale.com/vgpu: "%[6]d"
           otterscale.com/vgpumem-percentage: "%[7]d"
         # @schema
         # additionalProperties: true
@@ -481,6 +482,9 @@ prefill:
   autoscaling:
     enabled: true
 
+  parallelism:
+    tensor: "%[4]d"
+
   replicas: 1
   # schedulerName -- Name of the scheduler to use for scheduling prefill pods (overrides global schedulerName)
   # schedulerName: prefill-scheduler
@@ -550,13 +554,11 @@ prefill:
         # additionalProperties: true
         # @schema
         limits:
-          otterscale.com/vgpu: "%[4]d"
           otterscale.com/vgpumem-percentage: "%[5]d"
         # @schema
         # additionalProperties: true
         # @schema
         requests:
-          otterscale.com/vgpu: "%[4]d"
           otterscale.com/vgpumem-percentage: "%[5]d"
       # @schema
       # type: array
