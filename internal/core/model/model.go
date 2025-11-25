@@ -88,6 +88,7 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 		}
 
 		models = append(models, Model{
+			ID:      modelName,
 			Release: &releases[i],
 			Pods:    pods,
 		})
