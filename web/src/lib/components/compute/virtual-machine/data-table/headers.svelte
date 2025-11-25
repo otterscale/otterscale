@@ -17,6 +17,9 @@
 		port,
 		createTime,
 		vnc,
+		cpu_metric,
+		memory_metric,
+		storage_metric,
 		actions
 	};
 </script>
@@ -102,5 +105,29 @@
 {/snippet}
 
 {#snippet vnc()}{/snippet}
+
+{#snippet cpu_metric()}
+	<Layout.Header class="justify-center">
+		<Layout.HeaderViewer>
+			{m.cpu()}
+		</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet memory_metric()}
+	<Layout.Header class="justify-center">
+		<Layout.HeaderViewer>
+			{m.memory()}
+		</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet storage_metric()}
+	<Layout.Header class="justify-center">
+		<Layout.HeaderViewer>
+			{m.storage()}
+		</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
 
 {#snippet actions()}{/snippet}

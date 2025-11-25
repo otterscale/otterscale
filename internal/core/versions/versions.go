@@ -19,7 +19,7 @@ const (
 // Kubernetes Custom Resource Definition
 const (
 	GatewayAPI                   = "1.3.0"
-	GatewayAPIInferenceExtension = "1.1.0"
+	GatewayAPIInferenceExtension = "1.2.0-rc.1"
 )
 
 // Juju Charm

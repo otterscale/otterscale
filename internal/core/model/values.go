@@ -1,12 +1,12 @@
 package model
 
-// Gateway API Inference Extension v1.1.0
+// Gateway API Inference Extension v1.2.0-rc.1
 const inferencePoolValuesYAML = `inferenceExtension:
   replicas: 1
   image:
     name: llm-d-inference-scheduler
     hub: ghcr.io/llm-d
-    tag: v0.3.2
+    tag: v0.3.2-with-sidecar-fix
     pullPolicy: Always
   extProcPort: 9002
   env: []
@@ -15,6 +15,11 @@ const inferencePoolValuesYAML = `inferenceExtension:
   extraContainerPorts: []
   # Define additional service ports
   extraServicePorts: []
+#  extraServicePorts:
+#    - name: http
+#      port: 8081
+#      protocol: TCP
+#      targetPort: 8081
 
   # This is the plugins configuration file.
   # pluginsCustomConfig:
@@ -36,12 +41,15 @@ const inferencePoolValuesYAML = `inferenceExtension:
 
   flags:
     # Log verbosity
-    - name: v
-      value: 1
+    v: 1
 
   affinity: {}
 
   tolerations: []
+  
+  # Sidecar configuration for EPP
+  sidecar:
+    enabled: false
 
   # Monitoring configuration for EPP
   monitoring:
@@ -52,7 +60,7 @@ const inferencePoolValuesYAML = `inferenceExtension:
       auth:
         enabled: true
         # Service account token secret for authentication
-        secretName: inference-gateway-sa-metrics-reader-secret
+        secretName: %s-sa-metrics-reader-secret
       # additional labels for the ServiceMonitor
       extraLabels: {}
 
@@ -89,18 +97,20 @@ provider:
     # Set to true if the cluster is an Autopilot cluster.
     autopilot: false
 
-istio:
-  destinationRule:
-    # Provide a way to override the default calculated host
-    host: "" 
-    # Optional: Enables customization of the traffic policy
-    trafficPolicy:
-      tls:
-        insecureSkipVerify: true
-        mode: SIMPLE
-      # connectionPool:
-      #   http:
-      #     maxRequestsPerConnection: 256000
+  # Istio-specific configuration.
+  # This block is only used if name is "istio".
+  istio:
+    destinationRule:
+      # Provide a way to override the default calculated host
+      host: ""
+      # Optional: Enables customization of the traffic policy
+      trafficPolicy:
+        tls:
+          insecureSkipVerify: true
+          mode: SIMPLE
+        # connectionPool:
+        #   http:
+        #     maxRequestsPerConnection: 256000
 `
 
 // llm-d Model Service v0.3.6
@@ -145,7 +155,7 @@ modelArtifacts:
   #   oci:// not yet supported
   uri: "hf://{{ .Values.modelArtifacts.name }}"
   # size of volume to create to hold the model
-  size: %d
+  size: %q
   # name of secret containing credentials for accessing the model (e.g., HF_TOKEN)
   authSecretName: ""
   # location where model volume will be mounted (used when mountModelVolume: true)

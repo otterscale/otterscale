@@ -5,8 +5,12 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"log/slog"
 	"regexp"
+	"slices"
+	"strconv"
 	"strings"
+	"time"
 
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -23,8 +27,11 @@ import (
 
 const ModelNameAnnotation = "otterscale.com/model.name"
 
-// Release represents a Helm Release resource.
-type Model = release.Release
+type Model struct {
+	ID      string
+	Release *release.Release
+	Pods    []workload.Pod
+}
 
 type Resource struct {
 	VGPU       uint32
@@ -39,11 +46,12 @@ type UseCase struct {
 	gateway               service.GatewayRepo
 	httpRoute             service.HTTPRouteRepo
 	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
+	pod                   workload.PodRepo
 	release               release.ReleaseRepo
 	service               service.ServiceRepo
 }
 
-func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployment workload.DeploymentRepo, gateway service.GatewayRepo, httpRoute service.HTTPRouteRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, release release.ReleaseRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployment workload.DeploymentRepo, gateway service.GatewayRepo, httpRoute service.HTTPRouteRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, pod workload.PodRepo, release release.ReleaseRepo, service service.ServiceRepo) *UseCase {
 	return &UseCase{
 		inferencePool:         inferencePool,
 		chart:                 chart,
@@ -51,6 +59,7 @@ func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployme
 		gateway:               gateway,
 		httpRoute:             httpRoute,
 		persistentVolumeClaim: persistentVolumeClaim,
+		pod:                   pod,
 		release:               release,
 		service:               service,
 	}
@@ -59,12 +68,33 @@ func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployme
 func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (models []Model, uri string, err error) {
 	selector := release.TypeLabel + "=" + "model"
 
-	models, err = uc.release.List(ctx, scope, namespace, selector)
+	releases, err := uc.release.List(ctx, scope, namespace, selector)
 	if err != nil {
 		return nil, "", err
 	}
 
-	uri, err = uc.gatewayURL(ctx, scope, "llm-d", "llm-d-inference-gateway-istio")
+	for i := range releases {
+		modelName, ok := extractModelName(releases[i].Config)
+		if !ok {
+			slog.Error("model name not found in release config", "release", releases[i].Name)
+			continue
+		}
+
+		selector := "llm-d.ai/model" + "=" + formatLabel(modelName)
+
+		pods, err := uc.pod.List(ctx, scope, namespace, selector)
+		if err != nil {
+			return nil, "", err
+		}
+
+		models = append(models, Model{
+			ID:      modelName,
+			Release: &releases[i],
+			Pods:    pods,
+		})
+	}
+
+	uri, err = uc.gatewayURL(ctx, scope, "llm-d", "llm-d-infra-inference-gateway-istio")
 	if err != nil {
 		return nil, "", err
 	}
@@ -73,7 +103,7 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 }
 
 func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*Model, error) {
-	gatewayName := "llm-d-inference-gateway" // from llm-d-infra helm chart (.Values.nameOverride)
+	gatewayName := "llm-d-infra-inference-gateway" // from llm-d-infra helm chart (.Values.nameOverride)
 	inferencePoolName := "inferencepool-" + shortID(modelName)
 	inferencePoolPort := int32(8000) //nolint:mnd // default port for inference pool
 	httpRouteName := "httproute-" + shortID(gatewayName+inferencePoolName)
@@ -94,7 +124,15 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 	}
 
 	// deploy model service
-	return uc.installModelService(ctx, scope, namespace, name, modelName, sizeBytes, limits, requests)
+	release, err := uc.installModelService(ctx, scope, namespace, name, modelName, sizeBytes, limits, requests)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Model{
+		ID:      modelName,
+		Release: release,
+	}, nil
 }
 
 func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, requests, limits *Resource) (*Model, error) {
@@ -103,27 +141,40 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 		return nil, err
 	}
 
-	vname, ok := rel.Config["modelArtifacts.name"]
+	v, ok := rel.Config["modelArtifacts"]
 	if !ok {
-		return nil, fmt.Errorf("modelArtifacts.name not found in release config")
+		return nil, fmt.Errorf("modelArtifacts not found in release config")
 	}
 
-	vsize, ok := rel.Config["modelArtifacts.size"]
+	m, ok := v.(map[string]any)
 	if !ok {
-		return nil, fmt.Errorf("modelArtifacts.size not found in release config")
+		return nil, fmt.Errorf("modelArtifacts is not a map")
 	}
 
-	modelName, ok := vname.(string)
+	modelName, ok := m["name"].(string)
 	if !ok {
 		return nil, fmt.Errorf("modelArtifacts.name is not a string")
 	}
 
-	sizeBytes, ok := vsize.(int)
+	strSizeBytes, ok := m["size"].(string)
 	if !ok {
-		return nil, fmt.Errorf("modelArtifacts.size is not a int64")
+		return nil, fmt.Errorf("modelArtifacts.size is not a string")
 	}
 
-	return uc.upgradeModelService(ctx, scope, namespace, name, modelName, uint64(sizeBytes), limits, requests) //nolint:gosec // ignore
+	sizeBytes, err := strconv.ParseUint(strSizeBytes, 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse modelArtifacts.size: %w", err)
+	}
+
+	release, err := uc.upgradeModelService(ctx, scope, namespace, name, modelName, sizeBytes, limits, requests)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Model{
+		ID:      modelName,
+		Release: release,
+	}, nil
 }
 
 func (uc *UseCase) DeleteModel(ctx context.Context, scope, namespace, name string) error {
@@ -151,7 +202,7 @@ func (uc *UseCase) gatewayURL(ctx context.Context, scope, namespace, serviceName
 	}
 
 	if port == 0 {
-		return "", fmt.Errorf("default port not found for llm-d-inference-gateway-istio service")
+		return "", fmt.Errorf("default port not found for llm-d-infra-inference-gateway-istio service")
 	}
 
 	return fmt.Sprintf("http://%s:%d", url.Hostname(), port), nil
@@ -181,7 +232,7 @@ func (uc *UseCase) buildHTTPRoute(namespace, name, gatewayName, inferencePoolNam
 	// backend references
 	backendGroup := gav1.Group(v1.GroupName)
 	backendKind := gav1.Kind("InferencePool")
-	weight := int32(1)
+	weight := int32(100) //nolint:mnd // single backend, so 100% weight
 
 	// timeouts
 	timeout := gav1.Duration("0s")
@@ -258,13 +309,18 @@ func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, n
 	}
 
 	// values
-	valuesYAML := fmt.Sprintf(inferencePoolValuesYAML, port)
+	valuesYAML := fmt.Sprintf(inferencePoolValuesYAML, name, port)
 
 	_, err := uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
-	return err
+	if err != nil {
+		return err
+	}
+
+	// FIXME: workaround to remove tracing arg until supported in llm-d-inference-scheduler
+	return uc.removeTracingFlag(ctx, scope, namespace, name)
 }
 
-func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*Model, error) {
+func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*release.Release, error) {
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
@@ -279,19 +335,61 @@ func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, na
 	}
 
 	// values
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), sizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
+	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
 }
 
-func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*Model, error) {
+func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*release.Release, error) {
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
 	// values
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), sizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
+	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
+}
+
+func (uc *UseCase) removeTracingFlag(ctx context.Context, scope, namespace, name string) error {
+	time.Sleep(2 * time.Second)
+
+	deployment, err := uc.deployment.Get(ctx, scope, namespace, name+"-epp")
+	if err != nil {
+		return err
+	}
+
+	containers := deployment.Spec.Template.Spec.Containers
+	if len(containers) == 0 {
+		return fmt.Errorf("no containers found in deployment %s", deployment.Name)
+	}
+
+	deployment.Spec.Template.Spec.Containers[0].Args = slices.DeleteFunc(containers[0].Args, func(arg string) bool {
+		return arg == "--tracing=false"
+	})
+
+	_, err = uc.deployment.Update(ctx, scope, namespace, deployment)
+	return err
+}
+
+func extractModelName(config map[string]any) (string, bool) {
+	v, ok := config["modelArtifacts"]
+	if !ok {
+		return "", false
+	}
+
+	m, ok := v.(map[string]any)
+	if !ok {
+		return "", false
+	}
+
+	name, ok := m["name"].(string)
+	if !ok {
+		return "", false
+	}
+
+	return name, ok
 }
 
 func shortID(input string) string {

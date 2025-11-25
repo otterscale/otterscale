@@ -1,20 +1,13 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
-	import Content from '$lib/components/custom/chart/content/text/text.svelte';
-	import Layout from '$lib/components/custom/chart/layout/small.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
-	import Title from '$lib/components/custom/chart/title.svelte';
+	import * as Statistics from '$lib/components/custom/data-table/statistics/index';
 	import { formatDuration } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
 	let { client, fqdn }: { client: PrometheusDriver; fqdn: string } = $props();
 
-	// Constants
-	const CHART_TITLE = m.uptime();
-
-	// Query
 	const query = $derived(
 		`
 		node_time_seconds{instance=~"${fqdn}"}
@@ -24,25 +17,35 @@
 	);
 </script>
 
-{#await client.instantQuery(query)}
-	<ComponentLoading />
-{:then response}
-	<Layout>
-		{#snippet title()}
-			<Title title={CHART_TITLE} />
-		{/snippet}
-
-		{#snippet content()}
+<Statistics.Root type="count">
+	<Statistics.Header>
+		<Statistics.Title>{m.uptime()}</Statistics.Title>
+	</Statistics.Header>
+	<Statistics.Content class="min-h-20">
+		{#await client.instantQuery(query)}
+			<div class="flex h-[200px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:3-dots-bounce" class="m-8 size-8" />
+			</div>
+		{:then response}
 			{@const result = response.result}
 			{#if result.length === 0}
-				<Content />
+				<div class="flex h-[200px] w-full flex-col items-center justify-center">
+					<Icon icon="ph:chart-bar-fill" class="size-24 animate-pulse text-muted-foreground" />
+					<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
+				</div>
 			{:else}
 				{@const uptime = result[0].value.value}
 				{@const duration = formatDuration(uptime)}
-				<Content value={duration.value.toFixed(1)} unit={duration.unit} />
+				<p class="flex h-[200px] items-center justify-center text-5xl font-semibold">
+					{duration.value.toFixed(1)}
+					{duration.unit}
+				</p>
 			{/if}
-		{/snippet}
-	</Layout>
-{:catch}
-	<ErrorLayout title={CHART_TITLE} />
-{/await}
+		{:catch}
+			<div class="flex h-[200px] w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-bar-fill" class="size-24 animate-pulse text-muted-foreground" />
+				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
+			</div>
+		{/await}
+	</Statistics.Content>
+</Statistics.Root>

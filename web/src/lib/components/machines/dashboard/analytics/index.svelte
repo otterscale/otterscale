@@ -8,7 +8,7 @@
 	import { default as NetworkReceived } from './area-chart-network-received.svelte';
 	import { default as NetworkTransmitted } from './area-chart-network-transmitted.svelte';
 	import { default as BasicRAM } from './area-chart-ram.svelte';
-	import FQDNPicker from './machine-picker.svelte';
+	import InstancePicker from './instance-picker.svelte';
 	import { default as UsageRateUptime } from './text-chart-uptime.svelte';
 	import { default as UsageRateCPU } from './usage-rate-chart-cpu.svelte';
 	import { default as UsageRateRAM } from './usage-rate-chart-ram.svelte';
@@ -17,54 +17,54 @@
 
 	let { selectedTab, client }: { selectedTab: string; client: PrometheusDriver } = $props();
 
-	let selectedFQDN = $state(undefined);
+	let selectedInstance = $state(undefined);
 </script>
 
 <div class="flex flex-col gap-4">
-	<div class="mr-auto flex flex-wrap items-center gap-2">
-		<FQDNPicker bind:selectedFQDN />
+	<div class="ml-auto flex flex-wrap items-center gap-2">
+		<InstancePicker bind:selectedInstance />
 	</div>
-	{#if selectedFQDN && selectedTab === 'analytics'}
-		{#key selectedFQDN}
+	{#if selectedInstance && selectedTab === 'analytics'}
+		{#key selectedInstance}
 			<div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
 				<span class="col-span-1">
-					<UsageRateUptime {client} fqdn={selectedFQDN} />
+					<UsageRateUptime {client} fqdn={selectedInstance} />
 				</span>
 				<span class="col-span-1">
-					<UsageRateCPU {client} fqdn={selectedFQDN} />
+					<UsageRateCPU {client} fqdn={selectedInstance} />
 				</span>
 				<span class="col-span-1">
-					<UsageRateRAM {client} fqdn={selectedFQDN} />
+					<UsageRateRAM {client} fqdn={selectedInstance} />
 				</span>
 				<span class="col-span-1">
-					<UsageRateSWAP {client} fqdn={selectedFQDN} />
+					<UsageRateSWAP {client} fqdn={selectedInstance} />
 				</span>
 				<span class="col-span-1">
-					<UsageRateRootFS {client} fqdn={selectedFQDN} />
+					<UsageRateRootFS {client} fqdn={selectedInstance} />
 				</span>
 			</div>
 
 			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
 				<span class="col-span-1">
-					<CPUCoreProcessor {client} fqdn={selectedFQDN} />
+					<CPUCoreProcessor {client} fqdn={selectedInstance} />
 				</span>
 				<span class="col-span-1">
-					<CPUAverage {client} fqdn={selectedFQDN} />
+					<CPUAverage {client} fqdn={selectedInstance} />
 				</span>
 				<span class="col-span-1">
-					<BasicRAM {client} fqdn={selectedFQDN} />
+					<BasicRAM {client} fqdn={selectedInstance} />
 				</span>
 				<span class="col-span-1">
-					<BasicDisk {client} fqdn={selectedFQDN} />
+					<BasicDisk {client} fqdn={selectedInstance} />
 				</span>
 				<span class="col-span-1">
-					<DiskIOTime {client} fqdn={selectedFQDN} />
+					<DiskIOTime {client} fqdn={selectedInstance} />
 				</span>
 				<span class="col-span-1">
-					<NetworkReceived {client} fqdn={selectedFQDN} />
+					<NetworkReceived {client} fqdn={selectedInstance} />
 				</span>
 				<span class="col-span-1">
-					<NetworkTransmitted {client} fqdn={selectedFQDN} />
+					<NetworkTransmitted {client} fqdn={selectedInstance} />
 				</span>
 			</div>
 		{/key}

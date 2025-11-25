@@ -7,48 +7,48 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/goccy/go-yaml"
 	"github.com/spf13/viper"
+	"sigs.k8s.io/yaml"
 )
 
 type MAAS struct {
-	URL     string `yaml:"url"`
-	Key     string `yaml:"key"`
-	Version string `yaml:"version"`
+	URL     string `json:"url"`
+	Key     string `json:"key"`
+	Version string `json:"version"`
 }
 
 type Juju struct {
-	Controller          string   `yaml:"controller"`
-	ControllerAddresses []string `yaml:"controller_addresses"`
-	Username            string   `yaml:"username"`
-	Password            string   `yaml:"password"`
-	CACert              string   `yaml:"ca_cert"`
-	CloudName           string   `yaml:"cloud_name"`
-	CloudRegion         string   `yaml:"cloud_region"`
-	CharmhubAPIURL      string   `yaml:"charmhub_api_url"`
+	Controller          string   `json:"controller"`
+	ControllerAddresses []string `json:"controller_addresses"`
+	Username            string   `json:"username"`
+	Password            string   `json:"password"`
+	CACert              string   `json:"ca_cert"`
+	CloudName           string   `json:"cloud_name"`
+	CloudRegion         string   `json:"cloud_region"`
+	CharmhubAPIURL      string   `json:"charmhub_api_url"`
 }
 
 type MicroK8s struct {
-	Config string `yaml:"config"`
+	Config string `json:"config"`
 }
 
 type Kube struct {
-	HelmRepositoryURLs []string `yaml:"helm_repository_urls"`
+	HelmRepositoryURLs []string `json:"helm_repository_urls"`
 }
 
 type Ceph struct {
-	RADOSTimeout time.Duration `yaml:"rados_timeout"`
+	RADOSTimeout time.Duration `json:"rados_timeout"`
 }
 
 type Schema struct {
 	// System
-	MAAS     MAAS     `yaml:"maas"`
-	Juju     Juju     `yaml:"juju"`
-	MicroK8s MicroK8s `yaml:"micro_k8s"`
+	MAAS     MAAS     `json:"maas"`
+	Juju     Juju     `json:"juju"`
+	MicroK8s MicroK8s `json:"micro_k8s"`
 
 	// User
-	Kube Kube `yaml:"kube"`
-	Ceph Ceph `yaml:"ceph"`
+	Kube Kube `json:"kube"`
+	Ceph Ceph `json:"ceph"`
 }
 
 type Config struct {

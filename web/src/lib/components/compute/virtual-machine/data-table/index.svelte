@@ -19,6 +19,7 @@
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
+	import type { Metrics } from '../types';
 	import Create from './action-create.svelte';
 	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
@@ -27,10 +28,12 @@
 <script lang="ts">
 	let {
 		virtualMachines,
+		metrics,
 		scope,
 		reloadManager
 	}: {
 		virtualMachines: Writable<VirtualMachine[]>;
+		metrics: Metrics;
 		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
@@ -48,7 +51,7 @@
 			return $virtualMachines;
 		},
 		get columns() {
-			return getColumns(scope, reloadManager);
+			return getColumns(metrics, scope, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),

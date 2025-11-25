@@ -135,23 +135,29 @@ func toProtoModels(ms []model.Model) []*pb.Model {
 
 func toProtoModel(m *model.Model) *pb.Model {
 	ret := &pb.Model{}
-	ret.SetId("ID") // TODO: waiting for v0.3.0
-	ret.SetName(m.Name)
-	ret.SetNamespace(m.Namespace)
+	ret.SetId(m.ID)
 
-	info := m.Info
-	if info != nil {
-		ret.SetStatus(string(info.Status))
-		ret.SetDescription(info.Description)
-		ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
-		ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
+	release := m.Release
+	if release != nil {
+		ret.SetName(release.Name)
+		ret.SetNamespace(release.Namespace)
+
+		info := release.Info
+		if info != nil {
+			ret.SetStatus(string(info.Status))
+			ret.SetDescription(info.Description)
+			ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
+			ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
+		}
+
+		chart := release.Chart
+		if chart != nil && chart.Metadata != nil {
+			ret.SetChartVersion(chart.Metadata.Version)
+			ret.SetAppVersion(chart.Metadata.AppVersion)
+		}
 	}
 
-	chart := m.Chart
-	if chart != nil && chart.Metadata != nil {
-		ret.SetChartVersion(chart.Metadata.Version)
-		ret.SetAppVersion(chart.Metadata.AppVersion)
-	}
+	ret.SetPods(toProtoPods(m.Pods))
 
 	return ret
 }
