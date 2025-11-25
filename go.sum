@@ -771,6 +771,8 @@ github.com/openshift/custom-resource-status v1.1.2 h1:C3DL44LEbvlbItfd8mT5jWrqPf
 github.com/openshift/custom-resource-status v1.1.2/go.mod h1:DB/Mf2oTeiAmVVX1gN+NEqweonAPY0TKUwADizj8+ZA=
 github.com/otterscale/kubevirt-client-go v1.6.1 h1:Td9ZlgxXsHjSI2xOMiuGbffT7TWSq3680UxHdAl9sNM=
 github.com/otterscale/kubevirt-client-go v1.6.1/go.mod h1:t7hrI6H4z5ZnR278UCLK21xBk3URHKwYTLvfpm5jTf8=
+github.com/otterscale/samba-operator v0.0.1 h1:JhyDr801+6wXSFYipKdUq/56Sbi5JUa00MREaA4cAOo=
+github.com/otterscale/samba-operator v0.0.1/go.mod h1:LaNmRsWmqtKX3g4pJvGSV8yGcplqjiUrQd/imMoW6RM=
 github.com/otterscale/samba-operator-client-go v0.0.1 h1:PpRkS8zjXtTWYMhjAff3fV9EI3XlzASZLKfYOcuwGtY=
 github.com/otterscale/samba-operator-client-go v0.0.1/go.mod h1:3CENw32jo7LdU9Slk/cJMx200seFSfYyLeSsx/eY9QA=
 github.com/pelletier/go-toml/v2 v2.2.4 h1:mye9XuhQ6gvn5h28+VilKrrPoQVanw5PMw/TB0t5Ec4=
@@ -832,8 +834,6 @@ github.com/ryanuber/go-glob v1.0.0 h1:iQh3xXAumdQ+4Ufa5b25cRpC5TYKlno6hsv6Cb3pkB
 github.com/ryanuber/go-glob v1.0.0/go.mod h1:807d1WSdnB0XRJzKNil9Om6lcp/3a0v4qIHxIXzX/Yc=
 github.com/sagikazarmark/locafero v0.11.0 h1:1iurJgmM9G3PA/I+wWYIOw/5SyBtxapeHDcg+AAIFXc=
 github.com/sagikazarmark/locafero v0.11.0/go.mod h1:nVIGvgyzw595SUSUE6tvCp3YYTeHs15MvlmU87WwIik=
-github.com/samba-in-kubernetes/samba-operator v0.0.0-20250925054557-7a96dbc17391 h1:nrxTettTzCw1BRMsLtdhnlVHrtWLdU+OvDnUE+uhs3U=
-github.com/samba-in-kubernetes/samba-operator v0.0.0-20250925054557-7a96dbc17391/go.mod h1:LaNmRsWmqtKX3g4pJvGSV8yGcplqjiUrQd/imMoW6RM=
 github.com/santhosh-tekuri/jsonschema/v6 v6.0.2 h1:KRzFb2m7YtdldCEkzs6KqmJw4nqEVZGK7IN2kJkjTuQ=
 github.com/santhosh-tekuri/jsonschema/v6 v6.0.2/go.mod h1:JXeL+ps8p7/KNMjDQk3TCwPpBy0wYklyWTfbkIzdIFU=
 github.com/segmentio/asm v1.2.1 h1:DTNbBqs57ioxAD4PrArqftgypG4/qNpXoJx8TVXxPR0=
@@ -1241,8 +1241,6 @@ launchpad.net/gocheck v0.0.0-20140225173054-000000000087/go.mod h1:hj7XX3B/0A+80
 launchpad.net/xmlpath v0.0.0-20130614043138-000000000004/go.mod h1:vqyExLOM3qBx7mvYRkoxjSCF945s0mbe7YynlKYXtsA=
 oras.land/oras-go/v2 v2.6.0 h1:X4ELRsiGkrbeox69+9tzTu492FMUu7zJQW6eJU+I2oc=
 oras.land/oras-go/v2 v2.6.0/go.mod h1:magiQDfG6H1O9APp+rOsvCPcW1GD2MM7vgnKY0Y+u1o=
-sigs.k8s.io/controller-runtime v0.22.3 h1:I7mfqz/a/WdmDCEnXmSPm8/b/yRTy6JsKKENTijTq8Y=
-sigs.k8s.io/controller-runtime v0.22.3/go.mod h1:+QX1XUpTXN4mLoblf4tqr5CQcyHPAki2HLXqQMY6vh8=
 sigs.k8s.io/gateway-api v1.4.0 h1:ZwlNM6zOHq0h3WUX2gfByPs2yAEsy/EenYJB78jpQfQ=
 sigs.k8s.io/gateway-api v1.4.0/go.mod h1:AR5RSqciWP98OPckEjOjh2XJhAe2Na4LHyXD2FUY7Qk=
 sigs.k8s.io/gateway-api-inference-extension v1.1.0 h1:MqRYk+3LNUWB0MbTgTZVhmJGNDTvm8l3ze4MOlzR7MU=
