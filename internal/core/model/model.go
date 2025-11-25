@@ -351,7 +351,7 @@ func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, na
 	}
 
 	// values
-	strSizeBytes := strconv.Itoa(int(sizeBytes)) //nolint:gosec // ignore
+	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
 	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
@@ -362,7 +362,7 @@ func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, na
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
 	// values
-	strSizeBytes := strconv.Itoa(int(sizeBytes)) //nolint:gosec // ignore
+	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
 	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
