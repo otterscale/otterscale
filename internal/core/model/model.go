@@ -316,24 +316,7 @@ func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, n
 	}
 
 	// FIXME: workaround to remove tracing arg until supported in llm-d-inference-scheduler
-	time.Sleep(2 * time.Second)
-
-	deployment, err := uc.deployment.Get(ctx, scope, namespace, name+"-epp")
-	if err != nil {
-		return err
-	}
-
-	containers := deployment.Spec.Template.Spec.Containers
-	if len(containers) == 0 {
-		return fmt.Errorf("no containers found in deployment %s", deployment.Name)
-	}
-
-	deployment.Spec.Template.Spec.Containers[0].Args = slices.DeleteFunc(containers[0].Args, func(arg string) bool {
-		return arg == "--tracing=false"
-	})
-
-	_, err = uc.deployment.Update(ctx, scope, namespace, deployment)
-	return err
+	return uc.removeTracingFlag(ctx, scope, namespace, name)
 }
 
 func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, limits, requests *Resource) (*release.Release, error) {
@@ -366,6 +349,27 @@ func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, na
 	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, formatLabel(modelName), strSizeBytes, limits.VGPU, limits.VGPUMemory, requests.VGPU, requests.VGPUMemory)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
+}
+
+func (uc *UseCase) removeTracingFlag(ctx context.Context, scope, namespace, name string) error {
+	time.Sleep(2 * time.Second)
+
+	deployment, err := uc.deployment.Get(ctx, scope, namespace, name+"-epp")
+	if err != nil {
+		return err
+	}
+
+	containers := deployment.Spec.Template.Spec.Containers
+	if len(containers) == 0 {
+		return fmt.Errorf("no containers found in deployment %s", deployment.Name)
+	}
+
+	deployment.Spec.Template.Spec.Containers[0].Args = slices.DeleteFunc(containers[0].Args, func(arg string) bool {
+		return arg == "--tracing=false"
+	})
+
+	_, err = uc.deployment.Update(ctx, scope, namespace, deployment)
+	return err
 }
 
 func extractModelName(config map[string]any) (string, bool) {
