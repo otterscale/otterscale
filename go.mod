@@ -2,21 +2,9 @@ module github.com/otterscale/otterscale
 
 go 1.25.4
 
-retract v1.0.0-beta.19
+tool github.com/google/subcommands
 
-ignore (
-	./assets
-	./docs
-	./scripts
-	./web
-)
-
-replace (
-	github.com/Project-HAMi/HAMi => github.com/Project-HAMi/HAMi v0.0.0-20251107041134-1adf14808519 // v2.7.1
-	github.com/juju/juju => github.com/juju/juju v0.0.0-20251015133347-17876b918429 // v3.6.11
-	github.com/samba-in-kubernetes/samba-operator => github.com/otterscale/samba-operator v0.0.1
-	gopkg.in/yaml.v2 => github.com/juju/yaml/v2 v2.0.0
-)
+ignore ./web
 
 require (
 	connectrpc.com/connect v1.19.1
@@ -33,7 +21,6 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/go-faker/faker/v4 v4.7.0
 	github.com/go-ldap/ldap/v3 v3.4.12
-	github.com/google/subcommands v1.2.0
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674
@@ -55,7 +42,6 @@ require (
 	go.opentelemetry.io/otel/exporters/prometheus v0.60.0
 	go.opentelemetry.io/otel/sdk/metric v1.38.0
 	golang.org/x/sync v0.18.0
-	golang.org/x/tools v0.39.0
 	google.golang.org/protobuf v1.36.10
 	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v2 v2.4.0
@@ -143,6 +129,7 @@ require (
 	github.com/google/gnostic-models v0.7.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/google/subcommands v1.2.0 // indirect
 	github.com/gosuri/uitable v0.0.4 // indirect
 	github.com/grafana/regexp v0.0.0-20250905093917-f7b3be9d1853 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect
@@ -268,14 +255,14 @@ require (
 	go.uber.org/zap v1.27.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/crypto v0.44.0 // indirect
+	golang.org/x/crypto v0.43.0 // indirect
 	golang.org/x/exp v0.0.0-20250808145144-a408d31f581a // indirect
-	golang.org/x/mod v0.30.0 // indirect
-	golang.org/x/net v0.47.0 // indirect
+	golang.org/x/mod v0.29.0 // indirect
+	golang.org/x/net v0.46.0 // indirect
 	golang.org/x/oauth2 v0.31.0 // indirect
-	golang.org/x/sys v0.38.0 // indirect
-	golang.org/x/term v0.37.0 // indirect
-	golang.org/x/text v0.31.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
+	golang.org/x/term v0.36.0 // indirect
+	golang.org/x/text v0.30.0 // indirect
 	golang.org/x/time v0.13.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250922171735-9219d122eba9 // indirect
 	google.golang.org/grpc v1.76.0 // indirect
@@ -299,7 +286,16 @@ require (
 	k8s.io/utils v0.0.0-20250820121507-0af2bda4dd1d // indirect
 	kubevirt.io/controller-lifecycle-operator-sdk/api v0.0.0-20220329064328-f3cc58c6ed90 // indirect
 	oras.land/oras-go/v2 v2.6.0 // indirect
+	sigs.k8s.io/controller-runtime v0.22.3 // indirect
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect
 	sigs.k8s.io/structured-merge-diff/v6 v6.3.0 // indirect
 )
+
+replace (
+	github.com/Project-HAMi/HAMi => github.com/Project-HAMi/HAMi v0.0.0-20251107041134-1adf14808519 // v2.7.1
+	github.com/juju/juju => github.com/juju/juju v0.0.0-20251015133347-17876b918429 // v3.6.11
+	gopkg.in/yaml.v2 => github.com/juju/yaml/v2 v2.0.0
+)
+
+retract v1.0.0-beta.19
