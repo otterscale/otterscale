@@ -35,8 +35,8 @@ type Model struct {
 	xxx_hidden_LastDeployedAt  *timestamppb.Timestamp `protobuf:"bytes,16,opt,name=last_deployed_at,json=lastDeployedAt"`
 	xxx_hidden_ChartVersion    *string                `protobuf:"bytes,21,opt,name=chart_version,json=chartVersion"`
 	xxx_hidden_AppVersion      *string                `protobuf:"bytes,22,opt,name=app_version,json=appVersion"`
-	xxx_hidden_Requests        *Model_Resource        `protobuf:"bytes,31,opt,name=requests"`
-	xxx_hidden_Limits          *Model_Resource        `protobuf:"bytes,32,opt,name=limits"`
+	xxx_hidden_Prefill         *Model_Resource        `protobuf:"bytes,31,opt,name=prefill"`
+	xxx_hidden_Decode          *Model_Resource        `protobuf:"bytes,32,opt,name=decode"`
 	xxx_hidden_Pods            *[]*v1.Application_Pod `protobuf:"bytes,41,rep,name=pods"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
@@ -153,16 +153,16 @@ func (x *Model) GetAppVersion() string {
 	return ""
 }
 
-func (x *Model) GetRequests() *Model_Resource {
+func (x *Model) GetPrefill() *Model_Resource {
 	if x != nil {
-		return x.xxx_hidden_Requests
+		return x.xxx_hidden_Prefill
 	}
 	return nil
 }
 
-func (x *Model) GetLimits() *Model_Resource {
+func (x *Model) GetDecode() *Model_Resource {
 	if x != nil {
-		return x.xxx_hidden_Limits
+		return x.xxx_hidden_Decode
 	}
 	return nil
 }
@@ -219,12 +219,12 @@ func (x *Model) SetAppVersion(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 12)
 }
 
-func (x *Model) SetRequests(v *Model_Resource) {
-	x.xxx_hidden_Requests = v
+func (x *Model) SetPrefill(v *Model_Resource) {
+	x.xxx_hidden_Prefill = v
 }
 
-func (x *Model) SetLimits(v *Model_Resource) {
-	x.xxx_hidden_Limits = v
+func (x *Model) SetDecode(v *Model_Resource) {
+	x.xxx_hidden_Decode = v
 }
 
 func (x *Model) SetPods(v []*v1.Application_Pod) {
@@ -294,18 +294,18 @@ func (x *Model) HasAppVersion() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
-func (x *Model) HasRequests() bool {
+func (x *Model) HasPrefill() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Requests != nil
+	return x.xxx_hidden_Prefill != nil
 }
 
-func (x *Model) HasLimits() bool {
+func (x *Model) HasDecode() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Limits != nil
+	return x.xxx_hidden_Decode != nil
 }
 
 func (x *Model) ClearId() {
@@ -351,12 +351,12 @@ func (x *Model) ClearAppVersion() {
 	x.xxx_hidden_AppVersion = nil
 }
 
-func (x *Model) ClearRequests() {
-	x.xxx_hidden_Requests = nil
+func (x *Model) ClearPrefill() {
+	x.xxx_hidden_Prefill = nil
 }
 
-func (x *Model) ClearLimits() {
-	x.xxx_hidden_Limits = nil
+func (x *Model) ClearDecode() {
+	x.xxx_hidden_Decode = nil
 }
 
 type Model_builder struct {
@@ -371,8 +371,8 @@ type Model_builder struct {
 	LastDeployedAt  *timestamppb.Timestamp
 	ChartVersion    *string
 	AppVersion      *string
-	Requests        *Model_Resource
-	Limits          *Model_Resource
+	Prefill         *Model_Resource
+	Decode          *Model_Resource
 	Pods            []*v1.Application_Pod
 }
 
@@ -410,8 +410,8 @@ func (b0 Model_builder) Build() *Model {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 12)
 		x.xxx_hidden_AppVersion = b.AppVersion
 	}
-	x.xxx_hidden_Requests = b.Requests
-	x.xxx_hidden_Limits = b.Limits
+	x.xxx_hidden_Prefill = b.Prefill
+	x.xxx_hidden_Decode = b.Decode
 	x.xxx_hidden_Pods = &b.Pods
 	return m0
 }
@@ -628,8 +628,8 @@ type CreateModelRequest struct {
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_ModelName   *string                `protobuf:"bytes,11,opt,name=model_name,json=modelName"`
 	xxx_hidden_SizeBytes   uint64                 `protobuf:"varint,12,opt,name=size_bytes,json=sizeBytes"`
-	xxx_hidden_Limits      *Model_Resource        `protobuf:"bytes,21,opt,name=limits"`
-	xxx_hidden_Requests    *Model_Resource        `protobuf:"bytes,22,opt,name=requests"`
+	xxx_hidden_Prefill     *Model_Resource        `protobuf:"bytes,21,opt,name=prefill"`
+	xxx_hidden_Decode      *Model_Resource        `protobuf:"bytes,22,opt,name=decode"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -708,16 +708,16 @@ func (x *CreateModelRequest) GetSizeBytes() uint64 {
 	return 0
 }
 
-func (x *CreateModelRequest) GetLimits() *Model_Resource {
+func (x *CreateModelRequest) GetPrefill() *Model_Resource {
 	if x != nil {
-		return x.xxx_hidden_Limits
+		return x.xxx_hidden_Prefill
 	}
 	return nil
 }
 
-func (x *CreateModelRequest) GetRequests() *Model_Resource {
+func (x *CreateModelRequest) GetDecode() *Model_Resource {
 	if x != nil {
-		return x.xxx_hidden_Requests
+		return x.xxx_hidden_Decode
 	}
 	return nil
 }
@@ -747,12 +747,12 @@ func (x *CreateModelRequest) SetSizeBytes(v uint64) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
 }
 
-func (x *CreateModelRequest) SetLimits(v *Model_Resource) {
-	x.xxx_hidden_Limits = v
+func (x *CreateModelRequest) SetPrefill(v *Model_Resource) {
+	x.xxx_hidden_Prefill = v
 }
 
-func (x *CreateModelRequest) SetRequests(v *Model_Resource) {
-	x.xxx_hidden_Requests = v
+func (x *CreateModelRequest) SetDecode(v *Model_Resource) {
+	x.xxx_hidden_Decode = v
 }
 
 func (x *CreateModelRequest) HasScope() bool {
@@ -790,18 +790,18 @@ func (x *CreateModelRequest) HasSizeBytes() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *CreateModelRequest) HasLimits() bool {
+func (x *CreateModelRequest) HasPrefill() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Limits != nil
+	return x.xxx_hidden_Prefill != nil
 }
 
-func (x *CreateModelRequest) HasRequests() bool {
+func (x *CreateModelRequest) HasDecode() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Requests != nil
+	return x.xxx_hidden_Decode != nil
 }
 
 func (x *CreateModelRequest) ClearScope() {
@@ -829,12 +829,12 @@ func (x *CreateModelRequest) ClearSizeBytes() {
 	x.xxx_hidden_SizeBytes = 0
 }
 
-func (x *CreateModelRequest) ClearLimits() {
-	x.xxx_hidden_Limits = nil
+func (x *CreateModelRequest) ClearPrefill() {
+	x.xxx_hidden_Prefill = nil
 }
 
-func (x *CreateModelRequest) ClearRequests() {
-	x.xxx_hidden_Requests = nil
+func (x *CreateModelRequest) ClearDecode() {
+	x.xxx_hidden_Decode = nil
 }
 
 type CreateModelRequest_builder struct {
@@ -845,8 +845,8 @@ type CreateModelRequest_builder struct {
 	Name      *string
 	ModelName *string
 	SizeBytes *uint64
-	Limits    *Model_Resource
-	Requests  *Model_Resource
+	Prefill   *Model_Resource
+	Decode    *Model_Resource
 }
 
 func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
@@ -873,8 +873,8 @@ func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
-	x.xxx_hidden_Limits = b.Limits
-	x.xxx_hidden_Requests = b.Requests
+	x.xxx_hidden_Prefill = b.Prefill
+	x.xxx_hidden_Decode = b.Decode
 	return m0
 }
 
@@ -883,8 +883,8 @@ type UpdateModelRequest struct {
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Limits      *Model_Resource        `protobuf:"bytes,21,opt,name=limits"`
-	xxx_hidden_Requests    *Model_Resource        `protobuf:"bytes,22,opt,name=requests"`
+	xxx_hidden_Prefill     *Model_Resource        `protobuf:"bytes,21,opt,name=prefill"`
+	xxx_hidden_Decode      *Model_Resource        `protobuf:"bytes,22,opt,name=decode"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -946,16 +946,16 @@ func (x *UpdateModelRequest) GetName() string {
 	return ""
 }
 
-func (x *UpdateModelRequest) GetLimits() *Model_Resource {
+func (x *UpdateModelRequest) GetPrefill() *Model_Resource {
 	if x != nil {
-		return x.xxx_hidden_Limits
+		return x.xxx_hidden_Prefill
 	}
 	return nil
 }
 
-func (x *UpdateModelRequest) GetRequests() *Model_Resource {
+func (x *UpdateModelRequest) GetDecode() *Model_Resource {
 	if x != nil {
-		return x.xxx_hidden_Requests
+		return x.xxx_hidden_Decode
 	}
 	return nil
 }
@@ -975,12 +975,12 @@ func (x *UpdateModelRequest) SetName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
-func (x *UpdateModelRequest) SetLimits(v *Model_Resource) {
-	x.xxx_hidden_Limits = v
+func (x *UpdateModelRequest) SetPrefill(v *Model_Resource) {
+	x.xxx_hidden_Prefill = v
 }
 
-func (x *UpdateModelRequest) SetRequests(v *Model_Resource) {
-	x.xxx_hidden_Requests = v
+func (x *UpdateModelRequest) SetDecode(v *Model_Resource) {
+	x.xxx_hidden_Decode = v
 }
 
 func (x *UpdateModelRequest) HasScope() bool {
@@ -1004,18 +1004,18 @@ func (x *UpdateModelRequest) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UpdateModelRequest) HasLimits() bool {
+func (x *UpdateModelRequest) HasPrefill() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Limits != nil
+	return x.xxx_hidden_Prefill != nil
 }
 
-func (x *UpdateModelRequest) HasRequests() bool {
+func (x *UpdateModelRequest) HasDecode() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Requests != nil
+	return x.xxx_hidden_Decode != nil
 }
 
 func (x *UpdateModelRequest) ClearScope() {
@@ -1033,12 +1033,12 @@ func (x *UpdateModelRequest) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *UpdateModelRequest) ClearLimits() {
-	x.xxx_hidden_Limits = nil
+func (x *UpdateModelRequest) ClearPrefill() {
+	x.xxx_hidden_Prefill = nil
 }
 
-func (x *UpdateModelRequest) ClearRequests() {
-	x.xxx_hidden_Requests = nil
+func (x *UpdateModelRequest) ClearDecode() {
+	x.xxx_hidden_Decode = nil
 }
 
 type UpdateModelRequest_builder struct {
@@ -1047,8 +1047,8 @@ type UpdateModelRequest_builder struct {
 	Scope     *string
 	Namespace *string
 	Name      *string
-	Limits    *Model_Resource
-	Requests  *Model_Resource
+	Prefill   *Model_Resource
+	Decode    *Model_Resource
 }
 
 func (b0 UpdateModelRequest_builder) Build() *UpdateModelRequest {
@@ -1067,8 +1067,8 @@ func (b0 UpdateModelRequest_builder) Build() *UpdateModelRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Name = b.Name
 	}
-	x.xxx_hidden_Limits = b.Limits
-	x.xxx_hidden_Requests = b.Requests
+	x.xxx_hidden_Prefill = b.Prefill
+	x.xxx_hidden_Decode = b.Decode
 	return m0
 }
 
@@ -2111,7 +2111,7 @@ var File_api_model_v1_model_proto protoreflect.FileDescriptor
 
 const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
-	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe4\x04\n" +
+	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe2\x04\n" +
 	"\x05Model\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\v \x01(\tR\x04name\x12\x1c\n" +
@@ -2122,9 +2122,9 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x10last_deployed_at\x18\x10 \x01(\v2\x1a.google.protobuf.TimestampR\x0elastDeployedAt\x12#\n" +
 	"\rchart_version\x18\x15 \x01(\tR\fchartVersion\x12\x1f\n" +
 	"\vapp_version\x18\x16 \x01(\tR\n" +
-	"appVersion\x12?\n" +
-	"\brequests\x18\x1f \x01(\v2#.otterscale.model.v1.Model.ResourceR\brequests\x12;\n" +
-	"\x06limits\x18  \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06limits\x12>\n" +
+	"appVersion\x12=\n" +
+	"\aprefill\x18\x1f \x01(\v2#.otterscale.model.v1.Model.ResourceR\aprefill\x12;\n" +
+	"\x06decode\x18  \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06decode\x12>\n" +
 	"\x04pods\x18) \x03(\v2*.otterscale.application.v1.Application.PodR\x04pods\x1aM\n" +
 	"\bResource\x12\x12\n" +
 	"\x04vgpu\x18\x01 \x01(\rR\x04vgpu\x12-\n" +
@@ -2135,7 +2135,7 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x12ListModelsResponse\x122\n" +
 	"\x06models\x18\x01 \x03(\v2\x1a.otterscale.model.v1.ModelR\x06models\x12\x1f\n" +
 	"\vservice_uri\x18\x02 \x01(\tR\n" +
-	"serviceUri\"\x9e\x02\n" +
+	"serviceUri\"\x9c\x02\n" +
 	"\x12CreateModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
@@ -2143,15 +2143,15 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
 	"model_name\x18\v \x01(\tR\tmodelName\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\f \x01(\x04R\tsizeBytes\x12;\n" +
-	"\x06limits\x18\x15 \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06limits\x12?\n" +
-	"\brequests\x18\x16 \x01(\v2#.otterscale.model.v1.Model.ResourceR\brequestsJ\x04\b\x02\x10\x03\"\xe0\x01\n" +
+	"size_bytes\x18\f \x01(\x04R\tsizeBytes\x12=\n" +
+	"\aprefill\x18\x15 \x01(\v2#.otterscale.model.v1.Model.ResourceR\aprefill\x12;\n" +
+	"\x06decode\x18\x16 \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06decodeJ\x04\b\x02\x10\x03\"\xde\x01\n" +
 	"\x12UpdateModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12;\n" +
-	"\x06limits\x18\x15 \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06limits\x12?\n" +
-	"\brequests\x18\x16 \x01(\v2#.otterscale.model.v1.Model.ResourceR\brequestsJ\x04\b\x02\x10\x03\"b\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12=\n" +
+	"\aprefill\x18\x15 \x01(\v2#.otterscale.model.v1.Model.ResourceR\aprefill\x12;\n" +
+	"\x06decode\x18\x16 \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06decodeJ\x04\b\x02\x10\x03\"b\n" +
 	"\x12DeleteModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
@@ -2221,14 +2221,14 @@ var file_api_model_v1_model_proto_goTypes = []any{
 var file_api_model_v1_model_proto_depIdxs = []int32{
 	12, // 0: otterscale.model.v1.Model.first_deployed_at:type_name -> google.protobuf.Timestamp
 	12, // 1: otterscale.model.v1.Model.last_deployed_at:type_name -> google.protobuf.Timestamp
-	11, // 2: otterscale.model.v1.Model.requests:type_name -> otterscale.model.v1.Model.Resource
-	11, // 3: otterscale.model.v1.Model.limits:type_name -> otterscale.model.v1.Model.Resource
+	11, // 2: otterscale.model.v1.Model.prefill:type_name -> otterscale.model.v1.Model.Resource
+	11, // 3: otterscale.model.v1.Model.decode:type_name -> otterscale.model.v1.Model.Resource
 	13, // 4: otterscale.model.v1.Model.pods:type_name -> otterscale.application.v1.Application.Pod
 	0,  // 5: otterscale.model.v1.ListModelsResponse.models:type_name -> otterscale.model.v1.Model
-	11, // 6: otterscale.model.v1.CreateModelRequest.limits:type_name -> otterscale.model.v1.Model.Resource
-	11, // 7: otterscale.model.v1.CreateModelRequest.requests:type_name -> otterscale.model.v1.Model.Resource
-	11, // 8: otterscale.model.v1.UpdateModelRequest.limits:type_name -> otterscale.model.v1.Model.Resource
-	11, // 9: otterscale.model.v1.UpdateModelRequest.requests:type_name -> otterscale.model.v1.Model.Resource
+	11, // 6: otterscale.model.v1.CreateModelRequest.prefill:type_name -> otterscale.model.v1.Model.Resource
+	11, // 7: otterscale.model.v1.CreateModelRequest.decode:type_name -> otterscale.model.v1.Model.Resource
+	11, // 8: otterscale.model.v1.UpdateModelRequest.prefill:type_name -> otterscale.model.v1.Model.Resource
+	11, // 9: otterscale.model.v1.UpdateModelRequest.decode:type_name -> otterscale.model.v1.Model.Resource
 	12, // 10: otterscale.model.v1.ModelArtifact.created_at:type_name -> google.protobuf.Timestamp
 	6,  // 11: otterscale.model.v1.ListModelArtifactsResponse.model_artifacts:type_name -> otterscale.model.v1.ModelArtifact
 	1,  // 12: otterscale.model.v1.ModelService.ListModels:input_type -> otterscale.model.v1.ListModelsRequest

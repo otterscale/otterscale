@@ -377,8 +377,8 @@ decode:
         # additionalProperties: true
         # @schema
         limits:
-          otterscale.com/vgpu: "%[4]d"
-          otterscale.com/vgpumem-percentage: "%[5]d"
+          otterscale.com/vgpu: "%[6]d"
+          otterscale.com/vgpumem-percentage: "%[7]d"          
         # @schema
         # additionalProperties: true
         # @schema
@@ -550,14 +550,14 @@ prefill:
         # additionalProperties: true
         # @schema
         limits:
-          otterscale.com/vgpu: "1"
-          otterscale.com/vgpumem-percentage: "40"
+          otterscale.com/vgpu: "%[4]d"
+          otterscale.com/vgpumem-percentage: "%[5]d"
         # @schema
         # additionalProperties: true
         # @schema
         requests:
-          otterscale.com/vgpu: "1"
-          otterscale.com/vgpumem-percentage: "40"
+          otterscale.com/vgpu: "%[4]d"
+          otterscale.com/vgpumem-percentage: "%[5]d"
       # @schema
       # type: array
       # items:
