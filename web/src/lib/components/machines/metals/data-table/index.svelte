@@ -19,13 +19,20 @@
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
+	import type { Metrics } from '../types';
 	import { getColumns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
-	let { machines, reloadManager }: { machines: Writable<Machine[]>; reloadManager: ReloadManager } =
-		$props();
+	let {
+		machines,
+		metrics,
+		reloadManager
+	}: { machines: Writable<Machine[]>; metrics: Metrics; reloadManager: ReloadManager } = $props();
+
+	console.log(machines);
+	console.log(metrics);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
@@ -38,7 +45,7 @@
 			return $machines;
 		},
 		get columns() {
-			return getColumns(reloadManager);
+			return getColumns(metrics, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),
@@ -117,7 +124,7 @@
 				{table}
 			/>
 			<Filters.StringMatch
-				columnId="powerState"
+				columnId="power_state"
 				values={$machines.flatMap((row) => row.powerState)}
 				{messages}
 				{table}

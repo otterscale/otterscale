@@ -5,6 +5,7 @@ import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
+import type { Metrics } from '../types';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
@@ -18,10 +19,11 @@ const messages = {
 	machine: m.machine(),
 	placementGroupCount: m.placement_group(),
 	usage: m.usage(),
-	iops: m.iops()
+	iops: m.iops(),
+	throughput: m.throughput()
 };
 
-function getColumns(scope: string): ColumnDef<ObjectStorageDaemon>[] {
+function getColumns(metrics: Metrics, scope: string): ColumnDef<ObjectStorageDaemon>[] {
 	return [
 		{
 			id: 'select',
@@ -147,7 +149,16 @@ function getColumns(scope: string): ColumnDef<ObjectStorageDaemon>[] {
 				return renderSnippet(headers.iops, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.iops, row);
+				return renderSnippet(cells.iops, { row, metrics });
+			}
+		},
+		{
+			accessorKey: 'throughput',
+			header: ({ column }) => {
+				return renderSnippet(headers.throughput, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.throughput, { row, metrics });
 			}
 		},
 		{
