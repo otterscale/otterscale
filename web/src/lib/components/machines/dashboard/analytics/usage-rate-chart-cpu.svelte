@@ -40,7 +40,7 @@
 	</Statistics.Header>
 	<Statistics.Content class="min-h-20">
 		{#await fetchUsage()}
-			<div class="flex h-full w-full items-center justify-center">
+			<div class="flex h-[200px] w-full items-center justify-center">
 				<Icon icon="svg-spinners:6-dots-rotate" class="m-8 size-16" />
 			</div>
 		{:then response}
@@ -54,7 +54,7 @@
 				{@const data = [{ value: value }]}
 				<Chart.Container
 					config={chartConfig}
-					class="mx-auto my-auto aspect-square h-[250px] w-full"
+					class="mx-auto my-auto aspect-square h-[200px] w-full"
 				>
 					<ArcChart
 						{data}
@@ -85,7 +85,7 @@
 					</ArcChart>
 				</Chart.Container>
 			{:else}
-				<div class="flex h-full w-full flex-col items-center justify-center">
+				<div class="flex h-[200px] w-full flex-col items-center justify-center">
 					<Icon icon="ph:chart-bar-fill" class="size-24 animate-pulse text-muted-foreground" />
 					<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
 				</div>

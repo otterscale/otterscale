@@ -100,13 +100,13 @@
 	<Statistics.Content class="min-h-16">
 		{#await fetchFlattenedRange(client, query, startTime, endTime, STEP_SECONDS)}
 			<!-- Loading state -->
-			<div class="flex h-full w-full items-center justify-center">
+			<div class="flex h-[250px] w-full items-center justify-center">
 				<Icon icon="svg-spinners:blocks-wave" class="m-8 size-32 text-muted-foreground/50" />
 			</div>
 		{:then rawData}
 			{#if rawData.length === 0}
 				<!-- Empty state -->
-				<div class="flex h-full w-full flex-col items-center justify-center">
+				<div class="flex h-[250px] w-full flex-col items-center justify-center">
 					<Icon icon="ph:chart-line-fill" class="size-60 animate-pulse text-muted-foreground" />
 					<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
 				</div>
@@ -117,7 +117,7 @@
 				{@const chartConfig = generateChartConfig(filteredData)}
 				{@const top3Series = topKSeries.slice(0, TOP_HIGHLIGHT_COUNT)}
 
-				<ChartContainer config={chartConfig} class="aspect-auto h-[300px] w-full">
+				<ChartContainer config={chartConfig} class="aspect-auto h-[250px] w-full">
 					<AreaChart
 						data={filteredData}
 						x="date"
@@ -213,7 +213,7 @@
 			{/if}
 		{:catch}
 			<!-- Error state -->
-			<div class="flex h-full w-full flex-col items-center justify-center">
+			<div class="flex h-[250px] w-full flex-col items-center justify-center">
 				<Icon icon="ph:chart-bar-fill" class="size-24 animate-pulse text-muted-foreground" />
 				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
 			</div>
