@@ -23,6 +23,7 @@
 	"error_message_503": "我們暫時無法服務，就像吃掉您錢幣的販賣機一樣。請稍後再試！",
 	"home": "首頁",
 	"compute": "運算",
+	"compute_dashboard_description": "監控和管理您的運算資源，包括虛擬機器和 GPU。",
 	"platform": "平台",
 	"model": "模型",
 	"model_name": "模型名稱",
@@ -81,6 +82,7 @@
 	"object_gateway": "物件",
 	"virtualization": "虛擬化",
 	"virtual_machine": "虛擬機器",
+	"virtual_machines": "虛擬機器",
 	"machines": "機器",
 	"machines_description": "部署和管理基礎設施設施",
 	"metal": "實體機",
@@ -281,6 +283,7 @@
 	"optional": "選用",
 	"details": "詳細資訊",
 	"control_planes": "控制平面",
+	"controllers": "控制節點",
 	"workers": "工作節點",
 	"load_balancers": "負載平衡器",
 	"monitors": "監控器",
@@ -757,6 +760,7 @@
 	"migrate": "遷移",
 	"migrate_virtual_machine": "遷移虛擬機器",
 	"target_node": "目標節點",
+	"instances": "實例",
 	"instance_name": "實例名稱",
 	"instance_type": "實例類型",
 	"instance_phase": "實例階段",
@@ -848,5 +852,8 @@
 	"log": "日誌",
 	"vnc": "VNC",
 	"index": "索引",
-	"no_data_available": "無可用資料"
+	"no_data_available": "無可用資料",
+	"wait": "等待",
+	"delay": "延遲",
+	"no_data_display": "沒有資料以顯示"
 }

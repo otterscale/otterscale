@@ -1,6 +1,9 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
+	import { curveNatural } from 'd3-shape';
+	import { Area, AreaChart, LinearGradient } from 'layerchart';
+	import { SampleValue } from 'prometheus-query';
 
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -9,9 +12,11 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
-	import { formatCapacity } from '$lib/formatter';
+	import * as Chart from '$lib/components/ui/chart';
+	import { formatCapacity, formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
+	import type { Metrics } from '../types';
 	import Actions from './cell-actions.svelte';
 
 	export const cells = {
@@ -26,6 +31,7 @@
 		placementGroupCount,
 		usage,
 		iops,
+		throughput,
 		actions
 	};
 </script>
@@ -123,7 +129,166 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet iops()}{/snippet}
+{#snippet iops(data: { row: Row<ObjectStorageDaemon>; metrics: Metrics })}
+	{@const configuration = {
+		input: { label: 'input', color: 'var(--chart-1)' },
+		output: { label: 'output', color: 'var(--chart-2)' }
+	} satisfies Chart.ChartConfig}
+	{@const inputs = data.metrics.input.get(data.row.original.name) as SampleValue[]}
+	{@const outputs = data.metrics.output.get(data.row.original.name) as SampleValue[]}
+	{@const io = inputs.map((input, index) => ({
+		time: input.time,
+		input: input.value,
+		output: outputs[index]?.value ?? 0
+	}))}
+	<Chart.Container config={configuration} class="h-20 w-full">
+		<AreaChart
+			data={io}
+			x="time"
+			series={[
+				{
+					key: 'input',
+					label: configuration.input.label,
+					color: configuration.input.color
+				},
+				{
+					key: 'output',
+					label: configuration.output.label,
+					color: configuration.output.color
+				}
+			]}
+			props={{
+				area: {
+					curve: curveNatural,
+					'fill-opacity': 0.4,
+					line: { class: 'stroke-1' },
+					motion: 'tween'
+				},
+				xAxis: { format: () => '' },
+				yAxis: { format: () => '' }
+			}}
+		>
+			{#snippet tooltip()}
+				<Chart.Tooltip
+					indicator="dot"
+					labelFormatter={(v: Date) => {
+						return v.toLocaleDateString('en-US', {
+							year: 'numeric',
+							month: 'short',
+							day: 'numeric',
+							hour: 'numeric',
+							minute: 'numeric'
+						});
+					}}
+				>
+					{#snippet formatter({ item, name, value })}
+						{@const { value: ioValue, unit: ioUnit } = formatIO(Number(value))}
+						<div
+							class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
+							style="--color-bg: {item.color}"
+						>
+							<Icon icon="ph:square-fill" class="text-(--color-bg)" />
+							<h1 class="font-semibold text-muted-foreground">{name}</h1>
+							<p class="ml-auto">{ioValue} {ioUnit}</p>
+						</div>
+					{/snippet}
+				</Chart.Tooltip>
+			{/snippet}
+			{#snippet marks({ series, getAreaProps })}
+				{#each series as s, i (s.key)}
+					<LinearGradient
+						stops={[s.color ?? '', 'color-mix(in lch, ' + s.color + ' 10%, transparent)']}
+						vertical
+					>
+						{#snippet children({ gradient })}
+							<Area {...getAreaProps(s, i)} fill={gradient} />
+						{/snippet}
+					</LinearGradient>
+				{/each}
+			{/snippet}
+		</AreaChart>
+	</Chart.Container>
+{/snippet}
+
+{#snippet throughput(data: { row: Row<ObjectStorageDaemon>; metrics: Metrics })}
+	{@const configuration = {
+		read: { label: 'read', color: 'var(--chart-1)' },
+		write: { label: 'write', color: 'var(--chart-2)' }
+	} satisfies Chart.ChartConfig}
+	{@const reads = data.metrics.read.get(data.row.original.name) as SampleValue[]}
+	{@const writes = data.metrics.write.get(data.row.original.name) as SampleValue[]}
+	{@const throughputs = reads.map((read, index) => ({
+		time: read.time,
+		read: read.value,
+		write: writes[index]?.value ?? 0
+	}))}
+	<Chart.Container config={configuration} class="h-20 w-full">
+		<AreaChart
+			data={throughputs}
+			x="time"
+			series={[
+				{
+					key: 'read',
+					label: configuration.read.label,
+					color: configuration.read.color
+				},
+				{
+					key: 'write',
+					label: configuration.write.label,
+					color: configuration.write.color
+				}
+			]}
+			props={{
+				area: {
+					curve: curveNatural,
+					'fill-opacity': 0.4,
+					line: { class: 'stroke-1' },
+					motion: 'tween'
+				},
+				xAxis: { format: () => '' },
+				yAxis: { format: () => '' }
+			}}
+		>
+			{#snippet tooltip()}
+				<Chart.Tooltip
+					labelFormatter={(v: Date) => {
+						return v.toLocaleDateString('en-US', {
+							year: 'numeric',
+							month: 'short',
+							day: 'numeric',
+							hour: 'numeric',
+							minute: 'numeric'
+						});
+					}}
+				>
+					{#snippet formatter({ item, name, value })}
+						{@const { value: ioValue, unit: ioUnit } = formatIO(Number(value))}
+						<div
+							class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
+							style="--color-bg: {item.color}"
+						>
+							<Icon icon="ph:square-fill" class="text-(--color-bg)" />
+							<h1 class="font-semibold text-muted-foreground">{name}</h1>
+							<p class="ml-auto">{ioValue} {ioUnit}</p>
+						</div>
+					{/snippet}
+				</Chart.Tooltip>
+			{/snippet}
+			{#snippet marks({ series, getAreaProps })}
+				{#each series as s, i (s.key)}
+					<LinearGradient
+						stops={[s.color ?? '', 'color-mix(in lch, ' + s.color + ' 10%, transparent)']}
+						vertical
+					>
+						{#snippet children({ gradient })}
+							<Area {...getAreaProps(s, i)} fill={gradient} />
+						{/snippet}
+					</LinearGradient>
+				{/each}
+			{/snippet}
+		</AreaChart>
+	</Chart.Container>
+{/snippet}
 
 {#snippet actions(data: { row: Row<ObjectStorageDaemon>; scope: string })}
 	<Layout.Cell class="items-start">
