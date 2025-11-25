@@ -166,7 +166,7 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 		return nil, fmt.Errorf("failed to parse modelArtifacts.size: %w", err)
 	}
 
-	release, err := uc.upgradeModelService(ctx, scope, namespace, name, modelName, uint64(sizeBytes), limits, requests) //nolint:gosec // ignore
+	release, err := uc.upgradeModelService(ctx, scope, namespace, name, modelName, sizeBytes, limits, requests)
 	if err != nil {
 		return nil, err
 	}
@@ -232,7 +232,7 @@ func (uc *UseCase) buildHTTPRoute(namespace, name, gatewayName, inferencePoolNam
 	// backend references
 	backendGroup := gav1.Group(v1.GroupName)
 	backendKind := gav1.Kind("InferencePool")
-	weight := int32(100)
+	weight := int32(100) //nolint:mnd // single backend, so 100% weight
 
 	// timeouts
 	timeout := gav1.Duration("0s")
