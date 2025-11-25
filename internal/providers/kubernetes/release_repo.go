@@ -8,7 +8,6 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/go-faker/faker/v4"
-	"github.com/goccy/go-yaml"
 	"helm.sh/helm/v3/pkg/action"
 	helmchart "helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
@@ -16,6 +15,7 @@ import (
 	"helm.sh/helm/v3/pkg/getter"
 	"helm.sh/helm/v3/pkg/strvals"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
+	"sigs.k8s.io/yaml"
 
 	"github.com/otterscale/otterscale/internal/core/application/release"
 )

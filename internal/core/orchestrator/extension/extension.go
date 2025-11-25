@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/goccy/go-yaml"
 	"golang.org/x/sync/errgroup"
 	"helm.sh/helm/v3/pkg/storage/driver"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"sigs.k8s.io/kustomize/api/krusty"
 	"sigs.k8s.io/kustomize/kyaml/filesys"
+	"sigs.k8s.io/yaml"
 
 	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
