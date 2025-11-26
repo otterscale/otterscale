@@ -318,16 +318,11 @@ send_request() {
     local max_retries="${3:-3}"
     local retry_count=1
 
-    $(curl -X POST -sf --max-time 30 \
-    --header \"Content-Type: application/json\" \
-    --data \'"$data"\' \
-    "$OTTERSCALE_API_ENDPOINT$url_path")
-
     while ((retry_count <= max_retries)); do
-        if $(curl -X POST -sf --max-time 30 \
-                --header \"Content-Type: application/json\" \
-                --data \'"$data"\' \
-                "$OTTERSCALE_API_ENDPOINT$url_path" >/dev/null 2>&1); then
+        if curl -X POST -sf --max-time 30 \
+                --header "Content-Type: application/json" \
+                --data "'"$data"'" \
+                "$OTTERSCALE_API_ENDPOINT$url_path" >/dev/null 2>&1; then
             break
         fi
 
