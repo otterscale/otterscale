@@ -47,7 +47,7 @@
 </script>
 
 <main class="space-y-4 py-4">
-	<!-- <ExtensionsAlert scope={page.params.scope!} /> -->
+	<ExtensionsAlert scope={page.params.scope!} />
 	{#if prometheusDriver}
 		<div class="mx-auto grid w-full gap-6">
 			<div class="grid gap-1">
