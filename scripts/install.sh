@@ -326,7 +326,7 @@ send_request() {
         if $(curl -X POST -sf --max-time 30 \
                 --header "Content-Type: application/json" \
                 --data "$data" \
-                "$OTTERSCALE_API_ENDPOINT$url_path" >/dev/null 2>&1); then
+                "$OTTERSCALE_API_ENDPOINT/$url_path" >/dev/null 2>&1); then
             return 0
         fi
 
