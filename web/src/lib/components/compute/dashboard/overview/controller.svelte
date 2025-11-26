@@ -5,7 +5,6 @@
 
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
-	import { formatPercentage } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
