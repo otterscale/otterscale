@@ -323,20 +323,18 @@ send_request() {
     local retry_count=1
 
     while ((retry_count <= max_retries)); do
-        echo "$OTTERSCALE_API_ENDPOINT$url_path"
-        
         if $(curl -X POST -sf --max-time 30 \
                 --header \"Content-Type: application/json\" \
                 --data \'"$data"\' \
                 "$OTTERSCALE_API_ENDPOINT$url_path" >/dev/null 2>&1); then
-            return 0
+            break
         fi
 
-        echo "HTTP request failed (attempt $retry_count/$max_retries)"
+        echo "HTTP send request failed (attempt $retry_count/$max_retries)"
         retry_count=$((retry_count+1))
     done
 
-    echo "Failed to send HTTP request after $max_retries attempts"
+    echo "Failed to send HTTP request to $OTTERSCALE_API_ENDPOINT$url_path after $max_retries attempts"
     exit 1
 }
 
@@ -413,7 +411,7 @@ retry_snap_install() {
 
         if snap install "$snap_name" $snap_options >>"$TEMP_LOG" 2>&1; then
             log "INFO" "Successfully installed snap: $snap_name" "SNAP_INSTALL"
-            return 0
+            break
         fi
 
         log "WARN" "Failed to install snap $snap_name (attempt $retry_count/$max_retries)" "SNAP_INSTALL"
@@ -434,7 +432,7 @@ retry_snap_refresh() {
 
         if snap refresh "$snap_name" --channel="$snap_channel" >>"$TEMP_LOG" 2>&1; then
             log "INFO" "Successfully refreshed snap: $snap_name" "SNAP_REFRESH"
-            return 0
+            break
         fi
 
         log "WARN" "Failed to refresh snap $snap_name (attempt $retry_count/$max_retries)" "SNAP_REFRESH"
@@ -555,7 +553,7 @@ select_bridge() {
         if [[ $choice =~ ^[0-9]+$ ]] && ((choice >= 1 && choice <= ${#bridges[@]})); then
             OTTERSCALE_BRIDGE_NAME="${bridges[$((choice-1))]}"
             log "INFO" "User selected bridge: $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-            return 0
+            break
         fi
         echo "Invalid selection. Please try again."
     done
@@ -716,7 +714,7 @@ login_maas() {
     while ((retry_count < OTTERSCALE_MAX_RETRIES)); do
         if maas login admin "http://localhost:5240/MAAS/" "$APIKEY" >>"$TEMP_LOG" 2>&1; then
             log "INFO" "MAAS login successful" "MAAS_LOGIN"
-            return 0
+            break
         else
             log "WARN" "Failed to login to MAAS, retrying in 10 seconds (attempt $((retry_count + 1)))" "MAAS_LOGIN"
             retry_count=$((retry_count+1))
