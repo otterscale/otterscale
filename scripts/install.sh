@@ -1818,8 +1818,6 @@ parse_arguments() {
     done
 }
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    parse_arguments "$@"
-    check_curl
-    main "$@"
-fi
+parse_arguments "$@"
+check_curl
+main "$@"
