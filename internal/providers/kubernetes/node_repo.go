@@ -71,12 +71,33 @@ func (r *nodeRepo) InternalIP(ctx context.Context, scope string) (string, error)
 	}
 
 	for i := range nodes {
-		for _, addr := range nodes[i].Status.Addresses {
-			if addr.Type == v1.NodeInternalIP {
-				return addr.Address, nil
-			}
+		if !r.isNodeReady(&nodes[i]) {
+			continue
+		}
+
+		if ip := r.getInternalIP(&nodes[i]); ip != "" {
+			return ip, nil
 		}
 	}
 
 	return "", fmt.Errorf("no control plane node with InternalIP found")
+}
+
+func (r *nodeRepo) isNodeReady(node *cluster.Node) bool {
+	for i := range node.Status.Conditions {
+		if node.Status.Conditions[i].Type == v1.NodeReady &&
+			node.Status.Conditions[i].Status == v1.ConditionTrue {
+			return true
+		}
+	}
+	return false
+}
+
+func (r *nodeRepo) getInternalIP(node *cluster.Node) string {
+	for _, addr := range node.Status.Addresses {
+		if addr.Type == v1.NodeInternalIP {
+			return addr.Address
+		}
+	}
+	return ""
 }
