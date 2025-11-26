@@ -1701,7 +1701,7 @@ main() {
     # System validation
     log "INFO" "Performing system validation..." "VALIDATION"
     check_root
-    #check_os
+    check_os
     check_memory
     check_disk
     disable_ipv6
