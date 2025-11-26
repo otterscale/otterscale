@@ -323,6 +323,8 @@ send_request() {
     local retry_count=1
 
     while ((retry_count <= max_retries)); do
+        echo "$OTTERSCALE_API_ENDPOINT$url_path"
+        
         if $(curl -X POST -sf --max-time 30 \
                 --header \"Content-Type: application/json\" \
                 --data \'"$data"\' \
