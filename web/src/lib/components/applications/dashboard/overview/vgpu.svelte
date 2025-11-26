@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { scaleBand } from 'd3-scale';
 	import { BarChart, type ChartContextValue, Highlight } from 'layerchart';
 	import { InstantVector, PrometheusDriver } from 'prometheus-query';
@@ -66,7 +67,19 @@
 </script>
 
 {#if !isLoaded}
-	Loading
+	<Card.Root class="h-full gap-2">
+		<Card.Header class="h-[42px]">
+			<Card.Title>{m.vgpu()}</Card.Title>
+			<Card.Description>
+				{m.vgpu_usage_description()}
+			</Card.Description>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-[230px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
+			</div>
+		</Card.Content>
+	</Card.Root>
 {:else}
 	<Card.Root>
 		<Card.Header>
@@ -76,7 +89,7 @@
 			</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<Chart.Container config={configuration} class="w-full">
+			<Chart.Container class="h-[230px] w-full px-2 pt-2" config={configuration}>
 				<BarChart
 					bind:context
 					data={memoryUsage}
