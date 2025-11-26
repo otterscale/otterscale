@@ -108,6 +108,7 @@
 						<Button
 							href={resolve('/(auth)/scope/[scope]/setup', { scope: active })}
 							class="group/icon flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground transition"
+							disabled={active === 'OtterScale'}
 						>
 							<Icon
 								icon="{scopeIcon(scopes.findIndex((s) => s.name === active))}-fill"
