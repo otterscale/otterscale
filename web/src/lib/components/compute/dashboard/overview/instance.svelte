@@ -50,7 +50,7 @@
 	});
 </script>
 
-<Card.Root class="relative h-full gap-2 overflow-hidden">
+<Card.Root class="relative h-full min-h-[140px] gap-2 overflow-hidden">
 	<Icon
 		icon="ph:shipping-container"
 		class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
@@ -59,18 +59,16 @@
 		<Card.Title>{m.instances()}</Card.Title>
 		<Card.Description>{m.running()}</Card.Description>
 	</Card.Header>
-	<Card.Content class="h-full">
-		{#if !isLoaded}
-			<div class="flex h-full w-full items-center justify-center">
-				<Icon icon="svg-spinners:3-dots-bounce" class="size-8" />
-			</div>
-		{:else if !instances}
-			<div class="flex h-full w-full flex-col items-center justify-center">
-				<Icon icon="ph:chart-bar-fill" class="size-24 animate-pulse text-muted-foreground" />
-				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
-			</div>
-		{:else}
-			<p class="text-6xl">{instances.value}</p>
-		{/if}
-	</Card.Content>
+	{#if !isLoaded}
+		<div class="flex h-9 w-full items-center justify-center">
+			<Icon icon="svg-spinners:6-dots-rotate" class="size-10" />
+		</div>
+	{:else if !instances}
+		<div class="flex h-full w-full flex-col items-center justify-center">
+			<Icon icon="ph:chart-bar-fill" class="size-6 animate-pulse text-muted-foreground" />
+			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
+		</div>
+	{:else}
+		<Card.Content class="text-3xl">{instances.value}</Card.Content>
+	{/if}
 </Card.Root>
