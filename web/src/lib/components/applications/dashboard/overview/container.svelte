@@ -54,20 +54,22 @@
 	});
 </script>
 
-{#if !isLoaded}
-	Loading
-{:else}
-	<Card.Root class="relative h-full gap-2 overflow-hidden">
-		<Icon
-			icon="ph:shipping-container"
-			class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
-		/>
-		<Card.Header>
-			<Card.Title>{m.containers()}</Card.Title>
-			<Card.Description>{m.running()}</Card.Description>
-		</Card.Header>
+<Card.Root class="relative h-full min-h-[140px] gap-2 overflow-hidden">
+	<Icon
+		icon="ph:shipping-container"
+		class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
+	/>
+	<Card.Header>
+		<Card.Title>{m.containers()}</Card.Title>
+		<Card.Description>{m.running()}</Card.Description>
+	</Card.Header>
+	{#if !isLoaded}
+		<div class="flex h-9 w-full items-center justify-center">
+			<Icon icon="svg-spinners:6-dots-rotate" class="size-10" />
+		</div>
+	{:else}
 		<Card.Content class="text-3xl">
 			{runningContainers}
 		</Card.Content>
-	</Card.Root>
-{/if}
+	{/if}
+</Card.Root>

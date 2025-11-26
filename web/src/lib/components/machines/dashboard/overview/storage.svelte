@@ -89,77 +89,77 @@
 	});
 </script>
 
-{#if !isLoaded}
-	Loading
-{:else}
-	<Card.Root class="h-full gap-2">
-		<Card.Header>
-			<Card.Title class="flex flex-wrap items-center justify-between gap-6">
-				<div class="flex items-center gap-2 truncate text-sm font-medium tracking-tight">
-					<Icon icon="ph:hard-drives" class="size-4.5" />
-					{m.storage()}
-				</div>
-				<Tooltip.Provider>
-					<Tooltip.Root>
-						<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-							<Icon icon="ph:info" class="size-5 text-muted-foreground" />
-						</Tooltip.Trigger>
-						<Tooltip.Content>
-							<p>{m.machine_dashboard_total_storage_tooltip()}</p>
-						</Tooltip.Content>
-					</Tooltip.Root>
-				</Tooltip.Provider>
-			</Card.Title>
-		</Card.Header>
-		<Card.Content class="flex flex-col gap-0.5">
-			<div class="flex flex-wrap items-center justify-between gap-6">
+<Card.Root class="h-full gap-2">
+	<Card.Header>
+		<Card.Title class="flex flex-wrap items-center justify-between gap-6">
+			<div class="flex items-center gap-2 truncate text-sm font-medium tracking-tight">
+				<Icon icon="ph:hard-drives" class="size-4.5" />
+				{m.storage()}
+			</div>
+			<Tooltip.Provider>
+				<Tooltip.Root>
+					<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+						<Icon icon="ph:info" class="size-5 text-muted-foreground" />
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						<p>{m.machine_dashboard_total_storage_tooltip()}</p>
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</Tooltip.Provider>
+		</Card.Title>
+	</Card.Header>
+	{#if !isLoaded}
+		<div class="flex h-full w-full items-center justify-center">
+			<Icon icon="svg-spinners:6-dots-rotate" class="m-4 size-12" />
+		</div>
+	{:else}
+		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
+			<div class="flex flex-col gap-0.5">
 				<div class="text-3xl font-bold">
 					{formatCapacity(totalStorageBytes).value}
 					{formatCapacity(totalStorageBytes).unit}
 				</div>
-				<Chart.Container config={storageUsagesConfiguration} class="h-full w-20">
-					<LineChart
-						data={storageUsages}
-						x="time"
-						xScale={scaleUtc()}
-						axis={false}
-						series={[
-							{
-								key: 'value',
-								label: 'usage',
-								color: storageUsagesConfiguration.usage.color
-							}
-						]}
-						props={{
-							spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
-							xAxis: {
-								format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
-							},
-							highlight: { points: { r: 4 } }
-						}}
-					>
-						{#snippet tooltip()}
-							<Chart.Tooltip hideLabel>
-								{#snippet formatter({ item, name, value })}
-									<div
-										style="--color-bg: {item.color}"
-										class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
-									></div>
-									<div
-										class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
-									>
-										<div class="grid gap-1.5">
-											<span class="text-muted-foreground">{name}</span>
-										</div>
-										<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
-									</div>
-								{/snippet}
-							</Chart.Tooltip>
-						{/snippet}
-					</LineChart>
-				</Chart.Container>
+				<p class="text-sm text-muted-foreground">{m.over_n_disks({ totalDisks })}</p>
 			</div>
-			<p class="text-sm text-muted-foreground uppercase">{m.over_n_disks({ totalDisks })}</p>
+			<Chart.Container config={storageUsagesConfiguration} class="h-full w-20 pb-2">
+				<LineChart
+					data={storageUsages}
+					x="time"
+					xScale={scaleUtc()}
+					axis={false}
+					series={[
+						{
+							key: 'value',
+							label: 'usage',
+							color: storageUsagesConfiguration.usage.color
+						}
+					]}
+					props={{
+						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
+						xAxis: {
+							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+						},
+						highlight: { points: { r: 4 } }
+					}}
+				>
+					{#snippet tooltip()}
+						<Chart.Tooltip hideLabel>
+							{#snippet formatter({ item, name, value })}
+								<div
+									style="--color-bg: {item.color}"
+									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+								></div>
+								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+									<div class="grid gap-1.5">
+										<span class="text-muted-foreground">{name}</span>
+									</div>
+									<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
+								</div>
+							{/snippet}
+						</Chart.Tooltip>
+					{/snippet}
+				</LineChart>
+			</Chart.Container>
 		</Card.Content>
 		<Card.Footer
 			class={cn(
@@ -176,5 +176,5 @@
 				<Icon icon="ph:caret-down" />
 			{/if}
 		</Card.Footer>
-	</Card.Root>
-{/if}
+	{/if}
+</Card.Root>

@@ -62,25 +62,27 @@
 	});
 </script>
 
-{#if !isLoaded}
-	Loading
-{:else}
-	<Card.Root class="flex h-full flex-col">
-		<Card.Header class="gap-0.5">
-			<Card.Title>
-				<div class="flex items-center gap-1 truncate text-sm font-medium tracking-tight">
-					<Icon icon="ph:cube" class="size-4.5" />
-					{m.node_distribution()}
-				</div>
-			</Card.Title>
-			<Card.Description class="text-xs">
-				{m.node_distribution_description()}
-			</Card.Description>
-		</Card.Header>
+<Card.Root class="flex h-full flex-col">
+	<Card.Header class="gap-0.5">
+		<Card.Title>
+			<div class="flex items-center gap-1 truncate text-sm font-medium tracking-tight">
+				<Icon icon="ph:cube" class="size-4.5" />
+				{m.node_distribution()}
+			</div>
+		</Card.Title>
+		<Card.Description class="text-xs">
+			{m.node_distribution_description()}
+		</Card.Description>
+	</Card.Header>
+	{#if !isLoaded}
+		<div class="flex h-[200px] w-full items-center justify-center">
+			<Icon icon="svg-spinners:6-dots-rotate" class="m-4 size-12" />
+		</div>
+	{:else}
 		<Card.Content class="flex-1">
 			<Chart.Container
 				config={nodeProportionsConfiguration}
-				class="mx-auto aspect-square max-h-[250px]"
+				class="mx-auto aspect-square h-[250px]"
 			>
 				<PieChart
 					data={nodeProportions}
@@ -113,5 +115,5 @@
 				</PieChart>
 			</Chart.Container>
 		</Card.Content>
-	</Card.Root>
-{/if}
+	{/if}
+</Card.Root>

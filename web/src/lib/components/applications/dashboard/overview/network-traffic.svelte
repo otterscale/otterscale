@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
@@ -89,7 +90,17 @@
 </script>
 
 {#if !isLoaded}
-	Loading
+	<Card.Root>
+		<Card.Header class="h-[42px]">
+			<Card.Title>{m.network_bandwidth()}</Card.Title>
+			<Card.Description>{m.receive_and_transmit()}</Card.Description>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-[230px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
+			</div>
+		</Card.Content>
+	</Card.Root>
 {:else}
 	<Card.Root class="h-full gap-2">
 		<Card.Header>
@@ -97,7 +108,7 @@
 			<Card.Description>{m.receive_and_transmit()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<Chart.Container config={trafficsConfigurations}>
+			<Chart.Container class="h-[230px] w-full px-2 pt-2" config={trafficsConfigurations}>
 				<AreaChart
 					data={traffics}
 					x="time"

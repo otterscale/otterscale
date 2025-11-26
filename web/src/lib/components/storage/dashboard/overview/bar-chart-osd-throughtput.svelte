@@ -1,10 +1,10 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { BarChart, type ChartContextValue, Highlight } from 'layerchart';
 	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
 
-	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
@@ -136,8 +136,8 @@
 			reloadManager.stop();
 		}
 	});
-	onMount(() => {
-		fetch();
+	onMount(async () => {
+		await fetch();
 		isLoading = false;
 	});
 	onDestroy(() => {
@@ -146,10 +146,37 @@
 </script>
 
 {#if isLoading}
-	<ComponentLoading />
+	<Card.Root class="relative h-full gap-2 overflow-hidden">
+		<Card.Header class="flex h-20 flex-col items-stretch space-y-0 border-b p-0  sm:flex-row">
+			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+				<Card.Title>{CHART_TITLE}</Card.Title>
+				<Card.Description>{CHART_DESCRIPTION}</Card.Description>
+			</div>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-[200px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
+			</div>
+		</Card.Content>
+	</Card.Root>
+{:else if response.traffics === undefined}
+	<Card.Root class="relative h-full gap-2 overflow-hidden">
+		<Card.Header class="flex h-20 flex-col items-stretch space-y-0 border-b p-0  sm:flex-row">
+			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+				<Card.Title>{CHART_TITLE}</Card.Title>
+				<Card.Description>{CHART_DESCRIPTION}</Card.Description>
+			</div>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-[200px] w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-line-fill" class="size-50 animate-pulse text-muted-foreground" />
+				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
+			</div>
+		</Card.Content>
+	</Card.Root>
 {:else}
 	<Card.Root class="h-full gap-2">
-		<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+		<Card.Header class="flex h-20 flex-col items-stretch space-y-0 border-b p-0  sm:flex-row">
 			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
 				<Card.Title>{CHART_TITLE}</Card.Title>
 				<Card.Description>{CHART_DESCRIPTION}</Card.Description>
@@ -178,8 +205,8 @@
 			</div>
 		</Card.Header>
 
-		<Card.Content class="px-2 sm:p-6">
-			<Chart.Container config={chartConfig} class="aspect-auto h-[150px] w-full">
+		<Card.Content>
+			<Chart.Container config={chartConfig} class="aspect-auto h-[200px] w-full px-2 pt-2">
 				<BarChart
 					bind:context
 					data={response.traffics}

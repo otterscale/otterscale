@@ -82,34 +82,36 @@
 	});
 </script>
 
-{#if !isLoaded}
-	Loading
-{:else}
-	<Card.Root class="h-full gap-2">
-		<Card.Header>
-			<Card.Title class="flex flex-wrap items-center justify-between gap-6">
-				<div class="flex items-center gap-2 truncate text-sm font-medium tracking-tight">
-					<Icon icon="ph:cpu" class="size-4.5" />
-					{m.cpu()}
-				</div>
-				<Tooltip.Provider>
-					<Tooltip.Root>
-						<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-							<Icon icon="ph:info" class="size-5 text-muted-foreground" />
-						</Tooltip.Trigger>
-						<Tooltip.Content>
-							<p>{m.machine_dashboard_total_cpu_tooltip()}</p>
-						</Tooltip.Content>
-					</Tooltip.Root>
-				</Tooltip.Provider>
-			</Card.Title>
-		</Card.Header>
+<Card.Root class="h-full gap-2">
+	<Card.Header>
+		<Card.Title class="flex flex-wrap items-center justify-between gap-6">
+			<div class="flex items-center gap-2 truncate text-sm font-medium tracking-tight">
+				<Icon icon="ph:cpu" class="size-4.5" />
+				{m.cpu()}
+			</div>
+			<Tooltip.Provider>
+				<Tooltip.Root>
+					<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+						<Icon icon="ph:info" class="size-5 text-muted-foreground" />
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						<p>{m.machine_dashboard_total_cpu_tooltip()}</p>
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</Tooltip.Provider>
+		</Card.Title>
+	</Card.Header>
+	{#if !isLoaded}
+		<div class="flex h-full w-full items-center justify-center">
+			<Icon icon="svg-spinners:6-dots-rotate" class="m-4 size-12" />
+		</div>
+	{:else}
 		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
 			<div class="flex flex-col gap-0.5">
 				<div class="text-3xl font-bold">{totalCPUCores}</div>
 				<p class="text-sm text-muted-foreground">{m.cores()}</p>
 			</div>
-			<Chart.Container config={cpuUsagesConfiguration} class="h-full w-20">
+			<Chart.Container config={cpuUsagesConfiguration} class="h-full w-20 pb-2">
 				<LineChart
 					data={cpuUsages}
 					x="time"
@@ -164,5 +166,5 @@
 				<Icon icon="ph:caret-down" />
 			{/if}
 		</Card.Footer>
-	</Card.Root>
-{/if}
+	{/if}
+</Card.Root>
