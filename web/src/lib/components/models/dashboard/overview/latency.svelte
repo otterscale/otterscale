@@ -90,28 +90,32 @@
 	});
 </script>
 
-{#if !isLoaded}
-	Loading
-{:else}
-	<Card.Root class="h-full gap-2">
-		<Card.Header>
-			<Card.Title class="flex flex-wrap items-center justify-between gap-6">
-				<div class="flex items-center gap-2 truncate text-sm font-medium tracking-tight">
-					<Icon icon="ph:clock" class="size-4.5" />
-					{m.latency()}
-				</div>
-				<Tooltip.Provider>
-					<Tooltip.Root>
-						<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-							<Icon icon="ph:info" class="size-5 text-muted-foreground" />
-						</Tooltip.Trigger>
-						<Tooltip.Content>
-							<p>{m.llm_dashboard_latency_tooltip()}</p>
-						</Tooltip.Content>
-					</Tooltip.Root>
-				</Tooltip.Provider>
-			</Card.Title>
-		</Card.Header>
+<Card.Root class="h-full gap-2">
+	<Card.Header>
+		<Card.Title class="flex flex-wrap items-center justify-between gap-6">
+			<div class="flex items-center gap-2 truncate text-sm font-medium tracking-tight">
+				<Icon icon="ph:clock" class="size-4.5" />
+				{m.latency()}
+			</div>
+			<Tooltip.Provider>
+				<Tooltip.Root>
+					<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+						<Icon icon="ph:info" class="size-5 text-muted-foreground" />
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						<p>{m.llm_dashboard_latency_tooltip()}</p>
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</Tooltip.Provider>
+		</Card.Title>
+	</Card.Header>
+	{#if !isLoaded}
+		<Card.Content>
+			<div class="flex h-9 w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-10" />
+			</div>
+		</Card.Content>
+	{:else}
 		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
 			<div class="flex flex-col gap-0.5">
 				<div class="text-3xl font-bold">{latestLatency.toFixed(2)}</div>
@@ -172,5 +176,5 @@
 				<Icon icon="ph:caret-down" />
 			{/if}
 		</Card.Footer>
-	</Card.Root>
-{/if}
+	{/if}
+</Card.Root>
