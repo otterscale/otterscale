@@ -6,21 +6,21 @@ import (
 )
 
 type UseCase struct {
-	volume            VolumeRepo
 	subvolumeGroup    SubvolumeGroupRepo
 	subvolume         SubvolumeRepo
 	subvolumeSnapshot SubvolumeSnapshotRepo
+	volume            VolumeRepo
 
 	action   action.ActionRepo
 	facility facility.FacilityRepo
 }
 
-func NewUseCase(volume VolumeRepo, subvolumeGroup SubvolumeGroupRepo, subvolume SubvolumeRepo, subvolumeSnapshot SubvolumeSnapshotRepo, action action.ActionRepo, facility facility.FacilityRepo) *UseCase {
+func NewUseCase(subvolumeGroup SubvolumeGroupRepo, subvolume SubvolumeRepo, subvolumeSnapshot SubvolumeSnapshotRepo, volume VolumeRepo, action action.ActionRepo, facility facility.FacilityRepo) *UseCase {
 	return &UseCase{
-		volume:            volume,
 		subvolumeGroup:    subvolumeGroup,
 		subvolume:         subvolume,
 		subvolumeSnapshot: subvolumeSnapshot,
+		volume:            volume,
 		action:            action,
 		facility:          facility,
 	}

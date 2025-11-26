@@ -415,9 +415,14 @@ func toProtoPod(p *workload.Pod) *pb.Application_Pod {
 	ret.SetReady(containerStatusesReadyString(p.Status.ContainerStatuses))
 	ret.SetRestarts(containerStatusesRestartString(p.Status.ContainerStatuses))
 
-	if len(p.Status.Conditions) > 0 {
-		index := len(p.Status.Conditions) - 1
-		ret.SetLastCondition(toProtoLastCondition(&p.Status.Conditions[index]))
+	conditions := p.Status.Conditions
+
+	for i := range conditions {
+		if conditions[i].Status == workload.ConditionTrue {
+			ret.SetLastCondition(toProtoApplicationCondition(&conditions[i]))
+
+			break
+		}
 	}
 
 	ret.SetCreatedAt(timestamppb.New(p.CreationTimestamp.Time))
@@ -425,14 +430,25 @@ func toProtoPod(p *workload.Pod) *pb.Application_Pod {
 	return ret
 }
 
-func toProtoLastCondition(c *workload.PodCondition) *pb.Application_Condition {
+func toProtoApplicationCondition(c *workload.PodCondition) *pb.Application_Condition {
 	ret := &pb.Application_Condition{}
 	ret.SetType(string(c.Type))
 	ret.SetStatus(string(c.Status))
 	ret.SetReason((c.Reason))
 	ret.SetMessage((c.Message))
-	ret.SetProbedAt(timestamppb.New(c.LastProbeTime.Time))
-	ret.SetTransitionedAt(timestamppb.New(c.LastTransitionTime.Time))
+
+	probedAt := c.LastProbeTime.Time
+
+	if !probedAt.IsZero() {
+		ret.SetProbedAt(timestamppb.New(probedAt))
+	}
+
+	transitionedAt := c.LastTransitionTime.Time
+
+	if !transitionedAt.IsZero() {
+		ret.SetTransitionedAt(timestamppb.New(transitionedAt))
+	}
+
 	return ret
 }
 

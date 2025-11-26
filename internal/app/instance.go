@@ -580,9 +580,14 @@ func toProtoVirtualMachineClone(c *vm.VirtualMachineClone) *pb.VirtualMachine_Cl
 	ret.SetPhase(string(c.Status.Phase))
 	ret.SetCreatedAt(timestamppb.New(c.CreationTimestamp.Time))
 
-	if len(c.Status.Conditions) > 0 {
-		index := len(c.Status.Conditions) - 1
-		ret.SetLastCondition(toProtoApplicationConditionFromClone(&c.Status.Conditions[index]))
+	conditions := c.Status.Conditions
+
+	for i := range conditions {
+		if conditions[i].Status == workload.ConditionTrue {
+			ret.SetLastCondition(toProtoApplicationConditionFromClone(&c.Status.Conditions[i]))
+
+			break
+		}
 	}
 
 	return ret
@@ -611,9 +616,14 @@ func toProtoVirtualMachineSnapshot(s *vm.VirtualMachineSnapshot) *pb.VirtualMach
 			ret.SetReadyToUse(*s.Status.ReadyToUse)
 		}
 
-		if len(s.Status.Conditions) > 0 {
-			index := len(s.Status.Conditions) - 1
-			ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&s.Status.Conditions[index]))
+		conditions := s.Status.Conditions
+
+		for i := range conditions {
+			if conditions[i].Status == workload.ConditionTrue {
+				ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&s.Status.Conditions[i]))
+
+				break
+			}
 		}
 	}
 
@@ -641,9 +651,14 @@ func toProtoVirtualMachineRestore(r *vm.VirtualMachineRestore) *pb.VirtualMachin
 	if r.Status != nil && r.Status.Complete != nil {
 		ret.SetComplete(*r.Status.Complete)
 
-		if len(r.Status.Conditions) > 0 {
-			index := len(r.Status.Conditions) - 1
-			ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&r.Status.Conditions[index]))
+		conditions := r.Status.Conditions
+
+		for i := range conditions {
+			if conditions[i].Status == workload.ConditionTrue {
+				ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&r.Status.Conditions[i]))
+
+				break
+			}
 		}
 	}
 
@@ -744,9 +759,14 @@ func toProtoDataVolume(it *cdi.DataVolumePersistent) *pb.DataVolume {
 		ret.SetPersistentVolumeClaim(toProtoPersistentVolumeClaim(it.Persistent))
 	}
 
-	if len(it.Status.Conditions) > 0 {
-		index := len(it.Status.Conditions) - 1
-		ret.SetLastCondition(toProtoDataVolumeCondition(&it.Status.Conditions[index]))
+	conditions := it.Status.Conditions
+
+	for i := range conditions {
+		if conditions[i].Status == workload.ConditionTrue {
+			ret.SetLastCondition(toProtoDataVolumeCondition(&it.Status.Conditions[i]))
+
+			break
+		}
 	}
 
 	return ret
