@@ -105,15 +105,11 @@ error_exit() {
 }
 
 cleanup() {
-    log "INFO" "Performing cleanup..." "CLEANUP"
     if [[ -f "$TEMP_LOG" ]]; then
         rm -f "$TEMP_LOG"
     fi
-
     # Restore file descriptors
     exec 2>&4 1>&3
-
-    log "INFO" "Cleanup completed" "CLEANUP"
 }
 
 execute_cmd() {
