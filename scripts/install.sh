@@ -1447,7 +1447,7 @@ install_helm_chart() {
 
     if [[ -z $(microk8s helm3 list -n "$namespace" -o json | jq ".[] | select(.name==\"$deploy_name\")") ]]; then  
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"  
-        execute_cmd "microk8s helm3 install \"$deploy_name\" \"$repository_name\" -n \"$namespace" $extra_args" "helm install $deploy_name"  
+        execute_cmd "microk8s helm3 install \"$deploy_name\" \"$repository_name\" -n \"$namespace\" $extra_args" "helm install $deploy_name"  
     else  
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"  
     fi  
@@ -1470,7 +1470,7 @@ deploy_helm() {
 
     install_helm_chart "istio-base" "istio-system" "istio/base" "--create-namespace --set defaultRevision=default --wait --timeout 10m"
     install_helm_chart "istiod" "istio-system" "istio/istiod" "--wait --timeout 10m"
-    install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --set crds.enabled=true --wait --timeout 10m"
+    install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --version v1.19.1 --set crds.enabled=true --wait --timeout 10m"
     install_helm_chart "open-feature-operator" "open-feature-operator" "openfeature/open-feature-operator" "--create-namespace --set sidecarConfiguration.port=8080 --wait --timeout 10m"
 
     log "INFO" "Check helm chart otterscale" "HELM_CHECK"
