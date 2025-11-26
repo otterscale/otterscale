@@ -1443,7 +1443,7 @@ install_helm_chart() {
     local repository_name="$3"  
     local extra_args="$4"  
 
-    log "INFO" "Check helm chart $deploy_name" "HELM_CHART"
+    log "INFO" "Check helm chart $deploy_name" "HELM_CHECK"
 
     if [[ -z $(microk8s helm3 list -n "$namespace" -o json | jq ".[] | select(.name==\"$deploy_name\")") ]]; then  
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"  
@@ -1473,7 +1473,7 @@ deploy_helm() {
     install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --set crds.enabled=true --wait --timeout 10m"
     install_helm_chart "open-feature-operator" "open-feature-operator" "openfeature/open-feature-operator" "--create-namespace --set sidecarConfiguration.port=8080 --wait --timeout 10m"
 
-    log "INFO" "Check helm chart otterscale" "HELM_CHART"
+    log "INFO" "Check helm chart otterscale" "HELM_CHECK"
     local deploy_name
     local namespace
     deploy_name="otterscale"
