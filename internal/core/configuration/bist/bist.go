@@ -58,32 +58,32 @@ type UseCase struct {
 	conf *conf.Config
 
 	bucket      object.BucketRepo
+	clusterNode cluster.NodeRepo
 	configMap   config.ConfigMapRepo
 	image       block.ImageRepo
 	job         workload.JobRepo
 	namespace   cluster.NamespaceRepo
-	clusterNode cluster.NodeRepo
-	storageNode storage.NodeRepo
 	pod         workload.PodRepo
 	pool        storage.PoolRepo
 	secret      config.SecretRepo
 	service     service.ServiceRepo
+	storageNode storage.NodeRepo
 }
 
-func NewUseCase(conf *conf.Config, bucket object.BucketRepo, configMap config.ConfigMapRepo, image block.ImageRepo, job workload.JobRepo, namespace cluster.NamespaceRepo, clusterNode cluster.NodeRepo, storageNode storage.NodeRepo, pod workload.PodRepo, pool storage.PoolRepo, secret config.SecretRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(conf *conf.Config, bucket object.BucketRepo, clusterNode cluster.NodeRepo, configMap config.ConfigMapRepo, image block.ImageRepo, job workload.JobRepo, namespace cluster.NamespaceRepo, pod workload.PodRepo, pool storage.PoolRepo, secret config.SecretRepo, service service.ServiceRepo, storageNode storage.NodeRepo) *UseCase {
 	return &UseCase{
 		conf:        conf,
 		bucket:      bucket,
+		clusterNode: clusterNode,
 		configMap:   configMap,
 		image:       image,
 		job:         job,
 		namespace:   namespace,
-		clusterNode: clusterNode,
-		storageNode: storageNode,
 		pod:         pod,
 		pool:        pool,
 		secret:      secret,
 		service:     service,
+		storageNode: storageNode,
 	}
 }
 

@@ -72,20 +72,20 @@ type UseCase struct {
 	virtualMachineRestore  VirtualMachineRestoreRepo
 	virtualMachineSnapshot VirtualMachineSnapshotRepo
 
-	virtualMachineInstance vmi.VirtualMachineInstanceRepo
-	service                service.ServiceRepo
 	machine                machine.MachineRepo
+	service                service.ServiceRepo
+	virtualMachineInstance vmi.VirtualMachineInstanceRepo
 }
 
-func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo, service service.ServiceRepo, machine machine.MachineRepo) *UseCase {
+func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, machine machine.MachineRepo, service service.ServiceRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo) *UseCase {
 	return &UseCase{
 		virtualMachine:         virtualMachine,
 		virtualMachineClone:    virtualMachineClone,
 		virtualMachineRestore:  virtualMachineRestore,
 		virtualMachineSnapshot: virtualMachineSnapshot,
-		virtualMachineInstance: virtualMachineInstance,
 		service:                service,
 		machine:                machine,
+		virtualMachineInstance: virtualMachineInstance,
 	}
 }
 
