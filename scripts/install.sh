@@ -323,10 +323,10 @@ send_request() {
     local retry_count=1
 
     while ((retry_count <= max_retries)); do
-        if curl -s --max-time 30 \
+        if $(curl -X POST -sf --max-time 30 \
                 --header "Content-Type: application/json" \
                 --data "$data" \
-                "$OTTERSCALE_API_ENDPOINT$url_path" >/dev/null 2>&1; then
+                "$OTTERSCALE_API_ENDPOINT$url_path" >/dev/null 2>&1); then
             return 0
         fi
 
@@ -360,7 +360,7 @@ send_status_data() {
 EOF
 )
 
-    send_request "/otterscale.environment.v1.EnvironmentService/UpdateStatus" "$data"
+    send_request "/ootterscale.bootstrap.v1.BootstrapService/UpdateStatus" "$data"
 }
 
 # =============================================================================
