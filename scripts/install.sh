@@ -33,7 +33,6 @@ readonly SNAP_PACKAGES="core24 maas maas-test-db juju lxd microk8s"
 # Snap channel versions
 readonly CORE24_CHANNEL="latest/stable"
 readonly MAAS_CHANNEL="3.6/stable"
-readonly MAAS_DB_CHANNEL="3.6/stable"
 readonly JUJU_CHANNEL="3.6/stable"
 readonly LXD_CHANNEL="6/stable"
 readonly MICROK8S_CHANNEL="1.33/stable"
@@ -473,7 +472,7 @@ snap_install() {
     declare -A snap_channels=(
         ["core24"]="$CORE24_CHANNEL"
         ["maas"]="$MAAS_CHANNEL"
-        ["maas-test-db"]="$MAAS_DB_CHANNEL"
+        ["maas-test-db"]="$MAAS_CHANNEL"
         ["juju"]="$JUJU_CHANNEL"
         ["lxd"]="$LXD_CHANNEL"
         ["microk8s"]="$MICROK8S_CHANNEL"
@@ -1481,9 +1480,10 @@ deploy_helm() {
     log "INFO" "Process microk8s helm3" "HELM_CHECK"
 
     log "INFO" "Check helm repository" "HELM_REPO"
-    add_helm_repository "https://otterscale.github.io/charts" "otterscale-charts"
+    add_helm_repository "https://istio-release.storage.googleapis.com/charts" "istio"
     add_helm_repository "https://open-feature.github.io/open-feature-operator" "openfeature"
     add_helm_repository "https://charts.jetstack.io" "jetstack"
+    add_helm_repository "https://otterscale.github.io/charts" "otterscale-charts"
 
     log "INFO" "Update helm repository" "HELM_REPO"
     execute_cmd "microk8s helm3 repo update" "helm repository update"
@@ -1495,30 +1495,51 @@ deploy_helm() {
     local deploy_name
     local namespace
 
+    log "INFO" "Check helm chart istio-base" "HELM_CHART"
+    repository_name="istio/base"
+    deploy_name="istio-base"
+    namespace="istio-system"
+    if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
+        log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
+        execute_cmd "helm install $deploy_name $repository_name -n $namespace --set defaultRevision=default --create-namespace --wait --timeout 10m" "helm install $deploy_name"
+    else
+        log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
+    fi
+
+    log "INFO" "Check helm chart istiod" "HELM_CHART"
+    repository_name="istio/istiod"
+    deploy_name="istiod"
+    if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
+        log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
+        execute_cmd "helm install $deploy_name $repository_name -n $namespace --wait --timeout 10m" "helm install $deploy_name"
+    else
+        log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
+    fi
+
     log "INFO" "Check helm chart cert-manager" "HELM_CHART"
-    repository_name="jetstack"
+    repository_name="cert-manager/jetstack"
     deploy_name="cert-manager"
     namespace="cert-manager"
     if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/$deploy_name --version v1.19.1 -n $namespace --create-namespace --set crds.enabled=true --wait --timeout 10m" "helm install cert $deploy_name"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name --version v1.19.1 -n $namespace --create-namespace --set crds.enabled=true --wait --timeout 10m" "helm install $deploy_name"
     else
         log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
     fi
 
     log "INFO" "Check helm chart open-feature-operator" "HELM_CHART"
-    repository_name="openfeature"
+    repository_name="open-feature-operator/openfeature"
     deploy_name="open-feature-operator"
     namespace="open-feature-operator"
     if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/$deploy_name -n $namespace --create-namespace --set sidecarConfiguration.port=8080 --set controllerManager.kubeRbacProxy.resources.limits.cpu=400m -n $namespace --wait --timeout 10m" "helm install $deploy_name"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name -n $namespace --create-namespace --set sidecarConfiguration.port=8080 --set controllerManager.kubeRbacProxy.resources.limits.cpu=400m -n $namespace --wait --timeout 10m" "helm install $deploy_name"
     else
         log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
     fi
 
     log "INFO" "Check helm chart otterscale" "HELM_CHART"
-    repository_name="otterscale-charts"
+    repository_name="otterscale/otterscale-charts"
     deploy_name="otterscale"
     namespace="otterscale"
     if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
@@ -1681,7 +1702,7 @@ $(echo "$juju_cacert" | sed 's/^/      /')
 EOF
 
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "Deploy OtterScale chart"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "helm install $deploy_name"
 
         rm -f "$ca_cert_file"
         send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
@@ -1756,7 +1777,7 @@ main() {
     config_bridge
     config_ceph_rbd_modules
 
-    deploy_istio
+    #deploy_istio
     deploy_helm
 
     log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
