@@ -13,6 +13,7 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
+	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/config"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/service"
@@ -116,18 +117,20 @@ type UseCase struct {
 	smbSecurityConfig SMBSecurityConfigRepo
 
 	deployment            workload.DeploymentRepo
+	node                  cluster.NodeRepo
 	pod                   workload.PodRepo
 	secret                config.SecretRepo
 	service               service.ServiceRepo
 	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
 }
 
-func NewUseCase(smbCommonConfig SMBCommonConfigRepo, smbShare SMBShareRepo, smbSecurityConfig SMBSecurityConfigRepo, deployment workload.DeploymentRepo, pod workload.PodRepo, secret config.SecretRepo, service service.ServiceRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *UseCase {
+func NewUseCase(smbCommonConfig SMBCommonConfigRepo, smbShare SMBShareRepo, smbSecurityConfig SMBSecurityConfigRepo, deployment workload.DeploymentRepo, node cluster.NodeRepo, pod workload.PodRepo, secret config.SecretRepo, service service.ServiceRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo) *UseCase {
 	return &UseCase{
 		smbCommonConfig:       smbCommonConfig,
 		smbShare:              smbShare,
 		smbSecurityConfig:     smbSecurityConfig,
 		deployment:            deployment,
+		node:                  node,
 		pod:                   pod,
 		secret:                secret,
 		service:               service,
@@ -266,12 +269,12 @@ func (uc *UseCase) ListSMBShares(ctx context.Context, scope string) (data []Shar
 		})
 	}
 
-	url, err := uc.service.URL(scope)
+	internalIP, err := uc.node.InternalIP(ctx, scope)
 	if err != nil {
 		return nil, "", err
 	}
 
-	return ret, url.Hostname(), nil
+	return ret, internalIP, nil
 }
 
 func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, name string, sizeBytes uint64, port int32, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest MapToGuest, securityMode SecurityMode, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
@@ -331,7 +334,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, name string, sizeB
 		return nil, "", err
 	}
 
-	url, err := uc.service.URL(scope)
+	internalIP, err := uc.node.InternalIP(ctx, scope)
 	if err != nil {
 		return nil, "", err
 	}
@@ -341,7 +344,7 @@ func (uc *UseCase) CreateSMBShare(ctx context.Context, scope, name string, sizeB
 
 	return &ShareData{
 		Share: newShare,
-	}, url.Hostname(), nil
+	}, internalIP, nil
 }
 
 func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, name string, sizeBytes uint64, port int32, browsable, readOnly, guestOK bool, validUsers []string, mapToGuest MapToGuest, securityMode SecurityMode, localUsers []User, realm string, joinSource *User) (data *ShareData, hostname string, err error) {
@@ -411,14 +414,14 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, name string, sizeB
 		return nil, "", err
 	}
 
-	url, err := uc.service.URL(scope)
+	internalIP, err := uc.node.InternalIP(ctx, scope)
 	if err != nil {
 		return nil, "", err
 	}
 
 	return &ShareData{
 		Share: newShare,
-	}, url.Hostname(), nil
+	}, internalIP, nil
 }
 
 func (uc *UseCase) filterPods(selector labels.Selector, namespace string, pods []workload.Pod) []workload.Pod {

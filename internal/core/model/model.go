@@ -18,6 +18,7 @@ import (
 	gav1 "sigs.k8s.io/gateway-api/apis/v1"
 
 	"github.com/otterscale/otterscale/internal/core/application/chart"
+	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/release"
 	"github.com/otterscale/otterscale/internal/core/application/service"
@@ -51,11 +52,12 @@ type UseCase struct {
 	httpRoute             service.HTTPRouteRepo
 	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
 	pod                   workload.PodRepo
+	node                  cluster.NodeRepo
 	release               release.ReleaseRepo
 	service               service.ServiceRepo
 }
 
-func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployment workload.DeploymentRepo, gateway service.GatewayRepo, httpRoute service.HTTPRouteRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, pod workload.PodRepo, release release.ReleaseRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployment workload.DeploymentRepo, gateway service.GatewayRepo, httpRoute service.HTTPRouteRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, pod workload.PodRepo, node cluster.NodeRepo, release release.ReleaseRepo, service service.ServiceRepo) *UseCase {
 	return &UseCase{
 		inferencePool:         inferencePool,
 		chart:                 chart,
@@ -64,6 +66,7 @@ func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployme
 		httpRoute:             httpRoute,
 		persistentVolumeClaim: persistentVolumeClaim,
 		pod:                   pod,
+		node:                  node,
 		release:               release,
 		service:               service,
 	}
@@ -193,7 +196,7 @@ func (uc *UseCase) DeleteModel(ctx context.Context, scope, namespace, name strin
 }
 
 func (uc *UseCase) gatewayURL(ctx context.Context, scope, namespace, serviceName string) (string, error) {
-	url, err := uc.service.URL(scope)
+	internalIP, err := uc.node.InternalIP(ctx, scope)
 	if err != nil {
 		return "", err
 	}
@@ -203,19 +206,19 @@ func (uc *UseCase) gatewayURL(ctx context.Context, scope, namespace, serviceName
 		return "", err
 	}
 
-	var port int32
+	var nodePort int32
 	for _, sp := range service.Spec.Ports {
 		if sp.Name == "default" {
-			port = sp.Port
+			nodePort = sp.NodePort
 			break
 		}
 	}
 
-	if port == 0 {
-		return "", fmt.Errorf("default port not found for llm-d-infra-inference-gateway-istio service")
+	if nodePort == 0 {
+		return "", fmt.Errorf("default node port not found for llm-d-infra-inference-gateway-istio service")
 	}
 
-	return fmt.Sprintf("http://%s:%d", url.Hostname(), port), nil
+	return fmt.Sprintf("http://%s:%d", internalIP, nodePort), nil
 }
 
 func (uc *UseCase) reconcileHTTPRoute(ctx context.Context, scope, namespace, name, gatewayName, inferencePoolName string, inferencePoolPort int32) error {

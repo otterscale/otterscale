@@ -115,12 +115,12 @@ func (uc *UseCase) ListApplications(ctx context.Context, scope string) (apps []A
 		return nil, "", err
 	}
 
-	url, err := uc.service.URL(scope)
+	internalIP, err := uc.node.InternalIP(ctx, scope)
 	if err != nil {
 		return nil, "", err
 	}
 
-	return apps, url.Hostname(), nil
+	return apps, internalIP, nil
 }
 
 func (uc *UseCase) RestartApplication(ctx context.Context, scope, namespace, name, appType string) error {
