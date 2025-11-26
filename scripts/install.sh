@@ -318,6 +318,11 @@ send_request() {
     local max_retries="${3:-3}"
     local retry_count=1
 
+    $(curl -X POST -sf --max-time 30 \
+    --header \"Content-Type: application/json\" \
+    --data \'"$data"\' \
+    "$OTTERSCALE_API_ENDPOINT$url_path")
+
     while ((retry_count <= max_retries)); do
         if $(curl -X POST -sf --max-time 30 \
                 --header \"Content-Type: application/json\" \
@@ -326,11 +331,11 @@ send_request() {
             break
         fi
 
-        echo "HTTP send request failed (attempt $retry_count/$max_retries)"
+        echo "HTTP post failed (attempt $retry_count/$max_retries)"
         retry_count=$((retry_count+1))
     done
 
-    echo "Failed to send HTTP request to $OTTERSCALE_API_ENDPOINT$url_path after $max_retries attempts"
+    echo "HTTP post failed $OTTERSCALE_API_ENDPOINT$url_path after $max_retries attempts"
     exit 1
 }
 
