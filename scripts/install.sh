@@ -1425,45 +1425,6 @@ config_bridge() {
     fi
 }
 
-deploy_istio() {
-    log "INFO" "Check metallb ipaddresspools" "NETWORK"
-    if ! microk8s kubectl get ipaddresspools default-addresspool -n metallb-system -o json | jq --exit-status ".spec.addresses[] | select(.==\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\")" >/dev/null 2>&1 ; then
-        log "INFO" "Update microk8s metallb: $OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP" "NETWORK"
-        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >/dev/null 2>&1
-    fi
-
-    log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
-
-    local istio_version="1.27.3"
-    local istio_url="https://istio.io/downloadIstio"
-    local istio_namespace="istio-system"
-    local arch
-    arch=$(uname -m)
-
-    case "$arch" in
-        x86_64|amd64) arch="x86_64" ;;
-        aarch64|arm64) arch="arm64" ;;
-    esac
-
-    if ! command -v istioctl &> /dev/null; then
-        log "INFO" "Install istioctl" "ISTIO_DEPLOY"
-        if ! curl -fsSL $istio_url | ISTIO_VERSION="$istio_version" TARGET_ARCH="$arch" bash - >>"$TEMP_LOG" 2>&1; then
-            error_exit "Failed install istio"
-        fi
-
-        mv "istio-$istio_version/bin/istioctl" /usr/local/bin/
-        chmod +x /usr/local/bin/istioctl
-        rm -rf "istio-$istio_version"
-    fi
-
-    if [[ $(microk8s kubectl get deploy -n istio-system -l app=istiod -o name | wc -l) -eq 0 ]]; then
-        log "INFO" "Install istio into kubernetes environment" "ISTIO_SERVICE"
-        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation"
-    else
-        log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
-    fi
-}
-
 add_helm_repository() {
     local repository_url=$1
     local repository_name=$2
@@ -1776,8 +1737,6 @@ main() {
     log "INFO" "Finalizing configuration..." "FINAL_CONFIG"
     config_bridge
     config_ceph_rbd_modules
-
-    #deploy_istio
     deploy_helm
 
     log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
