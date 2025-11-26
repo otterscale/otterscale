@@ -3,7 +3,7 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
+	import { curveMonotoneX } from 'd3-shape';
 	import { LineChart } from 'layerchart';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -130,7 +130,7 @@
 						}
 					]}
 					props={{
-						spline: { curve: curveNatural, motion: 'tween', strokeWidth: 2 },
+						spline: { curve: curveMonotoneX, motion: 'tween', strokeWidth: 2 },
 						highlight: {
 							points: {
 								motion: 'none',

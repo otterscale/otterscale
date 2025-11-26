@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
+	import { curveMonotoneX } from 'd3-shape';
 	import { Area, AreaChart, ChartClipPath } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { cubicInOut } from 'svelte/easing';
@@ -65,7 +65,7 @@
 						series={getSeries(chartConfig)}
 						props={{
 							area: {
-								curve: curveNatural,
+								curve: curveMonotoneX,
 								'fill-opacity': 0.4,
 								line: { class: 'stroke-1' },
 								motion: 'tween'
