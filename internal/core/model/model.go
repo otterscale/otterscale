@@ -7,10 +7,8 @@ import (
 	"fmt"
 	"log/slog"
 	"regexp"
-	"slices"
 	"strconv"
 	"strings"
-	"time"
 
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -325,12 +323,7 @@ func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, n
 	valuesYAML := fmt.Sprintf(inferencePoolValuesYAML, name, port)
 
 	_, err := uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
-	if err != nil {
-		return err
-	}
-
-	// FIXME: workaround to remove tracing arg until supported in llm-d-inference-scheduler
-	return uc.removeTracingFlag(ctx, scope, namespace, name)
+	return err
 }
 
 func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill, decode *Resource) (*release.Release, error) {
@@ -363,27 +356,6 @@ func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, na
 	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, FormatLabel(modelName), strSizeBytes, prefill.VGPU, prefill.VGPUMemory, decode.VGPU, decode.VGPUMemory)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
-}
-
-func (uc *UseCase) removeTracingFlag(ctx context.Context, scope, namespace, name string) error {
-	time.Sleep(2 * time.Second)
-
-	deployment, err := uc.deployment.Get(ctx, scope, namespace, name+"-epp")
-	if err != nil {
-		return err
-	}
-
-	containers := deployment.Spec.Template.Spec.Containers
-	if len(containers) == 0 {
-		return fmt.Errorf("no containers found in deployment %s", deployment.Name)
-	}
-
-	deployment.Spec.Template.Spec.Containers[0].Args = slices.DeleteFunc(containers[0].Args, func(arg string) bool {
-		return arg == "--tracing=false"
-	})
-
-	_, err = uc.deployment.Update(ctx, scope, namespace, deployment)
-	return err
 }
 
 func extractModelName(config map[string]any) (string, bool) {
