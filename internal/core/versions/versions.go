@@ -13,7 +13,7 @@ const (
 	KubePrometheusStack = "79.7.1"
 	Istio               = "1.28.0"
 	LLMDInfra           = "1.3.3"
-	LLMDModelService    = "0.3.6"
+	LLMDModelService    = "0.3.10"
 )
 
 // Kubernetes Custom Resource Definition

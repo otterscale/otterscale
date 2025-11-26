@@ -38,17 +38,20 @@ func (s *ModelService) ListModels(ctx context.Context, req *pb.ListModelsRequest
 }
 
 func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelRequest) (*pb.Model, error) {
-	var requests, limits *model.Resource
+	var (
+		prefill *model.Prefill
+		decode  *model.Decode
+	)
 
-	if r := req.GetRequests(); r != nil {
-		requests = toModelResource(r)
+	if r := req.GetPrefill(); r != nil {
+		prefill = toModelPrefill(r)
 	}
 
-	if r := req.GetLimits(); r != nil {
-		limits = toModelResource(r)
+	if r := req.GetDecode(); r != nil {
+		decode = toModelDecode(r)
 	}
 
-	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSizeBytes(), limits, requests)
+	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSizeBytes(), prefill, decode)
 	if err != nil {
 		return nil, err
 	}
@@ -58,17 +61,20 @@ func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelReque
 }
 
 func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelRequest) (*pb.Model, error) {
-	var requests, limits *model.Resource
+	var (
+		prefill *model.Prefill
+		decode  *model.Decode
+	)
 
-	if r := req.GetRequests(); r != nil {
-		requests = toModelResource(r)
+	if r := req.GetPrefill(); r != nil {
+		prefill = toModelPrefill(r)
 	}
 
-	if r := req.GetLimits(); r != nil {
-		limits = toModelResource(r)
+	if r := req.GetDecode(); r != nil {
+		decode = toModelDecode(r)
 	}
 
-	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), requests, limits)
+	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), prefill, decode)
 	if err != nil {
 		return nil, err
 	}
@@ -116,11 +122,32 @@ func (s *ModelService) DeleteModelArtifact(ctx context.Context, req *pb.DeleteMo
 	return resp, nil
 }
 
-func toModelResource(r *pb.Model_Resource) *model.Resource {
-	return &model.Resource{
-		VGPU:       r.GetVgpu(),
+func toModelPrefill(r *pb.Model_Prefill) *model.Prefill {
+	return &model.Prefill{
+		Replica:    r.GetReplica(),
 		VGPUMemory: r.GetVgpumemPercentage(),
 	}
+}
+
+func toModelDecode(r *pb.Model_Decode) *model.Decode {
+	return &model.Decode{
+		Tensor:     r.GetTensor(),
+		VGPUMemory: r.GetVgpumemPercentage(),
+	}
+}
+
+func toProtoModelPrefill(r *model.Prefill) *pb.Model_Prefill {
+	ret := &pb.Model_Prefill{}
+	ret.SetReplica(r.Replica)
+	ret.SetVgpumemPercentage(r.VGPUMemory)
+	return ret
+}
+
+func toProtoModelDecode(r *model.Decode) *pb.Model_Decode {
+	ret := &pb.Model_Decode{}
+	ret.SetTensor(r.Tensor)
+	ret.SetVgpumemPercentage(r.VGPUMemory)
+	return ret
 }
 
 func toProtoModels(ms []model.Model) []*pb.Model {
@@ -155,6 +182,16 @@ func toProtoModel(m *model.Model) *pb.Model {
 			ret.SetChartVersion(chart.Metadata.Version)
 			ret.SetAppVersion(chart.Metadata.AppVersion)
 		}
+	}
+
+	prefill := m.Prefill
+	if prefill != nil {
+		ret.SetPrefill(toProtoModelPrefill(prefill))
+	}
+
+	decode := m.Decode
+	if decode != nil {
+		ret.SetDecode(toProtoModelDecode(decode))
 	}
 
 	ret.SetPods(toProtoPods(m.Pods))

@@ -57,31 +57,33 @@ type Result struct {
 type UseCase struct {
 	conf *conf.Config
 
-	bucket    object.BucketRepo
-	configMap config.ConfigMapRepo
-	image     block.ImageRepo
-	job       workload.JobRepo
-	namespace cluster.NamespaceRepo
-	node      storage.NodeRepo
-	pod       workload.PodRepo
-	pool      storage.PoolRepo
-	secret    config.SecretRepo
-	service   service.ServiceRepo
+	bucket      object.BucketRepo
+	clusterNode cluster.NodeRepo
+	configMap   config.ConfigMapRepo
+	image       block.ImageRepo
+	job         workload.JobRepo
+	namespace   cluster.NamespaceRepo
+	pod         workload.PodRepo
+	pool        storage.PoolRepo
+	secret      config.SecretRepo
+	service     service.ServiceRepo
+	storageNode storage.NodeRepo
 }
 
-func NewUseCase(conf *conf.Config, bucket object.BucketRepo, configMap config.ConfigMapRepo, image block.ImageRepo, job workload.JobRepo, namespace cluster.NamespaceRepo, node storage.NodeRepo, pod workload.PodRepo, pool storage.PoolRepo, secret config.SecretRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(conf *conf.Config, bucket object.BucketRepo, clusterNode cluster.NodeRepo, configMap config.ConfigMapRepo, image block.ImageRepo, job workload.JobRepo, namespace cluster.NamespaceRepo, pod workload.PodRepo, pool storage.PoolRepo, secret config.SecretRepo, service service.ServiceRepo, storageNode storage.NodeRepo) *UseCase {
 	return &UseCase{
-		conf:      conf,
-		bucket:    bucket,
-		configMap: configMap,
-		image:     image,
-		job:       job,
-		namespace: namespace,
-		node:      node,
-		pod:       pod,
-		pool:      pool,
-		secret:    secret,
-		service:   service,
+		conf:        conf,
+		bucket:      bucket,
+		clusterNode: clusterNode,
+		configMap:   configMap,
+		image:       image,
+		job:         job,
+		namespace:   namespace,
+		pod:         pod,
+		pool:        pool,
+		secret:      secret,
+		service:     service,
+		storageNode: storageNode,
 	}
 }
 
@@ -122,7 +124,7 @@ func (uc *UseCase) ListInternalObjectServices(ctx context.Context, scope string)
 }
 
 func (uc *UseCase) listMinIOs(ctx context.Context, scope string) ([]WarpTargetInternal, error) {
-	url, err := uc.service.URL(scope)
+	internalIP, err := uc.clusterNode.InternalIP(ctx, scope)
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +152,7 @@ func (uc *UseCase) listMinIOs(ctx context.Context, scope string) ([]WarpTargetIn
 				Type:  ObjectServiceTypeMinIO,
 				Scope: scope,
 				Name:  fmt.Sprintf("%s.%s", services[i].GetNamespace(), services[i].GetName()),
-				Host:  fmt.Sprintf("%s:%d", url.Hostname(), port.NodePort),
+				Host:  fmt.Sprintf("%s:%d", internalIP, port.NodePort),
 			})
 		}
 	}

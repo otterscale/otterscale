@@ -6,11 +6,11 @@ const inferencePoolValuesYAML = `inferenceExtension:
   image:
     name: llm-d-inference-scheduler
     hub: ghcr.io/llm-d
-    tag: v0.3.2-with-sidecar-fix
+    tag: v0.4.0-rc.1
     pullPolicy: Always
   extProcPort: 9002
   env: []
-  pluginsConfigFile: "default-plugins.yaml"
+  pluginsConfigFile: "pd-config.yaml"
   # Define additional container ports
   extraContainerPorts: []
   # Define additional service ports
@@ -22,18 +22,38 @@ const inferencePoolValuesYAML = `inferenceExtension:
 #      targetPort: 8081
 
   # This is the plugins configuration file.
-  # pluginsCustomConfig:
-  #   custom-plugins.yaml: |
-  #     apiVersion: inference.networking.x-k8s.io/v1alpha1
-  #     kind: EndpointPickerConfig
-  #     plugins:
-  #     - type: custom-scorer
-  #       parameters:
-  #         custom-threshold: 64
-  #     schedulingProfiles:
-  #     - name: default
-  #       plugins:
-  #       - pluginRef: custom-scorer
+  pluginsCustomConfig: # THIS CONFIG NEEDS TO BE CHECKED FOR INF SCHEDULER NEW IMAGE
+    pd-config.yaml: |
+      # ALWAYS DO PD IN THIS EXAMPLE (THRESHOLD 0)
+      apiVersion: inference.networking.x-k8s.io/v1alpha1
+      kind: EndpointPickerConfig
+      plugins:
+      - type: prefill-header-handler
+      - type: prefill-filter
+      - type: decode-filter
+      - type: max-score-picker
+      - type: queue-scorer
+        parameters:
+          hashBlockSize: 5
+          maxPrefixBlocksToMatch: 256
+          lruCapacityPerServer: 31250
+      - type: pd-profile-handler
+        parameters:
+          threshold: 0
+          hashBlockSize: 5
+      schedulingProfiles:
+      - name: prefill
+        plugins:
+        - pluginRef: prefill-filter
+        - pluginRef: queue-scorer
+          weight: 1.0
+        - pluginRef: max-score-picker
+      - name: decode
+        plugins:
+        - pluginRef: decode-filter
+        - pluginRef: queue-scorer
+          weight: 1.0
+        - pluginRef: max-score-picker
 
   # Example environment variables:
   # env:
@@ -113,7 +133,7 @@ provider:
         #     maxRequestsPerConnection: 256000
 `
 
-// llm-d Model Service v0.3.6
+// llm-d Model Service v0.3.10
 //
 //nolint:misspell // ignore
 const modelServiceValuesYAML = `# yaml-language-server: $schema=values.schema.json
@@ -171,7 +191,7 @@ accelerator:
   type: nvidia
   # Resource names for different accelerator types
   resources:
-    nvidia: otterscale.com/vgpu
+    nvidia: "otterscale.com/vgpu"
     intel-i915: "gpu.intel.com/i915"
     intel-xe: "gpu.intel.com/xe"
     intel-gaudi: "habana.ai/gaudi"
@@ -229,6 +249,11 @@ dra:
       match: "exactly"
       count: 1
       selectors: []
+    - name: intel-gaudi
+      class: gaudi.intel.com
+      match: "exactly"
+      count: 1
+      selectors: []
     - name: amd
       class: gpu.amd.com
       match: "exactly"
@@ -251,7 +276,7 @@ routing:
   # cf. https://github.com/llm-d/llm-d-routing-sidecar/
   proxy:
     enabled: true
-    image: ghcr.io/llm-d/llm-d-routing-sidecar:v0.3.0
+    image: ghcr.io/llm-d/llm-d-routing-sidecar:v0.4.0-rc.1
     imagePullPolicy: Always
     # target port on which VLLM should listen
     targetPort: 8200
@@ -267,8 +292,42 @@ routing:
     # The path to the certificate for secure proxy.  Arg is ommitted by default for compatability with legacy sidecar images.
     # certPath: "/certs"
 
-    # Overwrite the verbosity of logging in the sidecar (defaults to 5)
-    # debugLevel: 5
+    # Zap logging configuration
+    # Boolean: Development Mode defaults(encoder=consoleEncoder,logLevel=Debug,stackTraceLevel=Warn). Production Mode defaults(encoder=jsonEncoder,logLevel=Info,stackTraceLevel=Error)
+    # @schema
+    # type: boolean
+    # default:false
+    # @schema
+    # zapDevel: false
+
+    # String: Zap log encoding (one of 'json' or 'console')
+    # @schema
+    # default: json
+    # enum: [json,console]
+    # @schema
+    zapEncoder: json
+
+
+    # String or integer: Zap Level to configure the verbosity of logging. Can be one of 'debug', 'info', 'error', 'panic' or any integer value > 0 which corresponds to custom debug levels of increasing verbosity
+    # @schema
+    # type: [string, integer]
+    # default: debug
+    # @schema
+    zapLogLevel: debug
+
+    # String: Zap Level at and above which stacktraces are captured (one of 'info', 'error', 'panic')
+    # @schema
+    # enum: [info,error,panic]
+    # default: error
+    # @schema
+    # zapStacktraceLevel: error
+
+    # String: Zap time encoding (one of 'epoch', 'millis', 'nano', 'iso8601', 'rfc3339' or 'rfc3339nano'). Defaults to 'epoch'
+    # @schema
+    # enum: [epoch,millis,nano,iso8601,rfc3339,rfc3339nano]
+    # default: epoch
+    # @schema
+    # zapTimeEncoding: epoch
 
 # @schema
 # additionalProperties: true
@@ -279,7 +338,11 @@ decode:
   autoscaling:
     enabled: true
 
+  parallelism:
+    tensor: "%[6]d"
+
   replicas: 1
+  nodeSelector: {}
   # schedulerName -- Name of the scheduler to use for scheduling decode pods (overrides global schedulerName)
   # schedulerName: decode-scheduler
 
@@ -291,7 +354,7 @@ decode:
   # @schema
   containers:
     - name: "vllm"
-      image: "ghcr.io/llm-d/llm-d:v0.2.0"
+      image: "ghcr.io/llm-d/llm-d-cuda:v0.3.1"
       # type of command:
       #   vllmServe - modelservice will add the command vllm serve to the container
       #   imageDefault - no command will be added; the default command defined in the image will be used
@@ -304,29 +367,20 @@ decode:
       #   type: string
       # @schema
       args:
+      - --kv-transfer-config
+      - '{"kv_connector":"NixlConnector", "kv_role":"kv_both"}'
+      - "--disable-uvicorn-access-log"
       - --max-model-len
       - "2048"
-      - --enable-chunked-prefill
-      - --max-num-seqs
-      - "256"
-      - --enable-prefix-caching
-      - --kv-transfer-config
-      - '{"kv_connector":"NixlConnector", "kv_role":"kv_consumer"}'
       # @schema
       # items:
       #   $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.EnvVar
       # @schema
       env:
-      - name: CUDA_VISIBLE_DEVICES
-        value: "0"
-      - name: UCX_TLS
-        value: cuda_ipc,cuda_copy,tcp
       - name: VLLM_NIXL_SIDE_CHANNEL_HOST
         valueFrom:
           fieldRef:
             fieldPath: status.podIP
-      - name: VLLM_NIXL_SIDE_CHANNEL_PORT
-        value: "5557"
       - name: VLLM_LOGGING_LEVEL
         value: DEBUG
       imagePullPolicy: ""
@@ -336,12 +390,10 @@ decode:
       #   $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.ContainerPort
       # @schema
       ports:
-      - containerPort: 5557
-        protocol: TCP
-      - containerPort: 8200
-        name: metrics
-        protocol: TCP
-      
+        - containerPort: 8200  # matches routing.proxy.targetPort, set for metrics scraping with  monitoring.podmonitor.enabled true
+          name: metrics
+          protocol: TCP
+
       extraConfig:
         livenessProbe:
           failureThreshold: 3
@@ -365,10 +417,7 @@ decode:
           initialDelaySeconds: 15
           periodSeconds: 30
           timeoutSeconds: 5
-      
-      #   - containerPort: 8200  # matches routing.proxy.targetPort, set for metrics scraping with  monitoring.podmonitor.enabled true
-      #     name: metrics
-      #     protocol: TCP
+
       # @schema
       # $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.ResourceRequirements
       # @schema
@@ -377,13 +426,11 @@ decode:
         # additionalProperties: true
         # @schema
         limits:
-          otterscale.com/vgpu: "%[4]d"
-          otterscale.com/vgpumem-percentage: "%[5]d"
+          otterscale.com/vgpumem-percentage: "%[7]d"
         # @schema
         # additionalProperties: true
         # @schema
         requests:
-          otterscale.com/vgpu: "%[6]d"
           otterscale.com/vgpumem-percentage: "%[7]d"
         # @schema
         # additionalProperties: true
@@ -400,6 +447,8 @@ decode:
       volumeMounts:
         - name: metrics-volume
           mountPath: /.config
+        - name: shm
+          mountPath: /dev/shm
         - name: torch-compile-cache
           mountPath: /.cache
   # @schema
@@ -411,6 +460,10 @@ decode:
   volumes:
     - name: metrics-volume
       emptyDir: {}
+    - name: shm
+      emptyDir:
+        medium: Memory
+        sizeLimit: "16Gi"
     - name: torch-compile-cache
       emptyDir: {}
 
@@ -461,9 +514,15 @@ decode:
       interval: "30s"
       # scrapeTimeout -- Timeout after which the scrape is ended
       # scrapeTimeout: "10s"
+      # @schema
+      # additionalProperties: true
+      # @schema
       # labels -- Additional labels to be added to the PodMonitor
       labels: {}
       # annotations -- Additional annotations to be added to the PodMonitor
+      # @schema
+      # additionalProperties: true
+      # @schema
       annotations: {}
       # relabelings -- RelabelConfigs to apply to samples before scraping
       relabelings: []
@@ -481,7 +540,8 @@ prefill:
   autoscaling:
     enabled: true
 
-  replicas: 1
+  replicas: %[4]d
+  nodeSelector: {}
   # schedulerName -- Name of the scheduler to use for scheduling prefill pods (overrides global schedulerName)
   # schedulerName: prefill-scheduler
 
@@ -493,7 +553,7 @@ prefill:
   # @schema
   containers:
     - name: "vllm"
-      image: ghcr.io/llm-d/llm-d:v0.2.0
+      image: "ghcr.io/llm-d/llm-d-cuda:v0.3.1"
       modelCommand: vllmServe
       mountModelVolume: true
       # @schema
@@ -501,29 +561,20 @@ prefill:
       #   type: string
       # @schema
       args:
+      - --kv-transfer-config
+      - '{"kv_connector":"NixlConnector", "kv_role":"kv_both"}'
+      - "--disable-uvicorn-access-log"
       - --max-model-len
       - "2048"
-      - --enable-chunked-prefill
-      - --max-num-seqs
-      - "256"
-      - --enable-prefix-caching
-      - --kv-transfer-config
-      - '{"kv_connector":"NixlConnector", "kv_role":"kv_producer"}'
       # @schema
       # items:
       #   $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.EnvVar
       # @schema
       env:
-      - name: CUDA_VISIBLE_DEVICES
-        value: "0"
-      - name: UCX_TLS
-        value: cuda_ipc,cuda_copy,tcp
       - name: VLLM_NIXL_SIDE_CHANNEL_HOST
         valueFrom:
           fieldRef:
             fieldPath: status.podIP
-      - name: VLLM_NIXL_SIDE_CHANNEL_PORT
-        value: "5557"
       - name: VLLM_LOGGING_LEVEL
         value: DEBUG
       imagePullPolicy: ""
@@ -534,14 +585,34 @@ prefill:
       #   $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.ContainerPort
       # @schema
       ports:
-      - containerPort: 5557
-        protocol: TCP
-      - containerPort: 8200
-        name: metrics
-        protocol: TCP
-      #   - containerPort: 8000  # matches routing.servicePort, set for metrics scraping with  monitoring.podmonitor.enabled true
-      #     name: metrics
-      #     protocol: TCP
+        - containerPort: 8000
+          name: metrics
+          protocol: TCP
+
+      extraConfig:
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8000
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /v1/models
+            port: 8000
+          periodSeconds: 5
+          timeoutSeconds: 2
+        startupProbe:
+          failureThreshold: 60
+          httpGet:
+            path: /v1/models
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+
       # @schema
       # $ref: https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master/_definitions.json#/definitions/io.k8s.api.core.v1.ResourceRequirements
       # @schema
@@ -550,14 +621,12 @@ prefill:
         # additionalProperties: true
         # @schema
         limits:
-          otterscale.com/vgpu: "1"
-          otterscale.com/vgpumem-percentage: "40"
+          otterscale.com/vgpumem-percentage: "%[5]d"
         # @schema
         # additionalProperties: true
         # @schema
         requests:
-          otterscale.com/vgpu: "1"
-          otterscale.com/vgpumem-percentage: "40"
+          otterscale.com/vgpumem-percentage: "%[5]d"
       # @schema
       # type: array
       # items:
@@ -567,6 +636,8 @@ prefill:
       volumeMounts:
         - name: metrics-volume
           mountPath: /.config
+        - name: shm
+          mountPath: /dev/shm
         - name: torch-compile-cache
           mountPath: /.cache
   # @schema
@@ -578,6 +649,10 @@ prefill:
   volumes:
     - name: metrics-volume
       emptyDir: {}
+    - name: shm
+      emptyDir:
+        medium: Memory
+        sizeLimit: "16Gi"
     - name: torch-compile-cache
       emptyDir: {}
 
@@ -628,9 +703,15 @@ prefill:
       interval: "30s"
       # scrapeTimeout -- Timeout after which the scrape is ended
       # scrapeTimeout: "10s"
+      # @schema
+      # additionalProperties: true
+      # @schema
       # labels -- Additional labels to be added to the PodMonitor
       labels: {}
       # annotations -- Additional annotations to be added to the PodMonitor
+      # @schema
+      # additionalProperties: true
+      # @schema
       annotations: {}
       # relabelings -- RelabelConfigs to apply to samples before scraping
       relabelings: []

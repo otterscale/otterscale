@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
+	import { version } from '$app/environment';
 	import LogoImage from '$lib/assets/logo.png';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
@@ -41,9 +42,9 @@
 		<Dialog.Header class="flex-row items-center justify-evenly gap-4">
 			<Dialog.Title class="flex flex-col items-center gap-2 font-medium">
 				<img src={LogoImage} alt="logo" class="relative bottom-0 -mt-4 size-24" />
-				<div class="-mt-5 flex flex-col gap-1">
+				<div class="-mt-5 flex flex-col items-center justify-center gap-1">
 					<span class=" text-xl">{siteConfig.title}</span>
-					<Badge variant="outline">{import.meta.env.PACKAGE_VERSION}</Badge>
+					<Badge variant="outline">{version}</Badge>
 				</div>
 			</Dialog.Title>
 			<Dialog.Description class="flex flex-col justify-between gap-4 py-2">

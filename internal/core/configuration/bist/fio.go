@@ -288,7 +288,7 @@ func (uc *UseCase) ensureNamespace(ctx context.Context, scope, namespace string)
 func (uc *UseCase) ensureConfigMap(ctx context.Context, scope, namespace, name string) error {
 	_, err := uc.configMap.Get(ctx, scope, namespace, name)
 	if apierrors.IsNotFound(err) {
-		host, id, key, err := uc.node.Config(scope)
+		host, id, key, err := uc.storageNode.Config(scope)
 		if err != nil {
 			return err
 		}

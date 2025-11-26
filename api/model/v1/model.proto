@@ -54,8 +54,12 @@ service ModelService {
 }
 
 message Model {
-  message Resource {
-    uint32 vgpu = 1;
+  message Prefill {
+    uint32 replica = 1;
+    uint32 vgpumem_percentage = 2;
+  }
+  message Decode {
+    uint32 tensor = 1;
     uint32 vgpumem_percentage = 2;
   }
   string id = 1;
@@ -67,8 +71,8 @@ message Model {
   google.protobuf.Timestamp last_deployed_at = 16;
   string chart_version = 21;
   string app_version = 22;
-  Resource requests = 31;
-  Resource limits = 32;
+  Prefill prefill = 31;
+  Decode decode = 32;
   repeated otterscale.application.v1.Application.Pod pods = 41;
 }
 
@@ -90,8 +94,8 @@ message CreateModelRequest {
   string name = 4;
   string model_name = 11;
   uint64 size_bytes = 12;
-  Model.Resource limits = 21;
-  Model.Resource requests = 22;
+  Model.Prefill prefill = 21;
+  Model.Decode decode = 22;
 }
 
 message UpdateModelRequest {
@@ -99,8 +103,8 @@ message UpdateModelRequest {
   reserved 2;
   string namespace = 3;
   string name = 4;
-  Model.Resource limits = 21;
-  Model.Resource requests = 22;
+  Model.Prefill prefill = 21;
+  Model.Decode decode = 22;
 }
 
 message DeleteModelRequest {
