@@ -67,7 +67,7 @@
 </script>
 
 {#if !isLoaded}
-	<Card.Root class="h-full gap-2">
+	<Card.Root>
 		<Card.Header class="h-[42px]">
 			<Card.Title>{m.vgpu()}</Card.Title>
 			<Card.Description>

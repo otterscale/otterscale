@@ -94,7 +94,7 @@
 </script>
 
 {#if !isLoaded}
-	<Card.Root class="h-full gap-2">
+	<Card.Root>
 		<Card.Header class="h-[42px]">
 			<Card.Title>{m.storage_throughPut()}</Card.Title>
 			<Card.Description>{m.read_and_write()}</Card.Description>

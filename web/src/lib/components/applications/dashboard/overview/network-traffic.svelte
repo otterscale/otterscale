@@ -90,7 +90,7 @@
 </script>
 
 {#if !isLoaded}
-	<Card.Root class="h-full gap-2">
+	<Card.Root>
 		<Card.Header class="h-[42px]">
 			<Card.Title>{m.network_bandwidth()}</Card.Title>
 			<Card.Description>{m.receive_and_transmit()}</Card.Description>
