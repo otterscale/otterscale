@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"net/url"
 
 	v1 "k8s.io/api/core/v1"
 )
@@ -25,7 +24,6 @@ type ServiceRepo interface {
 	Update(ctx context.Context, scope, namespace string, s *Service) (*Service, error)
 	Create(ctx context.Context, scope, namespace string, s *Service) (*Service, error)
 	Delete(ctx context.Context, scope, namespace, name string) error
-	URL(scope string) (*url.URL, error)
 }
 
 type UseCase struct {

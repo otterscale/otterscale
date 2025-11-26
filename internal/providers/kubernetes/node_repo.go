@@ -2,7 +2,9 @@ package kubernetes
 
 import (
 	"context"
+	"fmt"
 
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
@@ -58,4 +60,23 @@ func (r *nodeRepo) Update(ctx context.Context, scope string, n *cluster.Node) (*
 	opts := metav1.UpdateOptions{}
 
 	return clientset.CoreV1().Nodes().Update(ctx, n, opts)
+}
+
+func (r *nodeRepo) InternalIP(ctx context.Context, scope string) (string, error) {
+	selector := "node-role.kubernetes.io/control-plane"
+
+	nodes, err := r.List(ctx, scope, selector)
+	if err != nil {
+		return "", err
+	}
+
+	for i := range nodes {
+		for _, addr := range nodes[i].Status.Addresses {
+			if addr.Type == v1.NodeInternalIP {
+				return addr.Address, nil
+			}
+		}
+	}
+
+	return "", fmt.Errorf("no control plane node with InternalIP found")
 }
