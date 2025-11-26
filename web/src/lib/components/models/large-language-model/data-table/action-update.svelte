@@ -8,9 +8,11 @@
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import {
 		type CreateModelRequest,
+		type Model,
 		type Model_Decode,
 		type Model_Prefill,
-		ModelService
+		ModelService,
+		type UpdateModelRequest
 	} from '$lib/api/model/v1/model_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -21,17 +23,14 @@
 	import { Slider } from '$lib/components/ui/slider/index.js';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
-
-	import type { ModeSource } from '../types';
-	import SelectModel from './util-select-model.svelte';
 </script>
 
 <script lang="ts">
 	let {
+		model,
 		scope,
-		namespace,
 		reloadManager
-	}: { scope: string; namespace: string; reloadManager: ReloadManager } = $props();
+	}: { model: Model; scope: string; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -40,17 +39,17 @@
 
 	const defaults = {
 		scope: scope,
-		namespace: 'llm-d',
-		sizeBytes: BigInt(100 * 1024 ** 3)
-	} as CreateModelRequest;
-	const defaultPrefillResource = {} as Model_Prefill;
-	const defaultDecodeResource = {} as Model_Decode;
+		name: model.name,
+		namespace: model.namespace,
+		prefill: { ...model.prefill },
+		decode: { ...model.decode }
+	} as UpdateModelRequest;
+	const defaultPrefillResource = { ...model.prefill } as Model_Prefill;
+	const defaultDecodeResource = { ...model.decode } as Model_Decode;
 
 	let request = $state(defaults);
 	let requestPrefillResource = $state({ ...defaultPrefillResource });
 	let requestDecodeResource = $state({ ...defaultDecodeResource });
-	let modelSource: ModeSource | undefined = $state(undefined);
-	let selectedModel: string = $state('');
 
 	function resetPrefillResources() {
 		requestPrefillResource = { ...defaultPrefillResource };
@@ -58,29 +57,16 @@
 	function resetDecodeResources() {
 		requestDecodeResource = { ...defaultDecodeResource };
 	}
-	function resetModelSource() {
-		modelSource = undefined;
-	}
-	function resetSelectedModel() {
-		selectedModel = '';
-	}
 
 	function reset() {
 		request = { ...defaults };
 		resetPrefillResources();
 		resetDecodeResources();
-		resetModelSource();
-		resetSelectedModel();
 	}
 
 	function integrate() {
 		request.prefill = requestPrefillResource;
 		request.decode = requestDecodeResource;
-		if (modelSource === 'local' && selectedModel) {
-			request.modelName = `pvc-selectedModel`;
-		} else if (modelSource === 'cloud' && selectedModel) {
-			request.modelName = `hf:${selectedModel}`;
-		}
 	}
 
 	let open = $state(false);
@@ -117,12 +103,12 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger class="default">
-		<Icon icon="ph:plus" />
-		{m.create()}
+	<Modal.Trigger variant="creative">
+		<Icon icon="ph:pencil" />
+		{m.update()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.create_model()}</Modal.Header>
+		<Modal.Header>{m.update_model()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
@@ -132,6 +118,8 @@
 						bind:value={request.name}
 						required
 						bind:invalid={invalidity.name}
+						readonly
+						class="focus-none"
 					/>
 				</Form.Field>
 
@@ -168,33 +156,6 @@
 							</SingleSelect.Content>
 						</SingleSelect.Root>
 					{/if}
-				</Form.Field>
-
-				<Form.Field>
-					<Form.Label>{m.model_name()}</Form.Label>
-					<SelectModel
-						bind:value={selectedModel}
-						bind:modelSource
-						required
-						bind:invalid={invalidity.modelName}
-						{scope}
-						{namespace}
-					></SelectModel>
-				</Form.Field>
-
-				<Form.Field>
-					<Form.Label>{m.size()}</Form.Label>
-					<SingleInput.Measurement
-						type="number"
-						bind:value={request.sizeBytes}
-						required
-						bind:invalid={invalidity.sizeBytes}
-						units={[
-							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
-						]}
-					/>
 				</Form.Field>
 			</Form.Fieldset>
 
@@ -254,14 +215,14 @@
 				disabled={invalid}
 				onclick={() => {
 					integrate();
-					toast.promise(() => modelClient.createModel(request), {
-						loading: `Creating ${request.modelName}...`,
+					toast.promise(() => modelClient.updateModel(request), {
+						loading: `Updating ${request.name}...`,
 						success: () => {
 							reloadManager.force();
-							return `Create ${request.modelName} success`;
+							return `Update ${request.name} success`;
 						},
 						error: (error) => {
-							let message = `Fail to create ${request.modelName}`;
+							let message = `Fail to update ${request.name}`;
 							toast.error(message, {
 								description: (error as ConnectError).message.toString(),
 								duration: Number.POSITIVE_INFINITY

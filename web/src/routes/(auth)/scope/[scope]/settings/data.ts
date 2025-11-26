@@ -25,5 +25,11 @@ export const getItems = (scope: string) => [
 		title: m.instance_type(),
 		type: m.virtual_machine(),
 		url: resolve('/(auth)/scope/[scope]/settings/instance-type', { scope })
+	},
+	{
+		icon: 'ph:robot',
+		title: m.model_artifact(),
+		type: m.model(),
+		url: resolve('/(auth)/scope/[scope]/settings/model-artifact', { scope })
 	}
 ];

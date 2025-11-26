@@ -20,22 +20,26 @@
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import { cn } from '$lib/utils';
 
-	import type { Meta } from '../types';
+	import type { Metrics } from '../types';
 	import Create from './action-create.svelte';
 	import { getColumns, messages } from './columns';
+	import Pods from './row-pods.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
 	let {
 		models,
+		metrics,
 		scope,
+		namespace,
 		reloadManager
 	}: {
 		models: Writable<Model[]>;
+		metrics: Metrics;
 		scope: string;
+		namespace: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -144,7 +148,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {scope} {reloadManager} />
+			<Create {scope} {namespace} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {
@@ -163,8 +167,9 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
-							{@const metadata = header.column.columnDef.meta as Meta}
-							<Table.Head class={cn(metadata?.isRowAction ? 'm-0 p-0' : '')}>
+							<Table.Head
+								class="has-[*[data-slot=data-table-row-expander]]:p-1 has-[*[data-slot=data-table-row-picker]]:p-0"
+							>
 								{#if !header.isPlaceholder}
 									<FlexRender
 										content={header.column.columnDef.header}
@@ -180,15 +185,15 @@
 				{#each table.getRowModel().rows as row (row.id)}
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
-							{@const metadata = cell.column.columnDef.meta as Meta}
-							<Table.Cell class={cn(metadata?.isRowAction ? 'm-0 p-0' : '')}>
+							<Table.Cell
+								class="has-[*[data-slot=data-table-row-expander]]:p-1 has-[*[data-slot=data-table-row-picker]]:p-0"
+							>
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
 					</Table.Row>
 					{#if row.getIsExpanded()}
-						<!-- <Pods {metrics} {row} {table} /> -->
-						123
+						<Pods {metrics} {row} {table} />
 					{/if}
 				{:else}
 					<Empty {table} />

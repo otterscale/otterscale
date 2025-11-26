@@ -36,7 +36,7 @@
 		try {
 			const response = await client.listGPURelationsByModel({
 				scope: scope,
-				namespace: model.application.namespace,
+				namespace: model.namespace,
 				modelName: model.name
 			});
 			nodes.set(

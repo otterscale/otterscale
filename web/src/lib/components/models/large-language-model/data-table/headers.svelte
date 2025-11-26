@@ -7,19 +7,29 @@
 	import { m } from '$lib/paraglide/messages';
 
 	export const headers = {
+		row_expander,
 		row_picker,
-		model,
 		name,
-		replicas,
-		healthies,
-		gpu_cache,
-		kv_cache,
-		requests,
-		time_to_first_token,
-		relation,
+		namespace,
+		status,
+		description,
+		first_deployed_at,
+		last_deployed_at,
+		chart_version,
+		app_version,
+		prefill,
+		decode,
+		gpu_relation,
 		action
 	};
 </script>
+
+{#snippet row_expander(table: Table<Model>)}
+	<Layout.Header class="justify-center">
+		<Layout.HeaderController>
+			<Headers.RowExpander {table} />
+		</Layout.HeaderController>
+	</Layout.Header>{/snippet}
 
 {#snippet row_picker(table: Table<Model>)}
 	<Layout.Header class="justify-center">
@@ -29,76 +39,91 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet model()}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.model()}</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
 {#snippet name(column: Column<Model>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.model_name()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
-{#snippet replicas(column: Column<Model>)}
+{#snippet namespace(column: Column<Model>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.namespace()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet status(column: Column<Model>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.status()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet description(column: Column<Model>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.description()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet first_deployed_at(column: Column<Model>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.replica()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.first_deployed_at()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet healthies(column: Column<Model>)}
+{#snippet last_deployed_at(column: Column<Model>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.health()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.last_deployed_at()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet gpu_cache(column: Column<Model>)}
+{#snippet chart_version(column: Column<Model>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.gpu_cache()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.chart_version()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet kv_cache(column: Column<Model>)}
+{#snippet app_version(column: Column<Model>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.kv_cache()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.application_version()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet requests(column: Column<Model>)}
+{#snippet prefill()}
 	<Layout.Header class="justify-end">
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.requests()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.prefill()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet time_to_first_token(column: Column<Model>)}
+{#snippet decode()}
 	<Layout.Header class="justify-end">
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.uptime()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.decode()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet relation()}
+{#snippet gpu_relation()}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>{m.gpu_relation()}</Layout.HeaderViewer>
 	</Layout.Header>

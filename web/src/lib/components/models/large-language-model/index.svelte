@@ -5,7 +5,6 @@
 	import { writable } from 'svelte/store';
 
 	import { env } from '$env/dynamic/public';
-	import { type Application, ApplicationService } from '$lib/api/application/v1/application_pb';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { type Model, ModelService } from '$lib/api/model/v1/model_pb.ts';
 	import * as Loading from '$lib/components/custom/loading';
@@ -43,16 +42,8 @@
 			});
 		}
 
-		const gpuCacheResponse = await prometheusDriver.rangeQuery(
-			`vllm:gpu_cache_usage_perc{scope_uuid="${scope}"}`,
-			Date.now() - 10 * 60 * 1000,
-			Date.now(),
-			2 * 60
-		);
-		const gpuCacheSampleVectors = getMapInstanceToMetric(gpuCacheResponse.result);
-
 		const kvCacheResponse = await prometheusDriver.rangeQuery(
-			`vllm:kv_cache_usage_perc{scope_uuid="${scope}"}`,
+			`vllm:kv_cache_usage_perc{juju_model="${scope}"}`,
 			Date.now() - 10 * 60 * 1000,
 			Date.now(),
 			2 * 60
@@ -60,7 +51,7 @@
 		const kvCacheSampleVectors = getMapInstanceToMetric(kvCacheResponse.result);
 
 		const timeToFirstTokenResponse = await prometheusDriver.rangeQuery(
-			`vllm:time_to_first_token_seconds_sum{scope_uuid="${scope}"}`,
+			`vllm:time_to_first_token_seconds_sum{juju_model="${scope}"}`,
 			Date.now() - 10 * 60 * 1000,
 			Date.now(),
 			2 * 60
@@ -68,7 +59,7 @@
 		const timeToFirstTokenSampleVectors = getMapInstanceToMetric(timeToFirstTokenResponse.result);
 
 		const requestLatencyResponse = await prometheusDriver.rangeQuery(
-			`vllm:e2e_request_latency_seconds_sum{scope_uuid="${scope}"}`,
+			`vllm:e2e_request_latency_seconds_sum{juju_model="${scope}"}`,
 			Date.now() - 10 * 60 * 1000,
 			Date.now(),
 			2 * 60
@@ -76,7 +67,6 @@
 		const requestLatencySampleVectors = getMapInstanceToMetric(requestLatencyResponse.result);
 
 		metrics = {
-			gpuCache: gpuCacheSampleVectors,
 			kvCache: kvCacheSampleVectors,
 			requestLatency: requestLatencySampleVectors,
 			timeToFirstToken: timeToFirstTokenSampleVectors
@@ -85,8 +75,7 @@
 
 	async function fetch() {
 		try {
-			fetchModels();
-			fetchMetrics();
+			await Promise.all([fetchModels(), fetchMetrics()]);
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -107,7 +96,7 @@
 <main class="space-y-4 py-4">
 	<ExtensionsAlert {scope} />
 	{#if isMounted}
-		<DataTable {models} {metrics} {scope} {reloadManager} />
+		<DataTable {models} namespace="default" {metrics} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

@@ -1,114 +1,155 @@
 <script lang="ts" module>
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
 
-	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
+	import type { Model } from '$lib/api/model/v1/model_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
-	import { formatBigNumber } from '$lib/formatter';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { formatTimeAgo } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 
-	import { type LargeLanguageModel } from '../type';
 	import Actions from './cell-actions.svelte';
 	import Relation from './cell-relation.svelte';
 
 	export const cells = {
+		row_expander,
 		row_picker,
-		model,
+		id,
 		name,
-		replicas,
-		healthies,
-		gpu_cache,
-		kv_cache,
-		requests,
-		time_to_first_token,
-		relation,
+		namespace,
+		status,
+		description,
+		first_deployed_at,
+		last_deployed_at,
+		chart_version,
+		app_version,
+		prefill,
+		decode,
+		gpu_relation,
 		action
 	};
 </script>
 
-{#snippet row_picker(row: Row<LargeLanguageModel>)}
+{#snippet row_expander(row: Row<Model>)}
+	<Layout.Cell class="items-center">
+		<Cells.RowExpander {row} />
+	</Layout.Cell>
+{/snippet}
+
+{#snippet row_picker(row: Row<Model>)}
 	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
 	</Layout.Cell>
 {/snippet}
 
-<!-- TODO: fix scope -->
-{#snippet model(row: Row<LargeLanguageModel>)}
+{#snippet id(row: Row<Model>)}
 	<Layout.Cell class="items-start">
-		<a
-			class="m-0 p-0 underline hover:no-underline"
-			href={resolve('/(auth)/scope/[scope]/applications/workloads/[namespace]/[application_name]', {
-				scope: page.params.scope!,
-				namespace: row.original.application.namespace,
-				application_name: row.original.application.name
-			})}
-		>
-			{row.original.application.name}
-		</a>
-		<Layout.SubCell>
-			{row.original.application.namespace}
-		</Layout.SubCell>
+		{row.original.id}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet name(row: Row<LargeLanguageModel>)}
+{#snippet name(row: Row<Model>)}
 	<Layout.Cell class="items-start">
 		{row.original.name}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet replicas(row: Row<LargeLanguageModel>)}
-	<Layout.Cell class="items-end">
-		{row.original.application.replicas}
+{#snippet namespace(row: Row<Model>)}
+	<Layout.Cell class="items-start">
+		{row.original.namespace}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet healthies(row: Row<LargeLanguageModel>)}
-	<Layout.Cell class="items-end">
-		{row.original.application.healthies}
+{#snippet status(row: Row<Model>)}
+	<Layout.Cell class="items-start">
+		{row.original.status}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet gpu_cache(row: Row<LargeLanguageModel>)}
-	<Layout.Cell class="items-end">
-		{row.original.metrics.gpu_cache}
+{#snippet description(row: Row<Model>)}
+	<Layout.Cell class="items-start">
+		<p class="max-w-[200px] truncate">{row.original.description}</p>
 	</Layout.Cell>
 {/snippet}
 
-{#snippet kv_cache(row: Row<LargeLanguageModel>)}
+{#snippet first_deployed_at(row: Row<Model>)}
+	{#if row.original.firstDeployedAt}
+		<Layout.Cell class="items-end">
+			<Tooltip.Provider>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						{formatTimeAgo(timestampDate(row.original.firstDeployedAt))}
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						{timestampDate(row.original.firstDeployedAt)}
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</Tooltip.Provider>
+		</Layout.Cell>
+	{/if}
+{/snippet}
+
+{#snippet last_deployed_at(row: Row<Model>)}
+	{#if row.original.lastDeployedAt}
+		<Layout.Cell class="items-end">
+			<Tooltip.Provider>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						{formatTimeAgo(timestampDate(row.original.lastDeployedAt))}
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						{timestampDate(row.original.lastDeployedAt)}
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</Tooltip.Provider>
+		</Layout.Cell>
+	{/if}
+{/snippet}
+
+{#snippet chart_version(row: Row<Model>)}
 	<Layout.Cell class="items-end">
-		{row.original.metrics.kv_cache}
+		{row.original.chartVersion}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet requests(row: Row<LargeLanguageModel>)}
+{#snippet app_version(row: Row<Model>)}
 	<Layout.Cell class="items-end">
-		{formatBigNumber(row.original.metrics.requests)}
+		{row.original.appVersion}
 	</Layout.Cell>
 {/snippet}
 
-{#snippet time_to_first_token(row: Row<LargeLanguageModel>)}
-	<Layout.Cell class="items-end">
-		{formatBigNumber(row.original.metrics.time_to_first_token)}
-	</Layout.Cell>
+{#snippet prefill(row: Row<Model>)}
+	{#if row.original.prefill}
+		<Layout.Cell class="items-end">
+			<p>
+				{row.original.prefill.vgpumemPercentage}% ({row.original.prefill.replica}
+				{m.replica()})
+			</p>
+		</Layout.Cell>
+	{/if}
 {/snippet}
 
-<!-- TODO: fix scope -->
-{#snippet relation(row: Row<LargeLanguageModel>)}
-	{#if row.original.application.healthies > 0}
+{#snippet decode(row: Row<Model>)}
+	{#if row.original.decode}
+		<Layout.Cell class="items-end">
+			<p>{row.original.decode.vgpumemPercentage}% ({row.original.decode.tensor} {m.tensor()})</p>
+		</Layout.Cell>
+	{/if}
+{/snippet}
+
+{#snippet gpu_relation(row: Row<Model>)}
+	{#if row.original.status === 'deployed'}
 		<Layout.Cell class="items-end">
 			<Relation scope={page.params.scope!} model={row.original} />
 		</Layout.Cell>
 	{/if}
 {/snippet}
 
-{#snippet action(data: {
-	row: Row<LargeLanguageModel>;
-	scope: string;
-	reloadManager: ReloadManager;
-})}
+{#snippet action(data: { row: Row<Model>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-end">
-		<Actions model={data.row.original} reloadManager={data.reloadManager} />
+		<Actions model={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}

@@ -4,7 +4,11 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { type DeleteModelRequest, type Model, ModelService } from '$lib/api/model/v1/model_pb';
+	import {
+		type DeleteModelArtifactRequest,
+		type ModelArtifact,
+		ModelService
+	} from '$lib/api/model/v1/model_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -14,17 +18,22 @@
 
 <script lang="ts">
 	let {
-		model,
+		modelArtifact,
 		scope,
 		reloadManager
-	}: { model: Model; scope: string; reloadManager: ReloadManager } = $props();
+	}: {
+		modelArtifact: ModelArtifact;
+		scope: string;
+		reloadManager: ReloadManager;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 	const modelClient = createClient(ModelService, transport);
 
 	const defaults = {
-		scope: scope
-	} as DeleteModelRequest;
+		scope: scope,
+		namespace: modelArtifact.namespace
+	} as DeleteModelArtifactRequest;
 	let request = $state({ ...defaults });
 	function reset() {
 		request = { ...defaults };
@@ -41,20 +50,19 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.delete()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Help>
-					{m.deletion_warning({ identifier: m.name() })}
-				</Form.Help>
 				<Form.Field>
+					<Form.Label>{m.model_artifact()}</Form.Label>
+					<Form.Help>
+						{m.deletion_warning({ identifier: m.model_artifact() })}
+					</Form.Help>
 					<SingleInput.Confirm
 						required
-						id="deletion"
-						target={model.name}
+						target={modelArtifact.name}
 						bind:value={request.name}
 						bind:invalid
 					/>
@@ -69,17 +77,18 @@
 			>
 				{m.cancel()}
 			</Modal.Cancel>
+
 			<Modal.Action
 				disabled={invalid}
 				onclick={() => {
-					toast.promise(() => modelClient.deleteModel(request), {
-						loading: `Deleting ${model.name}...`,
+					toast.promise(() => modelClient.deleteModelArtifact(request), {
+						loading: `Deleting model artifact ${modelArtifact.name}...`,
 						success: () => {
 							reloadManager.force();
-							return `Successfully deleted ${model.name}`;
+							return `Successfully deleted model artifact ${modelArtifact.name}`;
 						},
 						error: (error) => {
-							let message = `Failed to delete ${model.name}`;
+							let message = `Failed to delete model artifact ${modelArtifact.name}`;
 							toast.error(message, {
 								description: (error as ConnectError).message.toString(),
 								duration: Number.POSITIVE_INFINITY
