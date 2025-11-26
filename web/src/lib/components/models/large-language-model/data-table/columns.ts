@@ -56,6 +56,15 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Mode
 			}
 		},
 		{
+			accessorKey: 'id',
+			header: ({ column }) => {
+				return renderSnippet(headers.id, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.id, row);
+			}
+		},
+		{
 			accessorKey: 'namespace',
 			header: ({ column }) => {
 				return renderSnippet(headers.namespace, column);
@@ -145,7 +154,7 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Mode
 				return renderSnippet(headers.gpu_relation, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.gpu_relation, row);
+				return renderSnippet(cells.gpu_relation, { row, scope, reloadManager });
 			},
 			enableHiding: false
 		},

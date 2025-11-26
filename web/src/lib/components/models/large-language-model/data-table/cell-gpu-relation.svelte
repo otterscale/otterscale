@@ -16,7 +16,7 @@
 		type GPURelation_Pod,
 		OrchestratorService
 	} from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { Complex as Flow } from '$lib/components/flow/index';
+	import { Complex as ComplexFlow } from '$lib/components/flow/index';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
 </script>
@@ -49,7 +49,6 @@
 							type: 'machine',
 							id: `machine${gpuRelation.entity.value.id}`,
 							data: {
-								scope,
 								machine: gpuRelation.entity.value,
 								gpus: gpus.filter(
 									(gpu) => gpu.machineId === (gpuRelation.entity.value as GPURelation_Machine).id
@@ -79,7 +78,7 @@
 						return {
 							type: 'model',
 							id: `pod${gpuRelation.entity.value.namespace}${gpuRelation.entity.value.name}`,
-							data: gpuRelation.entity.value,
+							data: { scope, pod: gpuRelation.entity.value },
 							position
 						};
 					} else {
@@ -125,16 +124,14 @@
 	}
 
 	let open = $state(false);
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 </script>
 
-{#if isLoading}
-	Loading...
-{:else}
+{#if isLoaded}
 	<Sheet.Root bind:open>
 		<Sheet.Trigger>
 			<Icon icon="ph:arrow-square-out" />
@@ -144,7 +141,7 @@
 				<Sheet.Header>
 					<Sheet.Title class="text-center text-lg">{m.details()}</Sheet.Title>
 				</Sheet.Header>
-				<Flow.Flow initialNodes={$nodes} initialEdges={$edges} />
+				<ComplexFlow.Flow initialNodes={$nodes} initialEdges={$edges} />
 			{/if}
 		</Sheet.Content>
 	</Sheet.Root>

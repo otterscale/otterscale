@@ -67,7 +67,6 @@
 							type: 'machine',
 							id: `machine${gpuRelation.entity.value.id}`,
 							data: {
-								machineScope,
 								machine: gpuRelation.entity.value,
 								gpus: gpus.filter(
 									(gpu) => gpu.machineId === (gpuRelation.entity.value as GPURelation_Machine).id
@@ -94,7 +93,7 @@
 						return {
 							type: 'model',
 							id: `pod${gpuRelation.entity.value.namespace}${gpuRelation.entity.value.name}`,
-							data: gpuRelation.entity.value,
+							data: { scope: machineScope, pod: gpuRelation.entity.value },
 							position
 						};
 					} else {

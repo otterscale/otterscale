@@ -9,6 +9,7 @@
 	export const headers = {
 		row_expander,
 		row_picker,
+		id,
 		name,
 		namespace,
 		status,
@@ -35,6 +36,15 @@
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
 			<Headers.RowPicker {table} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet id(column: Column<Model>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.model_name()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}

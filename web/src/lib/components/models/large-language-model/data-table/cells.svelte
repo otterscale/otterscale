@@ -2,7 +2,6 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
 
-	import { page } from '$app/state';
 	import type { Model } from '$lib/api/model/v1/model_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -12,7 +11,7 @@
 	import { m } from '$lib/paraglide/messages';
 
 	import Actions from './cell-actions.svelte';
-	import Relation from './cell-relation.svelte';
+	import GPURelation from './cell-gpu-relation.svelte';
 
 	export const cells = {
 		row_expander,
@@ -140,10 +139,10 @@
 	{/if}
 {/snippet}
 
-{#snippet gpu_relation(row: Row<Model>)}
-	{#if row.original.status === 'deployed'}
+{#snippet gpu_relation(data: { row: Row<Model>; scope: string })}
+	{#if data.row.original.status === 'deployed'}
 		<Layout.Cell class="items-end">
-			<Relation scope={page.params.scope!} model={row.original} />
+			<GPURelation scope={data.scope} model={data.row.original} />
 		</Layout.Cell>
 	{/if}
 {/snippet}
