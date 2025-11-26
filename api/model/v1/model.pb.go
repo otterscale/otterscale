@@ -35,8 +35,8 @@ type Model struct {
 	xxx_hidden_LastDeployedAt  *timestamppb.Timestamp `protobuf:"bytes,16,opt,name=last_deployed_at,json=lastDeployedAt"`
 	xxx_hidden_ChartVersion    *string                `protobuf:"bytes,21,opt,name=chart_version,json=chartVersion"`
 	xxx_hidden_AppVersion      *string                `protobuf:"bytes,22,opt,name=app_version,json=appVersion"`
-	xxx_hidden_Prefill         *Model_Resource        `protobuf:"bytes,31,opt,name=prefill"`
-	xxx_hidden_Decode          *Model_Resource        `protobuf:"bytes,32,opt,name=decode"`
+	xxx_hidden_Prefill         *Model_Prefill         `protobuf:"bytes,31,opt,name=prefill"`
+	xxx_hidden_Decode          *Model_Decode          `protobuf:"bytes,32,opt,name=decode"`
 	xxx_hidden_Pods            *[]*v1.Application_Pod `protobuf:"bytes,41,rep,name=pods"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
@@ -153,14 +153,14 @@ func (x *Model) GetAppVersion() string {
 	return ""
 }
 
-func (x *Model) GetPrefill() *Model_Resource {
+func (x *Model) GetPrefill() *Model_Prefill {
 	if x != nil {
 		return x.xxx_hidden_Prefill
 	}
 	return nil
 }
 
-func (x *Model) GetDecode() *Model_Resource {
+func (x *Model) GetDecode() *Model_Decode {
 	if x != nil {
 		return x.xxx_hidden_Decode
 	}
@@ -219,11 +219,11 @@ func (x *Model) SetAppVersion(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 12)
 }
 
-func (x *Model) SetPrefill(v *Model_Resource) {
+func (x *Model) SetPrefill(v *Model_Prefill) {
 	x.xxx_hidden_Prefill = v
 }
 
-func (x *Model) SetDecode(v *Model_Resource) {
+func (x *Model) SetDecode(v *Model_Decode) {
 	x.xxx_hidden_Decode = v
 }
 
@@ -371,8 +371,8 @@ type Model_builder struct {
 	LastDeployedAt  *timestamppb.Timestamp
 	ChartVersion    *string
 	AppVersion      *string
-	Prefill         *Model_Resource
-	Decode          *Model_Resource
+	Prefill         *Model_Prefill
+	Decode          *Model_Decode
 	Pods            []*v1.Application_Pod
 }
 
@@ -628,8 +628,8 @@ type CreateModelRequest struct {
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	xxx_hidden_ModelName   *string                `protobuf:"bytes,11,opt,name=model_name,json=modelName"`
 	xxx_hidden_SizeBytes   uint64                 `protobuf:"varint,12,opt,name=size_bytes,json=sizeBytes"`
-	xxx_hidden_Prefill     *Model_Resource        `protobuf:"bytes,21,opt,name=prefill"`
-	xxx_hidden_Decode      *Model_Resource        `protobuf:"bytes,22,opt,name=decode"`
+	xxx_hidden_Prefill     *Model_Prefill         `protobuf:"bytes,21,opt,name=prefill"`
+	xxx_hidden_Decode      *Model_Decode          `protobuf:"bytes,22,opt,name=decode"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -708,14 +708,14 @@ func (x *CreateModelRequest) GetSizeBytes() uint64 {
 	return 0
 }
 
-func (x *CreateModelRequest) GetPrefill() *Model_Resource {
+func (x *CreateModelRequest) GetPrefill() *Model_Prefill {
 	if x != nil {
 		return x.xxx_hidden_Prefill
 	}
 	return nil
 }
 
-func (x *CreateModelRequest) GetDecode() *Model_Resource {
+func (x *CreateModelRequest) GetDecode() *Model_Decode {
 	if x != nil {
 		return x.xxx_hidden_Decode
 	}
@@ -747,11 +747,11 @@ func (x *CreateModelRequest) SetSizeBytes(v uint64) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
 }
 
-func (x *CreateModelRequest) SetPrefill(v *Model_Resource) {
+func (x *CreateModelRequest) SetPrefill(v *Model_Prefill) {
 	x.xxx_hidden_Prefill = v
 }
 
-func (x *CreateModelRequest) SetDecode(v *Model_Resource) {
+func (x *CreateModelRequest) SetDecode(v *Model_Decode) {
 	x.xxx_hidden_Decode = v
 }
 
@@ -845,8 +845,8 @@ type CreateModelRequest_builder struct {
 	Name      *string
 	ModelName *string
 	SizeBytes *uint64
-	Prefill   *Model_Resource
-	Decode    *Model_Resource
+	Prefill   *Model_Prefill
+	Decode    *Model_Decode
 }
 
 func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
@@ -883,8 +883,8 @@ type UpdateModelRequest struct {
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Prefill     *Model_Resource        `protobuf:"bytes,21,opt,name=prefill"`
-	xxx_hidden_Decode      *Model_Resource        `protobuf:"bytes,22,opt,name=decode"`
+	xxx_hidden_Prefill     *Model_Prefill         `protobuf:"bytes,21,opt,name=prefill"`
+	xxx_hidden_Decode      *Model_Decode          `protobuf:"bytes,22,opt,name=decode"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -946,14 +946,14 @@ func (x *UpdateModelRequest) GetName() string {
 	return ""
 }
 
-func (x *UpdateModelRequest) GetPrefill() *Model_Resource {
+func (x *UpdateModelRequest) GetPrefill() *Model_Prefill {
 	if x != nil {
 		return x.xxx_hidden_Prefill
 	}
 	return nil
 }
 
-func (x *UpdateModelRequest) GetDecode() *Model_Resource {
+func (x *UpdateModelRequest) GetDecode() *Model_Decode {
 	if x != nil {
 		return x.xxx_hidden_Decode
 	}
@@ -975,11 +975,11 @@ func (x *UpdateModelRequest) SetName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
-func (x *UpdateModelRequest) SetPrefill(v *Model_Resource) {
+func (x *UpdateModelRequest) SetPrefill(v *Model_Prefill) {
 	x.xxx_hidden_Prefill = v
 }
 
-func (x *UpdateModelRequest) SetDecode(v *Model_Resource) {
+func (x *UpdateModelRequest) SetDecode(v *Model_Decode) {
 	x.xxx_hidden_Decode = v
 }
 
@@ -1047,8 +1047,8 @@ type UpdateModelRequest_builder struct {
 	Scope     *string
 	Namespace *string
 	Name      *string
-	Prefill   *Model_Resource
-	Decode    *Model_Resource
+	Prefill   *Model_Prefill
+	Decode    *Model_Decode
 }
 
 func (b0 UpdateModelRequest_builder) Build() *UpdateModelRequest {
@@ -2002,9 +2002,9 @@ func (b0 DeleteModelArtifactRequest_builder) Build() *DeleteModelArtifactRequest
 	return m0
 }
 
-type Model_Resource struct {
+type Model_Prefill struct {
 	state                        protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Vgpu              uint32                 `protobuf:"varint,1,opt,name=vgpu"`
+	xxx_hidden_Replica           uint32                 `protobuf:"varint,1,opt,name=replica"`
 	xxx_hidden_VgpumemPercentage uint32                 `protobuf:"varint,2,opt,name=vgpumem_percentage,json=vgpumemPercentage"`
 	XXX_raceDetectHookData       protoimpl.RaceDetectHookData
 	XXX_presence                 [1]uint32
@@ -2012,20 +2012,20 @@ type Model_Resource struct {
 	sizeCache                    protoimpl.SizeCache
 }
 
-func (x *Model_Resource) Reset() {
-	*x = Model_Resource{}
+func (x *Model_Prefill) Reset() {
+	*x = Model_Prefill{}
 	mi := &file_api_model_v1_model_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Model_Resource) String() string {
+func (x *Model_Prefill) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Model_Resource) ProtoMessage() {}
+func (*Model_Prefill) ProtoMessage() {}
 
-func (x *Model_Resource) ProtoReflect() protoreflect.Message {
+func (x *Model_Prefill) ProtoReflect() protoreflect.Message {
 	mi := &file_api_model_v1_model_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -2037,68 +2037,173 @@ func (x *Model_Resource) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Model_Resource) GetVgpu() uint32 {
+func (x *Model_Prefill) GetReplica() uint32 {
 	if x != nil {
-		return x.xxx_hidden_Vgpu
+		return x.xxx_hidden_Replica
 	}
 	return 0
 }
 
-func (x *Model_Resource) GetVgpumemPercentage() uint32 {
+func (x *Model_Prefill) GetVgpumemPercentage() uint32 {
 	if x != nil {
 		return x.xxx_hidden_VgpumemPercentage
 	}
 	return 0
 }
 
-func (x *Model_Resource) SetVgpu(v uint32) {
-	x.xxx_hidden_Vgpu = v
+func (x *Model_Prefill) SetReplica(v uint32) {
+	x.xxx_hidden_Replica = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *Model_Resource) SetVgpumemPercentage(v uint32) {
+func (x *Model_Prefill) SetVgpumemPercentage(v uint32) {
 	x.xxx_hidden_VgpumemPercentage = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *Model_Resource) HasVgpu() bool {
+func (x *Model_Prefill) HasReplica() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *Model_Resource) HasVgpumemPercentage() bool {
+func (x *Model_Prefill) HasVgpumemPercentage() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Model_Resource) ClearVgpu() {
+func (x *Model_Prefill) ClearReplica() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Vgpu = 0
+	x.xxx_hidden_Replica = 0
 }
 
-func (x *Model_Resource) ClearVgpumemPercentage() {
+func (x *Model_Prefill) ClearVgpumemPercentage() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_VgpumemPercentage = 0
 }
 
-type Model_Resource_builder struct {
+type Model_Prefill_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Vgpu              *uint32
+	Replica           *uint32
 	VgpumemPercentage *uint32
 }
 
-func (b0 Model_Resource_builder) Build() *Model_Resource {
-	m0 := &Model_Resource{}
+func (b0 Model_Prefill_builder) Build() *Model_Prefill {
+	m0 := &Model_Prefill{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Vgpu != nil {
+	if b.Replica != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Vgpu = *b.Vgpu
+		x.xxx_hidden_Replica = *b.Replica
+	}
+	if b.VgpumemPercentage != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_VgpumemPercentage = *b.VgpumemPercentage
+	}
+	return m0
+}
+
+type Model_Decode struct {
+	state                        protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Tensor            uint32                 `protobuf:"varint,1,opt,name=tensor"`
+	xxx_hidden_VgpumemPercentage uint32                 `protobuf:"varint,2,opt,name=vgpumem_percentage,json=vgpumemPercentage"`
+	XXX_raceDetectHookData       protoimpl.RaceDetectHookData
+	XXX_presence                 [1]uint32
+	unknownFields                protoimpl.UnknownFields
+	sizeCache                    protoimpl.SizeCache
+}
+
+func (x *Model_Decode) Reset() {
+	*x = Model_Decode{}
+	mi := &file_api_model_v1_model_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Model_Decode) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Model_Decode) ProtoMessage() {}
+
+func (x *Model_Decode) ProtoReflect() protoreflect.Message {
+	mi := &file_api_model_v1_model_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Model_Decode) GetTensor() uint32 {
+	if x != nil {
+		return x.xxx_hidden_Tensor
+	}
+	return 0
+}
+
+func (x *Model_Decode) GetVgpumemPercentage() uint32 {
+	if x != nil {
+		return x.xxx_hidden_VgpumemPercentage
+	}
+	return 0
+}
+
+func (x *Model_Decode) SetTensor(v uint32) {
+	x.xxx_hidden_Tensor = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *Model_Decode) SetVgpumemPercentage(v uint32) {
+	x.xxx_hidden_VgpumemPercentage = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *Model_Decode) HasTensor() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *Model_Decode) HasVgpumemPercentage() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Model_Decode) ClearTensor() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Tensor = 0
+}
+
+func (x *Model_Decode) ClearVgpumemPercentage() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_VgpumemPercentage = 0
+}
+
+type Model_Decode_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Tensor            *uint32
+	VgpumemPercentage *uint32
+}
+
+func (b0 Model_Decode_builder) Build() *Model_Decode {
+	m0 := &Model_Decode{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Tensor != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Tensor = *b.Tensor
 	}
 	if b.VgpumemPercentage != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
@@ -2111,7 +2216,7 @@ var File_api_model_v1_model_proto protoreflect.FileDescriptor
 
 const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
-	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe2\x04\n" +
+	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb5\x05\n" +
 	"\x05Model\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\v \x01(\tR\x04name\x12\x1c\n" +
@@ -2122,12 +2227,15 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x10last_deployed_at\x18\x10 \x01(\v2\x1a.google.protobuf.TimestampR\x0elastDeployedAt\x12#\n" +
 	"\rchart_version\x18\x15 \x01(\tR\fchartVersion\x12\x1f\n" +
 	"\vapp_version\x18\x16 \x01(\tR\n" +
-	"appVersion\x12=\n" +
-	"\aprefill\x18\x1f \x01(\v2#.otterscale.model.v1.Model.ResourceR\aprefill\x12;\n" +
-	"\x06decode\x18  \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06decode\x12>\n" +
-	"\x04pods\x18) \x03(\v2*.otterscale.application.v1.Application.PodR\x04pods\x1aM\n" +
-	"\bResource\x12\x12\n" +
-	"\x04vgpu\x18\x01 \x01(\rR\x04vgpu\x12-\n" +
+	"appVersion\x12<\n" +
+	"\aprefill\x18\x1f \x01(\v2\".otterscale.model.v1.Model.PrefillR\aprefill\x129\n" +
+	"\x06decode\x18  \x01(\v2!.otterscale.model.v1.Model.DecodeR\x06decode\x12>\n" +
+	"\x04pods\x18) \x03(\v2*.otterscale.application.v1.Application.PodR\x04pods\x1aR\n" +
+	"\aPrefill\x12\x18\n" +
+	"\areplica\x18\x01 \x01(\rR\areplica\x12-\n" +
+	"\x12vgpumem_percentage\x18\x02 \x01(\rR\x11vgpumemPercentage\x1aO\n" +
+	"\x06Decode\x12\x16\n" +
+	"\x06tensor\x18\x01 \x01(\rR\x06tensor\x12-\n" +
 	"\x12vgpumem_percentage\x18\x02 \x01(\rR\x11vgpumemPercentage\"M\n" +
 	"\x11ListModelsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
@@ -2135,7 +2243,7 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x12ListModelsResponse\x122\n" +
 	"\x06models\x18\x01 \x03(\v2\x1a.otterscale.model.v1.ModelR\x06models\x12\x1f\n" +
 	"\vservice_uri\x18\x02 \x01(\tR\n" +
-	"serviceUri\"\x9c\x02\n" +
+	"serviceUri\"\x99\x02\n" +
 	"\x12CreateModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
@@ -2143,15 +2251,15 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
 	"model_name\x18\v \x01(\tR\tmodelName\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\f \x01(\x04R\tsizeBytes\x12=\n" +
-	"\aprefill\x18\x15 \x01(\v2#.otterscale.model.v1.Model.ResourceR\aprefill\x12;\n" +
-	"\x06decode\x18\x16 \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06decodeJ\x04\b\x02\x10\x03\"\xde\x01\n" +
+	"size_bytes\x18\f \x01(\x04R\tsizeBytes\x12<\n" +
+	"\aprefill\x18\x15 \x01(\v2\".otterscale.model.v1.Model.PrefillR\aprefill\x129\n" +
+	"\x06decode\x18\x16 \x01(\v2!.otterscale.model.v1.Model.DecodeR\x06decodeJ\x04\b\x02\x10\x03\"\xdb\x01\n" +
 	"\x12UpdateModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12=\n" +
-	"\aprefill\x18\x15 \x01(\v2#.otterscale.model.v1.Model.ResourceR\aprefill\x12;\n" +
-	"\x06decode\x18\x16 \x01(\v2#.otterscale.model.v1.Model.ResourceR\x06decodeJ\x04\b\x02\x10\x03\"b\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12<\n" +
+	"\aprefill\x18\x15 \x01(\v2\".otterscale.model.v1.Model.PrefillR\aprefill\x129\n" +
+	"\x06decode\x18\x16 \x01(\v2!.otterscale.model.v1.Model.DecodeR\x06decodeJ\x04\b\x02\x10\x03\"b\n" +
 	"\x12DeleteModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
@@ -2200,7 +2308,7 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x13DeleteModelArtifact\x12/.otterscale.model.v1.DeleteModelArtifactRequest\x1a\x16.google.protobuf.Empty\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
 	"\rmodel-enabledB2Z0github.com/otterscale/otterscale/api/model/v1;pbb\beditionsp\xe8\a"
 
-var file_api_model_v1_model_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_api_model_v1_model_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_api_model_v1_model_proto_goTypes = []any{
 	(*Model)(nil),                      // 0: otterscale.model.v1.Model
 	(*ListModelsRequest)(nil),          // 1: otterscale.model.v1.ListModelsRequest
@@ -2213,23 +2321,24 @@ var file_api_model_v1_model_proto_goTypes = []any{
 	(*ListModelArtifactsResponse)(nil), // 8: otterscale.model.v1.ListModelArtifactsResponse
 	(*CreateModelArtifactRequest)(nil), // 9: otterscale.model.v1.CreateModelArtifactRequest
 	(*DeleteModelArtifactRequest)(nil), // 10: otterscale.model.v1.DeleteModelArtifactRequest
-	(*Model_Resource)(nil),             // 11: otterscale.model.v1.Model.Resource
-	(*timestamppb.Timestamp)(nil),      // 12: google.protobuf.Timestamp
-	(*v1.Application_Pod)(nil),         // 13: otterscale.application.v1.Application.Pod
-	(*emptypb.Empty)(nil),              // 14: google.protobuf.Empty
+	(*Model_Prefill)(nil),              // 11: otterscale.model.v1.Model.Prefill
+	(*Model_Decode)(nil),               // 12: otterscale.model.v1.Model.Decode
+	(*timestamppb.Timestamp)(nil),      // 13: google.protobuf.Timestamp
+	(*v1.Application_Pod)(nil),         // 14: otterscale.application.v1.Application.Pod
+	(*emptypb.Empty)(nil),              // 15: google.protobuf.Empty
 }
 var file_api_model_v1_model_proto_depIdxs = []int32{
-	12, // 0: otterscale.model.v1.Model.first_deployed_at:type_name -> google.protobuf.Timestamp
-	12, // 1: otterscale.model.v1.Model.last_deployed_at:type_name -> google.protobuf.Timestamp
-	11, // 2: otterscale.model.v1.Model.prefill:type_name -> otterscale.model.v1.Model.Resource
-	11, // 3: otterscale.model.v1.Model.decode:type_name -> otterscale.model.v1.Model.Resource
-	13, // 4: otterscale.model.v1.Model.pods:type_name -> otterscale.application.v1.Application.Pod
+	13, // 0: otterscale.model.v1.Model.first_deployed_at:type_name -> google.protobuf.Timestamp
+	13, // 1: otterscale.model.v1.Model.last_deployed_at:type_name -> google.protobuf.Timestamp
+	11, // 2: otterscale.model.v1.Model.prefill:type_name -> otterscale.model.v1.Model.Prefill
+	12, // 3: otterscale.model.v1.Model.decode:type_name -> otterscale.model.v1.Model.Decode
+	14, // 4: otterscale.model.v1.Model.pods:type_name -> otterscale.application.v1.Application.Pod
 	0,  // 5: otterscale.model.v1.ListModelsResponse.models:type_name -> otterscale.model.v1.Model
-	11, // 6: otterscale.model.v1.CreateModelRequest.prefill:type_name -> otterscale.model.v1.Model.Resource
-	11, // 7: otterscale.model.v1.CreateModelRequest.decode:type_name -> otterscale.model.v1.Model.Resource
-	11, // 8: otterscale.model.v1.UpdateModelRequest.prefill:type_name -> otterscale.model.v1.Model.Resource
-	11, // 9: otterscale.model.v1.UpdateModelRequest.decode:type_name -> otterscale.model.v1.Model.Resource
-	12, // 10: otterscale.model.v1.ModelArtifact.created_at:type_name -> google.protobuf.Timestamp
+	11, // 6: otterscale.model.v1.CreateModelRequest.prefill:type_name -> otterscale.model.v1.Model.Prefill
+	12, // 7: otterscale.model.v1.CreateModelRequest.decode:type_name -> otterscale.model.v1.Model.Decode
+	11, // 8: otterscale.model.v1.UpdateModelRequest.prefill:type_name -> otterscale.model.v1.Model.Prefill
+	12, // 9: otterscale.model.v1.UpdateModelRequest.decode:type_name -> otterscale.model.v1.Model.Decode
+	13, // 10: otterscale.model.v1.ModelArtifact.created_at:type_name -> google.protobuf.Timestamp
 	6,  // 11: otterscale.model.v1.ListModelArtifactsResponse.model_artifacts:type_name -> otterscale.model.v1.ModelArtifact
 	1,  // 12: otterscale.model.v1.ModelService.ListModels:input_type -> otterscale.model.v1.ListModelsRequest
 	3,  // 13: otterscale.model.v1.ModelService.CreateModel:input_type -> otterscale.model.v1.CreateModelRequest
@@ -2241,10 +2350,10 @@ var file_api_model_v1_model_proto_depIdxs = []int32{
 	2,  // 19: otterscale.model.v1.ModelService.ListModels:output_type -> otterscale.model.v1.ListModelsResponse
 	0,  // 20: otterscale.model.v1.ModelService.CreateModel:output_type -> otterscale.model.v1.Model
 	0,  // 21: otterscale.model.v1.ModelService.UpdateModel:output_type -> otterscale.model.v1.Model
-	14, // 22: otterscale.model.v1.ModelService.DeleteModel:output_type -> google.protobuf.Empty
+	15, // 22: otterscale.model.v1.ModelService.DeleteModel:output_type -> google.protobuf.Empty
 	8,  // 23: otterscale.model.v1.ModelService.ListModelArtifacts:output_type -> otterscale.model.v1.ListModelArtifactsResponse
 	6,  // 24: otterscale.model.v1.ModelService.CreateModelArtifact:output_type -> otterscale.model.v1.ModelArtifact
-	14, // 25: otterscale.model.v1.ModelService.DeleteModelArtifact:output_type -> google.protobuf.Empty
+	15, // 25: otterscale.model.v1.ModelService.DeleteModelArtifact:output_type -> google.protobuf.Empty
 	19, // [19:26] is the sub-list for method output_type
 	12, // [12:19] is the sub-list for method input_type
 	12, // [12:12] is the sub-list for extension type_name
@@ -2263,7 +2372,7 @@ func file_api_model_v1_model_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_model_v1_model_proto_rawDesc), len(file_api_model_v1_model_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

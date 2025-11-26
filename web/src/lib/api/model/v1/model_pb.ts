@@ -15,7 +15,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/model/v1/model.proto.
  */
 export const file_api_model_v1_model: GenFile = /*@__PURE__*/
-  fileDesc("ChhhcGkvbW9kZWwvdjEvbW9kZWwucHJvdG8SE290dGVyc2NhbGUubW9kZWwudjEizQMKBU1vZGVsEgoKAmlkGAEgASgJEgwKBG5hbWUYCyABKAkSEQoJbmFtZXNwYWNlGAwgASgJEg4KBnN0YXR1cxgNIAEoCRITCgtkZXNjcmlwdGlvbhgOIAEoCRI1ChFmaXJzdF9kZXBsb3llZF9hdBgPIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASNAoQbGFzdF9kZXBsb3llZF9hdBgQIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFQoNY2hhcnRfdmVyc2lvbhgVIAEoCRITCgthcHBfdmVyc2lvbhgWIAEoCRI0CgdwcmVmaWxsGB8gASgLMiMub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5SZXNvdXJjZRIzCgZkZWNvZGUYICABKAsyIy5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsLlJlc291cmNlEjgKBHBvZHMYKSADKAsyKi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkFwcGxpY2F0aW9uLlBvZBo0CghSZXNvdXJjZRIMCgR2Z3B1GAEgASgNEhoKEnZncHVtZW1fcGVyY2VudGFnZRgCIAEoDSI7ChFMaXN0TW9kZWxzUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAlKBAgCEAMiVQoSTGlzdE1vZGVsc1Jlc3BvbnNlEioKBm1vZGVscxgBIAMoCzIaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwSEwoLc2VydmljZV91cmkYAiABKAki3QEKEkNyZWF0ZU1vZGVsUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRISCgptb2RlbF9uYW1lGAsgASgJEhIKCnNpemVfYnl0ZXMYDCABKAQSNAoHcHJlZmlsbBgVIAEoCzIjLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuUmVzb3VyY2USMwoGZGVjb2RlGBYgASgLMiMub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5SZXNvdXJjZUoECAIQAyK1AQoSVXBkYXRlTW9kZWxSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEjQKB3ByZWZpbGwYFSABKAsyIy5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsLlJlc291cmNlEjMKBmRlY29kZRgWIAEoCzIjLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuUmVzb3VyY2VKBAgCEAMiSgoSRGVsZXRlTW9kZWxSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJSgQIAhADIqYBCg1Nb2RlbEFydGlmYWN0EgwKBG5hbWUYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhIKCm1vZGVsX25hbWUYCyABKAkSDQoFcGhhc2UYFSABKAkSDAoEc2l6ZRgWIAEoAxITCgt2b2x1bWVfbmFtZRgfIAEoCRIuCgpjcmVhdGVkX2F0GCkgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCJDChlMaXN0TW9kZWxBcnRpZmFjdHNSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCUoECAIQAyJZChpMaXN0TW9kZWxBcnRpZmFjdHNSZXNwb25zZRI7Cg9tb2RlbF9hcnRpZmFjdHMYASADKAsyIi5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsQXJ0aWZhY3QidAoaQ3JlYXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAkSEgoKbW9kZWxfbmFtZRgLIAEoCRIMCgRzaXplGAwgASgDSgQIAhADIlIKGkRlbGV0ZU1vZGVsQXJ0aWZhY3RSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJSgQIAhADMsQGCgxNb2RlbFNlcnZpY2UScwoKTGlzdE1vZGVscxImLm90dGVyc2NhbGUubW9kZWwudjEuTGlzdE1vZGVsc1JlcXVlc3QaJy5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbHNSZXNwb25zZSIUit/VHQ8KDW1vZGVsLWVuYWJsZWQSaAoLQ3JlYXRlTW9kZWwSJy5vdHRlcnNjYWxlLm1vZGVsLnYxLkNyZWF0ZU1vZGVsUmVxdWVzdBoaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwiFIrf1R0PCg1tb2RlbC1lbmFibGVkEmgKC1VwZGF0ZU1vZGVsEicub3R0ZXJzY2FsZS5tb2RlbC52MS5VcGRhdGVNb2RlbFJlcXVlc3QaGi5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsIhSK39UdDwoNbW9kZWwtZW5hYmxlZBJkCgtEZWxldGVNb2RlbBInLm90dGVyc2NhbGUubW9kZWwudjEuRGVsZXRlTW9kZWxSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhSK39UdDwoNbW9kZWwtZW5hYmxlZBKLAQoSTGlzdE1vZGVsQXJ0aWZhY3RzEi4ub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxBcnRpZmFjdHNSZXF1ZXN0Gi8ub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxBcnRpZmFjdHNSZXNwb25zZSIUit/VHQ8KDW1vZGVsLWVuYWJsZWQSgAEKE0NyZWF0ZU1vZGVsQXJ0aWZhY3QSLy5vdHRlcnNjYWxlLm1vZGVsLnYxLkNyZWF0ZU1vZGVsQXJ0aWZhY3RSZXF1ZXN0GiIub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbEFydGlmYWN0IhSK39UdDwoNbW9kZWwtZW5hYmxlZBJ0ChNEZWxldGVNb2RlbEFydGlmYWN0Ei8ub3R0ZXJzY2FsZS5tb2RlbC52MS5EZWxldGVNb2RlbEFydGlmYWN0UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIUit/VHQ8KDW1vZGVsLWVuYWJsZWRCMlowZ2l0aHViLmNvbS9vdHRlcnNjYWxlL290dGVyc2NhbGUvYXBpL21vZGVsL3YxO3BiYghlZGl0aW9uc3DoBw", [file_api_annotations, file_api_application_v1_application, file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("ChhhcGkvbW9kZWwvdjEvbW9kZWwucHJvdG8SE290dGVyc2NhbGUubW9kZWwudjEiggQKBU1vZGVsEgoKAmlkGAEgASgJEgwKBG5hbWUYCyABKAkSEQoJbmFtZXNwYWNlGAwgASgJEg4KBnN0YXR1cxgNIAEoCRITCgtkZXNjcmlwdGlvbhgOIAEoCRI1ChFmaXJzdF9kZXBsb3llZF9hdBgPIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASNAoQbGFzdF9kZXBsb3llZF9hdBgQIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFQoNY2hhcnRfdmVyc2lvbhgVIAEoCRITCgthcHBfdmVyc2lvbhgWIAEoCRIzCgdwcmVmaWxsGB8gASgLMiIub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5QcmVmaWxsEjEKBmRlY29kZRggIAEoCzIhLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuRGVjb2RlEjgKBHBvZHMYKSADKAsyKi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkFwcGxpY2F0aW9uLlBvZBo2CgdQcmVmaWxsEg8KB3JlcGxpY2EYASABKA0SGgoSdmdwdW1lbV9wZXJjZW50YWdlGAIgASgNGjQKBkRlY29kZRIOCgZ0ZW5zb3IYASABKA0SGgoSdmdwdW1lbV9wZXJjZW50YWdlGAIgASgNIjsKEUxpc3RNb2RlbHNSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCUoECAIQAyJVChJMaXN0TW9kZWxzUmVzcG9uc2USKgoGbW9kZWxzGAEgAygLMhoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbBITCgtzZXJ2aWNlX3VyaRgCIAEoCSLaAQoSQ3JlYXRlTW9kZWxSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEhIKCm1vZGVsX25hbWUYCyABKAkSEgoKc2l6ZV9ieXRlcxgMIAEoBBIzCgdwcmVmaWxsGBUgASgLMiIub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5QcmVmaWxsEjEKBmRlY29kZRgWIAEoCzIhLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuRGVjb2RlSgQIAhADIrIBChJVcGRhdGVNb2RlbFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAkSMwoHcHJlZmlsbBgVIAEoCzIiLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuUHJlZmlsbBIxCgZkZWNvZGUYFiABKAsyIS5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsLkRlY29kZUoECAIQAyJKChJEZWxldGVNb2RlbFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAlKBAgCEAMipgEKDU1vZGVsQXJ0aWZhY3QSDAoEbmFtZRgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSEgoKbW9kZWxfbmFtZRgLIAEoCRINCgVwaGFzZRgVIAEoCRIMCgRzaXplGBYgASgDEhMKC3ZvbHVtZV9uYW1lGB8gASgJEi4KCmNyZWF0ZWRfYXQYKSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkMKGUxpc3RNb2RlbEFydGlmYWN0c1JlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJSgQIAhADIlkKGkxpc3RNb2RlbEFydGlmYWN0c1Jlc3BvbnNlEjsKD21vZGVsX2FydGlmYWN0cxgBIAMoCzIiLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWxBcnRpZmFjdCJ0ChpDcmVhdGVNb2RlbEFydGlmYWN0UmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRISCgptb2RlbF9uYW1lGAsgASgJEgwKBHNpemUYDCABKANKBAgCEAMiUgoaRGVsZXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAlKBAgCEAMyxAYKDE1vZGVsU2VydmljZRJzCgpMaXN0TW9kZWxzEiYub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxzUmVxdWVzdBonLm90dGVyc2NhbGUubW9kZWwudjEuTGlzdE1vZGVsc1Jlc3BvbnNlIhSK39UdDwoNbW9kZWwtZW5hYmxlZBJoCgtDcmVhdGVNb2RlbBInLm90dGVyc2NhbGUubW9kZWwudjEuQ3JlYXRlTW9kZWxSZXF1ZXN0Ghoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbCIUit/VHQ8KDW1vZGVsLWVuYWJsZWQSaAoLVXBkYXRlTW9kZWwSJy5vdHRlcnNjYWxlLm1vZGVsLnYxLlVwZGF0ZU1vZGVsUmVxdWVzdBoaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwiFIrf1R0PCg1tb2RlbC1lbmFibGVkEmQKC0RlbGV0ZU1vZGVsEicub3R0ZXJzY2FsZS5tb2RlbC52MS5EZWxldGVNb2RlbFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiFIrf1R0PCg1tb2RlbC1lbmFibGVkEosBChJMaXN0TW9kZWxBcnRpZmFjdHMSLi5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbEFydGlmYWN0c1JlcXVlc3QaLy5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbEFydGlmYWN0c1Jlc3BvbnNlIhSK39UdDwoNbW9kZWwtZW5hYmxlZBKAAQoTQ3JlYXRlTW9kZWxBcnRpZmFjdBIvLm90dGVyc2NhbGUubW9kZWwudjEuQ3JlYXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QaIi5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsQXJ0aWZhY3QiFIrf1R0PCg1tb2RlbC1lbmFibGVkEnQKE0RlbGV0ZU1vZGVsQXJ0aWZhY3QSLy5vdHRlcnNjYWxlLm1vZGVsLnYxLkRlbGV0ZU1vZGVsQXJ0aWZhY3RSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhSK39UdDwoNbW9kZWwtZW5hYmxlZEIyWjBnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvbW9kZWwvdjE7cGJiCGVkaXRpb25zcOgH", [file_api_annotations, file_api_application_v1_application, file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message otterscale.model.v1.Model
@@ -67,14 +67,14 @@ export type Model = Message<"otterscale.model.v1.Model"> & {
   appVersion: string;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource prefill = 31;
+   * @generated from field: otterscale.model.v1.Model.Prefill prefill = 31;
    */
-  prefill?: Model_Resource;
+  prefill?: Model_Prefill;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource decode = 32;
+   * @generated from field: otterscale.model.v1.Model.Decode decode = 32;
    */
-  decode?: Model_Resource;
+  decode?: Model_Decode;
 
   /**
    * @generated from field: repeated otterscale.application.v1.Application.Pod pods = 41;
@@ -90,13 +90,13 @@ export const ModelSchema: GenMessage<Model> = /*@__PURE__*/
   messageDesc(file_api_model_v1_model, 0);
 
 /**
- * @generated from message otterscale.model.v1.Model.Resource
+ * @generated from message otterscale.model.v1.Model.Prefill
  */
-export type Model_Resource = Message<"otterscale.model.v1.Model.Resource"> & {
+export type Model_Prefill = Message<"otterscale.model.v1.Model.Prefill"> & {
   /**
-   * @generated from field: uint32 vgpu = 1;
+   * @generated from field: uint32 replica = 1;
    */
-  vgpu: number;
+  replica: number;
 
   /**
    * @generated from field: uint32 vgpumem_percentage = 2;
@@ -105,11 +105,33 @@ export type Model_Resource = Message<"otterscale.model.v1.Model.Resource"> & {
 };
 
 /**
- * Describes the message otterscale.model.v1.Model.Resource.
- * Use `create(Model_ResourceSchema)` to create a new message.
+ * Describes the message otterscale.model.v1.Model.Prefill.
+ * Use `create(Model_PrefillSchema)` to create a new message.
  */
-export const Model_ResourceSchema: GenMessage<Model_Resource> = /*@__PURE__*/
+export const Model_PrefillSchema: GenMessage<Model_Prefill> = /*@__PURE__*/
   messageDesc(file_api_model_v1_model, 0, 0);
+
+/**
+ * @generated from message otterscale.model.v1.Model.Decode
+ */
+export type Model_Decode = Message<"otterscale.model.v1.Model.Decode"> & {
+  /**
+   * @generated from field: uint32 tensor = 1;
+   */
+  tensor: number;
+
+  /**
+   * @generated from field: uint32 vgpumem_percentage = 2;
+   */
+  vgpumemPercentage: number;
+};
+
+/**
+ * Describes the message otterscale.model.v1.Model.Decode.
+ * Use `create(Model_DecodeSchema)` to create a new message.
+ */
+export const Model_DecodeSchema: GenMessage<Model_Decode> = /*@__PURE__*/
+  messageDesc(file_api_model_v1_model, 0, 1);
 
 /**
  * @generated from message otterscale.model.v1.ListModelsRequest
@@ -185,14 +207,14 @@ export type CreateModelRequest = Message<"otterscale.model.v1.CreateModelRequest
   sizeBytes: bigint;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource prefill = 21;
+   * @generated from field: otterscale.model.v1.Model.Prefill prefill = 21;
    */
-  prefill?: Model_Resource;
+  prefill?: Model_Prefill;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource decode = 22;
+   * @generated from field: otterscale.model.v1.Model.Decode decode = 22;
    */
-  decode?: Model_Resource;
+  decode?: Model_Decode;
 };
 
 /**
@@ -222,14 +244,14 @@ export type UpdateModelRequest = Message<"otterscale.model.v1.UpdateModelRequest
   name: string;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource prefill = 21;
+   * @generated from field: otterscale.model.v1.Model.Prefill prefill = 21;
    */
-  prefill?: Model_Resource;
+  prefill?: Model_Prefill;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource decode = 22;
+   * @generated from field: otterscale.model.v1.Model.Decode decode = 22;
    */
-  decode?: Model_Resource;
+  decode?: Model_Decode;
 };
 
 /**

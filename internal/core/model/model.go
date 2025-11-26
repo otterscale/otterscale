@@ -31,13 +31,18 @@ const resourceVGPUMemPercentage = "otterscale.com/vgpumem-percentage"
 type Model struct {
 	ID      string
 	Release *release.Release
-	Prefill *Resource
-	Decode  *Resource
+	Prefill *Prefill
+	Decode  *Decode
 	Pods    []workload.Pod
 }
 
-type Resource struct {
-	VGPU       uint32
+type Prefill struct {
+	Replica    uint32
+	VGPUMemory uint32
+}
+
+type Decode struct {
+	Tensor     uint32
 	VGPUMemory uint32
 }
 
@@ -95,8 +100,8 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 		models = append(models, Model{
 			ID:      modelName,
 			Release: &releases[i],
-			Prefill: extractResource(releases[i].Config, "prefill"),
-			Decode:  extractResource(releases[i].Config, "decode"),
+			Prefill: extractPrefill(releases[i].Config, "prefill"),
+			Decode:  extractDecode(releases[i].Config, "decode"),
 			Pods:    pods,
 		})
 	}
@@ -109,7 +114,7 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 	return models, uri, nil
 }
 
-func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill, decode *Resource) (*Model, error) {
+func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill *Prefill, decode *Decode) (*Model, error) {
 	gatewayName := "llm-d-infra-inference-gateway" // from llm-d-infra helm chart (.Values.nameOverride)
 	inferencePoolName := "inferencepool-" + shortID(modelName)
 	inferencePoolPort := int32(8000) //nolint:mnd // default port for inference pool
@@ -139,12 +144,12 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 	return &Model{
 		ID:      modelName,
 		Release: release,
-		Prefill: extractResource(release.Config, "prefill"),
-		Decode:  extractResource(release.Config, "decode"),
+		Prefill: extractPrefill(release.Config, "prefill"),
+		Decode:  extractDecode(release.Config, "decode"),
 	}, nil
 }
 
-func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, prefill, decode *Resource) (*Model, error) {
+func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, prefill *Prefill, decode *Decode) (*Model, error) {
 	rel, err := uc.release.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return nil, err
@@ -183,8 +188,8 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 	return &Model{
 		ID:      modelName,
 		Release: release,
-		Prefill: extractResource(release.Config, "prefill"),
-		Decode:  extractResource(release.Config, "decode"),
+		Prefill: extractPrefill(release.Config, "prefill"),
+		Decode:  extractDecode(release.Config, "decode"),
 	}, nil
 }
 
@@ -326,7 +331,7 @@ func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, n
 	return err
 }
 
-func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill, decode *Resource) (*release.Release, error) {
+func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill *Prefill, decode *Decode) (*release.Release, error) {
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
@@ -342,18 +347,18 @@ func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, na
 
 	// values
 	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, FormatLabel(modelName), strSizeBytes, prefill.VGPU, prefill.VGPUMemory, decode.VGPU, decode.VGPUMemory)
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, FormatLabel(modelName), strSizeBytes, prefill.Replica, prefill.VGPUMemory, decode.Tensor, decode.VGPUMemory)
 
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
 }
 
-func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill, decode *Resource) (*release.Release, error) {
+func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill *Prefill, decode *Decode) (*release.Release, error) {
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
 	// values
 	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, FormatLabel(modelName), strSizeBytes, prefill.VGPU, prefill.VGPUMemory, decode.VGPU, decode.VGPUMemory)
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, FormatLabel(modelName), strSizeBytes, prefill.Replica, prefill.VGPUMemory, decode.Tensor, decode.VGPUMemory)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
 }
@@ -377,7 +382,7 @@ func extractModelName(config map[string]any) (string, bool) {
 	return name, ok
 }
 
-func extractResource(config map[string]any, key string) *Resource {
+func extractPrefill(config map[string]any, key string) *Prefill {
 	v, ok := config[key]
 	if !ok {
 		return nil
@@ -388,16 +393,39 @@ func extractResource(config map[string]any, key string) *Resource {
 		return nil
 	}
 
-	vgpu := extractVGPU(m)
-	vgpuMemory := extractVGPUMemory(m)
-
-	return &Resource{
-		VGPU:       vgpu,
-		VGPUMemory: vgpuMemory,
+	return &Prefill{
+		Replica:    extractReplica(m),
+		VGPUMemory: extractVGPUMemory(m),
 	}
 }
 
-func extractVGPU(config map[string]any) uint32 {
+func extractDecode(config map[string]any, key string) *Decode {
+	v, ok := config[key]
+	if !ok {
+		return nil
+	}
+
+	m, ok := v.(map[string]any)
+	if !ok {
+		return nil
+	}
+
+	return &Decode{
+		Tensor:     extractTensor(m),
+		VGPUMemory: extractVGPUMemory(m),
+	}
+}
+
+func extractReplica(config map[string]any) uint32 {
+	replicas, ok := config["replicas"].(float64)
+	if !ok {
+		return 0
+	}
+
+	return uint32(replicas)
+}
+
+func extractTensor(config map[string]any) uint32 {
 	parallelism, ok := config["parallelism"].(map[string]any)
 	if !ok {
 		return 1
