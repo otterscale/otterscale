@@ -1697,7 +1697,7 @@ main() {
     deploy_helm
 
     log "INFO" "OtterScale installation completed successfully!" "FINISHED"
-    send_status_data "FINISHED" "OtterScale endpoint is http://$OTTERSCALE_WEB_IP" "http://OTTERSCALE_WEB_IP"
+    send_status_data "FINISHED" "OtterScale endpoint is http://$OTTERSCALE_WEB_IP" "http://$OTTERSCALE_WEB_IP"
 }
 
 # =============================================================================
