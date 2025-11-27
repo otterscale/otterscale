@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log/slog"
 	"strconv"
+	"strings"
 
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -196,6 +197,7 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 		return nil, fmt.Errorf("modelArtifacts.size is not a string")
 	}
 
+	strSizeBytes = strings.Trim(strSizeBytes, `"`)
 	sizeBytes, err := strconv.ParseUint(strSizeBytes, 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse modelArtifacts.size: %w", err)
@@ -446,12 +448,7 @@ func extractDecode(config map[string]any, key string) *Decode {
 }
 
 func extractReplica(config map[string]any) uint32 {
-	replicas, ok := config["replicas"].(float64)
-	if !ok {
-		return 0
-	}
-
-	return uint32(replicas)
+	return parseResourceValue(config, "replicas")
 }
 
 func extractTensor(config map[string]any) uint32 {
@@ -493,12 +490,16 @@ func parseResourceValue(requests map[string]any, key string) uint32 {
 		return 0
 	}
 
-	resource, ok := value.(float64)
-	if !ok {
+	switch v := value.(type) {
+	case float64:
+		return uint32(v)
+
+	case int64:
+		return uint32(v)
+
+	default:
 		return 0
 	}
-
-	return uint32(resource)
 }
 
 func shortID(input string) string {
