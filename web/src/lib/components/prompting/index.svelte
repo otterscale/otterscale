@@ -7,7 +7,7 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 
-	import type { Choice, Message } from './types.d';
+	import type { Message } from './types.d';
 
 	const userIdentifier = 'userIdentifier';
 	const receiverIdentifier = 'receiverIdentifier';
