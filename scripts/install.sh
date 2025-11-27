@@ -519,13 +519,13 @@ get_default_dns() {
     if resolvectl status "$interface" | grep "DNS Servers" > /dev/null; then
         CURRENT_DNS=$(resolvectl status "$interface" | grep "DNS Servers" | awk '{print $3}' | head -1)
         if [[ -z $CURRENT_DNS ]]; then
-            log "WARN" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
+            log "INFO" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
             CURRENT_DNS="8.8.8.8"
         else
             log "INFO" "Detected DNS server for $interface: $CURRENT_DNS" "NETWORK"
         fi
     else
-        log "WARN" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
+        log "INFO" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
         CURRENT_DNS="8.8.8.8"
     fi
 }
@@ -1124,7 +1124,7 @@ add_clouds_yaml() {
     log "INFO" "Check juju clouds" "JUJU_CONFIG"
 
     if su "$NON_ROOT_USER" -c 'juju clouds 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
-        log "WARN" "Juju cloud maas-cloud already exists – skipping creation" "JUJU_CLOUD"
+        log "INFO" "Juju cloud maas-cloud already exists – skipping creation" "JUJU_CLOUD"
     else
         log "INFO" "Adding MAAS cloud to Juju..." "JUJU_BOOTSTRAP"
         if ! su "$NON_ROOT_USER" -c 'juju add-cloud --client maas-cloud $JUJU_CLOUD >>/dev/null 2>&1'; then
@@ -1137,7 +1137,7 @@ add_generates_yaml() {
     log "INFO" "Check juju credentials" "JUJU_CONFIG"
 
     if su "$NON_ROOT_USER" -c 'juju credentials 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
-        log "WARN" "Juju credential for maas-cloud already exists – skipping creation" "JUJU_CREDENTIAL"
+        log "INFO" "Juju credential for maas-cloud already exists – skipping creation" "JUJU_CREDENTIAL"
     else
         log "INFO" "Adding MAAS credential to Juju..." "JUJU_BOOTSTRAP"
         if ! su "$NON_ROOT_USER" -c 'juju add-credential --client maas-cloud -f $JUJU_CREDENTIAL >>/dev/null 2>&1'; then
@@ -1263,7 +1263,7 @@ juju_add_k8s() {
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client" >>"$TEMP_LOG" 2>&1; then
-        log "WARN" "Controller cos-k8s already exist" "JUJU_K8S"
+        log "INFO" "Controller cos-k8s already exist" "JUJU_K8S"
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1"; then
