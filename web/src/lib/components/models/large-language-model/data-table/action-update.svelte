@@ -10,6 +10,7 @@
 		type CreateModelRequest,
 		type Model,
 		type Model_Decode,
+		Model_Mode,
 		type Model_Prefill,
 		ModelService,
 		type UpdateModelRequest
@@ -21,6 +22,7 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Slider } from '$lib/components/ui/slider/index.js';
+	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
 </script>
@@ -37,10 +39,13 @@
 	const modelClient = createClient(ModelService, transport);
 	const applicationClient = createClient(ApplicationService, transport);
 
+	let isIntelligentMode = $state(model.mode === Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING);
+
 	const defaults = {
 		scope: scope,
 		name: model.name,
 		namespace: model.namespace,
+		mode: model.mode,
 		prefill: { ...model.prefill },
 		decode: { ...model.decode }
 	} as UpdateModelRequest;
@@ -67,6 +72,9 @@
 	function integrate() {
 		request.prefill = requestPrefillResource;
 		request.decode = requestDecodeResource;
+		request.mode = isIntelligentMode
+			? Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING
+			: Model_Mode.PREFILL_DECODE_DISAGGREGATION;
 	}
 
 	let open = $state(false);
@@ -182,25 +190,106 @@
 			</Form.Fieldset>
 
 			<Form.Fieldset>
-				<Form.Legend>{m.decode()}</Form.Legend>
+				<Form.Legend>{m.resources()}</Form.Legend>
 				<Form.Field>
-					<Form.Label>{m.tensor()}</Form.Label>
-					<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
-				</Form.Field>
-
-				<Form.Field>
-					<Form.Label>{m.memory()}</Form.Label>
-					<div class="flex items-center gap-4">
-						<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
-						<Slider
-							type="single"
-							bind:value={requestDecodeResource.vgpumemPercentage}
-							max={100}
-							step={1}
-							class="w-full py-4 **:data-[slot=slider-track]:h-3"
-						/>
+					<div class="flex items-center justify-between gap-4">
+						<div class="flex items-center gap-2 font-bold">
+							<Icon icon={isIntelligentMode ? 'ph:sparkle' : 'ph:aperture'} class="size-5" />
+							<p>
+								{isIntelligentMode
+									? 'Intelligent Optimization Mode Enabled'
+									: 'Disaggregation Mode Enabled'}
+							</p>
+						</div>
+						<Switch bind:checked={isIntelligentMode} />
 					</div>
 				</Form.Field>
+				{#if isIntelligentMode}
+					<Form.Fieldset>
+						<Form.Legend>{m.decode()}</Form.Legend>
+
+						<Form.Field>
+							<Form.Label>{m.replica()}</Form.Label>
+							<SingleInput.General type="number" bind:value={requestDecodeResource.replica} />
+						</Form.Field>
+
+						<Form.Field>
+							<Form.Label>{m.tensor()}</Form.Label>
+							<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
+						</Form.Field>
+
+						<Form.Field>
+							<Form.Label>{m.memory()}</Form.Label>
+							<div class="flex items-center gap-4">
+								<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
+								<Slider
+									type="single"
+									bind:value={requestDecodeResource.vgpumemPercentage}
+									max={100}
+									step={1}
+									class="w-full py-4 **:data-[slot=slider-track]:h-3"
+								/>
+							</div>
+						</Form.Field>
+					</Form.Fieldset>
+				{:else}
+					<div class="flex gap-4">
+						<Form.Fieldset>
+							<Form.Legend>{m.prefill()}</Form.Legend>
+							<Form.Field>
+								<Form.Label>{m.replica()}</Form.Label>
+								<SingleInput.General type="number" bind:value={requestPrefillResource.replica} />
+							</Form.Field>
+
+							<Form.Field>
+								<Form.Label>{m.memory()}</Form.Label>
+								<div class="flex items-center gap-4">
+									<p class="w-6 whitespace-nowrap">{requestPrefillResource.vgpumemPercentage} %</p>
+									<Slider
+										type="single"
+										bind:value={requestPrefillResource.vgpumemPercentage}
+										max={100}
+										step={1}
+										class="w-full py-4 **:data-[slot=slider-track]:h-3"
+									/>
+								</div>
+							</Form.Field>
+						</Form.Fieldset>
+
+						<Form.Fieldset>
+							<Form.Legend>{m.decode()}</Form.Legend>
+
+							<Form.Field>
+								<Form.Label>{m.replica()}</Form.Label>
+								<SingleInput.General
+									type="number"
+									bind:value={requestDecodeResource.replica}
+									readonly
+									class="focus-none"
+								/>
+							</Form.Field>
+
+							<Form.Field>
+								<Form.Label>{m.tensor()}</Form.Label>
+								<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
+							</Form.Field>
+
+							<Form.Field>
+								<Form.Label>{m.memory()}</Form.Label>
+								<div class="flex items-center gap-4">
+									<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
+									<Slider
+										type="single"
+										bind:value={requestDecodeResource.vgpumemPercentage}
+										max={100}
+										step={1}
+										class="w-full py-4 **:data-[slot=slider-track]:h-3"
+									/>
+								</div>
+							</Form.Field>
+						</Form.Fieldset>
+					</div>
+				{/if}
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>

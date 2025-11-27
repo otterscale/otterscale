@@ -9,6 +9,7 @@
 	import {
 		type CreateModelRequest,
 		type Model_Decode,
+		Model_Mode,
 		type Model_Prefill,
 		ModelService
 	} from '$lib/api/model/v1/model_pb';
@@ -19,6 +20,7 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Slider } from '$lib/components/ui/slider/index.js';
+	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
 
@@ -41,14 +43,16 @@
 	const defaults = {
 		scope: scope,
 		namespace: 'llm-d',
-		sizeBytes: BigInt(100 * 1024 ** 3)
+		sizeBytes: BigInt(100 * 1024 ** 3),
+		mode: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING
 	} as CreateModelRequest;
 	const defaultPrefillResource = {} as Model_Prefill;
-	const defaultDecodeResource = {} as Model_Decode;
+	const defaultDecodeResource = { replica: 1 } as Model_Decode;
 
 	let request = $state(defaults);
 	let requestPrefillResource = $state({ ...defaultPrefillResource });
 	let requestDecodeResource = $state({ ...defaultDecodeResource });
+	let isIntelligentMode = $state(true);
 	let modelSource: ModeSource | undefined = $state(undefined);
 	let selectedModel: string = $state('');
 
@@ -81,6 +85,9 @@
 		} else if (modelSource === 'cloud' && selectedModel) {
 			request.modelName = `hf:${selectedModel}`;
 		}
+		request.mode = isIntelligentMode
+			? Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING
+			: Model_Mode.PREFILL_DECODE_DISAGGREGATION;
 	}
 
 	let open = $state(false);
@@ -199,47 +206,106 @@
 			</Form.Fieldset>
 
 			<Form.Fieldset>
-				<Form.Legend>{m.prefill()}</Form.Legend>
+				<Form.Legend>{m.resources()}</Form.Legend>
 				<Form.Field>
-					<Form.Label>{m.replica()}</Form.Label>
-					<SingleInput.General type="number" bind:value={requestPrefillResource.replica} />
-				</Form.Field>
-
-				<Form.Field>
-					<Form.Label>{m.memory()}</Form.Label>
-					<div class="flex items-center gap-4">
-						<p class="w-6 whitespace-nowrap">{requestPrefillResource.vgpumemPercentage} %</p>
-						<Slider
-							type="single"
-							bind:value={requestPrefillResource.vgpumemPercentage}
-							max={100}
-							step={1}
-							class="w-full py-4 **:data-[slot=slider-track]:h-3"
-						/>
+					<div class="flex items-center justify-between gap-4">
+						<div class="flex items-center gap-2 font-bold">
+							<Icon icon={isIntelligentMode ? 'ph:sparkle' : 'ph:aperture'} class="size-5" />
+							<p>
+								{isIntelligentMode
+									? 'Intelligent Optimization Mode Enabled'
+									: 'Disaggregation Mode Enabled'}
+							</p>
+						</div>
+						<Switch bind:checked={isIntelligentMode} />
 					</div>
 				</Form.Field>
-			</Form.Fieldset>
+				{#if isIntelligentMode}
+					<Form.Fieldset>
+						<Form.Legend>{m.decode()}</Form.Legend>
 
-			<Form.Fieldset>
-				<Form.Legend>{m.decode()}</Form.Legend>
-				<Form.Field>
-					<Form.Label>{m.tensor()}</Form.Label>
-					<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
-				</Form.Field>
+						<Form.Field>
+							<Form.Label>{m.replica()}</Form.Label>
+							<SingleInput.General type="number" bind:value={requestDecodeResource.replica} />
+						</Form.Field>
 
-				<Form.Field>
-					<Form.Label>{m.memory()}</Form.Label>
-					<div class="flex items-center gap-4">
-						<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
-						<Slider
-							type="single"
-							bind:value={requestDecodeResource.vgpumemPercentage}
-							max={100}
-							step={1}
-							class="w-full py-4 **:data-[slot=slider-track]:h-3"
-						/>
+						<Form.Field>
+							<Form.Label>{m.tensor()}</Form.Label>
+							<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
+						</Form.Field>
+
+						<Form.Field>
+							<Form.Label>{m.memory()}</Form.Label>
+							<div class="flex items-center gap-4">
+								<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
+								<Slider
+									type="single"
+									bind:value={requestDecodeResource.vgpumemPercentage}
+									max={100}
+									step={1}
+									class="w-full py-4 **:data-[slot=slider-track]:h-3"
+								/>
+							</div>
+						</Form.Field>
+					</Form.Fieldset>
+				{:else}
+					<div class="flex gap-4">
+						<Form.Fieldset>
+							<Form.Legend>{m.prefill()}</Form.Legend>
+							<Form.Field>
+								<Form.Label>{m.replica()}</Form.Label>
+								<SingleInput.General type="number" bind:value={requestPrefillResource.replica} />
+							</Form.Field>
+
+							<Form.Field>
+								<Form.Label>{m.memory()}</Form.Label>
+								<div class="flex items-center gap-4">
+									<p class="w-6 whitespace-nowrap">{requestPrefillResource.vgpumemPercentage} %</p>
+									<Slider
+										type="single"
+										bind:value={requestPrefillResource.vgpumemPercentage}
+										max={100}
+										step={1}
+										class="w-full py-4 **:data-[slot=slider-track]:h-3"
+									/>
+								</div>
+							</Form.Field>
+						</Form.Fieldset>
+
+						<Form.Fieldset>
+							<Form.Legend>{m.decode()}</Form.Legend>
+
+							<Form.Field>
+								<Form.Label>{m.replica()}</Form.Label>
+								<SingleInput.General
+									type="number"
+									bind:value={requestDecodeResource.replica}
+									readonly
+									class="focus-none"
+								/>
+							</Form.Field>
+
+							<Form.Field>
+								<Form.Label>{m.tensor()}</Form.Label>
+								<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
+							</Form.Field>
+
+							<Form.Field>
+								<Form.Label>{m.memory()}</Form.Label>
+								<div class="flex items-center gap-4">
+									<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
+									<Slider
+										type="single"
+										bind:value={requestDecodeResource.vgpumemPercentage}
+										max={100}
+										step={1}
+										class="w-full py-4 **:data-[slot=slider-track]:h-3"
+									/>
+								</div>
+							</Form.Field>
+						</Form.Fieldset>
 					</div>
-				</Form.Field>
+				{/if}
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>

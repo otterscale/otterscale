@@ -186,7 +186,6 @@
 			<Modal.Action
 				disabled={invalid}
 				onclick={() => {
-					console.log(request);
 					toast.promise(() => modelClient.createModelArtifact(request), {
 						loading: `Creating model artifact ${request.name}...`,
 						success: () => {

@@ -22,8 +22,6 @@
 	let { metrics, table, row }: { metrics: Metrics; table: TableType<Model>; row: Row<Model> } =
 		$props();
 
-	console.log(metrics);
-
 	const pods = $derived(row.original.pods ?? []);
 
 	const total = $derived(pods.length);
