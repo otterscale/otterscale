@@ -925,7 +925,6 @@ generate_lxd_config() {
     cat > "$lxd_file" <<EOF
 config:
   core.https_address: '[::]:8443'
-  core.trust_password: password
 storage_pools:
 - config:
     size: $LXD_STORAGE_SIZE_GB
