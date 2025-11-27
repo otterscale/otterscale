@@ -530,30 +530,6 @@ get_default_dns() {
     fi
 }
 
-select_bridge() {
-    local bridges
-    readarray -t bridges < <(brctl show 2>/dev/null | awk 'NR>1 && $1!="" {print $1}')
-
-    if [[ ${#bridges[@]} -eq 0 ]]; then
-        return 1
-    fi
-
-    echo "Available network bridges:"
-    for i in "${!bridges[@]}"; do
-        echo "$((i+1))) ${bridges[$i]}"
-    done
-
-    while true; do
-        read -p "Select bridge (1-${#bridges[@]}): " choice
-        if [[ $choice =~ ^[0-9]+$ ]] && ((choice >= 1 && choice <= ${#bridges[@]})); then
-            OTTERSCALE_BRIDGE_NAME="${bridges[$((choice-1))]}"
-            log "INFO" "User selected bridge: $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-            return 0
-        fi
-        echo "Invalid selection. Please try again."
-    done
-}
-
 prompt_bridge_creation() {
     # Makesure NetworkManager service is active
     if ! systemctl is-active --quiet NetworkManager; then
@@ -593,11 +569,8 @@ check_bridge() {
     if ip link show "$OTTERSCALE_BRIDGE_NAME" &>/dev/null; then
         log "INFO" "Bridge $OTTERSCALE_BRIDGE_NAME exists" "NETWORK"
     else
-        log "INFO" "Bridge $OTTERSCALE_BRIDGE_NAME not found" "NETWORK"
-
-        if ! select_bridge; then
-            prompt_bridge_creation
-        fi
+        log "INFO" "Bridge $OTTERSCALE_BRIDGE_NAME not found, bridge will be created by script" "NETWORK"
+        prompt_bridge_creation
     fi
 
     # Get bridge network information
