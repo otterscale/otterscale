@@ -251,7 +251,14 @@ func (r *releaseRepo) toValues(valuesYAML string, valuesMap map[string]string) (
 	}
 
 	for k, v := range valuesMap {
-		if err := strvals.ParseInto(fmt.Sprintf("%s=%s", k, v), values); err != nil {
+		parser := strvals.ParseInto
+
+		if after, ok := strings.CutPrefix(v, "[str]"); ok {
+			v = after
+			parser = strvals.ParseIntoString
+		}
+
+		if err := parser(fmt.Sprintf("%s=%s", k, v), values); err != nil {
 			return nil, err
 		}
 	}
