@@ -104,15 +104,11 @@ error_exit() {
 }
 
 cleanup() {
-    log "INFO" "Performing cleanup..." "CLEANUP"
     if [[ -f "$TEMP_LOG" ]]; then
         rm -f "$TEMP_LOG"
     fi
-
     # Restore file descriptors
     exec 2>&4 1>&3
-
-    log "INFO" "Cleanup completed" "CLEANUP"
 }
 
 execute_cmd() {
@@ -322,18 +318,18 @@ send_request() {
     local retry_count=1
 
     while ((retry_count <= max_retries)); do
-        if curl -s --max-time 30 \
+        if curl -X POST -sf --max-time 30 \
                 --header "Content-Type: application/json" \
                 --data "$data" \
                 "$OTTERSCALE_API_ENDPOINT$url_path" >/dev/null 2>&1; then
             return 0
         fi
 
-        echo "HTTP request failed (attempt $retry_count/$max_retries)"
+        echo "HTTP post failed (attempt $retry_count/$max_retries)"
         retry_count=$((retry_count+1))
     done
 
-    echo "Failed to send HTTP request after $max_retries attempts"
+    echo "HTTP post to $OTTERSCALE_API_ENDPOINT$url_path failed after $max_retries attempts"
     exit 1
 }
 
@@ -359,7 +355,7 @@ send_status_data() {
 EOF
 )
 
-    send_request "/otterscale.environment.v1.EnvironmentService/UpdateStatus" "$data"
+    send_request "/otterscale.bootstrap.v1.BootstrapService/UpdateStatus" "$data"
 }
 
 # =============================================================================
@@ -1773,8 +1769,6 @@ parse_arguments() {
     done
 }
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    parse_arguments "$@"
-    check_curl
-    main "$@"
-fi
+parse_arguments "$@"
+check_curl
+main "$@"
