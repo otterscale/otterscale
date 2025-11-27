@@ -28,7 +28,6 @@
 		class={cn('no-scrollbar flex h-full w-full flex-col gap-4 overflow-y-auto p-4', className, {
 			'scroll-smooth': canScrollSmooth
 		})}
-		bind:this={autoScroll.ref}
 	>
 		{@render children?.()}
 	</div>

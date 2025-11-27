@@ -1,6 +1,8 @@
+import { timestampDate } from '@bufbuild/protobuf/wkt';
 import type { ColumnDef } from '@tanstack/table-core';
 
 import type { Model } from '$lib/api/model/v1/model_pb';
+import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import type { ReloadManager } from '$lib/components/custom/reloader';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
@@ -117,7 +119,14 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Mode
 			},
 			cell: ({ row }) => {
 				return renderSnippet(cells.first_deployed_at, row);
-			}
+			},
+			sortingFn: (previousRow, nextRow) =>
+				getSortingFunction(
+					previousRow.original.firstDeployedAt,
+					nextRow.original.firstDeployedAt,
+					(p, n) => timestampDate(p) < timestampDate(n),
+					(p, n) => timestampDate(p) === timestampDate(n)
+				)
 		},
 		{
 			accessorKey: 'last_deployed_at',
@@ -126,7 +135,14 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Mode
 			},
 			cell: ({ row }) => {
 				return renderSnippet(cells.last_deployed_at, row);
-			}
+			},
+			sortingFn: (previousRow, nextRow) =>
+				getSortingFunction(
+					previousRow.original.lastDeployedAt,
+					nextRow.original.lastDeployedAt,
+					(p, n) => timestampDate(p) < timestampDate(n),
+					(p, n) => timestampDate(p) === timestampDate(n)
+				)
 		},
 		{
 			accessorKey: 'prefill',

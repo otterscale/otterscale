@@ -63,7 +63,7 @@
 					<div class="size-fit rounded-full bg-muted-foreground/50 p-2">
 						<Icon icon="ph:graphics-card" class="size-5" />
 					</div>
-					<div class="justufy-start flex flex-col items-start">
+					<div class="flex flex-col items-start justify-start">
 						<p class="max-w-[200px] truncate text-base text-nowrap whitespace-nowrap">
 							{data.gpu.type}
 						</p>
