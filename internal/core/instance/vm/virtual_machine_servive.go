@@ -1,4 +1,4 @@
-package vms
+package vm
 
 import (
 	"context"
@@ -7,18 +7,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/otterscale/otterscale/internal/core/application/service"
-	"github.com/otterscale/otterscale/internal/core/instance/vm"
 )
-
-type UseCase struct {
-	service service.ServiceRepo
-}
-
-func NewUseCase(service service.ServiceRepo) *UseCase {
-	return &UseCase{
-		service: service,
-	}
-}
 
 func (uc *UseCase) CreateVirtualMachineService(ctx context.Context, scope, namespace, name, vmName string, ports []service.Port) (*service.Service, error) {
 	service := &corev1.Service{
@@ -26,7 +15,7 @@ func (uc *UseCase) CreateVirtualMachineService(ctx context.Context, scope, names
 			Name:      name,
 			Namespace: namespace,
 			Labels: map[string]string{
-				vm.VirtualMachineNameLabel: vmName,
+				nameLabel: vmName,
 			},
 		},
 		Spec: corev1.ServiceSpec{

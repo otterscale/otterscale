@@ -33,7 +33,7 @@ func (uc *UseCase) buildVirtualMachineRestore(namespace, name, vmName, snapshot 
 			Name:      name,
 			Namespace: namespace,
 			Labels: map[string]string{
-				VirtualMachineNameLabel: vmName,
+				nameLabel: vmName,
 			},
 		},
 		Spec: snapshotv1beta1.VirtualMachineRestoreSpec{

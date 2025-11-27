@@ -8,7 +8,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 )
 
-const DomainLabel = "otterscale.com"
+const domainLabel = "otterscale.com"
 
 type UseCase struct {
 	node cluster.NodeRepo
@@ -30,7 +30,7 @@ func (uc *UseCase) ListKubernetesNodeLabels(ctx context.Context, scope, hostname
 		maps.DeleteFunc(node.Labels, func(k, _ string) bool {
 			parts := strings.Split(k, "/")
 
-			return len(parts) < 2 || !strings.HasSuffix(parts[0], DomainLabel)
+			return len(parts) < 2 || !strings.HasSuffix(parts[0], domainLabel)
 		})
 	}
 

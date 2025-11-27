@@ -38,7 +38,7 @@ func (uc *UseCase) buildVirtualMachineSnapshot(namespace, name, vmName string) *
 			Name:      name,
 			Namespace: namespace,
 			Labels: map[string]string{
-				VirtualMachineNameLabel: vmName,
+				nameLabel: vmName,
 			},
 		},
 		Spec: snapshotv1beta1.VirtualMachineSnapshotSpec{

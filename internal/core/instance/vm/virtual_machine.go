@@ -21,7 +21,7 @@ const (
 	VirtualMachineDiskBusUSB    = corev1.DiskBusUSB
 )
 
-const VirtualMachineNameLabel = "otterscale.com/virtual-machine.name"
+const nameLabel = "otterscale.com/virtual-machine.name"
 
 const (
 	groupName = "kubevirt.io"
@@ -151,7 +151,7 @@ func (uc *UseCase) ListVirtualMachines(ctx context.Context, scope, namespace str
 	})
 
 	eg.Go(func() error {
-		selector := VirtualMachineNameLabel
+		selector := nameLabel
 
 		v, err := uc.service.List(egctx, scope, namespace, selector)
 		if err == nil {
@@ -241,7 +241,7 @@ func (uc *UseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name
 	})
 
 	eg.Go(func() error {
-		selector := VirtualMachineNameLabel + "=" + name
+		selector := nameLabel + "=" + name
 
 		v, err := uc.service.List(egctx, scope, namespace, selector)
 		if err == nil {
@@ -266,7 +266,7 @@ func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, n
 
 func (uc *UseCase) DeleteVirtualMachine(ctx context.Context, scope, namespace, name string) error {
 	// Get related services before deleting the virtual machine
-	selector := VirtualMachineNameLabel + "=" + name
+	selector := nameLabel + "=" + name
 
 	services, err := uc.service.List(ctx, scope, namespace, selector)
 	if err != nil {
