@@ -1452,6 +1452,13 @@ deploy_helm() {
     local keycloak_realm="otters"
 
     install_helm_chart "istio-base" "istio-system" "istio/base" "--create-namespace --set defaultRevision=default --wait --timeout 10m"
+    
+    log "INFO" "Check metallb ipaddresspools" "NETWORK"
+    if ! microk8s kubectl get ipaddresspools default-addresspool -n metallb-system -o json | jq --exit-status ".spec.addresses[] | select(.==\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\")" >/dev/null 2>&1 ; then
+        log "INFO" "Update microk8s metallb: $OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP" "NETWORK"
+        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >/dev/null 2>&1
+    fi
+
     install_helm_chart "istiod" "istio-system" "istio/istiod" "--wait --timeout 10m"
     install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --version v1.19.1 --set crds.enabled=true --wait --timeout 10m"
     install_helm_chart "open-feature-operator" "open-feature-operator" "openfeature/open-feature-operator" "--create-namespace --set sidecarConfiguration.port=8080 --wait --timeout 10m"
