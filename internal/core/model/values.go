@@ -64,7 +64,7 @@ schedulingProfiles:
 
 // v0.3.10
 //
-//nolint:funlen // ignore
+//nolint:goconst,funlen // ignore
 func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, sizeBytes uint64, prefill *Prefill, decode *Decode, maxModelLength uint32) map[string]string {
 	ret := map[string]string{
 		"modelArtifacts.name": modelName,
