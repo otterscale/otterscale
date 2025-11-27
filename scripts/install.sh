@@ -1440,7 +1440,7 @@ deploy_helm() {
     log "INFO" "Update helm repository" "HELM_REPO"
     execute_cmd "microk8s helm3 repo update" "helm repository update"
 
-    local otterscale_endpoint="http://$OTTERSCALE_WEB_IP"
+    local otterscale_endpoint="http://$OTTERSCALE_WEB_IP/"
     local keycloak_realm="otters"
 
     install_helm_chart "istio-base" "istio-system" "istio/base" "--create-namespace --set defaultRevision=default --wait --timeout 10m"
@@ -1618,8 +1618,8 @@ EOF
         log "INFO" "Cleanup ca cert file" "OTTERSCALE"
         rm -f "$ca_cert_file"
 
-        log "INFO" "Send $otterscale_endpoint to OtterScale" "OTTERSCALE"
-        send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
+        log "INFO" "Send $OTTERSCALE_WEB_IP to OtterScale" "OTTERSCALE"
+        send_status_data "FINISHED" "OtterScale endpoint is $OTTERSCALE_WEB_IP" "$OTTERSCALE_WEB_IP"
     else
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"
     fi
