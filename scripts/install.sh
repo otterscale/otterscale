@@ -1440,7 +1440,7 @@ deploy_helm() {
     log "INFO" "Update helm repository" "HELM_REPO"
     execute_cmd "microk8s helm3 repo update" "helm repository update"
 
-    local otterscale_endpoint="http://$OTTERSCALE_WEB_IP/"
+    local otterscale_endpoint="http://$OTTERSCALE_WEB_IP"
     local keycloak_realm="otters"
 
     install_helm_chart "istio-base" "istio-system" "istio/base" "--create-namespace --set defaultRevision=default --wait --timeout 10m"
