@@ -137,7 +137,7 @@ func (uc *UseCase) ListDataVolumes(ctx context.Context, scope, namespace string,
 			Persistent: &persistent.Persistent{
 				PersistentVolumeClaim: pvc,
 			},
-			BootImage: dv.Labels[bootImageLabel] == "true",
+			BootImage: isBootImage(&dv),
 		}
 
 		scName := pvc.Spec.StorageClassName
@@ -197,7 +197,7 @@ func (uc *UseCase) GetDataVolume(ctx context.Context, scope, namespace, name str
 			PersistentVolumeClaim: persistentVolumeClaim,
 			StorageClass:          storageClass,
 		},
-		BootImage: dataVolume.Labels[bootImageLabel] == "true",
+		BootImage: isBootImage(dataVolume),
 	}, nil
 }
 
@@ -209,7 +209,7 @@ func (uc *UseCase) CreateDataVolume(ctx context.Context, scope, namespace, name 
 
 	return &DataVolumePersistent{
 		DataVolume: dataVolume,
-		BootImage:  dataVolume.Labels[bootImageLabel] == "true",
+		BootImage:  isBootImage(dataVolume),
 	}, nil
 }
 
@@ -301,4 +301,22 @@ func (uc *UseCase) buildDataVolume(namespace, name string, srcType DataVolumeSou
 			PVC:     pvc,
 		},
 	}
+}
+
+func isBootImage(dv *DataVolume) bool {
+	if dv == nil {
+		return false
+	}
+
+	val, found := dv.Labels[bootImageLabel]
+	if !found {
+		return false
+	}
+
+	bootImage, err := strconv.ParseBool(val)
+	if err != nil {
+		return false
+	}
+
+	return bootImage
 }

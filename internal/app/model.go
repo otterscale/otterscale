@@ -51,7 +51,7 @@ func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelReque
 		decode = toModelDecode(r)
 	}
 
-	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSizeBytes(), prefill, decode)
+	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSizeBytes(), toModelMode(req.GetMode()), prefill, decode)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +74,7 @@ func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelReque
 		decode = toModelDecode(r)
 	}
 
-	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), prefill, decode)
+	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), toModelMode(req.GetMode()), prefill, decode)
 	if err != nil {
 		return nil, err
 	}
@@ -122,6 +122,19 @@ func (s *ModelService) DeleteModelArtifact(ctx context.Context, req *pb.DeleteMo
 	return resp, nil
 }
 
+func toModelMode(m pb.Model_Mode) model.Mode {
+	switch m {
+	case pb.Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING:
+		return model.ModeIntelligentInferenceScheduling
+
+	case pb.Model_MODE_PREFILL_DECODE_DISAGGREGATION:
+		return model.ModePrefillDecodeDisaggregation
+
+	default:
+		return model.ModeIntelligentInferenceScheduling
+	}
+}
+
 func toModelPrefill(r *pb.Model_Prefill) *model.Prefill {
 	return &model.Prefill{
 		Replica:    r.GetReplica(),
@@ -131,8 +144,22 @@ func toModelPrefill(r *pb.Model_Prefill) *model.Prefill {
 
 func toModelDecode(r *pb.Model_Decode) *model.Decode {
 	return &model.Decode{
+		Replica:    r.GetReplica(),
 		Tensor:     r.GetTensor(),
 		VGPUMemory: r.GetVgpumemPercentage(),
+	}
+}
+
+func toProtoModelMode(m model.Mode) pb.Model_Mode {
+	switch m {
+	case model.ModeIntelligentInferenceScheduling:
+		return pb.Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING
+
+	case model.ModePrefillDecodeDisaggregation:
+		return pb.Model_MODE_PREFILL_DECODE_DISAGGREGATION
+
+	default:
+		return pb.Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING
 	}
 }
 
@@ -145,6 +172,7 @@ func toProtoModelPrefill(r *model.Prefill) *pb.Model_Prefill {
 
 func toProtoModelDecode(r *model.Decode) *pb.Model_Decode {
 	ret := &pb.Model_Decode{}
+	ret.SetReplica(r.Replica)
 	ret.SetTensor(r.Tensor)
 	ret.SetVgpumemPercentage(r.VGPUMemory)
 	return ret
@@ -183,6 +211,8 @@ func toProtoModel(m *model.Model) *pb.Model {
 			ret.SetAppVersion(chart.Metadata.AppVersion)
 		}
 	}
+
+	ret.SetMode(toProtoModelMode(m.Mode))
 
 	prefill := m.Prefill
 	if prefill != nil {

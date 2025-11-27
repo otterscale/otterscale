@@ -24,11 +24,15 @@ import (
 
 const ModelNameAnnotation = "otterscale.com/model.name"
 
-const resourceVGPUMemPercentage = "otterscale.com/vgpumem-percentage"
+const (
+	vgpuResource              = "otterscale.com/vgpu"
+	vgpuMemPercentageResource = "otterscale.com/vgpumem-percentage"
+)
 
 type Model struct {
 	ID      string
 	Release *release.Release
+	Mode    Mode
 	Prefill *Prefill
 	Decode  *Decode
 	Pods    []workload.Pod
@@ -40,6 +44,7 @@ type Prefill struct {
 }
 
 type Decode struct {
+	Replica    uint32
 	Tensor     uint32
 	VGPUMemory uint32
 }
@@ -95,11 +100,20 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 			return nil, "", err
 		}
 
+		mode := ModeIntelligentInferenceScheduling
+		prefill := extractPrefill(releases[i].Config, "prefill")
+		decode := extractDecode(releases[i].Config, "decode")
+
+		if prefill != nil {
+			mode = ModePrefillDecodeDisaggregation
+		}
+
 		models = append(models, Model{
 			ID:      modelName,
 			Release: &releases[i],
-			Prefill: extractPrefill(releases[i].Config, "prefill"),
-			Decode:  extractDecode(releases[i].Config, "decode"),
+			Mode:    mode,
+			Prefill: prefill,
+			Decode:  decode,
 			Pods:    pods,
 		})
 	}
@@ -112,9 +126,9 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 	return models, uri, nil
 }
 
-func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill *Prefill, decode *Decode) (*Model, error) {
+func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, mode Mode, prefill *Prefill, decode *Decode) (*Model, error) {
 	gatewayName := "llm-d-infra-inference-gateway" // from llm-d-infra helm chart (.Values.nameOverride)
-	inferencePoolName := "inferencepool-" + shortID(modelName)
+	inferencePoolName := "inferencepool-" + shortID(name)
 	inferencePoolPort := int32(8000) //nolint:mnd // default port for inference pool
 	httpRouteName := "httproute-" + shortID(gatewayName+inferencePoolName)
 
@@ -124,7 +138,7 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 	}
 
 	// reconcile inference pool
-	if err := uc.reconcileInferencePool(ctx, scope, namespace, inferencePoolName, modelName, inferencePoolPort); err != nil {
+	if err := uc.reconcileInferencePool(ctx, scope, namespace, inferencePoolName, modelName, name, mode, inferencePoolPort); err != nil {
 		return nil, err
 	}
 
@@ -134,20 +148,29 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 	}
 
 	// deploy model service
-	release, err := uc.installModelService(ctx, scope, namespace, name, modelName, sizeBytes, prefill, decode)
+	release, err := uc.installModelService(ctx, scope, namespace, name, modelName, sizeBytes, mode, prefill, decode)
 	if err != nil {
 		return nil, err
+	}
+
+	newMode := ModeIntelligentInferenceScheduling
+	newPrefill := extractPrefill(release.Config, "prefill")
+	newDecode := extractDecode(release.Config, "decode")
+
+	if newPrefill != nil {
+		newMode = ModePrefillDecodeDisaggregation
 	}
 
 	return &Model{
 		ID:      modelName,
 		Release: release,
-		Prefill: extractPrefill(release.Config, "prefill"),
-		Decode:  extractDecode(release.Config, "decode"),
+		Mode:    newMode,
+		Prefill: newPrefill,
+		Decode:  newDecode,
 	}, nil
 }
 
-func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, prefill *Prefill, decode *Decode) (*Model, error) {
+func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name string, mode Mode, prefill *Prefill, decode *Decode) (*Model, error) {
 	rel, err := uc.release.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return nil, err
@@ -178,16 +201,25 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 		return nil, fmt.Errorf("failed to parse modelArtifacts.size: %w", err)
 	}
 
-	release, err := uc.upgradeModelService(ctx, scope, namespace, name, modelName, sizeBytes, prefill, decode)
+	release, err := uc.upgradeModelService(ctx, scope, namespace, name, modelName, sizeBytes, mode, prefill, decode)
 	if err != nil {
 		return nil, err
+	}
+
+	newMode := ModeIntelligentInferenceScheduling
+	newPrefill := extractPrefill(release.Config, "prefill")
+	newDecode := extractDecode(release.Config, "decode")
+
+	if newPrefill != nil {
+		newMode = ModePrefillDecodeDisaggregation
 	}
 
 	return &Model{
 		ID:      modelName,
 		Release: release,
-		Prefill: extractPrefill(release.Config, "prefill"),
-		Decode:  extractDecode(release.Config, "decode"),
+		Mode:    newMode,
+		Prefill: newPrefill,
+		Decode:  newDecode,
 	}, nil
 }
 
@@ -298,17 +330,17 @@ func (uc *UseCase) buildHTTPRoute(namespace, name, gatewayName, inferencePoolNam
 	}
 }
 
-func (uc *UseCase) reconcileInferencePool(ctx context.Context, scope, namespace, name, modelName string, port int32) error {
+func (uc *UseCase) reconcileInferencePool(ctx context.Context, scope, namespace, name, modelName, releaseName string, mode Mode, port int32) error {
 	_, err := uc.inferencePool.Get(ctx, scope, namespace, name)
 
 	if k8serrors.IsNotFound(err) {
-		return uc.installInferencePool(ctx, scope, namespace, name, modelName, port)
+		return uc.installInferencePool(ctx, scope, namespace, name, modelName, releaseName, mode, port)
 	}
 
 	return err
 }
 
-func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, name, modelName string, port int32) error {
+func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, name, modelName, releaseName string, mode Mode, port int32) error {
 	// chart ref
 	chartRef := fmt.Sprintf("oci://registry.k8s.io/gateway-api-inference-extension/charts/inferencepool:v%s", versions.GatewayAPIInferenceExtension)
 
@@ -323,13 +355,13 @@ func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, n
 	}
 
 	// values
-	valuesYAML := fmt.Sprintf(inferencePoolValuesYAML, name, port)
+	valuesMap := convertGAIEValuesMap(mode, name, releaseName, port)
 
-	_, err := uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
+	_, err := uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, "", valuesMap)
 	return err
 }
 
-func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill *Prefill, decode *Decode) (*release.Release, error) {
+func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, mode Mode, prefill *Prefill, decode *Decode) (*release.Release, error) {
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
@@ -344,21 +376,19 @@ func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, na
 	}
 
 	// values
-	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, name, strSizeBytes, prefill.Replica, prefill.VGPUMemory, decode.Tensor, decode.VGPUMemory)
+	valuesMap := convertModelServiceValuesMap(mode, name, modelName, sizeBytes, prefill, decode)
 
-	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
+	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, "", valuesMap)
 }
 
-func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, prefill *Prefill, decode *Decode) (*release.Release, error) {
+func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, mode Mode, prefill *Prefill, decode *Decode) (*release.Release, error) {
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
 	// values
-	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, name, strSizeBytes, prefill.Replica, prefill.VGPUMemory, decode.Tensor, decode.VGPUMemory)
+	valuesMap := convertModelServiceValuesMap(mode, name, modelName, sizeBytes, prefill, decode)
 
-	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
+	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, "", valuesMap, false)
 }
 
 func extractModelName(config map[string]any) (string, bool) {
@@ -409,6 +439,7 @@ func extractDecode(config map[string]any, key string) *Decode {
 	}
 
 	return &Decode{
+		Replica:    extractReplica(m),
 		Tensor:     extractTensor(m),
 		VGPUMemory: extractVGPUMemory(m),
 	}
@@ -453,7 +484,7 @@ func extractVGPUMemory(config map[string]any) uint32 {
 		return 0
 	}
 
-	return parseResourceValue(requests, resourceVGPUMemPercentage)
+	return parseResourceValue(requests, vgpuMemPercentageResource)
 }
 
 func parseResourceValue(requests map[string]any, key string) uint32 {
@@ -462,17 +493,12 @@ func parseResourceValue(requests map[string]any, key string) uint32 {
 		return 0
 	}
 
-	strValue, ok := value.(string)
+	resource, ok := value.(float64)
 	if !ok {
 		return 0
 	}
 
-	parsed, err := strconv.ParseUint(strValue, 10, 32)
-	if err != nil {
-		return 0
-	}
-
-	return uint32(parsed)
+	return uint32(resource)
 }
 
 func shortID(input string) string {
