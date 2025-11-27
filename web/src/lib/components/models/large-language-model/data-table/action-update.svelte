@@ -271,7 +271,12 @@
 
 							<Form.Field>
 								<Form.Label>{m.tensor()}</Form.Label>
-								<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
+								<SingleInput.General
+									type="number"
+									bind:value={requestDecodeResource.tensor}
+									readonly
+									class="focus-none"
+								/>
 							</Form.Field>
 
 							<Form.Field>

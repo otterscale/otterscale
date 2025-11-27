@@ -47,7 +47,7 @@
 		mode: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING
 	} as CreateModelRequest;
 	const defaultPrefillResource = {} as Model_Prefill;
-	const defaultDecodeResource = { replica: 1 } as Model_Decode;
+	const defaultDecodeResource = { replica: 1, tensor: 1 } as Model_Decode;
 
 	let request = $state(defaults);
 	let requestPrefillResource = $state({ ...defaultPrefillResource });
@@ -287,7 +287,12 @@
 
 							<Form.Field>
 								<Form.Label>{m.tensor()}</Form.Label>
-								<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
+								<SingleInput.General
+									type="number"
+									bind:value={requestDecodeResource.tensor}
+									readonly
+									class="focus-none"
+								/>
 							</Form.Field>
 
 							<Form.Field>
