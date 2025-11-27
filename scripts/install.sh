@@ -1407,6 +1407,12 @@ config_bridge() {
             done
         fi
     fi
+
+    log "INFO" "Check metallb ipaddresspools" "NETWORK"
+    if ! microk8s kubectl get ipaddresspools default-addresspool -n metallb-system -o json | jq --exit-status ".spec.addresses[] | select(.==\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\")" >/dev/null 2>&1 ; then
+        log "INFO" "Update microk8s metallb: $OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP" "NETWORK"
+        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >/dev/null 2>&1
+    fi
 }
 
 add_helm_repository() {
@@ -1439,6 +1445,7 @@ install_helm_chart() {
 
 deploy_helm() {
     log "INFO" "Process microk8s helm3" "HELM_CHECK"
+    local keycloak_realm="otters"
 
     log "INFO" "Check helm repository" "HELM_REPO"
     add_helm_repository "https://istio-release.storage.googleapis.com/charts" "istio"
@@ -1449,19 +1456,17 @@ deploy_helm() {
     log "INFO" "Update helm repository" "HELM_REPO"
     execute_cmd "microk8s helm3 repo update" "helm repository update"
 
-    local keycloak_realm="otters"
-
     install_helm_chart "istio-base" "istio-system" "istio/base" "--create-namespace --set defaultRevision=default --wait --timeout 10m"
-    
-    log "INFO" "Check metallb ipaddresspools" "NETWORK"
-    if ! microk8s kubectl get ipaddresspools default-addresspool -n metallb-system -o json | jq --exit-status ".spec.addresses[] | select(.==\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\")" >/dev/null 2>&1 ; then
-        log "INFO" "Update microk8s metallb: $OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP" "NETWORK"
-        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >/dev/null 2>&1
-    fi
-
     install_helm_chart "istiod" "istio-system" "istio/istiod" "--wait --timeout 10m"
     install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --version v1.19.1 --set crds.enabled=true --wait --timeout 10m"
     install_helm_chart "open-feature-operator" "open-feature-operator" "openfeature/open-feature-operator" "--create-namespace --set sidecarConfiguration.port=8080 --wait --timeout 10m"
+
+    log "INFO" "Check istio service type" "ISTIO"
+    local istio_svc_type=$(microk8s kubectl get svc istiod -n istio-system -o json | jq --exit-status -r ".spec.type | select(.==\"LoadBalancer\")")
+    if [[ -z $istio_svc_type ]]; then
+        log "INFO" "Update istiod svc from ClusterIP to LoadBalancer" "ISTIO"
+        microk8s kubectl patch svc istiod -n istio-system --type=json -p '{"spec":{"type":"LoadBalancer"}}' >/dev/null 2>&1
+    fi
 
     log "INFO" "Check helm chart otterscale" "HELM_CHECK"
     local deploy_name
