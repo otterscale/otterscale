@@ -26,7 +26,6 @@ import (
 	"github.com/otterscale/otterscale/internal/core/instance/cdi"
 	"github.com/otterscale/otterscale/internal/core/instance/vm"
 	"github.com/otterscale/otterscale/internal/core/instance/vmi"
-	"github.com/otterscale/otterscale/internal/core/instance/vms"
 	"github.com/otterscale/otterscale/internal/core/instance/vnc"
 	"github.com/otterscale/otterscale/internal/core/machine"
 	"github.com/otterscale/otterscale/internal/core/machine/purge"
@@ -142,10 +141,9 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	virtualMachineInstanceTypeRepo := kubevirt.NewVirtualMachineInstanceTypeRepo(kubeVirt)
 	virtualMachineInstanceMigrationRepo := kubevirt.NewVirtualMachineInstanceMigrationRepo(kubeVirt)
 	vmiUseCase := vmi.NewUseCase(virtualMachineInstanceRepo, virtualMachineInstanceTypeRepo, virtualMachineInstanceMigrationRepo)
-	vmsUseCase := vms.NewUseCase(serviceRepo)
 	vncRepo := kubevirt.NewVNCRepo(kubeVirt)
 	vncUseCase := vnc.NewUseCase(vncRepo)
-	instanceService := app.NewInstanceService(cdiUseCase, vmUseCase, vmiUseCase, vmsUseCase, vncUseCase)
+	instanceService := app.NewInstanceService(cdiUseCase, vmUseCase, vmiUseCase, vncUseCase)
 	eventRepo := maas.NewEventRepo(maasMAAS)
 	machineManagerRepo := juju.NewMachineManagerRepo(jujuJuju)
 	nodeDeviceRepo := maas.NewNodeDeviceRepo(maasMAAS)

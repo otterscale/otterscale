@@ -33,7 +33,6 @@ readonly SNAP_PACKAGES="core24 maas maas-test-db juju lxd microk8s"
 # Snap channel versions
 readonly CORE24_CHANNEL="latest/stable"
 readonly MAAS_CHANNEL="3.6/stable"
-readonly MAAS_DB_CHANNEL="3.6/stable"
 readonly JUJU_CHANNEL="3.6/stable"
 readonly LXD_CHANNEL="6/stable"
 readonly MICROK8S_CHANNEL="1.33/stable"
@@ -105,15 +104,11 @@ error_exit() {
 }
 
 cleanup() {
-    log "INFO" "Performing cleanup..." "CLEANUP"
     if [[ -f "$TEMP_LOG" ]]; then
         rm -f "$TEMP_LOG"
     fi
-
     # Restore file descriptors
     exec 2>&4 1>&3
-
-    log "INFO" "Cleanup completed" "CLEANUP"
 }
 
 execute_cmd() {
@@ -323,18 +318,18 @@ send_request() {
     local retry_count=1
 
     while ((retry_count <= max_retries)); do
-        if curl -s --max-time 30 \
+        if curl -X POST -sf --max-time 30 \
                 --header "Content-Type: application/json" \
                 --data "$data" \
                 "$OTTERSCALE_API_ENDPOINT$url_path" >/dev/null 2>&1; then
             return 0
         fi
 
-        echo "HTTP request failed (attempt $retry_count/$max_retries)"
+        echo "HTTP post failed (attempt $retry_count/$max_retries)"
         retry_count=$((retry_count+1))
     done
 
-    echo "Failed to send HTTP request after $max_retries attempts"
+    echo "HTTP post to $OTTERSCALE_API_ENDPOINT$url_path failed after $max_retries attempts"
     exit 1
 }
 
@@ -360,7 +355,7 @@ send_status_data() {
 EOF
 )
 
-    send_request "/otterscale.environment.v1.EnvironmentService/UpdateStatus" "$data"
+    send_request "/otterscale.bootstrap.v1.BootstrapService/UpdateStatus" "$data"
 }
 
 # =============================================================================
@@ -473,7 +468,7 @@ snap_install() {
     declare -A snap_channels=(
         ["core24"]="$CORE24_CHANNEL"
         ["maas"]="$MAAS_CHANNEL"
-        ["maas-test-db"]="$MAAS_DB_CHANNEL"
+        ["maas-test-db"]="$MAAS_CHANNEL"
         ["juju"]="$JUJU_CHANNEL"
         ["lxd"]="$LXD_CHANNEL"
         ["microk8s"]="$MICROK8S_CHANNEL"
@@ -1426,45 +1421,6 @@ config_bridge() {
     fi
 }
 
-deploy_istio() {
-    log "INFO" "Check metallb ipaddresspools" "NETWORK"
-    if ! microk8s kubectl get ipaddresspools default-addresspool -n metallb-system -o json | jq --exit-status ".spec.addresses[] | select(.==\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\")" >/dev/null 2>&1 ; then
-        log "INFO" "Update microk8s metallb: $OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP" "NETWORK"
-        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >/dev/null 2>&1
-    fi
-
-    log "INFO" "Prepare Istio service into microK8S" "ISTIO_CHECK"
-
-    local istio_version="1.27.3"
-    local istio_url="https://istio.io/downloadIstio"
-    local istio_namespace="istio-system"
-    local arch
-    arch=$(uname -m)
-
-    case "$arch" in
-        x86_64|amd64) arch="x86_64" ;;
-        aarch64|arm64) arch="arm64" ;;
-    esac
-
-    if ! command -v istioctl &> /dev/null; then
-        log "INFO" "Install istioctl" "ISTIO_DEPLOY"
-        if ! curl -fsSL $istio_url | ISTIO_VERSION="$istio_version" TARGET_ARCH="$arch" bash - >>"$TEMP_LOG" 2>&1; then
-            error_exit "Failed install istio"
-        fi
-
-        mv "istio-$istio_version/bin/istioctl" /usr/local/bin/
-        chmod +x /usr/local/bin/istioctl
-        rm -rf "istio-$istio_version"
-    fi
-
-    if [[ $(microk8s kubectl get deploy -n istio-system -l app=istiod -o name | wc -l) -eq 0 ]]; then
-        log "INFO" "Install istio into kubernetes environment" "ISTIO_SERVICE"
-        su "$NON_ROOT_USER" -c "istioctl install --set profile=default --skip-confirmation"
-    else
-        log "INFO" "Istio control plane already present in namespace: $istio_namespace" "ISTIO_SERVICE"
-    fi
-}
-
 add_helm_repository() {
     local repository_url=$1
     local repository_name=$2
@@ -1477,13 +1433,30 @@ add_helm_repository() {
     fi
 }
 
+install_helm_chart() {  
+    local deploy_name="$1"  
+    local namespace="$2"  
+    local repository_name="$3"  
+    local extra_args="$4"  
+
+    log "INFO" "Check helm chart $deploy_name" "HELM_CHECK"
+
+    if [[ -z $(microk8s helm3 list -n "$namespace" -o json | jq ".[] | select(.name==\"$deploy_name\")") ]]; then  
+        log "INFO" "Helm install $deploy_name" "HELM_INSTALL"  
+        execute_cmd "microk8s helm3 install \"$deploy_name\" \"$repository_name\" -n \"$namespace\" $extra_args" "helm install $deploy_name"  
+    else  
+        log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"  
+    fi  
+}  
+
 deploy_helm() {
     log "INFO" "Process microk8s helm3" "HELM_CHECK"
 
     log "INFO" "Check helm repository" "HELM_REPO"
-    add_helm_repository "https://otterscale.github.io/charts" "otterscale-charts"
+    add_helm_repository "https://istio-release.storage.googleapis.com/charts" "istio"
     add_helm_repository "https://open-feature.github.io/open-feature-operator" "openfeature"
     add_helm_repository "https://charts.jetstack.io" "jetstack"
+    add_helm_repository "https://otterscale.github.io/charts" "otterscale-charts"
 
     log "INFO" "Update helm repository" "HELM_REPO"
     execute_cmd "microk8s helm3 repo update" "helm repository update"
@@ -1491,37 +1464,17 @@ deploy_helm() {
     local otterscale_endpoint="http://$OTTERSCALE_WEB_IP"
     local keycloak_realm="otters"
 
-    local repository_name
+    install_helm_chart "istio-base" "istio-system" "istio/base" "--create-namespace --set defaultRevision=default --wait --timeout 10m"
+    install_helm_chart "istiod" "istio-system" "istio/istiod" "--wait --timeout 10m"
+    install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --version v1.19.1 --set crds.enabled=true --wait --timeout 10m"
+    install_helm_chart "open-feature-operator" "open-feature-operator" "openfeature/open-feature-operator" "--create-namespace --set sidecarConfiguration.port=8080 --wait --timeout 10m"
+
+    log "INFO" "Check helm chart otterscale" "HELM_CHECK"
     local deploy_name
     local namespace
-
-    log "INFO" "Check helm chart cert-manager" "HELM_CHART"
-    repository_name="jetstack"
-    deploy_name="cert-manager"
-    namespace="cert-manager"
-    if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
-        log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/$deploy_name --version v1.19.1 -n $namespace --create-namespace --set crds.enabled=true --wait --timeout 10m" "helm install cert $deploy_name"
-    else
-        log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
-    fi
-
-    log "INFO" "Check helm chart open-feature-operator" "HELM_CHART"
-    repository_name="openfeature"
-    deploy_name="open-feature-operator"
-    namespace="open-feature-operator"
-    if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
-        log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/$deploy_name -n $namespace --create-namespace --set sidecarConfiguration.port=8080 --set controllerManager.kubeRbacProxy.resources.limits.cpu=400m -n $namespace --wait --timeout 10m" "helm install $deploy_name"
-    else
-        log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
-    fi
-
-    log "INFO" "Check helm chart otterscale" "HELM_CHART"
-    repository_name="otterscale-charts"
     deploy_name="otterscale"
     namespace="otterscale"
-    if [[ -z $(microk8s helm list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
+    if [[ -z $(microk8s helm3 list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
         log "INFO" "Collecting configuration data for helm deployment" "HELM_CONFIG"
 
         # Collect MAAS configuration
@@ -1681,12 +1634,12 @@ $(echo "$juju_cacert" | sed 's/^/      /')
 EOF
 
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "Deploy OtterScale chart"
+        execute_cmd "microk8s helm3 install $deploy_name otterscale-charts/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "helm install $deploy_name"
 
         rm -f "$ca_cert_file"
         send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
     else
-        log "INFO" "Helm chart $deploy_name is exist" "HELM_CHECK"
+        log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"
     fi
 
     log "INFO" "You can visit web UI from $otterscale_endpoint" "FINISHED"
@@ -1755,8 +1708,6 @@ main() {
     log "INFO" "Finalizing configuration..." "FINAL_CONFIG"
     config_bridge
     config_ceph_rbd_modules
-
-    deploy_istio
     deploy_helm
 
     log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
@@ -1818,8 +1769,6 @@ parse_arguments() {
     done
 }
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    parse_arguments "$@"
-    check_curl
-    main "$@"
-fi
+parse_arguments "$@"
+check_curl
+main "$@"

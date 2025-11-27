@@ -2,7 +2,10 @@ module github.com/otterscale/otterscale
 
 go 1.25.4
 
-tool github.com/google/subcommands
+tool (
+	golang.org/x/tools
+	github.com/google/subcommands
+)
 
 ignore ./web
 
@@ -264,6 +267,7 @@ require (
 	golang.org/x/term v0.37.0 // indirect
 	golang.org/x/text v0.31.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
+	golang.org/x/tools v0.38.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251103181224-f26f9409b101 // indirect
 	google.golang.org/grpc v1.76.0 // indirect
 	gopkg.in/errgo.v1 v1.0.1 // indirect
