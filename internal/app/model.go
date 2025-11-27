@@ -39,8 +39,9 @@ func (s *ModelService) ListModels(ctx context.Context, req *pb.ListModelsRequest
 
 func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelRequest) (*pb.Model, error) {
 	var (
-		prefill *model.Prefill
-		decode  *model.Decode
+		prefill        *model.Prefill
+		decode         *model.Decode
+		maxModelLength uint32 = 8192
 	)
 
 	if r := req.GetPrefill(); r != nil {
@@ -51,7 +52,11 @@ func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelReque
 		decode = toModelDecode(r)
 	}
 
-	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSizeBytes(), toModelMode(req.GetMode()), prefill, decode)
+	if req.GetMaxModelLength() > 0 {
+		maxModelLength = req.GetMaxModelLength()
+	}
+
+	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSizeBytes(), toModelMode(req.GetMode()), prefill, decode, maxModelLength)
 	if err != nil {
 		return nil, err
 	}
@@ -62,8 +67,9 @@ func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelReque
 
 func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelRequest) (*pb.Model, error) {
 	var (
-		prefill *model.Prefill
-		decode  *model.Decode
+		prefill        *model.Prefill
+		decode         *model.Decode
+		maxModelLength uint32 = 8192
 	)
 
 	if r := req.GetPrefill(); r != nil {
@@ -74,7 +80,11 @@ func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelReque
 		decode = toModelDecode(r)
 	}
 
-	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), toModelMode(req.GetMode()), prefill, decode)
+	if req.GetMaxModelLength() > 0 {
+		maxModelLength = req.GetMaxModelLength()
+	}
+
+	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), toModelMode(req.GetMode()), prefill, decode, maxModelLength)
 	if err != nil {
 		return nil, err
 	}
@@ -224,6 +234,7 @@ func toProtoModel(m *model.Model) *pb.Model {
 		ret.SetDecode(toProtoModelDecode(decode))
 	}
 
+	ret.SetMaxModelLength(m.MaxModelLength)
 	ret.SetPods(toProtoPods(m.Pods))
 
 	return ret

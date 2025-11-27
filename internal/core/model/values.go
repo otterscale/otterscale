@@ -65,7 +65,7 @@ schedulingProfiles:
 // v0.3.10
 //
 //nolint:funlen // ignore
-func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, sizeBytes uint64, prefill *Prefill, decode *Decode) map[string]string {
+func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, sizeBytes uint64, prefill *Prefill, decode *Decode, maxModelLength uint32) map[string]string {
 	ret := map[string]string{
 		"modelArtifacts.name": modelName,
 		"modelArtifacts.labels." + escapeDot("llm-d.ai/model"): releaseName,
@@ -85,6 +85,8 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, size
 		"decode.containers[0].args[0]":                             "--kv-transfer-config",
 		"decode.containers[0].args[1]":                             "\\{\"kv_connector\":\"NixlConnector\"\\, \"kv_role\":\"kv_both\"\\}",
 		"decode.containers[0].args[2]":                             "--disable-uvicorn-access-log",
+		"decode.containers[0].args[3]":                             "--max-model-len",
+		"decode.containers[0].args[4]":                             "[str]" + strconv.FormatUint(uint64(maxModelLength), 10),
 		"decode.containers[0].env[0].name":                         "VLLM_NIXL_SIDE_CHANNEL_HOST",
 		"decode.containers[0].env[0].valueFrom.fieldRef.fieldPath": "status.podIP",
 		"decode.containers[0].env[1].name":                         "VLLM_LOGGING_LEVEL",
@@ -148,6 +150,8 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, size
 		ret["prefill.containers[0].args[0]"] = "--kv-transfer-config"
 		ret["prefill.containers[0].args[1]"] = "\\{\"kv_connector\":\"NixlConnector\"\\, \"kv_role\":\"kv_both\"\\}"
 		ret["prefill.containers[0].args[2]"] = "--disable-uvicorn-access-log"
+		ret["prefill.containers[0].args[3]"] = "--max-model-len"
+		ret["prefill.containers[0].args[4]"] = "[str]" + strconv.FormatUint(uint64(maxModelLength), 10)
 		ret["prefill.containers[0].env[0].name"] = "VLLM_NIXL_SIDE_CHANNEL_HOST"
 		ret["prefill.containers[0].env[0].valueFrom.fieldRef.fieldPath"] = "status.podIP"
 		ret["prefill.containers[0].env[1].name"] = "VLLM_LOGGING_LEVEL"

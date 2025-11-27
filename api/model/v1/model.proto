@@ -79,6 +79,7 @@ message Model {
   Mode mode = 31;
   Prefill prefill = 32;  // disabled if mode is intelligent inference scheduling
   Decode decode = 33;
+  uint32 max_model_length = 34;
   repeated otterscale.application.v1.Application.Pod pods = 41;
 }
 
@@ -103,6 +104,7 @@ message CreateModelRequest {
   Model.Mode mode = 21;
   Model.Prefill prefill = 22;
   Model.Decode decode = 23;
+  uint32 max_model_length = 24;
 }
 
 message UpdateModelRequest {
@@ -113,6 +115,7 @@ message UpdateModelRequest {
   Model.Mode mode = 21;
   Model.Prefill prefill = 22;
   Model.Decode decode = 23;
+  uint32 max_model_length = 24;
 }
 
 message DeleteModelRequest {
