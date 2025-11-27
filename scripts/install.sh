@@ -998,12 +998,12 @@ create_lxd_vm() {
         log "INFO" "Found existing VM hosts, checking resources..." "LXD_VM"
         search_available_vmhost "$vm_hosts"
     else
-        lxc_token=$(lxc config trust list-tokens -f json | jq -r '.[] | select(.ClientName=="maas") | .Token')
+        lxc_token=$(lxc config trust list-tokens -f json | jq -r '.[] | select(.ClientName=="maas") | .Token' | head -n 1)
         if [[ -z $lxc_token ]]; then
-            log "INFO" "Gererating lxc token" "LXD_CONFIG"
+            log "INFO" "Generating lxc token" "LXD_CONFIG"
             lxc_token=$(lxc config trust add --project maas --name maas | cut -d':' -f2 | tr -d '[:space:]')
         else
-            log "INFO" "Trust client: maas already exists" "LXD_CONFIG" 
+            log "INFO" "Trust client: maas already exists" "LXD_CONFIG"
         fi
 
         log "INFO" "Creating new LXD VM host..." "LXD_VM"
