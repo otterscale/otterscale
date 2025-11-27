@@ -56,7 +56,7 @@ service ModelService {
 message Model {
   enum Mode {
     MODE_INTELLIGENT_INFERENCE_SCHEDULING = 0;
-    MODE_PREFILL_DECODE_DISAGGREGATION = 1;
+    MODE_PREFILL_DECODE_DISAGGREGATION = 1;  // heterogeneous parallelism
   }
   message Prefill {
     uint32 replica = 1;
@@ -76,8 +76,9 @@ message Model {
   google.protobuf.Timestamp last_deployed_at = 16;
   string chart_version = 21;
   string app_version = 22;
-  Prefill prefill = 31;  // disabled if mode is intelligent inference scheduling
-  Decode decode = 32;
+  Mode mode = 31;
+  Prefill prefill = 32;  // disabled if mode is intelligent inference scheduling
+  Decode decode = 33;
   repeated otterscale.application.v1.Application.Pod pods = 41;
 }
 
@@ -99,8 +100,9 @@ message CreateModelRequest {
   string name = 4;
   string model_name = 11;
   uint64 size_bytes = 12;
-  Model.Prefill prefill = 21;
-  Model.Decode decode = 22;
+  Model.Mode mode = 21;
+  Model.Prefill prefill = 22;
+  Model.Decode decode = 23;
 }
 
 message UpdateModelRequest {
@@ -108,8 +110,9 @@ message UpdateModelRequest {
   reserved 2;
   string namespace = 3;
   string name = 4;
-  Model.Prefill prefill = 21;
-  Model.Decode decode = 22;
+  Model.Mode mode = 21;
+  Model.Prefill prefill = 22;
+  Model.Decode decode = 23;
 }
 
 message DeleteModelRequest {
