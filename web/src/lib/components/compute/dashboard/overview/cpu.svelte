@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
+	import { curveMonotoneX } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
@@ -77,36 +77,50 @@
 	});
 </script>
 
-<Card.Root class="h-full gap-2">
-	<Card.Header>
-		<Card.Title>{m.cpu_usage()}</Card.Title>
-		<Card.Action class="flex flex-col gap-0.5 text-sm text-muted-foreground">
-			{#if cpuWait}
-				<div class="flex justify-between gap-2">
-					<p>{m.wait()}</p>
-					<p class="font-mono">{(Number(cpuWait.value) * 100).toFixed(2)}%</p>
-				</div>
-			{/if}
-			{#if cpuDelay}
-				<div class="flex justify-between gap-2">
-					<p>{m.delay()}</p>
-					<p class="font-mono">{(Number(cpuDelay.value) * 100).toFixed(2)}%</p>
-				</div>
-			{/if}
-		</Card.Action>
-	</Card.Header>
-	<Card.Content class="h-full">
-		{#if !isLoaded}
-			<div class="flex h-full w-full items-center justify-center border">
-				<Icon icon="svg-spinners:6-dots-rotate" class="size-24" />
+{#if !isLoaded}
+	<Card.Root class="h-full gap-2">
+		<Card.Header class="h-[42px]">
+			<Card.Title>{m.cpu_usage()}</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-[200px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
 			</div>
-		{:else if !cpuUsages?.length}
-			<div class="flex h-full w-full flex-col items-center justify-center">
-				<Icon icon="ph:chart-line-fill" class="size-60 animate-pulse text-muted-foreground" />
+		</Card.Content>
+	</Card.Root>
+{:else if !cpuUsages?.length}
+	<Card.Root class="h-full gap-2">
+		<Card.Header class="h-[42px]">
+			<Card.Title>{m.cpu_usage()}</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-[200px] w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-line-fill" class="size-50 animate-pulse text-muted-foreground" />
 				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
 			</div>
-		{:else}
-			<Chart.Container config={configuration}>
+		</Card.Content>
+	</Card.Root>
+{:else}
+	<Card.Root class="h-full gap-2">
+		<Card.Header>
+			<Card.Title>{m.cpu_usage()}</Card.Title>
+			<Card.Action class="flex flex-col gap-0.5 text-sm text-muted-foreground">
+				{#if cpuWait}
+					<div class="flex justify-between gap-2">
+						<p>{m.wait()}</p>
+						<p class="font-mono">{(Number(cpuWait.value) * 100).toFixed(2)}%</p>
+					</div>
+				{/if}
+				{#if cpuDelay}
+					<div class="flex justify-between gap-2">
+						<p>{m.delay()}</p>
+						<p class="font-mono">{(Number(cpuDelay.value) * 100).toFixed(2)}%</p>
+					</div>
+				{/if}
+			</Card.Action>
+		</Card.Header>
+		<Card.Content class="h-full">
+			<Chart.Container class="h-[200px] w-full px-2 pt-2" config={configuration}>
 				<AreaChart
 					data={cpuUsages}
 					x="time"
@@ -121,7 +135,7 @@
 					]}
 					props={{
 						area: {
-							curve: curveNatural,
+							curve: curveMonotoneX,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
 							motion: 'tween'
@@ -174,6 +188,6 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		{/if}
-	</Card.Content>
-</Card.Root>
+		</Card.Content>
+	</Card.Root>
+{/if}

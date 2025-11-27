@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
 	import { curveStep } from 'd3-shape';
 	import { AreaChart } from 'layerchart';
@@ -6,7 +7,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 
-	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
@@ -189,8 +189,8 @@
 		fetch();
 	});
 
-	onMount(() => {
-		fetch();
+	onMount(async () => {
+		await fetch();
 		isLoading = false;
 	});
 	onDestroy(() => {
@@ -198,30 +198,40 @@
 	});
 </script>
 
-{#if isLoading}
-	<ComponentLoading />
-{:else}
-	<Card.Root class="h-full gap-2">
-		<Card.Header class="flex items-center">
-			<div class="grid flex-1 gap-1 text-center sm:text-left">
-				<Card.Title>{CHART_TITLE}</Card.Title>
-				<Card.Description>{CHART_DESCRIPTION}</Card.Description>
-			</div>
+<Card.Root class="h-full gap-2">
+	<Card.Header class="flex h-[42px] items-center">
+		<div class="grid flex-1 gap-1 text-center sm:text-left">
+			<Card.Title>{CHART_TITLE}</Card.Title>
+			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
+		</div>
 
-			<Select.Root type="single" bind:value={selectedInterval}>
-				<Select.Trigger class="w-fit rounded-lg sm:ml-auto" aria-label="Select time range">
-					{timeRange.label}
-				</Select.Trigger>
-				<Select.Content class="rounded-xl">
-					<Select.Item value="day" class="rounded-lg">{TIME_INTERVALS.day.label}</Select.Item>
-					<Select.Item value="week" class="rounded-lg">{TIME_INTERVALS.week.label}</Select.Item>
-					<Select.Item value="month" class="rounded-lg">{TIME_INTERVALS.month.label}</Select.Item>
-				</Select.Content>
-			</Select.Root>
-		</Card.Header>
-
+		<Select.Root type="single" bind:value={selectedInterval}>
+			<Select.Trigger class="w-fit rounded-lg sm:ml-auto" aria-label="Select time range">
+				{timeRange.label}
+			</Select.Trigger>
+			<Select.Content class="rounded-xl">
+				<Select.Item value="day" class="rounded-lg">{TIME_INTERVALS.day.label}</Select.Item>
+				<Select.Item value="week" class="rounded-lg">{TIME_INTERVALS.week.label}</Select.Item>
+				<Select.Item value="month" class="rounded-lg">{TIME_INTERVALS.month.label}</Select.Item>
+			</Select.Content>
+		</Select.Root>
+	</Card.Header>
+	{#if isLoading}
 		<Card.Content>
-			<Chart.Container config={CHART_CONFIG} class="h-[200px] w-full">
+			<div class="flex h-[200px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
+			</div>
+		</Card.Content>
+	{:else if response.length === 0}
+		<Card.Content>
+			<div class="flex h-[200px] w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-line-fill" class="size-50 animate-pulse text-muted-foreground" />
+				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
+			</div>
+		</Card.Content>
+	{:else}
+		<Card.Content>
+			<Chart.Container class="h-[200px] w-full px-2 pt-2" config={CHART_CONFIG}>
 				<AreaChart
 					data={response}
 					x="date"
@@ -279,5 +289,5 @@
 				</AreaChart>
 			</Chart.Container>
 		</Card.Content>
-	</Card.Root>
-{/if}
+	{/if}
+</Card.Root>

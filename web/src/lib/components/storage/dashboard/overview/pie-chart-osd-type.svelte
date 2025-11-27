@@ -1,9 +1,9 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { PieChart, Text } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
 
-	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
@@ -125,8 +125,8 @@
 			reloadManager.stop();
 		}
 	});
-	onMount(() => {
-		fetch();
+	onMount(async () => {
+		await fetch();
 		isLoading = false;
 	});
 	onDestroy(() => {
@@ -134,52 +134,57 @@
 	});
 </script>
 
-{#if isLoading}
-	<ComponentLoading />
-{:else}
-	<Card.Root class="h-full gap-2">
-		<Card.Header class="items-center">
-			<Card.Title>{CHART_TITLE}</Card.Title>
-			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
-		</Card.Header>
-		<Card.Content class="flex-1">
-			{#if response.chartData.length > 0}
-				<Chart.Container config={response.chartConfig} class="mx-auto aspect-square max-h-[200px]">
-					<PieChart
-						data={response.chartData}
-						key="deviceClass"
-						value="count"
-						c="color"
-						innerRadius={60}
-						padding={28}
-						props={{ pie: { motion: 'tween' } }}
-					>
-						{#snippet aboveMarks()}
-							<Text
-								value={String(response.total)}
-								textAnchor="middle"
-								verticalAnchor="middle"
-								class="fill-foreground text-3xl! font-bold"
-								dy={3}
-							/>
-							<Text
-								value="Total OSDs"
-								textAnchor="middle"
-								verticalAnchor="middle"
-								class="fill-muted-foreground! text-muted-foreground"
-								dy={22}
-							/>
-						{/snippet}
-						{#snippet tooltip()}
-							<Chart.Tooltip hideLabel />
-						{/snippet}
-					</PieChart>
-				</Chart.Container>
-			{:else}
-				<div class="flex h-full items-center justify-center text-muted-foreground">
-					<p>{m.no_data_available()}</p>
-				</div>
-			{/if}
+<Card.Root class="h-full gap-2">
+	<Card.Header class="h-[42px]">
+		<Card.Title>{CHART_TITLE}</Card.Title>
+		<Card.Description>{CHART_DESCRIPTION}</Card.Description>
+	</Card.Header>
+	{#if isLoading}
+		<Card.Content>
+			<div class="flex h-[200px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
+			</div>
 		</Card.Content>
-	</Card.Root>
-{/if}
+	{:else if response.chartData.length === 0}
+		<Card.Content>
+			<div class="flex h-[200px] w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-line-fill" class="size-50 animate-pulse text-muted-foreground" />
+				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
+			</div>
+		</Card.Content>
+	{:else}
+		<Card.Content>
+			<Chart.Container class="h-[200px] w-full" config={response.chartConfig}>
+				<PieChart
+					data={response.chartData}
+					key="deviceClass"
+					value="count"
+					c="color"
+					innerRadius={60}
+					padding={28}
+					props={{ pie: { motion: 'tween' } }}
+				>
+					{#snippet aboveMarks()}
+						<Text
+							value={String(response.total)}
+							textAnchor="middle"
+							verticalAnchor="middle"
+							class="fill-foreground text-3xl! font-bold"
+							dy={3}
+						/>
+						<Text
+							value="Total OSDs"
+							textAnchor="middle"
+							verticalAnchor="middle"
+							class="fill-muted-foreground! text-muted-foreground"
+							dy={22}
+						/>
+					{/snippet}
+					{#snippet tooltip()}
+						<Chart.Tooltip hideLabel />
+					{/snippet}
+				</PieChart>
+			</Chart.Container>
+		</Card.Content>
+	{/if}
+</Card.Root>

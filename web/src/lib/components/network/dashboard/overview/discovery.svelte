@@ -49,7 +49,16 @@
 </script>
 
 {#if isLoading}
-	Loading
+	<Card.Root class="relative h-full gap-2 overflow-hidden">
+		<Card.Header class="h-[42px]">
+			<Card.Title>{m.discovery()}</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-9 w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-6" />
+			</div>
+		</Card.Content>
+	</Card.Root>
 {:else}
 	<Card.Root class="relative h-full gap-2 overflow-hidden">
 		<Card.Header>

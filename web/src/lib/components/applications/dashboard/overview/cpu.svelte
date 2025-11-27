@@ -1,6 +1,7 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
+	import { curveMonotoneX } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
@@ -62,6 +63,7 @@
 			`
 		);
 		cpuLimits = response.result[0]?.value?.value;
+		console.log(response);
 	}
 
 	async function fetch() {
@@ -98,7 +100,16 @@
 </script>
 
 {#if !isLoaded}
-	Loading
+	<Card.Root class="h-full gap-2">
+		<Card.Header class="h-[42px]">
+			<Card.Title>{m.cpu_usage()}</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-[200px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
+			</div>
+		</Card.Content>
+	</Card.Root>
 {:else}
 	<Card.Root class="h-full gap-2">
 		<Card.Header>
@@ -133,7 +144,7 @@
 			</Card.Action>
 		</Card.Header>
 		<Card.Content>
-			<Chart.Container config={cpuUsagesConfiguration}>
+			<Chart.Container class="h-[200px] w-full px-2 pt-2" config={cpuUsagesConfiguration}>
 				<AreaChart
 					data={cpuUsages}
 					x="time"
@@ -148,7 +159,7 @@
 					]}
 					props={{
 						area: {
-							curve: curveNatural,
+							curve: curveMonotoneX,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
 							motion: 'tween'

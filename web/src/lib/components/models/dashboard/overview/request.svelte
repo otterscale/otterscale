@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
 	import { curveStep } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
@@ -88,16 +89,27 @@
 	});
 </script>
 
-{#if !isLoaded}
-	Loading
-{:else}
-	<Card.Root class="h-full">
-		<Card.Header>
-			<Card.Title>{m.requests()}</Card.Title>
-			<Card.Description>
-				{m.llm_dashboard_requests_tooltip()}
-			</Card.Description>
-		</Card.Header>
+<Card.Root class="h-full">
+	<Card.Header>
+		<Card.Title>{m.requests()}</Card.Title>
+		<Card.Description>
+			{m.llm_dashboard_requests_tooltip()}
+		</Card.Description>
+	</Card.Header>
+	{#if !isLoaded}
+		<Card.Content>
+			<div class="flex h-[200px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
+			</div>
+		</Card.Content>
+	{:else if requests.length === 0}
+		<Card.Content>
+			<div class="flex h-[200px] w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-line-fill" class="size-50 animate-pulse text-muted-foreground" />
+				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
+			</div>
+		</Card.Content>
+	{:else}
 		<Card.Content>
 			<Chart.Container config={configuration} class="h-[200px] w-full">
 				<AreaChart
@@ -160,5 +172,5 @@
 				</AreaChart>
 			</Chart.Container>
 		</Card.Content>
-	</Card.Root>
-{/if}
+	{/if}
+</Card.Root>

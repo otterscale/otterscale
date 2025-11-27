@@ -3,7 +3,7 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
+	import { curveMonotoneX } from 'd3-shape';
 	import { LineChart } from 'layerchart';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -85,32 +85,37 @@
 	});
 </script>
 
-{#if !isLoaded}
-	Loading
-{:else}
-	<Card.Root class="h-full gap-2">
-		<Card.Header>
-			<Card.Title class="flex flex-wrap items-center justify-between gap-6">
-				<div class="flex flex-col items-start gap-0.5 truncate text-sm font-medium tracking-tight">
-					<p class="text-xs text-muted-foreground uppercase">{m.over_the_past_6_months()}</p>
-					<div class="flex items-center gap-1 text-lg font-medium">
-						<Icon icon="ph:trend-up" class="size-4.5" /> +{totalNodes}
-					</div>
+<Card.Root class="h-full gap-2">
+	<Card.Header>
+		<Card.Title class="flex flex-wrap items-center justify-between gap-6">
+			<div class="flex flex-col items-start gap-0.5 truncate text-sm font-medium tracking-tight">
+				<p class="text-xs text-muted-foreground uppercase">{m.over_the_past_6_months()}</p>
+				<div class="flex items-center gap-1 text-lg font-medium">
+					<Icon icon="ph:trend-up" class="size-4.5" />
+					{#if totalNodes}
+						+{totalNodes}
+					{/if}
 				</div>
-				<Tooltip.Provider>
-					<Tooltip.Root>
-						<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-							<Icon icon="ph:info" class="size-5 text-muted-foreground" />
-						</Tooltip.Trigger>
-						<Tooltip.Content>
-							<p>{m.machine_dashboard_nodes_tooltip()}</p>
-						</Tooltip.Content>
-					</Tooltip.Root>
-				</Tooltip.Provider>
-			</Card.Title>
-		</Card.Header>
+			</div>
+			<Tooltip.Provider>
+				<Tooltip.Root>
+					<Tooltip.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+						<Icon icon="ph:info" class="size-5 text-muted-foreground" />
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						<p>{m.machine_dashboard_nodes_tooltip()}</p>
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</Tooltip.Provider>
+		</Card.Title>
+	</Card.Header>
+	{#if !isLoaded}
+		<div class="flex h-[250px] w-full items-center justify-center">
+			<Icon icon="svg-spinners:6-dots-rotate" class="m-4 size-12" />
+		</div>
+	{:else}
 		<Card.Content>
-			<Chart.Container config={nodesConfiguration} class="h-full w-full px-2 pt-2">
+			<Chart.Container config={nodesConfiguration} class="h-[250px] w-full px-2 pt-2">
 				<LineChart
 					points={{ r: 4 }}
 					data={nodes}
@@ -125,7 +130,7 @@
 						}
 					]}
 					props={{
-						spline: { curve: curveNatural, motion: 'tween', strokeWidth: 2 },
+						spline: { curve: curveMonotoneX, motion: 'tween', strokeWidth: 2 },
 						highlight: {
 							points: {
 								motion: 'none',
@@ -143,5 +148,5 @@
 				</LineChart>
 			</Chart.Container>
 		</Card.Content>
-	</Card.Root>
-{/if}
+	{/if}
+</Card.Root>

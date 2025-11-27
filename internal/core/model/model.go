@@ -6,9 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log/slog"
-	"regexp"
 	"strconv"
-	"strings"
 
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -90,7 +88,7 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 			continue
 		}
 
-		selector := "llm-d.ai/model" + "=" + FormatLabel(modelName)
+		selector := "llm-d.ai/model" + "=" + releases[i].Name
 
 		pods, err := uc.pod.List(ctx, scope, namespace, selector)
 		if err != nil {
@@ -347,7 +345,7 @@ func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, na
 
 	// values
 	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, FormatLabel(modelName), strSizeBytes, prefill.Replica, prefill.VGPUMemory, decode.Tensor, decode.VGPUMemory)
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, name, strSizeBytes, prefill.Replica, prefill.VGPUMemory, decode.Tensor, decode.VGPUMemory)
 
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, valuesYAML, nil)
 }
@@ -358,7 +356,7 @@ func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, na
 
 	// values
 	strSizeBytes := strconv.FormatUint(sizeBytes, 10)
-	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, FormatLabel(modelName), strSizeBytes, prefill.Replica, prefill.VGPUMemory, decode.Tensor, decode.VGPUMemory)
+	valuesYAML := fmt.Sprintf(modelServiceValuesYAML, modelName, name, strSizeBytes, prefill.Replica, prefill.VGPUMemory, decode.Tensor, decode.VGPUMemory)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, valuesYAML, nil, false)
 }
@@ -480,12 +478,4 @@ func parseResourceValue(requests map[string]any, key string) uint32 {
 func shortID(input string) string {
 	hash := sha256.Sum256([]byte(input))
 	return hex.EncodeToString(hash[:4])
-}
-
-func FormatLabel(input string) string {
-	regex := regexp.MustCompile("[^a-zA-Z0-9]+")
-	output := regex.ReplaceAllString(input, "-")
-	trimRegex := regexp.MustCompile("^-|-$")
-	finalOutput := trimRegex.ReplaceAllString(output, "")
-	return strings.ToLower(finalOutput)
 }

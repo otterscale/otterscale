@@ -81,7 +81,7 @@ func (uc *UseCase) ListGPURelationsByMachine(ctx context.Context, scope, machine
 }
 
 func (uc *UseCase) ListGPURelationsByModel(ctx context.Context, scope, namespace, modelName string) (*Relations, error) {
-	labelSelector := "llm-d.ai/model" + "=" + model.FormatLabel(modelName)
+	labelSelector := "llm-d.ai/model" + "=" + modelName // release name is set to model name
 
 	return uc.listRelations(ctx, scope, namespace, labelSelector)
 }
