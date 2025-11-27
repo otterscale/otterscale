@@ -1001,7 +1001,7 @@ create_lxd_vm() {
         lxc_token=$(lxc config trust list-tokens -f json | jq -r '.[] | select(.ClientName=="maas") | .Token')
         if [[ -z $lxc_token ]]; then
             log "INFO" "Gererating lxc token" "LXD_CONFIG"
-            lxc_token=$(lxc config trust add --project maas --name maas | cut -d':' -f2) | tr -d '[:space:]')
+            lxc_token=$(lxc config trust add --project maas --name maas | cut -d':' -f2 | tr -d '[:space:]')
         else
             log "INFO" "Trust client: maas already exists" "LXD_CONFIG" 
         fi
