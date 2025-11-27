@@ -350,7 +350,6 @@ send_status_data() {
     "phase": "$phase",
     "message": "$message",
     "new_url": "$new_url"
-
 }
 EOF
 )
@@ -1615,8 +1614,11 @@ EOF
 
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
         execute_cmd "microk8s helm3 install $deploy_name otterscale-charts/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "helm install $deploy_name"
-
+        
+        log "INFO" "Cleanup ca cert file" "OTTERSCALE"
         rm -f "$ca_cert_file"
+
+        log "INFO" "Send $otterscale_endpoint to OtterScale" "OTTERSCALE"
         send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
     else
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"
