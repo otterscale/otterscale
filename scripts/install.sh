@@ -1465,7 +1465,7 @@ deploy_helm() {
     local istio_svc_type=$(microk8s kubectl get svc istiod -n istio-system -o json | jq --exit-status -r ".spec.type | select(.==\"LoadBalancer\")")
     if [[ -z $istio_svc_type ]]; then
         log "INFO" "Update istiod svc from ClusterIP to LoadBalancer" "ISTIO"
-        microk8s kubectl patch svc istiod -n istio-system --type=json -p '{"spec":{"type":"LoadBalancer"}}' >/dev/null 2>&1
+        microk8s kubectl patch svc istiod -n istio-system --type=json -p "{\"spec\":{\"type\":\"LoadBalancer\"}}" >/dev/null 2>&1
     fi
 
     log "INFO" "Check helm chart otterscale" "HELM_CHECK"
