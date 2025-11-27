@@ -344,16 +344,25 @@ send_status_data() {
         return 0
     fi
 
-    local data
-    data=$(cat <<EOF
+    if [[ -n "$new_url" ]]; then
+        data=$(cat <<EOF
 {
-    "phase": "$phase",
-    "message": "$message",
-    "new_url": "$new_url"
+  "phase": "$phase",
+  "message": "$message",
+  "new_url": "$new_url"
 }
 EOF
-)
-
+    )
+    else
+        data=$(cat <<EOF
+{
+  "phase": "$phase",
+  "message": "$message"
+}
+EOF
+    )
+    fi
+    
     send_request "/otterscale.bootstrap.v1.BootstrapService/UpdateStatus" "$data"
 }
 
