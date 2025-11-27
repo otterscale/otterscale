@@ -330,7 +330,7 @@ send_request() {
         retry_count=$((retry_count+1))
     done
 
-    echo "HTTP post failed $OTTERSCALE_API_ENDPOINT$url_path after $max_retries attempts"
+    echo "HTTP post to $OTTERSCALE_API_ENDPOINT$url_path failed after $max_retries attempts"
     exit 1
 }
 
@@ -428,7 +428,7 @@ retry_snap_refresh() {
 
         if snap refresh "$snap_name" --channel="$snap_channel" >>"$TEMP_LOG" 2>&1; then
             log "INFO" "Successfully refreshed snap: $snap_name" "SNAP_REFRESH"
-            break
+            return 0
         fi
 
         log "WARN" "Failed to refresh snap $snap_name (attempt $retry_count/$max_retries)" "SNAP_REFRESH"
