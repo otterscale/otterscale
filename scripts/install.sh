@@ -1618,8 +1618,6 @@ EOF
         log "INFO" "Cleanup ca cert file" "OTTERSCALE"
         rm -f "$ca_cert_file"
 
-        log "INFO" "Send $otterscale_endpoint to OtterScale" "OTTERSCALE"
-        send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
     else
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"
     fi
@@ -1693,6 +1691,7 @@ main() {
     deploy_helm
 
     log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
+    send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
 }
 
 # =============================================================================
