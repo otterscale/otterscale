@@ -7,7 +7,7 @@
 </script>
 
 <div style:--loading-dots-size="{size}px" class="inline-flex items-center gap-1">
-	{#each { length: 3 } as _, i (i)}
+	{#each { length: 3 } as i (i)}
 		<span class="inline-block size-(--loading-dots-size) rounded-full bg-primary"></span>
 	{/each}
 </div>

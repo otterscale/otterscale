@@ -3,7 +3,6 @@
 	import Icon from '@iconify/svelte';
 	import type { Row, Table as TableType } from '@tanstack/table-core';
 	import { scaleUtc } from 'd3-scale';
-	import { curveLinear } from 'd3-shape';
 	import { LineChart } from 'layerchart';
 	import { SampleValue } from 'prometheus-query';
 
