@@ -1423,7 +1423,7 @@ install_helm_chart() {
 
     if [[ -z $(microk8s helm3 list -n "$namespace" -o json | jq ".[] | select(.name==\"$deploy_name\")") ]]; then  
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"  
-        execute_cmd "microk8s helm3 install \"$deploy_name\" \"$repository_name\" -n \"$namespace\" $extra_args" "helm install $deploy_name"  
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name -n $namespace $extra_args" "helm install $deploy_name"  
     else  
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"  
     fi  
