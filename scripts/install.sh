@@ -1629,8 +1629,6 @@ EOF
     else
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"
     fi
-
-    log "INFO" "Finished install helm charts" "FINISHED"
 }
 
 # =============================================================================
@@ -1698,7 +1696,7 @@ main() {
     config_ceph_rbd_modules
     deploy_helm
 
-    log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
+    log "INFO" "OtterScale installation completed successfully!" "FINISHED"
     send_status_data "FINISHED" "OtterScale endpoint is http://$OTTERSCALE_WEB_IP" "http://OTTERSCALE_WEB_IP"
 }
 
