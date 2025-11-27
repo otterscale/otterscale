@@ -34,7 +34,7 @@ readonly SNAP_PACKAGES="core24 maas maas-test-db juju lxd microk8s"
 readonly CORE24_CHANNEL="latest/stable"
 readonly MAAS_CHANNEL="3.6/stable"
 readonly JUJU_CHANNEL="3.6/stable"
-readonly LXD_CHANNEL="6/stable"
+readonly LXD_CHANNEL="5.21/stable"
 readonly MICROK8S_CHANNEL="1.33/stable"
 readonly CONTROLLER_CHARM_CHANNEL="3.6/stable"
 
@@ -530,30 +530,6 @@ get_default_dns() {
     fi
 }
 
-select_bridge() {
-    local bridges
-    readarray -t bridges < <(brctl show 2>/dev/null | awk 'NR>1 && $1!="" {print $1}')
-
-    if [[ ${#bridges[@]} -eq 0 ]]; then
-        return 1
-    fi
-
-    echo "Available network bridges:"
-    for i in "${!bridges[@]}"; do
-        echo "$((i+1))) ${bridges[$i]}"
-    done
-
-    while true; do
-        read -p "Select bridge (1-${#bridges[@]}): " choice
-        if [[ $choice =~ ^[0-9]+$ ]] && ((choice >= 1 && choice <= ${#bridges[@]})); then
-            OTTERSCALE_BRIDGE_NAME="${bridges[$((choice-1))]}"
-            log "INFO" "User selected bridge: $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-            return 0
-        fi
-        echo "Invalid selection. Please try again."
-    done
-}
-
 prompt_bridge_creation() {
     # Makesure NetworkManager service is active
     if ! systemctl is-active --quiet NetworkManager; then
@@ -593,11 +569,8 @@ check_bridge() {
     if ip link show "$OTTERSCALE_BRIDGE_NAME" &>/dev/null; then
         log "INFO" "Bridge $OTTERSCALE_BRIDGE_NAME exists" "NETWORK"
     else
-        log "INFO" "Bridge $OTTERSCALE_BRIDGE_NAME not found" "NETWORK"
-
-        if ! select_bridge; then
-            prompt_bridge_creation
-        fi
+        log "INFO" "Bridge $OTTERSCALE_BRIDGE_NAME not found, bridge will be created by script" "NETWORK"
+        prompt_bridge_creation
     fi
 
     # Get bridge network information
@@ -952,7 +925,6 @@ generate_lxd_config() {
     cat > "$lxd_file" <<EOF
 config:
   core.https_address: '[::]:8443'
-  core.trust_password: password
 storage_pools:
 - config:
     size: $LXD_STORAGE_SIZE_GB
@@ -1026,8 +998,16 @@ create_lxd_vm() {
         log "INFO" "Found existing VM hosts, checking resources..." "LXD_VM"
         search_available_vmhost "$vm_hosts"
     else
+        local lxc_token=$(lxc config trust list-tokens -f json | jq -r '.[] | select(.ClientName=="maas") | .Token' | head -n 1)
+        if [[ -z $lxc_token ]]; then
+            log "INFO" "Generating lxc token" "LXD_CONFIG"
+            local lxc_token=$(lxc config trust add --project maas --name maas | cut -d':' -f2 | tr -d '[:space:]')
+        else
+            log "INFO" "Trust client: maas already exists" "LXD_CONFIG"
+        fi
+
         log "INFO" "Creating new LXD VM host..." "LXD_VM"
-        execute_cmd "maas admin vm-hosts create password=password type=lxd power_address=https://$OTTERSCALE_INTERFACE_IP:8443 project=maas" "create MAAS LXD VM host"
+        execute_cmd "maas admin vm-hosts create password=$lxc_token type=lxd power_address=https://$OTTERSCALE_INTERFACE_IP:8443 project=maas" "create MAAS LXD VM host"
         VM_HOST_ID=$(maas admin vm-hosts read | jq -r '.[0].id')
     fi
 
