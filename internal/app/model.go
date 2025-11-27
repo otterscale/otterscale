@@ -11,6 +11,8 @@ import (
 	"github.com/otterscale/otterscale/internal/core/model"
 )
 
+const defaultMaxModelLength uint32 = 8192
+
 type ModelService struct {
 	pbconnect.UnimplementedModelServiceHandler
 
@@ -41,7 +43,7 @@ func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelReque
 	var (
 		prefill        *model.Prefill
 		decode         *model.Decode
-		maxModelLength uint32 = 8192
+		maxModelLength = defaultMaxModelLength
 	)
 
 	if r := req.GetPrefill(); r != nil {
@@ -69,7 +71,7 @@ func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelReque
 	var (
 		prefill        *model.Prefill
 		decode         *model.Decode
-		maxModelLength uint32 = 8192
+		maxModelLength = defaultMaxModelLength
 	)
 
 	if r := req.GetPrefill(); r != nil {

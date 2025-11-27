@@ -66,6 +66,22 @@ schedulingProfiles:
 //
 //nolint:goconst,funlen // ignore
 func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, sizeBytes uint64, prefill *Prefill, decode *Decode, maxModelLength uint32) map[string]string {
+	var (
+		prefillReplica, prefillVGPUMemory             uint32
+		decodeReplica, decodeTensor, decodeVGPUMemory uint32
+	)
+
+	if prefill != nil {
+		prefillReplica = prefill.Replica
+		prefillVGPUMemory = prefill.VGPUMemory
+	}
+
+	if decode != nil {
+		decodeReplica = decode.Replica
+		decodeTensor = decode.Tensor
+		decodeVGPUMemory = decode.VGPUMemory
+	}
+
 	ret := map[string]string{
 		"modelArtifacts.name": modelName,
 		"modelArtifacts.labels." + escapeDot("llm-d.ai/model"): releaseName,
@@ -79,7 +95,7 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, size
 		"routing.proxy.secure":                                     "false",
 		"decode.create":                                            "true",
 		"decode.autoscaling.enabled":                               "true",
-		"decode.replicas":                                          strconv.FormatUint(uint64(decode.Replica), 10),
+		"decode.replicas":                                          strconv.FormatUint(uint64(decodeReplica), 10),
 		"decode.containers[0].image":                               "ghcr.io/llm-d/llm-d-cuda:v0.3.1",
 		"decode.containers[0].modelCommand":                        "vllmServe",
 		"decode.containers[0].args[0]":                             "--kv-transfer-config",
@@ -94,8 +110,8 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, size
 		"decode.containers[0].ports[0].containerPort":              "8200",
 		"decode.containers[0].ports[0].name":                       "metrics",
 		"decode.containers[0].ports[0].protocol":                   "TCP",
-		"decode.containers[0].resources.limits." + escapeDot(vgpuMemPercentageResource):   strconv.FormatUint(uint64(decode.VGPUMemory), 10),
-		"decode.containers[0].resources.requests." + escapeDot(vgpuMemPercentageResource): strconv.FormatUint(uint64(decode.VGPUMemory), 10),
+		"decode.containers[0].resources.limits." + escapeDot(vgpuMemPercentageResource):   strconv.FormatUint(uint64(decodeVGPUMemory), 10),
+		"decode.containers[0].resources.requests." + escapeDot(vgpuMemPercentageResource): strconv.FormatUint(uint64(decodeVGPUMemory), 10),
 		"decode.containers[0].mountModelVolume":                                           "true",
 		"decode.containers[0].volumeMounts[0].name":                                       "metrics-volume",
 		"decode.containers[0].volumeMounts[0].mountPath":                                  "/.config",
@@ -138,13 +154,13 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, size
 		ret["prefill.create"] = "false"
 
 	case ModePrefillDecodeDisaggregation:
-		ret["decode.parallelism.tensor"] = strconv.FormatUint(uint64(decode.Tensor), 10)
+		ret["decode.parallelism.tensor"] = strconv.FormatUint(uint64(decodeTensor), 10)
 		ret["decode.containers[0].volumeMounts[2].name"] = "shm"
 		ret["decode.containers[0].volumeMounts[2].mountPath"] = "/dev/shm"
 		ret["decode.volumes[2].name"] = "shm"
 		ret["decode.volumes[2].emptyDir.medium"] = "Memory"
 		ret["decode.volumes[2].emptyDir.sizeLimit"] = "16Gi"
-		ret["prefill.replicas"] = strconv.FormatUint(uint64(prefill.Replica), 10)
+		ret["prefill.replicas"] = strconv.FormatUint(uint64(prefillReplica), 10)
 		ret["prefill.containers[0].image"] = "ghcr.io/llm-d/llm-d-cuda:v0.3.1"
 		ret["prefill.containers[0].modelCommand"] = "vllmServe"
 		ret["prefill.containers[0].args[0]"] = "--kv-transfer-config"
@@ -159,8 +175,8 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, size
 		ret["prefill.containers[0].ports[0].containerPort"] = "8000"
 		ret["prefill.containers[0].ports[0].name"] = "metrics"
 		ret["prefill.containers[0].ports[0].protocol"] = "TCP"
-		ret["prefill.containers[0].resources.limits."+escapeDot(vgpuMemPercentageResource)] = strconv.FormatUint(uint64(prefill.VGPUMemory), 10)
-		ret["prefill.containers[0].resources.requests."+escapeDot(vgpuMemPercentageResource)] = strconv.FormatUint(uint64(prefill.VGPUMemory), 10)
+		ret["prefill.containers[0].resources.limits."+escapeDot(vgpuMemPercentageResource)] = strconv.FormatUint(uint64(prefillVGPUMemory), 10)
+		ret["prefill.containers[0].resources.requests."+escapeDot(vgpuMemPercentageResource)] = strconv.FormatUint(uint64(prefillVGPUMemory), 10)
 		ret["prefill.containers[0].mountModelVolume"] = "true"
 		ret["prefill.containers[0].volumeMounts[0].name"] = "metrics-volume"
 		ret["prefill.containers[0].volumeMounts[0].mountPath"] = "/.config"

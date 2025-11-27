@@ -435,94 +435,73 @@ func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, na
 }
 
 func extractModelName(config map[string]any) (string, bool) {
-	v, ok := config["modelArtifacts"]
+	modelArtifacts, ok := config["modelArtifacts"].(map[string]any)
 	if !ok {
 		return "", false
 	}
 
-	m, ok := v.(map[string]any)
-	if !ok {
-		return "", false
-	}
-
-	name, ok := m["name"].(string)
-	if !ok {
-		return "", false
-	}
-
+	name, ok := modelArtifacts["name"].(string)
 	return name, ok
 }
 
 func extractMaxModelLength(config map[string]any) uint32 {
-	v, ok := config["decode"]
+	decode, ok := config["decode"].(map[string]any)
 	if !ok {
 		return 0
 	}
 
-	m, ok := v.(map[string]any)
-	if !ok {
-		return 0
-	}
-
-	containers, ok := m["containers"].([]any)
+	containers, ok := decode["containers"].([]any)
 	if !ok || len(containers) == 0 {
 		return 0
 	}
 
-	cm, ok := containers[0].(map[string]any)
+	container, ok := containers[0].(map[string]any)
 	if !ok {
 		return 0
 	}
 
-	args, ok := cm["args"].([]any)
+	args, ok := container["args"].([]any)
 	if !ok {
 		return 0
 	}
 
-	for i := range args {
-		argStr, ok := args[i].(string)
-		if !ok {
+	return parseMaxModelLenFromArgs(args)
+}
+
+func parseMaxModelLenFromArgs(args []any) uint32 {
+	for i, arg := range args {
+		argStr, ok := arg.(string)
+		if !ok || argStr != "--max-model-len" || i+1 >= len(args) {
 			continue
 		}
 
-		if argStr == "--max-model-len" && i+1 < len(args) {
-			valStr, ok := args[i+1].(string)
-			if !ok {
-				return 0
-			}
-
-			valStr = strings.TrimPrefix(valStr, "[str]")
-
-			val, err := strconv.ParseUint(valStr, 10, 32)
-			if err != nil {
-				return 0
-			}
-
-			return uint32(val)
+		valStr, ok := args[i+1].(string)
+		if !ok {
+			return 0
 		}
+
+		valStr = strings.TrimPrefix(valStr, "[str]")
+		val, err := strconv.ParseUint(valStr, 10, 32)
+		if err != nil {
+			return 0
+		}
+
+		return uint32(val)
 	}
 
 	return 0
 }
 
 func extractPrefill(config map[string]any) *Prefill {
-	v, ok := config["prefill"]
+	prefillConfig, ok := config["prefill"].(map[string]any)
 	if !ok {
 		return nil
 	}
 
-	m, ok := v.(map[string]any)
-	if !ok {
-		return nil
-	}
+	replica := extractReplica(prefillConfig)
+	vgpuMemory := extractVGPUMemory(prefillConfig)
 
-	replica := extractReplica(m)
-	if replica == 0 {
-		return nil
-	}
-
-	vgpuMemory := extractVGPUMemory(m)
-	if vgpuMemory == 0 {
+	if replica == 0 || vgpuMemory == 0 {
 		return nil
 	}
 
@@ -533,28 +512,16 @@ func extractPrefill(config map[string]any) *Prefill {
 }
 
 func extractDecode(config map[string]any) *Decode {
-	v, ok := config["decode"]
+	decodeConfig, ok := config["decode"].(map[string]any)
 	if !ok {
 		return nil
 	}
 
-	m, ok := v.(map[string]any)
-	if !ok {
-		return nil
-	}
+	replica := extractReplica(decodeConfig)
+	tensor := extractTensor(decodeConfig)
+	vgpuMemory := extractVGPUMemory(decodeConfig)
 
-	replica := extractReplica(m)
-	if replica == 0 {
-		return nil
-	}
-
-	tensor := extractTensor(m)
-	if tensor == 0 {
-		return nil
-	}
-
-	vgpuMemory := extractVGPUMemory(m)
-	if vgpuMemory == 0 {
+	if replica == 0 || tensor == 0 || vgpuMemory == 0 {
 		return nil
 	}
 
@@ -584,12 +551,12 @@ func extractVGPUMemory(config map[string]any) uint32 {
 		return 0
 	}
 
-	cm, ok := containers[0].(map[string]any)
+	container, ok := containers[0].(map[string]any)
 	if !ok {
 		return 0
 	}
 
-	resources, ok := cm["resources"].(map[string]any)
+	resources, ok := container["resources"].(map[string]any)
 	if !ok {
 		return 0
 	}
@@ -602,8 +569,8 @@ func extractVGPUMemory(config map[string]any) uint32 {
 	return parseResourceValue(requests, vgpuMemPercentageResource)
 }
 
-func parseResourceValue(requests map[string]any, key string) uint32 {
-	value, ok := requests[key]
+func parseResourceValue(config map[string]any, key string) uint32 {
+	value, ok := config[key]
 	if !ok {
 		return 0
 	}
