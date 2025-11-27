@@ -54,13 +54,18 @@ service ModelService {
 }
 
 message Model {
+  enum Mode {
+    MODE_INTELLIGENT_INFERENCE_SCHEDULING = 0;
+    MODE_PREFILL_DECODE_DISAGGREGATION = 1;
+  }
   message Prefill {
     uint32 replica = 1;
-    uint32 vgpumem_percentage = 2;
+    uint32 vgpumem_percentage = 11;
   }
   message Decode {
-    uint32 tensor = 1;
-    uint32 vgpumem_percentage = 2;
+    uint32 replica = 1;  // set to 1 if mode is prefill-decode disaggregation
+    uint32 tensor = 2;
+    uint32 vgpumem_percentage = 11;
   }
   string id = 1;
   string name = 11;
@@ -71,7 +76,7 @@ message Model {
   google.protobuf.Timestamp last_deployed_at = 16;
   string chart_version = 21;
   string app_version = 22;
-  Prefill prefill = 31;
+  Prefill prefill = 31;  // disabled if mode is intelligent inference scheduling
   Decode decode = 32;
   repeated otterscale.application.v1.Application.Pod pods = 41;
 }
