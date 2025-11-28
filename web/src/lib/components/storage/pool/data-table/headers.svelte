@@ -13,7 +13,6 @@
 		applications,
 		placement_group_state,
 		usage,
-		iops,
 		actions
 	};
 </script>
@@ -65,12 +64,6 @@
 			<Sorter {column} />
 		</Layout.HeaderController>
 		<Layout.HeaderViewer>{m.usage()}</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
-{#snippet iops()}
-	<Layout.Header class="justify-end">
-		<Layout.HeaderViewer>{m.iops()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

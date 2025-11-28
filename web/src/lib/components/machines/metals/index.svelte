@@ -37,6 +37,18 @@
 			});
 		}
 
+		const cpuResponse = await prometheusDriver.rangeQuery(
+			`
+			avg by (instance) (
+				1 - rate(node_cpu_seconds_total{juju_model=~".*",mode="idle"}[2m])
+			)
+			`,
+			Date.now() - 10 * 60 * 1000,
+			Date.now(),
+			2 * 60
+		);
+		const cpuSampleVectors = getMapInstanceToMetric(cpuResponse.result);
+
 		const memoryResponse = await prometheusDriver.rangeQuery(
 			`
 				(
@@ -63,7 +75,7 @@
 		);
 		const storageSampleVectors = getMapInstanceToMetric(storageResponse.result);
 
-		metrics = { memory: memorySampleVectors, storage: storageSampleVectors };
+		metrics = { cpu: cpuSampleVectors, memory: memorySampleVectors, storage: storageSampleVectors };
 	}
 
 	async function fetch() {

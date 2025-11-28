@@ -33,6 +33,7 @@
 		gpu,
 		tags,
 		scope,
+		cpu_metric,
 		memory_metric,
 		storage_metric,
 		actions
@@ -175,6 +176,52 @@
 	</Layout.Cell>
 {/snippet}
 
+{#snippet cpu_metric(data: { row: Row<Machine>; metrics: Metrics })}
+	{@const configuation = {
+		value: { label: 'usage', color: 'var(--chart-2)' }
+	} satisfies Chart.ChartConfig}
+	{@const usage: SampleValue[] = data.metrics.cpu.get(data.row.original.fqdn) ?? []}
+	{#if usage.length > 0}
+		<Layout.Cell class="justify-center">
+			<Chart.Container config={configuation} class="h-10 w-full">
+				<LineChart
+					data={usage}
+					x="time"
+					series={[
+						{
+							key: 'value',
+							label: configuation['value'].label,
+							color: configuation['value'].color
+						}
+					]}
+					props={{
+						spline: { strokeWidth: 2 }
+					}}
+					axis={false}
+					xScale={scaleUtc()}
+					yDomain={[0, 1]}
+					grid={false}
+				>
+					{#snippet tooltip()}
+						<Chart.Tooltip hideLabel>
+							{#snippet formatter({ item, name, value })}
+								<div
+									class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
+									style="--color-bg: {item.color}"
+								>
+									<Icon icon="ph:square-fill" class="text-(--color-bg)" />
+									<h1 class="font-semibold text-muted-foreground">{name}</h1>
+									<p class="ml-auto">{(Number(value) * 100).toFixed(2)} %</p>
+								</div>
+							{/snippet}
+						</Chart.Tooltip>
+					{/snippet}
+				</LineChart>
+			</Chart.Container>
+		</Layout.Cell>
+	{/if}
+{/snippet}
+
 {#snippet memory_metric(data: { row: Row<Machine>; metrics: Metrics })}
 	{@const configuation = {
 		value: { label: 'usage', color: 'var(--chart-2)' }
@@ -193,6 +240,9 @@
 							color: configuation['value'].color
 						}
 					]}
+					props={{
+						spline: { strokeWidth: 2 }
+					}}
 					axis={false}
 					xScale={scaleUtc()}
 					yDomain={[0, 1]}
@@ -236,6 +286,9 @@
 							color: configuation['value'].color
 						}
 					]}
+					props={{
+						spline: { strokeWidth: 2 }
+					}}
 					axis={false}
 					xScale={scaleUtc()}
 					yDomain={[0, 1]}

@@ -14,7 +14,6 @@ const messages = {
 	poolType: m.type(),
 	applications: m.applications(),
 	placementGroupState: m.placement_group_state(),
-	usage: m.usage(),
 	iops: m.iops()
 };
 
@@ -94,15 +93,6 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Pool
 					(p, n) => p < n,
 					(p, n) => p === n
 				)
-		},
-		{
-			accessorKey: 'iops',
-			header: ({ column }) => {
-				return renderSnippet(headers.iops, column);
-			},
-			cell: ({ row }) => {
-				return renderSnippet(cells.iops, row);
-			}
 		},
 		{
 			accessorKey: 'actions',

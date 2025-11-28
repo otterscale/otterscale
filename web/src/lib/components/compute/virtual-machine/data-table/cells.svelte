@@ -217,6 +217,9 @@
 							color: configuation['value'].color
 						}
 					]}
+					props={{
+						spline: { strokeWidth: 2 }
+					}}
 					axis={false}
 					xScale={scaleUtc()}
 					yDomain={[0, 1]}
@@ -260,6 +263,9 @@
 							color: configuation['value'].color
 						}
 					]}
+					props={{
+						spline: { strokeWidth: 2 }
+					}}
 					axis={false}
 					xScale={scaleUtc()}
 					yDomain={[0, 1]}
@@ -303,6 +309,9 @@
 							color: configuation['value'].color
 						}
 					]}
+					props={{
+						spline: { strokeWidth: 2 }
+					}}
 					axis={false}
 					xScale={scaleUtc()}
 					yDomain={[0, 1]}

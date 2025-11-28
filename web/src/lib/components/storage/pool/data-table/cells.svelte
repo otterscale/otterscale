@@ -20,7 +20,6 @@
 		applications,
 		placement_group_state,
 		usage,
-		iops,
 		actions
 	};
 </script>
@@ -100,8 +99,6 @@
 		</Progress.Root>
 	</Layout.Cell>
 {/snippet}
-
-{#snippet iops()}{/snippet}
 
 {#snippet actions(data: { row: Row<Pool>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
