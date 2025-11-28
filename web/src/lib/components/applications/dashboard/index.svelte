@@ -18,7 +18,6 @@
 	import NetworkTraffic from './overview/network-traffic.svelte';
 	import Pod from './overview/pod.svelte';
 	import ThroughtPut from './overview/throughput.svelte';
-	import VGPU from './overview/vgpu.svelte';
 	import Worker from './overview/worker.svelte';
 
 	let { scope }: { scope: string } = $props();
@@ -87,22 +86,22 @@
 					<div class="col-span-2">
 						<Container {prometheusDriver} {scope} bind:isReloading />
 					</div>
-					<div class="col-span-4">
+					<!-- <div class="col-span-4">
 						<VGPU {prometheusDriver} {scope} bind:isReloading />
-					</div>
-					<div class="col-span-4 col-start-5">
+					</div> -->
+					<div class="col-span-6">
 						<NetworkTraffic {prometheusDriver} {scope} bind:isReloading />
 					</div>
-					<div class="col-span-4">
+					<div class="col-span-6">
 						<ThroughtPut {prometheusDriver} {scope} bind:isReloading />
 					</div>
 				</Tabs.Content>
 				<Tabs.Content value="analytics">
 					<!-- {#if isMounted && prometheusDriver && scope}
-				<Dashboard client={prometheusDriver} scope={scope} />
-			{:else}
-				<Loading />
-			{/if} -->
+						<Dashboard client={prometheusDriver} {scope} />
+					{:else}
+						<Loading />
+					{/if} -->
 				</Tabs.Content>
 			</Tabs.Root>
 		</div>

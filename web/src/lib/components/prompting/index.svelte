@@ -99,7 +99,7 @@
 		reset();
 	}}
 >
-	<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>
+	<Dialog.Trigger class={buttonVariants({ variant: 'ghost' })}>
 		<Icon icon="ph:robot" />
 	</Dialog.Trigger>
 	<Dialog.Content

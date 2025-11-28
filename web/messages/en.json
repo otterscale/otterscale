@@ -30,6 +30,7 @@
 	"prefill": "Prefill",
 	"decode": "Decode",
 	"model_name": "Model Name",
+	"max_model_length": "Max Model Length",
 	"models": "Models",
 	"models_description": "AI models for intelligent data processing and analysis",
 	"llm": "LLM",

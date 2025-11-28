@@ -17,6 +17,7 @@
 		OrchestratorService
 	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { Complex as ComplexFlow } from '$lib/components/flow/index';
+	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
 </script>
@@ -133,7 +134,7 @@
 
 {#if isLoaded}
 	<Sheet.Root bind:open>
-		<Sheet.Trigger>
+		<Sheet.Trigger class={buttonVariants({ variant: 'ghost' })}>
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content side="right" class="min-w-[38vw] p-4">

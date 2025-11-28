@@ -30,6 +30,7 @@
 	"prefill": "預填",
 	"decode": "解碼",
 	"model_name": "模型名稱",
+	"max_model_length": "最大模型長度",
 	"models": "模型",
 	"models_description": "用於智慧資料處理與分析的 AI 模型",
 	"llm": "大型語言模型",

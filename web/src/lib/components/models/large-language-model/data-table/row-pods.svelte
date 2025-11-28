@@ -15,11 +15,23 @@
 	import { m } from '$lib/paraglide/messages';
 
 	import type { Metrics } from '../types';
+	import Log from './action-log.svelte';
 </script>
 
 <script lang="ts">
-	let { metrics, table, row }: { metrics: Metrics; table: TableType<Model>; row: Row<Model> } =
-		$props();
+	let {
+		metrics,
+		table,
+		row,
+		scope,
+		namespace
+	}: {
+		metrics: Metrics;
+		table: TableType<Model>;
+		row: Row<Model>;
+		scope: string;
+		namespace: string;
+	} = $props();
 
 	const pods = $derived(row.original.pods ?? []);
 
@@ -45,7 +57,7 @@
 		colspan={Object.keys(table.getHeaderGroups().flatMap((headerGroup) => headerGroup.headers))
 			.length}
 	>
-		<div class="h-full space-y-4 p-4">
+		<div class="h-full space-y-4 px-8 pt-8 pb-12">
 			<div class="flex items-center justify-between gap-4 p-4">
 				<h3 class="text-2xl font-bold">{total} Pods</h3>
 				<div class="flex items-center gap-4">
@@ -98,6 +110,7 @@
 							<Table.Head class="text-center">{m.kv_cache()}</Table.Head>
 							<Table.Head class="text-center">{m.time_to_first_token()}</Table.Head>
 							<Table.Head class="text-center">{m.requests()}</Table.Head>
+							<Table.Head class="text-end">{m.log()}</Table.Head>
 							<Table.Head class="text-end">{m.create_time()}</Table.Head>
 						</Table.Row>
 					</Table.Header>
@@ -267,6 +280,11 @@
 											{/snippet}
 										</LineChart>
 									</Chart.Container>
+								</Table.Cell>
+								<Table.Cell class="text-end">
+									{#if pod}
+										<Log {pod} {scope} {namespace} />
+									{/if}
 								</Table.Cell>
 								<Table.Cell class="text-end">
 									{#if pod.createdAt}

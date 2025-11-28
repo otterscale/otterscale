@@ -165,6 +165,11 @@
 						</SingleSelect.Root>
 					{/if}
 				</Form.Field>
+
+				<Form.Field>
+					<Form.Label>{m.max_model_length()}</Form.Label>
+					<SingleInput.General type="number" bind:value={request.maxModelLength} />
+				</Form.Field>
 			</Form.Fieldset>
 
 			<Form.Fieldset>

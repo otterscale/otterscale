@@ -44,6 +44,7 @@
 		scope: scope,
 		namespace: 'llm-d',
 		sizeBytes: BigInt(100 * 1024 ** 3),
+		maxModelLength: 8192,
 		mode: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING
 	} as CreateModelRequest;
 	const defaultPrefillResource = {} as Model_Prefill;
@@ -202,6 +203,11 @@
 							{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
 						]}
 					/>
+				</Form.Field>
+
+				<Form.Field>
+					<Form.Label>{m.max_model_length()}</Form.Label>
+					<SingleInput.General type="number" bind:value={request.maxModelLength} />
 				</Form.Field>
 			</Form.Fieldset>
 

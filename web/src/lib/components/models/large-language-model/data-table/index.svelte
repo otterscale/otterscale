@@ -20,6 +20,7 @@
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import { cn } from '$lib/utils';
 
 	import type { Metrics } from '../types';
 	import Create from './action-create.svelte';
@@ -188,14 +189,17 @@
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
 							<Table.Cell
-								class="has-[*[data-slot=data-table-row-expander]]:p-1 has-[*[data-slot=data-table-row-picker]]:p-0"
+								class={cn(
+									row.getIsExpanded() ? 'bg-muted/50' : '',
+									'has-[*[data-slot=data-table-row-expander]]:p-1 has-[*[data-slot=data-table-row-picker]]:p-0'
+								)}
 							>
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
 					</Table.Row>
 					{#if row.getIsExpanded()}
-						<Pods {metrics} {row} {table} />
+						<Pods {metrics} {row} {table} {scope} {namespace} />
 					{/if}
 				{:else}
 					<Empty {table} />
