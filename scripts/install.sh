@@ -317,7 +317,7 @@ check_iptables() {
 
     if ! iptables -C FORWARD -i "$OTTERSCALE_BRIDGE_NAME" -j ACCEPT 2>/dev/null; then
         iptables -A FORWARD -i "$OTTERSCALE_BRIDGE_NAME" -j ACCEPT
-        log "INFO" "Add rule: iptables -A FORWARD -i br-otters -j ACCEPT" "SYSTEM_CONFIG"
+        log "INFO" "Add rule: iptables -A FORWARD -i $OTTERSCALE_BRIDGE_NAME -j ACCEPT" "SYSTEM_CONFIG"
     fi
 }
 
