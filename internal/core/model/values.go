@@ -3,6 +3,8 @@ package model
 import (
 	"strconv"
 	"strings"
+
+	"github.com/otterscale/otterscale/internal/core/versions"
 )
 
 // v1.2.0-rc.1
@@ -10,7 +12,7 @@ func convertGAIEValuesMap(mode Mode, name, releaseName string, port int32) map[s
 	ret := map[string]string{
 		"inferenceExtension.image.name":                                                    "llm-d-inference-scheduler",
 		"inferenceExtension.image.hub":                                                     "ghcr.io/llm-d",
-		"inferenceExtension.image.tag":                                                     "v0.4.0-rc.1",
+		"inferenceExtension.image.tag":                                                     "v" + versions.LLMDInferenceScheduler,
 		"inferenceExtension.monitoring.prometheus.enabled":                                 "true",
 		"inferenceExtension.monitoring.prometheus.auth.secretName":                         name + "-sa-metrics-reader-secret",
 		"inferencePool.targetPortNumber":                                                   strconv.FormatInt(int64(port), 10),
@@ -90,13 +92,13 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, size
 		"accelerator.resources.nvidia":                             vgpuResource,
 		"routing.servicePort":                                      "8000",
 		"routing.proxy.enable":                                     "true",
-		"routing.proxy.image":                                      "ghcr.io/llm-d/llm-d-routing-sidecar:v0.4.0-rc.1",
+		"routing.proxy.image":                                      "ghcr.io/llm-d/llm-d-routing-sidecar:v" + versions.LLMDRoutingSidecar,
 		"routing.proxy.connector":                                  "nixlv2",
 		"routing.proxy.secure":                                     "false",
 		"decode.create":                                            "true",
 		"decode.autoscaling.enabled":                               "true",
 		"decode.replicas":                                          strconv.FormatUint(uint64(decodeReplica), 10),
-		"decode.containers[0].image":                               "ghcr.io/llm-d/llm-d-cuda:v0.3.1",
+		"decode.containers[0].image":                               "ghcr.io/llm-d/llm-d-cuda:v" + versions.LLMDCuda,
 		"decode.containers[0].modelCommand":                        "vllmServe",
 		"decode.containers[0].args[0]":                             "--kv-transfer-config",
 		"decode.containers[0].args[1]":                             "\\{\"kv_connector\":\"NixlConnector\"\\, \"kv_role\":\"kv_both\"\\}",
@@ -161,7 +163,7 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, size
 		ret["decode.volumes[2].emptyDir.medium"] = "Memory"
 		ret["decode.volumes[2].emptyDir.sizeLimit"] = "16Gi"
 		ret["prefill.replicas"] = strconv.FormatUint(uint64(prefillReplica), 10)
-		ret["prefill.containers[0].image"] = "ghcr.io/llm-d/llm-d-cuda:v0.3.1"
+		ret["prefill.containers[0].image"] = "ghcr.io/llm-d/llm-d-cuda:v" + versions.LLMDCuda
 		ret["prefill.containers[0].modelCommand"] = "vllmServe"
 		ret["prefill.containers[0].args[0]"] = "--kv-transfer-config"
 		ret["prefill.containers[0].args[1]"] = "\\{\"kv_connector\":\"NixlConnector\"\\, \"kv_role\":\"kv_both\"\\}"
