@@ -94,13 +94,11 @@ remove_juju_file() {
 }
 
 remove_iptables() {
-    iptables -C FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null
-    if [ $? -eq 0 ]; then
+    if iptables -C FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null; then
         iptables -D FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
     fi
 
-    iptables -C FORWARD -i br-otters -j ACCEPT 2>/dev/null
-    if [ $? -eq 0 ]; then
+    if iptables -C FORWARD -i br-otters -j ACCEPT 2>/dev/null; then
         iptables -D FORWARD -i br-otters -j ACCEPT
     fi
 }
