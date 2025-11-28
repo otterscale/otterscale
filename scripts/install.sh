@@ -307,6 +307,12 @@ disable_ipv6() {
     sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
 }
 
+enable_packet_forward() {
+    log "INFO" "Enable packet forward" "SYSTEM_CONFIG"
+    iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -A FORWARD -i br-otters -j ACCEPT
+}
+
 # =============================================================================
 # COMMUNICATION FUNCTIONS
 # =============================================================================
@@ -575,7 +581,6 @@ prompt_bridge_creation() {
 
     sleep 10
 }
-
 
 check_bridge() {
     log "INFO" "Checking network bridge configuration..." "NETWORK"
