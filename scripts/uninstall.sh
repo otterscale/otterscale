@@ -93,6 +93,18 @@ remove_juju_file() {
     fi
 }
 
+remove_iptables() {
+    iptables -C FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null
+    if [ $? -eq 0 ]; then
+        iptables -D FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+    fi
+
+    iptables -C FORWARD -i br-otters -j ACCEPT 2>/dev/null
+    if [ $? -eq 0 ]; then
+        iptables -D FORWARD -i br-otters -j ACCEPT
+    fi
+}
+
 main() {
     find_first_non_user
     if command -v juju >/dev/null 2>&1; then
@@ -100,6 +112,7 @@ main() {
     fi
     remove_pkg
     remove_juju_file
+    remote_iptables
 }
 
 main
