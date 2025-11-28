@@ -311,14 +311,14 @@ check_iptables() {
     log "INFO" "Check iptable rules" "SYSTEM_CONFIG"
 
     local rule_args="-m state --state RELATED,ESTABLISHED -j ACCEPT"
-    if ! iptables -C FORWARD "$rule_args" 2>/dev/null; then
-        iptables -A FORWARD "$rule_args"
+    if ! iptables -C FORWARD "${rule_args}" 2>/dev/null; then
+        iptables -A FORWARD ${rule_args}"
         log "INFO" "Add rule: iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT" "SYSTEM_CONFIG"
     fi
 
     rule_args="-i "$OTTERSCALE_BRIDGE_NAME" -j ACCEPT"
-    if ! iptables -C FORWARD "$rule_args" 2>/dev/null; then
-        iptables -A FORWARD "$rule_args"
+    if ! iptables -C FORWARD ${rule_args}" 2>/dev/null; then
+        iptables -A FORWARD ${rule_args}"
         log "INFO" "Add rule: iptables -A FORWARD -i br-otters -j ACCEPT" "SYSTEM_CONFIG"
     fi
 }
