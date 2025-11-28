@@ -317,8 +317,8 @@ check_iptables() {
     fi
 
     rule_args="-i "$OTTERSCALE_BRIDGE_NAME" -j ACCEPT"
-    if ! iptables -C FORWARD ${rule_args}" 2>/dev/null; then
-        iptables -A FORWARD ${rule_args}"
+    if ! iptables -C FORWARD "${rule_args}" 2>/dev/null; then
+        iptables -A FORWARD "${rule_args}"
         log "INFO" "Add rule: iptables -A FORWARD -i br-otters -j ACCEPT" "SYSTEM_CONFIG"
     fi
 }

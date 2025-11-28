@@ -95,12 +95,12 @@ remove_juju_file() {
 
 remove_iptables() {
     local rule_args="-m state --state RELATED,ESTABLISHED -j ACCEPT"
-    if iptables -C FORWARD ${rule_args}" 2>/dev/null; then
-        iptables -D FORWARD ${rule_args}"
+    if iptables -C FORWARD "${rule_args}" 2>/dev/null; then
+        iptables -D FORWARD "${rule_args}"
     fi
     rule_args="-i br-otters -j ACCEPT"
-    if iptables -C FORWARD ${rule_args}" 2>/dev/null; then
-        iptables -D FORWARD ${rule_args}"
+    if iptables -C FORWARD "${rule_args}" 2>/dev/null; then
+        iptables -D FORWARD "${rule_args}"
     fi
 }
 
