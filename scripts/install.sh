@@ -307,10 +307,18 @@ disable_ipv6() {
     sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
 }
 
-enable_packet_forward() {
-    log "INFO" "Enable packet forward" "SYSTEM_CONFIG"
-    iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-    iptables -A FORWARD -i br-otters -j ACCEPT
+check_iptables() {
+    log "INFO" "Check iptable rules" "SYSTEM_CONFIG"
+
+    iptables -C FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null
+    if [ $? -ne 0 ]; then
+        iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+    fi
+
+    iptables -C FORWARD -i br-otters -j ACCEPT 2>/dev/null
+    if [ $? -ne 0 ]; then
+        iptables -A FORWARD -i br-otters -j ACCEPT
+    fi
 }
 
 # =============================================================================
@@ -1668,6 +1676,7 @@ main() {
     check_memory
     check_disk
     disable_ipv6
+    check_iptables
     log "INFO" "All pre-checks passed" "VALIDATION"
 
     # Package installation
