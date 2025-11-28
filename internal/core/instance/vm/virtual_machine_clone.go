@@ -38,7 +38,7 @@ func (uc *UseCase) buildVirtualMachineClone(namespace, name, source, target stri
 			Name:      name,
 			Namespace: namespace,
 			Labels: map[string]string{
-				VirtualMachineNameLabel: source,
+				nameLabel: source,
 			},
 		},
 		Spec: clonev1beta1.VirtualMachineCloneSpec{

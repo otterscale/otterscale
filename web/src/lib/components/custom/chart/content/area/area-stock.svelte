@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
+	import { curveMonotoneX } from 'd3-shape';
 	import { Area, AreaChart, ChartClipPath } from 'layerchart';
 	import { cubicInOut } from 'svelte/easing';
 
@@ -62,7 +62,7 @@
 		seriesLayout="stack"
 		props={{
 			area: {
-				curve: curveNatural,
+				curve: curveMonotoneX,
 				'fill-opacity': AREA_FILL_OPACITY,
 				line: { class: 'stroke-1' },
 				motion: 'tween'

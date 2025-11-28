@@ -24,6 +24,47 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type Model_Mode int32
+
+const (
+	Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING Model_Mode = 0
+	Model_MODE_PREFILL_DECODE_DISAGGREGATION    Model_Mode = 1 // heterogeneous parallelism
+)
+
+// Enum value maps for Model_Mode.
+var (
+	Model_Mode_name = map[int32]string{
+		0: "MODE_INTELLIGENT_INFERENCE_SCHEDULING",
+		1: "MODE_PREFILL_DECODE_DISAGGREGATION",
+	}
+	Model_Mode_value = map[string]int32{
+		"MODE_INTELLIGENT_INFERENCE_SCHEDULING": 0,
+		"MODE_PREFILL_DECODE_DISAGGREGATION":    1,
+	}
+)
+
+func (x Model_Mode) Enum() *Model_Mode {
+	p := new(Model_Mode)
+	*p = x
+	return p
+}
+
+func (x Model_Mode) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Model_Mode) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_model_v1_model_proto_enumTypes[0].Descriptor()
+}
+
+func (Model_Mode) Type() protoreflect.EnumType {
+	return &file_api_model_v1_model_proto_enumTypes[0]
+}
+
+func (x Model_Mode) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 type Model struct {
 	state                      protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id              *string                `protobuf:"bytes,1,opt,name=id"`
@@ -35,8 +76,10 @@ type Model struct {
 	xxx_hidden_LastDeployedAt  *timestamppb.Timestamp `protobuf:"bytes,16,opt,name=last_deployed_at,json=lastDeployedAt"`
 	xxx_hidden_ChartVersion    *string                `protobuf:"bytes,21,opt,name=chart_version,json=chartVersion"`
 	xxx_hidden_AppVersion      *string                `protobuf:"bytes,22,opt,name=app_version,json=appVersion"`
-	xxx_hidden_Prefill         *Model_Prefill         `protobuf:"bytes,31,opt,name=prefill"`
-	xxx_hidden_Decode          *Model_Decode          `protobuf:"bytes,32,opt,name=decode"`
+	xxx_hidden_Mode            Model_Mode             `protobuf:"varint,31,opt,name=mode,enum=otterscale.model.v1.Model_Mode"`
+	xxx_hidden_Prefill         *Model_Prefill         `protobuf:"bytes,32,opt,name=prefill"`
+	xxx_hidden_Decode          *Model_Decode          `protobuf:"bytes,33,opt,name=decode"`
+	xxx_hidden_MaxModelLength  uint32                 `protobuf:"varint,34,opt,name=max_model_length,json=maxModelLength"`
 	xxx_hidden_Pods            *[]*v1.Application_Pod `protobuf:"bytes,41,rep,name=pods"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
@@ -153,6 +196,15 @@ func (x *Model) GetAppVersion() string {
 	return ""
 }
 
+func (x *Model) GetMode() Model_Mode {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 9) {
+			return x.xxx_hidden_Mode
+		}
+	}
+	return Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING
+}
+
 func (x *Model) GetPrefill() *Model_Prefill {
 	if x != nil {
 		return x.xxx_hidden_Prefill
@@ -167,6 +219,13 @@ func (x *Model) GetDecode() *Model_Decode {
 	return nil
 }
 
+func (x *Model) GetMaxModelLength() uint32 {
+	if x != nil {
+		return x.xxx_hidden_MaxModelLength
+	}
+	return 0
+}
+
 func (x *Model) GetPods() []*v1.Application_Pod {
 	if x != nil {
 		if x.xxx_hidden_Pods != nil {
@@ -178,27 +237,27 @@ func (x *Model) GetPods() []*v1.Application_Pod {
 
 func (x *Model) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 14)
 }
 
 func (x *Model) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 14)
 }
 
 func (x *Model) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 14)
 }
 
 func (x *Model) SetStatus(v string) {
 	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 14)
 }
 
 func (x *Model) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 14)
 }
 
 func (x *Model) SetFirstDeployedAt(v *timestamppb.Timestamp) {
@@ -211,12 +270,17 @@ func (x *Model) SetLastDeployedAt(v *timestamppb.Timestamp) {
 
 func (x *Model) SetChartVersion(v string) {
 	x.xxx_hidden_ChartVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 14)
 }
 
 func (x *Model) SetAppVersion(v string) {
 	x.xxx_hidden_AppVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 12)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 14)
+}
+
+func (x *Model) SetMode(v Model_Mode) {
+	x.xxx_hidden_Mode = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 14)
 }
 
 func (x *Model) SetPrefill(v *Model_Prefill) {
@@ -225,6 +289,11 @@ func (x *Model) SetPrefill(v *Model_Prefill) {
 
 func (x *Model) SetDecode(v *Model_Decode) {
 	x.xxx_hidden_Decode = v
+}
+
+func (x *Model) SetMaxModelLength(v uint32) {
+	x.xxx_hidden_MaxModelLength = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 14)
 }
 
 func (x *Model) SetPods(v []*v1.Application_Pod) {
@@ -294,6 +363,13 @@ func (x *Model) HasAppVersion() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
+func (x *Model) HasMode() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
+}
+
 func (x *Model) HasPrefill() bool {
 	if x == nil {
 		return false
@@ -306,6 +382,13 @@ func (x *Model) HasDecode() bool {
 		return false
 	}
 	return x.xxx_hidden_Decode != nil
+}
+
+func (x *Model) HasMaxModelLength() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 12)
 }
 
 func (x *Model) ClearId() {
@@ -351,12 +434,22 @@ func (x *Model) ClearAppVersion() {
 	x.xxx_hidden_AppVersion = nil
 }
 
+func (x *Model) ClearMode() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
+	x.xxx_hidden_Mode = Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING
+}
+
 func (x *Model) ClearPrefill() {
 	x.xxx_hidden_Prefill = nil
 }
 
 func (x *Model) ClearDecode() {
 	x.xxx_hidden_Decode = nil
+}
+
+func (x *Model) ClearMaxModelLength() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 12)
+	x.xxx_hidden_MaxModelLength = 0
 }
 
 type Model_builder struct {
@@ -371,8 +464,10 @@ type Model_builder struct {
 	LastDeployedAt  *timestamppb.Timestamp
 	ChartVersion    *string
 	AppVersion      *string
+	Mode            *Model_Mode
 	Prefill         *Model_Prefill
 	Decode          *Model_Decode
+	MaxModelLength  *uint32
 	Pods            []*v1.Application_Pod
 }
 
@@ -381,37 +476,45 @@ func (b0 Model_builder) Build() *Model {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 14)
 		x.xxx_hidden_Id = b.Id
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 14)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 14)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 14)
 		x.xxx_hidden_Status = b.Status
 	}
 	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 14)
 		x.xxx_hidden_Description = b.Description
 	}
 	x.xxx_hidden_FirstDeployedAt = b.FirstDeployedAt
 	x.xxx_hidden_LastDeployedAt = b.LastDeployedAt
 	if b.ChartVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 14)
 		x.xxx_hidden_ChartVersion = b.ChartVersion
 	}
 	if b.AppVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 12)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 14)
 		x.xxx_hidden_AppVersion = b.AppVersion
+	}
+	if b.Mode != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 14)
+		x.xxx_hidden_Mode = *b.Mode
 	}
 	x.xxx_hidden_Prefill = b.Prefill
 	x.xxx_hidden_Decode = b.Decode
+	if b.MaxModelLength != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 14)
+		x.xxx_hidden_MaxModelLength = *b.MaxModelLength
+	}
 	x.xxx_hidden_Pods = &b.Pods
 	return m0
 }
@@ -622,18 +725,20 @@ func (b0 ListModelsResponse_builder) Build() *ListModelsResponse {
 }
 
 type CreateModelRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_ModelName   *string                `protobuf:"bytes,11,opt,name=model_name,json=modelName"`
-	xxx_hidden_SizeBytes   uint64                 `protobuf:"varint,12,opt,name=size_bytes,json=sizeBytes"`
-	xxx_hidden_Prefill     *Model_Prefill         `protobuf:"bytes,21,opt,name=prefill"`
-	xxx_hidden_Decode      *Model_Decode          `protobuf:"bytes,22,opt,name=decode"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Namespace      *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name           *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_ModelName      *string                `protobuf:"bytes,11,opt,name=model_name,json=modelName"`
+	xxx_hidden_SizeBytes      uint64                 `protobuf:"varint,12,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_Mode           Model_Mode             `protobuf:"varint,21,opt,name=mode,enum=otterscale.model.v1.Model_Mode"`
+	xxx_hidden_Prefill        *Model_Prefill         `protobuf:"bytes,22,opt,name=prefill"`
+	xxx_hidden_Decode         *Model_Decode          `protobuf:"bytes,23,opt,name=decode"`
+	xxx_hidden_MaxModelLength uint32                 `protobuf:"varint,24,opt,name=max_model_length,json=maxModelLength"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *CreateModelRequest) Reset() {
@@ -708,6 +813,15 @@ func (x *CreateModelRequest) GetSizeBytes() uint64 {
 	return 0
 }
 
+func (x *CreateModelRequest) GetMode() Model_Mode {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 5) {
+			return x.xxx_hidden_Mode
+		}
+	}
+	return Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING
+}
+
 func (x *CreateModelRequest) GetPrefill() *Model_Prefill {
 	if x != nil {
 		return x.xxx_hidden_Prefill
@@ -722,29 +836,41 @@ func (x *CreateModelRequest) GetDecode() *Model_Decode {
 	return nil
 }
 
+func (x *CreateModelRequest) GetMaxModelLength() uint32 {
+	if x != nil {
+		return x.xxx_hidden_MaxModelLength
+	}
+	return 0
+}
+
 func (x *CreateModelRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 9)
 }
 
 func (x *CreateModelRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 9)
 }
 
 func (x *CreateModelRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 9)
 }
 
 func (x *CreateModelRequest) SetModelName(v string) {
 	x.xxx_hidden_ModelName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 9)
 }
 
 func (x *CreateModelRequest) SetSizeBytes(v uint64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 9)
+}
+
+func (x *CreateModelRequest) SetMode(v Model_Mode) {
+	x.xxx_hidden_Mode = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 9)
 }
 
 func (x *CreateModelRequest) SetPrefill(v *Model_Prefill) {
@@ -753,6 +879,11 @@ func (x *CreateModelRequest) SetPrefill(v *Model_Prefill) {
 
 func (x *CreateModelRequest) SetDecode(v *Model_Decode) {
 	x.xxx_hidden_Decode = v
+}
+
+func (x *CreateModelRequest) SetMaxModelLength(v uint32) {
+	x.xxx_hidden_MaxModelLength = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 9)
 }
 
 func (x *CreateModelRequest) HasScope() bool {
@@ -790,6 +921,13 @@ func (x *CreateModelRequest) HasSizeBytes() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
+func (x *CreateModelRequest) HasMode() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
 func (x *CreateModelRequest) HasPrefill() bool {
 	if x == nil {
 		return false
@@ -802,6 +940,13 @@ func (x *CreateModelRequest) HasDecode() bool {
 		return false
 	}
 	return x.xxx_hidden_Decode != nil
+}
+
+func (x *CreateModelRequest) HasMaxModelLength() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
 func (x *CreateModelRequest) ClearScope() {
@@ -829,6 +974,11 @@ func (x *CreateModelRequest) ClearSizeBytes() {
 	x.xxx_hidden_SizeBytes = 0
 }
 
+func (x *CreateModelRequest) ClearMode() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_Mode = Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING
+}
+
 func (x *CreateModelRequest) ClearPrefill() {
 	x.xxx_hidden_Prefill = nil
 }
@@ -837,16 +987,23 @@ func (x *CreateModelRequest) ClearDecode() {
 	x.xxx_hidden_Decode = nil
 }
 
+func (x *CreateModelRequest) ClearMaxModelLength() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	x.xxx_hidden_MaxModelLength = 0
+}
+
 type CreateModelRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope     *string
-	Namespace *string
-	Name      *string
-	ModelName *string
-	SizeBytes *uint64
-	Prefill   *Model_Prefill
-	Decode    *Model_Decode
+	Scope          *string
+	Namespace      *string
+	Name           *string
+	ModelName      *string
+	SizeBytes      *uint64
+	Mode           *Model_Mode
+	Prefill        *Model_Prefill
+	Decode         *Model_Decode
+	MaxModelLength *uint32
 }
 
 func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
@@ -854,41 +1011,51 @@ func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 9)
 		x.xxx_hidden_Scope = b.Scope
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 9)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 9)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.ModelName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 9)
 		x.xxx_hidden_ModelName = b.ModelName
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 9)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
+	}
+	if b.Mode != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 9)
+		x.xxx_hidden_Mode = *b.Mode
 	}
 	x.xxx_hidden_Prefill = b.Prefill
 	x.xxx_hidden_Decode = b.Decode
+	if b.MaxModelLength != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 9)
+		x.xxx_hidden_MaxModelLength = *b.MaxModelLength
+	}
 	return m0
 }
 
 type UpdateModelRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Prefill     *Model_Prefill         `protobuf:"bytes,21,opt,name=prefill"`
-	xxx_hidden_Decode      *Model_Decode          `protobuf:"bytes,22,opt,name=decode"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Namespace      *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name           *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_Mode           Model_Mode             `protobuf:"varint,21,opt,name=mode,enum=otterscale.model.v1.Model_Mode"`
+	xxx_hidden_Prefill        *Model_Prefill         `protobuf:"bytes,22,opt,name=prefill"`
+	xxx_hidden_Decode         *Model_Decode          `protobuf:"bytes,23,opt,name=decode"`
+	xxx_hidden_MaxModelLength uint32                 `protobuf:"varint,24,opt,name=max_model_length,json=maxModelLength"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *UpdateModelRequest) Reset() {
@@ -946,6 +1113,15 @@ func (x *UpdateModelRequest) GetName() string {
 	return ""
 }
 
+func (x *UpdateModelRequest) GetMode() Model_Mode {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 3) {
+			return x.xxx_hidden_Mode
+		}
+	}
+	return Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING
+}
+
 func (x *UpdateModelRequest) GetPrefill() *Model_Prefill {
 	if x != nil {
 		return x.xxx_hidden_Prefill
@@ -960,19 +1136,31 @@ func (x *UpdateModelRequest) GetDecode() *Model_Decode {
 	return nil
 }
 
+func (x *UpdateModelRequest) GetMaxModelLength() uint32 {
+	if x != nil {
+		return x.xxx_hidden_MaxModelLength
+	}
+	return 0
+}
+
 func (x *UpdateModelRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
 }
 
 func (x *UpdateModelRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
 }
 
 func (x *UpdateModelRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
+}
+
+func (x *UpdateModelRequest) SetMode(v Model_Mode) {
+	x.xxx_hidden_Mode = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
 }
 
 func (x *UpdateModelRequest) SetPrefill(v *Model_Prefill) {
@@ -981,6 +1169,11 @@ func (x *UpdateModelRequest) SetPrefill(v *Model_Prefill) {
 
 func (x *UpdateModelRequest) SetDecode(v *Model_Decode) {
 	x.xxx_hidden_Decode = v
+}
+
+func (x *UpdateModelRequest) SetMaxModelLength(v uint32) {
+	x.xxx_hidden_MaxModelLength = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 7)
 }
 
 func (x *UpdateModelRequest) HasScope() bool {
@@ -1004,6 +1197,13 @@ func (x *UpdateModelRequest) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
+func (x *UpdateModelRequest) HasMode() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
 func (x *UpdateModelRequest) HasPrefill() bool {
 	if x == nil {
 		return false
@@ -1016,6 +1216,13 @@ func (x *UpdateModelRequest) HasDecode() bool {
 		return false
 	}
 	return x.xxx_hidden_Decode != nil
+}
+
+func (x *UpdateModelRequest) HasMaxModelLength() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
 func (x *UpdateModelRequest) ClearScope() {
@@ -1033,6 +1240,11 @@ func (x *UpdateModelRequest) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
+func (x *UpdateModelRequest) ClearMode() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Mode = Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING
+}
+
 func (x *UpdateModelRequest) ClearPrefill() {
 	x.xxx_hidden_Prefill = nil
 }
@@ -1041,14 +1253,21 @@ func (x *UpdateModelRequest) ClearDecode() {
 	x.xxx_hidden_Decode = nil
 }
 
+func (x *UpdateModelRequest) ClearMaxModelLength() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	x.xxx_hidden_MaxModelLength = 0
+}
+
 type UpdateModelRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope     *string
-	Namespace *string
-	Name      *string
-	Prefill   *Model_Prefill
-	Decode    *Model_Decode
+	Scope          *string
+	Namespace      *string
+	Name           *string
+	Mode           *Model_Mode
+	Prefill        *Model_Prefill
+	Decode         *Model_Decode
+	MaxModelLength *uint32
 }
 
 func (b0 UpdateModelRequest_builder) Build() *UpdateModelRequest {
@@ -1056,19 +1275,27 @@ func (b0 UpdateModelRequest_builder) Build() *UpdateModelRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
 		x.xxx_hidden_Scope = b.Scope
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
 		x.xxx_hidden_Name = b.Name
+	}
+	if b.Mode != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
+		x.xxx_hidden_Mode = *b.Mode
 	}
 	x.xxx_hidden_Prefill = b.Prefill
 	x.xxx_hidden_Decode = b.Decode
+	if b.MaxModelLength != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 7)
+		x.xxx_hidden_MaxModelLength = *b.MaxModelLength
+	}
 	return m0
 }
 
@@ -2005,7 +2232,7 @@ func (b0 DeleteModelArtifactRequest_builder) Build() *DeleteModelArtifactRequest
 type Model_Prefill struct {
 	state                        protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Replica           uint32                 `protobuf:"varint,1,opt,name=replica"`
-	xxx_hidden_VgpumemPercentage uint32                 `protobuf:"varint,2,opt,name=vgpumem_percentage,json=vgpumemPercentage"`
+	xxx_hidden_VgpumemPercentage uint32                 `protobuf:"varint,11,opt,name=vgpumem_percentage,json=vgpumemPercentage"`
 	XXX_raceDetectHookData       protoimpl.RaceDetectHookData
 	XXX_presence                 [1]uint32
 	unknownFields                protoimpl.UnknownFields
@@ -2109,8 +2336,9 @@ func (b0 Model_Prefill_builder) Build() *Model_Prefill {
 
 type Model_Decode struct {
 	state                        protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Tensor            uint32                 `protobuf:"varint,1,opt,name=tensor"`
-	xxx_hidden_VgpumemPercentage uint32                 `protobuf:"varint,2,opt,name=vgpumem_percentage,json=vgpumemPercentage"`
+	xxx_hidden_Replica           uint32                 `protobuf:"varint,1,opt,name=replica"`
+	xxx_hidden_Tensor            uint32                 `protobuf:"varint,2,opt,name=tensor"`
+	xxx_hidden_VgpumemPercentage uint32                 `protobuf:"varint,11,opt,name=vgpumem_percentage,json=vgpumemPercentage"`
 	XXX_raceDetectHookData       protoimpl.RaceDetectHookData
 	XXX_presence                 [1]uint32
 	unknownFields                protoimpl.UnknownFields
@@ -2142,6 +2370,13 @@ func (x *Model_Decode) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *Model_Decode) GetReplica() uint32 {
+	if x != nil {
+		return x.xxx_hidden_Replica
+	}
+	return 0
+}
+
 func (x *Model_Decode) GetTensor() uint32 {
 	if x != nil {
 		return x.xxx_hidden_Tensor
@@ -2156,43 +2391,61 @@ func (x *Model_Decode) GetVgpumemPercentage() uint32 {
 	return 0
 }
 
+func (x *Model_Decode) SetReplica(v uint32) {
+	x.xxx_hidden_Replica = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
 func (x *Model_Decode) SetTensor(v uint32) {
 	x.xxx_hidden_Tensor = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *Model_Decode) SetVgpumemPercentage(v uint32) {
 	x.xxx_hidden_VgpumemPercentage = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *Model_Decode) HasTensor() bool {
+func (x *Model_Decode) HasReplica() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *Model_Decode) HasVgpumemPercentage() bool {
+func (x *Model_Decode) HasTensor() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Model_Decode) ClearTensor() {
+func (x *Model_Decode) HasVgpumemPercentage() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *Model_Decode) ClearReplica() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Replica = 0
+}
+
+func (x *Model_Decode) ClearTensor() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Tensor = 0
 }
 
 func (x *Model_Decode) ClearVgpumemPercentage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_VgpumemPercentage = 0
 }
 
 type Model_Decode_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
+	Replica           *uint32
 	Tensor            *uint32
 	VgpumemPercentage *uint32
 }
@@ -2201,12 +2454,16 @@ func (b0 Model_Decode_builder) Build() *Model_Decode {
 	m0 := &Model_Decode{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.Replica != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_Replica = *b.Replica
+	}
 	if b.Tensor != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Tensor = *b.Tensor
 	}
 	if b.VgpumemPercentage != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_VgpumemPercentage = *b.VgpumemPercentage
 	}
 	return m0
@@ -2216,7 +2473,7 @@ var File_api_model_v1_model_proto protoreflect.FileDescriptor
 
 const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
-	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb5\x05\n" +
+	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x89\a\n" +
 	"\x05Model\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\v \x01(\tR\x04name\x12\x1c\n" +
@@ -2227,23 +2484,29 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x10last_deployed_at\x18\x10 \x01(\v2\x1a.google.protobuf.TimestampR\x0elastDeployedAt\x12#\n" +
 	"\rchart_version\x18\x15 \x01(\tR\fchartVersion\x12\x1f\n" +
 	"\vapp_version\x18\x16 \x01(\tR\n" +
-	"appVersion\x12<\n" +
-	"\aprefill\x18\x1f \x01(\v2\".otterscale.model.v1.Model.PrefillR\aprefill\x129\n" +
-	"\x06decode\x18  \x01(\v2!.otterscale.model.v1.Model.DecodeR\x06decode\x12>\n" +
+	"appVersion\x123\n" +
+	"\x04mode\x18\x1f \x01(\x0e2\x1f.otterscale.model.v1.Model.ModeR\x04mode\x12<\n" +
+	"\aprefill\x18  \x01(\v2\".otterscale.model.v1.Model.PrefillR\aprefill\x129\n" +
+	"\x06decode\x18! \x01(\v2!.otterscale.model.v1.Model.DecodeR\x06decode\x12(\n" +
+	"\x10max_model_length\x18\" \x01(\rR\x0emaxModelLength\x12>\n" +
 	"\x04pods\x18) \x03(\v2*.otterscale.application.v1.Application.PodR\x04pods\x1aR\n" +
 	"\aPrefill\x12\x18\n" +
 	"\areplica\x18\x01 \x01(\rR\areplica\x12-\n" +
-	"\x12vgpumem_percentage\x18\x02 \x01(\rR\x11vgpumemPercentage\x1aO\n" +
-	"\x06Decode\x12\x16\n" +
-	"\x06tensor\x18\x01 \x01(\rR\x06tensor\x12-\n" +
-	"\x12vgpumem_percentage\x18\x02 \x01(\rR\x11vgpumemPercentage\"M\n" +
+	"\x12vgpumem_percentage\x18\v \x01(\rR\x11vgpumemPercentage\x1ai\n" +
+	"\x06Decode\x12\x18\n" +
+	"\areplica\x18\x01 \x01(\rR\areplica\x12\x16\n" +
+	"\x06tensor\x18\x02 \x01(\rR\x06tensor\x12-\n" +
+	"\x12vgpumem_percentage\x18\v \x01(\rR\x11vgpumemPercentage\"Y\n" +
+	"\x04Mode\x12)\n" +
+	"%MODE_INTELLIGENT_INFERENCE_SCHEDULING\x10\x00\x12&\n" +
+	"\"MODE_PREFILL_DECODE_DISAGGREGATION\x10\x01\"M\n" +
 	"\x11ListModelsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespaceJ\x04\b\x02\x10\x03\"i\n" +
 	"\x12ListModelsResponse\x122\n" +
 	"\x06models\x18\x01 \x03(\v2\x1a.otterscale.model.v1.ModelR\x06models\x12\x1f\n" +
 	"\vservice_uri\x18\x02 \x01(\tR\n" +
-	"serviceUri\"\x99\x02\n" +
+	"serviceUri\"\xf8\x02\n" +
 	"\x12CreateModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
@@ -2251,15 +2514,19 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
 	"model_name\x18\v \x01(\tR\tmodelName\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\f \x01(\x04R\tsizeBytes\x12<\n" +
-	"\aprefill\x18\x15 \x01(\v2\".otterscale.model.v1.Model.PrefillR\aprefill\x129\n" +
-	"\x06decode\x18\x16 \x01(\v2!.otterscale.model.v1.Model.DecodeR\x06decodeJ\x04\b\x02\x10\x03\"\xdb\x01\n" +
+	"size_bytes\x18\f \x01(\x04R\tsizeBytes\x123\n" +
+	"\x04mode\x18\x15 \x01(\x0e2\x1f.otterscale.model.v1.Model.ModeR\x04mode\x12<\n" +
+	"\aprefill\x18\x16 \x01(\v2\".otterscale.model.v1.Model.PrefillR\aprefill\x129\n" +
+	"\x06decode\x18\x17 \x01(\v2!.otterscale.model.v1.Model.DecodeR\x06decode\x12(\n" +
+	"\x10max_model_length\x18\x18 \x01(\rR\x0emaxModelLengthJ\x04\b\x02\x10\x03\"\xba\x02\n" +
 	"\x12UpdateModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12<\n" +
-	"\aprefill\x18\x15 \x01(\v2\".otterscale.model.v1.Model.PrefillR\aprefill\x129\n" +
-	"\x06decode\x18\x16 \x01(\v2!.otterscale.model.v1.Model.DecodeR\x06decodeJ\x04\b\x02\x10\x03\"b\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x123\n" +
+	"\x04mode\x18\x15 \x01(\x0e2\x1f.otterscale.model.v1.Model.ModeR\x04mode\x12<\n" +
+	"\aprefill\x18\x16 \x01(\v2\".otterscale.model.v1.Model.PrefillR\aprefill\x129\n" +
+	"\x06decode\x18\x17 \x01(\v2!.otterscale.model.v1.Model.DecodeR\x06decode\x12(\n" +
+	"\x10max_model_length\x18\x18 \x01(\rR\x0emaxModelLengthJ\x04\b\x02\x10\x03\"b\n" +
 	"\x12DeleteModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
@@ -2308,57 +2575,62 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x13DeleteModelArtifact\x12/.otterscale.model.v1.DeleteModelArtifactRequest\x1a\x16.google.protobuf.Empty\"\x14\x8a\xdf\xd5\x1d\x0f\n" +
 	"\rmodel-enabledB2Z0github.com/otterscale/otterscale/api/model/v1;pbb\beditionsp\xe8\a"
 
+var file_api_model_v1_model_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_model_v1_model_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_api_model_v1_model_proto_goTypes = []any{
-	(*Model)(nil),                      // 0: otterscale.model.v1.Model
-	(*ListModelsRequest)(nil),          // 1: otterscale.model.v1.ListModelsRequest
-	(*ListModelsResponse)(nil),         // 2: otterscale.model.v1.ListModelsResponse
-	(*CreateModelRequest)(nil),         // 3: otterscale.model.v1.CreateModelRequest
-	(*UpdateModelRequest)(nil),         // 4: otterscale.model.v1.UpdateModelRequest
-	(*DeleteModelRequest)(nil),         // 5: otterscale.model.v1.DeleteModelRequest
-	(*ModelArtifact)(nil),              // 6: otterscale.model.v1.ModelArtifact
-	(*ListModelArtifactsRequest)(nil),  // 7: otterscale.model.v1.ListModelArtifactsRequest
-	(*ListModelArtifactsResponse)(nil), // 8: otterscale.model.v1.ListModelArtifactsResponse
-	(*CreateModelArtifactRequest)(nil), // 9: otterscale.model.v1.CreateModelArtifactRequest
-	(*DeleteModelArtifactRequest)(nil), // 10: otterscale.model.v1.DeleteModelArtifactRequest
-	(*Model_Prefill)(nil),              // 11: otterscale.model.v1.Model.Prefill
-	(*Model_Decode)(nil),               // 12: otterscale.model.v1.Model.Decode
-	(*timestamppb.Timestamp)(nil),      // 13: google.protobuf.Timestamp
-	(*v1.Application_Pod)(nil),         // 14: otterscale.application.v1.Application.Pod
-	(*emptypb.Empty)(nil),              // 15: google.protobuf.Empty
+	(Model_Mode)(0),                    // 0: otterscale.model.v1.Model.Mode
+	(*Model)(nil),                      // 1: otterscale.model.v1.Model
+	(*ListModelsRequest)(nil),          // 2: otterscale.model.v1.ListModelsRequest
+	(*ListModelsResponse)(nil),         // 3: otterscale.model.v1.ListModelsResponse
+	(*CreateModelRequest)(nil),         // 4: otterscale.model.v1.CreateModelRequest
+	(*UpdateModelRequest)(nil),         // 5: otterscale.model.v1.UpdateModelRequest
+	(*DeleteModelRequest)(nil),         // 6: otterscale.model.v1.DeleteModelRequest
+	(*ModelArtifact)(nil),              // 7: otterscale.model.v1.ModelArtifact
+	(*ListModelArtifactsRequest)(nil),  // 8: otterscale.model.v1.ListModelArtifactsRequest
+	(*ListModelArtifactsResponse)(nil), // 9: otterscale.model.v1.ListModelArtifactsResponse
+	(*CreateModelArtifactRequest)(nil), // 10: otterscale.model.v1.CreateModelArtifactRequest
+	(*DeleteModelArtifactRequest)(nil), // 11: otterscale.model.v1.DeleteModelArtifactRequest
+	(*Model_Prefill)(nil),              // 12: otterscale.model.v1.Model.Prefill
+	(*Model_Decode)(nil),               // 13: otterscale.model.v1.Model.Decode
+	(*timestamppb.Timestamp)(nil),      // 14: google.protobuf.Timestamp
+	(*v1.Application_Pod)(nil),         // 15: otterscale.application.v1.Application.Pod
+	(*emptypb.Empty)(nil),              // 16: google.protobuf.Empty
 }
 var file_api_model_v1_model_proto_depIdxs = []int32{
-	13, // 0: otterscale.model.v1.Model.first_deployed_at:type_name -> google.protobuf.Timestamp
-	13, // 1: otterscale.model.v1.Model.last_deployed_at:type_name -> google.protobuf.Timestamp
-	11, // 2: otterscale.model.v1.Model.prefill:type_name -> otterscale.model.v1.Model.Prefill
-	12, // 3: otterscale.model.v1.Model.decode:type_name -> otterscale.model.v1.Model.Decode
-	14, // 4: otterscale.model.v1.Model.pods:type_name -> otterscale.application.v1.Application.Pod
-	0,  // 5: otterscale.model.v1.ListModelsResponse.models:type_name -> otterscale.model.v1.Model
-	11, // 6: otterscale.model.v1.CreateModelRequest.prefill:type_name -> otterscale.model.v1.Model.Prefill
-	12, // 7: otterscale.model.v1.CreateModelRequest.decode:type_name -> otterscale.model.v1.Model.Decode
-	11, // 8: otterscale.model.v1.UpdateModelRequest.prefill:type_name -> otterscale.model.v1.Model.Prefill
-	12, // 9: otterscale.model.v1.UpdateModelRequest.decode:type_name -> otterscale.model.v1.Model.Decode
-	13, // 10: otterscale.model.v1.ModelArtifact.created_at:type_name -> google.protobuf.Timestamp
-	6,  // 11: otterscale.model.v1.ListModelArtifactsResponse.model_artifacts:type_name -> otterscale.model.v1.ModelArtifact
-	1,  // 12: otterscale.model.v1.ModelService.ListModels:input_type -> otterscale.model.v1.ListModelsRequest
-	3,  // 13: otterscale.model.v1.ModelService.CreateModel:input_type -> otterscale.model.v1.CreateModelRequest
-	4,  // 14: otterscale.model.v1.ModelService.UpdateModel:input_type -> otterscale.model.v1.UpdateModelRequest
-	5,  // 15: otterscale.model.v1.ModelService.DeleteModel:input_type -> otterscale.model.v1.DeleteModelRequest
-	7,  // 16: otterscale.model.v1.ModelService.ListModelArtifacts:input_type -> otterscale.model.v1.ListModelArtifactsRequest
-	9,  // 17: otterscale.model.v1.ModelService.CreateModelArtifact:input_type -> otterscale.model.v1.CreateModelArtifactRequest
-	10, // 18: otterscale.model.v1.ModelService.DeleteModelArtifact:input_type -> otterscale.model.v1.DeleteModelArtifactRequest
-	2,  // 19: otterscale.model.v1.ModelService.ListModels:output_type -> otterscale.model.v1.ListModelsResponse
-	0,  // 20: otterscale.model.v1.ModelService.CreateModel:output_type -> otterscale.model.v1.Model
-	0,  // 21: otterscale.model.v1.ModelService.UpdateModel:output_type -> otterscale.model.v1.Model
-	15, // 22: otterscale.model.v1.ModelService.DeleteModel:output_type -> google.protobuf.Empty
-	8,  // 23: otterscale.model.v1.ModelService.ListModelArtifacts:output_type -> otterscale.model.v1.ListModelArtifactsResponse
-	6,  // 24: otterscale.model.v1.ModelService.CreateModelArtifact:output_type -> otterscale.model.v1.ModelArtifact
-	15, // 25: otterscale.model.v1.ModelService.DeleteModelArtifact:output_type -> google.protobuf.Empty
-	19, // [19:26] is the sub-list for method output_type
-	12, // [12:19] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	14, // 0: otterscale.model.v1.Model.first_deployed_at:type_name -> google.protobuf.Timestamp
+	14, // 1: otterscale.model.v1.Model.last_deployed_at:type_name -> google.protobuf.Timestamp
+	0,  // 2: otterscale.model.v1.Model.mode:type_name -> otterscale.model.v1.Model.Mode
+	12, // 3: otterscale.model.v1.Model.prefill:type_name -> otterscale.model.v1.Model.Prefill
+	13, // 4: otterscale.model.v1.Model.decode:type_name -> otterscale.model.v1.Model.Decode
+	15, // 5: otterscale.model.v1.Model.pods:type_name -> otterscale.application.v1.Application.Pod
+	1,  // 6: otterscale.model.v1.ListModelsResponse.models:type_name -> otterscale.model.v1.Model
+	0,  // 7: otterscale.model.v1.CreateModelRequest.mode:type_name -> otterscale.model.v1.Model.Mode
+	12, // 8: otterscale.model.v1.CreateModelRequest.prefill:type_name -> otterscale.model.v1.Model.Prefill
+	13, // 9: otterscale.model.v1.CreateModelRequest.decode:type_name -> otterscale.model.v1.Model.Decode
+	0,  // 10: otterscale.model.v1.UpdateModelRequest.mode:type_name -> otterscale.model.v1.Model.Mode
+	12, // 11: otterscale.model.v1.UpdateModelRequest.prefill:type_name -> otterscale.model.v1.Model.Prefill
+	13, // 12: otterscale.model.v1.UpdateModelRequest.decode:type_name -> otterscale.model.v1.Model.Decode
+	14, // 13: otterscale.model.v1.ModelArtifact.created_at:type_name -> google.protobuf.Timestamp
+	7,  // 14: otterscale.model.v1.ListModelArtifactsResponse.model_artifacts:type_name -> otterscale.model.v1.ModelArtifact
+	2,  // 15: otterscale.model.v1.ModelService.ListModels:input_type -> otterscale.model.v1.ListModelsRequest
+	4,  // 16: otterscale.model.v1.ModelService.CreateModel:input_type -> otterscale.model.v1.CreateModelRequest
+	5,  // 17: otterscale.model.v1.ModelService.UpdateModel:input_type -> otterscale.model.v1.UpdateModelRequest
+	6,  // 18: otterscale.model.v1.ModelService.DeleteModel:input_type -> otterscale.model.v1.DeleteModelRequest
+	8,  // 19: otterscale.model.v1.ModelService.ListModelArtifacts:input_type -> otterscale.model.v1.ListModelArtifactsRequest
+	10, // 20: otterscale.model.v1.ModelService.CreateModelArtifact:input_type -> otterscale.model.v1.CreateModelArtifactRequest
+	11, // 21: otterscale.model.v1.ModelService.DeleteModelArtifact:input_type -> otterscale.model.v1.DeleteModelArtifactRequest
+	3,  // 22: otterscale.model.v1.ModelService.ListModels:output_type -> otterscale.model.v1.ListModelsResponse
+	1,  // 23: otterscale.model.v1.ModelService.CreateModel:output_type -> otterscale.model.v1.Model
+	1,  // 24: otterscale.model.v1.ModelService.UpdateModel:output_type -> otterscale.model.v1.Model
+	16, // 25: otterscale.model.v1.ModelService.DeleteModel:output_type -> google.protobuf.Empty
+	9,  // 26: otterscale.model.v1.ModelService.ListModelArtifacts:output_type -> otterscale.model.v1.ListModelArtifactsResponse
+	7,  // 27: otterscale.model.v1.ModelService.CreateModelArtifact:output_type -> otterscale.model.v1.ModelArtifact
+	16, // 28: otterscale.model.v1.ModelService.DeleteModelArtifact:output_type -> google.protobuf.Empty
+	22, // [22:29] is the sub-list for method output_type
+	15, // [15:22] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_api_model_v1_model_proto_init() }
@@ -2371,13 +2643,14 @@ func file_api_model_v1_model_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_model_v1_model_proto_rawDesc), len(file_api_model_v1_model_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_api_model_v1_model_proto_goTypes,
 		DependencyIndexes: file_api_model_v1_model_proto_depIdxs,
+		EnumInfos:         file_api_model_v1_model_proto_enumTypes,
 		MessageInfos:      file_api_model_v1_model_proto_msgTypes,
 	}.Build()
 	File_api_model_v1_model_proto = out.File

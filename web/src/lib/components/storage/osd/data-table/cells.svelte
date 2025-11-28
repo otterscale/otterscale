@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import { curveNatural } from 'd3-shape';
+	import { curveMonotoneX } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { SampleValue } from 'prometheus-query';
 
@@ -159,7 +159,7 @@
 			]}
 			props={{
 				area: {
-					curve: curveNatural,
+					curve: curveMonotoneX,
 					'fill-opacity': 0.4,
 					line: { class: 'stroke-1' },
 					motion: 'tween'
@@ -240,7 +240,7 @@
 			]}
 			props={{
 				area: {
-					curve: curveNatural,
+					curve: curveMonotoneX,
 					'fill-opacity': 0.4,
 					line: { class: 'stroke-1' },
 					motion: 'tween'
