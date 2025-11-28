@@ -549,22 +549,17 @@ prompt_bridge_creation() {
         ipv4.method manual \
         ipv4.addresses "$CURRENT_CIDR" \
         ipv4.gateway "$CURRENT_GATEWAY" \
-        ipv4.dns "$CURRENT_DNS" > /dev/null; then
+        ipv4.dns "$CURRENT_DNS" \
+        connection.autoconnect yes \
+        bridge.stp no > /dev/null; then
         error_exit "Failed network bridge creation"
     fi
-
-    log "INFO" "Disable bridge stp" "NETWORK"
-    nmcli connection modify "$OTTERSCALE_BRIDGE_NAME" bridge.stp no > /dev/null
 
     log "INFO" "Connect network bridge $OTTERSCALE_BRIDGE_NAME to interface $CURRENT_INTERFACE"
     nmcli connection add type bridge-slave con-name br-otters-slave ifname "$CURRENT_INTERFACE" master "$OTTERSCALE_BRIDGE_NAME" > /dev/null
 
     log "INFO" "Disable $CURRENT_CONNECTION autoconnect" "NETWORK"
     nmcli connection modify "$CURRENT_CONNECTION" connection.autoconnect no > /dev/null
-
-    log "INFO" "Enable $OTTERSCALE_BRIDGE_NAME and br-otters-slave autoconnect" "NETWORK"
-    nmcli connection modify "$OTTERSCALE_BRIDGE_NAME" connection.autoconnect no > /dev/null
-    nmcli connection modify br-otters-slave connection.autoconnect no > /dev/null
 
     log "INFO" "Start up network bridge $OTTERSCALE_BRIDGE_NAME" "NETWORK"
     nmcli connection up "$OTTERSCALE_BRIDGE_NAME" > /dev/null && nmcli connection down "$CURRENT_CONNECTION" > /dev/null
