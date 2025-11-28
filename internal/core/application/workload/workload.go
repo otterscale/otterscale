@@ -6,6 +6,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/service"
 )
@@ -30,22 +31,24 @@ type UseCase struct {
 	pod         PodRepo
 	statefulSet StatefulSetRepo
 
-	service               service.ServiceRepo
+	node                  cluster.NodeRepo
 	persistentVolumeClaim persistent.PersistentVolumeClaimRepo
+	service               service.ServiceRepo
 	storageClass          persistent.StorageClassRepo
 
 	ttySessions sync.Map
 }
 
-func NewUseCase(daemonSet DaemonSetRepo, deployment DeploymentRepo, job JobRepo, pod PodRepo, statefulSet StatefulSetRepo, service service.ServiceRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, storageClass persistent.StorageClassRepo) *UseCase {
+func NewUseCase(daemonSet DaemonSetRepo, deployment DeploymentRepo, job JobRepo, pod PodRepo, statefulSet StatefulSetRepo, node cluster.NodeRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, service service.ServiceRepo, storageClass persistent.StorageClassRepo) *UseCase {
 	return &UseCase{
 		daemonSet:             daemonSet,
 		deployment:            deployment,
 		job:                   job,
 		pod:                   pod,
 		statefulSet:           statefulSet,
-		service:               service,
+		node:                  node,
 		persistentVolumeClaim: persistentVolumeClaim,
+		service:               service,
 		storageClass:          storageClass,
 	}
 }

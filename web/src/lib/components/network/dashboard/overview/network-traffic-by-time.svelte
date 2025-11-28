@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { scaleBand } from 'd3-scale';
 	import { BarChart, type ChartContextValue, Highlight } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
@@ -84,16 +85,18 @@
 	});
 </script>
 
-{#if !isLoaded}
-	Loading
-{:else}
-	<Card.Root class="h-full gap-2">
-		<Card.Header>
-			<Card.Title>{m.total_upload_and_download()}</Card.Title>
-			<Card.Description>
-				<p class="lowercase">{m.over_each_time({ unit: m.hour() })}</p>
-			</Card.Description>
-		</Card.Header>
+<Card.Root class="h-full gap-2">
+	<Card.Header>
+		<Card.Title>{m.total_upload_and_download()}</Card.Title>
+		<Card.Description>
+			<p class="lowercase">{m.over_each_time({ unit: m.hour() })}</p>
+		</Card.Description>
+	</Card.Header>
+	{#if !isLoaded}
+		<div class="flex h-[200px] w-full items-center justify-center">
+			<Icon icon="svg-spinners:6-dots-rotate" class="m-4 size-12" />
+		</div>
+	{:else}
 		<Card.Content>
 			<Chart.Container config={trafficsByTimeConfiguration} class="h-[200px] w-full">
 				<BarChart
@@ -169,5 +172,5 @@
 				</BarChart>
 			</Chart.Container>
 		</Card.Content>
-	</Card.Root>
-{/if}
+	{/if}
+</Card.Root>

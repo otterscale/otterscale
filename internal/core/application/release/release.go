@@ -3,10 +3,10 @@ package release
 import (
 	"context"
 
-	"github.com/goccy/go-yaml"
 	"golang.org/x/sync/errgroup"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/release"
+	"sigs.k8s.io/yaml"
 
 	"github.com/otterscale/otterscale/internal/core/application/chart"
 )

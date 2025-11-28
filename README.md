@@ -18,19 +18,19 @@
 <details>
   <summary><b>📸 Screenshots</b></summary>
 
-|                                                     Home                                                      |                                                 Scope Selector                                                 |
-| :-----------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: |
-|                   ![Home](https://otterscale.github.io/img/screenshot/screenshot-home.jpeg)                   |         ![Scope Selector](https://otterscale.github.io/img/screenshot/screenshot-scope-selector.jpeg)          |
-|                                               **Create Scope**                                                |                                           **Create Scope Settings**                                            |
-|         ![Create Scope 1](https://otterscale.github.io/img/screenshot/screenshot-scope-create-1.jpeg)         |         ![Create Scope 2](https://otterscale.github.io/img/screenshot/screenshot-scope-create-2.jpeg)          |
-|                                              **Scope Settings**                                               |                                             **Application Store**                                              |
-|         ![Scope Settings](https://otterscale.github.io/img/screenshot/screenshot-scope-settings.jpeg)         | ![Application Store](https://otterscale.github.io/img/screenshot/screenshot-application-management-store.jpeg) |
-|                                                 **Machines**                                                  |                                               **Machines Dark**                                                |
-|               ![Machines](https://otterscale.github.io/img/screenshot/screenshot-machines.jpeg)               |          ![Machines Dark](https://otterscale.github.io/img/screenshot/screenshot-machines-dark.jpeg)           |
-|                                                  **Storage**                                                  |                                                 **Networking**                                                 |
-|                ![Storage](https://otterscale.github.io/img/screenshot/screenshot-storage.jpeg)                |             ![Networking](https://otterscale.github.io/img/screenshot/screenshot-networking.jpeg)              |
-|                                          **Application Management**                                           |                                           **Application Workloads**                                            |
-| ![Application Management](https://otterscale.github.io/img/screenshot/screenshot-application-management.jpeg) |   ![Workloads](https://otterscale.github.io/img/screenshot/screenshot-application-management-workloads.jpeg)   |
+|                                                                                           Home                                                                                           |                                                                                      Scope Selector                                                                                       |
+| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|                   ![Home](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-home.jpeg)                   |         ![Scope Selector](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-scope-selector.jpeg)          |
+|                                                                                     **Create Scope**                                                                                     |                                                                                 **Create Scope Settings**                                                                                 |
+|         ![Create Scope 1](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-scope-create-1.jpeg)         |         ![Create Scope 2](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-scope-create-2.jpeg)          |
+|                                                                                    **Scope Settings**                                                                                    |                                                                                   **Application Store**                                                                                   |
+|         ![Scope Settings](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-scope-settings.jpeg)         | ![Application Store](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-application-management-store.jpeg) |
+|                                                                                       **Machines**                                                                                       |                                                                                     **Machines Dark**                                                                                     |
+|               ![Machines](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-machines.jpeg)               |          ![Machines Dark](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-machines-dark.jpeg)           |
+|                                                                                       **Storage**                                                                                        |                                                                                      **Networking**                                                                                       |
+|                ![Storage](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-storage.jpeg)                |             ![Networking](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-networking.jpeg)              |
+|                                                                                **Application Management**                                                                                |                                                                                 **Application Workloads**                                                                                 |
+| ![Application Management](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-application-management.jpeg) |   ![Workloads](https://raw.githubusercontent.com/otterscale/otterscale.github.io/refs/heads/feat/add_screenshot/static/img/screenshot/screenshot-application-management-workloads.jpeg)   |
 
 </details>
 
@@ -47,7 +47,7 @@
 ## 🚀 Quick Start
 
 > [!IMPORTANT]
-> Requirements: `Docker`, `Docker Compose`, `4GB RAM`, `10GB disk space`
+> Requirements: `Git`, `Docker`, `8GB RAM`, `100GB disk space`
 
 1. **Clone the repository:**
 
@@ -56,26 +56,20 @@
    cd otterscale
    ```
 
-2. **Initialize configuration:**
-
-   ```sh
-   docker run ghcr.io/otterscale/otterscale/service:latest init > otterscale.yaml
-   ```
-
-3. **Set up environment:**
+2. **Set up environment:**
 
    ```sh
    cp .env.example .env
    # Edit .env file with your settings
    ```
 
-4. **Start OtterScale:**
+3. **Start OtterScale:**
 
    ```sh
    docker compose up -d
    ```
 
-5. **Access web interface:**
+4. **Access web interface:**
 
 Open your browser and navigate to `http://localhost:3000` (or your configured port).
 

@@ -92,10 +92,10 @@
 					<div class="col-span-2">
 						<Instance {prometheusDriver} {scope} bind:isReloading />
 					</div>
-					<div class="col-span-4 col-start-5">
+					<div class="col-span-6">
 						<NetworkTraffic {prometheusDriver} {scope} bind:isReloading />
 					</div>
-					<div class="col-span-4">
+					<div class="col-span-6">
 						<ThroughtPut {prometheusDriver} {scope} bind:isReloading />
 					</div>
 				</Tabs.Content>

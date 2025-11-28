@@ -5,6 +5,7 @@
 	import { writable } from 'svelte/store';
 	import { fly } from 'svelte/transition';
 
+	import { version } from '$app/environment';
 	import { env } from '$env/dynamic/public';
 	import { BootstrapService, type WatchStatusResponse } from '$lib/api/bootstrap/v1/bootstrap_pb';
 	import SquareGridImage from '$lib/assets/square-grid.svg';
@@ -13,7 +14,7 @@
 	import { m } from '$lib/paraglide/messages';
 
 	// Constants
-	const INSTALL_CODE = `bash -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/main/scripts/install.sh)" -- url=${env.PUBLIC_API_URL}`;
+	const INSTALL_CODE = `bash -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/refs/tags/${version}/scripts/install.sh)" -- url=${env.PUBLIC_API_URL}`;
 	const RETRY_DELAY = 2000;
 
 	const SetupPhase = {
@@ -89,7 +90,7 @@
 		<img
 			src={SquareGridImage}
 			alt="square-grid"
-			class="[mask-image:radial-gradient(75%_75%_at_center,white,transparent)] opacity-90"
+			class="mask-[radial-gradient(75%_75%_at_center,white,transparent)] opacity-90"
 		/>
 	</div>
 
@@ -123,7 +124,7 @@
 		{m.setup_environment_waiting()}
 	</Button>
 
-	<div class="relative mx-auto flex w-full max-w-6xl flex-grow flex-col sm:mt-48">
+	<div class="relative mx-auto flex w-full max-w-6xl grow flex-col sm:mt-48">
 		<p class="mt-4 text-center text-lg text-muted-foreground">
 			{m.setup_environment_curl_description()}
 		</p>

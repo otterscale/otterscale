@@ -8,7 +8,6 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/go-faker/faker/v4"
-	"github.com/goccy/go-yaml"
 	"helm.sh/helm/v3/pkg/action"
 	helmchart "helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
@@ -16,6 +15,7 @@ import (
 	"helm.sh/helm/v3/pkg/getter"
 	"helm.sh/helm/v3/pkg/strvals"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
+	"sigs.k8s.io/yaml"
 
 	"github.com/otterscale/otterscale/internal/core/application/release"
 )
@@ -251,7 +251,14 @@ func (r *releaseRepo) toValues(valuesYAML string, valuesMap map[string]string) (
 	}
 
 	for k, v := range valuesMap {
-		if err := strvals.ParseInto(fmt.Sprintf("%s=%s", k, v), values); err != nil {
+		parser := strvals.ParseInto
+
+		if after, ok := strings.CutPrefix(v, "[str]"); ok {
+			v = after
+			parser = strvals.ParseIntoString
+		}
+
+		if err := parser(fmt.Sprintf("%s=%s", k, v), values); err != nil {
 			return nil, err
 		}
 	}

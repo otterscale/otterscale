@@ -13,4 +13,5 @@ type NodeRepo interface {
 	List(ctx context.Context, scope, selector string) ([]Node, error)
 	Get(ctx context.Context, scope, name string) (*Node, error)
 	Update(ctx context.Context, scope string, n *Node) (*Node, error)
+	InternalIP(ctx context.Context, scope string) (string, error)
 }

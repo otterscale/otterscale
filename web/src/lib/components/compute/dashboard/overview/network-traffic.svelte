@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
+	import { curveMonotoneX } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
@@ -84,23 +84,39 @@
 	});
 </script>
 
-<Card.Root class="h-full gap-2">
-	<Card.Header>
-		<Card.Title>{m.network_bandwidth()}</Card.Title>
-		<Card.Description>{m.receive_and_transmit()}</Card.Description>
-	</Card.Header>
-	<Card.Content class="h-full">
-		{#if !isLoaded}
-			<div class="flex h-full w-full items-center justify-center border">
-				<Icon icon="svg-spinners:6-dots-rotate" class="size-24" />
+{#if !isLoaded}
+	<Card.Root>
+		<Card.Header class="h-[42px]">
+			<Card.Title>{m.network_bandwidth()}</Card.Title>
+			<Card.Description>{m.receive_and_transmit()}</Card.Description>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-[230px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
 			</div>
-		{:else if !receives?.length || !transmits?.length}
-			<div class="flex h-full w-full flex-col items-center justify-center">
-				<Icon icon="ph:chart-line-fill" class="size-60 animate-pulse text-muted-foreground" />
+		</Card.Content>
+	</Card.Root>
+{:else if !receives?.length || !transmits?.length}
+	<Card.Root>
+		<Card.Header class="h-[42px]">
+			<Card.Title>{m.network_bandwidth()}</Card.Title>
+			<Card.Description>{m.receive_and_transmit()}</Card.Description>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-[230px] w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-line-fill" class="size-50 animate-pulse text-muted-foreground" />
 				<p class="text-base text-muted-foreground">{m.no_data_display()}</p>
 			</div>
-		{:else}
-			<Chart.Container config={configuration}>
+		</Card.Content>
+	</Card.Root>
+{:else}
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>{m.network_bandwidth()}</Card.Title>
+			<Card.Description>{m.receive_and_transmit()}</Card.Description>
+		</Card.Header>
+		<Card.Content class="h-full">
+			<Chart.Container class="h-[230px] w-full px-2 pt-2" config={configuration}>
 				<AreaChart
 					data={traffics}
 					x="time"
@@ -120,7 +136,7 @@
 					]}
 					props={{
 						area: {
-							curve: curveNatural,
+							curve: curveMonotoneX,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
 							motion: 'tween'
@@ -176,6 +192,6 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		{/if}
-	</Card.Content>
-</Card.Root>
+		</Card.Content>
+	</Card.Root>
+{/if}

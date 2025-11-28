@@ -20,7 +20,6 @@ import (
 	"github.com/otterscale/otterscale/internal/core/instance/cdi"
 	"github.com/otterscale/otterscale/internal/core/instance/vm"
 	"github.com/otterscale/otterscale/internal/core/instance/vmi"
-	"github.com/otterscale/otterscale/internal/core/instance/vms"
 	"github.com/otterscale/otterscale/internal/core/instance/vnc"
 	"github.com/otterscale/otterscale/internal/core/machine"
 	"github.com/otterscale/otterscale/internal/core/machine/purge"
@@ -57,7 +56,6 @@ var ProviderSet = wire.NewSet(
 	cdi.NewUseCase,
 	vm.NewUseCase,
 	vmi.NewUseCase,
-	vms.NewUseCase,
 	vnc.NewUseCase,
 	machine.NewUseCase,
 	purge.NewUseCase,

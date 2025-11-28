@@ -15,6 +15,7 @@ import (
 )
 
 const (
+	ConditionTrue     = v1.ConditionTrue
 	PodPhaseRunning   = v1.PodRunning
 	PodPhaseSucceeded = v1.PodSucceeded
 )

@@ -19,7 +19,6 @@ import (
 	"github.com/otterscale/otterscale/internal/core/instance/cdi"
 	"github.com/otterscale/otterscale/internal/core/instance/vm"
 	"github.com/otterscale/otterscale/internal/core/instance/vmi"
-	"github.com/otterscale/otterscale/internal/core/instance/vms"
 	"github.com/otterscale/otterscale/internal/core/instance/vnc"
 )
 
@@ -29,16 +28,14 @@ type InstanceService struct {
 	dataVolume             *cdi.UseCase
 	virtualMachine         *vm.UseCase
 	virtualMachineInstance *vmi.UseCase
-	virtualMachineService  *vms.UseCase
 	vnc                    *vnc.UseCase
 }
 
-func NewInstanceService(dataVolume *cdi.UseCase, virtualMachine *vm.UseCase, virtualMachineInstance *vmi.UseCase, virtualMachineService *vms.UseCase, vnc *vnc.UseCase) *InstanceService {
+func NewInstanceService(dataVolume *cdi.UseCase, virtualMachine *vm.UseCase, virtualMachineInstance *vmi.UseCase, vnc *vnc.UseCase) *InstanceService {
 	return &InstanceService{
 		dataVolume:             dataVolume,
 		virtualMachine:         virtualMachine,
 		virtualMachineInstance: virtualMachineInstance,
-		virtualMachineService:  virtualMachineService,
 		vnc:                    vnc,
 	}
 }
@@ -336,7 +333,7 @@ func (s *InstanceService) DeleteInstanceType(ctx context.Context, req *pb.Delete
 }
 
 func (s *InstanceService) CreateVirtualMachineService(ctx context.Context, req *pb.CreateVirtualMachineServiceRequest) (*apppb.Application_Service, error) {
-	svc, err := s.virtualMachineService.CreateVirtualMachineService(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetVirtualMachineName(), toPorts(req.GetPorts()))
+	svc, err := s.virtualMachine.CreateVirtualMachineService(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetVirtualMachineName(), toPorts(req.GetPorts()))
 	if err != nil {
 		return nil, err
 	}
@@ -346,7 +343,7 @@ func (s *InstanceService) CreateVirtualMachineService(ctx context.Context, req *
 }
 
 func (s *InstanceService) UpdateVirtualMachineService(ctx context.Context, req *pb.UpdateVirtualMachineServiceRequest) (*apppb.Application_Service, error) {
-	svc, err := s.virtualMachineService.UpdateVirtualMachineService(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), toPorts(req.GetPorts()))
+	svc, err := s.virtualMachine.UpdateVirtualMachineService(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), toPorts(req.GetPorts()))
 	if err != nil {
 		return nil, err
 	}
@@ -356,7 +353,7 @@ func (s *InstanceService) UpdateVirtualMachineService(ctx context.Context, req *
 }
 
 func (s *InstanceService) DeleteVirtualMachineService(ctx context.Context, req *pb.DeleteVirtualMachineServiceRequest) (*emptypb.Empty, error) {
-	if err := s.virtualMachineService.DeleteVirtualMachineService(ctx, req.GetScope(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.virtualMachine.DeleteVirtualMachineService(ctx, req.GetScope(), req.GetNamespace(), req.GetName()); err != nil {
 		return nil, err
 	}
 
@@ -580,9 +577,14 @@ func toProtoVirtualMachineClone(c *vm.VirtualMachineClone) *pb.VirtualMachine_Cl
 	ret.SetPhase(string(c.Status.Phase))
 	ret.SetCreatedAt(timestamppb.New(c.CreationTimestamp.Time))
 
-	if len(c.Status.Conditions) > 0 {
-		index := len(c.Status.Conditions) - 1
-		ret.SetLastCondition(toProtoApplicationConditionFromClone(&c.Status.Conditions[index]))
+	conditions := c.Status.Conditions
+
+	for i := range conditions {
+		if conditions[i].Status == workload.ConditionTrue {
+			ret.SetLastCondition(toProtoApplicationConditionFromClone(&c.Status.Conditions[i]))
+
+			break
+		}
 	}
 
 	return ret
@@ -611,9 +613,14 @@ func toProtoVirtualMachineSnapshot(s *vm.VirtualMachineSnapshot) *pb.VirtualMach
 			ret.SetReadyToUse(*s.Status.ReadyToUse)
 		}
 
-		if len(s.Status.Conditions) > 0 {
-			index := len(s.Status.Conditions) - 1
-			ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&s.Status.Conditions[index]))
+		conditions := s.Status.Conditions
+
+		for i := range conditions {
+			if conditions[i].Status == workload.ConditionTrue {
+				ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&s.Status.Conditions[i]))
+
+				break
+			}
 		}
 	}
 
@@ -641,9 +648,14 @@ func toProtoVirtualMachineRestore(r *vm.VirtualMachineRestore) *pb.VirtualMachin
 	if r.Status != nil && r.Status.Complete != nil {
 		ret.SetComplete(*r.Status.Complete)
 
-		if len(r.Status.Conditions) > 0 {
-			index := len(r.Status.Conditions) - 1
-			ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&r.Status.Conditions[index]))
+		conditions := r.Status.Conditions
+
+		for i := range conditions {
+			if conditions[i].Status == workload.ConditionTrue {
+				ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&r.Status.Conditions[i]))
+
+				break
+			}
 		}
 	}
 
@@ -735,7 +747,7 @@ func toProtoDataVolume(it *cdi.DataVolumePersistent) *pb.DataVolume {
 	ret.SetName(it.Name)
 	ret.SetNamespace(it.Namespace)
 	ret.SetSource(toProtoDataVolumeSource(it.Spec.Source))
-	ret.SetBootImage(it.Labels[cdi.DataVolumeBootImageLabel] == "true")
+	ret.SetBootImage(it.BootImage)
 	ret.SetPhase(string(it.Status.Phase))
 	ret.SetProgress(string(it.Status.Progress))
 	ret.SetSizeBytes(getDataVolumeSize(&it.Spec))
@@ -744,9 +756,14 @@ func toProtoDataVolume(it *cdi.DataVolumePersistent) *pb.DataVolume {
 		ret.SetPersistentVolumeClaim(toProtoPersistentVolumeClaim(it.Persistent))
 	}
 
-	if len(it.Status.Conditions) > 0 {
-		index := len(it.Status.Conditions) - 1
-		ret.SetLastCondition(toProtoDataVolumeCondition(&it.Status.Conditions[index]))
+	conditions := it.Status.Conditions
+
+	for i := range conditions {
+		if conditions[i].Status == workload.ConditionTrue {
+			ret.SetLastCondition(toProtoDataVolumeCondition(&it.Status.Conditions[i]))
+
+			break
+		}
 	}
 
 	return ret

@@ -12,13 +12,20 @@ const (
 const (
 	KubePrometheusStack = "79.7.1"
 	Istio               = "1.28.0"
-	LLMDInfra           = "1.3.3"
-	LLMDModelService    = "0.3.6"
+)
+
+// llm-d Components
+const (
+	LLMDCuda               = "0.4.0"
+	LLMDInferenceScheduler = "0.4.0-rc.1"
+	LLMDRoutingSidecar     = "0.4.0-rc.1"
+	LLMDModelService       = "0.3.10"
+	LLMDInfra              = "1.3.4"
 )
 
 // Kubernetes Custom Resource Definition
 const (
-	GatewayAPI                   = "1.3.0"
+	GatewayAPI                   = "1.4.0"
 	GatewayAPIInferenceExtension = "1.2.0-rc.1"
 )
 

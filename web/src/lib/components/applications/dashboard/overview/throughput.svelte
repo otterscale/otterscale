@@ -1,6 +1,7 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
+	import { curveMonotoneX } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
@@ -93,7 +94,17 @@
 </script>
 
 {#if !isLoaded}
-	Loading
+	<Card.Root>
+		<Card.Header class="h-[42px]">
+			<Card.Title>{m.storage_throughPut()}</Card.Title>
+			<Card.Description>{m.read_and_write()}</Card.Description>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex h-[230px] w-full items-center justify-center">
+				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
+			</div>
+		</Card.Content>
+	</Card.Root>
 {:else}
 	<Card.Root class="h-full gap-2">
 		<Card.Header>
@@ -101,7 +112,7 @@
 			<Card.Description>{m.read_and_write()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<Chart.Container config={throughputsConfigurations}>
+			<Chart.Container class="h-[230px] w-full px-2 pt-2" config={throughputsConfigurations}>
 				<AreaChart
 					data={throughputs}
 					x="time"
@@ -121,7 +132,7 @@
 					]}
 					props={{
 						area: {
-							curve: curveNatural,
+							curve: curveMonotoneX,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
 							motion: 'tween'

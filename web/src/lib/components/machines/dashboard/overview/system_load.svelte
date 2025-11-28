@@ -1,6 +1,7 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
+	import { curveMonotoneX } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
@@ -78,18 +79,20 @@
 	});
 </script>
 
-{#if !isLoaded}
-	Loading
-{:else}
-	<Card.Root class="h-full">
-		<Card.Header>
-			<Card.Title>{m.system_load()}</Card.Title>
-			<Card.Description>
-				{m.machine_dashboard_system_loads_tooltip()}
-			</Card.Description>
-		</Card.Header>
+<Card.Root class="h-full">
+	<Card.Header>
+		<Card.Title>{m.system_load()}</Card.Title>
+		<Card.Description>
+			{m.machine_dashboard_system_loads_tooltip()}
+		</Card.Description>
+	</Card.Header>
+	{#if !isLoaded}
+		<div class="flex h-[250px] w-full items-center justify-center">
+			<Icon icon="svg-spinners:6-dots-rotate" class="m-4 size-12" />
+		</div>
+	{:else}
 		<Card.Content>
-			<Chart.Container config={systemLoadConfiguration} class="h-[200px] w-full">
+			<Chart.Container config={systemLoadConfiguration} class="h-[250px] w-full">
 				<AreaChart
 					data={systemLoads}
 					x="time"
@@ -109,7 +112,7 @@
 					]}
 					props={{
 						area: {
-							curve: curveNatural,
+							curve: curveMonotoneX,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
 							motion: 'tween'
@@ -149,5 +152,5 @@
 				</AreaChart>
 			</Chart.Container>
 		</Card.Content>
-	</Card.Root>
-{/if}
+	{/if}
+</Card.Root>

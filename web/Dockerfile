@@ -1,6 +1,8 @@
 # Build stage
 FROM node:22-alpine AS builder
 
+ARG VERSION=unknown
+
 WORKDIR /src
 
 # Install pnpm
@@ -12,6 +14,9 @@ RUN npm install -g pnpm && pnpm install --frozen-lockfile && pnpm store prune
 
 # Copy source code
 COPY . .
+
+# Set version environment variable
+ENV VERSION=${VERSION}
 
 # Build the application
 RUN pnpm build

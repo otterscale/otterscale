@@ -11,6 +11,8 @@ import (
 	"github.com/otterscale/otterscale/internal/core/model"
 )
 
+const defaultMaxModelLength uint32 = 8192
+
 type ModelService struct {
 	pbconnect.UnimplementedModelServiceHandler
 
@@ -38,17 +40,25 @@ func (s *ModelService) ListModels(ctx context.Context, req *pb.ListModelsRequest
 }
 
 func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelRequest) (*pb.Model, error) {
-	var requests, limits *model.Resource
+	var (
+		prefill        *model.Prefill
+		decode         *model.Decode
+		maxModelLength = defaultMaxModelLength
+	)
 
-	if r := req.GetRequests(); r != nil {
-		requests = toModelResource(r)
+	if r := req.GetPrefill(); r != nil {
+		prefill = toModelPrefill(r)
 	}
 
-	if r := req.GetLimits(); r != nil {
-		limits = toModelResource(r)
+	if r := req.GetDecode(); r != nil {
+		decode = toModelDecode(r)
 	}
 
-	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSizeBytes(), limits, requests)
+	if req.GetMaxModelLength() > 0 {
+		maxModelLength = req.GetMaxModelLength()
+	}
+
+	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSizeBytes(), toModelMode(req.GetMode()), prefill, decode, maxModelLength)
 	if err != nil {
 		return nil, err
 	}
@@ -58,17 +68,25 @@ func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelReque
 }
 
 func (s *ModelService) UpdateModel(ctx context.Context, req *pb.UpdateModelRequest) (*pb.Model, error) {
-	var requests, limits *model.Resource
+	var (
+		prefill        *model.Prefill
+		decode         *model.Decode
+		maxModelLength = defaultMaxModelLength
+	)
 
-	if r := req.GetRequests(); r != nil {
-		requests = toModelResource(r)
+	if r := req.GetPrefill(); r != nil {
+		prefill = toModelPrefill(r)
 	}
 
-	if r := req.GetLimits(); r != nil {
-		limits = toModelResource(r)
+	if r := req.GetDecode(); r != nil {
+		decode = toModelDecode(r)
 	}
 
-	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), requests, limits)
+	if req.GetMaxModelLength() > 0 {
+		maxModelLength = req.GetMaxModelLength()
+	}
+
+	model, err := s.model.UpdateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), toModelMode(req.GetMode()), prefill, decode, maxModelLength)
 	if err != nil {
 		return nil, err
 	}
@@ -116,11 +134,60 @@ func (s *ModelService) DeleteModelArtifact(ctx context.Context, req *pb.DeleteMo
 	return resp, nil
 }
 
-func toModelResource(r *pb.Model_Resource) *model.Resource {
-	return &model.Resource{
-		VGPU:       r.GetVgpu(),
+func toModelMode(m pb.Model_Mode) model.Mode {
+	switch m {
+	case pb.Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING:
+		return model.ModeIntelligentInferenceScheduling
+
+	case pb.Model_MODE_PREFILL_DECODE_DISAGGREGATION:
+		return model.ModePrefillDecodeDisaggregation
+
+	default:
+		return model.ModeIntelligentInferenceScheduling
+	}
+}
+
+func toModelPrefill(r *pb.Model_Prefill) *model.Prefill {
+	return &model.Prefill{
+		Replica:    r.GetReplica(),
 		VGPUMemory: r.GetVgpumemPercentage(),
 	}
+}
+
+func toModelDecode(r *pb.Model_Decode) *model.Decode {
+	return &model.Decode{
+		Replica:    r.GetReplica(),
+		Tensor:     r.GetTensor(),
+		VGPUMemory: r.GetVgpumemPercentage(),
+	}
+}
+
+func toProtoModelMode(m model.Mode) pb.Model_Mode {
+	switch m {
+	case model.ModeIntelligentInferenceScheduling:
+		return pb.Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING
+
+	case model.ModePrefillDecodeDisaggregation:
+		return pb.Model_MODE_PREFILL_DECODE_DISAGGREGATION
+
+	default:
+		return pb.Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING
+	}
+}
+
+func toProtoModelPrefill(r *model.Prefill) *pb.Model_Prefill {
+	ret := &pb.Model_Prefill{}
+	ret.SetReplica(r.Replica)
+	ret.SetVgpumemPercentage(r.VGPUMemory)
+	return ret
+}
+
+func toProtoModelDecode(r *model.Decode) *pb.Model_Decode {
+	ret := &pb.Model_Decode{}
+	ret.SetReplica(r.Replica)
+	ret.SetTensor(r.Tensor)
+	ret.SetVgpumemPercentage(r.VGPUMemory)
+	return ret
 }
 
 func toProtoModels(ms []model.Model) []*pb.Model {
@@ -135,23 +202,42 @@ func toProtoModels(ms []model.Model) []*pb.Model {
 
 func toProtoModel(m *model.Model) *pb.Model {
 	ret := &pb.Model{}
-	ret.SetId("ID") // TODO: waiting for v0.3.0
-	ret.SetName(m.Name)
-	ret.SetNamespace(m.Namespace)
+	ret.SetId(m.ID)
 
-	info := m.Info
-	if info != nil {
-		ret.SetStatus(string(info.Status))
-		ret.SetDescription(info.Description)
-		ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
-		ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
+	release := m.Release
+	if release != nil {
+		ret.SetName(release.Name)
+		ret.SetNamespace(release.Namespace)
+
+		info := release.Info
+		if info != nil {
+			ret.SetStatus(string(info.Status))
+			ret.SetDescription(info.Description)
+			ret.SetFirstDeployedAt(timestamppb.New(info.FirstDeployed.Time))
+			ret.SetLastDeployedAt(timestamppb.New(info.LastDeployed.Time))
+		}
+
+		chart := release.Chart
+		if chart != nil && chart.Metadata != nil {
+			ret.SetChartVersion(chart.Metadata.Version)
+			ret.SetAppVersion(chart.Metadata.AppVersion)
+		}
 	}
 
-	chart := m.Chart
-	if chart != nil && chart.Metadata != nil {
-		ret.SetChartVersion(chart.Metadata.Version)
-		ret.SetAppVersion(chart.Metadata.AppVersion)
+	ret.SetMode(toProtoModelMode(m.Mode))
+
+	prefill := m.Prefill
+	if prefill != nil {
+		ret.SetPrefill(toProtoModelPrefill(prefill))
 	}
+
+	decode := m.Decode
+	if decode != nil {
+		ret.SetDecode(toProtoModelDecode(decode))
+	}
+
+	ret.SetMaxModelLength(m.MaxModelLength)
+	ret.SetPods(toProtoPods(m.Pods))
 
 	return ret
 }

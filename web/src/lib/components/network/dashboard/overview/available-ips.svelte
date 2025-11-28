@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
 	import { ArcChart, Text } from 'layerchart';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -59,30 +60,32 @@
 	});
 </script>
 
-{#if isLoading}
-	Loading
-{:else}
-	<Card.Root class="h-full gap-2">
-		<Card.Header class="items-center">
-			<Card.Title>{m.available_ip_addresses()}</Card.Title>
-			<Card.Description>
-				<Tooltip.Provider>
-					<Tooltip.Root>
-						<Tooltip.Trigger>
-							{targetSubnet?.subnet?.statistics?.availablePercent}
-						</Tooltip.Trigger>
-						<Tooltip.Content>
-							{targetSubnet?.subnet?.statistics?.available} / {targetSubnet?.subnet?.statistics
-								?.total}
-						</Tooltip.Content>
-					</Tooltip.Root>
-				</Tooltip.Provider>
-			</Card.Description>
-		</Card.Header>
+<Card.Root class="h-full gap-2">
+	<Card.Header class="items-center">
+		<Card.Title>{m.available_ip_addresses()}</Card.Title>
+		<Card.Description>
+			<Tooltip.Provider>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						{targetSubnet?.subnet?.statistics?.availablePercent}
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						{targetSubnet?.subnet?.statistics?.available} / {targetSubnet?.subnet?.statistics
+							?.total}
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</Tooltip.Provider>
+		</Card.Description>
+	</Card.Header>
+	{#if isLoading}
+		<div class="flex h-[200px] w-full items-center justify-center">
+			<Icon icon="svg-spinners:6-dots-rotate" class="m-4 size-12" />
+		</div>
+	{:else}
 		<Card.Content class="flex-1">
 			<Chart.Container
 				config={availableInternetProtocolsConfiguration}
-				class="mx-auto aspect-square max-h-[200px]"
+				class="mx-auto aspect-square h-[200px]"
 			>
 				<ArcChart
 					label="key"
@@ -127,5 +130,5 @@
 				</ArcChart>
 			</Chart.Container>
 		</Card.Content>
-	</Card.Root>
-{/if}
+	{/if}
+</Card.Root>

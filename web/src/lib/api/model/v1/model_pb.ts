@@ -2,9 +2,11 @@
 // @generated from file api/model/v1/model.proto (package otterscale.model.v1, edition 2023)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import { file_api_annotations } from "../../annotations_pb";
+import type { Application_Pod } from "../../application/v1/application_pb";
+import { file_api_application_v1_application } from "../../application/v1/application_pb";
 import type { EmptySchema, Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_empty, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -13,7 +15,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/model/v1/model.proto.
  */
 export const file_api_model_v1_model: GenFile = /*@__PURE__*/
-  fileDesc("ChhhcGkvbW9kZWwvdjEvbW9kZWwucHJvdG8SE290dGVyc2NhbGUubW9kZWwudjEilAMKBU1vZGVsEgoKAmlkGAEgASgJEgwKBG5hbWUYCyABKAkSEQoJbmFtZXNwYWNlGAwgASgJEg4KBnN0YXR1cxgNIAEoCRITCgtkZXNjcmlwdGlvbhgOIAEoCRI1ChFmaXJzdF9kZXBsb3llZF9hdBgPIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASNAoQbGFzdF9kZXBsb3llZF9hdBgQIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFQoNY2hhcnRfdmVyc2lvbhgVIAEoCRITCgthcHBfdmVyc2lvbhgWIAEoCRI1CghyZXF1ZXN0cxgfIAEoCzIjLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuUmVzb3VyY2USMwoGbGltaXRzGCAgASgLMiMub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5SZXNvdXJjZRo0CghSZXNvdXJjZRIMCgR2Z3B1GAEgASgNEhoKEnZncHVtZW1fcGVyY2VudGFnZRgCIAEoDSI7ChFMaXN0TW9kZWxzUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAlKBAgCEAMiVQoSTGlzdE1vZGVsc1Jlc3BvbnNlEioKBm1vZGVscxgBIAMoCzIaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwSEwoLc2VydmljZV91cmkYAiABKAki3gEKEkNyZWF0ZU1vZGVsUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRISCgptb2RlbF9uYW1lGAsgASgJEhIKCnNpemVfYnl0ZXMYDCABKAQSMwoGbGltaXRzGBUgASgLMiMub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5SZXNvdXJjZRI1CghyZXF1ZXN0cxgWIAEoCzIjLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuUmVzb3VyY2VKBAgCEAMitgEKElVwZGF0ZU1vZGVsUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRIzCgZsaW1pdHMYFSABKAsyIy5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsLlJlc291cmNlEjUKCHJlcXVlc3RzGBYgASgLMiMub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5SZXNvdXJjZUoECAIQAyJKChJEZWxldGVNb2RlbFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAlKBAgCEAMipgEKDU1vZGVsQXJ0aWZhY3QSDAoEbmFtZRgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSEgoKbW9kZWxfbmFtZRgLIAEoCRINCgVwaGFzZRgVIAEoCRIMCgRzaXplGBYgASgDEhMKC3ZvbHVtZV9uYW1lGB8gASgJEi4KCmNyZWF0ZWRfYXQYKSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkMKGUxpc3RNb2RlbEFydGlmYWN0c1JlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJSgQIAhADIlkKGkxpc3RNb2RlbEFydGlmYWN0c1Jlc3BvbnNlEjsKD21vZGVsX2FydGlmYWN0cxgBIAMoCzIiLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWxBcnRpZmFjdCJ0ChpDcmVhdGVNb2RlbEFydGlmYWN0UmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRISCgptb2RlbF9uYW1lGAsgASgJEgwKBHNpemUYDCABKANKBAgCEAMiUgoaRGVsZXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAlKBAgCEAMyxAYKDE1vZGVsU2VydmljZRJzCgpMaXN0TW9kZWxzEiYub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxzUmVxdWVzdBonLm90dGVyc2NhbGUubW9kZWwudjEuTGlzdE1vZGVsc1Jlc3BvbnNlIhSK39UdDwoNbW9kZWwtZW5hYmxlZBJoCgtDcmVhdGVNb2RlbBInLm90dGVyc2NhbGUubW9kZWwudjEuQ3JlYXRlTW9kZWxSZXF1ZXN0Ghoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbCIUit/VHQ8KDW1vZGVsLWVuYWJsZWQSaAoLVXBkYXRlTW9kZWwSJy5vdHRlcnNjYWxlLm1vZGVsLnYxLlVwZGF0ZU1vZGVsUmVxdWVzdBoaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwiFIrf1R0PCg1tb2RlbC1lbmFibGVkEmQKC0RlbGV0ZU1vZGVsEicub3R0ZXJzY2FsZS5tb2RlbC52MS5EZWxldGVNb2RlbFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiFIrf1R0PCg1tb2RlbC1lbmFibGVkEosBChJMaXN0TW9kZWxBcnRpZmFjdHMSLi5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbEFydGlmYWN0c1JlcXVlc3QaLy5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbEFydGlmYWN0c1Jlc3BvbnNlIhSK39UdDwoNbW9kZWwtZW5hYmxlZBKAAQoTQ3JlYXRlTW9kZWxBcnRpZmFjdBIvLm90dGVyc2NhbGUubW9kZWwudjEuQ3JlYXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QaIi5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsQXJ0aWZhY3QiFIrf1R0PCg1tb2RlbC1lbmFibGVkEnQKE0RlbGV0ZU1vZGVsQXJ0aWZhY3QSLy5vdHRlcnNjYWxlLm1vZGVsLnYxLkRlbGV0ZU1vZGVsQXJ0aWZhY3RSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhSK39UdDwoNbW9kZWwtZW5hYmxlZEIyWjBnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvbW9kZWwvdjE7cGJiCGVkaXRpb25zcOgH", [file_api_annotations, file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("ChhhcGkvbW9kZWwvdjEvbW9kZWwucHJvdG8SE290dGVyc2NhbGUubW9kZWwudjEitwUKBU1vZGVsEgoKAmlkGAEgASgJEgwKBG5hbWUYCyABKAkSEQoJbmFtZXNwYWNlGAwgASgJEg4KBnN0YXR1cxgNIAEoCRITCgtkZXNjcmlwdGlvbhgOIAEoCRI1ChFmaXJzdF9kZXBsb3llZF9hdBgPIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASNAoQbGFzdF9kZXBsb3llZF9hdBgQIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFQoNY2hhcnRfdmVyc2lvbhgVIAEoCRITCgthcHBfdmVyc2lvbhgWIAEoCRItCgRtb2RlGB8gASgOMh8ub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5Nb2RlEjMKB3ByZWZpbGwYICABKAsyIi5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsLlByZWZpbGwSMQoGZGVjb2RlGCEgASgLMiEub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5EZWNvZGUSGAoQbWF4X21vZGVsX2xlbmd0aBgiIAEoDRI4CgRwb2RzGCkgAygLMioub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5Qb2QaNgoHUHJlZmlsbBIPCgdyZXBsaWNhGAEgASgNEhoKEnZncHVtZW1fcGVyY2VudGFnZRgLIAEoDRpFCgZEZWNvZGUSDwoHcmVwbGljYRgBIAEoDRIOCgZ0ZW5zb3IYAiABKA0SGgoSdmdwdW1lbV9wZXJjZW50YWdlGAsgASgNIlkKBE1vZGUSKQolTU9ERV9JTlRFTExJR0VOVF9JTkZFUkVOQ0VfU0NIRURVTElORxAAEiYKIk1PREVfUFJFRklMTF9ERUNPREVfRElTQUdHUkVHQVRJT04QASI7ChFMaXN0TW9kZWxzUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAlKBAgCEAMiVQoSTGlzdE1vZGVsc1Jlc3BvbnNlEioKBm1vZGVscxgBIAMoCzIaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwSEwoLc2VydmljZV91cmkYAiABKAkiowIKEkNyZWF0ZU1vZGVsUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRISCgptb2RlbF9uYW1lGAsgASgJEhIKCnNpemVfYnl0ZXMYDCABKAQSLQoEbW9kZRgVIAEoDjIfLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuTW9kZRIzCgdwcmVmaWxsGBYgASgLMiIub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5QcmVmaWxsEjEKBmRlY29kZRgXIAEoCzIhLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwuRGVjb2RlEhgKEG1heF9tb2RlbF9sZW5ndGgYGCABKA1KBAgCEAMi+wEKElVwZGF0ZU1vZGVsUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRItCgRtb2RlGBUgASgOMh8ub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5Nb2RlEjMKB3ByZWZpbGwYFiABKAsyIi5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsLlByZWZpbGwSMQoGZGVjb2RlGBcgASgLMiEub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbC5EZWNvZGUSGAoQbWF4X21vZGVsX2xlbmd0aBgYIAEoDUoECAIQAyJKChJEZWxldGVNb2RlbFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAlKBAgCEAMipgEKDU1vZGVsQXJ0aWZhY3QSDAoEbmFtZRgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSEgoKbW9kZWxfbmFtZRgLIAEoCRINCgVwaGFzZRgVIAEoCRIMCgRzaXplGBYgASgDEhMKC3ZvbHVtZV9uYW1lGB8gASgJEi4KCmNyZWF0ZWRfYXQYKSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkMKGUxpc3RNb2RlbEFydGlmYWN0c1JlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJSgQIAhADIlkKGkxpc3RNb2RlbEFydGlmYWN0c1Jlc3BvbnNlEjsKD21vZGVsX2FydGlmYWN0cxgBIAMoCzIiLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWxBcnRpZmFjdCJ0ChpDcmVhdGVNb2RlbEFydGlmYWN0UmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRISCgptb2RlbF9uYW1lGAsgASgJEgwKBHNpemUYDCABKANKBAgCEAMiUgoaRGVsZXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAlKBAgCEAMyxAYKDE1vZGVsU2VydmljZRJzCgpMaXN0TW9kZWxzEiYub3R0ZXJzY2FsZS5tb2RlbC52MS5MaXN0TW9kZWxzUmVxdWVzdBonLm90dGVyc2NhbGUubW9kZWwudjEuTGlzdE1vZGVsc1Jlc3BvbnNlIhSK39UdDwoNbW9kZWwtZW5hYmxlZBJoCgtDcmVhdGVNb2RlbBInLm90dGVyc2NhbGUubW9kZWwudjEuQ3JlYXRlTW9kZWxSZXF1ZXN0Ghoub3R0ZXJzY2FsZS5tb2RlbC52MS5Nb2RlbCIUit/VHQ8KDW1vZGVsLWVuYWJsZWQSaAoLVXBkYXRlTW9kZWwSJy5vdHRlcnNjYWxlLm1vZGVsLnYxLlVwZGF0ZU1vZGVsUmVxdWVzdBoaLm90dGVyc2NhbGUubW9kZWwudjEuTW9kZWwiFIrf1R0PCg1tb2RlbC1lbmFibGVkEmQKC0RlbGV0ZU1vZGVsEicub3R0ZXJzY2FsZS5tb2RlbC52MS5EZWxldGVNb2RlbFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiFIrf1R0PCg1tb2RlbC1lbmFibGVkEosBChJMaXN0TW9kZWxBcnRpZmFjdHMSLi5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbEFydGlmYWN0c1JlcXVlc3QaLy5vdHRlcnNjYWxlLm1vZGVsLnYxLkxpc3RNb2RlbEFydGlmYWN0c1Jlc3BvbnNlIhSK39UdDwoNbW9kZWwtZW5hYmxlZBKAAQoTQ3JlYXRlTW9kZWxBcnRpZmFjdBIvLm90dGVyc2NhbGUubW9kZWwudjEuQ3JlYXRlTW9kZWxBcnRpZmFjdFJlcXVlc3QaIi5vdHRlcnNjYWxlLm1vZGVsLnYxLk1vZGVsQXJ0aWZhY3QiFIrf1R0PCg1tb2RlbC1lbmFibGVkEnQKE0RlbGV0ZU1vZGVsQXJ0aWZhY3QSLy5vdHRlcnNjYWxlLm1vZGVsLnYxLkRlbGV0ZU1vZGVsQXJ0aWZhY3RSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhSK39UdDwoNbW9kZWwtZW5hYmxlZEIyWjBnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvbW9kZWwvdjE7cGJiCGVkaXRpb25zcOgH", [file_api_annotations, file_api_application_v1_application, file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message otterscale.model.v1.Model
@@ -65,14 +67,31 @@ export type Model = Message<"otterscale.model.v1.Model"> & {
   appVersion: string;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource requests = 31;
+   * @generated from field: otterscale.model.v1.Model.Mode mode = 31;
    */
-  requests?: Model_Resource;
+  mode: Model_Mode;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource limits = 32;
+   * disabled if mode is intelligent inference scheduling
+   *
+   * @generated from field: otterscale.model.v1.Model.Prefill prefill = 32;
    */
-  limits?: Model_Resource;
+  prefill?: Model_Prefill;
+
+  /**
+   * @generated from field: otterscale.model.v1.Model.Decode decode = 33;
+   */
+  decode?: Model_Decode;
+
+  /**
+   * @generated from field: uint32 max_model_length = 34;
+   */
+  maxModelLength: number;
+
+  /**
+   * @generated from field: repeated otterscale.application.v1.Application.Pod pods = 41;
+   */
+  pods: Application_Pod[];
 };
 
 /**
@@ -83,26 +102,78 @@ export const ModelSchema: GenMessage<Model> = /*@__PURE__*/
   messageDesc(file_api_model_v1_model, 0);
 
 /**
- * @generated from message otterscale.model.v1.Model.Resource
+ * @generated from message otterscale.model.v1.Model.Prefill
  */
-export type Model_Resource = Message<"otterscale.model.v1.Model.Resource"> & {
+export type Model_Prefill = Message<"otterscale.model.v1.Model.Prefill"> & {
   /**
-   * @generated from field: uint32 vgpu = 1;
+   * @generated from field: uint32 replica = 1;
    */
-  vgpu: number;
+  replica: number;
 
   /**
-   * @generated from field: uint32 vgpumem_percentage = 2;
+   * @generated from field: uint32 vgpumem_percentage = 11;
    */
   vgpumemPercentage: number;
 };
 
 /**
- * Describes the message otterscale.model.v1.Model.Resource.
- * Use `create(Model_ResourceSchema)` to create a new message.
+ * Describes the message otterscale.model.v1.Model.Prefill.
+ * Use `create(Model_PrefillSchema)` to create a new message.
  */
-export const Model_ResourceSchema: GenMessage<Model_Resource> = /*@__PURE__*/
+export const Model_PrefillSchema: GenMessage<Model_Prefill> = /*@__PURE__*/
   messageDesc(file_api_model_v1_model, 0, 0);
+
+/**
+ * @generated from message otterscale.model.v1.Model.Decode
+ */
+export type Model_Decode = Message<"otterscale.model.v1.Model.Decode"> & {
+  /**
+   * set to 1 if mode is prefill-decode disaggregation
+   *
+   * @generated from field: uint32 replica = 1;
+   */
+  replica: number;
+
+  /**
+   * @generated from field: uint32 tensor = 2;
+   */
+  tensor: number;
+
+  /**
+   * @generated from field: uint32 vgpumem_percentage = 11;
+   */
+  vgpumemPercentage: number;
+};
+
+/**
+ * Describes the message otterscale.model.v1.Model.Decode.
+ * Use `create(Model_DecodeSchema)` to create a new message.
+ */
+export const Model_DecodeSchema: GenMessage<Model_Decode> = /*@__PURE__*/
+  messageDesc(file_api_model_v1_model, 0, 1);
+
+/**
+ * @generated from enum otterscale.model.v1.Model.Mode
+ */
+export enum Model_Mode {
+  /**
+   * @generated from enum value: MODE_INTELLIGENT_INFERENCE_SCHEDULING = 0;
+   */
+  INTELLIGENT_INFERENCE_SCHEDULING = 0,
+
+  /**
+   * heterogeneous parallelism
+   *
+   * @generated from enum value: MODE_PREFILL_DECODE_DISAGGREGATION = 1;
+   */
+  PREFILL_DECODE_DISAGGREGATION = 1,
+}
+
+/**
+ * Describes the enum otterscale.model.v1.Model.Mode.
+ */
+export const Model_ModeSchema: GenEnum<Model_Mode> = /*@__PURE__*/
+  enumDesc(file_api_model_v1_model, 0, 0);
 
 /**
  * @generated from message otterscale.model.v1.ListModelsRequest
@@ -178,14 +249,24 @@ export type CreateModelRequest = Message<"otterscale.model.v1.CreateModelRequest
   sizeBytes: bigint;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource limits = 21;
+   * @generated from field: otterscale.model.v1.Model.Mode mode = 21;
    */
-  limits?: Model_Resource;
+  mode: Model_Mode;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource requests = 22;
+   * @generated from field: otterscale.model.v1.Model.Prefill prefill = 22;
    */
-  requests?: Model_Resource;
+  prefill?: Model_Prefill;
+
+  /**
+   * @generated from field: otterscale.model.v1.Model.Decode decode = 23;
+   */
+  decode?: Model_Decode;
+
+  /**
+   * @generated from field: uint32 max_model_length = 24;
+   */
+  maxModelLength: number;
 };
 
 /**
@@ -215,14 +296,24 @@ export type UpdateModelRequest = Message<"otterscale.model.v1.UpdateModelRequest
   name: string;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource limits = 21;
+   * @generated from field: otterscale.model.v1.Model.Mode mode = 21;
    */
-  limits?: Model_Resource;
+  mode: Model_Mode;
 
   /**
-   * @generated from field: otterscale.model.v1.Model.Resource requests = 22;
+   * @generated from field: otterscale.model.v1.Model.Prefill prefill = 22;
    */
-  requests?: Model_Resource;
+  prefill?: Model_Prefill;
+
+  /**
+   * @generated from field: otterscale.model.v1.Model.Decode decode = 23;
+   */
+  decode?: Model_Decode;
+
+  /**
+   * @generated from field: uint32 max_model_length = 24;
+   */
+  maxModelLength: number;
 };
 
 /**

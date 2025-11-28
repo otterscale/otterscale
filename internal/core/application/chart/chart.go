@@ -59,7 +59,8 @@ type ChartRepo interface {
 }
 
 type UseCase struct {
-	conf  *config.Config
+	conf *config.Config
+
 	chart ChartRepo
 }
 

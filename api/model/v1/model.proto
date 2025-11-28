@@ -3,6 +3,7 @@ edition = "2023";
 package otterscale.model.v1;
 
 import "api/annotations.proto";
+import "api/application/v1/application.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -53,9 +54,18 @@ service ModelService {
 }
 
 message Model {
-  message Resource {
-    uint32 vgpu = 1;
-    uint32 vgpumem_percentage = 2;
+  enum Mode {
+    MODE_INTELLIGENT_INFERENCE_SCHEDULING = 0;
+    MODE_PREFILL_DECODE_DISAGGREGATION = 1;  // heterogeneous parallelism
+  }
+  message Prefill {
+    uint32 replica = 1;
+    uint32 vgpumem_percentage = 11;
+  }
+  message Decode {
+    uint32 replica = 1;  // set to 1 if mode is prefill-decode disaggregation
+    uint32 tensor = 2;
+    uint32 vgpumem_percentage = 11;
   }
   string id = 1;
   string name = 11;
@@ -66,8 +76,11 @@ message Model {
   google.protobuf.Timestamp last_deployed_at = 16;
   string chart_version = 21;
   string app_version = 22;
-  Resource requests = 31;
-  Resource limits = 32;
+  Mode mode = 31;
+  Prefill prefill = 32;  // disabled if mode is intelligent inference scheduling
+  Decode decode = 33;
+  uint32 max_model_length = 34;
+  repeated otterscale.application.v1.Application.Pod pods = 41;
 }
 
 message ListModelsRequest {
@@ -88,8 +101,10 @@ message CreateModelRequest {
   string name = 4;
   string model_name = 11;
   uint64 size_bytes = 12;
-  Model.Resource limits = 21;
-  Model.Resource requests = 22;
+  Model.Mode mode = 21;
+  Model.Prefill prefill = 22;
+  Model.Decode decode = 23;
+  uint32 max_model_length = 24;
 }
 
 message UpdateModelRequest {
@@ -97,8 +112,10 @@ message UpdateModelRequest {
   reserved 2;
   string namespace = 3;
   string name = 4;
-  Model.Resource limits = 21;
-  Model.Resource requests = 22;
+  Model.Mode mode = 21;
+  Model.Prefill prefill = 22;
+  Model.Decode decode = 23;
+  uint32 max_model_length = 24;
 }
 
 message DeleteModelRequest {
