@@ -553,6 +553,9 @@ prompt_bridge_creation() {
         error_exit "Failed network bridge creation"
     fi
 
+    log "INFO" "Disable bridge stp" "NETWORK"
+    nmcli connection modify "$OTTERSCALE_BRIDGE_NAME" bridge.stp no > /dev/null
+
     log "INFO" "Connect network bridge $OTTERSCALE_BRIDGE_NAME to interface $CURRENT_INTERFACE"
     nmcli connection add type bridge-slave con-name br-otters-slave ifname "$CURRENT_INTERFACE" master "$OTTERSCALE_BRIDGE_NAME" > /dev/null
 
