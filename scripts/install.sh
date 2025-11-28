@@ -310,13 +310,15 @@ disable_ipv6() {
 check_iptables() {
     log "INFO" "Check iptable rules" "SYSTEM_CONFIG"
 
-    if ! iptables -C FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null; then
-        iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+    local rule_args="-m state --state RELATED,ESTABLISHED -j ACCEPT"
+    if ! iptables -C FORWARD "$rule_args" 2>/dev/null; then
+        iptables -A FORWARD "$rule_args"
         log "INFO" "Add rule: iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT" "SYSTEM_CONFIG"
     fi
 
-    if ! iptables -C FORWARD -i br-otters -j ACCEPT 2>/dev/null; then
-        iptables -A FORWARD -i br-otters -j ACCEPT
+    rule_args="-i "$OTTERSCALE_BRIDGE_NAME" -j ACCEPT"
+    if ! iptables -C FORWARD "$rule_args" 2>/dev/null; then
+        iptables -A FORWARD "$rule_args"
         log "INFO" "Add rule: iptables -A FORWARD -i br-otters -j ACCEPT" "SYSTEM_CONFIG"
     fi
 }
@@ -1676,7 +1678,6 @@ main() {
     check_memory
     check_disk
     disable_ipv6
-    check_iptables
     log "INFO" "All pre-checks passed" "VALIDATION"
 
     # Package installation
@@ -1688,6 +1689,7 @@ main() {
     # Network setup
     log "INFO" "Setting up network..." "NETWORK"
     check_bridge
+    check_iptables
 
     # User setup
     log "INFO" "Setting up users and SSH..." "USER_SETUP"

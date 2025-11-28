@@ -94,12 +94,13 @@ remove_juju_file() {
 }
 
 remove_iptables() {
-    if iptables -C FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null; then
-        iptables -D FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+    local rule_args="-m state --state RELATED,ESTABLISHED -j ACCEPT"
+    if iptables -C FORWARD "$rule_args" 2>/dev/null; then
+        iptables -D FORWARD "$rule_args"
     fi
-
-    if iptables -C FORWARD -i br-otters -j ACCEPT 2>/dev/null; then
-        iptables -D FORWARD -i br-otters -j ACCEPT
+    rule_args="-i br-otters -j ACCEPT"
+    if iptables -C FORWARD "$rule_args" 2>/dev/null; then
+        iptables -D FORWARD "$rule_args"
     fi
 }
 
@@ -110,7 +111,7 @@ main() {
     fi
     remove_pkg
     remove_juju_file
-    remote_iptables
+    remove_iptables
 }
 
 main
