@@ -36,12 +36,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-# Create a home directory for nobody
-RUN mkdir -p /home/nobody && chown nobody:nogroup /home/nobody
-ENV HOME=/home/nobody
-
 # Copy binary with correct ownership
-COPY --from=builder --chown=nobody:nogroup /src/bin/otterscale ./otterscale
+COPY --from=builder --chown=nobody:nobody /src/bin/otterscale ./otterscale
 RUN chmod 550 ./otterscale
 
 # Switch to non-root user
