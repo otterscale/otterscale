@@ -2,12 +2,11 @@
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
 
+	import type { Model } from '$lib/api/model/v1/model_pb';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
 
-	import type { LargeLanguageModel } from '../type';
-
-	let { table }: { table: Table<LargeLanguageModel> } = $props();
+	let { table }: { table: Table<Model> } = $props();
 
 	const filteredModels = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
 </script>

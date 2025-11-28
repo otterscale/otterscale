@@ -8,7 +8,7 @@
 	let { table }: { table: Table<TData> } = $props();
 </script>
 
-<div class="flex items-center justify-center">
+<div data-slot="data-table-row-picker" class="flex items-center justify-center">
 	<Checkbox
 		checked={table.getIsAllPageRowsSelected()}
 		indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}

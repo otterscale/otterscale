@@ -31,9 +31,6 @@
 		reloadManager
 	}: { machines: Writable<Machine[]>; metrics: Metrics; reloadManager: ReloadManager } = $props();
 
-	console.log(machines);
-	console.log(metrics);
-
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);

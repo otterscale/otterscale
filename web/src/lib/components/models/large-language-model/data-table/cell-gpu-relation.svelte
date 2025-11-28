@@ -9,21 +9,21 @@
 	import { onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 
+	import type { Model } from '$lib/api/model/v1/model_pb';
 	import {
 		type GPURelation_GPU,
 		type GPURelation_Machine,
 		type GPURelation_Pod,
 		OrchestratorService
 	} from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { Complex as Flow } from '$lib/components/flow/index';
+	import { Complex as ComplexFlow } from '$lib/components/flow/index';
+	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
-
-	import type { LargeLanguageModel } from '../type';
 </script>
 
 <script lang="ts">
-	let { scope, model }: { scope: string; model: LargeLanguageModel } = $props();
+	let { scope, model }: { scope: string; model: Model } = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(OrchestratorService, transport);
@@ -37,7 +37,7 @@
 		try {
 			const response = await client.listGPURelationsByModel({
 				scope: scope,
-				namespace: model.application.namespace,
+				namespace: model.namespace,
 				modelName: model.name
 			});
 			nodes.set(
@@ -50,7 +50,6 @@
 							type: 'machine',
 							id: `machine${gpuRelation.entity.value.id}`,
 							data: {
-								scope,
 								machine: gpuRelation.entity.value,
 								gpus: gpus.filter(
 									(gpu) => gpu.machineId === (gpuRelation.entity.value as GPURelation_Machine).id
@@ -80,7 +79,7 @@
 						return {
 							type: 'model',
 							id: `pod${gpuRelation.entity.value.namespace}${gpuRelation.entity.value.name}`,
-							data: gpuRelation.entity.value,
+							data: { scope, pod: gpuRelation.entity.value },
 							position
 						};
 					} else {
@@ -126,18 +125,16 @@
 	}
 
 	let open = $state(false);
-	let isLoading = $state(true);
+	let isLoaded = $state(false);
 	onMount(async () => {
 		await fetch();
-		isLoading = false;
+		isLoaded = true;
 	});
 </script>
 
-{#if isLoading}
-	Loading...
-{:else}
+{#if isLoaded}
 	<Sheet.Root bind:open>
-		<Sheet.Trigger>
+		<Sheet.Trigger class={buttonVariants({ variant: 'ghost' })}>
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content side="right" class="min-w-[38vw] p-4">
@@ -145,7 +142,7 @@
 				<Sheet.Header>
 					<Sheet.Title class="text-center text-lg">{m.details()}</Sheet.Title>
 				</Sheet.Header>
-				<Flow.Flow initialNodes={$nodes} initialEdges={$edges} />
+				<ComplexFlow.Flow initialNodes={$nodes} initialEdges={$edges} />
 			{/if}
 		</Sheet.Content>
 	</Sheet.Root>
