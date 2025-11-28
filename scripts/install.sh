@@ -1417,7 +1417,7 @@ add_helm_repository() {
     if [[ -n $(microk8s helm3 repo list -o json | jq ".[] | select(.name==\"$repository_name\")") ]]; then
         log "INFO" "Helm repository $repository_name exist" "HELM_REPO"
     else
-        log "Add helm repository $repository_name" "HELM_REPO"
+        log "INFO" "Add helm repository $repository_name" "HELM_REPO"
         execute_cmd "microk8s helm3 repo add $repository_name $repository_url" "helm repository add"
     fi
 }
