@@ -310,14 +310,14 @@ disable_ipv6() {
 check_iptables() {
     log "INFO" "Check iptable rules" "SYSTEM_CONFIG"
 
-    iptables -C FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null
-    if [ $? -ne 0 ]; then
+    if ! iptables -C FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null; then
         iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+        log "INFO" "Add rule: iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT" "SYSTEM_CONFIG"
     fi
 
-    iptables -C FORWARD -i br-otters -j ACCEPT 2>/dev/null
-    if [ $? -ne 0 ]; then
+    if ! iptables -C FORWARD -i br-otters -j ACCEPT 2>/dev/null; then
         iptables -A FORWARD -i br-otters -j ACCEPT
+        log "INFO" "Add rule: iptables -A FORWARD -i br-otters -j ACCEPT" "SYSTEM_CONFIG"
     fi
 }
 
