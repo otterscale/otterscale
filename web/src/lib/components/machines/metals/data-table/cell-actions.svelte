@@ -32,7 +32,8 @@
 		disabled={machine.powerState.toLowerCase() !== 'on' ||
 			machine.status.toLowerCase() === 'commissioning' ||
 			machine.status.toLowerCase() === 'testing' ||
-			machine.status.toLowerCase() === 'deploying'}
+			machine.status.toLowerCase() === 'deploying' ||
+			!!machine.workloadAnnotations['juju-is-controller']}
 	>
 		<PowerOff {machine} {reloadManager} />
 	</Layout.ActionItem>
