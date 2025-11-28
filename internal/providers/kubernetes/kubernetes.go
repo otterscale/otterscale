@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -35,14 +36,20 @@ func New(conf *config.Config, juju *juju.Juju) (*Kubernetes, error) {
 	opts := []registry.ClientOption{
 		registry.ClientOptEnableCache(true),
 	}
+
 	registryClient, err := registry.NewClient(opts...)
 	if err != nil {
 		return nil, err
 	}
+
+	envSettings := cli.New()
+	envSettings.RepositoryConfig = filepath.Join(os.TempDir(), "helm", "repositories.yaml")
+	envSettings.RepositoryCache = filepath.Join(os.TempDir(), "helm", "repository")
+
 	return &Kubernetes{
 		conf:           conf,
 		juju:           juju,
-		envSettings:    cli.New(),
+		envSettings:    envSettings,
 		registryClient: registryClient,
 	}, nil
 }
