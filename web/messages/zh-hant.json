@@ -876,5 +876,7 @@
 	"tensor": "張量",
 	"create_model": "建立模型",
 	"update_model": "更新模型",
-	"delete_model": "刪除模型"
+	"delete_model": "刪除模型",
+	"test": "測試"
+
 }

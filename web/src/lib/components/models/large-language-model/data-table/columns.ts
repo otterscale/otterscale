@@ -21,10 +21,15 @@ const messages = {
 	app_version: m.version(),
 	prefill: m.prefill(),
 	decode: m.decode(),
-	gpu_relation: m.gpu_relation()
+	gpu_relation: m.gpu_relation(),
+	test: m.test()
 };
 
-function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Model>[] {
+function getColumns(
+	serviceUri: string,
+	scope: string,
+	reloadManager: ReloadManager
+): ColumnDef<Model>[] {
 	return [
 		{
 			id: 'expand',
@@ -171,6 +176,16 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Mode
 			},
 			cell: ({ row }) => {
 				return renderSnippet(cells.gpu_relation, { row, scope, reloadManager });
+			},
+			enableHiding: false
+		},
+		{
+			accessorKey: 'test',
+			header: ({ column }) => {
+				return renderSnippet(headers.test, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.test, { row, serviceUri: serviceUri });
 			},
 			enableHiding: false
 		},

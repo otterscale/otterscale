@@ -878,5 +878,6 @@
 	"tensor": "Tensor",
 	"create_model": "Create Model",
 	"update_model": "Update Model",
-	"delete_model": "Delete Model"
+	"delete_model": "Delete Model",
+	"test": "Testing"
 }

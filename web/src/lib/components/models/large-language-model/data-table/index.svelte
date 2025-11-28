@@ -30,12 +30,14 @@
 
 <script lang="ts">
 	let {
+		serviceUri,
 		models,
 		metrics,
 		scope,
 		namespace,
 		reloadManager
 	}: {
+		serviceUri: string;
 		models: Writable<Model[]>;
 		metrics: Metrics;
 		scope: string;
@@ -55,7 +57,7 @@
 			return $models;
 		},
 		get columns() {
-			return getColumns(scope, reloadManager);
+			return getColumns(serviceUri, scope, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),

@@ -6,6 +6,7 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import Prompting from '$lib/components/prompting/index.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
@@ -28,6 +29,7 @@
 		prefill,
 		decode,
 		gpu_relation,
+		test,
 		action
 	};
 </script>
@@ -143,6 +145,14 @@
 	{#if data.row.original.status === 'deployed'}
 		<Layout.Cell class="items-end">
 			<GPURelation scope={data.scope} model={data.row.original} />
+		</Layout.Cell>
+	{/if}
+{/snippet}
+
+{#snippet test(data: { row: Row<Model>; serviceUri: string })}
+	{#if data.row.original.status === 'deployed'}
+		<Layout.Cell class="items-end">
+			<Prompting serviceUri={data.serviceUri} model={data.row.original} />
 		</Layout.Cell>
 	{/if}
 {/snippet}

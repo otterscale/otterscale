@@ -21,6 +21,7 @@
 		prefill,
 		decode,
 		gpu_relation,
+		test,
 		action
 	};
 </script>
@@ -136,6 +137,12 @@
 {#snippet gpu_relation()}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>{m.gpu_relation()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet test()}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderViewer>{m.test()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

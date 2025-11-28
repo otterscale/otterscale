@@ -23,11 +23,13 @@
 	const modelClient = createClient(ModelService, transport);
 	const environmentService = createClient(EnvironmentService, transport);
 
+	let serviceUri = $state('');
 	const models = writable<Model[]>([]);
 	async function fetchModels() {
 		const response = await modelClient.listModels({
 			scope: scope
 		});
+		serviceUri = response.serviceUri;
 		models.set(response.models);
 	}
 
@@ -96,7 +98,7 @@
 <main class="space-y-4 py-4">
 	<ExtensionsAlert {scope} />
 	{#if isMounted}
-		<DataTable {models} namespace="default" {metrics} {scope} {reloadManager} />
+		<DataTable {serviceUri} {models} namespace="default" {metrics} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}
