@@ -2,10 +2,7 @@ module github.com/otterscale/otterscale
 
 go 1.25.4
 
-tool (
-	golang.org/x/tools
-	github.com/google/subcommands
-)
+tool github.com/google/subcommands
 
 ignore ./web
 
@@ -57,7 +54,7 @@ require (
 	kubevirt.io/api v1.6.3
 	kubevirt.io/containerized-data-importer-api v1.63.1
 	sigs.k8s.io/gateway-api v1.4.0
-	sigs.k8s.io/gateway-api-inference-extension v1.1.0
+	sigs.k8s.io/gateway-api-inference-extension v1.2.0-rc.1
 	sigs.k8s.io/kustomize/api v0.21.0
 	sigs.k8s.io/kustomize/kyaml v0.21.0
 	sigs.k8s.io/yaml v1.6.0
@@ -267,7 +264,6 @@ require (
 	golang.org/x/term v0.37.0 // indirect
 	golang.org/x/text v0.31.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
-	golang.org/x/tools v0.38.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251103181224-f26f9409b101 // indirect
 	google.golang.org/grpc v1.76.0 // indirect
 	gopkg.in/errgo.v1 v1.0.1 // indirect
