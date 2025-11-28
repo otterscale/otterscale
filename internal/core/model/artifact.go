@@ -13,8 +13,6 @@ import (
 	"github.com/otterscale/otterscale/internal/core/versions"
 )
 
-const ModelArtifactModelNameAnnotation = "otterscale.com/model-artifact.model-name"
-
 type Artifact struct {
 	Name       string
 	Namespace  string
@@ -70,7 +68,7 @@ func (uc *UseCase) installModelArtifact(ctx context.Context, scope, namespace, n
 
 	// annotations
 	annotations := map[string]string{
-		ModelArtifactModelNameAnnotation: modelName,
+		ModelNameAnnotation: modelName,
 	}
 
 	// values
@@ -96,7 +94,7 @@ func (uc *UseCase) toArtifact(pvc *persistent.PersistentVolumeClaim) *Artifact {
 	return &Artifact{
 		Name:       pvc.Name,
 		Namespace:  pvc.Namespace,
-		Modelname:  pvc.Annotations[ModelArtifactModelNameAnnotation],
+		Modelname:  pvc.Annotations[ModelNameAnnotation],
 		Phase:      pvc.Status.Phase,
 		Size:       size,
 		VolumeName: pvc.Spec.VolumeName,

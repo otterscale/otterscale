@@ -14,7 +14,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
 )
 
-const DataVolumeBootImageLabel = "otterscale.com/data-volume.boot-image"
+const bootImageLabel = "otterscale.com/data-volume.boot-image"
 
 type DataVolumeSourceType int64
 
@@ -41,6 +41,8 @@ type (
 type DataVolumePersistent struct {
 	*DataVolume
 	*persistent.Persistent
+
+	BootImage bool
 }
 
 type DataVolumeRepo interface {
@@ -75,7 +77,7 @@ func (uc *UseCase) ListDataVolumes(ctx context.Context, scope, namespace string,
 	eg, egctx := errgroup.WithContext(ctx)
 
 	eg.Go(func() error {
-		selector := DataVolumeBootImageLabel + "=" + strconv.FormatBool(bootImage)
+		selector := bootImageLabel + "=" + strconv.FormatBool(bootImage)
 
 		v, err := uc.dataVolume.List(egctx, scope, namespace, selector)
 		if err == nil {
@@ -135,6 +137,7 @@ func (uc *UseCase) ListDataVolumes(ctx context.Context, scope, namespace string,
 			Persistent: &persistent.Persistent{
 				PersistentVolumeClaim: pvc,
 			},
+			BootImage: isBootImage(&dv),
 		}
 
 		scName := pvc.Spec.StorageClassName
@@ -194,6 +197,7 @@ func (uc *UseCase) GetDataVolume(ctx context.Context, scope, namespace, name str
 			PersistentVolumeClaim: persistentVolumeClaim,
 			StorageClass:          storageClass,
 		},
+		BootImage: isBootImage(dataVolume),
 	}, nil
 }
 
@@ -205,6 +209,7 @@ func (uc *UseCase) CreateDataVolume(ctx context.Context, scope, namespace, name 
 
 	return &DataVolumePersistent{
 		DataVolume: dataVolume,
+		BootImage:  isBootImage(dataVolume),
 	}, nil
 }
 
@@ -287,7 +292,7 @@ func (uc *UseCase) buildDataVolume(namespace, name string, srcType DataVolumeSou
 			Name:      name,
 			Namespace: namespace,
 			Labels: map[string]string{
-				DataVolumeBootImageLabel: strconv.FormatBool(bootImage),
+				bootImageLabel: strconv.FormatBool(bootImage),
 			},
 		},
 		Spec: cdiv1beta1.DataVolumeSpec{
@@ -296,4 +301,22 @@ func (uc *UseCase) buildDataVolume(namespace, name string, srcType DataVolumeSou
 			PVC:     pvc,
 		},
 	}
+}
+
+func isBootImage(dv *DataVolume) bool {
+	if dv == nil {
+		return false
+	}
+
+	val, found := dv.Labels[bootImageLabel]
+	if !found {
+		return false
+	}
+
+	bootImage, err := strconv.ParseBool(val)
+	if err != nil {
+		return false
+	}
+
+	return bootImage
 }
