@@ -1379,7 +1379,7 @@ config_bridge() {
 
         if nmcli connection modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask" >/dev/null 2>&1; then
             log "INFO" "Add $OTTERSCALE_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-            nmcli connection down "$OTTERSCALE_BRIDGE_NAME" > /dev/null && nmcli connection up "$OTTERSCALE_BRIDGE_NAME" > /dev/null
+            nmcli connection down "$OTTERSCALE_BRIDGE_NAME" > /dev/null && nmcli connection up "$OTTERSCALE_BRIDGE_NAME" > /dev/null && nmcli connection up br-otters-slave > /dev/null
             sleep 10
 
             log "INFO" "Waiting ipv4 bind to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
