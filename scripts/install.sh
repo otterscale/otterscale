@@ -345,17 +345,25 @@ send_status_data() {
         return 0
     fi
 
-    local data
-    data=$(cat <<EOF
+    if [[ -n "$new_url" ]]; then
+        data=$(cat <<EOF
 {
-    "phase": "$phase",
-    "message": "$message",
-    "new_url": "$new_url"
-
+  "phase": "$phase",
+  "message": "$message",
+  "new_url": "$new_url"
 }
 EOF
-)
-
+    )
+    else
+        data=$(cat <<EOF
+{
+  "phase": "$phase",
+  "message": "$message"
+}
+EOF
+    )
+    fi
+    
     send_request "/otterscale.bootstrap.v1.BootstrapService/UpdateStatus" "$data"
 }
 
@@ -520,13 +528,13 @@ get_default_dns() {
     if resolvectl status "$interface" | grep "DNS Servers" > /dev/null; then
         CURRENT_DNS=$(resolvectl status "$interface" | grep "DNS Servers" | awk '{print $3}' | head -1)
         if [[ -z $CURRENT_DNS ]]; then
-            log "WARN" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
+            log "INFO" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
             CURRENT_DNS="8.8.8.8"
         else
             log "INFO" "Detected DNS server for $interface: $CURRENT_DNS" "NETWORK"
         fi
     else
-        log "WARN" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
+        log "INFO" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
         CURRENT_DNS="8.8.8.8"
     fi
 }
@@ -1130,7 +1138,7 @@ add_clouds_yaml() {
     log "INFO" "Check juju clouds" "JUJU_CONFIG"
 
     if su "$NON_ROOT_USER" -c 'juju clouds 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
-        log "WARN" "Juju cloud maas-cloud already exists – skipping creation" "JUJU_CLOUD"
+        log "INFO" "Juju cloud maas-cloud already exists – skipping creation" "JUJU_CLOUD"
     else
         log "INFO" "Adding MAAS cloud to Juju..." "JUJU_BOOTSTRAP"
         if ! su "$NON_ROOT_USER" -c 'juju add-cloud --client maas-cloud $JUJU_CLOUD >>/dev/null 2>&1'; then
@@ -1143,7 +1151,7 @@ add_generates_yaml() {
     log "INFO" "Check juju credentials" "JUJU_CONFIG"
 
     if su "$NON_ROOT_USER" -c 'juju credentials 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
-        log "WARN" "Juju credential for maas-cloud already exists – skipping creation" "JUJU_CREDENTIAL"
+        log "INFO" "Juju credential for maas-cloud already exists – skipping creation" "JUJU_CREDENTIAL"
     else
         log "INFO" "Adding MAAS credential to Juju..." "JUJU_BOOTSTRAP"
         if ! su "$NON_ROOT_USER" -c 'juju add-credential --client maas-cloud -f $JUJU_CREDENTIAL >>/dev/null 2>&1'; then
@@ -1269,7 +1277,7 @@ juju_add_k8s() {
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client" >>"$TEMP_LOG" 2>&1; then
-        log "WARN" "Controller cos-k8s already exist" "JUJU_K8S"
+        log "INFO" "Controller cos-k8s already exist" "JUJU_K8S"
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1"; then
@@ -1408,6 +1416,12 @@ config_bridge() {
             done
         fi
     fi
+
+    log "INFO" "Check metallb ipaddresspools" "NETWORK"
+    if ! microk8s kubectl get ipaddresspools default-addresspool -n metallb-system -o json | jq --exit-status ".spec.addresses[] | select(.==\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\")" >/dev/null 2>&1 ; then
+        log "INFO" "Update microk8s metallb: $OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP" "NETWORK"
+        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >/dev/null 2>&1
+    fi
 }
 
 add_helm_repository() {
@@ -1440,6 +1454,7 @@ install_helm_chart() {
 
 deploy_helm() {
     log "INFO" "Process microk8s helm3" "HELM_CHECK"
+    local keycloak_realm="otters"
 
     log "INFO" "Check helm repository" "HELM_REPO"
     add_helm_repository "https://istio-release.storage.googleapis.com/charts" "istio"
@@ -1450,11 +1465,9 @@ deploy_helm() {
     log "INFO" "Update helm repository" "HELM_REPO"
     execute_cmd "microk8s helm3 repo update" "helm repository update"
 
-    local otterscale_endpoint="http://$OTTERSCALE_WEB_IP"
-    local keycloak_realm="otters"
-
     install_helm_chart "istio-base" "istio-system" "istio/base" "--create-namespace --set defaultRevision=default --wait --timeout 10m"
     install_helm_chart "istiod" "istio-system" "istio/istiod" "--wait --timeout 10m"
+    install_helm_chart "istiod-ingress" "istio-system" "istio/gateway" "-n istio-system --wait --timeout 10m"
     install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --version v1.19.1 --set crds.enabled=true --wait --timeout 10m"
     install_helm_chart "open-feature-operator" "open-feature-operator" "openfeature/open-feature-operator" "--create-namespace --set sidecarConfiguration.port=8080 --wait --timeout 10m"
 
@@ -1624,14 +1637,13 @@ EOF
 
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
         execute_cmd "microk8s helm3 install $deploy_name otterscale-charts/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "helm install $deploy_name"
-
+        
+        log "INFO" "Cleanup ca cert file" "OTTERSCALE"
         rm -f "$ca_cert_file"
-        send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
+
     else
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"
     fi
-
-    log "INFO" "You can visit web UI from $otterscale_endpoint" "FINISHED"
 }
 
 # =============================================================================
@@ -1699,7 +1711,8 @@ main() {
     config_ceph_rbd_modules
     deploy_helm
 
-    log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
+    log "INFO" "OtterScale installation completed successfully!" "FINISHED"
+    send_status_data "FINISHED" "OtterScale endpoint is http://$OTTERSCALE_WEB_IP" "http://$OTTERSCALE_WEB_IP"
 }
 
 # =============================================================================
