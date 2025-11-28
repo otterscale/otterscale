@@ -327,6 +327,7 @@ send_request() {
 
         echo "HTTP post failed (attempt $retry_count/$max_retries)"
         retry_count=$((retry_count+1))
+        sleep 2
     done
 
     echo "HTTP post to $OTTERSCALE_API_ENDPOINT$url_path failed after $max_retries attempts"
@@ -1379,9 +1380,9 @@ config_bridge() {
         if nmcli connection modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask" >/dev/null 2>&1; then
             log "INFO" "Add $OTTERSCALE_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
             nmcli connection down "$OTTERSCALE_BRIDGE_NAME" > /dev/null && nmcli connection up "$OTTERSCALE_BRIDGE_NAME" > /dev/null
+            sleep 10
 
             log "INFO" "Waiting ipv4 bind to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-            sleep 10
             while true; do
                 if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
                     log "INFO" "Success bind IP $OTTERSCALE_WEB_IP to network device $OTTERSCALE_BRIDGE_NAME"
@@ -1431,7 +1432,7 @@ install_helm_chart() {
 
     if [[ -z $(microk8s helm3 list -n "$namespace" -o json | jq ".[] | select(.name==\"$deploy_name\")") ]]; then  
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"  
-        execute_cmd "microk8s helm3 install \"$deploy_name\" \"$repository_name\" -n \"$namespace\" $extra_args" "helm install $deploy_name"  
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name -n $namespace $extra_args" "helm install $deploy_name"  
     else  
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"  
     fi  
