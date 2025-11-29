@@ -1293,9 +1293,24 @@ juju_add_k8s() {
         log "INFO" "Controller cos-k8s already exist" "JUJU_K8S"
     fi
 
-    if ! su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1"; then
+    if su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1" ; then
+        log "INFO" "Scope cos already exists" "JUJU_SCOPE"
+    else
+        log "INFO" "Create scope: cos" "JUJU_SCOPE"
         su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s >/dev/null 2>&1"
+    fi
+
+    if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus >/dev/null 2>&1"; then
+        log "INFO" "Application cos-lite already exists" "JUJU_APPLICATION"
+    else
+        log "INFO" "Deploy application cos-lite" "JUJU_APPLICATION"
         su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust >/dev/null 2>&1"
+    fi
+
+    if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus-scrape-target-k8s >/dev/null 2>&1"; then
+        log "INFO" "Application prometheus-scrape-target-k8 already exists" "JUJJU_APPLICATION"
+    else
+        log "INFO" "Deploy application prometheus-scrape-target-k8" "JUJJU_APPLICATION"
         su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge >/dev/null 2>&1"
     fi
 
@@ -1647,6 +1662,9 @@ $(echo "$juju_cacert" | sed 's/^/      /')
   ceph:
     rados_timeout: 0s
 EOF
+
+        execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-postgresql-0 >/dev/null 2>&1"
+        execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-keycloak-postgres-0 >/dev/null 2>&1"
 
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
         execute_cmd "microk8s helm3 install $deploy_name otterscale-charts/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "helm install $deploy_name"
