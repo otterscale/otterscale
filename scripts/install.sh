@@ -1301,16 +1301,16 @@ juju_add_k8s() {
     fi
 
     if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus >/dev/null 2>&1"; then
-        log "INFO" "Application cos-lite already exists" "JUJU_APPLICATION"
+        log "INFO" "Application cos-lite already exists" "JUJU_DEPLOY"
     else
-        log "INFO" "Deploy application cos-lite" "JUJU_APPLICATION"
+        log "INFO" "Deploy application cos-lite" "JUJU_DEPLOY"
         su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust >/dev/null 2>&1"
     fi
 
     if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus-scrape-target-k8s >/dev/null 2>&1"; then
-        log "INFO" "Application prometheus-scrape-target-k8 already exists" "JUJU_APPLICATION"
+        log "INFO" "Application prometheus-scrape-target-k8 already exists" "JUJU_DEPLOY"
     else
-        log "INFO" "Deploy application prometheus-scrape-target-k8" "JUJU_APPLICATION"
+        log "INFO" "Deploy application prometheus-scrape-target-k8" "JUJU_DEPLOY"
         su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge >/dev/null 2>&1"
     fi
 
