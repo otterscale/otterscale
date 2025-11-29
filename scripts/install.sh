@@ -307,6 +307,20 @@ disable_ipv6() {
     sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
 }
 
+check_iptables() {
+    log "INFO" "Check iptable rules" "SYSTEM_CONFIG"
+
+    if ! iptables -C FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null; then
+        iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+        log "INFO" "Add rule: iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT" "SYSTEM_CONFIG"
+    fi
+
+    if ! iptables -C FORWARD -i "$OTTERSCALE_BRIDGE_NAME" -j ACCEPT 2>/dev/null; then
+        iptables -A FORWARD -i "$OTTERSCALE_BRIDGE_NAME" -j ACCEPT
+        log "INFO" "Add rule: iptables -A FORWARD -i $OTTERSCALE_BRIDGE_NAME -j ACCEPT" "SYSTEM_CONFIG"
+    fi
+}
+
 # =============================================================================
 # COMMUNICATION FUNCTIONS
 # =============================================================================
@@ -327,6 +341,7 @@ send_request() {
 
         echo "HTTP post failed (attempt $retry_count/$max_retries)"
         retry_count=$((retry_count+1))
+        sleep 2
     done
 
     echo "HTTP post to $OTTERSCALE_API_ENDPOINT$url_path failed after $max_retries attempts"
@@ -344,16 +359,24 @@ send_status_data() {
         return 0
     fi
 
-    local data
-    data=$(cat <<EOF
+    if [[ -n "$new_url" ]]; then
+        data=$(cat <<EOF
 {
-    "phase": "$phase",
-    "message": "$message",
-    "new_url": "$new_url"
-
+  "phase": "$phase",
+  "message": "$message",
+  "new_url": "$new_url"
 }
 EOF
-)
+    )
+    else
+        data=$(cat <<EOF
+{
+  "phase": "$phase",
+  "message": "$message"
+}
+EOF
+    )
+    fi
 
     send_request "/otterscale.bootstrap.v1.BootstrapService/UpdateStatus" "$data"
 }
@@ -519,13 +542,13 @@ get_default_dns() {
     if resolvectl status "$interface" | grep "DNS Servers" > /dev/null; then
         CURRENT_DNS=$(resolvectl status "$interface" | grep "DNS Servers" | awk '{print $3}' | head -1)
         if [[ -z $CURRENT_DNS ]]; then
-            log "WARN" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
+            log "INFO" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
             CURRENT_DNS="8.8.8.8"
         else
             log "INFO" "Detected DNS server for $interface: $CURRENT_DNS" "NETWORK"
         fi
     else
-        log "WARN" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
+        log "INFO" "No DNS found for $interface, using fallback 8.8.8.8" "NETWORK"
         CURRENT_DNS="8.8.8.8"
     fi
 }
@@ -549,19 +572,23 @@ prompt_bridge_creation() {
         ipv4.method manual \
         ipv4.addresses "$CURRENT_CIDR" \
         ipv4.gateway "$CURRENT_GATEWAY" \
-        ipv4.dns "$CURRENT_DNS" > /dev/null; then
+        ipv4.dns "$CURRENT_DNS" \
+        connection.autoconnect yes \
+        bridge.stp no > /dev/null; then
         error_exit "Failed network bridge creation"
     fi
 
     log "INFO" "Connect network bridge $OTTERSCALE_BRIDGE_NAME to interface $CURRENT_INTERFACE"
     nmcli connection add type bridge-slave con-name br-otters-slave ifname "$CURRENT_INTERFACE" master "$OTTERSCALE_BRIDGE_NAME" > /dev/null
 
+    log "INFO" "Disable $CURRENT_CONNECTION autoconnect" "NETWORK"
+    nmcli connection modify "$CURRENT_CONNECTION" connection.autoconnect no > /dev/null
+
     log "INFO" "Start up network bridge $OTTERSCALE_BRIDGE_NAME" "NETWORK"
     nmcli connection up "$OTTERSCALE_BRIDGE_NAME" > /dev/null && nmcli connection down "$CURRENT_CONNECTION" > /dev/null
 
     sleep 10
 }
-
 
 check_bridge() {
     log "INFO" "Checking network bridge configuration..." "NETWORK"
@@ -1124,7 +1151,7 @@ add_clouds_yaml() {
     log "INFO" "Check juju clouds" "JUJU_CONFIG"
 
     if su "$NON_ROOT_USER" -c 'juju clouds 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
-        log "WARN" "Juju cloud maas-cloud already exists – skipping creation" "JUJU_CLOUD"
+        log "INFO" "Juju cloud maas-cloud already exists – skipping creation" "JUJU_CLOUD"
     else
         log "INFO" "Adding MAAS cloud to Juju..." "JUJU_BOOTSTRAP"
         if ! su "$NON_ROOT_USER" -c 'juju add-cloud --client maas-cloud $JUJU_CLOUD >>/dev/null 2>&1'; then
@@ -1137,7 +1164,7 @@ add_generates_yaml() {
     log "INFO" "Check juju credentials" "JUJU_CONFIG"
 
     if su "$NON_ROOT_USER" -c 'juju credentials 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
-        log "WARN" "Juju credential for maas-cloud already exists – skipping creation" "JUJU_CREDENTIAL"
+        log "INFO" "Juju credential for maas-cloud already exists – skipping creation" "JUJU_CREDENTIAL"
     else
         log "INFO" "Adding MAAS credential to Juju..." "JUJU_BOOTSTRAP"
         if ! su "$NON_ROOT_USER" -c 'juju add-credential --client maas-cloud -f $JUJU_CREDENTIAL >>/dev/null 2>&1'; then
@@ -1263,12 +1290,27 @@ juju_add_k8s() {
     fi
 
     if ! su "$NON_ROOT_USER" -c "juju add-k8s cos-k8s --controller maas-cloud-controller --client" >>"$TEMP_LOG" 2>&1; then
-        log "WARN" "Controller cos-k8s already exist" "JUJU_K8S"
+        log "INFO" "Controller cos-k8s already exist" "JUJU_K8S"
     fi
 
-    if ! su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1"; then
+    if su "$NON_ROOT_USER" -c "juju show-model cos >/dev/null 2>&1"; then
+        log "INFO" "Scope cos already exists" "JUJU_SCOPE"
+    else
+        log "INFO" "Create scope: cos" "JUJU_SCOPE"
         su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s >/dev/null 2>&1"
+    fi
+
+    if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus >/dev/null 2>&1"; then
+        log "INFO" "Application cos-lite already exists" "JUJU_DEPLOY"
+    else
+        log "INFO" "Deploy application cos-lite" "JUJU_DEPLOY"
         su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust >/dev/null 2>&1"
+    fi
+
+    if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus-scrape-target-k8s >/dev/null 2>&1"; then
+        log "INFO" "Application prometheus-scrape-target-k8 already exists" "JUJU_DEPLOY"
+    else
+        log "INFO" "Deploy application prometheus-scrape-target-k8" "JUJU_DEPLOY"
         su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge >/dev/null 2>&1"
     fi
 
@@ -1371,10 +1413,11 @@ config_bridge() {
         local mask=$(nmcli device show "$OTTERSCALE_BRIDGE_NAME" | grep "^IP4.ADDRESS" | head -n 1 | awk '{print $2}' | cut -d'/' -f2)
         local metallb_svc=$(microk8s kubectl get svc metallb-webhook-service -n metallb-system -o json | jq -r .spec.clusterIP)
 
-        if nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask" >/dev/null 2>&1; then
+        if nmcli connection modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask" >/dev/null 2>&1; then
             log "INFO" "Add $OTTERSCALE_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
 
             log "INFO" "Waiting ipv4 bind to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
+            nmcli connection reload "$OTTERSCALE_BRIDGE_NAME"
             while true; do
                 if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
                     log "INFO" "Success bind IP $OTTERSCALE_WEB_IP to network device $OTTERSCALE_BRIDGE_NAME"
@@ -1384,7 +1427,8 @@ config_bridge() {
                 sleep 1
             done
 
-            sleep 10 # Wait microk8s refresh and restart
+            log "INFO" "Waiting microk8s refresh and restart" "NETWORK"
+            sleep 10
 
             log "INFO" "Waiting metallb-webhook-service is available" "MICROK8S"
             while true; do
@@ -1399,6 +1443,12 @@ config_bridge() {
             done
         fi
     fi
+
+    log "INFO" "Check metallb ipaddresspools" "NETWORK"
+    if ! microk8s kubectl get ipaddresspools default-addresspool -n metallb-system -o json | jq --exit-status ".spec.addresses[] | select(.==\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\")" >/dev/null 2>&1 ; then
+        log "INFO" "Update microk8s metallb: $OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP" "NETWORK"
+        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >/dev/null 2>&1
+    fi
 }
 
 add_helm_repository() {
@@ -1408,7 +1458,7 @@ add_helm_repository() {
     if [[ -n $(microk8s helm3 repo list -o json | jq ".[] | select(.name==\"$repository_name\")") ]]; then
         log "INFO" "Helm repository $repository_name exist" "HELM_REPO"
     else
-        log "Add helm repository $repository_name" "HELM_REPO"
+        log "INFO" "Add helm repository $repository_name" "HELM_REPO"
         execute_cmd "microk8s helm3 repo add $repository_name $repository_url" "helm repository add"
     fi
 }
@@ -1423,7 +1473,7 @@ install_helm_chart() {
 
     if [[ -z $(microk8s helm3 list -n "$namespace" -o json | jq ".[] | select(.name==\"$deploy_name\")") ]]; then  
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"  
-        execute_cmd "microk8s helm3 install \"$deploy_name\" \"$repository_name\" -n \"$namespace\" $extra_args" "helm install $deploy_name"  
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name -n $namespace $extra_args" "helm install $deploy_name"  
     else  
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"  
     fi  
@@ -1431,6 +1481,7 @@ install_helm_chart() {
 
 deploy_helm() {
     log "INFO" "Process microk8s helm3" "HELM_CHECK"
+    local keycloak_realm="otters"
 
     log "INFO" "Check helm repository" "HELM_REPO"
     add_helm_repository "https://istio-release.storage.googleapis.com/charts" "istio"
@@ -1441,11 +1492,9 @@ deploy_helm() {
     log "INFO" "Update helm repository" "HELM_REPO"
     execute_cmd "microk8s helm3 repo update" "helm repository update"
 
-    local otterscale_endpoint="http://$OTTERSCALE_WEB_IP"
-    local keycloak_realm="otters"
-
     install_helm_chart "istio-base" "istio-system" "istio/base" "--create-namespace --set defaultRevision=default --wait --timeout 10m"
     install_helm_chart "istiod" "istio-system" "istio/istiod" "--wait --timeout 10m"
+    install_helm_chart "istiod-ingress" "istio-system" "istio/gateway" "-n istio-system --wait --timeout 10m"
     install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --version v1.19.1 --set crds.enabled=true --wait --timeout 10m"
     install_helm_chart "open-feature-operator" "open-feature-operator" "openfeature/open-feature-operator" "--create-namespace --set sidecarConfiguration.port=8080 --wait --timeout 10m"
 
@@ -1613,16 +1662,18 @@ $(echo "$juju_cacert" | sed 's/^/      /')
     rados_timeout: 0s
 EOF
 
+        execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-postgresql-0 --ignore-not-found=true"
+        execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-keycloak-postgres-0 --ignore-not-found=true"
+
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
         execute_cmd "microk8s helm3 install $deploy_name otterscale-charts/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "helm install $deploy_name"
-
+        
+        log "INFO" "Cleanup ca cert file" "OTTERSCALE"
         rm -f "$ca_cert_file"
-        send_status_data "FINISHED" "OtterScale endpoint is $otterscale_endpoint" "$otterscale_endpoint"
+
     else
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"
     fi
-
-    log "INFO" "You can visit web UI from $otterscale_endpoint" "FINISHED"
 }
 
 # =============================================================================
@@ -1653,6 +1704,7 @@ main() {
     # Network setup
     log "INFO" "Setting up network..." "NETWORK"
     check_bridge
+    check_iptables
 
     # User setup
     log "INFO" "Setting up users and SSH..." "USER_SETUP"
@@ -1690,7 +1742,8 @@ main() {
     config_ceph_rbd_modules
     deploy_helm
 
-    log "INFO" "OtterScale installation completed successfully!" "INSTALLATION"
+    log "INFO" "OtterScale installation completed successfully!" "FINISHED"
+    send_status_data "FINISHED" "OtterScale endpoint is http://$OTTERSCALE_WEB_IP" "http://$OTTERSCALE_WEB_IP"
 }
 
 # =============================================================================
