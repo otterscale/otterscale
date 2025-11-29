@@ -36,6 +36,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/orchestrator/extension"
 	"github.com/otterscale/otterscale/internal/core/orchestrator/gpu"
 	"github.com/otterscale/otterscale/internal/core/orchestrator/standalone"
+	registry2 "github.com/otterscale/otterscale/internal/core/registry"
 	"github.com/otterscale/otterscale/internal/core/scope"
 	"github.com/otterscale/otterscale/internal/core/storage"
 	"github.com/otterscale/otterscale/internal/core/storage/block"
@@ -49,6 +50,7 @@ import (
 	"github.com/otterscale/otterscale/internal/providers/kubernetessigs"
 	"github.com/otterscale/otterscale/internal/providers/kubevirt"
 	"github.com/otterscale/otterscale/internal/providers/maas"
+	"github.com/otterscale/otterscale/internal/providers/registry"
 	"github.com/otterscale/otterscale/internal/providers/samba"
 	"github.com/spf13/cobra"
 )
@@ -169,6 +171,14 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	relationRepo := juju.NewRelationRepo(jujuJuju)
 	standaloneUseCase := standalone.NewUseCase(configConfig, facilityRepo, ipRangeRepo, machineRepo, orchestratorRepo, provisionerRepo, relationRepo, subnetRepo, tagRepo)
 	orchestratorService := app.NewOrchestratorService(orchestratorUseCase, extensionUseCase, gpuUseCase, standaloneUseCase)
+	registryRegistry, err := registry.New(configConfig, kubernetesKubernetes)
+	if err != nil {
+		return nil, nil, err
+	}
+	manifestRepo := registry.NewManifestRepo(registryRegistry)
+	repositoryRepo := registry.NewRepositoryRepo(registryRegistry)
+	registryUseCase := registry2.NewUseCase(manifestRepo, repositoryRepo)
+	registryService := app.NewRegistryService(registryUseCase)
 	storageUseCase := storage.NewUseCase(storageNodeRepo, poolRepo, machineRepo)
 	imageSnapshotRepo := ceph.NewImageSnapshotRepo(cephCeph)
 	blockUseCase := block.NewUseCase(imageRepo, imageSnapshotRepo, poolRepo)
@@ -191,7 +201,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	sshKeyRepo := maas.NewSSHKeyRepo(maasMAAS)
 	scopeUseCase := scope.NewUseCase(scopeRepo, sshKeyRepo, packageRepositoryRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
-	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, storageService, scopeService)
+	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, registryService, storageService, scopeService)
 	command := newCmd(configConfig, muxBootstrap, jwksProxy, serve)
 	return command, func() {
 	}, nil

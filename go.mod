@@ -31,6 +31,7 @@ require (
 	github.com/lestrrat-go/jwx/v3 v3.0.12
 	github.com/open-feature/go-sdk v1.17.0
 	github.com/open-feature/go-sdk-contrib/providers/flagd v0.3.0
+	github.com/opencontainers/image-spec v1.1.1
 	github.com/otterscale/kubevirt-client-go v1.6.1
 	github.com/otterscale/samba-operator-client-go v0.0.1
 	github.com/prometheus/client_golang v1.23.2
@@ -53,6 +54,7 @@ require (
 	k8s.io/client-go v0.34.2
 	kubevirt.io/api v1.6.3
 	kubevirt.io/containerized-data-importer-api v1.63.1
+	oras.land/oras-go/v2 v2.6.0
 	sigs.k8s.io/gateway-api v1.4.0
 	sigs.k8s.io/gateway-api-inference-extension v1.2.0-rc.1
 	sigs.k8s.io/kustomize/api v0.21.0
@@ -212,7 +214,6 @@ require (
 	github.com/open-feature/flagd-schemas v0.2.9-0.20250127221449-bb763438abc5 // indirect
 	github.com/open-feature/flagd/core v0.11.2 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
-	github.com/opencontainers/image-spec v1.1.1 // indirect
 	github.com/openshift/custom-resource-status v1.1.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
@@ -285,7 +286,6 @@ require (
 	k8s.io/kubectl v0.34.0 // indirect
 	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4 // indirect
 	kubevirt.io/controller-lifecycle-operator-sdk/api v0.0.0-20220329064328-f3cc58c6ed90 // indirect
-	oras.land/oras-go/v2 v2.6.0 // indirect
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect
 	sigs.k8s.io/structured-merge-diff/v6 v6.3.0 // indirect

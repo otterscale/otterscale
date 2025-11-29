@@ -30,13 +30,13 @@ import (
 	"github.com/otterscale/otterscale/internal/core/orchestrator/extension"
 	"github.com/otterscale/otterscale/internal/core/orchestrator/gpu"
 	"github.com/otterscale/otterscale/internal/core/orchestrator/standalone"
+	"github.com/otterscale/otterscale/internal/core/registry"
 	"github.com/otterscale/otterscale/internal/core/scope"
 	"github.com/otterscale/otterscale/internal/core/storage"
 	"github.com/otterscale/otterscale/internal/core/storage/block"
 	"github.com/otterscale/otterscale/internal/core/storage/file"
 	"github.com/otterscale/otterscale/internal/core/storage/object"
 	"github.com/otterscale/otterscale/internal/core/storage/smb"
-	"github.com/otterscale/otterscale/internal/core/containerimage"
 )
 
 var ProviderSet = wire.NewSet(
@@ -64,6 +64,7 @@ var ProviderSet = wire.NewSet(
 	model.NewUseCase,
 	network.NewUseCase,
 	orchestrator.NewUseCase,
+	registry.NewUseCase,
 	extension.NewUseCase,
 	gpu.NewUseCase,
 	standalone.NewUseCase,
@@ -73,5 +74,4 @@ var ProviderSet = wire.NewSet(
 	file.NewUseCase,
 	object.NewUseCase,
 	smb.NewUseCase,
-	containerimage.NewUseCase,
 )

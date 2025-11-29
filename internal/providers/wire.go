@@ -9,6 +9,7 @@ import (
 	"github.com/otterscale/otterscale/internal/providers/kubernetessigs"
 	"github.com/otterscale/otterscale/internal/providers/kubevirt"
 	"github.com/otterscale/otterscale/internal/providers/maas"
+	"github.com/otterscale/otterscale/internal/providers/registry"
 	"github.com/otterscale/otterscale/internal/providers/samba"
 )
 
@@ -49,7 +50,6 @@ var ProviderSet = wire.NewSet(
 	kubernetes.NewServiceRepo,
 	kubernetes.NewStatefulSetRepo,
 	kubernetes.NewStorageClassRepo,
-	kubernetes.NewContainerImageRepo,
 	kubernetessigs.New,
 	kubernetessigs.NewGatewayRepo,
 	kubernetessigs.NewHTTPRouteRepo,
@@ -79,6 +79,9 @@ var ProviderSet = wire.NewSet(
 	maas.NewSubnetRepo,
 	maas.NewTagRepo,
 	maas.NewVLANRepo,
+	registry.New,
+	registry.NewManifestRepo,
+	registry.NewRepositoryRepo,
 	samba.New,
 	samba.NewSMBCommonConfigRepo,
 	samba.NewSMBShareRepo,
