@@ -1,4 +1,4 @@
-package kubernetes
+package helm
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"connectrpc.com/connect"
 	"github.com/go-faker/faker/v4"
 	"helm.sh/helm/v3/pkg/action"
-	helmchart "helm.sh/helm/v3/pkg/chart"
+	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/downloader"
 	"helm.sh/helm/v3/pkg/getter"
@@ -22,12 +22,12 @@ import (
 
 // Note: Helm API do not support context.
 type releaseRepo struct {
-	kubernetes *Kubernetes
+	helm *Helm
 }
 
-func NewReleaseRepo(kubernetes *Kubernetes) (release.ReleaseRepo, error) {
+func NewReleaseRepo(helm *Helm) (release.ReleaseRepo, error) {
 	return &releaseRepo{
-		kubernetes: kubernetes,
+		helm: helm,
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func (r *releaseRepo) Install(_ context.Context, scope, namespace, name string, 
 	client.Labels = labelsInSecrets
 	client.PostRenderer = newPostRenderer(labels, annotations)
 
-	chartPath, err := client.LocateChart(chartRef, r.kubernetes.envSettings)
+	chartPath, err := client.LocateChart(chartRef, r.helm.envSettings)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func (r *releaseRepo) Upgrade(_ context.Context, scope, namespace, name string, 
 	client.DryRun = dryRun
 	client.ReuseValues = reuseValues
 
-	chartPath, err := client.LocateChart(chartRef, r.kubernetes.envSettings)
+	chartPath, err := client.LocateChart(chartRef, r.helm.envSettings)
 	if err != nil {
 		return nil, err
 	}
@@ -175,7 +175,7 @@ func (r *releaseRepo) GetValues(_ context.Context, scope, namespace, name string
 	return client.Run(name)
 }
 
-func (r *releaseRepo) chartInstall(chartPath string, dependencyUpdate bool, keyring string) (*helmchart.Chart, error) {
+func (r *releaseRepo) chartInstall(chartPath string, dependencyUpdate bool, keyring string) (*chart.Chart, error) {
 	chart, err := loader.Load(chartPath)
 	if err != nil {
 		return nil, err
@@ -191,11 +191,11 @@ func (r *releaseRepo) chartInstall(chartPath string, dependencyUpdate bool, keyr
 				ChartPath:        chartPath,
 				Keyring:          keyring,
 				SkipUpdate:       false,
-				Getters:          getter.All(r.kubernetes.envSettings),
-				RepositoryConfig: r.kubernetes.envSettings.RepositoryConfig,
-				RepositoryCache:  r.kubernetes.envSettings.RepositoryCache,
-				Debug:            r.kubernetes.envSettings.Debug,
-				RegistryClient:   r.kubernetes.registryClient,
+				Getters:          getter.All(r.helm.envSettings),
+				RepositoryConfig: r.helm.envSettings.RepositoryConfig,
+				RepositoryCache:  r.helm.envSettings.RepositoryCache,
+				Debug:            r.helm.envSettings.Debug,
+				RegistryClient:   r.helm.registryClient,
 			}
 			if err := manager.Update(); err != nil {
 				return nil, err
@@ -212,7 +212,7 @@ func (r *releaseRepo) chartInstall(chartPath string, dependencyUpdate bool, keyr
 }
 
 func (r *releaseRepo) config(scope, namespace string) (*action.Configuration, error) {
-	restConfig, err := r.kubernetes.Config(scope)
+	restConfig, err := r.helm.kubernetes.Config(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +229,7 @@ func (r *releaseRepo) config(scope, namespace string) (*action.Configuration, er
 		return nil, err
 	}
 
-	config.RegistryClient = r.kubernetes.registryClient
+	config.RegistryClient = r.helm.registryClient
 
 	return config, nil
 }

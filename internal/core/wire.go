@@ -3,7 +3,6 @@ package core
 import (
 	"github.com/google/wire"
 
-	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/config"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
@@ -31,6 +30,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/orchestrator/gpu"
 	"github.com/otterscale/otterscale/internal/core/orchestrator/standalone"
 	"github.com/otterscale/otterscale/internal/core/registry"
+	"github.com/otterscale/otterscale/internal/core/registry/chart"
 	"github.com/otterscale/otterscale/internal/core/scope"
 	"github.com/otterscale/otterscale/internal/core/storage"
 	"github.com/otterscale/otterscale/internal/core/storage/block"
@@ -40,7 +40,6 @@ import (
 )
 
 var ProviderSet = wire.NewSet(
-	chart.NewUseCase,
 	cluster.NewUseCase,
 	config.NewUseCase,
 	persistent.NewUseCase,
@@ -65,6 +64,7 @@ var ProviderSet = wire.NewSet(
 	network.NewUseCase,
 	orchestrator.NewUseCase,
 	registry.NewUseCase,
+	chart.NewUseCase,
 	extension.NewUseCase,
 	gpu.NewUseCase,
 	standalone.NewUseCase,

@@ -46,6 +46,15 @@ const (
 	// RegistryServiceDeleteManifestProcedure is the fully-qualified name of the RegistryService's
 	// DeleteManifest RPC.
 	RegistryServiceDeleteManifestProcedure = "/otterscale.registry.v1.RegistryService/DeleteManifest"
+	// RegistryServiceListChartsProcedure is the fully-qualified name of the RegistryService's
+	// ListCharts RPC.
+	RegistryServiceListChartsProcedure = "/otterscale.registry.v1.RegistryService/ListCharts"
+	// RegistryServiceListChartVersionsProcedure is the fully-qualified name of the RegistryService's
+	// ListChartVersions RPC.
+	RegistryServiceListChartVersionsProcedure = "/otterscale.registry.v1.RegistryService/ListChartVersions"
+	// RegistryServiceGetChartInformationProcedure is the fully-qualified name of the RegistryService's
+	// GetChartInformation RPC.
+	RegistryServiceGetChartInformationProcedure = "/otterscale.registry.v1.RegistryService/GetChartInformation"
 )
 
 // RegistryServiceClient is a client for the otterscale.registry.v1.RegistryService service.
@@ -54,6 +63,9 @@ type RegistryServiceClient interface {
 	ListRepositories(context.Context, *v1.ListRepositoriesRequest) (*v1.ListRepositoriesResponse, error)
 	ListManifests(context.Context, *v1.ListManifestsRequest) (*v1.ListManifestsResponse, error)
 	DeleteManifest(context.Context, *v1.DeleteManifestRequest) (*emptypb.Empty, error)
+	ListCharts(context.Context, *v1.ListChartsRequest) (*v1.ListChartsResponse, error)
+	ListChartVersions(context.Context, *v1.ListChartVersionsRequest) (*v1.ListChartVersionsResponse, error)
+	GetChartInformation(context.Context, *v1.GetChartInformationRequest) (*v1.Chart_Information, error)
 }
 
 // NewRegistryServiceClient constructs a client for the otterscale.registry.v1.RegistryService
@@ -91,15 +103,36 @@ func NewRegistryServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(registryServiceMethods.ByName("DeleteManifest")),
 			connect.WithClientOptions(opts...),
 		),
+		listCharts: connect.NewClient[v1.ListChartsRequest, v1.ListChartsResponse](
+			httpClient,
+			baseURL+RegistryServiceListChartsProcedure,
+			connect.WithSchema(registryServiceMethods.ByName("ListCharts")),
+			connect.WithClientOptions(opts...),
+		),
+		listChartVersions: connect.NewClient[v1.ListChartVersionsRequest, v1.ListChartVersionsResponse](
+			httpClient,
+			baseURL+RegistryServiceListChartVersionsProcedure,
+			connect.WithSchema(registryServiceMethods.ByName("ListChartVersions")),
+			connect.WithClientOptions(opts...),
+		),
+		getChartInformation: connect.NewClient[v1.GetChartInformationRequest, v1.Chart_Information](
+			httpClient,
+			baseURL+RegistryServiceGetChartInformationProcedure,
+			connect.WithSchema(registryServiceMethods.ByName("GetChartInformation")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // registryServiceClient implements RegistryServiceClient.
 type registryServiceClient struct {
-	getRegistryURL   *connect.Client[v1.GetRegistryURLRequest, v1.GetRegistryURLResponse]
-	listRepositories *connect.Client[v1.ListRepositoriesRequest, v1.ListRepositoriesResponse]
-	listManifests    *connect.Client[v1.ListManifestsRequest, v1.ListManifestsResponse]
-	deleteManifest   *connect.Client[v1.DeleteManifestRequest, emptypb.Empty]
+	getRegistryURL      *connect.Client[v1.GetRegistryURLRequest, v1.GetRegistryURLResponse]
+	listRepositories    *connect.Client[v1.ListRepositoriesRequest, v1.ListRepositoriesResponse]
+	listManifests       *connect.Client[v1.ListManifestsRequest, v1.ListManifestsResponse]
+	deleteManifest      *connect.Client[v1.DeleteManifestRequest, emptypb.Empty]
+	listCharts          *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
+	listChartVersions   *connect.Client[v1.ListChartVersionsRequest, v1.ListChartVersionsResponse]
+	getChartInformation *connect.Client[v1.GetChartInformationRequest, v1.Chart_Information]
 }
 
 // GetRegistryURL calls otterscale.registry.v1.RegistryService.GetRegistryURL.
@@ -138,6 +171,33 @@ func (c *registryServiceClient) DeleteManifest(ctx context.Context, req *v1.Dele
 	return nil, err
 }
 
+// ListCharts calls otterscale.registry.v1.RegistryService.ListCharts.
+func (c *registryServiceClient) ListCharts(ctx context.Context, req *v1.ListChartsRequest) (*v1.ListChartsResponse, error) {
+	response, err := c.listCharts.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListChartVersions calls otterscale.registry.v1.RegistryService.ListChartVersions.
+func (c *registryServiceClient) ListChartVersions(ctx context.Context, req *v1.ListChartVersionsRequest) (*v1.ListChartVersionsResponse, error) {
+	response, err := c.listChartVersions.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// GetChartInformation calls otterscale.registry.v1.RegistryService.GetChartInformation.
+func (c *registryServiceClient) GetChartInformation(ctx context.Context, req *v1.GetChartInformationRequest) (*v1.Chart_Information, error) {
+	response, err := c.getChartInformation.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // RegistryServiceHandler is an implementation of the otterscale.registry.v1.RegistryService
 // service.
 type RegistryServiceHandler interface {
@@ -145,6 +205,9 @@ type RegistryServiceHandler interface {
 	ListRepositories(context.Context, *v1.ListRepositoriesRequest) (*v1.ListRepositoriesResponse, error)
 	ListManifests(context.Context, *v1.ListManifestsRequest) (*v1.ListManifestsResponse, error)
 	DeleteManifest(context.Context, *v1.DeleteManifestRequest) (*emptypb.Empty, error)
+	ListCharts(context.Context, *v1.ListChartsRequest) (*v1.ListChartsResponse, error)
+	ListChartVersions(context.Context, *v1.ListChartVersionsRequest) (*v1.ListChartVersionsResponse, error)
+	GetChartInformation(context.Context, *v1.GetChartInformationRequest) (*v1.Chart_Information, error)
 }
 
 // NewRegistryServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -178,6 +241,24 @@ func NewRegistryServiceHandler(svc RegistryServiceHandler, opts ...connect.Handl
 		connect.WithSchema(registryServiceMethods.ByName("DeleteManifest")),
 		connect.WithHandlerOptions(opts...),
 	)
+	registryServiceListChartsHandler := connect.NewUnaryHandlerSimple(
+		RegistryServiceListChartsProcedure,
+		svc.ListCharts,
+		connect.WithSchema(registryServiceMethods.ByName("ListCharts")),
+		connect.WithHandlerOptions(opts...),
+	)
+	registryServiceListChartVersionsHandler := connect.NewUnaryHandlerSimple(
+		RegistryServiceListChartVersionsProcedure,
+		svc.ListChartVersions,
+		connect.WithSchema(registryServiceMethods.ByName("ListChartVersions")),
+		connect.WithHandlerOptions(opts...),
+	)
+	registryServiceGetChartInformationHandler := connect.NewUnaryHandlerSimple(
+		RegistryServiceGetChartInformationProcedure,
+		svc.GetChartInformation,
+		connect.WithSchema(registryServiceMethods.ByName("GetChartInformation")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.registry.v1.RegistryService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case RegistryServiceGetRegistryURLProcedure:
@@ -188,6 +269,12 @@ func NewRegistryServiceHandler(svc RegistryServiceHandler, opts ...connect.Handl
 			registryServiceListManifestsHandler.ServeHTTP(w, r)
 		case RegistryServiceDeleteManifestProcedure:
 			registryServiceDeleteManifestHandler.ServeHTTP(w, r)
+		case RegistryServiceListChartsProcedure:
+			registryServiceListChartsHandler.ServeHTTP(w, r)
+		case RegistryServiceListChartVersionsProcedure:
+			registryServiceListChartVersionsHandler.ServeHTTP(w, r)
+		case RegistryServiceGetChartInformationProcedure:
+			registryServiceGetChartInformationHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -211,4 +298,16 @@ func (UnimplementedRegistryServiceHandler) ListManifests(context.Context, *v1.Li
 
 func (UnimplementedRegistryServiceHandler) DeleteManifest(context.Context, *v1.DeleteManifestRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.registry.v1.RegistryService.DeleteManifest is not implemented"))
+}
+
+func (UnimplementedRegistryServiceHandler) ListCharts(context.Context, *v1.ListChartsRequest) (*v1.ListChartsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.registry.v1.RegistryService.ListCharts is not implemented"))
+}
+
+func (UnimplementedRegistryServiceHandler) ListChartVersions(context.Context, *v1.ListChartVersionsRequest) (*v1.ListChartVersionsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.registry.v1.RegistryService.ListChartVersions is not implemented"))
+}
+
+func (UnimplementedRegistryServiceHandler) GetChartInformation(context.Context, *v1.GetChartInformationRequest) (*v1.Chart_Information, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.registry.v1.RegistryService.GetChartInformation is not implemented"))
 }

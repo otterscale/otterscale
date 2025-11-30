@@ -4,12 +4,9 @@ import (
 	"context"
 	"encoding/base64"
 	"os"
-	"path/filepath"
 	"sync"
 	"time"
 
-	"helm.sh/helm/v3/pkg/cli"
-	"helm.sh/helm/v3/pkg/registry"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -22,10 +19,8 @@ import (
 )
 
 type Kubernetes struct {
-	conf           *config.Config
-	juju           *juju.Juju
-	envSettings    *cli.EnvSettings
-	registryClient *registry.Client
+	conf *config.Config
+	juju *juju.Juju
 
 	configs       sync.Map
 	clientsets    sync.Map
@@ -33,24 +28,9 @@ type Kubernetes struct {
 }
 
 func New(conf *config.Config, juju *juju.Juju) (*Kubernetes, error) {
-	opts := []registry.ClientOption{
-		registry.ClientOptEnableCache(true),
-	}
-
-	registryClient, err := registry.NewClient(opts...)
-	if err != nil {
-		return nil, err
-	}
-
-	envSettings := cli.New()
-	envSettings.RepositoryConfig = filepath.Join(os.TempDir(), "helm", "repositories.yaml")
-	envSettings.RepositoryCache = filepath.Join(os.TempDir(), "helm", "repository")
-
 	return &Kubernetes{
-		conf:           conf,
-		juju:           juju,
-		envSettings:    envSettings,
-		registryClient: registryClient,
+		conf: conf,
+		juju: juju,
 	}, nil
 }
 

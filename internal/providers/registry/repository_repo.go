@@ -2,9 +2,12 @@ package registry
 
 import (
 	"context"
+	"sort"
+	"strings"
 
 	"oras.land/oras-go/v2/registry/remote"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/otterscale/otterscale/internal/core/registry"
 )
 
@@ -36,7 +39,7 @@ func (r *repositoryRepo) List(ctx context.Context, scope string) ([]registry.Rep
 				return err
 			}
 
-			repositories = append(repositories, repository)
+			repositories = append(repositories, *repository)
 		}
 		return nil
 	})
@@ -56,17 +59,22 @@ func (r *repositoryRepo) GetRegistryURL(ctx context.Context, scope string) (stri
 	return client.Reference.Registry, nil
 }
 
-func (r *repositoryRepo) buildRepository(ctx context.Context, client *remote.Registry, repository string) (registry.Repository, error) {
+func (r *repositoryRepo) buildRepository(ctx context.Context, client *remote.Registry, repository string) (*registry.Repository, error) {
 	repo, err := client.Repository(ctx, repository)
 	if err != nil {
-		return registry.Repository{}, err
+		return nil, err
 	}
 
 	manifestCount := uint32(0)
 	sizeBytes := uint64(0)
+	latestTag := ""
 
 	err = repo.Tags(ctx, "", func(tags []string) error {
+		var tagVersions []*semver.Version
+
 		for _, tag := range tags {
+			manifestCount++
+
 			reference := client.Reference.Registry + "/" + repository + ":" + tag
 
 			_, ociManifest, err := fetchManifest(ctx, repo, reference)
@@ -74,18 +82,32 @@ func (r *repositoryRepo) buildRepository(ctx context.Context, client *remote.Reg
 				return err
 			}
 
-			manifestCount++
 			sizeBytes += calculateLayerSize(ociManifest)
+
+			// Change underscore (_) back to plus (+) for Helm
+			// See https://github.com/helm/helm/issues/10166
+			tagVersion, err := semver.StrictNewVersion(strings.ReplaceAll(tag, "_", "+"))
+			if err == nil {
+				tagVersions = append(tagVersions, tagVersion)
+			}
 		}
+
+		sort.Sort(sort.Reverse(semver.Collection(tagVersions)))
+
+		if len(tagVersions) > 0 {
+			latestTag = tagVersions[0].Original()
+		}
+
 		return nil
 	})
 	if err != nil {
-		return registry.Repository{}, err
+		return nil, err
 	}
 
-	return registry.Repository{
+	return &registry.Repository{
 		Name:          repository,
 		ManifestCount: manifestCount,
 		SizeBytes:     sizeBytes,
+		LatestTag:     latestTag,
 	}, nil
 }

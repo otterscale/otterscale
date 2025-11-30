@@ -73,18 +73,6 @@ const (
 	// ApplicationServiceRollbackReleaseProcedure is the fully-qualified name of the
 	// ApplicationService's RollbackRelease RPC.
 	ApplicationServiceRollbackReleaseProcedure = "/otterscale.application.v1.ApplicationService/RollbackRelease"
-	// ApplicationServiceListChartsProcedure is the fully-qualified name of the ApplicationService's
-	// ListCharts RPC.
-	ApplicationServiceListChartsProcedure = "/otterscale.application.v1.ApplicationService/ListCharts"
-	// ApplicationServiceGetChartProcedure is the fully-qualified name of the ApplicationService's
-	// GetChart RPC.
-	ApplicationServiceGetChartProcedure = "/otterscale.application.v1.ApplicationService/GetChart"
-	// ApplicationServiceGetChartMetadataProcedure is the fully-qualified name of the
-	// ApplicationService's GetChartMetadata RPC.
-	ApplicationServiceGetChartMetadataProcedure = "/otterscale.application.v1.ApplicationService/GetChartMetadata"
-	// ApplicationServiceUploadChartProcedure is the fully-qualified name of the ApplicationService's
-	// UploadChart RPC.
-	ApplicationServiceUploadChartProcedure = "/otterscale.application.v1.ApplicationService/UploadChart"
 	// ApplicationServiceListConfigMapsProcedure is the fully-qualified name of the ApplicationService's
 	// ListConfigMaps RPC.
 	ApplicationServiceListConfigMapsProcedure = "/otterscale.application.v1.ApplicationService/ListConfigMaps"
@@ -112,14 +100,10 @@ type ApplicationServiceClient interface {
 	ExecuteTTY(context.Context, *v1.ExecuteTTYRequest) (*connect.ServerStreamForClient[v1.ExecuteTTYResponse], error)
 	WriteTTY(context.Context, *v1.WriteTTYRequest) (*emptypb.Empty, error)
 	ListReleases(context.Context, *v1.ListReleasesRequest) (*v1.ListReleasesResponse, error)
-	CreateRelease(context.Context, *v1.CreateReleaseRequest) (*v1.Application_Release, error)
-	UpdateRelease(context.Context, *v1.UpdateReleaseRequest) (*v1.Application_Release, error)
+	CreateRelease(context.Context, *v1.CreateReleaseRequest) (*v1.Release, error)
+	UpdateRelease(context.Context, *v1.UpdateReleaseRequest) (*v1.Release, error)
 	DeleteRelease(context.Context, *v1.DeleteReleaseRequest) (*emptypb.Empty, error)
 	RollbackRelease(context.Context, *v1.RollbackReleaseRequest) (*emptypb.Empty, error)
-	ListCharts(context.Context, *v1.ListChartsRequest) (*v1.ListChartsResponse, error)
-	GetChart(context.Context, *v1.GetChartRequest) (*v1.Application_Chart, error)
-	GetChartMetadata(context.Context, *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error)
-	UploadChart(context.Context, *v1.UploadChartRequest) (*emptypb.Empty, error)
 	ListConfigMaps(context.Context, *v1.ListConfigMapsRequest) (*v1.ListConfigMapsResponse, error)
 	ListSecrets(context.Context, *v1.ListSecretsRequest) (*v1.ListSecretsResponse, error)
 	ListNamespaces(context.Context, *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error)
@@ -192,13 +176,13 @@ func NewApplicationServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			connect.WithSchema(applicationServiceMethods.ByName("ListReleases")),
 			connect.WithClientOptions(opts...),
 		),
-		createRelease: connect.NewClient[v1.CreateReleaseRequest, v1.Application_Release](
+		createRelease: connect.NewClient[v1.CreateReleaseRequest, v1.Release](
 			httpClient,
 			baseURL+ApplicationServiceCreateReleaseProcedure,
 			connect.WithSchema(applicationServiceMethods.ByName("CreateRelease")),
 			connect.WithClientOptions(opts...),
 		),
-		updateRelease: connect.NewClient[v1.UpdateReleaseRequest, v1.Application_Release](
+		updateRelease: connect.NewClient[v1.UpdateReleaseRequest, v1.Release](
 			httpClient,
 			baseURL+ApplicationServiceUpdateReleaseProcedure,
 			connect.WithSchema(applicationServiceMethods.ByName("UpdateRelease")),
@@ -214,30 +198,6 @@ func NewApplicationServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			httpClient,
 			baseURL+ApplicationServiceRollbackReleaseProcedure,
 			connect.WithSchema(applicationServiceMethods.ByName("RollbackRelease")),
-			connect.WithClientOptions(opts...),
-		),
-		listCharts: connect.NewClient[v1.ListChartsRequest, v1.ListChartsResponse](
-			httpClient,
-			baseURL+ApplicationServiceListChartsProcedure,
-			connect.WithSchema(applicationServiceMethods.ByName("ListCharts")),
-			connect.WithClientOptions(opts...),
-		),
-		getChart: connect.NewClient[v1.GetChartRequest, v1.Application_Chart](
-			httpClient,
-			baseURL+ApplicationServiceGetChartProcedure,
-			connect.WithSchema(applicationServiceMethods.ByName("GetChart")),
-			connect.WithClientOptions(opts...),
-		),
-		getChartMetadata: connect.NewClient[v1.GetChartMetadataRequest, v1.Application_Chart_Metadata](
-			httpClient,
-			baseURL+ApplicationServiceGetChartMetadataProcedure,
-			connect.WithSchema(applicationServiceMethods.ByName("GetChartMetadata")),
-			connect.WithClientOptions(opts...),
-		),
-		uploadChart: connect.NewClient[v1.UploadChartRequest, emptypb.Empty](
-			httpClient,
-			baseURL+ApplicationServiceUploadChartProcedure,
-			connect.WithSchema(applicationServiceMethods.ByName("UploadChart")),
 			connect.WithClientOptions(opts...),
 		),
 		listConfigMaps: connect.NewClient[v1.ListConfigMapsRequest, v1.ListConfigMapsResponse](
@@ -278,14 +238,10 @@ type applicationServiceClient struct {
 	executeTTY           *connect.Client[v1.ExecuteTTYRequest, v1.ExecuteTTYResponse]
 	writeTTY             *connect.Client[v1.WriteTTYRequest, emptypb.Empty]
 	listReleases         *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
-	createRelease        *connect.Client[v1.CreateReleaseRequest, v1.Application_Release]
-	updateRelease        *connect.Client[v1.UpdateReleaseRequest, v1.Application_Release]
+	createRelease        *connect.Client[v1.CreateReleaseRequest, v1.Release]
+	updateRelease        *connect.Client[v1.UpdateReleaseRequest, v1.Release]
 	deleteRelease        *connect.Client[v1.DeleteReleaseRequest, emptypb.Empty]
 	rollbackRelease      *connect.Client[v1.RollbackReleaseRequest, emptypb.Empty]
-	listCharts           *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
-	getChart             *connect.Client[v1.GetChartRequest, v1.Application_Chart]
-	getChartMetadata     *connect.Client[v1.GetChartMetadataRequest, v1.Application_Chart_Metadata]
-	uploadChart          *connect.Client[v1.UploadChartRequest, emptypb.Empty]
 	listConfigMaps       *connect.Client[v1.ListConfigMapsRequest, v1.ListConfigMapsResponse]
 	listSecrets          *connect.Client[v1.ListSecretsRequest, v1.ListSecretsResponse]
 	listNamespaces       *connect.Client[v1.ListNamespacesRequest, v1.ListNamespacesResponse]
@@ -366,7 +322,7 @@ func (c *applicationServiceClient) ListReleases(ctx context.Context, req *v1.Lis
 }
 
 // CreateRelease calls otterscale.application.v1.ApplicationService.CreateRelease.
-func (c *applicationServiceClient) CreateRelease(ctx context.Context, req *v1.CreateReleaseRequest) (*v1.Application_Release, error) {
+func (c *applicationServiceClient) CreateRelease(ctx context.Context, req *v1.CreateReleaseRequest) (*v1.Release, error) {
 	response, err := c.createRelease.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
@@ -375,7 +331,7 @@ func (c *applicationServiceClient) CreateRelease(ctx context.Context, req *v1.Cr
 }
 
 // UpdateRelease calls otterscale.application.v1.ApplicationService.UpdateRelease.
-func (c *applicationServiceClient) UpdateRelease(ctx context.Context, req *v1.UpdateReleaseRequest) (*v1.Application_Release, error) {
+func (c *applicationServiceClient) UpdateRelease(ctx context.Context, req *v1.UpdateReleaseRequest) (*v1.Release, error) {
 	response, err := c.updateRelease.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
@@ -395,42 +351,6 @@ func (c *applicationServiceClient) DeleteRelease(ctx context.Context, req *v1.De
 // RollbackRelease calls otterscale.application.v1.ApplicationService.RollbackRelease.
 func (c *applicationServiceClient) RollbackRelease(ctx context.Context, req *v1.RollbackReleaseRequest) (*emptypb.Empty, error) {
 	response, err := c.rollbackRelease.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// ListCharts calls otterscale.application.v1.ApplicationService.ListCharts.
-func (c *applicationServiceClient) ListCharts(ctx context.Context, req *v1.ListChartsRequest) (*v1.ListChartsResponse, error) {
-	response, err := c.listCharts.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// GetChart calls otterscale.application.v1.ApplicationService.GetChart.
-func (c *applicationServiceClient) GetChart(ctx context.Context, req *v1.GetChartRequest) (*v1.Application_Chart, error) {
-	response, err := c.getChart.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// GetChartMetadata calls otterscale.application.v1.ApplicationService.GetChartMetadata.
-func (c *applicationServiceClient) GetChartMetadata(ctx context.Context, req *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error) {
-	response, err := c.getChartMetadata.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// UploadChart calls otterscale.application.v1.ApplicationService.UploadChart.
-func (c *applicationServiceClient) UploadChart(ctx context.Context, req *v1.UploadChartRequest) (*emptypb.Empty, error) {
-	response, err := c.uploadChart.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -486,14 +406,10 @@ type ApplicationServiceHandler interface {
 	ExecuteTTY(context.Context, *v1.ExecuteTTYRequest, *connect.ServerStream[v1.ExecuteTTYResponse]) error
 	WriteTTY(context.Context, *v1.WriteTTYRequest) (*emptypb.Empty, error)
 	ListReleases(context.Context, *v1.ListReleasesRequest) (*v1.ListReleasesResponse, error)
-	CreateRelease(context.Context, *v1.CreateReleaseRequest) (*v1.Application_Release, error)
-	UpdateRelease(context.Context, *v1.UpdateReleaseRequest) (*v1.Application_Release, error)
+	CreateRelease(context.Context, *v1.CreateReleaseRequest) (*v1.Release, error)
+	UpdateRelease(context.Context, *v1.UpdateReleaseRequest) (*v1.Release, error)
 	DeleteRelease(context.Context, *v1.DeleteReleaseRequest) (*emptypb.Empty, error)
 	RollbackRelease(context.Context, *v1.RollbackReleaseRequest) (*emptypb.Empty, error)
-	ListCharts(context.Context, *v1.ListChartsRequest) (*v1.ListChartsResponse, error)
-	GetChart(context.Context, *v1.GetChartRequest) (*v1.Application_Chart, error)
-	GetChartMetadata(context.Context, *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error)
-	UploadChart(context.Context, *v1.UploadChartRequest) (*emptypb.Empty, error)
 	ListConfigMaps(context.Context, *v1.ListConfigMapsRequest) (*v1.ListConfigMapsResponse, error)
 	ListSecrets(context.Context, *v1.ListSecretsRequest) (*v1.ListSecretsResponse, error)
 	ListNamespaces(context.Context, *v1.ListNamespacesRequest) (*v1.ListNamespacesResponse, error)
@@ -585,30 +501,6 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 		connect.WithSchema(applicationServiceMethods.ByName("RollbackRelease")),
 		connect.WithHandlerOptions(opts...),
 	)
-	applicationServiceListChartsHandler := connect.NewUnaryHandlerSimple(
-		ApplicationServiceListChartsProcedure,
-		svc.ListCharts,
-		connect.WithSchema(applicationServiceMethods.ByName("ListCharts")),
-		connect.WithHandlerOptions(opts...),
-	)
-	applicationServiceGetChartHandler := connect.NewUnaryHandlerSimple(
-		ApplicationServiceGetChartProcedure,
-		svc.GetChart,
-		connect.WithSchema(applicationServiceMethods.ByName("GetChart")),
-		connect.WithHandlerOptions(opts...),
-	)
-	applicationServiceGetChartMetadataHandler := connect.NewUnaryHandlerSimple(
-		ApplicationServiceGetChartMetadataProcedure,
-		svc.GetChartMetadata,
-		connect.WithSchema(applicationServiceMethods.ByName("GetChartMetadata")),
-		connect.WithHandlerOptions(opts...),
-	)
-	applicationServiceUploadChartHandler := connect.NewUnaryHandlerSimple(
-		ApplicationServiceUploadChartProcedure,
-		svc.UploadChart,
-		connect.WithSchema(applicationServiceMethods.ByName("UploadChart")),
-		connect.WithHandlerOptions(opts...),
-	)
 	applicationServiceListConfigMapsHandler := connect.NewUnaryHandlerSimple(
 		ApplicationServiceListConfigMapsProcedure,
 		svc.ListConfigMaps,
@@ -661,14 +553,6 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 			applicationServiceDeleteReleaseHandler.ServeHTTP(w, r)
 		case ApplicationServiceRollbackReleaseProcedure:
 			applicationServiceRollbackReleaseHandler.ServeHTTP(w, r)
-		case ApplicationServiceListChartsProcedure:
-			applicationServiceListChartsHandler.ServeHTTP(w, r)
-		case ApplicationServiceGetChartProcedure:
-			applicationServiceGetChartHandler.ServeHTTP(w, r)
-		case ApplicationServiceGetChartMetadataProcedure:
-			applicationServiceGetChartMetadataHandler.ServeHTTP(w, r)
-		case ApplicationServiceUploadChartProcedure:
-			applicationServiceUploadChartHandler.ServeHTTP(w, r)
 		case ApplicationServiceListConfigMapsProcedure:
 			applicationServiceListConfigMapsHandler.ServeHTTP(w, r)
 		case ApplicationServiceListSecretsProcedure:
@@ -722,11 +606,11 @@ func (UnimplementedApplicationServiceHandler) ListReleases(context.Context, *v1.
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListReleases is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) CreateRelease(context.Context, *v1.CreateReleaseRequest) (*v1.Application_Release, error) {
+func (UnimplementedApplicationServiceHandler) CreateRelease(context.Context, *v1.CreateReleaseRequest) (*v1.Release, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.CreateRelease is not implemented"))
 }
 
-func (UnimplementedApplicationServiceHandler) UpdateRelease(context.Context, *v1.UpdateReleaseRequest) (*v1.Application_Release, error) {
+func (UnimplementedApplicationServiceHandler) UpdateRelease(context.Context, *v1.UpdateReleaseRequest) (*v1.Release, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.UpdateRelease is not implemented"))
 }
 
@@ -736,22 +620,6 @@ func (UnimplementedApplicationServiceHandler) DeleteRelease(context.Context, *v1
 
 func (UnimplementedApplicationServiceHandler) RollbackRelease(context.Context, *v1.RollbackReleaseRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.RollbackRelease is not implemented"))
-}
-
-func (UnimplementedApplicationServiceHandler) ListCharts(context.Context, *v1.ListChartsRequest) (*v1.ListChartsResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListCharts is not implemented"))
-}
-
-func (UnimplementedApplicationServiceHandler) GetChart(context.Context, *v1.GetChartRequest) (*v1.Application_Chart, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.GetChart is not implemented"))
-}
-
-func (UnimplementedApplicationServiceHandler) GetChartMetadata(context.Context, *v1.GetChartMetadataRequest) (*v1.Application_Chart_Metadata, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.GetChartMetadata is not implemented"))
-}
-
-func (UnimplementedApplicationServiceHandler) UploadChart(context.Context, *v1.UploadChartRequest) (*emptypb.Empty, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.UploadChart is not implemented"))
 }
 
 func (UnimplementedApplicationServiceHandler) ListConfigMaps(context.Context, *v1.ListConfigMapsRequest) (*v1.ListConfigMapsResponse, error) {

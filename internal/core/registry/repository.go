@@ -8,6 +8,7 @@ type Repository struct {
 	Name          string
 	ManifestCount uint32
 	SizeBytes     uint64
+	LatestTag     string
 }
 
 type RepositoryRepo interface {

@@ -9,7 +9,6 @@ package main
 import (
 	"github.com/otterscale/otterscale/internal/app"
 	"github.com/otterscale/otterscale/internal/config"
-	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	config2 "github.com/otterscale/otterscale/internal/core/application/config"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
@@ -37,6 +36,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/orchestrator/gpu"
 	"github.com/otterscale/otterscale/internal/core/orchestrator/standalone"
 	registry2 "github.com/otterscale/otterscale/internal/core/registry"
+	"github.com/otterscale/otterscale/internal/core/registry/chart"
 	"github.com/otterscale/otterscale/internal/core/scope"
 	"github.com/otterscale/otterscale/internal/core/storage"
 	"github.com/otterscale/otterscale/internal/core/storage/block"
@@ -45,6 +45,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/storage/smb"
 	"github.com/otterscale/otterscale/internal/mux"
 	"github.com/otterscale/otterscale/internal/providers/ceph"
+	"github.com/otterscale/otterscale/internal/providers/helm"
 	"github.com/otterscale/otterscale/internal/providers/juju"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
 	"github.com/otterscale/otterscale/internal/providers/kubernetessigs"
@@ -71,22 +72,23 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	namespaceRepo := kubernetes.NewNamespaceRepo(kubernetesKubernetes)
 	nodeRepo := kubernetes.NewNodeRepo(kubernetesKubernetes)
 	clusterUseCase := cluster.NewUseCase(namespaceRepo, nodeRepo)
-	chartRepo, err := kubernetes.NewChartRepo(kubernetesKubernetes)
+	helmHelm, err := helm.New(configConfig, kubernetesKubernetes)
 	if err != nil {
 		return nil, nil, err
 	}
-	chartUseCase := chart.NewUseCase(configConfig, chartRepo)
+	chartRepo := helm.NewChartRepo(helmHelm)
+	chartUseCase := chart.NewUseCase(chartRepo)
 	configMapRepo := kubernetes.NewConfigMapRepo(kubernetesKubernetes)
 	secretRepo := kubernetes.NewSecretRepo(kubernetesKubernetes)
 	configUseCase := config2.NewUseCase(configMapRepo, secretRepo)
 	persistentVolumeClaimRepo := kubernetes.NewPersistentVolumeClaimRepo(kubernetesKubernetes)
 	storageClassRepo := kubernetes.NewStorageClassRepo(kubernetesKubernetes)
 	persistentUseCase := persistent.NewUseCase(persistentVolumeClaimRepo, storageClassRepo)
-	releaseRepo, err := kubernetes.NewReleaseRepo(kubernetesKubernetes)
+	releaseRepo, err := helm.NewReleaseRepo(helmHelm)
 	if err != nil {
 		return nil, nil, err
 	}
-	releaseUseCase := release.NewUseCase(releaseRepo, chartRepo)
+	releaseUseCase := release.NewUseCase(releaseRepo)
 	kubernetesSigs, err := kubernetessigs.New(configConfig, kubernetesKubernetes)
 	if err != nil {
 		return nil, nil, err
@@ -156,7 +158,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	tagUseCase := tag.NewUseCase(tagRepo)
 	machineService := app.NewMachineService(machineUseCase, purgeUseCase, tagUseCase)
 	inferencePoolRepo := kubernetessigs.NewInferencePoolRepo(kubernetesSigs)
-	modelUseCase := model.NewUseCase(inferencePoolRepo, chartRepo, deploymentRepo, gatewayRepo, httpRouteRepo, persistentVolumeClaimRepo, podRepo, nodeRepo, releaseRepo, serviceRepo)
+	modelUseCase := model.NewUseCase(inferencePoolRepo, deploymentRepo, gatewayRepo, httpRouteRepo, persistentVolumeClaimRepo, podRepo, nodeRepo, releaseRepo, serviceRepo)
 	modelService := app.NewModelService(modelUseCase)
 	fabricRepo := maas.NewFabricRepo(maasMAAS)
 	subnetRepo := maas.NewSubnetRepo(maasMAAS)
@@ -166,7 +168,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	networkService := app.NewNetworkService(networkUseCase)
 	orchestratorUseCase := orchestrator.NewUseCase(nodeRepo)
 	customResourceDefinitionRepo := kubernetes.NewCustomResourceDefinitionRepo(kubernetesKubernetes)
-	extensionUseCase := extension.NewUseCase(chartRepo, customResourceDefinitionRepo, releaseRepo)
+	extensionUseCase := extension.NewUseCase(customResourceDefinitionRepo, releaseRepo)
 	gpuUseCase := gpu.NewUseCase(machineRepo, nodeRepo, podRepo)
 	relationRepo := juju.NewRelationRepo(jujuJuju)
 	standaloneUseCase := standalone.NewUseCase(configConfig, facilityRepo, ipRangeRepo, machineRepo, orchestratorRepo, provisionerRepo, relationRepo, subnetRepo, tagRepo)
@@ -178,7 +180,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	manifestRepo := registry.NewManifestRepo(registryRegistry)
 	repositoryRepo := registry.NewRepositoryRepo(registryRegistry)
 	registryUseCase := registry2.NewUseCase(manifestRepo, repositoryRepo)
-	registryService := app.NewRegistryService(registryUseCase)
+	registryService := app.NewRegistryService(chartUseCase, registryUseCase)
 	storageUseCase := storage.NewUseCase(storageNodeRepo, poolRepo, machineRepo)
 	imageSnapshotRepo := ceph.NewImageSnapshotRepo(cephCeph)
 	blockUseCase := block.NewUseCase(imageRepo, imageSnapshotRepo, poolRepo)

@@ -10,9 +10,7 @@ import (
 	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
-	_ "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	unsafe "unsafe"
@@ -30,6 +28,7 @@ type Repository struct {
 	xxx_hidden_Name          *string                `protobuf:"bytes,1,opt,name=name"`
 	xxx_hidden_ManifestCount uint32                 `protobuf:"varint,2,opt,name=manifest_count,json=manifestCount"`
 	xxx_hidden_SizeBytes     uint64                 `protobuf:"varint,3,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_LatestTag     *string                `protobuf:"bytes,4,opt,name=latest_tag,json=latestTag"`
 	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
 	XXX_presence             [1]uint32
 	unknownFields            protoimpl.UnknownFields
@@ -85,19 +84,34 @@ func (x *Repository) GetSizeBytes() uint64 {
 	return 0
 }
 
+func (x *Repository) GetLatestTag() string {
+	if x != nil {
+		if x.xxx_hidden_LatestTag != nil {
+			return *x.xxx_hidden_LatestTag
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *Repository) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *Repository) SetManifestCount(v uint32) {
 	x.xxx_hidden_ManifestCount = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *Repository) SetSizeBytes(v uint64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+}
+
+func (x *Repository) SetLatestTag(v string) {
+	x.xxx_hidden_LatestTag = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *Repository) HasName() bool {
@@ -121,6 +135,13 @@ func (x *Repository) HasSizeBytes() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
+func (x *Repository) HasLatestTag() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
 func (x *Repository) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
@@ -136,12 +157,18 @@ func (x *Repository) ClearSizeBytes() {
 	x.xxx_hidden_SizeBytes = 0
 }
 
+func (x *Repository) ClearLatestTag() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_LatestTag = nil
+}
+
 type Repository_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Name          *string
 	ManifestCount *uint32
 	SizeBytes     *uint64
+	LatestTag     *string
 }
 
 func (b0 Repository_builder) Build() *Repository {
@@ -149,16 +176,20 @@ func (b0 Repository_builder) Build() *Repository {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.ManifestCount != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_ManifestCount = *b.ManifestCount
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
+	}
+	if b.LatestTag != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_LatestTag = b.LatestTag
 	}
 	return m0
 }
@@ -465,7 +496,7 @@ func (*manifest_Image) isManifest_Content() {}
 
 func (*manifest_Chart) isManifest_Content() {}
 
-// github.com/opencontainers/image-spec/specs-go/v1
+// oci spec
 type Image struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_CreatedAt   *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=created_at,json=createdAt"`
@@ -644,7 +675,7 @@ func (b0 Image_builder) Build() *Image {
 	return m0
 }
 
-// helm.sh/helm/v3/pkg/chart
+// helm chart
 type Chart struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name         *string                `protobuf:"bytes,1,opt,name=name"`
@@ -1764,6 +1795,391 @@ func (b0 DeleteManifestRequest_builder) Build() *DeleteManifestRequest {
 	return m0
 }
 
+type ListChartsRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ListChartsRequest) Reset() {
+	*x = ListChartsRequest{}
+	mi := &file_api_registry_v1_registry_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListChartsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListChartsRequest) ProtoMessage() {}
+
+func (x *ListChartsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_registry_v1_registry_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListChartsRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListChartsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *ListChartsRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ListChartsRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+type ListChartsRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope *string
+}
+
+func (b0 ListChartsRequest_builder) Build() *ListChartsRequest {
+	m0 := &ListChartsRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	return m0
+}
+
+type ListChartsResponse struct {
+	state             protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Charts *[]*Chart              `protobuf:"bytes,1,rep,name=charts"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *ListChartsResponse) Reset() {
+	*x = ListChartsResponse{}
+	mi := &file_api_registry_v1_registry_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListChartsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListChartsResponse) ProtoMessage() {}
+
+func (x *ListChartsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_registry_v1_registry_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListChartsResponse) GetCharts() []*Chart {
+	if x != nil {
+		if x.xxx_hidden_Charts != nil {
+			return *x.xxx_hidden_Charts
+		}
+	}
+	return nil
+}
+
+func (x *ListChartsResponse) SetCharts(v []*Chart) {
+	x.xxx_hidden_Charts = &v
+}
+
+type ListChartsResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Charts []*Chart
+}
+
+func (b0 ListChartsResponse_builder) Build() *ListChartsResponse {
+	m0 := &ListChartsResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Charts = &b.Charts
+	return m0
+}
+
+type ListChartVersionsRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_ChartName   *string                `protobuf:"bytes,2,opt,name=chart_name,json=chartName"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ListChartVersionsRequest) Reset() {
+	*x = ListChartVersionsRequest{}
+	mi := &file_api_registry_v1_registry_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListChartVersionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListChartVersionsRequest) ProtoMessage() {}
+
+func (x *ListChartVersionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_registry_v1_registry_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListChartVersionsRequest) GetScope() string {
+	if x != nil {
+		if x.xxx_hidden_Scope != nil {
+			return *x.xxx_hidden_Scope
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListChartVersionsRequest) GetChartName() string {
+	if x != nil {
+		if x.xxx_hidden_ChartName != nil {
+			return *x.xxx_hidden_ChartName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListChartVersionsRequest) SetScope(v string) {
+	x.xxx_hidden_Scope = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *ListChartVersionsRequest) SetChartName(v string) {
+	x.xxx_hidden_ChartName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ListChartVersionsRequest) HasScope() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ListChartVersionsRequest) HasChartName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListChartVersionsRequest) ClearScope() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Scope = nil
+}
+
+func (x *ListChartVersionsRequest) ClearChartName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_ChartName = nil
+}
+
+type ListChartVersionsRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Scope     *string
+	ChartName *string
+}
+
+func (b0 ListChartVersionsRequest_builder) Build() *ListChartVersionsRequest {
+	m0 := &ListChartVersionsRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Scope != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Scope = b.Scope
+	}
+	if b.ChartName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_ChartName = b.ChartName
+	}
+	return m0
+}
+
+type ListChartVersionsResponse struct {
+	state               protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Versions *[]*Chart_Version      `protobuf:"bytes,1,rep,name=versions"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *ListChartVersionsResponse) Reset() {
+	*x = ListChartVersionsResponse{}
+	mi := &file_api_registry_v1_registry_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListChartVersionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListChartVersionsResponse) ProtoMessage() {}
+
+func (x *ListChartVersionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_registry_v1_registry_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListChartVersionsResponse) GetVersions() []*Chart_Version {
+	if x != nil {
+		if x.xxx_hidden_Versions != nil {
+			return *x.xxx_hidden_Versions
+		}
+	}
+	return nil
+}
+
+func (x *ListChartVersionsResponse) SetVersions(v []*Chart_Version) {
+	x.xxx_hidden_Versions = &v
+}
+
+type ListChartVersionsResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Versions []*Chart_Version
+}
+
+func (b0 ListChartVersionsResponse_builder) Build() *ListChartVersionsResponse {
+	m0 := &ListChartVersionsResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Versions = &b.Versions
+	return m0
+}
+
+type GetChartInformationRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ChartRef    *string                `protobuf:"bytes,1,opt,name=chart_ref,json=chartRef"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *GetChartInformationRequest) Reset() {
+	*x = GetChartInformationRequest{}
+	mi := &file_api_registry_v1_registry_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChartInformationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChartInformationRequest) ProtoMessage() {}
+
+func (x *GetChartInformationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_registry_v1_registry_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *GetChartInformationRequest) GetChartRef() string {
+	if x != nil {
+		if x.xxx_hidden_ChartRef != nil {
+			return *x.xxx_hidden_ChartRef
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *GetChartInformationRequest) SetChartRef(v string) {
+	x.xxx_hidden_ChartRef = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *GetChartInformationRequest) HasChartRef() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *GetChartInformationRequest) ClearChartRef() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ChartRef = nil
+}
+
+type GetChartInformationRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ChartRef *string
+}
+
+func (b0 GetChartInformationRequest_builder) Build() *GetChartInformationRequest {
+	m0 := &GetChartInformationRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ChartRef != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_ChartRef = b.ChartRef
+	}
+	return m0
+}
+
 type Image_Platform struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Architecture *string                `protobuf:"bytes,1,opt,name=architecture"`
@@ -1779,7 +2195,7 @@ type Image_Platform struct {
 
 func (x *Image_Platform) Reset() {
 	*x = Image_Platform{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[11]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1791,7 +2207,7 @@ func (x *Image_Platform) String() string {
 func (*Image_Platform) ProtoMessage() {}
 
 func (x *Image_Platform) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[11]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1959,14 +2375,13 @@ type Image_Config struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_User         *string                `protobuf:"bytes,1,opt,name=user"`
 	xxx_hidden_ExposedPorts []string               `protobuf:"bytes,2,rep,name=exposed_ports,json=exposedPorts"`
-	xxx_hidden_Envs         []string               `protobuf:"bytes,3,rep,name=envs"`
+	xxx_hidden_Environments []string               `protobuf:"bytes,3,rep,name=environments"`
 	xxx_hidden_Entrypoint   []string               `protobuf:"bytes,4,rep,name=entrypoint"`
 	xxx_hidden_Cmd          []string               `protobuf:"bytes,5,rep,name=cmd"`
 	xxx_hidden_Volumes      []string               `protobuf:"bytes,6,rep,name=volumes"`
 	xxx_hidden_WorkingDir   *string                `protobuf:"bytes,7,opt,name=working_dir,json=workingDir"`
 	xxx_hidden_Labels       map[string]string      `protobuf:"bytes,8,rep,name=labels" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	xxx_hidden_StopSignal   *string                `protobuf:"bytes,9,opt,name=stop_signal,json=stopSignal"`
-	xxx_hidden_ArgsEscaped  *string                `protobuf:"bytes,10,opt,name=args_escaped,json=argsEscaped"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -1975,7 +2390,7 @@ type Image_Config struct {
 
 func (x *Image_Config) Reset() {
 	*x = Image_Config{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[12]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1987,7 +2402,7 @@ func (x *Image_Config) String() string {
 func (*Image_Config) ProtoMessage() {}
 
 func (x *Image_Config) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[12]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2015,9 +2430,9 @@ func (x *Image_Config) GetExposedPorts() []string {
 	return nil
 }
 
-func (x *Image_Config) GetEnvs() []string {
+func (x *Image_Config) GetEnvironments() []string {
 	if x != nil {
-		return x.xxx_hidden_Envs
+		return x.xxx_hidden_Environments
 	}
 	return nil
 }
@@ -2070,27 +2485,17 @@ func (x *Image_Config) GetStopSignal() string {
 	return ""
 }
 
-func (x *Image_Config) GetArgsEscaped() string {
-	if x != nil {
-		if x.xxx_hidden_ArgsEscaped != nil {
-			return *x.xxx_hidden_ArgsEscaped
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *Image_Config) SetUser(v string) {
 	x.xxx_hidden_User = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 9)
 }
 
 func (x *Image_Config) SetExposedPorts(v []string) {
 	x.xxx_hidden_ExposedPorts = v
 }
 
-func (x *Image_Config) SetEnvs(v []string) {
-	x.xxx_hidden_Envs = v
+func (x *Image_Config) SetEnvironments(v []string) {
+	x.xxx_hidden_Environments = v
 }
 
 func (x *Image_Config) SetEntrypoint(v []string) {
@@ -2107,7 +2512,7 @@ func (x *Image_Config) SetVolumes(v []string) {
 
 func (x *Image_Config) SetWorkingDir(v string) {
 	x.xxx_hidden_WorkingDir = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 9)
 }
 
 func (x *Image_Config) SetLabels(v map[string]string) {
@@ -2116,12 +2521,7 @@ func (x *Image_Config) SetLabels(v map[string]string) {
 
 func (x *Image_Config) SetStopSignal(v string) {
 	x.xxx_hidden_StopSignal = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 10)
-}
-
-func (x *Image_Config) SetArgsEscaped(v string) {
-	x.xxx_hidden_ArgsEscaped = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 9)
 }
 
 func (x *Image_Config) HasUser() bool {
@@ -2145,13 +2545,6 @@ func (x *Image_Config) HasStopSignal() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
-func (x *Image_Config) HasArgsEscaped() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
-}
-
 func (x *Image_Config) ClearUser() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_User = nil
@@ -2167,24 +2560,18 @@ func (x *Image_Config) ClearStopSignal() {
 	x.xxx_hidden_StopSignal = nil
 }
 
-func (x *Image_Config) ClearArgsEscaped() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
-	x.xxx_hidden_ArgsEscaped = nil
-}
-
 type Image_Config_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	User         *string
 	ExposedPorts []string
-	Envs         []string
+	Environments []string
 	Entrypoint   []string
 	Cmd          []string
 	Volumes      []string
 	WorkingDir   *string
 	Labels       map[string]string
 	StopSignal   *string
-	ArgsEscaped  *string
 }
 
 func (b0 Image_Config_builder) Build() *Image_Config {
@@ -2192,26 +2579,22 @@ func (b0 Image_Config_builder) Build() *Image_Config {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.User != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 9)
 		x.xxx_hidden_User = b.User
 	}
 	x.xxx_hidden_ExposedPorts = b.ExposedPorts
-	x.xxx_hidden_Envs = b.Envs
+	x.xxx_hidden_Environments = b.Environments
 	x.xxx_hidden_Entrypoint = b.Entrypoint
 	x.xxx_hidden_Cmd = b.Cmd
 	x.xxx_hidden_Volumes = b.Volumes
 	if b.WorkingDir != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 9)
 		x.xxx_hidden_WorkingDir = b.WorkingDir
 	}
 	x.xxx_hidden_Labels = b.Labels
 	if b.StopSignal != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 9)
 		x.xxx_hidden_StopSignal = b.StopSignal
-	}
-	if b.ArgsEscaped != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 10)
-		x.xxx_hidden_ArgsEscaped = b.ArgsEscaped
 	}
 	return m0
 }
@@ -2228,7 +2611,7 @@ type Image_RootFS struct {
 
 func (x *Image_RootFS) Reset() {
 	*x = Image_RootFS{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[13]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2240,7 +2623,7 @@ func (x *Image_RootFS) String() string {
 func (*Image_RootFS) ProtoMessage() {}
 
 func (x *Image_RootFS) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[13]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2308,6 +2691,261 @@ func (b0 Image_RootFS_builder) Build() *Image_RootFS {
 	return m0
 }
 
+type Chart_Information struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Values      *string                `protobuf:"bytes,1,opt,name=values"`
+	xxx_hidden_Readme      *string                `protobuf:"bytes,2,opt,name=readme"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *Chart_Information) Reset() {
+	*x = Chart_Information{}
+	mi := &file_api_registry_v1_registry_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Chart_Information) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Chart_Information) ProtoMessage() {}
+
+func (x *Chart_Information) ProtoReflect() protoreflect.Message {
+	mi := &file_api_registry_v1_registry_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Chart_Information) GetValues() string {
+	if x != nil {
+		if x.xxx_hidden_Values != nil {
+			return *x.xxx_hidden_Values
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Chart_Information) GetReadme() string {
+	if x != nil {
+		if x.xxx_hidden_Readme != nil {
+			return *x.xxx_hidden_Readme
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Chart_Information) SetValues(v string) {
+	x.xxx_hidden_Values = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *Chart_Information) SetReadme(v string) {
+	x.xxx_hidden_Readme = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *Chart_Information) HasValues() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *Chart_Information) HasReadme() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Chart_Information) ClearValues() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Values = nil
+}
+
+func (x *Chart_Information) ClearReadme() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Readme = nil
+}
+
+type Chart_Information_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Values *string
+	Readme *string
+}
+
+func (b0 Chart_Information_builder) Build() *Chart_Information {
+	m0 := &Chart_Information{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Values != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Values = b.Values
+	}
+	if b.Readme != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Readme = b.Readme
+	}
+	return m0
+}
+
+type Chart_Version struct {
+	state                         protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ChartRef           *string                `protobuf:"bytes,1,opt,name=chart_ref,json=chartRef"`
+	xxx_hidden_ChartVersion       *string                `protobuf:"bytes,2,opt,name=chart_version,json=chartVersion"`
+	xxx_hidden_ApplicationVersion *string                `protobuf:"bytes,3,opt,name=application_version,json=applicationVersion"`
+	XXX_raceDetectHookData        protoimpl.RaceDetectHookData
+	XXX_presence                  [1]uint32
+	unknownFields                 protoimpl.UnknownFields
+	sizeCache                     protoimpl.SizeCache
+}
+
+func (x *Chart_Version) Reset() {
+	*x = Chart_Version{}
+	mi := &file_api_registry_v1_registry_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Chart_Version) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Chart_Version) ProtoMessage() {}
+
+func (x *Chart_Version) ProtoReflect() protoreflect.Message {
+	mi := &file_api_registry_v1_registry_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Chart_Version) GetChartRef() string {
+	if x != nil {
+		if x.xxx_hidden_ChartRef != nil {
+			return *x.xxx_hidden_ChartRef
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Chart_Version) GetChartVersion() string {
+	if x != nil {
+		if x.xxx_hidden_ChartVersion != nil {
+			return *x.xxx_hidden_ChartVersion
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Chart_Version) GetApplicationVersion() string {
+	if x != nil {
+		if x.xxx_hidden_ApplicationVersion != nil {
+			return *x.xxx_hidden_ApplicationVersion
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Chart_Version) SetChartRef(v string) {
+	x.xxx_hidden_ChartRef = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *Chart_Version) SetChartVersion(v string) {
+	x.xxx_hidden_ChartVersion = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *Chart_Version) SetApplicationVersion(v string) {
+	x.xxx_hidden_ApplicationVersion = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+}
+
+func (x *Chart_Version) HasChartRef() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *Chart_Version) HasChartVersion() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Chart_Version) HasApplicationVersion() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *Chart_Version) ClearChartRef() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ChartRef = nil
+}
+
+func (x *Chart_Version) ClearChartVersion() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_ChartVersion = nil
+}
+
+func (x *Chart_Version) ClearApplicationVersion() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_ApplicationVersion = nil
+}
+
+type Chart_Version_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ChartRef           *string
+	ChartVersion       *string
+	ApplicationVersion *string
+}
+
+func (b0 Chart_Version_builder) Build() *Chart_Version {
+	m0 := &Chart_Version{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ChartRef != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_ChartRef = b.ChartRef
+	}
+	if b.ChartVersion != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_ChartVersion = b.ChartVersion
+	}
+	if b.ApplicationVersion != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_ApplicationVersion = b.ApplicationVersion
+	}
+	return m0
+}
+
 type Chart_Maintainer struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
@@ -2321,7 +2959,7 @@ type Chart_Maintainer struct {
 
 func (x *Chart_Maintainer) Reset() {
 	*x = Chart_Maintainer{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[15]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2333,7 +2971,7 @@ func (x *Chart_Maintainer) String() string {
 func (*Chart_Maintainer) ProtoMessage() {}
 
 func (x *Chart_Maintainer) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[15]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2469,7 +3107,7 @@ type Chart_Dependency struct {
 
 func (x *Chart_Dependency) Reset() {
 	*x = Chart_Dependency{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[16]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2481,7 +3119,7 @@ func (x *Chart_Dependency) String() string {
 func (*Chart_Dependency) ProtoMessage() {}
 
 func (x *Chart_Dependency) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[16]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2710,13 +3348,15 @@ var File_api_registry_v1_registry_proto protoreflect.FileDescriptor
 
 const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"\n" +
-	"\x1eapi/registry/v1/registry.proto\x12\x16otterscale.registry.v1\x1a\x15api/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/protobuf/struct.proto\"f\n" +
+	"\x1eapi/registry/v1/registry.proto\x12\x16otterscale.registry.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x85\x01\n" +
 	"\n" +
 	"Repository\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12%\n" +
 	"\x0emanifest_count\x18\x02 \x01(\rR\rmanifestCount\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\x03 \x01(\x04R\tsizeBytes\"\xf5\x01\n" +
+	"size_bytes\x18\x03 \x01(\x04R\tsizeBytes\x12\x1d\n" +
+	"\n" +
+	"latest_tag\x18\x04 \x01(\tR\tlatestTag\"\xf5\x01\n" +
 	"\bManifest\x12'\n" +
 	"\x0frepository_name\x18\x01 \x01(\tR\x0erepositoryName\x12\x10\n" +
 	"\x03tag\x18\x02 \x01(\tR\x03tag\x12\x16\n" +
@@ -2725,7 +3365,7 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"size_bytes\x18\x04 \x01(\x04R\tsizeBytes\x125\n" +
 	"\x05image\x18\v \x01(\v2\x1d.otterscale.registry.v1.ImageH\x00R\x05image\x125\n" +
 	"\x05chart\x18\f \x01(\v2\x1d.otterscale.registry.v1.ChartH\x00R\x05chartB\t\n" +
-	"\acontent\"\x83\a\n" +
+	"\acontent\"\xf0\x06\n" +
 	"\x05Image\x129\n" +
 	"\n" +
 	"created_at\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12\x16\n" +
@@ -2740,11 +3380,11 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"os_version\x18\x03 \x01(\tR\tosVersion\x12\x1f\n" +
 	"\vos_features\x18\x04 \x03(\tR\n" +
 	"osFeatures\x12\x18\n" +
-	"\avariant\x18\x05 \x01(\tR\avariant\x1a\x8b\x03\n" +
+	"\avariant\x18\x05 \x01(\tR\avariant\x1a\xf8\x02\n" +
 	"\x06Config\x12\x12\n" +
 	"\x04user\x18\x01 \x01(\tR\x04user\x12#\n" +
-	"\rexposed_ports\x18\x02 \x03(\tR\fexposedPorts\x12\x12\n" +
-	"\x04envs\x18\x03 \x03(\tR\x04envs\x12\x1e\n" +
+	"\rexposed_ports\x18\x02 \x03(\tR\fexposedPorts\x12\"\n" +
+	"\fenvironments\x18\x03 \x03(\tR\fenvironments\x12\x1e\n" +
 	"\n" +
 	"entrypoint\x18\x04 \x03(\tR\n" +
 	"entrypoint\x12\x10\n" +
@@ -2754,15 +3394,13 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"workingDir\x12H\n" +
 	"\x06labels\x18\b \x03(\v20.otterscale.registry.v1.Image.Config.LabelsEntryR\x06labels\x12\x1f\n" +
 	"\vstop_signal\x18\t \x01(\tR\n" +
-	"stopSignal\x12!\n" +
-	"\fargs_escaped\x18\n" +
-	" \x01(\tR\vargsEscaped\x1a9\n" +
+	"stopSignal\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a7\n" +
 	"\x06RootFS\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x19\n" +
-	"\bdiff_ids\x18\x02 \x03(\tR\adiffIdsJ\x04\b\x06\x10\a\"\xbb\a\n" +
+	"\bdiff_ids\x18\x02 \x03(\tR\adiffIdsJ\x04\b\x06\x10\a\"\xf8\b\n" +
 	"\x05Chart\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04home\x18\x02 \x01(\tR\x04home\x12\x18\n" +
@@ -2785,7 +3423,14 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"\vannotations\x18\x0e \x03(\v2..otterscale.registry.v1.Chart.AnnotationsEntryR\vannotations\x12!\n" +
 	"\fkube_version\x18\x0f \x01(\tR\vkubeVersion\x12L\n" +
 	"\fdependencies\x18\x10 \x03(\v2(.otterscale.registry.v1.Chart.DependencyR\fdependencies\x12\x12\n" +
-	"\x04type\x18\x11 \x01(\tR\x04type\x1aH\n" +
+	"\x04type\x18\x11 \x01(\tR\x04type\x1a=\n" +
+	"\vInformation\x12\x16\n" +
+	"\x06values\x18\x01 \x01(\tR\x06values\x12\x16\n" +
+	"\x06readme\x18\x02 \x01(\tR\x06readme\x1a|\n" +
+	"\aVersion\x12\x1b\n" +
+	"\tchart_ref\x18\x01 \x01(\tR\bchartRef\x12#\n" +
+	"\rchart_version\x18\x02 \x01(\tR\fchartVersion\x12/\n" +
+	"\x13application_version\x18\x03 \x01(\tR\x12applicationVersion\x1aH\n" +
 	"\n" +
 	"Maintainer\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
@@ -2821,7 +3466,19 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"\x15DeleteManifestRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12'\n" +
 	"\x0frepository_name\x18\x02 \x01(\tR\x0erepositoryName\x12\x16\n" +
-	"\x06digest\x18\x03 \x01(\tR\x06digest2\xa7\x04\n" +
+	"\x06digest\x18\x03 \x01(\tR\x06digest\")\n" +
+	"\x11ListChartsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\"K\n" +
+	"\x12ListChartsResponse\x125\n" +
+	"\x06charts\x18\x01 \x03(\v2\x1d.otterscale.registry.v1.ChartR\x06charts\"O\n" +
+	"\x18ListChartVersionsRequest\x12\x14\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1d\n" +
+	"\n" +
+	"chart_name\x18\x02 \x01(\tR\tchartName\"^\n" +
+	"\x19ListChartVersionsResponse\x12A\n" +
+	"\bversions\x18\x01 \x03(\v2%.otterscale.registry.v1.Chart.VersionR\bversions\"9\n" +
+	"\x1aGetChartInformationRequest\x12\x1b\n" +
+	"\tchart_ref\x18\x01 \x01(\tR\bchartRef2\xc9\a\n" +
 	"\x0fRegistryService\x12\x88\x01\n" +
 	"\x0eGetRegistryURL\x12-.otterscale.registry.v1.GetRegistryURLRequest\x1a..otterscale.registry.v1.GetRegistryURLResponse\"\x17\x8a\xdf\xd5\x1d\x12\n" +
 	"\x10registry-enabled\x12\x8e\x01\n" +
@@ -2830,57 +3487,79 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"\rListManifests\x12,.otterscale.registry.v1.ListManifestsRequest\x1a-.otterscale.registry.v1.ListManifestsResponse\"\x17\x8a\xdf\xd5\x1d\x12\n" +
 	"\x10registry-enabled\x12p\n" +
 	"\x0eDeleteManifest\x12-.otterscale.registry.v1.DeleteManifestRequest\x1a\x16.google.protobuf.Empty\"\x17\x8a\xdf\xd5\x1d\x12\n" +
+	"\x10registry-enabled\x12|\n" +
+	"\n" +
+	"ListCharts\x12).otterscale.registry.v1.ListChartsRequest\x1a*.otterscale.registry.v1.ListChartsResponse\"\x17\x8a\xdf\xd5\x1d\x12\n" +
+	"\x10registry-enabled\x12\x91\x01\n" +
+	"\x11ListChartVersions\x120.otterscale.registry.v1.ListChartVersionsRequest\x1a1.otterscale.registry.v1.ListChartVersionsResponse\"\x17\x8a\xdf\xd5\x1d\x12\n" +
+	"\x10registry-enabled\x12\x8d\x01\n" +
+	"\x13GetChartInformation\x122.otterscale.registry.v1.GetChartInformationRequest\x1a).otterscale.registry.v1.Chart.Information\"\x17\x8a\xdf\xd5\x1d\x12\n" +
 	"\x10registry-enabledB5Z3github.com/otterscale/otterscale/api/registry/v1;pbb\beditionsp\xe8\a"
 
-var file_api_registry_v1_registry_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_api_registry_v1_registry_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_api_registry_v1_registry_proto_goTypes = []any{
-	(*Repository)(nil),               // 0: otterscale.registry.v1.Repository
-	(*Manifest)(nil),                 // 1: otterscale.registry.v1.Manifest
-	(*Image)(nil),                    // 2: otterscale.registry.v1.Image
-	(*Chart)(nil),                    // 3: otterscale.registry.v1.Chart
-	(*GetRegistryURLRequest)(nil),    // 4: otterscale.registry.v1.GetRegistryURLRequest
-	(*GetRegistryURLResponse)(nil),   // 5: otterscale.registry.v1.GetRegistryURLResponse
-	(*ListRepositoriesRequest)(nil),  // 6: otterscale.registry.v1.ListRepositoriesRequest
-	(*ListRepositoriesResponse)(nil), // 7: otterscale.registry.v1.ListRepositoriesResponse
-	(*ListManifestsRequest)(nil),     // 8: otterscale.registry.v1.ListManifestsRequest
-	(*ListManifestsResponse)(nil),    // 9: otterscale.registry.v1.ListManifestsResponse
-	(*DeleteManifestRequest)(nil),    // 10: otterscale.registry.v1.DeleteManifestRequest
-	(*Image_Platform)(nil),           // 11: otterscale.registry.v1.Image.Platform
-	(*Image_Config)(nil),             // 12: otterscale.registry.v1.Image.Config
-	(*Image_RootFS)(nil),             // 13: otterscale.registry.v1.Image.RootFS
-	nil,                              // 14: otterscale.registry.v1.Image.Config.LabelsEntry
-	(*Chart_Maintainer)(nil),         // 15: otterscale.registry.v1.Chart.Maintainer
-	(*Chart_Dependency)(nil),         // 16: otterscale.registry.v1.Chart.Dependency
-	nil,                              // 17: otterscale.registry.v1.Chart.AnnotationsEntry
-	(*timestamppb.Timestamp)(nil),    // 18: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),            // 19: google.protobuf.Empty
+	(*Repository)(nil),                 // 0: otterscale.registry.v1.Repository
+	(*Manifest)(nil),                   // 1: otterscale.registry.v1.Manifest
+	(*Image)(nil),                      // 2: otterscale.registry.v1.Image
+	(*Chart)(nil),                      // 3: otterscale.registry.v1.Chart
+	(*GetRegistryURLRequest)(nil),      // 4: otterscale.registry.v1.GetRegistryURLRequest
+	(*GetRegistryURLResponse)(nil),     // 5: otterscale.registry.v1.GetRegistryURLResponse
+	(*ListRepositoriesRequest)(nil),    // 6: otterscale.registry.v1.ListRepositoriesRequest
+	(*ListRepositoriesResponse)(nil),   // 7: otterscale.registry.v1.ListRepositoriesResponse
+	(*ListManifestsRequest)(nil),       // 8: otterscale.registry.v1.ListManifestsRequest
+	(*ListManifestsResponse)(nil),      // 9: otterscale.registry.v1.ListManifestsResponse
+	(*DeleteManifestRequest)(nil),      // 10: otterscale.registry.v1.DeleteManifestRequest
+	(*ListChartsRequest)(nil),          // 11: otterscale.registry.v1.ListChartsRequest
+	(*ListChartsResponse)(nil),         // 12: otterscale.registry.v1.ListChartsResponse
+	(*ListChartVersionsRequest)(nil),   // 13: otterscale.registry.v1.ListChartVersionsRequest
+	(*ListChartVersionsResponse)(nil),  // 14: otterscale.registry.v1.ListChartVersionsResponse
+	(*GetChartInformationRequest)(nil), // 15: otterscale.registry.v1.GetChartInformationRequest
+	(*Image_Platform)(nil),             // 16: otterscale.registry.v1.Image.Platform
+	(*Image_Config)(nil),               // 17: otterscale.registry.v1.Image.Config
+	(*Image_RootFS)(nil),               // 18: otterscale.registry.v1.Image.RootFS
+	nil,                                // 19: otterscale.registry.v1.Image.Config.LabelsEntry
+	(*Chart_Information)(nil),          // 20: otterscale.registry.v1.Chart.Information
+	(*Chart_Version)(nil),              // 21: otterscale.registry.v1.Chart.Version
+	(*Chart_Maintainer)(nil),           // 22: otterscale.registry.v1.Chart.Maintainer
+	(*Chart_Dependency)(nil),           // 23: otterscale.registry.v1.Chart.Dependency
+	nil,                                // 24: otterscale.registry.v1.Chart.AnnotationsEntry
+	(*timestamppb.Timestamp)(nil),      // 25: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),              // 26: google.protobuf.Empty
 }
 var file_api_registry_v1_registry_proto_depIdxs = []int32{
 	2,  // 0: otterscale.registry.v1.Manifest.image:type_name -> otterscale.registry.v1.Image
 	3,  // 1: otterscale.registry.v1.Manifest.chart:type_name -> otterscale.registry.v1.Chart
-	18, // 2: otterscale.registry.v1.Image.created_at:type_name -> google.protobuf.Timestamp
-	11, // 3: otterscale.registry.v1.Image.platform:type_name -> otterscale.registry.v1.Image.Platform
-	12, // 4: otterscale.registry.v1.Image.config:type_name -> otterscale.registry.v1.Image.Config
-	13, // 5: otterscale.registry.v1.Image.root_fs:type_name -> otterscale.registry.v1.Image.RootFS
-	15, // 6: otterscale.registry.v1.Chart.maintainers:type_name -> otterscale.registry.v1.Chart.Maintainer
-	17, // 7: otterscale.registry.v1.Chart.annotations:type_name -> otterscale.registry.v1.Chart.AnnotationsEntry
-	16, // 8: otterscale.registry.v1.Chart.dependencies:type_name -> otterscale.registry.v1.Chart.Dependency
+	25, // 2: otterscale.registry.v1.Image.created_at:type_name -> google.protobuf.Timestamp
+	16, // 3: otterscale.registry.v1.Image.platform:type_name -> otterscale.registry.v1.Image.Platform
+	17, // 4: otterscale.registry.v1.Image.config:type_name -> otterscale.registry.v1.Image.Config
+	18, // 5: otterscale.registry.v1.Image.root_fs:type_name -> otterscale.registry.v1.Image.RootFS
+	22, // 6: otterscale.registry.v1.Chart.maintainers:type_name -> otterscale.registry.v1.Chart.Maintainer
+	24, // 7: otterscale.registry.v1.Chart.annotations:type_name -> otterscale.registry.v1.Chart.AnnotationsEntry
+	23, // 8: otterscale.registry.v1.Chart.dependencies:type_name -> otterscale.registry.v1.Chart.Dependency
 	0,  // 9: otterscale.registry.v1.ListRepositoriesResponse.repositories:type_name -> otterscale.registry.v1.Repository
 	1,  // 10: otterscale.registry.v1.ListManifestsResponse.manifests:type_name -> otterscale.registry.v1.Manifest
-	14, // 11: otterscale.registry.v1.Image.Config.labels:type_name -> otterscale.registry.v1.Image.Config.LabelsEntry
-	4,  // 12: otterscale.registry.v1.RegistryService.GetRegistryURL:input_type -> otterscale.registry.v1.GetRegistryURLRequest
-	6,  // 13: otterscale.registry.v1.RegistryService.ListRepositories:input_type -> otterscale.registry.v1.ListRepositoriesRequest
-	8,  // 14: otterscale.registry.v1.RegistryService.ListManifests:input_type -> otterscale.registry.v1.ListManifestsRequest
-	10, // 15: otterscale.registry.v1.RegistryService.DeleteManifest:input_type -> otterscale.registry.v1.DeleteManifestRequest
-	5,  // 16: otterscale.registry.v1.RegistryService.GetRegistryURL:output_type -> otterscale.registry.v1.GetRegistryURLResponse
-	7,  // 17: otterscale.registry.v1.RegistryService.ListRepositories:output_type -> otterscale.registry.v1.ListRepositoriesResponse
-	9,  // 18: otterscale.registry.v1.RegistryService.ListManifests:output_type -> otterscale.registry.v1.ListManifestsResponse
-	19, // 19: otterscale.registry.v1.RegistryService.DeleteManifest:output_type -> google.protobuf.Empty
-	16, // [16:20] is the sub-list for method output_type
-	12, // [12:16] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	3,  // 11: otterscale.registry.v1.ListChartsResponse.charts:type_name -> otterscale.registry.v1.Chart
+	21, // 12: otterscale.registry.v1.ListChartVersionsResponse.versions:type_name -> otterscale.registry.v1.Chart.Version
+	19, // 13: otterscale.registry.v1.Image.Config.labels:type_name -> otterscale.registry.v1.Image.Config.LabelsEntry
+	4,  // 14: otterscale.registry.v1.RegistryService.GetRegistryURL:input_type -> otterscale.registry.v1.GetRegistryURLRequest
+	6,  // 15: otterscale.registry.v1.RegistryService.ListRepositories:input_type -> otterscale.registry.v1.ListRepositoriesRequest
+	8,  // 16: otterscale.registry.v1.RegistryService.ListManifests:input_type -> otterscale.registry.v1.ListManifestsRequest
+	10, // 17: otterscale.registry.v1.RegistryService.DeleteManifest:input_type -> otterscale.registry.v1.DeleteManifestRequest
+	11, // 18: otterscale.registry.v1.RegistryService.ListCharts:input_type -> otterscale.registry.v1.ListChartsRequest
+	13, // 19: otterscale.registry.v1.RegistryService.ListChartVersions:input_type -> otterscale.registry.v1.ListChartVersionsRequest
+	15, // 20: otterscale.registry.v1.RegistryService.GetChartInformation:input_type -> otterscale.registry.v1.GetChartInformationRequest
+	5,  // 21: otterscale.registry.v1.RegistryService.GetRegistryURL:output_type -> otterscale.registry.v1.GetRegistryURLResponse
+	7,  // 22: otterscale.registry.v1.RegistryService.ListRepositories:output_type -> otterscale.registry.v1.ListRepositoriesResponse
+	9,  // 23: otterscale.registry.v1.RegistryService.ListManifests:output_type -> otterscale.registry.v1.ListManifestsResponse
+	26, // 24: otterscale.registry.v1.RegistryService.DeleteManifest:output_type -> google.protobuf.Empty
+	12, // 25: otterscale.registry.v1.RegistryService.ListCharts:output_type -> otterscale.registry.v1.ListChartsResponse
+	14, // 26: otterscale.registry.v1.RegistryService.ListChartVersions:output_type -> otterscale.registry.v1.ListChartVersionsResponse
+	20, // 27: otterscale.registry.v1.RegistryService.GetChartInformation:output_type -> otterscale.registry.v1.Chart.Information
+	21, // [21:28] is the sub-list for method output_type
+	14, // [14:21] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_api_registry_v1_registry_proto_init() }
@@ -2898,7 +3577,7 @@ func file_api_registry_v1_registry_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_registry_v1_registry_proto_rawDesc), len(file_api_registry_v1_registry_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

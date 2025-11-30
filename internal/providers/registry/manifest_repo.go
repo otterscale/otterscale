@@ -12,6 +12,8 @@ import (
 	"oras.land/oras-go/v2/registry/remote"
 
 	"github.com/otterscale/otterscale/internal/core/registry"
+	"github.com/otterscale/otterscale/internal/core/registry/chart"
+	"github.com/otterscale/otterscale/internal/core/registry/image"
 )
 
 type manifestRepo struct {
@@ -24,6 +26,7 @@ func NewManifestRepo(registry *Registry) registry.ManifestRepo {
 
 var _ registry.ManifestRepo = (*manifestRepo)(nil)
 
+// FIXME: implement pagination
 func (r *manifestRepo) List(ctx context.Context, scope, repository string) ([]registry.Manifest, error) {
 	client, err := r.registry.client(scope)
 	if err != nil {
@@ -44,12 +47,26 @@ func (r *manifestRepo) List(ctx context.Context, scope, repository string) ([]re
 				return err
 			}
 
-			manifests = append(manifests, manifest)
+			manifests = append(manifests, *manifest)
 		}
 		return nil
 	})
 
 	return manifests, err
+}
+
+func (r *manifestRepo) Get(ctx context.Context, scope, repository, tag string) (*registry.Manifest, error) {
+	client, err := r.registry.client(scope)
+	if err != nil {
+		return nil, err
+	}
+
+	repo, err := client.Repository(ctx, repository)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.buildManifest(ctx, client, repo, repository, tag)
 }
 
 func (r *manifestRepo) Delete(ctx context.Context, scope, repository, digestStr string) error {
@@ -73,20 +90,20 @@ func (r *manifestRepo) Delete(ctx context.Context, scope, repository, digestStr 
 	return repo.Delete(ctx, desc)
 }
 
-func (r *manifestRepo) buildManifest(ctx context.Context, client *remote.Registry, repo orasregistry.Repository, repository, tag string) (registry.Manifest, error) {
+func (r *manifestRepo) buildManifest(ctx context.Context, client *remote.Registry, repo orasregistry.Repository, repository, tag string) (*registry.Manifest, error) {
 	reference := fmt.Sprintf("%s/%s:%s", client.Reference.Registry, repository, tag)
 
 	digest, ociManifest, err := fetchManifest(ctx, repo, reference)
 	if err != nil {
-		return registry.Manifest{}, err
+		return nil, err
 	}
 
 	image, chart, err := fetchConfig(ctx, repo, ociManifest.Config)
 	if err != nil {
-		return registry.Manifest{}, err
+		return nil, err
 	}
 
-	return registry.Manifest{
+	return &registry.Manifest{
 		Repository: repository,
 		Tag:        tag,
 		Digest:     digest,
@@ -116,7 +133,7 @@ func fetchManifest(ctx context.Context, repo orasregistry.Repository, reference 
 	return desc.Digest.String(), &manifest, nil
 }
 
-func fetchConfig(ctx context.Context, repo orasregistry.Repository, config ocispec.Descriptor) (*registry.Image, *registry.Chart, error) {
+func fetchConfig(ctx context.Context, repo orasregistry.Repository, config ocispec.Descriptor) (*image.Image, *chart.Chart, error) {
 	reader, err := repo.Fetch(ctx, config)
 	if err != nil {
 		return nil, nil, err
@@ -131,10 +148,10 @@ func fetchConfig(ctx context.Context, repo orasregistry.Repository, config ocisp
 	return parseConfig(content, config.MediaType)
 }
 
-func parseConfig(content []byte, mediaType string) (*registry.Image, *registry.Chart, error) {
+func parseConfig(content []byte, mediaType string) (*image.Image, *chart.Chart, error) {
 	var (
-		image registry.Image
-		chart registry.Chart
+		image image.Image
+		chart chart.Chart
 	)
 
 	switch mediaType {

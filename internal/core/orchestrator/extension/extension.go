@@ -13,7 +13,6 @@ import (
 	"sigs.k8s.io/kustomize/kyaml/filesys"
 	"sigs.k8s.io/yaml"
 
-	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/release"
 )
@@ -34,14 +33,12 @@ type Extension struct {
 }
 
 type UseCase struct {
-	chart                    chart.ChartRepo
 	customResourceDefinition cluster.CustomResourceDefinitionRepo
 	release                  release.ReleaseRepo
 }
 
-func NewUseCase(chart chart.ChartRepo, customResourceDefinition cluster.CustomResourceDefinitionRepo, release release.ReleaseRepo) *UseCase {
+func NewUseCase(customResourceDefinition cluster.CustomResourceDefinitionRepo, release release.ReleaseRepo) *UseCase {
 	return &UseCase{
-		chart:                    chart,
 		customResourceDefinition: customResourceDefinition,
 		release:                  release,
 	}

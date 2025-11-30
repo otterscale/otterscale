@@ -3,10 +3,8 @@ edition = "2023";
 package otterscale.registry.v1;
 
 import "api/annotations.proto";
-import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/struct.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/registry/v1;pb";
 
@@ -34,24 +32,31 @@ service RegistryService {
       name: "registry-enabled"
     };
   };
-}
 
-// message Customization {
-//   string type = 1;
-//   string name = 2;
-//   string verison = 3;
-//   google.protobuf.Struct values = 11;
-// }
-// message Metadata {
-//   string values_yaml = 1;
-//   string readme_md = 2;
-//   Chart.Customization customization = 11;  // create only
-// }
+  rpc ListCharts(ListChartsRequest) returns (ListChartsResponse) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
+
+  rpc ListChartVersions(ListChartVersionsRequest) returns (ListChartVersionsResponse) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
+
+  rpc GetChartInformation(GetChartInformationRequest) returns (Chart.Information) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
+}
 
 message Repository {
   string name = 1;
   uint32 manifest_count = 2;
   uint64 size_bytes = 3;
+  string latest_tag = 4;
 }
 
 message Manifest {
@@ -65,7 +70,7 @@ message Manifest {
   }
 }
 
-// github.com/opencontainers/image-spec/specs-go/v1
+// oci spec
 message Image {
   message Platform {
     string architecture = 1;
@@ -77,14 +82,13 @@ message Image {
   message Config {
     string user = 1;
     repeated string exposed_ports = 2;
-    repeated string envs = 3;
+    repeated string environments = 3;
     repeated string entrypoint = 4;
     repeated string cmd = 5;
     repeated string volumes = 6;
     string working_dir = 7;
     map<string, string> labels = 8;
     string stop_signal = 9;
-    string args_escaped = 10;
   }
   message RootFS {
     string type = 1;
@@ -98,8 +102,17 @@ message Image {
   reserved 6;  // history
 }
 
-// helm.sh/helm/v3/pkg/chart
+// helm chart
 message Chart {
+  message Information {  // helm show
+    string values = 1;
+    string readme = 2;
+  }
+  message Version {  // helm search repo
+    string chart_ref = 1;
+    string chart_version = 2;
+    string application_version = 3;
+  }
   message Maintainer {
     string name = 1;
     string email = 2;
@@ -163,4 +176,25 @@ message DeleteManifestRequest {
   string scope = 1;
   string repository_name = 2;
   string digest = 3;
+}
+
+message ListChartsRequest {
+  string scope = 1;
+}
+
+message ListChartsResponse {
+  repeated Chart charts = 1;
+}
+
+message ListChartVersionsRequest {
+  string scope = 1;
+  string chart_name = 2;
+}
+
+message ListChartVersionsResponse {
+  repeated Chart.Version versions = 1;
+}
+
+message GetChartInformationRequest {
+  string chart_ref = 1;
 }
