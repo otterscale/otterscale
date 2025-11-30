@@ -579,7 +579,7 @@ prompt_bridge_creation() {
     fi
 
     log "INFO" "Connect network bridge $OTTERSCALE_BRIDGE_NAME to interface $CURRENT_INTERFACE"
-    nmcli connection add type bridge-slave con-name br-otters-slave ifname "$CURRENT_INTERFACE" master "$OTTERSCALE_BRIDGE_NAME" > /dev/null
+    nmcli connection add type bridge-slave con-name "$OTTERSCALE_BRIDGE_NAME"-slave ifname "$CURRENT_INTERFACE" master "$OTTERSCALE_BRIDGE_NAME" > /dev/null
 
     log "INFO" "Disable $CURRENT_CONNECTION autoconnect" "NETWORK"
     nmcli connection modify "$CURRENT_CONNECTION" connection.autoconnect no > /dev/null
@@ -1418,6 +1418,8 @@ config_bridge() {
 
             log "INFO" "Waiting ipv4 bind to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
             nmcli connection reload "$OTTERSCALE_BRIDGE_NAME"
+            nmcli connection up "$OTTERSCALE_BRIDGE_NAME" > /dev/null && nmcli connection down "$CURRENT_CONNECTION" > /dev/null && nmcli connection up "$OTTERSCALE_BRIDGE_NAME"-bridge > /dev/null 
+
             while true; do
                 if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
                     log "INFO" "Success bind IP $OTTERSCALE_WEB_IP to network device $OTTERSCALE_BRIDGE_NAME"
