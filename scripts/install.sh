@@ -1522,7 +1522,7 @@ deploy_helm() {
     # Patch istiod-ingress
     local CURRENT=$(microk8s kubectl get svc istiod-ingress -n istio-system -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
     if [[ "$CURRENT" != "$OTTERSCALE_WEB_IP" ]]; then
-        log "INFO" "Specific metallb ip to service traefik-lb" "MICROK8S_SVC"
+        log "INFO" "Specific metallb ip to service istiod-ingress" "MICROK8S_SVC"
         
         microk8s kubectl patch svc istiod-ingress -n istio-system \
             --type merge \
