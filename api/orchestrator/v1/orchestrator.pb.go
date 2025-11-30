@@ -70,31 +70,34 @@ func (x AddClusterUnitsRequest_Type) Number() protoreflect.EnumNumber {
 type Extension_Type int32
 
 const (
-	Extension_TYPE_UNSPECIFIED Extension_Type = 0
-	Extension_TYPE_GENERAL     Extension_Type = 1
-	Extension_TYPE_REGISTRY    Extension_Type = 2
-	Extension_TYPE_MODEL       Extension_Type = 3
-	Extension_TYPE_INSTANCE    Extension_Type = 4
-	Extension_TYPE_STORAGE     Extension_Type = 5
+	Extension_TYPE_UNSPECIFIED  Extension_Type = 0
+	Extension_TYPE_METRICS      Extension_Type = 1
+	Extension_TYPE_SERVICE_MESH Extension_Type = 2
+	Extension_TYPE_REGISTRY     Extension_Type = 3
+	Extension_TYPE_MODEL        Extension_Type = 4
+	Extension_TYPE_INSTANCE     Extension_Type = 5
+	Extension_TYPE_STORAGE      Extension_Type = 6
 )
 
 // Enum value maps for Extension_Type.
 var (
 	Extension_Type_name = map[int32]string{
 		0: "TYPE_UNSPECIFIED",
-		1: "TYPE_GENERAL",
-		2: "TYPE_REGISTRY",
-		3: "TYPE_MODEL",
-		4: "TYPE_INSTANCE",
-		5: "TYPE_STORAGE",
+		1: "TYPE_METRICS",
+		2: "TYPE_SERVICE_MESH",
+		3: "TYPE_REGISTRY",
+		4: "TYPE_MODEL",
+		5: "TYPE_INSTANCE",
+		6: "TYPE_STORAGE",
 	}
 	Extension_Type_value = map[string]int32{
-		"TYPE_UNSPECIFIED": 0,
-		"TYPE_GENERAL":     1,
-		"TYPE_REGISTRY":    2,
-		"TYPE_MODEL":       3,
-		"TYPE_INSTANCE":    4,
-		"TYPE_STORAGE":     5,
+		"TYPE_UNSPECIFIED":  0,
+		"TYPE_METRICS":      1,
+		"TYPE_SERVICE_MESH": 2,
+		"TYPE_REGISTRY":     3,
+		"TYPE_MODEL":        4,
+		"TYPE_INSTANCE":     5,
+		"TYPE_STORAGE":      6,
 	}
 )
 
@@ -3266,7 +3269,7 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\n" +
 	"model_name\x18\x04 \x01(\tR\tmodelNameJ\x04\b\x02\x10\x03\"o\n" +
 	"\x1fListGPURelationsByModelResponse\x12L\n" +
-	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\x83\x04\n" +
+	"\rgpu_relations\x18\x01 \x03(\v2'.otterscale.orchestrator.v1.GPURelationR\fgpuRelations\"\x9b\x04\n" +
 	"\tExtension\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x12\n" +
@@ -3278,15 +3281,16 @@ const file_api_orchestrator_v1_orchestrator_proto_rawDesc = "" +
 	"\x06latest\x18\x16 \x01(\v2..otterscale.orchestrator.v1.Extension.ManifestR\x06latest\x1a8\n" +
 	"\bManifest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
-	"\aversion\x18\x02 \x01(\tR\aversion\"v\n" +
+	"\aversion\x18\x02 \x01(\tR\aversion\"\x8d\x01\n" +
 	"\x04Type\x12\x14\n" +
 	"\x10TYPE_UNSPECIFIED\x10\x00\x12\x10\n" +
-	"\fTYPE_GENERAL\x10\x01\x12\x11\n" +
-	"\rTYPE_REGISTRY\x10\x02\x12\x0e\n" +
+	"\fTYPE_METRICS\x10\x01\x12\x15\n" +
+	"\x11TYPE_SERVICE_MESH\x10\x02\x12\x11\n" +
+	"\rTYPE_REGISTRY\x10\x03\x12\x0e\n" +
 	"\n" +
-	"TYPE_MODEL\x10\x03\x12\x11\n" +
-	"\rTYPE_INSTANCE\x10\x04\x12\x10\n" +
-	"\fTYPE_STORAGE\x10\x05J\x04\b\x01\x10\x02\"s\n" +
+	"TYPE_MODEL\x10\x04\x12\x11\n" +
+	"\rTYPE_INSTANCE\x10\x05\x12\x10\n" +
+	"\fTYPE_STORAGE\x10\x06J\x04\b\x01\x10\x02\"s\n" +
 	"\x15ListExtensionsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12>\n" +
 	"\x04type\x18\x03 \x01(\x0e2*.otterscale.orchestrator.v1.Extension.TypeR\x04typeJ\x04\b\x02\x10\x03\"_\n" +

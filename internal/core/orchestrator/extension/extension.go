@@ -46,8 +46,11 @@ func NewUseCase(customResourceDefinition cluster.CustomResourceDefinitionRepo, r
 
 func (uc *UseCase) ListExtensions(ctx context.Context, scope string, extType Type) ([]Extension, error) {
 	switch extType {
-	case TypeGeneral:
-		return uc.listExtensions(ctx, scope, general)
+	case TypeMetrics:
+		return uc.listExtensions(ctx, scope, metrics)
+
+	case TypeServiceMesh:
+		return uc.listExtensions(ctx, scope, serviceMesh)
 
 	case TypeRegistry:
 		return uc.listExtensions(ctx, scope, registry)
