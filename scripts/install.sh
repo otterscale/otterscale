@@ -1524,7 +1524,7 @@ deploy_helm() {
     if [[ "$CURRENT" != "$OTTERSCALE_WEB_IP" ]]; then
         log "INFO" "Specific metallb ip to service traefik-lb" "MICROK8S_SVC"
         
-        microk8s kubectl patch svc istiod-ingress -n istiod-ingress \
+        microk8s kubectl patch svc istiod-ingress -n istio-system \
             --type merge \
             -p "$(cat <<EOF
 {
