@@ -1363,7 +1363,7 @@ juju_add_k8s() {
   }
 }
 EOF
-            )"
+            )" >/dev/null 2>&1
     fi
 
     log "INFO" "Kubernetes cluster added to Juju successfully" "JUJU_K8S"
@@ -1439,7 +1439,7 @@ config_bridge() {
             nmcli connection reload "$OTTERSCALE_BRIDGE_NAME"
 
             log "INFO" "Add $OTTERSCALE_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-            nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask"
+            nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask" >/dev/null 2>&1
 
             while true; do
                 if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
@@ -1535,7 +1535,7 @@ deploy_helm() {
   }
 }
 EOF
-            )"
+            )" >/dev/null 2>&1
     fi
 
     install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --version v1.19.1 --set crds.enabled=true --wait --timeout 10m"
