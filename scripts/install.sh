@@ -1348,10 +1348,10 @@ juju_add_k8s() {
     #su "$NON_ROOT_USER" -c "juju config -m cos loki memory=256Mi >/dev/null 2>&1"
 
     # Patch traefik-lb
-    local CURRENT=$(kubectl get svc traefik-lb -n cos -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
+    local CURRENT=$(microk8s kubectl get svc traefik-lb -n cos -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
     if [[ "$CURRENT" != "$OTTERSCALE_INTERFACE_IP" ]]; then
         log "INFO" "Specific metallb ip to service traefik-lb" "MICROK8S_SVC"
-        cat <<EOF | kubectl patch svc traefik-lb -n cos --type merge -f -
+        cat <<EOF | microk8s kubectl patch svc traefik-lb -n cos --type merge -f -
 {
     "metadata": {
         "annotations": {
@@ -1516,10 +1516,10 @@ deploy_helm() {
     install_helm_chart "istiod-ingress" "istio-system" "istio/gateway" "-n istio-system --wait --timeout 10m"
 
     # Patch traefik-lb
-    local CURRENT=$(kubectl get svc istiod-ingress -n istio-system -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
+    local CURRENT=$(microk8s kubectl get svc istiod-ingress -n istio-system -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
     if [[ "$CURRENT" != "$OTTERSCALE_WEB_IP" ]]; then
         log "INFO" "Specific metallb ip to service istiod-ingress" "MICROK8S_SVC"
-        cat <<EOF | kubectl patch svc istiod-ingress -n istiod-ingress --type merge -f -
+        cat <<EOF | microk8s kubectl patch svc istiod-ingress -n istiod-ingress --type merge -f -
 {
     "metadata": {
         "annotations": {
