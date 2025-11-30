@@ -104,6 +104,15 @@ func (s *RegistryService) GetChartInformation(ctx context.Context, req *pb.GetCh
 	return resp, nil
 }
 
+func (s *RegistryService) SyncArtifactHub(ctx context.Context, req *pb.SyncArtifactHubRequest) (*emptypb.Empty, error) {
+	if err := s.chart.SyncArtifactHub(ctx, req.GetRegistryUrl()); err != nil {
+		return nil, err
+	}
+
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
 func toProtoRepositories(rs []registry.Repository) []*pb.Repository {
 	ret := []*pb.Repository{}
 
@@ -162,7 +171,9 @@ func toProtoRegistryImage(i *image.Image) *pb.Image {
 	}
 
 	ret.SetAuthor(i.Author)
-
+	ret.SetPlatform(toProtoRegistryImagePlatform(&i.Platform))
+	ret.SetConfig(toProtoRegistryImageImageConfig(&i.Config))
+	ret.SetRootFs(toProtoRegistryImageRootFS(&i.RootFS))
 	return ret
 }
 

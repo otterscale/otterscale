@@ -50,6 +50,12 @@ service RegistryService {
       name: "registry-enabled"
     };
   };
+
+  rpc SyncArtifactHub(SyncArtifactHubRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
 }
 
 message Repository {
@@ -197,4 +203,8 @@ message ListChartVersionsResponse {
 
 message GetChartInformationRequest {
   string chart_ref = 1;
+}
+
+message SyncArtifactHubRequest {
+  string registry_url = 1;
 }
