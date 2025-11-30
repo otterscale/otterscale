@@ -18,6 +18,7 @@
 		gpu,
 		tags,
 		scope,
+		cpu_metric,
 		memory_metric,
 		storage_metric,
 		actions
@@ -127,6 +128,14 @@
 			<Layout.SubHeaderViewer>
 				{m.last_commissioned()}
 			</Layout.SubHeaderViewer>
+		</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet cpu_metric()}
+	<Layout.Header class="justify-center">
+		<Layout.HeaderViewer>
+			{m.cpu()}
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

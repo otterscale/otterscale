@@ -21,6 +21,7 @@ const messages = {
 	gpu: m.gpu(),
 	scope: m.scope(),
 	memory_metric: m.memory(),
+	cpu_metric: m.cpu(),
 	storage_metric: m.storage(),
 	tags: m.tags()
 };
@@ -184,6 +185,15 @@ function getColumns(metrics: Metrics, reloadManager: ReloadManager): ColumnDef<M
 					(p, n) => p < n,
 					(p, n) => p === n
 				)
+		},
+		{
+			accessorKey: 'cpu_metric',
+			header: ({ column }) => {
+				return renderSnippet(headers.cpu_metric, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.cpu_metric, { row, metrics });
+			}
 		},
 		{
 			accessorKey: 'memory_metric',
