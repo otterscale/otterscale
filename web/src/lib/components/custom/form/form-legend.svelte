@@ -17,7 +17,7 @@
 <legend
 	bind:this={ref}
 	data-slot="form-legend"
-	class={cn('text-lg font-bold', className)}
+	class={cn('-mb-2 text-lg font-bold', className)}
 	{...restProps}
 >
 	{@render children?.()}

@@ -52,9 +52,9 @@
 		class={cn(
 			'pl-9 ring-1',
 			isInvalid
-				? 'text-destructive/60 placeholder:text-xs placeholder:text-destructive/60 focus:placeholder:invisible'
+				? 'text-destructive/60 placeholder:text-xs placeholder:text-destructive/60 focus:text-foreground focus:placeholder:invisible'
 				: '',
-			isInvalid ? 'ring-destructive' : '',
+			isInvalid ? 'ring-destructive focus:ring-primary' : '',
 			className
 		)}
 		{type}

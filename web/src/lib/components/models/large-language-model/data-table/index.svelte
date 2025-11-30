@@ -1,7 +1,9 @@
 <script lang="ts" module>
 	import {
 		type ColumnFiltersState,
+		type ExpandedState,
 		getCoreRowModel,
+		getExpandedRowModel,
 		getFilteredRowModel,
 		getPaginationRowModel,
 		getSortedRowModel,
@@ -12,26 +14,35 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 
+	import type { Model } from '$lib/api/model/v1/model_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import { cn } from '$lib/utils';
 
-	import type { LargeLanguageModel } from '../type';
+	import type { Metrics } from '../types';
 	import Create from './action-create.svelte';
 	import { getColumns, messages } from './columns';
+	import Pods from './row-pods.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
 	let {
-		largeLanguageModels,
+		serviceUri,
+		models,
+		metrics,
 		scope,
+		namespace,
 		reloadManager
 	}: {
-		largeLanguageModels: Writable<LargeLanguageModel[]>;
+		serviceUri: string;
+		models: Writable<Model[]>;
+		metrics: Metrics;
 		scope: string;
+		namespace: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -40,19 +51,22 @@
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
+	let expanded = $state<ExpandedState>({});
 
 	const table = createSvelteTable({
 		get data() {
-			return $largeLanguageModels;
+			return $models;
 		},
 		get columns() {
-			return getColumns(scope, reloadManager);
+			return getColumns(serviceUri, scope, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+		getExpandedRowModel: getExpandedRowModel(),
+
 		state: {
 			get pagination() {
 				return pagination;
@@ -68,8 +82,12 @@
 			},
 			get rowSelection() {
 				return rowSelection;
+			},
+			get expanded() {
+				return expanded;
 			}
 		},
+
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
 				pagination = updater(pagination);
@@ -105,7 +123,16 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetPageIndex: false
+		onExpandedChange: (updater) => {
+			if (typeof updater === 'function') {
+				expanded = updater(expanded);
+			} else {
+				expanded = updater;
+			}
+		},
+
+		autoResetPageIndex: false,
+		getRowCanExpand: () => true
 	});
 </script>
 
@@ -117,14 +144,14 @@
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
 				columnId="name"
-				values={$largeLanguageModels.map((row) => row.name)}
+				values={$models.map((row) => row.name)}
 				{messages}
 				{table}
 			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {scope} {reloadManager} />
+			<Create {scope} {namespace} {reloadManager} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {
@@ -143,7 +170,9 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
-							<Table.Head>
+							<Table.Head
+								class="has-[*[data-slot=data-table-row-expander]]:p-1 has-[*[data-slot=data-table-row-picker]]:p-0"
+							>
 								{#if !header.isPlaceholder}
 									<FlexRender
 										content={header.column.columnDef.header}
@@ -159,11 +188,19 @@
 				{#each table.getRowModel().rows as row (row.id)}
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
-							<Table.Cell>
+							<Table.Cell
+								class={cn(
+									row.getIsExpanded() ? 'bg-muted/50' : '',
+									'has-[*[data-slot=data-table-row-expander]]:p-1 has-[*[data-slot=data-table-row-picker]]:p-0'
+								)}
+							>
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
 					</Table.Row>
+					{#if row.getIsExpanded()}
+						<Pods {metrics} {row} {table} {scope} {namespace} />
+					{/if}
 				{:else}
 					<Empty {table} />
 				{/each}

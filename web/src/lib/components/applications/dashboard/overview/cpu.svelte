@@ -63,7 +63,6 @@
 			`
 		);
 		cpuLimits = response.result[0]?.value?.value;
-		console.log(response);
 	}
 
 	async function fetch() {
