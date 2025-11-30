@@ -1666,8 +1666,10 @@ $(echo "$juju_cacert" | sed 's/^/      /')
     rados_timeout: 0s
 EOF
 
-        execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-postgresql-0 --ignore-not-found=true"
-        execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-keycloak-postgres-0 --ignore-not-found=true"
+        if microk8s kubectl get $namespace >/dev/null 2>&1; then
+            execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-postgresql-0 --ignore-not-found=true"
+            execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-keycloak-postgres-0 --ignore-not-found=true"
+        fi
 
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
         execute_cmd "microk8s helm3 install $deploy_name otterscale-charts/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "helm install $deploy_name"
