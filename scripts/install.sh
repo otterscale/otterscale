@@ -1413,12 +1413,14 @@ config_bridge() {
         local mask=$(nmcli device show "$OTTERSCALE_BRIDGE_NAME" | grep "^IP4.ADDRESS" | head -n 1 | awk '{print $2}' | cut -d'/' -f2)
         local metallb_svc=$(microk8s kubectl get svc metallb-webhook-service -n metallb-system -o json | jq -r .spec.clusterIP)
 
+        ## Add ip to connection, bring secondary ipv4 up after reboot
+        ## Add ip to device, to aviod network disconnect
         if nmcli connection modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask" >/dev/null 2>&1; then
-            log "INFO" "Add $OTTERSCALE_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-
             log "INFO" "Waiting ipv4 bind to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
             nmcli connection reload "$OTTERSCALE_BRIDGE_NAME"
-            nmcli connection up "$OTTERSCALE_BRIDGE_NAME" > /dev/null && nmcli connection down "$CURRENT_CONNECTION" > /dev/null && nmcli connection up "$OTTERSCALE_BRIDGE_NAME"-bridge > /dev/null 
+
+            log "INFO" "Add $OTTERSCALE_WEB_IP/$mask to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
+            nmcli device modify "$OTTERSCALE_BRIDGE_NAME" +ipv4.addresses "$OTTERSCALE_WEB_IP/$mask"
 
             while true; do
                 if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
