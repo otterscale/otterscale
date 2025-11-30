@@ -200,7 +200,7 @@ type Manifest struct {
 	xxx_hidden_Tag            *string                `protobuf:"bytes,2,opt,name=tag"`
 	xxx_hidden_Digest         *string                `protobuf:"bytes,3,opt,name=digest"`
 	xxx_hidden_SizeBytes      uint64                 `protobuf:"varint,4,opt,name=size_bytes,json=sizeBytes"`
-	xxx_hidden_Content        isManifest_Content     `protobuf_oneof:"content"`
+	xxx_hidden_Config         isManifest_Config      `protobuf_oneof:"config"`
 	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
 	XXX_presence              [1]uint32
 	unknownFields             protoimpl.UnknownFields
@@ -271,7 +271,7 @@ func (x *Manifest) GetSizeBytes() uint64 {
 
 func (x *Manifest) GetImage() *Image {
 	if x != nil {
-		if x, ok := x.xxx_hidden_Content.(*manifest_Image); ok {
+		if x, ok := x.xxx_hidden_Config.(*manifest_Image); ok {
 			return x.Image
 		}
 	}
@@ -280,7 +280,7 @@ func (x *Manifest) GetImage() *Image {
 
 func (x *Manifest) GetChart() *Chart {
 	if x != nil {
-		if x, ok := x.xxx_hidden_Content.(*manifest_Chart); ok {
+		if x, ok := x.xxx_hidden_Config.(*manifest_Chart); ok {
 			return x.Chart
 		}
 	}
@@ -309,18 +309,18 @@ func (x *Manifest) SetSizeBytes(v uint64) {
 
 func (x *Manifest) SetImage(v *Image) {
 	if v == nil {
-		x.xxx_hidden_Content = nil
+		x.xxx_hidden_Config = nil
 		return
 	}
-	x.xxx_hidden_Content = &manifest_Image{v}
+	x.xxx_hidden_Config = &manifest_Image{v}
 }
 
 func (x *Manifest) SetChart(v *Chart) {
 	if v == nil {
-		x.xxx_hidden_Content = nil
+		x.xxx_hidden_Config = nil
 		return
 	}
-	x.xxx_hidden_Content = &manifest_Chart{v}
+	x.xxx_hidden_Config = &manifest_Chart{v}
 }
 
 func (x *Manifest) HasRepositoryName() bool {
@@ -351,18 +351,18 @@ func (x *Manifest) HasSizeBytes() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *Manifest) HasContent() bool {
+func (x *Manifest) HasConfig() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Content != nil
+	return x.xxx_hidden_Config != nil
 }
 
 func (x *Manifest) HasImage() bool {
 	if x == nil {
 		return false
 	}
-	_, ok := x.xxx_hidden_Content.(*manifest_Image)
+	_, ok := x.xxx_hidden_Config.(*manifest_Image)
 	return ok
 }
 
@@ -370,7 +370,7 @@ func (x *Manifest) HasChart() bool {
 	if x == nil {
 		return false
 	}
-	_, ok := x.xxx_hidden_Content.(*manifest_Chart)
+	_, ok := x.xxx_hidden_Config.(*manifest_Chart)
 	return ok
 }
 
@@ -394,37 +394,37 @@ func (x *Manifest) ClearSizeBytes() {
 	x.xxx_hidden_SizeBytes = 0
 }
 
-func (x *Manifest) ClearContent() {
-	x.xxx_hidden_Content = nil
+func (x *Manifest) ClearConfig() {
+	x.xxx_hidden_Config = nil
 }
 
 func (x *Manifest) ClearImage() {
-	if _, ok := x.xxx_hidden_Content.(*manifest_Image); ok {
-		x.xxx_hidden_Content = nil
+	if _, ok := x.xxx_hidden_Config.(*manifest_Image); ok {
+		x.xxx_hidden_Config = nil
 	}
 }
 
 func (x *Manifest) ClearChart() {
-	if _, ok := x.xxx_hidden_Content.(*manifest_Chart); ok {
-		x.xxx_hidden_Content = nil
+	if _, ok := x.xxx_hidden_Config.(*manifest_Chart); ok {
+		x.xxx_hidden_Config = nil
 	}
 }
 
-const Manifest_Content_not_set_case case_Manifest_Content = 0
-const Manifest_Image_case case_Manifest_Content = 11
-const Manifest_Chart_case case_Manifest_Content = 12
+const Manifest_Config_not_set_case case_Manifest_Config = 0
+const Manifest_Image_case case_Manifest_Config = 11
+const Manifest_Chart_case case_Manifest_Config = 12
 
-func (x *Manifest) WhichContent() case_Manifest_Content {
+func (x *Manifest) WhichConfig() case_Manifest_Config {
 	if x == nil {
-		return Manifest_Content_not_set_case
+		return Manifest_Config_not_set_case
 	}
-	switch x.xxx_hidden_Content.(type) {
+	switch x.xxx_hidden_Config.(type) {
 	case *manifest_Image:
 		return Manifest_Image_case
 	case *manifest_Chart:
 		return Manifest_Chart_case
 	default:
-		return Manifest_Content_not_set_case
+		return Manifest_Config_not_set_case
 	}
 }
 
@@ -435,10 +435,10 @@ type Manifest_builder struct {
 	Tag            *string
 	Digest         *string
 	SizeBytes      *uint64
-	// Fields of oneof xxx_hidden_Content:
+	// Fields of oneof xxx_hidden_Config:
 	Image *Image
 	Chart *Chart
-	// -- end of xxx_hidden_Content
+	// -- end of xxx_hidden_Config
 }
 
 func (b0 Manifest_builder) Build() *Manifest {
@@ -462,17 +462,17 @@ func (b0 Manifest_builder) Build() *Manifest {
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
 	if b.Image != nil {
-		x.xxx_hidden_Content = &manifest_Image{b.Image}
+		x.xxx_hidden_Config = &manifest_Image{b.Image}
 	}
 	if b.Chart != nil {
-		x.xxx_hidden_Content = &manifest_Chart{b.Chart}
+		x.xxx_hidden_Config = &manifest_Chart{b.Chart}
 	}
 	return m0
 }
 
-type case_Manifest_Content protoreflect.FieldNumber
+type case_Manifest_Config protoreflect.FieldNumber
 
-func (x case_Manifest_Content) String() string {
+func (x case_Manifest_Config) String() string {
 	md := file_api_registry_v1_registry_proto_msgTypes[1].Descriptor()
 	if x == 0 {
 		return "not set"
@@ -480,8 +480,8 @@ func (x case_Manifest_Content) String() string {
 	return protoimpl.X.MessageFieldStringOf(md, protoreflect.FieldNumber(x))
 }
 
-type isManifest_Content interface {
-	isManifest_Content()
+type isManifest_Config interface {
+	isManifest_Config()
 }
 
 type manifest_Image struct {
@@ -492,9 +492,9 @@ type manifest_Chart struct {
 	Chart *Chart `protobuf:"bytes,12,opt,name=chart,oneof"`
 }
 
-func (*manifest_Image) isManifest_Content() {}
+func (*manifest_Image) isManifest_Config() {}
 
-func (*manifest_Chart) isManifest_Content() {}
+func (*manifest_Chart) isManifest_Config() {}
 
 // oci spec
 type Image struct {
@@ -3356,7 +3356,7 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"\n" +
 	"size_bytes\x18\x03 \x01(\x04R\tsizeBytes\x12\x1d\n" +
 	"\n" +
-	"latest_tag\x18\x04 \x01(\tR\tlatestTag\"\xf5\x01\n" +
+	"latest_tag\x18\x04 \x01(\tR\tlatestTag\"\xf4\x01\n" +
 	"\bManifest\x12'\n" +
 	"\x0frepository_name\x18\x01 \x01(\tR\x0erepositoryName\x12\x10\n" +
 	"\x03tag\x18\x02 \x01(\tR\x03tag\x12\x16\n" +
@@ -3364,8 +3364,8 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"\n" +
 	"size_bytes\x18\x04 \x01(\x04R\tsizeBytes\x125\n" +
 	"\x05image\x18\v \x01(\v2\x1d.otterscale.registry.v1.ImageH\x00R\x05image\x125\n" +
-	"\x05chart\x18\f \x01(\v2\x1d.otterscale.registry.v1.ChartH\x00R\x05chartB\t\n" +
-	"\acontent\"\xf0\x06\n" +
+	"\x05chart\x18\f \x01(\v2\x1d.otterscale.registry.v1.ChartH\x00R\x05chartB\b\n" +
+	"\x06config\"\xf0\x06\n" +
 	"\x05Image\x129\n" +
 	"\n" +
 	"created_at\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12\x16\n" +
