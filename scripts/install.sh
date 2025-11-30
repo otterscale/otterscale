@@ -76,7 +76,7 @@ log() {
     local timestamp
     timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
 
-    local formatted_message=$(printf "%s [%s] %-15s %s\n" "$timestamp" "$level" "$phase" "$message")
+    local formatted_message=$(printf "%s [%s] %-18s %s\n" "$timestamp" "$level" "$phase" "$message")
 
     # local formatted_message="$timestamp [$level] [$phase] $message"
     echo "$formatted_message" | tee -a "$LOG"
@@ -1297,21 +1297,21 @@ juju_add_k8s() {
         log "INFO" "Scope cos already exists" "JUJU_SCOPE"
     else
         log "INFO" "Create scope: cos" "JUJU_SCOPE"
-        su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s >/dev/null 2>&1"
+        su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s" >>"$TEMP_LOG" 2>&1
     fi
 
     if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus >/dev/null 2>&1"; then
-        log "INFO" "Application cos-lite already exists" "JUJU_DEPLOY"
+        log "INFO" "Application cos-lite already exists" "JUJU_APPLICATION"
     else
-        log "INFO" "Deploy application cos-lite" "JUJU_DEPLOY"
-        su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust >/dev/null 2>&1"
+        log "INFO" "Deploy application cos-lite" "JUJU_APPLICATION"
+        su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust" >>"$TEMP_LOG" 2>&1
     fi
 
     if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus-scrape-target-k8s >/dev/null 2>&1"; then
-        log "INFO" "Application prometheus-scrape-target-k8 already exists" "JUJU_DEPLOY"
+        log "INFO" "Application prometheus-scrape-target-k8 already exists" "JUJU_APPLICATION"
     else
-        log "INFO" "Deploy application prometheus-scrape-target-k8" "JUJU_DEPLOY"
-        su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge >/dev/null 2>&1"
+        log "INFO" "Deploy application prometheus-scrape-target-k8" "JUJU_APPLICATION"
+        su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge" >>"$TEMP_LOG" 2>&1
     fi
 
     ## Config prometheus
