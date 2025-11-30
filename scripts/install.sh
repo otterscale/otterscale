@@ -1301,16 +1301,16 @@ juju_add_k8s() {
     fi
 
     if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus >/dev/null 2>&1"; then
-        log "INFO" "Application cos-lite already exists" "JUJU_APPLICATION"
+        log "INFO" "Application prometheus (from cos-lite bundle) already exists" "JUJU_APPLICATION"
     else
         log "INFO" "Deploy application cos-lite" "JUJU_APPLICATION"
         su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust" >>"$TEMP_LOG" 2>&1
     fi
 
     if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus-scrape-target-k8s >/dev/null 2>&1"; then
-        log "INFO" "Application prometheus-scrape-target-k8 already exists" "JUJU_APPLICATION"
+        log "INFO" "Application prometheus-scrape-target-k8s already exists" "JUJU_APPLICATION"
     else
-        log "INFO" "Deploy application prometheus-scrape-target-k8" "JUJU_APPLICATION"
+        log "INFO" "Deploy application prometheus-scrape-target-k8s" "JUJU_APPLICATION"
         su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge" >>"$TEMP_LOG" 2>&1
     fi
 
@@ -1494,12 +1494,12 @@ install_helm_chart() {
 
     log "INFO" "Check helm chart $deploy_name" "HELM_CHECK"
 
-    if [[ -z $(microk8s helm3 list -n "$namespace" -o json | jq ".[] | select(.name==\"$deploy_name\")") ]]; then  
-        log "INFO" "Helm install $deploy_name" "HELM_INSTALL"  
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name -n $namespace $extra_args" "helm install $deploy_name"  
-    else  
-        log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"  
-    fi  
+    if [[ -z $(microk8s helm3 list -n "$namespace" -o json | jq ".[] | select(.name==\"$deploy_name\")") ]]; then
+        log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name -n $namespace $extra_args" "helm install $deploy_name"
+    else
+        log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"
+    fi
 }  
 
 deploy_helm() {
@@ -1705,7 +1705,7 @@ $(echo "$juju_cacert" | sed 's/^/      /')
     rados_timeout: 0s
 EOF
 
-        if microk8s kubectl get $namespace >/dev/null 2>&1; then
+        if microk8s kubectl get namespaces $namespace >/dev/null 2>&1; then
             execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-postgresql-0 --ignore-not-found=true"
             execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-keycloak-postgres-0 --ignore-not-found=true"
         fi
