@@ -1347,6 +1347,21 @@ juju_add_k8s() {
     #su "$NON_ROOT_USER" -c "juju config -m cos loki cpu=250m >/dev/null 2>&1"
     #su "$NON_ROOT_USER" -c "juju config -m cos loki memory=256Mi >/dev/null 2>&1"
 
+    # Patch traefik-lb
+    local CURRENT=$(kubectl get svc traefik-lb -n cos -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
+    if [[ "$CURRENT" != "$OTTERSCALE_INTERFACE_IP" ]]; then
+        log "INFO" "Specific metallb ip to service traefik-lb" "MICROK8S_SVC"
+        cat <<EOF | kubectl patch svc traefik-lb -n cos --type merge -f -
+{
+    "metadata": {
+        "annotations": {
+            "metallb.io/LoadBalancerIPs": "$OTTERSCALE_INTERFACE_IP"
+        }
+    }
+}
+EOF
+    fi
+
     log "INFO" "Kubernetes cluster added to Juju successfully" "JUJU_K8S"
 }
 
@@ -1499,6 +1514,22 @@ deploy_helm() {
     install_helm_chart "istio-base" "istio-system" "istio/base" "--create-namespace --set defaultRevision=default --wait --timeout 10m"
     install_helm_chart "istiod" "istio-system" "istio/istiod" "--wait --timeout 10m"
     install_helm_chart "istiod-ingress" "istio-system" "istio/gateway" "-n istio-system --wait --timeout 10m"
+
+    # Patch traefik-lb
+    local CURRENT=$(kubectl get svc istiod-ingress -n istio-system -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
+    if [[ "$CURRENT" != "$OTTERSCALE_WEB_IP" ]]; then
+        log "INFO" "Specific metallb ip to service istiod-ingress" "MICROK8S_SVC"
+        cat <<EOF | kubectl patch svc istiod-ingress -n istiod-ingress --type merge -f -
+{
+    "metadata": {
+        "annotations": {
+            "metallb.io/LoadBalancerIPs": "$OTTERSCALE_WEB_IP"
+        }
+    }
+}
+EOF
+    fi
+
     install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --version v1.19.1 --set crds.enabled=true --wait --timeout 10m"
     install_helm_chart "open-feature-operator" "open-feature-operator" "openfeature/open-feature-operator" "--create-namespace --set sidecarConfiguration.port=8080 --wait --timeout 10m"
 
