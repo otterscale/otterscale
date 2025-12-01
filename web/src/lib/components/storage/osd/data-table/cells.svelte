@@ -150,25 +150,10 @@
 		...outputs.map((output) => Number(output.value))
 	)}
 	<Chart.Container config={configuration} class="relative h-20 w-full">
-		{@const { value: maximumIOValue, unit: maximumIOUnit } = formatIO(maximumValue)}
-		{@const { value: minimumIOValue, unit: minimumIOUnit } = formatIO(minimumValue)}
-		<div
-			class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-		>
-			<span class="flex items-center gap-1">
-				{maximumIOValue.toFixed(0)}
-				{maximumIOUnit}
-				<Icon icon="ph:arrow-line-up" />
-			</span>
-			<span class="flex items-center gap-1">
-				{minimumIOValue.toFixed(0)}
-				{minimumIOUnit}
-				<Icon icon="ph:arrow-line-down" />
-			</span>
-		</div>
 		<AreaChart
 			data={ios}
 			x="time"
+			yDomain={[minimumValue, maximumValue]}
 			series={[
 				{
 					key: 'input',
@@ -255,25 +240,10 @@
 		...writes.map((write) => Number(write.value))
 	)}
 	<Chart.Container config={configuration} class="relative h-20 w-full">
-		{@const { value: maximumIOValue, unit: maximumIOUnit } = formatIO(maximumValue)}
-		{@const { value: minimumIOValue, unit: minimumIOUnit } = formatIO(minimumValue)}
-		<div
-			class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-		>
-			<span class="flex items-center gap-1">
-				{maximumIOValue.toFixed(0)}
-				{maximumIOUnit}
-				<Icon icon="ph:arrow-line-up" />
-			</span>
-			<span class="flex items-center gap-1">
-				{minimumIOValue.toFixed(0)}
-				{minimumIOUnit}
-				<Icon icon="ph:arrow-line-down" />
-			</span>
-		</div>
 		<AreaChart
 			data={throughputs}
 			x="time"
+			yDomain={[minimumValue, maximumValue]}
 			series={[
 				{
 					key: 'read',

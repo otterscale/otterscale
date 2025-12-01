@@ -98,25 +98,6 @@ function getColumns(
 				return renderSnippet(cells.description, row);
 			}
 		},
-
-		{
-			accessorKey: 'chart_version',
-			header: ({ column }) => {
-				return renderSnippet(headers.chart_version, column);
-			},
-			cell: ({ row }) => {
-				return renderSnippet(cells.chart_version, row);
-			}
-		},
-		{
-			accessorKey: 'app_version',
-			header: ({ column }) => {
-				return renderSnippet(headers.app_version, column);
-			},
-			cell: ({ row }) => {
-				return renderSnippet(cells.app_version, row);
-			}
-		},
 		{
 			accessorKey: 'first_deployed_at',
 			header: ({ column }) => {

@@ -14,7 +14,7 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Chart from '$lib/components/ui/chart';
-	import { formatCapacity, formatPercentage, formatTimeAgo } from '$lib/formatter';
+	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { cn } from '$lib/utils';
 
 	import type { Metrics } from '../types';
@@ -186,20 +186,6 @@
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
 		<Layout.Cell class="relative justify-center">
-			{@const maximumUsageValue = formatPercentage(maximumValue, 1, 0)}
-			{@const minimumUsageValue = formatPercentage(minimumValue, 1, 0)}
-			<div
-				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-			>
-				<span class="flex items-center gap-1">
-					{maximumUsageValue}%
-					<Icon icon="ph:arrow-line-up" />
-				</span>
-				<span class="flex items-center gap-1">
-					{minimumUsageValue}%
-					<Icon icon="ph:arrow-line-down" />
-				</span>
-			</div>
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -264,24 +250,6 @@
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
 		<Layout.Cell class="relative justify-center">
-			{@const { value: maximumCapacityValue, unit: maximumCapacityUnit } =
-				formatCapacity(maximumValue)}
-			{@const { value: minimumCapacityValue, unit: minimumCapacityUnit } =
-				formatCapacity(minimumValue)}
-			<div
-				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-			>
-				<span class="flex items-center gap-1">
-					{maximumCapacityValue.toFixed(0)}
-					{maximumCapacityUnit}
-					<Icon icon="ph:arrow-line-up" />
-				</span>
-				<span class="flex items-center gap-1">
-					{minimumCapacityValue.toFixed(0)}
-					{minimumCapacityUnit}
-					<Icon icon="ph:arrow-line-down" />
-				</span>
-			</div>
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -347,20 +315,6 @@
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
 		<Layout.Cell class="relative justify-center">
-			{@const maximumUsageValue = formatPercentage(maximumValue, 1, 0)}
-			{@const minimumUsageValue = formatPercentage(minimumValue, 1, 0)}
-			<div
-				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-			>
-				<span class="flex items-center gap-1">
-					{maximumUsageValue}%
-					<Icon icon="ph:arrow-line-up" />
-				</span>
-				<span class="flex items-center gap-1">
-					{minimumUsageValue}%
-					<Icon icon="ph:arrow-line-down" />
-				</span>
-			</div>
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
