@@ -52,12 +52,12 @@
 	const failed = $derived(pods.filter((pod) => pod?.lastCondition?.status !== 'True').length);
 </script>
 
-<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+<Table.Row class="bg-muted/50 hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
 	<Table.Cell
 		colspan={Object.keys(table.getHeaderGroups().flatMap((headerGroup) => headerGroup.headers))
 			.length}
 	>
-		<div class="h-full space-y-4 px-8 pt-8 pb-12">
+		<div class="h-full space-y-4 border-l-4 border-border px-8 pt-8 pb-12">
 			<div class="flex items-center justify-between gap-4 p-4">
 				<h3 class="text-2xl font-bold">{total} Pods</h3>
 				<div class="flex items-center gap-4">

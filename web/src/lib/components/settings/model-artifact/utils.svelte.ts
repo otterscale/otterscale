@@ -27,8 +27,6 @@ async function fetchModels(
 			throw new Error(`Failed to fetch models: ${response.status} ${response.statusText}`);
 		}
 		const data = await response.json();
-		console.log(`${base}?${queryParameters}`);
-		console.log(data);
 		return data;
 	} catch (error) {
 		throw new Error(error instanceof Error ? error.message : String(error));
