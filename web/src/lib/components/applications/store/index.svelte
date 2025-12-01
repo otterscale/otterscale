@@ -22,7 +22,9 @@
 
 	async function fetchCharts() {
 		try {
-			const response = await registryClient.listCharts({});
+			const response = await registryClient.listCharts({
+				scope: scope
+			});
 			charts.set(response.charts.sort((p, n) => p.name.localeCompare(n.name)));
 		} catch (error) {
 			console.error('Failed to fetch charts:', error);
