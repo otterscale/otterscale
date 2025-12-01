@@ -16,7 +16,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.40.0
 	github.com/aws/aws-sdk-go-v2/config v1.32.1
 	github.com/aws/aws-sdk-go-v2/credentials v1.19.1
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.92.0
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.92.1
 	github.com/canonical/gomaasclient v0.18.0
 	github.com/ceph/go-ceph v0.36.0
 	github.com/fsnotify/fsnotify v1.9.0
