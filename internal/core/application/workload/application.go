@@ -33,7 +33,6 @@ type Application struct {
 	Containers  []Container
 	Services    []service.Service
 	Persistents []persistent.Persistent
-	// ChartFile   *chart.File // return only when fetching from GetApplication
 }
 
 func (uc *UseCase) ListApplications(ctx context.Context, scope string) (apps []Application, hostname string, err error) {
