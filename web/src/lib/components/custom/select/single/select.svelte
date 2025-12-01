@@ -21,12 +21,12 @@
 		...restProps
 	}: PopoverPrimitive.RootProps & {
 		id?: string;
-		options: Writable<OptionType[]>;
+		options: OptionType[];
 		value?: any;
 		required?: boolean;
 		invalid?: boolean | null | undefined;
 	} = $props();
-	const optionManager = new OptionManager($options, {
+	const optionManager = new OptionManager(options, {
 		get value() {
 			return value ?? '';
 		},

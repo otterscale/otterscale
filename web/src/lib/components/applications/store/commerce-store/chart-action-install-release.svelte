@@ -38,7 +38,7 @@
 	const applicationClient = createClient(ApplicationService, transport);
 	const registryClient = createClient(RegistryService, transport);
 
-	const versions = writable<Chart_Version[]>();
+	const versions = writable<Chart_Version[]>([]);
 	async function fetchChartVersions(scope: string, repositoryName: string) {
 		try {
 			const response = await registryClient.listChartVersions({
@@ -46,21 +46,23 @@
 				repositoryName: repositoryName
 			});
 			versions.set(response.versions);
+
+			versionReference = $versions[0].chartRef;
+
+			versionReferenceOptions.set(
+				$versions.map((version) => ({
+					value: version.chartRef,
+					label: version.chartVersion,
+					icon: 'ph:tag'
+				}))
+			);
 		} catch (error) {
 			console.error('Error fetching:', error);
 		}
 	}
 
-	const versionRefrence = $derived($versions.length > 0 ? $versions[0].chartRef : '');
-	const versionReferenceOptions: Writable<SingleSelect.OptionType[]> = $derived(
-		writable(
-			$versions.map((version) => ({
-				value: version.chartRef,
-				label: version.chartVersion,
-				icon: 'ph:tag'
-			}))
-		)
-	);
+	let versionReference = $state('');
+	let versionReferenceOptions: Writable<SingleSelect.OptionType[]> = writable([]);
 
 	const defaults = $state({} as CreateReleaseRequest);
 	let request = $state(defaults);
@@ -112,7 +114,7 @@
 
 			<Form.Field>
 				<Form.Label>{m.version()}</Form.Label>
-				<SingleSelect.Root options={versionReferenceOptions} bind:value={request.chartRef}>
+				<SingleSelect.Root options={$versionReferenceOptions} bind:value={request.chartRef}>
 					<SingleSelect.Trigger />
 					<SingleSelect.Content>
 						<SingleSelect.Options>
@@ -142,7 +144,7 @@
 					{m.configuration()}
 				</Form.Label>
 				<ReleaseValuesInputEdit
-					chartRef={versionRefrence}
+					chartRef={versionReference}
 					bind:valuesYaml={request.valuesYaml}
 					bind:valuesMap={request.valuesMap}
 				/>
