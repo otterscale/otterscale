@@ -114,7 +114,7 @@
 
 			<Form.Field>
 				<Form.Label>{m.version()}</Form.Label>
-				<SingleSelect.Root options={$versionReferenceOptions} bind:value={request.chartRef}>
+				<SingleSelect.Root options={versionReferenceOptions} bind:value={request.chartRef}>
 					<SingleSelect.Trigger />
 					<SingleSelect.Content>
 						<SingleSelect.Options>
