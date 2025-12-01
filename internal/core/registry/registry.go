@@ -82,7 +82,7 @@ func (uc *UseCase) ListChartVersions(ctx context.Context, scope, repository stri
 		c := manifests[i].Chart
 		if c != nil {
 			versions = append(versions, chart.Version{
-				ChartRef:           fmt.Sprintf("oci://%s/%s:%s", registryURL, c.Name, c.Version),
+				ChartRef:           fmt.Sprintf("oci://%s/%s:%s", registryURL, c.Repository, c.Version),
 				ChartVersion:       c.Version,
 				ApplicationVersion: c.AppVersion,
 			})
