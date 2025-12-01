@@ -23,7 +23,7 @@
 	)}
 >
 	<Card.Header>
-		{#if chart.verified}
+		{#if chart.repositoryName.startsWith('otterscale/')}
 			<span class="absolute top-6 right-6">
 				<Icon icon="ph:star-fill" class="h-4 w-4 fill-yellow-400 text-yellow-400" />
 			</span>
@@ -46,10 +46,9 @@
 	<Card.Content class="p-8 text-sm text-muted-foreground">
 		<p class="line-clamp-3 text-left">{chart.description}</p>
 	</Card.Content>
-	<Card.Footer class="flex items-center justify-between gap-2">
-		<Badge variant="outline" class="text-sm text-muted-foreground">
-			{chart.license}
+	<Card.Footer class="flex">
+		<Badge variant="default" class={cn('ml-auto', chartReleases ? 'visible' : 'hidden')}>
+			{m.installed()}
 		</Badge>
-		<Badge variant="default" class={chartReleases ? 'visible' : 'hidden'}>{m.installed()}</Badge>
 	</Card.Footer>
 </Card.Root>
