@@ -17,8 +17,8 @@ const (
 // llm-d Components
 const (
 	LLMDCuda               = "0.4.0"
-	LLMDInferenceScheduler = "0.4.0-rc.1"
-	LLMDRoutingSidecar     = "0.4.0-rc.1"
+	LLMDInferenceScheduler = "0.4.0"
+	LLMDRoutingSidecar     = "0.4.0"
 	LLMDModelService       = "0.3.10"
 	LLMDInfra              = "1.3.4"
 )
@@ -26,7 +26,7 @@ const (
 // Kubernetes Custom Resource Definition
 const (
 	GatewayAPI                   = "1.4.0"
-	GatewayAPIInferenceExtension = "1.2.0-rc.1"
+	GatewayAPIInferenceExtension = "1.2.0"
 )
 
 // Juju Charm
