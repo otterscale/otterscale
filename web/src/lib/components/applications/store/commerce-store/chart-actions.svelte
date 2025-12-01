@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type { Writable } from 'svelte/store';
 
-	import type { Application_Release } from '$lib/api/application/v1/application_pb';
+	import type { Release } from '$lib/api/application/v1/application_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
 
@@ -16,9 +16,9 @@
 		scope,
 		releases = $bindable()
 	}: {
-		release: Application_Release;
+		release: Release;
 		scope: string;
-		releases: Writable<Application_Release[]>;
+		releases: Writable<Release[]>;
 	} = $props();
 </script>
 

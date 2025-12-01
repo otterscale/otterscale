@@ -1,10 +1,8 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 
-	import {
-		type Application_Chart,
-		type Application_Release
-	} from '$lib/api/application/v1/application_pb';
+	import { type Release } from '$lib/api/application/v1/application_pb';
+	import { type Chart } from '$lib/api/registry/v1/registry_pb';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
@@ -15,10 +13,7 @@
 </script>
 
 <script lang="ts">
-	let {
-		chart,
-		chartReleases
-	}: { chart: Application_Chart; chartReleases: Application_Release[] | undefined } = $props();
+	let { chart, chartReleases }: { chart: Chart; chartReleases: Release[] | undefined } = $props();
 </script>
 
 <Card.Root
@@ -43,7 +38,7 @@
 			<span>
 				<h3 class="font-semibold">{chart.name}</h3>
 				<p class="flex items-center gap-1 text-sm text-muted-foreground">
-					{chart.versions[0].chartVersion}
+					{chart.version}
 				</p>
 			</span>
 		</div>

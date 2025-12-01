@@ -1,7 +1,7 @@
-import type { Application_Chart } from '$lib/api/application/v1/application_pb';
+import { type Chart } from '$lib/api/registry/v1/registry_pb';
 
 class FilterManager {
-	charts: Application_Chart[] = $state([]);
+	charts: Chart[] = $state([]);
 
 	searchedName: string = $state('');
 	selectedKeywords: string[] = $state([]);
@@ -45,7 +45,7 @@ class FilterManager {
 			})
 	);
 
-	constructor(charts: Application_Chart[]) {
+	constructor(charts: Chart[]) {
 		this.charts = charts;
 	}
 
@@ -123,7 +123,7 @@ class PaginationManager {
 	perPage: number = 6;
 	siblingCount: number = 1;
 
-	constructor(charts: Application_Chart[]) {
+	constructor(charts: Chart[]) {
 		this.count = charts.length;
 	}
 }

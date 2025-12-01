@@ -3,11 +3,8 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import {
-		type Application_Chart,
-		type Application_Release,
-		ApplicationService
-	} from '$lib/api/application/v1/application_pb';
+	import { ApplicationService, type Release } from '$lib/api/application/v1/application_pb';
+	import { type Chart, RegistryService } from '$lib/api/registry/v1/registry_pb';
 	import * as Loading from '$lib/components/custom/loading';
 
 	import { CommerceStore } from './commerce-store/index';
@@ -18,13 +15,14 @@
 
 	const transport: Transport = getContext('transport');
 	const applicationClient = createClient(ApplicationService, transport);
+	const registryClient = createClient(RegistryService, transport);
 
-	const charts = writable<Application_Chart[]>([]);
-	const releases = writable<Application_Release[]>([]);
+	const charts = writable<Chart[]>([]);
+	const releases = writable<Release[]>([]);
 
 	async function fetchCharts() {
 		try {
-			const response = await applicationClient.listCharts({});
+			const response = await registryClient.listCharts({});
 			charts.set(response.charts.sort((p, n) => p.name.localeCompare(n.name)));
 		} catch (error) {
 			console.error('Failed to fetch charts:', error);
