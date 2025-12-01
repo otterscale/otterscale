@@ -2,12 +2,11 @@ package registry
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"sync"
 	"time"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	k8s "k8s.io/client-go/kubernetes"
 	"oras.land/oras-go/v2/registry/remote"
 
 	"github.com/otterscale/otterscale/internal/config"
@@ -44,17 +43,7 @@ func (m *Registry) client(scope string) (*remote.Registry, error) {
 }
 
 func (m *Registry) newClient(scope string) (*remote.Registry, error) {
-	config, err := m.kubernetes.Config(scope)
-	if err != nil {
-		return nil, err
-	}
-
-	clientset, err := k8s.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
-	registryAddress, err := m.getRegistryURL(clientset)
+	registryAddress, err := m.getRegistryURL(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -69,17 +58,25 @@ func (m *Registry) newClient(scope string) (*remote.Registry, error) {
 	return registry, nil
 }
 
-func (m *Registry) getRegistryURL(clientset *k8s.Clientset) (string, error) {
+func (m *Registry) getRegistryURL(scope string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	opts := metav1.GetOptions{}
-
-	service, err := clientset.CoreV1().Services("registry").Get(ctx, "registry", opts)
+	ip, err := m.kubernetes.InternalIP(ctx, scope)
 	if err != nil {
 		return "", err
 	}
 
-	// TODO: validate
-	return service.Spec.ClusterIP + ":" + strconv.Itoa(int(service.Spec.Ports[0].Port)), nil
+	service, err := m.kubernetes.GetService(ctx, scope, "registry", "registry")
+	if err != nil {
+		return "", err
+	}
+
+	ports := service.Spec.Ports
+
+	if len(ports) == 0 {
+		return "", fmt.Errorf("registry service has no ports defined")
+	}
+
+	return ip + ":" + strconv.Itoa(int(ports[0].NodePort)), nil
 }

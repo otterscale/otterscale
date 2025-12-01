@@ -103,7 +103,7 @@ func (r *manifestRepo) buildManifest(ctx context.Context, client *remote.Registr
 		return nil, err
 	}
 
-	// addional repository info to chart
+	// additional repository info to chart
 	if chart != nil {
 		chart.Repository = repository
 	}
@@ -154,7 +154,6 @@ func fetchConfig(ctx context.Context, repo orasregistry.Repository, config ocisp
 	return parseConfig(content, config.MediaType)
 }
 
-//nolint:gocritic // ignore unnamedResult
 func parseConfig(content []byte, mediaType string) (*image.Image, *chart.Chart, error) {
 	var (
 		image image.Image
