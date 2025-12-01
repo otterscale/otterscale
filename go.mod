@@ -31,7 +31,7 @@ require (
 	github.com/lestrrat-go/httprc/v3 v3.0.1
 	github.com/lestrrat-go/jwx/v3 v3.0.12
 	github.com/open-feature/go-sdk v1.17.0
-	github.com/open-feature/go-sdk-contrib/providers/flagd v0.3.0
+	github.com/open-feature/go-sdk-contrib/providers/flagd v0.3.1
 	github.com/opencontainers/image-spec v1.1.1
 	github.com/otterscale/kubevirt-client-go v1.6.1
 	github.com/otterscale/samba-operator-client-go v0.0.1
@@ -64,10 +64,10 @@ require (
 )
 
 require (
-	buf.build/gen/go/open-feature/flagd/connectrpc/go v1.18.1-20250127221518-be6d1143b690.1 // indirect
-	buf.build/gen/go/open-feature/flagd/grpc/go v1.5.1-20250127221518-be6d1143b690.2 // indirect
-	buf.build/gen/go/open-feature/flagd/protocolbuffers/go v1.36.6-20250127221518-be6d1143b690.1 // indirect
-	dario.cat/mergo v1.0.1 // indirect
+	buf.build/gen/go/open-feature/flagd/connectrpc/go v1.18.1-20250529171031-ebdc14163473.1 // indirect
+	buf.build/gen/go/open-feature/flagd/grpc/go v1.5.1-20250529171031-ebdc14163473.2 // indirect
+	buf.build/gen/go/open-feature/flagd/protocolbuffers/go v1.36.6-20250529171031-ebdc14163473.1 // indirect
+	dario.cat/mergo v1.0.2 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20250102033503-faa5f7b0171c // indirect
 	github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358 // indirect
 	github.com/BurntSushi/toml v1.5.0 // indirect
@@ -101,13 +101,13 @@ require (
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.3.0 // indirect
 	github.com/containerd/containerd v1.7.29 // indirect
-	github.com/containerd/errdefs v0.3.0 // indirect
+	github.com/containerd/errdefs v1.0.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
-	github.com/containerd/platforms v0.2.1 // indirect
+	github.com/containerd/platforms v1.0.0-rc.1 // indirect
 	github.com/cyphar/filepath-securejoin v0.6.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 // indirect
-	github.com/diegoholiveira/jsonlogic/v3 v3.7.4 // indirect
+	github.com/diegoholiveira/jsonlogic/v3 v3.8.4 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
 	github.com/emicklei/go-restful/v3 v3.13.0 // indirect
 	github.com/evanphx/json-patch v5.9.11+incompatible // indirect
@@ -211,8 +211,8 @@ require (
 	github.com/monochromegane/go-gitignore v0.0.0-20200626010858-205db1a8cc00 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
-	github.com/open-feature/flagd-schemas v0.2.9-0.20250127221449-bb763438abc5 // indirect
-	github.com/open-feature/flagd/core v0.11.2 // indirect
+	github.com/open-feature/flagd-schemas v0.2.9-0.20250707123415-08b4c52d3b86 // indirect
+	github.com/open-feature/flagd/core v0.12.1 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/openshift/custom-resource-status v1.1.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
