@@ -31,9 +31,6 @@ class FilterManager {
 						)
 					: true
 			)
-			.filter((chart) =>
-				this.selectedLicences.length ? this.selectedLicences.includes(chart.license) : true
-			)
 			.filter((chart) => {
 				if (this.selectedDeprecation === null) {
 					return true;

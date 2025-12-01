@@ -8,7 +8,6 @@
 	import ChartComponent from './chart.svelte';
 	import FilterDeprecation from './filter-deprecation.svelte';
 	import FilterKeyword from './filter-keyword.svelte';
-	import FilterLicence from './filter-licence.svelte';
 	import FilterMaintainer from './filter-maintainer.svelte';
 	import FilterName from './filter-name.svelte';
 	import FilterReset from './filter-reset.svelte';
@@ -57,7 +56,6 @@
 		<FilterName {filterManager} />
 		<FilterKeyword {filterManager} />
 		<FilterMaintainer {filterManager} />
-		<FilterLicence {filterManager} />
 		<FilterDeprecation {filterManager} />
 		<FilterReset {filterManager} />
 	</div>

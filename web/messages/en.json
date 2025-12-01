@@ -883,5 +883,6 @@
 	"create_model": "Create Model",
 	"update_model": "Update Model",
 	"delete_model": "Delete Model",
-	"test": "Testing"
+	"test": "Testing",
+	"official": "Official"
 }

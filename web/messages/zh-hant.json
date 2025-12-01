@@ -881,5 +881,6 @@
 	"create_model": "建立模型",
 	"update_model": "更新模型",
 	"delete_model": "刪除模型",
-	"test": "測試"
+	"test": "測試",
+	"official": "官方"
 }

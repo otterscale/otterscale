@@ -38,29 +38,31 @@
 	const applicationClient = createClient(ApplicationService, transport);
 	const registryClient = createClient(RegistryService, transport);
 
-	const versionsStore = writable<Chart_Version[]>();
+	const versions = writable<Chart_Version[]>([]);
 	async function fetchChartVersions(scope: string, repositoryName: string) {
 		try {
 			const response = await registryClient.listChartVersions({
 				scope: scope,
 				repositoryName: repositoryName
 			});
-			versionsStore.set(response.versions);
+			versions.set(response.versions);
+
+			versionReference = $versions[0].chartRef;
+
+			versionReferenceOptions.set(
+				$versions.map((version) => ({
+					value: version.chartRef,
+					label: version.chartVersion,
+					icon: 'ph:tag'
+				}))
+			);
 		} catch (error) {
 			console.error('Error fetching:', error);
 		}
 	}
 
-	let versionRefrence = $state($versionsStore[0].chartRef);
-	let versionReferenceOptions: Writable<SingleSelect.OptionType[]> = $state(
-		writable(
-			$versionsStore.map((version) => ({
-				value: version.chartRef,
-				label: version.chartVersion,
-				icon: 'ph:tag'
-			}))
-		)
-	);
+	let versionReference = $state('');
+	let versionReferenceOptions: Writable<SingleSelect.OptionType[]> = writable([]);
 
 	const defaults = $state({} as CreateReleaseRequest);
 	let request = $state(defaults);
@@ -83,7 +85,7 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger disabled={chart.deprecated} variant="default" class="w-full">
+	<Modal.Trigger disabled={chart.deprecated} variant="primary" class="w-full">
 		<Icon icon="ph:download-simple" />
 		{m.install()}
 	</Modal.Trigger>
@@ -112,7 +114,7 @@
 
 			<Form.Field>
 				<Form.Label>{m.version()}</Form.Label>
-				<SingleSelect.Root bind:options={versionReferenceOptions} bind:value={request.chartRef}>
+				<SingleSelect.Root options={versionReferenceOptions} bind:value={request.chartRef}>
 					<SingleSelect.Trigger />
 					<SingleSelect.Content>
 						<SingleSelect.Options>
@@ -142,7 +144,7 @@
 					{m.configuration()}
 				</Form.Label>
 				<ReleaseValuesInputEdit
-					chartRef={versionRefrence}
+					chartRef={versionReference}
 					bind:valuesYaml={request.valuesYaml}
 					bind:valuesMap={request.valuesMap}
 				/>

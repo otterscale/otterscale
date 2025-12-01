@@ -49,7 +49,7 @@
 		<Sheet.Header class="flex items-start justify-between bg-muted p-6 pb-2">
 			<Sheet.Title class="relative flex w-full items-start gap-2">
 				<Avatar.Root class="h-12 w-12">
-					<Avatar.Image src={chart.icon} />
+					<Avatar.Image src={chart.icon} class="object-contain" />
 					<Avatar.Fallback>
 						<Icon icon={fuzzLogosIcon(chart.name, 'fluent-emoji-flat:otter')} class="size-12" />
 					</Avatar.Fallback>
@@ -61,10 +61,10 @@
 					</p>
 				</span>
 				<span class="absolute top-0 right-0">
-					{#if chart.verified}
+					{#if chart.repositoryName.startsWith('otterscale/')}
 						<Badge variant="secondary">
 							<Icon icon="ph:star-fill" class="h-4 w-4 fill-yellow-400 text-yellow-400" />
-							{m.verified()}
+							{m.official()}
 						</Badge>
 					{/if}
 				</span>
@@ -80,13 +80,6 @@
 			</Tabs.List>
 			<Tabs.Content value="information" class="p-4">
 				<div class="space-y-4 p-4 text-sm text-muted-foreground">
-					{#if chart.license}
-						<div class="flex items-center gap-2">
-							<Icon icon="ph:identification-badge" />
-							{chart.license}
-						</div>
-					{/if}
-
 					<p class="max-h-[10vh] overflow-auto">
 						{chart.description}
 					</p>
@@ -268,10 +261,10 @@
 									/>
 								</Button>
 							</span>
-							<div class="flex max-h-[15vh] flex-col gap-1 overflow-auto pl-6 text-xs">
+							<div class="flex max-h-[15vh] flex-col flex-wrap gap-2 overflow-auto pl-6 text-xs">
 								{#if !isMaintainersExpand}
 									{#each chart.maintainers.slice(0, 3) as maintainer}
-										{maintainer.name}
+										<p>{maintainer.name}</p>
 									{/each}
 									{#if chart.maintainers.length > 3}
 										<Badge variant="outline" class="h-fit w-fit text-xs">
@@ -280,7 +273,7 @@
 									{/if}
 								{:else}
 									{#each chart.maintainers as maintainer}
-										{maintainer.name}
+										<p>{maintainer.name}</p>
 									{/each}
 								{/if}
 							</div>
