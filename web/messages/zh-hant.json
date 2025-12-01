@@ -882,5 +882,10 @@
 	"update_model": "更新模型",
 	"delete_model": "刪除模型",
 	"test": "測試",
-	"official": "官方"
+	"official": "官方",
+	"sync": "同步",
+	"manifest_count": "Manifest 數量",
+	"latest_tag": "最新標籤",
+	"registry": "註冊表",
+	"repositories": "儲存庫"
 }

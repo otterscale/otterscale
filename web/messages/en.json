@@ -884,5 +884,10 @@
 	"update_model": "Update Model",
 	"delete_model": "Delete Model",
 	"test": "Testing",
-	"official": "Official"
+	"official": "Official",
+	"sync": "Sync",
+	"manifest_count": "Manifest Count",
+	"latest_tag": "Latest Tag",
+	"registry": "Registry",
+	"repositories": "Repositories"
 }
