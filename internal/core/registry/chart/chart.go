@@ -35,6 +35,7 @@ type Information struct {
 	Values string
 }
 
+//nolint:revive // allows this exported interface name for specific domain clarity.
 type ChartRepo interface {
 	Show(ctx context.Context, chartRef string, format action.ShowOutputFormat) (string, error)
 	Pull(ctx context.Context, chartRef, localDir string) error

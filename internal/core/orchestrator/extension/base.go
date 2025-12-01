@@ -208,20 +208,20 @@ var (
 	}
 )
 
-func (uc *UseCase) base(name string) (base, error) {
-	all := []base{}
-	all = append(all, metrics...)
-	all = append(all, serviceMesh...)
-	all = append(all, registry...)
-	all = append(all, model...)
-	all = append(all, instance...)
-	all = append(all, storage...)
+func (uc *UseCase) base(name string) (*base, error) {
+	bases := []base{}
+	bases = append(bases, metrics...)
+	bases = append(bases, serviceMesh...)
+	bases = append(bases, registry...)
+	bases = append(bases, model...)
+	bases = append(bases, instance...)
+	bases = append(bases, storage...)
 
-	for _, p := range all {
-		if p.Name == name {
-			return p, nil
+	for i := range bases {
+		if bases[i].Name == name {
+			return &bases[i], nil
 		}
 	}
 
-	return base{}, fmt.Errorf("extension %s not found", name)
+	return nil, fmt.Errorf("extension %s not found", name)
 }

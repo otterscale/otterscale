@@ -7,6 +7,8 @@ type (
 	Image = ocispec.Image
 
 	// ImageConfig represents a OCI ImageConfig resource.
+	//
+	//nolint:revive // allows this type alias for brevity.
 	ImageConfig = ocispec.ImageConfig
 
 	// Platform represents a OCI Platform resource.

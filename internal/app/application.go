@@ -66,13 +66,6 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetAppl
 		return nil, err
 	}
 
-	// chartFile, err := s.release.GetChartFileFromApplication(ctx, req.GetScope(), req.GetNamespace(), app.Labels, app.Annotations)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// app.ChartFile = chartFile
-
 	resp := toProtoApplication(app)
 	return resp, nil
 }

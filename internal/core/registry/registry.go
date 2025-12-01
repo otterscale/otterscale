@@ -19,8 +19,8 @@ func NewUseCase(manifest ManifestRepo, repository RepositoryRepo) *UseCase {
 	}
 }
 
-func (uc *UseCase) GetRegistryURL(ctx context.Context, scope string) (string, error) {
-	return uc.repository.GetRegistryURL(ctx, scope)
+func (uc *UseCase) GetRegistryURL(scope string) (string, error) {
+	return uc.repository.GetRegistryURL(scope)
 }
 
 func (uc *UseCase) ListRepositories(ctx context.Context, scope string) ([]Repository, error) {
@@ -61,7 +61,7 @@ func (uc *UseCase) ListCharts(ctx context.Context, scope string) ([]chart.Chart,
 }
 
 func (uc *UseCase) ListChartVersions(ctx context.Context, scope, chartName string) ([]chart.Version, error) {
-	registryURL, err := uc.repository.GetRegistryURL(ctx, scope)
+	registryURL, err := uc.repository.GetRegistryURL(scope)
 	if err != nil {
 		return nil, err
 	}

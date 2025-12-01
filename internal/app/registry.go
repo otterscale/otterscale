@@ -30,8 +30,8 @@ func NewRegistryService(chart *chart.UseCase, registry *registry.UseCase) *Regis
 
 var _ pbconnect.RegistryServiceHandler = (*RegistryService)(nil)
 
-func (s *RegistryService) GetRegistryURL(ctx context.Context, req *pb.GetRegistryURLRequest) (*pb.GetRegistryURLResponse, error) {
-	url, err := s.registry.GetRegistryURL(ctx, req.GetScope())
+func (s *RegistryService) GetRegistryURL(_ context.Context, req *pb.GetRegistryURLRequest) (*pb.GetRegistryURLResponse, error) {
+	url, err := s.registry.GetRegistryURL(req.GetScope())
 	if err != nil {
 		return nil, err
 	}

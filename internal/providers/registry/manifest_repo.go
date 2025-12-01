@@ -133,6 +133,7 @@ func fetchManifest(ctx context.Context, repo orasregistry.Repository, reference 
 	return desc.Digest.String(), &manifest, nil
 }
 
+//nolint:gocritic // ignore hugeParam and unnamedResult
 func fetchConfig(ctx context.Context, repo orasregistry.Repository, config ocispec.Descriptor) (*image.Image, *chart.Chart, error) {
 	reader, err := repo.Fetch(ctx, config)
 	if err != nil {
@@ -148,6 +149,7 @@ func fetchConfig(ctx context.Context, repo orasregistry.Repository, config ocisp
 	return parseConfig(content, config.MediaType)
 }
 
+//nolint:gocritic // ignore unnamedResult
 func parseConfig(content []byte, mediaType string) (*image.Image, *chart.Chart, error) {
 	var (
 		image image.Image
@@ -174,7 +176,7 @@ func parseConfig(content []byte, mediaType string) (*image.Image, *chart.Chart, 
 func calculateLayerSize(manifest *ocispec.Manifest) uint64 {
 	var totalSize uint64
 	for _, layer := range manifest.Layers {
-		totalSize += uint64(layer.Size)
+		totalSize += uint64(layer.Size) //nolint:gosec // ignore
 	}
 	return totalSize
 }

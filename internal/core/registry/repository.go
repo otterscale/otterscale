@@ -13,5 +13,5 @@ type Repository struct {
 
 type RepositoryRepo interface {
 	List(ctx context.Context, scope string) ([]Repository, error)
-	GetRegistryURL(ctx context.Context, scope string) (string, error)
+	GetRegistryURL(scope string) (string, error)
 }

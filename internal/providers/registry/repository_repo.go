@@ -5,9 +5,9 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/Masterminds/semver/v3"
 	"oras.land/oras-go/v2/registry/remote"
 
-	"github.com/Masterminds/semver/v3"
 	"github.com/otterscale/otterscale/internal/core/registry"
 )
 
@@ -50,7 +50,7 @@ func (r *repositoryRepo) List(ctx context.Context, scope string) ([]registry.Rep
 	return repositories, nil
 }
 
-func (r *repositoryRepo) GetRegistryURL(ctx context.Context, scope string) (string, error) {
+func (r *repositoryRepo) GetRegistryURL(scope string) (string, error) {
 	client, err := r.registry.client(scope)
 	if err != nil {
 		return "", err

@@ -29,7 +29,7 @@ type PackageContent struct {
 }
 
 func fetchPackages(ctx context.Context, url string) ([]Package, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func fetchPackages(ctx context.Context, url string) ([]Package, error) {
 }
 
 func fetchContentURL(ctx context.Context, url string) (string, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
 	if err != nil {
 		return "", err
 	}
