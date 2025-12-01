@@ -5,5 +5,6 @@ type Metric = SvelteMap<string, SampleValue[]>;
 type Metrics = {
 	cpu: Metric;
 	memory: Metric;
-	storage: Metric;
+	storageRead: Metric;
+	storageWrite: Metric;
 };

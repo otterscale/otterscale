@@ -51,13 +51,11 @@
 
 		const memoryResponse = await prometheusDriver.rangeQuery(
 			`
-				(
-					node_memory_MemTotal_bytes - node_memory_MemFree_bytes
-					-
-					(node_memory_Cached_bytes + node_memory_Buffers_bytes + node_memory_SReclaimable_bytes)
-				)
-				/
 				node_memory_MemTotal_bytes
+				- node_memory_MemFree_bytes
+				- node_memory_Cached_bytes
+				- node_memory_Buffers_bytes
+				- node_memory_SReclaimable_bytes
 			`,
 			Date.now() - 10 * 60 * 1000,
 			Date.now(),

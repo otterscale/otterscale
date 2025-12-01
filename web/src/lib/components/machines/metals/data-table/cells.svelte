@@ -3,7 +3,8 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 	import { scaleUtc } from 'd3-scale';
-	import { LineChart } from 'layerchart';
+	import { curveNatural } from 'd3-shape';
+	import { AreaChart } from 'layerchart';
 	import { SampleValue } from 'prometheus-query';
 
 	import { resolve } from '$app/paths';
@@ -13,7 +14,7 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Chart from '$lib/components/ui/chart';
-	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
+	import { formatCapacity, formatPercentage, formatTimeAgo } from '$lib/formatter';
 	import { cn } from '$lib/utils';
 
 	import type { Metrics } from '../types';
@@ -177,33 +178,65 @@
 {/snippet}
 
 {#snippet cpu_metric(data: { row: Row<Machine>; metrics: Metrics })}
-	{@const configuation = {
-		value: { label: 'usage', color: 'var(--chart-2)' }
+	{@const usages: SampleValue[] = data.metrics.cpu.get(data.row.original.fqdn) ?? []}
+	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
+	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
+	{@const configuration = {
+		value: { label: 'usage', color: maximumValue > 0.5 ? 'var(--warning)' : 'var(--healthy)' }
 	} satisfies Chart.ChartConfig}
-	{@const usage: SampleValue[] = data.metrics.cpu.get(data.row.original.fqdn) ?? []}
-	{#if usage.length > 0}
-		<Layout.Cell class="justify-center">
-			<Chart.Container config={configuation} class="h-10 w-full">
-				<LineChart
-					data={usage}
+	{#if usages.length > 0}
+		<Layout.Cell class="relative justify-center">
+			{@const maximumUsageValue = formatPercentage(maximumValue, 1, 0)}
+			{@const minimumUsageValue = formatPercentage(minimumValue, 1, 0)}
+			<div
+				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
+			>
+				<span class="flex items-center gap-1">
+					{maximumUsageValue}%
+					<Icon icon="ph:arrow-line-up" />
+				</span>
+				<span class="flex items-center gap-1">
+					{minimumUsageValue}%
+					<Icon icon="ph:arrow-line-down" />
+				</span>
+			</div>
+			<Chart.Container config={configuration} class="h-10 w-full">
+				<AreaChart
+					data={usages}
 					x="time"
 					series={[
 						{
 							key: 'value',
-							label: configuation['value'].label,
-							color: configuation['value'].color
+							label: configuration['value'].label,
+							color: configuration['value'].color
 						}
 					]}
 					props={{
-						spline: { strokeWidth: 2 }
+						area: {
+							curve: curveNatural,
+							'fill-opacity': 0.1,
+							line: { class: 'stroke-1' },
+							motion: 'tween'
+						}
 					}}
 					axis={false}
 					xScale={scaleUtc()}
-					yDomain={[0, 1]}
+					yDomain={[minimumValue, maximumValue]}
 					grid={false}
 				>
 					{#snippet tooltip()}
-						<Chart.Tooltip hideLabel>
+						<Chart.Tooltip
+							indicator="dot"
+							labelFormatter={(v: Date) => {
+								return v.toLocaleDateString('en-US', {
+									year: 'numeric',
+									month: 'short',
+									day: 'numeric',
+									hour: 'numeric',
+									minute: 'numeric'
+								});
+							}}
+						>
 							{#snippet formatter({ item, name, value })}
 								<div
 									class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
@@ -216,86 +249,155 @@
 							{/snippet}
 						</Chart.Tooltip>
 					{/snippet}
-				</LineChart>
+				</AreaChart>
 			</Chart.Container>
 		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet memory_metric(data: { row: Row<Machine>; metrics: Metrics })}
-	{@const configuation = {
-		value: { label: 'usage', color: 'var(--chart-2)' }
+	{@const usages: SampleValue[] = data.metrics.memory.get(data.row.original.fqdn) ?? []}
+	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
+	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
+	{@const configuration = {
+		value: { label: 'usage', color: 'var(--chart-3)' }
 	} satisfies Chart.ChartConfig}
-	{@const usage: SampleValue[] = data.metrics.memory.get(data.row.original.fqdn) ?? []}
-	{#if usage.length > 0}
-		<Layout.Cell class="justify-center">
-			<Chart.Container config={configuation} class="h-10 w-full">
-				<LineChart
-					data={usage}
+	{#if usages.length > 0}
+		<Layout.Cell class="relative justify-center">
+			{@const { value: maximumCapacityValue, unit: maximumCapacityUnit } =
+				formatCapacity(maximumValue)}
+			{@const { value: minimumCapacityValue, unit: minimumCapacityUnit } =
+				formatCapacity(minimumValue)}
+			<div
+				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
+			>
+				<span class="flex items-center gap-1">
+					{maximumCapacityValue.toFixed(0)}
+					{maximumCapacityUnit}
+					<Icon icon="ph:arrow-line-up" />
+				</span>
+				<span class="flex items-center gap-1">
+					{minimumCapacityValue.toFixed(0)}
+					{minimumCapacityUnit}
+					<Icon icon="ph:arrow-line-down" />
+				</span>
+			</div>
+			<Chart.Container config={configuration} class="h-10 w-full">
+				<AreaChart
+					data={usages}
 					x="time"
 					series={[
 						{
 							key: 'value',
-							label: configuation['value'].label,
-							color: configuation['value'].color
+							label: configuration['value'].label,
+							color: configuration['value'].color
 						}
 					]}
 					props={{
-						spline: { strokeWidth: 2 }
+						area: {
+							curve: curveNatural,
+							'fill-opacity': 0.1,
+							line: { class: 'stroke-1' },
+							motion: 'tween'
+						}
 					}}
 					axis={false}
+					yDomain={[minimumValue, maximumValue]}
 					xScale={scaleUtc()}
-					yDomain={[0, 1]}
 					grid={false}
 				>
 					{#snippet tooltip()}
-						<Chart.Tooltip hideLabel>
+						<Chart.Tooltip
+							indicator="dot"
+							labelFormatter={(v: Date) => {
+								return v.toLocaleDateString('en-US', {
+									year: 'numeric',
+									month: 'short',
+									day: 'numeric',
+									hour: 'numeric',
+									minute: 'numeric'
+								});
+							}}
+						>
 							{#snippet formatter({ item, name, value })}
+								{@const { value: usageValue, unit: usageUnit } = formatCapacity(Number(value))}
 								<div
 									class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
 									style="--color-bg: {item.color}"
 								>
 									<Icon icon="ph:square-fill" class="text-(--color-bg)" />
 									<h1 class="font-semibold text-muted-foreground">{name}</h1>
-									<p class="ml-auto">{(Number(value) * 100).toFixed(2)} %</p>
+									<p class="ml-auto">{usageValue} {usageUnit}</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>
 					{/snippet}
-				</LineChart>
+				</AreaChart>
 			</Chart.Container>
 		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet storage_metric(data: { row: Row<Machine>; metrics: Metrics })}
-	{@const configuation = {
-		value: { label: 'usage', color: 'var(--chart-2)' }
+	{@const usages: SampleValue[] = data.metrics.storage.get(data.row.original.fqdn) ?? []}
+	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
+	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
+	{@const configuration = {
+		value: { label: 'usage', color: maximumValue > 0.5 ? 'var(--warning)' : 'var(--healthy)' }
 	} satisfies Chart.ChartConfig}
-	{@const usage: SampleValue[] = data.metrics.storage.get(data.row.original.fqdn) ?? []}
-	{#if usage.length > 0}
-		<Layout.Cell class="justify-center">
-			<Chart.Container config={configuation} class="h-10 w-full">
-				<LineChart
-					data={usage}
+	{#if usages.length > 0}
+		<Layout.Cell class="relative justify-center">
+			{@const maximumUsageValue = formatPercentage(maximumValue, 1, 0)}
+			{@const minimumUsageValue = formatPercentage(minimumValue, 1, 0)}
+			<div
+				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
+			>
+				<span class="flex items-center gap-1">
+					{maximumUsageValue}%
+					<Icon icon="ph:arrow-line-up" />
+				</span>
+				<span class="flex items-center gap-1">
+					{minimumUsageValue}%
+					<Icon icon="ph:arrow-line-down" />
+				</span>
+			</div>
+			<Chart.Container config={configuration} class="h-10 w-full">
+				<AreaChart
+					data={usages}
 					x="time"
 					series={[
 						{
 							key: 'value',
-							label: configuation['value'].label,
-							color: configuation['value'].color
+							label: configuration['value'].label,
+							color: configuration['value'].color
 						}
 					]}
 					props={{
-						spline: { strokeWidth: 2 }
+						area: {
+							curve: curveNatural,
+							'fill-opacity': 0.1,
+							line: { class: 'stroke-1' },
+							motion: 'tween'
+						}
 					}}
 					axis={false}
 					xScale={scaleUtc()}
-					yDomain={[0, 1]}
+					yDomain={[minimumValue, maximumValue]}
 					grid={false}
 				>
 					{#snippet tooltip()}
-						<Chart.Tooltip hideLabel>
+						<Chart.Tooltip
+							indicator="dot"
+							labelFormatter={(v: Date) => {
+								return v.toLocaleDateString('en-US', {
+									year: 'numeric',
+									month: 'short',
+									day: 'numeric',
+									hour: 'numeric',
+									minute: 'numeric'
+								});
+							}}
+						>
 							{#snippet formatter({ item, name, value })}
 								<div
 									class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
@@ -308,7 +410,7 @@
 							{/snippet}
 						</Chart.Tooltip>
 					{/snippet}
-				</LineChart>
+				</AreaChart>
 			</Chart.Container>
 		</Layout.Cell>
 	{/if}

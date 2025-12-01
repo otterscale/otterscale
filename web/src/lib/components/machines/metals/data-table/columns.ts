@@ -63,6 +63,15 @@ function getColumns(metrics: Metrics, reloadManager: ReloadManager): ColumnDef<M
 			}
 		},
 		{
+			accessorKey: 'scope',
+			header: ({ column }) => {
+				return renderSnippet(headers.scope, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.scope, row);
+			}
+		},
+		{
 			accessorKey: 'power_state',
 			header: ({ column }) => {
 				return renderSnippet(headers.power_state, column);
@@ -161,15 +170,7 @@ function getColumns(metrics: Metrics, reloadManager: ReloadManager): ColumnDef<M
 				return renderSnippet(cells.gpu, row);
 			}
 		},
-		{
-			accessorKey: 'scope',
-			header: ({ column }) => {
-				return renderSnippet(headers.scope, column);
-			},
-			cell: ({ row }) => {
-				return renderSnippet(cells.scope, row);
-			}
-		},
+
 		{
 			accessorKey: 'tags',
 			header: ({ column }) => {

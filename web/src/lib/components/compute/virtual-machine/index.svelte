@@ -50,22 +50,36 @@
 		);
 		const cpuSampleVectors = getMapNameToMetric(cpuResponse.result);
 		const memoryResponse = await prometheusDriver.rangeQuery(
-			`kubevirt_vmi_memory_resident_bytes{juju_model="${scope}"} / kubevirt_vmi_memory_domain_bytes{juju_model="${scope}"}`,
+			`kubevirt_vmi_memory_resident_bytes{juju_model="${scope}"}`,
 			Date.now() - 10 * 60 * 1000,
 			Date.now(),
 			2 * 60
 		);
 		const memorySampleVectors = getMapNameToMetric(memoryResponse.result);
 
-		const storageResponse = await prometheusDriver.rangeQuery(
+		const storageReadResponse = await prometheusDriver.rangeQuery(
 			`rate(kubevirt_vmi_storage_read_traffic_bytes_total{juju_model="${scope}"}[5m])`,
 			Date.now() - 10 * 60 * 1000,
 			Date.now(),
 			2 * 60
 		);
-		const storageSampleVectors = getMapNameToMetric(storageResponse.result);
+		const storageReadSampleVectors = getMapNameToMetric(storageReadResponse.result);
 
-		metrics = { cpu: cpuSampleVectors, memory: memorySampleVectors, storage: storageSampleVectors };
+		const storageWriteResponse = await prometheusDriver.rangeQuery(
+			`rate(kubevirt_vmi_storage_write_traffic_bytes_total{juju_model="${scope}"}[5m])`,
+			Date.now() - 10 * 60 * 1000,
+			Date.now(),
+			2 * 60
+		);
+		const storageWriteSampleVectors = getMapNameToMetric(storageWriteResponse.result);
+
+		metrics = {
+			cpu: cpuSampleVectors,
+			memory: memorySampleVectors,
+			storageRead: storageReadSampleVectors,
+			storageWrite: storageWriteSampleVectors
+		};
+		console.log(metrics);
 	}
 
 	async function fetch() {
