@@ -5,7 +5,9 @@ package extension
 type Type int32
 
 const (
-	TypeGeneral Type = iota
+	TypeUnspecified Type = iota
+	TypeMetrics
+	TypeServiceMesh
 	TypeRegistry
 	TypeModel
 	TypeInstance

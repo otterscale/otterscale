@@ -8,20 +8,18 @@ import (
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
-
 	"k8s.io/apimachinery/pkg/util/duration"
 
 	pb "github.com/otterscale/otterscale/api/application/v1"
 	"github.com/otterscale/otterscale/api/application/v1/pbconnect"
-	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/config"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/release"
 	"github.com/otterscale/otterscale/internal/core/application/service"
 	"github.com/otterscale/otterscale/internal/core/application/workload"
+	"github.com/otterscale/otterscale/internal/core/registry/chart"
 )
 
 type ApplicationService struct {
@@ -67,13 +65,6 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetAppl
 	if err != nil {
 		return nil, err
 	}
-
-	chartFile, err := s.release.GetChartFileFromApplication(ctx, req.GetScope(), req.GetNamespace(), app.Labels, app.Annotations)
-	if err != nil {
-		return nil, err
-	}
-
-	app.ChartFile = chartFile
 
 	resp := toProtoApplication(app)
 	return resp, nil
@@ -191,7 +182,7 @@ func (s *ApplicationService) ListReleases(ctx context.Context, req *pb.ListRelea
 	return resp, nil
 }
 
-func (s *ApplicationService) CreateRelease(ctx context.Context, req *pb.CreateReleaseRequest) (*pb.Application_Release, error) {
+func (s *ApplicationService) CreateRelease(ctx context.Context, req *pb.CreateReleaseRequest) (*pb.Release, error) {
 	release, err := s.release.CreateRelease(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml(), req.GetValuesMap())
 	if err != nil {
 		return nil, err
@@ -201,7 +192,7 @@ func (s *ApplicationService) CreateRelease(ctx context.Context, req *pb.CreateRe
 	return resp, nil
 }
 
-func (s *ApplicationService) UpdateRelease(ctx context.Context, req *pb.UpdateReleaseRequest) (*pb.Application_Release, error) {
+func (s *ApplicationService) UpdateRelease(ctx context.Context, req *pb.UpdateReleaseRequest) (*pb.Release, error) {
 	release, err := s.release.UpdateRelease(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetDryRun(), req.GetChartRef(), req.GetValuesYaml())
 	if err != nil {
 		return nil, err
@@ -227,36 +218,6 @@ func (s *ApplicationService) RollbackRelease(ctx context.Context, req *pb.Rollba
 
 	resp := &emptypb.Empty{}
 	return resp, nil
-}
-
-func (s *ApplicationService) ListCharts(ctx context.Context, _ *pb.ListChartsRequest) (*pb.ListChartsResponse, error) {
-	charts, err := s.chart.ListCharts(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &pb.ListChartsResponse{}
-	resp.SetCharts(toProtoCharts(charts))
-	return resp, nil
-}
-
-func (s *ApplicationService) GetChartMetadata(ctx context.Context, req *pb.GetChartMetadataRequest) (*pb.Application_Chart_Metadata, error) {
-	file, err := s.chart.GetChartFile(ctx, req.GetChartRef())
-	if err != nil {
-		return nil, err
-	}
-
-	resp := toProtoChartMetadata(file)
-	return resp, nil
-}
-
-func (s *ApplicationService) UploadChart(ctx context.Context, req *pb.UploadChartRequest) (*emptypb.Empty, error) {
-	err := s.chart.UploadChart(ctx, req.GetChartContent())
-	if err != nil {
-		return nil, err
-	}
-
-	return &emptypb.Empty{}, nil
 }
 
 func (s *ApplicationService) ListConfigMaps(ctx context.Context, req *pb.ListConfigMapsRequest) (*pb.ListConfigMapsResponse, error) {
@@ -332,10 +293,6 @@ func toProtoApplication(a *workload.Application) *pb.Application {
 	ret.SetPods(toProtoPods(a.Pods))
 	ret.SetPersistentVolumeClaims(toProtoPersistentVolumeClaims(a.Persistents))
 	ret.SetCreatedAt(timestamppb.New(a.CreatedAt))
-
-	if a.ChartFile != nil {
-		ret.SetMetadata(toProtoChartMetadata(a.ChartFile))
-	}
 
 	return ret
 }
@@ -478,8 +435,8 @@ func toProtoPersistentVolumeClaim(s *persistent.Persistent) *pb.Application_Pers
 	return ret
 }
 
-func toProtoReleases(rs []release.Release) []*pb.Application_Release {
-	ret := []*pb.Application_Release{}
+func toProtoReleases(rs []release.Release) []*pb.Release {
+	ret := []*pb.Release{}
 
 	for i := range rs {
 		ret = append(ret, toProtoRelease(&rs[i]))
@@ -488,106 +445,15 @@ func toProtoReleases(rs []release.Release) []*pb.Application_Release {
 	return ret
 }
 
-func toProtoRelease(r *release.Release) *pb.Application_Release {
-	version := &chart.Version{
-		Metadata: &chart.Metadata{
-			Version:    r.Chart.Metadata.Version,
-			AppVersion: r.Chart.Metadata.AppVersion,
-		},
-	}
-
-	ret := &pb.Application_Release{}
+func toProtoRelease(r *release.Release) *pb.Release {
+	ret := &pb.Release{}
 	ret.SetNamespace(r.Namespace)
 	ret.SetName(r.Name)
 	ret.SetRevision(int32(r.Version)) //nolint:gosec // ignore
-	ret.SetChartName(r.Chart.Name())
-	ret.SetVersion(toProtoChartVersion(version))
-	return ret
-}
 
-func toProtoCharts(cs []chart.Chart) []*pb.Application_Chart {
-	ret := []*pb.Application_Chart{}
-
-	for i := range cs {
-		if len(cs[i].Versions) > 0 {
-			ret = append(ret, toProtoChart(cs[i].Versions[0].Metadata, cs[i].Versions[0])) // latest only
-		}
-	}
-
-	return ret
-}
-
-func toProtoChart(cmd *chart.Metadata, vs ...*chart.Version) *pb.Application_Chart {
-	ret := &pb.Application_Chart{}
-	ret.SetName(cmd.Name)
-	ret.SetIcon(cmd.Icon)
-	ret.SetDescription(cmd.Description)
-	ret.SetDeprecated(cmd.Deprecated)
-	ret.SetTags(cmd.Tags)
-	ret.SetKeywords(cmd.Keywords)
-	ret.SetLicense(getChartLicense(cmd.Annotations))
-	ret.SetVerified(false) // TODO: custom
-	ret.SetHome(cmd.Home)
-	ret.SetSources(cmd.Sources)
-	ret.SetMaintainers(toProtoChartMaintainers(cmd.Maintainers))
-	ret.SetDependencies(toProtoChartDependencies(cmd.Dependencies))
-	ret.SetVersions(toProtoChartVersions(vs...))
-	return ret
-}
-
-func toProtoChartMaintainers(ms []*chart.Maintainer) []*pb.Application_Chart_Maintainer {
-	ret := []*pb.Application_Chart_Maintainer{}
-
-	for i := range ms {
-		ret = append(ret, toProtoChartMaintainer(ms[i]))
-	}
-
-	return ret
-}
-
-func toProtoChartMaintainer(m *chart.Maintainer) *pb.Application_Chart_Maintainer {
-	ret := &pb.Application_Chart_Maintainer{}
-	ret.SetName(m.Name)
-	ret.SetEmail(m.Email)
-	ret.SetUrl(m.URL)
-	return ret
-}
-
-func toProtoChartDependencies(ds []*chart.Dependency) []*pb.Application_Chart_Dependency {
-	ret := []*pb.Application_Chart_Dependency{}
-
-	for i := range ds {
-		ret = append(ret, toProtoChartDependency(ds[i]))
-	}
-
-	return ret
-}
-
-func toProtoChartDependency(d *chart.Dependency) *pb.Application_Chart_Dependency {
-	ret := &pb.Application_Chart_Dependency{}
-	ret.SetName(d.Name)
-	ret.SetVersion(d.Version)
-	ret.SetCondition(d.Condition)
-	return ret
-}
-
-func toProtoChartVersions(vs ...*chart.Version) []*pb.Application_Chart_Version {
-	ret := []*pb.Application_Chart_Version{}
-
-	for _, v := range vs {
-		ret = append(ret, toProtoChartVersion(v))
-	}
-
-	return ret
-}
-
-func toProtoChartVersion(v *chart.Version) *pb.Application_Chart_Version {
-	ret := &pb.Application_Chart_Version{}
-	ret.SetChartVersion(v.Version)
-	ret.SetApplicationVersion(v.AppVersion)
-
-	if len(v.URLs) > 0 {
-		ret.SetChartRef(v.URLs[0])
+	chart := r.Chart
+	if chart != nil {
+		ret.SetChart(toProtoChart(chart.Metadata, ""))
 	}
 
 	return ret
@@ -696,37 +562,6 @@ func toProtoStorageClass(sc *persistent.StorageClass) *pb.StorageClass {
 	ret.SetParameters(sc.Parameters)
 	ret.SetCreatedAt(timestamppb.New(sc.CreationTimestamp.Time))
 	return ret
-}
-
-func toProtoChartMetadata(md *chart.File) *pb.Application_Chart_Metadata {
-	ret := &pb.Application_Chart_Metadata{}
-	ret.SetValuesYaml(md.ValuesYAML)
-	ret.SetReadmeMd(md.ReadmeMarkdown)
-	ret.SetCustomization(toProtoChartCustomization(md.Customization))
-	return ret
-}
-
-func toProtoChartCustomization(c map[string]any) *pb.Application_Chart_Customization {
-	ret := &pb.Application_Chart_Customization{}
-
-	values, err := structpb.NewStruct(c)
-	if err == nil {
-		ret.SetValues(values)
-	}
-
-	return ret
-}
-
-func getChartLicense(m map[string]string) string {
-	keys := []string{"license", "licenses"}
-
-	for _, key := range keys {
-		if v, ok := m[key]; ok {
-			return v
-		}
-	}
-
-	return ""
 }
 
 func containerStatusesReadyString(statuses []workload.ContainerStatus) string {

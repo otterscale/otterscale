@@ -3,10 +3,10 @@ edition = "2023";
 package otterscale.application.v1;
 
 import "api/annotations.proto";
+import "api/registry/v1/registry.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/struct.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/application/v1;pb";
 
@@ -66,13 +66,13 @@ service ApplicationService {
     };
   };
 
-  rpc CreateRelease(CreateReleaseRequest) returns (Application.Release) {
+  rpc CreateRelease(CreateReleaseRequest) returns (Release) {
     option (otterscale.api.feature) = {
       name: "application-enabled"
     };
   };
 
-  rpc UpdateRelease(UpdateReleaseRequest) returns (Application.Release) {
+  rpc UpdateRelease(UpdateReleaseRequest) returns (Release) {
     option (otterscale.api.feature) = {
       name: "application-enabled"
     };
@@ -85,30 +85,6 @@ service ApplicationService {
   };
 
   rpc RollbackRelease(RollbackReleaseRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {
-      name: "application-enabled"
-    };
-  };
-
-  rpc ListCharts(ListChartsRequest) returns (ListChartsResponse) {
-    option (otterscale.api.feature) = {
-      name: "application-enabled"
-    };
-  };
-
-  rpc GetChart(GetChartRequest) returns (Application.Chart) {
-    option (otterscale.api.feature) = {
-      name: "application-enabled"
-    };
-  };
-
-  rpc GetChartMetadata(GetChartMetadataRequest) returns (Application.Chart.Metadata) {
-    option (otterscale.api.feature) = {
-      name: "application-enabled"
-    };
-  };
-
-  rpc UploadChart(UploadChartRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
       name: "application-enabled"
     };
@@ -131,6 +107,13 @@ service ApplicationService {
   rpc ListStorageClasses(ListStorageClassesRequest) returns (ListStorageClassesResponse);
 }
 
+message Release {
+  string namespace = 1;
+  string name = 2;
+  int32 revision = 3;
+  otterscale.registry.v1.Chart chart = 11;
+}
+
 message Namespace {
   string name = 1;
   map<string, string> labels = 2;
@@ -138,55 +121,6 @@ message Namespace {
 }
 
 message Application {
-  message Chart {
-    message Customization {
-      string type = 1;
-      string name = 2;
-      string verison = 3;
-      google.protobuf.Struct values = 11;
-    }
-    message Metadata {
-      string values_yaml = 1;
-      string readme_md = 2;
-      Application.Chart.Customization customization = 11;  // create only
-    }
-    message Maintainer {
-      string name = 1;
-      string email = 2;
-      string url = 3;
-    }
-    message Dependency {
-      string name = 1;
-      string version = 2;
-      string condition = 3;
-    }
-    message Version {
-      string chart_version = 1;
-      string chart_ref = 2;
-      string application_version = 3;
-    }
-    string name = 1;
-    string icon = 2;
-    string description = 3;
-    bool deprecated = 4;
-    string tags = 5;
-    repeated string keywords = 6;
-    string license = 7;
-    bool verified = 8;
-    string home = 11;
-    repeated string sources = 12;
-    repeated Maintainer maintainers = 21;
-    repeated Dependency dependencies = 31;
-    repeated Version versions = 41;
-  }
-  message Release {
-    reserved 1 to 3;
-    string namespace = 4;
-    string name = 5;
-    int32 revision = 6;
-    string chart_name = 11;
-    Chart.Version version = 12;
-  }
   message Condition {
     string type = 1;
     string status = 2;
@@ -235,7 +169,7 @@ message Application {
   map<string, string> labels = 4;
   int32 replicas = 5;
   int32 healthies = 11;
-  Chart.Metadata metadata = 21;
+  reserved 21;
   repeated Container containers = 31;
   repeated Service services = 101;
   repeated Pod pods = 102;
@@ -352,7 +286,7 @@ message ListReleasesRequest {
 }
 
 message ListReleasesResponse {
-  repeated Application.Release releases = 1;
+  repeated Release releases = 1;
 }
 
 message CreateReleaseRequest {
@@ -392,20 +326,6 @@ message RollbackReleaseRequest {
   bool dry_run = 5;
 }
 
-message ListChartsRequest {}
-
-message ListChartsResponse {
-  repeated Application.Chart charts = 1;
-}
-
-message GetChartRequest {
-  string name = 1;
-}
-
-message GetChartMetadataRequest {
-  string chart_ref = 1;
-}
-
 message ListConfigMapsRequest {
   string scope = 1;
   string namespace = 2;
@@ -440,8 +360,4 @@ message ListNamespacesResponse {
 
 message ListStorageClassesResponse {
   repeated StorageClass storage_classes = 1;
-}
-
-message UploadChartRequest {
-  bytes chart_content = 1;
 }

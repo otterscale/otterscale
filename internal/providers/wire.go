@@ -4,11 +4,13 @@ import (
 	"github.com/google/wire"
 
 	"github.com/otterscale/otterscale/internal/providers/ceph"
+	"github.com/otterscale/otterscale/internal/providers/helm"
 	"github.com/otterscale/otterscale/internal/providers/juju"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
 	"github.com/otterscale/otterscale/internal/providers/kubernetessigs"
 	"github.com/otterscale/otterscale/internal/providers/kubevirt"
 	"github.com/otterscale/otterscale/internal/providers/maas"
+	"github.com/otterscale/otterscale/internal/providers/registry"
 	"github.com/otterscale/otterscale/internal/providers/samba"
 )
 
@@ -24,6 +26,9 @@ var ProviderSet = wire.NewSet(
 	ceph.NewSubvolumeSnapshotRepo,
 	ceph.NewUserRepo,
 	ceph.NewVolumeRepo,
+	helm.New,
+	helm.NewChartRepo,
+	helm.NewReleaseRepo,
 	juju.New,
 	juju.NewActionRepo,
 	juju.NewCharmRepo,
@@ -34,7 +39,6 @@ var ProviderSet = wire.NewSet(
 	juju.NewScopeConfigRepo,
 	juju.NewScopeRepo,
 	kubernetes.New,
-	kubernetes.NewChartRepo,
 	kubernetes.NewConfigMapRepo,
 	kubernetes.NewCustomResourceDefinitionRepo,
 	kubernetes.NewDaemonSetRepo,
@@ -44,7 +48,6 @@ var ProviderSet = wire.NewSet(
 	kubernetes.NewNodeRepo,
 	kubernetes.NewPersistentVolumeClaimRepo,
 	kubernetes.NewPodRepo,
-	kubernetes.NewReleaseRepo,
 	kubernetes.NewSecretRepo,
 	kubernetes.NewServiceRepo,
 	kubernetes.NewStatefulSetRepo,
@@ -78,6 +81,9 @@ var ProviderSet = wire.NewSet(
 	maas.NewSubnetRepo,
 	maas.NewTagRepo,
 	maas.NewVLANRepo,
+	registry.New,
+	registry.NewManifestRepo,
+	registry.NewRepositoryRepo,
 	samba.New,
 	samba.NewSMBCommonConfigRepo,
 	samba.NewSMBShareRepo,

@@ -6,8 +6,8 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		type Application_Release,
 		ApplicationService,
+		type Release,
 		type RollbackReleaseRequest
 	} from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -22,9 +22,9 @@
 		scope,
 		releases = $bindable()
 	}: {
-		release: Application_Release;
+		release: Release;
 		scope: string;
-		releases: Writable<Application_Release[]>;
+		releases: Writable<Release[]>;
 	} = $props();
 
 	const transport: Transport = getContext('transport');

@@ -15,7 +15,6 @@ import (
 	v1 "sigs.k8s.io/gateway-api-inference-extension/api/v1"
 	gav1 "sigs.k8s.io/gateway-api/apis/v1"
 
-	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/release"
@@ -55,7 +54,6 @@ type Decode struct {
 type UseCase struct {
 	inferencePool InferencePoolRepo
 
-	chart                 chart.ChartRepo
 	deployment            workload.DeploymentRepo
 	gateway               service.GatewayRepo
 	httpRoute             service.HTTPRouteRepo
@@ -66,10 +64,9 @@ type UseCase struct {
 	service               service.ServiceRepo
 }
 
-func NewUseCase(inferencePool InferencePoolRepo, chart chart.ChartRepo, deployment workload.DeploymentRepo, gateway service.GatewayRepo, httpRoute service.HTTPRouteRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, pod workload.PodRepo, node cluster.NodeRepo, release release.ReleaseRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(inferencePool InferencePoolRepo, deployment workload.DeploymentRepo, gateway service.GatewayRepo, httpRoute service.HTTPRouteRepo, persistentVolumeClaim persistent.PersistentVolumeClaimRepo, pod workload.PodRepo, node cluster.NodeRepo, release release.ReleaseRepo, service service.ServiceRepo) *UseCase {
 	return &UseCase{
 		inferencePool:         inferencePool,
-		chart:                 chart,
 		deployment:            deployment,
 		gateway:               gateway,
 		httpRoute:             httpRoute,

@@ -21,13 +21,13 @@
 	const orchestratorClient = createClient(OrchestratorService, transport);
 
 	const modelExtensions: Writable<Extension[]> = writable([]);
-	const generalExtension: Writable<Extension[]> = writable([]);
+	const metricsExtension: Writable<Extension[]> = writable([]);
 
 	const alert: Alert.AlertType = $derived({
 		title: m.extensions_alert_title(),
 		message: m.extensions_alert_description(),
 		action: () => {
-			installExtensions(scope, ['model', 'general']);
+			installExtensions(scope, ['model', 'metrics']);
 		},
 		variant: 'destructive'
 	});
@@ -44,21 +44,21 @@
 		}
 	}
 
-	async function fetchGeneralExtensions() {
+	async function fetchMetricsExtensions() {
 		try {
 			const response = await orchestratorClient.listExtensions({
 				scope: scope,
-				type: Extension_Type.GENERAL
+				type: Extension_Type.METRICS
 			});
-			generalExtension.set(response.Extensions);
+			metricsExtension.set(response.Extensions);
 		} catch (error) {
-			console.error('Failed to fetch general extensions:', error);
+			console.error('Failed to fetch metrics extensions:', error);
 		}
 	}
 
 	async function fetch() {
 		try {
-			await Promise.all([fetchModelExtensions(), fetchGeneralExtensions()]);
+			await Promise.all([fetchModelExtensions(), fetchMetricsExtensions()]);
 		} catch (error) {
 			console.error('Failed to fetch data:', error);
 		}
@@ -69,7 +69,7 @@
 	});
 </script>
 
-{#if $modelExtensions.filter((modelExtension) => modelExtension.current).length < $modelExtensions.length || $generalExtension.filter((generalExtension) => generalExtension.current).length < $generalExtension.length}
+{#if $modelExtensions.filter((modelExtension) => modelExtension.current).length < $modelExtensions.length || $metricsExtension.filter((metricsExtension) => metricsExtension.current).length < $metricsExtension.length}
 	<Alert.Root {alert}>
 		<Alert.Icon />
 		<Alert.Title>{alert.title}</Alert.Title>
@@ -77,7 +77,7 @@
 			<div class="space-y-1">
 				<p>{alert.message}</p>
 				<div class="flex w-full flex-wrap gap-2">
-					{#each [...$modelExtensions, ...$generalExtension].filter((extension) => !extension.current) as extension}
+					{#each [...$modelExtensions, ...$metricsExtension].filter((extension) => !extension.current) as extension (extension.displayName)}
 						<Badge variant="outline" class="border-destructive/50 bg-destructive/5 text-destructive"
 							>{extension.displayName}</Badge
 						>

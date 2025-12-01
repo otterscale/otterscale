@@ -151,11 +151,12 @@ message ListGPURelationsByModelResponse {
 message Extension {
   enum Type {
     TYPE_UNSPECIFIED = 0;
-    TYPE_GENERAL = 1;
-    TYPE_REGISTRY = 2;
-    TYPE_MODEL = 3;
-    TYPE_INSTANCE = 4;
-    TYPE_STORAGE = 5;
+    TYPE_METRICS = 1;
+    TYPE_SERVICE_MESH = 2;
+    TYPE_REGISTRY = 3;
+    TYPE_MODEL = 4;
+    TYPE_INSTANCE = 5;
+    TYPE_STORAGE = 6;
   }
   message Manifest {
     string name = 1;

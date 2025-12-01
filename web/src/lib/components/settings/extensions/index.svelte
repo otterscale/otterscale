@@ -21,8 +21,10 @@
 	const transport: Transport = getContext('transport');
 	const orchestratorClient = createClient(OrchestratorService, transport);
 
-	const generalExtensions: Writable<Extension[]> = writable([]);
-	let isGeneralExtensionsLoaded = $state(false);
+	const metricsExtensions: Writable<Extension[]> = writable([]);
+	let isMetricsExtensionsLoaded = $state(false);
+	const serviceMeshExtensions: Writable<Extension[]> = writable([]);
+	let isServiceMeshExtensionsLoaded = $state(false);
 	const modelExtensions: Writable<Extension[]> = writable([]);
 	let isModelExtensionsLoaded = $state(false);
 	const registryExtensions: Writable<Extension[]> = writable([]);
@@ -32,16 +34,29 @@
 	const storageExtensions: Writable<Extension[]> = writable([]);
 	let isStorageExtensionsLoaded = $state(false);
 
-	async function fetchGeneralExtensions() {
+	async function fetchMetricsExtensions() {
 		try {
 			const response = await orchestratorClient.listExtensions({
 				scope: scope,
-				type: Extension_Type.GENERAL
+				type: Extension_Type.METRICS
 			});
-			generalExtensions.set(response.Extensions);
-			isGeneralExtensionsLoaded = true;
+			metricsExtensions.set(response.Extensions);
+			isMetricsExtensionsLoaded = true;
 		} catch (error) {
-			console.error('Failed to fetch general extensions:', error);
+			console.error('Failed to fetch metrics extensions:', error);
+		}
+	}
+
+	async function fetchServiceMeshExtensions() {
+		try {
+			const response = await orchestratorClient.listExtensions({
+				scope: scope,
+				type: Extension_Type.SERVICE_MESH
+			});
+			serviceMeshExtensions.set(response.Extensions);
+			isServiceMeshExtensionsLoaded = true;
+		} catch (error) {
+			console.error('Failed to fetch service mesh extensions:', error);
 		}
 	}
 
@@ -99,7 +114,8 @@
 
 	onMount(() => {
 		Promise.all([
-			fetchGeneralExtensions(),
+			fetchMetricsExtensions(),
+			fetchServiceMeshExtensions(),
 			fetchRegistryExtensions(),
 			fetchModelExtensions(),
 			fetchInstanceExtensions(),
@@ -113,19 +129,37 @@
 	class="group w-full overflow-hidden rounded-lg border bg-card text-card-foreground transition-all duration-300 **:data-[slot='accordion-trigger']:p-6"
 	value={getAccordionValue()}
 >
-	{#if isGeneralExtensionsLoaded && $generalExtensions.filter((generalExtension) => !generalExtension.latest).length == 0}
-		<Accordion.Item value="general">
+	{#if isMetricsExtensionsLoaded && $metricsExtensions.filter((metricsExtension) => !metricsExtension.latest).length == 0}
+		<Accordion.Item value="metrics">
 			<Accordion.Trigger>
 				<Thumbnail
 					{scope}
-					extensionsBundle="general"
-					extensions={generalExtensions}
-					updator={fetchGeneralExtensions}
+					extensionsBundle="metrics"
+					extensions={metricsExtensions}
+					updator={fetchMetricsExtensions}
 				/>
 			</Accordion.Trigger>
 			<Accordion.Content>
-				{#each $generalExtensions as generalExtension, index (index)}
-					<Node extension={generalExtension} alignment={index % 2 ? 'right' : 'left'} />
+				{#each $metricsExtensions as metricsExtension, index (index)}
+					<Node extension={metricsExtension} alignment={index % 2 ? 'right' : 'left'} />
+				{/each}
+			</Accordion.Content>
+		</Accordion.Item>
+	{/if}
+
+	{#if isServiceMeshExtensionsLoaded && $serviceMeshExtensions.filter((serviceMeshExtension) => !serviceMeshExtension.latest).length == 0}
+		<Accordion.Item value="serviceMesh">
+			<Accordion.Trigger>
+				<Thumbnail
+					{scope}
+					extensionsBundle="serviceMesh"
+					extensions={serviceMeshExtensions}
+					updator={fetchServiceMeshExtensions}
+				/>
+			</Accordion.Trigger>
+			<Accordion.Content>
+				{#each $serviceMeshExtensions as serviceMeshExtension, index (index)}
+					<Node extension={serviceMeshExtension} alignment={index % 2 ? 'right' : 'left'} />
 				{/each}
 			</Accordion.Content>
 		</Accordion.Item>

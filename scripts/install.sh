@@ -1608,6 +1608,13 @@ openfeature:
         "off": false
       defaultVariant: "on"
 
+    registry-enabled:
+      state: ENABLED
+      variants:
+        "on": true
+        "off": false
+      defaultVariant: "on"
+
     virtual-machine-enabled:
       state: ENABLED
       variants:

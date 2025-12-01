@@ -11,7 +11,6 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
-	"github.com/otterscale/otterscale/internal/core/application/chart"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/service"
 )
@@ -34,7 +33,6 @@ type Application struct {
 	Containers  []Container
 	Services    []service.Service
 	Persistents []persistent.Persistent
-	ChartFile   *chart.File // return only when fetching from GetApplication
 }
 
 func (uc *UseCase) ListApplications(ctx context.Context, scope string) (apps []Application, hostname string, err error) {

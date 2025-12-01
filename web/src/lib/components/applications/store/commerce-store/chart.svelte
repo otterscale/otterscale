@@ -3,10 +3,8 @@
 	import type { Snippet } from 'svelte';
 	import type { Writable } from 'svelte/store';
 
-	import {
-		type Application_Chart,
-		type Application_Release
-	} from '$lib/api/application/v1/application_pb';
+	import { type Release } from '$lib/api/application/v1/application_pb';
+	import { type Chart } from '$lib/api/registry/v1/registry_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
@@ -30,11 +28,11 @@
 		releases = $bindable(),
 		children
 	}: {
-		chart: Application_Chart;
-		chartReleases: Application_Release[] | undefined;
+		chart: Chart;
+		chartReleases: Release[] | undefined;
 		scope: string;
-		charts: Writable<Application_Chart[]>;
-		releases: Writable<Application_Release[]>;
+		charts: Writable<Chart[]>;
+		releases: Writable<Release[]>;
 		children: Snippet;
 	} = $props();
 
@@ -59,7 +57,7 @@
 				<span>
 					<h3 class="font-semibold">{chart.name}</h3>
 					<p class="flex items-center gap-1 text-sm text-muted-foreground">
-						{chart.versions[0].chartVersion}
+						{chart.version}
 					</p>
 				</span>
 				<span class="absolute top-0 right-0">
@@ -315,8 +313,8 @@
 										<Table.SubCell>{release.namespace}</Table.SubCell>
 									</Table.Cell>
 									<Table.Cell>
-										{release.version?.chartVersion}
-										<Table.SubCell>{release.version?.applicationVersion}</Table.SubCell>
+										{release.chart?.version}
+										<Table.SubCell>{release.chart?.appVersion}</Table.SubCell>
 									</Table.Cell>
 									<Table.Cell>
 										{release.revision}
@@ -333,7 +331,7 @@
 		</Tabs.Root>
 
 		<Sheet.Footer class="p-4">
-			<Install {chart} bind:charts />
+			<Install {chart} {scope} />
 		</Sheet.Footer>
 	</Sheet.Content>
 </Sheet.Root>

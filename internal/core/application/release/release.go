@@ -3,12 +3,7 @@ package release
 import (
 	"context"
 
-	"golang.org/x/sync/errgroup"
-	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/release"
-	"sigs.k8s.io/yaml"
-
-	"github.com/otterscale/otterscale/internal/core/application/chart"
 )
 
 const (
@@ -33,14 +28,11 @@ type ReleaseRepo interface {
 
 type UseCase struct {
 	release ReleaseRepo
-
-	chart chart.ChartRepo
 }
 
-func NewUseCase(release ReleaseRepo, chart chart.ChartRepo) *UseCase {
+func NewUseCase(release ReleaseRepo) *UseCase {
 	return &UseCase{
 		release: release,
-		chart:   chart,
 	}
 }
 
@@ -70,44 +62,4 @@ func (uc *UseCase) DeleteRelease(ctx context.Context, scope, namespace, name str
 
 func (uc *UseCase) RollbackRelease(ctx context.Context, scope, namespace, name string, dryRun bool) error {
 	return uc.release.Rollback(ctx, scope, namespace, name, dryRun)
-}
-
-func (uc *UseCase) GetChartFileFromApplication(ctx context.Context, scope, namespace string, labels, annotations map[string]string) (*chart.File, error) {
-	file := &chart.File{}
-	eg, egctx := errgroup.WithContext(ctx)
-
-	eg.Go(func() error {
-		releaseName, ok := labels[ReleaseNameLabel]
-		if ok {
-			v, err := uc.release.GetValues(egctx, scope, namespace, releaseName)
-			if err != nil {
-				return err
-			}
-
-			valuesYAML, _ := yaml.Marshal(v) // ignore error
-			file.ValuesYAML = string(valuesYAML)
-		}
-
-		return nil
-	})
-
-	eg.Go(func() error {
-		chartRef, ok := annotations[ChartRefAnnotation]
-		if ok {
-			v, err := uc.chart.Show(egctx, chartRef, action.ShowReadme)
-			if err != nil {
-				return err
-			}
-
-			file.ReadmeMarkdown = v
-		}
-
-		return nil
-	})
-
-	if err := eg.Wait(); err != nil {
-		return nil, err
-	}
-
-	return file, nil
 }

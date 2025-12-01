@@ -21,6 +21,7 @@ import (
 	modelv1 "github.com/otterscale/otterscale/api/model/v1/pbconnect"
 	networkv1 "github.com/otterscale/otterscale/api/network/v1/pbconnect"
 	orchv1 "github.com/otterscale/otterscale/api/orchestrator/v1/pbconnect"
+	registryv1 "github.com/otterscale/otterscale/api/registry/v1/pbconnect"
 	scopev1 "github.com/otterscale/otterscale/api/scope/v1/pbconnect"
 	storagev1 "github.com/otterscale/otterscale/api/storage/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/app"
@@ -38,11 +39,12 @@ type Serve struct {
 	model         *app.ModelService
 	network       *app.NetworkService
 	orchestrator  *app.OrchestratorService
+	registry      *app.RegistryService
 	storage       *app.StorageService
 	scope         *app.ScopeService
 }
 
-func NewServe(application *app.ApplicationService, configuration *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, instance *app.InstanceService, machine *app.MachineService, model *app.ModelService, network *app.NetworkService, orchestrator *app.OrchestratorService, storage *app.StorageService, scope *app.ScopeService) *Serve {
+func NewServe(application *app.ApplicationService, configuration *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, instance *app.InstanceService, machine *app.MachineService, model *app.ModelService, network *app.NetworkService, orchestrator *app.OrchestratorService, registry *app.RegistryService, storage *app.StorageService, scope *app.ScopeService) *Serve {
 	return &Serve{
 		ServeMux:      &http.ServeMux{},
 		application:   application,
@@ -54,6 +56,7 @@ func NewServe(application *app.ApplicationService, configuration *app.Configurat
 		model:         model,
 		network:       network,
 		orchestrator:  orchestrator,
+		registry:      registry,
 		storage:       storage,
 		scope:         scope,
 	}
@@ -71,6 +74,7 @@ func (s *Serve) RegisterHandlers(opts []connect.HandlerOption) error {
 		modelv1.ModelServiceName,
 		networkv1.NetworkServiceName,
 		orchv1.OrchestratorServiceName,
+		registryv1.RegistryServiceName,
 		scopev1.ScopeServiceName,
 		storagev1.StorageServiceName,
 	}
@@ -105,6 +109,7 @@ func (s *Serve) RegisterHandlers(opts []connect.HandlerOption) error {
 	s.Handle(modelv1.NewModelServiceHandler(s.model, opts...))
 	s.Handle(networkv1.NewNetworkServiceHandler(s.network, opts...))
 	s.Handle(orchv1.NewOrchestratorServiceHandler(s.orchestrator, opts...))
+	s.Handle(registryv1.NewRegistryServiceHandler(s.registry, opts...))
 	s.Handle(storagev1.NewStorageServiceHandler(s.storage, opts...))
 	s.Handle(scopev1.NewScopeServiceHandler(s.scope, opts...))
 

@@ -23,10 +23,15 @@
 			icon: string;
 		}
 	> = {
-		general: {
-			name: m.general(),
-			description: m.extensions_general_bundle_description(),
-			icon: 'ph:cube'
+		metrics: {
+			name: m.metrics(),
+			description: m.extensions_metrics_bundle_description(),
+			icon: 'ph:speedometer'
+		},
+		serviceMesh: {
+			name: m.service_mesh(),
+			description: m.extensions_service_mesh_bundle_description(),
+			icon: 'ph:network'
 		},
 		model: {
 			name: m.model(),

@@ -1,0 +1,211 @@
+edition = "2023";
+
+package otterscale.registry.v1;
+
+import "api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/otterscale/otterscale/api/registry/v1;pb";
+
+service RegistryService {
+  rpc GetRegistryURL(GetRegistryURLRequest) returns (GetRegistryURLResponse) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
+
+  rpc ListRepositories(ListRepositoriesRequest) returns (ListRepositoriesResponse) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
+
+  rpc ListManifests(ListManifestsRequest) returns (ListManifestsResponse) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
+
+  rpc DeleteManifest(DeleteManifestRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
+
+  rpc ListCharts(ListChartsRequest) returns (ListChartsResponse) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
+
+  rpc ListChartVersions(ListChartVersionsRequest) returns (ListChartVersionsResponse) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
+
+  rpc GetChartInformation(GetChartInformationRequest) returns (Chart.Information) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
+
+  rpc SyncArtifactHub(SyncArtifactHubRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "registry-enabled"
+    };
+  };
+}
+
+message Repository {
+  string name = 1;
+  uint32 manifest_count = 2;
+  uint64 size_bytes = 3;
+  string latest_tag = 4;
+}
+
+message Manifest {
+  string repository_name = 1;
+  string tag = 2;
+  string digest = 3;
+  uint64 size_bytes = 4;
+  oneof config {
+    Image image = 11;
+    Chart chart = 12;
+  }
+}
+
+// oci spec
+message Image {
+  message Platform {
+    string architecture = 1;
+    string os = 2;
+    string os_version = 3;
+    repeated string os_features = 4;
+    string variant = 5;
+  }
+  message Config {
+    string user = 1;
+    repeated string exposed_ports = 2;
+    repeated string environments = 3;
+    repeated string entrypoint = 4;
+    repeated string cmd = 5;
+    repeated string volumes = 6;
+    string working_dir = 7;
+    map<string, string> labels = 8;
+    string stop_signal = 9;
+  }
+  message RootFS {
+    string type = 1;
+    repeated string diff_ids = 2;
+  }
+  google.protobuf.Timestamp created_at = 1;
+  string author = 2;
+  Platform platform = 3;
+  Config config = 4;
+  RootFS root_fs = 5;
+  reserved 6;  // history
+}
+
+// helm chart
+message Chart {
+  message Information {  // helm show
+    string values = 1;
+    string readme = 2;
+  }
+  message Version {  // helm search repo
+    string chart_ref = 1;
+    string chart_version = 2;
+    string application_version = 3;
+  }
+  message Maintainer {
+    string name = 1;
+    string email = 2;
+    string url = 3;
+  }
+  message Dependency {
+    string name = 1;
+    string version = 2;
+    string repository = 3;
+    string condition = 4;
+    repeated string tags = 5;
+    bool enabled = 6;
+    reserved 7;  // import_values
+    string alias = 8;
+  }
+  string name = 1;
+  string home = 2;
+  repeated string sources = 3;
+  string version = 4;
+  string description = 5;
+  repeated string keywords = 6;
+  repeated Maintainer maintainers = 7;
+  string icon = 8;
+  string api_version = 9;
+  string condition = 10;
+  string tags = 11;
+  string app_version = 12;
+  bool deprecated = 13;
+  map<string, string> annotations = 14;
+  string kube_version = 15;
+  repeated Dependency dependencies = 16;
+  string type = 17;
+  string repository_name = 21;
+}
+
+message GetRegistryURLRequest {
+  string scope = 1;
+}
+
+message GetRegistryURLResponse {
+  string registry_url = 1;
+}
+
+message ListRepositoriesRequest {
+  string scope = 1;
+}
+
+message ListRepositoriesResponse {
+  repeated Repository repositories = 1;
+}
+
+message ListManifestsRequest {
+  string scope = 1;
+  string repository_name = 2;
+}
+
+message ListManifestsResponse {
+  repeated Manifest manifests = 1;
+}
+
+message DeleteManifestRequest {
+  string scope = 1;
+  string repository_name = 2;
+  string digest = 3;
+}
+
+message ListChartsRequest {
+  string scope = 1;
+}
+
+message ListChartsResponse {
+  repeated Chart charts = 1;
+}
+
+message ListChartVersionsRequest {
+  string scope = 1;
+  string repository_name = 2;
+}
+
+message ListChartVersionsResponse {
+  repeated Chart.Version versions = 1;
+}
+
+message GetChartInformationRequest {
+  string chart_ref = 1;
+}
+
+message SyncArtifactHubRequest {
+  string registry_url = 1;
+}

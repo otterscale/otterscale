@@ -132,8 +132,11 @@ func toManifests(ms []*pb.Extension_Manifest) []extension.Manifest {
 
 func toExtensionType(t pb.Extension_Type) extension.Type {
 	switch t {
-	case pb.Extension_TYPE_GENERAL:
-		return extension.TypeGeneral
+	case pb.Extension_TYPE_METRICS:
+		return extension.TypeMetrics
+
+	case pb.Extension_TYPE_SERVICE_MESH:
+		return extension.TypeServiceMesh
 
 	case pb.Extension_TYPE_REGISTRY:
 		return extension.TypeRegistry
@@ -148,7 +151,7 @@ func toExtensionType(t pb.Extension_Type) extension.Type {
 		return extension.TypeStorage
 
 	default:
-		return extension.TypeGeneral
+		return extension.TypeUnspecified
 	}
 }
 

@@ -1,15 +1,16 @@
 <script lang="ts" module>
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import type { Writable } from 'svelte/store';
+	import { getContext, onMount } from 'svelte';
+	import { type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import {
-		type Application_Release,
 		ApplicationService,
+		type Release,
 		type UpdateReleaseRequest
 	} from '$lib/api/application/v1/application_pb';
+	import { RegistryService } from '$lib/api/registry/v1/registry_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -25,21 +26,18 @@
 		valuesYaml = '',
 		releases = $bindable()
 	}: {
-		release: Application_Release;
+		release: Release;
 		scope: string;
 		valuesYaml?: string;
-		releases: Writable<Application_Release[]>;
+		releases: Writable<Release[]>;
 	} = $props();
-
-	const transport: Transport = getContext('transport');
-	const client = createClient(ApplicationService, transport);
 
 	const defaults = {
 		dryRun: false,
 		scope: scope,
 		namespace: release.namespace,
 		name: release.name,
-		chartRef: release.version?.chartRef,
+		chartRef: '',
 		valuesYaml: valuesYaml
 	} as UpdateReleaseRequest;
 	let request = $state(defaults);
@@ -51,6 +49,36 @@
 	function close() {
 		open = false;
 	}
+
+	const transport: Transport = getContext('transport');
+	const applicationClient = createClient(ApplicationService, transport);
+	const registryClient = createClient(RegistryService, transport);
+
+	async function fetchChartRef(scope: string, repositoryName: string, chartVersion: string) {
+		try {
+			const response = await registryClient.listChartVersions({
+				scope: scope,
+				repositoryName: repositoryName
+			});
+
+			const version = response.versions.find((v) => v.chartVersion === chartVersion);
+			if (version) {
+				request.chartRef = version.chartRef;
+			}
+		} catch (error) {
+			console.error('Error fetching:', error);
+		}
+	}
+
+	onMount(async () => {
+		try {
+			if (release.chart) {
+				await fetchChartRef(scope, release.chart.repositoryName, release.chart.version);
+			}
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+	});
 </script>
 
 <Modal.Root bind:open>
@@ -95,10 +123,10 @@
 			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
-					toast.promise(() => client.updateRelease(request), {
+					toast.promise(() => applicationClient.updateRelease(request), {
 						loading: 'Loading...',
 						success: (r) => {
-							client.listReleases({}).then((r) => {
+							applicationClient.listReleases({}).then((r) => {
 								releases.set(r.releases);
 							});
 							return `Update ${r.name} success`;

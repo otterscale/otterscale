@@ -23,17 +23,37 @@ type crdManifest struct {
 }
 
 type base struct {
-	Name        string
-	Namespace   string
-	DisplayName string
-	Description string
-	Logo        string
-	Charts      []chartManifest
-	CRD         *crdManifest
+	Name         string
+	Namespace    string
+	DisplayName  string
+	Description  string
+	Logo         string
+	Charts       []chartManifest
+	CRD          *crdManifest
+	Dependencies []string // TODO: implement dependency installation
 }
 
 var (
-	general = []base{
+	metrics = []base{
+		{
+			Name:        "kube-prometheus-stack",
+			Namespace:   "monitoring",
+			DisplayName: "Prometheus Stack",
+			Description: "Installs the kube-prometheus stack for easy, end-to-end Kubernetes cluster monitoring using the Prometheus Operator.",
+			Logo:        "https://github.com/prometheus-community.png",
+			Charts: []chartManifest{
+				{
+					Ref:     fmt.Sprintf("https://github.com/prometheus-community/helm-charts/releases/download/kube-prometheus-stack-%[1]s/kube-prometheus-stack-%[1]s.tgz", versions.KubePrometheusStack),
+					Version: versions.KubePrometheusStack,
+					Labels: map[string]string{
+						release.TypeLabel: "extension",
+					},
+				},
+			},
+		},
+	}
+
+	serviceMesh = []base{
 		{
 			Name:        "gateway-api",
 			DisplayName: "Gateway API",
@@ -82,22 +102,6 @@ var (
 				},
 			},
 		},
-		{
-			Name:        "kube-prometheus-stack",
-			Namespace:   "monitoring",
-			DisplayName: "Prometheus Stack",
-			Description: "Installs the kube-prometheus stack for easy, end-to-end Kubernetes cluster monitoring using the Prometheus Operator.",
-			Logo:        "https://github.com/prometheus-community.png",
-			Charts: []chartManifest{
-				{
-					Ref:     fmt.Sprintf("https://github.com/prometheus-community/helm-charts/releases/download/kube-prometheus-stack-%[1]s/kube-prometheus-stack-%[1]s.tgz", versions.KubePrometheusStack),
-					Version: versions.KubePrometheusStack,
-					Labels: map[string]string{
-						release.TypeLabel: "extension",
-					},
-				},
-			},
-		},
 	}
 
 	registry = []base{
@@ -139,6 +143,7 @@ var (
 					},
 				},
 			},
+			Dependencies: []string{"kube-prometheus-stack"},
 		},
 		{
 			Name:        "llm-d-infra",
@@ -179,6 +184,7 @@ var (
 					},
 				},
 			},
+			Dependencies: []string{"kube-prometheus-stack"},
 		},
 	}
 
@@ -202,19 +208,20 @@ var (
 	}
 )
 
-func (uc *UseCase) base(name string) (base, error) {
-	all := []base{}
-	all = append(all, general...)
-	all = append(all, registry...)
-	all = append(all, model...)
-	all = append(all, instance...)
-	all = append(all, storage...)
+func (uc *UseCase) base(name string) (*base, error) {
+	bases := []base{}
+	bases = append(bases, metrics...)
+	bases = append(bases, serviceMesh...)
+	bases = append(bases, registry...)
+	bases = append(bases, model...)
+	bases = append(bases, instance...)
+	bases = append(bases, storage...)
 
-	for _, p := range all {
-		if p.Name == name {
-			return p, nil
+	for i := range bases {
+		if bases[i].Name == name {
+			return &bases[i], nil
 		}
 	}
 
-	return base{}, fmt.Errorf("extension %s not found", name)
+	return nil, fmt.Errorf("extension %s not found", name)
 }

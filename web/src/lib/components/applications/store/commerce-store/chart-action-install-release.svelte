@@ -1,15 +1,19 @@
 <script lang="ts" module>
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import {
-		type Application_Chart,
 		ApplicationService,
 		type CreateReleaseRequest
 	} from '$lib/api/application/v1/application_pb';
+	import {
+		type Chart,
+		type Chart_Version,
+		RegistryService
+	} from '$lib/api/registry/v1/registry_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -18,33 +22,45 @@
 	import { cn } from '$lib/utils';
 
 	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
-
-	// import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
 </script>
 
 <script lang="ts">
 	let {
-		chart,
-		charts = $bindable()
+		scope,
+		chart
 	}: {
-		chart: Application_Chart;
-		charts: Writable<Application_Chart[]>;
+		scope: string;
+		chart: Chart;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
 
-	let versionRefrence = $state(chart.versions[0].chartRef);
+	const applicationClient = createClient(ApplicationService, transport);
+	const registryClient = createClient(RegistryService, transport);
+
+	const versionsStore = writable<Chart_Version[]>();
+	async function fetchChartVersions(scope: string, repositoryName: string) {
+		try {
+			const response = await registryClient.listChartVersions({
+				scope: scope,
+				repositoryName: repositoryName
+			});
+			versionsStore.set(response.versions);
+		} catch (error) {
+			console.error('Error fetching:', error);
+		}
+	}
+
+	let versionRefrence = $state($versionsStore[0].chartRef);
 	let versionReferenceOptions: Writable<SingleSelect.OptionType[]> = $state(
 		writable(
-			chart.versions.map((version) => ({
+			$versionsStore.map((version) => ({
 				value: version.chartRef,
 				label: version.chartVersion,
 				icon: 'ph:tag'
 			}))
 		)
 	);
-
-	const applicationClient = createClient(ApplicationService, transport);
 
 	const defaults = $state({} as CreateReleaseRequest);
 	let request = $state(defaults);
@@ -56,6 +72,14 @@
 	function close() {
 		open = false;
 	}
+
+	onMount(async () => {
+		try {
+			await fetchChartVersions(scope, chart.repositoryName);
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+	});
 </script>
 
 <Modal.Root bind:open>
@@ -138,9 +162,6 @@
 					toast.promise(() => applicationClient.createRelease(request), {
 						loading: `Creating ${request.name}...`,
 						success: () => {
-							applicationClient.listCharts({}).then((response) => {
-								charts.set(response.charts);
-							});
 							return `Create ${request.name}`;
 						},
 						error: (error) => {

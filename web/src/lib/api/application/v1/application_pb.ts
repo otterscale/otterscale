@@ -5,15 +5,49 @@
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import { file_api_annotations } from "../../annotations_pb";
+import type { Chart } from "../../registry/v1/registry_pb";
+import { file_api_registry_v1_registry } from "../../registry/v1/registry_pb";
 import type { Duration, EmptySchema, Timestamp } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_duration, file_google_protobuf_empty, file_google_protobuf_struct, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { JsonObject, Message } from "@bufbuild/protobuf";
+import { file_google_protobuf_duration, file_google_protobuf_empty, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file api/application/v1/application.proto.
  */
 export const file_api_application_v1_application: GenFile = /*@__PURE__*/
-  fileDesc("CiRhcGkvYXBwbGljYXRpb24vdjEvYXBwbGljYXRpb24ucHJvdG8SGW90dGVyc2NhbGUuYXBwbGljYXRpb24udjEiugEKCU5hbWVzcGFjZRIMCgRuYW1lGAEgASgJEkAKBmxhYmVscxgCIAMoCzIwLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuTmFtZXNwYWNlLkxhYmVsc0VudHJ5Ei4KCmNyZWF0ZWRfYXQYCyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wGi0KC0xhYmVsc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEi7xMKC0FwcGxpY2F0aW9uEgwKBHR5cGUYASABKAkSDAoEbmFtZRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSQgoGbGFiZWxzGAQgAygLMjIub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5MYWJlbHNFbnRyeRIQCghyZXBsaWNhcxgFIAEoBRIRCgloZWFsdGhpZXMYCyABKAUSRwoIbWV0YWRhdGEYFSABKAsyNS5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkFwcGxpY2F0aW9uLkNoYXJ0Lk1ldGFkYXRhEkQKCmNvbnRhaW5lcnMYHyADKAsyMC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkFwcGxpY2F0aW9uLkNvbnRhaW5lchJACghzZXJ2aWNlcxhlIAMoCzIuLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuQXBwbGljYXRpb24uU2VydmljZRI4CgRwb2RzGGYgAygLMioub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5Qb2QSXgoYcGVyc2lzdGVudF92b2x1bWVfY2xhaW1zGGcgAygLMjwub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5QZXJzaXN0ZW50Vm9sdW1lQ2xhaW0SLwoKY3JlYXRlZF9hdBjJASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wGswGCgVDaGFydBIMCgRuYW1lGAEgASgJEgwKBGljb24YAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkSEgoKZGVwcmVjYXRlZBgEIAEoCBIMCgR0YWdzGAUgASgJEhAKCGtleXdvcmRzGAYgAygJEg8KB2xpY2Vuc2UYByABKAkSEAoIdmVyaWZpZWQYCCABKAgSDAoEaG9tZRgLIAEoCRIPCgdzb3VyY2VzGAwgAygJEkwKC21haW50YWluZXJzGBUgAygLMjcub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5DaGFydC5NYWludGFpbmVyEk0KDGRlcGVuZGVuY2llcxgfIAMoCzI3Lm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuQXBwbGljYXRpb24uQ2hhcnQuRGVwZW5kZW5jeRJGCgh2ZXJzaW9ucxgpIAMoCzI0Lm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuQXBwbGljYXRpb24uQ2hhcnQuVmVyc2lvbhplCg1DdXN0b21pemF0aW9uEgwKBHR5cGUYASABKAkSDAoEbmFtZRgCIAEoCRIPCgd2ZXJpc29uGAMgASgJEicKBnZhbHVlcxgLIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3QahQEKCE1ldGFkYXRhEhMKC3ZhbHVlc195YW1sGAEgASgJEhEKCXJlYWRtZV9tZBgCIAEoCRJRCg1jdXN0b21pemF0aW9uGAsgASgLMjoub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5DaGFydC5DdXN0b21pemF0aW9uGjYKCk1haW50YWluZXISDAoEbmFtZRgBIAEoCRINCgVlbWFpbBgCIAEoCRILCgN1cmwYAyABKAkaPgoKRGVwZW5kZW5jeRIMCgRuYW1lGAEgASgJEg8KB3ZlcnNpb24YAiABKAkSEQoJY29uZGl0aW9uGAMgASgJGlAKB1ZlcnNpb24SFQoNY2hhcnRfdmVyc2lvbhgBIAEoCRIRCgljaGFydF9yZWYYAiABKAkSGwoTYXBwbGljYXRpb25fdmVyc2lvbhgDIAEoCRqdAQoHUmVsZWFzZRIRCgluYW1lc3BhY2UYBCABKAkSDAoEbmFtZRgFIAEoCRIQCghyZXZpc2lvbhgGIAEoBRISCgpjaGFydF9uYW1lGAsgASgJEkUKB3ZlcnNpb24YDCABKAsyNC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkFwcGxpY2F0aW9uLkNoYXJ0LlZlcnNpb25KBAgBEAQasAEKCUNvbmRpdGlvbhIMCgR0eXBlGAEgASgJEg4KBnN0YXR1cxgCIAEoCRIOCgZyZWFzb24YAyABKAkSDwoHbWVzc2FnZRgEIAEoCRIuCglwcm9iZWRfYXQYyQEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI0Cg90cmFuc2l0aW9uZWRfYXQYygEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBo6CglDb250YWluZXISEgoKaW1hZ2VfbmFtZRgBIAEoCRIZChFpbWFnZV9wdWxsX3BvbGljeRgCIAEoCRqMAgoHU2VydmljZRIMCgRuYW1lGAEgASgJEgwKBHR5cGUYAiABKAkSEgoKY2x1c3Rlcl9pcBgDIAEoCRJCCgVwb3J0cxgLIAMoCzIzLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuQXBwbGljYXRpb24uU2VydmljZS5Qb3J0Ei8KCmNyZWF0ZWRfYXQYyQEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBpcCgRQb3J0EgwKBHBvcnQYASABKAUSEQoJbm9kZV9wb3J0GAIgASgFEgwKBG5hbWUYAyABKAkSEAoIcHJvdG9jb2wYBCABKAkSEwoLdGFyZ2V0X3BvcnQYCyABKAkavgEKA1BvZBIMCgRuYW1lGAEgASgJEg0KBXBoYXNlGAIgASgJEg0KBXJlYWR5GAMgASgJEhAKCHJlc3RhcnRzGAQgASgJEkgKDmxhc3RfY29uZGl0aW9uGAsgASgLMjAub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5Db25kaXRpb24SLwoKY3JlYXRlZF9hdBjJASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wGs4BChVQZXJzaXN0ZW50Vm9sdW1lQ2xhaW0SDAoEbmFtZRgBIAEoCRIOCgZzdGF0dXMYAiABKAkSFAoMYWNjZXNzX21vZGVzGAMgAygJEhAKCGNhcGFjaXR5GAQgASgJEj4KDXN0b3JhZ2VfY2xhc3MYCyABKAsyJy5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLlN0b3JhZ2VDbGFzcxIvCgpjcmVhdGVkX2F0GMkBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASKXAgoMU3RvcmFnZUNsYXNzEgwKBG5hbWUYASABKAkSEwoLcHJvdmlzaW9uZXIYAiABKAkSFgoOcmVjbGFpbV9wb2xpY3kYAyABKAkSGwoTdm9sdW1lX2JpbmRpbmdfbW9kZRgEIAEoCRJLCgpwYXJhbWV0ZXJzGAUgAygLMjcub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5TdG9yYWdlQ2xhc3MuUGFyYW1ldGVyc0VudHJ5Ei8KCmNyZWF0ZWRfYXQYyQEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBoxCg9QYXJhbWV0ZXJzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASLKAwoJQ29uZmlnTWFwEgwKBG5hbWUYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEkAKBmxhYmVscxgDIAMoCzIwLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuQ29uZmlnTWFwLkxhYmVsc0VudHJ5EjwKBGRhdGEYCyADKAsyLi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkNvbmZpZ01hcC5EYXRhRW50cnkSSQoLYmluYXJ5X2RhdGEYDCADKAsyNC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkNvbmZpZ01hcC5CaW5hcnlEYXRhRW50cnkSEQoJaW1tdXRhYmxlGA0gASgIEi8KCmNyZWF0ZWRfYXQYyQEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBotCgtMYWJlbHNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBGisKCURhdGFFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBGjEKD0JpbmFyeURhdGFFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAw6AjgBIswDCgZTZWNyZXQSDAoEbmFtZRgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSPQoGbGFiZWxzGAMgAygLMi0ub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5TZWNyZXQuTGFiZWxzRW50cnkSOQoEZGF0YRgLIAMoCzIrLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuU2VjcmV0LkRhdGFFbnRyeRIMCgR0eXBlGAwgASgJEkYKC3N0cmluZ19kYXRhGA0gAygLMjEub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5TZWNyZXQuU3RyaW5nRGF0YUVudHJ5EhEKCWltbXV0YWJsZRgOIAEoCBIvCgpjcmVhdGVkX2F0GMkBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARorCglEYXRhRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgMOgI4ARoxCg9TdHJpbmdEYXRhRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASIuChdMaXN0QXBwbGljYXRpb25zUmVxdWVzdBINCgVzY29wZRgBIAEoCUoECAIQAyJqChhMaXN0QXBwbGljYXRpb25zUmVzcG9uc2USPAoMYXBwbGljYXRpb25zGAEgAygLMiYub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbhIQCghob3N0bmFtZRgCIAEoCSJNChVHZXRBcHBsaWNhdGlvblJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAlKBAgCEAMiXwoZUmVzdGFydEFwcGxpY2F0aW9uUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRIMCgR0eXBlGAUgASgJSgQIAhADIm8KF1NjYWxlQXBwbGljYXRpb25SZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEgwKBHR5cGUYBSABKAkSEAoIcmVwbGljYXMYCyABKAVKBAgCEAMiUwobRGVsZXRlQXBwbGljYXRpb25Qb2RSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJSgQIAhADIpEBChBXYXRjaExvZ3NSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIQCghwb2RfbmFtZRgEIAEoCRIWCg5jb250YWluZXJfbmFtZRgFIAEoCRIrCghkdXJhdGlvbhgGIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbkoECAIQAyIgChFXYXRjaExvZ3NSZXNwb25zZRILCgNsb2cYASABKAkidgoRRXhlY3V0ZVRUWVJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEhAKCHBvZF9uYW1lGAQgASgJEhYKDmNvbnRhaW5lcl9uYW1lGAUgASgJEg8KB2NvbW1hbmQYBiADKAlKBAgCEAMiOAoSRXhlY3V0ZVRUWVJlc3BvbnNlEhIKCnNlc3Npb25faWQYASABKAkSDgoGc3Rkb3V0GAIgASgMIjQKD1dyaXRlVFRZUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJEg0KBXN0ZGluGAIgASgMIioKE0xpc3RSZWxlYXNlc1JlcXVlc3QSDQoFc2NvcGUYASABKAlKBAgCEAMiWAoUTGlzdFJlbGVhc2VzUmVzcG9uc2USQAoIcmVsZWFzZXMYASADKAsyLi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkFwcGxpY2F0aW9uLlJlbGVhc2UiiwIKFENyZWF0ZVJlbGVhc2VSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEg8KB2RyeV9ydW4YBSABKAgSEQoJY2hhcnRfcmVmGAsgASgJEhMKC3ZhbHVlc195YW1sGAwgASgJElIKCnZhbHVlc19tYXAYDSADKAsyPi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkNyZWF0ZVJlbGVhc2VSZXF1ZXN0LlZhbHVlc01hcEVudHJ5GjAKDlZhbHVlc01hcEVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAFKBAgCEAMihQEKFFVwZGF0ZVJlbGVhc2VSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEg8KB2RyeV9ydW4YBSABKAgSEQoJY2hhcnRfcmVmGAsgASgJEhMKC3ZhbHVlc195YW1sGAwgASgJSgQIAhADIl0KFERlbGV0ZVJlbGVhc2VSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEg8KB2RyeV9ydW4YBSABKAhKBAgCEAMiXwoWUm9sbGJhY2tSZWxlYXNlUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRIPCgdkcnlfcnVuGAUgASgISgQIAhADIhMKEUxpc3RDaGFydHNSZXF1ZXN0IlIKEkxpc3RDaGFydHNSZXNwb25zZRI8CgZjaGFydHMYASADKAsyLC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkFwcGxpY2F0aW9uLkNoYXJ0Ih8KD0dldENoYXJ0UmVxdWVzdBIMCgRuYW1lGAEgASgJIiwKF0dldENoYXJ0TWV0YWRhdGFSZXF1ZXN0EhEKCWNoYXJ0X3JlZhgBIAEoCSI5ChVMaXN0Q29uZmlnTWFwc1JlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJIlMKFkxpc3RDb25maWdNYXBzUmVzcG9uc2USOQoLY29uZmlnX21hcHMYASADKAsyJC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkNvbmZpZ01hcCI2ChJMaXN0U2VjcmV0c1JlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJIkkKE0xpc3RTZWNyZXRzUmVzcG9uc2USMgoHc2VjcmV0cxgBIAMoCzIhLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuU2VjcmV0IjAKGUxpc3RTdG9yYWdlQ2xhc3Nlc1JlcXVlc3QSDQoFc2NvcGUYASABKAlKBAgCEAMiLAoVTGlzdE5hbWVzcGFjZXNSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJSgQIAhADIlIKFkxpc3ROYW1lc3BhY2VzUmVzcG9uc2USOAoKbmFtZXNwYWNlcxgBIAMoCzIkLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuTmFtZXNwYWNlIl4KGkxpc3RTdG9yYWdlQ2xhc3Nlc1Jlc3BvbnNlEkAKD3N0b3JhZ2VfY2xhc3NlcxgBIAMoCzInLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuU3RvcmFnZUNsYXNzIisKElVwbG9hZENoYXJ0UmVxdWVzdBIVCg1jaGFydF9jb250ZW50GAEgASgMMoQWChJBcHBsaWNhdGlvblNlcnZpY2USlwEKEExpc3RBcHBsaWNhdGlvbnMSMi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkxpc3RBcHBsaWNhdGlvbnNSZXF1ZXN0GjMub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5MaXN0QXBwbGljYXRpb25zUmVzcG9uc2UiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkEoYBCg5HZXRBcHBsaWNhdGlvbhIwLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuR2V0QXBwbGljYXRpb25SZXF1ZXN0GiYub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbiIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQSfgoSUmVzdGFydEFwcGxpY2F0aW9uEjQub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5SZXN0YXJ0QXBwbGljYXRpb25SZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhqK39UdFQoTYXBwbGljYXRpb24tZW5hYmxlZBJ6ChBTY2FsZUFwcGxpY2F0aW9uEjIub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5TY2FsZUFwcGxpY2F0aW9uUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQSggEKFERlbGV0ZUFwcGxpY2F0aW9uUG9kEjYub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5EZWxldGVBcHBsaWNhdGlvblBvZFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkEoQBCglXYXRjaExvZ3MSKy5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLldhdGNoTG9nc1JlcXVlc3QaLC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLldhdGNoTG9nc1Jlc3BvbnNlIhqK39UdFQoTYXBwbGljYXRpb24tZW5hYmxlZDABEocBCgpFeGVjdXRlVFRZEiwub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5FeGVjdXRlVFRZUmVxdWVzdBotLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuRXhlY3V0ZVRUWVJlc3BvbnNlIhqK39UdFQoTYXBwbGljYXRpb24tZW5hYmxlZDABEmoKCFdyaXRlVFRZEioub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5Xcml0ZVRUWVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkEosBCgxMaXN0UmVsZWFzZXMSLi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkxpc3RSZWxlYXNlc1JlcXVlc3QaLy5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkxpc3RSZWxlYXNlc1Jlc3BvbnNlIhqK39UdFQoTYXBwbGljYXRpb24tZW5hYmxlZBKMAQoNQ3JlYXRlUmVsZWFzZRIvLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuQ3JlYXRlUmVsZWFzZVJlcXVlc3QaLi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkFwcGxpY2F0aW9uLlJlbGVhc2UiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkEowBCg1VcGRhdGVSZWxlYXNlEi8ub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5VcGRhdGVSZWxlYXNlUmVxdWVzdBouLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuQXBwbGljYXRpb24uUmVsZWFzZSIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQSdAoNRGVsZXRlUmVsZWFzZRIvLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuRGVsZXRlUmVsZWFzZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkEngKD1JvbGxiYWNrUmVsZWFzZRIxLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuUm9sbGJhY2tSZWxlYXNlUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQShQEKCkxpc3RDaGFydHMSLC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkxpc3RDaGFydHNSZXF1ZXN0Gi0ub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5MaXN0Q2hhcnRzUmVzcG9uc2UiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkEoABCghHZXRDaGFydBIqLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuR2V0Q2hhcnRSZXF1ZXN0Giwub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5DaGFydCIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQSmQEKEEdldENoYXJ0TWV0YWRhdGESMi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkdldENoYXJ0TWV0YWRhdGFSZXF1ZXN0GjUub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5DaGFydC5NZXRhZGF0YSIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQScAoLVXBsb2FkQ2hhcnQSLS5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLlVwbG9hZENoYXJ0UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQSkQEKDkxpc3RDb25maWdNYXBzEjAub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5MaXN0Q29uZmlnTWFwc1JlcXVlc3QaMS5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkxpc3RDb25maWdNYXBzUmVzcG9uc2UiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkEogBCgtMaXN0U2VjcmV0cxItLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuTGlzdFNlY3JldHNSZXF1ZXN0Gi4ub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5MaXN0U2VjcmV0c1Jlc3BvbnNlIhqK39UdFQoTYXBwbGljYXRpb24tZW5hYmxlZBJ1Cg5MaXN0TmFtZXNwYWNlcxIwLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuTGlzdE5hbWVzcGFjZXNSZXF1ZXN0GjEub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5MaXN0TmFtZXNwYWNlc1Jlc3BvbnNlEoEBChJMaXN0U3RvcmFnZUNsYXNzZXMSNC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkxpc3RTdG9yYWdlQ2xhc3Nlc1JlcXVlc3QaNS5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkxpc3RTdG9yYWdlQ2xhc3Nlc1Jlc3BvbnNlQjhaNmdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9hcHBsaWNhdGlvbi92MTtwYmIIZWRpdGlvbnNw6Ac", [file_api_annotations, file_google_protobuf_duration, file_google_protobuf_empty, file_google_protobuf_timestamp, file_google_protobuf_struct]);
+  fileDesc("CiRhcGkvYXBwbGljYXRpb24vdjEvYXBwbGljYXRpb24ucHJvdG8SGW90dGVyc2NhbGUuYXBwbGljYXRpb24udjEiagoHUmVsZWFzZRIRCgluYW1lc3BhY2UYASABKAkSDAoEbmFtZRgCIAEoCRIQCghyZXZpc2lvbhgDIAEoBRIsCgVjaGFydBgLIAEoCzIdLm90dGVyc2NhbGUucmVnaXN0cnkudjEuQ2hhcnQiugEKCU5hbWVzcGFjZRIMCgRuYW1lGAEgASgJEkAKBmxhYmVscxgCIAMoCzIwLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuTmFtZXNwYWNlLkxhYmVsc0VudHJ5Ei4KCmNyZWF0ZWRfYXQYCyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wGi0KC0xhYmVsc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEivQsKC0FwcGxpY2F0aW9uEgwKBHR5cGUYASABKAkSDAoEbmFtZRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSQgoGbGFiZWxzGAQgAygLMjIub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5MYWJlbHNFbnRyeRIQCghyZXBsaWNhcxgFIAEoBRIRCgloZWFsdGhpZXMYCyABKAUSRAoKY29udGFpbmVycxgfIAMoCzIwLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuQXBwbGljYXRpb24uQ29udGFpbmVyEkAKCHNlcnZpY2VzGGUgAygLMi4ub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5TZXJ2aWNlEjgKBHBvZHMYZiADKAsyKi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkFwcGxpY2F0aW9uLlBvZBJeChhwZXJzaXN0ZW50X3ZvbHVtZV9jbGFpbXMYZyADKAsyPC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkFwcGxpY2F0aW9uLlBlcnNpc3RlbnRWb2x1bWVDbGFpbRIvCgpjcmVhdGVkX2F0GMkBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAasAEKCUNvbmRpdGlvbhIMCgR0eXBlGAEgASgJEg4KBnN0YXR1cxgCIAEoCRIOCgZyZWFzb24YAyABKAkSDwoHbWVzc2FnZRgEIAEoCRIuCglwcm9iZWRfYXQYyQEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI0Cg90cmFuc2l0aW9uZWRfYXQYygEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBo6CglDb250YWluZXISEgoKaW1hZ2VfbmFtZRgBIAEoCRIZChFpbWFnZV9wdWxsX3BvbGljeRgCIAEoCRqMAgoHU2VydmljZRIMCgRuYW1lGAEgASgJEgwKBHR5cGUYAiABKAkSEgoKY2x1c3Rlcl9pcBgDIAEoCRJCCgVwb3J0cxgLIAMoCzIzLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuQXBwbGljYXRpb24uU2VydmljZS5Qb3J0Ei8KCmNyZWF0ZWRfYXQYyQEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBpcCgRQb3J0EgwKBHBvcnQYASABKAUSEQoJbm9kZV9wb3J0GAIgASgFEgwKBG5hbWUYAyABKAkSEAoIcHJvdG9jb2wYBCABKAkSEwoLdGFyZ2V0X3BvcnQYCyABKAkavgEKA1BvZBIMCgRuYW1lGAEgASgJEg0KBXBoYXNlGAIgASgJEg0KBXJlYWR5GAMgASgJEhAKCHJlc3RhcnRzGAQgASgJEkgKDmxhc3RfY29uZGl0aW9uGAsgASgLMjAub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbi5Db25kaXRpb24SLwoKY3JlYXRlZF9hdBjJASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wGs4BChVQZXJzaXN0ZW50Vm9sdW1lQ2xhaW0SDAoEbmFtZRgBIAEoCRIOCgZzdGF0dXMYAiABKAkSFAoMYWNjZXNzX21vZGVzGAMgAygJEhAKCGNhcGFjaXR5GAQgASgJEj4KDXN0b3JhZ2VfY2xhc3MYCyABKAsyJy5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLlN0b3JhZ2VDbGFzcxIvCgpjcmVhdGVkX2F0GMkBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4AUoECBUQFiKXAgoMU3RvcmFnZUNsYXNzEgwKBG5hbWUYASABKAkSEwoLcHJvdmlzaW9uZXIYAiABKAkSFgoOcmVjbGFpbV9wb2xpY3kYAyABKAkSGwoTdm9sdW1lX2JpbmRpbmdfbW9kZRgEIAEoCRJLCgpwYXJhbWV0ZXJzGAUgAygLMjcub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5TdG9yYWdlQ2xhc3MuUGFyYW1ldGVyc0VudHJ5Ei8KCmNyZWF0ZWRfYXQYyQEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBoxCg9QYXJhbWV0ZXJzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASLKAwoJQ29uZmlnTWFwEgwKBG5hbWUYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEkAKBmxhYmVscxgDIAMoCzIwLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuQ29uZmlnTWFwLkxhYmVsc0VudHJ5EjwKBGRhdGEYCyADKAsyLi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkNvbmZpZ01hcC5EYXRhRW50cnkSSQoLYmluYXJ5X2RhdGEYDCADKAsyNC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkNvbmZpZ01hcC5CaW5hcnlEYXRhRW50cnkSEQoJaW1tdXRhYmxlGA0gASgIEi8KCmNyZWF0ZWRfYXQYyQEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBotCgtMYWJlbHNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBGisKCURhdGFFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBGjEKD0JpbmFyeURhdGFFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAw6AjgBIswDCgZTZWNyZXQSDAoEbmFtZRgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSPQoGbGFiZWxzGAMgAygLMi0ub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5TZWNyZXQuTGFiZWxzRW50cnkSOQoEZGF0YRgLIAMoCzIrLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuU2VjcmV0LkRhdGFFbnRyeRIMCgR0eXBlGAwgASgJEkYKC3N0cmluZ19kYXRhGA0gAygLMjEub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5TZWNyZXQuU3RyaW5nRGF0YUVudHJ5EhEKCWltbXV0YWJsZRgOIAEoCBIvCgpjcmVhdGVkX2F0GMkBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARorCglEYXRhRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgMOgI4ARoxCg9TdHJpbmdEYXRhRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASIuChdMaXN0QXBwbGljYXRpb25zUmVxdWVzdBINCgVzY29wZRgBIAEoCUoECAIQAyJqChhMaXN0QXBwbGljYXRpb25zUmVzcG9uc2USPAoMYXBwbGljYXRpb25zGAEgAygLMiYub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5BcHBsaWNhdGlvbhIQCghob3N0bmFtZRgCIAEoCSJNChVHZXRBcHBsaWNhdGlvblJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAlKBAgCEAMiXwoZUmVzdGFydEFwcGxpY2F0aW9uUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRIMCgR0eXBlGAUgASgJSgQIAhADIm8KF1NjYWxlQXBwbGljYXRpb25SZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEgwKBHR5cGUYBSABKAkSEAoIcmVwbGljYXMYCyABKAVKBAgCEAMiUwobRGVsZXRlQXBwbGljYXRpb25Qb2RSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJSgQIAhADIpEBChBXYXRjaExvZ3NSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIQCghwb2RfbmFtZRgEIAEoCRIWCg5jb250YWluZXJfbmFtZRgFIAEoCRIrCghkdXJhdGlvbhgGIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbkoECAIQAyIgChFXYXRjaExvZ3NSZXNwb25zZRILCgNsb2cYASABKAkidgoRRXhlY3V0ZVRUWVJlcXVlc3QSDQoFc2NvcGUYASABKAkSEQoJbmFtZXNwYWNlGAMgASgJEhAKCHBvZF9uYW1lGAQgASgJEhYKDmNvbnRhaW5lcl9uYW1lGAUgASgJEg8KB2NvbW1hbmQYBiADKAlKBAgCEAMiOAoSRXhlY3V0ZVRUWVJlc3BvbnNlEhIKCnNlc3Npb25faWQYASABKAkSDgoGc3Rkb3V0GAIgASgMIjQKD1dyaXRlVFRZUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJEg0KBXN0ZGluGAIgASgMIioKE0xpc3RSZWxlYXNlc1JlcXVlc3QSDQoFc2NvcGUYASABKAlKBAgCEAMiTAoUTGlzdFJlbGVhc2VzUmVzcG9uc2USNAoIcmVsZWFzZXMYASADKAsyIi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLlJlbGVhc2UiiwIKFENyZWF0ZVJlbGVhc2VSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEg8KB2RyeV9ydW4YBSABKAgSEQoJY2hhcnRfcmVmGAsgASgJEhMKC3ZhbHVlc195YW1sGAwgASgJElIKCnZhbHVlc19tYXAYDSADKAsyPi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkNyZWF0ZVJlbGVhc2VSZXF1ZXN0LlZhbHVlc01hcEVudHJ5GjAKDlZhbHVlc01hcEVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAFKBAgCEAMihQEKFFVwZGF0ZVJlbGVhc2VSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEg8KB2RyeV9ydW4YBSABKAgSEQoJY2hhcnRfcmVmGAsgASgJEhMKC3ZhbHVlc195YW1sGAwgASgJSgQIAhADIl0KFERlbGV0ZVJlbGVhc2VSZXF1ZXN0Eg0KBXNjb3BlGAEgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEg8KB2RyeV9ydW4YBSABKAhKBAgCEAMiXwoWUm9sbGJhY2tSZWxlYXNlUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRIPCgdkcnlfcnVuGAUgASgISgQIAhADIjkKFUxpc3RDb25maWdNYXBzUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkiUwoWTGlzdENvbmZpZ01hcHNSZXNwb25zZRI5Cgtjb25maWdfbWFwcxgBIAMoCzIkLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuQ29uZmlnTWFwIjYKEkxpc3RTZWNyZXRzUmVxdWVzdBINCgVzY29wZRgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkiSQoTTGlzdFNlY3JldHNSZXNwb25zZRIyCgdzZWNyZXRzGAEgAygLMiEub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5TZWNyZXQiMAoZTGlzdFN0b3JhZ2VDbGFzc2VzUmVxdWVzdBINCgVzY29wZRgBIAEoCUoECAIQAyIsChVMaXN0TmFtZXNwYWNlc1JlcXVlc3QSDQoFc2NvcGUYASABKAlKBAgCEAMiUgoWTGlzdE5hbWVzcGFjZXNSZXNwb25zZRI4CgpuYW1lc3BhY2VzGAEgAygLMiQub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5OYW1lc3BhY2UiXgoaTGlzdFN0b3JhZ2VDbGFzc2VzUmVzcG9uc2USQAoPc3RvcmFnZV9jbGFzc2VzGAEgAygLMicub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5TdG9yYWdlQ2xhc3My0xEKEkFwcGxpY2F0aW9uU2VydmljZRKXAQoQTGlzdEFwcGxpY2F0aW9ucxIyLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuTGlzdEFwcGxpY2F0aW9uc1JlcXVlc3QaMy5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkxpc3RBcHBsaWNhdGlvbnNSZXNwb25zZSIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQShgEKDkdldEFwcGxpY2F0aW9uEjAub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5HZXRBcHBsaWNhdGlvblJlcXVlc3QaJi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkFwcGxpY2F0aW9uIhqK39UdFQoTYXBwbGljYXRpb24tZW5hYmxlZBJ+ChJSZXN0YXJ0QXBwbGljYXRpb24SNC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLlJlc3RhcnRBcHBsaWNhdGlvblJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkEnoKEFNjYWxlQXBwbGljYXRpb24SMi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLlNjYWxlQXBwbGljYXRpb25SZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhqK39UdFQoTYXBwbGljYXRpb24tZW5hYmxlZBKCAQoURGVsZXRlQXBwbGljYXRpb25Qb2QSNi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkRlbGV0ZUFwcGxpY2F0aW9uUG9kUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQShAEKCVdhdGNoTG9ncxIrLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuV2F0Y2hMb2dzUmVxdWVzdBosLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuV2F0Y2hMb2dzUmVzcG9uc2UiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkMAEShwEKCkV4ZWN1dGVUVFkSLC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkV4ZWN1dGVUVFlSZXF1ZXN0Gi0ub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5FeGVjdXRlVFRZUmVzcG9uc2UiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkMAESagoIV3JpdGVUVFkSKi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLldyaXRlVFRZUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQSiwEKDExpc3RSZWxlYXNlcxIuLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuTGlzdFJlbGVhc2VzUmVxdWVzdBovLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuTGlzdFJlbGVhc2VzUmVzcG9uc2UiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkEoABCg1DcmVhdGVSZWxlYXNlEi8ub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5DcmVhdGVSZWxlYXNlUmVxdWVzdBoiLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuUmVsZWFzZSIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQSgAEKDVVwZGF0ZVJlbGVhc2USLy5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLlVwZGF0ZVJlbGVhc2VSZXF1ZXN0GiIub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5SZWxlYXNlIhqK39UdFQoTYXBwbGljYXRpb24tZW5hYmxlZBJ0Cg1EZWxldGVSZWxlYXNlEi8ub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5EZWxldGVSZWxlYXNlUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQSeAoPUm9sbGJhY2tSZWxlYXNlEjEub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5Sb2xsYmFja1JlbGVhc2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IhqK39UdFQoTYXBwbGljYXRpb24tZW5hYmxlZBKRAQoOTGlzdENvbmZpZ01hcHMSMC5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkxpc3RDb25maWdNYXBzUmVxdWVzdBoxLm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuTGlzdENvbmZpZ01hcHNSZXNwb25zZSIait/VHRUKE2FwcGxpY2F0aW9uLWVuYWJsZWQSiAEKC0xpc3RTZWNyZXRzEi0ub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5MaXN0U2VjcmV0c1JlcXVlc3QaLi5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkxpc3RTZWNyZXRzUmVzcG9uc2UiGorf1R0VChNhcHBsaWNhdGlvbi1lbmFibGVkEnUKDkxpc3ROYW1lc3BhY2VzEjAub3R0ZXJzY2FsZS5hcHBsaWNhdGlvbi52MS5MaXN0TmFtZXNwYWNlc1JlcXVlc3QaMS5vdHRlcnNjYWxlLmFwcGxpY2F0aW9uLnYxLkxpc3ROYW1lc3BhY2VzUmVzcG9uc2USgQEKEkxpc3RTdG9yYWdlQ2xhc3NlcxI0Lm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuTGlzdFN0b3JhZ2VDbGFzc2VzUmVxdWVzdBo1Lm90dGVyc2NhbGUuYXBwbGljYXRpb24udjEuTGlzdFN0b3JhZ2VDbGFzc2VzUmVzcG9uc2VCOFo2Z2l0aHViLmNvbS9vdHRlcnNjYWxlL290dGVyc2NhbGUvYXBpL2FwcGxpY2F0aW9uL3YxO3BiYghlZGl0aW9uc3DoBw", [file_api_annotations, file_api_registry_v1_registry, file_google_protobuf_duration, file_google_protobuf_empty, file_google_protobuf_timestamp]);
+
+/**
+ * @generated from message otterscale.application.v1.Release
+ */
+export type Release = Message<"otterscale.application.v1.Release"> & {
+  /**
+   * @generated from field: string namespace = 1;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
+
+  /**
+   * @generated from field: int32 revision = 3;
+   */
+  revision: number;
+
+  /**
+   * @generated from field: otterscale.registry.v1.Chart chart = 11;
+   */
+  chart?: Chart;
+};
+
+/**
+ * Describes the message otterscale.application.v1.Release.
+ * Use `create(ReleaseSchema)` to create a new message.
+ */
+export const ReleaseSchema: GenMessage<Release> = /*@__PURE__*/
+  messageDesc(file_api_application_v1_application, 0);
 
 /**
  * @generated from message otterscale.application.v1.Namespace
@@ -40,7 +74,7 @@ export type Namespace = Message<"otterscale.application.v1.Namespace"> & {
  * Use `create(NamespaceSchema)` to create a new message.
  */
 export const NamespaceSchema: GenMessage<Namespace> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 0);
+  messageDesc(file_api_application_v1_application, 1);
 
 /**
  * @generated from message otterscale.application.v1.Application
@@ -77,11 +111,6 @@ export type Application = Message<"otterscale.application.v1.Application"> & {
   healthies: number;
 
   /**
-   * @generated from field: otterscale.application.v1.Application.Chart.Metadata metadata = 21;
-   */
-  metadata?: Application_Chart_Metadata;
-
-  /**
    * @generated from field: repeated otterscale.application.v1.Application.Container containers = 31;
    */
   containers: Application_Container[];
@@ -112,263 +141,7 @@ export type Application = Message<"otterscale.application.v1.Application"> & {
  * Use `create(ApplicationSchema)` to create a new message.
  */
 export const ApplicationSchema: GenMessage<Application> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1);
-
-/**
- * @generated from message otterscale.application.v1.Application.Chart
- */
-export type Application_Chart = Message<"otterscale.application.v1.Application.Chart"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
-
-  /**
-   * @generated from field: string icon = 2;
-   */
-  icon: string;
-
-  /**
-   * @generated from field: string description = 3;
-   */
-  description: string;
-
-  /**
-   * @generated from field: bool deprecated = 4;
-   */
-  deprecated: boolean;
-
-  /**
-   * @generated from field: string tags = 5;
-   */
-  tags: string;
-
-  /**
-   * @generated from field: repeated string keywords = 6;
-   */
-  keywords: string[];
-
-  /**
-   * @generated from field: string license = 7;
-   */
-  license: string;
-
-  /**
-   * @generated from field: bool verified = 8;
-   */
-  verified: boolean;
-
-  /**
-   * @generated from field: string home = 11;
-   */
-  home: string;
-
-  /**
-   * @generated from field: repeated string sources = 12;
-   */
-  sources: string[];
-
-  /**
-   * @generated from field: repeated otterscale.application.v1.Application.Chart.Maintainer maintainers = 21;
-   */
-  maintainers: Application_Chart_Maintainer[];
-
-  /**
-   * @generated from field: repeated otterscale.application.v1.Application.Chart.Dependency dependencies = 31;
-   */
-  dependencies: Application_Chart_Dependency[];
-
-  /**
-   * @generated from field: repeated otterscale.application.v1.Application.Chart.Version versions = 41;
-   */
-  versions: Application_Chart_Version[];
-};
-
-/**
- * Describes the message otterscale.application.v1.Application.Chart.
- * Use `create(Application_ChartSchema)` to create a new message.
- */
-export const Application_ChartSchema: GenMessage<Application_Chart> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 0);
-
-/**
- * @generated from message otterscale.application.v1.Application.Chart.Customization
- */
-export type Application_Chart_Customization = Message<"otterscale.application.v1.Application.Chart.Customization"> & {
-  /**
-   * @generated from field: string type = 1;
-   */
-  type: string;
-
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
-
-  /**
-   * @generated from field: string verison = 3;
-   */
-  verison: string;
-
-  /**
-   * @generated from field: google.protobuf.Struct values = 11;
-   */
-  values?: JsonObject;
-};
-
-/**
- * Describes the message otterscale.application.v1.Application.Chart.Customization.
- * Use `create(Application_Chart_CustomizationSchema)` to create a new message.
- */
-export const Application_Chart_CustomizationSchema: GenMessage<Application_Chart_Customization> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 0, 0);
-
-/**
- * @generated from message otterscale.application.v1.Application.Chart.Metadata
- */
-export type Application_Chart_Metadata = Message<"otterscale.application.v1.Application.Chart.Metadata"> & {
-  /**
-   * @generated from field: string values_yaml = 1;
-   */
-  valuesYaml: string;
-
-  /**
-   * @generated from field: string readme_md = 2;
-   */
-  readmeMd: string;
-
-  /**
-   * create only
-   *
-   * @generated from field: otterscale.application.v1.Application.Chart.Customization customization = 11;
-   */
-  customization?: Application_Chart_Customization;
-};
-
-/**
- * Describes the message otterscale.application.v1.Application.Chart.Metadata.
- * Use `create(Application_Chart_MetadataSchema)` to create a new message.
- */
-export const Application_Chart_MetadataSchema: GenMessage<Application_Chart_Metadata> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 0, 1);
-
-/**
- * @generated from message otterscale.application.v1.Application.Chart.Maintainer
- */
-export type Application_Chart_Maintainer = Message<"otterscale.application.v1.Application.Chart.Maintainer"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
-
-  /**
-   * @generated from field: string email = 2;
-   */
-  email: string;
-
-  /**
-   * @generated from field: string url = 3;
-   */
-  url: string;
-};
-
-/**
- * Describes the message otterscale.application.v1.Application.Chart.Maintainer.
- * Use `create(Application_Chart_MaintainerSchema)` to create a new message.
- */
-export const Application_Chart_MaintainerSchema: GenMessage<Application_Chart_Maintainer> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 0, 2);
-
-/**
- * @generated from message otterscale.application.v1.Application.Chart.Dependency
- */
-export type Application_Chart_Dependency = Message<"otterscale.application.v1.Application.Chart.Dependency"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
-
-  /**
-   * @generated from field: string version = 2;
-   */
-  version: string;
-
-  /**
-   * @generated from field: string condition = 3;
-   */
-  condition: string;
-};
-
-/**
- * Describes the message otterscale.application.v1.Application.Chart.Dependency.
- * Use `create(Application_Chart_DependencySchema)` to create a new message.
- */
-export const Application_Chart_DependencySchema: GenMessage<Application_Chart_Dependency> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 0, 3);
-
-/**
- * @generated from message otterscale.application.v1.Application.Chart.Version
- */
-export type Application_Chart_Version = Message<"otterscale.application.v1.Application.Chart.Version"> & {
-  /**
-   * @generated from field: string chart_version = 1;
-   */
-  chartVersion: string;
-
-  /**
-   * @generated from field: string chart_ref = 2;
-   */
-  chartRef: string;
-
-  /**
-   * @generated from field: string application_version = 3;
-   */
-  applicationVersion: string;
-};
-
-/**
- * Describes the message otterscale.application.v1.Application.Chart.Version.
- * Use `create(Application_Chart_VersionSchema)` to create a new message.
- */
-export const Application_Chart_VersionSchema: GenMessage<Application_Chart_Version> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 0, 4);
-
-/**
- * @generated from message otterscale.application.v1.Application.Release
- */
-export type Application_Release = Message<"otterscale.application.v1.Application.Release"> & {
-  /**
-   * @generated from field: string namespace = 4;
-   */
-  namespace: string;
-
-  /**
-   * @generated from field: string name = 5;
-   */
-  name: string;
-
-  /**
-   * @generated from field: int32 revision = 6;
-   */
-  revision: number;
-
-  /**
-   * @generated from field: string chart_name = 11;
-   */
-  chartName: string;
-
-  /**
-   * @generated from field: otterscale.application.v1.Application.Chart.Version version = 12;
-   */
-  version?: Application_Chart_Version;
-};
-
-/**
- * Describes the message otterscale.application.v1.Application.Release.
- * Use `create(Application_ReleaseSchema)` to create a new message.
- */
-export const Application_ReleaseSchema: GenMessage<Application_Release> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 1);
+  messageDesc(file_api_application_v1_application, 2);
 
 /**
  * @generated from message otterscale.application.v1.Application.Condition
@@ -410,7 +183,7 @@ export type Application_Condition = Message<"otterscale.application.v1.Applicati
  * Use `create(Application_ConditionSchema)` to create a new message.
  */
 export const Application_ConditionSchema: GenMessage<Application_Condition> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 2);
+  messageDesc(file_api_application_v1_application, 2, 0);
 
 /**
  * @generated from message otterscale.application.v1.Application.Container
@@ -432,7 +205,7 @@ export type Application_Container = Message<"otterscale.application.v1.Applicati
  * Use `create(Application_ContainerSchema)` to create a new message.
  */
 export const Application_ContainerSchema: GenMessage<Application_Container> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 3);
+  messageDesc(file_api_application_v1_application, 2, 1);
 
 /**
  * @generated from message otterscale.application.v1.Application.Service
@@ -469,7 +242,7 @@ export type Application_Service = Message<"otterscale.application.v1.Application
  * Use `create(Application_ServiceSchema)` to create a new message.
  */
 export const Application_ServiceSchema: GenMessage<Application_Service> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 4);
+  messageDesc(file_api_application_v1_application, 2, 2);
 
 /**
  * @generated from message otterscale.application.v1.Application.Service.Port
@@ -506,7 +279,7 @@ export type Application_Service_Port = Message<"otterscale.application.v1.Applic
  * Use `create(Application_Service_PortSchema)` to create a new message.
  */
 export const Application_Service_PortSchema: GenMessage<Application_Service_Port> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 4, 0);
+  messageDesc(file_api_application_v1_application, 2, 2, 0);
 
 /**
  * @generated from message otterscale.application.v1.Application.Pod
@@ -548,7 +321,7 @@ export type Application_Pod = Message<"otterscale.application.v1.Application.Pod
  * Use `create(Application_PodSchema)` to create a new message.
  */
 export const Application_PodSchema: GenMessage<Application_Pod> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 5);
+  messageDesc(file_api_application_v1_application, 2, 3);
 
 /**
  * @generated from message otterscale.application.v1.Application.PersistentVolumeClaim
@@ -590,7 +363,7 @@ export type Application_PersistentVolumeClaim = Message<"otterscale.application.
  * Use `create(Application_PersistentVolumeClaimSchema)` to create a new message.
  */
 export const Application_PersistentVolumeClaimSchema: GenMessage<Application_PersistentVolumeClaim> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 1, 6);
+  messageDesc(file_api_application_v1_application, 2, 4);
 
 /**
  * @generated from message otterscale.application.v1.StorageClass
@@ -632,7 +405,7 @@ export type StorageClass = Message<"otterscale.application.v1.StorageClass"> & {
  * Use `create(StorageClassSchema)` to create a new message.
  */
 export const StorageClassSchema: GenMessage<StorageClass> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 2);
+  messageDesc(file_api_application_v1_application, 3);
 
 /**
  * @generated from message otterscale.application.v1.ConfigMap
@@ -679,7 +452,7 @@ export type ConfigMap = Message<"otterscale.application.v1.ConfigMap"> & {
  * Use `create(ConfigMapSchema)` to create a new message.
  */
 export const ConfigMapSchema: GenMessage<ConfigMap> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 3);
+  messageDesc(file_api_application_v1_application, 4);
 
 /**
  * @generated from message otterscale.application.v1.Secret
@@ -731,7 +504,7 @@ export type Secret = Message<"otterscale.application.v1.Secret"> & {
  * Use `create(SecretSchema)` to create a new message.
  */
 export const SecretSchema: GenMessage<Secret> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 4);
+  messageDesc(file_api_application_v1_application, 5);
 
 /**
  * @generated from message otterscale.application.v1.ListApplicationsRequest
@@ -748,7 +521,7 @@ export type ListApplicationsRequest = Message<"otterscale.application.v1.ListApp
  * Use `create(ListApplicationsRequestSchema)` to create a new message.
  */
 export const ListApplicationsRequestSchema: GenMessage<ListApplicationsRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 5);
+  messageDesc(file_api_application_v1_application, 6);
 
 /**
  * @generated from message otterscale.application.v1.ListApplicationsResponse
@@ -770,7 +543,7 @@ export type ListApplicationsResponse = Message<"otterscale.application.v1.ListAp
  * Use `create(ListApplicationsResponseSchema)` to create a new message.
  */
 export const ListApplicationsResponseSchema: GenMessage<ListApplicationsResponse> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 6);
+  messageDesc(file_api_application_v1_application, 7);
 
 /**
  * @generated from message otterscale.application.v1.GetApplicationRequest
@@ -797,7 +570,7 @@ export type GetApplicationRequest = Message<"otterscale.application.v1.GetApplic
  * Use `create(GetApplicationRequestSchema)` to create a new message.
  */
 export const GetApplicationRequestSchema: GenMessage<GetApplicationRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 7);
+  messageDesc(file_api_application_v1_application, 8);
 
 /**
  * @generated from message otterscale.application.v1.RestartApplicationRequest
@@ -829,7 +602,7 @@ export type RestartApplicationRequest = Message<"otterscale.application.v1.Resta
  * Use `create(RestartApplicationRequestSchema)` to create a new message.
  */
 export const RestartApplicationRequestSchema: GenMessage<RestartApplicationRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 8);
+  messageDesc(file_api_application_v1_application, 9);
 
 /**
  * @generated from message otterscale.application.v1.ScaleApplicationRequest
@@ -866,7 +639,7 @@ export type ScaleApplicationRequest = Message<"otterscale.application.v1.ScaleAp
  * Use `create(ScaleApplicationRequestSchema)` to create a new message.
  */
 export const ScaleApplicationRequestSchema: GenMessage<ScaleApplicationRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 9);
+  messageDesc(file_api_application_v1_application, 10);
 
 /**
  * @generated from message otterscale.application.v1.DeleteApplicationPodRequest
@@ -893,7 +666,7 @@ export type DeleteApplicationPodRequest = Message<"otterscale.application.v1.Del
  * Use `create(DeleteApplicationPodRequestSchema)` to create a new message.
  */
 export const DeleteApplicationPodRequestSchema: GenMessage<DeleteApplicationPodRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 10);
+  messageDesc(file_api_application_v1_application, 11);
 
 /**
  * @generated from message otterscale.application.v1.WatchLogsRequest
@@ -930,7 +703,7 @@ export type WatchLogsRequest = Message<"otterscale.application.v1.WatchLogsReque
  * Use `create(WatchLogsRequestSchema)` to create a new message.
  */
 export const WatchLogsRequestSchema: GenMessage<WatchLogsRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 11);
+  messageDesc(file_api_application_v1_application, 12);
 
 /**
  * @generated from message otterscale.application.v1.WatchLogsResponse
@@ -947,7 +720,7 @@ export type WatchLogsResponse = Message<"otterscale.application.v1.WatchLogsResp
  * Use `create(WatchLogsResponseSchema)` to create a new message.
  */
 export const WatchLogsResponseSchema: GenMessage<WatchLogsResponse> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 12);
+  messageDesc(file_api_application_v1_application, 13);
 
 /**
  * @generated from message otterscale.application.v1.ExecuteTTYRequest
@@ -984,7 +757,7 @@ export type ExecuteTTYRequest = Message<"otterscale.application.v1.ExecuteTTYReq
  * Use `create(ExecuteTTYRequestSchema)` to create a new message.
  */
 export const ExecuteTTYRequestSchema: GenMessage<ExecuteTTYRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 13);
+  messageDesc(file_api_application_v1_application, 14);
 
 /**
  * @generated from message otterscale.application.v1.ExecuteTTYResponse
@@ -1008,7 +781,7 @@ export type ExecuteTTYResponse = Message<"otterscale.application.v1.ExecuteTTYRe
  * Use `create(ExecuteTTYResponseSchema)` to create a new message.
  */
 export const ExecuteTTYResponseSchema: GenMessage<ExecuteTTYResponse> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 14);
+  messageDesc(file_api_application_v1_application, 15);
 
 /**
  * @generated from message otterscale.application.v1.WriteTTYRequest
@@ -1030,7 +803,7 @@ export type WriteTTYRequest = Message<"otterscale.application.v1.WriteTTYRequest
  * Use `create(WriteTTYRequestSchema)` to create a new message.
  */
 export const WriteTTYRequestSchema: GenMessage<WriteTTYRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 15);
+  messageDesc(file_api_application_v1_application, 16);
 
 /**
  * @generated from message otterscale.application.v1.ListReleasesRequest
@@ -1047,16 +820,16 @@ export type ListReleasesRequest = Message<"otterscale.application.v1.ListRelease
  * Use `create(ListReleasesRequestSchema)` to create a new message.
  */
 export const ListReleasesRequestSchema: GenMessage<ListReleasesRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 16);
+  messageDesc(file_api_application_v1_application, 17);
 
 /**
  * @generated from message otterscale.application.v1.ListReleasesResponse
  */
 export type ListReleasesResponse = Message<"otterscale.application.v1.ListReleasesResponse"> & {
   /**
-   * @generated from field: repeated otterscale.application.v1.Application.Release releases = 1;
+   * @generated from field: repeated otterscale.application.v1.Release releases = 1;
    */
-  releases: Application_Release[];
+  releases: Release[];
 };
 
 /**
@@ -1064,7 +837,7 @@ export type ListReleasesResponse = Message<"otterscale.application.v1.ListReleas
  * Use `create(ListReleasesResponseSchema)` to create a new message.
  */
 export const ListReleasesResponseSchema: GenMessage<ListReleasesResponse> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 17);
+  messageDesc(file_api_application_v1_application, 18);
 
 /**
  * @generated from message otterscale.application.v1.CreateReleaseRequest
@@ -1111,7 +884,7 @@ export type CreateReleaseRequest = Message<"otterscale.application.v1.CreateRele
  * Use `create(CreateReleaseRequestSchema)` to create a new message.
  */
 export const CreateReleaseRequestSchema: GenMessage<CreateReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 18);
+  messageDesc(file_api_application_v1_application, 19);
 
 /**
  * @generated from message otterscale.application.v1.UpdateReleaseRequest
@@ -1153,7 +926,7 @@ export type UpdateReleaseRequest = Message<"otterscale.application.v1.UpdateRele
  * Use `create(UpdateReleaseRequestSchema)` to create a new message.
  */
 export const UpdateReleaseRequestSchema: GenMessage<UpdateReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 19);
+  messageDesc(file_api_application_v1_application, 20);
 
 /**
  * @generated from message otterscale.application.v1.DeleteReleaseRequest
@@ -1185,7 +958,7 @@ export type DeleteReleaseRequest = Message<"otterscale.application.v1.DeleteRele
  * Use `create(DeleteReleaseRequestSchema)` to create a new message.
  */
 export const DeleteReleaseRequestSchema: GenMessage<DeleteReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 20);
+  messageDesc(file_api_application_v1_application, 21);
 
 /**
  * @generated from message otterscale.application.v1.RollbackReleaseRequest
@@ -1217,71 +990,7 @@ export type RollbackReleaseRequest = Message<"otterscale.application.v1.Rollback
  * Use `create(RollbackReleaseRequestSchema)` to create a new message.
  */
 export const RollbackReleaseRequestSchema: GenMessage<RollbackReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 21);
-
-/**
- * @generated from message otterscale.application.v1.ListChartsRequest
- */
-export type ListChartsRequest = Message<"otterscale.application.v1.ListChartsRequest"> & {
-};
-
-/**
- * Describes the message otterscale.application.v1.ListChartsRequest.
- * Use `create(ListChartsRequestSchema)` to create a new message.
- */
-export const ListChartsRequestSchema: GenMessage<ListChartsRequest> = /*@__PURE__*/
   messageDesc(file_api_application_v1_application, 22);
-
-/**
- * @generated from message otterscale.application.v1.ListChartsResponse
- */
-export type ListChartsResponse = Message<"otterscale.application.v1.ListChartsResponse"> & {
-  /**
-   * @generated from field: repeated otterscale.application.v1.Application.Chart charts = 1;
-   */
-  charts: Application_Chart[];
-};
-
-/**
- * Describes the message otterscale.application.v1.ListChartsResponse.
- * Use `create(ListChartsResponseSchema)` to create a new message.
- */
-export const ListChartsResponseSchema: GenMessage<ListChartsResponse> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 23);
-
-/**
- * @generated from message otterscale.application.v1.GetChartRequest
- */
-export type GetChartRequest = Message<"otterscale.application.v1.GetChartRequest"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
-};
-
-/**
- * Describes the message otterscale.application.v1.GetChartRequest.
- * Use `create(GetChartRequestSchema)` to create a new message.
- */
-export const GetChartRequestSchema: GenMessage<GetChartRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 24);
-
-/**
- * @generated from message otterscale.application.v1.GetChartMetadataRequest
- */
-export type GetChartMetadataRequest = Message<"otterscale.application.v1.GetChartMetadataRequest"> & {
-  /**
-   * @generated from field: string chart_ref = 1;
-   */
-  chartRef: string;
-};
-
-/**
- * Describes the message otterscale.application.v1.GetChartMetadataRequest.
- * Use `create(GetChartMetadataRequestSchema)` to create a new message.
- */
-export const GetChartMetadataRequestSchema: GenMessage<GetChartMetadataRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 25);
 
 /**
  * @generated from message otterscale.application.v1.ListConfigMapsRequest
@@ -1303,7 +1012,7 @@ export type ListConfigMapsRequest = Message<"otterscale.application.v1.ListConfi
  * Use `create(ListConfigMapsRequestSchema)` to create a new message.
  */
 export const ListConfigMapsRequestSchema: GenMessage<ListConfigMapsRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 26);
+  messageDesc(file_api_application_v1_application, 23);
 
 /**
  * @generated from message otterscale.application.v1.ListConfigMapsResponse
@@ -1320,7 +1029,7 @@ export type ListConfigMapsResponse = Message<"otterscale.application.v1.ListConf
  * Use `create(ListConfigMapsResponseSchema)` to create a new message.
  */
 export const ListConfigMapsResponseSchema: GenMessage<ListConfigMapsResponse> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 27);
+  messageDesc(file_api_application_v1_application, 24);
 
 /**
  * @generated from message otterscale.application.v1.ListSecretsRequest
@@ -1342,7 +1051,7 @@ export type ListSecretsRequest = Message<"otterscale.application.v1.ListSecretsR
  * Use `create(ListSecretsRequestSchema)` to create a new message.
  */
 export const ListSecretsRequestSchema: GenMessage<ListSecretsRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 28);
+  messageDesc(file_api_application_v1_application, 25);
 
 /**
  * @generated from message otterscale.application.v1.ListSecretsResponse
@@ -1359,7 +1068,7 @@ export type ListSecretsResponse = Message<"otterscale.application.v1.ListSecrets
  * Use `create(ListSecretsResponseSchema)` to create a new message.
  */
 export const ListSecretsResponseSchema: GenMessage<ListSecretsResponse> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 29);
+  messageDesc(file_api_application_v1_application, 26);
 
 /**
  * @generated from message otterscale.application.v1.ListStorageClassesRequest
@@ -1376,7 +1085,7 @@ export type ListStorageClassesRequest = Message<"otterscale.application.v1.ListS
  * Use `create(ListStorageClassesRequestSchema)` to create a new message.
  */
 export const ListStorageClassesRequestSchema: GenMessage<ListStorageClassesRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 30);
+  messageDesc(file_api_application_v1_application, 27);
 
 /**
  * @generated from message otterscale.application.v1.ListNamespacesRequest
@@ -1393,7 +1102,7 @@ export type ListNamespacesRequest = Message<"otterscale.application.v1.ListNames
  * Use `create(ListNamespacesRequestSchema)` to create a new message.
  */
 export const ListNamespacesRequestSchema: GenMessage<ListNamespacesRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 31);
+  messageDesc(file_api_application_v1_application, 28);
 
 /**
  * @generated from message otterscale.application.v1.ListNamespacesResponse
@@ -1410,7 +1119,7 @@ export type ListNamespacesResponse = Message<"otterscale.application.v1.ListName
  * Use `create(ListNamespacesResponseSchema)` to create a new message.
  */
 export const ListNamespacesResponseSchema: GenMessage<ListNamespacesResponse> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 32);
+  messageDesc(file_api_application_v1_application, 29);
 
 /**
  * @generated from message otterscale.application.v1.ListStorageClassesResponse
@@ -1427,24 +1136,7 @@ export type ListStorageClassesResponse = Message<"otterscale.application.v1.List
  * Use `create(ListStorageClassesResponseSchema)` to create a new message.
  */
 export const ListStorageClassesResponseSchema: GenMessage<ListStorageClassesResponse> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 33);
-
-/**
- * @generated from message otterscale.application.v1.UploadChartRequest
- */
-export type UploadChartRequest = Message<"otterscale.application.v1.UploadChartRequest"> & {
-  /**
-   * @generated from field: bytes chart_content = 1;
-   */
-  chartContent: Uint8Array;
-};
-
-/**
- * Describes the message otterscale.application.v1.UploadChartRequest.
- * Use `create(UploadChartRequestSchema)` to create a new message.
- */
-export const UploadChartRequestSchema: GenMessage<UploadChartRequest> = /*@__PURE__*/
-  messageDesc(file_api_application_v1_application, 34);
+  messageDesc(file_api_application_v1_application, 30);
 
 /**
  * @generated from service otterscale.application.v1.ApplicationService
@@ -1530,7 +1222,7 @@ export const ApplicationService: GenService<{
   createRelease: {
     methodKind: "unary";
     input: typeof CreateReleaseRequestSchema;
-    output: typeof Application_ReleaseSchema;
+    output: typeof ReleaseSchema;
   },
   /**
    * @generated from rpc otterscale.application.v1.ApplicationService.UpdateRelease
@@ -1538,7 +1230,7 @@ export const ApplicationService: GenService<{
   updateRelease: {
     methodKind: "unary";
     input: typeof UpdateReleaseRequestSchema;
-    output: typeof Application_ReleaseSchema;
+    output: typeof ReleaseSchema;
   },
   /**
    * @generated from rpc otterscale.application.v1.ApplicationService.DeleteRelease
@@ -1554,38 +1246,6 @@ export const ApplicationService: GenService<{
   rollbackRelease: {
     methodKind: "unary";
     input: typeof RollbackReleaseRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.application.v1.ApplicationService.ListCharts
-   */
-  listCharts: {
-    methodKind: "unary";
-    input: typeof ListChartsRequestSchema;
-    output: typeof ListChartsResponseSchema;
-  },
-  /**
-   * @generated from rpc otterscale.application.v1.ApplicationService.GetChart
-   */
-  getChart: {
-    methodKind: "unary";
-    input: typeof GetChartRequestSchema;
-    output: typeof Application_ChartSchema;
-  },
-  /**
-   * @generated from rpc otterscale.application.v1.ApplicationService.GetChartMetadata
-   */
-  getChartMetadata: {
-    methodKind: "unary";
-    input: typeof GetChartMetadataRequestSchema;
-    output: typeof Application_Chart_MetadataSchema;
-  },
-  /**
-   * @generated from rpc otterscale.application.v1.ApplicationService.UploadChart
-   */
-  uploadChart: {
-    methodKind: "unary";
-    input: typeof UploadChartRequestSchema;
     output: typeof EmptySchema;
   },
   /**

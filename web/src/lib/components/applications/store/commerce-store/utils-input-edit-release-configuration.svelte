@@ -12,10 +12,7 @@
 	import { gfmPlugin } from 'svelte-exmarkdown/gfm';
 	import Monaco from 'svelte-monaco';
 
-	import {
-		type Application_Chart_Metadata,
-		ApplicationService
-	} from '$lib/api/application/v1/application_pb';
+	import { type Chart_Information, RegistryService } from '$lib/api/registry/v1/registry_pb';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Resizable from '$lib/components/ui/resizable';
@@ -40,22 +37,22 @@
 	}
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(ApplicationService, transport);
+	const client = createClient(RegistryService, transport);
 
-	const chartMetadataStore = writable<Application_Chart_Metadata>();
-	const chartMetadataLoading = writable(true);
-	async function fetchChartMetadata(chartRef: string) {
+	const chartInformationStore = writable<Chart_Information>();
+	const chartInformationLoading = writable(true);
+	async function fetchChartInformation(chartRef: string) {
 		try {
-			const response = await client.getChartMetadata({
+			const response = await client.getChartInformation({
 				chartRef: chartRef
 			});
-			chartMetadataStore.set(response);
-			values = $chartMetadataStore.valuesYaml;
-			readme = $chartMetadataStore.readmeMd;
+			chartInformationStore.set(response);
+			values = $chartInformationStore.values;
+			readme = $chartInformationStore.readme;
 		} catch (error) {
 			console.error('Error fetching:', error);
 		} finally {
-			chartMetadataLoading.set(false);
+			chartInformationLoading.set(false);
 		}
 	}
 
@@ -74,8 +71,8 @@
 
 	onMount(async () => {
 		try {
-			await fetchChartMetadata(chartRef);
-			values = $chartMetadataStore.valuesYaml;
+			await fetchChartInformation(chartRef);
+			values = $chartInformationStore.values;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -123,7 +120,7 @@
 		</AlertDialog.Header>
 		<Resizable.PaneGroup direction="horizontal">
 			<Resizable.Pane defaultSize={50} class="h-[70vh]">
-				{#if $chartMetadataLoading}
+				{#if $chartInformationLoading}
 					<div class="flex-col space-y-4 pr-4">
 						{#each Array(3)}
 							<Skeleton class="h-[40px] w-full" />

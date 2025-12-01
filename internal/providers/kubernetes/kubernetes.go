@@ -3,29 +3,30 @@ package kubernetes
 import (
 	"context"
 	"encoding/base64"
+	"fmt"
 	"os"
-	"path/filepath"
 	"sync"
 	"time"
 
-	"helm.sh/helm/v3/pkg/cli"
-	"helm.sh/helm/v3/pkg/registry"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
+
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
 
 	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/scope"
 	"github.com/otterscale/otterscale/internal/providers/juju"
 )
 
 type Kubernetes struct {
-	conf           *config.Config
-	juju           *juju.Juju
-	envSettings    *cli.EnvSettings
-	registryClient *registry.Client
+	conf *config.Config
+	juju *juju.Juju
 
 	configs       sync.Map
 	clientsets    sync.Map
@@ -33,25 +34,55 @@ type Kubernetes struct {
 }
 
 func New(conf *config.Config, juju *juju.Juju) (*Kubernetes, error) {
-	opts := []registry.ClientOption{
-		registry.ClientOptEnableCache(true),
+	return &Kubernetes{
+		conf: conf,
+		juju: juju,
+	}, nil
+}
+
+func (m *Kubernetes) Config(scope string) (*rest.Config, error) {
+	if v, ok := m.configs.Load(scope); ok {
+		return v.(*rest.Config), nil
 	}
 
-	registryClient, err := registry.NewClient(opts...)
+	config, err := m.getConfig(scope)
 	if err != nil {
 		return nil, err
 	}
 
-	envSettings := cli.New()
-	envSettings.RepositoryConfig = filepath.Join(os.TempDir(), "helm", "repositories.yaml")
-	envSettings.RepositoryCache = filepath.Join(os.TempDir(), "helm", "repository")
+	m.configs.Store(scope, config)
 
-	return &Kubernetes{
-		conf:           conf,
-		juju:           juju,
-		envSettings:    envSettings,
-		registryClient: registryClient,
-	}, nil
+	return config, nil
+}
+
+func (m *Kubernetes) InternalIP(ctx context.Context, scope string) (string, error) {
+	controlPlanes, err := m.listControlPlanes(ctx, scope)
+	if err != nil {
+		return "", err
+	}
+
+	for i := range controlPlanes {
+		if !isNodeReady(&controlPlanes[i]) {
+			continue
+		}
+
+		if ip := getInternalIP(&controlPlanes[i]); ip != "" {
+			return ip, nil
+		}
+	}
+
+	return "", fmt.Errorf("no control plane node with InternalIP found")
+}
+
+func (m *Kubernetes) GetService(ctx context.Context, scope, namespace, name string) (*corev1.Service, error) {
+	clientset, err := m.clientset(scope)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.GetOptions{}
+
+	return clientset.CoreV1().Services(namespace).Get(ctx, name, opts)
 }
 
 func (m *Kubernetes) newMicroK8sConfig() (*rest.Config, error) {
@@ -124,21 +155,6 @@ func (m *Kubernetes) getConfig(scopeName string) (*rest.Config, error) {
 	return m.newConfig(scopeName)
 }
 
-func (m *Kubernetes) Config(scope string) (*rest.Config, error) {
-	if v, ok := m.configs.Load(scope); ok {
-		return v.(*rest.Config), nil
-	}
-
-	config, err := m.getConfig(scope)
-	if err != nil {
-		return nil, err
-	}
-
-	m.configs.Store(scope, config)
-
-	return config, nil
-}
-
 func (m *Kubernetes) clientset(scope string) (*kubernetes.Clientset, error) {
 	if v, ok := m.clientsets.Load(scope); ok {
 		return v.(*kubernetes.Clientset), nil
@@ -177,4 +193,41 @@ func (m *Kubernetes) extClientset(scope string) (*clientset.Clientset, error) {
 	m.extClientsets.Store(scope, clientset)
 
 	return clientset, nil
+}
+
+func (m *Kubernetes) listControlPlanes(ctx context.Context, scope string) ([]cluster.Node, error) {
+	clientset, err := m.clientset(scope)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.ListOptions{
+		LabelSelector: "node-role.kubernetes.io/control-plane",
+	}
+
+	list, err := clientset.CoreV1().Nodes().List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return list.Items, nil
+}
+
+func isNodeReady(node *cluster.Node) bool {
+	for i := range node.Status.Conditions {
+		if node.Status.Conditions[i].Type == corev1.NodeReady &&
+			node.Status.Conditions[i].Status == corev1.ConditionTrue {
+			return true
+		}
+	}
+	return false
+}
+
+func getInternalIP(node *cluster.Node) string {
+	for _, addr := range node.Status.Addresses {
+		if addr.Type == corev1.NodeInternalIP {
+			return addr.Address
+		}
+	}
+	return ""
 }

@@ -20,13 +20,13 @@
 	const transport: Transport = getContext('transport');
 	const orchestratorClient = createClient(OrchestratorService, transport);
 
-	const generalExtensions: Writable<Extension[]> = writable([]);
+	const metricsExtensions: Writable<Extension[]> = writable([]);
 
 	const alert: Alert.AlertType = $derived({
 		title: m.extensions_alert_title(),
 		message: m.extensions_alert_description(),
 		action: () => {
-			installExtensions(scope, ['general']);
+			installExtensions(scope, ['metrics']);
 		},
 		variant: 'destructive'
 	});
@@ -35,16 +35,16 @@
 		try {
 			const response = await orchestratorClient.listExtensions({
 				scope: scope,
-				type: Extension_Type.GENERAL
+				type: Extension_Type.METRICS
 			});
-			generalExtensions.set(response.Extensions);
+			metricsExtensions.set(response.Extensions);
 		} catch (error) {
 			console.error('Failed to fetch extensions:', error);
 		}
 	});
 </script>
 
-{#if $generalExtensions.filter((generalExtension) => generalExtension.current).length < $generalExtensions.length}
+{#if $metricsExtensions.filter((metricsExtension) => metricsExtension.current).length < $metricsExtensions.length}
 	<Alert.Root {alert}>
 		<Alert.Icon />
 		<Alert.Title>{alert.title}</Alert.Title>
@@ -52,7 +52,7 @@
 			<div class="space-y-1">
 				<p>{alert.message}</p>
 				<div class="flex w-full flex-wrap gap-2">
-					{#each $generalExtensions.filter((extension) => !extension.current) as extension}
+					{#each $metricsExtensions.filter((extension) => !extension.current) as extension (extension.displayName)}
 						<Badge variant="outline" class="border-destructive/50 bg-destructive/5 text-destructive"
 							>{extension.displayName}</Badge
 						>
