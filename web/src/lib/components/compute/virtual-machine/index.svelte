@@ -79,7 +79,6 @@
 			storageRead: storageReadSampleVectors,
 			storageWrite: storageWriteSampleVectors
 		};
-		console.log(metrics);
 	}
 
 	async function fetch() {
