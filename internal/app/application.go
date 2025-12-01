@@ -453,7 +453,7 @@ func toProtoRelease(r *release.Release) *pb.Release {
 
 	chart := r.Chart
 	if chart != nil {
-		ret.SetChart(toProtoChart(chart.Metadata))
+		ret.SetChart(toProtoChart(chart.Metadata, ""))
 	}
 
 	return ret

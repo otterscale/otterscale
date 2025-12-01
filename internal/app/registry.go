@@ -84,7 +84,7 @@ func (s *RegistryService) ListCharts(ctx context.Context, req *pb.ListChartsRequ
 }
 
 func (s *RegistryService) ListChartVersions(ctx context.Context, req *pb.ListChartVersionsRequest) (*pb.ListChartVersionsResponse, error) {
-	versions, err := s.registry.ListChartVersions(ctx, req.GetScope(), req.GetChartName())
+	versions, err := s.registry.ListChartVersions(ctx, req.GetScope(), req.GetRepositoryName())
 	if err != nil {
 		return nil, err
 	}
@@ -156,7 +156,7 @@ func toProtoManifest(m *registry.Manifest) *pb.Manifest {
 
 	chart := m.Chart
 	if chart != nil {
-		ret.SetChart(toProtoChart(chart))
+		ret.SetChart(toProtoChart(chart.Metadata, chart.Repository))
 	}
 
 	return ret
@@ -230,13 +230,13 @@ func toProtoCharts(cs []chart.Chart) []*pb.Chart {
 	ret := []*pb.Chart{}
 
 	for i := range cs {
-		ret = append(ret, toProtoChart(&cs[i]))
+		ret = append(ret, toProtoChart(cs[i].Metadata, cs[i].Repository))
 	}
 
 	return ret
 }
 
-func toProtoChart(c *chart.Chart) *pb.Chart {
+func toProtoChart(c *chart.Metadata, repository string) *pb.Chart {
 	ret := &pb.Chart{}
 	ret.SetName(c.Name)
 	ret.SetHome(c.Home)
@@ -255,6 +255,7 @@ func toProtoChart(c *chart.Chart) *pb.Chart {
 	ret.SetKubeVersion(c.KubeVersion)
 	ret.SetDependencies(toProtoChartDependencies(c.Dependencies))
 	ret.SetType(c.Type)
+	ret.SetRepositoryName(repository)
 	return ret
 }
 

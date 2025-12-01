@@ -151,6 +151,7 @@ message Chart {
   string kube_version = 15;
   repeated Dependency dependencies = 16;
   string type = 17;
+  string repository_name = 21;
 }
 
 message GetRegistryURLRequest {
@@ -194,7 +195,7 @@ message ListChartsResponse {
 
 message ListChartVersionsRequest {
   string scope = 1;
-  string chart_name = 2;
+  string repository_name = 2;
 }
 
 message ListChartVersionsResponse {

@@ -44,6 +44,11 @@ func (uc *UseCase) ListCharts(ctx context.Context, scope string) ([]chart.Chart,
 	charts := []chart.Chart{}
 
 	for _, repo := range repos {
+		// skip repositories with no latest tag
+		if repo.LatestTag == "" {
+			continue
+		}
+
 		manifest, err := uc.manifest.Get(ctx, scope, repo.Name, repo.LatestTag)
 		if err != nil {
 			return nil, err
@@ -60,13 +65,13 @@ func (uc *UseCase) ListCharts(ctx context.Context, scope string) ([]chart.Chart,
 	return charts, nil
 }
 
-func (uc *UseCase) ListChartVersions(ctx context.Context, scope, chartName string) ([]chart.Version, error) {
+func (uc *UseCase) ListChartVersions(ctx context.Context, scope, repository string) ([]chart.Version, error) {
 	registryURL, err := uc.repository.GetRegistryURL(scope)
 	if err != nil {
 		return nil, err
 	}
 
-	manifests, err := uc.manifest.List(ctx, scope, chartName)
+	manifests, err := uc.manifest.List(ctx, scope, repository)
 	if err != nil {
 		return nil, err
 	}

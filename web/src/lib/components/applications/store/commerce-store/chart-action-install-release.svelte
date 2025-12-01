@@ -39,11 +39,11 @@
 	const registryClient = createClient(RegistryService, transport);
 
 	const versionsStore = writable<Chart_Version[]>();
-	async function fetchChartVersions(scope: string, chartName: string) {
+	async function fetchChartVersions(scope: string, repositoryName: string) {
 		try {
 			const response = await registryClient.listChartVersions({
 				scope: scope,
-				chartName: chartName
+				repositoryName: repositoryName
 			});
 			versionsStore.set(response.versions);
 		} catch (error) {
@@ -75,7 +75,7 @@
 
 	onMount(async () => {
 		try {
-			await fetchChartVersions(scope, chart.name);
+			await fetchChartVersions(scope, chart.repositoryName);
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

@@ -103,6 +103,11 @@ func (r *manifestRepo) buildManifest(ctx context.Context, client *remote.Registr
 		return nil, err
 	}
 
+	// addional repository info to chart
+	if chart != nil {
+		chart.Repository = repository
+	}
+
 	return &registry.Manifest{
 		Repository: repository,
 		Tag:        tag,

@@ -54,11 +54,11 @@
 	const applicationClient = createClient(ApplicationService, transport);
 	const registryClient = createClient(RegistryService, transport);
 
-	async function fetchChartRef(scope: string, chartName: string, chartVersion: string) {
+	async function fetchChartRef(scope: string, repositoryName: string, chartVersion: string) {
 		try {
 			const response = await registryClient.listChartVersions({
 				scope: scope,
-				chartName: chartName
+				repositoryName: repositoryName
 			});
 
 			const version = response.versions.find((v) => v.chartVersion === chartVersion);
@@ -73,7 +73,7 @@
 	onMount(async () => {
 		try {
 			if (release.chart) {
-				await fetchChartRef(scope, release.chart.name, release.chart.version);
+				await fetchChartRef(scope, release.chart.repositoryName, release.chart.version);
 			}
 		} catch (error) {
 			console.error('Error during initial data load:', error);

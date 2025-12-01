@@ -3,6 +3,7 @@ package chart
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -14,8 +15,8 @@ import (
 )
 
 type (
-	// Chart represents a Helm Chart Metadata resource.
-	Chart = chart.Metadata
+	// Metadata represents Helm Chart Metadata resource.
+	Metadata = chart.Metadata
 
 	// Maintainer represents Helm Chart Maintainer resource.
 	Maintainer = chart.Maintainer
@@ -23,6 +24,11 @@ type (
 	// Dependency represents Helm Chart Dependency resource.
 	Dependency = chart.Dependency
 )
+
+type Chart struct {
+	*chart.Metadata
+	Repository string
+}
 
 type Version struct {
 	ChartRef           string
@@ -136,7 +142,8 @@ func (uc *UseCase) syncChart(ctx context.Context, chartRef, remoteOCI string) er
 	defer os.RemoveAll(destDir)
 
 	if err := uc.chart.Pull(ctx, chartRef, destDir); err != nil {
-		return err
+		slog.Error("failed to pull chart", "error", err, "chartRef", chartRef)
+		return nil // continue on error
 	}
 
 	name := filepath.Base(chartRef)

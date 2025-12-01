@@ -677,28 +677,29 @@ func (b0 Image_builder) Build() *Image {
 
 // helm chart
 type Chart struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name         *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Home         *string                `protobuf:"bytes,2,opt,name=home"`
-	xxx_hidden_Sources      []string               `protobuf:"bytes,3,rep,name=sources"`
-	xxx_hidden_Version      *string                `protobuf:"bytes,4,opt,name=version"`
-	xxx_hidden_Description  *string                `protobuf:"bytes,5,opt,name=description"`
-	xxx_hidden_Keywords     []string               `protobuf:"bytes,6,rep,name=keywords"`
-	xxx_hidden_Maintainers  *[]*Chart_Maintainer   `protobuf:"bytes,7,rep,name=maintainers"`
-	xxx_hidden_Icon         *string                `protobuf:"bytes,8,opt,name=icon"`
-	xxx_hidden_ApiVersion   *string                `protobuf:"bytes,9,opt,name=api_version,json=apiVersion"`
-	xxx_hidden_Condition    *string                `protobuf:"bytes,10,opt,name=condition"`
-	xxx_hidden_Tags         *string                `protobuf:"bytes,11,opt,name=tags"`
-	xxx_hidden_AppVersion   *string                `protobuf:"bytes,12,opt,name=app_version,json=appVersion"`
-	xxx_hidden_Deprecated   bool                   `protobuf:"varint,13,opt,name=deprecated"`
-	xxx_hidden_Annotations  map[string]string      `protobuf:"bytes,14,rep,name=annotations" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	xxx_hidden_KubeVersion  *string                `protobuf:"bytes,15,opt,name=kube_version,json=kubeVersion"`
-	xxx_hidden_Dependencies *[]*Chart_Dependency   `protobuf:"bytes,16,rep,name=dependencies"`
-	xxx_hidden_Type         *string                `protobuf:"bytes,17,opt,name=type"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Name           *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Home           *string                `protobuf:"bytes,2,opt,name=home"`
+	xxx_hidden_Sources        []string               `protobuf:"bytes,3,rep,name=sources"`
+	xxx_hidden_Version        *string                `protobuf:"bytes,4,opt,name=version"`
+	xxx_hidden_Description    *string                `protobuf:"bytes,5,opt,name=description"`
+	xxx_hidden_Keywords       []string               `protobuf:"bytes,6,rep,name=keywords"`
+	xxx_hidden_Maintainers    *[]*Chart_Maintainer   `protobuf:"bytes,7,rep,name=maintainers"`
+	xxx_hidden_Icon           *string                `protobuf:"bytes,8,opt,name=icon"`
+	xxx_hidden_ApiVersion     *string                `protobuf:"bytes,9,opt,name=api_version,json=apiVersion"`
+	xxx_hidden_Condition      *string                `protobuf:"bytes,10,opt,name=condition"`
+	xxx_hidden_Tags           *string                `protobuf:"bytes,11,opt,name=tags"`
+	xxx_hidden_AppVersion     *string                `protobuf:"bytes,12,opt,name=app_version,json=appVersion"`
+	xxx_hidden_Deprecated     bool                   `protobuf:"varint,13,opt,name=deprecated"`
+	xxx_hidden_Annotations    map[string]string      `protobuf:"bytes,14,rep,name=annotations" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	xxx_hidden_KubeVersion    *string                `protobuf:"bytes,15,opt,name=kube_version,json=kubeVersion"`
+	xxx_hidden_Dependencies   *[]*Chart_Dependency   `protobuf:"bytes,16,rep,name=dependencies"`
+	xxx_hidden_Type           *string                `protobuf:"bytes,17,opt,name=type"`
+	xxx_hidden_RepositoryName *string                `protobuf:"bytes,21,opt,name=repository_name,json=repositoryName"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *Chart) Reset() {
@@ -882,14 +883,24 @@ func (x *Chart) GetType() string {
 	return ""
 }
 
+func (x *Chart) GetRepositoryName() string {
+	if x != nil {
+		if x.xxx_hidden_RepositoryName != nil {
+			return *x.xxx_hidden_RepositoryName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *Chart) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 18)
 }
 
 func (x *Chart) SetHome(v string) {
 	x.xxx_hidden_Home = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 18)
 }
 
 func (x *Chart) SetSources(v []string) {
@@ -898,12 +909,12 @@ func (x *Chart) SetSources(v []string) {
 
 func (x *Chart) SetVersion(v string) {
 	x.xxx_hidden_Version = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 18)
 }
 
 func (x *Chart) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 18)
 }
 
 func (x *Chart) SetKeywords(v []string) {
@@ -916,32 +927,32 @@ func (x *Chart) SetMaintainers(v []*Chart_Maintainer) {
 
 func (x *Chart) SetIcon(v string) {
 	x.xxx_hidden_Icon = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 18)
 }
 
 func (x *Chart) SetApiVersion(v string) {
 	x.xxx_hidden_ApiVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 18)
 }
 
 func (x *Chart) SetCondition(v string) {
 	x.xxx_hidden_Condition = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 18)
 }
 
 func (x *Chart) SetTags(v string) {
 	x.xxx_hidden_Tags = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 18)
 }
 
 func (x *Chart) SetAppVersion(v string) {
 	x.xxx_hidden_AppVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 18)
 }
 
 func (x *Chart) SetDeprecated(v bool) {
 	x.xxx_hidden_Deprecated = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 18)
 }
 
 func (x *Chart) SetAnnotations(v map[string]string) {
@@ -950,7 +961,7 @@ func (x *Chart) SetAnnotations(v map[string]string) {
 
 func (x *Chart) SetKubeVersion(v string) {
 	x.xxx_hidden_KubeVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 14, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 14, 18)
 }
 
 func (x *Chart) SetDependencies(v []*Chart_Dependency) {
@@ -959,7 +970,12 @@ func (x *Chart) SetDependencies(v []*Chart_Dependency) {
 
 func (x *Chart) SetType(v string) {
 	x.xxx_hidden_Type = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 16, 17)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 16, 18)
+}
+
+func (x *Chart) SetRepositoryName(v string) {
+	x.xxx_hidden_RepositoryName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 17, 18)
 }
 
 func (x *Chart) HasName() bool {
@@ -1046,6 +1062,13 @@ func (x *Chart) HasType() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 16)
 }
 
+func (x *Chart) HasRepositoryName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 17)
+}
+
 func (x *Chart) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
@@ -1106,26 +1129,32 @@ func (x *Chart) ClearType() {
 	x.xxx_hidden_Type = nil
 }
 
+func (x *Chart) ClearRepositoryName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 17)
+	x.xxx_hidden_RepositoryName = nil
+}
+
 type Chart_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name         *string
-	Home         *string
-	Sources      []string
-	Version      *string
-	Description  *string
-	Keywords     []string
-	Maintainers  []*Chart_Maintainer
-	Icon         *string
-	ApiVersion   *string
-	Condition    *string
-	Tags         *string
-	AppVersion   *string
-	Deprecated   *bool
-	Annotations  map[string]string
-	KubeVersion  *string
-	Dependencies []*Chart_Dependency
-	Type         *string
+	Name           *string
+	Home           *string
+	Sources        []string
+	Version        *string
+	Description    *string
+	Keywords       []string
+	Maintainers    []*Chart_Maintainer
+	Icon           *string
+	ApiVersion     *string
+	Condition      *string
+	Tags           *string
+	AppVersion     *string
+	Deprecated     *bool
+	Annotations    map[string]string
+	KubeVersion    *string
+	Dependencies   []*Chart_Dependency
+	Type           *string
+	RepositoryName *string
 }
 
 func (b0 Chart_builder) Build() *Chart {
@@ -1133,57 +1162,61 @@ func (b0 Chart_builder) Build() *Chart {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 18)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Home != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 18)
 		x.xxx_hidden_Home = b.Home
 	}
 	x.xxx_hidden_Sources = b.Sources
 	if b.Version != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 18)
 		x.xxx_hidden_Version = b.Version
 	}
 	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 18)
 		x.xxx_hidden_Description = b.Description
 	}
 	x.xxx_hidden_Keywords = b.Keywords
 	x.xxx_hidden_Maintainers = &b.Maintainers
 	if b.Icon != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 18)
 		x.xxx_hidden_Icon = b.Icon
 	}
 	if b.ApiVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 18)
 		x.xxx_hidden_ApiVersion = b.ApiVersion
 	}
 	if b.Condition != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 18)
 		x.xxx_hidden_Condition = b.Condition
 	}
 	if b.Tags != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 18)
 		x.xxx_hidden_Tags = b.Tags
 	}
 	if b.AppVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 18)
 		x.xxx_hidden_AppVersion = b.AppVersion
 	}
 	if b.Deprecated != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 18)
 		x.xxx_hidden_Deprecated = *b.Deprecated
 	}
 	x.xxx_hidden_Annotations = b.Annotations
 	if b.KubeVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 14, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 14, 18)
 		x.xxx_hidden_KubeVersion = b.KubeVersion
 	}
 	x.xxx_hidden_Dependencies = &b.Dependencies
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 16, 17)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 16, 18)
 		x.xxx_hidden_Type = b.Type
+	}
+	if b.RepositoryName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 17, 18)
+		x.xxx_hidden_RepositoryName = b.RepositoryName
 	}
 	return m0
 }
@@ -1933,13 +1966,13 @@ func (b0 ListChartsResponse_builder) Build() *ListChartsResponse {
 }
 
 type ListChartVersionsRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_ChartName   *string                `protobuf:"bytes,2,opt,name=chart_name,json=chartName"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_RepositoryName *string                `protobuf:"bytes,2,opt,name=repository_name,json=repositoryName"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *ListChartVersionsRequest) Reset() {
@@ -1977,10 +2010,10 @@ func (x *ListChartVersionsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListChartVersionsRequest) GetChartName() string {
+func (x *ListChartVersionsRequest) GetRepositoryName() string {
 	if x != nil {
-		if x.xxx_hidden_ChartName != nil {
-			return *x.xxx_hidden_ChartName
+		if x.xxx_hidden_RepositoryName != nil {
+			return *x.xxx_hidden_RepositoryName
 		}
 		return ""
 	}
@@ -1992,8 +2025,8 @@ func (x *ListChartVersionsRequest) SetScope(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *ListChartVersionsRequest) SetChartName(v string) {
-	x.xxx_hidden_ChartName = &v
+func (x *ListChartVersionsRequest) SetRepositoryName(v string) {
+	x.xxx_hidden_RepositoryName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
@@ -2004,7 +2037,7 @@ func (x *ListChartVersionsRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListChartVersionsRequest) HasChartName() bool {
+func (x *ListChartVersionsRequest) HasRepositoryName() bool {
 	if x == nil {
 		return false
 	}
@@ -2016,16 +2049,16 @@ func (x *ListChartVersionsRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListChartVersionsRequest) ClearChartName() {
+func (x *ListChartVersionsRequest) ClearRepositoryName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_ChartName = nil
+	x.xxx_hidden_RepositoryName = nil
 }
 
 type ListChartVersionsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope     *string
-	ChartName *string
+	Scope          *string
+	RepositoryName *string
 }
 
 func (b0 ListChartVersionsRequest_builder) Build() *ListChartVersionsRequest {
@@ -2036,9 +2069,9 @@ func (b0 ListChartVersionsRequest_builder) Build() *ListChartVersionsRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.ChartName != nil {
+	if b.RepositoryName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_ChartName = b.ChartName
+		x.xxx_hidden_RepositoryName = b.RepositoryName
 	}
 	return m0
 }
@@ -3478,7 +3511,7 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a7\n" +
 	"\x06RootFS\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x19\n" +
-	"\bdiff_ids\x18\x02 \x03(\tR\adiffIdsJ\x04\b\x06\x10\a\"\xf8\b\n" +
+	"\bdiff_ids\x18\x02 \x03(\tR\adiffIdsJ\x04\b\x06\x10\a\"\xa1\t\n" +
 	"\x05Chart\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04home\x18\x02 \x01(\tR\x04home\x12\x18\n" +
@@ -3501,7 +3534,8 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"\vannotations\x18\x0e \x03(\v2..otterscale.registry.v1.Chart.AnnotationsEntryR\vannotations\x12!\n" +
 	"\fkube_version\x18\x0f \x01(\tR\vkubeVersion\x12L\n" +
 	"\fdependencies\x18\x10 \x03(\v2(.otterscale.registry.v1.Chart.DependencyR\fdependencies\x12\x12\n" +
-	"\x04type\x18\x11 \x01(\tR\x04type\x1a=\n" +
+	"\x04type\x18\x11 \x01(\tR\x04type\x12'\n" +
+	"\x0frepository_name\x18\x15 \x01(\tR\x0erepositoryName\x1a=\n" +
 	"\vInformation\x12\x16\n" +
 	"\x06values\x18\x01 \x01(\tR\x06values\x12\x16\n" +
 	"\x06readme\x18\x02 \x01(\tR\x06readme\x1a|\n" +
@@ -3548,11 +3582,10 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"\x11ListChartsRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\"K\n" +
 	"\x12ListChartsResponse\x125\n" +
-	"\x06charts\x18\x01 \x03(\v2\x1d.otterscale.registry.v1.ChartR\x06charts\"O\n" +
+	"\x06charts\x18\x01 \x03(\v2\x1d.otterscale.registry.v1.ChartR\x06charts\"Y\n" +
 	"\x18ListChartVersionsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1d\n" +
-	"\n" +
-	"chart_name\x18\x02 \x01(\tR\tchartName\"^\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12'\n" +
+	"\x0frepository_name\x18\x02 \x01(\tR\x0erepositoryName\"^\n" +
 	"\x19ListChartVersionsResponse\x12A\n" +
 	"\bversions\x18\x01 \x03(\v2%.otterscale.registry.v1.Chart.VersionR\bversions\"9\n" +
 	"\x1aGetChartInformationRequest\x12\x1b\n" +
