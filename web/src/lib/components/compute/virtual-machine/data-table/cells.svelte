@@ -370,12 +370,12 @@
 		write: writeUsage[index]?.value ?? 0
 	}))}
 	{@const maximumValue = Math.max(
-		...readUsage.map((usgae) => Number(usgae.value)),
-		...writeUsage.map((usgae) => Number(usgae.value))
+		...readUsage.map((usage) => Number(usage.value)),
+		...writeUsage.map((usage) => Number(usage.value))
 	)}
 	{@const minimumValue = Math.min(
-		...readUsage.map((usgae) => Number(usgae.value)),
-		...writeUsage.map((usgae) => Number(usgae.value))
+		...readUsage.map((usage) => Number(usage.value)),
+		...writeUsage.map((usage) => Number(usage.value))
 	)}
 	{@const configuration = {
 		read: { label: 'read', color: 'var(--chart-1)' },
