@@ -9,9 +9,9 @@
 	export const headers = {
 		row_picker,
 		name,
-		manifest_count,
-		size_bytes,
-		latest_tag,
+		manifests,
+		sizeBytes,
+		latestTag,
 		actions
 	};
 </script>
@@ -33,16 +33,16 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet manifest_count(column: Column<Repository>)}
+{#snippet manifests(column: Column<Repository>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.manifest_count()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.manifests()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet size_bytes(column: Column<Repository>)}
+{#snippet sizeBytes(column: Column<Repository>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -51,11 +51,8 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet latest_tag(column: Column<Repository>)}
-	<Layout.Header class="justify-end">
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
+{#snippet latestTag()}
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.latest_tag()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

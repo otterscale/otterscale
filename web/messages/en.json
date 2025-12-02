@@ -379,6 +379,7 @@
 	"only_deprecated": "Only Deprecated",
 	"only_available": "Only Available",
 	"keyword": "Keyword",
+	"keywords": "Keywords",
 	"licence": "Licence",
 	"installed": "INSTALLED",
 	"information": "Information",
@@ -886,8 +887,18 @@
 	"test": "Testing",
 	"official": "Official",
 	"sync": "Sync",
-	"manifest_count": "Manifest Count",
+	"manifests": "Manifests",
 	"latest_tag": "Latest Tag",
 	"registry": "Registry",
-	"repositories": "Repositories"
+	"repositories": "Repositories",
+	"maintainers": "Maintainers",
+	"working_directory": "Working Directory",
+	"export_ports": "Export Ports",
+	"entrypoint": "Entrypoint",
+	"cmd": "CMD",
+	"volumes": "Volumes",
+	"platforms": "Platforms",
+	"commands": "Commands",
+	"versions": "Versions",
+	"dependencies": "Dependencies"
 }

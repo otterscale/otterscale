@@ -8,15 +8,13 @@
 	import { formatCapacity } from '$lib/formatter';
 
 	import Manifests from './cell-manifests.svelte';
-	// import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,
 		name,
-		manifest_count,
-		size_bytes,
-		latest_tag
-		// actions
+		manifests,
+		sizeBytes,
+		latestTag
 	};
 </script>
 
@@ -32,11 +30,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet manifest_count(data: {
-	row: Row<Repository>;
-	scope: string;
-	reloadManager: ReloadManager;
-})}
+{#snippet manifests(data: { row: Row<Repository>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-end">
 		<Manifests
 			repository={data.row.original}
@@ -46,7 +40,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet size_bytes(row: Row<Repository>)}
+{#snippet sizeBytes(row: Row<Repository>)}
 	{@const { value, unit } = formatCapacity(row.original.sizeBytes)}
 	<Layout.Cell class="items-end">
 		{value}
@@ -54,14 +48,8 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet latest_tag(row: Row<Repository>)}
-	<Layout.Cell class="items-end">
+{#snippet latestTag(row: Row<Repository>)}
+	<Layout.Cell class="items-start">
 		{row.original.latestTag}
 	</Layout.Cell>
 {/snippet}
-
-<!-- {#snippet actions(row: Row<Repository>, scope: string, reloadManager: ReloadManager)}
-	<Layout.Cell class="items-end">
-		<Actions {row} {scope} {reloadManager} />
-	</Layout.Cell>
-{/snippet} -->

@@ -1,6 +1,7 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
 import type { Repository } from '$lib/api/registry/v1/registry_pb';
+import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import type { ReloadManager } from '$lib/components/custom/reloader';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
@@ -10,9 +11,9 @@ import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
-	manifest_count: m.manifest_count(),
-	size_bytes: m.size(),
-	latest_tag: m.latest_tag()
+	manifests: m.manifests(),
+	sizeBytes: m.size(),
+	latestTag: m.latest_tag()
 };
 
 function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Repository>[] {
@@ -38,42 +39,40 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Repo
 			}
 		},
 		{
-			accessorKey: 'manifest_count',
+			accessorKey: 'latestTag',
 			header: ({ column }) => {
-				return renderSnippet(headers.manifest_count, column);
+				return renderSnippet(headers.latestTag, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.manifest_count, { row, scope, reloadManager });
+				return renderSnippet(cells.latestTag, row);
 			}
 		},
 		{
-			accessorKey: 'size_bytes',
+			accessorKey: 'sizeBytes',
 			header: ({ column }) => {
-				return renderSnippet(headers.size_bytes, column);
+				return renderSnippet(headers.sizeBytes, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.size_bytes, row);
+				return renderSnippet(cells.sizeBytes, row);
 			}
 		},
+
 		{
-			accessorKey: '	',
+			accessorKey: 'manifests',
 			header: ({ column }) => {
-				return renderSnippet(headers.latest_tag, column);
+				return renderSnippet(headers.manifests, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.latest_tag, row);
-			}
+				return renderSnippet(cells.manifests, { row, scope, reloadManager });
+			},
+			sortingFn: (previousRow, nextRow) =>
+				getSortingFunction(
+					previousRow.original.manifestCount,
+					nextRow.original.manifestCount,
+					(p, n) => p < n,
+					(p, n) => p === n
+				)
 		}
-		// {
-		// 	accessorKey: 'actions',
-		// 	header: ({ column }) => {
-		// 		return renderSnippet(headers.actions, column);
-		// 	},
-		// 	cell: ({ row }) => {
-		// 		return renderSnippet(cells.actions, { data: { row, scope, reloadManager } });
-		// 	},
-		// 	enableHiding: false
-		// }
 	];
 }
 

@@ -21,6 +21,7 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	import { getColumns, messages } from './columns';
+	import CommandList from './command-list.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
@@ -128,6 +129,7 @@
 			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
+			<CommandList />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

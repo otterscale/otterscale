@@ -378,6 +378,7 @@
 	"only_deprecated": "僅已棄用",
 	"only_available": "僅可用",
 	"keyword": "關鍵字",
+	"keywords": "關鍵字",
 	"licence": "授權條款",
 	"installed": "已安裝",
 	"information": "資訊",
@@ -884,8 +885,18 @@
 	"test": "測試",
 	"official": "官方",
 	"sync": "同步",
-	"manifest_count": "Manifest 數量",
+	"manifests": "清單",
 	"latest_tag": "最新標籤",
 	"registry": "註冊表",
-	"repositories": "儲存庫"
+	"repositories": "儲存庫",
+	"maintainers": "維護者",
+	"working_directory": "工作目錄",
+	"export_ports": "匯出連接埠",
+	"entrypoint": "入口點",
+	"cmd": "CMD",
+	"volumes": "卷",
+	"platforms": "平台",
+	"commands": "指令碼",
+	"versions": "版本",
+	"dependencies": "相依性"
 }
