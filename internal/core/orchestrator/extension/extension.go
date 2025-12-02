@@ -18,6 +18,9 @@ import (
 
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/release"
+	"github.com/otterscale/otterscale/internal/core/application/service"
+	"github.com/otterscale/otterscale/internal/core/facility"
+	"github.com/otterscale/otterscale/internal/core/registry"
 	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
@@ -38,14 +41,18 @@ type Manifest struct {
 
 type UseCase struct {
 	customResourceDefinition cluster.CustomResourceDefinitionRepo
+	facility                 facility.FacilityRepo
 	release                  release.ReleaseRepo
+	repository               registry.RepositoryRepo
 	scope                    scope.ScopeRepo
 }
 
-func NewUseCase(customResourceDefinition cluster.CustomResourceDefinitionRepo, release release.ReleaseRepo, scope scope.ScopeRepo) *UseCase {
+func NewUseCase(customResourceDefinition cluster.CustomResourceDefinitionRepo, facility facility.FacilityRepo, release release.ReleaseRepo, repository registry.RepositoryRepo, scope scope.ScopeRepo, service service.ServiceRepo) *UseCase {
 	return &UseCase{
 		customResourceDefinition: customResourceDefinition,
+		facility:                 facility,
 		release:                  release,
+		repository:               repository,
 		scope:                    scope,
 	}
 }
@@ -237,7 +244,7 @@ func (uc *UseCase) processReleases(ctx context.Context, scope string, manifests 
 func (uc *UseCase) processPostFuncs(ctx context.Context, scope string, manifests []Manifest) error {
 	return uc.processManifests(ctx, scope, manifests, func(ctx context.Context, scope string, comp *component) error {
 		if comp.PostFunc != nil {
-			return comp.PostFunc(ctx, scope)
+			return comp.PostFunc(uc, ctx, scope)
 		}
 		return nil
 	})

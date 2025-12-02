@@ -2,6 +2,7 @@ package extension
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/otterscale/otterscale/internal/core/versions"
@@ -25,6 +26,7 @@ var registryComponents = []component{
 				"dockerRegistry.image.tag":                 "3",
 				"dockerRegistry.replicaCount":              "1",
 				"dockerRegistry.service.type":              "NodePort",
+				"dockerRegistry.service.nodePort":          "0",
 				"dockerRegistry.persistence.size":          "600Gi",
 				"dockerRegistry.persistence.storageClass":  "ceph-ext4",
 				"dockerRegistry.resources.requests.memory": "256Mi",
@@ -34,8 +36,34 @@ var registryComponents = []component{
 			},
 		},
 		Dependencies: []string{"kube-prometheus-stack"},
-		PostFunc: func(ctx context.Context, scope string) error {
-			return nil
+		PostFunc: func(uc *UseCase, ctx context.Context, scope string) error {
+			return uc.setCustomRegistries(ctx, scope)
 		},
 	},
+}
+
+type registryConfig struct {
+	URL                string `json:"url"`
+	InsecureSkipVerify bool   `json:"insecure_skip_verify"`
+}
+
+func (uc *UseCase) setCustomRegistries(ctx context.Context, scope string) error {
+	url, err := uc.repository.GetRegistryURL(scope)
+	if err != nil {
+		return err
+	}
+
+	registries := []registryConfig{
+		{
+			URL:                "http://" + url,
+			InsecureSkipVerify: true,
+		},
+	}
+
+	value, err := json.Marshal(registries)
+	if err != nil {
+		return err
+	}
+
+	return uc.facility.Update(ctx, scope, "registry", map[string]string{"custom_registries": string(value)})
 }

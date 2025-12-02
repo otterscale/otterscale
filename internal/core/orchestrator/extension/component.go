@@ -15,7 +15,7 @@ type component struct {
 	CRD   *crdComponent
 
 	Dependencies []string
-	PostFunc     func(ctx context.Context, scope string) error
+	PostFunc     func(uc *UseCase, ctx context.Context, scope string) error
 }
 
 type chartComponent struct {
