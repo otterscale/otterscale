@@ -1361,7 +1361,7 @@ juju_add_k8s() {
     # Patch traefik-lb
     local CURRENT_SVC_IP
     while true; do
-        if kubectl get svc -n cos traefik-lb >/dev/null 2>&1; then
+        if microk8s kubectl get svc -n cos traefik-lb >/dev/null 2>&1; then
             CURRENT_SVC_IP=$(microk8s kubectl get svc traefik-lb -n cos -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null)
             if [[ "$CURRENT_SVC_IP" != "$OTTERSCALE_INTERFACE_IP" ]]; then
                 log "INFO" "Specific metallb ip to service traefik-lb" "MICROK8S_SVC"
@@ -1382,6 +1382,7 @@ EOF
             fi
         else
             log "INFO" "Waiting k8s svc traefik-lb ready" "MICROK8S_SVC"
+            sleep 5
         fi
     done
 
