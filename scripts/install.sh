@@ -1363,7 +1363,7 @@ juju_add_k8s() {
     local CURRENT_SVC_IP
     while true; do
         if microk8s kubectl get svc -n cos traefik-lb >/dev/null 2>&1; then
-            CURRENT_SVC_IP=$(microk8s kubectl get svc traefik-lb -n cos -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null)
+            CURRENT_SVC_IP=$(microk8s kubectl get svc traefik-lb -n cos -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
             if [[ "$CURRENT_SVC_IP" != "$OTTERSCALE_INTERFACE_IP" ]]; then
                 log "INFO" "Specific metallb ip to service traefik-lb" "MICROK8S_SVC"
         
@@ -1536,7 +1536,7 @@ deploy_helm() {
     install_helm_chart "istiod-ingress" "istio-system" "istio/gateway" "-n istio-system --wait --timeout 10m"
 
     # Patch istiod-ingress
-    local CURRENT_SVC_IP=$(microk8s kubectl get svc istiod-ingress -n istio-system -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null)
+    local CURRENT_SVC_IP=$(microk8s kubectl get svc istiod-ingress -n istio-system -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
     if [[ "$CURRENT_SVC_IP" != "$OTTERSCALE_WEB_IP" ]]; then
         log "INFO" "Specific metallb ip to service istiod-ingress" "MICROK8S_SVC"
         
