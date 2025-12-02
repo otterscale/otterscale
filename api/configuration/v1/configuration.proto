@@ -15,8 +15,6 @@ service ConfigurationService {
 
   rpc UpdatePackageRepository(UpdatePackageRepositoryRequest) returns (Configuration.PackageRepository);
 
-  rpc UpdateHelmRepository(UpdateHelmRepositoryRequest) returns (Configuration.HelmRepository);
-
   rpc CreateBootImage(CreateBootImageRequest) returns (Configuration.BootImage);
 
   rpc UpdateBootImage(UpdateBootImageRequest) returns (Configuration.BootImage);
@@ -78,13 +76,9 @@ message Configuration {
     map<string, string> architecture_status_map = 6;
     bool default = 11;
   }
-  message HelmRepository {
-    repeated string urls = 1;
-  }
   NTPServer ntp_server = 1;
   repeated PackageRepository package_repositories = 2;
   repeated BootImage boot_images = 3;
-  HelmRepository helm_repository = 4;
 }
 
 message GetConfigurationRequest {}
@@ -97,10 +91,6 @@ message UpdatePackageRepositoryRequest {
   int64 id = 1;
   string url = 2;
   reserved 3;
-}
-
-message UpdateHelmRepositoryRequest {
-  repeated string urls = 1;
 }
 
 message CreateBootImageRequest {
