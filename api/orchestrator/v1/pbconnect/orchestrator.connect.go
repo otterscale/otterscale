@@ -58,12 +58,9 @@ const (
 	// OrchestratorServiceListExtensionsProcedure is the fully-qualified name of the
 	// OrchestratorService's ListExtensions RPC.
 	OrchestratorServiceListExtensionsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/ListExtensions"
-	// OrchestratorServiceInstallExtensionsProcedure is the fully-qualified name of the
-	// OrchestratorService's InstallExtensions RPC.
-	OrchestratorServiceInstallExtensionsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/InstallExtensions"
-	// OrchestratorServiceUpgradeExtensionsProcedure is the fully-qualified name of the
-	// OrchestratorService's UpgradeExtensions RPC.
-	OrchestratorServiceUpgradeExtensionsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/UpgradeExtensions"
+	// OrchestratorServiceInstallOrUpgradeExtensionsProcedure is the fully-qualified name of the
+	// OrchestratorService's InstallOrUpgradeExtensions RPC.
+	OrchestratorServiceInstallOrUpgradeExtensionsProcedure = "/otterscale.orchestrator.v1.OrchestratorService/InstallOrUpgradeExtensions"
 )
 
 // OrchestratorServiceClient is a client for the otterscale.orchestrator.v1.OrchestratorService
@@ -77,8 +74,7 @@ type OrchestratorServiceClient interface {
 	ListGPURelationsByMachine(context.Context, *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error)
 	ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error)
 	ListExtensions(context.Context, *v1.ListExtensionsRequest) (*v1.ListExtensionsResponse, error)
-	InstallExtensions(context.Context, *v1.InstallExtensionsRequest) (*emptypb.Empty, error)
-	UpgradeExtensions(context.Context, *v1.UpgradeExtensionsRequest) (*emptypb.Empty, error)
+	InstallOrUpgradeExtensions(context.Context, *v1.InstallOrUpgradeExtensionsRequest) (*emptypb.Empty, error)
 }
 
 // NewOrchestratorServiceClient constructs a client for the
@@ -141,16 +137,10 @@ func NewOrchestratorServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(orchestratorServiceMethods.ByName("ListExtensions")),
 			connect.WithClientOptions(opts...),
 		),
-		installExtensions: connect.NewClient[v1.InstallExtensionsRequest, emptypb.Empty](
+		installOrUpgradeExtensions: connect.NewClient[v1.InstallOrUpgradeExtensionsRequest, emptypb.Empty](
 			httpClient,
-			baseURL+OrchestratorServiceInstallExtensionsProcedure,
-			connect.WithSchema(orchestratorServiceMethods.ByName("InstallExtensions")),
-			connect.WithClientOptions(opts...),
-		),
-		upgradeExtensions: connect.NewClient[v1.UpgradeExtensionsRequest, emptypb.Empty](
-			httpClient,
-			baseURL+OrchestratorServiceUpgradeExtensionsProcedure,
-			connect.WithSchema(orchestratorServiceMethods.ByName("UpgradeExtensions")),
+			baseURL+OrchestratorServiceInstallOrUpgradeExtensionsProcedure,
+			connect.WithSchema(orchestratorServiceMethods.ByName("InstallOrUpgradeExtensions")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -166,8 +156,7 @@ type orchestratorServiceClient struct {
 	listGPURelationsByMachine  *connect.Client[v1.ListGPURelationsByMachineRequest, v1.ListGPURelationsByMachineResponse]
 	listGPURelationsByModel    *connect.Client[v1.ListGPURelationsByModelRequest, v1.ListGPURelationsByModelResponse]
 	listExtensions             *connect.Client[v1.ListExtensionsRequest, v1.ListExtensionsResponse]
-	installExtensions          *connect.Client[v1.InstallExtensionsRequest, emptypb.Empty]
-	upgradeExtensions          *connect.Client[v1.UpgradeExtensionsRequest, emptypb.Empty]
+	installOrUpgradeExtensions *connect.Client[v1.InstallOrUpgradeExtensionsRequest, emptypb.Empty]
 }
 
 // CreateNode calls otterscale.orchestrator.v1.OrchestratorService.CreateNode.
@@ -246,18 +235,10 @@ func (c *orchestratorServiceClient) ListExtensions(ctx context.Context, req *v1.
 	return nil, err
 }
 
-// InstallExtensions calls otterscale.orchestrator.v1.OrchestratorService.InstallExtensions.
-func (c *orchestratorServiceClient) InstallExtensions(ctx context.Context, req *v1.InstallExtensionsRequest) (*emptypb.Empty, error) {
-	response, err := c.installExtensions.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// UpgradeExtensions calls otterscale.orchestrator.v1.OrchestratorService.UpgradeExtensions.
-func (c *orchestratorServiceClient) UpgradeExtensions(ctx context.Context, req *v1.UpgradeExtensionsRequest) (*emptypb.Empty, error) {
-	response, err := c.upgradeExtensions.CallUnary(ctx, connect.NewRequest(req))
+// InstallOrUpgradeExtensions calls
+// otterscale.orchestrator.v1.OrchestratorService.InstallOrUpgradeExtensions.
+func (c *orchestratorServiceClient) InstallOrUpgradeExtensions(ctx context.Context, req *v1.InstallOrUpgradeExtensionsRequest) (*emptypb.Empty, error) {
+	response, err := c.installOrUpgradeExtensions.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -275,8 +256,7 @@ type OrchestratorServiceHandler interface {
 	ListGPURelationsByMachine(context.Context, *v1.ListGPURelationsByMachineRequest) (*v1.ListGPURelationsByMachineResponse, error)
 	ListGPURelationsByModel(context.Context, *v1.ListGPURelationsByModelRequest) (*v1.ListGPURelationsByModelResponse, error)
 	ListExtensions(context.Context, *v1.ListExtensionsRequest) (*v1.ListExtensionsResponse, error)
-	InstallExtensions(context.Context, *v1.InstallExtensionsRequest) (*emptypb.Empty, error)
-	UpgradeExtensions(context.Context, *v1.UpgradeExtensionsRequest) (*emptypb.Empty, error)
+	InstallOrUpgradeExtensions(context.Context, *v1.InstallOrUpgradeExtensionsRequest) (*emptypb.Empty, error)
 }
 
 // NewOrchestratorServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -334,16 +314,10 @@ func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...conne
 		connect.WithSchema(orchestratorServiceMethods.ByName("ListExtensions")),
 		connect.WithHandlerOptions(opts...),
 	)
-	orchestratorServiceInstallExtensionsHandler := connect.NewUnaryHandlerSimple(
-		OrchestratorServiceInstallExtensionsProcedure,
-		svc.InstallExtensions,
-		connect.WithSchema(orchestratorServiceMethods.ByName("InstallExtensions")),
-		connect.WithHandlerOptions(opts...),
-	)
-	orchestratorServiceUpgradeExtensionsHandler := connect.NewUnaryHandlerSimple(
-		OrchestratorServiceUpgradeExtensionsProcedure,
-		svc.UpgradeExtensions,
-		connect.WithSchema(orchestratorServiceMethods.ByName("UpgradeExtensions")),
+	orchestratorServiceInstallOrUpgradeExtensionsHandler := connect.NewUnaryHandlerSimple(
+		OrchestratorServiceInstallOrUpgradeExtensionsProcedure,
+		svc.InstallOrUpgradeExtensions,
+		connect.WithSchema(orchestratorServiceMethods.ByName("InstallOrUpgradeExtensions")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/otterscale.orchestrator.v1.OrchestratorService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -364,10 +338,8 @@ func NewOrchestratorServiceHandler(svc OrchestratorServiceHandler, opts ...conne
 			orchestratorServiceListGPURelationsByModelHandler.ServeHTTP(w, r)
 		case OrchestratorServiceListExtensionsProcedure:
 			orchestratorServiceListExtensionsHandler.ServeHTTP(w, r)
-		case OrchestratorServiceInstallExtensionsProcedure:
-			orchestratorServiceInstallExtensionsHandler.ServeHTTP(w, r)
-		case OrchestratorServiceUpgradeExtensionsProcedure:
-			orchestratorServiceUpgradeExtensionsHandler.ServeHTTP(w, r)
+		case OrchestratorServiceInstallOrUpgradeExtensionsProcedure:
+			orchestratorServiceInstallOrUpgradeExtensionsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -409,10 +381,6 @@ func (UnimplementedOrchestratorServiceHandler) ListExtensions(context.Context, *
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.ListExtensions is not implemented"))
 }
 
-func (UnimplementedOrchestratorServiceHandler) InstallExtensions(context.Context, *v1.InstallExtensionsRequest) (*emptypb.Empty, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.InstallExtensions is not implemented"))
-}
-
-func (UnimplementedOrchestratorServiceHandler) UpgradeExtensions(context.Context, *v1.UpgradeExtensionsRequest) (*emptypb.Empty, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.UpgradeExtensions is not implemented"))
+func (UnimplementedOrchestratorServiceHandler) InstallOrUpgradeExtensions(context.Context, *v1.InstallOrUpgradeExtensionsRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.orchestrator.v1.OrchestratorService.InstallOrUpgradeExtensions is not implemented"))
 }
