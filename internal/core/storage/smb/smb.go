@@ -20,7 +20,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 )
 
-const namespace = "samba-operator"
+const namespace = "samba-operator-system"
 
 const (
 	GuestOKkey    = "guest ok"
