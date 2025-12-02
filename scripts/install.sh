@@ -1705,9 +1705,6 @@ $(echo "$juju_cacert" | sed 's/^/      /')
     cloud_name: maas-cloud
     cloud_region: default
     charmhub_api_url: $OTTERSCALE_CHARMHUB_URL
-  kube:
-    helm_repository_urls:
-    - https://charts.bitnami.com/bitnami
   ceph:
     rados_timeout: 0s
 EOF

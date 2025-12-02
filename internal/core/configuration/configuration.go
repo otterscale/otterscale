@@ -2,7 +2,6 @@ package configuration
 
 import (
 	"context"
-	"errors"
 
 	"github.com/otterscale/otterscale/internal/config"
 )
@@ -11,7 +10,6 @@ type Configuration struct {
 	NTPServers          []string
 	PackageRepositories []PackageRepository
 	BootImages          []BootImage
-	HelmRepositorys     []string
 }
 
 type UseCase struct {
@@ -57,11 +55,5 @@ func (uc *UseCase) GetConfiguration(ctx context.Context) (*Configuration, error)
 		NTPServers:          ntpServers,
 		PackageRepositories: packageRepositories,
 		BootImages:          bootImages,
-		HelmRepositorys:     uc.conf.KubeHelmRepositoryURLs(),
 	}, nil
-}
-
-// TODO: update kubernetes config map
-func (uc *UseCase) UpdateHelmRepository(_ []string) ([]string, error) {
-	return nil, errors.ErrUnsupported
 }
