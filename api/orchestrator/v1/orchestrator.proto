@@ -33,9 +33,7 @@ service OrchestratorService {
 
   rpc ListExtensions(ListExtensionsRequest) returns (ListExtensionsResponse);
 
-  rpc InstallExtensions(InstallExtensionsRequest) returns (google.protobuf.Empty);
-
-  rpc UpgradeExtensions(UpgradeExtensionsRequest) returns (google.protobuf.Empty);
+  rpc InstallOrUpgradeExtensions(InstallOrUpgradeExtensionsRequest) returns (google.protobuf.Empty);
 }
 
 message CreateNodeRequest {
@@ -159,7 +157,7 @@ message Extension {
     TYPE_STORAGE = 6;
   }
   message Manifest {
-    string name = 1;
+    string id = 1;
     string version = 2;
   }
   reserved 1;
@@ -174,22 +172,14 @@ message Extension {
 
 message ListExtensionsRequest {
   string scope = 1;
-  reserved 2;
-  Extension.Type type = 3;
+  Extension.Type type = 2;
 }
 
 message ListExtensionsResponse {
   repeated Extension Extensions = 1;
 }
 
-message InstallExtensionsRequest {
+message InstallOrUpgradeExtensionsRequest {
   string scope = 1;
-  reserved 2;
-  repeated Extension.Manifest manifests = 3;
-}
-
-message UpgradeExtensionsRequest {
-  string scope = 1;
-  reserved 2;
-  repeated Extension.Manifest manifests = 3;
+  repeated Extension.Manifest manifests = 2;
 }

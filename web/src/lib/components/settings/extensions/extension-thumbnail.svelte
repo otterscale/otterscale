@@ -113,7 +113,7 @@
 						onclick={() => {
 							toast.promise(
 								() =>
-									orchestratorClient.installExtensions({
+									orchestratorClient.installOrUpgradeExtensions({
 										scope: scope,
 										manifests: $extensions
 											.filter((extension) => extension.latest && !extension.current)
@@ -148,7 +148,7 @@
 						onclick={() => {
 							toast.promise(
 								() =>
-									orchestratorClient.upgradeExtensions({
+									orchestratorClient.installOrUpgradeExtensions({
 										scope: scope,
 										manifests: $extensions
 											.filter((extension) => extension.latest && extension.current)
