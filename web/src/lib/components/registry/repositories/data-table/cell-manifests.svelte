@@ -447,21 +447,27 @@
 												</Item.Content>
 											</Item.Root>
 
-											<Item.Root class="col-span-1 p-0 md:col-span-2">
-												<Item.Media variant="icon">
-													<Icon icon="ph:folder" class="size-4" />
-												</Item.Media>
-												<Item.Content class="h-full">
-													<Item.Description class="text-xs">Volumes</Item.Description>
-													<Item.Title class="text-xs">
-														{#if image.config.volumes.length > 0}
+											{#if image.config.volumes.length > 0}
+												<Item.Root class="col-span-1 p-0 md:col-span-2">
+													<Item.Media variant="icon">
+														<Icon icon="ph:folder" class="size-4" />
+													</Item.Media>
+													<Item.Content class="h-full">
+														<Item.Description class="text-xs">Volumes</Item.Description>
+														<Item.Title class="flex flex-col gap-1 text-xs">
 															{#each image.config.volumes as volume (volume)}
-																<p>{volume}</p>
+																<span class="group flex w-full items-center gap-1">
+																	<p class="font-mono">{volume}</p>
+																	<CopyButton
+																		class="ml-auto size-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+																		text={volume}
+																	/>
+																</span>
 															{/each}
-														{/if}
-													</Item.Title>
-												</Item.Content>
-											</Item.Root>
+														</Item.Title>
+													</Item.Content>
+												</Item.Root>
+											{/if}
 										</div>
 									{/if}
 								</Card.Content>
