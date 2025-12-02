@@ -76,7 +76,9 @@ func (uc *UseCase) getPrometheusScrapeTargetK8sTargets(ctx context.Context) ([]s
 		return nil, fmt.Errorf("invalid type for targets.value field")
 	}
 
-	return strings.Split(value, ","), nil
+	return slices.DeleteFunc(strings.Split(value, ","), func(target string) bool {
+		return target == ""
+	}), nil
 }
 
 func (uc *UseCase) getPrometheusTarget(ctx context.Context, scope string) (string, error) {
