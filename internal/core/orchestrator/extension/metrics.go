@@ -2,6 +2,7 @@ package extension
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"slices"
 	"strings"
@@ -39,18 +40,12 @@ var metricsComponents = []component{
 			},
 		},
 		PostFunc: func(uc *UseCase, ctx context.Context, scope string) error {
-			cosScope := "cos"
-			appName := "prometheus-scrape-target-k8s"
-			namespace := "monitoring"
-			service := "kube-prometheus-stack-prometheus"
-			portName := "http-web"
-
-			targets, err := uc.getPrometheusScrapeTargetK8sTargets(ctx, cosScope, appName)
+			targets, err := uc.getPrometheusScrapeTargetK8sTargets(ctx)
 			if err != nil {
 				return err
 			}
 
-			target, err := uc.getPrometheusTarget(ctx, scope, namespace, service, portName)
+			target, err := uc.getPrometheusTarget(ctx, scope)
 			if err != nil {
 				return err
 			}
@@ -60,13 +55,13 @@ var metricsComponents = []component{
 			slices.Sort(targets)
 			targets = slices.Compact(targets)
 
-			return uc.setPrometheusScrapeTargetK8sTargets(ctx, cosScope, appName, targets)
+			return uc.setPrometheusScrapeTargetK8sTargets(ctx, targets)
 		},
 	},
 }
 
-func (uc *UseCase) getPrometheusScrapeTargetK8sTargets(ctx context.Context, scope, name string) ([]string, error) {
-	config, err := uc.facility.Config(ctx, scope, name)
+func (uc *UseCase) getPrometheusScrapeTargetK8sTargets(ctx context.Context) ([]string, error) {
+	config, err := uc.facility.Config(ctx, "cos", "prometheus-scrape-target-k8s")
 	if err != nil {
 		return nil, err
 	}
@@ -84,13 +79,13 @@ func (uc *UseCase) getPrometheusScrapeTargetK8sTargets(ctx context.Context, scop
 	return strings.Split(value, ","), nil
 }
 
-func (uc *UseCase) getPrometheusTarget(ctx context.Context, scope, namespace, name, portName string) (string, error) {
+func (uc *UseCase) getPrometheusTarget(ctx context.Context, scope string) (string, error) {
 	ip, err := uc.node.InternalIP(ctx, scope)
 	if err != nil {
 		return "", err
 	}
 
-	svc, err := uc.service.Get(ctx, scope, namespace, name)
+	svc, err := uc.service.Get(ctx, scope, "monitoring", "kube-prometheus-stack-prometheus")
 	if err != nil {
 		return "", err
 	}
@@ -98,14 +93,14 @@ func (uc *UseCase) getPrometheusTarget(ctx context.Context, scope, namespace, na
 	ports := svc.Spec.Ports
 
 	for i := range ports {
-		if ports[i].Name == portName {
+		if ports[i].Name == "http-web" {
 			return fmt.Sprintf("%s:%d", ip, ports[i].NodePort), nil
 		}
 	}
 
-	return "", fmt.Errorf("prometheus service has no %s port defined", portName)
+	return "", errors.New("prometheus service has no http-web port defined")
 }
 
-func (uc *UseCase) setPrometheusScrapeTargetK8sTargets(ctx context.Context, scope, name string, targets []string) error {
-	return uc.facility.Update(ctx, scope, name, map[string]string{"targets": strings.Join(targets, ",")})
+func (uc *UseCase) setPrometheusScrapeTargetK8sTargets(ctx context.Context, targets []string) error {
+	return uc.facility.Update(ctx, "cos", "prometheus-scrape-target-k8s", map[string]string{"targets": strings.Join(targets, ",")})
 }
