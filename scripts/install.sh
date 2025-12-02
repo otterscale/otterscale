@@ -585,7 +585,7 @@ prompt_bridge_creation() {
     nmcli connection modify "$CURRENT_CONNECTION" connection.autoconnect no > /dev/null
 
     log "INFO" "Start up network bridge $OTTERSCALE_BRIDGE_NAME and down $CURRENT_CONNECTION" "NETWORK"
-    nmcli connection up "$OTTERSCALE_BRIDGE_NAME" && nmcli connection down "$CURRENT_CONNECTION" > /dev/null
+    nmcli connection up "$OTTERSCALE_BRIDGE_NAME" > /dev/null  && nmcli connection down "$CURRENT_CONNECTION" > /dev/null
 
     sleep 10
 }
@@ -876,7 +876,7 @@ get_dhcp_subnet_and_ip() {
         log "INFO" "Please enter MAAS dhcp end ip in terminal" "MAAS_DHCP"
         enter_dhcp_end_ip
     else
-        log "INFO" "MAAS dhcp start ip: $MAAS_DHCP_END_IP" "MAAS_DHCP"
+        log "INFO" "MAAS dhcp ebd ip: $MAAS_DHCP_END_IP" "MAAS_DHCP"
     fi
 }
 
