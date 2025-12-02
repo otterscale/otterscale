@@ -857,7 +857,7 @@ enter_otterscale_web_ip() {
 
 get_otterscale_web_ip() {
     if [[ -z "$OTTERSCALE_WEB_IP" ]]; then
-        log "INFO" "Please enter another ip that otterscale web used" "MAAS_DHCP"
+        log "INFO" "Please enter the IP address for the OtterScale web interface" "MAAS_DHCP"
         enter_otterscale_web_ip
     else
         log "INFO" "OtterScale Web IP is $OTTERSCALE_WEB_IP" "NETWORK"
@@ -1359,7 +1359,7 @@ juju_add_k8s() {
     #su "$NON_ROOT_USER" -c "juju config -m cos loki memory=256Mi"
 
     # Patch traefik-lb
-    log "INFO" "Waiting k8s svc traefik-lb created" "MICROK8S_SVC"
+    log "INFO" "Waiting for k8s svc traefik-lb to be created" "MICROK8S_SVC"
     local CURRENT_SVC_IP
     while true; do
         if microk8s kubectl get svc -n cos traefik-lb >/dev/null 2>&1; then
@@ -1379,9 +1379,8 @@ juju_add_k8s() {
 }
 EOF
 )" >>"$TEMP_LOG" 2>&1
-                return 0
             fi
-
+            return 0
         else
             sleep 5
         fi
