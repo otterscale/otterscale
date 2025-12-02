@@ -876,7 +876,7 @@ get_dhcp_subnet_and_ip() {
         log "INFO" "Please enter MAAS dhcp end ip in terminal" "MAAS_DHCP"
         enter_dhcp_end_ip
     else
-        log "INFO" "MAAS dhcp ebd ip: $MAAS_DHCP_END_IP" "MAAS_DHCP"
+        log "INFO" "MAAS dhcp end ip: $MAAS_DHCP_END_IP" "MAAS_DHCP"
     fi
 }
 
@@ -1380,7 +1380,7 @@ juju_add_k8s() {
 EOF
 )" >>"$TEMP_LOG" 2>&1
             fi
-            return 0
+            break
         else
             sleep 5
         fi
