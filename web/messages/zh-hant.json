@@ -27,6 +27,8 @@
 	"platform": "平台",
 	"model": "模型",
 	"model_artifact": "模型檔",
+	"disaggregation_mode": "解耦模式",
+	"inference": "推論",
 	"prefill": "預填",
 	"decode": "解碼",
 	"model_name": "模型名稱",

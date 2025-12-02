@@ -27,6 +27,8 @@
 	"platform": "Platform",
 	"model": "Model",
 	"model_artifact": "Model Artifact",
+	"disaggregation_mode": "Disaggregation Mode",
+	"inference": "Inference",
 	"prefill": "Prefill",
 	"decode": "Decode",
 	"model_name": "Model Name",
