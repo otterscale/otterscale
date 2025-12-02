@@ -1359,13 +1359,16 @@ juju_add_k8s() {
     #su "$NON_ROOT_USER" -c "juju config -m cos loki memory=256Mi"
 
     # Patch traefik-lb
-    local CURRENT_SVC_IP=$(microk8s kubectl get svc traefik-lb -n cos -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null)
-    if [[ "$CURRENT_SVC_IP" != "$OTTERSCALE_INTERFACE_IP" ]]; then
-        log "INFO" "Specific metallb ip to service traefik-lb" "MICROK8S_SVC"
+    local CURRENT_SVC_IP
+    while true; do
+        if kubectl get svc -n cos traefik-lb >/dev/null 2>&1; then
+            CURRENT_SVC_IP=$(microk8s kubectl get svc traefik-lb -n cos -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null)
+            if [[ "$CURRENT_SVC_IP" != "$OTTERSCALE_INTERFACE_IP" ]]; then
+                log "INFO" "Specific metallb ip to service traefik-lb" "MICROK8S_SVC"
         
-        microk8s kubectl patch svc traefik-lb -n cos \
-            --type merge \
-            -p "$(cat <<EOF
+                microk8s kubectl patch svc traefik-lb -n cos \
+                    --type merge \
+                    -p "$(cat <<EOF
 {
   "metadata": {
     "annotations": {
@@ -1374,8 +1377,13 @@ juju_add_k8s() {
   }
 }
 EOF
-            )" >>"$TEMP_LOG" 2>&1
-    fi
+)" >>"$TEMP_LOG" 2>&1
+                return 0
+            fi
+        else
+            log "INFO" "Waiting k8s svc traefik-lb ready" "MICROK8S_SVC"
+        fi
+    done
 
     log "INFO" "Kubernetes cluster added to Juju successfully" "JUJU_K8S"
 }
