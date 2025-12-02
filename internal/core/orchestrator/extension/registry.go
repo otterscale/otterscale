@@ -37,7 +37,7 @@ var registryComponents = []component{
 		},
 		Dependencies: []string{"kube-prometheus-stack"},
 		PostFunc: func(uc *UseCase, ctx context.Context, scope string) error {
-			return uc.setCustomRegistries(ctx, scope)
+			return uc.setContainerdCustomRegistries(ctx, scope)
 		},
 	},
 }
@@ -47,7 +47,7 @@ type registryConfig struct {
 	InsecureSkipVerify bool   `json:"insecure_skip_verify"`
 }
 
-func (uc *UseCase) setCustomRegistries(ctx context.Context, scope string) error {
+func (uc *UseCase) setContainerdCustomRegistries(ctx context.Context, scope string) error {
 	url, err := uc.repository.GetRegistryURL(scope)
 	if err != nil {
 		return err
