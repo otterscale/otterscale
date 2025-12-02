@@ -234,6 +234,10 @@ func (uc *UseCase) processCRDs(ctx context.Context, scope string, manifests []Ma
 func (uc *UseCase) processReleases(ctx context.Context, scope string, manifests []Manifest) error {
 	return uc.processManifests(ctx, scope, manifests, func(ctx context.Context, scope string, comp *component) error {
 		if comp.Chart != nil {
+			if err := uc.patchValuesMap(ctx, scope, comp.Chart.ValuesMap); err != nil {
+				return err
+			}
+
 			return uc.installOrUpgradeRelease(ctx, scope, comp.Chart)
 		}
 		return nil
@@ -337,10 +341,6 @@ func (uc *UseCase) installOrUpgradeRelease(ctx context.Context, scope string, ch
 func (uc *UseCase) installRelease(ctx context.Context, scope string, chart *chartComponent) error {
 	labels := map[string]string{
 		release.TypeLabel: "extension",
-	}
-
-	if err := uc.patchValuesMap(ctx, scope, chart.ValuesMap); err != nil {
-		return err
 	}
 
 	_, err := uc.release.Install(ctx, scope, chart.Namespace, chart.Name, false, chart.Ref, labels, labels, nil, "", chart.ValuesMap)
