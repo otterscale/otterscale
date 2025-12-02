@@ -106,6 +106,6 @@ func (uc *UseCase) getPrometheusTarget(ctx context.Context, scope, namespace, na
 	return "", fmt.Errorf("prometheus service has no %s port defined", portName)
 }
 
-func (uc *UseCase) setPrometheusScrapeTargetK8sTargets(ctx context.Context, scope string, name string, targets []string) error {
+func (uc *UseCase) setPrometheusScrapeTargetK8sTargets(ctx context.Context, scope, name string, targets []string) error {
 	return uc.facility.Update(ctx, scope, name, map[string]string{"targets": strings.Join(targets, ",")})
 }
