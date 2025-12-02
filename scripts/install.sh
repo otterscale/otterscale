@@ -584,8 +584,8 @@ prompt_bridge_creation() {
     log "INFO" "Disable $CURRENT_CONNECTION autoconnect" "NETWORK"
     nmcli connection modify "$CURRENT_CONNECTION" connection.autoconnect no > /dev/null
 
-    log "INFO" "Start up network bridge $OTTERSCALE_BRIDGE_NAME" "NETWORK"
-    nmcli connection up "$OTTERSCALE_BRIDGE_NAME" > /dev/null && nmcli connection down "$CURRENT_CONNECTION" > /dev/null
+    log "INFO" "Start up network bridge $OTTERSCALE_BRIDGE_NAME and down $CURRENT_CONNECTION" "NETWORK"
+    nmcli connection up "$OTTERSCALE_BRIDGE_NAME" && nmcli connection down "$CURRENT_CONNECTION" > /dev/null
 
     sleep 10
 }
@@ -855,14 +855,25 @@ enter_otterscale_web_ip() {
     done
 }
 
+get_otterscale_web_ip() {
+    if [[ -z "$OTTERSCALE_WEB_IP" ]]; then
+        log "INFO" "Please enter another ip that otterscale web used" "MAAS_DHCP"
+        enter_otterscale_web_ip
+    else
+        log "INFO" "OtterScale Web IP is $OTTERSCALE_WEB_IP" "NETWORK"
+    fi
+}
+
 get_dhcp_subnet_and_ip() {
     if [[ -z "$MAAS_DHCP_START_IP" ]]; then
+        log "INFO" "Please enter MAAS dhcp start ip in terminal" "MAAS_DHCP"
         enter_dhcp_start_ip
     else
         log "INFO" "MAAS dhcp start ip: $MAAS_DHCP_START_IP" "MAAS_DHCP"
     fi
 
     if [[ -z "$MAAS_DHCP_END_IP" ]]; then
+        log "INFO" "Please enter MAAS dhcp end ip in terminal" "MAAS_DHCP"
         enter_dhcp_end_ip
     else
         log "INFO" "MAAS dhcp start ip: $MAAS_DHCP_END_IP" "MAAS_DHCP"
@@ -1297,59 +1308,59 @@ juju_add_k8s() {
         log "INFO" "Scope cos already exists" "JUJU_SCOPE"
     else
         log "INFO" "Create scope: cos" "JUJU_SCOPE"
-        su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s" >>"$TEMP_LOG" 2>&1
+        su "$NON_ROOT_USER" -c "juju add-model cos cos-k8s --debug" >>"$TEMP_LOG" 2>&1
     fi
 
     if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus >/dev/null 2>&1"; then
         log "INFO" "Application prometheus (from cos-lite bundle) already exists" "JUJU_APPLICATION"
     else
         log "INFO" "Deploy application cos-lite" "JUJU_APPLICATION"
-        su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust" >>"$TEMP_LOG" 2>&1
+        su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust --debug" >>"$TEMP_LOG" 2>&1
     fi
 
     if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus-scrape-target-k8s >/dev/null 2>&1"; then
         log "INFO" "Application prometheus-scrape-target-k8s already exists" "JUJU_APPLICATION"
     else
         log "INFO" "Deploy application prometheus-scrape-target-k8s" "JUJU_APPLICATION"
-        su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge" >>"$TEMP_LOG" 2>&1
+        su "$NON_ROOT_USER" -c "juju deploy -m cos prometheus-scrape-target-k8s --channel=2/edge --debug" >>"$TEMP_LOG" 2>&1
     fi
 
     ## Config prometheus
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus metrics_retention_time=180d >/dev/null 2>&1"
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus maximum_retention_size=70% >/dev/null 2>&1"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus metrics_retention_time=180d" >>"$TEMP_LOG" 2>&1
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus maximum_retention_size=70%" >>"$TEMP_LOG" 2>&1
 
     ## Offer
-    su "$NON_ROOT_USER" -c "juju offer cos.grafana:grafana-dashboard global-grafana >/dev/null 2>&1"
-    su "$NON_ROOT_USER" -c "juju offer cos.prometheus:receive-remote-write global-prometheus >/dev/null 2>&1"
+    su "$NON_ROOT_USER" -c "juju offer cos.grafana:grafana-dashboard global-grafana" >>"$TEMP_LOG" 2>&1
+    su "$NON_ROOT_USER" -c "juju offer cos.prometheus:receive-remote-write global-prometheus" >>"$TEMP_LOG" 2>&1
 
     ## Relate (integrate)
     if ! su "$NON_ROOT_USER" -c 'juju status -m cos --relations 2>/dev/null | grep -Eq "(^|[[:space:]])(prometheus(:[^[:space:]]+)?[[:space:]]+prometheus-scrape-target-k8s(:[^[:space:]]+)?|prometheus-scrape-target-k8s(:[^[:space:]]+)?[[:space:]]+prometheus(:[^[:space:]]+)?)"'; then
-      su "$NON_ROOT_USER" -c 'juju relate -m cos prometheus prometheus-scrape-target-k8s >/dev/null 2>&1'
+        su "$NON_ROOT_USER" -c "juju relate -m cos prometheus prometheus-scrape-target-k8s" >>"$TEMP_LOG" 2>&1
     fi
 
     ## Config prometheus scrape target
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s job_name=federate >/dev/null 2>&1"
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s scheme=http >/dev/null 2>&1"
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s metrics_path='/federate' >/dev/null 2>&1"
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s job_name=federate" >>"$TEMP_LOG" 2>&1
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s scheme=http" >>"$TEMP_LOG" 2>&1
+    su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s metrics_path='/federate'" >>"$TEMP_LOG" 2>&1
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s params='match[]:
-  - \"{__name__!=''}\"'"
+  - \"{__name__!=''}\"'" >>"$TEMP_LOG" 2>&1
 
     ## Cos-lite resource, default is not limit
     # Grafana
-    #su "$NON_ROOT_USER" -c "juju config -m cos grafana cpu=500m >/dev/null 2>&1"
-    #su "$NON_ROOT_USER" -c "juju config -m cos grafana memory=512Mi >/dev/null 2>&1"
+    #su "$NON_ROOT_USER" -c "juju config -m cos grafana cpu=500m"
+    #su "$NON_ROOT_USER" -c "juju config -m cos grafana memory=512Mi"
 
     # Prometheus
-    #su "$NON_ROOT_USER" -c "juju config -m cos prometheus cpu=2 >/dev/null 2>&1"
-    #su "$NON_ROOT_USER" -c "juju config -m cos prometheus memory=4Gi >/dev/null 2>&1"
+    #su "$NON_ROOT_USER" -c "juju config -m cos prometheus cpu=2"
+    #su "$NON_ROOT_USER" -c "juju config -m cos prometheus memory=4Gi"
 
     # Loki
-    #su "$NON_ROOT_USER" -c "juju config -m cos loki cpu=250m >/dev/null 2>&1"
-    #su "$NON_ROOT_USER" -c "juju config -m cos loki memory=256Mi >/dev/null 2>&1"
+    #su "$NON_ROOT_USER" -c "juju config -m cos loki cpu=250m"
+    #su "$NON_ROOT_USER" -c "juju config -m cos loki memory=256Mi"
 
     # Patch traefik-lb
-    local CURRENT=$(microk8s kubectl get svc traefik-lb -n cos -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
-    if [[ "$CURRENT" != "$OTTERSCALE_INTERFACE_IP" ]]; then
+    local CURRENT_SVC_IP=$(microk8s kubectl get svc traefik-lb -n cos -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null)
+    if [[ "$CURRENT_SVC_IP" != "$OTTERSCALE_INTERFACE_IP" ]]; then
         log "INFO" "Specific metallb ip to service traefik-lb" "MICROK8S_SVC"
         
         microk8s kubectl patch svc traefik-lb -n cos \
@@ -1363,7 +1374,7 @@ juju_add_k8s() {
   }
 }
 EOF
-            )" >/dev/null 2>&1
+            )" >>"$TEMP_LOG" 2>&1
     fi
 
     log "INFO" "Kubernetes cluster added to Juju successfully" "JUJU_K8S"
@@ -1417,12 +1428,7 @@ wait_for_deployment() {
 
 # Add second ipv4 addrese to bridge
 config_bridge() {
-    # Check variable $OTTERSCALE_WEB_IP value
-    if [[ -z "$OTTERSCALE_WEB_IP" ]]; then
-        enter_otterscale_web_ip
-    else
-        log "INFO" "OtterScale Web IP is $OTTERSCALE_WEB_IP" "NETWORK"
-    fi
+    get_otterscale_web_ip
 
     log "INFO" "Detect network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
 
@@ -1470,7 +1476,7 @@ config_bridge() {
     log "INFO" "Check metallb ipaddresspools" "NETWORK"
     if ! microk8s kubectl get ipaddresspools default-addresspool -n metallb-system -o json | jq --exit-status ".spec.addresses[] | select(.==\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\")" >/dev/null 2>&1 ; then
         log "INFO" "Update microk8s metallb: $OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP" "NETWORK"
-        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >/dev/null 2>&1
+        microk8s kubectl patch ipaddresspools default-addresspool -n metallb-system --type=json -p "[{\"op\":\"add\", \"path\": \"/spec/addresses/-\", \"value\":\"$OTTERSCALE_WEB_IP-$OTTERSCALE_WEB_IP\"}]" >>"$TEMP_LOG" 2>&1
     fi
 }
 
@@ -1496,7 +1502,7 @@ install_helm_chart() {
 
     if [[ -z $(microk8s helm3 list -n "$namespace" -o json | jq ".[] | select(.name==\"$deploy_name\")") ]]; then
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
-        execute_cmd "microk8s helm3 install $deploy_name $repository_name -n $namespace $extra_args" "helm install $deploy_name"
+        execute_cmd "microk8s helm3 install $deploy_name $repository_name -n $namespace $extra_args --debug" "helm install $deploy_name"
     else
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"
     fi
@@ -1520,8 +1526,8 @@ deploy_helm() {
     install_helm_chart "istiod-ingress" "istio-system" "istio/gateway" "-n istio-system --wait --timeout 10m"
 
     # Patch istiod-ingress
-    local CURRENT=$(microk8s kubectl get svc istiod-ingress -n istio-system -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
-    if [[ "$CURRENT" != "$OTTERSCALE_WEB_IP" ]]; then
+    local CURRENT_SVC_IP=$(microk8s kubectl get svc istiod-ingress -n istio-system -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null)
+    if [[ "$CURRENT_SVC_IP" != "$OTTERSCALE_WEB_IP" ]]; then
         log "INFO" "Specific metallb ip to service istiod-ingress" "MICROK8S_SVC"
         
         microk8s kubectl patch svc istiod-ingress -n istio-system \
@@ -1535,17 +1541,15 @@ deploy_helm() {
   }
 }
 EOF
-            )" >/dev/null 2>&1
+            )" >>"$TEMP_LOG" 2>&1
     fi
 
     install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --version v1.19.1 --set crds.enabled=true --wait --timeout 10m"
     install_helm_chart "open-feature-operator" "open-feature-operator" "openfeature/open-feature-operator" "--create-namespace --set sidecarConfiguration.port=8080 --wait --timeout 10m"
 
     log "INFO" "Check helm chart otterscale" "HELM_CHECK"
-    local deploy_name
-    local namespace
-    deploy_name="otterscale"
-    namespace="otterscale"
+    local deploy_name="otterscale"
+    local namespace="otterscale"
     if [[ -z $(microk8s helm3 list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
         log "INFO" "Collecting configuration data for helm deployment" "HELM_CONFIG"
 
@@ -1713,12 +1717,12 @@ $(echo "$juju_cacert" | sed 's/^/      /')
 EOF
 
         if microk8s kubectl get namespaces $namespace >/dev/null 2>&1; then
-            execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-postgresql-0 --ignore-not-found=true"
-            execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-keycloak-postgres-0 --ignore-not-found=true"
+            execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-postgresql-0 --ignore-not-found=true" "Delete PVC data-otterscale-postgresql-0"
+            execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-keycloak-postgres-0 --ignore-not-found=true" "Delete PVC data-otterscale-keycloak-postgres-0"
         fi
 
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
-        execute_cmd "microk8s helm3 install $deploy_name otterscale-charts/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m" "helm install $deploy_name"
+        execute_cmd "microk8s helm3 install $deploy_name otterscale-charts/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m --debug" "helm install $deploy_name"
         
         log "INFO" "Cleanup ca cert file" "OTTERSCALE"
         rm -f "$ca_cert_file"
@@ -1746,6 +1750,10 @@ main() {
     check_disk
     disable_ipv6
     log "INFO" "All pre-checks passed" "VALIDATION"
+
+    # Get or Enter Network IP
+    get_dhcp_subnet_and_ip
+    get_otterscale_web_ip
 
     # Package installation
     log "INFO" "Installing packages..." "PACKAGES"
