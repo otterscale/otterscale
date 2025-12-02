@@ -20,8 +20,8 @@ var metricsComponents = []component{
 			Ref:       kubePrometheusStackChartRef,
 			Version:   versions.KubePrometheusStack,
 			ValuesMap: map[string]string{
-				"prometheus.prometheusSpec.externalLabels.juju_model":                                       "",
-				"prometheus.prometheusSpec.externalLabels.juju_model_uuid":                                  "",
+				"prometheus.prometheusSpec.externalLabels.juju_model":                                       "{{ .Scope }}",
+				"prometheus.prometheusSpec.externalLabels.juju_model_uuid":                                  "{{ .Scope.UUID }}",
 				"prometheus.prometheusSpec.enableRemoteWriteReceiver":                                       "true",
 				"prometheus.prometheusSpec.retention":                                                       "365d",
 				"prometheus.prometheusSpec.retentionSize":                                                   "40GiB",

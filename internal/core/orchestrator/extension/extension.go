@@ -18,6 +18,7 @@ import (
 
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/release"
+	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
 type Extension struct {
@@ -38,12 +39,14 @@ type Manifest struct {
 type UseCase struct {
 	customResourceDefinition cluster.CustomResourceDefinitionRepo
 	release                  release.ReleaseRepo
+	scope                    scope.ScopeRepo
 }
 
-func NewUseCase(customResourceDefinition cluster.CustomResourceDefinitionRepo, release release.ReleaseRepo) *UseCase {
+func NewUseCase(customResourceDefinition cluster.CustomResourceDefinitionRepo, release release.ReleaseRepo, scope scope.ScopeRepo) *UseCase {
 	return &UseCase{
 		customResourceDefinition: customResourceDefinition,
 		release:                  release,
+		scope:                    scope,
 	}
 }
 
@@ -330,6 +333,10 @@ func (uc *UseCase) installRelease(ctx context.Context, scope string, chart *char
 		release.TypeLabel: "extension",
 	}
 
+	if err := uc.patchValuesMap(ctx, scope, chart.ValuesMap); err != nil {
+		return err
+	}
+
 	_, err := uc.release.Install(ctx, scope, chart.Namespace, chart.Name, false, chart.Ref, labels, labels, nil, "", chart.ValuesMap)
 	return err
 }
@@ -337,4 +344,22 @@ func (uc *UseCase) installRelease(ctx context.Context, scope string, chart *char
 func (uc *UseCase) upgradeRelease(ctx context.Context, scope string, chart *chartComponent) error {
 	_, err := uc.release.Upgrade(ctx, scope, chart.Namespace, chart.Name, false, chart.Ref, "", chart.ValuesMap, false)
 	return err
+}
+
+func (uc *UseCase) patchValuesMap(ctx context.Context, scopeName string, valuesMap map[string]string) error {
+	scope, err := uc.scope.Get(ctx, scopeName)
+	if err != nil {
+		return err
+	}
+
+	for key, value := range valuesMap {
+		switch value {
+		case "{{ .Scope }}":
+			valuesMap[key] = scope.Name
+		case "{{ .Scope.UUID }}":
+			valuesMap[key] = scope.UUID
+		}
+	}
+
+	return nil
 }
