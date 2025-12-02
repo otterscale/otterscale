@@ -1359,6 +1359,7 @@ juju_add_k8s() {
     #su "$NON_ROOT_USER" -c "juju config -m cos loki memory=256Mi"
 
     # Patch traefik-lb
+    log "INFO" "Waiting k8s svc traefik-lb created" "MICROK8S_SVC"
     local CURRENT_SVC_IP
     while true; do
         if microk8s kubectl get svc -n cos traefik-lb >/dev/null 2>&1; then
@@ -1380,8 +1381,8 @@ EOF
 )" >>"$TEMP_LOG" 2>&1
                 return 0
             fi
+
         else
-            log "INFO" "Waiting k8s svc traefik-lb ready" "MICROK8S_SVC"
             sleep 5
         fi
     done
