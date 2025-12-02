@@ -39,7 +39,7 @@
 	const modelClient = createClient(ModelService, transport);
 	const applicationClient = createClient(ApplicationService, transport);
 
-	let isIntelligentMode = $state(model.mode === Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING);
+	let isDisaggregationMode = $state(model.mode === Model_Mode.PREFILL_DECODE_DISAGGREGATION);
 
 	const defaults = {
 		scope: scope,
@@ -72,9 +72,9 @@
 	function integrate() {
 		request.prefill = requestPrefillResource;
 		request.decode = requestDecodeResource;
-		request.mode = isIntelligentMode
-			? Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING
-			: Model_Mode.PREFILL_DECODE_DISAGGREGATION;
+		request.mode = isDisaggregationMode
+			? Model_Mode.PREFILL_DECODE_DISAGGREGATION
+			: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING;
 	}
 
 	let open = $state(false);
@@ -199,19 +199,15 @@
 				<Form.Field>
 					<div class="flex items-center justify-between gap-4">
 						<div class="flex items-center gap-2 font-bold">
-							<Icon icon={isIntelligentMode ? 'ph:sparkle' : 'ph:aperture'} class="size-5" />
-							<p>
-								{isIntelligentMode
-									? 'Intelligent Optimization Mode Enabled'
-									: 'Disaggregation Mode Enabled'}
-							</p>
+							<Icon icon="ph:aperture" class="size-5" />
+							<p>{m.disaggregation_mode()}</p>
 						</div>
-						<Switch bind:checked={isIntelligentMode} />
+						<Switch bind:checked={isDisaggregationMode} />
 					</div>
 				</Form.Field>
-				{#if isIntelligentMode}
+				{#if !isDisaggregationMode}
 					<Form.Fieldset>
-						<Form.Legend>{m.decode()}</Form.Legend>
+						<Form.Legend>{m.inference()}</Form.Legend>
 
 						<Form.Field>
 							<Form.Label>{m.replica()}</Form.Label>
