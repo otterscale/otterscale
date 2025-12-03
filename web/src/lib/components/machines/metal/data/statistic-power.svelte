@@ -17,7 +17,10 @@
 	} = $props();
 </script>
 
-<Layout.Statistic.Root>
+<Layout.Statistic.Root class="relative overflow-hidden">
+	{#if ['Commissioning', 'Deploying', 'Releasing'].includes($machine.statusMessage)}
+		<Spinner class="absolute right-4 bottom-4 size-8 text-primary/20" />
+	{/if}
 	<Layout.Statistic.Header>
 		<Layout.Statistic.Title>
 			{$machine.powerType}
@@ -32,11 +35,13 @@
 	</Layout.Statistic.Header>
 	<Layout.Statistic.Content>
 		<div class="flex flex-col">
-			<p class="text-center">{$machine.status}</p>
-			{#if ['Commissioning', 'Deploying', 'Releasing'].includes($machine.statusMessage)}
+			<span class=" flex items-center gap-1 text-center">
+				{$machine.status}
+			</span>
+			{#if ['Commissioning', 'Deploying', 'Releasing'].includes($machine.statusMessage) && $machine.statusMessage !== $machine.status}
 				<p class="mt-1 h-0 text-sm text-muted-foreground">
 					<span class="flex items-center gap-1">
-						<Spinner class="size-4" />{$machine.statusMessage}
+						{$machine.statusMessage}
 					</span>
 				</p>
 			{/if}
