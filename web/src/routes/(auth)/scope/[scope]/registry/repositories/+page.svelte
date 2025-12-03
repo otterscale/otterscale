@@ -8,11 +8,11 @@
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
 		{
-			title: m.models(),
+			title: m.registry(),
 			url: resolve('/(auth)/scope/[scope]/registry', { scope: page.params.scope! })
 		},
 		{
-			title: m.llm(),
+			title: m.repositories(),
 			url: resolve('/(auth)/scope/[scope]/registry/repositories', { scope: page.params.scope! })
 		}
 	]);

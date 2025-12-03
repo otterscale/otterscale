@@ -230,9 +230,12 @@
 											{#each chart.dependencies as dependency, index (index)}
 												<!-- eslint-disable svelte/no-navigation-without-resolve -->
 												<a
-													href={dependency.repository}
-													class="col-span-1 hover:underline md:col-span-2"
+													href={/^https?:\/\//i.test(dependency.repository)
+														? dependency.repository
+														: undefined}
+													rel="noopener noreferrer"
 													target="_blank"
+													class="col-span-1 hover:underline md:col-span-2"
 												>
 													<Item.Root class="p-0 ">
 														<Item.Media variant="icon" class="bg-transparent">
@@ -256,7 +259,11 @@
 										<div class="grid grid-cols-1 gap-2 md:grid-cols-2">
 											{#each chart.maintainers as maintainer, index (index)}
 												<!-- eslint-disable svelte/no-navigation-without-resolve -->
-												<a href={maintainer.url} class="hover:underline" target="_blank">
+												<a
+													href={/^https?:\/\//i.test(maintainer.url) ? maintainer.url : undefined}
+													class="hover:underline"
+													target="_blank"
+												>
 													<Item.Root class="p-0">
 														<Item.Media variant="icon" class="bg-transparent">
 															<Icon icon="ph:user" class="size-4" />
@@ -280,7 +287,7 @@
 													<Button
 														variant="secondary"
 														size="icon-sm"
-														href={chart.home}
+														href={/^https?:\/\//i.test(chart.home) ? chart.home : undefined}
 														target="_blank"
 													>
 														<Icon icon="ph:house-bold" class="size-4" />
@@ -296,7 +303,12 @@
 										<Tooltip.Provider>
 											<Tooltip.Root>
 												<Tooltip.Trigger>
-													<Button variant="secondary" size="icon-sm" href={source} target="_blank">
+													<Button
+														variant="secondary"
+														size="icon-sm"
+														href={/^https?:\/\//i.test(source) ? source : undefined}
+														target="_blank"
+													>
 														<Icon icon="ph:code-bold" class="size-4" />
 													</Button>
 												</Tooltip.Trigger>
