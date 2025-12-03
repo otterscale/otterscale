@@ -184,11 +184,11 @@ func buildConfigs(scope string, configs map[string]map[string]any) (string, erro
 	m := map[string]string{}
 
 	for name, config := range configs {
-		m := map[string]any{
+		c := map[string]any{
 			scope + "-" + name: config,
 		}
 
-		value, err := yaml.Marshal(m)
+		value, err := yaml.Marshal(c)
 		if err != nil {
 			return "", fmt.Errorf("failed to marshal config for %s: %w", name, err)
 		}
