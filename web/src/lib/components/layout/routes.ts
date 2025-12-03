@@ -61,6 +61,15 @@ const platformRoutes = (scope: string): Route[] => [
 		]
 	},
 	{
+		path: { title: m.registry(), url: resolve('/(auth)/scope/[scope]/registry', { scope: scope }) },
+		items: [
+			{
+				title: m.repositories(),
+				url: resolve('/(auth)/scope/[scope]/registry/repositories', { scope: scope })
+			}
+		]
+	},
+	{
 		path: { title: m.compute(), url: resolve('/(auth)/scope/[scope]/compute', { scope: scope }) },
 		items: [
 			{

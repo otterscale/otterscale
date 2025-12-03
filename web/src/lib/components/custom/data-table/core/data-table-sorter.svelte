@@ -12,14 +12,15 @@
 <Button
 	data-slot="data-table-sorter"
 	variant="ghost"
+	size="icon-sm"
 	onclick={column.getToggleSortingHandler()}
-	class="invisible group-hover:visible"
+	class="invisible p-1 group-hover:visible"
 >
 	{#if column.getIsSorted() == 'asc'}
-		<Icon icon="ph:sort-ascending" />
+		<Icon icon="ph:caret-up-bold" class="size-3" />
 	{:else if column.getIsSorted() == 'desc'}
-		<Icon icon="ph:sort-descending" />
+		<Icon icon="ph:caret-down-bold" class="size-3" />
 	{:else}
-		<Icon icon="ph:list" />
+		<Icon icon="ph:minus-bold" class="size-3" />
 	{/if}
 </Button>
