@@ -16,16 +16,14 @@
 		machine: Machine;
 		reloadManager: ReloadManager;
 	} = $props();
+
+	const scope = machine.workloadAnnotations['juju-machine-id']?.split('-machine-')[0];
 </script>
 
 <Layout.Actions>
 	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionSeparator />
-	<Layout.ActionItem
-		disabled={(machine.status.toLowerCase() !== 'ready' &&
-			machine.status.toLowerCase() !== 'releasing') ||
-			!!machine.workloadAnnotations['juju-is-controller']}
-	>
+	<Layout.ActionItem disabled={!scope}>
 		<Remove {machine} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem
