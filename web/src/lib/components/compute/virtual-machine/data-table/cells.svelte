@@ -335,7 +335,7 @@
 	{@const traffics = readUsage.map((read, index) => ({
 		time: read.time,
 		read: read.value,
-		write: writeUsage[index]?.value ?? 0
+		write: writeUsage[index]?.value ?? null
 	}))}
 	{@const maximumValue = Math.max(
 		...readUsage.map((usage) => Number(usage.value)),

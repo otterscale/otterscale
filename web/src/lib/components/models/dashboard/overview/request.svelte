@@ -23,7 +23,7 @@
 		runnings.map((sample, index) => ({
 			time: sample.time,
 			running: sample.value,
-			waiting: waitings[index]?.value ?? 0
+			waiting: waitings[index]?.value ?? null
 		}))
 	);
 

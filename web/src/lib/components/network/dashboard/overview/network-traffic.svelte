@@ -31,7 +31,7 @@
 		receives?.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmits?.[index]?.value ?? 0
+			transmit: transmits?.[index]?.value ?? null
 		})) ?? []
 	);
 	const latestTraffics = $derived({

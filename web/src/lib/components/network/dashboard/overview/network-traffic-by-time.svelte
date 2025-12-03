@@ -27,7 +27,7 @@
 		receivesByTime?.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmitsByTime?.[index]?.value ?? 0
+			transmit: transmitsByTime?.[index]?.value ?? null
 		})) ?? []
 	);
 	let trafficsByTimeContext = $state<ChartContextValue>();
