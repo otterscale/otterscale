@@ -32,13 +32,6 @@ const items = [
 		url: resolve('/(auth)/configuration/package-repository')
 	},
 	{
-		icon: 'ph:cube',
-		title: m.helm_repository(),
-		description: m.setting_helm_repository_description(),
-		type: m.application(),
-		url: resolve('/(auth)/configuration/helm-repository')
-	},
-	{
 		icon: 'ph:wallet',
 		title: m.subscription(),
 		description: m.settings(),

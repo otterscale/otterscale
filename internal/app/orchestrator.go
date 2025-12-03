@@ -99,17 +99,8 @@ func (s *OrchestratorService) ListExtensions(ctx context.Context, req *pb.ListEx
 	return resp, nil
 }
 
-func (s *OrchestratorService) InstallExtensions(ctx context.Context, req *pb.InstallExtensionsRequest) (*emptypb.Empty, error) {
-	if err := s.extension.InstallExtensions(ctx, req.GetScope(), toManifests(req.GetManifests())); err != nil {
-		return nil, err
-	}
-
-	resp := &emptypb.Empty{}
-	return resp, nil
-}
-
-func (s *OrchestratorService) UpgradeExtensions(ctx context.Context, req *pb.UpgradeExtensionsRequest) (*emptypb.Empty, error) {
-	if err := s.extension.UpgradeExtensions(ctx, req.GetScope(), toManifests(req.GetManifests())); err != nil {
+func (s *OrchestratorService) InstallOrUpgradeExtensions(ctx context.Context, req *pb.InstallOrUpgradeExtensionsRequest) (*emptypb.Empty, error) {
+	if err := s.extension.InstallOrUpgradeExtensions(ctx, req.GetScope(), toManifests(req.GetManifests())); err != nil {
 		return nil, err
 	}
 
@@ -122,7 +113,7 @@ func toManifests(ms []*pb.Extension_Manifest) []extension.Manifest {
 
 	for _, m := range ms {
 		ret = append(ret, extension.Manifest{
-			Name:    m.GetName(),
+			ID:      m.GetId(),
 			Version: m.GetVersion(),
 		})
 	}
@@ -265,7 +256,7 @@ func toProtoExtension(p *extension.Extension) *pb.Extension {
 
 func toProtoExtensionManifest(m *extension.Manifest) *pb.Extension_Manifest {
 	ret := &pb.Extension_Manifest{}
-	ret.SetName(m.Name)
+	ret.SetId(m.ID)
 	ret.SetVersion(m.Version)
 	return ret
 }

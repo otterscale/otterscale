@@ -7,6 +7,7 @@ export type Path = {
 
 const PATH_ICON_MAP: Record<string, string> = {
 	'/applications': 'ph:compass',
+	'/registry': 'ph:table',
 	'/compute': 'ph:cpu',
 	'/configuration': 'ph:gear',
 	'/databases': 'ph:database',
@@ -24,6 +25,7 @@ const CEPH_PATH_DISABLED_MAP: Record<string, boolean> = {
 
 const KUBERNETES_PATH_DISABLED_MAP: Record<string, boolean> = {
 	'/applications': true,
+	'/registry': true,
 	'/compute': true,
 	'/databases': true,
 	'/models': true,

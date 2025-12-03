@@ -168,17 +168,17 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	networkService := app.NewNetworkService(networkUseCase)
 	orchestratorUseCase := orchestrator.NewUseCase(nodeRepo)
 	customResourceDefinitionRepo := kubernetes.NewCustomResourceDefinitionRepo(kubernetesKubernetes)
-	extensionUseCase := extension.NewUseCase(customResourceDefinitionRepo, releaseRepo)
-	gpuUseCase := gpu.NewUseCase(machineRepo, nodeRepo, podRepo)
-	relationRepo := juju.NewRelationRepo(jujuJuju)
-	standaloneUseCase := standalone.NewUseCase(configConfig, facilityRepo, ipRangeRepo, machineRepo, orchestratorRepo, provisionerRepo, relationRepo, subnetRepo, tagRepo)
-	orchestratorService := app.NewOrchestratorService(orchestratorUseCase, extensionUseCase, gpuUseCase, standaloneUseCase)
 	registryRegistry, err := registry.New(configConfig, kubernetesKubernetes)
 	if err != nil {
 		return nil, nil, err
 	}
-	manifestRepo := registry.NewManifestRepo(registryRegistry)
 	repositoryRepo := registry.NewRepositoryRepo(registryRegistry)
+	extensionUseCase := extension.NewUseCase(customResourceDefinitionRepo, facilityRepo, nodeRepo, releaseRepo, repositoryRepo, scopeRepo, serviceRepo)
+	gpuUseCase := gpu.NewUseCase(machineRepo, nodeRepo, podRepo)
+	relationRepo := juju.NewRelationRepo(jujuJuju)
+	standaloneUseCase := standalone.NewUseCase(configConfig, facilityRepo, ipRangeRepo, machineRepo, orchestratorRepo, provisionerRepo, relationRepo, subnetRepo, tagRepo)
+	orchestratorService := app.NewOrchestratorService(orchestratorUseCase, extensionUseCase, gpuUseCase, standaloneUseCase)
+	manifestRepo := registry.NewManifestRepo(registryRegistry)
 	registryUseCase := registry2.NewUseCase(manifestRepo, repositoryRepo)
 	registryService := app.NewRegistryService(chartUseCase, registryUseCase)
 	storageUseCase := storage.NewUseCase(storageNodeRepo, poolRepo, machineRepo)

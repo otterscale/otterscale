@@ -81,14 +81,13 @@ func (r *facilityRepo) Create(_ context.Context, scope, name, configYAML, charmN
 	return errors.Join(errs...)
 }
 
-// Note: This function has not been tested.
-func (r *facilityRepo) Update(_ context.Context, scope, name, configYAML string) error {
+func (r *facilityRepo) Update(_ context.Context, scope, name string, config map[string]string) error {
 	conn, err := r.juju.connection(scope)
 	if err != nil {
 		return err
 	}
 
-	return application.NewClient(conn).SetConfig("", name, configYAML, nil)
+	return application.NewClient(conn).SetConfig("", name, "", config)
 }
 
 // Note: This function has not been tested.

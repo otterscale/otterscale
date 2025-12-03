@@ -12,6 +12,7 @@
 	import FilterName from './filter-name.svelte';
 	import FilterReset from './filter-reset.svelte';
 	import Pagination from './pagination.svelte';
+	import SynchronizeArtifactHub from './synchronize-artifact-hub.svelte';
 	import Thumbnail from './thumbnail.svelte';
 	import { FilterManager, PaginationManager } from './utils';
 </script>
@@ -52,12 +53,15 @@
 		</p>
 	</div>
 
-	<div class="flex items-center gap-1">
-		<FilterName {filterManager} />
-		<FilterKeyword {filterManager} />
-		<FilterMaintainer {filterManager} />
-		<FilterDeprecation {filterManager} />
-		<FilterReset {filterManager} />
+	<div class="flex justify-between gap-4">
+		<div class="flex items-center gap-1">
+			<FilterName {filterManager} />
+			<FilterKeyword {filterManager} />
+			<FilterMaintainer {filterManager} />
+			<FilterDeprecation {filterManager} />
+			<FilterReset {filterManager} />
+		</div>
+		<SynchronizeArtifactHub {scope} />
 	</div>
 
 	<div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

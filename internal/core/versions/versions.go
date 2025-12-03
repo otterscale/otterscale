@@ -2,23 +2,24 @@ package versions
 
 // OtterScale Helm Chart
 const (
-	GPUOperator   = "1.0.5" // HAMi 2.6.1 & GPU Operator 25.3.2
-	KubeVirtInfra = "0.1.0" // KubeVirt 1.6.2 & CDI 1.63.1
+	GPUOperator   = "1.0.6" // HAMi 2.6.1 & GPU Operator 25.3.2
+	KubeVirtInfra = "0.1.1" // KubeVirt 1.6.2 & CDI 1.63.1
 	ModelArtifact = "0.1.0"
+	Registry      = "0.2.0"
 	SambaOperator = "0.1.0"
 )
 
 // Official Helm Chart
 const (
-	KubePrometheusStack = "79.7.1"
+	KubePrometheusStack = "79.9.0"
 	Istio               = "1.28.0"
 )
 
 // llm-d Components
 const (
 	LLMDCuda               = "0.4.0"
-	LLMDInferenceScheduler = "0.4.0-rc.1"
-	LLMDRoutingSidecar     = "0.4.0-rc.1"
+	LLMDInferenceScheduler = "0.4.0"
+	LLMDRoutingSidecar     = "0.4.0"
 	LLMDModelService       = "0.3.10"
 	LLMDInfra              = "1.3.4"
 )
@@ -26,7 +27,7 @@ const (
 // Kubernetes Custom Resource Definition
 const (
 	GatewayAPI                   = "1.4.0"
-	GatewayAPIInferenceExtension = "1.2.0-rc.1"
+	GatewayAPIInferenceExtension = "1.2.0"
 )
 
 // Juju Charm

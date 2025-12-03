@@ -27,8 +27,6 @@
 
 	import type { LayoutData } from './$types';
 
-	const EXCLUDED_SCOPES = ['cos', 'cos-dev', 'cos-lite'];
-
 	let {
 		data,
 		children
@@ -58,7 +56,7 @@
 	async function fetchScopes() {
 		try {
 			const response = await scopeClient.listScopes({});
-			scopes = response.scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name));
+			scopes = response.scopes.filter((scope) => scope.name !== 'cos');
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
 		}

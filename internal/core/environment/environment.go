@@ -5,9 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/url"
-	"slices"
-
-	"connectrpc.com/connect"
 
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core/facility/action"
@@ -59,42 +56,28 @@ func (uc *UseCase) DiscoverPrometheusURL(ctx context.Context) (*url.URL, error) 
 		return uc.prometheusURL, nil
 	}
 
-	scopes, err := uc.scope.List(ctx)
+	result, err := uc.action.Run(ctx, "cos", "traefik", "show-proxied-endpoints", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	cosNames := []string{"cos", "cos-lite", "cos-dev"}
-	cosScopes := slices.DeleteFunc(scopes, func(s scope.Scope) bool {
-		return !slices.Contains(cosNames, s.Name)
-	})
-
-	for i := range cosScopes {
-		result, err := uc.action.Run(ctx, cosScopes[i].Name, "traefik", "show-proxied-endpoints", nil)
-		if err != nil {
-			continue
-		}
-
-		var endpoints traefikProxiedEndpoints
-		proxiedEndpointsStr, ok := result["proxied-endpoints"].(string)
-		if !ok {
-			continue
-		}
-
-		if err := json.Unmarshal([]byte(proxiedEndpointsStr), &endpoints); err != nil {
-			continue
-		}
-
-		prometheusURL, err := url.Parse(endpoints.Prometheus.URL)
-		if err != nil {
-			continue
-		}
-
-		*uc.prometheusURL = *prometheusURL
-		return uc.prometheusURL, nil
+	var endpoints traefikProxiedEndpoints
+	proxiedEndpointsStr, ok := result["proxied-endpoints"].(string)
+	if !ok {
+		return nil, err
 	}
 
-	return nil, connect.NewError(connect.CodeNotFound, errors.New("prometheus URL not found in any COS scope"))
+	if err := json.Unmarshal([]byte(proxiedEndpointsStr), &endpoints); err != nil {
+		return nil, err
+	}
+
+	prometheusURL, err := url.Parse(endpoints.Prometheus.URL)
+	if err != nil {
+		return nil, err
+	}
+
+	*uc.prometheusURL = *prometheusURL
+	return uc.prometheusURL, nil
 }
 
 func isMAASConfigured(conf *config.Config) bool {
