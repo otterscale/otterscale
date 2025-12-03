@@ -275,7 +275,7 @@
 						{/if}
 					</Select.Trigger>
 					<Select.Content>
-						{#each $machinesStore.filter((m) => m.status === 'Ready') as machine (machine.id)}
+						{#each $machinesStore.filter((m) => m.status === 'Ready' || m.status === 'New') as machine (machine.id)}
 							<Select.Item value={machine.id}>
 								{@render machineSelectItem(machine)}
 							</Select.Item>
