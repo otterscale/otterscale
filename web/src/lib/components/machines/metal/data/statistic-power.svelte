@@ -5,6 +5,7 @@
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import { Badge } from '$lib/components/ui/badge';
+	import { Spinner } from '$lib/components/ui/spinner/index.js';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -30,7 +31,16 @@
 		</Layout.Statistic.Action>
 	</Layout.Statistic.Header>
 	<Layout.Statistic.Content>
-		{$machine.status}
+		<div class="flex flex-col">
+			<p class="text-center">{$machine.status}</p>
+			{#if ['Commissioning', 'Deploying', 'Releasing'].includes($machine.statusMessage)}
+				<p class="mt-1 h-0 text-sm text-muted-foreground">
+					<span class="flex items-center gap-1">
+						<Spinner class="size-4" />{$machine.statusMessage}
+					</span>
+				</p>
+			{/if}
+		</div>
 	</Layout.Statistic.Content>
 	<Layout.Statistic.Footer>
 		<sapn class="capitalize"> {$machine.osystem}</sapn>
