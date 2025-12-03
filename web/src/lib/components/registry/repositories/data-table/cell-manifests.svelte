@@ -261,6 +261,7 @@
 												<!-- eslint-disable svelte/no-navigation-without-resolve -->
 												<a
 													href={/^https?:\/\//i.test(maintainer.url) ? maintainer.url : undefined}
+													rel="noopener noreferrer"
 													class="hover:underline"
 													target="_blank"
 												>
@@ -288,6 +289,7 @@
 														variant="secondary"
 														size="icon-sm"
 														href={/^https?:\/\//i.test(chart.home) ? chart.home : undefined}
+														rel="noopener noreferrer"
 														target="_blank"
 													>
 														<Icon icon="ph:house-bold" class="size-4" />
@@ -307,6 +309,7 @@
 														variant="secondary"
 														size="icon-sm"
 														href={/^https?:\/\//i.test(source) ? source : undefined}
+														rel="noopener noreferrer"
 														target="_blank"
 													>
 														<Icon icon="ph:code-bold" class="size-4" />
