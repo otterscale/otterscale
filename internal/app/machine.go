@@ -63,14 +63,14 @@ func (s *MachineService) CreateMachine(ctx context.Context, req *pb.CreateMachin
 }
 
 func (s *MachineService) DeleteMachine(ctx context.Context, req *pb.DeleteMachineRequest) (*emptypb.Empty, error) {
-	if err := s.machine.DeleteMachine(ctx, req.GetId(), req.GetForce()); err != nil {
-		return nil, err
-	}
-
 	if req.GetPurgeDisk() {
 		if err := s.purge.PurgeDisk(ctx, req.GetId()); err != nil {
 			return nil, err
 		}
+	}
+
+	if err := s.machine.DeleteMachine(ctx, req.GetId(), req.GetForce()); err != nil {
+		return nil, err
 	}
 
 	resp := &emptypb.Empty{}
