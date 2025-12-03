@@ -184,7 +184,7 @@ func (uc *UseCase) deploy(ctx context.Context, scope, maasID, jujuID string, bas
 func buildConfig(scope, name string, configs map[string]map[string]any) (string, error) {
 	config, ok := configs[name]
 	if !ok {
-		return "", fmt.Errorf("no config found for %s", name)
+		return "", nil // skip
 	}
 
 	m := map[string]any{
