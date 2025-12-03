@@ -19,14 +19,15 @@ interface Plan {
 
 const plans: Plan[] = [
 	{
-		tier: m.standard_tier(),
+		tier: m.community_tier(),
 		star: false,
-		name: m.standard_tier_name(),
-		description: m.standard_tier_description(),
+		name: m.community_tier_name(),
+		description: m.community_tier_description(),
 		tags: [m.ceph(), m.kubernetes(), m.single_node()],
 		image: BasicTierImage,
-		disabled: get(premiumTier).level < PremiumTier_Level.STANDARD
+		disabled: get(premiumTier).level < PremiumTier_Level.COMMUNITY
 	},
+	// TODO: Standard tier disabled until feature is available
 	{
 		tier: m.premium_tier(),
 		star: true,
