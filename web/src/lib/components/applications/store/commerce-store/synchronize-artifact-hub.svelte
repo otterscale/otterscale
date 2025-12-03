@@ -1,7 +1,8 @@
 <script lang="ts" module>
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	import { RegistryService } from '$lib/api/registry/v1/registry_pb';
 	import { Button } from '$lib/components/ui/button';
@@ -26,11 +27,26 @@
 			console.error('Failed to synchronize with Artifact Hub:', error);
 		}
 	}
+
+	onMount(async () => {});
 </script>
 
 <Button
 	class="flex h-8 items-center gap-2"
 	onclick={() => {
+		toast.promise(
+			async () => {
+				await synchronize();
+			},
+			{
+				loading: 'Synchronizing with Artifact Hub...',
+				success: 'Synchronization successful!',
+				error: (error) => {
+					console.error('Failed to synchronize with Artifact Hub:', error);
+					return `Synchronization failed: ${(error as ConnectError).message}`;
+				}
+			}
+		);
 		synchronize();
 	}}
 >
