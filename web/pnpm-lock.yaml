@@ -23,8 +23,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1(@bufbuild/protobuf@2.10.1)(@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.10.1))
       '@dagrejs/dagre':
-        specifier: ^1.1.8
-        version: 1.1.8
+        specifier: ^2.0.1
+        version: 2.0.1
       '@iconify/svelte':
         specifier: ^5.1.0
         version: 5.1.0(svelte@5.45.2)
@@ -384,6 +384,9 @@ packages:
 
   '@dagrejs/dagre@1.1.8':
     resolution: {integrity: sha512-5SEDlndt4W/LaVzPYJW+bSmSEZc9EzTf8rJ20WCKvjS5EAZAN0b+x0Yww7VMT4R3Wootkg+X9bUfUxazYw6Blw==}
+
+  '@dagrejs/dagre@2.0.1':
+    resolution: {integrity: sha512-KEI+nyPrI6l8qeAZ9+Ju7+rWGYJnGRR9GUu7AEFUTrm/WC1i5d6/qo/HqQ+/LQRyDed0XjaNeqFBhaWd91Ho1g==}
 
   '@dagrejs/graphlib@2.2.4':
     resolution: {integrity: sha512-mepCf/e9+SKYy1d02/UkvSy6+6MoyXhVxP8lLDfA7BPE1X1d4dR0sZznmbM8/XVJ1GPM+Svnx7Xj6ZweByWUkw==}
@@ -3713,6 +3716,10 @@ snapshots:
   '@csstools/css-tokenizer@3.0.4': {}
 
   '@dagrejs/dagre@1.1.8':
+    dependencies:
+      '@dagrejs/graphlib': 2.2.4
+
+  '@dagrejs/dagre@2.0.1':
     dependencies:
       '@dagrejs/graphlib': 2.2.4
 
