@@ -154,14 +154,15 @@ func (uc *UseCase) deploy(ctx context.Context, scope, maasID, jujuID string, bas
 
 	for _, charm := range base.Charms() {
 		eg.Go(func() error {
-			name := scope + "-" + strings.TrimPrefix(charm.Name, "ch:")
+			charmName := strings.TrimPrefix(charm.Name, "ch:")
+			appName := scope + "-" + charmName
 
-			configs, err := base.Configs()
+			config, err := base.Config(charmName)
 			if err != nil {
 				return err
 			}
 
-			return uc.facility.Create(egctx, scope, name, configs, charm.Name, charm.Channel, charm.PlacementScope, charm.Subordinate, jujuID, series)
+			return uc.facility.Create(egctx, scope, appName, config, charm.Name, charm.Channel, charm.PlacementScope, charm.Subordinate, jujuID, series)
 		})
 	}
 
@@ -180,28 +181,22 @@ func (uc *UseCase) deploy(ctx context.Context, scope, maasID, jujuID string, bas
 	return eg.Wait()
 }
 
-func buildConfigs(scope string, configs map[string]map[string]any) (string, error) {
-	m := map[string]string{}
-
-	for name, config := range configs {
-		c := map[string]any{
-			scope + "-" + name: config,
-		}
-
-		value, err := yaml.Marshal(c)
-		if err != nil {
-			return "", fmt.Errorf("failed to marshal config for %s: %w", name, err)
-		}
-
-		m["ch:"+name] = string(value)
+func buildConfig(scope, name string, configs map[string]map[string]any) (string, error) {
+	config, ok := configs[name]
+	if !ok {
+		return "", nil // skip
 	}
 
-	data, err := yaml.Marshal(m)
+	m := map[string]any{
+		scope + "-" + name: config,
+	}
+
+	value, err := yaml.Marshal(m)
 	if err != nil {
-		return "", fmt.Errorf("failed to marshal final configs: %w", err)
+		return "", fmt.Errorf("failed to marshal config for %s: %w", name, err)
 	}
 
-	return string(data), nil
+	return string(value), nil
 }
 
 func buildRelations(scope string, relationList [][]string) [][]string {
