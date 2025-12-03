@@ -32,7 +32,7 @@ func (c *ceph) Charms() []charm {
 	}
 }
 
-func (c *ceph) Configs() (string, error) {
+func (c *ceph) Config(charmName string) (string, error) {
 	configs := map[string]map[string]any{
 		"ceph-mon": {
 			"monitor-count":       1,
@@ -57,7 +57,7 @@ func (c *ceph) Configs() (string, error) {
 		},
 	}
 
-	return buildConfigs(c.Scope, configs)
+	return buildConfig(c.Scope, charmName, configs)
 }
 
 func (c *ceph) Relations() [][]string {
