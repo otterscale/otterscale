@@ -7,7 +7,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/versions"
 )
 
-// v1.2.0-rc.1
+// v1.2.0
 func convertGAIEValuesMap(mode Mode, name, releaseName string, port int32) map[string]string {
 	ret := map[string]string{
 		"inferenceExtension.image.name":                                                    "llm-d-inference-scheduler",

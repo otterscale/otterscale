@@ -32,10 +32,6 @@ type MicroK8s struct {
 	Config string `json:"config"`
 }
 
-type Kube struct {
-	HelmRepositoryURLs []string `json:"helm_repository_urls"`
-}
-
 type Ceph struct {
 	RADOSTimeout time.Duration `json:"rados_timeout"`
 }
@@ -47,7 +43,6 @@ type Schema struct {
 	MicroK8s MicroK8s `json:"micro_k8s"`
 
 	// User
-	Kube Kube `json:"kube"`
 	Ceph Ceph `json:"ceph"`
 }
 
@@ -135,10 +130,6 @@ func (c *Config) MicroK8sConfig() string {
 	return c.v.GetString("micro_k8s.config")
 }
 
-func (c *Config) KubeHelmRepositoryURLs() []string {
-	return c.v.GetStringSlice("kube.helm_repository_urls")
-}
-
 func (c *Config) CephRADOSTimeout() time.Duration {
 	return c.v.GetDuration("ceph.rados_timeout")
 }
@@ -169,9 +160,6 @@ func defaultSchema() *Schema {
 			CloudName:      "maas-cloud",
 			CloudRegion:    "default",
 			CharmhubAPIURL: "https://api.charmhub.io",
-		},
-		Kube: Kube{
-			HelmRepositoryURLs: []string{"http://chartmuseum:8080"},
 		},
 	}
 }

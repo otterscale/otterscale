@@ -61,16 +61,6 @@ func (s *ConfigurationService) UpdatePackageRepository(ctx context.Context, req 
 	return resp, nil
 }
 
-func (s *ConfigurationService) UpdateHelmRepository(_ context.Context, req *pb.UpdateHelmRepositoryRequest) (*pb.Configuration_HelmRepository, error) {
-	helmRepository, err := s.configuration.UpdateHelmRepository(req.GetUrls())
-	if err != nil {
-		return nil, err
-	}
-
-	resp := toProtoHelmRepository(helmRepository)
-	return resp, nil
-}
-
 func (s *ConfigurationService) CreateBootImage(ctx context.Context, req *pb.CreateBootImageRequest) (*pb.Configuration_BootImage, error) {
 	image, err := s.configuration.CreateBootImage(ctx, req.GetDistroSeries(), req.GetArchitectures())
 	if err != nil {
@@ -390,18 +380,11 @@ func toProtoBootImageSelection(bis *configuration.BootImageSelection) *pb.Config
 	return ret
 }
 
-func toProtoHelmRepository(urls []string) *pb.Configuration_HelmRepository {
-	ret := &pb.Configuration_HelmRepository{}
-	ret.SetUrls(urls)
-	return ret
-}
-
 func toProtoConfiguration(c *configuration.Configuration) *pb.Configuration {
 	ret := &pb.Configuration{}
 	ret.SetNtpServer(toProtoNTPServer(c.NTPServers))
 	ret.SetPackageRepositories(toProtoPackageRepositories(c.PackageRepositories))
 	ret.SetBootImages(toProtoBootImages(c.BootImages))
-	ret.SetHelmRepository(toProtoHelmRepository(c.HelmRepositorys))
 	return ret
 }
 

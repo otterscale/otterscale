@@ -31,7 +31,7 @@ type Facility struct {
 type FacilityRepo interface {
 	List(ctx context.Context, scope, jujuID string) ([]Facility, error)
 	Create(ctx context.Context, scope, name, configYAML, charmName, channel, placementScope string, subordinate bool, directive, series string) error
-	Update(ctx context.Context, scope, name, configYAML string) error
+	Update(ctx context.Context, scope, name string, config map[string]string) error
 	Delete(ctx context.Context, scope, name string, destroyStorage, force bool) error
 	Resolve(ctx context.Context, scope, unitName string) error
 	Config(ctx context.Context, scope string, name string) (map[string]any, error)

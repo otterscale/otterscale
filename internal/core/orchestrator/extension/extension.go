@@ -4,23 +4,25 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"golang.org/x/sync/errgroup"
 	"helm.sh/helm/v3/pkg/storage/driver"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"sigs.k8s.io/kustomize/api/krusty"
+	"sigs.k8s.io/kustomize/api/resource"
 	"sigs.k8s.io/kustomize/kyaml/filesys"
 	"sigs.k8s.io/yaml"
 
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/release"
+	"github.com/otterscale/otterscale/internal/core/application/service"
+	"github.com/otterscale/otterscale/internal/core/facility"
+	"github.com/otterscale/otterscale/internal/core/registry"
+	"github.com/otterscale/otterscale/internal/core/scope"
 )
-
-type Manifest struct {
-	Name    string
-	Version string
-}
 
 type Extension struct {
 	DisplayName string
@@ -32,284 +34,343 @@ type Extension struct {
 	Latest      *Manifest
 }
 
-type UseCase struct {
-	customResourceDefinition cluster.CustomResourceDefinitionRepo
-	release                  release.ReleaseRepo
+type Manifest struct {
+	ID      string
+	Version string
 }
 
-func NewUseCase(customResourceDefinition cluster.CustomResourceDefinitionRepo, release release.ReleaseRepo) *UseCase {
+type UseCase struct {
+	customResourceDefinition cluster.CustomResourceDefinitionRepo
+	facility                 facility.FacilityRepo
+	node                     cluster.NodeRepo
+	release                  release.ReleaseRepo
+	repository               registry.RepositoryRepo
+	scope                    scope.ScopeRepo
+	service                  service.ServiceRepo
+}
+
+func NewUseCase(customResourceDefinition cluster.CustomResourceDefinitionRepo, facility facility.FacilityRepo, node cluster.NodeRepo, release release.ReleaseRepo, repository registry.RepositoryRepo, scope scope.ScopeRepo, service service.ServiceRepo) *UseCase {
 	return &UseCase{
 		customResourceDefinition: customResourceDefinition,
+		facility:                 facility,
+		node:                     node,
 		release:                  release,
+		repository:               repository,
+		scope:                    scope,
+		service:                  service,
 	}
 }
 
 func (uc *UseCase) ListExtensions(ctx context.Context, scope string, extType Type) ([]Extension, error) {
+	components, err := uc.getComponentsByType(extType)
+	if err != nil {
+		return nil, err
+	}
+
+	return uc.listExtensions(ctx, scope, components)
+}
+
+func (uc *UseCase) getComponentsByType(extType Type) ([]component, error) {
 	switch extType {
 	case TypeMetrics:
-		return uc.listExtensions(ctx, scope, metrics)
+		return metricsComponents, nil
 
 	case TypeServiceMesh:
-		return uc.listExtensions(ctx, scope, serviceMesh)
+		return serviceMeshComponents, nil
 
 	case TypeRegistry:
-		return uc.listExtensions(ctx, scope, registry)
+		return registryComponents, nil
 
 	case TypeModel:
-		return uc.listExtensions(ctx, scope, model)
+		return modelComponents, nil
 
 	case TypeInstance:
-		return uc.listExtensions(ctx, scope, instance)
+		return instanceComponents, nil
 
 	case TypeStorage:
-		return uc.listExtensions(ctx, scope, storage)
+		return storageComponents, nil
 
 	default:
 		return nil, fmt.Errorf("unknown extension type: %v", extType)
 	}
 }
 
-func (uc *UseCase) InstallExtensions(ctx context.Context, scope string, manifests []Manifest) error {
-	eg, egctx := errgroup.WithContext(ctx)
-
-	for _, manifest := range manifests {
-		eg.Go(func() error {
-			base, err := uc.base(manifest.Name)
-			if err != nil {
-				return err
-			}
-
-			for i := range base.Charts {
-				chart := base.Charts[i]
-
-				if _, err := uc.release.Install(egctx, scope, base.Namespace, base.Name, false, chart.Ref, chart.Labels, chart.Labels, chart.Annotations, "", chart.ValuesMap); err != nil {
-					return err
-				}
-
-				if chart.PostFunc != nil {
-					if err := chart.PostFunc(scope); err != nil {
-						return err
-					}
-				}
-			}
-
-			crd := base.CRD
-
-			if crd != nil {
-				fSys := filesys.MakeFsOnDisk()
-				k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
-
-				m, err := k.Run(fSys, crd.Ref)
-				if err != nil {
-					return err
-				}
-
-				for _, node := range m.Resources() {
-					data, err := node.AsYAML()
-					if err != nil {
-						return err
-					}
-
-					var def *apiextensionsv1.CustomResourceDefinition
-					if err := yaml.Unmarshal(data, &def); err != nil {
-						return err
-					}
-
-					if _, err := uc.customResourceDefinition.Create(egctx, scope, def); err != nil {
-						return err
-					}
-				}
-			}
-
-			return nil
-		})
+func (uc *UseCase) InstallOrUpgradeExtensions(ctx context.Context, scope string, manifests []Manifest) error {
+	steps := []func(context.Context, string, []Manifest) error{
+		uc.precondition,
+		uc.processCRDs,
+		uc.processReleases,
+		uc.processPostFuncs,
 	}
 
-	return eg.Wait()
-}
-
-func (uc *UseCase) UpgradeExtensions(ctx context.Context, scope string, manifests []Manifest) error {
-	eg, egctx := errgroup.WithContext(ctx)
-
-	for _, manifest := range manifests {
-		eg.Go(func() error {
-			base, err := uc.base(manifest.Name)
-			if err != nil {
-				return err
-			}
-
-			for i := range base.Charts {
-				chart := base.Charts[i]
-
-				if _, err := uc.release.Upgrade(egctx, scope, base.Namespace, base.Name, false, chart.Ref, "", chart.ValuesMap, true); err != nil {
-					return err
-				}
-			}
-
-			crd := base.CRD
-
-			if crd != nil {
-				fSys := filesys.MakeFsOnDisk()
-				k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
-
-				m, err := k.Run(fSys, crd.Ref)
-				if err != nil {
-					return err
-				}
-
-				for _, node := range m.Resources() {
-					data, err := node.AsYAML()
-					if err != nil {
-						return err
-					}
-
-					var def *apiextensionsv1.CustomResourceDefinition
-					if err := yaml.Unmarshal(data, &def); err != nil {
-						return err
-					}
-
-					if _, err := uc.customResourceDefinition.Update(egctx, scope, def); err != nil {
-						return err
-					}
-				}
-			}
-
-			return nil
-		})
-	}
-
-	return eg.Wait()
-}
-
-func (uc *UseCase) listExtensions(ctx context.Context, scope string, bases []base) ([]Extension, error) {
-	releases := make([]release.Release, len(bases))
-	crds := []cluster.CustomResourceDefinition{}
-
-	eg, egctx := errgroup.WithContext(ctx)
-
-	for i := range bases {
-		base := bases[i]
-
-		if len(base.Charts) > 0 {
-			eg.Go(func() error {
-				v, err := uc.release.Get(egctx, scope, base.Namespace, base.Name)
-				if err == nil {
-					releases[i] = *v
-				}
-				if errors.Is(err, driver.ErrReleaseNotFound) {
-					return nil
-				}
-				return err
-			})
+	for _, step := range steps {
+		if err := step(ctx, scope, manifests); err != nil {
+			return err
 		}
 	}
 
-	eg.Go(func() error {
-		v, err := uc.customResourceDefinition.List(egctx, scope, "")
-		if err == nil {
-			crds = v
-		}
-		return err
-	})
+	return nil
+}
 
-	if err := eg.Wait(); err != nil {
+func (uc *UseCase) listExtensions(ctx context.Context, scope string, components []component) ([]Extension, error) {
+	crds, err := uc.customResourceDefinition.List(ctx, scope, "")
+	if err != nil {
 		return nil, err
 	}
 
-	ret := []Extension{}
+	var extensions []Extension
 
-	for i := range bases {
-		base := bases[i]
-
-		if len(base.Charts) > 0 {
-			ret = append(ret, *uc.buildExtensionFromChart(&base, &releases[i]))
+	for i := range components {
+		ext, err := uc.buildExtension(ctx, scope, &components[i], crds)
+		if err != nil {
+			return nil, err
 		}
 
-		crd := base.CRD
-
-		if crd != nil {
-			ret = append(ret, *uc.buildExtensionFromCRD(&base, crds, crd.AnnotationVersionKey))
-		}
+		extensions = append(extensions, *ext)
 	}
 
-	return ret, nil
+	return extensions, nil
 }
 
-func (uc *UseCase) buildExtensionFromChart(base *base, release *release.Release) *Extension {
-	var (
-		status     string
-		deployedAt *time.Time
-		current    *Manifest
-		latest     *Manifest
-	)
-
-	if release.Info != nil {
-		status = release.Info.Status.String()
-		deployedAt = &release.Info.LastDeployed.Time
-		current = &Manifest{
-			Name:    release.Chart.Metadata.Name,
-			Version: release.Chart.Metadata.Version,
-		}
+func (uc *UseCase) buildExtension(ctx context.Context, scope string, comp *component, crds []cluster.CustomResourceDefinition) (*Extension, error) {
+	chart := comp.Chart
+	if chart != nil {
+		return uc.buildExtensionFromChart(ctx, scope, comp, chart)
 	}
 
-	charts := base.Charts
+	crd := comp.CRD
+	if crd != nil {
+		return uc.buildExtensionFromCRD(comp, crd, crds)
+	}
 
-	if len(charts) > 0 {
-		chart := charts[0]
+	return nil, fmt.Errorf("component %s has neither chart nor CRD", comp.ID)
+}
 
-		latest = &Manifest{
-			Name:    base.Name,
+func (uc *UseCase) buildExtensionFromChart(ctx context.Context, scope string, comp *component, chart *chartComponent) (*Extension, error) {
+	ext := &Extension{
+		DisplayName: comp.DisplayName,
+		Description: comp.Description,
+		Icon:        comp.Logo,
+		Latest: &Manifest{
+			ID:      comp.ID,
 			Version: chart.Version,
+		},
+	}
+
+	rel, err := uc.release.Get(ctx, scope, chart.Namespace, chart.Name)
+	if err != nil && !errors.Is(err, driver.ErrReleaseNotFound) {
+		return nil, err
+	}
+
+	if rel != nil && rel.Info != nil {
+		ext.Status = rel.Info.Status.String()
+		ext.DeployedAt = &rel.Info.LastDeployed.Time
+		ext.Current = &Manifest{
+			ID:      comp.ID,
+			Version: rel.Chart.Metadata.Version,
 		}
 	}
 
-	return &Extension{
-		DisplayName: base.DisplayName,
-		Description: base.Description,
-		Icon:        base.Logo,
-		Status:      status,
-		DeployedAt:  deployedAt,
-		Current:     current,
-		Latest:      latest,
-	}
+	return ext, nil
 }
 
-func (uc *UseCase) buildExtensionFromCRD(base *base, crds []cluster.CustomResourceDefinition, annotationVersionKey string) *Extension {
-	var (
-		status     string
-		deployedAt *time.Time
-		current    *Manifest
-		latest     *Manifest
-	)
+func (uc *UseCase) buildExtensionFromCRD(comp *component, crd *crdComponent, crds []cluster.CustomResourceDefinition) (*Extension, error) {
+	ext := &Extension{
+		DisplayName: comp.DisplayName,
+		Description: comp.Description,
+		Icon:        comp.Logo,
+		Latest: &Manifest{
+			ID:      comp.ID,
+			Version: crd.Version,
+		},
+	}
 
 	for i := range crds {
-		if version, ok := crds[i].Annotations[annotationVersionKey]; ok {
-			status = "deployed"
-			deployedAt = &crds[i].CreationTimestamp.Time
-			current = &Manifest{
-				Name:    base.Name,
-				Version: version,
+		if version, ok := crds[i].Annotations[crd.VersionAnnotation]; ok {
+			ext.Status = "deployed"
+			ext.DeployedAt = &crds[i].CreationTimestamp.Time
+			ext.Current = &Manifest{
+				ID:      comp.ID,
+				Version: strings.TrimPrefix(version, "v"),
 			}
 			break
 		}
 	}
 
-	crd := base.CRD
+	return ext, nil
+}
 
-	if crd != nil {
-		latest = &Manifest{
-			Name:    base.Name,
-			Version: crd.Version,
+func (uc *UseCase) precondition(ctx context.Context, scope string, manifests []Manifest) error {
+	return uc.processManifests(ctx, scope, manifests, func(ctx context.Context, scope string, comp *component) error {
+		for _, dep := range comp.Dependencies {
+			if err := uc.verifyDependency(ctx, scope, dep); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+}
+
+func (uc *UseCase) verifyDependency(ctx context.Context, scope, depID string) error {
+	depComponent, err := uc.whichComponent(depID)
+	if err != nil {
+		return err
+	}
+
+	if depComponent.Chart != nil {
+		_, err := uc.release.Get(ctx, scope, depComponent.Chart.Namespace, depComponent.Chart.Name)
+		if err != nil {
+			return fmt.Errorf("dependency %s not satisfied: %w", depID, err)
 		}
 	}
 
-	return &Extension{
-		DisplayName: base.DisplayName,
-		Description: base.Description,
-		Icon:        base.Logo,
-		Status:      status,
-		DeployedAt:  deployedAt,
-		Current:     current,
-		Latest:      latest,
+	return nil
+}
+
+func (uc *UseCase) processCRDs(ctx context.Context, scope string, manifests []Manifest) error {
+	return uc.processManifests(ctx, scope, manifests, func(ctx context.Context, scope string, comp *component) error {
+		if comp.CRD != nil {
+			return uc.createOrUpdateCRDsFromRef(ctx, scope, comp.CRD)
+		}
+		return nil
+	})
+}
+
+func (uc *UseCase) processReleases(ctx context.Context, scope string, manifests []Manifest) error {
+	return uc.processManifests(ctx, scope, manifests, func(ctx context.Context, scope string, comp *component) error {
+		if comp.Chart != nil {
+			if err := uc.patchValuesMap(ctx, scope, comp.Chart.ValuesMap); err != nil {
+				return err
+			}
+
+			return uc.installOrUpgradeRelease(ctx, scope, comp.Chart)
+		}
+		return nil
+	})
+}
+
+func (uc *UseCase) processPostFuncs(ctx context.Context, scope string, manifests []Manifest) error {
+	return uc.processManifests(ctx, scope, manifests, func(ctx context.Context, scope string, comp *component) error {
+		if comp.PostFunc != nil {
+			return comp.PostFunc(uc, ctx, scope)
+		}
+		return nil
+	})
+}
+
+func (uc *UseCase) processManifests(ctx context.Context, scope string, manifests []Manifest, fn func(context.Context, string, *component) error) error {
+	eg, egctx := errgroup.WithContext(ctx)
+
+	for _, manifest := range manifests {
+		eg.Go(func() error {
+			component, err := uc.whichComponent(manifest.ID)
+			if err != nil {
+				return err
+			}
+			return fn(egctx, scope, component)
+		})
 	}
+
+	return eg.Wait()
+}
+
+func (uc *UseCase) createOrUpdateCRDsFromRef(ctx context.Context, scope string, crd *crdComponent) error {
+	fSys := filesys.MakeFsOnDisk()
+	k := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
+
+	m, err := k.Run(fSys, crd.Ref)
+	if err != nil {
+		return err
+	}
+
+	for _, node := range m.Resources() {
+		if err := uc.processCRDNode(ctx, scope, node, crd.VersionAnnotation); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (uc *UseCase) processCRDNode(ctx context.Context, scope string, node *resource.Resource, versionAnnotation string) error {
+	data, err := node.AsYAML()
+	if err != nil {
+		return err
+	}
+
+	var def *apiextensionsv1.CustomResourceDefinition
+	if err := yaml.Unmarshal(data, &def); err != nil {
+		return err
+	}
+
+	return uc.createOrUpdateCRD(ctx, scope, def, versionAnnotation)
+}
+
+func (uc *UseCase) createOrUpdateCRD(ctx context.Context, scope string, crd *apiextensionsv1.CustomResourceDefinition, versionAnnotation string) error {
+	existing, err := uc.customResourceDefinition.Get(ctx, scope, crd.Name)
+	if k8serrors.IsNotFound(err) {
+		_, err := uc.customResourceDefinition.Create(ctx, scope, crd)
+		return err
+	}
+	if err != nil {
+		return err
+	}
+
+	if uc.shouldUpdateCRD(existing, crd, versionAnnotation) {
+		crd.ObjectMeta = existing.ObjectMeta
+		_, err = uc.customResourceDefinition.Update(ctx, scope, crd)
+		return err
+	}
+
+	return nil
+}
+
+func (uc *UseCase) shouldUpdateCRD(currentCRD *cluster.CustomResourceDefinition, newCRD *apiextensionsv1.CustomResourceDefinition, versionAnnotation string) bool {
+	currentVersion := currentCRD.Annotations[versionAnnotation]
+	newVersion := newCRD.Annotations[versionAnnotation]
+	return currentVersion != newVersion
+}
+
+func (uc *UseCase) installOrUpgradeRelease(ctx context.Context, scope string, chart *chartComponent) error {
+	_, err := uc.release.Get(ctx, scope, chart.Namespace, chart.Name)
+	if errors.Is(err, driver.ErrReleaseNotFound) {
+		return uc.installRelease(ctx, scope, chart)
+	}
+	if err != nil {
+		return err
+	}
+
+	return uc.upgradeRelease(ctx, scope, chart)
+}
+
+func (uc *UseCase) installRelease(ctx context.Context, scope string, chart *chartComponent) error {
+	labels := map[string]string{
+		release.TypeLabel: "extension",
+	}
+
+	_, err := uc.release.Install(ctx, scope, chart.Namespace, chart.Name, false, chart.Ref, labels, labels, nil, "", chart.ValuesMap)
+	return err
+}
+
+func (uc *UseCase) upgradeRelease(ctx context.Context, scope string, chart *chartComponent) error {
+	_, err := uc.release.Upgrade(ctx, scope, chart.Namespace, chart.Name, false, chart.Ref, "", chart.ValuesMap, false)
+	return err
+}
+
+func (uc *UseCase) patchValuesMap(ctx context.Context, scopeName string, valuesMap map[string]string) error {
+	scope, err := uc.scope.Get(ctx, scopeName)
+	if err != nil {
+		return err
+	}
+
+	for key, value := range valuesMap {
+		switch value {
+		case "{{ .Scope }}":
+			valuesMap[key] = scope.Name
+		case "{{ .Scope.UUID }}":
+			valuesMap[key] = scope.UUID
+		}
+	}
+
+	return nil
 }
