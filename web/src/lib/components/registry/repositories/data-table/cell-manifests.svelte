@@ -173,6 +173,22 @@
 									<Card.Description class="py-2 text-sm">
 										{chart.description}
 									</Card.Description>
+									{#if chart.keywords || chart.tags}
+										<div class="flex flex-wrap items-center gap-2">
+											{#if chart.tags}
+												<span class="flex items-center gap-1 text-xs text-muted-foreground">
+													<Icon icon="ph:tag" class="size-3" />
+													<p>{chart.tags}</p>
+												</span>
+											{/if}
+											{#each chart.keywords as keyword (keyword)}
+												<span class="flex items-center gap-1 text-xs text-muted-foreground">
+													<Icon icon="ph:tag" class="size-3" />
+													<p>{keyword}</p>
+												</span>
+											{/each}
+										</div>
+									{/if}
 									<Card.Action>
 										{#if chart.repositoryName.startsWith('otterscale/')}
 											<Icon icon="ph:star-fill" class="size-4 fill-yellow-400 text-yellow-400" />
@@ -255,26 +271,8 @@
 											{/each}
 										</div>
 									{/if}
-
-									{#if chart.keywords || chart.tags}
-										<Label>{m.tags()}/{m.keywords()}</Label>
-										<div class="flex flex-wrap items-center gap-2">
-											{#if chart.tags}
-												<span class="flex items-center gap-1 text-xs text-muted-foreground">
-													<Icon icon="ph:tag" class="size-3" />
-													<p>{chart.tags}</p>
-												</span>
-											{/if}
-											{#each chart.keywords as keyword (keyword)}
-												<span class="flex items-center gap-1 text-xs text-muted-foreground">
-													<Icon icon="ph:tag" class="size-3" />
-													<p>{keyword}</p>
-												</span>
-											{/each}
-										</div>
-									{/if}
 								</Card.Content>
-								<Card.Footer class="flex flex-wrap gap-2">
+								<Card.Footer class="flex flex-wrap gap-4">
 									{#if chart.home}
 										<Tooltip.Provider>
 											<Tooltip.Root>
@@ -329,21 +327,54 @@
 											</Item.Content>
 										</Item.Root>
 									</Card.Title>
-									<Card.Description class="space-y-2 py-2 text-sm text-muted-foreground">
-										{#if image.config && image.config.labels}
-											{#each Object.entries(image.config.labels) as [label, value] (label)}
-												<p class="break-all">{label}: {value}</p>
-											{/each}
-										{/if}
+									<Card.Description class="space-y-2 py-2 text-xs">
 										{#if image.author}
-											<p class="break-all">author: {image.author}</p>
+											<div class="grow">
+												<h3 class="font-semibold text-primary">Author</h3>
+												<p class="mt-1 break-all">{image.author}</p>
+											</div>
 										{/if}
 										{#if image.createdAt}
-											<p class="break-all">
-												create time: {timestampDate(image.createdAt).toDateString()}
-											</p>
+											<div class="grow">
+												<h3 class="font-semibold text-primary">Create Time</h3>
+												<p class="mt-1 break-all">
+													{timestampDate(image.createdAt).toDateString()}
+												</p>
+											</div>
+										{/if}
+										{#if image.config && image.config.labels}
+											{#each Object.entries(image.config.labels) as [label, value] (label)}
+												<div class="grow">
+													<h3 class="font-semibold text-primary capitalize">{label}</h3>
+													<p class="mt-1 break-all">
+														{value}
+													</p>
+												</div>
+											{/each}
 										{/if}
 									</Card.Description>
+									{#if image.platform}
+										<div class="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+											{#if image.platform.architecture}
+												<span class="flex items-center gap-1">
+													<Icon icon="ph:cpu" class="size-4" />
+													<p>{image.platform.architecture}</p>
+												</span>
+											{/if}
+											{#if image.platform.variant}
+												<span class="flex items-center gap-1">
+													<Icon icon="ph:cpu" class="size-4" />
+													<p>{image.platform.variant}</p>
+												</span>
+											{/if}
+											{#if image.platform.os && image.platform.variant}
+												<span class="flex items-center gap-1">
+													<Icon icon="ph:squares-four" class="size-4" />
+													<p>{image.platform.os} {image.platform.variant}</p>
+												</span>
+											{/if}
+										</div>
+									{/if}
 									<Card.Action>
 										{#if manifest.repositoryName.startsWith('otterscale/')}
 											<Icon icon="ph:star-fill" class="size-4 fill-yellow-400 text-yellow-400" />
@@ -440,30 +471,6 @@
 														</Item.Title>
 													</Item.Content>
 												</Item.Root>
-											{/if}
-										</div>
-									{/if}
-
-									{#if image.platform}
-										<Label>{m.platforms()}</Label>
-										<div class="flex flex-wrap items-center gap-4">
-											{#if image.platform.architecture}
-												<span class="flex items-center gap-1 text-sm text-muted-foreground">
-													<Icon icon="ph:cpu" class="size-4" />
-													<p>{image.platform.architecture}</p>
-												</span>
-											{/if}
-											{#if image.platform.variant}
-												<span class="flex items-center gap-1 text-sm text-muted-foreground">
-													<Icon icon="ph:cpu" class="size-4" />
-													<p>{image.platform.variant}</p>
-												</span>
-											{/if}
-											{#if image.platform.os && image.platform.variant}
-												<span class="flex items-center gap-1 text-sm text-muted-foreground">
-													<Icon icon="ph:squares-four" class="size-4" />
-													<p>{image.platform.os} {image.platform.variant}</p>
-												</span>
 											{/if}
 										</div>
 									{/if}

@@ -388,6 +388,7 @@
 	"releases": "發行版",
 	"chart": "Chart",
 	"chart_version": "Chart 版本",
+	"chart_package": "Chart 套件",
 	"upload": "上傳",
 	"applications_store_chart_upload_description": "將您的 Helm Chart 上傳至 OCI 登錄檔",
 	"applications_store_chart_upload_is_dragging": "在此放下檔案",
@@ -898,5 +899,7 @@
 	"platforms": "平台",
 	"commands": "指令碼",
 	"versions": "版本",
-	"dependencies": "相依性"
+	"dependencies": "相依性",
+	"push_image_description": "將映像推送到專案。",
+	"push_chart_description": "將圖表推送到專案。"
 }

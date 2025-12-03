@@ -129,7 +129,7 @@
 			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<CommandList />
+			<CommandList {scope} />
 			<Reloader
 				bind:checked={reloadManager.state}
 				onCheckedChange={() => {

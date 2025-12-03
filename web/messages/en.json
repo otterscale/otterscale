@@ -389,6 +389,7 @@
 	"releases": "Releases",
 	"chart": "Chart",
 	"chart_version": "Chart Version",
+	"chart_package": "Chart Package",
 	"upload": "Upload",
 	"applications_store_chart_upload_description": "Upload your Helm chart to OCI registry",
 	"applications_store_chart_upload_is_dragging": "Drop file here",
@@ -900,5 +901,7 @@
 	"platforms": "Platforms",
 	"commands": "Commands",
 	"versions": "Versions",
-	"dependencies": "Dependencies"
+	"dependencies": "Dependencies",
+	"push_image_description": "Push an image to a project.",
+	"push_chart_description": "Push a chart to a project."
 }
