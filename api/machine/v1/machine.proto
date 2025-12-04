@@ -85,6 +85,7 @@ message Machine {
   string status = 201;
   string status_message = 202;
   string agent_status = 203;
+  string agent_status_message = 204;
   string power_state = 301;
   string power_type = 302;
   string osystem = 401;
