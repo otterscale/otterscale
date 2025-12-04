@@ -35,10 +35,10 @@
 	</Layout.Statistic.Header>
 	<Layout.Statistic.Content>
 		<div class="flex flex-col">
-			<span class=" flex items-center gap-1 text-center">
+			<span class=" flex items-center gap-1">
 				{$machine.status}
 			</span>
-			{#if ['Commissioning', 'Deploying', 'Releasing'].includes($machine.status) && $machine.statusMessage !== $machine.status}
+			{#if (['Commissioning', 'Deploying', 'Releasing'].includes($machine.status) || $machine.status.startsWith('Failed')) && $machine.statusMessage !== $machine.status}
 				<p class="mt-1 h-0 text-sm text-muted-foreground">
 					<span class="flex items-center gap-1">
 						{$machine.statusMessage}
