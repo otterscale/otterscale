@@ -1431,16 +1431,6 @@ install_helm_chart() {
     fi
 }
 
-add_helm_repository() {
-    log "INFO" "Check helm repository" "HELM_REPO"
-    add_helm_repository "https://istio-release.storage.googleapis.com/charts" "istio"
-    add_helm_repository "https://charts.jetstack.io" "jetstack"
-    add_helm_repository "https://open-feature.github.io/open-feature-operator" "openfeature"
-    add_helm_repository "https://cloudnative-pg.github.io/charts" "cnpg"
-    add_helm_repository "https://otterscale.github.io/charts" "otterscale-charts"
-    execute_cmd "microk8s helm3 repo update" "helm repository update"
-}
-
 patch_istiod_ip() {
     local CURRENT_SVC_IP=$(microk8s kubectl get svc istiod-ingress -n istio-system -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
 
@@ -1729,8 +1719,15 @@ EOF
 }
 
 deploy_helm() {
-    log "INFO" "Process microk8s helm3" "HELM_CHECK"
+    log "INFO" "Check helm repository" "HELM_REPO"
+    add_helm_repository "https://istio-release.storage.googleapis.com/charts" "istio"
+    add_helm_repository "https://charts.jetstack.io" "jetstack"
+    add_helm_repository "https://open-feature.github.io/open-feature-operator" "openfeature"
+    add_helm_repository "https://cloudnative-pg.github.io/charts" "cnpg"
+    add_helm_repository "https://otterscale.github.io/charts" "otterscale-charts"
+    execute_cmd "microk8s helm3 repo update" "helm repository update"
 
+    log "INFO" "Install helm charts" "HELM_CHECK"
     install_helm_chart "istio-base" "istio-system" "istio/base" "--create-namespace --set defaultRevision=default --wait --timeout 10m"
     install_helm_chart "istiod" "istio-system" "istio/istiod" "--wait --timeout 10m"
     install_helm_chart "istiod-ingress" "istio-system" "istio/gateway" "-n istio-system --wait --timeout 10m"
@@ -1821,7 +1818,6 @@ main() {
     log "INFO" "Finalizing configuration..." "FINAL_CONFIG"
     config_ceph_rbd_modules
     check_secondary_ip
-    add_helm_repository
     deploy_helm
 
     log "INFO" "OtterScale installation completed successfully!" "FINISHED"
