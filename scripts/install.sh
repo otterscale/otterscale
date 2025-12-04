@@ -844,8 +844,8 @@ update_dhcp_config() {
 enable_maas_dhcp() {
     log "INFO" "Configuring MAAS DHCP..." "MAAS_DHCP"
 
-    local dynamic_ipranges=$(maas admin ipranges read | jq -r '.[] | select(.type==\"dynamic\").id')
-    if [ -n $dynamic_ipranges]; then
+    local dynamic_ipranges=$(maas admin ipranges read | jq -r '.[] | select(.type=="dynamic").id')
+    if [ -n $dynamic_ipranges ]; then
         log "INFO" "MAAS already has dynamic IP ranges - skipping DHCP configuration" "MAAS_DHCP"
         return 0
     fi
@@ -940,7 +940,7 @@ create_lxd_vm() {
     local vm_hosts=$(maas admin vm-hosts read)
     local vm_host_count=$(echo "$vm_hosts" | jq '. | length')
     VM_HOST_ID=""
-    
+
     if ((vm_host_count > 0)); then
         log "INFO" "Found existing VM hosts, checking resources..." "LXD_VM"
         search_available_vmhost "$vm_hosts"
