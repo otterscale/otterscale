@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { create } from '@bufbuild/protobuf';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import type { Snippet } from 'svelte';
@@ -7,20 +6,11 @@
 	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
+	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import {
-		AddMachineTagsRequestSchema,
-		CommissionMachineRequestSchema,
-		CreateMachineRequestSchema,
-		GetMachineRequestSchema,
-		type Machine,
-		MachineService
-	} from '$lib/api/machine/v1/machine_pb';
-	import {
-		CreateNodeRequestSchema,
-		OrchestratorService
-	} from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { CreateScopeRequestSchema, ScopeService } from '$lib/api/scope/v1/scope_pb';
+	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
+	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import { ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import { IPv4AddressInput } from '$lib/components/custom/ipv4';
 	import { IPv4CIDRInput } from '$lib/components/custom/ipv4-cidr';
 	import { Badge } from '$lib/components/ui/badge';
@@ -45,7 +35,7 @@
 	}: {
 		plan: Plan;
 		oncancel?: () => void;
-		onsuccess?: (name: string) => void;
+		onsuccess?: () => void;
 		actions?: Snippet<[{ isSubmitting: boolean; onCancel: () => void; onSubmit: () => void }]>;
 	} = $props();
 
@@ -79,112 +69,108 @@
 	}
 
 	function handleSubmit(event: Event) {
+		// Prepare data
+		const scope = scopeName;
+		const machineId = selectedMachine;
+		const virtualIps = virtualIp ? [virtualIp] : [];
+		const calicoCidrValue = calicoCidr;
+		const osdDevices = selectedDevices.map((device) => `${DEVICE_PATH_PREFIX}${device}`);
+
 		event.preventDefault();
 
 		if (isSubmitting) return;
 		isSubmitting = true;
 
 		// Create a loading toast that we can update
-		const toastId = toast.loading(`Creating scope ${scopeName}...`, {
+		const toastId = toast.loading(`Creating scope ${scope}...`, {
 			duration: TOAST_DURATION_MS
 		});
 
 		(async () => {
 			try {
 				// Step 1: Create Scope
-				const createScopeRequest = create(CreateScopeRequestSchema, {
-					name: scopeName
-				});
-				const scopeResponse = await scopeClient.createScope(createScopeRequest);
+				const scopeResponse = await scopeClient.createScope({ name: scope });
+
+				// Reset form and navigate
+				handleSuccess(scope);
 
 				// Step 2: Add Machine Tags
 				toast.loading('Adding machine tags...', { id: toastId, duration: TOAST_DURATION_MS });
-				const addMachineTagsRequest = create(AddMachineTagsRequestSchema, {
-					id: selectedMachine,
-					tags: []
-				});
-				await machineClient.addMachineTags(addMachineTagsRequest);
+				await machineClient.addMachineTags({ id: machineId, tags: [] });
 
 				// Step 3: Commission Machine
 				toast.loading('Commissioning machine...', { id: toastId, duration: TOAST_DURATION_MS });
-				const commissionMachineRequest = create(CommissionMachineRequestSchema, {
-					id: selectedMachine,
+				await machineClient.commissionMachine({
+					id: machineId,
 					enableSsh: true,
 					skipBmcConfig: false,
 					skipNetworking: false,
 					skipStorage: false
 				});
-				await machineClient.commissionMachine(commissionMachineRequest);
 
 				// Step 4: Wait for machine status to be Ready
-				toast.loading('Waiting for machine to be ready...', {
-					id: toastId,
-					duration: TOAST_DURATION_MS
-				});
-				const getMachineRequest = create(GetMachineRequestSchema, {
-					id: selectedMachine
-				});
-
-				// Poll until machine status is Ready
 				let machineReady = false;
 				let retryCount = 0;
 				while (!machineReady && retryCount < MAX_POLL_ATTEMPTS) {
-					await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
-					const machineResponse = await machineClient.getMachine(getMachineRequest);
+					const machineResponse = await machineClient.getMachine({ id: machineId });
+					toast.loading('Waiting for machine to be ready...', {
+						id: toastId,
+						duration: TOAST_DURATION_MS,
+						description: machineResponse.statusMessage
+					});
 					if (machineResponse.status.toLowerCase() === 'ready') {
 						machineReady = true;
 					}
+					await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
 					retryCount++;
 				}
 
 				// Step 5: Create Machine
 				toast.loading('Creating machine...', { id: toastId, duration: TOAST_DURATION_MS });
-				const createMachineRequest = create(CreateMachineRequestSchema, {
-					id: selectedMachine,
-					scope: scopeResponse.name
-				});
-				const machineResponse = await machineClient.createMachine(createMachineRequest);
+				await machineClient.createMachine({ id: machineId, scope: scope });
 
 				// Step 6: Wait for agent status to be Started
-				toast.loading('Waiting for agent to start...', {
-					id: toastId,
-					duration: TOAST_DURATION_MS
-				});
-
-				// Poll until agent status is Started
 				let agentStarted = false;
 				retryCount = 0;
 				while (!agentStarted && retryCount < MAX_POLL_ATTEMPTS) {
-					await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
-					const machineResponse = await machineClient.getMachine(getMachineRequest);
+					const machineResponse = await machineClient.getMachine({ id: machineId });
+					toast.loading('Waiting for agent to start...', {
+						id: toastId,
+						duration: TOAST_DURATION_MS,
+						description: machineResponse.agentStatusMessage
+					});
 					if (machineResponse.agentStatus.toLowerCase() === 'started') {
 						agentStarted = true;
 					}
+					await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
 					retryCount++;
 				}
 
 				// Step 7: Create Node
-				toast.loading('Creating node...', { id: toastId, duration: TOAST_DURATION_MS });
-				const createNodeRequest = create(CreateNodeRequestSchema, {
-					scope: scopeResponse.name,
-					machineId: machineResponse.id,
-					virtualIps: virtualIp ? [virtualIp] : [],
-					calicoCidr: calicoCidr,
-					osdDevices: selectedDevices.map((device) => `${DEVICE_PATH_PREFIX}${device}`)
+				toast.loading('Creating node...', {
+					id: toastId,
+					duration: TOAST_DURATION_MS,
+					description: 'Istalling Kubernetes and Ceph'
 				});
-				await orchestratorClient.createNode(createNodeRequest);
+				await orchestratorClient.createNode({
+					scope: scope,
+					machineId: machineId,
+					virtualIps: virtualIps,
+					calicoCidr: calicoCidrValue,
+					osdDevices: osdDevices
+				});
 
 				// Success
 				toast.success(m.create_scope_success({ name: scopeResponse.name }), {
 					id: toastId,
-					duration: 5000
+					duration: 5000,
+					description: ''
 				});
 				isSubmitting = false;
 				resetForm();
-				onsuccess?.(scopeResponse.name);
 			} catch (error) {
 				isSubmitting = false;
-				const message = `Failed to create scope: ${scopeName}`;
+				const message = `Failed to create scope: ${scope}`;
 				toast.error(message, {
 					id: toastId,
 					description: (error as ConnectError).message.toString(),
@@ -197,6 +183,12 @@
 	function handleCancel() {
 		resetForm();
 		oncancel?.();
+	}
+
+	function handleSuccess(scope: string) {
+		resetForm();
+		onsuccess?.();
+		goto(resolve('/(auth)/scope/[scope]/setup', { scope: scope }));
 	}
 
 	function resetForm() {
