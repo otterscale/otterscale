@@ -896,5 +896,7 @@
 	"versions": "版本",
 	"dependencies": "相依性",
 	"push_image_description": "將映像推送到專案。",
-	"push_chart_description": "將圖表推送到專案。"
+	"push_chart_description": "將圖表推送到專案。",
+	"gpu_relation_description": "顯示此模型的機器、GPU 和 Pod 之間的關聯。",
+	"gpu_relation_guide_description": "互動式圖表，探索物件之間的關聯與分配情形。"
 }

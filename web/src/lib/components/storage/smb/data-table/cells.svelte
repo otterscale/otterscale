@@ -8,8 +8,8 @@
 		SMBShare_SecurityConfig_Mode
 	} from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { TagGroup } from '$lib/components/tag-group';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
@@ -56,80 +56,80 @@
 </script>
 
 {#snippet row_picker(row: Row<SMBShare>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet uri(row: Row<SMBShare>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.uri}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet healthies(row: Row<SMBShare>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{row.original.healthies}/{row.original.replicas}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet size(row: Row<SMBShare>)}
 	{@const { value, unit } = formatCapacity(Number(row.original.sizeBytes))}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{value}
 		{unit}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet browsable(row: Row<SMBShare>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{@const value = row.original.browsable}
 		<Icon icon={value ? 'ph:check' : 'ph:x'} class={value ? 'text-green-500' : 'text-red-500'} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet read_only(row: Row<SMBShare>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{@const value = row.original.readOnly}
 		<Icon icon={value ? 'ph:check' : 'ph:x'} class={value ? 'text-green-500' : 'text-red-500'} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet guest_ok(row: Row<SMBShare>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{@const value = row.original.guestOk}
 		<Icon icon={value ? 'ph:check' : 'ph:x'} class={value ? 'text-green-500' : 'text-red-500'} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet map_to_guest(row: Row<SMBShare>)}
 	{#if row.original.commonConfig}
-		<Layout.Cell class="items-start">
+		<Table.Cell alignClass="items-start">
 			<Badge variant="outline">{getMapToGuestLabel(row.original.commonConfig.mapToGuest)}</Badge>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet mode(row: Row<SMBShare>)}
 	{#if row.original.securityConfig}
-		<Layout.Cell class="items-start">
+		<Table.Cell alignClass="items-start">
 			<Badge variant="outline">{getSecurityModeLabel(row.original.securityConfig.mode)}</Badge>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet valid_users(row: Row<SMBShare>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.validUsers && row.original.validUsers.length > 0}
 			<TagGroup
 				items={row.original.validUsers.map((validUser) => ({ title: validUser, icon: 'ph:user' }))}
 			/>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<SMBShare>; scope: string; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<Actions smbShare={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

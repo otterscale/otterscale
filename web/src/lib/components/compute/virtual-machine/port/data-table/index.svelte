@@ -12,11 +12,11 @@
 	} from '@tanstack/table-core';
 
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
-	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import { Empty, Filters, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
 
 	import Create from './action-create.svelte';
 	import { getColumns, messages } from './columns';
@@ -34,7 +34,6 @@
 		reloadManager: ReloadManager;
 	} = $props();
 
-	// let snapshots = $derived(image.snapshots || []);
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -160,7 +159,6 @@
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<Footer {table} />
 		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

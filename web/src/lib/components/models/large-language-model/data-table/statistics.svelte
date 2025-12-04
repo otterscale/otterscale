@@ -19,18 +19,18 @@
 		{@const title = m.models()}
 		{@const backgroundIcon = 'ph:robot'}
 		{@const models = filteredModels.length}
-		{@const modelsInTwoDays = filteredModels.filter((model) =>
+		{@const pastModels = filteredModels.filter((model) =>
 			model.firstDeployedAt
-				? timestampDate(model.firstDeployedAt) >= new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+				? timestampDate(model.firstDeployedAt) >= new Date(Date.now() - 14 * 24 * 60 * 60 * 1000) &&
+					timestampDate(model.firstDeployedAt) < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 				: false
 		).length}
-		{@const modelsInOneDay = filteredModels.filter((model) =>
+		{@const recentModels = filteredModels.filter((model) =>
 			model.firstDeployedAt
-				? timestampDate(model.firstDeployedAt) >= new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
+				? timestampDate(model.firstDeployedAt) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 				: false
 		).length}
-		{@const differenceInOneDay = modelsInOneDay + 1 - (modelsInTwoDays - modelsInOneDay)}
-
+		{@const difference = recentModels - pastModels}
 		<Card.Root
 			class="@container/card relative flex flex-col gap-6 overflow-hidden rounded-xl border bg-card py-6 text-card-foreground shadow-sm"
 		>
@@ -42,38 +42,34 @@
 					{models}
 				</Card.Title>
 				<Card.Action class="col-start-2 row-span-2 row-start-1 self-start justify-self-end">
-					{@const percentage = formatPercentage(differenceInOneDay, modelsInOneDay, 1)}
-					{#if differenceInOneDay > 0}
+					{@const percentage = formatPercentage(difference, pastModels, 1)}
+					{#if percentage}
 						<Badge>
-							<Icon icon="ph:trend-up" />
-							<p>+{percentage}%</p>
-						</Badge>
-					{:else if differenceInOneDay < 0}
-						<Badge>
-							<Icon icon="ph:trend-down" />
-							<p>-{percentage}%</p>
-						</Badge>
-					{:else}
-						<Badge>
-							<Icon icon="ph:minus" />
-							<p>{percentage ?? 0}%</p>
+							{#if difference > 0}
+								<Icon icon="ph:trend-up" />
+							{:else if difference < 0}
+								<Icon icon="ph:trend-down" />
+							{:else}
+								<Icon icon="ph:minus" />
+							{/if}
+							<p>{percentage}%</p>
 						</Badge>
 					{/if}
 				</Card.Action>
 			</Card.Header>
 			<Card.Footer class="flex flex-col items-start gap-1.5 px-6 text-sm [.border-t]:pt-6">
 				<div class="line-clamp-1 flex items-center gap-2 font-medium">
-					{#if differenceInOneDay > 0}
-						Trending up in the this day
+					{#if difference > 0}
+						Trending up in 7 day
 						<Icon icon="ph:trend-up" />
-					{:else if differenceInOneDay < 0}
-						Trending down in the this day
+					{:else if difference < 0}
+						Trending down in 7 day
 						<Icon icon="ph:trend-down" />
 					{:else}
-						No change in the this day
+						No change in 7 day
 					{/if}
 				</div>
-				<div class="text-muted-foreground">{modelsInOneDay} Models for the last 24 hours</div>
+				<div class="text-muted-foreground">{recentModels} Models for the last 14 days</div>
 			</Card.Footer>
 			<div
 				class="absolute top-0 -right-16 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"

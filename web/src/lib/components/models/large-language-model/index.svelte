@@ -98,7 +98,8 @@
 <main class="space-y-4 py-4">
 	<ExtensionsAlert {scope} />
 	{#if isMounted}
-		<DataTable {serviceUri} {models} namespace="default" {metrics} {scope} {reloadManager} />
+		<!-- Temporary fix the namespace to llm-d -->
+		<DataTable {serviceUri} {models} namespace="llm-d" {metrics} {scope} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

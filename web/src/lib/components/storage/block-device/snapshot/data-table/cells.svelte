@@ -4,9 +4,9 @@
 
 	import type { Image, Image_Snapshot } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { formatCapacity } from '$lib/formatter';
 
 	import Actions from './cell-actions.svelte';
@@ -21,31 +21,31 @@
 </script>
 
 {#snippet row_picker(row: Row<Image_Snapshot>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Image_Snapshot>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.name}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet protect(row: Row<Image_Snapshot>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.protected}
 			<Icon icon="ph:circle" class="text-primary" />
 		{:else}
 			<Icon icon="ph:x" class="text-destructive" />
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<Image_Snapshot>)}
 	{@const denominator = Number(row.original.quotaBytes)}
 	{@const numerator = Number(row.original.usedBytes)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<Progress.Root {numerator} {denominator} target="STB">
 			{#snippet ratio({ numerator, denominator })}
 				{Progress.formatRatio(numerator, denominator)}
@@ -58,7 +58,7 @@
 				{denominatorUnit}
 			{/snippet}
 		</Progress.Root>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet actions(data: {
@@ -67,12 +67,12 @@
 	scope: string;
 	reloadManager: ReloadManager;
 })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Actions
 			snapshot={data.row.original}
 			image={data.image}
 			scope={data.scope}
 			reloadManager={data.reloadManager}
 		/>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

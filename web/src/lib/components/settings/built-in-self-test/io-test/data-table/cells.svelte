@@ -9,8 +9,8 @@
 		TestResult_Status
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatSecond, formatTimeAgo } from '$lib/formatter';
@@ -41,19 +41,19 @@
 </script>
 
 {#snippet row_picker(row: Row<TestResult>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<TestResult>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.name}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet status(row: Row<TestResult>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if TestResult_Status[row.original.status] === 'SUCCEEDED'}
 			<Icon icon="ph:check" />
 		{:else if TestResult_Status[row.original.status] === 'FAILED'}
@@ -61,11 +61,11 @@
 		{:else}
 			<Icon icon="svg-spinners:180-ring-with-bg" />
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet target(row: Row<TestResult>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{#if row.original.kind.value.target.case === 'cephBlockDevice'}
 				<Badge variant="outline">
@@ -77,71 +77,71 @@
 				</Badge>
 			{/if}
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet accessMode(row: Row<TestResult>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{FIO_Input_AccessMode[row.original.kind.value?.input.accessMode]}
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet jobCount(row: Row<TestResult>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{row.original.kind.value?.input.jobCount}
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet runTime(row: Row<TestResult>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{@const formatted = formatSecond(Number(row.original.kind.value?.input.runTimeSeconds))}
 			{formatted.value}
 			{formatted.unit}
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet blockSize(row: Row<TestResult>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{@const formatted = formatCapacity(Number(row.original.kind.value?.input.blockSizeBytes))}
 			{formatted.value}
 			{formatted.unit}
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet fileSize(row: Row<TestResult>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{@const formatted = formatCapacity(Number(row.original.kind.value?.input.fileSizeBytes))}
 			{formatted.value}
 			{formatted.unit}
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet ioDepth(row: Row<TestResult>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{row.original.kind.value?.input.ioDepth}
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet createdBy(row: Row<TestResult>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.createdBy}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet bandwidth(row: Row<TestResult>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read}
 			<Badge variant="outline">
 				Read {(Number(row.original.kind.value.output.read.bandwidthBytes) / 1024 / 1024).toFixed(2)}
@@ -161,11 +161,11 @@
 				MB/s
 			</Badge>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet iops(row: Row<TestResult>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read}
 			<Badge variant="outline">
 				Read {row.original.kind.value.output.read.ioPerSecond.toFixed(0)}
@@ -181,11 +181,11 @@
 				Trim {row.original.kind.value.output.trim.ioPerSecond.toFixed(0)}
 			</Badge>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet latencyMinimum(row: Row<TestResult>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
 				Read {(
@@ -207,11 +207,11 @@
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet latencyMaximum(row: Row<TestResult>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
 				Read {(
@@ -233,11 +233,11 @@
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet latencyMean(row: Row<TestResult>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
 				Read {(
@@ -259,12 +259,12 @@
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet startedAt(row: Row<TestResult>)}
 	{#if row.original.startedAt}
-		<Layout.Cell class="items-start">
+		<Table.Cell alignClass="items-start">
 			<Tooltip.Provider>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
@@ -275,13 +275,13 @@
 					</Tooltip.Content>
 				</Tooltip.Root>
 			</Tooltip.Provider>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet completedAt(row: Row<TestResult>)}
 	{#if row.original.completedAt && Number(timestampDate(row.original.completedAt)) >= 0}
-		<Layout.Cell class="items-start">
+		<Table.Cell alignClass="items-start">
 			<Tooltip.Provider>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
@@ -292,12 +292,12 @@
 					</Tooltip.Content>
 				</Tooltip.Root>
 			</Tooltip.Provider>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet actions(data: { row: Row<TestResult>; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Actions testResult={data.row.original} reloadManager={data.reloadManager} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

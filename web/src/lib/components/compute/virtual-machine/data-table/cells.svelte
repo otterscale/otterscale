@@ -15,10 +15,10 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Chart from '$lib/components/ui/chart';
 	import * as HoverCard from '$lib/components/ui/hover-card';
-	import * as Table from '$lib/components/ui/table';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity, formatIO, formatTimeAgo } from '$lib/formatter';
 
@@ -45,22 +45,22 @@
 </script>
 
 {#snippet row_picker(row: Row<VirtualMachine>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<VirtualMachine>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<div class="flex items-center gap-1">
 			{row.original.name}
 		</div>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet status(row: Row<VirtualMachine>)}
 	{@const statusInfo = getStatusInfo(row.original.status)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger>
@@ -71,19 +71,19 @@
 				</Tooltip.Content>
 			</Tooltip.Root>
 		</Tooltip.Provider>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet namespace(row: Row<VirtualMachine>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Badge variant="outline">
 			{row.original.namespace}
 		</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet machineId(row: Row<VirtualMachine>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.machineId}
 			<a
 				class="m-0 p-0 underline hover:no-underline"
@@ -97,11 +97,11 @@
 				{row.original.ipAddresses}
 			</Layout.SubCell>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet instanceType(row: Row<VirtualMachine>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.instanceType}
 			<div class="flex items-center gap-1">
 				<Badge variant="outline">
@@ -156,27 +156,27 @@
 				</HoverCard.Root>
 			</div>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet disk(data: { row: Row<VirtualMachine>; scope: string })}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<Disk virtualMachine={data.row.original} scope={data.scope} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet port(data: { row: Row<VirtualMachine>; scope: string; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<Port
 			virtualMachine={data.row.original}
 			scope={data.scope}
 			reloadManager={data.reloadManager}
 		/>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet createTime(row: Row<VirtualMachine>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.createdAt}
 			<Tooltip.Provider>
 				<Tooltip.Root>
@@ -189,26 +189,26 @@
 				</Tooltip.Root>
 			</Tooltip.Provider>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet vnc(data: { row: Row<VirtualMachine>; scope: string })}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if data.row.original.status === 'Running'}
 			<VNC virtualMachine={data.row.original} scope={data.scope} />
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet cpu_metric(data: { row: Row<VirtualMachine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics.cpu.get(data.row.original.name) ?? []}
+	{@const usages: SampleValue[] = data.metrics?.cpu.get(data.row.original.name) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
 		value: { label: 'usage', color: maximumValue > 0.5 ? 'var(--warning)' : 'var(--healthy)' }
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
-		<Layout.Cell class="relative justify-center">
+		<Table.Cell alignClass="relative justify-center">
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -260,19 +260,19 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet memory_metric(data: { row: Row<VirtualMachine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics.memory.get(data.row.original.name) ?? []}
+	{@const usages: SampleValue[] = data.metrics?.memory.get(data.row.original.name) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
 		value: { label: 'usage', color: 'var(--chart-3)' }
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
-		<Layout.Cell class="relative justify-center">
+		<Table.Cell alignClass="relative justify-center">
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -325,13 +325,13 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet storage_metric(data: { row: Row<VirtualMachine>; metrics: Metrics })}
-	{@const readUsage: SampleValue[] = data.metrics.storageRead.get(data.row.original.name) ?? []}
-	{@const writeUsage: SampleValue[] = data.metrics.storageWrite.get(data.row.original.name) ?? []}
+	{@const readUsage: SampleValue[] = data.metrics?.storageRead.get(data.row.original.name) ?? []}
+	{@const writeUsage: SampleValue[] = data.metrics?.storageWrite.get(data.row.original.name) ?? []}
 	{@const traffics = readUsage.map((read, index) => ({
 		time: read.time,
 		read: read.value,
@@ -350,7 +350,7 @@
 		write: { label: 'write', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig}
 	{#if traffics.length > 0}
-		<Layout.Cell class="relative justify-center">
+		<Table.Cell alignClass="relative justify-center">
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={traffics}
@@ -407,16 +407,16 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet actions(data: { row: Row<VirtualMachine>; scope: string; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Actions
 			virtualMachine={data.row.original}
 			scope={data.scope}
 			reloadManager={data.reloadManager}
 		/>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

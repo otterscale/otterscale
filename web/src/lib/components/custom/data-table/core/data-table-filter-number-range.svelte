@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts" generics="TData">
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
 
@@ -11,16 +11,14 @@
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils.js';
 
-	const empty = [undefined, undefined];
-</script>
-
-<script lang="ts" generics="TData">
 	let {
 		table,
 		values,
 		columnId,
 		alias
 	}: { table: Table<TData>; values: number[]; columnId: string; alias?: string } = $props();
+
+	const empty = [undefined, undefined];
 
 	const minimum = Math.min(...values);
 	const maximum = Math.max(...values);

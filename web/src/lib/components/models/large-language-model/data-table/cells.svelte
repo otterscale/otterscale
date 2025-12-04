@@ -4,8 +4,8 @@
 
 	import type { Model } from '$lib/api/model/v1/model_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import Prompting from '$lib/components/prompting/index.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatTimeAgo } from '$lib/formatter';
@@ -17,68 +17,66 @@
 	export const cells = {
 		row_expander,
 		row_picker,
-		id,
 		name,
+		modelName,
 		namespace,
 		status,
 		description,
-		first_deployed_at,
-		last_deployed_at,
-		chart_version,
-		app_version,
 		prefill,
 		decode,
-		gpu_relation,
+		firstDeployedAt,
+		lastDeployedAt,
+		gpuRelation,
 		test,
 		action
 	};
 </script>
 
 {#snippet row_expander(row: Row<Model>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowExpander {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet row_picker(row: Row<Model>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
-{#snippet id(row: Row<Model>)}
-	<Layout.Cell class="items-start">
+{#snippet modelName(row: Row<Model>)}
+	<Table.Cell alignClass="items-start">
 		{row.original.id}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Model>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.name}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet namespace(row: Row<Model>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.namespace}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet status(row: Row<Model>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.status}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet description(row: Row<Model>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<p class="max-w-[200px] truncate">{row.original.description}</p>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
-{#snippet first_deployed_at(row: Row<Model>)}
+{#snippet firstDeployedAt(row: Row<Model>)}
 	{#if row.original.firstDeployedAt}
-		<Layout.Cell class="items-end">
+		<Table.Cell alignClass="items-end">
 			<Tooltip.Provider>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
@@ -89,13 +87,13 @@
 					</Tooltip.Content>
 				</Tooltip.Root>
 			</Tooltip.Provider>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
-{#snippet last_deployed_at(row: Row<Model>)}
+{#snippet lastDeployedAt(row: Row<Model>)}
 	{#if row.original.lastDeployedAt}
-		<Layout.Cell class="items-end">
+		<Table.Cell alignClass="items-end">
 			<Tooltip.Provider>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
@@ -106,59 +104,52 @@
 					</Tooltip.Content>
 				</Tooltip.Root>
 			</Tooltip.Provider>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
-{/snippet}
-
-{#snippet chart_version(row: Row<Model>)}
-	<Layout.Cell class="items-end">
-		{row.original.chartVersion}
-	</Layout.Cell>
-{/snippet}
-
-{#snippet app_version(row: Row<Model>)}
-	<Layout.Cell class="items-end">
-		{row.original.appVersion}
-	</Layout.Cell>
 {/snippet}
 
 {#snippet prefill(row: Row<Model>)}
 	{#if row.original.prefill}
-		<Layout.Cell class="items-end">
-			<p>
-				{row.original.prefill.vgpumemPercentage}% ({row.original.prefill.replica}
-				{m.replica()})
-			</p>
-		</Layout.Cell>
+		<Table.Cell alignClass="items-start">
+			{row.original.prefill.vgpumemPercentage}%
+			<Table.SubCell>
+				{row.original.prefill.replica}
+				{m.replica()}
+			</Table.SubCell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet decode(row: Row<Model>)}
 	{#if row.original.decode}
-		<Layout.Cell class="items-end">
-			<p>{row.original.decode.vgpumemPercentage}% ({row.original.decode.tensor} {m.tensor()})</p>
-		</Layout.Cell>
+		<Table.Cell alignClass="items-start">
+			{row.original.decode.vgpumemPercentage}%
+			<Table.SubCell>
+				{row.original.decode.tensor}
+				{m.tensor()}
+			</Table.SubCell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
-{#snippet gpu_relation(data: { row: Row<Model>; scope: string })}
+{#snippet gpuRelation(data: { row: Row<Model>; scope: string })}
 	{#if data.row.original.status === 'deployed'}
-		<Layout.Cell class="items-end">
+		<Table.Cell alignClass="items-center">
 			<GPURelation scope={data.scope} model={data.row.original} />
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet test(data: { row: Row<Model>; serviceUri: string })}
 	{#if data.row.original.status === 'deployed'}
-		<Layout.Cell class="items-end">
+		<Table.Cell alignClass="items-center">
 			<Prompting serviceUri={data.serviceUri} model={data.row.original} />
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet action(data: { row: Row<Model>; scope: string; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<Actions model={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

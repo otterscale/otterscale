@@ -4,8 +4,8 @@
 
 	import type { User } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { Key } from '$lib/components/storage/object-gateway/user/key';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 
@@ -22,41 +22,41 @@
 </script>
 
 {#snippet row_picker(row: Row<User>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet id(row: Row<User>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.id}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<User>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Badge variant="outline">{row.original.name}</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet suspended(row: Row<User>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.suspended}
 			<Icon icon="ph:circle" class="text-primary" />
 		{:else}
 			<Icon icon="ph:x" class="text-destructive" />
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet keys(data: { row: Row<User>; scope: string; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<Key user={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<User>; scope: string; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Actions user={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

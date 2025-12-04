@@ -3,8 +3,8 @@
 
 	import type { Repository } from '$lib/api/registry/v1/registry_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { formatCapacity } from '$lib/formatter';
 
 	import Manifests from './cell-manifests.svelte';
@@ -19,37 +19,37 @@
 </script>
 
 {#snippet row_picker(row: Row<Repository>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Repository>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.name}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet manifests(data: { row: Row<Repository>; scope: string; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<Manifests
 			repository={data.row.original}
 			scope={data.scope}
 			reloadManager={data.reloadManager}
 		/>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet sizeBytes(row: Row<Repository>)}
 	{@const { value, unit } = formatCapacity(row.original.sizeBytes)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{value}
 		{unit}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet latestTag(row: Row<Repository>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.latestTag}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

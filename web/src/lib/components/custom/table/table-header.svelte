@@ -14,6 +14,14 @@
 	}: WithElementRef<HTMLAttributes<HTMLTableSectionElement>> = $props();
 </script>
 
-<Table.Header bind:ref data-slot="table-header" class={cn(className)} {...restProps}>
+<Table.Header
+	bind:ref
+	data-slot="table-header"
+	class={cn(
+		'rounded-lg text-xs font-medium capitalize [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg',
+		className
+	)}
+	{...restProps}
+>
 	{@render children?.()}
 </Table.Header>

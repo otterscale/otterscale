@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts" generics="TData">
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
 
@@ -9,9 +9,7 @@
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-</script>
 
-<script lang="ts" generics="TData">
 	let {
 		table,
 		columnId,
@@ -31,7 +29,7 @@
 
 <Popover.Root>
 	<Popover.Trigger
-		class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs uppercase')}
+		class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs capitalize')}
 	>
 		<Icon icon="ph:funnel" />
 		{messages[columnId]}

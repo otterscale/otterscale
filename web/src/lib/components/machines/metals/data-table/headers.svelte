@@ -1,9 +1,10 @@
 <script lang="ts" module>
-	import type { Column, Table } from '@tanstack/table-core';
+	import type { Column, Table as TableType } from '@tanstack/table-core';
 
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { m } from '$lib/paraglide/messages';
 
 	export const headers = {
@@ -25,7 +26,7 @@
 	};
 </script>
 
-{#snippet row_picker(table: Table<Machine>)}
+{#snippet row_picker(table: TableType<Machine>)}
 	<Layout.Header class="items-start">
 		<Layout.HeaderController>
 			<Headers.RowPicker {table} />
@@ -36,10 +37,12 @@
 {#snippet fqdn_ip(column: Column<Machine>)}
 	<Layout.Header class="items-start">
 		<Layout.HeaderViewer>
-			{m.fqdn()}
-			<Layout.SubHeaderViewer>
-				{m.ip()}
-			</Layout.SubHeaderViewer>
+			<Table.Head>
+				{m.fqdn()}
+				<Table.SubHead>
+					{m.ip()}
+				</Table.SubHead>
+			</Table.Head>
 		</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -68,10 +71,12 @@
 {#snippet cores_arch(column: Column<Machine>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>
-			{m.core()}
-			<Layout.SubHeaderViewer>
-				{m.architecture()}
-			</Layout.SubHeaderViewer>
+			<Table.Head>
+				{m.core()}
+				<Table.SubHead>
+					{m.architecture()}
+				</Table.SubHead>
+			</Table.Head>
 		</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -124,10 +129,12 @@
 {#snippet scope()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>
-			{m.scope()}
-			<Layout.SubHeaderViewer>
-				{m.last_commissioned()}
-			</Layout.SubHeaderViewer>
+			<Table.Head>
+				{m.scope()}
+				<Table.SubHead>
+					{m.last_commissioned()}
+				</Table.SubHead>
+			</Table.Head>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

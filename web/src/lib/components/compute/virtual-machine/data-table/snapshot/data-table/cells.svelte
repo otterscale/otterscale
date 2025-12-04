@@ -4,8 +4,8 @@
 
 	import type { VirtualMachine_Snapshot } from '$lib/api/instance/v1/instance_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatTimeAgo } from '$lib/formatter';
@@ -25,49 +25,49 @@
 </script>
 
 {#snippet row_picker(row: Row<VirtualMachine_Snapshot>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<VirtualMachine_Snapshot>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.name}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet namespace(row: Row<VirtualMachine_Snapshot>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Badge variant="outline">
 			{row.original.namespace}
 		</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet sourceName(row: Row<VirtualMachine_Snapshot>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.sourceName}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet phase(row: Row<VirtualMachine_Snapshot>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Badge variant="outline">
 			{row.original.phase}
 		</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet ready(row: Row<VirtualMachine_Snapshot>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Badge variant="outline">
 			{row.original.readyToUse}
 		</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet createTime(row: Row<VirtualMachine_Snapshot>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.createdAt}
 			<Tooltip.Provider>
 				<Tooltip.Root>
@@ -80,7 +80,7 @@
 				</Tooltip.Root>
 			</Tooltip.Provider>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet actions(data: {
@@ -88,11 +88,11 @@
 	scope: string;
 	reloadManager: ReloadManager;
 })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Actions
 			virtualMachineSnapshot={data.row.original}
 			scope={data.scope}
 			reloadManager={data.reloadManager}
 		/>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

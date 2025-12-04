@@ -4,9 +4,9 @@
 
 	import type { Network } from '$lib/api/network/v1/network_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { cn } from '$lib/utils';
 
 	import ViewIPAddresses from './action-view-ip-addresses.svelte';
@@ -29,73 +29,73 @@
 </script>
 
 {#snippet row_picker(row: Row<Network>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet fabric(row: Row<Network>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.fabric}
 			{row.original.fabric.name}
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet vlan(row: Row<Network>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.vlan}
 			<div class="flex items-center gap-1">
 				{row.original.vlan.name}
 				<ViewVLAN vlan={row.original.vlan} />
 			</div>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet dhcpOn(row: Row<Network>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.vlan}
 			<Icon
 				icon={row.original.vlan.dhcpOn ? 'ph:circle' : 'ph:x'}
 				class={cn(row.original.vlan.dhcpOn ? 'text-primary' : 'text-destructive')}
 			/>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet subnet(row: Row<Network>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.subnet}
 			<span class="flex items-center">
 				{row.original.subnet.name}
 				<ViewSubnet subnet={row.original.subnet} />
 			</span>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet ipAddresses(row: Row<Network>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.subnet}
 			<span class="flex items-center">
 				{row.original.subnet.ipAddresses.length}
 				<ViewIPAddresses ipAddresses={row.original.subnet.ipAddresses} />
 			</span>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet ipRanges(data: { row: Row<Network>; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if data.row.original.subnet}
 			<ReservedIPRanges subnet={data.row.original.subnet} reloadManager={data.reloadManager} />
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet statistics(row: Row<Network>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.subnet && row.original.subnet.statistics}
 			<Progress.Root
 				numerator={Number(row.original.subnet.statistics.available)}
@@ -110,11 +110,11 @@
 				{/snippet}
 			</Progress.Root>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<Network>; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Actions network={data.row.original} reloadManager={data.reloadManager} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

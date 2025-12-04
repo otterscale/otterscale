@@ -14,11 +14,6 @@
 	}: WithElementRef<HTMLThAttributes> = $props();
 </script>
 
-<Table.Head
-	bind:ref
-	data-slot="table-head"
-	class={cn('text-xs font-medium uppercase', className)}
-	{...restProps}
->
+<Table.Head bind:ref data-slot="table-head" class={cn(className)} {...restProps}>
 	{@render children?.()}
 </Table.Head>

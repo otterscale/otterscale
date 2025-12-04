@@ -54,12 +54,12 @@
 					</div>
 					<div class="flex flex-col items-start justify-start">
 						<p class="max-w-[200px] truncate text-base text-nowrap whitespace-nowrap">
-							{data.pod.modelName}
+							{data.pod.name}
 						</p>
 						<p
 							class="max-w-[200px] truncate text-xs font-light text-nowrap whitespace-nowrap text-muted-foreground"
 						>
-							{data.pod.namespace} · {data.pod.name}
+							{data.pod.namespace}
 						</p>
 					</div>
 				</div>
@@ -74,7 +74,7 @@
 	</HoverCard.Trigger>
 	<HoverCard.Content class="max-h-[50vh] w-fit overflow-y-auto">
 		<div class="flex flex-col gap-2 p-2 text-base text-nowrap whitespace-nowrap">
-			<p class="text-lg font-bold">{data.pod.modelName}</p>
+			<p class="text-lg font-bold">{data.pod.name}</p>
 			<span class="flex items-center gap-2">
 				<Icon icon="ph:cube" class="size-6 text-muted-foreground" />
 				<div class="flex flex-col gap-0">
@@ -97,7 +97,7 @@
 						Number(device.usedMemoryBytes)
 					)}
 					<div
-						class="grid auto-rows-auto grid-cols-3 gap-1 rounded-lg bg-muted/50 p-4 hover:bg-muted"
+						class="grid auto-rows-auto grid-cols-2 gap-1 rounded-lg bg-muted/50 p-4 hover:bg-muted"
 					>
 						<span class="col-span-3 flex items-center gap-2">
 							<Icon icon="ph:identification-badge" class="size-6 text-muted-foreground" />
@@ -122,12 +122,12 @@
 								</p>
 							</div>
 						</span>
-						<span class="flex items-center gap-2">
+						<!-- <span class="flex items-center gap-2">
 							<Icon icon="ph:cube" class="size-6 text-muted-foreground" />
 							<div class="flex flex-col gap-0">
 								<p class="text-sm text-muted-foreground">{m.gpu_count()}</p>
 							</div>
-						</span>
+						</span> -->
 					</div>
 				{/each}
 			</div>

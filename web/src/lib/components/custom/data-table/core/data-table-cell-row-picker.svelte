@@ -1,10 +1,8 @@
-<script lang="ts" module>
+<script lang="ts" generics="TData">
 	import type { Row } from '@tanstack/table-core';
 
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-</script>
 
-<script lang="ts" generics="TData">
 	let { row }: { row: Row<TData> } = $props();
 </script>
 

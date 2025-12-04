@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts" generics="TData">
 	import type { Table } from '@tanstack/table-core';
 
 	import { Badge } from '$lib/components/ui/badge';
 	import { m } from '$lib/paraglide/messages';
-</script>
 
-<script lang="ts" generics="TData">
 	let { table }: { table: Table<TData> } = $props();
 
 	const selected = $derived(table.getFilteredSelectedRowModel().rows.length);

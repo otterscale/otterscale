@@ -3,9 +3,9 @@
 
 	import type { Image } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { Snapshot } from '$lib/components/storage/block-device/snapshot';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
@@ -23,27 +23,27 @@
 </script>
 
 {#snippet row_picker(row: Row<Image>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Image>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.name}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet poolName(row: Row<Image>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Badge variant="outline">{row.original.poolName}</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<Image>)}
 	{@const denominator = Number(row.original.quotaBytes)}
 	{@const numerator = Number(row.original.usedBytes)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<Progress.Root {numerator} {denominator} target="STB">
 			{#snippet ratio({ numerator, denominator })}
 				{Progress.formatRatio(numerator, denominator)}
@@ -56,17 +56,17 @@
 				{denominatorUnit}
 			{/snippet}
 		</Progress.Root>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet snapshots(data: { row: Row<Image>; scope: string; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<Snapshot image={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<Image>; scope: string; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Actions image={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

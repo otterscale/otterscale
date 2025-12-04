@@ -6,7 +6,7 @@
 	import type { Secret } from '$lib/api/application/v1/application_pb';
 	import CopyButton from '$lib/components/custom/copy-button/copy-button.svelte';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { TagGroup } from '$lib/components/tag-group';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -26,13 +26,13 @@
 </script>
 
 {#snippet row_picker(row: Row<Secret>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Secret>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Dialog.Root>
 			<Dialog.Trigger>
 				<p class="cursor-default underline hover:no-underline">
@@ -69,44 +69,44 @@
 				</div>
 			</Dialog.Content>
 		</Dialog.Root>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet namespace(row: Row<Secret>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.namespace}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet type(row: Row<Secret>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Badge variant="outline">
 			{row.original.type}
 		</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet immutable(row: Row<Secret>)}
-	<Layout.Cell class="items-end">
-		{@const value = row.original.immutable}
+	{@const value = row.original.immutable}
+	<Table.Cell alignClass="items-end">
 		<Icon icon={value ? 'ph:check' : 'ph:x'} class={value ? 'text-green-500' : 'text-red-500'} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet labels(row: Row<Secret>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<TagGroup
 			items={Object.entries(row.original.labels).map(([key, value]) => ({
 				title: `${key}: ${value}`,
 				icon: 'ph:tag'
 			}))}
 		/>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet created_at(row: Row<Secret>)}
 	{#if row.original.createdAt}
-		<Layout.Cell class="items-end">
+		<Table.Cell alignClass="items-end">
 			<Tooltip.Provider>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
@@ -117,6 +117,6 @@
 					</Tooltip.Content>
 				</Tooltip.Root>
 			</Tooltip.Provider>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}

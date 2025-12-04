@@ -2,13 +2,11 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import CopyButton from '$lib/components/custom/copy-button/copy-button.svelte';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
-	import * as Table from '$lib/components/custom/table';
+	import * as Table from '$lib/components/custom/table/index.js';
+	import { TagGroup } from '$lib/components/tag-group';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { m } from '$lib/paraglide/messages';
 
 	import type { Service } from '../types';
@@ -25,33 +23,33 @@
 </script>
 
 {#snippet row_picker(row: Row<Service>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Service>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.name}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet type(row: Row<Service>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Badge variant="outline">
 			{row.original.type}
 		</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet clusterIp(row: Row<Service>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.clusterIp}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet ports(row: Row<Service>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<HoverCard.Root>
 			<HoverCard.Trigger>
 				<span class="flex items-center justify-center gap-1">
@@ -94,31 +92,20 @@
 				</Table.Root>
 			</HoverCard.Content>
 		</HoverCard.Root>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet endpoints(row: Row<Service>)}
 	{#if row.original.type === 'NodePort'}
-		<Layout.Cell class="items-start">
-			{#each row.original.ports as port, index (index)}
-				{@const url = `http://${row.original.hostname}:${port.nodePort}`}
-				<div class="group flex items-center gap-1">
-					<Tooltip.Provider>
-						<Tooltip.Root delayDuration={13}>
-							<Tooltip.Trigger>
-								<Badge variant="outline">
-									{port.name}
-								</Badge>
-							</Tooltip.Trigger>
-							<Tooltip.Content>
-								{url}
-							</Tooltip.Content>
-						</Tooltip.Root>
-					</Tooltip.Provider>
-					<CopyButton class="invisible size-4 group-hover:visible" text={url} />
-				</div>
-			{/each}
-		</Layout.Cell>
+		<Table.Cell alignClass="items-start">
+			<TagGroup
+				items={row.original.ports.map((port) => ({
+					title: port.name ?? '',
+					description: `http://${row.original.hostname}:${port.nodePort}`,
+					icon: 'ph:tag'
+				}))}
+			/>
+		</Table.Cell>
 	{/if}
 {/snippet}
 

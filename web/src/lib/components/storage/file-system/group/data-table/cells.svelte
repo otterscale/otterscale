@@ -4,9 +4,9 @@
 
 	import type { SubvolumeGroup } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 
@@ -24,35 +24,35 @@
 </script>
 
 {#snippet row_picker(row: Row<SubvolumeGroup>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<SubvolumeGroup>)}
-	<Layout.Cell class="items-right">
+	<Table.Cell alignClass="items-right">
 		{row.original.name}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet poolName(row: Row<SubvolumeGroup>)}
-	<Layout.Cell class="items-right">
+	<Table.Cell alignClass="items-right">
 		<Badge variant="outline">
 			{row.original.poolName}
 		</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet mode(row: Row<SubvolumeGroup>)}
-	<Layout.Cell class="items-right">
+	<Table.Cell alignClass="items-right">
 		<Badge variant="outline">
 			{row.original.mode}
 		</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<SubvolumeGroup>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{#if row.original.quotaBytes === 0n}
 			<span class="text-sm text-muted-foreground">Quota limit is not set</span>
 		{:else}
@@ -75,15 +75,15 @@
 				{/snippet}
 			</Progress.Root>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet createTime(row: Row<SubvolumeGroup>)}
-	<Layout.Cell class="items-right">
+	<Table.Cell alignClass="items-right">
 		{#if row.original.createdAt}
 			{formatTimeAgo(timestampDate(row.original.createdAt))}
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet actions(data: {
@@ -92,12 +92,12 @@
 	volume: string;
 	reloadManager: ReloadManager;
 })}
-	<Layout.Cell class="items-right">
+	<Table.Cell alignClass="items-right">
 		<Actions
 			subvolumeGroup={data.row.original}
 			scope={data.scope}
 			volume={data.volume}
 			reloadManager={data.reloadManager}
 		/>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

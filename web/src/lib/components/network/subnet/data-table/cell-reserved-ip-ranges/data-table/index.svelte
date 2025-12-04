@@ -12,11 +12,11 @@
 	} from '@tanstack/table-core';
 
 	import type { Network_Subnet } from '$lib/api/network/v1/network_pb';
-	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import { Empty, Filters, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
 
 	import Create from './action-create.svelte';
 	import { getColumns, messages } from './columns';
@@ -164,7 +164,6 @@
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<Footer {table} />
 		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

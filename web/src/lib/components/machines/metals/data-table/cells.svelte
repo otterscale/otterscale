@@ -10,8 +10,8 @@
 	import { resolve } from '$app/paths';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Chart from '$lib/components/ui/chart';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
@@ -42,13 +42,13 @@
 </script>
 
 {#snippet row_picker(row: Row<Machine>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet fqdn_ip(row: Row<Machine>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<a
 			class="m-0 p-0 underline hover:no-underline"
 			href={resolve('/(auth)/machines/metal/[id]', {
@@ -58,17 +58,17 @@
 			{row.original.fqdn}
 		</a>
 		{#if row.original.ipAddresses}
-			<Layout.SubCell>
+			<Table.SubCell>
 				{#each row.original.ipAddresses as ipAddress}
 					{ipAddress}
 				{/each}
-			</Layout.SubCell>
+			</Table.SubCell>
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet power_state(row: Row<Machine>)}
-	<Layout.Cell class="flex-row items-center">
+	<div class="flex items-center gap-1">
 		<Icon
 			icon={row.original.powerState === 'on' ? 'ph:power' : 'ph:power'}
 			class={cn(
@@ -76,17 +76,17 @@
 				row.original.powerState === 'on' ? 'text-accent-foreground' : 'text-destructive'
 			)}
 		/>
-		<Layout.Cell>
+		<Table.Cell alignClass="items-start">
 			{row.original.powerState}
-			<Layout.SubCell>
+			<Table.SubCell>
 				{row.original.powerType}
-			</Layout.SubCell>
-		</Layout.Cell>
-	</Layout.Cell>
+			</Table.SubCell>
+		</Table.Cell>
+	</div>
 {/snippet}
 
 {#snippet status(row: Row<Machine>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{@const processingStates = [
 			'commissioning',
 			'deploying',
@@ -99,7 +99,7 @@
 		<Badge variant="outline">
 			{row.original.status}
 		</Badge>
-		<Layout.SubCell>
+		<Table.SubCell>
 			{#if row.original.statusMessage != 'Deployed'}
 				<span class="flex items-center gap-1">
 					{#if processingStates.includes(row.original.status.toLowerCase())}
@@ -114,78 +114,78 @@
 					{`${row.original.osystem} ${row.original.hweKernel} ${row.original.distroSeries}`}
 				</p>
 			{/if}
-		</Layout.SubCell>
-	</Layout.Cell>
+		</Table.SubCell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet cores_arch(row: Row<Machine>)}
-	<Layout.Cell class="items-right">
+	<Table.Cell alignClass="items-right">
 		{row.original.cpuCount}
-		<Layout.SubCell>
+		<Table.SubCell>
 			{row.original.architecture}
-		</Layout.SubCell>
-	</Layout.Cell>
+		</Table.SubCell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet ram(row: Row<Machine>)}
 	{@const { value, unit } = formatCapacity(Number(row.original.memoryMb) * 1000 * 1000)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{value}
 		{unit}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet disk(row: Row<Machine>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{row.original.blockDevices.length}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet storage(row: Row<Machine>)}
 	{@const { value, unit } = formatCapacity(Number(row.original.storageMb) * 1000 * 1000)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{value}
 		{unit}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 <!-- TODO: fix scope -->
 {#snippet gpu(row: Row<Machine>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<GPUs machine={row.original} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet tags(data: { row: Row<Machine>; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Tags machine={data.row.original} reloadManager={data.reloadManager} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet scope(row: Row<Machine>)}
 	{@const identifier = row.original.workloadAnnotations['juju-machine-id']}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if identifier}
 			{@const scope = identifier.split('-machine-')[0]}
 			{scope}
 			{#if row.original.lastCommissioned}
-				<Layout.SubCell>
+				<Table.SubCell>
 					{formatTimeAgo(timestampDate(row.original.lastCommissioned))}
-				</Layout.SubCell>
+				</Table.SubCell>
 			{/if}
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet cpu_metric(data: { row: Row<Machine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics.cpu.get(data.row.original.fqdn) ?? []}
+	{@const usages: SampleValue[] = data.metrics?.cpu.get(data.row.original.fqdn) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
 		value: { label: 'usage', color: maximumValue > 0.5 ? 'var(--warning)' : 'var(--healthy)' }
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
-		<Layout.Cell class="relative justify-center">
+		<Table.Cell alignClass="relative justify-center">
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -237,19 +237,19 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet memory_metric(data: { row: Row<Machine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics.memory.get(data.row.original.fqdn) ?? []}
+	{@const usages: SampleValue[] = data.metrics?.memory.get(data.row.original.fqdn) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
 		value: { label: 'usage', color: 'var(--chart-3)' }
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
-		<Layout.Cell class="relative justify-center">
+		<Table.Cell alignClass="relative justify-center">
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -302,19 +302,19 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet storage_metric(data: { row: Row<Machine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics.storage.get(data.row.original.fqdn) ?? []}
+	{@const usages: SampleValue[] = data.metrics?.storage.get(data.row.original.fqdn) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
 		value: { label: 'usage', color: maximumValue > 0.5 ? 'var(--warning)' : 'var(--healthy)' }
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
-		<Layout.Cell class="relative justify-center">
+		<Table.Cell alignClass="relative justify-center">
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -366,12 +366,12 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		</Layout.Cell>
+		</Table.Cell>
 	{/if}
 {/snippet}
 
 {#snippet actions(data: { row: Row<Machine>; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Actions machine={data.row.original} reloadManager={data.reloadManager} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

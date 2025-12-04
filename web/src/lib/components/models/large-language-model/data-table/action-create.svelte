@@ -42,7 +42,7 @@
 
 	const defaults = {
 		scope: scope,
-		namespace: 'llm-d',
+		namespace: namespace,
 		sizeBytes: BigInt(100 * 1024 ** 3),
 		maxModelLength: 8192,
 		mode: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING
@@ -124,7 +124,14 @@
 	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			reset();
+		}
+	}}
+>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -187,7 +194,11 @@
 						bind:invalid={invalidity.modelName}
 						{scope}
 						{namespace}
-					></SelectModel>
+					/>
+
+					{#if invalidity.modelName}
+						<p class="text-sm text-destructive/50">Please select a model.</p>
+					{/if}
 				</Form.Field>
 
 				<Form.Field>
@@ -211,24 +222,77 @@
 				</Form.Field>
 			</Form.Fieldset>
 
-			<Form.Fieldset>
-				<Form.Legend>{m.resources()}</Form.Legend>
-				<Form.Field>
-					<div class="flex items-center justify-between gap-4">
-						<div class="flex items-center gap-2 font-bold">
-							<Icon icon="ph:aperture" class="size-5" />
-							<p>{m.disaggregation_mode()}</p>
-						</div>
-						<Switch bind:checked={isDisaggregationMode} />
+			<Form.Field>
+				<div class="flex items-center justify-between gap-4">
+					<div class="flex items-center gap-2 font-bold">
+						<Icon icon="ph:aperture" class="size-5" />
+						<p>{m.disaggregation_mode()}</p>
 					</div>
-				</Form.Field>
-				{#if !isDisaggregationMode}
+					<Switch bind:checked={isDisaggregationMode} />
+				</div>
+			</Form.Field>
+			{#if !isDisaggregationMode}
+				<Form.Fieldset>
+					<Form.Legend>{m.inference()}</Form.Legend>
+
+					<Form.Field>
+						<Form.Label>{m.replica()}</Form.Label>
+						<SingleInput.General type="number" bind:value={requestDecodeResource.replica} />
+					</Form.Field>
+
+					<Form.Field>
+						<Form.Label>{m.tensor()}</Form.Label>
+						<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
+					</Form.Field>
+
+					<Form.Field>
+						<Form.Label>{m.memory()}</Form.Label>
+						<div class="flex items-center gap-4">
+							<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
+							<Slider
+								type="single"
+								bind:value={requestDecodeResource.vgpumemPercentage}
+								max={100}
+								step={1}
+								class="w-full py-4 **:data-[slot=slider-track]:h-3"
+							/>
+						</div>
+					</Form.Field>
+				</Form.Fieldset>
+			{:else}
+				<div class="flex gap-4">
 					<Form.Fieldset>
-						<Form.Legend>{m.inference()}</Form.Legend>
+						<Form.Legend>{m.prefill()}</Form.Legend>
+						<Form.Field>
+							<Form.Label>{m.replica()}</Form.Label>
+							<SingleInput.General type="number" bind:value={requestPrefillResource.replica} />
+						</Form.Field>
+
+						<Form.Field>
+							<Form.Label>{m.memory()}</Form.Label>
+							<div class="flex items-center gap-4">
+								<p class="w-6 whitespace-nowrap">{requestPrefillResource.vgpumemPercentage} %</p>
+								<Slider
+									type="single"
+									bind:value={requestPrefillResource.vgpumemPercentage}
+									max={100}
+									step={1}
+									class="w-full py-4 **:data-[slot=slider-track]:h-3"
+								/>
+							</div>
+						</Form.Field>
+					</Form.Fieldset>
+
+					<Form.Fieldset>
+						<Form.Legend>{m.decode()}</Form.Legend>
 
 						<Form.Field>
 							<Form.Label>{m.replica()}</Form.Label>
-							<SingleInput.General type="number" bind:value={requestDecodeResource.replica} />
+							<SingleInput.General
+								type="number"
+								bind:value={requestDecodeResource.replica}
+								readonly
+							/>
 						</Form.Field>
 
 						<Form.Field>
@@ -250,70 +314,8 @@
 							</div>
 						</Form.Field>
 					</Form.Fieldset>
-				{:else}
-					<div class="flex gap-4">
-						<Form.Fieldset>
-							<Form.Legend>{m.prefill()}</Form.Legend>
-							<Form.Field>
-								<Form.Label>{m.replica()}</Form.Label>
-								<SingleInput.General type="number" bind:value={requestPrefillResource.replica} />
-							</Form.Field>
-
-							<Form.Field>
-								<Form.Label>{m.memory()}</Form.Label>
-								<div class="flex items-center gap-4">
-									<p class="w-6 whitespace-nowrap">{requestPrefillResource.vgpumemPercentage} %</p>
-									<Slider
-										type="single"
-										bind:value={requestPrefillResource.vgpumemPercentage}
-										max={100}
-										step={1}
-										class="w-full py-4 **:data-[slot=slider-track]:h-3"
-									/>
-								</div>
-							</Form.Field>
-						</Form.Fieldset>
-
-						<Form.Fieldset>
-							<Form.Legend>{m.decode()}</Form.Legend>
-
-							<Form.Field>
-								<Form.Label>{m.replica()}</Form.Label>
-								<SingleInput.General
-									type="number"
-									bind:value={requestDecodeResource.replica}
-									readonly
-									class="focus-none"
-								/>
-							</Form.Field>
-
-							<Form.Field>
-								<Form.Label>{m.tensor()}</Form.Label>
-								<SingleInput.General
-									type="number"
-									bind:value={requestDecodeResource.tensor}
-									readonly
-									class="focus-none"
-								/>
-							</Form.Field>
-
-							<Form.Field>
-								<Form.Label>{m.memory()}</Form.Label>
-								<div class="flex items-center gap-4">
-									<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
-									<Slider
-										type="single"
-										bind:value={requestDecodeResource.vgpumemPercentage}
-										max={100}
-										step={1}
-										class="w-full py-4 **:data-[slot=slider-track]:h-3"
-									/>
-								</div>
-							</Form.Field>
-						</Form.Fieldset>
-					</div>
-				{/if}
-			</Form.Fieldset>
+				</div>
+			{/if}
 		</Form.Root>
 		<Modal.Footer>
 			<Modal.Cancel

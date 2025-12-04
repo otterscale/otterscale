@@ -14,6 +14,15 @@
 	}: WithElementRef<HTMLAttributes<HTMLTableRowElement>> = $props();
 </script>
 
-<Table.Row bind:ref data-slot="table-row" class={cn(className)} {...restProps}>
+<Table.Row
+	bind:ref
+	data-slot="table-row"
+	class={cn(
+		'hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent',
+		'text-xs hover:bg-muted/30 last-of-type:[&_td]:first:rounded-bl-lg last-of-type:[&_td]:last:rounded-br-lg',
+		className
+	)}
+	{...restProps}
+>
 	{@render children?.()}
 </Table.Row>

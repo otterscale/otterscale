@@ -1,11 +1,10 @@
 <script lang="ts" module>
 	import type { Row } from '@tanstack/table-core';
 
-	import type { User_Key } from '$lib/api/storage/v1/storage_pb';
-	import type { User } from '$lib/api/storage/v1/storage_pb';
+	import type { User, User_Key } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 
 	import Actions from './cell-actions.svelte';
 
@@ -17,15 +16,15 @@
 </script>
 
 {#snippet row_picker(row: Row<User_Key>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet accessKey(row: Row<User_Key>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.accessKey}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet actions(data: {
@@ -34,12 +33,12 @@
 	scope: string;
 	reloadManager: ReloadManager;
 })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Actions
 			key={data.row.original}
 			user={data.user}
 			scope={data.scope}
 			reloadManager={data.reloadManager}
 		/>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

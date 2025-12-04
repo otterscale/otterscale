@@ -6,6 +6,7 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 
@@ -22,42 +23,42 @@
 </script>
 
 {#snippet row_picker(row: Row<Bucket>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Bucket>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.name}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet owner(row: Row<Bucket>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Badge variant="outline">{row.original.owner}</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<Bucket>)}
 	{@const { value, unit } = formatCapacity(row.original.usedBytes)}
-	<Layout.Cell class="items-end gap-0">
+	<Table.Cell alignClass="items-end gap-0">
 		{value}
 		{unit}
 		<Layout.SubCell>{row.original.usedObjects} unit(s)</Layout.SubCell>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet createTime(row: Row<Bucket>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{#if row.original.createdAt}
 			{formatTimeAgo(timestampDate(row.original.createdAt))}
 		{/if}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<Bucket>; scope: string; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Actions bucket={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

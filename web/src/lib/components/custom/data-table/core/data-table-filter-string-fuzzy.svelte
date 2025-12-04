@@ -1,13 +1,11 @@
-<script lang="ts" module>
+<script lang="ts" generics="TData">
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
 
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import { cn } from '$lib/utils';
-</script>
 
-<script lang="ts" generics="TData">
 	let {
 		table,
 		columnId,
@@ -24,7 +22,7 @@
 	<Command.Root class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs')}>
 		<div class="relative">
 			<Command.Input
-				class="pr-3 placeholder:text-xs placeholder:uppercase"
+				class="pr-3 placeholder:text-xs placeholder:capitalize"
 				placeholder={messages[columnId]}
 				value={(table.getColumn(columnId)?.getFilterValue() as string) ?? ''}
 				oninput={(e) => {

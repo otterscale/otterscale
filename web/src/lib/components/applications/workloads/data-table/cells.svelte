@@ -5,9 +5,9 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 
@@ -31,14 +31,14 @@
 </script>
 
 {#snippet row_picker(row: Row<Application>)}
-	<Layout.Cell class="items-center">
+	<Table.Cell alignClass="items-center">
 		<Cells.RowPicker {row} />
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 <!-- TODO: fix scope -->
 {#snippet name(row: Row<Application>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<a
 			class="underline hover:no-underline"
 			href={resolve('/(auth)/scope/[scope]/applications/workloads/[namespace]/[application_name]', {
@@ -49,25 +49,25 @@
 		>
 			{row.original.name}
 		</a>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet type(row: Row<Application>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Badge variant="outline">
 			{row.original.type}
 		</Badge>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet namespace(row: Row<Application>)}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		{row.original.namespace}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet health(row: Row<Application>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		<Progress.Root
 			numerator={Number(row.original.healthies)}
 			denominator={Number(row.original.pods.length)}
@@ -80,66 +80,68 @@
 				{numerator}/{denominator}
 			{/snippet}
 		</Progress.Root>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet service(row: Row<Application>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{row.original.services.length}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet pod(row: Row<Application>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{row.original.pods.length}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet replica(row: Row<Application>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{row.original.replicas}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet container(row: Row<Application>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{row.original.containers.length}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet volume(row: Row<Application>)}
-	<Layout.Cell class="items-end">
+	<Table.Cell alignClass="items-end">
 		{row.original.persistentVolumeClaims.length}
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}
 
 {#snippet nodeport(row: Row<Application>)}
-	<Layout.Cell class="items-start">
-		{#each row.original.services as service (service.name)}
-			{#each service.ports as port, index (index)}
-				{#if port.nodePort > 0}
-					<span class="flex items-center">
-						<Badge variant="outline">{port.targetPort}</Badge>
+	<Table.Cell alignClass="items-start">
+		<div class="flex flex-wrap gap-1">
+			{#each row.original.services as service (service.name)}
+				{#each service.ports as port, index (index)}
+					{#if port.nodePort > 0}
 						<Button
+							class="flex items-center"
+							size="sm"
 							variant="ghost"
 							target="_blank"
 							href={`http://${row.original.hostname}:${port.nodePort}`}
 						>
 							<Icon icon="ph:arrow-square-out" />
+							{port.nodePort}
 						</Button>
-					</span>
-				{/if}
+					{/if}
+				{/each}
 			{/each}
-		{/each}
-	</Layout.Cell>
+		</div>
+	</Table.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<Application>; scope: string; reloadManager: ReloadManager })}
-	<Layout.Cell class="items-start">
+	<Table.Cell alignClass="items-start">
 		<Actions
 			application={data.row.original}
 			scope={data.scope}
 			reloadManager={data.reloadManager}
 		/>
-	</Layout.Cell>
+	</Table.Cell>
 {/snippet}

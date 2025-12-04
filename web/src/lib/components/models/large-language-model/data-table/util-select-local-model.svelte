@@ -57,10 +57,7 @@
 				modelSource = 'local' as ModeSource;
 			}}
 		>
-			<div class="font-base flex items-center gap-2 text-sm text-primary">
-				<Icon icon="ph:archive-fill" />
-				local
-			</div>
+			<Icon icon="ph:archive-fill" />
 		</Select.Trigger>
 		<Select.Content>
 			{#each $modelArtifactOptions as option (option.value)}
