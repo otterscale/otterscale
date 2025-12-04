@@ -150,7 +150,7 @@
 				toast.loading('Creating node...', {
 					id: toastId,
 					duration: TOAST_DURATION_MS,
-					description: 'Istalling Kubernetes and Ceph'
+					description: 'Installing  Kubernetes and Ceph'
 				});
 				await orchestratorClient.createNode({
 					scope: scope,
@@ -167,7 +167,6 @@
 					description: ''
 				});
 				isSubmitting = false;
-				resetForm();
 			} catch (error) {
 				isSubmitting = false;
 				const message = `Failed to create scope: ${scope}`;
