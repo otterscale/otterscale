@@ -259,6 +259,7 @@ check_root() {
     if [[ $EUID -ne 0 ]]; then
         error_exit "This script must be run as root"
     fi
+
     log "INFO" "Root access validated" "VALIDATION"
 }
 
@@ -301,22 +302,23 @@ check_disk() {
 }
 
 disable_ipv6() {
-    log "INFO" "Temporarily disabling IPv6 (restored after reboot)" "SYSTEM_CONFIG"
+    log "INFO" "Temporarily disabling IPv6 (restored after reboot)" "VALIDATION"
+
     sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
     sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
 }
 
 check_iptables() {
-    log "INFO" "Check iptable rules" "SYSTEM_CONFIG"
+    log "INFO" "Check iptable rules" "VALIDATION"
 
     if ! iptables -C FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null; then
         iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-        log "INFO" "Add rule: iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT" "SYSTEM_CONFIG"
+        log "INFO" "Add rule: iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT" "VALIDATION"
     fi
 
     if ! iptables -C FORWARD -i "$OTTERSCALE_BRIDGE_NAME" -j ACCEPT 2>/dev/null; then
         iptables -A FORWARD -i "$OTTERSCALE_BRIDGE_NAME" -j ACCEPT
-        log "INFO" "Add rule: iptables -A FORWARD -i $OTTERSCALE_BRIDGE_NAME -j ACCEPT" "SYSTEM_CONFIG"
+        log "INFO" "Add rule: iptables -A FORWARD -i $OTTERSCALE_BRIDGE_NAME -j ACCEPT" "VALIDATION"
     fi
 }
 
@@ -473,6 +475,7 @@ install_or_update_snap() {
         fi
     else
         local snap_options=""
+
         if [[ "$snap_name" == "microk8s" ]]; then
             snap_options="--classic --channel=$snap_channel"
         else
@@ -503,8 +506,6 @@ snap_install() {
     log "INFO" "Setting snap packages to hold..." "SNAP_HOLD"
     if ! snap refresh --hold >>"$TEMP_LOG" 2>&1; then
         log "WARN" "Failed to hold snap packages" "SNAP_HOLD"
-    else
-        log "INFO" "Snap packages held successfully" "SNAP_HOLD"
     fi
 }
 
@@ -577,7 +578,7 @@ prompt_bridge_creation() {
         error_exit "Failed network bridge creation"
     fi
 
-    log "INFO" "Connect network bridge $OTTERSCALE_BRIDGE_NAME to interface $CURRENT_INTERFACE"
+    log "INFO" "Connect network bridge $OTTERSCALE_BRIDGE_NAME to interface $CURRENT_INTERFACE" "NETWORK"
     nmcli connection add type bridge-slave con-name "$OTTERSCALE_BRIDGE_NAME"-slave ifname "$CURRENT_INTERFACE" master "$OTTERSCALE_BRIDGE_NAME" > /dev/null
 
     log "INFO" "Disable $CURRENT_CONNECTION autoconnect" "NETWORK"
@@ -651,8 +652,6 @@ generate_ssh_key() {
 
 add_key_to_maas() {
     local public_key="/home/$NON_ROOT_USER/.ssh/id_rsa.pub"
-
-    # Check if keys already exist
     local key_count=$(maas admin sshkeys read | jq -r 'length')
 
     if ((key_count > 0)); then
@@ -934,6 +933,7 @@ enable_maas_dhcp() {
     fi
 
     MAAS_NETWORK_SUBNET=$OTTERSCALE_CIDR
+    
     while true; do
         get_dhcp_subnet_and_ip
         if check_ip_range ; then
@@ -1525,15 +1525,13 @@ deploy_helm() {
     add_helm_repository "https://charts.jetstack.io" "jetstack"
     add_helm_repository "https://open-feature.github.io/open-feature-operator" "openfeature"
     add_helm_repository "https://otterscale.github.io/charts" "otterscale-charts"
-
-    log "INFO" "Update helm repository" "HELM_REPO"
     execute_cmd "microk8s helm3 repo update" "helm repository update"
 
     install_helm_chart "istio-base" "istio-system" "istio/base" "--create-namespace --set defaultRevision=default --wait --timeout 10m"
     install_helm_chart "istiod" "istio-system" "istio/istiod" "--wait --timeout 10m"
     install_helm_chart "istiod-ingress" "istio-system" "istio/gateway" "-n istio-system --wait --timeout 10m"
 
-    # Patch istiod-ingress
+    # Patch istiod-ingress svc ip
     local CURRENT_SVC_IP=$(microk8s kubectl get svc istiod-ingress -n istio-system -o jsonpath='{.metadata.annotations.metallb\.io/LoadBalancerIPs}' 2>/dev/null || true)
     if [[ "$CURRENT_SVC_IP" != "$OTTERSCALE_WEB_IP" ]]; then
         log "INFO" "Specific metallb ip to service istiod-ingress" "MICROK8S_SVC"
