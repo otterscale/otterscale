@@ -944,7 +944,7 @@ create_lxd_vm() {
         search_available_vmhost "$vm_hosts"
     fi
 
-    if [ -n $VM_HOST_ID ]; then
+    if [[ -n $VM_HOST_ID ]]; then
         local lxc_token=$(lxc config trust list-tokens -f json | jq -r '.[] | select(.ClientName=="maas") | .Token' | head -n 1)
 
         if [[ -z $lxc_token ]]; then
@@ -989,14 +989,14 @@ create_vm_from_maas() {
 
     # Check if juju-vm already exists
     juju_machine_id=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
-    if [ ! -z $juju_machine_id ]; then
+    if [[ ! -z $juju_machine_id ]]; then
         log "INFO" "Machine juju-vm (id: $juju_machine_id) already exists - skipping creation" "VM_CREATE"
         return 0
     fi
 
     log "INFO" "Creating VM from LXD host ID $VM_HOST_ID..." "VM_CREATE"
     juju_machine_id=$(maas admin vm-host compose "$VM_HOST_ID" cores="$LXD_CORES" memory="$LXD_MEMORY_MB" disk=1:size="$LXD_DISK_GB" | jq -r '.system_id')
-    if [ -z $juju_machine_id ]; then
+    if [[ -z $juju_machine_id ]]; then
         error_exit "Failed to create VM from LXD host ID $VM_HOST_ID"
     fi
 
@@ -1111,7 +1111,7 @@ bootstrap_juju() {
     rm -rf /home/"$NON_ROOT_USER"/otterscale-tmp
 
     juju_machine_id=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
-    if [ -z $juju_machine_id ]; then
+    if [[ -z $juju_machine_id ]]; then
         error_exit "juju-vm machine not found"
     fi
 
