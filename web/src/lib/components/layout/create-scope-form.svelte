@@ -40,9 +40,9 @@
 	} = $props();
 
 	// Constants
-	const TOAST_DURATION_MS = 1200000; // 20 minutes
+	const TOAST_DURATION_MS = 2400000; // 40 minutes
 	const POLLING_INTERVAL_MS = 5000; // 5 seconds
-	const MAX_POLL_ATTEMPTS = 60 * 4; // 20 minutes with 5 second intervals
+	const MAX_POLL_ATTEMPTS = 60 * 8; // 40 minutes with 5 second intervals
 	const DEVICE_PATH_PREFIX = '/dev/';
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
@@ -120,6 +120,8 @@
 					});
 					if (machineResponse.status.toLowerCase() === 'ready') {
 						machineReady = true;
+					} else if (machineResponse.status.toLowerCase().startsWith('failed')) {
+						throw new Error(`Machine commissioning failed: ${machineResponse.statusMessage}`);
 					}
 					await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
 					retryCount++;
@@ -141,6 +143,8 @@
 					});
 					if (machineResponse.agentStatus.toLowerCase() === 'started') {
 						agentStarted = true;
+					} else if (machineResponse.agentStatus.toLowerCase().startsWith('failed')) {
+						throw new Error(`Machine agent failed to start: ${machineResponse.agentStatusMessage}`);
 					}
 					await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
 					retryCount++;
