@@ -43,6 +43,11 @@ openapi:
 		api/api.proto \
 		$(PROTO_FILES)
 
+.PHONY: ceph-deps
+# ceph development libraries
+ceph-deps:
+	sudo apt update && sudo apt install -y libcephfs-dev librbd-dev librados-dev
+
 .PHONY: help
 # show help
 help:
