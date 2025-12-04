@@ -40,7 +40,6 @@ readonly CONTROLLER_CHARM_CHANNEL="3.6/stable"
 
 # OtterScale configuration
 readonly OTTERSCALE_MAX_RETRIES=5
-readonly OTTERSCALE_CHARMHUB_URL="https://api.charmhub.io"
 readonly OTTERSCALE_MAAS_ADMIN_USER="admin"
 readonly OTTERSCALE_MAAS_ADMIN_PASS="admin"
 readonly OTTERSCALE_MAAS_ADMIN_EMAIL="admin@example.com"
@@ -1523,8 +1522,8 @@ deploy_helm() {
 
     log "INFO" "Check helm repository" "HELM_REPO"
     add_helm_repository "https://istio-release.storage.googleapis.com/charts" "istio"
-    add_helm_repository "https://open-feature.github.io/open-feature-operator" "openfeature"
     add_helm_repository "https://charts.jetstack.io" "jetstack"
+    add_helm_repository "https://open-feature.github.io/open-feature-operator" "openfeature"
     add_helm_repository "https://otterscale.github.io/charts" "otterscale-charts"
 
     log "INFO" "Update helm repository" "HELM_REPO"
@@ -1717,15 +1716,9 @@ configContent: |
 $(echo "$juju_cacert" | sed 's/^/      /')
     cloud_name: maas-cloud
     cloud_region: default
-    charmhub_api_url: $OTTERSCALE_CHARMHUB_URL
   ceph:
     rados_timeout: 0s
 EOF
-
-        if microk8s kubectl get namespaces $namespace >/dev/null 2>&1; then
-            execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-postgresql-0 --ignore-not-found=true" "Delete PVC data-otterscale-postgresql-0"
-            execute_cmd "microk8s kubectl delete pvc -n $namespace data-otterscale-keycloak-postgres-0 --ignore-not-found=true" "Delete PVC data-otterscale-keycloak-postgres-0"
-        fi
 
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
         execute_cmd "microk8s helm3 install $deploy_name otterscale-charts/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m --debug" "helm install $deploy_name"
