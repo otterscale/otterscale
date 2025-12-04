@@ -46,7 +46,7 @@ openapi:
 .PHONY: ceph-deps
 # ceph development libraries
 ceph-deps:
-	apt update && apt install -y libcephfs-dev librbd-dev librados-dev
+	sudo apt update && sudo apt install -y libcephfs-dev librbd-dev librados-dev
 
 .PHONY: help
 # show help
