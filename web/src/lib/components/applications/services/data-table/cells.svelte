@@ -3,10 +3,11 @@
 	import type { Row } from '@tanstack/table-core';
 
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Table from '$lib/components/custom/table/index.js';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { TagGroup } from '$lib/components/tag-group';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card';
+	import * as Table from '$lib/components/ui/table';
 	import { m } from '$lib/paraglide/messages';
 
 	import type { Service } from '../types';
@@ -23,33 +24,33 @@
 </script>
 
 {#snippet row_picker(row: Row<Service>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Service>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.name}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet type(row: Row<Service>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.type}
 		</Badge>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet clusterIp(row: Row<Service>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.clusterIp}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet ports(row: Row<Service>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		<HoverCard.Root>
 			<HoverCard.Trigger>
 				<span class="flex items-center justify-center gap-1">
@@ -92,12 +93,12 @@
 				</Table.Root>
 			</HoverCard.Content>
 		</HoverCard.Root>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet endpoints(row: Row<Service>)}
 	{#if row.original.type === 'NodePort'}
-		<Table.Cell alignClass="items-start">
+		<Layout.Cell class="items-start">
 			<TagGroup
 				items={row.original.ports.map((port) => ({
 					title: port.name ?? '',
@@ -105,7 +106,7 @@
 					icon: 'ph:tag'
 				}))}
 			/>
-		</Table.Cell>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 

@@ -8,8 +8,8 @@
 	} from '$lib/api/instance/v1/instance_pb';
 	import type { EnhancedDisk } from '$lib/components/compute/virtual-machine/units/type';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity } from '$lib/formatter';
@@ -31,53 +31,53 @@
 </script>
 
 {#snippet row_picker(row: Row<EnhancedDisk>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<EnhancedDisk>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.name}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet bus(row: Row<EnhancedDisk>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{VirtualMachine_Disk_Bus[row.original.bus]}
 		</Badge>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet bootOrder(row: Row<EnhancedDisk>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.bootOrder}
 			<Badge variant="outline">
 				{row.original.bootOrder}
 			</Badge>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet dataVolume(row: Row<EnhancedDisk>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.volume?.name ?? ''}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet type(row: Row<EnhancedDisk>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.volume?.source?.type}
 			<Badge variant="outline">
 				{VirtualMachine_Disk_Volume_Source_Type[row.original.volume.source.type]}
 			</Badge>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet phase(row: Row<EnhancedDisk>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger>
@@ -94,11 +94,11 @@
 				</Tooltip.Content>
 			</Tooltip.Root>
 		</Tooltip.Provider>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet boot(row: Row<EnhancedDisk>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.bootImage}
 			<Tooltip.Provider>
 				<Tooltip.Root>
@@ -115,25 +115,25 @@
 				</Tooltip.Root>
 			</Tooltip.Provider>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet size(row: Row<EnhancedDisk>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.sizeBytes}
 			{@const { value, unit } = formatCapacity(row.original.sizeBytes)}
 			{value}
 			{unit}
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<EnhancedDisk>; scope: string; reloadManager: ReloadManager })}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Actions
 			enhancedDisk={data.row.original}
 			scope={data.scope}
 			reloadManager={data.reloadManager}
 		/>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}

@@ -4,7 +4,6 @@
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import * as Table from '$lib/components/custom/table/index.js';
 	import { m } from '$lib/paraglide/messages';
 
 	export const headers = {
@@ -37,12 +36,10 @@
 {#snippet fqdn_ip(column: Column<Machine>)}
 	<Layout.Header class="items-start">
 		<Layout.HeaderViewer>
-			<Table.Head>
-				{m.fqdn()}
-				<Table.SubHead>
-					{m.ip()}
-				</Table.SubHead>
-			</Table.Head>
+			{m.fqdn()}
+			<Layout.SubHeaderViewer>
+				{m.ip()}
+			</Layout.SubHeaderViewer>
 		</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -71,12 +68,10 @@
 {#snippet cores_arch(column: Column<Machine>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>
-			<Table.Head>
-				{m.core()}
-				<Table.SubHead>
-					{m.architecture()}
-				</Table.SubHead>
-			</Table.Head>
+			{m.core()}
+			<Layout.SubHeaderViewer>
+				{m.architecture()}
+			</Layout.SubHeaderViewer>
 		</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -129,12 +124,10 @@
 {#snippet scope()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>
-			<Table.Head>
-				{m.scope()}
-				<Table.SubHead>
-					{m.last_commissioned()}
-				</Table.SubHead>
-			</Table.Head>
+			{m.scope()}
+			<Layout.SubHeaderViewer>
+				{m.last_commissioned()}
+			</Layout.SubHeaderViewer>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

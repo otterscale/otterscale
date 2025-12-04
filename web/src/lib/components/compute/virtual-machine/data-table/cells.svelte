@@ -45,22 +45,22 @@
 </script>
 
 {#snippet row_picker(row: Row<VirtualMachine>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<VirtualMachine>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<div class="flex items-center gap-1">
 			{row.original.name}
 		</div>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet status(row: Row<VirtualMachine>)}
 	{@const statusInfo = getStatusInfo(row.original.status)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger>
@@ -71,19 +71,19 @@
 				</Tooltip.Content>
 			</Tooltip.Root>
 		</Tooltip.Provider>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet namespace(row: Row<VirtualMachine>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.namespace}
 		</Badge>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet machineId(row: Row<VirtualMachine>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.machineId}
 			<a
 				class="m-0 p-0 underline hover:no-underline"
@@ -97,11 +97,11 @@
 				{row.original.ipAddresses}
 			</Layout.SubCell>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet instanceType(row: Row<VirtualMachine>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.instanceType}
 			<div class="flex items-center gap-1">
 				<Badge variant="outline">
@@ -156,27 +156,27 @@
 				</HoverCard.Root>
 			</div>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet disk(data: { row: Row<VirtualMachine>; scope: string })}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		<Disk virtualMachine={data.row.original} scope={data.scope} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet port(data: { row: Row<VirtualMachine>; scope: string; reloadManager: ReloadManager })}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		<Port
 			virtualMachine={data.row.original}
 			scope={data.scope}
 			reloadManager={data.reloadManager}
 		/>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet createTime(row: Row<VirtualMachine>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.createdAt}
 			<Tooltip.Provider>
 				<Tooltip.Root>
@@ -189,26 +189,26 @@
 				</Tooltip.Root>
 			</Tooltip.Provider>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet vnc(data: { row: Row<VirtualMachine>; scope: string })}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{#if data.row.original.status === 'Running'}
 			<VNC virtualMachine={data.row.original} scope={data.scope} />
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet cpu_metric(data: { row: Row<VirtualMachine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics?.cpu.get(data.row.original.name) ?? []}
+	{@const usages: SampleValue[] = data.metrics.cpu?.get(data.row.original.name) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
 		value: { label: 'usage', color: maximumValue > 0.5 ? 'var(--warning)' : 'var(--healthy)' }
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
-		<Table.Cell alignClass="relative justify-center">
+		<Layout.Cell class="relative justify-center">
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -260,19 +260,19 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		</Table.Cell>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet memory_metric(data: { row: Row<VirtualMachine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics?.memory.get(data.row.original.name) ?? []}
+	{@const usages: SampleValue[] = data.metrics.memory?.get(data.row.original.name) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
 		value: { label: 'usage', color: 'var(--chart-3)' }
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
-		<Table.Cell alignClass="relative justify-center">
+		<Layout.Cell class="relative justify-center">
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -325,13 +325,13 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		</Table.Cell>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet storage_metric(data: { row: Row<VirtualMachine>; metrics: Metrics })}
-	{@const readUsage: SampleValue[] = data.metrics?.storageRead.get(data.row.original.name) ?? []}
-	{@const writeUsage: SampleValue[] = data.metrics?.storageWrite.get(data.row.original.name) ?? []}
+	{@const readUsage: SampleValue[] = data.metrics.storageRead?.get(data.row.original.name) ?? []}
+	{@const writeUsage: SampleValue[] = data.metrics.storageWrite?.get(data.row.original.name) ?? []}
 	{@const traffics = readUsage.map((read, index) => ({
 		time: read.time,
 		read: read.value,
@@ -350,7 +350,7 @@
 		write: { label: 'write', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig}
 	{#if traffics.length > 0}
-		<Table.Cell alignClass="relative justify-center">
+		<Layout.Cell class="relative justify-center">
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={traffics}
@@ -407,16 +407,16 @@
 					{/snippet}
 				</AreaChart>
 			</Chart.Container>
-		</Table.Cell>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet actions(data: { row: Row<VirtualMachine>; scope: string; reloadManager: ReloadManager })}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Actions
 			virtualMachine={data.row.original}
 			scope={data.scope}
 			reloadManager={data.reloadManager}
 		/>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}

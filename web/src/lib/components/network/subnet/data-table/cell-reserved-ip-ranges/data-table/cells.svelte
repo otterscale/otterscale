@@ -3,8 +3,8 @@
 
 	import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 
 	import Actions from './actions.svelte';
@@ -20,39 +20,39 @@
 </script>
 
 {#snippet row_picker(row: Row<Network_IPRange>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet type(row: Row<Network_IPRange>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.type}
 		</Badge>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet startIp(row: Row<Network_IPRange>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.startIp}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet endIp(row: Row<Network_IPRange>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.endIp}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet comment(row: Row<Network_IPRange>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.comment}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<Network_IPRange>; reloadManager: ReloadManager })}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Actions ipRange={data.row.original} reloadManager={data.reloadManager} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}

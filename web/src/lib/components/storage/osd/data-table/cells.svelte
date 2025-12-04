@@ -9,8 +9,8 @@
 	import { resolve } from '$app/paths';
 	import type { ObjectStorageDaemon } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress';
-	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Chart from '$lib/components/ui/chart';
 	import { formatCapacity, formatIO } from '$lib/formatter';
@@ -37,26 +37,26 @@
 </script>
 
 {#snippet row_picker(row: Row<ObjectStorageDaemon>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<ObjectStorageDaemon>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.name}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet state(row: Row<ObjectStorageDaemon>)}
-	<Table.Cell alignClass="flex-row items-center">
+	<Layout.Cell class="flex-row items-center">
 		{#if row.original.in}
 			<Badge variant="outline">{m.osd_in()}</Badge>
 		{/if}
 		{#if row.original.up}
 			<Badge variant="outline">{m.osd_up()}</Badge>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet osdUp()}{/snippet}
@@ -64,17 +64,17 @@
 {#snippet osdIn()}{/snippet}
 
 {#snippet exists(row: Row<ObjectStorageDaemon>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if !row.original.exists}
 			<Icon icon="ph:x" class="text-destructive" />
 		{:else}
 			<Icon icon="ph:circle" class="text-primary" />
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet machine(row: Row<ObjectStorageDaemon>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<div class="flex items-center gap-1">
 			<Badge variant="outline">
 				{row.original.machine?.hostname}
@@ -91,25 +91,25 @@
 				}}
 			/>
 		</div>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet deviceClass(row: Row<ObjectStorageDaemon>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.deviceClass}
 		</Badge>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet placementGroupCount(row: Row<ObjectStorageDaemon>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{row.original.placementGroupCount}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<ObjectStorageDaemon>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		<Progress.Root
 			numerator={Number(row.original.usedBytes)}
 			denominator={Number(row.original.sizeBytes)}
@@ -126,7 +126,7 @@
 				{denominatorUnit}
 			{/snippet}
 		</Progress.Root>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet iops(data: { row: Row<ObjectStorageDaemon>; metrics: Metrics })}
@@ -134,8 +134,8 @@
 		input: { label: 'input', color: 'var(--chart-1)' },
 		output: { label: 'output', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig}
-	{@const inputs = data.metrics?.input.get(data.row.original.name) as SampleValue[]}
-	{@const outputs = data.metrics?.output.get(data.row.original.name) as SampleValue[]}
+	{@const inputs = data.metrics.input?.get(data.row.original.name) as SampleValue[]}
+	{@const outputs = data.metrics.output?.get(data.row.original.name) as SampleValue[]}
 	{@const ios = inputs.map((input, index) => ({
 		time: input.time,
 		input: input.value,
@@ -149,7 +149,7 @@
 		...inputs.map((input) => Number(input.value)),
 		...outputs.map((output) => Number(output.value))
 	)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Chart.Container config={configuration} class="relative h-20 w-full">
 			<AreaChart
 				data={ios}
@@ -218,7 +218,7 @@
 				{/snippet}
 			</AreaChart>
 		</Chart.Container>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet throughput(data: { row: Row<ObjectStorageDaemon>; metrics: Metrics })}
@@ -226,8 +226,8 @@
 		read: { label: 'read', color: 'var(--chart-1)' },
 		write: { label: 'write', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig}
-	{@const reads = data.metrics?.read.get(data.row.original.name) as SampleValue[]}
-	{@const writes = data.metrics?.write.get(data.row.original.name) as SampleValue[]}
+	{@const reads = data.metrics.read?.get(data.row.original.name) as SampleValue[]}
+	{@const writes = data.metrics.write?.get(data.row.original.name) as SampleValue[]}
 	{@const throughputs = reads.map((read, index) => ({
 		time: read.time,
 		read: read.value,
@@ -241,7 +241,7 @@
 		...reads.map((read) => Number(read.value)),
 		...writes.map((write) => Number(write.value))
 	)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Chart.Container config={configuration} class="relative h-20 w-full">
 			<AreaChart
 				data={throughputs}
@@ -309,11 +309,11 @@
 				{/snippet}
 			</AreaChart>
 		</Chart.Container>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<ObjectStorageDaemon>; scope: string })}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Actions osd={data.row.original} scope={data.scope} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}

@@ -3,7 +3,7 @@
 
 	import type { Application_Service_Port } from '$lib/api/application/v1/application_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Table from '$lib/components/custom/table/index.js';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
 
 	export const cells = {
@@ -16,43 +16,43 @@
 </script>
 
 {#snippet row_picker(row: Row<Application_Service_Port>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Application_Service_Port>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.name}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet protocol(row: Row<Application_Service_Port>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.protocol}
 			<Badge variant="outline">
 				{row.original.protocol}
 			</Badge>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet port(row: Row<Application_Service_Port>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.port}
 			<Badge variant="outline">
 				{row.original.port}:{row.original.nodePort}
 			</Badge>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet nodePort(row: Row<Application_Service_Port>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.nodePort}
 			<Badge variant="outline">
 				{row.original.nodePort}
 			</Badge>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}

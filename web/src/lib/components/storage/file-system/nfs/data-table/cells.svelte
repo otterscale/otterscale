@@ -6,12 +6,13 @@
 
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Table from '$lib/components/custom/table/index.js';
 	import { Snapshot } from '$lib/components/storage/file-system/nfs/snapshot';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as HoverCard from '$lib/components/ui/hover-card';
+	import * as Table from '$lib/components/ui/table/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 
@@ -32,41 +33,41 @@
 </script>
 
 {#snippet row_picker(row: Row<Subvolume>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Subvolume>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.name}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet path(row: Row<Subvolume>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<p class="max-w-[200px] overflow-auto text-xs font-light">{row.original.path}</p>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet mode(row: Row<Subvolume>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.mode}
 		</Badge>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet poolName(row: Row<Subvolume>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.poolName}
 		</Badge>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet exportSubvolume(row: Row<Subvolume>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.export}
 			<div class="flex items-center gap-1">
 				<Badge variant="outline">
@@ -141,11 +142,11 @@
 				</HoverCard.Root>
 			</div>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<Subvolume>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.quotaBytes === 0n}
 			<span class="text-sm text-muted-foreground">Quota limit is not set</span>
 		{:else}
@@ -168,11 +169,11 @@
 				{/snippet}
 			</Progress.Root>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet createTime(row: Row<Subvolume>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.createdAt}
 			<Tooltip.Provider>
 				<Tooltip.Root>
@@ -185,7 +186,7 @@
 				</Tooltip.Root>
 			</Tooltip.Provider>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet snapshots(data: {
@@ -195,7 +196,7 @@
 	group: string;
 	reloadManager: ReloadManager;
 })}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		<Snapshot
 			subvolume={data.row.original}
 			scope={data.scope}
@@ -203,7 +204,7 @@
 			group={data.group}
 			reloadManager={data.reloadManager}
 		/>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(data: {
@@ -213,7 +214,7 @@
 	group: string;
 	reloadManager: ReloadManager;
 })}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Actions
 			subvolume={data.row.original}
 			scope={data.scope}
@@ -221,5 +222,5 @@
 			group={data.group}
 			reloadManager={data.reloadManager}
 		/>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}

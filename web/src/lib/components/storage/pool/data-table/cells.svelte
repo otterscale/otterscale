@@ -4,9 +4,9 @@
 
 	import { type Pool, PoolType } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress';
 	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
 
@@ -25,24 +25,24 @@
 </script>
 
 {#snippet row_picker(row: Row<Pool>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Pool>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<div class="flex items-center gap-1">
 			{row.original.name}
 			{#if row.original.updating}
 				<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
 			{/if}
 		</div>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet type(row: Row<Pool>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{#if row.original.poolType == PoolType.ERASURE}
 				ERASURE:{row.original.dataChunks}<Icon icon="ph:x" />{row.original.codingChunks}
@@ -50,11 +50,11 @@
 				REPLICATED:<Icon icon="ph:x" />{row.original.replicatedSize}
 			{:else}{/if}
 		</Badge>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet applications(row: Row<Pool>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<span class="flex gap-1">
 			{#each row.original.applications as application}
 				{#if application}
@@ -64,11 +64,11 @@
 				{/if}
 			{/each}
 		</span>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet placement_group_state(row: Row<Pool>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<span class="flex flex-col gap-1">
 			{#each Object.entries(row.original.placementGroupState) as [state, number]}
 				<Badge variant={getPlacementGroupStateVariant(state)}>
@@ -76,11 +76,11 @@
 				</Badge>
 			{/each}
 		</span>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<Pool>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		<Progress.Root
 			numerator={Number(row.original.usedBytes)}
 			denominator={Number(row.original.usedBytes + row.original.maxBytes)}
@@ -97,11 +97,11 @@
 				{denominatorUnit}
 			{/snippet}
 		</Progress.Root>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<Pool>; scope: string; reloadManager: ReloadManager })}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Actions pool={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}

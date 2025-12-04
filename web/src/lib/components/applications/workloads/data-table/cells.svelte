@@ -5,9 +5,9 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 
@@ -31,14 +31,14 @@
 </script>
 
 {#snippet row_picker(row: Row<Application>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 <!-- TODO: fix scope -->
 {#snippet name(row: Row<Application>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<a
 			class="underline hover:no-underline"
 			href={resolve('/(auth)/scope/[scope]/applications/workloads/[namespace]/[application_name]', {
@@ -49,25 +49,25 @@
 		>
 			{row.original.name}
 		</a>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet type(row: Row<Application>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.type}
 		</Badge>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet namespace(row: Row<Application>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.namespace}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet health(row: Row<Application>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		<Progress.Root
 			numerator={Number(row.original.healthies)}
 			denominator={Number(row.original.pods.length)}
@@ -80,41 +80,41 @@
 				{numerator}/{denominator}
 			{/snippet}
 		</Progress.Root>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet service(row: Row<Application>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{row.original.services.length}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet pod(row: Row<Application>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{row.original.pods.length}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet replica(row: Row<Application>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{row.original.replicas}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet container(row: Row<Application>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{row.original.containers.length}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet volume(row: Row<Application>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{row.original.persistentVolumeClaims.length}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet nodeport(row: Row<Application>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<div class="flex flex-wrap gap-1">
 			{#each row.original.services as service (service.name)}
 				{#each service.ports as port, index (index)}
@@ -133,15 +133,15 @@
 				{/each}
 			{/each}
 		</div>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<Application>; scope: string; reloadManager: ReloadManager })}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Actions
 			application={data.row.original}
 			scope={data.scope}
 			reloadManager={data.reloadManager}
 		/>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}

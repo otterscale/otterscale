@@ -6,7 +6,7 @@
 	import type { Secret } from '$lib/api/application/v1/application_pb';
 	import CopyButton from '$lib/components/custom/copy-button/copy-button.svelte';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import * as Table from '$lib/components/custom/table/index.js';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { TagGroup } from '$lib/components/tag-group';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -26,13 +26,13 @@
 </script>
 
 {#snippet row_picker(row: Row<Secret>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Secret>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Dialog.Root>
 			<Dialog.Trigger>
 				<p class="cursor-default underline hover:no-underline">
@@ -69,44 +69,44 @@
 				</div>
 			</Dialog.Content>
 		</Dialog.Root>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet namespace(row: Row<Secret>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.namespace}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet type(row: Row<Secret>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.type}
 		</Badge>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet immutable(row: Row<Secret>)}
 	{@const value = row.original.immutable}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		<Icon icon={value ? 'ph:check' : 'ph:x'} class={value ? 'text-green-500' : 'text-red-500'} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet labels(row: Row<Secret>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		<TagGroup
 			items={Object.entries(row.original.labels).map(([key, value]) => ({
 				title: `${key}: ${value}`,
 				icon: 'ph:tag'
 			}))}
 		/>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet created_at(row: Row<Secret>)}
 	{#if row.original.createdAt}
-		<Table.Cell alignClass="items-end">
+		<Layout.Cell class="items-end">
 			<Tooltip.Provider>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
@@ -117,6 +117,6 @@
 					</Tooltip.Content>
 				</Tooltip.Root>
 			</Tooltip.Provider>
-		</Table.Cell>
+		</Layout.Cell>
 	{/if}
 {/snippet}

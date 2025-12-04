@@ -10,8 +10,8 @@
 		Warp_Input_Operation
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatSecond, formatTimeAgo } from '$lib/formatter';
@@ -38,19 +38,19 @@
 </script>
 
 {#snippet row_picker(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.name}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet status(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if TestResult_Status[row.original.status] === 'SUCCEEDED'}
 			<Icon icon="ph:check" />
 		{:else if TestResult_Status[row.original.status] === 'FAILED'}
@@ -58,11 +58,11 @@
 		{:else}
 			<Icon icon="svg-spinners:180-ring-with-bg" />
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet target(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
 			{#if row.original.kind.value.target.case === 'internalObjectService'}
 				<Badge variant="outline">
@@ -74,50 +74,50 @@
 				</Badge>
 			{/if}
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet createdBy(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.createdBy}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet operation(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
 			{Warp_Input_Operation[row.original.kind.value.input.operation]}
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 {#snippet duration(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
 			{@const formatted = formatSecond(Number(row.original.kind.value?.input.durationSeconds))}
 			{formatted.value}
 			{formatted.unit}
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 {#snippet objectSize(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
 			{@const formatted = formatCapacity(Number(row.original.kind.value?.input.objectSizeBytes))}
 			{formatted.value}
 			{formatted.unit}
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 {#snippet objectCount(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
 			{row.original.kind.value.input.objectCount}
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet throughputFastest(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
 				Get {(Number(row.original.kind.value.output.get.bytes.fastestPerSecond) / 1000000).toFixed(
@@ -139,11 +139,11 @@
 				).toFixed(3)} MB/s
 			</Badge>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet throughputSlowest(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
 				Get {(Number(row.original.kind.value.output.get.bytes.slowestPerSecond) / 1000000).toFixed(
@@ -165,11 +165,11 @@
 				).toFixed(3)} MB/s
 			</Badge>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet throughputMedian(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
 				Get {(Number(row.original.kind.value.output.get.bytes.medianPerSecond) / 1000000).toFixed(
@@ -191,11 +191,11 @@
 				).toFixed(3)} MB/s
 			</Badge>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet startedAt(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.startedAt}
 			<Tooltip.Provider>
 				<Tooltip.Root>
@@ -208,11 +208,11 @@
 				</Tooltip.Root>
 			</Tooltip.Provider>
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet completedAt(row: Row<TestResult>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{#if row.original.completedAt}
 			{#if Number(timestampDate(row.original.completedAt)) >= 0}
 				<Tooltip.Provider>
@@ -227,11 +227,11 @@
 				</Tooltip.Provider>
 			{/if}
 		{/if}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<TestResult>; scope: string; reloadManager: ReloadManager })}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<Actions testResult={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}

@@ -4,8 +4,8 @@
 
 	import type { Model } from '$lib/api/model/v1/model_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Table from '$lib/components/custom/table/index.js';
 	import Prompting from '$lib/components/prompting/index.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatTimeAgo } from '$lib/formatter';
@@ -33,50 +33,50 @@
 </script>
 
 {#snippet row_expander(row: Row<Model>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowExpander {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet row_picker(row: Row<Model>)}
-	<Table.Cell alignClass="items-center">
+	<Layout.Cell class="items-center">
 		<Cells.RowPicker {row} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet modelName(row: Row<Model>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.id}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Model>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.name}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet namespace(row: Row<Model>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.namespace}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet status(row: Row<Model>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		{row.original.status}
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet description(row: Row<Model>)}
-	<Table.Cell alignClass="items-start">
+	<Layout.Cell class="items-start">
 		<p class="max-w-[200px] truncate">{row.original.description}</p>
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet firstDeployedAt(row: Row<Model>)}
 	{#if row.original.firstDeployedAt}
-		<Table.Cell alignClass="items-end">
+		<Layout.Cell class="items-end">
 			<Tooltip.Provider>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
@@ -87,13 +87,13 @@
 					</Tooltip.Content>
 				</Tooltip.Root>
 			</Tooltip.Provider>
-		</Table.Cell>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet lastDeployedAt(row: Row<Model>)}
 	{#if row.original.lastDeployedAt}
-		<Table.Cell alignClass="items-end">
+		<Layout.Cell class="items-end">
 			<Tooltip.Provider>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
@@ -104,52 +104,52 @@
 					</Tooltip.Content>
 				</Tooltip.Root>
 			</Tooltip.Provider>
-		</Table.Cell>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet prefill(row: Row<Model>)}
 	{#if row.original.prefill}
-		<Table.Cell alignClass="items-start">
+		<Layout.Cell class="items-start">
 			{row.original.prefill.vgpumemPercentage}%
-			<Table.SubCell>
+			<Layout.SubCell>
 				{row.original.prefill.replica}
 				{m.replica()}
-			</Table.SubCell>
-		</Table.Cell>
+			</Layout.SubCell>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet decode(row: Row<Model>)}
 	{#if row.original.decode}
-		<Table.Cell alignClass="items-start">
+		<Layout.Cell class="items-start">
 			{row.original.decode.vgpumemPercentage}%
-			<Table.SubCell>
+			<Layout.SubCell>
 				{row.original.decode.tensor}
 				{m.tensor()}
-			</Table.SubCell>
-		</Table.Cell>
+			</Layout.SubCell>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet gpuRelation(data: { row: Row<Model>; scope: string })}
 	{#if data.row.original.status === 'deployed'}
-		<Table.Cell alignClass="items-center">
+		<Layout.Cell class="items-center">
 			<GPURelation scope={data.scope} model={data.row.original} />
-		</Table.Cell>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet test(data: { row: Row<Model>; serviceUri: string })}
 	{#if data.row.original.status === 'deployed'}
-		<Table.Cell alignClass="items-center">
+		<Layout.Cell class="items-center">
 			<Prompting serviceUri={data.serviceUri} model={data.row.original} />
-		</Table.Cell>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet action(data: { row: Row<Model>; scope: string; reloadManager: ReloadManager })}
-	<Table.Cell alignClass="items-end">
+	<Layout.Cell class="items-end">
 		<Actions model={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
-	</Table.Cell>
+	</Layout.Cell>
 {/snippet}
