@@ -48,8 +48,8 @@
 		</div>
 	</Layout.Statistic.Content>
 	<Layout.Statistic.Footer>
-		<sapn class="capitalize"> {$machine.osystem}</sapn>
+		<span class="capitalize"> {$machine.osystem}</span>
 		{$machine.hweKernel}
-		<sapn class="capitalize"> {$machine.distroSeries}</sapn>
+		<span class="capitalize"> {$machine.distroSeries}</span>
 	</Layout.Statistic.Footer>
 </Layout.Statistic.Root>
