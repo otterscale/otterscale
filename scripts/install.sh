@@ -1656,50 +1656,152 @@ otterscaleWeb:
     keycloakClientID: "$keycloak_clientID"
     keycloakClientSecret: "$keycloak_secret_token"
 
-postgresql:
-  auth:
-    postgresPassword: "postgres-otterscale"
-    password: "otterscale"
+  cloudnative-pg:
+    enabled: true
+    cluster:
+      name: otterscale-postgres-cluster
+    auth:
+      username: "otterscale"
+      password: "otterscale"
+      database: "otterscale"
+      port: "5432"
+    bootstrap:
+      initdb:
+        database: otterscale
+        owner: otterscale
+        secret:
+          name: otterscale-pg-secret
 
-keycloak:
-  auth:
-    adminPassword: "$keycloak_admin_paswd"
+keycloakx:
+  command:
+    - "/opt/keycloak/bin/kc.sh"
+    - "--verbose"
+    - "start"
+    - "--http-port=8080"
+    - "--hostname-strict=false"
+    - "--spi-events-listener-jboss-logging-success-level=info"
+    - "--spi-events-listener-jboss-logging-error-level=warn"
+    - "--import-realm"
 
-  keycloakConfigCli:
-    configuration:
-      phison-realm.json: |
-        {
-          "realm": "$keycloak_realm",
-          "enabled": true,
-          "registrationAllowed": true,
-          "rememberMe": true,
-          "resetPasswordAllowed": true,
-          "clients": [
-            {
-              "enabled": true,
-              "clientId": "otterscale",
-              "clientAuthenticatorType": "client-secret",
-              "secret": "$keycloak_secret_token",
-              "protocol": "openid-connect",
-              "authorizationServicesEnabled": false,
-              "directAccessGrantsEnabled": false,
-              "publicClient": false,
-              "serviceAccountsEnabled": false,
-              "standardFlowEnabled": true,
-              "frontchannelLogout": true,
-              "redirectUris": [
-                "http://$OTTERSCALE_WEB_IP/*"
-              ],
-              "webOrigins": [
-                "http://$OTTERSCALE_WEB_IP"
-              ],
-              "attributes": {
-                "frontchannel.logout.session.required": "true",
-                "pkce.code.challenge.method": "S256"
+  extraEnv: |
+    - name: KEYCLOAK_ADMIN
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "keycloak.fullname" . }}-admin-creds
+          key: user
+    - name: KEYCLOAK_ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "keycloak.fullname" . }}-admin-creds
+          key: password
+    - name: JAVA_OPTS_APPEND
+      value: >-
+        -XX:MaxRAMPercentage=50.0
+        -Djgroups.dns.query={{ include "keycloak.fullname" . }}-headless
+    - name: KC_DB_URL_HOST
+      valueFrom:
+        secretKeyRef:
+          name: keycloak-pg-secret
+          key: host
+    - name: KC_DB_URL_PORT
+      valueFrom:
+        secretKeyRef:
+          name: keycloak-pg-secret
+          key: port
+    - name: KC_DB_URL_DATABASE
+      valueFrom:
+        secretKeyRef:
+          name: keycloak-pg-secret
+          key: dbname
+    - name: KC_DB_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: keycloak-pg-secret
+          key: username
+
+  extraVolumes: |
+    - name: realm-import-volume
+      secret:
+        secretName: '{{ .Release.Name }}-keycloakx-otters-realm'
+
+  extraVolumeMounts: |
+    - name: realm-import-volume
+      mountPath: "/opt/keycloak/data/import/otters-realm.json"
+      subPath: "otters-realm.json"
+      readOnly: true
+
+  secrets:
+    admin-creds:
+      stringData:
+        user: admin
+        password: "$keycloak_admin_paswd"
+
+    otters-realm:
+      stringData:
+        otters-realm.json: |
+          {
+            "realm": "$keycloak_realm",
+            "enabled": true,
+            "registrationAllowed": true,
+            "rememberMe": true,
+            "resetPasswordAllowed": true,
+            "clients": [
+              {
+                "enabled": true,
+                "clientId": "otterscale",
+                "clientAuthenticatorType": "client-secret",
+                "secret": "$",
+                "protocol": "openid-connect",
+                "authorizationServicesEnabled": false,
+                "directAccessGrantsEnabled": false,
+                "publicClient": false,
+                "serviceAccountsEnabled": false,
+                "standardFlowEnabled": true,
+                "frontchannelLogout": true,
+                "redirectUris": [
+                  "http://$OTTERSCALE_WEB_IP/*"
+                ],
+                "webOrigins": [
+                  "http://$OTTERSCALE_WEB_IP"
+                ],
+                "attributes": {
+                  "frontchannel.logout.session.required": "true",
+                  "pkce.code.challenge.method": "S256"
+                }
               }
-            }
-          ]
-        }
+            ]
+          }
+
+  database:
+    existingSecret: "keycloak-pg-secret"
+    existingSecretKey: "password"
+    vendor: postgres
+    hostname: keycloak-postgres-cluster-rw
+    username: "keycloak"
+    password: "keycloak"
+    database: "keycloak"
+    port: "5432"
+
+  dbchecker:
+    enabled: true
+
+  http:
+    relativePath: "/auth/"
+
+  postgresql:
+    cluster:
+      name: keycloak-postgres-cluster
+    auth:
+      username: "keycloak"
+      password: "keycloak"
+      database: "keycloak"
+      port: "5432"
+    bootstrap:
+      initdb:
+        database: keycloak
+        owner: keycloak
+        secret:
+          name: keycloak-pg-secret
 
 configContent: |
   maas:
@@ -1723,8 +1825,9 @@ EOF
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
         execute_cmd "microk8s helm3 install $deploy_name otterscale-charts/otterscale -n $namespace --create-namespace -f $otterscale_helm_values --wait --timeout 10m --debug" "helm install $deploy_name"
         
-        log "INFO" "Cleanup ca cert file" "OTTERSCALE"
+        log "INFO" "Cleanup ca cert file and $otterscale_helm_values" "OTTERSCALE"
         rm -f "$ca_cert_file"
+        rm -f "$otterscale_helm_values"
 
     else
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"
