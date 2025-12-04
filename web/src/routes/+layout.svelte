@@ -31,7 +31,7 @@
 {/snippet}
 
 <ModeWatcher />
-<Toaster richColors {loadingIcon} />
+<Toaster expand richColors {loadingIcon} />
 
 <div class="app">
 	<main>
