@@ -402,9 +402,7 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, name string, sizeB
 	}
 
 	// Update service
-	service := uc.buildService(namespace, names.Share, port)
-
-	if err := uc.updateService(ctx, scope, namespace, names.Share, service); err != nil {
+	if err := uc.updateService(ctx, scope, namespace, names.Share, port); err != nil {
 		return nil, "", err
 	}
 
@@ -477,15 +475,13 @@ func (uc *UseCase) waitAndUpdateServiceNodePort(scope, namespace, name string, p
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
-	newService := uc.buildService(namespace, name, port)
-
 	for {
 		select {
 		case <-ctx.Done():
 			return
 
 		case <-ticker.C:
-			err := uc.updateService(ctx, scope, namespace, name, newService)
+			err := uc.updateService(ctx, scope, namespace, name, port)
 			if k8serrors.IsNotFound(err) {
 				continue
 			}
