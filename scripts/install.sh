@@ -844,8 +844,8 @@ update_dhcp_config() {
 enable_maas_dhcp() {
     log "INFO" "Configuring MAAS DHCP..." "MAAS_DHCP"
 
-    local dynamic_ipranges=$(maas admin ipranges read | jq -r '.[] | select(.type=="dynamic").id')
-    if [ -z $dynamic_ipranges ]; then
+    local dynamic_ipranges=$(maas admin ipranges read | jq -r '.[] | select(.type=="dynamic") | length')
+    if [ ! -z $dynamic_ipranges ]; then
         log "INFO" "MAAS already has dynamic IP ranges - skipping DHCP configuration" "MAAS_DHCP"
         return 0
     fi
