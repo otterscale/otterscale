@@ -546,7 +546,7 @@ check_bridge() {
     OTTERSCALE_INTERFACE_IP=$(echo "$OTTERSCALE_CIDR" | cut -d'/' -f1)
     get_default_dns "$OTTERSCALE_BRIDGE_NAME"
 
-    log "INFO" "Bridge configuration - IP: $OTTERSCALE_INTERFACE_IP, CIDR: $OTTERSCALE_CIDR" "NETWORK"
+    log "INFO" "Bridge configuration - IP: $OTTERSCALE_INTERFACE_IP" "NETWORK"
 }
 
 # =============================================================================
@@ -989,7 +989,7 @@ create_vm_from_maas() {
 
     # Check if juju-vm already exists
     juju_machine_id=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
-    if [ -z $juju_machine_id ]; then
+    if [ ! -z $juju_machine_id ]; then
         log "INFO" "Machine juju-vm (id: $juju_machine_id) already exists - skipping creation" "VM_CREATE"
         return 0
     fi
