@@ -19,16 +19,17 @@ func (a *addons) Charms() []charm {
 	}
 }
 
-func (a *addons) Configs() (string, error) {
+func (a *addons) Config(charmName string) (string, error) {
 	configs := map[string]map[string]any{
 		"ceph-csi": {
 			"default-storage":      "ceph-ext4",
 			"cephfs-enable":        "true",
 			"provisioner-replicas": 1,
+			"release":              "v3.13.0", // for ubuntu noble
 		},
 	}
 
-	return buildConfigs(a.Scope, configs)
+	return buildConfig(a.Scope, charmName, configs)
 }
 
 func (a *addons) Relations() [][]string {

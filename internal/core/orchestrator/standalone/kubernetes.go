@@ -35,7 +35,7 @@ func (k *kubernetes) Charms() []charm {
 	}
 }
 
-func (k *kubernetes) Configs() (string, error) {
+func (k *kubernetes) Config(charmName string) (string, error) {
 	configs := map[string]map[string]any{
 		"kubernetes-control-plane": {
 			"register-with-taints": "",
@@ -57,7 +57,7 @@ func (k *kubernetes) Configs() (string, error) {
 		},
 	}
 
-	return buildConfigs(k.Scope, configs)
+	return buildConfig(k.Scope, charmName, configs)
 }
 
 func (k *kubernetes) Relations() [][]string {

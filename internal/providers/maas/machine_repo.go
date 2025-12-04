@@ -87,29 +87,31 @@ func (r *machineRepo) Commission(_ context.Context, id string, enableSSH, skipBM
 }
 
 func (r *machineRepo) ExtractScope(m *machine.Machine) (string, error) {
-	v, ok := m.WorkloadAnnotations["juju-machine-id"]
+	v, ok := m.WorkloadAnnotations["juju-machine-id"] // foo-bar-machine-0
 	if !ok {
 		return "", fmt.Errorf("machine %q missing workload annotation juju-machine-id", m.Hostname)
 	}
 
 	token := strings.Split(v, "-")
-	if len(token) < 1 {
+	if len(token) < 3 {
 		return "", fmt.Errorf("invalid juju-machine-id format for machine %q", m.Hostname)
 	}
 
-	return token[0], nil
+	scope := strings.Join(token[:len(token)-2], "-")
+	return scope, nil
 }
 
 func (r *machineRepo) ExtractJujuID(m *machine.Machine) (string, error) {
-	v, ok := m.WorkloadAnnotations["juju-machine-id"]
+	v, ok := m.WorkloadAnnotations["juju-machine-id"] // foo-bar-machine-0
 	if !ok {
 		return "", fmt.Errorf("machine %q missing workload annotation juju-machine-id", m.Hostname)
 	}
 
 	token := strings.Split(v, "-")
-	if len(token) < 2 {
+	if len(token) < 3 {
 		return "", fmt.Errorf("invalid juju-machine-id format for machine %q", m.Hostname)
 	}
 
-	return token[2], nil
+	id := token[len(token)-1]
+	return id, nil
 }
