@@ -59,8 +59,8 @@ func (r *scopeRepo) Get(ctx context.Context, name string) (*scope.Scope, error) 
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("scope %q not found", name))
 }
 
-func (r *scopeRepo) Create(ctx context.Context, name, aptMirrorURL, sshKey string) (*scope.Scope, error) {
-	info, err := r.create(ctx, name, aptMirrorURL)
+func (r *scopeRepo) Create(ctx context.Context, name string, config map[string]any, sshKey string) (*scope.Scope, error) {
+	info, err := r.create(ctx, name, config)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (r *scopeRepo) Create(ctx context.Context, name, aptMirrorURL, sshKey strin
 	return r.toScopeFromInfo(&info), nil
 }
 
-func (r *scopeRepo) create(_ context.Context, name, aptMirrorURL string) (base.ModelInfo, error) {
+func (r *scopeRepo) create(_ context.Context, name string, config map[string]any) (base.ModelInfo, error) {
 	conn, err := r.juju.connection("controller")
 	if err != nil {
 		return base.ModelInfo{}, err
@@ -82,7 +82,6 @@ func (r *scopeRepo) create(_ context.Context, name, aptMirrorURL string) (base.M
 	cloudName := r.juju.conf.JujuCloudName()
 	cloudRegion := r.juju.conf.JujuCloudRegion()
 	cloudCredential := names.CloudCredentialTag{}
-	config := map[string]any{"apt-mirror": aptMirrorURL}
 
 	return modelmanager.NewClient(conn).CreateModel(name, userName, cloudName, cloudRegion, cloudCredential, config)
 }
