@@ -90,7 +90,7 @@
 		"@oslojs/binary": "^1.0.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
-		"@shikijs/langs": "^3.17.1",
+		"@shikijs/langs": "^3.19.0",
 		"@shikijs/themes": "^3.17.1",
 		"@xterm/addon-clipboard": "^0.1.0",
 		"@xterm/addon-fit": "^0.10.0",
