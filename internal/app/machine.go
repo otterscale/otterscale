@@ -185,7 +185,13 @@ func toProtoMachine(m *machine.MachineData) *pb.Machine {
 	ret.SetDescription(m.Description)
 	ret.SetStatus(m.StatusName)
 	ret.SetStatusMessage(m.StatusMessage)
-	ret.SetAgentStatus(m.AgentStatus)
+
+	agentStatus := m.AgentStatus
+	if agentStatus != nil {
+		ret.SetAgentStatus(agentStatus.Name)
+		ret.SetAgentStatusMessage(agentStatus.Message)
+	}
+
 	ret.SetPowerState(m.PowerState)
 	ret.SetPowerType(m.PowerType)
 	ret.SetOsystem(m.OSystem)

@@ -38,7 +38,12 @@ type MachineData struct {
 
 	GPUs               []GPU
 	LastCommissionedAt time.Time
-	AgentStatus        string
+	AgentStatus        *AgentStatus
+}
+
+type AgentStatus struct {
+	Name    string
+	Message string
 }
 
 //nolint:revive // allows this exported interface name for specific domain clarity.
@@ -63,7 +68,7 @@ type NodeDeviceRepo interface {
 }
 
 type OrchestratorRepo interface {
-	AgentStatus(ctx context.Context, scope string, jujuID string) (string, error)
+	AgentStatus(ctx context.Context, scope string, jujuID string) (*AgentStatus, error)
 }
 
 type UseCase struct {
@@ -220,15 +225,15 @@ func (uc *UseCase) PowerOffMachine(ctx context.Context, id, comment string) (*Ma
 	}, nil
 }
 
-func (uc *UseCase) agentStatus(ctx context.Context, machine *Machine) (string, error) {
+func (uc *UseCase) agentStatus(ctx context.Context, machine *Machine) (*AgentStatus, error) {
 	scope, err := uc.machine.ExtractScope(machine)
 	if err != nil {
-		return "", nil // ignore
+		return nil, nil // ignore
 	}
 
 	jujuID, err := uc.machine.ExtractJujuID(machine)
 	if err != nil {
-		return "", nil // ignore
+		return nil, nil // ignore
 	}
 
 	return uc.orchestrator.AgentStatus(ctx, scope, jujuID)
