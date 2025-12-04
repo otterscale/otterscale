@@ -939,7 +939,8 @@ create_lxd_vm() {
 
     local vm_hosts=$(maas admin vm-hosts read)
     local vm_host_count=$(echo "$vm_hosts" | jq '. | length')
-
+    VM_HOST_ID=""
+    
     if ((vm_host_count > 0)); then
         log "INFO" "Found existing VM hosts, checking resources..." "LXD_VM"
         search_available_vmhost "$vm_hosts"
