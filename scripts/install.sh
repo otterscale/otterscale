@@ -944,7 +944,7 @@ create_lxd_vm() {
         search_available_vmhost "$vm_hosts"
     fi
 
-    if [[ -n $VM_HOST_ID ]]; then
+    if [[ -z $VM_HOST_ID ]]; then
         local lxc_token=$(lxc config trust list-tokens -f json | jq -r '.[] | select(.ClientName=="maas") | .Token' | head -n 1)
 
         if [[ -z $lxc_token ]]; then
@@ -956,6 +956,8 @@ create_lxd_vm() {
 
         log "INFO" "Creating new LXD VM host..." "LXD_VM"
         VM_HOST_ID=$(maas admin vm-hosts create password="$lxc_token" type=lxd power_address=https://"$OTTERSCALE_INTERFACE_IP":8443 project=maas | jq -r '.id')
+    else
+        log "INFO" "Skipping creation, using existing VM host (ID: $VM_HOST_ID)" "LXD_VM"
     fi
 
     log "INFO" "LXD VM host (ID: $VM_HOST_ID) is ready" "LXD_VM"
@@ -965,7 +967,7 @@ search_available_vmhost() {
     local vm_hosts="$1"
 
     while IFS= read -r host; do
-        VM_HOST_ID=$(echo "$host" | jq -r '.id')
+        local current_id=$(echo "$host" | jq -r '.id')
         local available_cores=$(echo "$host" | jq -r '.available.cores')
         local available_memory_gb=$(echo "$host" | jq -r '.available.memory / 1024' | bc -l | xargs printf "%.2f\n")
         local available_disk_gb=$(echo "$host" | jq -r '.available.local_storage / (1024*1024*1024)' | bc -l | xargs printf "%.2f\n")
@@ -973,13 +975,15 @@ search_available_vmhost() {
         if [[ $(echo "$available_cores >= 1" | bc -l) -eq 1 ]] && \
            [[ $(echo "$available_memory_gb >= 4" | bc -l) -eq 1 ]] && \
            [[ $(echo "$available_disk_gb >= 8" | bc -l) -eq 1 ]]; then
-            log "INFO" "Using existing VM host $VM_HOST_ID with sufficient resources" "LXD_VM"
+            log "INFO" "Found suitable VM host (ID: $current_id)" "LXD_VM"
             log "INFO" "Available resources - Cores: $available_cores, Memory: ${available_memory_gb}GB, Disk: ${available_disk_gb}GB" "LXD_VM"
+
+            VM_HOST_ID="$current_id"
             return 0
         fi
     done < <(echo "$vm_hosts" | jq -c '.[]')
 
-    error_exit "No VM host with sufficient resources found"
+    error_exit "No existing VM host has sufficient resources"
 }
 
 create_vm_from_maas() {
