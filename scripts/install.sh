@@ -845,15 +845,13 @@ enable_maas_dhcp() {
     log "INFO" "Configuring MAAS DHCP..." "MAAS_DHCP"
 
     local dynamic_ipranges=$(maas admin ipranges read | jq -r '.[] | select(.type=="dynamic").id')
-    if [ -n $dynamic_ipranges ]; then
+    if [ -z $dynamic_ipranges ]; then
         log "INFO" "MAAS already has dynamic IP ranges - skipping DHCP configuration" "MAAS_DHCP"
         return 0
     fi
     
     get_maas_dhcp_from_subnet
-
     update_fabric_dns
-
     create_dhcp_iprange
     get_dhcp_fabric
     update_dhcp_config "True"
@@ -957,7 +955,7 @@ create_lxd_vm() {
         fi
 
         log "INFO" "Creating new LXD VM host..." "LXD_VM"
-        VM_HOST_ID=$(maas admin vm-hosts create password=$lxc_token type=lxd power_address=https://$OTTERSCALE_INTERFACE_IP:8443 project=maas | jq -r '.id')
+        VM_HOST_ID=$(maas admin vm-hosts create password="$lxc_token" type=lxd power_address=https://"$OTTERSCALE_INTERFACE_IP":8443 project=maas | jq -r '.id')
     fi
 
     log "INFO" "LXD VM host (ID: $VM_HOST_ID) is ready" "LXD_VM"
@@ -991,7 +989,7 @@ create_vm_from_maas() {
 
     # Check if juju-vm already exists
     juju_machine_id=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
-    if [ -n $juju_machine_id ]; then
+    if [ -z $juju_machine_id ]; then
         log "INFO" "Machine juju-vm (id: $juju_machine_id) already exists - skipping creation" "VM_CREATE"
         return 0
     fi
