@@ -1649,7 +1649,7 @@ keycloakx:
                 "enabled": true,
                 "clientId": "otterscale",
                 "clientAuthenticatorType": "client-secret",
-                "secret": "$",
+                "secret": "$keycloak_secret_token",
                 "protocol": "openid-connect",
                 "authorizationServicesEnabled": false,
                 "directAccessGrantsEnabled": false,
