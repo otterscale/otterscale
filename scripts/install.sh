@@ -1524,6 +1524,7 @@ deploy_helm() {
     add_helm_repository "https://istio-release.storage.googleapis.com/charts" "istio"
     add_helm_repository "https://charts.jetstack.io" "jetstack"
     add_helm_repository "https://open-feature.github.io/open-feature-operator" "openfeature"
+    add_helm_repository "https://cloudnative-pg.github.io/charts" "cnpg"
     add_helm_repository "https://otterscale.github.io/charts" "otterscale-charts"
     execute_cmd "microk8s helm3 repo update" "helm repository update"
 
@@ -1552,6 +1553,7 @@ EOF
 
     install_helm_chart "cert-manager" "cert-manager" "jetstack/cert-manager" "--create-namespace --version v1.19.1 --set crds.enabled=true --wait --timeout 10m"
     install_helm_chart "open-feature-operator" "open-feature-operator" "openfeature/open-feature-operator" "--create-namespace --set sidecarConfiguration.port=8080 --wait --timeout 10m"
+    install_helm_chart "cloudnative-pg" "cloudnative" "cnpg/cloudnative-pg" "--create-namespace --wait --timeout 10m"
 
     log "INFO" "Check helm chart otterscale" "HELM_CHECK"
     local deploy_name="otterscale"
