@@ -34,6 +34,7 @@ type Machine struct {
 	xxx_hidden_Status              *string                      `protobuf:"bytes,201,opt,name=status"`
 	xxx_hidden_StatusMessage       *string                      `protobuf:"bytes,202,opt,name=status_message,json=statusMessage"`
 	xxx_hidden_AgentStatus         *string                      `protobuf:"bytes,203,opt,name=agent_status,json=agentStatus"`
+	xxx_hidden_AgentStatusMessage  *string                      `protobuf:"bytes,204,opt,name=agent_status_message,json=agentStatusMessage"`
 	xxx_hidden_PowerState          *string                      `protobuf:"bytes,301,opt,name=power_state,json=powerState"`
 	xxx_hidden_PowerType           *string                      `protobuf:"bytes,302,opt,name=power_type,json=powerType"`
 	xxx_hidden_Osystem             *string                      `protobuf:"bytes,401,opt,name=osystem"`
@@ -171,6 +172,16 @@ func (x *Machine) GetAgentStatus() string {
 	if x != nil {
 		if x.xxx_hidden_AgentStatus != nil {
 			return *x.xxx_hidden_AgentStatus
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Machine) GetAgentStatusMessage() string {
+	if x != nil {
+		if x.xxx_hidden_AgentStatusMessage != nil {
+			return *x.xxx_hidden_AgentStatusMessage
 		}
 		return ""
 	}
@@ -334,7 +345,7 @@ func (x *Machine) GetGpuDevices() []*Machine_NodeDevice {
 
 func (x *Machine) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 29)
 }
 
 func (x *Machine) SetLastCommissioned(v *timestamppb.Timestamp) {
@@ -343,17 +354,17 @@ func (x *Machine) SetLastCommissioned(v *timestamppb.Timestamp) {
 
 func (x *Machine) SetHardwareUuid(v string) {
 	x.xxx_hidden_HardwareUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 29)
 }
 
 func (x *Machine) SetHostname(v string) {
 	x.xxx_hidden_Hostname = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 29)
 }
 
 func (x *Machine) SetFqdn(v string) {
 	x.xxx_hidden_Fqdn = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 29)
 }
 
 func (x *Machine) SetTags(v []string) {
@@ -362,72 +373,77 @@ func (x *Machine) SetTags(v []string) {
 
 func (x *Machine) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 29)
 }
 
 func (x *Machine) SetStatus(v string) {
 	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 29)
 }
 
 func (x *Machine) SetStatusMessage(v string) {
 	x.xxx_hidden_StatusMessage = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 29)
 }
 
 func (x *Machine) SetAgentStatus(v string) {
 	x.xxx_hidden_AgentStatus = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 29)
+}
+
+func (x *Machine) SetAgentStatusMessage(v string) {
+	x.xxx_hidden_AgentStatusMessage = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 29)
 }
 
 func (x *Machine) SetPowerState(v string) {
 	x.xxx_hidden_PowerState = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 29)
 }
 
 func (x *Machine) SetPowerType(v string) {
 	x.xxx_hidden_PowerType = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 29)
 }
 
 func (x *Machine) SetOsystem(v string) {
 	x.xxx_hidden_Osystem = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 13, 29)
 }
 
 func (x *Machine) SetDistroSeries(v string) {
 	x.xxx_hidden_DistroSeries = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 13, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 14, 29)
 }
 
 func (x *Machine) SetHweKernel(v string) {
 	x.xxx_hidden_HweKernel = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 14, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 15, 29)
 }
 
 func (x *Machine) SetArchitecture(v string) {
 	x.xxx_hidden_Architecture = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 15, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 16, 29)
 }
 
 func (x *Machine) SetCpuSpeed(v int64) {
 	x.xxx_hidden_CpuSpeed = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 16, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 17, 29)
 }
 
 func (x *Machine) SetCpuCount(v int64) {
 	x.xxx_hidden_CpuCount = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 17, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 18, 29)
 }
 
 func (x *Machine) SetMemoryMb(v int64) {
 	x.xxx_hidden_MemoryMb = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 18, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 19, 29)
 }
 
 func (x *Machine) SetStorageMb(v float64) {
 	x.xxx_hidden_StorageMb = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 19, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 20, 29)
 }
 
 func (x *Machine) SetIpAddresses(v []string) {
@@ -444,7 +460,7 @@ func (x *Machine) SetHardwareInformation(v map[string]string) {
 
 func (x *Machine) SetBiosBootMethod(v string) {
 	x.xxx_hidden_BiosBootMethod = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 23, 28)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 24, 29)
 }
 
 func (x *Machine) SetNumaNodes(v []*Machine_NUMANode) {
@@ -526,81 +542,88 @@ func (x *Machine) HasAgentStatus() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
 }
 
-func (x *Machine) HasPowerState() bool {
+func (x *Machine) HasAgentStatusMessage() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 10)
 }
 
-func (x *Machine) HasPowerType() bool {
+func (x *Machine) HasPowerState() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 11)
 }
 
-func (x *Machine) HasOsystem() bool {
+func (x *Machine) HasPowerType() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 12)
 }
 
-func (x *Machine) HasDistroSeries() bool {
+func (x *Machine) HasOsystem() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 13)
 }
 
-func (x *Machine) HasHweKernel() bool {
+func (x *Machine) HasDistroSeries() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 14)
 }
 
-func (x *Machine) HasArchitecture() bool {
+func (x *Machine) HasHweKernel() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 15)
 }
 
-func (x *Machine) HasCpuSpeed() bool {
+func (x *Machine) HasArchitecture() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 16)
 }
 
-func (x *Machine) HasCpuCount() bool {
+func (x *Machine) HasCpuSpeed() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 17)
 }
 
-func (x *Machine) HasMemoryMb() bool {
+func (x *Machine) HasCpuCount() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 18)
 }
 
-func (x *Machine) HasStorageMb() bool {
+func (x *Machine) HasMemoryMb() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 19)
 }
 
+func (x *Machine) HasStorageMb() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 20)
+}
+
 func (x *Machine) HasBiosBootMethod() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 23)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 24)
 }
 
 func (x *Machine) ClearId() {
@@ -647,58 +670,63 @@ func (x *Machine) ClearAgentStatus() {
 	x.xxx_hidden_AgentStatus = nil
 }
 
-func (x *Machine) ClearPowerState() {
+func (x *Machine) ClearAgentStatusMessage() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 10)
+	x.xxx_hidden_AgentStatusMessage = nil
+}
+
+func (x *Machine) ClearPowerState() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
 	x.xxx_hidden_PowerState = nil
 }
 
 func (x *Machine) ClearPowerType() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 12)
 	x.xxx_hidden_PowerType = nil
 }
 
 func (x *Machine) ClearOsystem() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 12)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 13)
 	x.xxx_hidden_Osystem = nil
 }
 
 func (x *Machine) ClearDistroSeries() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 13)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 14)
 	x.xxx_hidden_DistroSeries = nil
 }
 
 func (x *Machine) ClearHweKernel() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 14)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 15)
 	x.xxx_hidden_HweKernel = nil
 }
 
 func (x *Machine) ClearArchitecture() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 15)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 16)
 	x.xxx_hidden_Architecture = nil
 }
 
 func (x *Machine) ClearCpuSpeed() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 16)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 17)
 	x.xxx_hidden_CpuSpeed = 0
 }
 
 func (x *Machine) ClearCpuCount() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 17)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 18)
 	x.xxx_hidden_CpuCount = 0
 }
 
 func (x *Machine) ClearMemoryMb() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 18)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 19)
 	x.xxx_hidden_MemoryMb = 0
 }
 
 func (x *Machine) ClearStorageMb() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 19)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 20)
 	x.xxx_hidden_StorageMb = 0
 }
 
 func (x *Machine) ClearBiosBootMethod() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 23)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 24)
 	x.xxx_hidden_BiosBootMethod = nil
 }
 
@@ -715,6 +743,7 @@ type Machine_builder struct {
 	Status              *string
 	StatusMessage       *string
 	AgentStatus         *string
+	AgentStatusMessage  *string
 	PowerState          *string
 	PowerType           *string
 	Osystem             *string
@@ -740,84 +769,88 @@ func (b0 Machine_builder) Build() *Machine {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 29)
 		x.xxx_hidden_Id = b.Id
 	}
 	x.xxx_hidden_LastCommissioned = b.LastCommissioned
 	if b.HardwareUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 29)
 		x.xxx_hidden_HardwareUuid = b.HardwareUuid
 	}
 	if b.Hostname != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 29)
 		x.xxx_hidden_Hostname = b.Hostname
 	}
 	if b.Fqdn != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 29)
 		x.xxx_hidden_Fqdn = b.Fqdn
 	}
 	x.xxx_hidden_Tags = b.Tags
 	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 29)
 		x.xxx_hidden_Description = b.Description
 	}
 	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 29)
 		x.xxx_hidden_Status = b.Status
 	}
 	if b.StatusMessage != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 29)
 		x.xxx_hidden_StatusMessage = b.StatusMessage
 	}
 	if b.AgentStatus != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 29)
 		x.xxx_hidden_AgentStatus = b.AgentStatus
 	}
+	if b.AgentStatusMessage != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 29)
+		x.xxx_hidden_AgentStatusMessage = b.AgentStatusMessage
+	}
 	if b.PowerState != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 29)
 		x.xxx_hidden_PowerState = b.PowerState
 	}
 	if b.PowerType != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 29)
 		x.xxx_hidden_PowerType = b.PowerType
 	}
 	if b.Osystem != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 13, 29)
 		x.xxx_hidden_Osystem = b.Osystem
 	}
 	if b.DistroSeries != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 13, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 14, 29)
 		x.xxx_hidden_DistroSeries = b.DistroSeries
 	}
 	if b.HweKernel != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 14, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 15, 29)
 		x.xxx_hidden_HweKernel = b.HweKernel
 	}
 	if b.Architecture != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 15, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 16, 29)
 		x.xxx_hidden_Architecture = b.Architecture
 	}
 	if b.CpuSpeed != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 16, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 17, 29)
 		x.xxx_hidden_CpuSpeed = *b.CpuSpeed
 	}
 	if b.CpuCount != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 17, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 18, 29)
 		x.xxx_hidden_CpuCount = *b.CpuCount
 	}
 	if b.MemoryMb != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 18, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 19, 29)
 		x.xxx_hidden_MemoryMb = *b.MemoryMb
 	}
 	if b.StorageMb != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 19, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 20, 29)
 		x.xxx_hidden_StorageMb = *b.StorageMb
 	}
 	x.xxx_hidden_IpAddresses = b.IpAddresses
 	x.xxx_hidden_WorkloadAnnotations = b.WorkloadAnnotations
 	x.xxx_hidden_HardwareInformation = b.HardwareInformation
 	if b.BiosBootMethod != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 23, 28)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 24, 29)
 		x.xxx_hidden_BiosBootMethod = b.BiosBootMethod
 	}
 	x.xxx_hidden_NumaNodes = &b.NumaNodes
@@ -3479,7 +3512,7 @@ var File_api_machine_v1_machine_proto protoreflect.FileDescriptor
 
 const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\n" +
-	"\x1capi/machine/v1/machine.proto\x12\x15otterscale.machine.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x97\x13\n" +
+	"\x1capi/machine/v1/machine.proto\x12\x15otterscale.machine.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xca\x13\n" +
 	"\aMachine\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12G\n" +
 	"\x11last_commissioned\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x10lastCommissioned\x12#\n" +
@@ -3490,7 +3523,8 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\vdescription\x18i \x01(\tR\vdescription\x12\x17\n" +
 	"\x06status\x18\xc9\x01 \x01(\tR\x06status\x12&\n" +
 	"\x0estatus_message\x18\xca\x01 \x01(\tR\rstatusMessage\x12\"\n" +
-	"\fagent_status\x18\xcb\x01 \x01(\tR\vagentStatus\x12 \n" +
+	"\fagent_status\x18\xcb\x01 \x01(\tR\vagentStatus\x121\n" +
+	"\x14agent_status_message\x18\xcc\x01 \x01(\tR\x12agentStatusMessage\x12 \n" +
 	"\vpower_state\x18\xad\x02 \x01(\tR\n" +
 	"powerState\x12\x1e\n" +
 	"\n" +

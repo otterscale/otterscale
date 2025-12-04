@@ -23,10 +23,10 @@ func NewOrchestratorRepo(juju *Juju) machine.OrchestratorRepo {
 
 var _ machine.OrchestratorRepo = (*orchestratorRepo)(nil)
 
-func (r *orchestratorRepo) AgentStatus(_ context.Context, scope, jujuID string) (string, error) {
+func (r *orchestratorRepo) AgentStatus(_ context.Context, scope, jujuID string) (*machine.AgentStatus, error) {
 	conn, err := r.juju.connection(scope)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	args := &client.StatusArgs{
@@ -35,13 +35,16 @@ func (r *orchestratorRepo) AgentStatus(_ context.Context, scope, jujuID string) 
 
 	fullStatus, err := client.NewClient(conn, nil).Status(args)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	machineStatus, ok := fullStatus.Machines[jujuID]
 	if !ok {
-		return "", connect.NewError(connect.CodeNotFound, fmt.Errorf("agent with ID %q not found", jujuID))
+		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("agent with ID %q not found", jujuID))
 	}
 
-	return machineStatus.AgentStatus.Status, nil
+	return &machine.AgentStatus{
+		Name:    machineStatus.AgentStatus.Status,
+		Message: machineStatus.InstanceStatus.Info,
+	}, nil
 }

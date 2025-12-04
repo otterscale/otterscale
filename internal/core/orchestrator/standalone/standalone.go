@@ -85,7 +85,7 @@ func (uc *UseCase) CreateNode(ctx context.Context, scope, machineID string, virt
 		return err
 	}
 
-	if agentStatus != "started" {
+	if agentStatus.Name != "started" {
 		return connect.NewError(connect.CodeInvalidArgument, errors.New("machine is not started"))
 	}
 
