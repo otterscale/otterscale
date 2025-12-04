@@ -18,7 +18,7 @@
 </script>
 
 <Layout.Statistic.Root class="relative overflow-hidden">
-	{#if ['Commissioning', 'Deploying', 'Releasing'].includes($machine.statusMessage)}
+	{#if ['Commissioning', 'Deploying', 'Releasing'].includes($machine.status)}
 		<Spinner class="absolute right-4 bottom-4 size-8 text-primary/20" />
 	{/if}
 	<Layout.Statistic.Header>
@@ -38,7 +38,7 @@
 			<span class=" flex items-center gap-1 text-center">
 				{$machine.status}
 			</span>
-			{#if ['Commissioning', 'Deploying', 'Releasing'].includes($machine.statusMessage) && $machine.statusMessage !== $machine.status}
+			{#if ['Commissioning', 'Deploying', 'Releasing'].includes($machine.status) && $machine.statusMessage !== $machine.status}
 				<p class="mt-1 h-0 text-sm text-muted-foreground">
 					<span class="flex items-center gap-1">
 						{$machine.statusMessage}
