@@ -274,6 +274,10 @@
 							<Select.Item value={machine.id}>
 								{@render machineSelectItem(machine)}
 							</Select.Item>
+						{:else}
+							<Select.Item value="" disabled class="[&_svg]:hidden">
+								{m.no_available_devices()}
+							</Select.Item>
 						{/each}
 					</Select.Content>
 				</Select.Root>
