@@ -59,6 +59,7 @@
 	let scopeNameError = $state('');
 	let selectedMachine = $state('');
 	let selectedDevices = $state<string[]>([]);
+	let storageDevicesError = $state('');
 	let calicoCidr = $state('');
 	let virtualIp = $state('');
 	let isSubmitting = $state(false);
@@ -102,6 +103,10 @@
 		// Validate scope name before submission
 		if (validateScopeName(scopeName)) return;
 		if (isSubmitting) return;
+		if (selectedDevices.length === 0) {
+			storageDevicesError = m.create_scope_storage_devices_required();
+			return;
+		}
 		isSubmitting = true;
 
 		// Prepare data
@@ -350,7 +355,8 @@
 								<Tooltip.Root>
 									<Tooltip.Trigger>
 										<Label
-											class="flex items-start gap-x-2 rounded-md border p-2 hover:bg-accent/50 has-aria-checked:border-slate-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-slate-900 dark:has-aria-checked:bg-slate-950"
+											class="flex items-start gap-x-2 rounded-md border p-2 hover:bg-accent/50 has-aria-checked:border-slate-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-slate-900 dark:has-aria-checked:bg-slate-950 
+											{storageDevicesError ? 'border-destructive' : ''}"
 										>
 											<Checkbox
 												id={device.name}
@@ -361,6 +367,7 @@
 													} else {
 														selectedDevices = selectedDevices.filter((d) => d !== device.name);
 													}
+													storageDevicesError = '';
 												}}
 												class="data-[state=checked]:border-slate-600 data-[state=checked]:bg-slate-600 data-[state=checked]:text-white dark:data-[state=checked]:border-slate-700 dark:data-[state=checked]:bg-slate-700"
 											/>
@@ -376,6 +383,17 @@
 									</Tooltip.Content>
 								</Tooltip.Root>
 							</Tooltip.Provider>
+							{#if storageDevicesError}
+								<span class="flex items-center gap-2 text-sm text-destructive">
+									<Icon icon="ph:warning-circle-bold" class="size-4" />
+									{storageDevicesError}
+								</span>
+							{/if}
+						{:else}
+							<p class="flex items-center gap-2 text-sm text-destructive">
+								<Icon icon="ph:warning-circle-bold" class="size-4" />
+								{m.no_available_storage_devices()}
+							</p>
 						{/each}
 					</div>
 				</div>
