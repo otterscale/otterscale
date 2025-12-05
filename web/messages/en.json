@@ -859,5 +859,6 @@
 	"push_image_description": "Push an image to a project.",
 	"push_chart_description": "Push a chart to a project.",
 	"gpu_relation_description": "Displays the relationship between Machines, GPUs, and Pods for this model.",
-	"gpu_relation_guide_description": "Interact with the graph to explore connections and allocations."
+	"gpu_relation_guide_description": "Interact with the graph to explore connections and allocations.",
+	"no_available_machines": "No available machines"
 }

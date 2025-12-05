@@ -859,5 +859,6 @@
 	"push_image_description": "推送映像檔至專案。",
 	"push_chart_description": "推送 Chart 至專案。",
 	"gpu_relation_description": "顯示此模型的機器、GPU 和 Pod 之間的關係。",
-	"gpu_relation_guide_description": "與圖表互動以探索連線和分配。"
+	"gpu_relation_guide_description": "與圖表互動以探索連線和分配。",
+	"no_available_machines": "無可用機器"
 }
