@@ -1425,16 +1425,23 @@ add_helm_repository() {
 }
 
 install_helm_chart() {  
-    local deploy_name="$1"  
-    local namespace="$2"  
-    local repository_name="$3"  
-    local extra_args="$4"  
+    local deploy_name="$1"
+    local namespace="$2"
+    local repository_name="$3"
+    local extra_args="$4"
+    local chart_status
+    local app_version
 
     log "INFO" "Check helm chart $deploy_name" "HELM_CHECK"
 
     if [[ -z $(microk8s helm3 list -n "$namespace" -o json | jq ".[] | select(.name==\"$deploy_name\")") ]]; then
         log "INFO" "Helm install $deploy_name" "HELM_INSTALL"
         execute_cmd "microk8s helm3 install $deploy_name $repository_name -n $namespace $extra_args --debug" "helm install $deploy_name"
+
+        chart_status=$(microk8s helm list -n "$namespace" --output json | jq -r ".[] | select(.name==\"$deploy_name\").status")
+        app_version=$(microk8s helm list -n "$namespace" --output json | jq -r ".[] | select(.name==\"$deploy_name\").app_version")
+
+        log "INFO" "The Helm release is $chart_status, and the app version is $app_version"
     else
         log "INFO" "Helm chart $deploy_name already exists" "HELM_CHECK"
     fi
