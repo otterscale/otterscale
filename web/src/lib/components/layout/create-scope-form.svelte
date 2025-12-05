@@ -276,7 +276,7 @@
 							</Select.Item>
 						{:else}
 							<Select.Item value="" disabled class="[&_svg]:hidden">
-								{m.no_available_devices()}
+								{m.no_available_machines()}
 							</Select.Item>
 						{/each}
 					</Select.Content>
