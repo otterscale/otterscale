@@ -59,6 +59,7 @@
 	let scopeNameError = $state('');
 	let selectedMachine = $state('');
 	let selectedDevices = $state<string[]>([]);
+	let storageDevicesError = $state('');
 	let calicoCidr = $state('');
 	let virtualIp = $state('');
 	let isSubmitting = $state(false);
@@ -102,6 +103,10 @@
 		// Validate scope name before submission
 		if (validateScopeName(scopeName)) return;
 		if (isSubmitting) return;
+		if (!selectedDevices || selectedDevices.length === 0) {
+			storageDevicesError = m.create_scope_storage_devices_required();
+			return;
+		}
 		isSubmitting = true;
 
 		// Prepare data
@@ -340,8 +345,14 @@
 							{m.create_scope_storage_devices()}
 							<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
 						</Label>
-						<p class="text-sm text-muted-foreground">
-							{m.create_scope_storage_devices_description()}
+						<p class="flex items-center gap-6 text-sm text-muted-foreground">
+							<span>{m.create_scope_storage_devices_description()}</span>
+							{#if storageDevicesError}
+								<span class="inline-flex items-center gap-1 text-destructive">
+									<Icon icon="ph:warning-circle-bold" class="size-4" />
+									{storageDevicesError}
+								</span>
+							{/if}
 						</p>
 					</div>
 					<div class="flex gap-3 overflow-x-auto">
@@ -361,6 +372,7 @@
 													} else {
 														selectedDevices = selectedDevices.filter((d) => d !== device.name);
 													}
+													storageDevicesError = '';
 												}}
 												class="data-[state=checked]:border-slate-600 data-[state=checked]:bg-slate-600 data-[state=checked]:text-white dark:data-[state=checked]:border-slate-700 dark:data-[state=checked]:bg-slate-700"
 											/>
@@ -376,6 +388,11 @@
 									</Tooltip.Content>
 								</Tooltip.Root>
 							</Tooltip.Provider>
+						{:else}
+							<p class="flex items-center gap-2 text-sm text-destructive">
+								<Icon icon="ph:warning-circle-bold" class="size-4 text-destructive" />
+								{m.no_available_storage_devices()}
+							</p>
 						{/each}
 					</div>
 				</div>
