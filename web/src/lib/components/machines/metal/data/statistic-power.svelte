@@ -48,8 +48,14 @@
 		</div>
 	</Layout.Statistic.Content>
 	<Layout.Statistic.Footer class="gap-1">
-		<span class="capitalize"> {$machine.osystem}</span>
-		<span class="uppercase">{$machine.hweKernel}</span>
-		<span class="capitalize">{$machine.distroSeries}</span>
+		{#if $machine.osystem}
+			<span class="capitalize">{$machine.osystem}</span>
+		{/if}
+		{#if $machine.hweKernel}
+			<span class="uppercase">{$machine.hweKernel}</span>
+		{/if}
+		{#if $machine.distroSeries}
+			<span class="capitalize">{$machine.distroSeries}</span>
+		{/if}
 	</Layout.Statistic.Footer>
 </Layout.Statistic.Root>
