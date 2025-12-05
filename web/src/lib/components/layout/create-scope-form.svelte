@@ -103,7 +103,7 @@
 		// Validate scope name before submission
 		if (validateScopeName(scopeName)) return;
 		if (isSubmitting) return;
-		if (!selectedDevices || selectedDevices.length === 0) {
+		if (selectedDevices.length === 0) {
 			storageDevicesError = m.create_scope_storage_devices_required();
 			return;
 		}
@@ -345,14 +345,8 @@
 							{m.create_scope_storage_devices()}
 							<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
 						</Label>
-						<p class="flex items-center gap-6 text-sm text-muted-foreground">
-							<span>{m.create_scope_storage_devices_description()}</span>
-							{#if storageDevicesError}
-								<span class="inline-flex items-center gap-1 text-destructive">
-									<Icon icon="ph:warning-circle-bold" class="size-4" />
-									{storageDevicesError}
-								</span>
-							{/if}
+						<p class="text-sm text-muted-foreground">
+							{m.create_scope_storage_devices_description()}
 						</p>
 					</div>
 					<div class="flex gap-3 overflow-x-auto">
@@ -361,7 +355,8 @@
 								<Tooltip.Root>
 									<Tooltip.Trigger>
 										<Label
-											class="flex items-start gap-x-2 rounded-md border p-2 hover:bg-accent/50 has-aria-checked:border-slate-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-slate-900 dark:has-aria-checked:bg-slate-950"
+											class="flex items-start gap-x-2 rounded-md border p-2 hover:bg-accent/50 has-aria-checked:border-slate-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-slate-900 dark:has-aria-checked:bg-slate-950 
+											{storageDevicesError ? 'border-destructive' : ''}"
 										>
 											<Checkbox
 												id={device.name}
@@ -388,9 +383,15 @@
 									</Tooltip.Content>
 								</Tooltip.Root>
 							</Tooltip.Provider>
+							{#if storageDevicesError}
+								<span class="flex items-center gap-2 text-sm text-destructive">
+									<Icon icon="ph:warning-circle-bold" class="size-4" />
+									{storageDevicesError}
+								</span>
+							{/if}
 						{:else}
 							<p class="flex items-center gap-2 text-sm text-destructive">
-								<Icon icon="ph:warning-circle-bold" class="size-4 text-destructive" />
+								<Icon icon="ph:warning-circle-bold" class="size-4" />
 								{m.no_available_storage_devices()}
 							</p>
 						{/each}
