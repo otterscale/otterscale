@@ -977,9 +977,9 @@ search_available_vmhost() {
         local available_memory_gb=$(echo "$host" | jq -r '.available.memory / 1024' | bc -l | xargs printf "%.2f\n")
         local available_disk_gb=$(echo "$host" | jq -r '.available.local_storage / (1024*1024*1024)' | bc -l | xargs printf "%.2f\n")
 
-        if [[ $(echo "$available_cores >= 1" | bc -l) -eq 1 ]] && \
-           [[ $(echo "$available_memory_gb >= 4" | bc -l) -eq 1 ]] && \
-           [[ $(echo "$available_disk_gb >= 8" | bc -l) -eq 1 ]]; then
+        if [[ $(echo "$available_cores >= $LXD_CORES" | bc -l) -eq 1 ]] && \
+           [[ $(echo "$available_memory_gb >= $((LXD_MEMORY_MB / 1024))" | bc -l) -eq 1 ]] && \
+           [[ $(echo "$available_disk_gb >= ${LXD_DISK_GB%G}" | bc -l) -eq 1 ]]; then
             log "INFO" "Found suitable VM host (ID: $current_id)" "LXD_VM"
             log "INFO" "Available resources - Cores: $available_cores, Memory: ${available_memory_gb}GB, Disk: ${available_disk_gb}GB" "LXD_VM"
 
