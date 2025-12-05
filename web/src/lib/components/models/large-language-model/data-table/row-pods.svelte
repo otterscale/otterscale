@@ -37,9 +37,6 @@
 
 	const total = $derived(pods.length);
 	const running = $derived(pods.filter((pod) => pod.phase === 'Running').length);
-	const averageRestarts = $derived(
-		total > 0 ? pods.reduce((a, pod) => a + Number(pod.restarts), 0) / total : 0
-	);
 	const phases = $derived(
 		pods.reduce(
 			(a, pod) => {
@@ -52,7 +49,7 @@
 	const failed = $derived(pods.filter((pod) => pod?.lastCondition?.status !== 'True').length);
 </script>
 
-<Table.Row class="hover:bg-transparent">
+<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
 	<Table.Cell
 		colspan={Object.keys(table.getHeaderGroups().flatMap((headerGroup) => headerGroup.headers))
 			.length}
@@ -80,13 +77,6 @@
 						<div>
 							<h6 class="text-xs text-muted-foreground">{m.running()}</h6>
 							<p class="text-base">{running}</p>
-						</div>
-					</div>
-					<div class="flex items-center gap-1">
-						<Icon icon="ph:stop-circle-duotone" class="size-6 text-chart-4" />
-						<div>
-							<h6 class="text-xs text-muted-foreground">{m.restarts()}</h6>
-							<p class="text-base">{averageRestarts}</p>
 						</div>
 					</div>
 					<div class="flex items-center gap-1">

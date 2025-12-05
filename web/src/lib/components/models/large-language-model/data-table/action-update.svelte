@@ -203,6 +203,7 @@
 							<Slider
 								type="single"
 								bind:value={requestDecodeResource.vgpumemPercentage}
+								min={1}
 								max={100}
 								step={1}
 								class="w-full py-4 **:data-[slot=slider-track]:h-3"
@@ -226,6 +227,7 @@
 								<Slider
 									type="single"
 									bind:value={requestPrefillResource.vgpumemPercentage}
+									min={1}
 									max={100}
 									step={1}
 									class="w-full py-4 **:data-[slot=slider-track]:h-3"
@@ -264,6 +266,7 @@
 								<Slider
 									type="single"
 									bind:value={requestDecodeResource.vgpumemPercentage}
+									min={1}
 									max={100}
 									step={1}
 									class="w-full py-4 **:data-[slot=slider-track]:h-3"

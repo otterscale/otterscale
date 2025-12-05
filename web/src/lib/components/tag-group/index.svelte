@@ -50,12 +50,12 @@
 							<Item.Actions></Item.Actions>
 						</Item.Root>
 					{:else}
-						<Badge variant="outline" class="flex items-center gap-1">
+						<span class="flex items-center gap-1 py-1">
 							{#if item.icon}
 								<Icon icon={item.icon} />
 							{/if}
 							<p class="text-xs">{item.title}</p>
-						</Badge>
+						</span>
 					{/if}
 				{/each}
 			</div>

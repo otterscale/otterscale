@@ -2,11 +2,12 @@ import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 import type { HuggingFaceModel, ModelTag, ModelTagCategory, SortType } from './types';
 
-async function fetchModels(
+async function fetchHuggingFaceModels(
 	author: string,
 	tags: string[],
 	sort: SortType,
-	limit?: number
+	limit?: number,
+	search?: string
 ): Promise<HuggingFaceModel[]> {
 	const base = 'https://huggingface.co/api/models';
 	const queryParameters = new SvelteURLSearchParams({
@@ -19,6 +20,9 @@ async function fetchModels(
 	});
 	if (limit) {
 		queryParameters.append('limit', String(limit));
+	}
+	if (search) {
+		queryParameters.append('search', search);
 	}
 
 	try {
@@ -33,7 +37,7 @@ async function fetchModels(
 	}
 }
 
-async function fetchModelTypes(modelTagCategory: ModelTagCategory): Promise<ModelTag[]> {
+async function fetchHuggingFaceModelTypes(modelTagCategory: ModelTagCategory): Promise<ModelTag[]> {
 	const base = 'https://huggingface.co/api/models-tags-by-type';
 	const queryParameters = new SvelteURLSearchParams({
 		type: modelTagCategory
@@ -51,4 +55,4 @@ async function fetchModelTypes(modelTagCategory: ModelTagCategory): Promise<Mode
 	}
 }
 
-export { fetchModels, fetchModelTypes };
+export { fetchHuggingFaceModels, fetchHuggingFaceModelTypes };

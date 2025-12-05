@@ -1,11 +1,13 @@
+<script lang="ts" module>
+	export type Type = 'data' | 'count' | 'ratio';
+</script>
+
 <script lang="ts">
 	import { setContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	import * as Card from '$lib/components/ui/card';
 	import { cn, type WithElementRef } from '$lib/utils.js';
-
-	import type { Type } from './types';
 
 	let {
 		ref = $bindable(null),

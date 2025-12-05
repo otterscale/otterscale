@@ -24,7 +24,6 @@
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
 
-	import type { ModeSource } from '../types';
 	import SelectModel from './util-select-model.svelte';
 </script>
 
@@ -54,7 +53,7 @@
 	let requestPrefillResource = $state({ ...defaultPrefillResource });
 	let requestDecodeResource = $state({ ...defaultDecodeResource });
 	let isDisaggregationMode = $state(false);
-	let modelSource: ModeSource | undefined = $state(undefined);
+	let fromLocal: boolean = $state(false);
 	let selectedModel: string = $state('');
 
 	function resetPrefillResources() {
@@ -63,8 +62,8 @@
 	function resetDecodeResources() {
 		requestDecodeResource = { ...defaultDecodeResource };
 	}
-	function resetModelSource() {
-		modelSource = undefined;
+	function resetFromLocal() {
+		fromLocal = false;
 	}
 	function resetSelectedModel() {
 		selectedModel = '';
@@ -74,18 +73,14 @@
 		request = { ...defaults };
 		resetPrefillResources();
 		resetDecodeResources();
-		resetModelSource();
+		resetFromLocal();
 		resetSelectedModel();
 	}
 
 	function integrate() {
 		request.prefill = requestPrefillResource;
 		request.decode = requestDecodeResource;
-		if (modelSource === 'local' && selectedModel) {
-			request.modelName = `pvc-selectedModel`;
-		} else if (modelSource === 'cloud' && selectedModel) {
-			request.modelName = `hf:${selectedModel}`;
-		}
+		request.modelName = fromLocal ? `pvc-${selectedModel}` : selectedModel;
 		request.mode = isDisaggregationMode
 			? Model_Mode.PREFILL_DECODE_DISAGGREGATION
 			: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING;
@@ -189,7 +184,7 @@
 					<Form.Label>{m.model_name()}</Form.Label>
 					<SelectModel
 						bind:value={selectedModel}
-						bind:modelSource
+						bind:fromLocal
 						required
 						bind:invalid={invalidity.modelName}
 						{scope}
@@ -197,7 +192,7 @@
 					/>
 
 					{#if invalidity.modelName}
-						<p class="text-sm text-destructive/50">Please select a model.</p>
+						<p class="text-sm text-destructive/50">{m.select_model_description()}</p>
 					{/if}
 				</Form.Field>
 
@@ -252,6 +247,7 @@
 							<Slider
 								type="single"
 								bind:value={requestDecodeResource.vgpumemPercentage}
+								min={1}
 								max={100}
 								step={1}
 								class="w-full py-4 **:data-[slot=slider-track]:h-3"
@@ -275,6 +271,7 @@
 								<Slider
 									type="single"
 									bind:value={requestPrefillResource.vgpumemPercentage}
+									min={1}
 									max={100}
 									step={1}
 									class="w-full py-4 **:data-[slot=slider-track]:h-3"
@@ -307,6 +304,7 @@
 								<Slider
 									type="single"
 									bind:value={requestDecodeResource.vgpumemPercentage}
+									min={1}
 									max={100}
 									step={1}
 									class="w-full py-4 **:data-[slot=slider-track]:h-3"
@@ -318,17 +316,14 @@
 			{/if}
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
 				disabled={invalid}
 				onclick={() => {
 					integrate();
+					console.log(request);
 					toast.promise(() => modelClient.createModel(request), {
 						loading: `Creating ${request.modelName}...`,
 						success: () => {
@@ -344,7 +339,6 @@
 							return message;
 						}
 					});
-					reset();
 					close();
 				}}
 			>

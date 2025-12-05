@@ -1,6 +1,8 @@
-export const POST = async ({ request }) => {
+import type { RequestEvent } from '@sveltejs/kit';
+
+export async function POST(event: RequestEvent): Promise<Response> {
 	const { serviceUri, modelName, modelIdentifier, prompt, max_tokens, temperature } =
-		await request.json();
+		await event.request.json();
 
 	const response = await fetch(`${serviceUri}/v1/completions`, {
 		method: 'POST',
@@ -19,4 +21,4 @@ export const POST = async ({ request }) => {
 		status: response.status,
 		headers: response.headers
 	});
-};
+}
