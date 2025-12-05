@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts" generics="TData">
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
 
@@ -7,9 +7,7 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-</script>
 
-<script lang="ts" generics="TData">
 	let { table, messages }: { table: Table<TData>; messages: Record<string, string> } = $props();
 </script>
 
@@ -32,7 +30,7 @@
 						.filter((column) => column.getCanHide()) as column (column.id)}
 						<Command.Item
 							onSelect={() => column.toggleVisibility(!column.getIsVisible())}
-							class="text-xs uppercase"
+							class="text-xs capitalize"
 						>
 							<Icon
 								icon="ph:check"

@@ -59,7 +59,7 @@
 		reads.map((sample, index) => ({
 			time: sample.time,
 			read: sample.value,
-			write: writes[index]?.value ?? 0
+			write: writes[index]?.value ?? null
 		}))
 	);
 

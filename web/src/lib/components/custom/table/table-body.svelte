@@ -14,6 +14,11 @@
 	}: WithElementRef<HTMLAttributes<HTMLTableSectionElement>> = $props();
 </script>
 
-<Table.Body bind:ref data-slot="table-body" class={cn(className)} {...restProps}>
+<Table.Body
+	bind:ref
+	data-slot="table-body"
+	class={cn('[&_tr]:last:rounded-b-lg', className)}
+	{...restProps}
+>
 	{@render children?.()}
 </Table.Body>

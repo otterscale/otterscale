@@ -27,7 +27,7 @@
 		receivesByTime?.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmitsByTime?.[index]?.value ?? 0
+			transmit: transmitsByTime?.[index]?.value ?? null
 		})) ?? []
 	);
 	let trafficsByTimeContext = $state<ChartContextValue>();
@@ -134,7 +134,7 @@
 						xAxis: {
 							format: (v: Date) =>
 								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
-							ticks: 1
+							ticks: trafficsByTime.length > 20 ? 2 : 1
 						}
 					}}
 					legend

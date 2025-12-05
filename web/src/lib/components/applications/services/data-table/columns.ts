@@ -56,6 +56,16 @@ function getColumns(): ColumnDef<Service>[] {
 			}
 		},
 		{
+			accessorKey: 'endpoints',
+			header: ({ column }) => {
+				return renderSnippet(headers.endpoints, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.endpoints, row);
+			},
+			enableHiding: false
+		},
+		{
 			accessorKey: 'ports',
 			header: ({ column }) => {
 				return renderSnippet(headers.ports, column);
@@ -70,16 +80,6 @@ function getColumns(): ColumnDef<Service>[] {
 					(p, n) => p < n,
 					(p, n) => p === n
 				)
-		},
-		{
-			accessorKey: 'endpoints',
-			header: ({ column }) => {
-				return renderSnippet(headers.endpoints, column);
-			},
-			cell: ({ row }) => {
-				return renderSnippet(cells.endpoints, row);
-			},
-			enableHiding: false
 		},
 		{
 			accessorKey: 'actions',

@@ -12,7 +12,6 @@ import (
 
 	"github.com/otterscale/otterscale/internal/core/application/config"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
-	"github.com/otterscale/otterscale/internal/core/application/service"
 )
 
 func (uc *UseCase) buildUsersSecret(namespace, name string, users []User) *config.Secret {
@@ -172,26 +171,6 @@ func (uc *UseCase) buildPersistentVolumeClaim(namespace, name string, sizeBytes 
 				},
 			},
 			StorageClassName: &storageClassName,
-		},
-	}
-}
-
-func (uc *UseCase) buildService(namespace, name string, nodePort int32) *service.Service {
-	return &service.Service{
-		ObjectMeta: v1.ObjectMeta{
-			Name:      name,
-			Namespace: namespace,
-		},
-		Spec: corev1.ServiceSpec{
-			Type: corev1.ServiceTypeNodePort,
-			Ports: []corev1.ServicePort{
-				{
-					Name:     "smb",
-					Port:     445,
-					NodePort: nodePort,
-					Protocol: corev1.ProtocolTCP,
-				},
-			},
 		},
 	}
 }

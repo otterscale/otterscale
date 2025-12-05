@@ -87,8 +87,8 @@
 {/snippet}
 
 {#snippet immutable(row: Row<Secret>)}
+	{@const value = row.original.immutable}
 	<Layout.Cell class="items-end">
-		{@const value = row.original.immutable}
 		<Icon icon={value ? 'ph:check' : 'ph:x'} class={value ? 'text-green-500' : 'text-red-500'} />
 	</Layout.Cell>
 {/snippet}

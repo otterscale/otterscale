@@ -115,22 +115,24 @@
 
 {#snippet nodeport(row: Row<Application>)}
 	<Layout.Cell class="items-start">
-		{#each row.original.services as service (service.name)}
-			{#each service.ports as port, index (index)}
-				{#if port.nodePort > 0}
-					<span class="flex items-center">
-						<Badge variant="outline">{port.targetPort}</Badge>
+		<div class="flex flex-wrap gap-1">
+			{#each row.original.services as service (service.name)}
+				{#each service.ports as port, index (index)}
+					{#if port.nodePort > 0}
 						<Button
+							class="flex items-center"
+							size="sm"
 							variant="ghost"
 							target="_blank"
 							href={`http://${row.original.hostname}:${port.nodePort}`}
 						>
 							<Icon icon="ph:arrow-square-out" />
+							{port.nodePort}
 						</Button>
-					</span>
-				{/if}
+					{/if}
+				{/each}
 			{/each}
-		{/each}
+		</div>
 	</Layout.Cell>
 {/snippet}
 

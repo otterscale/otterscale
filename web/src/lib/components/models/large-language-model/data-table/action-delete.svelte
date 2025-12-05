@@ -23,7 +23,8 @@
 	const modelClient = createClient(ModelService, transport);
 
 	const defaults = {
-		scope: scope
+		scope: scope,
+		namespace: model.namespace
 	} as DeleteModelRequest;
 	let request = $state({ ...defaults });
 	function reset() {

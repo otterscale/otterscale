@@ -1,12 +1,10 @@
 <script lang="ts" module>
 	import '@xyflow/svelte/dist/style.css';
-	import '@xyflow/svelte/dist/style.css';
 
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { type Edge, type Node } from '@xyflow/svelte';
 	import { getContext } from 'svelte';
-	import { onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 
 	import type { Model } from '$lib/api/model/v1/model_pb';
@@ -126,24 +124,36 @@
 
 	let open = $state(false);
 	let isLoaded = $state(false);
-	onMount(async () => {
-		await fetch();
-		isLoaded = true;
-	});
 </script>
 
-{#if isLoaded}
-	<Sheet.Root bind:open>
-		<Sheet.Trigger class={buttonVariants({ variant: 'ghost' })}>
-			<Icon icon="ph:arrow-square-out" />
-		</Sheet.Trigger>
-		<Sheet.Content side="right" class="min-w-[38vw] p-4">
+<Sheet.Root
+	bind:open
+	onOpenChange={async (isOpen) => {
+		if (isOpen) {
+			if (!isLoaded) {
+				await fetch();
+				isLoaded = true;
+			}
+		} else {
+			isLoaded = false;
+		}
+	}}
+>
+	<Sheet.Trigger class={buttonVariants({ variant: 'ghost' })}>
+		<Icon icon="ph:arrow-square-out" />
+	</Sheet.Trigger>
+	<Sheet.Content side="right" class="min-w-[38vw]">
+		{#if isLoaded}
+			<Sheet.Header>
+				<Sheet.Title>{m.details()}</Sheet.Title>
+				<Sheet.Description>
+					<p>{m.gpu_relation_description()}</p>
+					<p>{m.gpu_relation_guide_description()}</p>
+				</Sheet.Description>
+			</Sheet.Header>
 			{#if open}
-				<Sheet.Header>
-					<Sheet.Title class="text-center text-lg">{m.details()}</Sheet.Title>
-				</Sheet.Header>
 				<ComplexFlow.Flow initialNodes={$nodes} initialEdges={$edges} />
 			{/if}
-		</Sheet.Content>
-	</Sheet.Root>
-{/if}
+		{/if}
+	</Sheet.Content>
+</Sheet.Root>

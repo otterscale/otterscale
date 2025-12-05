@@ -23,7 +23,7 @@
 		prompts.map((sample, index) => ({
 			time: sample.time,
 			prompt: sample.value,
-			generation: generations[index]?.value ?? 0
+			generation: generations[index]?.value ?? null
 		}))
 	);
 

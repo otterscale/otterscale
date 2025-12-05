@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"maps"
 
+	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 
 	"github.com/otterscale/otterscale/internal/core/application/config"
 	"github.com/otterscale/otterscale/internal/core/application/persistent"
-	"github.com/otterscale/otterscale/internal/core/application/service"
 )
 
 func mergeUsers(existing, desired []userEntry) []User {
@@ -196,14 +196,19 @@ func (uc *UseCase) updatePersistentVolumeClaim(ctx context.Context, scope, names
 	return err
 }
 
-func (uc *UseCase) updateService(ctx context.Context, scope, namespace, name string, service *service.Service) error {
+func (uc *UseCase) updateService(ctx context.Context, scope, namespace, name string, port int32) error {
 	existing, err := uc.service.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return err
 	}
 
-	service.ObjectMeta = existing.ObjectMeta
+	if len(existing.Spec.Ports) == 0 {
+		return fmt.Errorf("service %q has no ports defined", name)
+	}
 
-	_, err = uc.service.Update(ctx, scope, namespace, service)
+	existing.Spec.Type = corev1.ServiceTypeNodePort
+	existing.Spec.Ports[0].NodePort = port
+
+	_, err = uc.service.Update(ctx, scope, namespace, existing)
 	return err
 }

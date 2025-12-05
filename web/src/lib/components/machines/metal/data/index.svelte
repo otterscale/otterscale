@@ -7,7 +7,6 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { m } from '$lib/paraglide/messages';
 
-	import Alert from './alert.svelte';
 	import StatisticCPU from './statistic-cpu.svelte';
 	import StatisticHardware from './statistic-hardware.svelte';
 	import StatisticMemory from './statistic-memory.svelte';
@@ -26,10 +25,6 @@
 </script>
 
 <main class="space-y-4 py-4">
-	{#if $machine.statusMessage !== 'Deployed'}
-		<Alert {machine} />
-	{/if}
-
 	<div class="space-y-4 py-4">
 		<div class="flex items-end gap-2 text-5xl">
 			<p class="text-muted-foreground">{$machine.id}</p>

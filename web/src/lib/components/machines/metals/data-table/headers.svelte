@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import type { Column, Table } from '@tanstack/table-core';
+	import type { Column, Table as TableType } from '@tanstack/table-core';
 
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
@@ -25,7 +25,7 @@
 	};
 </script>
 
-{#snippet row_picker(table: Table<Machine>)}
+{#snippet row_picker(table: TableType<Machine>)}
 	<Layout.Header class="items-start">
 		<Layout.HeaderController>
 			<Headers.RowPicker {table} />

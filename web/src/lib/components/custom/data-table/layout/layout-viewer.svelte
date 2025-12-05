@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { type WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	import { cn } from '$lib/utils';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		children,
@@ -14,13 +12,6 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {} = $props();
 </script>
 
-<div
-	bind:this={ref}
-	class={cn(
-		'rounded-lg border [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg',
-		className
-	)}
-	{...restProps}
->
+<div bind:this={ref} class={cn(className)} {...restProps}>
 	{@render children?.()}
 </div>

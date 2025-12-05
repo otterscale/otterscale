@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { scaleUtc } from 'd3-scale';
 	import { BarChart, type ChartContextValue, Highlight } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
@@ -31,7 +30,7 @@
 		receives?.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmits?.[index]?.value ?? 0
+			transmit: transmits?.[index]?.value ?? null
 		})) ?? []
 	);
 	const latestTraffics = $derived({
@@ -53,6 +52,10 @@
 			color: trafficsConfigurations[activeTraffic].color
 		}
 	]);
+
+	const tickInterval = $derived(
+		traffics.length > 0 ? Math.max(1, Math.floor(traffics.length / 12)) : 20
+	);
 
 	async function fetchReceives() {
 		const response = await prometheusDriver.rangeQuery(
@@ -187,7 +190,7 @@
 						xAxis: {
 							format: (v: Date) =>
 								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
-							ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks()
+							ticks: tickInterval
 						}
 					}}
 				>

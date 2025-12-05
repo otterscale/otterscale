@@ -80,7 +80,7 @@
 		return reads.map((sample: SampleValue, index: number) => ({
 			date: sample.time,
 			Read: sample.value,
-			Write: writes[index]?.value ?? 0
+			Write: writes[index]?.value ?? null
 		}));
 	}
 

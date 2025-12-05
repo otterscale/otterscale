@@ -27,7 +27,7 @@
 		ones.map((sample, index) => ({
 			time: sample.time,
 			one: sample.value,
-			five: fives[index]?.value ?? 0
+			five: fives[index]?.value ?? null
 		}))
 	);
 

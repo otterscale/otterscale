@@ -14,11 +14,11 @@
 	import { type Writable } from 'svelte/store';
 
 	import type { Repository } from '$lib/api/registry/v1/registry_pb';
-	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import { Empty, Filters, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
 
 	import { getColumns, messages } from './columns';
 	import CommandList from './command-list.svelte';
@@ -176,7 +176,6 @@
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<Footer {table} />
 		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

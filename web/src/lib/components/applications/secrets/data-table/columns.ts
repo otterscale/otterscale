@@ -11,15 +11,11 @@ import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
-	type: m.type(),
 	namespace: m.namespace(),
-	health: m.health(),
-	service: m.service(),
-	pod: m.pod(),
-	replica: m.replica(),
-	container: m.container(),
-	volume: m.volume(),
-	nodeport: m.nodeport()
+	type: m.type(),
+	immutable: m.immutable(),
+	labels: m.labels(),
+	createdAt: m.create_time()
 };
 
 function getColumns(): ColumnDef<Secret>[] {
@@ -81,7 +77,7 @@ function getColumns(): ColumnDef<Secret>[] {
 			}
 		},
 		{
-			accessorKey: 'created_at',
+			accessorKey: 'createdAt',
 			header: ({ column }) => {
 				return renderSnippet(headers.created_at, column);
 			},

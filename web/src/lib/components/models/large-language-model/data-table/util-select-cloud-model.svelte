@@ -155,10 +155,7 @@
 			modelSource = 'cloud' as ModeSource;
 		}}
 	>
-		<div class="font-base flex items-center gap-2 text-sm text-primary">
-			<Icon icon="ph:cloud" />
-			cloud
-		</div>
+		<Icon icon="ph:cloud" />
 	</Dialog.Trigger>
 	<Dialog.Content
 		class="h-[77vh] min-w-[77vw] overflow-y-auto"

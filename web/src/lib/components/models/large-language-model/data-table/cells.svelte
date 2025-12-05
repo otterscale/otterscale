@@ -17,18 +17,16 @@
 	export const cells = {
 		row_expander,
 		row_picker,
-		id,
 		name,
+		modelName,
 		namespace,
 		status,
 		description,
-		first_deployed_at,
-		last_deployed_at,
-		chart_version,
-		app_version,
 		prefill,
 		decode,
-		gpu_relation,
+		firstDeployedAt,
+		lastDeployedAt,
+		gpuRelation,
 		test,
 		action
 	};
@@ -46,7 +44,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet id(row: Row<Model>)}
+{#snippet modelName(row: Row<Model>)}
 	<Layout.Cell class="items-start">
 		{row.original.id}
 	</Layout.Cell>
@@ -76,7 +74,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet first_deployed_at(row: Row<Model>)}
+{#snippet firstDeployedAt(row: Row<Model>)}
 	{#if row.original.firstDeployedAt}
 		<Layout.Cell class="items-end">
 			<Tooltip.Provider>
@@ -93,7 +91,7 @@
 	{/if}
 {/snippet}
 
-{#snippet last_deployed_at(row: Row<Model>)}
+{#snippet lastDeployedAt(row: Row<Model>)}
 	{#if row.original.lastDeployedAt}
 		<Layout.Cell class="items-end">
 			<Tooltip.Provider>
@@ -110,40 +108,33 @@
 	{/if}
 {/snippet}
 
-{#snippet chart_version(row: Row<Model>)}
-	<Layout.Cell class="items-end">
-		{row.original.chartVersion}
-	</Layout.Cell>
-{/snippet}
-
-{#snippet app_version(row: Row<Model>)}
-	<Layout.Cell class="items-end">
-		{row.original.appVersion}
-	</Layout.Cell>
-{/snippet}
-
 {#snippet prefill(row: Row<Model>)}
 	{#if row.original.prefill}
-		<Layout.Cell class="items-end">
-			<p>
-				{row.original.prefill.vgpumemPercentage}% ({row.original.prefill.replica}
-				{m.replica()})
-			</p>
+		<Layout.Cell class="items-start">
+			{row.original.prefill.vgpumemPercentage}%
+			<Layout.SubCell>
+				{row.original.prefill.replica}
+				{m.replica()}
+			</Layout.SubCell>
 		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet decode(row: Row<Model>)}
 	{#if row.original.decode}
-		<Layout.Cell class="items-end">
-			<p>{row.original.decode.vgpumemPercentage}% ({row.original.decode.tensor} {m.tensor()})</p>
+		<Layout.Cell class="items-start">
+			{row.original.decode.vgpumemPercentage}%
+			<Layout.SubCell>
+				{row.original.decode.tensor}
+				{m.tensor()}
+			</Layout.SubCell>
 		</Layout.Cell>
 	{/if}
 {/snippet}
 
-{#snippet gpu_relation(data: { row: Row<Model>; scope: string })}
+{#snippet gpuRelation(data: { row: Row<Model>; scope: string })}
 	{#if data.row.original.status === 'deployed'}
-		<Layout.Cell class="items-end">
+		<Layout.Cell class="items-center">
 			<GPURelation scope={data.scope} model={data.row.original} />
 		</Layout.Cell>
 	{/if}
@@ -151,7 +142,7 @@
 
 {#snippet test(data: { row: Row<Model>; serviceUri: string })}
 	{#if data.row.original.status === 'deployed'}
-		<Layout.Cell class="items-end">
+		<Layout.Cell class="items-center">
 			<Prompting serviceUri={data.serviceUri} model={data.row.original} />
 		</Layout.Cell>
 	{/if}

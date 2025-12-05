@@ -20,7 +20,7 @@
 		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
-	let latestAvailableModels = $state(0);
+	let latestAvailableModels: number | undefined = $state(undefined);
 	let availableModels = $state([] as SampleValue[]);
 	const trend = $derived(
 		availableModels.length > 1 && availableModels[availableModels.length - 2].value !== 0
@@ -111,6 +111,13 @@
 		<Card.Content>
 			<div class="flex h-9 w-full items-center justify-center">
 				<Icon icon="svg-spinners:6-dots-rotate" class="size-10" />
+			</div>
+		</Card.Content>
+	{:else if latestAvailableModels == undefined}
+		<Card.Content>
+			<div class="flex h-full w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-bar-fill" class="size-6 animate-pulse text-muted-foreground" />
+				<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 			</div>
 		</Card.Content>
 	{:else}
