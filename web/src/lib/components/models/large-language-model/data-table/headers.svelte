@@ -39,12 +39,9 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet modelName(column: Column<Model>)}
+{#snippet modelName()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.model_name()}</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 

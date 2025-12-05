@@ -18,7 +18,7 @@
 	bind:ref
 	data-slot="table-header"
 	class={cn(
-		'rounded-lg text-xs font-medium capitalize [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg',
+		'group rounded-lg text-xs font-medium capitalize [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg',
 		className
 	)}
 	{...restProps}

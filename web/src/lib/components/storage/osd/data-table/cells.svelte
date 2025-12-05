@@ -134,12 +134,12 @@
 		input: { label: 'input', color: 'var(--chart-1)' },
 		output: { label: 'output', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig}
-	{@const inputs = data.metrics.input?.get(data.row.original.name) as SampleValue[]}
-	{@const outputs = data.metrics.output?.get(data.row.original.name) as SampleValue[]}
+	{@const inputs = (data.metrics.input?.get(data.row.original.name) as SampleValue[]) ?? []}
+	{@const outputs = (data.metrics.output?.get(data.row.original.name) as SampleValue[]) ?? []}
 	{@const ios = inputs.map((input, index) => ({
 		time: input.time,
 		input: input.value,
-		output: outputs[index]?.value ?? 0
+		output: outputs[index].value ?? null
 	}))}
 	{@const maximumValue = Math.max(
 		...inputs.map((input) => Number(input.value)),
@@ -226,12 +226,12 @@
 		read: { label: 'read', color: 'var(--chart-1)' },
 		write: { label: 'write', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig}
-	{@const reads = data.metrics.read?.get(data.row.original.name) as SampleValue[]}
-	{@const writes = data.metrics.write?.get(data.row.original.name) as SampleValue[]}
+	{@const reads = (data.metrics.read?.get(data.row.original.name) as SampleValue[]) ?? []}
+	{@const writes = (data.metrics.write?.get(data.row.original.name) as SampleValue[]) ?? []}
 	{@const throughputs = reads.map((read, index) => ({
 		time: read.time,
 		read: read.value,
-		write: writes[index]?.value ?? 0
+		write: writes[index]?.value ?? null
 	}))}
 	{@const maximumValue = Math.max(
 		...reads.map((read) => Number(read.value)),
