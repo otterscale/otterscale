@@ -204,11 +204,14 @@
 	"memory_usage": "記憶體使用量",
 	"create_scope_name": "名稱",
 	"create_scope_name_description": "輸入您的範圍的唯一識別碼和設施命名的前綴。",
+	"create_scope_name_invalid_format": "名稱必須以小寫字母開頭，且只能包含小寫字母和'-'。",
+	"create_scope_name_already_exists": "此範圍名稱已存在，請選擇其他名稱。",
 	"create_scope_machine": "機器",
 	"create_scope_machine_description": "為您的 Ceph 和 Kubernetes 部署選擇一台機器。",
 	"create_scope_machine_select": "選擇一台機器",
 	"create_scope_storage_devices": "儲存裝置",
 	"create_scope_storage_devices_description": "為 Ceph 設定專用儲存裝置。",
+	"create_scope_storage_devices_required": "請至少選擇一個儲存裝置。",
 	"create_scope_calico_cidr": "Calico CIDR",
 	"create_scope_calico_cidr_description": "Kubernetes Pod 通訊的網路範圍。",
 	"create_scope_virtual_ip": "虛擬 IP",
@@ -860,5 +863,6 @@
 	"push_chart_description": "推送 Chart 至專案。",
 	"gpu_relation_description": "顯示此模型的機器、GPU 和 Pod 之間的關係。",
 	"gpu_relation_guide_description": "與圖表互動以探索連線和分配。",
-	"no_available_machines": "無可用機器"
+	"no_available_machines": "無可用機器",
+	"no_available_storage_devices": "無可用儲存裝置"
 }
