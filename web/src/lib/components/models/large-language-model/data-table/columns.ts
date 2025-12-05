@@ -13,15 +13,14 @@ import { headers } from './headers.svelte';
 const messages = {
 	name: m.name(),
 	namespace: m.namespace(),
+	id: m.model_name(),
 	status: m.status(),
 	description: m.description(),
-	first_deployed_at: m.time(),
-	last_deployed_at: m.time(),
-	chart_version: m.version(),
-	app_version: m.version(),
+	firstDeployedAt: m.first_deployed_at(),
+	lastDeployedAt: m.last_deployed_at(),
 	prefill: m.prefill(),
 	decode: m.decode(),
-	gpu_relation: m.gpu_relation(),
+	gpuRelation: m.gpu_relation(),
 	test: m.test()
 };
 
@@ -63,12 +62,12 @@ function getColumns(
 			}
 		},
 		{
-			accessorKey: 'id',
+			accessorKey: 'modelName',
 			header: ({ column }) => {
-				return renderSnippet(headers.id, column);
+				return renderSnippet(headers.modelName, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.id, row);
+				return renderSnippet(cells.modelName, row);
 			}
 		},
 		{
@@ -98,57 +97,6 @@ function getColumns(
 				return renderSnippet(cells.description, row);
 			}
 		},
-
-		{
-			accessorKey: 'chart_version',
-			header: ({ column }) => {
-				return renderSnippet(headers.chart_version, column);
-			},
-			cell: ({ row }) => {
-				return renderSnippet(cells.chart_version, row);
-			}
-		},
-		{
-			accessorKey: 'app_version',
-			header: ({ column }) => {
-				return renderSnippet(headers.app_version, column);
-			},
-			cell: ({ row }) => {
-				return renderSnippet(cells.app_version, row);
-			}
-		},
-		{
-			accessorKey: 'first_deployed_at',
-			header: ({ column }) => {
-				return renderSnippet(headers.first_deployed_at, column);
-			},
-			cell: ({ row }) => {
-				return renderSnippet(cells.first_deployed_at, row);
-			},
-			sortingFn: (previousRow, nextRow) =>
-				getSortingFunction(
-					previousRow.original.firstDeployedAt,
-					nextRow.original.firstDeployedAt,
-					(p, n) => timestampDate(p) < timestampDate(n),
-					(p, n) => timestampDate(p) === timestampDate(n)
-				)
-		},
-		{
-			accessorKey: 'last_deployed_at',
-			header: ({ column }) => {
-				return renderSnippet(headers.last_deployed_at, column);
-			},
-			cell: ({ row }) => {
-				return renderSnippet(cells.last_deployed_at, row);
-			},
-			sortingFn: (previousRow, nextRow) =>
-				getSortingFunction(
-					previousRow.original.lastDeployedAt,
-					nextRow.original.lastDeployedAt,
-					(p, n) => timestampDate(p) < timestampDate(n),
-					(p, n) => timestampDate(p) === timestampDate(n)
-				)
-		},
 		{
 			accessorKey: 'prefill',
 			header: ({ column }) => {
@@ -170,12 +118,44 @@ function getColumns(
 			enableHiding: false
 		},
 		{
-			accessorKey: 'gpu_relation',
+			accessorKey: 'firstDeployedAt',
 			header: ({ column }) => {
-				return renderSnippet(headers.gpu_relation, column);
+				return renderSnippet(headers.firstDeployedAt, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.gpu_relation, { row, scope, reloadManager });
+				return renderSnippet(cells.firstDeployedAt, row);
+			},
+			sortingFn: (previousRow, nextRow) =>
+				getSortingFunction(
+					previousRow.original.firstDeployedAt,
+					nextRow.original.firstDeployedAt,
+					(p, n) => timestampDate(p) < timestampDate(n),
+					(p, n) => timestampDate(p) === timestampDate(n)
+				)
+		},
+		{
+			accessorKey: 'lastDeployedAt',
+			header: ({ column }) => {
+				return renderSnippet(headers.lastDeployedAt, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.lastDeployedAt, row);
+			},
+			sortingFn: (previousRow, nextRow) =>
+				getSortingFunction(
+					previousRow.original.lastDeployedAt,
+					nextRow.original.lastDeployedAt,
+					(p, n) => timestampDate(p) < timestampDate(n),
+					(p, n) => timestampDate(p) === timestampDate(n)
+				)
+		},
+		{
+			accessorKey: 'gpuRelation',
+			header: ({ column }) => {
+				return renderSnippet(headers.gpuRelation, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.gpuRelation, { row, scope, reloadManager });
 			},
 			enableHiding: false
 		},

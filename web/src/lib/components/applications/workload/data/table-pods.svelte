@@ -7,9 +7,10 @@
 	import { page } from '$app/state';
 	import type { Application, Application_Pod } from '$lib/api/application/v1/application_pb';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Table from '$lib/components/custom/table';
+	import { Empty } from '$lib/components/custom/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
+	import * as Table from '$lib/components/ui/table';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
@@ -145,7 +146,7 @@
 		{#if $application.pods.length === 0}
 			<Table.Row>
 				<Table.Cell colspan={6}>
-					<Table.Empty />
+					<Empty />
 				</Table.Cell>
 			</Table.Row>
 		{/if}

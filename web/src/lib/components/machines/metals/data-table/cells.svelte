@@ -14,7 +14,7 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Chart from '$lib/components/ui/chart';
-	import { formatCapacity, formatPercentage, formatTimeAgo } from '$lib/formatter';
+	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { cn } from '$lib/utils';
 
 	import type { Metrics } from '../types';
@@ -68,7 +68,7 @@
 {/snippet}
 
 {#snippet power_state(row: Row<Machine>)}
-	<Layout.Cell class="flex-row items-center">
+	<div class="flex items-center gap-1">
 		<Icon
 			icon={row.original.powerState === 'on' ? 'ph:power' : 'ph:power'}
 			class={cn(
@@ -76,13 +76,13 @@
 				row.original.powerState === 'on' ? 'text-accent-foreground' : 'text-destructive'
 			)}
 		/>
-		<Layout.Cell>
+		<Layout.Cell class="items-start">
 			{row.original.powerState}
 			<Layout.SubCell>
 				{row.original.powerType}
 			</Layout.SubCell>
 		</Layout.Cell>
-	</Layout.Cell>
+	</div>
 {/snippet}
 
 {#snippet status(row: Row<Machine>)}
@@ -178,7 +178,7 @@
 {/snippet}
 
 {#snippet cpu_metric(data: { row: Row<Machine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics.cpu.get(data.row.original.fqdn) ?? []}
+	{@const usages: SampleValue[] = data.metrics.cpu?.get(data.row.original.fqdn) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
@@ -186,20 +186,6 @@
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
 		<Layout.Cell class="relative justify-center">
-			{@const maximumUsageValue = formatPercentage(maximumValue, 1, 0)}
-			{@const minimumUsageValue = formatPercentage(minimumValue, 1, 0)}
-			<div
-				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-			>
-				<span class="flex items-center gap-1">
-					{maximumUsageValue}%
-					<Icon icon="ph:arrow-line-up" />
-				</span>
-				<span class="flex items-center gap-1">
-					{minimumUsageValue}%
-					<Icon icon="ph:arrow-line-down" />
-				</span>
-			</div>
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -256,7 +242,7 @@
 {/snippet}
 
 {#snippet memory_metric(data: { row: Row<Machine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics.memory.get(data.row.original.fqdn) ?? []}
+	{@const usages: SampleValue[] = data.metrics.memory?.get(data.row.original.fqdn) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
@@ -264,24 +250,6 @@
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
 		<Layout.Cell class="relative justify-center">
-			{@const { value: maximumCapacityValue, unit: maximumCapacityUnit } =
-				formatCapacity(maximumValue)}
-			{@const { value: minimumCapacityValue, unit: minimumCapacityUnit } =
-				formatCapacity(minimumValue)}
-			<div
-				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-			>
-				<span class="flex items-center gap-1">
-					{maximumCapacityValue.toFixed(0)}
-					{maximumCapacityUnit}
-					<Icon icon="ph:arrow-line-up" />
-				</span>
-				<span class="flex items-center gap-1">
-					{minimumCapacityValue.toFixed(0)}
-					{minimumCapacityUnit}
-					<Icon icon="ph:arrow-line-down" />
-				</span>
-			</div>
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -339,7 +307,7 @@
 {/snippet}
 
 {#snippet storage_metric(data: { row: Row<Machine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics.storage.get(data.row.original.fqdn) ?? []}
+	{@const usages: SampleValue[] = data.metrics.storage?.get(data.row.original.fqdn) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
@@ -347,20 +315,6 @@
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
 		<Layout.Cell class="relative justify-center">
-			{@const maximumUsageValue = formatPercentage(maximumValue, 1, 0)}
-			{@const minimumUsageValue = formatPercentage(minimumValue, 1, 0)}
-			<div
-				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-			>
-				<span class="flex items-center gap-1">
-					{maximumUsageValue}%
-					<Icon icon="ph:arrow-line-up" />
-				</span>
-				<span class="flex items-center gap-1">
-					{minimumUsageValue}%
-					<Icon icon="ph:arrow-line-down" />
-				</span>
-			</div>
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}

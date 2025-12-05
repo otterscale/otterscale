@@ -1,8 +1,7 @@
 <script lang="ts" module>
 	import type { Row } from '@tanstack/table-core';
 
-	import type { User_Key } from '$lib/api/storage/v1/storage_pb';
-	import type { User } from '$lib/api/storage/v1/storage_pb';
+	import type { User, User_Key } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';

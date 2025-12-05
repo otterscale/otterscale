@@ -15,12 +15,12 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Chart from '$lib/components/ui/chart';
 	import * as HoverCard from '$lib/components/ui/hover-card';
-	import * as Table from '$lib/components/ui/table';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { formatCapacity, formatIO, formatPercentage, formatTimeAgo } from '$lib/formatter';
+	import { formatCapacity, formatIO, formatTimeAgo } from '$lib/formatter';
 
 	import type { Metrics } from '../types';
 	import Actions from './cell-actions.svelte';
@@ -201,7 +201,7 @@
 {/snippet}
 
 {#snippet cpu_metric(data: { row: Row<VirtualMachine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics.cpu.get(data.row.original.name) ?? []}
+	{@const usages: SampleValue[] = data.metrics.cpu?.get(data.row.original.name) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
@@ -209,20 +209,6 @@
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
 		<Layout.Cell class="relative justify-center">
-			{@const maximumUsageValue = formatPercentage(maximumValue, 1, 0)}
-			{@const minimumUsageValue = formatPercentage(minimumValue, 1, 0)}
-			<div
-				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-			>
-				<span class="flex items-center gap-1">
-					{maximumUsageValue}%
-					<Icon icon="ph:arrow-line-up" />
-				</span>
-				<span class="flex items-center gap-1">
-					{minimumUsageValue}%
-					<Icon icon="ph:arrow-line-down" />
-				</span>
-			</div>
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -279,7 +265,7 @@
 {/snippet}
 
 {#snippet memory_metric(data: { row: Row<VirtualMachine>; metrics: Metrics })}
-	{@const usages: SampleValue[] = data.metrics.memory.get(data.row.original.name) ?? []}
+	{@const usages: SampleValue[] = data.metrics.memory?.get(data.row.original.name) ?? []}
 	{@const maximumValue = Math.max(...usages.map((usage) => Number(usage.value)))}
 	{@const minimumValue = Math.min(...usages.map((usage) => Number(usage.value)))}
 	{@const configuration = {
@@ -287,24 +273,6 @@
 	} satisfies Chart.ChartConfig}
 	{#if usages.length > 0}
 		<Layout.Cell class="relative justify-center">
-			{@const { value: maximumCapacityValue, unit: maximumCapacityUnit } =
-				formatCapacity(maximumValue)}
-			{@const { value: minimumCapacityValue, unit: minimumCapacityUnit } =
-				formatCapacity(minimumValue)}
-			<div
-				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-			>
-				<span class="flex items-center gap-1">
-					{maximumCapacityValue.toFixed(0)}
-					{maximumCapacityUnit}
-					<Icon icon="ph:arrow-line-up" />
-				</span>
-				<span class="flex items-center gap-1">
-					{minimumCapacityValue.toFixed(0)}
-					{minimumCapacityUnit}
-					<Icon icon="ph:arrow-line-down" />
-				</span>
-			</div>
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={usages}
@@ -362,12 +330,12 @@
 {/snippet}
 
 {#snippet storage_metric(data: { row: Row<VirtualMachine>; metrics: Metrics })}
-	{@const readUsage: SampleValue[] = data.metrics.storageRead.get(data.row.original.name) ?? []}
-	{@const writeUsage: SampleValue[] = data.metrics.storageWrite.get(data.row.original.name) ?? []}
+	{@const readUsage: SampleValue[] = data.metrics.storageRead?.get(data.row.original.name) ?? []}
+	{@const writeUsage: SampleValue[] = data.metrics.storageWrite?.get(data.row.original.name) ?? []}
 	{@const traffics = readUsage.map((read, index) => ({
 		time: read.time,
 		read: read.value,
-		write: writeUsage[index]?.value ?? 0
+		write: writeUsage[index]?.value ?? null
 	}))}
 	{@const maximumValue = Math.max(
 		...readUsage.map((usage) => Number(usage.value)),
@@ -383,24 +351,6 @@
 	} satisfies Chart.ChartConfig}
 	{#if traffics.length > 0}
 		<Layout.Cell class="relative justify-center">
-			{@const { value: maximumCapacityValue, unit: maximumCapacityUnit } =
-				formatCapacity(maximumValue)}
-			{@const { value: minimumCapacityValue, unit: minimumCapacityUnit } =
-				formatCapacity(minimumValue)}
-			<div
-				class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-			>
-				<span class="flex items-center gap-1">
-					{maximumCapacityValue.toFixed(0)}
-					{maximumCapacityUnit}
-					<Icon icon="ph:arrow-line-up" />
-				</span>
-				<span class="flex items-center gap-1">
-					{minimumCapacityValue.toFixed(0)}
-					{minimumCapacityUnit}
-					<Icon icon="ph:arrow-line-down" />
-				</span>
-			</div>
 			<Chart.Container config={configuration} class="h-10 w-full">
 				<AreaChart
 					data={traffics}

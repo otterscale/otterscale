@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	import { cn } from '$lib/utils';
+	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
+	import * as InputGroup from '$lib/components/ui/input-group/index.js';
 
 	import type { ModeSource } from '../types';
 	import SelectCloudModel from './util-select-cloud-model.svelte';
@@ -28,21 +29,18 @@
 	});
 </script>
 
-<div
-	class={cn(
-		'flex items-center gap-2 rounded-lg border px-3 py-3 text-sm shadow-sm hover:cursor-default',
-		invalid ? 'text-destructive ring-1 ring-destructive' : ''
-	)}
->
-	<Icon icon="ph:robot" />
-	{#if value}
-		{value}
-	{:else}
-		<p class="text-xs text-destructive/60">Select Model from Model Artifacts or HuggingFace.</p>
-	{/if}
-</div>
-
-<div class="ml-auto flex gap-1">
+<ButtonGroup.Root class="w-full">
+	<InputGroup.Root>
+		<InputGroup.Input
+			placeholder="Select from Artifacts or HuggingFace"
+			readonly
+			class="cursor-default"
+			{value}
+		/>
+		<InputGroup.Addon>
+			<Icon icon="ph:robot" />
+		</InputGroup.Addon>
+	</InputGroup.Root>
 	<SelectLocalModel bind:modelSource bind:value {scope} {namespace} />
 	<SelectCloudModel bind:modelSource bind:value />
-</div>
+</ButtonGroup.Root>

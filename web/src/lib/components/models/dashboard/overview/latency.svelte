@@ -20,7 +20,7 @@
 		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
-	let latestLatency = $state(0);
+	let latestLatency: number | undefined = $state(undefined);
 	let latencies = $state([] as SampleValue[]);
 	const trend = $derived(
 		latencies.length > 1 && latencies[latencies.length - 2].value !== 0
@@ -38,8 +38,7 @@
 			const response = await prometheusDriver.instantQuery(
 				`histogram_quantile(0.95, sum by(le) (vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}))`
 			);
-			const value = response.result[0]?.value;
-			latestLatency = isNaN(Number(value)) ? 0 : value;
+			latestLatency = response.result[0]?.value ? Number(response.result[0]?.value) : undefined;
 		} catch (error) {
 			console.error(`Fail to fetch latest latency in scope ${scope}:`, error);
 		}
@@ -113,6 +112,13 @@
 		<Card.Content>
 			<div class="flex h-9 w-full items-center justify-center">
 				<Icon icon="svg-spinners:6-dots-rotate" class="size-10" />
+			</div>
+		</Card.Content>
+	{:else if latestLatency == undefined}
+		<Card.Content>
+			<div class="flex h-full w-full flex-col items-center justify-center">
+				<Icon icon="ph:chart-bar-fill" class="size-6 animate-pulse text-muted-foreground" />
+				<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 			</div>
 		</Card.Content>
 	{:else}

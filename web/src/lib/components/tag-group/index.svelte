@@ -2,56 +2,63 @@
 	import Icon from '@iconify/svelte';
 
 	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import * as HoverCard from '$lib/components/ui/hover-card';
+	import * as Item from '$lib/components/ui/item/index.js';
 
-	import type { Item } from './types';
+	import type { Item as ItemType } from './types';
 
-	let { items, limit = 1 }: { items: Item[]; limit?: number } = $props();
+	let { items, limit = 1 }: { items: ItemType[]; limit?: number } = $props();
 </script>
 
 {#if limit >= 0}
-	{#if items.length > limit}
-		<Tooltip.Provider>
-			<Tooltip.Root>
-				<Tooltip.Trigger>
-					<div class="flex flex-wrap items-center gap-1">
-						{#each items.slice(0, limit) as item, index (index)}
-							<Badge variant="outline" class="flex items-center gap-1">
-								{#if item.icon}
-									<Icon icon={item.icon} class="size-5" />
-								{/if}
-								<p class="text-xs">{item.title}</p>
-							</Badge>
-							<p class="text-xs font-light text-muted-foreground">
-								+ {items.length - limit}
-							</p>
-						{/each}
-					</div>
-				</Tooltip.Trigger>
-				<Tooltip.Content class="max-h-xl h-fit w-fit max-w-xs overflow-y-auto">
-					<div class="my-2 flex flex-wrap gap-2">
-						{#each items as item, index (index)}
-							<Badge variant="outline" class="flex items-center gap-1 overflow-auto">
-								{#if item.icon}
-									<Icon icon={item.icon} class="size-5 text-card" />
-								{/if}
-								<p class="text-xs text-card">{item.title}</p>
-							</Badge>
-						{/each}
-					</div>
-				</Tooltip.Content>
-			</Tooltip.Root>
-		</Tooltip.Provider>
-	{:else}
-		<div class="flex flex-wrap items-center gap-1">
-			{#each items as item, index (index)}
-				<Badge variant="outline" class="flex items-center gap-1">
-					{#if item.icon}
-						<Icon icon={item.icon} class="size-5" />
+	<HoverCard.Root>
+		<HoverCard.Trigger>
+			<div class="flex flex-wrap items-center gap-1">
+				{#each items.slice(0, limit) as item, index (index)}
+					<Badge variant="outline" class="flex items-center gap-1">
+						{#if item.icon}
+							<Icon icon={item.icon} class="size-5" />
+						{/if}
+						<p class="text-xs">{item.title}</p>
+					</Badge>
+					{#if items.length > limit}
+						<p class="cursor-default text-xs font-light text-muted-foreground">
+							+ {items.length - limit}
+						</p>
 					{/if}
-					<p class="text-xs">{item.title}</p>
-				</Badge>
-			{/each}
-		</div>
-	{/if}
+				{/each}
+			</div>
+		</HoverCard.Trigger>
+		<HoverCard.Content class="max-h-xl w-fit max-w-sm overflow-y-auto">
+			<div class="flex flex-wrap items-center gap-2">
+				{#each items as item, index (index)}
+					{#if item.description}
+						<Item.Root size="sm" class="p-0">
+							{#if item.icon}
+								<Item.Media variant="icon">
+									<Icon icon={item.icon} class="size-3" />
+								</Item.Media>
+							{/if}
+							<Item.Content>
+								<Item.Title class="text-xs">
+									{item.title}
+								</Item.Title>
+								<Item.Description class="text-xs">
+									{item.description}
+								</Item.Description>
+							</Item.Content>
+							<Item.Actions></Item.Actions>
+						</Item.Root>
+					{:else}
+						<Badge variant="outline" class="flex items-center gap-1">
+							{#if item.icon}
+								<Icon icon={item.icon} />
+							{/if}
+							<p class="text-xs">{item.title}</p>
+						</Badge>
+					{/if}
+				{/each}
+			</div>
+		</HoverCard.Content>
+	</HoverCard.Root>
 {/if}

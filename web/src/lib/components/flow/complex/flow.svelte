@@ -1,16 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import '@xyflow/svelte/dist/style.css';
 
 	import dagre from '@dagrejs/dagre';
-	import {
-		Controls,
-		type Edge,
-		MiniMap,
-		type Node,
-		Panel,
-		Position,
-		SvelteFlow
-	} from '@xyflow/svelte';
+	import { Background, type Edge, type Node, Panel, Position, SvelteFlow } from '@xyflow/svelte';
+	import { mode } from 'mode-watcher';
 
 	import { cn } from '$lib/utils';
 
@@ -22,9 +15,7 @@
 
 	const defaultNodeWidth = 300;
 	const defaultNodeHeight = 150;
-</script>
 
-<script lang="ts">
 	let isHorizontal = $state(false);
 	function getLayoutedElements(nodes: Node[], edges: Edge[]) {
 		dagreGraph.setGraph({ rankdir: isHorizontal ? 'LR' : 'TB' });
@@ -102,7 +93,7 @@
 		}));
 	}}
 >
+	<Background bgColor={mode.current === 'dark' ? '#1a1a1a' : '#f5f5f5'} />
 	<Panel position="top-right" />
-	<MiniMap />
-	<Controls />
+	<!-- <MiniMap /> -->
 </SvelteFlow>

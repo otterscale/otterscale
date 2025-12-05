@@ -1,3 +1,5 @@
+import ActionItem from './data-table-action-item.svelte';
+import ActionList from './data-table-actions.svelte';
 import CellRowExpander from './data-table-cell-row-expander.svelte';
 import CellRowPicker from './data-table-cell-row-picker.svelte';
 import Empty from './data-table-empty.svelte';
@@ -29,4 +31,9 @@ const Headers = {
 	RowExpander: HeaderRowExpander
 };
 
-export { Cells, Empty, Filters, Footer, getSortingFunction, Headers, Pagination, Sorter };
+const Actions = {
+	ActionList: ActionList,
+	ActionItem: ActionItem
+};
+
+export { Actions, Cells, Empty, Filters, Footer, getSortingFunction, Headers, Pagination, Sorter };

@@ -52,12 +52,12 @@
 	const failed = $derived(pods.filter((pod) => pod?.lastCondition?.status !== 'True').length);
 </script>
 
-<Table.Row class="bg-muted/50 hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+<Table.Row class="hover:bg-transparent">
 	<Table.Cell
 		colspan={Object.keys(table.getHeaderGroups().flatMap((headerGroup) => headerGroup.headers))
 			.length}
 	>
-		<div class="h-full space-y-4 border-l-4 border-border px-8 pt-8 pb-12">
+		<div class="m-4 h-full space-y-4 border-l-4 border-border p-8">
 			<div class="flex items-center justify-between gap-4 p-4">
 				<h3 class="text-2xl font-bold">{total} Pods</h3>
 				<div class="flex items-center gap-4">
@@ -98,23 +98,23 @@
 					</div>
 				</div>
 			</div>
-			<div class="rounded-lg border">
-				<Table.Root>
-					<Table.Header>
-						<Table.Row>
-							<Table.Head>{m.pod()}</Table.Head>
-							<Table.Head>{m.phase()}</Table.Head>
-							<Table.Head class="text-end">{m.ready()}</Table.Head>
-							<Table.Head class="text-end">{m.restarts()}</Table.Head>
-							<Table.Head class="text-start">{m.last_condition()}</Table.Head>
-							<Table.Head class="text-center">{m.kv_cache()}</Table.Head>
-							<Table.Head class="text-center">{m.time_to_first_token()}</Table.Head>
-							<Table.Head class="text-center">{m.requests()}</Table.Head>
-							<Table.Head class="text-end">{m.log()}</Table.Head>
-							<Table.Head class="text-end">{m.create_time()}</Table.Head>
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
+			<Table.Root>
+				<Table.Header>
+					<Table.Row>
+						<Table.Head>{m.pod()}</Table.Head>
+						<Table.Head>{m.phase()}</Table.Head>
+						<Table.Head class="text-end">{m.ready()}</Table.Head>
+						<Table.Head class="text-end">{m.restarts()}</Table.Head>
+						<Table.Head class="text-start">{m.last_condition()}</Table.Head>
+						<Table.Head class="text-center">{m.kv_cache()}</Table.Head>
+						<Table.Head class="text-center">{m.time_to_first_token()}</Table.Head>
+						<Table.Head class="text-center">{m.requests()}</Table.Head>
+						<Table.Head class="text-center">{m.log()}</Table.Head>
+						<Table.Head class="text-end">{m.create_time()}</Table.Head>
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{#if row.original.pods.length > 0}
 						{#each row.original.pods as pod (pod.name)}
 							<Table.Row>
 								<Table.Cell>{pod.name}</Table.Cell>
@@ -155,7 +155,7 @@
 									{@const configuration = {
 										cache: { label: 'cache', color: 'var(--chart-2)' }
 									} satisfies Chart.ChartConfig}
-									{@const kvCaches: SampleValue[] = metrics.kvCache.get(pod.name) ?? []}
+									{@const kvCaches: SampleValue[] = metrics.kvCache?.get(pod.name) ?? []}
 									{#if kvCaches.length > 0}
 										<Chart.Container config={configuration} class="h-10 w-full">
 											<LineChart
@@ -199,7 +199,7 @@
 									{@const configuration = {
 										time: { label: 'time', color: 'var(--chart-1)' }
 									} satisfies Chart.ChartConfig}
-									{@const timeToFirstTokens: SampleValue[] = metrics.timeToFirstToken.get(pod.name) ?? []}
+									{@const timeToFirstTokens: SampleValue[] = metrics.timeToFirstToken?.get(pod.name) ?? []}
 									{#if timeToFirstTokens.length > 0}
 										<Chart.Container config={configuration} class="h-10 w-full">
 											<LineChart
@@ -243,7 +243,7 @@
 									{@const configuration = {
 										time: { label: 'time', color: 'var(--chart-1)' }
 									} satisfies Chart.ChartConfig}
-									{@const requestLatencies: SampleValue[] = metrics.requestLatency.get(pod.name) ?? []}
+									{@const requestLatencies: SampleValue[] = metrics.requestLatency?.get(pod.name) ?? []}
 									<Chart.Container config={configuration} class="h-10 w-full">
 										<LineChart
 											data={requestLatencies}
@@ -281,7 +281,7 @@
 										</LineChart>
 									</Chart.Container>
 								</Table.Cell>
-								<Table.Cell class="text-end">
+								<Table.Cell class="text-center">
 									{#if pod}
 										<Log {pod} {scope} {namespace} />
 									{/if}
@@ -302,9 +302,15 @@
 								</Table.Cell>
 							</Table.Row>
 						{/each}
-					</Table.Body>
-				</Table.Root>
-			</div>
+					{:else}
+						<Table.Row>
+							<Table.Cell colspan={10}>
+								<Table.Empty />
+							</Table.Cell>
+						</Table.Row>
+					{/if}
+				</Table.Body>
+			</Table.Root>
 		</div>
 	</Table.Cell>
 </Table.Row>

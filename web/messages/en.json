@@ -880,7 +880,7 @@
 	"create_model": "Create Model",
 	"update_model": "Update Model",
 	"delete_model": "Delete Model",
-	"test": "Testing",
+	"test": "Test",
 	"official": "Official",
 	"sync": "Sync",
 	"manifests": "Manifests",
@@ -898,5 +898,7 @@
 	"versions": "Versions",
 	"dependencies": "Dependencies",
 	"push_image_description": "Push an image to a project.",
-	"push_chart_description": "Push a chart to a project."
+	"push_chart_description": "Push a chart to a project.",
+	"gpu_relation_description": "Displays the relationship between Machines, GPUs, and Pods for this model.",
+	"gpu_relation_guide_description": "Interact with the graph to explore connections and allocations."
 }

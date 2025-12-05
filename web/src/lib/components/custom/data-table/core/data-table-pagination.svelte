@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts" generics="TData">
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
 
 	import { Button } from '$lib/components/ui/button/index.js';
-</script>
 
-<script lang="ts" generics="TData">
 	let { table }: { table: Table<TData> } = $props();
 </script>
 

@@ -15,12 +15,11 @@
 	import { type Writable } from 'svelte/store';
 
 	import type { Model } from '$lib/api/model/v1/model_pb';
-	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import { Empty, Filters, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table/index.js';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
-	import { cn } from '$lib/utils';
 
 	import type { Metrics } from '../types';
 	import Create from './action-create.svelte';
@@ -170,9 +169,7 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
-							<Table.Head
-								class="has-[*[data-slot=data-table-row-expander]]:p-1 has-[*[data-slot=data-table-row-picker]]:p-0"
-							>
+							<Table.Head>
 								{#if !header.isPlaceholder}
 									<FlexRender
 										content={header.column.columnDef.header}
@@ -188,12 +185,7 @@
 				{#each table.getRowModel().rows as row (row.id)}
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
-							<Table.Cell
-								class={cn(
-									row.getIsExpanded() ? 'bg-muted/50' : '',
-									'has-[*[data-slot=data-table-row-expander]]:p-1 has-[*[data-slot=data-table-row-picker]]:p-0'
-								)}
-							>
+							<Table.Cell>
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
@@ -208,7 +200,6 @@
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<Footer {table} />
 		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

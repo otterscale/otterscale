@@ -50,7 +50,7 @@
 		bind:ref
 		data-slot="input-general"
 		class={cn(
-			'pl-9 ring-1',
+			'read-only:focus-none pl-9 ring-1 read-only:cursor-default',
 			isInvalid
 				? 'text-destructive/60 placeholder:text-xs placeholder:text-destructive/60 focus:text-foreground focus:placeholder:invisible'
 				: '',

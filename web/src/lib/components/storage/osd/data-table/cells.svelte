@@ -134,12 +134,12 @@
 		input: { label: 'input', color: 'var(--chart-1)' },
 		output: { label: 'output', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig}
-	{@const inputs = data.metrics.input.get(data.row.original.name) as SampleValue[]}
-	{@const outputs = data.metrics.output.get(data.row.original.name) as SampleValue[]}
+	{@const inputs = (data.metrics.input?.get(data.row.original.name) as SampleValue[]) ?? []}
+	{@const outputs = (data.metrics.output?.get(data.row.original.name) as SampleValue[]) ?? []}
 	{@const ios = inputs.map((input, index) => ({
 		time: input.time,
 		input: input.value,
-		output: outputs[index]?.value ?? 0
+		output: outputs[index].value ?? null
 	}))}
 	{@const maximumValue = Math.max(
 		...inputs.map((input) => Number(input.value)),
@@ -149,89 +149,76 @@
 		...inputs.map((input) => Number(input.value)),
 		...outputs.map((output) => Number(output.value))
 	)}
-	<Chart.Container config={configuration} class="relative h-20 w-full">
-		{@const { value: maximumIOValue, unit: maximumIOUnit } = formatIO(maximumValue)}
-		{@const { value: minimumIOValue, unit: minimumIOUnit } = formatIO(minimumValue)}
-		<div
-			class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-		>
-			<span class="flex items-center gap-1">
-				{maximumIOValue.toFixed(0)}
-				{maximumIOUnit}
-				<Icon icon="ph:arrow-line-up" />
-			</span>
-			<span class="flex items-center gap-1">
-				{minimumIOValue.toFixed(0)}
-				{minimumIOUnit}
-				<Icon icon="ph:arrow-line-down" />
-			</span>
-		</div>
-		<AreaChart
-			data={ios}
-			x="time"
-			series={[
-				{
-					key: 'input',
-					label: configuration.input.label,
-					color: configuration.input.color
-				},
-				{
-					key: 'output',
-					label: configuration.output.label,
-					color: configuration.output.color
-				}
-			]}
-			props={{
-				area: {
-					curve: curveMonotoneX,
-					'fill-opacity': 0.4,
-					line: { class: 'stroke-1' },
-					motion: 'tween'
-				},
-				xAxis: { format: () => '' },
-				yAxis: { format: () => '' }
-			}}
-		>
-			{#snippet tooltip()}
-				<Chart.Tooltip
-					indicator="dot"
-					labelFormatter={(v: Date) => {
-						return v.toLocaleDateString('en-US', {
-							year: 'numeric',
-							month: 'short',
-							day: 'numeric',
-							hour: 'numeric',
-							minute: 'numeric'
-						});
-					}}
-				>
-					{#snippet formatter({ item, name, value })}
-						{@const { value: ioValue, unit: ioUnit } = formatIO(Number(value))}
-						<div
-							class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
-							style="--color-bg: {item.color}"
-						>
-							<Icon icon="ph:square-fill" class="text-(--color-bg)" />
-							<h1 class="font-semibold text-muted-foreground">{name}</h1>
-							<p class="ml-auto">{ioValue} {ioUnit}</p>
-						</div>
-					{/snippet}
-				</Chart.Tooltip>
-			{/snippet}
-			{#snippet marks({ series, getAreaProps })}
-				{#each series as s, i (s.key)}
-					<LinearGradient
-						stops={[s.color ?? '', 'color-mix(in lch, ' + s.color + ' 10%, transparent)']}
-						vertical
+	<Layout.Cell class="items-center">
+		<Chart.Container config={configuration} class="relative h-20 w-full">
+			<AreaChart
+				data={ios}
+				x="time"
+				yDomain={[minimumValue, maximumValue]}
+				series={[
+					{
+						key: 'input',
+						label: configuration.input.label,
+						color: configuration.input.color
+					},
+					{
+						key: 'output',
+						label: configuration.output.label,
+						color: configuration.output.color
+					}
+				]}
+				props={{
+					area: {
+						curve: curveMonotoneX,
+						'fill-opacity': 0.4,
+						line: { class: 'stroke-1' },
+						motion: 'tween'
+					},
+					xAxis: { format: () => '' },
+					yAxis: { format: () => '' }
+				}}
+			>
+				{#snippet tooltip()}
+					<Chart.Tooltip
+						indicator="dot"
+						labelFormatter={(v: Date) => {
+							return v.toLocaleDateString('en-US', {
+								year: 'numeric',
+								month: 'short',
+								day: 'numeric',
+								hour: 'numeric',
+								minute: 'numeric'
+							});
+						}}
 					>
-						{#snippet children({ gradient })}
-							<Area {...getAreaProps(s, i)} fill={gradient} />
+						{#snippet formatter({ item, name, value })}
+							{@const { value: ioValue, unit: ioUnit } = formatIO(Number(value))}
+							<div
+								class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
+								style="--color-bg: {item.color}"
+							>
+								<Icon icon="ph:square-fill" class="text-(--color-bg)" />
+								<h1 class="font-semibold text-muted-foreground">{name}</h1>
+								<p class="ml-auto">{ioValue} {ioUnit}</p>
+							</div>
 						{/snippet}
-					</LinearGradient>
-				{/each}
-			{/snippet}
-		</AreaChart>
-	</Chart.Container>
+					</Chart.Tooltip>
+				{/snippet}
+				{#snippet marks({ series, getAreaProps })}
+					{#each series as s, i (s.key)}
+						<LinearGradient
+							stops={[s.color ?? '', 'color-mix(in lch, ' + s.color + ' 10%, transparent)']}
+							vertical
+						>
+							{#snippet children({ gradient })}
+								<Area {...getAreaProps(s, i)} fill={gradient} />
+							{/snippet}
+						</LinearGradient>
+					{/each}
+				{/snippet}
+			</AreaChart>
+		</Chart.Container>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet throughput(data: { row: Row<ObjectStorageDaemon>; metrics: Metrics })}
@@ -239,12 +226,12 @@
 		read: { label: 'read', color: 'var(--chart-1)' },
 		write: { label: 'write', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig}
-	{@const reads = data.metrics.read.get(data.row.original.name) as SampleValue[]}
-	{@const writes = data.metrics.write.get(data.row.original.name) as SampleValue[]}
+	{@const reads = (data.metrics.read?.get(data.row.original.name) as SampleValue[]) ?? []}
+	{@const writes = (data.metrics.write?.get(data.row.original.name) as SampleValue[]) ?? []}
 	{@const throughputs = reads.map((read, index) => ({
 		time: read.time,
 		read: read.value,
-		write: writes[index]?.value ?? 0
+		write: writes[index]?.value ?? null
 	}))}
 	{@const maximumValue = Math.max(
 		...reads.map((read) => Number(read.value)),
@@ -254,88 +241,75 @@
 		...reads.map((read) => Number(read.value)),
 		...writes.map((write) => Number(write.value))
 	)}
-	<Chart.Container config={configuration} class="relative h-20 w-full">
-		{@const { value: maximumIOValue, unit: maximumIOUnit } = formatIO(maximumValue)}
-		{@const { value: minimumIOValue, unit: minimumIOUnit } = formatIO(minimumValue)}
-		<div
-			class="absolute flex h-full w-full flex-col items-end justify-between text-xs text-muted-foreground"
-		>
-			<span class="flex items-center gap-1">
-				{maximumIOValue.toFixed(0)}
-				{maximumIOUnit}
-				<Icon icon="ph:arrow-line-up" />
-			</span>
-			<span class="flex items-center gap-1">
-				{minimumIOValue.toFixed(0)}
-				{minimumIOUnit}
-				<Icon icon="ph:arrow-line-down" />
-			</span>
-		</div>
-		<AreaChart
-			data={throughputs}
-			x="time"
-			series={[
-				{
-					key: 'read',
-					label: configuration.read.label,
-					color: configuration.read.color
-				},
-				{
-					key: 'write',
-					label: configuration.write.label,
-					color: configuration.write.color
-				}
-			]}
-			props={{
-				area: {
-					curve: curveMonotoneX,
-					'fill-opacity': 0.4,
-					line: { class: 'stroke-1' },
-					motion: 'tween'
-				},
-				xAxis: { format: () => '' },
-				yAxis: { format: () => '' }
-			}}
-		>
-			{#snippet tooltip()}
-				<Chart.Tooltip
-					labelFormatter={(v: Date) => {
-						return v.toLocaleDateString('en-US', {
-							year: 'numeric',
-							month: 'short',
-							day: 'numeric',
-							hour: 'numeric',
-							minute: 'numeric'
-						});
-					}}
-				>
-					{#snippet formatter({ item, name, value })}
-						{@const { value: ioValue, unit: ioUnit } = formatIO(Number(value))}
-						<div
-							class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
-							style="--color-bg: {item.color}"
-						>
-							<Icon icon="ph:square-fill" class="text-(--color-bg)" />
-							<h1 class="font-semibold text-muted-foreground">{name}</h1>
-							<p class="ml-auto">{ioValue} {ioUnit}</p>
-						</div>
-					{/snippet}
-				</Chart.Tooltip>
-			{/snippet}
-			{#snippet marks({ series, getAreaProps })}
-				{#each series as s, i (s.key)}
-					<LinearGradient
-						stops={[s.color ?? '', 'color-mix(in lch, ' + s.color + ' 10%, transparent)']}
-						vertical
+	<Layout.Cell class="items-center">
+		<Chart.Container config={configuration} class="relative h-20 w-full">
+			<AreaChart
+				data={throughputs}
+				x="time"
+				yDomain={[minimumValue, maximumValue]}
+				series={[
+					{
+						key: 'read',
+						label: configuration.read.label,
+						color: configuration.read.color
+					},
+					{
+						key: 'write',
+						label: configuration.write.label,
+						color: configuration.write.color
+					}
+				]}
+				props={{
+					area: {
+						curve: curveMonotoneX,
+						'fill-opacity': 0.4,
+						line: { class: 'stroke-1' },
+						motion: 'tween'
+					},
+					xAxis: { format: () => '' },
+					yAxis: { format: () => '' }
+				}}
+			>
+				{#snippet tooltip()}
+					<Chart.Tooltip
+						labelFormatter={(v: Date) => {
+							return v.toLocaleDateString('en-US', {
+								year: 'numeric',
+								month: 'short',
+								day: 'numeric',
+								hour: 'numeric',
+								minute: 'numeric'
+							});
+						}}
 					>
-						{#snippet children({ gradient })}
-							<Area {...getAreaProps(s, i)} fill={gradient} />
+						{#snippet formatter({ item, name, value })}
+							{@const { value: ioValue, unit: ioUnit } = formatIO(Number(value))}
+							<div
+								class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
+								style="--color-bg: {item.color}"
+							>
+								<Icon icon="ph:square-fill" class="text-(--color-bg)" />
+								<h1 class="font-semibold text-muted-foreground">{name}</h1>
+								<p class="ml-auto">{ioValue} {ioUnit}</p>
+							</div>
 						{/snippet}
-					</LinearGradient>
-				{/each}
-			{/snippet}
-		</AreaChart>
-	</Chart.Container>
+					</Chart.Tooltip>
+				{/snippet}
+				{#snippet marks({ series, getAreaProps })}
+					{#each series as s, i (s.key)}
+						<LinearGradient
+							stops={[s.color ?? '', 'color-mix(in lch, ' + s.color + ' 10%, transparent)']}
+							vertical
+						>
+							{#snippet children({ gradient })}
+								<Area {...getAreaProps(s, i)} fill={gradient} />
+							{/snippet}
+						</LinearGradient>
+					{/each}
+				{/snippet}
+			</AreaChart>
+		</Chart.Container>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(data: { row: Row<ObjectStorageDaemon>; scope: string })}
