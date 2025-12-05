@@ -553,7 +553,7 @@ check_bridge() {
 # USER MANAGEMENT FUNCTIONS
 # =============================================================================
 find_first_non_root_user() {
-    if [ -z "$NON_ROOT_USER" ]; then
+    if [[ -z "$NON_ROOT_USER" ]]; then
         for user_home in /home/*; do
             if [[ -d "$user_home" ]]; then
                 NON_ROOT_USER=$(basename "$user_home")
@@ -561,7 +561,7 @@ find_first_non_root_user() {
             fi
         done
 
-        if [ -z "$NON_ROOT_USER" ]; then
+        if [[ -z "$NON_ROOT_USER" ]]; then
             error_exit "No non-root user found"
         fi
 
@@ -744,7 +744,7 @@ create_boot_source() {
 start_import() {
     log "INFO" "Starting MAAS boot image download..." "MAAS_IMAGES"
 
-    execute_cmd "maas admin boot-resources stop-import" "Prepare import MAAS image"
+    maas admin boot-resources stop-import >>"$TEMP_LOG" 2>&1 || true
     sleep 10
     execute_cmd "maas admin boot-resources import" "Start MAAS image download"
     sleep 10
@@ -783,15 +783,20 @@ get_otterscale_web_ip() {
 }
 
 get_maas_dhcp_from_subnet() {
+    local ipcalc_output
+    ipcalc_output=$(ipcalc -b "$OTTERSCALE_CIDR" 2>/dev/null)  
+    if [[ $? -ne 0 ]]; then
+        error_exit "ipcalc failed for CIDR '$OTTERSCALE_CIDR'. Please check the CIDR format."
+    fi
+
     local broadcast=$(ipcalc -b "$OTTERSCALE_CIDR" | grep Broadcast | awk '{print $2}')
-    
     IFS='.' read -r i1 i2 i3 i4 <<< "$broadcast"
-    
+
     MAAS_DHCP_START_IP="$i1.$i2.$i3.$((i4 - 3))"
     log "INFO" "MAAS DHCP start ip is $MAAS_DHCP_START_IP" "MAAS_DHCP"
-    
+
     MAAS_DHCP_END_IP="$i1.$i2.$i3.$((i4 - 2))"
-    log "INFO" "MAAS DHCP start ip is $MAAS_DHCP_END_IP" "MAAS_DHCP"
+    log "INFO" "MAAS DHCP end ip is $MAAS_DHCP_END_IP" "MAAS_DHCP"
 }
 
 update_fabric_dns() {
@@ -800,8 +805,8 @@ update_fabric_dns() {
 
     if [[ "$FABRIC_DNS" =~ $CURRENT_DNS ]]; then
         log "INFO" "Current dns already existed, skipping..." "MAAS_DNS"
-    elif [ -z "$MAAS_SUBNET_DNS" ]; then
-        if [ -z "$FABRIC_DNS" ]; then
+    elif [[ -z "$MAAS_SUBNET_DNS" ]]; then
+        if [[ -z "$FABRIC_DNS" ]]; then
             dns_value="$CURRENT_DNS"
         else
             dns_value="$FABRIC_DNS $CURRENT_DNS"
@@ -828,7 +833,7 @@ get_dhcp_fabric() {
     VLAN_TAG=$(maas admin subnet read "$OTTERSCALE_CIDR" | jq -r ".vlan.vid")
     PRIMARY_RACK=$(maas admin rack-controllers read | jq -r ".[] | .system_id")
 
-    if [ -z "$FABRIC_ID" ] || [ -z "$VLAN_TAG" ] || [ -z "$PRIMARY_RACK" ]; then
+    if [[ -z "$FABRIC_ID" ]] || [[ -z "$VLAN_TAG" ]] || [[ -z "$PRIMARY_RACK" ]]; then
         error_exit "Failed to get network configuration details"
     fi
 }
@@ -845,7 +850,7 @@ enable_maas_dhcp() {
     log "INFO" "Configuring MAAS DHCP..." "MAAS_DHCP"
 
     local dynamic_ipranges=$(maas admin ipranges read | jq -r '.[] | select(.type=="dynamic") | length')
-    if [ ! -z $dynamic_ipranges ]; then
+    if [[ ! -z "$dynamic_ipranges" ]]; then
         log "INFO" "MAAS already has dynamic IP ranges - skipping DHCP configuration" "MAAS_DHCP"
         return 0
     fi
@@ -993,14 +998,14 @@ create_vm_from_maas() {
 
     # Check if juju-vm already exists
     juju_machine_id=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
-    if [[ ! -z $juju_machine_id ]]; then
+    if [[ ! -z "$juju_machine_id" ]]; then
         log "INFO" "Machine juju-vm (id: $juju_machine_id) already exists - skipping creation" "VM_CREATE"
         return 0
     fi
 
     log "INFO" "Creating VM from LXD host ID $VM_HOST_ID..." "VM_CREATE"
     juju_machine_id=$(maas admin vm-host compose "$VM_HOST_ID" cores="$LXD_CORES" memory="$LXD_MEMORY_MB" disk=1:size="$LXD_DISK_GB" | jq -r '.system_id')
-    if [[ -z $juju_machine_id ]]; then
+    if [[ -z "$juju_machine_id" ]]; then
         error_exit "Failed to create VM from LXD host ID $VM_HOST_ID"
     fi
 
@@ -1037,8 +1042,8 @@ rename_machine() {
     local machine_id="$1"
     local machine_name="$2"
 
-    log "INFO" "Machine $machine_id renamed to $machine_name" "VM_CREATE"
     execute_cmd "maas admin machine update $machine_id hostname=$machine_name" "rename machine $machine_id to $machine_name"
+    log "INFO" "Machine $machine_id renamed to $machine_name" "VM_CREATE"
 }
 
 # =============================================================================
@@ -1115,7 +1120,7 @@ bootstrap_juju() {
     rm -rf /home/"$NON_ROOT_USER"/otterscale-tmp
 
     juju_machine_id=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
-    if [[ -z $juju_machine_id ]]; then
+    if [[ -z "$juju_machine_id" ]]; then
         error_exit "juju-vm machine not found"
     fi
 
@@ -1362,7 +1367,7 @@ append_ip_to_interface() {
     else
         error_exit "Failed to add IPv4 $OTTERSCALE_WEB_IP/$mask to $OTTERSCALE_BRIDGE_NAME via nmcli"
     fi
-      
+
     log "INFO" "Waiting ipv4 bind to network device $OTTERSCALE_BRIDGE_NAME" "NETWORK"
     while true; do
         if nmcli device show "$OTTERSCALE_BRIDGE_NAME" | awk -F': ' '/^IP4.ADDRESS/ {print $2}' | sed 's#/.*##' | sed 's/  *//g' | grep -qx "$OTTERSCALE_WEB_IP"; then
@@ -1373,7 +1378,7 @@ append_ip_to_interface() {
         sleep 1
     done
 
-    log "INFO" "Waiting microk8s refresh and restart" "NETWMICROK8SORK"
+    log "INFO" "Waiting microk8s refresh and restart" "MICROK8S"
     sleep 10
 
     log "INFO" "Waiting metallb-webhook-service is available" "MICROK8S"
@@ -1485,10 +1490,7 @@ generate_chart_values() {
     log "INFO" "KeyCloak Client ID: $keycloak_clientID" "OTTERSCALE"
 
     local keycloak_admin_paswd=$(base64 /dev/urandom 2>/dev/null | tr -dc "$charset" | head -c 32)
-    log "INFO" "KeyCloak admin password: $keycloak_admin_paswd" "OTTERSCALE"
-
     local keycloak_secret_token=$(base64 /dev/urandom 2>/dev/null | tr -dc "$charset" | head -c 32)
-    log "INFO" "KeyCloak client secret: $keycloak_secret_token" "OTTERSCALE"
 
     # Create values file
     otterscale_helm_values="/tmp/otterscale_helm_values_$(date '+%Y%m%d_%H%M%S').yaml"
