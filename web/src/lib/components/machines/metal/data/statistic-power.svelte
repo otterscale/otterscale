@@ -47,9 +47,15 @@
 			{/if}
 		</div>
 	</Layout.Statistic.Content>
-	<Layout.Statistic.Footer>
-		<span class="capitalize"> {$machine.osystem}</span>
-		{$machine.hweKernel}
-		<span class="capitalize"> {$machine.distroSeries}</span>
+	<Layout.Statistic.Footer class="gap-1">
+		{#if $machine.osystem}
+			<span class="capitalize">{$machine.osystem}</span>
+		{/if}
+		{#if $machine.hweKernel}
+			<span class="uppercase">{$machine.hweKernel}</span>
+		{/if}
+		{#if $machine.distroSeries}
+			<span class="capitalize">{$machine.distroSeries}</span>
+		{/if}
 	</Layout.Statistic.Footer>
 </Layout.Statistic.Root>
