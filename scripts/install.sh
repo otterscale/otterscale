@@ -1487,7 +1487,7 @@ generate_chart_values() {
     local juju_cacert=$(echo "$controller_details" | jq -r ".\"$controller_name\".details.\"ca-cert\"")
 
     # Create temporary file for CA certificate to handle multiline content properly
-    local ca_cert_file="/tmp/juju-ca-cert.pem"
+    ca_cert_file="/tmp/juju-ca-cert.pem"
     echo "$juju_cacert" > "$ca_cert_file"
 
     # Generate keycloak token
