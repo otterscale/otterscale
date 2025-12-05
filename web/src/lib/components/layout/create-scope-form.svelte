@@ -10,7 +10,7 @@
 	import { resolve } from '$app/paths';
 	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
 	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { ScopeService } from '$lib/api/scope/v1/scope_pb';
+	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import { IPv4AddressInput } from '$lib/components/custom/ipv4';
 	import { IPv4CIDRInput } from '$lib/components/custom/ipv4-cidr';
 	import { Badge } from '$lib/components/ui/badge';
@@ -49,9 +49,14 @@
 	const scopeClient = createClient(ScopeService, transport);
 	const orchestratorClient = createClient(OrchestratorService, transport);
 	const machinesStore = writable<Machine[]>([]);
+	const scopesStore = writable<Scope[]>([]);
+
+	// Validation regex: only lowercase letters and hyphens, must start with a letter
+	const SCOPE_NAME_REGEX = /^[a-z][a-z-]*$/;
 
 	// Form state
 	let scopeName = $state('');
+	let scopeNameError = $state('');
 	let selectedMachine = $state('');
 	let selectedDevices = $state<string[]>([]);
 	let calicoCidr = $state('');
@@ -68,18 +73,43 @@
 		}
 	}
 
+	async function fetchScopes() {
+		try {
+			const response = await scopeClient.listScopes({});
+			scopesStore.set(response.scopes);
+		} catch (error) {
+			console.error('Error fetching scopes:', error);
+			toast.error('Failed to fetch scopes');
+		}
+	}
+
+	function validateScopeName(value: string): string {
+		if (!value) {
+			return '';
+		}
+		if (!SCOPE_NAME_REGEX.test(value)) {
+			return m.create_scope_name_invalid_format();
+		}
+		if ($scopesStore.some((s) => s.name === value)) {
+			return m.create_scope_name_already_exists();
+		}
+		return '';
+	}
+
 	function handleSubmit(event: Event) {
+		event.preventDefault();
+
+		// Validate scope name before submission
+		if (validateScopeName(scopeName)) return;
+		if (isSubmitting) return;
+		isSubmitting = true;
+
 		// Prepare data
 		const scope = scopeName;
 		const machineId = selectedMachine;
 		const virtualIps = virtualIp ? [virtualIp] : [];
 		const calicoCidrValue = calicoCidr;
 		const osdDevices = selectedDevices.map((device) => `${DEVICE_PATH_PREFIX}${device}`);
-
-		event.preventDefault();
-
-		if (isSubmitting) return;
-		isSubmitting = true;
 
 		// Create a loading toast that we can update
 		const toastId = toast.loading(`Creating scope ${scope}...`, {
@@ -204,7 +234,7 @@
 	}
 
 	onMount(async () => {
-		await fetchMachines();
+		await Promise.all([fetchMachines(), fetchScopes()]);
 	});
 </script>
 
@@ -246,7 +276,23 @@
 						{m.create_scope_name_description()}
 					</p>
 				</div>
-				<Input id="name" type="text" placeholder="scope-name" bind:value={scopeName} required />
+				<Input
+					id="name"
+					type="text"
+					placeholder="scope-name"
+					bind:value={scopeName}
+					oninput={(e: Event) => {
+						const target = e.currentTarget as HTMLInputElement;
+						target.value = target.value.toLowerCase().replace(/[^a-z-]/g, ''); // Only allow lowercase letters and hyphens
+						scopeName = target.value;
+						scopeNameError = validateScopeName(target.value);
+					}}
+					aria-invalid={!!scopeNameError}
+					required
+				/>
+				{#if scopeNameError}
+					<p class="text-sm text-destructive">{scopeNameError}</p>
+				{/if}
 			</div>
 
 			<!-- Machine Selection -->
