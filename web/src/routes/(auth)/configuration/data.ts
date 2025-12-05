@@ -30,12 +30,6 @@ const items = [
 		description: m.setting_package_repository_description(),
 		type: m.machine(),
 		url: resolve('/(auth)/configuration/package-repository')
-	},
-	{
-		icon: 'ph:wallet',
-		title: m.subscription(),
-		description: m.settings(),
-		url: resolve('/(auth)/configuration/subscription')
 	}
 ];
 
