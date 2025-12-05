@@ -1761,13 +1761,11 @@ deploy_helm() {
 # MAIN INSTALLATION FUNCTION
 # =============================================================================
 main() {
-    # Initialize logging
     init_logging
 
     log "INFO" "Starting OtterScale installation..." "INSTALLATION"
     log "INFO" "Target endpoint: $OTTERSCALE_API_ENDPOINT" "INSTALLATION"
 
-    # System validation
     log "INFO" "Performing system validation..." "VALIDATION"
     check_root
     check_os
@@ -1776,26 +1774,21 @@ main() {
     disable_ipv6
     log "INFO" "All pre-checks passed" "VALIDATION"
 
-    # Enter otterscale web IP
     get_otterscale_web_ip
 
-    # Package installation
     log "INFO" "Installing packages..." "PACKAGES"
     update_apt
     install_apt "$APT_PACKAGES"
     install_snap
 
-    # Network setup
     log "INFO" "Setting up network..." "NETWORK"
     check_bridge
     check_iptables
 
-    # User setup
     log "INFO" "Setting up users and SSH..." "USER_SETUP"
     find_first_non_root_user
     generate_ssh_key
 
-    # MAAS Setup
     log "INFO" "Setting up MAAS..." "MAAS_SETUP"
     init_maas
     create_maas_admin
@@ -1805,14 +1798,12 @@ main() {
     download_maas_img
     enable_maas_dhcp
 
-    # LXD Setup
     log "INFO" "Setting up LXD..." "LXD_SETUP"
     init_lxd
     create_maas_lxd_project
     create_lxd_vm
     create_vm_from_maas
 
-    # Juju Setup
     log "INFO" "Setting up Juju..." "JUJU_SETUP"
     prepare_microk8s_config
     enable_microk8s_option
@@ -1820,7 +1811,6 @@ main() {
     bootstrap_juju
     juju_add_k8s
 
-    # Final configuration
     log "INFO" "Finalizing configuration..." "FINAL_CONFIG"
     config_ceph_rbd_modules
     check_secondary_ip
