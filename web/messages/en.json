@@ -204,7 +204,7 @@
 	"memory_usage": "Memory Usage",
 	"create_scope_name": "Name",
 	"create_scope_name_description": "Enter a unique identifier for your scope and prefix for facility naming.",
-	"create_scope_name_invalid_format": "Name must start with a lowercase letter and contain only lowercase letters and hyphens.",
+	"create_scope_name_invalid_format": "Name must start with a lowercase letter and contain only lowercase letters and '-'.",
 	"create_scope_name_already_exists": "This scope name already exists. Please choose a different name.",
 	"create_scope_machine": "Machine",
 	"create_scope_machine_description": "Choose a machine for your Ceph and Kubernetes deployment.",

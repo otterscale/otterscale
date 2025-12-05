@@ -204,7 +204,7 @@
 	"memory_usage": "記憶體使用量",
 	"create_scope_name": "名稱",
 	"create_scope_name_description": "輸入您的範圍的唯一識別碼和設施命名的前綴。",
-	"create_scope_name_invalid_format": "名稱必須以小寫字母開頭，且只能包含小寫字母和連字符。",
+	"create_scope_name_invalid_format": "名稱必須以小寫字母開頭，且只能包含小寫字母和'-'。",
 	"create_scope_name_already_exists": "此範圍名稱已存在，請選擇其他名稱。",
 	"create_scope_machine": "機器",
 	"create_scope_machine_description": "為您的 Ceph 和 Kubernetes 部署選擇一台機器。",

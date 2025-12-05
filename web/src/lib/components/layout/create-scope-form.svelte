@@ -283,7 +283,6 @@
 					bind:value={scopeName}
 					oninput={(e: Event) => {
 						const target = e.currentTarget as HTMLInputElement;
-						target.value = target.value.toLowerCase().replace(/[^a-z-]/g, ''); // Only allow lowercase letters and hyphens
 						scopeName = target.value;
 						scopeNameError = validateScopeName(target.value);
 					}}
