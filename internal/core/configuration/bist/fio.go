@@ -117,7 +117,7 @@ func (uc *UseCase) CreateFIOResult(ctx context.Context, name, createdBy string, 
 		}
 
 		configMapName := fmt.Sprintf("ceph-conf-%s", shortID(block.Scope))
-		if err := uc.ensureConfigMap(ctx, scope.ReservedName, bistNamespace, configMapName); err != nil {
+		if err := uc.ensureConfigMap(ctx, block.Scope, scope.ReservedName, bistNamespace, configMapName); err != nil {
 			return nil, err
 		}
 
@@ -285,10 +285,10 @@ func (uc *UseCase) ensureNamespace(ctx context.Context, scope, namespace string)
 	return err
 }
 
-func (uc *UseCase) ensureConfigMap(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) ensureConfigMap(ctx context.Context, targetScope, scope, namespace, name string) error {
 	_, err := uc.configMap.Get(ctx, scope, namespace, name)
 	if apierrors.IsNotFound(err) {
-		host, id, key, err := uc.storageNode.Config(scope)
+		host, id, key, err := uc.storageNode.Config(targetScope)
 		if err != nil {
 			return err
 		}
