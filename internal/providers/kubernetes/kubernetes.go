@@ -149,10 +149,15 @@ func (m *Kubernetes) newConfig(scope string) (*rest.Config, error) {
 }
 
 func (m *Kubernetes) getConfig(scopeName string) (*rest.Config, error) {
-	if scopeName == scope.ReservedName {
-		return m.newMicroK8sConfig()
+	if scopeName != scope.ReservedName {
+		return m.newConfig(scopeName)
 	}
-	return m.newConfig(scopeName)
+
+	if os.Getenv("OTTERSCALE_CONTAINER") == "true" {
+		return rest.InClusterConfig()
+	}
+
+	return m.newMicroK8sConfig()
 }
 
 func (m *Kubernetes) clientset(scope string) (*kubernetes.Clientset, error) {
