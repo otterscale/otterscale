@@ -30,6 +30,11 @@ const (
 	GatewayAPIInferenceExtension = "1.2.0"
 )
 
+// Kubernetes
+const (
+	CephCSI = "3.13.0"
+)
+
 // Juju Charm
 const (
 	Kubernetes = "1.33/stable"
