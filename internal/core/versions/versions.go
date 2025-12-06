@@ -26,8 +26,8 @@ const (
 
 // Kubernetes Custom Resource Definition
 const (
-	GatewayAPI                   = "1.4.0"
-	GatewayAPIInferenceExtension = "1.2.0"
+	GatewayAPI                   = "1.4.1"
+	GatewayAPIInferenceExtension = "1.2.1"
 )
 
 // Kubernetes
