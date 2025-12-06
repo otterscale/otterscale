@@ -1,6 +1,7 @@
 package extension
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/otterscale/otterscale/internal/core/versions"
@@ -30,6 +31,9 @@ var modelComponents = []component{
 			},
 		},
 		Dependencies: []string{"kube-prometheus-stack"},
+		PostFunc: func(uc *UseCase, ctx context.Context, scope string) error {
+			return uc.setDefaultNodeLabel(ctx, scope)
+		},
 	},
 	{
 		ID:          "llm-d-infra",
@@ -48,4 +52,22 @@ var modelComponents = []component{
 			},
 		},
 	},
+}
+
+// TODO: better?
+func (uc *UseCase) setDefaultNodeLabel(ctx context.Context, scope string) error {
+	nodes, err := uc.node.List(ctx, scope, "")
+	if err != nil {
+		return err
+	}
+
+	for i := range nodes {
+		nodes[i].Labels["nvidia.com/gpu.workload.config"] = "vgpu"
+
+		if _, err := uc.node.Update(ctx, scope, &nodes[i]); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
