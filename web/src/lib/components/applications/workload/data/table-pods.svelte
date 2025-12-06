@@ -44,7 +44,7 @@
 			command: '/bin/sh'
 		});
 
-		const terminalUrl = `${resolve('/(auth)/tty')}${searchParams.toString()}`;
+		const terminalUrl = `${resolve('/tty')}?${searchParams.toString()}`;
 		const windowName = m.tty();
 
 		const features = [
