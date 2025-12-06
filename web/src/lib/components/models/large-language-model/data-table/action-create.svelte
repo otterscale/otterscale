@@ -84,7 +84,7 @@
 		if (modelSource === 'local' && selectedModel) {
 			request.modelName = `pvc-selectedModel`;
 		} else if (modelSource === 'cloud' && selectedModel) {
-			request.modelName = `hf:${selectedModel}`;
+			request.modelName = selectedModel;
 		}
 		request.mode = isDisaggregationMode
 			? Model_Mode.PREFILL_DECODE_DISAGGREGATION
