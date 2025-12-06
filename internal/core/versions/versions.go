@@ -20,7 +20,7 @@ const (
 	LLMDCuda               = "0.4.0"
 	LLMDInferenceScheduler = "0.4.0"
 	LLMDRoutingSidecar     = "0.4.0"
-	LLMDModelService       = "0.3.10"
+	LLMDModelService       = "0.3.14"
 	LLMDInfra              = "1.3.4"
 )
 
