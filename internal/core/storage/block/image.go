@@ -4,6 +4,8 @@ import (
 	"context"
 	"math"
 	"time"
+
+	"github.com/otterscale/otterscale/internal/core/storage"
 )
 
 const (
@@ -43,7 +45,7 @@ type ImageRepo interface {
 }
 
 func (uc *UseCase) ListImages(ctx context.Context, scope string) ([]Image, error) {
-	pools, err := uc.pool.List(ctx, scope, "rbd")
+	pools, err := uc.pool.List(ctx, scope, storage.PoolApplicationBlock)
 	if err != nil {
 		return nil, err
 	}

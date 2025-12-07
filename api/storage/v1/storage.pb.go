@@ -23,47 +23,94 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type PoolType int32
+type Pool_Type int32
 
 const (
-	PoolType_POOL_TYPE_UNSPECIFIED PoolType = 0
-	PoolType_POOL_TYPE_ERASURE     PoolType = 1
-	PoolType_POOL_TYPE_REPLICATED  PoolType = 2
+	Pool_TYPE_UNSPECIFIED Pool_Type = 0
+	Pool_TYPE_ERASURE     Pool_Type = 1
+	Pool_TYPE_REPLICATED  Pool_Type = 2
 )
 
-// Enum value maps for PoolType.
+// Enum value maps for Pool_Type.
 var (
-	PoolType_name = map[int32]string{
-		0: "POOL_TYPE_UNSPECIFIED",
-		1: "POOL_TYPE_ERASURE",
-		2: "POOL_TYPE_REPLICATED",
+	Pool_Type_name = map[int32]string{
+		0: "TYPE_UNSPECIFIED",
+		1: "TYPE_ERASURE",
+		2: "TYPE_REPLICATED",
 	}
-	PoolType_value = map[string]int32{
-		"POOL_TYPE_UNSPECIFIED": 0,
-		"POOL_TYPE_ERASURE":     1,
-		"POOL_TYPE_REPLICATED":  2,
+	Pool_Type_value = map[string]int32{
+		"TYPE_UNSPECIFIED": 0,
+		"TYPE_ERASURE":     1,
+		"TYPE_REPLICATED":  2,
 	}
 )
 
-func (x PoolType) Enum() *PoolType {
-	p := new(PoolType)
+func (x Pool_Type) Enum() *Pool_Type {
+	p := new(Pool_Type)
 	*p = x
 	return p
 }
 
-func (x PoolType) String() string {
+func (x Pool_Type) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (PoolType) Descriptor() protoreflect.EnumDescriptor {
+func (Pool_Type) Descriptor() protoreflect.EnumDescriptor {
 	return file_api_storage_v1_storage_proto_enumTypes[0].Descriptor()
 }
 
-func (PoolType) Type() protoreflect.EnumType {
+func (Pool_Type) Type() protoreflect.EnumType {
 	return &file_api_storage_v1_storage_proto_enumTypes[0]
 }
 
-func (x PoolType) Number() protoreflect.EnumNumber {
+func (x Pool_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+type Pool_Application int32
+
+const (
+	Pool_APPLICATION_UNSPECIFIED Pool_Application = 0
+	Pool_APPLICATION_BLOCK       Pool_Application = 1
+	Pool_APPLICATION_FILE        Pool_Application = 2
+	Pool_APPLICATION_OBJECT      Pool_Application = 3
+)
+
+// Enum value maps for Pool_Application.
+var (
+	Pool_Application_name = map[int32]string{
+		0: "APPLICATION_UNSPECIFIED",
+		1: "APPLICATION_BLOCK",
+		2: "APPLICATION_FILE",
+		3: "APPLICATION_OBJECT",
+	}
+	Pool_Application_value = map[string]int32{
+		"APPLICATION_UNSPECIFIED": 0,
+		"APPLICATION_BLOCK":       1,
+		"APPLICATION_FILE":        2,
+		"APPLICATION_OBJECT":      3,
+	}
+)
+
+func (x Pool_Application) Enum() *Pool_Application {
+	p := new(Pool_Application)
+	*p = x
+	return p
+}
+
+func (x Pool_Application) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Pool_Application) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_storage_v1_storage_proto_enumTypes[1].Descriptor()
+}
+
+func (Pool_Application) Type() protoreflect.EnumType {
+	return &file_api_storage_v1_storage_proto_enumTypes[1]
+}
+
+func (x Pool_Application) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
@@ -103,11 +150,11 @@ func (x Bucket_ACL) String() string {
 }
 
 func (Bucket_ACL) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_storage_v1_storage_proto_enumTypes[1].Descriptor()
+	return file_api_storage_v1_storage_proto_enumTypes[2].Descriptor()
 }
 
 func (Bucket_ACL) Type() protoreflect.EnumType {
-	return &file_api_storage_v1_storage_proto_enumTypes[1]
+	return &file_api_storage_v1_storage_proto_enumTypes[2]
 }
 
 func (x Bucket_ACL) Number() protoreflect.EnumNumber {
@@ -147,11 +194,11 @@ func (x SMBShare_CommonConfig_MapToGuest) String() string {
 }
 
 func (SMBShare_CommonConfig_MapToGuest) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_storage_v1_storage_proto_enumTypes[2].Descriptor()
+	return file_api_storage_v1_storage_proto_enumTypes[3].Descriptor()
 }
 
 func (SMBShare_CommonConfig_MapToGuest) Type() protoreflect.EnumType {
-	return &file_api_storage_v1_storage_proto_enumTypes[2]
+	return &file_api_storage_v1_storage_proto_enumTypes[3]
 }
 
 func (x SMBShare_CommonConfig_MapToGuest) Number() protoreflect.EnumNumber {
@@ -188,11 +235,11 @@ func (x SMBShare_SecurityConfig_Mode) String() string {
 }
 
 func (SMBShare_SecurityConfig_Mode) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_storage_v1_storage_proto_enumTypes[3].Descriptor()
+	return file_api_storage_v1_storage_proto_enumTypes[4].Descriptor()
 }
 
 func (SMBShare_SecurityConfig_Mode) Type() protoreflect.EnumType {
-	return &file_api_storage_v1_storage_proto_enumTypes[3]
+	return &file_api_storage_v1_storage_proto_enumTypes[4]
 }
 
 func (x SMBShare_SecurityConfig_Mode) Number() protoreflect.EnumNumber {
@@ -232,11 +279,11 @@ func (x ValidateSMBUserResponse_EntityType) String() string {
 }
 
 func (ValidateSMBUserResponse_EntityType) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_storage_v1_storage_proto_enumTypes[4].Descriptor()
+	return file_api_storage_v1_storage_proto_enumTypes[5].Descriptor()
 }
 
 func (ValidateSMBUserResponse_EntityType) Type() protoreflect.EnumType {
-	return &file_api_storage_v1_storage_proto_enumTypes[4]
+	return &file_api_storage_v1_storage_proto_enumTypes[5]
 }
 
 func (x ValidateSMBUserResponse_EntityType) Number() protoreflect.EnumNumber {
@@ -901,7 +948,7 @@ type Pool struct {
 	xxx_hidden_Id                  int64                  `protobuf:"varint,1,opt,name=id"`
 	xxx_hidden_Name                *string                `protobuf:"bytes,2,opt,name=name"`
 	xxx_hidden_Updating            bool                   `protobuf:"varint,3,opt,name=updating"`
-	xxx_hidden_PoolType            PoolType               `protobuf:"varint,11,opt,name=pool_type,json=poolType,enum=otterscale.storage.v1.PoolType"`
+	xxx_hidden_Type                Pool_Type              `protobuf:"varint,11,opt,name=type,enum=otterscale.storage.v1.Pool_Type"`
 	xxx_hidden_EcOverwrites        bool                   `protobuf:"varint,21,opt,name=ec_overwrites,json=ecOverwrites"`
 	xxx_hidden_DataChunks          uint64                 `protobuf:"varint,22,opt,name=data_chunks,json=dataChunks"`
 	xxx_hidden_CodingChunks        uint64                 `protobuf:"varint,23,opt,name=coding_chunks,json=codingChunks"`
@@ -914,7 +961,7 @@ type Pool struct {
 	xxx_hidden_PlacementGroupCount uint64                 `protobuf:"varint,51,opt,name=placement_group_count,json=placementGroupCount"`
 	xxx_hidden_PlacementGroupState map[string]int64       `protobuf:"bytes,52,rep,name=placement_group_state,json=placementGroupState" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
 	xxx_hidden_CreatedAt           *timestamppb.Timestamp `protobuf:"bytes,61,opt,name=created_at,json=createdAt"`
-	xxx_hidden_Applications        []string               `protobuf:"bytes,71,rep,name=applications"`
+	xxx_hidden_Applications        []Pool_Application     `protobuf:"varint,71,rep,packed,name=applications,enum=otterscale.storage.v1.Pool_Application"`
 	XXX_raceDetectHookData         protoimpl.RaceDetectHookData
 	XXX_presence                   [1]uint32
 	unknownFields                  protoimpl.UnknownFields
@@ -970,13 +1017,13 @@ func (x *Pool) GetUpdating() bool {
 	return false
 }
 
-func (x *Pool) GetPoolType() PoolType {
+func (x *Pool) GetType() Pool_Type {
 	if x != nil {
 		if protoimpl.X.Present(&(x.XXX_presence[0]), 3) {
-			return x.xxx_hidden_PoolType
+			return x.xxx_hidden_Type
 		}
 	}
-	return PoolType_POOL_TYPE_UNSPECIFIED
+	return Pool_TYPE_UNSPECIFIED
 }
 
 func (x *Pool) GetEcOverwrites() bool {
@@ -1063,7 +1110,7 @@ func (x *Pool) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *Pool) GetApplications() []string {
+func (x *Pool) GetApplications() []Pool_Application {
 	if x != nil {
 		return x.xxx_hidden_Applications
 	}
@@ -1085,8 +1132,8 @@ func (x *Pool) SetUpdating(v bool) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 17)
 }
 
-func (x *Pool) SetPoolType(v PoolType) {
-	x.xxx_hidden_PoolType = v
+func (x *Pool) SetType(v Pool_Type) {
+	x.xxx_hidden_Type = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 17)
 }
 
@@ -1148,7 +1195,7 @@ func (x *Pool) SetCreatedAt(v *timestamppb.Timestamp) {
 	x.xxx_hidden_CreatedAt = v
 }
 
-func (x *Pool) SetApplications(v []string) {
+func (x *Pool) SetApplications(v []Pool_Application) {
 	x.xxx_hidden_Applications = v
 }
 
@@ -1173,7 +1220,7 @@ func (x *Pool) HasUpdating() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *Pool) HasPoolType() bool {
+func (x *Pool) HasType() bool {
 	if x == nil {
 		return false
 	}
@@ -1272,9 +1319,9 @@ func (x *Pool) ClearUpdating() {
 	x.xxx_hidden_Updating = false
 }
 
-func (x *Pool) ClearPoolType() {
+func (x *Pool) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_PoolType = PoolType_POOL_TYPE_UNSPECIFIED
+	x.xxx_hidden_Type = Pool_TYPE_UNSPECIFIED
 }
 
 func (x *Pool) ClearEcOverwrites() {
@@ -1337,7 +1384,7 @@ type Pool_builder struct {
 	Id                  *int64
 	Name                *string
 	Updating            *bool
-	PoolType            *PoolType
+	Type                *Pool_Type
 	EcOverwrites        *bool
 	DataChunks          *uint64
 	CodingChunks        *uint64
@@ -1350,7 +1397,7 @@ type Pool_builder struct {
 	PlacementGroupCount *uint64
 	PlacementGroupState map[string]int64
 	CreatedAt           *timestamppb.Timestamp
-	Applications        []string
+	Applications        []Pool_Application
 }
 
 func (b0 Pool_builder) Build() *Pool {
@@ -1369,9 +1416,9 @@ func (b0 Pool_builder) Build() *Pool {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 17)
 		x.xxx_hidden_Updating = *b.Updating
 	}
-	if b.PoolType != nil {
+	if b.Type != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 17)
-		x.xxx_hidden_PoolType = *b.PoolType
+		x.xxx_hidden_Type = *b.Type
 	}
 	if b.EcOverwrites != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 17)
@@ -3768,7 +3815,7 @@ func (b0 DoSMARTResponse_builder) Build() *DoSMARTResponse {
 type ListPoolsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Application *string                `protobuf:"bytes,11,opt,name=application"`
+	xxx_hidden_Application Pool_Application       `protobuf:"varint,11,opt,name=application,enum=otterscale.storage.v1.Pool_Application"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -3810,14 +3857,13 @@ func (x *ListPoolsRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListPoolsRequest) GetApplication() string {
+func (x *ListPoolsRequest) GetApplication() Pool_Application {
 	if x != nil {
-		if x.xxx_hidden_Application != nil {
-			return *x.xxx_hidden_Application
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 1) {
+			return x.xxx_hidden_Application
 		}
-		return ""
 	}
-	return ""
+	return Pool_APPLICATION_UNSPECIFIED
 }
 
 func (x *ListPoolsRequest) SetScope(v string) {
@@ -3825,8 +3871,8 @@ func (x *ListPoolsRequest) SetScope(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *ListPoolsRequest) SetApplication(v string) {
-	x.xxx_hidden_Application = &v
+func (x *ListPoolsRequest) SetApplication(v Pool_Application) {
+	x.xxx_hidden_Application = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
@@ -3851,14 +3897,14 @@ func (x *ListPoolsRequest) ClearScope() {
 
 func (x *ListPoolsRequest) ClearApplication() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Application = nil
+	x.xxx_hidden_Application = Pool_APPLICATION_UNSPECIFIED
 }
 
 type ListPoolsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope       *string
-	Application *string
+	Application *Pool_Application
 }
 
 func (b0 ListPoolsRequest_builder) Build() *ListPoolsRequest {
@@ -3871,7 +3917,7 @@ func (b0 ListPoolsRequest_builder) Build() *ListPoolsRequest {
 	}
 	if b.Application != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
-		x.xxx_hidden_Application = b.Application
+		x.xxx_hidden_Application = *b.Application
 	}
 	return m0
 }
@@ -3939,12 +3985,12 @@ type CreatePoolRequest struct {
 	state                     protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_PoolName       *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
-	xxx_hidden_PoolType       PoolType               `protobuf:"varint,11,opt,name=pool_type,json=poolType,enum=otterscale.storage.v1.PoolType"`
+	xxx_hidden_Type           Pool_Type              `protobuf:"varint,11,opt,name=type,enum=otterscale.storage.v1.Pool_Type"`
 	xxx_hidden_EcOverwrites   bool                   `protobuf:"varint,21,opt,name=ec_overwrites,json=ecOverwrites"`
 	xxx_hidden_ReplicatedSize uint64                 `protobuf:"varint,31,opt,name=replicated_size,json=replicatedSize"`
 	xxx_hidden_QuotaBytes     uint64                 `protobuf:"varint,41,opt,name=quota_bytes,json=quotaBytes"`
 	xxx_hidden_QuotaObjects   uint64                 `protobuf:"varint,42,opt,name=quota_objects,json=quotaObjects"`
-	xxx_hidden_Applications   []string               `protobuf:"bytes,61,rep,name=applications"`
+	xxx_hidden_Applications   []Pool_Application     `protobuf:"varint,61,rep,packed,name=applications,enum=otterscale.storage.v1.Pool_Application"`
 	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
 	XXX_presence              [1]uint32
 	unknownFields             protoimpl.UnknownFields
@@ -3996,13 +4042,13 @@ func (x *CreatePoolRequest) GetPoolName() string {
 	return ""
 }
 
-func (x *CreatePoolRequest) GetPoolType() PoolType {
+func (x *CreatePoolRequest) GetType() Pool_Type {
 	if x != nil {
 		if protoimpl.X.Present(&(x.XXX_presence[0]), 2) {
-			return x.xxx_hidden_PoolType
+			return x.xxx_hidden_Type
 		}
 	}
-	return PoolType_POOL_TYPE_UNSPECIFIED
+	return Pool_TYPE_UNSPECIFIED
 }
 
 func (x *CreatePoolRequest) GetEcOverwrites() bool {
@@ -4033,7 +4079,7 @@ func (x *CreatePoolRequest) GetQuotaObjects() uint64 {
 	return 0
 }
 
-func (x *CreatePoolRequest) GetApplications() []string {
+func (x *CreatePoolRequest) GetApplications() []Pool_Application {
 	if x != nil {
 		return x.xxx_hidden_Applications
 	}
@@ -4050,8 +4096,8 @@ func (x *CreatePoolRequest) SetPoolName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 8)
 }
 
-func (x *CreatePoolRequest) SetPoolType(v PoolType) {
-	x.xxx_hidden_PoolType = v
+func (x *CreatePoolRequest) SetType(v Pool_Type) {
+	x.xxx_hidden_Type = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 8)
 }
 
@@ -4075,7 +4121,7 @@ func (x *CreatePoolRequest) SetQuotaObjects(v uint64) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 8)
 }
 
-func (x *CreatePoolRequest) SetApplications(v []string) {
+func (x *CreatePoolRequest) SetApplications(v []Pool_Application) {
 	x.xxx_hidden_Applications = v
 }
 
@@ -4093,7 +4139,7 @@ func (x *CreatePoolRequest) HasPoolName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreatePoolRequest) HasPoolType() bool {
+func (x *CreatePoolRequest) HasType() bool {
 	if x == nil {
 		return false
 	}
@@ -4138,9 +4184,9 @@ func (x *CreatePoolRequest) ClearPoolName() {
 	x.xxx_hidden_PoolName = nil
 }
 
-func (x *CreatePoolRequest) ClearPoolType() {
+func (x *CreatePoolRequest) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_PoolType = PoolType_POOL_TYPE_UNSPECIFIED
+	x.xxx_hidden_Type = Pool_TYPE_UNSPECIFIED
 }
 
 func (x *CreatePoolRequest) ClearEcOverwrites() {
@@ -4168,12 +4214,12 @@ type CreatePoolRequest_builder struct {
 
 	Scope          *string
 	PoolName       *string
-	PoolType       *PoolType
+	Type           *Pool_Type
 	EcOverwrites   *bool
 	ReplicatedSize *uint64
 	QuotaBytes     *uint64
 	QuotaObjects   *uint64
-	Applications   []string
+	Applications   []Pool_Application
 }
 
 func (b0 CreatePoolRequest_builder) Build() *CreatePoolRequest {
@@ -4188,9 +4234,9 @@ func (b0 CreatePoolRequest_builder) Build() *CreatePoolRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 8)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
-	if b.PoolType != nil {
+	if b.Type != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
-		x.xxx_hidden_PoolType = *b.PoolType
+		x.xxx_hidden_Type = *b.Type
 	}
 	if b.EcOverwrites != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 8)
@@ -12438,12 +12484,12 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"used_bytes\x18\r \x01(\x04R\tusedBytes\x122\n" +
 	"\x15placement_group_count\x18\x15 \x01(\x04R\x13placementGroupCount\x128\n" +
-	"\amachine\x18e \x01(\v2\x1e.otterscale.storage.v1.MachineR\amachine\"\x82\x06\n" +
+	"\amachine\x18e \x01(\v2\x1e.otterscale.storage.v1.MachineR\amachine\"\xd9\a\n" +
 	"\x04Pool\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
-	"\bupdating\x18\x03 \x01(\bR\bupdating\x12<\n" +
-	"\tpool_type\x18\v \x01(\x0e2\x1f.otterscale.storage.v1.PoolTypeR\bpoolType\x12#\n" +
+	"\bupdating\x18\x03 \x01(\bR\bupdating\x124\n" +
+	"\x04type\x18\v \x01(\x0e2 .otterscale.storage.v1.Pool.TypeR\x04type\x12#\n" +
 	"\rec_overwrites\x18\x15 \x01(\bR\fecOverwrites\x12\x1f\n" +
 	"\vdata_chunks\x18\x16 \x01(\x04R\n" +
 	"dataChunks\x12#\n" +
@@ -12459,11 +12505,20 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\x15placement_group_count\x183 \x01(\x04R\x13placementGroupCount\x12h\n" +
 	"\x15placement_group_state\x184 \x03(\v24.otterscale.storage.v1.Pool.PlacementGroupStateEntryR\x13placementGroupState\x129\n" +
 	"\n" +
-	"created_at\x18= \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12\"\n" +
-	"\fapplications\x18G \x03(\tR\fapplications\x1aF\n" +
+	"created_at\x18= \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12K\n" +
+	"\fapplications\x18G \x03(\x0e2'.otterscale.storage.v1.Pool.ApplicationR\fapplications\x1aF\n" +
 	"\x18PlacementGroupStateEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x01\"\xb6\x05\n" +
+	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x01\"C\n" +
+	"\x04Type\x12\x14\n" +
+	"\x10TYPE_UNSPECIFIED\x10\x00\x12\x10\n" +
+	"\fTYPE_ERASURE\x10\x01\x12\x13\n" +
+	"\x0fTYPE_REPLICATED\x10\x02\"o\n" +
+	"\vApplication\x12\x1b\n" +
+	"\x17APPLICATION_UNSPECIFIED\x10\x00\x12\x15\n" +
+	"\x11APPLICATION_BLOCK\x10\x01\x12\x14\n" +
+	"\x10APPLICATION_FILE\x10\x02\x12\x16\n" +
+	"\x12APPLICATION_OBJECT\x10\x03\"\xb6\x05\n" +
 	"\x05Image\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\tpool_name\x18\v \x01(\tR\bpoolName\x12*\n" +
@@ -12614,22 +12669,22 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\x05lines\x18\x01 \x03(\tR\x05lines\x1aq\n" +
 	"\x14DeviceOutputMapEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12C\n" +
-	"\x05value\x18\x02 \x01(\v2-.otterscale.storage.v1.DoSMARTResponse.OutputR\x05value:\x028\x01\"P\n" +
+	"\x05value\x18\x02 \x01(\v2-.otterscale.storage.v1.DoSMARTResponse.OutputR\x05value:\x028\x01\"y\n" +
 	"\x10ListPoolsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12 \n" +
-	"\vapplication\x18\v \x01(\tR\vapplicationJ\x04\b\x02\x10\x03\"F\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12I\n" +
+	"\vapplication\x18\v \x01(\x0e2'.otterscale.storage.v1.Pool.ApplicationR\vapplicationJ\x04\b\x02\x10\x03\"F\n" +
 	"\x11ListPoolsResponse\x121\n" +
-	"\x05pools\x18\x01 \x03(\v2\x1b.otterscale.storage.v1.PoolR\x05pools\"\xc2\x02\n" +
+	"\x05pools\x18\x01 \x03(\v2\x1b.otterscale.storage.v1.PoolR\x05pools\"\xe3\x02\n" +
 	"\x11CreatePoolRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
-	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12<\n" +
-	"\tpool_type\x18\v \x01(\x0e2\x1f.otterscale.storage.v1.PoolTypeR\bpoolType\x12#\n" +
+	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x124\n" +
+	"\x04type\x18\v \x01(\x0e2 .otterscale.storage.v1.Pool.TypeR\x04type\x12#\n" +
 	"\rec_overwrites\x18\x15 \x01(\bR\fecOverwrites\x12'\n" +
 	"\x0freplicated_size\x18\x1f \x01(\x04R\x0ereplicatedSize\x12\x1f\n" +
 	"\vquota_bytes\x18) \x01(\x04R\n" +
 	"quotaBytes\x12#\n" +
-	"\rquota_objects\x18* \x01(\x04R\fquotaObjects\x12\"\n" +
-	"\fapplications\x18= \x03(\tR\fapplicationsJ\x04\b\x02\x10\x03\"\x92\x01\n" +
+	"\rquota_objects\x18* \x01(\x04R\fquotaObjects\x12K\n" +
+	"\fapplications\x18= \x03(\x0e2'.otterscale.storage.v1.Pool.ApplicationR\fapplicationsJ\x04\b\x02\x10\x03\"\x92\x01\n" +
 	"\x11UpdatePoolRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1f\n" +
@@ -12888,11 +12943,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"EntityType\x12\x17\n" +
 	"\x13ENTITY_TYPE_UNKNOWN\x10\x00\x12\x14\n" +
 	"\x10ENTITY_TYPE_USER\x10\x01\x12\x15\n" +
-	"\x11ENTITY_TYPE_GROUP\x10\x02*V\n" +
-	"\bPoolType\x12\x19\n" +
-	"\x15POOL_TYPE_UNSPECIFIED\x10\x00\x12\x15\n" +
-	"\x11POOL_TYPE_ERASURE\x10\x01\x12\x18\n" +
-	"\x14POOL_TYPE_REPLICATED\x10\x022\xf3-\n" +
+	"\x11ENTITY_TYPE_GROUP\x10\x022\xf3-\n" +
 	"\x0eStorageService\x12\x8b\x01\n" +
 	"\fListMonitors\x12*.otterscale.storage.v1.ListMonitorsRequest\x1a+.otterscale.storage.v1.ListMonitorsResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
 	"\x1bdistributed-storage-enabled\x12\xaf\x01\n" +
@@ -12988,228 +13039,232 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\x0fValidateSMBUser\x12-.otterscale.storage.v1.ValidateSMBUserRequest\x1a..otterscale.storage.v1.ValidateSMBUserResponse\"\"\x8a\xdf\xd5\x1d\x1d\n" +
 	"\x1bdistributed-storage-enabledB4Z2github.com/otterscale/otterscale/api/storage/v1;pbb\beditionsp\xe8\a"
 
-var file_api_storage_v1_storage_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
+var file_api_storage_v1_storage_proto_enumTypes = make([]protoimpl.EnumInfo, 6)
 var file_api_storage_v1_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 77)
 var file_api_storage_v1_storage_proto_goTypes = []any{
-	(PoolType)(0),                              // 0: otterscale.storage.v1.PoolType
-	(Bucket_ACL)(0),                            // 1: otterscale.storage.v1.Bucket.ACL
-	(SMBShare_CommonConfig_MapToGuest)(0),      // 2: otterscale.storage.v1.SMBShare.CommonConfig.MapToGuest
-	(SMBShare_SecurityConfig_Mode)(0),          // 3: otterscale.storage.v1.SMBShare.SecurityConfig.Mode
-	(ValidateSMBUserResponse_EntityType)(0),    // 4: otterscale.storage.v1.ValidateSMBUserResponse.EntityType
-	(*Machine)(nil),                            // 5: otterscale.storage.v1.Machine
-	(*Monitor)(nil),                            // 6: otterscale.storage.v1.Monitor
-	(*ObjectStorageDaemon)(nil),                // 7: otterscale.storage.v1.ObjectStorageDaemon
-	(*Pool)(nil),                               // 8: otterscale.storage.v1.Pool
-	(*Image)(nil),                              // 9: otterscale.storage.v1.Image
-	(*Volume)(nil),                             // 10: otterscale.storage.v1.Volume
-	(*Subvolume)(nil),                          // 11: otterscale.storage.v1.Subvolume
-	(*SubvolumeGroup)(nil),                     // 12: otterscale.storage.v1.SubvolumeGroup
-	(*Bucket)(nil),                             // 13: otterscale.storage.v1.Bucket
-	(*User)(nil),                               // 14: otterscale.storage.v1.User
-	(*SMBShare)(nil),                           // 15: otterscale.storage.v1.SMBShare
-	(*ListMonitorsRequest)(nil),                // 16: otterscale.storage.v1.ListMonitorsRequest
-	(*ListMonitorsResponse)(nil),               // 17: otterscale.storage.v1.ListMonitorsResponse
-	(*ListObjectStorageDaemonsRequest)(nil),    // 18: otterscale.storage.v1.ListObjectStorageDaemonsRequest
-	(*ListObjectStorageDaemonsResponse)(nil),   // 19: otterscale.storage.v1.ListObjectStorageDaemonsResponse
-	(*DoSMARTRequest)(nil),                     // 20: otterscale.storage.v1.DoSMARTRequest
-	(*DoSMARTResponse)(nil),                    // 21: otterscale.storage.v1.DoSMARTResponse
-	(*ListPoolsRequest)(nil),                   // 22: otterscale.storage.v1.ListPoolsRequest
-	(*ListPoolsResponse)(nil),                  // 23: otterscale.storage.v1.ListPoolsResponse
-	(*CreatePoolRequest)(nil),                  // 24: otterscale.storage.v1.CreatePoolRequest
-	(*UpdatePoolRequest)(nil),                  // 25: otterscale.storage.v1.UpdatePoolRequest
-	(*DeletePoolRequest)(nil),                  // 26: otterscale.storage.v1.DeletePoolRequest
-	(*ListImagesRequest)(nil),                  // 27: otterscale.storage.v1.ListImagesRequest
-	(*ListImagesResponse)(nil),                 // 28: otterscale.storage.v1.ListImagesResponse
-	(*CreateImageRequest)(nil),                 // 29: otterscale.storage.v1.CreateImageRequest
-	(*UpdateImageRequest)(nil),                 // 30: otterscale.storage.v1.UpdateImageRequest
-	(*DeleteImageRequest)(nil),                 // 31: otterscale.storage.v1.DeleteImageRequest
-	(*CreateImageSnapshotRequest)(nil),         // 32: otterscale.storage.v1.CreateImageSnapshotRequest
-	(*DeleteImageSnapshotRequest)(nil),         // 33: otterscale.storage.v1.DeleteImageSnapshotRequest
-	(*RollbackImageSnapshotRequest)(nil),       // 34: otterscale.storage.v1.RollbackImageSnapshotRequest
-	(*ProtectImageSnapshotRequest)(nil),        // 35: otterscale.storage.v1.ProtectImageSnapshotRequest
-	(*UnprotectImageSnapshotRequest)(nil),      // 36: otterscale.storage.v1.UnprotectImageSnapshotRequest
-	(*ListVolumesRequest)(nil),                 // 37: otterscale.storage.v1.ListVolumesRequest
-	(*ListVolumesResponse)(nil),                // 38: otterscale.storage.v1.ListVolumesResponse
-	(*ListSubvolumesRequest)(nil),              // 39: otterscale.storage.v1.ListSubvolumesRequest
-	(*ListSubvolumesResponse)(nil),             // 40: otterscale.storage.v1.ListSubvolumesResponse
-	(*CreateSubvolumeRequest)(nil),             // 41: otterscale.storage.v1.CreateSubvolumeRequest
-	(*UpdateSubvolumeRequest)(nil),             // 42: otterscale.storage.v1.UpdateSubvolumeRequest
-	(*DeleteSubvolumeRequest)(nil),             // 43: otterscale.storage.v1.DeleteSubvolumeRequest
-	(*GrantSubvolumeExportAccessRequest)(nil),  // 44: otterscale.storage.v1.GrantSubvolumeExportAccessRequest
-	(*RevokeSubvolumeExportAccessRequest)(nil), // 45: otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
-	(*CreateSubvolumeSnapshotRequest)(nil),     // 46: otterscale.storage.v1.CreateSubvolumeSnapshotRequest
-	(*DeleteSubvolumeSnapshotRequest)(nil),     // 47: otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
-	(*ListSubvolumeGroupsRequest)(nil),         // 48: otterscale.storage.v1.ListSubvolumeGroupsRequest
-	(*ListSubvolumeGroupsResponse)(nil),        // 49: otterscale.storage.v1.ListSubvolumeGroupsResponse
-	(*CreateSubvolumeGroupRequest)(nil),        // 50: otterscale.storage.v1.CreateSubvolumeGroupRequest
-	(*UpdateSubvolumeGroupRequest)(nil),        // 51: otterscale.storage.v1.UpdateSubvolumeGroupRequest
-	(*DeleteSubvolumeGroupRequest)(nil),        // 52: otterscale.storage.v1.DeleteSubvolumeGroupRequest
-	(*ListBucketsRequest)(nil),                 // 53: otterscale.storage.v1.ListBucketsRequest
-	(*ListBucketsResponse)(nil),                // 54: otterscale.storage.v1.ListBucketsResponse
-	(*CreateBucketRequest)(nil),                // 55: otterscale.storage.v1.CreateBucketRequest
-	(*UpdateBucketRequest)(nil),                // 56: otterscale.storage.v1.UpdateBucketRequest
-	(*DeleteBucketRequest)(nil),                // 57: otterscale.storage.v1.DeleteBucketRequest
-	(*ListUsersRequest)(nil),                   // 58: otterscale.storage.v1.ListUsersRequest
-	(*ListUsersResponse)(nil),                  // 59: otterscale.storage.v1.ListUsersResponse
-	(*CreateUserRequest)(nil),                  // 60: otterscale.storage.v1.CreateUserRequest
-	(*UpdateUserRequest)(nil),                  // 61: otterscale.storage.v1.UpdateUserRequest
-	(*DeleteUserRequest)(nil),                  // 62: otterscale.storage.v1.DeleteUserRequest
-	(*CreateUserKeyRequest)(nil),               // 63: otterscale.storage.v1.CreateUserKeyRequest
-	(*DeleteUserKeyRequest)(nil),               // 64: otterscale.storage.v1.DeleteUserKeyRequest
-	(*ListSMBSharesRequest)(nil),               // 65: otterscale.storage.v1.ListSMBSharesRequest
-	(*ListSMBSharesResponse)(nil),              // 66: otterscale.storage.v1.ListSMBSharesResponse
-	(*CreateSMBShareRequest)(nil),              // 67: otterscale.storage.v1.CreateSMBShareRequest
-	(*UpdateSMBShareRequest)(nil),              // 68: otterscale.storage.v1.UpdateSMBShareRequest
-	(*ValidateSMBUserRequest)(nil),             // 69: otterscale.storage.v1.ValidateSMBUserRequest
-	(*ValidateSMBUserResponse)(nil),            // 70: otterscale.storage.v1.ValidateSMBUserResponse
-	nil,                                        // 71: otterscale.storage.v1.Pool.PlacementGroupStateEntry
-	(*Image_Snapshot)(nil),                     // 72: otterscale.storage.v1.Image.Snapshot
-	(*Subvolume_Snapshot)(nil),                 // 73: otterscale.storage.v1.Subvolume.Snapshot
-	(*Subvolume_Export)(nil),                   // 74: otterscale.storage.v1.Subvolume.Export
-	(*Bucket_Grant)(nil),                       // 75: otterscale.storage.v1.Bucket.Grant
-	(*User_Key)(nil),                           // 76: otterscale.storage.v1.User.Key
-	(*SMBShare_CommonConfig)(nil),              // 77: otterscale.storage.v1.SMBShare.CommonConfig
-	(*SMBShare_SecurityConfig)(nil),            // 78: otterscale.storage.v1.SMBShare.SecurityConfig
-	(*SMBShare_SecurityConfig_User)(nil),       // 79: otterscale.storage.v1.SMBShare.SecurityConfig.User
-	(*DoSMARTResponse_Output)(nil),             // 80: otterscale.storage.v1.DoSMARTResponse.Output
-	nil,                                        // 81: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
-	(*timestamppb.Timestamp)(nil),              // 82: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                      // 83: google.protobuf.Empty
+	(Pool_Type)(0),                             // 0: otterscale.storage.v1.Pool.Type
+	(Pool_Application)(0),                      // 1: otterscale.storage.v1.Pool.Application
+	(Bucket_ACL)(0),                            // 2: otterscale.storage.v1.Bucket.ACL
+	(SMBShare_CommonConfig_MapToGuest)(0),      // 3: otterscale.storage.v1.SMBShare.CommonConfig.MapToGuest
+	(SMBShare_SecurityConfig_Mode)(0),          // 4: otterscale.storage.v1.SMBShare.SecurityConfig.Mode
+	(ValidateSMBUserResponse_EntityType)(0),    // 5: otterscale.storage.v1.ValidateSMBUserResponse.EntityType
+	(*Machine)(nil),                            // 6: otterscale.storage.v1.Machine
+	(*Monitor)(nil),                            // 7: otterscale.storage.v1.Monitor
+	(*ObjectStorageDaemon)(nil),                // 8: otterscale.storage.v1.ObjectStorageDaemon
+	(*Pool)(nil),                               // 9: otterscale.storage.v1.Pool
+	(*Image)(nil),                              // 10: otterscale.storage.v1.Image
+	(*Volume)(nil),                             // 11: otterscale.storage.v1.Volume
+	(*Subvolume)(nil),                          // 12: otterscale.storage.v1.Subvolume
+	(*SubvolumeGroup)(nil),                     // 13: otterscale.storage.v1.SubvolumeGroup
+	(*Bucket)(nil),                             // 14: otterscale.storage.v1.Bucket
+	(*User)(nil),                               // 15: otterscale.storage.v1.User
+	(*SMBShare)(nil),                           // 16: otterscale.storage.v1.SMBShare
+	(*ListMonitorsRequest)(nil),                // 17: otterscale.storage.v1.ListMonitorsRequest
+	(*ListMonitorsResponse)(nil),               // 18: otterscale.storage.v1.ListMonitorsResponse
+	(*ListObjectStorageDaemonsRequest)(nil),    // 19: otterscale.storage.v1.ListObjectStorageDaemonsRequest
+	(*ListObjectStorageDaemonsResponse)(nil),   // 20: otterscale.storage.v1.ListObjectStorageDaemonsResponse
+	(*DoSMARTRequest)(nil),                     // 21: otterscale.storage.v1.DoSMARTRequest
+	(*DoSMARTResponse)(nil),                    // 22: otterscale.storage.v1.DoSMARTResponse
+	(*ListPoolsRequest)(nil),                   // 23: otterscale.storage.v1.ListPoolsRequest
+	(*ListPoolsResponse)(nil),                  // 24: otterscale.storage.v1.ListPoolsResponse
+	(*CreatePoolRequest)(nil),                  // 25: otterscale.storage.v1.CreatePoolRequest
+	(*UpdatePoolRequest)(nil),                  // 26: otterscale.storage.v1.UpdatePoolRequest
+	(*DeletePoolRequest)(nil),                  // 27: otterscale.storage.v1.DeletePoolRequest
+	(*ListImagesRequest)(nil),                  // 28: otterscale.storage.v1.ListImagesRequest
+	(*ListImagesResponse)(nil),                 // 29: otterscale.storage.v1.ListImagesResponse
+	(*CreateImageRequest)(nil),                 // 30: otterscale.storage.v1.CreateImageRequest
+	(*UpdateImageRequest)(nil),                 // 31: otterscale.storage.v1.UpdateImageRequest
+	(*DeleteImageRequest)(nil),                 // 32: otterscale.storage.v1.DeleteImageRequest
+	(*CreateImageSnapshotRequest)(nil),         // 33: otterscale.storage.v1.CreateImageSnapshotRequest
+	(*DeleteImageSnapshotRequest)(nil),         // 34: otterscale.storage.v1.DeleteImageSnapshotRequest
+	(*RollbackImageSnapshotRequest)(nil),       // 35: otterscale.storage.v1.RollbackImageSnapshotRequest
+	(*ProtectImageSnapshotRequest)(nil),        // 36: otterscale.storage.v1.ProtectImageSnapshotRequest
+	(*UnprotectImageSnapshotRequest)(nil),      // 37: otterscale.storage.v1.UnprotectImageSnapshotRequest
+	(*ListVolumesRequest)(nil),                 // 38: otterscale.storage.v1.ListVolumesRequest
+	(*ListVolumesResponse)(nil),                // 39: otterscale.storage.v1.ListVolumesResponse
+	(*ListSubvolumesRequest)(nil),              // 40: otterscale.storage.v1.ListSubvolumesRequest
+	(*ListSubvolumesResponse)(nil),             // 41: otterscale.storage.v1.ListSubvolumesResponse
+	(*CreateSubvolumeRequest)(nil),             // 42: otterscale.storage.v1.CreateSubvolumeRequest
+	(*UpdateSubvolumeRequest)(nil),             // 43: otterscale.storage.v1.UpdateSubvolumeRequest
+	(*DeleteSubvolumeRequest)(nil),             // 44: otterscale.storage.v1.DeleteSubvolumeRequest
+	(*GrantSubvolumeExportAccessRequest)(nil),  // 45: otterscale.storage.v1.GrantSubvolumeExportAccessRequest
+	(*RevokeSubvolumeExportAccessRequest)(nil), // 46: otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
+	(*CreateSubvolumeSnapshotRequest)(nil),     // 47: otterscale.storage.v1.CreateSubvolumeSnapshotRequest
+	(*DeleteSubvolumeSnapshotRequest)(nil),     // 48: otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
+	(*ListSubvolumeGroupsRequest)(nil),         // 49: otterscale.storage.v1.ListSubvolumeGroupsRequest
+	(*ListSubvolumeGroupsResponse)(nil),        // 50: otterscale.storage.v1.ListSubvolumeGroupsResponse
+	(*CreateSubvolumeGroupRequest)(nil),        // 51: otterscale.storage.v1.CreateSubvolumeGroupRequest
+	(*UpdateSubvolumeGroupRequest)(nil),        // 52: otterscale.storage.v1.UpdateSubvolumeGroupRequest
+	(*DeleteSubvolumeGroupRequest)(nil),        // 53: otterscale.storage.v1.DeleteSubvolumeGroupRequest
+	(*ListBucketsRequest)(nil),                 // 54: otterscale.storage.v1.ListBucketsRequest
+	(*ListBucketsResponse)(nil),                // 55: otterscale.storage.v1.ListBucketsResponse
+	(*CreateBucketRequest)(nil),                // 56: otterscale.storage.v1.CreateBucketRequest
+	(*UpdateBucketRequest)(nil),                // 57: otterscale.storage.v1.UpdateBucketRequest
+	(*DeleteBucketRequest)(nil),                // 58: otterscale.storage.v1.DeleteBucketRequest
+	(*ListUsersRequest)(nil),                   // 59: otterscale.storage.v1.ListUsersRequest
+	(*ListUsersResponse)(nil),                  // 60: otterscale.storage.v1.ListUsersResponse
+	(*CreateUserRequest)(nil),                  // 61: otterscale.storage.v1.CreateUserRequest
+	(*UpdateUserRequest)(nil),                  // 62: otterscale.storage.v1.UpdateUserRequest
+	(*DeleteUserRequest)(nil),                  // 63: otterscale.storage.v1.DeleteUserRequest
+	(*CreateUserKeyRequest)(nil),               // 64: otterscale.storage.v1.CreateUserKeyRequest
+	(*DeleteUserKeyRequest)(nil),               // 65: otterscale.storage.v1.DeleteUserKeyRequest
+	(*ListSMBSharesRequest)(nil),               // 66: otterscale.storage.v1.ListSMBSharesRequest
+	(*ListSMBSharesResponse)(nil),              // 67: otterscale.storage.v1.ListSMBSharesResponse
+	(*CreateSMBShareRequest)(nil),              // 68: otterscale.storage.v1.CreateSMBShareRequest
+	(*UpdateSMBShareRequest)(nil),              // 69: otterscale.storage.v1.UpdateSMBShareRequest
+	(*ValidateSMBUserRequest)(nil),             // 70: otterscale.storage.v1.ValidateSMBUserRequest
+	(*ValidateSMBUserResponse)(nil),            // 71: otterscale.storage.v1.ValidateSMBUserResponse
+	nil,                                        // 72: otterscale.storage.v1.Pool.PlacementGroupStateEntry
+	(*Image_Snapshot)(nil),                     // 73: otterscale.storage.v1.Image.Snapshot
+	(*Subvolume_Snapshot)(nil),                 // 74: otterscale.storage.v1.Subvolume.Snapshot
+	(*Subvolume_Export)(nil),                   // 75: otterscale.storage.v1.Subvolume.Export
+	(*Bucket_Grant)(nil),                       // 76: otterscale.storage.v1.Bucket.Grant
+	(*User_Key)(nil),                           // 77: otterscale.storage.v1.User.Key
+	(*SMBShare_CommonConfig)(nil),              // 78: otterscale.storage.v1.SMBShare.CommonConfig
+	(*SMBShare_SecurityConfig)(nil),            // 79: otterscale.storage.v1.SMBShare.SecurityConfig
+	(*SMBShare_SecurityConfig_User)(nil),       // 80: otterscale.storage.v1.SMBShare.SecurityConfig.User
+	(*DoSMARTResponse_Output)(nil),             // 81: otterscale.storage.v1.DoSMARTResponse.Output
+	nil,                                        // 82: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
+	(*timestamppb.Timestamp)(nil),              // 83: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                      // 84: google.protobuf.Empty
 }
 var file_api_storage_v1_storage_proto_depIdxs = []int32{
-	5,  // 0: otterscale.storage.v1.Monitor.machine:type_name -> otterscale.storage.v1.Machine
-	5,  // 1: otterscale.storage.v1.ObjectStorageDaemon.machine:type_name -> otterscale.storage.v1.Machine
-	0,  // 2: otterscale.storage.v1.Pool.pool_type:type_name -> otterscale.storage.v1.PoolType
-	71, // 3: otterscale.storage.v1.Pool.placement_group_state:type_name -> otterscale.storage.v1.Pool.PlacementGroupStateEntry
-	82, // 4: otterscale.storage.v1.Pool.created_at:type_name -> google.protobuf.Timestamp
-	82, // 5: otterscale.storage.v1.Image.created_at:type_name -> google.protobuf.Timestamp
-	72, // 6: otterscale.storage.v1.Image.snapshots:type_name -> otterscale.storage.v1.Image.Snapshot
-	82, // 7: otterscale.storage.v1.Volume.created_at:type_name -> google.protobuf.Timestamp
-	82, // 8: otterscale.storage.v1.Subvolume.created_at:type_name -> google.protobuf.Timestamp
-	74, // 9: otterscale.storage.v1.Subvolume.export:type_name -> otterscale.storage.v1.Subvolume.Export
-	73, // 10: otterscale.storage.v1.Subvolume.snapshots:type_name -> otterscale.storage.v1.Subvolume.Snapshot
-	82, // 11: otterscale.storage.v1.SubvolumeGroup.created_at:type_name -> google.protobuf.Timestamp
-	75, // 12: otterscale.storage.v1.Bucket.grants:type_name -> otterscale.storage.v1.Bucket.Grant
-	82, // 13: otterscale.storage.v1.Bucket.created_at:type_name -> google.protobuf.Timestamp
-	76, // 14: otterscale.storage.v1.User.keys:type_name -> otterscale.storage.v1.User.Key
-	77, // 15: otterscale.storage.v1.SMBShare.common_config:type_name -> otterscale.storage.v1.SMBShare.CommonConfig
-	78, // 16: otterscale.storage.v1.SMBShare.security_config:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig
-	6,  // 17: otterscale.storage.v1.ListMonitorsResponse.monitors:type_name -> otterscale.storage.v1.Monitor
-	7,  // 18: otterscale.storage.v1.ListObjectStorageDaemonsResponse.object_storage_daemons:type_name -> otterscale.storage.v1.ObjectStorageDaemon
-	81, // 19: otterscale.storage.v1.DoSMARTResponse.device_output_map:type_name -> otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
-	8,  // 20: otterscale.storage.v1.ListPoolsResponse.pools:type_name -> otterscale.storage.v1.Pool
-	0,  // 21: otterscale.storage.v1.CreatePoolRequest.pool_type:type_name -> otterscale.storage.v1.PoolType
-	9,  // 22: otterscale.storage.v1.ListImagesResponse.images:type_name -> otterscale.storage.v1.Image
-	10, // 23: otterscale.storage.v1.ListVolumesResponse.volumes:type_name -> otterscale.storage.v1.Volume
-	11, // 24: otterscale.storage.v1.ListSubvolumesResponse.subvolumes:type_name -> otterscale.storage.v1.Subvolume
-	12, // 25: otterscale.storage.v1.ListSubvolumeGroupsResponse.subvolume_groups:type_name -> otterscale.storage.v1.SubvolumeGroup
-	13, // 26: otterscale.storage.v1.ListBucketsResponse.buckets:type_name -> otterscale.storage.v1.Bucket
-	1,  // 27: otterscale.storage.v1.CreateBucketRequest.acl:type_name -> otterscale.storage.v1.Bucket.ACL
-	1,  // 28: otterscale.storage.v1.UpdateBucketRequest.acl:type_name -> otterscale.storage.v1.Bucket.ACL
-	14, // 29: otterscale.storage.v1.ListUsersResponse.users:type_name -> otterscale.storage.v1.User
-	15, // 30: otterscale.storage.v1.ListSMBSharesResponse.smb_shares:type_name -> otterscale.storage.v1.SMBShare
-	77, // 31: otterscale.storage.v1.CreateSMBShareRequest.common_config:type_name -> otterscale.storage.v1.SMBShare.CommonConfig
-	78, // 32: otterscale.storage.v1.CreateSMBShareRequest.security_config:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig
-	77, // 33: otterscale.storage.v1.UpdateSMBShareRequest.common_config:type_name -> otterscale.storage.v1.SMBShare.CommonConfig
-	78, // 34: otterscale.storage.v1.UpdateSMBShareRequest.security_config:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig
-	4,  // 35: otterscale.storage.v1.ValidateSMBUserResponse.entity_type:type_name -> otterscale.storage.v1.ValidateSMBUserResponse.EntityType
-	82, // 36: otterscale.storage.v1.Subvolume.Snapshot.created_at:type_name -> google.protobuf.Timestamp
-	2,  // 37: otterscale.storage.v1.SMBShare.CommonConfig.map_to_guest:type_name -> otterscale.storage.v1.SMBShare.CommonConfig.MapToGuest
-	3,  // 38: otterscale.storage.v1.SMBShare.SecurityConfig.mode:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.Mode
-	79, // 39: otterscale.storage.v1.SMBShare.SecurityConfig.local_users:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.User
-	79, // 40: otterscale.storage.v1.SMBShare.SecurityConfig.join_source:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.User
-	80, // 41: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry.value:type_name -> otterscale.storage.v1.DoSMARTResponse.Output
-	16, // 42: otterscale.storage.v1.StorageService.ListMonitors:input_type -> otterscale.storage.v1.ListMonitorsRequest
-	18, // 43: otterscale.storage.v1.StorageService.ListObjectStorageDaemons:input_type -> otterscale.storage.v1.ListObjectStorageDaemonsRequest
-	20, // 44: otterscale.storage.v1.StorageService.DoSMART:input_type -> otterscale.storage.v1.DoSMARTRequest
-	22, // 45: otterscale.storage.v1.StorageService.ListPools:input_type -> otterscale.storage.v1.ListPoolsRequest
-	24, // 46: otterscale.storage.v1.StorageService.CreatePool:input_type -> otterscale.storage.v1.CreatePoolRequest
-	25, // 47: otterscale.storage.v1.StorageService.UpdatePool:input_type -> otterscale.storage.v1.UpdatePoolRequest
-	26, // 48: otterscale.storage.v1.StorageService.DeletePool:input_type -> otterscale.storage.v1.DeletePoolRequest
-	27, // 49: otterscale.storage.v1.StorageService.ListImages:input_type -> otterscale.storage.v1.ListImagesRequest
-	29, // 50: otterscale.storage.v1.StorageService.CreateImage:input_type -> otterscale.storage.v1.CreateImageRequest
-	30, // 51: otterscale.storage.v1.StorageService.UpdateImage:input_type -> otterscale.storage.v1.UpdateImageRequest
-	31, // 52: otterscale.storage.v1.StorageService.DeleteImage:input_type -> otterscale.storage.v1.DeleteImageRequest
-	32, // 53: otterscale.storage.v1.StorageService.CreateImageSnapshot:input_type -> otterscale.storage.v1.CreateImageSnapshotRequest
-	33, // 54: otterscale.storage.v1.StorageService.DeleteImageSnapshot:input_type -> otterscale.storage.v1.DeleteImageSnapshotRequest
-	34, // 55: otterscale.storage.v1.StorageService.RollbackImageSnapshot:input_type -> otterscale.storage.v1.RollbackImageSnapshotRequest
-	35, // 56: otterscale.storage.v1.StorageService.ProtectImageSnapshot:input_type -> otterscale.storage.v1.ProtectImageSnapshotRequest
-	36, // 57: otterscale.storage.v1.StorageService.UnprotectImageSnapshot:input_type -> otterscale.storage.v1.UnprotectImageSnapshotRequest
-	37, // 58: otterscale.storage.v1.StorageService.ListVolumes:input_type -> otterscale.storage.v1.ListVolumesRequest
-	39, // 59: otterscale.storage.v1.StorageService.ListSubvolumes:input_type -> otterscale.storage.v1.ListSubvolumesRequest
-	41, // 60: otterscale.storage.v1.StorageService.CreateSubvolume:input_type -> otterscale.storage.v1.CreateSubvolumeRequest
-	42, // 61: otterscale.storage.v1.StorageService.UpdateSubvolume:input_type -> otterscale.storage.v1.UpdateSubvolumeRequest
-	43, // 62: otterscale.storage.v1.StorageService.DeleteSubvolume:input_type -> otterscale.storage.v1.DeleteSubvolumeRequest
-	44, // 63: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:input_type -> otterscale.storage.v1.GrantSubvolumeExportAccessRequest
-	45, // 64: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:input_type -> otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
-	46, // 65: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:input_type -> otterscale.storage.v1.CreateSubvolumeSnapshotRequest
-	47, // 66: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:input_type -> otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
-	48, // 67: otterscale.storage.v1.StorageService.ListSubvolumeGroups:input_type -> otterscale.storage.v1.ListSubvolumeGroupsRequest
-	50, // 68: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:input_type -> otterscale.storage.v1.CreateSubvolumeGroupRequest
-	51, // 69: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:input_type -> otterscale.storage.v1.UpdateSubvolumeGroupRequest
-	52, // 70: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:input_type -> otterscale.storage.v1.DeleteSubvolumeGroupRequest
-	53, // 71: otterscale.storage.v1.StorageService.ListBuckets:input_type -> otterscale.storage.v1.ListBucketsRequest
-	55, // 72: otterscale.storage.v1.StorageService.CreateBucket:input_type -> otterscale.storage.v1.CreateBucketRequest
-	56, // 73: otterscale.storage.v1.StorageService.UpdateBucket:input_type -> otterscale.storage.v1.UpdateBucketRequest
-	57, // 74: otterscale.storage.v1.StorageService.DeleteBucket:input_type -> otterscale.storage.v1.DeleteBucketRequest
-	58, // 75: otterscale.storage.v1.StorageService.ListUsers:input_type -> otterscale.storage.v1.ListUsersRequest
-	60, // 76: otterscale.storage.v1.StorageService.CreateUser:input_type -> otterscale.storage.v1.CreateUserRequest
-	61, // 77: otterscale.storage.v1.StorageService.UpdateUser:input_type -> otterscale.storage.v1.UpdateUserRequest
-	62, // 78: otterscale.storage.v1.StorageService.DeleteUser:input_type -> otterscale.storage.v1.DeleteUserRequest
-	63, // 79: otterscale.storage.v1.StorageService.CreateUserKey:input_type -> otterscale.storage.v1.CreateUserKeyRequest
-	64, // 80: otterscale.storage.v1.StorageService.DeleteUserKey:input_type -> otterscale.storage.v1.DeleteUserKeyRequest
-	65, // 81: otterscale.storage.v1.StorageService.ListSMBShares:input_type -> otterscale.storage.v1.ListSMBSharesRequest
-	67, // 82: otterscale.storage.v1.StorageService.CreateSMBShare:input_type -> otterscale.storage.v1.CreateSMBShareRequest
-	68, // 83: otterscale.storage.v1.StorageService.UpdateSMBShare:input_type -> otterscale.storage.v1.UpdateSMBShareRequest
-	69, // 84: otterscale.storage.v1.StorageService.ValidateSMBUser:input_type -> otterscale.storage.v1.ValidateSMBUserRequest
-	17, // 85: otterscale.storage.v1.StorageService.ListMonitors:output_type -> otterscale.storage.v1.ListMonitorsResponse
-	19, // 86: otterscale.storage.v1.StorageService.ListObjectStorageDaemons:output_type -> otterscale.storage.v1.ListObjectStorageDaemonsResponse
-	21, // 87: otterscale.storage.v1.StorageService.DoSMART:output_type -> otterscale.storage.v1.DoSMARTResponse
-	23, // 88: otterscale.storage.v1.StorageService.ListPools:output_type -> otterscale.storage.v1.ListPoolsResponse
-	8,  // 89: otterscale.storage.v1.StorageService.CreatePool:output_type -> otterscale.storage.v1.Pool
-	8,  // 90: otterscale.storage.v1.StorageService.UpdatePool:output_type -> otterscale.storage.v1.Pool
-	83, // 91: otterscale.storage.v1.StorageService.DeletePool:output_type -> google.protobuf.Empty
-	28, // 92: otterscale.storage.v1.StorageService.ListImages:output_type -> otterscale.storage.v1.ListImagesResponse
-	9,  // 93: otterscale.storage.v1.StorageService.CreateImage:output_type -> otterscale.storage.v1.Image
-	9,  // 94: otterscale.storage.v1.StorageService.UpdateImage:output_type -> otterscale.storage.v1.Image
-	83, // 95: otterscale.storage.v1.StorageService.DeleteImage:output_type -> google.protobuf.Empty
-	72, // 96: otterscale.storage.v1.StorageService.CreateImageSnapshot:output_type -> otterscale.storage.v1.Image.Snapshot
-	83, // 97: otterscale.storage.v1.StorageService.DeleteImageSnapshot:output_type -> google.protobuf.Empty
-	83, // 98: otterscale.storage.v1.StorageService.RollbackImageSnapshot:output_type -> google.protobuf.Empty
-	83, // 99: otterscale.storage.v1.StorageService.ProtectImageSnapshot:output_type -> google.protobuf.Empty
-	83, // 100: otterscale.storage.v1.StorageService.UnprotectImageSnapshot:output_type -> google.protobuf.Empty
-	38, // 101: otterscale.storage.v1.StorageService.ListVolumes:output_type -> otterscale.storage.v1.ListVolumesResponse
-	40, // 102: otterscale.storage.v1.StorageService.ListSubvolumes:output_type -> otterscale.storage.v1.ListSubvolumesResponse
-	11, // 103: otterscale.storage.v1.StorageService.CreateSubvolume:output_type -> otterscale.storage.v1.Subvolume
-	11, // 104: otterscale.storage.v1.StorageService.UpdateSubvolume:output_type -> otterscale.storage.v1.Subvolume
-	83, // 105: otterscale.storage.v1.StorageService.DeleteSubvolume:output_type -> google.protobuf.Empty
-	83, // 106: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:output_type -> google.protobuf.Empty
-	83, // 107: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:output_type -> google.protobuf.Empty
-	73, // 108: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:output_type -> otterscale.storage.v1.Subvolume.Snapshot
-	83, // 109: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:output_type -> google.protobuf.Empty
-	49, // 110: otterscale.storage.v1.StorageService.ListSubvolumeGroups:output_type -> otterscale.storage.v1.ListSubvolumeGroupsResponse
-	12, // 111: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
-	12, // 112: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
-	83, // 113: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:output_type -> google.protobuf.Empty
-	54, // 114: otterscale.storage.v1.StorageService.ListBuckets:output_type -> otterscale.storage.v1.ListBucketsResponse
-	13, // 115: otterscale.storage.v1.StorageService.CreateBucket:output_type -> otterscale.storage.v1.Bucket
-	13, // 116: otterscale.storage.v1.StorageService.UpdateBucket:output_type -> otterscale.storage.v1.Bucket
-	83, // 117: otterscale.storage.v1.StorageService.DeleteBucket:output_type -> google.protobuf.Empty
-	59, // 118: otterscale.storage.v1.StorageService.ListUsers:output_type -> otterscale.storage.v1.ListUsersResponse
-	14, // 119: otterscale.storage.v1.StorageService.CreateUser:output_type -> otterscale.storage.v1.User
-	14, // 120: otterscale.storage.v1.StorageService.UpdateUser:output_type -> otterscale.storage.v1.User
-	83, // 121: otterscale.storage.v1.StorageService.DeleteUser:output_type -> google.protobuf.Empty
-	76, // 122: otterscale.storage.v1.StorageService.CreateUserKey:output_type -> otterscale.storage.v1.User.Key
-	83, // 123: otterscale.storage.v1.StorageService.DeleteUserKey:output_type -> google.protobuf.Empty
-	66, // 124: otterscale.storage.v1.StorageService.ListSMBShares:output_type -> otterscale.storage.v1.ListSMBSharesResponse
-	15, // 125: otterscale.storage.v1.StorageService.CreateSMBShare:output_type -> otterscale.storage.v1.SMBShare
-	15, // 126: otterscale.storage.v1.StorageService.UpdateSMBShare:output_type -> otterscale.storage.v1.SMBShare
-	70, // 127: otterscale.storage.v1.StorageService.ValidateSMBUser:output_type -> otterscale.storage.v1.ValidateSMBUserResponse
-	85, // [85:128] is the sub-list for method output_type
-	42, // [42:85] is the sub-list for method input_type
-	42, // [42:42] is the sub-list for extension type_name
-	42, // [42:42] is the sub-list for extension extendee
-	0,  // [0:42] is the sub-list for field type_name
+	6,  // 0: otterscale.storage.v1.Monitor.machine:type_name -> otterscale.storage.v1.Machine
+	6,  // 1: otterscale.storage.v1.ObjectStorageDaemon.machine:type_name -> otterscale.storage.v1.Machine
+	0,  // 2: otterscale.storage.v1.Pool.type:type_name -> otterscale.storage.v1.Pool.Type
+	72, // 3: otterscale.storage.v1.Pool.placement_group_state:type_name -> otterscale.storage.v1.Pool.PlacementGroupStateEntry
+	83, // 4: otterscale.storage.v1.Pool.created_at:type_name -> google.protobuf.Timestamp
+	1,  // 5: otterscale.storage.v1.Pool.applications:type_name -> otterscale.storage.v1.Pool.Application
+	83, // 6: otterscale.storage.v1.Image.created_at:type_name -> google.protobuf.Timestamp
+	73, // 7: otterscale.storage.v1.Image.snapshots:type_name -> otterscale.storage.v1.Image.Snapshot
+	83, // 8: otterscale.storage.v1.Volume.created_at:type_name -> google.protobuf.Timestamp
+	83, // 9: otterscale.storage.v1.Subvolume.created_at:type_name -> google.protobuf.Timestamp
+	75, // 10: otterscale.storage.v1.Subvolume.export:type_name -> otterscale.storage.v1.Subvolume.Export
+	74, // 11: otterscale.storage.v1.Subvolume.snapshots:type_name -> otterscale.storage.v1.Subvolume.Snapshot
+	83, // 12: otterscale.storage.v1.SubvolumeGroup.created_at:type_name -> google.protobuf.Timestamp
+	76, // 13: otterscale.storage.v1.Bucket.grants:type_name -> otterscale.storage.v1.Bucket.Grant
+	83, // 14: otterscale.storage.v1.Bucket.created_at:type_name -> google.protobuf.Timestamp
+	77, // 15: otterscale.storage.v1.User.keys:type_name -> otterscale.storage.v1.User.Key
+	78, // 16: otterscale.storage.v1.SMBShare.common_config:type_name -> otterscale.storage.v1.SMBShare.CommonConfig
+	79, // 17: otterscale.storage.v1.SMBShare.security_config:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig
+	7,  // 18: otterscale.storage.v1.ListMonitorsResponse.monitors:type_name -> otterscale.storage.v1.Monitor
+	8,  // 19: otterscale.storage.v1.ListObjectStorageDaemonsResponse.object_storage_daemons:type_name -> otterscale.storage.v1.ObjectStorageDaemon
+	82, // 20: otterscale.storage.v1.DoSMARTResponse.device_output_map:type_name -> otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
+	1,  // 21: otterscale.storage.v1.ListPoolsRequest.application:type_name -> otterscale.storage.v1.Pool.Application
+	9,  // 22: otterscale.storage.v1.ListPoolsResponse.pools:type_name -> otterscale.storage.v1.Pool
+	0,  // 23: otterscale.storage.v1.CreatePoolRequest.type:type_name -> otterscale.storage.v1.Pool.Type
+	1,  // 24: otterscale.storage.v1.CreatePoolRequest.applications:type_name -> otterscale.storage.v1.Pool.Application
+	10, // 25: otterscale.storage.v1.ListImagesResponse.images:type_name -> otterscale.storage.v1.Image
+	11, // 26: otterscale.storage.v1.ListVolumesResponse.volumes:type_name -> otterscale.storage.v1.Volume
+	12, // 27: otterscale.storage.v1.ListSubvolumesResponse.subvolumes:type_name -> otterscale.storage.v1.Subvolume
+	13, // 28: otterscale.storage.v1.ListSubvolumeGroupsResponse.subvolume_groups:type_name -> otterscale.storage.v1.SubvolumeGroup
+	14, // 29: otterscale.storage.v1.ListBucketsResponse.buckets:type_name -> otterscale.storage.v1.Bucket
+	2,  // 30: otterscale.storage.v1.CreateBucketRequest.acl:type_name -> otterscale.storage.v1.Bucket.ACL
+	2,  // 31: otterscale.storage.v1.UpdateBucketRequest.acl:type_name -> otterscale.storage.v1.Bucket.ACL
+	15, // 32: otterscale.storage.v1.ListUsersResponse.users:type_name -> otterscale.storage.v1.User
+	16, // 33: otterscale.storage.v1.ListSMBSharesResponse.smb_shares:type_name -> otterscale.storage.v1.SMBShare
+	78, // 34: otterscale.storage.v1.CreateSMBShareRequest.common_config:type_name -> otterscale.storage.v1.SMBShare.CommonConfig
+	79, // 35: otterscale.storage.v1.CreateSMBShareRequest.security_config:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig
+	78, // 36: otterscale.storage.v1.UpdateSMBShareRequest.common_config:type_name -> otterscale.storage.v1.SMBShare.CommonConfig
+	79, // 37: otterscale.storage.v1.UpdateSMBShareRequest.security_config:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig
+	5,  // 38: otterscale.storage.v1.ValidateSMBUserResponse.entity_type:type_name -> otterscale.storage.v1.ValidateSMBUserResponse.EntityType
+	83, // 39: otterscale.storage.v1.Subvolume.Snapshot.created_at:type_name -> google.protobuf.Timestamp
+	3,  // 40: otterscale.storage.v1.SMBShare.CommonConfig.map_to_guest:type_name -> otterscale.storage.v1.SMBShare.CommonConfig.MapToGuest
+	4,  // 41: otterscale.storage.v1.SMBShare.SecurityConfig.mode:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.Mode
+	80, // 42: otterscale.storage.v1.SMBShare.SecurityConfig.local_users:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.User
+	80, // 43: otterscale.storage.v1.SMBShare.SecurityConfig.join_source:type_name -> otterscale.storage.v1.SMBShare.SecurityConfig.User
+	81, // 44: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry.value:type_name -> otterscale.storage.v1.DoSMARTResponse.Output
+	17, // 45: otterscale.storage.v1.StorageService.ListMonitors:input_type -> otterscale.storage.v1.ListMonitorsRequest
+	19, // 46: otterscale.storage.v1.StorageService.ListObjectStorageDaemons:input_type -> otterscale.storage.v1.ListObjectStorageDaemonsRequest
+	21, // 47: otterscale.storage.v1.StorageService.DoSMART:input_type -> otterscale.storage.v1.DoSMARTRequest
+	23, // 48: otterscale.storage.v1.StorageService.ListPools:input_type -> otterscale.storage.v1.ListPoolsRequest
+	25, // 49: otterscale.storage.v1.StorageService.CreatePool:input_type -> otterscale.storage.v1.CreatePoolRequest
+	26, // 50: otterscale.storage.v1.StorageService.UpdatePool:input_type -> otterscale.storage.v1.UpdatePoolRequest
+	27, // 51: otterscale.storage.v1.StorageService.DeletePool:input_type -> otterscale.storage.v1.DeletePoolRequest
+	28, // 52: otterscale.storage.v1.StorageService.ListImages:input_type -> otterscale.storage.v1.ListImagesRequest
+	30, // 53: otterscale.storage.v1.StorageService.CreateImage:input_type -> otterscale.storage.v1.CreateImageRequest
+	31, // 54: otterscale.storage.v1.StorageService.UpdateImage:input_type -> otterscale.storage.v1.UpdateImageRequest
+	32, // 55: otterscale.storage.v1.StorageService.DeleteImage:input_type -> otterscale.storage.v1.DeleteImageRequest
+	33, // 56: otterscale.storage.v1.StorageService.CreateImageSnapshot:input_type -> otterscale.storage.v1.CreateImageSnapshotRequest
+	34, // 57: otterscale.storage.v1.StorageService.DeleteImageSnapshot:input_type -> otterscale.storage.v1.DeleteImageSnapshotRequest
+	35, // 58: otterscale.storage.v1.StorageService.RollbackImageSnapshot:input_type -> otterscale.storage.v1.RollbackImageSnapshotRequest
+	36, // 59: otterscale.storage.v1.StorageService.ProtectImageSnapshot:input_type -> otterscale.storage.v1.ProtectImageSnapshotRequest
+	37, // 60: otterscale.storage.v1.StorageService.UnprotectImageSnapshot:input_type -> otterscale.storage.v1.UnprotectImageSnapshotRequest
+	38, // 61: otterscale.storage.v1.StorageService.ListVolumes:input_type -> otterscale.storage.v1.ListVolumesRequest
+	40, // 62: otterscale.storage.v1.StorageService.ListSubvolumes:input_type -> otterscale.storage.v1.ListSubvolumesRequest
+	42, // 63: otterscale.storage.v1.StorageService.CreateSubvolume:input_type -> otterscale.storage.v1.CreateSubvolumeRequest
+	43, // 64: otterscale.storage.v1.StorageService.UpdateSubvolume:input_type -> otterscale.storage.v1.UpdateSubvolumeRequest
+	44, // 65: otterscale.storage.v1.StorageService.DeleteSubvolume:input_type -> otterscale.storage.v1.DeleteSubvolumeRequest
+	45, // 66: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:input_type -> otterscale.storage.v1.GrantSubvolumeExportAccessRequest
+	46, // 67: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:input_type -> otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
+	47, // 68: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:input_type -> otterscale.storage.v1.CreateSubvolumeSnapshotRequest
+	48, // 69: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:input_type -> otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
+	49, // 70: otterscale.storage.v1.StorageService.ListSubvolumeGroups:input_type -> otterscale.storage.v1.ListSubvolumeGroupsRequest
+	51, // 71: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:input_type -> otterscale.storage.v1.CreateSubvolumeGroupRequest
+	52, // 72: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:input_type -> otterscale.storage.v1.UpdateSubvolumeGroupRequest
+	53, // 73: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:input_type -> otterscale.storage.v1.DeleteSubvolumeGroupRequest
+	54, // 74: otterscale.storage.v1.StorageService.ListBuckets:input_type -> otterscale.storage.v1.ListBucketsRequest
+	56, // 75: otterscale.storage.v1.StorageService.CreateBucket:input_type -> otterscale.storage.v1.CreateBucketRequest
+	57, // 76: otterscale.storage.v1.StorageService.UpdateBucket:input_type -> otterscale.storage.v1.UpdateBucketRequest
+	58, // 77: otterscale.storage.v1.StorageService.DeleteBucket:input_type -> otterscale.storage.v1.DeleteBucketRequest
+	59, // 78: otterscale.storage.v1.StorageService.ListUsers:input_type -> otterscale.storage.v1.ListUsersRequest
+	61, // 79: otterscale.storage.v1.StorageService.CreateUser:input_type -> otterscale.storage.v1.CreateUserRequest
+	62, // 80: otterscale.storage.v1.StorageService.UpdateUser:input_type -> otterscale.storage.v1.UpdateUserRequest
+	63, // 81: otterscale.storage.v1.StorageService.DeleteUser:input_type -> otterscale.storage.v1.DeleteUserRequest
+	64, // 82: otterscale.storage.v1.StorageService.CreateUserKey:input_type -> otterscale.storage.v1.CreateUserKeyRequest
+	65, // 83: otterscale.storage.v1.StorageService.DeleteUserKey:input_type -> otterscale.storage.v1.DeleteUserKeyRequest
+	66, // 84: otterscale.storage.v1.StorageService.ListSMBShares:input_type -> otterscale.storage.v1.ListSMBSharesRequest
+	68, // 85: otterscale.storage.v1.StorageService.CreateSMBShare:input_type -> otterscale.storage.v1.CreateSMBShareRequest
+	69, // 86: otterscale.storage.v1.StorageService.UpdateSMBShare:input_type -> otterscale.storage.v1.UpdateSMBShareRequest
+	70, // 87: otterscale.storage.v1.StorageService.ValidateSMBUser:input_type -> otterscale.storage.v1.ValidateSMBUserRequest
+	18, // 88: otterscale.storage.v1.StorageService.ListMonitors:output_type -> otterscale.storage.v1.ListMonitorsResponse
+	20, // 89: otterscale.storage.v1.StorageService.ListObjectStorageDaemons:output_type -> otterscale.storage.v1.ListObjectStorageDaemonsResponse
+	22, // 90: otterscale.storage.v1.StorageService.DoSMART:output_type -> otterscale.storage.v1.DoSMARTResponse
+	24, // 91: otterscale.storage.v1.StorageService.ListPools:output_type -> otterscale.storage.v1.ListPoolsResponse
+	9,  // 92: otterscale.storage.v1.StorageService.CreatePool:output_type -> otterscale.storage.v1.Pool
+	9,  // 93: otterscale.storage.v1.StorageService.UpdatePool:output_type -> otterscale.storage.v1.Pool
+	84, // 94: otterscale.storage.v1.StorageService.DeletePool:output_type -> google.protobuf.Empty
+	29, // 95: otterscale.storage.v1.StorageService.ListImages:output_type -> otterscale.storage.v1.ListImagesResponse
+	10, // 96: otterscale.storage.v1.StorageService.CreateImage:output_type -> otterscale.storage.v1.Image
+	10, // 97: otterscale.storage.v1.StorageService.UpdateImage:output_type -> otterscale.storage.v1.Image
+	84, // 98: otterscale.storage.v1.StorageService.DeleteImage:output_type -> google.protobuf.Empty
+	73, // 99: otterscale.storage.v1.StorageService.CreateImageSnapshot:output_type -> otterscale.storage.v1.Image.Snapshot
+	84, // 100: otterscale.storage.v1.StorageService.DeleteImageSnapshot:output_type -> google.protobuf.Empty
+	84, // 101: otterscale.storage.v1.StorageService.RollbackImageSnapshot:output_type -> google.protobuf.Empty
+	84, // 102: otterscale.storage.v1.StorageService.ProtectImageSnapshot:output_type -> google.protobuf.Empty
+	84, // 103: otterscale.storage.v1.StorageService.UnprotectImageSnapshot:output_type -> google.protobuf.Empty
+	39, // 104: otterscale.storage.v1.StorageService.ListVolumes:output_type -> otterscale.storage.v1.ListVolumesResponse
+	41, // 105: otterscale.storage.v1.StorageService.ListSubvolumes:output_type -> otterscale.storage.v1.ListSubvolumesResponse
+	12, // 106: otterscale.storage.v1.StorageService.CreateSubvolume:output_type -> otterscale.storage.v1.Subvolume
+	12, // 107: otterscale.storage.v1.StorageService.UpdateSubvolume:output_type -> otterscale.storage.v1.Subvolume
+	84, // 108: otterscale.storage.v1.StorageService.DeleteSubvolume:output_type -> google.protobuf.Empty
+	84, // 109: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:output_type -> google.protobuf.Empty
+	84, // 110: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:output_type -> google.protobuf.Empty
+	74, // 111: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:output_type -> otterscale.storage.v1.Subvolume.Snapshot
+	84, // 112: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:output_type -> google.protobuf.Empty
+	50, // 113: otterscale.storage.v1.StorageService.ListSubvolumeGroups:output_type -> otterscale.storage.v1.ListSubvolumeGroupsResponse
+	13, // 114: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
+	13, // 115: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
+	84, // 116: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:output_type -> google.protobuf.Empty
+	55, // 117: otterscale.storage.v1.StorageService.ListBuckets:output_type -> otterscale.storage.v1.ListBucketsResponse
+	14, // 118: otterscale.storage.v1.StorageService.CreateBucket:output_type -> otterscale.storage.v1.Bucket
+	14, // 119: otterscale.storage.v1.StorageService.UpdateBucket:output_type -> otterscale.storage.v1.Bucket
+	84, // 120: otterscale.storage.v1.StorageService.DeleteBucket:output_type -> google.protobuf.Empty
+	60, // 121: otterscale.storage.v1.StorageService.ListUsers:output_type -> otterscale.storage.v1.ListUsersResponse
+	15, // 122: otterscale.storage.v1.StorageService.CreateUser:output_type -> otterscale.storage.v1.User
+	15, // 123: otterscale.storage.v1.StorageService.UpdateUser:output_type -> otterscale.storage.v1.User
+	84, // 124: otterscale.storage.v1.StorageService.DeleteUser:output_type -> google.protobuf.Empty
+	77, // 125: otterscale.storage.v1.StorageService.CreateUserKey:output_type -> otterscale.storage.v1.User.Key
+	84, // 126: otterscale.storage.v1.StorageService.DeleteUserKey:output_type -> google.protobuf.Empty
+	67, // 127: otterscale.storage.v1.StorageService.ListSMBShares:output_type -> otterscale.storage.v1.ListSMBSharesResponse
+	16, // 128: otterscale.storage.v1.StorageService.CreateSMBShare:output_type -> otterscale.storage.v1.SMBShare
+	16, // 129: otterscale.storage.v1.StorageService.UpdateSMBShare:output_type -> otterscale.storage.v1.SMBShare
+	71, // 130: otterscale.storage.v1.StorageService.ValidateSMBUser:output_type -> otterscale.storage.v1.ValidateSMBUserResponse
+	88, // [88:131] is the sub-list for method output_type
+	45, // [45:88] is the sub-list for method input_type
+	45, // [45:45] is the sub-list for extension type_name
+	45, // [45:45] is the sub-list for extension extendee
+	0,  // [0:45] is the sub-list for field type_name
 }
 
 func init() { file_api_storage_v1_storage_proto_init() }
@@ -13222,7 +13277,7 @@ func file_api_storage_v1_storage_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_storage_v1_storage_proto_rawDesc), len(file_api_storage_v1_storage_proto_rawDesc)),
-			NumEnums:      5,
+			NumEnums:      6,
 			NumMessages:   77,
 			NumExtensions: 0,
 			NumServices:   1,

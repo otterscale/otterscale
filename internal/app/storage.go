@@ -74,7 +74,7 @@ func (s *StorageService) DoSMART(ctx context.Context, req *pb.DoSMARTRequest) (*
 }
 
 func (s *StorageService) ListPools(ctx context.Context, req *pb.ListPoolsRequest) (*pb.ListPoolsResponse, error) {
-	pools, err := s.storage.ListPools(ctx, req.GetScope(), req.GetApplication())
+	pools, err := s.storage.ListPools(ctx, req.GetScope(), toPoolApplication(req.GetApplication()))
 	if err != nil {
 		return nil, err
 	}
@@ -88,12 +88,12 @@ func (s *StorageService) CreatePool(ctx context.Context, req *pb.CreatePoolReque
 	pool, err := s.storage.CreatePool(ctx,
 		req.GetScope(),
 		req.GetPoolName(),
-		toPoolType(req.GetPoolType()),
+		toPoolType(req.GetType()),
 		req.GetEcOverwrites(),
 		req.GetReplicatedSize(),
 		req.GetQuotaBytes(),
 		req.GetQuotaObjects(),
-		req.GetApplications(),
+		toPoolApplications(req.GetApplications()),
 	)
 	if err != nil {
 		return nil, err
@@ -563,16 +563,42 @@ func (s *StorageService) ValidateSMBUser(_ context.Context, req *pb.ValidateSMBU
 	return resp, nil
 }
 
-func toPoolType(pt pb.PoolType) storage.PoolType {
+func toPoolType(pt pb.Pool_Type) storage.PoolType {
 	switch pt {
-	case pb.PoolType_POOL_TYPE_ERASURE:
+	case pb.Pool_TYPE_ERASURE:
 		return storage.PoolTypeErasure
 
-	case pb.PoolType_POOL_TYPE_REPLICATED:
+	case pb.Pool_TYPE_REPLICATED:
 		return storage.PoolTypeReplicated
 
 	default:
 		return storage.PoolTypeUnspecified
+	}
+}
+
+func toPoolApplications(pas []pb.Pool_Application) []storage.PoolApplication {
+	ret := []storage.PoolApplication{}
+
+	for _, pa := range pas {
+		ret = append(ret, toPoolApplication(pa))
+	}
+
+	return ret
+}
+
+func toPoolApplication(pa pb.Pool_Application) storage.PoolApplication {
+	switch pa {
+	case pb.Pool_APPLICATION_BLOCK:
+		return storage.PoolApplicationBlock
+
+	case pb.Pool_APPLICATION_FILE:
+		return storage.PoolApplicationFile
+
+	case pb.Pool_APPLICATION_OBJECT:
+		return storage.PoolApplicationObject
+
+	default:
+		return storage.PoolApplicationUnspecified
 	}
 }
 
@@ -624,13 +650,6 @@ func toSecurityMode(sm pb.SMBShare_SecurityConfig_Mode) smb.SecurityMode {
 	}
 }
 
-func toUser(u *pb.SMBShare_SecurityConfig_User) *smb.User {
-	return &smb.User{
-		Username: u.GetUsername(),
-		Password: u.GetPassword(),
-	}
-}
-
 func toUsers(us []*pb.SMBShare_SecurityConfig_User) []smb.User {
 	ret := []smb.User{}
 
@@ -639,6 +658,13 @@ func toUsers(us []*pb.SMBShare_SecurityConfig_User) []smb.User {
 	}
 
 	return ret
+}
+
+func toUser(u *pb.SMBShare_SecurityConfig_User) *smb.User {
+	return &smb.User{
+		Username: u.GetUsername(),
+		Password: u.GetPassword(),
+	}
 }
 
 func toProtoStorageMachine(m *machine.Machine) *pb.Machine {
@@ -723,16 +749,42 @@ func toProtoPools(ps []storage.Pool) []*pb.Pool {
 	return ret
 }
 
-func toProtoPoolType(pt storage.PoolType) pb.PoolType {
+func toProtoPoolType(pt storage.PoolType) pb.Pool_Type {
 	switch pt {
 	case storage.PoolTypeErasure:
-		return pb.PoolType_POOL_TYPE_ERASURE
+		return pb.Pool_TYPE_ERASURE
 
 	case storage.PoolTypeReplicated:
-		return pb.PoolType_POOL_TYPE_REPLICATED
+		return pb.Pool_TYPE_REPLICATED
 
 	default:
-		return pb.PoolType_POOL_TYPE_UNSPECIFIED
+		return pb.Pool_TYPE_UNSPECIFIED
+	}
+}
+
+func toProtoPoolApplications(pas []storage.PoolApplication) []pb.Pool_Application {
+	ret := []pb.Pool_Application{}
+
+	for i := range pas {
+		ret = append(ret, toProtoPoolApplication(pas[i]))
+	}
+
+	return ret
+}
+
+func toProtoPoolApplication(pa storage.PoolApplication) pb.Pool_Application {
+	switch pa {
+	case storage.PoolApplicationBlock:
+		return pb.Pool_APPLICATION_BLOCK
+
+	case storage.PoolApplicationFile:
+		return pb.Pool_APPLICATION_FILE
+
+	case storage.PoolApplicationObject:
+		return pb.Pool_APPLICATION_OBJECT
+
+	default:
+		return pb.Pool_APPLICATION_UNSPECIFIED
 	}
 }
 
@@ -741,7 +793,7 @@ func toProtoPool(p *storage.Pool) *pb.Pool {
 	ret.SetId(p.ID)
 	ret.SetName(p.Name)
 	ret.SetUpdating(p.Updating)
-	ret.SetPoolType(toProtoPoolType(p.Type))
+	ret.SetType(toProtoPoolType(p.Type))
 	ret.SetEcOverwrites(p.ECOverwrites)
 	ret.SetDataChunks(p.DataChunks)
 	ret.SetCodingChunks(p.CodingChunks)
@@ -754,7 +806,7 @@ func toProtoPool(p *storage.Pool) *pb.Pool {
 	ret.SetPlacementGroupCount(p.PlacementGroupCount)
 	ret.SetPlacementGroupState(p.PlacementGroupState)
 	ret.SetCreatedAt(timestamppb.New(p.CreatedAt))
-	ret.SetApplications(p.Applications)
+	ret.SetApplications(toProtoPoolApplications(p.Applications))
 	return ret
 }
 

@@ -268,12 +268,6 @@ service StorageService {
   };
 }
 
-enum PoolType {
-  POOL_TYPE_UNSPECIFIED = 0;
-  POOL_TYPE_ERASURE = 1;
-  POOL_TYPE_REPLICATED = 2;
-}
-
 message Machine {
   string id = 1;
   string hostname = 2;
@@ -301,10 +295,21 @@ message ObjectStorageDaemon {
 }
 
 message Pool {
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_ERASURE = 1;
+    TYPE_REPLICATED = 2;
+  }
+  enum Application {
+    APPLICATION_UNSPECIFIED = 0;
+    APPLICATION_BLOCK = 1;
+    APPLICATION_FILE = 2;
+    APPLICATION_OBJECT = 3;
+  }
   int64 id = 1;
   string name = 2;
   bool updating = 3;
-  PoolType pool_type = 11;
+  Type type = 11;
   bool ec_overwrites = 21;      // erasure
   uint64 data_chunks = 22;      // erasure k
   uint64 coding_chunks = 23;    // erasure m
@@ -317,7 +322,7 @@ message Pool {
   uint64 placement_group_count = 51;
   map<string, int64> placement_group_state = 52;
   google.protobuf.Timestamp created_at = 61;
-  repeated string applications = 71;
+  repeated Application applications = 71;
 }
 
 message Image {
@@ -487,7 +492,7 @@ message DoSMARTResponse {
 message ListPoolsRequest {
   string scope = 1;
   reserved 2;
-  string application = 11;
+  Pool.Application application = 11;
 }
 
 message ListPoolsResponse {
@@ -498,12 +503,12 @@ message CreatePoolRequest {
   string scope = 1;
   reserved 2;
   string pool_name = 3;
-  PoolType pool_type = 11;
+  Pool.Type type = 11;
   bool ec_overwrites = 21;      // erasure
   uint64 replicated_size = 31;  // replicated
   uint64 quota_bytes = 41;
   uint64 quota_objects = 42;
-  repeated string applications = 61;  // cephfs, rbd, rgw
+  repeated Pool.Application applications = 61;
 }
 
 message UpdatePoolRequest {
