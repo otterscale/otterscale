@@ -2,7 +2,6 @@ package ceph
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -197,9 +196,9 @@ func osdCommand(conn *rados.Conn, osd int, m any) ([]byte, error) {
 		return nil, err
 	}
 
-	resp, _, err := conn.OsdCommand(osd, [][]byte{cmd})
+	resp, status, err := conn.OsdCommand(osd, [][]byte{cmd})
 	if err != nil {
-		return nil, errors.New(string(resp))
+		return nil, fmt.Errorf("%s: %w", status, err)
 	}
 
 	return resp, nil
@@ -231,9 +230,9 @@ func monCommand(conn *rados.Conn, m any) ([]byte, error) {
 		return nil, err
 	}
 
-	resp, _, err := conn.MonCommand(cmd)
+	resp, status, err := conn.MonCommand(cmd)
 	if err != nil {
-		return nil, errors.New(string(resp))
+		return nil, fmt.Errorf("%s: %w", status, err)
 	}
 
 	return resp, nil
