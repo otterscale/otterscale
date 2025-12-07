@@ -38,16 +38,17 @@ func (k *kubernetes) Charms() []charm {
 func (k *kubernetes) Config(charmName string) (string, error) {
 	configs := map[string]map[string]any{
 		"kubernetes-control-plane": {
-			"register-with-taints": "",
 			"allow-privileged":     "true",
+			"api-extra-args":       "service-node-port-range=1-65535",
 			"loadbalancer-ips":     strings.Join(k.VirtualIPs, " "),
+			"register-with-taints": "",
 		},
 		"kubeapi-load-balancer": {
 			"loadbalancer-ips": strings.Join(k.VirtualIPs, " "),
 		},
 		"calico": {
-			"ignore-loose-rpf": "true",
 			"cidr":             k.CalicoCIDR,
+			"ignore-loose-rpf": "true",
 		},
 		"containerd": {
 			"gpu_driver": "none",

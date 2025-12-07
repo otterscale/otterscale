@@ -22,8 +22,8 @@ func (a *addons) Charms() []charm {
 func (a *addons) Config(charmName string) (string, error) {
 	configs := map[string]map[string]any{
 		"ceph-csi": {
-			"default-storage":      "ceph-ext4",
 			"cephfs-enable":        "true",
+			"default-storage":      "ceph-ext4",
 			"provisioner-replicas": 1,
 			"release":              "v" + versions.CephCSI,
 		},
