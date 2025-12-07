@@ -121,7 +121,7 @@ message Namespace {
 }
 
 message Application {
-   enum Type {
+  enum Type {
     TYPE_UNKNOWN = 0;
     TYPE_DEPLOYMENT = 1;
     TYPE_STATEFUL_SET = 2;

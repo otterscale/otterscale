@@ -311,7 +311,7 @@ func (uc *UseCase) ensureConfigMap(ctx context.Context, targetScope, scope, name
 }
 
 func (uc *UseCase) ensurePool(ctx context.Context, scope, pool string) error {
-	pools, err := uc.pool.List(ctx, scope, "")
+	pools, err := uc.pool.List(ctx, scope, storage.PoolApplicationBlock)
 	if err != nil {
 		return err
 	}
@@ -326,7 +326,7 @@ func (uc *UseCase) ensurePool(ctx context.Context, scope, pool string) error {
 		return err
 	}
 
-	return uc.pool.Enable(ctx, scope, pool, "rbd")
+	return uc.pool.Enable(ctx, scope, pool, storage.PoolApplicationBlock)
 }
 
 func (uc *UseCase) ensureImage(ctx context.Context, scope, pool, image string) error {

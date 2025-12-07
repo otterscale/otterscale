@@ -2,6 +2,7 @@ package ceph
 
 import (
 	"context"
+	"fmt"
 	"slices"
 	"strconv"
 	"strings"
@@ -22,7 +23,7 @@ func NewPoolRepo(ceph *Ceph) storage.PoolRepo {
 
 var _ storage.PoolRepo = (*poolRepo)(nil)
 
-func (r *poolRepo) List(_ context.Context, scope, application string) ([]storage.Pool, error) {
+func (r *poolRepo) List(_ context.Context, scope string, application storage.PoolApplication) ([]storage.Pool, error) {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
@@ -45,13 +46,28 @@ func (r *poolRepo) List(_ context.Context, scope, application string) ([]storage
 
 	pools := r.toPools(osdDump, pgDump, df)
 
-	if application == "" {
+	if application == storage.PoolApplicationUnspecified {
 		return pools, nil
 	}
 
 	return slices.DeleteFunc(pools, func(p storage.Pool) bool {
 		return !slices.Contains(p.Applications, application)
 	}), nil
+}
+
+func (r *poolRepo) Get(ctx context.Context, scope, pool string) (*storage.Pool, error) {
+	pools, err := r.List(ctx, scope, storage.PoolApplicationUnspecified)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range pools {
+		if pools[i].Name == pool {
+			return &pools[i], nil
+		}
+	}
+
+	return nil, fmt.Errorf("storage pool %q not found", pool)
 }
 
 func (r *poolRepo) Create(_ context.Context, scope, pool string, poolType storage.PoolType) error {
@@ -72,13 +88,13 @@ func (r *poolRepo) Delete(_ context.Context, scope, pool string) error {
 	return deleteOSDPool(conn, pool)
 }
 
-func (r *poolRepo) Enable(_ context.Context, scope, pool, application string) error {
+func (r *poolRepo) Enable(_ context.Context, scope, pool string, application storage.PoolApplication) error {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
 
-	return enableOSDPoolApplication(conn, pool, application)
+	return enableOSDPoolApplication(conn, pool, application.String())
 }
 
 func (r *poolRepo) GetParameter(_ context.Context, scope, pool, key string) (string, error) {
@@ -184,7 +200,16 @@ func (r *poolRepo) toPools(d *osdDump, pd *pgDump, df *df) []storage.Pool {
 		}
 
 		for app := range d.Pools[i].ApplicationMetadata {
-			pool.Applications = append(pool.Applications, app)
+			switch app {
+			case storage.PoolApplicationBlock.String():
+				pool.Applications = append(pool.Applications, storage.PoolApplicationBlock)
+
+			case storage.PoolApplicationFile.String():
+				pool.Applications = append(pool.Applications, storage.PoolApplicationFile)
+
+			case storage.PoolApplicationObject.String():
+				pool.Applications = append(pool.Applications, storage.PoolApplicationObject)
+			}
 		}
 
 		ret = append(ret, pool)
