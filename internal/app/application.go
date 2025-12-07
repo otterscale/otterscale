@@ -71,7 +71,7 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *pb.GetAppl
 }
 
 func (s *ApplicationService) RestartApplication(ctx context.Context, req *pb.RestartApplicationRequest) (*emptypb.Empty, error) {
-	if err := s.workload.RestartApplication(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetType()); err != nil {
+	if err := s.workload.RestartApplication(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), toWorkloadType(req.GetType())); err != nil {
 		return nil, err
 	}
 
@@ -80,7 +80,7 @@ func (s *ApplicationService) RestartApplication(ctx context.Context, req *pb.Res
 }
 
 func (s *ApplicationService) ScaleApplication(ctx context.Context, req *pb.ScaleApplicationRequest) (*emptypb.Empty, error) {
-	if err := s.workload.ScaleApplication(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetType(), req.GetReplicas()); err != nil {
+	if err := s.workload.ScaleApplication(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), toWorkloadType(req.GetType()), req.GetReplicas()); err != nil {
 		return nil, err
 	}
 
@@ -264,6 +264,38 @@ func (s *ApplicationService) ListStorageClasses(ctx context.Context, req *pb.Lis
 	return resp, nil
 }
 
+func toWorkloadType(t pb.Application_Type) workload.Type {
+	switch t {
+	case pb.Application_TYPE_DEPLOYMENT:
+		return workload.TypeDeployment
+
+	case pb.Application_TYPE_STATEFUL_SET:
+		return workload.TypeStatefulSet
+
+	case pb.Application_TYPE_DAEMON_SET:
+		return workload.TypeDaemonSet
+
+	default:
+		return workload.TypeUnknown
+	}
+}
+
+func toProtoApplicationType(t workload.Type) pb.Application_Type {
+	switch t {
+	case workload.TypeDeployment:
+		return pb.Application_TYPE_DEPLOYMENT
+
+	case workload.TypeStatefulSet:
+		return pb.Application_TYPE_STATEFUL_SET
+
+	case workload.TypeDaemonSet:
+		return pb.Application_TYPE_DAEMON_SET
+
+	default:
+		return pb.Application_TYPE_UNKNOWN
+	}
+}
+
 func toProtoApplications(as []workload.Application) []*pb.Application {
 	ret := []*pb.Application{}
 
@@ -282,7 +314,7 @@ func toProtoApplication(a *workload.Application) *pb.Application {
 	}
 
 	ret := &pb.Application{}
-	ret.SetType(a.Type)
+	ret.SetType(toProtoApplicationType(a.Type))
 	ret.SetName(a.Name)
 	ret.SetNamespace(a.Namespace)
 	ret.SetLabels(a.Labels)

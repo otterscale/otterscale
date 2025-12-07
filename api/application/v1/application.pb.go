@@ -25,6 +25,53 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type Application_Type int32
+
+const (
+	Application_TYPE_UNKNOWN      Application_Type = 0
+	Application_TYPE_DEPLOYMENT   Application_Type = 1
+	Application_TYPE_STATEFUL_SET Application_Type = 2
+	Application_TYPE_DAEMON_SET   Application_Type = 3
+)
+
+// Enum value maps for Application_Type.
+var (
+	Application_Type_name = map[int32]string{
+		0: "TYPE_UNKNOWN",
+		1: "TYPE_DEPLOYMENT",
+		2: "TYPE_STATEFUL_SET",
+		3: "TYPE_DAEMON_SET",
+	}
+	Application_Type_value = map[string]int32{
+		"TYPE_UNKNOWN":      0,
+		"TYPE_DEPLOYMENT":   1,
+		"TYPE_STATEFUL_SET": 2,
+		"TYPE_DAEMON_SET":   3,
+	}
+)
+
+func (x Application_Type) Enum() *Application_Type {
+	p := new(Application_Type)
+	*p = x
+	return p
+}
+
+func (x Application_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Application_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_application_v1_application_proto_enumTypes[0].Descriptor()
+}
+
+func (Application_Type) Type() protoreflect.EnumType {
+	return &file_api_application_v1_application_proto_enumTypes[0]
+}
+
+func (x Application_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 type Release struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,1,opt,name=namespace"`
@@ -310,7 +357,7 @@ func (b0 Namespace_builder) Build() *Namespace {
 
 type Application struct {
 	state                             protoimpl.MessageState                `protogen:"opaque.v1"`
-	xxx_hidden_Type                   *string                               `protobuf:"bytes,1,opt,name=type"`
+	xxx_hidden_Type                   Application_Type                      `protobuf:"varint,1,opt,name=type,enum=otterscale.application.v1.Application_Type"`
 	xxx_hidden_Name                   *string                               `protobuf:"bytes,2,opt,name=name"`
 	xxx_hidden_Namespace              *string                               `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Labels                 map[string]string                     `protobuf:"bytes,4,rep,name=labels" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
@@ -352,14 +399,13 @@ func (x *Application) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Application) GetType() string {
+func (x *Application) GetType() Application_Type {
 	if x != nil {
-		if x.xxx_hidden_Type != nil {
-			return *x.xxx_hidden_Type
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
+			return x.xxx_hidden_Type
 		}
-		return ""
 	}
-	return ""
+	return Application_TYPE_UNKNOWN
 }
 
 func (x *Application) GetName() string {
@@ -446,8 +492,8 @@ func (x *Application) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *Application) SetType(v string) {
-	x.xxx_hidden_Type = &v
+func (x *Application) SetType(v Application_Type) {
+	x.xxx_hidden_Type = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
 }
 
@@ -539,7 +585,7 @@ func (x *Application) HasCreatedAt() bool {
 
 func (x *Application) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Type = nil
+	x.xxx_hidden_Type = Application_TYPE_UNKNOWN
 }
 
 func (x *Application) ClearName() {
@@ -569,7 +615,7 @@ func (x *Application) ClearCreatedAt() {
 type Application_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Type                   *string
+	Type                   *Application_Type
 	Name                   *string
 	Namespace              *string
 	Labels                 map[string]string
@@ -588,7 +634,7 @@ func (b0 Application_builder) Build() *Application {
 	_, _ = b, x
 	if b.Type != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
-		x.xxx_hidden_Type = b.Type
+		x.xxx_hidden_Type = *b.Type
 	}
 	if b.Name != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
@@ -1601,7 +1647,7 @@ type RestartApplicationRequest struct {
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Type        *string                `protobuf:"bytes,5,opt,name=type"`
+	xxx_hidden_Type        Application_Type       `protobuf:"varint,5,opt,name=type,enum=otterscale.application.v1.Application_Type"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -1663,14 +1709,13 @@ func (x *RestartApplicationRequest) GetName() string {
 	return ""
 }
 
-func (x *RestartApplicationRequest) GetType() string {
+func (x *RestartApplicationRequest) GetType() Application_Type {
 	if x != nil {
-		if x.xxx_hidden_Type != nil {
-			return *x.xxx_hidden_Type
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 3) {
+			return x.xxx_hidden_Type
 		}
-		return ""
 	}
-	return ""
+	return Application_TYPE_UNKNOWN
 }
 
 func (x *RestartApplicationRequest) SetScope(v string) {
@@ -1688,8 +1733,8 @@ func (x *RestartApplicationRequest) SetName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *RestartApplicationRequest) SetType(v string) {
-	x.xxx_hidden_Type = &v
+func (x *RestartApplicationRequest) SetType(v Application_Type) {
+	x.xxx_hidden_Type = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
@@ -1738,7 +1783,7 @@ func (x *RestartApplicationRequest) ClearName() {
 
 func (x *RestartApplicationRequest) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Type = nil
+	x.xxx_hidden_Type = Application_TYPE_UNKNOWN
 }
 
 type RestartApplicationRequest_builder struct {
@@ -1747,7 +1792,7 @@ type RestartApplicationRequest_builder struct {
 	Scope     *string
 	Namespace *string
 	Name      *string
-	Type      *string
+	Type      *Application_Type
 }
 
 func (b0 RestartApplicationRequest_builder) Build() *RestartApplicationRequest {
@@ -1768,7 +1813,7 @@ func (b0 RestartApplicationRequest_builder) Build() *RestartApplicationRequest {
 	}
 	if b.Type != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_Type = b.Type
+		x.xxx_hidden_Type = *b.Type
 	}
 	return m0
 }
@@ -1778,7 +1823,7 @@ type ScaleApplicationRequest struct {
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_Type        *string                `protobuf:"bytes,5,opt,name=type"`
+	xxx_hidden_Type        Application_Type       `protobuf:"varint,5,opt,name=type,enum=otterscale.application.v1.Application_Type"`
 	xxx_hidden_Replicas    int32                  `protobuf:"varint,11,opt,name=replicas"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -1841,14 +1886,13 @@ func (x *ScaleApplicationRequest) GetName() string {
 	return ""
 }
 
-func (x *ScaleApplicationRequest) GetType() string {
+func (x *ScaleApplicationRequest) GetType() Application_Type {
 	if x != nil {
-		if x.xxx_hidden_Type != nil {
-			return *x.xxx_hidden_Type
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 3) {
+			return x.xxx_hidden_Type
 		}
-		return ""
 	}
-	return ""
+	return Application_TYPE_UNKNOWN
 }
 
 func (x *ScaleApplicationRequest) GetReplicas() int32 {
@@ -1873,8 +1917,8 @@ func (x *ScaleApplicationRequest) SetName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
-func (x *ScaleApplicationRequest) SetType(v string) {
-	x.xxx_hidden_Type = &v
+func (x *ScaleApplicationRequest) SetType(v Application_Type) {
+	x.xxx_hidden_Type = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
@@ -1935,7 +1979,7 @@ func (x *ScaleApplicationRequest) ClearName() {
 
 func (x *ScaleApplicationRequest) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Type = nil
+	x.xxx_hidden_Type = Application_TYPE_UNKNOWN
 }
 
 func (x *ScaleApplicationRequest) ClearReplicas() {
@@ -1949,7 +1993,7 @@ type ScaleApplicationRequest_builder struct {
 	Scope     *string
 	Namespace *string
 	Name      *string
-	Type      *string
+	Type      *Application_Type
 	Replicas  *int32
 }
 
@@ -1971,7 +2015,7 @@ func (b0 ScaleApplicationRequest_builder) Build() *ScaleApplicationRequest {
 	}
 	if b.Type != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
-		x.xxx_hidden_Type = b.Type
+		x.xxx_hidden_Type = *b.Type
 	}
 	if b.Replicas != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
@@ -5589,9 +5633,9 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"created_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xdd\x0e\n" +
-	"\vApplication\x12\x12\n" +
-	"\x04type\x18\x01 \x01(\tR\x04type\x12\x12\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xe5\x0f\n" +
+	"\vApplication\x12?\n" +
+	"\x04type\x18\x01 \x01(\x0e2+.otterscale.application.v1.Application.TypeR\x04type\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12J\n" +
 	"\x06labels\x18\x04 \x03(\v22.otterscale.application.v1.Application.LabelsEntryR\x06labels\x12\x1a\n" +
@@ -5649,7 +5693,12 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01J\x04\b\x15\x10\x16\"\xef\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"Y\n" +
+	"\x04Type\x12\x10\n" +
+	"\fTYPE_UNKNOWN\x10\x00\x12\x13\n" +
+	"\x0fTYPE_DEPLOYMENT\x10\x01\x12\x15\n" +
+	"\x11TYPE_STATEFUL_SET\x10\x02\x12\x13\n" +
+	"\x0fTYPE_DAEMON_SET\x10\x03J\x04\b\x15\x10\x16\"\xef\x02\n" +
 	"\fStorageClass\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
 	"\vprovisioner\x18\x02 \x01(\tR\vprovisioner\x12%\n" +
@@ -5710,17 +5759,17 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\x15GetApplicationRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"}\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xaa\x01\n" +
 	"\x19RestartApplicationRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12\x12\n" +
-	"\x04type\x18\x05 \x01(\tR\x04typeJ\x04\b\x02\x10\x03\"\x97\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12?\n" +
+	"\x04type\x18\x05 \x01(\x0e2+.otterscale.application.v1.Application.TypeR\x04typeJ\x04\b\x02\x10\x03\"\xc4\x01\n" +
 	"\x17ScaleApplicationRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12\x12\n" +
-	"\x04type\x18\x05 \x01(\tR\x04type\x12\x1a\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12?\n" +
+	"\x04type\x18\x05 \x01(\x0e2+.otterscale.application.v1.Application.TypeR\x04type\x12\x1a\n" +
 	"\breplicas\x18\v \x01(\x05R\breplicasJ\x04\b\x02\x10\x03\"k\n" +
 	"\x1bDeleteApplicationPodRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
@@ -5839,135 +5888,140 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\x0eListNamespaces\x120.otterscale.application.v1.ListNamespacesRequest\x1a1.otterscale.application.v1.ListNamespacesResponse\x12\x81\x01\n" +
 	"\x12ListStorageClasses\x124.otterscale.application.v1.ListStorageClassesRequest\x1a5.otterscale.application.v1.ListStorageClassesResponseB8Z6github.com/otterscale/otterscale/api/application/v1;pbb\beditionsp\xe8\a"
 
+var file_api_application_v1_application_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_application_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 47)
 var file_api_application_v1_application_proto_goTypes = []any{
-	(*Release)(nil),                           // 0: otterscale.application.v1.Release
-	(*Namespace)(nil),                         // 1: otterscale.application.v1.Namespace
-	(*Application)(nil),                       // 2: otterscale.application.v1.Application
-	(*StorageClass)(nil),                      // 3: otterscale.application.v1.StorageClass
-	(*ConfigMap)(nil),                         // 4: otterscale.application.v1.ConfigMap
-	(*Secret)(nil),                            // 5: otterscale.application.v1.Secret
-	(*ListApplicationsRequest)(nil),           // 6: otterscale.application.v1.ListApplicationsRequest
-	(*ListApplicationsResponse)(nil),          // 7: otterscale.application.v1.ListApplicationsResponse
-	(*GetApplicationRequest)(nil),             // 8: otterscale.application.v1.GetApplicationRequest
-	(*RestartApplicationRequest)(nil),         // 9: otterscale.application.v1.RestartApplicationRequest
-	(*ScaleApplicationRequest)(nil),           // 10: otterscale.application.v1.ScaleApplicationRequest
-	(*DeleteApplicationPodRequest)(nil),       // 11: otterscale.application.v1.DeleteApplicationPodRequest
-	(*WatchLogsRequest)(nil),                  // 12: otterscale.application.v1.WatchLogsRequest
-	(*WatchLogsResponse)(nil),                 // 13: otterscale.application.v1.WatchLogsResponse
-	(*ExecuteTTYRequest)(nil),                 // 14: otterscale.application.v1.ExecuteTTYRequest
-	(*ExecuteTTYResponse)(nil),                // 15: otterscale.application.v1.ExecuteTTYResponse
-	(*WriteTTYRequest)(nil),                   // 16: otterscale.application.v1.WriteTTYRequest
-	(*ListReleasesRequest)(nil),               // 17: otterscale.application.v1.ListReleasesRequest
-	(*ListReleasesResponse)(nil),              // 18: otterscale.application.v1.ListReleasesResponse
-	(*CreateReleaseRequest)(nil),              // 19: otterscale.application.v1.CreateReleaseRequest
-	(*UpdateReleaseRequest)(nil),              // 20: otterscale.application.v1.UpdateReleaseRequest
-	(*DeleteReleaseRequest)(nil),              // 21: otterscale.application.v1.DeleteReleaseRequest
-	(*RollbackReleaseRequest)(nil),            // 22: otterscale.application.v1.RollbackReleaseRequest
-	(*ListConfigMapsRequest)(nil),             // 23: otterscale.application.v1.ListConfigMapsRequest
-	(*ListConfigMapsResponse)(nil),            // 24: otterscale.application.v1.ListConfigMapsResponse
-	(*ListSecretsRequest)(nil),                // 25: otterscale.application.v1.ListSecretsRequest
-	(*ListSecretsResponse)(nil),               // 26: otterscale.application.v1.ListSecretsResponse
-	(*ListStorageClassesRequest)(nil),         // 27: otterscale.application.v1.ListStorageClassesRequest
-	(*ListNamespacesRequest)(nil),             // 28: otterscale.application.v1.ListNamespacesRequest
-	(*ListNamespacesResponse)(nil),            // 29: otterscale.application.v1.ListNamespacesResponse
-	(*ListStorageClassesResponse)(nil),        // 30: otterscale.application.v1.ListStorageClassesResponse
-	nil,                                       // 31: otterscale.application.v1.Namespace.LabelsEntry
-	(*Application_Condition)(nil),             // 32: otterscale.application.v1.Application.Condition
-	(*Application_Container)(nil),             // 33: otterscale.application.v1.Application.Container
-	(*Application_Service)(nil),               // 34: otterscale.application.v1.Application.Service
-	(*Application_Pod)(nil),                   // 35: otterscale.application.v1.Application.Pod
-	(*Application_PersistentVolumeClaim)(nil), // 36: otterscale.application.v1.Application.PersistentVolumeClaim
-	nil,                              // 37: otterscale.application.v1.Application.LabelsEntry
-	(*Application_Service_Port)(nil), // 38: otterscale.application.v1.Application.Service.Port
-	nil,                              // 39: otterscale.application.v1.StorageClass.ParametersEntry
-	nil,                              // 40: otterscale.application.v1.ConfigMap.LabelsEntry
-	nil,                              // 41: otterscale.application.v1.ConfigMap.DataEntry
-	nil,                              // 42: otterscale.application.v1.ConfigMap.BinaryDataEntry
-	nil,                              // 43: otterscale.application.v1.Secret.LabelsEntry
-	nil,                              // 44: otterscale.application.v1.Secret.DataEntry
-	nil,                              // 45: otterscale.application.v1.Secret.StringDataEntry
-	nil,                              // 46: otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
-	(*v1.Chart)(nil),                 // 47: otterscale.registry.v1.Chart
-	(*timestamppb.Timestamp)(nil),    // 48: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),      // 49: google.protobuf.Duration
-	(*emptypb.Empty)(nil),            // 50: google.protobuf.Empty
+	(Application_Type)(0),                     // 0: otterscale.application.v1.Application.Type
+	(*Release)(nil),                           // 1: otterscale.application.v1.Release
+	(*Namespace)(nil),                         // 2: otterscale.application.v1.Namespace
+	(*Application)(nil),                       // 3: otterscale.application.v1.Application
+	(*StorageClass)(nil),                      // 4: otterscale.application.v1.StorageClass
+	(*ConfigMap)(nil),                         // 5: otterscale.application.v1.ConfigMap
+	(*Secret)(nil),                            // 6: otterscale.application.v1.Secret
+	(*ListApplicationsRequest)(nil),           // 7: otterscale.application.v1.ListApplicationsRequest
+	(*ListApplicationsResponse)(nil),          // 8: otterscale.application.v1.ListApplicationsResponse
+	(*GetApplicationRequest)(nil),             // 9: otterscale.application.v1.GetApplicationRequest
+	(*RestartApplicationRequest)(nil),         // 10: otterscale.application.v1.RestartApplicationRequest
+	(*ScaleApplicationRequest)(nil),           // 11: otterscale.application.v1.ScaleApplicationRequest
+	(*DeleteApplicationPodRequest)(nil),       // 12: otterscale.application.v1.DeleteApplicationPodRequest
+	(*WatchLogsRequest)(nil),                  // 13: otterscale.application.v1.WatchLogsRequest
+	(*WatchLogsResponse)(nil),                 // 14: otterscale.application.v1.WatchLogsResponse
+	(*ExecuteTTYRequest)(nil),                 // 15: otterscale.application.v1.ExecuteTTYRequest
+	(*ExecuteTTYResponse)(nil),                // 16: otterscale.application.v1.ExecuteTTYResponse
+	(*WriteTTYRequest)(nil),                   // 17: otterscale.application.v1.WriteTTYRequest
+	(*ListReleasesRequest)(nil),               // 18: otterscale.application.v1.ListReleasesRequest
+	(*ListReleasesResponse)(nil),              // 19: otterscale.application.v1.ListReleasesResponse
+	(*CreateReleaseRequest)(nil),              // 20: otterscale.application.v1.CreateReleaseRequest
+	(*UpdateReleaseRequest)(nil),              // 21: otterscale.application.v1.UpdateReleaseRequest
+	(*DeleteReleaseRequest)(nil),              // 22: otterscale.application.v1.DeleteReleaseRequest
+	(*RollbackReleaseRequest)(nil),            // 23: otterscale.application.v1.RollbackReleaseRequest
+	(*ListConfigMapsRequest)(nil),             // 24: otterscale.application.v1.ListConfigMapsRequest
+	(*ListConfigMapsResponse)(nil),            // 25: otterscale.application.v1.ListConfigMapsResponse
+	(*ListSecretsRequest)(nil),                // 26: otterscale.application.v1.ListSecretsRequest
+	(*ListSecretsResponse)(nil),               // 27: otterscale.application.v1.ListSecretsResponse
+	(*ListStorageClassesRequest)(nil),         // 28: otterscale.application.v1.ListStorageClassesRequest
+	(*ListNamespacesRequest)(nil),             // 29: otterscale.application.v1.ListNamespacesRequest
+	(*ListNamespacesResponse)(nil),            // 30: otterscale.application.v1.ListNamespacesResponse
+	(*ListStorageClassesResponse)(nil),        // 31: otterscale.application.v1.ListStorageClassesResponse
+	nil,                                       // 32: otterscale.application.v1.Namespace.LabelsEntry
+	(*Application_Condition)(nil),             // 33: otterscale.application.v1.Application.Condition
+	(*Application_Container)(nil),             // 34: otterscale.application.v1.Application.Container
+	(*Application_Service)(nil),               // 35: otterscale.application.v1.Application.Service
+	(*Application_Pod)(nil),                   // 36: otterscale.application.v1.Application.Pod
+	(*Application_PersistentVolumeClaim)(nil), // 37: otterscale.application.v1.Application.PersistentVolumeClaim
+	nil,                              // 38: otterscale.application.v1.Application.LabelsEntry
+	(*Application_Service_Port)(nil), // 39: otterscale.application.v1.Application.Service.Port
+	nil,                              // 40: otterscale.application.v1.StorageClass.ParametersEntry
+	nil,                              // 41: otterscale.application.v1.ConfigMap.LabelsEntry
+	nil,                              // 42: otterscale.application.v1.ConfigMap.DataEntry
+	nil,                              // 43: otterscale.application.v1.ConfigMap.BinaryDataEntry
+	nil,                              // 44: otterscale.application.v1.Secret.LabelsEntry
+	nil,                              // 45: otterscale.application.v1.Secret.DataEntry
+	nil,                              // 46: otterscale.application.v1.Secret.StringDataEntry
+	nil,                              // 47: otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
+	(*v1.Chart)(nil),                 // 48: otterscale.registry.v1.Chart
+	(*timestamppb.Timestamp)(nil),    // 49: google.protobuf.Timestamp
+	(*durationpb.Duration)(nil),      // 50: google.protobuf.Duration
+	(*emptypb.Empty)(nil),            // 51: google.protobuf.Empty
 }
 var file_api_application_v1_application_proto_depIdxs = []int32{
-	47, // 0: otterscale.application.v1.Release.chart:type_name -> otterscale.registry.v1.Chart
-	31, // 1: otterscale.application.v1.Namespace.labels:type_name -> otterscale.application.v1.Namespace.LabelsEntry
-	48, // 2: otterscale.application.v1.Namespace.created_at:type_name -> google.protobuf.Timestamp
-	37, // 3: otterscale.application.v1.Application.labels:type_name -> otterscale.application.v1.Application.LabelsEntry
-	33, // 4: otterscale.application.v1.Application.containers:type_name -> otterscale.application.v1.Application.Container
-	34, // 5: otterscale.application.v1.Application.services:type_name -> otterscale.application.v1.Application.Service
-	35, // 6: otterscale.application.v1.Application.pods:type_name -> otterscale.application.v1.Application.Pod
-	36, // 7: otterscale.application.v1.Application.persistent_volume_claims:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
-	48, // 8: otterscale.application.v1.Application.created_at:type_name -> google.protobuf.Timestamp
-	39, // 9: otterscale.application.v1.StorageClass.parameters:type_name -> otterscale.application.v1.StorageClass.ParametersEntry
-	48, // 10: otterscale.application.v1.StorageClass.created_at:type_name -> google.protobuf.Timestamp
-	40, // 11: otterscale.application.v1.ConfigMap.labels:type_name -> otterscale.application.v1.ConfigMap.LabelsEntry
-	41, // 12: otterscale.application.v1.ConfigMap.data:type_name -> otterscale.application.v1.ConfigMap.DataEntry
-	42, // 13: otterscale.application.v1.ConfigMap.binary_data:type_name -> otterscale.application.v1.ConfigMap.BinaryDataEntry
-	48, // 14: otterscale.application.v1.ConfigMap.created_at:type_name -> google.protobuf.Timestamp
-	43, // 15: otterscale.application.v1.Secret.labels:type_name -> otterscale.application.v1.Secret.LabelsEntry
-	44, // 16: otterscale.application.v1.Secret.data:type_name -> otterscale.application.v1.Secret.DataEntry
-	45, // 17: otterscale.application.v1.Secret.string_data:type_name -> otterscale.application.v1.Secret.StringDataEntry
-	48, // 18: otterscale.application.v1.Secret.created_at:type_name -> google.protobuf.Timestamp
-	2,  // 19: otterscale.application.v1.ListApplicationsResponse.applications:type_name -> otterscale.application.v1.Application
-	49, // 20: otterscale.application.v1.WatchLogsRequest.duration:type_name -> google.protobuf.Duration
-	0,  // 21: otterscale.application.v1.ListReleasesResponse.releases:type_name -> otterscale.application.v1.Release
-	46, // 22: otterscale.application.v1.CreateReleaseRequest.values_map:type_name -> otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
-	4,  // 23: otterscale.application.v1.ListConfigMapsResponse.config_maps:type_name -> otterscale.application.v1.ConfigMap
-	5,  // 24: otterscale.application.v1.ListSecretsResponse.secrets:type_name -> otterscale.application.v1.Secret
-	1,  // 25: otterscale.application.v1.ListNamespacesResponse.namespaces:type_name -> otterscale.application.v1.Namespace
-	3,  // 26: otterscale.application.v1.ListStorageClassesResponse.storage_classes:type_name -> otterscale.application.v1.StorageClass
-	48, // 27: otterscale.application.v1.Application.Condition.probed_at:type_name -> google.protobuf.Timestamp
-	48, // 28: otterscale.application.v1.Application.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
-	38, // 29: otterscale.application.v1.Application.Service.ports:type_name -> otterscale.application.v1.Application.Service.Port
-	48, // 30: otterscale.application.v1.Application.Service.created_at:type_name -> google.protobuf.Timestamp
-	32, // 31: otterscale.application.v1.Application.Pod.last_condition:type_name -> otterscale.application.v1.Application.Condition
-	48, // 32: otterscale.application.v1.Application.Pod.created_at:type_name -> google.protobuf.Timestamp
-	3,  // 33: otterscale.application.v1.Application.PersistentVolumeClaim.storage_class:type_name -> otterscale.application.v1.StorageClass
-	48, // 34: otterscale.application.v1.Application.PersistentVolumeClaim.created_at:type_name -> google.protobuf.Timestamp
-	6,  // 35: otterscale.application.v1.ApplicationService.ListApplications:input_type -> otterscale.application.v1.ListApplicationsRequest
-	8,  // 36: otterscale.application.v1.ApplicationService.GetApplication:input_type -> otterscale.application.v1.GetApplicationRequest
-	9,  // 37: otterscale.application.v1.ApplicationService.RestartApplication:input_type -> otterscale.application.v1.RestartApplicationRequest
-	10, // 38: otterscale.application.v1.ApplicationService.ScaleApplication:input_type -> otterscale.application.v1.ScaleApplicationRequest
-	11, // 39: otterscale.application.v1.ApplicationService.DeleteApplicationPod:input_type -> otterscale.application.v1.DeleteApplicationPodRequest
-	12, // 40: otterscale.application.v1.ApplicationService.WatchLogs:input_type -> otterscale.application.v1.WatchLogsRequest
-	14, // 41: otterscale.application.v1.ApplicationService.ExecuteTTY:input_type -> otterscale.application.v1.ExecuteTTYRequest
-	16, // 42: otterscale.application.v1.ApplicationService.WriteTTY:input_type -> otterscale.application.v1.WriteTTYRequest
-	17, // 43: otterscale.application.v1.ApplicationService.ListReleases:input_type -> otterscale.application.v1.ListReleasesRequest
-	19, // 44: otterscale.application.v1.ApplicationService.CreateRelease:input_type -> otterscale.application.v1.CreateReleaseRequest
-	20, // 45: otterscale.application.v1.ApplicationService.UpdateRelease:input_type -> otterscale.application.v1.UpdateReleaseRequest
-	21, // 46: otterscale.application.v1.ApplicationService.DeleteRelease:input_type -> otterscale.application.v1.DeleteReleaseRequest
-	22, // 47: otterscale.application.v1.ApplicationService.RollbackRelease:input_type -> otterscale.application.v1.RollbackReleaseRequest
-	23, // 48: otterscale.application.v1.ApplicationService.ListConfigMaps:input_type -> otterscale.application.v1.ListConfigMapsRequest
-	25, // 49: otterscale.application.v1.ApplicationService.ListSecrets:input_type -> otterscale.application.v1.ListSecretsRequest
-	28, // 50: otterscale.application.v1.ApplicationService.ListNamespaces:input_type -> otterscale.application.v1.ListNamespacesRequest
-	27, // 51: otterscale.application.v1.ApplicationService.ListStorageClasses:input_type -> otterscale.application.v1.ListStorageClassesRequest
-	7,  // 52: otterscale.application.v1.ApplicationService.ListApplications:output_type -> otterscale.application.v1.ListApplicationsResponse
-	2,  // 53: otterscale.application.v1.ApplicationService.GetApplication:output_type -> otterscale.application.v1.Application
-	50, // 54: otterscale.application.v1.ApplicationService.RestartApplication:output_type -> google.protobuf.Empty
-	50, // 55: otterscale.application.v1.ApplicationService.ScaleApplication:output_type -> google.protobuf.Empty
-	50, // 56: otterscale.application.v1.ApplicationService.DeleteApplicationPod:output_type -> google.protobuf.Empty
-	13, // 57: otterscale.application.v1.ApplicationService.WatchLogs:output_type -> otterscale.application.v1.WatchLogsResponse
-	15, // 58: otterscale.application.v1.ApplicationService.ExecuteTTY:output_type -> otterscale.application.v1.ExecuteTTYResponse
-	50, // 59: otterscale.application.v1.ApplicationService.WriteTTY:output_type -> google.protobuf.Empty
-	18, // 60: otterscale.application.v1.ApplicationService.ListReleases:output_type -> otterscale.application.v1.ListReleasesResponse
-	0,  // 61: otterscale.application.v1.ApplicationService.CreateRelease:output_type -> otterscale.application.v1.Release
-	0,  // 62: otterscale.application.v1.ApplicationService.UpdateRelease:output_type -> otterscale.application.v1.Release
-	50, // 63: otterscale.application.v1.ApplicationService.DeleteRelease:output_type -> google.protobuf.Empty
-	50, // 64: otterscale.application.v1.ApplicationService.RollbackRelease:output_type -> google.protobuf.Empty
-	24, // 65: otterscale.application.v1.ApplicationService.ListConfigMaps:output_type -> otterscale.application.v1.ListConfigMapsResponse
-	26, // 66: otterscale.application.v1.ApplicationService.ListSecrets:output_type -> otterscale.application.v1.ListSecretsResponse
-	29, // 67: otterscale.application.v1.ApplicationService.ListNamespaces:output_type -> otterscale.application.v1.ListNamespacesResponse
-	30, // 68: otterscale.application.v1.ApplicationService.ListStorageClasses:output_type -> otterscale.application.v1.ListStorageClassesResponse
-	52, // [52:69] is the sub-list for method output_type
-	35, // [35:52] is the sub-list for method input_type
-	35, // [35:35] is the sub-list for extension type_name
-	35, // [35:35] is the sub-list for extension extendee
-	0,  // [0:35] is the sub-list for field type_name
+	48, // 0: otterscale.application.v1.Release.chart:type_name -> otterscale.registry.v1.Chart
+	32, // 1: otterscale.application.v1.Namespace.labels:type_name -> otterscale.application.v1.Namespace.LabelsEntry
+	49, // 2: otterscale.application.v1.Namespace.created_at:type_name -> google.protobuf.Timestamp
+	0,  // 3: otterscale.application.v1.Application.type:type_name -> otterscale.application.v1.Application.Type
+	38, // 4: otterscale.application.v1.Application.labels:type_name -> otterscale.application.v1.Application.LabelsEntry
+	34, // 5: otterscale.application.v1.Application.containers:type_name -> otterscale.application.v1.Application.Container
+	35, // 6: otterscale.application.v1.Application.services:type_name -> otterscale.application.v1.Application.Service
+	36, // 7: otterscale.application.v1.Application.pods:type_name -> otterscale.application.v1.Application.Pod
+	37, // 8: otterscale.application.v1.Application.persistent_volume_claims:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
+	49, // 9: otterscale.application.v1.Application.created_at:type_name -> google.protobuf.Timestamp
+	40, // 10: otterscale.application.v1.StorageClass.parameters:type_name -> otterscale.application.v1.StorageClass.ParametersEntry
+	49, // 11: otterscale.application.v1.StorageClass.created_at:type_name -> google.protobuf.Timestamp
+	41, // 12: otterscale.application.v1.ConfigMap.labels:type_name -> otterscale.application.v1.ConfigMap.LabelsEntry
+	42, // 13: otterscale.application.v1.ConfigMap.data:type_name -> otterscale.application.v1.ConfigMap.DataEntry
+	43, // 14: otterscale.application.v1.ConfigMap.binary_data:type_name -> otterscale.application.v1.ConfigMap.BinaryDataEntry
+	49, // 15: otterscale.application.v1.ConfigMap.created_at:type_name -> google.protobuf.Timestamp
+	44, // 16: otterscale.application.v1.Secret.labels:type_name -> otterscale.application.v1.Secret.LabelsEntry
+	45, // 17: otterscale.application.v1.Secret.data:type_name -> otterscale.application.v1.Secret.DataEntry
+	46, // 18: otterscale.application.v1.Secret.string_data:type_name -> otterscale.application.v1.Secret.StringDataEntry
+	49, // 19: otterscale.application.v1.Secret.created_at:type_name -> google.protobuf.Timestamp
+	3,  // 20: otterscale.application.v1.ListApplicationsResponse.applications:type_name -> otterscale.application.v1.Application
+	0,  // 21: otterscale.application.v1.RestartApplicationRequest.type:type_name -> otterscale.application.v1.Application.Type
+	0,  // 22: otterscale.application.v1.ScaleApplicationRequest.type:type_name -> otterscale.application.v1.Application.Type
+	50, // 23: otterscale.application.v1.WatchLogsRequest.duration:type_name -> google.protobuf.Duration
+	1,  // 24: otterscale.application.v1.ListReleasesResponse.releases:type_name -> otterscale.application.v1.Release
+	47, // 25: otterscale.application.v1.CreateReleaseRequest.values_map:type_name -> otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
+	5,  // 26: otterscale.application.v1.ListConfigMapsResponse.config_maps:type_name -> otterscale.application.v1.ConfigMap
+	6,  // 27: otterscale.application.v1.ListSecretsResponse.secrets:type_name -> otterscale.application.v1.Secret
+	2,  // 28: otterscale.application.v1.ListNamespacesResponse.namespaces:type_name -> otterscale.application.v1.Namespace
+	4,  // 29: otterscale.application.v1.ListStorageClassesResponse.storage_classes:type_name -> otterscale.application.v1.StorageClass
+	49, // 30: otterscale.application.v1.Application.Condition.probed_at:type_name -> google.protobuf.Timestamp
+	49, // 31: otterscale.application.v1.Application.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
+	39, // 32: otterscale.application.v1.Application.Service.ports:type_name -> otterscale.application.v1.Application.Service.Port
+	49, // 33: otterscale.application.v1.Application.Service.created_at:type_name -> google.protobuf.Timestamp
+	33, // 34: otterscale.application.v1.Application.Pod.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	49, // 35: otterscale.application.v1.Application.Pod.created_at:type_name -> google.protobuf.Timestamp
+	4,  // 36: otterscale.application.v1.Application.PersistentVolumeClaim.storage_class:type_name -> otterscale.application.v1.StorageClass
+	49, // 37: otterscale.application.v1.Application.PersistentVolumeClaim.created_at:type_name -> google.protobuf.Timestamp
+	7,  // 38: otterscale.application.v1.ApplicationService.ListApplications:input_type -> otterscale.application.v1.ListApplicationsRequest
+	9,  // 39: otterscale.application.v1.ApplicationService.GetApplication:input_type -> otterscale.application.v1.GetApplicationRequest
+	10, // 40: otterscale.application.v1.ApplicationService.RestartApplication:input_type -> otterscale.application.v1.RestartApplicationRequest
+	11, // 41: otterscale.application.v1.ApplicationService.ScaleApplication:input_type -> otterscale.application.v1.ScaleApplicationRequest
+	12, // 42: otterscale.application.v1.ApplicationService.DeleteApplicationPod:input_type -> otterscale.application.v1.DeleteApplicationPodRequest
+	13, // 43: otterscale.application.v1.ApplicationService.WatchLogs:input_type -> otterscale.application.v1.WatchLogsRequest
+	15, // 44: otterscale.application.v1.ApplicationService.ExecuteTTY:input_type -> otterscale.application.v1.ExecuteTTYRequest
+	17, // 45: otterscale.application.v1.ApplicationService.WriteTTY:input_type -> otterscale.application.v1.WriteTTYRequest
+	18, // 46: otterscale.application.v1.ApplicationService.ListReleases:input_type -> otterscale.application.v1.ListReleasesRequest
+	20, // 47: otterscale.application.v1.ApplicationService.CreateRelease:input_type -> otterscale.application.v1.CreateReleaseRequest
+	21, // 48: otterscale.application.v1.ApplicationService.UpdateRelease:input_type -> otterscale.application.v1.UpdateReleaseRequest
+	22, // 49: otterscale.application.v1.ApplicationService.DeleteRelease:input_type -> otterscale.application.v1.DeleteReleaseRequest
+	23, // 50: otterscale.application.v1.ApplicationService.RollbackRelease:input_type -> otterscale.application.v1.RollbackReleaseRequest
+	24, // 51: otterscale.application.v1.ApplicationService.ListConfigMaps:input_type -> otterscale.application.v1.ListConfigMapsRequest
+	26, // 52: otterscale.application.v1.ApplicationService.ListSecrets:input_type -> otterscale.application.v1.ListSecretsRequest
+	29, // 53: otterscale.application.v1.ApplicationService.ListNamespaces:input_type -> otterscale.application.v1.ListNamespacesRequest
+	28, // 54: otterscale.application.v1.ApplicationService.ListStorageClasses:input_type -> otterscale.application.v1.ListStorageClassesRequest
+	8,  // 55: otterscale.application.v1.ApplicationService.ListApplications:output_type -> otterscale.application.v1.ListApplicationsResponse
+	3,  // 56: otterscale.application.v1.ApplicationService.GetApplication:output_type -> otterscale.application.v1.Application
+	51, // 57: otterscale.application.v1.ApplicationService.RestartApplication:output_type -> google.protobuf.Empty
+	51, // 58: otterscale.application.v1.ApplicationService.ScaleApplication:output_type -> google.protobuf.Empty
+	51, // 59: otterscale.application.v1.ApplicationService.DeleteApplicationPod:output_type -> google.protobuf.Empty
+	14, // 60: otterscale.application.v1.ApplicationService.WatchLogs:output_type -> otterscale.application.v1.WatchLogsResponse
+	16, // 61: otterscale.application.v1.ApplicationService.ExecuteTTY:output_type -> otterscale.application.v1.ExecuteTTYResponse
+	51, // 62: otterscale.application.v1.ApplicationService.WriteTTY:output_type -> google.protobuf.Empty
+	19, // 63: otterscale.application.v1.ApplicationService.ListReleases:output_type -> otterscale.application.v1.ListReleasesResponse
+	1,  // 64: otterscale.application.v1.ApplicationService.CreateRelease:output_type -> otterscale.application.v1.Release
+	1,  // 65: otterscale.application.v1.ApplicationService.UpdateRelease:output_type -> otterscale.application.v1.Release
+	51, // 66: otterscale.application.v1.ApplicationService.DeleteRelease:output_type -> google.protobuf.Empty
+	51, // 67: otterscale.application.v1.ApplicationService.RollbackRelease:output_type -> google.protobuf.Empty
+	25, // 68: otterscale.application.v1.ApplicationService.ListConfigMaps:output_type -> otterscale.application.v1.ListConfigMapsResponse
+	27, // 69: otterscale.application.v1.ApplicationService.ListSecrets:output_type -> otterscale.application.v1.ListSecretsResponse
+	30, // 70: otterscale.application.v1.ApplicationService.ListNamespaces:output_type -> otterscale.application.v1.ListNamespacesResponse
+	31, // 71: otterscale.application.v1.ApplicationService.ListStorageClasses:output_type -> otterscale.application.v1.ListStorageClassesResponse
+	55, // [55:72] is the sub-list for method output_type
+	38, // [38:55] is the sub-list for method input_type
+	38, // [38:38] is the sub-list for extension type_name
+	38, // [38:38] is the sub-list for extension extendee
+	0,  // [0:38] is the sub-list for field type_name
 }
 
 func init() { file_api_application_v1_application_proto_init() }
@@ -5980,13 +6034,14 @@ func file_api_application_v1_application_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_application_v1_application_proto_rawDesc), len(file_api_application_v1_application_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   47,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_api_application_v1_application_proto_goTypes,
 		DependencyIndexes: file_api_application_v1_application_proto_depIdxs,
+		EnumInfos:         file_api_application_v1_application_proto_enumTypes,
 		MessageInfos:      file_api_application_v1_application_proto_msgTypes,
 	}.Build()
 	File_api_application_v1_application_proto = out.File
