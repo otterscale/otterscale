@@ -72,5 +72,5 @@ func (uc *UseCase) setContainerdCustomRegistries(ctx context.Context, scope stri
 		return err
 	}
 
-	return uc.facility.Update(ctx, scope, scope+"-containerd", map[string]string{"custom_registries": string(value)})
+	return uc.facility.Update(ctx, scope, "containerd", map[string]string{"custom_registries": string(value)})
 }

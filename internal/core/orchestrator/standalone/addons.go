@@ -2,14 +2,10 @@ package standalone
 
 import "github.com/otterscale/otterscale/internal/core/versions"
 
-type addons struct {
-	Scope string
-}
+type addons struct{}
 
-func newAddons(scope string) base {
-	return &addons{
-		Scope: scope,
-	}
+func newAddons() base {
+	return &addons{}
 }
 
 func (a *addons) Charms() []charm {
@@ -29,19 +25,17 @@ func (a *addons) Config(charmName string) (string, error) {
 		},
 	}
 
-	return buildConfig(a.Scope, charmName, configs)
+	return buildConfig(charmName, configs)
 }
 
 func (a *addons) Relations() [][]string {
-	relations := [][]string{
+	return [][]string{
 		{"ceph-csi", "ceph-mon"},
 		{"ceph-csi", "kubernetes-control-plane"},
 		{"grafana-agent:cos-agent", "ceph-mon:cos-agent"},
 		{"grafana-agent:cos-agent", "kubeapi-load-balancer:cos-agent"},
 		{"grafana-agent:cos-agent", "kubernetes-control-plane:cos-agent"},
 	}
-
-	return buildRelations(a.Scope, relations)
 }
 
 func (a *addons) Tags() []string {

@@ -8,14 +8,12 @@ import (
 )
 
 type ceph struct {
-	Scope      string
 	OSDDevices []string
 	NFSVIP     string
 }
 
-func newCeph(scope string, osdDevices []string, nfsVIP string) base {
+func newCeph(osdDevices []string, nfsVIP string) base {
 	return &ceph{
-		Scope:      scope,
 		OSDDevices: osdDevices,
 		NFSVIP:     nfsVIP,
 	}
@@ -57,19 +55,17 @@ func (c *ceph) Config(charmName string) (string, error) {
 		},
 	}
 
-	return buildConfig(c.Scope, charmName, configs)
+	return buildConfig(charmName, configs)
 }
 
 func (c *ceph) Relations() [][]string {
-	relations := [][]string{
+	return [][]string{
 		{"ceph-mon:client", "ceph-nfs:ceph-client"},
 		{"ceph-mon:mds", "ceph-fs:ceph-mds"},
 		{"ceph-mon:osd", "ceph-osd:mon"},
 		{"ceph-mon:radosgw", "ceph-radosgw:mon"},
 		{"hacluster:ha", "ceph-nfs:ha"},
 	}
-
-	return buildRelations(c.Scope, relations)
 }
 
 func (c *ceph) Tags() []string {

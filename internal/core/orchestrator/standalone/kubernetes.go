@@ -10,14 +10,12 @@ import (
 const defaultCalicoCIDR = "198.19.0.0/16"
 
 type kubernetes struct {
-	Scope      string
 	VirtualIPs []string
 	CalicoCIDR string
 }
 
-func newKubernetes(scope string, virtualIPs []string, calicoCIDR string) base {
+func newKubernetes(virtualIPs []string, calicoCIDR string) base {
 	return &kubernetes{
-		Scope:      scope,
 		VirtualIPs: virtualIPs,
 		CalicoCIDR: calicoCIDR,
 	}
@@ -58,11 +56,11 @@ func (k *kubernetes) Config(charmName string) (string, error) {
 		},
 	}
 
-	return buildConfig(k.Scope, charmName, configs)
+	return buildConfig(charmName, configs)
 }
 
 func (k *kubernetes) Relations() [][]string {
-	relations := [][]string{
+	return [][]string{
 		{"calico:cni", "kubernetes-control-plane:cni"},
 		{"calico:etcd", "etcd:db"},
 		{"easyrsa:client", "etcd:certificates"},
@@ -75,8 +73,6 @@ func (k *kubernetes) Relations() [][]string {
 		{"keepalived:website", "kubeapi-load-balancer:apiserver"},
 		{"containerd:containerd", "kubernetes-control-plane:container-runtime"},
 	}
-
-	return buildRelations(k.Scope, relations)
 }
 
 func (k *kubernetes) Tags() []string {
