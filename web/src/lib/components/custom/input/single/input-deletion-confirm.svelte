@@ -2,7 +2,6 @@
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	import { CopyButton } from '$lib/components/custom/copy-button';
 	import { cn } from '$lib/utils';
 
 	import General from './input-general.svelte';
@@ -39,5 +38,4 @@
 		required
 		{...restProps}
 	/>
-	<CopyButton text={target} class="absolute top-1/2 right-0 -translate-y-1/2 items-center" />
 </div>

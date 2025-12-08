@@ -14,7 +14,8 @@
 		scope,
 		namespace,
 		required,
-		invalid = $bindable()
+		invalid = $bindable(),
+		fromLocal = $bindable()
 	}: {
 		value: string;
 		modelSource?: ModeSource;
@@ -22,6 +23,7 @@
 		namespace: string;
 		required: boolean;
 		invalid: boolean;
+		fromLocal: boolean;
 	} = $props();
 
 	$effect(() => {
@@ -29,7 +31,7 @@
 	});
 </script>
 
-<ButtonGroup.Root class="w-full">
+<ButtonGroup.Root class="w-full" aria-invalid={invalid}>
 	<InputGroup.Root>
 		<InputGroup.Input
 			placeholder="Select from Artifacts or HuggingFace"
@@ -41,6 +43,6 @@
 			<Icon icon="ph:robot" />
 		</InputGroup.Addon>
 	</InputGroup.Root>
-	<SelectLocalModel bind:modelSource bind:value {scope} {namespace} />
-	<SelectCloudModel bind:modelSource bind:value />
+	<SelectLocalModel bind:value {scope} {namespace} bind:fromLocal />
+	<SelectCloudModel bind:value />
 </ButtonGroup.Root>

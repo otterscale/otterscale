@@ -137,7 +137,7 @@
 
 <Layout.Root>
 	<Layout.Statistics>
-		<Statistics {table} />
+		<Statistics {serviceUri} {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>

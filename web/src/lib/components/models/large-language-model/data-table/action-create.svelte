@@ -13,18 +13,23 @@
 		type Model_Prefill,
 		ModelService
 	} from '$lib/api/model/v1/model_pb';
+	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
+	import { buttonVariants } from '$lib/components/ui/button';
+	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
+	import Input from '$lib/components/ui/input/input.svelte';
+	import * as Item from '$lib/components/ui/item/index.js';
+	import * as Popover from '$lib/components/ui/popover';
 	import { Slider } from '$lib/components/ui/slider/index.js';
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
 
-	import type { ModeSource } from '../types';
 	import SelectModel from './util-select-model.svelte';
 </script>
 
@@ -54,8 +59,6 @@
 	let requestPrefillResource = $state({ ...defaultPrefillResource });
 	let requestDecodeResource = $state({ ...defaultDecodeResource });
 	let isDisaggregationMode = $state(false);
-	let modelSource: ModeSource | undefined = $state(undefined);
-	let selectedModel: string = $state('');
 
 	function resetPrefillResources() {
 		requestPrefillResource = { ...defaultPrefillResource };
@@ -63,29 +66,16 @@
 	function resetDecodeResources() {
 		requestDecodeResource = { ...defaultDecodeResource };
 	}
-	function resetModelSource() {
-		modelSource = undefined;
-	}
-	function resetSelectedModel() {
-		selectedModel = '';
-	}
 
 	function reset() {
 		request = { ...defaults };
 		resetPrefillResources();
 		resetDecodeResources();
-		resetModelSource();
-		resetSelectedModel();
 	}
 
 	function integrate() {
 		request.prefill = requestPrefillResource;
 		request.decode = requestDecodeResource;
-		if (modelSource === 'local' && selectedModel) {
-			request.modelName = `pvc-selectedModel`;
-		} else if (modelSource === 'cloud' && selectedModel) {
-			request.modelName = selectedModel;
-		}
 		request.mode = isDisaggregationMode
 			? Model_Mode.PREFILL_DECODE_DISAGGREGATION
 			: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING;
@@ -188,8 +178,8 @@
 				<Form.Field>
 					<Form.Label>{m.model_name()}</Form.Label>
 					<SelectModel
-						bind:value={selectedModel}
-						bind:modelSource
+						bind:value={request.modelName}
+						bind:fromLocal={request.fromPersistentVolumeClaim}
 						required
 						bind:invalid={invalidity.modelName}
 						{scope}
@@ -197,7 +187,7 @@
 					/>
 
 					{#if invalidity.modelName}
-						<p class="text-sm text-destructive/50">Please select a model.</p>
+						<p class="text-sm text-destructive/50">{m.select_model_description()}</p>
 					{/if}
 				</Form.Field>
 
@@ -218,7 +208,37 @@
 
 				<Form.Field>
 					<Form.Label>{m.max_model_length()}</Form.Label>
-					<SingleInput.General type="number" bind:value={request.maxModelLength} />
+					<ButtonGroup.Root class="w-full">
+						<Input type="number" bind:value={request.maxModelLength} />
+						{#if request.modelName}
+							{#await fetch(`https://huggingface.co/${request.modelName}/resolve/main/config.json`) then response}
+								{#await response.text() then body}
+									<Popover.Root>
+										<Popover.Trigger class={buttonVariants({ variant: 'outline' })}>
+											<Icon icon="ph:gear-fine" />
+										</Popover.Trigger>
+										<Popover.Content
+											align="center"
+											side="left"
+											class="max-h-[50vh] w-fit overflow-y-auto"
+										>
+											<Item.Root class="w-full">
+												<Item.Content class="flex flex-col items-start">
+													<Item.Title class="text-xl font-bold">
+														{m.configuration()}
+													</Item.Title>
+													<Item.Description class="text-muted-foreground">
+														{request.modelName}
+													</Item.Description>
+												</Item.Content>
+											</Item.Root>
+											<Code.Root lang="json" code={body} class="border-none" />
+										</Popover.Content>
+									</Popover.Root>
+								{/await}
+							{/await}
+						{/if}
+					</ButtonGroup.Root>
 				</Form.Field>
 			</Form.Fieldset>
 
@@ -252,6 +272,7 @@
 							<Slider
 								type="single"
 								bind:value={requestDecodeResource.vgpumemPercentage}
+								min={1}
 								max={100}
 								step={1}
 								class="w-full py-4 **:data-[slot=slider-track]:h-3"
@@ -275,6 +296,7 @@
 								<Slider
 									type="single"
 									bind:value={requestPrefillResource.vgpumemPercentage}
+									min={1}
 									max={100}
 									step={1}
 									class="w-full py-4 **:data-[slot=slider-track]:h-3"
@@ -307,6 +329,7 @@
 								<Slider
 									type="single"
 									bind:value={requestDecodeResource.vgpumemPercentage}
+									min={1}
 									max={100}
 									step={1}
 									class="w-full py-4 **:data-[slot=slider-track]:h-3"
@@ -318,11 +341,7 @@
 			{/if}
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
@@ -344,7 +363,6 @@
 							return message;
 						}
 					});
-					reset();
 					close();
 				}}
 			>

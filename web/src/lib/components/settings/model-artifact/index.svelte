@@ -54,9 +54,9 @@
 
 {#if isMounted}
 	<Layout.Root>
-		<Layout.Title>{m.virtual_machine_data_volume()}</Layout.Title>
+		<Layout.Title>{m.model_artifact()}</Layout.Title>
 		<Layout.Description>
-			{m.setting_data_volume_description()}
+			{m.model_artifact_setting_description()}
 		</Layout.Description>
 		<Layout.Controller>
 			<Create {scope} {reloadManager} />
@@ -84,7 +84,7 @@
 							<Table.Head>{m.phase()}</Table.Head>
 							<Table.Head class="text-right">{m.size()}</Table.Head>
 							<Table.Head>{m.volume()}</Table.Head>
-							<Table.Head class="text-right">{m.create_time()}</Table.Head>
+							<Table.Head class="text-end">{m.create_time()}</Table.Head>
 							<Table.Head></Table.Head>
 						</Table.Row>
 					</Table.Header>
@@ -103,19 +103,21 @@
 								<Table.Cell>
 									{modelArtifact.volumeName}
 								</Table.Cell>
-								<Table.Cell class="text-right">
-									{#if modelArtifact.createdAt}
-										<Tooltip.Provider>
-											<Tooltip.Root>
-												<Tooltip.Trigger>
-													{formatTimeAgo(timestampDate(modelArtifact.createdAt))}
-												</Tooltip.Trigger>
-												<Tooltip.Content>
-													{timestampDate(modelArtifact.createdAt)}
-												</Tooltip.Content>
-											</Tooltip.Root>
-										</Tooltip.Provider>
-									{/if}
+								<Table.Cell>
+									<div class="flex justify-end">
+										{#if modelArtifact.createdAt}
+											<Tooltip.Provider>
+												<Tooltip.Root>
+													<Tooltip.Trigger>
+														{formatTimeAgo(timestampDate(modelArtifact.createdAt))}
+													</Tooltip.Trigger>
+													<Tooltip.Content>
+														{timestampDate(modelArtifact.createdAt)}
+													</Tooltip.Content>
+												</Tooltip.Root>
+											</Tooltip.Provider>
+										{/if}
+									</div>
 								</Table.Cell>
 								<Table.Cell>
 									<Delete {modelArtifact} {scope} {reloadManager} />

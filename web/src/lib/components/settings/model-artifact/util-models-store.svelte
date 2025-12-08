@@ -1,23 +1,25 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { Single as SingleInput } from '$lib/components/custom/input';
 	import {
 		type HuggingFaceModel,
 		type ModelTag,
 		type SortType
 	} from '$lib/components/settings/model-artifact/types';
 	import {
-		fetchModels,
-		fetchModelTypes
+		fetchHuggingFaceModels,
+		fetchHuggingFaceModelTypes
 	} from '$lib/components/settings/model-artifact/utils.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
+	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import * as Card from '$lib/components/ui/card';
 	import * as Command from '$lib/components/ui/command';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import * as InputGroup from '$lib/components/ui/input-group/index.js';
+	import Label from '$lib/components/ui/label/label.svelte';
 	import * as Popover from '$lib/components/ui/popover';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { formatBigNumber, formatTimeAgo } from '$lib/formatter';
@@ -34,18 +36,20 @@
 
 	const defaultLimit = 30;
 	let limit = $state(defaultLimit);
+	let search = $state('');
 
 	const defaultSort = 'downloads' as SortType;
 	let sort = $state<SortType>(defaultSort);
 
 	let huggingFaceModels = $state([] as HuggingFaceModel[]);
 	let isHuggingFaceModelsLoaded = $state(false);
-	async function fetchModelsByTags(tags: ModelTag[]) {
-		const response = await fetchModels(
+	async function fetch() {
+		const response = await fetchHuggingFaceModels(
 			'RedHatAI',
-			tags.map((tag) => tag.id),
+			modelTags.map((tag) => tag.id),
 			sort,
-			limit
+			limit,
+			search
 		);
 		huggingFaceModels = response;
 		isHuggingFaceModelsLoaded = true;
@@ -56,7 +60,7 @@
 	let selectedLicenseTags = $state(defaultLicenseTags);
 	let isLicenseTagsLoaded = $state(false);
 	async function fetchLicenseTags() {
-		const response = await fetchModelTypes('license');
+		const response = await fetchHuggingFaceModelTypes('license');
 		licenseTags.set(response);
 		isLicenseTagsLoaded = true;
 	}
@@ -75,7 +79,7 @@
 	let selectedLibraryTags = $state(defaultLibraryTags);
 	let isLibraryTagsLoaded = $state(false);
 	async function fetchLibraryTags() {
-		const response = await fetchModelTypes('library');
+		const response = await fetchHuggingFaceModelTypes('library');
 		libraryTags.set(response);
 		isLibraryTagsLoaded = true;
 	}
@@ -94,7 +98,7 @@
 	let selectedPipelineTags = $state(defaultPipelineTags);
 	let isPipelineTagsLoaded = $state(false);
 	async function fetchPipelineTags() {
-		const response = await fetchModelTypes('pipeline_tag');
+		const response = await fetchHuggingFaceModelTypes('pipeline_tag');
 		pipelineTags.set(response);
 		isPipelineTagsLoaded = true;
 	}
@@ -123,32 +127,38 @@
 		open = false;
 	}
 
-	function reset() {
+	function resetFilter() {
 		selectedLicenseTags = defaultLicenseTags;
 		selectedLibraryTags = defaultLibraryTags;
 		selectedPipelineTags = defaultPipelineTags;
 		limit = defaultLimit;
 		sort = defaultSort;
+		search = '';
+	}
+	function resetModel() {
+		selectedModel = null;
 	}
 
 	$effect(() => {
-		if (modelTags && limit && sort) {
-			fetchModelsByTags(modelTags);
-		}
 		invalid = required && !value;
 	});
 	onMount(async () => {
 		await fetchPipelineTags();
 		await fetchLicenseTags();
 		await fetchLibraryTags();
-		await fetchModelsByTags([]);
-	});
-	onDestroy(() => {
-		reset();
+		await fetch();
 	});
 </script>
 
-<Dialog.Root bind:open>
+<Dialog.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			resetModel();
+			resetFilter();
+		}
+	}}
+>
 	<Dialog.Trigger
 		class={cn(
 			buttonVariants({ variant: 'outline' }),
@@ -217,6 +227,24 @@
 				</div>
 			{/if}
 			<div class="flex h-12 items-center gap-1">
+				<ButtonGroup.Root>
+					<InputGroup.Root class="w-50">
+						<InputGroup.Input placeholder="Search" bind:value={search} />
+						<InputGroup.Addon>
+							<Icon icon="logos:hugging-face-icon" />
+						</InputGroup.Addon>
+					</InputGroup.Root>
+					<Button
+						onclick={() => {
+							fetch();
+						}}
+						variant="outline"
+						size="icon"
+						aria-label="Search"
+					>
+						<Icon icon="ph:magnifying-glass" />
+					</Button>
+				</ButtonGroup.Root>
 				{#if isPipelineTagsLoaded}
 					<!-- Pipeline Filter -->
 					<Popover.Root>
@@ -244,15 +272,11 @@
 													handlePipelineTagSelect(tag);
 												}}
 											>
-												<Icon
-													icon="ph:check"
-													class={cn(isTagSelected(tag) ? 'visible' : 'invisible', 'h-4 w-4')}
-												/>
+												<Icon icon={isTagSelected(tag) ? 'ph:tag-fill' : 'ph:tag'} class="size-5" />
 												<div class="flex flex-col items-start justify-start gap-1">
 													<h6 class="text-sm">{tag.label}</h6>
 													{#if tag.subType}
 														<span class="flex items-center gap-1">
-															<Icon icon="ph:tag" class="size-4" />
 															<p class="text-xs text-muted-foreground">
 																{tag.subType}
 															</p>
@@ -294,15 +318,11 @@
 													handleLibraryTagSelect(tag);
 												}}
 											>
-												<Icon
-													icon="ph:check"
-													class={cn(isTagSelected(tag) ? 'visible' : 'invisible', 'h-4 w-4')}
-												/>
+												<Icon icon={isTagSelected(tag) ? 'ph:tag-fill' : 'ph:tag'} />
 												<div class="flex flex-col items-start justify-start gap-1">
 													<h6 class="text-sm">{tag.label}</h6>
 													{#if tag.subType}
-														<span class="flex items-center gap-1">
-															<Icon icon="ph:tag" class="size-4" />
+														<span class="flex items-center gap-2">
 															<p class="text-xs text-muted-foreground">
 																{tag.subType}
 															</p>
@@ -344,10 +364,7 @@
 													handleLicenseTagSelect(tag);
 												}}
 											>
-												<Icon
-													icon="ph:check"
-													class={cn(isTagSelected(tag) ? 'visible' : 'invisible', 'h-4 w-4')}
-												/>
+												<Icon icon={isTagSelected(tag) ? 'ph:tag-fill' : 'ph:tag'} />
 												<div class="flex flex-col items-start justify-start gap-1">
 													<h6 class="text-sm">{tag.label}</h6>
 													{#if tag.subType}
@@ -401,7 +418,25 @@
 						</Command.Root>
 					</Popover.Content>
 				</Popover.Root>
-				<SingleInput.General type="number" class="h-8 w-24" bind:value={limit} min={0} step={6} />
+				<InputGroup.Root class="w-30">
+					<InputGroup.Input type="number" bind:value={limit} min={0} step={6} placeholder="Limit" />
+					<InputGroup.Addon>
+						<Icon icon="ph:funnel" />
+					</InputGroup.Addon>
+				</InputGroup.Root>
+
+				{#if search || modelTags.length > 0}
+					<Button
+						onclick={() => {
+							fetch();
+						}}
+						aria-label="Search"
+						class="ml-auto flex h-8 items-center gap-1"
+					>
+						<Icon icon="ph:magnifying-glass" />
+						<Label>{m.search()}</Label>
+					</Button>
+				{/if}
 			</div>
 			{#if huggingFaceModels.length > 0}
 				<!-- Models -->
@@ -474,7 +509,8 @@
 						<Button
 							variant="destructive"
 							onclick={() => {
-								reset();
+								resetFilter();
+								fetch();
 							}}
 						>
 							{m.reset()}

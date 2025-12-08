@@ -2,7 +2,8 @@
 	import '@xyflow/svelte/dist/style.css';
 
 	import dagre from '@dagrejs/dagre';
-	import { type Edge, type Node, Panel, Position, SvelteFlow } from '@xyflow/svelte';
+	import { Background, type Edge, type Node, Panel, Position, SvelteFlow } from '@xyflow/svelte';
+	import { mode } from 'mode-watcher';
 
 	import { cn } from '$lib/utils';
 
@@ -94,5 +95,6 @@
 		}));
 	}}
 >
+	<Background bgColor={mode.current === 'dark' ? '#1a1a1a' : '#f5f5f5'} />
 	<Panel position="top-right" />
 </SvelteFlow>
