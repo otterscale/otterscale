@@ -3,7 +3,7 @@ package versions
 // OtterScale Helm Chart
 const (
 	GPUOperator   = "1.0.6" // HAMi 2.6.1 & GPU Operator 25.3.2
-	KubeVirtInfra = "0.1.1" // KubeVirt 1.6.2 & CDI 1.63.1
+	KubeVirtInfra = "0.1.2" // KubeVirt 1.6.2 & CDI 1.63.1
 	ModelArtifact = "0.1.2"
 	Registry      = "0.2.0"
 	SambaOperator = "0.1.0"
