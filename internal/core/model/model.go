@@ -23,7 +23,10 @@ import (
 	"github.com/otterscale/otterscale/internal/core/versions"
 )
 
-const ModelNameAnnotation = "otterscale.com/model.name"
+const (
+	ModelNameAnnotation = "otterscale.com/model.name"
+	ModelPVCAnnotation  = "otterscale.com/model.pvc"
+)
 
 const (
 	vgpuResource              = "otterscale.com/vgpu"
@@ -38,6 +41,8 @@ type Model struct {
 	Decode         *Decode
 	MaxModelLength uint32
 	Pods           []workload.Pod
+	FromPVC        bool
+	PVCName        string
 }
 
 type Prefill struct {
@@ -109,6 +114,8 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 			return nil, "", err
 		}
 
+		pvcName, fromPVC := releases[i].Labels[ModelPVCAnnotation]
+
 		models = append(models, Model{
 			ID:             modelName,
 			Release:        &releases[i],
@@ -117,6 +124,8 @@ func (uc *UseCase) ListModels(ctx context.Context, scope, namespace string) (mod
 			Decode:         decode,
 			MaxModelLength: maxModelLength,
 			Pods:           pods,
+			FromPVC:        fromPVC,
+			PVCName:        pvcName,
 		})
 	}
 
@@ -136,7 +145,7 @@ func httpRouteName(name string) string {
 	return "httproute-" + shortID(name)
 }
 
-func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, mode Mode, prefill *Prefill, decode *Decode, maxModelLength uint32) (*Model, error) {
+func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, modelName string, fromPVC bool, pvcName string, sizeBytes uint64, mode Mode, prefill *Prefill, decode *Decode, maxModelLength uint32) (*Model, error) {
 	gatewayName := "llm-d-infra-inference-gateway" // from llm-d-infra helm chart (.Values.nameOverride)
 	inferencePoolName := inferencePoolName(name)
 	inferencePoolPort := int32(8000) //nolint:mnd // default port for inference pool
@@ -158,7 +167,7 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 	}
 
 	// deploy model service
-	release, err := uc.installModelService(ctx, scope, namespace, name, modelName, sizeBytes, mode, prefill, decode, maxModelLength)
+	release, err := uc.installModelService(ctx, scope, namespace, name, modelName, fromPVC, pvcName, sizeBytes, mode, prefill, decode, maxModelLength)
 	if err != nil {
 		return nil, err
 	}
@@ -172,6 +181,8 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 		newMode = ModePrefillDecodeDisaggregation
 	}
 
+	newPVCName, newFromPVC := release.Labels[ModelPVCAnnotation]
+
 	return &Model{
 		ID:             modelName,
 		Release:        release,
@@ -179,6 +190,8 @@ func (uc *UseCase) CreateModel(ctx context.Context, scope, namespace, name, mode
 		Prefill:        newPrefill,
 		Decode:         newDecode,
 		MaxModelLength: newMaxModelLength,
+		FromPVC:        newFromPVC,
+		PVCName:        newPVCName,
 	}, nil
 }
 
@@ -228,6 +241,8 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 		newMode = ModePrefillDecodeDisaggregation
 	}
 
+	pvcName, fromPVC := release.Labels[ModelPVCAnnotation]
+
 	return &Model{
 		ID:             modelName,
 		Release:        release,
@@ -235,6 +250,8 @@ func (uc *UseCase) UpdateModel(ctx context.Context, scope, namespace, name strin
 		Prefill:        newPrefill,
 		Decode:         newDecode,
 		MaxModelLength: newMaxModelLength,
+		FromPVC:        fromPVC,
+		PVCName:        pvcName,
 	}, nil
 }
 
@@ -401,7 +418,7 @@ func (uc *UseCase) installInferencePool(ctx context.Context, scope, namespace, n
 	return err
 }
 
-func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, sizeBytes uint64, mode Mode, prefill *Prefill, decode *Decode, maxModelLength uint32) (*release.Release, error) {
+func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, name, modelName string, fromPVC bool, pvcName string, sizeBytes uint64, mode Mode, prefill *Prefill, decode *Decode, maxModelLength uint32) (*release.Release, error) {
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
@@ -410,13 +427,17 @@ func (uc *UseCase) installModelService(ctx context.Context, scope, namespace, na
 		release.TypeLabel: "model",
 	}
 
+	if fromPVC {
+		labels[ModelPVCAnnotation] = pvcName
+	}
+
 	// annotations
 	annotations := map[string]string{
 		ModelNameAnnotation: modelName,
 	}
 
 	// values
-	valuesMap := convertModelServiceValuesMap(mode, name, modelName, sizeBytes, prefill, decode, maxModelLength)
+	valuesMap := convertModelServiceValuesMap(mode, name, modelName, fromPVC, pvcName, sizeBytes, prefill, decode, maxModelLength)
 
 	return uc.release.Install(ctx, scope, namespace, name, false, chartRef, labels, labels, annotations, "", valuesMap)
 }
@@ -425,8 +446,15 @@ func (uc *UseCase) upgradeModelService(ctx context.Context, scope, namespace, na
 	// chart ref
 	chartRef := fmt.Sprintf("https://github.com/llm-d-incubation/llm-d-modelservice/releases/download/llm-d-modelservice-v%[1]s/llm-d-modelservice-v%[1]s.tgz", versions.LLMDModelService)
 
+	rel, err := uc.release.Get(ctx, scope, namespace, name)
+	if err != nil {
+		return nil, err
+	}
+
+	pvcName, fromPVC := rel.Labels[ModelPVCAnnotation]
+
 	// values
-	valuesMap := convertModelServiceValuesMap(mode, name, modelName, sizeBytes, prefill, decode, maxModelLength)
+	valuesMap := convertModelServiceValuesMap(mode, name, modelName, fromPVC, pvcName, sizeBytes, prefill, decode, maxModelLength)
 
 	return uc.release.Upgrade(ctx, scope, namespace, name, false, chartRef, "", valuesMap, false)
 }

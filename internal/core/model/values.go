@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -67,7 +68,7 @@ schedulingProfiles:
 // v0.3.10
 //
 //nolint:goconst,funlen // ignore
-func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, sizeBytes uint64, prefill *Prefill, decode *Decode, maxModelLength uint32) map[string]string {
+func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, fromPVC bool, pvcName string, sizeBytes uint64, prefill *Prefill, decode *Decode, maxModelLength uint32) map[string]string {
 	var (
 		prefillReplica, prefillVGPUMemory             uint32
 		decodeReplica, decodeTensor, decodeVGPUMemory uint32
@@ -141,6 +142,10 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, size
 		"decode.monitoring.podmonitor.portName":                                           "metrics",
 		"decode.monitoring.podmonitor.path":                                               "/metrics",
 		"decode.monitoring.podmonitor.interval":                                           "30s",
+	}
+
+	if fromPVC {
+		ret["modelArtifacts.uri"] = fmt.Sprintf("pvc://%s/model", pvcName)
 	}
 
 	switch mode {
