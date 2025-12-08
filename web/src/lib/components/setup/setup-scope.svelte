@@ -208,7 +208,14 @@
 			<span
 				class="flex space-x-2 truncate overflow-visible capitalize {serviceState.state?.textClass}"
 			>
-				<span>{serviceState.state?.state}</span>
+				<span
+					class:truncate={serviceState.state?.state && serviceState.state.state.length >= 10}
+					title={serviceState.state?.state && serviceState.state.state.length >= 10
+						? serviceState.state.state
+						: undefined}
+				>
+					{serviceState.state?.state}
+				</span>
 			</span>
 			<div class="text-xs tracking-tight text-muted-foreground capitalize md:text-base lg:text-lg">
 				{serviceState.state?.details}
