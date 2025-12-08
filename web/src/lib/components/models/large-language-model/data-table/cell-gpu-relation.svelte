@@ -16,7 +16,7 @@
 	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { Complex as ComplexFlow } from '$lib/components/flow/index';
 	import { buttonVariants } from '$lib/components/ui/button';
-	import * as Sheet from '$lib/components/ui/sheet';
+	import * as Drawer from '$lib/components/ui/drawer/index.js';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -126,7 +126,7 @@
 	let isLoaded = $state(false);
 </script>
 
-<Sheet.Root
+<Drawer.Root
 	bind:open
 	onOpenChange={async (isOpen) => {
 		if (isOpen) {
@@ -139,21 +139,21 @@
 		}
 	}}
 >
-	<Sheet.Trigger class={buttonVariants({ variant: 'ghost' })}>
+	<Drawer.Trigger class={buttonVariants({ variant: 'ghost' })}>
 		<Icon icon="ph:arrow-square-out" />
-	</Sheet.Trigger>
-	<Sheet.Content side="right" class="min-w-[38vw]">
+	</Drawer.Trigger>
+	<Drawer.Content class="h-[77vh]">
 		{#if isLoaded}
-			<Sheet.Header>
-				<Sheet.Title>{m.details()}</Sheet.Title>
-				<Sheet.Description>
+			<Drawer.Header>
+				<Drawer.Title>{m.details()}</Drawer.Title>
+				<Drawer.Description>
 					<p>{m.gpu_relation_description()}</p>
 					<p>{m.gpu_relation_guide_description()}</p>
-				</Sheet.Description>
-			</Sheet.Header>
+				</Drawer.Description>
+			</Drawer.Header>
 			{#if open}
 				<ComplexFlow.Flow initialNodes={$nodes} initialEdges={$edges} />
 			{/if}
 		{/if}
-	</Sheet.Content>
-</Sheet.Root>
+	</Drawer.Content>
+</Drawer.Root>
