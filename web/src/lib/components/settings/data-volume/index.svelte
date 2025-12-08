@@ -107,7 +107,7 @@
 												{/if}
 											</Tooltip.Trigger>
 											<Tooltip.Content>
-												{dataVolume.phase}
+												{dataVolume.phase.replace(/([A-Z])/g, ' $1').trim()}
 											</Tooltip.Content>
 										</Tooltip.Root>
 									</Tooltip.Provider>
