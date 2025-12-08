@@ -39,8 +39,8 @@ func (r *actionRepo) Run(ctx context.Context, scope, appName, actionName string,
 	return r.juju.Run(ctx, scope, appName, actionName, params)
 }
 
-func (r *actionRepo) Execute(ctx context.Context, scope, appName, command string) (map[string]any, error) {
-	return r.juju.Execute(ctx, scope, appName, command)
+func (r *actionRepo) Execute(ctx context.Context, scope, unitName, command string) (map[string]any, error) {
+	return r.juju.Execute(ctx, scope, unitName, command)
 }
 
 func (r *actionRepo) toActions(m map[string]api.ActionSpec) []action.Action {

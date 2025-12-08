@@ -15,7 +15,7 @@ type Action struct {
 type ActionRepo interface {
 	List(ctx context.Context, scope, appName string) ([]Action, error)
 	Run(ctx context.Context, scope, appName, actionName string, params map[string]any) (map[string]any, error)
-	Execute(ctx context.Context, scope, appName, command string) (map[string]any, error)
+	Execute(ctx context.Context, scope, unitName, command string) (map[string]any, error)
 }
 
 type UseCase struct {
