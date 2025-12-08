@@ -190,11 +190,7 @@ func (uc *UseCase) updatePersistentVolumeClaim(ctx context.Context, scope, names
 		return err
 	}
 
-	existing.Spec.Resources = corev1.VolumeResourceRequirements{
-		Requests: corev1.ResourceList{
-			"storage": *resource.NewQuantity(int64(sizeBytes), resource.BinarySI), //nolint:gosec // ignore
-		},
-	}
+	existing.Spec.Resources.Requests[corev1.ResourceStorage] = *resource.NewQuantity(int64(sizeBytes), resource.BinarySI) //nolint:gosec // ignore
 
 	_, err = uc.persistentVolumeClaim.Update(ctx, scope, namespace, existing)
 	return err
