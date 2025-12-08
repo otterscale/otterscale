@@ -1268,7 +1268,9 @@ juju_add_k8s() {
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s scheme=http" >>"$TEMP_LOG" 2>&1
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s metrics_path='/federate'" >>"$TEMP_LOG" 2>&1
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus-scrape-target-k8s params='match[]:
-  - \"{__name__!=''}\"'" >>"$TEMP_LOG" 2>&1
+   - \"{__name__!=\\\"\\\"}\"
+'" >>"$TEMP_LOG" 2>&1
+
 
     ## Cos-lite resource, default is not limit
     # Grafana
