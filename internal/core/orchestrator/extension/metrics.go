@@ -106,10 +106,7 @@ func (uc *UseCase) setPrometheusScrapeTargetK8sTargets(ctx context.Context, targ
 }
 
 func (uc *UseCase) waitAndGetPrometheusTarget(ctx context.Context, scope string) (string, error) {
-	const (
-		timeout  = 5 * time.Minute
-		interval = 5 * time.Second
-	)
+	const interval = 5 * time.Second
 
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
