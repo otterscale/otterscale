@@ -19,7 +19,7 @@
 <Card.Root
 	class={cn(
 		chart.deprecated ? 'bg-muted' : 'hover:shadow-lg',
-		'relative flex h-full flex-col justify-between gap-4 overflow-hidden transition-all'
+		'relative flex h-50 flex-col gap-4 overflow-hidden transition-all'
 	)}
 >
 	<Card.Header>
@@ -43,7 +43,7 @@
 			</span>
 		</div>
 	</Card.Header>
-	<Card.Content class="p-8 text-sm text-muted-foreground">
+	<Card.Content class="px-8 py-4 text-sm text-muted-foreground">
 		<p class="line-clamp-3 text-left">{chart.description}</p>
 	</Card.Content>
 	<Card.Footer class="flex">

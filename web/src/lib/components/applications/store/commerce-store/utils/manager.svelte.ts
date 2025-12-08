@@ -117,7 +117,7 @@ class FilterManager {
 class PaginationManager {
 	activePage: number = $state(0);
 	count: number = $state(0);
-	perPage: number = 6;
+	perPage: number = 9;
 	siblingCount: number = 1;
 
 	constructor(charts: Chart[]) {

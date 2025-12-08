@@ -19,6 +19,10 @@
 	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
+	import { fetchHuggingFaceModelInformation } from '$lib/components/settings/model-artifact/utils.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
+	import Input from '$lib/components/ui/input/input.svelte';
 	import { Slider } from '$lib/components/ui/slider/index.js';
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { m } from '$lib/paraglide/messages.js';
@@ -183,7 +187,7 @@
 				<Form.Field>
 					<Form.Label>{m.model_name()}</Form.Label>
 					<SelectModel
-						bind:value={selectedModel}
+						bind:value={request.modelName}
 						bind:fromLocal
 						required
 						bind:invalid={invalidity.modelName}
@@ -213,7 +217,21 @@
 
 				<Form.Field>
 					<Form.Label>{m.max_model_length()}</Form.Label>
-					<SingleInput.General type="number" bind:value={request.maxModelLength} />
+					<ButtonGroup.Root class="w-full">
+						<Input type="number" bind:value={request.maxModelLength} />
+						<Button
+							onclick={async () => {
+								console.log(request.modelName);
+								if (request.modelName) {
+									const response = await fetchHuggingFaceModelInformation(request.modelName);
+									// request.maxModelLength = response['']
+									console.log(response);
+								}
+							}}
+						>
+							<Icon icon="ph:robot" />
+						</Button>
+					</ButtonGroup.Root>
 				</Form.Field>
 			</Form.Fieldset>
 
