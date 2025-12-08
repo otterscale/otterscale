@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 	import SendIcon from '@lucide/svelte/icons/send';
+	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import { toast } from 'svelte-sonner';
 
 	import { resolve } from '$app/paths';
@@ -11,6 +12,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as InputGroup from '$lib/components/ui/input-group/index.js';
 	import { Label } from '$lib/components/ui/label';
+	import { m } from '$lib/paraglide/messages';
 
 	import type { Message } from './types.d';
 
@@ -23,7 +25,12 @@
 </script>
 
 <script lang="ts">
-	let { serviceUri, model, scope }: { serviceUri: string; model: Model; scope: string } = $props();
+	let {
+		serviceUri,
+		model,
+		scope,
+		...restProps
+	}: DialogPrimitive.TriggerProps & { serviceUri: string; model: Model; scope: string } = $props();
 
 	// Parameters
 	let temperature = $state(defaults.temperature);
@@ -107,7 +114,7 @@
 		reset();
 	}}
 >
-	<Dialog.Trigger class={buttonVariants({ variant: 'ghost' })}>
+	<Dialog.Trigger class={buttonVariants({ variant: 'ghost' })} {...restProps}>
 		<Icon icon="ph:robot" />
 	</Dialog.Trigger>
 	<Dialog.Content
@@ -139,12 +146,12 @@
 					</Dialog.Trigger>
 					<Dialog.Content>
 						<Dialog.Header>
-							<Dialog.Title>Controllers</Dialog.Title>
+							<Dialog.Title>{m.parameters()}</Dialog.Title>
 						</Dialog.Header>
 						<div class="flex flex-col gap-4 rounded-lg border-border bg-background">
 							<div class="flex flex-col gap-2">
 								<div class="flex justify-between gap-4">
-									<Label for="temperature" class="text-sm font-medium">Temperature</Label>
+									<Label for="temperature" class="text-sm font-medium">{m.temperature()}</Label>
 									<p class="text-muted-foreground">{temperature}</p>
 								</div>
 								<Input
@@ -158,7 +165,9 @@
 							</div>
 							<div class="flex flex-col gap-2">
 								<div class="flex justify-between gap-4">
-									<Label for="maximum_token_length" class="text-sm font-medium">Max Tokens</Label>
+									<Label for="maximum_token_length" class="text-sm font-medium"
+										>{m.max_tokens()}</Label
+									>
 									<p class="text-muted-foreground">{max_tokens}</p>
 								</div>
 								<Input
@@ -192,16 +201,16 @@
 			{#if isNewChat}
 				<!-- Background -->
 				<div
-					class="relative mx-auto mt-0 flex h-[50vh] w-full max-w-4xl flex-col items-center justify-center px-4 text-center sm:px-6 lg:px-8"
+					class="relative mx-auto mt-0 flex h-[50vh] w-full max-w-4xl flex-col items-center justify-center overflow-hidden px-4 text-center sm:px-6 lg:px-8"
 				>
 					<Icon
 						icon="ph:sparkle"
 						class="absolute -z-10 h-[500px] w-[500px] rotate-45 transform animate-pulse text-muted-foreground opacity-10 blur-sm"
 					/>
 					<div class="z-10">
-						<h1 class="text-3xl font-bold text-primary sm:text-4xl">Model Testing</h1>
+						<h1 class="text-3xl font-bold text-primary sm:text-4xl">{m.model_testing()}</h1>
 						<p class="mt-3 text-muted-foreground">
-							Type a prompt below and press Send to test the model.
+							{m.model_testing_description()}
 						</p>
 					</div>
 				</div>
@@ -238,8 +247,7 @@
 							</div>
 							<Chat.BubbleMessage class="flex max-w-96 flex-col gap-1 break-all">
 								<p class="text-destructive">
-									Oops! Something went wrong while fetching the response.<br />
-									Please try again or check your network connection.
+									{m.model_response_error()}
 								</p>
 							</Chat.BubbleMessage>
 						</Chat.Bubble>

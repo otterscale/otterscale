@@ -11,6 +11,7 @@
 	import * as Select from '$lib/components/ui/select';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
+	import { cn } from '$lib/utils';
 
 	let { pod, scope, namespace }: { pod: Application_Pod; scope: string; namespace: string } =
 		$props();
@@ -113,7 +114,7 @@
 </script>
 
 <Sheet.Root>
-	<Sheet.Trigger class={buttonVariants({ variant: 'ghost' })}>
+	<Sheet.Trigger class={cn('w-fit', buttonVariants({ variant: 'ghost' }))}>
 		<Icon icon="ph:file-text" />
 	</Sheet.Trigger>
 
@@ -122,11 +123,11 @@
 			class="dark size-full flex-col rounded-l-lg border border-border bg-secondary font-mono text-sm text-card-foreground shadow-sm"
 		>
 			<!-- Header with time selector -->
-			<div class="flex items-center justify-between border-b border-border p-4">
+			<div class="flex h-12 items-center justify-between border-b border-border p-4">
 				<h3 class="text-lg font-semibold">{m.log()}</h3>
 				<div class="mr-8 flex items-center gap-2">
 					<Select.Root type="single" onValueChange={handleDurationChange}>
-						<Select.Trigger class="w-20">
+						<Select.Trigger class="h-8 w-20">
 							{triggerContent}
 						</Select.Trigger>
 						<Select.Content>
@@ -143,7 +144,7 @@
 				</div>
 			</div>
 
-			<div bind:this={terminal} class="h-full flex-col overflow-auto p-4">
+			<div bind:this={terminal} class="max-h-[calc(95vh-48px)] flex-col overflow-auto p-4">
 				{#each messages as msg, i}
 					{@const isLastMessage = messages.length === i + 1}
 					{@const textClass = isLastMessage ? '' : 'text-green-500'}

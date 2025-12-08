@@ -2,6 +2,20 @@ import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 import type { HuggingFaceModel, ModelTag, ModelTagCategory, SortType } from './types';
 
+async function fetchHuggingFaceModelInformation(id: string): Promise<HuggingFaceModel> {
+	const base = `https://huggingface.co/api/models/${id}`;
+	try {
+		const response = await fetch(base);
+		if (!response.ok) {
+			throw new Error(`Failed to fetch model info: ${response.status} ${response.statusText}`);
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		throw new Error(error instanceof Error ? error.message : String(error));
+	}
+}
+
 async function fetchHuggingFaceModels(
 	author: string,
 	tags: string[],
@@ -55,4 +69,4 @@ async function fetchHuggingFaceModelTypes(modelTagCategory: ModelTagCategory): P
 	}
 }
 
-export { fetchHuggingFaceModels, fetchHuggingFaceModelTypes };
+export { fetchHuggingFaceModelInformation, fetchHuggingFaceModels, fetchHuggingFaceModelTypes };

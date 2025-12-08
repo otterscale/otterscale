@@ -269,7 +269,7 @@
 										</LineChart>
 									</Chart.Container>
 								</Table.Cell>
-								<Table.Cell class="text-center">
+								<Table.Cell class="flex items-center justify-center">
 									{#if pod}
 										<Log {pod} {scope} {namespace} />
 									{/if}

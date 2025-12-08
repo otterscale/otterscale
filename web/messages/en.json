@@ -864,5 +864,11 @@
 	"push_chart_description": "Push a chart to a project.",
 	"gpu_relation_description": "Displays the relationship between Machines, GPUs, and Pods for this model.",
 	"gpu_relation_guide_description": "Interact with the graph to explore connections and allocations.",
-	"download": "Download"
+	"download": "Download",
+	"temperature": "Temperature",
+	"max_tokens": "Max Tokens",
+	"model_testing": "Model Testing",
+	"model_testing_description": "Type a prompt below and press Send to test the model.",
+	"model_response_error": "Oops! Something went wrong while fetching the response. Please try again or check your network connection.",
+	"health_check": "Health Check"
 }

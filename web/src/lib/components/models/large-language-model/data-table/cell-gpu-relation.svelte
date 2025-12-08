@@ -138,7 +138,7 @@
 	}}
 >
 	<Drawer.Trigger class={buttonVariants({ variant: 'ghost' })}>
-		<Icon icon="ph:arrow-square-out" />
+		<Icon icon="ph:graph" />
 	</Drawer.Trigger>
 	<Drawer.Content class="h-[77vh]">
 		{#if isLoaded}
