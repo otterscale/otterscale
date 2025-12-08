@@ -35,7 +35,7 @@ func (c *ceph) Charms() []charm {
 func (c *ceph) Config(charmName string) (string, error) {
 	configs := map[string]map[string]any{
 		"ceph-mon": {
-			"config-flags":        `{ "global": {"osd_pool_default_size": 1, "osd_pool_default_min_size": 1, "mon_allow_pool_size_one": true} }`,
+			"config-flags":        `{ "global": {"osd_pool_default_size": 1, "osd_pool_default_min_size": 1, "mon_allow_pool_size_one": true, "mon_allow_pool_delete": true} }`,
 			"enable-perf-metrics": true,
 			"expected-osd-count":  1,
 			"monitor-count":       1,
