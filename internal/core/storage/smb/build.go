@@ -167,7 +167,7 @@ func (uc *UseCase) buildPersistentVolumeClaim(namespace, name string, sizeBytes 
 			},
 			Resources: corev1.VolumeResourceRequirements{
 				Requests: corev1.ResourceList{
-					"storage": *resource.NewQuantity(int64(sizeBytes), resource.BinarySI), //nolint:gosec // ignore
+					corev1.ResourceStorage: *resource.NewQuantity(int64(sizeBytes), resource.BinarySI), //nolint:gosec // ignore
 				},
 			},
 			StorageClassName: &storageClassName,
