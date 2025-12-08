@@ -17,7 +17,6 @@
 		reloadManager: ReloadManager;
 	} = $props();
 
-	// const scope = machine.workloadAnnotations['juju-machine-id']?.split('-machine-')[0];
 	const scope = $derived(machine.workloadAnnotations['juju-machine-id']?.split('-machine-')[0]);
 </script>
 
