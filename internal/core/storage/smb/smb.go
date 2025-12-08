@@ -395,9 +395,7 @@ func (uc *UseCase) UpdateSMBShare(ctx context.Context, scope, name string, sizeB
 	}
 
 	// Update persistent volume claim
-	pvc := uc.buildPersistentVolumeClaim(namespace, names.PersistentVolumeClaim, sizeBytes)
-
-	if err := uc.updatePersistentVolumeClaim(ctx, scope, namespace, pvc); err != nil {
+	if err := uc.updatePersistentVolumeClaim(ctx, scope, namespace, names.PersistentVolumeClaim, sizeBytes); err != nil {
 		return nil, "", err
 	}
 
