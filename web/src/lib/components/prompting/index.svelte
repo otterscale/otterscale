@@ -39,7 +39,7 @@
 	// Messages
 	let messages: Message[] = $state([]);
 	const isNewChat = $derived(messages.length === 0);
-	// Compltion
+	// Completion
 	let hasError = $state(false);
 	let userMessage = $state('');
 	let modelMessage = $state('');

@@ -20,7 +20,7 @@
 		scope,
 		namespace,
 		fromLocal = $bindable()
-	}: { value: string; scope: string; namespace: string, fromLocal: boolean } = $props();
+	}: { value: string; scope: string; namespace: string; fromLocal: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -59,9 +59,12 @@
 		</Select.Trigger>
 		<Select.Content>
 			{#each $modelArtifactOptions as option (option.value)}
-				<Select.Item value={option.value} onclick={() => {
-					fromLocal = true
-				}}>
+				<Select.Item
+					value={option.value}
+					onclick={() => {
+						fromLocal = true;
+					}}
+				>
 					<Icon
 						icon={option.icon ? option.icon : 'ph:empty'}
 						class={cn('size-5', option.icon ? 'visible' : 'invisible')}

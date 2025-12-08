@@ -348,7 +348,6 @@
 				disabled={invalid}
 				onclick={() => {
 					integrate();
-					console.log(request);
 					toast.promise(() => modelClient.createModel(request), {
 						loading: `Creating ${request.modelName}...`,
 						success: () => {
