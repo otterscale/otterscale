@@ -78,6 +78,8 @@
 		cephOsd: 'ceph-osd'
 	} as const;
 
+	const TRUNCATE_LENGTH = 10;
+
 	// Utility functions
 	function createEmptyComponent(): ServiceComponent {
 		return { channel: '', version: '', allUnits: 0, activeUnits: 0 };
@@ -196,6 +198,7 @@
 {/snippet}
 <!-- TODO: copy here -->
 {#snippet statusCard(serviceState: ServiceState)}
+	{@const isLongState = (serviceState.state?.state?.length ?? 0) >= TRUNCATE_LENGTH}
 	<div
 		class="relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg bg-muted p-4 shadow-sm md:p-6 lg:p-10"
 	>
@@ -204,15 +207,11 @@
 		>
 			<Icon icon={serviceState.state?.icon} class="size-84" />
 		</div>
-		<div class="z-10 mb-8 flex flex-col space-y-2 text-3xl sm:mb-2 lg:text-5xl">
-			<span
-				class="flex space-x-2 truncate overflow-visible capitalize {serviceState.state?.textClass}"
-			>
+		<div class="z-10 mb-8 flex flex-col gap-2 text-3xl sm:mb-2 lg:text-5xl">
+			<span class="flex items-center gap-2 capitalize {serviceState.state?.textClass}">
 				<span
-					class:truncate={serviceState.state?.state && serviceState.state.state.length >= 10}
-					title={serviceState.state?.state && serviceState.state.state.length >= 10
-						? serviceState.state.state
-						: undefined}
+					class:truncate={isLongState}
+					title={isLongState ? serviceState.state.state : undefined}
 				>
 					{serviceState.state?.state}
 				</span>
