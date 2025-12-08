@@ -84,7 +84,7 @@ func (m *Ceph) getConnectionConfig(scope string) (connectionConfig, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	result, err := m.juju.Execute(ctx, scope, name, "ceph config generate-minimal-conf && ceph auth get client.admin")
+	result, err := m.juju.ExecuteFromApp(ctx, scope, name, "ceph config generate-minimal-conf && ceph auth get client.admin")
 	if err != nil {
 		return connectionConfig{}, err
 	}
@@ -208,7 +208,7 @@ func (m *Ceph) extractObjectKeys(r map[string]any) (accessKey, secretKey string,
 }
 
 func (m *Ceph) getObjectKeys(ctx context.Context, scope, name string) (accessKey, secretKey string, err error) {
-	result, err := m.juju.Execute(ctx, scope, name, "radosgw-admin user list")
+	result, err := m.juju.ExecuteFromApp(ctx, scope, name, "radosgw-admin user list")
 	if err != nil {
 		return "", "", err
 	}
@@ -218,7 +218,7 @@ func (m *Ceph) getObjectKeys(ctx context.Context, scope, name string) (accessKey
 		return "", "", err
 	}
 
-	result, err = m.juju.Execute(ctx, scope, name, cmd)
+	result, err = m.juju.ExecuteFromApp(ctx, scope, name, cmd)
 	if err != nil {
 		return "", "", err
 	}

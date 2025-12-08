@@ -165,7 +165,7 @@ func (m *Juju) Run(ctx context.Context, scope, appName, actionName string, param
 	return m.waitForCompleted(ctx, scope, id, time.Second, time.Minute)
 }
 
-func (m *Juju) Execute(ctx context.Context, scope, appName, command string) (map[string]any, error) {
+func (m *Juju) ExecuteFromApp(ctx context.Context, scope, appName, command string) (map[string]any, error) {
 	conn, err := m.connection(scope)
 	if err != nil {
 		return nil, err
@@ -176,10 +176,19 @@ func (m *Juju) Execute(ctx context.Context, scope, appName, command string) (map
 		return nil, err
 	}
 
+	return m.Execute(ctx, scope, leader, command)
+}
+
+func (m *Juju) Execute(ctx context.Context, scope, unitName, command string) (map[string]any, error) {
+	conn, err := m.connection(scope)
+	if err != nil {
+		return nil, err
+	}
+
 	parallel := true
 	args := action.RunParams{
 		Commands: command,
-		Units:    []string{leader},
+		Units:    []string{unitName},
 		Parallel: &parallel,
 	}
 
@@ -189,7 +198,7 @@ func (m *Juju) Execute(ctx context.Context, scope, appName, command string) (map
 	}
 
 	if len(enqueued.Actions) == 0 || enqueued.Actions[0].Action == nil {
-		return nil, fmt.Errorf("failed to run command %q on %s", command, leader)
+		return nil, fmt.Errorf("failed to run command %q on %s", command, unitName)
 	}
 
 	id := enqueued.Actions[0].Action.ID
