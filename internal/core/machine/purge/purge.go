@@ -48,7 +48,7 @@ func (uc *UseCase) PurgeDisk(ctx context.Context, machineID string) error {
 	}
 
 	for _, app := range apps {
-		if app.Name != scope+"-ceph-osd" {
+		if app.Name != "ceph-osd" {
 			continue
 		}
 

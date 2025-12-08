@@ -21,10 +21,9 @@ func (uc *UseCase) createCOS(ctx context.Context, scope string) error {
 	}
 
 	// integrate
-	name := scope + "-" + "grafana-agent"
 	endpointList := [][]string{
-		{name + ":send-remote-write", "global-prometheus:receive-remote-write"},
-		{name + ":grafana-dashboards-provider", "global-grafana:grafana-dashboard"},
+		{"grafana-agent:send-remote-write", "global-prometheus:receive-remote-write"},
+		{"grafana-agent:grafana-dashboards-provider", "global-grafana:grafana-dashboard"},
 	}
 
 	eg, egctx := errgroup.WithContext(ctx)
