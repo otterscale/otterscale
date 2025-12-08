@@ -140,10 +140,10 @@
 	{/if}
 {/snippet}
 
-{#snippet test(data: { row: Row<Model>; serviceUri: string })}
+{#snippet test(data: { row: Row<Model>; serviceUri: string; scope: string })}
 	{#if data.row.original.status === 'deployed'}
 		<Layout.Cell class="items-center">
-			<Prompting serviceUri={data.serviceUri} model={data.row.original} />
+			<Prompting serviceUri={data.serviceUri} model={data.row.original} scope={data.scope} />
 		</Layout.Cell>
 	{/if}
 {/snippet}

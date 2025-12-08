@@ -164,7 +164,7 @@ function getColumns(
 				return renderSnippet(headers.test, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.test, { row, serviceUri: serviceUri });
+				return renderSnippet(cells.test, { row, serviceUri, scope });
 			},
 			enableHiding: false
 		},

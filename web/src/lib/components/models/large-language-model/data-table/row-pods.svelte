@@ -109,9 +109,7 @@
 							<Table.Row>
 								<Table.Cell>{pod.name}</Table.Cell>
 								<Table.Cell>
-									<Badge variant="outline">
-										{pod.phase}
-									</Badge>
+									{pod.phase}
 								</Table.Cell>
 								<Table.Cell class="text-end">
 									{pod.ready}
@@ -121,7 +119,7 @@
 									{#if pod.lastCondition}
 										{@const status = pod.lastCondition.status}
 										{#if status === 'True'}
-											<Badge variant="outline">{pod.lastCondition.type}</Badge>
+											{pod.lastCondition.type}
 										{:else}
 											<div class="flex items-center gap-1 text-destructive">
 												<Badge variant="destructive">{pod.lastCondition.reason}</Badge>

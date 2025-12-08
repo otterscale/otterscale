@@ -1,7 +1,9 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 	import SendIcon from '@lucide/svelte/icons/send';
+	import { toast } from 'svelte-sonner';
 
+	import { resolve } from '$app/paths';
 	import type { Model } from '$lib/api/model/v1/model_pb';
 	import * as Chat from '$lib/components/custom/chat';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
@@ -21,7 +23,7 @@
 </script>
 
 <script lang="ts">
-	let { serviceUri, model }: { serviceUri: string; model: Model } = $props();
+	let { serviceUri, model, scope }: { serviceUri: string; model: Model; scope: string } = $props();
 
 	// Parameters
 	let temperature = $state(defaults.temperature);
@@ -46,25 +48,32 @@
 			})
 		});
 
-		const response = await fetch('/api/completion', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				serviceUri: serviceUri,
-				modelName: model.name,
-				modelIdentifier: model.id,
-				prompt: userMessage,
-				max_tokens: max_tokens,
-				temperature: temperature
-			})
-		});
-
-		const body = await response.json();
+		const response = await fetch(
+			resolve('/(auth)/scope/[scope]/models/api/completion', { scope }),
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					serviceUri: serviceUri,
+					modelName: model.name,
+					modelIdentifier: model.id,
+					prompt: userMessage,
+					max_tokens: max_tokens,
+					temperature: temperature
+				})
+			}
+		);
 
 		if (!response.ok) {
 			hasError = true;
-			throw new Error('Failed to get response from model:', body);
+			const errorMessage = await response.text();
+			toast.error('Failed to get response from model', {
+				description: errorMessage,
+				duration: Number.POSITIVE_INFINITY
+			});
 		}
+
+		const body = await response.json();
 
 		modelMessage = body.choices.map((choice: { text: string }) => choice.text).join('');
 
@@ -228,7 +237,10 @@
 								/>
 							</div>
 							<Chat.BubbleMessage class="flex max-w-96 flex-col gap-1 break-all">
-								<p class="text-destructive">An error occurred while fetching the response.</p>
+								<p class="text-destructive">
+									Oops! Something went wrong while fetching the response.<br />
+									Please try again or check your network connection.
+								</p>
 							</Chat.BubbleMessage>
 						</Chat.Bubble>
 					{:else if !isModelLoaded && modelMessage === ''}
