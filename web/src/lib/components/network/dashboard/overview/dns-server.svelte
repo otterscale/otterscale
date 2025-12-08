@@ -21,7 +21,7 @@
 
 	const networks = writable<Network[]>([]);
 
-	const targetSubnet = $derived($networks.find((network) => network?.vlan?.dhcpOn != null));
+	const targetSubnet = $derived($networks.find((network) => network?.vlan?.dhcpOn));
 
 	async function fetch() {
 		try {
