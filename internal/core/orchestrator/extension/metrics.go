@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"time"
+
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 
 	"github.com/otterscale/otterscale/internal/core/versions"
 )
@@ -45,7 +48,7 @@ var metricsComponents = []component{
 				return err
 			}
 
-			target, err := uc.getPrometheusTarget(ctx, scope)
+			target, err := uc.waitAndGetPrometheusTarget(ctx, scope)
 			if err != nil {
 				return err
 			}
@@ -81,28 +84,56 @@ func (uc *UseCase) getPrometheusScrapeTargetK8sTargets(ctx context.Context) ([]s
 	}), nil
 }
 
-func (uc *UseCase) getPrometheusTarget(ctx context.Context, scope string) (string, error) {
-	ip, err := uc.node.InternalIP(ctx, scope)
-	if err != nil {
-		return "", err
-	}
-
+func (uc *UseCase) getPrometheusTargetNodePort(ctx context.Context, scope string) (int32, error) {
 	svc, err := uc.service.Get(ctx, scope, "monitoring", "kube-prometheus-stack-prometheus")
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
 	ports := svc.Spec.Ports
 
 	for i := range ports {
 		if ports[i].Name == "http-web" {
-			return fmt.Sprintf("%s:%d", ip, ports[i].NodePort), nil
+			return ports[i].NodePort, nil
 		}
 	}
 
-	return "", errors.New("prometheus service has no http-web port defined")
+	return 0, errors.New("prometheus service has no http-web port defined")
 }
 
 func (uc *UseCase) setPrometheusScrapeTargetK8sTargets(ctx context.Context, targets []string) error {
 	return uc.facility.Update(ctx, "cos", "prometheus-scrape-target-k8s", map[string]string{"targets": strings.Join(targets, ",")})
+}
+
+func (uc *UseCase) waitAndGetPrometheusTarget(ctx context.Context, scope string) (string, error) {
+	const (
+		timeout  = 5 * time.Minute
+		interval = 5 * time.Second
+	)
+
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	ip, err := uc.node.InternalIP(ctx, scope)
+	if err != nil {
+		return "", err
+	}
+
+	for {
+		select {
+		case <-ctx.Done():
+			return "", ctx.Err()
+
+		case <-ticker.C:
+			port, err := uc.getPrometheusTargetNodePort(ctx, scope)
+			if k8serrors.IsNotFound(err) {
+				continue
+			}
+			if err != nil {
+				return "", err
+			}
+
+			return fmt.Sprintf("%s:%d", ip, port), nil
+		}
+	}
 }
