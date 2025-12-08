@@ -1,11 +1,23 @@
 package standalone
 
 import (
+	"encoding/json"
 	"strings"
 
 	"github.com/otterscale/otterscale/internal/core/machine/tag"
 	"github.com/otterscale/otterscale/internal/core/versions"
 )
+
+type cephGlobalConfig struct {
+	OsdPoolDefaultSize    int  `json:"osd_pool_default_size"`
+	OsdPoolDefaultMinSize int  `json:"osd_pool_default_min_size"`
+	MonAllowPoolSizeOne   bool `json:"mon_allow_pool_size_one"`
+	MonAllowPoolDelete    bool `json:"mon_allow_pool_delete"`
+}
+
+type cephConfigFlags struct {
+	Global cephGlobalConfig `json:"global"`
+}
 
 type ceph struct {
 	Scope      string
@@ -33,9 +45,18 @@ func (c *ceph) Charms() []charm {
 }
 
 func (c *ceph) Config(charmName string) (string, error) {
+	configFlags, _ := json.Marshal(cephConfigFlags{
+		Global: cephGlobalConfig{
+			OsdPoolDefaultSize:    1,
+			OsdPoolDefaultMinSize: 1,
+			MonAllowPoolSizeOne:   true,
+			MonAllowPoolDelete:    true,
+		},
+	})
+
 	configs := map[string]map[string]any{
 		"ceph-mon": {
-			"config-flags":        `{ "global": {"osd_pool_default_size": 1, "osd_pool_default_min_size": 1, "mon_allow_pool_size_one": true, "mon_allow_pool_delete": true} }`,
+			"config-flags":        string(configFlags),
 			"enable-perf-metrics": true,
 			"expected-osd-count":  1,
 			"monitor-count":       1,
