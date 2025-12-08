@@ -35,7 +35,7 @@
 	const DEFAULT_REQUEST = {
 		scope: scope,
 		name: '',
-		namespace: 'default',
+		namespace: 'kubevirt',
 		source: { type: DataVolume_Source_Type.HTTP_URL, data: '' } as DataVolume_Source,
 		bootImage: true,
 		sizeBytes: BigInt(10 * 1024 ** 3)
@@ -75,7 +75,7 @@
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.namespace()}</Form.Label>
-					<SingleInput.General type="text" bind:value={request.namespace} />
+					<SingleInput.General disabled type="text" bind:value={request.namespace} />
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.size()}</Form.Label>

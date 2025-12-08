@@ -24,12 +24,12 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
 
 	// UI state
+	const DEFAULT_NAMESPACE = 'kubevirt';
 	let isAdvancedOpen = $state(false);
 	let open = $state(false);
 
@@ -86,11 +86,9 @@
 
 	async function loadBootDataVolumes() {
 		try {
-			if (!request.namespace) return;
-
 			const response = await virtualMachineClient.listDataVolumes({
 				scope: scope,
-				namespace: request.namespace,
+				namespace: DEFAULT_NAMESPACE,
 				bootImage: true
 			});
 
@@ -113,14 +111,14 @@
 	const DEFAULT_REQUEST = {
 		scope: scope,
 		name: '',
-		namespace: 'default',
+		namespace: DEFAULT_NAMESPACE,
 		instanceTypeName: '',
 		bootDataVolumeName: '',
 		startupScript: ''
 	} as CreateVirtualMachineRequest;
 
 	// ==================== Form State ====================
-	let request: CreateVirtualMachineRequest = $state({ ...DEFAULT_REQUEST });
+	let request = $state(DEFAULT_REQUEST);
 
 	// Load bootable PVCs when namespace changes
 	$effect(() => {
@@ -166,7 +164,7 @@
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.namespace()}</Form.Label>
-					<SingleInput.General type="text" bind:value={request.namespace} />
+					<SingleInput.General disabled type="text" bind:value={request.namespace} />
 				</Form.Field>
 
 				<Form.Field>
