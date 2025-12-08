@@ -13,16 +13,18 @@
 		type Model_Prefill,
 		ModelService
 	} from '$lib/api/model/v1/model_pb';
+	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
-	import { fetchHuggingFaceModelInformation } from '$lib/components/settings/model-artifact/utils.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import { buttonVariants } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import Input from '$lib/components/ui/input/input.svelte';
+	import * as Item from '$lib/components/ui/item/index.js';
+	import * as Popover from '$lib/components/ui/popover';
 	import { Slider } from '$lib/components/ui/slider/index.js';
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { m } from '$lib/paraglide/messages.js';
@@ -57,8 +59,6 @@
 	let requestPrefillResource = $state({ ...defaultPrefillResource });
 	let requestDecodeResource = $state({ ...defaultDecodeResource });
 	let isDisaggregationMode = $state(false);
-	let fromLocal: boolean = $state(false);
-	let selectedModel: string = $state('');
 
 	function resetPrefillResources() {
 		requestPrefillResource = { ...defaultPrefillResource };
@@ -66,25 +66,16 @@
 	function resetDecodeResources() {
 		requestDecodeResource = { ...defaultDecodeResource };
 	}
-	function resetFromLocal() {
-		fromLocal = false;
-	}
-	function resetSelectedModel() {
-		selectedModel = '';
-	}
 
 	function reset() {
 		request = { ...defaults };
 		resetPrefillResources();
 		resetDecodeResources();
-		resetFromLocal();
-		resetSelectedModel();
 	}
 
 	function integrate() {
 		request.prefill = requestPrefillResource;
 		request.decode = requestDecodeResource;
-		request.modelName = fromLocal ? `pvc-${selectedModel}` : selectedModel;
 		request.mode = isDisaggregationMode
 			? Model_Mode.PREFILL_DECODE_DISAGGREGATION
 			: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING;
@@ -188,7 +179,7 @@
 					<Form.Label>{m.model_name()}</Form.Label>
 					<SelectModel
 						bind:value={request.modelName}
-						bind:fromLocal
+						bind:fromLocal={request.fromPersistentVolumeClaim}
 						required
 						bind:invalid={invalidity.modelName}
 						{scope}
@@ -219,18 +210,34 @@
 					<Form.Label>{m.max_model_length()}</Form.Label>
 					<ButtonGroup.Root class="w-full">
 						<Input type="number" bind:value={request.maxModelLength} />
-						<Button
-							onclick={async () => {
-								console.log(request.modelName);
-								if (request.modelName) {
-									const response = await fetchHuggingFaceModelInformation(request.modelName);
-									// request.maxModelLength = response['']
-									console.log(response);
-								}
-							}}
-						>
-							<Icon icon="ph:robot" />
-						</Button>
+						{#if request.modelName}
+							{#await fetch(`https://huggingface.co/${request.modelName}/resolve/main/config.json`) then response}
+								{#await response.text() then body}
+									<Popover.Root>
+										<Popover.Trigger class={buttonVariants({ variant: 'outline' })}>
+											<Icon icon="ph:gear-fine" />
+										</Popover.Trigger>
+										<Popover.Content
+											align="center"
+											side="left"
+											class="max-h-[50vh] w-fit overflow-y-auto"
+										>
+											<Item.Root class="w-full">
+												<Item.Content class="flex flex-col items-start">
+													<Item.Title class="text-xl font-bold">
+														{m.configuration()}
+													</Item.Title>
+													<Item.Description class="text-muted-foreground">
+														{request.modelName}
+													</Item.Description>
+												</Item.Content>
+											</Item.Root>
+											<Code.Root lang="json" code={body} class="border-none" />
+										</Popover.Content>
+									</Popover.Root>
+								{/await}
+							{/await}
+						{/if}
 					</ButtonGroup.Root>
 				</Form.Field>
 			</Form.Fieldset>

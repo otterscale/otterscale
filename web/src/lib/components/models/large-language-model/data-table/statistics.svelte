@@ -12,18 +12,20 @@
 </script>
 
 <div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-	<Statistics.Root type="data">
-		<Statistics.Header>
-			<Statistics.Title>{m.service()}</Statistics.Title>
-			<p class="text-center text-lg font-semibold">{serviceUri}</p>
-		</Statistics.Header>
-		<Statistics.Footer class="space-x-1">
-			<Badge>chat</Badge>
-			<Badge>completions</Badge>
-			<Badge>embedding</Badge>
-		</Statistics.Footer>
-		<Statistics.Background icon="ph:squares-four" />
-	</Statistics.Root>
+	{#if serviceUri}
+		<Statistics.Root type="data">
+			<Statistics.Header>
+				<Statistics.Title>{m.service()}</Statistics.Title>
+				<p class="text-center text-lg font-semibold">{serviceUri}</p>
+			</Statistics.Header>
+			<Statistics.Footer class="space-x-1">
+				<Badge>chat</Badge>
+				<Badge>completions</Badge>
+				<Badge>embedding</Badge>
+			</Statistics.Footer>
+			<Statistics.Background icon="ph:squares-four" />
+		</Statistics.Root>
+	{/if}
 	<Statistics.Root type="count">
 		{@const models = filteredModels.length}
 		<Statistics.Header>

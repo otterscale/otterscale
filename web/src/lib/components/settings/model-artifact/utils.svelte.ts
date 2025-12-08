@@ -2,7 +2,7 @@ import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 import type { HuggingFaceModel, ModelTag, ModelTagCategory, SortType } from './types';
 
-async function fetchHuggingFaceModelInformation(id: string): Promise<HuggingFaceModel> {
+async function fetchHuggingFaceModelInformation(id: string) {
 	const base = `https://huggingface.co/api/models/${id}`;
 	try {
 		const response = await fetch(base);
