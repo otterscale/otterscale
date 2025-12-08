@@ -41,7 +41,7 @@ func (uc *UseCase) ListSubvolumes(ctx context.Context, scope, volume, group stri
 		return nil, err
 	}
 
-	clients, err := uc.subvolume.ListExportClients(ctx, scope, uc.nfsAppName(scope)) // TODO: multiple ceph-nfs charms
+	clients, err := uc.subvolume.ListExportClients(ctx, scope, "ceph-nfs") // TODO: multiple "ceph-nfs" charms
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (uc *UseCase) CreateSubvolume(ctx context.Context, scope, volume, subvolume
 		"size": size / 1024 / 1024 / 1024, // gb
 	}
 
-	if _, err := uc.action.Run(ctx, scope, uc.nfsAppName(scope), "create-share", params); err != nil {
+	if _, err := uc.action.Run(ctx, scope, "ceph-nfs", "create-share", params); err != nil {
 		return nil, err
 	}
 
@@ -108,7 +108,7 @@ func (uc *UseCase) UpdateSubvolume(ctx context.Context, scope, volume, subvolume
 		"size": size / 1024 / 1024 / 1024, // gb
 	}
 
-	if _, err := uc.action.Run(ctx, scope, uc.nfsAppName(scope), "resize-share", params); err != nil {
+	if _, err := uc.action.Run(ctx, scope, "ceph-nfs", "resize-share", params); err != nil {
 		return nil, err
 	}
 
@@ -129,7 +129,7 @@ func (uc *UseCase) DeleteSubvolume(ctx context.Context, scope, volume, subvolume
 		"purge": true,
 	}
 
-	_, err = uc.action.Run(ctx, scope, uc.nfsAppName(scope), "delete-share", params)
+	_, err = uc.action.Run(ctx, scope, "ceph-nfs", "delete-share", params)
 	return err
 }
 
@@ -139,7 +139,7 @@ func (uc *UseCase) GrantSubvolumeClient(ctx context.Context, scope, subvolume, c
 		"client": clientIP,
 	}
 
-	_, err := uc.action.Run(ctx, scope, uc.nfsAppName(scope), "grant-access", params)
+	_, err := uc.action.Run(ctx, scope, "ceph-nfs", "grant-access", params)
 	return err
 }
 
@@ -149,13 +149,13 @@ func (uc *UseCase) RevokeSubvolumeClient(ctx context.Context, scope, subvolume, 
 		"client": clientIP,
 	}
 
-	_, err := uc.action.Run(ctx, scope, uc.nfsAppName(scope), "revoke-access", params)
+	_, err := uc.action.Run(ctx, scope, "ceph-nfs", "revoke-access", params)
 	return err
 }
 
-// TODO: multiple ceph-nfs charms
+// TODO: multiple "ceph-nfs" charms
 func (uc *UseCase) isSubvolumeExport(ctx context.Context, scope, volume, subvolume, group string) (bool, error) {
-	m, err := uc.subvolume.ListExportClients(ctx, scope, uc.nfsAppName(scope))
+	m, err := uc.subvolume.ListExportClients(ctx, scope, "ceph-nfs")
 	if err != nil {
 		return false, err
 	}
@@ -170,7 +170,7 @@ func (uc *UseCase) isSubvolumeExport(ctx context.Context, scope, volume, subvolu
 }
 
 func (uc *UseCase) vip(ctx context.Context, scope string) (string, error) {
-	config, err := uc.facility.Config(ctx, scope, uc.nfsAppName(scope))
+	config, err := uc.facility.Config(ctx, scope, "ceph-nfs")
 	if err != nil {
 		return "", err
 	}
@@ -186,8 +186,4 @@ func (uc *UseCase) vip(ctx context.Context, scope string) (string, error) {
 	}
 
 	return value.(string), nil
-}
-
-func (uc *UseCase) nfsAppName(scope string) string {
-	return scope + "-ceph-nfs"
 }

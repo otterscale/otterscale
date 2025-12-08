@@ -53,6 +53,10 @@
 		}
 	]);
 
+	const tickInterval = $derived(
+		traffics.length > 0 ? Math.max(1, Math.floor(traffics.length / 12)) : 20
+	);
+
 	async function fetchReceives() {
 		const response = await prometheusDriver.rangeQuery(
 			`sum(irate(node_network_receive_bytes_total[4m]))`,
@@ -186,7 +190,7 @@
 						xAxis: {
 							format: (v: Date) =>
 								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
-							ticks: 12
+							ticks: tickInterval
 						}
 					}}
 				>

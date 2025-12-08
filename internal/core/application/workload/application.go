@@ -15,14 +15,8 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/service"
 )
 
-const (
-	ApplicationTypeDeployment  = "Deployment"
-	ApplicationTypeStatefulSet = "StatefulSet"
-	ApplicationTypeDaemonSet   = "DaemonSet"
-)
-
 type Application struct {
-	Type        string
+	Type        Type
 	Name        string
 	Namespace   string
 	Labels      map[string]string
@@ -121,9 +115,9 @@ func (uc *UseCase) ListApplications(ctx context.Context, scope string) (apps []A
 	return apps, internalIP, nil
 }
 
-func (uc *UseCase) RestartApplication(ctx context.Context, scope, namespace, name, appType string) error {
+func (uc *UseCase) RestartApplication(ctx context.Context, scope, namespace, name string, appType Type) error {
 	switch appType {
-	case ApplicationTypeDeployment:
+	case TypeDeployment:
 		deployment, err := uc.deployment.Get(ctx, scope, namespace, name)
 		if err != nil {
 			return err
@@ -138,7 +132,7 @@ func (uc *UseCase) RestartApplication(ctx context.Context, scope, namespace, nam
 		_, err = uc.deployment.Update(ctx, scope, namespace, deployment)
 		return err
 
-	case ApplicationTypeStatefulSet:
+	case TypeStatefulSet:
 		statefulSet, err := uc.statefulSet.Get(ctx, scope, namespace, name)
 		if err != nil {
 			return err
@@ -153,7 +147,7 @@ func (uc *UseCase) RestartApplication(ctx context.Context, scope, namespace, nam
 		_, err = uc.statefulSet.Update(ctx, scope, namespace, statefulSet)
 		return err
 
-	case ApplicationTypeDaemonSet:
+	case TypeDaemonSet:
 		daemonSet, err := uc.daemonSet.Get(ctx, scope, namespace, name)
 		if err != nil {
 			return err
@@ -172,9 +166,9 @@ func (uc *UseCase) RestartApplication(ctx context.Context, scope, namespace, nam
 	return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("unknown application type: %s", appType))
 }
 
-func (uc *UseCase) ScaleApplication(ctx context.Context, scope, namespace, name, appType string, replicas int32) error {
+func (uc *UseCase) ScaleApplication(ctx context.Context, scope, namespace, name string, appType Type, replicas int32) error {
 	switch appType {
-	case ApplicationTypeDeployment:
+	case TypeDeployment:
 		deployment, err := uc.deployment.Get(ctx, scope, namespace, name)
 		if err != nil {
 			return err
@@ -185,7 +179,7 @@ func (uc *UseCase) ScaleApplication(ctx context.Context, scope, namespace, name,
 		_, err = uc.deployment.Update(ctx, scope, namespace, deployment)
 		return err
 
-	case ApplicationTypeStatefulSet:
+	case TypeStatefulSet:
 		statefulSet, err := uc.statefulSet.Get(ctx, scope, namespace, name)
 		if err != nil {
 			return err
@@ -196,7 +190,7 @@ func (uc *UseCase) ScaleApplication(ctx context.Context, scope, namespace, name,
 		_, err = uc.statefulSet.Update(ctx, scope, namespace, statefulSet)
 		return err
 
-	case ApplicationTypeDaemonSet:
+	case TypeDaemonSet:
 		return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("daemon set does not support replica scaling"))
 	}
 
@@ -372,7 +366,7 @@ func (uc *UseCase) filterPersistents(namespace string, volumes []persistent.Volu
 	return ret
 }
 
-func (uc *UseCase) toApplication(labelSelector *v1.LabelSelector, podLabels map[string]string, appType, name, namespace string, replicas *int32, objectMeta *ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
+func (uc *UseCase) toApplication(labelSelector *v1.LabelSelector, podLabels map[string]string, appType Type, name, namespace string, replicas *int32, objectMeta *ObjectMeta, pods []Pod, containers []Container, services []service.Service, volumes []persistent.Volume, persistentVolumeClaims []persistent.PersistentVolumeClaim, storageClasses []persistent.StorageClass) (*Application, error) {
 	selector, err := v1.LabelSelectorAsSelector(labelSelector)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create selector: %w", err)
@@ -397,7 +391,7 @@ func (uc *UseCase) fromDeployment(workload *Deployment, pods []Pod, services []s
 	return uc.toApplication(
 		workload.Spec.Selector,
 		workload.Spec.Template.Labels,
-		ApplicationTypeDeployment,
+		TypeDeployment,
 		workload.Name,
 		workload.Namespace,
 		workload.Spec.Replicas,
@@ -415,7 +409,7 @@ func (uc *UseCase) fromStatefulSet(workload *StatefulSet, pods []Pod, services [
 	return uc.toApplication(
 		workload.Spec.Selector,
 		workload.Spec.Template.Labels,
-		ApplicationTypeStatefulSet,
+		TypeStatefulSet,
 		workload.Name,
 		workload.Namespace,
 		workload.Spec.Replicas,
@@ -433,7 +427,7 @@ func (uc *UseCase) fromDaemonSet(workload *DaemonSet, pods []Pod, services []ser
 	return uc.toApplication(
 		workload.Spec.Selector,
 		workload.Spec.Template.Labels,
-		ApplicationTypeDaemonSet,
+		TypeDaemonSet,
 		workload.Name,
 		workload.Namespace,
 		nil,

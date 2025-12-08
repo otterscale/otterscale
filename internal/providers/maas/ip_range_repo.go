@@ -54,7 +54,14 @@ func (r *ipRangeRepo) Update(_ context.Context, id int, startIP, endIP, comment 
 		return nil, err
 	}
 
+	ipRange, err := client.IPRange.Get(id)
+	if err != nil {
+		return nil, err
+	}
+
 	params := &entity.IPRangeParams{
+		Type:    "reserved",
+		Subnet:  strconv.Itoa(ipRange.Subnet.ID),
 		StartIP: startIP,
 		EndIP:   endIP,
 		Comment: comment,

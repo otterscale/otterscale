@@ -17,7 +17,7 @@
 
 	const networks = writable<Network[]>([]);
 
-	const targetSubnet = $derived($networks.find((network) => network?.vlan?.dhcpOn != null));
+	const targetSubnet = $derived($networks.find((network) => network?.vlan?.dhcpOn));
 
 	async function fetch() {
 		try {
@@ -66,7 +66,7 @@
 			<Card.Description>{targetSubnet?.subnet?.name}</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			{#if !targetSubnet?.vlan?.dhcpOn}
+			{#if targetSubnet?.vlan?.dhcpOn}
 				<p class="text-3xl text-green-600 dark:text-green-400">{m.on()}</p>
 				<Icon
 					icon="ph:check"

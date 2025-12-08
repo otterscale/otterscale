@@ -121,6 +121,12 @@ message Namespace {
 }
 
 message Application {
+  enum Type {
+    TYPE_UNKNOWN = 0;
+    TYPE_DEPLOYMENT = 1;
+    TYPE_STATEFUL_SET = 2;
+    TYPE_DAEMON_SET = 3;
+  }
   message Condition {
     string type = 1;
     string status = 2;
@@ -163,7 +169,7 @@ message Application {
     StorageClass storage_class = 11;
     google.protobuf.Timestamp created_at = 201;
   }
-  string type = 1;
+  Type type = 1;
   string name = 2;
   string namespace = 3;
   map<string, string> labels = 4;
@@ -229,7 +235,7 @@ message RestartApplicationRequest {
   reserved 2;
   string namespace = 3;
   string name = 4;
-  string type = 5;
+  Application.Type type = 5;
 }
 
 message ScaleApplicationRequest {
@@ -237,7 +243,7 @@ message ScaleApplicationRequest {
   reserved 2;
   string namespace = 3;
   string name = 4;
-  string type = 5;
+  Application.Type type = 5;
   int32 replicas = 11;
 }
 

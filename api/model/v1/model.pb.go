@@ -66,25 +66,27 @@ func (x Model_Mode) Number() protoreflect.EnumNumber {
 }
 
 type Model struct {
-	state                      protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Id              *string                `protobuf:"bytes,1,opt,name=id"`
-	xxx_hidden_Name            *string                `protobuf:"bytes,11,opt,name=name"`
-	xxx_hidden_Namespace       *string                `protobuf:"bytes,12,opt,name=namespace"`
-	xxx_hidden_Status          *string                `protobuf:"bytes,13,opt,name=status"`
-	xxx_hidden_Description     *string                `protobuf:"bytes,14,opt,name=description"`
-	xxx_hidden_FirstDeployedAt *timestamppb.Timestamp `protobuf:"bytes,15,opt,name=first_deployed_at,json=firstDeployedAt"`
-	xxx_hidden_LastDeployedAt  *timestamppb.Timestamp `protobuf:"bytes,16,opt,name=last_deployed_at,json=lastDeployedAt"`
-	xxx_hidden_ChartVersion    *string                `protobuf:"bytes,21,opt,name=chart_version,json=chartVersion"`
-	xxx_hidden_AppVersion      *string                `protobuf:"bytes,22,opt,name=app_version,json=appVersion"`
-	xxx_hidden_Mode            Model_Mode             `protobuf:"varint,31,opt,name=mode,enum=otterscale.model.v1.Model_Mode"`
-	xxx_hidden_Prefill         *Model_Prefill         `protobuf:"bytes,32,opt,name=prefill"`
-	xxx_hidden_Decode          *Model_Decode          `protobuf:"bytes,33,opt,name=decode"`
-	xxx_hidden_MaxModelLength  uint32                 `protobuf:"varint,34,opt,name=max_model_length,json=maxModelLength"`
-	xxx_hidden_Pods            *[]*v1.Application_Pod `protobuf:"bytes,41,rep,name=pods"`
-	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
-	XXX_presence               [1]uint32
-	unknownFields              protoimpl.UnknownFields
-	sizeCache                  protoimpl.SizeCache
+	state                                protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Id                        *string                `protobuf:"bytes,1,opt,name=id"`
+	xxx_hidden_Name                      *string                `protobuf:"bytes,11,opt,name=name"`
+	xxx_hidden_Namespace                 *string                `protobuf:"bytes,12,opt,name=namespace"`
+	xxx_hidden_Status                    *string                `protobuf:"bytes,13,opt,name=status"`
+	xxx_hidden_Description               *string                `protobuf:"bytes,14,opt,name=description"`
+	xxx_hidden_FirstDeployedAt           *timestamppb.Timestamp `protobuf:"bytes,15,opt,name=first_deployed_at,json=firstDeployedAt"`
+	xxx_hidden_LastDeployedAt            *timestamppb.Timestamp `protobuf:"bytes,16,opt,name=last_deployed_at,json=lastDeployedAt"`
+	xxx_hidden_ChartVersion              *string                `protobuf:"bytes,21,opt,name=chart_version,json=chartVersion"`
+	xxx_hidden_AppVersion                *string                `protobuf:"bytes,22,opt,name=app_version,json=appVersion"`
+	xxx_hidden_Mode                      Model_Mode             `protobuf:"varint,31,opt,name=mode,enum=otterscale.model.v1.Model_Mode"`
+	xxx_hidden_Prefill                   *Model_Prefill         `protobuf:"bytes,32,opt,name=prefill"`
+	xxx_hidden_Decode                    *Model_Decode          `protobuf:"bytes,33,opt,name=decode"`
+	xxx_hidden_MaxModelLength            uint32                 `protobuf:"varint,34,opt,name=max_model_length,json=maxModelLength"`
+	xxx_hidden_Pods                      *[]*v1.Application_Pod `protobuf:"bytes,41,rep,name=pods"`
+	xxx_hidden_FromPersistentVolumeClaim bool                   `protobuf:"varint,51,opt,name=from_persistent_volume_claim,json=fromPersistentVolumeClaim"`
+	xxx_hidden_PersistentVolumeClaimName *string                `protobuf:"bytes,52,opt,name=persistent_volume_claim_name,json=persistentVolumeClaimName"`
+	XXX_raceDetectHookData               protoimpl.RaceDetectHookData
+	XXX_presence                         [1]uint32
+	unknownFields                        protoimpl.UnknownFields
+	sizeCache                            protoimpl.SizeCache
 }
 
 func (x *Model) Reset() {
@@ -235,29 +237,46 @@ func (x *Model) GetPods() []*v1.Application_Pod {
 	return nil
 }
 
+func (x *Model) GetFromPersistentVolumeClaim() bool {
+	if x != nil {
+		return x.xxx_hidden_FromPersistentVolumeClaim
+	}
+	return false
+}
+
+func (x *Model) GetPersistentVolumeClaimName() string {
+	if x != nil {
+		if x.xxx_hidden_PersistentVolumeClaimName != nil {
+			return *x.xxx_hidden_PersistentVolumeClaimName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *Model) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 14)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 16)
 }
 
 func (x *Model) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 14)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 16)
 }
 
 func (x *Model) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 14)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 16)
 }
 
 func (x *Model) SetStatus(v string) {
 	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 14)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 16)
 }
 
 func (x *Model) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 14)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 16)
 }
 
 func (x *Model) SetFirstDeployedAt(v *timestamppb.Timestamp) {
@@ -270,17 +289,17 @@ func (x *Model) SetLastDeployedAt(v *timestamppb.Timestamp) {
 
 func (x *Model) SetChartVersion(v string) {
 	x.xxx_hidden_ChartVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 14)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 16)
 }
 
 func (x *Model) SetAppVersion(v string) {
 	x.xxx_hidden_AppVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 14)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 16)
 }
 
 func (x *Model) SetMode(v Model_Mode) {
 	x.xxx_hidden_Mode = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 14)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 16)
 }
 
 func (x *Model) SetPrefill(v *Model_Prefill) {
@@ -293,11 +312,21 @@ func (x *Model) SetDecode(v *Model_Decode) {
 
 func (x *Model) SetMaxModelLength(v uint32) {
 	x.xxx_hidden_MaxModelLength = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 14)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 16)
 }
 
 func (x *Model) SetPods(v []*v1.Application_Pod) {
 	x.xxx_hidden_Pods = &v
+}
+
+func (x *Model) SetFromPersistentVolumeClaim(v bool) {
+	x.xxx_hidden_FromPersistentVolumeClaim = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 14, 16)
+}
+
+func (x *Model) SetPersistentVolumeClaimName(v string) {
+	x.xxx_hidden_PersistentVolumeClaimName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 15, 16)
 }
 
 func (x *Model) HasId() bool {
@@ -391,6 +420,20 @@ func (x *Model) HasMaxModelLength() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 12)
 }
 
+func (x *Model) HasFromPersistentVolumeClaim() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 14)
+}
+
+func (x *Model) HasPersistentVolumeClaimName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 15)
+}
+
 func (x *Model) ClearId() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Id = nil
@@ -452,23 +495,35 @@ func (x *Model) ClearMaxModelLength() {
 	x.xxx_hidden_MaxModelLength = 0
 }
 
+func (x *Model) ClearFromPersistentVolumeClaim() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 14)
+	x.xxx_hidden_FromPersistentVolumeClaim = false
+}
+
+func (x *Model) ClearPersistentVolumeClaimName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 15)
+	x.xxx_hidden_PersistentVolumeClaimName = nil
+}
+
 type Model_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Id              *string
-	Name            *string
-	Namespace       *string
-	Status          *string
-	Description     *string
-	FirstDeployedAt *timestamppb.Timestamp
-	LastDeployedAt  *timestamppb.Timestamp
-	ChartVersion    *string
-	AppVersion      *string
-	Mode            *Model_Mode
-	Prefill         *Model_Prefill
-	Decode          *Model_Decode
-	MaxModelLength  *uint32
-	Pods            []*v1.Application_Pod
+	Id                        *string
+	Name                      *string
+	Namespace                 *string
+	Status                    *string
+	Description               *string
+	FirstDeployedAt           *timestamppb.Timestamp
+	LastDeployedAt            *timestamppb.Timestamp
+	ChartVersion              *string
+	AppVersion                *string
+	Mode                      *Model_Mode
+	Prefill                   *Model_Prefill
+	Decode                    *Model_Decode
+	MaxModelLength            *uint32
+	Pods                      []*v1.Application_Pod
+	FromPersistentVolumeClaim *bool
+	PersistentVolumeClaimName *string
 }
 
 func (b0 Model_builder) Build() *Model {
@@ -476,46 +531,54 @@ func (b0 Model_builder) Build() *Model {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 14)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 16)
 		x.xxx_hidden_Id = b.Id
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 14)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 16)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 14)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 16)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 14)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 16)
 		x.xxx_hidden_Status = b.Status
 	}
 	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 14)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 16)
 		x.xxx_hidden_Description = b.Description
 	}
 	x.xxx_hidden_FirstDeployedAt = b.FirstDeployedAt
 	x.xxx_hidden_LastDeployedAt = b.LastDeployedAt
 	if b.ChartVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 14)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 16)
 		x.xxx_hidden_ChartVersion = b.ChartVersion
 	}
 	if b.AppVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 14)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 16)
 		x.xxx_hidden_AppVersion = b.AppVersion
 	}
 	if b.Mode != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 14)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 16)
 		x.xxx_hidden_Mode = *b.Mode
 	}
 	x.xxx_hidden_Prefill = b.Prefill
 	x.xxx_hidden_Decode = b.Decode
 	if b.MaxModelLength != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 14)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 16)
 		x.xxx_hidden_MaxModelLength = *b.MaxModelLength
 	}
 	x.xxx_hidden_Pods = &b.Pods
+	if b.FromPersistentVolumeClaim != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 14, 16)
+		x.xxx_hidden_FromPersistentVolumeClaim = *b.FromPersistentVolumeClaim
+	}
+	if b.PersistentVolumeClaimName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 15, 16)
+		x.xxx_hidden_PersistentVolumeClaimName = b.PersistentVolumeClaimName
+	}
 	return m0
 }
 
@@ -725,20 +788,22 @@ func (b0 ListModelsResponse_builder) Build() *ListModelsResponse {
 }
 
 type CreateModelRequest struct {
-	state                     protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Scope          *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Namespace      *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name           *string                `protobuf:"bytes,4,opt,name=name"`
-	xxx_hidden_ModelName      *string                `protobuf:"bytes,11,opt,name=model_name,json=modelName"`
-	xxx_hidden_SizeBytes      uint64                 `protobuf:"varint,12,opt,name=size_bytes,json=sizeBytes"`
-	xxx_hidden_Mode           Model_Mode             `protobuf:"varint,21,opt,name=mode,enum=otterscale.model.v1.Model_Mode"`
-	xxx_hidden_Prefill        *Model_Prefill         `protobuf:"bytes,22,opt,name=prefill"`
-	xxx_hidden_Decode         *Model_Decode          `protobuf:"bytes,23,opt,name=decode"`
-	xxx_hidden_MaxModelLength uint32                 `protobuf:"varint,24,opt,name=max_model_length,json=maxModelLength"`
-	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
-	XXX_presence              [1]uint32
-	unknownFields             protoimpl.UnknownFields
-	sizeCache                 protoimpl.SizeCache
+	state                                protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope                     *string                `protobuf:"bytes,1,opt,name=scope"`
+	xxx_hidden_Namespace                 *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_Name                      *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_ModelName                 *string                `protobuf:"bytes,11,opt,name=model_name,json=modelName"`
+	xxx_hidden_SizeBytes                 uint64                 `protobuf:"varint,12,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_FromPersistentVolumeClaim bool                   `protobuf:"varint,13,opt,name=from_persistent_volume_claim,json=fromPersistentVolumeClaim"`
+	xxx_hidden_PersistentVolumeClaimName *string                `protobuf:"bytes,14,opt,name=persistent_volume_claim_name,json=persistentVolumeClaimName"`
+	xxx_hidden_Mode                      Model_Mode             `protobuf:"varint,21,opt,name=mode,enum=otterscale.model.v1.Model_Mode"`
+	xxx_hidden_Prefill                   *Model_Prefill         `protobuf:"bytes,22,opt,name=prefill"`
+	xxx_hidden_Decode                    *Model_Decode          `protobuf:"bytes,23,opt,name=decode"`
+	xxx_hidden_MaxModelLength            uint32                 `protobuf:"varint,24,opt,name=max_model_length,json=maxModelLength"`
+	XXX_raceDetectHookData               protoimpl.RaceDetectHookData
+	XXX_presence                         [1]uint32
+	unknownFields                        protoimpl.UnknownFields
+	sizeCache                            protoimpl.SizeCache
 }
 
 func (x *CreateModelRequest) Reset() {
@@ -813,9 +878,26 @@ func (x *CreateModelRequest) GetSizeBytes() uint64 {
 	return 0
 }
 
+func (x *CreateModelRequest) GetFromPersistentVolumeClaim() bool {
+	if x != nil {
+		return x.xxx_hidden_FromPersistentVolumeClaim
+	}
+	return false
+}
+
+func (x *CreateModelRequest) GetPersistentVolumeClaimName() string {
+	if x != nil {
+		if x.xxx_hidden_PersistentVolumeClaimName != nil {
+			return *x.xxx_hidden_PersistentVolumeClaimName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *CreateModelRequest) GetMode() Model_Mode {
 	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 5) {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 7) {
 			return x.xxx_hidden_Mode
 		}
 	}
@@ -845,32 +927,42 @@ func (x *CreateModelRequest) GetMaxModelLength() uint32 {
 
 func (x *CreateModelRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
 }
 
 func (x *CreateModelRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
 }
 
 func (x *CreateModelRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
 }
 
 func (x *CreateModelRequest) SetModelName(v string) {
 	x.xxx_hidden_ModelName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
 }
 
 func (x *CreateModelRequest) SetSizeBytes(v uint64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
+}
+
+func (x *CreateModelRequest) SetFromPersistentVolumeClaim(v bool) {
+	x.xxx_hidden_FromPersistentVolumeClaim = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
+}
+
+func (x *CreateModelRequest) SetPersistentVolumeClaimName(v string) {
+	x.xxx_hidden_PersistentVolumeClaimName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
 }
 
 func (x *CreateModelRequest) SetMode(v Model_Mode) {
 	x.xxx_hidden_Mode = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
 }
 
 func (x *CreateModelRequest) SetPrefill(v *Model_Prefill) {
@@ -883,7 +975,7 @@ func (x *CreateModelRequest) SetDecode(v *Model_Decode) {
 
 func (x *CreateModelRequest) SetMaxModelLength(v uint32) {
 	x.xxx_hidden_MaxModelLength = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 11)
 }
 
 func (x *CreateModelRequest) HasScope() bool {
@@ -921,11 +1013,25 @@ func (x *CreateModelRequest) HasSizeBytes() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *CreateModelRequest) HasMode() bool {
+func (x *CreateModelRequest) HasFromPersistentVolumeClaim() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *CreateModelRequest) HasPersistentVolumeClaimName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+}
+
+func (x *CreateModelRequest) HasMode() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
 func (x *CreateModelRequest) HasPrefill() bool {
@@ -946,7 +1052,7 @@ func (x *CreateModelRequest) HasMaxModelLength() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 10)
 }
 
 func (x *CreateModelRequest) ClearScope() {
@@ -974,8 +1080,18 @@ func (x *CreateModelRequest) ClearSizeBytes() {
 	x.xxx_hidden_SizeBytes = 0
 }
 
-func (x *CreateModelRequest) ClearMode() {
+func (x *CreateModelRequest) ClearFromPersistentVolumeClaim() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_FromPersistentVolumeClaim = false
+}
+
+func (x *CreateModelRequest) ClearPersistentVolumeClaimName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	x.xxx_hidden_PersistentVolumeClaimName = nil
+}
+
+func (x *CreateModelRequest) ClearMode() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
 	x.xxx_hidden_Mode = Model_MODE_INTELLIGENT_INFERENCE_SCHEDULING
 }
 
@@ -988,22 +1104,24 @@ func (x *CreateModelRequest) ClearDecode() {
 }
 
 func (x *CreateModelRequest) ClearMaxModelLength() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 10)
 	x.xxx_hidden_MaxModelLength = 0
 }
 
 type CreateModelRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope          *string
-	Namespace      *string
-	Name           *string
-	ModelName      *string
-	SizeBytes      *uint64
-	Mode           *Model_Mode
-	Prefill        *Model_Prefill
-	Decode         *Model_Decode
-	MaxModelLength *uint32
+	Scope                     *string
+	Namespace                 *string
+	Name                      *string
+	ModelName                 *string
+	SizeBytes                 *uint64
+	FromPersistentVolumeClaim *bool
+	PersistentVolumeClaimName *string
+	Mode                      *Model_Mode
+	Prefill                   *Model_Prefill
+	Decode                    *Model_Decode
+	MaxModelLength            *uint32
 }
 
 func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
@@ -1011,33 +1129,41 @@ func (b0 CreateModelRequest_builder) Build() *CreateModelRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
 		x.xxx_hidden_Scope = b.Scope
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.ModelName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
 		x.xxx_hidden_ModelName = b.ModelName
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
+	if b.FromPersistentVolumeClaim != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
+		x.xxx_hidden_FromPersistentVolumeClaim = *b.FromPersistentVolumeClaim
+	}
+	if b.PersistentVolumeClaimName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
+		x.xxx_hidden_PersistentVolumeClaimName = b.PersistentVolumeClaimName
+	}
 	if b.Mode != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
 		x.xxx_hidden_Mode = *b.Mode
 	}
 	x.xxx_hidden_Prefill = b.Prefill
 	x.xxx_hidden_Decode = b.Decode
 	if b.MaxModelLength != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 11)
 		x.xxx_hidden_MaxModelLength = *b.MaxModelLength
 	}
 	return m0
@@ -2473,7 +2599,7 @@ var File_api_model_v1_model_proto protoreflect.FileDescriptor
 
 const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
-	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x89\a\n" +
+	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8b\b\n" +
 	"\x05Model\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\v \x01(\tR\x04name\x12\x1c\n" +
@@ -2489,7 +2615,9 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\aprefill\x18  \x01(\v2\".otterscale.model.v1.Model.PrefillR\aprefill\x129\n" +
 	"\x06decode\x18! \x01(\v2!.otterscale.model.v1.Model.DecodeR\x06decode\x12(\n" +
 	"\x10max_model_length\x18\" \x01(\rR\x0emaxModelLength\x12>\n" +
-	"\x04pods\x18) \x03(\v2*.otterscale.application.v1.Application.PodR\x04pods\x1aR\n" +
+	"\x04pods\x18) \x03(\v2*.otterscale.application.v1.Application.PodR\x04pods\x12?\n" +
+	"\x1cfrom_persistent_volume_claim\x183 \x01(\bR\x19fromPersistentVolumeClaim\x12?\n" +
+	"\x1cpersistent_volume_claim_name\x184 \x01(\tR\x19persistentVolumeClaimName\x1aR\n" +
 	"\aPrefill\x12\x18\n" +
 	"\areplica\x18\x01 \x01(\rR\areplica\x12-\n" +
 	"\x12vgpumem_percentage\x18\v \x01(\rR\x11vgpumemPercentage\x1ai\n" +
@@ -2506,7 +2634,7 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x12ListModelsResponse\x122\n" +
 	"\x06models\x18\x01 \x03(\v2\x1a.otterscale.model.v1.ModelR\x06models\x12\x1f\n" +
 	"\vservice_uri\x18\x02 \x01(\tR\n" +
-	"serviceUri\"\xf8\x02\n" +
+	"serviceUri\"\xfa\x03\n" +
 	"\x12CreateModelRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
@@ -2514,7 +2642,9 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
 	"model_name\x18\v \x01(\tR\tmodelName\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\f \x01(\x04R\tsizeBytes\x123\n" +
+	"size_bytes\x18\f \x01(\x04R\tsizeBytes\x12?\n" +
+	"\x1cfrom_persistent_volume_claim\x18\r \x01(\bR\x19fromPersistentVolumeClaim\x12?\n" +
+	"\x1cpersistent_volume_claim_name\x18\x0e \x01(\tR\x19persistentVolumeClaimName\x123\n" +
 	"\x04mode\x18\x15 \x01(\x0e2\x1f.otterscale.model.v1.Model.ModeR\x04mode\x12<\n" +
 	"\aprefill\x18\x16 \x01(\v2\".otterscale.model.v1.Model.PrefillR\aprefill\x129\n" +
 	"\x06decode\x18\x17 \x01(\v2!.otterscale.model.v1.Model.DecodeR\x06decode\x12(\n" +

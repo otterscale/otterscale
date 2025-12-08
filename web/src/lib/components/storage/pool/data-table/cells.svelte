@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import { type Pool, PoolType } from '$lib/api/storage/v1/storage_pb';
+	import { type Pool, Pool_Type } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress';
@@ -44,9 +44,9 @@
 {#snippet type(row: Row<Pool>)}
 	<Layout.Cell class="items-start">
 		<Badge variant="outline">
-			{#if row.original.poolType == PoolType.ERASURE}
+			{#if row.original.type == Pool_Type.ERASURE}
 				ERASURE:{row.original.dataChunks}<Icon icon="ph:x" />{row.original.codingChunks}
-			{:else if row.original.poolType == PoolType.REPLICATED}
+			{:else if row.original.type == Pool_Type.REPLICATED}
 				REPLICATED:<Icon icon="ph:x" />{row.original.replicatedSize}
 			{:else}{/if}
 		</Badge>

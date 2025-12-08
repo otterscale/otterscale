@@ -11,7 +11,7 @@ import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
-	poolType: m.type(),
+	type: m.type(),
 	applications: m.applications(),
 	placementGroupState: m.placement_group_state(),
 	iops: m.iops()
@@ -40,7 +40,7 @@ function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<Pool
 			}
 		},
 		{
-			accessorKey: 'poolType',
+			accessorKey: 'type',
 			header: ({ column }) => {
 				return renderSnippet(headers.type, column);
 			},

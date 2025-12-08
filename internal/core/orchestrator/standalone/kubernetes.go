@@ -10,14 +10,12 @@ import (
 const defaultCalicoCIDR = "198.19.0.0/16"
 
 type kubernetes struct {
-	Scope      string
 	VirtualIPs []string
 	CalicoCIDR string
 }
 
-func newKubernetes(scope string, virtualIPs []string, calicoCIDR string) base {
+func newKubernetes(virtualIPs []string, calicoCIDR string) base {
 	return &kubernetes{
-		Scope:      scope,
 		VirtualIPs: virtualIPs,
 		CalicoCIDR: calicoCIDR,
 	}
@@ -38,16 +36,17 @@ func (k *kubernetes) Charms() []charm {
 func (k *kubernetes) Config(charmName string) (string, error) {
 	configs := map[string]map[string]any{
 		"kubernetes-control-plane": {
-			"register-with-taints": "",
 			"allow-privileged":     "true",
+			"api-extra-args":       "service-node-port-range=1-65535",
 			"loadbalancer-ips":     strings.Join(k.VirtualIPs, " "),
+			"register-with-taints": "",
 		},
 		"kubeapi-load-balancer": {
 			"loadbalancer-ips": strings.Join(k.VirtualIPs, " "),
 		},
 		"calico": {
-			"ignore-loose-rpf": "true",
 			"cidr":             k.CalicoCIDR,
+			"ignore-loose-rpf": "true",
 		},
 		"containerd": {
 			"gpu_driver": "none",
@@ -57,11 +56,11 @@ func (k *kubernetes) Config(charmName string) (string, error) {
 		},
 	}
 
-	return buildConfig(k.Scope, charmName, configs)
+	return buildConfig(charmName, configs)
 }
 
 func (k *kubernetes) Relations() [][]string {
-	relations := [][]string{
+	return [][]string{
 		{"calico:cni", "kubernetes-control-plane:cni"},
 		{"calico:etcd", "etcd:db"},
 		{"easyrsa:client", "etcd:certificates"},
@@ -74,8 +73,6 @@ func (k *kubernetes) Relations() [][]string {
 		{"keepalived:website", "kubeapi-load-balancer:apiserver"},
 		{"containerd:containerd", "kubernetes-control-plane:container-runtime"},
 	}
-
-	return buildRelations(k.Scope, relations)
 }
 
 func (k *kubernetes) Tags() []string {

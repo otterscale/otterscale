@@ -79,12 +79,10 @@ func (m *Ceph) extractAsConnectionConfig(r map[string]any) (connectionConfig, er
 }
 
 func (m *Ceph) getConnectionConfig(scope string) (connectionConfig, error) {
-	name := scope + "-ceph-mon"
-
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	result, err := m.juju.Execute(ctx, scope, name, "ceph config generate-minimal-conf && ceph auth get client.admin")
+	result, err := m.juju.ExecuteFromApp(ctx, scope, "ceph-mon", "ceph config generate-minimal-conf && ceph auth get client.admin")
 	if err != nil {
 		return connectionConfig{}, err
 	}
@@ -208,7 +206,7 @@ func (m *Ceph) extractObjectKeys(r map[string]any) (accessKey, secretKey string,
 }
 
 func (m *Ceph) getObjectKeys(ctx context.Context, scope, name string) (accessKey, secretKey string, err error) {
-	result, err := m.juju.Execute(ctx, scope, name, "radosgw-admin user list")
+	result, err := m.juju.ExecuteFromApp(ctx, scope, name, "radosgw-admin user list")
 	if err != nil {
 		return "", "", err
 	}
@@ -218,7 +216,7 @@ func (m *Ceph) getObjectKeys(ctx context.Context, scope, name string) (accessKey
 		return "", "", err
 	}
 
-	result, err = m.juju.Execute(ctx, scope, name, cmd)
+	result, err = m.juju.ExecuteFromApp(ctx, scope, name, cmd)
 	if err != nil {
 		return "", "", err
 	}
@@ -227,9 +225,6 @@ func (m *Ceph) getObjectKeys(ctx context.Context, scope, name string) (accessKey
 }
 
 func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
-	name := scope + "-ceph-mon"
-	rgwName := scope + "-ceph-radosgw"
-
 	config := clientConfig{}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -237,7 +232,7 @@ func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
 	eg, egctx := errgroup.WithContext(ctx)
 
 	eg.Go(func() error {
-		accessKey, secretKey, err := m.getObjectKeys(egctx, scope, name)
+		accessKey, secretKey, err := m.getObjectKeys(egctx, scope, "ceph-mon")
 		if err == nil {
 			config.AccessKey = accessKey
 			config.SecretKey = secretKey
@@ -246,7 +241,7 @@ func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
 	})
 
 	eg.Go(func() error {
-		endpoint, err := m.juju.GetEndpoint(egctx, scope, rgwName)
+		endpoint, err := m.juju.GetEndpoint(egctx, scope, "ceph-radosgw")
 		if err == nil {
 			config.Endpoint = endpoint
 		}

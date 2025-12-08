@@ -10,7 +10,7 @@
 	import { resolve } from '$app/paths';
 	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
 	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
-	import { ScopeService } from '$lib/api/scope/v1/scope_pb';
+	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import { IPv4AddressInput } from '$lib/components/custom/ipv4';
 	import { IPv4CIDRInput } from '$lib/components/custom/ipv4-cidr';
 	import { Badge } from '$lib/components/ui/badge';
@@ -49,11 +49,17 @@
 	const scopeClient = createClient(ScopeService, transport);
 	const orchestratorClient = createClient(OrchestratorService, transport);
 	const machinesStore = writable<Machine[]>([]);
+	const scopesStore = writable<Scope[]>([]);
+
+	// Validation regex: only lowercase letters and hyphens, must start with a letter
+	const SCOPE_NAME_REGEX = /^[a-z][a-z-]*$/;
 
 	// Form state
 	let scopeName = $state('');
+	let scopeNameError = $state('');
 	let selectedMachine = $state('');
 	let selectedDevices = $state<string[]>([]);
+	let storageDevicesError = $state('');
 	let calicoCidr = $state('');
 	let virtualIp = $state('');
 	let isSubmitting = $state(false);
@@ -68,18 +74,47 @@
 		}
 	}
 
+	async function fetchScopes() {
+		try {
+			const response = await scopeClient.listScopes({});
+			scopesStore.set(response.scopes);
+		} catch (error) {
+			console.error('Error fetching scopes:', error);
+			toast.error('Failed to fetch scopes');
+		}
+	}
+
+	function validateScopeName(value: string): string {
+		if (!value) {
+			return '';
+		}
+		if (!SCOPE_NAME_REGEX.test(value)) {
+			return m.create_scope_name_invalid_format();
+		}
+		if ($scopesStore.some((s) => s.name === value)) {
+			return m.create_scope_name_already_exists();
+		}
+		return '';
+	}
+
 	function handleSubmit(event: Event) {
+		event.preventDefault();
+
+		// Validate scope name before submission
+		if (validateScopeName(scopeName)) return;
+		if (isSubmitting) return;
+		if (selectedDevices.length === 0) {
+			storageDevicesError = m.create_scope_storage_devices_required();
+			return;
+		}
+		isSubmitting = true;
+
 		// Prepare data
 		const scope = scopeName;
 		const machineId = selectedMachine;
 		const virtualIps = virtualIp ? [virtualIp] : [];
 		const calicoCidrValue = calicoCidr;
 		const osdDevices = selectedDevices.map((device) => `${DEVICE_PATH_PREFIX}${device}`);
-
-		event.preventDefault();
-
-		if (isSubmitting) return;
-		isSubmitting = true;
 
 		// Create a loading toast that we can update
 		const toastId = toast.loading(`Creating scope ${scope}...`, {
@@ -204,7 +239,7 @@
 	}
 
 	onMount(async () => {
-		await fetchMachines();
+		await Promise.all([fetchMachines(), fetchScopes()]);
 	});
 </script>
 
@@ -246,7 +281,22 @@
 						{m.create_scope_name_description()}
 					</p>
 				</div>
-				<Input id="name" type="text" placeholder="scope-name" bind:value={scopeName} required />
+				<Input
+					id="name"
+					type="text"
+					placeholder="scope-name"
+					bind:value={scopeName}
+					oninput={(e: Event) => {
+						const target = e.currentTarget as HTMLInputElement;
+						scopeName = target.value;
+						scopeNameError = validateScopeName(target.value);
+					}}
+					aria-invalid={!!scopeNameError}
+					required
+				/>
+				{#if scopeNameError}
+					<p class="text-sm text-destructive">{scopeNameError}</p>
+				{/if}
 			</div>
 
 			<!-- Machine Selection -->
@@ -273,6 +323,10 @@
 						{#each $machinesStore.filter((m) => m.status === 'Ready' || m.status === 'New') as machine (machine.id)}
 							<Select.Item value={machine.id}>
 								{@render machineSelectItem(machine)}
+							</Select.Item>
+						{:else}
+							<Select.Item value="" disabled class="[&_svg]:hidden">
+								{m.no_available_machines()}
 							</Select.Item>
 						{/each}
 					</Select.Content>
@@ -301,7 +355,8 @@
 								<Tooltip.Root>
 									<Tooltip.Trigger>
 										<Label
-											class="flex items-start gap-x-2 rounded-md border p-2 hover:bg-accent/50 has-aria-checked:border-slate-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-slate-900 dark:has-aria-checked:bg-slate-950"
+											class="flex items-start gap-x-2 rounded-md border p-2 hover:bg-accent/50 has-aria-checked:border-slate-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-slate-900 dark:has-aria-checked:bg-slate-950 
+											{storageDevicesError ? 'border-destructive' : ''}"
 										>
 											<Checkbox
 												id={device.name}
@@ -312,6 +367,7 @@
 													} else {
 														selectedDevices = selectedDevices.filter((d) => d !== device.name);
 													}
+													storageDevicesError = '';
 												}}
 												class="data-[state=checked]:border-slate-600 data-[state=checked]:bg-slate-600 data-[state=checked]:text-white dark:data-[state=checked]:border-slate-700 dark:data-[state=checked]:bg-slate-700"
 											/>
@@ -327,6 +383,17 @@
 									</Tooltip.Content>
 								</Tooltip.Root>
 							</Tooltip.Provider>
+							{#if storageDevicesError}
+								<span class="flex items-center gap-2 text-sm text-destructive">
+									<Icon icon="ph:warning-circle-bold" class="size-4" />
+									{storageDevicesError}
+								</span>
+							{/if}
+						{:else}
+							<p class="flex items-center gap-2 text-sm text-destructive">
+								<Icon icon="ph:warning-circle-bold" class="size-4" />
+								{m.no_available_storage_devices()}
+							</p>
 						{/each}
 					</div>
 				</div>

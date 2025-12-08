@@ -404,8 +404,14 @@ func toProtoTestResult(r *bist.Result) *pb.TestResult {
 	ret.SetName(r.Name)
 	ret.SetStatus(toProtoTestResultStatus(r.Status))
 	ret.SetCreatedBy(r.CreatedBy)
-	ret.SetStartedAt(timestamppb.New(r.StartTime))
-	ret.SetCompletedAt(timestamppb.New(r.CompletionTime))
+
+	if !r.StartTime.IsZero() {
+		ret.SetStartedAt(timestamppb.New(r.StartTime))
+	}
+
+	if !r.CompletionTime.IsZero() {
+		ret.SetCompletedAt(timestamppb.New(r.CompletionTime))
+	}
 
 	if r.FIO != nil {
 		ret.SetFio(toProtoFIO(r.FIO))

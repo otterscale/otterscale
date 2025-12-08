@@ -58,7 +58,7 @@ func (s *ModelService) CreateModel(ctx context.Context, req *pb.CreateModelReque
 		maxModelLength = req.GetMaxModelLength()
 	}
 
-	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetSizeBytes(), toModelMode(req.GetMode()), prefill, decode, maxModelLength)
+	model, err := s.model.CreateModel(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetModelName(), req.GetFromPersistentVolumeClaim(), req.GetPersistentVolumeClaimName(), req.GetSizeBytes(), toModelMode(req.GetMode()), prefill, decode, maxModelLength)
 	if err != nil {
 		return nil, err
 	}
@@ -238,6 +238,8 @@ func toProtoModel(m *model.Model) *pb.Model {
 
 	ret.SetMaxModelLength(m.MaxModelLength)
 	ret.SetPods(toProtoPods(m.Pods))
+	ret.SetFromPersistentVolumeClaim(m.FromPVC)
+	ret.SetPersistentVolumeClaimName(m.PVCName)
 
 	return ret
 }

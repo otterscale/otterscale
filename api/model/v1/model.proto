@@ -81,6 +81,8 @@ message Model {
   Decode decode = 33;
   uint32 max_model_length = 34;
   repeated otterscale.application.v1.Application.Pod pods = 41;
+  bool from_persistent_volume_claim = 51;
+  string persistent_volume_claim_name = 52;
 }
 
 message ListModelsRequest {
@@ -101,6 +103,8 @@ message CreateModelRequest {
   string name = 4;
   string model_name = 11;
   uint64 size_bytes = 12;
+  bool from_persistent_volume_claim = 13;
+  string persistent_volume_claim_name = 14;
   Model.Mode mode = 21;
   Model.Prefill prefill = 22;
   Model.Decode decode = 23;

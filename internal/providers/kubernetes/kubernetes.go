@@ -121,12 +121,10 @@ func (m *Kubernetes) writeCAToFile(caData []byte) (string, error) {
 }
 
 func (m *Kubernetes) newConfig(scope string) (*rest.Config, error) {
-	name := scope + "-kubernetes-control-plane"
-
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	kubeConfig, err := m.getKubeConfig(ctx, scope, name)
+	kubeConfig, err := m.getKubeConfig(ctx, scope, "kubernetes-control-plane")
 	if err != nil {
 		return nil, err
 	}
@@ -149,10 +147,15 @@ func (m *Kubernetes) newConfig(scope string) (*rest.Config, error) {
 }
 
 func (m *Kubernetes) getConfig(scopeName string) (*rest.Config, error) {
-	if scopeName == scope.ReservedName {
-		return m.newMicroK8sConfig()
+	if scopeName != scope.ReservedName {
+		return m.newConfig(scopeName)
 	}
-	return m.newConfig(scopeName)
+
+	if os.Getenv("OTTERSCALE_CONTAINER") == "true" {
+		return rest.InClusterConfig()
+	}
+
+	return m.newMicroK8sConfig()
 }
 
 func (m *Kubernetes) clientset(scope string) (*kubernetes.Clientset, error) {

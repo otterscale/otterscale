@@ -8,9 +8,9 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/resource"
 
 	"github.com/otterscale/otterscale/internal/core/application/config"
-	"github.com/otterscale/otterscale/internal/core/application/persistent"
 )
 
 func mergeUsers(existing, desired []userEntry) []User {
@@ -184,15 +184,15 @@ func (uc *UseCase) updateShare(ctx context.Context, scope, namespace, name strin
 	return err
 }
 
-func (uc *UseCase) updatePersistentVolumeClaim(ctx context.Context, scope, namespace string, pvc *persistent.PersistentVolumeClaim) error {
-	existing, err := uc.persistentVolumeClaim.Get(ctx, scope, namespace, pvc.Name)
+func (uc *UseCase) updatePersistentVolumeClaim(ctx context.Context, scope, namespace, name string, sizeBytes uint64) error {
+	existing, err := uc.persistentVolumeClaim.Get(ctx, scope, namespace, name)
 	if err != nil {
 		return err
 	}
 
-	pvc.ObjectMeta = existing.ObjectMeta
+	existing.Spec.Resources.Requests[corev1.ResourceStorage] = *resource.NewQuantity(int64(sizeBytes), resource.BinarySI) //nolint:gosec // ignore
 
-	_, err = uc.persistentVolumeClaim.Update(ctx, scope, namespace, pvc)
+	_, err = uc.persistentVolumeClaim.Update(ctx, scope, namespace, existing)
 	return err
 }
 

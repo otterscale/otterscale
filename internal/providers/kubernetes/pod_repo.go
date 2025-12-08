@@ -9,8 +9,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/httpstream"
 	"k8s.io/client-go/tools/remotecommand"
-
-	"github.com/otterscale/kubevirt-client-go/containerizeddataimporter/scheme"
+	"k8s.io/kubectl/pkg/scheme"
 
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 )

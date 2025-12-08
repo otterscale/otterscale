@@ -173,7 +173,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 		return nil, nil, err
 	}
 	repositoryRepo := registry.NewRepositoryRepo(registryRegistry)
-	extensionUseCase := extension.NewUseCase(customResourceDefinitionRepo, facilityRepo, nodeRepo, releaseRepo, repositoryRepo, scopeRepo, serviceRepo)
+	extensionUseCase := extension.NewUseCase(actionRepo, customResourceDefinitionRepo, facilityRepo, nodeRepo, releaseRepo, repositoryRepo, scopeRepo, serviceRepo)
 	gpuUseCase := gpu.NewUseCase(machineRepo, nodeRepo, podRepo)
 	relationRepo := juju.NewRelationRepo(jujuJuju)
 	standaloneUseCase := standalone.NewUseCase(configConfig, facilityRepo, ipRangeRepo, machineRepo, orchestratorRepo, provisionerRepo, relationRepo, subnetRepo, tagRepo)

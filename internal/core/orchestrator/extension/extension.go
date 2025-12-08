@@ -20,6 +20,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/release"
 	"github.com/otterscale/otterscale/internal/core/application/service"
 	"github.com/otterscale/otterscale/internal/core/facility"
+	"github.com/otterscale/otterscale/internal/core/facility/action"
 	"github.com/otterscale/otterscale/internal/core/registry"
 	"github.com/otterscale/otterscale/internal/core/scope"
 )
@@ -40,6 +41,7 @@ type Manifest struct {
 }
 
 type UseCase struct {
+	action                   action.ActionRepo
 	customResourceDefinition cluster.CustomResourceDefinitionRepo
 	facility                 facility.FacilityRepo
 	node                     cluster.NodeRepo
@@ -49,8 +51,9 @@ type UseCase struct {
 	service                  service.ServiceRepo
 }
 
-func NewUseCase(customResourceDefinition cluster.CustomResourceDefinitionRepo, facility facility.FacilityRepo, node cluster.NodeRepo, release release.ReleaseRepo, repository registry.RepositoryRepo, scope scope.ScopeRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(action action.ActionRepo, customResourceDefinition cluster.CustomResourceDefinitionRepo, facility facility.FacilityRepo, node cluster.NodeRepo, release release.ReleaseRepo, repository registry.RepositoryRepo, scope scope.ScopeRepo, service service.ServiceRepo) *UseCase {
 	return &UseCase{
+		action:                   action,
 		customResourceDefinition: customResourceDefinition,
 		facility:                 facility,
 		node:                     node,

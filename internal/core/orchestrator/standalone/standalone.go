@@ -115,9 +115,9 @@ func (uc *UseCase) CreateNode(ctx context.Context, scope, machineID string, virt
 		releaseFunc = append(releaseFunc, releaseVIP)
 	}
 
-	ceph := newCeph(scope, osdDevices, nfsVIP.String())
-	kubernetes := newKubernetes(scope, virtualIPs, calicoCIDR)
-	addons := newAddons(scope)
+	ceph := newCeph(osdDevices, nfsVIP.String())
+	kubernetes := newKubernetes(virtualIPs, calicoCIDR)
+	addons := newAddons()
 
 	for _, base := range []base{kubernetes, ceph, addons} {
 		if err := uc.deploy(ctx, scope, machineID, jujuID, base); err != nil {
@@ -154,10 +154,9 @@ func (uc *UseCase) deploy(ctx context.Context, scope, maasID, jujuID string, bas
 
 	for _, charm := range base.Charms() {
 		eg.Go(func() error {
-			charmName := strings.TrimPrefix(charm.Name, "ch:")
-			appName := scope + "-" + charmName
+			appName := strings.TrimPrefix(charm.Name, "ch:")
 
-			config, err := base.Config(charmName)
+			config, err := base.Config(appName)
 			if err != nil {
 				return err
 			}
@@ -181,14 +180,14 @@ func (uc *UseCase) deploy(ctx context.Context, scope, maasID, jujuID string, bas
 	return eg.Wait()
 }
 
-func buildConfig(scope, name string, configs map[string]map[string]any) (string, error) {
+func buildConfig(name string, configs map[string]map[string]any) (string, error) {
 	config, ok := configs[name]
 	if !ok {
 		return "", nil // skip
 	}
 
 	m := map[string]any{
-		scope + "-" + name: config,
+		name: config,
 	}
 
 	value, err := yaml.Marshal(m)
@@ -197,20 +196,4 @@ func buildConfig(scope, name string, configs map[string]map[string]any) (string,
 	}
 
 	return string(value), nil
-}
-
-func buildRelations(scope string, relationList [][]string) [][]string {
-	relations := [][]string{}
-
-	for _, r := range relationList {
-		endpoints := []string{}
-
-		for _, endpoint := range r {
-			endpoints = append(endpoints, scope+"-"+endpoint)
-		}
-
-		relations = append(relations, endpoints)
-	}
-
-	return relations
 }

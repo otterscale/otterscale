@@ -23,23 +23,24 @@ type Pool struct {
 	PlacementGroupCount uint64
 	PlacementGroupState map[string]int64
 	CreatedAt           time.Time
-	Applications        []string
+	Applications        []PoolApplication
 }
 
 // Note: Ceph create and update operations only return error status.
 type PoolRepo interface {
-	List(ctx context.Context, scope, application string) ([]Pool, error)
-	Create(ctx context.Context, scope string, pool string, poolType PoolType) error
-	Delete(ctx context.Context, scope string, pool string) error
-	Enable(ctx context.Context, scope string, pool, application string) error
-	GetParameter(ctx context.Context, scope string, pool, key string) (string, error)
-	SetParameter(ctx context.Context, scope string, pool, key, value string) error
-	GetQuota(ctx context.Context, scope string, pool string) (maxBytes, maxObjects uint64, err error)
-	SetQuota(ctx context.Context, scope string, pool string, maxBytes, maxObjects uint64) error
-	GetECProfile(ctx context.Context, scope string, pool string) (k, m string, err error)
+	List(ctx context.Context, scope string, application PoolApplication) ([]Pool, error)
+	Get(ctx context.Context, scope, pool string) (*Pool, error)
+	Create(ctx context.Context, scope, pool string, poolType PoolType) error
+	Delete(ctx context.Context, scope, pool string) error
+	Enable(ctx context.Context, scope, pool string, application PoolApplication) error
+	GetParameter(ctx context.Context, scope, pool, key string) (string, error)
+	SetParameter(ctx context.Context, scope, pool, key, value string) error
+	GetQuota(ctx context.Context, scope, pool string) (maxBytes, maxObjects uint64, err error)
+	SetQuota(ctx context.Context, scope, pool string, maxBytes, maxObjects uint64) error
+	GetECProfile(ctx context.Context, scope, pool string) (k, m string, err error)
 }
 
-func (uc *UseCase) ListPools(ctx context.Context, scope, application string) ([]Pool, error) {
+func (uc *UseCase) ListPools(ctx context.Context, scope string, application PoolApplication) ([]Pool, error) {
 	pools, err := uc.pool.List(ctx, scope, application)
 	if err != nil {
 		return nil, err
@@ -50,7 +51,7 @@ func (uc *UseCase) ListPools(ctx context.Context, scope, application string) ([]
 	return pools, nil
 }
 
-func (uc *UseCase) CreatePool(ctx context.Context, scope, pool string, poolType PoolType, ecOverwrites bool, replicatedSize, quotaMaxBytes, quotaMaxObjects uint64, applications []string) (*Pool, error) {
+func (uc *UseCase) CreatePool(ctx context.Context, scope, pool string, poolType PoolType, ecOverwrites bool, replicatedSize, quotaMaxBytes, quotaMaxObjects uint64, applications []PoolApplication) (*Pool, error) {
 	if err := uc.pool.Create(ctx, scope, pool, poolType); err != nil {
 		return nil, err
 	}
@@ -77,9 +78,7 @@ func (uc *UseCase) CreatePool(ctx context.Context, scope, pool string, poolType 
 		return nil, err
 	}
 
-	return &Pool{
-		Name: pool,
-	}, nil
+	return uc.pool.Get(ctx, scope, pool)
 }
 
 func (uc *UseCase) UpdatePool(ctx context.Context, scope, pool string, quotaMaxBytes, quotaMaxObjects uint64) (*Pool, error) {
@@ -87,9 +86,7 @@ func (uc *UseCase) UpdatePool(ctx context.Context, scope, pool string, quotaMaxB
 		return nil, err
 	}
 
-	return &Pool{
-		Name: pool,
-	}, nil
+	return uc.pool.Get(ctx, scope, pool)
 }
 
 func (uc *UseCase) DeletePool(ctx context.Context, scope, pool string) error {

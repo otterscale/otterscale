@@ -6,7 +6,7 @@
 	import { toast } from 'svelte-sonner';
 
 	import type { CreatePoolRequest } from '$lib/api/storage/v1/storage_pb';
-	import { PoolType, StorageService } from '$lib/api/storage/v1/storage_pb';
+	import { Pool_Application, Pool_Type, StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -19,14 +19,14 @@
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
-	export const poolTypes: Writable<SingleSelect.OptionType[]> = writable([
+	export const types: Writable<SingleSelect.OptionType[]> = writable([
 		{
-			value: PoolType.ERASURE,
+			value: Pool_Type.ERASURE,
 			label: 'Erasure',
 			icon: 'ph:scales'
 		},
 		{
-			value: PoolType.REPLICATED,
+			value: Pool_Type.REPLICATED,
 			label: 'Replicated',
 			icon: 'ph:copy-simple'
 		}
@@ -34,17 +34,17 @@
 
 	export const applications: Writable<SingleSelect.OptionType[]> = writable([
 		{
-			value: 'cephfs',
+			value: Pool_Application.FILE,
 			label: 'Ceph File System',
 			icon: 'ph:squares-four'
 		},
 		{
-			value: 'rbd',
+			value: Pool_Application.BLOCK,
 			label: 'RADOS Block Device',
 			icon: 'ph:squares-four'
 		},
 		{
-			value: 'rgw',
+			value: Pool_Application.OBJECT,
 			label: 'RADOS Gateway',
 			icon: 'ph:squares-four'
 		}
@@ -74,8 +74,8 @@
 	let invalidity = $state({} as Booleanified<CreatePoolRequest>);
 	const invalid = $derived(
 		invalidity.poolName ||
-			invalidity.poolType ||
-			(request.poolType === PoolType.REPLICATED && invalidity.replicatedSize)
+			invalidity.type ||
+			(request.type === Pool_Type.REPLICATED && invalidity.replicatedSize)
 	);
 
 	let open = $state(false);
@@ -106,9 +106,9 @@
 					<Form.Label>{m.type()}</Form.Label>
 					<SingleSelect.Root
 						required
-						options={poolTypes}
-						bind:value={request.poolType}
-						bind:invalid={invalidity.poolType}
+						options={types}
+						bind:value={request.type}
+						bind:invalid={invalidity.type}
 					>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -117,7 +117,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each $poolTypes as type}
+										{#each $types as type}
 											<SingleSelect.Item option={type}>
 												<Icon
 													icon={type.icon ? type.icon : 'ph:empty'}
@@ -133,7 +133,7 @@
 						</SingleSelect.Content>
 					</SingleSelect.Root>
 				</Form.Field>
-				{#if request.poolType === PoolType.ERASURE}
+				{#if request.type === Pool_Type.ERASURE}
 					<Form.Field>
 						<!-- <Form.Label>{m.ec_overwrite()}</Form.Label> -->
 						<SingleInput.Boolean
@@ -142,7 +142,7 @@
 						/>
 					</Form.Field>
 				{/if}
-				{#if request.poolType === PoolType.REPLICATED}
+				{#if request.type === Pool_Type.REPLICATED}
 					<Form.Field>
 						<Form.Label>{m.replicated_size()}</Form.Label>
 						<SingleInput.General

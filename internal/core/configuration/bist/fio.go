@@ -117,7 +117,7 @@ func (uc *UseCase) CreateFIOResult(ctx context.Context, name, createdBy string, 
 		}
 
 		configMapName := fmt.Sprintf("ceph-conf-%s", shortID(block.Scope))
-		if err := uc.ensureConfigMap(ctx, scope.ReservedName, bistNamespace, configMapName); err != nil {
+		if err := uc.ensureConfigMap(ctx, block.Scope, scope.ReservedName, bistNamespace, configMapName); err != nil {
 			return nil, err
 		}
 
@@ -285,10 +285,10 @@ func (uc *UseCase) ensureNamespace(ctx context.Context, scope, namespace string)
 	return err
 }
 
-func (uc *UseCase) ensureConfigMap(ctx context.Context, scope, namespace, name string) error {
+func (uc *UseCase) ensureConfigMap(ctx context.Context, targetScope, scope, namespace, name string) error {
 	_, err := uc.configMap.Get(ctx, scope, namespace, name)
 	if apierrors.IsNotFound(err) {
-		host, id, key, err := uc.storageNode.Config(scope)
+		host, id, key, err := uc.storageNode.Config(targetScope)
 		if err != nil {
 			return err
 		}
@@ -311,7 +311,7 @@ func (uc *UseCase) ensureConfigMap(ctx context.Context, scope, namespace, name s
 }
 
 func (uc *UseCase) ensurePool(ctx context.Context, scope, pool string) error {
-	pools, err := uc.pool.List(ctx, scope, "")
+	pools, err := uc.pool.List(ctx, scope, storage.PoolApplicationBlock)
 	if err != nil {
 		return err
 	}
@@ -326,7 +326,7 @@ func (uc *UseCase) ensurePool(ctx context.Context, scope, pool string) error {
 		return err
 	}
 
-	return uc.pool.Enable(ctx, scope, pool, "rbd")
+	return uc.pool.Enable(ctx, scope, pool, storage.PoolApplicationBlock)
 }
 
 func (uc *UseCase) ensureImage(ctx context.Context, scope, pool, image string) error {

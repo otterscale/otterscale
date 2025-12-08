@@ -429,7 +429,7 @@ func (uc *UseCase) filterClones(namespace, name string, clones []VirtualMachineC
 	ret := []VirtualMachineClone{}
 
 	for i := range clones {
-		if clones[i].Namespace == namespace && clones[i].Name == name {
+		if val, ok := clones[i].GetLabels()[nameLabel]; clones[i].Namespace == namespace && ok && val == name {
 			ret = append(ret, clones[i])
 		}
 	}
@@ -441,7 +441,7 @@ func (uc *UseCase) filterSnapshots(namespace, name string, snapshots []VirtualMa
 	ret := []VirtualMachineSnapshot{}
 
 	for i := range snapshots {
-		if snapshots[i].Namespace == namespace && snapshots[i].Name == name {
+		if val, ok := snapshots[i].GetLabels()[nameLabel]; snapshots[i].Namespace == namespace && ok && val == name {
 			ret = append(ret, snapshots[i])
 		}
 	}
@@ -453,7 +453,7 @@ func (uc *UseCase) filterRestores(namespace, name string, restores []VirtualMach
 	ret := []VirtualMachineRestore{}
 
 	for i := range restores {
-		if restores[i].Namespace == namespace && restores[i].Name == name {
+		if val, ok := restores[i].GetLabels()[nameLabel]; restores[i].Namespace == namespace && ok && val == name {
 			ret = append(ret, restores[i])
 		}
 	}
@@ -465,7 +465,7 @@ func (uc *UseCase) filterServices(namespace, name string, services []service.Ser
 	ret := []service.Service{}
 
 	for i := range services {
-		if services[i].Namespace == namespace && services[i].Name == name {
+		if val, ok := services[i].GetLabels()[nameLabel]; services[i].Namespace == namespace && ok && val == name {
 			ret = append(ret, services[i])
 		}
 	}

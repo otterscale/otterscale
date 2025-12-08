@@ -174,7 +174,7 @@ func (uc *UseCase) GetDataVolume(ctx context.Context, scope, namespace, name str
 	eg.Go(func() error {
 		v, err := uc.persistentVolumeClaim.Get(egctx, scope, namespace, name)
 		if err == nil {
-			scName := persistentVolumeClaim.Spec.StorageClassName
+			scName := v.Spec.StorageClassName
 			if scName != nil {
 				sc, err := uc.storageClass.Get(egctx, scope, *scName)
 				if err == nil {
