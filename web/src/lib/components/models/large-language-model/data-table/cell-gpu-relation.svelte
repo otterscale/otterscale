@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import '@xyflow/svelte/dist/style.css';
 
 	import { createClient, type Transport } from '@connectrpc/connect';
@@ -18,9 +18,7 @@
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Drawer from '$lib/components/ui/drawer/index.js';
 	import { m } from '$lib/paraglide/messages';
-</script>
 
-<script lang="ts">
 	let { scope, model }: { scope: string; model: Model } = $props();
 
 	const transport: Transport = getContext('transport');
