@@ -20,6 +20,7 @@ func (a *addons) Config(charmName string) (string, error) {
 		"ceph-csi": {
 			"cephfs-enable":        "true",
 			"default-storage":      "ceph-ext4",
+			"image-registry":       "ghcr.io/otterscale",
 			"provisioner-replicas": 1,
 			"release":              "v" + versions.CephCSI,
 		},

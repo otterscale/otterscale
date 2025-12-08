@@ -47,6 +47,7 @@ func (k *kubernetes) Config(charmName string) (string, error) {
 		"calico": {
 			"cidr":             k.CalicoCIDR,
 			"ignore-loose-rpf": "true",
+			"image-registry":   "ghcr.io/otterscale",
 		},
 		"containerd": {
 			"gpu_driver": "none",
