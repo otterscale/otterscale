@@ -6,7 +6,7 @@
 	import { toast } from 'svelte-sonner';
 
 	import type { CreateImageRequest } from '$lib/api/storage/v1/storage_pb';
-	import { StorageService } from '$lib/api/storage/v1/storage_pb';
+	import { Pool_Application, StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
@@ -63,14 +63,16 @@
 				scope: scope
 			});
 			poolOptions.set(
-				response.pools.map(
-					(pool) =>
-						({
-							value: pool.name,
-							label: pool.name,
-							icon: 'ph:cube'
-						}) as SingleSelect.OptionType
-				)
+				response.pools
+					.filter((pool) => pool.applications.includes(Pool_Application.BLOCK))
+					.map(
+						(pool) =>
+							({
+								value: pool.name,
+								label: pool.name,
+								icon: 'ph:cube'
+							}) as SingleSelect.OptionType
+					)
 			);
 
 			isPoolsLoading = false;
@@ -124,7 +126,7 @@
 									<SingleSelect.List>
 										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 										<SingleSelect.Group>
-											{#each $poolOptions as option}
+											{#each $poolOptions as option (option.value)}
 												<SingleSelect.Item {option}>
 													<Icon
 														icon={option.icon ? option.icon : 'ph:empty'}
