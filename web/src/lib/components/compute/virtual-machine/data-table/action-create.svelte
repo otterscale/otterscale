@@ -134,7 +134,6 @@
 	// ==================== Lifecycle Hooks ====================
 	onMount(() => {
 		loadInstanceTypes();
-		// loadBootDataVolumes();
 	});
 </script>
 
@@ -212,7 +211,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each $bootDataVolumes.filter((dv) => dv.phase != 'Failed') as dv (dv.value)}
+										{#each $bootDataVolumes.filter((dv) => dv.phase !== 'Failed') as dv (dv.value)}
 											<SingleSelect.Item option={dv} disabled={dv.phase !== 'Succeeded'}>
 												{#if dv.phase === 'Succeeded'}
 													<Icon icon="ph:hard-drive" class="size-5" />
