@@ -10,8 +10,17 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/sync/errgroup"
+
 	"github.com/otterscale/otterscale/internal/core/machine"
 )
+
+const gpuPresentLabel = "nvidia.com/gpu.present"
+
+type unitInfo struct {
+	Hostname string
+	HasGPU   bool
+}
 
 func (uc *UseCase) containerdConfigPath() string {
 	return "/etc/containerd/config.toml"
@@ -39,120 +48,113 @@ func (uc *UseCase) containerdTemplatePath(unitName string) string {
 	return fmt.Sprintf("/var/lib/juju/agents/unit-%s/charm/templates/config_v2.toml", sanitizedName)
 }
 
-func (uc *UseCase) getContainerdTemplate(ctx context.Context, scope, unit string) (string, error) {
-	path := uc.containerdTemplatePath(unit)
-	cmd := fmt.Sprintf("cat %s", path)
-
-	r, err := uc.action.Execute(ctx, scope, unit, cmd)
-	if err != nil {
-		return "", err
-	}
-
-	stdout, ok := r["stdout"].(string)
-	if !ok {
-		return "", errors.New("containerd config stdout not found")
-	}
-
-	return stdout, nil
-}
-
-func (uc *UseCase) setContainerdTemplate(ctx context.Context, scope, unit, config string) error {
+func (uc *UseCase) setContainerdTemplate(ctx context.Context, scope, unit string, hasGPU bool) error {
+	data := base64.StdEncoding.EncodeToString([]byte(renderContainerdTemplate(hasGPU)))
 	path := uc.containerdTemplatePath(unit)
 
-	data := base64.StdEncoding.EncodeToString([]byte(config))
-	cmd := fmt.Sprintf(`echo "%s" | base64 -d > %s`, data, path)
+	cmd := fmt.Sprintf(`echo "%q" | base64 -d > %s`, data, path)
 
 	_, err := uc.action.Execute(ctx, scope, unit, cmd)
 	return err
 }
 
-func (uc *UseCase) reconcileContainerd(ctx context.Context, scope, unit string) error {
-	// get custom registries
+func (uc *UseCase) getCustomRegistries(ctx context.Context, scope string) ([]registryConfig, error) {
 	config, err := uc.getConfig(ctx, scope, "containerd")
-	if err != nil {
-		return err
-	}
-
-	customRegistries, err := getValue[string](config, "custom_registries")
-	if err != nil {
-		return err
-	}
-
-	var registries []registryConfig
-	if err := json.Unmarshal([]byte(customRegistries), &registries); err != nil {
-		return err
-	}
-
-	// add hack registries
-	hack := slices.Clone(registries)
-	hack = append(hack, registryConfig{
-		URL:                "http://hack.reconcile",
-		InsecureSkipVerify: true,
-	})
-
-	hackValue, err := json.Marshal(hack)
-	if err != nil {
-		return err
-	}
-
-	// set hacked config
-	if err := uc.hackAndWaitContainerdConfigChanged(ctx, scope, unit, string(hackValue)); err != nil {
-		return err
-	}
-
-	// set config back
-	oriValue, err := json.Marshal(registries)
-	if err != nil {
-		return err
-	}
-
-	return uc.setConfig(ctx, scope, "containerd", "custom_registries", string(oriValue))
-}
-
-func (uc *UseCase) patchContainerdTemplates(ctx context.Context, scope string, wait bool) error {
-	unitWithGPU, err := uc.getContainerdUnitContainsGPU(ctx, scope)
-	if err != nil {
-		return err
-	}
-
-	for unit, hasGPU := range unitWithGPU {
-		// update by gpu operator
-		if wait {
-			if err := uc.waitContainerdTemplateChanged(ctx, scope, unit); err != nil {
-				return err
-			}
-		}
-
-		config := renderContainerdTemplate(hasGPU)
-
-		if err := uc.setContainerdTemplate(ctx, scope, unit, config); err != nil {
-			return err
-		}
-
-		if err := uc.reconcileContainerd(ctx, scope, unit); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (uc *UseCase) getContainerdUnitContainsGPU(ctx context.Context, scope string) (map[string]bool, error) {
-	machineWithGPU, err := uc.findMachineWithGPU(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return uc.findContainerdUnitWithGPU(ctx, scope, machineWithGPU)
+	customRegistries, err := getValue[string](config, "custom_registries")
+	if err != nil {
+		return nil, err
+	}
+
+	var registries []registryConfig
+
+	if err := json.Unmarshal([]byte(customRegistries), &registries); err != nil {
+		return nil, err
+	}
+
+	return registries, nil
 }
 
-func (uc *UseCase) findContainerdUnitWithGPU(ctx context.Context, scope string, machineWithGPU map[string]bool) (map[string]bool, error) {
+func (uc *UseCase) reconcileContainerd(ctx context.Context, scope, unit string) error {
+	registries, err := uc.getCustomRegistries(ctx, scope)
+	if err != nil {
+		return err
+	}
+
+	if err := uc.hackAndWaitContainerdConfigChanged(ctx, scope, unit, registries); err != nil {
+		return err
+	}
+
+	// set custom registries back
+	return uc.setContainerdCustomRegistries(ctx, scope, registries)
+}
+
+func (uc *UseCase) patchContainerdTemplates(ctx context.Context, scope string, wait bool) error {
+	ctrUnitInfo, err := uc.getContainerdUnitInfo(ctx, scope)
+	if err != nil {
+		return err
+	}
+
+	eg, egctx := errgroup.WithContext(ctx)
+
+	for ctr, unitInfo := range ctrUnitInfo {
+		eg.Go(func() error {
+			// waiting for node contains label
+			if wait && unitInfo.HasGPU {
+				if err := uc.waitNodeLabel(ctx, scope, unitInfo.Hostname); err != nil {
+					return err
+				}
+			}
+
+			hasGPU, err := uc.isNodeContainsGPU(ctx, scope, unitInfo.Hostname)
+			if err != nil {
+				return err
+			}
+
+			if err := uc.setContainerdTemplate(egctx, scope, ctr, hasGPU); err != nil {
+				return err
+			}
+
+			return uc.reconcileContainerd(egctx, scope, ctr)
+		})
+	}
+
+	return eg.Wait()
+}
+
+func (uc *UseCase) isNodeContainsGPU(ctx context.Context, scope, name string) (bool, error) {
+	node, err := uc.node.Get(ctx, scope, name)
+	if err != nil {
+		return false, err
+	}
+
+	present, ok := node.GetLabels()[gpuPresentLabel]
+	if ok {
+		return present == "true", nil
+	}
+
+	return false, nil
+}
+
+func (uc *UseCase) getContainerdUnitInfo(ctx context.Context, scope string) (map[string]unitInfo, error) {
+	machineUnitInfo, err := uc.findMachineUnitInfo(ctx, scope)
+	if err != nil {
+		return nil, err
+	}
+
+	return uc.findContainerdUnitInfo(ctx, scope, machineUnitInfo)
+}
+
+func (uc *UseCase) findContainerdUnitInfo(ctx context.Context, scope string, machineUnitInfo map[string]unitInfo) (map[string]unitInfo, error) {
 	facilities, err := uc.facility.List(ctx, scope, "")
 	if err != nil {
 		return nil, err
 	}
 
-	unitWithGPU := map[string]bool{}
+	ctrUnitInfo := map[string]unitInfo{}
 
 	for i := range facilities {
 		status := facilities[i].Status
@@ -169,25 +171,34 @@ func (uc *UseCase) findContainerdUnitWithGPU(ctx context.Context, scope string, 
 					continue
 				}
 
-				if hasGPU, ok := machineWithGPU[unit.Machine]; ok {
-					unitWithGPU[subName] = hasGPU
+				if unitInfo, ok := machineUnitInfo[unit.Machine]; ok {
+					ctrUnitInfo[subName] = unitInfo
 				}
 			}
 		}
 	}
 
-	return unitWithGPU, nil
+	return ctrUnitInfo, nil
 }
 
-func (uc *UseCase) findMachineWithGPU(ctx context.Context) (map[string]bool, error) {
+func (uc *UseCase) findMachineUnitInfo(ctx context.Context, scope string) (map[string]unitInfo, error) {
 	machines, err := uc.machine.List(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	machineWithGPU := map[string]bool{}
+	machineUnitInfo := map[string]unitInfo{}
 
 	for i := range machines {
+		machineScope, err := uc.machine.ExtractScope(&machines[i])
+		if err != nil {
+			continue
+		}
+
+		if machineScope != scope {
+			continue
+		}
+
 		jujuID, err := uc.machine.ExtractJujuID(&machines[i])
 		if err != nil {
 			continue
@@ -198,10 +209,13 @@ func (uc *UseCase) findMachineWithGPU(ctx context.Context) (map[string]bool, err
 			return nil, err
 		}
 
-		machineWithGPU[jujuID] = uc.containsNvidiaGPU(gpus)
+		machineUnitInfo[jujuID] = unitInfo{
+			Hostname: machines[i].Hostname,
+			HasGPU:   uc.containsNvidiaGPU(gpus),
+		}
 	}
 
-	return machineWithGPU, nil
+	return machineUnitInfo, nil
 }
 
 func (uc *UseCase) containsNvidiaGPU(gpus []machine.GPU) bool {
@@ -213,13 +227,8 @@ func (uc *UseCase) containsNvidiaGPU(gpus []machine.GPU) bool {
 	return false
 }
 
-func (uc *UseCase) waitContainerdTemplateChanged(ctx context.Context, scope, unit string) error {
+func (uc *UseCase) waitNodeLabel(ctx context.Context, scope, hostname string) error {
 	const interval = 5 * time.Second
-
-	before, err := uc.getContainerdTemplate(ctx, scope, unit)
-	if err != nil {
-		return err
-	}
 
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
@@ -230,19 +239,19 @@ func (uc *UseCase) waitContainerdTemplateChanged(ctx context.Context, scope, uni
 			return ctx.Err()
 
 		case <-ticker.C:
-			after, err := uc.getContainerdTemplate(ctx, scope, unit)
+			hasGPU, err := uc.isNodeContainsGPU(ctx, scope, hostname)
 			if err != nil {
 				return err
 			}
 
-			if before != after {
+			if hasGPU {
 				return nil
 			}
 		}
 	}
 }
 
-func (uc *UseCase) hackAndWaitContainerdConfigChanged(ctx context.Context, scope, unit, hackValue string) error {
+func (uc *UseCase) hackAndWaitContainerdConfigChanged(ctx context.Context, scope, unit string, registries []registryConfig) error {
 	const interval = 5 * time.Second
 
 	before, err := uc.getContainerdConfig(ctx, scope, unit)
@@ -250,7 +259,14 @@ func (uc *UseCase) hackAndWaitContainerdConfigChanged(ctx context.Context, scope
 		return err
 	}
 
-	if err := uc.setConfig(ctx, scope, "containerd", "custom_registries", string(hackValue)); err != nil {
+	// add hack registries
+	hack := slices.Clone(registries)
+	hack = append(hack, registryConfig{
+		URL:                "http://hack.reconcile",
+		InsecureSkipVerify: true,
+	})
+
+	if err := uc.setContainerdCustomRegistries(ctx, scope, hack); err != nil {
 		return err
 	}
 
