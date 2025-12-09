@@ -2,7 +2,6 @@ package extension
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"slices"
 	"strings"
@@ -43,78 +42,57 @@ var metricsComponents = []component{
 			},
 		},
 		PostFunc: func(uc *UseCase, ctx context.Context, scope string) error {
-			targets, err := uc.getPrometheusScrapeTargetK8sTargets(ctx)
-			if err != nil {
-				return err
-			}
-
-			target, err := uc.waitAndGetPrometheusTarget(ctx, scope)
-			if err != nil {
-				return err
-			}
-
-			targets = append(targets, target)
-
-			slices.Sort(targets)
-			targets = slices.Compact(targets)
-
-			return uc.setPrometheusScrapeTargetK8sTargets(ctx, targets)
+			return uc.setPrometheusTargets(ctx, scope)
 		},
 	},
 }
 
-func (uc *UseCase) getPrometheusScrapeTargetK8sTargets(ctx context.Context) ([]string, error) {
-	config, err := uc.facility.Config(ctx, "cos", "prometheus-scrape-target-k8s")
+func (uc *UseCase) setPrometheusTargets(ctx context.Context, scope string) error {
+	targets, err := uc.getPrometheusTargets(ctx)
+	if err != nil {
+		return err
+	}
+
+	newTarget, err := uc.waitPrometheusNewTarget(ctx, scope)
+	if err != nil {
+		return err
+	}
+
+	targets = append(targets, newTarget)
+
+	// de-duplicate
+	slices.Sort(targets)
+	targets = slices.Compact(targets)
+
+	return uc.setConfig(ctx, "cos", "prometheus-scrape-target-k8s", "targets", strings.Join(targets, ","))
+}
+
+func (uc *UseCase) getPrometheusTargets(ctx context.Context) ([]string, error) {
+	config, err := uc.getConfig(ctx, "cos", "prometheus-scrape-target-k8s")
 	if err != nil {
 		return nil, err
 	}
 
-	targets, ok := config["targets"].(map[string]any)
-	if !ok {
-		return nil, fmt.Errorf("invalid type for targets field")
+	targets, err := getValue[string](config, "targets")
+	if err != nil {
+		return nil, err
 	}
 
-	value, ok := targets["value"].(string)
-	if !ok {
-		return nil, fmt.Errorf("invalid type for targets.value field")
-	}
-
-	return slices.DeleteFunc(strings.Split(value, ","), func(target string) bool {
+	return slices.DeleteFunc(strings.Split(targets, ","), func(target string) bool {
 		return target == ""
 	}), nil
 }
 
-func (uc *UseCase) getPrometheusTargetNodePort(ctx context.Context, scope string) (int32, error) {
-	svc, err := uc.service.Get(ctx, scope, "monitoring", "kube-prometheus-stack-prometheus")
-	if err != nil {
-		return 0, err
-	}
-
-	ports := svc.Spec.Ports
-
-	for i := range ports {
-		if ports[i].Name == "http-web" {
-			return ports[i].NodePort, nil
-		}
-	}
-
-	return 0, errors.New("prometheus service has no http-web port defined")
-}
-
-func (uc *UseCase) setPrometheusScrapeTargetK8sTargets(ctx context.Context, targets []string) error {
-	return uc.facility.Update(ctx, "cos", "prometheus-scrape-target-k8s", map[string]string{"targets": strings.Join(targets, ",")})
-}
-
-func (uc *UseCase) waitAndGetPrometheusTarget(ctx context.Context, scope string) (string, error) {
+func (uc *UseCase) waitPrometheusNewTarget(ctx context.Context, scope string) (string, error) {
 	const interval = 5 * time.Second
-
-	ticker := time.NewTicker(interval)
-	defer ticker.Stop()
 
 	ip, err := uc.node.InternalIP(ctx, scope)
 	if err != nil {
 		return "", err
 	}
+
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
 
 	for {
 		select {
@@ -122,7 +100,7 @@ func (uc *UseCase) waitAndGetPrometheusTarget(ctx context.Context, scope string)
 			return "", ctx.Err()
 
 		case <-ticker.C:
-			port, err := uc.getPrometheusTargetNodePort(ctx, scope)
+			port, err := uc.getNodePort(ctx, scope, "monitoring", "kube-prometheus-stack-prometheus", "http-web")
 			if k8serrors.IsNotFound(err) {
 				continue
 			}
