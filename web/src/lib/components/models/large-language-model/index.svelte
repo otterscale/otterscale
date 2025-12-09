@@ -83,12 +83,13 @@
 		}
 	}
 
-	const reloadManager = new ReloadManager(fetch, false);
+	const reloadManager = new ReloadManager(fetch);
 
 	let isMounted = $state(false);
 	onMount(async () => {
 		await fetch();
 		isMounted = true;
+		reloadManager.start();
 	});
 	onDestroy(() => {
 		reloadManager.stop();
