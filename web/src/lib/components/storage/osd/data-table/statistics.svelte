@@ -58,7 +58,7 @@
 			.reduce((a, current) => a + current, 0)}
 		{@const { value: totalSizeValue, unit: totalSizeUnit } = formatCapacity(totalSize)}
 		{@const { value: totalUsedValue, unit: totalUsedUnit } = formatCapacity(totalUsed)}
-		{@const percentage = formatPercentage(totalUsed, totalSize)}
+		{@const percentage = formatPercentage(totalUsed, totalSize, 0)}
 		<Card.Root class="relative overflow-hidden">
 			<Card.Header class="gap-3">
 				<Card.Title>
