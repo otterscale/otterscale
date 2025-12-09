@@ -29,7 +29,7 @@
 	<Statistics.Root type="ratio">
 		{@const powerOnMachines = filteredMachines.filter((m) => m.powerState === 'on').length}
 		{@const totalMachines = filteredMachines.length}
-		{@const percentage = formatPercentage(powerOnMachines, totalMachines)}
+		{@const percentage = formatPercentage(powerOnMachines, totalMachines, 0)}
 		<Statistics.Header>
 			<Statistics.Title>{m.power()}</Statistics.Title>
 		</Statistics.Header>
@@ -48,7 +48,7 @@
 			(machine) => machine.status === 'Deployed'
 		).length}
 		{@const totalMachines = filteredMachines.length}
-		{@const percentage = formatPercentage(deployedMachines, totalMachines)}
+		{@const percentage = formatPercentage(deployedMachines, totalMachines, 0)}
 		<Statistics.Header>
 			<Statistics.Title>{m.deployments()}</Statistics.Title>
 		</Statistics.Header>

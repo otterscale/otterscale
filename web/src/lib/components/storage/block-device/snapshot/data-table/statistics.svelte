@@ -50,7 +50,7 @@
 		{@const backgroundIcon = 'ph:shield-checkered'}
 		{@const protectedSnapshots = filteredSnapshots.filter((snapshot) => snapshot.protected).length}
 		{@const totalSnapshots = filteredSnapshots.length}
-		{@const percentage = formatPercentage(protectedSnapshots, totalSnapshots)}
+		{@const percentage = formatPercentage(protectedSnapshots, totalSnapshots, 0)}
 		<Card.Root class="relative overflow-hidden">
 			<Card.Header class="gap-3">
 				<Card.Title>

@@ -103,7 +103,7 @@
 			(total, application) => total + application.pods.length,
 			0
 		)}
-		{@const percentage = formatPercentage(healthPods, totalPods)}
+		{@const percentage = formatPercentage(healthPods, totalPods, 0)}
 		<Card.Root class="relative overflow-hidden">
 			<Card.Header class="gap-3">
 				<Card.Title>

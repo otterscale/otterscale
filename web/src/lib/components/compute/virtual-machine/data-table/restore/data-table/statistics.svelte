@@ -50,7 +50,7 @@
 		{@const backgroundIcon = 'ph:check'}
 		{@const completedRestores = filteredRestores.filter((restore) => restore.complete).length}
 		{@const restores = filteredRestores.length}
-		{@const percentage = formatPercentage(completedRestores, restores)}
+		{@const percentage = formatPercentage(completedRestores, restores, 0)}
 		<Card.Root class="relative overflow-hidden">
 			<Card.Header class="gap-3">
 				<Card.Title>
