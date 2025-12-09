@@ -54,6 +54,7 @@ var modelComponents = []component{
 				"gateway.service.type":                              "NodePort",
 			},
 		},
+		Dependencies: []string{"istiod"},
 	},
 }
 
