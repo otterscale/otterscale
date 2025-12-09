@@ -50,5 +50,5 @@ const (
 
 // Bist Image Version
 const (
-	Bist = "0.0.2"
+	Bist = "0.0.3"
 )
