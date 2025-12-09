@@ -32,6 +32,9 @@ var modelComponents = []component{
 		},
 		Dependencies: []string{"kube-prometheus-stack"},
 		PostFunc: func(uc *UseCase, ctx context.Context, scope string) error {
+			if err := uc.patchContainerdTemplates(ctx, scope, true); err != nil {
+				return err
+			}
 			return uc.setDefaultNodeLabel(ctx, scope)
 		},
 	},

@@ -19,8 +19,10 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/application/release"
 	"github.com/otterscale/otterscale/internal/core/application/service"
+	"github.com/otterscale/otterscale/internal/core/application/workload"
 	"github.com/otterscale/otterscale/internal/core/facility"
 	"github.com/otterscale/otterscale/internal/core/facility/action"
+	"github.com/otterscale/otterscale/internal/core/machine"
 	"github.com/otterscale/otterscale/internal/core/registry"
 	"github.com/otterscale/otterscale/internal/core/scope"
 )
@@ -43,20 +45,26 @@ type Manifest struct {
 type UseCase struct {
 	action                   action.ActionRepo
 	customResourceDefinition cluster.CustomResourceDefinitionRepo
+	daemonSet                workload.DaemonSetRepo
 	facility                 facility.FacilityRepo
+	machine                  machine.MachineRepo
 	node                     cluster.NodeRepo
+	nodeDevice               machine.NodeDeviceRepo
 	release                  release.ReleaseRepo
 	repository               registry.RepositoryRepo
 	scope                    scope.ScopeRepo
 	service                  service.ServiceRepo
 }
 
-func NewUseCase(action action.ActionRepo, customResourceDefinition cluster.CustomResourceDefinitionRepo, facility facility.FacilityRepo, node cluster.NodeRepo, release release.ReleaseRepo, repository registry.RepositoryRepo, scope scope.ScopeRepo, service service.ServiceRepo) *UseCase {
+func NewUseCase(action action.ActionRepo, customResourceDefinition cluster.CustomResourceDefinitionRepo, daemonSet workload.DaemonSetRepo, facility facility.FacilityRepo, machine machine.MachineRepo, node cluster.NodeRepo, nodeDevice machine.NodeDeviceRepo, release release.ReleaseRepo, repository registry.RepositoryRepo, scope scope.ScopeRepo, service service.ServiceRepo) *UseCase {
 	return &UseCase{
 		action:                   action,
 		customResourceDefinition: customResourceDefinition,
+		daemonSet:                daemonSet,
 		facility:                 facility,
+		machine:                  machine,
 		node:                     node,
+		nodeDevice:               nodeDevice,
 		release:                  release,
 		repository:               repository,
 		scope:                    scope,
