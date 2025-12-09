@@ -6,7 +6,7 @@
 	import { toast } from 'svelte-sonner';
 
 	import type { CreateImageRequest } from '$lib/api/storage/v1/storage_pb';
-	import { StorageService } from '$lib/api/storage/v1/storage_pb';
+	import { Pool_Application, StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
@@ -60,7 +60,8 @@
 	async function fetchVolumeOptions() {
 		try {
 			const response = await storageClient.listPools({
-				scope: scope
+				scope: scope,
+				application: Pool_Application.BLOCK
 			});
 			poolOptions.set(
 				response.pools.map(
@@ -124,7 +125,7 @@
 									<SingleSelect.List>
 										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 										<SingleSelect.Group>
-											{#each $poolOptions as option}
+											{#each $poolOptions as option (option.value)}
 												<SingleSelect.Item {option}>
 													<Icon
 														icon={option.icon ? option.icon : 'ph:empty'}
