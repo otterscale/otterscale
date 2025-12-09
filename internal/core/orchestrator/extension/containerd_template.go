@@ -154,7 +154,7 @@ version = 2
         {%%- if registry.host %%}
         [plugins."io.containerd.grpc.v1.cri".registry.mirrors."{{ registry.host }}"]
           {%%- if registry.url %%}
-          endpoint = ["{{ registry.url}}"]
+          endpoint = ["{{ registry.url }}"]
           {%%- endif -%%}
         {%% endif -%%}
       {%% endfor %%}
