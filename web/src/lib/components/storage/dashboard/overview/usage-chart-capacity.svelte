@@ -33,6 +33,8 @@
 		{} as {
 			usedValue: number | undefined;
 			usedUnit: string | undefined;
+			availableValue: number | undefined;
+			availableUnit: string | undefined;
 			totalValue: number | undefined;
 			totalUnit: string | undefined;
 			usage: { value: number }[];
@@ -52,16 +54,20 @@
 		const totalValue = totalResponse.result[0]?.value?.value;
 
 		const usedCapacity = usedValue ? formatCapacity(usedValue) : null;
+		const availableBytes = totalValue - usedValue;
+		const availableCapacity = availableBytes ? formatCapacity(availableBytes) : null;
 		const totalCapacity = totalValue ? formatCapacity(totalValue) : null;
-		const usageValue = usedValue / totalValue;
-		const usagePercentage = usageValue != null ? usageValue * 100 : null;
+		const availableRatio = availableBytes / totalValue;
+		const availablePercentage = availableRatio != null ? availableRatio * 100 : null;
 
 		response = {
 			usedValue: usedCapacity ? Math.round(usedCapacity.value) : undefined,
 			usedUnit: usedCapacity ? usedCapacity.unit : undefined,
+			availableValue: availableCapacity ? Math.round(availableCapacity.value) : undefined,
+			availableUnit: availableCapacity ? availableCapacity.unit : undefined,
 			totalValue: totalCapacity ? Math.round(totalCapacity.value) : undefined,
 			totalUnit: totalCapacity ? totalCapacity.unit : undefined,
-			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
+			usage: availablePercentage !== null ? [{ value: availablePercentage }] : [{ value: NaN }]
 		};
 	}
 
@@ -86,7 +92,13 @@
 <Card.Root class="h-full gap-2">
 	<Card.Header class="h-[42px]">
 		<Card.Title>{CHART_TITLE}</Card.Title>
-		<Card.Description>{CHART_DESCRIPTION}</Card.Description>
+		<Card.Description>
+			{#if response.totalValue != undefined && response.totalUnit != undefined}
+				{m.remaining_capacity()}
+			{:else}
+				{CHART_DESCRIPTION}
+			{/if}
+		</Card.Description>
 	</Card.Header>
 	{#if isLoading}
 		<Card.Content>
@@ -94,7 +106,7 @@
 				<Icon icon="svg-spinners:6-dots-rotate" class="size-12" />
 			</div>
 		</Card.Content>
-	{:else if response.usedValue == undefined && response.usedUnit == undefined}
+	{:else if response.availableValue == undefined && response.availableUnit == undefined}
 		<Card.Content>
 			<div class="flex h-[200px] w-full flex-col items-center justify-center">
 				<Icon icon="ph:chart-line-fill" class="size-50 animate-pulse text-muted-foreground" />
@@ -130,18 +142,18 @@
 					{/snippet}
 					{#snippet aboveMarks()}
 						<Text
-							value={response.usedValue}
+							value="{response.availableValue} {response.availableUnit}"
 							textAnchor="middle"
 							verticalAnchor="middle"
 							class="fill-foreground text-4xl! font-bold"
 							dy={3}
 						/>
 						<Text
-							value={response.usedUnit}
+							value="Used {response.usedValue} {response.usedUnit}"
 							textAnchor="middle"
 							verticalAnchor="middle"
 							class="fill-muted-foreground!"
-							dy={22}
+							dy={25}
 						/>
 					{/snippet}
 				</ArcChart>

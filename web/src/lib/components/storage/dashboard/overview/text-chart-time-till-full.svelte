@@ -21,31 +21,12 @@
 	const query = $derived(
 		`
 	(
-		ceph_pool_max_avail{
-			job=~".+",
-			juju_application=~".*",
-			juju_model=~".*",
-			juju_model="${scope}",
-			juju_unit=~".*"
-		} 
+		ceph_pool_max_avail{job=~".+",juju_model="${scope}"} 
 		/ 
-		deriv(ceph_pool_stored{
-			job=~".+",
-			juju_application=~".*",
-			juju_model=~".*",
-			juju_model="${scope}",
-			juju_unit=~".*"
-		}[6h])
+		deriv(ceph_pool_stored{job=~".+",juju_model="${scope}"}[6h])
 	) 
 	* 
-	on(pool_id) group_left(instance, name) ceph_pool_metadata{
-		job=~".+",
-		juju_application=~".*",
-		juju_model=~".*",
-		juju_model="${scope}",
-		juju_unit=~".*",
-		name=~".mgr"
-	} > 0
+	on(pool_id) group_left(instance, name) ceph_pool_metadata{job=~".+",juju_model="${scope}",name=~".mgr"} > 0
 	`
 	);
 
