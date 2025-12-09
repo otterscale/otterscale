@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"golang.org/x/sync/errgroup"
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 
 	"github.com/otterscale/otterscale/internal/core/machine"
 )
@@ -98,6 +97,10 @@ func (uc *UseCase) patchContainerdTemplates(ctx context.Context, scope string, w
 	}
 
 	if wait {
+		if !uc.anyGPU(ctrUnitInfo) {
+			return errors.New("no GPU found in any unit")
+		}
+
 		if err := uc.waitGPUOperatorReady(ctx, scope); err != nil {
 			return err
 		}
@@ -225,6 +228,15 @@ func (uc *UseCase) containsNvidiaGPU(gpus []machine.GPU) bool {
 	return false
 }
 
+func (uc *UseCase) anyGPU(ctrUnitInfo map[string]unitInfo) bool {
+	for _, unitInfo := range ctrUnitInfo {
+		if unitInfo.HasGPU {
+			return true
+		}
+	}
+	return false
+}
+
 func (uc *UseCase) waitGPUOperatorReady(ctx context.Context, scope string) error {
 	const interval = 5 * time.Second
 
@@ -238,9 +250,6 @@ func (uc *UseCase) waitGPUOperatorReady(ctx context.Context, scope string) error
 
 		case <-ticker.C:
 			daemonSet, err := uc.daemonSet.Get(ctx, scope, "gpu-operator", "nvidia-operator-validator")
-			if k8serrors.IsNotFound(err) {
-				return nil
-			}
 			if err != nil {
 				return err
 			}
