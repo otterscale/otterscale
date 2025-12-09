@@ -38,6 +38,7 @@ func (k *kubernetes) Config(charmName string) (string, error) {
 		"kubernetes-control-plane": {
 			"allow-privileged":     "true",
 			"api-extra-args":       "service-node-port-range=1-65535",
+			"image-registry":       "ghcr.io/otterscale",
 			"loadbalancer-ips":     strings.Join(k.VirtualIPs, " "),
 			"register-with-taints": "",
 		},

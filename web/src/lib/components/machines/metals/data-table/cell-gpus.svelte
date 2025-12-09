@@ -16,9 +16,10 @@
 		OrchestratorService
 	} from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import * as Table from '$lib/components/custom/table';
-	import { Complex as Simple } from '$lib/components/flow/index';
+	import { Complex as ComplexFlow } from '$lib/components/flow/index';
+	import { buttonVariants } from '$lib/components/ui/button';
+	import * as Drawer from '$lib/components/ui/drawer/index.js';
 	import * as HoverCard from '$lib/components/ui/hover-card';
-	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
@@ -40,7 +41,7 @@
 	const edges: Writable<Edge[]> = writable([]);
 	let isLoaded = $state(false);
 
-	async function fetchGPURelations() {
+	async function fetch() {
 		if (!machineScope) {
 			return;
 		}
@@ -140,7 +141,7 @@
 
 	onMount(async () => {
 		try {
-			await fetchGPURelations();
+			await fetch();
 			isLoaded = true;
 		} catch (error) {
 			console.error('Error fetching GPU relations:', error);
@@ -148,92 +149,74 @@
 	});
 </script>
 
-{#if machineScope && $nodes.length > 0 && isModelEnabled}
-	<Sheet.Root bind:open onOpenChange={fetchGPURelations}>
-		<Sheet.Trigger>
-			<span class="flex items-center gap-1">
-				{machine.gpuDevices.length}
-				<Icon icon="ph:arrow-square-out" />
-			</span>
-		</Sheet.Trigger>
-		<Sheet.Content side="right" class="min-w-[38vw] p-4">
-			{#if open}
-				<Sheet.Header>
-					<Sheet.Title class="text-center text-lg">{m.details()}</Sheet.Title>
-				</Sheet.Header>
+<span class="flex items-center">
+	{#if $nodes.length > 0 && isModelEnabled}
+		<Drawer.Root
+			bind:open
+			onOpenChange={async (isOpen) => {
+				if (isOpen) {
+					if (!isLoaded) {
+						await fetch();
+						isLoaded = true;
+					}
+				} else {
+					isLoaded = false;
+				}
+			}}
+		>
+			<Drawer.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon-sm' })}>
+				<Icon icon="ph:graph" />
+			</Drawer.Trigger>
+			<Drawer.Content class="h-[77vh]">
 				{#if isLoaded}
-					<Simple.Flow initialNodes={$nodes} initialEdges={$edges} />
-				{:else}
-					<div class="flex h-full items-center justify-center p-8">
-						<Icon icon="ph:circle-notch" class="h-8 w-8 animate-spin" />
-					</div>
+					<Drawer.Header>
+						<Drawer.Title>{m.details()}</Drawer.Title>
+						<Drawer.Description>
+							<p>{m.gpu_relation_description()}</p>
+							<p>{m.gpu_relation_guide_description()}</p>
+						</Drawer.Description>
+					</Drawer.Header>
+					{#if open}
+						<ComplexFlow.Flow initialNodes={$nodes} initialEdges={$edges} />
+					{/if}
 				{/if}
-				<div class="mt-auto rounded-lg border shadow">
-					<Table.Root>
-						<Table.Header>
-							<Table.Row
-								class="bg-muted [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
-							>
-								<Table.Head>{m.product()}</Table.Head>
-								<Table.Head>{m.vendor()}</Table.Head>
-								<Table.Head>{m.bus()}</Table.Head>
-								<Table.Head>{m.pci_address()}</Table.Head>
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-							{#each machine.gpuDevices as gpuDevice}
-								<Table.Row>
-									<Table.Cell>
-										{gpuDevice.productName !== '' ? gpuDevice.productName : gpuDevice.productId}
-									</Table.Cell>
-									<Table.Cell>
-										{gpuDevice.vendorName !== '' ? gpuDevice.vendorName : gpuDevice.vendorId}
-									</Table.Cell>
-									<Table.Cell>{gpuDevice.busName}</Table.Cell>
-									<Table.Cell>{gpuDevice.pciAddress}</Table.Cell>
-								</Table.Row>
-							{/each}
-						</Table.Body>
-					</Table.Root>
-				</div>
-			{/if}
-		</Sheet.Content>
-	</Sheet.Root>
-{:else}
-	<HoverCard.Root>
-		<HoverCard.Trigger>
-			<span class="flex items-center gap-1">
-				{machine.gpuDevices.length}
-				<Icon icon="ph:info" />
-			</span>
-		</HoverCard.Trigger>
-		<HoverCard.Content class="m-0 h-fit w-fit p-0">
-			<Table.Root>
-				<Table.Header>
-					<Table.Row
-						class="bg-muted [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
-					>
-						<Table.Head>{m.product()}</Table.Head>
-						<Table.Head>{m.vendor()}</Table.Head>
-						<Table.Head>{m.bus()}</Table.Head>
-						<Table.Head>{m.pci_address()}</Table.Head>
-					</Table.Row>
-				</Table.Header>
-				<Table.Body>
-					{#each machine.gpuDevices as gpuDevice}
-						<Table.Row>
-							<Table.Cell>
-								{gpuDevice.productName !== '' ? gpuDevice.productName : gpuDevice.productId}
-							</Table.Cell>
-							<Table.Cell>
-								{gpuDevice.vendorName !== '' ? gpuDevice.vendorName : gpuDevice.vendorId}
-							</Table.Cell>
-							<Table.Cell>{gpuDevice.busName}</Table.Cell>
-							<Table.Cell>{gpuDevice.pciAddress}</Table.Cell>
+			</Drawer.Content>
+		</Drawer.Root>
+	{/if}
+	{#if machineScope}
+		<HoverCard.Root>
+			<HoverCard.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon-sm' })}>
+				<Icon icon="ph:graphics-card" />
+			</HoverCard.Trigger>
+			<HoverCard.Content class="m-0 h-fit w-fit rounded-lg p-0">
+				<Table.Root>
+					<Table.Header>
+						<Table.Row
+							class="bg-muted [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
+						>
+							<Table.Head>{m.product()}</Table.Head>
+							<Table.Head>{m.vendor()}</Table.Head>
+							<Table.Head>{m.bus()}</Table.Head>
+							<Table.Head>{m.pci_address()}</Table.Head>
 						</Table.Row>
-					{/each}
-				</Table.Body>
-			</Table.Root>
-		</HoverCard.Content>
-	</HoverCard.Root>
-{/if}
+					</Table.Header>
+					<Table.Body>
+						{#each machine.gpuDevices as gpuDevice}
+							<Table.Row>
+								<Table.Cell>
+									{gpuDevice.productName !== '' ? gpuDevice.productName : gpuDevice.productId}
+								</Table.Cell>
+								<Table.Cell>
+									{gpuDevice.vendorName !== '' ? gpuDevice.vendorName : gpuDevice.vendorId}
+								</Table.Cell>
+								<Table.Cell>{gpuDevice.busName}</Table.Cell>
+								<Table.Cell>{gpuDevice.pciAddress}</Table.Cell>
+							</Table.Row>
+						{/each}
+					</Table.Body>
+				</Table.Root>
+			</HoverCard.Content>
+		</HoverCard.Root>
+	{/if}
+	<p class="p-2">{machine.gpuDevices.length}</p>
+</span>

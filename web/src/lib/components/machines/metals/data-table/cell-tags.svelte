@@ -56,11 +56,10 @@
 	}
 </script>
 
-<div class="flex w-full justify-end">
+<div class="flex w-full flex-row-reverse items-center gap-2">
+	{machine.tags.length}
 	<Select.Root bind:open type="multiple" bind:value={tags} onOpenChange={loadTags}>
-		<Select.Trigger class="ring-none m-0 flex-row-reverse border-none p-0 shadow-none">
-			{machine.tags.length}
-		</Select.Trigger>
+		<Select.Trigger class="ring-none m-0 border-none p-0 shadow-none" />
 		<Select.Content>
 			<Select.Group>
 				{#if isTagsLoading}

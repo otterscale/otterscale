@@ -95,5 +95,4 @@
 >
 	<Background bgColor={mode.current === 'dark' ? '#1a1a1a' : '#f5f5f5'} />
 	<Panel position="top-right" />
-	<!-- <MiniMap /> -->
 </SvelteFlow>

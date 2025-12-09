@@ -27,6 +27,9 @@
 	"platform": "平台",
 	"model": "模型",
 	"model_artifact": "模型產物",
+	"no_model_artifact": "沒有模型產物",
+	"no_model_artifact_guide": "未找到本地模型。請下載模型產物以繼續。",
+	"model_artifact_setting_description": "輕鬆從 Hugging Face 直接下載模型產物，實現無縫整合與部署。存取預訓練模型、管理版本，並透過安全的一鍵下載簡化您的工作流程。",
 	"disaggregation_mode": "解構模式",
 	"inference": "推論",
 	"prefill": "預填充",
@@ -831,6 +834,7 @@
 	"search": "搜尋",
 	"models_store_title": "搜尋模型",
 	"models_store_description": "瀏覽並從可用的 Hugging Face 模型中選擇。",
+	"select_model_description": "請選擇一個模型。",
 	"pipeline": "管線 (Pipeline)",
 	"library": "函式庫",
 	"license": "授權",
@@ -864,5 +868,13 @@
 	"gpu_relation_description": "顯示此模型的機器、GPU 和 Pod 之間的關係。",
 	"gpu_relation_guide_description": "與圖表互動以探索連線和分配。",
 	"no_available_machines": "無可用機器",
-	"no_available_storage_devices": "無可用儲存裝置"
+	"no_available_storage_devices": "無可用儲存裝置",
+	"gpu_relation_guide_description": "與圖表互動以探索連線和分配。",
+	"download": "下載",
+	"temperature": "溫度",
+	"max_tokens": "最大 Token 數",
+	"model_testing": "模型測試",
+	"model_testing_description": "請在下方輸入提示並按下傳送以測試模型。",
+	"model_response_error": "哎呀！取得回應時發生錯誤。請重試或檢查您的網路連線。",
+	"health_check": "健康檢查"
 }

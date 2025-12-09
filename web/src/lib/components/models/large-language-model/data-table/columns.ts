@@ -13,7 +13,7 @@ import { headers } from './headers.svelte';
 const messages = {
 	name: m.name(),
 	namespace: m.namespace(),
-	id: m.model_name(),
+	modelName: m.model_name(),
 	status: m.status(),
 	description: m.description(),
 	firstDeployedAt: m.first_deployed_at(),
@@ -59,7 +59,8 @@ function getColumns(
 			},
 			cell: ({ row }) => {
 				return renderSnippet(cells.name, row);
-			}
+			},
+			enableHiding: false
 		},
 		{
 			accessorKey: 'modelName',
@@ -104,8 +105,7 @@ function getColumns(
 			},
 			cell: ({ row }) => {
 				return renderSnippet(cells.prefill, row);
-			},
-			enableHiding: false
+			}
 		},
 		{
 			accessorKey: 'decode',
@@ -114,8 +114,7 @@ function getColumns(
 			},
 			cell: ({ row }) => {
 				return renderSnippet(cells.decode, row);
-			},
-			enableHiding: false
+			}
 		},
 		{
 			accessorKey: 'firstDeployedAt',
@@ -165,7 +164,7 @@ function getColumns(
 				return renderSnippet(headers.test, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.test, { row, serviceUri: serviceUri });
+				return renderSnippet(cells.test, { row, serviceUri, scope });
 			},
 			enableHiding: false
 		},

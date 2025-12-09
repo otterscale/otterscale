@@ -1,6 +1,10 @@
 <script lang="ts" module>
+	import type { Type } from './statistics.svelte';
+
 	function getIcon(type: Type) {
 		switch (type) {
+			case 'data':
+				return 'ph:scroll-bold';
 			case 'count':
 				return 'ph:chart-bar-bold';
 			case 'ratio':
@@ -18,8 +22,6 @@
 
 	import * as Card from '$lib/components/ui/card';
 	import { cn, type WithElementRef } from '$lib/utils.js';
-
-	import type { Type } from './types';
 
 	let {
 		ref = $bindable(null),

@@ -17,7 +17,7 @@
 	import { cn } from '$lib/utils';
 
 	import ModelsStore from './util-models-store.svelte';
-	import { fetchModels } from './utils.svelte';
+	import { fetchHuggingFaceModels } from './utils.svelte';
 
 	interface OptionType extends SingleSelect.OptionType {
 		downloads: number;
@@ -33,7 +33,6 @@
 	const modelClient = createClient(ModelService, transport);
 	const applicationClient = createClient(ApplicationService, transport);
 
-	let namespace = $state('default');
 	const namespaceOptions: Writable<SingleSelect.OptionType[]> = writable([]);
 	async function fetchNamespaceOptions() {
 		const response = await applicationClient.listNamespaces({ scope });
@@ -49,7 +48,9 @@
 	const huggingFaceModelOptions: Writable<OptionType[]> = writable([]);
 
 	const defaults = {
-		scope: scope
+		scope: scope,
+		namespace: 'llm-d',
+		size: BigInt(100 * 1024 ** 3)
 	} as CreateModelArtifactRequest;
 	let request = $state({ ...defaults });
 	function reset() {
@@ -63,7 +64,7 @@
 
 	async function fetchModelOptions() {
 		try {
-			const huggingfaceModels = await fetchModels('RedHatAI', [], 'downloads', 10);
+			const huggingfaceModels = await fetchHuggingFaceModels('RedHatAI', [], 'downloads', 10);
 			huggingFaceModelOptions.set(
 				huggingfaceModels.map((model) => ({
 					value: model.id,
@@ -93,7 +94,14 @@
 	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			reset();
+		}
+	}}
+>
 	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -117,14 +125,14 @@
 					<Form.Label>{m.namespace()}</Form.Label>
 
 					<SingleSelect.Root
-						bind:value={namespace}
+						bind:value={request.namespace}
 						options={namespaceOptions}
 						required
 						bind:invalid={invalidity.namespace}
 					>
 						<SingleSelect.Trigger>
 							<Icon icon="ph:cube" />
-							{namespace}
+							{request.namespace}
 							<Icon icon="ph:caret-down" class="ml-auto size-5" />
 						</SingleSelect.Trigger>
 						<SingleSelect.Content>
@@ -176,11 +184,7 @@
 		</Form.Root>
 
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
@@ -201,7 +205,6 @@
 							return message;
 						}
 					});
-					reset();
 					close();
 				}}
 			>

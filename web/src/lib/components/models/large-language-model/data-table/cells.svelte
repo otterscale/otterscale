@@ -7,6 +7,7 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import Prompting from '$lib/components/prompting/index.svelte';
+	import { fetchHuggingFaceModelInformation } from '$lib/components/settings/model-artifact/utils.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
@@ -140,12 +141,22 @@
 	{/if}
 {/snippet}
 
-{#snippet test(data: { row: Row<Model>; serviceUri: string })}
-	{#if data.row.original.status === 'deployed'}
-		<Layout.Cell class="items-center">
-			<Prompting serviceUri={data.serviceUri} model={data.row.original} />
-		</Layout.Cell>
-	{/if}
+{#snippet test(data: { row: Row<Model>; serviceUri: string; scope: string })}
+	{#await fetchHuggingFaceModelInformation(data.row.original.id) then response}
+		{@const tags = response['tags']}
+		{#if tags.includes('text-generation')}
+			{@const isReady =
+				data.row.original.pods.filter((pod) => pod.phase.toUpperCase() === 'RUNNING').length > 0}
+			<Layout.Cell class="items-center">
+				<Prompting
+					serviceUri={data.serviceUri}
+					model={data.row.original}
+					scope={data.scope}
+					disabled={!isReady}
+				/>
+			</Layout.Cell>
+		{/if}
+	{/await}
 {/snippet}
 
 {#snippet action(data: { row: Row<Model>; scope: string; reloadManager: ReloadManager })}
