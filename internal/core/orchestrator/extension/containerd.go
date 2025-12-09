@@ -51,7 +51,7 @@ func (uc *UseCase) setContainerdTemplate(ctx context.Context, scope, unit string
 	data := base64.StdEncoding.EncodeToString([]byte(renderContainerdTemplate(hasGPU)))
 	path := uc.containerdTemplatePath(unit)
 
-	cmd := fmt.Sprintf(`echo "%q" | base64 -d > %s`, data, path)
+	cmd := fmt.Sprintf(`echo %q | base64 -d > %s`, data, path)
 
 	_, err := uc.action.Execute(ctx, scope, unit, cmd)
 	return err
