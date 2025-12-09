@@ -67,7 +67,8 @@
 			availableUnit: availableCapacity ? availableCapacity.unit : undefined,
 			totalValue: totalCapacity ? Math.round(totalCapacity.value) : undefined,
 			totalUnit: totalCapacity ? totalCapacity.unit : undefined,
-			availablePercentage: availablePercentage !== null ? [{ value: availablePercentage }] : [{ value: NaN }]
+			availablePercentage:
+				availablePercentage !== null ? [{ value: availablePercentage }] : [{ value: NaN }]
 		};
 	}
 
